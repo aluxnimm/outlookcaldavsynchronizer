@@ -100,7 +100,6 @@ namespace CalDavSynchronizer.DataAccess
                     <C:calendar-query xmlns:C=""urn:ietf:params:xml:ns:caldav"">
                         <D:prop xmlns:D=""DAV:"">
                             <D:getetag/>
-                            <D:displayname/>
                         </D:prop>
                         <C:filter>
                             <C:comp-filter name=""VCALENDAR"">

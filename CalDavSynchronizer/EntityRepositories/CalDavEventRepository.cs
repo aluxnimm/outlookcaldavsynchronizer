@@ -64,14 +64,29 @@ namespace CalDavSynchronizer.EntityRepositories
       }
     }
 
-    public override EntityIdWithVersion<Uri, string> Update (Uri entityId, Func<IEvent, IEvent> entityModifier)
+    public override EntityIdWithVersion<Uri, string> Update (Uri entityId, Func<IEvent, IEvent> entityModifier, IEvent cachedCurrentTargetEntityIfAvailable)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
         IEvent newEvent = new Event();
         newEvent = entityModifier (newEvent);
+
+        if (cachedCurrentTargetEntityIfAvailable == null)
+        {
+          s_logger.WarnFormat ("Event '{0}' is not in cache and has to be loaded from Server. This could cause performance problems", entityId);
+          cachedCurrentTargetEntityIfAvailable = GetEvent (entityId);
+        }
+
+        newEvent.Sequence = cachedCurrentTargetEntityIfAvailable.Sequence + 1;
+
         return _calDavDataAccess.UpdateEvent (entityId, SerializeCalEvent (newEvent));
       }
+    }
+
+    private IEvent GetEvent (Uri id)
+    {
+      var currentEventData = _calDavDataAccess.GetEvents (new[] { id }).First ().Value;
+      return DeserializeICalEvent (currentEventData);
     }
 
     public override EntityIdWithVersion<Uri, string> Create (Func<IEvent, IEvent> entityInitializer)

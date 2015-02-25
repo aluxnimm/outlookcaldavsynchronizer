@@ -47,7 +47,7 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
       throw new NotImplementedException();
     }
 
-    public override EntityIdWithVersion<int, int> Update (int entityId, Func<PersonA, PersonA> entityModifier)
+    public override EntityIdWithVersion<int, int> Update (int entityId, Func<PersonA, PersonA> entityModifier, PersonA cachedCurrentTargetEntityIfAvailable)
     {
       throw new NotImplementedException();
     }

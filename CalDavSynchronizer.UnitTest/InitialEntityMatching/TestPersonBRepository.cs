@@ -33,7 +33,7 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
 
     public override IEnumerable<EntityIdWithVersion<string, string>> GetEntityVersions (DateTime @from, DateTime to)
     {
-      return _persons.Select (p => new EntityIdWithVersion<string, string> (p.Id, p.Version)).ToArray ();
+      return _persons.Select (p => new EntityIdWithVersion<string, string> (p.Id, p.Version)).ToArray();
     }
 
     public override IDictionary<string, PersonB> GetEntities (IEnumerable<string> sourceEntityIds)
@@ -44,17 +44,17 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
 
     public override bool Delete (string entityId)
     {
-      throw new NotImplementedException ();
+      throw new NotImplementedException();
     }
 
-    public override EntityIdWithVersion<string, string> Update (string entityId, Func<PersonB, PersonB> entityModifier)
+    public override EntityIdWithVersion<string, string> Update (string entityId, Func<PersonB, PersonB> entityModifier, PersonB cachedCurrentTargetEntityIfAvailable)
     {
-      throw new NotImplementedException ();
+      throw new NotImplementedException();
     }
 
     public override EntityIdWithVersion<string, string> Create (Func<PersonB, PersonB> entityInitializer)
     {
-      throw new NotImplementedException ();
+      throw new NotImplementedException();
     }
   }
 }

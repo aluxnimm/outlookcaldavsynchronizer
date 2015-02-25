@@ -15,9 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using CalDavSynchronizer.ConflictManagement;
 using CalDavSynchronizer.EntityRelationManagement;
 using CalDavSynchronizer.EntityRepositories;
 using CalDavSynchronizer.EntityVersionManagement;
@@ -28,7 +26,7 @@ namespace CalDavSynchronizer.Synchronization
   internal class SynchronizationTasks<TSourceEntity, TSourceEntityId, TSourceEntityVersion, TTargetEntity, TTargetEntityId, TTargetEntityVersion>
   {
     // ReSharper disable once StaticFieldInGenericType
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod ().DeclaringType);
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
 
     private readonly IVersionStorage<TTargetEntityId, TTargetEntityVersion> _knownTargetVersions;
@@ -37,12 +35,11 @@ namespace CalDavSynchronizer.Synchronization
     private readonly Func<TSourceEntity, TTargetEntity, TTargetEntity> _entityMapper;
 
 
-
     public SynchronizationTasks (
-      IEntityRelationStorage<TSourceEntityId, TTargetEntityId> sourceToTargetEntityRelationStorage, 
-      EntityRepositoryBase<TTargetEntity, TTargetEntityId, TTargetEntityVersion> targetEntityRepository, 
-      Func<TSourceEntity, TTargetEntity, TTargetEntity> entityMapper, 
-      IVersionStorage<TTargetEntityId, TTargetEntityVersion> knownTargetVersions)
+        IEntityRelationStorage<TSourceEntityId, TTargetEntityId> sourceToTargetEntityRelationStorage,
+        EntityRepositoryBase<TTargetEntity, TTargetEntityId, TTargetEntityVersion> targetEntityRepository,
+        Func<TSourceEntity, TTargetEntity, TTargetEntity> entityMapper,
+        IVersionStorage<TTargetEntityId, TTargetEntityVersion> knownTargetVersions)
     {
       _sourceToTargetEntityRelationStorage = sourceToTargetEntityRelationStorage;
       _targetEntityRepository = targetEntityRepository;
@@ -50,9 +47,8 @@ namespace CalDavSynchronizer.Synchronization
       _knownTargetVersions = knownTargetVersions;
     }
 
-   
 
-    public void SynchronizeChanged (IDictionary<TSourceEntityId, TSourceEntity> changedVersions)
+    public void SynchronizeChanged (IDictionary<TSourceEntityId, TSourceEntity> changedVersions, IDictionary<TTargetEntityId, TTargetEntity> currentTargetEntityCache)
     {
       foreach (var entityById in changedVersions)
       {
@@ -62,7 +58,11 @@ namespace CalDavSynchronizer.Synchronization
           s_logger.DebugFormat ("Updating '{0}' in target", targetEntityId);
           bool idChanged;
           var entityByIdInClosure = entityById.Value;
-          var newTargetEntityWithVerisonId = _targetEntityRepository.Update (targetEntityId, target => _entityMapper (entityByIdInClosure, target));
+
+          TTargetEntity cachedCurrentTargetEntity;
+          currentTargetEntityCache.TryGetValue (targetEntityId, out cachedCurrentTargetEntity);
+
+          var newTargetEntityWithVerisonId = _targetEntityRepository.Update (targetEntityId, target => _entityMapper (entityByIdInClosure, target), cachedCurrentTargetEntity);
           if (!targetEntityId.Equals (newTargetEntityWithVerisonId.Id))
           {
             _sourceToTargetEntityRelationStorage.TryRemoveByEntity1 (entityById.Key, out targetEntityId);
@@ -122,13 +122,16 @@ namespace CalDavSynchronizer.Synchronization
       }
     }
 
-    public void RestoreChangedInTarget (IEnumerable<Tuple<TSourceEntityId, TTargetEntityId>> changes, IDictionary<TSourceEntityId, TSourceEntity> restoreInformation)
+    public void RestoreChangedInTarget (IEnumerable<Tuple<TSourceEntityId, TTargetEntityId>> changes, IDictionary<TSourceEntityId, TSourceEntity> restoreInformation, IDictionary<TTargetEntityId, TTargetEntity> currentTargetEntityCache)
     {
       foreach (var change in changes)
       {
         var sourceEntity = restoreInformation[change.Item1];
 
-        var newTargetEntityWithVerisonId = _targetEntityRepository.Update (change.Item2, newEntity => _entityMapper (sourceEntity, newEntity));
+        TTargetEntity cachedCurrentTargetEntity;
+        currentTargetEntityCache.TryGetValue (change.Item2, out cachedCurrentTargetEntity);
+
+        var newTargetEntityWithVerisonId = _targetEntityRepository.Update (change.Item2, newEntity => _entityMapper (sourceEntity, newEntity), cachedCurrentTargetEntity);
 
         if (!change.Item2.Equals (newTargetEntityWithVerisonId.Id))
         {
@@ -147,7 +150,7 @@ namespace CalDavSynchronizer.Synchronization
         s_logger.DebugFormat ("Restored '{0}' in target", newTargetEntityWithVerisonId.Id);
       }
     }
-   
+
     public void SynchronizeAdded (IDictionary<TSourceEntityId, TSourceEntity> addedVersions)
     {
       foreach (var entityById in addedVersions)
@@ -160,6 +163,30 @@ namespace CalDavSynchronizer.Synchronization
         _knownTargetVersions.AddVersion (newTargetEntityWithVerisonId);
       }
     }
-  
+
+    public IDictionary<TTargetEntityId, TTargetEntity> LoadTargetEntityCache (IDictionary<TSourceEntityId, TSourceEntity> sourceChanges, IDictionary<TTargetEntityId, TTargetEntity> targetChanges)
+    {
+      var targetEntityCache = new Dictionary<TTargetEntityId, TTargetEntity>();
+      var targetEntitiesToLoad = new List<TTargetEntityId>();
+
+      foreach (var sourceChange in sourceChanges)
+      {
+        TTargetEntityId targetEntityId;
+        if (_sourceToTargetEntityRelationStorage.TryGetEntity2ByEntity1 (sourceChange.Key, out targetEntityId))
+        {
+          TTargetEntity targetEntity;
+
+          if (targetChanges.TryGetValue (targetEntityId, out targetEntity))
+            targetEntityCache.Add (targetEntityId, targetEntity);
+          else
+            targetEntitiesToLoad.Add (targetEntityId);
+        }
+      }
+
+      foreach (var kv in _targetEntityRepository.GetEntities (targetEntitiesToLoad))
+        targetEntityCache.Add (kv.Key, kv.Value);
+
+      return targetEntityCache;
+    }
   }
 }

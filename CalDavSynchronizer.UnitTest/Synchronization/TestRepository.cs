@@ -55,7 +55,7 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
       return true;
     }
 
-    public override EntityIdWithVersion<string, int> Update (string entityId, Func<string, string> entityModifier)
+    public override EntityIdWithVersion<string, int> Update (string entityId, Func<string, string> entityModifier, string cachedCurrentTargetEntityIfAvailable)
     {
       var kv = EntityVersionAndContentById[entityId];
       EntityVersionAndContentById.Remove (entityId);

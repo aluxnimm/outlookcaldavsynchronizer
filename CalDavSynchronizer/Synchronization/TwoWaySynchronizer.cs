@@ -59,16 +59,19 @@ namespace CalDavSynchronizer.Synchronization
 
       var solvedConflicts = _conflictSolver.SolveConflicts (atypeEntityDelta, btypeEntityDelta, _conflictResolutionStrategy, _atypeToBtypeEntityRelationStorage, _btypeToAtypeEntityRelationStorage);
 
+
+      var bCurrentTargetEntityCache = aToBtasks.LoadTargetEntityCache (solvedConflicts.ADelta.Changed, btypeEntityDelta.Changed);
+      var aCurrentTargetEntityCache = bToAtasks.LoadTargetEntityCache (solvedConflicts.BDelta.Changed, atypeEntityDelta.Changed);
+
+
       aToBtasks.SnychronizeDeleted (solvedConflicts.ADelta.Deleted);
-      aToBtasks.SynchronizeChanged (solvedConflicts.ADelta.Changed);
+      aToBtasks.SynchronizeChanged (solvedConflicts.ADelta.Changed, bCurrentTargetEntityCache);
       aToBtasks.SynchronizeAdded (atypeEntityDelta.Added);
 
       bToAtasks.SnychronizeDeleted (solvedConflicts.BDelta.Deleted);
-      bToAtasks.SynchronizeChanged (solvedConflicts.BDelta.Changed);
+      bToAtasks.SynchronizeChanged (solvedConflicts.BDelta.Changed, aCurrentTargetEntityCache);
       bToAtasks.SynchronizeAdded (btypeEntityDelta.Added);
     }
-  
-   
 
   }
 }

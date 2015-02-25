@@ -59,7 +59,7 @@ namespace CalDavSynchronizer.EntityRepositories
       }
     }
 
-    public override EntityIdWithVersion<string, DateTime> Update (string entityId, Func<AppointmentItem, AppointmentItem> entityModifier)
+    public override EntityIdWithVersion<string, DateTime> Update (string entityId, Func<AppointmentItem, AppointmentItem> entityModifier, AppointmentItem cachedCurrentTargetEntityIfAvailable)
     {
       var appointment = _outlookDataAccess.GetEvents (new[] { entityId }).Single();
       appointment = entityModifier (appointment);

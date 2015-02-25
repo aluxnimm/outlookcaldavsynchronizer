@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CalDavSynchronizer.ConflictManagement;
@@ -50,18 +51,31 @@ namespace CalDavSynchronizer.Synchronization
       var btypeChangesWithOutConflicts = conflictSolver.GetTargetChangesWithoutConflict (_btypeDelta.Changed, atypeEntityDelta.Deleted, atypeEntityDelta.Changed);
       var btypeDeletionsWithoutConflicts = conflictSolver.GetTargetDeletionsWithoutConflict (_btypeDelta.Deleted, atypeEntityDelta.Deleted, atypeEntityDelta.Changed);
 
-      var btypeChangesRestoreInformation = _atypeEntityRepository.GetEntities (btypeChangesWithOutConflicts.Select (e => e.Item1));
+      var atypeIdsOfbtypeChangesWithOutConflicts = btypeChangesWithOutConflicts.Select (e => e.Item1).ToArray();
+
+      var btypeChangesRestoreInformation = _atypeEntityRepository.GetEntities (atypeIdsOfbtypeChangesWithOutConflicts);
       var btypeDeletionRestoreInformation = _atypeEntityRepository.GetEntities (btypeDeletionsWithoutConflicts.Select (e => e.Item1));
 
       conflictSolver.ClearTargetDeletionConflicts (_btypeDelta.Deleted, atypeEntityDelta.Changed);
 
+
+      var allAtypeIdsThatWillCauseUpdatesOnB = atypeEntityDelta.Changed.Keys.Union (atypeIdsOfbtypeChangesWithOutConflicts);
+      List<TBtypeEntityId> allBtypeIdsThatWillBeUpdated = new List<TBtypeEntityId>();
+      foreach (var atypeId in allAtypeIdsThatWillCauseUpdatesOnB)
+      {
+        TBtypeEntityId btypeId;
+        if (_atypeToBtypeEntityRelationStorage.TryGetEntity2ByEntity1 (atypeId, out btypeId))
+          allBtypeIdsThatWillBeUpdated.Add (btypeId);
+      }
+      var currentTargetEntityCache = _btypeEntityRepository.GetEntities (allBtypeIdsThatWillBeUpdated);
+
       aToBtasks.SnychronizeDeleted (atypeEntityDelta.Deleted);
-      aToBtasks.SynchronizeChanged (atypeEntityDelta.Changed);
+      aToBtasks.SynchronizeChanged (atypeEntityDelta.Changed, currentTargetEntityCache);
       aToBtasks.SynchronizeAdded (atypeEntityDelta.Added);
 
       aToBtasks.DeleteAdded (_btypeDelta.Added.Select (v => v.Id));
       aToBtasks.RestoreDeletedInTarget (btypeDeletionsWithoutConflicts, btypeDeletionRestoreInformation);
-      aToBtasks.RestoreChangedInTarget (btypeChangesWithOutConflicts, btypeChangesRestoreInformation);
+      aToBtasks.RestoreChangedInTarget (btypeChangesWithOutConflicts, btypeChangesRestoreInformation, currentTargetEntityCache);
     }
   }
 }
