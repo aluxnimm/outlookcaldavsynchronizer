@@ -42,7 +42,7 @@ namespace CalDavSynchronizer.Scheduling
     {
       _outlookEmailAddress = outlookEmailAddress;
       // Set to min, to ensure that it runs on the first run after startup
-      _lastRun = DateTime.MinValue ;
+      _lastRun = DateTime.MinValue;
     }
 
     public void UpdateOptions (NameSpace outlookSession, Options options)
@@ -50,7 +50,7 @@ namespace CalDavSynchronizer.Scheduling
       _profileName = options.Name;
 
       var storageDataAccess = StorageDataAccessFactory<string, DateTime, Uri, string>.Create (options);
-      var synchronizationContext = new OutlookCalDavEventContext (outlookSession, storageDataAccess, options,_outlookEmailAddress);
+      var synchronizationContext = new OutlookCalDavEventContext (outlookSession, storageDataAccess, options, _outlookEmailAddress);
       var conflictResolutionStrategy = ConflictResolutionStrategyFactory.Create (options.ConflictResolution);
       _synchronizer = SynchronizerFactory<AppointmentItem, string, DateTime, IEvent, Uri, string>.Create (options.SynchronizationMode, conflictResolutionStrategy, synchronizationContext);
       _interval = TimeSpan.FromMinutes (options.SynchronizationIntervalInMinutes);
@@ -58,7 +58,7 @@ namespace CalDavSynchronizer.Scheduling
 
     public void RunIfRequiredAndReschedule ()
     {
-      if (DateTime.UtcNow > _lastRun + _interval)
+      if (_interval > TimeSpan.Zero && DateTime.UtcNow > _lastRun + _interval)
       {
         RunNoThrowAndReschedule();
       }
@@ -68,7 +68,7 @@ namespace CalDavSynchronizer.Scheduling
     {
       try
       {
-        using(AutomaticStopwatch.StartInfo(s_logger,string.Format("Running synchronization profile '{0}'",_profileName)))
+        using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("Running synchronization profile '{0}'", _profileName)))
         {
           _synchronizer.Synchronize();
         }

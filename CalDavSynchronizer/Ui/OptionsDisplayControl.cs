@@ -16,12 +16,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using CalDavSynchronizer.ConflictManagement;
 using CalDavSynchronizer.Contracts;
@@ -42,9 +37,11 @@ namespace CalDavSynchronizer.Ui
     public event EventHandler OnDeletionRequested;
     public event EventHandler<string> OnProfileNameChanged;
 
-    private readonly IList<Item<int>> _availableSyncIntervals = Enumerable.Range (1, 12).Select (i => i * 5).Select (i => new Item<int> (i, i.ToString ())).ToList ();
+    private readonly IList<Item<int>> _availableSyncIntervals =
+        (new Item<int>[] { new Item<int> (0, "Manual only") })
+            .Union (Enumerable.Range (1, 12).Select (i => i * 5).Select (i => new Item<int> (i, i.ToString()))).ToList();
 
-    private readonly IList<Item<ConflictResolution>> _availableConflictResolutions = new List<Item<ConflictResolution>> ()
+    private readonly IList<Item<ConflictResolution>> _availableConflictResolutions = new List<Item<ConflictResolution>>()
                                                                                      {
                                                                                          new Item<ConflictResolution> (ConflictResolution.OutlookWins, "OutlookWins"),
                                                                                          new Item<ConflictResolution> (ConflictResolution.ServerWins, "ServerWins"),
@@ -53,7 +50,7 @@ namespace CalDavSynchronizer.Ui
                                                                                      };
 
 
-    private readonly IList<Item<SynchronizationMode>> _availableSynchronizationModes = new List<Item<SynchronizationMode>> ()
+    private readonly IList<Item<SynchronizationMode>> _availableSynchronizationModes = new List<Item<SynchronizationMode>>()
                                                                                        {
                                                                                            new Item<SynchronizationMode> (SynchronizationMode.ReplicateOutlookIntoServer, "ReplicateOutlookIntoServer"),
                                                                                            new Item<SynchronizationMode> (SynchronizationMode.ReplicateServerIntoOutlook, "ReplicateServerIntoOutlook"),
@@ -62,7 +59,7 @@ namespace CalDavSynchronizer.Ui
                                                                                            new Item<SynchronizationMode> (SynchronizationMode.MergeInBothDirections, "MergeInBothDirections"),
                                                                                        };
 
-  
+
     public OptionsDisplayControl (NameSpace session)
     {
       InitializeComponent();
@@ -73,12 +70,12 @@ namespace CalDavSynchronizer.Ui
       BindComboBox (_synchronizationModeComboBox, _availableSynchronizationModes);
 
       _testConnectionButton.Click += _testConnectionButton_Click;
-      _selectOutlookFolderButton.Click +=_selectOutlookFolderButton_Click;
+      _selectOutlookFolderButton.Click += _selectOutlookFolderButton_Click;
 
       _profileNameTextBox.TextChanged += _profileNameTextBox_TextChanged;
     }
 
-    void _profileNameTextBox_TextChanged (object sender, EventArgs e)
+    private void _profileNameTextBox_TextChanged (object sender, EventArgs e)
     {
       if (OnProfileNameChanged != null)
         OnProfileNameChanged (this, _profileNameTextBox.Text);
@@ -94,12 +91,12 @@ namespace CalDavSynchronizer.Ui
 
     private void _testConnectionButton_Click (object sender, EventArgs e)
     {
-      TestServerConnection ();
+      TestServerConnection();
     }
 
     private void _selectOutlookFolderButton_Click (object sender, EventArgs e)
     {
-      SelectFolder ();
+      SelectFolder();
     }
 
     private void TestServerConnection ()
@@ -108,14 +105,14 @@ namespace CalDavSynchronizer.Ui
 
       try
       {
-        AdjustCalendarUrl ();
+        AdjustCalendarUrl();
 
         var dataAccess = new CalDavDataAccess (new Uri (_calenderUrlTextBox.Text), _userNameTextBox.Text, _passwordTextBox.Text);
 
-        if (!dataAccess.IsCalendarAccessSupported ())
+        if (!dataAccess.IsCalendarAccessSupported())
           MessageBox.Show ("The specified Url does not support calendar access!", connectionTestCaption);
 
-        if (!dataAccess.IsResourceCalender ())
+        if (!dataAccess.IsResourceCalender())
           MessageBox.Show ("The specified Url is not a calendar!", connectionTestCaption);
 
         MessageBox.Show ("Connection test successful.", connectionTestCaption);
@@ -137,8 +134,8 @@ namespace CalDavSynchronizer.Ui
       set
       {
         _profileNameTextBox.Text = value.Name;
-        numberOfDaysInThePast.Text = value.DaysToSynchronizeInThePast.ToString ();
-        numberOfDaysInTheFuture.Text = value.DaysToSynchronizeInTheFuture.ToString ();
+        numberOfDaysInThePast.Text = value.DaysToSynchronizeInThePast.ToString();
+        numberOfDaysInTheFuture.Text = value.DaysToSynchronizeInTheFuture.ToString();
 
         _emailAddressTextBox.Text = value.EmailAddress;
         _calenderUrlTextBox.Text = value.CalenderUrl;
@@ -154,25 +151,25 @@ namespace CalDavSynchronizer.Ui
       }
       get
       {
-        AdjustCalendarUrl ();
+        AdjustCalendarUrl();
 
         // TODO: validate inputs
-        return new Options ()
-        {
-          Name = _profileNameTextBox.Text,
-          DaysToSynchronizeInThePast = int.Parse (numberOfDaysInThePast.Text),
-          DaysToSynchronizeInTheFuture = int.Parse (numberOfDaysInTheFuture.Text),
-          EmailAddress = _emailAddressTextBox.Text,
-          CalenderUrl = _calenderUrlTextBox.Text,
-          UserName = _userNameTextBox.Text,
-          Password = _passwordTextBox.Text,
-          SynchronizationMode = (SynchronizationMode) _synchronizationModeComboBox.SelectedValue,
-          ConflictResolution = (ConflictResolution) (_conflictResolutionComboBox.SelectedValue ?? ConflictResolution.Manual),
-          SynchronizationIntervalInMinutes = (int) _syncIntervalComboBox.SelectedValue,
-          OutlookFolderEntryId = _folderEntryId,
-          OutlookFolderStoreId = _folderStoreId,
-          Id = _optionsId
-        };
+        return new Options()
+               {
+                   Name = _profileNameTextBox.Text,
+                   DaysToSynchronizeInThePast = int.Parse (numberOfDaysInThePast.Text),
+                   DaysToSynchronizeInTheFuture = int.Parse (numberOfDaysInTheFuture.Text),
+                   EmailAddress = _emailAddressTextBox.Text,
+                   CalenderUrl = _calenderUrlTextBox.Text,
+                   UserName = _userNameTextBox.Text,
+                   Password = _passwordTextBox.Text,
+                   SynchronizationMode = (SynchronizationMode) _synchronizationModeComboBox.SelectedValue,
+                   ConflictResolution = (ConflictResolution) (_conflictResolutionComboBox.SelectedValue ?? ConflictResolution.Manual),
+                   SynchronizationIntervalInMinutes = (int) _syncIntervalComboBox.SelectedValue,
+                   OutlookFolderEntryId = _folderEntryId,
+                   OutlookFolderStoreId = _folderStoreId,
+                   Id = _optionsId
+               };
       }
     }
 
@@ -186,7 +183,6 @@ namespace CalDavSynchronizer.Ui
 
     private void UpdateFolder (string folderEntryId, string folderStoreId)
     {
-
       if (!string.IsNullOrEmpty (folderEntryId) && !string.IsNullOrEmpty (folderStoreId))
       {
         var folder = _session.GetFolderFromID (folderEntryId, folderStoreId);
@@ -202,7 +198,7 @@ namespace CalDavSynchronizer.Ui
 
     private void SelectFolder ()
     {
-      var folder = _session.PickFolder ();
+      var folder = _session.PickFolder();
       if (folder != null)
       {
         UpdateFolder (folder);
@@ -214,7 +210,5 @@ namespace CalDavSynchronizer.Ui
       if (OnDeletionRequested != null)
         OnDeletionRequested (this, EventArgs.Empty);
     }
-
-
   }
 }
