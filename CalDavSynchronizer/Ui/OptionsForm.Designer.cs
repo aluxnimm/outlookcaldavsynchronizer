@@ -39,7 +39,7 @@ namespace CalDavSynchronizer.Ui
       // _okButton
       // 
       this._okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._okButton.Location = new System.Drawing.Point(289, 555);
+      this._okButton.Location = new System.Drawing.Point(289, 581);
       this._okButton.Name = "_okButton";
       this._okButton.Size = new System.Drawing.Size(75, 23);
       this._okButton.TabIndex = 0;
@@ -51,7 +51,7 @@ namespace CalDavSynchronizer.Ui
       // 
       this._cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this._cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this._cancelButton.Location = new System.Drawing.Point(370, 555);
+      this._cancelButton.Location = new System.Drawing.Point(370, 581);
       this._cancelButton.Name = "_cancelButton";
       this._cancelButton.Size = new System.Drawing.Size(75, 23);
       this._cancelButton.TabIndex = 1;
@@ -66,13 +66,13 @@ namespace CalDavSynchronizer.Ui
       this._tabControl.Location = new System.Drawing.Point(13, 13);
       this._tabControl.Name = "_tabControl";
       this._tabControl.SelectedIndex = 0;
-      this._tabControl.Size = new System.Drawing.Size(432, 536);
+      this._tabControl.Size = new System.Drawing.Size(432, 562);
       this._tabControl.TabIndex = 2;
       // 
       // _addProfileButton
       // 
       this._addProfileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this._addProfileButton.Location = new System.Drawing.Point(13, 555);
+      this._addProfileButton.Location = new System.Drawing.Point(13, 581);
       this._addProfileButton.Name = "_addProfileButton";
       this._addProfileButton.Size = new System.Drawing.Size(75, 23);
       this._addProfileButton.TabIndex = 3;
@@ -86,7 +86,7 @@ namespace CalDavSynchronizer.Ui
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this._cancelButton;
-      this.ClientSize = new System.Drawing.Size(457, 590);
+      this.ClientSize = new System.Drawing.Size(457, 616);
       this.ControlBox = false;
       this.Controls.Add(this._addProfileButton);
       this.Controls.Add(this._tabControl);
