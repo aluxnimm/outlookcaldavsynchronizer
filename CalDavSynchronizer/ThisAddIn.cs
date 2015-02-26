@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using CalDavSynchronizer.DataAccess;
@@ -51,7 +52,12 @@ namespace CalDavSynchronizer
         _openExplorers.NewExplorer += OpenExplorers_NewExplorer;
         AddToolbarToActiveExplorer();
 
-        _optionsDataAccess = new OptionsDataAccess();
+        _optionsDataAccess = new OptionsDataAccess (
+            Path.Combine (
+                Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData),
+                "CalDavSynchronizer",
+                "options.xml"
+                ));
         _scheduler = new Scheduler (Application.Session);
         _scheduler.SetOptions (_optionsDataAccess.LoadOptions());
       }

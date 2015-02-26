@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.IO;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Properties;
 using CalDavSynchronizer.Utilities;
@@ -22,20 +23,27 @@ namespace CalDavSynchronizer.DataAccess
 {
   internal class OptionsDataAccess : IOptionsDataAccess
   {
+    private readonly string _optionsFilePath;
+
+    public OptionsDataAccess (string optionsFilePath)
+    {
+      _optionsFilePath = optionsFilePath;
+    }
+
     public Options[] LoadOptions ()
     {
-      var serializedOptions = Settings.Default.Options;
-
-      if (string.IsNullOrEmpty (serializedOptions))
+      if (!File.Exists(_optionsFilePath))
         return new Options[] { };
       else
-        return Serializer<Options[]>.Deserialize (serializedOptions);
+        return Serializer<Options[]>.Deserialize (File.ReadAllText(_optionsFilePath));
     }
 
     public void SaveOptions (Options[] options)
     {
-      Settings.Default.Options = Serializer<Options[]>.Serialize (options);
-      Settings.Default.Save();
+      if (!Directory.Exists (Path.GetDirectoryName (_optionsFilePath)))
+        Directory.CreateDirectory (Path.GetDirectoryName (_optionsFilePath));
+
+      File.WriteAllText (_optionsFilePath, Serializer<Options[]>.Serialize (options));
     }
   }
 }
