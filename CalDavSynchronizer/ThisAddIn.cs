@@ -39,6 +39,12 @@ namespace CalDavSynchronizer
     private Explorers _openExplorers;
     private Scheduler _scheduler;
     private IOptionsDataAccess _optionsDataAccess;
+    private static string _applicationDataDirectory;
+
+    public static string ApplicationDataDirectory
+    {
+      get { return _applicationDataDirectory; }
+    }
 
     private void ThisAddIn_Startup (object sender, EventArgs e)
     {
@@ -52,10 +58,11 @@ namespace CalDavSynchronizer
         _openExplorers.NewExplorer += OpenExplorers_NewExplorer;
         AddToolbarToActiveExplorer();
 
+        _applicationDataDirectory = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData), "CalDavSynchronizer");
+
         _optionsDataAccess = new OptionsDataAccess (
             Path.Combine (
-                Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData),
-                "CalDavSynchronizer",
+                _applicationDataDirectory,
                 "options.xml"
                 ));
         _scheduler = new Scheduler (Application.Session);

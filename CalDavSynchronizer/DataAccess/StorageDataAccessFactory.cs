@@ -24,13 +24,9 @@ namespace CalDavSynchronizer.DataAccess
     public static IStorageDataAccess<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> Create (Options options)
     {
       var storageDataDirectory = Path.Combine (
-          Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData),
-          "CalDavSynchronizer",
+          ThisAddIn.ApplicationDataDirectory,
           options.Id.ToString()
       );
-
-      if (!Directory.Exists (storageDataDirectory))
-        Directory.CreateDirectory (storageDataDirectory);
 
       return new StorageDataAccess<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> (storageDataDirectory);
     }

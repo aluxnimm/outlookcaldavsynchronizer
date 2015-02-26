@@ -38,7 +38,7 @@ namespace CalDavSynchronizer.DataAccess
 
     public void SaveChaches (EntityCaches<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> caches)
     {
-      if (Directory.Exists (_dataDirectory))
+      if (!Directory.Exists (_dataDirectory))
         Directory.CreateDirectory (_dataDirectory);
 
       SetVersionStorage (caches.AtypeStorage, s_atypeEntityStorageName);
