@@ -307,7 +307,9 @@ namespace CalDavSynchronizer.EntityMapping
       {
         if (!IsOwnIdentity (recipient))
         {
+          var addressDummy = recipient.AddressEntry.Address;
           string emailAddress = recipient.PropertyAccessor.GetProperty (PR_SMTP_ADDRESS);
+
           var attendee = new Attendee (string.Format ("MAILTO:{0}", emailAddress));
           attendee.CommonName = recipient.Name;
           attendee.Role = MapAttendeeType1To2 ((OlMeetingRecipientType) recipient.Type);
@@ -382,7 +384,7 @@ namespace CalDavSynchronizer.EntityMapping
       foreach (var attendee in source.Attendees)
       {
         Recipient targetRecipient;
-        if (!indexByEmailAddresses.TryGetValue (attendee.Value, out targetRecipient))
+        if (!indexByEmailAddresses.TryGetValue (attendee.Value.ToString(), out targetRecipient))
         {
           targetRecipient = target.Recipients.Add (attendee.Value.ToString().Substring (s_mailtoSchemaLength));
         }
@@ -402,13 +404,14 @@ namespace CalDavSynchronizer.EntityMapping
       }
     }
 
-    private Dictionary<Uri, Recipient> GetOutlookRecipientsByEmailAddresses (AppointmentItem appointment)
+    private Dictionary<string, Recipient> GetOutlookRecipientsByEmailAddresses (AppointmentItem appointment)
     {
-      Dictionary<Uri, Recipient> indexByEmailAddresses = new Dictionary<Uri, Recipient>();
+      Dictionary<string, Recipient> indexByEmailAddresses = new Dictionary<string, Recipient>(StringComparer.InvariantCultureIgnoreCase);
 
       foreach (Recipient recipient in appointment.Recipients)
       {
-        var emailAddress = new Uri ("mailto:" + recipient.PropertyAccessor.GetProperty (PR_SMTP_ADDRESS));
+        var addressDummy = recipient.AddressEntry.Address;
+        var emailAddress = "mailto:" + recipient.PropertyAccessor.GetProperty (PR_SMTP_ADDRESS);
         indexByEmailAddresses.Add (emailAddress, recipient);
       }
 
