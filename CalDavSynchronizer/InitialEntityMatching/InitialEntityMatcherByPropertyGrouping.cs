@@ -36,12 +36,14 @@ namespace CalDavSynchronizer.InitialEntityMatching
       IVersionStorage<TAtypeEntityId, TAtypeEntityVersion> atypeVersionStorage,
       IVersionStorage<TBtypeEntityId, TBtypeEntityVersion> btypeVersionStorage)
     {
+      atypeVersionStorage.SetNewVersions (atypeEntityVersions);
+      btypeVersionStorage.SetNewVersions (btypeEntityVersions);
 
-      Dictionary<TAtypeEntityId, EntityIdWithVersion<TAtypeEntityId, TAtypeEntityVersion>> atypeEntityVersionsById = atypeEntityVersions.ToDictionary (v => v.Id);
-      Dictionary<TBtypeEntityId, EntityIdWithVersion<TBtypeEntityId, TBtypeEntityVersion>> btypeEntityVersionsById = btypeEntityVersions.ToDictionary (v => v.Id);
+      Dictionary<TAtypeEntityId, EntityIdWithVersion<TAtypeEntityId, TAtypeEntityVersion>> notMatchingAtypeEntityVersionsById = atypeEntityVersions.ToDictionary (v => v.Id);
+      Dictionary<TBtypeEntityId, EntityIdWithVersion<TBtypeEntityId, TBtypeEntityVersion>> notMatchingbtypeEntityVersionsById = btypeEntityVersions.ToDictionary (v => v.Id);
 
-      var atypeEntities = atypeEntityRepository.GetEntities (atypeEntityVersionsById.Keys);
-      var btypeEntities = btypeEntityRepository.GetEntities (btypeEntityVersionsById.Keys);
+      var atypeEntities = atypeEntityRepository.GetEntities (notMatchingAtypeEntityVersionsById.Keys);
+      var btypeEntities = btypeEntityRepository.GetEntities (notMatchingbtypeEntityVersionsById.Keys);
 
       var atypeEntityIdsGroupedByProperty = atypeEntities.GroupBy (a => GetAtypePropertyValue(a.Value)).ToDictionary (g => g.Key, g => g.Select (o => o.Key).ToList ());
       var btypeEntityIdsGroupedByProperty = btypeEntities.GroupBy (b => GetBtypePropertyValue(b.Value)).ToDictionary (g => g.Key, g => g.Select (o => o.Key).ToList ());
@@ -58,10 +60,8 @@ namespace CalDavSynchronizer.InitialEntityMatching
               if (AreEqual (atypeEntities[atypeEntityId], btypeEntities[btypeEntityId]))
               {
                 relationStorageToPopulate.AddRelation (atypeEntityId, btypeEntityId);
-                atypeVersionStorage.AddVersion (atypeEntityVersionsById[atypeEntityId]);
-                btypeVersionStorage.AddVersion (btypeEntityVersionsById[btypeEntityId]);
-                atypeEntityVersionsById.Remove (atypeEntityId);
-                btypeEntityVersionsById.Remove (btypeEntityId);
+                notMatchingAtypeEntityVersionsById.Remove (atypeEntityId);
+                notMatchingbtypeEntityVersionsById.Remove (btypeEntityId);
 
                 break; 
               }
@@ -70,7 +70,8 @@ namespace CalDavSynchronizer.InitialEntityMatching
         }
       }
 
-      return Tuple.Create<IEnumerable<EntityIdWithVersion<TAtypeEntityId, TAtypeEntityVersion>>, IEnumerable<EntityIdWithVersion<TBtypeEntityId, TBtypeEntityVersion>>> (atypeEntityVersionsById.Values, btypeEntityVersionsById.Values);
+
+      return Tuple.Create<IEnumerable<EntityIdWithVersion<TAtypeEntityId, TAtypeEntityVersion>>, IEnumerable<EntityIdWithVersion<TBtypeEntityId, TBtypeEntityVersion>>> (notMatchingAtypeEntityVersionsById.Values, notMatchingbtypeEntityVersionsById.Values);
     }
 
     protected abstract bool AreEqual (TAtypeEntity atypeEntity, TBtypeEntity btypeEntity);

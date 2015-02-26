@@ -23,10 +23,12 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
   [TestFixture]
   public class InitialEntityMatcherByPropertyGroupingFixture
   {
+    private VersionStorage<int, int> _atypeVersionStorage;
+    private VersionStorage<string, string> _btypeVersionStorage;
+
     [Test]
     public void PopulateEntityRelationStorage_OneRelationMatches ()
     {
-
       var result = Test (
           new[]
           {
@@ -40,7 +42,7 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
               new PersonB ("two", "Marge", "49", "1"),
               new PersonB ("three", "Bart", "9", "1"),
           }
-       );
+          );
 
       Assert.That (result.BbyA.Count, Is.EqualTo (1));
       Assert.That (result.AbyB.Count, Is.EqualTo (1));
@@ -48,8 +50,22 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
       Assert.That (result.BbyA[2], Is.EqualTo ("two"));
       Assert.That (result.AbyB["two"], Is.EqualTo (2));
 
+      Assert.That (_atypeVersionStorage.KnownVersionsForUnitTests.ContainsKey (1), Is.True);
+      Assert.That (_atypeVersionStorage.KnownVersionsForUnitTests.ContainsKey (2), Is.True);
+      Assert.That (_atypeVersionStorage.KnownVersionsForUnitTests.ContainsKey (3), Is.True);
+
+
+      Assert.That (_btypeVersionStorage.KnownVersionsForUnitTests.ContainsKey ("one"), Is.True);
+      Assert.That (_btypeVersionStorage.KnownVersionsForUnitTests.ContainsKey ("two"), Is.True);
+      Assert.That (_btypeVersionStorage.KnownVersionsForUnitTests.ContainsKey ("three"), Is.True);
     }
 
+    [SetUp ()]
+    public void Setup ()
+    {
+      _atypeVersionStorage = new VersionStorage<int, int>();
+      _btypeVersionStorage = new VersionStorage<string, string>();
+    }
 
     public TestRelationStorage Test (IEnumerable<PersonA> aPersons, IEnumerable<PersonB> bPersons)
     {
@@ -58,20 +74,19 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
       var atypeRepository = new TestPersonARepository (aPersons);
       var btypeRepository = new TestPersonBRepository (bPersons);
 
+
       new TestInitialEntityMatcher().PopulateEntityRelationStorage (
           entityRelationStorage,
           atypeRepository,
           btypeRepository,
           atypeRepository.GetEntityVersions (DateTime.MinValue, DateTime.MinValue),
           btypeRepository.GetEntityVersions (DateTime.MinValue, DateTime.MinValue),
-          new VersionStorage<int, int>(),
-          new VersionStorage<string, string>()
+          _atypeVersionStorage,
+          _btypeVersionStorage
           );
 
 
       return entityRelationStorage;
     }
-
-  
   }
 }

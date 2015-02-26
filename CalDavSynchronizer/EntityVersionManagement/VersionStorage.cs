@@ -30,8 +30,12 @@ namespace CalDavSynchronizer.EntityVersionManagement
     private static readonly EntityIdWithVersionByIdComparer<TEntityId, TVersion> s_entityIdWithVersionByIdComparer = new EntityIdWithVersionByIdComparer<TEntityId, TVersion> (EqualityComparer<TEntityId>.Default);
     private Dictionary<TEntityId, EntityIdWithVersion<TEntityId, TVersion>> _knownVersions = new Dictionary<TEntityId, EntityIdWithVersion<TEntityId, TVersion>>();
 
+    public Dictionary<TEntityId, EntityIdWithVersion<TEntityId, TVersion>> KnownVersionsForUnitTests
+    {
+      get { return _knownVersions; }
+    }
 
-  
+
     public VersionDelta<TEntityId, TVersion> SetNewVersions (IEnumerable<EntityIdWithVersion<TEntityId, TVersion>> newVersions)
     {
       var knownVersions = _knownVersions.Values;
@@ -50,7 +54,7 @@ namespace CalDavSynchronizer.EntityVersionManagement
           .Select (e => e.NewVersion)
           .ToArray();
 
-      _knownVersions = newVersions.ToDictionary(v => v.Id);
+      _knownVersions = newVersions.ToDictionary (v => v.Id);
 
       return new VersionDelta<TEntityId, TVersion> (addedEvents, deletedEvents, changedEvents);
     }
