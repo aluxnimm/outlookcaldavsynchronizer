@@ -52,7 +52,16 @@ namespace CalDavSynchronizer.EntityRepositories
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
-        return _calDavDataAccess.GetEvents (sourceEntityIds).ToDictionary (kv => kv.Key, kv => DeserializeICalEvent (kv.Value));
+        Dictionary<Uri, IEvent> entitiesByKey = new Dictionary<Uri, IEvent>();
+
+        foreach (var kv in _calDavDataAccess.GetEvents (sourceEntityIds))
+        {
+          IEvent evt;
+          if (TryDeserializeICalEvent (kv.Value, out evt))
+            entitiesByKey.Add (kv.Key, evt);
+        }
+
+        return entitiesByKey;
       }
     }
 
@@ -85,7 +94,7 @@ namespace CalDavSynchronizer.EntityRepositories
 
     private IEvent GetEvent (Uri id)
     {
-      var currentEventData = _calDavDataAccess.GetEvents (new[] { id }).First ().Value;
+      var currentEventData = _calDavDataAccess.GetEvents (new[] { id }).First().Value;
       return DeserializeICalEvent (currentEventData);
     }
 
@@ -95,7 +104,7 @@ namespace CalDavSynchronizer.EntityRepositories
       {
         IEvent newEvent = new Event();
         newEvent = entityInitializer (newEvent);
-        return _calDavDataAccess.CreateEvent (SerializeCalEvent(newEvent));
+        return _calDavDataAccess.CreateEvent (SerializeCalEvent (newEvent));
       }
     }
 
@@ -105,6 +114,21 @@ namespace CalDavSynchronizer.EntityRepositories
       var calendar = new iCalendar();
       calendar.Events.Add (evt);
       return _calendarSerializer.SerializeToString (calendar);
+    }
+
+    private bool TryDeserializeICalEvent (string iCalData, out IEvent evt)
+    {
+      evt = null;
+      try
+      {
+        evt = DeserializeICalEvent (iCalData);
+        return true;
+      }
+      catch (Exception x)
+      {
+        s_logger.Error (string.Format ("Could not deserilaize ICalData:\r\n{0}", iCalData), x);
+        return false;
+      }
     }
 
     private IEvent DeserializeICalEvent (string iCalData)

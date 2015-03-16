@@ -32,8 +32,25 @@ namespace CalDavSynchronizer.EntityRepositories
     public EntityDelta<TEntity, TEntityId> LoadDelta (VersionDelta<TEntityId, TEntityVersion> delta)
     {
       var addedAndChanged = GetEntities (delta.Added.Union (delta.Changed).Select (v => v.Id));
-      var added = delta.Added.ToDictionary (v => v.Id, v => addedAndChanged[v.Id]);
-      var changed = delta.Changed.ToDictionary (v => v.Id, v => addedAndChanged[v.Id]);
+
+      var added = new Dictionary<TEntityId, TEntity>();
+      foreach (var addedVersion in delta.Added)
+      {
+        TEntity addedEntity;
+        // if entity coulkd not be deserialized, then it will not be present in the dictionary
+        if (addedAndChanged.TryGetValue (addedVersion.Id, out addedEntity))
+          added.Add (addedVersion.Id, addedEntity);
+      }
+
+      var changed = new Dictionary<TEntityId, TEntity> ();
+      foreach (var changedVersion in delta.Changed)
+      {
+        TEntity changedEntity;
+        // if entity coulkd not be deserialized, then it will not be present in the dictionary
+        if (addedAndChanged.TryGetValue (changedVersion.Id, out changedEntity))
+          changed.Add (changedVersion.Id, changedEntity);
+      }
+      
       var deleted = delta.Deleted.ToDictionary (k => k.Id, v => true);
       return new EntityDelta<TEntity, TEntityId> (added, changed, deleted);
     }
