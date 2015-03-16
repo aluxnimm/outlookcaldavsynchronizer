@@ -47,6 +47,36 @@ namespace CalDavSynchronizer.Synchronization
       _knownTargetVersions = knownTargetVersions;
     }
 
+    private void TryExecute<T> (Func<T> repositoryOperation, Action<T> cacheUpdateOperation, TTargetEntityId targetIdForLogging)
+    {
+      TryExecute (repositoryOperation, cacheUpdateOperation, default(TSourceEntityId), targetIdForLogging);
+    }
+
+    private void TryExecute<T> (Func<T> repositoryOperation, Action<T> cacheUpdateOperation, TSourceEntityId sourceIdForLogging)
+    {
+      TryExecute (repositoryOperation, cacheUpdateOperation, sourceIdForLogging, default(TTargetEntityId));
+    }
+
+    private void TryExecute<T> (Func<T> repositoryOperation, Action<T> cacheUpdateOperation, TSourceEntityId sourceIdForLogging, TTargetEntityId targetIdForLogging)
+    {
+      bool success = false;
+      T result = default (T);
+      try
+      {
+        result = repositoryOperation();
+        success = true;
+      }
+      catch (Exception x)
+      {
+        s_logger.Error (string.Format ("Error occured, skipping entity. Source: '{0}', Target '{1}'", sourceIdForLogging, targetIdForLogging), x);
+      }
+
+      if (success)
+      {
+        cacheUpdateOperation (result);
+      }
+    }
+
 
     public void SynchronizeChanged (IDictionary<TSourceEntityId, TSourceEntity> changedVersions, IDictionary<TTargetEntityId, TTargetEntity> currentTargetEntityCache)
     {
@@ -62,26 +92,39 @@ namespace CalDavSynchronizer.Synchronization
           TTargetEntity cachedCurrentTargetEntity;
           currentTargetEntityCache.TryGetValue (targetEntityId, out cachedCurrentTargetEntity);
 
-          var newTargetEntityWithVerisonId = _targetEntityRepository.Update (targetEntityId, target => _entityMapper (entityByIdInClosure, target), cachedCurrentTargetEntity);
-          if (!targetEntityId.Equals (newTargetEntityWithVerisonId.Id))
-          {
-            _sourceToTargetEntityRelationStorage.TryRemoveByEntity1 (entityById.Key, out targetEntityId);
-            _sourceToTargetEntityRelationStorage.AddRelation (entityById.Key, newTargetEntityWithVerisonId.Id);
-            _knownTargetVersions.DeleteVersion (targetEntityId);
-            _knownTargetVersions.AddVersion (newTargetEntityWithVerisonId);
-          }
-          else
-          {
-            _knownTargetVersions.ChangeVersion (newTargetEntityWithVerisonId);
-          }
+          TryExecute (
+              () => _targetEntityRepository.Update (targetEntityId, target => _entityMapper (entityByIdInClosure, target), cachedCurrentTargetEntity),
+              newTargetEntityWithVersionId =>
+              {
+                if (!targetEntityId.Equals (newTargetEntityWithVersionId.Id))
+                {
+                  _sourceToTargetEntityRelationStorage.TryRemoveByEntity1 (entityById.Key, out targetEntityId);
+                  _sourceToTargetEntityRelationStorage.AddRelation (entityById.Key, newTargetEntityWithVersionId.Id);
+                  _knownTargetVersions.DeleteVersion (targetEntityId);
+                  _knownTargetVersions.AddVersion (newTargetEntityWithVersionId);
+                }
+                else
+                {
+                  _knownTargetVersions.ChangeVersion (newTargetEntityWithVersionId);
+                }
+              },
+              entityById.Key,
+              targetEntityId
+              );
         }
         else
         {
           var entityByIdInClosure = entityById.Value;
-          var newTargetEntityWithVerisonId = _targetEntityRepository.Create (newEntity => _entityMapper (entityByIdInClosure, newEntity));
-          s_logger.DebugFormat ("Created '{0}' in target", targetEntityId);
-          _sourceToTargetEntityRelationStorage.AddRelation (entityById.Key, newTargetEntityWithVerisonId.Id);
-          _knownTargetVersions.AddVersion (newTargetEntityWithVerisonId);
+          TryExecute (
+              () => _targetEntityRepository.Create (newEntity => _entityMapper (entityByIdInClosure, newEntity)),
+              newTargetEntityWithVerisonId =>
+              {
+                s_logger.DebugFormat ("Created '{0}' in target", targetEntityId);
+                _sourceToTargetEntityRelationStorage.AddRelation (entityById.Key, newTargetEntityWithVerisonId.Id);
+                _knownTargetVersions.AddVersion (newTargetEntityWithVerisonId);
+              },
+              entityById.Key
+              );
         }
       }
     }
@@ -94,8 +137,12 @@ namespace CalDavSynchronizer.Synchronization
         if (_sourceToTargetEntityRelationStorage.TryRemoveByEntity1 (deleted.Key, out targetEntityId))
         {
           s_logger.DebugFormat ("Deleting '{0}' in target", targetEntityId);
-          _targetEntityRepository.Delete (targetEntityId);
-          _knownTargetVersions.DeleteVersion (targetEntityId);
+          TryExecute (
+              () => _targetEntityRepository.Delete (targetEntityId),
+              _ => _knownTargetVersions.DeleteVersion (targetEntityId),
+              deleted.Key,
+              targetEntityId
+              );
         }
       }
     }
@@ -105,8 +152,11 @@ namespace CalDavSynchronizer.Synchronization
       foreach (var addedId in addedVersions)
       {
         s_logger.DebugFormat ("Deleting '{0}' in target", addedId);
-        _targetEntityRepository.Delete (addedId);
-        _knownTargetVersions.DeleteVersion (addedId);
+        TryExecute (
+            () => _targetEntityRepository.Delete (addedId),
+            _ => _knownTargetVersions.DeleteVersion (addedId),
+            addedId
+            );
       }
     }
 
@@ -115,10 +165,15 @@ namespace CalDavSynchronizer.Synchronization
       foreach (var deletion in deletions)
       {
         var sourceEntity = restoreInformation[deletion.Item1];
-        var newTargetEntityWithVerisonId = _targetEntityRepository.Create (newEntity => _entityMapper (sourceEntity, newEntity));
-
-        s_logger.DebugFormat ("Restored '{0}' in target", newTargetEntityWithVerisonId.Id);
-        _knownTargetVersions.AddVersion (newTargetEntityWithVerisonId);
+        TryExecute (
+            () => _targetEntityRepository.Create (newEntity => _entityMapper (sourceEntity, newEntity)),
+            newTargetEntityWithVerisonId =>
+            {
+              s_logger.DebugFormat ("Restored '{0}' in target", newTargetEntityWithVerisonId.Id);
+              _knownTargetVersions.AddVersion (newTargetEntityWithVerisonId);
+            },
+            deletion.Item1
+            );
       }
     }
 
@@ -131,23 +186,30 @@ namespace CalDavSynchronizer.Synchronization
         TTargetEntity cachedCurrentTargetEntity;
         currentTargetEntityCache.TryGetValue (change.Item2, out cachedCurrentTargetEntity);
 
-        var newTargetEntityWithVerisonId = _targetEntityRepository.Update (change.Item2, newEntity => _entityMapper (sourceEntity, newEntity), cachedCurrentTargetEntity);
 
-        if (!change.Item2.Equals (newTargetEntityWithVerisonId.Id))
-        {
-          TTargetEntityId targetEntityId;
-          _sourceToTargetEntityRelationStorage.TryRemoveByEntity1 (change.Item1, out targetEntityId);
-          _sourceToTargetEntityRelationStorage.AddRelation (change.Item1, newTargetEntityWithVerisonId.Id);
-          _knownTargetVersions.DeleteVersion (targetEntityId);
-          _knownTargetVersions.AddVersion (newTargetEntityWithVerisonId);
-        }
-        else
-        {
-          _knownTargetVersions.ChangeVersion (newTargetEntityWithVerisonId);
-        }
+        TryExecute (
+            () => _targetEntityRepository.Update (change.Item2, newEntity => _entityMapper (sourceEntity, newEntity), cachedCurrentTargetEntity),
+            newTargetEntityWithVerisonId =>
+            {
+              if (!change.Item2.Equals (newTargetEntityWithVerisonId.Id))
+              {
+                TTargetEntityId targetEntityId;
+                _sourceToTargetEntityRelationStorage.TryRemoveByEntity1 (change.Item1, out targetEntityId);
+                _sourceToTargetEntityRelationStorage.AddRelation (change.Item1, newTargetEntityWithVerisonId.Id);
+                _knownTargetVersions.DeleteVersion (targetEntityId);
+                _knownTargetVersions.AddVersion (newTargetEntityWithVerisonId);
+              }
+              else
+              {
+                _knownTargetVersions.ChangeVersion (newTargetEntityWithVerisonId);
+              }
 
 
-        s_logger.DebugFormat ("Restored '{0}' in target", newTargetEntityWithVerisonId.Id);
+              s_logger.DebugFormat ("Restored '{0}' in target", newTargetEntityWithVerisonId.Id);
+            },
+            change.Item1,
+            change.Item2
+            );
       }
     }
 
@@ -156,37 +218,51 @@ namespace CalDavSynchronizer.Synchronization
       foreach (var entityById in addedVersions)
       {
         var entityByIdInClosure = entityById.Value;
-        var newTargetEntityWithVerisonId = _targetEntityRepository.Create (newEntity => _entityMapper (entityByIdInClosure, newEntity));
 
-        s_logger.DebugFormat ("Created '{0}' in target", newTargetEntityWithVerisonId.Id);
-        _sourceToTargetEntityRelationStorage.AddRelation (entityById.Key, newTargetEntityWithVerisonId.Id);
-        _knownTargetVersions.AddVersion (newTargetEntityWithVerisonId);
+        TryExecute (
+            () => _targetEntityRepository.Create (newEntity => _entityMapper (entityByIdInClosure, newEntity)),
+            newTargetEntityWithVerisonId =>
+            {
+              s_logger.DebugFormat ("Created '{0}' in target", newTargetEntityWithVerisonId.Id);
+              _sourceToTargetEntityRelationStorage.AddRelation (entityById.Key, newTargetEntityWithVerisonId.Id);
+              _knownTargetVersions.AddVersion (newTargetEntityWithVerisonId);
+            },
+            entityById.Key
+            );
       }
     }
 
     public IDictionary<TTargetEntityId, TTargetEntity> LoadTargetEntityCache (IDictionary<TSourceEntityId, TSourceEntity> sourceChanges, IDictionary<TTargetEntityId, TTargetEntity> targetChanges)
     {
-      var targetEntityCache = new Dictionary<TTargetEntityId, TTargetEntity>();
-      var targetEntitiesToLoad = new List<TTargetEntityId>();
-
-      foreach (var sourceChange in sourceChanges)
+      try
       {
-        TTargetEntityId targetEntityId;
-        if (_sourceToTargetEntityRelationStorage.TryGetEntity2ByEntity1 (sourceChange.Key, out targetEntityId))
+        var targetEntityCache = new Dictionary<TTargetEntityId, TTargetEntity>();
+        var targetEntitiesToLoad = new List<TTargetEntityId>();
+
+        foreach (var sourceChange in sourceChanges)
         {
-          TTargetEntity targetEntity;
+          TTargetEntityId targetEntityId;
+          if (_sourceToTargetEntityRelationStorage.TryGetEntity2ByEntity1 (sourceChange.Key, out targetEntityId))
+          {
+            TTargetEntity targetEntity;
 
-          if (targetChanges.TryGetValue (targetEntityId, out targetEntity))
-            targetEntityCache.Add (targetEntityId, targetEntity);
-          else
-            targetEntitiesToLoad.Add (targetEntityId);
+            if (targetChanges.TryGetValue (targetEntityId, out targetEntity))
+              targetEntityCache.Add (targetEntityId, targetEntity);
+            else
+              targetEntitiesToLoad.Add (targetEntityId);
+          }
         }
+
+        foreach (var kv in _targetEntityRepository.GetEntities (targetEntitiesToLoad))
+          targetEntityCache.Add (kv.Key, kv.Value);
+
+        return targetEntityCache;
       }
-
-      foreach (var kv in _targetEntityRepository.GetEntities (targetEntitiesToLoad))
-        targetEntityCache.Add (kv.Key, kv.Value);
-
-      return targetEntityCache;
+      catch (Exception x)
+      {
+        s_logger.ErrorFormat ("Could not load target entity cache. Using empty cache, which will result in poor performance", x);
+        return new Dictionary<TTargetEntityId, TTargetEntity>();
+      }
     }
   }
 }
