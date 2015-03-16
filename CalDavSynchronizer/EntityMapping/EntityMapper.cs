@@ -52,7 +52,6 @@ namespace CalDavSynchronizer.EntityMapping
       MapAttendees1To2 (source, target);
       MapRecurrance1To2 (source, target);
       return target;
-
     }
 
 
@@ -160,6 +159,8 @@ namespace CalDavSynchronizer.EntityMapping
 
     private void MapRecurrance2To1 (IEvent source, AppointmentItem target)
     {
+      target.ClearRecurrencePattern();
+
       if (source.RecurrenceRules.Count > 0)
       {
         var targetRecurrencePattern = target.GetRecurrencePattern();
@@ -169,11 +170,13 @@ namespace CalDavSynchronizer.EntityMapping
         }
         var sourceRecurrencePattern = source.RecurrenceRules[0];
 
-
-        targetRecurrencePattern.Occurrences = sourceRecurrencePattern.Count;
-        targetRecurrencePattern.PatternEndDate = sourceRecurrencePattern.Until;
-
         targetRecurrencePattern.Interval = sourceRecurrencePattern.Interval;
+
+        if (sourceRecurrencePattern.Count >= 0)
+          targetRecurrencePattern.Occurrences = sourceRecurrencePattern.Count;
+    
+        if (sourceRecurrencePattern.Until != default(DateTime))
+          targetRecurrencePattern.PatternEndDate = sourceRecurrencePattern.Until;
 
         switch (sourceRecurrencePattern.Frequency)
         {
@@ -189,7 +192,7 @@ namespace CalDavSynchronizer.EntityMapping
             else
             {
               s_logger.WarnFormat ("Event '{0}' contains a weekly recurrence pattern, which is not supported by outlook. Ignoring recurrence rule.", source.Url);
-              target.ClearRecurrencePattern ();
+              target.ClearRecurrencePattern();
             }
             break;
           case FrequencyType.Monthly:
@@ -254,7 +257,7 @@ namespace CalDavSynchronizer.EntityMapping
             else
             {
               s_logger.WarnFormat ("Event '{0}' contains a yearly recurrence pattern, which is not supported by outlook. Ignoring recurrence rule.", source.Url);
-              target.ClearRecurrencePattern ();
+              target.ClearRecurrencePattern();
             }
             break;
           default:
@@ -263,10 +266,7 @@ namespace CalDavSynchronizer.EntityMapping
             break;
         }
       }
-      else
-      {
-        target.ClearRecurrencePattern();
-      }
+    
     }
 
     private int MapPriority1To2 (OlImportance value)
@@ -345,6 +345,8 @@ namespace CalDavSynchronizer.EntityMapping
     {
       switch (recipientType)
       {
+        case null:
+        case "NON-PARTICIPANT":
         case "OPT-PARTICIPANT":
           return OlMeetingRecipientType.olOptional;
         case "REQ-PARTICIPANT":
@@ -390,6 +392,7 @@ namespace CalDavSynchronizer.EntityMapping
         }
         targetRecipientsWhichShouldRemain.Add (targetRecipient);
 
+
         targetRecipient.Type = (int) MapAttendeeType2To1 (attendee.Role);
       }
 
@@ -406,7 +409,7 @@ namespace CalDavSynchronizer.EntityMapping
 
     private Dictionary<string, Recipient> GetOutlookRecipientsByEmailAddresses (AppointmentItem appointment)
     {
-      Dictionary<string, Recipient> indexByEmailAddresses = new Dictionary<string, Recipient>(StringComparer.InvariantCultureIgnoreCase);
+      Dictionary<string, Recipient> indexByEmailAddresses = new Dictionary<string, Recipient> (StringComparer.InvariantCultureIgnoreCase);
 
       foreach (Recipient recipient in appointment.Recipients)
       {
