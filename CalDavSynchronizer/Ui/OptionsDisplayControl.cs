@@ -73,7 +73,28 @@ namespace CalDavSynchronizer.Ui
       _selectOutlookFolderButton.Click += _selectOutlookFolderButton_Click;
 
       _profileNameTextBox.TextChanged += _profileNameTextBox_TextChanged;
+      _synchronizationModeComboBox.SelectedValueChanged += _synchronizationModeComboBox_SelectedValueChanged;
     }
+
+    void _synchronizationModeComboBox_SelectedValueChanged (object sender, EventArgs e)
+    {
+      UpdateConflictResolutionComboBoxEnabled();
+    }
+
+    private void UpdateConflictResolutionComboBoxEnabled ()
+    {
+      switch ((SynchronizationMode) _synchronizationModeComboBox.SelectedValue)
+      {
+        case SynchronizationMode.ReplicateOutlookIntoServer:
+        case SynchronizationMode.ReplicateServerIntoOutlook:
+          _conflictResolutionComboBox.Enabled = false;
+          break;
+        default:
+          _conflictResolutionComboBox.Enabled = true;
+          break;
+      }
+    }
+
 
     private void _profileNameTextBox_TextChanged (object sender, EventArgs e)
     {
@@ -148,6 +169,7 @@ namespace CalDavSynchronizer.Ui
         _syncIntervalComboBox.SelectedValue = value.SynchronizationIntervalInMinutes;
         _optionsId = value.Id;
         UpdateFolder (value.OutlookFolderEntryId, value.OutlookFolderStoreId);
+        UpdateConflictResolutionComboBoxEnabled();
       }
       get
       {
