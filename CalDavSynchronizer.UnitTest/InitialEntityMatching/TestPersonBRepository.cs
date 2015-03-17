@@ -36,7 +36,7 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
       return _persons.Select (p => new EntityIdWithVersion<string, string> (p.Id, p.Version)).ToArray();
     }
 
-    public override IDictionary<string, PersonB> GetEntities (IEnumerable<string> sourceEntityIds)
+    public override IDictionary<string, PersonB> GetEntities (ICollection<string> sourceEntityIds)
     {
       var personsById = _persons.ToDictionary (p => p.Id);
       return sourceEntityIds.Select (id => personsById[id]).ToDictionary (p => p.Id);

@@ -23,6 +23,7 @@ namespace CalDavSynchronizer.DataAccess
   public interface IStorageDataAccess<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
   {
     void SaveChaches (EntityCaches<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> caches);
+    void DeleteCaches ();
     EntityCaches<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> LoadOrCreateCaches (out bool cachesWereCreatedNew);
   }
 }

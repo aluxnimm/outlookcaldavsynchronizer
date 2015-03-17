@@ -23,7 +23,7 @@ namespace CalDavSynchronizer.EntityRepositories
   public abstract class EntityRepositoryBase<TEntity, TEntityId, TEntityVersion> : IWritableEntityRepository<TEntity, TEntityId, TEntityVersion>, IReadOnlyEntityRepository<TEntity, TEntityId, TEntityVersion> 
   {
     public abstract IEnumerable<EntityIdWithVersion<TEntityId, TEntityVersion>> GetEntityVersions (DateTime from, DateTime to);
-    public abstract IDictionary<TEntityId, TEntity> GetEntities (IEnumerable<TEntityId> sourceEntityIds);
+    public abstract IDictionary<TEntityId, TEntity> GetEntities (ICollection<TEntityId> sourceEntityIds);
 
     public abstract bool Delete (TEntityId entityId);
     public abstract EntityIdWithVersion<TEntityId, TEntityVersion> Update (TEntityId entityId, Func<TEntity, TEntity> entityModifier, TEntity cachedCurrentTargetEntityIfAvailable);
@@ -31,7 +31,7 @@ namespace CalDavSynchronizer.EntityRepositories
 
     public EntityDelta<TEntity, TEntityId> LoadDelta (VersionDelta<TEntityId, TEntityVersion> delta)
     {
-      var addedAndChanged = GetEntities (delta.Added.Union (delta.Changed).Select (v => v.Id));
+      var addedAndChanged = GetEntities (delta.Added.Union (delta.Changed).Select (v => v.Id).ToArray());
 
       var added = new Dictionary<TEntityId, TEntity>();
       foreach (var addedVersion in delta.Added)

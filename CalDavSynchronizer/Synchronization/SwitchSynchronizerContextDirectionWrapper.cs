@@ -74,6 +74,11 @@ namespace CalDavSynchronizer.Synchronization
       _inner.SaveChaches (switchedCaches);
     }
 
+    public void DeleteCaches ()
+    {
+      _inner.DeleteCaches();
+    }
+
     public EntityCaches<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> LoadOrCreateCaches (out bool cachesWereCreatedNew)
     {
       var caches = _inner.LoadOrCreateCaches (out cachesWereCreatedNew);

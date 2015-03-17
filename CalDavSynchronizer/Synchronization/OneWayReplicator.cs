@@ -49,7 +49,7 @@ namespace CalDavSynchronizer.Synchronization
       var atypeIdsOfbtypeChangesWithOutConflicts = btypeChangesWithOutConflicts.Select (e => e.Item1).ToArray();
 
       var btypeChangesRestoreInformation = atypeEntityRepository.GetEntities (atypeIdsOfbtypeChangesWithOutConflicts);
-      var btypeDeletionRestoreInformation = atypeEntityRepository.GetEntities (btypeDeletionsWithoutConflicts.Select (e => e.Item1));
+      var btypeDeletionRestoreInformation = atypeEntityRepository.GetEntities (btypeDeletionsWithoutConflicts.Select (e => e.Item1).ToArray());
 
       conflictSolver.ClearTargetDeletionConflicts (btypeDelta.Deleted, atypeEntityDelta.Changed);
 
@@ -76,7 +76,7 @@ namespace CalDavSynchronizer.Synchronization
     }
 
 
-    protected override void SynchronizeOverride (SynchronizationTasks<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> aToBtasks, SynchronizationTasks<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> bToAtasks, OneWaySyncData<TAtypeEntity, TAtypeEntityId, TBtypeEntity, TBtypeEntityId> syncData)
+    protected override void DoSynchronization (SynchronizationTasks<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> aToBtasks, SynchronizationTasks<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> bToAtasks, OneWaySyncData<TAtypeEntity, TAtypeEntityId, TBtypeEntity, TBtypeEntityId> syncData)
     {
       aToBtasks.SnychronizeDeleted (syncData.AtypeEntityDelta.Deleted);
       aToBtasks.SynchronizeChanged (syncData.AtypeEntityDelta.Changed,syncData.CurrentTargetEntityCache);

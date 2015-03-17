@@ -7,7 +7,7 @@ namespace CalDavSynchronizer.EntityRepositories
   public interface IReadOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
   {
     IEnumerable<EntityIdWithVersion<TEntityId, TEntityVersion>> GetEntityVersions (DateTime from, DateTime to);
-    IDictionary<TEntityId, TEntity> GetEntities (IEnumerable<TEntityId> sourceEntityIds);
+    IDictionary<TEntityId, TEntity> GetEntities (ICollection<TEntityId> sourceEntityIds);
     EntityDelta<TEntity, TEntityId> LoadDelta (VersionDelta<TEntityId, TEntityVersion> delta);
   }
 }

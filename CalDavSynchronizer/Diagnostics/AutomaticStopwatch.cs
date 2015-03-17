@@ -36,7 +36,7 @@ namespace CalDavSynchronizer.Diagnostics
 
     public static AutomaticStopwatch StartDebug (ILog logger)
     {
-      return new AutomaticStopwatch (logger, string.Empty, Level.Info);
+      return new AutomaticStopwatch (logger, string.Empty, Level.Debug);
     }
 
     private AutomaticStopwatch (ILog logger, string name, Level logLevel)
@@ -44,6 +44,10 @@ namespace CalDavSynchronizer.Diagnostics
       _name = name;
       _logLevel = logLevel;
       _logger = logger;
+
+      if (_name != string.Empty)
+        _logger.Logger.Log (typeof (AutomaticStopwatch), _logLevel, string.Format ("Starting '{0}'", _name), null);
+
       _stopwatch = Stopwatch.StartNew();
     }
 
@@ -52,9 +56,9 @@ namespace CalDavSynchronizer.Diagnostics
     {
       _stopwatch.Stop();
       if (_name != string.Empty)
-        _logger.Logger.Log (typeof (AutomaticStopwatch), Level.Debug, string.Format ("Duration of '{0}': {1}", _name, _stopwatch.Elapsed), null);
+        _logger.Logger.Log (typeof (AutomaticStopwatch), _logLevel, string.Format ("Duration of '{0}': {1}", _name, _stopwatch.Elapsed), null);
       else
-        _logger.Logger.Log (typeof (AutomaticStopwatch), Level.Debug, string.Format ("Duration: {0}", _stopwatch.Elapsed), null);
+        _logger.Logger.Log (typeof (AutomaticStopwatch), _logLevel, string.Format ("Duration: {0}", _stopwatch.Elapsed), null);
     }
   }
 }

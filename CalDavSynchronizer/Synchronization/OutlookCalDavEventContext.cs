@@ -89,5 +89,11 @@ namespace CalDavSynchronizer.Synchronization
     {
       return _storageDataAccess.LoadOrCreateCaches (out cachesWereCreatedNew);
     }
+
+
+    public void DeleteCaches ()
+    {
+      _storageDataAccess.DeleteCaches();
+    }
   }
 }

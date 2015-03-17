@@ -35,6 +35,16 @@ namespace CalDavSynchronizer.DataAccess
       _dataDirectory = dataDirectory;
     }
 
+    public void DeleteCaches ()
+    {
+      if (!Directory.Exists (_dataDirectory))
+        return;
+
+      File.Delete (GetFullEntityPath (s_atypeEntityStorageName));
+      File.Delete (GetFullEntityPath (s_btypeEntityStorageName));
+      File.Delete (GetFullEntityPath (s_relationStorageName));
+
+    }
 
     public void SaveChaches (EntityCaches<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> caches)
     {

@@ -16,10 +16,10 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using CalDavSynchronizer.EntityMapping;
 using CalDavSynchronizer.EntityRelationManagement;
 using CalDavSynchronizer.EntityRepositories;
 using CalDavSynchronizer.EntityVersionManagement;
+using CalDavSynchronizer.InitialEntityMatching;
 using log4net;
 
 namespace CalDavSynchronizer.Synchronization
@@ -40,73 +40,106 @@ namespace CalDavSynchronizer.Synchronization
     {
       s_logger.DebugFormat ("Entered. Atype='{0}', Btype='{1}'", typeof (TAtypeEntity).Name, typeof (TBtypeEntity).Name);
 
-      var atypeEntityRepository = _synchronizerContext.AtypeRepository;
-      var btypeEntityRepository = _synchronizerContext.BtypeRepository;
-      var entityMapper = _synchronizerContext.EntityMapper;
+      TSyncData syncData;
+      SynchronizationTasks<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> aToBtasks;
+      SynchronizationTasks<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> bToAtasks;
+      EntityCaches<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> caches;
 
-      bool cachesWereCreatedNew;
-      var caches = _synchronizerContext.LoadOrCreateCaches (out cachesWereCreatedNew);
-
-      var atypeVersionStorage = caches.AtypeStorage;
-      var btypeVersionStorage = caches.BtypeStorage;
-
-      var atypeVersions = atypeEntityRepository.GetEntityVersions (_synchronizerContext.From, _synchronizerContext.To);
-      var btypeVersions = btypeEntityRepository.GetEntityVersions (_synchronizerContext.From, _synchronizerContext.To);
-      var atypeToBtypeEntityRelationStorage = caches.EntityRelationStorage;
-
-      VersionDelta<TAtypeEntityId, TAtypeEntityVersion> atypeDelta;
-      VersionDelta<TBtypeEntityId, TBtypeEntityVersion> btypeDelta;
-
-      if (cachesWereCreatedNew)
+      try
       {
-        var result = _synchronizerContext.InitialEntityMatcher.PopulateEntityRelationStorage (
-            atypeToBtypeEntityRelationStorage,
+        var atypeEntityRepository = _synchronizerContext.AtypeRepository;
+        var btypeEntityRepository = _synchronizerContext.BtypeRepository;
+        var entityMapper = _synchronizerContext.EntityMapper;
+
+        bool cachesWereCreatedNew;
+        caches = _synchronizerContext.LoadOrCreateCaches (out cachesWereCreatedNew);
+
+        var atypeVersionStorage = caches.AtypeStorage;
+        var btypeVersionStorage = caches.BtypeStorage;
+
+        var atypeVersions = atypeEntityRepository.GetEntityVersions (_synchronizerContext.From, _synchronizerContext.To);
+        var btypeVersions = btypeEntityRepository.GetEntityVersions (_synchronizerContext.From, _synchronizerContext.To);
+        var atypeToBtypeEntityRelationStorage = caches.EntityRelationStorage;
+
+        VersionDelta<TAtypeEntityId, TAtypeEntityVersion> atypeDelta;
+        VersionDelta<TBtypeEntityId, TBtypeEntityVersion> btypeDelta;
+
+        if (cachesWereCreatedNew)
+        {
+          s_logger.Info ("Did not find entity caches. Performing initial population");
+
+          var result = _synchronizerContext.InitialEntityMatcher.PopulateEntityRelationStorage (
+              atypeToBtypeEntityRelationStorage,
+              atypeEntityRepository,
+              btypeEntityRepository,
+              atypeVersions,
+              btypeVersions,
+              atypeVersionStorage,
+              btypeVersionStorage);
+
+          atypeDelta = new VersionDelta<TAtypeEntityId, TAtypeEntityVersion> (result.Item1.ToList(), new EntityIdWithVersion<TAtypeEntityId, TAtypeEntityVersion>[] { }, new EntityIdWithVersion<TAtypeEntityId, TAtypeEntityVersion>[] { });
+          btypeDelta = new VersionDelta<TBtypeEntityId, TBtypeEntityVersion> (result.Item2.ToList(), new EntityIdWithVersion<TBtypeEntityId, TBtypeEntityVersion>[] { }, new EntityIdWithVersion<TBtypeEntityId, TBtypeEntityVersion>[] { });
+        }
+        else
+        {
+          atypeDelta = atypeVersionStorage.SetNewVersions (atypeVersions);
+          btypeDelta = btypeVersionStorage.SetNewVersions (btypeVersions);
+        }
+
+        var btypeToAtypeEntityRelationStorage = new EntityRelationStorageSwitchRolesWrapper<TBtypeEntityId, TAtypeEntityId> (atypeToBtypeEntityRelationStorage);
+
+        s_logger.DebugFormat ("Atype delta: {0}", atypeDelta);
+        s_logger.DebugFormat ("Btype delta: {0}", btypeDelta);
+
+      
+        syncData = CalculateDataToSynchronize (
             atypeEntityRepository,
             btypeEntityRepository,
-            atypeVersions,
-            btypeVersions,
-            atypeVersionStorage,
+            atypeDelta,
+            btypeDelta,
+            atypeToBtypeEntityRelationStorage,
+            btypeToAtypeEntityRelationStorage);
+
+        aToBtasks = new SynchronizationTasks<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> (
+            atypeToBtypeEntityRelationStorage,
+            btypeEntityRepository,
+            entityMapper.Map1To2,
             btypeVersionStorage);
 
-        atypeDelta = new VersionDelta<TAtypeEntityId, TAtypeEntityVersion> (result.Item1.ToList(), new EntityIdWithVersion<TAtypeEntityId, TAtypeEntityVersion>[] { }, new EntityIdWithVersion<TAtypeEntityId, TAtypeEntityVersion>[] { });
-        btypeDelta = new VersionDelta<TBtypeEntityId, TBtypeEntityVersion> (result.Item2.ToList(), new EntityIdWithVersion<TBtypeEntityId, TBtypeEntityVersion>[] { }, new EntityIdWithVersion<TBtypeEntityId, TBtypeEntityVersion>[] { });
+        bToAtasks = new SynchronizationTasks<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> (
+            btypeToAtypeEntityRelationStorage,
+            atypeEntityRepository,
+            entityMapper.Map2To1,
+            atypeVersionStorage);
       }
-      else
+      catch (Exception x)
       {
-        atypeDelta = atypeVersionStorage.SetNewVersions (atypeVersions);
-        btypeDelta = btypeVersionStorage.SetNewVersions (btypeVersions);
+        s_logger.Error ("Error during synchronization preparation. Aborting synchronization.", x);
+        return;
       }
 
-      var btypeToAtypeEntityRelationStorage = new EntityRelationStorageSwitchRolesWrapper<TBtypeEntityId, TAtypeEntityId> (atypeToBtypeEntityRelationStorage);
+      try
+      {
+        DoSynchronization (
+            aToBtasks,
+            bToAtasks,
+            syncData);
+      }
+      catch (Exception x)
+      {
+        // DoSynchronization should skip and log exceptions but not rethrow them!
+        s_logger.Error ("Error during synchronization. Deleting caches to prevent cache inconsistencies.", x);
+        try
+        {
+          _synchronizerContext.DeleteCaches();
+        }
+        catch (Exception x2)
+        {
+          s_logger.Error ("Error during cache deletion.", x2);
+        }
+        return;
+      }
 
-      s_logger.DebugFormat ("Atype delta: {0}", atypeDelta);
-      s_logger.DebugFormat ("Btype delta: {0}", btypeDelta);
-
-
-      var syncData = CalculateDataToSynchronize (
-          atypeEntityRepository,
-          btypeEntityRepository,
-          atypeDelta,
-          btypeDelta,
-          atypeToBtypeEntityRelationStorage,
-          btypeToAtypeEntityRelationStorage);
-
-       var aToBtasks = new SynchronizationTasks<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> (
-          atypeToBtypeEntityRelationStorage,
-          btypeEntityRepository,
-          entityMapper.Map1To2,
-          btypeVersionStorage);
-
-      var bToAtasks = new SynchronizationTasks<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> (
-          btypeToAtypeEntityRelationStorage,
-          atypeEntityRepository,
-          entityMapper.Map2To1,
-          atypeVersionStorage);
-
-      SynchronizeOverride(
-        aToBtasks,
-        bToAtasks,
-        syncData);
 
       _synchronizerContext.SaveChaches (caches);
 
@@ -123,7 +156,7 @@ namespace CalDavSynchronizer.Synchronization
         );
 
 
-    protected abstract void SynchronizeOverride (
+    protected abstract void DoSynchronization (
         SynchronizationTasks<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> aToBtasks,
         SynchronizationTasks<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> bToAtasks,
         TSyncData syncData

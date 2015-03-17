@@ -49,7 +49,7 @@ namespace CalDavSynchronizer.Synchronization
       return new TwoWaySyncData<TAtypeEntity, TAtypeEntityId, TBtypeEntity, TBtypeEntityId> (atypeEntityDelta, btypeEntityDelta, solvedConflicts);
     }
 
-    protected override void SynchronizeOverride (SynchronizationTasks<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> aToBtasks, SynchronizationTasks<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> bToAtasks, TwoWaySyncData<TAtypeEntity, TAtypeEntityId, TBtypeEntity, TBtypeEntityId> syncData)
+    protected override void DoSynchronization (SynchronizationTasks<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> aToBtasks, SynchronizationTasks<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> bToAtasks, TwoWaySyncData<TAtypeEntity, TAtypeEntityId, TBtypeEntity, TBtypeEntityId> syncData)
     {
       var bCurrentTargetEntityCache = aToBtasks.LoadTargetEntityCache (syncData.SolvedConflicts.ADelta.Changed, syncData.BtypeDelta.Changed);
       var aCurrentTargetEntityCache = bToAtasks.LoadTargetEntityCache (syncData.SolvedConflicts.BDelta.Changed, syncData.AtypeDelta.Changed);

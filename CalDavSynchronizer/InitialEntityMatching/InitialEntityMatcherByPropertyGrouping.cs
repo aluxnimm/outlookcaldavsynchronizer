@@ -16,16 +16,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using CalDavSynchronizer.EntityRelationManagement;
 using CalDavSynchronizer.EntityRepositories;
 using CalDavSynchronizer.EntityVersionManagement;
+using log4net;
 
 namespace CalDavSynchronizer.InitialEntityMatching
 {
   public abstract class InitialEntityMatcherByPropertyGrouping<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TAtypeProperty, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeProperty> 
     : InitialEntityMatcher<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion>
   {
-    
+    // ReSharper disable once StaticFieldInGenericType
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod ().DeclaringType);
 
     public Tuple<IEnumerable<EntityIdWithVersion<TAtypeEntityId, TAtypeEntityVersion>>,IEnumerable<EntityIdWithVersion<TBtypeEntityId, TBtypeEntityVersion>>> PopulateEntityRelationStorage (
       IEntityRelationStorage<TAtypeEntityId,TBtypeEntityId> relationStorageToPopulate,
@@ -59,6 +62,8 @@ namespace CalDavSynchronizer.InitialEntityMatching
             {
               if (AreEqual (atypeEntities[atypeEntityId], btypeEntities[btypeEntityId]))
               {
+                s_logger.DebugFormat ("Found matching entities: '{0}' == '{1}'", atypeEntityId, btypeEntityId);
+
                 relationStorageToPopulate.AddRelation (atypeEntityId, btypeEntityId);
                 notMatchingAtypeEntityVersionsById.Remove (atypeEntityId);
                 notMatchingbtypeEntityVersionsById.Remove (btypeEntityId);

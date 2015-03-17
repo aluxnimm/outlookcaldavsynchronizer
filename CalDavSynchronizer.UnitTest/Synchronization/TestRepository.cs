@@ -44,7 +44,7 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
       return EntityVersionAndContentById.Select (kv => new EntityIdWithVersion<string, int> (kv.Key, kv.Value.Item1)).ToArray();
     }
 
-    public override IDictionary<string, string> GetEntities (IEnumerable<string> sourceEntityIds)
+    public override IDictionary<string, string> GetEntities (ICollection<string> sourceEntityIds)
     {
       return sourceEntityIds.Select (id => new { id, EntityVersionAndContentById[id].Item2 }).ToDictionary (v => v.id, v => v.Item2);
     }

@@ -39,7 +39,7 @@ namespace CalDavSynchronizer.EntityRepositories
           .ToArray();
     }
 
-    public override IDictionary<string, AppointmentItem> GetEntities (IEnumerable<string> sourceEntityIds)
+    public override IDictionary<string, AppointmentItem> GetEntities (ICollection<string> sourceEntityIds)
     {
       return _outlookDataAccess.GetEvents (sourceEntityIds).ToDictionary (a => a.EntryID);
     }

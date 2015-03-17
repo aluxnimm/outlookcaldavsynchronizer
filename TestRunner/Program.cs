@@ -77,7 +77,7 @@ namespace TestRunner
     {
       var eventRepository = new CalDavEventRepository (s_dataAccess, new DDay.iCal.Serialization.iCalendar.iCalendarSerializer ());
 
-      var x = eventRepository.GetEntities (s_dataAccess.GetEvents (null, null).Select (v => v.Id)).Select (e => e.Value);
+      var x = eventRepository.GetEntities (s_dataAccess.GetEvents (null, null).Select (v => v.Id).ToArray()).Select (e => e.Value);
 
     
       foreach (var e in s_dataAccess.GetEvents (null, null))

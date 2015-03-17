@@ -127,6 +127,11 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
     {
     }
 
+    public void DeleteCaches ()
+    {
+      
+    }
+
     public EntityCaches<string, int, string, int> LoadOrCreateCaches (out bool createdNew)
     {
       createdNew = false;

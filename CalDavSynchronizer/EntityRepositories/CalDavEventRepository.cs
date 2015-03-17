@@ -42,15 +42,18 @@ namespace CalDavSynchronizer.EntityRepositories
 
     public override IEnumerable<EntityIdWithVersion<Uri, string>> GetEntityVersions (DateTime from, DateTime to)
     {
-      using (AutomaticStopwatch.StartDebug (s_logger))
+      using (AutomaticStopwatch.StartInfo (s_logger, "CalDavEventRepository.GetEntityVersions"))
       {
         return _calDavDataAccess.GetEvents (from, to);
       }
     }
 
-    public override IDictionary<Uri, IEvent> GetEntities (IEnumerable<Uri> sourceEntityIds)
+    public override IDictionary<Uri, IEvent> GetEntities (ICollection<Uri> sourceEntityIds)
     {
-      using (AutomaticStopwatch.StartDebug (s_logger))
+      if(sourceEntityIds.Count == 0)
+        return new Dictionary<Uri, IEvent> ();
+
+      using (AutomaticStopwatch.StartInfo (s_logger, string.Format("CalDavEventRepository.GetEntities ({0} entitie(s))",sourceEntityIds.Count)))
       {
         Dictionary<Uri, IEvent> entitiesByKey = new Dictionary<Uri, IEvent>();
 
