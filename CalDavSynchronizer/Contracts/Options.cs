@@ -26,7 +26,8 @@ namespace CalDavSynchronizer.Contracts
   {
     private const int c_saltLength = 17;
 
-    public string Name {get; set; }
+    public bool Inactive { get; set; }
+    public string Name { get; set; }
     public Guid Id { get; set; }
     public string OutlookFolderEntryId { get; set; }
     public string OutlookFolderStoreId { get; set; }
@@ -85,6 +86,7 @@ namespace CalDavSynchronizer.Contracts
       options.SynchronizationMode = SynchronizationMode.ReplicateOutlookIntoServer;
       options.Name = "<Enter name here>";
       options.Id = Guid.NewGuid();
+      options.Inactive = false;
       return options;
     }
 

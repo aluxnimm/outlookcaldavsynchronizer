@@ -154,6 +154,7 @@ namespace CalDavSynchronizer.Ui
     {
       set
       {
+        _inactiveCheckBox.Checked = value.Inactive;
         _profileNameTextBox.Text = value.Name;
         numberOfDaysInThePast.Text = value.DaysToSynchronizeInThePast.ToString();
         numberOfDaysInTheFuture.Text = value.DaysToSynchronizeInTheFuture.ToString();
@@ -190,7 +191,8 @@ namespace CalDavSynchronizer.Ui
                    SynchronizationIntervalInMinutes = (int) _syncIntervalComboBox.SelectedValue,
                    OutlookFolderEntryId = _folderEntryId,
                    OutlookFolderStoreId = _folderStoreId,
-                   Id = _optionsId
+                   Id = _optionsId,
+                   Inactive = _inactiveCheckBox.Checked
                };
       }
     }

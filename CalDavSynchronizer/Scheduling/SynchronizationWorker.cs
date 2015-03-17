@@ -37,6 +37,7 @@ namespace CalDavSynchronizer.Scheduling
     private ISynchronizer _synchronizer;
     private string _profileName;
     private readonly string _outlookEmailAddress;
+    private bool _inactive;
 
     public SynchronizationWorker (string outlookEmailAddress)
     {
@@ -54,11 +55,12 @@ namespace CalDavSynchronizer.Scheduling
       var conflictResolutionStrategy = ConflictResolutionStrategyFactory.Create (options.ConflictResolution);
       _synchronizer = SynchronizerFactory<AppointmentItem, string, DateTime, IEvent, Uri, string>.Create (options.SynchronizationMode, conflictResolutionStrategy, synchronizationContext);
       _interval = TimeSpan.FromMinutes (options.SynchronizationIntervalInMinutes);
+      _inactive = options.Inactive;
     }
 
     public void RunIfRequiredAndReschedule ()
     {
-      if (_interval > TimeSpan.Zero && DateTime.UtcNow > _lastRun + _interval)
+      if (!_inactive && _interval > TimeSpan.Zero && DateTime.UtcNow > _lastRun + _interval)
       {
         RunNoThrowAndReschedule();
       }
@@ -66,6 +68,9 @@ namespace CalDavSynchronizer.Scheduling
 
     public void RunNoThrowAndReschedule ()
     {
+      if (_inactive)
+        return;
+
       try
       {
         using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("Running synchronization profile '{0}'", _profileName)))

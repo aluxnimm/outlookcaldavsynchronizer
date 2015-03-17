@@ -39,6 +39,8 @@
       this._conflictResolutionComboBox = new System.Windows.Forms.ComboBox();
       this._synchronizationModeComboBox = new System.Windows.Forms.ComboBox();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
+      this.label11 = new System.Windows.Forms.Label();
+      this._emailAddressTextBox = new System.Windows.Forms.TextBox();
       this._testConnectionButton = new System.Windows.Forms.Button();
       this.label5 = new System.Windows.Forms.Label();
       this.label4 = new System.Windows.Forms.Label();
@@ -53,8 +55,7 @@
       this._deleteButton = new System.Windows.Forms.Button();
       this._profileNameTextBox = new System.Windows.Forms.TextBox();
       this.label10 = new System.Windows.Forms.Label();
-      this._emailAddressTextBox = new System.Windows.Forms.TextBox();
-      this.label11 = new System.Windows.Forms.Label();
+      this._inactiveCheckBox = new System.Windows.Forms.CheckBox();
       this.groupBox2.SuspendLayout();
       this.groupBox1.SuspendLayout();
       this.SuspendLayout();
@@ -180,6 +181,23 @@
       this.groupBox1.TabIndex = 1;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Server settings";
+      // 
+      // label11
+      // 
+      this.label11.AutoSize = true;
+      this.label11.Location = new System.Drawing.Point(6, 104);
+      this.label11.Name = "label11";
+      this.label11.Size = new System.Drawing.Size(75, 13);
+      this.label11.TabIndex = 13;
+      this.label11.Text = "Email address:";
+      // 
+      // _emailAddressTextBox
+      // 
+      this._emailAddressTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this._emailAddressTextBox.Location = new System.Drawing.Point(172, 101);
+      this._emailAddressTextBox.Name = "_emailAddressTextBox";
+      this._emailAddressTextBox.Size = new System.Drawing.Size(234, 20);
+      this._emailAddressTextBox.TabIndex = 12;
       // 
       // _testConnectionButton
       // 
@@ -307,27 +325,21 @@
       this.label10.TabIndex = 13;
       this.label10.Text = "Profile name:";
       // 
-      // _emailAddressTextBox
+      // _inactiveCheckBox
       // 
-      this._emailAddressTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._emailAddressTextBox.Location = new System.Drawing.Point(172, 101);
-      this._emailAddressTextBox.Name = "_emailAddressTextBox";
-      this._emailAddressTextBox.Size = new System.Drawing.Size(234, 20);
-      this._emailAddressTextBox.TabIndex = 12;
-      // 
-      // label11
-      // 
-      this.label11.AutoSize = true;
-      this.label11.Location = new System.Drawing.Point(6, 104);
-      this.label11.Name = "label11";
-      this.label11.Size = new System.Drawing.Size(75, 13);
-      this.label11.TabIndex = 13;
-      this.label11.Text = "Email address:";
+      this._inactiveCheckBox.AutoSize = true;
+      this._inactiveCheckBox.Location = new System.Drawing.Point(308, 504);
+      this._inactiveCheckBox.Name = "_inactiveCheckBox";
+      this._inactiveCheckBox.Size = new System.Drawing.Size(110, 17);
+      this._inactiveCheckBox.TabIndex = 26;
+      this._inactiveCheckBox.Text = "Deactivate Profile";
+      this._inactiveCheckBox.UseVisualStyleBackColor = true;
       // 
       // OptionsDisplayControl
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this._inactiveCheckBox);
       this.Controls.Add(this.label10);
       this.Controls.Add(this._profileNameTextBox);
       this.Controls.Add(this._deleteButton);
@@ -383,5 +395,6 @@
     private System.Windows.Forms.Label label10;
     private System.Windows.Forms.Label label11;
     private System.Windows.Forms.TextBox _emailAddressTextBox;
+    private System.Windows.Forms.CheckBox _inactiveCheckBox;
   }
 }
