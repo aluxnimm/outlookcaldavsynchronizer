@@ -25,53 +25,59 @@ using log4net;
 namespace CalDavSynchronizer.Synchronization
 {
   public class TwoWaySynchronizer<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion>
-    : SynchronizerBase<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion>
+      : SynchronizerBase<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TwoWaySyncData<TAtypeEntity, TAtypeEntityId, TBtypeEntity, TBtypeEntityId>>
   {
     // ReSharper disable once StaticFieldInGenericType
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod ().DeclaringType);
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private readonly IConflictResolutionStrategy<TAtypeEntity, TBtypeEntity> _conflictResolutionStrategy;
-    private TwoWayConflictSolver<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> _conflictSolver;
+    private readonly TwoWayConflictSolver<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> _conflictSolver;
+
 
     public TwoWaySynchronizer (ISynchronizerContext<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> synchronizerContext, IConflictResolutionStrategy<TAtypeEntity, TBtypeEntity> conflictResolutionStrategy)
-        : base(synchronizerContext)
+        : base (synchronizerContext)
     {
       _conflictResolutionStrategy = conflictResolutionStrategy;
-      _conflictSolver = new TwoWayConflictSolver<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> ();
+      _conflictSolver = new TwoWayConflictSolver<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion>();
     }
 
-    protected override void SynchronizeOverride ()
+    protected override TwoWaySyncData<TAtypeEntity, TAtypeEntityId, TBtypeEntity, TBtypeEntityId> CalculateDataToSynchronize (IReadOnlyEntityRepository<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> atypeEntityRepository, IReadOnlyEntityRepository<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> btypeEntityRepository, VersionDelta<TAtypeEntityId, TAtypeEntityVersion> atypeDelta, VersionDelta<TBtypeEntityId, TBtypeEntityVersion> btypeDelta, IEntityRelationStorage<TAtypeEntityId, TBtypeEntityId> atypeToBtypeEntityRelationStorage, IEntityRelationStorage<TBtypeEntityId, TAtypeEntityId> btypeToAtypeEntityRelationStorage)
     {
-      var aToBtasks = new SynchronizationTasks<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> (
-        _atypeToBtypeEntityRelationStorage,
-        _btypeEntityRepository,
-        _entityMapper.Map1To2,
-        _btypeVersions);
-
-      var bToAtasks = new SynchronizationTasks<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> (
-        _btypeToAtypeEntityRelationStorage,
-        _atypeEntityRepository,
-        _entityMapper.Map2To1,
-        _atypeVersions);
-
-      var atypeEntityDelta = _atypeEntityRepository.LoadDelta (_atypeDelta);
-      var btypeEntityDelta = _btypeEntityRepository.LoadDelta (_btypeDelta);
-
-      var solvedConflicts = _conflictSolver.SolveConflicts (atypeEntityDelta, btypeEntityDelta, _conflictResolutionStrategy, _atypeToBtypeEntityRelationStorage, _btypeToAtypeEntityRelationStorage);
-
-
-      var bCurrentTargetEntityCache = aToBtasks.LoadTargetEntityCache (solvedConflicts.ADelta.Changed, btypeEntityDelta.Changed);
-      var aCurrentTargetEntityCache = bToAtasks.LoadTargetEntityCache (solvedConflicts.BDelta.Changed, atypeEntityDelta.Changed);
-
-
-      aToBtasks.SnychronizeDeleted (solvedConflicts.ADelta.Deleted);
-      aToBtasks.SynchronizeChanged (solvedConflicts.ADelta.Changed, bCurrentTargetEntityCache);
-      aToBtasks.SynchronizeAdded (atypeEntityDelta.Added);
-
-      bToAtasks.SnychronizeDeleted (solvedConflicts.BDelta.Deleted);
-      bToAtasks.SynchronizeChanged (solvedConflicts.BDelta.Changed, aCurrentTargetEntityCache);
-      bToAtasks.SynchronizeAdded (btypeEntityDelta.Added);
+      var atypeEntityDelta = atypeEntityRepository.LoadDelta (atypeDelta);
+      var btypeEntityDelta = btypeEntityRepository.LoadDelta (btypeDelta);
+      var solvedConflicts = _conflictSolver.SolveConflicts (atypeEntityDelta, btypeEntityDelta, _conflictResolutionStrategy, atypeToBtypeEntityRelationStorage, btypeToAtypeEntityRelationStorage);
+      return new TwoWaySyncData<TAtypeEntity, TAtypeEntityId, TBtypeEntity, TBtypeEntityId> (atypeEntityDelta, btypeEntityDelta, solvedConflicts);
     }
 
+    protected override void SynchronizeOverride (SynchronizationTasks<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> aToBtasks, SynchronizationTasks<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> bToAtasks, TwoWaySyncData<TAtypeEntity, TAtypeEntityId, TBtypeEntity, TBtypeEntityId> syncData)
+    {
+      var bCurrentTargetEntityCache = aToBtasks.LoadTargetEntityCache (syncData.SolvedConflicts.ADelta.Changed, syncData.BtypeDelta.Changed);
+      var aCurrentTargetEntityCache = bToAtasks.LoadTargetEntityCache (syncData.SolvedConflicts.BDelta.Changed, syncData.AtypeDelta.Changed);
+
+
+      aToBtasks.SnychronizeDeleted (syncData.SolvedConflicts.ADelta.Deleted);
+      aToBtasks.SynchronizeChanged (syncData.SolvedConflicts.ADelta.Changed, bCurrentTargetEntityCache);
+      aToBtasks.SynchronizeAdded (syncData.AtypeDelta.Added);
+
+      bToAtasks.SnychronizeDeleted (syncData.SolvedConflicts.BDelta.Deleted);
+      bToAtasks.SynchronizeChanged (syncData.SolvedConflicts.BDelta.Changed, aCurrentTargetEntityCache);
+      bToAtasks.SynchronizeAdded (syncData.BtypeDelta.Added);
+    }
+   
+  }
+
+  public struct TwoWaySyncData<TAtypeEntity, TAtypeEntityId, TBtypeEntity, TBtypeEntityId>
+  {
+    public readonly EntityDelta<TAtypeEntity, TAtypeEntityId> AtypeDelta;
+    public readonly EntityDelta<TBtypeEntity, TBtypeEntityId> BtypeDelta;
+    public readonly SolvedConflicts<TAtypeEntity, TAtypeEntityId, TBtypeEntity, TBtypeEntityId> SolvedConflicts;
+
+    public TwoWaySyncData (EntityDelta<TAtypeEntity, TAtypeEntityId> atypeDelta, EntityDelta<TBtypeEntity, TBtypeEntityId> btypeDelta, SolvedConflicts<TAtypeEntity, TAtypeEntityId, TBtypeEntity, TBtypeEntityId> solvedConflicts)
+        : this()
+    {
+      AtypeDelta = atypeDelta;
+      BtypeDelta = btypeDelta;
+      SolvedConflicts = solvedConflicts;
+    }
   }
 }

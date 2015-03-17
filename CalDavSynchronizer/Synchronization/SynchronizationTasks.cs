@@ -23,7 +23,7 @@ using log4net;
 
 namespace CalDavSynchronizer.Synchronization
 {
-  internal class SynchronizationTasks<TSourceEntity, TSourceEntityId, TSourceEntityVersion, TTargetEntity, TTargetEntityId, TTargetEntityVersion>
+  public class SynchronizationTasks<TSourceEntity, TSourceEntityId, TSourceEntityVersion, TTargetEntity, TTargetEntityId, TTargetEntityVersion>
   {
     // ReSharper disable once StaticFieldInGenericType
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);

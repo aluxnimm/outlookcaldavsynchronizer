@@ -20,7 +20,7 @@ using CalDavSynchronizer.EntityVersionManagement;
 
 namespace CalDavSynchronizer.EntityRepositories
 {
-  public abstract class EntityRepositoryBase<TEntity, TEntityId, TEntityVersion> 
+  public abstract class EntityRepositoryBase<TEntity, TEntityId, TEntityVersion> : IWritableEntityRepository<TEntity, TEntityId, TEntityVersion>, IReadOnlyEntityRepository<TEntity, TEntityId, TEntityVersion> 
   {
     public abstract IEnumerable<EntityIdWithVersion<TEntityId, TEntityVersion>> GetEntityVersions (DateTime from, DateTime to);
     public abstract IDictionary<TEntityId, TEntity> GetEntities (IEnumerable<TEntityId> sourceEntityIds);

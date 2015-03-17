@@ -18,12 +18,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CalDavSynchronizer.ConflictManagement;
+using CalDavSynchronizer.EntityRepositories;
 using log4net;
 
 namespace CalDavSynchronizer.Synchronization
 {
   public class OneWayReplicator<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion>
-      : SynchronizerBase<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion>
+      : SynchronizerBase<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion, OneWaySyncData<TAtypeEntity, TAtypeEntityId, TBtypeEntity, TBtypeEntityId>>
   {
     // ReSharper disable once StaticFieldInGenericType
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
@@ -34,29 +35,23 @@ namespace CalDavSynchronizer.Synchronization
     {
     }
 
-
-    protected override void SynchronizeOverride ()
+    protected override OneWaySyncData<TAtypeEntity, TAtypeEntityId, TBtypeEntity, TBtypeEntityId> CalculateDataToSynchronize (EntityRepositories.IReadOnlyEntityRepository<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> atypeEntityRepository, EntityRepositories.IReadOnlyEntityRepository<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> btypeEntityRepository, EntityVersionManagement.VersionDelta<TAtypeEntityId, TAtypeEntityVersion> atypeDelta, EntityVersionManagement.VersionDelta<TBtypeEntityId, TBtypeEntityVersion> btypeDelta, EntityRelationManagement.IEntityRelationStorage<TAtypeEntityId, TBtypeEntityId> atypeToBtypeEntityRelationStorage, EntityRelationManagement.IEntityRelationStorage<TBtypeEntityId, TAtypeEntityId> btypeToAtypeEntityRelationStorage)
     {
-      var aToBtasks = new SynchronizationTasks<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> (
-          _atypeToBtypeEntityRelationStorage,
-          _btypeEntityRepository,
-          _entityMapper.Map1To2,
-          _btypeVersions);
 
-      var conflictSolver = new OneWayConflictSolutionTasks<TAtypeEntity, TAtypeEntityId, TBtypeEntityId, TBtypeEntityVersion> (_atypeToBtypeEntityRelationStorage);
+      var conflictSolver = new OneWayConflictSolutionTasks<TAtypeEntity, TAtypeEntityId, TBtypeEntityId, TBtypeEntityVersion> (atypeToBtypeEntityRelationStorage);
 
-      var atypeEntityDelta = _atypeEntityRepository.LoadDelta (_atypeDelta);
+      var atypeEntityDelta = atypeEntityRepository.LoadDelta (atypeDelta);
 
 
-      var btypeChangesWithOutConflicts = conflictSolver.GetTargetChangesWithoutConflict (_btypeDelta.Changed, atypeEntityDelta.Deleted, atypeEntityDelta.Changed);
-      var btypeDeletionsWithoutConflicts = conflictSolver.GetTargetDeletionsWithoutConflict (_btypeDelta.Deleted, atypeEntityDelta.Deleted, atypeEntityDelta.Changed);
+      var btypeChangesWithOutConflicts = conflictSolver.GetTargetChangesWithoutConflict (btypeDelta.Changed, atypeEntityDelta.Deleted, atypeEntityDelta.Changed);
+      var btypeDeletionsWithoutConflicts = conflictSolver.GetTargetDeletionsWithoutConflict (btypeDelta.Deleted, atypeEntityDelta.Deleted, atypeEntityDelta.Changed);
 
       var atypeIdsOfbtypeChangesWithOutConflicts = btypeChangesWithOutConflicts.Select (e => e.Item1).ToArray();
 
-      var btypeChangesRestoreInformation = _atypeEntityRepository.GetEntities (atypeIdsOfbtypeChangesWithOutConflicts);
-      var btypeDeletionRestoreInformation = _atypeEntityRepository.GetEntities (btypeDeletionsWithoutConflicts.Select (e => e.Item1));
+      var btypeChangesRestoreInformation = atypeEntityRepository.GetEntities (atypeIdsOfbtypeChangesWithOutConflicts);
+      var btypeDeletionRestoreInformation = atypeEntityRepository.GetEntities (btypeDeletionsWithoutConflicts.Select (e => e.Item1));
 
-      conflictSolver.ClearTargetDeletionConflicts (_btypeDelta.Deleted, atypeEntityDelta.Changed);
+      conflictSolver.ClearTargetDeletionConflicts (btypeDelta.Deleted, atypeEntityDelta.Changed);
 
 
       var allAtypeIdsThatWillCauseUpdatesOnB = atypeEntityDelta.Changed.Keys.Union (atypeIdsOfbtypeChangesWithOutConflicts);
@@ -64,18 +59,56 @@ namespace CalDavSynchronizer.Synchronization
       foreach (var atypeId in allAtypeIdsThatWillCauseUpdatesOnB)
       {
         TBtypeEntityId btypeId;
-        if (_atypeToBtypeEntityRelationStorage.TryGetEntity2ByEntity1 (atypeId, out btypeId))
+        if (atypeToBtypeEntityRelationStorage.TryGetEntity2ByEntity1 (atypeId, out btypeId))
           allBtypeIdsThatWillBeUpdated.Add (btypeId);
       }
-      var currentTargetEntityCache = _btypeEntityRepository.GetEntities (allBtypeIdsThatWillBeUpdated);
+      var currentTargetEntityCache = btypeEntityRepository.GetEntities (allBtypeIdsThatWillBeUpdated);
 
-      aToBtasks.SnychronizeDeleted (atypeEntityDelta.Deleted);
-      aToBtasks.SynchronizeChanged (atypeEntityDelta.Changed, currentTargetEntityCache);
-      aToBtasks.SynchronizeAdded (atypeEntityDelta.Added);
+      return new OneWaySyncData<TAtypeEntity, TAtypeEntityId, TBtypeEntity, TBtypeEntityId> (
+          atypeEntityDelta,
+          btypeDelta.Added.Select (v => v.Id),
+          btypeChangesWithOutConflicts,
+          btypeDeletionsWithoutConflicts,
+          currentTargetEntityCache,
+          btypeChangesRestoreInformation,
+          btypeDeletionRestoreInformation
+       );
+    }
 
-      aToBtasks.DeleteAdded (_btypeDelta.Added.Select (v => v.Id));
-      aToBtasks.RestoreDeletedInTarget (btypeDeletionsWithoutConflicts, btypeDeletionRestoreInformation);
-      aToBtasks.RestoreChangedInTarget (btypeChangesWithOutConflicts, btypeChangesRestoreInformation, currentTargetEntityCache);
+
+    protected override void SynchronizeOverride (SynchronizationTasks<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> aToBtasks, SynchronizationTasks<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> bToAtasks, OneWaySyncData<TAtypeEntity, TAtypeEntityId, TBtypeEntity, TBtypeEntityId> syncData)
+    {
+      aToBtasks.SnychronizeDeleted (syncData.AtypeEntityDelta.Deleted);
+      aToBtasks.SynchronizeChanged (syncData.AtypeEntityDelta.Changed,syncData.CurrentTargetEntityCache);
+      aToBtasks.SynchronizeAdded (syncData.AtypeEntityDelta.Added);
+
+      aToBtasks.DeleteAdded (syncData.BTypeAdded);
+      aToBtasks.RestoreDeletedInTarget (syncData.BtypeDeletionsWithoutConflicts, syncData.BtypeDeletionRestoreInformation);
+      aToBtasks.RestoreChangedInTarget (syncData.BtypeChangesWithOutConflicts, syncData.BtypeChangesRestoreInformation, syncData.CurrentTargetEntityCache);
+    }
+
+  }
+
+  public struct OneWaySyncData<TAtypeEntity, TAtypeEntityId, TBtypeEntity, TBtypeEntityId>
+  {
+    public readonly EntityDelta<TAtypeEntity, TAtypeEntityId> AtypeEntityDelta;
+    public readonly IEnumerable<TBtypeEntityId> BTypeAdded;
+    public readonly IEnumerable<Tuple<TAtypeEntityId, TBtypeEntityId>> BtypeChangesWithOutConflicts;
+    public readonly IEnumerable<Tuple<TAtypeEntityId, TBtypeEntityId>> BtypeDeletionsWithoutConflicts;
+    public readonly IDictionary<TBtypeEntityId, TBtypeEntity> CurrentTargetEntityCache;
+    public readonly IDictionary<TAtypeEntityId, TAtypeEntity> BtypeChangesRestoreInformation;
+    public readonly IDictionary<TAtypeEntityId, TAtypeEntity> BtypeDeletionRestoreInformation;
+
+    public OneWaySyncData (EntityDelta<TAtypeEntity, TAtypeEntityId> atypeEntityDelta, IEnumerable<TBtypeEntityId> bTypeAdded, IEnumerable<Tuple<TAtypeEntityId, TBtypeEntityId>> btypeChangesWithOutConflicts, IEnumerable<Tuple<TAtypeEntityId, TBtypeEntityId>> btypeDeletionsWithoutConflicts, IDictionary<TBtypeEntityId, TBtypeEntity> currentTargetEntityCache, IDictionary<TAtypeEntityId, TAtypeEntity> btypeChangesRestoreInformation, IDictionary<TAtypeEntityId, TAtypeEntity> btypeDeletionRestoreInformation)
+        : this()
+    {
+      AtypeEntityDelta = atypeEntityDelta;
+      BTypeAdded = bTypeAdded;
+      BtypeChangesWithOutConflicts = btypeChangesWithOutConflicts;
+      BtypeDeletionsWithoutConflicts = btypeDeletionsWithoutConflicts;
+      CurrentTargetEntityCache = currentTargetEntityCache;
+      BtypeChangesRestoreInformation = btypeChangesRestoreInformation;
+      BtypeDeletionRestoreInformation = btypeDeletionRestoreInformation;
     }
   }
 }
