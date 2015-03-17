@@ -88,8 +88,8 @@ namespace CalDavSynchronizer.Synchronization
 
         var btypeToAtypeEntityRelationStorage = new EntityRelationStorageSwitchRolesWrapper<TBtypeEntityId, TAtypeEntityId> (atypeToBtypeEntityRelationStorage);
 
-        s_logger.DebugFormat ("Atype delta: {0}", atypeDelta);
-        s_logger.DebugFormat ("Btype delta: {0}", btypeDelta);
+        s_logger.InfoFormat ("Atype delta: {0}", atypeDelta);
+        s_logger.InfoFormat ("Btype delta: {0}", btypeDelta);
 
       
         syncData = CalculateDataToSynchronize (
