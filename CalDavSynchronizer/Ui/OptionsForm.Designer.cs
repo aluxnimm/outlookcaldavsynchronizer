@@ -30,9 +30,12 @@ namespace CalDavSynchronizer.Ui
     /// </summary>
     private void InitializeComponent ()
     {
+      this.components = new System.ComponentModel.Container();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OptionsForm));
       this._okButton = new System.Windows.Forms.Button();
       this._cancelButton = new System.Windows.Forms.Button();
       this._tabControl = new System.Windows.Forms.TabControl();
+      this._tabImageList = new System.Windows.Forms.ImageList(this.components);
       this._addProfileButton = new System.Windows.Forms.Button();
       this.SuspendLayout();
       // 
@@ -63,11 +66,18 @@ namespace CalDavSynchronizer.Ui
       this._tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this._tabControl.ImageList = this._tabImageList;
       this._tabControl.Location = new System.Drawing.Point(13, 13);
       this._tabControl.Name = "_tabControl";
       this._tabControl.SelectedIndex = 0;
       this._tabControl.Size = new System.Drawing.Size(432, 562);
       this._tabControl.TabIndex = 2;
+      // 
+      // _tabImageList
+      // 
+      this._tabImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("_tabImageList.ImageStream")));
+      this._tabImageList.TransparentColor = System.Drawing.Color.Transparent;
+      this._tabImageList.Images.SetKeyName(0, "inactive");
       // 
       // _addProfileButton
       // 
@@ -107,6 +117,7 @@ namespace CalDavSynchronizer.Ui
     private System.Windows.Forms.Button _cancelButton;
     private System.Windows.Forms.TabControl _tabControl;
     private System.Windows.Forms.Button _addProfileButton;
+    private System.Windows.Forms.ImageList _tabImageList;
 
   }
 }

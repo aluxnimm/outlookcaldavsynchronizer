@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
@@ -61,22 +62,39 @@ namespace CalDavSynchronizer.Ui
       }
     }
 
-    private void AddTabPage (Options options)
+    private TabPage AddTabPage (Options options)
     {
       var optionsControl = new OptionsDisplayControl (_session);
-      optionsControl.Options = options;
 
       var tabPage = new TabPage (options.Name);
-      optionsControl.OnDeletionRequested += delegate { _tabControl.TabPages.Remove (tabPage); };
-      optionsControl.OnProfileNameChanged += delegate (object sender, string e)
+      _tabControl.TabPages.Add (tabPage);
+
+      optionsControl.DeletionRequested += delegate { _tabControl.TabPages.Remove (tabPage); };
+      optionsControl.ProfileNameChanged += delegate (object sender, string e)
       {
         tabPage.Text = e;
       };
 
+      optionsControl.InactiveChanged += delegate (object sender, bool inactive)
+      {
+        if (inactive)
+          tabPage.ImageKey = "inactive";
+        else
+          tabPage.ImageKey = null;
+      };
+
+      optionsControl.CopyRequested += delegate
+      {
+        var newOptions = optionsControl.Options;
+        newOptions.Name += " (Copy)";
+        var newPage = AddTabPage (newOptions);
+        _tabControl.SelectedTab = newPage;
+      };
+
+      optionsControl.Options = options;
       tabPage.Controls.Add (optionsControl);
       optionsControl.Dock = DockStyle.Fill;
-
-      _tabControl.TabPages.Add (tabPage);
+      return tabPage;
     }
 
 

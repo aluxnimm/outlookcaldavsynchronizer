@@ -34,8 +34,10 @@ namespace CalDavSynchronizer.Ui
     private readonly NameSpace _session;
     private Guid _optionsId;
 
-    public event EventHandler OnDeletionRequested;
-    public event EventHandler<string> OnProfileNameChanged;
+    public event EventHandler DeletionRequested;
+    public event EventHandler CopyRequested;
+    public event EventHandler<bool> InactiveChanged;
+    public event EventHandler<string> ProfileNameChanged;
 
     private readonly IList<Item<int>> _availableSyncIntervals =
         (new Item<int>[] { new Item<int> (0, "Manual only") })
@@ -74,6 +76,12 @@ namespace CalDavSynchronizer.Ui
 
       _profileNameTextBox.TextChanged += _profileNameTextBox_TextChanged;
       _synchronizationModeComboBox.SelectedValueChanged += _synchronizationModeComboBox_SelectedValueChanged;
+      _inactiveCheckBox.CheckedChanged += _inactiveCheckBox_CheckedChanged;
+    }
+
+    void _inactiveCheckBox_CheckedChanged (object sender, EventArgs e)
+    {
+      UpdateInactiveDisplay();
     }
 
     void _synchronizationModeComboBox_SelectedValueChanged (object sender, EventArgs e)
@@ -98,8 +106,8 @@ namespace CalDavSynchronizer.Ui
 
     private void _profileNameTextBox_TextChanged (object sender, EventArgs e)
     {
-      if (OnProfileNameChanged != null)
-        OnProfileNameChanged (this, _profileNameTextBox.Text);
+      if (ProfileNameChanged != null)
+        ProfileNameChanged (this, _profileNameTextBox.Text);
     }
 
 
@@ -171,6 +179,7 @@ namespace CalDavSynchronizer.Ui
         _optionsId = value.Id;
         UpdateFolder (value.OutlookFolderEntryId, value.OutlookFolderStoreId);
         UpdateConflictResolutionComboBoxEnabled();
+        UpdateInactiveDisplay();
       }
       get
       {
@@ -197,6 +206,11 @@ namespace CalDavSynchronizer.Ui
       }
     }
 
+    private void UpdateInactiveDisplay ()
+    {
+      if (InactiveChanged != null)
+        InactiveChanged (this, _inactiveCheckBox.Checked);
+    }
 
     private void UpdateFolder (MAPIFolder folder)
     {
@@ -231,8 +245,14 @@ namespace CalDavSynchronizer.Ui
 
     private void _deleteButton_Click (object sender, EventArgs e)
     {
-      if (OnDeletionRequested != null)
-        OnDeletionRequested (this, EventArgs.Empty);
+      if (DeletionRequested != null)
+        DeletionRequested (this, EventArgs.Empty);
+    }
+
+    private void _copyButton_Click (object sender, EventArgs e)
+    {
+      if (CopyRequested != null)
+        CopyRequested (this, EventArgs.Empty);
     }
   }
 }

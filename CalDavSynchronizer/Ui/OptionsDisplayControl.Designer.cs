@@ -56,6 +56,7 @@
       this._profileNameTextBox = new System.Windows.Forms.TextBox();
       this.label10 = new System.Windows.Forms.Label();
       this._inactiveCheckBox = new System.Windows.Forms.CheckBox();
+      this._copyButton = new System.Windows.Forms.Button();
       this.groupBox2.SuspendLayout();
       this.groupBox1.SuspendLayout();
       this.SuspendLayout();
@@ -335,10 +336,21 @@
       this._inactiveCheckBox.Text = "Deactivate Profile";
       this._inactiveCheckBox.UseVisualStyleBackColor = true;
       // 
+      // _copyButton
+      // 
+      this._copyButton.Location = new System.Drawing.Point(93, 500);
+      this._copyButton.Name = "_copyButton";
+      this._copyButton.Size = new System.Drawing.Size(75, 23);
+      this._copyButton.TabIndex = 27;
+      this._copyButton.Text = "Copy";
+      this._copyButton.UseVisualStyleBackColor = true;
+      this._copyButton.Click += new System.EventHandler(this._copyButton_Click);
+      // 
       // OptionsDisplayControl
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this._copyButton);
       this.Controls.Add(this._inactiveCheckBox);
       this.Controls.Add(this.label10);
       this.Controls.Add(this._profileNameTextBox);
@@ -396,5 +408,6 @@
     private System.Windows.Forms.Label label11;
     private System.Windows.Forms.TextBox _emailAddressTextBox;
     private System.Windows.Forms.CheckBox _inactiveCheckBox;
+    private System.Windows.Forms.Button _copyButton;
   }
 }
