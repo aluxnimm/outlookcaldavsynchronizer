@@ -25,8 +25,8 @@ namespace CalDavSynchronizer.InitialEntityMatching
   {
     Tuple<IEnumerable<EntityIdWithVersion<TAtypeEntityId, TAtypeEntityVersion>>, IEnumerable<EntityIdWithVersion<TBtypeEntityId, TBtypeEntityVersion>>> PopulateEntityRelationStorage (
       IEntityRelationStorage<TAtypeEntityId, TBtypeEntityId> relationStorageToPopulate,
-      EntityRepositoryBase<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> atypeEntityRepository,
-      EntityRepositoryBase<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> btypeEntityRepository,
+      IReadOnlyEntityRepository<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> atypeEntityRepository,
+      IReadOnlyEntityRepository<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> btypeEntityRepository,
       IEnumerable<EntityIdWithVersion<TAtypeEntityId, TAtypeEntityVersion>> atypeEntityVersions,
       IEnumerable<EntityIdWithVersion<TBtypeEntityId, TBtypeEntityVersion>> btypeEntityVersions,
       IVersionStorage<TAtypeEntityId,TAtypeEntityVersion> atypeVersionStorage,

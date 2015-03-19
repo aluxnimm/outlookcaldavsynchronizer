@@ -23,7 +23,7 @@ using log4net;
 
 namespace CalDavSynchronizer.Synchronization
 {
-  public class SynchronizationTasks<TSourceEntity, TSourceEntityId, TSourceEntityVersion, TTargetEntity, TTargetEntityId, TTargetEntityVersion>
+  public class SynchronizationTasks<TSourceEntity, TSourceEntityId, TTargetEntity, TTargetEntityId, TTargetEntityVersion>
   {
     // ReSharper disable once StaticFieldInGenericType
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
@@ -31,20 +31,22 @@ namespace CalDavSynchronizer.Synchronization
 
     private readonly IVersionStorage<TTargetEntityId, TTargetEntityVersion> _knownTargetVersions;
     private readonly IEntityRelationStorage<TSourceEntityId, TTargetEntityId> _sourceToTargetEntityRelationStorage;
-    private readonly EntityRepositoryBase<TTargetEntity, TTargetEntityId, TTargetEntityVersion> _targetEntityRepository;
+    private readonly IWriteOnlyEntityRepository<TTargetEntity, TTargetEntityId, TTargetEntityVersion> _targetWriteOnlyEntityRepository;
+    private readonly IReadOnlyEntityRepository<TTargetEntity, TTargetEntityId, TTargetEntityVersion> _targetReadOnlyEntityRepository;
     private readonly Func<TSourceEntity, TTargetEntity, TTargetEntity> _entityMapper;
 
 
     public SynchronizationTasks (
         IEntityRelationStorage<TSourceEntityId, TTargetEntityId> sourceToTargetEntityRelationStorage,
-        EntityRepositoryBase<TTargetEntity, TTargetEntityId, TTargetEntityVersion> targetEntityRepository,
+        IWriteOnlyEntityRepository<TTargetEntity, TTargetEntityId, TTargetEntityVersion> targetEntityRepository,
         Func<TSourceEntity, TTargetEntity, TTargetEntity> entityMapper,
-        IVersionStorage<TTargetEntityId, TTargetEntityVersion> knownTargetVersions)
+        IVersionStorage<TTargetEntityId, TTargetEntityVersion> knownTargetVersions, IReadOnlyEntityRepository<TTargetEntity, TTargetEntityId, TTargetEntityVersion> targetReadOnlyEntityRepository)
     {
       _sourceToTargetEntityRelationStorage = sourceToTargetEntityRelationStorage;
-      _targetEntityRepository = targetEntityRepository;
+      _targetWriteOnlyEntityRepository = targetEntityRepository;
       _entityMapper = entityMapper;
       _knownTargetVersions = knownTargetVersions;
+      _targetReadOnlyEntityRepository = targetReadOnlyEntityRepository;
     }
 
     private void TryExecute<T> (Func<T> repositoryOperation, Action<T> cacheUpdateOperation, TTargetEntityId targetIdForLogging)
@@ -93,7 +95,7 @@ namespace CalDavSynchronizer.Synchronization
           currentTargetEntityCache.TryGetValue (targetEntityId, out cachedCurrentTargetEntity);
 
           TryExecute (
-              () => _targetEntityRepository.Update (targetEntityId, target => _entityMapper (entityByIdInClosure, target), cachedCurrentTargetEntity),
+              () => _targetWriteOnlyEntityRepository.Update (targetEntityId, target => _entityMapper (entityByIdInClosure, target), cachedCurrentTargetEntity),
               newTargetEntityWithVersionId =>
               {
                 if (!targetEntityId.Equals (newTargetEntityWithVersionId.Id))
@@ -116,7 +118,7 @@ namespace CalDavSynchronizer.Synchronization
         {
           var entityByIdInClosure = entityById.Value;
           TryExecute (
-              () => _targetEntityRepository.Create (newEntity => _entityMapper (entityByIdInClosure, newEntity)),
+              () => _targetWriteOnlyEntityRepository.Create (newEntity => _entityMapper (entityByIdInClosure, newEntity)),
               newTargetEntityWithVerisonId =>
               {
                 s_logger.DebugFormat ("Created '{0}' in target", targetEntityId);
@@ -138,7 +140,7 @@ namespace CalDavSynchronizer.Synchronization
         {
           s_logger.DebugFormat ("Deleting '{0}' in target", targetEntityId);
           TryExecute (
-              () => _targetEntityRepository.Delete (targetEntityId),
+              () => _targetWriteOnlyEntityRepository.Delete (targetEntityId),
               _ => _knownTargetVersions.DeleteVersion (targetEntityId),
               deleted.Key,
               targetEntityId
@@ -153,7 +155,7 @@ namespace CalDavSynchronizer.Synchronization
       {
         s_logger.DebugFormat ("Deleting '{0}' in target", addedId);
         TryExecute (
-            () => _targetEntityRepository.Delete (addedId),
+            () => _targetWriteOnlyEntityRepository.Delete (addedId),
             _ => _knownTargetVersions.DeleteVersion (addedId),
             addedId
             );
@@ -166,7 +168,7 @@ namespace CalDavSynchronizer.Synchronization
       {
         var sourceEntity = restoreInformation[deletion.Item1];
         TryExecute (
-            () => _targetEntityRepository.Create (newEntity => _entityMapper (sourceEntity, newEntity)),
+            () => _targetWriteOnlyEntityRepository.Create (newEntity => _entityMapper (sourceEntity, newEntity)),
             newTargetEntityWithVerisonId =>
             {
               s_logger.DebugFormat ("Restored '{0}' in target", newTargetEntityWithVerisonId.Id);
@@ -188,7 +190,7 @@ namespace CalDavSynchronizer.Synchronization
 
 
         TryExecute (
-            () => _targetEntityRepository.Update (change.Item2, newEntity => _entityMapper (sourceEntity, newEntity), cachedCurrentTargetEntity),
+            () => _targetWriteOnlyEntityRepository.Update (change.Item2, newEntity => _entityMapper (sourceEntity, newEntity), cachedCurrentTargetEntity),
             newTargetEntityWithVerisonId =>
             {
               if (!change.Item2.Equals (newTargetEntityWithVerisonId.Id))
@@ -220,7 +222,7 @@ namespace CalDavSynchronizer.Synchronization
         var entityByIdInClosure = entityById.Value;
 
         TryExecute (
-            () => _targetEntityRepository.Create (newEntity => _entityMapper (entityByIdInClosure, newEntity)),
+            () => _targetWriteOnlyEntityRepository.Create (newEntity => _entityMapper (entityByIdInClosure, newEntity)),
             newTargetEntityWithVerisonId =>
             {
               s_logger.DebugFormat ("Created '{0}' in target", newTargetEntityWithVerisonId.Id);
@@ -253,7 +255,7 @@ namespace CalDavSynchronizer.Synchronization
           }
         }
 
-        foreach (var kv in _targetEntityRepository.GetEntities (targetEntitiesToLoad))
+        foreach (var kv in _targetReadOnlyEntityRepository.GetEntities (targetEntitiesToLoad))
           targetEntityCache.Add (kv.Key, kv.Value);
 
         return targetEntityCache;

@@ -41,14 +41,18 @@ namespace CalDavSynchronizer.Synchronization
       s_logger.InfoFormat ("Entered. Atype='{0}', Btype='{1}'", typeof (TAtypeEntity).Name, typeof (TBtypeEntity).Name);
 
       TSyncData syncData;
-      SynchronizationTasks<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> aToBtasks;
-      SynchronizationTasks<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> bToAtasks;
+      SynchronizationTasks<TAtypeEntity, TAtypeEntityId, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> aToBtasks;
+      SynchronizationTasks<TBtypeEntity, TBtypeEntityId, TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> bToAtasks;
       EntityCaches<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> caches;
 
       try
       {
-        var atypeEntityRepository = _synchronizerContext.AtypeRepository;
-        var btypeEntityRepository = _synchronizerContext.BtypeRepository;
+        var atypeReadOnlyEntityRepository = new ReadOnlyEntityRepositoryCachingDecorator<TAtypeEntity,TAtypeEntityId,TAtypeEntityVersion>(_synchronizerContext.AtypeRepository);
+        var btypeReadOnlyEntityRepository = new ReadOnlyEntityRepositoryCachingDecorator<TBtypeEntity,TBtypeEntityId,TBtypeEntityVersion>(_synchronizerContext.BtypeRepository);
+        
+        IWriteOnlyEntityRepository<TAtypeEntity,TAtypeEntityId,TAtypeEntityVersion> atypeWriteOnlyEntityRepository = _synchronizerContext.AtypeRepository;
+        IWriteOnlyEntityRepository<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> btypeWriteOnlyEntityRepository = _synchronizerContext.BtypeRepository;
+        
         var entityMapper = _synchronizerContext.EntityMapper;
 
         bool cachesWereCreatedNew;
@@ -57,8 +61,8 @@ namespace CalDavSynchronizer.Synchronization
         var atypeVersionStorage = caches.AtypeStorage;
         var btypeVersionStorage = caches.BtypeStorage;
 
-        var atypeVersions = atypeEntityRepository.GetEntityVersions (_synchronizerContext.From, _synchronizerContext.To);
-        var btypeVersions = btypeEntityRepository.GetEntityVersions (_synchronizerContext.From, _synchronizerContext.To);
+        var atypeVersions = atypeReadOnlyEntityRepository.GetEntityVersions (_synchronizerContext.From, _synchronizerContext.To);
+        var btypeVersions = btypeReadOnlyEntityRepository.GetEntityVersions (_synchronizerContext.From, _synchronizerContext.To);
         var atypeToBtypeEntityRelationStorage = caches.EntityRelationStorage;
 
         VersionDelta<TAtypeEntityId, TAtypeEntityVersion> atypeDelta;
@@ -70,8 +74,8 @@ namespace CalDavSynchronizer.Synchronization
 
           var result = _synchronizerContext.InitialEntityMatcher.PopulateEntityRelationStorage (
               atypeToBtypeEntityRelationStorage,
-              atypeEntityRepository,
-              btypeEntityRepository,
+              atypeReadOnlyEntityRepository,
+              btypeReadOnlyEntityRepository,
               atypeVersions,
               btypeVersions,
               atypeVersionStorage,
@@ -93,24 +97,29 @@ namespace CalDavSynchronizer.Synchronization
 
       
         syncData = CalculateDataToSynchronize (
-            atypeEntityRepository,
-            btypeEntityRepository,
+            atypeReadOnlyEntityRepository,
+            btypeReadOnlyEntityRepository,
             atypeDelta,
             btypeDelta,
             atypeToBtypeEntityRelationStorage,
             btypeToAtypeEntityRelationStorage);
 
-        aToBtasks = new SynchronizationTasks<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> (
-            atypeToBtypeEntityRelationStorage,
-            btypeEntityRepository,
-            entityMapper.Map1To2,
-            btypeVersionStorage);
+        atypeReadOnlyEntityRepository.LogWarningOnCacheMisses = true;
+        btypeReadOnlyEntityRepository.LogWarningOnCacheMisses = true;
 
-        bToAtasks = new SynchronizationTasks<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> (
+        aToBtasks = new SynchronizationTasks<TAtypeEntity, TAtypeEntityId, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> (
+            atypeToBtypeEntityRelationStorage,
+            btypeWriteOnlyEntityRepository,
+            entityMapper.Map1To2,
+            btypeVersionStorage,
+            btypeReadOnlyEntityRepository);
+
+        bToAtasks = new SynchronizationTasks<TBtypeEntity, TBtypeEntityId, TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> (
             btypeToAtypeEntityRelationStorage,
-            atypeEntityRepository,
+            atypeWriteOnlyEntityRepository,
             entityMapper.Map2To1,
-            atypeVersionStorage);
+            atypeVersionStorage,
+            atypeReadOnlyEntityRepository);
       }
       catch (Exception x)
       {
@@ -157,8 +166,8 @@ namespace CalDavSynchronizer.Synchronization
 
 
     protected abstract void DoSynchronization (
-        SynchronizationTasks<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> aToBtasks,
-        SynchronizationTasks<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> bToAtasks,
+        SynchronizationTasks<TAtypeEntity, TAtypeEntityId, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> aToBtasks,
+        SynchronizationTasks<TBtypeEntity, TBtypeEntityId, TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> bToAtasks,
         TSyncData syncData
         );
   }

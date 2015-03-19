@@ -76,7 +76,7 @@ namespace CalDavSynchronizer.Synchronization
     }
 
 
-    protected override void DoSynchronization (SynchronizationTasks<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> aToBtasks, SynchronizationTasks<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> bToAtasks, OneWaySyncData<TAtypeEntity, TAtypeEntityId, TBtypeEntity, TBtypeEntityId> syncData)
+    protected override void DoSynchronization (SynchronizationTasks<TAtypeEntity, TAtypeEntityId, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> aToBtasks, SynchronizationTasks<TBtypeEntity, TBtypeEntityId, TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> bToAtasks, OneWaySyncData<TAtypeEntity, TAtypeEntityId, TBtypeEntity, TBtypeEntityId> syncData)
     {
       aToBtasks.SnychronizeDeleted (syncData.AtypeEntityDelta.Deleted);
       aToBtasks.SynchronizeChanged (syncData.AtypeEntityDelta.Changed,syncData.CurrentTargetEntityCache);

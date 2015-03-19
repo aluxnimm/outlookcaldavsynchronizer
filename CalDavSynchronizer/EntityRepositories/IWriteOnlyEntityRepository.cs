@@ -3,7 +3,7 @@ using CalDavSynchronizer.EntityVersionManagement;
 
 namespace CalDavSynchronizer.EntityRepositories
 {
-  public interface IWritableEntityRepository<TEntity, TEntityId, TEntityVersion>
+  public interface IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
   {
     bool Delete (TEntityId entityId);
     EntityIdWithVersion<TEntityId, TEntityVersion> Update (TEntityId entityId, Func<TEntity, TEntity> entityModifier, TEntity cachedCurrentTargetEntityIfAvailable);

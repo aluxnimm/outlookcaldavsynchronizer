@@ -168,7 +168,8 @@
   -->
   <ItemGroup>
     <Compile Include="EntityRepositories\IReadOnlyEntityRepository.cs" />
-    <Compile Include="EntityRepositories\IWritableEntityRepository.cs" />
+    <Compile Include="EntityRepositories\IWriteOnlyEntityRepository.cs" />
+    <Compile Include="EntityRepositories\ReadOnlyEntityRepositoryCachingDecorator.cs" />
     <Compile Include="InitialEntityMatching\InitialEntityMatcherByPropertyGrouping.cs" />
     <Compile Include="InitialEntityMatching\EntityCaches.cs" />
     <Compile Include="InitialEntityMatching\InitialEntityMatcher.cs" />
