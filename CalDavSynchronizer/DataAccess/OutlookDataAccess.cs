@@ -15,6 +15,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using CalDavSynchronizer.EntityVersionManagement;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.DataAccess
@@ -22,40 +26,67 @@ namespace CalDavSynchronizer.DataAccess
   internal class OutlookDataAccess : IOutlookDataAccess
   {
     private readonly MAPIFolder _calendarFolder;
+    private readonly NameSpace _mapiNameSpace;
 
-    public OutlookDataAccess (MAPIFolder calendarFolder)
+    public OutlookDataAccess (MAPIFolder calendarFolder, NameSpace mapiNameSpace)
     {
       if (calendarFolder == null)
         throw new ArgumentNullException ("calendarFolder");
+      if (mapiNameSpace == null)
+        throw new ArgumentNullException ("mapiNameSpace");
       _calendarFolder = calendarFolder;
+      _mapiNameSpace = mapiNameSpace;
     }
 
+    const string c_entryIdColumnName = "EntryID";
+    const string c_lastModificationTimeColumnId = "LastModificationTime";
 
-    public IEnumerable<AppointmentItem> GetEvents (DateTime? fromUtc, DateTime? toUtc)
+    public IEnumerable<EntityIdWithVersion<string, DateTime>> GetEvents (DateTime? fromUtc, DateTime? toUtc)
     {
-      List<AppointmentItem> events = new List<AppointmentItem>();
+      var events = new List<EntityIdWithVersion<string, DateTime>> ();
 
-      foreach (AppointmentItem evt in _calendarFolder.Items)
+      var filterBuilder = new StringBuilder();
+
+      if (fromUtc.HasValue)
       {
-        if (fromUtc == null || evt.StartUTC >= fromUtc)
-          if (toUtc == null || evt.EndUTC <= toUtc)
-            events.Add (evt);
+        filterBuilder.AppendFormat ("[Start] > '{0}'", ToOutlookDateString(fromUtc.Value));
       }
+
+      if (toUtc.HasValue)
+      {
+        if (filterBuilder.Length > 0)
+          filterBuilder.Append (" And ");
+
+        filterBuilder.AppendFormat ("[End] < '{0}'", ToOutlookDateString(toUtc.Value));
+      }
+
+      var table = _calendarFolder.GetTable(filterBuilder.ToString());
+      table.Columns.RemoveAll();
+      table.Columns.Add (c_entryIdColumnName);
+      table.Columns.Add (c_lastModificationTimeColumnId);
+
+      while (!table.EndOfTable)
+      {
+        var row = table.GetNextRow();
+        var entryId = (string) row[c_entryIdColumnName];
+        var lastModificationTime = (DateTime) row[c_lastModificationTimeColumnId];
+        events.Add (new EntityIdWithVersion<string, DateTime> (entryId, lastModificationTime));
+      }
+
       return events;
     }
 
+
+    private static readonly CultureInfo _enUsCultureInfo = CultureInfo.GetCultureInfo ("en-US");
+    private string ToOutlookDateString (DateTime value)
+    {
+      return value.ToString ("g", _enUsCultureInfo);
+    }
 
     public IEnumerable<AppointmentItem> GetEvents (IEnumerable<string> ids)
     {
-      HashSet<string> idsHashSet = new HashSet<string> (ids);
-      List<AppointmentItem> events = new List<AppointmentItem>();
-
-      foreach (AppointmentItem evt in _calendarFolder.Items)
-      {
-        if (idsHashSet.Contains (evt.EntryID))
-          events.Add (evt);
-      }
-      return events;
+      var storeId = _calendarFolder.StoreID;
+      return ids.Select (id => (AppointmentItem) _mapiNameSpace.GetItemFromID (id, storeId)).ToList();
     }
 
 

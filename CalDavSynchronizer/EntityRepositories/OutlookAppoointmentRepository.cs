@@ -33,10 +33,7 @@ namespace CalDavSynchronizer.EntityRepositories
 
     public override IEnumerable<EntityIdWithVersion<string, DateTime>> GetEntityVersions (DateTime from, DateTime to)
     {
-      return _outlookDataAccess
-          .GetEvents (from, to)
-          .Select (a => new EntityIdWithVersion<string, DateTime> (a.EntryID, a.LastModificationTime))
-          .ToArray();
+      return _outlookDataAccess.GetEvents(from,to);
     }
 
     public override IDictionary<string, AppointmentItem> GetEntities (ICollection<string> sourceEntityIds)

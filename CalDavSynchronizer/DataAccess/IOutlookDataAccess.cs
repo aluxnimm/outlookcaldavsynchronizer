@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
+using CalDavSynchronizer.EntityVersionManagement;
 using DDay.iCal;
 using Microsoft.Office.Interop.Outlook;
 
@@ -22,7 +23,7 @@ namespace CalDavSynchronizer.DataAccess
 {
   internal interface IOutlookDataAccess
   {
-    IEnumerable<AppointmentItem> GetEvents (DateTime? fromUtc, DateTime? toUtc);
+    IEnumerable<EntityIdWithVersion<string, DateTime>> GetEvents (DateTime? fromUtc, DateTime? toUtc);
     IEnumerable<AppointmentItem> GetEvents (IEnumerable<string> ids);
     AppointmentItem CreateNewEvent ();
   }
