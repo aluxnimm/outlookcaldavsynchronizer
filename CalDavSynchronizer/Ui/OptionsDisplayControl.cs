@@ -18,10 +18,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using CalDavSynchronizer.ConflictManagement;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
-using CalDavSynchronizer.Synchronization;
+using CalDavSynchronizer.Implementation;
 using Microsoft.Office.Interop.Outlook;
 using Exception = System.Exception;
 

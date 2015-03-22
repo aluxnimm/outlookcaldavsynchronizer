@@ -17,11 +17,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CalDavSynchronizer.EntityRepositories;
-using CalDavSynchronizer.EntityVersionManagement;
+using CalDavSynchronizer.Generic.EntityVersionManagement;
 
 namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
 {
-  internal class TestPersonARepository : EntityRepositoryBase<PersonA, int, int>
+  internal class TestPersonARepository : IEntityRepository<PersonA, int, int>
   {
     private readonly IEnumerable<PersonA> _persons;
 
@@ -31,28 +31,28 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
     }
 
 
-    public override IEnumerable<EntityIdWithVersion<int, int>> GetEntityVersions (DateTime @from, DateTime to)
+    public  Dictionary<int, int> GetEntityVersions (DateTime @from, DateTime to)
     {
-      return _persons.Select (p => new EntityIdWithVersion<int, int> (p.Id, p.Version)).ToArray ();
+      return _persons.ToDictionary(kv => kv.Id, kv => kv.Version);
     }
 
-    public override IDictionary<int, PersonA> GetEntities (ICollection<int> sourceEntityIds)
+    public  IDictionary<int, PersonA> GetEntities (ICollection<int> sourceEntityIds)
     {
       var personsById = _persons.ToDictionary (p => p.Id);
       return sourceEntityIds.Select (id => personsById[id]).ToDictionary (p => p.Id);
     }
 
-    public override bool Delete (int entityId)
+    public  bool Delete (int entityId)
     {
       throw new NotImplementedException();
     }
 
-    public override EntityIdWithVersion<int, int> Update (int entityId, Func<PersonA, PersonA> entityModifier, PersonA cachedCurrentTargetEntityIfAvailable)
+    public  EntityIdWithVersion<int, int> Update (int entityId,PersonA entityToUpdate, Func<PersonA, PersonA> entityModifier)
     {
       throw new NotImplementedException();
     }
 
-    public override EntityIdWithVersion<int, int> Create (Func<PersonA, PersonA> entityInitializer)
+    public  EntityIdWithVersion<int, int> Create (Func<PersonA, PersonA> entityInitializer)
     {
       throw new NotImplementedException();
     }

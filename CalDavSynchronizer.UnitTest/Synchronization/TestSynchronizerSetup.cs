@@ -14,37 +14,34 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using CalDavSynchronizer.EntityMapping;
-using CalDavSynchronizer.EntityRelationManagement;
+using System.Collections.Generic;
+using System.Linq;
 using CalDavSynchronizer.EntityRepositories;
-using CalDavSynchronizer.EntityVersionManagement;
-using CalDavSynchronizer.InitialEntityMatching;
-using CalDavSynchronizer.Synchronization;
+using CalDavSynchronizer.Generic.EntityMapping;
+using CalDavSynchronizer.Generic.EntityRelationManagement;
+using CalDavSynchronizer.Generic.InitialEntityMatching;
+using CalDavSynchronizer.Generic.Synchronization;
 using NUnit.Framework;
 
 namespace CalDavSynchronizer.UnitTest.Synchronization
 {
-  internal class TestSynchronizerSetup : ISynchronizerContext<string, string, int, string, string, int>
+  internal class TestSynchronizerSetup : ISynchronizerContext<string, int, string, string, int, string>
   {
-    public VersionStorage<string, int> _localVersions;
-    public VersionStorage<string, int> _serverVersions;
 
     public TestRepository _localRepository;
     public TestRepository _serverRepository;
 
-    protected EntityRelationStorage<string, string> _entityRelationStorage;
     protected ISynchronizer _synchronizer;
-
+    private readonly IEntityRelationDataFactory<string, int, string, int> _entityRelationDataFactory;
+    private List<EntityRelationData> _entityRelationData = new List<EntityRelationData>();
 
     public TestSynchronizerSetup ()
     {
-      _localVersions = new VersionStorage<string, int>();
-      _serverVersions = new VersionStorage<string, int>();
 
       _localRepository = new TestRepository ("l");
       _serverRepository = new TestRepository ("s");
 
-      _entityRelationStorage = new EntityRelationStorage<string, string>();
+      _entityRelationDataFactory = new EntityRelationDataFactory();
     }
 
     public void AssertServerCount (int i)
@@ -86,11 +83,19 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
       var v3 = _serverRepository.Create (v => "Item 1");
       var v4 = _serverRepository.Create (v => "Item 2");
 
-      _localVersions.SetNewVersions (new[] { v1, v2 });
-      _serverVersions.SetNewVersions (new[] { v3, v4 });
+      _entityRelationData.Add (new EntityRelationData (
+          v1.Id,
+          v1.Version,
+          v3.Id,
+          v3.Version
+        ));
 
-      _entityRelationStorage.AddRelation (v1.Id, v3.Id);
-      _entityRelationStorage.AddRelation (v2.Id, v4.Id);
+      _entityRelationData.Add (new EntityRelationData (
+          v2.Id,
+          v2.Version,
+          v4.Id,
+          v4.Version
+        ));
     }
 
     public IEntityMapper<string, string> EntityMapper
@@ -98,12 +103,12 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
       get { return new Mapper(); }
     }
 
-    public EntityRepositoryBase<string, string, int> AtypeRepository
+    public IEntityRepository<string, string, int> AtypeRepository
     {
       get { return _localRepository; }
     }
 
-    public EntityRepositoryBase<string, string, int> BtypeRepository
+    public IEntityRepository<string, string, int> BtypeRepository
     {
       get { return _serverRepository; }
     }
@@ -119,28 +124,24 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
       get { return DateTime.Now; }
     }
 
-    public InitialEntityMatcher<string, string, int, string, string, int> InitialEntityMatcher {
+    public IInitialEntityMatcher<string, string, int, string, string, int> InitialEntityMatcher {
       get { throw new NotImplementedException(); }
     }
 
-    public void SaveChaches (EntityCaches<string, int, string, int> caches)
+    public IEntityRelationDataFactory<string, int, string, int> EntityRelationDataFactory
     {
+      get { return _entityRelationDataFactory; }
+    }
+    
+
+    public IEnumerable<IEntityRelationData<string, int, string, int>> Load ()
+    {
+      return _entityRelationData.ToArray();
     }
 
-    public void DeleteCaches ()
+    public void Save (List<IEntityRelationData<string, int, string, int>> data)
     {
-      
-    }
-
-    public EntityCaches<string, int, string, int> LoadOrCreateCaches (out bool createdNew)
-    {
-      createdNew = false;
-
-      return new EntityCaches<string, int, string, int> (
-          _localVersions,
-          _serverVersions,
-          _entityRelationStorage
-          );
+      _entityRelationData = data.Cast<EntityRelationData>().ToList();
     }
   }
 }

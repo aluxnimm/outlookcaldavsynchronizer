@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using CalDavSynchronizer.EntityVersionManagement;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.DataAccess
@@ -41,9 +40,9 @@ namespace CalDavSynchronizer.DataAccess
     const string c_entryIdColumnName = "EntryID";
     const string c_lastModificationTimeColumnId = "LastModificationTime";
 
-    public IEnumerable<EntityIdWithVersion<string, DateTime>> GetEvents (DateTime? fromUtc, DateTime? toUtc)
+    public Dictionary<string, DateTime> GetEvents (DateTime? fromUtc, DateTime? toUtc)
     {
-      var events = new List<EntityIdWithVersion<string, DateTime>> ();
+      var events = new Dictionary<string, DateTime> ();
 
       var filterBuilder = new StringBuilder();
 
@@ -70,7 +69,7 @@ namespace CalDavSynchronizer.DataAccess
         var row = table.GetNextRow();
         var entryId = (string) row[c_entryIdColumnName];
         var lastModificationTime = (DateTime) row[c_lastModificationTimeColumnId];
-        events.Add (new EntityIdWithVersion<string, DateTime> (entryId, lastModificationTime));
+        events.Add (entryId, lastModificationTime);
       }
 
       return events;

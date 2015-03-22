@@ -15,7 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
-using CalDavSynchronizer.EntityVersionManagement;
+using CalDavSynchronizer.Generic.EntityVersionManagement;
 
 namespace CalDavSynchronizer.DataAccess
 {
@@ -24,7 +24,7 @@ namespace CalDavSynchronizer.DataAccess
     bool IsCalendarAccessSupported ();
     bool IsResourceCalender ();
 
-    IEnumerable<EntityIdWithVersion<Uri, string>> GetEvents (DateTime? from, DateTime? to);
+    Dictionary<Uri, string> GetEvents (DateTime? from, DateTime? to);
 
     EntityIdWithVersion<Uri, string> UpdateEvent (EntityIdWithVersion<Uri, string> evt, string iCalData);
     bool DeleteEvent (EntityIdWithVersion<Uri, string> evt);

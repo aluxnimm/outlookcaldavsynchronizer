@@ -14,12 +14,15 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.IO;
 using System.Reflection;
-using CalDavSynchronizer.ConflictManagement;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Diagnostics;
-using CalDavSynchronizer.Synchronization;
+using CalDavSynchronizer.Generic.EntityRelationManagement;
+using CalDavSynchronizer.Generic.Synchronization;
+using CalDavSynchronizer.Generic.Synchronization.States;
+using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Utilities;
 using DDay.iCal;
 using log4net;
@@ -50,10 +53,35 @@ namespace CalDavSynchronizer.Scheduling
     {
       _profileName = options.Name;
 
-      var storageDataAccess = StorageDataAccessFactory<string, DateTime, Uri, string>.Create (options);
+      var storageDataDirectory = Path.Combine (
+         ThisAddIn.ApplicationDataDirectory,
+         options.Id.ToString ()
+     );
+
+      var storageDataAccess = new EntityRelationDataAccess<string, DateTime, OutlookEventRelationData , Uri, string> (storageDataDirectory);
+
       var synchronizationContext = new OutlookCalDavEventContext (outlookSession, storageDataAccess, options, _outlookEmailAddress);
-      var conflictResolutionStrategy = ConflictResolutionStrategyFactory.Create (options.ConflictResolution);
-      _synchronizer = SynchronizerFactory<AppointmentItem, string, DateTime, IEvent, Uri, string>.Create (options.SynchronizationMode, conflictResolutionStrategy, synchronizationContext);
+
+      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, AppointmentItem, Uri, string, IEvent> (
+        synchronizationContext.EntityMapper,
+        synchronizationContext.AtypeRepository,
+        synchronizationContext.BtypeRepository,
+        synchronizationContext.EntityRelationDataFactory
+      );
+
+      
+
+      _synchronizer = new Synchronizer<string, DateTime, AppointmentItem, Uri, string, IEvent> (
+          synchronizationContext,
+          InitialSyncStateCreationStrategyFactory.Create(
+            syncStateFactory,
+            syncStateFactory.Environment,
+            options.SynchronizationMode,
+            options.ConflictResolution)
+          );
+
+    
+      
       _interval = TimeSpan.FromMinutes (options.SynchronizationIntervalInMinutes);
       _inactive = options.Inactive;
     }

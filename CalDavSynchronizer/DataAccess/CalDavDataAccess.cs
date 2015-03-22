@@ -20,7 +20,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Xml;
-using CalDavSynchronizer.EntityVersionManagement;
+using CalDavSynchronizer.Generic.EntityVersionManagement;
 
 namespace CalDavSynchronizer.DataAccess
 {
@@ -81,7 +81,7 @@ namespace CalDavSynchronizer.DataAccess
 
     private const string s_calDavDateTimeFormatString = "yyyyMMddThhmmssZ";
 
-    public IEnumerable<EntityIdWithVersion<Uri, string>> GetEvents (DateTime? from, DateTime? to)
+    public Dictionary<Uri, string> GetEvents (DateTime? from, DateTime? to)
     {
       if (from.HasValue != to.HasValue)
         throw new ArgumentException ("Either both or no boundary has to be set");
@@ -119,7 +119,7 @@ namespace CalDavSynchronizer.DataAccess
       XmlNodeList responseNodes = responseXml.XmlDocument.SelectNodes ("/D:multistatus/D:response", responseXml.XmlNamespaceManager);
 
 
-      var entities = new List<EntityIdWithVersion<Uri, string>>();
+      var entities = new Dictionary <Uri, string>();
 
       // ReSharper disable once LoopCanBeConvertedToQuery
       // ReSharper disable once PossibleNullReferenceException
@@ -128,7 +128,7 @@ namespace CalDavSynchronizer.DataAccess
         var urlNode = responseElement.SelectSingleNode ("D:href", responseXml.XmlNamespaceManager);
         var etagNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:getetag", responseXml.XmlNamespaceManager);
         if (urlNode != null && etagNode != null)
-          entities.Add (new EntityIdWithVersion<Uri, string> (new Uri (urlNode.InnerText, UriKind.Relative), etagNode.InnerText));
+          entities.Add (new Uri (urlNode.InnerText, UriKind.Relative), etagNode.InnerText);
       }
 
       return entities;

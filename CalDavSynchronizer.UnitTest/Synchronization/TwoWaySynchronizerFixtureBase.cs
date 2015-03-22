@@ -14,9 +14,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using CalDavSynchronizer.ConflictManagement;
-using CalDavSynchronizer.EntityRelationManagement;
-using CalDavSynchronizer.Synchronization;
+using CalDavSynchronizer.Generic.Synchronization;
+using CalDavSynchronizer.Generic.Synchronization.States;
 
 namespace CalDavSynchronizer.UnitTest.Synchronization
 {
@@ -24,8 +23,18 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
   {
     public void Synchronize (GenericConflictResolution winner)
     {
-      SynchronizeInternal(SynchronizationMode.MergeInBothDirections, winner);
+      IEntityConflictSyncStateFactory<string, int, string, string, int, string> conflictStrategy;
+      if (winner == GenericConflictResolution.AWins)
+        conflictStrategy = new EntityConflictSyncStateFactory_AWins<string, int, string, string, int, string> (_factory);
+      else
+        conflictStrategy = new EntityConflictSyncStateFactory_BWins<string, int, string, string, int, string> (_factory);
+
+
+      var strategy = new TwoWayInitialSyncStateCreationStrategy<string, int, string, string, int, string> (_factory, conflictStrategy);
+
+      SynchronizeInternal(strategy);
     }
 
+   
   }
 }

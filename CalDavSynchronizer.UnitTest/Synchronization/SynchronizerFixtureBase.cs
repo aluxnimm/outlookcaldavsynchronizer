@@ -14,38 +14,47 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using CalDavSynchronizer.ConflictManagement;
-using CalDavSynchronizer.Synchronization;
+using CalDavSynchronizer.Generic.Synchronization;
+using CalDavSynchronizer.Generic.Synchronization.States;
 using NUnit.Framework;
 
 namespace CalDavSynchronizer.UnitTest.Synchronization
 {
-  internal class SynchronizerFixtureBase
+  internal abstract class SynchronizerFixtureBase
   {
     protected TestSynchronizerSetup _synchronizerSetup;
 
     protected ISynchronizer _synchronizer;
-
+    protected IEntitySyncStateFactory<string, int, string, string, int, string> _factory;
 
     [SetUp ()]
     public virtual void Setup ()
     {
       _synchronizerSetup = new TestSynchronizerSetup();
+      _factory = new EntitySyncStateFactory<string, int, string, string, int, string> (
+          _synchronizerSetup.EntityMapper,
+          _synchronizerSetup.AtypeRepository,
+          _synchronizerSetup.BtypeRepository,
+          _synchronizerSetup.EntityRelationDataFactory
+          );
     }
 
-    protected void SynchronizeInternal (SynchronizationMode synchronizationMode, GenericConflictResolution conflictResolution)
+    protected void SynchronizeInternal (IInitialSyncStateCreationStrategy<string, int, string, string, int, string> strategy)
     {
-      var conflictResolutionStrategy = new FixedConflictResolutionStrategy<string, string> (conflictResolution);
+      _synchronizer = new Synchronizer<string, int, string, string, int, string> (
+         _synchronizerSetup,
+         strategy
+      );
 
-      _synchronizer = SynchronizerFactory<string, string, int, string, string, int>.Create (synchronizationMode, conflictResolutionStrategy, _synchronizerSetup);
       _synchronizer.Synchronize();
     }
 
-
-    protected void ExecuteTwice (Action a)
+    protected void ExecuteMultipleTimes (Action a)
     {
-      a();
-      a();
+      a ();
+      a ();
+      a ();
+      a ();
     }
   }
 }

@@ -17,11 +17,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CalDavSynchronizer.EntityRepositories;
-using CalDavSynchronizer.EntityVersionManagement;
+using CalDavSynchronizer.Generic.EntityVersionManagement;
 
 namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
 {
-  internal class TestPersonBRepository : EntityRepositoryBase<PersonB, string, string>
+  internal class TestPersonBRepository : IEntityRepository<PersonB, string, string>
   {
     private readonly IEnumerable<PersonB> _persons;
 
@@ -31,28 +31,28 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
     }
 
 
-    public override IEnumerable<EntityIdWithVersion<string, string>> GetEntityVersions (DateTime @from, DateTime to)
+    public  Dictionary<string, string> GetEntityVersions (DateTime @from, DateTime to)
     {
-      return _persons.Select (p => new EntityIdWithVersion<string, string> (p.Id, p.Version)).ToArray();
+      return _persons.ToDictionary (kv => kv.Id, kv => kv.Version);
     }
 
-    public override IDictionary<string, PersonB> GetEntities (ICollection<string> sourceEntityIds)
+    public  IDictionary<string, PersonB> GetEntities (ICollection<string> sourceEntityIds)
     {
       var personsById = _persons.ToDictionary (p => p.Id);
       return sourceEntityIds.Select (id => personsById[id]).ToDictionary (p => p.Id);
     }
 
-    public override bool Delete (string entityId)
+    public  bool Delete (string entityId)
     {
       throw new NotImplementedException();
     }
 
-    public override EntityIdWithVersion<string, string> Update (string entityId, Func<PersonB, PersonB> entityModifier, PersonB cachedCurrentTargetEntityIfAvailable)
+    public  EntityIdWithVersion<string, string> Update (string entityId,PersonB entityToUpdate, Func<PersonB, PersonB> entityModifier)
     {
       throw new NotImplementedException();
     }
 
-    public override EntityIdWithVersion<string, string> Create (Func<PersonB, PersonB> entityInitializer)
+    public  EntityIdWithVersion<string, string> Create (Func<PersonB, PersonB> entityInitializer)
     {
       throw new NotImplementedException();
     }

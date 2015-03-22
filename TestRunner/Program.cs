@@ -17,9 +17,8 @@ using System;
 using System.Linq;
 using System.Reflection;
 using CalDavSynchronizer.DataAccess;
-using CalDavSynchronizer.EntityRelationManagement;
 using CalDavSynchronizer.EntityRepositories;
-using CalDavSynchronizer.EntityVersionManagement;
+using CalDavSynchronizer.Implementation;
 using DDay.iCal;
 using log4net;
 using log4net.Config;
@@ -52,36 +51,16 @@ namespace TestRunner
       s_logger.InfoFormat ("blablubb");
     }
 
-    private static void TestStorageDataAccess ()
-    {
-      var dataAccess = new StorageDataAccess<string,int,Uri,int> (@"C:\temp\CalDavSynchronizer");
-
-
-      var storage2 = new EntityRelationStorage<string, Uri>();
-      storage2.AddRelation ("bla", new Uri ("http://void666.net/bla"));
-      storage2.AddRelation ("blubb", new Uri ("http://void666.net/blubb"));
-
-     
-
-      var versionStorage = new VersionStorage<string, int>();
-      versionStorage.SetNewVersions (new[]
-                                     {
-                                         new EntityIdWithVersion<string, int> ("Item1", 11),
-                                         new EntityIdWithVersion<string, int> ("Item2", 21),
-                                     });
-
-    }
-
+   
 
     private static void TestCalDavDataAccess ()
     {
       var eventRepository = new CalDavEventRepository (s_dataAccess, new DDay.iCal.Serialization.iCalendar.iCalendarSerializer ());
 
-      var x = eventRepository.GetEntities (s_dataAccess.GetEvents (null, null).Select (v => v.Id).ToArray()).Select (e => e.Value);
-
+     
     
-      foreach (var e in s_dataAccess.GetEvents (null, null))
-        s_dataAccess.DeleteEvent (e);
+      //foreach (var e in s_dataAccess.GetEvents (null, null))
+      //  s_dataAccess.DeleteEvent (e);
 
       var evt = eventRepository.Create (e =>
       {

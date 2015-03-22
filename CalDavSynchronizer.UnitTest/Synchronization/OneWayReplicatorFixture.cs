@@ -27,7 +27,7 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
       _synchronizerSetup._localRepository.Create (v => "Item 1");
       _synchronizerSetup._localRepository.Create (v => "Item 2");
 
-      ExecuteTwice (() =>
+      ExecuteMultipleTimes (() =>
       {
         Synchronize();
 
@@ -47,7 +47,7 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
       _synchronizerSetup._serverRepository.Create (v => "Item 1");
       _synchronizerSetup._serverRepository.Create (v => "Item 2");
 
-      ExecuteTwice (() =>
+      ExecuteMultipleTimes (() =>
       {
         Synchronize();
 
@@ -65,7 +65,7 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
       _synchronizerSetup._localRepository.Create (v => "Item l");
       _synchronizerSetup._serverRepository.Create (v => "Item s");
 
-      ExecuteTwice (() =>
+      ExecuteMultipleTimes (() =>
       {
         Synchronize();
 
@@ -88,7 +88,7 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
 
       _synchronizerSetup._localRepository.Delete ("l1");
 
-      ExecuteTwice (() =>
+      ExecuteMultipleTimes (() =>
       {
         Synchronize();
 
@@ -107,7 +107,7 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
 
       _synchronizerSetup._serverRepository.Delete ("s1");
 
-      ExecuteTwice (() =>
+      ExecuteMultipleTimes (() =>
       {
         Synchronize();
 
@@ -130,7 +130,7 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
       _synchronizerSetup._serverRepository.Delete ("s1");
       _synchronizerSetup._localRepository.Delete ("l2");
 
-      ExecuteTwice (() =>
+      ExecuteMultipleTimes (() =>
       {
         Synchronize();
 
@@ -150,7 +150,7 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
       _synchronizerSetup._serverRepository.Delete ("s1");
       _synchronizerSetup._localRepository.Delete ("l1");
 
-      ExecuteTwice (() =>
+      ExecuteMultipleTimes (() =>
       {
         Synchronize();
 
@@ -168,7 +168,7 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
       _synchronizerSetup.InitializeWithTwoEvents();
       _synchronizerSetup._localRepository.UpdateWithoutIdChange ("l1", v => "upd Item 1");
 
-      ExecuteTwice (() =>
+      ExecuteMultipleTimes (() =>
       {
         Synchronize();
 
@@ -188,7 +188,7 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
       _synchronizerSetup.InitializeWithTwoEvents();
       _synchronizerSetup._serverRepository.UpdateWithoutIdChange ("s1", v => "upd Item 1");
 
-      ExecuteTwice (() =>
+      ExecuteMultipleTimes (() =>
       {
         Synchronize();
 
@@ -209,7 +209,7 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
       _synchronizerSetup._serverRepository.UpdateWithoutIdChange ("s1", v => "upd Item 1");
       _synchronizerSetup._localRepository.UpdateWithoutIdChange ("l2", v => "upd Item 2");
 
-      ExecuteTwice (() =>
+      ExecuteMultipleTimes (() =>
       {
         Synchronize();
 
@@ -230,7 +230,7 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
       _synchronizerSetup._localRepository.Delete ("l1");
       _synchronizerSetup._serverRepository.UpdateWithoutIdChange ("s1", v => "upd Item 1");
 
-      ExecuteTwice (() =>
+      ExecuteMultipleTimes (() =>
       {
         Synchronize();
 
@@ -251,7 +251,7 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
       _synchronizerSetup._serverRepository.Delete ("s1");
       _synchronizerSetup._localRepository.UpdateWithoutIdChange ("l1", v => "upd Item 1");
 
-      ExecuteTwice (() =>
+      ExecuteMultipleTimes (() =>
       {
         Synchronize();
 
@@ -273,7 +273,7 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
       _synchronizerSetup._serverRepository.UpdateWithoutIdChange ("s1", v => "upd srv Item 1");
       _synchronizerSetup._localRepository.UpdateWithoutIdChange ("l1", v => "upd loc Item 1");
 
-      ExecuteTwice (() =>
+      ExecuteMultipleTimes (() =>
       {
         Synchronize();
 

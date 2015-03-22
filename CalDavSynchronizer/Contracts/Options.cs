@@ -17,8 +17,7 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Serialization;
-using CalDavSynchronizer.ConflictManagement;
-using CalDavSynchronizer.Synchronization;
+using CalDavSynchronizer.Implementation;
 
 namespace CalDavSynchronizer.Contracts
 {

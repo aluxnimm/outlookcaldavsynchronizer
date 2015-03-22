@@ -14,8 +14,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using CalDavSynchronizer.ConflictManagement;
-using CalDavSynchronizer.Synchronization;
+using CalDavSynchronizer.Generic.Synchronization;
 
 namespace CalDavSynchronizer.UnitTest.Synchronization
 {
@@ -24,7 +23,9 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
 
     public void Synchronize ()
     {
-      SynchronizeInternal (SynchronizationMode.ReplicateOutlookIntoServer, GenericConflictResolution.AWins);
+      SynchronizeInternal (
+          new OneWayInitialSyncStateCreationStrategy_AToB<string, int,string, string, int,string> (_factory)
+          );
     }
     
   }

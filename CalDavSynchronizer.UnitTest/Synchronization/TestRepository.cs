@@ -17,11 +17,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CalDavSynchronizer.EntityRepositories;
-using CalDavSynchronizer.EntityVersionManagement;
+using CalDavSynchronizer.Generic.EntityVersionManagement;
 
 namespace CalDavSynchronizer.UnitTest.Synchronization
 {
-  internal class TestRepository : EntityRepositoryBase<string, string, int>
+  internal class TestRepository : IEntityRepository<string, string, int>
   {
     private readonly string _idPrefix;
 
@@ -39,23 +39,23 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
       _idPrefix = idPrefix;
     }
 
-    public override IEnumerable<EntityIdWithVersion<string, int>> GetEntityVersions (DateTime @from, DateTime to)
+    public Dictionary<string, int> GetEntityVersions (DateTime @from, DateTime to)
     {
-      return EntityVersionAndContentById.Select (kv => new EntityIdWithVersion<string, int> (kv.Key, kv.Value.Item1)).ToArray();
+      return EntityVersionAndContentById.ToDictionary (kv => kv.Key, kv => kv.Value.Item1);
     }
 
-    public override IDictionary<string, string> GetEntities (ICollection<string> sourceEntityIds)
+    public IDictionary<string, string> GetEntities (ICollection<string> sourceEntityIds)
     {
       return sourceEntityIds.Select (id => new { id, EntityVersionAndContentById[id].Item2 }).ToDictionary (v => v.id, v => v.Item2);
     }
 
-    public override bool Delete (string entityId)
+    public bool Delete (string entityId)
     {
       EntityVersionAndContentById.Remove (entityId);
       return true;
     }
 
-    public override EntityIdWithVersion<string, int> Update (string entityId, Func<string, string> entityModifier, string cachedCurrentTargetEntityIfAvailable)
+    public EntityIdWithVersion<string, int> Update (string entityId, string entityToUpdate, Func<string, string> entityModifier)
     {
       var kv = EntityVersionAndContentById[entityId];
       EntityVersionAndContentById.Remove (entityId);
@@ -81,7 +81,7 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
     }
 
 
-    public override EntityIdWithVersion<string, int> Create (Func<string, string> entityInitializer)
+    public EntityIdWithVersion<string, int> Create (Func<string, string> entityInitializer)
     {
       var newValue = entityInitializer (string.Empty);
       var entityId = _idPrefix + _nextId++;

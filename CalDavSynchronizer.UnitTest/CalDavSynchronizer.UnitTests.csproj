@@ -48,22 +48,22 @@
   <ItemGroup>
     <Compile Include="InitialEntityMatching\InitialEntityMatcherByPropertyGroupingFixture.cs" />
     <Compile Include="InitialEntityMatching\PersonA.cs" />
+    <Compile Include="InitialEntityMatching\PersonAPersonBRelationData.cs" />
+    <Compile Include="InitialEntityMatching\PersonAPersonBRelationDataFactory.cs" />
     <Compile Include="InitialEntityMatching\PersonB.cs" />
     <Compile Include="InitialEntityMatching\TestInitialEntityMatcher.cs" />
     <Compile Include="InitialEntityMatching\TestPersonARepository.cs" />
     <Compile Include="InitialEntityMatching\TestPersonBRepository.cs" />
-    <Compile Include="InitialEntityMatching\TestRelationStorage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="EntityVersionManagement\TestClass.cs" />
-    <Compile Include="EntityVersionManagement\TestClassEqualityComparer.cs" />
-    <Compile Include="EntityVersionManagement\VersionStorageFixture.cs" />
-    <Compile Include="Synchronization\FailingConflictResolutionStrategy.cs" />
+    <Compile Include="Synchronization\EntityRelationData.cs" />
+    <Compile Include="Synchronization\EntityRelationDataFactory.cs" />
+    <Compile Include="Synchronization\GenericConflictResolution.cs" />
     <Compile Include="Synchronization\Mapper.cs" />
     <Compile Include="Synchronization\OneWayReplicatorFixtureBase.cs" />
     <Compile Include="Synchronization\SynchronizerFixtureBase.cs" />
     <Compile Include="Synchronization\OneWayReplicatorFixture.cs" />
     <Compile Include="Synchronization\TestSynchronizerSetup.cs" />
-    <Compile Include="Synchronization\TwoWaySynchronizer.cs" />
+    <Compile Include="Synchronization\TwoWaySynchronizerFixture.cs" />
     <Compile Include="Synchronization\TestRepository.cs" />
     <Compile Include="Synchronization\TwoWaySynchronizerFixtureBase.cs" />
   </ItemGroup>
