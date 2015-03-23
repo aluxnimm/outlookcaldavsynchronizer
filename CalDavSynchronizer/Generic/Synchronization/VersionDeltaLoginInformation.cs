@@ -48,7 +48,7 @@ namespace CalDavSynchronizer.Generic.Synchronization
 
     public override string ToString ()
     {
-      return string.Format ("Unchanged: {0} ,Added: {1} , Deleted {2} ,  Changed {3}", _unchanged, _added, _deleted, _changed);
+      return string.Format ("Unchanged: {0} , Added: {1} , Deleted {2} ,  Changed {3}", _unchanged, _added, _deleted, _changed);
     }
   }
 }
