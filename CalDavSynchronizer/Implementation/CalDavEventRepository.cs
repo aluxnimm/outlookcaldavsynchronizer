@@ -70,7 +70,7 @@ namespace CalDavSynchronizer.Implementation
           foreach (var kv in events)
           {
             IEvent evt;
-            if (TryDeserializeICalEvent (kv.Value, out evt, kv.Key))
+          if (TryDeserializeICalEvent (kv.Value, out evt, kv.Key))
               entitiesByKey.Add (kv.Key, evt);
             stepProgress.Increase();
           }

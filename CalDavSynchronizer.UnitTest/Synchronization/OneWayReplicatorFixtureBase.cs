@@ -21,9 +21,9 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
   internal class OneWayReplicatorFixtureBase : SynchronizerFixtureBase
   {
 
-    public void Synchronize ()
+    public bool Synchronize ()
     {
-      SynchronizeInternal (
+      return SynchronizeInternal (
           new OneWayInitialSyncStateCreationStrategy_AToB<string, int,string, string, int,string> (_factory)
           );
     }

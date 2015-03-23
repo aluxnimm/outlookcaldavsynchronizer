@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +41,7 @@ namespace CalDavSynchronizer.Generic.Synchronization
     }
 
 
-    public void Synchronize ()
+    public bool Synchronize ()
     {
       s_logger.InfoFormat ("Entered. Atype='{0}', Btype='{1}'", typeof (TAtypeEntity).Name, typeof (TBtypeEntity).Name);
 
@@ -75,6 +76,10 @@ namespace CalDavSynchronizer.Generic.Synchronization
 
         var entitySyncStates = new List<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>>();
 
+
+        var aDeltaLogInfo = new VersionDeltaLoginInformation();
+        var bDeltaLogInfo = new VersionDeltaLoginInformation();
+
         foreach (var cachedEntityData in cachedData)
         {
           TAtypeEntityVersion repositoryAVersion;
@@ -89,10 +94,16 @@ namespace CalDavSynchronizer.Generic.Synchronization
           if (repositoryBVersionAvailable)
             btypeRepositoryVersions.Remove (cachedEntityData.BtypeId);
 
-          var entitySyncState = CreateInitialSyncState (cachedEntityData, repositoryAVersionAvailable, repositoryAVersion, repositoryBVersionAvailable, repositoryBVersion);
+          var entitySyncState = CreateInitialSyncState (cachedEntityData, repositoryAVersionAvailable, repositoryAVersion, repositoryBVersionAvailable, repositoryBVersion, aDeltaLogInfo, bDeltaLogInfo);
 
           entitySyncStates.Add (entitySyncState);
         }
+
+        aDeltaLogInfo.IncAdded (atypeRepositoryVersions.Count);
+        bDeltaLogInfo.IncAdded (btypeRepositoryVersions.Count);
+
+        s_logger.InfoFormat ("Atype delta: {0}", aDeltaLogInfo);
+        s_logger.InfoFormat ("Btype delta: {0}", bDeltaLogInfo);
 
         foreach (var newA in atypeRepositoryVersions)
           entitySyncStates.Add (_initialSyncStateCreationStrategy.CreateFor_Added_NotExisting (newA.Key, newA.Value));
@@ -119,24 +130,24 @@ namespace CalDavSynchronizer.Generic.Synchronization
         // an state is allowed only to resolve to another state, if the following states requires equal or less entities!
         entitySyncStates = entitySyncStates.Select (a => a.FetchRequiredEntities (aEntities, bEntities)).ToList();
 
-        // TODO: add try catch for every call
-        entitySyncStates = entitySyncStates.Select (a => a.PerformSyncAction ()).ToList ();
+      
+        entitySyncStates = entitySyncStates.Select (a => a.PerformSyncActionNoThrow()).ToList();
 
-        var newData = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> ();
+        var newData = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
 
-        // TODO: add try catch for every call
         foreach (var syncAction in entitySyncStates)
-          syncAction.AddNewData (newData.Add);
+          syncAction.AddNewRelationNoThrow (newData.Add);
 
         _synchronizerContext.Save (newData);
       }
       catch (Exception x)
       {
         s_logger.Error ("Error during synchronization:", x);
+        return false;
       }
 
-
       s_logger.DebugFormat ("Exiting.");
+      return true;
     }
 
     private IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> CreateInitialSyncState (
@@ -144,7 +155,9 @@ namespace CalDavSynchronizer.Generic.Synchronization
         bool repositoryAVersionAvailable,
         TAtypeEntityVersion repositoryAVersion,
         bool repositoryBVersionAvailable,
-        TBtypeEntityVersion repositoryBVersion)
+        TBtypeEntityVersion repositoryBVersion,
+        VersionDeltaLoginInformation aLogInfo,
+        VersionDeltaLoginInformation bLogInfo)
     {
       IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> state;
       if (repositoryAVersionAvailable)
@@ -152,53 +165,75 @@ namespace CalDavSynchronizer.Generic.Synchronization
         var aChanged = !_atypeComparer.Equals (repositoryAVersion, cachedData.AtypeVersion);
         if (aChanged)
         {
+          aLogInfo.IncChanged();
           if (repositoryBVersionAvailable)
           {
             var bChanged = !_btypeComparer.Equals (repositoryBVersion, cachedData.BtypeVersion);
             if (bChanged)
+            {
+              bLogInfo.IncChanged();
               state = _initialSyncStateCreationStrategy.CreateFor_Changed_Changed (cachedData, repositoryAVersion, repositoryBVersion);
+            }
             else
+            {
+              bLogInfo.IncUnchanged();
               state = _initialSyncStateCreationStrategy.CreateFor_Changed_Unchanged (cachedData, repositoryAVersion);
+            }
           }
           else
           {
+            bLogInfo.IncDeleted();
             state = _initialSyncStateCreationStrategy.CreateFor_Changed_Deleted (cachedData, repositoryAVersion);
           }
         }
         else
         {
+          aLogInfo.IncUnchanged();
           if (repositoryBVersionAvailable)
           {
             var bChanged = !_btypeComparer.Equals (repositoryBVersion, cachedData.BtypeVersion);
             if (bChanged)
+            {
+              bLogInfo.IncChanged();
               state = _initialSyncStateCreationStrategy.CreateFor_Unchanged_Changed (cachedData, repositoryBVersion);
+            }
             else
+            {
+              bLogInfo.IncUnchanged ();
               state = _initialSyncStateCreationStrategy.CreateFor_Unchanged_Unchanged (cachedData);
+            }
           }
           else
           {
+            bLogInfo.IncDeleted();
             state = _initialSyncStateCreationStrategy.CreateFor_Unchanged_Deleted (cachedData);
           }
         }
       }
       else
       {
+        aLogInfo.IncDeleted();
         if (repositoryBVersionAvailable)
         {
           var bChanged = !_btypeComparer.Equals (repositoryBVersion, cachedData.BtypeVersion);
           if (bChanged)
+          {
+            bLogInfo.IncChanged();
             state = _initialSyncStateCreationStrategy.CreateFor_Deleted_Changed (cachedData, repositoryBVersion);
+          }
           else
+          {
+            bLogInfo.IncUnchanged();
             state = _initialSyncStateCreationStrategy.CreateFor_Deleted_Unchanged (cachedData);
+          }
         }
         else
         {
+          bLogInfo.IncDeleted();
           state = _initialSyncStateCreationStrategy.CreateFor_Deleted_Deleted (cachedData);
         }
       }
       return state;
     }
-
- 
   }
 }

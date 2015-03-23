@@ -51,16 +51,12 @@ namespace CalDavSynchronizer.Implementation
       From = DateTime.Now.AddDays (-options.DaysToSynchronizeInThePast);
       To = DateTime.Now.AddDays (options.DaysToSynchronizeInTheFuture);
 
-
       _entityRelationDataFactory = new OutlookEventRelationDataFactory();
 
       _entityMapper = new AppointmentEventEntityMapper (outlookEmailAddress, new Uri ("mailto:" + options.EmailAddress));
 
       var calendarFolder = outlookSession.GetFolderFromID (options.OutlookFolderEntryId, options.OutlookFolderStoreId);
       _atypeRepository = new OutlookAppoointmentRepository (new OutlookDataAccess (calendarFolder,outlookSession));
-
-      //foreach (var e in _atypeRepository.GetEntityVersions (DateTime.Now.AddYears (-4), DateTime.Now.AddYears (4)).Keys)
-      //  _atypeRepository.Delete (e);
 
       _btypeRepository = new CalDavEventRepository (new CalDavDataAccess (new Uri (options.CalenderUrl), options.UserName, options.Password), new iCalendarSerializer());
 

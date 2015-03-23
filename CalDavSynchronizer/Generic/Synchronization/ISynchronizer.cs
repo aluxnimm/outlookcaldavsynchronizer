@@ -19,6 +19,6 @@ namespace CalDavSynchronizer.Generic.Synchronization
 {
   public interface ISynchronizer
   {
-    void Synchronize ();
+    bool Synchronize ();
   }
 }

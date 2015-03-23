@@ -87,6 +87,7 @@ namespace CalDavSynchronizer.Ui
       {
         var newOptions = optionsControl.Options;
         newOptions.Name += " (Copy)";
+        newOptions.Id = Guid.NewGuid();
         var newPage = AddTabPage (newOptions);
         _tabControl.SelectedTab = newPage;
       };

@@ -168,12 +168,12 @@
   -->
   <ItemGroup>
     <Compile Include="Generic\EntityRelationManagement\EntityRelationDataAccess.cs" />
+    <Compile Include="Generic\Synchronization\VersionDeltaLoginInformation.cs" />
     <Compile Include="Generic\ProgressReport\IProgressReporter.cs" />
     <Compile Include="Generic\ProgressReport\IProgressStep.cs" />
     <Compile Include="Generic\ProgressReport\ITotalProgressFactory.cs" />
     <Compile Include="Generic\ProgressReport\NullProgressStep.cs" />
     <Compile Include="Generic\ProgressReport\NullTotalProgress.cs" />
-    <Compile Include="Generic\Synchronization\VersionDeltaLoginInformation.cs" />
     <Compile Include="Implementation\OutlookEventRelationData.cs" />
     <Compile Include="Generic\EntityRelationManagement\IEntityRelationDataFactory.cs" />
     <Compile Include="Implementation\OutlookEventRelationDataFactory.cs" />
