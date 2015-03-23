@@ -60,7 +60,7 @@ namespace CalDavSynchronizer.Implementation
         foreach (var kv in _calDavDataAccess.GetEvents (sourceEntityIds))
         {
           IEvent evt;
-          if (TryDeserializeICalEvent (kv.Value, out evt))
+          if (TryDeserializeICalEvent (kv.Value, out evt, kv.Key))
             entitiesByKey.Add (kv.Key, evt);
         }
 
@@ -107,7 +107,7 @@ namespace CalDavSynchronizer.Implementation
       return _calendarSerializer.SerializeToString (calendar);
     }
 
-    private bool TryDeserializeICalEvent (string iCalData, out IEvent evt)
+    private bool TryDeserializeICalEvent (string iCalData, out IEvent evt, Uri uriOfEventForLogging)
     {
       evt = null;
       try
@@ -117,7 +117,7 @@ namespace CalDavSynchronizer.Implementation
       }
       catch (Exception x)
       {
-        s_logger.Error (string.Format ("Could not deserilaize ICalData:\r\n{0}", iCalData), x);
+        s_logger.Error (string.Format ("Could not deserilaize ICalData of '{0}':\r\n{1}",uriOfEventForLogging, iCalData), x);
         return false;
       }
     }

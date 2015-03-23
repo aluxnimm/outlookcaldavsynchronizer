@@ -39,14 +39,14 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
           );
     }
 
-    protected void SynchronizeInternal (IInitialSyncStateCreationStrategy<string, int, string, string, int, string> strategy)
+    protected bool SynchronizeInternal (IInitialSyncStateCreationStrategy<string, int, string, string, int, string> strategy)
     {
       _synchronizer = new Synchronizer<string, int, string, string, int, string> (
          _synchronizerSetup,
          strategy
       );
 
-      _synchronizer.Synchronize();
+      return _synchronizer.Synchronize();
     }
 
     protected void ExecuteMultipleTimes (Action a)

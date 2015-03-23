@@ -168,6 +168,7 @@
   -->
   <ItemGroup>
     <Compile Include="Generic\EntityRelationManagement\EntityRelationDataAccess.cs" />
+    <Compile Include="Generic\Synchronization\VersionDeltaLoginInformation.cs" />
     <Compile Include="Implementation\OutlookEventRelationData.cs" />
     <Compile Include="Generic\EntityRelationManagement\IEntityRelationDataFactory.cs" />
     <Compile Include="Implementation\OutlookEventRelationDataFactory.cs" />
