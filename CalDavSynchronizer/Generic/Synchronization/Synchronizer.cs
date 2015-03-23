@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CalDavSynchronizer.Generic.EntityRelationManagement;
+using CalDavSynchronizer.Generic.ProgressReport;
 using CalDavSynchronizer.Generic.Synchronization.States;
 using log4net;
 
@@ -47,6 +48,7 @@ namespace CalDavSynchronizer.Generic.Synchronization
 
       try
       {
+        ITotalProgress totalProgress = NullTotalProgress.Instance;
         var atypeEntityRepository = _synchronizerContext.AtypeRepository;
         var btypeEntityRepository = _synchronizerContext.BtypeRepository;
 
@@ -58,13 +60,12 @@ namespace CalDavSynchronizer.Generic.Synchronization
         IDictionary<TBtypeEntityId, TBtypeEntity> allBtypeEntities = null;
 
 
-
         if (cachedData == null)
         {
           s_logger.Info ("Did not find entity caches. Performing initial population");
 
-          allAtypeEntities = atypeEntityRepository.GetEntities (atypeRepositoryVersions.Keys);
-          allBtypeEntities = btypeEntityRepository.GetEntities (btypeRepositoryVersions.Keys);
+          allAtypeEntities = atypeEntityRepository.GetEntities (atypeRepositoryVersions.Keys, totalProgress);
+          allBtypeEntities = btypeEntityRepository.GetEntities (btypeRepositoryVersions.Keys, totalProgress);
 
           cachedData = _synchronizerContext.InitialEntityMatcher.PopulateEntityRelationStorage (
               _synchronizerContext.EntityRelationDataFactory,
@@ -118,9 +119,9 @@ namespace CalDavSynchronizer.Generic.Synchronization
           syncAction.AddRequiredEntitiesToLoad (aEntitesToLoad.Add, bEntitesToLoad.Add);
 
 
-        var aEntities = allAtypeEntities ?? atypeEntityRepository.GetEntities (aEntitesToLoad);
+        var aEntities = allAtypeEntities ?? atypeEntityRepository.GetEntities (aEntitesToLoad, totalProgress);
 
-        var bEntities = allBtypeEntities ?? btypeEntityRepository.GetEntities (bEntitesToLoad);
+        var bEntities = allBtypeEntities ?? btypeEntityRepository.GetEntities (bEntitesToLoad, totalProgress);
 
 
         entitySyncStates = entitySyncStates.Select (a => a.FetchRequiredEntities (aEntities, bEntities)).ToList();
@@ -130,8 +131,18 @@ namespace CalDavSynchronizer.Generic.Synchronization
         // an state is allowed only to resolve to another state, if the following states requires equal or less entities!
         entitySyncStates = entitySyncStates.Select (a => a.FetchRequiredEntities (aEntities, bEntities)).ToList();
 
-      
-        entitySyncStates = entitySyncStates.Select (a => a.PerformSyncActionNoThrow()).ToList();
+
+        using (var progress = totalProgress.StartStep (entitySyncStates.Count))
+        {
+          entitySyncStates = entitySyncStates.Select (
+              a =>
+              {
+                var nextState = a.PerformSyncActionNoThrow();
+                progress.Increase();
+                return nextState;
+              }
+              ).ToList();
+        }
 
         var newData = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
 
@@ -199,7 +210,7 @@ namespace CalDavSynchronizer.Generic.Synchronization
             }
             else
             {
-              bLogInfo.IncUnchanged ();
+              bLogInfo.IncUnchanged();
               state = _initialSyncStateCreationStrategy.CreateFor_Unchanged_Unchanged (cachedData);
             }
           }
