@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CalDavSynchronizer.EntityRepositories;
 using CalDavSynchronizer.Generic.EntityVersionManagement;
+using CalDavSynchronizer.Generic.ProgressReport;
 
 namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
 {
@@ -36,7 +37,7 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
       return _persons.ToDictionary(kv => kv.Id, kv => kv.Version);
     }
 
-    public  IDictionary<int, PersonA> GetEntities (ICollection<int> sourceEntityIds)
+    public  IDictionary<int, PersonA> GetEntities (ICollection<int> sourceEntityIds, ITotalProgress progress)
     {
       var personsById = _persons.ToDictionary (p => p.Id);
       return sourceEntityIds.Select (id => personsById[id]).ToDictionary (p => p.Id);

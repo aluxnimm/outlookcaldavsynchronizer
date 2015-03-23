@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using CalDavSynchronizer.Generic.ProgressReport;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.DataAccess
@@ -82,10 +83,15 @@ namespace CalDavSynchronizer.DataAccess
       return value.ToString ("g", _enUsCultureInfo);
     }
 
-    public IEnumerable<AppointmentItem> GetEvents (IEnumerable<string> ids)
+    public IEnumerable<AppointmentItem> GetEvents (ICollection<string> ids, ITotalProgress progress)
     {
-      var storeId = _calendarFolder.StoreID;
-      return ids.Select (id => (AppointmentItem) _mapiNameSpace.GetItemFromID (id, storeId)).ToList();
+      using (var stepProgress= progress.StartStep (ids.Count))
+      {
+        var storeId = _calendarFolder.StoreID;
+        var result = ids.Select (id => (AppointmentItem) _mapiNameSpace.GetItemFromID (id, storeId)).ToList();
+        stepProgress.IncreaseBy (ids.Count);
+        return result;
+      }
     }
 
 

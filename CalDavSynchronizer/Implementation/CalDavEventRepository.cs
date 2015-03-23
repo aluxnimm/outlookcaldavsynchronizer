@@ -21,6 +21,7 @@ using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Diagnostics;
 using CalDavSynchronizer.EntityRepositories;
 using CalDavSynchronizer.Generic.EntityVersionManagement;
+using CalDavSynchronizer.Generic.ProgressReport;
 using DDay.iCal;
 using DDay.iCal.Serialization;
 using log4net;
@@ -48,7 +49,7 @@ namespace CalDavSynchronizer.Implementation
       }
     }
 
-    public IDictionary<Uri, IEvent> GetEntities (ICollection<Uri> sourceEntityIds)
+    public IDictionary<Uri, IEvent> GetEntities (ICollection<Uri> sourceEntityIds, ITotalProgress progress)
     {
       if(sourceEntityIds.Count == 0)
         return new Dictionary<Uri, IEvent> ();
@@ -57,11 +58,22 @@ namespace CalDavSynchronizer.Implementation
       {
         Dictionary<Uri, IEvent> entitiesByKey = new Dictionary<Uri, IEvent>();
 
-        foreach (var kv in _calDavDataAccess.GetEvents (sourceEntityIds))
+        Dictionary<Uri, string> events;
+        using (var stepProgress = progress.StartStep (sourceEntityIds.Count))
         {
-          IEvent evt;
-          if (TryDeserializeICalEvent (kv.Value, out evt))
-            entitiesByKey.Add (kv.Key, evt);
+          events = _calDavDataAccess.GetEvents (sourceEntityIds);
+          stepProgress.IncreaseBy (sourceEntityIds.Count);
+        }
+
+        using (var stepProgress = progress.StartStep (events.Count))
+        {
+          foreach (var kv in events)
+          {
+            IEvent evt;
+            if (TryDeserializeICalEvent (kv.Value, out evt, kv.Key))
+              entitiesByKey.Add (kv.Key, evt);
+            stepProgress.Increase();
+          }
         }
 
         return entitiesByKey;
@@ -107,7 +119,7 @@ namespace CalDavSynchronizer.Implementation
       return _calendarSerializer.SerializeToString (calendar);
     }
 
-    private bool TryDeserializeICalEvent (string iCalData, out IEvent evt)
+    private bool TryDeserializeICalEvent (string iCalData, out IEvent evt, Uri uriOfEventForLogging)
     {
       evt = null;
       try
@@ -117,7 +129,7 @@ namespace CalDavSynchronizer.Implementation
       }
       catch (Exception x)
       {
-        s_logger.Error (string.Format ("Could not deserilaize ICalData:\r\n{0}", iCalData), x);
+        s_logger.Error (string.Format ("Could not deserilaize ICalData of '{0}':\r\n{1}",uriOfEventForLogging, iCalData), x);
         return false;
       }
     }

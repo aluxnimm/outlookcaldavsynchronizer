@@ -19,6 +19,7 @@ using System.Linq;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.EntityRepositories;
 using CalDavSynchronizer.Generic.EntityVersionManagement;
+using CalDavSynchronizer.Generic.ProgressReport;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation
@@ -37,15 +38,15 @@ namespace CalDavSynchronizer.Implementation
       return _outlookDataAccess.GetEvents(from,to);
     }
 
-    public IDictionary<string, AppointmentItem> GetEntities (ICollection<string> sourceEntityIds)
+    public IDictionary<string, AppointmentItem> GetEntities (ICollection<string> sourceEntityIds, ITotalProgress progress)
     {
-      return _outlookDataAccess.GetEvents (sourceEntityIds).ToDictionary (a => a.EntryID);
+      return _outlookDataAccess.GetEvents (sourceEntityIds,progress).ToDictionary (a => a.EntryID);
     }
 
 
     public bool Delete (string entityId)
     {
-      var appointment = _outlookDataAccess.GetEvents (new[] { entityId }).SingleOrDefault();
+      var appointment = _outlookDataAccess.GetEvents (new[] { entityId }, NullTotalProgress.Instance).SingleOrDefault();
       if (appointment != null)
       {
         appointment.Delete();
@@ -59,7 +60,7 @@ namespace CalDavSynchronizer.Implementation
 
     public EntityIdWithVersion<string, DateTime> Update (string entityId, AppointmentItem entityToUpdate, Func<AppointmentItem, AppointmentItem> entityModifier)
     {
-      var appointment = _outlookDataAccess.GetEvents (new[] { entityId }).Single();
+      var appointment = _outlookDataAccess.GetEvents (new[] { entityId },NullTotalProgress.Instance).Single();
       appointment = entityModifier (appointment);
       appointment.Save();
       return new EntityIdWithVersion<string, DateTime> (appointment.EntryID, appointment.LastModificationTime);

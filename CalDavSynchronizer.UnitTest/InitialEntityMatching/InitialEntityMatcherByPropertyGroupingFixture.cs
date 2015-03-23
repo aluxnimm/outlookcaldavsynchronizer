@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.EntityRepositories;
+using CalDavSynchronizer.Generic.ProgressReport;
 using NUnit.Framework;
 
 namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
@@ -48,8 +49,8 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
       var atypeEntityVersionsToWork = atypeRepository.GetEntityVersions (DateTime.MinValue, DateTime.MinValue);
       var btypeEntityVersionsToWork = btypeRepository.GetEntityVersions (DateTime.MinValue, DateTime.MinValue);
 
-      var allAtypeEntities = atypeRepository.GetEntities (atypeEntityVersionsToWork.Keys);
-      var allBtypeEntities = btypeRepository.GetEntities (btypeEntityVersionsToWork.Keys);
+      var allAtypeEntities = atypeRepository.GetEntities (atypeEntityVersionsToWork.Keys, NullTotalProgress.Instance);
+      var allBtypeEntities = btypeRepository.GetEntities (btypeEntityVersionsToWork.Keys, NullTotalProgress.Instance);
 
       var foundRelations = new TestInitialEntityMatcher().PopulateEntityRelationStorage (
           new PersonAPersonBRelationDataFactory(),

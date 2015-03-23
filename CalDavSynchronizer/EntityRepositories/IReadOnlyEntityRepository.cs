@@ -15,12 +15,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
+using CalDavSynchronizer.Generic.ProgressReport;
 
 namespace CalDavSynchronizer.EntityRepositories
 {
   public interface IReadOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
   {
     Dictionary<TEntityId, TEntityVersion> GetEntityVersions (DateTime from, DateTime to);
-    IDictionary<TEntityId, TEntity> GetEntities (ICollection<TEntityId> sourceEntityIds);
+    IDictionary<TEntityId, TEntity> GetEntities (ICollection<TEntityId> sourceEntityIds, ITotalProgress progress);
   }
 }
