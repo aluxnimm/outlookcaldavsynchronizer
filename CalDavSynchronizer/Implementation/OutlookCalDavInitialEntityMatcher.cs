@@ -20,28 +20,29 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation
 {
-  internal class OutlookCalDavInitialEntityMatcher : InitialEntityMatcherByPropertyGrouping<AppointmentItem, string, DateTime, DateTime, IEvent, Uri, string, DateTime>
+  internal class OutlookCalDavInitialEntityMatcher : InitialEntityMatcherByPropertyGrouping<AppointmentItem, string, DateTime, string, IEvent, Uri, string, string>
   {
     
     protected override bool AreEqual (AppointmentItem atypeEntity, IEvent btypeEntity)
     {
       return
-          btypeEntity.Start.UTC == atypeEntity.StartUTC.ToUniversalTime () &&
-          btypeEntity.DTEnd.UTC == atypeEntity.EndUTC.ToUniversalTime () &&
-          btypeEntity.Summary == atypeEntity.Subject;
+          btypeEntity.Summary == atypeEntity.Subject &&
+          (btypeEntity.IsAllDay && atypeEntity.AllDayEvent ||
+           btypeEntity.Start.UTC == atypeEntity.StartUTC.ToUniversalTime() &&
+           btypeEntity.DTEnd.UTC == atypeEntity.EndUTC.ToUniversalTime());
     }
 
-    protected override DateTime GetAtypePropertyValue (AppointmentItem atypeEntity)
+    protected override string GetAtypePropertyValue (AppointmentItem atypeEntity)
     {
-      return atypeEntity.StartUTC.ToUniversalTime();
+      return atypeEntity.Subject.ToLower();
     }
 
-    protected override DateTime GetBtypePropertyValue (IEvent btypeEntity)
+    protected override string GetBtypePropertyValue (IEvent btypeEntity)
     {
-      return btypeEntity.Start.UTC;
+      return btypeEntity.Summary.ToLower();
     }
 
-    protected override DateTime MapAtypePropertyValue (DateTime value)
+    protected override string MapAtypePropertyValue (string value)
     {
       return value;
     }
