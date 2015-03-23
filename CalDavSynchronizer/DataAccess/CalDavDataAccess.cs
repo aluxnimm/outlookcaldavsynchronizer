@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -91,7 +92,7 @@ namespace CalDavSynchronizer.DataAccess
           request =>
           {
             request.Method = "REPORT";
-            request.ContentType = "text/xml";
+            request.ContentType = "text/xml; charset=UTF-8";
             request.Headers.Add ("Depth", 1.ToString());
             request.ServicePoint.Expect100Continue = false;
           },
@@ -119,7 +120,7 @@ namespace CalDavSynchronizer.DataAccess
       XmlNodeList responseNodes = responseXml.XmlDocument.SelectNodes ("/D:multistatus/D:response", responseXml.XmlNamespaceManager);
 
 
-      var entities = new Dictionary <Uri, string>();
+      var entities = new Dictionary<Uri, string>();
 
       // ReSharper disable once LoopCanBeConvertedToQuery
       // ReSharper disable once PossibleNullReferenceException
@@ -141,7 +142,7 @@ namespace CalDavSynchronizer.DataAccess
           request =>
           {
             request.Method = "PROPFIND";
-            request.ContentType = "text/xml";
+            request.ContentType = "text/xml; charset=UTF-8";
             request.ServicePoint.Expect100Continue = false;
             request.Headers["Depth"] = depth.ToString();
           },
@@ -171,7 +172,7 @@ namespace CalDavSynchronizer.DataAccess
           request =>
           {
             request.Method = "PUT";
-            request.ContentType = "text/xml";
+            request.ContentType = "text/xml; charset=UTF-8";
             if (!string.IsNullOrEmpty (etag))
               request.Headers.Add ("If-Match", etag);
             request.ServicePoint.Expect100Continue = false;
@@ -190,7 +191,7 @@ namespace CalDavSynchronizer.DataAccess
           {
             request.Method = "PUT";
             request.Headers.Add ("If-None-Match", "*");
-            request.ContentType = "text/calendar";
+            request.ContentType = "text/calendar; charset=UTF-8";
             request.ServicePoint.Expect100Continue = false;
           },
           iCalData);
@@ -259,9 +260,10 @@ namespace CalDavSynchronizer.DataAccess
           request =>
           {
             request.Method = "REPORT";
-            request.ContentType = "text/xml";
+            request.ContentType = "text/xml; charset=UTF-8";
             request.Headers.Add ("Depth", "1");
             request.ServicePoint.Expect100Continue = false;
+            request.Headers.Add (HttpRequestHeader.AcceptCharset, "utf-8");
           },
           requestBody
           );
@@ -299,7 +301,7 @@ namespace CalDavSynchronizer.DataAccess
       modifier (request);
       if (requestBody != string.Empty)
       {
-        var requestBodyAsBytes = Encoding.ASCII.GetBytes (requestBody);
+        var requestBodyAsBytes = Encoding.UTF8.GetBytes (requestBody);
 
         using (var requestStream = request.GetRequestStream())
         {
@@ -312,15 +314,20 @@ namespace CalDavSynchronizer.DataAccess
 
     private static XmlDocumentWithNamespaceManager CreateCalDavXmlDocument (Stream calDavXmlStream)
     {
-      XmlDocument responseBody = new XmlDocument();
-      responseBody.Load (calDavXmlStream);
+      using (var reader = new StreamReader (calDavXmlStream, Encoding.UTF8))
+      {
+        XmlDocument responseBody = new XmlDocument();
 
-      XmlNamespaceManager namespaceManager = new XmlNamespaceManager (responseBody.NameTable);
-      //currNsmgr.AddNamespace(String.Empty, "urn:ietf:params:xml:ns:caldav");
-      namespaceManager.AddNamespace ("C", "urn:ietf:params:xml:ns:caldav");
-      namespaceManager.AddNamespace ("D", "DAV:");
 
-      return new XmlDocumentWithNamespaceManager (responseBody, namespaceManager);
+        responseBody.Load (reader);
+
+        XmlNamespaceManager namespaceManager = new XmlNamespaceManager (responseBody.NameTable);
+        //currNsmgr.AddNamespace(String.Empty, "urn:ietf:params:xml:ns:caldav");
+        namespaceManager.AddNamespace ("C", "urn:ietf:params:xml:ns:caldav");
+        namespaceManager.AddNamespace ("D", "DAV:");
+
+        return new XmlDocumentWithNamespaceManager (responseBody, namespaceManager);
+      }
     }
   }
 }
