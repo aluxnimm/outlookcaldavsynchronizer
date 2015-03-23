@@ -32,12 +32,12 @@ namespace CalDavSynchronizer.Generic.InitialEntityMatching
         IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> relationFactory,
         IDictionary<TAtypeEntityId, TAtypeEntity> allAtypeEntities,
         IDictionary<TBtypeEntityId, TBtypeEntity> allBtypeEntities,
-        Dictionary<TAtypeEntityId, TAtypeEntityVersion> atypeEntityVersionsToWork,
-        Dictionary<TBtypeEntityId, TBtypeEntityVersion> btypeEntityVersionsToWork
+        Dictionary<TAtypeEntityId, TAtypeEntityVersion> atypeEntityVersions,
+        Dictionary<TBtypeEntityId, TBtypeEntityVersion> btypeEntityVersions
         )
     {
       var atypeEntityIdsGroupedByProperty = allAtypeEntities.GroupBy (a => GetAtypePropertyValue (a.Value)).ToDictionary (g => g.Key, g => g.Select (o => o.Key).ToList());
-      var btypeEntityIdsGroupedByProperty = allBtypeEntities.GroupBy (b => GetBtypePropertyValue (b.Value)).ToDictionary (g => g.Key, g => g.Select (o => o.Key).ToList());
+      var btypeEntityIdsGroupedByProperty = allBtypeEntities.GroupBy (b => GetBtypePropertyValue (b.Value)).ToDictionary (g => g.Key, g => g.ToDictionary (o => o.Key, o => true));
 
       List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> foundRelations = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
 
@@ -45,22 +45,28 @@ namespace CalDavSynchronizer.Generic.InitialEntityMatching
       {
         foreach (var atypeEntityId in atypeEntityGroup.Value)
         {
-          List<TBtypeEntityId> btypeEntityGroup;
-          if (btypeEntityIdsGroupedByProperty.TryGetValue (MapAtypePropertyValue (atypeEntityGroup.Key), out btypeEntityGroup))
+          Dictionary<TBtypeEntityId,bool> btypeEntityGroup;
+
+          var btypeEntityGroupKey = MapAtypePropertyValue (atypeEntityGroup.Key);
+          if (btypeEntityIdsGroupedByProperty.TryGetValue (btypeEntityGroupKey, out btypeEntityGroup))
           {
-            foreach (var btypeEntityId in btypeEntityGroup.ToArray())
+            foreach (var btypeEntityId in btypeEntityGroup.Keys)
             {
               if (AreEqual (allAtypeEntities[atypeEntityId], allBtypeEntities[btypeEntityId]))
               {
                 s_logger.DebugFormat ("Found matching entities: '{0}' == '{1}'", atypeEntityId, btypeEntityId);
 
-                foundRelations.Add (relationFactory.Create (atypeEntityId, atypeEntityVersionsToWork[atypeEntityId], btypeEntityId, btypeEntityVersionsToWork[btypeEntityId]));
-                atypeEntityVersionsToWork.Remove (atypeEntityId);
-                btypeEntityVersionsToWork.Remove (btypeEntityId);
-
+                foundRelations.Add (relationFactory.Create (atypeEntityId, atypeEntityVersions[atypeEntityId], btypeEntityId, btypeEntityVersions[btypeEntityId]));
+                // b has to be removed from the Group, because b is iterated in the inner loop an if an second match would occour this will lead to an exception
+                // not required to remove a from the group, because in the aouter loop every group is just iterated once
+                btypeEntityGroup.Remove (btypeEntityId);
                 break;
               }
             }
+
+            // throwing away the empty dictionaries is not neccessary. Just to make dubugging easier, because there is less crap the dictionary. 
+            if (btypeEntityGroup.Count == 0)
+              btypeEntityIdsGroupedByProperty.Remove (btypeEntityGroupKey);
           }
         }
       }

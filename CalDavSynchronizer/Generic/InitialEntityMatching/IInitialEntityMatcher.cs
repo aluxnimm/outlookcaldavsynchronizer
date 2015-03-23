@@ -26,8 +26,8 @@ namespace CalDavSynchronizer.Generic.InitialEntityMatching
         IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> relationFactory,
         IDictionary<TAtypeEntityId, TAtypeEntity> allAtypeEntities,
         IDictionary<TBtypeEntityId, TBtypeEntity> allBtypeEntities,
-        Dictionary<TAtypeEntityId, TAtypeEntityVersion> atypeEntityVersionsToWork,
-        Dictionary<TBtypeEntityId, TBtypeEntityVersion> btypeEntityVersionsToWork
+        Dictionary<TAtypeEntityId, TAtypeEntityVersion> atypeEntityVersions,
+        Dictionary<TBtypeEntityId, TBtypeEntityVersion> btypeEntityVersions
         );
   }
 }
