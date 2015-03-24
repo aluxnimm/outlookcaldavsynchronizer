@@ -27,7 +27,7 @@ namespace CalDavSynchronizer.Generic.ProgressReport
     private readonly double _uiTicksPerStepTick;
     private readonly IProgressUi _progressUi;
     private readonly int _uiMax;
-    private int _currentValue;
+    private double _currentValue;
 
 
     public ProgressStep (IProgressUi progressUi, int uiMin, int uiMax, int stepMaximum)
@@ -59,8 +59,8 @@ namespace CalDavSynchronizer.Generic.ProgressReport
     {
       try
       {
-        _currentValue = Math.Min (_currentValue + (int) (value * _uiTicksPerStepTick), _uiMax);
-        _progressUi.SetValue (_currentValue);
+        _currentValue = Math.Min (_currentValue + (value * _uiTicksPerStepTick), _uiMax);
+        _progressUi.SetValue ((int)_currentValue);
       }
       catch (Exception x)
       {

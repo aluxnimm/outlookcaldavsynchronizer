@@ -35,14 +35,14 @@ namespace CalDavSynchronizer.Generic.ProgressReport
 
     public TotalProgress (IProgressUiFactory uiFactory, int aAnnounced, int bAnnounced)
     {
-      var factor = Math.Max (aAnnounced, bAnnounced) * 10;
+      const int smallStepCompletionCountAnticipationFactor =  10;
 
       _prefixSummedStepTotals = new[]
                                 {
-                                    factor * c_aloadStepFactor * aAnnounced,
-                                    factor * c_bloadStep1Factor * bAnnounced,
-                                    factor * c_bloadStep2Factor * bAnnounced,
-                                    factor * c_syncStepFactor * (aAnnounced + bAnnounced),
+                                    smallStepCompletionCountAnticipationFactor * c_aloadStepFactor * aAnnounced,
+                                    smallStepCompletionCountAnticipationFactor * c_bloadStep1Factor * bAnnounced,
+                                    smallStepCompletionCountAnticipationFactor * c_bloadStep2Factor * bAnnounced,
+                                    smallStepCompletionCountAnticipationFactor * c_syncStepFactor * (aAnnounced + bAnnounced),
                                 };
 
       CalculatePrefixSum (_prefixSummedStepTotals);
