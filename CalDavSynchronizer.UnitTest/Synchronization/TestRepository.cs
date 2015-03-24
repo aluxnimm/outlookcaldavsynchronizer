@@ -45,7 +45,7 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
       return EntityVersionAndContentById.ToDictionary (kv => kv.Key, kv => kv.Value.Item1);
     }
 
-    public IDictionary<string, string> GetEntities (ICollection<string> sourceEntityIds, ITotalProgress progress)
+    public IReadOnlyDictionary<string, string> GetEntities (ICollection<string> sourceEntityIds, ITotalProgress progress)
     {
       return sourceEntityIds.Select (id => new { id, EntityVersionAndContentById[id].Item2 }).ToDictionary (v => v.id, v => v.Item2);
     }

@@ -33,22 +33,25 @@ namespace CalDavSynchronizer.Generic.Synchronization
     private static readonly IEqualityComparer<TAtypeEntityVersion> _atypeComparer = EqualityComparer<TAtypeEntityVersion>.Default;
     private static readonly IEqualityComparer<TBtypeEntityVersion> _btypeComparer = EqualityComparer<TBtypeEntityVersion>.Default;
     private readonly ISynchronizerContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _synchronizerContext;
-    private IInitialSyncStateCreationStrategy<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _initialSyncStateCreationStrategy;
+    private readonly IInitialSyncStateCreationStrategy<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _initialSyncStateCreationStrategy;
+    private readonly ITotalProgressFactory _totalProgressFactory;
 
-    public Synchronizer (ISynchronizerContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> synchronizerContext, IInitialSyncStateCreationStrategy<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> initialSyncStateCreationStrategy)
+    public Synchronizer (ISynchronizerContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> synchronizerContext, IInitialSyncStateCreationStrategy<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> initialSyncStateCreationStrategy, ITotalProgressFactory totalProgressFactory)
     {
       _synchronizerContext = synchronizerContext;
       _initialSyncStateCreationStrategy = initialSyncStateCreationStrategy;
+      _totalProgressFactory = totalProgressFactory;
     }
 
 
     public bool Synchronize ()
     {
-      s_logger.InfoFormat ("Entered. Atype='{0}', Btype='{1}'", typeof (TAtypeEntity).Name, typeof (TBtypeEntity).Name);
+      s_logger.InfoFormat ("Entered. Syncstrategy '{0}' with Atype='{1}' and Btype='{2}'",_initialSyncStateCreationStrategy.GetType().Name,  typeof (TAtypeEntity).Name, typeof (TBtypeEntity).Name);
+
+      var totalProgress = NullTotalProgress.Instance;
 
       try
       {
-        ITotalProgress totalProgress = NullTotalProgress.Instance;
         var atypeEntityRepository = _synchronizerContext.AtypeRepository;
         var btypeEntityRepository = _synchronizerContext.BtypeRepository;
 
@@ -56,14 +59,14 @@ namespace CalDavSynchronizer.Generic.Synchronization
         var atypeRepositoryVersions = atypeEntityRepository.GetEntityVersions (_synchronizerContext.From, _synchronizerContext.To);
         var btypeRepositoryVersions = btypeEntityRepository.GetEntityVersions (_synchronizerContext.From, _synchronizerContext.To);
 
-        IDictionary<TAtypeEntityId, TAtypeEntity> allAtypeEntities = null;
-        IDictionary<TBtypeEntityId, TBtypeEntity> allBtypeEntities = null;
-
+        IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> allAtypeEntities = null;
+        IReadOnlyDictionary<TBtypeEntityId, TBtypeEntity> allBtypeEntities = null;
 
         if (cachedData == null)
         {
           s_logger.Info ("Did not find entity caches. Performing initial population");
 
+          totalProgress = _totalProgressFactory.Create (atypeRepositoryVersions.Count, btypeRepositoryVersions.Count);
           allAtypeEntities = atypeEntityRepository.GetEntities (atypeRepositoryVersions.Keys, totalProgress);
           allBtypeEntities = btypeEntityRepository.GetEntities (btypeRepositoryVersions.Keys, totalProgress);
 
@@ -119,9 +122,19 @@ namespace CalDavSynchronizer.Generic.Synchronization
           syncAction.AddRequiredEntitiesToLoad (aEntitesToLoad.Add, bEntitesToLoad.Add);
 
 
-        var aEntities = allAtypeEntities ?? atypeEntityRepository.GetEntities (aEntitesToLoad, totalProgress);
-
-        var bEntities = allBtypeEntities ?? btypeEntityRepository.GetEntities (bEntitesToLoad, totalProgress);
+        IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> aEntities;
+        IReadOnlyDictionary<TBtypeEntityId, TBtypeEntity> bEntities;
+        if (allAtypeEntities == null || allBtypeEntities == null)
+        {
+          totalProgress = _totalProgressFactory.Create (aEntitesToLoad.Count, bEntitesToLoad.Count);
+          aEntities = atypeEntityRepository.GetEntities (aEntitesToLoad, totalProgress);
+          bEntities = btypeEntityRepository.GetEntities (bEntitesToLoad, totalProgress);
+        }
+        else
+        {
+          aEntities = allAtypeEntities;
+          bEntities = allBtypeEntities;
+        }
 
 
         entitySyncStates = entitySyncStates.Select (a => a.FetchRequiredEntities (aEntities, bEntities)).ToList();
@@ -150,11 +163,17 @@ namespace CalDavSynchronizer.Generic.Synchronization
           syncAction.AddNewRelationNoThrow (newData.Add);
 
         _synchronizerContext.Save (newData);
+
+
       }
       catch (Exception x)
       {
         s_logger.Error ("Error during synchronization:", x);
         return false;
+      }
+      finally
+      {
+        totalProgress.Dispose();
       }
 
       s_logger.DebugFormat ("Exiting.");

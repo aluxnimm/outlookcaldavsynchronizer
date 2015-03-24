@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer 
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -13,15 +13,35 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
-using System.Collections.Generic;
+using System.Windows.Forms;
 using CalDavSynchronizer.Generic.ProgressReport;
 
-namespace CalDavSynchronizer.EntityRepositories
+namespace CalDavSynchronizer.Ui
 {
-  public interface IReadOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
+  public partial class ProgressForm : Form, IProgressUi
   {
-    Dictionary<TEntityId, TEntityVersion> GetEntityVersions (DateTime from, DateTime to);
-    IReadOnlyDictionary<TEntityId, TEntity> GetEntities (ICollection<TEntityId> sourceEntityIds, ITotalProgress progress);
+    public ProgressForm ()
+    {
+      InitializeComponent();
+    }
+
+    public void SetValue (int value)
+    {
+      _progressBar.Value = value;
+    }
+
+    public void SetMaximun (int value)
+    {
+      _progressBar.Maximum = 0;
+      _progressBar.Maximum = value;
+    }
+
+
+    void IDisposable.Dispose ()
+    {
+      Close();
+    }
   }
 }

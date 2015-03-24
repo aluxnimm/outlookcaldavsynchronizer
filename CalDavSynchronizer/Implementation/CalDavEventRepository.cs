@@ -49,10 +49,14 @@ namespace CalDavSynchronizer.Implementation
       }
     }
 
-    public IDictionary<Uri, IEvent> GetEntities (ICollection<Uri> sourceEntityIds, ITotalProgress progress)
+    public IReadOnlyDictionary<Uri, IEvent> GetEntities (ICollection<Uri> sourceEntityIds, ITotalProgress progress)
     {
-      if(sourceEntityIds.Count == 0)
-        return new Dictionary<Uri, IEvent> ();
+      if (sourceEntityIds.Count == 0)
+      {
+        progress.StartStep (0).Dispose ();
+        progress.StartStep (0).Dispose ();
+        return new Dictionary<Uri, IEvent>();
+      }
 
       using (AutomaticStopwatch.StartInfo (s_logger, string.Format("CalDavEventRepository.GetEntities ({0} entitie(s))",sourceEntityIds.Count)))
       {

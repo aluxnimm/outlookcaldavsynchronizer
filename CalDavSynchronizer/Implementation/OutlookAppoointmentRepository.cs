@@ -38,7 +38,7 @@ namespace CalDavSynchronizer.Implementation
       return _outlookDataAccess.GetEvents(from,to);
     }
 
-    public IDictionary<string, AppointmentItem> GetEntities (ICollection<string> sourceEntityIds, ITotalProgress progress)
+    public IReadOnlyDictionary<string, AppointmentItem> GetEntities (ICollection<string> sourceEntityIds, ITotalProgress progress)
     {
       return _outlookDataAccess.GetEvents (sourceEntityIds,progress).ToDictionary (a => a.EntryID);
     }

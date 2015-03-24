@@ -30,10 +30,10 @@ namespace CalDavSynchronizer.Generic.InitialEntityMatching
 
     public List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> PopulateEntityRelationStorage (
         IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> relationFactory,
-        IDictionary<TAtypeEntityId, TAtypeEntity> allAtypeEntities,
-        IDictionary<TBtypeEntityId, TBtypeEntity> allBtypeEntities,
-        Dictionary<TAtypeEntityId, TAtypeEntityVersion> atypeEntityVersions,
-        Dictionary<TBtypeEntityId, TBtypeEntityVersion> btypeEntityVersions
+        IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> allAtypeEntities,
+        IReadOnlyDictionary<TBtypeEntityId, TBtypeEntity> allBtypeEntities,
+        IReadOnlyDictionary<TAtypeEntityId, TAtypeEntityVersion> atypeEntityVersions,
+        IReadOnlyDictionary<TBtypeEntityId, TBtypeEntityVersion> btypeEntityVersions
         )
     {
       var atypeEntityIdsGroupedByProperty = allAtypeEntities.GroupBy (a => GetAtypePropertyValue (a.Value)).ToDictionary (g => g.Key, g => g.Select (o => o.Key).ToList());

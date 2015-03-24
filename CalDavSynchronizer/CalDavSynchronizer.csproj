@@ -118,6 +118,7 @@
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Security" />
@@ -168,8 +169,17 @@
   -->
   <ItemGroup>
     <Compile Include="Generic\EntityRelationManagement\EntityRelationDataAccess.cs" />
+    <Compile Include="Generic\ProgressReport\IProgressUi.cs" />
+    <Compile Include="Generic\ProgressReport\IProgressUiFactory.cs" />
+    <Compile Include="Generic\ProgressReport\MeteringProgressStep.cs" />
+    <Compile Include="Generic\ProgressReport\MeteringTotalProgressFactory.cs" />
+    <Compile Include="Generic\ProgressReport\NullTotalProgressFactory.cs" />
+    <Compile Include="Generic\ProgressReport\MeteringTotalProgress.cs" />
+    <Compile Include="Generic\ProgressReport\ProgressStep.cs" />
+    <Compile Include="Generic\ProgressReport\TotalProgress.cs" />
+    <Compile Include="Generic\ProgressReport\TotalProgressFactory.cs" />
     <Compile Include="Generic\Synchronization\VersionDeltaLoginInformation.cs" />
-    <Compile Include="Generic\ProgressReport\IProgressReporter.cs" />
+    <Compile Include="Generic\ProgressReport\ITotalProgress.cs" />
     <Compile Include="Generic\ProgressReport\IProgressStep.cs" />
     <Compile Include="Generic\ProgressReport\ITotalProgressFactory.cs" />
     <Compile Include="Generic\ProgressReport\NullProgressStep.cs" />
@@ -266,20 +276,21 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Ui\ProgressForm.resx">
+      <DependentUpon>ProgressForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
     <None Include="CalDavSynchronizer_TemporaryKey.pfx" />
     <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    <Compile Include="Ui\ProgressForm.cs">
+      <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Ui\ProgressForm.Designer.cs">
+      <DependentUpon>ProgressForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\ProgressFormFactory.cs" />
     <Compile Include="Utilities\ExceptionHandler.cs" />
     <Compile Include="Utilities\IExceptionHandler.cs" />
     <Compile Include="Utilities\Serializer.cs" />

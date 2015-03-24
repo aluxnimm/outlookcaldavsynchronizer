@@ -14,12 +14,14 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Configuration;
 using System.IO;
 using System.Reflection;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Diagnostics;
 using CalDavSynchronizer.Generic.EntityRelationManagement;
+using CalDavSynchronizer.Generic.ProgressReport;
 using CalDavSynchronizer.Generic.Synchronization;
 using CalDavSynchronizer.Generic.Synchronization.States;
 using CalDavSynchronizer.Implementation;
@@ -41,12 +43,16 @@ namespace CalDavSynchronizer.Scheduling
     private string _profileName;
     private readonly string _outlookEmailAddress;
     private bool _inactive;
+    private readonly ITotalProgressFactory _totalProgressFactory;
 
     public SynchronizationWorker (string outlookEmailAddress)
     {
       _outlookEmailAddress = outlookEmailAddress;
       // Set to min, to ensure that it runs on the first run after startup
       _lastRun = DateTime.MinValue;
+      _totalProgressFactory = new TotalProgressFactory(
+        new Ui.ProgressFormFactory(),
+        int.Parse(ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"]));
     }
 
     public void UpdateOptions (NameSpace outlookSession, Options options)
@@ -77,7 +83,8 @@ namespace CalDavSynchronizer.Scheduling
             syncStateFactory,
             syncStateFactory.Environment,
             options.SynchronizationMode,
-            options.ConflictResolution)
+            options.ConflictResolution),
+            _totalProgressFactory
           );
 
     

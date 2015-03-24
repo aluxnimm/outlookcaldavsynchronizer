@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using CalDavSynchronizer.Generic.ProgressReport;
 using CalDavSynchronizer.Generic.Synchronization;
 using CalDavSynchronizer.Generic.Synchronization.States;
 using NUnit.Framework;
@@ -43,7 +44,8 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
     {
       _synchronizer = new Synchronizer<string, int, string, string, int, string> (
          _synchronizerSetup,
-         strategy
+         strategy,
+         NullTotalProgressFactory.Instance
       );
 
       return _synchronizer.Synchronize();

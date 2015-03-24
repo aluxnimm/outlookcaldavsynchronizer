@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer 
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -13,15 +13,30 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using System.Collections.Generic;
-using CalDavSynchronizer.Generic.ProgressReport;
 
-namespace CalDavSynchronizer.EntityRepositories
+using System;
+using System.Diagnostics;
+
+namespace CalDavSynchronizer.Generic.ProgressReport
 {
-  public interface IReadOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
+  internal class MeteringTotalProgress : ITotalProgress
   {
-    Dictionary<TEntityId, TEntityVersion> GetEntityVersions (DateTime from, DateTime to);
-    IReadOnlyDictionary<TEntityId, TEntity> GetEntities (ICollection<TEntityId> sourceEntityIds, ITotalProgress progress);
+    private readonly Stopwatch _totalTime;
+
+    public MeteringTotalProgress ()
+    {
+      _totalTime = Stopwatch.StartNew();
+    }
+
+    public void Dispose ()
+    {
+      _totalTime.Stop();
+      Debug.WriteLine ("Total Time: {0}", _totalTime.Elapsed);
+    }
+
+    public IProgressStep StartStep (int stepCompletedCount)
+    {
+      return new MeteringProgressStep (stepCompletedCount);
+    }
   }
 }

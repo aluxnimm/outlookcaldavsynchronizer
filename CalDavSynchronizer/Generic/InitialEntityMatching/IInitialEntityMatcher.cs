@@ -24,10 +24,10 @@ namespace CalDavSynchronizer.Generic.InitialEntityMatching
   {
     List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> PopulateEntityRelationStorage (
         IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> relationFactory,
-        IDictionary<TAtypeEntityId, TAtypeEntity> allAtypeEntities,
-        IDictionary<TBtypeEntityId, TBtypeEntity> allBtypeEntities,
-        Dictionary<TAtypeEntityId, TAtypeEntityVersion> atypeEntityVersions,
-        Dictionary<TBtypeEntityId, TBtypeEntityVersion> btypeEntityVersions
+        IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> allAtypeEntities,
+        IReadOnlyDictionary<TBtypeEntityId, TBtypeEntity> allBtypeEntities,
+        IReadOnlyDictionary<TAtypeEntityId, TAtypeEntityVersion> atypeEntityVersions,
+        IReadOnlyDictionary<TBtypeEntityId, TBtypeEntityVersion> btypeEntityVersions
         );
   }
 }

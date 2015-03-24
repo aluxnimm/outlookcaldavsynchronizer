@@ -68,9 +68,11 @@
       this.groupBox2.Controls.Add(this._selectOutlookFolderButton);
       this.groupBox2.Controls.Add(this._outoookFolderNameTextBox);
       this.groupBox2.Controls.Add(this.label9);
-      this.groupBox2.Location = new System.Drawing.Point(12, 226);
+      this.groupBox2.Location = new System.Drawing.Point(18, 348);
+      this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this.groupBox2.Name = "groupBox2";
-      this.groupBox2.Size = new System.Drawing.Size(412, 78);
+      this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+      this.groupBox2.Size = new System.Drawing.Size(618, 120);
       this.groupBox2.TabIndex = 2;
       this.groupBox2.TabStop = false;
       this.groupBox2.Text = "Outlook settings";
@@ -78,9 +80,10 @@
       // _selectOutlookFolderButton
       // 
       this._selectOutlookFolderButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._selectOutlookFolderButton.Location = new System.Drawing.Point(378, 21);
+      this._selectOutlookFolderButton.Location = new System.Drawing.Point(567, 32);
+      this._selectOutlookFolderButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this._selectOutlookFolderButton.Name = "_selectOutlookFolderButton";
-      this._selectOutlookFolderButton.Size = new System.Drawing.Size(28, 23);
+      this._selectOutlookFolderButton.Size = new System.Drawing.Size(42, 35);
       this._selectOutlookFolderButton.TabIndex = 0;
       this._selectOutlookFolderButton.Text = "...";
       this._selectOutlookFolderButton.UseVisualStyleBackColor = true;
@@ -89,27 +92,30 @@
       // 
       this._outoookFolderNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this._outoookFolderNameTextBox.Location = new System.Drawing.Point(190, 23);
+      this._outoookFolderNameTextBox.Location = new System.Drawing.Point(285, 35);
+      this._outoookFolderNameTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this._outoookFolderNameTextBox.Name = "_outoookFolderNameTextBox";
       this._outoookFolderNameTextBox.ReadOnly = true;
-      this._outoookFolderNameTextBox.Size = new System.Drawing.Size(182, 20);
+      this._outoookFolderNameTextBox.Size = new System.Drawing.Size(271, 26);
       this._outoookFolderNameTextBox.TabIndex = 13;
       // 
       // label9
       // 
       this.label9.AutoSize = true;
-      this.label9.Location = new System.Drawing.Point(8, 26);
+      this.label9.Location = new System.Drawing.Point(12, 40);
+      this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label9.Name = "label9";
-      this.label9.Size = new System.Drawing.Size(76, 13);
+      this.label9.Size = new System.Drawing.Size(113, 20);
       this.label9.TabIndex = 13;
       this.label9.Text = "Outlook Folder";
       // 
       // label8
       // 
       this.label8.AutoSize = true;
-      this.label8.Location = new System.Drawing.Point(12, 372);
+      this.label8.Location = new System.Drawing.Point(18, 572);
+      this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label8.Name = "label8";
-      this.label8.Size = new System.Drawing.Size(167, 13);
+      this.label8.Size = new System.Drawing.Size(250, 20);
       this.label8.TabIndex = 25;
       this.label8.Text = "Synchronization interval (minutes):";
       // 
@@ -118,26 +124,29 @@
       this._syncIntervalComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._syncIntervalComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this._syncIntervalComboBox.FormattingEnabled = true;
-      this._syncIntervalComboBox.Location = new System.Drawing.Point(235, 369);
+      this._syncIntervalComboBox.Location = new System.Drawing.Point(352, 568);
+      this._syncIntervalComboBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this._syncIntervalComboBox.Name = "_syncIntervalComboBox";
-      this._syncIntervalComboBox.Size = new System.Drawing.Size(183, 21);
+      this._syncIntervalComboBox.Size = new System.Drawing.Size(272, 28);
       this._syncIntervalComboBox.TabIndex = 5;
       // 
       // label7
       // 
       this.label7.AutoSize = true;
-      this.label7.Location = new System.Drawing.Point(12, 345);
+      this.label7.Location = new System.Drawing.Point(18, 531);
+      this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label7.Name = "label7";
-      this.label7.Size = new System.Drawing.Size(98, 13);
+      this.label7.Size = new System.Drawing.Size(146, 20);
       this.label7.TabIndex = 23;
       this.label7.Text = "Conflict Resolution:";
       // 
       // label6
       // 
       this.label6.AutoSize = true;
-      this.label6.Location = new System.Drawing.Point(12, 318);
+      this.label6.Location = new System.Drawing.Point(18, 489);
+      this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label6.Name = "label6";
-      this.label6.Size = new System.Drawing.Size(115, 13);
+      this.label6.Size = new System.Drawing.Size(170, 20);
       this.label6.TabIndex = 22;
       this.label6.Text = "Synchronization Mode:";
       // 
@@ -147,9 +156,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this._conflictResolutionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this._conflictResolutionComboBox.FormattingEnabled = true;
-      this._conflictResolutionComboBox.Location = new System.Drawing.Point(184, 342);
+      this._conflictResolutionComboBox.Location = new System.Drawing.Point(276, 526);
+      this._conflictResolutionComboBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this._conflictResolutionComboBox.Name = "_conflictResolutionComboBox";
-      this._conflictResolutionComboBox.Size = new System.Drawing.Size(234, 21);
+      this._conflictResolutionComboBox.Size = new System.Drawing.Size(349, 28);
       this._conflictResolutionComboBox.TabIndex = 4;
       // 
       // _synchronizationModeComboBox
@@ -158,9 +168,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this._synchronizationModeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this._synchronizationModeComboBox.FormattingEnabled = true;
-      this._synchronizationModeComboBox.Location = new System.Drawing.Point(184, 315);
+      this._synchronizationModeComboBox.Location = new System.Drawing.Point(276, 485);
+      this._synchronizationModeComboBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this._synchronizationModeComboBox.Name = "_synchronizationModeComboBox";
-      this._synchronizationModeComboBox.Size = new System.Drawing.Size(234, 21);
+      this._synchronizationModeComboBox.Size = new System.Drawing.Size(349, 28);
       this._synchronizationModeComboBox.TabIndex = 3;
       // 
       // groupBox1
@@ -176,9 +187,11 @@
       this.groupBox1.Controls.Add(this._userNameTextBox);
       this.groupBox1.Controls.Add(this._calenderUrlTextBox);
       this.groupBox1.Controls.Add(this.label3);
-      this.groupBox1.Location = new System.Drawing.Point(12, 38);
+      this.groupBox1.Location = new System.Drawing.Point(18, 58);
+      this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(412, 174);
+      this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+      this.groupBox1.Size = new System.Drawing.Size(618, 268);
       this.groupBox1.TabIndex = 1;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Server settings";
@@ -186,26 +199,29 @@
       // label11
       // 
       this.label11.AutoSize = true;
-      this.label11.Location = new System.Drawing.Point(6, 104);
+      this.label11.Location = new System.Drawing.Point(9, 160);
+      this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label11.Name = "label11";
-      this.label11.Size = new System.Drawing.Size(75, 13);
+      this.label11.Size = new System.Drawing.Size(113, 20);
       this.label11.TabIndex = 13;
       this.label11.Text = "Email address:";
       // 
       // _emailAddressTextBox
       // 
       this._emailAddressTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._emailAddressTextBox.Location = new System.Drawing.Point(172, 101);
+      this._emailAddressTextBox.Location = new System.Drawing.Point(258, 155);
+      this._emailAddressTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this._emailAddressTextBox.Name = "_emailAddressTextBox";
-      this._emailAddressTextBox.Size = new System.Drawing.Size(234, 20);
+      this._emailAddressTextBox.Size = new System.Drawing.Size(349, 26);
       this._emailAddressTextBox.TabIndex = 12;
       // 
       // _testConnectionButton
       // 
       this._testConnectionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._testConnectionButton.Location = new System.Drawing.Point(306, 145);
+      this._testConnectionButton.Location = new System.Drawing.Point(459, 223);
+      this._testConnectionButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this._testConnectionButton.Name = "_testConnectionButton";
-      this._testConnectionButton.Size = new System.Drawing.Size(100, 23);
+      this._testConnectionButton.Size = new System.Drawing.Size(150, 35);
       this._testConnectionButton.TabIndex = 3;
       this._testConnectionButton.Text = "Test connection";
       this._testConnectionButton.UseVisualStyleBackColor = true;
@@ -213,97 +229,108 @@
       // label5
       // 
       this.label5.AutoSize = true;
-      this.label5.Location = new System.Drawing.Point(6, 78);
+      this.label5.Location = new System.Drawing.Point(9, 120);
+      this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label5.Name = "label5";
-      this.label5.Size = new System.Drawing.Size(56, 13);
+      this.label5.Size = new System.Drawing.Size(82, 20);
       this.label5.TabIndex = 11;
       this.label5.Text = "Password:";
       // 
       // label4
       // 
       this.label4.AutoSize = true;
-      this.label4.Location = new System.Drawing.Point(6, 52);
+      this.label4.Location = new System.Drawing.Point(9, 80);
+      this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label4.Name = "label4";
-      this.label4.Size = new System.Drawing.Size(58, 13);
+      this.label4.Size = new System.Drawing.Size(87, 20);
       this.label4.TabIndex = 10;
       this.label4.Text = "Username:";
       // 
       // _passwordTextBox
       // 
       this._passwordTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._passwordTextBox.Location = new System.Drawing.Point(223, 75);
+      this._passwordTextBox.Location = new System.Drawing.Point(334, 115);
+      this._passwordTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this._passwordTextBox.Name = "_passwordTextBox";
       this._passwordTextBox.PasswordChar = '*';
-      this._passwordTextBox.Size = new System.Drawing.Size(183, 20);
+      this._passwordTextBox.Size = new System.Drawing.Size(272, 26);
       this._passwordTextBox.TabIndex = 2;
       // 
       // _userNameTextBox
       // 
       this._userNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._userNameTextBox.Location = new System.Drawing.Point(223, 49);
+      this._userNameTextBox.Location = new System.Drawing.Point(334, 75);
+      this._userNameTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this._userNameTextBox.Name = "_userNameTextBox";
-      this._userNameTextBox.Size = new System.Drawing.Size(183, 20);
+      this._userNameTextBox.Size = new System.Drawing.Size(272, 26);
       this._userNameTextBox.TabIndex = 1;
       // 
       // _calenderUrlTextBox
       // 
       this._calenderUrlTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this._calenderUrlTextBox.Location = new System.Drawing.Point(80, 23);
+      this._calenderUrlTextBox.Location = new System.Drawing.Point(120, 35);
+      this._calenderUrlTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this._calenderUrlTextBox.Name = "_calenderUrlTextBox";
-      this._calenderUrlTextBox.Size = new System.Drawing.Size(326, 20);
+      this._calenderUrlTextBox.Size = new System.Drawing.Size(487, 26);
       this._calenderUrlTextBox.TabIndex = 0;
       // 
       // label3
       // 
       this.label3.AutoSize = true;
-      this.label3.Location = new System.Drawing.Point(6, 26);
+      this.label3.Location = new System.Drawing.Point(9, 40);
+      this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label3.Name = "label3";
-      this.label3.Size = new System.Drawing.Size(68, 13);
+      this.label3.Size = new System.Drawing.Size(101, 20);
       this.label3.TabIndex = 6;
       this.label3.Text = "Calender Url:";
       // 
       // numberOfDaysInTheFuture
       // 
       this.numberOfDaysInTheFuture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.numberOfDaysInTheFuture.Location = new System.Drawing.Point(235, 460);
+      this.numberOfDaysInTheFuture.Location = new System.Drawing.Point(352, 708);
+      this.numberOfDaysInTheFuture.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this.numberOfDaysInTheFuture.Name = "numberOfDaysInTheFuture";
-      this.numberOfDaysInTheFuture.Size = new System.Drawing.Size(183, 20);
+      this.numberOfDaysInTheFuture.Size = new System.Drawing.Size(272, 26);
       this.numberOfDaysInTheFuture.TabIndex = 7;
       this.numberOfDaysInTheFuture.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
       // 
       // numberOfDaysInThePast
       // 
       this.numberOfDaysInThePast.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.numberOfDaysInThePast.Location = new System.Drawing.Point(235, 434);
+      this.numberOfDaysInThePast.Location = new System.Drawing.Point(352, 668);
+      this.numberOfDaysInThePast.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this.numberOfDaysInThePast.Name = "numberOfDaysInThePast";
-      this.numberOfDaysInThePast.Size = new System.Drawing.Size(183, 20);
+      this.numberOfDaysInThePast.Size = new System.Drawing.Size(272, 26);
       this.numberOfDaysInThePast.TabIndex = 6;
       this.numberOfDaysInThePast.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
       // 
       // label2
       // 
       this.label2.AutoSize = true;
-      this.label2.Location = new System.Drawing.Point(12, 463);
+      this.label2.Location = new System.Drawing.Point(18, 712);
+      this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label2.Name = "label2";
-      this.label2.Size = new System.Drawing.Size(177, 13);
+      this.label2.Size = new System.Drawing.Size(266, 20);
       this.label2.TabIndex = 16;
       this.label2.Text = "Synchronize timespan future  (days):";
       // 
       // label1
       // 
       this.label1.AutoSize = true;
-      this.label1.Location = new System.Drawing.Point(12, 437);
+      this.label1.Location = new System.Drawing.Point(18, 672);
+      this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label1.Name = "label1";
-      this.label1.Size = new System.Drawing.Size(170, 13);
+      this.label1.Size = new System.Drawing.Size(255, 20);
       this.label1.TabIndex = 15;
       this.label1.Text = "Synchronize timespan past  (days):";
       // 
       // _deleteButton
       // 
-      this._deleteButton.Location = new System.Drawing.Point(12, 500);
+      this._deleteButton.Location = new System.Drawing.Point(18, 769);
+      this._deleteButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this._deleteButton.Name = "_deleteButton";
-      this._deleteButton.Size = new System.Drawing.Size(75, 23);
+      this._deleteButton.Size = new System.Drawing.Size(112, 35);
       this._deleteButton.TabIndex = 8;
       this._deleteButton.Text = "Delete";
       this._deleteButton.UseVisualStyleBackColor = true;
@@ -312,35 +339,39 @@
       // _profileNameTextBox
       // 
       this._profileNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._profileNameTextBox.Location = new System.Drawing.Point(235, 12);
+      this._profileNameTextBox.Location = new System.Drawing.Point(352, 18);
+      this._profileNameTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this._profileNameTextBox.Name = "_profileNameTextBox";
-      this._profileNameTextBox.Size = new System.Drawing.Size(183, 20);
+      this._profileNameTextBox.Size = new System.Drawing.Size(272, 26);
       this._profileNameTextBox.TabIndex = 0;
       // 
       // label10
       // 
       this.label10.AutoSize = true;
-      this.label10.Location = new System.Drawing.Point(20, 15);
+      this.label10.Location = new System.Drawing.Point(30, 23);
+      this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label10.Name = "label10";
-      this.label10.Size = new System.Drawing.Size(68, 13);
+      this.label10.Size = new System.Drawing.Size(101, 20);
       this.label10.TabIndex = 13;
       this.label10.Text = "Profile name:";
       // 
       // _inactiveCheckBox
       // 
       this._inactiveCheckBox.AutoSize = true;
-      this._inactiveCheckBox.Location = new System.Drawing.Point(308, 504);
+      this._inactiveCheckBox.Location = new System.Drawing.Point(462, 775);
+      this._inactiveCheckBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this._inactiveCheckBox.Name = "_inactiveCheckBox";
-      this._inactiveCheckBox.Size = new System.Drawing.Size(110, 17);
+      this._inactiveCheckBox.Size = new System.Drawing.Size(158, 24);
       this._inactiveCheckBox.TabIndex = 26;
       this._inactiveCheckBox.Text = "Deactivate Profile";
       this._inactiveCheckBox.UseVisualStyleBackColor = true;
       // 
       // _copyButton
       // 
-      this._copyButton.Location = new System.Drawing.Point(93, 500);
+      this._copyButton.Location = new System.Drawing.Point(140, 769);
+      this._copyButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this._copyButton.Name = "_copyButton";
-      this._copyButton.Size = new System.Drawing.Size(75, 23);
+      this._copyButton.Size = new System.Drawing.Size(112, 35);
       this._copyButton.TabIndex = 27;
       this._copyButton.Text = "Copy";
       this._copyButton.UseVisualStyleBackColor = true;
@@ -348,7 +379,7 @@
       // 
       // OptionsDisplayControl
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this._copyButton);
       this.Controls.Add(this._inactiveCheckBox);
@@ -367,8 +398,9 @@
       this.Controls.Add(this.numberOfDaysInThePast);
       this.Controls.Add(this.label2);
       this.Controls.Add(this.label1);
+      this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this.Name = "OptionsDisplayControl";
-      this.Size = new System.Drawing.Size(438, 544);
+      this.Size = new System.Drawing.Size(704, 837);
       this.groupBox2.ResumeLayout(false);
       this.groupBox2.PerformLayout();
       this.groupBox1.ResumeLayout(false);

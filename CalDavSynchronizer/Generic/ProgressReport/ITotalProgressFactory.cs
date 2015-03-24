@@ -18,8 +18,8 @@ using System;
 
 namespace CalDavSynchronizer.Generic.ProgressReport
 {
-  internal interface ITotalProgressFactory
+  public interface ITotalProgressFactory
   {
-    ITotalProgress Create ();
+    ITotalProgress Create (int aLoadCount,int bLoadCount);
   }
 }

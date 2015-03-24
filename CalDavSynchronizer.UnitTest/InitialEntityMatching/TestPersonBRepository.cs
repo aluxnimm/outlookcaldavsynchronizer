@@ -37,7 +37,7 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
       return _persons.ToDictionary (kv => kv.Id, kv => kv.Version);
     }
 
-    public IDictionary<string, PersonB> GetEntities (ICollection<string> sourceEntityIds, ITotalProgress progress)
+    public IReadOnlyDictionary<string, PersonB> GetEntities (ICollection<string> sourceEntityIds, ITotalProgress progress)
     {
       var personsById = _persons.ToDictionary (p => p.Id);
       return sourceEntityIds.Select (id => personsById[id]).ToDictionary (p => p.Id);

@@ -46,18 +46,18 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
       var btypeRepository = new TestPersonBRepository (bPersons);
 
 
-      var atypeEntityVersionsToWork = atypeRepository.GetEntityVersions (DateTime.MinValue, DateTime.MinValue);
-      var btypeEntityVersionsToWork = btypeRepository.GetEntityVersions (DateTime.MinValue, DateTime.MinValue);
+      var atypeEntityVersions = atypeRepository.GetEntityVersions (DateTime.MinValue, DateTime.MinValue);
+      var btypeEntityVersions = btypeRepository.GetEntityVersions (DateTime.MinValue, DateTime.MinValue);
 
-      var allAtypeEntities = atypeRepository.GetEntities (atypeEntityVersionsToWork.Keys, NullTotalProgress.Instance);
-      var allBtypeEntities = btypeRepository.GetEntities (btypeEntityVersionsToWork.Keys, NullTotalProgress.Instance);
+      var allAtypeEntities = atypeRepository.GetEntities (atypeEntityVersions.Keys, NullTotalProgress.Instance);
+      var allBtypeEntities = btypeRepository.GetEntities (btypeEntityVersions.Keys, NullTotalProgress.Instance);
 
       var foundRelations = new TestInitialEntityMatcher().PopulateEntityRelationStorage (
           new PersonAPersonBRelationDataFactory(),
           allAtypeEntities,
           allBtypeEntities,
-          atypeEntityVersionsToWork,
-          btypeEntityVersionsToWork);
+          atypeEntityVersions,
+          btypeEntityVersions);
 
       Assert.That (foundRelations.Count, Is.EqualTo (1));
       var relation = foundRelations[0];
@@ -67,13 +67,7 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
       Assert.That (relation.BtypeId, Is.EqualTo ("two"));
       Assert.That (relation.BtypeVersion, Is.EqualTo ("1"));
 
-      Assert.That (atypeEntityVersionsToWork.Count, Is.EqualTo (2));
-      Assert.That (atypeEntityVersionsToWork.ContainsKey (1), Is.True);
-      Assert.That (atypeEntityVersionsToWork.ContainsKey (3), Is.True);
-
-      Assert.That (btypeEntityVersionsToWork.Count, Is.EqualTo (2));
-      Assert.That (btypeEntityVersionsToWork.ContainsKey ("one"), Is.True);
-      Assert.That (btypeEntityVersionsToWork.ContainsKey ("three"), Is.True);
+    
     }
 
   }
