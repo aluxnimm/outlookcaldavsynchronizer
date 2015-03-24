@@ -13,14 +13,15 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
+using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Scheduling
 {
@@ -35,14 +36,14 @@ namespace CalDavSynchronizer.Scheduling
     private readonly string _outlookEmailAddress;
 
     private readonly TimeSpan _timerInterval = TimeSpan.FromSeconds (30);
-   
+
     public Scheduler (NameSpace outlookSession)
     {
       _outlookEmailAddress = outlookSession.CurrentUser.Address;
       _outlookSession = outlookSession;
       _synchronizationTimer.Tick += _synchronizationTimer_Tick;
-      _synchronizationTimer.Interval = (int)_timerInterval.TotalMilliseconds;
-      _synchronizationTimer.Start ();
+      _synchronizationTimer.Interval = (int) _timerInterval.TotalMilliseconds;
+      _synchronizationTimer.Start();
     }
 
 
@@ -50,22 +51,29 @@ namespace CalDavSynchronizer.Scheduling
     {
       _synchronizationTimer.Stop();
       foreach (var worker in _workersById.Values)
-        worker.RunIfRequiredAndReschedule ();
+        worker.RunIfRequiredAndReschedule();
       _synchronizationTimer.Start();
     }
 
     public void SetOptions (Options[] options)
     {
-      _workersById = options.ToDictionary (
-          o => o.Id,
-          o =>
-          {
-            SynchronizationWorker worker;
-            if (!_workersById.TryGetValue (o.Id, out worker))
-              worker = new SynchronizationWorker(_outlookEmailAddress);
-            worker.UpdateOptions (_outlookSession, o);
-            return worker;
-          });
+      Dictionary<Guid, SynchronizationWorker> workersById = new Dictionary<Guid, SynchronizationWorker>();
+      foreach (var option in options)
+      {
+        try
+        {
+          SynchronizationWorker worker;
+          if (!_workersById.TryGetValue (option.Id, out worker))
+            worker = new SynchronizationWorker (_outlookEmailAddress);
+          worker.UpdateOptions (_outlookSession, option);
+          workersById.Add (option.Id, worker);
+        }
+        catch (Exception x)
+        {
+          s_logger.Error (null, x);
+        }
+      }
+      _workersById = workersById;
     }
 
     public void RunNow ()

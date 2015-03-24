@@ -17,10 +17,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
+using log4net;
 using Microsoft.Office.Interop.Outlook;
 using Exception = System.Exception;
 
@@ -28,6 +30,8 @@ namespace CalDavSynchronizer.Ui
 {
   public partial class OptionsDisplayControl : UserControl
   {
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
+
     private string _folderEntryId;
     private string _folderStoreId;
     private readonly NameSpace _session;
@@ -222,7 +226,19 @@ namespace CalDavSynchronizer.Ui
     {
       if (!string.IsNullOrEmpty (folderEntryId) && !string.IsNullOrEmpty (folderStoreId))
       {
-        var folder = _session.GetFolderFromID (folderEntryId, folderStoreId);
+
+        MAPIFolder folder;
+
+        try
+        {
+          folder = _session.GetFolderFromID (folderEntryId, folderStoreId);
+        }
+        catch (Exception x)
+        {
+          s_logger.Error (null, x);
+          _outoookFolderNameTextBox.Text = "<ERROR>";
+          return;
+        }
         if (folder != null)
         {
           UpdateFolder (folder);
