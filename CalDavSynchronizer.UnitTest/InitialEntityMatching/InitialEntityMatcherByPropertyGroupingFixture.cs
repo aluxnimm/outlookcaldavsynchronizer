@@ -46,11 +46,11 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
       var btypeRepository = new TestPersonBRepository (bPersons);
 
 
-      var atypeEntityVersions = atypeRepository.GetEntityVersions (DateTime.MinValue, DateTime.MinValue);
-      var btypeEntityVersions = btypeRepository.GetEntityVersions (DateTime.MinValue, DateTime.MinValue);
+      var atypeEntityVersions = atypeRepository.GetVersions (DateTime.MinValue, DateTime.MinValue);
+      var btypeEntityVersions = btypeRepository.GetVersions (DateTime.MinValue, DateTime.MinValue);
 
-      var allAtypeEntities = atypeRepository.GetEntities (atypeEntityVersions.Keys, NullTotalProgress.Instance);
-      var allBtypeEntities = btypeRepository.GetEntities (btypeEntityVersions.Keys, NullTotalProgress.Instance);
+      var allAtypeEntities = atypeRepository.Get (atypeEntityVersions.Keys, NullTotalProgress.Instance);
+      var allBtypeEntities = btypeRepository.Get (btypeEntityVersions.Keys, NullTotalProgress.Instance);
 
       var foundRelations = new TestInitialEntityMatcher().PopulateEntityRelationStorage (
           new PersonAPersonBRelationDataFactory(),

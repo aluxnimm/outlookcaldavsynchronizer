@@ -41,32 +41,32 @@ namespace CalDavSynchronizer.Implementation
       _calendarSerializer = calendarSerializer;
     }
 
-    public Dictionary<Uri, string> GetEntityVersions (DateTime from, DateTime to)
+    public Dictionary<Uri, string> GetVersions (DateTime from, DateTime to)
     {
-      using (AutomaticStopwatch.StartInfo (s_logger, "CalDavEventRepository.GetEntityVersions"))
+      using (AutomaticStopwatch.StartInfo (s_logger, "CalDavEventRepository.GetVersions"))
       {
         return _calDavDataAccess.GetEvents (from, to);
       }
     }
 
-    public IReadOnlyDictionary<Uri, IEvent> GetEntities (ICollection<Uri> sourceEntityIds, ITotalProgress progress)
+    public IReadOnlyDictionary<Uri, IEvent> Get (ICollection<Uri> ids, ITotalProgress progress)
     {
-      if (sourceEntityIds.Count == 0)
+      if (ids.Count == 0)
       {
         progress.StartStep (0).Dispose ();
         progress.StartStep (0).Dispose ();
         return new Dictionary<Uri, IEvent>();
       }
 
-      using (AutomaticStopwatch.StartInfo (s_logger, string.Format("CalDavEventRepository.GetEntities ({0} entitie(s))",sourceEntityIds.Count)))
+      using (AutomaticStopwatch.StartInfo (s_logger, string.Format("CalDavEventRepository.Get ({0} entitie(s))",ids.Count)))
       {
         Dictionary<Uri, IEvent> entitiesByKey = new Dictionary<Uri, IEvent>();
 
         Dictionary<Uri, string> events;
-        using (var stepProgress = progress.StartStep (sourceEntityIds.Count))
+        using (var stepProgress = progress.StartStep (ids.Count))
         {
-          events = _calDavDataAccess.GetEvents (sourceEntityIds);
-          stepProgress.IncreaseBy (sourceEntityIds.Count);
+          events = _calDavDataAccess.GetEvents (ids);
+          stepProgress.IncreaseBy (ids.Count);
         }
 
         using (var stepProgress = progress.StartStep (events.Count))

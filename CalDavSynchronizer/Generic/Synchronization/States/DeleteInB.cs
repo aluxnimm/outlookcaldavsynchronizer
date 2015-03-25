@@ -51,7 +51,7 @@ namespace CalDavSynchronizer.Generic.Synchronization.States
     {
       try
       {
-        var newA = _environment.BRepository.Delete (_knownData.BtypeId);
+         _environment.BRepository.Delete (_knownData.BtypeId);
         return Discard ();
       }
       catch (Exception x)

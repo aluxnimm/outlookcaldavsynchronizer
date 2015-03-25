@@ -237,7 +237,6 @@
     <Compile Include="DataAccess\ICalDavDataAccess.cs" />
     <Compile Include="DataAccess\IOptionsDataAccess.cs" />
     <Compile Include="DataAccess\IOutlookDataAccess.cs" />
-    <Compile Include="DataAccess\OutlookDataAccess.cs" />
     <Compile Include="DataAccess\OptionsDataAccess.cs" />
     <Compile Include="Contracts\Options.cs" />
     <Compile Include="Generic\Synchronization\States\UpdateFromNewerToOlder.cs" />

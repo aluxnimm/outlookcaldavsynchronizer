@@ -40,14 +40,14 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
       _idPrefix = idPrefix;
     }
 
-    public Dictionary<string, int> GetEntityVersions (DateTime @from, DateTime to)
+    public Dictionary<string, int> GetVersions (DateTime @from, DateTime to)
     {
       return EntityVersionAndContentById.ToDictionary (kv => kv.Key, kv => kv.Value.Item1);
     }
 
-    public IReadOnlyDictionary<string, string> GetEntities (ICollection<string> sourceEntityIds, ITotalProgress progress)
+    public IReadOnlyDictionary<string, string> Get (ICollection<string> ids, ITotalProgress progress)
     {
-      return sourceEntityIds.Select (id => new { id, EntityVersionAndContentById[id].Item2 }).ToDictionary (v => v.id, v => v.Item2);
+      return ids.Select (id => new { id, EntityVersionAndContentById[id].Item2 }).ToDictionary (v => v.id, v => v.Item2);
     }
 
     public bool Delete (string entityId)

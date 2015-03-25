@@ -56,8 +56,8 @@ namespace CalDavSynchronizer.Generic.Synchronization
         var btypeEntityRepository = _synchronizerContext.BtypeRepository;
 
         var cachedData = _synchronizerContext.Load();
-        var atypeRepositoryVersions = atypeEntityRepository.GetEntityVersions (_synchronizerContext.From, _synchronizerContext.To);
-        var btypeRepositoryVersions = btypeEntityRepository.GetEntityVersions (_synchronizerContext.From, _synchronizerContext.To);
+        var atypeRepositoryVersions = atypeEntityRepository.GetVersions (_synchronizerContext.From, _synchronizerContext.To);
+        var btypeRepositoryVersions = btypeEntityRepository.GetVersions (_synchronizerContext.From, _synchronizerContext.To);
 
         IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> allAtypeEntities = null;
         IReadOnlyDictionary<TBtypeEntityId, TBtypeEntity> allBtypeEntities = null;
@@ -67,8 +67,8 @@ namespace CalDavSynchronizer.Generic.Synchronization
           s_logger.Info ("Did not find entity caches. Performing initial population");
 
           totalProgress = _totalProgressFactory.Create (atypeRepositoryVersions.Count, btypeRepositoryVersions.Count);
-          allAtypeEntities = atypeEntityRepository.GetEntities (atypeRepositoryVersions.Keys, totalProgress);
-          allBtypeEntities = btypeEntityRepository.GetEntities (btypeRepositoryVersions.Keys, totalProgress);
+          allAtypeEntities = atypeEntityRepository.Get (atypeRepositoryVersions.Keys, totalProgress);
+          allBtypeEntities = btypeEntityRepository.Get (btypeRepositoryVersions.Keys, totalProgress);
 
           cachedData = _synchronizerContext.InitialEntityMatcher.PopulateEntityRelationStorage (
               _synchronizerContext.EntityRelationDataFactory,
@@ -127,8 +127,8 @@ namespace CalDavSynchronizer.Generic.Synchronization
         if (allAtypeEntities == null || allBtypeEntities == null)
         {
           totalProgress = _totalProgressFactory.Create (aEntitesToLoad.Count, bEntitesToLoad.Count);
-          aEntities = atypeEntityRepository.GetEntities (aEntitesToLoad, totalProgress);
-          bEntities = btypeEntityRepository.GetEntities (bEntitesToLoad, totalProgress);
+          aEntities = atypeEntityRepository.Get (aEntitesToLoad, totalProgress);
+          bEntities = btypeEntityRepository.Get (bEntitesToLoad, totalProgress);
         }
         else
         {

@@ -32,15 +32,15 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
     }
 
 
-    public  Dictionary<int, int> GetEntityVersions (DateTime @from, DateTime to)
+    public  Dictionary<int, int> GetVersions (DateTime @from, DateTime to)
     {
       return _persons.ToDictionary(kv => kv.Id, kv => kv.Version);
     }
 
-    public IReadOnlyDictionary<int, PersonA> GetEntities (ICollection<int> sourceEntityIds, ITotalProgress progress)
+    public IReadOnlyDictionary<int, PersonA> Get (ICollection<int> ids, ITotalProgress progress)
     {
       var personsById = _persons.ToDictionary (p => p.Id);
-      return sourceEntityIds.Select (id => personsById[id]).ToDictionary (p => p.Id);
+      return ids.Select (id => personsById[id]).ToDictionary (p => p.Id);
     }
 
     public  bool Delete (int entityId)

@@ -56,7 +56,7 @@ namespace CalDavSynchronizer.Implementation
       _entityMapper = new AppointmentEventEntityMapper (outlookEmailAddress, new Uri ("mailto:" + options.EmailAddress));
 
       var calendarFolder = outlookSession.GetFolderFromID (options.OutlookFolderEntryId, options.OutlookFolderStoreId);
-      _atypeRepository = new OutlookAppoointmentRepository (new OutlookDataAccess (calendarFolder,outlookSession));
+      _atypeRepository = new OutlookAppoointmentRepository (calendarFolder,outlookSession);
 
       _btypeRepository = new CalDavEventRepository (new CalDavDataAccess (new Uri (options.CalenderUrl), options.UserName, options.Password), new iCalendarSerializer());
 
