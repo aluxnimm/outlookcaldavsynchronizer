@@ -16,9 +16,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
-using System.Text;
 using CalDavSynchronizer.Generic.EntityMapping;
 using DDay.iCal;
 using log4net;
@@ -55,24 +53,9 @@ namespace CalDavSynchronizer.Implementation
 
       target.Priority = MapPriority1To2 (source.Importance);
 
-      MapAttachments (source, target);
       MapAttendees1To2 (source, target);
       MapRecurrance1To2 (source, target);
       return target;
-    }
-
-    private void MapAttachments (AppointmentItem source, IEvent target)
-    {
-      //foreach (OutlookAttachment attachment in source.Attachments)
-      //{
-      //  // NOT TESTETD since Sogo doesn't support binary attachments
-      //  var targetAttachment = new ICalAttachment();
-      //  var tempFilePath = Path.GetTempFileName();
-      //  attachment.SaveAsFile (tempFilePath);
-      //  targetAttachment.Data = File.ReadAllBytes (tempFilePath);
-      //  File.Delete (tempFilePath);
-      //  target.Attachments.Add (targetAttachment);
-      //}
     }
 
 
@@ -395,34 +378,9 @@ namespace CalDavSynchronizer.Implementation
       MapAttendees2To1 (source, target);
       MapRecurrance2To1 (source, target);
 
-      MapAttachments (source, target);
-
       return target;
     }
 
-    private void MapAttachments (IEvent source, AppointmentItem target)
-    {
-      //foreach (OutlookAttachment attachment in target.Attachments)
-      //  attachment.Delete();
-
-      //foreach (var attachment in source.Attachments)
-      //{
-      //  // Either Data or Uri can be set (exclusive) . See Equals() method of https://github.com/mdavid/DDay-iCal-svn/blob/master/DDay.iCal/DataTypes/Attachment.cs 
-
-      //  if (attachment.Data != null)
-      //  {
-      //    // NOT TESTETD since Sogo doesn't support binary attachments
-      //    var tempFilePath = Path.GetTempFileName ();
-      //    File.WriteAllBytes (tempFilePath, attachment.Data);
-      //    target.Attachments.Add (tempFilePath);
-      //    File.Delete (tempFilePath);
-      //  }
-      //  else if (attachment.Uri != null)
-      //  {
-      //    target.Body += Environment.NewLine + attachment.Uri;
-      //  }
-      //}
-    }
 
     private void MapAttendees2To1 (IEvent source, AppointmentItem target)
     {
