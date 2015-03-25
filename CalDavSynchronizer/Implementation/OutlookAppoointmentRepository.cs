@@ -13,12 +13,11 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.EntityRepositories;
 using CalDavSynchronizer.Generic.EntityVersionManagement;
 using CalDavSynchronizer.Generic.ProgressReport;
@@ -28,7 +27,7 @@ namespace CalDavSynchronizer.Implementation
 {
   internal class OutlookAppoointmentRepository : IEntityRepository<AppointmentItem, string, DateTime>
   {
-     private readonly MAPIFolder _calendarFolder;
+    private readonly MAPIFolder _calendarFolder;
     private readonly NameSpace _mapiNameSpace;
 
     public OutlookAppoointmentRepository (MAPIFolder calendarFolder, NameSpace mapiNameSpace)
@@ -40,27 +39,27 @@ namespace CalDavSynchronizer.Implementation
       _calendarFolder = calendarFolder;
       _mapiNameSpace = mapiNameSpace;
     }
-    
-    const string c_entryIdColumnName = "EntryID";
-    const string c_lastModificationTimeColumnId = "LastModificationTime";
+
+    private const string c_entryIdColumnName = "EntryID";
 
     public Dictionary<string, DateTime> GetVersions (DateTime fromUtc, DateTime toUtc)
     {
-      var events = new Dictionary<string, DateTime> ();
+      var events = new Dictionary<string, DateTime>();
 
-      string filter = String.Format("[Start] > '{0}' And [End] < '{1}'", ToOutlookDateString (fromUtc), ToOutlookDateString (toUtc));
+      string filter = String.Format ("[Start] > '{0}' And [End] < '{1}'", ToOutlookDateString (fromUtc), ToOutlookDateString (toUtc));
 
       var table = _calendarFolder.GetTable (filter);
-      table.Columns.RemoveAll ();
+      table.Columns.RemoveAll();
       table.Columns.Add (c_entryIdColumnName);
-      table.Columns.Add (c_lastModificationTimeColumnId);
+
+      var storeId = _calendarFolder.StoreID;
 
       while (!table.EndOfTable)
       {
-        var row = table.GetNextRow ();
+        var row = table.GetNextRow();
         var entryId = (string) row[c_entryIdColumnName];
-        var lastModificationTime = (DateTime) row[c_lastModificationTimeColumnId];
-        events.Add (entryId, lastModificationTime);
+        var appointment = (AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, storeId);
+        events.Add (appointment.EntryID, appointment.LastModificationTime);
       }
 
       return events;
@@ -68,12 +67,13 @@ namespace CalDavSynchronizer.Implementation
 
 
     private static readonly CultureInfo _enUsCultureInfo = CultureInfo.GetCultureInfo ("en-US");
+
     private string ToOutlookDateString (DateTime value)
     {
       return value.ToString ("g", _enUsCultureInfo);
     }
 
-   
+
     public IReadOnlyDictionary<string, AppointmentItem> Get (ICollection<string> ids, ITotalProgress progress)
     {
       using (var stepProgress = progress.StartStep (ids.Count))
@@ -87,9 +87,9 @@ namespace CalDavSynchronizer.Implementation
 
     public EntityIdWithVersion<string, DateTime> Update (string entityId, AppointmentItem entityToUpdate, Func<AppointmentItem, AppointmentItem> entityModifier)
     {
-      var appointment = Get (new[] { entityId }, NullTotalProgress.Instance).Single ().Value;
+      var appointment = Get (new[] { entityId }, NullTotalProgress.Instance).Single().Value;
       appointment = entityModifier (appointment);
-      appointment.Save ();
+      appointment.Save();
       return new EntityIdWithVersion<string, DateTime> (appointment.EntryID, appointment.LastModificationTime);
     }
 
@@ -98,7 +98,7 @@ namespace CalDavSynchronizer.Implementation
       var appointment = Get (new[] { entityId }, NullTotalProgress.Instance).Values.SingleOrDefault();
       if (appointment != null)
       {
-        appointment.Delete ();
+        appointment.Delete();
         return true;
       }
       else
@@ -111,9 +111,8 @@ namespace CalDavSynchronizer.Implementation
     {
       var appointment = (AppointmentItem) _calendarFolder.Items.Add (OlItemType.olAppointmentItem);
       appointment = entityInitializer (appointment);
-      appointment.Save ();
+      appointment.Save();
       return new EntityIdWithVersion<string, DateTime> (appointment.EntryID, appointment.LastModificationTime);
     }
-
   }
 }
