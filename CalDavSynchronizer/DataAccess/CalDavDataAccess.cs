@@ -34,6 +34,8 @@ namespace CalDavSynchronizer.DataAccess
 
     public CalDavDataAccess (Uri calendarUrl, string username, string password)
     {
+      ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+
       if (calendarUrl == null)
         throw new ArgumentNullException ("calendarUrl");
       _username = username;
