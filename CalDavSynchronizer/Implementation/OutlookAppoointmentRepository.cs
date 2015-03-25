@@ -76,7 +76,7 @@ namespace CalDavSynchronizer.Implementation
 
     public IReadOnlyDictionary<string, AppointmentItem> Get (ICollection<string> ids, ITotalProgress progress)
     {
-      using (var stepProgress = progress.StartStep (ids.Count))
+      using (var stepProgress = progress.StartStep (ids.Count, string.Format ("Loading {0} entities from Outlook...", ids.Count)))
       {
         var storeId = _calendarFolder.StoreID;
         var result = ids.ToDictionary (id => id, id => (AppointmentItem) _mapiNameSpace.GetItemFromID (id, storeId));

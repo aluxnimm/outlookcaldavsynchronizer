@@ -20,6 +20,6 @@ namespace CalDavSynchronizer.Generic.ProgressReport
 {
   public interface ITotalProgress : IDisposable
   {
-    IProgressStep StartStep (int stepCompletedCount);
+    IProgressStep StartStep (int stepCompletedCount, string stepDescription);
   }
 }

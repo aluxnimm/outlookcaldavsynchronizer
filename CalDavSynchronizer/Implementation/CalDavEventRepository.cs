@@ -53,8 +53,8 @@ namespace CalDavSynchronizer.Implementation
     {
       if (ids.Count == 0)
       {
-        progress.StartStep (0).Dispose ();
-        progress.StartStep (0).Dispose ();
+        progress.StartStep (0, "").Dispose ();
+        progress.StartStep (0, "").Dispose ();
         return new Dictionary<Uri, IEvent>();
       }
 
@@ -63,13 +63,13 @@ namespace CalDavSynchronizer.Implementation
         Dictionary<Uri, IEvent> entitiesByKey = new Dictionary<Uri, IEvent>();
 
         Dictionary<Uri, string> events;
-        using (var stepProgress = progress.StartStep (ids.Count))
+        using (var stepProgress = progress.StartStep (ids.Count, string.Format ("Loading {0} entities from CalDav-Server...", ids.Count)))
         {
           events = _calDavDataAccess.GetEvents (ids);
           stepProgress.IncreaseBy (ids.Count);
         }
 
-        using (var stepProgress = progress.StartStep (events.Count))
+        using (var stepProgress = progress.StartStep (events.Count, string.Format ("Deserializing {0} CalDav entities...", events.Count)))
         {
           foreach (var kv in events)
           {

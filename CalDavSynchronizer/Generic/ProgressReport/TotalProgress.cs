@@ -70,10 +70,12 @@ namespace CalDavSynchronizer.Generic.ProgressReport
       }
     }
 
-    IProgressStep ITotalProgress.StartStep (int stepCompletedCount)
+    IProgressStep ITotalProgress.StartStep (int stepCompletedCount, string stepDescription)
     {
       try
       {
+        _progressUi.SetMessage (stepDescription);
+
         _currentStep++;
         if (_currentStep > _prefixSummedStepTotals.Length)
         {

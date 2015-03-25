@@ -30,7 +30,7 @@ namespace CalDavSynchronizer.Generic.ProgressReport
     {
     }
 
-    IProgressStep ITotalProgress.StartStep (int stepCompletedCount)
+    IProgressStep ITotalProgress.StartStep (int stepCompletedCount, string stepDescription)
     {
       return NullProgressStep.Instance;
     }

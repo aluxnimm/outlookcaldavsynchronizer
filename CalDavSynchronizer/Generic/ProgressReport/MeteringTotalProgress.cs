@@ -34,7 +34,7 @@ namespace CalDavSynchronizer.Generic.ProgressReport
       Debug.WriteLine ("Total Time: {0}", _totalTime.Elapsed);
     }
 
-    public IProgressStep StartStep (int stepCompletedCount)
+    public IProgressStep StartStep (int stepCompletedCount, string stepDescription)
     {
       return new MeteringProgressStep (stepCompletedCount);
     }

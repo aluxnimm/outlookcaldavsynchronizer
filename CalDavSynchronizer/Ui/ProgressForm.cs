@@ -32,6 +32,12 @@ namespace CalDavSynchronizer.Ui
       _progressBar.Value = value;
     }
 
+    public void SetMessage (string message)
+    {
+      _messageLabel.Text = message;
+      Refresh();
+    }
+
     public void SetMaximun (int value)
     {
       _progressBar.Maximum = 0;

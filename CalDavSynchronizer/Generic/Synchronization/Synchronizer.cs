@@ -145,7 +145,7 @@ namespace CalDavSynchronizer.Generic.Synchronization
         entitySyncStates = entitySyncStates.Select (a => a.FetchRequiredEntities (aEntities, bEntities)).ToList();
 
 
-        using (var progress = totalProgress.StartStep (entitySyncStates.Count))
+        using (var progress = totalProgress.StartStep (entitySyncStates.Count, string.Format("Processing {0} entities...", entitySyncStates.Count)))
         {
           entitySyncStates = entitySyncStates.Select (
               a =>

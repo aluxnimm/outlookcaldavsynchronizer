@@ -29,6 +29,7 @@
     private void InitializeComponent ()
     {
       this._progressBar = new System.Windows.Forms.ProgressBar();
+      this._messageLabel = new System.Windows.Forms.Label();
       this.SuspendLayout();
       // 
       // _progressBar
@@ -38,23 +39,34 @@
       this._progressBar.Size = new System.Drawing.Size(319, 23);
       this._progressBar.TabIndex = 0;
       // 
+      // _messageLabel
+      // 
+      this._messageLabel.AutoSize = true;
+      this._messageLabel.Location = new System.Drawing.Point(12, 44);
+      this._messageLabel.Name = "_messageLabel";
+      this._messageLabel.Size = new System.Drawing.Size(0, 13);
+      this._messageLabel.TabIndex = 1;
+      // 
       // ProgressForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(343, 56);
+      this.ClientSize = new System.Drawing.Size(343, 66);
       this.ControlBox = false;
+      this.Controls.Add(this._messageLabel);
       this.Controls.Add(this._progressBar);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
       this.Name = "ProgressForm";
       this.ShowIcon = false;
-      this.Text = "Synchronizing...";
+      this.Text = "CalDavSynchronizer - Synchronizing...";
       this.ResumeLayout(false);
+      this.PerformLayout();
 
     }
 
     #endregion
 
     private System.Windows.Forms.ProgressBar _progressBar;
+    private System.Windows.Forms.Label _messageLabel;
   }
 }

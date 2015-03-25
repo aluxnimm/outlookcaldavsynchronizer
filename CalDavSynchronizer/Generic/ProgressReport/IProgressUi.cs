@@ -21,5 +21,6 @@ namespace CalDavSynchronizer.Generic.ProgressReport
   public interface IProgressUi : IDisposable
   {
     void SetValue (int value);
+    void SetMessage (string message);
   }
 }
