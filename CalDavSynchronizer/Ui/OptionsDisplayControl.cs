@@ -59,8 +59,8 @@ namespace CalDavSynchronizer.Ui
                                                                                        {
                                                                                            new Item<SynchronizationMode> (SynchronizationMode.ReplicateOutlookIntoServer, "ReplicateOutlookIntoServer"),
                                                                                            new Item<SynchronizationMode> (SynchronizationMode.ReplicateServerIntoOutlook, "ReplicateServerIntoOutlook"),
-                                                                                           //new Item<SynchronizationMode> (SynchronizationMode.MergeOutlookIntoServer, "MergeOutlookIntoServer"),
-                                                                                           //new Item<SynchronizationMode> (SynchronizationMode.MergeServerIntoOutlook, "MergeServerIntoOutlook"),
+                                                                                           new Item<SynchronizationMode> (SynchronizationMode.MergeOutlookIntoServer, "MergeOutlookIntoServer"),
+                                                                                           new Item<SynchronizationMode> (SynchronizationMode.MergeServerIntoOutlook, "MergeServerIntoOutlook"),
                                                                                            new Item<SynchronizationMode> (SynchronizationMode.MergeInBothDirections, "MergeInBothDirections"),
                                                                                        };
 
@@ -96,12 +96,11 @@ namespace CalDavSynchronizer.Ui
     {
       switch ((SynchronizationMode) _synchronizationModeComboBox.SelectedValue)
       {
-        case SynchronizationMode.ReplicateOutlookIntoServer:
-        case SynchronizationMode.ReplicateServerIntoOutlook:
-          _conflictResolutionComboBox.Enabled = false;
+        case SynchronizationMode.MergeInBothDirections:
+          _conflictResolutionComboBox.Enabled = true;
           break;
         default:
-          _conflictResolutionComboBox.Enabled = true;
+          _conflictResolutionComboBox.Enabled = false;
           break;
       }
     }

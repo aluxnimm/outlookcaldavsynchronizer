@@ -22,10 +22,12 @@ namespace CalDavSynchronizer.Generic.Synchronization
   public class OneWayInitialSyncStateCreationStrategy_AToB<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> : IInitialSyncStateCreationStrategy<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
   {
     private readonly IEntitySyncStateFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _factory;
+    private readonly OneWaySyncMode _syncMode;
 
-    public OneWayInitialSyncStateCreationStrategy_AToB (IEntitySyncStateFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> factory)
+    public OneWayInitialSyncStateCreationStrategy_AToB (IEntitySyncStateFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> factory, OneWaySyncMode syncMode)
     {
       _factory = factory;
+      _syncMode = syncMode;
     }
 
     public IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> CreateFor_Changed_Changed (IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> knownData, TAtypeEntityVersion newA, TBtypeEntityVersion newB)
@@ -80,7 +82,15 @@ namespace CalDavSynchronizer.Generic.Synchronization
 
     public IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> CreateFor_NotExisting_Added (TBtypeEntityId bId, TBtypeEntityVersion b)
     {
-      return _factory.Create_DeleteInBWithNoRetry (bId, b);
+      switch (_syncMode)
+      {
+        case OneWaySyncMode.Replicate:
+          return _factory.Create_DeleteInBWithNoRetry (bId, b);
+        case OneWaySyncMode.Merge:
+          return _factory.Create_Discard();
+        default :
+          throw new InvalidOperationException(string.Format("SyncMode '{0}' is not supported",_syncMode));
+      }
     }
   }
 }

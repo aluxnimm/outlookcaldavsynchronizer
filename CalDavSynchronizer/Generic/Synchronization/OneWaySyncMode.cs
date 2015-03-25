@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer 
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -13,20 +13,21 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
-using CalDavSynchronizer.Generic.Synchronization;
 
-namespace CalDavSynchronizer.UnitTest.Synchronization
+namespace CalDavSynchronizer.Generic.Synchronization
 {
-  internal class OneWayReplicatorFixtureBase : SynchronizerFixtureBase
+  public enum OneWaySyncMode
   {
+    /// <summary>
+    /// Forces the target to be the same as the source
+    /// </summary>
+    Replicate,
 
-    public bool Synchronize ()
-    {
-      return SynchronizeInternal (
-          new OneWayInitialSyncStateCreationStrategy_AToB<string, int,string, string, int,string> (_factory, OneWaySyncMode.Replicate)
-          );
-    }
-    
+    /// <summary>
+    /// Same as Replicate, except added entites in target are ignored 
+    /// </summary>
+    Merge
   }
 }

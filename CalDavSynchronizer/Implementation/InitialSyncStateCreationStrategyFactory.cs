@@ -51,13 +51,17 @@ namespace CalDavSynchronizer.Implementation
               conflictResolutionStrategy
               );
         case SynchronizationMode.ReplicateOutlookIntoServer:
+        case SynchronizationMode.MergeOutlookIntoServer:
           return new OneWayInitialSyncStateCreationStrategy_AToB<string, DateTime, AppointmentItem, Uri, string, IEvent> (
-              syncStateFactory
-              );
+              syncStateFactory,
+              synchronizationMode == SynchronizationMode.ReplicateOutlookIntoServer ? OneWaySyncMode.Replicate : OneWaySyncMode.Merge
+           );
         case SynchronizationMode.ReplicateServerIntoOutlook:
+        case SynchronizationMode.MergeServerIntoOutlook:
           return new OneWayInitialSyncStateCreationStrategy_BToA<string, DateTime, AppointmentItem, Uri, string, IEvent> (
-             syncStateFactory
-              );
+             syncStateFactory,
+             synchronizationMode == SynchronizationMode.ReplicateServerIntoOutlook ? OneWaySyncMode.Replicate : OneWaySyncMode.Merge
+           );
        
       }
       throw new NotImplementedException ();
