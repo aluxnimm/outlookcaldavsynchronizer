@@ -47,7 +47,11 @@ namespace CalDavSynchronizer.Generic.Synchronization.States
     public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> FetchRequiredEntities (IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> aEntities, IReadOnlyDictionary<TBtypeEntityId, TBtypeEntity> bEntites)
     {
       if (!bEntites.TryGetValue (_bId, out _bEntity))
-        return Discard ();
+      {
+        // Just an info, because an add will be retried on next synchronization
+        s_logger.InfoFormat ("Could not fetch entity '{0}'. Discarding operation.", _bId);
+        return Discard();
+      }
 
       return this;
     }

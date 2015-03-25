@@ -45,10 +45,16 @@ namespace CalDavSynchronizer.Generic.Synchronization.States
     public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> FetchRequiredEntities (IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> aEntities, IReadOnlyDictionary<TBtypeEntityId, TBtypeEntity> bEntites)
     {
       if (!aEntities.TryGetValue (_knownData.AtypeId, out _aEntity))
+      {
+        s_logger.ErrorFormat ("Could not fetch entity '{0}'. Skipping operation.", _knownData.AtypeId);
         return CreateDoNothing();
+      }
 
       if (!bEntites.TryGetValue (_knownData.BtypeId, out _bEntity))
+      {
+        s_logger.ErrorFormat ("Could not fetch entity '{0}'. Skipping operation.", _knownData.BtypeId);
         return CreateDoNothing();
+      }
 
       return this;
     }
