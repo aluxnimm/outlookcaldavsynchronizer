@@ -402,7 +402,7 @@ namespace CalDavSynchronizer.Implementation
     public AppointmentItem Map2To1 (IEvent source, AppointmentItem target)
     {
       target.StartUTC = source.Start.UTC;
-      target.EndUTC = source.DTEnd.UTC;
+      target.EndUTC = source.DTEnd != null ? source.DTEnd.UTC : source.Start.UTC;
       target.Subject = source.Summary;
       target.Location = source.Location;
       target.Body = source.Description;
@@ -452,7 +452,7 @@ namespace CalDavSynchronizer.Implementation
 
       foreach (Recipient recipient in appointment.Recipients)
       {
-        indexByEmailAddresses.Add (GetMailUrl(recipient.AddressEntry), recipient);
+        indexByEmailAddresses.Add (GetMailUrl (recipient.AddressEntry), recipient);
       }
 
       return indexByEmailAddresses;
