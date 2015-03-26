@@ -57,11 +57,11 @@ namespace CalDavSynchronizer.Ui
 
     private readonly IList<Item<SynchronizationMode>> _availableSynchronizationModes = new List<Item<SynchronizationMode>>()
                                                                                        {
-                                                                                           new Item<SynchronizationMode> (SynchronizationMode.ReplicateOutlookIntoServer, "ReplicateOutlookIntoServer"),
-                                                                                           new Item<SynchronizationMode> (SynchronizationMode.ReplicateServerIntoOutlook, "ReplicateServerIntoOutlook"),
-                                                                                           new Item<SynchronizationMode> (SynchronizationMode.MergeOutlookIntoServer, "MergeOutlookIntoServer"),
-                                                                                           new Item<SynchronizationMode> (SynchronizationMode.MergeServerIntoOutlook, "MergeServerIntoOutlook"),
-                                                                                           new Item<SynchronizationMode> (SynchronizationMode.MergeInBothDirections, "MergeInBothDirections"),
+                                                                                           new Item<SynchronizationMode> (SynchronizationMode.ReplicateOutlookIntoServer, "Outlook \u2192 CalDav (Replicate)"),
+                                                                                           new Item<SynchronizationMode> (SynchronizationMode.ReplicateServerIntoOutlook, "Outlook \u2190 CalDav (Replicate)"),
+                                                                                           new Item<SynchronizationMode> (SynchronizationMode.MergeOutlookIntoServer, "Outlook \u2192 CalDav (Merge)"),
+                                                                                           new Item<SynchronizationMode> (SynchronizationMode.MergeServerIntoOutlook, "Outlook \u2190 CalDav (Merge)"),
+                                                                                           new Item<SynchronizationMode> (SynchronizationMode.MergeInBothDirections, "Outlook \u2190\u2192 CalDav"),
                                                                                        };
 
 
