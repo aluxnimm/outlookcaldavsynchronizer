@@ -44,8 +44,8 @@ namespace CalDavSynchronizer.Implementation
 
     public IEvent Map1To2 (AppointmentItem source, IEvent target)
     {
-      target.Start = new iCalDateTime (source.StartUTC);
-      target.DTEnd = new iCalDateTime (source.EndUTC);
+      target.Start = new iCalDateTime (source.StartUTC) { IsUniversalTime = true };
+      target.DTEnd = new iCalDateTime (source.EndUTC) { IsUniversalTime = true };
       target.Summary = source.Subject;
       target.Location = source.Location;
       target.Description = source.Body;
