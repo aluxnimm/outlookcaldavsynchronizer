@@ -19,14 +19,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Xml;
 using CalDavSynchronizer.Generic.EntityVersionManagement;
+using log4net;
 
 namespace CalDavSynchronizer.DataAccess
 {
   public class CalDavDataAccess : ICalDavDataAccess
   {
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
+
     private readonly Uri _calendarUrl;
     private readonly string _username;
     // TODO: consider to use SecureString
@@ -131,7 +135,13 @@ namespace CalDavSynchronizer.DataAccess
         var urlNode = responseElement.SelectSingleNode ("D:href", responseXml.XmlNamespaceManager);
         var etagNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:getetag", responseXml.XmlNamespaceManager);
         if (urlNode != null && etagNode != null)
-          entities.Add (new Uri (urlNode.InnerText, UriKind.Relative), etagNode.InnerText);
+        {
+          var uri = new Uri (urlNode.InnerText, UriKind.Relative);
+          if (!entities.ContainsKey (uri))
+            entities.Add (uri, etagNode.InnerText);
+          else
+            s_logger.WarnFormat ("Entitiy '{0}' was contained multiple times in server response. Ignoring redundant entity", uri);
+        }
       }
 
       return entities;
