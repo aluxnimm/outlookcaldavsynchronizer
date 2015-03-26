@@ -53,11 +53,42 @@ namespace CalDavSynchronizer.Implementation
 
       target.Priority = MapPriority1To2 (source.Importance);
 
-      MapAttendees1To2 (source, target);
+      bool organizerSet;
+      MapAttendees1To2 (source, target, out organizerSet);
       MapRecurrance1To2 (source, target);
+      if (!organizerSet)
+        MapOrganizer1To2 (source, target);
       return target;
     }
 
+    private void MapOrganizer1To2 (AppointmentItem source, IEvent target)
+    {
+      var organizer = source.GetOrganizer();
+      if (organizer != null)
+      {
+        SetOrganizer (target, organizer);
+      }
+    }
+
+    private void SetOrganizer (IEvent target, AddressEntry organizer)
+    {
+      var targetOrganizer = new Organizer (GetMailUrl (organizer));
+      targetOrganizer.CommonName = organizer.Name;
+      target.Organizer = targetOrganizer;
+    }
+
+
+    private string GetMailUrl (AddressEntry addressEntry)
+    {
+      string emailAddress;
+
+      if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olSmtpAddressEntry)
+        emailAddress = addressEntry.Address;
+      else
+        emailAddress = addressEntry.PropertyAccessor.GetProperty (PR_SMTP_ADDRESS);
+
+      return string.Format ("MAILTO:{0}", emailAddress);
+    }
 
     private void MapRecurrance1To2 (AppointmentItem source, IEvent target)
     {
@@ -304,19 +335,23 @@ namespace CalDavSynchronizer.Implementation
     }
 
 
-    private void MapAttendees1To2 (AppointmentItem source, IEvent target)
+    private void MapAttendees1To2 (AppointmentItem source, IEvent target, out bool organizerSet)
     {
+      organizerSet = false;
+
       foreach (Recipient recipient in source.Recipients)
       {
         if (!IsOwnIdentity (recipient))
         {
-          var addressDummy = recipient.AddressEntry.Address;
-          string emailAddress = recipient.PropertyAccessor.GetProperty (PR_SMTP_ADDRESS);
-
-          var attendee = new Attendee (string.Format ("MAILTO:{0}", emailAddress));
+          var attendee = new Attendee (GetMailUrl (recipient.AddressEntry));
           attendee.CommonName = recipient.Name;
           attendee.Role = MapAttendeeType1To2 ((OlMeetingRecipientType) recipient.Type);
           target.Attendees.Add (attendee);
+        }
+        if (((OlMeetingRecipientType) recipient.Type) == OlMeetingRecipientType.olOrganizer)
+        {
+          SetOrganizer (target, recipient.AddressEntry);
+          organizerSet = true;
         }
       }
     }
@@ -417,9 +452,7 @@ namespace CalDavSynchronizer.Implementation
 
       foreach (Recipient recipient in appointment.Recipients)
       {
-        var addressDummy = recipient.AddressEntry.Address;
-        var emailAddress = "mailto:" + recipient.PropertyAccessor.GetProperty (PR_SMTP_ADDRESS);
-        indexByEmailAddresses.Add (emailAddress, recipient);
+        indexByEmailAddresses.Add (GetMailUrl(recipient.AddressEntry), recipient);
       }
 
       return indexByEmailAddresses;
