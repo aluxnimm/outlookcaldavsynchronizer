@@ -58,8 +58,42 @@ namespace CalDavSynchronizer.Implementation
       MapRecurrance1To2 (source, target);
       if (!organizerSet)
         MapOrganizer1To2 (source, target);
+
+      target.Class = MapPrivacy1To2 (source.Sensitivity);
+
       return target;
     }
+
+    private string MapPrivacy1To2 (OlSensitivity value)
+    {
+      switch (value)
+      {
+        case OlSensitivity.olNormal:
+          return "PUBLIC";
+        case OlSensitivity.olPersonal:
+          return "PRIVATE"; // not sure
+        case OlSensitivity.olPrivate:
+          return "PRIVATE";
+        case OlSensitivity.olConfidential:
+          return "CONFIDENTIAL";
+      }
+      throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
+    }
+
+    private OlSensitivity MapPrivacy2To1 (string value)
+    {
+      switch (value)
+      {
+        case "PUBLIC":
+          return OlSensitivity.olNormal;
+        case "PRIVATE":
+          return OlSensitivity.olPrivate;
+        case "CONFIDENTIAL":
+          return OlSensitivity.olConfidential;
+      }
+      return OlSensitivity.olNormal;
+    }
+
 
     private void MapOrganizer1To2 (AppointmentItem source, IEvent target)
     {
@@ -412,6 +446,8 @@ namespace CalDavSynchronizer.Implementation
 
       MapAttendees2To1 (source, target);
       MapRecurrance2To1 (source, target);
+
+      target.Sensitivity = MapPrivacy2To1 (source.Class);
 
       return target;
     }
