@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using CalDavSynchronizer.Generic.EntityMapping;
 using DDay.iCal;
@@ -60,8 +61,49 @@ namespace CalDavSynchronizer.Implementation
         MapOrganizer1To2 (source, target);
 
       target.Class = MapPrivacy1To2 (source.Sensitivity);
-
+      MapReminder1To2 (source, target);
+      
       return target;
+    }
+
+    private void MapReminder1To2 (AppointmentItem source, IEvent target)
+    {
+      if (source.ReminderSet)
+      {
+        var trigger = new Trigger (TimeSpan.FromMinutes (-source.ReminderMinutesBeforeStart));
+        trigger.Parameters.Add ("VALUE", "DURATION");
+        target.Alarms.Add (
+          new Alarm() { 
+            Action = AlarmAction.Display,
+            Trigger = trigger
+          }
+        );
+      }
+    }
+
+    private void MapReminder2To1 (IEvent source, AppointmentItem target)
+    {
+      if (source.Alarms.Count == 0)
+      {
+        target.ReminderSet = false;
+        return;
+      }
+
+      if (source.Alarms.Count > 1)
+        s_logger.WarnFormat ("Event '{0}' contains multiple alarms. Ignoring all except first.", source.Url);
+
+      var alarm = source.Alarms[0];
+
+      if (!(alarm.Trigger.IsRelative && alarm.Trigger.Related == TriggerRelation.Start && alarm.Trigger.Duration < TimeSpan.Zero && alarm.Trigger.Duration.HasValue))
+      {
+        s_logger.WarnFormat ("Event '{0}' alarm is not relative before event start. Ignoring.", source.Url);
+        target.ReminderSet = false;
+        return;
+      }
+
+      target.ReminderSet = true;
+      target.ReminderMinutesBeforeStart = -(int) alarm.Trigger.Duration.Value.TotalMinutes;
+
     }
 
     private string MapPrivacy1To2 (OlSensitivity value)
@@ -448,6 +490,7 @@ namespace CalDavSynchronizer.Implementation
       MapRecurrance2To1 (source, target);
 
       target.Sensitivity = MapPrivacy2To1 (source.Class);
+      MapReminder2To1 (source, target);
 
       return target;
     }
