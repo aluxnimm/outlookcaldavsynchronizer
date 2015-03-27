@@ -33,8 +33,8 @@ namespace CalDavSynchronizer.Implementation
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private const string PR_SMTP_ADDRESS = "http://schemas.microsoft.com/mapi/proptag/0x39FE001E";
-    private string _outlookEmailAddress;
-    private Uri _serverEmailAddress;
+    private readonly string _outlookEmailAddress;
+    private readonly Uri _serverEmailAddress;
 
     public AppointmentEventEntityMapper (string outlookEmailAddress, Uri serverEmailAddress)
     {
@@ -45,12 +45,26 @@ namespace CalDavSynchronizer.Implementation
 
     public IEvent Map1To2 (AppointmentItem source, IEvent target)
     {
-      target.Start = new iCalDateTime (source.StartUTC) { IsUniversalTime = true };
-      target.DTEnd = new iCalDateTime (source.EndUTC) { IsUniversalTime = true };
+      if (source.AllDayEvent)
+      {
+        // Outlook's AllDayEvent relates to Start and not not StartUtc!!!
+        target.Start = new iCalDateTime (source.Start);
+        target.Start.HasTime = false;
+
+        target.End = new iCalDateTime (source.End);
+        target.End.HasTime = false;
+        target.IsAllDay = true;
+      }
+      else
+      {
+        target.Start = new iCalDateTime (source.StartUTC) { IsUniversalTime = true };
+        target.DTEnd = new iCalDateTime (source.EndUTC) { IsUniversalTime = true };
+        target.IsAllDay = false;
+      }
+    
       target.Summary = source.Subject;
       target.Location = source.Location;
       target.Description = source.Body;
-      target.IsAllDay = source.AllDayEvent;
 
       target.Priority = MapPriority1To2 (source.Importance);
 
@@ -477,12 +491,35 @@ namespace CalDavSynchronizer.Implementation
 
     public AppointmentItem Map2To1 (IEvent source, AppointmentItem target)
     {
-      target.StartUTC = source.Start.UTC;
-      target.EndUTC = source.DTEnd != null ? source.DTEnd.UTC : source.Start.UTC;
+      if (source.IsAllDay)
+      {
+        target.Start = source.Start.Value;
+        target.End = source.End.Value;
+        target.AllDayEvent = true;
+      }
+      else
+      {
+        target.AllDayEvent = false;
+        target.StartUTC = source.Start.UTC;
+        if (source.DTEnd != null)
+        {
+          target.EndUTC = source.DTEnd.UTC;
+        }
+        else if (source.Start.HasTime)
+        {
+          target.EndUTC = source.Start.UTC;
+        }
+        else
+        {
+          target.EndUTC = source.Start.AddDays (1).UTC;
+        }
+      }
+    
+    
+
       target.Subject = source.Summary;
       target.Location = source.Location;
       target.Body = source.Description;
-      target.AllDayEvent = source.IsAllDay;
 
       target.Importance = MapPriority2To1 (source.Priority);
 
