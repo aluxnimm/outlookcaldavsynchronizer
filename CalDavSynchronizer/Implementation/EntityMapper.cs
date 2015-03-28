@@ -16,7 +16,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using CalDavSynchronizer.Generic.EntityMapping;
 using DDay.iCal;
@@ -61,7 +60,7 @@ namespace CalDavSynchronizer.Implementation
         target.DTEnd = new iCalDateTime (source.EndUTC) { IsUniversalTime = true };
         target.IsAllDay = false;
       }
-    
+
       target.Summary = source.Subject;
       target.Location = source.Location;
       target.Description = source.Body;
@@ -76,7 +75,7 @@ namespace CalDavSynchronizer.Implementation
 
       target.Class = MapPrivacy1To2 (source.Sensitivity);
       MapReminder1To2 (source, target);
-      
+
       return target;
     }
 
@@ -87,11 +86,12 @@ namespace CalDavSynchronizer.Implementation
         var trigger = new Trigger (TimeSpan.FromMinutes (-source.ReminderMinutesBeforeStart));
         trigger.Parameters.Add ("VALUE", "DURATION");
         target.Alarms.Add (
-          new Alarm() { 
-            Action = AlarmAction.Display,
-            Trigger = trigger
-          }
-        );
+            new Alarm()
+            {
+                Action = AlarmAction.Display,
+                Trigger = trigger
+            }
+            );
       }
     }
 
@@ -117,7 +117,6 @@ namespace CalDavSynchronizer.Implementation
 
       target.ReminderSet = true;
       target.ReminderMinutesBeforeStart = -(int) alarm.Trigger.Duration.Value.TotalMinutes;
-
     }
 
     private string MapPrivacy1To2 (OlSensitivity value)
@@ -433,10 +432,17 @@ namespace CalDavSynchronizer.Implementation
       {
         if (!IsOwnIdentity (recipient))
         {
-          var attendee = new Attendee (GetMailUrl (recipient.AddressEntry));
+          Attendee attendee;
+          
+          if(!string.IsNullOrEmpty(recipient.Address))
+            attendee = new Attendee (GetMailUrl (recipient.AddressEntry));
+          else
+            attendee = new Attendee ();
+          
           attendee.CommonName = recipient.Name;
           attendee.Role = MapAttendeeType1To2 ((OlMeetingRecipientType) recipient.Type);
           target.Attendees.Add (attendee);
+
         }
         if (((OlMeetingRecipientType) recipient.Type) == OlMeetingRecipientType.olOrganizer)
         {
@@ -514,8 +520,7 @@ namespace CalDavSynchronizer.Implementation
           target.EndUTC = source.Start.AddDays (1).UTC;
         }
       }
-    
-    
+
 
       target.Subject = source.Summary;
       target.Location = source.Location;
@@ -536,19 +541,30 @@ namespace CalDavSynchronizer.Implementation
     private void MapAttendees2To1 (IEvent source, AppointmentItem target)
     {
       var targetRecipientsWhichShouldRemain = new HashSet<Recipient>();
-      var indexByEmailAddresses = GetOutlookRecipientsByEmailAddresses (target);
+      var indexByEmailAddresses = GetOutlookRecipientsByEmailAddressesOrName (target);
 
       foreach (var attendee in source.Attendees)
       {
-        Recipient targetRecipient;
-        if (!indexByEmailAddresses.TryGetValue (attendee.Value.ToString(), out targetRecipient))
+        Recipient targetRecipient = null;
+
+        if (attendee.Value != null && !string.IsNullOrEmpty(attendee.Value.ToString().Substring (s_mailtoSchemaLength)))
         {
-          targetRecipient = target.Recipients.Add (attendee.Value.ToString().Substring (s_mailtoSchemaLength));
+          if (!indexByEmailAddresses.TryGetValue (attendee.Value.ToString(), out targetRecipient))
+          {
+            targetRecipient = target.Recipients.Add (attendee.Value.ToString().Substring (s_mailtoSchemaLength));
+          }
         }
-        targetRecipientsWhichShouldRemain.Add (targetRecipient);
+        else
+        {
+          if (!string.IsNullOrEmpty (attendee.CommonName))
+            targetRecipient = target.Recipients.Add (attendee.CommonName);
+        }
 
-
-        targetRecipient.Type = (int) MapAttendeeType2To1 (attendee.Role);
+        if (targetRecipient != null)
+        {
+          targetRecipientsWhichShouldRemain.Add (targetRecipient);
+          targetRecipient.Type = (int) MapAttendeeType2To1 (attendee.Role);
+        }
       }
 
       for (int i = target.Recipients.Count; i > 0; i--)
@@ -562,13 +578,16 @@ namespace CalDavSynchronizer.Implementation
       }
     }
 
-    private Dictionary<string, Recipient> GetOutlookRecipientsByEmailAddresses (AppointmentItem appointment)
+    private Dictionary<string, Recipient> GetOutlookRecipientsByEmailAddressesOrName (AppointmentItem appointment)
     {
       Dictionary<string, Recipient> indexByEmailAddresses = new Dictionary<string, Recipient> (StringComparer.InvariantCultureIgnoreCase);
 
       foreach (Recipient recipient in appointment.Recipients)
       {
-        indexByEmailAddresses.Add (GetMailUrl (recipient.AddressEntry), recipient);
+        if (! string.IsNullOrEmpty (recipient.Address))
+          indexByEmailAddresses[GetMailUrl (recipient.AddressEntry)] =  recipient;
+        else
+          indexByEmailAddresses[recipient.Name] = recipient;
       }
 
       return indexByEmailAddresses;

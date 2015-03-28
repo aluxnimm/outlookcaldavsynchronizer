@@ -4,3 +4,4 @@ debug/
 *.suo
 *.csproj.user
 packages/*/
+/CalDavSynchronizer.sln.DotSettings.user

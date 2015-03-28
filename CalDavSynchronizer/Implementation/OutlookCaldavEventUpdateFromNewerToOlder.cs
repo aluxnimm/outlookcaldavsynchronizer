@@ -31,7 +31,14 @@ namespace CalDavSynchronizer.Implementation
 
     protected override bool AIsNewerThanB
     {
-      get { return _aEntity.LastModificationTime.ToUniversalTime() >= _bEntity.LastModified.UTC; }
+      get
+      {
+        // Assume that no modification means, that the item is never modified. Therefore it must be new. 
+        if (_bEntity.LastModified == null)
+          return false;
+
+        return _aEntity.LastModificationTime.ToUniversalTime() >= _bEntity.LastModified.UTC; 
+      }
     }
   }
 }
