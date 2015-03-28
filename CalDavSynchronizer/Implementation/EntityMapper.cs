@@ -16,6 +16,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using CalDavSynchronizer.Generic.EntityMapping;
 using DDay.iCal;
@@ -76,7 +78,20 @@ namespace CalDavSynchronizer.Implementation
       target.Class = MapPrivacy1To2 (source.Sensitivity);
       MapReminder1To2 (source, target);
 
+      MapCategories1To2(source, target);
+
       return target;
+    }
+
+    private static void MapCategories1To2 (AppointmentItem source, IEvent target)
+    {
+      if (!string.IsNullOrEmpty (source.Categories))
+      {
+        Array.ForEach (
+            source.Categories.Split (new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries),
+            c => target.Categories.Add (c)
+            );
+      }
     }
 
     private void MapReminder1To2 (AppointmentItem source, IEvent target)
@@ -433,16 +448,15 @@ namespace CalDavSynchronizer.Implementation
         if (!IsOwnIdentity (recipient))
         {
           Attendee attendee;
-          
-          if(!string.IsNullOrEmpty(recipient.Address))
+
+          if (!string.IsNullOrEmpty (recipient.Address))
             attendee = new Attendee (GetMailUrl (recipient.AddressEntry));
           else
-            attendee = new Attendee ();
-          
+            attendee = new Attendee();
+
           attendee.CommonName = recipient.Name;
           attendee.Role = MapAttendeeType1To2 ((OlMeetingRecipientType) recipient.Type);
           target.Attendees.Add (attendee);
-
         }
         if (((OlMeetingRecipientType) recipient.Type) == OlMeetingRecipientType.olOrganizer)
         {
@@ -534,7 +548,14 @@ namespace CalDavSynchronizer.Implementation
       target.Sensitivity = MapPrivacy2To1 (source.Class);
       MapReminder2To1 (source, target);
 
+      MapCategories2To1(source, target);
+
       return target;
+    }
+
+    private static void MapCategories2To1 (IEvent source, AppointmentItem target)
+    {
+      target.Categories = string.Join (CultureInfo.CurrentCulture.TextInfo.ListSeparator, source.Categories);
     }
 
 
@@ -547,7 +568,7 @@ namespace CalDavSynchronizer.Implementation
       {
         Recipient targetRecipient = null;
 
-        if (attendee.Value != null && !string.IsNullOrEmpty(attendee.Value.ToString().Substring (s_mailtoSchemaLength)))
+        if (attendee.Value != null && !string.IsNullOrEmpty (attendee.Value.ToString().Substring (s_mailtoSchemaLength)))
         {
           if (!indexByEmailAddresses.TryGetValue (attendee.Value.ToString(), out targetRecipient))
           {
@@ -585,7 +606,7 @@ namespace CalDavSynchronizer.Implementation
       foreach (Recipient recipient in appointment.Recipients)
       {
         if (! string.IsNullOrEmpty (recipient.Address))
-          indexByEmailAddresses[GetMailUrl (recipient.AddressEntry)] =  recipient;
+          indexByEmailAddresses[GetMailUrl (recipient.AddressEntry)] = recipient;
         else
           indexByEmailAddresses[recipient.Name] = recipient;
       }
