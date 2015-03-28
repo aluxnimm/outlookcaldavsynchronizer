@@ -80,8 +80,42 @@ namespace CalDavSynchronizer.Implementation
 
       MapCategories1To2(source, target);
 
+      target.Transparency = MapTransparency1To2 (source.BusyStatus);
+
       return target;
     }
+
+    private TransparencyType MapTransparency1To2 (OlBusyStatus value)
+    {
+      switch (value)
+      {
+        case OlBusyStatus.olBusy:
+        case OlBusyStatus.olOutOfOffice:
+        case OlBusyStatus.olWorkingElsewhere:
+          return TransparencyType.Opaque;
+        case OlBusyStatus.olTentative:
+        case OlBusyStatus.olFree:
+          return TransparencyType.Transparent;
+      }
+
+      throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
+    }
+
+
+    private OlBusyStatus MapTransparency2To1 (TransparencyType value)
+    {
+      switch (value)
+      {
+        case  TransparencyType.Opaque:
+          return OlBusyStatus.olBusy;
+        case TransparencyType.Transparent:
+          return OlBusyStatus.olFree;
+      }
+
+      throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
+    }
+
+
 
     private static void MapCategories1To2 (AppointmentItem source, IEvent target)
     {
@@ -549,6 +583,8 @@ namespace CalDavSynchronizer.Implementation
       MapReminder2To1 (source, target);
 
       MapCategories2To1(source, target);
+
+      target.BusyStatus = MapTransparency2To1 (source.Transparency);
 
       return target;
     }
