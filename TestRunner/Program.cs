@@ -18,6 +18,7 @@ using System.Linq;
 using System.Reflection;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.EntityRepositories;
+using CalDavSynchronizer.Generic.ProgressReport;
 using CalDavSynchronizer.Implementation;
 using DDay.iCal;
 using log4net;
@@ -57,7 +58,9 @@ namespace TestRunner
     {
       var eventRepository = new CalDavEventRepository (s_dataAccess, new DDay.iCal.Serialization.iCalendar.iCalendarSerializer ());
 
-     
+      var versions = eventRepository.GetVersions (DateTime.Now.AddDays (-1000), DateTime.Now.AddDays (1000));
+      var events = eventRepository.Get (versions.Keys, NullTotalProgress.Instance);
+
     
       //foreach (var e in s_dataAccess.GetEvents (null, null))
       //  s_dataAccess.DeleteEvent (e);
