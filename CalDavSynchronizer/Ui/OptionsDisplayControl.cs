@@ -16,6 +16,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
@@ -138,7 +139,13 @@ namespace CalDavSynchronizer.Ui
       {
         AdjustCalendarUrl();
 
-        var dataAccess = new CalDavDataAccess (new Uri (_calenderUrlTextBox.Text), _userNameTextBox.Text, _passwordTextBox.Text);
+       var dataAccess = new CalDavDataAccess (
+          new Uri (_calenderUrlTextBox.Text), 
+        _userNameTextBox.Text, 
+        _passwordTextBox.Text,
+        TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+        TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"])
+       );
 
         if (!dataAccess.IsCalendarAccessSupported())
           MessageBox.Show ("The specified Url does not support calendar access!", connectionTestCaption);

@@ -35,8 +35,10 @@ namespace CalDavSynchronizer.DataAccess
     private readonly string _username;
     // TODO: consider to use SecureString
     private readonly string _password;
+    private readonly TimeSpan _connectTimeout;
+    private readonly TimeSpan _readWriteTimeout;
 
-    public CalDavDataAccess (Uri calendarUrl, string username, string password)
+    public CalDavDataAccess (Uri calendarUrl, string username, string password, TimeSpan connectTimeout, TimeSpan readWriteTimeout)
     {
       ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
 
@@ -44,6 +46,8 @@ namespace CalDavSynchronizer.DataAccess
         throw new ArgumentNullException ("calendarUrl");
       _username = username;
       _password = password;
+      _connectTimeout = connectTimeout;
+      _readWriteTimeout = readWriteTimeout;
       _calendarUrl = calendarUrl;
     }
 
@@ -51,6 +55,8 @@ namespace CalDavSynchronizer.DataAccess
     private HttpWebRequest CreateRequest (Uri url)
     {
       var request = (HttpWebRequest) HttpWebRequest.Create (url);
+      request.Timeout = (int) _connectTimeout.TotalMilliseconds;
+      request.ReadWriteTimeout = (int) _readWriteTimeout.TotalMilliseconds;
 
       if (!string.IsNullOrEmpty (_username))
       {

@@ -30,7 +30,7 @@ namespace TestRunner
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    private static readonly ICalDavDataAccess s_dataAccess = new CalDavDataAccess (new Uri ("XXXXXXXXXXXXXXXXX"), "XXXXXXXXX", "XXXXXXXXX");
+    private static readonly ICalDavDataAccess s_dataAccess = new CalDavDataAccess (new Uri ("XXXXXXXXXXXXXXXXX"), "XXXXXXXXX", "XXXXXXXXX", TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(5));
 
     private static void Main (string[] args)
     {

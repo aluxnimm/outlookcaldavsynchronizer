@@ -39,10 +39,10 @@ namespace CalDavSynchronizer.Implementation
     private readonly AppointmentEventEntityMapper _entityMapper;
     private readonly OutlookAppoointmentRepository _atypeRepository;
     private readonly CalDavEventRepository _btypeRepository;
-    private IEntityRelationDataFactory<string, DateTime, Uri, string> _entityRelationDataFactory;
+    private readonly IEntityRelationDataFactory<string, DateTime, Uri, string> _entityRelationDataFactory;
 
 
-    public OutlookCalDavEventContext (NameSpace outlookSession, IEntityRelationDataAccess<string, DateTime, Uri, string> storageDataAccess, Options options, string outlookEmailAddress)
+    public OutlookCalDavEventContext (NameSpace outlookSession, IEntityRelationDataAccess<string, DateTime, Uri, string> storageDataAccess, Options options, string outlookEmailAddress, TimeSpan connectTimeout, TimeSpan readWriteTimeout)
     {
       if (outlookSession == null)
         throw new ArgumentNullException ("outlookSession");
@@ -56,9 +56,17 @@ namespace CalDavSynchronizer.Implementation
       _entityMapper = new AppointmentEventEntityMapper (outlookEmailAddress, new Uri ("mailto:" + options.EmailAddress));
 
       var calendarFolder = outlookSession.GetFolderFromID (options.OutlookFolderEntryId, options.OutlookFolderStoreId);
-      _atypeRepository = new OutlookAppoointmentRepository (calendarFolder,outlookSession);
+      _atypeRepository = new OutlookAppoointmentRepository (calendarFolder, outlookSession);
 
-      _btypeRepository = new CalDavEventRepository (new CalDavDataAccess (new Uri (options.CalenderUrl), options.UserName, options.Password), new iCalendarSerializer());
+      _btypeRepository = new CalDavEventRepository (
+          new CalDavDataAccess (
+              new Uri (options.CalenderUrl),
+              options.UserName,
+              options.Password,
+              connectTimeout,
+              readWriteTimeout
+          ),
+          new iCalendarSerializer());
 
       _storageDataAccess = storageDataAccess;
 
@@ -100,12 +108,6 @@ namespace CalDavSynchronizer.Implementation
     public void Save (List<IEntityRelationData<string, DateTime, Uri, string>> data)
     {
       _storageDataAccess.Save (data);
-    }
-
-
-    public void DeleteCaches ()
-    {
-      //_storageDataAccess.DeleteCaches();
     }
   }
 }

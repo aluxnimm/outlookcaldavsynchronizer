@@ -66,7 +66,14 @@ namespace CalDavSynchronizer.Scheduling
 
       var storageDataAccess = new EntityRelationDataAccess<string, DateTime, OutlookEventRelationData , Uri, string> (storageDataDirectory);
 
-      var synchronizationContext = new OutlookCalDavEventContext (outlookSession, storageDataAccess, options, _outlookEmailAddress);
+      var synchronizationContext = new OutlookCalDavEventContext (
+        outlookSession, 
+        storageDataAccess, 
+        options, 
+        _outlookEmailAddress, 
+        TimeSpan.Parse(ConfigurationManager.AppSettings["calDavConnectTimeout"]), 
+        TimeSpan.Parse(ConfigurationManager.AppSettings["calDavReadWriteTimeout"])
+      );
 
       var syncStateFactory = new EntitySyncStateFactory<string, DateTime, AppointmentItem, Uri, string, IEvent> (
         synchronizationContext.EntityMapper,
