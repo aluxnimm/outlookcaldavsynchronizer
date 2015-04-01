@@ -46,7 +46,7 @@ namespace CalDavSynchronizer.Implementation
     {
       var events = new Dictionary<string, DateTime>();
 
-      string filter = String.Format ("[Start] > '{0}' And [End] < '{1}'", ToOutlookDateString (fromUtc), ToOutlookDateString (toUtc));
+      string filter = String.Format ("[Start] < '{0}' And [End] > '{1}'", ToOutlookDateString (toUtc), ToOutlookDateString (fromUtc));
 
       var table = _calendarFolder.GetTable (filter);
       table.Columns.RemoveAll();
