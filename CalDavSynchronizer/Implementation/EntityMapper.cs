@@ -382,7 +382,8 @@ namespace CalDavSynchronizer.Implementation
               }
               else
               { 
-                  targetRecurrencePattern.Instance = sourceRecurrencePattern.ByDay[0].Offset; 
+
+                  targetRecurrencePattern.Instance = (sourceRecurrencePattern.ByDay[0].Offset>=0)?sourceRecurrencePattern.ByDay[0].Offset:5; 
               }
               targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1 (sourceRecurrencePattern.ByDay);
             }
@@ -443,8 +444,8 @@ namespace CalDavSynchronizer.Implementation
                 }
                 targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
 
+                targetRecurrencePattern.Instance = (sourceRecurrencePattern.ByDay[0].Offset >= 0) ? sourceRecurrencePattern.ByDay[0].Offset : 5;
                 targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1(sourceRecurrencePattern.ByDay);
-                targetRecurrencePattern.Instance = sourceRecurrencePattern.ByDay[0].Offset; 
             }
             else
             {
