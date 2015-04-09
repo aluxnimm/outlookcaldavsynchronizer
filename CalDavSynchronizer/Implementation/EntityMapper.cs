@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using CalDavSynchronizer.Generic.EntityMapping;
 using DDay.iCal;
@@ -78,7 +77,7 @@ namespace CalDavSynchronizer.Implementation
       target.Class = MapPrivacy1To2 (source.Sensitivity);
       MapReminder1To2 (source, target);
 
-      MapCategories1To2(source, target);
+      MapCategories1To2 (source, target);
 
       target.Transparency = MapTransparency1To2 (source.BusyStatus);
 
@@ -106,7 +105,7 @@ namespace CalDavSynchronizer.Implementation
     {
       switch (value)
       {
-        case  TransparencyType.Opaque:
+        case TransparencyType.Opaque:
           return OlBusyStatus.olBusy;
         case TransparencyType.Transparent:
           return OlBusyStatus.olFree;
@@ -114,7 +113,6 @@ namespace CalDavSynchronizer.Implementation
 
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
     }
-
 
 
     private static void MapCategories1To2 (AppointmentItem source, IEvent target)
@@ -377,13 +375,12 @@ namespace CalDavSynchronizer.Implementation
                 s_logger.WarnFormat ("Event '{0}' contains more than one week in a monthly recurrence rule. Since outlook supports only one week, all except the first one will be ignored.", source.Url);
               }
               else if (sourceRecurrencePattern.ByWeekNo.Count > 0)
-              { 
+              {
                 targetRecurrencePattern.Instance = sourceRecurrencePattern.ByWeekNo[0];
               }
               else
-              { 
-
-                  targetRecurrencePattern.Instance = (sourceRecurrencePattern.ByDay[0].Offset>=0)?sourceRecurrencePattern.ByDay[0].Offset:5; 
+              {
+                targetRecurrencePattern.Instance = (sourceRecurrencePattern.ByDay[0].Offset >= 0) ? sourceRecurrencePattern.ByDay[0].Offset : 5;
               }
               targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1 (sourceRecurrencePattern.ByDay);
             }
@@ -437,15 +434,15 @@ namespace CalDavSynchronizer.Implementation
             }
             else if (sourceRecurrencePattern.ByMonth.Count > 0 && sourceRecurrencePattern.ByDay.Count > 0)
             {
-                targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursYearNth;
-                if (sourceRecurrencePattern.ByMonth.Count > 1)
-                {
-                    s_logger.WarnFormat("Event '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.Url);
-                }
-                targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
+              targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursYearNth;
+              if (sourceRecurrencePattern.ByMonth.Count > 1)
+              {
+                s_logger.WarnFormat ("Event '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.Url);
+              }
+              targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
 
-                targetRecurrencePattern.Instance = (sourceRecurrencePattern.ByDay[0].Offset >= 0) ? sourceRecurrencePattern.ByDay[0].Offset : 5;
-                targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1(sourceRecurrencePattern.ByDay);
+              targetRecurrencePattern.Instance = (sourceRecurrencePattern.ByDay[0].Offset >= 0) ? sourceRecurrencePattern.ByDay[0].Offset : 5;
+              targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1 (sourceRecurrencePattern.ByDay);
             }
             else
             {
@@ -599,19 +596,19 @@ namespace CalDavSynchronizer.Implementation
       MapAttendees2To1 (source, target);
       if (source.Organizer != null)
       {
-          target.MeetingStatus = OlMeetingStatus.olMeetingReceived;
-          target.PropertyAccessor.SetProperty("http://schemas.microsoft.com/mapi/proptag/0x0042001F", source.Organizer.Value.ToString().Substring(s_mailtoSchemaLength));
+        target.MeetingStatus = OlMeetingStatus.olMeetingReceived;
+        target.PropertyAccessor.SetProperty ("http://schemas.microsoft.com/mapi/proptag/0x0042001F", source.Organizer.Value.ToString().Substring (s_mailtoSchemaLength));
       }
       else
       {
-          target.MeetingStatus = OlMeetingStatus.olNonMeeting;
+        target.MeetingStatus = OlMeetingStatus.olNonMeeting;
       }
       MapRecurrance2To1 (source, target);
 
       target.Sensitivity = MapPrivacy2To1 (source.Class);
       MapReminder2To1 (source, target);
 
-      MapCategories2To1(source, target);
+      MapCategories2To1 (source, target);
 
       target.BusyStatus = MapTransparency2To1 (source.Transparency);
 
