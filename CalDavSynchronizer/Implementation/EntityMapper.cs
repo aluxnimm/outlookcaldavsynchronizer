@@ -249,7 +249,7 @@ namespace CalDavSynchronizer.Implementation
             break;
           case OlRecurrenceType.olRecursWeekly:
             targetRecurrencePattern.Frequency = FrequencyType.Weekly;
-            MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+            MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay, 0);
             break;
           case OlRecurrenceType.olRecursMonthly:
             targetRecurrencePattern.Frequency = FrequencyType.Monthly;
@@ -257,7 +257,7 @@ namespace CalDavSynchronizer.Implementation
             break;
           case OlRecurrenceType.olRecursMonthNth:
             targetRecurrencePattern.Frequency = FrequencyType.Monthly;
-            MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+            MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay, sourceRecurrencePattern.Instance);
             targetRecurrencePattern.ByWeekNo.Add (sourceRecurrencePattern.Instance);
             break;
           case OlRecurrenceType.olRecursYearly:
@@ -267,7 +267,7 @@ namespace CalDavSynchronizer.Implementation
             break;
           case OlRecurrenceType.olRecursYearNth:
             targetRecurrencePattern.Frequency = FrequencyType.Yearly;
-            MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+            MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay, sourceRecurrencePattern.Instance);
             targetRecurrencePattern.ByMonth.Add (sourceRecurrencePattern.MonthOfYear);
             targetRecurrencePattern.ByWeekNo.Add (sourceRecurrencePattern.Instance);
             break;
@@ -277,22 +277,22 @@ namespace CalDavSynchronizer.Implementation
       }
     }
 
-    private void MapDayOfWeek1To2 (OlDaysOfWeek source, IList<IWeekDay> target)
+    private void MapDayOfWeek1To2 (OlDaysOfWeek source, IList<IWeekDay> target, int offset)
     {
       if ((source & OlDaysOfWeek.olMonday) > 0)
-        target.Add (new WeekDay (DayOfWeek.Monday));
+        target.Add (new WeekDay (DayOfWeek.Monday, offset));
       if ((source & OlDaysOfWeek.olTuesday) > 0)
-        target.Add (new WeekDay (DayOfWeek.Tuesday));
+        target.Add (new WeekDay (DayOfWeek.Tuesday, offset));
       if ((source & OlDaysOfWeek.olWednesday) > 0)
-        target.Add (new WeekDay (DayOfWeek.Wednesday));
+        target.Add (new WeekDay (DayOfWeek.Wednesday, offset));
       if ((source & OlDaysOfWeek.olThursday) > 0)
-        target.Add (new WeekDay (DayOfWeek.Thursday));
+        target.Add (new WeekDay (DayOfWeek.Thursday, offset));
       if ((source & OlDaysOfWeek.olFriday) > 0)
-        target.Add (new WeekDay (DayOfWeek.Friday));
+        target.Add (new WeekDay (DayOfWeek.Friday, offset));
       if ((source & OlDaysOfWeek.olSaturday) > 0)
-        target.Add (new WeekDay (DayOfWeek.Saturday));
+        target.Add (new WeekDay (DayOfWeek.Saturday, offset));
       if ((source & OlDaysOfWeek.olSunday) > 0)
-        target.Add (new WeekDay (DayOfWeek.Sunday));
+        target.Add (new WeekDay (DayOfWeek.Sunday, offset));
     }
 
     private OlDaysOfWeek MapDayOfWeek2To1 (IList<IWeekDay> source)
@@ -369,14 +369,21 @@ namespace CalDavSynchronizer.Implementation
             }
             break;
           case FrequencyType.Monthly:
-            if (sourceRecurrencePattern.ByWeekNo.Count > 0 && sourceRecurrencePattern.ByDay.Count > 0)
+            if (sourceRecurrencePattern.ByDay.Count > 0)
             {
               targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursMonthNth;
               if (sourceRecurrencePattern.ByWeekNo.Count > 1)
               {
                 s_logger.WarnFormat ("Event '{0}' contains more than one week in a monthly recurrence rule. Since outlook supports only one week, all except the first one will be ignored.", source.Url);
               }
-              targetRecurrencePattern.Instance = sourceRecurrencePattern.ByWeekNo[0];
+              else if (sourceRecurrencePattern.ByWeekNo.Count > 0)
+              { 
+                targetRecurrencePattern.Instance = sourceRecurrencePattern.ByWeekNo[0];
+              }
+              else
+              { 
+                  targetRecurrencePattern.Instance = sourceRecurrencePattern.ByDay[0].Offset; 
+              }
               targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1 (sourceRecurrencePattern.ByDay);
             }
             else if (sourceRecurrencePattern.ByMonthDay.Count > 0)
@@ -426,6 +433,18 @@ namespace CalDavSynchronizer.Implementation
                 s_logger.WarnFormat ("Event '{0}' contains more than one days in a monthly recurrence rule. Since outlook supports only one day, all except the first one will be ignored.", source.Url);
               }
               targetRecurrencePattern.DayOfMonth = sourceRecurrencePattern.ByMonthDay[0];
+            }
+            else if (sourceRecurrencePattern.ByMonth.Count > 0 && sourceRecurrencePattern.ByDay.Count > 0)
+            {
+                targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursYearNth;
+                if (sourceRecurrencePattern.ByMonth.Count > 1)
+                {
+                    s_logger.WarnFormat("Event '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.Url);
+                }
+                targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
+
+                targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1(sourceRecurrencePattern.ByDay);
+                targetRecurrencePattern.Instance = sourceRecurrencePattern.ByDay[0].Offset; 
             }
             else
             {
@@ -577,6 +596,15 @@ namespace CalDavSynchronizer.Implementation
       target.Importance = MapPriority2To1 (source.Priority);
 
       MapAttendees2To1 (source, target);
+      if (source.Organizer != null)
+      {
+          target.MeetingStatus = OlMeetingStatus.olMeetingReceived;
+          target.PropertyAccessor.SetProperty("http://schemas.microsoft.com/mapi/proptag/0x0042001F", source.Organizer.Value.ToString().Substring(s_mailtoSchemaLength));
+      }
+      else
+      {
+          target.MeetingStatus = OlMeetingStatus.olNonMeeting;
+      }
       MapRecurrance2To1 (source, target);
 
       target.Sensitivity = MapPrivacy2To1 (source.Class);
