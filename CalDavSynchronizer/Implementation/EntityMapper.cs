@@ -395,8 +395,7 @@ namespace CalDavSynchronizer.Implementation
             }
             else
             {
-              s_logger.WarnFormat ("Event '{0}' contains a monthly recurrence pattern, which is not supported by outlook. Ignoring recurrence rule.", source.Url);
-              target.ClearRecurrencePattern();
+              targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursMonthly;
             }
             break;
           case FrequencyType.Yearly:
@@ -446,8 +445,7 @@ namespace CalDavSynchronizer.Implementation
             }
             else
             {
-              s_logger.WarnFormat ("Event '{0}' contains a yearly recurrence pattern, which is not supported by outlook. Ignoring recurrence rule.", source.Url);
-              target.ClearRecurrencePattern();
+              targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursYearly;
             }
             break;
           default:
