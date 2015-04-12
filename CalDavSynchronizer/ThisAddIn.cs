@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.IO;
 using System.Reflection;
@@ -31,42 +32,37 @@ namespace CalDavSynchronizer
 {
   public partial class ThisAddIn
   {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod ().DeclaringType);
 
-    private Office.CommandBar _toolBar;
-    private Office.CommandBarButton _optionsButton;
-    private Office.CommandBarButton _syncNowButton;
-    private Explorers _openExplorers;
-    private Scheduler _scheduler;
-    private IOptionsDataAccess _optionsDataAccess;
-    private static string _applicationDataDirectory;
+    internal static Scheduler Scheduler { get; private set; }
+    internal static IOptionsDataAccess OptionsDataAccess { get; private set; }
+    internal static NameSpace Session { get; private set; }
 
-    public static string ApplicationDataDirectory
-    {
-      get { return _applicationDataDirectory; }
-    }
 
     private void ThisAddIn_Startup (object sender, EventArgs e)
     {
+      InitializeSynchronizer ();
+    }
+
+    private void InitializeSynchronizer ()
+    {
       try
       {
-        XmlConfigurator.Configure();
+        XmlConfigurator.Configure ();
+
+        Session = Application.Session;
 
         s_logger.Info ("Startup...");
 
-        _openExplorers = Application.Explorers;
-        _openExplorers.NewExplorer += OpenExplorers_NewExplorer;
-        AddToolbarToActiveExplorer();
+        var applicationDataDirectory = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData), "CalDavSynchronizer");
 
-        _applicationDataDirectory = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData), "CalDavSynchronizer");
-
-        _optionsDataAccess = new OptionsDataAccess (
+        OptionsDataAccess = new OptionsDataAccess (
             Path.Combine (
-                _applicationDataDirectory,
+                applicationDataDirectory,
                 "options.xml"
                 ));
-        _scheduler = new Scheduler (Application.Session);
-        _scheduler.SetOptions (_optionsDataAccess.LoadOptions());
+        Scheduler = new Scheduler (Application.Session, applicationDataDirectory);
+        Scheduler.SetOptions (OptionsDataAccess.LoadOptions ());
       }
       catch (Exception x)
       {
@@ -77,88 +73,14 @@ namespace CalDavSynchronizer
       s_logger.Info ("Startup finnished");
     }
 
-
-    private void Synchronize ()
-    {
-      try
-      {
-        s_logger.Info ("Synchronization manually triggered");
-        _scheduler.RunNow();
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.HandleException (x, s_logger);
-      }
-    }
-
-    private void OpenExplorers_NewExplorer (Explorer new_Explorer)
-    {
-      ((_Explorer) new_Explorer).Activate();
-      _toolBar = null;
-      AddToolbarToActiveExplorer();
-    }
-
-
-    private void AddToolbarToActiveExplorer ()
-    {
-      if (_toolBar == null)
-      {
-        Office.CommandBars cmdBars = Application.ActiveExplorer().CommandBars;
-        _toolBar = cmdBars.Add ("CalDav Synchronizer", Office.MsoBarPosition.msoBarTop, false, true);
-      }
-      try
-      {
-        Office.CommandBarButton button_1 = (Office.CommandBarButton) _toolBar.Controls.Add (1, missing, missing, missing, missing);
-        button_1.Style = Office.MsoButtonStyle.msoButtonCaption;
-        button_1.Caption = "Options";
-        button_1.Tag = "Options";
-        if (_optionsButton == null)
-        {
-          _optionsButton = button_1;
-          _optionsButton.Click += OptionsButton_Click;
-        }
-
-        Office.CommandBarButton button_2 = (Office.CommandBarButton) _toolBar.Controls.Add (1, missing, missing, missing, missing);
-        button_2.Style = Office.MsoButtonStyle.msoButtonCaption;
-        button_2.Caption = "Synchronize now";
-        button_2.Tag = "Synchronize now";
-        _toolBar.Visible = true;
-        if (_syncNowButton == null)
-        {
-          _syncNowButton = button_2;
-          _syncNowButton.Click += SyncNowButton_Click;
-        }
-      }
-      catch (Exception ex)
-      {
-        MessageBox.Show (ex.Message);
-      }
-    }
-
-    private void SyncNowButton_Click (Office.CommandBarButton Ctrl, ref bool CancelDefault)
-    {
-      Synchronize();
-    }
-
-    private void OptionsButton_Click (Office.CommandBarButton Ctrl, ref bool CancelDefault)
-    {
-      try
-      {
-        var options = _optionsDataAccess.LoadOptions();
-        if (OptionsForm.EditOptions (Application.Session, options, out options))
-        {
-          _optionsDataAccess.SaveOptions (options);
-          _scheduler.SetOptions (options);
-        }
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.HandleException (x, s_logger);
-      }
-    }
-
     private void ThisAddIn_Shutdown (object sender, EventArgs e)
     {
+
+    }
+
+    protected override Microsoft.Office.Tools.Ribbon.IRibbonExtension[] CreateRibbonObjects ()
+    {
+      return new Microsoft.Office.Tools.Ribbon.IRibbonExtension[] { new CalDavSynchronizerRibbon () };
     }
 
     #region VSTO generated code

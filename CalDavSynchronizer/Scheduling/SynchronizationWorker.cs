@@ -44,10 +44,12 @@ namespace CalDavSynchronizer.Scheduling
     private readonly string _outlookEmailAddress;
     private bool _inactive;
     private readonly ITotalProgressFactory _totalProgressFactory;
+    private readonly string _applicationDataDirectory;
 
-    public SynchronizationWorker (string outlookEmailAddress)
+    public SynchronizationWorker (string outlookEmailAddress, string applicationDataDirectory)
     {
       _outlookEmailAddress = outlookEmailAddress;
+      _applicationDataDirectory = applicationDataDirectory;
       // Set to min, to ensure that it runs on the first run after startup
       _lastRun = DateTime.MinValue;
       _totalProgressFactory = new TotalProgressFactory(
@@ -60,7 +62,7 @@ namespace CalDavSynchronizer.Scheduling
       _profileName = options.Name;
 
       var storageDataDirectory = Path.Combine (
-         ThisAddIn.ApplicationDataDirectory,
+         _applicationDataDirectory,
          options.Id.ToString ()
      );
 

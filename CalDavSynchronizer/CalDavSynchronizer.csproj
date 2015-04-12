@@ -168,6 +168,12 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="CalDavSynchronizerRibbon.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CalDavSynchronizerRibbon.Designer.cs">
+      <DependentUpon>CalDavSynchronizerRibbon.cs</DependentUpon>
+    </Compile>
     <Compile Include="Generic\EntityRelationManagement\EntityRelationDataAccess.cs" />
     <Compile Include="Generic\ProgressReport\IProgressUi.cs" />
     <Compile Include="Generic\ProgressReport\IProgressUiFactory.cs" />
@@ -261,6 +267,9 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <EmbeddedResource Include="CalDavSynchronizerRibbon.resx">
+      <DependentUpon>CalDavSynchronizerRibbon.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Ui\OptionsDisplayControl.resx">
       <DependentUpon>OptionsDisplayControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -275,6 +284,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="Ui\ProgressForm.resx">
       <DependentUpon>ProgressForm.cs</DependentUpon>
@@ -307,7 +317,15 @@
     </Compile>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\Sync.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Options.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\About.ico" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
