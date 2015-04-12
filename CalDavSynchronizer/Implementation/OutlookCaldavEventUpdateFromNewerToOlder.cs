@@ -22,9 +22,9 @@ using Microsoft.Office.Interop.Outlook;
 namespace CalDavSynchronizer.Implementation
 {
   internal class OutlookCaldavEventUpdateFromNewerToOlder
-      : UpdateFromNewerToOlder<string, DateTime, AppointmentItem, Uri, string, IEvent>
+      : UpdateFromNewerToOlder<string, DateTime, AppointmentItem, Uri, string, IICalendar>
   {
-    public OutlookCaldavEventUpdateFromNewerToOlder (EntitySyncStateEnvironment<string, DateTime, AppointmentItem, Uri, string, IEvent> environment, IEntityRelationData<string, DateTime, Uri, string> knownData, DateTime newA, string newB)
+    public OutlookCaldavEventUpdateFromNewerToOlder (EntitySyncStateEnvironment<string, DateTime, AppointmentItem, Uri, string, IICalendar> environment, IEntityRelationData<string, DateTime, Uri, string> knownData, DateTime newA, string newB)
         : base(environment, knownData, newA, newB)
     {
     }
@@ -33,11 +33,13 @@ namespace CalDavSynchronizer.Implementation
     {
       get
       {
+        var evt = _bEntity.Events[0];
+
         // Assume that no modification means, that the item is never modified. Therefore it must be new. 
-        if (_bEntity.LastModified == null)
+        if (evt.LastModified == null)
           return false;
 
-        return _aEntity.LastModificationTime.ToUniversalTime() >= _bEntity.LastModified.UTC; 
+        return _aEntity.LastModificationTime.ToUniversalTime() >= evt.LastModified.UTC; 
       }
     }
   }

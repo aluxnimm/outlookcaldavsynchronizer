@@ -65,14 +65,14 @@ namespace TestRunner
       //foreach (var e in s_dataAccess.GetEvents (null, null))
       //  s_dataAccess.DeleteEvent (e);
 
-      var evt = eventRepository.Create (e =>
-      {
-        e.Summary = "bla";
-        e.Location = "iwo";
-        e.Start = new iCalDateTime (DateTime.UtcNow.AddHours (-4));
-        e.DTEnd = new iCalDateTime (DateTime.UtcNow.AddHours (-3));
-        return e;
-      });
+      //var evt = eventRepository.Create (e =>
+      //{
+      //  e.Summary = "bla";
+      //  e.Location = "iwo";
+      //  e.Start = new iCalDateTime (DateTime.UtcNow.AddHours (-4));
+      //  e.DTEnd = new iCalDateTime (DateTime.UtcNow.AddHours (-3));
+      //  return e;
+      //});
 
 
       //foreach (var evt in x)

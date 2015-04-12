@@ -33,7 +33,7 @@ using log4net;
 
 namespace CalDavSynchronizer.Implementation
 {
-  public class CalDavEventRepository : IEntityRepository<IEvent, Uri, string>
+  public class CalDavEventRepository : IEntityRepository<IICalendar, Uri, string>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -54,13 +54,13 @@ namespace CalDavSynchronizer.Implementation
       }
     }
 
-    public IReadOnlyDictionary<Uri, IEvent> Get (ICollection<Uri> ids, ITotalProgress progress)
+    public IReadOnlyDictionary<Uri, IICalendar> Get (ICollection<Uri> ids, ITotalProgress progress)
     {
       if (ids.Count == 0)
       {
         progress.StartStep (0, "").Dispose();
         progress.StartStep (0, "").Dispose();
-        return new Dictionary<Uri, IEvent>();
+        return new Dictionary<Uri, IICalendar> ();
       }
 
       using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("CalDavEventRepository.Get ({0} entitie(s))", ids.Count)))
@@ -79,25 +79,25 @@ namespace CalDavSynchronizer.Implementation
       }
     }
 
-    private IReadOnlyDictionary<Uri, IEvent> ParallelDeserialize (IReadOnlyDictionary<Uri, string> serializedEvents)
+    private IReadOnlyDictionary<Uri, IICalendar> ParallelDeserialize (IReadOnlyDictionary<Uri, string> serializedEvents)
     {
-      var result = new Dictionary<Uri, IEvent>();
+      var result = new Dictionary<Uri, IICalendar> ();
       Parallel.ForEach (
           serializedEvents,
-          () => Tuple.Create (new iCalendarSerializer(), new List<Tuple<Uri, IEvent>>()),
+          () => Tuple.Create (new iCalendarSerializer (), new List<Tuple<Uri, IICalendar>> ()),
           (serialized, loopState, threadLocal) =>
           {
-            IEvent evt;
-            if (TryDeserializeICalEvent (serialized.Value, out evt, serialized.Key, threadLocal.Item1))
-              threadLocal.Item2.Add (Tuple.Create (serialized.Key, evt));
+            IICalendar calendar;
+            if (TryDeserializeICalEvent (serialized.Value, out calendar, serialized.Key, threadLocal.Item1))
+              threadLocal.Item2.Add (Tuple.Create (serialized.Key, calendar));
             return threadLocal;
           },
           threadLocal =>
           {
             lock (result)
             {
-              foreach (var evt in threadLocal.Item2)
-                result.Add (evt.Item1, evt.Item2);
+              foreach (var calendar in threadLocal.Item2)
+                result.Add (calendar.Item1, calendar.Item2);
             }
           });
 
@@ -113,43 +113,41 @@ namespace CalDavSynchronizer.Implementation
       }
     }
 
-    public EntityIdWithVersion<Uri, string> Update (Uri entityId, IEvent entityToUpdate, Func<IEvent, IEvent> entityModifier)
+    public EntityIdWithVersion<Uri, string> Update (Uri entityId, IICalendar entityToUpdate, Func<IICalendar, IICalendar> entityModifier)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
-        IEvent newEvent = new Event();
-        newEvent = entityModifier (newEvent);
+        IICalendar newCalendar = new iCalendar ();
+        newCalendar = entityModifier (newCalendar);
 
-        newEvent.Sequence = entityToUpdate.Sequence + 1;
+        newCalendar.Events[0].Sequence = entityToUpdate.Events[0].Sequence + 1;
 
-        return _calDavDataAccess.UpdateEvent (entityId, SerializeCalEvent (newEvent));
+        return _calDavDataAccess.UpdateEvent (entityId, SerializeCalEvent (newCalendar));
       }
     }
 
-    public EntityIdWithVersion<Uri, string> Create (Func<IEvent, IEvent> entityInitializer)
+    public EntityIdWithVersion<Uri, string> Create (Func<IICalendar, IICalendar> entityInitializer)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
-        IEvent newEvent = new Event();
-        newEvent = entityInitializer (newEvent);
-        return _calDavDataAccess.CreateEvent (SerializeCalEvent (newEvent));
+        IICalendar newCalendar = new iCalendar ();
+        newCalendar = entityInitializer (newCalendar);
+        return _calDavDataAccess.CreateEvent (SerializeCalEvent (newCalendar));
       }
     }
 
 
-    private string SerializeCalEvent (IEvent evt)
+    private string SerializeCalEvent (IICalendar calendar)
     {
-      var calendar = new iCalendar();
-      calendar.Events.Add (evt);
       return _calendarSerializer.SerializeToString (calendar);
     }
 
-    private static bool TryDeserializeICalEvent (string iCalData, out IEvent evt, Uri uriOfEventForLogging, IStringSerializer calendarSerializer)
+    private static bool TryDeserializeICalEvent (string iCalData, out IICalendar calendar, Uri uriOfEventForLogging, IStringSerializer calendarSerializer)
     {
-      evt = null;
+      calendar = null;
       try
       {
-        evt = DeserializeICalEvent (iCalData, calendarSerializer);
+        calendar = DeserializeICalEvent (iCalData, calendarSerializer);
         return true;
       }
       catch (Exception x)
@@ -159,16 +157,13 @@ namespace CalDavSynchronizer.Implementation
       }
     }
 
-    private static IEvent DeserializeICalEvent (string iCalData, IStringSerializer calendarSerializer)
+    private static IICalendar DeserializeICalEvent (string iCalData, IStringSerializer calendarSerializer)
     {
-      IEvent evt;
-
       using (var reader = new StringReader (iCalData))
       {
         var calendarCollection = (iCalendarCollection) calendarSerializer.Deserialize (reader);
-        evt = calendarCollection[0].Events[0];
+        return calendarCollection[0];
       }
-      return evt;
     }
   }
 }

@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
 // 
-// You should have received a copy of the GNU Affero General Public License
+// You should have received a copy of the GNU Affero General Public LicenseIICalendar
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
@@ -28,7 +28,7 @@ using RecurrencePattern = DDay.iCal.RecurrencePattern;
 
 namespace CalDavSynchronizer.Implementation
 {
-  internal class AppointmentEventEntityMapper : IEntityMapper<AppointmentItem, IEvent>
+  internal class AppointmentEventEntityMapper : IEntityMapper<AppointmentItem, IICalendar>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -43,8 +43,11 @@ namespace CalDavSynchronizer.Implementation
     }
 
 
-    public IEvent Map1To2 (AppointmentItem source, IEvent target)
+    public IICalendar Map1To2 (AppointmentItem source, IICalendar targetCalender)
     {
+      IEvent target = new Event();
+      targetCalender.Events.Add (target);
+
       if (source.AllDayEvent)
       {
         // Outlook's AllDayEvent relates to Start and not not StartUtc!!!
@@ -81,7 +84,7 @@ namespace CalDavSynchronizer.Implementation
 
       target.Transparency = MapTransparency1To2 (source.BusyStatus);
 
-      return target;
+      return targetCalender;
     }
 
     private TransparencyType MapTransparency1To2 (OlBusyStatus value)
@@ -558,8 +561,10 @@ namespace CalDavSynchronizer.Implementation
 
     private const int s_mailtoSchemaLength = 7; // length of "mailto:"
 
-    public AppointmentItem Map2To1 (IEvent source, AppointmentItem target)
+    public AppointmentItem Map2To1 (IICalendar sourceCalendar, AppointmentItem target)
     {
+      var source = sourceCalendar.Events[0];
+
       if (source.IsAllDay)
       {
         target.Start = source.Start.Value;

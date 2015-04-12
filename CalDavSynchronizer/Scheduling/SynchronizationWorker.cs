@@ -75,16 +75,16 @@ namespace CalDavSynchronizer.Scheduling
         TimeSpan.Parse(ConfigurationManager.AppSettings["calDavReadWriteTimeout"])
       );
 
-      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, AppointmentItem, Uri, string, IEvent> (
+      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, AppointmentItem, Uri, string, IICalendar> (
         synchronizationContext.EntityMapper,
         synchronizationContext.AtypeRepository,
         synchronizationContext.BtypeRepository,
         synchronizationContext.EntityRelationDataFactory
       );
 
-      
 
-      _synchronizer = new Synchronizer<string, DateTime, AppointmentItem, Uri, string, IEvent> (
+
+      _synchronizer = new Synchronizer<string, DateTime, AppointmentItem, Uri, string, IICalendar> (
           synchronizationContext,
           InitialSyncStateCreationStrategyFactory.Create(
             syncStateFactory,

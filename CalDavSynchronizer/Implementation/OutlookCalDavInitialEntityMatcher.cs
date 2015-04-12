@@ -20,16 +20,18 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation
 {
-  internal class OutlookCalDavInitialEntityMatcher : InitialEntityMatcherByPropertyGrouping<AppointmentItem, string, DateTime, string, IEvent, Uri, string, string>
+  internal class OutlookCalDavInitialEntityMatcher : InitialEntityMatcherByPropertyGrouping<AppointmentItem, string, DateTime, string, IICalendar, Uri, string, string>
   {
-    
-    protected override bool AreEqual (AppointmentItem atypeEntity, IEvent btypeEntity)
+
+    protected override bool AreEqual (AppointmentItem atypeEntity, IICalendar btypeEntity)
     {
+      var evt = btypeEntity.Events[0];
+
       return
-          btypeEntity.Summary == atypeEntity.Subject &&
-          (btypeEntity.IsAllDay && atypeEntity.AllDayEvent ||
-           btypeEntity.Start.UTC == atypeEntity.StartUTC.ToUniversalTime() &&
-           btypeEntity.DTEnd.UTC == atypeEntity.EndUTC.ToUniversalTime());
+          evt.Summary == atypeEntity.Subject &&
+          (evt.IsAllDay && atypeEntity.AllDayEvent ||
+           evt.Start.UTC == atypeEntity.StartUTC.ToUniversalTime() &&
+           evt.DTEnd.UTC == atypeEntity.EndUTC.ToUniversalTime());
     }
 
     protected override string GetAtypePropertyValue (AppointmentItem atypeEntity)
@@ -37,9 +39,9 @@ namespace CalDavSynchronizer.Implementation
       return atypeEntity.Subject.ToLower();
     }
 
-    protected override string GetBtypePropertyValue (IEvent btypeEntity)
+    protected override string GetBtypePropertyValue (IICalendar btypeEntity)
     {
-      return btypeEntity.Summary.ToLower();
+      return btypeEntity.Events[0].Summary.ToLower();
     }
 
     protected override string MapAtypePropertyValue (string value)

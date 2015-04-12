@@ -25,14 +25,14 @@ namespace CalDavSynchronizer.Implementation
   public static class InitialSyncStateCreationStrategyFactory
   {
 
-    private static IEntityConflictSyncStateFactory<string, DateTime, AppointmentItem, Uri, string, IEvent> Create (IEntitySyncStateFactory<string, DateTime, AppointmentItem, Uri, string, IEvent> syncStateFactory, EntitySyncStateEnvironment<string, DateTime, AppointmentItem, Uri, string, IEvent> environment, ConflictResolution conflictResolution)
+    private static IEntityConflictSyncStateFactory<string, DateTime, AppointmentItem, Uri, string, IICalendar> Create (IEntitySyncStateFactory<string, DateTime, AppointmentItem, Uri, string, IICalendar> syncStateFactory, EntitySyncStateEnvironment<string, DateTime, AppointmentItem, Uri, string, IICalendar> environment, ConflictResolution conflictResolution)
     {
       switch (conflictResolution)
       {
         case ConflictResolution.OutlookWins:
-          return new EntityConflictSyncStateFactory_AWins<string, DateTime, AppointmentItem, Uri, string, IEvent> (syncStateFactory);
+          return new EntityConflictSyncStateFactory_AWins<string, DateTime, AppointmentItem, Uri, string, IICalendar> (syncStateFactory);
         case ConflictResolution.ServerWins:
-          return new EntityConflictSyncStateFactory_BWins<string, DateTime, AppointmentItem, Uri, string, IEvent> (syncStateFactory);
+          return new EntityConflictSyncStateFactory_BWins<string, DateTime, AppointmentItem, Uri, string, IICalendar> (syncStateFactory);
         case ConflictResolution.Automatic:
           return new OutlookCaldavEventEntityConflictSyncStateFactory_Automatic (environment);
       }
@@ -40,25 +40,25 @@ namespace CalDavSynchronizer.Implementation
       throw new NotImplementedException ();
     }
 
-    public static IInitialSyncStateCreationStrategy<string, DateTime, AppointmentItem, Uri, string, IEvent> Create (IEntitySyncStateFactory<string, DateTime, AppointmentItem, Uri, string, IEvent> syncStateFactory, EntitySyncStateEnvironment<string, DateTime, AppointmentItem, Uri, string, IEvent> environment, SynchronizationMode synchronizationMode, ConflictResolution conflictResolution)
+    public static IInitialSyncStateCreationStrategy<string, DateTime, AppointmentItem, Uri, string, IICalendar> Create (IEntitySyncStateFactory<string, DateTime, AppointmentItem, Uri, string, IICalendar> syncStateFactory, EntitySyncStateEnvironment<string, DateTime, AppointmentItem, Uri, string, IICalendar> environment, SynchronizationMode synchronizationMode, ConflictResolution conflictResolution)
     {
       switch (synchronizationMode)
       {
         case SynchronizationMode.MergeInBothDirections:
           var conflictResolutionStrategy = Create (syncStateFactory,environment, conflictResolution);
-          return new TwoWayInitialSyncStateCreationStrategy<string, DateTime, AppointmentItem, Uri, string, IEvent> (
+          return new TwoWayInitialSyncStateCreationStrategy<string, DateTime, AppointmentItem, Uri, string, IICalendar> (
               syncStateFactory,
               conflictResolutionStrategy
               );
         case SynchronizationMode.ReplicateOutlookIntoServer:
         case SynchronizationMode.MergeOutlookIntoServer:
-          return new OneWayInitialSyncStateCreationStrategy_AToB<string, DateTime, AppointmentItem, Uri, string, IEvent> (
+          return new OneWayInitialSyncStateCreationStrategy_AToB<string, DateTime, AppointmentItem, Uri, string, IICalendar> (
               syncStateFactory,
               synchronizationMode == SynchronizationMode.ReplicateOutlookIntoServer ? OneWaySyncMode.Replicate : OneWaySyncMode.Merge
            );
         case SynchronizationMode.ReplicateServerIntoOutlook:
         case SynchronizationMode.MergeServerIntoOutlook:
-          return new OneWayInitialSyncStateCreationStrategy_BToA<string, DateTime, AppointmentItem, Uri, string, IEvent> (
+          return new OneWayInitialSyncStateCreationStrategy_BToA<string, DateTime, AppointmentItem, Uri, string, IICalendar> (
              syncStateFactory,
              synchronizationMode == SynchronizationMode.ReplicateServerIntoOutlook ? OneWaySyncMode.Replicate : OneWaySyncMode.Merge
            );
@@ -70,14 +70,14 @@ namespace CalDavSynchronizer.Implementation
   }
 
   internal class OutlookCaldavEventEntityConflictSyncStateFactory_Automatic
-      : EntityConflictSyncStateFactory_Automatic<string, DateTime, AppointmentItem, Uri, string, IEvent>
+      : EntityConflictSyncStateFactory_Automatic<string, DateTime, AppointmentItem, Uri, string, IICalendar>
   {
-    public OutlookCaldavEventEntityConflictSyncStateFactory_Automatic (EntitySyncStateEnvironment<string, DateTime, AppointmentItem, Uri, string, IEvent> environment)
+    public OutlookCaldavEventEntityConflictSyncStateFactory_Automatic (EntitySyncStateEnvironment<string, DateTime, AppointmentItem, Uri, string, IICalendar> environment)
         : base(environment)
     {
     }
 
-    protected override IEntitySyncState<string, DateTime, AppointmentItem, Uri, string, IEvent> Create_FromNewerToOlder (IEntityRelationData<string, DateTime, Uri, string> knownData, DateTime newA, string newB)
+    protected override IEntitySyncState<string, DateTime, AppointmentItem, Uri, string, IICalendar> Create_FromNewerToOlder (IEntityRelationData<string, DateTime, Uri, string> knownData, DateTime newA, string newB)
     {
       return new OutlookCaldavEventUpdateFromNewerToOlder (
           _environment,
