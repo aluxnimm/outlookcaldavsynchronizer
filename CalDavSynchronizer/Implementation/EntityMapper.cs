@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using CalDavSynchronizer.Generic.EntityMapping;
 using DDay.iCal;
@@ -36,11 +37,13 @@ namespace CalDavSynchronizer.Implementation
     private const string PR_SMTP_ADDRESS = "http://schemas.microsoft.com/mapi/proptag/0x39FE001E";
     private readonly string _outlookEmailAddress;
     private readonly Uri _serverEmailAddress;
+    private readonly TimeZoneInfo _localTimeZoneInfo;
 
-    public AppointmentEventEntityMapper (string outlookEmailAddress, Uri serverEmailAddress)
+    public AppointmentEventEntityMapper (string outlookEmailAddress, Uri serverEmailAddress, string localTimeZoneId)
     {
       _outlookEmailAddress = outlookEmailAddress;
       _serverEmailAddress = serverEmailAddress;
+      _localTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (localTimeZoneId);
     }
 
     public IICalendar Map1To2 (AppointmentItem source, IICalendar targetCalender)
@@ -361,7 +364,7 @@ namespace CalDavSynchronizer.Implementation
     }
 
 
-    private void MapRecurrance2To1 (IEvent source, AppointmentItem target)
+    private void MapRecurrance2To1 (IEvent source, IEnumerable<IEvent> exceptions, AppointmentItem target)
     {
       target.ClearRecurrencePattern();
 
@@ -486,6 +489,18 @@ namespace CalDavSynchronizer.Implementation
             target.ClearRecurrencePattern();
             break;
         }
+
+        // Due to limitations out outlook, the Appointment has to be saved here. Otherwise 'targetRecurrencePattern.GetOccurrence ()'
+        // will throw an exception
+        target.Save();
+
+        foreach (var recurranceException in exceptions)
+        {
+          var originalStart = TimeZoneInfo.ConvertTimeFromUtc (recurranceException.RecurrenceID.UTC, _localTimeZoneInfo);
+          var targetException = targetRecurrencePattern.GetOccurrence (originalStart);
+          Map2To1 (recurranceException, new IEvent[] { }, targetException, true);
+          targetException.Save();
+        }
       }
     }
 
@@ -594,7 +609,12 @@ namespace CalDavSynchronizer.Implementation
     public AppointmentItem Map2To1 (IICalendar sourceCalendar, AppointmentItem target)
     {
       var source = sourceCalendar.Events[0];
+      return Map2To1 (source, sourceCalendar.Events.Skip (1), target, false);
+    }
 
+
+    private AppointmentItem Map2To1 (IEvent source, IEnumerable<IEvent> recurrenceExceptionsOrNull, AppointmentItem target, bool isRecurrenceException)
+    {
       if (source.IsAllDay)
       {
         target.Start = source.Start.Value;
@@ -636,12 +656,17 @@ namespace CalDavSynchronizer.Implementation
       {
         target.MeetingStatus = OlMeetingStatus.olNonMeeting;
       }
-      MapRecurrance2To1 (source, target);
 
-      target.Sensitivity = MapPrivacy2To1 (source.Class);
+      if (!isRecurrenceException)
+        MapRecurrance2To1 (source, recurrenceExceptionsOrNull, target);
+
+      if (!isRecurrenceException)
+        target.Sensitivity = MapPrivacy2To1 (source.Class);
+
       MapReminder2To1 (source, target);
 
-      MapCategories2To1 (source, target);
+      if (!isRecurrenceException)
+        MapCategories2To1 (source, target);
 
       target.BusyStatus = MapTransparency2To1 (source.Transparency);
 

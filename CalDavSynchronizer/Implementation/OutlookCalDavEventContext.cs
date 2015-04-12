@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -53,7 +54,7 @@ namespace CalDavSynchronizer.Implementation
 
       _entityRelationDataFactory = new OutlookEventRelationDataFactory();
 
-      _entityMapper = new AppointmentEventEntityMapper (outlookEmailAddress, new Uri ("mailto:" + options.EmailAddress));
+      _entityMapper = new AppointmentEventEntityMapper (outlookEmailAddress, new Uri ("mailto:" + options.EmailAddress), outlookSession.Application.TimeZones.CurrentTimeZone.ID);
 
       var calendarFolder = outlookSession.GetFolderFromID (options.OutlookFolderEntryId, options.OutlookFolderStoreId);
       _atypeRepository = new OutlookAppoointmentRepository (calendarFolder, outlookSession);
@@ -65,7 +66,7 @@ namespace CalDavSynchronizer.Implementation
               options.Password,
               connectTimeout,
               readWriteTimeout
-          ),
+              ),
           new iCalendarSerializer());
 
       _storageDataAccess = storageDataAccess;
