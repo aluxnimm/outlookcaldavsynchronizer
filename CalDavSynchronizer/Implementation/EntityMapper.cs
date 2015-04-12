@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
 // 
-// You should have received a copy of the GNU Affero General Public LicenseIICalendar
+// You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
@@ -22,6 +22,7 @@ using CalDavSynchronizer.Generic.EntityMapping;
 using DDay.iCal;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
+using RecurrenceException = Microsoft.Office.Interop.Outlook.Exception;
 using ICalAttachment = DDay.iCal.Attachment;
 using OutlookAttachment = Microsoft.Office.Interop.Outlook.Attachment;
 using RecurrencePattern = DDay.iCal.RecurrencePattern;
@@ -42,12 +43,16 @@ namespace CalDavSynchronizer.Implementation
       _serverEmailAddress = serverEmailAddress;
     }
 
-
     public IICalendar Map1To2 (AppointmentItem source, IICalendar targetCalender)
     {
       IEvent target = new Event();
       targetCalender.Events.Add (target);
+      Map1To2 (source, target, false);
+      return targetCalender;
+    }
 
+    private void Map1To2 (AppointmentItem source, IEvent target, bool isRecurrenceException)
+    {
       if (source.AllDayEvent)
       {
         // Outlook's AllDayEvent relates to Start and not not StartUtc!!!
@@ -73,7 +78,10 @@ namespace CalDavSynchronizer.Implementation
 
       bool organizerSet;
       MapAttendees1To2 (source, target, out organizerSet);
-      MapRecurrance1To2 (source, target);
+
+      if (!isRecurrenceException)
+        MapRecurrance1To2 (source, target);
+
       if (!organizerSet)
         MapOrganizer1To2 (source, target);
 
@@ -83,8 +91,6 @@ namespace CalDavSynchronizer.Implementation
       MapCategories1To2 (source, target);
 
       target.Transparency = MapTransparency1To2 (source.BusyStatus);
-
-      return targetCalender;
     }
 
     private TransparencyType MapTransparency1To2 (OlBusyStatus value)
@@ -275,6 +281,30 @@ namespace CalDavSynchronizer.Implementation
         }
 
         target.RecurrenceRules.Add (targetRecurrencePattern);
+
+        foreach (RecurrenceException sourceException in sourceRecurrencePattern.Exceptions)
+        {
+          if (!sourceException.Deleted)
+          {
+            var targetException = new Event();
+            target.Calendar.Events.Add (targetException);
+            targetException.UID = target.UID;
+            Map1To2 (sourceException.AppointmentItem, targetException, true);
+
+            if (source.AllDayEvent)
+            {
+              // Outlook's AllDayEvent relates to Start and not not StartUtc!!!
+              targetException.RecurrenceID = new iCalDateTime (sourceException.OriginalDate);
+              targetException.RecurrenceID.HasTime = false;
+            }
+            else
+            {
+              var timeZone = TimeZoneInfo.FindSystemTimeZoneById (source.StartTimeZone.ID);
+              var originalDateUtc = TimeZoneInfo.ConvertTimeToUtc (sourceException.OriginalDate, timeZone);
+              targetException.RecurrenceID = new iCalDateTime (originalDateUtc) { IsUniversalTime = true };
+            }
+          }
+        }
       }
     }
 

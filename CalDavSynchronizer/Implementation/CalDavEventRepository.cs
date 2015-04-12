@@ -120,7 +120,10 @@ namespace CalDavSynchronizer.Implementation
         IICalendar newCalendar = new iCalendar ();
         newCalendar = entityModifier (newCalendar);
 
-        newCalendar.Events[0].Sequence = entityToUpdate.Events[0].Sequence + 1;
+        for (int i = 0, newSequenceNumber = entityToUpdate.Events[0].Sequence + 1; i < newCalendar.Events.Count; i++, newSequenceNumber++)
+        {
+          newCalendar.Events[i].Sequence = i;
+        }
 
         return _calDavDataAccess.UpdateEvent (entityId, SerializeCalEvent (newCalendar));
       }
@@ -132,6 +135,10 @@ namespace CalDavSynchronizer.Implementation
       {
         IICalendar newCalendar = new iCalendar ();
         newCalendar = entityInitializer (newCalendar);
+        for (int i = 0; i < newCalendar.Events.Count; i++)
+        {
+          newCalendar.Events[i].Sequence = i;
+        }
         return _calDavDataAccess.CreateEvent (SerializeCalEvent (newCalendar));
       }
     }
