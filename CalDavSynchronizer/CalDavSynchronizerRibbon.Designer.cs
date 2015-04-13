@@ -77,6 +77,7 @@
       this.AboutButton.Label = "About";
       this.AboutButton.Name = "AboutButton";
       this.AboutButton.ShowImage = true;
+      this.AboutButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.AboutButton_Click);
       // 
       // CalDavSynchronizerRibbon
       // 

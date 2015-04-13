@@ -49,5 +49,11 @@ namespace CalDavSynchronizer
         ExceptionHandler.Instance.HandleException (x, s_logger);
       }
     }
+
+    private void AboutButton_Click (object sender, RibbonControlEventArgs e)
+    {
+      using (var aboutForm = new AboutForm())
+        aboutForm.ShowDialog();
+    }
   }
 }
