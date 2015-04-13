@@ -289,29 +289,46 @@ namespace CalDavSynchronizer.Implementation
 
         target.RecurrenceRules.Add (targetRecurrencePattern);
 
+        PeriodList targetExList = new PeriodList();
+
         foreach (RecurrenceException sourceException in sourceRecurrencePattern.Exceptions)
         {
           if (!sourceException.Deleted)
           {
             var targetException = new Event();
-            target.Calendar.Events.Add (targetException);
+            target.Calendar.Events.Add(targetException);
             targetException.UID = target.UID;
-            Map1To2 (sourceException.AppointmentItem, targetException, true);
+            Map1To2(sourceException.AppointmentItem, targetException, true);
 
             if (source.AllDayEvent)
             {
               // Outlook's AllDayEvent relates to Start and not not StartUtc!!!
-              targetException.RecurrenceID = new iCalDateTime (sourceException.OriginalDate);
+              targetException.RecurrenceID = new iCalDateTime(sourceException.OriginalDate);
               targetException.RecurrenceID.HasTime = false;
             }
             else
             {
-              var timeZone = TimeZoneInfo.FindSystemTimeZoneById (source.StartTimeZone.ID);
-              var originalDateUtc = TimeZoneInfo.ConvertTimeToUtc (sourceException.OriginalDate, timeZone);
-              targetException.RecurrenceID = new iCalDateTime (originalDateUtc) { IsUniversalTime = true };
+              var timeZone = TimeZoneInfo.FindSystemTimeZoneById(source.StartTimeZone.ID);
+              var originalDateUtc = TimeZoneInfo.ConvertTimeToUtc(sourceException.OriginalDate, timeZone);
+              targetException.RecurrenceID = new iCalDateTime(originalDateUtc) { IsUniversalTime = true };
+            }
+          }
+          else
+          {
+            if (source.AllDayEvent)
+            {
+              iCalDateTime exDate = new iCalDateTime(sourceException.OriginalDate);
+              exDate.HasTime = false;
+              targetExList.Add(exDate);
+            }
+            else
+            {
+              iCalDateTime exDate = new iCalDateTime(sourceException.OriginalDate.Add(source.StartUTC.TimeOfDay)) { IsUniversalTime = true };
+              targetExList.Add(exDate);
             }
           }
         }
+        target.ExceptionDates.Add(targetExList);
       }
     }
 
