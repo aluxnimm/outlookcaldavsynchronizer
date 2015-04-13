@@ -522,6 +522,17 @@ namespace CalDavSynchronizer.Implementation
           exceptionWrapper.Dispose ();
         }
 
+        if (source.ExceptionDates != null)
+        {
+          foreach (IPeriodList exdateList in source.ExceptionDates)
+          {
+            foreach (IPeriod exdate in exdateList)
+            {
+              var originalStart = TimeZoneInfo.ConvertTimeFromUtc(exdate.StartTime.UTC, _localTimeZoneInfo);
+              targetRecurrencePattern.GetOccurrence(originalStart).Delete();
+            }
+          }
+        }
         Marshal.FinalReleaseComObject (targetRecurrencePattern);
       }
     }
