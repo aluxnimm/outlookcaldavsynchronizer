@@ -247,8 +247,10 @@ namespace CalDavSynchronizer.Implementation
         IRecurrencePattern targetRecurrencePattern = new RecurrencePattern();
         if (!sourceRecurrencePattern.NoEndDate)
         {
-          targetRecurrencePattern.Count = sourceRecurrencePattern.Occurrences;
-          targetRecurrencePattern.Until = sourceRecurrencePattern.PatternEndDate;
+            targetRecurrencePattern.Count = sourceRecurrencePattern.Occurrences;
+            //Until must not be set if count is set, since outlook always sets Occurrences
+            //but sogo wants it as utc end time of the last event not only the enddate at 0000
+            //targetRecurrencePattern.Until = sourceRecurrencePattern.PatternEndDate.Add(sourceRecurrencePattern.EndTime.TimeOfDay).ToUniversalTime();
         }
         targetRecurrencePattern.Interval = sourceRecurrencePattern.Interval;
 
