@@ -212,7 +212,7 @@ namespace CalDavSynchronizer.Implementation
     private void MapOrganizer1To2 (AppointmentItem source, IEvent target)
     {
       var organizer = source.GetOrganizer();
-      if (organizer != null)
+      if (organizer != null && source.MeetingStatus!=OlMeetingStatus.olNonMeeting)
       {
         SetOrganizer (target, organizer);
       }
