@@ -69,5 +69,11 @@ namespace CalDavSynchronizer.Generic.Synchronization.States
     {
       s_logger.Error ("This state should have been left via PerformSyncActionNoThrow!"); 
     }
+
+    public override void Dispose ()
+    {
+      _aEntity = default(TAtypeEntity);
+      _bEntity = default(TBtypeEntity);
+    }
   }
 }

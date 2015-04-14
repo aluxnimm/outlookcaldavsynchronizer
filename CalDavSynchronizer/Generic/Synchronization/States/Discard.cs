@@ -45,5 +45,10 @@ namespace CalDavSynchronizer.Generic.Synchronization.States
     {
      
     }
+
+    public void Dispose ()
+    {
+      
+    }
   }
 }

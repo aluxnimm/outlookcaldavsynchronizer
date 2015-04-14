@@ -121,7 +121,6 @@ namespace CalDavSynchronizer.Generic.Synchronization
         foreach (var syncAction in entitySyncStates)
           syncAction.AddRequiredEntitiesToLoad (aEntitesToLoad.Add, bEntitesToLoad.Add);
 
-
         IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> aEntities;
         IReadOnlyDictionary<TBtypeEntityId, TBtypeEntity> bEntities;
         if (allAtypeEntities == null || allBtypeEntities == null)
@@ -136,14 +135,20 @@ namespace CalDavSynchronizer.Generic.Synchronization
           bEntities = allBtypeEntities;
         }
 
+        var allSyncStatesThatWereCreated = new HashSet<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>> ();
+        entitySyncStates.ForEach (s => allSyncStatesThatWereCreated.Add (s));
 
         entitySyncStates = entitySyncStates.Select (a => a.FetchRequiredEntities (aEntities, bEntities)).ToList();
+        entitySyncStates.ForEach (s => allSyncStatesThatWereCreated.Add (s));
+
         entitySyncStates = entitySyncStates.Select (a => a.Resolve()).ToList();
+        entitySyncStates.ForEach (s => allSyncStatesThatWereCreated.Add (s));
+
 
         // since resolve may change to an new state, required entities have to be fetched again.
         // an state is allowed only to resolve to another state, if the following states requires equal or less entities!
         entitySyncStates = entitySyncStates.Select (a => a.FetchRequiredEntities (aEntities, bEntities)).ToList();
-
+        entitySyncStates.ForEach (s => allSyncStatesThatWereCreated.Add (s));
 
         using (var progress = totalProgress.StartStep (entitySyncStates.Count, string.Format("Processing {0} entities...", entitySyncStates.Count)))
         {
@@ -152,6 +157,7 @@ namespace CalDavSynchronizer.Generic.Synchronization
               {
                 var nextState = a.PerformSyncActionNoThrow();
                 progress.Increase();
+                allSyncStatesThatWereCreated.Add (nextState);
                 return nextState;
               }
               ).ToList();
@@ -161,6 +167,9 @@ namespace CalDavSynchronizer.Generic.Synchronization
 
         foreach (var syncAction in entitySyncStates)
           syncAction.AddNewRelationNoThrow (newData.Add);
+
+        foreach (var syncState in allSyncStatesThatWereCreated)
+          syncState.Dispose();
 
         _synchronizerContext.Save (newData);
 

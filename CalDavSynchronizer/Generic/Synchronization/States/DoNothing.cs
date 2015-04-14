@@ -51,5 +51,10 @@ namespace CalDavSynchronizer.Generic.Synchronization.States
     {
       addAction (_knownData);
     }
+
+    public void Dispose ()
+    {
+      
+    }
   }
 }

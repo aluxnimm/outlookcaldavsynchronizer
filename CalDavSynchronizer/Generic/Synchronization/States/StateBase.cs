@@ -62,5 +62,10 @@ namespace CalDavSynchronizer.Generic.Synchronization.States
     {
       s_logger.Error ("Exception occured:", x);
     }
+
+    public virtual void Dispose ()
+    {
+      
+    }
   }
 }
