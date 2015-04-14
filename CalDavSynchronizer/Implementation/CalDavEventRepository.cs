@@ -15,11 +15,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Diagnostics;
@@ -60,7 +59,7 @@ namespace CalDavSynchronizer.Implementation
       {
         progress.StartStep (0, "").Dispose();
         progress.StartStep (0, "").Dispose();
-        return new Dictionary<Uri, IICalendar> ();
+        return new Dictionary<Uri, IICalendar>();
       }
 
       using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("CalDavEventRepository.Get ({0} entitie(s))", ids.Count)))
@@ -81,10 +80,10 @@ namespace CalDavSynchronizer.Implementation
 
     private IReadOnlyDictionary<Uri, IICalendar> ParallelDeserialize (IReadOnlyDictionary<Uri, string> serializedEvents)
     {
-      var result = new Dictionary<Uri, IICalendar> ();
+      var result = new Dictionary<Uri, IICalendar>();
       Parallel.ForEach (
           serializedEvents,
-          () => Tuple.Create (new iCalendarSerializer (), new List<Tuple<Uri, IICalendar>> ()),
+          () => Tuple.Create (new iCalendarSerializer(), new List<Tuple<Uri, IICalendar>>()),
           (serialized, loopState, threadLocal) =>
           {
             IICalendar calendar;
@@ -117,12 +116,12 @@ namespace CalDavSynchronizer.Implementation
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
-        IICalendar newCalendar = new iCalendar ();
+        IICalendar newCalendar = new iCalendar();
         newCalendar = entityModifier (newCalendar);
 
-        for (int i = 0, newSequenceNumber = entityToUpdate.Events[0].Sequence + 1; i < newCalendar.Events.Count; i++, newSequenceNumber++)
+        for (int i = 0, newSequenceNumber = entityToUpdate.Events.Max (e => e.Sequence) + 1; i < newCalendar.Events.Count; i++, newSequenceNumber++)
         {
-          newCalendar.Events[i].Sequence = i;
+          newCalendar.Events[i].Sequence = newSequenceNumber;
         }
 
         return _calDavDataAccess.UpdateEvent (entityId, SerializeCalEvent (newCalendar));
@@ -133,7 +132,7 @@ namespace CalDavSynchronizer.Implementation
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
-        IICalendar newCalendar = new iCalendar ();
+        IICalendar newCalendar = new iCalendar();
         newCalendar = entityInitializer (newCalendar);
         for (int i = 0; i < newCalendar.Events.Count; i++)
         {
