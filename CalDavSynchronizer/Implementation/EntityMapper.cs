@@ -400,8 +400,7 @@ namespace CalDavSynchronizer.Implementation
             }
             else
             {
-              s_logger.WarnFormat ("Event '{0}' contains a weekly recurrence pattern, which is not supported by outlook. Ignoring recurrence rule.", source.Url);
-              target.ClearRecurrencePattern();
+              targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursWeekly;
             }
             break;
           case FrequencyType.Monthly:
