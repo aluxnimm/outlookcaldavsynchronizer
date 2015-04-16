@@ -25,7 +25,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation
 {
-  internal class OutlookAppoointmentRepository : IEntityRepository<AppointmentItem, string, DateTime>
+  internal class OutlookAppoointmentRepository : IEntityRepository<AppointmentItemWrapper, string, DateTime>
   {
     private readonly MAPIFolder _calendarFolder;
     private readonly NameSpace _mapiNameSpace;
@@ -72,23 +72,28 @@ namespace CalDavSynchronizer.Implementation
     }
 
 
-    public IReadOnlyDictionary<string, AppointmentItem> Get (ICollection<string> ids, ITotalProgress progress)
+    public IReadOnlyDictionary<string, AppointmentItemWrapper> Get (ICollection<string> ids, ITotalProgress progress)
     {
       using (var stepProgress = progress.StartStep (ids.Count, string.Format ("Loading {0} entities from Outlook...", ids.Count)))
       {
         var storeId = _calendarFolder.StoreID;
-        var result = ids.ToDictionary (id => id, id => (AppointmentItem) _mapiNameSpace.GetItemFromID (id, storeId));
+        var result = ids.ToDictionary (id => id, id => new AppointmentItemWrapper ((AppointmentItem) _mapiNameSpace.GetItemFromID (id, storeId), entryId => (AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, storeId)));
         stepProgress.IncreaseBy (ids.Count);
         return result;
       }
     }
 
-    public EntityIdWithVersion<string, DateTime> Update (string entityId, AppointmentItem entityToUpdate, Func<AppointmentItem, AppointmentItem> entityModifier)
+    public void Cleanup (IReadOnlyDictionary<string, AppointmentItemWrapper> entities)
     {
-      var appointment = Get (new[] { entityId }, NullTotalProgress.Instance).Single().Value;
-      appointment = entityModifier (appointment);
-      appointment.Save();
-      return new EntityIdWithVersion<string, DateTime> (appointment.EntryID, appointment.LastModificationTime);
+      foreach (var appointmentItemWrapper in entities.Values)
+        appointmentItemWrapper.Dispose();
+    }
+
+    public EntityIdWithVersion<string, DateTime> Update (string entityId, AppointmentItemWrapper entityToUpdate, Func<AppointmentItemWrapper, AppointmentItemWrapper> entityModifier)
+    {
+      entityToUpdate = entityModifier (entityToUpdate);
+      entityToUpdate.Inner.Save ();
+      return new EntityIdWithVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime);
     }
 
     public bool Delete (string entityId)
@@ -96,7 +101,8 @@ namespace CalDavSynchronizer.Implementation
       var appointment = Get (new[] { entityId }, NullTotalProgress.Instance).Values.SingleOrDefault();
       if (appointment != null)
       {
-        appointment.Delete();
+        appointment.Inner.Delete();
+        appointment.Dispose();
         return true;
       }
       else
@@ -105,12 +111,14 @@ namespace CalDavSynchronizer.Implementation
       }
     }
 
-    public EntityIdWithVersion<string, DateTime> Create (Func<AppointmentItem, AppointmentItem> entityInitializer)
+    public EntityIdWithVersion<string, DateTime> Create (Func<AppointmentItemWrapper, AppointmentItemWrapper> entityInitializer)
     {
-      var appointment = (AppointmentItem) _calendarFolder.Items.Add (OlItemType.olAppointmentItem);
-      appointment = entityInitializer (appointment);
-      appointment.Save();
-      return new EntityIdWithVersion<string, DateTime> (appointment.EntryID, appointment.LastModificationTime);
+      var wrapper = new AppointmentItemWrapper ((AppointmentItem) _calendarFolder.Items.Add (OlItemType.olAppointmentItem), entryId => (AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, _calendarFolder.StoreID));
+      wrapper = entityInitializer (wrapper);
+      wrapper.Inner.Save ();
+      var result = new EntityIdWithVersion<string, DateTime> (wrapper.Inner.EntryID, wrapper.Inner.LastModificationTime);
+      wrapper.Dispose();
+      return result;
     }
   }
 }

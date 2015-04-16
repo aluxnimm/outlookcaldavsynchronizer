@@ -30,7 +30,7 @@ using RecurrencePattern = DDay.iCal.RecurrencePattern;
 
 namespace CalDavSynchronizer.Implementation
 {
-  internal class AppointmentEventEntityMapper : IEntityMapper<AppointmentItem, IICalendar>
+  internal class AppointmentEventEntityMapper : IEntityMapper<AppointmentItemWrapper, IICalendar>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -46,8 +46,9 @@ namespace CalDavSynchronizer.Implementation
       _localTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (localTimeZoneId);
     }
 
-    public IICalendar Map1To2 (AppointmentItem source, IICalendar targetCalender)
+    public IICalendar Map1To2 (AppointmentItemWrapper sourceWrapper, IICalendar targetCalender)
     {
+      var source = sourceWrapper.Inner;
       IEvent target = new Event();
       targetCalender.Events.Add (target);
       Map1To2 (source, target, false);
@@ -366,13 +367,13 @@ namespace CalDavSynchronizer.Implementation
     }
 
 
-    private void MapRecurrance2To1 (IEvent source, IEnumerable<IEvent> exceptions, AppointmentItem target)
+    private void MapRecurrance2To1 (IEvent source, IEnumerable<IEvent> exceptions, AppointmentItemWrapper targetWrapper)
     {
-      target.ClearRecurrencePattern();
+      targetWrapper.Inner.ClearRecurrencePattern();
 
       if (source.RecurrenceRules.Count > 0)
       {
-        var targetRecurrencePattern = target.GetRecurrencePattern();
+        var targetRecurrencePattern = targetWrapper.Inner.GetRecurrencePattern ();
         if (source.RecurrenceRules.Count > 1)
         {
           s_logger.WarnFormat ("Event '{0}' contains more than one recurrence rule. Since outlook supports only one rule, all except the first one will be ignored.", source.Url);
@@ -487,20 +488,22 @@ namespace CalDavSynchronizer.Implementation
             break;
           default:
             s_logger.WarnFormat ("Recurring event '{0}' contains the Frequency '{1}', which is not supported by outlook. Ignoring recurrence rule.", source.Url, sourceRecurrencePattern.Frequency);
-            target.ClearRecurrencePattern();
+            targetWrapper.Inner.ClearRecurrencePattern ();
             break;
         }
 
         // Due to limitations out outlook, the Appointment has to be saved here. Otherwise 'targetRecurrencePattern.GetOccurrence ()'
         // will throw an exception
-        target.Save();
+        targetWrapper.SaveAndReload();
 
         foreach (var recurranceException in exceptions)
         {
           var originalStart = TimeZoneInfo.ConvertTimeFromUtc (recurranceException.RecurrenceID.UTC, _localTimeZoneInfo);
           var targetException = targetRecurrencePattern.GetOccurrence (originalStart);
-          Map2To1 (recurranceException, new IEvent[] { }, targetException, true);
-          targetException.Save();
+          var exceptionWrapper = new AppointmentItemWrapper (targetException, _ => { throw new InvalidOperationException ("cannot reload exception item"); });
+          Map2To1 (recurranceException, new IEvent[] { }, exceptionWrapper , true);
+          exceptionWrapper.Inner.Save ();
+          exceptionWrapper.Dispose ();
         }
       }
     }
@@ -607,71 +610,71 @@ namespace CalDavSynchronizer.Implementation
 
     private const int s_mailtoSchemaLength = 7; // length of "mailto:"
 
-    public AppointmentItem Map2To1 (IICalendar sourceCalendar, AppointmentItem target)
+    public AppointmentItemWrapper Map2To1 (IICalendar sourceCalendar, AppointmentItemWrapper target)
     {
       var source = sourceCalendar.Events[0];
       return Map2To1 (source, sourceCalendar.Events.Skip (1), target, false);
     }
 
 
-    private AppointmentItem Map2To1 (IEvent source, IEnumerable<IEvent> recurrenceExceptionsOrNull, AppointmentItem target, bool isRecurrenceException)
+    private AppointmentItemWrapper Map2To1 (IEvent source, IEnumerable<IEvent> recurrenceExceptionsOrNull, AppointmentItemWrapper targetWrapper, bool isRecurrenceException)
     {
       if (source.IsAllDay)
       {
-        target.Start = source.Start.Value;
-        target.End = source.End.Value;
-        target.AllDayEvent = true;
+        targetWrapper.Inner.Start = source.Start.Value;
+        targetWrapper.Inner.End = source.End.Value;
+        targetWrapper.Inner.AllDayEvent = true;
       }
       else
       {
-        target.AllDayEvent = false;
-        target.StartUTC = source.Start.UTC;
+        targetWrapper.Inner.AllDayEvent = false;
+        targetWrapper.Inner.StartUTC = source.Start.UTC;
         if (source.DTEnd != null)
         {
-          target.EndUTC = source.DTEnd.UTC;
+          targetWrapper.Inner.EndUTC = source.DTEnd.UTC;
         }
         else if (source.Start.HasTime)
         {
-          target.EndUTC = source.Start.UTC;
+          targetWrapper.Inner.EndUTC = source.Start.UTC;
         }
         else
         {
-          target.EndUTC = source.Start.AddDays (1).UTC;
+          targetWrapper.Inner.EndUTC = source.Start.AddDays (1).UTC;
         }
       }
 
 
-      target.Subject = source.Summary;
-      target.Location = source.Location;
-      target.Body = source.Description;
+      targetWrapper.Inner.Subject = source.Summary;
+      targetWrapper.Inner.Location = source.Location;
+      targetWrapper.Inner.Body = source.Description;
 
-      target.Importance = MapPriority2To1 (source.Priority);
+      targetWrapper.Inner.Importance = MapPriority2To1 (source.Priority);
 
-      MapAttendees2To1 (source, target);
+      MapAttendees2To1 (source, targetWrapper.Inner);
       if (source.Organizer != null)
       {
-        target.MeetingStatus = OlMeetingStatus.olMeetingReceived;
-        target.PropertyAccessor.SetProperty ("http://schemas.microsoft.com/mapi/proptag/0x0042001F", source.Organizer.Value.ToString().Substring (s_mailtoSchemaLength));
+        targetWrapper.Inner.MeetingStatus = OlMeetingStatus.olMeetingReceived;
+        targetWrapper.Inner.PropertyAccessor.SetProperty ("http://schemas.microsoft.com/mapi/proptag/0x0042001F", source.Organizer.Value.ToString ().Substring (s_mailtoSchemaLength));
       }
       else
       {
-        target.MeetingStatus = OlMeetingStatus.olNonMeeting;
+        targetWrapper.Inner.MeetingStatus = OlMeetingStatus.olNonMeeting;
       }
 
       if (!isRecurrenceException)
-        MapRecurrance2To1 (source, recurrenceExceptionsOrNull, target);
+        MapRecurrance2To1 (source, recurrenceExceptionsOrNull, targetWrapper);
 
       if (!isRecurrenceException)
-        target.Sensitivity = MapPrivacy2To1 (source.Class);
+        targetWrapper.Inner.Sensitivity = MapPrivacy2To1 (source.Class);
 
-      MapReminder2To1 (source, target);
+      MapReminder2To1 (source, targetWrapper.Inner);
 
       if (!isRecurrenceException)
-        MapCategories2To1 (source, target);
+        MapCategories2To1 (source, targetWrapper.Inner);
 
-      target.BusyStatus = MapTransparency2To1 (source.Transparency);
+      targetWrapper.Inner.BusyStatus = MapTransparency2To1 (source.Transparency);
 
-      return target;
+      return targetWrapper;
     }
 
     private static void MapCategories2To1 (IEvent source, AppointmentItem target)

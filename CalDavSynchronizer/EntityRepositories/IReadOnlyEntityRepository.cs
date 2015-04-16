@@ -23,5 +23,6 @@ namespace CalDavSynchronizer.EntityRepositories
   {
     Dictionary<TEntityId, TEntityVersion> GetVersions (DateTime from, DateTime to);
     IReadOnlyDictionary<TEntityId, TEntity> Get (ICollection<TEntityId> ids, ITotalProgress progress);
+    void Cleanup (IReadOnlyDictionary<TEntityId, TEntity> entities);
   }
 }

@@ -31,7 +31,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation
 {
-  public class OutlookCalDavEventContext : ISynchronizerContext<string, DateTime, AppointmentItem, Uri, string, IICalendar>
+  public class OutlookCalDavEventContext : ISynchronizerContext<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -75,12 +75,12 @@ namespace CalDavSynchronizer.Implementation
     }
 
 
-    public IEntityMapper<AppointmentItem, IICalendar> EntityMapper
+    public IEntityMapper<AppointmentItemWrapper, IICalendar> EntityMapper
     {
       get { return _entityMapper; }
     }
 
-    public IEntityRepository<AppointmentItem, string, DateTime> AtypeRepository
+    public IEntityRepository<AppointmentItemWrapper, string, DateTime> AtypeRepository
     {
       get { return _atypeRepository; }
     }
@@ -93,7 +93,7 @@ namespace CalDavSynchronizer.Implementation
     public SynchronizationMode SynchronizationMode { get; private set; }
     public DateTime From { get; private set; }
     public DateTime To { get; private set; }
-    public IInitialEntityMatcher<AppointmentItem, string, DateTime, IICalendar, Uri, string> InitialEntityMatcher { get; private set; }
+    public IInitialEntityMatcher<AppointmentItemWrapper, string, DateTime, IICalendar, Uri, string> InitialEntityMatcher { get; private set; }
 
     public IEntityRelationDataFactory<string, DateTime, Uri, string> EntityRelationDataFactory
     {

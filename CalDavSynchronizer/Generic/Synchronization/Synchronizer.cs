@@ -171,6 +171,9 @@ namespace CalDavSynchronizer.Generic.Synchronization
         foreach (var syncState in allSyncStatesThatWereCreated)
           syncState.Dispose();
 
+        atypeEntityRepository.Cleanup (aEntities);
+        btypeEntityRepository.Cleanup (bEntities);
+
         _synchronizerContext.Save (newData);
 
 

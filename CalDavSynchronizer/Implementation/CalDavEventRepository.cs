@@ -78,6 +78,11 @@ namespace CalDavSynchronizer.Implementation
       }
     }
 
+    public void Cleanup (IReadOnlyDictionary<Uri, IICalendar> entities)
+    {
+      // nothing to do
+    }
+
     private IReadOnlyDictionary<Uri, IICalendar> ParallelDeserialize (IReadOnlyDictionary<Uri, string> serializedEvents)
     {
       var result = new Dictionary<Uri, IICalendar>();

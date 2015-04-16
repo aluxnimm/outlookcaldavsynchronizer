@@ -50,6 +50,11 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
       return ids.Select (id => new { id, EntityVersionAndContentById[id].Item2 }).ToDictionary (v => v.id, v => v.Item2);
     }
 
+    public void Cleanup (IReadOnlyDictionary<string, string> entities)
+    {
+      
+    }
+
     public bool Delete (string entityId)
     {
       EntityVersionAndContentById.Remove (entityId);

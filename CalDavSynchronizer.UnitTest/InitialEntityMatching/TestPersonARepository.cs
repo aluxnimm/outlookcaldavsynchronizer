@@ -43,6 +43,11 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
       return ids.Select (id => personsById[id]).ToDictionary (p => p.Id);
     }
 
+    public void Cleanup (IReadOnlyDictionary<int, PersonA> entities)
+    {
+      
+    }
+
     public  bool Delete (int entityId)
     {
       throw new NotImplementedException();
