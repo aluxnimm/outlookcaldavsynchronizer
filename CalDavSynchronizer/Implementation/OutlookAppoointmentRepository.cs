@@ -47,7 +47,6 @@ namespace CalDavSynchronizer.Implementation
       var events = new Dictionary<string, DateTime>();
 
       string filter = String.Format ("[Start] < '{0}' And [End] > '{1}'", ToOutlookDateString (toUtc), ToOutlookDateString (fromUtc));
-
       var table = _calendarFolder.GetTable (filter);
       table.Columns.RemoveAll();
       table.Columns.Add (c_entryIdColumnName);
@@ -66,11 +65,10 @@ namespace CalDavSynchronizer.Implementation
     }
 
 
-    private static readonly CultureInfo _enUsCultureInfo = CultureInfo.GetCultureInfo ("en-US");
-
+    private static readonly CultureInfo _currentCultureInfo = CultureInfo.CurrentCulture;
     private string ToOutlookDateString (DateTime value)
     {
-      return value.ToString ("g", _enUsCultureInfo);
+      return value.ToString("g", _currentCultureInfo);
     }
 
 
