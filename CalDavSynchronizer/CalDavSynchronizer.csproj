@@ -174,6 +174,9 @@
     <Compile Include="CalDavSynchronizerRibbon.Designer.cs">
       <DependentUpon>CalDavSynchronizerRibbon.cs</DependentUpon>
     </Compile>
+    <Compile Include="Contracts\ProfileEntry.cs" />
+    <Compile Include="DataAccess\IProfileListDataAccess.cs" />
+    <Compile Include="DataAccess\ProfileListDataAccess.cs" />
     <Compile Include="Generic\EntityRelationManagement\EntityRelationDataAccess.cs" />
     <Compile Include="Generic\ProgressReport\IProgressUi.cs" />
     <Compile Include="Generic\ProgressReport\IProgressUiFactory.cs" />

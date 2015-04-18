@@ -13,18 +13,17 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
-using System.Windows.Forms;
+using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Scheduling;
-using CalDavSynchronizer.Ui;
-using CalDavSynchronizer.Utilities;
 using log4net;
 using log4net.Config;
 using Microsoft.Office.Interop.Outlook;
+using Microsoft.Office.Tools.Ribbon;
 using Exception = System.Exception;
 using Office = Microsoft.Office.Core;
 
@@ -32,7 +31,7 @@ namespace CalDavSynchronizer
 {
   public partial class ThisAddIn
   {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod ().DeclaringType);
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     internal static Scheduler Scheduler { get; private set; }
     internal static IOptionsDataAccess OptionsDataAccess { get; private set; }
@@ -41,17 +40,16 @@ namespace CalDavSynchronizer
 
     private void ThisAddIn_Startup (object sender, EventArgs e)
     {
-      InitializeSynchronizer ();
+      InitializeSynchronizer();
     }
 
     private void InitializeSynchronizer ()
     {
       try
       {
-        XmlConfigurator.Configure ();
+        XmlConfigurator.Configure();
 
         Session = Application.Session;
-
         s_logger.Info ("Startup...");
 
         var applicationDataDirectory = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData), "CalDavSynchronizer");
@@ -59,10 +57,10 @@ namespace CalDavSynchronizer
         OptionsDataAccess = new OptionsDataAccess (
             Path.Combine (
                 applicationDataDirectory,
-                "options.xml"
+                GetOrCreateConfigFileName(applicationDataDirectory, Session.CurrentProfileName)
                 ));
         Scheduler = new Scheduler (Application.Session, applicationDataDirectory);
-        Scheduler.SetOptions (OptionsDataAccess.LoadOptions ());
+        Scheduler.SetOptions (OptionsDataAccess.LoadOptions());
       }
       catch (Exception x)
       {
@@ -73,14 +71,31 @@ namespace CalDavSynchronizer
       s_logger.Info ("Startup finnished");
     }
 
-    private void ThisAddIn_Shutdown (object sender, EventArgs e)
+    private static string GetOrCreateConfigFileName (string applicationDataDirectory, string profileName)
     {
-
+      var profileDataAccess = new ProfileListDataAccess (Path.Combine (applicationDataDirectory, "profiles.xml"));
+      var profiles = profileDataAccess.Load();
+      var profile = profiles.FirstOrDefault (p => p.ProfileName.Equals (profileName, StringComparison.OrdinalIgnoreCase));
+      if (profile == null)
+      {
+        profile = new ProfileEntry()
+                  {
+                      ProfileName = profileName,
+                      ConfigFileName = string.Format ("options_{0}.xml", Guid.NewGuid())
+                  };
+        profiles = profiles.Union (new[] { profile }).ToArray();
+        profileDataAccess.Save (profiles);
+      }
+      return profile.ConfigFileName;
     }
 
-    protected override Microsoft.Office.Tools.Ribbon.IRibbonExtension[] CreateRibbonObjects ()
+    private void ThisAddIn_Shutdown (object sender, EventArgs e)
     {
-      return new Microsoft.Office.Tools.Ribbon.IRibbonExtension[] { new CalDavSynchronizerRibbon () };
+    }
+
+    protected override IRibbonExtension[] CreateRibbonObjects ()
+    {
+      return new IRibbonExtension[] { new CalDavSynchronizerRibbon() };
     }
 
     #region VSTO generated code
