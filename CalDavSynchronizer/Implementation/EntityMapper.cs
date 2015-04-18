@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using CalDavSynchronizer.Generic.EntityMapping;
 using DDay.iCal;
 using log4net;
@@ -369,8 +370,6 @@ namespace CalDavSynchronizer.Implementation
 
     private void MapRecurrance2To1 (IEvent source, IEnumerable<IEvent> exceptions, AppointmentItemWrapper targetWrapper)
     {
-      targetWrapper.Inner.ClearRecurrencePattern();
-
       if (source.RecurrenceRules.Count > 0)
       {
         var targetRecurrencePattern = targetWrapper.Inner.GetRecurrencePattern ();
@@ -505,6 +504,8 @@ namespace CalDavSynchronizer.Implementation
           exceptionWrapper.Inner.Save ();
           exceptionWrapper.Dispose ();
         }
+
+        Marshal.FinalReleaseComObject (targetRecurrencePattern);
       }
     }
 
@@ -619,6 +620,12 @@ namespace CalDavSynchronizer.Implementation
 
     private AppointmentItemWrapper Map2To1 (IEvent source, IEnumerable<IEvent> recurrenceExceptionsOrNull, AppointmentItemWrapper targetWrapper, bool isRecurrenceException)
     {
+      if (!isRecurrenceException && targetWrapper.Inner.IsRecurring)
+      {
+        targetWrapper.Inner.ClearRecurrencePattern ();
+        targetWrapper.SaveAndReload ();
+      }
+
       if (source.IsAllDay)
       {
         targetWrapper.Inner.Start = source.Start.Value;

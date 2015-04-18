@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Microsoft.Office.Interop.Outlook;
 
@@ -7,7 +8,7 @@ namespace CalDavSynchronizer.Implementation
   public class AppointmentItemWrapper : IDisposable
   {
     public AppointmentItem Inner { get; private set; }
-    private readonly Func<string, AppointmentItem> _load;
+    private Func<string, AppointmentItem> _load;
 
     public AppointmentItemWrapper (AppointmentItem inner, Func<string, AppointmentItem> load)
     {
@@ -19,14 +20,21 @@ namespace CalDavSynchronizer.Implementation
     {
       Inner.Save();
       var entryId = Inner.EntryID;
-      Inner = null;
+      DisposeInner();
       Thread.MemoryBarrier();
-      Inner = _load(entryId);
+      Inner = _load (entryId);
+    }
+
+    private void DisposeInner ()
+    {
+      Marshal.FinalReleaseComObject (Inner);
+      Inner = null;
     }
 
     public void Dispose ()
     {
-      Inner = null;
+      DisposeInner();
+      _load = null;
     }
   }
 }
