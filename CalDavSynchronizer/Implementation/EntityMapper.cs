@@ -210,6 +210,25 @@ namespace CalDavSynchronizer.Implementation
       return OlSensitivity.olNormal;
     }
 
+    private string MapParticipation1To2 (OlResponseStatus value)
+    {
+      switch (value)
+      {
+        case OlResponseStatus.olResponseAccepted:
+          return "ACCEPTED";
+        case OlResponseStatus.olResponseDeclined:
+          return "DECLINED";
+        case OlResponseStatus.olResponseNone:
+          return null;
+        case OlResponseStatus.olResponseNotResponded:
+          return "NEEDS-ACTION";
+        case OlResponseStatus.olResponseOrganized:
+          return "ACCEPTED";
+        case OlResponseStatus.olResponseTentative:
+          return "TENTATIVE";
+      }
+      throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
+    }
 
     private void MapOrganizer1To2 (AppointmentItem source, IEvent target)
     {
@@ -584,6 +603,7 @@ namespace CalDavSynchronizer.Implementation
           else
             attendee = new Attendee();
 
+          attendee.ParticipationStatus = MapParticipation1To2 (recipient.MeetingResponseStatus);
           attendee.CommonName = recipient.Name;
           attendee.Role = MapAttendeeType1To2 ((OlMeetingRecipientType) recipient.Type);
           target.Attendees.Add (attendee);
