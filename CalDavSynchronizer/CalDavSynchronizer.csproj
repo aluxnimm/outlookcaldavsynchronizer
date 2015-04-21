@@ -194,7 +194,9 @@
     <Compile Include="Generic\ProgressReport\ITotalProgressFactory.cs" />
     <Compile Include="Generic\ProgressReport\NullProgressStep.cs" />
     <Compile Include="Generic\ProgressReport\NullTotalProgress.cs" />
-    <Compile Include="Implementation\AppointmentItemWrapper.cs" />
+    <Compile Include="Implementation\ComWrappers\AppointmentItemWrapper.cs" />
+    <Compile Include="Implementation\ComWrappers\ComEnumerableExtensions.cs" />
+    <Compile Include="Implementation\ComWrappers\GenericComObjectWrapper.cs" />
     <Compile Include="Implementation\OutlookEventRelationData.cs" />
     <Compile Include="Generic\EntityRelationManagement\IEntityRelationDataFactory.cs" />
     <Compile Include="Implementation\OutlookEventRelationDataFactory.cs" />
@@ -247,7 +249,6 @@
     <Compile Include="DataAccess\CalDavDataAccess.cs" />
     <Compile Include="DataAccess\ICalDavDataAccess.cs" />
     <Compile Include="DataAccess\IOptionsDataAccess.cs" />
-    <Compile Include="DataAccess\IOutlookDataAccess.cs" />
     <Compile Include="DataAccess\OptionsDataAccess.cs" />
     <Compile Include="Contracts\Options.cs" />
     <Compile Include="Generic\Synchronization\States\UpdateFromNewerToOlder.cs" />

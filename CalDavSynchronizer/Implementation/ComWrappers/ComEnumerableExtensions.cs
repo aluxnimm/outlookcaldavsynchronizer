@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer 
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -13,18 +13,29 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using System.Collections.Generic;
-using CalDavSynchronizer.Generic.ProgressReport;
-using DDay.iCal;
-using Microsoft.Office.Interop.Outlook;
 
-namespace CalDavSynchronizer.DataAccess
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+
+namespace CalDavSynchronizer.Implementation.ComWrappers
 {
-  internal interface IOutlookDataAccess
+  internal static class ComEnumerableExtensions
   {
-    Dictionary<string, DateTime> GetEvents (DateTime? fromUtc, DateTime? toUtc);
-    IEnumerable<AppointmentItem> GetEvents (ICollection<string> ids, ITotalProgress progress);
-    AppointmentItem CreateNewEvent ();
+    public static IEnumerable<T> ToSafeEnumerable<T> (this IEnumerable source)
+    {
+      foreach (T item in source)
+      {
+        try
+        {
+          yield return item;
+        }
+        finally
+        {
+          Marshal.FinalReleaseComObject (item);
+        }
+      }
+    }
   }
 }

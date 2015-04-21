@@ -19,8 +19,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using CalDavSynchronizer.Generic.EntityMapping;
+using CalDavSynchronizer.Implementation.ComWrappers;
 using DDay.iCal;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
@@ -232,10 +232,12 @@ namespace CalDavSynchronizer.Implementation
 
     private void MapOrganizer1To2 (AppointmentItem source, IEvent target)
     {
-      var organizer = source.GetOrganizer();
-      if (organizer != null && source.MeetingStatus!=OlMeetingStatus.olNonMeeting)
+      using (var organizerWrapper = GenericComObjectWrapper.Create (source.GetOrganizer()))
       {
-        SetOrganizer (target, organizer);
+        if (organizerWrapper.Inner != null && source.MeetingStatus != OlMeetingStatus.olNonMeeting)
+        {
+          SetOrganizer (target, organizerWrapper.Inner);
+        }
       }
     }
 
@@ -263,91 +265,96 @@ namespace CalDavSynchronizer.Implementation
     {
       if (source.IsRecurring)
       {
-        var sourceRecurrencePattern = source.GetRecurrencePattern();
-
-        IRecurrencePattern targetRecurrencePattern = new RecurrencePattern();
-        if (!sourceRecurrencePattern.NoEndDate)
+        using (var sourceRecurrencePatternWrapper = GenericComObjectWrapper.Create (source.GetRecurrencePattern()))
         {
+          var sourceRecurrencePattern = sourceRecurrencePatternWrapper.Inner;
+          IRecurrencePattern targetRecurrencePattern = new RecurrencePattern();
+          if (!sourceRecurrencePattern.NoEndDate)
+          {
             targetRecurrencePattern.Count = sourceRecurrencePattern.Occurrences;
             //Until must not be set if count is set, since outlook always sets Occurrences
             //but sogo wants it as utc end time of the last event not only the enddate at 0000
             //targetRecurrencePattern.Until = sourceRecurrencePattern.PatternEndDate.Add(sourceRecurrencePattern.EndTime.TimeOfDay).ToUniversalTime();
-        }
-        targetRecurrencePattern.Interval = sourceRecurrencePattern.Interval;
+          }
+          targetRecurrencePattern.Interval = sourceRecurrencePattern.Interval;
 
-        switch (sourceRecurrencePattern.RecurrenceType)
-        {
-          case OlRecurrenceType.olRecursDaily:
-            targetRecurrencePattern.Frequency = FrequencyType.Daily;
-            break;
-          case OlRecurrenceType.olRecursWeekly:
-            targetRecurrencePattern.Frequency = FrequencyType.Weekly;
-            MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay, 0);
-            break;
-          case OlRecurrenceType.olRecursMonthly:
-            targetRecurrencePattern.Frequency = FrequencyType.Monthly;
-            targetRecurrencePattern.ByMonthDay.Add (sourceRecurrencePattern.DayOfMonth);
-            break;
-          case OlRecurrenceType.olRecursMonthNth:
-            targetRecurrencePattern.Frequency = FrequencyType.Monthly;
-            MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay, sourceRecurrencePattern.Instance);
-            targetRecurrencePattern.ByWeekNo.Add (sourceRecurrencePattern.Instance);
-            break;
-          case OlRecurrenceType.olRecursYearly:
-            targetRecurrencePattern.Frequency = FrequencyType.Yearly;
-            targetRecurrencePattern.ByMonthDay.Add (sourceRecurrencePattern.DayOfMonth);
-            targetRecurrencePattern.ByMonth.Add (sourceRecurrencePattern.MonthOfYear);
-            break;
-          case OlRecurrenceType.olRecursYearNth:
-            targetRecurrencePattern.Frequency = FrequencyType.Yearly;
-            MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay, sourceRecurrencePattern.Instance);
-            targetRecurrencePattern.ByMonth.Add (sourceRecurrencePattern.MonthOfYear);
-            targetRecurrencePattern.ByWeekNo.Add (sourceRecurrencePattern.Instance);
-            break;
-        }
-
-        target.RecurrenceRules.Add (targetRecurrencePattern);
-
-        PeriodList targetExList = new PeriodList();
-
-        foreach (RecurrenceException sourceException in sourceRecurrencePattern.Exceptions)
-        {
-          if (!sourceException.Deleted)
+          switch (sourceRecurrencePattern.RecurrenceType)
           {
-            var targetException = new Event();
-            target.Calendar.Events.Add(targetException);
-            targetException.UID = target.UID;
-            Map1To2(sourceException.AppointmentItem, targetException, true);
+            case OlRecurrenceType.olRecursDaily:
+              targetRecurrencePattern.Frequency = FrequencyType.Daily;
+              break;
+            case OlRecurrenceType.olRecursWeekly:
+              targetRecurrencePattern.Frequency = FrequencyType.Weekly;
+              MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay, 0);
+              break;
+            case OlRecurrenceType.olRecursMonthly:
+              targetRecurrencePattern.Frequency = FrequencyType.Monthly;
+              targetRecurrencePattern.ByMonthDay.Add (sourceRecurrencePattern.DayOfMonth);
+              break;
+            case OlRecurrenceType.olRecursMonthNth:
+              targetRecurrencePattern.Frequency = FrequencyType.Monthly;
+              MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay, sourceRecurrencePattern.Instance);
+              targetRecurrencePattern.ByWeekNo.Add (sourceRecurrencePattern.Instance);
+              break;
+            case OlRecurrenceType.olRecursYearly:
+              targetRecurrencePattern.Frequency = FrequencyType.Yearly;
+              targetRecurrencePattern.ByMonthDay.Add (sourceRecurrencePattern.DayOfMonth);
+              targetRecurrencePattern.ByMonth.Add (sourceRecurrencePattern.MonthOfYear);
+              break;
+            case OlRecurrenceType.olRecursYearNth:
+              targetRecurrencePattern.Frequency = FrequencyType.Yearly;
+              MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay, sourceRecurrencePattern.Instance);
+              targetRecurrencePattern.ByMonth.Add (sourceRecurrencePattern.MonthOfYear);
+              targetRecurrencePattern.ByWeekNo.Add (sourceRecurrencePattern.Instance);
+              break;
+          }
 
-            if (source.AllDayEvent)
+          target.RecurrenceRules.Add (targetRecurrencePattern);
+
+          PeriodList targetExList = new PeriodList();
+
+          foreach (var sourceException in sourceRecurrencePattern.Exceptions.ToSafeEnumerable<RecurrenceException>())
+          {
+            if (!sourceException.Deleted)
             {
-              // Outlook's AllDayEvent relates to Start and not not StartUtc!!!
-              targetException.RecurrenceID = new iCalDateTime(sourceException.OriginalDate);
-              targetException.RecurrenceID.HasTime = false;
+              var targetException = new Event();
+              target.Calendar.Events.Add (targetException);
+              targetException.UID = target.UID;
+              using (var wrapper = new AppointmentItemWrapper (sourceException.AppointmentItem, _ => { throw new InvalidOperationException ("Cannot reload exception AppointmentITem!"); }))
+              {
+                Map1To2 (wrapper.Inner, targetException, true);
+              }
+
+              if (source.AllDayEvent)
+              {
+                // Outlook's AllDayEvent relates to Start and not not StartUtc!!!
+                targetException.RecurrenceID = new iCalDateTime (sourceException.OriginalDate);
+                targetException.RecurrenceID.HasTime = false;
+              }
+              else
+              {
+                var timeZone = TimeZoneInfo.FindSystemTimeZoneById (source.StartTimeZone.ID);
+                var originalDateUtc = TimeZoneInfo.ConvertTimeToUtc (sourceException.OriginalDate, timeZone);
+                targetException.RecurrenceID = new iCalDateTime (originalDateUtc) { IsUniversalTime = true };
+              }
             }
             else
             {
-              var timeZone = TimeZoneInfo.FindSystemTimeZoneById(source.StartTimeZone.ID);
-              var originalDateUtc = TimeZoneInfo.ConvertTimeToUtc(sourceException.OriginalDate, timeZone);
-              targetException.RecurrenceID = new iCalDateTime(originalDateUtc) { IsUniversalTime = true };
+              if (source.AllDayEvent)
+              {
+                iCalDateTime exDate = new iCalDateTime (sourceException.OriginalDate);
+                exDate.HasTime = false;
+                targetExList.Add (exDate);
+              }
+              else
+              {
+                iCalDateTime exDate = new iCalDateTime (sourceException.OriginalDate.Add (source.StartUTC.TimeOfDay)) { IsUniversalTime = true };
+                targetExList.Add (exDate);
+              }
             }
           }
-          else
-          {
-            if (source.AllDayEvent)
-            {
-              iCalDateTime exDate = new iCalDateTime(sourceException.OriginalDate);
-              exDate.HasTime = false;
-              targetExList.Add(exDate);
-            }
-            else
-            {
-              iCalDateTime exDate = new iCalDateTime(sourceException.OriginalDate.Add(source.StartUTC.TimeOfDay)) { IsUniversalTime = true };
-              targetExList.Add(exDate);
-            }
-          }
+          target.ExceptionDates.Add (targetExList);
         }
-        target.ExceptionDates.Add(targetExList);
       }
     }
 
@@ -408,151 +415,161 @@ namespace CalDavSynchronizer.Implementation
     {
       if (source.RecurrenceRules.Count > 0)
       {
-        var targetRecurrencePattern = targetWrapper.Inner.GetRecurrencePattern ();
-        if (source.RecurrenceRules.Count > 1)
+        using (var targetRecurrencePatternWrapper = GenericComObjectWrapper.Create (targetWrapper.Inner.GetRecurrencePattern()))
         {
-          s_logger.WarnFormat ("Event '{0}' contains more than one recurrence rule. Since outlook supports only one rule, all except the first one will be ignored.", source.Url);
-        }
-        var sourceRecurrencePattern = source.RecurrenceRules[0];
+          var targetRecurrencePattern = targetRecurrencePatternWrapper.Inner;
+          if (source.RecurrenceRules.Count > 1)
+          {
+            s_logger.WarnFormat ("Event '{0}' contains more than one recurrence rule. Since outlook supports only one rule, all except the first one will be ignored.", source.Url);
+          }
+          var sourceRecurrencePattern = source.RecurrenceRules[0];
 
-        targetRecurrencePattern.Interval = sourceRecurrencePattern.Interval;
+          targetRecurrencePattern.Interval = sourceRecurrencePattern.Interval;
 
-        if (sourceRecurrencePattern.Count >= 0)
-          targetRecurrencePattern.Occurrences = sourceRecurrencePattern.Count;
+          if (sourceRecurrencePattern.Count >= 0)
+            targetRecurrencePattern.Occurrences = sourceRecurrencePattern.Count;
 
-        if (sourceRecurrencePattern.Until != default(DateTime))
-          targetRecurrencePattern.PatternEndDate = sourceRecurrencePattern.Until;
+          if (sourceRecurrencePattern.Until != default(DateTime))
+            targetRecurrencePattern.PatternEndDate = sourceRecurrencePattern.Until;
 
-        switch (sourceRecurrencePattern.Frequency)
-        {
-          case FrequencyType.Daily:
-            targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursDaily;
-            break;
-          case FrequencyType.Weekly:
-            if (sourceRecurrencePattern.ByDay.Count > 0)
-            {
-              targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursWeekly;
-              targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1 (sourceRecurrencePattern.ByDay);
-            }
-            else
-            {
-              targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursWeekly;
-            }
-            break;
-          case FrequencyType.Monthly:
-            if (sourceRecurrencePattern.ByDay.Count > 0)
-            {
-              targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursMonthNth;
-              if (sourceRecurrencePattern.ByWeekNo.Count > 1)
+          switch (sourceRecurrencePattern.Frequency)
+          {
+            case FrequencyType.Daily:
+              targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursDaily;
+              break;
+            case FrequencyType.Weekly:
+              if (sourceRecurrencePattern.ByDay.Count > 0)
               {
-                s_logger.WarnFormat ("Event '{0}' contains more than one week in a monthly recurrence rule. Since outlook supports only one week, all except the first one will be ignored.", source.Url);
-              }
-              else if (sourceRecurrencePattern.ByWeekNo.Count > 0)
-              {
-                targetRecurrencePattern.Instance = sourceRecurrencePattern.ByWeekNo[0];
+                targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursWeekly;
+                targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1 (sourceRecurrencePattern.ByDay);
               }
               else
               {
+                targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursWeekly;
+              }
+              break;
+            case FrequencyType.Monthly:
+              if (sourceRecurrencePattern.ByDay.Count > 0)
+              {
+                targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursMonthNth;
+                if (sourceRecurrencePattern.ByWeekNo.Count > 1)
+                {
+                  s_logger.WarnFormat ("Event '{0}' contains more than one week in a monthly recurrence rule. Since outlook supports only one week, all except the first one will be ignored.", source.Url);
+                }
+                else if (sourceRecurrencePattern.ByWeekNo.Count > 0)
+                {
+                  targetRecurrencePattern.Instance = sourceRecurrencePattern.ByWeekNo[0];
+                }
+                else
+                {
+                  targetRecurrencePattern.Instance = (sourceRecurrencePattern.ByDay[0].Offset >= 0) ? sourceRecurrencePattern.ByDay[0].Offset : 5;
+                }
+                targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1 (sourceRecurrencePattern.ByDay);
+              }
+              else if (sourceRecurrencePattern.ByMonthDay.Count > 0)
+              {
+                targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursMonthly;
+                if (sourceRecurrencePattern.ByMonthDay.Count > 1)
+                {
+                  s_logger.WarnFormat ("Event '{0}' contains more than one days in a monthly recurrence rule. Since outlook supports only one day, all except the first one will be ignored.", source.Url);
+                }
+                targetRecurrencePattern.DayOfMonth = sourceRecurrencePattern.ByMonthDay[0];
+              }
+              else
+              {
+                targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursMonthly;
+              }
+              break;
+            case FrequencyType.Yearly:
+              if (sourceRecurrencePattern.ByMonth.Count > 0 && sourceRecurrencePattern.ByWeekNo.Count > 0)
+              {
+                targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursYearNth;
+                if (sourceRecurrencePattern.ByMonth.Count > 1)
+                {
+                  s_logger.WarnFormat ("Event '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.Url);
+                }
+                targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
+
+                if (sourceRecurrencePattern.ByWeekNo.Count > 1)
+                {
+                  s_logger.WarnFormat ("Event '{0}' contains more than one week in a yearly recurrence rule. Since outlook supports only one week, all except the first one will be ignored.", source.Url);
+                }
+                targetRecurrencePattern.Instance = sourceRecurrencePattern.ByWeekNo[0];
+
+                targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1 (sourceRecurrencePattern.ByDay);
+              }
+              else if (sourceRecurrencePattern.ByMonth.Count > 0 && sourceRecurrencePattern.ByMonthDay.Count > 0)
+              {
+                targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursYearly;
+                if (sourceRecurrencePattern.ByMonth.Count > 1)
+                {
+                  s_logger.WarnFormat ("Event '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.Url);
+                }
+                targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
+
+                if (sourceRecurrencePattern.ByMonthDay.Count > 1)
+                {
+                  s_logger.WarnFormat ("Event '{0}' contains more than one days in a monthly recurrence rule. Since outlook supports only one day, all except the first one will be ignored.", source.Url);
+                }
+                targetRecurrencePattern.DayOfMonth = sourceRecurrencePattern.ByMonthDay[0];
+              }
+              else if (sourceRecurrencePattern.ByMonth.Count > 0 && sourceRecurrencePattern.ByDay.Count > 0)
+              {
+                targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursYearNth;
+                if (sourceRecurrencePattern.ByMonth.Count > 1)
+                {
+                  s_logger.WarnFormat ("Event '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.Url);
+                }
+                targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
+
                 targetRecurrencePattern.Instance = (sourceRecurrencePattern.ByDay[0].Offset >= 0) ? sourceRecurrencePattern.ByDay[0].Offset : 5;
+                targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1 (sourceRecurrencePattern.ByDay);
               }
-              targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1 (sourceRecurrencePattern.ByDay);
-            }
-            else if (sourceRecurrencePattern.ByMonthDay.Count > 0)
-            {
-              targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursMonthly;
-              if (sourceRecurrencePattern.ByMonthDay.Count > 1)
+              else
               {
-                s_logger.WarnFormat ("Event '{0}' contains more than one days in a monthly recurrence rule. Since outlook supports only one day, all except the first one will be ignored.", source.Url);
+                targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursYearly;
               }
-              targetRecurrencePattern.DayOfMonth = sourceRecurrencePattern.ByMonthDay[0];
-            }
-            else
-            {
-              targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursMonthly;
-            }
-            break;
-          case FrequencyType.Yearly:
-            if (sourceRecurrencePattern.ByMonth.Count > 0 && sourceRecurrencePattern.ByWeekNo.Count > 0)
-            {
-              targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursYearNth;
-              if (sourceRecurrencePattern.ByMonth.Count > 1)
-              {
-                s_logger.WarnFormat ("Event '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.Url);
-              }
-              targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
-
-              if (sourceRecurrencePattern.ByWeekNo.Count > 1)
-              {
-                s_logger.WarnFormat ("Event '{0}' contains more than one week in a yearly recurrence rule. Since outlook supports only one week, all except the first one will be ignored.", source.Url);
-              }
-              targetRecurrencePattern.Instance = sourceRecurrencePattern.ByWeekNo[0];
-
-              targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1 (sourceRecurrencePattern.ByDay);
-            }
-            else if (sourceRecurrencePattern.ByMonth.Count > 0 && sourceRecurrencePattern.ByMonthDay.Count > 0)
-            {
-              targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursYearly;
-              if (sourceRecurrencePattern.ByMonth.Count > 1)
-              {
-                s_logger.WarnFormat ("Event '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.Url);
-              }
-              targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
-
-              if (sourceRecurrencePattern.ByMonthDay.Count > 1)
-              {
-                s_logger.WarnFormat ("Event '{0}' contains more than one days in a monthly recurrence rule. Since outlook supports only one day, all except the first one will be ignored.", source.Url);
-              }
-              targetRecurrencePattern.DayOfMonth = sourceRecurrencePattern.ByMonthDay[0];
-            }
-            else if (sourceRecurrencePattern.ByMonth.Count > 0 && sourceRecurrencePattern.ByDay.Count > 0)
-            {
-              targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursYearNth;
-              if (sourceRecurrencePattern.ByMonth.Count > 1)
-              {
-                s_logger.WarnFormat ("Event '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.Url);
-              }
-              targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
-
-              targetRecurrencePattern.Instance = (sourceRecurrencePattern.ByDay[0].Offset >= 0) ? sourceRecurrencePattern.ByDay[0].Offset : 5;
-              targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1 (sourceRecurrencePattern.ByDay);
-            }
-            else
-            {
-              targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursYearly;
-            }
-            break;
-          default:
-            s_logger.WarnFormat ("Recurring event '{0}' contains the Frequency '{1}', which is not supported by outlook. Ignoring recurrence rule.", source.Url, sourceRecurrencePattern.Frequency);
-            targetWrapper.Inner.ClearRecurrencePattern ();
-            break;
+              break;
+            default:
+              s_logger.WarnFormat ("Recurring event '{0}' contains the Frequency '{1}', which is not supported by outlook. Ignoring recurrence rule.", source.Url, sourceRecurrencePattern.Frequency);
+              targetWrapper.Inner.ClearRecurrencePattern();
+              break;
+          }
         }
-
         // Due to limitations out outlook, the Appointment has to be saved here. Otherwise 'targetRecurrencePattern.GetOccurrence ()'
         // will throw an exception
+
         targetWrapper.SaveAndReload();
 
-        foreach (var recurranceException in exceptions)
+        using (var targetRecurrencePatternWrapper = GenericComObjectWrapper.Create (targetWrapper.Inner.GetRecurrencePattern()))
         {
-          var originalStart = TimeZoneInfo.ConvertTimeFromUtc (recurranceException.RecurrenceID.UTC, _localTimeZoneInfo);
-          var targetException = targetRecurrencePattern.GetOccurrence (originalStart);
-          var exceptionWrapper = new AppointmentItemWrapper (targetException, _ => { throw new InvalidOperationException ("cannot reload exception item"); });
-          Map2To1 (recurranceException, new IEvent[] { }, exceptionWrapper , true);
-          exceptionWrapper.Inner.Save ();
-          exceptionWrapper.Dispose ();
-        }
-
-        if (source.ExceptionDates != null)
-        {
-          foreach (IPeriodList exdateList in source.ExceptionDates)
+          var targetRecurrencePattern = targetRecurrencePatternWrapper.Inner;
+          foreach (var recurranceException in exceptions)
           {
-            foreach (IPeriod exdate in exdateList)
+            var originalStart = TimeZoneInfo.ConvertTimeFromUtc (recurranceException.RecurrenceID.UTC, _localTimeZoneInfo);
+            var targetException = targetRecurrencePattern.GetOccurrence (originalStart);
+            using (var exceptionWrapper = new AppointmentItemWrapper (targetException, _ => { throw new InvalidOperationException ("cannot reload exception item"); }))
             {
-              var originalStart = TimeZoneInfo.ConvertTimeFromUtc(exdate.StartTime.UTC, _localTimeZoneInfo);
-              targetRecurrencePattern.GetOccurrence(originalStart).Delete();
+              Map2To1 (recurranceException, new IEvent[] { }, exceptionWrapper, true);
+              exceptionWrapper.Inner.Save();
+            }
+          }
+
+          if (source.ExceptionDates != null)
+          {
+            foreach (IPeriodList exdateList in source.ExceptionDates)
+            {
+              foreach (IPeriod exdate in exdateList)
+              {
+                var originalStart = TimeZoneInfo.ConvertTimeFromUtc (exdate.StartTime.UTC, _localTimeZoneInfo);
+                using (var wrapper = GenericComObjectWrapper.Create (targetRecurrencePattern.GetOccurrence (originalStart)))
+                {
+                  wrapper.Inner.Delete();
+                }
+              }
             }
           }
         }
-        Marshal.FinalReleaseComObject (targetRecurrencePattern);
       }
     }
 
@@ -592,16 +609,23 @@ namespace CalDavSynchronizer.Implementation
     {
       organizerSet = false;
 
-      foreach (Recipient recipient in source.Recipients)
+      foreach (var recipient in source.Recipients.ToSafeEnumerable<Recipient>())
       {
         if (!IsOwnIdentity (recipient))
         {
           Attendee attendee;
 
           if (!string.IsNullOrEmpty (recipient.Address))
-            attendee = new Attendee (GetMailUrl (recipient.AddressEntry));
+          {
+            using (var entryWrapper = GenericComObjectWrapper.Create (recipient.AddressEntry))
+            {
+              attendee = new Attendee (GetMailUrl (entryWrapper.Inner));
+            }
+          }
           else
+          {
             attendee = new Attendee();
+          }
 
           attendee.ParticipationStatus = MapParticipation1To2 (recipient.MeetingResponseStatus);
           attendee.CommonName = recipient.Name;
@@ -610,7 +634,10 @@ namespace CalDavSynchronizer.Implementation
         }
         if (((OlMeetingRecipientType) recipient.Type) == OlMeetingRecipientType.olOrganizer)
         {
-          SetOrganizer (target, recipient.AddressEntry);
+          using (var entryWrapper = GenericComObjectWrapper.Create (recipient.AddressEntry))
+          {
+            SetOrganizer (target, entryWrapper.Inner);
+          }
           organizerSet = true;
         }
       }
@@ -670,8 +697,8 @@ namespace CalDavSynchronizer.Implementation
     {
       if (!isRecurrenceException && targetWrapper.Inner.IsRecurring)
       {
-        targetWrapper.Inner.ClearRecurrencePattern ();
-        targetWrapper.SaveAndReload ();
+        targetWrapper.Inner.ClearRecurrencePattern();
+        targetWrapper.SaveAndReload();
       }
 
       if (source.IsAllDay)
@@ -709,7 +736,7 @@ namespace CalDavSynchronizer.Implementation
       if (source.Organizer != null)
       {
         targetWrapper.Inner.MeetingStatus = OlMeetingStatus.olMeetingReceived;
-        targetWrapper.Inner.PropertyAccessor.SetProperty ("http://schemas.microsoft.com/mapi/proptag/0x0042001F", source.Organizer.Value.ToString ().Substring (s_mailtoSchemaLength));
+        targetWrapper.Inner.PropertyAccessor.SetProperty ("http://schemas.microsoft.com/mapi/proptag/0x0042001F", source.Organizer.Value.ToString().Substring (s_mailtoSchemaLength));
       }
       else
       {
@@ -742,39 +769,45 @@ namespace CalDavSynchronizer.Implementation
     {
       var targetRecipientsWhichShouldRemain = new HashSet<Recipient>();
       var indexByEmailAddresses = GetOutlookRecipientsByEmailAddressesOrName (target);
-
-      foreach (var attendee in source.Attendees)
+      try
       {
-        Recipient targetRecipient = null;
-
-        if (attendee.Value != null && !string.IsNullOrEmpty (attendee.Value.ToString().Substring (s_mailtoSchemaLength)))
+        foreach (var attendee in source.Attendees)
         {
-          if (!indexByEmailAddresses.TryGetValue (attendee.Value.ToString(), out targetRecipient))
+          Recipient targetRecipient = null;
+
+          if (attendee.Value != null && !string.IsNullOrEmpty (attendee.Value.ToString().Substring (s_mailtoSchemaLength)))
           {
-            targetRecipient = target.Recipients.Add (attendee.Value.ToString().Substring (s_mailtoSchemaLength));
+            if (!indexByEmailAddresses.TryGetValue (attendee.Value.ToString(), out targetRecipient))
+            {
+              targetRecipient = target.Recipients.Add (attendee.Value.ToString().Substring (s_mailtoSchemaLength));
+            }
+          }
+          else
+          {
+            if (!string.IsNullOrEmpty (attendee.CommonName))
+              targetRecipient = target.Recipients.Add (attendee.CommonName);
+          }
+
+          if (targetRecipient != null)
+          {
+            targetRecipientsWhichShouldRemain.Add (targetRecipient);
+            targetRecipient.Type = (int) MapAttendeeType2To1 (attendee.Role);
           }
         }
-        else
-        {
-          if (!string.IsNullOrEmpty (attendee.CommonName))
-            targetRecipient = target.Recipients.Add (attendee.CommonName);
-        }
 
-        if (targetRecipient != null)
+        for (int i = target.Recipients.Count; i > 0; i--)
         {
-          targetRecipientsWhichShouldRemain.Add (targetRecipient);
-          targetRecipient.Type = (int) MapAttendeeType2To1 (attendee.Role);
+          var recipient = target.Recipients[i];
+          if (!IsOwnIdentity (recipient))
+          {
+            if (!targetRecipientsWhichShouldRemain.Contains (recipient))
+              target.Recipients.Remove (i);
+          }
         }
       }
-
-      for (int i = target.Recipients.Count; i > 0; i--)
+      finally
       {
-        var recipient = target.Recipients[i];
-        if (!IsOwnIdentity (recipient))
-        {
-          if (!targetRecipientsWhichShouldRemain.Contains (recipient))
-            target.Recipients.Remove (i);
-        }
+        indexByEmailAddresses.Values.ToSafeEnumerable<Recipient>().ToArray();
       }
     }
 

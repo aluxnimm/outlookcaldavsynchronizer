@@ -21,6 +21,7 @@ using System.Linq;
 using CalDavSynchronizer.EntityRepositories;
 using CalDavSynchronizer.Generic.EntityVersionManagement;
 using CalDavSynchronizer.Generic.ProgressReport;
+using CalDavSynchronizer.Implementation.ComWrappers;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation
@@ -57,18 +58,20 @@ namespace CalDavSynchronizer.Implementation
       {
         var row = table.GetNextRow();
         var entryId = (string) row[c_entryIdColumnName];
-        var appointment = (AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, storeId);
-        events.Add (appointment.EntryID, appointment.LastModificationTime);
+        using (var appointmentWrapper = GenericComObjectWrapper.Create ((AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, storeId)))
+        {
+          events.Add (appointmentWrapper.Inner.EntryID, appointmentWrapper.Inner.LastModificationTime);
+        }
       }
 
       return events;
     }
 
-
     private static readonly CultureInfo _currentCultureInfo = CultureInfo.CurrentCulture;
+
     private string ToOutlookDateString (DateTime value)
     {
-      return value.ToString("g", _currentCultureInfo);
+      return value.ToString ("g", _currentCultureInfo);
     }
 
 
@@ -92,33 +95,37 @@ namespace CalDavSynchronizer.Implementation
     public EntityIdWithVersion<string, DateTime> Update (string entityId, AppointmentItemWrapper entityToUpdate, Func<AppointmentItemWrapper, AppointmentItemWrapper> entityModifier)
     {
       entityToUpdate = entityModifier (entityToUpdate);
-      entityToUpdate.Inner.Save ();
+      entityToUpdate.Inner.Save();
       return new EntityIdWithVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime);
     }
 
     public bool Delete (string entityId)
     {
-      var appointment = Get (new[] { entityId }, NullTotalProgress.Instance).Values.SingleOrDefault();
-      if (appointment != null)
+      using (var appointment = Get (new[] { entityId }, NullTotalProgress.Instance).Values.SingleOrDefault())
       {
-        appointment.Inner.Delete();
-        appointment.Dispose();
-        return true;
-      }
-      else
-      {
-        return false;
+        if (appointment != null)
+        {
+          appointment.Inner.Delete();
+          return true;
+        }
+        else
+        {
+          return false;
+        }
       }
     }
 
     public EntityIdWithVersion<string, DateTime> Create (Func<AppointmentItemWrapper, AppointmentItemWrapper> entityInitializer)
     {
-      var wrapper = new AppointmentItemWrapper ((AppointmentItem) _calendarFolder.Items.Add (OlItemType.olAppointmentItem), entryId => (AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, _calendarFolder.StoreID));
-      wrapper = entityInitializer (wrapper);
-      wrapper.Inner.Save ();
-      var result = new EntityIdWithVersion<string, DateTime> (wrapper.Inner.EntryID, wrapper.Inner.LastModificationTime);
-      wrapper.Dispose();
-      return result;
+      using (var wrapper = new AppointmentItemWrapper ((AppointmentItem) _calendarFolder.Items.Add (OlItemType.olAppointmentItem), entryId => (AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, _calendarFolder.StoreID)))
+      {
+        using (var initializedWrapper = entityInitializer (wrapper))
+        {
+          initializedWrapper.Inner.Save();
+          var result = new EntityIdWithVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime);
+          return result;
+        }
+      }
     }
   }
 }

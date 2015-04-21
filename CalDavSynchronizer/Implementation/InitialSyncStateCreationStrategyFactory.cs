@@ -17,6 +17,7 @@ using System;
 using CalDavSynchronizer.Generic.EntityRelationManagement;
 using CalDavSynchronizer.Generic.Synchronization;
 using CalDavSynchronizer.Generic.Synchronization.States;
+using CalDavSynchronizer.Implementation.ComWrappers;
 using DDay.iCal;
 using Microsoft.Office.Interop.Outlook;
 

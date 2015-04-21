@@ -24,6 +24,7 @@ using CalDavSynchronizer.Generic.EntityMapping;
 using CalDavSynchronizer.Generic.EntityRelationManagement;
 using CalDavSynchronizer.Generic.InitialEntityMatching;
 using CalDavSynchronizer.Generic.Synchronization;
+using CalDavSynchronizer.Implementation.ComWrappers;
 using DDay.iCal;
 using DDay.iCal.Serialization.iCalendar;
 using log4net;
