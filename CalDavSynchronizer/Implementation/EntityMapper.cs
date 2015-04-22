@@ -792,6 +792,7 @@ namespace CalDavSynchronizer.Implementation
           {
             targetRecipientsWhichShouldRemain.Add (targetRecipient);
             targetRecipient.Type = (int) MapAttendeeType2To1 (attendee.Role);
+            targetRecipient.Resolve();
           }
         }
 
