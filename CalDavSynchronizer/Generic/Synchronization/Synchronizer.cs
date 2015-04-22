@@ -16,7 +16,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using CalDavSynchronizer.Generic.EntityRelationManagement;
 using CalDavSynchronizer.Generic.ProgressReport;
@@ -80,8 +79,7 @@ namespace CalDavSynchronizer.Generic.Synchronization
                 btypeRepositoryVersions);
           }
 
-          var entitySyncStates = new List<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>>();
-
+          var entitySyncStates = new EntitySyncStateContainer<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>();
 
           var aDeltaLogInfo = new VersionDeltaLoginInformation();
           var bDeltaLogInfo = new VersionDeltaLoginInformation();
@@ -120,9 +118,7 @@ namespace CalDavSynchronizer.Generic.Synchronization
           HashSet<TAtypeEntityId> aEntitesToLoad = new HashSet<TAtypeEntityId>();
           HashSet<TBtypeEntityId> bEntitesToLoad = new HashSet<TBtypeEntityId>();
 
-          foreach (var syncAction in entitySyncStates)
-            syncAction.AddRequiredEntitiesToLoad (aEntitesToLoad.Add, bEntitesToLoad.Add);
-
+          entitySyncStates.Execute (s => s.AddRequiredEntitiesToLoad (aEntitesToLoad.Add, bEntitesToLoad.Add));
 
           if (aEntities == null && bEntities == null)
           {
@@ -131,41 +127,29 @@ namespace CalDavSynchronizer.Generic.Synchronization
             bEntities = btypeEntityRepository.Get (bEntitesToLoad, totalProgress);
           }
 
-          var allSyncStatesThatWereCreated = new HashSet<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>>();
-          entitySyncStates.ForEach (s => allSyncStatesThatWereCreated.Add (s));
-
-          entitySyncStates = entitySyncStates.Select (a => a.FetchRequiredEntities (aEntities, bEntities)).ToList();
-          entitySyncStates.ForEach (s => allSyncStatesThatWereCreated.Add (s));
-
-          entitySyncStates = entitySyncStates.Select (a => a.Resolve()).ToList();
-          entitySyncStates.ForEach (s => allSyncStatesThatWereCreated.Add (s));
-
+          entitySyncStates.DoTransition (s => s.FetchRequiredEntities (aEntities, bEntities));
+          entitySyncStates.DoTransition (s => s.Resolve ());
 
           // since resolve may change to an new state, required entities have to be fetched again.
           // an state is allowed only to resolve to another state, if the following states requires equal or less entities!
-          entitySyncStates = entitySyncStates.Select (a => a.FetchRequiredEntities (aEntities, bEntities)).ToList();
-          entitySyncStates.ForEach (s => allSyncStatesThatWereCreated.Add (s));
+          entitySyncStates.DoTransition (s => s.FetchRequiredEntities (aEntities, bEntities));
 
           using (var progress = totalProgress.StartStep (entitySyncStates.Count, string.Format ("Processing {0} entities...", entitySyncStates.Count)))
           {
-            entitySyncStates = entitySyncStates.Select (
-                a =>
+            entitySyncStates.DoTransition (
+                s =>
                 {
-                  var nextState = a.PerformSyncActionNoThrow();
+                  var nextState = s.PerformSyncActionNoThrow();
                   progress.Increase();
-                  allSyncStatesThatWereCreated.Add (nextState);
                   return nextState;
-                }
-                ).ToList();
+                });
           }
 
           var newData = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
 
-          foreach (var syncAction in entitySyncStates)
-            syncAction.AddNewRelationNoThrow (newData.Add);
+          entitySyncStates.Execute (s => s.AddNewRelationNoThrow (newData.Add));
 
-          foreach (var syncState in allSyncStatesThatWereCreated)
-            syncState.Dispose();
+          entitySyncStates.Dispose();
 
           _synchronizerContext.Save (newData);
         }

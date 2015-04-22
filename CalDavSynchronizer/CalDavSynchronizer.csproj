@@ -187,6 +187,7 @@
     <Compile Include="Generic\ProgressReport\ProgressStep.cs" />
     <Compile Include="Generic\ProgressReport\TotalProgress.cs" />
     <Compile Include="Generic\ProgressReport\TotalProgressFactory.cs" />
+    <Compile Include="Generic\Synchronization\EntitySyncStateContainer.cs" />
     <Compile Include="Generic\Synchronization\OneWaySyncMode.cs" />
     <Compile Include="Generic\Synchronization\VersionDeltaLoginInformation.cs" />
     <Compile Include="Generic\ProgressReport\ITotalProgress.cs" />
