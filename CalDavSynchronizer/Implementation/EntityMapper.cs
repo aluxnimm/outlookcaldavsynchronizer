@@ -736,11 +736,11 @@ namespace CalDavSynchronizer.Implementation
       if (source.Organizer != null)
       {
         string sourceOrganizerEmail = source.Organizer.Value.ToString().Substring (s_mailtoSchemaLength);
-        if (StringComparer.InvariantCultureIgnoreCase.Compare(sourceOrganizerEmail, _outlookEmailAddress) != 0)
+        if (StringComparer.InvariantCultureIgnoreCase.Compare (sourceOrganizerEmail, _outlookEmailAddress) != 0)
         {
           targetWrapper.Inner.MeetingStatus = OlMeetingStatus.olMeetingReceived;
-          targetWrapper.Inner.PropertyAccessor.SetProperty("http://schemas.microsoft.com/mapi/proptag/0x0042001F", sourceOrganizerEmail);
-          targetWrapper.Inner.PropertyAccessor.SetProperty("http://schemas.microsoft.com/mapi/proptag/0x0C1A001E", sourceOrganizerEmail);
+          targetWrapper.Inner.PropertyAccessor.SetProperty ("http://schemas.microsoft.com/mapi/proptag/0x0042001F", sourceOrganizerEmail);
+          targetWrapper.Inner.PropertyAccessor.SetProperty ("http://schemas.microsoft.com/mapi/proptag/0x0C1A001E", sourceOrganizerEmail);
         }
         else
         {
@@ -821,7 +821,7 @@ namespace CalDavSynchronizer.Implementation
       }
       finally
       {
-        recipientsToDispose.ToSafeEnumerable ().ToArray ();
+        recipientsToDispose.ToSafeEnumerable().ToArray();
       }
     }
 
