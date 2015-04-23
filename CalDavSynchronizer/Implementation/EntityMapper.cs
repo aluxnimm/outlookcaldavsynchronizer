@@ -36,6 +36,12 @@ namespace CalDavSynchronizer.Implementation
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private const string PR_SMTP_ADDRESS = "http://schemas.microsoft.com/mapi/proptag/0x39FE001E";
+    private const string PR_SENDER_NAME = "http://schemas.microsoft.com/mapi/proptag/0x0C1A001E";
+    /// <summary>
+    /// Not sure what this really means. When its set outlook display it as "On behalf of" but on some websites it is listed as 'From2'
+    /// </summary>
+    private const string PR_ON_BEHALF_OF = "http://schemas.microsoft.com/mapi/proptag/0x0042001F";
+
     private readonly string _outlookEmailAddress;
     private readonly string _serverEmailUri;
     private readonly TimeZoneInfo _localTimeZoneInfo;
@@ -779,8 +785,8 @@ namespace CalDavSynchronizer.Implementation
         if (StringComparer.InvariantCultureIgnoreCase.Compare (sourceOrganizerEmail, _outlookEmailAddress) != 0)
         {
           targetWrapper.Inner.MeetingStatus = OlMeetingStatus.olMeetingReceived;
-          targetWrapper.Inner.PropertyAccessor.SetProperty ("http://schemas.microsoft.com/mapi/proptag/0x0042001F", sourceOrganizerEmail);
-          targetWrapper.Inner.PropertyAccessor.SetProperty ("http://schemas.microsoft.com/mapi/proptag/0x0C1A001E", sourceOrganizerEmail);
+          targetWrapper.Inner.PropertyAccessor.SetProperty (PR_ON_BEHALF_OF, sourceOrganizerEmail);
+          targetWrapper.Inner.PropertyAccessor.SetProperty (PR_SENDER_NAME, sourceOrganizerEmail);
         }
         else
         {
