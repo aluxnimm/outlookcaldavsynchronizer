@@ -735,8 +735,17 @@ namespace CalDavSynchronizer.Implementation
       MapAttendees2To1 (source, targetWrapper.Inner);
       if (source.Organizer != null)
       {
-        targetWrapper.Inner.MeetingStatus = OlMeetingStatus.olMeetingReceived;
-        targetWrapper.Inner.PropertyAccessor.SetProperty ("http://schemas.microsoft.com/mapi/proptag/0x0042001F", source.Organizer.Value.ToString().Substring (s_mailtoSchemaLength));
+        string sourceOrganizerEmail = source.Organizer.Value.ToString().Substring (s_mailtoSchemaLength);
+        if (StringComparer.InvariantCultureIgnoreCase.Compare(sourceOrganizerEmail, _outlookEmailAddress) != 0)
+        {
+          targetWrapper.Inner.MeetingStatus = OlMeetingStatus.olMeetingReceived;
+          targetWrapper.Inner.PropertyAccessor.SetProperty("http://schemas.microsoft.com/mapi/proptag/0x0042001F", sourceOrganizerEmail);
+          targetWrapper.Inner.PropertyAccessor.SetProperty("http://schemas.microsoft.com/mapi/proptag/0x0C1A001E", sourceOrganizerEmail);
+        }
+        else
+        {
+          targetWrapper.Inner.MeetingStatus = OlMeetingStatus.olMeeting;
+        }
       }
       else
       {
