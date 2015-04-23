@@ -58,8 +58,11 @@ namespace CalDavSynchronizer.Implementation.ComWrappers
 
     public void Replace (AppointmentItem inner)
     {
-      DisposeInner();
-      Inner = inner;
+      if (inner != Inner)
+      {
+        DisposeInner();
+        Inner = inner;
+      }
     }
   }
 }
