@@ -37,13 +37,13 @@ namespace CalDavSynchronizer.Implementation
 
     private const string PR_SMTP_ADDRESS = "http://schemas.microsoft.com/mapi/proptag/0x39FE001E";
     private readonly string _outlookEmailAddress;
-    private readonly Uri _serverEmailAddress;
+    private readonly string _serverEmailUri;
     private readonly TimeZoneInfo _localTimeZoneInfo;
 
     public AppointmentEventEntityMapper (string outlookEmailAddress, Uri serverEmailAddress, string localTimeZoneId)
     {
       _outlookEmailAddress = outlookEmailAddress;
-      _serverEmailAddress = serverEmailAddress;
+      _serverEmailUri = serverEmailAddress.ToString();
       _localTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (localTimeZoneId);
     }
 
@@ -229,6 +229,46 @@ namespace CalDavSynchronizer.Implementation
       }
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
     }
+
+    private OlResponseStatus MapParticipation2To1 (string value)
+    {
+      switch (value)
+      {
+        case "NEEDS-ACTION":
+          return OlResponseStatus.olResponseNotResponded;
+        case "ACCEPTED":
+          return OlResponseStatus.olResponseAccepted;
+        case "DECLINED":
+          return OlResponseStatus.olResponseDeclined;
+        case "TENTATIVE":
+          return OlResponseStatus.olResponseTentative;
+        case "DELEGATED":
+          return OlResponseStatus.olResponseNotResponded;
+        case null:
+          return OlResponseStatus.olResponseNone;
+      }
+      throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
+    }
+
+
+    private OlMeetingResponse? MapParticipation2ToMeetingResponse (string value)
+    {
+      switch (value)
+      {
+        case "ACCEPTED":
+          return OlMeetingResponse.olMeetingAccepted;
+        case "DECLINED":
+          return OlMeetingResponse.olMeetingDeclined;
+        case "TENTATIVE":
+          return OlMeetingResponse.olMeetingTentative;
+        case "NEEDS-ACTION":
+        case "DELEGATED":
+        case null:
+          return null;
+      }
+      throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
+    }
+
 
     private void MapOrganizer1To2 (AppointmentItem source, IEvent target)
     {
@@ -764,6 +804,21 @@ namespace CalDavSynchronizer.Implementation
         MapCategories2To1 (source, targetWrapper.Inner);
 
       targetWrapper.Inner.BusyStatus = MapTransparency2To1 (source.Transparency);
+
+      if (source.Organizer != null)
+      {
+        // TODO:  check if 'source.Status' should be used
+        var ownSourceAttendee = source.Attendees.SingleOrDefault (a => StringComparer.InvariantCultureIgnoreCase.Compare (a.Value.ToString(), _serverEmailUri) == 0);
+        if (ownSourceAttendee != null)
+        {
+          var response = MapParticipation2ToMeetingResponse (ownSourceAttendee.ParticipationStatus);
+          if (response != null)
+          {
+            var newAppointment = targetWrapper.Inner.Respond (response.Value).GetAssociatedAppointment (false);
+            targetWrapper.Replace (newAppointment);
+          }
+        }
+      }
 
       return targetWrapper;
     }
