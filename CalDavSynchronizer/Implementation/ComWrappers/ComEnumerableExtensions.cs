@@ -23,6 +23,11 @@ namespace CalDavSynchronizer.Implementation.ComWrappers
 {
   internal static class ComEnumerableExtensions
   {
+    public static IEnumerable<T> ToSafeEnumerable<T> (this IEnumerable<T> source)
+    {
+      return ToSafeEnumerable<T> ((IEnumerable) source);
+    }
+
     public static IEnumerable<T> ToSafeEnumerable<T> (this IEnumerable source)
     {
       foreach (T item in source)

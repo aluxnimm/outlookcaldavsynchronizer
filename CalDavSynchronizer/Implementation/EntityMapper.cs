@@ -776,10 +776,12 @@ namespace CalDavSynchronizer.Implementation
 
     private void MapAttendees2To1 (IEvent source, AppointmentItem target)
     {
-      var targetRecipientsWhichShouldRemain = new HashSet<Recipient>();
-      var indexByEmailAddresses = GetOutlookRecipientsByEmailAddressesOrName (target);
+      var recipientsToDispose = new HashSet<Recipient>();
       try
       {
+        var targetRecipientsWhichShouldRemain = new HashSet<Recipient>();
+        var indexByEmailAddresses = GetOutlookRecipientsByEmailAddressesOrName (target, recipientsToDispose);
+
         foreach (var attendee in source.Attendees)
         {
           Recipient targetRecipient = null;
@@ -799,6 +801,7 @@ namespace CalDavSynchronizer.Implementation
 
           if (targetRecipient != null)
           {
+            recipientsToDispose.Add (targetRecipient);
             targetRecipientsWhichShouldRemain.Add (targetRecipient);
             targetRecipient.Type = (int) MapAttendeeType2To1 (attendee.Role);
             targetRecipient.Resolve();
@@ -808,6 +811,7 @@ namespace CalDavSynchronizer.Implementation
         for (int i = target.Recipients.Count; i > 0; i--)
         {
           var recipient = target.Recipients[i];
+          recipientsToDispose.Add (recipient);
           if (!IsOwnIdentity (recipient))
           {
             if (!targetRecipientsWhichShouldRemain.Contains (recipient))
@@ -817,20 +821,28 @@ namespace CalDavSynchronizer.Implementation
       }
       finally
       {
-        indexByEmailAddresses.Values.ToSafeEnumerable<Recipient>().ToArray();
+        recipientsToDispose.ToSafeEnumerable ().ToArray ();
       }
     }
 
-    private Dictionary<string, Recipient> GetOutlookRecipientsByEmailAddressesOrName (AppointmentItem appointment)
+    private Dictionary<string, Recipient> GetOutlookRecipientsByEmailAddressesOrName (AppointmentItem appointment, HashSet<Recipient> disposeList)
     {
       Dictionary<string, Recipient> indexByEmailAddresses = new Dictionary<string, Recipient> (StringComparer.InvariantCultureIgnoreCase);
 
       foreach (Recipient recipient in appointment.Recipients)
       {
+        disposeList.Add (recipient);
         if (! string.IsNullOrEmpty (recipient.Address))
-          indexByEmailAddresses[GetMailUrl (recipient.AddressEntry)] = recipient;
+        {
+          using (var entryWrapper = GenericComObjectWrapper.Create (recipient.AddressEntry))
+          {
+            indexByEmailAddresses[GetMailUrl (entryWrapper.Inner)] = recipient;
+          }
+        }
         else
+        {
           indexByEmailAddresses[recipient.Name] = recipient;
+        }
       }
 
       return indexByEmailAddresses;
