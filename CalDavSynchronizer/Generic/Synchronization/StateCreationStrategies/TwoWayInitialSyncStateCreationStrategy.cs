@@ -21,6 +21,12 @@ using CalDavSynchronizer.Generic.Synchronization.States;
 
 namespace CalDavSynchronizer.Generic.Synchronization.StateCreationStrategies
 {
+  /// <summary>
+  /// Creates initial states in that way, so that it results in a merge in both directions
+  /// </summary>
+  /// <remarks>
+  /// since two way-merging can result in conflicts, this class requires a strategy to resolve conflicts
+  /// </remarks>
   public class TwoWayInitialSyncStateCreationStrategy<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> : IInitialSyncStateCreationStrategy<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
   {
     private readonly IEntitySyncStateFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _stateFactory;

@@ -5,6 +5,13 @@ using CalDavSynchronizer.Generic.Synchronization.States;
 
 namespace CalDavSynchronizer.Generic.Synchronization
 {
+  /// <summary>
+  /// A container for syncstates, that tracks all created states and disposes them on demand
+  /// </summary>
+  /// <remarks>
+  /// Disposing a SyncState means that the state will  set all references to entities to their default value (which is null for ref types)
+  /// This may be helpful, for implementations where the Entity has an underlying COM-Object
+  /// </remarks>
   internal class EntitySyncStateContainer<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> : IDisposable
   {
     private List<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>> _entitySyncStates = new List<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>>();

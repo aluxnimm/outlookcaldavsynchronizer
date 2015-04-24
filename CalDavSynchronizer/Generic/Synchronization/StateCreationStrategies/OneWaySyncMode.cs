@@ -18,6 +18,9 @@ using System;
 
 namespace CalDavSynchronizer.Generic.Synchronization.StateCreationStrategies
 {
+  /// <summary>
+  /// Mode for the OneWay strategies
+  /// </summary>
   public enum OneWaySyncMode
   {
     /// <summary>

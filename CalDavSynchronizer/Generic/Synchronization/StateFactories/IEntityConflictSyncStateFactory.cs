@@ -20,6 +20,9 @@ using CalDavSynchronizer.Generic.Synchronization.States;
 
 namespace CalDavSynchronizer.Generic.Synchronization.StateFactories
 {
+  /// <summary>
+  /// Creates initial states for the conflict cases of a two way merge
+  /// </summary>
   public interface IEntityConflictSyncStateFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> 
   {
     IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> Create_DetermineByConflictSolver_Changed_Changed (IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> knownData, TAtypeEntityVersion newA, TBtypeEntityVersion newB);

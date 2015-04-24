@@ -18,6 +18,9 @@ using System;
 
 namespace CalDavSynchronizer.Generic.ProgressReport
 {
+  /// <summary>
+  /// Creates an new progress display
+  /// </summary>
   public interface IProgressUiFactory
   {
     IProgressUi Create (int maxValue);

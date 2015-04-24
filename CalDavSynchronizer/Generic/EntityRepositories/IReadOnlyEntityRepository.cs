@@ -20,6 +20,9 @@ using CalDavSynchronizer.Generic.ProgressReport;
 
 namespace CalDavSynchronizer.Generic.EntityRepositories
 {
+  /// <summary>
+  /// All readoperations that a repository has to support
+  /// </summary>
   public interface IReadOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
   {
     Dictionary<TEntityId, TEntityVersion> GetVersions (DateTime from, DateTime to);

@@ -23,7 +23,7 @@ using CalDavSynchronizer.Generic.Synchronization.StateFactories;
 namespace CalDavSynchronizer.Generic.Synchronization
 {
   /// <summary>
-  /// Environment for the state
+  /// Environment for a SyncState
   /// NOTE: this is not the Context from the State-Pattern !!!
   /// </summary>
   public class EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>

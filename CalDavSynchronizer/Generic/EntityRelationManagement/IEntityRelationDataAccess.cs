@@ -18,6 +18,9 @@ using System.Collections.Generic;
 
 namespace CalDavSynchronizer.Generic.EntityRelationManagement
 {
+  /// <summary>
+  /// Saves and Loads entity relation data
+  /// </summary>
   public interface IEntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
   {
     IEnumerable<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> LoadEntityRelationData ();

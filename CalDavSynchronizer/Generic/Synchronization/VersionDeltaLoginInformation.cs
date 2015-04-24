@@ -18,6 +18,9 @@ using System;
 
 namespace CalDavSynchronizer.Generic.Synchronization
 {
+  /// <summary>
+  /// A helper class for creating pretty log messages
+  /// </summary>
   public class VersionDeltaLoginInformation
   {
     private int _added;

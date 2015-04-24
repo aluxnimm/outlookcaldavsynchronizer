@@ -20,6 +20,9 @@ using CalDavSynchronizer.Generic.Synchronization.States;
 
 namespace CalDavSynchronizer.Generic.Synchronization.StateFactories
 {
+  /// <summary>
+  /// Can create all synchronization states, which do not require further resolution
+  /// </summary>
   public interface IEntitySyncStateFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
   {
     IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> Create_CreateInB (TAtypeEntityId aId, TAtypeEntityVersion a);

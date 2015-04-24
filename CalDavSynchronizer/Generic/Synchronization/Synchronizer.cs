@@ -25,6 +25,9 @@ using log4net;
 
 namespace CalDavSynchronizer.Generic.Synchronization
 {
+  /// <summary>
+  /// Synchronizes tow repositories
+  /// </summary>
   public class Synchronizer<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
       : ISynchronizer
   {

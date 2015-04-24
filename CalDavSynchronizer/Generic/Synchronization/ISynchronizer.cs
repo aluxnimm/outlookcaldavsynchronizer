@@ -17,6 +17,9 @@ using System;
 
 namespace CalDavSynchronizer.Generic.Synchronization
 {
+  /// <summary>
+  /// A Synchronizer :-P
+  /// </summary>
   public interface ISynchronizer
   {
     bool Synchronize ();

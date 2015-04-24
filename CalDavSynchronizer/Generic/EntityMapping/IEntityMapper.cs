@@ -17,6 +17,9 @@ using System;
 
 namespace CalDavSynchronizer.Generic.EntityMapping
 {
+  /// <summary>
+  /// Maps a entity from one physical representation into another and vice versa
+  /// </summary>
   public interface IEntityMapper<T1,T2>
   {
     T2 Map1To2 (T1 source, T2 target);

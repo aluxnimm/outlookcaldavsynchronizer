@@ -17,6 +17,9 @@ using System;
 
 namespace CalDavSynchronizer.Generic.EntityRelationManagement
 {
+  /// <summary>
+  /// Can create new instances of IEntityRelationData
+  /// </summary>
   public interface IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
   {
     IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> Create (

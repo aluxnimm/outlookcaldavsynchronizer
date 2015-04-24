@@ -18,6 +18,9 @@ using System;
 
 namespace CalDavSynchronizer.Generic.EntityRepositories
 {
+  /// <summary>
+  /// Represents an Repository, which contains entites that have to be synced
+  /// </summary>
   public interface IEntityRepository<TEntity, TEntityId, TEntityVersion> : IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>, IReadOnlyEntityRepository<TEntity, TEntityId, TEntityVersion> 
   {
  

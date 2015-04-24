@@ -17,6 +17,12 @@ using System;
 
 namespace CalDavSynchronizer.Generic.EntityRelationManagement
 {
+  /// <summary>
+  /// Describes the relation between an entity in the A repository and an entity in the B repository 
+  /// </summary>
+  /// <remarks>
+  /// The implementig type has to be XML-Serializable!!!
+  /// </remarks>
   public interface IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
   {
     TAtypeEntityId AtypeId { get; set; }

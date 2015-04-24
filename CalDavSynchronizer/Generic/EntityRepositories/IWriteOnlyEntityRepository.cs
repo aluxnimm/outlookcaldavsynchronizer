@@ -19,6 +19,9 @@ using CalDavSynchronizer.Generic.EntityVersionManagement;
 
 namespace CalDavSynchronizer.Generic.EntityRepositories
 {
+  /// <summary>
+  /// All writeoperations that a repository has to support
+  /// </summary>
   public interface IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
   {
     bool Delete (TEntityId entityId);

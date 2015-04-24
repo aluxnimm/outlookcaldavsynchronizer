@@ -18,6 +18,9 @@ using System;
 
 namespace CalDavSynchronizer.Generic.ProgressReport
 {
+  /// <summary>
+  /// Displays progress information with additional information
+  /// </summary>
   public interface IProgressUi : IDisposable
   {
     void SetValue (int value);

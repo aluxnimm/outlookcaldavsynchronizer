@@ -20,6 +20,11 @@ using CalDavSynchronizer.Generic.Synchronization.States;
 
 namespace CalDavSynchronizer.Generic.Synchronization.StateFactories
 {
+  /// <summary>
+  /// Creates initial states for the conflict cases of a two way merge in that way, so that:
+  /// - deletions have higher priority than changes 
+  /// - more recent changes have higher priority than older changes
+  /// </summary>
   public abstract class EntityConflictSyncStateFactory_Automatic<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> : IEntityConflictSyncStateFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
   {
     protected EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _environment;

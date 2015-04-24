@@ -21,6 +21,9 @@ using CalDavSynchronizer.Generic.InitialEntityMatching;
 
 namespace CalDavSynchronizer.Generic.Synchronization
 {
+  /// <summary>
+  /// The context in which the synchronizer operates
+  /// </summary>
   public interface ISynchronizerContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
     : IEntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
   {

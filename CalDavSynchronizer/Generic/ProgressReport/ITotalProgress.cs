@@ -18,6 +18,9 @@ using System;
 
 namespace CalDavSynchronizer.Generic.ProgressReport
 {
+  /// <summary>
+  /// Represents the progress of an operation, which consists of multiple steps 
+  /// </summary>
   public interface ITotalProgress : IDisposable
   {
     IProgressStep StartStep (int stepCompletedCount, string stepDescription);

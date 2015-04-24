@@ -22,6 +22,14 @@ using log4net;
 
 namespace CalDavSynchronizer.Generic.InitialEntityMatching
 {
+  /// <summary>
+  /// Standardimplementation of IInitialEntityMatcher
+  /// </summary>
+  /// <remarks>
+  /// Finding matches in two entityrepositories with n and m entities requires m*n compare operations
+  /// This class  uses an single property of an entity to do the compare operation. Only if the property-compare-operation suceedes, the expensive compare operation is performed
+  /// For maximum performance the used property has to have a "HashValue-Quality" and a cheap compare operation. e.g. the StartDate of an Appointment
+  /// </remarks>
   public abstract class InitialEntityMatcherByPropertyGrouping<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TAtypeProperty, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeProperty>
       : IInitialEntityMatcher<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion>
   {

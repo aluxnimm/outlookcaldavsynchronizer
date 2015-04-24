@@ -21,6 +21,9 @@ using System.Xml.Serialization;
 
 namespace CalDavSynchronizer.Generic.EntityRelationManagement
 {
+  /// <summary>
+  /// Defaultimplementation for IEntityRelationDataAccess, which uses  an XML-file as underlying storage
+  /// </summary>
   public class EntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TEntityRelationData, TBtypeEntityId, TBtypeEntityVersion> : IEntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
       where TEntityRelationData : IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
   {

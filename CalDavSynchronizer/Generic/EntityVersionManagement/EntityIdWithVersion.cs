@@ -17,7 +17,9 @@ using System;
 
 namespace CalDavSynchronizer.Generic.EntityVersionManagement
 {
-  [Serializable]
+  /// <summary>
+  /// Represents the Id and the Version of an entity
+  /// </summary>
   public class EntityIdWithVersion<TEntityId, TVersion>
   {
     public readonly TEntityId Id;

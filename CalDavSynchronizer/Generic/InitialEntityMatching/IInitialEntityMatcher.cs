@@ -19,6 +19,9 @@ using CalDavSynchronizer.Generic.EntityRelationManagement;
 
 namespace CalDavSynchronizer.Generic.InitialEntityMatching
 {
+  /// <summary>
+  /// Takes the content of two repositories and finds those pairs of A and B entities, such that the A and B part of the pair relate to the same logical entity 
+  /// </summary>
   public interface IInitialEntityMatcher<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion>
   {
     List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> PopulateEntityRelationStorage (

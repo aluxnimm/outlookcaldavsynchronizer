@@ -20,6 +20,9 @@ using log4net;
 
 namespace CalDavSynchronizer.Generic.ProgressReport
 {
+  /// <summary>
+  /// Standardimplementation of IProgressStep
+  /// </summary>
   public class ProgressStep : IProgressStep
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
