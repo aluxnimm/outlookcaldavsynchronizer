@@ -13,14 +13,16 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace CalDavSynchronizer.EntityRepositories
+using System;
+using CalDavSynchronizer.Generic.EntityVersionManagement;
+
+namespace CalDavSynchronizer.Generic.EntityRepositories
 {
-  public interface IEntityRepository<TEntity, TEntityId, TEntityVersion> : IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>, IReadOnlyEntityRepository<TEntity, TEntityId, TEntityVersion> 
+  public interface IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
   {
- 
+    bool Delete (TEntityId entityId);
+    EntityIdWithVersion<TEntityId, TEntityVersion> Update (TEntityId entityId, TEntity entityToUpdate, Func<TEntity, TEntity> entityModifier);
+    EntityIdWithVersion<TEntityId, TEntityVersion> Create (Func<TEntity, TEntity> entityInitializer);
   }
 }

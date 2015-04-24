@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using CalDavSynchronizer.EntityRepositories;
+using CalDavSynchronizer.Generic.EntityRepositories;
 using CalDavSynchronizer.Generic.EntityVersionManagement;
 using CalDavSynchronizer.Generic.ProgressReport;
 using CalDavSynchronizer.Implementation.ComWrappers;

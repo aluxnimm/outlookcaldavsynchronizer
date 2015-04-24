@@ -13,11 +13,12 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using CalDavSynchronizer.Generic.EntityRelationManagement;
 using CalDavSynchronizer.Generic.Synchronization.States;
 
-namespace CalDavSynchronizer.Generic.Synchronization
+namespace CalDavSynchronizer.Generic.Synchronization.StateCreationStrategies
 {
   public interface IInitialSyncStateCreationStrategy<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
   {

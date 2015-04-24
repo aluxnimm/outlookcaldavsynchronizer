@@ -17,7 +17,6 @@ using System;
 using System.Linq;
 using System.Reflection;
 using CalDavSynchronizer.DataAccess;
-using CalDavSynchronizer.EntityRepositories;
 using CalDavSynchronizer.Generic.ProgressReport;
 using CalDavSynchronizer.Implementation;
 using DDay.iCal;

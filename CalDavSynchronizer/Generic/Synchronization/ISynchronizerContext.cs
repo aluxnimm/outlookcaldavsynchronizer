@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using CalDavSynchronizer.EntityRepositories;
 using CalDavSynchronizer.Generic.EntityMapping;
 using CalDavSynchronizer.Generic.EntityRelationManagement;
+using CalDavSynchronizer.Generic.EntityRepositories;
 using CalDavSynchronizer.Generic.InitialEntityMatching;
 
 namespace CalDavSynchronizer.Generic.Synchronization

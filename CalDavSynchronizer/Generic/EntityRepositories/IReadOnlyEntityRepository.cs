@@ -13,11 +13,12 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.Generic.ProgressReport;
 
-namespace CalDavSynchronizer.EntityRepositories
+namespace CalDavSynchronizer.Generic.EntityRepositories
 {
   public interface IReadOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
   {

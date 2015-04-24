@@ -23,6 +23,7 @@ using CalDavSynchronizer.Diagnostics;
 using CalDavSynchronizer.Generic.EntityRelationManagement;
 using CalDavSynchronizer.Generic.ProgressReport;
 using CalDavSynchronizer.Generic.Synchronization;
+using CalDavSynchronizer.Generic.Synchronization.StateFactories;
 using CalDavSynchronizer.Generic.Synchronization.States;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;

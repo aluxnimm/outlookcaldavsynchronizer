@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using CalDavSynchronizer.Generic.Synchronization;
+using CalDavSynchronizer.Generic.Synchronization.StateCreationStrategies;
 
 namespace CalDavSynchronizer.UnitTest.Synchronization
 {

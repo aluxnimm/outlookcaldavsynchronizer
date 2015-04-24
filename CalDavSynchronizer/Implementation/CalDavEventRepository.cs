@@ -22,7 +22,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Diagnostics;
-using CalDavSynchronizer.EntityRepositories;
+using CalDavSynchronizer.Generic.EntityRepositories;
 using CalDavSynchronizer.Generic.EntityVersionManagement;
 using CalDavSynchronizer.Generic.ProgressReport;
 using DDay.iCal;

@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using CalDavSynchronizer.Generic.EntityRelationManagement;
 using CalDavSynchronizer.Generic.ProgressReport;
+using CalDavSynchronizer.Generic.Synchronization.StateCreationStrategies;
 using CalDavSynchronizer.Generic.Synchronization.States;
 using log4net;
 

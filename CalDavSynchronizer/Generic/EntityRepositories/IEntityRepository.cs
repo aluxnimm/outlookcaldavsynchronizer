@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer 
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -16,18 +16,10 @@
 
 using System;
 
-namespace CalDavSynchronizer.Generic.Synchronization
+namespace CalDavSynchronizer.Generic.EntityRepositories
 {
-  public enum OneWaySyncMode
+  public interface IEntityRepository<TEntity, TEntityId, TEntityVersion> : IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>, IReadOnlyEntityRepository<TEntity, TEntityId, TEntityVersion> 
   {
-    /// <summary>
-    /// Forces the target to be the same as the source
-    /// </summary>
-    Replicate,
-
-    /// <summary>
-    /// Same as Replicate, except added entites in target are ignored 
-    /// </summary>
-    Merge
+ 
   }
 }

@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer 
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -13,15 +13,21 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using CalDavSynchronizer.Generic.EntityVersionManagement;
 
-namespace CalDavSynchronizer.EntityRepositories
+using System;
+
+namespace CalDavSynchronizer.Generic.Synchronization.StateCreationStrategies
 {
-  public interface IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
+  public enum OneWaySyncMode
   {
-    bool Delete (TEntityId entityId);
-    EntityIdWithVersion<TEntityId, TEntityVersion> Update (TEntityId entityId, TEntity entityToUpdate, Func<TEntity, TEntity> entityModifier);
-    EntityIdWithVersion<TEntityId, TEntityVersion> Create (Func<TEntity, TEntity> entityInitializer);
+    /// <summary>
+    /// Forces the target to be the same as the source
+    /// </summary>
+    Replicate,
+
+    /// <summary>
+    /// Same as Replicate, except added entites in target are ignored 
+    /// </summary>
+    Merge
   }
 }

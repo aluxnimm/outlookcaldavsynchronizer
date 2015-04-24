@@ -16,9 +16,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CalDavSynchronizer.EntityRepositories;
 using CalDavSynchronizer.Generic.EntityMapping;
 using CalDavSynchronizer.Generic.EntityRelationManagement;
+using CalDavSynchronizer.Generic.EntityRepositories;
 using CalDavSynchronizer.Generic.InitialEntityMatching;
 using CalDavSynchronizer.Generic.Synchronization;
 using NUnit.Framework;

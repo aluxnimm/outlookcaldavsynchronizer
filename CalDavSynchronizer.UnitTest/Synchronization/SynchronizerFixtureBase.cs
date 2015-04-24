@@ -16,6 +16,8 @@
 using System;
 using CalDavSynchronizer.Generic.ProgressReport;
 using CalDavSynchronizer.Generic.Synchronization;
+using CalDavSynchronizer.Generic.Synchronization.StateCreationStrategies;
+using CalDavSynchronizer.Generic.Synchronization.StateFactories;
 using CalDavSynchronizer.Generic.Synchronization.States;
 using NUnit.Framework;
 
