@@ -281,7 +281,15 @@ namespace CalDavSynchronizer.Implementation
       {
         if (organizerWrapper.Inner != null && source.MeetingStatus != OlMeetingStatus.olNonMeeting)
         {
-          SetOrganizer (target, organizerWrapper.Inner);
+          if (StringComparer.InvariantCultureIgnoreCase.Compare(organizerWrapper.Inner.Name, source.Organizer) == 0)
+          {
+            SetOrganizer(target, organizerWrapper.Inner);
+          }
+          else
+          {
+            SetOrganizer(target, source.Organizer, source.PropertyAccessor.GetProperty(PR_SENDER_EMAIL_ADDRESS));
+          }
+
         }
       }
     }
@@ -293,6 +301,12 @@ namespace CalDavSynchronizer.Implementation
       target.Organizer = targetOrganizer;
     }
 
+    private void SetOrganizer (IEvent target, string organizerCN, string organizerEmail)
+    {
+      var targetOrganizer = new Organizer(string.Format ("MAILTO:{0}", organizerEmail));
+      targetOrganizer.CommonName = organizerCN;
+      target.Organizer = targetOrganizer;
+    }
 
     private string GetMailUrl (AddressEntry addressEntry)
     {
