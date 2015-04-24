@@ -837,7 +837,6 @@ namespace CalDavSynchronizer.Implementation
 
       if (source.Organizer != null)
       {
-        // TODO:  check if 'source.Status' should be used
         var ownSourceAttendee = source.Attendees.SingleOrDefault (a => StringComparer.InvariantCultureIgnoreCase.Compare (a.Value.ToString(), _serverEmailUri) == 0);
         if (ownSourceAttendee != null)
         {
