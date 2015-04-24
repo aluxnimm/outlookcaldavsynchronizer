@@ -102,14 +102,14 @@ namespace CalDavSynchronizer.Implementation
     }
 
 
-    public IEnumerable<IEntityRelationData<string, DateTime, Uri, string>> Load ()
+    public IEnumerable<IEntityRelationData<string, DateTime, Uri, string>> LoadEntityRelationData ()
     {
-      return _storageDataAccess.Load();
+      return _storageDataAccess.LoadEntityRelationData();
     }
 
-    public void Save (List<IEntityRelationData<string, DateTime, Uri, string>> data)
+    public void SaveEntityRelationData (List<IEntityRelationData<string, DateTime, Uri, string>> data)
     {
-      _storageDataAccess.Save (data);
+      _storageDataAccess.SaveEntityRelationData (data);
     }
   }
 }

@@ -43,7 +43,7 @@ namespace CalDavSynchronizer.Generic.EntityRelationManagement
 
     }
 
-    public IEnumerable<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> Load ()
+    public IEnumerable<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> LoadEntityRelationData ()
     {
       if (!DoesEntityExist (s_relationStorageName))
         return null;
@@ -60,7 +60,7 @@ namespace CalDavSynchronizer.Generic.EntityRelationManagement
       }
     }
 
-    public void Save (List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> data)
+    public void SaveEntityRelationData (List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> data)
     {
       if (!Directory.Exists (_dataDirectory))
         Directory.CreateDirectory (_dataDirectory);

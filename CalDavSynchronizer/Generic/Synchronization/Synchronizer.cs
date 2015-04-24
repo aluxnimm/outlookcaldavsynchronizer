@@ -55,7 +55,7 @@ namespace CalDavSynchronizer.Generic.Synchronization
         var atypeEntityRepository = _synchronizerContext.AtypeRepository;
         var btypeEntityRepository = _synchronizerContext.BtypeRepository;
 
-        var cachedData = _synchronizerContext.Load();
+        var cachedData = _synchronizerContext.LoadEntityRelationData();
         var atypeRepositoryVersions = atypeEntityRepository.GetVersions (_synchronizerContext.From, _synchronizerContext.To);
         var btypeRepositoryVersions = btypeEntityRepository.GetVersions (_synchronizerContext.From, _synchronizerContext.To);
 
@@ -152,7 +152,7 @@ namespace CalDavSynchronizer.Generic.Synchronization
 
           entitySyncStates.Dispose();
 
-          _synchronizerContext.Save (newData);
+          _synchronizerContext.SaveEntityRelationData (newData);
         }
         finally
         {

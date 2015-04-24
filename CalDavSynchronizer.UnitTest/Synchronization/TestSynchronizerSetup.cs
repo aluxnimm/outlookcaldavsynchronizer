@@ -134,12 +134,12 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
     }
     
 
-    public IEnumerable<IEntityRelationData<string, int, string, int>> Load ()
+    public IEnumerable<IEntityRelationData<string, int, string, int>> LoadEntityRelationData ()
     {
       return _entityRelationData.ToArray();
     }
 
-    public void Save (List<IEntityRelationData<string, int, string, int>> data)
+    public void SaveEntityRelationData (List<IEntityRelationData<string, int, string, int>> data)
     {
       _entityRelationData = data.Cast<EntityRelationData>().ToList();
     }
