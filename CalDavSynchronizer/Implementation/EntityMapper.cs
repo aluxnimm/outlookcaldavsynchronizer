@@ -37,10 +37,9 @@ namespace CalDavSynchronizer.Implementation
 
     private const string PR_SMTP_ADDRESS = "http://schemas.microsoft.com/mapi/proptag/0x39FE001E";
     private const string PR_SENDER_NAME = "http://schemas.microsoft.com/mapi/proptag/0x0C1A001E";
-    /// <summary>
-    /// Not sure what this really means. When its set outlook display it as "On behalf of" but on some websites it is listed as 'From2'
-    /// </summary>
-    private const string PR_ON_BEHALF_OF = "http://schemas.microsoft.com/mapi/proptag/0x0042001F";
+    private const string PR_SENDER_EMAIL_ADDRESS = "http://schemas.microsoft.com/mapi/proptag/0x0C1F001E";
+    private const string PR_SENT_REPRESENTING_NAME = "http://schemas.microsoft.com/mapi/proptag/0x0042001F";
+    private const string PR_SENT_REPRESENTING_EMAIL_ADDRESS = "http://schemas.microsoft.com/mapi/proptag/0x0065001E";
 
     private readonly string _outlookEmailAddress;
     private readonly string _serverEmailUri;
@@ -785,8 +784,19 @@ namespace CalDavSynchronizer.Implementation
         if (StringComparer.InvariantCultureIgnoreCase.Compare (sourceOrganizerEmail, _outlookEmailAddress) != 0)
         {
           targetWrapper.Inner.MeetingStatus = OlMeetingStatus.olMeetingReceived;
-          targetWrapper.Inner.PropertyAccessor.SetProperty (PR_ON_BEHALF_OF, sourceOrganizerEmail);
-          targetWrapper.Inner.PropertyAccessor.SetProperty (PR_SENDER_NAME, sourceOrganizerEmail);
+          targetWrapper.Inner.PropertyAccessor.SetProperty (PR_SENT_REPRESENTING_EMAIL_ADDRESS, sourceOrganizerEmail);
+          targetWrapper.Inner.PropertyAccessor.SetProperty (PR_SENDER_EMAIL_ADDRESS, sourceOrganizerEmail);
+
+          if (source.Organizer.CommonName != null)
+          {
+            targetWrapper.Inner.PropertyAccessor.SetProperty (PR_SENT_REPRESENTING_NAME, source.Organizer.CommonName);
+            targetWrapper.Inner.PropertyAccessor.SetProperty (PR_SENDER_NAME, source.Organizer.CommonName);
+          }
+          else
+          {
+            targetWrapper.Inner.PropertyAccessor.SetProperty (PR_SENT_REPRESENTING_NAME, sourceOrganizerEmail);
+            targetWrapper.Inner.PropertyAccessor.SetProperty (PR_SENDER_NAME, sourceOrganizerEmail);
+          }
         }
         else
         {
