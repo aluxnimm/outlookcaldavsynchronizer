@@ -854,7 +854,7 @@ namespace CalDavSynchronizer.Implementation
         if (ownSourceAttendee != null)
         {
           var response = MapParticipation2ToMeetingResponse (ownSourceAttendee.ParticipationStatus);
-          if (response != null)
+          if ((response != null) && (MapParticipation2To1(ownSourceAttendee.ParticipationStatus) != targetWrapper.Inner.ResponseStatus))
           {
             var newAppointment = targetWrapper.Inner.Respond (response.Value).GetAssociatedAppointment (false);
             targetWrapper.Replace (newAppointment);
