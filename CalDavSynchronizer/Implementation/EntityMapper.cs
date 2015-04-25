@@ -667,6 +667,7 @@ namespace CalDavSynchronizer.Implementation
     private void MapAttendees1To2 (AppointmentItem source, IEvent target, out bool organizerSet)
     {
       organizerSet = false;
+      bool ownAttendeeSet = false;
 
       foreach (var recipient in source.Recipients.ToSafeEnumerable<Recipient>())
       {
@@ -690,6 +691,18 @@ namespace CalDavSynchronizer.Implementation
           attendee.CommonName = recipient.Name;
           attendee.Role = MapAttendeeType1To2 ((OlMeetingRecipientType) recipient.Type);
           target.Attendees.Add (attendee);
+        }
+        else
+        {
+          if ((source.MeetingStatus == OlMeetingStatus.olMeetingReceived) && (!ownAttendeeSet))
+          {
+            Attendee ownAttendee = new Attendee(string.Format("MAILTO:{0}", recipient.Address));
+            ownAttendee.CommonName = recipient.Name;
+            ownAttendee.ParticipationStatus = MapParticipation1To2(source.ResponseStatus);
+            ownAttendee.Role = MapAttendeeType1To2((OlMeetingRecipientType)recipient.Type);
+            target.Attendees.Add(ownAttendee);
+            ownAttendeeSet = true;
+          }
         }
         if (((OlMeetingRecipientType) recipient.Type) == OlMeetingRecipientType.olOrganizer)
         {
