@@ -850,7 +850,7 @@ namespace CalDavSynchronizer.Implementation
 
       if (source.Organizer != null)
       {
-        var ownSourceAttendee = source.Attendees.SingleOrDefault (a => StringComparer.InvariantCultureIgnoreCase.Compare (a.Value.ToString(), _serverEmailUri) == 0);
+        var ownSourceAttendee = source.Attendees.FirstOrDefault (a => StringComparer.InvariantCultureIgnoreCase.Compare (a.Value.ToString(), _serverEmailUri) == 0);
         if (ownSourceAttendee != null)
         {
           var response = MapParticipation2ToMeetingResponse (ownSourceAttendee.ParticipationStatus);
