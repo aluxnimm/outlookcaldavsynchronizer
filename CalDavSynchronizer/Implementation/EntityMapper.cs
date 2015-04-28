@@ -811,18 +811,25 @@ namespace CalDavSynchronizer.Implementation
         if (StringComparer.InvariantCultureIgnoreCase.Compare (sourceOrganizerEmail, _outlookEmailAddress) != 0)
         {
           targetWrapper.Inner.MeetingStatus = OlMeetingStatus.olMeetingReceived;
-          targetWrapper.Inner.PropertyAccessor.SetProperty (PR_SENT_REPRESENTING_EMAIL_ADDRESS, sourceOrganizerEmail);
-          targetWrapper.Inner.PropertyAccessor.SetProperty (PR_SENDER_EMAIL_ADDRESS, sourceOrganizerEmail);
+          try
+          {
+            targetWrapper.Inner.PropertyAccessor.SetProperty(PR_SENT_REPRESENTING_EMAIL_ADDRESS, sourceOrganizerEmail);
+            targetWrapper.Inner.PropertyAccessor.SetProperty(PR_SENDER_EMAIL_ADDRESS, sourceOrganizerEmail);
 
-          if (source.Organizer.CommonName != null)
-          {
-            targetWrapper.Inner.PropertyAccessor.SetProperty (PR_SENT_REPRESENTING_NAME, source.Organizer.CommonName);
-            targetWrapper.Inner.PropertyAccessor.SetProperty (PR_SENDER_NAME, source.Organizer.CommonName);
+            if (source.Organizer.CommonName != null)
+            {
+              targetWrapper.Inner.PropertyAccessor.SetProperty(PR_SENT_REPRESENTING_NAME, source.Organizer.CommonName);
+              targetWrapper.Inner.PropertyAccessor.SetProperty(PR_SENDER_NAME, source.Organizer.CommonName);
+            }
+            else
+            {
+              targetWrapper.Inner.PropertyAccessor.SetProperty(PR_SENT_REPRESENTING_NAME, sourceOrganizerEmail);
+              targetWrapper.Inner.PropertyAccessor.SetProperty(PR_SENDER_NAME, sourceOrganizerEmail);
+            }
           }
-          else
+          catch (System.Runtime.InteropServices.COMException ex)
           {
-            targetWrapper.Inner.PropertyAccessor.SetProperty (PR_SENT_REPRESENTING_NAME, sourceOrganizerEmail);
-            targetWrapper.Inner.PropertyAccessor.SetProperty (PR_SENDER_NAME, sourceOrganizerEmail);
+            s_logger.Error("Could not set property tags for organizer", ex);
           }
         }
         else
