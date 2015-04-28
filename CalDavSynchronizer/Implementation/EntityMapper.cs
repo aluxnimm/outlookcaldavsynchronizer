@@ -42,6 +42,8 @@ namespace CalDavSynchronizer.Implementation
     private const string PR_SENT_REPRESENTING_EMAIL_ADDRESS = "http://schemas.microsoft.com/mapi/proptag/0x0065001E";
     private const string PR_SENT_REPRESENTING_ADDRTYPE = "http://schemas.microsoft.com/mapi/proptag/0x0064001E";
     private const string PR_SENDER_ADDRTYPE = "http://schemas.microsoft.com/mapi/proptag/0x0C1E001E";
+    private const string PR_SENT_REPRESENTING_ENTRYID = "http://schemas.microsoft.com/mapi/proptag/0x00410102";
+    private const string PR_SENDER_ENTRYID = "http://schemas.microsoft.com/mapi/proptag/0x0C190102";
 
     private readonly string _outlookEmailAddress;
     private readonly string _serverEmailUri;
@@ -806,95 +808,7 @@ namespace CalDavSynchronizer.Implementation
 
       targetWrapper.Inner.Importance = MapPriority2To1 (source.Priority);
 
-      MapAttendees2To1 (source, targetWrapper.Inner);
-      if (source.Organizer != null)
-      {
-        string sourceOrganizerEmail = source.Organizer.Value.ToString().Substring (s_mailtoSchemaLength);
-        if (StringComparer.InvariantCultureIgnoreCase.Compare (sourceOrganizerEmail, _outlookEmailAddress) != 0)
-        {
-          targetWrapper.Inner.MeetingStatus = OlMeetingStatus.olMeetingReceived;
-         
-            if (source.Organizer.CommonName != null)
-            {
-              try
-              {
-                targetWrapper.Inner.PropertyAccessor.SetProperty(PR_SENT_REPRESENTING_NAME, source.Organizer.CommonName);
-              }
-              catch (System.Runtime.InteropServices.COMException ex)
-              {
-                s_logger.Error("Could not set property PR_SENT_REPRESENTING_NAME for organizer", ex);
-              }
-              try
-              {
-                targetWrapper.Inner.PropertyAccessor.SetProperty(PR_SENDER_NAME, source.Organizer.CommonName);
-              }
-              catch (System.Runtime.InteropServices.COMException ex)
-              {
-                s_logger.Error("Could not set property PR_SENDER_NAME for organizer", ex);
-              }
-            }
-            else
-            {
-              try
-              {
-                targetWrapper.Inner.PropertyAccessor.SetProperty(PR_SENT_REPRESENTING_NAME, sourceOrganizerEmail);
-              }
-              catch (System.Runtime.InteropServices.COMException ex)
-              {
-                s_logger.Error("Could not set property PR_SENT_REPRESENTING_NAME for organizer", ex);
-              }
-              try
-              {
-                targetWrapper.Inner.PropertyAccessor.SetProperty(PR_SENDER_NAME, sourceOrganizerEmail);
-              }
-              catch (System.Runtime.InteropServices.COMException ex)
-              {
-                s_logger.Error("Could not set property PR_SENDER_NAME for organizer", ex);
-              }
-            }
-
-            try
-            {
-              targetWrapper.Inner.PropertyAccessor.SetProperty(PR_SENT_REPRESENTING_EMAIL_ADDRESS, sourceOrganizerEmail);
-            }
-            catch (System.Runtime.InteropServices.COMException ex)
-            {
-              s_logger.Error("Could not set property PR_SENT_REPRESENTING_EMAIL_ADDRESS for organizer", ex);
-            }
-            try
-            {
-              targetWrapper.Inner.PropertyAccessor.SetProperty(PR_SENT_REPRESENTING_ADDRTYPE, "SMTP");
-            }
-            catch (System.Runtime.InteropServices.COMException ex)
-            {
-              s_logger.Error("Could not set property PR_SENT_REPRESENTING_ADDRTYPE for organizer", ex);
-            }
-            try
-            {
-              targetWrapper.Inner.PropertyAccessor.SetProperty(PR_SENDER_EMAIL_ADDRESS, sourceOrganizerEmail);
-            }
-            catch (System.Runtime.InteropServices.COMException ex)
-            {
-              s_logger.Error("Could not set property PR_SENDER_EMAIL_ADDRESS for organizer", ex);
-            }
-            try
-            {
-              targetWrapper.Inner.PropertyAccessor.SetProperty(PR_SENDER_ADDRTYPE, "SMTP");
-            }
-            catch (System.Runtime.InteropServices.COMException ex)
-            {
-              s_logger.Error("Could not set property PR_SENDER_ADDRTYPE for organizer", ex);
-            }
-        }
-        else
-        {
-          targetWrapper.Inner.MeetingStatus = OlMeetingStatus.olMeeting;
-        }
-      }
-      else
-      {
-        targetWrapper.Inner.MeetingStatus = OlMeetingStatus.olNonMeeting;
-      }
+      MapAttendeesAndOrganizer2To1 (source, targetWrapper.Inner);
 
       if (!isRecurrenceException)
         MapRecurrance2To1 (source, recurrenceExceptionsOrNull, targetWrapper);
@@ -932,7 +846,7 @@ namespace CalDavSynchronizer.Implementation
     }
 
 
-    private void MapAttendees2To1 (IEvent source, AppointmentItem target)
+    private void MapAttendeesAndOrganizer2To1 (IEvent source, AppointmentItem target)
     {
       var recipientsToDispose = new HashSet<Recipient>();
       try
@@ -964,6 +878,114 @@ namespace CalDavSynchronizer.Implementation
             targetRecipient.Type = (int) MapAttendeeType2To1 (attendee.Role);
             targetRecipient.Resolve();
           }
+        }
+
+        if (source.Organizer != null)
+        {
+          string sourceOrganizerEmail = source.Organizer.Value.ToString().Substring(s_mailtoSchemaLength);
+          if (StringComparer.InvariantCultureIgnoreCase.Compare(sourceOrganizerEmail, _outlookEmailAddress) != 0)
+          {
+            Recipient targetRecipient = null;
+
+            target.MeetingStatus = OlMeetingStatus.olMeetingReceived;
+
+            targetRecipient = target.Recipients.Add(sourceOrganizerEmail);
+            recipientsToDispose.Add(targetRecipient);
+            targetRecipientsWhichShouldRemain.Add(targetRecipient);
+            targetRecipient.Type = (int)OlMeetingRecipientType.olOrganizer;
+
+            if (targetRecipient.Resolve())
+            {
+              try
+              {
+                target.PropertyAccessor.SetProperty(PR_SENT_REPRESENTING_ENTRYID, target.PropertyAccessor.StringToBinary(targetRecipient.AddressEntry.ID));
+                target.PropertyAccessor.SetProperty(PR_SENDER_ENTRYID, target.PropertyAccessor.StringToBinary(targetRecipient.AddressEntry.ID));
+              }
+              catch (System.Runtime.InteropServices.COMException ex)
+              {
+                s_logger.Error("Could not set property PR_SENDER_ENTRYID for organizer", ex);
+              }
+            }
+
+            if (source.Organizer.CommonName != null)
+            {
+              try
+              {
+                target.PropertyAccessor.SetProperty(PR_SENT_REPRESENTING_NAME, source.Organizer.CommonName);
+              }
+              catch (System.Runtime.InteropServices.COMException ex)
+              {
+                s_logger.Error("Could not set property PR_SENT_REPRESENTING_NAME for organizer", ex);
+              }
+              try
+              {
+                target.PropertyAccessor.SetProperty(PR_SENDER_NAME, source.Organizer.CommonName);
+              }
+              catch (System.Runtime.InteropServices.COMException ex)
+              {
+                s_logger.Error("Could not set property PR_SENDER_NAME for organizer", ex);
+              }
+            }
+            else
+            {
+              try
+              {
+                target.PropertyAccessor.SetProperty(PR_SENT_REPRESENTING_NAME, sourceOrganizerEmail);
+              }
+              catch (System.Runtime.InteropServices.COMException ex)
+              {
+                s_logger.Error("Could not set property PR_SENT_REPRESENTING_NAME for organizer", ex);
+              }
+              try
+              {
+                target.PropertyAccessor.SetProperty(PR_SENDER_NAME, sourceOrganizerEmail);
+              }
+              catch (System.Runtime.InteropServices.COMException ex)
+              {
+                s_logger.Error("Could not set property PR_SENDER_NAME for organizer", ex);
+              }
+            }
+            try
+            {
+              target.PropertyAccessor.SetProperty(PR_SENT_REPRESENTING_EMAIL_ADDRESS, sourceOrganizerEmail);
+            }
+            catch (System.Runtime.InteropServices.COMException ex)
+            {
+              s_logger.Error("Could not set property PR_SENT_REPRESENTING_EMAIL_ADDRESS for organizer", ex);
+            }
+            try
+            {
+              target.PropertyAccessor.SetProperty(PR_SENT_REPRESENTING_ADDRTYPE, "SMTP");
+            }
+            catch (System.Runtime.InteropServices.COMException ex)
+            {
+              s_logger.Error("Could not set property PR_SENT_REPRESENTING_ADDRTYPE for organizer", ex);
+            }
+            try
+            {
+              target.PropertyAccessor.SetProperty(PR_SENDER_EMAIL_ADDRESS, sourceOrganizerEmail);
+            }
+            catch (System.Runtime.InteropServices.COMException ex)
+            {
+              s_logger.Error("Could not set property PR_SENDER_EMAIL_ADDRESS for organizer", ex);
+            }
+            try
+            {
+              target.PropertyAccessor.SetProperty(PR_SENDER_ADDRTYPE, "SMTP");
+            }
+            catch (System.Runtime.InteropServices.COMException ex)
+            {
+              s_logger.Error("Could not set property PR_SENDER_ADDRTYPE for organizer", ex);
+            }
+          }
+          else
+          {
+            target.MeetingStatus = OlMeetingStatus.olMeeting;
+          }
+        }
+        else
+        {
+          target.MeetingStatus = OlMeetingStatus.olNonMeeting;
         }
 
         for (int i = target.Recipients.Count; i > 0; i--)
