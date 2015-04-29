@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using CalDavSynchronizer.Generic.EntityMapping;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using DDay.iCal;
@@ -58,7 +59,7 @@ namespace CalDavSynchronizer.Implementation
       _localTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (localTimeZoneId);
 
       string outlookMajorVersionString = outlookApplicationVersion.Split (new char[] { '.' })[0];
-      _outlookMajorVersion = Convert.ToInt32(outlookMajorVersionString);
+      _outlookMajorVersion = Convert.ToInt32 (outlookMajorVersionString);
     }
 
     public IICalendar Map1To2 (AppointmentItemWrapper sourceWrapper, IICalendar targetCalender)
@@ -289,15 +290,14 @@ namespace CalDavSynchronizer.Implementation
       {
         if (organizerWrapper.Inner != null && source.MeetingStatus != OlMeetingStatus.olNonMeeting)
         {
-          if (StringComparer.InvariantCultureIgnoreCase.Compare(organizerWrapper.Inner.Name, source.Organizer) == 0)
+          if (StringComparer.InvariantCultureIgnoreCase.Compare (organizerWrapper.Inner.Name, source.Organizer) == 0)
           {
-            SetOrganizer(target, organizerWrapper.Inner);
+            SetOrganizer (target, organizerWrapper.Inner);
           }
           else
           {
-            SetOrganizer(target, source.Organizer, source.GetPropertySafe (PR_SENDER_EMAIL_ADDRESS) );
+            SetOrganizer (target, source.Organizer, source.GetPropertySafe (PR_SENDER_EMAIL_ADDRESS));
           }
-
         }
       }
     }
@@ -311,7 +311,7 @@ namespace CalDavSynchronizer.Implementation
 
     private void SetOrganizer (IEvent target, string organizerCN, string organizerEmail)
     {
-      var targetOrganizer = new Organizer(string.Format ("MAILTO:{0}", organizerEmail));
+      var targetOrganizer = new Organizer (string.Format ("MAILTO:{0}", organizerEmail));
       targetOrganizer.CommonName = organizerCN;
       target.Organizer = targetOrganizer;
     }
@@ -704,11 +704,11 @@ namespace CalDavSynchronizer.Implementation
         {
           if ((source.MeetingStatus == OlMeetingStatus.olMeetingReceived) && (!ownAttendeeSet))
           {
-            Attendee ownAttendee = new Attendee(string.Format("MAILTO:{0}", recipient.Address));
+            Attendee ownAttendee = new Attendee (string.Format ("MAILTO:{0}", recipient.Address));
             ownAttendee.CommonName = recipient.Name;
-            ownAttendee.ParticipationStatus = MapParticipation1To2(source.ResponseStatus);
-            ownAttendee.Role = MapAttendeeType1To2((OlMeetingRecipientType)recipient.Type);
-            target.Attendees.Add(ownAttendee);
+            ownAttendee.ParticipationStatus = MapParticipation1To2 (source.ResponseStatus);
+            ownAttendee.Role = MapAttendeeType1To2 ((OlMeetingRecipientType) recipient.Type);
+            target.Attendees.Add (ownAttendee);
             ownAttendeeSet = true;
           }
         }
@@ -833,7 +833,7 @@ namespace CalDavSynchronizer.Implementation
         if (ownSourceAttendee != null)
         {
           var response = MapParticipation2ToMeetingResponse (ownSourceAttendee.ParticipationStatus);
-          if ((response != null) && (MapParticipation2To1(ownSourceAttendee.ParticipationStatus) != targetWrapper.Inner.ResponseStatus))
+          if ((response != null) && (MapParticipation2To1 (ownSourceAttendee.ParticipationStatus) != targetWrapper.Inner.ResponseStatus))
           {
             var newAppointment = targetWrapper.Inner.Respond (response.Value).GetAssociatedAppointment (false);
             targetWrapper.Replace (newAppointment);
@@ -886,26 +886,25 @@ namespace CalDavSynchronizer.Implementation
 
         if (source.Organizer != null)
         {
-          string sourceOrganizerEmail = source.Organizer.Value.ToString().Substring(s_mailtoSchemaLength);
-          if (StringComparer.InvariantCultureIgnoreCase.Compare(sourceOrganizerEmail, _outlookEmailAddress) != 0)
+          string sourceOrganizerEmail = source.Organizer.Value.ToString().Substring (s_mailtoSchemaLength);
+          if (StringComparer.InvariantCultureIgnoreCase.Compare (sourceOrganizerEmail, _outlookEmailAddress) != 0)
           {
             Recipient targetRecipient = null;
 
             target.MeetingStatus = OlMeetingStatus.olMeetingReceived;
 
-            targetRecipient = target.Recipients.Add(sourceOrganizerEmail);
-            recipientsToDispose.Add(targetRecipient);
-            targetRecipientsWhichShouldRemain.Add(targetRecipient);
-            targetRecipient.Type = (int)OlMeetingRecipientType.olOrganizer;
+            targetRecipient = target.Recipients.Add (sourceOrganizerEmail);
+            recipientsToDispose.Add (targetRecipient);
+            targetRecipientsWhichShouldRemain.Add (targetRecipient);
+            targetRecipient.Type = (int) OlMeetingRecipientType.olOrganizer;
 
-            using (var oPa = GenericComObjectWrapper.Create(target.PropertyAccessor))
+            using (var oPa = GenericComObjectWrapper.Create (target.PropertyAccessor))
             {
-
               string organizerID = null;
 
               if (targetRecipient.Resolve())
               {
-                using (var organizerAddressEntry = GenericComObjectWrapper.Create(targetRecipient.AddressEntry))
+                using (var organizerAddressEntry = GenericComObjectWrapper.Create (targetRecipient.AddressEntry))
                 {
                   organizerID = organizerAddressEntry.Inner.ID;
                 }
@@ -915,44 +914,44 @@ namespace CalDavSynchronizer.Implementation
               {
                 try
                 {
-                  oPa.Inner.SetProperty(PR_SENT_REPRESENTING_NAME, source.Organizer.CommonName);
-                  oPa.Inner.SetProperty(PR_SENT_REPRESENTING_EMAIL_ADDRESS, sourceOrganizerEmail);
-                  oPa.Inner.SetProperty(PR_SENT_REPRESENTING_ADDRTYPE, "SMTP");
-                  oPa.Inner.SetProperty(PR_SENT_REPRESENTING_ENTRYID, oPa.Inner.StringToBinary(organizerID));
+                  oPa.Inner.SetProperty (PR_SENT_REPRESENTING_NAME, source.Organizer.CommonName);
+                  oPa.Inner.SetProperty (PR_SENT_REPRESENTING_EMAIL_ADDRESS, sourceOrganizerEmail);
+                  oPa.Inner.SetProperty (PR_SENT_REPRESENTING_ADDRTYPE, "SMTP");
+                  oPa.Inner.SetProperty (PR_SENT_REPRESENTING_ENTRYID, oPa.Inner.StringToBinary (organizerID));
 
                   if (_outlookMajorVersion >= 15)
                   {
-                    oPa.Inner.SetProperty(PR_SENDER_NAME, source.Organizer.CommonName);
-                    oPa.Inner.SetProperty(PR_SENDER_EMAIL_ADDRESS, sourceOrganizerEmail);
-                    oPa.Inner.SetProperty(PR_SENDER_ADDRTYPE, "SMTP");
-                    oPa.Inner.SetProperty(PR_SENDER_ENTRYID, oPa.Inner.StringToBinary(organizerID));
+                    oPa.Inner.SetProperty (PR_SENDER_NAME, source.Organizer.CommonName);
+                    oPa.Inner.SetProperty (PR_SENDER_EMAIL_ADDRESS, sourceOrganizerEmail);
+                    oPa.Inner.SetProperty (PR_SENDER_ADDRTYPE, "SMTP");
+                    oPa.Inner.SetProperty (PR_SENDER_ENTRYID, oPa.Inner.StringToBinary (organizerID));
                   }
                 }
-                catch (System.Runtime.InteropServices.COMException ex)
+                catch (COMException ex)
                 {
-                  s_logger.Error("Could not set properties PR_SENDER_* for organizer", ex);
+                  s_logger.Error ("Could not set properties PR_SENDER_* for organizer", ex);
                 }
               }
               else
               {
                 try
                 {
-                  oPa.Inner.SetProperty(PR_SENT_REPRESENTING_NAME, sourceOrganizerEmail);
-                  oPa.Inner.SetProperty(PR_SENT_REPRESENTING_EMAIL_ADDRESS, sourceOrganizerEmail);
-                  oPa.Inner.SetProperty(PR_SENT_REPRESENTING_ADDRTYPE, "SMTP");
-                  oPa.Inner.SetProperty(PR_SENT_REPRESENTING_ENTRYID, oPa.Inner.StringToBinary(organizerID));
+                  oPa.Inner.SetProperty (PR_SENT_REPRESENTING_NAME, sourceOrganizerEmail);
+                  oPa.Inner.SetProperty (PR_SENT_REPRESENTING_EMAIL_ADDRESS, sourceOrganizerEmail);
+                  oPa.Inner.SetProperty (PR_SENT_REPRESENTING_ADDRTYPE, "SMTP");
+                  oPa.Inner.SetProperty (PR_SENT_REPRESENTING_ENTRYID, oPa.Inner.StringToBinary (organizerID));
 
                   if (_outlookMajorVersion >= 15)
                   {
-                    oPa.Inner.SetProperty(PR_SENDER_NAME, sourceOrganizerEmail);
-                    oPa.Inner.SetProperty(PR_SENDER_EMAIL_ADDRESS, sourceOrganizerEmail);
-                    oPa.Inner.SetProperty(PR_SENDER_ADDRTYPE, "SMTP");
-                    oPa.Inner.SetProperty(PR_SENDER_ENTRYID, oPa.Inner.StringToBinary(organizerID));
+                    oPa.Inner.SetProperty (PR_SENDER_NAME, sourceOrganizerEmail);
+                    oPa.Inner.SetProperty (PR_SENDER_EMAIL_ADDRESS, sourceOrganizerEmail);
+                    oPa.Inner.SetProperty (PR_SENDER_ADDRTYPE, "SMTP");
+                    oPa.Inner.SetProperty (PR_SENDER_ENTRYID, oPa.Inner.StringToBinary (organizerID));
                   }
                 }
-                catch (System.Runtime.InteropServices.COMException ex)
+                catch (COMException ex)
                 {
-                  s_logger.Error("Could not set property PR_SENDER_* for organizer", ex);
+                  s_logger.Error ("Could not set property PR_SENDER_* for organizer", ex);
                 }
               }
             }
