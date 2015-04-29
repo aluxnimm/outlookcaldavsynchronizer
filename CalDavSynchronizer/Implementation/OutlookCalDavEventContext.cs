@@ -55,7 +55,7 @@ namespace CalDavSynchronizer.Implementation
 
       _entityRelationDataFactory = new OutlookEventRelationDataFactory();
 
-      _entityMapper = new AppointmentEventEntityMapper (outlookEmailAddress, new Uri ("mailto:" + options.EmailAddress), outlookSession.Application.TimeZones.CurrentTimeZone.ID);
+      _entityMapper = new AppointmentEventEntityMapper (outlookEmailAddress, new Uri ("mailto:" + options.EmailAddress), outlookSession.Application.TimeZones.CurrentTimeZone.ID, outlookSession.Application.Version);
 
       var calendarFolder = outlookSession.GetFolderFromID (options.OutlookFolderEntryId, options.OutlookFolderStoreId);
       _atypeRepository = new OutlookAppoointmentRepository (calendarFolder, outlookSession);

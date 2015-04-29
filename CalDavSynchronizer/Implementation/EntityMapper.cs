@@ -45,20 +45,20 @@ namespace CalDavSynchronizer.Implementation
     private const string PR_SENT_REPRESENTING_ENTRYID = "http://schemas.microsoft.com/mapi/proptag/0x00410102";
     private const string PR_SENDER_ENTRYID = "http://schemas.microsoft.com/mapi/proptag/0x0C190102";
 
-    private readonly int _OutlookMajorVersion;
+    private readonly int _outlookMajorVersion;
 
     private readonly string _outlookEmailAddress;
     private readonly string _serverEmailUri;
     private readonly TimeZoneInfo _localTimeZoneInfo;
 
-    public AppointmentEventEntityMapper (string outlookEmailAddress, Uri serverEmailAddress, string localTimeZoneId)
+    public AppointmentEventEntityMapper (string outlookEmailAddress, Uri serverEmailAddress, string localTimeZoneId, string outlookApplicationVersion)
     {
-       string OutlookMajorVersionString = Globals.ThisAddIn.Application.Version.Split(new char[] { '.' })[0];
-
       _outlookEmailAddress = outlookEmailAddress;
       _serverEmailUri = serverEmailAddress.ToString();
       _localTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (localTimeZoneId);
-      _OutlookMajorVersion = Convert.ToInt32(OutlookMajorVersionString);
+
+      string outlookMajorVersionString = outlookApplicationVersion.Split (new char[] { '.' })[0];
+      _outlookMajorVersion = Convert.ToInt32(outlookMajorVersionString);
     }
 
     public IICalendar Map1To2 (AppointmentItemWrapper sourceWrapper, IICalendar targetCalender)
@@ -920,7 +920,7 @@ namespace CalDavSynchronizer.Implementation
                   oPa.Inner.SetProperty(PR_SENT_REPRESENTING_ADDRTYPE, "SMTP");
                   oPa.Inner.SetProperty(PR_SENT_REPRESENTING_ENTRYID, oPa.Inner.StringToBinary(organizerID));
 
-                  if (_OutlookMajorVersion >= 15)
+                  if (_outlookMajorVersion >= 15)
                   {
                     oPa.Inner.SetProperty(PR_SENDER_NAME, source.Organizer.CommonName);
                     oPa.Inner.SetProperty(PR_SENDER_EMAIL_ADDRESS, sourceOrganizerEmail);
@@ -942,7 +942,7 @@ namespace CalDavSynchronizer.Implementation
                   oPa.Inner.SetProperty(PR_SENT_REPRESENTING_ADDRTYPE, "SMTP");
                   oPa.Inner.SetProperty(PR_SENT_REPRESENTING_ENTRYID, oPa.Inner.StringToBinary(organizerID));
 
-                  if (_OutlookMajorVersion >= 15)
+                  if (_outlookMajorVersion >= 15)
                   {
                     oPa.Inner.SetProperty(PR_SENDER_NAME, sourceOrganizerEmail);
                     oPa.Inner.SetProperty(PR_SENDER_EMAIL_ADDRESS, sourceOrganizerEmail);
