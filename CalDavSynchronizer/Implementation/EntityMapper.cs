@@ -295,7 +295,7 @@ namespace CalDavSynchronizer.Implementation
           }
           else
           {
-            SetOrganizer(target, source.Organizer, source.PropertyAccessor.GetProperty(PR_SENDER_EMAIL_ADDRESS));
+            SetOrganizer(target, source.Organizer, source.GetPropertySafe (PR_SENDER_EMAIL_ADDRESS) );
           }
 
         }
@@ -323,7 +323,7 @@ namespace CalDavSynchronizer.Implementation
       if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olSmtpAddressEntry)
         emailAddress = addressEntry.Address;
       else
-        emailAddress = addressEntry.PropertyAccessor.GetProperty (PR_SMTP_ADDRESS);
+        emailAddress = addressEntry.GetPropertySafe (PR_SMTP_ADDRESS);
 
       return string.Format ("MAILTO:{0}", emailAddress);
     }

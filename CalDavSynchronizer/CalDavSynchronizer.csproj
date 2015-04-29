@@ -198,6 +198,7 @@
     <Compile Include="Implementation\ComWrappers\AppointmentItemWrapper.cs" />
     <Compile Include="Implementation\ComWrappers\ComEnumerableExtensions.cs" />
     <Compile Include="Implementation\ComWrappers\GenericComObjectWrapper.cs" />
+    <Compile Include="Implementation\ComWrappers\OutlookObjectExtensions.cs" />
     <Compile Include="Implementation\OutlookEventRelationData.cs" />
     <Compile Include="Generic\EntityRelationManagement\IEntityRelationDataFactory.cs" />
     <Compile Include="Implementation\OutlookEventRelationDataFactory.cs" />
