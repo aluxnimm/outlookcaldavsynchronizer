@@ -869,7 +869,14 @@ namespace CalDavSynchronizer.Implementation
           {
             if (!indexByEmailAddresses.TryGetValue (attendee.Value.ToString(), out targetRecipient))
             {
-              targetRecipient = target.Recipients.Add (attendee.Value.ToString().Substring (s_mailtoSchemaLength));
+              if (!string.IsNullOrEmpty(attendee.CommonName))
+              {
+                targetRecipient = target.Recipients.Add(attendee.CommonName+"<"+attendee.Value.ToString().Substring(s_mailtoSchemaLength)+">");
+              }
+              else
+              {
+                targetRecipient = target.Recipients.Add(attendee.Value.ToString().Substring(s_mailtoSchemaLength));
+              }
             }
           }
           else
@@ -896,7 +903,7 @@ namespace CalDavSynchronizer.Implementation
 
             target.MeetingStatus = OlMeetingStatus.olMeetingReceived;
 
-            targetRecipient = target.Recipients.Add (sourceOrganizerEmail);
+            targetRecipient = target.Recipients.Add (source.Organizer.CommonName+"<"+sourceOrganizerEmail+">");
             recipientsToDispose.Add (targetRecipient);
             targetRecipientsWhichShouldRemain.Add (targetRecipient);
             targetRecipient.Type = (int) OlMeetingRecipientType.olOrganizer;
