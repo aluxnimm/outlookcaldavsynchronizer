@@ -829,14 +829,17 @@ namespace CalDavSynchronizer.Implementation
 
       if (source.Organizer != null)
       {
-        var ownSourceAttendee = source.Attendees.FirstOrDefault (a => StringComparer.InvariantCultureIgnoreCase.Compare (a.Value.ToString(), _serverEmailUri) == 0);
+        var ownSourceAttendee = source.Attendees.FirstOrDefault (a => StringComparer.InvariantCultureIgnoreCase.Compare ( a.Value!=null?a.Value.ToString():null, _serverEmailUri) == 0);
         if (ownSourceAttendee != null)
         {
           var response = MapParticipation2ToMeetingResponse (ownSourceAttendee.ParticipationStatus);
           if ((response != null) && (MapParticipation2To1 (ownSourceAttendee.ParticipationStatus) != targetWrapper.Inner.ResponseStatus))
           {
-            var newAppointment = targetWrapper.Inner.Respond (response.Value).GetAssociatedAppointment (false);
-            targetWrapper.Replace (newAppointment);
+            using (var newMeetingItem = GenericComObjectWrapper.Create(targetWrapper.Inner.Respond(response.Value)))
+            {
+              var newAppointment = newMeetingItem.Inner.GetAssociatedAppointment(false);
+              targetWrapper.Replace(newAppointment);
+            }
           }
         }
       }
