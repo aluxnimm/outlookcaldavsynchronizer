@@ -913,49 +913,31 @@ namespace CalDavSynchronizer.Implementation
                 }
               }
 
-              if (source.Organizer.CommonName != null)
-              {
-                try
-                {
-                  oPa.Inner.SetProperty (PR_SENT_REPRESENTING_NAME, source.Organizer.CommonName);
-                  oPa.Inner.SetProperty (PR_SENT_REPRESENTING_EMAIL_ADDRESS, sourceOrganizerEmail);
-                  oPa.Inner.SetProperty (PR_SENT_REPRESENTING_ADDRTYPE, "SMTP");
-                  oPa.Inner.SetProperty (PR_SENT_REPRESENTING_ENTRYID, oPa.Inner.StringToBinary (organizerID));
+              var propertyTagsSentRepresenting = new object[] { PR_SENT_REPRESENTING_NAME, PR_SENT_REPRESENTING_EMAIL_ADDRESS, PR_SENT_REPRESENTING_ADDRTYPE, PR_SENT_REPRESENTING_ENTRYID };
+              var propertyTagsSender = new object[] { PR_SENDER_NAME, PR_SENDER_EMAIL_ADDRESS, PR_SENT_REPRESENTING_ADDRTYPE, PR_SENDER_ENTRYID };
+              object[] propertyValues;
 
-                  if (_outlookMajorVersion >= 15)
-                  {
-                    oPa.Inner.SetProperty (PR_SENDER_NAME, source.Organizer.CommonName);
-                    oPa.Inner.SetProperty (PR_SENDER_EMAIL_ADDRESS, sourceOrganizerEmail);
-                    oPa.Inner.SetProperty (PR_SENDER_ADDRTYPE, "SMTP");
-                    oPa.Inner.SetProperty (PR_SENDER_ENTRYID, oPa.Inner.StringToBinary (organizerID));
-                  }
-                }
-                catch (COMException ex)
-                {
-                  s_logger.Error ("Could not set properties PR_SENDER_* for organizer", ex);
-                }
+              if (source.Organizer.CommonName != null)
+              { 
+                propertyValues = new object[] { source.Organizer.CommonName, sourceOrganizerEmail, "SMTP", oPa.Inner.StringToBinary (organizerID) };
               }
               else
               {
-                try
-                {
-                  oPa.Inner.SetProperty (PR_SENT_REPRESENTING_NAME, sourceOrganizerEmail);
-                  oPa.Inner.SetProperty (PR_SENT_REPRESENTING_EMAIL_ADDRESS, sourceOrganizerEmail);
-                  oPa.Inner.SetProperty (PR_SENT_REPRESENTING_ADDRTYPE, "SMTP");
-                  oPa.Inner.SetProperty (PR_SENT_REPRESENTING_ENTRYID, oPa.Inner.StringToBinary (organizerID));
+                propertyValues = new object[] { sourceOrganizerEmail, sourceOrganizerEmail, "SMTP", oPa.Inner.StringToBinary(organizerID) };
+              }
+              
+              try
+              {
+                oPa.Inner.SetProperties(propertyTagsSentRepresenting, propertyValues);
 
-                  if (_outlookMajorVersion >= 15)
-                  {
-                    oPa.Inner.SetProperty (PR_SENDER_NAME, sourceOrganizerEmail);
-                    oPa.Inner.SetProperty (PR_SENDER_EMAIL_ADDRESS, sourceOrganizerEmail);
-                    oPa.Inner.SetProperty (PR_SENDER_ADDRTYPE, "SMTP");
-                    oPa.Inner.SetProperty (PR_SENDER_ENTRYID, oPa.Inner.StringToBinary (organizerID));
-                  }
-                }
-                catch (COMException ex)
+                if (_outlookMajorVersion >= 15)
                 {
-                  s_logger.Error ("Could not set property PR_SENDER_* for organizer", ex);
+                  oPa.Inner.SetProperties(propertyTagsSender, propertyValues);
                 }
+              }
+              catch (COMException ex)
+              {
+                s_logger.Error ("Could not set property PR_SENDER_* for organizer", ex);
               }
             }
           }
