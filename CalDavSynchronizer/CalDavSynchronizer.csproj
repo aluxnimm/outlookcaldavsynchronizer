@@ -245,7 +245,7 @@
     <Compile Include="Generic\Synchronization\StateFactories\IEntitySyncStateFactory.cs" />
     <Compile Include="Generic\Synchronization\ISynchronizer.cs" />
     <Compile Include="Generic\EntityMapping\IEntityMapper.cs" />
-    <Compile Include="Implementation\OutlookAppoointmentRepository.cs" />
+    <Compile Include="Implementation\OutlookAppointmentRepository.cs" />
     <Compile Include="Generic\Synchronization\ISynchronizerContext.cs" />
     <Compile Include="Implementation\OutlookCalDavEventContext.cs" />
     <Compile Include="DataAccess\CalDavDataAccess.cs" />

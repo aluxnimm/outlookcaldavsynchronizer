@@ -26,12 +26,12 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation
 {
-  internal class OutlookAppoointmentRepository : IEntityRepository<AppointmentItemWrapper, string, DateTime>
+  internal class OutlookAppointmentRepository : IEntityRepository<AppointmentItemWrapper, string, DateTime>
   {
-    private readonly MAPIFolder _calendarFolder;
+    private readonly Folder _calendarFolder;
     private readonly NameSpace _mapiNameSpace;
 
-    public OutlookAppoointmentRepository (MAPIFolder calendarFolder, NameSpace mapiNameSpace)
+    public OutlookAppointmentRepository (Folder calendarFolder, NameSpace mapiNameSpace)
     {
       if (calendarFolder == null)
         throw new ArgumentNullException ("calendarFolder");
