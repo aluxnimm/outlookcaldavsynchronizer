@@ -37,6 +37,10 @@ namespace CalDavSynchronizer.Implementation
         throw new ArgumentNullException ("calendarFolder");
       if (mapiNameSpace == null)
         throw new ArgumentNullException ("mapiNameSpace");
+
+      if (calendarFolder.DefaultItemType != OlItemType.olAppointmentItem)
+        throw new ArgumentException(string.Format("Wrong ItemType in folder <{0}>. It should be a calendar folder.", calendarFolder.Name));
+
       _calendarFolder = calendarFolder;
       _mapiNameSpace = mapiNameSpace;
     }
