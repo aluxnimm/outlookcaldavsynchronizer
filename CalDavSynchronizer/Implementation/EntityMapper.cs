@@ -491,14 +491,6 @@ namespace CalDavSynchronizer.Implementation
           }
           var sourceRecurrencePattern = source.RecurrenceRules[0];
 
-          targetRecurrencePattern.Interval = sourceRecurrencePattern.Interval;
-
-          if (sourceRecurrencePattern.Count >= 0)
-            targetRecurrencePattern.Occurrences = sourceRecurrencePattern.Count;
-
-          if (sourceRecurrencePattern.Until != default(DateTime))
-            targetRecurrencePattern.PatternEndDate = sourceRecurrencePattern.Until;
-
           switch (sourceRecurrencePattern.Frequency)
           {
             case FrequencyType.Daily:
@@ -602,6 +594,15 @@ namespace CalDavSynchronizer.Implementation
               targetWrapper.Inner.ClearRecurrencePattern();
               break;
           }
+
+          targetRecurrencePattern.Interval = sourceRecurrencePattern.Interval;
+
+          if (sourceRecurrencePattern.Count >= 0)
+            targetRecurrencePattern.Occurrences = sourceRecurrencePattern.Count;
+
+          if (sourceRecurrencePattern.Until != default(DateTime))
+            targetRecurrencePattern.PatternEndDate = sourceRecurrencePattern.Until;
+
         }
         // Due to limitations out outlook, the Appointment has to be saved here. Otherwise 'targetRecurrencePattern.GetOccurrence ()'
         // will throw an exception
