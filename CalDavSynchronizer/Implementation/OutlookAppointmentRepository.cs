@@ -52,22 +52,24 @@ namespace CalDavSynchronizer.Implementation
       var events = new Dictionary<string, DateTime>();
 
       string filter = String.Format ("[Start] < '{0}' And [End] > '{1}'", ToOutlookDateString (toUtc), ToOutlookDateString (fromUtc));
-      var table = _calendarFolder.GetTable (filter);
-      table.Columns.RemoveAll();
-      table.Columns.Add (c_entryIdColumnName);
-
-      var storeId = _calendarFolder.StoreID;
-
-      while (!table.EndOfTable)
+      using (var tableWrapper = GenericComObjectWrapper.Create ((Table) _calendarFolder.GetTable (filter)))
       {
-        var row = table.GetNextRow();
-        var entryId = (string) row[c_entryIdColumnName];
-        using (var appointmentWrapper = GenericComObjectWrapper.Create ((AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, storeId)))
+        var table = tableWrapper.Inner;
+        table.Columns.RemoveAll();
+        table.Columns.Add (c_entryIdColumnName);
+
+        var storeId = _calendarFolder.StoreID;
+
+        while (!table.EndOfTable)
         {
-          events.Add (appointmentWrapper.Inner.EntryID, appointmentWrapper.Inner.LastModificationTime);
+          var row = table.GetNextRow();
+          var entryId = (string) row[c_entryIdColumnName];
+          using (var appointmentWrapper = GenericComObjectWrapper.Create ((AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, storeId)))
+          {
+            events.Add (appointmentWrapper.Inner.EntryID, appointmentWrapper.Inner.LastModificationTime);
+          }
         }
       }
-
       return events;
     }
 
@@ -94,6 +96,7 @@ namespace CalDavSynchronizer.Implementation
     {
       foreach (var appointmentItemWrapper in entities.Values)
         appointmentItemWrapper.Dispose();
+
     }
 
     public EntityIdWithVersion<string, DateTime> Update (string entityId, AppointmentItemWrapper entityToUpdate, Func<AppointmentItemWrapper, AppointmentItemWrapper> entityModifier)
