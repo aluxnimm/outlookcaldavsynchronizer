@@ -26,7 +26,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation
 {
-  internal class OutlookAppointmentRepository : IEntityRepository<AppointmentItemWrapper, string, DateTime>
+  public class OutlookAppointmentRepository : IEntityRepository<AppointmentItemWrapper, string, DateTime>
   {
     private readonly Folder _calendarFolder;
     private readonly NameSpace _mapiNameSpace;
@@ -133,6 +133,11 @@ namespace CalDavSynchronizer.Implementation
           return result;
         }
       }
+    }
+
+    public static AppointmentItemWrapper CreateNewAppointmentForTesting (MAPIFolder calendarFolder, NameSpace mapiNamespace)
+    {
+      return new AppointmentItemWrapper ((AppointmentItem) calendarFolder.Items.Add (OlItemType.olAppointmentItem), entryId => (AppointmentItem) mapiNamespace.GetItemFromID (entryId, calendarFolder.StoreID));
     }
   }
 }

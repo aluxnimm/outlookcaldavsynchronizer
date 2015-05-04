@@ -21,6 +21,7 @@ namespace CalDavSynchronizerTestAutomation
       display.Show ();
       var runner  = new TestRunner (display);
       ManualAssert.Initialize (display);
+      OutlookTestContext.Initialize (Globals.ThisAddIn.Application.Session);
       runner.Run (Assembly.GetExecutingAssembly ());
     }
   }

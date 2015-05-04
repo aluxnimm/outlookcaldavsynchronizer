@@ -32,7 +32,7 @@ using RecurrencePattern = DDay.iCal.RecurrencePattern;
 
 namespace CalDavSynchronizer.Implementation
 {
-  internal class AppointmentEventEntityMapper : IEntityMapper<AppointmentItemWrapper, IICalendar>
+  public class AppointmentEventEntityMapper : IEntityMapper<AppointmentItemWrapper, IICalendar>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
