@@ -168,6 +168,9 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="EntityMapper\OrganizerFixture.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Infrastructure\IManualAssertUi.cs" />
     <Compile Include="Infrastructure\ITestDisplay.cs" />
     <Compile Include="Infrastructure\ManualAssert.cs" />
@@ -231,9 +234,7 @@
       <Name>CalDavSynchronizer</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="EntityMapper\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
