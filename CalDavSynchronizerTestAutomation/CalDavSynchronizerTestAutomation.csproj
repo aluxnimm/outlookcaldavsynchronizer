@@ -111,6 +111,10 @@
   -->
   <ItemGroup>
     <Reference Include="Accessibility" />
+    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -160,9 +164,22 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="Infrastructure\IManualAssertUi.cs" />
+    <Compile Include="Infrastructure\ITestDisplay.cs" />
+    <Compile Include="Infrastructure\ManualAssert.cs" />
+    <Compile Include="Infrastructure\TestResultDisplay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Infrastructure\TestResultDisplay.Designer.cs">
+      <DependentUpon>TestResultDisplay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Infrastructure\TestRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <EmbeddedResource Include="Infrastructure\TestResultDisplay.resx">
+      <DependentUpon>TestResultDisplay.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -176,6 +193,7 @@
       <DependentUpon>TestAutomationRibbon.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="CalDavSynchronizerTestAutomation_TemporaryKey.pfx" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -201,6 +219,7 @@
     </Compile>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

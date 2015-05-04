@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using CalDavSynchronizerTestAutomation.Infrastructure;
 using Microsoft.Office.Tools.Ribbon;
 
 namespace CalDavSynchronizerTestAutomation
@@ -15,7 +17,11 @@ namespace CalDavSynchronizerTestAutomation
 
     private void StartTestsButton_Click (object sender, RibbonControlEventArgs e)
     {
-      0.GetHashCode();
+      var display = new TestResultDisplay ();
+      display.Show ();
+      var runner  = new TestRunner (display);
+      ManualAssert.Initialize (display);
+      runner.Run (Assembly.GetExecutingAssembly ());
     }
   }
 }
