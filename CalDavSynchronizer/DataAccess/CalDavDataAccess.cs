@@ -92,6 +92,23 @@ namespace CalDavSynchronizer.DataAccess
       return calenderNode != null;
     }
 
+    public bool isWriteableCalender ()
+    {
+      var properties = GetCurrentUserPrivileges(_calendarUrl, 0);
+
+      XmlNodeList privilegeList = properties.XmlDocument.SelectNodes("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-privilege-set/D:privilege", properties.XmlNamespaceManager);
+
+      foreach (XmlElement priv in privilegeList)
+      {
+        if (priv.InnerXml.Contains("write-content"))
+        {
+          return true;
+        }
+        
+      }
+      return false;
+    }
+
     private const string s_calDavDateTimeFormatString = "yyyyMMddThhmmssZ";
 
     public Dictionary<Uri, string> GetEvents (DateTime? from, DateTime? to)
@@ -172,6 +189,27 @@ namespace CalDavSynchronizer.DataAccess
           );
     }
 
+    private XmlDocumentWithNamespaceManager GetCurrentUserPrivileges (Uri url, int depth)
+    {
+      return ExecuteCalDavRequestAndReadResponse (
+          url,
+          request =>
+          {
+            request.Method = "PROPFIND";
+            request.ContentType = "text/xml; charset=UTF-8";
+            request.ServicePoint.Expect100Continue = false;
+            request.Headers["Depth"] = depth.ToString();
+          },
+          @"<?xml version='1.0'?>
+                        <D:propfind xmlns:D=""DAV:"">
+                          <D:prop>
+                            <D:current-user-privilege-set/>
+                          </D:prop>
+                        </D:propfind>
+                 "
+          );
+    }
+ 
     public EntityIdWithVersion<Uri, string> UpdateEvent (EntityIdWithVersion<Uri, string> evt, string iCalData)
     {
       return UpdateEvent (evt.Id, evt.Version, iCalData);
