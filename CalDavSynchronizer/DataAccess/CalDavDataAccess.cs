@@ -96,17 +96,11 @@ namespace CalDavSynchronizer.DataAccess
     {
       var properties = GetCurrentUserPrivileges(_calendarUrl, 0);
 
-      XmlNodeList privilegeList = properties.XmlDocument.SelectNodes("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-privilege-set/D:privilege", properties.XmlNamespaceManager);
+      XmlNode privilegeWriteContent = properties.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-privilege-set/D:privilege/D:write-content", properties.XmlNamespaceManager);
+      XmlNode privilegeBind = properties.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-privilege-set/D:privilege/D:bind", properties.XmlNamespaceManager);
+      XmlNode privilegeUnbind = properties.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-privilege-set/D:privilege/D:unbind", properties.XmlNamespaceManager);
 
-      foreach (XmlElement priv in privilegeList)
-      {
-        if (priv.InnerXml.Contains("write-content"))
-        {
-          return true;
-        }
-        
-      }
-      return false;
+      return ((privilegeWriteContent != null) && (privilegeBind != null) && (privilegeUnbind != null));
     }
 
     private const string s_calDavDateTimeFormatString = "yyyyMMddThhmmssZ";
