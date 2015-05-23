@@ -226,9 +226,17 @@ namespace CalDavSynchronizer.Ui
 
     private void UpdateFolder (MAPIFolder folder)
     {
-      _folderEntryId = folder.EntryID;
-      _folderStoreId = folder.StoreID;
-      _outoookFolderNameTextBox.Text = folder.Name;
+      if (folder.DefaultItemType != OlItemType.olAppointmentItem)
+      {
+        string wrongFolderMessage = string.Format("Wrong ItemType in folder <{0}>. It should be a calendar folder.", folder.Name);
+        MessageBox.Show(wrongFolderMessage, "Configuration Error");
+      }
+      else
+      {
+        _folderEntryId = folder.EntryID;
+        _folderStoreId = folder.StoreID;
+        _outoookFolderNameTextBox.Text = folder.Name;
+      }
     }
 
     private void UpdateFolder (string folderEntryId, string folderStoreId)
@@ -250,8 +258,8 @@ namespace CalDavSynchronizer.Ui
         }
         if (folder != null)
         {
-          UpdateFolder (folder);
-          return;
+            UpdateFolder (folder);
+            return;
         }
       }
 
