@@ -218,16 +218,28 @@ namespace CalDavSynchronizer.DataAccess
     {
       var absoluteEventUrl = new Uri (_calendarUrl, url);
 
-      var response = ExecuteCalDavRequest (absoluteEventUrl,
-          request =>
-          {
-            request.Method = "PUT";
-            request.ContentType = "text/xml; charset=UTF-8";
-            if (!string.IsNullOrEmpty (etag))
-              request.Headers.Add ("If-Match", etag);
-            request.ServicePoint.Expect100Continue = false;
-          },
-          iCalData);
+      WebResponse response;
+
+      try
+      {
+        response = ExecuteCalDavRequest (absoluteEventUrl,
+            request =>
+            {
+              request.Method = "PUT";
+              request.ContentType = "text/xml; charset=UTF-8";
+              if (!string.IsNullOrEmpty(etag))
+                request.Headers.Add("If-Match", etag);
+              request.ServicePoint.Expect100Continue = false;
+            },
+            iCalData);
+      }
+      catch (WebException x)
+      {
+        if (((HttpWebResponse) x.Response).StatusCode == HttpStatusCode.Forbidden)
+          throw new Exception (string.Format("Error updating event with url '{0}' and etag '{1}' (Access denied)", absoluteEventUrl, etag));
+        else
+          throw;
+      }
 
       return new EntityIdWithVersion<Uri, string> (url, response.Headers["ETag"]);
     }
@@ -236,16 +248,27 @@ namespace CalDavSynchronizer.DataAccess
     {
       var eventUrl = new Uri (_calendarUrl, string.Format ("{0:D}.ics", Guid.NewGuid()));
 
-      var response = ExecuteCalDavRequest (eventUrl,
-          request =>
-          {
-            request.Method = "PUT";
-            request.Headers.Add ("If-None-Match", "*");
-            request.ContentType = "text/calendar; charset=UTF-8";
-            request.ServicePoint.Expect100Continue = false;
-          },
-          iCalData);
+      WebResponse response;
 
+      try
+      {
+        response = ExecuteCalDavRequest (eventUrl,
+            request =>
+            {
+              request.Method = "PUT";
+              request.Headers.Add("If-None-Match", "*");
+              request.ContentType = "text/calendar; charset=UTF-8";
+              request.ServicePoint.Expect100Continue = false;
+            },
+            iCalData);
+      }
+      catch (WebException x)
+      {
+        if (((HttpWebResponse) x.Response).StatusCode == HttpStatusCode.Forbidden)
+          throw new Exception (string.Format("Error creating event with url '{0}' (Access denied)", eventUrl));
+        else
+          throw;
+      }
       return new EntityIdWithVersion<Uri, string> (new Uri (eventUrl.AbsolutePath, UriKind.Relative), response.Headers["ETag"]);
     }
 
@@ -281,6 +304,8 @@ namespace CalDavSynchronizer.DataAccess
       {
         if (((HttpWebResponse) x.Response).StatusCode == HttpStatusCode.NotFound)
           return false;
+        else if (((HttpWebResponse) x.Response).StatusCode == HttpStatusCode.Forbidden)
+          throw new Exception(string.Format("Error deleting event with url '{0}' and etag '{1}' (Access denied)", uri, etag));
         else
           throw;
       }
