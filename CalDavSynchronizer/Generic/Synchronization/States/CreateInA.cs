@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -25,15 +26,15 @@ namespace CalDavSynchronizer.Generic.Synchronization.States
       StateBase<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
   {
     // ReSharper disable once StaticFieldInGenericType
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod ().DeclaringType);
-    
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
+
     private readonly TBtypeEntityId _bId;
     private readonly TBtypeEntityVersion _bVersion;
     private TBtypeEntity _bEntity;
 
 
     public CreateInA (EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> environment, TBtypeEntityId bId, TBtypeEntityVersion bVersion)
-        : base(environment)
+        : base (environment)
     {
       _bId = bId;
       _bVersion = bVersion;
@@ -71,13 +72,13 @@ namespace CalDavSynchronizer.Generic.Synchronization.States
       catch (Exception x)
       {
         LogException (x);
-        return Discard ();
+        return Discard();
       }
     }
 
     public override void AddNewRelationNoThrow (Action<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> addAction)
     {
-      s_logger.Error ("This state should have been left via PerformSyncActionNoThrow!"); 
+      s_logger.Error ("This state should have been left via PerformSyncActionNoThrow!");
     }
 
     public override void Dispose ()

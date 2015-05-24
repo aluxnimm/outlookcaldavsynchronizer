@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,7 +54,7 @@ namespace CalDavSynchronizer.Generic.InitialEntityMatching
       {
         foreach (var atypeEntityId in atypeEntityGroup.Value)
         {
-          Dictionary<TBtypeEntityId,bool> btypeEntityGroup;
+          Dictionary<TBtypeEntityId, bool> btypeEntityGroup;
 
           var btypeEntityGroupKey = MapAtypePropertyValue (atypeEntityGroup.Key);
           if (btypeEntityIdsGroupedByProperty.TryGetValue (btypeEntityGroupKey, out btypeEntityGroup))

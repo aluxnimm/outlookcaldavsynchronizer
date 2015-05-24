@@ -602,7 +602,6 @@ namespace CalDavSynchronizer.Implementation
 
           if (sourceRecurrencePattern.Until != default(DateTime))
             targetRecurrencePattern.PatternEndDate = sourceRecurrencePattern.Until;
-
         }
         // Due to limitations out outlook, the Appointment has to be saved here. Otherwise 'targetRecurrencePattern.GetOccurrence ()'
         // will throw an exception
@@ -830,16 +829,16 @@ namespace CalDavSynchronizer.Implementation
 
       if (source.Organizer != null)
       {
-        var ownSourceAttendee = source.Attendees.FirstOrDefault (a => StringComparer.InvariantCultureIgnoreCase.Compare ( a.Value!=null?a.Value.ToString():null, _serverEmailUri) == 0);
+        var ownSourceAttendee = source.Attendees.FirstOrDefault (a => StringComparer.InvariantCultureIgnoreCase.Compare (a.Value != null ? a.Value.ToString() : null, _serverEmailUri) == 0);
         if (ownSourceAttendee != null)
         {
           var response = MapParticipation2ToMeetingResponse (ownSourceAttendee.ParticipationStatus);
           if ((response != null) && (MapParticipation2To1 (ownSourceAttendee.ParticipationStatus) != targetWrapper.Inner.ResponseStatus))
           {
-            using (var newMeetingItem = GenericComObjectWrapper.Create(targetWrapper.Inner.Respond(response.Value)))
+            using (var newMeetingItem = GenericComObjectWrapper.Create (targetWrapper.Inner.Respond (response.Value)))
             {
-              var newAppointment = newMeetingItem.Inner.GetAssociatedAppointment(false);
-              targetWrapper.Replace(newAppointment);
+              var newAppointment = newMeetingItem.Inner.GetAssociatedAppointment (false);
+              targetWrapper.Replace (newAppointment);
             }
           }
         }
@@ -870,13 +869,13 @@ namespace CalDavSynchronizer.Implementation
           {
             if (!indexByEmailAddresses.TryGetValue (attendee.Value.ToString(), out targetRecipient))
             {
-              if (!string.IsNullOrEmpty(attendee.CommonName))
+              if (!string.IsNullOrEmpty (attendee.CommonName))
               {
-                targetRecipient = target.Recipients.Add(attendee.CommonName+"<"+attendee.Value.ToString().Substring(s_mailtoSchemaLength)+">");
+                targetRecipient = target.Recipients.Add (attendee.CommonName + "<" + attendee.Value.ToString().Substring (s_mailtoSchemaLength) + ">");
               }
               else
               {
-                targetRecipient = target.Recipients.Add(attendee.Value.ToString().Substring(s_mailtoSchemaLength));
+                targetRecipient = target.Recipients.Add (attendee.Value.ToString().Substring (s_mailtoSchemaLength));
               }
             }
           }
@@ -904,7 +903,7 @@ namespace CalDavSynchronizer.Implementation
 
             target.MeetingStatus = OlMeetingStatus.olMeetingReceived;
 
-            targetRecipient = target.Recipients.Add (source.Organizer.CommonName+"<"+sourceOrganizerEmail+">");
+            targetRecipient = target.Recipients.Add (source.Organizer.CommonName + "<" + sourceOrganizerEmail + ">");
             recipientsToDispose.Add (targetRecipient);
             targetRecipientsWhichShouldRemain.Add (targetRecipient);
             targetRecipient.Type = (int) OlMeetingRecipientType.olOrganizer;
@@ -926,21 +925,21 @@ namespace CalDavSynchronizer.Implementation
               object[] propertyValues;
 
               if (source.Organizer.CommonName != null)
-              { 
+              {
                 propertyValues = new object[] { source.Organizer.CommonName, sourceOrganizerEmail, "SMTP", oPa.Inner.StringToBinary (organizerID) };
               }
               else
               {
-                propertyValues = new object[] { sourceOrganizerEmail, sourceOrganizerEmail, "SMTP", oPa.Inner.StringToBinary(organizerID) };
+                propertyValues = new object[] { sourceOrganizerEmail, sourceOrganizerEmail, "SMTP", oPa.Inner.StringToBinary (organizerID) };
               }
-              
+
               try
               {
-                oPa.Inner.SetProperties(propertyTagsSentRepresenting, propertyValues);
+                oPa.Inner.SetProperties (propertyTagsSentRepresenting, propertyValues);
 
                 if (_outlookMajorVersion >= 15)
                 {
-                  oPa.Inner.SetProperties(propertyTagsSender, propertyValues);
+                  oPa.Inner.SetProperties (propertyTagsSender, propertyValues);
                 }
               }
               catch (COMException ex)

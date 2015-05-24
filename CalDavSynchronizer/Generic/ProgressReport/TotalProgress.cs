@@ -35,7 +35,7 @@ namespace CalDavSynchronizer.Generic.ProgressReport
 
     public TotalProgress (IProgressUiFactory uiFactory, int aAnnounced, int bAnnounced)
     {
-      const int smallStepCompletionCountAnticipationFactor =  10;
+      const int smallStepCompletionCountAnticipationFactor = 10;
 
       _prefixSummedStepTotals = new[]
                                 {

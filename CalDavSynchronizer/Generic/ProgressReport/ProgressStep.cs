@@ -63,7 +63,7 @@ namespace CalDavSynchronizer.Generic.ProgressReport
       try
       {
         _currentValue = Math.Min (_currentValue + (value * _uiTicksPerStepTick), _uiMax);
-        _progressUi.SetValue ((int)_currentValue);
+        _progressUi.SetValue ((int) _currentValue);
       }
       catch (Exception x)
       {

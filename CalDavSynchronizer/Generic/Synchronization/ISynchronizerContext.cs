@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using CalDavSynchronizer.Generic.EntityMapping;
 using CalDavSynchronizer.Generic.EntityRelationManagement;
@@ -25,7 +26,7 @@ namespace CalDavSynchronizer.Generic.Synchronization
   /// The context in which the synchronizer operates
   /// </summary>
   public interface ISynchronizerContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
-    : IEntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
+      : IEntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
   {
     IEntityMapper<TAtypeEntity, TBtypeEntity> EntityMapper { get; }
     IEntityRepository<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> AtypeRepository { get; }

@@ -12,12 +12,10 @@ namespace CalDavSynchronizer
 {
   public partial class CalDavSynchronizerRibbon
   {
-
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod ().DeclaringType);
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private void CalDavSynchronizerRibbon_Load (object sender, RibbonUIEventArgs e)
     {
-
     }
 
     private void SynchronizeNowButton_Click (object sender, RibbonControlEventArgs e)
@@ -25,7 +23,7 @@ namespace CalDavSynchronizer
       try
       {
         s_logger.Info ("Synchronization manually triggered");
-        ThisAddIn.Scheduler.RunNow ();
+        ThisAddIn.Scheduler.RunNow();
       }
       catch (Exception x)
       {
@@ -37,7 +35,7 @@ namespace CalDavSynchronizer
     {
       try
       {
-        var options = ThisAddIn.OptionsDataAccess.LoadOptions ();
+        var options = ThisAddIn.OptionsDataAccess.LoadOptions();
         if (OptionsForm.EditOptions (ThisAddIn.Session, options, out options))
         {
           ThisAddIn.OptionsDataAccess.SaveOptions (options);
@@ -53,7 +51,9 @@ namespace CalDavSynchronizer
     private void AboutButton_Click (object sender, RibbonControlEventArgs e)
     {
       using (var aboutForm = new AboutForm())
+      {
         aboutForm.ShowDialog();
+      }
     }
   }
 }

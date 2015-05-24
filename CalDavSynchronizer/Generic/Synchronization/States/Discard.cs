@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.Generic.EntityRelationManagement;
@@ -21,7 +22,6 @@ namespace CalDavSynchronizer.Generic.Synchronization.States
 {
   internal class Discard<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> : IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
   {
-   
     public void AddRequiredEntitiesToLoad (Func<TAtypeEntityId, bool> a, Func<TBtypeEntityId, bool> b)
     {
     }
@@ -43,12 +43,10 @@ namespace CalDavSynchronizer.Generic.Synchronization.States
 
     public void AddNewRelationNoThrow (Action<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> addAction)
     {
-     
     }
 
     public void Dispose ()
     {
-      
     }
   }
 }

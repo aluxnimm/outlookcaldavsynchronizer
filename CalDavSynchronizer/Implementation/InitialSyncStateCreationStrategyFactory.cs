@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using CalDavSynchronizer.Generic.EntityRelationManagement;
 using CalDavSynchronizer.Generic.Synchronization;
@@ -27,7 +28,6 @@ namespace CalDavSynchronizer.Implementation
 {
   public static class InitialSyncStateCreationStrategyFactory
   {
-
     private static IEntityConflictSyncStateFactory<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> Create (IEntitySyncStateFactory<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> syncStateFactory, EntitySyncStateEnvironment<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> environment, ConflictResolution conflictResolution)
     {
       switch (conflictResolution)
@@ -40,7 +40,7 @@ namespace CalDavSynchronizer.Implementation
           return new OutlookCaldavEventEntityConflictSyncStateFactory_Automatic (environment);
       }
 
-      throw new NotImplementedException ();
+      throw new NotImplementedException();
     }
 
     public static IInitialSyncStateCreationStrategy<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> Create (IEntitySyncStateFactory<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> syncStateFactory, EntitySyncStateEnvironment<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> environment, SynchronizationMode synchronizationMode, ConflictResolution conflictResolution)
@@ -48,7 +48,7 @@ namespace CalDavSynchronizer.Implementation
       switch (synchronizationMode)
       {
         case SynchronizationMode.MergeInBothDirections:
-          var conflictResolutionStrategy = Create (syncStateFactory,environment, conflictResolution);
+          var conflictResolutionStrategy = Create (syncStateFactory, environment, conflictResolution);
           return new TwoWayInitialSyncStateCreationStrategy<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (
               syncStateFactory,
               conflictResolutionStrategy
@@ -58,25 +58,23 @@ namespace CalDavSynchronizer.Implementation
           return new OneWayInitialSyncStateCreationStrategy_AToB<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (
               syncStateFactory,
               synchronizationMode == SynchronizationMode.ReplicateOutlookIntoServer ? OneWaySyncMode.Replicate : OneWaySyncMode.Merge
-           );
+              );
         case SynchronizationMode.ReplicateServerIntoOutlook:
         case SynchronizationMode.MergeServerIntoOutlook:
           return new OneWayInitialSyncStateCreationStrategy_BToA<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (
-             syncStateFactory,
-             synchronizationMode == SynchronizationMode.ReplicateServerIntoOutlook ? OneWaySyncMode.Replicate : OneWaySyncMode.Merge
-           );
-       
+              syncStateFactory,
+              synchronizationMode == SynchronizationMode.ReplicateServerIntoOutlook ? OneWaySyncMode.Replicate : OneWaySyncMode.Merge
+              );
       }
-      throw new NotImplementedException ();
+      throw new NotImplementedException();
     }
-
   }
 
   internal class OutlookCaldavEventEntityConflictSyncStateFactory_Automatic
       : EntityConflictSyncStateFactory_Automatic<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar>
   {
     public OutlookCaldavEventEntityConflictSyncStateFactory_Automatic (EntitySyncStateEnvironment<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> environment)
-        : base(environment)
+        : base (environment)
     {
     }
 

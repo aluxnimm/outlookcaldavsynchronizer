@@ -49,7 +49,7 @@ namespace CalDavSynchronizer.Generic.Synchronization
 
     public bool Synchronize ()
     {
-      s_logger.InfoFormat ("Entered. Syncstrategy '{0}' with Atype='{1}' and Btype='{2}'",_initialSyncStateCreationStrategy.GetType().Name,  typeof (TAtypeEntity).Name, typeof (TBtypeEntity).Name);
+      s_logger.InfoFormat ("Entered. Syncstrategy '{0}' with Atype='{1}' and Btype='{2}'", _initialSyncStateCreationStrategy.GetType().Name, typeof (TAtypeEntity).Name, typeof (TBtypeEntity).Name);
 
       var totalProgress = NullTotalProgress.Instance;
 
@@ -132,7 +132,7 @@ namespace CalDavSynchronizer.Generic.Synchronization
           }
 
           entitySyncStates.DoTransition (s => s.FetchRequiredEntities (aEntities, bEntities));
-          entitySyncStates.DoTransition (s => s.Resolve ());
+          entitySyncStates.DoTransition (s => s.Resolve());
 
           // since resolve may change to an new state, required entities have to be fetched again.
           // an state is allowed only to resolve to another state, if the following states requires equal or less entities!

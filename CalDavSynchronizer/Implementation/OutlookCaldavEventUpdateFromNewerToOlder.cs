@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using CalDavSynchronizer.Generic.EntityRelationManagement;
 using CalDavSynchronizer.Generic.Synchronization;
@@ -27,7 +28,7 @@ namespace CalDavSynchronizer.Implementation
       : UpdateFromNewerToOlder<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar>
   {
     public OutlookCaldavEventUpdateFromNewerToOlder (EntitySyncStateEnvironment<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> environment, IEntityRelationData<string, DateTime, Uri, string> knownData, DateTime newA, string newB)
-        : base(environment, knownData, newA, newB)
+        : base (environment, knownData, newA, newB)
     {
     }
 
@@ -41,7 +42,7 @@ namespace CalDavSynchronizer.Implementation
         if (evt.LastModified == null)
           return false;
 
-        return _aEntity.Inner.LastModificationTime.ToUniversalTime() >= evt.LastModified.UTC; 
+        return _aEntity.Inner.LastModificationTime.ToUniversalTime() >= evt.LastModified.UTC;
       }
     }
   }

@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Configuration;
 using System.IO;
@@ -54,9 +55,9 @@ namespace CalDavSynchronizer.Scheduling
       _applicationDataDirectory = applicationDataDirectory;
       // Set to min, to ensure that it runs on the first run after startup
       _lastRun = DateTime.MinValue;
-      _totalProgressFactory = new TotalProgressFactory(
-        new Ui.ProgressFormFactory(),
-        int.Parse(ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"]));
+      _totalProgressFactory = new TotalProgressFactory (
+          new Ui.ProgressFormFactory(),
+          int.Parse (ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"]));
     }
 
     public void UpdateOptions (NameSpace outlookSession, Options options)
@@ -64,42 +65,40 @@ namespace CalDavSynchronizer.Scheduling
       _profileName = options.Name;
 
       var storageDataDirectory = Path.Combine (
-         _applicationDataDirectory,
-         options.Id.ToString ()
-     );
+          _applicationDataDirectory,
+          options.Id.ToString()
+          );
 
-      var storageDataAccess = new EntityRelationDataAccess<string, DateTime, OutlookEventRelationData , Uri, string> (storageDataDirectory);
+      var storageDataAccess = new EntityRelationDataAccess<string, DateTime, OutlookEventRelationData, Uri, string> (storageDataDirectory);
 
       var synchronizationContext = new OutlookCalDavEventContext (
-        outlookSession, 
-        storageDataAccess, 
-        options, 
-        _outlookEmailAddress, 
-        TimeSpan.Parse(ConfigurationManager.AppSettings["calDavConnectTimeout"]), 
-        TimeSpan.Parse(ConfigurationManager.AppSettings["calDavReadWriteTimeout"])
-      );
+          outlookSession,
+          storageDataAccess,
+          options,
+          _outlookEmailAddress,
+          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"])
+          );
 
       var syncStateFactory = new EntitySyncStateFactory<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (
-        synchronizationContext.EntityMapper,
-        synchronizationContext.AtypeRepository,
-        synchronizationContext.BtypeRepository,
-        synchronizationContext.EntityRelationDataFactory
-      );
-
+          synchronizationContext.EntityMapper,
+          synchronizationContext.AtypeRepository,
+          synchronizationContext.BtypeRepository,
+          synchronizationContext.EntityRelationDataFactory
+          );
 
 
       _synchronizer = new Synchronizer<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (
           synchronizationContext,
-          InitialSyncStateCreationStrategyFactory.Create(
-            syncStateFactory,
-            syncStateFactory.Environment,
-            options.SynchronizationMode,
-            options.ConflictResolution),
-            _totalProgressFactory
+          InitialSyncStateCreationStrategyFactory.Create (
+              syncStateFactory,
+              syncStateFactory.Environment,
+              options.SynchronizationMode,
+              options.ConflictResolution),
+          _totalProgressFactory
           );
 
-    
-      
+
       _interval = TimeSpan.FromMinutes (options.SynchronizationIntervalInMinutes);
       _inactive = options.Inactive;
     }

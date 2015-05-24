@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,22 +28,21 @@ using log4net.Core;
 
 namespace CalDavSynchronizer.Utilities
 {
-  class ExceptionHandler : IExceptionHandler
+  internal class ExceptionHandler : IExceptionHandler
   {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod ().DeclaringType);
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     public static readonly IExceptionHandler Instance = new ExceptionHandler();
 
     private ExceptionHandler ()
     {
-      
     }
 
     public void HandleException (Exception exception, ILog logger)
     {
-      var additionMessage = GetAdditionMessageNoThrow(exception);
+      var additionMessage = GetAdditionMessageNoThrow (exception);
       logger.Logger.Log (typeof (ExceptionHandler), Level.Error, additionMessage, exception);
-      MessageBox.Show (exception.ToString ());
+      MessageBox.Show (exception.ToString());
     }
 
     private string GetAdditionMessageNoThrow (Exception exception)
@@ -63,7 +63,7 @@ namespace CalDavSynchronizer.Utilities
       var webException = x as WebException;
       if (webException != null)
       {
-         using (var reader = new StreamReader (webException.Response.GetResponseStream()))
+        using (var reader = new StreamReader (webException.Response.GetResponseStream()))
         {
           return reader.ReadToEnd();
         }
@@ -71,7 +71,5 @@ namespace CalDavSynchronizer.Utilities
 
       return string.Empty;
     }
-
-
   }
 }

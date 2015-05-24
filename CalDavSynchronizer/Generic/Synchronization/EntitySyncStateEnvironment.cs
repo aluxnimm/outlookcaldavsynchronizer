@@ -42,6 +42,5 @@ namespace CalDavSynchronizer.Generic.Synchronization
       DataFactory = dataFactory;
       StateFactory = stateFactory;
     }
-
   }
 }

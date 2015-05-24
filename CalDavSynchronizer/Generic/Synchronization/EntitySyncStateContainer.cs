@@ -37,7 +37,7 @@ namespace CalDavSynchronizer.Generic.Synchronization
     public void Dispose ()
     {
       foreach (var syncState in _allSyncStatesThatWereCreated)
-        syncState.Dispose ();
+        syncState.Dispose();
     }
 
     public int Count

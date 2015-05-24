@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.IO;
 using CalDavSynchronizer.Contracts;
@@ -32,10 +33,10 @@ namespace CalDavSynchronizer.DataAccess
 
     public Options[] LoadOptions ()
     {
-      if (!File.Exists(_optionsFilePath))
+      if (!File.Exists (_optionsFilePath))
         return new Options[] { };
       else
-        return Serializer<Options[]>.Deserialize (File.ReadAllText(_optionsFilePath));
+        return Serializer<Options[]>.Deserialize (File.ReadAllText (_optionsFilePath));
     }
 
     public void SaveOptions (Options[] options)

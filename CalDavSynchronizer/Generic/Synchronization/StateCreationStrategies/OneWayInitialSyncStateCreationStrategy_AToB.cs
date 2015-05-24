@@ -62,7 +62,7 @@ namespace CalDavSynchronizer.Generic.Synchronization.StateCreationStrategies
 
     public IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> CreateFor_Deleted_Deleted (IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> knownData)
     {
-      return _factory.Create_Discard ();
+      return _factory.Create_Discard();
     }
 
     public IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> CreateFor_Deleted_Unchanged (IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> knownData)
@@ -93,8 +93,8 @@ namespace CalDavSynchronizer.Generic.Synchronization.StateCreationStrategies
           return _factory.Create_DeleteInBWithNoRetry (bId, b);
         case OneWaySyncMode.Merge:
           return _factory.Create_Discard();
-        default :
-          throw new InvalidOperationException(string.Format("SyncMode '{0}' is not supported",_syncMode));
+        default:
+          throw new InvalidOperationException (string.Format ("SyncMode '{0}' is not supported", _syncMode));
       }
     }
   }

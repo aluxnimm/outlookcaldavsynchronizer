@@ -39,7 +39,7 @@ namespace CalDavSynchronizer.Implementation
         throw new ArgumentNullException ("mapiNameSpace");
 
       if (calendarFolder.DefaultItemType != OlItemType.olAppointmentItem)
-        throw new ArgumentException(string.Format("Wrong ItemType in folder <{0}>. It should be a calendar folder.", calendarFolder.Name));
+        throw new ArgumentException (string.Format ("Wrong ItemType in folder <{0}>. It should be a calendar folder.", calendarFolder.Name));
 
       _calendarFolder = calendarFolder;
       _mapiNameSpace = mapiNameSpace;
@@ -96,7 +96,6 @@ namespace CalDavSynchronizer.Implementation
     {
       foreach (var appointmentItemWrapper in entities.Values)
         appointmentItemWrapper.Dispose();
-
     }
 
     public EntityIdWithVersion<string, DateTime> Update (string entityId, AppointmentItemWrapper entityToUpdate, Func<AppointmentItemWrapper, AppointmentItemWrapper> entityModifier)

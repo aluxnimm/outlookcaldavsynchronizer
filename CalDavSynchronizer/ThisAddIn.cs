@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.IO;
 using System.Linq;
@@ -57,7 +58,7 @@ namespace CalDavSynchronizer
         OptionsDataAccess = new OptionsDataAccess (
             Path.Combine (
                 applicationDataDirectory,
-                GetOrCreateConfigFileName(applicationDataDirectory, Session.CurrentProfileName)
+                GetOrCreateConfigFileName (applicationDataDirectory, Session.CurrentProfileName)
                 ));
         Scheduler = new Scheduler (Application.Session, applicationDataDirectory);
         Scheduler.SetOptions (OptionsDataAccess.LoadOptions());

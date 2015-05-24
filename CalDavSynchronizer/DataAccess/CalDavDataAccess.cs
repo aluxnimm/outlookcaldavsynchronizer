@@ -94,11 +94,11 @@ namespace CalDavSynchronizer.DataAccess
 
     public bool IsWriteableCalender ()
     {
-      var properties = GetCurrentUserPrivileges(_calendarUrl, 0);
+      var properties = GetCurrentUserPrivileges (_calendarUrl, 0);
 
-      XmlNode privilegeWriteContent = properties.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-privilege-set/D:privilege/D:write-content", properties.XmlNamespaceManager);
-      XmlNode privilegeBind = properties.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-privilege-set/D:privilege/D:bind", properties.XmlNamespaceManager);
-      XmlNode privilegeUnbind = properties.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-privilege-set/D:privilege/D:unbind", properties.XmlNamespaceManager);
+      XmlNode privilegeWriteContent = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-privilege-set/D:privilege/D:write-content", properties.XmlNamespaceManager);
+      XmlNode privilegeBind = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-privilege-set/D:privilege/D:bind", properties.XmlNamespaceManager);
+      XmlNode privilegeUnbind = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-privilege-set/D:privilege/D:unbind", properties.XmlNamespaceManager);
 
       return ((privilegeWriteContent != null) && (privilegeBind != null) && (privilegeUnbind != null));
     }
@@ -203,7 +203,7 @@ namespace CalDavSynchronizer.DataAccess
                  "
           );
     }
- 
+
     public EntityIdWithVersion<Uri, string> UpdateEvent (EntityIdWithVersion<Uri, string> evt, string iCalData)
     {
       return UpdateEvent (evt.Id, evt.Version, iCalData);
@@ -227,8 +227,8 @@ namespace CalDavSynchronizer.DataAccess
             {
               request.Method = "PUT";
               request.ContentType = "text/xml; charset=UTF-8";
-              if (!string.IsNullOrEmpty(etag))
-                request.Headers.Add("If-Match", etag);
+              if (!string.IsNullOrEmpty (etag))
+                request.Headers.Add ("If-Match", etag);
               request.ServicePoint.Expect100Continue = false;
             },
             iCalData);
@@ -236,7 +236,7 @@ namespace CalDavSynchronizer.DataAccess
       catch (WebException x)
       {
         if (((HttpWebResponse) x.Response).StatusCode == HttpStatusCode.Forbidden)
-          throw new Exception (string.Format("Error updating event with url '{0}' and etag '{1}' (Access denied)", absoluteEventUrl, etag));
+          throw new Exception (string.Format ("Error updating event with url '{0}' and etag '{1}' (Access denied)", absoluteEventUrl, etag));
         else
           throw;
       }
@@ -256,7 +256,7 @@ namespace CalDavSynchronizer.DataAccess
             request =>
             {
               request.Method = "PUT";
-              request.Headers.Add("If-None-Match", "*");
+              request.Headers.Add ("If-None-Match", "*");
               request.ContentType = "text/calendar; charset=UTF-8";
               request.ServicePoint.Expect100Continue = false;
             },
@@ -265,7 +265,7 @@ namespace CalDavSynchronizer.DataAccess
       catch (WebException x)
       {
         if (((HttpWebResponse) x.Response).StatusCode == HttpStatusCode.Forbidden)
-          throw new Exception (string.Format("Error creating event with url '{0}' (Access denied)", eventUrl));
+          throw new Exception (string.Format ("Error creating event with url '{0}' (Access denied)", eventUrl));
         else
           throw;
       }
@@ -305,7 +305,7 @@ namespace CalDavSynchronizer.DataAccess
         if (((HttpWebResponse) x.Response).StatusCode == HttpStatusCode.NotFound)
           return false;
         else if (((HttpWebResponse) x.Response).StatusCode == HttpStatusCode.Forbidden)
-          throw new Exception(string.Format("Error deleting event with url '{0}' and etag '{1}' (Access denied)", uri, etag));
+          throw new Exception (string.Format ("Error deleting event with url '{0}' and etag '{1}' (Access denied)", uri, etag));
         else
           throw;
       }

@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -29,7 +30,7 @@ namespace CalDavSynchronizer.Generic.EntityRelationManagement
   {
     private const string s_relationStorageName = "relations.xml";
 
-    readonly XmlSerializer _serializer = new XmlSerializer (typeof (List<TEntityRelationData>));
+    private readonly XmlSerializer _serializer = new XmlSerializer (typeof (List<TEntityRelationData>));
     private readonly string _dataDirectory;
 
     public EntityRelationDataAccess (string dataDirectory)
@@ -43,7 +44,6 @@ namespace CalDavSynchronizer.Generic.EntityRelationManagement
         return;
 
       File.Delete (GetFullEntityPath (s_relationStorageName));
-
     }
 
     public IEnumerable<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> LoadEntityRelationData ()
@@ -80,7 +80,7 @@ namespace CalDavSynchronizer.Generic.EntityRelationManagement
     {
       return File.Exists (GetFullEntityPath (entityId));
     }
-    
+
     private Stream CreateOutputStream (string entityId)
     {
       return new FileStream (GetFullEntityPath (entityId), FileMode.Create, FileAccess.Write);
@@ -95,7 +95,5 @@ namespace CalDavSynchronizer.Generic.EntityRelationManagement
     {
       return new FileStream (GetFullEntityPath (entityId), FileMode.Open, FileAccess.Read);
     }
-
- 
   }
 }

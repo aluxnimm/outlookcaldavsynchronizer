@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Drawing;
 using System.Linq;
@@ -70,10 +71,7 @@ namespace CalDavSynchronizer.Ui
       _tabControl.TabPages.Add (tabPage);
 
       optionsControl.DeletionRequested += delegate { _tabControl.TabPages.Remove (tabPage); };
-      optionsControl.ProfileNameChanged += delegate (object sender, string e)
-      {
-        tabPage.Text = e;
-      };
+      optionsControl.ProfileNameChanged += delegate (object sender, string e) { tabPage.Text = e; };
 
       optionsControl.InactiveChanged += delegate (object sender, bool inactive)
       {

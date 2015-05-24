@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -83,12 +84,12 @@ namespace CalDavSynchronizer.Ui
       _inactiveCheckBox.CheckedChanged += _inactiveCheckBox_CheckedChanged;
     }
 
-    void _inactiveCheckBox_CheckedChanged (object sender, EventArgs e)
+    private void _inactiveCheckBox_CheckedChanged (object sender, EventArgs e)
     {
       UpdateInactiveDisplay();
     }
 
-    void _synchronizationModeComboBox_SelectedValueChanged (object sender, EventArgs e)
+    private void _synchronizationModeComboBox_SelectedValueChanged (object sender, EventArgs e)
     {
       UpdateConflictResolutionComboBoxEnabled();
     }
@@ -139,13 +140,13 @@ namespace CalDavSynchronizer.Ui
       {
         AdjustCalendarUrl();
 
-       var dataAccess = new CalDavDataAccess (
-          new Uri (_calenderUrlTextBox.Text), 
-        _userNameTextBox.Text, 
-        _passwordTextBox.Text,
-        TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-        TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"])
-       );
+        var dataAccess = new CalDavDataAccess (
+            new Uri (_calenderUrlTextBox.Text),
+            _userNameTextBox.Text,
+            _passwordTextBox.Text,
+            TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+            TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"])
+            );
 
         if (!dataAccess.IsCalendarAccessSupported())
           MessageBox.Show ("The specified Url does not support calendar access!", connectionTestCaption);
@@ -154,7 +155,7 @@ namespace CalDavSynchronizer.Ui
           MessageBox.Show ("The specified Url is not a calendar!", connectionTestCaption);
 
         if (!dataAccess.IsWriteableCalender())
-          MessageBox.Show("The specified Url is a read-only calendar!", connectionTestCaption);
+          MessageBox.Show ("The specified Url is a read-only calendar!", connectionTestCaption);
 
         MessageBox.Show ("Connection test successful.", connectionTestCaption);
       }
@@ -228,8 +229,8 @@ namespace CalDavSynchronizer.Ui
     {
       if (folder.DefaultItemType != OlItemType.olAppointmentItem)
       {
-        string wrongFolderMessage = string.Format("Wrong ItemType in folder <{0}>. It should be a calendar folder.", folder.Name);
-        MessageBox.Show(wrongFolderMessage, "Configuration Error");
+        string wrongFolderMessage = string.Format ("Wrong ItemType in folder <{0}>. It should be a calendar folder.", folder.Name);
+        MessageBox.Show (wrongFolderMessage, "Configuration Error");
       }
       else
       {
@@ -243,7 +244,6 @@ namespace CalDavSynchronizer.Ui
     {
       if (!string.IsNullOrEmpty (folderEntryId) && !string.IsNullOrEmpty (folderStoreId))
       {
-
         MAPIFolder folder;
 
         try
@@ -258,8 +258,8 @@ namespace CalDavSynchronizer.Ui
         }
         if (folder != null)
         {
-            UpdateFolder (folder);
-            return;
+          UpdateFolder (folder);
+          return;
         }
       }
 

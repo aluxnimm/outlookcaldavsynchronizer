@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.IO;
 using System.Text;
@@ -20,7 +21,7 @@ using System.Xml.Serialization;
 
 namespace CalDavSynchronizer.Utilities
 {
-  internal static  class Serializer<T>
+  internal static class Serializer<T>
   {
     private static readonly XmlSerializer _xmlSerializer = new XmlSerializer (typeof (T));
 
@@ -29,16 +30,19 @@ namespace CalDavSynchronizer.Utilities
       var stringBuilder = new StringBuilder();
 
       using (var writer = new StringWriter (stringBuilder))
+      {
         _xmlSerializer.Serialize (writer, o);
+      }
 
       return stringBuilder.ToString();
     }
 
-    public static  T Deserialize (string serialized)
+    public static T Deserialize (string serialized)
     {
       using (var reader = new StringReader (serialized))
+      {
         return (T) _xmlSerializer.Deserialize (reader);
+      }
     }
-
   }
 }

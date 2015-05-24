@@ -28,4 +28,3 @@ namespace CalDavSynchronizer.Generic.ProgressReport
     }
   }
 }
-

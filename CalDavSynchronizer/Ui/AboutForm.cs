@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,25 +32,24 @@ namespace CalDavSynchronizer.Ui
   {
     public AboutForm ()
     {
-      InitializeComponent ();
+      InitializeComponent();
       _versionLabel.Text = string.Format (_versionLabel.Text, Assembly.GetExecutingAssembly().GetName().Version);
 
       _linkLabelTeamMembers.LinkClicked += _linkLabelTeamMembers_LinkClicked;
       _linkLabelTeamMembers.Text = string.Empty;
       AddTeamMember ("Alexander Nimmervoll", "http://sourceforge.net/u/nimm/profile/");
       AddTeamMember ("Gerhard Zehetbauer", "http://sourceforge.net/u/nertsch/profile/");
-
     }
 
-    void _linkLabelTeamMembers_LinkClicked (object sender, LinkLabelLinkClickedEventArgs e)
+    private void _linkLabelTeamMembers_LinkClicked (object sender, LinkLabelLinkClickedEventArgs e)
     {
-      Process.Start ((string)e.Link.LinkData);
+      Process.Start ((string) e.Link.LinkData);
     }
 
 
     private void AddTeamMember (string name, string memberHome)
     {
-      if(_linkLabelTeamMembers.Text != string.Empty)
+      if (_linkLabelTeamMembers.Text != string.Empty)
         _linkLabelTeamMembers.Text += ", ";
       var start = _linkLabelTeamMembers.Text.Length;
       _linkLabelTeamMembers.Text += name;

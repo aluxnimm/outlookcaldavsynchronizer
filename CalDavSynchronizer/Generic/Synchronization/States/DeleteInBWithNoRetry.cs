@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -25,19 +26,18 @@ namespace CalDavSynchronizer.Generic.Synchronization.States
       : StateBase<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
   {
     // ReSharper disable once StaticFieldInGenericType
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod ().DeclaringType);
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
     private readonly TBtypeEntityId _bId;
 
 
     public DeleteInBWithNoRetry (EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> environment, TBtypeEntityId bId)
-        : base(environment)
+        : base (environment)
     {
       _bId = bId;
     }
 
     public override void AddRequiredEntitiesToLoad (Func<TAtypeEntityId, bool> a, Func<TBtypeEntityId, bool> b)
     {
-
     }
 
     public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> FetchRequiredEntities (IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> aEntities, IReadOnlyDictionary<TBtypeEntityId, TBtypeEntity> bEntites)
@@ -55,18 +55,18 @@ namespace CalDavSynchronizer.Generic.Synchronization.States
       try
       {
         _environment.BRepository.Delete (_bId);
-        return Discard ();
+        return Discard();
       }
       catch (Exception x)
       {
         LogException (x);
-        return Discard ();
+        return Discard();
       }
     }
 
     public override void AddNewRelationNoThrow (Action<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> addAction)
     {
-      s_logger.Error ("This state should have been left via PerformSyncActionNoThrow!"); 
+      s_logger.Error ("This state should have been left via PerformSyncActionNoThrow!");
     }
   }
 }

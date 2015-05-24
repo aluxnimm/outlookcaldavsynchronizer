@@ -27,6 +27,7 @@ namespace CalDavSynchronizer.Contracts
   {
     [XmlAttribute]
     public string ProfileName { get; set; }
+
     [XmlAttribute]
     public string ConfigFileName { get; set; }
   }

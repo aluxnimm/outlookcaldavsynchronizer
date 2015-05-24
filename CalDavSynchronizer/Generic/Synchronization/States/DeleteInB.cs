@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -25,16 +26,15 @@ namespace CalDavSynchronizer.Generic.Synchronization.States
       : StateWithKnownData<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
   {
     // ReSharper disable once StaticFieldInGenericType
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod ().DeclaringType);
-    
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
+
     public DeleteInB (EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> environment, IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> knownData)
-        : base(environment, knownData)
+        : base (environment, knownData)
     {
     }
 
     public override void AddRequiredEntitiesToLoad (Func<TAtypeEntityId, bool> a, Func<TBtypeEntityId, bool> b)
     {
-
     }
 
     public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> FetchRequiredEntities (IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> aEntities, IReadOnlyDictionary<TBtypeEntityId, TBtypeEntity> bEntites)
@@ -51,19 +51,19 @@ namespace CalDavSynchronizer.Generic.Synchronization.States
     {
       try
       {
-         _environment.BRepository.Delete (_knownData.BtypeId);
-        return Discard ();
+        _environment.BRepository.Delete (_knownData.BtypeId);
+        return Discard();
       }
       catch (Exception x)
       {
         LogException (x);
-        return CreateDoNothing ();
+        return CreateDoNothing();
       }
     }
 
     public override void AddNewRelationNoThrow (Action<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> addAction)
     {
-      s_logger.Error ("This state should have been left via PerformSyncActionNoThrow!"); 
+      s_logger.Error ("This state should have been left via PerformSyncActionNoThrow!");
     }
   }
 }

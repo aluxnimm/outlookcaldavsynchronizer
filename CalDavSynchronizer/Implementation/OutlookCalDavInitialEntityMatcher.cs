@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using CalDavSynchronizer.Generic.InitialEntityMatching;
 using CalDavSynchronizer.Implementation.ComWrappers;
@@ -23,7 +24,6 @@ namespace CalDavSynchronizer.Implementation
 {
   internal class OutlookCalDavInitialEntityMatcher : InitialEntityMatcherByPropertyGrouping<AppointmentItemWrapper, string, DateTime, string, IICalendar, Uri, string, string>
   {
-
     protected override bool AreEqual (AppointmentItemWrapper atypeEntity, IICalendar btypeEntity)
     {
       var evt = btypeEntity.Events[0];
@@ -49,6 +49,5 @@ namespace CalDavSynchronizer.Implementation
     {
       return value;
     }
-
   }
 }
