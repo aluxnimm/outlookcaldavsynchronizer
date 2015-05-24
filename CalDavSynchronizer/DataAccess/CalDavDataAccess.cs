@@ -92,7 +92,7 @@ namespace CalDavSynchronizer.DataAccess
       return calenderNode != null;
     }
 
-    public bool isWriteableCalender ()
+    public bool IsWriteableCalender ()
     {
       var properties = GetCurrentUserPrivileges(_calendarUrl, 0);
 

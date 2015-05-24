@@ -153,7 +153,7 @@ namespace CalDavSynchronizer.Ui
         if (!dataAccess.IsResourceCalender())
           MessageBox.Show ("The specified Url is not a calendar!", connectionTestCaption);
 
-        if (!dataAccess.isWriteableCalender())
+        if (!dataAccess.IsWriteableCalender())
           MessageBox.Show("The specified Url is a read-only calendar!", connectionTestCaption);
 
         MessageBox.Show ("Connection test successful.", connectionTestCaption);
