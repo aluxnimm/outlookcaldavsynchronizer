@@ -79,11 +79,11 @@ namespace CalDavSynchronizer.Contracts
 
       options.OutlookFolderEntryId = outlookFolderEntryId;
       options.OutlookFolderStoreId = outlookFolderStoreId;
-      options.ConflictResolution = ConflictResolution.OutlookWins;
-      options.DaysToSynchronizeInTheFuture = 100;
-      options.DaysToSynchronizeInThePast = 100;
+      options.ConflictResolution = ConflictResolution.Automatic;
+      options.DaysToSynchronizeInTheFuture = 60;
+      options.DaysToSynchronizeInThePast = 180;
       options.SynchronizationIntervalInMinutes = 30;
-      options.SynchronizationMode = SynchronizationMode.ReplicateOutlookIntoServer;
+      options.SynchronizationMode = SynchronizationMode.MergeInBothDirections;
       options.Name = "<Enter name here>";
       options.Id = Guid.NewGuid();
       options.Inactive = false;
