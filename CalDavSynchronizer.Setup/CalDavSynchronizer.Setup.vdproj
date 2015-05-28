@@ -685,10 +685,10 @@
         }
         "LaunchCondition"
         {
-            "{836E08B8-0285-4809-BA42-01DB6754A45D}:_66A8EF80CF914879957BDFDDA4F78726"
+            "{836E08B8-0285-4809-BA42-01DB6754A45D}:_269C3B7D426441B2B28AF17C65E7C30D"
             {
             "Name" = "8:Verify VSTO 2010 Runtime availability"
-            "Condition" = "8:VSTORUNTIMEREDIST>=\"10.0.30319\""
+            "Condition" = "8:VSTORUNTIMEREDIST>=\"10.0.30319\" OR OFFICERUNTIME>=”10.0.21022”"
             "Message" = "8:The Visual Studio 2010 Tools for Office Runtime is not installed. Please run Setup.exe."
             "InstallUrl" = "8:"
             }
@@ -699,9 +699,17 @@
             {
             "Name" = "8:Search for VSTO 2010 Runtime"
             "Root" = "2:1"
-            "RegKey" = "8:SOFTWARE\\Microsoft\\VSTO Runtime Setup\\v4R"
+            "RegKey" = "8:SOFTWARE\\Wow6432Node\\Microsoft\\VSTO Runtime Setup\\v4R"
             "Value" = "8:Version"
             "Property" = "8:VSTORUNTIMEREDIST"
+            }
+            "{CF66B7F7-B7DA-4B08-A67A-233430638C9C}:_E5F4061452B244CE8176901539E87F67"
+            {
+            "Name" = "8:Search for VSTO 2010 Runtime"
+            "Root" = "2:1"
+            "RegKey" = "8:SOFTWARE\\Wow6432Node\\Microsoft\\VSTO Runtime Setup\\v4"
+            "Value" = "8:Version"
+            "Property" = "8:OFFICERUNTIME"
             }
         }
         "MsiBootstrapper"
@@ -714,7 +722,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CalDavSynchronizer"
         "ProductCode" = "8:{A84E32EE-D605-4737-9DDF-73EF5301C64B}"
-        "PackageCode" = "8:{B5CDBE44-5701-40C4-9DE3-681624F310C7}"
+        "PackageCode" = "8:{34A747D0-A7F5-4FF3-A098-1B8AA9FDD456}"
         "UpgradeCode" = "8:{691063F4-DD9A-4264-948D-3FBD2565572C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
