@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
@@ -82,6 +83,11 @@ namespace CalDavSynchronizer.Ui
       _profileNameTextBox.TextChanged += _profileNameTextBox_TextChanged;
       _synchronizationModeComboBox.SelectedValueChanged += _synchronizationModeComboBox_SelectedValueChanged;
       _inactiveCheckBox.CheckedChanged += _inactiveCheckBox_CheckedChanged;
+    }
+
+    public string ProfileName
+    {
+      get { return _profileNameTextBox.Text; }
     }
 
     private void _inactiveCheckBox_CheckedChanged (object sender, EventArgs e)
@@ -169,6 +175,25 @@ namespace CalDavSynchronizer.Ui
     {
       if (!_calenderUrlTextBox.Text.EndsWith ("/"))
         _calenderUrlTextBox.Text += "/";
+    }
+
+    public bool Validate (StringBuilder errorMessageBuilder)
+    {
+      bool result = true;
+
+      if (string.IsNullOrWhiteSpace (_calenderUrlTextBox.Text))
+      {
+        errorMessageBuilder.AppendLine ("- The CalDav Calendar Url is empty.");
+        result = false;
+      }
+
+      if (string.IsNullOrWhiteSpace (_folderStoreId) || string.IsNullOrWhiteSpace (_folderEntryId))
+      {
+        errorMessageBuilder.AppendLine ("- There is no Outlook Folder selected.");
+        result = false;
+      }
+
+      return result;
     }
 
     public Options Options

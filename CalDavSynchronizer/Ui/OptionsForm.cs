@@ -15,8 +15,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Drawing;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
 using Microsoft.Office.Interop.Outlook;
@@ -96,11 +96,53 @@ namespace CalDavSynchronizer.Ui
       return tabPage;
     }
 
-
     private void OkButton_Click (object sender, EventArgs e)
     {
-      DialogResult = DialogResult.OK;
+      TabPage firstTabPageWithError;
+      string errorMessage;
+
+      if (Validate (out errorMessage, out firstTabPageWithError))
+      {
+        DialogResult = DialogResult.OK;
+      }
+      else
+      {
+        MessageBox.Show (errorMessage, "Some Options contain invalid Values", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        if (firstTabPageWithError != null)
+          _tabControl.SelectedTab = firstTabPageWithError;
+      }
     }
+
+    private bool Validate (out string errorMessage, out TabPage firstTabPageWithError)
+    {
+      StringBuilder errorMessageBuilder = new StringBuilder();
+      bool isValid = true;
+      firstTabPageWithError = null;
+
+      foreach (TabPage tabPage in  _tabControl.TabPages)
+      {
+        var optionsDisplayControl = (OptionsDisplayControl) tabPage.Controls[0];
+        StringBuilder currentControlErrorMessageBuilder = new StringBuilder();
+
+        if (!optionsDisplayControl.Validate (currentControlErrorMessageBuilder))
+        {
+          if (errorMessageBuilder.Length > 0)
+            errorMessageBuilder.AppendLine();
+
+          errorMessageBuilder.AppendFormat ("Profile '{0}'", optionsDisplayControl.ProfileName);
+          errorMessageBuilder.AppendLine();
+          errorMessageBuilder.Append (currentControlErrorMessageBuilder);
+
+          isValid = false;
+          if (firstTabPageWithError == null)
+            firstTabPageWithError = tabPage;
+        }
+      }
+
+      errorMessage = errorMessageBuilder.ToString();
+      return isValid;
+    }
+
 
     private void _addProfileButton_Click (object sender, EventArgs e)
     {
