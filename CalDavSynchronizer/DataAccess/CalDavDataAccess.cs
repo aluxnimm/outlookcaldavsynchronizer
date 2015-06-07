@@ -63,7 +63,7 @@ namespace CalDavSynchronizer.DataAccess
         request.PreAuthenticate = true;
         request.Credentials = new NetworkCredential (_username, _password);
       }
-
+      request.AllowAutoRedirect = false;
       return request;
     }
 
@@ -384,7 +384,19 @@ namespace CalDavSynchronizer.DataAccess
         }
       }
 
-      return request.GetResponse();
+      WebResponse response = request.GetResponse();
+      if (((HttpWebResponse)response).StatusCode == HttpStatusCode.Moved || ((HttpWebResponse)response).StatusCode == HttpStatusCode.Redirect)
+      {
+        if (!string.IsNullOrEmpty(response.Headers["Location"]))
+        {
+          return ExecuteCalDavRequest(new Uri(response.Headers["Location"]), modifier, requestBody);
+        }
+        else
+        {
+          s_logger.Warn("Ignoring Redirection without Location header.");
+        }
+      }
+      return response;
     }
 
     private static XmlDocumentWithNamespaceManager CreateCalDavXmlDocument (Stream calDavXmlStream)
