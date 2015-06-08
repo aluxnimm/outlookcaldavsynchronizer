@@ -318,13 +318,28 @@ namespace CalDavSynchronizer.Implementation
 
     private string GetMailUrl (AddressEntry addressEntry)
     {
-      string emailAddress;
+      string emailAddress = string.Empty;
 
-      if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olSmtpAddressEntry)
+      if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeUserAddressEntry
+       || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeRemoteUserAddressEntry)
+      {
+        using (var exchUser = GenericComObjectWrapper.Create (addressEntry.GetExchangeUser()))
+        {
+          if (exchUser != null)
+          {
+            emailAddress = exchUser.Inner.PrimarySmtpAddress;
+          }
+        }
+      }
+      else if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olSmtpAddressEntry)
+      {
         emailAddress = addressEntry.Address;
+      }
       else
+      {
         emailAddress = addressEntry.GetPropertySafe (PR_SMTP_ADDRESS);
-
+      }
+     
       return string.Format ("MAILTO:{0}", emailAddress);
     }
 
