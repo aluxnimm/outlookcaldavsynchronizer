@@ -22,5 +22,6 @@ namespace CalDavSynchronizer.Utilities
   internal interface IExceptionHandler
   {
     void HandleException (Exception x, ILog logger);
+    void LogException (Exception exception, ILog logger);
   }
 }

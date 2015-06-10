@@ -21,6 +21,7 @@ using CalDavSynchronizer.Generic.EntityRelationManagement;
 using CalDavSynchronizer.Generic.ProgressReport;
 using CalDavSynchronizer.Generic.Synchronization.StateCreationStrategies;
 using CalDavSynchronizer.Generic.Synchronization.States;
+using CalDavSynchronizer.Utilities;
 using log4net;
 
 namespace CalDavSynchronizer.Generic.Synchronization
@@ -165,7 +166,7 @@ namespace CalDavSynchronizer.Generic.Synchronization
       }
       catch (Exception x)
       {
-        s_logger.Error ("Error during synchronization:", x);
+        ExceptionHandler.Instance.LogException (x, s_logger);
         return false;
       }
       finally

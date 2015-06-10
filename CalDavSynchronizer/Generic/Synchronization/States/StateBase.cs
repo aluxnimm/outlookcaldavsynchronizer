@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using CalDavSynchronizer.Generic.EntityRelationManagement;
+using CalDavSynchronizer.Utilities;
 using log4net;
 
 namespace CalDavSynchronizer.Generic.Synchronization.States
@@ -61,7 +62,7 @@ namespace CalDavSynchronizer.Generic.Synchronization.States
 
     protected void LogException (Exception x)
     {
-      s_logger.Error ("Exception occured:", x);
+      ExceptionHandler.Instance.LogException (x, s_logger);
     }
 
     public virtual void Dispose ()

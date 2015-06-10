@@ -21,6 +21,7 @@ using System.Reflection;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Scheduling;
+using CalDavSynchronizer.Utilities;
 using log4net;
 using log4net.Config;
 using Microsoft.Office.Interop.Outlook;
@@ -65,7 +66,7 @@ namespace CalDavSynchronizer
       }
       catch (Exception x)
       {
-        s_logger.Error (string.Empty, x);
+        ExceptionHandler.Instance.LogException (x, s_logger);
         throw;
       }
 

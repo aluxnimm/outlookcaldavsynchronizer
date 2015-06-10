@@ -45,6 +45,12 @@ namespace CalDavSynchronizer.Utilities
       MessageBox.Show (exception.ToString());
     }
 
+    public void LogException (Exception exception, ILog logger)
+    {
+      var additionMessage = GetAdditionMessageNoThrow (exception);
+      logger.Logger.Log (typeof (ExceptionHandler), Level.Error, additionMessage, exception);
+    }
+
     private string GetAdditionMessageNoThrow (Exception exception)
     {
       try
@@ -53,7 +59,7 @@ namespace CalDavSynchronizer.Utilities
       }
       catch (Exception x)
       {
-        s_logger.Error ("Excption while creating additional exception message", x);
+        s_logger.Error ("Exception while creating additional exception message", x);
         return string.Empty;
       }
     }
@@ -63,13 +69,76 @@ namespace CalDavSynchronizer.Utilities
       var webException = x as WebException;
       if (webException != null)
       {
-        using (var reader = new StreamReader (webException.Response.GetResponseStream()))
-        {
-          return reader.ReadToEnd();
-        }
+        return GetAdditionalExceptionMessage (webException);
       }
 
       return string.Empty;
     }
+
+    private string GetAdditionalExceptionMessage (WebException x)
+    {
+      StringBuilder stringBuilder = new StringBuilder();
+      
+      stringBuilder.AppendFormat ("StatusCode: {0}", GetStatusCodeNoThrow (x));
+      stringBuilder.AppendLine();
+
+      stringBuilder.AppendFormat ("StatusDescription: {0}", GetStatusDescriptionNoThrow (x));
+      stringBuilder.AppendLine ();
+
+      stringBuilder.AppendFormat ("Body: {0}", GetResponseBodyNoThrow (x));
+      stringBuilder.AppendLine ();
+
+      return stringBuilder.ToString();
+    }
+
+
+    private string GetResponseBodyNoThrow (WebException exception)
+    {
+      try
+      {
+        using (var reader = new StreamReader (exception.Response.GetResponseStream()))
+        {
+          return reader.ReadToEnd();
+        }
+      }
+      catch (Exception x)
+      {
+        s_logger.Error ("Exception while reading the response.", x);
+        return string.Empty;
+      }
+    }
+
+    private HttpStatusCode? GetStatusCodeNoThrow (WebException exception)
+    {
+      try
+      {
+        var response = exception.Response as HttpWebResponse;
+        if (response == null)
+          return null;
+        return response.StatusCode;
+      }
+      catch (Exception x)
+      {
+        s_logger.Error ("Exception while reading the StatusCode.", x);
+        return null;
+      }
+    }
+
+    private string GetStatusDescriptionNoThrow (WebException exception)
+    {
+      try
+      {
+        var response = exception.Response as HttpWebResponse;
+        if (response == null)
+          return null;
+        return response.StatusDescription;
+      }
+      catch (Exception x)
+      {
+        s_logger.Error ("Exception while reading the StatusDescription.", x);
+        return string.Empty;
+      }
+    }
+
   }
 }

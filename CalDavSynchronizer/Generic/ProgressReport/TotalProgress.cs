@@ -16,6 +16,7 @@
 
 using System;
 using System.Reflection;
+using CalDavSynchronizer.Utilities;
 using log4net;
 
 namespace CalDavSynchronizer.Generic.ProgressReport
@@ -66,7 +67,7 @@ namespace CalDavSynchronizer.Generic.ProgressReport
       }
       catch (Exception x)
       {
-        s_logger.Error (null, x);
+        ExceptionHandler.Instance.LogException (x, s_logger);
       }
     }
 
@@ -95,7 +96,7 @@ namespace CalDavSynchronizer.Generic.ProgressReport
       }
       catch (Exception x)
       {
-        s_logger.Error (null, x);
+        ExceptionHandler.Instance.LogException (x, s_logger);
         return NullProgressStep.Instance;
       }
     }

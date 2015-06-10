@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Utilities;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
 using Exception = System.Exception;
@@ -71,7 +72,7 @@ namespace CalDavSynchronizer.Scheduling
         }
         catch (Exception x)
         {
-          s_logger.Error (null, x);
+          ExceptionHandler.Instance.LogException (x, s_logger); 
         }
       }
       _workersById = workersById;
