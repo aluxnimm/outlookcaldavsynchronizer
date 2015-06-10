@@ -15,11 +15,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Generic.ProgressReport;
 using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Utilities;
 using log4net;
@@ -61,7 +63,15 @@ namespace CalDavSynchronizer
                 applicationDataDirectory,
                 GetOrCreateConfigFileName (applicationDataDirectory, Session.CurrentProfileName)
                 ));
-        Scheduler = new Scheduler (Application.Session, applicationDataDirectory);
+
+        var synchronizerFactory = new SynchronizerFactory (
+            applicationDataDirectory,
+            new TotalProgressFactory (
+                new Ui.ProgressFormFactory(),
+                int.Parse (ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"])),
+            Application.Session);
+
+        Scheduler = new Scheduler (synchronizerFactory);
         Scheduler.SetOptions (OptionsDataAccess.LoadOptions());
       }
       catch (Exception x)

@@ -215,6 +215,7 @@
     <Compile Include="Generic\EntityVersionManagement\EntityIdWithVersion.cs" />
     <Compile Include="Implementation\Events\CalDavEventRepository.cs" />
     <Compile Include="Implementation\Events\InitialEventSyncStateCreationStrategyFactory.cs" />
+    <Compile Include="Scheduling\ISynchronizerFactory.cs" />
     <Compile Include="Scheduling\Scheduler.cs" />
     <Compile Include="Scheduling\SynchronizationWorker.cs" />
     <Compile Include="Generic\EntityRelationManagement\IEntityRelationData.cs" />
@@ -260,6 +261,7 @@
     <Compile Include="Generic\Synchronization\StateCreationStrategies\OneWayInitialSyncStateCreationStrategy_AToB.cs" />
     <Compile Include="Generic\Synchronization\Synchronizer.cs" />
     <Compile Include="Generic\Synchronization\StateCreationStrategies\TwoWayInitialSyncStateCreationStrategy.cs" />
+    <Compile Include="Scheduling\SynchronizerFactory.cs" />
     <Compile Include="Ui\AboutForm.cs">
       <SubType>Form</SubType>
     </Compile>
