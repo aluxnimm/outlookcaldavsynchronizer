@@ -15,18 +15,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using CalDavSynchronizer.Generic.EntityRelationManagement;
 using CalDavSynchronizer.Generic.Synchronization;
 using CalDavSynchronizer.Generic.Synchronization.StateCreationStrategies;
 using CalDavSynchronizer.Generic.Synchronization.StateFactories;
-using CalDavSynchronizer.Generic.Synchronization.States;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using DDay.iCal;
-using Microsoft.Office.Interop.Outlook;
 
-namespace CalDavSynchronizer.Implementation
+namespace CalDavSynchronizer.Implementation.Events
 {
-  public static class InitialSyncStateCreationStrategyFactory
+  public static class InitialEventSyncStateCreationStrategyFactory
   {
     private static IEntityConflictSyncStateFactory<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> Create (IEntitySyncStateFactory<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> syncStateFactory, EntitySyncStateEnvironment<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> environment, ConflictResolution conflictResolution)
     {
@@ -37,7 +34,7 @@ namespace CalDavSynchronizer.Implementation
         case ConflictResolution.ServerWins:
           return new EntityConflictSyncStateFactory_BWins<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (syncStateFactory);
         case ConflictResolution.Automatic:
-          return new OutlookCaldavEventEntityConflictSyncStateFactory_Automatic (environment);
+          return new EventEntityConflictSyncStateFactory_Automatic (environment);
       }
 
       throw new NotImplementedException();
@@ -67,25 +64,6 @@ namespace CalDavSynchronizer.Implementation
               );
       }
       throw new NotImplementedException();
-    }
-  }
-
-  internal class OutlookCaldavEventEntityConflictSyncStateFactory_Automatic
-      : EntityConflictSyncStateFactory_Automatic<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar>
-  {
-    public OutlookCaldavEventEntityConflictSyncStateFactory_Automatic (EntitySyncStateEnvironment<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> environment)
-        : base (environment)
-    {
-    }
-
-    protected override IEntitySyncState<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> Create_FromNewerToOlder (IEntityRelationData<string, DateTime, Uri, string> knownData, DateTime newA, string newB)
-    {
-      return new OutlookCaldavEventUpdateFromNewerToOlder (
-          _environment,
-          knownData,
-          newA,
-          newB
-          );
     }
   }
 }

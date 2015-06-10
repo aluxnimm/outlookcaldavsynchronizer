@@ -20,9 +20,8 @@ using CalDavSynchronizer.Generic.Synchronization;
 using CalDavSynchronizer.Generic.Synchronization.States;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using DDay.iCal;
-using Microsoft.Office.Interop.Outlook;
 
-namespace CalDavSynchronizer.Implementation
+namespace CalDavSynchronizer.Implementation.Events
 {
   internal class OutlookCaldavEventUpdateFromNewerToOlder
       : UpdateFromNewerToOlder<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar>

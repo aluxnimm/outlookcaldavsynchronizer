@@ -30,7 +30,7 @@ using DDay.iCal.Serialization;
 using DDay.iCal.Serialization.iCalendar;
 using log4net;
 
-namespace CalDavSynchronizer.Implementation
+namespace CalDavSynchronizer.Implementation.Events
 {
   public class CalDavEventRepository : IEntityRepository<IICalendar, Uri, string>
   {

@@ -30,21 +30,21 @@ using DDay.iCal.Serialization.iCalendar;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
 
-namespace CalDavSynchronizer.Implementation
+namespace CalDavSynchronizer.Implementation.Events
 {
-  public class OutlookCalDavEventContext : ISynchronizerContext<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar>
+  public class EventSynchronizationContext : ISynchronizerContext<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
 
     private readonly IEntityRelationDataAccess<string, DateTime, Uri, string> _storageDataAccess;
-    private readonly AppointmentEventEntityMapper _entityMapper;
-    private readonly OutlookAppointmentRepository _atypeRepository;
+    private readonly EventEntityMapper _entityMapper;
+    private readonly OutlookEventRepository _atypeRepository;
     private readonly IEntityRepository<IICalendar, Uri, string> _btypeRepository;
     private readonly IEntityRelationDataFactory<string, DateTime, Uri, string> _entityRelationDataFactory;
 
 
-    public OutlookCalDavEventContext (NameSpace outlookSession, IEntityRelationDataAccess<string, DateTime, Uri, string> storageDataAccess, Options options, string outlookEmailAddress, TimeSpan connectTimeout, TimeSpan readWriteTimeout)
+    public EventSynchronizationContext (NameSpace outlookSession, IEntityRelationDataAccess<string, DateTime, Uri, string> storageDataAccess, Options options, string outlookEmailAddress, TimeSpan connectTimeout, TimeSpan readWriteTimeout)
     {
       if (outlookSession == null)
         throw new ArgumentNullException ("outlookSession");
@@ -55,10 +55,10 @@ namespace CalDavSynchronizer.Implementation
 
       _entityRelationDataFactory = new OutlookEventRelationDataFactory();
 
-      _entityMapper = new AppointmentEventEntityMapper (outlookEmailAddress, new Uri ("mailto:" + options.EmailAddress), outlookSession.Application.TimeZones.CurrentTimeZone.ID, outlookSession.Application.Version);
+      _entityMapper = new EventEntityMapper (outlookEmailAddress, new Uri ("mailto:" + options.EmailAddress), outlookSession.Application.TimeZones.CurrentTimeZone.ID, outlookSession.Application.Version);
 
       var calendarFolder = (Folder) outlookSession.GetFolderFromID (options.OutlookFolderEntryId, options.OutlookFolderStoreId);
-      _atypeRepository = new OutlookAppointmentRepository (calendarFolder, outlookSession);
+      _atypeRepository = new OutlookEventRepository (calendarFolder, outlookSession);
 
       _btypeRepository = new CalDavEventRepository (
           new CalDavDataAccess (
@@ -77,7 +77,7 @@ namespace CalDavSynchronizer.Implementation
 
       _storageDataAccess = storageDataAccess;
 
-      InitialEntityMatcher = new OutlookCalDavInitialEntityMatcher();
+      InitialEntityMatcher = new InitialEventEntityMatcher();
     }
 
 

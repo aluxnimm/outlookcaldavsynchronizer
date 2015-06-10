@@ -19,15 +19,14 @@ using System.Configuration;
 using System.IO;
 using System.Reflection;
 using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Diagnostics;
 using CalDavSynchronizer.Generic.EntityRelationManagement;
 using CalDavSynchronizer.Generic.ProgressReport;
 using CalDavSynchronizer.Generic.Synchronization;
 using CalDavSynchronizer.Generic.Synchronization.StateFactories;
-using CalDavSynchronizer.Generic.Synchronization.States;
-using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.Implementation.Events;
+using CalDavSynchronizer.Ui;
 using CalDavSynchronizer.Utilities;
 using DDay.iCal;
 using log4net;
@@ -56,7 +55,7 @@ namespace CalDavSynchronizer.Scheduling
       // Set to min, to ensure that it runs on the first run after startup
       _lastRun = DateTime.MinValue;
       _totalProgressFactory = new TotalProgressFactory (
-          new Ui.ProgressFormFactory(),
+          new ProgressFormFactory(),
           int.Parse (ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"]));
     }
 
@@ -71,7 +70,7 @@ namespace CalDavSynchronizer.Scheduling
 
       var storageDataAccess = new EntityRelationDataAccess<string, DateTime, OutlookEventRelationData, Uri, string> (storageDataDirectory);
 
-      var synchronizationContext = new OutlookCalDavEventContext (
+      var synchronizationContext = new EventSynchronizationContext (
           outlookSession,
           storageDataAccess,
           options,
@@ -90,7 +89,7 @@ namespace CalDavSynchronizer.Scheduling
 
       _synchronizer = new Synchronizer<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (
           synchronizationContext,
-          InitialSyncStateCreationStrategyFactory.Create (
+          InitialEventSyncStateCreationStrategyFactory.Create (
               syncStateFactory,
               syncStateFactory.Environment,
               options.SynchronizationMode,
