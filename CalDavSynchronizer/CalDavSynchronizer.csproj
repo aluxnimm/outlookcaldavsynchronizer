@@ -196,6 +196,7 @@
     <Compile Include="Generic\ProgressReport\ITotalProgressFactory.cs" />
     <Compile Include="Generic\ProgressReport\NullProgressStep.cs" />
     <Compile Include="Generic\ProgressReport\NullTotalProgress.cs" />
+    <Compile Include="Implementation\ComWrappers\TaskItemWrapper.cs" />
     <Compile Include="Implementation\ComWrappers\AppointmentItemWrapper.cs" />
     <Compile Include="Implementation\ComWrappers\ComEnumerableExtensions.cs" />
     <Compile Include="Implementation\ComWrappers\GenericComObjectWrapper.cs" />
@@ -215,6 +216,16 @@
     <Compile Include="Generic\EntityVersionManagement\EntityIdWithVersion.cs" />
     <Compile Include="Implementation\Events\CalDavEventRepository.cs" />
     <Compile Include="Implementation\Events\InitialEventSyncStateCreationStrategyFactory.cs" />
+    <Compile Include="Implementation\Tasks\CalDavTaskRepository.cs" />
+    <Compile Include="Implementation\Tasks\TaskSynchronizationContext.cs" />
+    <Compile Include="Implementation\Tasks\InitialEventSyncStateCreationStrategyFactory.cs" />
+    <Compile Include="Implementation\Tasks\TasktEntityConflictSyncStateFactory_Automatic.cs" />
+    <Compile Include="Implementation\Tasks\InitialTasktEntityMatcher.cs" />
+    <Compile Include="Implementation\Tasks\TaskRelationData.cs" />
+    <Compile Include="Implementation\Tasks\TaskRelationDataFactory.cs" />
+    <Compile Include="Implementation\Tasks\TaskMapper.cs" />
+    <Compile Include="Implementation\Tasks\TaskUpdateFromNewerToOlder.cs" />
+    <Compile Include="Implementation\Tasks\OutlookEventRepository.cs" />
     <Compile Include="Scheduling\ISynchronizerFactory.cs" />
     <Compile Include="Scheduling\Scheduler.cs" />
     <Compile Include="Scheduling\SynchronizationWorker.cs" />
