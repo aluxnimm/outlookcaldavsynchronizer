@@ -38,9 +38,6 @@ namespace CalDavSynchronizer.Implementation.Tasks
       if (mapiNameSpace == null)
         throw new ArgumentNullException ("mapiNameSpace");
 
-      if (taskFolder.DefaultItemType != OlItemType.olTaskItem)
-        throw new ArgumentException (string.Format ("Wrong ItemType in folder <{0}>. It should be a task folder.", taskFolder.Name));
-
       _taskFolder = taskFolder;
       _mapiNameSpace = mapiNameSpace;
     }

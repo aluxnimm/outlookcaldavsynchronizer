@@ -24,6 +24,7 @@ using CalDavSynchronizer.Generic.Synchronization;
 using CalDavSynchronizer.Generic.Synchronization.StateFactories;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Events;
+using CalDavSynchronizer.Implementation.Tasks;
 using DDay.iCal;
 using Microsoft.Office.Interop.Outlook;
 
@@ -46,7 +47,21 @@ namespace CalDavSynchronizer.Scheduling
 
     public ISynchronizer CreateSynchronizer (Options options)
     {
-      return CreateEventSynchronizer (options);
+      var outlookFolder = (Folder) _outlookSession.GetFolderFromID (options.OutlookFolderEntryId, options.OutlookFolderStoreId);
+
+      switch (outlookFolder.DefaultItemType)
+      {
+        case OlItemType.olAppointmentItem:
+          return CreateEventSynchronizer (options);
+        case OlItemType.olTaskItem:
+          return CreateTaskSynchronizer (options);
+        default:
+          throw new NotSupportedException (
+              string.Format (
+                  "The folder '{0}' contains an item type ('{1}'), whis is not supported for synchronization",
+                  outlookFolder.Name,
+                  outlookFolder.DefaultItemType));
+      }
     }
 
     private ISynchronizer CreateEventSynchronizer (Options options)
@@ -84,6 +99,38 @@ namespace CalDavSynchronizer.Scheduling
               options.ConflictResolution),
           _totalProgressFactory
           );
+    }
+
+    private ISynchronizer CreateTaskSynchronizer (Options options)
+    {
+      var storageDataDirectory = Path.Combine (
+          _applicationDataDirectory,
+          options.Id.ToString()
+          );
+
+      var storageDataAccess = new EntityRelationDataAccess<string, DateTime, OutlookEventRelationData, Uri, string> (storageDataDirectory);
+
+      var synchronizationContext = new TaskSynchronizationContext (
+          _outlookSession,
+          storageDataAccess,
+          options,
+          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]));
+
+      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, TaskItemWrapper, Uri, string, ITodo> (
+          synchronizationContext.EntityMapper,
+          synchronizationContext.AtypeRepository,
+          synchronizationContext.BtypeRepository,
+          synchronizationContext.EntityRelationDataFactory);
+
+      return new Synchronizer<string, DateTime, TaskItemWrapper, Uri, string, ITodo> (
+          synchronizationContext,
+          InitialTaskSyncStateCreationStrategyFactory.Create (
+              syncStateFactory,
+              syncStateFactory.Environment,
+              options.SynchronizationMode,
+              options.ConflictResolution),
+          _totalProgressFactory);
     }
   }
 }

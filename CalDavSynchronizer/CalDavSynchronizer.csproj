@@ -225,7 +225,7 @@
     <Compile Include="Implementation\Tasks\TaskRelationDataFactory.cs" />
     <Compile Include="Implementation\Tasks\TaskMapper.cs" />
     <Compile Include="Implementation\Tasks\TaskUpdateFromNewerToOlder.cs" />
-    <Compile Include="Implementation\Tasks\OutlookEventRepository.cs" />
+    <Compile Include="Implementation\Tasks\OutlookTaskRepository.cs" />
     <Compile Include="Scheduling\ISynchronizerFactory.cs" />
     <Compile Include="Scheduling\Scheduler.cs" />
     <Compile Include="Scheduling\SynchronizationWorker.cs" />
