@@ -269,7 +269,15 @@ namespace CalDavSynchronizer.DataAccess
         else
           throw;
       }
-      return new EntityIdWithVersion<Uri, string> (new Uri (eventUrl.AbsolutePath, UriKind.Relative), response.Headers["ETag"]);
+
+      Uri effectiveEventUrl;
+      var location = response.Headers["location"];
+      if (!string.IsNullOrEmpty (location))
+        effectiveEventUrl = new Uri (location);
+      else
+        effectiveEventUrl = eventUrl;
+
+      return new EntityIdWithVersion<Uri, string> (new Uri (effectiveEventUrl.AbsolutePath, UriKind.Relative), response.Headers["ETag"]);
     }
 
     public bool DeleteEvent (EntityIdWithVersion<Uri, string> evt)
