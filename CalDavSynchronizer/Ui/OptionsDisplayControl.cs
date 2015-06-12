@@ -35,6 +35,7 @@ namespace CalDavSynchronizer.Ui
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
+    private OlItemType? _folderType;
     private string _folderEntryId;
     private string _folderStoreId;
     private readonly NameSpace _session;
@@ -43,7 +44,7 @@ namespace CalDavSynchronizer.Ui
     public event EventHandler DeletionRequested;
     public event EventHandler CopyRequested;
     public event EventHandler<bool> InactiveChanged;
-    public event EventHandler<string> ProfileNameChanged;
+    public event EventHandler<string> DisplayNameChanged;
 
     private readonly IList<Item<int>> _availableSyncIntervals =
         (new Item<int>[] { new Item<int> (0, "Manual only") })
@@ -116,8 +117,28 @@ namespace CalDavSynchronizer.Ui
 
     private void _profileNameTextBox_TextChanged (object sender, EventArgs e)
     {
-      if (ProfileNameChanged != null)
-        ProfileNameChanged (this, _profileNameTextBox.Text);
+      OnDisplayNameChanged();
+    }
+
+
+    private void OnDisplayNameChanged ()
+    {
+      string folderSpecifier;
+      switch (_folderType)
+      {
+        case OlItemType.olAppointmentItem:
+          folderSpecifier = "(C)";
+          break;
+        case OlItemType.olTaskItem:
+          folderSpecifier = "(T)";
+          break;
+        default:
+          folderSpecifier = "(ERROR)";
+          break;
+      }
+
+      if (DisplayNameChanged != null)
+        DisplayNameChanged (this, _profileNameTextBox.Text + " " + folderSpecifier);
     }
 
 
@@ -250,19 +271,46 @@ namespace CalDavSynchronizer.Ui
         InactiveChanged (this, _inactiveCheckBox.Checked);
     }
 
+
+    private bool IsTaskSynchronizationEnabled
+    {
+      get
+      {
+        bool enabled;
+        if (bool.TryParse (ConfigurationManager.AppSettings["enableTaskSynchronization"], out enabled))
+          return enabled;
+        else
+          return false;
+      }
+    }
+
     private void UpdateFolder (MAPIFolder folder)
     {
-      if (folder.DefaultItemType != OlItemType.olAppointmentItem)
+      if (IsTaskSynchronizationEnabled)
       {
-        string wrongFolderMessage = string.Format ("Wrong ItemType in folder <{0}>. It should be a calendar folder.", folder.Name);
-        MessageBox.Show (wrongFolderMessage, "Configuration Error");
+        if (folder.DefaultItemType != OlItemType.olAppointmentItem && folder.DefaultItemType != OlItemType.olTaskItem)
+        {
+          string wrongFolderMessage = string.Format ("Wrong ItemType in folder <{0}>. It should be a calendar or task folder.", folder.Name);
+          MessageBox.Show (wrongFolderMessage, "Configuration Error");
+          return;
+        }
       }
       else
       {
-        _folderEntryId = folder.EntryID;
-        _folderStoreId = folder.StoreID;
-        _outoookFolderNameTextBox.Text = folder.Name;
+        if (folder.DefaultItemType != OlItemType.olAppointmentItem)
+        {
+          string wrongFolderMessage = string.Format ("Wrong ItemType in folder <{0}>. It should be a calendar folder.", folder.Name);
+          MessageBox.Show (wrongFolderMessage, "Configuration Error");
+          return;
+        }
       }
+
+
+      _folderEntryId = folder.EntryID;
+      _folderStoreId = folder.StoreID;
+      _outoookFolderNameTextBox.Text = folder.Name;
+      _folderType = folder.DefaultItemType;
+      OnDisplayNameChanged();
     }
 
     private void UpdateFolder (string folderEntryId, string folderStoreId)
@@ -279,6 +327,7 @@ namespace CalDavSynchronizer.Ui
         {
           s_logger.Error (null, x);
           _outoookFolderNameTextBox.Text = "<ERROR>";
+          _folderType = null;
           return;
         }
         if (folder != null)
@@ -289,6 +338,7 @@ namespace CalDavSynchronizer.Ui
       }
 
       _outoookFolderNameTextBox.Text = "<MISSING>";
+      _folderType = null;
     }
 
     private void SelectFolder ()

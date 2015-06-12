@@ -3,10 +3,9 @@ using System.Configuration;
 using System.IO;
 using CalDavSynchronizer.Generic.EntityMapping;
 using CalDavSynchronizer.Generic.EntityRepositories;
-using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.Implementation.Events;
 using DDay.iCal;
-using DDay.iCal.Serialization;
 using DDay.iCal.Serialization.iCalendar;
 using Microsoft.Office.Interop.Outlook;
 
@@ -14,9 +13,9 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
 {
   public class OutlookTestContext
   {
-    private static AppointmentEventEntityMapper _entityMapper;
-    private static OutlookAppointmentRepository _outlookRepository;
-    private static readonly iCalendarSerializer _calendarSerializer = new iCalendarSerializer ();
+    private static EventEntityMapper _entityMapper;
+    private static OutlookEventRepository _outlookRepository;
+    private static readonly iCalendarSerializer _calendarSerializer = new iCalendarSerializer();
     private static Folder s_calendarFolder;
     private static NameSpace s_mapiNameSpace;
 
@@ -28,13 +27,13 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       if (mapiNameSpace == null)
         throw new ArgumentNullException ("mapiNameSpace");
 
-      _entityMapper = new AppointmentEventEntityMapper (mapiNameSpace.CurrentUser.Address, new Uri ("mailto:" + testerServerEmailAddress), mapiNameSpace.Application.TimeZones.CurrentTimeZone.ID, mapiNameSpace.Application.Version);
+      _entityMapper = new EventEntityMapper (mapiNameSpace.CurrentUser.Address, new Uri ("mailto:" + testerServerEmailAddress), mapiNameSpace.Application.TimeZones.CurrentTimeZone.ID, mapiNameSpace.Application.Version);
 
       var outlookFolderEntryId = ConfigurationManager.AppSettings[string.Format ("{0}.OutlookFolderEntryId", Environment.MachineName)];
       var outlookFolderStoreId = ConfigurationManager.AppSettings[string.Format ("{0}.OutlookFolderStoreId", Environment.MachineName)];
 
       s_calendarFolder = (Folder) mapiNameSpace.GetFolderFromID (outlookFolderEntryId, outlookFolderStoreId);
-      _outlookRepository = new OutlookAppointmentRepository (s_calendarFolder, mapiNameSpace);
+      _outlookRepository = new OutlookEventRepository (s_calendarFolder, mapiNameSpace);
     }
 
     public static IEntityMapper<AppointmentItemWrapper, IICalendar> EntityMapper
@@ -58,7 +57,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
 
     public static AppointmentItemWrapper CreateNewAppointment ()
     {
-      return OutlookAppointmentRepository.CreateNewAppointmentForTesting (s_calendarFolder, s_mapiNameSpace);
+      return OutlookEventRepository.CreateNewAppointmentForTesting (s_calendarFolder, s_mapiNameSpace);
     }
   }
 }

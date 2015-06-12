@@ -25,26 +25,27 @@ using CalDavSynchronizer.Generic.EntityRepositories;
 using CalDavSynchronizer.Generic.InitialEntityMatching;
 using CalDavSynchronizer.Generic.Synchronization;
 using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.Implementation.Events;
 using DDay.iCal;
 using DDay.iCal.Serialization.iCalendar;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
 
-namespace CalDavSynchronizer.Implementation
+namespace CalDavSynchronizer.Implementation.Tasks
 {
-  public class OutlookCalDavEventContext : ISynchronizerContext<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar>
+  public class TaskSynchronizationContext : ISynchronizerContext<string, DateTime, TaskItemWrapper, Uri, string, ITodo>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
 
     private readonly IEntityRelationDataAccess<string, DateTime, Uri, string> _storageDataAccess;
-    private readonly AppointmentEventEntityMapper _entityMapper;
-    private readonly OutlookAppointmentRepository _atypeRepository;
-    private readonly IEntityRepository<IICalendar, Uri, string> _btypeRepository;
+    private readonly TaskMapper _entityMapper;
+    private readonly OutlookTaskRepository _atypeRepository;
+    private readonly CalDavTaskRepository _btypeRepository;
     private readonly IEntityRelationDataFactory<string, DateTime, Uri, string> _entityRelationDataFactory;
 
 
-    public OutlookCalDavEventContext (NameSpace outlookSession, IEntityRelationDataAccess<string, DateTime, Uri, string> storageDataAccess, Options options, string outlookEmailAddress, TimeSpan connectTimeout, TimeSpan readWriteTimeout)
+    public TaskSynchronizationContext (NameSpace outlookSession, IEntityRelationDataAccess<string, DateTime, Uri, string> storageDataAccess, Options options, TimeSpan connectTimeout, TimeSpan readWriteTimeout)
     {
       if (outlookSession == null)
         throw new ArgumentNullException ("outlookSession");
@@ -55,12 +56,12 @@ namespace CalDavSynchronizer.Implementation
 
       _entityRelationDataFactory = new OutlookEventRelationDataFactory();
 
-      _entityMapper = new AppointmentEventEntityMapper (outlookEmailAddress, new Uri ("mailto:" + options.EmailAddress), outlookSession.Application.TimeZones.CurrentTimeZone.ID, outlookSession.Application.Version);
+      _entityMapper = new TaskMapper();
 
       var calendarFolder = (Folder) outlookSession.GetFolderFromID (options.OutlookFolderEntryId, options.OutlookFolderStoreId);
-      _atypeRepository = new OutlookAppointmentRepository (calendarFolder, outlookSession);
+      _atypeRepository = new OutlookTaskRepository (calendarFolder, outlookSession);
 
-      _btypeRepository = new CalDavEventRepository (
+      _btypeRepository = new CalDavTaskRepository (
           new CalDavDataAccess (
               new Uri (options.CalenderUrl),
               options.UserName,
@@ -70,28 +71,23 @@ namespace CalDavSynchronizer.Implementation
               ),
           new iCalendarSerializer());
 
-      if (StringComparer.InvariantCultureIgnoreCase.Compare (new Uri (options.CalenderUrl).Host, "www.google.com") == 0)
-      {
-        _btypeRepository = new EntityRepositoryDeleteCreateInstaedOfUpdateWrapper<IICalendar, Uri, string> (_btypeRepository);
-      }
-
       _storageDataAccess = storageDataAccess;
 
-      InitialEntityMatcher = new OutlookCalDavInitialEntityMatcher();
+      InitialEntityMatcher = new InitialTaskEntityMatcher();
     }
 
 
-    public IEntityMapper<AppointmentItemWrapper, IICalendar> EntityMapper
+    public IEntityMapper<TaskItemWrapper, ITodo> EntityMapper
     {
       get { return _entityMapper; }
     }
 
-    public IEntityRepository<AppointmentItemWrapper, string, DateTime> AtypeRepository
+    public IEntityRepository<TaskItemWrapper, string, DateTime> AtypeRepository
     {
       get { return _atypeRepository; }
     }
 
-    public IEntityRepository<IICalendar, Uri, string> BtypeRepository
+    public IEntityRepository<ITodo, Uri, string> BtypeRepository
     {
       get { return _btypeRepository; }
     }
@@ -99,7 +95,7 @@ namespace CalDavSynchronizer.Implementation
     public SynchronizationMode SynchronizationMode { get; private set; }
     public DateTime From { get; private set; }
     public DateTime To { get; private set; }
-    public IInitialEntityMatcher<AppointmentItemWrapper, string, DateTime, IICalendar, Uri, string> InitialEntityMatcher { get; private set; }
+    public IInitialEntityMatcher<TaskItemWrapper, string, DateTime, ITodo, Uri, string> InitialEntityMatcher { get; private set; }
 
     public IEntityRelationDataFactory<string, DateTime, Uri, string> EntityRelationDataFactory
     {

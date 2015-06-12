@@ -18,7 +18,7 @@ using System;
 using System.Xml.Serialization;
 using CalDavSynchronizer.Generic.EntityRelationManagement;
 
-namespace CalDavSynchronizer.Implementation
+namespace CalDavSynchronizer.Implementation.Events
 {
   public class OutlookEventRelationData : IEntityRelationData<string, DateTime, Uri, string>
   {

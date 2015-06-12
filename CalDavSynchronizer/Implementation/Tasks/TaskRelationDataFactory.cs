@@ -17,13 +17,13 @@
 using System;
 using CalDavSynchronizer.Generic.EntityRelationManagement;
 
-namespace CalDavSynchronizer.Implementation
+namespace CalDavSynchronizer.Implementation.Tasks
 {
-  public class OutlookEventRelationDataFactory : IEntityRelationDataFactory<string, DateTime, Uri, string>
+  public class TaskRelationDataFactory : IEntityRelationDataFactory<string, DateTime, Uri, string>
   {
     public IEntityRelationData<string, DateTime, Uri, string> Create (string atypeId, DateTime atypeVersion, Uri btypeId, string btypeVersion)
     {
-      return new OutlookEventRelationData()
+      return new TaskRelationData()
              {
                  AtypeId = atypeId,
                  AtypeVersion = atypeVersion,

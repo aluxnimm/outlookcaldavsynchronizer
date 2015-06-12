@@ -25,14 +25,12 @@ using CalDavSynchronizer.Implementation.ComWrappers;
 using DDay.iCal;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
-using RecurrenceException = Microsoft.Office.Interop.Outlook.Exception;
-using ICalAttachment = DDay.iCal.Attachment;
-using OutlookAttachment = Microsoft.Office.Interop.Outlook.Attachment;
+using Exception = Microsoft.Office.Interop.Outlook.Exception;
 using RecurrencePattern = DDay.iCal.RecurrencePattern;
 
-namespace CalDavSynchronizer.Implementation
+namespace CalDavSynchronizer.Implementation.Events
 {
-  public class AppointmentEventEntityMapper : IEntityMapper<AppointmentItemWrapper, IICalendar>
+  public class EventEntityMapper : IEntityMapper<AppointmentItemWrapper, IICalendar>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -52,7 +50,7 @@ namespace CalDavSynchronizer.Implementation
     private readonly string _serverEmailUri;
     private readonly TimeZoneInfo _localTimeZoneInfo;
 
-    public AppointmentEventEntityMapper (string outlookEmailAddress, Uri serverEmailAddress, string localTimeZoneId, string outlookApplicationVersion)
+    public EventEntityMapper (string outlookEmailAddress, Uri serverEmailAddress, string localTimeZoneId, string outlookApplicationVersion)
     {
       _outlookEmailAddress = outlookEmailAddress;
       _serverEmailUri = serverEmailAddress.ToString();
@@ -395,7 +393,7 @@ namespace CalDavSynchronizer.Implementation
 
           PeriodList targetExList = new PeriodList();
 
-          foreach (var sourceException in sourceRecurrencePattern.Exceptions.ToSafeEnumerable<RecurrenceException>())
+          foreach (var sourceException in sourceRecurrencePattern.Exceptions.ToSafeEnumerable<Exception>())
           {
             if (!sourceException.Deleted)
             {

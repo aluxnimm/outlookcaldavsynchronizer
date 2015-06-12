@@ -19,6 +19,7 @@ using System.Reflection;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Generic.ProgressReport;
 using CalDavSynchronizer.Implementation;
+using CalDavSynchronizer.Implementation.Events;
 using DDay.iCal;
 using log4net;
 using log4net.Config;

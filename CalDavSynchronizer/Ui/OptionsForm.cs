@@ -71,7 +71,7 @@ namespace CalDavSynchronizer.Ui
       _tabControl.TabPages.Add (tabPage);
 
       optionsControl.DeletionRequested += delegate { _tabControl.TabPages.Remove (tabPage); };
-      optionsControl.ProfileNameChanged += delegate (object sender, string e) { tabPage.Text = e; };
+      optionsControl.DisplayNameChanged += delegate (object sender, string e) { tabPage.Text = e; };
 
       optionsControl.InactiveChanged += delegate (object sender, bool inactive)
       {

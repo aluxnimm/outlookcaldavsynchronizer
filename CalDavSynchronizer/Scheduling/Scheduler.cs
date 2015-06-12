@@ -32,17 +32,13 @@ namespace CalDavSynchronizer.Scheduling
 
     private readonly Timer _synchronizationTimer = new Timer();
 
-    private readonly NameSpace _outlookSession;
     private Dictionary<Guid, SynchronizationWorker> _workersById = new Dictionary<Guid, SynchronizationWorker>();
-    private readonly string _outlookEmailAddress;
-    private readonly string _applicationDataDirectory;
     private readonly TimeSpan _timerInterval = TimeSpan.FromSeconds (30);
+    private readonly ISynchronizerFactory _synchronizerFactory;
 
-    public Scheduler (NameSpace outlookSession, string applicationDataDirectory)
+    public Scheduler (ISynchronizerFactory synchronizerFactory)
     {
-      _outlookEmailAddress = outlookSession.CurrentUser.Address;
-      _outlookSession = outlookSession;
-      _applicationDataDirectory = applicationDataDirectory;
+      _synchronizerFactory = synchronizerFactory;
       _synchronizationTimer.Tick += _synchronizationTimer_Tick;
       _synchronizationTimer.Interval = (int) _timerInterval.TotalMilliseconds;
       _synchronizationTimer.Start();
@@ -66,8 +62,8 @@ namespace CalDavSynchronizer.Scheduling
         {
           SynchronizationWorker worker;
           if (!_workersById.TryGetValue (option.Id, out worker))
-            worker = new SynchronizationWorker (_outlookEmailAddress, _applicationDataDirectory);
-          worker.UpdateOptions (_outlookSession, option);
+            worker = new SynchronizationWorker (_synchronizerFactory);
+          worker.UpdateOptions (option);
           workersById.Add (option.Id, worker);
         }
         catch (Exception x)

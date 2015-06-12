@@ -18,11 +18,10 @@ using System;
 using CalDavSynchronizer.Generic.InitialEntityMatching;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using DDay.iCal;
-using Microsoft.Office.Interop.Outlook;
 
-namespace CalDavSynchronizer.Implementation
+namespace CalDavSynchronizer.Implementation.Events
 {
-  internal class OutlookCalDavInitialEntityMatcher : InitialEntityMatcherByPropertyGrouping<AppointmentItemWrapper, string, DateTime, string, IICalendar, Uri, string, string>
+  internal class InitialEventEntityMatcher : InitialEntityMatcherByPropertyGrouping<AppointmentItemWrapper, string, DateTime, string, IICalendar, Uri, string, string>
   {
     protected override bool AreEqual (AppointmentItemWrapper atypeEntity, IICalendar btypeEntity)
     {

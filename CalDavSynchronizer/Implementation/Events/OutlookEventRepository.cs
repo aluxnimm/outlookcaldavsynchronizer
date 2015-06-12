@@ -24,22 +24,19 @@ using CalDavSynchronizer.Generic.ProgressReport;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using Microsoft.Office.Interop.Outlook;
 
-namespace CalDavSynchronizer.Implementation
+namespace CalDavSynchronizer.Implementation.Events
 {
-  public class OutlookAppointmentRepository : IEntityRepository<AppointmentItemWrapper, string, DateTime>
+  public class OutlookEventRepository : IEntityRepository<AppointmentItemWrapper, string, DateTime>
   {
     private readonly Folder _calendarFolder;
     private readonly NameSpace _mapiNameSpace;
 
-    public OutlookAppointmentRepository (Folder calendarFolder, NameSpace mapiNameSpace)
+    public OutlookEventRepository (Folder calendarFolder, NameSpace mapiNameSpace)
     {
       if (calendarFolder == null)
         throw new ArgumentNullException ("calendarFolder");
       if (mapiNameSpace == null)
         throw new ArgumentNullException ("mapiNameSpace");
-
-      if (calendarFolder.DefaultItemType != OlItemType.olAppointmentItem)
-        throw new ArgumentException (string.Format ("Wrong ItemType in folder <{0}>. It should be a calendar folder.", calendarFolder.Name));
 
       _calendarFolder = calendarFolder;
       _mapiNameSpace = mapiNameSpace;

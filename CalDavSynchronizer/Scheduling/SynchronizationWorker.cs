@@ -19,15 +19,14 @@ using System.Configuration;
 using System.IO;
 using System.Reflection;
 using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Diagnostics;
 using CalDavSynchronizer.Generic.EntityRelationManagement;
 using CalDavSynchronizer.Generic.ProgressReport;
 using CalDavSynchronizer.Generic.Synchronization;
 using CalDavSynchronizer.Generic.Synchronization.StateFactories;
-using CalDavSynchronizer.Generic.Synchronization.States;
-using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.Implementation.Events;
+using CalDavSynchronizer.Ui;
 using CalDavSynchronizer.Utilities;
 using DDay.iCal;
 using log4net;
@@ -44,61 +43,20 @@ namespace CalDavSynchronizer.Scheduling
     private TimeSpan _interval;
     private ISynchronizer _synchronizer;
     private string _profileName;
-    private readonly string _outlookEmailAddress;
     private bool _inactive;
-    private readonly ITotalProgressFactory _totalProgressFactory;
-    private readonly string _applicationDataDirectory;
+    private readonly ISynchronizerFactory _synchronizerFactory;
 
-    public SynchronizationWorker (string outlookEmailAddress, string applicationDataDirectory)
+    public SynchronizationWorker (ISynchronizerFactory synchronizerFactory)
     {
-      _outlookEmailAddress = outlookEmailAddress;
-      _applicationDataDirectory = applicationDataDirectory;
+      _synchronizerFactory = synchronizerFactory;
       // Set to min, to ensure that it runs on the first run after startup
       _lastRun = DateTime.MinValue;
-      _totalProgressFactory = new TotalProgressFactory (
-          new Ui.ProgressFormFactory(),
-          int.Parse (ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"]));
     }
 
-    public void UpdateOptions (NameSpace outlookSession, Options options)
+    public void UpdateOptions (Options options)
     {
       _profileName = options.Name;
-
-      var storageDataDirectory = Path.Combine (
-          _applicationDataDirectory,
-          options.Id.ToString()
-          );
-
-      var storageDataAccess = new EntityRelationDataAccess<string, DateTime, OutlookEventRelationData, Uri, string> (storageDataDirectory);
-
-      var synchronizationContext = new OutlookCalDavEventContext (
-          outlookSession,
-          storageDataAccess,
-          options,
-          _outlookEmailAddress,
-          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"])
-          );
-
-      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (
-          synchronizationContext.EntityMapper,
-          synchronizationContext.AtypeRepository,
-          synchronizationContext.BtypeRepository,
-          synchronizationContext.EntityRelationDataFactory
-          );
-
-
-      _synchronizer = new Synchronizer<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (
-          synchronizationContext,
-          InitialSyncStateCreationStrategyFactory.Create (
-              syncStateFactory,
-              syncStateFactory.Environment,
-              options.SynchronizationMode,
-              options.ConflictResolution),
-          _totalProgressFactory
-          );
-
-
+      _synchronizer = _synchronizerFactory.CreateSynchronizer (options);
       _interval = TimeSpan.FromMinutes (options.SynchronizationIntervalInMinutes);
       _inactive = options.Inactive;
     }
