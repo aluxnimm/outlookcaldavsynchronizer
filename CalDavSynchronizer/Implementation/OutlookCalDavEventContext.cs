@@ -70,7 +70,10 @@ namespace CalDavSynchronizer.Implementation
               ),
           new iCalendarSerializer());
 
-      _btypeRepository = new EntityRepositoryDeleteCreateInstaedOfUpdateWrapper<IICalendar, Uri, string> (_btypeRepository);
+      if (StringComparer.InvariantCultureIgnoreCase.Compare (new Uri (options.CalenderUrl).Host, "www.google.com") == 0)
+      {
+        _btypeRepository = new EntityRepositoryDeleteCreateInstaedOfUpdateWrapper<IICalendar, Uri, string> (_btypeRepository);
+      }
 
       _storageDataAccess = storageDataAccess;
 
