@@ -40,7 +40,7 @@ namespace CalDavSynchronizer.Implementation
     private readonly IEntityRelationDataAccess<string, DateTime, Uri, string> _storageDataAccess;
     private readonly AppointmentEventEntityMapper _entityMapper;
     private readonly OutlookAppointmentRepository _atypeRepository;
-    private readonly CalDavEventRepository _btypeRepository;
+    private readonly IEntityRepository<IICalendar, Uri, string> _btypeRepository;
     private readonly IEntityRelationDataFactory<string, DateTime, Uri, string> _entityRelationDataFactory;
 
 
@@ -69,6 +69,8 @@ namespace CalDavSynchronizer.Implementation
               readWriteTimeout
               ),
           new iCalendarSerializer());
+
+      _btypeRepository = new EntityRepositoryDeleteCreateInstaedOfUpdateWrapper<IICalendar, Uri, string> (_btypeRepository);
 
       _storageDataAccess = storageDataAccess;
 
