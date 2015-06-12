@@ -123,7 +123,6 @@ namespace CalDavSynchronizer.Ui
 
     private void OnDisplayNameChanged ()
     {
-
       string folderSpecifier;
       switch (_folderType)
       {
@@ -134,14 +133,13 @@ namespace CalDavSynchronizer.Ui
           folderSpecifier = "(T)";
           break;
         default:
-            folderSpecifier = "(ERROR)";
+          folderSpecifier = "(ERROR)";
           break;
       }
 
       if (DisplayNameChanged != null)
         DisplayNameChanged (this, _profileNameTextBox.Text + " " + folderSpecifier);
     }
-
 
 
     private void BindComboBox (ComboBox comboBox, IEnumerable list)
@@ -273,21 +271,46 @@ namespace CalDavSynchronizer.Ui
         InactiveChanged (this, _inactiveCheckBox.Checked);
     }
 
+
+    private bool IsTaskSynchronizationEnabled
+    {
+      get
+      {
+        bool enabled;
+        if (bool.TryParse (ConfigurationManager.AppSettings["enableTaskSynchronization"], out enabled))
+          return enabled;
+        else
+          return false;
+      }
+    }
+
     private void UpdateFolder (MAPIFolder folder)
     {
-      if (folder.DefaultItemType != OlItemType.olAppointmentItem && folder.DefaultItemType != OlItemType.olTaskItem)
+      if (IsTaskSynchronizationEnabled)
       {
-        string wrongFolderMessage = string.Format ("Wrong ItemType in folder <{0}>. It should be a calendar or task folder.", folder.Name);
-        MessageBox.Show (wrongFolderMessage, "Configuration Error");
+        if (folder.DefaultItemType != OlItemType.olAppointmentItem && folder.DefaultItemType != OlItemType.olTaskItem)
+        {
+          string wrongFolderMessage = string.Format ("Wrong ItemType in folder <{0}>. It should be a calendar or task folder.", folder.Name);
+          MessageBox.Show (wrongFolderMessage, "Configuration Error");
+          return;
+        }
       }
       else
       {
-        _folderEntryId = folder.EntryID;
-        _folderStoreId = folder.StoreID;
-        _outoookFolderNameTextBox.Text = folder.Name;
-        _folderType = folder.DefaultItemType;
-        OnDisplayNameChanged();
+        if (folder.DefaultItemType != OlItemType.olAppointmentItem)
+        {
+          string wrongFolderMessage = string.Format ("Wrong ItemType in folder <{0}>. It should be a calendar folder.", folder.Name);
+          MessageBox.Show (wrongFolderMessage, "Configuration Error");
+          return;
+        }
       }
+
+
+      _folderEntryId = folder.EntryID;
+      _folderStoreId = folder.StoreID;
+      _outoookFolderNameTextBox.Text = folder.Name;
+      _folderType = folder.DefaultItemType;
+      OnDisplayNameChanged();
     }
 
     private void UpdateFolder (string folderEntryId, string folderStoreId)
