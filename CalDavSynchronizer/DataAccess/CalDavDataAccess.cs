@@ -319,7 +319,7 @@ namespace CalDavSynchronizer.DataAccess
       }
 
       var error = response.Headers["X-Dav-Error"];
-      if (error != "200 No error")
+      if (error != null && error != "200 No error")
         throw new Exception (string.Format ("Error deleting event with url '{0}' and etag '{1}': {2}", uri, etag, error));
 
       return true;
