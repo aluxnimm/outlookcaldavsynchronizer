@@ -78,9 +78,9 @@ namespace CalDavSynchronizer.Implementation.Events
     }
 
 
-    public IReadOnlyDictionary<string, AppointmentItemWrapper> Get (ICollection<string> ids, ITotalProgress progress)
+    public IReadOnlyDictionary<string, AppointmentItemWrapper> Get (ICollection<string> ids, ITotalProgressLogger progressLogger)
     {
-      using (var stepProgress = progress.StartStep (ids.Count, string.Format ("Loading {0} entities from Outlook...", ids.Count)))
+      using (var stepProgress = progressLogger.StartStep (ids.Count, string.Format ("Loading {0} entities from Outlook...", ids.Count)))
       {
         var storeId = _calendarFolder.StoreID;
         var result = ids.ToDictionary (id => id, id => new AppointmentItemWrapper ((AppointmentItem) _mapiNameSpace.GetItemFromID (id, storeId), entryId => (AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, storeId)));
@@ -104,7 +104,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
     public bool Delete (string entityId)
     {
-      using (var appointment = Get (new[] { entityId }, NullTotalProgress.Instance).Values.SingleOrDefault())
+      using (var appointment = Get (new[] { entityId }, NullTotalProgressLogger.Instance).Values.SingleOrDefault())
       {
         if (appointment != null)
         {

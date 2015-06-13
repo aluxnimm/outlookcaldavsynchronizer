@@ -3,13 +3,13 @@ using System.Diagnostics;
 
 namespace CalDavSynchronizer.Generic.ProgressReport
 {
-  public class MeteringProgressStep : IProgressStep
+  public class MeteringProgressLogger : IProgressLogger
   {
     private readonly Stopwatch _totalTime;
     private int _count = 1;
     private readonly int _completedCount;
 
-    public MeteringProgressStep (int completedCount)
+    public MeteringProgressLogger (int completedCount)
     {
       _completedCount = completedCount;
       _totalTime = Stopwatch.StartNew();

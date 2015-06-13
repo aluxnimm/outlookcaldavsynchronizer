@@ -18,21 +18,12 @@ using System;
 
 namespace CalDavSynchronizer.Generic.ProgressReport
 {
-  public class NullTotalProgress : ITotalProgress
+  /// <summary>
+  /// A single progress step
+  /// </summary>
+  public interface IProgressLogger : IDisposable
   {
-    public static readonly ITotalProgress Instance = new NullTotalProgress();
-
-    private NullTotalProgress ()
-    {
-    }
-
-    public void Dispose ()
-    {
-    }
-
-    IProgressStep ITotalProgress.StartStep (int stepCompletedCount, string stepDescription)
-    {
-      return NullProgressStep.Instance;
-    }
+    void Increase ();
+    void IncreaseBy (int value);
   }
 }

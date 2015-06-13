@@ -23,6 +23,6 @@ namespace CalDavSynchronizer.Generic.ProgressReport
   /// </summary>
   public interface ITotalProgressFactory
   {
-    ITotalProgress Create (int aLoadCount, int bLoadCount);
+    ITotalProgressLogger Create (int aLoadCount, int bLoadCount);
   }
 }

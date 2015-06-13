@@ -15,28 +15,24 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Diagnostics;
 
 namespace CalDavSynchronizer.Generic.ProgressReport
 {
-  internal class MeteringTotalProgress : ITotalProgress
+  public class NullTotalProgressLogger : ITotalProgressLogger
   {
-    private readonly Stopwatch _totalTime;
+    public static readonly ITotalProgressLogger Instance = new NullTotalProgressLogger();
 
-    public MeteringTotalProgress ()
+    private NullTotalProgressLogger ()
     {
-      _totalTime = Stopwatch.StartNew();
     }
 
     public void Dispose ()
     {
-      _totalTime.Stop();
-      Debug.WriteLine ("Total Time: {0}", _totalTime.Elapsed);
     }
 
-    public IProgressStep StartStep (int stepCompletedCount, string stepDescription)
+    IProgressLogger ITotalProgressLogger.StartStep (int stepCompletedCount, string stepDescription)
     {
-      return new MeteringProgressStep (stepCompletedCount);
+      return NullProgressLogger.Instance;
     }
   }
 }

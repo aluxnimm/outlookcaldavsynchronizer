@@ -21,7 +21,7 @@ using log4net;
 
 namespace CalDavSynchronizer.Generic.ProgressReport
 {
-  public class TotalProgress : ITotalProgress
+  public class TotalProgressLogger : ITotalProgressLogger
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -34,7 +34,7 @@ namespace CalDavSynchronizer.Generic.ProgressReport
     private readonly IProgressUi _progressUi;
     private int _currentStep = -1;
 
-    public TotalProgress (IProgressUiFactory uiFactory, int aAnnounced, int bAnnounced)
+    public TotalProgressLogger (IProgressUiFactory uiFactory, int aAnnounced, int bAnnounced)
     {
       const int smallStepCompletionCountAnticipationFactor = 10;
 
@@ -71,7 +71,7 @@ namespace CalDavSynchronizer.Generic.ProgressReport
       }
     }
 
-    IProgressStep ITotalProgress.StartStep (int stepCompletedCount, string stepDescription)
+    IProgressLogger ITotalProgressLogger.StartStep (int stepCompletedCount, string stepDescription)
     {
       try
       {
@@ -82,11 +82,11 @@ namespace CalDavSynchronizer.Generic.ProgressReport
         {
           s_logger.ErrorFormat ("Exceeded total progress steps of {0}", _prefixSummedStepTotals.Length);
           _progressUi.SetValue (_prefixSummedStepTotals[_prefixSummedStepTotals.Length - 1]);
-          return NullProgressStep.Instance;
+          return NullProgressLogger.Instance;
         }
         else
         {
-          return new ProgressStep (
+          return new ProgressLogger (
               _progressUi,
               _currentStep == 0 ? 0 : _prefixSummedStepTotals[_currentStep - 1],
               _prefixSummedStepTotals[_currentStep],
@@ -97,7 +97,7 @@ namespace CalDavSynchronizer.Generic.ProgressReport
       catch (Exception x)
       {
         ExceptionHandler.Instance.LogException (x, s_logger);
-        return NullProgressStep.Instance;
+        return NullProgressLogger.Instance;
       }
     }
   }

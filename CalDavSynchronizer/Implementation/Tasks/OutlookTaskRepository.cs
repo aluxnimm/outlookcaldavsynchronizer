@@ -76,9 +76,9 @@ namespace CalDavSynchronizer.Implementation.Tasks
       return value.ToString ("g", _currentCultureInfo);
     }
 
-    public IReadOnlyDictionary<string, TaskItemWrapper> Get (ICollection<string> ids, ITotalProgress progress)
+    public IReadOnlyDictionary<string, TaskItemWrapper> Get (ICollection<string> ids, ITotalProgressLogger progressLogger)
     {
-      using (var stepProgress = progress.StartStep (ids.Count, string.Format ("Loading {0} entities from Outlook...", ids.Count)))
+      using (var stepProgress = progressLogger.StartStep (ids.Count, string.Format ("Loading {0} entities from Outlook...", ids.Count)))
       {
         var storeId = _taskFolder.StoreID;
         var result = ids.ToDictionary (id => id, id => new TaskItemWrapper ((TaskItem) _mapiNameSpace.GetItemFromID (id, storeId), entryId => (TaskItem) _mapiNameSpace.GetItemFromID (entryId, storeId)));
@@ -102,7 +102,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
     public bool Delete (string entityId)
     {
-      using (var entityWrapper = Get (new[] { entityId }, NullTotalProgress.Instance).Values.SingleOrDefault())
+      using (var entityWrapper = Get (new[] { entityId }, NullTotalProgressLogger.Instance).Values.SingleOrDefault())
       {
         if (entityWrapper != null)
         {

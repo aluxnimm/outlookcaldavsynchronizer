@@ -22,9 +22,9 @@ namespace CalDavSynchronizer.Generic.ProgressReport
   {
     public static readonly ITotalProgressFactory Instance = new NullTotalProgressFactory();
 
-    public ITotalProgress Create (int aLoadCount, int bLoadCount)
+    public ITotalProgressLogger Create (int aLoadCount, int bLoadCount)
     {
-      return NullTotalProgress.Instance;
+      return NullTotalProgressLogger.Instance;
     }
   }
 }

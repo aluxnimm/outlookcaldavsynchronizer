@@ -21,8 +21,8 @@ namespace CalDavSynchronizer.Generic.ProgressReport
   /// <summary>
   /// Represents the progress of an operation, which consists of multiple steps 
   /// </summary>
-  public interface ITotalProgress : IDisposable
+  public interface ITotalProgressLogger : IDisposable
   {
-    IProgressStep StartStep (int stepCompletedCount, string stepDescription);
+    IProgressLogger StartStep (int stepCompletedCount, string stepDescription);
   }
 }

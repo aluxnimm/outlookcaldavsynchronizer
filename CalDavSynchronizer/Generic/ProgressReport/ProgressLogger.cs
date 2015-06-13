@@ -24,7 +24,7 @@ namespace CalDavSynchronizer.Generic.ProgressReport
   /// <summary>
   /// Standardimplementation of IProgressStep
   /// </summary>
-  public class ProgressStep : IProgressStep
+  public class ProgressLogger : IProgressLogger
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -34,7 +34,7 @@ namespace CalDavSynchronizer.Generic.ProgressReport
     private double _currentValue;
 
 
-    public ProgressStep (IProgressUi progressUi, int uiMin, int uiMax, int stepMaximum)
+    public ProgressLogger (IProgressUi progressUi, int uiMin, int uiMax, int stepMaximum)
     {
       _progressUi = progressUi;
       _uiTicksPerStepTick = (uiMax - uiMin) / (double) stepMaximum;

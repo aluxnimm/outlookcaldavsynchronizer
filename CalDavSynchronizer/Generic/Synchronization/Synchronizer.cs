@@ -52,7 +52,7 @@ namespace CalDavSynchronizer.Generic.Synchronization
     {
       s_logger.InfoFormat ("Entered. Syncstrategy '{0}' with Atype='{1}' and Btype='{2}'", _initialSyncStateCreationStrategy.GetType().Name, typeof (TAtypeEntity).Name, typeof (TBtypeEntity).Name);
 
-      var totalProgress = NullTotalProgress.Instance;
+      var totalProgress = NullTotalProgressLogger.Instance;
 
       try
       {
