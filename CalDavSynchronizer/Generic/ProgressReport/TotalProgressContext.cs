@@ -39,10 +39,21 @@ namespace CalDavSynchronizer.Generic.ProgressReport
       (_logger ?? NullTotalProgressLogger.Instance).Dispose();
     }
 
-    public IProgressLogger StartStep (int stepCompletedCount, string stepDescription)
+    public IDisposable StartARepositoryLoad ()
     {
-      return (_logger ?? NullTotalProgressLogger.Instance).StartStep (stepCompletedCount, stepDescription);
+      return (_logger ?? NullTotalProgressLogger.Instance).StartARepositoryLoad();
     }
+
+    public IDisposable StartBRepositoryLoad ()
+    {
+      return (_logger ?? NullTotalProgressLogger.Instance).StartBRepositoryLoad();
+    }
+
+    public IProgressLogger StartProcessing (int entityCount)
+    {
+      return (_logger ?? NullTotalProgressLogger.Instance).StartProcessing (entityCount);
+    }
+
 
     public void NotifyLoadCount (int aLoadCount, int bLoadCount)
     {
@@ -52,7 +63,7 @@ namespace CalDavSynchronizer.Generic.ProgressReport
       try
       {
         if (aLoadCount + bLoadCount > _loadOperationThresholdForProgressDisplay)
-          _logger = new TotalProgressLogger (_progressUiFactory, aLoadCount, bLoadCount);
+          _logger = new TotalProgressLogger (_progressUiFactory);
         else
           _logger = NullTotalProgressLogger.Instance;
       }

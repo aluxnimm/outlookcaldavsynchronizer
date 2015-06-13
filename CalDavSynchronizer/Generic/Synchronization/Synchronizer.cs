@@ -74,8 +74,16 @@ namespace CalDavSynchronizer.Generic.Synchronization
               s_logger.Info ("Did not find entity caches. Performing initial population");
 
               totalProgress.NotifyLoadCount (atypeRepositoryVersions.Count, btypeRepositoryVersions.Count);
-              aEntities = atypeEntityRepository.Get (atypeRepositoryVersions.Keys, totalProgress);
-              bEntities = btypeEntityRepository.Get (btypeRepositoryVersions.Keys, totalProgress);
+
+              using (totalProgress.StartARepositoryLoad())
+              {
+                aEntities = atypeEntityRepository.Get (atypeRepositoryVersions.Keys);
+              }
+
+              using (totalProgress.StartBRepositoryLoad())
+              {
+                bEntities = btypeEntityRepository.Get (btypeRepositoryVersions.Keys);
+              }
 
               cachedData = _synchronizerContext.InitialEntityMatcher.PopulateEntityRelationStorage (
                   _synchronizerContext.EntityRelationDataFactory,
@@ -129,8 +137,14 @@ namespace CalDavSynchronizer.Generic.Synchronization
             if (aEntities == null && bEntities == null)
             {
               totalProgress.NotifyLoadCount (aEntitesToLoad.Count, bEntitesToLoad.Count);
-              aEntities = atypeEntityRepository.Get (aEntitesToLoad, totalProgress);
-              bEntities = btypeEntityRepository.Get (bEntitesToLoad, totalProgress);
+              using (totalProgress.StartARepositoryLoad())
+              {
+                aEntities = atypeEntityRepository.Get (aEntitesToLoad);
+              }
+              using (totalProgress.StartBRepositoryLoad())
+              {
+                bEntities = btypeEntityRepository.Get (bEntitesToLoad);
+              }
             }
 
             entitySyncStates.DoTransition (s => s.FetchRequiredEntities (aEntities, bEntities));
@@ -140,7 +154,7 @@ namespace CalDavSynchronizer.Generic.Synchronization
             // an state is allowed only to resolve to another state, if the following states requires equal or less entities!
             entitySyncStates.DoTransition (s => s.FetchRequiredEntities (aEntities, bEntities));
 
-            using (var progress = totalProgress.StartStep (entitySyncStates.Count, string.Format ("Processing {0} entities...", entitySyncStates.Count)))
+            using (var progress = totalProgress.StartProcessing (entitySyncStates.Count))
             {
               entitySyncStates.DoTransition (
                   s =>

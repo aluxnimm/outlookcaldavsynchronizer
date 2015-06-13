@@ -25,38 +25,14 @@ namespace CalDavSynchronizer.Generic.ProgressReport
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    private const int c_aloadStepFactor = 1;
-    private const int c_bloadStep1Factor = 2;
-    private const int c_bloadStep2Factor = 16;
-    private const int c_syncStepFactor = 39;
+    private const int c_SingleStepTotal = 10000;
 
-    private readonly int[] _prefixSummedStepTotals;
+
     private readonly IProgressUi _progressUi;
-    private int _currentStep = -1;
 
-    public TotalProgressLogger (IProgressUiFactory uiFactory, int aAnnounced, int bAnnounced)
+    public TotalProgressLogger (IProgressUiFactory uiFactory)
     {
-      const int smallStepCompletionCountAnticipationFactor = 10;
-
-      _prefixSummedStepTotals = new[]
-                                {
-                                    smallStepCompletionCountAnticipationFactor * c_aloadStepFactor * aAnnounced,
-                                    smallStepCompletionCountAnticipationFactor * c_bloadStep1Factor * bAnnounced,
-                                    smallStepCompletionCountAnticipationFactor * c_bloadStep2Factor * bAnnounced,
-                                    smallStepCompletionCountAnticipationFactor * c_syncStepFactor * (aAnnounced + bAnnounced),
-                                };
-
-      CalculatePrefixSum (_prefixSummedStepTotals);
-
-      _progressUi = uiFactory.Create (_prefixSummedStepTotals[_prefixSummedStepTotals.Length - 1]);
-    }
-
-    private void CalculatePrefixSum (int[] values)
-    {
-      for (int i = 0, sum = 0; i < values.Length; i++)
-      {
-        sum = values[i] = sum + values[i];
-      }
+      _progressUi = uiFactory.Create (3 * c_SingleStepTotal);
     }
 
     public void Dispose ()
@@ -71,34 +47,22 @@ namespace CalDavSynchronizer.Generic.ProgressReport
       }
     }
 
-    IProgressLogger ITotalProgressLogger.StartStep (int stepCompletedCount, string stepDescription)
+    public IDisposable StartARepositoryLoad ()
     {
-      try
-      {
-        _progressUi.SetMessage (stepDescription);
+      _progressUi.SetMessage ("Loading entities from Outlook...");
+      return new ProgressLogger (_progressUi, 0, c_SingleStepTotal, 1);
+    }
 
-        _currentStep++;
-        if (_currentStep > _prefixSummedStepTotals.Length)
-        {
-          s_logger.ErrorFormat ("Exceeded total progress steps of {0}", _prefixSummedStepTotals.Length);
-          _progressUi.SetValue (_prefixSummedStepTotals[_prefixSummedStepTotals.Length - 1]);
-          return NullProgressLogger.Instance;
-        }
-        else
-        {
-          return new ProgressLogger (
-              _progressUi,
-              _currentStep == 0 ? 0 : _prefixSummedStepTotals[_currentStep - 1],
-              _prefixSummedStepTotals[_currentStep],
-              stepCompletedCount
-              );
-        }
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.LogException (x, s_logger);
-        return NullProgressLogger.Instance;
-      }
+    public IDisposable StartBRepositoryLoad ()
+    {
+      _progressUi.SetMessage ("Loading entities from CalDav-Server...");
+      return new ProgressLogger (_progressUi, c_SingleStepTotal, 2 * c_SingleStepTotal, 1);
+    }
+
+    public IProgressLogger StartProcessing (int entityCount)
+    {
+      _progressUi.SetMessage (string.Format ("Processing {0} entities...", entityCount));
+      return new ProgressLogger (_progressUi, 2 * c_SingleStepTotal, 3 * c_SingleStepTotal, entityCount);
     }
 
     public void NotifyLoadCount (int aLoadCount, int bLoadCount)

@@ -23,7 +23,9 @@ namespace CalDavSynchronizer.Generic.ProgressReport
   /// </summary>
   public interface ITotalProgressLogger : IDisposable
   {
-    IProgressLogger StartStep (int stepCompletedCount, string stepDescription);
+    IDisposable StartARepositoryLoad ();
+    IDisposable StartBRepositoryLoad ();
+    IProgressLogger StartProcessing (int entityCount);
     void NotifyLoadCount (int aLoadCount, int bLoadCount);
   }
 }

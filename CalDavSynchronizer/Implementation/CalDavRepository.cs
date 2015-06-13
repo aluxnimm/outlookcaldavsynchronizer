@@ -24,7 +24,6 @@ using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Diagnostics;
 using CalDavSynchronizer.Generic.EntityRepositories;
 using CalDavSynchronizer.Generic.EntityVersionManagement;
-using CalDavSynchronizer.Generic.ProgressReport;
 using DDay.iCal;
 using DDay.iCal.Serialization;
 using DDay.iCal.Serialization.iCalendar;
@@ -69,28 +68,15 @@ namespace CalDavSynchronizer.Implementation
       }
     }
 
-    public IReadOnlyDictionary<Uri, IICalendar> Get (ICollection<Uri> ids, ITotalProgressLogger progressLogger)
+    public IReadOnlyDictionary<Uri, IICalendar> Get (ICollection<Uri> ids)
     {
       if (ids.Count == 0)
-      {
-        progressLogger.StartStep (0, "").Dispose();
-        progressLogger.StartStep (0, "").Dispose();
         return new Dictionary<Uri, IICalendar>();
-      }
 
       using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("CalDavRepository.Get ({0} entitie(s))", ids.Count)))
       {
-        Dictionary<Uri, string> entities;
-        using (var stepProgress = progressLogger.StartStep (ids.Count, string.Format ("Loading {0} entities from CalDav-Server...", ids.Count)))
-        {
-          entities = _calDavDataAccess.GetEntities (ids);
-          stepProgress.IncreaseBy (ids.Count);
-        }
-
-        using (var stepProgress = progressLogger.StartStep (entities.Count, string.Format ("Deserializing {0} CalDav entities...", entities.Count)))
-        {
-          return ParallelDeserialize (entities);
-        }
+        var entities = _calDavDataAccess.GetEntities (ids);
+        return ParallelDeserialize (entities);
       }
     }
 

@@ -41,9 +41,9 @@ namespace CalDavSynchronizer.Generic.EntityRepositories
       return _inner.GetVersions (@from, to);
     }
 
-    public IReadOnlyDictionary<TEntityId, TEntity> Get (ICollection<TEntityId> ids, ITotalProgressLogger progressLogger)
+    public IReadOnlyDictionary<TEntityId, TEntity> Get (ICollection<TEntityId> ids)
     {
-      return _inner.Get (ids, progressLogger);
+      return _inner.Get (ids);
     }
 
     public void Cleanup (IReadOnlyDictionary<TEntityId, TEntity> entities)

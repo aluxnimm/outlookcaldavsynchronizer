@@ -34,10 +34,10 @@ namespace CalDavSynchronizer.Generic.ProgressReport
     private double _currentValue;
 
 
-    public ProgressLogger (IProgressUi progressUi, int uiMin, int uiMax, int stepMaximum)
+    public ProgressLogger (IProgressUi progressUi, int uiMin, int uiMax, int steps)
     {
       _progressUi = progressUi;
-      _uiTicksPerStepTick = (uiMax - uiMin) / (double) stepMaximum;
+      _uiTicksPerStepTick = (uiMax - uiMin) / (double) steps;
       _currentValue = uiMin;
       _uiMax = uiMax;
     }

@@ -30,7 +30,17 @@ namespace CalDavSynchronizer.Generic.ProgressReport
     {
     }
 
-    IProgressLogger ITotalProgressLogger.StartStep (int stepCompletedCount, string stepDescription)
+    public IDisposable StartARepositoryLoad ()
+    {
+      return NullProgressLogger.Instance;
+    }
+
+    public IDisposable StartBRepositoryLoad ()
+    {
+      return NullProgressLogger.Instance;
+    }
+
+    public IProgressLogger StartProcessing (int entityCount)
     {
       return NullProgressLogger.Instance;
     }
