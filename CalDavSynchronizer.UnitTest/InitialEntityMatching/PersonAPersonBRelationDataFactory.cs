@@ -13,12 +13,13 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using CalDavSynchronizer.Generic.EntityRelationManagement;
 
 namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
 {
-  class PersonAPersonBRelationDataFactory : IEntityRelationDataFactory<int, int, string, string>
+  internal class PersonAPersonBRelationDataFactory : IEntityRelationDataFactory<int, int, string, string>
   {
     public IEntityRelationData<int, int, string, string> Create (int atypeId, int atypeVersion, string btypeId, string btypeVersion)
     {

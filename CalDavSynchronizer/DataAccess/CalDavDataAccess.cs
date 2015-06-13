@@ -146,7 +146,7 @@ namespace CalDavSynchronizer.DataAccess
                         </C:filter>
                     </C:calendar-query>
                     ",
-                     entityType,
+              entityType,
               from == null ? string.Empty : string.Format (@"<C:time-range start=""{0}"" end=""{1}""/>",
                   from.Value.ToString (s_calDavDateTimeFormatString),
                   to.Value.ToString (s_calDavDateTimeFormatString))
@@ -406,15 +406,15 @@ namespace CalDavSynchronizer.DataAccess
       }
 
       WebResponse response = request.GetResponse();
-      if (((HttpWebResponse)response).StatusCode == HttpStatusCode.Moved || ((HttpWebResponse)response).StatusCode == HttpStatusCode.Redirect)
+      if (((HttpWebResponse) response).StatusCode == HttpStatusCode.Moved || ((HttpWebResponse) response).StatusCode == HttpStatusCode.Redirect)
       {
-        if (!string.IsNullOrEmpty(response.Headers["Location"]))
+        if (!string.IsNullOrEmpty (response.Headers["Location"]))
         {
-          return ExecuteCalDavRequest(new Uri(response.Headers["Location"]), modifier, requestBody);
+          return ExecuteCalDavRequest (new Uri (response.Headers["Location"]), modifier, requestBody);
         }
         else
         {
-          s_logger.Warn("Ignoring Redirection without Location header.");
+          s_logger.Warn ("Ignoring Redirection without Location header.");
         }
       }
       return response;

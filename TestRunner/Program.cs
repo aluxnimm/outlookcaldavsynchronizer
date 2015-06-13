@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Linq;
 using System.Reflection;
@@ -30,12 +31,11 @@ namespace TestRunner
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    private static readonly ICalDavDataAccess s_dataAccess = new CalDavDataAccess (new Uri ("XXXXXXXXXXXXXXXXX"), "XXXXXXXXX", "XXXXXXXXX", TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(5));
+    private static readonly ICalDavDataAccess s_dataAccess = new CalDavDataAccess (new Uri ("XXXXXXXXXXXXXXXXX"), "XXXXXXXXX", "XXXXXXXXX", TimeSpan.FromMinutes (1), TimeSpan.FromMinutes (5));
 
     private static void Main (string[] args)
     {
-
-      Console.WriteLine (new Uri("mailto:Gerhard@blablubb.com").AbsolutePath);
+      Console.WriteLine (new Uri ("mailto:Gerhard@blablubb.com").AbsolutePath);
 
       //XmlConfigurator.Configure();
 
@@ -52,16 +52,15 @@ namespace TestRunner
       s_logger.InfoFormat ("blablubb");
     }
 
-   
 
     private static void TestCalDavDataAccess ()
     {
-      var eventRepository = new CalDavRepository (s_dataAccess, new DDay.iCal.Serialization.iCalendar.iCalendarSerializer (),CalDavRepository.EntityType.Event);
+      var eventRepository = new CalDavRepository (s_dataAccess, new DDay.iCal.Serialization.iCalendar.iCalendarSerializer(), CalDavRepository.EntityType.Event);
 
       var versions = eventRepository.GetVersions (DateTime.Now.AddDays (-1000), DateTime.Now.AddDays (1000));
       var events = eventRepository.Get (versions.Keys, NullTotalProgress.Instance);
 
-    
+
       //foreach (var e in s_dataAccess.GetEvents (null, null))
       //  s_dataAccess.DeleteEvent (e);
 
@@ -81,13 +80,6 @@ namespace TestRunner
       //}
 
 
-
-
-
-
-
-    
-
       //eventRepository.Update (evt.Id, e =>
       //{
       //  e.Summary = "blubb";
@@ -96,8 +88,6 @@ namespace TestRunner
       //  e.DTEnd = new iCalDateTime (DateTime.UtcNow.AddHours (-3));
       //  return e;
       //});
-
-    
     }
 
 

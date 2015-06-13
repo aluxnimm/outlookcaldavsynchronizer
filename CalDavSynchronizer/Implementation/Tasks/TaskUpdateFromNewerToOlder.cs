@@ -35,13 +35,12 @@ namespace CalDavSynchronizer.Implementation.Tasks
     {
       get
       {
-
         // Assume that no modification means, that the item is never modified. Therefore it must be new. 
         var todo = _bEntity.Todos[0];
         if (todo.LastModified == null)
           return false;
 
-        return _aEntity.Inner.LastModificationTime.ToUniversalTime () >= todo.LastModified.UTC;
+        return _aEntity.Inner.LastModificationTime.ToUniversalTime() >= todo.LastModified.UTC;
       }
     }
   }

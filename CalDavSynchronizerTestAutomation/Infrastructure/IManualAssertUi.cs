@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CalDavSynchronizerTestAutomation.Infrastructure
 {
-  interface IManualAssertUi
+  internal interface IManualAssertUi
   {
     bool Assert (string instruction);
   }

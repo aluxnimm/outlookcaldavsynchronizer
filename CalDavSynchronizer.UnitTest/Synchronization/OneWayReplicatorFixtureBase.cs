@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using CalDavSynchronizer.Generic.Synchronization;
 using CalDavSynchronizer.Generic.Synchronization.StateCreationStrategies;
@@ -21,13 +22,11 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
 {
   internal class OneWayReplicatorFixtureBase : SynchronizerFixtureBase
   {
-
     public bool Synchronize ()
     {
       return SynchronizeInternal (
-          new OneWayInitialSyncStateCreationStrategy_AToB<string, int,string, string, int,string> (_factory, OneWaySyncMode.Replicate)
+          new OneWayInitialSyncStateCreationStrategy_AToB<string, int, string, string, int, string> (_factory, OneWaySyncMode.Replicate)
           );
     }
-    
   }
 }

@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,6 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
 {
   internal class TestSynchronizerSetup : ISynchronizerContext<string, int, string, string, int, string>
   {
-
     public TestRepository _localRepository;
     public TestRepository _serverRepository;
 
@@ -37,7 +37,6 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
 
     public TestSynchronizerSetup ()
     {
-
       _localRepository = new TestRepository ("l");
       _serverRepository = new TestRepository ("s");
 
@@ -88,14 +87,14 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
           v1.Version,
           v3.Id,
           v3.Version
-        ));
+          ));
 
       _entityRelationData.Add (new EntityRelationData (
           v2.Id,
           v2.Version,
           v4.Id,
           v4.Version
-        ));
+          ));
     }
 
     public IEntityMapper<string, string> EntityMapper
@@ -124,7 +123,8 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
       get { return DateTime.Now; }
     }
 
-    public IInitialEntityMatcher<string, string, int, string, string, int> InitialEntityMatcher {
+    public IInitialEntityMatcher<string, string, int, string, string, int> InitialEntityMatcher
+    {
       get { throw new NotImplementedException(); }
     }
 
@@ -132,7 +132,7 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
     {
       get { return _entityRelationDataFactory; }
     }
-    
+
 
     public IEnumerable<IEntityRelationData<string, int, string, int>> LoadEntityRelationData ()
     {

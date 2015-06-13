@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,9 +33,9 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
     }
 
 
-    public  Dictionary<int, int> GetVersions (DateTime @from, DateTime to)
+    public Dictionary<int, int> GetVersions (DateTime @from, DateTime to)
     {
-      return _persons.ToDictionary(kv => kv.Id, kv => kv.Version);
+      return _persons.ToDictionary (kv => kv.Id, kv => kv.Version);
     }
 
     public IReadOnlyDictionary<int, PersonA> Get (ICollection<int> ids, ITotalProgress progress)
@@ -45,20 +46,19 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
 
     public void Cleanup (IReadOnlyDictionary<int, PersonA> entities)
     {
-      
     }
 
-    public  bool Delete (int entityId)
+    public bool Delete (int entityId)
     {
       throw new NotImplementedException();
     }
 
-    public  EntityIdWithVersion<int, int> Update (int entityId,PersonA entityToUpdate, Func<PersonA, PersonA> entityModifier)
+    public EntityIdWithVersion<int, int> Update (int entityId, PersonA entityToUpdate, Func<PersonA, PersonA> entityModifier)
     {
       throw new NotImplementedException();
     }
 
-    public  EntityIdWithVersion<int, int> Create (Func<PersonA, PersonA> entityInitializer)
+    public EntityIdWithVersion<int, int> Create (Func<PersonA, PersonA> entityInitializer)
     {
       throw new NotImplementedException();
     }

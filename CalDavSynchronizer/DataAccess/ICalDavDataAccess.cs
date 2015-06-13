@@ -27,7 +27,7 @@ namespace CalDavSynchronizer.DataAccess
 
     Dictionary<Uri, string> GetEvents (DateTime? from, DateTime? to);
     Dictionary<Uri, string> GetTodos (DateTime? from, DateTime? to);
-    
+
     EntityIdWithVersion<Uri, string> UpdateEntity (EntityIdWithVersion<Uri, string> evt, string iCalData);
     bool DeleteEntity (EntityIdWithVersion<Uri, string> evt);
     Dictionary<Uri, string> GetEntities (IEnumerable<Uri> eventUrls);

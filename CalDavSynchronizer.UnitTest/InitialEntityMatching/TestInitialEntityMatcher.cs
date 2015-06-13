@@ -13,12 +13,13 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using CalDavSynchronizer.Generic.InitialEntityMatching;
 
 namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
 {
-  internal class TestInitialEntityMatcher : InitialEntityMatcherByPropertyGrouping<PersonA,int,int,int,PersonB,string,string,string>
+  internal class TestInitialEntityMatcher : InitialEntityMatcherByPropertyGrouping<PersonA, int, int, int, PersonB, string, string, string>
   {
     protected override bool AreEqual (PersonA atypeEntity, PersonB btypeEntity)
     {
@@ -41,8 +42,4 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
       return value.ToString();
     }
   }
-
-
-  
-
 }

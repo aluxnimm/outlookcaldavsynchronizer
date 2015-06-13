@@ -68,7 +68,7 @@ namespace CalDavSynchronizer.Scheduling
         }
         catch (Exception x)
         {
-          ExceptionHandler.Instance.LogException (x, s_logger); 
+          ExceptionHandler.Instance.LogException (x, s_logger);
         }
       }
       _workersById = workersById;

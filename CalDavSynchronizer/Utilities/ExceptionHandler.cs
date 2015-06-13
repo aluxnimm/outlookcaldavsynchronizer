@@ -78,15 +78,15 @@ namespace CalDavSynchronizer.Utilities
     private string GetAdditionalExceptionMessage (WebException x)
     {
       StringBuilder stringBuilder = new StringBuilder();
-      
+
       stringBuilder.AppendFormat ("StatusCode: {0}", GetStatusCodeNoThrow (x));
       stringBuilder.AppendLine();
 
       stringBuilder.AppendFormat ("StatusDescription: {0}", GetStatusDescriptionNoThrow (x));
-      stringBuilder.AppendLine ();
+      stringBuilder.AppendLine();
 
       stringBuilder.AppendFormat ("Body: {0}", GetResponseBodyNoThrow (x));
-      stringBuilder.AppendLine ();
+      stringBuilder.AppendLine();
 
       return stringBuilder.ToString();
     }
@@ -139,6 +139,5 @@ namespace CalDavSynchronizer.Utilities
         return string.Empty;
       }
     }
-
   }
 }

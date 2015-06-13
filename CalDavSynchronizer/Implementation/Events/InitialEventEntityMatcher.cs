@@ -36,12 +36,12 @@ namespace CalDavSynchronizer.Implementation.Events
 
     protected override string GetAtypePropertyValue (AppointmentItemWrapper atypeEntity)
     {
-      return (atypeEntity.Inner.Subject!=null?atypeEntity.Inner.Subject.ToLower():string.Empty);
+      return (atypeEntity.Inner.Subject != null ? atypeEntity.Inner.Subject.ToLower() : string.Empty);
     }
 
     protected override string GetBtypePropertyValue (IICalendar btypeEntity)
     {
-      return (btypeEntity.Events[0].Summary!=null?btypeEntity.Events[0].Summary.ToLower():string.Empty);
+      return (btypeEntity.Events[0].Summary != null ? btypeEntity.Events[0].Summary.ToLower() : string.Empty);
     }
 
     protected override string MapAtypePropertyValue (string value)

@@ -12,17 +12,16 @@ namespace CalDavSynchronizerTestAutomation
   {
     private void TestAutomationRibbon_Load (object sender, RibbonUIEventArgs e)
     {
-
     }
 
     private void StartTestsButton_Click (object sender, RibbonControlEventArgs e)
     {
-      var display = new TestResultDisplay ();
-      display.Show ();
-      var runner  = new TestRunner (display);
+      var display = new TestResultDisplay();
+      display.Show();
+      var runner = new TestRunner (display);
       ManualAssert.Initialize (display);
       OutlookTestContext.Initialize (Globals.ThisAddIn.Application.Session);
-      runner.Run (Assembly.GetExecutingAssembly ());
+      runner.Run (Assembly.GetExecutingAssembly());
     }
   }
 }

@@ -13,6 +13,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.Generic.ProgressReport;
@@ -23,7 +24,6 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
   [TestFixture]
   public class InitialEntityMatcherByPropertyGroupingFixture
   {
-
     [Test]
     public void PopulateEntityRelationStorage_OneRelationMatches ()
     {
@@ -65,9 +65,6 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
       Assert.That (relation.AtypeVersion, Is.EqualTo (1));
       Assert.That (relation.BtypeId, Is.EqualTo ("two"));
       Assert.That (relation.BtypeVersion, Is.EqualTo ("1"));
-
-    
     }
-
   }
 }

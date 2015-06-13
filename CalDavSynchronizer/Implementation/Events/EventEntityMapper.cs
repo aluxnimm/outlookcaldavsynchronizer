@@ -319,7 +319,7 @@ namespace CalDavSynchronizer.Implementation.Events
       string emailAddress = string.Empty;
 
       if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeUserAddressEntry
-       || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeRemoteUserAddressEntry)
+          || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeRemoteUserAddressEntry)
       {
         using (var exchUser = GenericComObjectWrapper.Create (addressEntry.GetExchangeUser()))
         {
@@ -337,7 +337,7 @@ namespace CalDavSynchronizer.Implementation.Events
       {
         emailAddress = addressEntry.GetPropertySafe (PR_SMTP_ADDRESS);
       }
-     
+
       return string.Format ("MAILTO:{0}", emailAddress);
     }
 
