@@ -84,7 +84,7 @@ namespace CalDavSynchronizer.Contracts
       options.DaysToSynchronizeInThePast = 180;
       options.SynchronizationIntervalInMinutes = 30;
       options.SynchronizationMode = SynchronizationMode.MergeInBothDirections;
-      options.Name = "<Enter name here>";
+      options.Name = "<New Profile>";
       options.Id = Guid.NewGuid();
       options.Inactive = false;
       return options;

@@ -43,8 +43,7 @@ namespace CalDavSynchronizer.Ui
 
     public event EventHandler DeletionRequested;
     public event EventHandler CopyRequested;
-    public event EventHandler<bool> InactiveChanged;
-    public event EventHandler<string> DisplayNameChanged;
+    public event EventHandler<HeaderEventArgs> HeaderChanged;
 
     private readonly IList<Item<int>> _availableSyncIntervals =
         (new Item<int>[] { new Item<int> (0, "Manual only") })
@@ -93,7 +92,7 @@ namespace CalDavSynchronizer.Ui
 
     private void _inactiveCheckBox_CheckedChanged (object sender, EventArgs e)
     {
-      UpdateInactiveDisplay();
+      OnHeaderChanged();
     }
 
     private void _synchronizationModeComboBox_SelectedValueChanged (object sender, EventArgs e)
@@ -117,28 +116,17 @@ namespace CalDavSynchronizer.Ui
 
     private void _profileNameTextBox_TextChanged (object sender, EventArgs e)
     {
-      OnDisplayNameChanged();
+      OnHeaderChanged();
     }
 
 
-    private void OnDisplayNameChanged ()
+    private void OnHeaderChanged ()
     {
-      string folderSpecifier;
-      switch (_folderType)
+      if (HeaderChanged != null)
       {
-        case OlItemType.olAppointmentItem:
-          folderSpecifier = "(C)";
-          break;
-        case OlItemType.olTaskItem:
-          folderSpecifier = "(T)";
-          break;
-        default:
-          folderSpecifier = "(ERROR)";
-          break;
+        var args = new HeaderEventArgs (_profileNameTextBox.Text, _inactiveCheckBox.Checked, _folderType);
+        HeaderChanged (this, args);
       }
-
-      if (DisplayNameChanged != null)
-        DisplayNameChanged (this, _profileNameTextBox.Text + " " + folderSpecifier);
     }
 
 
@@ -238,7 +226,7 @@ namespace CalDavSynchronizer.Ui
         _optionsId = value.Id;
         UpdateFolder (value.OutlookFolderEntryId, value.OutlookFolderStoreId);
         UpdateConflictResolutionComboBoxEnabled();
-        UpdateInactiveDisplay();
+        OnHeaderChanged();
       }
       get
       {
@@ -265,13 +253,6 @@ namespace CalDavSynchronizer.Ui
       }
     }
 
-    private void UpdateInactiveDisplay ()
-    {
-      if (InactiveChanged != null)
-        InactiveChanged (this, _inactiveCheckBox.Checked);
-    }
-
-
     private bool IsTaskSynchronizationEnabled
     {
       get
@@ -290,7 +271,7 @@ namespace CalDavSynchronizer.Ui
       {
         if (folder.DefaultItemType != OlItemType.olAppointmentItem && folder.DefaultItemType != OlItemType.olTaskItem)
         {
-          string wrongFolderMessage = string.Format ("Wrong ItemType in folder <{0}>. It should be a calendar or task folder.", folder.Name);
+          string wrongFolderMessage = string.Format ("Wrong ItemType in folder '{0}'. It should be a calendar or task folder.", folder.Name);
           MessageBox.Show (wrongFolderMessage, "Configuration Error");
           return;
         }
@@ -299,7 +280,7 @@ namespace CalDavSynchronizer.Ui
       {
         if (folder.DefaultItemType != OlItemType.olAppointmentItem)
         {
-          string wrongFolderMessage = string.Format ("Wrong ItemType in folder <{0}>. It should be a calendar folder.", folder.Name);
+          string wrongFolderMessage = string.Format ("Wrong ItemType in folder '{0}'. It should be a calendar folder.", folder.Name);
           MessageBox.Show (wrongFolderMessage, "Configuration Error");
           return;
         }
@@ -310,7 +291,7 @@ namespace CalDavSynchronizer.Ui
       _folderStoreId = folder.StoreID;
       _outoookFolderNameTextBox.Text = folder.Name;
       _folderType = folder.DefaultItemType;
-      OnDisplayNameChanged();
+      OnHeaderChanged();
     }
 
     private void UpdateFolder (string folderEntryId, string folderStoreId)

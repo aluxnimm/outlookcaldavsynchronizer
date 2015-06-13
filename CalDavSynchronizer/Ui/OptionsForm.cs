@@ -71,14 +71,29 @@ namespace CalDavSynchronizer.Ui
       _tabControl.TabPages.Add (tabPage);
 
       optionsControl.DeletionRequested += delegate { _tabControl.TabPages.Remove (tabPage); };
-      optionsControl.DisplayNameChanged += delegate (object sender, string e) { tabPage.Text = e; };
 
-      optionsControl.InactiveChanged += delegate (object sender, bool inactive)
+      optionsControl.HeaderChanged += delegate (object sender, HeaderEventArgs e)
       {
-        if (inactive)
-          tabPage.ImageKey = "inactive";
-        else
-          tabPage.ImageKey = null;
+        tabPage.Text = e.Name;
+
+        switch (e.FolderItemType)
+        {
+          case OlItemType.olAppointmentItem:
+            if (e.IsInactive)
+              tabPage.ImageKey = "AppointmentDisabled";
+            else
+              tabPage.ImageKey = "Appointment";
+            break;
+          case OlItemType.olTaskItem:
+            if (e.IsInactive)
+              tabPage.ImageKey = "TaskDisabled";
+            else
+              tabPage.ImageKey = "Task";
+            break;
+          default:
+            tabPage.ImageKey = null;
+            break;
+        }
       };
 
       optionsControl.CopyRequested += delegate

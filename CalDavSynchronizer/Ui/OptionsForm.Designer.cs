@@ -77,6 +77,10 @@ namespace CalDavSynchronizer.Ui
       this._tabImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("_tabImageList.ImageStream")));
       this._tabImageList.TransparentColor = System.Drawing.Color.Transparent;
       this._tabImageList.Images.SetKeyName(0, "inactive");
+      this._tabImageList.Images.SetKeyName(1, "Appointment");
+      this._tabImageList.Images.SetKeyName(2, "AppointmentDisabled");
+      this._tabImageList.Images.SetKeyName(3, "Task");
+      this._tabImageList.Images.SetKeyName(4, "TaskDisabled");
       // 
       // _addProfileButton
       // 
