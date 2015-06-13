@@ -68,16 +68,19 @@ namespace CalDavSynchronizer.Implementation
       }
     }
 
-    public IReadOnlyDictionary<Uri, IICalendar> Get (ICollection<Uri> ids)
+    public Task<IReadOnlyDictionary<Uri, IICalendar>> Get (ICollection<Uri> ids)
     {
-      if (ids.Count == 0)
-        return new Dictionary<Uri, IICalendar>();
-
-      using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("CalDavRepository.Get ({0} entitie(s))", ids.Count)))
+      return Task.Factory.StartNew (() =>
       {
-        var entities = _calDavDataAccess.GetEntities (ids);
-        return ParallelDeserialize (entities);
-      }
+        if (ids.Count == 0)
+          return new Dictionary<Uri, IICalendar>();
+
+        using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("CalDavRepository.Get ({0} entitie(s))", ids.Count)))
+        {
+          var entities = _calDavDataAccess.GetEntities (ids);
+          return ParallelDeserialize (entities);
+        }
+      });
     }
 
     public void Cleanup (IReadOnlyDictionary<Uri, IICalendar> entities)

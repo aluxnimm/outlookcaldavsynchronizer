@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CalDavSynchronizer.Generic.EntityRepositories;
 using CalDavSynchronizer.Generic.EntityVersionManagement;
 using CalDavSynchronizer.Generic.ProgressReport;
@@ -38,7 +39,7 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
       return _persons.ToDictionary (kv => kv.Id, kv => kv.Version);
     }
 
-    public IReadOnlyDictionary<int, PersonA> Get (ICollection<int> ids)
+    public async Task<IReadOnlyDictionary<int, PersonA>> Get (ICollection<int> ids)
     {
       var personsById = _persons.ToDictionary (p => p.Id);
       return ids.Select (id => personsById[id]).ToDictionary (p => p.Id);

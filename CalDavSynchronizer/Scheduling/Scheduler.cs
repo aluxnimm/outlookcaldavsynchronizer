@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Utilities;
@@ -45,11 +46,11 @@ namespace CalDavSynchronizer.Scheduling
     }
 
 
-    private void _synchronizationTimer_Tick (object sender, EventArgs e)
+    private async void _synchronizationTimer_Tick (object sender, EventArgs e)
     {
       _synchronizationTimer.Stop();
       foreach (var worker in _workersById.Values)
-        worker.RunIfRequiredAndReschedule();
+        await worker.RunIfRequiredAndReschedule();
       _synchronizationTimer.Start();
     }
 
@@ -74,10 +75,10 @@ namespace CalDavSynchronizer.Scheduling
       _workersById = workersById;
     }
 
-    public void RunNow ()
+    public async Task RunNow ()
     {
       foreach (var worker in _workersById.Values)
-        worker.RunNoThrowAndReschedule();
+        await worker.RunNoThrowAndReschedule();
     }
   }
 }

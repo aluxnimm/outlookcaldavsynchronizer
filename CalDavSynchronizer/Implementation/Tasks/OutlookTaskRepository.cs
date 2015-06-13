@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using CalDavSynchronizer.Generic.EntityRepositories;
 using CalDavSynchronizer.Generic.EntityVersionManagement;
 using CalDavSynchronizer.Generic.ProgressReport;
@@ -76,7 +77,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       return value.ToString ("g", _currentCultureInfo);
     }
 
-    public IReadOnlyDictionary<string, TaskItemWrapper> Get (ICollection<string> ids)
+    public async Task<IReadOnlyDictionary<string, TaskItemWrapper>> Get (ICollection<string> ids)
     {
       var storeId = _taskFolder.StoreID;
       return ids.ToDictionary (id => id, id => new TaskItemWrapper ((TaskItem) _mapiNameSpace.GetItemFromID (id, storeId), entryId => (TaskItem) _mapiNameSpace.GetItemFromID (entryId, storeId)));
@@ -97,7 +98,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
     public bool Delete (string entityId)
     {
-      using (var entityWrapper = Get (new[] { entityId }).Values.SingleOrDefault())
+      using (var entityWrapper = Get (new[] { entityId }).Result.Values.SingleOrDefault())
       {
         if (entityWrapper != null)
         {

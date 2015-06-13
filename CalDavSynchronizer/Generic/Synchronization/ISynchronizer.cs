@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Threading.Tasks;
 
 namespace CalDavSynchronizer.Generic.Synchronization
 {
@@ -23,6 +24,6 @@ namespace CalDavSynchronizer.Generic.Synchronization
   /// </summary>
   public interface ISynchronizer
   {
-    bool Synchronize ();
+    Task<bool> Synchronize ();
   }
 }

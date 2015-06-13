@@ -51,7 +51,7 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
           NullTotalProgressFactory.Instance
           );
 
-      return _synchronizer.Synchronize();
+      return _synchronizer.Synchronize().Result;
     }
 
     protected void ExecuteMultipleTimes (Action a)

@@ -18,6 +18,7 @@ using System;
 using System.Configuration;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Diagnostics;
 using CalDavSynchronizer.Generic.EntityRelationManagement;
@@ -61,15 +62,15 @@ namespace CalDavSynchronizer.Scheduling
       _inactive = options.Inactive;
     }
 
-    public void RunIfRequiredAndReschedule ()
+    public async Task RunIfRequiredAndReschedule ()
     {
       if (!_inactive && _interval > TimeSpan.Zero && DateTime.UtcNow > _lastRun + _interval)
       {
-        RunNoThrowAndReschedule();
+        await RunNoThrowAndReschedule();
       }
     }
 
-    public void RunNoThrowAndReschedule ()
+    public async Task RunNoThrowAndReschedule ()
     {
       if (_inactive)
         return;
@@ -78,7 +79,7 @@ namespace CalDavSynchronizer.Scheduling
       {
         using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("Running synchronization profile '{0}'", _profileName)))
         {
-          _synchronizer.Synchronize();
+          await _synchronizer.Synchronize();
         }
       }
       catch (Exception x)

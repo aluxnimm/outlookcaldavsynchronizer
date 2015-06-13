@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using CalDavSynchronizer.Generic.EntityVersionManagement;
 using CalDavSynchronizer.Generic.ProgressReport;
 
@@ -41,7 +42,7 @@ namespace CalDavSynchronizer.Generic.EntityRepositories
       return _inner.GetVersions (@from, to);
     }
 
-    public IReadOnlyDictionary<TEntityId, TEntity> Get (ICollection<TEntityId> ids)
+    public Task<IReadOnlyDictionary<TEntityId, TEntity>> Get (ICollection<TEntityId> ids)
     {
       return _inner.Get (ids);
     }

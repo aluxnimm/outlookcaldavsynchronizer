@@ -18,12 +18,12 @@ namespace CalDavSynchronizer
     {
     }
 
-    private void SynchronizeNowButton_Click (object sender, RibbonControlEventArgs e)
+    private async void SynchronizeNowButton_Click (object sender, RibbonControlEventArgs e)
     {
       try
       {
         s_logger.Info ("Synchronization manually triggered");
-        ThisAddIn.Scheduler.RunNow();
+        await ThisAddIn.Scheduler.RunNow();
       }
       catch (Exception x)
       {

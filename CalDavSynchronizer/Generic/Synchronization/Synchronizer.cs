@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
 using CalDavSynchronizer.Generic.EntityRelationManagement;
 using CalDavSynchronizer.Generic.ProgressReport;
 using CalDavSynchronizer.Generic.Synchronization.StateCreationStrategies;
@@ -48,7 +49,7 @@ namespace CalDavSynchronizer.Generic.Synchronization
     }
 
 
-    public bool Synchronize ()
+    public async Task<bool> Synchronize ()
     {
       s_logger.InfoFormat ("Entered. Syncstrategy '{0}' with Atype='{1}' and Btype='{2}'", _initialSyncStateCreationStrategy.GetType().Name, typeof (TAtypeEntity).Name, typeof (TBtypeEntity).Name);
 
@@ -77,12 +78,12 @@ namespace CalDavSynchronizer.Generic.Synchronization
 
               using (totalProgress.StartARepositoryLoad())
               {
-                aEntities = atypeEntityRepository.Get (atypeRepositoryVersions.Keys);
+                aEntities = await atypeEntityRepository.Get (atypeRepositoryVersions.Keys);
               }
 
               using (totalProgress.StartBRepositoryLoad())
               {
-                bEntities = btypeEntityRepository.Get (btypeRepositoryVersions.Keys);
+                bEntities = await btypeEntityRepository.Get (btypeRepositoryVersions.Keys);
               }
 
               cachedData = _synchronizerContext.InitialEntityMatcher.PopulateEntityRelationStorage (
@@ -139,11 +140,12 @@ namespace CalDavSynchronizer.Generic.Synchronization
               totalProgress.NotifyLoadCount (aEntitesToLoad.Count, bEntitesToLoad.Count);
               using (totalProgress.StartARepositoryLoad())
               {
-                aEntities = atypeEntityRepository.Get (aEntitesToLoad);
+                aEntities = await atypeEntityRepository.Get (aEntitesToLoad);
               }
+
               using (totalProgress.StartBRepositoryLoad())
               {
-                bEntities = btypeEntityRepository.Get (bEntitesToLoad);
+                bEntities = await btypeEntityRepository.Get (bEntitesToLoad);
               }
             }
 

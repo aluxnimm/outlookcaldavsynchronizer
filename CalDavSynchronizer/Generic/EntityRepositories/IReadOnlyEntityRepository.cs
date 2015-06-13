@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using CalDavSynchronizer.Generic.ProgressReport;
 
 namespace CalDavSynchronizer.Generic.EntityRepositories
@@ -26,7 +27,7 @@ namespace CalDavSynchronizer.Generic.EntityRepositories
   public interface IReadOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
   {
     Dictionary<TEntityId, TEntityVersion> GetVersions (DateTime from, DateTime to);
-    IReadOnlyDictionary<TEntityId, TEntity> Get (ICollection<TEntityId> ids);
+    Task<IReadOnlyDictionary<TEntityId, TEntity>> Get (ICollection<TEntityId> ids);
     void Cleanup (IReadOnlyDictionary<TEntityId, TEntity> entities);
   }
 }
