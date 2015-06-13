@@ -140,14 +140,19 @@ namespace CalDavSynchronizer.Implementation
         IICalendar newCalendar = new iCalendar();
         newCalendar = entityModifier (newCalendar);
 
-        for (int i = 0, newSequenceNumber = entityToUpdate.Events.Max (e => e.Sequence) + 1; i < newCalendar.Events.Count; i++, newSequenceNumber++)
+        if (entityToUpdate.Events.Count > 0)
         {
-          newCalendar.Events[i].Sequence = newSequenceNumber;
+          for (int i = 0, newSequenceNumber = entityToUpdate.Events.Max(e => e.Sequence) + 1; i < newCalendar.Events.Count; i++, newSequenceNumber++)
+          {
+            newCalendar.Events[i].Sequence = newSequenceNumber;
+          }
         }
-
-        for (int i = 0, newSequenceNumber = entityToUpdate.Todos.Max (e => e.Sequence) + 1; i < newCalendar.Todos.Count; i++, newSequenceNumber++)
+        if (entityToUpdate.Todos.Count > 0)
         {
-          newCalendar.Todos[i].Sequence = newSequenceNumber;
+          for (int i = 0, newSequenceNumber = entityToUpdate.Todos.Max(e => e.Sequence) + 1; i < newCalendar.Todos.Count; i++, newSequenceNumber++)
+          {
+            newCalendar.Todos[i].Sequence = newSequenceNumber;
+          }
         }
 
         return _calDavDataAccess.UpdateEntity (entityId, SerializeCalendar (newCalendar));
