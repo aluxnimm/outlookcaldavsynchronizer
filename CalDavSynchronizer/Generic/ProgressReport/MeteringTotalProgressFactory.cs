@@ -6,7 +6,7 @@ namespace CalDavSynchronizer.Generic.ProgressReport
   {
     public static readonly ITotalProgressFactory Instance = new NullTotalProgressFactory();
 
-    public ITotalProgressLogger Create (int aLoadCount, int bLoadCount)
+    public ITotalProgressLogger Create ()
     {
       return new MeteringTotalProgressLogger();
     }

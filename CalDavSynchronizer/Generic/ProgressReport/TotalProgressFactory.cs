@@ -17,20 +17,9 @@ namespace CalDavSynchronizer.Generic.ProgressReport
       _loadOperationThresholdForProgressDisplay = loadOperationThresholdForProgressDisplay;
     }
 
-    public ITotalProgressLogger Create (int aLoadCount, int bLoadCount)
+    public ITotalProgressLogger Create ()
     {
-      try
-      {
-        if (aLoadCount + bLoadCount > _loadOperationThresholdForProgressDisplay)
-          return new TotalProgressLogger (_progressUiFactory, aLoadCount, bLoadCount);
-        else
-          return NullTotalProgressLogger.Instance;
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.LogException (x, s_logger);
-        return NullTotalProgressLogger.Instance;
-      }
+      return new TotalProgressContext (_progressUiFactory, _loadOperationThresholdForProgressDisplay);
     }
   }
 }

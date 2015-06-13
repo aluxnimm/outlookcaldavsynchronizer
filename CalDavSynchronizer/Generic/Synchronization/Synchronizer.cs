@@ -52,126 +52,124 @@ namespace CalDavSynchronizer.Generic.Synchronization
     {
       s_logger.InfoFormat ("Entered. Syncstrategy '{0}' with Atype='{1}' and Btype='{2}'", _initialSyncStateCreationStrategy.GetType().Name, typeof (TAtypeEntity).Name, typeof (TBtypeEntity).Name);
 
-      var totalProgress = NullTotalProgressLogger.Instance;
 
       try
       {
-        var atypeEntityRepository = _synchronizerContext.AtypeRepository;
-        var btypeEntityRepository = _synchronizerContext.BtypeRepository;
-
-        var cachedData = _synchronizerContext.LoadEntityRelationData();
-        var atypeRepositoryVersions = atypeEntityRepository.GetVersions (_synchronizerContext.From, _synchronizerContext.To);
-        var btypeRepositoryVersions = btypeEntityRepository.GetVersions (_synchronizerContext.From, _synchronizerContext.To);
-
-        IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> aEntities = null;
-        IReadOnlyDictionary<TBtypeEntityId, TBtypeEntity> bEntities = null;
-
-        try
+        using (var totalProgress = _totalProgressFactory.Create())
         {
-          if (cachedData == null)
+          var atypeEntityRepository = _synchronizerContext.AtypeRepository;
+          var btypeEntityRepository = _synchronizerContext.BtypeRepository;
+
+          var cachedData = _synchronizerContext.LoadEntityRelationData();
+          var atypeRepositoryVersions = atypeEntityRepository.GetVersions (_synchronizerContext.From, _synchronizerContext.To);
+          var btypeRepositoryVersions = btypeEntityRepository.GetVersions (_synchronizerContext.From, _synchronizerContext.To);
+
+          IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> aEntities = null;
+          IReadOnlyDictionary<TBtypeEntityId, TBtypeEntity> bEntities = null;
+
+          try
           {
-            s_logger.Info ("Did not find entity caches. Performing initial population");
+            if (cachedData == null)
+            {
+              s_logger.Info ("Did not find entity caches. Performing initial population");
 
-            totalProgress = _totalProgressFactory.Create (atypeRepositoryVersions.Count, btypeRepositoryVersions.Count);
-            aEntities = atypeEntityRepository.Get (atypeRepositoryVersions.Keys, totalProgress);
-            bEntities = btypeEntityRepository.Get (btypeRepositoryVersions.Keys, totalProgress);
+              totalProgress.NotifyLoadCount (atypeRepositoryVersions.Count, btypeRepositoryVersions.Count);
+              aEntities = atypeEntityRepository.Get (atypeRepositoryVersions.Keys, totalProgress);
+              bEntities = btypeEntityRepository.Get (btypeRepositoryVersions.Keys, totalProgress);
 
-            cachedData = _synchronizerContext.InitialEntityMatcher.PopulateEntityRelationStorage (
-                _synchronizerContext.EntityRelationDataFactory,
-                aEntities,
-                bEntities,
-                atypeRepositoryVersions,
-                btypeRepositoryVersions);
+              cachedData = _synchronizerContext.InitialEntityMatcher.PopulateEntityRelationStorage (
+                  _synchronizerContext.EntityRelationDataFactory,
+                  aEntities,
+                  bEntities,
+                  atypeRepositoryVersions,
+                  btypeRepositoryVersions);
+            }
+
+            var entitySyncStates = new EntitySyncStateContainer<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>();
+
+            var aDeltaLogInfo = new VersionDeltaLoginInformation();
+            var bDeltaLogInfo = new VersionDeltaLoginInformation();
+
+            foreach (var cachedEntityData in cachedData)
+            {
+              TAtypeEntityVersion repositoryAVersion;
+              TBtypeEntityVersion repositoryBVersion;
+
+              var repositoryAVersionAvailable = atypeRepositoryVersions.TryGetValue (cachedEntityData.AtypeId, out repositoryAVersion);
+              var repositoryBVersionAvailable = btypeRepositoryVersions.TryGetValue (cachedEntityData.BtypeId, out repositoryBVersion);
+
+              if (repositoryAVersionAvailable)
+                atypeRepositoryVersions.Remove (cachedEntityData.AtypeId);
+
+              if (repositoryBVersionAvailable)
+                btypeRepositoryVersions.Remove (cachedEntityData.BtypeId);
+
+              var entitySyncState = CreateInitialSyncState (cachedEntityData, repositoryAVersionAvailable, repositoryAVersion, repositoryBVersionAvailable, repositoryBVersion, aDeltaLogInfo, bDeltaLogInfo);
+
+              entitySyncStates.Add (entitySyncState);
+            }
+
+            aDeltaLogInfo.IncAdded (atypeRepositoryVersions.Count);
+            bDeltaLogInfo.IncAdded (btypeRepositoryVersions.Count);
+
+            s_logger.InfoFormat ("Atype delta: {0}", aDeltaLogInfo);
+            s_logger.InfoFormat ("Btype delta: {0}", bDeltaLogInfo);
+
+            foreach (var newA in atypeRepositoryVersions)
+              entitySyncStates.Add (_initialSyncStateCreationStrategy.CreateFor_Added_NotExisting (newA.Key, newA.Value));
+
+            foreach (var newB in btypeRepositoryVersions)
+              entitySyncStates.Add (_initialSyncStateCreationStrategy.CreateFor_NotExisting_Added (newB.Key, newB.Value));
+
+            HashSet<TAtypeEntityId> aEntitesToLoad = new HashSet<TAtypeEntityId>();
+            HashSet<TBtypeEntityId> bEntitesToLoad = new HashSet<TBtypeEntityId>();
+
+            entitySyncStates.Execute (s => s.AddRequiredEntitiesToLoad (aEntitesToLoad.Add, bEntitesToLoad.Add));
+
+            if (aEntities == null && bEntities == null)
+            {
+              totalProgress.NotifyLoadCount (aEntitesToLoad.Count, bEntitesToLoad.Count);
+              aEntities = atypeEntityRepository.Get (aEntitesToLoad, totalProgress);
+              bEntities = btypeEntityRepository.Get (bEntitesToLoad, totalProgress);
+            }
+
+            entitySyncStates.DoTransition (s => s.FetchRequiredEntities (aEntities, bEntities));
+            entitySyncStates.DoTransition (s => s.Resolve());
+
+            // since resolve may change to an new state, required entities have to be fetched again.
+            // an state is allowed only to resolve to another state, if the following states requires equal or less entities!
+            entitySyncStates.DoTransition (s => s.FetchRequiredEntities (aEntities, bEntities));
+
+            using (var progress = totalProgress.StartStep (entitySyncStates.Count, string.Format ("Processing {0} entities...", entitySyncStates.Count)))
+            {
+              entitySyncStates.DoTransition (
+                  s =>
+                  {
+                    var nextState = s.PerformSyncActionNoThrow();
+                    progress.Increase();
+                    return nextState;
+                  });
+            }
+
+            var newData = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
+
+            entitySyncStates.Execute (s => s.AddNewRelationNoThrow (newData.Add));
+
+            entitySyncStates.Dispose();
+
+            _synchronizerContext.SaveEntityRelationData (newData);
           }
-
-          var entitySyncStates = new EntitySyncStateContainer<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>();
-
-          var aDeltaLogInfo = new VersionDeltaLoginInformation();
-          var bDeltaLogInfo = new VersionDeltaLoginInformation();
-
-          foreach (var cachedEntityData in cachedData)
+          finally
           {
-            TAtypeEntityVersion repositoryAVersion;
-            TBtypeEntityVersion repositoryBVersion;
-
-            var repositoryAVersionAvailable = atypeRepositoryVersions.TryGetValue (cachedEntityData.AtypeId, out repositoryAVersion);
-            var repositoryBVersionAvailable = btypeRepositoryVersions.TryGetValue (cachedEntityData.BtypeId, out repositoryBVersion);
-
-            if (repositoryAVersionAvailable)
-              atypeRepositoryVersions.Remove (cachedEntityData.AtypeId);
-
-            if (repositoryBVersionAvailable)
-              btypeRepositoryVersions.Remove (cachedEntityData.BtypeId);
-
-            var entitySyncState = CreateInitialSyncState (cachedEntityData, repositoryAVersionAvailable, repositoryAVersion, repositoryBVersionAvailable, repositoryBVersion, aDeltaLogInfo, bDeltaLogInfo);
-
-            entitySyncStates.Add (entitySyncState);
+            atypeEntityRepository.Cleanup (aEntities);
+            btypeEntityRepository.Cleanup (bEntities);
           }
-
-          aDeltaLogInfo.IncAdded (atypeRepositoryVersions.Count);
-          bDeltaLogInfo.IncAdded (btypeRepositoryVersions.Count);
-
-          s_logger.InfoFormat ("Atype delta: {0}", aDeltaLogInfo);
-          s_logger.InfoFormat ("Btype delta: {0}", bDeltaLogInfo);
-
-          foreach (var newA in atypeRepositoryVersions)
-            entitySyncStates.Add (_initialSyncStateCreationStrategy.CreateFor_Added_NotExisting (newA.Key, newA.Value));
-
-          foreach (var newB in btypeRepositoryVersions)
-            entitySyncStates.Add (_initialSyncStateCreationStrategy.CreateFor_NotExisting_Added (newB.Key, newB.Value));
-
-          HashSet<TAtypeEntityId> aEntitesToLoad = new HashSet<TAtypeEntityId>();
-          HashSet<TBtypeEntityId> bEntitesToLoad = new HashSet<TBtypeEntityId>();
-
-          entitySyncStates.Execute (s => s.AddRequiredEntitiesToLoad (aEntitesToLoad.Add, bEntitesToLoad.Add));
-
-          if (aEntities == null && bEntities == null)
-          {
-            totalProgress = _totalProgressFactory.Create (aEntitesToLoad.Count, bEntitesToLoad.Count);
-            aEntities = atypeEntityRepository.Get (aEntitesToLoad, totalProgress);
-            bEntities = btypeEntityRepository.Get (bEntitesToLoad, totalProgress);
-          }
-
-          entitySyncStates.DoTransition (s => s.FetchRequiredEntities (aEntities, bEntities));
-          entitySyncStates.DoTransition (s => s.Resolve());
-
-          // since resolve may change to an new state, required entities have to be fetched again.
-          // an state is allowed only to resolve to another state, if the following states requires equal or less entities!
-          entitySyncStates.DoTransition (s => s.FetchRequiredEntities (aEntities, bEntities));
-
-          using (var progress = totalProgress.StartStep (entitySyncStates.Count, string.Format ("Processing {0} entities...", entitySyncStates.Count)))
-          {
-            entitySyncStates.DoTransition (
-                s =>
-                {
-                  var nextState = s.PerformSyncActionNoThrow();
-                  progress.Increase();
-                  return nextState;
-                });
-          }
-
-          var newData = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
-
-          entitySyncStates.Execute (s => s.AddNewRelationNoThrow (newData.Add));
-
-          entitySyncStates.Dispose();
-
-          _synchronizerContext.SaveEntityRelationData (newData);
-        }
-        finally
-        {
-          atypeEntityRepository.Cleanup (aEntities);
-          btypeEntityRepository.Cleanup (bEntities);
         }
       }
       catch (Exception x)
       {
         ExceptionHandler.Instance.LogException (x, s_logger);
         return false;
-      }
-      finally
-      {
-        totalProgress.Dispose();
       }
 
       s_logger.DebugFormat ("Exiting.");

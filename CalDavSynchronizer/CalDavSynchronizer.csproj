@@ -186,6 +186,7 @@
     <Compile Include="Generic\ProgressReport\NullTotalProgressFactory.cs" />
     <Compile Include="Generic\ProgressReport\MeteringTotalProgressLogger.cs" />
     <Compile Include="Generic\ProgressReport\ProgressLogger.cs" />
+    <Compile Include="Generic\ProgressReport\TotalProgressContext.cs" />
     <Compile Include="Generic\ProgressReport\TotalProgressLogger.cs" />
     <Compile Include="Generic\ProgressReport\TotalProgressFactory.cs" />
     <Compile Include="Generic\Synchronization\EntitySyncStateContainer.cs" />

@@ -38,5 +38,9 @@ namespace CalDavSynchronizer.Generic.ProgressReport
     {
       return new MeteringProgressLogger (stepCompletedCount);
     }
+
+    public void NotifyLoadCount (int aLoadCount, int bLoadCount)
+    {
+    }
   }
 }

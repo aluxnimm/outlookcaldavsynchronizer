@@ -34,5 +34,9 @@ namespace CalDavSynchronizer.Generic.ProgressReport
     {
       return NullProgressLogger.Instance;
     }
+
+    public void NotifyLoadCount (int aLoadCount, int bLoadCount)
+    {
+    }
   }
 }
