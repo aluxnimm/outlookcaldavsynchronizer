@@ -30,26 +30,42 @@ using DDay.iCal.Serialization;
 using DDay.iCal.Serialization.iCalendar;
 using log4net;
 
-namespace CalDavSynchronizer.Implementation.Events
+namespace CalDavSynchronizer.Implementation
 {
-  public class CalDavEventRepository : IEntityRepository<IICalendar, Uri, string>
+  public class CalDavRepository : IEntityRepository<IICalendar, Uri, string>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private readonly ICalDavDataAccess _calDavDataAccess;
     private readonly IStringSerializer _calendarSerializer;
+    private readonly EntityType _entityType;
 
-    public CalDavEventRepository (ICalDavDataAccess calDavDataAccess, IStringSerializer calendarSerializer)
+    public enum EntityType
+    {
+      Event,
+      Todo
+    }
+
+    public CalDavRepository (ICalDavDataAccess calDavDataAccess, IStringSerializer calendarSerializer, EntityType entityType)
     {
       _calDavDataAccess = calDavDataAccess;
       _calendarSerializer = calendarSerializer;
+      _entityType = entityType;
     }
 
     public Dictionary<Uri, string> GetVersions (DateTime from, DateTime to)
     {
-      using (AutomaticStopwatch.StartInfo (s_logger, "CalDavEventRepository.GetVersions"))
+      using (AutomaticStopwatch.StartInfo (s_logger, "CalDavRepository.GetVersions"))
       {
-        return _calDavDataAccess.GetEvents (from, to);
+        switch (_entityType)
+        {
+          case EntityType.Event:
+            return _calDavDataAccess.GetEvents (from, to);
+          case EntityType.Todo:
+            return _calDavDataAccess.GetTodos (from, to);
+          default:
+            throw new NotImplementedException (string.Format ("EntityType '{0}' not implemented.", _entityType));
+        }
       }
     }
 
@@ -62,18 +78,18 @@ namespace CalDavSynchronizer.Implementation.Events
         return new Dictionary<Uri, IICalendar>();
       }
 
-      using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("CalDavEventRepository.Get ({0} entitie(s))", ids.Count)))
+      using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("CalDavRepository.Get ({0} entitie(s))", ids.Count)))
       {
-        Dictionary<Uri, string> events;
+        Dictionary<Uri, string> entities;
         using (var stepProgress = progress.StartStep (ids.Count, string.Format ("Loading {0} entities from CalDav-Server...", ids.Count)))
         {
-          events = _calDavDataAccess.GetEvents (ids);
+          entities = _calDavDataAccess.GetEntities (ids);
           stepProgress.IncreaseBy (ids.Count);
         }
 
-        using (var stepProgress = progress.StartStep (events.Count, string.Format ("Deserializing {0} CalDav entities...", events.Count)))
+        using (var stepProgress = progress.StartStep (entities.Count, string.Format ("Deserializing {0} CalDav entities...", entities.Count)))
         {
-          return ParallelDeserialize (events);
+          return ParallelDeserialize (entities);
         }
       }
     }
@@ -83,16 +99,16 @@ namespace CalDavSynchronizer.Implementation.Events
       // nothing to do
     }
 
-    private IReadOnlyDictionary<Uri, IICalendar> ParallelDeserialize (IReadOnlyDictionary<Uri, string> serializedEvents)
+    private IReadOnlyDictionary<Uri, IICalendar> ParallelDeserialize (IReadOnlyDictionary<Uri, string> serializedEntities)
     {
       var result = new Dictionary<Uri, IICalendar>();
       Parallel.ForEach (
-          serializedEvents,
+          serializedEntities,
           () => Tuple.Create (new iCalendarSerializer(), new List<Tuple<Uri, IICalendar>>()),
           (serialized, loopState, threadLocal) =>
           {
             IICalendar calendar;
-            if (TryDeserializeICalEvent (serialized.Value, out calendar, serialized.Key, threadLocal.Item1))
+            if (TryDeserializeCalendar (serialized.Value, out calendar, serialized.Key, threadLocal.Item1))
               threadLocal.Item2.Add (Tuple.Create (serialized.Key, calendar));
             return threadLocal;
           },
@@ -113,7 +129,7 @@ namespace CalDavSynchronizer.Implementation.Events
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
-        return _calDavDataAccess.DeleteEvent (entityId);
+        return _calDavDataAccess.DeleteEntity (entityId);
       }
     }
 
@@ -129,7 +145,12 @@ namespace CalDavSynchronizer.Implementation.Events
           newCalendar.Events[i].Sequence = newSequenceNumber;
         }
 
-        return _calDavDataAccess.UpdateEvent (entityId, SerializeCalEvent (newCalendar));
+        for (int i = 0, newSequenceNumber = entityToUpdate.Todos.Max (e => e.Sequence) + 1; i < newCalendar.Todos.Count; i++, newSequenceNumber++)
+        {
+          newCalendar.Todos[i].Sequence = newSequenceNumber;
+        }
+
+        return _calDavDataAccess.UpdateEntity (entityId, SerializeCalendar (newCalendar));
       }
     }
 
@@ -143,32 +164,37 @@ namespace CalDavSynchronizer.Implementation.Events
         {
           newCalendar.Events[i].Sequence = i;
         }
-        return _calDavDataAccess.CreateEvent (SerializeCalEvent (newCalendar));
+        for (int i = 0; i < newCalendar.Todos.Count; i++)
+        {
+          newCalendar.Todos[i].Sequence = i;
+        }
+
+        return _calDavDataAccess.CreateEntity (SerializeCalendar (newCalendar));
       }
     }
 
 
-    private string SerializeCalEvent (IICalendar calendar)
+    private string SerializeCalendar (IICalendar calendar)
     {
       return _calendarSerializer.SerializeToString (calendar);
     }
 
-    private static bool TryDeserializeICalEvent (string iCalData, out IICalendar calendar, Uri uriOfEventForLogging, IStringSerializer calendarSerializer)
+    private static bool TryDeserializeCalendar (string iCalData, out IICalendar calendar, Uri uriOfCalendarForLogging, IStringSerializer calendarSerializer)
     {
       calendar = null;
       try
       {
-        calendar = DeserializeICalEvent (iCalData, calendarSerializer);
+        calendar = DeserializeCalendar (iCalData, calendarSerializer);
         return true;
       }
       catch (Exception x)
       {
-        s_logger.Error (string.Format ("Could not deserilaize ICalData of '{0}':\r\n{1}", uriOfEventForLogging, iCalData), x);
+        s_logger.Error (string.Format ("Could not deserilaize ICalData of '{0}':\r\n{1}", uriOfCalendarForLogging, iCalData), x);
         return false;
       }
     }
 
-    private static IICalendar DeserializeICalEvent (string iCalData, IStringSerializer calendarSerializer)
+    private static IICalendar DeserializeCalendar (string iCalData, IStringSerializer calendarSerializer)
     {
       using (var reader = new StringReader (iCalData))
       {

@@ -60,7 +60,7 @@ namespace CalDavSynchronizer.Implementation.Events
       var calendarFolder = (Folder) outlookSession.GetFolderFromID (options.OutlookFolderEntryId, options.OutlookFolderStoreId);
       _atypeRepository = new OutlookEventRepository (calendarFolder, outlookSession);
 
-      _btypeRepository = new CalDavEventRepository (
+      _btypeRepository = new CalDavRepository (
           new CalDavDataAccess (
               new Uri (options.CalenderUrl),
               options.UserName,
@@ -68,7 +68,8 @@ namespace CalDavSynchronizer.Implementation.Events
               connectTimeout,
               readWriteTimeout
               ),
-          new iCalendarSerializer());
+          new iCalendarSerializer(),
+          CalDavRepository.EntityType.Event);
 
       if (StringComparer.InvariantCultureIgnoreCase.Compare (new Uri (options.CalenderUrl).Host, "www.google.com") == 0)
       {

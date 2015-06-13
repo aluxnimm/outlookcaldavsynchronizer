@@ -24,9 +24,9 @@ using DDay.iCal;
 namespace CalDavSynchronizer.Implementation.Tasks
 {
   internal class TaskUpdateFromNewerToOlder
-      : UpdateFromNewerToOlder<string, DateTime, TaskItemWrapper, Uri, string, ITodo>
+      : UpdateFromNewerToOlder<string, DateTime, TaskItemWrapper, Uri, string, IICalendar>
   {
-    public TaskUpdateFromNewerToOlder (EntitySyncStateEnvironment<string, DateTime, TaskItemWrapper, Uri, string, ITodo> environment, IEntityRelationData<string, DateTime, Uri, string> knownData, DateTime newA, string newB)
+    public TaskUpdateFromNewerToOlder (EntitySyncStateEnvironment<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> environment, IEntityRelationData<string, DateTime, Uri, string> knownData, DateTime newA, string newB)
         : base (environment, knownData, newA, newB)
     {
     }
@@ -35,11 +35,13 @@ namespace CalDavSynchronizer.Implementation.Tasks
     {
       get
       {
+
         // Assume that no modification means, that the item is never modified. Therefore it must be new. 
-        if (_bEntity.LastModified == null)
+        var todo = _bEntity.Todos[0];
+        if (todo.LastModified == null)
           return false;
 
-        return _aEntity.Inner.LastModificationTime.ToUniversalTime () >= _bEntity.LastModified.UTC;
+        return _aEntity.Inner.LastModificationTime.ToUniversalTime () >= todo.LastModified.UTC;
       }
     }
   }

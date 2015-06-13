@@ -26,12 +26,13 @@ namespace CalDavSynchronizer.DataAccess
     bool IsResourceCalender ();
 
     Dictionary<Uri, string> GetEvents (DateTime? from, DateTime? to);
-
-    EntityIdWithVersion<Uri, string> UpdateEvent (EntityIdWithVersion<Uri, string> evt, string iCalData);
-    bool DeleteEvent (EntityIdWithVersion<Uri, string> evt);
-    Dictionary<Uri, string> GetEvents (IEnumerable<Uri> eventUrls);
-    EntityIdWithVersion<Uri, string> CreateEvent (string iCalData);
-    bool DeleteEvent (Uri uri);
-    EntityIdWithVersion<Uri, string> UpdateEvent (Uri url, string iCalData);
+    Dictionary<Uri, string> GetTodos (DateTime? from, DateTime? to);
+    
+    EntityIdWithVersion<Uri, string> UpdateEntity (EntityIdWithVersion<Uri, string> evt, string iCalData);
+    bool DeleteEntity (EntityIdWithVersion<Uri, string> evt);
+    Dictionary<Uri, string> GetEntities (IEnumerable<Uri> eventUrls);
+    EntityIdWithVersion<Uri, string> CreateEntity (string iCalData);
+    bool DeleteEntity (Uri uri);
+    EntityIdWithVersion<Uri, string> UpdateEntity (Uri url, string iCalData);
   }
 }

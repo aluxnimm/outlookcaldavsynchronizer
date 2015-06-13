@@ -26,14 +26,14 @@ using DDay.iCal;
 namespace CalDavSynchronizer.Implementation.Tasks
 {
   internal class TaskEntityConflictSyncStateFactory_Automatic
-      : EntityConflictSyncStateFactory_Automatic<string, DateTime, TaskItemWrapper, Uri, string, ITodo>
+      : EntityConflictSyncStateFactory_Automatic<string, DateTime, TaskItemWrapper, Uri, string, IICalendar>
   {
-    public TaskEntityConflictSyncStateFactory_Automatic (EntitySyncStateEnvironment<string, DateTime, TaskItemWrapper, Uri, string, ITodo> environment)
+    public TaskEntityConflictSyncStateFactory_Automatic (EntitySyncStateEnvironment<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> environment)
         : base (environment)
     {
     }
 
-    protected override IEntitySyncState<string, DateTime, TaskItemWrapper, Uri, string, ITodo> Create_FromNewerToOlder (IEntityRelationData<string, DateTime, Uri, string> knownData, DateTime newA, string newB)
+    protected override IEntitySyncState<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> Create_FromNewerToOlder (IEntityRelationData<string, DateTime, Uri, string> knownData, DateTime newA, string newB)
     {
       return new TaskUpdateFromNewerToOlder (
           _environment,

@@ -1,24 +1,35 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CalDavSynchronizer.Generic.EntityMapping;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using DDay.iCal;
 
 namespace CalDavSynchronizer.Implementation.Tasks
 {
-  class TaskMapper :  IEntityMapper<TaskItemWrapper, ITodo>
+  internal class TaskMapper : IEntityMapper<TaskItemWrapper, IICalendar>
   {
-    public ITodo Map1To2 (TaskItemWrapper source, ITodo target)
+    public IICalendar Map1To2 (TaskItemWrapper source, IICalendar targetCalender)
     {
-      throw new NotImplementedException();
+      ITodo target = new Todo();
+      targetCalender.Todos.Add (target);
+      Map1To2 (source, target);
+      return targetCalender;
+    }
+
+    public void Map1To2 (TaskItemWrapper source, ITodo target)
+    {
+      target.Summary = source.Inner.Subject;
+    }
+
+    public TaskItemWrapper Map2To1 (IICalendar sourceCalendar, TaskItemWrapper target)
+    {
+      var source = sourceCalendar.Todos[0];
+      return Map2To1 (source, target);
     }
 
     public TaskItemWrapper Map2To1 (ITodo source, TaskItemWrapper target)
     {
-      throw new NotImplementedException();
+      target.Inner.Subject = source.Summary;
+      return target;
     }
   }
 }

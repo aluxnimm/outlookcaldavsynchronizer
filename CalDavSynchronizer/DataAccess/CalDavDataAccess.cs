@@ -105,7 +105,19 @@ namespace CalDavSynchronizer.DataAccess
 
     private const string s_calDavDateTimeFormatString = "yyyyMMddThhmmssZ";
 
+
     public Dictionary<Uri, string> GetEvents (DateTime? from, DateTime? to)
+    {
+      return GetEntities (from, to, "VEVENT");
+    }
+
+    public Dictionary<Uri, string> GetTodos (DateTime? from, DateTime? to)
+    {
+      return GetEntities (from, to, "VTODO");
+    }
+
+
+    private Dictionary<Uri, string> GetEntities (DateTime? from, DateTime? to, string entityType)
     {
       if (from.HasValue != to.HasValue)
         throw new ArgumentException ("Either both or no boundary has to be set");
@@ -127,13 +139,14 @@ namespace CalDavSynchronizer.DataAccess
                         </D:prop>
                         <C:filter>
                             <C:comp-filter name=""VCALENDAR"">
-                                <C:comp-filter name=""VEVENT"">
-                                  {0}
+                                <C:comp-filter name=""{0}"">
+                                  {1}
                                 </C:comp-filter>
                             </C:comp-filter>
                         </C:filter>
                     </C:calendar-query>
                     ",
+                     entityType,
               from == null ? string.Empty : string.Format (@"<C:time-range start=""{0}"" end=""{1}""/>",
                   from.Value.ToString (s_calDavDateTimeFormatString),
                   to.Value.ToString (s_calDavDateTimeFormatString))
@@ -204,17 +217,17 @@ namespace CalDavSynchronizer.DataAccess
           );
     }
 
-    public EntityIdWithVersion<Uri, string> UpdateEvent (EntityIdWithVersion<Uri, string> evt, string iCalData)
+    public EntityIdWithVersion<Uri, string> UpdateEntity (EntityIdWithVersion<Uri, string> evt, string iCalData)
     {
-      return UpdateEvent (evt.Id, evt.Version, iCalData);
+      return UpdateEntity (evt.Id, evt.Version, iCalData);
     }
 
-    public EntityIdWithVersion<Uri, string> UpdateEvent (Uri url, string iCalData)
+    public EntityIdWithVersion<Uri, string> UpdateEntity (Uri url, string iCalData)
     {
-      return UpdateEvent (url, string.Empty, iCalData);
+      return UpdateEntity (url, string.Empty, iCalData);
     }
 
-    private EntityIdWithVersion<Uri, string> UpdateEvent (Uri url, string etag, string iCalData)
+    private EntityIdWithVersion<Uri, string> UpdateEntity (Uri url, string etag, string iCalData)
     {
       var absoluteEventUrl = new Uri (_calendarUrl, url);
 
@@ -244,7 +257,7 @@ namespace CalDavSynchronizer.DataAccess
       return new EntityIdWithVersion<Uri, string> (url, response.Headers["ETag"]);
     }
 
-    public EntityIdWithVersion<Uri, string> CreateEvent (string iCalData)
+    public EntityIdWithVersion<Uri, string> CreateEntity (string iCalData)
     {
       var eventUrl = new Uri (_calendarUrl, string.Format ("{0:D}.ics", Guid.NewGuid()));
 
@@ -280,17 +293,17 @@ namespace CalDavSynchronizer.DataAccess
       return new EntityIdWithVersion<Uri, string> (new Uri (effectiveEventUrl.AbsolutePath, UriKind.Relative), response.Headers["ETag"]);
     }
 
-    public bool DeleteEvent (EntityIdWithVersion<Uri, string> evt)
+    public bool DeleteEntity (EntityIdWithVersion<Uri, string> evt)
     {
-      return DeleteEvent (evt.Id, evt.Version);
+      return DeleteEntity (evt.Id, evt.Version);
     }
 
-    public bool DeleteEvent (Uri uri)
+    public bool DeleteEntity (Uri uri)
     {
-      return DeleteEvent (uri, string.Empty);
+      return DeleteEntity (uri, string.Empty);
     }
 
-    private bool DeleteEvent (Uri uri, string etag)
+    private bool DeleteEntity (Uri uri, string etag)
     {
       var absoluteEventUrl = new Uri (_calendarUrl, uri);
 
@@ -326,7 +339,7 @@ namespace CalDavSynchronizer.DataAccess
     }
 
 
-    public Dictionary<Uri, string> GetEvents (IEnumerable<Uri> eventUrls)
+    public Dictionary<Uri, string> GetEntities (IEnumerable<Uri> eventUrls)
     {
       var requestBody = @"<?xml version=""1.0""?>
 			                    <C:calendar-multiget xmlns:C=""urn:ietf:params:xml:ns:caldav"" xmlns:D=""DAV:"">

@@ -117,13 +117,13 @@ namespace CalDavSynchronizer.Scheduling
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]));
 
-      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, TaskItemWrapper, Uri, string, ITodo> (
+      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> (
           synchronizationContext.EntityMapper,
           synchronizationContext.AtypeRepository,
           synchronizationContext.BtypeRepository,
           synchronizationContext.EntityRelationDataFactory);
 
-      return new Synchronizer<string, DateTime, TaskItemWrapper, Uri, string, ITodo> (
+      return new Synchronizer<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> (
           synchronizationContext,
           InitialTaskSyncStateCreationStrategyFactory.Create (
               syncStateFactory,

@@ -214,9 +214,8 @@
     <Compile Include="Diagnostics\AutomaticStopwatch.cs" />
     <Compile Include="Generic\EntityRepositories\IEntityRepository.cs" />
     <Compile Include="Generic\EntityVersionManagement\EntityIdWithVersion.cs" />
-    <Compile Include="Implementation\Events\CalDavEventRepository.cs" />
+    <Compile Include="Implementation\CalDavRepository.cs" />
     <Compile Include="Implementation\Events\InitialEventSyncStateCreationStrategyFactory.cs" />
-    <Compile Include="Implementation\Tasks\CalDavTaskRepository.cs" />
     <Compile Include="Implementation\Tasks\TaskSynchronizationContext.cs" />
     <Compile Include="Implementation\Tasks\InitialEventSyncStateCreationStrategyFactory.cs" />
     <Compile Include="Implementation\Tasks\TasktEntityConflictSyncStateFactory_Automatic.cs" />

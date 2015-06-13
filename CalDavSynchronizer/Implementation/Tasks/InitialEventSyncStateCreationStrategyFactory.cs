@@ -26,14 +26,14 @@ namespace CalDavSynchronizer.Implementation.Tasks
 {
   public static class InitialTaskSyncStateCreationStrategyFactory
   {
-    private static IEntityConflictSyncStateFactory<string, DateTime, TaskItemWrapper, Uri, string, ITodo> Create (IEntitySyncStateFactory<string, DateTime, TaskItemWrapper, Uri, string, ITodo> syncStateFactory, EntitySyncStateEnvironment<string, DateTime, TaskItemWrapper, Uri, string, ITodo> environment, ConflictResolution conflictResolution)
+    private static IEntityConflictSyncStateFactory<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> Create (IEntitySyncStateFactory<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> syncStateFactory, EntitySyncStateEnvironment<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> environment, ConflictResolution conflictResolution)
     {
       switch (conflictResolution)
       {
         case ConflictResolution.OutlookWins:
-          return new EntityConflictSyncStateFactory_AWins<string, DateTime, TaskItemWrapper, Uri, string, ITodo> (syncStateFactory);
+          return new EntityConflictSyncStateFactory_AWins<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> (syncStateFactory);
         case ConflictResolution.ServerWins:
-          return new EntityConflictSyncStateFactory_BWins<string, DateTime, TaskItemWrapper, Uri, string, ITodo> (syncStateFactory);
+          return new EntityConflictSyncStateFactory_BWins<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> (syncStateFactory);
         case ConflictResolution.Automatic:
           return new TaskEntityConflictSyncStateFactory_Automatic (environment);
       }
@@ -41,25 +41,25 @@ namespace CalDavSynchronizer.Implementation.Tasks
       throw new NotImplementedException();
     }
 
-    public static IInitialSyncStateCreationStrategy<string, DateTime, TaskItemWrapper, Uri, string, ITodo> Create (IEntitySyncStateFactory<string, DateTime, TaskItemWrapper, Uri, string, ITodo> syncStateFactory, EntitySyncStateEnvironment<string, DateTime, TaskItemWrapper, Uri, string, ITodo> environment, SynchronizationMode synchronizationMode, ConflictResolution conflictResolution)
+    public static IInitialSyncStateCreationStrategy<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> Create (IEntitySyncStateFactory<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> syncStateFactory, EntitySyncStateEnvironment<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> environment, SynchronizationMode synchronizationMode, ConflictResolution conflictResolution)
     {
       switch (synchronizationMode)
       {
         case SynchronizationMode.MergeInBothDirections:
           var conflictResolutionStrategy = Create (syncStateFactory, environment, conflictResolution);
-          return new TwoWayInitialSyncStateCreationStrategy<string, DateTime, TaskItemWrapper, Uri, string, ITodo> (
+          return new TwoWayInitialSyncStateCreationStrategy<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> (
               syncStateFactory,
               conflictResolutionStrategy
               );
         case SynchronizationMode.ReplicateOutlookIntoServer:
         case SynchronizationMode.MergeOutlookIntoServer:
-          return new OneWayInitialSyncStateCreationStrategy_AToB<string, DateTime, TaskItemWrapper, Uri, string, ITodo> (
+          return new OneWayInitialSyncStateCreationStrategy_AToB<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> (
               syncStateFactory,
               synchronizationMode == SynchronizationMode.ReplicateOutlookIntoServer ? OneWaySyncMode.Replicate : OneWaySyncMode.Merge
               );
         case SynchronizationMode.ReplicateServerIntoOutlook:
         case SynchronizationMode.MergeServerIntoOutlook:
-          return new OneWayInitialSyncStateCreationStrategy_BToA<string, DateTime, TaskItemWrapper, Uri, string, ITodo> (
+          return new OneWayInitialSyncStateCreationStrategy_BToA<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> (
               syncStateFactory,
               synchronizationMode == SynchronizationMode.ReplicateServerIntoOutlook ? OneWaySyncMode.Replicate : OneWaySyncMode.Merge
               );

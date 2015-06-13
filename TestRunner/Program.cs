@@ -56,7 +56,7 @@ namespace TestRunner
 
     private static void TestCalDavDataAccess ()
     {
-      var eventRepository = new CalDavEventRepository (s_dataAccess, new DDay.iCal.Serialization.iCalendar.iCalendarSerializer ());
+      var eventRepository = new CalDavRepository (s_dataAccess, new DDay.iCal.Serialization.iCalendar.iCalendarSerializer (),CalDavRepository.EntityType.Event);
 
       var versions = eventRepository.GetVersions (DateTime.Now.AddDays (-1000), DateTime.Now.AddDays (1000));
       var events = eventRepository.Get (versions.Keys, NullTotalProgress.Instance);

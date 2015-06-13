@@ -42,37 +42,91 @@ namespace CalDavSynchronizer.Implementation.Tasks
       _mapiNameSpace = mapiNameSpace;
     }
 
+    private const string c_entryIdColumnName = "EntryID";
+
     public Dictionary<string, DateTime> GetVersions (DateTime fromUtc, DateTime toUtc)
     {
-      // is from and to still relevant for tasks ?
-      throw new NotImplementedException();
+      var entities = new Dictionary<string, DateTime>();
+
+      using (var tableWrapper = GenericComObjectWrapper.Create ((Table) _taskFolder.GetTable()))
+      {
+        var table = tableWrapper.Inner;
+        table.Columns.RemoveAll();
+        table.Columns.Add (c_entryIdColumnName);
+
+        var storeId = _taskFolder.StoreID;
+
+        while (!table.EndOfTable)
+        {
+          var row = table.GetNextRow();
+          var entryId = (string) row[c_entryIdColumnName];
+          using (var appointmentWrapper = GenericComObjectWrapper.Create ((TaskItem) _mapiNameSpace.GetItemFromID (entryId, storeId)))
+          {
+            entities.Add (appointmentWrapper.Inner.EntryID, appointmentWrapper.Inner.LastModificationTime);
+          }
+        }
+      }
+      return entities;
+    }
+
+    private static readonly CultureInfo _currentCultureInfo = CultureInfo.CurrentCulture;
+
+    private string ToOutlookDateString (DateTime value)
+    {
+      return value.ToString ("g", _currentCultureInfo);
     }
 
     public IReadOnlyDictionary<string, TaskItemWrapper> Get (ICollection<string> ids, ITotalProgress progress)
     {
-      throw new NotImplementedException ();
+      using (var stepProgress = progress.StartStep (ids.Count, string.Format ("Loading {0} entities from Outlook...", ids.Count)))
+      {
+        var storeId = _taskFolder.StoreID;
+        var result = ids.ToDictionary (id => id, id => new TaskItemWrapper ((TaskItem) _mapiNameSpace.GetItemFromID (id, storeId), entryId => (TaskItem) _mapiNameSpace.GetItemFromID (entryId, storeId)));
+        stepProgress.IncreaseBy (ids.Count);
+        return result;
+      }
     }
 
     public void Cleanup (IReadOnlyDictionary<string, TaskItemWrapper> entities)
     {
-      foreach (var appointmentItemWrapper in entities.Values)
-        appointmentItemWrapper.Dispose();
+      foreach (var wrapper in entities.Values)
+        wrapper.Dispose();
     }
 
     public EntityIdWithVersion<string, DateTime> Update (string entityId, TaskItemWrapper entityToUpdate, Func<TaskItemWrapper, TaskItemWrapper> entityModifier)
     {
-      throw new NotImplementedException ();
+      entityToUpdate = entityModifier (entityToUpdate);
+      entityToUpdate.Inner.Save();
+      return new EntityIdWithVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime);
     }
 
     public bool Delete (string entityId)
     {
-      throw new NotImplementedException ();
+      using (var entityWrapper = Get (new[] { entityId }, NullTotalProgress.Instance).Values.SingleOrDefault())
+      {
+        if (entityWrapper != null)
+        {
+          entityWrapper.Inner.Delete();
+          return true;
+        }
+        else
+        {
+          return false;
+        }
+      }
     }
 
     public EntityIdWithVersion<string, DateTime> Create (Func<TaskItemWrapper, TaskItemWrapper> entityInitializer)
     {
-      throw new NotImplementedException ();
+      using (var wrapper = new TaskItemWrapper ((TaskItem) _taskFolder.Items.Add (OlItemType.olTaskItem), entryId => (TaskItem) _mapiNameSpace.GetItemFromID (entryId, _taskFolder.StoreID)))
+      {
+        using (var initializedWrapper = entityInitializer (wrapper))
+        {
+          initializedWrapper.Inner.Save();
+          var result = new EntityIdWithVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime);
+          return result;
+        }
+      }
     }
-
   }
 }

@@ -33,7 +33,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Tasks
 {
-  public class TaskSynchronizationContext : ISynchronizerContext<string, DateTime, TaskItemWrapper, Uri, string, ITodo>
+  public class TaskSynchronizationContext : ISynchronizerContext<string, DateTime, TaskItemWrapper, Uri, string, IICalendar>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -41,7 +41,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
     private readonly IEntityRelationDataAccess<string, DateTime, Uri, string> _storageDataAccess;
     private readonly TaskMapper _entityMapper;
     private readonly OutlookTaskRepository _atypeRepository;
-    private readonly CalDavTaskRepository _btypeRepository;
+    private readonly CalDavRepository _btypeRepository;
     private readonly IEntityRelationDataFactory<string, DateTime, Uri, string> _entityRelationDataFactory;
 
 
@@ -61,7 +61,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       var calendarFolder = (Folder) outlookSession.GetFolderFromID (options.OutlookFolderEntryId, options.OutlookFolderStoreId);
       _atypeRepository = new OutlookTaskRepository (calendarFolder, outlookSession);
 
-      _btypeRepository = new CalDavTaskRepository (
+      _btypeRepository = new CalDavRepository (
           new CalDavDataAccess (
               new Uri (options.CalenderUrl),
               options.UserName,
@@ -69,7 +69,8 @@ namespace CalDavSynchronizer.Implementation.Tasks
               connectTimeout,
               readWriteTimeout
               ),
-          new iCalendarSerializer());
+          new iCalendarSerializer(),
+          CalDavRepository.EntityType.Todo);
 
       _storageDataAccess = storageDataAccess;
 
@@ -77,7 +78,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
     }
 
 
-    public IEntityMapper<TaskItemWrapper, ITodo> EntityMapper
+    public IEntityMapper<TaskItemWrapper, IICalendar> EntityMapper
     {
       get { return _entityMapper; }
     }
@@ -87,7 +88,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       get { return _atypeRepository; }
     }
 
-    public IEntityRepository<ITodo, Uri, string> BtypeRepository
+    public IEntityRepository<IICalendar, Uri, string> BtypeRepository
     {
       get { return _btypeRepository; }
     }
@@ -95,7 +96,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
     public SynchronizationMode SynchronizationMode { get; private set; }
     public DateTime From { get; private set; }
     public DateTime To { get; private set; }
-    public IInitialEntityMatcher<TaskItemWrapper, string, DateTime, ITodo, Uri, string> InitialEntityMatcher { get; private set; }
+    public IInitialEntityMatcher<TaskItemWrapper, string, DateTime, IICalendar, Uri, string> InitialEntityMatcher { get; private set; }
 
     public IEntityRelationDataFactory<string, DateTime, Uri, string> EntityRelationDataFactory
     {

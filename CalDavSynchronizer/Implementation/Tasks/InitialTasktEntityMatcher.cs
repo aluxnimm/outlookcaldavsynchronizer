@@ -21,13 +21,13 @@ using DDay.iCal;
 
 namespace CalDavSynchronizer.Implementation.Tasks
 {
-  internal class InitialTaskEntityMatcher : InitialEntityMatcherByPropertyGrouping<TaskItemWrapper, string, DateTime, string, ITodo, Uri, string, string>
+  internal class InitialTaskEntityMatcher : InitialEntityMatcherByPropertyGrouping<TaskItemWrapper, string, DateTime, string, IICalendar, Uri, string, string>
   {
-    protected override bool AreEqual (TaskItemWrapper atypeEntity, ITodo btypeEntity)
+    protected override bool AreEqual (TaskItemWrapper atypeEntity, IICalendar btypeEntity)
     {
       // TODO: find a rule, when two tasks are considered to be equal (maybe subject is not enough)
 
-      return atypeEntity.Inner.Subject == btypeEntity.Summary;
+      return atypeEntity.Inner.Subject == btypeEntity.Todos[0].Summary;
     }
 
     protected override string GetAtypePropertyValue (TaskItemWrapper atypeEntity)
@@ -35,9 +35,9 @@ namespace CalDavSynchronizer.Implementation.Tasks
       return (atypeEntity.Inner.Subject ?? string.Empty).ToLower();
     }
 
-    protected override string GetBtypePropertyValue (ITodo btypeEntity)
+    protected override string GetBtypePropertyValue (IICalendar btypeEntity)
     {
-      return (btypeEntity.Summary ?? string.Empty).ToLower();
+      return (btypeEntity.Todos[0].Summary ?? string.Empty).ToLower();
     }
 
     protected override string MapAtypePropertyValue (string value)
