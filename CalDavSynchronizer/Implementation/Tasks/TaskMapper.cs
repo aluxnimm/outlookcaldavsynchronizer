@@ -56,14 +56,18 @@ namespace CalDavSynchronizer.Implementation.Tasks
       
       target.Inner.Importance = MapPriority2To1 (source.Priority);
 
+      target.Inner.Sensitivity = MapPrivacy2To1 (source.Class);
+
       target.Inner.Status = MapStatus2To1 (source.Status);
 
       MapCategories2To1 (source, target);
 
+      MapReminder2To1 (source, target);
+
       return target;
     }
 
-    private OlImportance MapPriority2To1(int value)
+    private OlImportance MapPriority2To1 (int value)
     {
       switch (value)
       {
@@ -76,10 +80,10 @@ namespace CalDavSynchronizer.Implementation.Tasks
           return OlImportance.olImportanceHigh;
       }
 
-      throw new NotImplementedException(string.Format("Mapping for value '{0}' not implemented.", value));
+      throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
     }
 
-    private OlTaskStatus MapStatus2To1( TodoStatus value)
+    private OlTaskStatus MapStatus2To1 (TodoStatus value)
     {
       switch (value)
       {
@@ -93,13 +97,56 @@ namespace CalDavSynchronizer.Implementation.Tasks
           return OlTaskStatus.olTaskWaiting;
       }
 
-      throw new NotImplementedException(string.Format("Mapping for value '{0}' not implemented.", value));
+      throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
     }
 
-    private static void MapCategories2To1(ITodo source, TaskItemWrapper target)
+    private static void MapCategories2To1 (ITodo source, TaskItemWrapper target)
     {
-      target.Inner.Categories = string.Join(CultureInfo.CurrentCulture.TextInfo.ListSeparator, source.Categories);
+      target.Inner.Categories = string.Join (CultureInfo.CurrentCulture.TextInfo.ListSeparator, source.Categories);
     }
 
+    private OlSensitivity MapPrivacy2To1 (string value)
+    {
+      switch (value)
+      {
+        case "PUBLIC":
+          return OlSensitivity.olNormal;
+        case "PRIVATE":
+          return OlSensitivity.olPrivate;
+        case "CONFIDENTIAL":
+          return OlSensitivity.olConfidential;
+      }
+      return OlSensitivity.olNormal;
+    }
+
+    private void MapReminder2To1 (ITodo source, TaskItemWrapper target)
+    {
+      if (source.Alarms.Count == 0)
+      {
+        target.Inner.ReminderSet = false;
+        return;
+      }
+
+      if (source.Alarms.Count > 1)
+        s_logger.WarnFormat("Task '{0}' contains multiple alarms. Ignoring all except first.", source.Url);
+
+      var alarm = source.Alarms[0];
+
+      target.Inner.ReminderSet = true;
+
+      if (alarm.Trigger.IsRelative && alarm.Trigger.Related == TriggerRelation.Start && alarm.Trigger.Duration.HasValue)
+      {
+        target.Inner.ReminderTime = source.Start.Value.Add (alarm.Trigger.Duration.Value);
+      }
+      else if (alarm.Trigger.IsRelative && alarm.Trigger.Related == TriggerRelation.End && alarm.Trigger.Duration.HasValue)
+      {
+        target.Inner.ReminderTime = source.Due.Value.Add (alarm.Trigger.Duration.Value);
+      }
+      else
+      {
+        s_logger.WarnFormat ("Task '{0}' alarm is not supported. Ignoring.", source.Url);
+        target.Inner.ReminderSet = false;
+      }
+    }
   }
 }
