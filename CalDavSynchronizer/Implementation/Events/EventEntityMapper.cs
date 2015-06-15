@@ -443,19 +443,19 @@ namespace CalDavSynchronizer.Implementation.Events
     private void MapDayOfWeek1To2 (OlDaysOfWeek source, IList<IWeekDay> target, int offset)
     {
       if ((source & OlDaysOfWeek.olMonday) > 0)
-        target.Add (new WeekDay (DayOfWeek.Monday, offset));
+        target.Add ((offset>0)?new WeekDay (DayOfWeek.Monday, offset):new WeekDay (DayOfWeek.Monday));
       if ((source & OlDaysOfWeek.olTuesday) > 0)
-        target.Add (new WeekDay (DayOfWeek.Tuesday, offset));
+        target.Add ((offset>0)?new WeekDay (DayOfWeek.Tuesday, offset):new WeekDay (DayOfWeek.Tuesday));
       if ((source & OlDaysOfWeek.olWednesday) > 0)
-        target.Add (new WeekDay (DayOfWeek.Wednesday, offset));
+        target.Add ((offset>0)?new WeekDay (DayOfWeek.Wednesday, offset):new WeekDay (DayOfWeek.Wednesday));
       if ((source & OlDaysOfWeek.olThursday) > 0)
-        target.Add (new WeekDay (DayOfWeek.Thursday, offset));
+        target.Add ((offset>0)?new WeekDay (DayOfWeek.Thursday, offset):new WeekDay (DayOfWeek.Thursday));
       if ((source & OlDaysOfWeek.olFriday) > 0)
-        target.Add (new WeekDay (DayOfWeek.Friday, offset));
+        target.Add ((offset>0)?new WeekDay (DayOfWeek.Friday, offset):new WeekDay (DayOfWeek.Friday));
       if ((source & OlDaysOfWeek.olSaturday) > 0)
-        target.Add (new WeekDay (DayOfWeek.Saturday, offset));
+        target.Add ((offset>0)?new WeekDay (DayOfWeek.Saturday, offset):new WeekDay (DayOfWeek.Saturday));
       if ((source & OlDaysOfWeek.olSunday) > 0)
-        target.Add (new WeekDay (DayOfWeek.Sunday, offset));
+        target.Add ((offset>0)?new WeekDay (DayOfWeek.Sunday, offset):new WeekDay (DayOfWeek.Sunday));
     }
 
     private OlDaysOfWeek MapDayOfWeek2To1 (IList<IWeekDay> source)
