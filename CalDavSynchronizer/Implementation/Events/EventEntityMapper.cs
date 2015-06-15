@@ -391,8 +391,6 @@ namespace CalDavSynchronizer.Implementation.Events
 
           target.RecurrenceRules.Add (targetRecurrencePattern);
 
-          PeriodList targetExList = new PeriodList();
-
           foreach (var sourceException in sourceRecurrencePattern.Exceptions.ToSafeEnumerable<Exception>())
           {
             if (!sourceException.Deleted)
@@ -420,20 +418,24 @@ namespace CalDavSynchronizer.Implementation.Events
             }
             else
             {
+              PeriodList targetExList = new PeriodList();
+
               if (source.AllDayEvent)
               {
                 iCalDateTime exDate = new iCalDateTime (sourceException.OriginalDate);
                 exDate.HasTime = false;
                 targetExList.Add (exDate);
+                targetExList.Parameters.Add ("VALUE", "DATE");
+                target.ExceptionDates.Add(targetExList);
               }
               else
               {
                 iCalDateTime exDate = new iCalDateTime (sourceException.OriginalDate.Add (source.StartUTC.TimeOfDay)) { IsUniversalTime = true };
                 targetExList.Add (exDate);
+                target.ExceptionDates.Add(targetExList);
               }
             }
           }
-          target.ExceptionDates.Add (targetExList);
         }
       }
     }
