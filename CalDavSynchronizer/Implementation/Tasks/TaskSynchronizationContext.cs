@@ -56,7 +56,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       _entityRelationDataFactory = new OutlookEventRelationDataFactory();
 
-      _entityMapper = new TaskMapper();
+      _entityMapper = new TaskMapper (outlookSession.Application.TimeZones.CurrentTimeZone.ID);
 
       var calendarFolder = (Folder) outlookSession.GetFolderFromID (options.OutlookFolderEntryId, options.OutlookFolderStoreId);
       _atypeRepository = new OutlookTaskRepository (calendarFolder, outlookSession);
