@@ -37,7 +37,7 @@ namespace CalDavSynchronizer.Generic.InitialEntityMatching
     // ReSharper disable once StaticFieldInGenericType
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    public List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> PopulateEntityRelationStorage (
+    public List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> FindMatchingEntities (
         IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> relationFactory,
         IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> allAtypeEntities,
         IReadOnlyDictionary<TBtypeEntityId, TBtypeEntity> allBtypeEntities,

@@ -25,7 +25,7 @@ namespace CalDavSynchronizer.Generic.InitialEntityMatching
   /// </summary>
   public interface IInitialEntityMatcher<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion>
   {
-    List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> PopulateEntityRelationStorage (
+    List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> FindMatchingEntities (
         IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> relationFactory,
         IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> allAtypeEntities,
         IReadOnlyDictionary<TBtypeEntityId, TBtypeEntity> allBtypeEntities,
