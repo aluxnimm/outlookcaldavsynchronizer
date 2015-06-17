@@ -80,8 +80,8 @@ namespace CalDavSynchronizer.Contracts
       options.OutlookFolderEntryId = outlookFolderEntryId;
       options.OutlookFolderStoreId = outlookFolderStoreId;
       options.ConflictResolution = ConflictResolution.Automatic;
-      options.DaysToSynchronizeInTheFuture = 60;
-      options.DaysToSynchronizeInThePast = 180;
+      options.DaysToSynchronizeInTheFuture = 180;
+      options.DaysToSynchronizeInThePast = 60;
       options.SynchronizationIntervalInMinutes = 30;
       options.SynchronizationMode = SynchronizationMode.MergeInBothDirections;
       options.Name = "<New Profile>";
