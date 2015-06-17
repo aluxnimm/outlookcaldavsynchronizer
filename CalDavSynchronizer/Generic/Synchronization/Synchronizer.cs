@@ -86,7 +86,7 @@ namespace CalDavSynchronizer.Generic.Synchronization
                 bEntities = await btypeEntityRepository.Get (btypeRepositoryVersions.Keys);
               }
 
-              cachedData = _synchronizerContext.InitialEntityMatcher.PopulateEntityRelationStorage (
+              cachedData = _synchronizerContext.InitialEntityMatcher.FindMatchingEntities (
                   _synchronizerContext.EntityRelationDataFactory,
                   aEntities,
                   bEntities,

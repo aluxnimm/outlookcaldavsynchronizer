@@ -51,7 +51,7 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
       var allAtypeEntities = atypeRepository.Get (atypeEntityVersions.Keys).Result;
       var allBtypeEntities = btypeRepository.Get (btypeEntityVersions.Keys).Result;
 
-      var foundRelations = new TestInitialEntityMatcher().PopulateEntityRelationStorage (
+      var foundRelations = new TestInitialEntityMatcher().FindMatchingEntities (
           new PersonAPersonBRelationDataFactory(),
           allAtypeEntities,
           allBtypeEntities,
