@@ -329,13 +329,23 @@ namespace CalDavSynchronizer.Implementation.Events
           }
         }
       }
-      else if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olSmtpAddressEntry)
+      else if ( addressEntry.AddressEntryUserType == OlAddressEntryUserType.olSmtpAddressEntry || 
+                addressEntry.AddressEntryUserType == OlAddressEntryUserType.olLdapAddressEntry || 
+                addressEntry.AddressEntryUserType == OlAddressEntryUserType.olOutlookContactAddressEntry) 
       {
         emailAddress = addressEntry.Address;
       }
       else
       {
-        emailAddress = addressEntry.GetPropertySafe (PR_SMTP_ADDRESS);
+        try
+        {
+          emailAddress = addressEntry.GetPropertySafe(PR_SMTP_ADDRESS);
+        }
+        catch (COMException ex)
+        {
+          s_logger.Error("Could not get property PR_SMTP_ADDRESS for adressEntry", ex);
+          emailAddress = addressEntry.Address;
+        }
       }
 
       return string.Format ("MAILTO:{0}", emailAddress);
