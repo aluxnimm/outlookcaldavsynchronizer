@@ -973,9 +973,13 @@ namespace CalDavSynchronizer.Implementation.Events
               }
             }
           }
-          else
+          else if (target.Recipients.Count > 0)
           {
             target.MeetingStatus = OlMeetingStatus.olMeeting;
+          }
+          else
+          {
+            target.MeetingStatus = OlMeetingStatus.olNonMeeting;
           }
         }
         else
