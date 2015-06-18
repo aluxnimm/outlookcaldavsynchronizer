@@ -23,6 +23,7 @@ namespace CalDavSynchronizer
       try
       {
         s_logger.Info ("Synchronization manually triggered");
+        ThisAddIn.EnsureSynchronizationContext ();
         await ThisAddIn.Scheduler.RunNow();
       }
       catch (Exception x)
