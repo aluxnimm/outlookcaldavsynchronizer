@@ -48,10 +48,18 @@ namespace CalDavSynchronizer.Scheduling
 
     private async void _synchronizationTimer_Tick (object sender, EventArgs e)
     {
-      _synchronizationTimer.Stop();
-      foreach (var worker in _workersById.Values)
-        await worker.RunIfRequiredAndReschedule();
-      _synchronizationTimer.Start();
+      try
+      {
+        ThisAddIn.EnsureSynchronizationContext();
+        _synchronizationTimer.Stop();
+        foreach (var worker in _workersById.Values)
+          await worker.RunIfRequiredAndReschedule();
+        _synchronizationTimer.Start();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.LogException (x, s_logger);
+      }
     }
 
     public void SetOptions (Options[] options)

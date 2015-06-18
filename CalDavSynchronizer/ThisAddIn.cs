@@ -19,6 +19,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Generic.ProgressReport;
@@ -56,6 +57,8 @@ namespace CalDavSynchronizer
         Session = Application.Session;
         s_logger.Info ("Startup...");
 
+        EnsureSynchronizationContext();
+
         var applicationDataDirectory = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData), "CalDavSynchronizer");
 
         OptionsDataAccess = new OptionsDataAccess (
@@ -81,6 +84,17 @@ namespace CalDavSynchronizer
       }
 
       s_logger.Info ("Startup finnished");
+    }
+
+    /// <summary>
+    /// Ensures that the syncronizationcontext is not null ( it seems to be a bug that the synchronizationcontext is null in Office Addins)
+    /// </summary>
+    public static void EnsureSynchronizationContext ()
+    {
+      if (System.Threading.SynchronizationContext.Current == null)
+      {
+        System.Threading.SynchronizationContext.SetSynchronizationContext (new WindowsFormsSynchronizationContext());
+      }
     }
 
     private static string GetOrCreateConfigFileName (string applicationDataDirectory, string profileName)
