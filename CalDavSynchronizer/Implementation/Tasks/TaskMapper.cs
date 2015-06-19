@@ -40,7 +40,14 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       if (source.Inner.DueDate != _dateNull)
       {
-        target.Due = new iCalDateTime (source.Inner.DueDate.Year, source.Inner.DueDate.Month, source.Inner.DueDate.Day, false);
+        if (source.Inner.DueDate == source.Inner.StartDate)
+        {
+          target.Duration = default(TimeSpan);
+        }
+        else
+        {
+          target.Due = new iCalDateTime (source.Inner.DueDate.Year, source.Inner.DueDate.Month, source.Inner.DueDate.Day, false);
+        }
       }
 
       if (source.Inner.Complete && source.Inner.DateCompleted != _dateNull)
