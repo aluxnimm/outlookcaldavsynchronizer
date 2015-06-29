@@ -286,9 +286,14 @@ namespace CalDavSynchronizer.DataAccess
       Uri effectiveEventUrl;
       var location = response.Headers["location"];
       if (!string.IsNullOrEmpty (location))
-        effectiveEventUrl = new Uri (location);
+      {
+        var locationUrl = new Uri (location, UriKind.RelativeOrAbsolute);
+        effectiveEventUrl = locationUrl.IsAbsoluteUri ? locationUrl : new Uri (_calendarUrl, locationUrl);
+      }
       else
+      {
         effectiveEventUrl = eventUrl;
+      }
 
       return new EntityIdWithVersion<Uri, string> (new Uri (effectiveEventUrl.AbsolutePath, UriKind.Relative), response.Headers["ETag"]);
     }
