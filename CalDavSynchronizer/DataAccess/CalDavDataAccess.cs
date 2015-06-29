@@ -248,7 +248,7 @@ namespace CalDavSynchronizer.DataAccess
       }
       catch (WebException x)
       {
-        if (((HttpWebResponse) x.Response).StatusCode == HttpStatusCode.Forbidden)
+        if (x.Response != null && ((HttpWebResponse) x.Response).StatusCode == HttpStatusCode.Forbidden)
           throw new Exception (string.Format ("Error updating event with url '{0}' and etag '{1}' (Access denied)", absoluteEventUrl, etag));
         else
           throw;
@@ -277,7 +277,7 @@ namespace CalDavSynchronizer.DataAccess
       }
       catch (WebException x)
       {
-        if (((HttpWebResponse) x.Response).StatusCode == HttpStatusCode.Forbidden)
+        if (x.Response != null && ((HttpWebResponse) x.Response).StatusCode == HttpStatusCode.Forbidden)
           throw new Exception (string.Format ("Error creating event with url '{0}' (Access denied)", eventUrl));
         else
           throw;
@@ -323,12 +323,18 @@ namespace CalDavSynchronizer.DataAccess
       }
       catch (WebException x)
       {
-        if (((HttpWebResponse) x.Response).StatusCode == HttpStatusCode.NotFound)
-          return false;
-        else if (((HttpWebResponse) x.Response).StatusCode == HttpStatusCode.Forbidden)
-          throw new Exception (string.Format ("Error deleting event with url '{0}' and etag '{1}' (Access denied)", uri, etag));
-        else
-          throw;
+        if (x.Response != null)
+        {
+          var httpWebResponse = (HttpWebResponse) x.Response;
+
+          if (httpWebResponse.StatusCode == HttpStatusCode.NotFound)
+            return false;
+
+          if (httpWebResponse.StatusCode == HttpStatusCode.Forbidden)
+            throw new Exception (string.Format ("Error deleting event with url '{0}' and etag '{1}' (Access denied)", uri, etag));
+        }
+
+        throw;
       }
 
       var error = response.Headers["X-Dav-Error"];
