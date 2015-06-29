@@ -366,7 +366,8 @@ namespace CalDavSynchronizer.Implementation.Events
             //but sogo wants it as utc end time of the last event not only the enddate at 0000
             //targetRecurrencePattern.Until = sourceRecurrencePattern.PatternEndDate.Add(sourceRecurrencePattern.EndTime.TimeOfDay).ToUniversalTime();
           }
-          targetRecurrencePattern.Interval = sourceRecurrencePattern.Interval;
+          targetRecurrencePattern.Interval = (sourceRecurrencePattern.RecurrenceType == OlRecurrenceType.olRecursYearly ||
+                                              sourceRecurrencePattern.RecurrenceType == OlRecurrenceType.olRecursYearNth) ? sourceRecurrencePattern.Interval / 12 : sourceRecurrencePattern.Interval;
 
           switch (sourceRecurrencePattern.RecurrenceType)
           {
@@ -620,7 +621,8 @@ namespace CalDavSynchronizer.Implementation.Events
               break;
           }
 
-          targetRecurrencePattern.Interval = sourceRecurrencePattern.Interval;
+          targetRecurrencePattern.Interval = (targetRecurrencePattern.RecurrenceType == OlRecurrenceType.olRecursYearly || 
+                                              targetRecurrencePattern.RecurrenceType == OlRecurrenceType.olRecursYearNth) ? sourceRecurrencePattern.Interval * 12 : sourceRecurrencePattern.Interval;
 
           if (sourceRecurrencePattern.Count >= 0)
             targetRecurrencePattern.Occurrences = sourceRecurrencePattern.Count;
