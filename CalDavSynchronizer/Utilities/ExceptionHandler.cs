@@ -79,64 +79,44 @@ namespace CalDavSynchronizer.Utilities
     {
       StringBuilder stringBuilder = new StringBuilder();
 
-      stringBuilder.AppendFormat ("StatusCode: {0}", GetStatusCodeNoThrow (x));
+      stringBuilder.AppendFormat ("Status: {0}", x.Status);
       stringBuilder.AppendLine();
 
-      stringBuilder.AppendFormat ("StatusDescription: {0}", GetStatusDescriptionNoThrow (x));
-      stringBuilder.AppendLine();
-
-      stringBuilder.AppendFormat ("Body: {0}", GetResponseBodyNoThrow (x));
-      stringBuilder.AppendLine();
+      AppendHttpResponseDetails (stringBuilder, x);
 
       return stringBuilder.ToString();
     }
 
-
-    private string GetResponseBodyNoThrow (WebException exception)
+    private void AppendHttpResponseDetails (StringBuilder stringBuilder, WebException exception)
     {
+      var httpWebResponse = exception.Response as HttpWebResponse;
+      if (httpWebResponse == null)
+        return;
+
       try
       {
-        using (var reader = new StreamReader (exception.Response.GetResponseStream()))
+        stringBuilder.AppendFormat ("StatusCode: {0}", httpWebResponse.StatusCode);
+        stringBuilder.AppendLine();
+
+        stringBuilder.AppendFormat ("StatusDescription: {0}", httpWebResponse.StatusDescription);
+        stringBuilder.AppendLine();
+
+        try
         {
-          return reader.ReadToEnd();
+          using (var reader = new StreamReader (httpWebResponse.GetResponseStream()))
+          {
+            stringBuilder.AppendFormat ("Body: {0}", reader.ReadToEnd());
+            stringBuilder.AppendLine();
+          }
+        }
+        catch (ProtocolViolationException)
+        {
+          // Occurs if there is no response stream and can be ignored
         }
       }
       catch (Exception x)
       {
-        s_logger.Error ("Exception while reading the response.", x);
-        return string.Empty;
-      }
-    }
-
-    private HttpStatusCode? GetStatusCodeNoThrow (WebException exception)
-    {
-      try
-      {
-        var response = exception.Response as HttpWebResponse;
-        if (response == null)
-          return null;
-        return response.StatusCode;
-      }
-      catch (Exception x)
-      {
-        s_logger.Error ("Exception while reading the StatusCode.", x);
-        return null;
-      }
-    }
-
-    private string GetStatusDescriptionNoThrow (WebException exception)
-    {
-      try
-      {
-        var response = exception.Response as HttpWebResponse;
-        if (response == null)
-          return null;
-        return response.StatusDescription;
-      }
-      catch (Exception x)
-      {
-        s_logger.Error ("Exception while reading the StatusDescription.", x);
-        return string.Empty;
+        s_logger.Error ("Exception while getting exception details.", x);
       }
     }
   }
