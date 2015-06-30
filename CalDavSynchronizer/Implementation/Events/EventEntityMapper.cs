@@ -329,6 +329,16 @@ namespace CalDavSynchronizer.Implementation.Events
           }
         }
       }
+      else if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeDistributionListAddressEntry)
+      {
+        using (var exchDL = GenericComObjectWrapper.Create (addressEntry.GetExchangeDistributionList()))
+        {
+          if (exchDL != null)
+          {
+            emailAddress = exchDL.Inner.PrimarySmtpAddress;
+          }
+        }
+      }
       else if ( addressEntry.AddressEntryUserType == OlAddressEntryUserType.olSmtpAddressEntry || 
                 addressEntry.AddressEntryUserType == OlAddressEntryUserType.olLdapAddressEntry || 
                 addressEntry.AddressEntryUserType == OlAddressEntryUserType.olOutlookContactAddressEntry) 
