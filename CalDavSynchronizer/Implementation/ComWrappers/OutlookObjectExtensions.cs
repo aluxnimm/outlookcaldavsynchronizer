@@ -15,6 +15,11 @@ namespace CalDavSynchronizer.Implementation.ComWrappers
       return a.PropertyAccessor.GetPropertySafe (propertyName);
     }
 
+    public static dynamic GetPropertySafe(this ContactItem a, string propertyName)
+    {
+      return a.PropertyAccessor.GetPropertySafe(propertyName);
+    }
+
     private static dynamic GetPropertySafe (this PropertyAccessor accessor, string propertyName)
     {
       using (var wrapper = GenericComObjectWrapper.Create (accessor))

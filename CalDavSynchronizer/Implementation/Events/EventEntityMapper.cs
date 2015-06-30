@@ -35,6 +35,7 @@ namespace CalDavSynchronizer.Implementation.Events
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private const string PR_SMTP_ADDRESS = "http://schemas.microsoft.com/mapi/proptag/0x39FE001E";
+    private const string PR_EMAIL1ADDRESS = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/8084001F";
     private const string PR_SENDER_NAME = "http://schemas.microsoft.com/mapi/proptag/0x0C1A001E";
     private const string PR_SENDER_EMAIL_ADDRESS = "http://schemas.microsoft.com/mapi/proptag/0x0C1F001E";
     private const string PR_SENT_REPRESENTING_NAME = "http://schemas.microsoft.com/mapi/proptag/0x0042001E";
@@ -343,11 +344,41 @@ namespace CalDavSynchronizer.Implementation.Events
           }
         }
       }
-      else if ( addressEntry.AddressEntryUserType == OlAddressEntryUserType.olSmtpAddressEntry || 
-                addressEntry.AddressEntryUserType == OlAddressEntryUserType.olLdapAddressEntry || 
-                addressEntry.AddressEntryUserType == OlAddressEntryUserType.olOutlookContactAddressEntry) 
+      else if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olSmtpAddressEntry 
+                || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olLdapAddressEntry ) 
       {
         emailAddress = addressEntry.Address;
+      }
+      else if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olOutlookContactAddressEntry)
+      {
+        if (addressEntry.Type == "EX")
+        {
+          using (var exchContact = GenericComObjectWrapper.Create(addressEntry.GetContact()))
+          {
+            if (exchContact != null)
+            {
+              if (exchContact.Inner.Email1AddressType == "EX")
+              {
+                try
+                {
+                  emailAddress = exchContact.Inner.GetPropertySafe(PR_EMAIL1ADDRESS);
+                }
+                catch (COMException ex)
+                {
+                  s_logger.Error("Could not get property PR_EMAIL1ADDRESS for adressEntry", ex);
+                }
+              }
+              else
+              {
+                emailAddress = exchContact.Inner.Email1Address;
+              }
+            }
+          }
+        }
+        else
+        {
+          emailAddress = addressEntry.Address;
+        }
       }
       else
       {
@@ -358,7 +389,6 @@ namespace CalDavSynchronizer.Implementation.Events
         catch (COMException ex)
         {
           s_logger.Error("Could not get property PR_SMTP_ADDRESS for adressEntry", ex);
-          emailAddress = addressEntry.Address;
         }
       }
 
