@@ -319,7 +319,10 @@ namespace CalDavSynchronizer.Implementation.Events
       string emailAddress = string.Empty;
 
       if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeUserAddressEntry
-          || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeRemoteUserAddressEntry)
+          || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeRemoteUserAddressEntry
+          || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeAgentAddressEntry
+          || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeOrganizationAddressEntry
+          || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangePublicFolderAddressEntry)
       {
         using (var exchUser = GenericComObjectWrapper.Create (addressEntry.GetExchangeUser()))
         {
@@ -329,7 +332,8 @@ namespace CalDavSynchronizer.Implementation.Events
           }
         }
       }
-      else if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeDistributionListAddressEntry)
+      else if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeDistributionListAddressEntry
+                || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olOutlookDistributionListAddressEntry)
       {
         using (var exchDL = GenericComObjectWrapper.Create (addressEntry.GetExchangeDistributionList()))
         {
