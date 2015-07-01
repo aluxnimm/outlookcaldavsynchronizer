@@ -388,11 +388,18 @@ namespace CalDavSynchronizer.Implementation.Events
         }
         catch (COMException ex)
         {
-          s_logger.Error("Could not get property PR_SMTP_ADDRESS for adressEntry", ex);
+          s_logger.Error ("Could not get property PR_SMTP_ADDRESS for adressEntry", ex);
         }
       }
 
-      return string.Format ("MAILTO:{0}", emailAddress);
+      emailAddress = string.Format("MAILTO:{0}", emailAddress);
+      if (!Uri.IsWellFormedUriString(emailAddress, UriKind.Absolute))
+      {
+        s_logger.ErrorFormat("Invalid email address URI {0} for addressEntry",emailAddress);
+        s_logger.DebugFormat ("emailaddress: {0} AdressEntryType: {1} AdressEntryUserType: {2} addressEntry.Address: {3}",emailAddress, addressEntry.Type, addressEntry.AddressEntryUserType, addressEntry.Address);
+        emailAddress = string.Empty;
+      }
+      return emailAddress;
     }
 
     private void MapRecurrance1To2 (AppointmentItem source, IEvent target)
@@ -775,7 +782,19 @@ namespace CalDavSynchronizer.Implementation.Events
         {
           if ((source.MeetingStatus == OlMeetingStatus.olMeetingReceived) && (!ownAttendeeSet))
           {
-            Attendee ownAttendee = new Attendee (string.Format ("MAILTO:{0}", recipient.Address));
+            Attendee ownAttendee;
+
+            if (!string.IsNullOrEmpty(recipient.Address))
+            {
+              using (var entryWrapper = GenericComObjectWrapper.Create(recipient.AddressEntry))
+              {
+                ownAttendee = new Attendee(GetMailUrl(entryWrapper.Inner));
+              }
+            }
+            else
+            {
+              ownAttendee = new Attendee();
+            }
             ownAttendee.CommonName = recipient.Name;
             ownAttendee.ParticipationStatus = MapParticipation1To2 (source.ResponseStatus);
             ownAttendee.Role = MapAttendeeType1To2 ((OlMeetingRecipientType) recipient.Type);
