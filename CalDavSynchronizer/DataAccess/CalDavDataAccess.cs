@@ -49,6 +49,8 @@ namespace CalDavSynchronizer.DataAccess
       _connectTimeout = connectTimeout;
       _readWriteTimeout = readWriteTimeout;
       _calendarUrl = calendarUrl;
+
+      s_logger.DebugFormat ("Created with Url '{0}'", _calendarUrl);
     }
 
 
@@ -229,7 +231,12 @@ namespace CalDavSynchronizer.DataAccess
 
     private EntityIdWithVersion<Uri, string> UpdateEntity (Uri url, string etag, string iCalData)
     {
+      s_logger.DebugFormat ("Updating entity '{0}'", url);
+
       var absoluteEventUrl = new Uri (_calendarUrl, url);
+
+      s_logger.DebugFormat ("Absolute entity location: '{0}'", absoluteEventUrl);
+
 
       WebResponse response;
 
@@ -254,12 +261,17 @@ namespace CalDavSynchronizer.DataAccess
           throw;
       }
 
+      if (s_logger.IsDebugEnabled)
+        s_logger.DebugFormat ("Updated entity. Server response header: '{0}'", response.Headers.ToString().Replace ("\r\n", " <CR> "));
+
       return new EntityIdWithVersion<Uri, string> (url, response.Headers["ETag"]);
     }
 
     public EntityIdWithVersion<Uri, string> CreateEntity (string iCalData)
     {
       var eventUrl = new Uri (_calendarUrl, string.Format ("{0:D}.ics", Guid.NewGuid()));
+
+      s_logger.DebugFormat ("Creating entity '{0}'", eventUrl);
 
       WebResponse response;
 
@@ -287,8 +299,10 @@ namespace CalDavSynchronizer.DataAccess
       var location = response.Headers["location"];
       if (!string.IsNullOrEmpty (location))
       {
+        s_logger.DebugFormat ("Server sent new location: '{0}'", location);
         var locationUrl = new Uri (location, UriKind.RelativeOrAbsolute);
         effectiveEventUrl = locationUrl.IsAbsoluteUri ? locationUrl : new Uri (_calendarUrl, locationUrl);
+        s_logger.DebugFormat ("New entity location: '{0}'", effectiveEventUrl);
       }
       else
       {
@@ -310,7 +324,11 @@ namespace CalDavSynchronizer.DataAccess
 
     private bool DeleteEntity (Uri uri, string etag)
     {
+      s_logger.DebugFormat ("Deleting entity '{0}'", uri);
+
       var absoluteEventUrl = new Uri (_calendarUrl, uri);
+
+      s_logger.DebugFormat ("Absolute entity location: '{0}'", absoluteEventUrl);
 
       WebResponse response;
 
