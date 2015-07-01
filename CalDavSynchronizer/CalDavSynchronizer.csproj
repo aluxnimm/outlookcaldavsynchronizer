@@ -211,7 +211,7 @@
     <Compile Include="DataAccess\XmlDocumentWithNamespaceManager.cs" />
     <Compile Include="Diagnostics\AutomaticStopwatch.cs" />
     <Compile Include="Generic\EntityRepositories\IEntityRepository.cs" />
-    <Compile Include="Generic\EntityVersionManagement\EntityIdWithVersion.cs" />
+    <Compile Include="Generic\EntityIdWithVersion.cs" />
     <Compile Include="Implementation\CalDavRepository.cs" />
     <Compile Include="Implementation\Events\InitialEventSyncStateCreationStrategyFactory.cs" />
     <Compile Include="Implementation\Tasks\TaskSynchronizationContext.cs" />

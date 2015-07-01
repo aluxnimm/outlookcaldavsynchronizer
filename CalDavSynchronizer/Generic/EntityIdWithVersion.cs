@@ -16,7 +16,7 @@
 
 using System;
 
-namespace CalDavSynchronizer.Generic.EntityVersionManagement
+namespace CalDavSynchronizer.Generic
 {
   /// <summary>
   /// Represents the Id and the Version of an entity

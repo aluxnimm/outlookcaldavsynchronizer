@@ -18,8 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CalDavSynchronizer.Generic;
 using CalDavSynchronizer.Generic.EntityRepositories;
-using CalDavSynchronizer.Generic.EntityVersionManagement;
 using CalDavSynchronizer.Generic.ProgressReport;
 
 namespace CalDavSynchronizer.UnitTest.Synchronization
