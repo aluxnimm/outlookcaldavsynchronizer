@@ -692,11 +692,19 @@ namespace CalDavSynchronizer.Implementation.Events
           foreach (var recurranceException in exceptions)
           {
             var originalStart = TimeZoneInfo.ConvertTimeFromUtc (recurranceException.RecurrenceID.UTC, _localTimeZoneInfo);
-            var targetException = targetRecurrencePattern.GetOccurrence (originalStart);
-            using (var exceptionWrapper = new AppointmentItemWrapper (targetException, _ => { throw new InvalidOperationException ("cannot reload exception item"); }))
+
+            try
             {
-              Map2To1 (recurranceException, new IEvent[] { }, exceptionWrapper, true);
-              exceptionWrapper.Inner.Save();
+              var targetException = targetRecurrencePattern.GetOccurrence(originalStart);
+              using (var exceptionWrapper = new AppointmentItemWrapper(targetException, _ => { throw new InvalidOperationException("cannot reload exception item"); }))
+              {
+                Map2To1(recurranceException, new IEvent[] { }, exceptionWrapper, true);
+                exceptionWrapper.Inner.Save();
+              }
+            }
+            catch (COMException ex)
+            {
+              s_logger.Error("Can't find occurence of exception", ex);
             }
           }
 
@@ -707,9 +715,16 @@ namespace CalDavSynchronizer.Implementation.Events
               foreach (IPeriod exdate in exdateList)
               {
                 var originalStart = TimeZoneInfo.ConvertTimeFromUtc (exdate.StartTime.UTC, _localTimeZoneInfo);
-                using (var wrapper = GenericComObjectWrapper.Create (targetRecurrencePattern.GetOccurrence (originalStart)))
+                try
                 {
-                  wrapper.Inner.Delete();
+                  using (var wrapper = GenericComObjectWrapper.Create(targetRecurrencePattern.GetOccurrence(originalStart)))
+                  {
+                    wrapper.Inner.Delete();
+                  }
+                }
+                catch (COMException ex)
+                {
+                  s_logger.Error("Can't find occurence of exception", ex);
                 }
               }
             }
