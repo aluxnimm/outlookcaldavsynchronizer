@@ -108,18 +108,18 @@ namespace CalDavSynchronizer.DataAccess
     private const string s_calDavDateTimeFormatString = "yyyyMMddThhmmssZ";
 
 
-    public Dictionary<Uri, string> GetEvents (DateTime? from, DateTime? to)
+    public IReadOnlyList<EntityIdWithVersion<Uri, string>> GetEvents (DateTime? from, DateTime? to)
     {
       return GetEntities (from, to, "VEVENT");
     }
 
-    public Dictionary<Uri, string> GetTodos (DateTime? from, DateTime? to)
+    public IReadOnlyList<EntityIdWithVersion<Uri, string>> GetTodos (DateTime? from, DateTime? to)
     {
       return GetEntities (from, to, "VTODO");
     }
 
 
-    private Dictionary<Uri, string> GetEntities (DateTime? from, DateTime? to, string entityType)
+    private IReadOnlyList<EntityIdWithVersion<Uri, string>> GetEntities (DateTime? from, DateTime? to, string entityType)
     {
       if (from.HasValue != to.HasValue)
         throw new ArgumentException ("Either both or no boundary has to be set");
@@ -158,7 +158,7 @@ namespace CalDavSynchronizer.DataAccess
       XmlNodeList responseNodes = responseXml.XmlDocument.SelectNodes ("/D:multistatus/D:response", responseXml.XmlNamespaceManager);
 
 
-      var entities = new Dictionary<Uri, string>();
+      var entities = new List<EntityIdWithVersion<Uri, string>>();
 
       // ReSharper disable once LoopCanBeConvertedToQuery
       // ReSharper disable once PossibleNullReferenceException
@@ -169,10 +169,7 @@ namespace CalDavSynchronizer.DataAccess
         if (urlNode != null && etagNode != null)
         {
           var uri = new Uri (urlNode.InnerText, UriKind.Relative);
-          if (!entities.ContainsKey (uri))
-            entities.Add (uri, etagNode.InnerText);
-          else
-            s_logger.WarnFormat ("Entitiy '{0}' was contained multiple times in server response. Ignoring redundant entity", uri);
+          entities.Add (EntityIdWithVersion.Create (uri, etagNode.InnerText));
         }
       }
 
@@ -368,7 +365,7 @@ namespace CalDavSynchronizer.DataAccess
     }
 
 
-    public Dictionary<Uri, string> GetEntities (IEnumerable<Uri> eventUrls)
+    public IReadOnlyList<EntityWithVersion<Uri, string>> GetEntities (IEnumerable<Uri> eventUrls)
     {
       var requestBody = @"<?xml version=""1.0""?>
 			                    <C:calendar-multiget xmlns:C=""urn:ietf:params:xml:ns:caldav"" xmlns:D=""DAV:"">
@@ -395,7 +392,7 @@ namespace CalDavSynchronizer.DataAccess
 
       XmlNodeList responseNodes = responseXml.XmlDocument.SelectNodes ("/D:multistatus/D:response", responseXml.XmlNamespaceManager);
 
-      var entities = new Dictionary<Uri, string>();
+      var entities = new List<EntityWithVersion<Uri, string>> ();
 
       if (responseNodes == null)
         return entities;
@@ -408,7 +405,7 @@ namespace CalDavSynchronizer.DataAccess
         var urlNode = responseElement.SelectSingleNode ("D:href", responseXml.XmlNamespaceManager);
         var dataNode = responseElement.SelectSingleNode ("D:propstat/D:prop/C:calendar-data", responseXml.XmlNamespaceManager);
         if (urlNode != null && dataNode != null)
-          entities.Add (new Uri (urlNode.InnerText, UriKind.Relative), dataNode.InnerText);
+          entities.Add (EntityWithVersion.Create(new Uri (urlNode.InnerText, UriKind.Relative), dataNode.InnerText));
       }
 
       return entities;

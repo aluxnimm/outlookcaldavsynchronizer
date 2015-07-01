@@ -177,6 +177,7 @@
     <Compile Include="Contracts\ProfileEntry.cs" />
     <Compile Include="DataAccess\IProfileListDataAccess.cs" />
     <Compile Include="DataAccess\ProfileListDataAccess.cs" />
+    <Compile Include="Generic\EntityWithVersion.cs" />
     <Compile Include="Generic\EntityRelationManagement\EntityRelationDataAccess.cs" />
     <Compile Include="Generic\EntityRepositories\EntityRepositoryDeleteCreateInstaedOfUpdateWrapper.cs" />
     <Compile Include="Generic\ProgressReport\IProgressUi.cs" />

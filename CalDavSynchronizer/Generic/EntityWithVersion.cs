@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer 
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -15,18 +15,30 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace CalDavSynchronizer.Generic.EntityRepositories
+namespace CalDavSynchronizer.Generic
 {
   /// <summary>
-  /// All readoperations that a repository has to support
+  /// Represents the Id and the Version of an entity
   /// </summary>
-  public interface IReadOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
+  public class EntityWithVersion<TEntityId, TEntity>
   {
-    IReadOnlyList<EntityIdWithVersion<TEntityId, TEntityVersion>> GetVersions (DateTime from, DateTime to);
-    Task<IReadOnlyList<EntityWithVersion<TEntityId, TEntity>>> Get (ICollection<TEntityId> ids);
-    void Cleanup (IReadOnlyDictionary<TEntityId, TEntity> entities);
+    public readonly TEntityId Id;
+    public readonly TEntity Entity;
+
+    public EntityWithVersion (TEntityId id, TEntity entity)
+    {
+      Id = id;
+      Entity = entity;
+    }
   }
+
+  public class EntityWithVersion
+  {
+    public static EntityWithVersion<TEntityId, TEntity> Create<TEntityId, TEntity> (TEntityId id, TEntity entity)
+    {
+      return new EntityWithVersion<TEntityId, TEntity> (id, entity);
+    }
+  }
+
 }

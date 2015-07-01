@@ -36,12 +36,13 @@ namespace CalDavSynchronizer.Generic.EntityRepositories
       return _inner.Create (entityInitializer);
     }
 
-    public Dictionary<TEntityId, TEntityVersion> GetVersions (DateTime @from, DateTime to)
+
+    public IReadOnlyList<EntityIdWithVersion<TEntityId, TEntityVersion>> GetVersions (DateTime @from, DateTime to)
     {
-      return _inner.GetVersions (@from, to);
+      return _inner.GetVersions (@from, @to);
     }
 
-    public Task<IReadOnlyDictionary<TEntityId, TEntity>> Get (ICollection<TEntityId> ids)
+    public Task<IReadOnlyList<EntityWithVersion<TEntityId, TEntity>>> Get (ICollection<TEntityId> ids)
     {
       return _inner.Get (ids);
     }

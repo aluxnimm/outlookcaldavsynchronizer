@@ -32,4 +32,12 @@ namespace CalDavSynchronizer.Generic
       Version = version;
     }
   }
+
+  public class EntityIdWithVersion
+  {
+    public static EntityIdWithVersion<TEntityId, TEntity> Create<TEntityId, TEntity> (TEntityId id, TEntity entity)
+    {
+      return new EntityIdWithVersion<TEntityId, TEntity> (id, entity);
+    }
+  }
 }

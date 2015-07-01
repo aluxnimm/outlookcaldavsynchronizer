@@ -52,7 +52,7 @@ namespace CalDavSynchronizer.Implementation
       _entityType = entityType;
     }
 
-    public Dictionary<Uri, string> GetVersions (DateTime from, DateTime to)
+    public IReadOnlyList<EntityIdWithVersion<Uri, string>> GetVersions (DateTime from, DateTime to)
     {
       using (AutomaticStopwatch.StartInfo (s_logger, "CalDavRepository.GetVersions"))
       {
@@ -68,12 +68,12 @@ namespace CalDavSynchronizer.Implementation
       }
     }
 
-    public Task<IReadOnlyDictionary<Uri, IICalendar>> Get (ICollection<Uri> ids)
+    public Task<IReadOnlyList<EntityWithVersion<Uri, IICalendar>>> Get (ICollection<Uri> ids)
     {
       return Task.Factory.StartNew (() =>
       {
         if (ids.Count == 0)
-          return new Dictionary<Uri, IICalendar>();
+          return new EntityWithVersion<Uri, IICalendar>[] {};
 
         using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("CalDavRepository.Get ({0} entitie(s))", ids.Count)))
         {
@@ -88,17 +88,19 @@ namespace CalDavSynchronizer.Implementation
       // nothing to do
     }
 
-    private IReadOnlyDictionary<Uri, IICalendar> ParallelDeserialize (IReadOnlyDictionary<Uri, string> serializedEntities)
+    private IReadOnlyList<EntityWithVersion<Uri, IICalendar>> ParallelDeserialize (IReadOnlyList<EntityWithVersion<Uri, string>> serializedEntities)
     {
-      var result = new Dictionary<Uri, IICalendar>();
+      var result = new List<EntityWithVersion<Uri, IICalendar>> ();
+
       Parallel.ForEach (
           serializedEntities,
           () => Tuple.Create (new iCalendarSerializer(), new List<Tuple<Uri, IICalendar>>()),
           (serialized, loopState, threadLocal) =>
           {
             IICalendar calendar;
-            if (TryDeserializeCalendar (serialized.Value, out calendar, serialized.Key, threadLocal.Item1))
-              threadLocal.Item2.Add (Tuple.Create (serialized.Key, calendar));
+
+            if (TryDeserializeCalendar (serialized.Entity, out calendar, serialized.Id, threadLocal.Item1))
+              threadLocal.Item2.Add (Tuple.Create (serialized.Id, calendar));
             return threadLocal;
           },
           threadLocal =>
@@ -106,7 +108,7 @@ namespace CalDavSynchronizer.Implementation
             lock (result)
             {
               foreach (var calendar in threadLocal.Item2)
-                result.Add (calendar.Item1, calendar.Item2);
+                result.Add (EntityWithVersion.Create(calendar.Item1, calendar.Item2));
             }
           });
 
@@ -131,14 +133,14 @@ namespace CalDavSynchronizer.Implementation
 
         if (entityToUpdate.Events.Count > 0)
         {
-          for (int i = 0, newSequenceNumber = entityToUpdate.Events.Max(e => e.Sequence) + 1; i < newCalendar.Events.Count; i++, newSequenceNumber++)
+          for (int i = 0, newSequenceNumber = entityToUpdate.Events.Max (e => e.Sequence) + 1; i < newCalendar.Events.Count; i++, newSequenceNumber++)
           {
             newCalendar.Events[i].Sequence = newSequenceNumber;
           }
         }
         if (entityToUpdate.Todos.Count > 0)
         {
-          for (int i = 0, newSequenceNumber = entityToUpdate.Todos.Max(e => e.Sequence) + 1; i < newCalendar.Todos.Count; i++, newSequenceNumber++)
+          for (int i = 0, newSequenceNumber = entityToUpdate.Todos.Max (e => e.Sequence) + 1; i < newCalendar.Todos.Count; i++, newSequenceNumber++)
           {
             newCalendar.Todos[i].Sequence = newSequenceNumber;
           }

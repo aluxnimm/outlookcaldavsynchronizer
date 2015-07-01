@@ -54,8 +54,6 @@
     <Compile Include="InitialEntityMatching\PersonAPersonBRelationDataFactory.cs" />
     <Compile Include="InitialEntityMatching\PersonB.cs" />
     <Compile Include="InitialEntityMatching\TestInitialEntityMatcher.cs" />
-    <Compile Include="InitialEntityMatching\TestPersonARepository.cs" />
-    <Compile Include="InitialEntityMatching\TestPersonBRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Synchronization\EntityRelationData.cs" />
     <Compile Include="Synchronization\EntityRelationDataFactory.cs" />
