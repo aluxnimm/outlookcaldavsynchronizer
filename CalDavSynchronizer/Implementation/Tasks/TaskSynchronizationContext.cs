@@ -74,7 +74,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       _storageDataAccess = storageDataAccess;
 
-      InitialEntityMatcher = new InitialTaskEntityMatcher();
+      InitialEntityMatcher = new InitialTaskEntityMatcher(EqualityComparer<Uri>.Default);
     }
 
 

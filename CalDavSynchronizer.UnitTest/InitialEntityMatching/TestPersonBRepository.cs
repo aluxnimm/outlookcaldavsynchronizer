@@ -24,7 +24,7 @@ using CalDavSynchronizer.Generic.ProgressReport;
 
 namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
 {
-  internal class TestPersonBRepository : IEntityRepository<PersonB, string, string>
+  internal class TestPersonBRepository : IEntityRepository<PersonB, Identifier<string>, string>
   {
     private readonly IEnumerable<PersonB> _persons;
 
@@ -34,32 +34,32 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
     }
 
 
-    public Dictionary<string, string> GetVersions (DateTime @from, DateTime to)
+    public Dictionary<Identifier<string>, string> GetVersions (DateTime @from, DateTime to)
     {
-      return _persons.ToDictionary (kv => kv.Id, kv => kv.Version);
+      return _persons.ToDictionary (kv => kv.Id, kv => kv.Version, new IdentifierEqualityComparer<string>());
     }
 
-    public async Task<IReadOnlyDictionary<string, PersonB>> Get (ICollection<string> ids)
+    public async Task<IReadOnlyDictionary<Identifier<string>, PersonB>> Get (ICollection<Identifier<string>> ids)
     {
-      var personsById = _persons.ToDictionary (p => p.Id);
-      return ids.Select (id => personsById[id]).ToDictionary (p => p.Id);
+      var personsById = _persons.ToDictionary (p => p.Id, new IdentifierEqualityComparer<string>());
+      return ids.Select (id => personsById[id]).ToDictionary (p => p.Id, new IdentifierEqualityComparer<string>());
     }
 
-    public void Cleanup (IReadOnlyDictionary<string, PersonB> entities)
+    public void Cleanup (IReadOnlyDictionary<Identifier<string>, PersonB> entities)
     {
     }
 
-    public bool Delete (string entityId)
-    {
-      throw new NotImplementedException();
-    }
-
-    public EntityIdWithVersion<string, string> Update (string entityId, PersonB entityToUpdate, Func<PersonB, PersonB> entityModifier)
+    public bool Delete (Identifier<string> entityId)
     {
       throw new NotImplementedException();
     }
 
-    public EntityIdWithVersion<string, string> Create (Func<PersonB, PersonB> entityInitializer)
+    public EntityIdWithVersion<Identifier<string>, string> Update (Identifier<string> entityId, PersonB entityToUpdate, Func<PersonB, PersonB> entityModifier)
+    {
+      throw new NotImplementedException();
+    }
+
+    public EntityIdWithVersion<Identifier<string>, string> Create (Func<PersonB, PersonB> entityInitializer)
     {
       throw new NotImplementedException();
     }

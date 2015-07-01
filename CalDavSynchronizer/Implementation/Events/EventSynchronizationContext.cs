@@ -78,7 +78,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
       _storageDataAccess = storageDataAccess;
 
-      InitialEntityMatcher = new InitialEventEntityMatcher();
+      InitialEntityMatcher = new InitialEventEntityMatcher(EqualityComparer<Uri>.Default);
     }
 
 

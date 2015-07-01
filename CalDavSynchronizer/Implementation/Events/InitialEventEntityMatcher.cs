@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using CalDavSynchronizer.Generic.InitialEntityMatching;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using DDay.iCal;
@@ -23,6 +24,11 @@ namespace CalDavSynchronizer.Implementation.Events
 {
   internal class InitialEventEntityMatcher : InitialEntityMatcherByPropertyGrouping<AppointmentItemWrapper, string, DateTime, string, IICalendar, Uri, string, string>
   {
+    public InitialEventEntityMatcher (IEqualityComparer<Uri> btypeIdEqualityComparer)
+        : base(btypeIdEqualityComparer)
+    {
+    }
+
     protected override bool AreEqual (AppointmentItemWrapper atypeEntity, IICalendar btypeEntity)
     {
       var evt = btypeEntity.Events[0];

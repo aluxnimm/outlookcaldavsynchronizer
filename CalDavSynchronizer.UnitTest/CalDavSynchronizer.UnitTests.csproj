@@ -46,6 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InitialEntityMatching\Identifier.cs" />
+    <Compile Include="InitialEntityMatching\IdentifierEqualityComparer.cs" />
     <Compile Include="InitialEntityMatching\InitialEntityMatcherByPropertyGroupingFixture.cs" />
     <Compile Include="InitialEntityMatching\PersonA.cs" />
     <Compile Include="InitialEntityMatching\PersonAPersonBRelationData.cs" />

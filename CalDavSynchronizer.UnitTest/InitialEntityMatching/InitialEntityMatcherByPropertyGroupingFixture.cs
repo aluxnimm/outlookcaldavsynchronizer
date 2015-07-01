@@ -29,15 +29,16 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
     {
       var aPersons = new[]
                      {
-                         new PersonA (1, "Homer", 49, 1),
-                         new PersonA (2, "Marge", 49, 1),
-                         new PersonA (3, "Bart", 8, 1),
+                         new PersonA (new Identifier<int> (1), "Homer", 49, 1),
+                         new PersonA (new Identifier<int> (2), "Marge", 49, 1), // Just one of those two is allowed to match
+                         new PersonA (new Identifier<int> (4), "Marge", 49, 1), // Just one of those two is allowed to match
+                         new PersonA (new Identifier<int> (3), "Bart", 8, 1),
                      };
       var bPersons = new[]
                      {
-                         new PersonB ("one", "Homerx", "49", "1"),
-                         new PersonB ("two", "Marge", "49", "1"),
-                         new PersonB ("three", "Bart", "9", "1"),
+                         new PersonB (new Identifier<string> ("one"), "Homerx", "49", "1"),
+                         new PersonB (new Identifier<string> ("two"), "Marge", "49", "1"),
+                         new PersonB (new Identifier<string> ("three"), "Bart", "9", "1"),
                      };
 
 
@@ -51,7 +52,7 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
       var allAtypeEntities = atypeRepository.Get (atypeEntityVersions.Keys).Result;
       var allBtypeEntities = btypeRepository.Get (btypeEntityVersions.Keys).Result;
 
-      var foundRelations = new TestInitialEntityMatcher().FindMatchingEntities (
+      var foundRelations = new TestInitialEntityMatcher (new IdentifierEqualityComparer<string>()).FindMatchingEntities (
           new PersonAPersonBRelationDataFactory(),
           allAtypeEntities,
           allBtypeEntities,
@@ -61,9 +62,9 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
       Assert.That (foundRelations.Count, Is.EqualTo (1));
       var relation = foundRelations[0];
 
-      Assert.That (relation.AtypeId, Is.EqualTo (2));
+      Assert.That (relation.AtypeId.Value, Is.EqualTo (2).Or.EqualTo (4)); // Depends on the implementation which one matches
       Assert.That (relation.AtypeVersion, Is.EqualTo (1));
-      Assert.That (relation.BtypeId, Is.EqualTo ("two"));
+      Assert.That (relation.BtypeId.Value, Is.EqualTo ("two"));
       Assert.That (relation.BtypeVersion, Is.EqualTo ("1"));
     }
   }

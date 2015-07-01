@@ -20,12 +20,12 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
 {
   public class PersonA
   {
-    private readonly int _id;
+    private readonly Identifier<int> _id;
     private readonly int _age;
     private readonly string _name;
     private readonly int _version;
 
-    public PersonA (int id, string name, int age, int version)
+    public PersonA (Identifier<int> id, string name, int age, int version)
     {
       _id = id;
       _name = name;
@@ -34,7 +34,7 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
     }
 
 
-    public int Id
+    public Identifier<int> Id
     {
       get { return _id; }
     }

@@ -15,12 +15,18 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using CalDavSynchronizer.Generic.InitialEntityMatching;
 
 namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
 {
-  internal class TestInitialEntityMatcher : InitialEntityMatcherByPropertyGrouping<PersonA, int, int, int, PersonB, string, string, string>
+  internal class TestInitialEntityMatcher : InitialEntityMatcherByPropertyGrouping<PersonA, Identifier<int>, int, int, PersonB, Identifier<string>, string, string>
   {
+    public TestInitialEntityMatcher (IEqualityComparer<Identifier<string>> btypeIdEqualityComparer)
+        : base (btypeIdEqualityComparer)
+    {
+    }
+
     protected override bool AreEqual (PersonA atypeEntity, PersonB btypeEntity)
     {
       return atypeEntity.Name == btypeEntity.Name &&

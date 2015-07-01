@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using CalDavSynchronizer.Generic.InitialEntityMatching;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using DDay.iCal;
@@ -23,6 +24,11 @@ namespace CalDavSynchronizer.Implementation.Tasks
 {
   internal class InitialTaskEntityMatcher : InitialEntityMatcherByPropertyGrouping<TaskItemWrapper, string, DateTime, string, IICalendar, Uri, string, string>
   {
+    public InitialTaskEntityMatcher (IEqualityComparer<Uri> btypeIdEqualityComparer)
+        : base(btypeIdEqualityComparer)
+    {
+    }
+
     protected override bool AreEqual (TaskItemWrapper atypeEntity, IICalendar btypeEntity)
     {
       // TODO: find a rule, when two tasks are considered to be equal (maybe subject is not enough)
