@@ -306,6 +306,7 @@ namespace CalDavSynchronizer.Implementation.Events
       var targetOrganizer = new Organizer (GetMailUrl (organizer));
       targetOrganizer.CommonName = organizer.Name;
       target.Organizer = targetOrganizer;
+      target.Organizer.Parameters.Add("SCHEDULE-AGENT", "CLIENT");
     }
 
     private void SetOrganizer (IEvent target, string organizerCN, string organizerEmail)
