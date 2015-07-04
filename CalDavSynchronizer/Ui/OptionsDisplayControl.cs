@@ -202,6 +202,28 @@ namespace CalDavSynchronizer.Ui
         result = false;
       }
 
+      try
+      {
+        var uri = new Uri (_calenderUrlTextBox.Text).ToString();
+      }
+      catch (Exception x)
+      {
+        errorMessageBuilder.AppendFormat ("- The CalDav Calendar Url is invalid. ({0})", x.Message);
+        errorMessageBuilder.AppendLine();
+        result = false;
+      }
+
+      try
+      {
+        var uri = new Uri ("mailto:" + _emailAddressTextBox.Text).ToString();
+      }
+      catch (Exception x)
+      {
+        errorMessageBuilder.AppendFormat ("- The Email Address is invalid. ({0})", x.Message);
+        errorMessageBuilder.AppendLine();
+        result = false;
+      }
+
       return result;
     }
 
