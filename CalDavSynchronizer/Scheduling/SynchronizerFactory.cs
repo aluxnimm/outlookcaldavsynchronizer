@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using CalDavSynchronizer.Contracts;
@@ -97,8 +98,9 @@ namespace CalDavSynchronizer.Scheduling
               syncStateFactory.Environment,
               options.SynchronizationMode,
               options.ConflictResolution),
-          _totalProgressFactory
-          );
+          _totalProgressFactory,
+          EqualityComparer<string>.Default,
+          EqualityComparer<Uri>.Default);
     }
 
     private ISynchronizer CreateTaskSynchronizer (Options options)
@@ -130,7 +132,9 @@ namespace CalDavSynchronizer.Scheduling
               syncStateFactory.Environment,
               options.SynchronizationMode,
               options.ConflictResolution),
-          _totalProgressFactory);
+          _totalProgressFactory,
+          EqualityComparer<string>.Default,
+          EqualityComparer<Uri>.Default);
     }
   }
 }

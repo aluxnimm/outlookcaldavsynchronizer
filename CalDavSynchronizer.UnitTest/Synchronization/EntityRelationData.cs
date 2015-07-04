@@ -34,4 +34,20 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
     public string BtypeId { get; set; }
     public int BtypeVersion { get; set; }
   }
+
+  internal class EntityRelationDataString : IEntityRelationData<string, string, string, string>
+  {
+    public EntityRelationDataString (string atypeId, string atypeVersion, string btypeId, string btypeVersion)
+    {
+      AtypeId = atypeId;
+      AtypeVersion = atypeVersion;
+      BtypeId = btypeId;
+      BtypeVersion = btypeVersion;
+    }
+
+    public string AtypeId { get; set; }
+    public string AtypeVersion { get; set; }
+    public string BtypeId { get; set; }
+    public string BtypeVersion { get; set; }
+  }
 }

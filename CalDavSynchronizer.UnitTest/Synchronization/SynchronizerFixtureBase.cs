@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using CalDavSynchronizer.Generic.ProgressReport;
 using CalDavSynchronizer.Generic.Synchronization;
 using CalDavSynchronizer.Generic.Synchronization.StateCreationStrategies;
@@ -48,7 +49,9 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
       _synchronizer = new Synchronizer<string, int, string, string, int, string> (
           _synchronizerSetup,
           strategy,
-          NullTotalProgressFactory.Instance
+          NullTotalProgressFactory.Instance,
+          EqualityComparer<string>.Default,
+          EqualityComparer<string>.Default
           );
 
       return _synchronizer.Synchronize().Result;

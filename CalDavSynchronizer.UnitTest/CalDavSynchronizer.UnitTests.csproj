@@ -60,6 +60,8 @@
     <Compile Include="Synchronization\GenericConflictResolution.cs" />
     <Compile Include="Synchronization\Mapper.cs" />
     <Compile Include="Synchronization\OneWayReplicatorFixtureBase.cs" />
+    <Compile Include="Synchronization\SynchronizerBuilder.cs" />
+    <Compile Include="Synchronization\SynchronizerFixture.cs" />
     <Compile Include="Synchronization\SynchronizerFixtureBase.cs" />
     <Compile Include="Synchronization\OneWayReplicatorFixture.cs" />
     <Compile Include="Synchronization\TestSynchronizerSetup.cs" />

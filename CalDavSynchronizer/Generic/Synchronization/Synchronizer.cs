@@ -34,23 +34,31 @@ namespace CalDavSynchronizer.Generic.Synchronization
   public class Synchronizer<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
       : ISynchronizer
   {
+    // ReSharper disable once StaticFieldInGenericType
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private static readonly IEqualityComparer<TAtypeEntityVersion> _atypeVersionComparer = EqualityComparer<TAtypeEntityVersion>.Default;
     private static readonly IEqualityComparer<TBtypeEntityVersion> _btypeVersionComparer = EqualityComparer<TBtypeEntityVersion>.Default;
 
-    private readonly IEqualityComparer<TAtypeEntityId> _atypeIdComparer = EqualityComparer<TAtypeEntityId>.Default;
-    private readonly IEqualityComparer<TBtypeEntityId> _btypeIdComparer = EqualityComparer<TBtypeEntityId>.Default;
+    private readonly IEqualityComparer<TAtypeEntityId> _atypeIdComparer ;
+    private readonly IEqualityComparer<TBtypeEntityId> _btypeIdComparer ;
 
     private readonly ISynchronizerContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _synchronizerContext;
     private readonly IInitialSyncStateCreationStrategy<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _initialSyncStateCreationStrategy;
     private readonly ITotalProgressFactory _totalProgressFactory;
 
-    public Synchronizer (ISynchronizerContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> synchronizerContext, IInitialSyncStateCreationStrategy<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> initialSyncStateCreationStrategy, ITotalProgressFactory totalProgressFactory)
+    public Synchronizer (
+      ISynchronizerContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> synchronizerContext, 
+      IInitialSyncStateCreationStrategy<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> initialSyncStateCreationStrategy,
+      ITotalProgressFactory totalProgressFactory, 
+      IEqualityComparer<TAtypeEntityId> atypeIdComparer,
+      IEqualityComparer<TBtypeEntityId> btypeIdComparer)
     {
       _synchronizerContext = synchronizerContext;
       _initialSyncStateCreationStrategy = initialSyncStateCreationStrategy;
       _totalProgressFactory = totalProgressFactory;
+      _atypeIdComparer = atypeIdComparer;
+      _btypeIdComparer = btypeIdComparer;
     }
 
 
