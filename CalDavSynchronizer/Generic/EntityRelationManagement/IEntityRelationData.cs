@@ -24,11 +24,11 @@ namespace CalDavSynchronizer.Generic.EntityRelationManagement
   /// <remarks>
   /// The implementig type has to be XML-Serializable!!!
   /// </remarks>
-  public interface IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
+  public interface IEntityRelationData<out TAtypeEntityId, out TAtypeEntityVersion, out TBtypeEntityId, out TBtypeEntityVersion>
   {
-    TAtypeEntityId AtypeId { get; set; }
-    TAtypeEntityVersion AtypeVersion { get; set; }
-    TBtypeEntityId BtypeId { get; set; }
-    TBtypeEntityVersion BtypeVersion { get; set; }
+    TAtypeEntityId AtypeId { get; }
+    TAtypeEntityVersion AtypeVersion { get; }
+    TBtypeEntityId BtypeId { get; }
+    TBtypeEntityVersion BtypeVersion { get; }
   }
 }
