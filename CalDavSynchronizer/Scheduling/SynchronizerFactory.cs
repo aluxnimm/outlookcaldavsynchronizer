@@ -74,14 +74,17 @@ namespace CalDavSynchronizer.Scheduling
 
       var storageDataAccess = new EntityRelationDataAccess<string, DateTime, OutlookEventRelationData, Uri, string> (storageDataDirectory);
 
+      var btypeIdEqualityComparer = EqualityComparer<Uri>.Default;
+      var atypeIdComparer = EqualityComparer<string>.Default;
+
       var synchronizationContext = new EventSynchronizationContext (
           _outlookSession,
           storageDataAccess,
           options,
           _outlookEmailAddress,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"])
-          );
+          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]),
+          btypeIdEqualityComparer);
 
       var syncStateFactory = new EntitySyncStateFactory<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (
           synchronizationContext.EntityMapper,
@@ -89,7 +92,6 @@ namespace CalDavSynchronizer.Scheduling
           synchronizationContext.BtypeRepository,
           synchronizationContext.EntityRelationDataFactory
           );
-
 
       return new Synchronizer<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (
           synchronizationContext,
@@ -99,8 +101,8 @@ namespace CalDavSynchronizer.Scheduling
               options.SynchronizationMode,
               options.ConflictResolution),
           _totalProgressFactory,
-          EqualityComparer<string>.Default,
-          EqualityComparer<Uri>.Default);
+          atypeIdComparer,
+          btypeIdEqualityComparer);
     }
 
     private ISynchronizer CreateTaskSynchronizer (Options options)
@@ -112,12 +114,16 @@ namespace CalDavSynchronizer.Scheduling
 
       var storageDataAccess = new EntityRelationDataAccess<string, DateTime, OutlookEventRelationData, Uri, string> (storageDataDirectory);
 
+      var btypeIdEqualityComparer = EqualityComparer<Uri>.Default;
+      var atypeIdComparer = EqualityComparer<string>.Default;
+
       var synchronizationContext = new TaskSynchronizationContext (
           _outlookSession,
           storageDataAccess,
           options,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]));
+          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]), 
+          btypeIdEqualityComparer);
 
       var syncStateFactory = new EntitySyncStateFactory<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> (
           synchronizationContext.EntityMapper,
@@ -133,8 +139,8 @@ namespace CalDavSynchronizer.Scheduling
               options.SynchronizationMode,
               options.ConflictResolution),
           _totalProgressFactory,
-          EqualityComparer<string>.Default,
-          EqualityComparer<Uri>.Default);
+          atypeIdComparer,
+          btypeIdEqualityComparer);
     }
   }
 }

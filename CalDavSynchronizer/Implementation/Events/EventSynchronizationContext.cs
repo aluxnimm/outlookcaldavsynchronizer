@@ -44,7 +44,7 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly IEntityRelationDataFactory<string, DateTime, Uri, string> _entityRelationDataFactory;
 
 
-    public EventSynchronizationContext (NameSpace outlookSession, IEntityRelationDataAccess<string, DateTime, Uri, string> storageDataAccess, Options options, string outlookEmailAddress, TimeSpan connectTimeout, TimeSpan readWriteTimeout)
+    public EventSynchronizationContext (NameSpace outlookSession, IEntityRelationDataAccess<string, DateTime, Uri, string> storageDataAccess, Options options, string outlookEmailAddress, TimeSpan connectTimeout, TimeSpan readWriteTimeout, IEqualityComparer<Uri> btypeIdEqualityComparer)
     {
       if (outlookSession == null)
         throw new ArgumentNullException ("outlookSession");
@@ -78,7 +78,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
       _storageDataAccess = storageDataAccess;
 
-      InitialEntityMatcher = new InitialEventEntityMatcher(EqualityComparer<Uri>.Default);
+      InitialEntityMatcher = new InitialEventEntityMatcher(btypeIdEqualityComparer);
     }
 
 
