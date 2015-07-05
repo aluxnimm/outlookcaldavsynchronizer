@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Generic.EntityRelationManagement;
@@ -33,19 +34,31 @@ namespace CalDavSynchronizer.Generic.Synchronization
   public class Synchronizer<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
       : ISynchronizer
   {
+    // ReSharper disable once StaticFieldInGenericType
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    private static readonly IEqualityComparer<TAtypeEntityVersion> _atypeComparer = EqualityComparer<TAtypeEntityVersion>.Default;
-    private static readonly IEqualityComparer<TBtypeEntityVersion> _btypeComparer = EqualityComparer<TBtypeEntityVersion>.Default;
+    private static readonly IEqualityComparer<TAtypeEntityVersion> _atypeVersionComparer = EqualityComparer<TAtypeEntityVersion>.Default;
+    private static readonly IEqualityComparer<TBtypeEntityVersion> _btypeVersionComparer = EqualityComparer<TBtypeEntityVersion>.Default;
+
+    private readonly IEqualityComparer<TAtypeEntityId> _atypeIdComparer ;
+    private readonly IEqualityComparer<TBtypeEntityId> _btypeIdComparer ;
+
     private readonly ISynchronizerContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _synchronizerContext;
     private readonly IInitialSyncStateCreationStrategy<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _initialSyncStateCreationStrategy;
     private readonly ITotalProgressFactory _totalProgressFactory;
 
-    public Synchronizer (ISynchronizerContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> synchronizerContext, IInitialSyncStateCreationStrategy<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> initialSyncStateCreationStrategy, ITotalProgressFactory totalProgressFactory)
+    public Synchronizer (
+      ISynchronizerContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> synchronizerContext, 
+      IInitialSyncStateCreationStrategy<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> initialSyncStateCreationStrategy,
+      ITotalProgressFactory totalProgressFactory, 
+      IEqualityComparer<TAtypeEntityId> atypeIdComparer,
+      IEqualityComparer<TBtypeEntityId> btypeIdComparer)
     {
       _synchronizerContext = synchronizerContext;
       _initialSyncStateCreationStrategy = initialSyncStateCreationStrategy;
       _totalProgressFactory = totalProgressFactory;
+      _atypeIdComparer = atypeIdComparer;
+      _btypeIdComparer = btypeIdComparer;
     }
 
 
@@ -62,8 +75,14 @@ namespace CalDavSynchronizer.Generic.Synchronization
           var btypeEntityRepository = _synchronizerContext.BtypeRepository;
 
           var cachedData = _synchronizerContext.LoadEntityRelationData();
-          var atypeRepositoryVersions = atypeEntityRepository.GetVersions (_synchronizerContext.From, _synchronizerContext.To);
-          var btypeRepositoryVersions = btypeEntityRepository.GetVersions (_synchronizerContext.From, _synchronizerContext.To);
+
+          var atypeRepositoryVersions = CreateDictionary (
+              atypeEntityRepository.GetVersions (_synchronizerContext.From, _synchronizerContext.To),
+              _atypeIdComparer);
+
+          var btypeRepositoryVersions = CreateDictionary (
+              btypeEntityRepository.GetVersions (_synchronizerContext.From, _synchronizerContext.To),
+              _btypeIdComparer);
 
           IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> aEntities = null;
           IReadOnlyDictionary<TBtypeEntityId, TBtypeEntity> bEntities = null;
@@ -78,12 +97,16 @@ namespace CalDavSynchronizer.Generic.Synchronization
 
               using (totalProgress.StartARepositoryLoad())
               {
-                aEntities = await atypeEntityRepository.Get (atypeRepositoryVersions.Keys);
+                aEntities = CreateDictionary (
+                    await atypeEntityRepository.Get (atypeRepositoryVersions.Keys),
+                    _atypeIdComparer);
               }
 
               using (totalProgress.StartBRepositoryLoad())
               {
-                bEntities = await btypeEntityRepository.Get (btypeRepositoryVersions.Keys);
+                bEntities = CreateDictionary (
+                    await btypeEntityRepository.Get (btypeRepositoryVersions.Keys),
+                    _btypeIdComparer);
               }
 
               cachedData = _synchronizerContext.InitialEntityMatcher.FindMatchingEntities (
@@ -140,12 +163,16 @@ namespace CalDavSynchronizer.Generic.Synchronization
               totalProgress.NotifyLoadCount (aEntitesToLoad.Count, bEntitesToLoad.Count);
               using (totalProgress.StartARepositoryLoad())
               {
-                aEntities = await atypeEntityRepository.Get (aEntitesToLoad);
+                aEntities = CreateDictionary (
+                    await atypeEntityRepository.Get (aEntitesToLoad),
+                    _atypeIdComparer);
               }
 
               using (totalProgress.StartBRepositoryLoad())
               {
-                bEntities = await btypeEntityRepository.Get (bEntitesToLoad);
+                bEntities = CreateDictionary (
+                    await btypeEntityRepository.Get (bEntitesToLoad),
+                    _btypeIdComparer);
               }
             }
 
@@ -192,6 +219,36 @@ namespace CalDavSynchronizer.Generic.Synchronization
       return true;
     }
 
+    private Dictionary<TKey, TValue> CreateDictionary<TKey, TValue> (IReadOnlyList<EntityIdWithVersion<TKey, TValue>> tuples, IEqualityComparer<TKey> equalityComparer)
+    {
+      var dictionary = new Dictionary<TKey, TValue> (equalityComparer);
+
+      foreach (var tuple in tuples)
+      {
+        if (!dictionary.ContainsKey (tuple.Id))
+          dictionary.Add (tuple.Id, tuple.Version);
+        else
+          s_logger.WarnFormat ("EntitiyVersion '{0}' was contained multiple times in server response. Ignoring redundant entity", tuple.Id);
+      }
+
+      return dictionary;
+    }
+
+    private Dictionary<TKey, TValue> CreateDictionary<TKey, TValue> (IReadOnlyList<EntityWithVersion<TKey, TValue>> tuples, IEqualityComparer<TKey> equalityComparer)
+    {
+      var dictionary = new Dictionary<TKey, TValue> (equalityComparer);
+
+      foreach (var tuple in tuples)
+      {
+        if (!dictionary.ContainsKey (tuple.Id))
+          dictionary.Add (tuple.Id, tuple.Entity);
+        else
+          s_logger.WarnFormat ("Entitiy '{0}' was contained multiple times in server response. Ignoring redundant entity", tuple.Id);
+      }
+
+      return dictionary;
+    }
+
     private IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> CreateInitialSyncState (
         IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> cachedData,
         bool repositoryAVersionAvailable,
@@ -204,13 +261,13 @@ namespace CalDavSynchronizer.Generic.Synchronization
       IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> state;
       if (repositoryAVersionAvailable)
       {
-        var aChanged = !_atypeComparer.Equals (repositoryAVersion, cachedData.AtypeVersion);
+        var aChanged = !_atypeVersionComparer.Equals (repositoryAVersion, cachedData.AtypeVersion);
         if (aChanged)
         {
           aLogInfo.IncChanged();
           if (repositoryBVersionAvailable)
           {
-            var bChanged = !_btypeComparer.Equals (repositoryBVersion, cachedData.BtypeVersion);
+            var bChanged = !_btypeVersionComparer.Equals (repositoryBVersion, cachedData.BtypeVersion);
             if (bChanged)
             {
               bLogInfo.IncChanged();
@@ -233,7 +290,7 @@ namespace CalDavSynchronizer.Generic.Synchronization
           aLogInfo.IncUnchanged();
           if (repositoryBVersionAvailable)
           {
-            var bChanged = !_btypeComparer.Equals (repositoryBVersion, cachedData.BtypeVersion);
+            var bChanged = !_btypeVersionComparer.Equals (repositoryBVersion, cachedData.BtypeVersion);
             if (bChanged)
             {
               bLogInfo.IncChanged();
@@ -257,7 +314,7 @@ namespace CalDavSynchronizer.Generic.Synchronization
         aLogInfo.IncDeleted();
         if (repositoryBVersionAvailable)
         {
-          var bChanged = !_btypeComparer.Equals (repositoryBVersion, cachedData.BtypeVersion);
+          var bChanged = !_btypeVersionComparer.Equals (repositoryBVersion, cachedData.BtypeVersion);
           if (bChanged)
           {
             bLogInfo.IncChanged();

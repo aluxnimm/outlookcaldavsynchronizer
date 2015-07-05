@@ -16,20 +16,29 @@
 
 using System;
 
-namespace CalDavSynchronizer.Generic.EntityVersionManagement
+namespace CalDavSynchronizer.Generic
 {
   /// <summary>
   /// Represents the Id and the Version of an entity
   /// </summary>
-  public class EntityIdWithVersion<TEntityId, TVersion>
+  public class EntityWithVersion<TEntityId, TEntity>
   {
     public readonly TEntityId Id;
-    public readonly TVersion Version;
+    public readonly TEntity Entity;
 
-    public EntityIdWithVersion (TEntityId id, TVersion version)
+    public EntityWithVersion (TEntityId id, TEntity entity)
     {
       Id = id;
-      Version = version;
+      Entity = entity;
     }
   }
+
+  public class EntityWithVersion
+  {
+    public static EntityWithVersion<TEntityId, TEntity> Create<TEntityId, TEntity> (TEntityId id, TEntity entity)
+    {
+      return new EntityWithVersion<TEntityId, TEntity> (id, entity);
+    }
+  }
+
 }

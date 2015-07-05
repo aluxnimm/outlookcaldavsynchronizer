@@ -36,6 +36,16 @@ namespace CalDavSynchronizer.Generic.InitialEntityMatching
   {
     // ReSharper disable once StaticFieldInGenericType
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
+    private readonly IEqualityComparer<TBtypeEntityId> _btypeIdEqualityComparer;
+
+    protected InitialEntityMatcherByPropertyGrouping (IEqualityComparer<TBtypeEntityId> btypeIdEqualityComparer)
+    {
+      if (btypeIdEqualityComparer == null)
+        throw new ArgumentNullException ("btypeIdEqualityComparer");
+
+      _btypeIdEqualityComparer = btypeIdEqualityComparer;
+    }
+
 
     public List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> FindMatchingEntities (
         IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> relationFactory,
@@ -46,7 +56,7 @@ namespace CalDavSynchronizer.Generic.InitialEntityMatching
         )
     {
       var atypeEntityIdsGroupedByProperty = allAtypeEntities.GroupBy (a => GetAtypePropertyValue (a.Value)).ToDictionary (g => g.Key, g => g.Select (o => o.Key).ToList());
-      var btypeEntityIdsGroupedByProperty = allBtypeEntities.GroupBy (b => GetBtypePropertyValue (b.Value)).ToDictionary (g => g.Key, g => g.ToDictionary (o => o.Key, o => true));
+      var btypeEntityIdsGroupedByProperty = allBtypeEntities.GroupBy (b => GetBtypePropertyValue (b.Value)).ToDictionary (g => g.Key, g => g.ToDictionary (o => o.Key, o => true, _btypeIdEqualityComparer));
 
       List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> foundRelations = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
 

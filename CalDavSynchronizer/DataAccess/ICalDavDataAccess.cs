@@ -16,7 +16,7 @@
 
 using System;
 using System.Collections.Generic;
-using CalDavSynchronizer.Generic.EntityVersionManagement;
+using CalDavSynchronizer.Generic;
 
 namespace CalDavSynchronizer.DataAccess
 {
@@ -25,12 +25,12 @@ namespace CalDavSynchronizer.DataAccess
     bool IsCalendarAccessSupported ();
     bool IsResourceCalender ();
 
-    Dictionary<Uri, string> GetEvents (DateTime? from, DateTime? to);
-    Dictionary<Uri, string> GetTodos (DateTime? from, DateTime? to);
+    IReadOnlyList<EntityIdWithVersion<Uri, string>> GetEvents (DateTime? from, DateTime? to);
+    IReadOnlyList<EntityIdWithVersion<Uri, string>> GetTodos (DateTime? from, DateTime? to);
 
     EntityIdWithVersion<Uri, string> UpdateEntity (EntityIdWithVersion<Uri, string> evt, string iCalData);
     bool DeleteEntity (EntityIdWithVersion<Uri, string> evt);
-    Dictionary<Uri, string> GetEntities (IEnumerable<Uri> eventUrls);
+    IReadOnlyList<EntityWithVersion<Uri, string>> GetEntities (IEnumerable<Uri> eventUrls);
     EntityIdWithVersion<Uri, string> CreateEntity (string iCalData);
     bool DeleteEntity (Uri uri);
     EntityIdWithVersion<Uri, string> UpdateEntity (Uri url, string iCalData);

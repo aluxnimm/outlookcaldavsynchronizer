@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.Generic.ProgressReport;
 using NUnit.Framework;
+using System.Linq;
 
 namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
 {
@@ -29,29 +30,28 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
     {
       var aPersons = new[]
                      {
-                         new PersonA (1, "Homer", 49, 1),
-                         new PersonA (2, "Marge", 49, 1),
-                         new PersonA (3, "Bart", 8, 1),
+                         new PersonA (new Identifier<int> (1), "Homer", 49, 1),
+                         new PersonA (new Identifier<int> (2), "Marge", 49, 1), // Just one of those two is allowed to match
+                         new PersonA (new Identifier<int> (4), "Marge", 49, 1), // Just one of those two is allowed to match
+                         new PersonA (new Identifier<int> (3), "Bart", 8, 1),
                      };
       var bPersons = new[]
                      {
-                         new PersonB ("one", "Homerx", "49", "1"),
-                         new PersonB ("two", "Marge", "49", "1"),
-                         new PersonB ("three", "Bart", "9", "1"),
+                         new PersonB (new Identifier<string> ("one"), "Homerx", "49", "1"),
+                         new PersonB (new Identifier<string> ("two"), "Marge", "49", "1"),
+                         new PersonB (new Identifier<string> ("three"), "Bart", "9", "1"),
                      };
 
+      var atypeIdEqualityComparer = new IdentifierEqualityComparer<int>();
+      var btypeIdEqualityComparer = new IdentifierEqualityComparer<string>();
 
-      var atypeRepository = new TestPersonARepository (aPersons);
-      var btypeRepository = new TestPersonBRepository (bPersons);
+      var atypeEntityVersions = aPersons.ToDictionary (p => p.Id, p => p.Version, atypeIdEqualityComparer);
+      var btypeEntityVersions = bPersons.ToDictionary (p => p.Id, p => p.Version, btypeIdEqualityComparer);
 
+      var allAtypeEntities = aPersons.ToDictionary (p => p.Id, atypeIdEqualityComparer);
+      var allBtypeEntities = bPersons.ToDictionary (p => p.Id, btypeIdEqualityComparer);
 
-      var atypeEntityVersions = atypeRepository.GetVersions (DateTime.MinValue, DateTime.MinValue);
-      var btypeEntityVersions = btypeRepository.GetVersions (DateTime.MinValue, DateTime.MinValue);
-
-      var allAtypeEntities = atypeRepository.Get (atypeEntityVersions.Keys).Result;
-      var allBtypeEntities = btypeRepository.Get (btypeEntityVersions.Keys).Result;
-
-      var foundRelations = new TestInitialEntityMatcher().FindMatchingEntities (
+      var foundRelations = new TestInitialEntityMatcher (btypeIdEqualityComparer).FindMatchingEntities (
           new PersonAPersonBRelationDataFactory(),
           allAtypeEntities,
           allBtypeEntities,
@@ -61,9 +61,9 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
       Assert.That (foundRelations.Count, Is.EqualTo (1));
       var relation = foundRelations[0];
 
-      Assert.That (relation.AtypeId, Is.EqualTo (2));
+      Assert.That (relation.AtypeId.Value, Is.EqualTo (2).Or.EqualTo (4)); // Depends on the implementation which one matches
       Assert.That (relation.AtypeVersion, Is.EqualTo (1));
-      Assert.That (relation.BtypeId, Is.EqualTo ("two"));
+      Assert.That (relation.BtypeId.Value, Is.EqualTo ("two"));
       Assert.That (relation.BtypeVersion, Is.EqualTo ("1"));
     }
   }

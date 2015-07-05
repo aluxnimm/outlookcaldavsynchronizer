@@ -18,8 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CalDavSynchronizer.Generic;
 using CalDavSynchronizer.Generic.EntityRepositories;
-using CalDavSynchronizer.Generic.EntityVersionManagement;
 using CalDavSynchronizer.Generic.ProgressReport;
 
 namespace CalDavSynchronizer.UnitTest.Synchronization
@@ -42,14 +42,14 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
       _idPrefix = idPrefix;
     }
 
-    public Dictionary<string, int> GetVersions (DateTime @from, DateTime to)
+    public IReadOnlyList<EntityIdWithVersion<string, int>> GetVersions (DateTime @from, DateTime to)
     {
-      return EntityVersionAndContentById.ToDictionary (kv => kv.Key, kv => kv.Value.Item1);
+      return EntityVersionAndContentById.Select(kv => EntityIdWithVersion.Create(kv.Key, kv.Value.Item1)).ToList();
     }
 
-    public async Task<IReadOnlyDictionary<string, string>> Get (ICollection<string> ids)
+    public async Task<IReadOnlyList<EntityWithVersion<string, string>>> Get (ICollection<string> ids)
     {
-      return ids.Select (id => new { id, EntityVersionAndContentById[id].Item2 }).ToDictionary (v => v.id, v => v.Item2);
+      return ids.Select (id => EntityWithVersion.Create (id, EntityVersionAndContentById[id].Item2)).ToArray();
     }
 
     public void Cleanup (IReadOnlyDictionary<string, string> entities)

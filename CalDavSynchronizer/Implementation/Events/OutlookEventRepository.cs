@@ -19,8 +19,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using CalDavSynchronizer.Generic;
 using CalDavSynchronizer.Generic.EntityRepositories;
-using CalDavSynchronizer.Generic.EntityVersionManagement;
 using CalDavSynchronizer.Generic.ProgressReport;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using Microsoft.Office.Interop.Outlook;
@@ -45,9 +45,9 @@ namespace CalDavSynchronizer.Implementation.Events
 
     private const string c_entryIdColumnName = "EntryID";
 
-    public Dictionary<string, DateTime> GetVersions (DateTime fromUtc, DateTime toUtc)
+    public IReadOnlyList<EntityIdWithVersion<string, DateTime>> GetVersions (DateTime fromUtc, DateTime toUtc)
     {
-      var events = new Dictionary<string, DateTime>();
+      var events = new List<EntityIdWithVersion<string, DateTime>>();
 
       string filter = String.Format ("[Start] < '{0}' And [End] > '{1}'", ToOutlookDateString (toUtc), ToOutlookDateString (fromUtc));
       using (var tableWrapper = GenericComObjectWrapper.Create ((Table) _calendarFolder.GetTable (filter)))
@@ -64,7 +64,7 @@ namespace CalDavSynchronizer.Implementation.Events
           var entryId = (string) row[c_entryIdColumnName];
           using (var appointmentWrapper = GenericComObjectWrapper.Create ((AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, storeId)))
           {
-            events.Add (appointmentWrapper.Inner.EntryID, appointmentWrapper.Inner.LastModificationTime);
+            events.Add (new EntityIdWithVersion<string, DateTime> (appointmentWrapper.Inner.EntryID, appointmentWrapper.Inner.LastModificationTime));
           }
         }
       }
@@ -79,10 +79,16 @@ namespace CalDavSynchronizer.Implementation.Events
     }
 
 
-    public async Task<IReadOnlyDictionary<string, AppointmentItemWrapper>> Get (ICollection<string> ids)
+    public async Task<IReadOnlyList<EntityWithVersion<string, AppointmentItemWrapper>>> Get (ICollection<string> ids)
     {
       var storeId = _calendarFolder.StoreID;
-      return ids.ToDictionary (id => id, id => new AppointmentItemWrapper ((AppointmentItem) _mapiNameSpace.GetItemFromID (id, storeId), entryId => (AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, storeId)));
+      return ids
+          .Select (id => EntityWithVersion.Create (
+              id,
+              new AppointmentItemWrapper (
+                  (AppointmentItem) _mapiNameSpace.GetItemFromID (id, storeId),
+                  entryId => (AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, storeId))))
+          .ToArray();
     }
 
     public void Cleanup (IReadOnlyDictionary<string, AppointmentItemWrapper> entities)
@@ -100,17 +106,14 @@ namespace CalDavSynchronizer.Implementation.Events
 
     public bool Delete (string entityId)
     {
-      using (var appointment = Get (new[] { entityId }).Result.Values.SingleOrDefault())
+      var entityWithId = Get (new[] { entityId }).Result.SingleOrDefault();
+      if (entityWithId == null)
+        return false;
+
+      using (var appointment = entityWithId.Entity)
       {
-        if (appointment != null)
-        {
-          appointment.Inner.Delete();
-          return true;
-        }
-        else
-        {
-          return false;
-        }
+        appointment.Inner.Delete();
+        return true;
       }
     }
 

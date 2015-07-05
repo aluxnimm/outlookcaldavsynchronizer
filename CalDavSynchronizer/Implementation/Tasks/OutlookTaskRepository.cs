@@ -19,8 +19,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using CalDavSynchronizer.Generic;
 using CalDavSynchronizer.Generic.EntityRepositories;
-using CalDavSynchronizer.Generic.EntityVersionManagement;
 using CalDavSynchronizer.Generic.ProgressReport;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using Microsoft.Office.Interop.Outlook;
@@ -45,9 +45,9 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
     private const string c_entryIdColumnName = "EntryID";
 
-    public Dictionary<string, DateTime> GetVersions (DateTime fromUtc, DateTime toUtc)
+    public IReadOnlyList<EntityIdWithVersion<string, DateTime>> GetVersions (DateTime fromUtc, DateTime toUtc)
     {
-      var entities = new Dictionary<string, DateTime>();
+      var entities = new List<EntityIdWithVersion<string, DateTime>>();
 
       using (var tableWrapper = GenericComObjectWrapper.Create ((Table) _taskFolder.GetTable()))
       {
@@ -63,7 +63,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
           var entryId = (string) row[c_entryIdColumnName];
           using (var appointmentWrapper = GenericComObjectWrapper.Create ((TaskItem) _mapiNameSpace.GetItemFromID (entryId, storeId)))
           {
-            entities.Add (appointmentWrapper.Inner.EntryID, appointmentWrapper.Inner.LastModificationTime);
+            entities.Add (EntityIdWithVersion.Create (appointmentWrapper.Inner.EntryID, appointmentWrapper.Inner.LastModificationTime));
           }
         }
       }
@@ -77,10 +77,16 @@ namespace CalDavSynchronizer.Implementation.Tasks
       return value.ToString ("g", _currentCultureInfo);
     }
 
-    public async Task<IReadOnlyDictionary<string, TaskItemWrapper>> Get (ICollection<string> ids)
+    public async Task<IReadOnlyList<EntityWithVersion<string, TaskItemWrapper>>> Get (ICollection<string> ids)
     {
       var storeId = _taskFolder.StoreID;
-      return ids.ToDictionary (id => id, id => new TaskItemWrapper ((TaskItem) _mapiNameSpace.GetItemFromID (id, storeId), entryId => (TaskItem) _mapiNameSpace.GetItemFromID (entryId, storeId)));
+      return ids
+          .Select (id => EntityWithVersion.Create (
+              id,
+              new TaskItemWrapper (
+                  (TaskItem) _mapiNameSpace.GetItemFromID (id, storeId),
+                  entryId => (TaskItem) _mapiNameSpace.GetItemFromID (entryId, storeId))))
+          .ToArray();
     }
 
     public void Cleanup (IReadOnlyDictionary<string, TaskItemWrapper> entities)
@@ -98,18 +104,16 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
     public bool Delete (string entityId)
     {
-      using (var entityWrapper = Get (new[] { entityId }).Result.Values.SingleOrDefault())
+      var entityWithId = Get (new[] { entityId }).Result.SingleOrDefault ();
+      if (entityWithId == null)
+        return false;
+
+      using (var entity = entityWithId.Entity)
       {
-        if (entityWrapper != null)
-        {
-          entityWrapper.Inner.Delete();
-          return true;
-        }
-        else
-        {
-          return false;
-        }
+        entity.Inner.Delete ();
+        return true;
       }
+
     }
 
     public EntityIdWithVersion<string, DateTime> Create (Func<TaskItemWrapper, TaskItemWrapper> entityInitializer)

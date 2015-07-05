@@ -19,9 +19,9 @@ using CalDavSynchronizer.Generic.EntityRelationManagement;
 
 namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
 {
-  public class PersonAPersonBRelationData : IEntityRelationData<int, int, string, string>
+  public class PersonAPersonBRelationData : IEntityRelationData<Identifier<int>, int, Identifier<string>, string>
   {
-    public PersonAPersonBRelationData (int atypeId, int atypeVersion, string btypeId, string btypeVersion)
+    public PersonAPersonBRelationData (Identifier<int> atypeId, int atypeVersion, Identifier<string> btypeId, string btypeVersion)
     {
       AtypeId = atypeId;
       AtypeVersion = atypeVersion;
@@ -29,11 +29,11 @@ namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
       BtypeVersion = btypeVersion;
     }
 
-    public int AtypeId { get; set; }
+    public Identifier<int> AtypeId { get; set; }
 
     public int AtypeVersion { get; set; }
 
-    public string BtypeId { get; set; }
+    public Identifier<string> BtypeId { get; set; }
 
     public string BtypeVersion { get; set; }
   }

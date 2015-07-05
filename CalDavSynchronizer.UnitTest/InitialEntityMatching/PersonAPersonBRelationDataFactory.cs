@@ -19,9 +19,9 @@ using CalDavSynchronizer.Generic.EntityRelationManagement;
 
 namespace CalDavSynchronizer.UnitTest.InitialEntityMatching
 {
-  internal class PersonAPersonBRelationDataFactory : IEntityRelationDataFactory<int, int, string, string>
+  internal class PersonAPersonBRelationDataFactory : IEntityRelationDataFactory<Identifier<int>, int, Identifier<string>, string>
   {
-    public IEntityRelationData<int, int, string, string> Create (int atypeId, int atypeVersion, string btypeId, string btypeVersion)
+    public IEntityRelationData<Identifier<int>, int, Identifier<string>, string> Create (Identifier<int> atypeId, int atypeVersion, Identifier<string> btypeId, string btypeVersion)
     {
       return new PersonAPersonBRelationData (atypeId, atypeVersion, btypeId, btypeVersion);
     }

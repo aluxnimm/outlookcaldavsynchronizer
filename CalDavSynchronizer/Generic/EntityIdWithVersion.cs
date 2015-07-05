@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer 
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -16,19 +16,28 @@
 
 using System;
 
-namespace CalDavSynchronizer.Generic.EntityRelationManagement
+namespace CalDavSynchronizer.Generic
 {
   /// <summary>
-  /// Describes the relation between an entity in the A repository and an entity in the B repository 
+  /// Represents the Id and the Version of an entity
   /// </summary>
-  /// <remarks>
-  /// The implementig type has to be XML-Serializable!!!
-  /// </remarks>
-  public interface IEntityRelationData<out TAtypeEntityId, out TAtypeEntityVersion, out TBtypeEntityId, out TBtypeEntityVersion>
+  public class EntityIdWithVersion<TEntityId, TVersion>
   {
-    TAtypeEntityId AtypeId { get; }
-    TAtypeEntityVersion AtypeVersion { get; }
-    TBtypeEntityId BtypeId { get; }
-    TBtypeEntityVersion BtypeVersion { get; }
+    public readonly TEntityId Id;
+    public readonly TVersion Version;
+
+    public EntityIdWithVersion (TEntityId id, TVersion version)
+    {
+      Id = id;
+      Version = version;
+    }
+  }
+
+  public class EntityIdWithVersion
+  {
+    public static EntityIdWithVersion<TEntityId, TEntity> Create<TEntityId, TEntity> (TEntityId id, TEntity entity)
+    {
+      return new EntityIdWithVersion<TEntityId, TEntity> (id, entity);
+    }
   }
 }
