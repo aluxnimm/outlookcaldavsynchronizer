@@ -105,7 +105,7 @@ namespace CalDavSynchronizer.DataAccess
     }
 
     private const string s_calDavDateTimeFormatString = "yyyyMMddThhmmssZ";
-    
+
     public IReadOnlyList<EntityIdWithVersion<Uri, string>> GetEvents (DateTime? from, DateTime? to)
     {
       return GetEntities (from, to, "VEVENT");
@@ -115,7 +115,7 @@ namespace CalDavSynchronizer.DataAccess
     {
       return GetEntities (from, to, "VTODO");
     }
-    
+
     private IReadOnlyList<EntityIdWithVersion<Uri, string>> GetEntities (DateTime? from, DateTime? to, string entityType)
     {
       if (from.HasValue != to.HasValue)
@@ -172,6 +172,14 @@ namespace CalDavSynchronizer.DataAccess
 
       return entities;
     }
+
+    private string GetEtag (Uri absoluteEntityUrl)
+    {
+      var response = ExecuteCalDavRequest (absoluteEntityUrl, delegate { }, null);
+
+      return response.Headers["ETag"];
+    }
+
 
     private XmlDocumentWithNamespaceManager GetAllProperties (Uri url, int depth)
     {
@@ -302,9 +310,21 @@ namespace CalDavSynchronizer.DataAccess
         effectiveEventUrl = eventUrl;
       }
 
-      return new EntityIdWithVersion<Uri, string> (UriHelper.GetUnescapedPath(effectiveEventUrl), response.Headers["ETag"]);
+      var etag = response.Headers["ETag"];
+      string version;
+      if (etag != null)
+      {
+        version = etag;
+      }
+      else
+      {
+        version = GetEtag (effectiveEventUrl);
+      }
+
+
+      return new EntityIdWithVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveEventUrl), version);
     }
-    
+
     public bool DeleteEntity (EntityIdWithVersion<Uri, string> evt)
     {
       return DeleteEntity (evt.Id, evt.Version);
@@ -359,7 +379,7 @@ namespace CalDavSynchronizer.DataAccess
 
       return true;
     }
-    
+
     public IReadOnlyList<EntityWithVersion<Uri, string>> GetEntities (IEnumerable<Uri> eventUrls)
     {
       var requestBody = @"<?xml version=""1.0""?>
@@ -391,7 +411,7 @@ namespace CalDavSynchronizer.DataAccess
 
       if (responseNodes == null)
         return entities;
-      
+
       // ReSharper disable once LoopCanBeConvertedToQuery
       // ReSharper disable once PossibleNullReferenceException
       foreach (XmlElement responseElement in responseNodes)
@@ -436,7 +456,7 @@ namespace CalDavSynchronizer.DataAccess
     {
       var request = CreateRequest (url);
       modifier (request);
-      if (requestBody != string.Empty)
+      if (!string.IsNullOrEmpty (requestBody))
       {
         var requestBodyAsBytes = Encoding.UTF8.GetBytes (requestBody);
 
