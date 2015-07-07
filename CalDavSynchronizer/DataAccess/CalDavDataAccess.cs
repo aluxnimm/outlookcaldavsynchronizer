@@ -84,7 +84,6 @@ namespace CalDavSynchronizer.DataAccess
           .Any (option => String.Compare (option, "calendar-access", StringComparison.OrdinalIgnoreCase) == 0);
     }
 
-
     public bool IsResourceCalender ()
     {
       var properties = GetAllProperties (_calendarUrl, 0);
@@ -106,8 +105,7 @@ namespace CalDavSynchronizer.DataAccess
     }
 
     private const string s_calDavDateTimeFormatString = "yyyyMMddThhmmssZ";
-
-
+    
     public IReadOnlyList<EntityIdWithVersion<Uri, string>> GetEvents (DateTime? from, DateTime? to)
     {
       return GetEntities (from, to, "VEVENT");
@@ -117,8 +115,7 @@ namespace CalDavSynchronizer.DataAccess
     {
       return GetEntities (from, to, "VTODO");
     }
-
-
+    
     private IReadOnlyList<EntityIdWithVersion<Uri, string>> GetEntities (DateTime? from, DateTime? to, string entityType)
     {
       if (from.HasValue != to.HasValue)
@@ -168,7 +165,7 @@ namespace CalDavSynchronizer.DataAccess
         var etagNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:getetag", responseXml.XmlNamespaceManager);
         if (urlNode != null && etagNode != null)
         {
-          var uri = new Uri (urlNode.InnerText, UriKind.Relative);
+          var uri = UriHelper.UnescapeRelativeUri (_calendarUrl, urlNode.InnerText);
           entities.Add (EntityIdWithVersion.Create (uri, etagNode.InnerText));
         }
       }
@@ -233,7 +230,6 @@ namespace CalDavSynchronizer.DataAccess
       var absoluteEventUrl = new Uri (_calendarUrl, url);
 
       s_logger.DebugFormat ("Absolute entity location: '{0}'", absoluteEventUrl);
-
 
       WebResponse response;
 
@@ -306,9 +302,9 @@ namespace CalDavSynchronizer.DataAccess
         effectiveEventUrl = eventUrl;
       }
 
-      return new EntityIdWithVersion<Uri, string> (new Uri (effectiveEventUrl.AbsolutePath, UriKind.Relative), response.Headers["ETag"]);
+      return new EntityIdWithVersion<Uri, string> (UriHelper.GetUnescapedPath(effectiveEventUrl), response.Headers["ETag"]);
     }
-
+    
     public bool DeleteEntity (EntityIdWithVersion<Uri, string> evt)
     {
       return DeleteEntity (evt.Id, evt.Version);
@@ -363,8 +359,7 @@ namespace CalDavSynchronizer.DataAccess
 
       return true;
     }
-
-
+    
     public IReadOnlyList<EntityWithVersion<Uri, string>> GetEntities (IEnumerable<Uri> eventUrls)
     {
       var requestBody = @"<?xml version=""1.0""?>
@@ -392,12 +387,11 @@ namespace CalDavSynchronizer.DataAccess
 
       XmlNodeList responseNodes = responseXml.XmlDocument.SelectNodes ("/D:multistatus/D:response", responseXml.XmlNamespaceManager);
 
-      var entities = new List<EntityWithVersion<Uri, string>> ();
+      var entities = new List<EntityWithVersion<Uri, string>>();
 
       if (responseNodes == null)
         return entities;
-
-
+      
       // ReSharper disable once LoopCanBeConvertedToQuery
       // ReSharper disable once PossibleNullReferenceException
       foreach (XmlElement responseElement in responseNodes)
@@ -405,10 +399,31 @@ namespace CalDavSynchronizer.DataAccess
         var urlNode = responseElement.SelectSingleNode ("D:href", responseXml.XmlNamespaceManager);
         var dataNode = responseElement.SelectSingleNode ("D:propstat/D:prop/C:calendar-data", responseXml.XmlNamespaceManager);
         if (urlNode != null && dataNode != null)
-          entities.Add (EntityWithVersion.Create(new Uri (urlNode.InnerText, UriKind.Relative), dataNode.InnerText));
+        {
+          entities.Add (EntityWithVersion.Create (UriHelper.UnescapeRelativeUri (_calendarUrl, urlNode.InnerText), dataNode.InnerText));
+        }
       }
 
       return entities;
+    }
+
+    /// <summary>
+    /// Since Uri.Compare() cannot compare relative Uris and ignoring escapes, all Uris have to be unescaped when entering CalDavSynchronizer
+    /// </summary>
+    private static class UriHelper
+    {
+      public static Uri GetUnescapedPath (Uri absoluteUri)
+      {
+        return new Uri (absoluteUri.GetComponents (UriComponents.Path | UriComponents.KeepDelimiter, UriFormat.Unescaped), UriKind.Relative);
+      }
+
+      public static Uri UnescapeRelativeUri (Uri baseUri, string relativeUriString)
+      {
+        var relativeUri = new Uri (relativeUriString, UriKind.Relative);
+        var aboluteUri = new Uri (baseUri, relativeUri);
+        var unescapedRelativeUri = new Uri (aboluteUri.GetComponents (UriComponents.Path | UriComponents.KeepDelimiter, UriFormat.Unescaped), UriKind.Relative);
+        return unescapedRelativeUri;
+      }
     }
 
     private XmlDocumentWithNamespaceManager ExecuteCalDavRequestAndReadResponse (Uri url, Action<HttpWebRequest> modifier, string requestBody)
