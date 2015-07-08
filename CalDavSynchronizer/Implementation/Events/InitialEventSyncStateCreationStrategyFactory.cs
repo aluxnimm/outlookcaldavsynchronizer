@@ -17,6 +17,7 @@
 using System;
 using CalDavSynchronizer.Generic.Synchronization;
 using CalDavSynchronizer.Generic.Synchronization.StateCreationStrategies;
+using CalDavSynchronizer.Generic.Synchronization.StateCreationStrategies.ConflictStrategies;
 using CalDavSynchronizer.Generic.Synchronization.StateFactories;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using DDay.iCal;
@@ -25,16 +26,16 @@ namespace CalDavSynchronizer.Implementation.Events
 {
   public static class InitialEventSyncStateCreationStrategyFactory
   {
-    private static IEntityConflictSyncStateFactory<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> Create (IEntitySyncStateFactory<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> syncStateFactory, EntitySyncStateEnvironment<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> environment, ConflictResolution conflictResolution)
+    private static IConflictInitialSyncStateCreationStrategy<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> Create (IEntitySyncStateFactory<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> syncStateFactory, EntitySyncStateEnvironment<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> environment, ConflictResolution conflictResolution)
     {
       switch (conflictResolution)
       {
         case ConflictResolution.OutlookWins:
-          return new EntityConflictSyncStateFactory_AWins<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (syncStateFactory);
+          return new ConflictInitialSyncStateCreationStrategyAWins<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (syncStateFactory);
         case ConflictResolution.ServerWins:
-          return new EntityConflictSyncStateFactory_BWins<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (syncStateFactory);
+          return new ConflictInitialSyncStateCreationStrategyBWins<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (syncStateFactory);
         case ConflictResolution.Automatic:
-          return new EventEntityConflictSyncStateFactory_Automatic (environment);
+          return new EventConflictInitialSyncStateCreationStrategyAutomatic (environment);
       }
 
       throw new NotImplementedException();

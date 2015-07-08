@@ -17,6 +17,7 @@
 using System;
 using CalDavSynchronizer.Generic.Synchronization;
 using CalDavSynchronizer.Generic.Synchronization.StateCreationStrategies;
+using CalDavSynchronizer.Generic.Synchronization.StateCreationStrategies.ConflictStrategies;
 using CalDavSynchronizer.Generic.Synchronization.StateFactories;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Events;
@@ -26,16 +27,16 @@ namespace CalDavSynchronizer.Implementation.Tasks
 {
   public static class InitialTaskSyncStateCreationStrategyFactory
   {
-    private static IEntityConflictSyncStateFactory<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> Create (IEntitySyncStateFactory<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> syncStateFactory, EntitySyncStateEnvironment<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> environment, ConflictResolution conflictResolution)
+    private static IConflictInitialSyncStateCreationStrategy<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> Create (IEntitySyncStateFactory<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> syncStateFactory, EntitySyncStateEnvironment<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> environment, ConflictResolution conflictResolution)
     {
       switch (conflictResolution)
       {
         case ConflictResolution.OutlookWins:
-          return new EntityConflictSyncStateFactory_AWins<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> (syncStateFactory);
+          return new ConflictInitialSyncStateCreationStrategyAWins<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> (syncStateFactory);
         case ConflictResolution.ServerWins:
-          return new EntityConflictSyncStateFactory_BWins<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> (syncStateFactory);
+          return new ConflictInitialSyncStateCreationStrategyBWins<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> (syncStateFactory);
         case ConflictResolution.Automatic:
-          return new TaskEntityConflictSyncStateFactory_Automatic (environment);
+          return new TaskConflictInitialSyncStateCreationStrategyAutomatic (environment);
       }
 
       throw new NotImplementedException();

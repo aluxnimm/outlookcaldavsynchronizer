@@ -17,6 +17,7 @@
 using System;
 using CalDavSynchronizer.Generic.Synchronization;
 using CalDavSynchronizer.Generic.Synchronization.StateCreationStrategies;
+using CalDavSynchronizer.Generic.Synchronization.StateCreationStrategies.ConflictStrategies;
 using CalDavSynchronizer.Generic.Synchronization.StateFactories;
 using CalDavSynchronizer.Generic.Synchronization.States;
 
@@ -26,14 +27,14 @@ namespace CalDavSynchronizer.UnitTest.Synchronization
   {
     public void Synchronize (GenericConflictResolution winner)
     {
-      IEntityConflictSyncStateFactory<string, int, string, string, int, string> conflictStrategy;
+      IConflictInitialSyncStateCreationStrategy<string, int, string, string, int, string> conflictInitialStrategy;
       if (winner == GenericConflictResolution.AWins)
-        conflictStrategy = new EntityConflictSyncStateFactory_AWins<string, int, string, string, int, string> (_factory);
+        conflictInitialStrategy = new ConflictInitialSyncStateCreationStrategyAWins<string, int, string, string, int, string> (_factory);
       else
-        conflictStrategy = new EntityConflictSyncStateFactory_BWins<string, int, string, string, int, string> (_factory);
+        conflictInitialStrategy = new ConflictInitialSyncStateCreationStrategyBWins<string, int, string, string, int, string> (_factory);
 
 
-      var strategy = new TwoWayInitialSyncStateCreationStrategy<string, int, string, string, int, string> (_factory, conflictStrategy);
+      var strategy = new TwoWayInitialSyncStateCreationStrategy<string, int, string, string, int, string> (_factory, conflictInitialStrategy);
 
       SynchronizeInternal (strategy);
     }

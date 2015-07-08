@@ -17,6 +17,7 @@
 using System;
 using CalDavSynchronizer.Generic.EntityRelationManagement;
 using CalDavSynchronizer.Generic.Synchronization;
+using CalDavSynchronizer.Generic.Synchronization.StateCreationStrategies.ConflictStrategies;
 using CalDavSynchronizer.Generic.Synchronization.StateFactories;
 using CalDavSynchronizer.Generic.Synchronization.States;
 using CalDavSynchronizer.Implementation.ComWrappers;
@@ -25,10 +26,10 @@ using DDay.iCal;
 
 namespace CalDavSynchronizer.Implementation.Tasks
 {
-  internal class TaskEntityConflictSyncStateFactory_Automatic
-      : EntityConflictSyncStateFactory_Automatic<string, DateTime, TaskItemWrapper, Uri, string, IICalendar>
+  internal class TaskConflictInitialSyncStateCreationStrategyAutomatic
+      : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, TaskItemWrapper, Uri, string, IICalendar>
   {
-    public TaskEntityConflictSyncStateFactory_Automatic (EntitySyncStateEnvironment<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> environment)
+    public TaskConflictInitialSyncStateCreationStrategyAutomatic (EntitySyncStateEnvironment<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> environment)
         : base (environment)
     {
     }
