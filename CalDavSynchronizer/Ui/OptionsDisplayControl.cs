@@ -153,7 +153,12 @@ namespace CalDavSynchronizer.Ui
 
       try
       {
-        AdjustCalendarUrl();
+        StringBuilder errorMessageBuilder = new StringBuilder();
+        if (!ValidateCalendarUrl (errorMessageBuilder))
+        {
+          MessageBox.Show (errorMessageBuilder.ToString(), "The calendar Url is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          return;
+        }
 
         var dataAccess = new CalDavDataAccess (
             new Uri (_calenderUrlTextBox.Text),
@@ -180,36 +185,13 @@ namespace CalDavSynchronizer.Ui
       }
     }
 
-    private void AdjustCalendarUrl ()
-    {
-      if (!_calenderUrlTextBox.Text.EndsWith ("/"))
-        _calenderUrlTextBox.Text += "/";
-    }
-
     public bool Validate (StringBuilder errorMessageBuilder)
     {
-      bool result = true;
-
-      if (string.IsNullOrWhiteSpace (_calenderUrlTextBox.Text))
-      {
-        errorMessageBuilder.AppendLine ("- The CalDav Calendar Url is empty.");
-        result = false;
-      }
+      bool result = ValidateCalendarUrl (errorMessageBuilder);
 
       if (string.IsNullOrWhiteSpace (_folderStoreId) || string.IsNullOrWhiteSpace (_folderEntryId))
       {
         errorMessageBuilder.AppendLine ("- There is no Outlook Folder selected.");
-        result = false;
-      }
-
-      try
-      {
-        var uri = new Uri (_calenderUrlTextBox.Text).ToString();
-      }
-      catch (Exception x)
-      {
-        errorMessageBuilder.AppendFormat ("- The CalDav Calendar Url is invalid. ({0})", x.Message);
-        errorMessageBuilder.AppendLine();
         result = false;
       }
 
@@ -226,6 +208,43 @@ namespace CalDavSynchronizer.Ui
 
       return result;
     }
+
+    private bool ValidateCalendarUrl (StringBuilder errorMessageBuilder)
+    {
+      bool result = true;
+
+      if (string.IsNullOrWhiteSpace (_calenderUrlTextBox.Text))
+      {
+        errorMessageBuilder.AppendLine ("- The CalDav Calendar Url is empty.");
+        return false;
+      }
+
+      if (_calenderUrlTextBox.Text.Trim () != _calenderUrlTextBox.Text)
+      {
+        errorMessageBuilder.AppendLine ("- The CalDav Calendar Url cannot end/start with whitespaces.");
+        result = false;
+      }
+
+      if (!_calenderUrlTextBox.Text.EndsWith("/"))
+      {
+        errorMessageBuilder.AppendLine ("- The CalDav Calendar Url hast to end with an slash ('/').");
+        result = false;
+      }
+
+      try
+      {
+        var uri = new Uri (_calenderUrlTextBox.Text).ToString();
+      }
+      catch (Exception x)
+      {
+        errorMessageBuilder.AppendFormat ("- The CalDav Calendar Url is not a well formed Url. ({0})", x.Message);
+        errorMessageBuilder.AppendLine();
+        result = false;
+      }
+
+      return result;
+    }
+
 
     public Options Options
     {
@@ -252,9 +271,6 @@ namespace CalDavSynchronizer.Ui
       }
       get
       {
-        AdjustCalendarUrl();
-
-        // TODO: validate inputs
         return new Options()
                {
                    Name = _profileNameTextBox.Text,
@@ -274,6 +290,7 @@ namespace CalDavSynchronizer.Ui
                };
       }
     }
+
 
     private bool IsTaskSynchronizationEnabled
     {
