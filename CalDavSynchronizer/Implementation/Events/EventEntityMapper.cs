@@ -50,7 +50,6 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly string _outlookEmailAddress;
     private readonly string _serverEmailUri;
     private readonly TimeZoneInfo _localTimeZoneInfo;
-    private iCalTimeZone localTz;
 
     public EventEntityMapper (string outlookEmailAddress, Uri serverEmailAddress, string localTimeZoneId, string outlookApplicationVersion)
     {
@@ -66,14 +65,14 @@ namespace CalDavSynchronizer.Implementation.Events
     {
       var source = sourceWrapper.Inner;
       IEvent target = new Event();
-      localTz = iCalTimeZone.FromSystemTimeZone(_localTimeZoneInfo, new DateTime (1970,1,1),true);
-      targetCalender.TimeZones.Add(localTz);
+      var localIcalTimeZone = iCalTimeZone.FromSystemTimeZone(_localTimeZoneInfo, new DateTime (1970,1,1),true);
+      targetCalender.TimeZones.Add (localIcalTimeZone);
       targetCalender.Events.Add (target);
-      Map1To2 (source, target, false);
+      Map1To2 (source, target, false, localIcalTimeZone);
       return targetCalender;
     }
 
-    private void Map1To2 (AppointmentItem source, IEvent target, bool isRecurrenceException)
+    private void Map1To2 (AppointmentItem source, IEvent target, bool isRecurrenceException,iCalTimeZone localIcalTimeZone)
     {
       if (source.AllDayEvent)
       {
@@ -87,9 +86,9 @@ namespace CalDavSynchronizer.Implementation.Events
       else
       {
         target.Start = new iCalDateTime (source.Start);
-        target.Start.SetTimeZone(localTz);
+        target.Start.SetTimeZone (localIcalTimeZone);
         target.DTEnd = new iCalDateTime (source.End);
-        target.End.SetTimeZone(localTz);
+        target.End.SetTimeZone (localIcalTimeZone);
         target.IsAllDay = false;
       }
 
@@ -103,7 +102,7 @@ namespace CalDavSynchronizer.Implementation.Events
       MapAttendees1To2 (source, target, out organizerSet);
 
       if (!isRecurrenceException)
-        MapRecurrance1To2 (source, target);
+        MapRecurrance1To2 (source, target, localIcalTimeZone);
 
       if (!organizerSet)
         MapOrganizer1To2 (source, target);
@@ -407,7 +406,7 @@ namespace CalDavSynchronizer.Implementation.Events
       return emailAddress;
     }
 
-    private void MapRecurrance1To2 (AppointmentItem source, IEvent target)
+    private void MapRecurrance1To2 (AppointmentItem source, IEvent target, iCalTimeZone localIcalTimeZone)
     {
       if (source.IsRecurring)
       {
@@ -467,7 +466,7 @@ namespace CalDavSynchronizer.Implementation.Events
               targetException.UID = target.UID;
               using (var wrapper = new AppointmentItemWrapper (sourceException.AppointmentItem, _ => { throw new InvalidOperationException ("Cannot reload exception AppointmentITem!"); }))
               {
-                Map1To2 (wrapper.Inner, targetException, true);
+                Map1To2 (wrapper.Inner, targetException, true, localIcalTimeZone);
               }
 
               if (source.AllDayEvent)
