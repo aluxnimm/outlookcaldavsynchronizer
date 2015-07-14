@@ -50,7 +50,7 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly string _outlookEmailAddress;
     private readonly string _serverEmailUri;
     private readonly TimeZoneInfo _localTimeZoneInfo;
-    private ITimeZone localTz;
+    private iCalTimeZone localTz;
 
     public EventEntityMapper (string outlookEmailAddress, Uri serverEmailAddress, string localTimeZoneId, string outlookApplicationVersion)
     {
@@ -66,7 +66,8 @@ namespace CalDavSynchronizer.Implementation.Events
     {
       var source = sourceWrapper.Inner;
       IEvent target = new Event();
-      localTz = targetCalender.AddLocalTimeZone();
+      localTz = iCalTimeZone.FromSystemTimeZone(_localTimeZoneInfo, new DateTime (1970,1,1),true);
+      targetCalender.TimeZones.Add(localTz);
       targetCalender.Events.Add (target);
       Map1To2 (source, target, false);
       return targetCalender;
