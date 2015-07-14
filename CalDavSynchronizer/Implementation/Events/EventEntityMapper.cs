@@ -698,12 +698,13 @@ namespace CalDavSynchronizer.Implementation.Events
           var targetRecurrencePattern = targetRecurrencePatternWrapper.Inner;
           foreach (var recurranceException in exceptions)
           {
-            var originalStart = TimeZoneInfo.ConvertTimeFromUtc (recurranceException.RecurrenceID.UTC, _localTimeZoneInfo);
-
+            var originalStart = recurranceException.RecurrenceID.Date;
+            
             try
             {
-              var targetException = targetRecurrencePattern.GetOccurrence(originalStart);
+              var targetException = targetRecurrencePattern.GetOccurrence(originalStart.Add(targetWrapper.Inner.Start.TimeOfDay));
               using (var exceptionWrapper = new AppointmentItemWrapper(targetException, _ => { throw new InvalidOperationException("cannot reload exception item"); }))
+             
               {
                 Map2To1(recurranceException, new IEvent[] { }, exceptionWrapper, true);
                 exceptionWrapper.Inner.Save();
@@ -721,10 +722,11 @@ namespace CalDavSynchronizer.Implementation.Events
             {
               foreach (IPeriod exdate in exdateList)
               {
-                var originalStart = TimeZoneInfo.ConvertTimeFromUtc (exdate.StartTime.UTC, _localTimeZoneInfo);
+                var originalStart = exdate.StartTime.Date;
+                
                 try
                 {
-                  using (var wrapper = GenericComObjectWrapper.Create(targetRecurrencePattern.GetOccurrence(originalStart)))
+                  using (var wrapper = GenericComObjectWrapper.Create(targetRecurrencePattern.GetOccurrence(originalStart.Add(targetWrapper.Inner.Start.TimeOfDay))))
                   {
                     wrapper.Inner.Delete();
                   }
