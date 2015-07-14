@@ -50,6 +50,7 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly string _outlookEmailAddress;
     private readonly string _serverEmailUri;
     private readonly TimeZoneInfo _localTimeZoneInfo;
+    private ITimeZone localTz;
 
     public EventEntityMapper (string outlookEmailAddress, Uri serverEmailAddress, string localTimeZoneId, string outlookApplicationVersion)
     {
@@ -65,6 +66,7 @@ namespace CalDavSynchronizer.Implementation.Events
     {
       var source = sourceWrapper.Inner;
       IEvent target = new Event();
+      localTz = targetCalender.AddLocalTimeZone();
       targetCalender.Events.Add (target);
       Map1To2 (source, target, false);
       return targetCalender;
@@ -77,15 +79,16 @@ namespace CalDavSynchronizer.Implementation.Events
         // Outlook's AllDayEvent relates to Start and not not StartUtc!!!
         target.Start = new iCalDateTime (source.Start);
         target.Start.HasTime = false;
-
         target.End = new iCalDateTime (source.End);
         target.End.HasTime = false;
         target.IsAllDay = true;
       }
       else
       {
-        target.Start = new iCalDateTime (source.StartUTC) { IsUniversalTime = true };
-        target.DTEnd = new iCalDateTime (source.EndUTC) { IsUniversalTime = true };
+        target.Start = new iCalDateTime (source.Start);
+        target.Start.SetTimeZone(localTz);
+        target.DTEnd = new iCalDateTime (source.End);
+        target.End.SetTimeZone(localTz);
         target.IsAllDay = false;
       }
 
@@ -493,7 +496,10 @@ namespace CalDavSynchronizer.Implementation.Events
               }
               else
               {
-                iCalDateTime exDate = new iCalDateTime (sourceException.OriginalDate.Add (source.StartUTC.TimeOfDay)) { IsUniversalTime = true };
+                var timeZone = TimeZoneInfo.FindSystemTimeZoneById(source.StartTimeZone.ID);
+                var originalDateUtc = TimeZoneInfo.ConvertTimeToUtc(sourceException.OriginalDate, timeZone);
+                iCalDateTime exDate = new iCalDateTime(originalDateUtc.Add (source.Start.TimeOfDay)) { IsUniversalTime = true };
+
                 targetExList.Add (exDate);
                 target.ExceptionDates.Add(targetExList);
               }
