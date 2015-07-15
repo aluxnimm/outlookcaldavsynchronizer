@@ -48,9 +48,16 @@ namespace CalDavSynchronizer.Scheduling
 
     public ISynchronizer CreateSynchronizer (Options options)
     {
-      var outlookFolder = (Folder) _outlookSession.GetFolderFromID (options.OutlookFolderEntryId, options.OutlookFolderStoreId);
+      OlItemType defaultItemType;
+      string folderName;
 
-      switch (outlookFolder.DefaultItemType)
+      using (var outlookFolderWrapper = GenericComObjectWrapper.Create ((Folder) _outlookSession.GetFolderFromID (options.OutlookFolderEntryId, options.OutlookFolderStoreId)))
+      {
+        defaultItemType = outlookFolderWrapper.Inner.DefaultItemType;
+        folderName = outlookFolderWrapper.Inner.Name;
+      }
+
+      switch (defaultItemType)
       {
         case OlItemType.olAppointmentItem:
           return CreateEventSynchronizer (options);
@@ -60,8 +67,8 @@ namespace CalDavSynchronizer.Scheduling
           throw new NotSupportedException (
               string.Format (
                   "The folder '{0}' contains an item type ('{1}'), whis is not supported for synchronization",
-                  outlookFolder.Name,
-                  outlookFolder.DefaultItemType));
+                  folderName,
+                  defaultItemType));
       }
     }
 
@@ -122,7 +129,7 @@ namespace CalDavSynchronizer.Scheduling
           storageDataAccess,
           options,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]), 
+          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]),
           btypeIdEqualityComparer);
 
       var syncStateFactory = new EntitySyncStateFactory<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> (
