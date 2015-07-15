@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 
 namespace CalDavSynchronizer.Implementation.ComWrappers
 {
-  internal class GenericComObjectWrapper<T> : IDisposable
+  public class GenericComObjectWrapper<T> : IDisposable
       where T : class
   {
     private T _inner;
@@ -44,7 +44,7 @@ namespace CalDavSynchronizer.Implementation.ComWrappers
     }
   }
 
-  internal static class GenericComObjectWrapper
+  public static class GenericComObjectWrapper
   {
     public static GenericComObjectWrapper<T> Create<T> (T inner) where T : class
     {

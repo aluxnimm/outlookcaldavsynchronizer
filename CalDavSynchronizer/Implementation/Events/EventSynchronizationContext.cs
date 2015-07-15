@@ -57,8 +57,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
       _entityMapper = new EventEntityMapper (outlookEmailAddress, new Uri ("mailto:" + options.EmailAddress), outlookSession.Application.TimeZones.CurrentTimeZone.ID, outlookSession.Application.Version);
 
-      var calendarFolder = (Folder) outlookSession.GetFolderFromID (options.OutlookFolderEntryId, options.OutlookFolderStoreId);
-      _atypeRepository = new OutlookEventRepository (calendarFolder, outlookSession);
+      _atypeRepository = new OutlookEventRepository (outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId);
 
       _btypeRepository = new CalDavRepository (
           new CalDavDataAccess (
@@ -78,7 +77,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
       _storageDataAccess = storageDataAccess;
 
-      InitialEntityMatcher = new InitialEventEntityMatcher(btypeIdEqualityComparer);
+      InitialEntityMatcher = new InitialEventEntityMatcher (btypeIdEqualityComparer);
     }
 
 
