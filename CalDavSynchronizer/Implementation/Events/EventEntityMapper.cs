@@ -457,10 +457,16 @@ namespace CalDavSynchronizer.Implementation.Events
 
           target.RecurrenceRules.Add (targetRecurrencePattern);
 
+          Dictionary<DateTime, PeriodList> targetExceptionDatesByOriginalOutlookDate = new Dictionary<DateTime, PeriodList>();
+          HashSet<DateTime> originalOutlookDatesWithExceptions = new HashSet<DateTime>();
+
           foreach (var sourceException in sourceRecurrencePattern.Exceptions.ToSafeEnumerable<Exception>())
           {
             if (!sourceException.Deleted)
             {
+              targetExceptionDatesByOriginalOutlookDate.Remove (sourceException.OriginalDate);
+              originalOutlookDatesWithExceptions.Add (sourceException.OriginalDate);
+
               var targetException = new Event();
               target.Calendar.Events.Add (targetException);
               targetException.UID = target.UID;
@@ -484,27 +490,30 @@ namespace CalDavSynchronizer.Implementation.Events
             }
             else
             {
-              PeriodList targetExList = new PeriodList();
-
-              if (source.AllDayEvent)
+              if (!originalOutlookDatesWithExceptions.Contains (sourceException.OriginalDate))
               {
-                iCalDateTime exDate = new iCalDateTime (sourceException.OriginalDate);
-                exDate.HasTime = false;
-                targetExList.Add (exDate);
-                targetExList.Parameters.Add ("VALUE", "DATE");
-                target.ExceptionDates.Add(targetExList);
-              }
-              else
-              {
-                var timeZone = TimeZoneInfo.FindSystemTimeZoneById(source.StartTimeZone.ID);
-                var originalDateUtc = TimeZoneInfo.ConvertTimeToUtc(sourceException.OriginalDate, timeZone);
-                iCalDateTime exDate = new iCalDateTime(originalDateUtc.Add (source.Start.TimeOfDay)) { IsUniversalTime = true };
+                PeriodList targetExList = new PeriodList();
 
-                targetExList.Add (exDate);
-                target.ExceptionDates.Add(targetExList);
+                if (source.AllDayEvent)
+                {
+                  iCalDateTime exDate = new iCalDateTime (sourceException.OriginalDate);
+                  exDate.HasTime = false;
+                  targetExList.Add (exDate);
+                  targetExList.Parameters.Add ("VALUE", "DATE");
+                }
+                else
+                {
+                  var timeZone = TimeZoneInfo.FindSystemTimeZoneById (source.StartTimeZone.ID);
+                  var originalDateUtc = TimeZoneInfo.ConvertTimeToUtc (sourceException.OriginalDate, timeZone);
+                  iCalDateTime exDate = new iCalDateTime (originalDateUtc.Add (source.Start.TimeOfDay)) { IsUniversalTime = true };
+
+                  targetExList.Add (exDate);
+                }
+                targetExceptionDatesByOriginalOutlookDate.Add (sourceException.OriginalDate, targetExList);
               }
             }
           }
+          target.ExceptionDates.AddRange (targetExceptionDatesByOriginalOutlookDate.Values);
         }
       }
     }
