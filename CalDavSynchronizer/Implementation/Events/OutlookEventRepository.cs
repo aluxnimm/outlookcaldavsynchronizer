@@ -29,42 +29,51 @@ namespace CalDavSynchronizer.Implementation.Events
 {
   public class OutlookEventRepository : IEntityRepository<AppointmentItemWrapper, string, DateTime>
   {
-    private readonly Folder _calendarFolder;
     private readonly NameSpace _mapiNameSpace;
+    private readonly string _folderId;
+    private readonly string _folderStoreId;
 
-    public OutlookEventRepository (Folder calendarFolder, NameSpace mapiNameSpace)
+    public OutlookEventRepository (NameSpace mapiNameSpace, string folderId, string folderStoreId)
     {
-      if (calendarFolder == null)
-        throw new ArgumentNullException ("calendarFolder");
       if (mapiNameSpace == null)
         throw new ArgumentNullException ("mapiNameSpace");
 
-      _calendarFolder = calendarFolder;
       _mapiNameSpace = mapiNameSpace;
+      _folderId = folderId;
+      _folderStoreId = folderStoreId;
     }
 
     private const string c_entryIdColumnName = "EntryID";
+
+
+    private GenericComObjectWrapper<Folder> CreateFolderWrapper ()
+    {
+      return GenericComObjectWrapper.Create ((Folder) _mapiNameSpace.GetFolderFromID (_folderId, _folderStoreId));
+    }
 
     public IReadOnlyList<EntityIdWithVersion<string, DateTime>> GetVersions (DateTime fromUtc, DateTime toUtc)
     {
       var events = new List<EntityIdWithVersion<string, DateTime>>();
 
       string filter = String.Format ("[Start] < '{0}' And [End] > '{1}'", ToOutlookDateString (toUtc), ToOutlookDateString (fromUtc));
-      using (var tableWrapper = GenericComObjectWrapper.Create ((Table) _calendarFolder.GetTable (filter)))
+      using (var calendarFolderWrapper = CreateFolderWrapper())
       {
-        var table = tableWrapper.Inner;
-        table.Columns.RemoveAll();
-        table.Columns.Add (c_entryIdColumnName);
-
-        var storeId = _calendarFolder.StoreID;
-
-        while (!table.EndOfTable)
+        using (var tableWrapper = GenericComObjectWrapper.Create ((Table) calendarFolderWrapper.Inner.GetTable (filter)))
         {
-          var row = table.GetNextRow();
-          var entryId = (string) row[c_entryIdColumnName];
-          using (var appointmentWrapper = GenericComObjectWrapper.Create ((AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, storeId)))
+          var table = tableWrapper.Inner;
+          table.Columns.RemoveAll();
+          table.Columns.Add (c_entryIdColumnName);
+
+          var storeId = calendarFolderWrapper.Inner.StoreID;
+
+          while (!table.EndOfTable)
           {
-            events.Add (new EntityIdWithVersion<string, DateTime> (appointmentWrapper.Inner.EntryID, appointmentWrapper.Inner.LastModificationTime));
+            var row = table.GetNextRow();
+            var entryId = (string) row[c_entryIdColumnName];
+            using (var appointmentWrapper = GenericComObjectWrapper.Create ((AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, storeId)))
+            {
+              events.Add (new EntityIdWithVersion<string, DateTime> (appointmentWrapper.Inner.EntryID, appointmentWrapper.Inner.LastModificationTime));
+            }
           }
         }
       }
@@ -81,13 +90,12 @@ namespace CalDavSynchronizer.Implementation.Events
 
     public async Task<IReadOnlyList<EntityWithVersion<string, AppointmentItemWrapper>>> Get (ICollection<string> ids)
     {
-      var storeId = _calendarFolder.StoreID;
       return ids
           .Select (id => EntityWithVersion.Create (
               id,
               new AppointmentItemWrapper (
-                  (AppointmentItem) _mapiNameSpace.GetItemFromID (id, storeId),
-                  entryId => (AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, storeId))))
+                  (AppointmentItem) _mapiNameSpace.GetItemFromID (id, _folderStoreId),
+                  entryId => (AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, _folderStoreId))))
           .ToArray();
     }
 
@@ -119,9 +127,18 @@ namespace CalDavSynchronizer.Implementation.Events
 
     public EntityIdWithVersion<string, DateTime> Create (Func<AppointmentItemWrapper, AppointmentItemWrapper> entityInitializer)
     {
-      using (var wrapper = new AppointmentItemWrapper ((AppointmentItem) _calendarFolder.Items.Add (OlItemType.olAppointmentItem), entryId => (AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, _calendarFolder.StoreID)))
+      AppointmentItemWrapper newAppointmentItemWrapper;
+
+      using (var folderWrapper = CreateFolderWrapper())
       {
-        using (var initializedWrapper = entityInitializer (wrapper))
+        newAppointmentItemWrapper = new AppointmentItemWrapper (
+            (AppointmentItem) folderWrapper.Inner.Items.Add (OlItemType.olAppointmentItem),
+            entryId => (AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, _folderStoreId));
+      }
+
+      using (newAppointmentItemWrapper)
+      {
+        using (var initializedWrapper = entityInitializer (newAppointmentItemWrapper))
         {
           initializedWrapper.Inner.Save();
           var result = new EntityIdWithVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime);
