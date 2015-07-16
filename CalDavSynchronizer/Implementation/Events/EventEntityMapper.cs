@@ -571,7 +571,7 @@ namespace CalDavSynchronizer.Implementation.Events
     }
 
 
-    private void MapRecurrance2To1 (IEvent source, IEnumerable<IEvent> exceptions, AppointmentItemWrapper targetWrapper)
+    private void MapRecurrance2To1 (IEvent source, IReadOnlyCollection<IEvent> exceptions, AppointmentItemWrapper targetWrapper)
     {
       if (source.RecurrenceRules.Count > 0)
       {
@@ -713,25 +713,13 @@ namespace CalDavSynchronizer.Implementation.Events
         using (var targetRecurrencePatternWrapper = GenericComObjectWrapper.Create (targetWrapper.Inner.GetRecurrencePattern()))
         {
           var targetRecurrencePattern = targetRecurrencePatternWrapper.Inner;
-          foreach (var recurranceException in exceptions)
-          {
-            var originalStart = recurranceException.RecurrenceID.Date;
-            
-            try
-            {
-              var targetException = targetRecurrencePattern.GetOccurrence(originalStart.Add(targetWrapper.Inner.Start.TimeOfDay));
-              using (var exceptionWrapper = new AppointmentItemWrapper(targetException, _ => { throw new InvalidOperationException("cannot reload exception item"); }))
-             
-              {
-                Map2To1(recurranceException, new IEvent[] { }, exceptionWrapper, true);
-                exceptionWrapper.Inner.Save();
-              }
-            }
-            catch (COMException ex)
-            {
-              s_logger.Error("Can't find occurence of exception", ex);
-            }
-          }
+
+          // to prevent skipping of occurences while moving (outlook throws exception when skipping occurences), moving has to be done in two steps
+          // first move all exceptions which are preponed from earliest to latest
+          MapRecurrenceExceptions2To1 (exceptions.Where(e => e.Start.UTC < e.RecurrenceID.Date).OrderBy(e => e.Start.UTC), targetWrapper, targetRecurrencePattern);
+          // then move all exceptions which are postponed or are not moved from last to first
+          MapRecurrenceExceptions2To1 (exceptions.Where (e => e.Start.UTC >= e.RecurrenceID.Date).OrderByDescending (e => e.Start.UTC), targetWrapper, targetRecurrencePattern);
+          // HINT: this algorith will only prevent skipping while moving. If the final state contains skipped occurences, outlook will throw an exception anyway
 
           if (source.ExceptionDates != null)
           {
@@ -755,6 +743,29 @@ namespace CalDavSynchronizer.Implementation.Events
               }
             }
           }
+        }
+      }
+    }
+
+    private void MapRecurrenceExceptions2To1 (IEnumerable<IEvent> exceptions, AppointmentItemWrapper targetWrapper, Microsoft.Office.Interop.Outlook.RecurrencePattern targetRecurrencePattern)
+    {
+      foreach (var recurranceException in exceptions)
+      {
+        var originalStart = recurranceException.RecurrenceID.Date;
+
+        try
+        {
+          var targetException = targetRecurrencePattern.GetOccurrence (originalStart.Add (targetWrapper.Inner.Start.TimeOfDay));
+          using (var exceptionWrapper = new AppointmentItemWrapper (targetException, _ => { throw new InvalidOperationException ("cannot reload exception item"); }))
+
+          {
+            Map2To1 (recurranceException, new IEvent[] { }, exceptionWrapper, true);
+            exceptionWrapper.Inner.Save();
+          }
+        }
+        catch (COMException ex)
+        {
+          s_logger.Error ("Can't find occurence of exception", ex);
         }
       }
     }
@@ -900,11 +911,11 @@ namespace CalDavSynchronizer.Implementation.Events
     public AppointmentItemWrapper Map2To1 (IICalendar sourceCalendar, AppointmentItemWrapper target)
     {
       var source = sourceCalendar.Events[0];
-      return Map2To1 (source, sourceCalendar.Events.Skip (1), target, false);
+      return Map2To1 (source, sourceCalendar.Events.Skip (1).ToArray(), target, false);
     }
 
 
-    private AppointmentItemWrapper Map2To1 (IEvent source, IEnumerable<IEvent> recurrenceExceptionsOrNull, AppointmentItemWrapper targetWrapper, bool isRecurrenceException)
+    private AppointmentItemWrapper Map2To1 (IEvent source, IReadOnlyCollection<IEvent> recurrenceExceptionsOrNull, AppointmentItemWrapper targetWrapper, bool isRecurrenceException)
     {
       if (!isRecurrenceException && targetWrapper.Inner.IsRecurring)
       {
