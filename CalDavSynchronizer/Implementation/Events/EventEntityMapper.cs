@@ -714,13 +714,6 @@ namespace CalDavSynchronizer.Implementation.Events
         {
           var targetRecurrencePattern = targetRecurrencePatternWrapper.Inner;
 
-          // to prevent skipping of occurences while moving (outlook throws exception when skipping occurences), moving has to be done in two steps
-          // first move all exceptions which are preponed from earliest to latest
-          MapRecurrenceExceptions2To1 (exceptions.Where(e => e.Start.UTC < e.RecurrenceID.Date).OrderBy(e => e.Start.UTC), targetWrapper, targetRecurrencePattern);
-          // then move all exceptions which are postponed or are not moved from last to first
-          MapRecurrenceExceptions2To1 (exceptions.Where (e => e.Start.UTC >= e.RecurrenceID.Date).OrderByDescending (e => e.Start.UTC), targetWrapper, targetRecurrencePattern);
-          // HINT: this algorith will only prevent skipping while moving. If the final state contains skipped occurences, outlook will throw an exception anyway
-
           if (source.ExceptionDates != null)
           {
             foreach (IPeriodList exdateList in source.ExceptionDates)
@@ -728,7 +721,7 @@ namespace CalDavSynchronizer.Implementation.Events
               foreach (IPeriod exdate in exdateList)
               {
                 var originalStart = exdate.StartTime.Date;
-                
+
                 try
                 {
                   using (var wrapper = GenericComObjectWrapper.Create(targetRecurrencePattern.GetOccurrence(originalStart.Add(targetWrapper.Inner.Start.TimeOfDay))))
@@ -743,6 +736,12 @@ namespace CalDavSynchronizer.Implementation.Events
               }
             }
           }
+          // to prevent skipping of occurences while moving (outlook throws exception when skipping occurences), moving has to be done in two steps
+          // first move all exceptions which are preponed from earliest to latest
+          MapRecurrenceExceptions2To1 (exceptions.Where(e => e.Start.UTC < e.RecurrenceID.Date).OrderBy(e => e.Start.UTC), targetWrapper, targetRecurrencePattern);
+          // then move all exceptions which are postponed or are not moved from last to first
+          MapRecurrenceExceptions2To1 (exceptions.Where (e => e.Start.UTC >= e.RecurrenceID.Date).OrderByDescending (e => e.Start.UTC), targetWrapper, targetRecurrencePattern);
+          // HINT: this algorith will only prevent skipping while moving. If the final state contains skipped occurences, outlook will throw an exception anyway
         }
       }
     }
