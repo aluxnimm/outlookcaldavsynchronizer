@@ -473,6 +473,34 @@ namespace CalDavSynchronizer.Implementation.Events
               using (var wrapper = new AppointmentItemWrapper (sourceException.AppointmentItem, _ => { throw new InvalidOperationException ("Cannot reload exception AppointmentITem!"); }))
               {
                 Map1To2 (wrapper.Inner, targetException, true, localIcalTimeZone);
+                
+                // check if new exception is already present in target
+                // if it is found and not already present as exdate then add a new exdate to avoid 2 events
+                var targetContainsExceptionList = target.GetOccurrences(wrapper.Inner.Start);
+                if (targetContainsExceptionList.Count>0)
+                {
+                  if (!originalOutlookDatesWithExceptions.Contains(wrapper.Inner.Start))
+                  {
+                    PeriodList targetExList = new PeriodList();
+
+                    if (wrapper.Inner.AllDayEvent)
+                    {
+                      iCalDateTime exDate = new iCalDateTime(wrapper.Inner.Start);
+                      exDate.HasTime = false;
+                      targetExList.Add(exDate);
+                      targetExList.Parameters.Add("VALUE", "DATE");
+                    }
+                    else
+                    {
+                      var timeZone = TimeZoneInfo.FindSystemTimeZoneById(wrapper.Inner.StartTimeZone.ID);
+                      var originalDateUtc = TimeZoneInfo.ConvertTimeToUtc(wrapper.Inner.Start, timeZone);
+                      iCalDateTime exDate = new iCalDateTime(originalDateUtc) { IsUniversalTime = true };
+
+                      targetExList.Add(exDate);
+                    }
+                    targetExceptionDatesByOriginalOutlookDate.Add(sourceException.OriginalDate, targetExList);
+                  }
+                }
               }
 
               if (source.AllDayEvent)
