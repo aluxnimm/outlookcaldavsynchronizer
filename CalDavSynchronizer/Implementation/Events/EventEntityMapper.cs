@@ -498,7 +498,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
                       targetExList.Add(exDate);
                     }
-                    targetExceptionDatesByOriginalOutlookDate.Add(sourceException.OriginalDate, targetExList);
+                    targetExceptionDatesByOriginalOutlookDate.Add(wrapper.Inner.Start, targetExList);
                   }
                 }
               }
