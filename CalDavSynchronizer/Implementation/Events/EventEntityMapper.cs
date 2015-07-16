@@ -764,7 +764,7 @@ namespace CalDavSynchronizer.Implementation.Events
         }
         catch (COMException ex)
         {
-          s_logger.Error ("Can't find occurence of exception", ex);
+          s_logger.Error ("Can't find occurence of exception or exception can't be saved", ex);
         }
       }
     }
