@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Globalization;
 using System.Reflection;
-using CalDavSynchronizer.Generic.EntityMapping;
 using CalDavSynchronizer.Implementation.ComWrappers;
-using Microsoft.Office.Interop.Outlook;
 using DDay.iCal;
+using GenSync.EntityMapping;
 using log4net;
+using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Tasks
 {

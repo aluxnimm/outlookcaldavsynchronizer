@@ -19,14 +19,15 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.Generic.EntityRelationManagement;
-using CalDavSynchronizer.Generic.ProgressReport;
-using CalDavSynchronizer.Generic.Synchronization;
-using CalDavSynchronizer.Generic.Synchronization.StateFactories;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Events;
 using CalDavSynchronizer.Implementation.Tasks;
+using CalDavSynchronizer.Utilities;
 using DDay.iCal;
+using GenSync.EntityRelationManagement;
+using GenSync.ProgressReport;
+using GenSync.Synchronization;
+using GenSync.Synchronization.StateFactories;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Scheduling
@@ -97,7 +98,8 @@ namespace CalDavSynchronizer.Scheduling
           synchronizationContext.EntityMapper,
           synchronizationContext.AtypeRepository,
           synchronizationContext.BtypeRepository,
-          synchronizationContext.EntityRelationDataFactory
+          synchronizationContext.EntityRelationDataFactory,
+          ExceptionHandler.Instance
           );
 
       return new Synchronizer<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (
@@ -109,7 +111,8 @@ namespace CalDavSynchronizer.Scheduling
               options.ConflictResolution),
           _totalProgressFactory,
           atypeIdComparer,
-          btypeIdEqualityComparer);
+          btypeIdEqualityComparer,
+          ExceptionHandler.Instance);
     }
 
     private ISynchronizer CreateTaskSynchronizer (Options options)
@@ -136,7 +139,8 @@ namespace CalDavSynchronizer.Scheduling
           synchronizationContext.EntityMapper,
           synchronizationContext.AtypeRepository,
           synchronizationContext.BtypeRepository,
-          synchronizationContext.EntityRelationDataFactory);
+          synchronizationContext.EntityRelationDataFactory,
+          ExceptionHandler.Instance);
 
       return new Synchronizer<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> (
           synchronizationContext,
@@ -147,7 +151,8 @@ namespace CalDavSynchronizer.Scheduling
               options.ConflictResolution),
           _totalProgressFactory,
           atypeIdComparer,
-          btypeIdEqualityComparer);
+          btypeIdEqualityComparer,
+          ExceptionHandler.Instance);
     }
   }
 }

@@ -22,7 +22,7 @@ using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Xml;
-using CalDavSynchronizer.Generic;
+using GenSync;
 using log4net;
 
 namespace CalDavSynchronizer.DataAccess

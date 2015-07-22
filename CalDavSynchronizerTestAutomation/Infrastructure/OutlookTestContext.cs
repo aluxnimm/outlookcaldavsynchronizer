@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Configuration;
 using System.IO;
-using CalDavSynchronizer.Generic.EntityMapping;
-using CalDavSynchronizer.Generic.EntityRepositories;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Events;
 using DDay.iCal;
 using DDay.iCal.Serialization.iCalendar;
+using GenSync.EntityMapping;
+using GenSync.EntityRepositories;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizerTestAutomation.Infrastructure

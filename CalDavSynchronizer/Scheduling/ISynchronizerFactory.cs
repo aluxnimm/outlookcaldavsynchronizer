@@ -16,8 +16,7 @@
 
 using System;
 using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.Generic.Synchronization;
-using Microsoft.Office.Interop.Outlook;
+using GenSync.Synchronization;
 
 namespace CalDavSynchronizer.Scheduling
 {

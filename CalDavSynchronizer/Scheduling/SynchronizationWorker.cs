@@ -15,24 +15,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Configuration;
-using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Diagnostics;
-using CalDavSynchronizer.Generic.EntityRelationManagement;
-using CalDavSynchronizer.Generic.ProgressReport;
-using CalDavSynchronizer.Generic.Synchronization;
-using CalDavSynchronizer.Generic.Synchronization.StateFactories;
-using CalDavSynchronizer.Implementation.ComWrappers;
-using CalDavSynchronizer.Implementation.Events;
-using CalDavSynchronizer.Ui;
 using CalDavSynchronizer.Utilities;
-using DDay.iCal;
+using GenSync.Synchronization;
 using log4net;
-using Microsoft.Office.Interop.Outlook;
-using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Scheduling
 {

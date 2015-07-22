@@ -15,13 +15,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using CalDavSynchronizer.Generic.EntityRelationManagement;
-using CalDavSynchronizer.Generic.Synchronization;
-using CalDavSynchronizer.Generic.Synchronization.StateCreationStrategies.ConflictStrategies;
-using CalDavSynchronizer.Generic.Synchronization.StateFactories;
-using CalDavSynchronizer.Generic.Synchronization.States;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using DDay.iCal;
+using GenSync.EntityRelationManagement;
+using GenSync.Synchronization;
+using GenSync.Synchronization.StateCreationStrategies.ConflictStrategies;
+using GenSync.Synchronization.States;
 
 namespace CalDavSynchronizer.Implementation.Events
 {

@@ -16,7 +16,7 @@
 
 using System;
 using System.Windows.Forms;
-using CalDavSynchronizer.Generic.ProgressReport;
+using GenSync.ProgressReport;
 
 namespace CalDavSynchronizer.Ui
 {

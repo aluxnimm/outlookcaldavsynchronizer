@@ -1,5 +1,5 @@
 using System;
-using CalDavSynchronizer.Generic.ProgressReport;
+using GenSync.ProgressReport;
 
 namespace CalDavSynchronizer.Ui
 {

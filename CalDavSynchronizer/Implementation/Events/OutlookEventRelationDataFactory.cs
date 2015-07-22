@@ -15,7 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using CalDavSynchronizer.Generic.EntityRelationManagement;
+using GenSync.EntityRelationManagement;
 
 namespace CalDavSynchronizer.Implementation.Events
 {

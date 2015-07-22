@@ -17,7 +17,6 @@
 using System;
 using System.IO;
 using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.Properties;
 using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.DataAccess

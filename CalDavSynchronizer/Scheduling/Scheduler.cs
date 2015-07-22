@@ -22,8 +22,6 @@ using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Utilities;
 using log4net;
-using Microsoft.Office.Interop.Outlook;
-using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Scheduling
 {

@@ -64,6 +64,10 @@
       <Project>{64937844-752B-49A4-9B3F-3526601E93E1}</Project>
       <Name>CalDavSynchronizer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GenSync\GenSync.csproj">
+      <Project>{76c932e7-eca5-4010-b602-2104327ee5ee}</Project>
+      <Name>GenSync</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

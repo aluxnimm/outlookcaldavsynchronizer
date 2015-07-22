@@ -22,11 +22,11 @@ using System.Reflection;
 using System.Threading.Tasks;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Diagnostics;
-using CalDavSynchronizer.Generic;
-using CalDavSynchronizer.Generic.EntityRepositories;
 using DDay.iCal;
 using DDay.iCal.Serialization;
 using DDay.iCal.Serialization.iCalendar;
+using GenSync;
+using GenSync.EntityRepositories;
 using log4net;
 
 namespace CalDavSynchronizer.Implementation

@@ -177,24 +177,6 @@
     <Compile Include="Contracts\ProfileEntry.cs" />
     <Compile Include="DataAccess\IProfileListDataAccess.cs" />
     <Compile Include="DataAccess\ProfileListDataAccess.cs" />
-    <Compile Include="Generic\EntityWithVersion.cs" />
-    <Compile Include="Generic\EntityRelationManagement\EntityRelationDataAccess.cs" />
-    <Compile Include="Generic\EntityRepositories\EntityRepositoryDeleteCreateInstaedOfUpdateWrapper.cs" />
-    <Compile Include="Generic\ProgressReport\IProgressUi.cs" />
-    <Compile Include="Generic\ProgressReport\IProgressUiFactory.cs" />
-    <Compile Include="Generic\ProgressReport\NullTotalProgressFactory.cs" />
-    <Compile Include="Generic\ProgressReport\ProgressLogger.cs" />
-    <Compile Include="Generic\ProgressReport\TotalProgressContext.cs" />
-    <Compile Include="Generic\ProgressReport\TotalProgressLogger.cs" />
-    <Compile Include="Generic\ProgressReport\TotalProgressFactory.cs" />
-    <Compile Include="Generic\Synchronization\EntitySyncStateContainer.cs" />
-    <Compile Include="Generic\Synchronization\StateCreationStrategies\OneWaySyncMode.cs" />
-    <Compile Include="Generic\Synchronization\VersionDeltaLoginInformation.cs" />
-    <Compile Include="Generic\ProgressReport\ITotalProgressLogger.cs" />
-    <Compile Include="Generic\ProgressReport\IProgressLogger.cs" />
-    <Compile Include="Generic\ProgressReport\ITotalProgressFactory.cs" />
-    <Compile Include="Generic\ProgressReport\NullProgressLogger.cs" />
-    <Compile Include="Generic\ProgressReport\NullTotalProgressLogger.cs" />
     <Compile Include="Implementation\ComWrappers\TaskItemWrapper.cs" />
     <Compile Include="Implementation\ComWrappers\AppointmentItemWrapper.cs" />
     <Compile Include="Implementation\ComWrappers\ComEnumerableExtensions.cs" />
@@ -202,17 +184,10 @@
     <Compile Include="Implementation\ComWrappers\OutlookObjectExtensions.cs" />
     <Compile Include="Implementation\Events\EventConflictInitialSyncStateCreationStrategyAutomatic.cs" />
     <Compile Include="Implementation\Events\OutlookEventRelationData.cs" />
-    <Compile Include="Generic\EntityRelationManagement\IEntityRelationDataFactory.cs" />
     <Compile Include="Implementation\Events\OutlookEventRelationDataFactory.cs" />
-    <Compile Include="Generic\EntityRepositories\IReadOnlyEntityRepository.cs" />
-    <Compile Include="Generic\EntityRepositories\IWriteOnlyEntityRepository.cs" />
-    <Compile Include="Generic\InitialEntityMatching\InitialEntityMatcherByPropertyGrouping.cs" />
-    <Compile Include="Generic\InitialEntityMatching\IInitialEntityMatcher.cs" />
     <Compile Include="Implementation\Events\InitialEventEntityMatcher.cs" />
     <Compile Include="DataAccess\XmlDocumentWithNamespaceManager.cs" />
     <Compile Include="Diagnostics\AutomaticStopwatch.cs" />
-    <Compile Include="Generic\EntityRepositories\IEntityRepository.cs" />
-    <Compile Include="Generic\EntityIdWithVersion.cs" />
     <Compile Include="Implementation\CalDavRepository.cs" />
     <Compile Include="Implementation\Events\InitialEventSyncStateCreationStrategyFactory.cs" />
     <Compile Include="Implementation\Tasks\TaskSynchronizationContext.cs" />
@@ -227,49 +202,15 @@
     <Compile Include="Scheduling\ISynchronizerFactory.cs" />
     <Compile Include="Scheduling\Scheduler.cs" />
     <Compile Include="Scheduling\SynchronizationWorker.cs" />
-    <Compile Include="Generic\EntityRelationManagement\IEntityRelationData.cs" />
-    <Compile Include="Generic\EntityRelationManagement\IEntityRelationDataAccess.cs" />
-    <Compile Include="Generic\Synchronization\StateCreationStrategies\OneWayInitialSyncStateCreationStrategy_BToA.cs" />
-    <Compile Include="Generic\Synchronization\States\DeleteInAWithNoRetry.cs" />
-    <Compile Include="Generic\Synchronization\StateCreationStrategies\ConflictStrategies\ConflictInitialSyncStateCreationStrategyAutomatic.cs" />
-    <Compile Include="Generic\Synchronization\StateCreationStrategies\ConflictStrategies\ConflictInitialSyncStateCreationStrategyAWins.cs" />
-    <Compile Include="Generic\Synchronization\StateCreationStrategies\ConflictStrategies\ConflictInitialSyncStateCreationStrategyBWins.cs" />
-    <Compile Include="Generic\Synchronization\EntitySyncStateEnvironment.cs" />
-    <Compile Include="Generic\Synchronization\StateFactories\EntitySyncStateFactory.cs" />
-    <Compile Include="Generic\Synchronization\StateCreationStrategies\ConflictStrategies\IConflictInitialSyncStateCreationStrategy.cs" />
     <Compile Include="Implementation\Events\OutlookCaldavEventUpdateFromNewerToOlder.cs" />
-    <Compile Include="Generic\Synchronization\States\RestoreInA.cs" />
-    <Compile Include="Generic\Synchronization\States\StateBase.cs" />
-    <Compile Include="Generic\Synchronization\States\StateWithKnownData.cs" />
-    <Compile Include="Generic\Synchronization\States\CreateInA.cs" />
-    <Compile Include="Generic\Synchronization\States\CreateInB.cs" />
-    <Compile Include="Generic\Synchronization\States\DeleteInA.cs" />
-    <Compile Include="Generic\Synchronization\States\DeleteInB.cs" />
-    <Compile Include="Generic\Synchronization\States\DeleteInBWithNoRetry.cs" />
-    <Compile Include="Generic\Synchronization\States\Discard.cs" />
-    <Compile Include="Generic\Synchronization\States\DoNothing.cs" />
-    <Compile Include="Generic\Synchronization\States\IEntitySyncState.cs" />
-    <Compile Include="Generic\Synchronization\States\RestoreInB.cs" />
-    <Compile Include="Generic\Synchronization\States\UpdateAToB.cs" />
-    <Compile Include="Generic\Synchronization\States\UpdateBase.cs" />
-    <Compile Include="Generic\Synchronization\States\UpdateBToA.cs" />
-    <Compile Include="Generic\Synchronization\StateCreationStrategies\IInitialSyncStateCreationStrategy.cs" />
-    <Compile Include="Generic\Synchronization\StateFactories\IEntitySyncStateFactory.cs" />
-    <Compile Include="Generic\Synchronization\ISynchronizer.cs" />
-    <Compile Include="Generic\EntityMapping\IEntityMapper.cs" />
     <Compile Include="Implementation\Events\OutlookEventRepository.cs" />
-    <Compile Include="Generic\Synchronization\ISynchronizerContext.cs" />
     <Compile Include="Implementation\Events\EventSynchronizationContext.cs" />
     <Compile Include="DataAccess\CalDavDataAccess.cs" />
     <Compile Include="DataAccess\ICalDavDataAccess.cs" />
     <Compile Include="DataAccess\IOptionsDataAccess.cs" />
     <Compile Include="DataAccess\OptionsDataAccess.cs" />
     <Compile Include="Contracts\Options.cs" />
-    <Compile Include="Generic\Synchronization\States\UpdateFromNewerToOlder.cs" />
     <Compile Include="Implementation\SynchronizationMode.cs" />
-    <Compile Include="Generic\Synchronization\StateCreationStrategies\OneWayInitialSyncStateCreationStrategy_AToB.cs" />
-    <Compile Include="Generic\Synchronization\Synchronizer.cs" />
-    <Compile Include="Generic\Synchronization\StateCreationStrategies\TwoWayInitialSyncStateCreationStrategy.cs" />
     <Compile Include="Scheduling\SynchronizerFactory.cs" />
     <Compile Include="Ui\AboutForm.cs">
       <SubType>Form</SubType>
@@ -360,6 +301,12 @@
   <ItemGroup>
     <Content Include="LICENSE.txt" />
     <Content Include="Resources\outlookcaldavsynchronizerlogoarrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GenSync\GenSync.csproj">
+      <Project>{76c932e7-eca5-4010-b602-2104327ee5ee}</Project>
+      <Name>GenSync</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

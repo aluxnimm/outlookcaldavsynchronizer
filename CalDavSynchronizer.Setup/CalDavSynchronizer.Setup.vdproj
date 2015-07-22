@@ -27,14 +27,26 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_43EC16D9D9A6EAD58110391E1371EBA5"
+        "OwnerKey" = "8:_D0573CF0D3BE46C89FD82CA20842E07A"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_51CF5A73AF27F03B76EF931CC3828E65"
         "OwnerKey" = "8:_D0573CF0D3BE46C89FD82CA20842E07A"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_5AE4DDD39B7DE5689AA6C67805CBB7EF"
+        "MsmKey" = "8:_55540044C70C5D393A98FB269B600B18"
         "OwnerKey" = "8:_D0573CF0D3BE46C89FD82CA20842E07A"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_55540044C70C5D393A98FB269B600B18"
+        "OwnerKey" = "8:_DE5B6AF0056642F59C77E8057038D9B3"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -99,8 +111,8 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_E6C5F0FEBEE54203A8FEC2684AE96FB3"
-        "OwnerKey" = "8:_D0573CF0D3BE46C89FD82CA20842E07A"
+        "MsmKey" = "8:_DE5B6AF0056642F59C77E8057038D9B3"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -117,12 +129,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_F3753511DB56003848E2BA94D769B63D"
-        "OwnerKey" = "8:_D0573CF0D3BE46C89FD82CA20842E07A"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_D0573CF0D3BE46C89FD82CA20842E07A"
         "MsmSig" = "8:_UNDEFINED"
@@ -130,13 +136,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_E6C5F0FEBEE54203A8FEC2684AE96FB3"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_F3753511DB56003848E2BA94D769B63D"
+        "OwnerKey" = "8:_DE5B6AF0056642F59C77E8057038D9B3"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -184,7 +184,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_5AE4DDD39B7DE5689AA6C67805CBB7EF"
+        "OwnerKey" = "8:_55540044C70C5D393A98FB269B600B18"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_43EC16D9D9A6EAD58110391E1371EBA5"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -343,6 +349,37 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_43EC16D9D9A6EAD58110391E1371EBA5"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:DDay.iCal, Version=1.0.2.575, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_43EC16D9D9A6EAD58110391E1371EBA5"
+                    {
+                    "Name" = "8:DDay.iCal.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:DDay.iCal.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_51CF5A73AF27F03B76EF931CC3828E65"
             {
             "AssemblyRegister" = "3:1"
@@ -374,20 +411,20 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_5AE4DDD39B7DE5689AA6C67805CBB7EF"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_55540044C70C5D393A98FB269B600B18"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+            "AssemblyAsmDisplayName" = "8:log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_5AE4DDD39B7DE5689AA6C67805CBB7EF"
+                    "_55540044C70C5D393A98FB269B600B18"
                     {
-                    "Name" = "8:stdole.dll"
+                    "Name" = "8:log4net.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:stdole.dll"
+            "SourcePath" = "8:log4net.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
@@ -549,37 +586,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_E6C5F0FEBEE54203A8FEC2684AE96FB3"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_E6C5F0FEBEE54203A8FEC2684AE96FB3"
-                    {
-                    "Name" = "8:log4net.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:log4net.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_EBE50DD3E1857D1E765C50265A3BC7CD"
             {
             "AssemblyRegister" = "3:1"
@@ -594,37 +600,6 @@
                     }
                 }
             "SourcePath" = "8:Microsoft.Office.Tools.Common.v4.0.Utilities.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_F3753511DB56003848E2BA94D769B63D"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:DDay.iCal, Version=1.0.2.575, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_F3753511DB56003848E2BA94D769B63D"
-                    {
-                    "Name" = "8:DDay.iCal.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:DDay.iCal.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
@@ -943,7 +918,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_BA2632F6C8B24942A192353F0F49D47C"
                     {
                     "Sequence" = "3:100"
-                    "DisplayName" = "8:Fertig"
+                    "DisplayName" = "8:Finished"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdFinishedDlg.wid"
@@ -987,7 +962,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_2286BA7BAAC14AC3A12465525A2B61CE"
                     {
                     "Sequence" = "3:200"
-                    "DisplayName" = "8:Installationsordner"
+                    "DisplayName" = "8:Installation Folder"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdAdminFolderDlg.wid"
@@ -1009,7 +984,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_A26E61337AEC4EDBA413428EC8193994"
                     {
                     "Sequence" = "3:100"
-                    "DisplayName" = "8:Willkommen"
+                    "DisplayName" = "8:Welcome"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdAdminWelcomeDlg.wid"
@@ -1057,7 +1032,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_D7794A1EC76347FD8C6DD9565CFCB9F8"
                     {
                     "Sequence" = "3:300"
-                    "DisplayName" = "8:Installation bestätigen"
+                    "DisplayName" = "8:Confirm Installation"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdAdminConfirmDlg.wid"
@@ -1088,7 +1063,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_2AB90FAFDE5D4686973CCC49D9B3FF47"
                     {
                     "Sequence" = "3:100"
-                    "DisplayName" = "8:Willkommen"
+                    "DisplayName" = "8:Welcome"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdWelcomeDlg.wid"
@@ -1136,7 +1111,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_7E1F789C281B4DAA89FA012842074AD9"
                     {
                     "Sequence" = "3:300"
-                    "DisplayName" = "8:Installation bestätigen"
+                    "DisplayName" = "8:Confirm Installation"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdConfirmDlg.wid"
@@ -1158,7 +1133,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_D646FC1DF7D84AEC8A87A27792A1DAD8"
                     {
                     "Sequence" = "3:200"
-                    "DisplayName" = "8:Installationsordner"
+                    "DisplayName" = "8:Installation Folder"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdFolderDlg.wid"
@@ -1202,7 +1177,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_1EDEFCBEF4F64D5E8A14C048620D30A5"
                     {
                     "Sequence" = "3:100"
-                    "DisplayName" = "8:Status"
+                    "DisplayName" = "8:Progress"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdProgressDlg.wid"
@@ -1246,7 +1221,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_9F7F695BE7634DECAF5CEFE0E4AD0590"
                     {
                     "Sequence" = "3:100"
-                    "DisplayName" = "8:Fertig"
+                    "DisplayName" = "8:Finished"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdAdminFinishedDlg.wid"
@@ -1283,7 +1258,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_E9B9DB1715514366BB7DC5CB6E2E6F09"
                     {
                     "Sequence" = "3:100"
-                    "DisplayName" = "8:Status"
+                    "DisplayName" = "8:Progress"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdAdminProgressDlg.wid"
@@ -1352,6 +1327,34 @@
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{64937844-752B-49A4-9B3F-3526601E93E1}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_DE5B6AF0056642F59C77E8057038D9B3"
+            {
+            "SourcePath" = "8:..\\GenSync\\obj\\Release\\GenSync.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{76C932E7-ECA5-4010-B602-2104327EE5EE}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {

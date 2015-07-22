@@ -16,7 +16,7 @@
 
 using System;
 using System.Collections.Generic;
-using CalDavSynchronizer.Generic;
+using GenSync;
 
 namespace CalDavSynchronizer.DataAccess
 {

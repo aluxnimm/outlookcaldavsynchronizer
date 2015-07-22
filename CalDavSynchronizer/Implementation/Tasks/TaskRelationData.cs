@@ -16,7 +16,7 @@
 
 using System;
 using System.Xml.Serialization;
-using CalDavSynchronizer.Generic.EntityRelationManagement;
+using GenSync.EntityRelationManagement;
 
 namespace CalDavSynchronizer.Implementation.Tasks
 {

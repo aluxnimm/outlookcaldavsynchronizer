@@ -19,10 +19,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using CalDavSynchronizer.Generic;
-using CalDavSynchronizer.Generic.EntityRepositories;
-using CalDavSynchronizer.Generic.ProgressReport;
 using CalDavSynchronizer.Implementation.ComWrappers;
+using GenSync;
+using GenSync.EntityRepositories;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Tasks

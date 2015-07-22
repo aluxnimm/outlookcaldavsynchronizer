@@ -16,9 +16,9 @@
 
 using System;
 using System.Collections.Generic;
-using CalDavSynchronizer.Generic.InitialEntityMatching;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using DDay.iCal;
+using GenSync.InitialEntityMatching;
 
 namespace CalDavSynchronizer.Implementation.Tasks
 {

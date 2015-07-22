@@ -22,9 +22,9 @@ using System.Reflection;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
-using CalDavSynchronizer.Generic.ProgressReport;
 using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Utilities;
+using GenSync.ProgressReport;
 using log4net;
 using log4net.Config;
 using Microsoft.Office.Interop.Outlook;
@@ -71,7 +71,8 @@ namespace CalDavSynchronizer
             applicationDataDirectory,
             new TotalProgressFactory (
                 new Ui.ProgressFormFactory(),
-                int.Parse (ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"])),
+                int.Parse (ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"]),
+                ExceptionHandler.Instance),
             Application.Session);
 
         Scheduler = new Scheduler (synchronizerFactory);
