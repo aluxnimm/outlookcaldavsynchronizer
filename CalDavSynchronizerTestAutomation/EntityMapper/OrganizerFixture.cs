@@ -60,7 +60,7 @@ END:VCALENDAR
       {
         OutlookTestContext.EntityMapper.Map2To1 (evt, outlookEvent);
 
-        var inspector = outlookEvent.Inner.GetInspector;
+        _Inspector inspector = outlookEvent.Inner.GetInspector;
 
         inspector.Activate();
 

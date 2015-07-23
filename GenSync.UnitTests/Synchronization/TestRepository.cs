@@ -45,6 +45,7 @@ namespace GenSync.UnitTests.Synchronization
       return EntityVersionAndContentById.Select(kv => EntityIdWithVersion.Create(kv.Key, kv.Value.Item1)).ToList();
     }
 
+    // ReSharper disable once CSharpWarnings::CS1998
     public async Task<IReadOnlyList<EntityWithVersion<string, string>>> Get (ICollection<string> ids)
     {
       return ids.Select (id => EntityWithVersion.Create (id, EntityVersionAndContentById[id].Item2)).ToArray();

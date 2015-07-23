@@ -86,8 +86,9 @@ namespace CalDavSynchronizer.Implementation.Events
       return value.ToString ("g", _currentCultureInfo);
     }
 
-
+#pragma warning disable 1998
     public async Task<IReadOnlyList<EntityWithVersion<string, AppointmentItemWrapper>>> Get (ICollection<string> ids)
+#pragma warning restore 1998
     {
       return ids
           .Select (id => EntityWithVersion.Create (
