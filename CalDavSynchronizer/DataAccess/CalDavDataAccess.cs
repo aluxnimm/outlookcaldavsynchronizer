@@ -121,17 +121,21 @@ namespace CalDavSynchronizer.DataAccess
       if (from.HasValue != to.HasValue)
         throw new ArgumentException ("Either both or no boundary has to be set");
 
-      var responseXml = ExecuteCalDavRequestAndReadResponse (
-          _calendarUrl,
-          request =>
-          {
-            request.Method = "REPORT";
-            request.ContentType = "text/xml; charset=UTF-8";
-            request.Headers.Add ("Depth", 1.ToString());
-            request.ServicePoint.Expect100Continue = false;
-          },
-          string.Format (
-              @"<?xml version=""1.0""?>
+      var entities = new List<EntityIdWithVersion<Uri, string>>();
+
+      try
+      {
+        var responseXml = ExecuteCalDavRequestAndReadResponse(
+            _calendarUrl,
+            request =>
+            {
+              request.Method = "REPORT";
+              request.ContentType = "text/xml; charset=UTF-8";
+              request.Headers.Add("Depth", 1.ToString());
+              request.ServicePoint.Expect100Continue = false;
+            },
+            string.Format(
+                @"<?xml version=""1.0""?>
                     <C:calendar-query xmlns:C=""urn:ietf:params:xml:ns:caldav"">
                         <D:prop xmlns:D=""DAV:"">
                             <D:getetag/>
@@ -145,31 +149,40 @@ namespace CalDavSynchronizer.DataAccess
                         </C:filter>
                     </C:calendar-query>
                     ",
-              entityType,
-              from == null ? string.Empty : string.Format (@"<C:time-range start=""{0}"" end=""{1}""/>",
-                  from.Value.ToString (s_calDavDateTimeFormatString),
-                  to.Value.ToString (s_calDavDateTimeFormatString))
-              ));
+                entityType,
+                from == null ? string.Empty : string.Format(@"<C:time-range start=""{0}"" end=""{1}""/>",
+                    from.Value.ToString(s_calDavDateTimeFormatString),
+                    to.Value.ToString(s_calDavDateTimeFormatString))
+                ));
 
 
-      XmlNodeList responseNodes = responseXml.XmlDocument.SelectNodes ("/D:multistatus/D:response", responseXml.XmlNamespaceManager);
+        XmlNodeList responseNodes = responseXml.XmlDocument.SelectNodes("/D:multistatus/D:response", responseXml.XmlNamespaceManager);
 
-
-      var entities = new List<EntityIdWithVersion<Uri, string>>();
-
-      // ReSharper disable once LoopCanBeConvertedToQuery
-      // ReSharper disable once PossibleNullReferenceException
-      foreach (XmlElement responseElement in responseNodes)
-      {
-        var urlNode = responseElement.SelectSingleNode ("D:href", responseXml.XmlNamespaceManager);
-        var etagNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:getetag", responseXml.XmlNamespaceManager);
-        if (urlNode != null && etagNode != null)
+        // ReSharper disable once LoopCanBeConvertedToQuery
+        // ReSharper disable once PossibleNullReferenceException
+        foreach (XmlElement responseElement in responseNodes)
         {
-          var uri = UriHelper.UnescapeRelativeUri (_calendarUrl, urlNode.InnerText);
-          entities.Add (EntityIdWithVersion.Create (uri, etagNode.InnerText));
+          var urlNode = responseElement.SelectSingleNode ("D:href", responseXml.XmlNamespaceManager);
+          var etagNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:getetag", responseXml.XmlNamespaceManager);
+          if (urlNode != null && etagNode != null)
+          {
+            var uri = UriHelper.UnescapeRelativeUri (_calendarUrl, urlNode.InnerText);
+            entities.Add (EntityIdWithVersion.Create (uri, etagNode.InnerText));
+          }
         }
       }
+      catch (WebException x)
+      {
+        if (x.Response != null)
+        {
+          var httpWebResponse = (HttpWebResponse)x.Response;
 
+          if (httpWebResponse.StatusCode == HttpStatusCode.NotFound)
+            return entities;
+        }
+
+        throw;
+      }
       return entities;
     }
 
