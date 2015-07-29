@@ -883,10 +883,18 @@ namespace CalDavSynchronizer.Implementation.Events
         }
         if (((OlMeetingRecipientType) recipient.Type) == OlMeetingRecipientType.olOrganizer)
         {
-          using (var entryWrapper = GenericComObjectWrapper.Create (recipient.AddressEntry))
-          {
-            SetOrganizer (target, entryWrapper.Inner);
+          if (!string.IsNullOrEmpty(recipient.Address))
+          { 
+            using (var entryWrapper = GenericComObjectWrapper.Create (recipient.AddressEntry))
+            {
+              SetOrganizer (target, entryWrapper.Inner);
+            }
           }
+          else
+          {
+            SetOrganizer (target, recipient.Name, string.Empty);
+          }
+
           organizerSet = true;
         }
       }
