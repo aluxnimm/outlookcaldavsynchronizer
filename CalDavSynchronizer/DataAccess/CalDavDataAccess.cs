@@ -74,10 +74,12 @@ namespace CalDavSynchronizer.DataAccess
       var request = CreateRequest (_calendarUrl);
       request.Method = "OPTIONS";
       // FIXME: Redirects don't authenticate.
-      var response = request.GetResponse();
 
-
-      string davHeader = response.Headers["DAV"].ToString();
+      string davHeader;
+      using (var response = request.GetResponse())
+      {
+        davHeader = response.Headers["DAV"];
+      }
 
       return davHeader.Split (new[] { ',' })
           .Select (o => o.Trim())
@@ -125,16 +127,16 @@ namespace CalDavSynchronizer.DataAccess
 
       try
       {
-        var responseXml = ExecuteCalDavRequestAndReadResponse(
+        var responseXml = ExecuteCalDavRequestAndReadResponse (
             _calendarUrl,
             request =>
             {
               request.Method = "REPORT";
               request.ContentType = "text/xml; charset=UTF-8";
-              request.Headers.Add("Depth", 1.ToString());
+              request.Headers.Add ("Depth", 1.ToString());
               request.ServicePoint.Expect100Continue = false;
             },
-            string.Format(
+            string.Format (
                 @"<?xml version=""1.0""?>
                     <C:calendar-query xmlns:C=""urn:ietf:params:xml:ns:caldav"">
                         <D:prop xmlns:D=""DAV:"">
@@ -150,13 +152,13 @@ namespace CalDavSynchronizer.DataAccess
                     </C:calendar-query>
                     ",
                 entityType,
-                from == null ? string.Empty : string.Format(@"<C:time-range start=""{0}"" end=""{1}""/>",
-                    from.Value.ToString(s_calDavDateTimeFormatString),
-                    to.Value.ToString(s_calDavDateTimeFormatString))
+                from == null ? string.Empty : string.Format (@"<C:time-range start=""{0}"" end=""{1}""/>",
+                    from.Value.ToString (s_calDavDateTimeFormatString),
+                    to.Value.ToString (s_calDavDateTimeFormatString))
                 ));
 
 
-        XmlNodeList responseNodes = responseXml.XmlDocument.SelectNodes("/D:multistatus/D:response", responseXml.XmlNamespaceManager);
+        XmlNodeList responseNodes = responseXml.XmlDocument.SelectNodes ("/D:multistatus/D:response", responseXml.XmlNamespaceManager);
 
         // ReSharper disable once LoopCanBeConvertedToQuery
         // ReSharper disable once PossibleNullReferenceException
@@ -175,7 +177,7 @@ namespace CalDavSynchronizer.DataAccess
       {
         if (x.Response != null)
         {
-          var httpWebResponse = (HttpWebResponse)x.Response;
+          var httpWebResponse = (HttpWebResponse) x.Response;
 
           if (httpWebResponse.StatusCode == HttpStatusCode.NotFound)
             return entities;
@@ -188,9 +190,8 @@ namespace CalDavSynchronizer.DataAccess
 
     private string GetEtag (Uri absoluteEntityUrl)
     {
-      var response = ExecuteCalDavRequest (absoluteEntityUrl, delegate { }, null);
-
-      return response.Headers["ETag"];
+      var headers = ExecuteCalDavRequestAndReturnResponseHeaders (absoluteEntityUrl, delegate { }, null);
+      return headers["ETag"];
     }
 
 
@@ -252,11 +253,11 @@ namespace CalDavSynchronizer.DataAccess
 
       s_logger.DebugFormat ("Absolute entity location: '{0}'", absoluteEventUrl);
 
-      WebResponse response;
+      WebHeaderCollection responseHeaders;
 
       try
       {
-        response = ExecuteCalDavRequest (absoluteEventUrl,
+        responseHeaders = ExecuteCalDavRequestAndReturnResponseHeaders (absoluteEventUrl,
             request =>
             {
               request.Method = "PUT";
@@ -276,9 +277,9 @@ namespace CalDavSynchronizer.DataAccess
       }
 
       if (s_logger.IsDebugEnabled)
-        s_logger.DebugFormat ("Updated entity. Server response header: '{0}'", response.Headers.ToString().Replace ("\r\n", " <CR> "));
+        s_logger.DebugFormat ("Updated entity. Server response header: '{0}'", responseHeaders.ToString().Replace ("\r\n", " <CR> "));
 
-      return new EntityIdWithVersion<Uri, string> (url, response.Headers["ETag"]);
+      return new EntityIdWithVersion<Uri, string> (url, responseHeaders["ETag"]);
     }
 
     public EntityIdWithVersion<Uri, string> CreateEntity (string iCalData)
@@ -287,11 +288,11 @@ namespace CalDavSynchronizer.DataAccess
 
       s_logger.DebugFormat ("Creating entity '{0}'", eventUrl);
 
-      WebResponse response;
+      WebHeaderCollection responseHeaders;
 
       try
       {
-        response = ExecuteCalDavRequest (eventUrl,
+        responseHeaders = ExecuteCalDavRequestAndReturnResponseHeaders (eventUrl,
             request =>
             {
               request.Method = "PUT";
@@ -310,7 +311,7 @@ namespace CalDavSynchronizer.DataAccess
       }
 
       Uri effectiveEventUrl;
-      var location = response.Headers["location"];
+      var location = responseHeaders["location"];
       if (!string.IsNullOrEmpty (location))
       {
         s_logger.DebugFormat ("Server sent new location: '{0}'", location);
@@ -323,7 +324,7 @@ namespace CalDavSynchronizer.DataAccess
         effectiveEventUrl = eventUrl;
       }
 
-      var etag = response.Headers["ETag"];
+      var etag = responseHeaders["ETag"];
       string version;
       if (etag != null)
       {
@@ -333,7 +334,6 @@ namespace CalDavSynchronizer.DataAccess
       {
         version = GetEtag (effectiveEventUrl);
       }
-
 
       return new EntityIdWithVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveEventUrl), version);
     }
@@ -356,11 +356,11 @@ namespace CalDavSynchronizer.DataAccess
 
       s_logger.DebugFormat ("Absolute entity location: '{0}'", absoluteEventUrl);
 
-      WebResponse response;
+      WebHeaderCollection responseHeaders;
 
       try
       {
-        response = ExecuteCalDavRequest (absoluteEventUrl,
+        responseHeaders = ExecuteCalDavRequestAndReturnResponseHeaders (absoluteEventUrl,
             request =>
             {
               request.Method = "DELETE";
@@ -386,7 +386,7 @@ namespace CalDavSynchronizer.DataAccess
         throw;
       }
 
-      var error = response.Headers["X-Dav-Error"];
+      var error = responseHeaders["X-Dav-Error"];
       if (error != null && error != "200 No error")
         throw new Exception (string.Format ("Error deleting event with url '{0}' and etag '{1}': {2}", uri, etag, error));
 
@@ -461,8 +461,21 @@ namespace CalDavSynchronizer.DataAccess
 
     private XmlDocumentWithNamespaceManager ExecuteCalDavRequestAndReadResponse (Uri url, Action<HttpWebRequest> modifier, string requestBody)
     {
-      var response = ExecuteCalDavRequest (url, modifier, requestBody);
-      return CreateCalDavXmlDocument (response.GetResponseStream());
+      using (var response = ExecuteCalDavRequest (url, modifier, requestBody))
+      {
+        using (var responseStream = response.GetResponseStream())
+        {
+          return CreateCalDavXmlDocument (responseStream);
+        }
+      }
+    }
+
+    private WebHeaderCollection ExecuteCalDavRequestAndReturnResponseHeaders (Uri url, Action<HttpWebRequest> modifier, string requestBody)
+    {
+      using (var response = ExecuteCalDavRequest (url, modifier, requestBody))
+      {
+        return response.Headers;
+      }
     }
 
     private WebResponse ExecuteCalDavRequest (Uri url, Action<HttpWebRequest> modifier, string requestBody)
