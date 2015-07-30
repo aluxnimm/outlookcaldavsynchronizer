@@ -215,6 +215,11 @@ namespace GenSync.Synchronization
         _exceptionLogger.LogException (x, s_logger);
         return false;
       }
+      finally
+      {
+        System.GC.Collect();
+        System.GC.WaitForPendingFinalizers();
+      }
 
       s_logger.DebugFormat ("Exiting.");
       return true;

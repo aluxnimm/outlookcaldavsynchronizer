@@ -25,6 +25,7 @@ using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
+using CalDavSynchronizer.Implementation.ComWrappers;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
 using Exception = System.Exception;
@@ -337,23 +338,31 @@ namespace CalDavSynchronizer.Ui
     {
       if (!string.IsNullOrEmpty (folderEntryId) && !string.IsNullOrEmpty (folderStoreId))
       {
-        MAPIFolder folder;
+        GenericComObjectWrapper<MAPIFolder> folderWrapper = null;
 
         try
         {
-          folder = _session.GetFolderFromID (folderEntryId, folderStoreId);
+          try
+          {
+            folderWrapper = GenericComObjectWrapper.Create(_session.GetFolderFromID(folderEntryId, folderStoreId));
+          }
+          catch (Exception x)
+          {
+            s_logger.Error(null, x);
+            _outoookFolderNameTextBox.Text = "<ERROR>";
+            _folderType = null;
+            return;
+          }
+          if (folderWrapper != null)
+          {
+            UpdateFolder(folderWrapper.Inner);
+            return;
+          }
         }
-        catch (Exception x)
+        finally
         {
-          s_logger.Error (null, x);
-          _outoookFolderNameTextBox.Text = "<ERROR>";
-          _folderType = null;
-          return;
-        }
-        if (folder != null)
-        {
-          UpdateFolder (folder);
-          return;
+          if (folderWrapper != null)
+            folderWrapper.Dispose();
         }
       }
 
@@ -366,7 +375,10 @@ namespace CalDavSynchronizer.Ui
       var folder = _session.PickFolder();
       if (folder != null)
       {
-        UpdateFolder (folder);
+        using (var folderWrapper = GenericComObjectWrapper.Create(folder))
+        {
+          UpdateFolder(folderWrapper.Inner);
+        }
       }
     }
 
