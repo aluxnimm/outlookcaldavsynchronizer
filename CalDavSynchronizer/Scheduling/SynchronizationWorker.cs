@@ -68,7 +68,15 @@ namespace CalDavSynchronizer.Scheduling
       {
         using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("Running synchronization profile '{0}'", _profileName)))
         {
-          await _synchronizer.Synchronize();
+          try
+          {
+            await _synchronizer.Synchronize();
+          }
+          finally
+          {
+            GC.Collect ();
+            GC.WaitForPendingFinalizers ();
+          }
         }
       }
       catch (Exception x)
