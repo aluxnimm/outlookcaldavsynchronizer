@@ -62,10 +62,11 @@ namespace CalDavSynchronizer.Implementation.Events
       _btypeRepository = new CalDavRepository (
           new CalDavDataAccess (
               new Uri (options.CalenderUrl),
-              options.UserName,
-              options.Password,
-              connectTimeout,
-              readWriteTimeout
+              new CalDavWebClient (
+                  options.UserName,
+                  options.Password,
+                  connectTimeout,
+                  readWriteTimeout)
               ),
           new iCalendarSerializer(),
           CalDavRepository.EntityType.Event);

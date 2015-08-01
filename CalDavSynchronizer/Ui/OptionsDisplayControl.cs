@@ -163,10 +163,11 @@ namespace CalDavSynchronizer.Ui
 
         var dataAccess = new CalDavDataAccess (
             new Uri (_calenderUrlTextBox.Text),
-            _userNameTextBox.Text,
-            _passwordTextBox.Text,
-            TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-            TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"])
+            new CalDavWebClient (
+                _userNameTextBox.Text,
+                _passwordTextBox.Text,
+                TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+                TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]))
             );
 
         if (!dataAccess.IsCalendarAccessSupported())
@@ -220,13 +221,13 @@ namespace CalDavSynchronizer.Ui
         return false;
       }
 
-      if (_calenderUrlTextBox.Text.Trim () != _calenderUrlTextBox.Text)
+      if (_calenderUrlTextBox.Text.Trim() != _calenderUrlTextBox.Text)
       {
         errorMessageBuilder.AppendLine ("- The CalDav Calendar Url cannot end/start with whitespaces.");
         result = false;
       }
 
-      if (!_calenderUrlTextBox.Text.EndsWith("/"))
+      if (!_calenderUrlTextBox.Text.EndsWith ("/"))
       {
         errorMessageBuilder.AppendLine ("- The CalDav Calendar Url hast to end with an slash ('/').");
         result = false;
@@ -344,18 +345,18 @@ namespace CalDavSynchronizer.Ui
         {
           try
           {
-            folderWrapper = GenericComObjectWrapper.Create(_session.GetFolderFromID(folderEntryId, folderStoreId));
+            folderWrapper = GenericComObjectWrapper.Create (_session.GetFolderFromID (folderEntryId, folderStoreId));
           }
           catch (Exception x)
           {
-            s_logger.Error(null, x);
+            s_logger.Error (null, x);
             _outoookFolderNameTextBox.Text = "<ERROR>";
             _folderType = null;
             return;
           }
           if (folderWrapper != null)
           {
-            UpdateFolder(folderWrapper.Inner);
+            UpdateFolder (folderWrapper.Inner);
             return;
           }
         }
@@ -375,9 +376,9 @@ namespace CalDavSynchronizer.Ui
       var folder = _session.PickFolder();
       if (folder != null)
       {
-        using (var folderWrapper = GenericComObjectWrapper.Create(folder))
+        using (var folderWrapper = GenericComObjectWrapper.Create (folder))
         {
-          UpdateFolder(folderWrapper.Inner);
+          UpdateFolder (folderWrapper.Inner);
         }
       }
     }
