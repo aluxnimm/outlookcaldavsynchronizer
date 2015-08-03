@@ -48,10 +48,7 @@ namespace CalDavSynchronizer.DataAccess
     {
       var headers = _calDavWebClient.ExecuteCalDavRequestAndReturnResponseHeaders (
           _calendarUrl,
-          request =>
-          {
-            request.Method = "OPTIONS";
-          },
+          request => { request.Method = "OPTIONS"; },
           null);
 
       var davHeader = headers["DAV"];
@@ -254,7 +251,18 @@ namespace CalDavSynchronizer.DataAccess
       if (s_logger.IsDebugEnabled)
         s_logger.DebugFormat ("Updated entity. Server response header: '{0}'", responseHeaders.ToString().Replace ("\r\n", " <CR> "));
 
-      return new EntityIdWithVersion<Uri, string> (url, responseHeaders["ETag"]);
+      var newEtag = responseHeaders["ETag"];
+      string version;
+      if (newEtag != null)
+      {
+        version = newEtag;
+      }
+      else
+      {
+        version = GetEtag (absoluteEventUrl);
+      }
+
+      return new EntityIdWithVersion<Uri, string> (url, version);
     }
 
     public EntityIdWithVersion<Uri, string> CreateEntity (string iCalData)
@@ -433,6 +441,5 @@ namespace CalDavSynchronizer.DataAccess
         return unescapedRelativeUri;
       }
     }
-
   }
 }
