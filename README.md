@@ -36,6 +36,25 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changlog ###
 
+#### 0.99.10 ####
+- Fetch Etag from server, if it is not included in an update response.
+- Factor out CalDavWebClient from CalDavDataAccess.
+
+#### 0.99.9 ####
+- Dispose Folders in OptionDialog
+- Call GarbageCollector after each synchronizer run to avoid issues with recurrence exceptions
+
+#### 0.99.8 ####
+- Fix some caldav timeout issues, properly dispose WebRequests
+
+#### 0.99.7 ####
+- Check if organizer address is empty to avoid COM Exception in GetMailUrl
+- Fix exdate calculation for moved recurrence exceptions
+
+#### 0.99.6 ####
+- Catch 404 response for empty caldav repositories from Synology
+- Some generic Refactoring
+
 #### 0.99.4 ####
 - Dispose Outlook-Folders after usage
 - Some more recurrence exception fixes:
@@ -44,8 +63,10 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 - Swap handling of ExeptionDates and RecurrenceIDs
 - Clarify logging error
 - check if new exception is already present in target
+
 #### 0.99.3 ####
 - Fix timezone definition
+
 #### 0.99.2 ####
 - fix timezone issues for syncing from Outlook to CalDav for recurrent events
 - Add local timezone info to new CalDav events
@@ -54,40 +75,53 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 - fix calculation of exdates for recurrence exceptions
 - Fix date calculation for GetOccurence
 - Honor BYSETPOS for monthly and yearly recurrence rules
+
 #### 0.99.1 ####
-- Improved validation of calendar url in options dialog.
+- Improved validation of calendar url in options dialog
+
 #### 0.99 ####
 - Fixes for google
+
 #### 0.98 ####
 - Add SCHEDULE-AGENT=CLIENT for organizer to avoid sending invitations twice in SOGo, see ticket 45
+
 #### 0.97.8 ####
 - Add debug logging for caldav requests
+
 #### 0.97.7 ####
 - more fixes for exchange email addresses for attendees and better logging
 - catch COM exception for not found recurrence exceptions
+
 #### 0.97.6 ####
 - more fixes for GetMailUrl
 - Improve handling of WebExceptions
+
 #### 0.97.5 ####
 - fixes for GetMailUrl for Exchange and GAL
 - fix WebException exceptions
 - response header 'location' is allowed to contain a relative Uri
+
 #### 0.97.3 ####
 - fix interval for yearly recurrence rules
+
 #### 0.97.2 ####
 - add synchronization context if missing
 - fix for task sync if start and due dates are equal
+
 #### 0.97.1 ####
 - swap default values for sync timespans in options dialog
 - catch exceptions if PR_SMTP_ADDRESS property not available
 - set meetingstatus to nonmeeting if only own organizer and no attendees are present
+
 #### 0.97 ####
 - Initial task sync support (alpha)
 - Make caldav requests async, Outlook UI stays responsive during caldav get requests
 - some recurrence fixes
 - improve total progress handling
+
 #### 0.96 ####
-- Fixes for google 
+- Fixes for google
+
 #### 0.95.1 ####
 - Fix getting smtp address for exchange users
 
