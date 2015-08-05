@@ -945,8 +945,37 @@ namespace CalDavSynchronizer.Implementation.Events
 
     public AppointmentItemWrapper Map2To1 (IICalendar sourceCalendar, AppointmentItemWrapper target)
     {
-      var source = sourceCalendar.Events[0];
-      return Map2To1 (source, sourceCalendar.Events.Skip (1).ToArray(), target, false);
+      IEvent sourceMasterEvent = null;
+      IReadOnlyCollection<IEvent> sourceExceptionEvents;
+
+      var sourceEvents = sourceCalendar.Events;
+
+      if (sourceEvents.Count == 1)
+      {
+        sourceMasterEvent = sourceEvents[0];
+        sourceExceptionEvents = new IEvent[] { };
+      }
+      else
+      {
+        var sourceExceptionEventsList = new List<IEvent>();
+        sourceExceptionEvents = sourceExceptionEventsList;
+
+        foreach (var sourceEvent in sourceEvents)
+        {
+          if (sourceEvent.RecurrenceID == null)
+            sourceMasterEvent = sourceEvent;
+          else
+            sourceExceptionEventsList.Add (sourceEvent);
+        }
+
+        // TODO
+        // Maybe it is a goo idea to sort the exception events here by RecurrenceId
+      }
+
+      if (sourceMasterEvent == null)
+        throw new System.Exception ("CalDav Ressources with contains only exceptions are NOT supported!");
+
+      return Map2To1 (sourceMasterEvent, sourceExceptionEvents, target, false);
     }
 
 
