@@ -23,6 +23,8 @@ This project was initially developed as a master thesis project at the [Universi
 - SabreDAV
 - Google Calendar ( use the following URL: https://www.google.com/calendar/dav/<your_google_calendar_id>/events )
 - Zimbra 8.5
+- GroupOffice
+- Synology NAS
 
 ### Used Libraries ###
 
@@ -35,6 +37,11 @@ Download and extract the `OutlookCalDavSynchronizer.zip` into the same folder an
 If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=44074)
 
 ### Changlog ###
+
+#### 0.99.12 ####
+- Fix Bug: Mapping is wrong, when master event is not first event in CalDAV resource.
+- Fix logging issue
+- Fix recurrence from Outlook for last weekday in month
 
 #### 0.99.10 ####
 - Fetch Etag from server, if it is not included in an update response.
