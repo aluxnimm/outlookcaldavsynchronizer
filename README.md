@@ -38,6 +38,10 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changlog ###
 
+#### 0.99.13 ####
+- Use BYSETPOS -1 to fix last (working)day monthly/yearly recurrences from Outlook
+- Add UserAgent header to request. (needed by BAIKAL for example)
+
 #### 0.99.12 ####
 - Fix Bug: Mapping is wrong, when master event is not first event in CalDAV resource.
 - Fix logging issue
