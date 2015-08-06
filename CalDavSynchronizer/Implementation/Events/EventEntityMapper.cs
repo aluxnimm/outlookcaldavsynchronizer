@@ -439,7 +439,16 @@ namespace CalDavSynchronizer.Implementation.Events
               break;
             case OlRecurrenceType.olRecursMonthNth:
               targetRecurrencePattern.Frequency = FrequencyType.Monthly;
-              MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay, sourceRecurrencePattern.Instance);
+
+              if (sourceRecurrencePattern.Instance == 5)
+              {
+                targetRecurrencePattern.BySetPosition.Add (-1);
+                MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay, 0);
+              }
+              else
+              {
+                MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay, sourceRecurrencePattern.Instance);
+              }
               break;
             case OlRecurrenceType.olRecursYearly:
               targetRecurrencePattern.Frequency = FrequencyType.Yearly;
@@ -448,7 +457,15 @@ namespace CalDavSynchronizer.Implementation.Events
               break;
             case OlRecurrenceType.olRecursYearNth:
               targetRecurrencePattern.Frequency = FrequencyType.Yearly;
-              MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay, sourceRecurrencePattern.Instance);
+              if (sourceRecurrencePattern.Instance == 5)
+              {
+                targetRecurrencePattern.BySetPosition.Add (-1);
+                MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay, 0);
+              }
+              else
+              {
+                MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay, sourceRecurrencePattern.Instance);
+              }
               targetRecurrencePattern.ByMonth.Add (sourceRecurrencePattern.MonthOfYear);
               break;
           }
@@ -547,19 +564,19 @@ namespace CalDavSynchronizer.Implementation.Events
     private void MapDayOfWeek1To2 (OlDaysOfWeek source, IList<IWeekDay> target, int offset)
     {
       if ((source & OlDaysOfWeek.olMonday) > 0)
-        target.Add ((offset>0)?new WeekDay (DayOfWeek.Monday, (offset==5)?-1:offset):new WeekDay (DayOfWeek.Monday));
+        target.Add ((offset>0)?new WeekDay (DayOfWeek.Monday, offset):new WeekDay (DayOfWeek.Monday));
       if ((source & OlDaysOfWeek.olTuesday) > 0)
-        target.Add((offset > 0) ? new WeekDay(DayOfWeek.Tuesday, (offset == 5) ? -1 : offset) : new WeekDay(DayOfWeek.Tuesday));
+        target.Add ((offset > 0) ? new WeekDay (DayOfWeek.Tuesday, offset) : new WeekDay (DayOfWeek.Tuesday));
       if ((source & OlDaysOfWeek.olWednesday) > 0)
-        target.Add((offset > 0) ? new WeekDay(DayOfWeek.Wednesday, (offset == 5) ? -1 : offset) : new WeekDay(DayOfWeek.Wednesday));
+        target.Add ((offset > 0) ? new WeekDay (DayOfWeek.Wednesday, offset) : new WeekDay (DayOfWeek.Wednesday));
       if ((source & OlDaysOfWeek.olThursday) > 0)
-        target.Add((offset > 0) ? new WeekDay(DayOfWeek.Thursday, (offset == 5) ? -1 : offset) : new WeekDay(DayOfWeek.Thursday));
+        target.Add ((offset > 0) ? new WeekDay (DayOfWeek.Thursday, offset) : new WeekDay (DayOfWeek.Thursday));
       if ((source & OlDaysOfWeek.olFriday) > 0)
-        target.Add((offset > 0) ? new WeekDay(DayOfWeek.Friday, (offset == 5) ? -1 : offset) : new WeekDay(DayOfWeek.Friday));
+        target.Add ((offset > 0) ? new WeekDay (DayOfWeek.Friday, offset) : new WeekDay (DayOfWeek.Friday));
       if ((source & OlDaysOfWeek.olSaturday) > 0)
-        target.Add((offset > 0) ? new WeekDay(DayOfWeek.Saturday, (offset == 5) ? -1 : offset) : new WeekDay(DayOfWeek.Saturday));
+        target.Add ((offset > 0) ? new WeekDay (DayOfWeek.Saturday, offset) : new WeekDay (DayOfWeek.Saturday));
       if ((source & OlDaysOfWeek.olSunday) > 0)
-        target.Add((offset > 0) ? new WeekDay(DayOfWeek.Sunday, (offset == 5) ? -1 : offset) : new WeekDay(DayOfWeek.Sunday));
+        target.Add ((offset > 0) ? new WeekDay (DayOfWeek.Sunday, offset) : new WeekDay (DayOfWeek.Sunday));
     }
 
     private OlDaysOfWeek MapDayOfWeek2To1 (IList<IWeekDay> source)
