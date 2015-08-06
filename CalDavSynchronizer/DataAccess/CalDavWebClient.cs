@@ -33,6 +33,7 @@ namespace CalDavSynchronizer.DataAccess
     private readonly string _password;
     private readonly TimeSpan _connectTimeout;
     private readonly TimeSpan _readWriteTimeout;
+    private readonly string _userAgent;
 
     public CalDavWebClient (string username, string password, TimeSpan connectTimeout, TimeSpan readWriteTimeout)
     {
@@ -42,6 +43,8 @@ namespace CalDavSynchronizer.DataAccess
       _password = password;
       _connectTimeout = connectTimeout;
       _readWriteTimeout = readWriteTimeout;
+      var version = Assembly.GetExecutingAssembly().GetName().Version;
+      _userAgent = string.Format ("CalDavSynchronizer/{0}.{1}", version.Major, version.Minor);
     }
 
 
@@ -50,6 +53,7 @@ namespace CalDavSynchronizer.DataAccess
       var request = (HttpWebRequest) HttpWebRequest.Create (url);
       request.Timeout = (int) _connectTimeout.TotalMilliseconds;
       request.ReadWriteTimeout = (int) _readWriteTimeout.TotalMilliseconds;
+      request.UserAgent = _userAgent;
 
       if (!string.IsNullOrEmpty (_username))
       {
