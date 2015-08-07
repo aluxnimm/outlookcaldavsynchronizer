@@ -38,6 +38,9 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changlog ###
 
+#### 0.99.15 ####
+- Implement app.config options for disabling SSL/TLS certificate validation and enabling/disabling SSL3/TLS12
+
 #### 0.99.14 ####
 - Use BYSETPOS also for other instances from Outlook fixes first/second/... weekday/weekend day in month
 
@@ -209,6 +212,14 @@ In that xml file you can config timeout parameters and config options in the sec
 - **calDavConnectTimeout**: timeout for caldav connects (default 90 sec)
 - **calDavReadWriteTimeout**; timeout for caldav read/write requests (default 5 sec)
 - **enableTaskSynchronization** Support for task sync (alpha) true or false
+
+If you have problems with SSL/TLS and self-signed certificates, you can change the following settings at your own risk.
+The recommended way would be to add the self signed cert to the Local Computer Trusted Root Certification Authorities
+You can import the cert by running the MMC as Administrator.
+
+- **disableCertificateValidation** set to true to disable SSL/TLS certificate validation, major security risk, use with caution!
+- **enableSsl3** set to true to enable deprecated SSLv3, major security risk, use with caution! 
+- **enableTls12** set to false to disable TLS12, not recommended 
 
 In the section `log4net` you can define the log level for the main log and for the caldav data access, 
     level value can be DEBUG or INFO
