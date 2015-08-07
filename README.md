@@ -26,6 +26,18 @@ This project was initially developed as a master thesis project at the [Universi
 - GroupOffice
 - Synology NAS
 
+### Features ###
+
+- open source AGPL, the only free Outlook CalDav plugin
+- two-way-sync
+- SSL/TLS support, support for self-signed certificates
+- configurable sync range
+- sync multiple calendars per profile
+- sync reminders, categories, recurrences with exceptions, importance, transparency
+- sync organizer and attendees and own response status
+- task support (alpha)
+- CardDav is planned 
+
 ### Used Libraries ###
 
 -  [DDay.iCal](http://www.ddaysoftware.com/Pages/Projects/DDay.iCal/)
@@ -33,7 +45,7 @@ This project was initially developed as a master thesis project at the [Universi
 
 ### Install instructions ###
 
-Download and extract the `OutlookCalDavSynchronizer.zip` into the same folder and start setup.exe.
+Download and extract the `OutlookCalDavSynchronizer-<Version>.zip` into the same folder and start setup.exe.
 If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=44074)
 
 ### Changlog ###
@@ -166,7 +178,7 @@ The following properties need to be set for a new profile:
 
 - *Profile name*: An arbitrary name for the profile, which will be displayed at the associated tab.
 - *Server settings*:
-	- **CalDAV Url:** URL of the remote CalDAV folder. You should use a HTTPS connection here for security reason! If you only have a self signed certificate, add the self signed cert to the Local Computer Trusted Root Certification Authorities. You can import the cert by running the MMC as Administrator.
+	- **CalDAV Url:** URL of the remote CalDAV folder. You should use a HTTPS connection here for security reason! If you only have a self signed certificate, add the self signed cert to the Local Computer Trusted Root Certification Authorities. You can import the cert by running the MMC as Administrator. If that fails, see section *'Debugging and more config options'*
 	- **Username:** Username to connect to the CalDAV server
 	- **Password:** Password used for the connection. The password will be saved encrypted in the option config file.
 	- **Email address:** email address used as remote identity for the CalDAV server, necessary to synchronize the organizer
