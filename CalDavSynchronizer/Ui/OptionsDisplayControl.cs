@@ -167,7 +167,10 @@ namespace CalDavSynchronizer.Ui
                 _userNameTextBox.Text,
                 _passwordTextBox.Text,
                 TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-                TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]))
+                TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]),
+                Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"]),
+                Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"]),
+                Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"]))
             );
 
         if (!dataAccess.IsCalendarAccessSupported())

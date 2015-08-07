@@ -92,6 +92,9 @@ namespace CalDavSynchronizer.Scheduling
           _outlookEmailAddress,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]),
+          Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"]),
+          Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"]),
+          Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"]),
           btypeIdEqualityComparer);
 
       var syncStateFactory = new EntitySyncStateFactory<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (
@@ -133,6 +136,9 @@ namespace CalDavSynchronizer.Scheduling
           options,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]),
+          Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"]),
+          Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"]),
+          Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"]),
           btypeIdEqualityComparer);
 
       var syncStateFactory = new EntitySyncStateFactory<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> (

@@ -35,10 +35,21 @@ namespace CalDavSynchronizer.DataAccess
     private readonly TimeSpan _readWriteTimeout;
     private readonly string _userAgent;
 
-    public CalDavWebClient (string username, string password, TimeSpan connectTimeout, TimeSpan readWriteTimeout)
+    public CalDavWebClient (string username, string password, TimeSpan connectTimeout, TimeSpan readWriteTimeout, bool disableCertValidation, bool useSsl3, bool useTls12)
     {
-      ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-
+      ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11;
+      if (useTls12)
+      {
+        ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+      }
+      if (useSsl3)
+      {
+        ServicePointManager.SecurityProtocol |= SecurityProtocolType.Ssl3;
+      }
+      if (disableCertValidation)
+      {
+        ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+      }
       _username = username;
       _password = password;
       _connectTimeout = connectTimeout;
@@ -46,7 +57,6 @@ namespace CalDavSynchronizer.DataAccess
       var version = Assembly.GetExecutingAssembly().GetName().Version;
       _userAgent = string.Format ("CalDavSynchronizer/{0}.{1}", version.Major, version.Minor);
     }
-
 
     private HttpWebRequest CreateRequest (Uri url)
     {

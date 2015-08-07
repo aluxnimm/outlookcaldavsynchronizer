@@ -45,7 +45,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
     private readonly IEntityRelationDataFactory<string, DateTime, Uri, string> _entityRelationDataFactory;
 
 
-    public TaskSynchronizationContext (NameSpace outlookSession, IEntityRelationDataAccess<string, DateTime, Uri, string> storageDataAccess, Options options, TimeSpan connectTimeout, TimeSpan readWriteTimeout, IEqualityComparer<Uri> btypeIdEqualityComparer)
+    public TaskSynchronizationContext (NameSpace outlookSession, IEntityRelationDataAccess<string, DateTime, Uri, string> storageDataAccess, Options options, TimeSpan connectTimeout, TimeSpan readWriteTimeout, bool disableCertValidation, bool useSsl3, bool useTls12, IEqualityComparer<Uri> btypeIdEqualityComparer)
     {
       if (outlookSession == null)
         throw new ArgumentNullException ("outlookSession");
@@ -68,7 +68,10 @@ namespace CalDavSynchronizer.Implementation.Tasks
                   options.UserName,
                   options.Password,
                   connectTimeout,
-                  readWriteTimeout)
+                  readWriteTimeout,
+                  disableCertValidation,
+                  useSsl3, 
+                  useTls12)
               ),
           new iCalendarSerializer(),
           CalDavRepository.EntityType.Todo);
