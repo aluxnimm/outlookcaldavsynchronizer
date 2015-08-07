@@ -150,7 +150,7 @@ namespace CalDavSynchronizer.Ui
 
     private void TestServerConnection ()
     {
-      const string connectionTestCaption = "Connection test";
+      const string connectionTestCaption = "Test settings";
 
       try
       {

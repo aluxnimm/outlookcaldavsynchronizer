@@ -225,7 +225,7 @@
       this._testConnectionButton.Name = "_testConnectionButton";
       this._testConnectionButton.Size = new System.Drawing.Size(133, 28);
       this._testConnectionButton.TabIndex = 3;
-      this._testConnectionButton.Text = "Test connection";
+      this._testConnectionButton.Text = "Test settings";
       this._testConnectionButton.UseVisualStyleBackColor = true;
       // 
       // label5
