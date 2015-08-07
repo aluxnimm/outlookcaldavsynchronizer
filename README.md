@@ -38,6 +38,9 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changlog ###
 
+#### 0.99.14 ####
+- Use BYSETPOS also for other instances from Outlook fixes first/second/... weekday/weekend day in month
+
 #### 0.99.13 ####
 - Use BYSETPOS -1 to fix last (working)day monthly/yearly recurrences from Outlook
 - Add UserAgent header to request. (needed by BAIKAL for example)
