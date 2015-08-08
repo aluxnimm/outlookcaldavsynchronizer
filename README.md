@@ -219,6 +219,7 @@ In the install dir (The default is `'C:\Program Files (x86)\Gerhard Zehetbauer\C
     CalDavSynchronizer.dll.config
 
 In that xml file you can config timeout parameters and config options in the section `appSettings`
+After changing parameters you have to restart Outlook.
 
 - **loadOperationThresholdForProgressDisplay**: amount of sync operations to show the progress bar (default 50)
 - **calDavConnectTimeout**: timeout for caldav connects (default 90 sec)
@@ -235,3 +236,4 @@ You can import the cert by running the MMC as Administrator.
 
 In the section `log4net` you can define the log level for the main log and for the caldav data access, 
     level value can be DEBUG or INFO
+    
