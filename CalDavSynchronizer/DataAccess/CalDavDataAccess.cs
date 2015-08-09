@@ -16,11 +16,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Text;
 using System.Xml;
 using GenSync;
 using log4net;
@@ -184,6 +182,41 @@ namespace CalDavSynchronizer.DataAccess
                         </D:propfind>
                  "
           );
+    }
+
+    public bool DoesSupportCalendarQuery ()
+    {
+      return DoesSupportsReportSet (_calendarUrl, 0, "C", "calendar-query");
+    }
+
+    private bool DoesSupportsReportSet (Uri url, int depth, string reportSetNamespace, string reportSet)
+    {
+      var document = _calDavWebClient.ExecuteCalDavRequestAndReadResponse (
+          url,
+          request =>
+          {
+            request.Method = "PROPFIND";
+            request.ContentType = "text/xml; charset=UTF-8";
+            request.ServicePoint.Expect100Continue = false;
+            request.Headers["Depth"] = depth.ToString();
+          },
+          @"<?xml version='1.0'?>
+                        <D:propfind xmlns:D=""DAV:"">
+                          <D:prop>
+                            <D:supported-report-set/>
+                          </D:prop>
+                        </D:propfind>
+                 "
+          );
+
+      XmlNode reportSetNode = document.XmlDocument.SelectSingleNode (
+          string.Format (
+              "/D:multistatus/D:response/D:propstat/D:prop/D:supported-report-set/D:supported-report/D:report/{0}:{1}",
+              reportSetNamespace,
+              reportSet),
+          document.XmlNamespaceManager);
+
+      return reportSetNode != null;
     }
 
     private XmlDocumentWithNamespaceManager GetCurrentUserPrivileges (Uri url, int depth)

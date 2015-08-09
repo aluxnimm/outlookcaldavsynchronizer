@@ -182,6 +182,10 @@ namespace CalDavSynchronizer.Ui
         if (!dataAccess.IsWriteableCalender())
           MessageBox.Show ("The specified Url is a read-only calendar!", connectionTestCaption);
 
+        if (!dataAccess.DoesSupportCalendarQuery ())
+          MessageBox.Show ("The specified Url does not support Calendar Queries!", connectionTestCaption);
+
+
         MessageBox.Show ("Connection test successful.", connectionTestCaption);
       }
       catch (Exception x)
