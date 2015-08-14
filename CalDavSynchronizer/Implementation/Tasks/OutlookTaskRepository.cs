@@ -44,7 +44,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
     private const string c_entryIdColumnName = "EntryID";
 
-    public IReadOnlyList<EntityIdWithVersion<string, DateTime>> GetVersions (DateTime fromUtc, DateTime toUtc)
+    public IReadOnlyList<EntityIdWithVersion<string, DateTime>> GetVersions ()
     {
       var entities = new List<EntityIdWithVersion<string, DateTime>>();
 

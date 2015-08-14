@@ -184,6 +184,8 @@
     <Compile Include="Implementation\ComWrappers\ComEnumerableExtensions.cs" />
     <Compile Include="Implementation\ComWrappers\GenericComObjectWrapper.cs" />
     <Compile Include="Implementation\ComWrappers\OutlookObjectExtensions.cs" />
+    <Compile Include="Implementation\TimeRangeFiltering\DateTimeRange.cs" />
+    <Compile Include="Implementation\TimeRangeFiltering\DateTimeRangeProvider.cs" />
     <Compile Include="Implementation\Events\EventConflictInitialSyncStateCreationStrategyAutomatic.cs" />
     <Compile Include="Implementation\Events\OutlookEventRelationData.cs" />
     <Compile Include="Implementation\Events\OutlookEventRelationDataFactory.cs" />
@@ -201,6 +203,8 @@
     <Compile Include="Implementation\Tasks\TaskMapper.cs" />
     <Compile Include="Implementation\Tasks\TaskUpdateFromNewerToOlder.cs" />
     <Compile Include="Implementation\Tasks\OutlookTaskRepository.cs" />
+    <Compile Include="Implementation\TimeRangeFiltering\IDateTimeRangeProvider.cs" />
+    <Compile Include="Implementation\TimeRangeFiltering\NullDateTimeRangeProvider.cs" />
     <Compile Include="Scheduling\ISynchronizerFactory.cs" />
     <Compile Include="Scheduling\Scheduler.cs" />
     <Compile Include="Scheduling\SynchronizationWorker.cs" />

@@ -20,6 +20,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using GenSync;
 using GenSync.EntityRepositories;
 using Microsoft.Office.Interop.Outlook;
@@ -31,8 +32,9 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly NameSpace _mapiNameSpace;
     private readonly string _folderId;
     private readonly string _folderStoreId;
+    private readonly IDateTimeRangeProvider _dateTimeRangeProvider;
 
-    public OutlookEventRepository (NameSpace mapiNameSpace, string folderId, string folderStoreId)
+    public OutlookEventRepository (NameSpace mapiNameSpace, string folderId, string folderStoreId, IDateTimeRangeProvider dateTimeRangeProvider)
     {
       if (mapiNameSpace == null)
         throw new ArgumentNullException ("mapiNameSpace");
@@ -40,6 +42,7 @@ namespace CalDavSynchronizer.Implementation.Events
       _mapiNameSpace = mapiNameSpace;
       _folderId = folderId;
       _folderStoreId = folderStoreId;
+      _dateTimeRangeProvider = dateTimeRangeProvider;
     }
 
     private const string c_entryIdColumnName = "EntryID";
@@ -50,11 +53,17 @@ namespace CalDavSynchronizer.Implementation.Events
       return GenericComObjectWrapper.Create ((Folder) _mapiNameSpace.GetFolderFromID (_folderId, _folderStoreId));
     }
 
-    public IReadOnlyList<EntityIdWithVersion<string, DateTime>> GetVersions (DateTime fromUtc, DateTime toUtc)
+    public IReadOnlyList<EntityIdWithVersion<string, DateTime>> GetVersions ()
     {
       var events = new List<EntityIdWithVersion<string, DateTime>>();
 
-      string filter = String.Format ("[Start] < '{0}' And [End] > '{1}'", ToOutlookDateString (toUtc), ToOutlookDateString (fromUtc));
+      var range = _dateTimeRangeProvider.GetRange();
+      object filter;
+      if (range.HasValue)
+        filter = String.Format ("[Start] < '{0}' And [End] > '{1}'", ToOutlookDateString (range.Value.From), ToOutlookDateString (range.Value.To));
+      else
+        filter = Type.Missing;
+
       using (var calendarFolderWrapper = CreateFolderWrapper())
       {
         using (var tableWrapper = GenericComObjectWrapper.Create ((Table) calendarFolderWrapper.Inner.GetTable (filter)))

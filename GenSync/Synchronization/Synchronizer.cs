@@ -78,11 +78,11 @@ namespace GenSync.Synchronization
           var cachedData = _synchronizerContext.LoadEntityRelationData();
 
           var atypeRepositoryVersions = CreateDictionary (
-              atypeEntityRepository.GetVersions (_synchronizerContext.From, _synchronizerContext.To),
+              atypeEntityRepository.GetVersions(),
               _atypeIdComparer);
 
           var btypeRepositoryVersions = CreateDictionary (
-              btypeEntityRepository.GetVersions (_synchronizerContext.From, _synchronizerContext.To),
+              btypeEntityRepository.GetVersions(),
               _btypeIdComparer);
 
           IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> aEntities = null;

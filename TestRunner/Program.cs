@@ -18,6 +18,7 @@ using System;
 using System.Reflection;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
+using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using log4net;
 
 namespace TestRunner
@@ -32,9 +33,9 @@ namespace TestRunner
             "XXXXXXXXX",
             "XXXXXXXXX",
             TimeSpan.FromMinutes (1),
-            TimeSpan.FromMinutes (5), 
+            TimeSpan.FromMinutes (5),
             false,
-            false, 
+            false,
             true));
 
     private static void Main (string[] args)
@@ -59,9 +60,13 @@ namespace TestRunner
 
     private static void TestCalDavDataAccess ()
     {
-      var eventRepository = new CalDavRepository (s_dataAccess, new DDay.iCal.Serialization.iCalendar.iCalendarSerializer(), CalDavRepository.EntityType.Event);
+      var eventRepository = new CalDavRepository (
+          s_dataAccess,
+          new DDay.iCal.Serialization.iCalendar.iCalendarSerializer(),
+          CalDavRepository.EntityType.Event,
+          NullDateTimeRangeProvider.Instance);
 
-      var versions = eventRepository.GetVersions (DateTime.Now.AddDays (-1000), DateTime.Now.AddDays (1000));
+      var versions = eventRepository.GetVersions();
       //var events = eventRepository.Get (versions.Keys);
 
 

@@ -31,9 +31,7 @@ namespace GenSync.Synchronization
     IEntityMapper<TAtypeEntity, TBtypeEntity> EntityMapper { get; }
     IEntityRepository<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> AtypeRepository { get; }
     IEntityRepository<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> BtypeRepository { get; }
-    DateTime From { get; }
-    DateTime To { get; }
-
+   
     IInitialEntityMatcher<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> InitialEntityMatcher { get; }
     IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> EntityRelationDataFactory { get; }
   }

@@ -15,18 +15,25 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace GenSync.EntityRepositories
+namespace CalDavSynchronizer.Implementation.TimeRangeFiltering
 {
-  /// <summary>
-  /// All readoperations that a repository has to support
-  /// </summary>
-  public interface IReadOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
+  internal class DateTimeRangeProvider : IDateTimeRangeProvider
   {
-    IReadOnlyList<EntityIdWithVersion<TEntityId, TEntityVersion>> GetVersions ();
-    Task<IReadOnlyList<EntityWithVersion<TEntityId, TEntity>>> Get (ICollection<TEntityId> ids);
-    void Cleanup (IReadOnlyDictionary<TEntityId, TEntity> entities);
+    private readonly int _daysToSynchronizeInThePast;
+    private readonly int _daysToSynchronizeInTheFuture;
+
+    public DateTimeRangeProvider (int daysToSynchronizeInThePast, int daysToSynchronizeInTheFuture)
+    {
+      _daysToSynchronizeInThePast = daysToSynchronizeInThePast;
+      _daysToSynchronizeInTheFuture = daysToSynchronizeInTheFuture;
+    }
+
+    public DateTimeRange? GetRange ()
+    {
+      return new DateTimeRange (
+          DateTime.Now.AddDays (-_daysToSynchronizeInThePast),
+          DateTime.Now.AddDays (_daysToSynchronizeInTheFuture));
+    }
   }
 }
