@@ -272,11 +272,13 @@ namespace CalDavSynchronizer.Ui
         _synchronizationModeComboBox.SelectedValue = value.SynchronizationMode;
         _conflictResolutionComboBox.SelectedValue = value.ConflictResolution;
 
+        _enableTimeRangeFilteringCheckBox.Checked = !value.IgnoreSynchronizationTimeRange;
         _syncIntervalComboBox.SelectedValue = value.SynchronizationIntervalInMinutes;
         _optionsId = value.Id;
         UpdateFolder (value.OutlookFolderEntryId, value.OutlookFolderStoreId);
         UpdateConflictResolutionComboBoxEnabled();
         OnHeaderChanged();
+        UpdateTimeRangeFilteringGroupBoxEnabled();
       }
       get
       {
@@ -295,7 +297,8 @@ namespace CalDavSynchronizer.Ui
                    OutlookFolderEntryId = _folderEntryId,
                    OutlookFolderStoreId = _folderStoreId,
                    Id = _optionsId,
-                   Inactive = _inactiveCheckBox.Checked
+                   Inactive = _inactiveCheckBox.Checked,
+                   IgnoreSynchronizationTimeRange = !_enableTimeRangeFilteringCheckBox.Checked
                };
       }
     }
@@ -400,6 +403,16 @@ namespace CalDavSynchronizer.Ui
     {
       if (CopyRequested != null)
         CopyRequested (this, EventArgs.Empty);
+    }
+
+    private void _enableTimeRangeFilteringCheckBox_CheckedChanged (object sender, EventArgs e)
+    {
+      UpdateTimeRangeFilteringGroupBoxEnabled();
+    }
+
+    private void UpdateTimeRangeFilteringGroupBoxEnabled ()
+    {
+      _timeRangeFilteringGroupBox.Enabled = _enableTimeRangeFilteringCheckBox.Checked;
     }
   }
 }
