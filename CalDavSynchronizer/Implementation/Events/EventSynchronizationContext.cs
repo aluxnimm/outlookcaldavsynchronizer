@@ -50,14 +50,15 @@ namespace CalDavSynchronizer.Implementation.Events
       if (outlookSession == null)
         throw new ArgumentNullException ("outlookSession");
 
-      SynchronizationMode = options.SynchronizationMode;
-
 
       _entityRelationDataFactory = new OutlookEventRelationDataFactory();
 
       _entityMapper = new EventEntityMapper (outlookEmailAddress, new Uri ("mailto:" + options.EmailAddress), outlookSession.Application.TimeZones.CurrentTimeZone.ID, outlookSession.Application.Version);
 
-      var dateTimeRangeProvider = new DateTimeRangeProvider (options.DaysToSynchronizeInThePast, options.DaysToSynchronizeInTheFuture);
+      var dateTimeRangeProvider =
+          options.IgnoreSynchronizationTimeRange ?
+              NullDateTimeRangeProvider.Instance :
+              new DateTimeRangeProvider (options.DaysToSynchronizeInThePast, options.DaysToSynchronizeInTheFuture);
 
       _atypeRepository = new OutlookEventRepository (
           outlookSession,
@@ -106,8 +107,6 @@ namespace CalDavSynchronizer.Implementation.Events
     {
       get { return _btypeRepository; }
     }
-
-    public SynchronizationMode SynchronizationMode { get; private set; }
 
     public IInitialEntityMatcher<AppointmentItemWrapper, string, DateTime, IICalendar, Uri, string> InitialEntityMatcher { get; private set; }
 
