@@ -30,13 +30,13 @@ namespace GenSync.UnitTests.Synchronization
     protected TestSynchronizerSetup _synchronizerSetup;
 
     protected ISynchronizer _synchronizer;
-    protected IEntitySyncStateFactory<string, int, string, string, int, string> _factory;
+    protected IEntitySyncStateFactory<Identifier, int, string, Identifier, int, string> _factory;
 
     [SetUp ()]
     public virtual void Setup ()
     {
       _synchronizerSetup = new TestSynchronizerSetup();
-      _factory = new EntitySyncStateFactory<string, int, string, string, int, string> (
+      _factory = new EntitySyncStateFactory<Identifier, int, string, Identifier, int, string> (
           _synchronizerSetup.EntityMapper,
           _synchronizerSetup.AtypeRepository,
           _synchronizerSetup.BtypeRepository,
@@ -45,14 +45,14 @@ namespace GenSync.UnitTests.Synchronization
           );
     }
 
-    protected bool SynchronizeInternal (IInitialSyncStateCreationStrategy<string, int, string, string, int, string> strategy)
+    protected bool SynchronizeInternal (IInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string> strategy)
     {
-      _synchronizer = new Synchronizer<string, int, string, string, int, string> (
+      _synchronizer = new Synchronizer<Identifier, int, string, Identifier, int, string> (
           _synchronizerSetup,
           strategy,
           NullTotalProgressFactory.Instance,
-          EqualityComparer<string>.Default,
-          EqualityComparer<string>.Default,
+          IdentifierEqualityComparer.Instance,
+          IdentifierEqualityComparer.Instance,
           MockRepository.GenerateMock<IExceptionLogger>()
           );
 

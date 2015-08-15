@@ -19,9 +19,9 @@ using GenSync.EntityRelationManagement;
 
 namespace GenSync.UnitTests.Synchronization
 {
-  internal class EntityRelationDataFactory : IEntityRelationDataFactory<string, int, string, int>
+  internal class EntityRelationDataFactory : IEntityRelationDataFactory<Identifier, int, Identifier, int>
   {
-    public IEntityRelationData<string, int, string, int> Create (string atypeId, int atypeVersion, string btypeId, int btypeVersion)
+    public IEntityRelationData<Identifier, int, Identifier, int> Create (Identifier atypeId, int atypeVersion, Identifier btypeId, int btypeVersion)
     {
       return new EntityRelationData (atypeId, atypeVersion, btypeId, btypeVersion);
     }

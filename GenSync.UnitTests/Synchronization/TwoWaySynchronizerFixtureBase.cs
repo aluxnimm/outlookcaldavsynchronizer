@@ -24,14 +24,14 @@ namespace GenSync.UnitTests.Synchronization
   {
     public void Synchronize (GenericConflictResolution winner)
     {
-      IConflictInitialSyncStateCreationStrategy<string, int, string, string, int, string> conflictInitialStrategy;
+      IConflictInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string> conflictInitialStrategy;
       if (winner == GenericConflictResolution.AWins)
-        conflictInitialStrategy = new ConflictInitialSyncStateCreationStrategyAWins<string, int, string, string, int, string> (_factory);
+        conflictInitialStrategy = new ConflictInitialSyncStateCreationStrategyAWins<Identifier, int, string, Identifier, int, string> (_factory);
       else
-        conflictInitialStrategy = new ConflictInitialSyncStateCreationStrategyBWins<string, int, string, string, int, string> (_factory);
+        conflictInitialStrategy = new ConflictInitialSyncStateCreationStrategyBWins<Identifier, int, string, Identifier, int, string> (_factory);
 
 
-      var strategy = new TwoWayInitialSyncStateCreationStrategy<string, int, string, string, int, string> (_factory, conflictInitialStrategy);
+      var strategy = new TwoWayInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string> (_factory, conflictInitialStrategy);
 
       SynchronizeInternal (strategy);
     }

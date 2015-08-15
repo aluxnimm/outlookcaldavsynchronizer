@@ -19,11 +19,11 @@ namespace GenSync.UnitTests.Synchronization
     {
       SynchronizerContext = MockRepository.GenerateMock<ISynchronizerContext<string, string, string, string, string, string>> ();
       AtypeRepository = MockRepository.GenerateMock<IEntityRepository<string, string, string>> ();
-      BtypeRepository = MockRepository.GenerateMock<IEntityRepository<string, string, string>>();
-      EntityMapper = MockRepository.GenerateMock<IEntityMapper<string, string>>();
-      EntityRelationDataFactory = MockRepository.GenerateMock<IEntityRelationDataFactory<string, string, string, string>>();
-      InitialEntityMatcher = MockRepository.GenerateMock<IInitialEntityMatcher<string, string, string, string, string, string>>();
-      InitialSyncStateCreationStrategy = MockRepository.GenerateMock<IInitialSyncStateCreationStrategy<string, string, string, string, string, string>>();
+      BtypeRepository = MockRepository.GenerateMock<IEntityRepository<string, string, string>> ();
+      EntityMapper = MockRepository.GenerateMock<IEntityMapper<string, string>> ();
+      EntityRelationDataFactory = MockRepository.GenerateMock<IEntityRelationDataFactory<string, string, string, string>> ();
+      InitialEntityMatcher = MockRepository.GenerateMock<IInitialEntityMatcher<string, string, string, string, string, string>> ();
+      InitialSyncStateCreationStrategy = MockRepository.GenerateMock<IInitialSyncStateCreationStrategy<string, string, string, string, string, string>> ();
 
 
       SynchronizerContext.Stub (s => s.AtypeRepository).Return (AtypeRepository);
@@ -49,7 +49,7 @@ namespace GenSync.UnitTests.Synchronization
     public IEqualityComparer<string> BtypeIdComparer { get; set; }
 
     public IEqualityComparer<string> AtypeIdComparer { get; set; }
-    
+
     public IInitialSyncStateCreationStrategy<string, string, string, string, string, string> InitialSyncStateCreationStrategy { get; set; }
 
     public IInitialEntityMatcher<string, string, string, string, string, string> InitialEntityMatcher { get; set; }

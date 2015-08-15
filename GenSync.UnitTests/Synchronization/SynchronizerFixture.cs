@@ -15,48 +15,48 @@ namespace GenSync.UnitTests.Synchronization
     [Test]
     public void Synchronize_GetVersionsAndGetReturnDuplicateEntries_RemovesDuplicates ()
     {
-      var builder = new SynchronizerBuilder();
+      var builder = new SynchronizerBuilder ();
 
       builder.AtypeIdComparer = StringComparer.InvariantCultureIgnoreCase;
 
       builder.AtypeRepository
-          .Expect (r => r.GetVersions())
-          .IgnoreArguments()
+          .Expect (r => r.GetVersions ())
+          .IgnoreArguments ()
           .Return (new[] { EntityIdWithVersion.Create ("A1", "v1"), EntityIdWithVersion.Create ("a1", "v3") });
 
       builder.BtypeRepository
-          .Expect (r => r.GetVersions())
-          .IgnoreArguments()
+          .Expect (r => r.GetVersions ())
+          .IgnoreArguments ()
           .Return (new[] { EntityIdWithVersion.Create ("b1", "v2") });
 
 
       Task<IReadOnlyList<EntityWithVersion<string, string>>> aTypeLoadTask = new Task<IReadOnlyList<EntityWithVersion<string, string>>> (
           () => new List<EntityWithVersion<string, string>> { EntityWithVersion.Create ("A1", "AAAA"), EntityWithVersion.Create ("a1", "____") });
-      aTypeLoadTask.RunSynchronously();
+      aTypeLoadTask.RunSynchronously ();
       builder.AtypeRepository
-          .Expect (r => r.Get (Arg<ICollection<string>>.Matches (c => c.Count == 1 && c.First() == "A1")))
+          .Expect (r => r.Get (Arg<ICollection<string>>.Matches (c => c.Count == 1 && c.First () == "A1")))
           .Return (aTypeLoadTask);
 
       Task<IReadOnlyList<EntityWithVersion<string, string>>> bTypeLoadTask = new Task<IReadOnlyList<EntityWithVersion<string, string>>> (
           () => new List<EntityWithVersion<string, string>> { EntityWithVersion.Create ("b1", "BBBB"), });
-      bTypeLoadTask.RunSynchronously();
+      bTypeLoadTask.RunSynchronously ();
       builder.BtypeRepository
-          .Expect (r => r.Get (Arg<ICollection<string>>.Matches (c => c.Count == 1 && c.First() == "b1")))
+          .Expect (r => r.Get (Arg<ICollection<string>>.Matches (c => c.Count == 1 && c.First () == "b1")))
           .Return (bTypeLoadTask);
 
 
-      var knownData = new EntityRelationDataString ("A1", "v1", "b1", "v2");
+      var knownData = new EntityRelationData<string, string, string, string> ("A1", "v1", "b1", "v2");
       builder.InitialEntityMatcher
           .Expect (m => m.FindMatchingEntities (null, null, null, null, null))
-          .IgnoreArguments()
+          .IgnoreArguments ()
           .Return (new List<IEntityRelationData<string, string, string, string>> { knownData });
 
       builder.InitialSyncStateCreationStrategy
           .Expect (s => s.CreateFor_Unchanged_Unchanged (knownData))
           .Return (new DoNothing<string, string, string, string, string, string> (knownData));
 
-      var synchronizer = builder.Build();
-      synchronizer.Synchronize().Wait();
+      var synchronizer = builder.Build ();
+      synchronizer.Synchronize ().Wait ();
 
       builder.SynchronizerContext.AssertWasCalled (
           c => c.SaveEntityRelationData (Arg<List<IEntityRelationData<string, string, string, string>>>.Matches (l => l.Count == 1 && l[0] == knownData)));

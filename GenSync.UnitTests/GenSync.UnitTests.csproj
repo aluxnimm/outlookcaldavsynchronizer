@@ -58,6 +58,8 @@
     <Compile Include="Synchronization\EntityRelationData.cs" />
     <Compile Include="Synchronization\EntityRelationDataFactory.cs" />
     <Compile Include="Synchronization\GenericConflictResolution.cs" />
+    <Compile Include="Synchronization\Identifier.cs" />
+    <Compile Include="Synchronization\IdentifierEqualityComparer.cs" />
     <Compile Include="Synchronization\Mapper.cs" />
     <Compile Include="Synchronization\OneWayReplicatorFixture.cs" />
     <Compile Include="Synchronization\OneWayReplicatorFixtureBase.cs" />

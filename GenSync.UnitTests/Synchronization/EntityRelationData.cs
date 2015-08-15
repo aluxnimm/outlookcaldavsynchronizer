@@ -19,9 +19,9 @@ using GenSync.EntityRelationManagement;
 
 namespace GenSync.UnitTests.Synchronization
 {
-  internal class EntityRelationData : IEntityRelationData<string, int, string, int>
+  internal class EntityRelationData : IEntityRelationData<Identifier, int, Identifier, int>
   {
-    public EntityRelationData (string atypeId, int atypeVersion, string btypeId, int btypeVersion)
+    public EntityRelationData (Identifier atypeId, int atypeVersion, Identifier btypeId, int btypeVersion)
     {
       AtypeId = atypeId;
       AtypeVersion = atypeVersion;
@@ -29,15 +29,15 @@ namespace GenSync.UnitTests.Synchronization
       BtypeVersion = btypeVersion;
     }
 
-    public string AtypeId { get; set; }
+    public Identifier AtypeId { get; set; }
     public int AtypeVersion { get; set; }
-    public string BtypeId { get; set; }
+    public Identifier BtypeId { get; set; }
     public int BtypeVersion { get; set; }
   }
 
-  internal class EntityRelationDataString : IEntityRelationData<string, string, string, string>
+  internal class EntityRelationDataString : IEntityRelationData<Identifier, string, Identifier, string>
   {
-    public EntityRelationDataString (string atypeId, string atypeVersion, string btypeId, string btypeVersion)
+    public EntityRelationDataString (Identifier atypeId, string atypeVersion, Identifier btypeId, string btypeVersion)
     {
       AtypeId = atypeId;
       AtypeVersion = atypeVersion;
@@ -45,9 +45,27 @@ namespace GenSync.UnitTests.Synchronization
       BtypeVersion = btypeVersion;
     }
 
-    public string AtypeId { get; set; }
+    public Identifier AtypeId { get; set; }
     public string AtypeVersion { get; set; }
-    public string BtypeId { get; set; }
+    public Identifier BtypeId { get; set; }
     public string BtypeVersion { get; set; }
   }
+
+  internal class EntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
+    : IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
+  {
+    public EntityRelationData (TAtypeEntityId atypeId, TAtypeEntityVersion atypeVersion, TBtypeEntityId btypeId, TBtypeEntityVersion btypeVersion)
+    {
+      AtypeId = atypeId;
+      AtypeVersion = atypeVersion;
+      BtypeId = btypeId;
+      BtypeVersion = btypeVersion;
+    }
+
+    public TAtypeEntityId AtypeId { get; set; }
+    public TAtypeEntityVersion AtypeVersion { get; set; }
+    public TBtypeEntityId BtypeId { get; set; }
+    public TBtypeEntityVersion BtypeVersion { get; set; }
+  }
+
 }

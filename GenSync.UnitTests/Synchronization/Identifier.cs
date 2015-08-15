@@ -15,17 +15,31 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using GenSync.Synchronization.StateCreationStrategies;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace GenSync.UnitTests.Synchronization
 {
-  internal class OneWayReplicatorFixtureBase : SynchronizerFixtureBase
+  public class Identifier
   {
-    public bool Synchronize ()
+    private readonly string _value;
+
+    public Identifier (string value)
     {
-      return SynchronizeInternal (
-          new OneWayInitialSyncStateCreationStrategy_AToB<Identifier, int, string, Identifier, int, string> (_factory, OneWaySyncMode.Replicate)
-          );
+      _value = value;
     }
+
+    public static implicit operator Identifier (string value)
+    {
+      return new Identifier (value);
+    }
+
+    public string Value
+    {
+      get { return _value; }
+    }
+
   }
 }

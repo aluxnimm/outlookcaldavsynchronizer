@@ -26,12 +26,12 @@ using NUnit.Framework;
 
 namespace GenSync.UnitTests.Synchronization
 {
-  internal class TestSynchronizerSetup : ISynchronizerContext<string, int, string, string, int, string>
+  internal class TestSynchronizerSetup : ISynchronizerContext<Identifier, int, string, Identifier, int, string>
   {
-    public TestRepository _localRepository;
-    public TestRepository _serverRepository;
+    public readonly TestRepository _localRepository;
+    public readonly TestRepository _serverRepository;
 
-    private readonly IEntityRelationDataFactory<string, int, string, int> _entityRelationDataFactory;
+    private readonly IEntityRelationDataFactory<Identifier, int, Identifier, int> _entityRelationDataFactory;
     private List<EntityRelationData> _entityRelationData = new List<EntityRelationData>();
 
     public TestSynchronizerSetup ()
@@ -101,12 +101,12 @@ namespace GenSync.UnitTests.Synchronization
       get { return new Mapper(); }
     }
 
-    public IEntityRepository<string, string, int> AtypeRepository
+    public IEntityRepository<string, Identifier, int> AtypeRepository
     {
       get { return _localRepository; }
     }
 
-    public IEntityRepository<string, string, int> BtypeRepository
+    public IEntityRepository<string, Identifier, int> BtypeRepository
     {
       get { return _serverRepository; }
     }
@@ -122,23 +122,23 @@ namespace GenSync.UnitTests.Synchronization
       get { return DateTime.Now; }
     }
 
-    public IInitialEntityMatcher<string, string, int, string, string, int> InitialEntityMatcher
+    public IInitialEntityMatcher<string, Identifier, int, string, Identifier, int> InitialEntityMatcher
     {
       get { throw new NotImplementedException(); }
     }
 
-    public IEntityRelationDataFactory<string, int, string, int> EntityRelationDataFactory
+    public IEntityRelationDataFactory<Identifier, int, Identifier, int> EntityRelationDataFactory
     {
       get { return _entityRelationDataFactory; }
     }
 
 
-    public IEnumerable<IEntityRelationData<string, int, string, int>> LoadEntityRelationData ()
+    public IEnumerable<IEntityRelationData<Identifier, int, Identifier, int>> LoadEntityRelationData ()
     {
       return _entityRelationData.ToArray();
     }
 
-    public void SaveEntityRelationData (List<IEntityRelationData<string, int, string, int>> data)
+    public void SaveEntityRelationData (List<IEntityRelationData<Identifier, int, Identifier, int>> data)
     {
       _entityRelationData = data.Cast<EntityRelationData>().ToList();
     }

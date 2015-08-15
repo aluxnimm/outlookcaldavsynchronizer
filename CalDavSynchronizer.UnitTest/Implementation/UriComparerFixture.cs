@@ -15,17 +15,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using GenSync.Synchronization.StateCreationStrategies;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using NUnit.Framework;
 
-namespace GenSync.UnitTests.Synchronization
+namespace CalDavSynchronizer.UnitTest.Implementation
 {
-  internal class OneWayReplicatorFixtureBase : SynchronizerFixtureBase
+  [TestFixture]
+  public class UriComparerFixture
   {
-    public bool Synchronize ()
-    {
-      return SynchronizeInternal (
-          new OneWayInitialSyncStateCreationStrategy_AToB<Identifier, int, string, Identifier, int, string> (_factory, OneWaySyncMode.Replicate)
-          );
-    }
+
+
+
+
   }
 }

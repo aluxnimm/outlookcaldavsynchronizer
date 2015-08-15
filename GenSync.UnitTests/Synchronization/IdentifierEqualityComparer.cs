@@ -15,17 +15,28 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using GenSync.Synchronization.StateCreationStrategies;
+using System.Collections.Generic;
+using GenSync.UnitTests.InitialEntityMatching;
 
 namespace GenSync.UnitTests.Synchronization
 {
-  internal class OneWayReplicatorFixtureBase : SynchronizerFixtureBase
+  internal class IdentifierEqualityComparer : IEqualityComparer<Identifier>
   {
-    public bool Synchronize ()
+    public static readonly IEqualityComparer<Identifier> Instance = new IdentifierEqualityComparer();
+
+    private IdentifierEqualityComparer ()
     {
-      return SynchronizeInternal (
-          new OneWayInitialSyncStateCreationStrategy_AToB<Identifier, int, string, Identifier, int, string> (_factory, OneWaySyncMode.Replicate)
-          );
+      
+    }
+
+    public bool Equals (Identifier x, Identifier y)
+    {
+      return StringComparer.InvariantCultureIgnoreCase.Compare (x.Value, y.Value) == 0;
+    }
+
+    public int GetHashCode (Identifier obj)
+    {
+      return obj.Value.ToLower().GetHashCode();
     }
   }
 }
