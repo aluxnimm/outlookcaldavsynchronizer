@@ -81,6 +81,8 @@ namespace CalDavSynchronizer.Ui
       this._tabImageList.Images.SetKeyName(2, "AppointmentDisabled");
       this._tabImageList.Images.SetKeyName(3, "Task");
       this._tabImageList.Images.SetKeyName(4, "TaskDisabled");
+      this._tabImageList.Images.SetKeyName(5, "Contact");
+      this._tabImageList.Images.SetKeyName(6, "ContactDisabled");
       // 
       // _addProfileButton
       // 

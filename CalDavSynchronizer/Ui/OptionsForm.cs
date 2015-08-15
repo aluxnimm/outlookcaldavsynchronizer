@@ -90,6 +90,12 @@ namespace CalDavSynchronizer.Ui
             else
               tabPage.ImageKey = "Task";
             break;
+          case OlItemType.olContactItem:
+            if (e.IsInactive)
+              tabPage.ImageKey = "ContactDisabled";
+            else
+              tabPage.ImageKey = "Contact";
+            break;
           default:
             tabPage.ImageKey = null;
             break;

@@ -33,8 +33,12 @@ namespace CalDavSynchronizer.DataAccess
     {
     }
 
+    public bool IsAddressBookAccessSupported ()
+    {
+      return HasOption ("addressbook");
+    }
 
-    public bool IsAddressBook ()
+    public bool IsResourceAddressBook ()
     {
       return IsResourceType ("A", "addressbook");
     }

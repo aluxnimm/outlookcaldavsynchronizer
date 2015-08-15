@@ -161,7 +161,7 @@ namespace CalDavSynchronizer.Ui
           return;
         }
 
-        var dataAccess = new CalDavDataAccess (
+        var calDavDataAccess = new CalDavDataAccess (
             new Uri (_calenderUrlTextBox.Text),
             new CalDavClient (
                 _userNameTextBox.Text,
@@ -173,25 +173,110 @@ namespace CalDavSynchronizer.Ui
                 Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"]))
             );
 
-        if (!dataAccess.IsCalendarAccessSupported())
-          MessageBox.Show ("The specified Url does not support calendar access!", connectionTestCaption);
+        var cardDavDataAccess = new CardDavDataAccess (
+            new Uri (_calenderUrlTextBox.Text),
+            new CardDavClient (
+                _userNameTextBox.Text,
+                _passwordTextBox.Text,
+                TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+                TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]),
+                Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"]),
+                Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"]),
+                Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"]))
+            );
 
-        if (!dataAccess.IsResourceCalender())
-          MessageBox.Show ("The specified Url is not a calendar!", connectionTestCaption);
+        var isCalendar = calDavDataAccess.IsResourceCalender();
+        var isAddressBook = cardDavDataAccess.IsResourceAddressBook();
 
-        if (!dataAccess.IsWriteable())
-          MessageBox.Show ("The specified Url is a read-only calendar!", connectionTestCaption);
+        if (!isCalendar && ! isAddressBook)
+        {
+          MessageBox.Show ("The specified Url is neither a calendar nor an addressbook!", connectionTestCaption);
+          return;
+        }
 
-        if (!dataAccess.DoesSupportCalendarQuery())
-          MessageBox.Show ("The specified Url does not support Calendar Queries!", connectionTestCaption);
+        if (isCalendar && isAddressBook)
+        {
+          MessageBox.Show ("Ressources which are a calendar and a addressbook are not valid!", connectionTestCaption);
+          return;
+        }
 
+        bool hasError = false;
+        errorMessageBuilder.Clear();
 
-        MessageBox.Show ("Connection test successful.", connectionTestCaption);
+        if (isCalendar)
+        {
+          hasError = TestCalendar (calDavDataAccess, errorMessageBuilder);
+        }
+
+        if (isAddressBook)
+        {
+          hasError = TestAddressBook (cardDavDataAccess, errorMessageBuilder);
+        }
+
+        if (hasError)
+          MessageBox.Show ("Connection test NOT successful:" + Environment.NewLine + errorMessageBuilder.ToString(), connectionTestCaption);
+        else
+          MessageBox.Show ("Connection test successful.", connectionTestCaption);
       }
       catch (Exception x)
       {
         MessageBox.Show (x.Message, connectionTestCaption);
       }
+    }
+
+    private bool TestAddressBook (CardDavDataAccess cardDavDataAccess, StringBuilder errorMessageBuilder)
+    {
+      bool hasError = false;
+      if (!cardDavDataAccess.IsAddressBookAccessSupported())
+      {
+        errorMessageBuilder.AppendLine ("- The specified Url does not support addressbook.");
+        hasError = true;
+      }
+
+      if (!cardDavDataAccess.IsWriteable())
+      {
+        errorMessageBuilder.AppendLine ("- The specified Url is a read-only addressbook.");
+        hasError = true;
+      }
+
+      if (_folderType != OlItemType.olContactItem)
+      {
+        errorMessageBuilder.AppendLine ("- The outlook folder is not a address book, or there is no folder selected.");
+        hasError = true;
+      }
+      return hasError;
+    }
+
+    private bool TestCalendar (CalDavDataAccess calDavDataAccess, StringBuilder errorMessageBuilder)
+    {
+      bool hasError = false;
+
+      if (!calDavDataAccess.IsCalendarAccessSupported())
+      {
+        errorMessageBuilder.AppendLine ("- The specified Url does not support calendar access.");
+        hasError = true;
+      }
+
+      if (!calDavDataAccess.IsWriteable())
+      {
+        errorMessageBuilder.AppendLine ("- The specified Url is a read-only calendar.");
+        hasError = true;
+      }
+
+
+      if (!calDavDataAccess.DoesSupportCalendarQuery())
+      {
+        errorMessageBuilder.AppendLine ("- The specified Url does not support Calendar Queries.");
+        hasError = true;
+      }
+
+      if (_folderType != OlItemType.olAppointmentItem)
+      {
+        errorMessageBuilder.AppendLine ("- The outlook folder is not a calendar, or there is no folder selected.");
+        hasError = true;
+      }
+
+      return hasError;
     }
 
     public bool Validate (StringBuilder errorMessageBuilder)
@@ -320,23 +405,22 @@ namespace CalDavSynchronizer.Ui
     {
       if (IsTaskSynchronizationEnabled)
       {
-        if (folder.DefaultItemType != OlItemType.olAppointmentItem && folder.DefaultItemType != OlItemType.olTaskItem)
+        if (folder.DefaultItemType != OlItemType.olAppointmentItem && folder.DefaultItemType != OlItemType.olTaskItem && folder.DefaultItemType != OlItemType.olContactItem)
         {
-          string wrongFolderMessage = string.Format ("Wrong ItemType in folder '{0}'. It should be a calendar or task folder.", folder.Name);
+          string wrongFolderMessage = string.Format ("Wrong ItemType in folder '{0}'. It should be a calendar, task or contact folder.", folder.Name);
           MessageBox.Show (wrongFolderMessage, "Configuration Error");
           return;
         }
       }
       else
       {
-        if (folder.DefaultItemType != OlItemType.olAppointmentItem)
+        if (folder.DefaultItemType != OlItemType.olAppointmentItem && folder.DefaultItemType != OlItemType.olContactItem)
         {
-          string wrongFolderMessage = string.Format ("Wrong ItemType in folder '{0}'. It should be a calendar folder.", folder.Name);
+          string wrongFolderMessage = string.Format ("Wrong ItemType in folder '{0}'. It should be a calendar or contact folder.", folder.Name);
           MessageBox.Show (wrongFolderMessage, "Configuration Error");
           return;
         }
       }
-
 
       _folderEntryId = folder.EntryID;
       _folderStoreId = folder.StoreID;
@@ -390,6 +474,15 @@ namespace CalDavSynchronizer.Ui
         {
           UpdateFolder (folderWrapper.Inner);
         }
+      }
+
+      if (_folderType == OlItemType.olContactItem)
+      {
+        MessageBox.Show (
+            "The contact synchronization is currently in development and has limited functionality.",
+            "CalDav Synchronizer",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Warning);
       }
     }
 
