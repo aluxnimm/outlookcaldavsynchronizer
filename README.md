@@ -50,6 +50,9 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changlog ###
 
+#### 0.99.16 ####
+- Make filtering for time range optional
+
 #### 0.99.15 ####
 - Implement app.config options for disabling SSL/TLS certificate validation and enabling/disabling SSL3/TLS12
 
