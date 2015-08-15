@@ -36,28 +36,18 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
     private readonly ICardDavDataAccess _cardDavDataAccess;
     private readonly vCardStandardWriter _vCardWriter;
-    private readonly EntityType _entityType;
-    private readonly IDateTimeRangeProvider _dateTimeRangeProvider;
 
-    public enum EntityType
-    {
-      Event,
-      Todo
-    }
-
-    public CardDavRepository (ICardDavDataAccess cardDavDataAccess, EntityType entityType, IDateTimeRangeProvider dateTimeRangeProvider)
+    public CardDavRepository (ICardDavDataAccess cardDavDataAccess)
     {
       _cardDavDataAccess = cardDavDataAccess;
       _vCardWriter = new vCardStandardWriter();
-      _entityType = entityType;
-      _dateTimeRangeProvider = dateTimeRangeProvider;
     }
 
     public IReadOnlyList<EntityIdWithVersion<Uri, string>> GetVersions ()
     {
       using (AutomaticStopwatch.StartInfo (s_logger, "CardDavRepository.GetVersions"))
       {
-        return _cardDavDataAccess.GetContacts ();
+        return _cardDavDataAccess.GetContacts();
       }
     }
 
@@ -121,9 +111,9 @@ namespace CalDavSynchronizer.Implementation.Contacts
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
-        vCard newVcard = new vCard ();
+        vCard newVcard = new vCard();
         newVcard = entityModifier (newVcard);
-    
+
 
         return _cardDavDataAccess.UpdateEntity (entityId, Serialize (newVcard));
       }
@@ -133,7 +123,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
-        vCard newVcard = new vCard ();
+        vCard newVcard = new vCard();
         newVcard = entityInitializer (newVcard);
         return _cardDavDataAccess.CreateEntity (Serialize (newVcard));
       }
