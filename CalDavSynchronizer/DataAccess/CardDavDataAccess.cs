@@ -26,7 +26,7 @@ using log4net;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public class CardDavDataAccess : WebDavDataAccess
+  public class CardDavDataAccess : WebDavDataAccess, ICardDavDataAccess
   {
     public CardDavDataAccess (Uri serverUrl, IWebDavClient webDavClient)
         : base (serverUrl, webDavClient)

@@ -21,10 +21,9 @@ using GenSync;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public interface ICalDavDataAccess
+  public interface ICardDavDataAccess
   {
-    IReadOnlyList<EntityIdWithVersion<Uri, string>> GetEvents (DateTimeRange? range);
-    IReadOnlyList<EntityIdWithVersion<Uri, string>> GetTodos (DateTimeRange? range);
+    IReadOnlyList<EntityIdWithVersion<Uri, string>> GetContacts ();
     IReadOnlyList<EntityWithVersion<Uri, string>> GetEntities (IEnumerable<Uri> eventUrls);
     EntityIdWithVersion<Uri, string> CreateEntity (string iCalData);
     bool DeleteEntity (Uri uri);

@@ -176,6 +176,7 @@
     </Compile>
     <Compile Include="Contracts\ProfileEntry.cs" />
     <Compile Include="DataAccess\CardDavClient.cs" />
+    <Compile Include="DataAccess\ICardDavDataAccess.cs" />
     <Compile Include="DataAccess\WebDavDataAccess.cs" />
     <Compile Include="DataAccess\CardDavDataAccess.cs" />
     <Compile Include="DataAccess\IWebDavClient.cs" />
