@@ -175,7 +175,9 @@
       <DependentUpon>CalDavSynchronizerRibbon.cs</DependentUpon>
     </Compile>
     <Compile Include="Contracts\ProfileEntry.cs" />
+    <Compile Include="DataAccess\CardDavClient.cs" />
     <Compile Include="DataAccess\WebDavDataAccess.cs" />
+    <Compile Include="DataAccess\CardDavDataAccess.cs" />
     <Compile Include="DataAccess\IWebDavClient.cs" />
     <Compile Include="DataAccess\WebDavClient.cs" />
     <Compile Include="DataAccess\CalDavClient.cs" />
