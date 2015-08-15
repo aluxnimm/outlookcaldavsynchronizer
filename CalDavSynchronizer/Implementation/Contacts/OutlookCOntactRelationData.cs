@@ -15,19 +15,26 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using CalDavSynchronizer.Implementation.TimeRangeFiltering;
-using GenSync;
+using System.Xml.Serialization;
+using GenSync.EntityRelationManagement;
 
-namespace CalDavSynchronizer.DataAccess
+namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public interface ICalDavDataAccess
+  public class OutlookContactRelationData : IEntityRelationData<string, DateTime, Uri, string>
   {
-    IReadOnlyList<EntityIdWithVersion<Uri, string>> GetEvents (DateTimeRange? range);
-    IReadOnlyList<EntityIdWithVersion<Uri, string>> GetTodos (DateTimeRange? range);
-    IReadOnlyList<EntityWithVersion<Uri, string>> GetEntities (IEnumerable<Uri> eventUrls);
-    EntityIdWithVersion<Uri, string> CreateEntity (string iCalData);
-    bool DeleteEntity (Uri uri);
-    EntityIdWithVersion<Uri, string> UpdateEntity (Uri url, string iCalData);
+    public string AtypeId { get; set; }
+    public DateTime AtypeVersion { get; set; }
+
+    [XmlIgnore]
+    public Uri BtypeId { get; set; }
+
+    [XmlElement ("BtypeId")]
+    public string SerializableBtypeId
+    {
+      get { return BtypeId.ToString(); }
+      set { BtypeId = new Uri (value, UriKind.Relative); }
+    }
+
+    public string BtypeVersion { get; set; }
   }
 }

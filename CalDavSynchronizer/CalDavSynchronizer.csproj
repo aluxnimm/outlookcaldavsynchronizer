@@ -128,6 +128,9 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Thought.vCards">
+      <HintPath>..\packages\Thought.vCards.1.0.7\lib\net40\Thought.vCards.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Office.Tools.v4.0.Framework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
@@ -175,8 +178,13 @@
       <DependentUpon>CalDavSynchronizerRibbon.cs</DependentUpon>
     </Compile>
     <Compile Include="Contracts\ProfileEntry.cs" />
-    <Compile Include="DataAccess\CalDavWebClient.cs" />
-    <Compile Include="DataAccess\ICalDavWebClient.cs" />
+    <Compile Include="DataAccess\CardDavClient.cs" />
+    <Compile Include="DataAccess\ICardDavDataAccess.cs" />
+    <Compile Include="DataAccess\WebDavDataAccess.cs" />
+    <Compile Include="DataAccess\CardDavDataAccess.cs" />
+    <Compile Include="DataAccess\IWebDavClient.cs" />
+    <Compile Include="DataAccess\WebDavClient.cs" />
+    <Compile Include="DataAccess\CalDavClient.cs" />
     <Compile Include="DataAccess\IProfileListDataAccess.cs" />
     <Compile Include="DataAccess\ProfileListDataAccess.cs" />
     <Compile Include="Implementation\ComWrappers\TaskItemWrapper.cs" />
@@ -184,6 +192,16 @@
     <Compile Include="Implementation\ComWrappers\ComEnumerableExtensions.cs" />
     <Compile Include="Implementation\ComWrappers\GenericComObjectWrapper.cs" />
     <Compile Include="Implementation\ComWrappers\OutlookObjectExtensions.cs" />
+    <Compile Include="Implementation\Contacts\CardDavRepository.cs" />
+    <Compile Include="Implementation\Contacts\ContactConflictInitialSyncStateCreationStrategyAutomatic.cs" />
+    <Compile Include="Implementation\Contacts\ContactEntityMapper.cs" />
+    <Compile Include="Implementation\Contacts\ContactSynchronizationContext.cs" />
+    <Compile Include="Implementation\Contacts\InitialContactEntityMatcher.cs" />
+    <Compile Include="Implementation\Contacts\InitialContactSyncStateCreationStrategyFactory.cs" />
+    <Compile Include="Implementation\Contacts\OutlookCardDavUpdateFromNewerToOlder.cs" />
+    <Compile Include="Implementation\Contacts\OutlookContactRepository.cs" />
+    <Compile Include="Implementation\Contacts\OutlookContactRelationData.cs" />
+    <Compile Include="Implementation\Contacts\OutlookContactRelationDataFactory.cs" />
     <Compile Include="Implementation\TimeRangeFiltering\DateTimeRange.cs" />
     <Compile Include="Implementation\TimeRangeFiltering\DateTimeRangeProvider.cs" />
     <Compile Include="Implementation\Events\EventConflictInitialSyncStateCreationStrategyAutomatic.cs" />

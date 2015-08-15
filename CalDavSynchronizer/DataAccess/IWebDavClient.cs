@@ -15,13 +15,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System;
 using System.Net;
+using System.Xml;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public interface ICalDavWebClient
+  public interface IWebDavClient
   {
-    XmlDocumentWithNamespaceManager ExecuteCalDavRequestAndReadResponse (Uri url, Action<HttpWebRequest> modifier, string requestBody);
-    WebHeaderCollection ExecuteCalDavRequestAndReturnResponseHeaders (Uri url, Action<HttpWebRequest> modifier, string requestBody);
+    XmlDocumentWithNamespaceManager ExecuteWebDavRequestAndReadResponse (Uri url, Action<HttpWebRequest> modifier, string requestBody);
+    WebHeaderCollection ExecuteWebDavRequestAndReturnResponseHeaders (Uri url, Action<HttpWebRequest> modifier, string requestBody);
   }
 }

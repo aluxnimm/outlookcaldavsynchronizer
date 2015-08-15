@@ -20,6 +20,7 @@ using System.Configuration;
 using System.IO;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.Implementation.Contacts;
 using CalDavSynchronizer.Implementation.Events;
 using CalDavSynchronizer.Implementation.Tasks;
 using CalDavSynchronizer.Utilities;
@@ -29,6 +30,7 @@ using GenSync.ProgressReport;
 using GenSync.Synchronization;
 using GenSync.Synchronization.StateFactories;
 using Microsoft.Office.Interop.Outlook;
+using Thought.vCards;
 
 namespace CalDavSynchronizer.Scheduling
 {
@@ -64,6 +66,8 @@ namespace CalDavSynchronizer.Scheduling
           return CreateEventSynchronizer (options);
         case OlItemType.olTaskItem:
           return CreateTaskSynchronizer (options);
+        case OlItemType.olContactItem:
+          return CreateContactSynchronizer (options);
         default:
           throw new NotSupportedException (
               string.Format (
@@ -151,6 +155,49 @@ namespace CalDavSynchronizer.Scheduling
       return new Synchronizer<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> (
           synchronizationContext,
           InitialTaskSyncStateCreationStrategyFactory.Create (
+              syncStateFactory,
+              syncStateFactory.Environment,
+              options.SynchronizationMode,
+              options.ConflictResolution),
+          _totalProgressFactory,
+          atypeIdComparer,
+          btypeIdEqualityComparer,
+          ExceptionHandler.Instance);
+    }
+
+    private ISynchronizer CreateContactSynchronizer (Options options)
+    {
+      var storageDataDirectory = Path.Combine (
+          _applicationDataDirectory,
+          options.Id.ToString()
+          );
+
+      var storageDataAccess = new EntityRelationDataAccess<string, DateTime, OutlookContactRelationData, Uri, string> (storageDataDirectory);
+
+      var btypeIdEqualityComparer = EqualityComparer<Uri>.Default;
+      var atypeIdComparer = EqualityComparer<string>.Default;
+
+      var synchronizationContext = new ContactSynchronizationContext (
+          _outlookSession,
+          storageDataAccess,
+          options,
+          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]),
+          Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"]),
+          Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"]),
+          Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"]),
+          btypeIdEqualityComparer);
+
+      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, GenericComObjectWrapper<ContactItem>, Uri, string, vCard> (
+          synchronizationContext.EntityMapper,
+          synchronizationContext.AtypeRepository,
+          synchronizationContext.BtypeRepository,
+          synchronizationContext.EntityRelationDataFactory,
+          ExceptionHandler.Instance);
+
+      return new Synchronizer<string, DateTime, GenericComObjectWrapper<ContactItem>, Uri, string, vCard> (
+          synchronizationContext,
+          InitialContactSyncStateCreationStrategyFactory.Create (
               syncStateFactory,
               syncStateFactory.Environment,
               options.SynchronizationMode,

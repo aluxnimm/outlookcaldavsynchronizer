@@ -31,41 +31,38 @@ using GenSync.InitialEntityMatching;
 using GenSync.Synchronization;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
+using Thought.vCards;
 
-namespace CalDavSynchronizer.Implementation.Tasks
+namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public class TaskSynchronizationContext : ISynchronizerContext<string, DateTime, TaskItemWrapper, Uri, string, IICalendar>
+  public class ContactSynchronizationContext : ISynchronizerContext<string, DateTime, GenericComObjectWrapper<ContactItem>, Uri, string, vCard>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-
     private readonly IEntityRelationDataAccess<string, DateTime, Uri, string> _storageDataAccess;
-    private readonly TaskMapper _entityMapper;
-    private readonly OutlookTaskRepository _atypeRepository;
-    private readonly CalDavRepository _btypeRepository;
+    private readonly ContactEntityMapper _entityMapper;
+    private readonly OutlookContactRepository _atypeRepository;
+    private readonly IEntityRepository<vCard, Uri, string> _btypeRepository;
     private readonly IEntityRelationDataFactory<string, DateTime, Uri, string> _entityRelationDataFactory;
 
-
-    public TaskSynchronizationContext (NameSpace outlookSession, IEntityRelationDataAccess<string, DateTime, Uri, string> storageDataAccess, Options options, TimeSpan connectTimeout, TimeSpan readWriteTimeout, bool disableCertValidation, bool useSsl3, bool useTls12, IEqualityComparer<Uri> btypeIdEqualityComparer)
+    public ContactSynchronizationContext (NameSpace outlookSession, IEntityRelationDataAccess<string, DateTime, Uri, string> storageDataAccess, Options options, TimeSpan connectTimeout, TimeSpan readWriteTimeout, bool disableCertValidation, bool useSsl3, bool useTls12, IEqualityComparer<Uri> btypeIdEqualityComparer)
     {
       if (outlookSession == null)
         throw new ArgumentNullException ("outlookSession");
 
-      SynchronizationMode = options.SynchronizationMode;
-      From = DateTime.Now.AddDays (-options.DaysToSynchronizeInThePast);
-      To = DateTime.Now.AddDays (options.DaysToSynchronizeInTheFuture);
+      _entityRelationDataFactory = new OutlookContactRelationDataFactory();
 
-      _entityRelationDataFactory = new OutlookEventRelationDataFactory();
+      _entityMapper = new ContactEntityMapper();
 
-      _entityMapper = new TaskMapper (outlookSession.Application.TimeZones.CurrentTimeZone.ID);
+      _atypeRepository = new OutlookContactRepository (
+          outlookSession,
+          options.OutlookFolderEntryId,
+          options.OutlookFolderStoreId);
 
-      var calendarFolder = (Folder) outlookSession.GetFolderFromID (options.OutlookFolderEntryId, options.OutlookFolderStoreId);
-      _atypeRepository = new OutlookTaskRepository (calendarFolder, outlookSession);
-
-      _btypeRepository = new CalDavRepository (
-          new CalDavDataAccess (
+      _btypeRepository = new CardDavRepository (
+          new CardDavDataAccess (
               new Uri (options.CalenderUrl),
-              new CalDavClient (
+              new CardDavClient (
                   options.UserName,
                   options.Password,
                   connectTimeout,
@@ -73,42 +70,39 @@ namespace CalDavSynchronizer.Implementation.Tasks
                   disableCertValidation,
                   useSsl3,
                   useTls12)
-              ),
-          new iCalendarSerializer(),
-          CalDavRepository.EntityType.Todo,
-          NullDateTimeRangeProvider.Instance);
+              ));
+
+      if (StringComparer.InvariantCultureIgnoreCase.Compare (new Uri (options.CalenderUrl).Host, "www.google.com") == 0)
+      {
+        _btypeRepository = new EntityRepositoryDeleteCreateInstaedOfUpdateWrapper<vCard, Uri, string> (_btypeRepository);
+      }
 
       _storageDataAccess = storageDataAccess;
 
-      InitialEntityMatcher = new InitialTaskEntityMatcher (btypeIdEqualityComparer);
+      InitialEntityMatcher = new InitialContactEntityMatcher (btypeIdEqualityComparer);
     }
 
-
-    public IEntityMapper<TaskItemWrapper, IICalendar> EntityMapper
+    public IEntityMapper<GenericComObjectWrapper<ContactItem>, vCard> EntityMapper
     {
       get { return _entityMapper; }
     }
 
-    public IEntityRepository<TaskItemWrapper, string, DateTime> AtypeRepository
+    public IEntityRepository<GenericComObjectWrapper<ContactItem>, string, DateTime> AtypeRepository
     {
       get { return _atypeRepository; }
     }
 
-    public IEntityRepository<IICalendar, Uri, string> BtypeRepository
+    public IEntityRepository<vCard, Uri, string> BtypeRepository
     {
       get { return _btypeRepository; }
     }
 
-    public SynchronizationMode SynchronizationMode { get; private set; }
-    public DateTime From { get; private set; }
-    public DateTime To { get; private set; }
-    public IInitialEntityMatcher<TaskItemWrapper, string, DateTime, IICalendar, Uri, string> InitialEntityMatcher { get; private set; }
+    public IInitialEntityMatcher<GenericComObjectWrapper<ContactItem>, string, DateTime, vCard, Uri, string> InitialEntityMatcher { get; private set; }
 
     public IEntityRelationDataFactory<string, DateTime, Uri, string> EntityRelationDataFactory
     {
       get { return _entityRelationDataFactory; }
     }
-
 
     public IEnumerable<IEntityRelationData<string, DateTime, Uri, string>> LoadEntityRelationData ()
     {

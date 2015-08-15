@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer 
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -15,19 +15,24 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using CalDavSynchronizer.Implementation.TimeRangeFiltering;
-using GenSync;
+using System.Reflection;
+using System.Xml;
+using log4net;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public interface ICalDavDataAccess
+  public class CardDavClient : WebDavClient
   {
-    IReadOnlyList<EntityIdWithVersion<Uri, string>> GetEvents (DateTimeRange? range);
-    IReadOnlyList<EntityIdWithVersion<Uri, string>> GetTodos (DateTimeRange? range);
-    IReadOnlyList<EntityWithVersion<Uri, string>> GetEntities (IEnumerable<Uri> eventUrls);
-    EntityIdWithVersion<Uri, string> CreateEntity (string iCalData);
-    bool DeleteEntity (Uri uri);
-    EntityIdWithVersion<Uri, string> UpdateEntity (Uri url, string iCalData);
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
+
+    public CardDavClient (string username, string password, TimeSpan connectTimeout, TimeSpan readWriteTimeout, bool disableCertValidation, bool useSsl3, bool useTls12)
+        : base (username, password, connectTimeout, readWriteTimeout, disableCertValidation, useSsl3, useTls12)
+    {
+    }
+
+    protected override void RegisterNameSpaces (XmlNamespaceManager namespaceManager)
+    {
+      namespaceManager.AddNamespace ("A", "urn:ietf:params:xml:ns:carddav");
+    }
   }
 }
