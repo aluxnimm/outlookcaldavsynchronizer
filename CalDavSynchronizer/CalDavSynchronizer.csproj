@@ -193,6 +193,7 @@
     <Compile Include="Implementation\ComWrappers\GenericComObjectWrapper.cs" />
     <Compile Include="Implementation\ComWrappers\OutlookObjectExtensions.cs" />
     <Compile Include="Implementation\Contacts\CardDavRepository.cs" />
+    <Compile Include="Implementation\Contacts\InitialContactEntityMatcher.cs" />
     <Compile Include="Implementation\Contacts\OutlookContactRepository.cs" />
     <Compile Include="Implementation\TimeRangeFiltering\DateTimeRange.cs" />
     <Compile Include="Implementation\TimeRangeFiltering\DateTimeRangeProvider.cs" />
