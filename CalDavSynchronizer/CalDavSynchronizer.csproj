@@ -188,6 +188,7 @@
     <Compile Include="Implementation\ComWrappers\ComEnumerableExtensions.cs" />
     <Compile Include="Implementation\ComWrappers\GenericComObjectWrapper.cs" />
     <Compile Include="Implementation\ComWrappers\OutlookObjectExtensions.cs" />
+    <Compile Include="Implementation\Contacts\OutlookContactRepository.cs" />
     <Compile Include="Implementation\TimeRangeFiltering\DateTimeRange.cs" />
     <Compile Include="Implementation\TimeRangeFiltering\DateTimeRangeProvider.cs" />
     <Compile Include="Implementation\Events\EventConflictInitialSyncStateCreationStrategyAutomatic.cs" />
