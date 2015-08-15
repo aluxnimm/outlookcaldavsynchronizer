@@ -20,6 +20,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Xml;
+using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using GenSync;
 using log4net;
 
@@ -78,21 +79,18 @@ namespace CalDavSynchronizer.DataAccess
 
     private const string s_calDavDateTimeFormatString = "yyyyMMddThhmmssZ";
 
-    public IReadOnlyList<EntityIdWithVersion<Uri, string>> GetEvents (DateTime? from, DateTime? to)
+    public IReadOnlyList<EntityIdWithVersion<Uri, string>> GetEvents (DateTimeRange? range)
     {
-      return GetEntities (from, to, "VEVENT");
+      return GetEntities (range, "VEVENT");
     }
 
-    public IReadOnlyList<EntityIdWithVersion<Uri, string>> GetTodos (DateTime? from, DateTime? to)
+    public IReadOnlyList<EntityIdWithVersion<Uri, string>> GetTodos (DateTimeRange? range)
     {
-      return GetEntities (from, to, "VTODO");
+      return GetEntities (range, "VTODO");
     }
 
-    private IReadOnlyList<EntityIdWithVersion<Uri, string>> GetEntities (DateTime? from, DateTime? to, string entityType)
+    private IReadOnlyList<EntityIdWithVersion<Uri, string>> GetEntities (DateTimeRange? range, string entityType)
     {
-      if (from.HasValue != to.HasValue)
-        throw new ArgumentException ("Either both or no boundary has to be set");
-
       var entities = new List<EntityIdWithVersion<Uri, string>>();
 
       try
@@ -122,9 +120,9 @@ namespace CalDavSynchronizer.DataAccess
                     </C:calendar-query>
                     ",
                 entityType,
-                from == null ? string.Empty : string.Format (@"<C:time-range start=""{0}"" end=""{1}""/>",
-                    from.Value.ToString (s_calDavDateTimeFormatString),
-                    to.Value.ToString (s_calDavDateTimeFormatString))
+                range == null ? string.Empty : string.Format (@"<C:time-range start=""{0}"" end=""{1}""/>",
+                    range.Value.From.ToString (s_calDavDateTimeFormatString),
+                    range.Value.To.ToString (s_calDavDateTimeFormatString))
                 ));
 
 

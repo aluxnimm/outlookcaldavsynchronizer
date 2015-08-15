@@ -21,6 +21,7 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Events;
+using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using DDay.iCal;
 using DDay.iCal.Serialization.iCalendar;
 using GenSync.EntityMapping;
@@ -70,11 +71,12 @@ namespace CalDavSynchronizer.Implementation.Tasks
                   connectTimeout,
                   readWriteTimeout,
                   disableCertValidation,
-                  useSsl3, 
+                  useSsl3,
                   useTls12)
               ),
           new iCalendarSerializer(),
-          CalDavRepository.EntityType.Todo);
+          CalDavRepository.EntityType.Todo,
+          NullDateTimeRangeProvider.Instance);
 
       _storageDataAccess = storageDataAccess;
 

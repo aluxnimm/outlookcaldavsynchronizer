@@ -20,12 +20,12 @@ namespace GenSync.UnitTests.Synchronization
       builder.AtypeIdComparer = StringComparer.InvariantCultureIgnoreCase;
 
       builder.AtypeRepository
-          .Expect (r => r.GetVersions (DateTime.Now, DateTime.Now))
+          .Expect (r => r.GetVersions())
           .IgnoreArguments()
           .Return (new[] { EntityIdWithVersion.Create ("A1", "v1"), EntityIdWithVersion.Create ("a1", "v3") });
 
       builder.BtypeRepository
-          .Expect (r => r.GetVersions (DateTime.Now, DateTime.Now))
+          .Expect (r => r.GetVersions())
           .IgnoreArguments()
           .Return (new[] { EntityIdWithVersion.Create ("b1", "v2") });
 

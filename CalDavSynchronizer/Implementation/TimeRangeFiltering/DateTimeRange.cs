@@ -15,18 +15,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace GenSync.EntityRepositories
+namespace CalDavSynchronizer.Implementation.TimeRangeFiltering
 {
-  /// <summary>
-  /// All readoperations that a repository has to support
-  /// </summary>
-  public interface IReadOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
+  public struct DateTimeRange
   {
-    IReadOnlyList<EntityIdWithVersion<TEntityId, TEntityVersion>> GetVersions ();
-    Task<IReadOnlyList<EntityWithVersion<TEntityId, TEntity>>> Get (ICollection<TEntityId> ids);
-    void Cleanup (IReadOnlyDictionary<TEntityId, TEntity> entities);
+    public readonly DateTime From;
+    public readonly DateTime To;
+
+    public DateTimeRange (DateTime @from, DateTime to)
+        : this()
+    {
+      From = @from;
+      To = to;
+    }
   }
 }

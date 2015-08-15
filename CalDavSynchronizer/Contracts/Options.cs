@@ -32,6 +32,7 @@ namespace CalDavSynchronizer.Contracts
     public string OutlookFolderEntryId { get; set; }
     public string OutlookFolderStoreId { get; set; }
 
+    public bool IgnoreSynchronizationTimeRange { get; set; }
     public int DaysToSynchronizeInThePast { get; set; }
     public int DaysToSynchronizeInTheFuture { get; set; }
     public SynchronizationMode SynchronizationMode { get; set; }

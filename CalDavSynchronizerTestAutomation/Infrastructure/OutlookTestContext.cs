@@ -3,6 +3,7 @@ using System.Configuration;
 using System.IO;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Events;
+using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using DDay.iCal;
 using DDay.iCal.Serialization.iCalendar;
 using GenSync.EntityMapping;
@@ -33,7 +34,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       s_outlookFolderEntryId = ConfigurationManager.AppSettings[string.Format ("{0}.OutlookFolderEntryId", Environment.MachineName)];
       s_outlookFolderStoreId = ConfigurationManager.AppSettings[string.Format ("{0}.OutlookFolderStoreId", Environment.MachineName)];
 
-      _outlookRepository = new OutlookEventRepository (mapiNameSpace, s_outlookFolderEntryId, s_outlookFolderStoreId);
+      _outlookRepository = new OutlookEventRepository (mapiNameSpace, s_outlookFolderEntryId, s_outlookFolderStoreId, NullDateTimeRangeProvider.Instance);
     }
 
     public static IEntityMapper<AppointmentItemWrapper, IICalendar> EntityMapper

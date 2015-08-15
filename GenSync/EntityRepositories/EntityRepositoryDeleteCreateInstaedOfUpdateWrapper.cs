@@ -36,9 +36,9 @@ namespace GenSync.EntityRepositories
     }
 
 
-    public IReadOnlyList<EntityIdWithVersion<TEntityId, TEntityVersion>> GetVersions (DateTime @from, DateTime to)
+    public IReadOnlyList<EntityIdWithVersion<TEntityId, TEntityVersion>> GetVersions ()
     {
-      return _inner.GetVersions (@from, @to);
+      return _inner.GetVersions();
     }
 
     public Task<IReadOnlyList<EntityWithVersion<TEntityId, TEntity>>> Get (ICollection<TEntityId> ids)

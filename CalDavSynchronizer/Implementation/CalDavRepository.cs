@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Diagnostics;
+using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using DDay.iCal;
 using DDay.iCal.Serialization;
 using DDay.iCal.Serialization.iCalendar;
@@ -38,6 +39,7 @@ namespace CalDavSynchronizer.Implementation
     private readonly ICalDavDataAccess _calDavDataAccess;
     private readonly IStringSerializer _calendarSerializer;
     private readonly EntityType _entityType;
+    private readonly IDateTimeRangeProvider _dateTimeRangeProvider;
 
     public enum EntityType
     {
@@ -45,23 +47,25 @@ namespace CalDavSynchronizer.Implementation
       Todo
     }
 
-    public CalDavRepository (ICalDavDataAccess calDavDataAccess, IStringSerializer calendarSerializer, EntityType entityType)
+    public CalDavRepository (ICalDavDataAccess calDavDataAccess, IStringSerializer calendarSerializer, EntityType entityType, IDateTimeRangeProvider dateTimeRangeProvider)
     {
       _calDavDataAccess = calDavDataAccess;
       _calendarSerializer = calendarSerializer;
       _entityType = entityType;
+      _dateTimeRangeProvider = dateTimeRangeProvider;
     }
 
-    public IReadOnlyList<EntityIdWithVersion<Uri, string>> GetVersions (DateTime from, DateTime to)
+    public IReadOnlyList<EntityIdWithVersion<Uri, string>> GetVersions ()
     {
       using (AutomaticStopwatch.StartInfo (s_logger, "CalDavRepository.GetVersions"))
       {
         switch (_entityType)
         {
           case EntityType.Event:
-            return _calDavDataAccess.GetEvents (from, to);
+
+            return _calDavDataAccess.GetEvents (_dateTimeRangeProvider.GetRange());
           case EntityType.Todo:
-            return _calDavDataAccess.GetTodos (from, to);
+            return _calDavDataAccess.GetTodos (_dateTimeRangeProvider.GetRange());
           default:
             throw new NotImplementedException (string.Format ("EntityType '{0}' not implemented.", _entityType));
         }
@@ -73,7 +77,7 @@ namespace CalDavSynchronizer.Implementation
       return Task.Factory.StartNew (() =>
       {
         if (ids.Count == 0)
-          return new EntityWithVersion<Uri, IICalendar>[] {};
+          return new EntityWithVersion<Uri, IICalendar>[] { };
 
         using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("CalDavRepository.Get ({0} entitie(s))", ids.Count)))
         {
@@ -90,7 +94,7 @@ namespace CalDavSynchronizer.Implementation
 
     private IReadOnlyList<EntityWithVersion<Uri, IICalendar>> ParallelDeserialize (IReadOnlyList<EntityWithVersion<Uri, string>> serializedEntities)
     {
-      var result = new List<EntityWithVersion<Uri, IICalendar>> ();
+      var result = new List<EntityWithVersion<Uri, IICalendar>>();
 
       Parallel.ForEach (
           serializedEntities,
@@ -108,7 +112,7 @@ namespace CalDavSynchronizer.Implementation
             lock (result)
             {
               foreach (var calendar in threadLocal.Item2)
-                result.Add (EntityWithVersion.Create(calendar.Item1, calendar.Item2));
+                result.Add (EntityWithVersion.Create (calendar.Item1, calendar.Item2));
             }
           });
 

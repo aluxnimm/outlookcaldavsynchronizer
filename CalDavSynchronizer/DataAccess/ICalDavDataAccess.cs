@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using GenSync;
 
 namespace CalDavSynchronizer.DataAccess
@@ -25,8 +26,8 @@ namespace CalDavSynchronizer.DataAccess
     bool IsCalendarAccessSupported ();
     bool IsResourceCalender ();
 
-    IReadOnlyList<EntityIdWithVersion<Uri, string>> GetEvents (DateTime? from, DateTime? to);
-    IReadOnlyList<EntityIdWithVersion<Uri, string>> GetTodos (DateTime? from, DateTime? to);
+    IReadOnlyList<EntityIdWithVersion<Uri, string>> GetEvents (DateTimeRange? range);
+    IReadOnlyList<EntityIdWithVersion<Uri, string>> GetTodos (DateTimeRange? range);
 
     EntityIdWithVersion<Uri, string> UpdateEntity (EntityIdWithVersion<Uri, string> evt, string iCalData);
     bool DeleteEntity (EntityIdWithVersion<Uri, string> evt);

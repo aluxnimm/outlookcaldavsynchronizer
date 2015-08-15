@@ -40,7 +40,7 @@ namespace GenSync.UnitTests.Synchronization
       _idPrefix = idPrefix;
     }
 
-    public IReadOnlyList<EntityIdWithVersion<string, int>> GetVersions (DateTime @from, DateTime to)
+    public IReadOnlyList<EntityIdWithVersion<string, int>> GetVersions ()
     {
       return EntityVersionAndContentById.Select(kv => EntityIdWithVersion.Create(kv.Key, kv.Value.Item1)).ToList();
     }

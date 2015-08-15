@@ -20,6 +20,7 @@ using System.Reflection;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using DDay.iCal;
 using DDay.iCal.Serialization.iCalendar;
 using GenSync.EntityMapping;
@@ -49,15 +50,21 @@ namespace CalDavSynchronizer.Implementation.Events
       if (outlookSession == null)
         throw new ArgumentNullException ("outlookSession");
 
-      SynchronizationMode = options.SynchronizationMode;
-      From = DateTime.Now.AddDays (-options.DaysToSynchronizeInThePast);
-      To = DateTime.Now.AddDays (options.DaysToSynchronizeInTheFuture);
 
       _entityRelationDataFactory = new OutlookEventRelationDataFactory();
 
       _entityMapper = new EventEntityMapper (outlookEmailAddress, new Uri ("mailto:" + options.EmailAddress), outlookSession.Application.TimeZones.CurrentTimeZone.ID, outlookSession.Application.Version);
 
-      _atypeRepository = new OutlookEventRepository (outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId);
+      var dateTimeRangeProvider =
+          options.IgnoreSynchronizationTimeRange ?
+              NullDateTimeRangeProvider.Instance :
+              new DateTimeRangeProvider (options.DaysToSynchronizeInThePast, options.DaysToSynchronizeInTheFuture);
+
+      _atypeRepository = new OutlookEventRepository (
+          outlookSession,
+          options.OutlookFolderEntryId,
+          options.OutlookFolderStoreId,
+          dateTimeRangeProvider);
 
       _btypeRepository = new CalDavRepository (
           new CalDavDataAccess (
@@ -68,11 +75,12 @@ namespace CalDavSynchronizer.Implementation.Events
                   connectTimeout,
                   readWriteTimeout,
                   disableCertValidation,
-                  useSsl3, 
+                  useSsl3,
                   useTls12)
               ),
           new iCalendarSerializer(),
-          CalDavRepository.EntityType.Event);
+          CalDavRepository.EntityType.Event,
+          dateTimeRangeProvider);
 
       if (StringComparer.InvariantCultureIgnoreCase.Compare (new Uri (options.CalenderUrl).Host, "www.google.com") == 0)
       {
@@ -100,9 +108,6 @@ namespace CalDavSynchronizer.Implementation.Events
       get { return _btypeRepository; }
     }
 
-    public SynchronizationMode SynchronizationMode { get; private set; }
-    public DateTime From { get; private set; }
-    public DateTime To { get; private set; }
     public IInitialEntityMatcher<AppointmentItemWrapper, string, DateTime, IICalendar, Uri, string> InitialEntityMatcher { get; private set; }
 
     public IEntityRelationDataFactory<string, DateTime, Uri, string> EntityRelationDataFactory
