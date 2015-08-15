@@ -24,7 +24,7 @@ using log4net;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public class CalDavWebClient : ICalDavWebClient
+  public class WebDavClient : IWebDavClient
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -35,7 +35,7 @@ namespace CalDavSynchronizer.DataAccess
     private readonly TimeSpan _readWriteTimeout;
     private readonly string _userAgent;
 
-    public CalDavWebClient (string username, string password, TimeSpan connectTimeout, TimeSpan readWriteTimeout, bool disableCertValidation, bool useSsl3, bool useTls12)
+    public WebDavClient (string username, string password, TimeSpan connectTimeout, TimeSpan readWriteTimeout, bool disableCertValidation, bool useSsl3, bool useTls12)
     {
       ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11;
       if (useTls12)
@@ -74,29 +74,26 @@ namespace CalDavSynchronizer.DataAccess
       return request;
     }
 
-    private const string s_calDavDateTimeFormatString = "yyyyMMddThhmmssZ";
-
-
-    public XmlDocumentWithNamespaceManager ExecuteCalDavRequestAndReadResponse (Uri url, Action<HttpWebRequest> modifier, string requestBody)
+    public XmlDocumentWithNamespaceManager ExecuteWebDavRequestAndReadResponse (Uri url, Action<HttpWebRequest> modifier, string requestBody)
     {
-      using (var response = ExecuteCalDavRequest (url, modifier, requestBody))
+      using (var response = ExecuteWebDavRequest (url, modifier, requestBody))
       {
         using (var responseStream = response.GetResponseStream())
         {
-          return CreateCalDavXmlDocument (responseStream);
+          return CreateXmlDocument (responseStream);
         }
       }
     }
 
-    public WebHeaderCollection ExecuteCalDavRequestAndReturnResponseHeaders (Uri url, Action<HttpWebRequest> modifier, string requestBody)
+    public WebHeaderCollection ExecuteWebDavRequestAndReturnResponseHeaders (Uri url, Action<HttpWebRequest> modifier, string requestBody)
     {
-      using (var response = ExecuteCalDavRequest (url, modifier, requestBody))
+      using (var response = ExecuteWebDavRequest (url, modifier, requestBody))
       {
         return response.Headers;
       }
     }
 
-    private WebResponse ExecuteCalDavRequest (Uri url, Action<HttpWebRequest> modifier, string requestBody)
+    private WebResponse ExecuteWebDavRequest (Uri url, Action<HttpWebRequest> modifier, string requestBody)
     {
       var request = CreateRequest (url);
       modifier (request);
@@ -115,7 +112,7 @@ namespace CalDavSynchronizer.DataAccess
       {
         if (!string.IsNullOrEmpty (response.Headers["Location"]))
         {
-          return ExecuteCalDavRequest (new Uri (response.Headers["Location"]), modifier, requestBody);
+          return ExecuteWebDavRequest (new Uri (response.Headers["Location"]), modifier, requestBody);
         }
         else
         {
@@ -125,22 +122,23 @@ namespace CalDavSynchronizer.DataAccess
       return response;
     }
 
-    private static XmlDocumentWithNamespaceManager CreateCalDavXmlDocument (Stream calDavXmlStream)
+    private XmlDocumentWithNamespaceManager CreateXmlDocument (Stream webDavXmlStream)
     {
-      using (var reader = new StreamReader (calDavXmlStream, Encoding.UTF8))
+      using (var reader = new StreamReader (webDavXmlStream, Encoding.UTF8))
       {
         XmlDocument responseBody = new XmlDocument();
-
-
         responseBody.Load (reader);
 
         XmlNamespaceManager namespaceManager = new XmlNamespaceManager (responseBody.NameTable);
-        //currNsmgr.AddNamespace(String.Empty, "urn:ietf:params:xml:ns:caldav");
-        namespaceManager.AddNamespace ("C", "urn:ietf:params:xml:ns:caldav");
         namespaceManager.AddNamespace ("D", "DAV:");
+        RegisterNameSpaces (namespaceManager);
 
         return new XmlDocumentWithNamespaceManager (responseBody, namespaceManager);
       }
+    }
+
+    protected virtual void RegisterNameSpaces (XmlNamespaceManager namespaceManager)
+    {
     }
   }
 }

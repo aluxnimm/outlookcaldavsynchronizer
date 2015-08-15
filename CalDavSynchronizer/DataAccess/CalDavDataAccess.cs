@@ -31,9 +31,9 @@ namespace CalDavSynchronizer.DataAccess
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private readonly Uri _calendarUrl;
-    private readonly ICalDavWebClient _calDavWebClient;
+    private readonly IWebDavClient _calDavWebClient;
 
-    public CalDavDataAccess (Uri calendarUrl, ICalDavWebClient calDavWebClient)
+    public CalDavDataAccess (Uri calendarUrl, IWebDavClient calDavWebClient)
     {
       if (calendarUrl == null)
         throw new ArgumentNullException ("calendarUrl");
@@ -45,7 +45,7 @@ namespace CalDavSynchronizer.DataAccess
 
     public bool IsCalendarAccessSupported ()
     {
-      var headers = _calDavWebClient.ExecuteCalDavRequestAndReturnResponseHeaders (
+      var headers = _calDavWebClient.ExecuteWebDavRequestAndReturnResponseHeaders (
           _calendarUrl,
           request => { request.Method = "OPTIONS"; },
           null);
@@ -95,7 +95,7 @@ namespace CalDavSynchronizer.DataAccess
 
       try
       {
-        var responseXml = _calDavWebClient.ExecuteCalDavRequestAndReadResponse (
+        var responseXml = _calDavWebClient.ExecuteWebDavRequestAndReadResponse (
             _calendarUrl,
             request =>
             {
@@ -158,14 +158,14 @@ namespace CalDavSynchronizer.DataAccess
 
     private string GetEtag (Uri absoluteEntityUrl)
     {
-      var headers = _calDavWebClient.ExecuteCalDavRequestAndReturnResponseHeaders (absoluteEntityUrl, delegate { }, null);
+      var headers = _calDavWebClient.ExecuteWebDavRequestAndReturnResponseHeaders (absoluteEntityUrl, delegate { }, null);
       return headers["ETag"];
     }
 
 
     private XmlDocumentWithNamespaceManager GetAllProperties (Uri url, int depth)
     {
-      return _calDavWebClient.ExecuteCalDavRequestAndReadResponse (
+      return _calDavWebClient.ExecuteWebDavRequestAndReadResponse (
           url,
           request =>
           {
@@ -189,7 +189,7 @@ namespace CalDavSynchronizer.DataAccess
 
     private bool DoesSupportsReportSet (Uri url, int depth, string reportSetNamespace, string reportSet)
     {
-      var document = _calDavWebClient.ExecuteCalDavRequestAndReadResponse (
+      var document = _calDavWebClient.ExecuteWebDavRequestAndReadResponse (
           url,
           request =>
           {
@@ -219,7 +219,7 @@ namespace CalDavSynchronizer.DataAccess
 
     private XmlDocumentWithNamespaceManager GetCurrentUserPrivileges (Uri url, int depth)
     {
-      return _calDavWebClient.ExecuteCalDavRequestAndReadResponse (
+      return _calDavWebClient.ExecuteWebDavRequestAndReadResponse (
           url,
           request =>
           {
@@ -260,7 +260,7 @@ namespace CalDavSynchronizer.DataAccess
 
       try
       {
-        responseHeaders = _calDavWebClient.ExecuteCalDavRequestAndReturnResponseHeaders (absoluteEventUrl,
+        responseHeaders = _calDavWebClient.ExecuteWebDavRequestAndReturnResponseHeaders (absoluteEventUrl,
             request =>
             {
               request.Method = "PUT";
@@ -306,7 +306,7 @@ namespace CalDavSynchronizer.DataAccess
 
       try
       {
-        responseHeaders = _calDavWebClient.ExecuteCalDavRequestAndReturnResponseHeaders (eventUrl,
+        responseHeaders = _calDavWebClient.ExecuteWebDavRequestAndReturnResponseHeaders (eventUrl,
             request =>
             {
               request.Method = "PUT";
@@ -374,7 +374,7 @@ namespace CalDavSynchronizer.DataAccess
 
       try
       {
-        responseHeaders = _calDavWebClient.ExecuteCalDavRequestAndReturnResponseHeaders (absoluteEventUrl,
+        responseHeaders = _calDavWebClient.ExecuteWebDavRequestAndReturnResponseHeaders (absoluteEventUrl,
             request =>
             {
               request.Method = "DELETE";
@@ -419,7 +419,7 @@ namespace CalDavSynchronizer.DataAccess
                                         " + String.Join (Environment.NewLine, eventUrls.Select (u => string.Format ("<D:href>{0}</D:href>", u))) + @"
                                     </C:calendar-multiget>";
 
-      var responseXml = _calDavWebClient.ExecuteCalDavRequestAndReadResponse (
+      var responseXml = _calDavWebClient.ExecuteWebDavRequestAndReadResponse (
           _calendarUrl,
           request =>
           {

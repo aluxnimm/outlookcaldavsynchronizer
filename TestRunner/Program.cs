@@ -29,7 +29,7 @@ namespace TestRunner
 
     private static readonly ICalDavDataAccess s_dataAccess = new CalDavDataAccess (
         new Uri ("XXXXXXXXXXXXXXXXX"),
-        new CalDavWebClient (
+        new CalDavClient (
             "XXXXXXXXX",
             "XXXXXXXXX",
             TimeSpan.FromMinutes (1),

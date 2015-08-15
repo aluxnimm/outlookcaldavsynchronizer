@@ -163,7 +163,7 @@ namespace CalDavSynchronizer.Ui
 
         var dataAccess = new CalDavDataAccess (
             new Uri (_calenderUrlTextBox.Text),
-            new CalDavWebClient (
+            new CalDavClient (
                 _userNameTextBox.Text,
                 _passwordTextBox.Text,
                 TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
@@ -182,7 +182,7 @@ namespace CalDavSynchronizer.Ui
         if (!dataAccess.IsWriteableCalender())
           MessageBox.Show ("The specified Url is a read-only calendar!", connectionTestCaption);
 
-        if (!dataAccess.DoesSupportCalendarQuery ())
+        if (!dataAccess.DoesSupportCalendarQuery())
           MessageBox.Show ("The specified Url does not support Calendar Queries!", connectionTestCaption);
 
 
