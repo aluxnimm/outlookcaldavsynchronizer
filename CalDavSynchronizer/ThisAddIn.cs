@@ -73,7 +73,12 @@ namespace CalDavSynchronizer
                 new Ui.ProgressFormFactory(),
                 int.Parse (ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"]),
                 ExceptionHandler.Instance),
-            Application.Session);
+            Application.Session,
+            TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+            TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]),
+            Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"]),
+            Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"]),
+            Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"]));
 
         Scheduler = new Scheduler (synchronizerFactory);
         Scheduler.SetOptions (OptionsDataAccess.LoadOptions());

@@ -45,13 +45,31 @@ namespace CalDavSynchronizer.Scheduling
     private readonly string _applicationDataDirectory;
     private readonly ITotalProgressFactory _totalProgressFactory;
     private readonly NameSpace _outlookSession;
+    private readonly TimeSpan _calDavConnectTimeout;
+    private readonly TimeSpan _calDavReadWriteTimeout;
+    private readonly bool _disableCertValidation;
+    private readonly bool _useSsl3;
+    private readonly bool _useTls12;
 
-    public SynchronizerFactory (string applicationDataDirectory, ITotalProgressFactory totalProgressFactory, NameSpace outlookSession)
+    public SynchronizerFactory (
+        string applicationDataDirectory,
+        ITotalProgressFactory totalProgressFactory,
+        NameSpace outlookSession,
+        TimeSpan calDavConnectTimeout,
+        TimeSpan calDavReadWriteTimeout,
+        bool disableCertValidation,
+        bool useSsl3,
+        bool useTls12)
     {
       _outlookEmailAddress = outlookSession.CurrentUser.Address;
       _applicationDataDirectory = applicationDataDirectory;
       _totalProgressFactory = totalProgressFactory;
       _outlookSession = outlookSession;
+      _calDavConnectTimeout = calDavConnectTimeout;
+      _calDavReadWriteTimeout = calDavReadWriteTimeout;
+      _disableCertValidation = disableCertValidation;
+      _useSsl3 = useSsl3;
+      _useTls12 = useTls12;
     }
 
     public ISynchronizer CreateSynchronizer (Options options)
@@ -101,11 +119,11 @@ namespace CalDavSynchronizer.Scheduling
               new CalDavClient (
                   options.UserName,
                   options.Password,
-                  TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-                  TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]),
-                  Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"]),
-                  Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"]),
-                  Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"]))),
+                  _calDavConnectTimeout,
+                  _calDavReadWriteTimeout,
+                  _disableCertValidation,
+                  _useSsl3,
+                  _useTls12)),
           new iCalendarSerializer(),
           CalDavRepository.EntityType.Event,
           dateTimeRangeProvider);
@@ -167,11 +185,11 @@ namespace CalDavSynchronizer.Scheduling
               new CalDavClient (
                   options.UserName,
                   options.Password,
-                  TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-                  TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]),
-                  Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"]),
-                  Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"]),
-                  Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"]))
+                  _calDavConnectTimeout,
+                  _calDavReadWriteTimeout,
+                  _disableCertValidation,
+                  _useSsl3,
+                  _useTls12)
               ),
           new iCalendarSerializer(),
           CalDavRepository.EntityType.Todo,
@@ -223,11 +241,11 @@ namespace CalDavSynchronizer.Scheduling
               new CardDavClient (
                   options.UserName,
                   options.Password,
-                  TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-                  TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]),
-                  Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"]),
-                  Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"]),
-                  Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"]))
+                  _calDavConnectTimeout,
+                  _calDavReadWriteTimeout,
+                  _disableCertValidation,
+                  _useSsl3,
+                  _useTls12)
               ));
 
       if (StringComparer.InvariantCultureIgnoreCase.Compare (new Uri (options.CalenderUrl).Host, "www.google.com") == 0)
