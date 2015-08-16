@@ -263,16 +263,15 @@ namespace CalDavSynchronizer.Ui
         hasError = true;
       }
 
-
       if (!calDavDataAccess.DoesSupportCalendarQuery())
       {
         errorMessageBuilder.AppendLine ("- The specified Url does not support Calendar Queries.");
         hasError = true;
       }
 
-      if (_folderType != OlItemType.olAppointmentItem)
+      if (_folderType != OlItemType.olAppointmentItem && _folderType != OlItemType.olTaskItem)
       {
-        errorMessageBuilder.AppendLine ("- The outlook folder is not a calendar, or there is no folder selected.");
+        errorMessageBuilder.AppendLine ("- The outlook folder is not a calendar or task folder, or there is no folder selected.");
         hasError = true;
       }
 
