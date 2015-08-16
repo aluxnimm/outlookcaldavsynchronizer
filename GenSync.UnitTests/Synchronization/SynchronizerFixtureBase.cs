@@ -16,6 +16,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using GenSync.EntityRelationManagement;
+using GenSync.InitialEntityMatching;
 using GenSync.ProgressReport;
 using GenSync.Synchronization;
 using GenSync.Synchronization.StateCreationStrategies;
@@ -27,36 +30,52 @@ namespace GenSync.UnitTests.Synchronization
 {
   internal abstract class SynchronizerFixtureBase
   {
-    protected TestSynchronizerSetup _synchronizerSetup;
-
-    protected ISynchronizer _synchronizer;
+    protected TestRepository _localRepository;
+    protected TestRepository _serverRepository;
+    private IEntityRelationDataFactory<Identifier, int, Identifier, int> _entityRelationDataFactory;
     protected IEntitySyncStateFactory<Identifier, int, string, Identifier, int, string> _factory;
+    private List<EntityRelationData> _entityRelationData;
+    private IEntityRelationDataAccess<Identifier, int, Identifier, int> _entityRelationDataAccess;
 
-    [SetUp ()]
-    public virtual void Setup ()
+    [SetUp]
+    public void Setup ()
     {
-      _synchronizerSetup = new TestSynchronizerSetup();
+      _entityRelationData = new List<EntityRelationData>();
+      _localRepository = new TestRepository ("l");
+      _serverRepository = new TestRepository ("s");
+      _entityRelationDataFactory = new EntityRelationDataFactory();
+
       _factory = new EntitySyncStateFactory<Identifier, int, string, Identifier, int, string> (
-          _synchronizerSetup.EntityMapper,
-          _synchronizerSetup.AtypeRepository,
-          _synchronizerSetup.BtypeRepository,
-          _synchronizerSetup.EntityRelationDataFactory,
-           MockRepository.GenerateMock<IExceptionLogger> ()
+          new Mapper(),
+          _localRepository,
+          _serverRepository,
+          _entityRelationDataFactory,
+          MockRepository.GenerateMock<IExceptionLogger>()
           );
+
+      _entityRelationDataAccess = MockRepository.GenerateStub<IEntityRelationDataAccess<Identifier, int, Identifier, int>>();
+      _entityRelationDataAccess.Stub (d => d.LoadEntityRelationData()).WhenCalled (a => a.ReturnValue = _entityRelationData.ToArray());
+      _entityRelationDataAccess
+          .Stub (d => d.SaveEntityRelationData (null))
+          .IgnoreArguments()
+          .WhenCalled (a => { _entityRelationData = ((List<IEntityRelationData<Identifier, int, Identifier, int>>) a.Arguments[0]).Cast<EntityRelationData>().ToList(); });
     }
 
     protected bool SynchronizeInternal (IInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string> strategy)
     {
-      _synchronizer = new Synchronizer<Identifier, int, string, Identifier, int, string> (
-          _synchronizerSetup,
+      var synchronizer = new Synchronizer<Identifier, int, string, Identifier, int, string> (
+          _localRepository,
+          _serverRepository,
           strategy,
+          _entityRelationDataAccess,
+          _entityRelationDataFactory,
+          MockRepository.GenerateStub<IInitialEntityMatcher<string, Identifier, int, string, Identifier, int>>(),
+          IdentifierEqualityComparer.Instance,
+          IdentifierEqualityComparer.Instance,
           NullTotalProgressFactory.Instance,
-          IdentifierEqualityComparer.Instance,
-          IdentifierEqualityComparer.Instance,
-          MockRepository.GenerateMock<IExceptionLogger>()
-          );
+          MockRepository.GenerateMock<IExceptionLogger>());
 
-      return _synchronizer.Synchronize().Result;
+      return synchronizer.Synchronize().Result;
     }
 
     protected void ExecuteMultipleTimes (Action a)
@@ -65,6 +84,60 @@ namespace GenSync.UnitTests.Synchronization
       a();
       a();
       a();
+    }
+
+    public void AssertServerCount (int i)
+    {
+      Assert.AreEqual (i, _serverRepository.Count);
+    }
+
+    public void AssertLocalCount (int i)
+    {
+      Assert.AreEqual (i, _localRepository.Count);
+    }
+
+    public void AssertServer (string id, int version, string content)
+    {
+      Assert.AreEqual (Tuple.Create (version, content), _serverRepository[id]);
+    }
+
+    public void AssertLocal (string id, int version, string content)
+    {
+      Assert.AreEqual (Tuple.Create (version, content), _localRepository[id]);
+    }
+
+    public void AssertLocal (int version, string content)
+    {
+      CollectionAssert.Contains (_localRepository.EntityVersionAndContentById.Values, Tuple.Create (version, content));
+    }
+
+    public void AssertServer (int version, string content)
+    {
+      CollectionAssert.Contains (_serverRepository.EntityVersionAndContentById.Values, Tuple.Create (version, content));
+    }
+
+
+    public void InitializeWithTwoEvents ()
+    {
+      var v1 = _localRepository.Create (v => "Item 1");
+      var v2 = _localRepository.Create (v => "Item 2");
+
+      var v3 = _serverRepository.Create (v => "Item 1");
+      var v4 = _serverRepository.Create (v => "Item 2");
+
+      _entityRelationData.Add (new EntityRelationData (
+          v1.Id,
+          v1.Version,
+          v3.Id,
+          v3.Version
+          ));
+
+      _entityRelationData.Add (new EntityRelationData (
+          v2.Id,
+          v2.Version,
+          v4.Id,
+          v4.Version
+          ));
     }
   }
 }

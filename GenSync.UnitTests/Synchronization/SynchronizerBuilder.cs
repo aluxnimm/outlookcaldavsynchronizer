@@ -11,40 +11,36 @@ using Rhino.Mocks;
 
 namespace GenSync.UnitTests.Synchronization
 {
-  class SynchronizerBuilder
+  internal class SynchronizerBuilder
   {
-    public ISynchronizerContext<string, string, string, string, string, string> SynchronizerContext { get; set; }
 
     public SynchronizerBuilder ()
     {
-      SynchronizerContext = MockRepository.GenerateMock<ISynchronizerContext<string, string, string, string, string, string>> ();
-      AtypeRepository = MockRepository.GenerateMock<IEntityRepository<string, string, string>> ();
-      BtypeRepository = MockRepository.GenerateMock<IEntityRepository<string, string, string>> ();
-      EntityMapper = MockRepository.GenerateMock<IEntityMapper<string, string>> ();
+      AtypeRepository = MockRepository.GenerateMock<IEntityRepository<string, string, string>>();
+      BtypeRepository = MockRepository.GenerateMock<IEntityRepository<string, string, string>>();
+      EntityMapper = MockRepository.GenerateMock<IEntityMapper<string, string>>();
+      EntityRelationDataAccess = MockRepository.GenerateMock<IEntityRelationDataAccess<string, string, string, string>> ();
       EntityRelationDataFactory = MockRepository.GenerateMock<IEntityRelationDataFactory<string, string, string, string>> ();
-      InitialEntityMatcher = MockRepository.GenerateMock<IInitialEntityMatcher<string, string, string, string, string, string>> ();
-      InitialSyncStateCreationStrategy = MockRepository.GenerateMock<IInitialSyncStateCreationStrategy<string, string, string, string, string, string>> ();
-
-
-      SynchronizerContext.Stub (s => s.AtypeRepository).Return (AtypeRepository);
-      SynchronizerContext.Stub (s => s.BtypeRepository).Return (BtypeRepository);
-      SynchronizerContext.Stub (s => s.EntityMapper).Return (EntityMapper);
-      SynchronizerContext.Stub (s => s.EntityRelationDataFactory).Return (EntityRelationDataFactory);
-      SynchronizerContext.Stub (s => s.InitialEntityMatcher).Return (InitialEntityMatcher);
+      InitialEntityMatcher = MockRepository.GenerateMock<IInitialEntityMatcher<string, string, string, string, string, string>>();
+      InitialSyncStateCreationStrategy = MockRepository.GenerateMock<IInitialSyncStateCreationStrategy<string, string, string, string, string, string>>();
     }
 
     public Synchronizer<string, string, string, string, string, string> Build ()
     {
-
       return new Synchronizer<string, string, string, string, string, string> (
-          SynchronizerContext,
+          AtypeRepository,
+          BtypeRepository,
           InitialSyncStateCreationStrategy,
-          new NullTotalProgressFactory (),
+          EntityRelationDataAccess,
+          EntityRelationDataFactory,
+          InitialEntityMatcher,
           AtypeIdComparer,
           BtypeIdComparer,
-          MockRepository.GenerateMock<IExceptionLogger> ());
-
+          new NullTotalProgressFactory(),
+          MockRepository.GenerateMock<IExceptionLogger>());
     }
+
+    public IEntityRelationDataAccess<string, string, string, string> EntityRelationDataAccess { get; set; }
 
     public IEqualityComparer<string> BtypeIdComparer { get; set; }
 

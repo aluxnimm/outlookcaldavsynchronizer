@@ -19,13 +19,18 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Contacts;
 using CalDavSynchronizer.Implementation.Events;
 using CalDavSynchronizer.Implementation.Tasks;
+using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using CalDavSynchronizer.Utilities;
 using DDay.iCal;
+using DDay.iCal.Serialization.iCalendar;
 using GenSync.EntityRelationManagement;
+using GenSync.EntityRepositories;
 using GenSync.ProgressReport;
 using GenSync.Synchronization;
 using GenSync.Synchronization.StateFactories;
@@ -79,94 +84,169 @@ namespace CalDavSynchronizer.Scheduling
 
     private ISynchronizer CreateEventSynchronizer (Options options)
     {
+      var dateTimeRangeProvider =
+          options.IgnoreSynchronizationTimeRange ?
+              NullDateTimeRangeProvider.Instance :
+              new DateTimeRangeProvider (options.DaysToSynchronizeInThePast, options.DaysToSynchronizeInTheFuture);
+
+      var atypeRepository = new OutlookEventRepository (
+          _outlookSession,
+          options.OutlookFolderEntryId,
+          options.OutlookFolderStoreId,
+          dateTimeRangeProvider);
+
+      IEntityRepository<IICalendar, Uri, string> btypeRepository = new CalDavRepository (
+          new CalDavDataAccess (
+              new Uri (options.CalenderUrl),
+              new CalDavClient (
+                  options.UserName,
+                  options.Password,
+                  TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+                  TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]),
+                  Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"]),
+                  Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"]),
+                  Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"]))),
+          new iCalendarSerializer(),
+          CalDavRepository.EntityType.Event,
+          dateTimeRangeProvider);
+
+      if (StringComparer.InvariantCultureIgnoreCase.Compare (new Uri (options.CalenderUrl).Host, "www.google.com") == 0)
+      {
+        btypeRepository = new EntityRepositoryDeleteCreateInstaedOfUpdateWrapper<IICalendar, Uri, string> (btypeRepository);
+      }
+
+      var entityMapper = new EventEntityMapper (
+          _outlookEmailAddress, new Uri ("mailto:" + options.EmailAddress),
+          _outlookSession.Application.TimeZones.CurrentTimeZone.ID,
+          _outlookSession.Application.Version);
+
+      var outlookEventRelationDataFactory = new OutlookEventRelationDataFactory();
+
+      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (
+          entityMapper,
+          atypeRepository,
+          btypeRepository,
+          outlookEventRelationDataFactory,
+          ExceptionHandler.Instance
+          );
+
       var storageDataDirectory = Path.Combine (
           _applicationDataDirectory,
           options.Id.ToString()
           );
 
-      var storageDataAccess = new EntityRelationDataAccess<string, DateTime, OutlookEventRelationData, Uri, string> (storageDataDirectory);
-
       var btypeIdEqualityComparer = EqualityComparer<Uri>.Default;
-      var atypeIdComparer = EqualityComparer<string>.Default;
-
-      var synchronizationContext = new EventSynchronizationContext (
-          _outlookSession,
-          storageDataAccess,
-          options,
-          _outlookEmailAddress,
-          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]),
-          Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"]),
-          Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"]),
-          Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"]),
-          btypeIdEqualityComparer);
-
-      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (
-          synchronizationContext.EntityMapper,
-          synchronizationContext.AtypeRepository,
-          synchronizationContext.BtypeRepository,
-          synchronizationContext.EntityRelationDataFactory,
-          ExceptionHandler.Instance
-          );
+      var atypeIdEqualityComparer = EqualityComparer<string>.Default;
 
       return new Synchronizer<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (
-          synchronizationContext,
+          atypeRepository,
+          btypeRepository,
           InitialEventSyncStateCreationStrategyFactory.Create (
               syncStateFactory,
               syncStateFactory.Environment,
               options.SynchronizationMode,
               options.ConflictResolution),
-          _totalProgressFactory,
-          atypeIdComparer,
+          new EntityRelationDataAccess<string, DateTime, OutlookEventRelationData, Uri, string> (storageDataDirectory),
+          outlookEventRelationDataFactory,
+          new InitialEventEntityMatcher (btypeIdEqualityComparer),
+          atypeIdEqualityComparer,
           btypeIdEqualityComparer,
+          _totalProgressFactory,
           ExceptionHandler.Instance);
     }
 
     private ISynchronizer CreateTaskSynchronizer (Options options)
     {
+      // TODO: dispose folder like it is done for events
+      var calendarFolder = (Folder) _outlookSession.GetFolderFromID (options.OutlookFolderEntryId, options.OutlookFolderStoreId);
+      var atypeRepository = new OutlookTaskRepository (calendarFolder, _outlookSession);
+
+      var btypeRepository = new CalDavRepository (
+          new CalDavDataAccess (
+              new Uri (options.CalenderUrl),
+              new CalDavClient (
+                  options.UserName,
+                  options.Password,
+                  TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+                  TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]),
+                  Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"]),
+                  Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"]),
+                  Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"]))
+              ),
+          new iCalendarSerializer(),
+          CalDavRepository.EntityType.Todo,
+          NullDateTimeRangeProvider.Instance);
+
+      var outlookEventRelationDataFactory = new OutlookEventRelationDataFactory();
+      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> (
+          new TaskMapper (_outlookSession.Application.TimeZones.CurrentTimeZone.ID),
+          atypeRepository,
+          btypeRepository,
+          outlookEventRelationDataFactory,
+          ExceptionHandler.Instance);
+
       var storageDataDirectory = Path.Combine (
           _applicationDataDirectory,
           options.Id.ToString()
           );
 
-      var storageDataAccess = new EntityRelationDataAccess<string, DateTime, OutlookEventRelationData, Uri, string> (storageDataDirectory);
-
       var btypeIdEqualityComparer = EqualityComparer<Uri>.Default;
-      var atypeIdComparer = EqualityComparer<string>.Default;
-
-      var synchronizationContext = new TaskSynchronizationContext (
-          _outlookSession,
-          storageDataAccess,
-          options,
-          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]),
-          Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"]),
-          Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"]),
-          Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"]),
-          btypeIdEqualityComparer);
-
-      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> (
-          synchronizationContext.EntityMapper,
-          synchronizationContext.AtypeRepository,
-          synchronizationContext.BtypeRepository,
-          synchronizationContext.EntityRelationDataFactory,
-          ExceptionHandler.Instance);
+      var atypeIdEqualityComparer = EqualityComparer<string>.Default;
 
       return new Synchronizer<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> (
-          synchronizationContext,
+          atypeRepository,
+          btypeRepository,
           InitialTaskSyncStateCreationStrategyFactory.Create (
               syncStateFactory,
               syncStateFactory.Environment,
               options.SynchronizationMode,
               options.ConflictResolution),
-          _totalProgressFactory,
-          atypeIdComparer,
+          new EntityRelationDataAccess<string, DateTime, OutlookEventRelationData, Uri, string> (storageDataDirectory),
+          outlookEventRelationDataFactory,
+          new InitialTaskEntityMatcher (btypeIdEqualityComparer),
+          atypeIdEqualityComparer,
           btypeIdEqualityComparer,
+          _totalProgressFactory,
           ExceptionHandler.Instance);
     }
 
     private ISynchronizer CreateContactSynchronizer (Options options)
     {
+      var atypeRepository = new OutlookContactRepository (
+          _outlookSession,
+          options.OutlookFolderEntryId,
+          options.OutlookFolderStoreId);
+
+      IEntityRepository<vCard, Uri, string> btypeRepository = new CardDavRepository (
+          new CardDavDataAccess (
+              new Uri (options.CalenderUrl),
+              new CardDavClient (
+                  options.UserName,
+                  options.Password,
+                  TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+                  TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]),
+                  Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"]),
+                  Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"]),
+                  Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"]))
+              ));
+
+      if (StringComparer.InvariantCultureIgnoreCase.Compare (new Uri (options.CalenderUrl).Host, "www.google.com") == 0)
+      {
+        btypeRepository = new EntityRepositoryDeleteCreateInstaedOfUpdateWrapper<vCard, Uri, string> (btypeRepository);
+      }
+
+      var entityRelationDataFactory = new OutlookContactRelationDataFactory();
+
+      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, GenericComObjectWrapper<ContactItem>, Uri, string, vCard> (
+          new ContactEntityMapper(),
+          atypeRepository,
+          btypeRepository,
+          entityRelationDataFactory,
+          ExceptionHandler.Instance);
+
+      var btypeIdEqualityComparer = EqualityComparer<Uri>.Default;
+      var atypeIdEqulityComparer = EqualityComparer<string>.Default;
+
       var storageDataDirectory = Path.Combine (
           _applicationDataDirectory,
           options.Id.ToString()
@@ -174,37 +254,20 @@ namespace CalDavSynchronizer.Scheduling
 
       var storageDataAccess = new EntityRelationDataAccess<string, DateTime, OutlookContactRelationData, Uri, string> (storageDataDirectory);
 
-      var btypeIdEqualityComparer = EqualityComparer<Uri>.Default;
-      var atypeIdComparer = EqualityComparer<string>.Default;
-
-      var synchronizationContext = new ContactSynchronizationContext (
-          _outlookSession,
-          storageDataAccess,
-          options,
-          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]),
-          Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"]),
-          Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"]),
-          Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"]),
-          btypeIdEqualityComparer);
-
-      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, GenericComObjectWrapper<ContactItem>, Uri, string, vCard> (
-          synchronizationContext.EntityMapper,
-          synchronizationContext.AtypeRepository,
-          synchronizationContext.BtypeRepository,
-          synchronizationContext.EntityRelationDataFactory,
-          ExceptionHandler.Instance);
-
       return new Synchronizer<string, DateTime, GenericComObjectWrapper<ContactItem>, Uri, string, vCard> (
-          synchronizationContext,
+          atypeRepository,
+          btypeRepository,
           InitialContactSyncStateCreationStrategyFactory.Create (
               syncStateFactory,
               syncStateFactory.Environment,
               options.SynchronizationMode,
               options.ConflictResolution),
-          _totalProgressFactory,
-          atypeIdComparer,
+          storageDataAccess,
+          entityRelationDataFactory,
+          new InitialContactEntityMatcher (btypeIdEqualityComparer),
+          atypeIdEqulityComparer,
           btypeIdEqualityComparer,
+          _totalProgressFactory,
           ExceptionHandler.Instance);
     }
   }

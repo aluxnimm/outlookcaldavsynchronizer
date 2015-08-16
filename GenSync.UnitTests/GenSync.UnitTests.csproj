@@ -67,7 +67,6 @@
     <Compile Include="Synchronization\SynchronizerFixture.cs" />
     <Compile Include="Synchronization\SynchronizerFixtureBase.cs" />
     <Compile Include="Synchronization\TestRepository.cs" />
-    <Compile Include="Synchronization\TestSynchronizerSetup.cs" />
     <Compile Include="Synchronization\TwoWaySynchronizerFixture.cs" />
     <Compile Include="Synchronization\TwoWaySynchronizerFixtureBase.cs" />
   </ItemGroup>

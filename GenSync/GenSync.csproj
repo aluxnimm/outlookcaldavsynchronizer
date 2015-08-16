@@ -72,7 +72,6 @@
     <Compile Include="Synchronization\EntitySyncStateContainer.cs" />
     <Compile Include="Synchronization\EntitySyncStateEnvironment.cs" />
     <Compile Include="Synchronization\ISynchronizer.cs" />
-    <Compile Include="Synchronization\ISynchronizerContext.cs" />
     <Compile Include="Synchronization\StateCreationStrategies\ConflictStrategies\ConflictInitialSyncStateCreationStrategyAutomatic.cs" />
     <Compile Include="Synchronization\StateCreationStrategies\ConflictStrategies\ConflictInitialSyncStateCreationStrategyAWins.cs" />
     <Compile Include="Synchronization\StateCreationStrategies\ConflictStrategies\ConflictInitialSyncStateCreationStrategyBWins.cs" />

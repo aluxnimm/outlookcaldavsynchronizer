@@ -26,20 +26,20 @@ namespace GenSync.UnitTests.Synchronization
     [TestCase (GenericConflictResolution.BWins)]
     public void TwoWaySynchronize_AddedLocal (GenericConflictResolution conflictWinner)
     {
-      _synchronizerSetup._localRepository.Create (v => "Item 1");
-      _synchronizerSetup._localRepository.Create (v => "Item 2");
+      _localRepository.Create (v => "Item 1");
+      _localRepository.Create (v => "Item 2");
 
       ExecuteMultipleTimes (() =>
       {
         Synchronize (conflictWinner);
 
-        _synchronizerSetup.AssertLocalCount (2);
-        _synchronizerSetup.AssertLocal ("l1", 0, "Item 1");
-        _synchronizerSetup.AssertLocal ("l2", 0, "Item 2");
+        AssertLocalCount (2);
+        AssertLocal ("l1", 0, "Item 1");
+        AssertLocal ("l2", 0, "Item 2");
 
-        _synchronizerSetup.AssertServerCount (2);
-        _synchronizerSetup.AssertServer ("s1", 0, "Item 1");
-        _synchronizerSetup.AssertServer ("s2", 0, "Item 2");
+        AssertServerCount (2);
+        AssertServer ("s1", 0, "Item 1");
+        AssertServer ("s2", 0, "Item 2");
       });
     }
 
@@ -47,19 +47,19 @@ namespace GenSync.UnitTests.Synchronization
     [TestCase (GenericConflictResolution.BWins)]
     public void TwoWaySynchronize_AddedServer (GenericConflictResolution conflictWinner)
     {
-      _synchronizerSetup._serverRepository.Create (v => "Item 1");
-      _synchronizerSetup._serverRepository.Create (v => "Item 2");
+      _serverRepository.Create (v => "Item 1");
+      _serverRepository.Create (v => "Item 2");
 
       ExecuteMultipleTimes (() =>
       {
         Synchronize (conflictWinner);
-        _synchronizerSetup.AssertLocalCount (2);
-        _synchronizerSetup.AssertLocal ("l1", 0, "Item 1");
-        _synchronizerSetup.AssertLocal ("l2", 0, "Item 2");
+        AssertLocalCount (2);
+        AssertLocal ("l1", 0, "Item 1");
+        AssertLocal ("l2", 0, "Item 2");
 
-        _synchronizerSetup.AssertServerCount (2);
-        _synchronizerSetup.AssertServer ("s1", 0, "Item 1");
-        _synchronizerSetup.AssertServer ("s2", 0, "Item 2");
+        AssertServerCount (2);
+        AssertServer ("s1", 0, "Item 1");
+        AssertServer ("s2", 0, "Item 2");
       });
     }
 
@@ -67,25 +67,25 @@ namespace GenSync.UnitTests.Synchronization
     [TestCase (GenericConflictResolution.BWins)]
     public void TwoWaySynchronize_AddedBoth (GenericConflictResolution conflictWinner)
     {
-      _synchronizerSetup.InitializeWithTwoEvents();
+      InitializeWithTwoEvents();
 
-      _synchronizerSetup._localRepository.Create (v => "Item l");
-      _synchronizerSetup._serverRepository.Create (v => "Item s");
+      _localRepository.Create (v => "Item l");
+      _serverRepository.Create (v => "Item s");
 
       ExecuteMultipleTimes (() =>
       {
         Synchronize (conflictWinner);
-        _synchronizerSetup.AssertLocalCount (4);
-        _synchronizerSetup.AssertLocal ("l1", 0, "Item 1");
-        _synchronizerSetup.AssertLocal ("l2", 0, "Item 2");
-        _synchronizerSetup.AssertLocal (0, "Item l");
-        _synchronizerSetup.AssertLocal (0, "Item s");
+        AssertLocalCount (4);
+        AssertLocal ("l1", 0, "Item 1");
+        AssertLocal ("l2", 0, "Item 2");
+        AssertLocal (0, "Item l");
+        AssertLocal (0, "Item s");
 
-        _synchronizerSetup.AssertServerCount (4);
-        _synchronizerSetup.AssertServer ("s1", 0, "Item 1");
-        _synchronizerSetup.AssertServer ("s2", 0, "Item 2");
-        _synchronizerSetup.AssertServer (0, "Item l");
-        _synchronizerSetup.AssertServer (0, "Item s");
+        AssertServerCount (4);
+        AssertServer ("s1", 0, "Item 1");
+        AssertServer ("s2", 0, "Item 2");
+        AssertServer (0, "Item l");
+        AssertServer (0, "Item s");
       });
     }
 
@@ -93,18 +93,18 @@ namespace GenSync.UnitTests.Synchronization
     [TestCase (GenericConflictResolution.BWins)]
     public void TwoWaySynchronize_DeletedLocal (GenericConflictResolution conflictWinner)
     {
-      _synchronizerSetup.InitializeWithTwoEvents();
+      InitializeWithTwoEvents();
 
-      _synchronizerSetup._localRepository.Delete ("l1");
+      _localRepository.Delete ("l1");
 
       ExecuteMultipleTimes (() =>
       {
         Synchronize (conflictWinner);
-        _synchronizerSetup.AssertLocalCount (1);
-        _synchronizerSetup.AssertLocal ("l2", 0, "Item 2");
+        AssertLocalCount (1);
+        AssertLocal ("l2", 0, "Item 2");
 
-        _synchronizerSetup.AssertServerCount (1);
-        _synchronizerSetup.AssertServer ("s2", 0, "Item 2");
+        AssertServerCount (1);
+        AssertServer ("s2", 0, "Item 2");
       });
     }
 
@@ -112,18 +112,18 @@ namespace GenSync.UnitTests.Synchronization
     [TestCase (GenericConflictResolution.BWins)]
     public void TwoWaySynchronize_DeletedServer (GenericConflictResolution conflictWinner)
     {
-      _synchronizerSetup.InitializeWithTwoEvents();
+      InitializeWithTwoEvents();
 
-      _synchronizerSetup._serverRepository.Delete ("s1");
+      _serverRepository.Delete ("s1");
 
       ExecuteMultipleTimes (() =>
       {
         Synchronize (conflictWinner);
-        _synchronizerSetup.AssertLocalCount (1);
-        _synchronizerSetup.AssertLocal ("l2", 0, "Item 2");
+        AssertLocalCount (1);
+        AssertLocal ("l2", 0, "Item 2");
 
-        _synchronizerSetup.AssertServerCount (1);
-        _synchronizerSetup.AssertServer ("s2", 0, "Item 2");
+        AssertServerCount (1);
+        AssertServer ("s2", 0, "Item 2");
       });
     }
 
@@ -131,17 +131,17 @@ namespace GenSync.UnitTests.Synchronization
     [TestCase (GenericConflictResolution.BWins)]
     public void TwoWaySynchronize_DeletedBoth (GenericConflictResolution conflictWinner)
     {
-      _synchronizerSetup.InitializeWithTwoEvents();
+      InitializeWithTwoEvents();
 
-      _synchronizerSetup._serverRepository.Delete ("s1");
-      _synchronizerSetup._localRepository.Delete ("l2");
+      _serverRepository.Delete ("s1");
+      _localRepository.Delete ("l2");
 
       ExecuteMultipleTimes (() =>
       {
         Synchronize (conflictWinner);
-        _synchronizerSetup.AssertLocalCount (0);
+        AssertLocalCount (0);
 
-        _synchronizerSetup.AssertServerCount (0);
+        AssertServerCount (0);
       });
     }
 
@@ -149,19 +149,19 @@ namespace GenSync.UnitTests.Synchronization
     [TestCase (GenericConflictResolution.BWins)]
     public void TwoWaySynchronize_DeletedBothWithConflict (GenericConflictResolution conflictWinner)
     {
-      _synchronizerSetup.InitializeWithTwoEvents();
+      InitializeWithTwoEvents();
 
-      _synchronizerSetup._serverRepository.Delete ("s1");
-      _synchronizerSetup._localRepository.Delete ("l1");
+      _serverRepository.Delete ("s1");
+      _localRepository.Delete ("l1");
 
       ExecuteMultipleTimes (() =>
       {
         Synchronize (conflictWinner);
-        _synchronizerSetup.AssertLocalCount (1);
-        _synchronizerSetup.AssertLocal ("l2", 0, "Item 2");
+        AssertLocalCount (1);
+        AssertLocal ("l2", 0, "Item 2");
 
-        _synchronizerSetup.AssertServerCount (1);
-        _synchronizerSetup.AssertServer ("s2", 0, "Item 2");
+        AssertServerCount (1);
+        AssertServer ("s2", 0, "Item 2");
       });
     }
 
@@ -169,19 +169,19 @@ namespace GenSync.UnitTests.Synchronization
     [TestCase (GenericConflictResolution.BWins)]
     public void TwoWaySynchronize_UpdatedLocal (GenericConflictResolution conflictWinner)
     {
-      _synchronizerSetup.InitializeWithTwoEvents();
-      _synchronizerSetup._localRepository.UpdateWithoutIdChange ("l1", v => "upd Item 1");
+      InitializeWithTwoEvents();
+      _localRepository.UpdateWithoutIdChange ("l1", v => "upd Item 1");
 
       ExecuteMultipleTimes (() =>
       {
         Synchronize (conflictWinner);
-        _synchronizerSetup.AssertLocalCount (2);
-        _synchronizerSetup.AssertLocal ("l1", 1, "upd Item 1");
-        _synchronizerSetup.AssertLocal ("l2", 0, "Item 2");
+        AssertLocalCount (2);
+        AssertLocal ("l1", 1, "upd Item 1");
+        AssertLocal ("l2", 0, "Item 2");
 
-        _synchronizerSetup.AssertServerCount (2);
-        _synchronizerSetup.AssertServer ("s1u", 1, "upd Item 1");
-        _synchronizerSetup.AssertServer ("s2", 0, "Item 2");
+        AssertServerCount (2);
+        AssertServer ("s1u", 1, "upd Item 1");
+        AssertServer ("s2", 0, "Item 2");
       });
     }
 
@@ -189,19 +189,19 @@ namespace GenSync.UnitTests.Synchronization
     [TestCase (GenericConflictResolution.BWins)]
     public void TwoWaySynchronize_UpdatedServer (GenericConflictResolution conflictWinner)
     {
-      _synchronizerSetup.InitializeWithTwoEvents();
-      _synchronizerSetup._serverRepository.UpdateWithoutIdChange ("s1", v => "upd Item 1");
+      InitializeWithTwoEvents();
+      _serverRepository.UpdateWithoutIdChange ("s1", v => "upd Item 1");
 
       ExecuteMultipleTimes (() =>
       {
         Synchronize (conflictWinner);
-        _synchronizerSetup.AssertLocalCount (2);
-        _synchronizerSetup.AssertLocal ("l1u", 1, "upd Item 1");
-        _synchronizerSetup.AssertLocal ("l2", 0, "Item 2");
+        AssertLocalCount (2);
+        AssertLocal ("l1u", 1, "upd Item 1");
+        AssertLocal ("l2", 0, "Item 2");
 
-        _synchronizerSetup.AssertServerCount (2);
-        _synchronizerSetup.AssertServer ("s1", 1, "upd Item 1");
-        _synchronizerSetup.AssertServer ("s2", 0, "Item 2");
+        AssertServerCount (2);
+        AssertServer ("s1", 1, "upd Item 1");
+        AssertServer ("s2", 0, "Item 2");
       });
     }
 
@@ -209,140 +209,140 @@ namespace GenSync.UnitTests.Synchronization
     [TestCase (GenericConflictResolution.BWins)]
     public void TwoWaySynchronize_UpdatedBoth (GenericConflictResolution conflictWinner)
     {
-      _synchronizerSetup.InitializeWithTwoEvents();
-      _synchronizerSetup._serverRepository.UpdateWithoutIdChange ("s1", v => "upd Item 1");
-      _synchronizerSetup._localRepository.UpdateWithoutIdChange ("l2", v => "upd Item 2");
+      InitializeWithTwoEvents();
+      _serverRepository.UpdateWithoutIdChange ("s1", v => "upd Item 1");
+      _localRepository.UpdateWithoutIdChange ("l2", v => "upd Item 2");
 
       ExecuteMultipleTimes (() =>
       {
         Synchronize (conflictWinner);
-        _synchronizerSetup.AssertLocalCount (2);
-        _synchronizerSetup.AssertLocal ("l1u", 1, "upd Item 1");
-        _synchronizerSetup.AssertLocal ("l2", 1, "upd Item 2");
+        AssertLocalCount (2);
+        AssertLocal ("l1u", 1, "upd Item 1");
+        AssertLocal ("l2", 1, "upd Item 2");
 
-        _synchronizerSetup.AssertServerCount (2);
-        _synchronizerSetup.AssertServer ("s1", 1, "upd Item 1");
-        _synchronizerSetup.AssertServer ("s2u", 1, "upd Item 2");
+        AssertServerCount (2);
+        AssertServer ("s1", 1, "upd Item 1");
+        AssertServer ("s2u", 1, "upd Item 2");
       });
     }
 
     [Test]
     public void TwoWaySynchronize_DeletedLocal_ChangeServer_Conflict_LocalWins ()
     {
-      _synchronizerSetup.InitializeWithTwoEvents();
+      InitializeWithTwoEvents();
 
-      _synchronizerSetup._localRepository.Delete ("l1");
-      _synchronizerSetup._serverRepository.UpdateWithoutIdChange ("s1", v => "upd Item 1");
+      _localRepository.Delete ("l1");
+      _serverRepository.UpdateWithoutIdChange ("s1", v => "upd Item 1");
 
       ExecuteMultipleTimes (() =>
       {
         Synchronize (GenericConflictResolution.AWins);
-        _synchronizerSetup.AssertLocalCount (1);
-        _synchronizerSetup.AssertLocal ("l2", 0, "Item 2");
+        AssertLocalCount (1);
+        AssertLocal ("l2", 0, "Item 2");
 
-        _synchronizerSetup.AssertServerCount (1);
-        _synchronizerSetup.AssertServer ("s2", 0, "Item 2");
+        AssertServerCount (1);
+        AssertServer ("s2", 0, "Item 2");
       });
     }
 
     [Test]
     public void TwoWaySynchronize_DeletedLocal_ChangeServer_Conflict_ServerWins ()
     {
-      _synchronizerSetup.InitializeWithTwoEvents();
+      InitializeWithTwoEvents();
 
-      _synchronizerSetup._localRepository.Delete ("l1");
-      _synchronizerSetup._serverRepository.UpdateWithoutIdChange ("s1", v => "upd Item 1");
+      _localRepository.Delete ("l1");
+      _serverRepository.UpdateWithoutIdChange ("s1", v => "upd Item 1");
 
       ExecuteMultipleTimes (() =>
       {
         Synchronize (GenericConflictResolution.BWins);
-        _synchronizerSetup.AssertLocalCount (2);
-        _synchronizerSetup.AssertLocal ("l3", 0, "upd Item 1");
-        _synchronizerSetup.AssertLocal ("l2", 0, "Item 2");
+        AssertLocalCount (2);
+        AssertLocal ("l3", 0, "upd Item 1");
+        AssertLocal ("l2", 0, "Item 2");
 
-        _synchronizerSetup.AssertServerCount (2);
-        _synchronizerSetup.AssertServer ("s1", 1, "upd Item 1");
-        _synchronizerSetup.AssertServer ("s2", 0, "Item 2");
+        AssertServerCount (2);
+        AssertServer ("s1", 1, "upd Item 1");
+        AssertServer ("s2", 0, "Item 2");
       });
     }
 
     [Test]
     public void TwoWaySynchronize_DeletedServer_ChangeLocal_Conflict_LocalWins ()
     {
-      _synchronizerSetup.InitializeWithTwoEvents();
+      InitializeWithTwoEvents();
 
-      _synchronizerSetup._serverRepository.Delete ("s1");
-      _synchronizerSetup._localRepository.UpdateWithoutIdChange ("l1", v => "upd Item 1");
+      _serverRepository.Delete ("s1");
+      _localRepository.UpdateWithoutIdChange ("l1", v => "upd Item 1");
 
       ExecuteMultipleTimes (() =>
       {
         Synchronize (GenericConflictResolution.AWins);
-        _synchronizerSetup.AssertLocalCount (2);
-        _synchronizerSetup.AssertLocal ("l1", 1, "upd Item 1");
-        _synchronizerSetup.AssertLocal ("l2", 0, "Item 2");
+        AssertLocalCount (2);
+        AssertLocal ("l1", 1, "upd Item 1");
+        AssertLocal ("l2", 0, "Item 2");
 
-        _synchronizerSetup.AssertServerCount (2);
-        _synchronizerSetup.AssertServer ("s3", 0, "upd Item 1");
-        _synchronizerSetup.AssertServer ("s2", 0, "Item 2");
+        AssertServerCount (2);
+        AssertServer ("s3", 0, "upd Item 1");
+        AssertServer ("s2", 0, "Item 2");
       });
     }
 
     [Test]
     public void TwoWaySynchronize_DeletedServer_ChangeLocal_Conflict_ServerWins ()
     {
-      _synchronizerSetup.InitializeWithTwoEvents();
+      InitializeWithTwoEvents();
 
-      _synchronizerSetup._serverRepository.Delete ("s1");
-      _synchronizerSetup._localRepository.UpdateWithoutIdChange ("l1", v => "upd Item 1");
+      _serverRepository.Delete ("s1");
+      _localRepository.UpdateWithoutIdChange ("l1", v => "upd Item 1");
 
       ExecuteMultipleTimes (() =>
       {
         Synchronize (GenericConflictResolution.BWins);
-        _synchronizerSetup.AssertLocalCount (1);
-        _synchronizerSetup.AssertLocal ("l2", 0, "Item 2");
+        AssertLocalCount (1);
+        AssertLocal ("l2", 0, "Item 2");
 
-        _synchronizerSetup.AssertServerCount (1);
-        _synchronizerSetup.AssertServer ("s2", 0, "Item 2");
+        AssertServerCount (1);
+        AssertServer ("s2", 0, "Item 2");
       });
     }
 
     [Test]
     public void TwoWaySynchronize_UpdatedBoth_Conflict_LocalWins ()
     {
-      _synchronizerSetup.InitializeWithTwoEvents();
-      _synchronizerSetup._serverRepository.UpdateWithoutIdChange ("s1", v => "upd srv Item 1");
-      _synchronizerSetup._localRepository.UpdateWithoutIdChange ("l1", v => "upd loc Item 1");
+      InitializeWithTwoEvents();
+      _serverRepository.UpdateWithoutIdChange ("s1", v => "upd srv Item 1");
+      _localRepository.UpdateWithoutIdChange ("l1", v => "upd loc Item 1");
 
       ExecuteMultipleTimes (() =>
       {
         Synchronize (GenericConflictResolution.AWins);
-        _synchronizerSetup.AssertLocalCount (2);
-        _synchronizerSetup.AssertLocal ("l1", 1, "upd loc Item 1");
-        _synchronizerSetup.AssertLocal ("l2", 0, "Item 2");
+        AssertLocalCount (2);
+        AssertLocal ("l1", 1, "upd loc Item 1");
+        AssertLocal ("l2", 0, "Item 2");
 
-        _synchronizerSetup.AssertServerCount (2);
-        _synchronizerSetup.AssertServer ("s1u", 2, "upd loc Item 1");
-        _synchronizerSetup.AssertServer ("s2", 0, "Item 2");
+        AssertServerCount (2);
+        AssertServer ("s1u", 2, "upd loc Item 1");
+        AssertServer ("s2", 0, "Item 2");
       });
     }
 
     [Test]
     public void TwoWaySynchronize_UpdatedBoth_Conflict_ServerWins ()
     {
-      _synchronizerSetup.InitializeWithTwoEvents();
-      _synchronizerSetup._serverRepository.UpdateWithoutIdChange ("s1", v => "upd srv Item 1");
-      _synchronizerSetup._localRepository.UpdateWithoutIdChange ("l1", v => "upd loc Item 1");
+      InitializeWithTwoEvents();
+      _serverRepository.UpdateWithoutIdChange ("s1", v => "upd srv Item 1");
+      _localRepository.UpdateWithoutIdChange ("l1", v => "upd loc Item 1");
 
       ExecuteMultipleTimes (() =>
       {
         Synchronize (GenericConflictResolution.BWins);
-        _synchronizerSetup.AssertLocalCount (2);
-        _synchronizerSetup.AssertLocal ("l1u", 2, "upd srv Item 1");
-        _synchronizerSetup.AssertLocal ("l2", 0, "Item 2");
+        AssertLocalCount (2);
+        AssertLocal ("l1u", 2, "upd srv Item 1");
+        AssertLocal ("l2", 0, "Item 2");
 
-        _synchronizerSetup.AssertServerCount (2);
-        _synchronizerSetup.AssertServer ("s1", 1, "upd srv Item 1");
-        _synchronizerSetup.AssertServer ("s2", 0, "Item 2");
+        AssertServerCount (2);
+        AssertServer ("s1", 1, "upd srv Item 1");
+        AssertServer ("s2", 0, "Item 2");
       });
     }
   }

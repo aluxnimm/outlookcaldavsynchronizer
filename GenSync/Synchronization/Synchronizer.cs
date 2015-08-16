@@ -19,6 +19,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using GenSync.EntityRelationManagement;
+using GenSync.EntityRepositories;
+using GenSync.InitialEntityMatching;
 using GenSync.ProgressReport;
 using GenSync.Synchronization.StateCreationStrategies;
 using GenSync.Synchronization.States;
@@ -41,25 +43,37 @@ namespace GenSync.Synchronization
     private readonly IEqualityComparer<TAtypeEntityId> _atypeIdComparer;
     private readonly IEqualityComparer<TBtypeEntityId> _btypeIdComparer;
 
-    private readonly ISynchronizerContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _synchronizerContext;
+    private readonly IInitialEntityMatcher<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> _initialEntityMatcher;
+    private readonly IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> _entityRelationDataFactory;
+    private readonly IEntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> _entityRelationDataAccess;
+    private readonly IEntityRepository<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> _atypeRepository;
+    private readonly IEntityRepository<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> _btypeRepository;
     private readonly IInitialSyncStateCreationStrategy<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _initialSyncStateCreationStrategy;
     private readonly ITotalProgressFactory _totalProgressFactory;
     private readonly IExceptionLogger _exceptionLogger;
 
 
     public Synchronizer (
-        ISynchronizerContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> synchronizerContext,
-        IInitialSyncStateCreationStrategy<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> initialSyncStateCreationStrategy,
-        ITotalProgressFactory totalProgressFactory,
-        IEqualityComparer<TAtypeEntityId> atypeIdComparer,
-        IEqualityComparer<TBtypeEntityId> btypeIdComparer, IExceptionLogger exceptionLogger)
+      IEntityRepository<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> atypeRepository,
+      IEntityRepository<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> btypeRepository, 
+      IInitialSyncStateCreationStrategy<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> initialSyncStateCreationStrategy,
+      IEntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> entityRelationDataAccess,
+      IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> entityRelationDataFactory, 
+      IInitialEntityMatcher<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> initialEntityMatcher,
+      IEqualityComparer<TAtypeEntityId> atypeIdComparer, IEqualityComparer<TBtypeEntityId> btypeIdComparer,
+      ITotalProgressFactory totalProgressFactory,
+      IExceptionLogger exceptionLogger)
     {
-      _synchronizerContext = synchronizerContext;
       _initialSyncStateCreationStrategy = initialSyncStateCreationStrategy;
       _totalProgressFactory = totalProgressFactory;
       _atypeIdComparer = atypeIdComparer;
       _btypeIdComparer = btypeIdComparer;
       _exceptionLogger = exceptionLogger;
+      _atypeRepository = atypeRepository;
+      _btypeRepository = btypeRepository;
+      _entityRelationDataAccess = entityRelationDataAccess;
+      _entityRelationDataFactory = entityRelationDataFactory;
+      _initialEntityMatcher = initialEntityMatcher;
     }
 
 
@@ -72,17 +86,14 @@ namespace GenSync.Synchronization
       {
         using (var totalProgress = _totalProgressFactory.Create())
         {
-          var atypeEntityRepository = _synchronizerContext.AtypeRepository;
-          var btypeEntityRepository = _synchronizerContext.BtypeRepository;
-
-          var cachedData = _synchronizerContext.LoadEntityRelationData();
+          var cachedData = _entityRelationDataAccess.LoadEntityRelationData ();
 
           var atypeRepositoryVersions = CreateDictionary (
-              atypeEntityRepository.GetVersions(),
+              _atypeRepository.GetVersions(),
               _atypeIdComparer);
 
           var btypeRepositoryVersions = CreateDictionary (
-              btypeEntityRepository.GetVersions(),
+              _btypeRepository.GetVersions(),
               _btypeIdComparer);
 
           IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> aEntities = null;
@@ -99,19 +110,19 @@ namespace GenSync.Synchronization
               using (totalProgress.StartARepositoryLoad())
               {
                 aEntities = CreateDictionary (
-                    await atypeEntityRepository.Get (atypeRepositoryVersions.Keys),
+                    await _atypeRepository.Get (atypeRepositoryVersions.Keys),
                     _atypeIdComparer);
               }
 
               using (totalProgress.StartBRepositoryLoad())
               {
                 bEntities = CreateDictionary (
-                    await btypeEntityRepository.Get (btypeRepositoryVersions.Keys),
+                    await _btypeRepository.Get (btypeRepositoryVersions.Keys),
                     _btypeIdComparer);
               }
 
-              cachedData = _synchronizerContext.InitialEntityMatcher.FindMatchingEntities (
-                  _synchronizerContext.EntityRelationDataFactory,
+              cachedData = _initialEntityMatcher.FindMatchingEntities (
+                  _entityRelationDataFactory,
                   aEntities,
                   bEntities,
                   atypeRepositoryVersions,
@@ -165,14 +176,14 @@ namespace GenSync.Synchronization
               using (totalProgress.StartARepositoryLoad())
               {
                 aEntities = CreateDictionary (
-                    await atypeEntityRepository.Get (aEntitesToLoad),
+                    await _atypeRepository.Get (aEntitesToLoad),
                     _atypeIdComparer);
               }
 
               using (totalProgress.StartBRepositoryLoad())
               {
                 bEntities = CreateDictionary (
-                    await btypeEntityRepository.Get (bEntitesToLoad),
+                    await _btypeRepository.Get (bEntitesToLoad),
                     _btypeIdComparer);
               }
             }
@@ -201,12 +212,12 @@ namespace GenSync.Synchronization
 
             entitySyncStates.Dispose();
 
-            _synchronizerContext.SaveEntityRelationData (newData);
+            _entityRelationDataAccess.SaveEntityRelationData (newData);
           }
           finally
           {
-            atypeEntityRepository.Cleanup (aEntities);
-            btypeEntityRepository.Cleanup (bEntities);
+            _atypeRepository.Cleanup (aEntities);
+            _btypeRepository.Cleanup (bEntities);
           }
         }
       }
