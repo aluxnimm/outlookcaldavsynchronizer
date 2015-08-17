@@ -39,7 +39,7 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Scheduling
 {
-  internal class SynchronizerFactory : ISynchronizerFactory
+  public class SynchronizerFactory : ISynchronizerFactory
   {
     private readonly string _outlookEmailAddress;
     private readonly string _applicationDataDirectory;
@@ -102,6 +102,35 @@ namespace CalDavSynchronizer.Scheduling
 
     private ISynchronizer CreateEventSynchronizer (Options options)
     {
+      var calDavDataAccess = new CalDavDataAccess (
+          new Uri (options.CalenderUrl),
+          new CalDavClient (
+              options.UserName,
+              options.Password,
+              _calDavConnectTimeout,
+              _calDavReadWriteTimeout,
+              _disableCertValidation,
+              _useSsl3,
+              _useTls12));
+
+      var storageDataDirectory = Path.Combine (
+          _applicationDataDirectory,
+          options.Id.ToString()
+          );
+
+      var entityRelationDataAccess = new EntityRelationDataAccess<string, DateTime, OutlookEventRelationData, Uri, string> (storageDataDirectory);
+
+      return CreateEventSynchronizer (options, calDavDataAccess, entityRelationDataAccess);
+    }
+
+    /// <remarks>
+    /// Public because it is being used by integration tests
+    /// </remarks>
+    public ISynchronizer CreateEventSynchronizer (
+        Options options,
+        ICalDavDataAccess calDavDataAccess,
+        IEntityRelationDataAccess<string, DateTime, Uri, string> entityRelationDataAccess)
+    {
       var dateTimeRangeProvider =
           options.IgnoreSynchronizationTimeRange ?
               NullDateTimeRangeProvider.Instance :
@@ -114,16 +143,7 @@ namespace CalDavSynchronizer.Scheduling
           dateTimeRangeProvider);
 
       IEntityRepository<IICalendar, Uri, string> btypeRepository = new CalDavRepository (
-          new CalDavDataAccess (
-              new Uri (options.CalenderUrl),
-              new CalDavClient (
-                  options.UserName,
-                  options.Password,
-                  _calDavConnectTimeout,
-                  _calDavReadWriteTimeout,
-                  _disableCertValidation,
-                  _useSsl3,
-                  _useTls12)),
+          calDavDataAccess,
           new iCalendarSerializer(),
           CalDavRepository.EntityType.Event,
           dateTimeRangeProvider);
@@ -148,10 +168,6 @@ namespace CalDavSynchronizer.Scheduling
           ExceptionHandler.Instance
           );
 
-      var storageDataDirectory = Path.Combine (
-          _applicationDataDirectory,
-          options.Id.ToString()
-          );
 
       var btypeIdEqualityComparer = EqualityComparer<Uri>.Default;
       var atypeIdEqualityComparer = EqualityComparer<string>.Default;
@@ -164,7 +180,7 @@ namespace CalDavSynchronizer.Scheduling
               syncStateFactory.Environment,
               options.SynchronizationMode,
               options.ConflictResolution),
-          new EntityRelationDataAccess<string, DateTime, OutlookEventRelationData, Uri, string> (storageDataDirectory),
+          entityRelationDataAccess,
           outlookEventRelationDataFactory,
           new InitialEventEntityMatcher (btypeIdEqualityComparer),
           atypeIdEqualityComparer,

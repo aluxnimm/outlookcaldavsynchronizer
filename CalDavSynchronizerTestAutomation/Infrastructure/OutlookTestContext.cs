@@ -1,18 +1,26 @@
 ﻿using System;
 using System.Configuration;
 using System.IO;
+using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Events;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
+using CalDavSynchronizer.Scheduling;
 using DDay.iCal;
 using DDay.iCal.Serialization.iCalendar;
 using GenSync.EntityMapping;
+using GenSync.EntityRelationManagement;
 using GenSync.EntityRepositories;
+using GenSync.ProgressReport;
+using GenSync.Synchronization;
 using Microsoft.Office.Interop.Outlook;
+using Rhino.Mocks;
 
 namespace CalDavSynchronizerTestAutomation.Infrastructure
 {
-  public class OutlookTestContext
+  public static class OutlookTestContext
   {
     private static EventEntityMapper _entityMapper;
     private static OutlookEventRepository _outlookRepository;
@@ -20,6 +28,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
     private static NameSpace s_mapiNameSpace;
     private static string s_outlookFolderEntryId;
     private static string s_outlookFolderStoreId;
+    private static SynchronizerFactory s_synchronizerFactory;
 
     public static void Initialize (NameSpace mapiNameSpace)
     {
@@ -35,7 +44,37 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       s_outlookFolderStoreId = ConfigurationManager.AppSettings[string.Format ("{0}.OutlookFolderStoreId", Environment.MachineName)];
 
       _outlookRepository = new OutlookEventRepository (mapiNameSpace, s_outlookFolderEntryId, s_outlookFolderStoreId, NullDateTimeRangeProvider.Instance);
+
+      s_synchronizerFactory = new SynchronizerFactory (
+          @"a:\invalid path",
+          NullTotalProgressFactory.Instance,
+          s_mapiNameSpace,
+          TimeSpan.Zero,
+          TimeSpan.Zero,
+          false,
+          false,
+          true);
     }
+    
+    public static ISynchronizer CreateEventSynchronizer (SynchronizationMode mode, ICalDavDataAccess calDavDataAccess)
+    {
+      var options = new Options()
+                    {
+                        ConflictResolution = ConflictResolution.Automatic,
+                        EmailAddress = "tester@test.com",
+                        IgnoreSynchronizationTimeRange = true,
+                        OutlookFolderEntryId = s_outlookFolderEntryId,
+                        OutlookFolderStoreId = s_outlookFolderStoreId,
+                        SynchronizationMode = mode,
+                        CalenderUrl = "http://invalidurl.net"
+                    };
+
+      return s_synchronizerFactory.CreateEventSynchronizer (
+          options,
+          calDavDataAccess,
+          MockRepository.GenerateStub<IEntityRelationDataAccess<string, DateTime, Uri, string>>());
+    }
+
 
     public static IEntityMapper<AppointmentItemWrapper, IICalendar> EntityMapper
     {
@@ -47,13 +86,18 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       get { return _outlookRepository; }
     }
 
-    public static IICalendar DeserializeICalEvent (string iCalData)
+    public static IICalendar DeserializeICalendar (string iCalData)
     {
       using (var reader = new StringReader (iCalData))
       {
         var calendarCollection = (iCalendarCollection) _calendarSerializer.Deserialize (reader);
         return calendarCollection[0];
       }
+    }
+
+    public static string SerializeICalendar (IICalendar calendar)
+    {
+      return _calendarSerializer.SerializeToString (calendar);
     }
 
     public static AppointmentItemWrapper CreateNewAppointment ()

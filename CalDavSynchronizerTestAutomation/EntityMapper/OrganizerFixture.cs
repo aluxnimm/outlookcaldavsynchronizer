@@ -55,7 +55,7 @@ END:VEVENT
 END:VCALENDAR
       ";
 
-      var evt = OutlookTestContext.DeserializeICalEvent (eventData);
+      var evt = OutlookTestContext.DeserializeICalendar (eventData);
       using (var outlookEvent = OutlookTestContext.CreateNewAppointment())
       {
         OutlookTestContext.EntityMapper.Map2To1 (evt, outlookEvent);

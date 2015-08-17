@@ -118,6 +118,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="Rhino.Mocks">
+      <HintPath>..\packages\RhinoMocks.3.6.1\lib\net\Rhino.Mocks.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
@@ -171,6 +174,7 @@
     <Compile Include="EntityMapper\OrganizerFixture.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="EventRoundTrip\CalDavToOutlookToCalDavRoundTrip.cs" />
     <Compile Include="Infrastructure\IManualAssertUi.cs" />
     <Compile Include="Infrastructure\ITestDisplay.cs" />
     <Compile Include="Infrastructure\ManualAssert.cs" />
