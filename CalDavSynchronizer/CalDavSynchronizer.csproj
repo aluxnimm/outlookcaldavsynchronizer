@@ -221,6 +221,7 @@
     <Compile Include="Implementation\Tasks\OutlookTaskRepository.cs" />
     <Compile Include="Implementation\TimeRangeFiltering\IDateTimeRangeProvider.cs" />
     <Compile Include="Implementation\TimeRangeFiltering\NullDateTimeRangeProvider.cs" />
+    <Compile Include="Properties\AssemblyInfoCommon.cs" />
     <Compile Include="Scheduling\ISynchronizerFactory.cs" />
     <Compile Include="Scheduling\Scheduler.cs" />
     <Compile Include="Scheduling\SynchronizationWorker.cs" />

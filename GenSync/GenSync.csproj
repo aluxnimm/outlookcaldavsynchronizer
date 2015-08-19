@@ -42,6 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\CalDavSynchronizer\Properties\AssemblyInfoCommon.cs">
+      <Link>Properties\AssemblyInfoCommon.cs</Link>
+    </Compile>
     <Compile Include="EntityIdWithVersion.cs" />
     <Compile Include="EntityMapping\IEntityMapper.cs" />
     <Compile Include="EntityRelationManagement\EntityRelationDataAccess.cs" />
