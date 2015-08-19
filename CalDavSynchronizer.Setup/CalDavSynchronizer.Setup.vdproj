@@ -40,13 +40,19 @@
         "Entry"
         {
         "MsmKey" = "8:_55540044C70C5D393A98FB269B600B18"
-        "OwnerKey" = "8:_D0573CF0D3BE46C89FD82CA20842E07A"
+        "OwnerKey" = "8:_B01AB58FFEC43235628BD375E6B9CE66"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_55540044C70C5D393A98FB269B600B18"
         "OwnerKey" = "8:_DE5B6AF0056642F59C77E8057038D9B3"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_55540044C70C5D393A98FB269B600B18"
+        "OwnerKey" = "8:_D0573CF0D3BE46C89FD82CA20842E07A"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -71,6 +77,12 @@
         {
         "MsmKey" = "8:_9DB623BB119C4BC78C98A0D7610B33E2"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B01AB58FFEC43235628BD375E6B9CE66"
+        "OwnerKey" = "8:_D0573CF0D3BE46C89FD82CA20842E07A"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -111,6 +123,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_D73C00E01E857170818C8074E90E4B14"
+        "OwnerKey" = "8:_D0573CF0D3BE46C89FD82CA20842E07A"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_DE5B6AF0056642F59C77E8057038D9B3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -131,6 +149,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_D0573CF0D3BE46C89FD82CA20842E07A"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_B01AB58FFEC43235628BD375E6B9CE66"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -184,13 +208,19 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_55540044C70C5D393A98FB269B600B18"
+        "OwnerKey" = "8:_D73C00E01E857170818C8074E90E4B14"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_43EC16D9D9A6EAD58110391E1371EBA5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_55540044C70C5D393A98FB269B600B18"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -493,6 +523,37 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B01AB58FFEC43235628BD375E6B9CE66"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:GenSync, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_B01AB58FFEC43235628BD375E6B9CE66"
+                    {
+                    "Name" = "8:GenSync.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:GenSync.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B86C1143864BAFE508CC8B179E0A033C"
             {
             "AssemblyRegister" = "3:1"
@@ -569,6 +630,37 @@
                     }
                 }
             "SourcePath" = "8:Microsoft.VisualStudio.Tools.Applications.Runtime.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_D73C00E01E857170818C8074E90E4B14"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Thought.vCards, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_D73C00E01E857170818C8074E90E4B14"
+                    {
+                    "Name" = "8:Thought.vCards.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Thought.vCards.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
@@ -696,15 +788,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CalDavSynchronizer"
-        "ProductCode" = "8:{A84E32EE-D605-4737-9DDF-73EF5301C64B}"
-        "PackageCode" = "8:{34A747D0-A7F5-4FF3-A098-1B8AA9FDD456}"
+        "ProductCode" = "8:{0A8B1753-6DFF-4D46-9ABD-007DDA40574C}"
+        "PackageCode" = "8:{07DD8FBF-9A35-451B-BCCE-C321DF55DA25}"
         "UpgradeCode" = "8:{691063F4-DD9A-4264-948D-3FBD2565572C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
-        "RemovePreviousVersions" = "11:FALSE"
+        "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.0"
+        "ProductVersion" = "8:1.0.1"
         "Manufacturer" = "8:Gerhard Zehetbauer"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
