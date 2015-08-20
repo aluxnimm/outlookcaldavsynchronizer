@@ -112,8 +112,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
         vCard newVcard = new vCard();
+        newVcard.UniqueId = entityToUpdate.UniqueId;
         newVcard = entityModifier (newVcard);
-
 
         return _cardDavDataAccess.UpdateEntity (entityId, Serialize (newVcard));
       }
