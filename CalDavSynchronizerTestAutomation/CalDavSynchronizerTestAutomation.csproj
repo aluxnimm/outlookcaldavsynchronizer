@@ -174,7 +174,8 @@
     <Compile Include="EntityMapper\OrganizerFixture.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="EventRoundTrip\CalDavToOutlookToCalDavRoundTrip.cs" />
+    <Compile Include="SynchronizerTests\CalDavToOutlookToCalDavRoundTrip.cs" />
+    <Compile Include="Infrastructure\EntityRelationStorage.cs" />
     <Compile Include="Infrastructure\IManualAssertUi.cs" />
     <Compile Include="Infrastructure\ITestDisplay.cs" />
     <Compile Include="Infrastructure\ManualAssert.cs" />
@@ -215,6 +216,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="SynchronizerTests\OutlookToCalDav.cs" />
     <Compile Include="TestAutomationRibbon.cs">
       <SubType>Component</SubType>
     </Compile>

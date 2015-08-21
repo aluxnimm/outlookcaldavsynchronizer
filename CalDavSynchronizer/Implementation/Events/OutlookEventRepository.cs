@@ -156,9 +156,17 @@ namespace CalDavSynchronizer.Implementation.Events
       }
     }
 
-    public static AppointmentItemWrapper CreateNewAppointmentForTesting (MAPIFolder calendarFolder, NameSpace mapiNamespace)
+    public static AppointmentItemWrapper CreateNewAppointmentForTesting (MAPIFolder calendarFolder, NameSpace mapiNamespace, string folderStoreId)
     {
-      return new AppointmentItemWrapper ((AppointmentItem) calendarFolder.Items.Add (OlItemType.olAppointmentItem), entryId => (AppointmentItem) mapiNamespace.GetItemFromID (entryId, calendarFolder.StoreID));
+      return new AppointmentItemWrapper ((AppointmentItem) calendarFolder.Items.Add (OlItemType.olAppointmentItem), entryId => (AppointmentItem) mapiNamespace.GetItemFromID (entryId, folderStoreId));
+    }
+
+
+    public static AppointmentItemWrapper GetOutlookEventForTesting (string id, NameSpace mapiNamespace, string folderStoreId)
+    {
+      return new AppointmentItemWrapper (
+          (AppointmentItem) mapiNamespace.GetItemFromID (id, folderStoreId),
+          entryId => (AppointmentItem) mapiNamespace.GetItemFromID (id, folderStoreId));
     }
   }
 }

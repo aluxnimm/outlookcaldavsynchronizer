@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 
 namespace CalDavSynchronizer.Implementation.ComWrappers
 {
-  internal static class ComEnumerableExtensions
+  public static class ComEnumerableExtensions
   {
     public static IEnumerable<T> ToSafeEnumerable<T> (this IEnumerable<T> source)
     {

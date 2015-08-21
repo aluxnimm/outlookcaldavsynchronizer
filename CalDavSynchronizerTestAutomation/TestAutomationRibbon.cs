@@ -31,7 +31,7 @@ namespace CalDavSynchronizerTestAutomation
     {
       if (System.Threading.SynchronizationContext.Current == null)
       {
-        System.Threading.SynchronizationContext.SetSynchronizationContext (new WindowsFormsSynchronizationContext ());
+        System.Threading.SynchronizationContext.SetSynchronizationContext (new WindowsFormsSynchronizationContext());
       }
     }
   }
