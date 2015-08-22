@@ -40,7 +40,7 @@
         "Entry"
         {
         "MsmKey" = "8:_55540044C70C5D393A98FB269B600B18"
-        "OwnerKey" = "8:_B01AB58FFEC43235628BD375E6B9CE66"
+        "OwnerKey" = "8:_ADCC600B9E5EDCC771B1A77354FF331A"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -81,7 +81,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_B01AB58FFEC43235628BD375E6B9CE66"
+        "MsmKey" = "8:_ADCC600B9E5EDCC771B1A77354FF331A"
         "OwnerKey" = "8:_D0573CF0D3BE46C89FD82CA20842E07A"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -154,12 +154,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_B01AB58FFEC43235628BD375E6B9CE66"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_DE5B6AF0056642F59C77E8057038D9B3"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -215,6 +209,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_43EC16D9D9A6EAD58110391E1371EBA5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_ADCC600B9E5EDCC771B1A77354FF331A"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -523,14 +523,14 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B01AB58FFEC43235628BD375E6B9CE66"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_ADCC600B9E5EDCC771B1A77354FF331A"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:GenSync, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_B01AB58FFEC43235628BD375E6B9CE66"
+                    "_ADCC600B9E5EDCC771B1A77354FF331A"
                     {
                     "Name" = "8:GenSync.dll"
                     "Attributes" = "3:512"
@@ -788,15 +788,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CalDavSynchronizer"
-        "ProductCode" = "8:{0A8B1753-6DFF-4D46-9ABD-007DDA40574C}"
-        "PackageCode" = "8:{07DD8FBF-9A35-451B-BCCE-C321DF55DA25}"
+        "ProductCode" = "8:{D69D350D-8CC5-4C1B-A756-CDFE76EA25FA}"
+        "PackageCode" = "8:{D3D2A301-1478-4E0E-8837-50B88DFA724C}"
         "UpgradeCode" = "8:{691063F4-DD9A-4264-948D-3FBD2565572C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.1"
+        "ProductVersion" = "8:1.0.2"
         "Manufacturer" = "8:Gerhard Zehetbauer"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -1398,7 +1398,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_D0573CF0D3BE46C89FD82CA20842E07A"
             {
-            "SourcePath" = "8:..\\CalDavSynchronizer\\obj\\Release\\CalDavSynchronizer.dll"
+            "SourcePath" = "8:..\\CalDavSynchronizer\\obj\\Debug\\CalDavSynchronizer.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
@@ -1426,7 +1426,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_DE5B6AF0056642F59C77E8057038D9B3"
             {
-            "SourcePath" = "8:..\\GenSync\\obj\\Release\\GenSync.dll"
+            "SourcePath" = "8:..\\GenSync\\obj\\Debug\\GenSync.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"

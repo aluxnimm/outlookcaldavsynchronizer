@@ -50,6 +50,9 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changlog ###
 
+#### 1.0.2 ####
+- Bugfix: Preserve UID when updating an Event.
+
 #### 0.99.16 ####
 - Make filtering for time range optional
 
