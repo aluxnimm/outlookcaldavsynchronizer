@@ -20,7 +20,7 @@ using GenSync.Synchronization;
 
 namespace CalDavSynchronizer.Scheduling
 {
-  internal interface ISynchronizerFactory
+  public interface ISynchronizerFactory
   {
     ISynchronizer CreateSynchronizer (Options options);
   }

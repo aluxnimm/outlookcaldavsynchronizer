@@ -18,7 +18,7 @@ using System;
 
 namespace CalDavSynchronizer.AutomaticUpdates
 {
-  internal class NewerVersionFoundEventArgs : EventArgs
+  public class NewerVersionFoundEventArgs : EventArgs
   {
     private readonly string _whatsNewInformation;
     private readonly string _downloadLink;

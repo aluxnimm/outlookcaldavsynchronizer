@@ -18,7 +18,7 @@ using System;
 
 namespace CalDavSynchronizer.AutomaticUpdates
 {
-  internal interface IAvailableVersionService
+  public interface IAvailableVersionService
   {
     Version GetVersionOfDefaultDownload ();
     string GetWhatsNewNoThrow (Version oldVersion, Version newVersion);

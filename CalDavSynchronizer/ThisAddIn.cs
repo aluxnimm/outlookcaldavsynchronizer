@@ -15,111 +15,21 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Configuration;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Windows.Forms;
-using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.DataAccess;
-using CalDavSynchronizer.Scheduling;
-using CalDavSynchronizer.Utilities;
-using GenSync.ProgressReport;
-using log4net;
-using log4net.Config;
-using Microsoft.Office.Interop.Outlook;
 using Microsoft.Office.Tools.Ribbon;
-using Exception = System.Exception;
 using Office = Microsoft.Office.Core;
 
 namespace CalDavSynchronizer
 {
   public partial class ThisAddIn
   {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
-
-    internal static Scheduler Scheduler { get; private set; }
-    internal static IOptionsDataAccess OptionsDataAccess { get; private set; }
-    internal static NameSpace Session { get; private set; }
+    public static ComponentContainer ComponentContainer { get; private set; }
 
 
     private void ThisAddIn_Startup (object sender, EventArgs e)
     {
-      InitializeSynchronizer();
+      ComponentContainer = new ComponentContainer (Application.Session);
     }
 
-    private void InitializeSynchronizer ()
-    {
-      try
-      {
-        XmlConfigurator.Configure();
-
-        Session = Application.Session;
-        s_logger.Info ("Startup...");
-
-        EnsureSynchronizationContext();
-
-        var applicationDataDirectory = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData), "CalDavSynchronizer");
-
-        OptionsDataAccess = new OptionsDataAccess (
-            Path.Combine (
-                applicationDataDirectory,
-                GetOrCreateConfigFileName (applicationDataDirectory, Session.CurrentProfileName)
-                ));
-
-        var synchronizerFactory = new SynchronizerFactory (
-            applicationDataDirectory,
-            new TotalProgressFactory (
-                new Ui.ProgressFormFactory(),
-                int.Parse (ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"]),
-                ExceptionHandler.Instance),
-            Application.Session,
-            TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-            TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]),
-            Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"]),
-            Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"]),
-            Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"]));
-
-        Scheduler = new Scheduler (synchronizerFactory);
-        Scheduler.SetOptions (OptionsDataAccess.LoadOptions());
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.LogException (x, s_logger);
-        throw;
-      }
-
-      s_logger.Info ("Startup finnished");
-    }
-
-    /// <summary>
-    /// Ensures that the syncronizationcontext is not null ( it seems to be a bug that the synchronizationcontext is null in Office Addins)
-    /// </summary>
-    public static void EnsureSynchronizationContext ()
-    {
-      if (System.Threading.SynchronizationContext.Current == null)
-      {
-        System.Threading.SynchronizationContext.SetSynchronizationContext (new WindowsFormsSynchronizationContext());
-      }
-    }
-
-    private static string GetOrCreateConfigFileName (string applicationDataDirectory, string profileName)
-    {
-      var profileDataAccess = new ProfileListDataAccess (Path.Combine (applicationDataDirectory, "profiles.xml"));
-      var profiles = profileDataAccess.Load();
-      var profile = profiles.FirstOrDefault (p => p.ProfileName.Equals (profileName, StringComparison.OrdinalIgnoreCase));
-      if (profile == null)
-      {
-        profile = new ProfileEntry()
-                  {
-                      ProfileName = profileName,
-                      ConfigFileName = string.Format ("options_{0}.xml", Guid.NewGuid())
-                  };
-        profiles = profiles.Union (new[] { profile }).ToArray();
-        profileDataAccess.Save (profiles);
-      }
-      return profile.ConfigFileName;
-    }
 
     private void ThisAddIn_Shutdown (object sender, EventArgs e)
     {

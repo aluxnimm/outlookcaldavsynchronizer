@@ -56,7 +56,8 @@ namespace CalDavSynchronizer.AutomaticUpdates
       try
       {
         var client = new WebClient();
-        var readme = client.DownloadString (new Uri ("http://sourceforge.net/p/outlookcaldavsynchronizer/code/ci/master/tree/README.md?format=raw"));
+        var readme = client.DownloadString (new Uri ("http://sourceforge.net/p/outlookcaldavsynchronizer/code/ci/master/tree/README.md?format=raw"))
+            .Replace ("\n", Environment.NewLine);
 
         var start = Find (readme, newVersion);
         var end = Find (readme, oldVersion);

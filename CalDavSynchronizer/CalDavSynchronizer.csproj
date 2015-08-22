@@ -181,6 +181,7 @@
     <Compile Include="CalDavSynchronizerRibbon.Designer.cs">
       <DependentUpon>CalDavSynchronizerRibbon.cs</DependentUpon>
     </Compile>
+    <Compile Include="ComponentContainer.cs" />
     <Compile Include="Contracts\ProfileEntry.cs" />
     <Compile Include="DataAccess\CardDavClient.cs" />
     <Compile Include="DataAccess\ICardDavDataAccess.cs" />
@@ -238,6 +239,12 @@
     <Compile Include="Contracts\Options.cs" />
     <Compile Include="Implementation\SynchronizationMode.cs" />
     <Compile Include="Scheduling\SynchronizerFactory.cs" />
+    <Compile Include="Ui\GetNewVersionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ui\GetNewVersionForm.Designer.cs">
+      <DependentUpon>GetNewVersionForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Ui\AboutForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -263,6 +270,9 @@
     </Compile>
     <EmbeddedResource Include="CalDavSynchronizerRibbon.resx">
       <DependentUpon>CalDavSynchronizerRibbon.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ui\GetNewVersionForm.resx">
+      <DependentUpon>GetNewVersionForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>

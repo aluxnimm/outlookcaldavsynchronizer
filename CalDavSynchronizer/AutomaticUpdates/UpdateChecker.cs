@@ -25,7 +25,7 @@ using log4net;
 
 namespace CalDavSynchronizer.AutomaticUpdates
 {
-  internal class UpdateChecker
+  public class UpdateChecker
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -58,19 +58,22 @@ namespace CalDavSynchronizer.AutomaticUpdates
       get { return _isEnabled; }
       set
       {
-        if (value)
+        if (value != _isEnabled)
         {
-          _timer.Change (TimeSpan.FromSeconds (10), TimeSpan.FromDays (1));
-        }
-        else
-        {
-          lock (_timerLock)
+          if (value)
           {
-            _timer.Change (Timeout.Infinite, Timeout.Infinite);
+            _timer.Change (TimeSpan.FromSeconds (10), TimeSpan.FromDays (1));
           }
-        }
+          else
+          {
+            lock (_timerLock)
+            {
+              _timer.Change (Timeout.Infinite, Timeout.Infinite);
+            }
+          }
 
-        _isEnabled = value;
+          _isEnabled = value;
+        }
       }
     }
 

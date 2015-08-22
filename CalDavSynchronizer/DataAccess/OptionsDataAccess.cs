@@ -18,12 +18,14 @@ using System;
 using System.IO;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Utilities;
+using Microsoft.Win32;
 
 namespace CalDavSynchronizer.DataAccess
 {
   internal class OptionsDataAccess : IOptionsDataAccess
   {
     private readonly string _optionsFilePath;
+    private const string s_OptionsRegistryKey = @"Software\CalDavSynchronizer";
 
     public OptionsDataAccess (string optionsFilePath)
     {
@@ -44,6 +46,32 @@ namespace CalDavSynchronizer.DataAccess
         Directory.CreateDirectory (Path.GetDirectoryName (_optionsFilePath));
 
       File.WriteAllText (_optionsFilePath, Serializer<Options[]>.Serialize (options));
+    }
+
+    public bool ShouldCheckForNewerVersions
+    {
+      get
+      {
+        using (var key = OpenOptionsKey())
+        {
+          return (int) (key.GetValue ("CheckForNewerVersions") ?? 1) != 0;
+        }
+      }
+      set
+      {
+        using (var key = OpenOptionsKey())
+        {
+          key.SetValue ("CheckForNewerVersions", value ? 1 : 0);
+        }
+      }
+    }
+
+    private static RegistryKey OpenOptionsKey ()
+    {
+      var key = Registry.CurrentUser.OpenSubKey (s_OptionsRegistryKey, true);
+      if (key == null)
+        key = Registry.CurrentUser.CreateSubKey (s_OptionsRegistryKey);
+      return key;
     }
   }
 }
