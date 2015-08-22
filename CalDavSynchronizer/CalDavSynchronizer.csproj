@@ -171,6 +171,10 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="AutomaticUpdates\AvailableVersionService.cs" />
+    <Compile Include="AutomaticUpdates\IAvailableVersionService.cs" />
+    <Compile Include="AutomaticUpdates\NewerVersionFoundEventArgs.cs" />
+    <Compile Include="AutomaticUpdates\UpdateChecker.cs" />
     <Compile Include="CalDavSynchronizerRibbon.cs">
       <SubType>Component</SubType>
     </Compile>
