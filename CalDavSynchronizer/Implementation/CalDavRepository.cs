@@ -132,25 +132,8 @@ namespace CalDavSynchronizer.Implementation
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
-        IICalendar newCalendar = new iCalendar();
-        newCalendar = entityModifier (newCalendar);
-
-        if (entityToUpdate.Events.Count > 0)
-        {
-          for (int i = 0, newSequenceNumber = entityToUpdate.Events.Max (e => e.Sequence) + 1; i < newCalendar.Events.Count; i++, newSequenceNumber++)
-          {
-            newCalendar.Events[i].Sequence = newSequenceNumber;
-          }
-        }
-        if (entityToUpdate.Todos.Count > 0)
-        {
-          for (int i = 0, newSequenceNumber = entityToUpdate.Todos.Max (e => e.Sequence) + 1; i < newCalendar.Todos.Count; i++, newSequenceNumber++)
-          {
-            newCalendar.Todos[i].Sequence = newSequenceNumber;
-          }
-        }
-
-        return _calDavDataAccess.UpdateEntity (entityId, SerializeCalendar (newCalendar));
+        var updatedEntity = entityModifier (entityToUpdate);
+        return _calDavDataAccess.UpdateEntity (entityId, SerializeCalendar (updatedEntity));
       }
     }
 
@@ -160,15 +143,6 @@ namespace CalDavSynchronizer.Implementation
       {
         IICalendar newCalendar = new iCalendar();
         newCalendar = entityInitializer (newCalendar);
-        for (int i = 0; i < newCalendar.Events.Count; i++)
-        {
-          newCalendar.Events[i].Sequence = i;
-        }
-        for (int i = 0; i < newCalendar.Todos.Count; i++)
-        {
-          newCalendar.Todos[i].Sequence = i;
-        }
-
         return _calDavDataAccess.CreateEntity (SerializeCalendar (newCalendar));
       }
     }

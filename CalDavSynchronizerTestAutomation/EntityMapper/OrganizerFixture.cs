@@ -10,6 +10,7 @@ namespace CalDavSynchronizerTestAutomation.EntityMapper
   public class OrganizerFixture
   {
     [Test]
+    [ContainsManualAssert]
     public void TestOrganizerRoundTrip ()
     {
       var eventData = @"
@@ -68,9 +69,7 @@ END:VCALENDAR
 
         inspector.Close (OlInspectorClose.olDiscard);
 
-        IICalendar newCalendar = new iCalendar();
-
-        OutlookTestContext.EntityMapper.Map1To2 (outlookEvent, newCalendar);
+        var newCalendar = OutlookTestContext.EntityMapper.Map1To2 (outlookEvent, new iCalendar());
 
         Assert.That (newCalendar.Events[0].Organizer.CommonName, Is.EqualTo ("Test Account"));
         Assert.That (newCalendar.Events[0].Organizer.Value.ToString(), Is.EqualTo ("mailto:tw13test@technikum-wien.at"));

@@ -61,15 +61,31 @@ namespace CalDavSynchronizer.Implementation.Events
       _outlookMajorVersion = Convert.ToInt32 (outlookMajorVersionString);
     }
 
-    public IICalendar Map1To2 (AppointmentItemWrapper sourceWrapper, IICalendar targetCalender)
+    public IICalendar Map1To2 (AppointmentItemWrapper sourceWrapper, IICalendar existingTargetCalender)
     {
-      var source = sourceWrapper.Inner;
-      IEvent target = new Event();
-      var localIcalTimeZone = iCalTimeZone.FromSystemTimeZone(_localTimeZoneInfo, new DateTime (1970,1,1),true);
-      targetCalender.TimeZones.Add (localIcalTimeZone);
-      targetCalender.Events.Add (target);
-      Map1To2 (source, target, false, localIcalTimeZone);
-      return targetCalender;
+      var newTargetCalender = new iCalendar();
+      var localIcalTimeZone = iCalTimeZone.FromSystemTimeZone (_localTimeZoneInfo, new DateTime (1970, 1, 1), true);
+      newTargetCalender.TimeZones.Add (localIcalTimeZone);
+
+      var existingTargetEvent = existingTargetCalender.Events.FirstOrDefault (e => e.RecurrenceID == null);
+
+      var newTargetEvent = new Event();
+
+      if (existingTargetEvent != null)
+        newTargetEvent.UID = existingTargetEvent.UID;
+
+      newTargetCalender.Events.Add (newTargetEvent);
+
+      Map1To2 (sourceWrapper.Inner, newTargetEvent, false, localIcalTimeZone);
+
+      for (int i = 0, newSequenceNumber = existingTargetCalender.Events.Count > 0 ? existingTargetCalender.Events.Max (e => e.Sequence) + 1 : 0;
+          i < newTargetCalender.Events.Count;
+          i++, newSequenceNumber++)
+      {
+        newTargetCalender.Events[i].Sequence = newSequenceNumber;
+      }
+
+      return newTargetCalender;
     }
 
     private void Map1To2 (AppointmentItem source, IEvent target, bool isRecurrenceException,iCalTimeZone localIcalTimeZone)

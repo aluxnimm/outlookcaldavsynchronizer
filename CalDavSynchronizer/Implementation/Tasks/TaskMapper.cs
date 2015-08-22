@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using DDay.iCal;
@@ -20,12 +21,30 @@ namespace CalDavSynchronizer.Implementation.Tasks
       _dateNull = new DateTime(4501, 1, 1, 0, 0, 0);
       _localTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (localTimeZoneId);
     }
-    public IICalendar Map1To2 (TaskItemWrapper source, IICalendar targetCalender)
+
+    public IICalendar Map1To2 (TaskItemWrapper source, IICalendar existingTargetCalender)
     {
-      ITodo target = new Todo();
-      targetCalender.Todos.Add (target);
-      Map1To2 (source, target);
-      return targetCalender;
+      var newTargetCalender = new iCalendar();
+
+      var existingTargetTodo = existingTargetCalender.Todos.FirstOrDefault (e => e.RecurrenceID == null);
+
+      var newTargetTodo = new Todo();
+
+      if (existingTargetTodo != null)
+        newTargetTodo.UID = existingTargetTodo.UID;
+
+      newTargetCalender.Todos.Add (newTargetTodo);
+
+      Map1To2 (source, newTargetTodo);
+
+      for (int i = 0, newSequenceNumber = existingTargetCalender.Todos.Count > 0 ? existingTargetCalender.Todos.Max (e => e.Sequence) + 1 : 0;
+          i < newTargetCalender.Todos.Count;
+          i++, newSequenceNumber++)
+      {
+        newTargetCalender.Todos[i].Sequence = newSequenceNumber;
+      }
+
+      return newTargetCalender;
     }
 
     public void Map1To2 (TaskItemWrapper source, ITodo target)
