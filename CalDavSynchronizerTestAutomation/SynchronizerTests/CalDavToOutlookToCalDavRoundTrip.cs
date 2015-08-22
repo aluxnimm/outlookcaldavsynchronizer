@@ -7,7 +7,7 @@ namespace CalDavSynchronizerTestAutomation.SynchronizerTests
   [TestFixture]
   public class CalDavToOutlookToCalDavRoundTrip
   {
-    [Test]
+    //[Test]
     public void KeepsCustomProperties ()
     {
       var eventData = @"
