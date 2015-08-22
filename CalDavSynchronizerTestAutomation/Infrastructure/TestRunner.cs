@@ -17,16 +17,27 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       _testDisplay = testDisplay;
     }
 
-    public void Run (Assembly testAssembly)
+    public void Run (Assembly testAssembly, bool excludeManual)
     {
-      var testFixtures = testAssembly.GetTypes().Where (t => t.GetCustomAttributes (typeof (TestFixtureAttribute), true).Any());
+      var testFixtures = testAssembly
+          .GetTypes()
+          .Where (t => t.GetCustomAttributes (typeof (TestFixtureAttribute), true).Any());
+
+
       foreach (var testFixture in testFixtures)
-        Run (testFixture);
+        Run (testFixture, excludeManual);
     }
 
-    private void Run (Type testFixture)
+    private void Run (Type testFixture, bool excludeManual)
     {
       var tests = testFixture.GetMethods().Where (m => m.GetCustomAttributes (typeof (TestAttribute), true).Any());
+
+      if (excludeManual)
+      {
+        tests = tests
+            .Where (t => !t.GetCustomAttributes (typeof (ContainsManualAssertAttribute), true).Any());
+      }
+
       var testFixtureInstance = testFixture.GetConstructor (Type.EmptyTypes).Invoke (new object[] { });
       foreach (var test in tests)
         Run (testFixtureInstance, test);

@@ -62,6 +62,9 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
         var parent = GetOrCreateNode (parentPath);
         var nodeName = path.Substring (seperator + 1, path.Length - seperator - 1);
         node = parent.Nodes.Add (nodeName);
+
+        if (!parent.IsExpanded)
+          parent.Expand ();
       }
       else
       {
@@ -69,6 +72,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       }
 
       _nodesByPath.Add (path, node);
+
       return node;
     }
 

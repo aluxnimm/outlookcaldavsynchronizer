@@ -37,6 +37,7 @@
       this.tab1 = this.Factory.CreateRibbonTab();
       this.group1 = this.Factory.CreateRibbonGroup();
       this.StartTestsButton = this.Factory.CreateRibbonButton();
+      this.StartTestsExcludeManualButton = this.Factory.CreateRibbonButton();
       this.tab1.SuspendLayout();
       this.group1.SuspendLayout();
       // 
@@ -50,13 +51,20 @@
       // group1
       // 
       this.group1.Items.Add(this.StartTestsButton);
+      this.group1.Items.Add(this.StartTestsExcludeManualButton);
       this.group1.Name = "group1";
       // 
       // StartTestsButton
       // 
-      this.StartTestsButton.Label = "Start tests";
+      this.StartTestsButton.Label = "Start tests (all)";
       this.StartTestsButton.Name = "StartTestsButton";
       this.StartTestsButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.StartTestsButton_Click);
+      // 
+      // StartTestsExcludeManualButton
+      // 
+      this.StartTestsExcludeManualButton.Label = "Start tests (exclude manual)";
+      this.StartTestsExcludeManualButton.Name = "StartTestsExcludeManualButton";
+      this.StartTestsExcludeManualButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.StartTestsExcludeManualButton_Click);
       // 
       // CalDavSynchronizerTestRibbon
       // 
@@ -76,6 +84,7 @@
     internal Microsoft.Office.Tools.Ribbon.RibbonTab tab1;
     internal Microsoft.Office.Tools.Ribbon.RibbonGroup group1;
     internal Microsoft.Office.Tools.Ribbon.RibbonButton StartTestsButton;
+    internal Microsoft.Office.Tools.Ribbon.RibbonButton StartTestsExcludeManualButton;
   }
 
   partial class ThisRibbonCollection

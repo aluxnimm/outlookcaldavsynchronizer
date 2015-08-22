@@ -15,13 +15,18 @@ namespace CalDavSynchronizerTestAutomation
 
     private void StartTestsButton_Click (object sender, RibbonControlEventArgs e)
     {
+      StartTests(false);
+    }
+
+    private static void StartTests (bool excludeManual)
+    {
       EnsureSynchronizationContext();
       var display = new TestResultDisplay();
       display.Show();
       var runner = new TestRunner (display);
       ManualAssert.Initialize (display);
       OutlookTestContext.Initialize (Globals.ThisAddIn.Application.Session);
-      runner.Run (Assembly.GetExecutingAssembly());
+      runner.Run (Assembly.GetExecutingAssembly(), excludeManual);
     }
 
     /// <summary>
@@ -33,6 +38,11 @@ namespace CalDavSynchronizerTestAutomation
       {
         System.Threading.SynchronizationContext.SetSynchronizationContext (new WindowsFormsSynchronizationContext());
       }
+    }
+
+    private void StartTestsExcludeManualButton_Click (object sender, RibbonControlEventArgs e)
+    {
+      StartTests (true);
     }
   }
 }
