@@ -15,43 +15,35 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using Microsoft.Office.Tools.Ribbon;
-using Office = Microsoft.Office.Core;
 
-namespace CalDavSynchronizer
+namespace CalDavSynchronizer.AutomaticUpdates
 {
-  public partial class ThisAddIn
+  public class NewerVersionFoundEventArgs : EventArgs
   {
-    public static ComponentContainer ComponentContainer { get; private set; }
+    private readonly string _whatsNewInformation;
+    private readonly string _downloadLink;
+    private readonly Version _newVersion;
 
-
-    private void ThisAddIn_Startup (object sender, EventArgs e)
+    public NewerVersionFoundEventArgs (Version newVersion, string whatsNewInformation, string downloadLink)
     {
-      ComponentContainer = new ComponentContainer (Application.Session);
+      _newVersion = newVersion;
+      _whatsNewInformation = whatsNewInformation;
+      _downloadLink = downloadLink;
     }
 
-
-    private void ThisAddIn_Shutdown (object sender, EventArgs e)
+    public string WhatsNewInformation
     {
+      get { return _whatsNewInformation; }
     }
 
-    protected override IRibbonExtension[] CreateRibbonObjects ()
+    public string DownloadLink
     {
-      return new IRibbonExtension[] { new CalDavSynchronizerRibbon() };
+      get { return _downloadLink; }
     }
 
-    #region VSTO generated code
-
-    /// <summary>
-    /// Required method for Designer support - do not modify
-    /// the contents of this method with the code editor.
-    /// </summary>
-    private void InternalStartup ()
+    public Version NewVersion
     {
-      Startup += ThisAddIn_Startup;
-      Shutdown += ThisAddIn_Shutdown;
+      get { return _newVersion; }
     }
-
-    #endregion
   }
 }

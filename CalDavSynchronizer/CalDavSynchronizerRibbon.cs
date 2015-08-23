@@ -9,41 +9,18 @@ namespace CalDavSynchronizer
 {
   public partial class CalDavSynchronizerRibbon
   {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
-
     private void CalDavSynchronizerRibbon_Load (object sender, RibbonUIEventArgs e)
     {
     }
 
     private async void SynchronizeNowButton_Click (object sender, RibbonControlEventArgs e)
     {
-      try
-      {
-        s_logger.Info ("Synchronization manually triggered");
-        ThisAddIn.EnsureSynchronizationContext ();
-        await ThisAddIn.Scheduler.RunNow();
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.HandleException (x, s_logger);
-      }
+      await ThisAddIn.ComponentContainer.SynchronizeNowNoThrow();
     }
 
     private void OptionsButton_Click (object sender, RibbonControlEventArgs e)
     {
-      try
-      {
-        var options = ThisAddIn.OptionsDataAccess.LoadOptions();
-        if (OptionsForm.EditOptions (ThisAddIn.Session, options, out options))
-        {
-          ThisAddIn.OptionsDataAccess.SaveOptions (options);
-          ThisAddIn.Scheduler.SetOptions (options);
-        }
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.HandleException (x, s_logger);
-      }
+      ThisAddIn.ComponentContainer.ShowOptionsNoThrow ();
     }
 
     private void AboutButton_Click (object sender, RibbonControlEventArgs e)

@@ -25,7 +25,7 @@ using log4net;
 
 namespace CalDavSynchronizer.Scheduling
 {
-  internal class Scheduler
+  public class Scheduler
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -34,10 +34,17 @@ namespace CalDavSynchronizer.Scheduling
     private Dictionary<Guid, SynchronizationWorker> _workersById = new Dictionary<Guid, SynchronizationWorker>();
     private readonly TimeSpan _timerInterval = TimeSpan.FromSeconds (30);
     private readonly ISynchronizerFactory _synchronizerFactory;
+    private readonly Action _ensureSynchronizationContext;
 
-    public Scheduler (ISynchronizerFactory synchronizerFactory)
+    public Scheduler (ISynchronizerFactory synchronizerFactory, Action ensureSynchronizationContext)
     {
+      if (synchronizerFactory == null)
+        throw new ArgumentNullException ("synchronizerFactory");
+      if (ensureSynchronizationContext == null)
+        throw new ArgumentNullException ("ensureSynchronizationContext");
+
       _synchronizerFactory = synchronizerFactory;
+      _ensureSynchronizationContext = ensureSynchronizationContext;
       _synchronizationTimer.Tick += _synchronizationTimer_Tick;
       _synchronizationTimer.Interval = (int) _timerInterval.TotalMilliseconds;
       _synchronizationTimer.Start();
@@ -48,7 +55,7 @@ namespace CalDavSynchronizer.Scheduling
     {
       try
       {
-        ThisAddIn.EnsureSynchronizationContext();
+        _ensureSynchronizationContext();
         _synchronizationTimer.Stop();
         foreach (var worker in _workersById.Values)
           await worker.RunIfRequiredAndReschedule();

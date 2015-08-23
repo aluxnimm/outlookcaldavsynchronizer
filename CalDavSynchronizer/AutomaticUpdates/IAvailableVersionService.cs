@@ -15,13 +15,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using CalDavSynchronizer.Contracts;
-using GenSync.Synchronization;
 
-namespace CalDavSynchronizer.Scheduling
+namespace CalDavSynchronizer.AutomaticUpdates
 {
-  public interface ISynchronizerFactory
+  public interface IAvailableVersionService
   {
-    ISynchronizer CreateSynchronizer (Options options);
+    Version GetVersionOfDefaultDownload ();
+    string GetWhatsNewNoThrow (Version oldVersion, Version newVersion);
+    string DownloadLink { get; }
   }
 }

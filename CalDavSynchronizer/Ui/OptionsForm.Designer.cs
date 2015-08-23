@@ -37,6 +37,7 @@ namespace CalDavSynchronizer.Ui
       this._tabControl = new System.Windows.Forms.TabControl();
       this._tabImageList = new System.Windows.Forms.ImageList(this.components);
       this._addProfileButton = new System.Windows.Forms.Button();
+      this._checkForNewerVersionsCheckBox = new System.Windows.Forms.CheckBox();
       this.SuspendLayout();
       // 
       // _okButton
@@ -94,6 +95,16 @@ namespace CalDavSynchronizer.Ui
       this._addProfileButton.UseVisualStyleBackColor = true;
       this._addProfileButton.Click += new System.EventHandler(this._addProfileButton_Click);
       // 
+      // _checkForNewerVersionsCheckBox
+      // 
+      this._checkForNewerVersionsCheckBox.AutoSize = true;
+      this._checkForNewerVersionsCheckBox.Location = new System.Drawing.Point(13, 628);
+      this._checkForNewerVersionsCheckBox.Name = "_checkForNewerVersionsCheckBox";
+      this._checkForNewerVersionsCheckBox.Size = new System.Drawing.Size(210, 17);
+      this._checkForNewerVersionsCheckBox.TabIndex = 4;
+      this._checkForNewerVersionsCheckBox.Text = "Automatically check for newer versions";
+      this._checkForNewerVersionsCheckBox.UseVisualStyleBackColor = true;
+      // 
       // OptionsForm
       // 
       this.AcceptButton = this._okButton;
@@ -101,8 +112,9 @@ namespace CalDavSynchronizer.Ui
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.AutoSize = true;
       this.CancelButton = this._cancelButton;
-      this.ClientSize = new System.Drawing.Size(457, 630);
+      this.ClientSize = new System.Drawing.Size(457, 652);
       this.ControlBox = false;
+      this.Controls.Add(this._checkForNewerVersionsCheckBox);
       this.Controls.Add(this._addProfileButton);
       this.Controls.Add(this._tabControl);
       this.Controls.Add(this._cancelButton);
@@ -113,6 +125,7 @@ namespace CalDavSynchronizer.Ui
       this.Name = "OptionsForm";
       this.Text = "CalDav Synchronizer";
       this.ResumeLayout(false);
+      this.PerformLayout();
 
     }
 
@@ -123,6 +136,7 @@ namespace CalDavSynchronizer.Ui
     private System.Windows.Forms.TabControl _tabControl;
     private System.Windows.Forms.Button _addProfileButton;
     private System.Windows.Forms.ImageList _tabImageList;
+    private System.Windows.Forms.CheckBox _checkForNewerVersionsCheckBox;
 
   }
 }
