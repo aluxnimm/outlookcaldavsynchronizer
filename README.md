@@ -50,6 +50,9 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changlog ###
 
+#### 1.0.3 ####
+- Add feature, which checks if a newer version is available (Ticket 61)
+
 #### 1.0.2 ####
 - Bugfix: Preserve UID when updating an Event.
 
