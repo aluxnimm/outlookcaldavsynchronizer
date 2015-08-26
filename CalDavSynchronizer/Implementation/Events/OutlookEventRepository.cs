@@ -60,7 +60,7 @@ namespace CalDavSynchronizer.Implementation.Events
       var range = _dateTimeRangeProvider.GetRange();
       object filter;
       if (range.HasValue)
-        filter = String.Format ("[Start] < '{0}' And [End] > '{1}'", ToOutlookDateString (range.Value.From), ToOutlookDateString (range.Value.To));
+        filter = String.Format ("[Start] < '{0}' And [End] > '{1}'", ToOutlookDateString (range.Value.To), ToOutlookDateString (range.Value.From));
       else
         filter = Type.Missing;
 
