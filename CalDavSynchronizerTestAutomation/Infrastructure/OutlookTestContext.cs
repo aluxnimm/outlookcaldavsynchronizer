@@ -244,7 +244,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           .Return (new[] { EntityWithVersion.Create (entityUri, existingEventData) });
 
       calDavDataAccess
-          .Expect (r => r.UpdateEntity (null, null))
+          .Expect (r => r.UpdateEntity (new Uri("http://bla.com"), null))
           .IgnoreArguments()
           .Return (EntityIdWithVersion.Create (new Uri ("http://bla.com"), "blubb"))
           .WhenCalled (a => { roundTrippedData = (string) a.Arguments[1]; });

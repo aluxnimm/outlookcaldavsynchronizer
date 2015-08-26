@@ -23,11 +23,21 @@ namespace CalDavSynchronizer.DataAccess
 {
   public interface ICalDavDataAccess
   {
+    bool IsResourceCalender ();
+    bool DoesSupportCalendarQuery ();
+    bool IsCalendarAccessSupported ();
+    bool IsWriteable ();
+
     IReadOnlyList<EntityIdWithVersion<Uri, string>> GetEvents (DateTimeRange? range);
     IReadOnlyList<EntityIdWithVersion<Uri, string>> GetTodos (DateTimeRange? range);
     IReadOnlyList<EntityWithVersion<Uri, string>> GetEntities (IEnumerable<Uri> eventUrls);
+
     EntityIdWithVersion<Uri, string> CreateEntity (string iCalData);
+    
     bool DeleteEntity (Uri uri);
+    bool DeleteEntity (EntityIdWithVersion<Uri, string> entity);
+    
     EntityIdWithVersion<Uri, string> UpdateEntity (Uri url, string iCalData);
+    EntityIdWithVersion<Uri, string> UpdateEntity (EntityIdWithVersion<Uri, string> evt, string contents);
   }
 }
