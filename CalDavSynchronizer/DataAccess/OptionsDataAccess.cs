@@ -22,7 +22,7 @@ using Microsoft.Win32;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  internal class OptionsDataAccess : IOptionsDataAccess
+  public class OptionsDataAccess : IOptionsDataAccess
   {
     private readonly string _optionsFilePath;
     private const string s_OptionsRegistryKey = @"Software\CalDavSynchronizer";

@@ -145,7 +145,7 @@ namespace CalDavSynchronizer
       }
     }
 
-    private static string GetOrCreateConfigFileName (string applicationDataDirectory, string profileName)
+    public static string GetOrCreateConfigFileName (string applicationDataDirectory, string profileName)
     {
       var profileDataAccess = new ProfileListDataAccess (Path.Combine (applicationDataDirectory, "profiles.xml"));
       var profiles = profileDataAccess.Load();
