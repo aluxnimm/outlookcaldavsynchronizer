@@ -64,7 +64,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
         node = parent.Nodes.Add (nodeName);
 
         if (!parent.IsExpanded)
-          parent.Expand ();
+          parent.Expand();
       }
       else
       {

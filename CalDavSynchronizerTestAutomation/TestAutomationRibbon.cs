@@ -15,7 +15,7 @@ namespace CalDavSynchronizerTestAutomation
 
     private void StartTestsButton_Click (object sender, RibbonControlEventArgs e)
     {
-      StartTests(false);
+      StartTests (false);
     }
 
     private static void StartTests (bool excludeManual)

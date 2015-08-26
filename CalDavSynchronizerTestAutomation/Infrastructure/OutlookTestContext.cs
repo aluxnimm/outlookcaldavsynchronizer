@@ -71,7 +71,8 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
     public static ISynchronizer CreateEventSynchronizer (
         SynchronizationMode mode,
         ICalDavDataAccess calDavDataAccess,
-        IEntityRelationDataAccess<string, DateTime, Uri, string> entityRelationDataAccess = null)
+        IEntityRelationDataAccess<string, DateTime, Uri, string> entityRelationDataAccess = null,
+        Action<Options> optionsModifier = null)
     {
       var options = new Options()
                     {
@@ -83,6 +84,9 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
                         SynchronizationMode = mode,
                         CalenderUrl = "http://invalidurl.net"
                     };
+
+      if (optionsModifier != null)
+        optionsModifier (options);
 
       return s_synchronizerFactory.CreateEventSynchronizer (
           options,
@@ -181,9 +185,11 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       }
     }
 
-    public static string SyncOutlookToCalDav_CalDavIsEmpty (IEntityRelationDataAccess<string, DateTime, Uri, string> entityRelationDataAccess = null)
+    public static List<string> SyncOutlookToCalDav_CalDavIsEmpty (
+        IEntityRelationDataAccess<string, DateTime, Uri, string> entityRelationDataAccess = null,
+        Action<Options> optionsModifier = null)
     {
-      string roundTrippedData = null;
+      var calDavEvents = new List<string>();
 
       ICalDavDataAccess calDavDataAccess = MockRepository.GenerateMock<ICalDavDataAccess>();
 
@@ -196,13 +202,14 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           .Expect (r => r.CreateEntity (null))
           .IgnoreArguments()
           .Return (EntityIdWithVersion.Create (new Uri ("http://bla.com"), "blubb"))
-          .WhenCalled (a => { roundTrippedData = (string) a.Arguments[0]; });
+          .WhenCalled (a => calDavEvents.Add ((string) a.Arguments[0]));
       ISynchronizer synchronizer = CreateEventSynchronizer (
           SynchronizationMode.ReplicateOutlookIntoServer,
           calDavDataAccess,
-          entityRelationDataAccess);
+          entityRelationDataAccess,
+          optionsModifier);
       WaitForTask (synchronizer.Synchronize());
-      return roundTrippedData;
+      return calDavEvents;
     }
 
     public static string SyncOutlookToCalDav_EventsExistsInCalDav (string existingEventData, string existingAppointmentId)
@@ -323,6 +330,20 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
             ex.Inner.Save();
           }
         }
+
+        w.Inner.Save();
+
+        return w.Inner.EntryID;
+      }
+    }
+
+    public static string CreateEventInOutlook (string subject, DateTime start, DateTime end)
+    {
+      using (var w = CreateNewAppointment())
+      {
+        w.Inner.Start = start;
+        w.Inner.End = end;
+        w.Inner.Subject = subject;
 
         w.Inner.Save();
 

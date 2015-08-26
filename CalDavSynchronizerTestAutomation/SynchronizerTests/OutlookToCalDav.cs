@@ -11,6 +11,39 @@ namespace CalDavSynchronizerTestAutomation.SynchronizerTests
   public class OutlookToCalDav
   {
     [Test]
+    public void TestTimeRangeFilter ()
+    {
+      OutlookTestContext.DeleteAllOutlookEvents();
+
+      OutlookTestContext.CreateEventInOutlook ("before", DateTime.Now.AddDays (-20), DateTime.Now.AddDays (-11));
+      OutlookTestContext.CreateEventInOutlook ("after", DateTime.Now.AddDays (11), DateTime.Now.AddDays (20));
+      OutlookTestContext.CreateEventInOutlook ("overlapBeginning", DateTime.Now.AddDays (-11), DateTime.Now.AddDays (-9));
+      OutlookTestContext.CreateEventInOutlook ("overlapEnd", DateTime.Now.AddDays (9), DateTime.Now.AddDays (11));
+      OutlookTestContext.CreateEventInOutlook ("inside", DateTime.Now.AddDays (-5), DateTime.Now.AddDays (5));
+      OutlookTestContext.CreateEventInOutlook ("surrounding", DateTime.Now.AddDays (-11), DateTime.Now.AddDays (11));
+
+      var eventDatas = OutlookTestContext.SyncOutlookToCalDav_CalDavIsEmpty (
+          null,
+          o =>
+          {
+            o.DaysToSynchronizeInTheFuture = 10;
+            o.DaysToSynchronizeInThePast = 10;
+            o.IgnoreSynchronizationTimeRange = false;
+          });
+
+      var calendars = eventDatas.Select (OutlookTestContext.DeserializeICalendar).ToArray();
+
+      Assert.That (calendars.Length, Is.EqualTo (4));
+
+      CollectionAssert.AreEquivalent (
+          new[]
+          {
+              "overlapBeginning", "overlapEnd", "inside", "surrounding"
+          },
+          calendars.Select (c => c.Events[0].Summary));
+    }
+
+    [Test]
     public void CreateNewInCalDav ()
     {
       OutlookTestContext.DeleteAllOutlookEvents();
@@ -19,7 +52,7 @@ namespace CalDavSynchronizerTestAutomation.SynchronizerTests
 
       var eventData = OutlookTestContext.SyncOutlookToCalDav_CalDavIsEmpty();
 
-      CheckEvent (eventData, appointmentId, new[] { 0, 1, 2 });
+      CheckEvent (eventData[0], appointmentId, new[] { 0, 1, 2 });
     }
 
     [Test]
