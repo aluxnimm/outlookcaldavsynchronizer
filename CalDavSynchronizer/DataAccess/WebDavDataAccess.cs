@@ -153,11 +153,6 @@ namespace CalDavSynchronizer.DataAccess
           );
     }
 
-    public EntityIdWithVersion<Uri, string> UpdateEntity (EntityIdWithVersion<Uri, string> evt, string contents)
-    {
-      return UpdateEntity (evt.Id, evt.Version, contents);
-    }
-
     public EntityIdWithVersion<Uri, string> UpdateEntity (Uri url, string contents)
     {
       return UpdateEntity (url, string.Empty, contents);
@@ -265,11 +260,6 @@ namespace CalDavSynchronizer.DataAccess
       }
 
       return new EntityIdWithVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveEventUrl), version);
-    }
-
-    public bool DeleteEntity (EntityIdWithVersion<Uri, string> entity)
-    {
-      return DeleteEntity (entity.Id, entity.Version);
     }
 
     public bool DeleteEntity (Uri uri)

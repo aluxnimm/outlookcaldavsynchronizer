@@ -79,23 +79,10 @@ namespace CalDavDataAccessIntegrationTests
       return _inner.DeleteEntity (uri);
     }
 
-    public bool DeleteEntity (EntityIdWithVersion<Uri, string> entity)
-    {
-      return _inner.DeleteEntity (entity);
-    }
-
     public EntityIdWithVersion<Uri, string> UpdateEntity (Uri url, string iCalData)
     {
-      if (!_inner.DeleteEntity (url))
-        throw new Exception();
+      _inner.DeleteEntity (url);
       return _inner.CreateEntity (iCalData);
-    }
-
-    public EntityIdWithVersion<Uri, string> UpdateEntity (EntityIdWithVersion<Uri, string> evt, string contents)
-    {
-      if (!_inner.DeleteEntity (evt))
-        throw new Exception ("(412) Precondition Failed");
-      return _inner.CreateEntity (contents);
     }
   }
 }

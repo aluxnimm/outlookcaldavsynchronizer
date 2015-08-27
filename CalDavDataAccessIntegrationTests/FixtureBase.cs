@@ -121,7 +121,7 @@ namespace CalDavDataAccessIntegrationTests
           queriedEntitesWithVersion.Select (e => e.Id),
           entitiesWithVersion.Select (e => e.Id));
 
-      var updated = _calDavDataAccess.UpdateEntity (entitiesWithVersion[1], SerializeCalendar (CreateEntity (600)));
+      var updated = _calDavDataAccess.UpdateEntity (entitiesWithVersion[1].Id, SerializeCalendar (CreateEntity (600)));
 
       Assert.That (
           _calDavDataAccess.GetEvents (new DateTimeRange (DateTime.Now.AddDays (150), DateTime.Now.AddDays (450))).Count,
@@ -132,11 +132,6 @@ namespace CalDavDataAccessIntegrationTests
       Assert.That (
           _calDavDataAccess.GetEvents (new DateTimeRange (DateTime.Now.AddDays (150), DateTime.Now.AddDays (450))).Count,
           Is.EqualTo (3));
-
-      // It seems that preconditions are not supported on DELETE by all servers
-      //Assert.That (
-      //    () => _calDavDataAccess.DeleteEntity (entitiesWithVersion[1]),
-      //    Throws.Exception.With.Message.Contains ("(412) Precondition Failed"));
 
       _calDavDataAccess.DeleteEntity (updateReverted.Id);
 
@@ -152,89 +147,37 @@ namespace CalDavDataAccessIntegrationTests
           entites.Select (e => DeserializeCalendar (e.Entity).Events[0].Summary),
           new[] { "Event1", "Event3", "Event4" });
     }
-    
-    //[Test]
-    //public void UpdateNonExistingEntity_ViaId ()
-    //{
-    //  var v1 = _calDavDataAccess.CreateEntity (
-    //      SerializeCalendar (
-    //          CreateEntity (1)));
-
-    //  _calDavDataAccess.DeleteEntity (v1.Id);
-
-    //  _calDavDataAccess.UpdateEntity (
-    //      v1.Id,
-    //      SerializeCalendar (
-    //          CreateEntity (1)));
-    //}
-
-    //[Test]
-    //public void UpdateNonExistingEntity_ViaIdAndVersion ()
-    //{
-    //  var v1 = _calDavDataAccess.CreateEntity (
-    //      SerializeCalendar (
-    //          CreateEntity (1)));
-
-    //  _calDavDataAccess.DeleteEntity (v1.Id);
-
-    //  _calDavDataAccess.UpdateEntity (
-    //      v1,
-    //      SerializeCalendar (
-    //          CreateEntity (1)));
-    //}
 
     [Test]
-    public void TestPreconditionOnUpdate ()
+    public void UpdateNonExistingEntity ()
     {
-      foreach (var evt in _calDavDataAccess.GetEvents (null))
-        _calDavDataAccess.DeleteEntity (evt.Id);
+      var v = _calDavDataAccess.CreateEntity (
+          SerializeCalendar (
+              CreateEntity (1)));
 
-      var v1 = _calDavDataAccess.CreateEntity (
+      _calDavDataAccess.DeleteEntity (v.Id);
+
+      v = _calDavDataAccess.UpdateEntity (
+          v.Id,
           SerializeCalendar (
               CreateEntity (1)));
 
       Assert.That (
-          _calDavDataAccess.GetEvents (new DateTimeRange (DateTime.Now.AddDays (50), DateTime.Now.AddDays (150))).Count,
+          _calDavDataAccess.GetEntities (new[] { v.Id }).Count,
           Is.EqualTo (1));
-
-      var v2 = _calDavDataAccess.UpdateEntity (v1, SerializeCalendar (CreateEntity (6)));
-
-      // The Combination of Id AND Version has to change!
-      // ( When update creates a new Id, the Version can remain e.g. '0'. When the Id doesn't change, the Version has to change. Of course both can change.)
-      Assert.That (v2.Id != v1.Id || v2.Version != v1.Version, Is.True);
-
-      Assert.That (
-          _calDavDataAccess.GetEvents (new DateTimeRange (DateTime.Now.AddDays (50), DateTime.Now.AddDays (150))).Count,
-          Is.EqualTo (0));
-
-      Assert.That (
-          _calDavDataAccess.GetEvents (new DateTimeRange (DateTime.Now.AddDays (550), DateTime.Now.AddDays (650))).Count,
-          Is.EqualTo (1));
-
-      Assert.That (
-          () => _calDavDataAccess.UpdateEntity (v1, SerializeCalendar (CreateEntity (1))),
-          Throws.Exception.With.Message.Contains ("(412) Precondition Failed"));
-
-      Assert.That (
-          _calDavDataAccess.GetEvents (new DateTimeRange (DateTime.Now.AddDays (50), DateTime.Now.AddDays (150))).Count,
-          Is.EqualTo (0));
-
-      Assert.That (
-          _calDavDataAccess.GetEvents (new DateTimeRange (DateTime.Now.AddDays (550), DateTime.Now.AddDays (650))).Count,
-          Is.EqualTo (1));
-
-      var v3 = _calDavDataAccess.UpdateEntity (v2.Id, SerializeCalendar (CreateEntity (1)));
-      Assert.That (v3.Id != v1.Id || v3.Version != v1.Version, Is.True);
-      Assert.That (v3.Id != v2.Id || v3.Version != v2.Version, Is.True);
-
-      Assert.That (
-          _calDavDataAccess.GetEvents (new DateTimeRange (DateTime.Now.AddDays (50), DateTime.Now.AddDays (150))).Count,
-          Is.EqualTo (1));
-
-      Assert.That (
-          _calDavDataAccess.GetEvents (new DateTimeRange (DateTime.Now.AddDays (550), DateTime.Now.AddDays (650))).Count,
-          Is.EqualTo (0));
     }
+
+    [Test]
+    public void DeleteNonExistingEntity ()
+    {
+      var v = _calDavDataAccess.CreateEntity (
+          SerializeCalendar (
+              CreateEntity (1)));
+
+      Assert.That (_calDavDataAccess.DeleteEntity (v.Id), Is.True);
+      Assert.That (_calDavDataAccess.DeleteEntity (v.Id), Is.False);
+    }
+
 
     private iCalendar CreateEntity (int startInHundretDays)
     {

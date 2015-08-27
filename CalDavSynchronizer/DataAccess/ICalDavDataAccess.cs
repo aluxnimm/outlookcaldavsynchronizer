@@ -35,9 +35,6 @@ namespace CalDavSynchronizer.DataAccess
     EntityIdWithVersion<Uri, string> CreateEntity (string iCalData);
     
     bool DeleteEntity (Uri uri);
-    bool DeleteEntity (EntityIdWithVersion<Uri, string> entity);
-    
     EntityIdWithVersion<Uri, string> UpdateEntity (Uri url, string iCalData);
-    EntityIdWithVersion<Uri, string> UpdateEntity (EntityIdWithVersion<Uri, string> evt, string contents);
   }
 }
