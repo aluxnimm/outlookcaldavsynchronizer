@@ -167,11 +167,7 @@ namespace CalDavSynchronizer.Ui
                 _userNameTextBox.Text,
                 _passwordTextBox.Text,
                 TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-                TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]),
-                Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"]),
-                Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"]),
-                Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"]))
-            );
+                TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"])));
 
         var cardDavDataAccess = new CardDavDataAccess (
             new Uri (_calenderUrlTextBox.Text),
@@ -179,11 +175,7 @@ namespace CalDavSynchronizer.Ui
                 _userNameTextBox.Text,
                 _passwordTextBox.Text,
                 TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-                TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]),
-                Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"]),
-                Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"]),
-                Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"]))
-            );
+                TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"])));
 
         var isCalendar = calDavDataAccess.IsResourceCalender();
         var isAddressBook = cardDavDataAccess.IsResourceAddressBook();

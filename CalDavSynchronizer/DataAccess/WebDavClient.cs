@@ -35,21 +35,8 @@ namespace CalDavSynchronizer.DataAccess
     private readonly TimeSpan _readWriteTimeout;
     private readonly string _userAgent;
 
-    public WebDavClient (string username, string password, TimeSpan connectTimeout, TimeSpan readWriteTimeout, bool disableCertValidation, bool useSsl3, bool useTls12)
+    public WebDavClient (string username, string password, TimeSpan connectTimeout, TimeSpan readWriteTimeout)
     {
-      ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11;
-      if (useTls12)
-      {
-        ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
-      }
-      if (useSsl3)
-      {
-        ServicePointManager.SecurityProtocol |= SecurityProtocolType.Ssl3;
-      }
-      if (disableCertValidation)
-      {
-        ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-      }
       _username = username;
       _password = password;
       _connectTimeout = connectTimeout;

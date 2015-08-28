@@ -56,10 +56,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           NullTotalProgressFactory.Instance,
           s_mapiNameSpace,
           TimeSpan.Zero,
-          TimeSpan.Zero,
-          false,
-          false,
-          true);
+          TimeSpan.Zero);
 
       s_outlookEventRepository = new OutlookEventRepository (
           s_mapiNameSpace,

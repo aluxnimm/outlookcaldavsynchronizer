@@ -25,8 +25,8 @@ namespace CalDavSynchronizer.DataAccess
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    public CalDavClient (string username, string password, TimeSpan connectTimeout, TimeSpan readWriteTimeout, bool disableCertValidation, bool useSsl3, bool useTls12)
-        : base (username, password, connectTimeout, readWriteTimeout, disableCertValidation, useSsl3, useTls12)
+    public CalDavClient (string username, string password, TimeSpan connectTimeout, TimeSpan readWriteTimeout)
+        : base (username, password, connectTimeout, readWriteTimeout)
     {
     }
 

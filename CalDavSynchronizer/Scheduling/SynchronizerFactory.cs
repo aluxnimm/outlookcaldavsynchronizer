@@ -47,19 +47,13 @@ namespace CalDavSynchronizer.Scheduling
     private readonly NameSpace _outlookSession;
     private readonly TimeSpan _calDavConnectTimeout;
     private readonly TimeSpan _calDavReadWriteTimeout;
-    private readonly bool _disableCertValidation;
-    private readonly bool _useSsl3;
-    private readonly bool _useTls12;
 
     public SynchronizerFactory (
         string applicationDataDirectory,
         ITotalProgressFactory totalProgressFactory,
         NameSpace outlookSession,
         TimeSpan calDavConnectTimeout,
-        TimeSpan calDavReadWriteTimeout,
-        bool disableCertValidation,
-        bool useSsl3,
-        bool useTls12)
+        TimeSpan calDavReadWriteTimeout)
     {
       _outlookEmailAddress = outlookSession.CurrentUser.Address;
       _applicationDataDirectory = applicationDataDirectory;
@@ -67,9 +61,6 @@ namespace CalDavSynchronizer.Scheduling
       _outlookSession = outlookSession;
       _calDavConnectTimeout = calDavConnectTimeout;
       _calDavReadWriteTimeout = calDavReadWriteTimeout;
-      _disableCertValidation = disableCertValidation;
-      _useSsl3 = useSsl3;
-      _useTls12 = useTls12;
     }
 
     public ISynchronizer CreateSynchronizer (Options options)
@@ -108,10 +99,7 @@ namespace CalDavSynchronizer.Scheduling
               options.UserName,
               options.Password,
               _calDavConnectTimeout,
-              _calDavReadWriteTimeout,
-              _disableCertValidation,
-              _useSsl3,
-              _useTls12));
+              _calDavReadWriteTimeout));
 
       var storageDataDirectory = Path.Combine (
           _applicationDataDirectory,
@@ -202,10 +190,7 @@ namespace CalDavSynchronizer.Scheduling
                   options.UserName,
                   options.Password,
                   _calDavConnectTimeout,
-                  _calDavReadWriteTimeout,
-                  _disableCertValidation,
-                  _useSsl3,
-                  _useTls12)
+                  _calDavReadWriteTimeout)
               ),
           new iCalendarSerializer(),
           CalDavRepository.EntityType.Todo,
@@ -258,11 +243,7 @@ namespace CalDavSynchronizer.Scheduling
                   options.UserName,
                   options.Password,
                   _calDavConnectTimeout,
-                  _calDavReadWriteTimeout,
-                  _disableCertValidation,
-                  _useSsl3,
-                  _useTls12)
-              ));
+                  _calDavReadWriteTimeout)));
 
       if (StringComparer.InvariantCultureIgnoreCase.Compare (new Uri (options.CalenderUrl).Host, "www.google.com") == 0)
       {

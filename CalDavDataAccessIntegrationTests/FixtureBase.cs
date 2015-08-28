@@ -61,10 +61,7 @@ namespace CalDavDataAccessIntegrationTests
                   options.UserName,
                   options.Password,
                   TimeSpan.FromSeconds (30),
-                  TimeSpan.FromSeconds (30),
-                  false,
-                  false,
-                  true)));
+                  TimeSpan.FromSeconds (30))));
     }
 
     protected virtual ICalDavDataAccess Wrap (ICalDavDataAccess dataAccess)

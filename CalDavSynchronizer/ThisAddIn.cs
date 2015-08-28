@@ -24,12 +24,11 @@ namespace CalDavSynchronizer
   {
     public static ComponentContainer ComponentContainer { get; private set; }
 
-
     private void ThisAddIn_Startup (object sender, EventArgs e)
     {
+      ComponentContainer.ConfigureServicePointManager();
       ComponentContainer = new ComponentContainer (Application.Session);
     }
-
 
     private void ThisAddIn_Shutdown (object sender, EventArgs e)
     {

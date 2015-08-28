@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -57,10 +58,7 @@ namespace CalDavSynchronizer
                 ExceptionHandler.Instance),
             _session,
             TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-            TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]),
-            Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"]),
-            Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"]),
-            Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"]));
+            TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]));
 
         _scheduler = new Scheduler (synchronizerFactory, EnsureSynchronizationContext);
         _scheduler.SetOptions (_optionsDataAccess.LoadOptions());
@@ -77,6 +75,27 @@ namespace CalDavSynchronizer
 
       s_logger.Info ("Startup finnished");
     }
+
+    public static void ConfigureServicePointManager ()
+    {
+      ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11;
+
+      if (Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"]))
+      {
+        ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+      }
+
+      if (Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"]))
+      {
+        ServicePointManager.SecurityProtocol |= SecurityProtocolType.Ssl3;
+      }
+
+      if (Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"]))
+      {
+        ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+      }
+    }
+
 
     private bool ShouldCheckForNewerVersions
     {
