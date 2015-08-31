@@ -99,11 +99,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
     }
 
 
-    public bool Delete (Uri entityId)
+    public void Delete (Uri entityId)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
-        return _cardDavDataAccess.DeleteEntity (entityId);
+        _cardDavDataAccess.DeleteEntity (entityId);
       }
     }
 

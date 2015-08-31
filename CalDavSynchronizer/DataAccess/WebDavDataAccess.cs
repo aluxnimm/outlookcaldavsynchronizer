@@ -15,8 +15,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Xml;
 using GenSync;
@@ -45,14 +48,22 @@ namespace CalDavSynchronizer.DataAccess
     {
       var headers = _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (
           _serverUrl,
-          request => { request.Method = "OPTIONS"; },
+          request => { request.Method = new System.Net.Http.HttpMethod ("OPTIONS"); },
+          null,
           null);
 
-      var davHeader = headers["DAV"];
-
-      return davHeader.Split (new[] { ',' })
-          .Select (o => o.Trim())
-          .Any (option => String.Compare (option, requiredOption, StringComparison.OrdinalIgnoreCase) == 0);
+      IEnumerable<string> davValues;
+      if (headers.TryGetValues ("DAV", out davValues))
+      {
+        return davValues.Any (
+            value => value.Split (new[] { ',' })
+                .Select (o => o.Trim())
+                .Any (option => String.Compare (option, requiredOption, StringComparison.OrdinalIgnoreCase) == 0));
+      }
+      else
+      {
+        return false;
+      }
     }
 
     protected bool IsResourceType (string @namespace, string name)
@@ -79,8 +90,8 @@ namespace CalDavSynchronizer.DataAccess
 
     private string GetEtag (Uri absoluteEntityUrl)
     {
-      var headers = _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (absoluteEntityUrl, delegate { }, null);
-      return headers["ETag"];
+      var headers = _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (absoluteEntityUrl, delegate { }, null, null);
+      return headers.ETag.Tag;
     }
 
     private XmlDocumentWithNamespaceManager GetAllProperties (Uri url, int depth)
@@ -89,11 +100,10 @@ namespace CalDavSynchronizer.DataAccess
           url,
           request =>
           {
-            request.Method = "PROPFIND";
-            request.ContentType = "text/xml; charset=UTF-8";
-            request.ServicePoint.Expect100Continue = false;
-            request.Headers["Depth"] = depth.ToString();
+            request.Method = new System.Net.Http.HttpMethod ("PROPFIND");
+            request.Headers.Add ("Depth", depth.ToString());
           },
+          "application/xml",
           @"<?xml version='1.0'?>
                         <D:propfind xmlns:D=""DAV:"">
                             <D:allprop/>
@@ -108,11 +118,10 @@ namespace CalDavSynchronizer.DataAccess
           url,
           request =>
           {
-            request.Method = "PROPFIND";
-            request.ContentType = "text/xml; charset=UTF-8";
-            request.ServicePoint.Expect100Continue = false;
-            request.Headers["Depth"] = depth.ToString();
+            request.Method = new System.Net.Http.HttpMethod ("PROPFIND");
+            request.Headers.Add ("Depth", depth.ToString());
           },
+          "application/xml",
           @"<?xml version='1.0'?>
                         <D:propfind xmlns:D=""DAV:"">
                           <D:prop>
@@ -138,11 +147,10 @@ namespace CalDavSynchronizer.DataAccess
           url,
           request =>
           {
-            request.Method = "PROPFIND";
-            request.ContentType = "text/xml; charset=UTF-8";
-            request.ServicePoint.Expect100Continue = false;
-            request.Headers["Depth"] = depth.ToString();
+            request.Method = new System.Net.Http.HttpMethod ("PROPFIND");
+            request.Headers.Add ("Depth", depth.ToString());
           },
+          "application/xml",
           @"<?xml version='1.0'?>
                         <D:propfind xmlns:D=""DAV:"">
                           <D:prop>
@@ -166,19 +174,18 @@ namespace CalDavSynchronizer.DataAccess
 
       s_logger.DebugFormat ("Absolute entity location: '{0}'", absoluteEventUrl);
 
-      WebHeaderCollection responseHeaders;
+      HttpResponseHeaders responseHeaders;
 
       try
       {
         responseHeaders = _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (absoluteEventUrl,
             request =>
             {
-              request.Method = "PUT";
-              request.ContentType = "text/calendar; charset=UTF-8";
+              request.Method = new System.Net.Http.HttpMethod ("PUT");
               if (!string.IsNullOrEmpty (etag))
                 request.Headers.Add ("If-Match", etag);
-              request.ServicePoint.Expect100Continue = false;
             },
+            "text/calendar",
             contents);
       }
       catch (WebException x)
@@ -193,12 +200,10 @@ namespace CalDavSynchronizer.DataAccess
         s_logger.DebugFormat ("Updated entity. Server response header: '{0}'", responseHeaders.ToString().Replace ("\r\n", " <CR> "));
 
       Uri effectiveEventUrl;
-      var location = responseHeaders["location"];
-      if (!string.IsNullOrEmpty (location))
+      if (responseHeaders.Location != null)
       {
-        s_logger.DebugFormat ("Server sent new location: '{0}'", location);
-        var locationUrl = new Uri (location, UriKind.RelativeOrAbsolute);
-        effectiveEventUrl = locationUrl.IsAbsoluteUri ? locationUrl : new Uri (_serverUrl, locationUrl);
+        s_logger.DebugFormat ("Server sent new location: '{0}'", responseHeaders.Location);
+        effectiveEventUrl = responseHeaders.Location.IsAbsoluteUri ? responseHeaders.Location : new Uri (_serverUrl, responseHeaders.Location);
         s_logger.DebugFormat ("New entity location: '{0}'", effectiveEventUrl);
       }
       else
@@ -206,11 +211,11 @@ namespace CalDavSynchronizer.DataAccess
         effectiveEventUrl = absoluteEventUrl;
       }
 
-      var newEtag = responseHeaders["ETag"];
+      var newEtag = responseHeaders.ETag;
       string version;
       if (newEtag != null)
       {
-        version = newEtag;
+        version = newEtag.Tag;
       }
       else
       {
@@ -226,18 +231,17 @@ namespace CalDavSynchronizer.DataAccess
 
       s_logger.DebugFormat ("Creating entity '{0}'", eventUrl);
 
-      WebHeaderCollection responseHeaders;
+      HttpResponseHeaders responseHeaders;
 
       try
       {
         responseHeaders = _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (eventUrl,
             request =>
             {
-              request.Method = "PUT";
+              request.Method = new System.Net.Http.HttpMethod ("PUT");
               request.Headers.Add ("If-None-Match", "*");
-              request.ContentType = "text/calendar; charset=UTF-8";
-              request.ServicePoint.Expect100Continue = false;
             },
+            "text/calendar",
             content);
       }
       catch (WebException x)
@@ -249,12 +253,10 @@ namespace CalDavSynchronizer.DataAccess
       }
 
       Uri effectiveEventUrl;
-      var location = responseHeaders["location"];
-      if (!string.IsNullOrEmpty (location))
+      if (responseHeaders.Location != null)
       {
-        s_logger.DebugFormat ("Server sent new location: '{0}'", location);
-        var locationUrl = new Uri (location, UriKind.RelativeOrAbsolute);
-        effectiveEventUrl = locationUrl.IsAbsoluteUri ? locationUrl : new Uri (_serverUrl, locationUrl);
+        s_logger.DebugFormat ("Server sent new location: '{0}'", responseHeaders.Location);
+        effectiveEventUrl = responseHeaders.Location.IsAbsoluteUri ? responseHeaders.Location : new Uri (_serverUrl, responseHeaders.Location);
         s_logger.DebugFormat ("New entity location: '{0}'", effectiveEventUrl);
       }
       else
@@ -262,11 +264,11 @@ namespace CalDavSynchronizer.DataAccess
         effectiveEventUrl = eventUrl;
       }
 
-      var etag = responseHeaders["ETag"];
+      var etag = responseHeaders.ETag;
       string version;
       if (etag != null)
       {
-        version = etag;
+        version = etag.Tag;
       }
       else
       {
@@ -276,12 +278,12 @@ namespace CalDavSynchronizer.DataAccess
       return new EntityIdWithVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveEventUrl), version);
     }
 
-    public bool DeleteEntity (Uri uri)
+    public void DeleteEntity (Uri uri)
     {
-      return DeleteEntity (uri, string.Empty);
+      DeleteEntity (uri, string.Empty);
     }
 
-    private bool DeleteEntity (Uri uri, string etag)
+    private void DeleteEntity (Uri uri, string etag)
     {
       s_logger.DebugFormat ("Deleting entity '{0}'", uri);
 
@@ -289,18 +291,19 @@ namespace CalDavSynchronizer.DataAccess
 
       s_logger.DebugFormat ("Absolute entity location: '{0}'", absoluteEventUrl);
 
-      WebHeaderCollection responseHeaders;
+      HttpResponseHeaders responseHeaders;
 
       try
       {
         responseHeaders = _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (absoluteEventUrl,
             request =>
             {
-              request.Method = "DELETE";
+              request.Method = new System.Net.Http.HttpMethod ("DELETE");
+
               if (!string.IsNullOrEmpty (etag))
                 request.Headers.Add ("If-Match", etag);
-              request.ServicePoint.Expect100Continue = false;
             },
+            null,
             string.Empty);
       }
       catch (WebException x)
@@ -309,8 +312,6 @@ namespace CalDavSynchronizer.DataAccess
         {
           var httpWebResponse = (HttpWebResponse) x.Response;
 
-          if (httpWebResponse.StatusCode == HttpStatusCode.NotFound)
-            return false;
 
           if (httpWebResponse.StatusCode == HttpStatusCode.Forbidden)
             throw new Exception (string.Format ("Error deleting event with url '{0}' and etag '{1}' (Access denied)", uri, etag));
@@ -318,12 +319,14 @@ namespace CalDavSynchronizer.DataAccess
 
         throw;
       }
-
-      var error = responseHeaders["X-Dav-Error"];
-      if (error != null && error != "200 No error")
-        throw new Exception (string.Format ("Error deleting entity with url '{0}' and etag '{1}': {2}", uri, etag, error));
-
-      return true;
+       
+      IEnumerable<string> errorValues;
+      if (responseHeaders.TryGetValues ("X-Dav-Error", out errorValues))
+      {
+        var errorList = errorValues.ToList();
+        if (errorList.Any (v => v != "200 No error"))
+          throw new Exception (string.Format ("Error deleting entity with url '{0}' and etag '{1}': {2}", uri, etag, string.Join (",", errorList)));
+      }
     }
 
     /// <summary>

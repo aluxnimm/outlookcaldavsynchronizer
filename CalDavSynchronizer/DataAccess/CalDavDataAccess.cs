@@ -77,11 +77,10 @@ namespace CalDavSynchronizer.DataAccess
             _serverUrl,
             request =>
             {
-              request.Method = "REPORT";
-              request.ContentType = "text/xml; charset=UTF-8";
+              request.Method = new System.Net.Http.HttpMethod("REPORT");
               request.Headers.Add ("Depth", 1.ToString());
-              request.ServicePoint.Expect100Continue = false;
             },
+            "application/xml",
             string.Format (
                 @"<?xml version=""1.0""?>
                     <C:calendar-query xmlns:C=""urn:ietf:params:xml:ns:caldav"">
@@ -150,12 +149,11 @@ namespace CalDavSynchronizer.DataAccess
           _serverUrl,
           request =>
           {
-            request.Method = "REPORT";
-            request.ContentType = "text/xml; charset=UTF-8";
+            request.Method = new System.Net.Http.HttpMethod ("REPORT");
             request.Headers.Add ("Depth", "1");
-            request.ServicePoint.Expect100Continue = false;
-            request.Headers.Add (HttpRequestHeader.AcceptCharset, "utf-8");
+            request.Headers.AcceptCharset.Add(new System.Net.Http.Headers.StringWithQualityHeaderValue("utf-8"));
           },
+          "application/xml",
           requestBody
           );
 

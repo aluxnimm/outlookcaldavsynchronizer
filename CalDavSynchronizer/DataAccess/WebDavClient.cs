@@ -17,6 +17,8 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
 using System.Xml;
@@ -28,84 +30,76 @@ namespace CalDavSynchronizer.DataAccess
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    private readonly string _username;
-    // TODO: consider to use SecureString
-    private readonly string _password;
-    private readonly TimeSpan _connectTimeout;
-    private readonly TimeSpan _readWriteTimeout;
-    private readonly string _userAgent;
+    private readonly ProductInfoHeaderValue _productInfo;
+    private readonly HttpClient _httpClient;
 
     public WebDavClient (string username, string password, TimeSpan connectTimeout, TimeSpan readWriteTimeout)
     {
-      _username = username;
-      _password = password;
-      _connectTimeout = connectTimeout;
-      _readWriteTimeout = readWriteTimeout;
       var version = Assembly.GetExecutingAssembly().GetName().Version;
-      _userAgent = string.Format ("CalDavSynchronizer/{0}.{1}", version.Major, version.Minor);
+      _productInfo = new ProductInfoHeaderValue ("CalDavSynchronizer", string.Format ("{0}.{1}", version.Major, version.Minor));
+
+      var httpClientHandler = new HttpClientHandler();
+      if (!string.IsNullOrEmpty (username))
+      {
+        httpClientHandler.Credentials = new NetworkCredential (username, password);
+      }
+      _httpClient = new HttpClient (httpClientHandler);
+      _httpClient.Timeout = connectTimeout;
     }
 
-    private HttpWebRequest CreateRequest (Uri url)
+    private HttpRequestMessage CreateRequestMessage (Uri url)
     {
-      var request = (HttpWebRequest) HttpWebRequest.Create (url);
-      request.Timeout = (int) _connectTimeout.TotalMilliseconds;
-      request.ReadWriteTimeout = (int) _readWriteTimeout.TotalMilliseconds;
-      request.UserAgent = _userAgent;
+      var request = new HttpRequestMessage();
 
-      if (!string.IsNullOrEmpty (_username))
-      {
-        request.PreAuthenticate = true;
-        request.Credentials = new NetworkCredential (_username, _password);
-      }
-      request.AllowAutoRedirect = false;
+      request.RequestUri = url;
+      request.Headers.UserAgent.Add (_productInfo);
+
       return request;
     }
 
-    public XmlDocumentWithNamespaceManager ExecuteWebDavRequestAndReadResponse (Uri url, Action<HttpWebRequest> modifier, string requestBody)
+    public XmlDocumentWithNamespaceManager ExecuteWebDavRequestAndReadResponse (Uri url, Action<HttpRequestMessage> modifier, string mediaType, string requestBody)
     {
-      using (var response = ExecuteWebDavRequest (url, modifier, requestBody))
+      using (var response = ExecuteWebDavRequest (url, modifier, mediaType, requestBody))
       {
-        using (var responseStream = response.GetResponseStream())
+        using (var responseStream = response.Content.ReadAsStreamAsync().Result)
         {
           return CreateXmlDocument (responseStream);
         }
       }
     }
 
-    public WebHeaderCollection ExecuteWebDavRequestAndReturnResponseHeaders (Uri url, Action<HttpWebRequest> modifier, string requestBody)
+    public HttpResponseHeaders ExecuteWebDavRequestAndReturnResponseHeaders (Uri url, Action<HttpRequestMessage> modifier, string mediaType, string requestBody)
     {
-      using (var response = ExecuteWebDavRequest (url, modifier, requestBody))
+      using (var response = ExecuteWebDavRequest (url, modifier, mediaType, requestBody))
       {
         return response.Headers;
       }
     }
 
-    private WebResponse ExecuteWebDavRequest (Uri url, Action<HttpWebRequest> modifier, string requestBody)
+    private HttpResponseMessage ExecuteWebDavRequest (Uri url, Action<HttpRequestMessage> modifier, string mediaType, string requestBody)
     {
-      var request = CreateRequest (url);
-      modifier (request);
+      var requestMessage = CreateRequestMessage (url);
+      modifier (requestMessage);
       if (!string.IsNullOrEmpty (requestBody))
       {
-        var requestBodyAsBytes = Encoding.UTF8.GetBytes (requestBody);
-
-        using (var requestStream = request.GetRequestStream())
-        {
-          requestStream.Write (requestBodyAsBytes, 0, requestBodyAsBytes.Length);
-        }
+        requestMessage.Content = new StringContent (requestBody, Encoding.UTF8, mediaType);
       }
 
-      WebResponse response = request.GetResponse();
-      if (((HttpWebResponse) response).StatusCode == HttpStatusCode.Moved || ((HttpWebResponse) response).StatusCode == HttpStatusCode.Redirect)
+      var response = _httpClient.SendAsync (requestMessage).Result;
+      if (response.StatusCode == HttpStatusCode.Moved || response.StatusCode == HttpStatusCode.Redirect)
       {
-        if (!string.IsNullOrEmpty (response.Headers["Location"]))
+        if (response.Headers.Location != null)
         {
-          return ExecuteWebDavRequest (new Uri (response.Headers["Location"]), modifier, requestBody);
+          return ExecuteWebDavRequest (response.Headers.Location, modifier, mediaType, requestBody);
         }
         else
         {
           s_logger.Warn ("Ignoring Redirection without Location header.");
         }
       }
+
+      response.EnsureSuccessStatusCode();
+
       return response;
     }
 

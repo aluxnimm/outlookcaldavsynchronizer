@@ -103,18 +103,16 @@ namespace CalDavSynchronizer.Implementation.Tasks
       return new EntityIdWithVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime);
     }
 
-    public bool Delete (string entityId)
+    public void Delete (string entityId)
     {
       var entityWithId = Get (new[] { entityId }).Result.SingleOrDefault ();
       if (entityWithId == null)
-        return false;
+        return;
 
       using (var entity = entityWithId.Entity)
       {
         entity.Inner.Delete ();
-        return true;
       }
-
     }
 
     public EntityIdWithVersion<string, DateTime> Create (Func<TaskItemWrapper, TaskItemWrapper> entityInitializer)

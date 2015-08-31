@@ -55,10 +55,9 @@ namespace GenSync.UnitTests.Synchronization
     {
     }
 
-    public bool Delete (Identifier entityId)
+    public void Delete (Identifier entityId)
     {
       EntityVersionAndContentById.Remove (entityId);
-      return true;
     }
 
     public EntityIdWithVersion<Identifier, int> Update (Identifier entityId, string entityToUpdate, Func<string, string> entityModifier)

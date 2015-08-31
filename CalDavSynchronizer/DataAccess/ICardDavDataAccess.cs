@@ -26,7 +26,7 @@ namespace CalDavSynchronizer.DataAccess
     IReadOnlyList<EntityIdWithVersion<Uri, string>> GetContacts ();
     IReadOnlyList<EntityWithVersion<Uri, string>> GetEntities (IEnumerable<Uri> eventUrls);
     EntityIdWithVersion<Uri, string> CreateEntity (string iCalData);
-    bool DeleteEntity (Uri uri);
+    void DeleteEntity (Uri uri);
     EntityIdWithVersion<Uri, string> UpdateEntity (Uri url, string iCalData);
   }
 }

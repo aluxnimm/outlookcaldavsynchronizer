@@ -58,11 +58,10 @@ namespace CalDavSynchronizer.DataAccess
             _serverUrl,
             request =>
             {
-              request.Method = "PROPFIND";
-              request.ContentType = "text/xml; charset=UTF-8";
-              request.ServicePoint.Expect100Continue = false;
-              request.Headers["Depth"] = "1";
+              request.Method = new System.Net.Http.HttpMethod ("PROPFIND");
+              request.Headers.Add ("Depth", "1");
             },
+            "application/xml",
             @"<?xml version='1.0'?>
                         <D:propfind xmlns:D=""DAV:"">
                             <D:prop>
@@ -124,12 +123,11 @@ namespace CalDavSynchronizer.DataAccess
           _serverUrl,
           request =>
           {
-            request.Method = "REPORT";
-            request.ContentType = "text/xml; charset=UTF-8";
+            request.Method = new System.Net.Http.HttpMethod ("REPORT");
             request.Headers.Add ("Depth", "1");
-            request.ServicePoint.Expect100Continue = false;
             //request.Headers.Add (HttpRequestHeader.AcceptCharset, "utf-8");
           },
+          "application/xml",
           requestBody
           );
 

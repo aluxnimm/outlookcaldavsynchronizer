@@ -17,13 +17,24 @@
 using System;
 using System;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Xml;
 
 namespace CalDavSynchronizer.DataAccess
 {
   public interface IWebDavClient
   {
-    XmlDocumentWithNamespaceManager ExecuteWebDavRequestAndReadResponse (Uri url, Action<HttpWebRequest> modifier, string requestBody);
-    WebHeaderCollection ExecuteWebDavRequestAndReturnResponseHeaders (Uri url, Action<HttpWebRequest> modifier, string requestBody);
+    XmlDocumentWithNamespaceManager ExecuteWebDavRequestAndReadResponse (
+        Uri url,
+        Action<HttpRequestMessage> modifier,
+        string mediaType,
+        string requestBody);
+
+    HttpResponseHeaders ExecuteWebDavRequestAndReturnResponseHeaders (
+        Uri url,
+        Action<HttpRequestMessage> modifier,
+        string mediaType,
+        string requestBody);
   }
 }

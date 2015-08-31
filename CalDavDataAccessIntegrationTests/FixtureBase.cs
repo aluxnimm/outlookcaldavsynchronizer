@@ -155,14 +155,23 @@ namespace CalDavDataAccessIntegrationTests
 
       _calDavDataAccess.DeleteEntity (v.Id);
 
-      v = _calDavDataAccess.UpdateEntity (
-          v.Id,
-          SerializeCalendar (
-              CreateEntity (1)));
+      try
+      {
+        v = _calDavDataAccess.UpdateEntity (
+            v.Id,
+            SerializeCalendar (
+                CreateEntity (1)));
+        // If implementation doesn't trow, the entity must be newly created
 
-      Assert.That (
-          _calDavDataAccess.GetEntities (new[] { v.Id }).Count,
+        Assert.That (
+            _calDavDataAccess.GetEntities (new[] { v.Id }).Count,
           Is.EqualTo (1).Or.EqualTo(0));
+      }
+      catch (Exception x)
+      {
+        // if implementation throws, there must be an 404 Error
+        Assert.That (x.Message.Contains ("404"));
+      }
     }
 
     [Test]
@@ -172,8 +181,11 @@ namespace CalDavDataAccessIntegrationTests
           SerializeCalendar (
               CreateEntity (1)));
 
-      Assert.That (_calDavDataAccess.DeleteEntity (v.Id), Is.True);
-      Assert.That (_calDavDataAccess.DeleteEntity (v.Id), Is.False);
+      _calDavDataAccess.DeleteEntity (v.Id);
+
+      Assert.That (
+          () => _calDavDataAccess.DeleteEntity (v.Id),
+          Throws.Exception);
     }
 
     [Test]

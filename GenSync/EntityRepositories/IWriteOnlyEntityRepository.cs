@@ -23,7 +23,7 @@ namespace GenSync.EntityRepositories
   /// </summary>
   public interface IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
   {
-    bool Delete (TEntityId entityId);
+    void Delete (TEntityId entityId);
     EntityIdWithVersion<TEntityId, TEntityVersion> Update (TEntityId entityId, TEntity entityToUpdate, Func<TEntity, TEntity> entityModifier);
     EntityIdWithVersion<TEntityId, TEntityVersion> Create (Func<TEntity, TEntity> entityInitializer);
   }

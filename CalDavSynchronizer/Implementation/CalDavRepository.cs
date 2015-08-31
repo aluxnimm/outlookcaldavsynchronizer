@@ -120,11 +120,11 @@ namespace CalDavSynchronizer.Implementation
     }
 
 
-    public bool Delete (Uri entityId)
+    public void Delete (Uri entityId)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
-        return _calDavDataAccess.DeleteEntity (entityId);
+        _calDavDataAccess.DeleteEntity (entityId);
       }
     }
 
