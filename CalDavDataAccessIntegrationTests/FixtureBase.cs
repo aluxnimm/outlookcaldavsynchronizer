@@ -175,6 +175,26 @@ namespace CalDavDataAccessIntegrationTests
       Assert.That (_calDavDataAccess.DeleteEntity (v.Id), Is.False);
     }
 
+    [Test]
+    public void CreateInvalidEntity ()
+    {
+      Assert.That (
+          () => _calDavDataAccess.CreateEntity ("Invalix CalDav Entity"),
+          Throws.Exception);
+    }
+
+    [Test]
+    public void InvalidUpdateEntity ()
+    {
+      var v = _calDavDataAccess.CreateEntity (
+          SerializeCalendar (
+              CreateEntity (1)));
+
+      Assert.That (
+          () => _calDavDataAccess.UpdateEntity (v.Id, "Invalid ICal"),
+          Throws.Exception);
+    }
+
 
     private iCalendar CreateEntity (int startInHundretDays)
     {
