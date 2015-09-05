@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Xml;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using GenSync;
@@ -33,28 +34,28 @@ namespace CalDavSynchronizer.DataAccess
     {
     }
 
-    public bool IsAddressBookAccessSupported ()
+    public Task<bool> IsAddressBookAccessSupported ()
     {
       return HasOption ("addressbook");
     }
 
-    public bool IsResourceAddressBook ()
+    public Task<bool> IsResourceAddressBook ()
     {
       return IsResourceType ("A", "addressbook");
     }
 
-    public EntityIdWithVersion<Uri, string> CreateEntity (string iCalData)
+    public Task<EntityIdWithVersion<Uri, string>> CreateEntity (string iCalData)
     {
       return CreateEntity (string.Format ("{0:D}.vcs", Guid.NewGuid()), iCalData);
     }
 
-    public IReadOnlyList<EntityIdWithVersion<Uri, string>> GetContacts ()
+    public async Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetContacts ()
     {
       var entities = new List<EntityIdWithVersion<Uri, string>>();
 
       try
       {
-        var responseXml = _webDavClient.ExecuteWebDavRequestAndReadResponse (
+        var responseXml = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
             _serverUrl,
             request =>
             {
@@ -106,7 +107,7 @@ namespace CalDavSynchronizer.DataAccess
       return entities;
     }
 
-    public IReadOnlyList<EntityWithVersion<Uri, string>> GetEntities (IEnumerable<Uri> urls)
+    public async Task<IReadOnlyList<EntityWithVersion<Uri, string>>> GetEntities (IEnumerable<Uri> urls)
     {
       var requestBody = @" <?xml version=""1.0"" encoding=""utf-8"" ?>
    <C:addressbook-multiget xmlns:D=""DAV:"" xmlns:C=""urn:ietf:params:xml:ns:carddav"">
@@ -119,7 +120,7 @@ namespace CalDavSynchronizer.DataAccess
  ";
 
 
-      var responseXml = _webDavClient.ExecuteWebDavRequestAndReadResponse (
+      var responseXml = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
           _serverUrl,
           request =>
           {

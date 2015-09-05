@@ -16,6 +16,7 @@
 
 using System;
 using System.Reflection;
+using System.Threading.Tasks;
 using GenSync.EntityRelationManagement;
 using log4net;
 
@@ -52,10 +53,10 @@ namespace GenSync.Synchronization.States
       s_logger.Error ("This state should have been left via Resolve!");
     }
 
-    public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> PerformSyncActionNoThrow ()
+    public override Task<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>> PerformSyncActionNoThrow ()
     {
       s_logger.Error ("This state should have been left via Resolve!");
-      return this;
+      return Task.FromResult<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>>(this);
     }
   }
 }

@@ -88,12 +88,18 @@ namespace GenSync.Synchronization
         {
           var cachedData = _entityRelationDataAccess.LoadEntityRelationData ();
 
+          var aVersionsTask = _atypeRepository.GetVersions ();
+          var bVersionsTask = _btypeRepository.GetVersions ();
+
+          var aVersions = await aVersionsTask;
+          var bVersions = await bVersionsTask;
+
           var atypeRepositoryVersions = CreateDictionary (
-              _atypeRepository.GetVersions(),
+              aVersions,
               _atypeIdComparer);
 
           var btypeRepositoryVersions = CreateDictionary (
-              _btypeRepository.GetVersions(),
+              bVersions,
               _btypeIdComparer);
 
           IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> aEntities = null;
@@ -197,10 +203,10 @@ namespace GenSync.Synchronization
 
             using (var progress = totalProgress.StartProcessing (entitySyncStates.Count))
             {
-              entitySyncStates.DoTransition (
-                  s =>
+              await entitySyncStates.DoTransition (
+                  async s =>
                   {
-                    var nextState = s.PerformSyncActionNoThrow();
+                    var nextState = await s.PerformSyncActionNoThrow();
                     progress.Increase();
                     return nextState;
                   });

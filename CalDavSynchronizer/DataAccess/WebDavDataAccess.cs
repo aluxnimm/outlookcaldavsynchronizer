@@ -21,6 +21,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Xml;
 using GenSync;
 using log4net;
@@ -44,9 +45,9 @@ namespace CalDavSynchronizer.DataAccess
       s_logger.DebugFormat ("Created with Url '{0}'", _serverUrl);
     }
 
-    protected bool HasOption (string requiredOption)
+    protected async Task<bool> HasOption (string requiredOption)
     {
-      var headers = _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (
+      var headers = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (
           _serverUrl,
           request => { request.Method = new System.Net.Http.HttpMethod ("OPTIONS"); },
           null,
@@ -66,9 +67,9 @@ namespace CalDavSynchronizer.DataAccess
       }
     }
 
-    protected bool IsResourceType (string @namespace, string name)
+    protected async Task<bool> IsResourceType (string @namespace, string name)
     {
-      var properties = GetAllProperties (_serverUrl, 0);
+      var properties = await GetAllProperties (_serverUrl, 0);
 
       XmlNode resourceTypeNode = properties.XmlDocument.SelectSingleNode (
           string.Format ("/D:multistatus/D:response/D:propstat/D:prop/D:resourcetype/{0}:{1}", @namespace, name),
@@ -77,9 +78,9 @@ namespace CalDavSynchronizer.DataAccess
       return resourceTypeNode != null;
     }
 
-    public bool IsWriteable ()
+    public async Task<bool> IsWriteable ()
     {
-      var properties = GetCurrentUserPrivileges (_serverUrl, 0);
+      var properties = await GetCurrentUserPrivileges (_serverUrl, 0);
 
       XmlNode privilegeWriteContent = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-privilege-set/D:privilege/D:write-content", properties.XmlNamespaceManager);
       XmlNode privilegeBind = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-privilege-set/D:privilege/D:bind", properties.XmlNamespaceManager);
@@ -88,13 +89,13 @@ namespace CalDavSynchronizer.DataAccess
       return ((privilegeWriteContent != null) && (privilegeBind != null) && (privilegeUnbind != null));
     }
 
-    private string GetEtag (Uri absoluteEntityUrl)
+    private async Task<string> GetEtag (Uri absoluteEntityUrl)
     {
-      var headers = _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (absoluteEntityUrl, delegate { }, null, null);
+      var headers = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (absoluteEntityUrl, delegate { }, null, null);
       return headers.ETag.Tag;
     }
 
-    private XmlDocumentWithNamespaceManager GetAllProperties (Uri url, int depth)
+    private Task<XmlDocumentWithNamespaceManager> GetAllProperties (Uri url, int depth)
     {
       return _webDavClient.ExecuteWebDavRequestAndReadResponse (
           url,
@@ -112,9 +113,9 @@ namespace CalDavSynchronizer.DataAccess
           );
     }
 
-    protected bool DoesSupportsReportSet (Uri url, int depth, string reportSetNamespace, string reportSet)
+    protected async Task<bool> DoesSupportsReportSet (Uri url, int depth, string reportSetNamespace, string reportSet)
     {
-      var document = _webDavClient.ExecuteWebDavRequestAndReadResponse (
+      var document = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
           url,
           request =>
           {
@@ -141,7 +142,7 @@ namespace CalDavSynchronizer.DataAccess
       return reportSetNode != null;
     }
 
-    private XmlDocumentWithNamespaceManager GetCurrentUserPrivileges (Uri url, int depth)
+    private Task<XmlDocumentWithNamespaceManager> GetCurrentUserPrivileges (Uri url, int depth)
     {
       return _webDavClient.ExecuteWebDavRequestAndReadResponse (
           url,
@@ -161,12 +162,12 @@ namespace CalDavSynchronizer.DataAccess
           );
     }
 
-    public EntityIdWithVersion<Uri, string> UpdateEntity (Uri url, string contents)
+    public Task<EntityIdWithVersion<Uri, string>> UpdateEntity (Uri url, string contents)
     {
       return UpdateEntity (url, string.Empty, contents);
     }
 
-    private EntityIdWithVersion<Uri, string> UpdateEntity (Uri url, string etag, string contents)
+    private async Task<EntityIdWithVersion<Uri, string>> UpdateEntity (Uri url, string etag, string contents)
     {
       s_logger.DebugFormat ("Updating entity '{0}'", url);
 
@@ -178,7 +179,7 @@ namespace CalDavSynchronizer.DataAccess
 
       try
       {
-        responseHeaders = _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (absoluteEventUrl,
+        responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (absoluteEventUrl,
             request =>
             {
               request.Method = new System.Net.Http.HttpMethod ("PUT");
@@ -219,13 +220,13 @@ namespace CalDavSynchronizer.DataAccess
       }
       else
       {
-        version = GetEtag (effectiveEventUrl);
+        version = await GetEtag (effectiveEventUrl);
       }
 
       return new EntityIdWithVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveEventUrl), version);
     }
 
-    protected EntityIdWithVersion<Uri, string> CreateEntity (string name, string content)
+    protected async Task<EntityIdWithVersion<Uri, string>> CreateEntity (string name, string content)
     {
       var eventUrl = new Uri (_serverUrl, name);
 
@@ -235,7 +236,7 @@ namespace CalDavSynchronizer.DataAccess
 
       try
       {
-        responseHeaders = _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (eventUrl,
+        responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (eventUrl,
             request =>
             {
               request.Method = new System.Net.Http.HttpMethod ("PUT");
@@ -272,18 +273,18 @@ namespace CalDavSynchronizer.DataAccess
       }
       else
       {
-        version = GetEtag (effectiveEventUrl);
+        version = await GetEtag (effectiveEventUrl);
       }
 
       return new EntityIdWithVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveEventUrl), version);
     }
 
-    public void DeleteEntity (Uri uri)
+    public Task DeleteEntity (Uri uri)
     {
-      DeleteEntity (uri, string.Empty);
+      return DeleteEntity (uri, string.Empty);
     }
 
-    private void DeleteEntity (Uri uri, string etag)
+    private async Task DeleteEntity (Uri uri, string etag)
     {
       s_logger.DebugFormat ("Deleting entity '{0}'", uri);
 
@@ -295,7 +296,7 @@ namespace CalDavSynchronizer.DataAccess
 
       try
       {
-        responseHeaders = _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (absoluteEventUrl,
+        responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (absoluteEventUrl,
             request =>
             {
               request.Method = new System.Net.Http.HttpMethod ("DELETE");
@@ -319,7 +320,7 @@ namespace CalDavSynchronizer.DataAccess
 
         throw;
       }
-       
+
       IEnumerable<string> errorValues;
       if (responseHeaders.TryGetValues ("X-Dav-Error", out errorValues))
       {

@@ -13,7 +13,7 @@ namespace GenSync.UnitTests.Synchronization
   public class SynchronizerFixture
   {
     [Test]
-    public void Synchronize_GetVersionsAndGetReturnDuplicateEntries_RemovesDuplicates ()
+    public async Task Synchronize_GetVersionsAndGetReturnDuplicateEntries_RemovesDuplicates ()
     {
       var builder = new SynchronizerBuilder();
 
@@ -22,12 +22,16 @@ namespace GenSync.UnitTests.Synchronization
       builder.AtypeRepository
           .Expect (r => r.GetVersions())
           .IgnoreArguments()
-          .Return (new[] { EntityIdWithVersion.Create ("A1", "v1"), EntityIdWithVersion.Create ("a1", "v3") });
+          .Return (
+              Task.FromResult<IReadOnlyList<EntityIdWithVersion<string, string>>> (
+                  new[] { EntityIdWithVersion.Create ("A1", "v1"), EntityIdWithVersion.Create ("a1", "v3") }));
 
       builder.BtypeRepository
           .Expect (r => r.GetVersions())
           .IgnoreArguments()
-          .Return (new[] { EntityIdWithVersion.Create ("b1", "v2") });
+          .Return (
+              Task.FromResult<IReadOnlyList<EntityIdWithVersion<string, string>>> (
+                  new[] { EntityIdWithVersion.Create ("b1", "v2") }));
 
 
       Task<IReadOnlyList<EntityWithVersion<string, string>>> aTypeLoadTask = new Task<IReadOnlyList<EntityWithVersion<string, string>>> (
@@ -56,7 +60,7 @@ namespace GenSync.UnitTests.Synchronization
           .Return (new DoNothing<string, string, string, string, string, string> (knownData));
 
       var synchronizer = builder.Build();
-      synchronizer.Synchronize().Wait();
+      await synchronizer.Synchronize();
 
       builder.EntityRelationDataAccess.AssertWasCalled (
           c => c.SaveEntityRelationData (Arg<List<IEntityRelationData<string, string, string, string>>>.Matches (l => l.Count == 1 && l[0] == knownData)));

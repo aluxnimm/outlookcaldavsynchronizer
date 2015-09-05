@@ -15,23 +15,21 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Xml;
+using System.Threading.Tasks;
 
 namespace CalDavSynchronizer.DataAccess
 {
   public interface IWebDavClient
   {
-    XmlDocumentWithNamespaceManager ExecuteWebDavRequestAndReadResponse (
+    Task<XmlDocumentWithNamespaceManager> ExecuteWebDavRequestAndReadResponse (
         Uri url,
         Action<HttpRequestMessage> modifier,
         string mediaType,
         string requestBody);
 
-    HttpResponseHeaders ExecuteWebDavRequestAndReturnResponseHeaders (
+    Task<HttpResponseHeaders> ExecuteWebDavRequestAndReturnResponseHeaders (
         Uri url,
         Action<HttpRequestMessage> modifier,
         string mediaType,

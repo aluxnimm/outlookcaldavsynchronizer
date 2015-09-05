@@ -48,10 +48,10 @@ namespace CalDavSynchronizer.Implementation.Contacts
         return true;
 
         // Assume that no modification means, that the item is never modified. Therefore it must be new. 
-        if (_bEntity.RevisionDate == null)
-          return false;
+        //if (_bEntity.RevisionDate == null)
+        //  return false;
 
-        return _aEntity.Inner.LastModificationTime.ToUniversalTime() >= _bEntity.RevisionDate.Value;
+        //return _aEntity.Inner.LastModificationTime.ToUniversalTime() >= _bEntity.RevisionDate.Value;
       }
     }
   }

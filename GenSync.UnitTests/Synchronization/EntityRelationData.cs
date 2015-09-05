@@ -52,7 +52,7 @@ namespace GenSync.UnitTests.Synchronization
   }
 
   internal class EntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
-    : IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
+      : IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
   {
     public EntityRelationData (TAtypeEntityId atypeId, TAtypeEntityVersion atypeVersion, TBtypeEntityId btypeId, TBtypeEntityVersion btypeVersion)
     {
@@ -67,5 +67,4 @@ namespace GenSync.UnitTests.Synchronization
     public TBtypeEntityId BtypeId { get; set; }
     public TBtypeEntityVersion BtypeVersion { get; set; }
   }
-
 }

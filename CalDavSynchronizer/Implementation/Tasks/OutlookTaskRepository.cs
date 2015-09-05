@@ -44,7 +44,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
     private const string c_entryIdColumnName = "EntryID";
 
-    public IReadOnlyList<EntityIdWithVersion<string, DateTime>> GetVersions ()
+    public Task<IReadOnlyList<EntityIdWithVersion<string, DateTime>>> GetVersions ()
     {
       var entities = new List<EntityIdWithVersion<string, DateTime>>();
 
@@ -66,7 +66,8 @@ namespace CalDavSynchronizer.Implementation.Tasks
           }
         }
       }
-      return entities;
+
+      return Task.FromResult<IReadOnlyList<EntityIdWithVersion<string, DateTime>>> (entities);
     }
 
     private static readonly CultureInfo _currentCultureInfo = CultureInfo.CurrentCulture;
@@ -96,26 +97,28 @@ namespace CalDavSynchronizer.Implementation.Tasks
         wrapper.Dispose();
     }
 
-    public EntityIdWithVersion<string, DateTime> Update (string entityId, TaskItemWrapper entityToUpdate, Func<TaskItemWrapper, TaskItemWrapper> entityModifier)
+    public Task<EntityIdWithVersion<string, DateTime>> Update (string entityId, TaskItemWrapper entityToUpdate, Func<TaskItemWrapper, TaskItemWrapper> entityModifier)
     {
       entityToUpdate = entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save();
-      return new EntityIdWithVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime);
+      return Task.FromResult(new EntityIdWithVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime));
     }
 
-    public void Delete (string entityId)
+    public Task Delete (string entityId)
     {
       var entityWithId = Get (new[] { entityId }).Result.SingleOrDefault ();
       if (entityWithId == null)
-        return;
+        return Task.FromResult(0);
 
       using (var entity = entityWithId.Entity)
       {
         entity.Inner.Delete ();
       }
+      
+      return Task.FromResult (0);
     }
 
-    public EntityIdWithVersion<string, DateTime> Create (Func<TaskItemWrapper, TaskItemWrapper> entityInitializer)
+    public Task<EntityIdWithVersion<string, DateTime>> Create (Func<TaskItemWrapper, TaskItemWrapper> entityInitializer)
     {
       using (var wrapper = new TaskItemWrapper ((TaskItem) _taskFolder.Items.Add (OlItemType.olTaskItem), entryId => (TaskItem) _mapiNameSpace.GetItemFromID (entryId, _taskFolder.StoreID)))
       {
@@ -123,7 +126,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
         {
           initializedWrapper.Inner.Save();
           var result = new EntityIdWithVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime);
-          return result;
+          return Task.FromResult(result);
         }
       }
     }

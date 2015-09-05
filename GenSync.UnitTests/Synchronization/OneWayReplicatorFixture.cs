@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace GenSync.UnitTests.Synchronization
@@ -23,10 +24,10 @@ namespace GenSync.UnitTests.Synchronization
   internal class OneWayReplicatorFixture : OneWayReplicatorFixtureBase
   {
     [Test]
-    public void ReplicateAtoBAddedLocal ()
+    public async Task ReplicateAtoBAddedLocal ()
     {
-      _localRepository.Create (v => "Item 1");
-      _localRepository.Create (v => "Item 2");
+      await _localRepository.Create (v => "Item 1");
+      await _localRepository.Create (v => "Item 2");
 
       ExecuteMultipleTimes (() =>
       {
@@ -43,10 +44,10 @@ namespace GenSync.UnitTests.Synchronization
     }
 
     [Test]
-    public void ReplicateAtoBAddedServer ()
+    public async Task ReplicateAtoBAddedServer ()
     {
-      _serverRepository.Create (v => "Item 1");
-      _serverRepository.Create (v => "Item 2");
+      await _serverRepository.Create (v => "Item 1");
+      await _serverRepository.Create (v => "Item 2");
 
       ExecuteMultipleTimes (() =>
       {
@@ -59,12 +60,12 @@ namespace GenSync.UnitTests.Synchronization
     }
 
     [Test]
-    public void ReplicateAtoBAddedBoth ()
+    public async Task ReplicateAtoBAddedBoth ()
     {
-      InitializeWithTwoEvents();
+      await InitializeWithTwoEvents();
 
-      _localRepository.Create (v => "Item l");
-      _serverRepository.Create (v => "Item s");
+      await _localRepository.Create (v => "Item l");
+      await _serverRepository.Create (v => "Item s");
 
       ExecuteMultipleTimes (() =>
       {
@@ -83,11 +84,11 @@ namespace GenSync.UnitTests.Synchronization
     }
 
     [Test]
-    public void ReplicateAtoBDeletedLocal ()
+    public async Task ReplicateAtoBDeletedLocal ()
     {
-      InitializeWithTwoEvents();
+      await InitializeWithTwoEvents();
 
-      _localRepository.Delete ("l1");
+      await _localRepository.Delete ("l1");
 
       ExecuteMultipleTimes (() =>
       {
@@ -102,11 +103,11 @@ namespace GenSync.UnitTests.Synchronization
     }
 
     [Test]
-    public void ReplicateAtoBDeletedServer ()
+    public async Task ReplicateAtoBDeletedServer ()
     {
-      InitializeWithTwoEvents();
+      await InitializeWithTwoEvents();
 
-      _serverRepository.Delete ("s1");
+      await _serverRepository.Delete ("s1");
 
       ExecuteMultipleTimes (() =>
       {
@@ -123,13 +124,13 @@ namespace GenSync.UnitTests.Synchronization
     }
 
     [Test]
-    public void ReplicateAtoBDeletedBoth ()
+    public async Task ReplicateAtoBDeletedBoth ()
     {
-      InitializeWithTwoEvents();
+      await InitializeWithTwoEvents();
 
       // Schlägt feht Wenns am server gelöscht wird, muss es natürlich wieder hergestellt werden!!
-      _serverRepository.Delete ("s1");
-      _localRepository.Delete ("l2");
+      await _serverRepository.Delete ("s1");
+      await _localRepository.Delete ("l2");
 
       ExecuteMultipleTimes (() =>
       {
@@ -144,12 +145,12 @@ namespace GenSync.UnitTests.Synchronization
     }
 
     [Test]
-    public void ReplicateAtoBDeletedBothWithConflict ()
+    public async Task ReplicateAtoBDeletedBothWithConflict ()
     {
-      InitializeWithTwoEvents();
+      await InitializeWithTwoEvents();
 
-      _serverRepository.Delete ("s1");
-      _localRepository.Delete ("l1");
+      await _serverRepository.Delete ("s1");
+      await _localRepository.Delete ("l1");
 
       ExecuteMultipleTimes (() =>
       {
@@ -164,9 +165,9 @@ namespace GenSync.UnitTests.Synchronization
     }
 
     [Test]
-    public void ReplicateAtoBUpdatedLocal ()
+    public async Task ReplicateAtoBUpdatedLocal ()
     {
-      InitializeWithTwoEvents();
+      await InitializeWithTwoEvents();
       _localRepository.UpdateWithoutIdChange ("l1", v => "upd Item 1");
 
       ExecuteMultipleTimes (() =>
@@ -184,9 +185,9 @@ namespace GenSync.UnitTests.Synchronization
     }
 
     [Test]
-    public void ReplicateAtoBUpdatedServer ()
+    public async Task ReplicateAtoBUpdatedServer ()
     {
-      InitializeWithTwoEvents();
+      await InitializeWithTwoEvents();
       _serverRepository.UpdateWithoutIdChange ("s1", v => "upd Item 1");
 
       ExecuteMultipleTimes (() =>
@@ -204,9 +205,9 @@ namespace GenSync.UnitTests.Synchronization
     }
 
     [Test]
-    public void ReplicateAtoBUpdatedBoth ()
+    public async Task ReplicateAtoBUpdatedBoth ()
     {
-      InitializeWithTwoEvents();
+      await InitializeWithTwoEvents();
       _serverRepository.UpdateWithoutIdChange ("s1", v => "upd Item 1");
       _localRepository.UpdateWithoutIdChange ("l2", v => "upd Item 2");
 
@@ -225,10 +226,10 @@ namespace GenSync.UnitTests.Synchronization
     }
 
     [Test]
-    public void ReplicateAtoBDeletedLocal_ChangeServer_Conflict ()
+    public async Task ReplicateAtoBDeletedLocal_ChangeServer_Conflict ()
     {
-      InitializeWithTwoEvents();
-      _localRepository.Delete ("l1");
+      await InitializeWithTwoEvents();
+      await _localRepository.Delete ("l1");
       _serverRepository.UpdateWithoutIdChange ("s1", v => "upd Item 1");
 
       ExecuteMultipleTimes (() =>
@@ -245,11 +246,11 @@ namespace GenSync.UnitTests.Synchronization
 
 
     [Test]
-    public void ReplicateAtoBDeletedServer_ChangeLocal_Conflict ()
+    public async Task ReplicateAtoBDeletedServer_ChangeLocal_Conflict ()
     {
-      InitializeWithTwoEvents();
+      await InitializeWithTwoEvents();
 
-      _serverRepository.Delete ("s1");
+      await _serverRepository.Delete ("s1");
       _localRepository.UpdateWithoutIdChange ("l1", v => "upd Item 1");
 
       ExecuteMultipleTimes (() =>
@@ -268,9 +269,9 @@ namespace GenSync.UnitTests.Synchronization
 
 
     [Test]
-    public void ReplicateAtoBUpdatedBoth_Conflict ()
+    public async Task ReplicateAtoBUpdatedBoth_Conflict ()
     {
-      InitializeWithTwoEvents();
+      await InitializeWithTwoEvents();
       _serverRepository.UpdateWithoutIdChange ("s1", v => "upd srv Item 1");
       _localRepository.UpdateWithoutIdChange ("l1", v => "upd loc Item 1");
 

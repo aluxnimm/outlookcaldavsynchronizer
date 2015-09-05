@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace GenSync.UnitTests.Synchronization
@@ -24,10 +25,10 @@ namespace GenSync.UnitTests.Synchronization
   {
     [TestCase (GenericConflictResolution.AWins)]
     [TestCase (GenericConflictResolution.BWins)]
-    public void TwoWaySynchronize_AddedLocal (GenericConflictResolution conflictWinner)
+    public async Task TwoWaySynchronize_AddedLocal (GenericConflictResolution conflictWinner)
     {
-      _localRepository.Create (v => "Item 1");
-      _localRepository.Create (v => "Item 2");
+      await _localRepository.Create (v => "Item 1");
+      await _localRepository.Create (v => "Item 2");
 
       ExecuteMultipleTimes (() =>
       {
@@ -45,10 +46,10 @@ namespace GenSync.UnitTests.Synchronization
 
     [TestCase (GenericConflictResolution.AWins)]
     [TestCase (GenericConflictResolution.BWins)]
-    public void TwoWaySynchronize_AddedServer (GenericConflictResolution conflictWinner)
+    public async Task TwoWaySynchronize_AddedServer (GenericConflictResolution conflictWinner)
     {
-      _serverRepository.Create (v => "Item 1");
-      _serverRepository.Create (v => "Item 2");
+      await _serverRepository.Create (v => "Item 1");
+      await _serverRepository.Create (v => "Item 2");
 
       ExecuteMultipleTimes (() =>
       {
@@ -65,12 +66,12 @@ namespace GenSync.UnitTests.Synchronization
 
     [TestCase (GenericConflictResolution.AWins)]
     [TestCase (GenericConflictResolution.BWins)]
-    public void TwoWaySynchronize_AddedBoth (GenericConflictResolution conflictWinner)
+    public async Task TwoWaySynchronize_AddedBoth (GenericConflictResolution conflictWinner)
     {
-      InitializeWithTwoEvents();
+      await InitializeWithTwoEvents();
 
-      _localRepository.Create (v => "Item l");
-      _serverRepository.Create (v => "Item s");
+      await _localRepository.Create (v => "Item l");
+      await _serverRepository.Create (v => "Item s");
 
       ExecuteMultipleTimes (() =>
       {
@@ -91,11 +92,11 @@ namespace GenSync.UnitTests.Synchronization
 
     [TestCase (GenericConflictResolution.AWins)]
     [TestCase (GenericConflictResolution.BWins)]
-    public void TwoWaySynchronize_DeletedLocal (GenericConflictResolution conflictWinner)
+    public async Task TwoWaySynchronize_DeletedLocal (GenericConflictResolution conflictWinner)
     {
-      InitializeWithTwoEvents();
+      await InitializeWithTwoEvents();
 
-      _localRepository.Delete ("l1");
+      await _localRepository.Delete ("l1");
 
       ExecuteMultipleTimes (() =>
       {
@@ -110,11 +111,11 @@ namespace GenSync.UnitTests.Synchronization
 
     [TestCase (GenericConflictResolution.AWins)]
     [TestCase (GenericConflictResolution.BWins)]
-    public void TwoWaySynchronize_DeletedServer (GenericConflictResolution conflictWinner)
+    public async Task TwoWaySynchronize_DeletedServer (GenericConflictResolution conflictWinner)
     {
-      InitializeWithTwoEvents();
+      await InitializeWithTwoEvents();
 
-      _serverRepository.Delete ("s1");
+      await _serverRepository.Delete ("s1");
 
       ExecuteMultipleTimes (() =>
       {
@@ -129,12 +130,12 @@ namespace GenSync.UnitTests.Synchronization
 
     [TestCase (GenericConflictResolution.AWins)]
     [TestCase (GenericConflictResolution.BWins)]
-    public void TwoWaySynchronize_DeletedBoth (GenericConflictResolution conflictWinner)
+    public async Task TwoWaySynchronize_DeletedBoth (GenericConflictResolution conflictWinner)
     {
-      InitializeWithTwoEvents();
+      await InitializeWithTwoEvents();
 
-      _serverRepository.Delete ("s1");
-      _localRepository.Delete ("l2");
+      await _serverRepository.Delete ("s1");
+      await _localRepository.Delete ("l2");
 
       ExecuteMultipleTimes (() =>
       {
@@ -147,12 +148,12 @@ namespace GenSync.UnitTests.Synchronization
 
     [TestCase (GenericConflictResolution.AWins)]
     [TestCase (GenericConflictResolution.BWins)]
-    public void TwoWaySynchronize_DeletedBothWithConflict (GenericConflictResolution conflictWinner)
+    public async Task TwoWaySynchronize_DeletedBothWithConflict (GenericConflictResolution conflictWinner)
     {
-      InitializeWithTwoEvents();
+      await InitializeWithTwoEvents();
 
-      _serverRepository.Delete ("s1");
-      _localRepository.Delete ("l1");
+      await _serverRepository.Delete ("s1");
+      await _localRepository.Delete ("l1");
 
       ExecuteMultipleTimes (() =>
       {
@@ -167,9 +168,9 @@ namespace GenSync.UnitTests.Synchronization
 
     [TestCase (GenericConflictResolution.AWins)]
     [TestCase (GenericConflictResolution.BWins)]
-    public void TwoWaySynchronize_UpdatedLocal (GenericConflictResolution conflictWinner)
+    public async Task TwoWaySynchronize_UpdatedLocal (GenericConflictResolution conflictWinner)
     {
-      InitializeWithTwoEvents();
+      await InitializeWithTwoEvents();
       _localRepository.UpdateWithoutIdChange ("l1", v => "upd Item 1");
 
       ExecuteMultipleTimes (() =>
@@ -187,9 +188,9 @@ namespace GenSync.UnitTests.Synchronization
 
     [TestCase (GenericConflictResolution.AWins)]
     [TestCase (GenericConflictResolution.BWins)]
-    public void TwoWaySynchronize_UpdatedServer (GenericConflictResolution conflictWinner)
+    public async Task TwoWaySynchronize_UpdatedServer (GenericConflictResolution conflictWinner)
     {
-      InitializeWithTwoEvents();
+      await InitializeWithTwoEvents();
       _serverRepository.UpdateWithoutIdChange ("s1", v => "upd Item 1");
 
       ExecuteMultipleTimes (() =>
@@ -207,9 +208,9 @@ namespace GenSync.UnitTests.Synchronization
 
     [TestCase (GenericConflictResolution.AWins)]
     [TestCase (GenericConflictResolution.BWins)]
-    public void TwoWaySynchronize_UpdatedBoth (GenericConflictResolution conflictWinner)
+    public async Task TwoWaySynchronize_UpdatedBoth (GenericConflictResolution conflictWinner)
     {
-      InitializeWithTwoEvents();
+      await InitializeWithTwoEvents();
       _serverRepository.UpdateWithoutIdChange ("s1", v => "upd Item 1");
       _localRepository.UpdateWithoutIdChange ("l2", v => "upd Item 2");
 
@@ -227,11 +228,11 @@ namespace GenSync.UnitTests.Synchronization
     }
 
     [Test]
-    public void TwoWaySynchronize_DeletedLocal_ChangeServer_Conflict_LocalWins ()
+    public async Task TwoWaySynchronize_DeletedLocal_ChangeServer_Conflict_LocalWins ()
     {
-      InitializeWithTwoEvents();
+      await InitializeWithTwoEvents();
 
-      _localRepository.Delete ("l1");
+      await _localRepository.Delete ("l1");
       _serverRepository.UpdateWithoutIdChange ("s1", v => "upd Item 1");
 
       ExecuteMultipleTimes (() =>
@@ -246,11 +247,11 @@ namespace GenSync.UnitTests.Synchronization
     }
 
     [Test]
-    public void TwoWaySynchronize_DeletedLocal_ChangeServer_Conflict_ServerWins ()
+    public async Task TwoWaySynchronize_DeletedLocal_ChangeServer_Conflict_ServerWins ()
     {
-      InitializeWithTwoEvents();
+      await InitializeWithTwoEvents();
 
-      _localRepository.Delete ("l1");
+      await _localRepository.Delete ("l1");
       _serverRepository.UpdateWithoutIdChange ("s1", v => "upd Item 1");
 
       ExecuteMultipleTimes (() =>
@@ -267,11 +268,11 @@ namespace GenSync.UnitTests.Synchronization
     }
 
     [Test]
-    public void TwoWaySynchronize_DeletedServer_ChangeLocal_Conflict_LocalWins ()
+    public async Task TwoWaySynchronize_DeletedServer_ChangeLocal_Conflict_LocalWins ()
     {
-      InitializeWithTwoEvents();
+      await InitializeWithTwoEvents();
 
-      _serverRepository.Delete ("s1");
+      await _serverRepository.Delete ("s1");
       _localRepository.UpdateWithoutIdChange ("l1", v => "upd Item 1");
 
       ExecuteMultipleTimes (() =>
@@ -288,11 +289,11 @@ namespace GenSync.UnitTests.Synchronization
     }
 
     [Test]
-    public void TwoWaySynchronize_DeletedServer_ChangeLocal_Conflict_ServerWins ()
+    public async Task TwoWaySynchronize_DeletedServer_ChangeLocal_Conflict_ServerWins ()
     {
-      InitializeWithTwoEvents();
+      await InitializeWithTwoEvents();
 
-      _serverRepository.Delete ("s1");
+      await _serverRepository.Delete ("s1");
       _localRepository.UpdateWithoutIdChange ("l1", v => "upd Item 1");
 
       ExecuteMultipleTimes (() =>
@@ -307,9 +308,9 @@ namespace GenSync.UnitTests.Synchronization
     }
 
     [Test]
-    public void TwoWaySynchronize_UpdatedBoth_Conflict_LocalWins ()
+    public async Task TwoWaySynchronize_UpdatedBoth_Conflict_LocalWins ()
     {
-      InitializeWithTwoEvents();
+      await InitializeWithTwoEvents();
       _serverRepository.UpdateWithoutIdChange ("s1", v => "upd srv Item 1");
       _localRepository.UpdateWithoutIdChange ("l1", v => "upd loc Item 1");
 
@@ -327,9 +328,9 @@ namespace GenSync.UnitTests.Synchronization
     }
 
     [Test]
-    public void TwoWaySynchronize_UpdatedBoth_Conflict_ServerWins ()
+    public async Task TwoWaySynchronize_UpdatedBoth_Conflict_ServerWins ()
     {
-      InitializeWithTwoEvents();
+      await InitializeWithTwoEvents();
       _serverRepository.UpdateWithoutIdChange ("s1", v => "upd srv Item 1");
       _localRepository.UpdateWithoutIdChange ("l1", v => "upd loc Item 1");
 

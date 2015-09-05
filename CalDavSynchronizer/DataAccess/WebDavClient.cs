@@ -21,6 +21,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 using log4net;
 
@@ -57,26 +58,35 @@ namespace CalDavSynchronizer.DataAccess
       return request;
     }
 
-    public XmlDocumentWithNamespaceManager ExecuteWebDavRequestAndReadResponse (Uri url, Action<HttpRequestMessage> modifier, string mediaType, string requestBody)
+    public async Task<XmlDocumentWithNamespaceManager> ExecuteWebDavRequestAndReadResponse (
+      Uri url, 
+      Action<HttpRequestMessage> modifier, 
+      string mediaType, 
+      string requestBody)
     {
       using (var response = ExecuteWebDavRequest (url, modifier, mediaType, requestBody))
       {
-        using (var responseStream = response.Content.ReadAsStreamAsync().Result)
+
+        using (var responseStream = await (await response).Content.ReadAsStreamAsync())
         {
           return CreateXmlDocument (responseStream);
         }
       }
     }
 
-    public HttpResponseHeaders ExecuteWebDavRequestAndReturnResponseHeaders (Uri url, Action<HttpRequestMessage> modifier, string mediaType, string requestBody)
+    public async Task<HttpResponseHeaders> ExecuteWebDavRequestAndReturnResponseHeaders (
+      Uri url,
+      Action<HttpRequestMessage> modifier, 
+      string mediaType, 
+      string requestBody)
     {
-      using (var response = ExecuteWebDavRequest (url, modifier, mediaType, requestBody))
+      using (var response = await ExecuteWebDavRequest (url, modifier, mediaType, requestBody))
       {
         return response.Headers;
       }
     }
 
-    private HttpResponseMessage ExecuteWebDavRequest (Uri url, Action<HttpRequestMessage> modifier, string mediaType, string requestBody)
+    private async Task<HttpResponseMessage> ExecuteWebDavRequest (Uri url, Action<HttpRequestMessage> modifier, string mediaType, string requestBody)
     {
       var requestMessage = CreateRequestMessage (url);
       modifier (requestMessage);
@@ -85,12 +95,12 @@ namespace CalDavSynchronizer.DataAccess
         requestMessage.Content = new StringContent (requestBody, Encoding.UTF8, mediaType);
       }
 
-      var response = _httpClient.SendAsync (requestMessage).Result;
+      var response = await _httpClient.SendAsync (requestMessage);
       if (response.StatusCode == HttpStatusCode.Moved || response.StatusCode == HttpStatusCode.Redirect)
       {
         if (response.Headers.Location != null)
         {
-          return ExecuteWebDavRequest (response.Headers.Location, modifier, mediaType, requestBody);
+          return await ExecuteWebDavRequest (response.Headers.Location, modifier, mediaType, requestBody);
         }
         else
         {

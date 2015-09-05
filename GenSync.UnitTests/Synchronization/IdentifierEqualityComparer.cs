@@ -26,7 +26,6 @@ namespace GenSync.UnitTests.Synchronization
 
     private IdentifierEqualityComparer ()
     {
-      
     }
 
     public bool Equals (Identifier x, Identifier y)

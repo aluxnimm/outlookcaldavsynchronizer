@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using GenSync;
 
@@ -23,18 +24,18 @@ namespace CalDavSynchronizer.DataAccess
 {
   public interface ICalDavDataAccess
   {
-    bool IsResourceCalender ();
-    bool DoesSupportCalendarQuery ();
-    bool IsCalendarAccessSupported ();
-    bool IsWriteable ();
+    Task<bool> IsResourceCalender ();
+    Task<bool> DoesSupportCalendarQuery ();
+    Task<bool> IsCalendarAccessSupported ();
+    Task<bool> IsWriteable ();
 
-    IReadOnlyList<EntityIdWithVersion<Uri, string>> GetEvents (DateTimeRange? range);
-    IReadOnlyList<EntityIdWithVersion<Uri, string>> GetTodos (DateTimeRange? range);
-    IReadOnlyList<EntityWithVersion<Uri, string>> GetEntities (IEnumerable<Uri> eventUrls);
+    Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetEvents (DateTimeRange? range);
+    Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetTodos (DateTimeRange? range);
+    Task<IReadOnlyList<EntityWithVersion<Uri, string>>> GetEntities (IEnumerable<Uri> eventUrls);
 
-    EntityIdWithVersion<Uri, string> CreateEntity (string iCalData);
+    Task<EntityIdWithVersion<Uri, string>> CreateEntity (string iCalData);
     
-    void DeleteEntity (Uri uri);
-    EntityIdWithVersion<Uri, string> UpdateEntity (Uri url, string iCalData);
+    Task DeleteEntity (Uri uri);
+    Task<EntityIdWithVersion<Uri, string>> UpdateEntity (Uri url, string iCalData);
   }
 }

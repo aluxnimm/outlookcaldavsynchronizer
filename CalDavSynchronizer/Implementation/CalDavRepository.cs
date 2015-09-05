@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using CalDavSynchronizer.DataAccess;
@@ -55,7 +54,7 @@ namespace CalDavSynchronizer.Implementation
       _dateTimeRangeProvider = dateTimeRangeProvider;
     }
 
-    public IReadOnlyList<EntityIdWithVersion<Uri, string>> GetVersions ()
+    public Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetVersions ()
     {
       using (AutomaticStopwatch.StartInfo (s_logger, "CalDavRepository.GetVersions"))
       {
@@ -72,19 +71,16 @@ namespace CalDavSynchronizer.Implementation
       }
     }
 
-    public Task<IReadOnlyList<EntityWithVersion<Uri, IICalendar>>> Get (ICollection<Uri> ids)
+    public async Task<IReadOnlyList<EntityWithVersion<Uri, IICalendar>>> Get (ICollection<Uri> ids)
     {
-      return Task.Factory.StartNew (() =>
-      {
-        if (ids.Count == 0)
-          return new EntityWithVersion<Uri, IICalendar>[] { };
+      if (ids.Count == 0)
+        return new EntityWithVersion<Uri, IICalendar>[] { };
 
-        using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("CalDavRepository.Get ({0} entitie(s))", ids.Count)))
-        {
-          var entities = _calDavDataAccess.GetEntities (ids);
-          return ParallelDeserialize (entities);
-        }
-      });
+      using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("CalDavRepository.Get ({0} entitie(s))", ids.Count)))
+      {
+        var entities = await _calDavDataAccess.GetEntities (ids);
+        return await ParallelDeserialize (entities);
+      }
     }
 
     public void Cleanup (IReadOnlyDictionary<Uri, IICalendar> entities)
@@ -92,43 +88,47 @@ namespace CalDavSynchronizer.Implementation
       // nothing to do
     }
 
-    private IReadOnlyList<EntityWithVersion<Uri, IICalendar>> ParallelDeserialize (IReadOnlyList<EntityWithVersion<Uri, string>> serializedEntities)
+    private Task<IReadOnlyList<EntityWithVersion<Uri, IICalendar>>> ParallelDeserialize (IReadOnlyList<EntityWithVersion<Uri, string>> serializedEntities)
     {
-      var result = new List<EntityWithVersion<Uri, IICalendar>>();
+      return Task.Factory.StartNew (() =>
+      {
+        var result = new List<EntityWithVersion<Uri, IICalendar>>();
 
-      Parallel.ForEach (
-          serializedEntities,
-          () => Tuple.Create (new iCalendarSerializer(), new List<Tuple<Uri, IICalendar>>()),
-          (serialized, loopState, threadLocal) =>
-          {
-            IICalendar calendar;
-
-            if (TryDeserializeCalendar (serialized.Entity, out calendar, serialized.Id, threadLocal.Item1))
-              threadLocal.Item2.Add (Tuple.Create (serialized.Id, calendar));
-            return threadLocal;
-          },
-          threadLocal =>
-          {
-            lock (result)
+        Parallel.ForEach (
+            serializedEntities,
+            () => Tuple.Create (new iCalendarSerializer(), new List<Tuple<Uri, IICalendar>>()),
+            (serialized, loopState, threadLocal) =>
             {
-              foreach (var calendar in threadLocal.Item2)
-                result.Add (EntityWithVersion.Create (calendar.Item1, calendar.Item2));
-            }
-          });
+              IICalendar calendar;
 
-      return result;
+              if (TryDeserializeCalendar (serialized.Entity, out calendar, serialized.Id, threadLocal.Item1))
+                threadLocal.Item2.Add (Tuple.Create (serialized.Id, calendar));
+              return threadLocal;
+            },
+            threadLocal =>
+            {
+              lock (result)
+              {
+                foreach (var calendar in threadLocal.Item2)
+                  result.Add (EntityWithVersion.Create (calendar.Item1, calendar.Item2));
+              }
+            });
+
+        IReadOnlyList<EntityWithVersion<Uri, IICalendar>> readOnlyResult = result;
+        return readOnlyResult;
+      });
     }
 
 
-    public void Delete (Uri entityId)
+    public Task Delete (Uri entityId)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
-        _calDavDataAccess.DeleteEntity (entityId);
+        return _calDavDataAccess.DeleteEntity (entityId);
       }
     }
 
-    public EntityIdWithVersion<Uri, string> Update (Uri entityId, IICalendar entityToUpdate, Func<IICalendar, IICalendar> entityModifier)
+    public Task<EntityIdWithVersion<Uri, string>> Update (Uri entityId, IICalendar entityToUpdate, Func<IICalendar, IICalendar> entityModifier)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
@@ -137,13 +137,13 @@ namespace CalDavSynchronizer.Implementation
       }
     }
 
-    public EntityIdWithVersion<Uri, string> Create (Func<IICalendar, IICalendar> entityInitializer)
+    public async Task<EntityIdWithVersion<Uri, string>> Create (Func<IICalendar, IICalendar> entityInitializer)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
         IICalendar newCalendar = new iCalendar();
         newCalendar = entityInitializer (newCalendar);
-        return _calDavDataAccess.CreateEntity (SerializeCalendar (newCalendar));
+        return await _calDavDataAccess.CreateEntity (SerializeCalendar (newCalendar));
       }
     }
 

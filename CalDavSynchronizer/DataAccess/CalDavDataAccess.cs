@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Xml;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using GenSync;
@@ -35,45 +36,45 @@ namespace CalDavSynchronizer.DataAccess
     {
     }
 
-    public bool IsCalendarAccessSupported ()
+    public Task<bool> IsCalendarAccessSupported ()
     {
       return HasOption ("calendar-access");
     }
 
-    public bool IsResourceCalender ()
+    public Task<bool> IsResourceCalender ()
     {
       return IsResourceType ("C", "calendar");
     }
 
-    public bool DoesSupportCalendarQuery ()
+    public Task<bool> DoesSupportCalendarQuery ()
     {
       return DoesSupportsReportSet (_serverUrl, 0, "C", "calendar-query");
     }
 
     private const string s_calDavDateTimeFormatString = "yyyyMMddThhmmssZ";
 
-    public IReadOnlyList<EntityIdWithVersion<Uri, string>> GetEvents (DateTimeRange? range)
+    public Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetEvents (DateTimeRange? range)
     {
       return GetEntities (range, "VEVENT");
     }
 
-    public IReadOnlyList<EntityIdWithVersion<Uri, string>> GetTodos (DateTimeRange? range)
+    public Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetTodos (DateTimeRange? range)
     {
       return GetEntities (range, "VTODO");
     }
 
-    public EntityIdWithVersion<Uri, string> CreateEntity (string iCalData)
+    public Task<EntityIdWithVersion<Uri, string>> CreateEntity (string iCalData)
     {
       return CreateEntity (string.Format ("{0:D}.ics", Guid.NewGuid()), iCalData);
     }
 
-    private IReadOnlyList<EntityIdWithVersion<Uri, string>> GetEntities (DateTimeRange? range, string entityType)
+    private async Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetEntities (DateTimeRange? range, string entityType)
     {
       var entities = new List<EntityIdWithVersion<Uri, string>>();
 
       try
       {
-        var responseXml = _webDavClient.ExecuteWebDavRequestAndReadResponse (
+        var responseXml = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
             _serverUrl,
             request =>
             {
@@ -133,7 +134,7 @@ namespace CalDavSynchronizer.DataAccess
       return entities;
     }
 
-    public IReadOnlyList<EntityWithVersion<Uri, string>> GetEntities (IEnumerable<Uri> eventUrls)
+    public async Task<IReadOnlyList<EntityWithVersion<Uri, string>>> GetEntities (IEnumerable<Uri> eventUrls)
     {
       var requestBody = @"<?xml version=""1.0""?>
 			                    <C:calendar-multiget xmlns:C=""urn:ietf:params:xml:ns:caldav"" xmlns:D=""DAV:"">
@@ -145,7 +146,7 @@ namespace CalDavSynchronizer.DataAccess
                                         " + String.Join (Environment.NewLine, eventUrls.Select (u => string.Format ("<D:href>{0}</D:href>", u))) + @"
                                     </C:calendar-multiget>";
 
-      var responseXml = _webDavClient.ExecuteWebDavRequestAndReadResponse (
+      var responseXml = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
           _serverUrl,
           request =>
           {

@@ -13,14 +13,13 @@ namespace GenSync.UnitTests.Synchronization
 {
   internal class SynchronizerBuilder
   {
-
     public SynchronizerBuilder ()
     {
       AtypeRepository = MockRepository.GenerateMock<IEntityRepository<string, string, string>>();
       BtypeRepository = MockRepository.GenerateMock<IEntityRepository<string, string, string>>();
       EntityMapper = MockRepository.GenerateMock<IEntityMapper<string, string>>();
-      EntityRelationDataAccess = MockRepository.GenerateMock<IEntityRelationDataAccess<string, string, string, string>> ();
-      EntityRelationDataFactory = MockRepository.GenerateMock<IEntityRelationDataFactory<string, string, string, string>> ();
+      EntityRelationDataAccess = MockRepository.GenerateMock<IEntityRelationDataAccess<string, string, string, string>>();
+      EntityRelationDataFactory = MockRepository.GenerateMock<IEntityRelationDataFactory<string, string, string, string>>();
       InitialEntityMatcher = MockRepository.GenerateMock<IInitialEntityMatcher<string, string, string, string, string, string>>();
       InitialSyncStateCreationStrategy = MockRepository.GenerateMock<IInitialSyncStateCreationStrategy<string, string, string, string, string, string>>();
     }

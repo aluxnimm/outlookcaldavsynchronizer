@@ -21,6 +21,7 @@ using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
@@ -138,9 +139,9 @@ namespace CalDavSynchronizer.Ui
       comboBox.DisplayMember = "Name";
     }
 
-    private void _testConnectionButton_Click (object sender, EventArgs e)
+    private async void _testConnectionButton_Click (object sender, EventArgs e)
     {
-      TestServerConnection();
+      await TestServerConnection();
     }
 
     private void _selectOutlookFolderButton_Click (object sender, EventArgs e)
@@ -148,7 +149,7 @@ namespace CalDavSynchronizer.Ui
       SelectFolder();
     }
 
-    private void TestServerConnection ()
+    private async Task TestServerConnection ()
     {
       const string connectionTestCaption = "Test settings";
 
@@ -177,8 +178,8 @@ namespace CalDavSynchronizer.Ui
                 TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
                 TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"])));
 
-        var isCalendar = calDavDataAccess.IsResourceCalender();
-        var isAddressBook = cardDavDataAccess.IsResourceAddressBook();
+        var isCalendar = await calDavDataAccess.IsResourceCalender();
+        var isAddressBook = await cardDavDataAccess.IsResourceAddressBook();
 
         if (!isCalendar && ! isAddressBook)
         {
@@ -197,12 +198,12 @@ namespace CalDavSynchronizer.Ui
 
         if (isCalendar)
         {
-          hasError = TestCalendar (calDavDataAccess, errorMessageBuilder);
+          hasError = await TestCalendar (calDavDataAccess, errorMessageBuilder);
         }
 
         if (isAddressBook)
         {
-          hasError = TestAddressBook (cardDavDataAccess, errorMessageBuilder);
+          hasError = await TestAddressBook (cardDavDataAccess, errorMessageBuilder);
         }
 
         if (hasError)
@@ -216,16 +217,16 @@ namespace CalDavSynchronizer.Ui
       }
     }
 
-    private bool TestAddressBook (CardDavDataAccess cardDavDataAccess, StringBuilder errorMessageBuilder)
+    private async Task<bool> TestAddressBook (CardDavDataAccess cardDavDataAccess, StringBuilder errorMessageBuilder)
     {
       bool hasError = false;
-      if (!cardDavDataAccess.IsAddressBookAccessSupported())
+      if (!await cardDavDataAccess.IsAddressBookAccessSupported())
       {
         errorMessageBuilder.AppendLine ("- The specified Url does not support addressbook.");
         hasError = true;
       }
 
-      if (!cardDavDataAccess.IsWriteable())
+      if (!await cardDavDataAccess.IsWriteable())
       {
         errorMessageBuilder.AppendLine ("- The specified Url is a read-only addressbook.");
         hasError = true;
@@ -239,23 +240,23 @@ namespace CalDavSynchronizer.Ui
       return hasError;
     }
 
-    private bool TestCalendar (CalDavDataAccess calDavDataAccess, StringBuilder errorMessageBuilder)
+    private async Task<bool> TestCalendar (CalDavDataAccess calDavDataAccess, StringBuilder errorMessageBuilder)
     {
       bool hasError = false;
 
-      if (!calDavDataAccess.IsCalendarAccessSupported())
+      if (!await calDavDataAccess.IsCalendarAccessSupported())
       {
         errorMessageBuilder.AppendLine ("- The specified Url does not support calendar access.");
         hasError = true;
       }
 
-      if (!calDavDataAccess.IsWriteable())
+      if (!await calDavDataAccess.IsWriteable())
       {
         errorMessageBuilder.AppendLine ("- The specified Url is a read-only calendar.");
         hasError = true;
       }
 
-      if (!calDavDataAccess.DoesSupportCalendarQuery())
+      if (!await calDavDataAccess.DoesSupportCalendarQuery())
       {
         errorMessageBuilder.AppendLine ("- The specified Url does not support Calendar Queries.");
         hasError = true;

@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using GenSync;
 
@@ -23,10 +24,10 @@ namespace CalDavSynchronizer.DataAccess
 {
   public interface ICardDavDataAccess
   {
-    IReadOnlyList<EntityIdWithVersion<Uri, string>> GetContacts ();
-    IReadOnlyList<EntityWithVersion<Uri, string>> GetEntities (IEnumerable<Uri> eventUrls);
-    EntityIdWithVersion<Uri, string> CreateEntity (string iCalData);
-    void DeleteEntity (Uri uri);
-    EntityIdWithVersion<Uri, string> UpdateEntity (Uri url, string iCalData);
+    Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetContacts ();
+    Task<IReadOnlyList<EntityWithVersion<Uri, string>>> GetEntities (IEnumerable<Uri> eventUrls);
+    Task<EntityIdWithVersion<Uri, string>> CreateEntity (string iCalData);
+    Task DeleteEntity (Uri uri);
+    Task<EntityIdWithVersion<Uri, string>> UpdateEntity (Uri url, string iCalData);
   }
 }

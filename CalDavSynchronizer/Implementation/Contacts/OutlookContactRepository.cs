@@ -51,7 +51,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       return GenericComObjectWrapper.Create ((Folder) _mapiNameSpace.GetFolderFromID (_folderId, _folderStoreId));
     }
 
-    public IReadOnlyList<EntityIdWithVersion<string, DateTime>> GetVersions ()
+    public Task<IReadOnlyList<EntityIdWithVersion<string, DateTime>>> GetVersions ()
     {
       var events = new List<EntityIdWithVersion<string, DateTime>>();
 
@@ -77,7 +77,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
           }
         }
       }
-      return events;
+
+      return Task.FromResult<IReadOnlyList<EntityIdWithVersion<string, DateTime>>> (events);
     }
 
     private static readonly CultureInfo _currentCultureInfo = CultureInfo.CurrentCulture;
@@ -105,26 +106,28 @@ namespace CalDavSynchronizer.Implementation.Contacts
         appointmentItemWrapper.Dispose();
     }
 
-    public EntityIdWithVersion<string, DateTime> Update (string entityId, GenericComObjectWrapper<ContactItem> entityToUpdate, Func<GenericComObjectWrapper<ContactItem>, GenericComObjectWrapper<ContactItem>> entityModifier)
+    public Task<EntityIdWithVersion<string, DateTime>> Update (string entityId, GenericComObjectWrapper<ContactItem> entityToUpdate, Func<GenericComObjectWrapper<ContactItem>, GenericComObjectWrapper<ContactItem>> entityModifier)
     {
       entityToUpdate = entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save();
-      return new EntityIdWithVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime);
+      return Task.FromResult (new EntityIdWithVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime));
     }
 
-    public void Delete (string entityId)
+    public Task Delete (string entityId)
     {
       var entityWithId = Get (new[] { entityId }).Result.SingleOrDefault();
       if (entityWithId == null)
-        return;
+        return Task.FromResult (0);
 
       using (var appointment = entityWithId.Entity)
       {
         appointment.Inner.Delete();
       }
+
+      return Task.FromResult (0);
     }
 
-    public EntityIdWithVersion<string, DateTime> Create (Func<GenericComObjectWrapper<ContactItem>, GenericComObjectWrapper<ContactItem>> entityInitializer)
+    public Task<EntityIdWithVersion<string, DateTime>> Create (Func<GenericComObjectWrapper<ContactItem>, GenericComObjectWrapper<ContactItem>> entityInitializer)
     {
       GenericComObjectWrapper<ContactItem> newWrapper;
 
@@ -139,7 +142,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         {
           initializedWrapper.Inner.Save();
           var result = new EntityIdWithVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime);
-          return result;
+          return Task.FromResult(result);
         }
       }
     }

@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using GenSync.EntityRelationManagement;
 using GenSync.InitialEntityMatching;
 using GenSync.ProgressReport;
@@ -117,13 +118,13 @@ namespace GenSync.UnitTests.Synchronization
     }
 
 
-    public void InitializeWithTwoEvents ()
+    public async Task InitializeWithTwoEvents ()
     {
-      var v1 = _localRepository.Create (v => "Item 1");
-      var v2 = _localRepository.Create (v => "Item 2");
+      var v1 = await _localRepository.Create (v => "Item 1");
+      var v2 = await _localRepository.Create (v => "Item 2");
 
-      var v3 = _serverRepository.Create (v => "Item 1");
-      var v4 = _serverRepository.Create (v => "Item 2");
+      var v3 = await _serverRepository.Create (v => "Item 1");
+      var v4 = await _serverRepository.Create (v => "Item 2");
 
       _entityRelationData.Add (new EntityRelationData (
           v1.Id,
