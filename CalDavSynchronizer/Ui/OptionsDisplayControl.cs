@@ -19,6 +19,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -163,21 +164,25 @@ namespace CalDavSynchronizer.Ui
           return;
         }
 
+        var calDavHttpClient = SynchronizerFactory.CreateHttpClient (
+            _calenderUrlTextBox.Text,
+            _userNameTextBox.Text,
+            _passwordTextBox.Text,
+            TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]));
         var calDavDataAccess = new CalDavDataAccess (
             new Uri (_calenderUrlTextBox.Text),
             new CalDavClient (
-                SynchronizerFactory.CreateHttpClient (
-                    _userNameTextBox.Text,
-                    _passwordTextBox.Text,
-                    TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]))));
+                new Lazy<HttpClient>(() => calDavHttpClient)));
 
+        var cardDavHttpClient = SynchronizerFactory.CreateHttpClient (
+            _calenderUrlTextBox.Text,
+            _userNameTextBox.Text,
+            _passwordTextBox.Text,
+            TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]));
         var cardDavDataAccess = new CardDavDataAccess (
             new Uri (_calenderUrlTextBox.Text),
             new CardDavClient (
-                SynchronizerFactory.CreateHttpClient (
-                    _userNameTextBox.Text,
-                    _passwordTextBox.Text,
-                    TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]))));
+                new Lazy<HttpClient>(()=> cardDavHttpClient)));
 
         var isCalendar = await calDavDataAccess.IsResourceCalender();
         var isAddressBook = await cardDavDataAccess.IsResourceAddressBook();

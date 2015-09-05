@@ -32,9 +32,9 @@ namespace CalDavSynchronizer.DataAccess
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private readonly ProductInfoHeaderValue _productInfo;
-    private readonly HttpClient _httpClient;
+    private readonly Lazy<HttpClient> _httpClient;
 
-    protected WebDavClient (HttpClient httpClient)
+    protected WebDavClient (Lazy<HttpClient> httpClient)
     {
       if (httpClient == null)
         throw new ArgumentNullException ("httpClient");
@@ -91,7 +91,7 @@ namespace CalDavSynchronizer.DataAccess
         requestMessage.Content = new StringContent (requestBody, Encoding.UTF8, mediaType);
       }
 
-      var response = await _httpClient.SendAsync (requestMessage);
+      var response = await _httpClient.Value.SendAsync (requestMessage);
       if (response.StatusCode == HttpStatusCode.Moved || response.StatusCode == HttpStatusCode.Redirect)
       {
         if (response.Headers.Location != null)

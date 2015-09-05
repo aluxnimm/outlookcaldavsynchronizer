@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using CalDavSynchronizer;
@@ -55,13 +56,16 @@ namespace CalDavDataAccessIntegrationTests
 
       var options = optionsDataAccess.LoadOptions().Single (o => o.Name == ProfileName);
 
+      var httpClient = SynchronizerFactory.CreateHttpClient (
+          options.CalenderUrl,
+          options.UserName,
+          options.Password,
+          TimeSpan.FromSeconds (30));
       _calDavDataAccess = new CalDavDataAccess (
           new Uri (options.CalenderUrl),
           new CalDavClient (
-                  SynchronizerFactory.CreateHttpClient (
-                  options.UserName,
-                  options.Password,
-                  TimeSpan.FromSeconds (30))));
+                  new Lazy<HttpClient> (() => httpClient)));
+
     }
 
     [Test]

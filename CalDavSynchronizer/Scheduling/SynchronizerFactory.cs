@@ -97,7 +97,7 @@ namespace CalDavSynchronizer.Scheduling
     {
       var calDavDataAccess = new CalDavDataAccess (
           new Uri (options.CalenderUrl),
-          new CalDavClient (CreateHttpClient (options)));
+          new CalDavClient (new Lazy<HttpClient> (() => CreateHttpClient (options))));
 
       var storageDataDirectory = Path.Combine (
           _applicationDataDirectory,
@@ -112,19 +112,30 @@ namespace CalDavSynchronizer.Scheduling
 
     private HttpClient CreateHttpClient (Options options)
     {
-      return CreateHttpClient (options.UserName, options.Password, _calDavConnectTimeout);
+      return CreateHttpClient (options.CalenderUrl, options.UserName, options.Password, _calDavConnectTimeout);
     }
 
-    public static HttpClient CreateHttpClient (string username, string password, TimeSpan calDavConnectTimeout)
+    public static HttpClient CreateHttpClient (string calendarUrl, string username, string password, TimeSpan calDavConnectTimeout)
     {
-      var httpClientHandler = new HttpClientHandler();
-      if (!string.IsNullOrEmpty (username))
+      if (
+          calendarUrl.ToLower().Contains ("calendar.google.com")
+          && string.IsNullOrEmpty (password)
+          && !string.IsNullOrEmpty (username)
+          && username.StartsWith ("oauth:"))
       {
-        httpClientHandler.Credentials = new NetworkCredential (username, password);
+        return CalDavSynchronizer.OAuth.Google.GoogleHttpClientFactory.CreateHttpClient (username.Substring (6));
       }
-      var httpClient = new HttpClient (httpClientHandler);
-      httpClient.Timeout = calDavConnectTimeout;
-      return httpClient;
+      else
+      {
+        var httpClientHandler = new HttpClientHandler();
+        if (!string.IsNullOrEmpty (username))
+        {
+          httpClientHandler.Credentials = new NetworkCredential (username, password);
+        }
+        var httpClient = new HttpClient (httpClientHandler);
+        httpClient.Timeout = calDavConnectTimeout;
+        return httpClient;
+      }
     }
 
     /// <remarks>
@@ -197,7 +208,7 @@ namespace CalDavSynchronizer.Scheduling
       var btypeRepository = new CalDavRepository (
           new CalDavDataAccess (
               new Uri (options.CalenderUrl),
-              new CalDavClient (CreateHttpClient (options))),
+              new CalDavClient (new Lazy<HttpClient> (() => CreateHttpClient (options)))),
           new iCalendarSerializer(),
           CalDavRepository.EntityType.Todo,
           NullDateTimeRangeProvider.Instance);
@@ -245,7 +256,7 @@ namespace CalDavSynchronizer.Scheduling
       IEntityRepository<vCard, Uri, string> btypeRepository = new CardDavRepository (
           new CardDavDataAccess (
               new Uri (options.CalenderUrl),
-              new CardDavClient (CreateHttpClient (options))));
+              new CardDavClient (new Lazy<HttpClient> (() => CreateHttpClient (options)))));
 
       var entityRelationDataFactory = new OutlookContactRelationDataFactory();
 
