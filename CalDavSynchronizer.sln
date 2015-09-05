@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenSync.UnitTests", "GenSyn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalDavDataAccessIntegrationTests", "CalDavDataAccessIntegrationTests\CalDavDataAccessIntegrationTests.csproj", "{BE747238-9388-43CE-AF64-536C64442EB9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalDavSynchronizer.OAuth.Google", "CalDavSynchronizer.OAuth.Google\CalDavSynchronizer.OAuth.Google.csproj", "{230914CF-6FF1-4B09-A831-C37C6B41D127}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{BE747238-9388-43CE-AF64-536C64442EB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE747238-9388-43CE-AF64-536C64442EB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE747238-9388-43CE-AF64-536C64442EB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{230914CF-6FF1-4B09-A831-C37C6B41D127}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{230914CF-6FF1-4B09-A831-C37C6B41D127}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{230914CF-6FF1-4B09-A831-C37C6B41D127}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{230914CF-6FF1-4B09-A831-C37C6B41D127}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
