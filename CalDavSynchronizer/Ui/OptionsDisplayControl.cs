@@ -27,6 +27,7 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.Scheduling;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
 using Exception = System.Exception;
@@ -165,18 +166,18 @@ namespace CalDavSynchronizer.Ui
         var calDavDataAccess = new CalDavDataAccess (
             new Uri (_calenderUrlTextBox.Text),
             new CalDavClient (
-                _userNameTextBox.Text,
-                _passwordTextBox.Text,
-                TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-                TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"])));
+                SynchronizerFactory.CreateHttpClient (
+                    _userNameTextBox.Text,
+                    _passwordTextBox.Text,
+                    TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]))));
 
         var cardDavDataAccess = new CardDavDataAccess (
             new Uri (_calenderUrlTextBox.Text),
             new CardDavClient (
-                _userNameTextBox.Text,
-                _passwordTextBox.Text,
-                TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-                TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"])));
+                SynchronizerFactory.CreateHttpClient (
+                    _userNameTextBox.Text,
+                    _passwordTextBox.Text,
+                    TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]))));
 
         var isCalendar = await calDavDataAccess.IsResourceCalender();
         var isAddressBook = await cardDavDataAccess.IsResourceAddressBook();

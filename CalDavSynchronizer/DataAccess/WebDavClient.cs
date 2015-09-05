@@ -34,18 +34,14 @@ namespace CalDavSynchronizer.DataAccess
     private readonly ProductInfoHeaderValue _productInfo;
     private readonly HttpClient _httpClient;
 
-    public WebDavClient (string username, string password, TimeSpan connectTimeout, TimeSpan readWriteTimeout)
+    protected WebDavClient (HttpClient httpClient)
     {
+      if (httpClient == null)
+        throw new ArgumentNullException ("httpClient");
+
       var version = Assembly.GetExecutingAssembly().GetName().Version;
       _productInfo = new ProductInfoHeaderValue ("CalDavSynchronizer", string.Format ("{0}.{1}", version.Major, version.Minor));
-
-      var httpClientHandler = new HttpClientHandler();
-      if (!string.IsNullOrEmpty (username))
-      {
-        httpClientHandler.Credentials = new NetworkCredential (username, password);
-      }
-      _httpClient = new HttpClient (httpClientHandler);
-      _httpClient.Timeout = connectTimeout;
+      _httpClient = httpClient;
     }
 
     private HttpRequestMessage CreateRequestMessage (Uri url)

@@ -18,6 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.Net;
+using System.Net.Http;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
@@ -95,11 +97,7 @@ namespace CalDavSynchronizer.Scheduling
     {
       var calDavDataAccess = new CalDavDataAccess (
           new Uri (options.CalenderUrl),
-          new CalDavClient (
-              options.UserName,
-              options.Password,
-              _calDavConnectTimeout,
-              _calDavReadWriteTimeout));
+          new CalDavClient (CreateHttpClient (options)));
 
       var storageDataDirectory = Path.Combine (
           _applicationDataDirectory,
@@ -109,6 +107,24 @@ namespace CalDavSynchronizer.Scheduling
       var entityRelationDataAccess = new EntityRelationDataAccess<string, DateTime, OutlookEventRelationData, Uri, string> (storageDataDirectory);
 
       return CreateEventSynchronizer (options, calDavDataAccess, entityRelationDataAccess);
+    }
+
+
+    private HttpClient CreateHttpClient (Options options)
+    {
+      return CreateHttpClient (options.UserName, options.Password, _calDavConnectTimeout);
+    }
+
+    public static HttpClient CreateHttpClient (string username, string password, TimeSpan calDavConnectTimeout)
+    {
+      var httpClientHandler = new HttpClientHandler();
+      if (!string.IsNullOrEmpty (username))
+      {
+        httpClientHandler.Credentials = new NetworkCredential (username, password);
+      }
+      var httpClient = new HttpClient (httpClientHandler);
+      httpClient.Timeout = calDavConnectTimeout;
+      return httpClient;
     }
 
     /// <remarks>
@@ -181,12 +197,7 @@ namespace CalDavSynchronizer.Scheduling
       var btypeRepository = new CalDavRepository (
           new CalDavDataAccess (
               new Uri (options.CalenderUrl),
-              new CalDavClient (
-                  options.UserName,
-                  options.Password,
-                  _calDavConnectTimeout,
-                  _calDavReadWriteTimeout)
-              ),
+              new CalDavClient (CreateHttpClient (options))),
           new iCalendarSerializer(),
           CalDavRepository.EntityType.Todo,
           NullDateTimeRangeProvider.Instance);
@@ -234,11 +245,7 @@ namespace CalDavSynchronizer.Scheduling
       IEntityRepository<vCard, Uri, string> btypeRepository = new CardDavRepository (
           new CardDavDataAccess (
               new Uri (options.CalenderUrl),
-              new CardDavClient (
-                  options.UserName,
-                  options.Password,
-                  _calDavConnectTimeout,
-                  _calDavReadWriteTimeout)));
+              new CardDavClient (CreateHttpClient (options))));
 
       var entityRelationDataFactory = new OutlookContactRelationDataFactory();
 

@@ -24,6 +24,7 @@ using CalDavSynchronizer;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
+using CalDavSynchronizer.Scheduling;
 using DDay.iCal;
 using DDay.iCal.Serialization.iCalendar;
 using GenSync;
@@ -57,10 +58,10 @@ namespace CalDavDataAccessIntegrationTests
       _calDavDataAccess = new CalDavDataAccess (
           new Uri (options.CalenderUrl),
           new CalDavClient (
-              options.UserName,
-              options.Password,
-              TimeSpan.FromSeconds (30),
-              TimeSpan.FromSeconds (30)));
+                  SynchronizerFactory.CreateHttpClient (
+                  options.UserName,
+                  options.Password,
+                  TimeSpan.FromSeconds (30))));
     }
 
     [Test]
