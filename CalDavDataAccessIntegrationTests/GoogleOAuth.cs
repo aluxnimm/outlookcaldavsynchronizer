@@ -18,11 +18,11 @@ using System;
 
 namespace CalDavDataAccessIntegrationTests
 {
-  public class Google : FixtureBase
+  public class GoogleOAuth : FixtureBase
   {
     protected override string ProfileName
     {
-      get { return "TestCal-Google"; }
+      get { return "TestCal-Google (OAuth)"; }
     }
   }
 }

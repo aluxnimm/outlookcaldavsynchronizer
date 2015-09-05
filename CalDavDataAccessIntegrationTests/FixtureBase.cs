@@ -65,7 +65,6 @@ namespace CalDavDataAccessIntegrationTests
           new Uri (options.CalenderUrl),
           new CalDavClient (
                   new Lazy<HttpClient> (() => httpClient)));
-
     }
 
     [Test]

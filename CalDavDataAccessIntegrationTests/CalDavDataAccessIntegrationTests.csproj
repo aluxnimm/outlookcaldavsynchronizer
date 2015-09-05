@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FixtureBase.cs" />
+    <Compile Include="GoogleOAuth.cs" />
     <Compile Include="Google.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sogo.cs" />
