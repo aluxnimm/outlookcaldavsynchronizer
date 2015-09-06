@@ -54,19 +54,13 @@ namespace CalDavDataAccessIntegrationTests
 
       var options = optionsDataAccess.LoadOptions().Single (o => o.Name == ProfileName);
 
-      _calDavDataAccess = Wrap (
-          new CalDavDataAccess (
-              new Uri (options.CalenderUrl),
-              new CalDavClient (
-                  options.UserName,
-                  options.Password,
-                  TimeSpan.FromSeconds (30),
-                  TimeSpan.FromSeconds (30))));
-    }
-
-    protected virtual ICalDavDataAccess Wrap (ICalDavDataAccess dataAccess)
-    {
-      return dataAccess;
+      _calDavDataAccess = new CalDavDataAccess (
+          new Uri (options.CalenderUrl),
+          new CalDavClient (
+              options.UserName,
+              options.Password,
+              TimeSpan.FromSeconds (30),
+              TimeSpan.FromSeconds (30)));
     }
 
     [Test]
@@ -99,15 +93,18 @@ namespace CalDavDataAccessIntegrationTests
       foreach (var evt in _calDavDataAccess.GetEvents (null))
         _calDavDataAccess.DeleteEntity (evt.Id);
 
-
       var entitiesWithVersion = new List<EntityIdWithVersion<Uri, string>>();
+
+      var uids = new List<string>();
 
       for (int i = 1; i <= 5; i++)
       {
+        var iCalendar = CreateEntity (i);
+        uids.Add (iCalendar.Events[0].UID);
         entitiesWithVersion.Add (
             _calDavDataAccess.CreateEntity (
                 SerializeCalendar (
-                    CreateEntity (i))));
+                    iCalendar)));
       }
 
       var queriedEntitesWithVersion = _calDavDataAccess.GetEvents (new DateTimeRange (DateTime.Now.AddDays (150), DateTime.Now.AddDays (450)));
@@ -118,13 +115,17 @@ namespace CalDavDataAccessIntegrationTests
           queriedEntitesWithVersion.Select (e => e.Id),
           entitiesWithVersion.Select (e => e.Id));
 
-      var updated = _calDavDataAccess.UpdateEntity (entitiesWithVersion[1].Id, SerializeCalendar (CreateEntity (600)));
+      var updatedCalendar = CreateEntity (600);
+      updatedCalendar.Events[0].UID = uids[1];
+      var updated = _calDavDataAccess.UpdateEntity (entitiesWithVersion[1].Id, SerializeCalendar (updatedCalendar));
 
       Assert.That (
           _calDavDataAccess.GetEvents (new DateTimeRange (DateTime.Now.AddDays (150), DateTime.Now.AddDays (450))).Count,
           Is.EqualTo (2));
 
-      var updateReverted = _calDavDataAccess.UpdateEntity (updated.Id, SerializeCalendar (CreateEntity (2)));
+      var updatedRevertedCalendar = CreateEntity (2);
+      updatedRevertedCalendar.Events[0].UID = uids[1];
+      var updateReverted = _calDavDataAccess.UpdateEntity (updated.Id, SerializeCalendar (updatedRevertedCalendar));
 
       Assert.That (
           _calDavDataAccess.GetEvents (new DateTimeRange (DateTime.Now.AddDays (150), DateTime.Now.AddDays (450))).Count,
@@ -161,7 +162,7 @@ namespace CalDavDataAccessIntegrationTests
 
       Assert.That (
           _calDavDataAccess.GetEntities (new[] { v.Id }).Count,
-          Is.EqualTo (1));
+          Is.EqualTo (1).Or.EqualTo(0));
     }
 
     [Test]

@@ -25,10 +25,5 @@ namespace CalDavDataAccessIntegrationTests
     {
       get { return "TestCal-Google"; }
     }
-
-    protected override ICalDavDataAccess Wrap (ICalDavDataAccess dataAccess)
-    {
-      return new CalDavDataAccessCreateDeleteInsteadOfUpdateWrappper (dataAccess);
-    }
   }
 }

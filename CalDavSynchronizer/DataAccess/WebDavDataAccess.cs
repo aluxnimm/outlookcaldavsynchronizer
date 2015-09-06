@@ -174,7 +174,7 @@ namespace CalDavSynchronizer.DataAccess
             request =>
             {
               request.Method = "PUT";
-              request.ContentType = "text/xml; charset=UTF-8";
+              request.ContentType = "text/calendar; charset=UTF-8";
               if (!string.IsNullOrEmpty (etag))
                 request.Headers.Add ("If-Match", etag);
               request.ServicePoint.Expect100Continue = false;
@@ -192,6 +192,20 @@ namespace CalDavSynchronizer.DataAccess
       if (s_logger.IsDebugEnabled)
         s_logger.DebugFormat ("Updated entity. Server response header: '{0}'", responseHeaders.ToString().Replace ("\r\n", " <CR> "));
 
+      Uri effectiveEventUrl;
+      var location = responseHeaders["location"];
+      if (!string.IsNullOrEmpty (location))
+      {
+        s_logger.DebugFormat ("Server sent new location: '{0}'", location);
+        var locationUrl = new Uri (location, UriKind.RelativeOrAbsolute);
+        effectiveEventUrl = locationUrl.IsAbsoluteUri ? locationUrl : new Uri (_serverUrl, locationUrl);
+        s_logger.DebugFormat ("New entity location: '{0}'", effectiveEventUrl);
+      }
+      else
+      {
+        effectiveEventUrl = absoluteEventUrl;
+      }
+
       var newEtag = responseHeaders["ETag"];
       string version;
       if (newEtag != null)
@@ -200,10 +214,10 @@ namespace CalDavSynchronizer.DataAccess
       }
       else
       {
-        version = GetEtag (absoluteEventUrl);
+        version = GetEtag (effectiveEventUrl);
       }
 
-      return new EntityIdWithVersion<Uri, string> (url, version);
+      return new EntityIdWithVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveEventUrl), version);
     }
 
     protected EntityIdWithVersion<Uri, string> CreateEntity (string name, string content)

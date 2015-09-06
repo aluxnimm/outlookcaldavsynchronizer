@@ -51,7 +51,6 @@
     <Compile Include="EntityRelationManagement\IEntityRelationData.cs" />
     <Compile Include="EntityRelationManagement\IEntityRelationDataAccess.cs" />
     <Compile Include="EntityRelationManagement\IEntityRelationDataFactory.cs" />
-    <Compile Include="EntityRepositories\EntityRepositoryDeleteCreateInstaedOfUpdateWrapper.cs" />
     <Compile Include="EntityRepositories\IEntityRepository.cs" />
     <Compile Include="EntityRepositories\IReadOnlyEntityRepository.cs" />
     <Compile Include="EntityRepositories\IWriteOnlyEntityRepository.cs" />

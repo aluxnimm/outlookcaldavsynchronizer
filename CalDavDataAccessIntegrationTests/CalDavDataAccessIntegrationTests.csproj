@@ -46,7 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CalDavDataAccessCreateDeleteInsteadOfUpdateWrappper.cs" />
     <Compile Include="FixtureBase.cs" />
     <Compile Include="Google.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

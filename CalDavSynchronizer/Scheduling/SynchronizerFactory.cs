@@ -136,11 +136,6 @@ namespace CalDavSynchronizer.Scheduling
           CalDavRepository.EntityType.Event,
           dateTimeRangeProvider);
 
-      if (StringComparer.InvariantCultureIgnoreCase.Compare (new Uri (options.CalenderUrl).Host, "www.google.com") == 0)
-      {
-        btypeRepository = new EntityRepositoryDeleteCreateInstaedOfUpdateWrapper<IICalendar, Uri, string> (btypeRepository);
-      }
-
       var entityMapper = new EventEntityMapper (
           _outlookEmailAddress, new Uri ("mailto:" + options.EmailAddress),
           _outlookSession.Application.TimeZones.CurrentTimeZone.ID,
@@ -244,11 +239,6 @@ namespace CalDavSynchronizer.Scheduling
                   options.Password,
                   _calDavConnectTimeout,
                   _calDavReadWriteTimeout)));
-
-      if (StringComparer.InvariantCultureIgnoreCase.Compare (new Uri (options.CalenderUrl).Host, "www.google.com") == 0)
-      {
-        btypeRepository = new EntityRepositoryDeleteCreateInstaedOfUpdateWrapper<vCard, Uri, string> (btypeRepository);
-      }
 
       var entityRelationDataFactory = new OutlookContactRelationDataFactory();
 

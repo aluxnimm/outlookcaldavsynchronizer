@@ -33,10 +33,7 @@ namespace TestRunner
             "XXXXXXXXX",
             "XXXXXXXXX",
             TimeSpan.FromMinutes (1),
-            TimeSpan.FromMinutes (5),
-            false,
-            false,
-            true));
+            TimeSpan.FromMinutes (5)));
 
     private static void Main (string[] args)
     {
