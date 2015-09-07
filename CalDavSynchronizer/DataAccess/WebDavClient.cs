@@ -32,15 +32,16 @@ namespace CalDavSynchronizer.DataAccess
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private readonly ProductInfoHeaderValue _productInfo;
-    private readonly Lazy<HttpClient> _httpClient;
+    private readonly Func<Task<HttpClient>> _httpClientFactory;
+    private HttpClient _httpClient;
 
-    protected WebDavClient (Lazy<HttpClient> httpClient, string productName, string productVersion)
+    protected WebDavClient (Func<Task<HttpClient>> httpClientFactory, string productName, string productVersion)
     {
-      if (httpClient == null)
-        throw new ArgumentNullException ("httpClient");
+      if (httpClientFactory == null)
+        throw new ArgumentNullException ("httpClientFactory");
 
       _productInfo = new ProductInfoHeaderValue (productName, productVersion);
-      _httpClient = httpClient;
+      _httpClientFactory = httpClientFactory;
     }
 
     private HttpRequestMessage CreateRequestMessage (Uri url)
@@ -89,7 +90,12 @@ namespace CalDavSynchronizer.DataAccess
         requestMessage.Content = new StringContent (requestBody, Encoding.UTF8, mediaType);
       }
 
-      var response = await _httpClient.Value.SendAsync (requestMessage);
+      if (_httpClient == null)
+      {
+        _httpClient = await _httpClientFactory();
+      }
+
+      var response = await _httpClient.SendAsync (requestMessage);
       if (response.StatusCode == HttpStatusCode.Moved || response.StatusCode == HttpStatusCode.Redirect)
       {
         if (response.Headers.Location != null)

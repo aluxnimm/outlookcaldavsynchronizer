@@ -17,6 +17,7 @@
 using System;
 using System.Net.Http;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Xml;
 using log4net;
 
@@ -26,8 +27,8 @@ namespace CalDavSynchronizer.DataAccess
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    public CalDavClient (Lazy<HttpClient> httpClient, string productName, string productVersion)
-        : base (httpClient,productName, productVersion)
+    public CalDavClient (Func<Task<HttpClient>> httpClientFactory, string productName, string productVersion)
+        : base (httpClientFactory, productName, productVersion)
     {
     }
 

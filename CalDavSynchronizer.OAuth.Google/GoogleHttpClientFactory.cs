@@ -13,27 +13,15 @@ namespace CalDavSynchronizer.OAuth.Google
 {
   public static class GoogleHttpClientFactory
   {
-    public static HttpClient CreateHttpClient (string user, string userAgentHeader)
+    public static async Task<HttpClient> CreateHttpClient (string user, string userAgentHeader)
     {
-      //Todo: auf async umstellen
-     
-      ManualResetEventSlim evt = new ManualResetEventSlim();
-
-      var t = Task<int>.Run (() =>
-      {
-        var result = LoginToGoogle (user).Result;
-        evt.Set();
-        return result;
-      });
-
-      evt.Wait();
+      var userCredential = await LoginToGoogle (user);
 
       var client = new HttpClientFactory().CreateHttpClient (new CreateHttpClientArgs() { ApplicationName = userAgentHeader });
-      t.Result.Initialize (client);
+      userCredential.Initialize (client);
 
       return client;
     }
-
 
     private static async Task<UserCredential> LoginToGoogle (string user)
     {
@@ -48,15 +36,6 @@ namespace CalDavSynchronizer.OAuth.Google
           CancellationToken.None);
 
       return credential;
-
-      // Create the service.
-      //var service = new BooksService(new BaseClientService.Initializer()
-      //    {
-      //        HttpClientInitializer = credential,
-      //        ApplicationName = "Books API Sample",
-      //    });
-
-      //var bookshelves = await service.Mylibrary.Bookshelves.List().ExecuteAsync();
     }
   }
 }

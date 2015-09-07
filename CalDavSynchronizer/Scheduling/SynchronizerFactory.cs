@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
@@ -124,7 +125,7 @@ namespace CalDavSynchronizer.Scheduling
       var calDavDataAccess = new CalDavDataAccess (
           new Uri (calenderUrl),
           new CalDavClient (
-              new Lazy<HttpClient> (() => CreateHttpClient (username, password, timeout, serverAdapterType)),
+              () => CreateHttpClient (username, password, timeout, serverAdapterType),
               productAndVersion.Item1,
               productAndVersion.Item2));
       return calDavDataAccess;
@@ -141,15 +142,15 @@ namespace CalDavSynchronizer.Scheduling
 
       var cardDavDataAccess = new CardDavDataAccess (
           new Uri (calenderUrl),
-          new CardDavClient (
-              new Lazy<HttpClient> (() => CreateHttpClient (username, password, timeout, serverAdapterType)),
+          new CalDavClient (
+              () => CreateHttpClient (username, password, timeout, serverAdapterType),
               productAndVersion.Item1,
               productAndVersion.Item2));
       return cardDavDataAccess;
     }
 
 
-    private static HttpClient CreateHttpClient (string username, string password, TimeSpan calDavConnectTimeout, ServerAdapterType serverAdapterType)
+    private static async Task<HttpClient> CreateHttpClient (string username, string password, TimeSpan calDavConnectTimeout, ServerAdapterType serverAdapterType)
     {
       switch (serverAdapterType)
       {
@@ -163,7 +164,7 @@ namespace CalDavSynchronizer.Scheduling
           httpClient.Timeout = calDavConnectTimeout;
           return httpClient;
         case ServerAdapterType.GoogleOAuth:
-          return OAuth.Google.GoogleHttpClientFactory.CreateHttpClient (username, GetProductWithVersion());
+          return await OAuth.Google.GoogleHttpClientFactory.CreateHttpClient (username, GetProductWithVersion());
         default:
           throw new ArgumentOutOfRangeException ("serverAdapterType");
       }
