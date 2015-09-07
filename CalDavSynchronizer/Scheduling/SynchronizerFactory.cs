@@ -142,7 +142,7 @@ namespace CalDavSynchronizer.Scheduling
 
       var cardDavDataAccess = new CardDavDataAccess (
           new Uri (calenderUrl),
-          new CalDavClient (
+          new CardDavClient (
               () => CreateHttpClient (username, password, timeout, serverAdapterType),
               productAndVersion.Item1,
               productAndVersion.Item2));
