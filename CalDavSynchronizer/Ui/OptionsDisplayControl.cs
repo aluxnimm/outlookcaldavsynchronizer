@@ -72,6 +72,35 @@ namespace CalDavSynchronizer.Ui
                                                                                        };
 
 
+    private ServerAdapterType SelectedServerAdapterType
+    {
+      get { return _useGoogleOAuthCheckBox.Checked ? ServerAdapterType.GoogleOAuth : ServerAdapterType.Default; }
+      set
+      {
+        switch (value)
+        {
+          case ServerAdapterType.Default:
+            _useGoogleOAuthCheckBox.Checked = false;
+            break;
+          case ServerAdapterType.GoogleOAuth:
+            _useGoogleOAuthCheckBox.Checked = true;
+            break;
+          default:
+            throw new ArgumentOutOfRangeException ("value");
+        }
+      }
+    }
+
+    private void UpdatePasswordEnabled ()
+    {
+      _passwordTextBox.Enabled = SelectedServerAdapterType != ServerAdapterType.GoogleOAuth;
+    }
+
+    private void _useGoogleOAuthCheckBox_CheckedChanged (object sender, EventArgs e)
+    {
+      UpdatePasswordEnabled();
+    }
+
     public OptionsDisplayControl (NameSpace session)
     {
       InitializeComponent();
@@ -164,25 +193,20 @@ namespace CalDavSynchronizer.Ui
           return;
         }
 
-        var calDavHttpClient = SynchronizerFactory.CreateHttpClient (
-            _calenderUrlTextBox.Text,
-            _userNameTextBox.Text,
-            _passwordTextBox.Text,
-            TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]));
-        var calDavDataAccess = new CalDavDataAccess (
-            new Uri (_calenderUrlTextBox.Text),
-            new CalDavClient (
-                new Lazy<HttpClient>(() => calDavHttpClient)));
 
-        var cardDavHttpClient = SynchronizerFactory.CreateHttpClient (
+        var calDavDataAccess = SynchronizerFactory.CreateCalDavDataAccess (
             _calenderUrlTextBox.Text,
             _userNameTextBox.Text,
             _passwordTextBox.Text,
-            TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]));
-        var cardDavDataAccess = new CardDavDataAccess (
-            new Uri (_calenderUrlTextBox.Text),
-            new CardDavClient (
-                new Lazy<HttpClient>(()=> cardDavHttpClient)));
+            TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+            SelectedServerAdapterType);
+
+        var cardDavDataAccess = SynchronizerFactory.CreateCardDavDataAccess (
+            _calenderUrlTextBox.Text,
+            _userNameTextBox.Text,
+            _passwordTextBox.Text,
+            TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+            SelectedServerAdapterType);
 
         var isCalendar = await calDavDataAccess.IsResourceCalender();
         var isAddressBook = await cardDavDataAccess.IsResourceAddressBook();
@@ -358,6 +382,9 @@ namespace CalDavSynchronizer.Ui
         _enableTimeRangeFilteringCheckBox.Checked = !value.IgnoreSynchronizationTimeRange;
         _syncIntervalComboBox.SelectedValue = value.SynchronizationIntervalInMinutes;
         _optionsId = value.Id;
+
+        SelectedServerAdapterType = value.ServerAdapterType;
+
         UpdateFolder (value.OutlookFolderEntryId, value.OutlookFolderStoreId);
         UpdateConflictResolutionComboBoxEnabled();
         OnHeaderChanged();
@@ -381,7 +408,8 @@ namespace CalDavSynchronizer.Ui
                    OutlookFolderStoreId = _folderStoreId,
                    Id = _optionsId,
                    Inactive = _inactiveCheckBox.Checked,
-                   IgnoreSynchronizationTimeRange = !_enableTimeRangeFilteringCheckBox.Checked
+                   IgnoreSynchronizationTimeRange = !_enableTimeRangeFilteringCheckBox.Checked,
+                   ServerAdapterType = SelectedServerAdapterType
                };
       }
     }

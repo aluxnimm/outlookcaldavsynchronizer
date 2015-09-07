@@ -56,15 +56,12 @@ namespace CalDavDataAccessIntegrationTests
 
       var options = optionsDataAccess.LoadOptions().Single (o => o.Name == ProfileName);
 
-      var httpClient = SynchronizerFactory.CreateHttpClient (
+      _calDavDataAccess = SynchronizerFactory.CreateCalDavDataAccess (
           options.CalenderUrl,
           options.UserName,
           options.Password,
-          TimeSpan.FromSeconds (30));
-      _calDavDataAccess = new CalDavDataAccess (
-          new Uri (options.CalenderUrl),
-          new CalDavClient (
-                  new Lazy<HttpClient> (() => httpClient)));
+          TimeSpan.FromSeconds (30),
+          options.ServerAdapterType);
     }
 
     [Test]
@@ -169,7 +166,7 @@ namespace CalDavDataAccessIntegrationTests
 
         Assert.That (
             (await _calDavDataAccess.GetEntities (new[] { v.Id })).Count,
-          Is.EqualTo (1).Or.EqualTo(0));
+            Is.EqualTo (1).Or.EqualTo (0));
       }
       catch (Exception x)
       {

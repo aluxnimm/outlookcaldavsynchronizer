@@ -15,25 +15,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Net.Http;
-using System.Reflection;
-using System.Xml;
-using log4net;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace CalDavSynchronizer.DataAccess
+namespace CalDavSynchronizer.Contracts
 {
-  public class CalDavClient : WebDavClient
+  public enum ServerAdapterType
   {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
-
-    public CalDavClient (Lazy<HttpClient> httpClient, string productName, string productVersion)
-        : base (httpClient,productName, productVersion)
-    {
-    }
-
-    protected override void RegisterNameSpaces (XmlNamespaceManager namespaceManager)
-    {
-      namespaceManager.AddNamespace ("C", "urn:ietf:params:xml:ns:caldav");
-    }
+    Default,
+    GoogleOAuth
   }
 }

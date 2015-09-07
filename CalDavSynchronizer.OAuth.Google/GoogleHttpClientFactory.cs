@@ -13,8 +13,10 @@ namespace CalDavSynchronizer.OAuth.Google
 {
   public static class GoogleHttpClientFactory
   {
-    public static HttpClient CreateHttpClient (string user)
+    public static HttpClient CreateHttpClient (string user, string userAgentHeader)
     {
+      //Todo: auf async umstellen
+     
       ManualResetEventSlim evt = new ManualResetEventSlim();
 
       var t = Task<int>.Run (() =>
@@ -26,7 +28,7 @@ namespace CalDavSynchronizer.OAuth.Google
 
       evt.Wait();
 
-      var client = new HttpClientFactory().CreateHttpClient (new CreateHttpClientArgs() { ApplicationName = "CalDavSynchronizer/1.0" });
+      var client = new HttpClientFactory().CreateHttpClient (new CreateHttpClientArgs() { ApplicationName = userAgentHeader });
       t.Result.Initialize (client);
 
       return client;

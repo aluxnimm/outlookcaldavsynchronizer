@@ -16,7 +16,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -95,9 +94,13 @@ namespace CalDavSynchronizer.Scheduling
 
     private ISynchronizer CreateEventSynchronizer (Options options)
     {
-      var calDavDataAccess = new CalDavDataAccess (
-          new Uri (options.CalenderUrl),
-          new CalDavClient (new Lazy<HttpClient> (() => CreateHttpClient (options))));
+      var calDavDataAccess = CreateCalDavDataAccess (
+          options.CalenderUrl,
+          options.UserName,
+          options.Password,
+          _calDavConnectTimeout,
+          options.ServerAdapterType);
+
 
       var storageDataDirectory = Path.Combine (
           _applicationDataDirectory,
@@ -109,33 +112,73 @@ namespace CalDavSynchronizer.Scheduling
       return CreateEventSynchronizer (options, calDavDataAccess, entityRelationDataAccess);
     }
 
-
-    private HttpClient CreateHttpClient (Options options)
+    public static CalDavDataAccess CreateCalDavDataAccess (
+        string calenderUrl,
+        string username,
+        string password,
+        TimeSpan timeout,
+        ServerAdapterType serverAdapterType)
     {
-      return CreateHttpClient (options.CalenderUrl, options.UserName, options.Password, _calDavConnectTimeout);
+      var productAndVersion = GetProductAndVersion();
+
+      var calDavDataAccess = new CalDavDataAccess (
+          new Uri (calenderUrl),
+          new CalDavClient (
+              new Lazy<HttpClient> (() => CreateHttpClient (username, password, timeout, serverAdapterType)),
+              productAndVersion.Item1,
+              productAndVersion.Item2));
+      return calDavDataAccess;
     }
 
-    public static HttpClient CreateHttpClient (string calendarUrl, string username, string password, TimeSpan calDavConnectTimeout)
+    public static CardDavDataAccess CreateCardDavDataAccess (
+        string calenderUrl,
+        string username,
+        string password,
+        TimeSpan timeout,
+        ServerAdapterType serverAdapterType)
     {
-      if (
-          calendarUrl.ToLower().Contains ("calendar.google.com")
-          && string.IsNullOrEmpty (password)
-          && !string.IsNullOrEmpty (username)
-          && username.StartsWith ("oauth:"))
+      var productAndVersion = GetProductAndVersion();
+
+      var cardDavDataAccess = new CardDavDataAccess (
+          new Uri (calenderUrl),
+          new CardDavClient (
+              new Lazy<HttpClient> (() => CreateHttpClient (username, password, timeout, serverAdapterType)),
+              productAndVersion.Item1,
+              productAndVersion.Item2));
+      return cardDavDataAccess;
+    }
+
+
+    private static HttpClient CreateHttpClient (string username, string password, TimeSpan calDavConnectTimeout, ServerAdapterType serverAdapterType)
+    {
+      switch (serverAdapterType)
       {
-        return CalDavSynchronizer.OAuth.Google.GoogleHttpClientFactory.CreateHttpClient (username.Substring (6));
+        case ServerAdapterType.Default:
+          var httpClientHandler = new HttpClientHandler();
+          if (!string.IsNullOrEmpty (username))
+          {
+            httpClientHandler.Credentials = new NetworkCredential (username, password);
+          }
+          var httpClient = new HttpClient (httpClientHandler);
+          httpClient.Timeout = calDavConnectTimeout;
+          return httpClient;
+        case ServerAdapterType.GoogleOAuth:
+          return OAuth.Google.GoogleHttpClientFactory.CreateHttpClient (username, GetProductWithVersion());
+        default:
+          throw new ArgumentOutOfRangeException ("serverAdapterType");
       }
-      else
-      {
-        var httpClientHandler = new HttpClientHandler();
-        if (!string.IsNullOrEmpty (username))
-        {
-          httpClientHandler.Credentials = new NetworkCredential (username, password);
-        }
-        var httpClient = new HttpClient (httpClientHandler);
-        httpClient.Timeout = calDavConnectTimeout;
-        return httpClient;
-      }
+    }
+
+    private static Tuple<string, string> GetProductAndVersion ()
+    {
+      var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+      return Tuple.Create ("CalDavSynchronizer", string.Format ("{0}.{1}", version.Major, version.Minor));
+    }
+
+    private static string GetProductWithVersion ()
+    {
+      var productAndVersion = GetProductAndVersion();
+      return string.Format ("{0}/{1}", productAndVersion.Item1, productAndVersion.Item2);
     }
 
     /// <remarks>
@@ -206,9 +249,12 @@ namespace CalDavSynchronizer.Scheduling
       var atypeRepository = new OutlookTaskRepository (calendarFolder, _outlookSession);
 
       var btypeRepository = new CalDavRepository (
-          new CalDavDataAccess (
-              new Uri (options.CalenderUrl),
-              new CalDavClient (new Lazy<HttpClient> (() => CreateHttpClient (options)))),
+          CreateCalDavDataAccess (
+              options.CalenderUrl,
+              options.UserName,
+              options.Password,
+              _calDavConnectTimeout,
+              options.ServerAdapterType),
           new iCalendarSerializer(),
           CalDavRepository.EntityType.Todo,
           NullDateTimeRangeProvider.Instance);
@@ -253,10 +299,14 @@ namespace CalDavSynchronizer.Scheduling
           options.OutlookFolderEntryId,
           options.OutlookFolderStoreId);
 
+
       IEntityRepository<vCard, Uri, string> btypeRepository = new CardDavRepository (
-          new CardDavDataAccess (
-              new Uri (options.CalenderUrl),
-              new CardDavClient (new Lazy<HttpClient> (() => CreateHttpClient (options)))));
+          CreateCardDavDataAccess (
+              options.CalenderUrl,
+              options.UserName,
+              options.Password,
+              _calDavConnectTimeout,
+              options.ServerAdapterType));
 
       var entityRelationDataFactory = new OutlookContactRelationDataFactory();
 

@@ -47,6 +47,9 @@ namespace CalDavSynchronizer.Contracts
     public string ProtectedPassword { get; set; }
     // ReSharper restore MemberCanBePrivate.Global
 
+    public ServerAdapterType ServerAdapterType { get; set; }
+
+
     [XmlIgnore]
     public string Password
     {

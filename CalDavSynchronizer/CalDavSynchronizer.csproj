@@ -203,6 +203,7 @@
     </Compile>
     <Compile Include="ComponentContainer.cs" />
     <Compile Include="Contracts\ProfileEntry.cs" />
+    <Compile Include="Contracts\ServerAdapterType.cs" />
     <Compile Include="DataAccess\CardDavClient.cs" />
     <Compile Include="DataAccess\ICardDavDataAccess.cs" />
     <Compile Include="DataAccess\WebDavDataAccess.cs" />

@@ -34,13 +34,12 @@ namespace CalDavSynchronizer.DataAccess
     private readonly ProductInfoHeaderValue _productInfo;
     private readonly Lazy<HttpClient> _httpClient;
 
-    protected WebDavClient (Lazy<HttpClient> httpClient)
+    protected WebDavClient (Lazy<HttpClient> httpClient, string productName, string productVersion)
     {
       if (httpClient == null)
         throw new ArgumentNullException ("httpClient");
 
-      var version = Assembly.GetExecutingAssembly().GetName().Version;
-      _productInfo = new ProductInfoHeaderValue ("CalDavSynchronizer", string.Format ("{0}.{1}", version.Major, version.Minor));
+      _productInfo = new ProductInfoHeaderValue (productName, productVersion);
       _httpClient = httpClient;
     }
 
@@ -55,14 +54,13 @@ namespace CalDavSynchronizer.DataAccess
     }
 
     public async Task<XmlDocumentWithNamespaceManager> ExecuteWebDavRequestAndReadResponse (
-      Uri url, 
-      Action<HttpRequestMessage> modifier, 
-      string mediaType, 
-      string requestBody)
+        Uri url,
+        Action<HttpRequestMessage> modifier,
+        string mediaType,
+        string requestBody)
     {
       using (var response = ExecuteWebDavRequest (url, modifier, mediaType, requestBody))
       {
-
         using (var responseStream = await (await response).Content.ReadAsStreamAsync())
         {
           return CreateXmlDocument (responseStream);
@@ -71,10 +69,10 @@ namespace CalDavSynchronizer.DataAccess
     }
 
     public async Task<HttpResponseHeaders> ExecuteWebDavRequestAndReturnResponseHeaders (
-      Uri url,
-      Action<HttpRequestMessage> modifier, 
-      string mediaType, 
-      string requestBody)
+        Uri url,
+        Action<HttpRequestMessage> modifier,
+        string mediaType,
+        string requestBody)
     {
       using (var response = await ExecuteWebDavRequest (url, modifier, mediaType, requestBody))
       {

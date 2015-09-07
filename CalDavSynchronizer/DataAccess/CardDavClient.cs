@@ -26,8 +26,8 @@ namespace CalDavSynchronizer.DataAccess
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    public CardDavClient (Lazy<HttpClient> httpClient)
-        : base(httpClient)
+    public CardDavClient (Lazy<HttpClient> httpClient, string productName, string productVersion)
+        : base (httpClient, productName, productVersion)
     {
     }
 
