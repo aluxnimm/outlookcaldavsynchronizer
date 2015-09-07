@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer 
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -16,6 +16,13 @@
 
 using System;
 
-namespace TestRunner.Synchronizer
+namespace CalDavDataAccessIntegrationTests
 {
+  public class GoogleOAuth : FixtureBase
+  {
+    protected override string ProfileName
+    {
+      get { return "TestCal-Google (OAuth)"; }
+    }
+  }
 }

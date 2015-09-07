@@ -5,8 +5,6 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalDavSynchronizer", "CalDavSynchronizer\CalDavSynchronizer.csproj", "{64937844-752B-49A4-9B3F-3526601E93E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestRunner", "TestRunner\TestRunner.csproj", "{71738AA8-28BA-41EB-9205-D5A6B6343D42}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalDavSynchronizer.UnitTests", "CalDavSynchronizer.UnitTest\CalDavSynchronizer.UnitTests.csproj", "{60B1D6FA-B087-42D8-B330-7C147B62FC7A}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "CalDavSynchronizer.Setup", "CalDavSynchronizer.Setup\CalDavSynchronizer.Setup.vdproj", "{C05F2805-55A8-4ABB-9892-515781049EB6}"
@@ -19,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenSync.UnitTests", "GenSyn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalDavDataAccessIntegrationTests", "CalDavDataAccessIntegrationTests\CalDavDataAccessIntegrationTests.csproj", "{BE747238-9388-43CE-AF64-536C64442EB9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalDavSynchronizer.OAuth.Google", "CalDavSynchronizer.OAuth.Google\CalDavSynchronizer.OAuth.Google.csproj", "{230914CF-6FF1-4B09-A831-C37C6B41D127}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +29,6 @@ Global
 		{64937844-752B-49A4-9B3F-3526601E93E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64937844-752B-49A4-9B3F-3526601E93E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64937844-752B-49A4-9B3F-3526601E93E1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{71738AA8-28BA-41EB-9205-D5A6B6343D42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{71738AA8-28BA-41EB-9205-D5A6B6343D42}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{71738AA8-28BA-41EB-9205-D5A6B6343D42}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{71738AA8-28BA-41EB-9205-D5A6B6343D42}.Release|Any CPU.Build.0 = Release|Any CPU
 		{60B1D6FA-B087-42D8-B330-7C147B62FC7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{60B1D6FA-B087-42D8-B330-7C147B62FC7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60B1D6FA-B087-42D8-B330-7C147B62FC7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -55,6 +51,10 @@ Global
 		{BE747238-9388-43CE-AF64-536C64442EB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE747238-9388-43CE-AF64-536C64442EB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE747238-9388-43CE-AF64-536C64442EB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{230914CF-6FF1-4B09-A831-C37C6B41D127}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{230914CF-6FF1-4B09-A831-C37C6B41D127}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{230914CF-6FF1-4B09-A831-C37C6B41D127}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{230914CF-6FF1-4B09-A831-C37C6B41D127}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -40,6 +40,5 @@ namespace GenSync.UnitTests.Synchronization
     {
       get { return _value; }
     }
-
   }
 }

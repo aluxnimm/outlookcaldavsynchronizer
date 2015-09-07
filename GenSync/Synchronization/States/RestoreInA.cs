@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Threading.Tasks;
 using GenSync.EntityRelationManagement;
 
 namespace GenSync.Synchronization.States
@@ -27,11 +28,11 @@ namespace GenSync.Synchronization.States
     {
     }
 
-    public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> PerformSyncActionNoThrow ()
+    public override async Task<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>> PerformSyncActionNoThrow ()
     {
       try
       {
-        var newA = _environment.ARepository.Update (_knownData.AtypeId, _aEntity, a => _environment.Mapper.Map2To1 (_bEntity, a));
+        var newA = await _environment.ARepository.Update (_knownData.AtypeId, _aEntity, a => _environment.Mapper.Map2To1 (_bEntity, a));
         return CreateDoNothing (newA.Id, newA.Version, _knownData.BtypeId, _knownData.BtypeVersion);
       }
       catch (Exception x)

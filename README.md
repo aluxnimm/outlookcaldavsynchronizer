@@ -50,6 +50,10 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changlog ###
 
+#### 1.1.0 ####
+- Support for Google OAuth
+- Perform all web operations in the Background
+
 #### 1.0.4 ####
 -Fix TimeRange filter for events
 

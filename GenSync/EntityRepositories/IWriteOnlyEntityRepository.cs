@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Threading.Tasks;
 
 namespace GenSync.EntityRepositories
 {
@@ -23,8 +24,8 @@ namespace GenSync.EntityRepositories
   /// </summary>
   public interface IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
   {
-    bool Delete (TEntityId entityId);
-    EntityIdWithVersion<TEntityId, TEntityVersion> Update (TEntityId entityId, TEntity entityToUpdate, Func<TEntity, TEntity> entityModifier);
-    EntityIdWithVersion<TEntityId, TEntityVersion> Create (Func<TEntity, TEntity> entityInitializer);
+    Task Delete (TEntityId entityId);
+    Task<EntityIdWithVersion<TEntityId, TEntityVersion>> Update (TEntityId entityId, TEntity entityToUpdate, Func<TEntity, TEntity> entityModifier);
+    Task<EntityIdWithVersion<TEntityId, TEntityVersion>> Create (Func<TEntity, TEntity> entityInitializer);
   }
 }

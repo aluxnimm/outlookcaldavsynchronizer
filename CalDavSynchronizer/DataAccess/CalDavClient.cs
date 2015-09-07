@@ -15,7 +15,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Net.Http;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Xml;
 using log4net;
 
@@ -25,8 +27,8 @@ namespace CalDavSynchronizer.DataAccess
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    public CalDavClient (string username, string password, TimeSpan connectTimeout, TimeSpan readWriteTimeout)
-        : base (username, password, connectTimeout, readWriteTimeout)
+    public CalDavClient (Func<Task<HttpClient>> httpClientFactory, string productName, string productVersion)
+        : base (httpClientFactory, productName, productVersion)
     {
     }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using GenSync.Synchronization.States;
 
 namespace GenSync.Synchronization
@@ -23,9 +24,23 @@ namespace GenSync.Synchronization
       _allSyncStatesThatWereCreated.Add (syncState);
     }
 
+    public async Task DoTransition (Func<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>, Task<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>>> transitionFunction)
+    {
+      List<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>> entitySyncStates = new List<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>>();
+
+      foreach (var state in _entitySyncStates)
+      {
+        var newState = await transitionFunction (state);
+        entitySyncStates.Add (newState);
+      }
+
+      _entitySyncStates = entitySyncStates;
+      _entitySyncStates.ForEach (s => _allSyncStatesThatWereCreated.Add (s));
+    }
+
     public void DoTransition (Func<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>, IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>> transitionFunction)
     {
-      _entitySyncStates = _entitySyncStates.Select (transitionFunction).ToList();
+      _entitySyncStates = _entitySyncStates.Select (transitionFunction).ToList ();
       _entitySyncStates.ForEach (s => _allSyncStatesThatWereCreated.Add (s));
     }
 

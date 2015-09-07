@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
 using GenSync.EntityRelationManagement;
 using log4net;
 
@@ -62,11 +63,11 @@ namespace GenSync.Synchronization.States
       return this;
     }
 
-    public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> PerformSyncActionNoThrow ()
+    public override async Task<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>> PerformSyncActionNoThrow ()
     {
       try
       {
-        var newA = _environment.ARepository.Create (a => _environment.Mapper.Map2To1 (_bEntity, a));
+        var newA = await _environment.ARepository.Create (a => _environment.Mapper.Map2To1 (_bEntity, a));
         return CreateDoNothing (newA.Id, newA.Version, _bId, _bVersion);
       }
       catch (Exception x)

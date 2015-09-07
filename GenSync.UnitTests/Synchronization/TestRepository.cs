@@ -40,28 +40,29 @@ namespace GenSync.UnitTests.Synchronization
       _idPrefix = idPrefix;
     }
 
-    public IReadOnlyList<EntityIdWithVersion<Identifier, int>> GetVersions ()
+    public Task<IReadOnlyList<EntityIdWithVersion<Identifier, int>>> GetVersions ()
     {
-      return EntityVersionAndContentById.Select (kv => EntityIdWithVersion.Create (kv.Key, kv.Value.Item1)).ToList();
+      return Task.FromResult<IReadOnlyList<EntityIdWithVersion<Identifier, int>>> (
+          EntityVersionAndContentById.Select (kv => EntityIdWithVersion.Create (kv.Key, kv.Value.Item1)).ToList());
     }
 
-    // ReSharper disable once CSharpWarnings::CS1998
-    public async Task<IReadOnlyList<EntityWithVersion<Identifier, string>>> Get (ICollection<Identifier> ids)
+    public Task<IReadOnlyList<EntityWithVersion<Identifier, string>>> Get (ICollection<Identifier> ids)
     {
-      return ids.Select (id => EntityWithVersion.Create (id, EntityVersionAndContentById[id].Item2)).ToArray();
+      return Task.FromResult<IReadOnlyList<EntityWithVersion<Identifier, string>>> (
+          ids.Select (id => EntityWithVersion.Create (id, EntityVersionAndContentById[id].Item2)).ToArray());
     }
 
     public void Cleanup (IReadOnlyDictionary<Identifier, string> entities)
     {
     }
 
-    public bool Delete (Identifier entityId)
+    public Task Delete (Identifier entityId)
     {
       EntityVersionAndContentById.Remove (entityId);
-      return true;
+      return Task.FromResult (0);
     }
 
-    public EntityIdWithVersion<Identifier, int> Update (Identifier entityId, string entityToUpdate, Func<string, string> entityModifier)
+    public Task<EntityIdWithVersion<Identifier, int>> Update (Identifier entityId, string entityToUpdate, Func<string, string> entityModifier)
     {
       var kv = EntityVersionAndContentById[entityId];
       EntityVersionAndContentById.Remove (entityId);
@@ -72,7 +73,7 @@ namespace GenSync.UnitTests.Synchronization
       var newEntityId = entityId.Value + "u";
 
       EntityVersionAndContentById[newEntityId] = Tuple.Create (newVersion, newValue);
-      return new EntityIdWithVersion<Identifier, int> (newEntityId, newVersion);
+      return Task.FromResult (new EntityIdWithVersion<Identifier, int> (newEntityId, newVersion));
     }
 
     public EntityIdWithVersion<Identifier, int> UpdateWithoutIdChange (Identifier entityId, Func<string, string> entityModifier)
@@ -87,12 +88,12 @@ namespace GenSync.UnitTests.Synchronization
     }
 
 
-    public EntityIdWithVersion<Identifier, int> Create (Func<string, string> entityInitializer)
+    public Task<EntityIdWithVersion<Identifier, int>> Create (Func<string, string> entityInitializer)
     {
       var newValue = entityInitializer (string.Empty);
       var entityId = _idPrefix + _nextId++;
       EntityVersionAndContentById[entityId] = Tuple.Create (0, newValue);
-      return new EntityIdWithVersion<Identifier, int> (entityId, 0);
+      return Task.FromResult(new EntityIdWithVersion<Identifier, int> (entityId, 0));
     }
 
     public Tuple<int, string> this [string id]

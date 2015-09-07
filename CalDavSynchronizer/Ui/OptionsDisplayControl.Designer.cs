@@ -39,6 +39,7 @@
       this._conflictResolutionComboBox = new System.Windows.Forms.ComboBox();
       this._synchronizationModeComboBox = new System.Windows.Forms.ComboBox();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
+      this._useGoogleOAuthCheckBox = new System.Windows.Forms.CheckBox();
       this.label11 = new System.Windows.Forms.Label();
       this._emailAddressTextBox = new System.Windows.Forms.TextBox();
       this._testConnectionButton = new System.Windows.Forms.Button();
@@ -75,7 +76,7 @@
       this.groupBox2.Controls.Add(this.label9);
       this.groupBox2.Location = new System.Drawing.Point(12, 226);
       this.groupBox2.Name = "groupBox2";
-      this.groupBox2.Size = new System.Drawing.Size(412, 80);
+      this.groupBox2.Size = new System.Drawing.Size(445, 80);
       this.groupBox2.TabIndex = 2;
       this.groupBox2.TabStop = false;
       this.groupBox2.Text = "Outlook settings";
@@ -83,7 +84,7 @@
       // _selectOutlookFolderButton
       // 
       this._selectOutlookFolderButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._selectOutlookFolderButton.Location = new System.Drawing.Point(378, 21);
+      this._selectOutlookFolderButton.Location = new System.Drawing.Point(411, 21);
       this._selectOutlookFolderButton.Name = "_selectOutlookFolderButton";
       this._selectOutlookFolderButton.Size = new System.Drawing.Size(28, 23);
       this._selectOutlookFolderButton.TabIndex = 0;
@@ -97,7 +98,7 @@
       this._outoookFolderNameTextBox.Location = new System.Drawing.Point(190, 23);
       this._outoookFolderNameTextBox.Name = "_outoookFolderNameTextBox";
       this._outoookFolderNameTextBox.ReadOnly = true;
-      this._outoookFolderNameTextBox.Size = new System.Drawing.Size(182, 20);
+      this._outoookFolderNameTextBox.Size = new System.Drawing.Size(215, 20);
       this._outoookFolderNameTextBox.TabIndex = 13;
       // 
       // label9
@@ -123,7 +124,7 @@
       this._syncIntervalComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._syncIntervalComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this._syncIntervalComboBox.FormattingEnabled = true;
-      this._syncIntervalComboBox.Location = new System.Drawing.Point(250, 81);
+      this._syncIntervalComboBox.Location = new System.Drawing.Point(283, 81);
       this._syncIntervalComboBox.Name = "_syncIntervalComboBox";
       this._syncIntervalComboBox.Size = new System.Drawing.Size(156, 21);
       this._syncIntervalComboBox.TabIndex = 5;
@@ -154,7 +155,7 @@
       this._conflictResolutionComboBox.FormattingEnabled = true;
       this._conflictResolutionComboBox.Location = new System.Drawing.Point(190, 54);
       this._conflictResolutionComboBox.Name = "_conflictResolutionComboBox";
-      this._conflictResolutionComboBox.Size = new System.Drawing.Size(216, 21);
+      this._conflictResolutionComboBox.Size = new System.Drawing.Size(249, 21);
       this._conflictResolutionComboBox.TabIndex = 4;
       // 
       // _synchronizationModeComboBox
@@ -165,13 +166,14 @@
       this._synchronizationModeComboBox.FormattingEnabled = true;
       this._synchronizationModeComboBox.Location = new System.Drawing.Point(190, 27);
       this._synchronizationModeComboBox.Name = "_synchronizationModeComboBox";
-      this._synchronizationModeComboBox.Size = new System.Drawing.Size(216, 21);
+      this._synchronizationModeComboBox.Size = new System.Drawing.Size(249, 21);
       this._synchronizationModeComboBox.TabIndex = 3;
       // 
       // groupBox1
       // 
       this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupBox1.Controls.Add(this._useGoogleOAuthCheckBox);
       this.groupBox1.Controls.Add(this.label11);
       this.groupBox1.Controls.Add(this._emailAddressTextBox);
       this.groupBox1.Controls.Add(this._testConnectionButton);
@@ -183,10 +185,21 @@
       this.groupBox1.Controls.Add(this.label3);
       this.groupBox1.Location = new System.Drawing.Point(12, 38);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(412, 174);
+      this.groupBox1.Size = new System.Drawing.Size(445, 174);
       this.groupBox1.TabIndex = 1;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Server settings";
+      // 
+      // _useGoogleOAuthCheckBox
+      // 
+      this._useGoogleOAuthCheckBox.AutoSize = true;
+      this._useGoogleOAuthCheckBox.Location = new System.Drawing.Point(11, 149);
+      this._useGoogleOAuthCheckBox.Name = "_useGoogleOAuthCheckBox";
+      this._useGoogleOAuthCheckBox.Size = new System.Drawing.Size(115, 17);
+      this._useGoogleOAuthCheckBox.TabIndex = 14;
+      this._useGoogleOAuthCheckBox.Text = "Use Google OAuth";
+      this._useGoogleOAuthCheckBox.UseVisualStyleBackColor = true;
+      this._useGoogleOAuthCheckBox.CheckedChanged += new System.EventHandler(this._useGoogleOAuthCheckBox_CheckedChanged);
       // 
       // label11
       // 
@@ -200,7 +213,7 @@
       // _emailAddressTextBox
       // 
       this._emailAddressTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._emailAddressTextBox.Location = new System.Drawing.Point(223, 101);
+      this._emailAddressTextBox.Location = new System.Drawing.Point(256, 101);
       this._emailAddressTextBox.Name = "_emailAddressTextBox";
       this._emailAddressTextBox.Size = new System.Drawing.Size(183, 20);
       this._emailAddressTextBox.TabIndex = 12;
@@ -208,7 +221,7 @@
       // _testConnectionButton
       // 
       this._testConnectionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._testConnectionButton.Location = new System.Drawing.Point(306, 145);
+      this._testConnectionButton.Location = new System.Drawing.Point(339, 145);
       this._testConnectionButton.Name = "_testConnectionButton";
       this._testConnectionButton.Size = new System.Drawing.Size(100, 23);
       this._testConnectionButton.TabIndex = 3;
@@ -236,7 +249,7 @@
       // _passwordTextBox
       // 
       this._passwordTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._passwordTextBox.Location = new System.Drawing.Point(223, 75);
+      this._passwordTextBox.Location = new System.Drawing.Point(256, 75);
       this._passwordTextBox.Name = "_passwordTextBox";
       this._passwordTextBox.PasswordChar = '*';
       this._passwordTextBox.Size = new System.Drawing.Size(183, 20);
@@ -245,7 +258,7 @@
       // _userNameTextBox
       // 
       this._userNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._userNameTextBox.Location = new System.Drawing.Point(223, 49);
+      this._userNameTextBox.Location = new System.Drawing.Point(256, 49);
       this._userNameTextBox.Name = "_userNameTextBox";
       this._userNameTextBox.Size = new System.Drawing.Size(183, 20);
       this._userNameTextBox.TabIndex = 1;
@@ -256,7 +269,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this._calenderUrlTextBox.Location = new System.Drawing.Point(80, 23);
       this._calenderUrlTextBox.Name = "_calenderUrlTextBox";
-      this._calenderUrlTextBox.Size = new System.Drawing.Size(326, 20);
+      this._calenderUrlTextBox.Size = new System.Drawing.Size(359, 20);
       this._calenderUrlTextBox.TabIndex = 0;
       // 
       // label3
@@ -271,7 +284,7 @@
       // numberOfDaysInTheFuture
       // 
       this.numberOfDaysInTheFuture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.numberOfDaysInTheFuture.Location = new System.Drawing.Point(276, 44);
+      this.numberOfDaysInTheFuture.Location = new System.Drawing.Point(309, 44);
       this.numberOfDaysInTheFuture.Name = "numberOfDaysInTheFuture";
       this.numberOfDaysInTheFuture.Size = new System.Drawing.Size(118, 20);
       this.numberOfDaysInTheFuture.TabIndex = 7;
@@ -280,7 +293,7 @@
       // numberOfDaysInThePast
       // 
       this.numberOfDaysInThePast.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.numberOfDaysInThePast.Location = new System.Drawing.Point(276, 18);
+      this.numberOfDaysInThePast.Location = new System.Drawing.Point(309, 18);
       this.numberOfDaysInThePast.Name = "numberOfDaysInThePast";
       this.numberOfDaysInThePast.Size = new System.Drawing.Size(118, 20);
       this.numberOfDaysInThePast.TabIndex = 6;
@@ -319,7 +332,7 @@
       this._profileNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._profileNameTextBox.Location = new System.Drawing.Point(235, 12);
       this._profileNameTextBox.Name = "_profileNameTextBox";
-      this._profileNameTextBox.Size = new System.Drawing.Size(183, 20);
+      this._profileNameTextBox.Size = new System.Drawing.Size(222, 20);
       this._profileNameTextBox.TabIndex = 0;
       // 
       // label10
@@ -333,8 +346,9 @@
       // 
       // _inactiveCheckBox
       // 
+      this._inactiveCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._inactiveCheckBox.AutoSize = true;
-      this._inactiveCheckBox.Location = new System.Drawing.Point(308, 522);
+      this._inactiveCheckBox.Location = new System.Drawing.Point(341, 522);
       this._inactiveCheckBox.Name = "_inactiveCheckBox";
       this._inactiveCheckBox.Size = new System.Drawing.Size(110, 17);
       this._inactiveCheckBox.TabIndex = 26;
@@ -365,7 +379,7 @@
       this.groupBox3.Controls.Add(this.label6);
       this.groupBox3.Location = new System.Drawing.Point(12, 312);
       this.groupBox3.Name = "groupBox3";
-      this.groupBox3.Size = new System.Drawing.Size(412, 200);
+      this.groupBox3.Size = new System.Drawing.Size(445, 200);
       this.groupBox3.TabIndex = 28;
       this.groupBox3.TabStop = false;
       this.groupBox3.Text = "Sync settings";
@@ -391,7 +405,7 @@
       this._timeRangeFilteringGroupBox.Controls.Add(this.numberOfDaysInTheFuture);
       this._timeRangeFilteringGroupBox.Location = new System.Drawing.Point(6, 113);
       this._timeRangeFilteringGroupBox.Name = "_timeRangeFilteringGroupBox";
-      this._timeRangeFilteringGroupBox.Size = new System.Drawing.Size(400, 80);
+      this._timeRangeFilteringGroupBox.Size = new System.Drawing.Size(433, 80);
       this._timeRangeFilteringGroupBox.TabIndex = 26;
       this._timeRangeFilteringGroupBox.TabStop = false;
       // 
@@ -456,5 +470,6 @@
     private System.Windows.Forms.GroupBox groupBox3;
     private System.Windows.Forms.GroupBox _timeRangeFilteringGroupBox;
     private System.Windows.Forms.CheckBox _enableTimeRangeFilteringCheckBox;
+    private System.Windows.Forms.CheckBox _useGoogleOAuthCheckBox;
   }
 }
