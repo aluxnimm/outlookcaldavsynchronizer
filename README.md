@@ -21,7 +21,7 @@ This project was initially developed as a master thesis project at the [Universi
 - Horde Kronolith
 - OwnCloud
 - SabreDAV
-- Google Calendar ( use the following URL: https://www.google.com/calendar/dav/<your_google_calendar_id>/events )
+- Google Calendar
 - Zimbra 8.5
 - GroupOffice
 - Synology NAS
@@ -198,6 +198,7 @@ The following properties need to be set for a new profile:
 	- **Username:** Username to connect to the CalDAV server
 	- **Password:** Password used for the connection. The password will be saved encrypted in the option config file.
 	- **Email address:** email address used as remote identity for the CalDAV server, necessary to synchronize the organizer
+	
 - *Outlook settings*:
 	- **Outlook Folder:** Outlook folder that should be used for synchronization
 - *Sync settings*:
@@ -216,6 +217,20 @@ The following properties need to be set for a new profile:
 	- **Synchronization timespan future (days):** For performance reasons it is useful to sync only a given timespan of a big calendar, especially past events are normally not necessary to sync after a given timespan
 	- **Deactivate profile:** If activated, current profile is not synced anymore without the need to delete the profile
 	
+#### Google Calender settings ####
+
+For Google Calender use the following settings:
+CalDAV Url: `https://apidata.googleusercontent.com/caldav/v2/<your_google_calendar_id>/events`.
+Check the Use Google OAuth Checkbox instead of entering your password. When testing the settings, you will be redirected to your browser to enter your Google Account password and grant access rights to your Google Calender for OutlookCalDavSynchronizer via the safe OAuth protocol.
+
+#### Synology NAS settings ####
+
+For Synology NAS with SSL support use port 5006 and the following settings in your NAS:
+In Synology DSM Navigate to control panel > Terminal & SNMP
+Select Enable SSH 
+Then enter Advanced Settings and set it to High
+Now it will work on port 5006 with https.
+
 ### Trouble Shooting ###
 
 Options and state information is stored in the following folder:
