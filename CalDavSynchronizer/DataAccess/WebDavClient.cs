@@ -44,23 +44,16 @@ namespace CalDavSynchronizer.DataAccess
       _httpClientFactory = httpClientFactory;
     }
 
-    private HttpRequestMessage CreateRequestMessage (Uri url)
-    {
-      var request = new HttpRequestMessage();
-
-      request.RequestUri = url;
-      request.Headers.UserAgent.Add (_productInfo);
-
-      return request;
-    }
-
     public async Task<XmlDocumentWithNamespaceManager> ExecuteWebDavRequestAndReadResponse (
         Uri url,
-        Action<HttpRequestMessage> modifier,
+        string httpMethod,
+        int? depth,
+        string ifMatch,
+        string ifNoneMatch,
         string mediaType,
         string requestBody)
     {
-      using (var response = ExecuteWebDavRequest (url, modifier, mediaType, requestBody))
+      using (var response = ExecuteWebDavRequest (url, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody))
       {
         using (var responseStream = await (await response).Content.ReadAsStreamAsync())
         {
@@ -71,23 +64,45 @@ namespace CalDavSynchronizer.DataAccess
 
     public async Task<HttpResponseHeaders> ExecuteWebDavRequestAndReturnResponseHeaders (
         Uri url,
-        Action<HttpRequestMessage> modifier,
+        string httpMethod,
+        int? depth,
+        string ifMatch,
+        string ifNoneMatch,
         string mediaType,
         string requestBody)
     {
-      using (var response = await ExecuteWebDavRequest (url, modifier, mediaType, requestBody))
+      using (var response = await ExecuteWebDavRequest (url, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody))
       {
         return response.Headers;
       }
     }
 
-    private async Task<HttpResponseMessage> ExecuteWebDavRequest (Uri url, Action<HttpRequestMessage> modifier, string mediaType, string requestBody)
+    private async Task<HttpResponseMessage> ExecuteWebDavRequest (
+        Uri url,
+        string httpMethod,
+        int? depth,
+        string ifMatch,
+        string ifNoneMatch,
+        string mediaType,
+        string requestBody)
     {
       HttpResponseMessage response;
 
-      using (var requestMessage = CreateRequestMessage (url))
+      using (var requestMessage = new HttpRequestMessage())
       {
-        modifier (requestMessage);
+        requestMessage.RequestUri = url;
+        requestMessage.Headers.UserAgent.Add (_productInfo);
+        requestMessage.Method = new HttpMethod (httpMethod);
+
+        if (depth != null)
+          requestMessage.Headers.Add ("Depth", depth.ToString());
+
+        if (!string.IsNullOrEmpty (ifMatch))
+          requestMessage.Headers.Add ("If-Match", ifMatch);
+
+        if (!string.IsNullOrEmpty (ifNoneMatch))
+          requestMessage.Headers.Add ("If-None-Match", ifNoneMatch);
+
         if (!string.IsNullOrEmpty (requestBody))
         {
           requestMessage.Content = new StringContent (requestBody, Encoding.UTF8, mediaType);
@@ -109,7 +124,7 @@ namespace CalDavSynchronizer.DataAccess
           {
             var location = response.Headers.Location;
             response.Dispose();
-            return await ExecuteWebDavRequest (location, modifier, mediaType, requestBody);
+            return await ExecuteWebDavRequest (location, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody);
           }
           else
           {

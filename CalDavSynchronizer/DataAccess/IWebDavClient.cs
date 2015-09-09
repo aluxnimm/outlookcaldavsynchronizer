@@ -25,13 +25,19 @@ namespace CalDavSynchronizer.DataAccess
   {
     Task<XmlDocumentWithNamespaceManager> ExecuteWebDavRequestAndReadResponse (
         Uri url,
-        Action<HttpRequestMessage> modifier,
+        string httpMethod,
+        int? depth,
+        string ifMatch,
+        string ifNoneMatch,
         string mediaType,
         string requestBody);
 
     Task<HttpResponseHeaders> ExecuteWebDavRequestAndReturnResponseHeaders (
         Uri url,
-        Action<HttpRequestMessage> modifier,
+        string httpMethod,
+        int? depth,
+        string ifMatch,
+        string ifNoneMatch,
         string mediaType,
         string requestBody);
   }

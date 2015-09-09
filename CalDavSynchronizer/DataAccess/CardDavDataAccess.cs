@@ -57,11 +57,10 @@ namespace CalDavSynchronizer.DataAccess
       {
         var responseXml = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
             _serverUrl,
-            request =>
-            {
-              request.Method = new System.Net.Http.HttpMethod ("PROPFIND");
-              request.Headers.Add ("Depth", "1");
-            },
+            "PROPFIND",
+            1,
+            null,
+            null,
             "application/xml",
             @"<?xml version='1.0'?>
                         <D:propfind xmlns:D=""DAV:"">
@@ -122,12 +121,10 @@ namespace CalDavSynchronizer.DataAccess
 
       var responseXml = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
           _serverUrl,
-          request =>
-          {
-            request.Method = new System.Net.Http.HttpMethod ("REPORT");
-            request.Headers.Add ("Depth", "1");
-            //request.Headers.Add (HttpRequestHeader.AcceptCharset, "utf-8");
-          },
+          "REPORT",
+          1,
+          null,
+          null,
           "application/xml",
           requestBody
           );
