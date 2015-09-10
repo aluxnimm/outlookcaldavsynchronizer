@@ -184,6 +184,7 @@ namespace CalDavSynchronizer.Ui
     {
       const string connectionTestCaption = "Test settings";
 
+      _testConnectionButton.Enabled = false;
       try
       {
         StringBuilder errorMessageBuilder = new StringBuilder();
@@ -244,6 +245,10 @@ namespace CalDavSynchronizer.Ui
       catch (Exception x)
       {
         MessageBox.Show (x.Message, connectionTestCaption);
+      }
+      finally
+      {
+        _testConnectionButton.Enabled = true;
       }
     }
 
