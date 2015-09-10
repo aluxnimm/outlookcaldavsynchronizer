@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer 
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -15,26 +15,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Net.Http;
-using System.Reflection;
-using System.Threading.Tasks;
-using System.Xml;
-using log4net;
+using System.Collections.Generic;
+using System.Net.Http.Headers;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public class CardDavClient : WebDavClient
+  public interface IHttpHeaders
   {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
-
-    public CardDavClient (Func<Task<HttpClient>> httpClientFactory, string productName, string productVersion)
-        : base (httpClientFactory, productName, productVersion)
-    {
-    }
-
-    protected override void RegisterNameSpaces (XmlNamespaceManager namespaceManager)
-    {
-      namespaceManager.AddNamespace ("A", "urn:ietf:params:xml:ns:carddav");
-    }
+    bool TryGetValues (string name,out IEnumerable<string> values);
+    Uri Location { get; }
+    EntityTagHeaderValue ETag { get; }
   }
 }

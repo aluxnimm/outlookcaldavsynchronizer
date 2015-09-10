@@ -49,7 +49,10 @@ namespace CalDavSynchronizer.DataAccess
     {
       var headers = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (
           _serverUrl,
-          request => { request.Method = new System.Net.Http.HttpMethod ("OPTIONS"); },
+          "OPTIONS",
+          null,
+          null,
+          null,
           null,
           null);
 
@@ -91,7 +94,7 @@ namespace CalDavSynchronizer.DataAccess
 
     private async Task<string> GetEtag (Uri absoluteEntityUrl)
     {
-      var headers = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (absoluteEntityUrl, delegate { }, null, null);
+      var headers = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (absoluteEntityUrl, "GET", null, null, null, null, null);
       return headers.ETag.Tag;
     }
 
@@ -99,11 +102,10 @@ namespace CalDavSynchronizer.DataAccess
     {
       return _webDavClient.ExecuteWebDavRequestAndReadResponse (
           url,
-          request =>
-          {
-            request.Method = new System.Net.Http.HttpMethod ("PROPFIND");
-            request.Headers.Add ("Depth", depth.ToString());
-          },
+          "PROPFIND",
+          depth,
+          null,
+          null,
           "application/xml",
           @"<?xml version='1.0'?>
                         <D:propfind xmlns:D=""DAV:"">
@@ -117,11 +119,10 @@ namespace CalDavSynchronizer.DataAccess
     {
       var document = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
           url,
-          request =>
-          {
-            request.Method = new System.Net.Http.HttpMethod ("PROPFIND");
-            request.Headers.Add ("Depth", depth.ToString());
-          },
+          "PROPFIND",
+          depth,
+          null,
+          null,
           "application/xml",
           @"<?xml version='1.0'?>
                         <D:propfind xmlns:D=""DAV:"">
@@ -146,11 +147,10 @@ namespace CalDavSynchronizer.DataAccess
     {
       return _webDavClient.ExecuteWebDavRequestAndReadResponse (
           url,
-          request =>
-          {
-            request.Method = new System.Net.Http.HttpMethod ("PROPFIND");
-            request.Headers.Add ("Depth", depth.ToString());
-          },
+          "PROPFIND",
+          depth,
+          null,
+          null,
           "application/xml",
           @"<?xml version='1.0'?>
                         <D:propfind xmlns:D=""DAV:"">
@@ -175,17 +175,16 @@ namespace CalDavSynchronizer.DataAccess
 
       s_logger.DebugFormat ("Absolute entity location: '{0}'", absoluteEventUrl);
 
-      HttpResponseHeaders responseHeaders;
+      IHttpHeaders responseHeaders;
 
       try
       {
-        responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (absoluteEventUrl,
-            request =>
-            {
-              request.Method = new System.Net.Http.HttpMethod ("PUT");
-              if (!string.IsNullOrEmpty (etag))
-                request.Headers.Add ("If-Match", etag);
-            },
+        responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (
+            absoluteEventUrl,
+            "PUT",
+            null,
+            etag,
+            null,
             "text/calendar",
             contents);
       }
@@ -232,16 +231,16 @@ namespace CalDavSynchronizer.DataAccess
 
       s_logger.DebugFormat ("Creating entity '{0}'", eventUrl);
 
-      HttpResponseHeaders responseHeaders;
+      IHttpHeaders responseHeaders;
 
       try
       {
-        responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (eventUrl,
-            request =>
-            {
-              request.Method = new System.Net.Http.HttpMethod ("PUT");
-              request.Headers.Add ("If-None-Match", "*");
-            },
+        responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (
+            eventUrl,
+            "PUT",
+            null,
+            null,
+            "*",
             "text/calendar",
             content);
       }
@@ -292,18 +291,16 @@ namespace CalDavSynchronizer.DataAccess
 
       s_logger.DebugFormat ("Absolute entity location: '{0}'", absoluteEventUrl);
 
-      HttpResponseHeaders responseHeaders;
+      IHttpHeaders responseHeaders;
 
       try
       {
-        responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (absoluteEventUrl,
-            request =>
-            {
-              request.Method = new System.Net.Http.HttpMethod ("DELETE");
-
-              if (!string.IsNullOrEmpty (etag))
-                request.Headers.Add ("If-Match", etag);
-            },
+        responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (
+            absoluteEventUrl,
+            "DELETE",
+            null,
+            etag,
+            null,
             null,
             string.Empty);
       }

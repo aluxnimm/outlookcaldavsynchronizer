@@ -204,15 +204,17 @@
     <Compile Include="ComponentContainer.cs" />
     <Compile Include="Contracts\ProfileEntry.cs" />
     <Compile Include="Contracts\ServerAdapterType.cs" />
-    <Compile Include="DataAccess\CardDavClient.cs" />
+    <Compile Include="DataAccess\HttpClientBasedClient\HttpResponseHeadersAdapter.cs" />
     <Compile Include="DataAccess\ICardDavDataAccess.cs" />
+    <Compile Include="DataAccess\IHttpHeaders.cs" />
     <Compile Include="DataAccess\WebDavDataAccess.cs" />
     <Compile Include="DataAccess\CardDavDataAccess.cs" />
     <Compile Include="DataAccess\IWebDavClient.cs" />
-    <Compile Include="DataAccess\WebDavClient.cs" />
-    <Compile Include="DataAccess\CalDavClient.cs" />
+    <Compile Include="DataAccess\HttpClientBasedClient\WebDavClient.cs" />
     <Compile Include="DataAccess\IProfileListDataAccess.cs" />
     <Compile Include="DataAccess\ProfileListDataAccess.cs" />
+    <Compile Include="DataAccess\WebRequestBasedClient\WebHeaderCollectionAdapter.cs" />
+    <Compile Include="DataAccess\WebRequestBasedClient\WebDavClient.cs" />
     <Compile Include="Implementation\ComWrappers\TaskItemWrapper.cs" />
     <Compile Include="Implementation\ComWrappers\AppointmentItemWrapper.cs" />
     <Compile Include="Implementation\ComWrappers\ComEnumerableExtensions.cs" />
@@ -369,6 +371,7 @@
       <Name>GenSync</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

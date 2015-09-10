@@ -76,11 +76,10 @@ namespace CalDavSynchronizer.DataAccess
       {
         var responseXml = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
             _serverUrl,
-            request =>
-            {
-              request.Method = new System.Net.Http.HttpMethod("REPORT");
-              request.Headers.Add ("Depth", 1.ToString());
-            },
+            "REPORT",
+            1,
+            null,
+            null,
             "application/xml",
             string.Format (
                 @"<?xml version=""1.0""?>
@@ -148,12 +147,10 @@ namespace CalDavSynchronizer.DataAccess
 
       var responseXml = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
           _serverUrl,
-          request =>
-          {
-            request.Method = new System.Net.Http.HttpMethod ("REPORT");
-            request.Headers.Add ("Depth", "1");
-            request.Headers.AcceptCharset.Add(new System.Net.Http.Headers.StringWithQualityHeaderValue("utf-8"));
-          },
+          "REPORT",
+          1,
+          null,
+          null,
           "application/xml",
           requestBody
           );

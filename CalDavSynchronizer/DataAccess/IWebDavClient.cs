@@ -16,8 +16,8 @@
 
 using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace CalDavSynchronizer.DataAccess
 {
@@ -25,14 +25,22 @@ namespace CalDavSynchronizer.DataAccess
   {
     Task<XmlDocumentWithNamespaceManager> ExecuteWebDavRequestAndReadResponse (
         Uri url,
-        Action<HttpRequestMessage> modifier,
+        string httpMethod,
+        int? depth,
+        string ifMatch,
+        string ifNoneMatch,
         string mediaType,
         string requestBody);
 
-    Task<HttpResponseHeaders> ExecuteWebDavRequestAndReturnResponseHeaders (
+    Task<IHttpHeaders> ExecuteWebDavRequestAndReturnResponseHeaders (
         Uri url,
-        Action<HttpRequestMessage> modifier,
+        string httpMethod,
+        int? depth,
+        string ifMatch,
+        string ifNoneMatch,
         string mediaType,
         string requestBody);
+
+
   }
 }
