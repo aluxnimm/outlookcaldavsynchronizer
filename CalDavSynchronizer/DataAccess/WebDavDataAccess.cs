@@ -175,7 +175,7 @@ namespace CalDavSynchronizer.DataAccess
 
       s_logger.DebugFormat ("Absolute entity location: '{0}'", absoluteEventUrl);
 
-      HttpResponseHeaders responseHeaders;
+      IHttpHeaders responseHeaders;
 
       try
       {
@@ -231,7 +231,7 @@ namespace CalDavSynchronizer.DataAccess
 
       s_logger.DebugFormat ("Creating entity '{0}'", eventUrl);
 
-      HttpResponseHeaders responseHeaders;
+      IHttpHeaders responseHeaders;
 
       try
       {
@@ -291,7 +291,7 @@ namespace CalDavSynchronizer.DataAccess
 
       s_logger.DebugFormat ("Absolute entity location: '{0}'", absoluteEventUrl);
 
-      HttpResponseHeaders responseHeaders;
+      IHttpHeaders responseHeaders;
 
       try
       {

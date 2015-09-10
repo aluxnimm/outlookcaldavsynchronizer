@@ -22,6 +22,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.DataAccess.HttpClientBasedClient;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Contacts;
@@ -124,7 +125,7 @@ namespace CalDavSynchronizer.Scheduling
 
       var calDavDataAccess = new CalDavDataAccess (
           new Uri (calenderUrl),
-          new CalDavClient (
+          new WebDavClient (
               () => CreateHttpClient (username, password, timeout, serverAdapterType),
               productAndVersion.Item1,
               productAndVersion.Item2));
@@ -142,7 +143,7 @@ namespace CalDavSynchronizer.Scheduling
 
       var cardDavDataAccess = new CardDavDataAccess (
           new Uri (calenderUrl),
-          new CardDavClient (
+          new WebDavClient (
               () => CreateHttpClient (username, password, timeout, serverAdapterType),
               productAndVersion.Item1,
               productAndVersion.Item2));

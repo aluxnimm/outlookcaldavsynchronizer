@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using log4net;
 
-namespace CalDavSynchronizer.DataAccess
+namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
 {
   public class WebDavClient : IWebDavClient
   {
@@ -35,7 +35,7 @@ namespace CalDavSynchronizer.DataAccess
     private readonly Func<Task<HttpClient>> _httpClientFactory;
     private HttpClient _httpClient;
 
-    protected WebDavClient (Func<Task<HttpClient>> httpClientFactory, string productName, string productVersion)
+    public WebDavClient (Func<Task<HttpClient>> httpClientFactory, string productName, string productVersion)
     {
       if (httpClientFactory == null)
         throw new ArgumentNullException ("httpClientFactory");
@@ -62,7 +62,7 @@ namespace CalDavSynchronizer.DataAccess
       }
     }
 
-    public async Task<HttpResponseHeaders> ExecuteWebDavRequestAndReturnResponseHeaders (
+    public async Task<IHttpHeaders> ExecuteWebDavRequestAndReturnResponseHeaders (
         Uri url,
         string httpMethod,
         int? depth,
@@ -73,7 +73,7 @@ namespace CalDavSynchronizer.DataAccess
     {
       using (var response = await ExecuteWebDavRequest (url, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody))
       {
-        return response.Headers;
+        return new HttpResponseHeadersAdapter(response.Headers);
       }
     }
 
@@ -152,15 +152,14 @@ namespace CalDavSynchronizer.DataAccess
         responseBody.Load (reader);
 
         XmlNamespaceManager namespaceManager = new XmlNamespaceManager (responseBody.NameTable);
+        
         namespaceManager.AddNamespace ("D", "DAV:");
-        RegisterNameSpaces (namespaceManager);
+        namespaceManager.AddNamespace ("C", "urn:ietf:params:xml:ns:caldav");
+        namespaceManager.AddNamespace ("A", "urn:ietf:params:xml:ns:carddav");
 
         return new XmlDocumentWithNamespaceManager (responseBody, namespaceManager);
       }
     }
 
-    protected virtual void RegisterNameSpaces (XmlNamespaceManager namespaceManager)
-    {
-    }
   }
 }

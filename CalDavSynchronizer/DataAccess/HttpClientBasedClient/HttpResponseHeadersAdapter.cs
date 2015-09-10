@@ -15,26 +15,39 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Net.Http;
-using System.Reflection;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
-using System.Xml;
-using log4net;
 
-namespace CalDavSynchronizer.DataAccess
+namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
 {
-  public class CalDavClient : WebDavClient
+  internal class HttpResponseHeadersAdapter : IHttpHeaders
   {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
+    private readonly HttpResponseHeaders _inner;
 
-    public CalDavClient (Func<Task<HttpClient>> httpClientFactory, string productName, string productVersion)
-        : base (httpClientFactory, productName, productVersion)
+    public HttpResponseHeadersAdapter (HttpResponseHeaders inner)
     {
+      if (inner == null)
+        throw new ArgumentNullException ("inner");
+
+      _inner = inner;
     }
 
-    protected override void RegisterNameSpaces (XmlNamespaceManager namespaceManager)
+    public bool TryGetValues (string name, out IEnumerable<string> values)
     {
-      namespaceManager.AddNamespace ("C", "urn:ietf:params:xml:ns:caldav");
+      return _inner.TryGetValues (name, out values);
+    }
+
+    public Uri Location
+    {
+      get { return _inner.Location; }
+    }
+
+    public EntityTagHeaderValue ETag
+    {
+      get { return _inner.ETag; }
     }
   }
 }
