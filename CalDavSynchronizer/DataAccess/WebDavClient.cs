@@ -83,34 +83,50 @@ namespace CalDavSynchronizer.DataAccess
 
     private async Task<HttpResponseMessage> ExecuteWebDavRequest (Uri url, Action<HttpRequestMessage> modifier, string mediaType, string requestBody)
     {
-      var requestMessage = CreateRequestMessage (url);
-      modifier (requestMessage);
-      if (!string.IsNullOrEmpty (requestBody))
-      {
-        requestMessage.Content = new StringContent (requestBody, Encoding.UTF8, mediaType);
-      }
+      HttpResponseMessage response;
 
-      if (_httpClient == null)
+      using (var requestMessage = CreateRequestMessage (url))
       {
-        _httpClient = await _httpClientFactory();
-      }
-
-      var response = await _httpClient.SendAsync (requestMessage);
-      if (response.StatusCode == HttpStatusCode.Moved || response.StatusCode == HttpStatusCode.Redirect)
-      {
-        if (response.Headers.Location != null)
+        modifier (requestMessage);
+        if (!string.IsNullOrEmpty (requestBody))
         {
-          return await ExecuteWebDavRequest (response.Headers.Location, modifier, mediaType, requestBody);
+          requestMessage.Content = new StringContent (requestBody, Encoding.UTF8, mediaType);
         }
-        else
+
+        if (_httpClient == null)
         {
-          s_logger.Warn ("Ignoring Redirection without Location header.");
+          _httpClient = await _httpClientFactory();
         }
+
+        response = await _httpClient.SendAsync (requestMessage);
       }
 
-      response.EnsureSuccessStatusCode();
+      try
+      {
+        if (response.StatusCode == HttpStatusCode.Moved || response.StatusCode == HttpStatusCode.Redirect)
+        {
+          if (response.Headers.Location != null)
+          {
+            var location = response.Headers.Location;
+            response.Dispose();
+            return await ExecuteWebDavRequest (location, modifier, mediaType, requestBody);
+          }
+          else
+          {
+            s_logger.Warn ("Ignoring Redirection without Location header.");
+          }
+        }
 
-      return response;
+        response.EnsureSuccessStatusCode();
+
+        return response;
+      }
+      catch (Exception)
+      {
+        if (response != null)
+          response.Dispose();
+        throw;
+      }
     }
 
     private XmlDocumentWithNamespaceManager CreateXmlDocument (Stream webDavXmlStream)
