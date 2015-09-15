@@ -202,7 +202,17 @@ namespace CalDavSynchronizer.Implementation.Events
 
       var alarm = source.Alarms[0];
 
-      if (!(alarm.Trigger.IsRelative && alarm.Trigger.Related == TriggerRelation.Start && alarm.Trigger.Duration < TimeSpan.Zero && alarm.Trigger.Duration.HasValue))
+      if (alarm.Trigger == null)
+      {
+        s_logger.WarnFormat ("Event '{0}' contains non RFC-conform alarm. Ignoring alarm.", source.Url);
+        target.ReminderSet = false;
+        return;
+      }
+
+      if (!(alarm.Trigger.IsRelative
+            && alarm.Trigger.Related == TriggerRelation.Start
+            && alarm.Trigger.Duration.HasValue
+            && alarm.Trigger.Duration < TimeSpan.Zero))
       {
         s_logger.WarnFormat ("Event '{0}' alarm is not relative before event start. Ignoring.", source.Url);
         target.ReminderSet = false;
