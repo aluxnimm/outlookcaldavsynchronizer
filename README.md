@@ -50,6 +50,13 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changlog ###
 
+#### 1.2.0 ####
+- Added option to ignore new version and wait for next update.
+- Added workaround for Group Office, which will tolerate empty VALARMs.
+- Disable SynchronizeNowButton during synchronization.
+- Disable TestConnectionButton while test is in progress.
+- Add proper disposing for web messages.
+
 #### 1.1.0 ####
 - Support for Google OAuth
 - Perform all web operations in the Background
