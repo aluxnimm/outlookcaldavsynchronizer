@@ -63,7 +63,7 @@ namespace CalDavSynchronizer
         _scheduler = new Scheduler (synchronizerFactory, EnsureSynchronizationContext);
         _scheduler.SetOptions (_optionsDataAccess.LoadOptions());
 
-        _updateChecker = new UpdateChecker (new AvailableVersionService());
+        _updateChecker = new UpdateChecker (new AvailableVersionService(), () => _optionsDataAccess.IgnoreUpdatesTilVersion);
         _updateChecker.NewerVersionFound += UpdateChecker_NewerVersionFound;
         _updateChecker.IsEnabled = _optionsDataAccess.ShouldCheckForNewerVersions;
       }
@@ -156,6 +156,13 @@ namespace CalDavSynchronizer
           ShouldCheckForNewerVersions = false;
           MessageBox.Show ("Automatic check for newer version turned off.", "CalDav Synchronizer");
         };
+
+        form.IgnoreThisVersion += delegate
+        {
+          _optionsDataAccess.IgnoreUpdatesTilVersion = e.NewVersion;
+          MessageBox.Show (string.Format ("Waiting for newer version than '{0}'.", e.NewVersion), "CalDav Synchronizer");
+        };
+
         form.ShowDialog();
       }
       catch (Exception x)

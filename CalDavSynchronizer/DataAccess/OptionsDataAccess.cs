@@ -66,6 +66,31 @@ namespace CalDavSynchronizer.DataAccess
       }
     }
 
+    public Version IgnoreUpdatesTilVersion
+    {
+      get
+      {
+        using (var key = OpenOptionsKey())
+        {
+          var versionString = (string) key.GetValue ("IgnoreUpdatesTilVersion");
+          if (!string.IsNullOrEmpty (versionString))
+            return new Version (versionString);
+          else
+            return null;
+        }
+      }
+      set
+      {
+        using (var key = OpenOptionsKey())
+        {
+          if (value != null)
+            key.SetValue ("IgnoreUpdatesTilVersion", value.ToString());
+          else
+            key.DeleteValue ("IgnoreUpdatesTilVersion");
+        }
+      }
+    }
+
     private static RegistryKey OpenOptionsKey ()
     {
       var key = Registry.CurrentUser.OpenSubKey (s_OptionsRegistryKey, true);

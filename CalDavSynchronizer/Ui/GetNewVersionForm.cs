@@ -26,6 +26,14 @@ namespace CalDavSynchronizer.Ui
     private readonly string _newVersionDownloadUrl;
 
     public event EventHandler TurnOffCheckForNewerVersions;
+    public event EventHandler IgnoreThisVersion;
+
+    protected virtual void OnIgnoreThisVersion ()
+    {
+      var handler = IgnoreThisVersion;
+      if (handler != null)
+        handler (this, EventArgs.Empty);
+    }
 
     protected virtual void OnTurnOffCheckForNewerVersions ()
     {
@@ -41,10 +49,10 @@ namespace CalDavSynchronizer.Ui
 
     public GetNewVersionForm (string whatsNew, Version newVersion, string newVersionDownloadUrl)
     {
-      InitializeComponent ();
+      InitializeComponent();
 
       _newVersionDownloadUrl = newVersionDownloadUrl;
-      _currentVersionLabel.Text = string.Format (_currentVersionLabel.Text, Assembly.GetExecutingAssembly ().GetName ().Version);
+      _currentVersionLabel.Text = string.Format (_currentVersionLabel.Text, Assembly.GetExecutingAssembly().GetName().Version);
       _captionLabel.Text = string.Format (_captionLabel.Text, newVersion);
       _newFeaturesTextBox.Text = whatsNew;
 
@@ -66,7 +74,9 @@ namespace CalDavSynchronizer.Ui
       OnTurnOffCheckForNewerVersions();
     }
 
-
-
+    private void _ignoreThisVersionLinkLabel_LinkClicked (object sender, LinkLabelLinkClickedEventArgs e)
+    {
+      OnIgnoreThisVersion();
+    }
   }
 }

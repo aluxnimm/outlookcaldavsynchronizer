@@ -25,5 +25,6 @@ namespace CalDavSynchronizer.DataAccess
     void SaveOptions (Options[] options);
 
     bool ShouldCheckForNewerVersions { get; set; }
+    Version IgnoreUpdatesTilVersion { get; set; }
   }
 }

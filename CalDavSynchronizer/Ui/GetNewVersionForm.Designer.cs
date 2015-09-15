@@ -37,6 +37,7 @@
       this._doNotCheckForNewerVersionsLinkLabel = new System.Windows.Forms.LinkLabel();
       this._logoPictureBox = new System.Windows.Forms.PictureBox();
       this.WhatsNewLabel = new System.Windows.Forms.Label();
+      this._ignoreThisVersionLinkLabel = new System.Windows.Forms.LinkLabel();
       ((System.ComponentModel.ISupportInitialize)(this._logoPictureBox)).BeginInit();
       this.SuspendLayout();
       // 
@@ -126,12 +127,24 @@
       this.WhatsNewLabel.TabIndex = 8;
       this.WhatsNewLabel.Text = "Whats\'s new?";
       // 
+      // _ignoreThisVersionLinkLabel
+      // 
+      this._ignoreThisVersionLinkLabel.AutoSize = true;
+      this._ignoreThisVersionLinkLabel.Location = new System.Drawing.Point(132, 62);
+      this._ignoreThisVersionLinkLabel.Name = "_ignoreThisVersionLinkLabel";
+      this._ignoreThisVersionLinkLabel.Size = new System.Drawing.Size(93, 13);
+      this._ignoreThisVersionLinkLabel.TabIndex = 9;
+      this._ignoreThisVersionLinkLabel.TabStop = true;
+      this._ignoreThisVersionLinkLabel.Text = "Ignore this version";
+      this._ignoreThisVersionLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this._ignoreThisVersionLinkLabel_LinkClicked);
+      // 
       // GetNewVersionForm
       // 
       this.AcceptButton = this.btnOK;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(459, 463);
+      this.Controls.Add(this._ignoreThisVersionLinkLabel);
       this.Controls.Add(this.WhatsNewLabel);
       this.Controls.Add(this._logoPictureBox);
       this.Controls.Add(this._doNotCheckForNewerVersionsLinkLabel);
@@ -162,5 +175,6 @@
     private System.Windows.Forms.LinkLabel _doNotCheckForNewerVersionsLinkLabel;
     private System.Windows.Forms.PictureBox _logoPictureBox;
     private System.Windows.Forms.Label WhatsNewLabel;
+    private System.Windows.Forms.LinkLabel _ignoreThisVersionLinkLabel;
   }
 }

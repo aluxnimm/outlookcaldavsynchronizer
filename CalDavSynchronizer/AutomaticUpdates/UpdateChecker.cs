@@ -33,6 +33,7 @@ namespace CalDavSynchronizer.AutomaticUpdates
     private readonly Object _timerLock = new object();
     private readonly Timer _timer;
     private bool _isEnabled;
+    private readonly Func<Version> _ignoreUpdatesTilVersionProvider;
 
     public event EventHandler<NewerVersionFoundEventArgs> NewerVersionFound;
 
@@ -43,12 +44,15 @@ namespace CalDavSynchronizer.AutomaticUpdates
         handler (this, e);
     }
 
-    public UpdateChecker (IAvailableVersionService availableVersionService)
+    public UpdateChecker (IAvailableVersionService availableVersionService, Func<Version> ignoreUpdatesTilVersionProvider)
     {
       if (availableVersionService == null)
         throw new ArgumentNullException ("availableVersionService");
+      if (ignoreUpdatesTilVersionProvider == null)
+        throw new ArgumentNullException ("ignoreUpdatesTilVersionProvider");
 
       _availableVersionService = availableVersionService;
+      _ignoreUpdatesTilVersionProvider = ignoreUpdatesTilVersionProvider;
 
       _timer = new Timer (Timer_Elapsed);
     }
@@ -85,6 +89,13 @@ namespace CalDavSynchronizer.AutomaticUpdates
         if (availableVersion == null)
         {
           s_logger.Error ("Did not find any default Version!");
+          return;
+        }
+
+        var ignoreUpdatesTilVersion = _ignoreUpdatesTilVersionProvider();
+        if (ignoreUpdatesTilVersion != null
+            && availableVersion <= ignoreUpdatesTilVersion)
+        {
           return;
         }
 
