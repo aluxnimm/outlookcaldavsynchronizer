@@ -15,12 +15,20 @@ namespace CalDavSynchronizer
 
     private async void SynchronizeNowButton_Click (object sender, RibbonControlEventArgs e)
     {
-      await ThisAddIn.ComponentContainer.SynchronizeNowNoThrow();
+      SynchronizeNowButton.Enabled = false;
+      try
+      {
+        await ThisAddIn.ComponentContainer.SynchronizeNowNoThrow();
+      }
+      finally
+      {
+        SynchronizeNowButton.Enabled = true;
+      }
     }
 
     private void OptionsButton_Click (object sender, RibbonControlEventArgs e)
     {
-      ThisAddIn.ComponentContainer.ShowOptionsNoThrow ();
+      ThisAddIn.ComponentContainer.ShowOptionsNoThrow();
     }
 
     private void AboutButton_Click (object sender, RibbonControlEventArgs e)
