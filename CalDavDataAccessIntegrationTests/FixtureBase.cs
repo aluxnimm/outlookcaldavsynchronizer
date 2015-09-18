@@ -43,6 +43,11 @@ namespace CalDavDataAccessIntegrationTests
 
     protected abstract string ProfileName { get; }
 
+    protected virtual ServerAdapterType? ServerAdapterTypeOverride
+    {
+      get { return null; }
+    }
+
     [TestFixtureSetUp]
     public void Initialize ()
     {
@@ -56,12 +61,12 @@ namespace CalDavDataAccessIntegrationTests
 
       var options = optionsDataAccess.LoadOptions().Single (o => o.Name == ProfileName);
 
-      _calDavDataAccess = SynchronizerFactory.CreateCalDavDataAccess (
-          options.CalenderUrl,
-          options.UserName,
-          options.Password,
-          TimeSpan.FromSeconds (30),
-          options.ServerAdapterType);
+      if (ServerAdapterTypeOverride.HasValue)
+        options.ServerAdapterType = ServerAdapterTypeOverride.Value;
+
+      _calDavDataAccess = new CalDavDataAccess (
+          new Uri (options.CalenderUrl),
+          SynchronizerFactory.CreateWebDavClient (options, TimeSpan.FromSeconds (30)));
     }
 
     [Test]

@@ -25,6 +25,7 @@ namespace CalDavSynchronizer.Contracts
   public enum ServerAdapterType
   {
     Default,
-    GoogleOAuth
+    GoogleOAuth,
+    SynchronousWebRequestBased
   }
 }

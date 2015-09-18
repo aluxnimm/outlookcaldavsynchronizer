@@ -194,20 +194,21 @@ namespace CalDavSynchronizer.Ui
           return;
         }
 
+        var calDavDataAccess = new CalDavDataAccess (
+            new Uri (_calenderUrlTextBox.Text),
+            SynchronizerFactory.CreateWebDavClient (
+                _userNameTextBox.Text,
+                _passwordTextBox.Text,
+                TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+                SelectedServerAdapterType));
 
-        var calDavDataAccess = SynchronizerFactory.CreateCalDavDataAccess (
-            _calenderUrlTextBox.Text,
-            _userNameTextBox.Text,
-            _passwordTextBox.Text,
-            TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-            SelectedServerAdapterType);
-
-        var cardDavDataAccess = SynchronizerFactory.CreateCardDavDataAccess (
-            _calenderUrlTextBox.Text,
-            _userNameTextBox.Text,
-            _passwordTextBox.Text,
-            TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-            SelectedServerAdapterType);
+        var cardDavDataAccess = new CardDavDataAccess (
+            new Uri (_calenderUrlTextBox.Text),
+            SynchronizerFactory.CreateWebDavClient (
+                _userNameTextBox.Text,
+                _passwordTextBox.Text,
+                TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+                SelectedServerAdapterType));
 
         var isCalendar = await calDavDataAccess.IsResourceCalender();
         var isAddressBook = await cardDavDataAccess.IsResourceAddressBook();
