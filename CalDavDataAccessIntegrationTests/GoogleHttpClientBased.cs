@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer 
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -15,14 +15,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using CalDavSynchronizer.Contracts;
 
 namespace CalDavDataAccessIntegrationTests
 {
-  public class Sogo : FixtureBase
+  public class GoogleHttpClientBased : FixtureBase
   {
     protected override string ProfileName
     {
-      get { return "TestCal-Sogo"; }
+      get { return "TestCal-Google"; }
+    }
+
+    protected override ServerAdapterType? ServerAdapterTypeOverride
+    {
+      get { return ServerAdapterType.Default; }
     }
   }
 }
