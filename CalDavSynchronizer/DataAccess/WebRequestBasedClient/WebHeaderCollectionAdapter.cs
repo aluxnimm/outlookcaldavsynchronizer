@@ -23,19 +23,23 @@ namespace CalDavSynchronizer.DataAccess.WebRequestBasedClient
 {
   internal class WebHeaderCollectionAdapter : IHttpHeaders
   {
-    private readonly WebHeaderCollection _inner;
+    private readonly WebHeaderCollection _headerFromLastCall;
+    private readonly WebHeaderCollection _headerFromFirstCall;
 
-    public WebHeaderCollectionAdapter (WebHeaderCollection inner)
+    public WebHeaderCollectionAdapter (WebHeaderCollection headerFromFirstCall, WebHeaderCollection headerFromLastCall)
     {
-      if (inner == null)
-        throw new ArgumentNullException ("inner");
+      if (headerFromLastCall == null)
+        throw new ArgumentNullException ("headerFromLastCall");
+      if (headerFromFirstCall == null)
+        throw new ArgumentNullException ("headerFromFirstCall");
 
-      _inner = inner;
+      _headerFromLastCall = headerFromLastCall;
+      _headerFromFirstCall = headerFromFirstCall;
     }
 
     public bool TryGetValues (string name, out IEnumerable<string> values)
     {
-      var value = _inner[name];
+      var value = _headerFromLastCall[name];
       if (value != null)
       {
         values = new[] { value };
@@ -52,7 +56,7 @@ namespace CalDavSynchronizer.DataAccess.WebRequestBasedClient
     {
       get
       {
-        var location = _inner["location"];
+        var location = _headerFromFirstCall["location"];
         return !string.IsNullOrEmpty (location) ? new Uri (location) : null;
       }
     }
@@ -61,7 +65,7 @@ namespace CalDavSynchronizer.DataAccess.WebRequestBasedClient
     {
       get
       {
-        var etag = _inner["ETag"];
+        var etag = _headerFromLastCall["ETag"];
         return etag != null ? new EntityTagHeaderValue (etag) : null;
       }
     }

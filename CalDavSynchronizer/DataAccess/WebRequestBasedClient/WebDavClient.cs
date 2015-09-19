@@ -72,7 +72,7 @@ namespace CalDavSynchronizer.DataAccess.WebRequestBasedClient
         string mediaType,
         string requestBody)
     {
-      using (var response = ExecuteWebDavRequest (url, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody))
+      using (var response = ExecuteWebDavRequest (url, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody).Item2)
       {
         using (var responseStream = response.GetResponseStream())
         {
@@ -90,20 +90,26 @@ namespace CalDavSynchronizer.DataAccess.WebRequestBasedClient
         string mediaType,
         string requestBody)
     {
-      using (var response = ExecuteWebDavRequest (url, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody))
+      var result = ExecuteWebDavRequest (url, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody);
+
+      using (var response = result.Item2)
       {
-        return Task.FromResult<IHttpHeaders> (new WebHeaderCollectionAdapter (response.Headers));
+        return Task.FromResult<IHttpHeaders> (new WebHeaderCollectionAdapter (result.Item1, response.Headers));
       }
     }
 
-    private WebResponse ExecuteWebDavRequest (
+    /// <returns>
+    /// Tuple with the sucsessful response and teh headerCollection from the FIRST call
+    /// </returns>
+    private Tuple<WebHeaderCollection, WebResponse> ExecuteWebDavRequest (
         Uri url,
         string httpMethod,
         int? depth,
         string ifMatch,
         string ifNoneMatch,
         string mediaType,
-        string requestBody)
+        string requestBody,
+        WebHeaderCollection headersFromFirstCall = null)
     {
       var request = CreateRequest (url);
 
@@ -137,15 +143,20 @@ namespace CalDavSynchronizer.DataAccess.WebRequestBasedClient
         if (!string.IsNullOrEmpty (response.Headers["Location"]))
         {
           var location = response.Headers["Location"];
-          response.Dispose();
-          return ExecuteWebDavRequest (new Uri (location), httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody);
+          using (response)
+          {
+            return Tuple.Create (
+                headersFromFirstCall ?? response.Headers,
+                ExecuteWebDavRequest (new Uri (location), httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody).Item2);
+          }
         }
         else
         {
           s_logger.Warn ("Ignoring Redirection without Location header.");
         }
       }
-      return response;
+
+      return Tuple.Create (headersFromFirstCall ?? response.Headers, response);
     }
 
     private XmlDocumentWithNamespaceManager CreateXmlDocument (Stream webDavXmlStream)
