@@ -76,7 +76,7 @@ namespace CalDavDataAccessIntegrationTests
     }
 
     [Test]
-    public async Task DoesSupportCalendarQuery ()
+    public virtual async Task DoesSupportCalendarQuery ()
     {
       Assert.That (await _calDavDataAccess.DoesSupportCalendarQuery(), Is.True);
     }
@@ -145,12 +145,28 @@ namespace CalDavDataAccessIntegrationTests
 
       var entites = await _calDavDataAccess.GetEntities (entitiesWithVersion.Take (4).Select (e => e.Id));
 
-      Assert.That (entites.Count, Is.EqualTo (3)); // Only 3, the second was deleted
+      if (!DeletedEntitesAreJustMarkedAsDeletedAndStillAvailableViaCalendarMultigetReport)
+      {
+        Assert.That (entites.Count, Is.EqualTo (3)); // Only 3, the second was deleted
 
-      CollectionAssert.AreEquivalent (
-          entites.Select (e => DeserializeCalendar (e.Entity).Events[0].Summary),
-          new[] { "Event1", "Event3", "Event4" });
+        CollectionAssert.AreEquivalent (
+            entites.Select (e => DeserializeCalendar (e.Entity).Events[0].Summary),
+            new[] { "Event1", "Event3", "Event4" });
+      }
+      else
+      {
+        CollectionAssert.AreEquivalent (
+            entites.Select (e => DeserializeCalendar (e.Entity).Events[0].Summary),
+            new[] { "Event1", "Event2", "Event3", "Event4" });
+      }
     }
+
+
+    protected virtual bool DeletedEntitesAreJustMarkedAsDeletedAndStillAvailableViaCalendarMultigetReport
+    {
+      get { return false; }
+    }
+
 
     [Test]
     public async Task UpdateNonExistingEntity ()

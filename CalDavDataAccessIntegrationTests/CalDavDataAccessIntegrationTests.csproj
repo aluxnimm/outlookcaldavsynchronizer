@@ -72,6 +72,8 @@
     <Compile Include="GoogleHttpClientBased.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SogoHttpClientBased.cs" />
+    <Compile Include="ZimbraSynchronousWebRequestBased.cs" />
+    <Compile Include="ZimbraHttpClientBased.cs" />
     <Compile Include="SogoSynchronousWebRequestBased.cs" />
   </ItemGroup>
   <ItemGroup>
