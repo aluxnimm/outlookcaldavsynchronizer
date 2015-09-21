@@ -147,6 +147,7 @@ namespace CalDavSynchronizer.Scheduling
           if (!string.IsNullOrEmpty (username))
           {
             httpClientHandler.Credentials = new NetworkCredential (username, password);
+            httpClientHandler.AllowAutoRedirect = false;
           }
           var httpClient = new HttpClient (httpClientHandler);
           httpClient.Timeout = calDavConnectTimeout;
