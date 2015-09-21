@@ -55,7 +55,7 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
     {
       using (var response = ExecuteWebDavRequest (url, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody))
       {
-        using (var responseStream = await (await response).Content.ReadAsStreamAsync())
+        using (var responseStream = await (await response).Item2.Content.ReadAsStreamAsync())
         {
           return CreateXmlDocument (responseStream);
         }
@@ -71,20 +71,22 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
         string mediaType,
         string requestBody)
     {
-      using (var response = await ExecuteWebDavRequest (url, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody))
+      var result = await ExecuteWebDavRequest (url, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody);
+      using (var response = result.Item2)
       {
-        return new HttpResponseHeadersAdapter(response.Headers);
+        return new HttpResponseHeadersAdapter (result.Item1, response.Headers);
       }
     }
 
-    private async Task<HttpResponseMessage> ExecuteWebDavRequest (
+    private async Task<Tuple<HttpResponseHeaders, HttpResponseMessage>> ExecuteWebDavRequest (
         Uri url,
         string httpMethod,
         int? depth,
         string ifMatch,
         string ifNoneMatch,
         string mediaType,
-        string requestBody)
+        string requestBody,
+        HttpResponseHeaders headersFromFirstCall = null)
     {
       HttpResponseMessage response;
 
@@ -124,7 +126,7 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
           {
             var location = response.Headers.Location;
             response.Dispose();
-            return await ExecuteWebDavRequest (location, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody);
+            return await ExecuteWebDavRequest (location, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody, headersFromFirstCall ?? response.Headers);
           }
           else
           {
@@ -134,7 +136,7 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
 
         response.EnsureSuccessStatusCode();
 
-        return response;
+        return Tuple.Create (headersFromFirstCall ?? response.Headers, response);
       }
       catch (Exception)
       {
@@ -152,7 +154,7 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
         responseBody.Load (reader);
 
         XmlNamespaceManager namespaceManager = new XmlNamespaceManager (responseBody.NameTable);
-        
+
         namespaceManager.AddNamespace ("D", "DAV:");
         namespaceManager.AddNamespace ("C", "urn:ietf:params:xml:ns:caldav");
         namespaceManager.AddNamespace ("A", "urn:ietf:params:xml:ns:carddav");
@@ -160,6 +162,5 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
         return new XmlDocumentWithNamespaceManager (responseBody, namespaceManager);
       }
     }
-
   }
 }

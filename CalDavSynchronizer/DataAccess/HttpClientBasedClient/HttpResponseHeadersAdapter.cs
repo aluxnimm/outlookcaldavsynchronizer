@@ -25,29 +25,33 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
 {
   internal class HttpResponseHeadersAdapter : IHttpHeaders
   {
-    private readonly HttpResponseHeaders _inner;
+    private readonly HttpResponseHeaders _headersFromFirstCall;
+    private readonly HttpResponseHeaders _headersFromLastCall;
 
-    public HttpResponseHeadersAdapter (HttpResponseHeaders inner)
+    public HttpResponseHeadersAdapter (HttpResponseHeaders headersFromFirstCall, HttpResponseHeaders headersFromLastCall)
     {
-      if (inner == null)
-        throw new ArgumentNullException ("inner");
+      if (headersFromFirstCall == null)
+        throw new ArgumentNullException ("headersFromFirstCall");
+      if (headersFromLastCall == null)
+        throw new ArgumentNullException ("headersFromLastCall");
 
-      _inner = inner;
+      _headersFromFirstCall = headersFromFirstCall;
+      _headersFromLastCall = headersFromLastCall;
     }
 
     public bool TryGetValues (string name, out IEnumerable<string> values)
     {
-      return _inner.TryGetValues (name, out values);
+      return _headersFromFirstCall.TryGetValues (name, out values);
     }
 
     public Uri Location
     {
-      get { return _inner.Location; }
+      get { return _headersFromFirstCall.Location; }
     }
 
     public EntityTagHeaderValue ETag
     {
-      get { return _inner.ETag; }
+      get { return _headersFromLastCall.ETag; }
     }
   }
 }
