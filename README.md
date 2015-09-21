@@ -50,6 +50,9 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changlog ###
 
+#### 1.2.1 ####
+- Fixed HttpClient redirect issue, which affected Zimbra integration
+
 #### 1.2.0 ####
 - Added option to ignore new version and wait for next update.
 - Added workaround for Group Office, which will tolerate empty VALARMs.
