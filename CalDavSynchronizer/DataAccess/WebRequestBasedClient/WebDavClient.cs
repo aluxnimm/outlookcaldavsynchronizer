@@ -145,9 +145,7 @@ namespace CalDavSynchronizer.DataAccess.WebRequestBasedClient
           var location = response.Headers["Location"];
           using (response)
           {
-            return Tuple.Create (
-                headersFromFirstCall ?? response.Headers,
-                ExecuteWebDavRequest (new Uri (location), httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody).Item2);
+            return ExecuteWebDavRequest (new Uri (location), httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody, headersFromFirstCall ?? response.Headers);
           }
         }
         else
