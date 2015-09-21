@@ -162,6 +162,26 @@ namespace CalDavSynchronizer.DataAccess
           );
     }
 
+    private Task<XmlDocumentWithNamespaceManager> GetCurrentUserPrincipal(Uri url, int depth)
+    {
+      return _webDavClient.ExecuteWebDavRequestAndReadResponse(
+          url,
+          "PROPFIND",
+          depth,
+          null,
+          null,
+          "application/xml",
+          @"<?xml version='1.0'?>
+                        <D:propfind xmlns:D=""DAV:"">
+                          <D:prop>
+                            <D:current-user-principal/>
+                            <D:principal-URL/>
+                            <D:resourcetype/>
+                          </D:prop>
+                        </D:propfind>
+                 "
+          );
+    }
     public Task<EntityIdWithVersion<Uri, string>> UpdateEntity (Uri url, string contents)
     {
       return UpdateEntity (url, string.Empty, contents);
