@@ -11,6 +11,7 @@ namespace CalDavSynchronizerTestAutomation.SynchronizerTests
   public class OutlookToCalDav
   {
     [Test]
+    [Ignore ("Automated tests have to be run via TestAutomationPlugin")]
     public void TestTimeRangeFilter ()
     {
       OutlookTestContext.DeleteAllOutlookEvents();
@@ -44,6 +45,7 @@ namespace CalDavSynchronizerTestAutomation.SynchronizerTests
     }
 
     [Test]
+    [Ignore ("Automated tests have to be run via TestAutomationPlugin")]
     public void CreateNewInCalDav ()
     {
       OutlookTestContext.DeleteAllOutlookEvents();
@@ -56,6 +58,7 @@ namespace CalDavSynchronizerTestAutomation.SynchronizerTests
     }
 
     [Test]
+    [Ignore ("Automated tests have to be run via TestAutomationPlugin")]
     public void ExistsInCalDav ()
     {
       OutlookTestContext.DeleteAllOutlookEvents();

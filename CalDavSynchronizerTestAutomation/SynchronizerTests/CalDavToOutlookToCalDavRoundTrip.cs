@@ -30,6 +30,7 @@ END:VCALENDAR
     }
 
     [Test]
+    [Ignore ("Automated tests have to be run via TestAutomationPlugin")]
     public void KeepsUid ()
     {
       var eventData = @"

@@ -11,6 +11,7 @@ namespace CalDavSynchronizerTestAutomation.EntityMapper
   {
     [Test]
     [ContainsManualAssert]
+    [Ignore ("Automated tests have to be run via TestAutomationPlugin")]
     public void TestOrganizerRoundTrip ()
     {
       var eventData = @"
