@@ -134,7 +134,7 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
           }
         }
 
-        response.EnsureSuccessStatusCode();
+        await EnsureSuccessStatusCode (response);
 
         return Tuple.Create (headersFromFirstCall ?? response.Headers, response);
       }
@@ -143,6 +143,37 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
         if (response != null)
           response.Dispose();
         throw;
+      }
+    }
+
+    private static async Task EnsureSuccessStatusCode (HttpResponseMessage response)
+    {
+      if (!response.IsSuccessStatusCode)
+      {
+        string responseMessage = null;
+
+        try
+        {
+          using (var responseStream = await response.Content.ReadAsStreamAsync())
+          {
+            using (var reader = new StreamReader (responseStream, Encoding.UTF8))
+            {
+              responseMessage = reader.ReadToEnd();
+            }
+          }
+        }
+        catch
+        {
+          // throw default exception, if reading the response fails
+          response.EnsureSuccessStatusCode();
+        }
+
+        throw new HttpRequestException (
+            string.Format (
+                "Response status code does not indicate success: '{0}' ('{1}'). Message:\r\n{2}",
+                (int) response.StatusCode,
+                response.StatusCode,
+                responseMessage));
       }
     }
 
