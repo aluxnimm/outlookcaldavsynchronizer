@@ -1122,17 +1122,29 @@ namespace CalDavSynchronizer.Implementation.Events
         {
           Recipient targetRecipient = null;
 
-          if (attendee.Value != null && !string.IsNullOrEmpty (attendee.Value.ToString().Substring (s_mailtoSchemaLength)))
+          string attendeeEmail = string.Empty;
+          if (attendee.Value !=null)
           {
-            if (!indexByEmailAddresses.TryGetValue (attendee.Value.ToString(), out targetRecipient))
+            try
+            {
+              attendeeEmail = attendee.Value.ToString();
+            }
+            catch (UriFormatException ex)
+            {
+              s_logger.Error("Ignoring invalid Uri in attendee email.", ex);
+            }
+          }
+          if (attendee.Value != null && !string.IsNullOrEmpty (attendeeEmail.Substring (s_mailtoSchemaLength)))
+          {
+            if (!indexByEmailAddresses.TryGetValue (attendeeEmail, out targetRecipient))
             {
               if (!string.IsNullOrEmpty (attendee.CommonName))
               {
-                targetRecipient = target.Recipients.Add (attendee.CommonName + "<" + attendee.Value.ToString().Substring (s_mailtoSchemaLength) + ">");
+                targetRecipient = target.Recipients.Add (attendee.CommonName + "<" + attendeeEmail.Substring (s_mailtoSchemaLength) + ">");
               }
               else
               {
-                targetRecipient = target.Recipients.Add (attendee.Value.ToString().Substring (s_mailtoSchemaLength));
+                targetRecipient = target.Recipients.Add (attendeeEmail.Substring (s_mailtoSchemaLength));
               }
             }
           }
@@ -1153,7 +1165,17 @@ namespace CalDavSynchronizer.Implementation.Events
 
         if (source.Organizer != null)
         {
-          string sourceOrganizerEmail = source.Organizer.Value.ToString().Substring (s_mailtoSchemaLength);
+          string sourceOrganizerEmail = string.Empty;
+
+          try
+          {
+            sourceOrganizerEmail = source.Organizer.Value.ToString().Substring(s_mailtoSchemaLength);
+          }
+          catch (UriFormatException ex)
+          {
+            s_logger.Error("Ignoring invalid Uri in organizer email.", ex);
+          }
+
           if (StringComparer.InvariantCultureIgnoreCase.Compare (sourceOrganizerEmail, _outlookEmailAddress) != 0)
           {
             Recipient targetRecipient = null;
