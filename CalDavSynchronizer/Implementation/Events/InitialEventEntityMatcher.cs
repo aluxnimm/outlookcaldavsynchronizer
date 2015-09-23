@@ -25,7 +25,7 @@ namespace CalDavSynchronizer.Implementation.Events
   internal class InitialEventEntityMatcher : InitialEntityMatcherByPropertyGrouping<AppointmentItemWrapper, string, DateTime, string, IICalendar, Uri, string, string>
   {
     public InitialEventEntityMatcher (IEqualityComparer<Uri> btypeIdEqualityComparer)
-        : base(btypeIdEqualityComparer)
+        : base (btypeIdEqualityComparer)
     {
     }
 
@@ -36,8 +36,8 @@ namespace CalDavSynchronizer.Implementation.Events
       return
           evt.Summary == atypeEntity.Inner.Subject &&
           (evt.IsAllDay && atypeEntity.Inner.AllDayEvent ||
-           evt.Start.UTC == atypeEntity.Inner.StartUTC.ToUniversalTime() &&
-           evt.DTEnd.UTC == atypeEntity.Inner.EndUTC.ToUniversalTime());
+           evt.Start.UTC == atypeEntity.Inner.StartUTC &&
+           evt.DTEnd.UTC == atypeEntity.Inner.EndUTC);
     }
 
     protected override string GetAtypePropertyValue (AppointmentItemWrapper atypeEntity)

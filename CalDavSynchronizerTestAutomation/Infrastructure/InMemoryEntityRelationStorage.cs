@@ -9,12 +9,12 @@ using GenSync.EntityRelationManagement;
 
 namespace CalDavSynchronizerTestAutomation.Infrastructure
 {
-  public class EntityRelationStorage<TAtypeEntityId, TAtypeEntityVersion, TEntityRelationData, TBtypeEntityId, TBtypeEntityVersion> : IEntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
+  public class InMemoryEntityRelationStorage<TAtypeEntityId, TAtypeEntityVersion, TEntityRelationData, TBtypeEntityId, TBtypeEntityVersion> : IEntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
       where TEntityRelationData : IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
   {
     private List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> _data;
 
-    public EntityRelationStorage ()
+    public InMemoryEntityRelationStorage ()
     {
     }
 
@@ -27,5 +27,11 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
     {
       _data = data;
     }
+  }
+
+
+  internal class InMemoryEntityRelationStorage : InMemoryEntityRelationStorage<string, DateTime, IEntityRelationData<string, DateTime, Uri, string>, Uri, string>
+  {
+
   }
 }

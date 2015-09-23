@@ -126,7 +126,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
 
     public static string SyncCalDavToOutlookAndBackToCalDav (string eventData)
     {
-      var entityRelationStorage = new EntityRelationStorage<string, DateTime, IEntityRelationData<string, DateTime, Uri, string>, Uri, string>();
+      var entityRelationStorage = new InMemoryEntityRelationStorage<string, DateTime, IEntityRelationData<string, DateTime, Uri, string>, Uri, string>();
 
       SyncCalDavToOutlook (eventData, entityRelationStorage);
 
@@ -215,7 +215,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
 
     public static string SyncOutlookToCalDav_EventsExistsInCalDav (string existingEventData, string existingAppointmentId)
     {
-      var entityRelationStorage = new EntityRelationStorage<string, DateTime, IEntityRelationData<string, DateTime, Uri, string>, Uri, string>();
+      var entityRelationStorage = new InMemoryEntityRelationStorage<string, DateTime, IEntityRelationData<string, DateTime, Uri, string>, Uri, string>();
       entityRelationStorage.SaveEntityRelationData (new List<IEntityRelationData<string, DateTime, Uri, string>>()
                                                     {
                                                         new OutlookEventRelationData()
@@ -359,5 +359,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
     {
       return OutlookEventRepository.GetOutlookEventForTesting (id, s_mapiNameSpace, s_outlookFolderStoreId);
     }
+
+   
   }
 }

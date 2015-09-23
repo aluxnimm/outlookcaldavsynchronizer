@@ -195,8 +195,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Infrastructure\ContainsManualAssertAttribute.cs" />
+    <Compile Include="Infrastructure\InMemoryCalDAVServer.cs" />
     <Compile Include="SynchronizerTests\CalDavToOutlookToCalDavRoundTrip.cs" />
-    <Compile Include="Infrastructure\EntityRelationStorage.cs" />
+    <Compile Include="Infrastructure\InMemoryEntityRelationStorage.cs" />
     <Compile Include="Infrastructure\IManualAssertUi.cs" />
     <Compile Include="Infrastructure\ITestDisplay.cs" />
     <Compile Include="Infrastructure\ManualAssert.cs" />
@@ -237,6 +238,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="InitialEntityMatcherTest.cs" />
     <Compile Include="SynchronizerTests\OutlookToCalDav.cs" />
     <Compile Include="TestAutomationRibbon.cs">
       <SubType>Component</SubType>
