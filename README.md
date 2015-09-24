@@ -50,6 +50,11 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changlog ###
 
+#### 1.2.2 ####
+- Fixed bug in InitialEventEntityMatcher which caused a duplication of events, when a profile was deleted and recreated.
+- Catch UriFormatExceptions in attendee and organizer Values from CalDav.
+- Include response message in exception, if a protocol error occurs.
+
 #### 1.2.1 ####
 - Fixed HttpClient redirect issue, which affected Zimbra integration
 
