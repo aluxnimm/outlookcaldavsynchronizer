@@ -193,28 +193,36 @@ namespace CalDavSynchronizer.Ui
           MessageBox.Show (errorMessageBuilder.ToString(), "The calendar Url is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
           return;
         }
+        Uri calendarUrl;
 
-        var calendarUrl = new Uri (_calenderUrlTextBox.Text);
+        if (_calenderUrlTextBox.Text.EndsWith("/"))
+        {
+          calendarUrl = new Uri(_calenderUrlTextBox.Text);
+        }
+        else
+        {
+          calendarUrl = new Uri(new Uri(_calenderUrlTextBox.Text).GetLeftPart(UriPartial.Authority) + "/.well-known/caldav/");
+        }
 
-        var calDavDataAccess = new CalDavDataAccess (
-            calendarUrl,
-            SynchronizerFactory.CreateWebDavClient (
-                _userNameTextBox.Text,
-                _passwordTextBox.Text,
-                TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-                SelectedServerAdapterType));
+        var calDavDataAccess = new CalDavDataAccess(
+              calendarUrl,
+              SynchronizerFactory.CreateWebDavClient(
+                  _userNameTextBox.Text,
+                  _passwordTextBox.Text,
+                  TimeSpan.Parse(ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+                  SelectedServerAdapterType));
 
-        var cardDavDataAccess = new CardDavDataAccess (
-            calendarUrl,
-            SynchronizerFactory.CreateWebDavClient (
-                _userNameTextBox.Text,
-                _passwordTextBox.Text,
-                TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-                SelectedServerAdapterType));
+        var cardDavDataAccess = new CardDavDataAccess(
+              calendarUrl,
+              SynchronizerFactory.CreateWebDavClient(
+                  _userNameTextBox.Text,
+                  _passwordTextBox.Text,
+                  TimeSpan.Parse(ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+                  SelectedServerAdapterType));
 
         var isCalendar = await calDavDataAccess.IsResourceCalender();
         var isAddressBook = await cardDavDataAccess.IsResourceAddressBook();
-
+ 
         if (!isCalendar && ! isAddressBook)
         {
           var foundCalendars = await calDavDataAccess.GetUserCalendars();
@@ -367,12 +375,6 @@ namespace CalDavSynchronizer.Ui
       if (_calenderUrlTextBox.Text.Trim() != _calenderUrlTextBox.Text)
       {
         errorMessageBuilder.AppendLine ("- The CalDav Calendar Url cannot end/start with whitespaces.");
-        result = false;
-      }
-
-      if (!_calenderUrlTextBox.Text.EndsWith ("/"))
-      {
-        errorMessageBuilder.AppendLine ("- The CalDav Calendar Url hast to end with an slash ('/').");
         result = false;
       }
 
