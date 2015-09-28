@@ -194,8 +194,10 @@ namespace CalDavSynchronizer.Ui
           return;
         }
 
+        var calendarUrl = new Uri (_calenderUrlTextBox.Text);
+
         var calDavDataAccess = new CalDavDataAccess (
-            new Uri (_calenderUrlTextBox.Text),
+            calendarUrl,
             SynchronizerFactory.CreateWebDavClient (
                 _userNameTextBox.Text,
                 _passwordTextBox.Text,
@@ -203,7 +205,7 @@ namespace CalDavSynchronizer.Ui
                 SelectedServerAdapterType));
 
         var cardDavDataAccess = new CardDavDataAccess (
-            new Uri (_calenderUrlTextBox.Text),
+            calendarUrl,
             SynchronizerFactory.CreateWebDavClient (
                 _userNameTextBox.Text,
                 _passwordTextBox.Text,
@@ -215,8 +217,29 @@ namespace CalDavSynchronizer.Ui
 
         if (!isCalendar && ! isAddressBook)
         {
-          MessageBox.Show ("The specified Url is neither a calendar nor an addressbook!", connectionTestCaption);
-          return;
+          var foundCalendars = await calDavDataAccess.GetUserCalendars();
+
+          using (ListCalendarsForm listCalendarsForm = new ListCalendarsForm(foundCalendars))
+          {
+            if (listCalendarsForm.ShowDialog() == DialogResult.OK)
+            {
+              _calenderUrlTextBox.Text = new Uri(calendarUrl.GetLeftPart(UriPartial.Authority)+listCalendarsForm.getCalendarUri()).ToString();
+              isCalendar = true;
+
+              calDavDataAccess = new CalDavDataAccess(
+                new Uri (_calenderUrlTextBox.Text),
+                SynchronizerFactory.CreateWebDavClient(
+                  _userNameTextBox.Text,
+                  _passwordTextBox.Text,
+                  TimeSpan.Parse(ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+                  SelectedServerAdapterType));
+            }
+            else
+            {
+              MessageBox.Show("The specified Url is neither a calendar nor an addressbook!", connectionTestCaption);
+              return;
+            }
+          }
         }
 
         if (isCalendar && isAddressBook)

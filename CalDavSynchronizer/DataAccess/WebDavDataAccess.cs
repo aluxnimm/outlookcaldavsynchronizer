@@ -92,6 +92,39 @@ namespace CalDavSynchronizer.DataAccess
       return ((privilegeWriteContent != null) && (privilegeBind != null) && (privilegeUnbind != null));
     }
 
+    public async Task<IReadOnlyList<Tuple<Uri,string>>> GetUserCalendars()
+    {
+      var properties = await GetCurrentUserPrincipal(_serverUrl);
+
+      XmlNode principal = properties.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-principal", properties.XmlNamespaceManager);
+
+      properties = await GetCalendarHomeSet(new Uri (_serverUrl.GetLeftPart(UriPartial.Authority)+principal.InnerText));
+
+      XmlNode homeSet = properties.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/C:calendar-home-set", properties.XmlNamespaceManager);
+
+      var responseXml = await ListCalendars(new Uri (_serverUrl.GetLeftPart(UriPartial.Authority) + homeSet.InnerText));
+
+      XmlNodeList responseNodes = responseXml.XmlDocument.SelectNodes("/D:multistatus/D:response", responseXml.XmlNamespaceManager);
+
+      var cals = new List<Tuple<Uri,string>>();
+
+      foreach (XmlElement responseElement in responseNodes)
+      {
+        var urlNode = responseElement.SelectSingleNode("D:href", responseXml.XmlNamespaceManager);
+        var displayNameNode = responseElement.SelectSingleNode("D:propstat/D:prop/D:displayname", responseXml.XmlNamespaceManager);
+        if (urlNode != null && displayNameNode != null)
+        {
+          XmlNode isCollection = responseElement.SelectSingleNode("D:propstat/D:prop/D:resourcetype/C:calendar", responseXml.XmlNamespaceManager);
+          if (isCollection != null)
+          {
+            var uri = UriHelper.UnescapeRelativeUri(_serverUrl, urlNode.InnerText);
+            cals.Add(Tuple.Create(uri, displayNameNode.InnerText));
+          }
+        }
+      }
+      return cals;
+    }
+
     private async Task<string> GetEtag (Uri absoluteEntityUrl)
     {
       var headers = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (absoluteEntityUrl, "GET", null, null, null, null, null);
@@ -162,12 +195,12 @@ namespace CalDavSynchronizer.DataAccess
           );
     }
 
-    private Task<XmlDocumentWithNamespaceManager> GetCurrentUserPrincipal(Uri url, int depth)
+    private Task<XmlDocumentWithNamespaceManager> GetCurrentUserPrincipal(Uri url)
     {
       return _webDavClient.ExecuteWebDavRequestAndReadResponse(
           url,
           "PROPFIND",
-          depth,
+          0,
           null,
           null,
           "application/xml",
@@ -182,6 +215,47 @@ namespace CalDavSynchronizer.DataAccess
                  "
           );
     }
+
+    private Task<XmlDocumentWithNamespaceManager> GetCalendarHomeSet(Uri url)
+    {
+      return _webDavClient.ExecuteWebDavRequestAndReadResponse(
+          url,
+          "PROPFIND",
+          0,
+          null,
+          null,
+          "application/xml",
+          @"<?xml version='1.0'?>
+                        <D:propfind xmlns:D=""DAV:"" xmlns:C=""urn:ietf:params:xml:ns:caldav"">
+                          <D:prop>
+                            <C:calendar-home-set/>
+                          </D:prop>
+                        </D:propfind>
+                 "
+          );
+    }
+
+    private Task<XmlDocumentWithNamespaceManager> ListCalendars(Uri url)
+    {
+      return _webDavClient.ExecuteWebDavRequestAndReadResponse(
+          url,
+          "PROPFIND",
+          1,
+          null,
+          null,
+          "application/xml",
+          @"<?xml version='1.0'?>
+                        <D:propfind xmlns:D=""DAV:"" xmlns:C=""urn:ietf:params:xml:ns:caldav"">
+                          <D:prop>
+                              <D:resourcetype />
+                              <D:displayname />
+                              <C:supported-calendar-component-set />
+                          </D:prop>
+                        </D:propfind>
+                 "
+          );
+    }
+
     public Task<EntityIdWithVersion<Uri, string>> UpdateEntity (Uri url, string contents)
     {
       return UpdateEntity (url, string.Empty, contents);

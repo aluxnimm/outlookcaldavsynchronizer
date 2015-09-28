@@ -276,6 +276,12 @@
     </Compile>
     <Compile Include="Ui\HeaderEventArgs.cs" />
     <Compile Include="Ui\Item.cs" />
+    <Compile Include="Ui\ListCalendarsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ui\ListCalendarsForm.Designer.cs">
+      <DependentUpon>ListCalendarsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Ui\OptionsDisplayControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -299,6 +305,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ui\ListCalendarsForm.resx">
+      <DependentUpon>ListCalendarsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\OptionsDisplayControl.resx">
       <DependentUpon>OptionsDisplayControl.cs</DependentUpon>
