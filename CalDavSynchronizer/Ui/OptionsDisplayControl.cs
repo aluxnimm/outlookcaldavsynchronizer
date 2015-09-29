@@ -193,15 +193,11 @@ namespace CalDavSynchronizer.Ui
           MessageBox.Show (errorMessageBuilder.ToString(), "The calendar Url is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
           return;
         }
-        Uri calendarUrl;
+        Uri calendarUrl = new Uri(_calenderUrlTextBox.Text);
 
-        if (_calenderUrlTextBox.Text.EndsWith("/"))
+        if (!_calenderUrlTextBox.Text.EndsWith("/") || calendarUrl.GetLeftPart(UriPartial.Authority) + "/" == _calenderUrlTextBox.Text)
         {
-          calendarUrl = new Uri(_calenderUrlTextBox.Text);
-        }
-        else
-        {
-          calendarUrl = new Uri(new Uri(_calenderUrlTextBox.Text).GetLeftPart(UriPartial.Authority) + "/.well-known/caldav/");
+          calendarUrl = new Uri(calendarUrl.GetLeftPart(UriPartial.Authority) + "/.well-known/caldav/");
         }
 
         var calDavDataAccess = new CalDavDataAccess(
