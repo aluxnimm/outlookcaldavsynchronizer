@@ -227,26 +227,34 @@ namespace CalDavSynchronizer.Ui
         {
           var foundCalendars = await calDavDataAccess.GetUserCalendars();
 
-          using (ListCalendarsForm listCalendarsForm = new ListCalendarsForm(foundCalendars))
-          {
-            if (listCalendarsForm.ShowDialog() == DialogResult.OK)
+          if (foundCalendars.Count>0)
+          { 
+            using (ListCalendarsForm listCalendarsForm = new ListCalendarsForm(foundCalendars))
             {
-              _calenderUrlTextBox.Text = new Uri(calendarUrl.GetLeftPart(UriPartial.Authority)+listCalendarsForm.getCalendarUri()).ToString();
-              isCalendar = true;
+              if (listCalendarsForm.ShowDialog() == DialogResult.OK)
+              {
+                _calenderUrlTextBox.Text = new Uri(calendarUrl.GetLeftPart(UriPartial.Authority)+listCalendarsForm.getCalendarUri()).ToString();
+                isCalendar = true;
 
-              calDavDataAccess = new CalDavDataAccess(
-                new Uri (_calenderUrlTextBox.Text),
-                SynchronizerFactory.CreateWebDavClient(
-                  _userNameTextBox.Text,
-                  _passwordTextBox.Text,
-                  TimeSpan.Parse(ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-                  SelectedServerAdapterType));
+                calDavDataAccess = new CalDavDataAccess(
+                  new Uri (_calenderUrlTextBox.Text),
+                  SynchronizerFactory.CreateWebDavClient(
+                    _userNameTextBox.Text,
+                    _passwordTextBox.Text,
+                    TimeSpan.Parse(ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+                    SelectedServerAdapterType));
+              }
+              else
+              {
+                MessageBox.Show("The specified Url is neither a calendar nor an addressbook!", connectionTestCaption);
+                return;
+              }
             }
-            else
-            {
+          }
+          else
+          {
               MessageBox.Show("The specified Url is neither a calendar nor an addressbook!", connectionTestCaption);
               return;
-            }
           }
         }
 
