@@ -33,6 +33,7 @@ namespace CalDavSynchronizer.Ui
       InitializeComponent();
       dataGridView1.DataSource = cals;
       dataGridView1.MultiSelect = false;
+      dataGridView1.RowHeadersVisible = false;
       dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
       dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
       dataGridView1.Columns[0].HeaderText = "Calendar Url";
