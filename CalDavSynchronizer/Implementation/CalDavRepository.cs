@@ -20,6 +20,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.DDayICalWorkaround;
 using CalDavSynchronizer.Diagnostics;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using DDay.iCal;
@@ -102,7 +103,19 @@ namespace CalDavSynchronizer.Implementation
               IICalendar calendar;
 
               if (TryDeserializeCalendar (serialized.Entity, out calendar, serialized.Id, threadLocal.Item1))
+              {
                 threadLocal.Item2.Add (Tuple.Create (serialized.Id, calendar));
+              }
+              else
+              {
+                // maybe deserialization failed because of the iCal-TimeZone-Bug =>  try to fix it
+                var fixedICalData = CalendarDataPreprocessor.FixTimeZoneComponentOrderNoThrow (serialized.Entity);
+                if (TryDeserializeCalendar (fixedICalData, out calendar, serialized.Id, threadLocal.Item1))
+                {
+                  threadLocal.Item2.Add (Tuple.Create (serialized.Id, calendar));
+                }
+              }
+
               return threadLocal;
             },
             threadLocal =>
