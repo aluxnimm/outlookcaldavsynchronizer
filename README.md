@@ -31,6 +31,7 @@ This project was initially developed as a master thesis project at the [Universi
 - open source AGPL, the only free Outlook CalDav plugin
 - two-way-sync
 - SSL/TLS support, support for self-signed certificates
+- Autodiscovery of calendars
 - configurable sync range
 - sync multiple calendars per profile
 - sync reminders, categories, recurrences with exceptions, importance, transparency
@@ -49,6 +50,9 @@ Download and extract the `OutlookCalDavSynchronizer-<Version>.zip` into the same
 If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=44074)
 
 ### Changlog ###
+
+#### 1.3.0 ####
+- Add support for Autodiscovery of CalDAV urls
 
 #### 1.2.2 ####
 - Fixed bug in InitialEventEntityMatcher which caused a duplication of events, when a profile was deleted and recreated.
@@ -209,7 +213,7 @@ The following properties need to be set for a new profile:
 
 - *Profile name*: An arbitrary name for the profile, which will be displayed at the associated tab.
 - *Server settings*:
-	- **CalDAV Url:** URL of the remote CalDAV folder. You should use a HTTPS connection here for security reason! If you only have a self signed certificate, add the self signed cert to the Local Computer Trusted Root Certification Authorities. You can import the cert by running the MMC as Administrator. If that fails, see section *'Debugging and more config options'*
+	- **CalDAV Url:** URL of the remote CalDAV server. You should use a HTTPS connection here for security reason! If you only have a self signed certificate, add the self signed cert to the Local Computer Trusted Root Certification Authorities. You can import the cert by running the MMC as Administrator. If that fails, see section *'Debugging and more config options'*
 	- **Username:** Username to connect to the CalDAV server
 	- **Password:** Password used for the connection. The password will be saved encrypted in the option config file.
 	- **Email address:** email address used as remote identity for the CalDAV server, necessary to synchronize the organizer
@@ -245,6 +249,11 @@ In Synology DSM Navigate to control panel > Terminal & SNMP
 Select Enable SSH 
 Then enter Advanced Settings and set it to High
 Now it will work on port 5006 with https.
+
+### Autodiscovery ###
+
+You can use the exact calendar URL or the principal url and use the 'Test settings' button in the option dialog to try to autodiscover available calendars on the server. You can  then choose one of the found calendars in the new window.
+If your server has redirections for well-known Urls (./well-known/caldav/) you need to enter the server name only (without path).
 
 ### Trouble Shooting ###
 
