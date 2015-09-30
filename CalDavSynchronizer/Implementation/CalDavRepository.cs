@@ -20,6 +20,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.DDayICalWorkaround;
 using CalDavSynchronizer.Diagnostics;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using DDay.iCal;
@@ -102,7 +103,20 @@ namespace CalDavSynchronizer.Implementation
               IICalendar calendar;
 
               if (TryDeserializeCalendar (serialized.Entity, out calendar, serialized.Id, threadLocal.Item1))
+              {
                 threadLocal.Item2.Add (Tuple.Create (serialized.Id, calendar));
+              }
+              else
+              {
+                // maybe deserialization failed because of the iCal-TimeZone-Bug =>  try to fix it
+                var fixedICalData = CalendarDataPreprocessor.FixTimeZoneComponentOrderNoThrow (serialized.Entity);
+                if (TryDeserializeCalendar (fixedICalData, out calendar, serialized.Id, threadLocal.Item1))
+                {
+                  threadLocal.Item2.Add (Tuple.Create (serialized.Id, calendar));
+                  s_logger.Info(string.Format("Deserialized ICalData with reordering of TimeZone data '{0}'.", serialized.Id));
+                }
+              }
+
               return threadLocal;
             },
             threadLocal =>
@@ -163,7 +177,8 @@ namespace CalDavSynchronizer.Implementation
       }
       catch (Exception x)
       {
-        s_logger.Error (string.Format ("Could not deserilaize ICalData of '{0}':\r\n{1}", uriOfCalendarForLogging, iCalData), x);
+        s_logger.Error (string.Format ("Could not deserialize ICalData of '{0}'.", uriOfCalendarForLogging));
+        s_logger.Debug (string.Format ("ICalData:\r\n{0}", iCalData), x);
         return false;
       }
     }
