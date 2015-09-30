@@ -193,11 +193,15 @@ namespace CalDavSynchronizer.Ui
           MessageBox.Show (errorMessageBuilder.ToString(), "The calendar Url is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
           return;
         }
+
         Uri calendarUrl = new Uri(_calenderUrlTextBox.Text);
 
-        if (!_calenderUrlTextBox.Text.EndsWith("/") || calendarUrl.GetLeftPart(UriPartial.Authority) + "/" == _calenderUrlTextBox.Text)
+        bool autoDiscovery = false;
+
+        if (!_calenderUrlTextBox.Text.EndsWith("/") || calendarUrl.AbsolutePath=="/")
         {
           calendarUrl = new Uri(calendarUrl.GetLeftPart(UriPartial.Authority) + "/.well-known/caldav/");
+          autoDiscovery = true;
         }
 
         var calDavDataAccess = new CalDavDataAccess(
@@ -216,9 +220,14 @@ namespace CalDavSynchronizer.Ui
                   TimeSpan.Parse(ConfigurationManager.AppSettings["calDavConnectTimeout"]),
                   SelectedServerAdapterType));
 
-        var isCalendar = await calDavDataAccess.IsResourceCalender();
-        var isAddressBook = await cardDavDataAccess.IsResourceAddressBook();
- 
+        bool isCalendar = false;
+        bool isAddressBook = false;
+
+        if (!autoDiscovery)
+        {
+          isCalendar = await calDavDataAccess.IsResourceCalender();
+          isAddressBook = await cardDavDataAccess.IsResourceAddressBook();
+        }
         if (!isCalendar && ! isAddressBook)
         {
           var foundCalendars = await calDavDataAccess.GetUserCalendars();
