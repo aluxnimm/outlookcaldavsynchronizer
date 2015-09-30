@@ -53,6 +53,7 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 #### 1.3.0 ####
 - Add support for Autodiscovery of CalDAV urls
+- Workaround: Since DDay.iCal is not capable to parse events, which contain unsorted TimeZoneComponents, they must be sorted before parsing.
 
 #### 1.2.2 ####
 - Fixed bug in InitialEventEntityMatcher which caused a duplication of events, when a profile was deleted and recreated.
