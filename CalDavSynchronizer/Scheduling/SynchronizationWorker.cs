@@ -16,6 +16,7 @@
 
 using System;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Diagnostics;
@@ -25,7 +26,7 @@ using log4net;
 
 namespace CalDavSynchronizer.Scheduling
 {
-  internal class SynchronizationWorker
+  public class SynchronizationWorker
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -35,6 +36,7 @@ namespace CalDavSynchronizer.Scheduling
     private string _profileName;
     private bool _inactive;
     private readonly ISynchronizerFactory _synchronizerFactory;
+    private int _workInProgress = 0;
 
     public SynchronizationWorker (ISynchronizerFactory synchronizerFactory)
     {
@@ -55,11 +57,32 @@ namespace CalDavSynchronizer.Scheduling
     {
       if (!_inactive && _interval > TimeSpan.Zero && DateTime.UtcNow > _lastRun + _interval)
       {
-        await RunNoThrowAndReschedule();
+        await RunNoThrowAndRescheduleIfNotRunning();
       }
     }
 
-    public async Task RunNoThrowAndReschedule ()
+    public async Task RunNoThrowAndRescheduleIfNotRunning ()
+    {
+      // Monitor cannot be used here, since Monitor allows recursive enter for a thread (which can easily happen in an async scenario)
+      if (Interlocked.CompareExchange (ref _workInProgress, 1, 0) == 0)
+      {
+        try
+        {
+          await RunNoThrowAndReschedule();
+        }
+        finally
+        {
+          Interlocked.Exchange (ref _workInProgress, 0);
+        }
+      }
+      else
+      {
+        s_logger.InfoFormat ("Skipping run of Synchronization profile '{0}', because it is currently already running.", _profileName);
+      }
+    }
+
+
+    private async Task RunNoThrowAndReschedule ()
     {
       if (_inactive)
         return;
@@ -74,8 +97,8 @@ namespace CalDavSynchronizer.Scheduling
           }
           finally
           {
-            GC.Collect ();
-            GC.WaitForPendingFinalizers ();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
           }
         }
       }
