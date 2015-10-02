@@ -25,6 +25,7 @@ This project was initially developed as a master thesis project at the [Universi
 - Zimbra 8.5
 - GroupOffice
 - Synology NAS
+- One.com
 
 ### Features ###
 
