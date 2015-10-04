@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -7,6 +8,8 @@ using DDay.iCal;
 using GenSync.EntityMapping;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
+using Exception = Microsoft.Office.Interop.Outlook.Exception;
+using RecurrencePattern = DDay.iCal.RecurrencePattern;
 
 namespace CalDavSynchronizer.Implementation.Tasks
 {
@@ -25,6 +28,8 @@ namespace CalDavSynchronizer.Implementation.Tasks
     public IICalendar Map1To2 (TaskItemWrapper source, IICalendar existingTargetCalender)
     {
       var newTargetCalender = new iCalendar();
+      var localIcalTimeZone = iCalTimeZone.FromSystemTimeZone(_localTimeZoneInfo, new DateTime(1970, 1, 1), true);
+      newTargetCalender.TimeZones.Add(localIcalTimeZone);
 
       var existingTargetTodo = existingTargetCalender.Todos.FirstOrDefault (e => e.RecurrenceID == null);
 
@@ -35,7 +40,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       newTargetCalender.Todos.Add (newTargetTodo);
 
-      Map1To2 (source, newTargetTodo);
+      Map1To2 (source, newTargetTodo, localIcalTimeZone);
 
       for (int i = 0, newSequenceNumber = existingTargetCalender.Todos.Count > 0 ? existingTargetCalender.Todos.Max (e => e.Sequence) + 1 : 0;
           i < newTargetCalender.Todos.Count;
@@ -47,7 +52,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       return newTargetCalender;
     }
 
-    public void Map1To2 (TaskItemWrapper source, ITodo target)
+    public void Map1To2 (TaskItemWrapper source, ITodo target, iCalTimeZone localIcalTimeZone)
     {
       target.Summary = source.Inner.Subject;
       target.Description = source.Inner.Body;
@@ -75,6 +80,8 @@ namespace CalDavSynchronizer.Implementation.Tasks
       }
 
       target.PercentComplete = source.Inner.PercentComplete;
+
+      MapRecurrance1To2 (source.Inner, target, localIcalTimeZone);
 
       target.Properties.Set ("STATUS", MapStatus1To2 (source.Inner.Status));
 
@@ -185,6 +192,104 @@ namespace CalDavSynchronizer.Implementation.Tasks
       }
     }
 
+    private void MapRecurrance1To2 (TaskItem source, ITodo target, iCalTimeZone localIcalTimeZone)
+    {
+      if (source.IsRecurring)
+      {
+        using (var sourceRecurrencePatternWrapper = GenericComObjectWrapper.Create(source.GetRecurrencePattern()))
+        {
+          var sourceRecurrencePattern = sourceRecurrencePatternWrapper.Inner;
+          IRecurrencePattern targetRecurrencePattern = new RecurrencePattern();
+          if (!sourceRecurrencePattern.NoEndDate)
+          {
+            targetRecurrencePattern.Count = sourceRecurrencePattern.Occurrences;
+            //Until must not be set if count is set, since outlook always sets Occurrences
+            //but sogo wants it as utc end time of the last event not only the enddate at 0000
+            //targetRecurrencePattern.Until = sourceRecurrencePattern.PatternEndDate.Add(sourceRecurrencePattern.EndTime.TimeOfDay).ToUniversalTime();
+          }
+          targetRecurrencePattern.Interval = (sourceRecurrencePattern.RecurrenceType == OlRecurrenceType.olRecursYearly ||
+                                              sourceRecurrencePattern.RecurrenceType == OlRecurrenceType.olRecursYearNth) ? sourceRecurrencePattern.Interval / 12 : sourceRecurrencePattern.Interval;
+
+          switch (sourceRecurrencePattern.RecurrenceType)
+          {
+            case OlRecurrenceType.olRecursDaily:
+              targetRecurrencePattern.Frequency = FrequencyType.Daily;
+              break;
+            case OlRecurrenceType.olRecursWeekly:
+              targetRecurrencePattern.Frequency = FrequencyType.Weekly;
+              MapDayOfWeek1To2(sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+              break;
+            case OlRecurrenceType.olRecursMonthly:
+              targetRecurrencePattern.Frequency = FrequencyType.Monthly;
+              targetRecurrencePattern.ByMonthDay.Add(sourceRecurrencePattern.DayOfMonth);
+              break;
+            case OlRecurrenceType.olRecursMonthNth:
+              targetRecurrencePattern.Frequency = FrequencyType.Monthly;
+
+              if (sourceRecurrencePattern.Instance == 5)
+              {
+                targetRecurrencePattern.BySetPosition.Add(-1);
+                MapDayOfWeek1To2(sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+              }
+              else if (sourceRecurrencePattern.Instance > 0)
+              {
+                targetRecurrencePattern.BySetPosition.Add(sourceRecurrencePattern.Instance);
+                MapDayOfWeek1To2(sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+              }
+              else
+              {
+                MapDayOfWeek1To2(sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+              }
+              break;
+            case OlRecurrenceType.olRecursYearly:
+              targetRecurrencePattern.Frequency = FrequencyType.Yearly;
+              targetRecurrencePattern.ByMonthDay.Add(sourceRecurrencePattern.DayOfMonth);
+              targetRecurrencePattern.ByMonth.Add(sourceRecurrencePattern.MonthOfYear);
+              break;
+            case OlRecurrenceType.olRecursYearNth:
+              targetRecurrencePattern.Frequency = FrequencyType.Yearly;
+              if (sourceRecurrencePattern.Instance == 5)
+              {
+                targetRecurrencePattern.BySetPosition.Add(-1);
+                MapDayOfWeek1To2(sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+              }
+              else if (sourceRecurrencePattern.Instance > 0)
+              {
+                targetRecurrencePattern.BySetPosition.Add(sourceRecurrencePattern.Instance);
+                MapDayOfWeek1To2(sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+              }
+              else
+              {
+                MapDayOfWeek1To2(sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+              }
+              targetRecurrencePattern.ByMonth.Add(sourceRecurrencePattern.MonthOfYear);
+              break;
+          }
+
+          target.RecurrenceRules.Add(targetRecurrencePattern);
+
+        }
+      }
+    }
+
+    private void MapDayOfWeek1To2 (OlDaysOfWeek source, IList<IWeekDay> target)
+    {
+      if ((source & OlDaysOfWeek.olMonday) > 0)
+        target.Add(new WeekDay(DayOfWeek.Monday));
+      if ((source & OlDaysOfWeek.olTuesday) > 0)
+        target.Add(new WeekDay(DayOfWeek.Tuesday));
+      if ((source & OlDaysOfWeek.olWednesday) > 0)
+        target.Add(new WeekDay(DayOfWeek.Wednesday));
+      if ((source & OlDaysOfWeek.olThursday) > 0)
+        target.Add(new WeekDay(DayOfWeek.Thursday));
+      if ((source & OlDaysOfWeek.olFriday) > 0)
+        target.Add(new WeekDay(DayOfWeek.Friday));
+      if ((source & OlDaysOfWeek.olSaturday) > 0)
+        target.Add(new WeekDay(DayOfWeek.Saturday));
+      if ((source & OlDaysOfWeek.olSunday) > 0)
+        target.Add(new WeekDay(DayOfWeek.Sunday));
+    }
+
     public TaskItemWrapper Map2To1 (IICalendar sourceCalendar, TaskItemWrapper target)
     {
       var source = sourceCalendar.Todos[0];
@@ -223,6 +328,8 @@ namespace CalDavSynchronizer.Implementation.Tasks
       MapCategories2To1 (source, target);
 
       MapReminder2To1 (source, target);
+
+      MapRecurrance2To1 (source, target);
 
       return target;
     }
@@ -313,6 +420,180 @@ namespace CalDavSynchronizer.Implementation.Tasks
         s_logger.WarnFormat ("Task '{0}' alarm is not supported. Ignoring.", source.UID);
         target.Inner.ReminderSet = false;
       }
+    }
+
+    private void MapRecurrance2To1(ITodo source, TaskItemWrapper targetWrapper)
+    {
+      if (source.RecurrenceRules.Count > 0)
+      {
+        using (var targetRecurrencePatternWrapper = GenericComObjectWrapper.Create(targetWrapper.Inner.GetRecurrencePattern()))
+        {
+          var targetRecurrencePattern = targetRecurrencePatternWrapper.Inner;
+          if (source.RecurrenceRules.Count > 1)
+          {
+            s_logger.WarnFormat("Task '{0}' contains more than one recurrence rule. Since outlook supports only one rule, all except the first one will be ignored.", source.Url);
+          }
+          var sourceRecurrencePattern = source.RecurrenceRules[0];
+
+          switch (sourceRecurrencePattern.Frequency)
+          {
+            case FrequencyType.Daily:
+              targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursDaily;
+              break;
+            case FrequencyType.Weekly:
+              if (sourceRecurrencePattern.ByDay.Count > 0)
+              {
+                targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursWeekly;
+                targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1(sourceRecurrencePattern.ByDay);
+              }
+              else
+              {
+                targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursWeekly;
+              }
+              break;
+            case FrequencyType.Monthly:
+              if (sourceRecurrencePattern.ByDay.Count > 0)
+              {
+                targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursMonthNth;
+                if (sourceRecurrencePattern.ByWeekNo.Count > 1)
+                {
+                  s_logger.WarnFormat("Task '{0}' contains more than one week in a monthly recurrence rule. Since outlook supports only one week, all except the first one will be ignored.", source.Url);
+                }
+                else if (sourceRecurrencePattern.ByWeekNo.Count > 0)
+                {
+                  targetRecurrencePattern.Instance = sourceRecurrencePattern.ByWeekNo[0];
+                }
+                else
+                {
+                  targetRecurrencePattern.Instance = (sourceRecurrencePattern.ByDay[0].Offset >= 0) ? sourceRecurrencePattern.ByDay[0].Offset : 5;
+                }
+                if (sourceRecurrencePattern.BySetPosition.Count > 0)
+                {
+                  targetRecurrencePattern.Instance = (sourceRecurrencePattern.BySetPosition[0] >= 0) ? sourceRecurrencePattern.BySetPosition[0] : 5;
+                }
+                targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1(sourceRecurrencePattern.ByDay);
+              }
+              else if (sourceRecurrencePattern.ByMonthDay.Count > 0)
+              {
+                targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursMonthly;
+                if (sourceRecurrencePattern.ByMonthDay.Count > 1)
+                {
+                  s_logger.WarnFormat("Task '{0}' contains more than one days in a monthly recurrence rule. Since outlook supports only one day, all except the first one will be ignored.", source.Url);
+                }
+                targetRecurrencePattern.DayOfMonth = sourceRecurrencePattern.ByMonthDay[0];
+              }
+              else
+              {
+                targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursMonthly;
+              }
+              break;
+            case FrequencyType.Yearly:
+              if (sourceRecurrencePattern.ByMonth.Count > 0 && sourceRecurrencePattern.ByWeekNo.Count > 0)
+              {
+                targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursYearNth;
+                if (sourceRecurrencePattern.ByMonth.Count > 1)
+                {
+                  s_logger.WarnFormat("Task '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.Url);
+                }
+                targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
+
+                if (sourceRecurrencePattern.ByWeekNo.Count > 1)
+                {
+                  s_logger.WarnFormat("Task '{0}' contains more than one week in a yearly recurrence rule. Since outlook supports only one week, all except the first one will be ignored.", source.Url);
+                }
+                targetRecurrencePattern.Instance = sourceRecurrencePattern.ByWeekNo[0];
+
+                targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1(sourceRecurrencePattern.ByDay);
+              }
+              else if (sourceRecurrencePattern.ByMonth.Count > 0 && sourceRecurrencePattern.ByMonthDay.Count > 0)
+              {
+                targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursYearly;
+                if (sourceRecurrencePattern.ByMonth.Count > 1)
+                {
+                  s_logger.WarnFormat("Task '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.Url);
+                }
+                targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
+
+                if (sourceRecurrencePattern.ByMonthDay.Count > 1)
+                {
+                  s_logger.WarnFormat("Task '{0}' contains more than one days in a monthly recurrence rule. Since outlook supports only one day, all except the first one will be ignored.", source.Url);
+                }
+                targetRecurrencePattern.DayOfMonth = sourceRecurrencePattern.ByMonthDay[0];
+              }
+              else if (sourceRecurrencePattern.ByMonth.Count > 0 && sourceRecurrencePattern.ByDay.Count > 0)
+              {
+                targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursYearNth;
+                if (sourceRecurrencePattern.ByMonth.Count > 1)
+                {
+                  s_logger.WarnFormat("Task '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.Url);
+                }
+                targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
+
+                targetRecurrencePattern.Instance = (sourceRecurrencePattern.ByDay[0].Offset >= 0) ? sourceRecurrencePattern.ByDay[0].Offset : 5;
+                if (sourceRecurrencePattern.BySetPosition.Count > 0)
+                {
+                  targetRecurrencePattern.Instance = (sourceRecurrencePattern.BySetPosition[0] >= 0) ? sourceRecurrencePattern.BySetPosition[0] : 5;
+                }
+                targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1(sourceRecurrencePattern.ByDay);
+              }
+              else
+              {
+                targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursYearly;
+              }
+              break;
+            default:
+              s_logger.WarnFormat("Recurring task '{0}' contains the Frequency '{1}', which is not supported by outlook. Ignoring recurrence rule.", source.Url, sourceRecurrencePattern.Frequency);
+              targetWrapper.Inner.ClearRecurrencePattern();
+              break;
+          }
+
+          targetRecurrencePattern.Interval = (targetRecurrencePattern.RecurrenceType == OlRecurrenceType.olRecursYearly ||
+                                              targetRecurrencePattern.RecurrenceType == OlRecurrenceType.olRecursYearNth) ? sourceRecurrencePattern.Interval * 12 : sourceRecurrencePattern.Interval;
+
+          if (sourceRecurrencePattern.Count >= 0)
+            targetRecurrencePattern.Occurrences = sourceRecurrencePattern.Count;
+
+          if (sourceRecurrencePattern.Until != default(DateTime))
+            targetRecurrencePattern.PatternEndDate = sourceRecurrencePattern.Until;
+        }
+
+        targetWrapper.SaveAndReload();
+
+      }
+    }
+
+    private OlDaysOfWeek MapDayOfWeek2To1(IList<IWeekDay> source)
+    {
+      OlDaysOfWeek target = 0;
+
+      foreach (var day in source)
+      {
+        switch (day.DayOfWeek)
+        {
+          case DayOfWeek.Monday:
+            target |= OlDaysOfWeek.olMonday;
+            break;
+          case DayOfWeek.Tuesday:
+            target |= OlDaysOfWeek.olTuesday;
+            break;
+          case DayOfWeek.Wednesday:
+            target |= OlDaysOfWeek.olWednesday;
+            break;
+          case DayOfWeek.Thursday:
+            target |= OlDaysOfWeek.olThursday;
+            break;
+          case DayOfWeek.Friday:
+            target |= OlDaysOfWeek.olFriday;
+            break;
+          case DayOfWeek.Saturday:
+            target |= OlDaysOfWeek.olSaturday;
+            break;
+          case DayOfWeek.Sunday:
+            target |= OlDaysOfWeek.olSunday;
+            break;
+        }
+      }
+      return target;
     }
   }
 }
