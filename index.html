@@ -5,7 +5,7 @@
     <title>Outlookcaldavsynchronizer by aluxnimm</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
@@ -52,8 +52,27 @@
 <li>Horde Kronolith</li>
 <li>OwnCloud</li>
 <li>SabreDAV</li>
-<li>Google Calendar ( use the following URL: <a href="https://www.google.com/calendar/dav/">https://www.google.com/calendar/dav/</a>/events )</li>
+<li>Google Calendar</li>
 <li>Zimbra 8.5</li>
+<li>GroupOffice</li>
+<li>Synology NAS</li>
+<li>One.com</li>
+</ul>
+
+<h3>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h3>
+
+<ul>
+<li>open source AGPL, the only free Outlook CalDav plugin</li>
+<li>two-way-sync</li>
+<li>SSL/TLS support, support for self-signed certificates</li>
+<li>Autodiscovery of calendars</li>
+<li>configurable sync range</li>
+<li>sync multiple calendars per profile</li>
+<li>sync reminders, categories, recurrences with exceptions, importance, transparency</li>
+<li>sync organizer and attendees and own response status</li>
+<li>task support (alpha)</li>
+<li>CardDav is planned </li>
 </ul>
 
 <h3>
@@ -69,11 +88,150 @@
 <h3>
 <a id="install-instructions" class="anchor" href="#install-instructions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install instructions</h3>
 
-<p>Download and extract the <code>OutlookCalDavSynchronizer.zip</code> into the same folder and start setup.exe.
+<p>Download and extract the <code>OutlookCalDavSynchronizer-&lt;Version&gt;.zip</code> into the same folder and start setup.exe.
 If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from <a href="https://www.microsoft.com/en-us/download/details.aspx?id=44074">Microsoft Download Link</a></p>
 
 <h3>
 <a id="changlog" class="anchor" href="#changlog" aria-hidden="true"><span class="octicon octicon-link"></span></a>Changlog</h3>
+
+<h4>
+<a id="130" class="anchor" href="#130" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.3.0</h4>
+
+<ul>
+<li>Add support for Autodiscovery of CalDAV urls</li>
+<li>Workaround: Since DDay.iCal is not capable to parse events, which contain unsorted TimeZoneComponents, they must be sorted before parsing.</li>
+</ul>
+
+<h4>
+<a id="122" class="anchor" href="#122" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.2.2</h4>
+
+<ul>
+<li>Fixed bug in InitialEventEntityMatcher which caused a duplication of events, when a profile was deleted and recreated.</li>
+<li>Catch UriFormatExceptions in attendee and organizer Values from CalDav.</li>
+<li>Include response message in exception, if a protocol error occurs.</li>
+</ul>
+
+<h4>
+<a id="121" class="anchor" href="#121" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.2.1</h4>
+
+<ul>
+<li>Fixed HttpClient redirect issue, which affected Zimbra integration</li>
+</ul>
+
+<h4>
+<a id="120" class="anchor" href="#120" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.2.0</h4>
+
+<ul>
+<li>Added option to ignore new version and wait for next update.</li>
+<li>Added workaround for Group Office, which will tolerate empty VALARMs.</li>
+<li>Disable SynchronizeNowButton during synchronization.</li>
+<li>Disable TestConnectionButton while test is in progress.</li>
+<li>Add proper disposing for web messages.</li>
+</ul>
+
+<h4>
+<a id="110" class="anchor" href="#110" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.1.0</h4>
+
+<ul>
+<li>Support for Google OAuth</li>
+<li>Perform all web operations in the Background</li>
+</ul>
+
+<h4>
+<a id="104" class="anchor" href="#104" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.0.4</h4>
+
+<p>-Fix TimeRange filter for events</p>
+
+<h4>
+<a id="103" class="anchor" href="#103" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.0.3</h4>
+
+<ul>
+<li>Add feature, which checks if a newer version is available (Ticket 61)</li>
+</ul>
+
+<h4>
+<a id="102" class="anchor" href="#102" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.0.2</h4>
+
+<ul>
+<li>Bugfix: Preserve UID when updating an Event.</li>
+</ul>
+
+<h4>
+<a id="09916" class="anchor" href="#09916" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.99.16</h4>
+
+<ul>
+<li>Make filtering for time range optional</li>
+</ul>
+
+<h4>
+<a id="09915" class="anchor" href="#09915" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.99.15</h4>
+
+<ul>
+<li>Implement app.config options for disabling SSL/TLS certificate validation and enabling/disabling SSL3/TLS12</li>
+</ul>
+
+<h4>
+<a id="09914" class="anchor" href="#09914" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.99.14</h4>
+
+<ul>
+<li>Use BYSETPOS also for other instances from Outlook fixes first/second/... weekday/weekend day in month</li>
+</ul>
+
+<h4>
+<a id="09913" class="anchor" href="#09913" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.99.13</h4>
+
+<ul>
+<li>Use BYSETPOS -1 to fix last (working)day monthly/yearly recurrences from Outlook</li>
+<li>Add UserAgent header to request. (needed by BAIKAL for example)</li>
+</ul>
+
+<h4>
+<a id="09912" class="anchor" href="#09912" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.99.12</h4>
+
+<ul>
+<li>Fix Bug: Mapping is wrong, when master event is not first event in CalDAV resource.</li>
+<li>Fix logging issue</li>
+<li>Fix recurrence from Outlook for last weekday in month</li>
+</ul>
+
+<h4>
+<a id="09910" class="anchor" href="#09910" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.99.10</h4>
+
+<ul>
+<li>Fetch Etag from server, if it is not included in an update response.</li>
+<li>Factor out CalDavWebClient from CalDavDataAccess.</li>
+</ul>
+
+<h4>
+<a id="0999" class="anchor" href="#0999" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.99.9</h4>
+
+<ul>
+<li>Dispose Folders in OptionDialog</li>
+<li>Call GarbageCollector after each synchronizer run to avoid issues with recurrence exceptions</li>
+</ul>
+
+<h4>
+<a id="0998" class="anchor" href="#0998" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.99.8</h4>
+
+<ul>
+<li>Fix some caldav timeout issues, properly dispose WebRequests</li>
+</ul>
+
+<h4>
+<a id="0997" class="anchor" href="#0997" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.99.7</h4>
+
+<ul>
+<li>Check if organizer address is empty to avoid COM Exception in GetMailUrl</li>
+<li>Fix exdate calculation for moved recurrence exceptions</li>
+</ul>
+
+<h4>
+<a id="0996" class="anchor" href="#0996" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.99.6</h4>
+
+<ul>
+<li>Catch 404 response for empty caldav repositories from Synology</li>
+<li>Some generic Refactoring</li>
+</ul>
 
 <h4>
 <a id="0994" class="anchor" href="#0994" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.99.4</h4>
@@ -85,52 +243,127 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 <li>Prevent skipping of Appointment-exceptions while moving</li>
 <li>Swap handling of ExeptionDates and RecurrenceIDs</li>
 <li>Clarify logging error</li>
-<li>check if new exception is already present in target
-#### 0.99.3 ####</li>
-<li>Fix timezone definition
-#### 0.99.2 ####</li>
+<li>check if new exception is already present in target</li>
+</ul>
+
+<h4>
+<a id="0993" class="anchor" href="#0993" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.99.3</h4>
+
+<ul>
+<li>Fix timezone definition</li>
+</ul>
+
+<h4>
+<a id="0992" class="anchor" href="#0992" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.99.2</h4>
+
+<ul>
 <li>fix timezone issues for syncing from Outlook to CalDav for recurrent events</li>
 <li>Add local timezone info to new CalDav events</li>
 <li>Set start and end date in local timezone instead of utc for CalDav events</li>
 <li>fixes recurrent events that span over daylight saving time changes</li>
 <li>fix calculation of exdates for recurrence exceptions</li>
 <li>Fix date calculation for GetOccurence</li>
-<li>Honor BYSETPOS for monthly and yearly recurrence rules
-#### 0.99.1 ####</li>
-<li>Improved validation of calendar url in options dialog.
-#### 0.99 ####</li>
-<li>Fixes for google
-#### 0.98 ####</li>
-<li>Add SCHEDULE-AGENT=CLIENT for organizer to avoid sending invitations twice in SOGo, see ticket 45
-#### 0.97.8 ####</li>
-<li>Add debug logging for caldav requests
-#### 0.97.7 ####</li>
+<li>Honor BYSETPOS for monthly and yearly recurrence rules</li>
+</ul>
+
+<h4>
+<a id="0991" class="anchor" href="#0991" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.99.1</h4>
+
+<ul>
+<li>Improved validation of calendar url in options dialog</li>
+</ul>
+
+<h4>
+<a id="099" class="anchor" href="#099" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.99</h4>
+
+<ul>
+<li>Fixes for google</li>
+</ul>
+
+<h4>
+<a id="098" class="anchor" href="#098" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.98</h4>
+
+<ul>
+<li>Add SCHEDULE-AGENT=CLIENT for organizer to avoid sending invitations twice in SOGo, see ticket 45</li>
+</ul>
+
+<h4>
+<a id="0978" class="anchor" href="#0978" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.97.8</h4>
+
+<ul>
+<li>Add debug logging for caldav requests</li>
+</ul>
+
+<h4>
+<a id="0977" class="anchor" href="#0977" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.97.7</h4>
+
+<ul>
 <li>more fixes for exchange email addresses for attendees and better logging</li>
-<li>catch COM exception for not found recurrence exceptions
-#### 0.97.6 ####</li>
+<li>catch COM exception for not found recurrence exceptions</li>
+</ul>
+
+<h4>
+<a id="0976" class="anchor" href="#0976" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.97.6</h4>
+
+<ul>
 <li>more fixes for GetMailUrl</li>
-<li>Improve handling of WebExceptions
-#### 0.97.5 ####</li>
+<li>Improve handling of WebExceptions</li>
+</ul>
+
+<h4>
+<a id="0975" class="anchor" href="#0975" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.97.5</h4>
+
+<ul>
 <li>fixes for GetMailUrl for Exchange and GAL</li>
 <li>fix WebException exceptions</li>
-<li>response header 'location' is allowed to contain a relative Uri
-#### 0.97.3 ####</li>
-<li>fix interval for yearly recurrence rules
-#### 0.97.2 ####</li>
+<li>response header 'location' is allowed to contain a relative Uri</li>
+</ul>
+
+<h4>
+<a id="0973" class="anchor" href="#0973" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.97.3</h4>
+
+<ul>
+<li>fix interval for yearly recurrence rules</li>
+</ul>
+
+<h4>
+<a id="0972" class="anchor" href="#0972" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.97.2</h4>
+
+<ul>
 <li>add synchronization context if missing</li>
-<li>fix for task sync if start and due dates are equal
-#### 0.97.1 ####</li>
+<li>fix for task sync if start and due dates are equal</li>
+</ul>
+
+<h4>
+<a id="0971" class="anchor" href="#0971" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.97.1</h4>
+
+<ul>
 <li>swap default values for sync timespans in options dialog</li>
 <li>catch exceptions if PR_SMTP_ADDRESS property not available</li>
-<li>set meetingstatus to nonmeeting if only own organizer and no attendees are present
-#### 0.97 ####</li>
+<li>set meetingstatus to nonmeeting if only own organizer and no attendees are present</li>
+</ul>
+
+<h4>
+<a id="097" class="anchor" href="#097" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.97</h4>
+
+<ul>
 <li>Initial task sync support (alpha)</li>
 <li>Make caldav requests async, Outlook UI stays responsive during caldav get requests</li>
 <li>some recurrence fixes</li>
-<li>improve total progress handling
-#### 0.96 ####</li>
-<li>Fixes for google 
-#### 0.95.1 ####</li>
+<li>improve total progress handling</li>
+</ul>
+
+<h4>
+<a id="096" class="anchor" href="#096" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.96</h4>
+
+<ul>
+<li>Fixes for google</li>
+</ul>
+
+<h4>
+<a id="0951" class="anchor" href="#0951" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.95.1</h4>
+
+<ul>
 <li>Fix getting smtp address for exchange users</li>
 </ul>
 
@@ -174,11 +407,12 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 <li>
 <em>Profile name</em>: An arbitrary name for the profile, which will be displayed at the associated tab.</li>
 <li>
-<em>Server settings</em>:
+<p><em>Server settings</em>:</p>
 
 <ul>
 <li>
-<strong>CalDAV Url:</strong> URL of the remote CalDAV folder. You should use a HTTPS connection here for security reason! If you only have a self signed certificate, add the self signed cert to the Local Computer Trusted Root Certification Authorities. You can import the cert by running the MMC as Administrator.</li>
+<strong>CalDAV Url:</strong> URL of the remote CalDAV server. You should use a HTTPS connection here for security reason! If you only have a self signed certificate, add the self signed cert to the Local Computer Trusted Root Certification Authorities. You can import the cert by running the MMC as Administrator. If that fails, see section <em>'Debugging and more config options'</em>
+</li>
 <li>
 <strong>Username:</strong> Username to connect to the CalDAV server</li>
 <li>
@@ -188,7 +422,7 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 </ul>
 </li>
 <li>
-<em>Outlook settings</em>:
+<p><em>Outlook settings</em>:</p>
 
 <ul>
 <li>
@@ -237,6 +471,28 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 </li>
 </ul>
 
+<h4>
+<a id="google-calender-settings" class="anchor" href="#google-calender-settings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Google Calender settings</h4>
+
+<p>For Google Calender use the following settings:
+CalDAV Url: <code>https://apidata.googleusercontent.com/caldav/v2/&lt;your_google_calendar_id&gt;/events</code>.
+Check the Use Google OAuth Checkbox instead of entering your password. When testing the settings, you will be redirected to your browser to enter your Google Account password and grant access rights to your Google Calender for OutlookCalDavSynchronizer via the safe OAuth protocol.</p>
+
+<h4>
+<a id="synology-nas-settings" class="anchor" href="#synology-nas-settings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Synology NAS settings</h4>
+
+<p>For Synology NAS with SSL support use port 5006 and the following settings in your NAS:
+In Synology DSM Navigate to control panel &gt; Terminal &amp; SNMP
+Select Enable SSH 
+Then enter Advanced Settings and set it to High
+Now it will work on port 5006 with https.</p>
+
+<h3>
+<a id="autodiscovery" class="anchor" href="#autodiscovery" aria-hidden="true"><span class="octicon octicon-link"></span></a>Autodiscovery</h3>
+
+<p>You can use the exact calendar URL or the principal url and use the 'Test settings' button in the option dialog to try to autodiscover available calendars on the server. You can  then choose one of the found calendars in the new window.
+If your server has redirections for well-known Urls (./well-known/caldav/) you need to enter the server name only (without path).</p>
+
 <h3>
 <a id="trouble-shooting" class="anchor" href="#trouble-shooting" aria-hidden="true"><span class="octicon octicon-link"></span></a>Trouble Shooting</h3>
 
@@ -258,7 +514,8 @@ For each sync profile there is a subfolder with state information stored in a re
 <pre><code>CalDavSynchronizer.dll.config
 </code></pre>
 
-<p>In that xml file you can config timeout parameters and config options in the section <code>appSettings</code></p>
+<p>In that xml file you can config timeout parameters and config options in the section <code>appSettings</code>
+After changing parameters you have to restart Outlook.</p>
 
 <ul>
 <li>
@@ -269,6 +526,19 @@ For each sync profile there is a subfolder with state information stored in a re
 <strong>calDavReadWriteTimeout</strong>; timeout for caldav read/write requests (default 5 sec)</li>
 <li>
 <strong>enableTaskSynchronization</strong> Support for task sync (alpha) true or false</li>
+</ul>
+
+<p>If you have problems with SSL/TLS and self-signed certificates, you can change the following settings at your own risk.
+The recommended way would be to add the self signed cert to the Local Computer Trusted Root Certification Authorities
+You can import the cert by running the MMC as Administrator.</p>
+
+<ul>
+<li>
+<strong>disableCertificateValidation</strong> set to true to disable SSL/TLS certificate validation, major security risk, use with caution!</li>
+<li>
+<strong>enableSsl3</strong> set to true to enable deprecated SSLv3, major security risk, use with caution! </li>
+<li>
+<strong>enableTls12</strong> set to false to disable TLS12, not recommended </li>
 </ul>
 
 <p>In the section <code>log4net</code> you can define the log level for the main log and for the caldav data access, 
@@ -285,4 +555,3 @@ For each sync profile there is a subfolder with state information stored in a re
   
   </body>
 </html>
-
