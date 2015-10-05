@@ -52,6 +52,11 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changlog ###
 
+#### 1.3.1 ####
+- Add guard to prevent that a SynchronizationWorker is running multiple times.
+- Fix priority mapping for tasks.
+- Initial implementation of recurring tasks.
+
 #### 1.3.0 ####
 - Add support for Autodiscovery of CalDAV urls
 - Workaround: Since DDay.iCal is not capable to parse events, which contain unsorted TimeZoneComponents, they must be sorted before parsing.
