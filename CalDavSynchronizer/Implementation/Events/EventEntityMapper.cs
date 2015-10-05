@@ -177,15 +177,19 @@ namespace CalDavSynchronizer.Implementation.Events
     {
       if (source.ReminderSet)
       {
-        var trigger = new Trigger (TimeSpan.FromMinutes (-source.ReminderMinutesBeforeStart));
-        trigger.Parameters.Add ("VALUE", "DURATION");
+        var trigger = new Trigger(TimeSpan.FromMinutes(source.ReminderMinutesBeforeStart));
         target.Alarms.Add (
             new Alarm()
             {
-                Action = AlarmAction.Display,
-                Trigger = trigger
+                Trigger = trigger,
+                Description = "This is an event reminder"
             }
             );
+        
+        // Fix for google, since Google wants ACTION property DISPLAY in uppercase
+        var actionProperty = new CalendarProperty("ACTION","DISPLAY");
+        target.Alarms[0].Properties.Add(actionProperty);
+        
       }
     }
 
