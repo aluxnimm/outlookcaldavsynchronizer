@@ -177,7 +177,8 @@ namespace CalDavSynchronizer.Implementation.Events
     {
       if (source.ReminderSet)
       {
-        var trigger = new Trigger(TimeSpan.FromMinutes(source.ReminderMinutesBeforeStart));
+        var trigger = new Trigger (TimeSpan.FromMinutes (-source.ReminderMinutesBeforeStart));
+
         target.Alarms.Add (
             new Alarm()
             {

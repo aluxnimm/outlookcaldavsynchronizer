@@ -52,6 +52,9 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changlog ###
 
+#### 1.3.3 ####
+- Fix reminder timespan value
+
 #### 1.3.2 ####
 - Fix reminders for google
 - Clarify test settings info for read-only resources and set Synchronization mode

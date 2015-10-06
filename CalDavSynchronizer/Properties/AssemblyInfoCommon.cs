@@ -30,4 +30,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright ("Copyright © 2015 Gerhard Zehetbauer")]
 [assembly: AssemblyTrademark ("")]
 
-[assembly: AssemblyVersion ("1.3.2.0")]
+[assembly: AssemblyVersion ("1.3.3.0")]
