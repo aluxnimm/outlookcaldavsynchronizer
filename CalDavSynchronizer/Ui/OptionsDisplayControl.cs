@@ -275,11 +275,24 @@ namespace CalDavSynchronizer.Ui
         if (isCalendar)
         {
           hasError = await TestCalendar (calDavDataAccess, errorMessageBuilder);
+
+          if (!await calDavDataAccess.IsWriteable())
+          {
+            _synchronizationModeComboBox.SelectedValue = SynchronizationMode.ReplicateServerIntoOutlook;
+            MessageBox.Show("The specified Url is a read-only calendar. Synchronization mode set to \"Outlook \u2190 CalDav (Replicate)\"");
+          }
         }
 
         if (isAddressBook)
         {
           hasError = await TestAddressBook (cardDavDataAccess, errorMessageBuilder);
+
+          if (!await cardDavDataAccess.IsWriteable())
+          {
+            _synchronizationModeComboBox.SelectedValue = SynchronizationMode.ReplicateServerIntoOutlook;
+            MessageBox.Show("The specified Url is a read-only addressbook. Synchronization mode set to \"Outlook \u2190 CalDav (Replicate)\"");
+          }
+
         }
 
         if (hasError)
@@ -306,12 +319,6 @@ namespace CalDavSynchronizer.Ui
         hasError = true;
       }
 
-      if (!await cardDavDataAccess.IsWriteable())
-      {
-        errorMessageBuilder.AppendLine ("- The specified Url is a read-only addressbook.");
-        hasError = true;
-      }
-
       if (_folderType != OlItemType.olContactItem)
       {
         errorMessageBuilder.AppendLine ("- The outlook folder is not a address book, or there is no folder selected.");
@@ -330,15 +337,9 @@ namespace CalDavSynchronizer.Ui
         hasError = true;
       }
 
-      if (!await calDavDataAccess.IsWriteable())
-      {
-        errorMessageBuilder.AppendLine ("- The specified Url is a read-only calendar.");
-        hasError = true;
-      }
-
       if (!await calDavDataAccess.DoesSupportCalendarQuery())
       {
-        errorMessageBuilder.AppendLine ("- The specified Url does not support Calendar Queries.");
+        errorMessageBuilder.AppendLine ("- The specified Url does not support Calendar Queries. Some features like time range filter may not work!");
         hasError = true;
       }
 
