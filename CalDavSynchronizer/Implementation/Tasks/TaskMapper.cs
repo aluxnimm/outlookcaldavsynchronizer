@@ -170,10 +170,12 @@ namespace CalDavSynchronizer.Implementation.Tasks
           target.Alarms.Add(
               new Alarm()
               {
-                Action = AlarmAction.Display,
-                Trigger = trigger
+                Trigger = trigger,
+                Description = "This is a task reminder"
               }
               );
+          var actionProperty = new CalendarProperty("ACTION", "DISPLAY");
+          target.Alarms[0].Properties.Add(actionProperty);
         }
         else if (source.Inner.DueDate != _dateNull)
         {
@@ -184,10 +186,12 @@ namespace CalDavSynchronizer.Implementation.Tasks
           target.Alarms.Add(
               new Alarm()
               {
-                Action = AlarmAction.Display,
-                Trigger = trigger
+                Trigger = trigger,
+                Description = "This is a task reminder"
               }
               );
+          var actionProperty = new CalendarProperty("ACTION", "DISPLAY");
+          target.Alarms[0].Properties.Add(actionProperty);
         }
       }
     }
