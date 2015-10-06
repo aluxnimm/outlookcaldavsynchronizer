@@ -52,6 +52,10 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changlog ###
 
+#### 1.3.2 ####
+- Fix reminders for google
+- Clarify test settings info for read-only resources and set Synchronization mode
+
 #### 1.3.1 ####
 - Add guard to prevent that a SynchronizationWorker is running multiple times.
 - Fix priority mapping for tasks.
