@@ -1139,7 +1139,7 @@ namespace CalDavSynchronizer.Implementation.Events
               s_logger.Error("Ignoring invalid Uri in attendee email.", ex);
             }
           }
-          if (attendee.Value != null && !string.IsNullOrEmpty (attendeeEmail.Substring (s_mailtoSchemaLength)))
+          if (attendeeEmail.Length>=s_mailtoSchemaLength && !string.IsNullOrEmpty (attendeeEmail.Substring (s_mailtoSchemaLength)))
           {
             if (!indexByEmailAddresses.TryGetValue (attendeeEmail, out targetRecipient))
             {
