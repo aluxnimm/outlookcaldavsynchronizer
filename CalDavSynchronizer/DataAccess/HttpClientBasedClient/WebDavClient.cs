@@ -162,8 +162,9 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
             }
           }
         }
-        catch
+        catch (Exception x)
         {
+          s_logger.Error ("Exception while trying to read the error message.", x);
           // throw default exception, if reading the response fails
           response.EnsureSuccessStatusCode();
         }
