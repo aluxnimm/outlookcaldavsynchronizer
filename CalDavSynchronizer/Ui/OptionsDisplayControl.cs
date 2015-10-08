@@ -29,6 +29,7 @@ using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Scheduling;
+using CalDavSynchronizer.Ui.ConnectionTests;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
 using Exception = System.Exception;
@@ -37,6 +38,7 @@ namespace CalDavSynchronizer.Ui
 {
   public partial class OptionsDisplayControl : UserControl
   {
+    private const string c_connectionTestCaption = "Test settings";
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private OlItemType? _folderType;
@@ -182,126 +184,47 @@ namespace CalDavSynchronizer.Ui
 
     private async Task TestServerConnection ()
     {
-      const string connectionTestCaption = "Test settings";
-
       _testConnectionButton.Enabled = false;
       try
       {
         StringBuilder errorMessageBuilder = new StringBuilder();
-        if (!ValidateCalendarUrl (errorMessageBuilder))
+        if (!ValidateCalendarUrl (errorMessageBuilder, false))
         {
           MessageBox.Show (errorMessageBuilder.ToString(), "The calendar Url is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
           return;
         }
 
-        Uri calendarUrl = new Uri (_calenderUrlTextBox.Text);
+        var uri = new Uri (_calenderUrlTextBox.Text);
+        var webDavClient = CreateWebDavClient();
 
-        bool autoDiscovery = false;
-
-        if (!_calenderUrlTextBox.Text.EndsWith ("/") || calendarUrl.AbsolutePath == "/")
+        if (!ConnectionTester.RequiresAutoDiscovery (uri))
         {
-          calendarUrl = new Uri (calendarUrl.GetLeftPart (UriPartial.Authority) + "/.well-known/caldav/");
-          autoDiscovery = true;
-        }
-
-        var calDavDataAccess = new CalDavDataAccess (
-            calendarUrl,
-            SynchronizerFactory.CreateWebDavClient (
-                _userNameTextBox.Text,
-                _passwordTextBox.Text,
-                TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-                SelectedServerAdapterType));
-
-        var cardDavDataAccess = new CardDavDataAccess (
-            calendarUrl,
-            SynchronizerFactory.CreateWebDavClient (
-                _userNameTextBox.Text,
-                _passwordTextBox.Text,
-                TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-                SelectedServerAdapterType));
-
-        bool isCalendar = false;
-        bool isAddressBook = false;
-
-        if (!autoDiscovery)
-        {
-          isCalendar = await calDavDataAccess.IsResourceCalender();
-          isAddressBook = await cardDavDataAccess.IsResourceAddressBook();
-        }
-        if (!isCalendar && ! isAddressBook)
-        {
-          var foundCalendars = await calDavDataAccess.GetUserCalendars();
-
-          if (foundCalendars.Count > 0)
+          var result = await ConnectionTester.TestConnection (uri, webDavClient);
+          if (result.ResourceType != ResourceType.None)
           {
-            using (ListCalendarsForm listCalendarsForm = new ListCalendarsForm (foundCalendars))
-            {
-              if (listCalendarsForm.ShowDialog() == DialogResult.OK)
-              {
-                _calenderUrlTextBox.Text = new Uri (calendarUrl.GetLeftPart (UriPartial.Authority) + listCalendarsForm.getCalendarUri()).ToString();
-                isCalendar = true;
-
-                calDavDataAccess = new CalDavDataAccess (
-                    new Uri (_calenderUrlTextBox.Text),
-                    SynchronizerFactory.CreateWebDavClient (
-                        _userNameTextBox.Text,
-                        _passwordTextBox.Text,
-                        TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-                        SelectedServerAdapterType));
-              }
-              else
-              {
-                MessageBox.Show ("The specified Url is neither a calendar nor an addressbook!", connectionTestCaption);
-                return;
-              }
-            }
-          }
-          else
-          {
-            MessageBox.Show ("The specified Url is neither a calendar nor an addressbook!", connectionTestCaption);
+            DisplayTestReport (result);
             return;
           }
         }
 
-        if (isCalendar && isAddressBook)
+        var autoDiscoveredUri = await DoAutoDiscovery (ConnectionTester.GetAutoDiscoverUrl (uri), webDavClient);
+        Uri effectiveUri;
+        if (autoDiscoveredUri != null)
         {
-          MessageBox.Show ("Ressources which are a calendar and a addressbook are not valid!", connectionTestCaption);
-          return;
+          effectiveUri = autoDiscoveredUri;
+          _calenderUrlTextBox.Text = autoDiscoveredUri.ToString();
         }
-
-        bool hasError = false;
-        errorMessageBuilder.Clear();
-
-        if (isCalendar)
-        {
-          hasError = await TestCalendar (calDavDataAccess, errorMessageBuilder);
-
-          if (!await calDavDataAccess.IsWriteable())
-          {
-            _synchronizationModeComboBox.SelectedValue = SynchronizationMode.ReplicateServerIntoOutlook;
-            MessageBox.Show ("The specified Url is a read-only calendar. Synchronization mode set to \"Outlook \u2190 CalDav (Replicate)\"");
-          }
-        }
-
-        if (isAddressBook)
-        {
-          hasError = await TestAddressBook (cardDavDataAccess, errorMessageBuilder);
-
-          if (!await cardDavDataAccess.IsWriteable())
-          {
-            _synchronizationModeComboBox.SelectedValue = SynchronizationMode.ReplicateServerIntoOutlook;
-            MessageBox.Show ("The specified Url is a read-only addressbook. Synchronization mode set to \"Outlook \u2190 CalDav (Replicate)\"");
-          }
-        }
-
-        if (hasError)
-          MessageBox.Show ("Connection test NOT successful:" + Environment.NewLine + errorMessageBuilder.ToString(), connectionTestCaption);
         else
-          MessageBox.Show ("Connection test successful.", connectionTestCaption);
+        {
+          effectiveUri = uri;
+        }
+
+        var finalResult = await ConnectionTester.TestConnection (effectiveUri, webDavClient);
+        DisplayTestReport (finalResult);
       }
       catch (Exception x)
       {
-        MessageBox.Show (x.Message, connectionTestCaption);
+        MessageBox.Show (x.Message, c_connectionTestCaption);
       }
       finally
       {
@@ -309,51 +232,135 @@ namespace CalDavSynchronizer.Ui
       }
     }
 
-    private async Task<bool> TestAddressBook (CardDavDataAccess cardDavDataAccess, StringBuilder errorMessageBuilder)
+    private void DisplayTestReport (TestResult result)
     {
       bool hasError = false;
-      if (!await cardDavDataAccess.IsAddressBookAccessSupported())
+      var errorMessageBuilder = new StringBuilder();
+
+      var isCalendar = result.ResourceType.HasFlag (ResourceType.Calendar);
+      var isAddressBook = result.ResourceType.HasFlag (ResourceType.AddressBook);
+
+      if (!isCalendar && !isAddressBook)
       {
-        errorMessageBuilder.AppendLine ("- The specified Url does not support addressbook.");
+        errorMessageBuilder.AppendLine ("- The specified Url is neither a calendar nor an addressbook!");
         hasError = true;
       }
 
-      if (_folderType != OlItemType.olContactItem)
+      if (isCalendar && isAddressBook)
       {
-        errorMessageBuilder.AppendLine ("- The outlook folder is not a address book, or there is no folder selected.");
+        errorMessageBuilder.AppendLine ("- Ressources which are a calendar and a addressbook are not valid!");
         hasError = true;
       }
-      return hasError;
+
+      if (isCalendar)
+      {
+        if (!result.CalendarProperties.HasFlag (CalendarProperties.CalendarAccessSupported))
+        {
+          errorMessageBuilder.AppendLine ("- The specified Url does not support calendar access.");
+          hasError = true;
+        }
+
+        if (!result.CalendarProperties.HasFlag (CalendarProperties.SupportsCalendarQuery))
+        {
+          errorMessageBuilder.AppendLine ("- The specified Url does not support Calendar Queries. Some features like time range filter may not work!");
+          hasError = true;
+        }
+
+        if (!result.CalendarProperties.HasFlag (CalendarProperties.IsWriteable))
+        {
+          var synchronizationMode = (SynchronizationMode) _synchronizationModeComboBox.SelectedValue;
+          if (synchronizationMode == SynchronizationMode.MergeInBothDirections
+              || synchronizationMode == SynchronizationMode.MergeOutlookIntoServer
+              || synchronizationMode == SynchronizationMode.ReplicateOutlookIntoServer)
+          {
+            errorMessageBuilder.AppendFormat (
+                "- The specified calendar is not writeable. Therefore it is not possible to use the synchronization mode '{0}'.",
+                _availableSynchronizationModes.Single (m => m.Value == synchronizationMode).Name);
+            errorMessageBuilder.AppendLine();
+            hasError = true;
+          }
+        }
+
+        if (_folderType != OlItemType.olAppointmentItem && _folderType != OlItemType.olTaskItem)
+        {
+          errorMessageBuilder.AppendLine ("- The outlook folder is not a calendar or task folder, or there is no folder selected.");
+          hasError = true;
+        }
+      }
+
+      if (isAddressBook)
+      {
+        if (!result.AddressBookProperties.HasFlag (AddressBookProperties.AddressBookAccessSupported))
+        {
+          errorMessageBuilder.AppendLine ("- The specified Url does not support addressbook.");
+          hasError = true;
+        }
+
+        if (!result.AddressBookProperties.HasFlag (AddressBookProperties.IsWriteable))
+        {
+          var synchronizationMode = (SynchronizationMode) _synchronizationModeComboBox.SelectedValue;
+          if (synchronizationMode == SynchronizationMode.MergeInBothDirections
+              || synchronizationMode == SynchronizationMode.MergeOutlookIntoServer
+              || synchronizationMode == SynchronizationMode.ReplicateOutlookIntoServer)
+          {
+            errorMessageBuilder.AppendFormat (
+                "- The specified address book is not writeable. Therefore it is not possible to use the synchronization mode '{0}'.",
+                _availableSynchronizationModes.Single (m => m.Value == synchronizationMode).Name);
+            errorMessageBuilder.AppendLine();
+            hasError = true;
+          }
+        }
+
+        if (_folderType != OlItemType.olContactItem)
+        {
+          errorMessageBuilder.AppendLine ("- The outlook folder is not a address book, or there is no folder selected.");
+          hasError = true;
+        }
+      }
+
+      if (hasError)
+        MessageBox.Show ("Connection test NOT successful:" + Environment.NewLine + errorMessageBuilder, c_connectionTestCaption);
+      else
+        MessageBox.Show ("Connection test successful.", c_connectionTestCaption);
     }
 
-    private async Task<bool> TestCalendar (CalDavDataAccess calDavDataAccess, StringBuilder errorMessageBuilder)
+
+    private async Task<Uri> DoAutoDiscovery (Uri autoDiscoveryUri, IWebDavClient webDavClient)
     {
-      bool hasError = false;
+      var calDavDataAccess = new CalDavDataAccess (autoDiscoveryUri, webDavClient);
 
-      if (!await calDavDataAccess.IsCalendarAccessSupported())
+      var foundCalendars = await calDavDataAccess.GetUserCalendars();
+
+      if (foundCalendars.Count > 0)
       {
-        errorMessageBuilder.AppendLine ("- The specified Url does not support calendar access.");
-        hasError = true;
+        using (ListCalendarsForm listCalendarsForm = new ListCalendarsForm (foundCalendars))
+        {
+          if (listCalendarsForm.ShowDialog() == DialogResult.OK)
+          {
+            return new Uri (autoDiscoveryUri.GetLeftPart (UriPartial.Authority) + listCalendarsForm.getCalendarUri());
+          }
+        }
       }
-
-      if (!await calDavDataAccess.DoesSupportCalendarQuery())
+      else
       {
-        errorMessageBuilder.AppendLine ("- The specified Url does not support Calendar Queries. Some features like time range filter may not work!");
-        hasError = true;
+        MessageBox.Show ("No calendars were found via autodiscovery!", c_connectionTestCaption);
       }
-
-      if (_folderType != OlItemType.olAppointmentItem && _folderType != OlItemType.olTaskItem)
-      {
-        errorMessageBuilder.AppendLine ("- The outlook folder is not a calendar or task folder, or there is no folder selected.");
-        hasError = true;
-      }
-
-      return hasError;
+      return null;
     }
+
+    private IWebDavClient CreateWebDavClient ()
+    {
+      return SynchronizerFactory.CreateWebDavClient (
+          _userNameTextBox.Text,
+          _passwordTextBox.Text,
+          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+          SelectedServerAdapterType);
+    }
+
 
     public bool Validate (StringBuilder errorMessageBuilder)
     {
-      bool result = ValidateCalendarUrl (errorMessageBuilder);
+      bool result = ValidateCalendarUrl (errorMessageBuilder, true);
 
       if (string.IsNullOrWhiteSpace (_folderStoreId) || string.IsNullOrWhiteSpace (_folderEntryId))
       {
@@ -375,7 +382,7 @@ namespace CalDavSynchronizer.Ui
       return result;
     }
 
-    private bool ValidateCalendarUrl (StringBuilder errorMessageBuilder)
+    private bool ValidateCalendarUrl (StringBuilder errorMessageBuilder, bool requiresTrailingSlash)
     {
       bool result = true;
 
@@ -388,6 +395,12 @@ namespace CalDavSynchronizer.Ui
       if (_calenderUrlTextBox.Text.Trim() != _calenderUrlTextBox.Text)
       {
         errorMessageBuilder.AppendLine ("- The CalDav Calendar Url cannot end/start with whitespaces.");
+        result = false;
+      }
+
+      if (requiresTrailingSlash && !_calenderUrlTextBox.Text.EndsWith ("/"))
+      {
+        errorMessageBuilder.AppendLine ("- The CalDav Calendar Url hast to end with an slash ('/').");
         result = false;
       }
 
