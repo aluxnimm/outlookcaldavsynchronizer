@@ -220,6 +220,10 @@ namespace CalDavSynchronizer.Ui
         }
 
         var finalResult = await ConnectionTester.TestConnection (effectiveUri, webDavClient);
+
+        if (bool.Parse (ConfigurationManager.AppSettings["automaticallyFixSettings"]))
+          AutomaticallyFixSettings (finalResult);
+
         DisplayTestReport (finalResult);
       }
       catch (Exception x)
@@ -229,6 +233,38 @@ namespace CalDavSynchronizer.Ui
       finally
       {
         _testConnectionButton.Enabled = true;
+      }
+    }
+
+    private void AutomaticallyFixSettings (TestResult result)
+    {
+      const SynchronizationMode readOnlyDefaultMode = SynchronizationMode.ReplicateServerIntoOutlook;
+      if (result.ResourceType.HasFlag (ResourceType.Calendar))
+      {
+        if (!result.CalendarProperties.HasFlag (CalendarProperties.IsWriteable)
+            && SelectedModeRequiresWriteableServerResource)
+        {
+          _synchronizationModeComboBox.SelectedValue = readOnlyDefaultMode;
+          MessageBox.Show (
+              string.Format (
+                  "The specified Url is a read-only calendar. Synchronization mode set to '{0}'.",
+                  _availableSynchronizationModes.Single (m => m.Value == readOnlyDefaultMode).Name),
+              c_connectionTestCaption);
+        }
+      }
+
+      if (result.ResourceType.HasFlag (ResourceType.AddressBook))
+      {
+        if (!result.AddressBookProperties.HasFlag (AddressBookProperties.IsWriteable)
+            && SelectedModeRequiresWriteableServerResource)
+        {
+          _synchronizationModeComboBox.SelectedValue = readOnlyDefaultMode;
+          MessageBox.Show (
+              string.Format (
+                  "The specified Url is a read-only addressbook. Synchronization mode set to '{0}'.",
+                  _availableSynchronizationModes.Single (m => m.Value == readOnlyDefaultMode).Name),
+              c_connectionTestCaption);
+        }
       }
     }
 
@@ -318,6 +354,12 @@ namespace CalDavSynchronizer.Ui
         MessageBox.Show ("Connection test NOT successful:" + Environment.NewLine + errorMessageBuilder, c_connectionTestCaption);
       else
         MessageBox.Show ("Connection test successful.", c_connectionTestCaption);
+    }
+
+
+    private bool SelectedModeRequiresWriteableServerResource
+    {
+      get { return RequiresWriteableServerResource ((SynchronizationMode) _synchronizationModeComboBox.SelectedValue); }
     }
 
     private static bool RequiresWriteableServerResource (SynchronizationMode synchronizationMode)
