@@ -113,7 +113,7 @@ namespace CalDavSynchronizer.Implementation
                 if (TryDeserializeCalendar (fixedICalData, out calendar, serialized.Id, threadLocal.Item1))
                 {
                   threadLocal.Item2.Add (Tuple.Create (serialized.Id, calendar));
-                  s_logger.Info(string.Format("Deserialized ICalData with reordering of TimeZone data '{0}'.", serialized.Id));
+                  s_logger.Info (string.Format ("Deserialized ICalData with reordering of TimeZone data '{0}'.", serialized.Id));
                 }
               }
 

@@ -101,20 +101,20 @@ namespace CalDavSynchronizer.Implementation.Tasks
     {
       entityToUpdate = entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save();
-      return Task.FromResult(new EntityIdWithVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime));
+      return Task.FromResult (new EntityIdWithVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime));
     }
 
     public Task Delete (string entityId)
     {
-      var entityWithId = Get (new[] { entityId }).Result.SingleOrDefault ();
+      var entityWithId = Get (new[] { entityId }).Result.SingleOrDefault();
       if (entityWithId == null)
-        return Task.FromResult(0);
+        return Task.FromResult (0);
 
       using (var entity = entityWithId.Entity)
       {
-        entity.Inner.Delete ();
+        entity.Inner.Delete();
       }
-      
+
       return Task.FromResult (0);
     }
 
@@ -126,7 +126,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
         {
           initializedWrapper.Inner.Save();
           var result = new EntityIdWithVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime);
-          return Task.FromResult(result);
+          return Task.FromResult (result);
         }
       }
     }

@@ -91,7 +91,7 @@ namespace CalDavSynchronizer.Scheduling
     public async Task RunNow ()
     {
       foreach (var worker in _workersById.Values)
-        await worker.RunNoThrowAndRescheduleIfNotRunning ();
+        await worker.RunNoThrowAndRescheduleIfNotRunning();
     }
   }
 }

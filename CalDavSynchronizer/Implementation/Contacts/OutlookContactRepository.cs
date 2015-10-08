@@ -142,7 +142,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         {
           initializedWrapper.Inner.Save();
           var result = new EntityIdWithVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime);
-          return Task.FromResult(result);
+          return Task.FromResult (result);
         }
       }
     }

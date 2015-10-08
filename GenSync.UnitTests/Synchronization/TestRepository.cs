@@ -93,7 +93,7 @@ namespace GenSync.UnitTests.Synchronization
       var newValue = entityInitializer (string.Empty);
       var entityId = _idPrefix + _nextId++;
       EntityVersionAndContentById[entityId] = Tuple.Create (0, newValue);
-      return Task.FromResult(new EntityIdWithVersion<Identifier, int> (entityId, 0));
+      return Task.FromResult (new EntityIdWithVersion<Identifier, int> (entityId, 0));
     }
 
     public Tuple<int, string> this [string id]

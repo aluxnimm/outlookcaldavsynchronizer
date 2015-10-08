@@ -40,7 +40,5 @@ namespace CalDavSynchronizer.DataAccess
         string ifNoneMatch,
         string mediaType,
         string requestBody);
-
-
   }
 }

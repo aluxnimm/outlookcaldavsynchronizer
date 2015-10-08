@@ -126,7 +126,7 @@ namespace CalDavSynchronizer.Implementation.Events
     {
       var entityWithId = Get (new[] { entityId }).Result.SingleOrDefault();
       if (entityWithId == null)
-        return Task.FromResult(0);
+        return Task.FromResult (0);
 
       using (var appointment = entityWithId.Entity)
       {
@@ -152,7 +152,7 @@ namespace CalDavSynchronizer.Implementation.Events
         {
           initializedWrapper.Inner.Save();
           var result = new EntityIdWithVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime);
-          return Task.FromResult(result);
+          return Task.FromResult (result);
         }
       }
     }

@@ -194,31 +194,31 @@ namespace CalDavSynchronizer.Ui
           return;
         }
 
-        Uri calendarUrl = new Uri(_calenderUrlTextBox.Text);
+        Uri calendarUrl = new Uri (_calenderUrlTextBox.Text);
 
         bool autoDiscovery = false;
 
-        if (!_calenderUrlTextBox.Text.EndsWith("/") || calendarUrl.AbsolutePath=="/")
+        if (!_calenderUrlTextBox.Text.EndsWith ("/") || calendarUrl.AbsolutePath == "/")
         {
-          calendarUrl = new Uri(calendarUrl.GetLeftPart(UriPartial.Authority) + "/.well-known/caldav/");
+          calendarUrl = new Uri (calendarUrl.GetLeftPart (UriPartial.Authority) + "/.well-known/caldav/");
           autoDiscovery = true;
         }
 
-        var calDavDataAccess = new CalDavDataAccess(
-              calendarUrl,
-              SynchronizerFactory.CreateWebDavClient(
-                  _userNameTextBox.Text,
-                  _passwordTextBox.Text,
-                  TimeSpan.Parse(ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-                  SelectedServerAdapterType));
+        var calDavDataAccess = new CalDavDataAccess (
+            calendarUrl,
+            SynchronizerFactory.CreateWebDavClient (
+                _userNameTextBox.Text,
+                _passwordTextBox.Text,
+                TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+                SelectedServerAdapterType));
 
-        var cardDavDataAccess = new CardDavDataAccess(
-              calendarUrl,
-              SynchronizerFactory.CreateWebDavClient(
-                  _userNameTextBox.Text,
-                  _passwordTextBox.Text,
-                  TimeSpan.Parse(ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-                  SelectedServerAdapterType));
+        var cardDavDataAccess = new CardDavDataAccess (
+            calendarUrl,
+            SynchronizerFactory.CreateWebDavClient (
+                _userNameTextBox.Text,
+                _passwordTextBox.Text,
+                TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+                SelectedServerAdapterType));
 
         bool isCalendar = false;
         bool isAddressBook = false;
@@ -232,34 +232,34 @@ namespace CalDavSynchronizer.Ui
         {
           var foundCalendars = await calDavDataAccess.GetUserCalendars();
 
-          if (foundCalendars.Count>0)
-          { 
-            using (ListCalendarsForm listCalendarsForm = new ListCalendarsForm(foundCalendars))
+          if (foundCalendars.Count > 0)
+          {
+            using (ListCalendarsForm listCalendarsForm = new ListCalendarsForm (foundCalendars))
             {
               if (listCalendarsForm.ShowDialog() == DialogResult.OK)
               {
-                _calenderUrlTextBox.Text = new Uri(calendarUrl.GetLeftPart(UriPartial.Authority)+listCalendarsForm.getCalendarUri()).ToString();
+                _calenderUrlTextBox.Text = new Uri (calendarUrl.GetLeftPart (UriPartial.Authority) + listCalendarsForm.getCalendarUri()).ToString();
                 isCalendar = true;
 
-                calDavDataAccess = new CalDavDataAccess(
-                  new Uri (_calenderUrlTextBox.Text),
-                  SynchronizerFactory.CreateWebDavClient(
-                    _userNameTextBox.Text,
-                    _passwordTextBox.Text,
-                    TimeSpan.Parse(ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-                    SelectedServerAdapterType));
+                calDavDataAccess = new CalDavDataAccess (
+                    new Uri (_calenderUrlTextBox.Text),
+                    SynchronizerFactory.CreateWebDavClient (
+                        _userNameTextBox.Text,
+                        _passwordTextBox.Text,
+                        TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+                        SelectedServerAdapterType));
               }
               else
               {
-                MessageBox.Show("The specified Url is neither a calendar nor an addressbook!", connectionTestCaption);
+                MessageBox.Show ("The specified Url is neither a calendar nor an addressbook!", connectionTestCaption);
                 return;
               }
             }
           }
           else
           {
-              MessageBox.Show("The specified Url is neither a calendar nor an addressbook!", connectionTestCaption);
-              return;
+            MessageBox.Show ("The specified Url is neither a calendar nor an addressbook!", connectionTestCaption);
+            return;
           }
         }
 
@@ -279,7 +279,7 @@ namespace CalDavSynchronizer.Ui
           if (!await calDavDataAccess.IsWriteable())
           {
             _synchronizationModeComboBox.SelectedValue = SynchronizationMode.ReplicateServerIntoOutlook;
-            MessageBox.Show("The specified Url is a read-only calendar. Synchronization mode set to \"Outlook \u2190 CalDav (Replicate)\"");
+            MessageBox.Show ("The specified Url is a read-only calendar. Synchronization mode set to \"Outlook \u2190 CalDav (Replicate)\"");
           }
         }
 
@@ -290,9 +290,8 @@ namespace CalDavSynchronizer.Ui
           if (!await cardDavDataAccess.IsWriteable())
           {
             _synchronizationModeComboBox.SelectedValue = SynchronizationMode.ReplicateServerIntoOutlook;
-            MessageBox.Show("The specified Url is a read-only addressbook. Synchronization mode set to \"Outlook \u2190 CalDav (Replicate)\"");
+            MessageBox.Show ("The specified Url is a read-only addressbook. Synchronization mode set to \"Outlook \u2190 CalDav (Replicate)\"");
           }
-
         }
 
         if (hasError)

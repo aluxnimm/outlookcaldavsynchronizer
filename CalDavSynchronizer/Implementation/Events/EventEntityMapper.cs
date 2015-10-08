@@ -88,7 +88,7 @@ namespace CalDavSynchronizer.Implementation.Events
       return newTargetCalender;
     }
 
-    private void Map1To2 (AppointmentItem source, IEvent target, bool isRecurrenceException,iCalTimeZone localIcalTimeZone)
+    private void Map1To2 (AppointmentItem source, IEvent target, bool isRecurrenceException, iCalTimeZone localIcalTimeZone)
     {
       if (source.AllDayEvent)
       {
@@ -186,11 +186,10 @@ namespace CalDavSynchronizer.Implementation.Events
                 Description = "This is an event reminder"
             }
             );
-        
+
         // Fix for google, since Google wants ACTION property DISPLAY in uppercase
-        var actionProperty = new CalendarProperty("ACTION","DISPLAY");
-        target.Alarms[0].Properties.Add(actionProperty);
-        
+        var actionProperty = new CalendarProperty ("ACTION", "DISPLAY");
+        target.Alarms[0].Properties.Add (actionProperty);
       }
     }
 
@@ -340,7 +339,7 @@ namespace CalDavSynchronizer.Implementation.Events
       var targetOrganizer = new Organizer (GetMailUrl (organizer));
       targetOrganizer.CommonName = organizer.Name;
       target.Organizer = targetOrganizer;
-      target.Organizer.Parameters.Add("SCHEDULE-AGENT", "CLIENT");
+      target.Organizer.Parameters.Add ("SCHEDULE-AGENT", "CLIENT");
     }
 
     private void SetOrganizer (IEvent target, string organizerCN, string organizerEmail)
@@ -369,7 +368,7 @@ namespace CalDavSynchronizer.Implementation.Events
         }
       }
       else if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeDistributionListAddressEntry
-                || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olOutlookDistributionListAddressEntry)
+               || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olOutlookDistributionListAddressEntry)
       {
         using (var exchDL = GenericComObjectWrapper.Create (addressEntry.GetExchangeDistributionList()))
         {
@@ -379,8 +378,8 @@ namespace CalDavSynchronizer.Implementation.Events
           }
         }
       }
-      else if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olSmtpAddressEntry 
-                || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olLdapAddressEntry ) 
+      else if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olSmtpAddressEntry
+               || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olLdapAddressEntry)
       {
         emailAddress = addressEntry.Address;
       }
@@ -388,7 +387,7 @@ namespace CalDavSynchronizer.Implementation.Events
       {
         if (addressEntry.Type == "EX")
         {
-          using (var exchContact = GenericComObjectWrapper.Create(addressEntry.GetContact()))
+          using (var exchContact = GenericComObjectWrapper.Create (addressEntry.GetContact()))
           {
             if (exchContact != null)
             {
@@ -396,11 +395,11 @@ namespace CalDavSynchronizer.Implementation.Events
               {
                 try
                 {
-                  emailAddress = exchContact.Inner.GetPropertySafe(PR_EMAIL1ADDRESS);
+                  emailAddress = exchContact.Inner.GetPropertySafe (PR_EMAIL1ADDRESS);
                 }
                 catch (COMException ex)
                 {
-                  s_logger.Error("Could not get property PR_EMAIL1ADDRESS for adressEntry", ex);
+                  s_logger.Error ("Could not get property PR_EMAIL1ADDRESS for adressEntry", ex);
                 }
               }
               else
@@ -419,7 +418,7 @@ namespace CalDavSynchronizer.Implementation.Events
       {
         try
         {
-          emailAddress = addressEntry.GetPropertySafe(PR_SMTP_ADDRESS);
+          emailAddress = addressEntry.GetPropertySafe (PR_SMTP_ADDRESS);
         }
         catch (COMException ex)
         {
@@ -427,11 +426,11 @@ namespace CalDavSynchronizer.Implementation.Events
         }
       }
 
-      emailAddress = string.Format("MAILTO:{0}", emailAddress);
-      if (!Uri.IsWellFormedUriString(emailAddress, UriKind.Absolute))
+      emailAddress = string.Format ("MAILTO:{0}", emailAddress);
+      if (!Uri.IsWellFormedUriString (emailAddress, UriKind.Absolute))
       {
-        s_logger.ErrorFormat("Invalid email address URI {0} for addressEntry",emailAddress);
-        s_logger.DebugFormat ("emailaddress: {0} AdressEntryType: {1} AdressEntryUserType: {2} addressEntry.Address: {3}",emailAddress, addressEntry.Type, addressEntry.AddressEntryUserType, addressEntry.Address);
+        s_logger.ErrorFormat ("Invalid email address URI {0} for addressEntry", emailAddress);
+        s_logger.DebugFormat ("emailaddress: {0} AdressEntryType: {1} AdressEntryUserType: {2} addressEntry.Address: {3}", emailAddress, addressEntry.Type, addressEntry.AddressEntryUserType, addressEntry.Address);
         emailAddress = string.Empty;
       }
       return emailAddress;
@@ -479,7 +478,7 @@ namespace CalDavSynchronizer.Implementation.Events
               else if (sourceRecurrencePattern.Instance > 0)
               {
                 targetRecurrencePattern.BySetPosition.Add (sourceRecurrencePattern.Instance);
-                MapDayOfWeek1To2(sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+                MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
               }
               else
               {
@@ -501,7 +500,7 @@ namespace CalDavSynchronizer.Implementation.Events
               else if (sourceRecurrencePattern.Instance > 0)
               {
                 targetRecurrencePattern.BySetPosition.Add (sourceRecurrencePattern.Instance);
-                MapDayOfWeek1To2(sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+                MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
               }
               else
               {
@@ -529,32 +528,32 @@ namespace CalDavSynchronizer.Implementation.Events
               using (var wrapper = new AppointmentItemWrapper (sourceException.AppointmentItem, _ => { throw new InvalidOperationException ("Cannot reload exception AppointmentITem!"); }))
               {
                 Map1To2 (wrapper.Inner, targetException, true, localIcalTimeZone);
-                
+
                 // check if new exception is already present in target
                 // if it is found and not already present as exdate then add a new exdate to avoid 2 events
-                var targetContainsExceptionList = target.GetOccurrences(wrapper.Inner.Start);
-                if (targetContainsExceptionList.Count>0)
+                var targetContainsExceptionList = target.GetOccurrences (wrapper.Inner.Start);
+                if (targetContainsExceptionList.Count > 0)
                 {
-                  if (!originalOutlookDatesWithExceptions.Contains(wrapper.Inner.Start))
+                  if (!originalOutlookDatesWithExceptions.Contains (wrapper.Inner.Start))
                   {
                     PeriodList targetExList = new PeriodList();
 
                     if (wrapper.Inner.AllDayEvent)
                     {
-                      iCalDateTime exDate = new iCalDateTime(wrapper.Inner.Start);
+                      iCalDateTime exDate = new iCalDateTime (wrapper.Inner.Start);
                       exDate.HasTime = false;
-                      targetExList.Add(exDate);
-                      targetExList.Parameters.Add("VALUE", "DATE");
+                      targetExList.Add (exDate);
+                      targetExList.Parameters.Add ("VALUE", "DATE");
                     }
                     else
                     {
-                      var timeZone = TimeZoneInfo.FindSystemTimeZoneById(wrapper.Inner.StartTimeZone.ID);
-                      var originalDateUtc = TimeZoneInfo.ConvertTimeToUtc(wrapper.Inner.Start.Date, timeZone);
-                      iCalDateTime exDate = new iCalDateTime(originalDateUtc.Add(source.Start.TimeOfDay)) { IsUniversalTime = true };
+                      var timeZone = TimeZoneInfo.FindSystemTimeZoneById (wrapper.Inner.StartTimeZone.ID);
+                      var originalDateUtc = TimeZoneInfo.ConvertTimeToUtc (wrapper.Inner.Start.Date, timeZone);
+                      iCalDateTime exDate = new iCalDateTime (originalDateUtc.Add (source.Start.TimeOfDay)) { IsUniversalTime = true };
 
-                      targetExList.Add(exDate);
+                      targetExList.Add (exDate);
                     }
-                    targetExceptionDatesByOriginalOutlookDate.Add(wrapper.Inner.Start.Date.Add(source.Start.TimeOfDay), targetExList);
+                    targetExceptionDatesByOriginalOutlookDate.Add (wrapper.Inner.Start.Date.Add (source.Start.TimeOfDay), targetExList);
                   }
                 }
               }
@@ -780,7 +779,7 @@ namespace CalDavSynchronizer.Implementation.Events
               break;
           }
 
-          targetRecurrencePattern.Interval = (targetRecurrencePattern.RecurrenceType == OlRecurrenceType.olRecursYearly || 
+          targetRecurrencePattern.Interval = (targetRecurrencePattern.RecurrenceType == OlRecurrenceType.olRecursYearly ||
                                               targetRecurrencePattern.RecurrenceType == OlRecurrenceType.olRecursYearNth) ? sourceRecurrencePattern.Interval * 12 : sourceRecurrencePattern.Interval;
 
           if (sourceRecurrencePattern.Count >= 0)
@@ -808,21 +807,21 @@ namespace CalDavSynchronizer.Implementation.Events
 
                 try
                 {
-                  using (var wrapper = GenericComObjectWrapper.Create(targetRecurrencePattern.GetOccurrence(originalStart.Add(targetWrapper.Inner.Start.TimeOfDay))))
+                  using (var wrapper = GenericComObjectWrapper.Create (targetRecurrencePattern.GetOccurrence (originalStart.Add (targetWrapper.Inner.Start.TimeOfDay))))
                   {
                     wrapper.Inner.Delete();
                   }
                 }
                 catch (COMException ex)
                 {
-                  s_logger.Error("Can't find occurence of exception", ex);
+                  s_logger.Error ("Can't find occurence of exception", ex);
                 }
               }
             }
           }
           // to prevent skipping of occurences while moving (outlook throws exception when skipping occurences), moving has to be done in two steps
           // first move all exceptions which are preponed from earliest to latest
-          MapRecurrenceExceptions2To1 (exceptions.Where(e => e.Start.UTC < e.RecurrenceID.Date).OrderBy(e => e.Start.UTC), targetWrapper, targetRecurrencePattern);
+          MapRecurrenceExceptions2To1 (exceptions.Where (e => e.Start.UTC < e.RecurrenceID.Date).OrderBy (e => e.Start.UTC), targetWrapper, targetRecurrencePattern);
           // then move all exceptions which are postponed or are not moved from last to first
           MapRecurrenceExceptions2To1 (exceptions.Where (e => e.Start.UTC >= e.RecurrenceID.Date).OrderByDescending (e => e.Start.UTC), targetWrapper, targetRecurrencePattern);
           // HINT: this algorith will only prevent skipping while moving. If the final state contains skipped occurences, outlook will throw an exception anyway
@@ -919,11 +918,11 @@ namespace CalDavSynchronizer.Implementation.Events
           {
             Attendee ownAttendee;
 
-            if (!string.IsNullOrEmpty(recipient.Address))
+            if (!string.IsNullOrEmpty (recipient.Address))
             {
-              using (var entryWrapper = GenericComObjectWrapper.Create(recipient.AddressEntry))
+              using (var entryWrapper = GenericComObjectWrapper.Create (recipient.AddressEntry))
               {
-                ownAttendee = new Attendee(GetMailUrl(entryWrapper.Inner));
+                ownAttendee = new Attendee (GetMailUrl (entryWrapper.Inner));
               }
             }
             else
@@ -939,8 +938,8 @@ namespace CalDavSynchronizer.Implementation.Events
         }
         if (((OlMeetingRecipientType) recipient.Type) == OlMeetingRecipientType.olOrganizer)
         {
-          if (!string.IsNullOrEmpty(recipient.Address))
-          { 
+          if (!string.IsNullOrEmpty (recipient.Address))
+          {
             using (var entryWrapper = GenericComObjectWrapper.Create (recipient.AddressEntry))
             {
               SetOrganizer (target, entryWrapper.Inner);
@@ -1128,7 +1127,7 @@ namespace CalDavSynchronizer.Implementation.Events
           Recipient targetRecipient = null;
 
           string attendeeEmail = string.Empty;
-          if (attendee.Value !=null)
+          if (attendee.Value != null)
           {
             try
             {
@@ -1136,10 +1135,10 @@ namespace CalDavSynchronizer.Implementation.Events
             }
             catch (UriFormatException ex)
             {
-              s_logger.Error("Ignoring invalid Uri in attendee email.", ex);
+              s_logger.Error ("Ignoring invalid Uri in attendee email.", ex);
             }
           }
-          if (attendeeEmail.Length>=s_mailtoSchemaLength && !string.IsNullOrEmpty (attendeeEmail.Substring (s_mailtoSchemaLength)))
+          if (attendeeEmail.Length >= s_mailtoSchemaLength && !string.IsNullOrEmpty (attendeeEmail.Substring (s_mailtoSchemaLength)))
           {
             if (!indexByEmailAddresses.TryGetValue (attendeeEmail, out targetRecipient))
             {
@@ -1174,11 +1173,11 @@ namespace CalDavSynchronizer.Implementation.Events
 
           try
           {
-            sourceOrganizerEmail = source.Organizer.Value.ToString().Substring(s_mailtoSchemaLength);
+            sourceOrganizerEmail = source.Organizer.Value.ToString().Substring (s_mailtoSchemaLength);
           }
           catch (UriFormatException ex)
           {
-            s_logger.Error("Ignoring invalid Uri in organizer email.", ex);
+            s_logger.Error ("Ignoring invalid Uri in organizer email.", ex);
           }
 
           if (StringComparer.InvariantCultureIgnoreCase.Compare (sourceOrganizerEmail, _outlookEmailAddress) != 0)

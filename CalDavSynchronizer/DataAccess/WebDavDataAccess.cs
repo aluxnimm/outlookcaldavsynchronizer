@@ -162,9 +162,9 @@ namespace CalDavSynchronizer.DataAccess
           );
     }
 
-    protected Task<XmlDocumentWithNamespaceManager> GetCurrentUserPrincipal(Uri url)
+    protected Task<XmlDocumentWithNamespaceManager> GetCurrentUserPrincipal (Uri url)
     {
-      return _webDavClient.ExecuteWebDavRequestAndReadResponse(
+      return _webDavClient.ExecuteWebDavRequestAndReadResponse (
           url,
           "PROPFIND",
           0,

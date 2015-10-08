@@ -25,7 +25,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
   internal class InitialTaskEntityMatcher : InitialEntityMatcherByPropertyGrouping<TaskItemWrapper, string, DateTime, string, IICalendar, Uri, string, string>
   {
     public InitialTaskEntityMatcher (IEqualityComparer<Uri> btypeIdEqualityComparer)
-        : base(btypeIdEqualityComparer)
+        : base (btypeIdEqualityComparer)
     {
     }
 

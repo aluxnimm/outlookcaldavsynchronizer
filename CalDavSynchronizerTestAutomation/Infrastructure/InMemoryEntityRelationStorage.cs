@@ -32,6 +32,5 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
 
   internal class InMemoryEntityRelationStorage : InMemoryEntityRelationStorage<string, DateTime, IEntityRelationData<string, DateTime, Uri, string>, Uri, string>
   {
-
   }
 }

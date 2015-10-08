@@ -28,7 +28,7 @@ namespace CalDavSynchronizer.Ui
 {
   public partial class ListCalendarsForm : Form
   {
-    public ListCalendarsForm(IReadOnlyList<Tuple<Uri,string>> cals)
+    public ListCalendarsForm (IReadOnlyList<Tuple<Uri, string>> cals)
     {
       InitializeComponent();
       dataGridView1.DataSource = cals;
@@ -41,24 +41,23 @@ namespace CalDavSynchronizer.Ui
       dataGridView1.Columns[1].HeaderText = "DisplayName";
     }
 
-    private void ListCalendarsForm_Load(object sender, EventArgs e)
+    private void ListCalendarsForm_Load (object sender, EventArgs e)
     {
-
     }
 
-    private void btnOK_Click(object sender, EventArgs e)
+    private void btnOK_Click (object sender, EventArgs e)
     {
-      DialogResult = System.Windows.Forms.DialogResult.OK; 
+      DialogResult = System.Windows.Forms.DialogResult.OK;
     }
 
-    public string getCalendarUri()
+    public string getCalendarUri ()
     {
       return dataGridView1.CurrentRow.Cells[0].Value.ToString();
     }
 
-    private void buttonCancel_Click(object sender, EventArgs e)
+    private void buttonCancel_Click (object sender, EventArgs e)
     {
-      DialogResult = System.Windows.Forms.DialogResult.Cancel; 
+      DialogResult = System.Windows.Forms.DialogResult.Cancel;
     }
   }
 }

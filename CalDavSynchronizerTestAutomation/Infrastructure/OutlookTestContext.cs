@@ -359,7 +359,5 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
     {
       return OutlookEventRepository.GetOutlookEventForTesting (id, s_mapiNameSpace, s_outlookFolderStoreId);
     }
-
-   
   }
 }

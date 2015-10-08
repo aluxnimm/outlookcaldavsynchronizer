@@ -51,37 +51,37 @@ namespace CalDavSynchronizer.DataAccess
       return DoesSupportsReportSet (_serverUrl, 0, "C", "calendar-query");
     }
 
-    public async Task<IReadOnlyList<Tuple<Uri, string>>> GetUserCalendars()
+    public async Task<IReadOnlyList<Tuple<Uri, string>>> GetUserCalendars ()
     {
-      var properties = await GetCurrentUserPrincipal(_serverUrl);
+      var properties = await GetCurrentUserPrincipal (_serverUrl);
 
-      XmlNode principal = properties.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-principal", properties.XmlNamespaceManager);
+      XmlNode principal = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-principal", properties.XmlNamespaceManager);
 
       var cals = new List<Tuple<Uri, string>>();
 
       if (principal != null)
       {
-        properties = await GetCalendarHomeSet(new Uri(_serverUrl.GetLeftPart(UriPartial.Authority) + principal.InnerText));
+        properties = await GetCalendarHomeSet (new Uri (_serverUrl.GetLeftPart (UriPartial.Authority) + principal.InnerText));
 
-        XmlNode homeSet = properties.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/C:calendar-home-set", properties.XmlNamespaceManager);
+        XmlNode homeSet = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/C:calendar-home-set", properties.XmlNamespaceManager);
 
         if (homeSet != null)
         {
-          properties = await ListCalendars(new Uri(_serverUrl.GetLeftPart(UriPartial.Authority) + homeSet.InnerText));
+          properties = await ListCalendars (new Uri (_serverUrl.GetLeftPart (UriPartial.Authority) + homeSet.InnerText));
 
-          XmlNodeList responseNodes = properties.XmlDocument.SelectNodes("/D:multistatus/D:response", properties.XmlNamespaceManager);
+          XmlNodeList responseNodes = properties.XmlDocument.SelectNodes ("/D:multistatus/D:response", properties.XmlNamespaceManager);
 
           foreach (XmlElement responseElement in responseNodes)
           {
-            var urlNode = responseElement.SelectSingleNode("D:href", properties.XmlNamespaceManager);
-            var displayNameNode = responseElement.SelectSingleNode("D:propstat/D:prop/D:displayname", properties.XmlNamespaceManager);
+            var urlNode = responseElement.SelectSingleNode ("D:href", properties.XmlNamespaceManager);
+            var displayNameNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:displayname", properties.XmlNamespaceManager);
             if (urlNode != null && displayNameNode != null)
             {
-              XmlNode isCollection = responseElement.SelectSingleNode("D:propstat/D:prop/D:resourcetype/C:calendar", properties.XmlNamespaceManager);
+              XmlNode isCollection = responseElement.SelectSingleNode ("D:propstat/D:prop/D:resourcetype/C:calendar", properties.XmlNamespaceManager);
               if (isCollection != null)
               {
-                var uri = UriHelper.UnescapeRelativeUri(_serverUrl, urlNode.InnerText);
-                cals.Add(Tuple.Create(uri, displayNameNode.InnerText));
+                var uri = UriHelper.UnescapeRelativeUri (_serverUrl, urlNode.InnerText);
+                cals.Add (Tuple.Create (uri, displayNameNode.InnerText));
               }
             }
           }
@@ -90,9 +90,9 @@ namespace CalDavSynchronizer.DataAccess
       return cals;
     }
 
-    private Task<XmlDocumentWithNamespaceManager> GetCalendarHomeSet(Uri url)
+    private Task<XmlDocumentWithNamespaceManager> GetCalendarHomeSet (Uri url)
     {
-      return _webDavClient.ExecuteWebDavRequestAndReadResponse(
+      return _webDavClient.ExecuteWebDavRequestAndReadResponse (
           url,
           "PROPFIND",
           0,
@@ -109,9 +109,9 @@ namespace CalDavSynchronizer.DataAccess
           );
     }
 
-    private Task<XmlDocumentWithNamespaceManager> ListCalendars(Uri url)
+    private Task<XmlDocumentWithNamespaceManager> ListCalendars (Uri url)
     {
-      return _webDavClient.ExecuteWebDavRequestAndReadResponse(
+      return _webDavClient.ExecuteWebDavRequestAndReadResponse (
           url,
           "PROPFIND",
           1,

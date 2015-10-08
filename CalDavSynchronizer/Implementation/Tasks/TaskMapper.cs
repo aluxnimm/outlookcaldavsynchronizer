@@ -15,21 +15,21 @@ namespace CalDavSynchronizer.Implementation.Tasks
 {
   internal class TaskMapper : IEntityMapper<TaskItemWrapper, IICalendar>
   {
-    private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
     private readonly DateTime _dateNull;
     private readonly TimeZoneInfo _localTimeZoneInfo;
 
     public TaskMapper (string localTimeZoneId)
     {
-      _dateNull = new DateTime(4501, 1, 1, 0, 0, 0);
+      _dateNull = new DateTime (4501, 1, 1, 0, 0, 0);
       _localTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (localTimeZoneId);
     }
 
     public IICalendar Map1To2 (TaskItemWrapper source, IICalendar existingTargetCalender)
     {
       var newTargetCalender = new iCalendar();
-      var localIcalTimeZone = iCalTimeZone.FromSystemTimeZone(_localTimeZoneInfo, new DateTime(1970, 1, 1), true);
-      newTargetCalender.TimeZones.Add(localIcalTimeZone);
+      var localIcalTimeZone = iCalTimeZone.FromSystemTimeZone (_localTimeZoneInfo, new DateTime (1970, 1, 1), true);
+      newTargetCalender.TimeZones.Add (localIcalTimeZone);
 
       var existingTargetTodo = existingTargetCalender.Todos.FirstOrDefault (e => e.RecurrenceID == null);
 
@@ -92,7 +92,6 @@ namespace CalDavSynchronizer.Implementation.Tasks
       MapReminder1To2 (source, target);
 
       MapCategories1To2 (source, target);
-
     }
 
     private string MapStatus1To2 (OlTaskStatus value)
@@ -100,7 +99,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       switch (value)
       {
         case OlTaskStatus.olTaskDeferred:
-         return "CANCELLED";
+          return "CANCELLED";
         case OlTaskStatus.olTaskComplete:
           return "COMPLETED";
         case OlTaskStatus.olTaskInProgress:
@@ -110,7 +109,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
           return "NEEDS-ACTION";
       }
 
-      throw new NotImplementedException (string.Format("Mapping for value '{0}' not implemented.", value));
+      throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
     }
 
     private int MapPriority1To2 (OlImportance value)
@@ -125,7 +124,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
           return 1;
       }
 
-      throw new NotImplementedException (string.Format("Mapping for value '{0}' not implemented.", value));
+      throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
     }
 
     private string MapPrivacy1To2 (OlSensitivity value)
@@ -146,10 +145,10 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
     private static void MapCategories1To2 (TaskItemWrapper source, ITodo target)
     {
-      if (!string.IsNullOrEmpty(source.Inner.Categories))
+      if (!string.IsNullOrEmpty (source.Inner.Categories))
       {
-        Array.ForEach(
-            source.Inner.Categories.Split (new[] {CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries),
+        Array.ForEach (
+            source.Inner.Categories.Split (new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries),
             c => target.Categories.Add (c)
             );
       }
@@ -167,15 +166,15 @@ namespace CalDavSynchronizer.Implementation.Tasks
           trigger.Parameters.Add ("RELATED", "START");
           trigger.Parameters.Add ("VALUE", "DURATION");
 
-          target.Alarms.Add(
+          target.Alarms.Add (
               new Alarm()
               {
-                Trigger = trigger,
-                Description = "This is a task reminder"
+                  Trigger = trigger,
+                  Description = "This is a task reminder"
               }
               );
-          var actionProperty = new CalendarProperty("ACTION", "DISPLAY");
-          target.Alarms[0].Properties.Add(actionProperty);
+          var actionProperty = new CalendarProperty ("ACTION", "DISPLAY");
+          target.Alarms[0].Properties.Add (actionProperty);
         }
         else if (source.Inner.DueDate != _dateNull)
         {
@@ -183,15 +182,15 @@ namespace CalDavSynchronizer.Implementation.Tasks
           trigger.Parameters.Add ("RELATED", "END");
           trigger.Parameters.Add ("VALUE", "DURATION");
 
-          target.Alarms.Add(
+          target.Alarms.Add (
               new Alarm()
               {
-                Trigger = trigger,
-                Description = "This is a task reminder"
+                  Trigger = trigger,
+                  Description = "This is a task reminder"
               }
               );
-          var actionProperty = new CalendarProperty("ACTION", "DISPLAY");
-          target.Alarms[0].Properties.Add(actionProperty);
+          var actionProperty = new CalendarProperty ("ACTION", "DISPLAY");
+          target.Alarms[0].Properties.Add (actionProperty);
         }
       }
     }
@@ -200,7 +199,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
     {
       if (source.IsRecurring)
       {
-        using (var sourceRecurrencePatternWrapper = GenericComObjectWrapper.Create(source.GetRecurrencePattern()))
+        using (var sourceRecurrencePatternWrapper = GenericComObjectWrapper.Create (source.GetRecurrencePattern()))
         {
           var sourceRecurrencePattern = sourceRecurrencePatternWrapper.Inner;
           IRecurrencePattern targetRecurrencePattern = new RecurrencePattern();
@@ -221,57 +220,56 @@ namespace CalDavSynchronizer.Implementation.Tasks
               break;
             case OlRecurrenceType.olRecursWeekly:
               targetRecurrencePattern.Frequency = FrequencyType.Weekly;
-              MapDayOfWeek1To2(sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+              MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
               break;
             case OlRecurrenceType.olRecursMonthly:
               targetRecurrencePattern.Frequency = FrequencyType.Monthly;
-              targetRecurrencePattern.ByMonthDay.Add(sourceRecurrencePattern.DayOfMonth);
+              targetRecurrencePattern.ByMonthDay.Add (sourceRecurrencePattern.DayOfMonth);
               break;
             case OlRecurrenceType.olRecursMonthNth:
               targetRecurrencePattern.Frequency = FrequencyType.Monthly;
 
               if (sourceRecurrencePattern.Instance == 5)
               {
-                targetRecurrencePattern.BySetPosition.Add(-1);
-                MapDayOfWeek1To2(sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+                targetRecurrencePattern.BySetPosition.Add (-1);
+                MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
               }
               else if (sourceRecurrencePattern.Instance > 0)
               {
-                targetRecurrencePattern.BySetPosition.Add(sourceRecurrencePattern.Instance);
-                MapDayOfWeek1To2(sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+                targetRecurrencePattern.BySetPosition.Add (sourceRecurrencePattern.Instance);
+                MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
               }
               else
               {
-                MapDayOfWeek1To2(sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+                MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
               }
               break;
             case OlRecurrenceType.olRecursYearly:
               targetRecurrencePattern.Frequency = FrequencyType.Yearly;
-              targetRecurrencePattern.ByMonthDay.Add(sourceRecurrencePattern.DayOfMonth);
-              targetRecurrencePattern.ByMonth.Add(sourceRecurrencePattern.MonthOfYear);
+              targetRecurrencePattern.ByMonthDay.Add (sourceRecurrencePattern.DayOfMonth);
+              targetRecurrencePattern.ByMonth.Add (sourceRecurrencePattern.MonthOfYear);
               break;
             case OlRecurrenceType.olRecursYearNth:
               targetRecurrencePattern.Frequency = FrequencyType.Yearly;
               if (sourceRecurrencePattern.Instance == 5)
               {
-                targetRecurrencePattern.BySetPosition.Add(-1);
-                MapDayOfWeek1To2(sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+                targetRecurrencePattern.BySetPosition.Add (-1);
+                MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
               }
               else if (sourceRecurrencePattern.Instance > 0)
               {
-                targetRecurrencePattern.BySetPosition.Add(sourceRecurrencePattern.Instance);
-                MapDayOfWeek1To2(sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+                targetRecurrencePattern.BySetPosition.Add (sourceRecurrencePattern.Instance);
+                MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
               }
               else
               {
-                MapDayOfWeek1To2(sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+                MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
               }
-              targetRecurrencePattern.ByMonth.Add(sourceRecurrencePattern.MonthOfYear);
+              targetRecurrencePattern.ByMonth.Add (sourceRecurrencePattern.MonthOfYear);
               break;
           }
 
-          target.RecurrenceRules.Add(targetRecurrencePattern);
-
+          target.RecurrenceRules.Add (targetRecurrencePattern);
         }
       }
     }
@@ -279,19 +277,19 @@ namespace CalDavSynchronizer.Implementation.Tasks
     private void MapDayOfWeek1To2 (OlDaysOfWeek source, IList<IWeekDay> target)
     {
       if ((source & OlDaysOfWeek.olMonday) > 0)
-        target.Add(new WeekDay(DayOfWeek.Monday));
+        target.Add (new WeekDay (DayOfWeek.Monday));
       if ((source & OlDaysOfWeek.olTuesday) > 0)
-        target.Add(new WeekDay(DayOfWeek.Tuesday));
+        target.Add (new WeekDay (DayOfWeek.Tuesday));
       if ((source & OlDaysOfWeek.olWednesday) > 0)
-        target.Add(new WeekDay(DayOfWeek.Wednesday));
+        target.Add (new WeekDay (DayOfWeek.Wednesday));
       if ((source & OlDaysOfWeek.olThursday) > 0)
-        target.Add(new WeekDay(DayOfWeek.Thursday));
+        target.Add (new WeekDay (DayOfWeek.Thursday));
       if ((source & OlDaysOfWeek.olFriday) > 0)
-        target.Add(new WeekDay(DayOfWeek.Friday));
+        target.Add (new WeekDay (DayOfWeek.Friday));
       if ((source & OlDaysOfWeek.olSaturday) > 0)
-        target.Add(new WeekDay(DayOfWeek.Saturday));
+        target.Add (new WeekDay (DayOfWeek.Saturday));
       if ((source & OlDaysOfWeek.olSunday) > 0)
-        target.Add(new WeekDay(DayOfWeek.Sunday));
+        target.Add (new WeekDay (DayOfWeek.Sunday));
     }
 
     public TaskItemWrapper Map2To1 (IICalendar sourceCalendar, TaskItemWrapper target)
@@ -304,12 +302,13 @@ namespace CalDavSynchronizer.Implementation.Tasks
     {
       target.Inner.Subject = source.Summary;
       target.Inner.Body = source.Description;
-     
-      if (source.Start != null ) target.Inner.StartDate = source.Start.Date;
+
+      if (source.Start != null)
+        target.Inner.StartDate = source.Start.Date;
       if (source.Due != null)
       {
         if (source.Start == null || source.Start.Value <= source.Due.Value)
-        target.Inner.DueDate = source.Due.Date;
+          target.Inner.DueDate = source.Due.Date;
       }
       if (source.Completed != null)
       {
@@ -322,7 +321,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       }
 
       target.Inner.PercentComplete = source.PercentComplete;
-      
+
       target.Inner.Importance = MapPriority2To1 (source.Priority);
 
       target.Inner.Sensitivity = MapPrivacy2To1 (source.Class);
@@ -405,7 +404,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       }
 
       if (source.Alarms.Count > 1)
-        s_logger.WarnFormat("Task '{0}' contains multiple alarms. Ignoring all except first.", source.UID);
+        s_logger.WarnFormat ("Task '{0}' contains multiple alarms. Ignoring all except first.", source.UID);
 
       var alarm = source.Alarms[0];
 
@@ -413,7 +412,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       if (alarm.Trigger.IsRelative && alarm.Trigger.Related == TriggerRelation.Start && alarm.Trigger.Duration.HasValue && source.Start != null)
       {
-        target.Inner.ReminderTime = TimeZoneInfo.ConvertTimeFromUtc (source.Start.UTC, _localTimeZoneInfo).Add(alarm.Trigger.Duration.Value);
+        target.Inner.ReminderTime = TimeZoneInfo.ConvertTimeFromUtc (source.Start.UTC, _localTimeZoneInfo).Add (alarm.Trigger.Duration.Value);
       }
       else if (alarm.Trigger.IsRelative && alarm.Trigger.Related == TriggerRelation.End && alarm.Trigger.Duration.HasValue && source.Due != null)
       {
@@ -426,16 +425,16 @@ namespace CalDavSynchronizer.Implementation.Tasks
       }
     }
 
-    private void MapRecurrance2To1(ITodo source, TaskItemWrapper targetWrapper)
+    private void MapRecurrance2To1 (ITodo source, TaskItemWrapper targetWrapper)
     {
       if (source.RecurrenceRules.Count > 0)
       {
-        using (var targetRecurrencePatternWrapper = GenericComObjectWrapper.Create(targetWrapper.Inner.GetRecurrencePattern()))
+        using (var targetRecurrencePatternWrapper = GenericComObjectWrapper.Create (targetWrapper.Inner.GetRecurrencePattern()))
         {
           var targetRecurrencePattern = targetRecurrencePatternWrapper.Inner;
           if (source.RecurrenceRules.Count > 1)
           {
-            s_logger.WarnFormat("Task '{0}' contains more than one recurrence rule. Since outlook supports only one rule, all except the first one will be ignored.", source.Url);
+            s_logger.WarnFormat ("Task '{0}' contains more than one recurrence rule. Since outlook supports only one rule, all except the first one will be ignored.", source.Url);
           }
           var sourceRecurrencePattern = source.RecurrenceRules[0];
 
@@ -448,7 +447,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
               if (sourceRecurrencePattern.ByDay.Count > 0)
               {
                 targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursWeekly;
-                targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1(sourceRecurrencePattern.ByDay);
+                targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1 (sourceRecurrencePattern.ByDay);
               }
               else
               {
@@ -461,7 +460,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
                 targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursMonthNth;
                 if (sourceRecurrencePattern.ByWeekNo.Count > 1)
                 {
-                  s_logger.WarnFormat("Task '{0}' contains more than one week in a monthly recurrence rule. Since outlook supports only one week, all except the first one will be ignored.", source.Url);
+                  s_logger.WarnFormat ("Task '{0}' contains more than one week in a monthly recurrence rule. Since outlook supports only one week, all except the first one will be ignored.", source.Url);
                 }
                 else if (sourceRecurrencePattern.ByWeekNo.Count > 0)
                 {
@@ -475,14 +474,14 @@ namespace CalDavSynchronizer.Implementation.Tasks
                 {
                   targetRecurrencePattern.Instance = (sourceRecurrencePattern.BySetPosition[0] >= 0) ? sourceRecurrencePattern.BySetPosition[0] : 5;
                 }
-                targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1(sourceRecurrencePattern.ByDay);
+                targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1 (sourceRecurrencePattern.ByDay);
               }
               else if (sourceRecurrencePattern.ByMonthDay.Count > 0)
               {
                 targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursMonthly;
                 if (sourceRecurrencePattern.ByMonthDay.Count > 1)
                 {
-                  s_logger.WarnFormat("Task '{0}' contains more than one days in a monthly recurrence rule. Since outlook supports only one day, all except the first one will be ignored.", source.Url);
+                  s_logger.WarnFormat ("Task '{0}' contains more than one days in a monthly recurrence rule. Since outlook supports only one day, all except the first one will be ignored.", source.Url);
                 }
                 targetRecurrencePattern.DayOfMonth = sourceRecurrencePattern.ByMonthDay[0];
               }
@@ -497,30 +496,30 @@ namespace CalDavSynchronizer.Implementation.Tasks
                 targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursYearNth;
                 if (sourceRecurrencePattern.ByMonth.Count > 1)
                 {
-                  s_logger.WarnFormat("Task '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.Url);
+                  s_logger.WarnFormat ("Task '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.Url);
                 }
                 targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
 
                 if (sourceRecurrencePattern.ByWeekNo.Count > 1)
                 {
-                  s_logger.WarnFormat("Task '{0}' contains more than one week in a yearly recurrence rule. Since outlook supports only one week, all except the first one will be ignored.", source.Url);
+                  s_logger.WarnFormat ("Task '{0}' contains more than one week in a yearly recurrence rule. Since outlook supports only one week, all except the first one will be ignored.", source.Url);
                 }
                 targetRecurrencePattern.Instance = sourceRecurrencePattern.ByWeekNo[0];
 
-                targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1(sourceRecurrencePattern.ByDay);
+                targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1 (sourceRecurrencePattern.ByDay);
               }
               else if (sourceRecurrencePattern.ByMonth.Count > 0 && sourceRecurrencePattern.ByMonthDay.Count > 0)
               {
                 targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursYearly;
                 if (sourceRecurrencePattern.ByMonth.Count > 1)
                 {
-                  s_logger.WarnFormat("Task '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.Url);
+                  s_logger.WarnFormat ("Task '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.Url);
                 }
                 targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
 
                 if (sourceRecurrencePattern.ByMonthDay.Count > 1)
                 {
-                  s_logger.WarnFormat("Task '{0}' contains more than one days in a monthly recurrence rule. Since outlook supports only one day, all except the first one will be ignored.", source.Url);
+                  s_logger.WarnFormat ("Task '{0}' contains more than one days in a monthly recurrence rule. Since outlook supports only one day, all except the first one will be ignored.", source.Url);
                 }
                 targetRecurrencePattern.DayOfMonth = sourceRecurrencePattern.ByMonthDay[0];
               }
@@ -529,7 +528,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
                 targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursYearNth;
                 if (sourceRecurrencePattern.ByMonth.Count > 1)
                 {
-                  s_logger.WarnFormat("Task '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.Url);
+                  s_logger.WarnFormat ("Task '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.Url);
                 }
                 targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
 
@@ -538,7 +537,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
                 {
                   targetRecurrencePattern.Instance = (sourceRecurrencePattern.BySetPosition[0] >= 0) ? sourceRecurrencePattern.BySetPosition[0] : 5;
                 }
-                targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1(sourceRecurrencePattern.ByDay);
+                targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1 (sourceRecurrencePattern.ByDay);
               }
               else
               {
@@ -546,7 +545,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
               }
               break;
             default:
-              s_logger.WarnFormat("Recurring task '{0}' contains the Frequency '{1}', which is not supported by outlook. Ignoring recurrence rule.", source.Url, sourceRecurrencePattern.Frequency);
+              s_logger.WarnFormat ("Recurring task '{0}' contains the Frequency '{1}', which is not supported by outlook. Ignoring recurrence rule.", source.Url, sourceRecurrencePattern.Frequency);
               targetWrapper.Inner.ClearRecurrencePattern();
               break;
           }
@@ -562,11 +561,10 @@ namespace CalDavSynchronizer.Implementation.Tasks
         }
 
         targetWrapper.SaveAndReload();
-
       }
     }
 
-    private OlDaysOfWeek MapDayOfWeek2To1(IList<IWeekDay> source)
+    private OlDaysOfWeek MapDayOfWeek2To1 (IList<IWeekDay> source)
     {
       OlDaysOfWeek target = 0;
 

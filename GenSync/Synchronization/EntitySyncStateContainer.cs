@@ -40,7 +40,7 @@ namespace GenSync.Synchronization
 
     public void DoTransition (Func<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>, IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>> transitionFunction)
     {
-      _entitySyncStates = _entitySyncStates.Select (transitionFunction).ToList ();
+      _entitySyncStates = _entitySyncStates.Select (transitionFunction).ToList();
       _entitySyncStates.ForEach (s => _allSyncStatesThatWereCreated.Add (s));
     }
 
