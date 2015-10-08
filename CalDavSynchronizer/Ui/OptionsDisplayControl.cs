@@ -248,7 +248,7 @@ namespace CalDavSynchronizer.Ui
 
       if (isCalendar && isAddressBook)
       {
-        errorMessageBuilder.AppendLine ("- Ressources which are a calendar and a addressbook are not valid!");
+        errorMessageBuilder.AppendLine ("- Ressources which are a calendar and an addressbook are not valid!");
         hasError = true;
       }
 
@@ -262,7 +262,7 @@ namespace CalDavSynchronizer.Ui
 
         if (!result.CalendarProperties.HasFlag (CalendarProperties.SupportsCalendarQuery))
         {
-          errorMessageBuilder.AppendLine ("- The specified Url does not support Calendar Queries. Some features like time range filter may not work!");
+          errorMessageBuilder.AppendLine ("- The specified Url does not support calendar queries. Some features like time range filter may not work!");
           hasError = true;
         }
 
@@ -292,7 +292,7 @@ namespace CalDavSynchronizer.Ui
       {
         if (!result.AddressBookProperties.HasFlag (AddressBookProperties.AddressBookAccessSupported))
         {
-          errorMessageBuilder.AppendLine ("- The specified Url does not support addressbook.");
+          errorMessageBuilder.AppendLine ("- The specified Url does not support address books.");
           hasError = true;
         }
 
@@ -313,7 +313,7 @@ namespace CalDavSynchronizer.Ui
 
         if (_folderType != OlItemType.olContactItem)
         {
-          errorMessageBuilder.AppendLine ("- The outlook folder is not a address book, or there is no folder selected.");
+          errorMessageBuilder.AppendLine ("- The outlook folder is not an address book, or there is no folder selected.");
           hasError = true;
         }
       }
@@ -400,7 +400,7 @@ namespace CalDavSynchronizer.Ui
 
       if (requiresTrailingSlash && !_calenderUrlTextBox.Text.EndsWith ("/"))
       {
-        errorMessageBuilder.AppendLine ("- The CalDav Calendar Url hast to end with an slash ('/').");
+        errorMessageBuilder.AppendLine ("- The CalDav Calendar Url has to end with a slash ('/').");
         result = false;
       }
 
