@@ -263,6 +263,11 @@
     <Compile Include="Contracts\Options.cs" />
     <Compile Include="Implementation\SynchronizationMode.cs" />
     <Compile Include="Scheduling\SynchronizerFactory.cs" />
+    <Compile Include="Ui\ConnectionTests\AddressBookProperties.cs" />
+    <Compile Include="Ui\ConnectionTests\CalendarProperties.cs" />
+    <Compile Include="Ui\ConnectionTests\ConnectionTester.cs" />
+    <Compile Include="Ui\ConnectionTests\ResourceType.cs" />
+    <Compile Include="Ui\ConnectionTests\TestResult.cs" />
     <Compile Include="Ui\GetNewVersionForm.cs">
       <SubType>Form</SubType>
     </Compile>
