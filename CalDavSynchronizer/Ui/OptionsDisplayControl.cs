@@ -269,9 +269,7 @@ namespace CalDavSynchronizer.Ui
         if (!result.CalendarProperties.HasFlag (CalendarProperties.IsWriteable))
         {
           var synchronizationMode = (SynchronizationMode) _synchronizationModeComboBox.SelectedValue;
-          if (synchronizationMode == SynchronizationMode.MergeInBothDirections
-              || synchronizationMode == SynchronizationMode.MergeOutlookIntoServer
-              || synchronizationMode == SynchronizationMode.ReplicateOutlookIntoServer)
+          if (RequiresWriteableServerResource (synchronizationMode))
           {
             errorMessageBuilder.AppendFormat (
                 "- The specified calendar is not writeable. Therefore it is not possible to use the synchronization mode '{0}'.",
@@ -299,9 +297,7 @@ namespace CalDavSynchronizer.Ui
         if (!result.AddressBookProperties.HasFlag (AddressBookProperties.IsWriteable))
         {
           var synchronizationMode = (SynchronizationMode) _synchronizationModeComboBox.SelectedValue;
-          if (synchronizationMode == SynchronizationMode.MergeInBothDirections
-              || synchronizationMode == SynchronizationMode.MergeOutlookIntoServer
-              || synchronizationMode == SynchronizationMode.ReplicateOutlookIntoServer)
+          if (RequiresWriteableServerResource (synchronizationMode))
           {
             errorMessageBuilder.AppendFormat (
                 "- The specified address book is not writeable. Therefore it is not possible to use the synchronization mode '{0}'.",
@@ -322,6 +318,13 @@ namespace CalDavSynchronizer.Ui
         MessageBox.Show ("Connection test NOT successful:" + Environment.NewLine + errorMessageBuilder, c_connectionTestCaption);
       else
         MessageBox.Show ("Connection test successful.", c_connectionTestCaption);
+    }
+
+    private static bool RequiresWriteableServerResource (SynchronizationMode synchronizationMode)
+    {
+      return synchronizationMode == SynchronizationMode.MergeInBothDirections
+             || synchronizationMode == SynchronizationMode.MergeOutlookIntoServer
+             || synchronizationMode == SynchronizationMode.ReplicateOutlookIntoServer;
     }
 
 
