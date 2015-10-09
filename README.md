@@ -227,7 +227,8 @@ The following properties need to be set for a new profile:
 
 - *Profile name*: An arbitrary name for the profile, which will be displayed at the associated tab.
 - *Server settings*:
-	- **CalDAV Url:** URL of the remote CalDAV server. You should use a HTTPS connection here for security reason! If you only have a self signed certificate, add the self signed cert to the Local Computer Trusted Root Certification Authorities. You can import the cert by running the MMC as Administrator. If that fails, see section *'Debugging and more config options'*
+	- **CalDAV Url:** URL of the remote CalDAV or CardDAV server. You should use a HTTPS connection here for security reason! The Url must end with a **/** e.g. **https://myserver.com/** 
+	- If you only have a self signed certificate, add the self signed cert to the Local Computer Trusted Root Certification Authorities. You can import the cert by running the MMC as Administrator. If that fails, see section *'Debugging and more config options'*
 	- **Username:** Username to connect to the CalDAV server
 	- **Password:** Password used for the connection. The password will be saved encrypted in the option config file.
 	- **Email address:** email address used as remote identity for the CalDAV server, necessary to synchronize the organizer
@@ -253,7 +254,7 @@ The following properties need to be set for a new profile:
 #### Google Calender settings ####
 
 For Google Calender use the following settings:
-CalDAV Url: `https://apidata.googleusercontent.com/caldav/v2/<your_google_calendar_id>/events`.
+CalDAV Url: `https://apidata.googleusercontent.com/caldav/v2/<your_google_calendar_id>/events/`.
 Check the Use Google OAuth Checkbox instead of entering your password. When testing the settings, you will be redirected to your browser to enter your Google Account password and grant access rights to your Google Calender for OutlookCalDavSynchronizer via the safe OAuth protocol.
 
 #### Synology NAS settings ####
