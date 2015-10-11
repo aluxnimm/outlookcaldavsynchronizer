@@ -53,12 +53,12 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 ### Changlog ###
 
 #### 1.3.4 ####
-- Add support for Outlook 2007, credits to PierreMarieBaty
+- Add support for Outlook 2007, credits to PierreMarieBaty (pull request #67)
 - Refactoring of Autodiscovery
 - Refactoring of url validation and test settings
 - Added option to automatically fix synchronization settings.
 - Avoid ArgumentOutOfRangeException in attendee email substring
-- 
+
 #### 1.3.3 ####
 - Fix reminder timespan value
 
