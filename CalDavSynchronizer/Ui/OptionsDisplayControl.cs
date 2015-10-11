@@ -197,7 +197,19 @@ namespace CalDavSynchronizer.Ui
         var uri = new Uri (_calenderUrlTextBox.Text);
         var webDavClient = CreateWebDavClient();
 
-        if (!ConnectionTester.RequiresAutoDiscovery (uri))
+        Uri autoDiscoveredUri = null;
+        Uri effectiveUri = uri;
+
+        if (ConnectionTester.RequiresAutoDiscovery (uri))
+        {
+          autoDiscoveredUri = await DoAutoDiscovery(ConnectionTester.GetAutoDiscoverUrl(uri), webDavClient);
+          if (autoDiscoveredUri != null)
+          {
+            effectiveUri = autoDiscoveredUri;
+            _calenderUrlTextBox.Text = autoDiscoveredUri.ToString();
+          }
+        }
+        else
         {
           var result = await ConnectionTester.TestConnection (uri, webDavClient);
           if (result.ResourceType != ResourceType.None)
@@ -205,26 +217,36 @@ namespace CalDavSynchronizer.Ui
             DisplayTestReport (result);
             return;
           }
+          else
+          {
+            autoDiscoveredUri = await DoAutoDiscovery(uri, webDavClient);
+            if (autoDiscoveredUri != null)
+            {
+              effectiveUri = autoDiscoveredUri;
+              _calenderUrlTextBox.Text = autoDiscoveredUri.ToString();
+            }
+            else
+            {
+              // another try to get calendar uri with well-known url
+              autoDiscoveredUri = await DoAutoDiscovery(ConnectionTester.GetAutoDiscoverUrl(uri), webDavClient);
+              if (autoDiscoveredUri != null)
+              {
+                effectiveUri = autoDiscoveredUri;
+                _calenderUrlTextBox.Text = autoDiscoveredUri.ToString();
+              }
+            }
+          }
         }
 
-        var autoDiscoveredUri = await DoAutoDiscovery (ConnectionTester.GetAutoDiscoverUrl (uri), webDavClient);
-        Uri effectiveUri;
-        if (autoDiscoveredUri != null)
+        if (effectiveUri != uri)
         {
-          effectiveUri = autoDiscoveredUri;
-          _calenderUrlTextBox.Text = autoDiscoveredUri.ToString();
+          var finalResult = await ConnectionTester.TestConnection(effectiveUri, webDavClient);
+
+          if (bool.Parse(ConfigurationManager.AppSettings["automaticallyFixSettings"]))
+            AutomaticallyFixSettings(finalResult);
+
+          DisplayTestReport(finalResult);
         }
-        else
-        {
-          effectiveUri = uri;
-        }
-
-        var finalResult = await ConnectionTester.TestConnection (effectiveUri, webDavClient);
-
-        if (bool.Parse (ConfigurationManager.AppSettings["automaticallyFixSettings"]))
-          AutomaticallyFixSettings (finalResult);
-
-        DisplayTestReport (finalResult);
       }
       catch (Exception x)
       {
