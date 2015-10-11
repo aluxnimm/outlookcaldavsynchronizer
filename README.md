@@ -1,6 +1,6 @@
 ## Outlook CalDav Synchronizer ##
 
-Outlook Plugin, which synchronizes events between Outlook and Google, SOGo, Horde or any other CalDAV server. Supported Outlook versions are 2013 and 2010.
+Outlook Plugin, which synchronizes events between Outlook and Google, SOGo, Horde or any other CalDAV server. Supported Outlook versions are 2013, 2010 and 2007.
 
 ### Project Homepage ###
 [https://sourceforge.net/projects/outlookcaldavsynchronizer/](https://sourceforge.net/projects/outlookcaldavsynchronizer/)
@@ -52,6 +52,13 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changlog ###
 
+#### 1.3.4 ####
+- Add support for Outlook 2007, credits to PierreMarieBaty
+- Refactoring of Autodiscovery
+- Refactoring of url validation and test settings
+- Added option to automatically fix synchronization settings.
+- Avoid ArgumentOutOfRangeException in attendee email substring
+- 
 #### 1.3.3 ####
 - Fix reminder timespan value
 
