@@ -15,19 +15,40 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Windows.Forms;
+using Microsoft.Office.Core;
 using Microsoft.Office.Tools.Ribbon;
-using Office = Microsoft.Office.Core;
+using Microsoft.Office.Interop.Outlook;
+using CalDavSynchronizer.Ui;
 
 namespace CalDavSynchronizer
 {
   public partial class ThisAddIn
   {
+    private CalDavSynchronizerToolBar _calDavSynchronizerToolBar = null; // Pierre-Marie Baty -- only for Outlook < 2010
     public static ComponentContainer ComponentContainer { get; private set; }
 
     private void ThisAddIn_Startup (object sender, EventArgs e)
     {
       ComponentContainer.ConfigureServicePointManager();
       ComponentContainer = new ComponentContainer (Application.Session);
+
+      if (IsOutlookVersionSmallerThan2010)
+      {
+        try
+        {
+          _calDavSynchronizerToolBar = new CalDavSynchronizerToolBar (Application, ComponentContainer, missing);
+        }
+        catch (System.Exception ex)
+        {
+          MessageBox.Show (ex.Message);
+        }
+      }
+    }
+
+    private static bool IsOutlookVersionSmallerThan2010
+    {
+      get { return Convert.ToInt32 (Globals.ThisAddIn.Application.Version.Split (new[] { '.' })[0]) < 14; }
     }
 
     private void ThisAddIn_Shutdown (object sender, EventArgs e)
