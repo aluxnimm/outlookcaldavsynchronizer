@@ -89,7 +89,10 @@ namespace CalDavSynchronizer
 
     private void ToolBarBtn_About_OnClick(CommandBarButton Ctrl, ref bool CancelDefault)
     {
-      (new AboutForm()).ShowDialog(); // fire up the About dialog box
+      using (var aboutForm = new AboutForm())
+      {
+        aboutForm.ShowDialog();
+      }
     }
 
     private void ThisAddIn_Shutdown (object sender, EventArgs e)

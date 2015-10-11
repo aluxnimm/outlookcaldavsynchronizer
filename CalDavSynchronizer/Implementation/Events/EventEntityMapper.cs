@@ -316,11 +316,22 @@ namespace CalDavSynchronizer.Implementation.Events
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
     }
 
-    pivate AddressEntry GetEventOrganizer (AppointmentItem appt) // Microsoft recommends this way for Outlook 2007. May still work with Outlook 2010+
+    private AddressEntry GetEventOrganizer (AppointmentItem source) 
     {
-      string PR_SENT_REPRESENTING_ENTRYID = @"http://schemas.microsoft.com/mapi/proptag/0x00410102";
-      string organizerEntryID = appt.PropertyAccessor.BinaryToString (appt.PropertyAccessor.GetProperty (PR_SENT_REPRESENTING_ENTRYID));
-      return Globals.ThisAddIn.Application.Session.GetAddressEntryFromID (organizerEntryID);
+      if (_outlookMajorVersion < 14)
+      {
+        // Microsoft recommends this way for Outlook 2007. May still work with Outlook 2010+
+        using (var oPa = GenericComObjectWrapper.Create (source.PropertyAccessor))
+        {
+          string organizerEntryID = oPa.Inner.BinaryToString(oPa.Inner.GetProperty(PR_SENT_REPRESENTING_ENTRYID));
+          return Globals.ThisAddIn.Application.Session.GetAddressEntryFromID(organizerEntryID);
+        }
+       
+      }
+      else
+      {
+        return source.GetOrganizer();
+      }
     }
 
     private void MapOrganizer1To2 (AppointmentItem source, IEvent target)
