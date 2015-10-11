@@ -201,6 +201,7 @@
     <Compile Include="CalDavSynchronizerRibbon.Designer.cs">
       <DependentUpon>CalDavSynchronizerRibbon.cs</DependentUpon>
     </Compile>
+    <Compile Include="CalDavSynchronizerToolBar.cs" />
     <Compile Include="ComponentContainer.cs" />
     <Compile Include="Contracts\ProfileEntry.cs" />
     <Compile Include="Contracts\ServerAdapterType.cs" />
