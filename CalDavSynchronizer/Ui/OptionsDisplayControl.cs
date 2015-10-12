@@ -194,59 +194,45 @@ namespace CalDavSynchronizer.Ui
           return;
         }
 
-        var uri = new Uri (_calenderUrlTextBox.Text);
+        var enteredUri = new Uri (_calenderUrlTextBox.Text);
         var webDavClient = CreateWebDavClient();
 
-        Uri autoDiscoveredUri = null;
-        Uri effectiveUri = uri;
+        Uri autoDiscoveredUrl;
 
-        if (ConnectionTester.RequiresAutoDiscovery (uri))
+        if (ConnectionTester.RequiresAutoDiscovery (enteredUri))
         {
-          autoDiscoveredUri = await DoAutoDiscovery(ConnectionTester.GetAutoDiscoverUrl(uri), webDavClient);
-          if (autoDiscoveredUri != null)
-          {
-            effectiveUri = autoDiscoveredUri;
-            _calenderUrlTextBox.Text = autoDiscoveredUri.ToString();
-          }
+          autoDiscoveredUrl = await DoAutoDiscovery (ConnectionTester.GetAutoDiscoverUrl (enteredUri), webDavClient);
+          if (autoDiscoveredUrl == null)
+            return;
         }
         else
         {
-          var result = await ConnectionTester.TestConnection (uri, webDavClient);
+          var result = await ConnectionTester.TestConnection (enteredUri, webDavClient);
           if (result.ResourceType != ResourceType.None)
           {
+            if (ShouldAutomaticallyFixSettings)
+              AutomaticallyFixSettings (result);
+
             DisplayTestReport (result);
             return;
           }
           else
           {
-            autoDiscoveredUri = await DoAutoDiscovery(uri, webDavClient);
-            if (autoDiscoveredUri != null)
-            {
-              effectiveUri = autoDiscoveredUri;
-              _calenderUrlTextBox.Text = autoDiscoveredUri.ToString();
-            }
-            else
-            {
-              // another try to get calendar uri with well-known url
-              autoDiscoveredUri = await DoAutoDiscovery(ConnectionTester.GetAutoDiscoverUrl(uri), webDavClient);
-              if (autoDiscoveredUri != null)
-              {
-                effectiveUri = autoDiscoveredUri;
-                _calenderUrlTextBox.Text = autoDiscoveredUri.ToString();
-              }
-            }
+            autoDiscoveredUrl = await DoAutoDiscovery (enteredUri, webDavClient) ??
+                                await DoAutoDiscovery (ConnectionTester.GetAutoDiscoverUrl (enteredUri), webDavClient);
+            if (autoDiscoveredUrl == null)
+              return;
           }
         }
 
-        if (effectiveUri != uri)
-        {
-          var finalResult = await ConnectionTester.TestConnection(effectiveUri, webDavClient);
+        _calenderUrlTextBox.Text = autoDiscoveredUrl.ToString();
 
-          if (bool.Parse(ConfigurationManager.AppSettings["automaticallyFixSettings"]))
-            AutomaticallyFixSettings(finalResult);
+        var finalResult = await ConnectionTester.TestConnection (autoDiscoveredUrl, webDavClient);
 
-          DisplayTestReport(finalResult);
-        }
+        if (ShouldAutomaticallyFixSettings)
+          AutomaticallyFixSettings (finalResult);
+
+        DisplayTestReport (finalResult);
       }
       catch (Exception x)
       {
@@ -256,6 +242,11 @@ namespace CalDavSynchronizer.Ui
       {
         _testConnectionButton.Enabled = true;
       }
+    }
+
+    private static bool ShouldAutomaticallyFixSettings
+    {
+      get { return bool.Parse (ConfigurationManager.AppSettings["automaticallyFixSettings"]); }
     }
 
     private void AutomaticallyFixSettings (TestResult result)
