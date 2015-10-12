@@ -26,6 +26,8 @@ This project was initially developed as a master thesis project at the [Universi
 - GroupOffice
 - Synology NAS
 - One.com
+- DAViCal
+- Baïkal
 
 ### Features ###
 
@@ -263,6 +265,7 @@ The following properties need to be set for a new profile:
 For Google Calender use the following settings:
 CalDAV Url: `https://apidata.googleusercontent.com/caldav/v2/<your_google_calendar_id>/events/`.
 Check the Use Google OAuth Checkbox instead of entering your password. When testing the settings, you will be redirected to your browser to enter your Google Account password and grant access rights to your Google Calender for OutlookCalDavSynchronizer via the safe OAuth protocol.
+For Autodiscovery of all available google calendars use the Url `https://apidata.googleusercontent.com/caldav/v2/` and press the 'Test settings' button.
 
 #### Synology NAS settings ####
 
