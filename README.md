@@ -17,6 +17,7 @@ This project was initially developed as a master thesis project at the [Universi
 
 ### Tested CalDAV Servers ###
 
+- DAViCal
 - SOGo
 - Horde Kronolith
 - OwnCloud
