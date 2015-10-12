@@ -24,6 +24,9 @@ namespace CalDavSynchronizer
   internal class CalDavSynchronizerToolBar
   {
     private readonly CommandBarButton _toolBarBtnSyncNow;
+    private readonly CommandBarButton _toolBarBtnOptions;
+    private readonly CommandBarButton _toolBarBtnAboutMe;
+
     private readonly ComponentContainer _componentContainer;
 
     public CalDavSynchronizerToolBar (Application application, ComponentContainer componentContainer, object missing)
@@ -32,13 +35,13 @@ namespace CalDavSynchronizer
 
       var toolBar = application.ActiveExplorer().CommandBars.Add ("CalDav Synchronizer", MsoBarPosition.msoBarTop, false, true);
 
-      var toolBarBtnOptions = (CommandBarButton) toolBar.Controls.Add (1, missing, missing, missing, missing);
-      toolBarBtnOptions.Style = MsoButtonStyle.msoButtonIconAndCaption;
-      toolBarBtnOptions.Caption = "Options";
-      toolBarBtnOptions.FaceId = 222; // builtin icon: hand hovering above a property list
-      toolBarBtnOptions.Tag = "View or set CalDav Synchronizer options";
+      _toolBarBtnOptions = (CommandBarButton) toolBar.Controls.Add (1, missing, missing, missing, missing);
+      _toolBarBtnOptions.Style = MsoButtonStyle.msoButtonIconAndCaption;
+      _toolBarBtnOptions.Caption = "Options";
+      _toolBarBtnOptions.FaceId = 222; // builtin icon: hand hovering above a property list
+      _toolBarBtnOptions.Tag = "View or set CalDav Synchronizer options";
 
-      toolBarBtnOptions.Click += ToolBarBtn_Options_OnClick;
+      _toolBarBtnOptions.Click += ToolBarBtn_Options_OnClick;
 
       _toolBarBtnSyncNow = (CommandBarButton) toolBar.Controls.Add (1, missing, missing, missing, missing);
       _toolBarBtnSyncNow.Style = MsoButtonStyle.msoButtonIconAndCaption;
@@ -47,12 +50,12 @@ namespace CalDavSynchronizer
       _toolBarBtnSyncNow.Tag = "Synchronize now";
       _toolBarBtnSyncNow.Click += ToolBarBtn_SyncNow_OnClick;
 
-      var toolBarBtnAboutMe = (CommandBarButton) toolBar.Controls.Add (1, missing, missing, missing, missing);
-      toolBarBtnAboutMe.Style = MsoButtonStyle.msoButtonIconAndCaption;
-      toolBarBtnAboutMe.Caption = "About";
-      toolBarBtnAboutMe.FaceId = 487; // builtin icon: blue round sign with "i" letter
-      toolBarBtnAboutMe.Tag = "About CalDav Synchronizer";
-      toolBarBtnAboutMe.Click += ToolBarBtn_About_OnClick;
+      _toolBarBtnAboutMe = (CommandBarButton) toolBar.Controls.Add (1, missing, missing, missing, missing);
+      _toolBarBtnAboutMe.Style = MsoButtonStyle.msoButtonIconAndCaption;
+      _toolBarBtnAboutMe.Caption = "About";
+      _toolBarBtnAboutMe.FaceId = 487; // builtin icon: blue round sign with "i" letter
+      _toolBarBtnAboutMe.Tag = "About CalDav Synchronizer";
+      _toolBarBtnAboutMe.Click += ToolBarBtn_About_OnClick;
 
       toolBar.Visible = true;
     }
