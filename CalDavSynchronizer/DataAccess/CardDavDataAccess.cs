@@ -44,6 +44,84 @@ namespace CalDavSynchronizer.DataAccess
       return IsResourceType ("A", "addressbook");
     }
 
+    public async Task<IReadOnlyList<Tuple<Uri, string>>> GetUserAddressBooks()
+    {
+      var properties = await GetCurrentUserPrincipal(_serverUrl);
+
+      XmlNode principal = properties.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-principal", properties.XmlNamespaceManager);
+
+      var addressbooks = new List<Tuple<Uri, string>>();
+
+      if (principal != null)
+      {
+        properties = await GetAddressBookHomeSet(new Uri(_serverUrl.GetLeftPart(UriPartial.Authority) + principal.InnerText));
+
+        XmlNode homeSet = properties.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/A:addressbook-home-set", properties.XmlNamespaceManager);
+
+        if (homeSet != null)
+        {
+          properties = await ListAddressBooks(new Uri(_serverUrl.GetLeftPart(UriPartial.Authority) + homeSet.InnerText));
+
+          XmlNodeList responseNodes = properties.XmlDocument.SelectNodes("/D:multistatus/D:response", properties.XmlNamespaceManager);
+
+          foreach (XmlElement responseElement in responseNodes)
+          {
+            var urlNode = responseElement.SelectSingleNode("D:href", properties.XmlNamespaceManager);
+            var displayNameNode = responseElement.SelectSingleNode("D:propstat/D:prop/D:displayname", properties.XmlNamespaceManager);
+            if (urlNode != null && displayNameNode != null)
+            {
+              XmlNode isCollection = responseElement.SelectSingleNode("D:propstat/D:prop/D:resourcetype/A:addressbook", properties.XmlNamespaceManager);
+              if (isCollection != null)
+              {
+                var uri = UriHelper.UnescapeRelativeUri(_serverUrl, urlNode.InnerText);
+                addressbooks.Add(Tuple.Create(uri, displayNameNode.InnerText));
+              }
+            }
+          }
+        }
+      }
+      return addressbooks;
+    }
+
+    private Task<XmlDocumentWithNamespaceManager> GetAddressBookHomeSet(Uri url)
+    {
+      return _webDavClient.ExecuteWebDavRequestAndReadResponse(
+          url,
+          "PROPFIND",
+          0,
+          null,
+          null,
+          "application/xml",
+          @"<?xml version='1.0'?>
+                        <D:propfind xmlns:D=""DAV:"" xmlns:C=""urn:ietf:params:xml:ns:carddav"">
+                          <D:prop>
+                            <C:addressbook-home-set/>
+                          </D:prop>
+                        </D:propfind>
+                 "
+          );
+    }
+
+    private Task<XmlDocumentWithNamespaceManager> ListAddressBooks(Uri url)
+    {
+      return _webDavClient.ExecuteWebDavRequestAndReadResponse(
+          url,
+          "PROPFIND",
+          1,
+          null,
+          null,
+          "application/xml",
+          @"<?xml version='1.0'?>
+                        <D:propfind xmlns:D=""DAV:"">
+                          <D:prop>
+                              <D:resourcetype />
+                              <D:displayname />
+                          </D:prop>
+                        </D:propfind>
+                 "
+          );
+    }
+
     public Task<EntityIdWithVersion<Uri, string>> CreateEntity (string iCalData)
     {
       return CreateEntity (string.Format ("{0:D}.vcs", Guid.NewGuid()), iCalData);
