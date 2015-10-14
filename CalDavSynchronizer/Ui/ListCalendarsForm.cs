@@ -36,7 +36,7 @@ namespace CalDavSynchronizer.Ui
       dataGridView1.RowHeadersVisible = false;
       dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
       dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-      dataGridView1.Columns[0].HeaderText = "Calendar Url";
+      dataGridView1.Columns[0].HeaderText = "CalDav/CardDav Url";
       dataGridView1.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
       dataGridView1.Columns[1].HeaderText = "DisplayName";
     }

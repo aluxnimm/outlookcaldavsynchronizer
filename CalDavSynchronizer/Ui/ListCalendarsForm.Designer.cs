@@ -87,7 +87,7 @@
       this.Controls.Add(this.dataGridView1);
       this.Name = "ListCalendarsForm";
       this.ShowIcon = false;
-      this.Text = "Select Calendar";
+      this.Text = "Select Calendar or Addressbook";
       this.Load += new System.EventHandler(this.ListCalendarsForm_Load);
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
       this.ResumeLayout(false);

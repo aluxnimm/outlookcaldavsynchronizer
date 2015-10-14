@@ -190,7 +190,7 @@ namespace CalDavSynchronizer.Ui
         StringBuilder errorMessageBuilder = new StringBuilder();
         if (!ValidateCalendarUrl (errorMessageBuilder, false))
         {
-          MessageBox.Show (errorMessageBuilder.ToString(), "The calendar Url is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          MessageBox.Show (errorMessageBuilder.ToString(), "The CalDav/CardDav Url is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
           return;
         }
 
@@ -446,19 +446,19 @@ namespace CalDavSynchronizer.Ui
 
       if (string.IsNullOrWhiteSpace (_calenderUrlTextBox.Text))
       {
-        errorMessageBuilder.AppendLine ("- The CalDav Calendar Url is empty.");
+        errorMessageBuilder.AppendLine ("- The CalDav/CardDav Url is empty.");
         return false;
       }
 
       if (_calenderUrlTextBox.Text.Trim() != _calenderUrlTextBox.Text)
       {
-        errorMessageBuilder.AppendLine ("- The CalDav Calendar Url cannot end/start with whitespaces.");
+        errorMessageBuilder.AppendLine ("- The CalDav/CardDav Url cannot end/start with whitespaces.");
         result = false;
       }
 
       if (requiresTrailingSlash && !_calenderUrlTextBox.Text.EndsWith ("/"))
       {
-        errorMessageBuilder.AppendLine ("- The CalDav Calendar Url has to end with a slash ('/').");
+        errorMessageBuilder.AppendLine ("- The CalDav/CardDav Url has to end with a slash ('/').");
         result = false;
       }
 
@@ -468,7 +468,7 @@ namespace CalDavSynchronizer.Ui
       }
       catch (Exception x)
       {
-        errorMessageBuilder.AppendFormat ("- The CalDav Calendar Url is not a well formed Url. ({0})", x.Message);
+        errorMessageBuilder.AppendFormat ("- The CalDav/CardDav Url is not a well formed Url. ({0})", x.Message);
         errorMessageBuilder.AppendLine();
         result = false;
       }
