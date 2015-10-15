@@ -210,7 +210,7 @@ namespace CalDavSynchronizer.DataAccess
       var responseXml = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
           _serverUrl,
           "REPORT",
-          1,
+          0,
           null,
           null,
           "application/xml",
