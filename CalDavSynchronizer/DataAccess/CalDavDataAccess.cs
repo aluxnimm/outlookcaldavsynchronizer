@@ -51,9 +51,11 @@ namespace CalDavSynchronizer.DataAccess
       return DoesSupportsReportSet (_serverUrl, 0, "C", "calendar-query");
     }
 
-    public async Task<IReadOnlyList<Tuple<Uri, string>>> GetUserCalendars ()
+    public async Task<IReadOnlyList<Tuple<Uri, string>>> GetUserCalendars (bool useWellKnownUrl)
     {
-      var properties = await GetCurrentUserPrincipal (_serverUrl);
+      var autodiscoveryUrl = useWellKnownUrl ? AutoDiscoveryUrl : _serverUrl;
+
+      var properties = await GetCurrentUserPrincipal(autodiscoveryUrl);
 
       XmlNode principal = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-principal", properties.XmlNamespaceManager);
 
@@ -61,13 +63,13 @@ namespace CalDavSynchronizer.DataAccess
 
       if (principal != null)
       {
-        properties = await GetCalendarHomeSet (new Uri (_serverUrl.GetLeftPart (UriPartial.Authority) + principal.InnerText));
+        properties = await GetCalendarHomeSet(new Uri(autodiscoveryUrl.GetLeftPart(UriPartial.Authority) + principal.InnerText));
 
         XmlNode homeSet = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/C:calendar-home-set", properties.XmlNamespaceManager);
 
         if (homeSet != null)
         {
-          properties = await ListCalendars (new Uri (_serverUrl.GetLeftPart (UriPartial.Authority) + homeSet.InnerText));
+          properties = await ListCalendars(new Uri(autodiscoveryUrl.GetLeftPart(UriPartial.Authority) + homeSet.InnerText));
 
           XmlNodeList responseNodes = properties.XmlDocument.SelectNodes ("/D:multistatus/D:response", properties.XmlNamespaceManager);
 
@@ -80,7 +82,7 @@ namespace CalDavSynchronizer.DataAccess
               XmlNode isCollection = responseElement.SelectSingleNode ("D:propstat/D:prop/D:resourcetype/C:calendar", properties.XmlNamespaceManager);
               if (isCollection != null)
               {
-                var uri = UriHelper.UnescapeRelativeUri (_serverUrl, urlNode.InnerText);
+                var uri = UriHelper.UnescapeRelativeUri(autodiscoveryUrl, urlNode.InnerText);
                 cals.Add (Tuple.Create (uri, displayNameNode.InnerText));
               }
             }
@@ -88,6 +90,14 @@ namespace CalDavSynchronizer.DataAccess
         }
       }
       return cals;
+    }
+
+    private Uri AutoDiscoveryUrl
+    {
+      get
+      {
+        return new Uri(_serverUrl.GetLeftPart(UriPartial.Authority) + "/.well-known/caldav/");
+      }
     }
 
     private Task<XmlDocumentWithNamespaceManager> GetCalendarHomeSet (Uri url)

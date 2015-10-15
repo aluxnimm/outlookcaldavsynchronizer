@@ -58,10 +58,5 @@ namespace CalDavSynchronizer.Ui.ConnectionTests
     {
       return uri.AbsolutePath == "/" || !uri.AbsolutePath.EndsWith ("/");
     }
-
-    public static Uri GetAutoDiscoverUrl (Uri uri)
-    {
-      return new Uri (uri.GetLeftPart (UriPartial.Authority) + "/.well-known/caldav/");
-    }
   }
 }

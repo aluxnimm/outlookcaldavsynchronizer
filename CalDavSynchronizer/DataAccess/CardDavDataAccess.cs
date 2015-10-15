@@ -44,9 +44,11 @@ namespace CalDavSynchronizer.DataAccess
       return IsResourceType ("A", "addressbook");
     }
 
-    public async Task<IReadOnlyList<Tuple<Uri, string>>> GetUserAddressBooks()
+    public async Task<IReadOnlyList<Tuple<Uri, string>>> GetUserAddressBooks(bool useWellKnownUrl)
     {
-      var properties = await GetCurrentUserPrincipal(_serverUrl);
+      var autodiscoveryUrl = useWellKnownUrl ? AutoDiscoveryUrl : _serverUrl;
+
+      var properties = await GetCurrentUserPrincipal(autodiscoveryUrl);
 
       XmlNode principal = properties.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-principal", properties.XmlNamespaceManager);
 
@@ -54,13 +56,13 @@ namespace CalDavSynchronizer.DataAccess
 
       if (principal != null)
       {
-        properties = await GetAddressBookHomeSet(new Uri(_serverUrl.GetLeftPart(UriPartial.Authority) + principal.InnerText));
+        properties = await GetAddressBookHomeSet(new Uri(autodiscoveryUrl.GetLeftPart(UriPartial.Authority) + principal.InnerText));
 
         XmlNode homeSet = properties.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/A:addressbook-home-set", properties.XmlNamespaceManager);
 
         if (homeSet != null)
         {
-          properties = await ListAddressBooks(new Uri(_serverUrl.GetLeftPart(UriPartial.Authority) + homeSet.InnerText));
+          properties = await ListAddressBooks(new Uri(autodiscoveryUrl.GetLeftPart(UriPartial.Authority) + homeSet.InnerText));
 
           XmlNodeList responseNodes = properties.XmlDocument.SelectNodes("/D:multistatus/D:response", properties.XmlNamespaceManager);
 
@@ -73,7 +75,7 @@ namespace CalDavSynchronizer.DataAccess
               XmlNode isCollection = responseElement.SelectSingleNode("D:propstat/D:prop/D:resourcetype/A:addressbook", properties.XmlNamespaceManager);
               if (isCollection != null)
               {
-                var uri = UriHelper.UnescapeRelativeUri(_serverUrl, urlNode.InnerText);
+                var uri = UriHelper.UnescapeRelativeUri(autodiscoveryUrl, urlNode.InnerText);
                 addressbooks.Add(Tuple.Create(uri, displayNameNode.InnerText));
               }
             }
@@ -81,6 +83,14 @@ namespace CalDavSynchronizer.DataAccess
         }
       }
       return addressbooks;
+    }
+
+    private Uri AutoDiscoveryUrl
+    {
+      get
+      {
+        return new Uri(_serverUrl.GetLeftPart(UriPartial.Authority) + "/.well-known/carddav/");
+      }
     }
 
     private Task<XmlDocumentWithNamespaceManager> GetAddressBookHomeSet(Uri url)

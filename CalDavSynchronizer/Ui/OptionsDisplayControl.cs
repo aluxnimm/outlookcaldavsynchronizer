@@ -201,7 +201,7 @@ namespace CalDavSynchronizer.Ui
 
         if (ConnectionTester.RequiresAutoDiscovery (enteredUri))
         {
-          autoDiscoveredUrl = await DoAutoDiscovery (ConnectionTester.GetAutoDiscoverUrl (enteredUri), webDavClient);
+          autoDiscoveredUrl = await DoAutoDiscovery (enteredUri, webDavClient, true);
           if (autoDiscoveredUrl == null)
             return;
         }
@@ -218,8 +218,8 @@ namespace CalDavSynchronizer.Ui
           }
           else
           {
-            autoDiscoveredUrl = await DoAutoDiscovery (enteredUri, webDavClient) ??
-                                await DoAutoDiscovery (ConnectionTester.GetAutoDiscoverUrl (enteredUri), webDavClient);
+            autoDiscoveredUrl = await DoAutoDiscovery (enteredUri, webDavClient, false) ??
+                                await DoAutoDiscovery (enteredUri, webDavClient, true);
             if (autoDiscoveredUrl == null)
               return;
           }
@@ -236,7 +236,10 @@ namespace CalDavSynchronizer.Ui
       }
       catch (Exception x)
       {
-        MessageBox.Show (x.Message, c_connectionTestCaption);
+        string message = null;
+        for (Exception ex = x; ex != null; ex = ex.InnerException)
+          message += ex.Message + Environment.NewLine;
+        MessageBox.Show(message, c_connectionTestCaption);
       }
       finally
       {
@@ -383,25 +386,26 @@ namespace CalDavSynchronizer.Ui
     }
 
 
-    private async Task<Uri> DoAutoDiscovery (Uri autoDiscoveryUri, IWebDavClient webDavClient)
+    private async Task<Uri> DoAutoDiscovery(Uri autoDiscoveryUri, IWebDavClient webDavClient, bool useWellKnownUrl)
     {
+      IReadOnlyList<Tuple<Uri, string>> foundResources;
+  
       var calDavDataAccess = new CalDavDataAccess (autoDiscoveryUri, webDavClient);
+      foundResources = await calDavDataAccess.GetUserCalendars(useWellKnownUrl);
 
-      var foundCalendars = await calDavDataAccess.GetUserCalendars();
-
-      if (foundCalendars.Count > 0)
+      if (foundResources.Count > 0)
       {
-        using (ListCalendarsForm listCalendarsForm = new ListCalendarsForm (foundCalendars))
+        using (ListCalendarsForm listCalendarsForm = new ListCalendarsForm(foundResources))
         {
           if (listCalendarsForm.ShowDialog() == DialogResult.OK)
           {
-            return new Uri (autoDiscoveryUri.GetLeftPart (UriPartial.Authority) + listCalendarsForm.getCalendarUri());
+            return new Uri (autoDiscoveryUri.GetLeftPart(UriPartial.Authority) + listCalendarsForm.getCalendarUri());
           }
         }
       }
       else
       {
-        MessageBox.Show ("No calendars were found via autodiscovery!", c_connectionTestCaption);
+        MessageBox.Show("No resources were found via autodiscovery!", c_connectionTestCaption);
       }
       return null;
     }
