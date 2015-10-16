@@ -127,7 +127,15 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       if (!string.IsNullOrEmpty(source.Inner.WebPage))
       {
-        target.Websites.Add(new vCardWebsite(source.Inner.WebPage));
+        target.Websites.Add(new vCardWebsite (source.Inner.WebPage));
+      }
+      if (!string.IsNullOrEmpty(source.Inner.PersonalHomePage))
+      {
+        target.Websites.Add(new vCardWebsite (source.Inner.PersonalHomePage, vCardWebsiteTypes.Personal));
+      }
+      if (!string.IsNullOrEmpty(source.Inner.BusinessHomePage))
+      {
+        target.Websites.Add(new vCardWebsite (source.Inner.BusinessHomePage, vCardWebsiteTypes.Work));
       }
 
       return target;
@@ -225,6 +233,18 @@ namespace CalDavSynchronizer.Implementation.Contacts
       if ((sourceWebSite = source.Websites.GetFirstChoice(vCardWebsiteTypes.Default)) != null)
       {
         target.Inner.WebPage = sourceWebSite.Url;
+      }
+      vCardWebsite sourceHomePage;
+
+      if ((sourceHomePage = source.Websites.GetFirstChoice(vCardWebsiteTypes.Personal)) != null)
+      {
+        target.Inner.PersonalHomePage = sourceHomePage.Url;
+      }
+      vCardWebsite sourceBusinessHomePage;
+
+      if ((sourceBusinessHomePage = source.Websites.GetFirstChoice(vCardWebsiteTypes.Work)) != null)
+      {
+        target.Inner.BusinessHomePage = sourceBusinessHomePage.Url;
       }
 
       return target;
