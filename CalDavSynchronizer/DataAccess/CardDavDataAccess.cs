@@ -196,7 +196,7 @@ namespace CalDavSynchronizer.DataAccess
 
     public async Task<IReadOnlyList<EntityWithVersion<Uri, string>>> GetEntities (IEnumerable<Uri> urls)
     {
-      var requestBody = @" <?xml version=""1.0"" encoding=""utf-8"" ?>
+      var requestBody = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
    <C:addressbook-multiget xmlns:D=""DAV:"" xmlns:C=""urn:ietf:params:xml:ns:carddav"">
      <D:prop>
        <D:getetag/>
