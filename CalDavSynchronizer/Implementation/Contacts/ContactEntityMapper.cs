@@ -35,39 +35,39 @@ namespace CalDavSynchronizer.Implementation.Contacts
       target.AdditionalNames = source.Inner.MiddleName;
       target.Gender = MapGender2To1 (source.Inner.Gender);
 
-      if (!string.IsNullOrEmpty(source.Inner.NickName))
+      if (!string.IsNullOrEmpty (source.Inner.NickName))
       {
-        Array.ForEach(
-            source.Inner.NickName.Split(new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries),
-            c => target.Nicknames.Add(c)
+        Array.ForEach (
+            source.Inner.NickName.Split (new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries),
+            c => target.Nicknames.Add (c)
             );
       }
 
-      if (!string.IsNullOrEmpty(source.Inner.Categories))
+      if (!string.IsNullOrEmpty (source.Inner.Categories))
       {
-        Array.ForEach(
-            source.Inner.Categories.Split(new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries),
-            c => target.Categories.Add(c)
+        Array.ForEach (
+            source.Inner.Categories.Split (new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries),
+            c => target.Categories.Add (c)
             );
       }
 
-      if (!string.IsNullOrEmpty(source.Inner.Email1Address))
+      if (!string.IsNullOrEmpty (source.Inner.Email1Address))
       {
-        target.EmailAddresses.Add(new vCardEmailAddress(source.Inner.Email1Address));
+        target.EmailAddresses.Add (new vCardEmailAddress (source.Inner.Email1Address));
       }
-      if (!string.IsNullOrEmpty(source.Inner.Email2Address))
+      if (!string.IsNullOrEmpty (source.Inner.Email2Address))
       {
-        target.EmailAddresses.Add(new vCardEmailAddress(source.Inner.Email2Address));
+        target.EmailAddresses.Add (new vCardEmailAddress (source.Inner.Email2Address));
       }
-      if (!string.IsNullOrEmpty(source.Inner.Email3Address))
+      if (!string.IsNullOrEmpty (source.Inner.Email3Address))
       {
-        target.EmailAddresses.Add(new vCardEmailAddress(source.Inner.Email3Address));
+        target.EmailAddresses.Add (new vCardEmailAddress (source.Inner.Email3Address));
       }
 
-      if (!string.IsNullOrEmpty(source.Inner.HomeAddress))
+      if (!string.IsNullOrEmpty (source.Inner.HomeAddress))
       {
         vCardDeliveryAddress homeAddress = new vCardDeliveryAddress();
-        homeAddress.AddressType.Add(vCardDeliveryAddressTypes.Home);
+        homeAddress.AddressType.Add (vCardDeliveryAddressTypes.Home);
         homeAddress.City = source.Inner.HomeAddressCity;
         homeAddress.Country = source.Inner.HomeAddressCountry;
         homeAddress.PostalCode = source.Inner.HomeAddressPostalCode;
@@ -75,15 +75,15 @@ namespace CalDavSynchronizer.Implementation.Contacts
         homeAddress.Street = source.Inner.HomeAddressStreet;
         if (source.Inner.SelectedMailingAddress == OlMailingAddress.olHome)
         {
-          homeAddress.AddressType.Add(vCardDeliveryAddressTypes.Preferred);
+          homeAddress.AddressType.Add (vCardDeliveryAddressTypes.Preferred);
         }
-        target.DeliveryAddresses.Add(homeAddress);
+        target.DeliveryAddresses.Add (homeAddress);
       }
 
-      if (!string.IsNullOrEmpty(source.Inner.BusinessAddress))
+      if (!string.IsNullOrEmpty (source.Inner.BusinessAddress))
       {
         vCardDeliveryAddress businessAddress = new vCardDeliveryAddress();
-        businessAddress.AddressType.Add(vCardDeliveryAddressTypes.Work);
+        businessAddress.AddressType.Add (vCardDeliveryAddressTypes.Work);
         businessAddress.City = source.Inner.BusinessAddressCity;
         businessAddress.Country = source.Inner.BusinessAddressCountry;
         businessAddress.PostalCode = source.Inner.BusinessAddressPostalCode;
@@ -91,15 +91,15 @@ namespace CalDavSynchronizer.Implementation.Contacts
         businessAddress.Street = source.Inner.BusinessAddressStreet;
         if (source.Inner.SelectedMailingAddress == OlMailingAddress.olBusiness)
         {
-          businessAddress.AddressType.Add(vCardDeliveryAddressTypes.Preferred);
+          businessAddress.AddressType.Add (vCardDeliveryAddressTypes.Preferred);
         }
-        target.DeliveryAddresses.Add(businessAddress);
+        target.DeliveryAddresses.Add (businessAddress);
       }
 
-      if (!string.IsNullOrEmpty(source.Inner.OtherAddress))
+      if (!string.IsNullOrEmpty (source.Inner.OtherAddress))
       {
         vCardDeliveryAddress otherAddress = new vCardDeliveryAddress();
-        otherAddress.AddressType.Add(vCardDeliveryAddressTypes.Postal);
+        otherAddress.AddressType.Add (vCardDeliveryAddressTypes.Postal);
         otherAddress.City = source.Inner.OtherAddressCity;
         otherAddress.Country = source.Inner.OtherAddressCountry;
         otherAddress.PostalCode = source.Inner.OtherAddressPostalCode;
@@ -107,14 +107,14 @@ namespace CalDavSynchronizer.Implementation.Contacts
         otherAddress.Street = source.Inner.OtherAddressStreet;
         if (source.Inner.SelectedMailingAddress == OlMailingAddress.olOther)
         {
-          otherAddress.AddressType.Add(vCardDeliveryAddressTypes.Preferred);
+          otherAddress.AddressType.Add (vCardDeliveryAddressTypes.Preferred);
         }
-        target.DeliveryAddresses.Add(otherAddress);
+        target.DeliveryAddresses.Add (otherAddress);
       }
 
       MapPhoneNumbers1to2 (source.Inner, target);
 
-      if (!source.Inner.Birthday.Equals(new DateTime(4501, 1, 1, 0, 0, 0)))
+      if (!source.Inner.Birthday.Equals (new DateTime (4501, 1, 1, 0, 0, 0)))
       {
         // TODO: Workaround for serializer needed, BirthDate must be YYYY-MM-DD
         target.BirthDate = source.Inner.Birthday.Date;
@@ -125,17 +125,17 @@ namespace CalDavSynchronizer.Implementation.Contacts
       target.Title = source.Inner.JobTitle;
       target.Office = source.Inner.OfficeLocation;
 
-      if (!string.IsNullOrEmpty(source.Inner.WebPage))
+      if (!string.IsNullOrEmpty (source.Inner.WebPage))
       {
-        target.Websites.Add(new vCardWebsite (source.Inner.WebPage));
+        target.Websites.Add (new vCardWebsite (source.Inner.WebPage));
       }
-      if (!string.IsNullOrEmpty(source.Inner.PersonalHomePage))
+      if (!string.IsNullOrEmpty (source.Inner.PersonalHomePage))
       {
-        target.Websites.Add(new vCardWebsite (source.Inner.PersonalHomePage, vCardWebsiteTypes.Personal));
+        target.Websites.Add (new vCardWebsite (source.Inner.PersonalHomePage, vCardWebsiteTypes.Personal));
       }
-      if (!string.IsNullOrEmpty(source.Inner.BusinessHomePage))
+      if (!string.IsNullOrEmpty (source.Inner.BusinessHomePage))
       {
-        target.Websites.Add(new vCardWebsite (source.Inner.BusinessHomePage, vCardWebsiteTypes.Work));
+        target.Websites.Add (new vCardWebsite (source.Inner.BusinessHomePage, vCardWebsiteTypes.Work));
       }
 
       return target;
@@ -150,20 +150,20 @@ namespace CalDavSynchronizer.Implementation.Contacts
       target.Inner.MiddleName = source.AdditionalNames;
       target.Inner.Gender = MapGender1To2 (source.Gender);
 
-      if (source.Nicknames.Count >0)
+      if (source.Nicknames.Count > 0)
       {
         string[] nickNames = new string[source.Nicknames.Count];
-        source.Nicknames.CopyTo(nickNames,0);
-        target.Inner.NickName = string.Join(CultureInfo.CurrentCulture.TextInfo.ListSeparator, nickNames);
+        source.Nicknames.CopyTo (nickNames, 0);
+        target.Inner.NickName = string.Join (CultureInfo.CurrentCulture.TextInfo.ListSeparator, nickNames);
       }
 
       if (source.Categories.Count > 0)
       {
         string[] categories = new string[source.Categories.Count];
-        source.Categories.CopyTo(categories, 0);
-        target.Inner.Categories = string.Join(CultureInfo.CurrentCulture.TextInfo.ListSeparator, categories);
+        source.Categories.CopyTo (categories, 0);
+        target.Inner.Categories = string.Join (CultureInfo.CurrentCulture.TextInfo.ListSeparator, categories);
       }
-      
+
       if (source.EmailAddresses.Count >= 1)
       {
         target.Inner.Email1Address = source.EmailAddresses[0].Address;
@@ -221,7 +221,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       MapTelephoneNumber2to1 (source, target.Inner);
 
-      target.Inner.Birthday = source.BirthDate ?? new DateTime(4501, 1, 1);
+      target.Inner.Birthday = source.BirthDate ?? new DateTime (4501, 1, 1);
 
       target.Inner.Department = source.Department;
       target.Inner.CompanyName = source.Organization;
@@ -230,19 +230,19 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       vCardWebsite sourceWebSite;
 
-      if ((sourceWebSite = source.Websites.GetFirstChoice(vCardWebsiteTypes.Default)) != null)
+      if ((sourceWebSite = source.Websites.GetFirstChoice (vCardWebsiteTypes.Default)) != null)
       {
         target.Inner.WebPage = sourceWebSite.Url;
       }
       vCardWebsite sourceHomePage;
 
-      if ((sourceHomePage = source.Websites.GetFirstChoice(vCardWebsiteTypes.Personal)) != null)
+      if ((sourceHomePage = source.Websites.GetFirstChoice (vCardWebsiteTypes.Personal)) != null)
       {
         target.Inner.PersonalHomePage = sourceHomePage.Url;
       }
       vCardWebsite sourceBusinessHomePage;
 
-      if ((sourceBusinessHomePage = source.Websites.GetFirstChoice(vCardWebsiteTypes.Work)) != null)
+      if ((sourceBusinessHomePage = source.Websites.GetFirstChoice (vCardWebsiteTypes.Work)) != null)
       {
         target.Inner.BusinessHomePage = sourceBusinessHomePage.Url;
       }
@@ -250,7 +250,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       return target;
     }
 
-    private static OlGender MapGender1To2(vCardGender sourceGender)
+    private static OlGender MapGender1To2 (vCardGender sourceGender)
     {
       switch (sourceGender)
       {
@@ -262,10 +262,10 @@ namespace CalDavSynchronizer.Implementation.Contacts
           return OlGender.olUnspecified;
       }
 
-      throw new NotImplementedException(string.Format("Mapping for value '{0}' not implemented.", sourceGender));
+      throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", sourceGender));
     }
 
-    private static vCardGender MapGender2To1(OlGender sourceGender)
+    private static vCardGender MapGender2To1 (OlGender sourceGender)
     {
       switch (sourceGender)
       {
@@ -277,76 +277,76 @@ namespace CalDavSynchronizer.Implementation.Contacts
           return vCardGender.Unknown;
       }
 
-      throw new NotImplementedException(string.Format("Mapping for value '{0}' not implemented.", sourceGender));
+      throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", sourceGender));
     }
 
     private static void MapPhoneNumbers1to2 (ContactItem source, vCard target)
     {
-      if (!string.IsNullOrEmpty(source.PrimaryTelephoneNumber))
+      if (!string.IsNullOrEmpty (source.PrimaryTelephoneNumber))
       {
-        vCardPhone phoneNumber = new vCardPhone(source.PrimaryTelephoneNumber, vCardPhoneTypes.Main);
+        vCardPhone phoneNumber = new vCardPhone (source.PrimaryTelephoneNumber, vCardPhoneTypes.Main);
         phoneNumber.IsPreferred = true;
-        target.Phones.Add(phoneNumber);
+        target.Phones.Add (phoneNumber);
       }
-      if (!string.IsNullOrEmpty(source.MobileTelephoneNumber))
+      if (!string.IsNullOrEmpty (source.MobileTelephoneNumber))
       {
-        vCardPhone phoneNumber = new vCardPhone(source.MobileTelephoneNumber, vCardPhoneTypes.Cellular);
+        vCardPhone phoneNumber = new vCardPhone (source.MobileTelephoneNumber, vCardPhoneTypes.Cellular);
         phoneNumber.IsPreferred = (target.Phones.Count == 0);
-        target.Phones.Add(phoneNumber);
+        target.Phones.Add (phoneNumber);
       }
-      if (!string.IsNullOrEmpty(source.HomeTelephoneNumber))
+      if (!string.IsNullOrEmpty (source.HomeTelephoneNumber))
       {
-        vCardPhone phoneNumber = new vCardPhone(source.HomeTelephoneNumber, vCardPhoneTypes.Home);
+        vCardPhone phoneNumber = new vCardPhone (source.HomeTelephoneNumber, vCardPhoneTypes.Home);
         phoneNumber.IsPreferred = (target.Phones.Count == 0);
-        target.Phones.Add(phoneNumber);
+        target.Phones.Add (phoneNumber);
       }
-      if (!string.IsNullOrEmpty(source.Home2TelephoneNumber))
+      if (!string.IsNullOrEmpty (source.Home2TelephoneNumber))
       {
-        vCardPhone phoneNumber = new vCardPhone(source.Home2TelephoneNumber, vCardPhoneTypes.HomeVoice);
+        vCardPhone phoneNumber = new vCardPhone (source.Home2TelephoneNumber, vCardPhoneTypes.HomeVoice);
         phoneNumber.IsPreferred = (target.Phones.Count == 0);
-        target.Phones.Add(phoneNumber);
+        target.Phones.Add (phoneNumber);
       }
-      if (!string.IsNullOrEmpty(source.HomeFaxNumber))
+      if (!string.IsNullOrEmpty (source.HomeFaxNumber))
       {
-        vCardPhone phoneNumber = new vCardPhone(source.HomeFaxNumber, vCardPhoneTypes.Fax);
+        vCardPhone phoneNumber = new vCardPhone (source.HomeFaxNumber, vCardPhoneTypes.Fax);
         phoneNumber.IsPreferred = (target.Phones.Count == 0);
-        target.Phones.Add(phoneNumber);
+        target.Phones.Add (phoneNumber);
       }
-      if (!string.IsNullOrEmpty(source.BusinessTelephoneNumber))
+      if (!string.IsNullOrEmpty (source.BusinessTelephoneNumber))
       {
-        vCardPhone phoneNumber = new vCardPhone(source.BusinessTelephoneNumber, vCardPhoneTypes.Work);
+        vCardPhone phoneNumber = new vCardPhone (source.BusinessTelephoneNumber, vCardPhoneTypes.Work);
         phoneNumber.IsPreferred = (target.Phones.Count == 0);
-        target.Phones.Add(phoneNumber);
+        target.Phones.Add (phoneNumber);
       }
-      if (!string.IsNullOrEmpty(source.Business2TelephoneNumber))
+      if (!string.IsNullOrEmpty (source.Business2TelephoneNumber))
       {
-        vCardPhone phoneNumber = new vCardPhone(source.Business2TelephoneNumber, vCardPhoneTypes.WorkVoice);
+        vCardPhone phoneNumber = new vCardPhone (source.Business2TelephoneNumber, vCardPhoneTypes.WorkVoice);
         phoneNumber.IsPreferred = (target.Phones.Count == 0);
-        target.Phones.Add(phoneNumber);
+        target.Phones.Add (phoneNumber);
       }
-      if (!string.IsNullOrEmpty(source.BusinessFaxNumber))
+      if (!string.IsNullOrEmpty (source.BusinessFaxNumber))
       {
-        vCardPhone phoneNumber = new vCardPhone(source.BusinessFaxNumber, vCardPhoneTypes.WorkFax);
+        vCardPhone phoneNumber = new vCardPhone (source.BusinessFaxNumber, vCardPhoneTypes.WorkFax);
         phoneNumber.IsPreferred = (target.Phones.Count == 0);
-        target.Phones.Add(phoneNumber);
+        target.Phones.Add (phoneNumber);
       }
-      if (!string.IsNullOrEmpty(source.PagerNumber))
+      if (!string.IsNullOrEmpty (source.PagerNumber))
       {
-        vCardPhone phoneNumber = new vCardPhone(source.PagerNumber, vCardPhoneTypes.Pager);
+        vCardPhone phoneNumber = new vCardPhone (source.PagerNumber, vCardPhoneTypes.Pager);
         phoneNumber.IsPreferred = (target.Phones.Count == 0);
-        target.Phones.Add(phoneNumber);
+        target.Phones.Add (phoneNumber);
       }
-      if (!string.IsNullOrEmpty(source.CarTelephoneNumber))
+      if (!string.IsNullOrEmpty (source.CarTelephoneNumber))
       {
-        vCardPhone phoneNumber = new vCardPhone(source.CarTelephoneNumber, vCardPhoneTypes.Car);
+        vCardPhone phoneNumber = new vCardPhone (source.CarTelephoneNumber, vCardPhoneTypes.Car);
         phoneNumber.IsPreferred = (target.Phones.Count == 0);
-        target.Phones.Add(phoneNumber);
+        target.Phones.Add (phoneNumber);
       }
-      if (!string.IsNullOrEmpty(source.ISDNNumber))
+      if (!string.IsNullOrEmpty (source.ISDNNumber))
       {
-        vCardPhone phoneNumber = new vCardPhone(source.ISDNNumber, vCardPhoneTypes.ISDN);
+        vCardPhone phoneNumber = new vCardPhone (source.ISDNNumber, vCardPhoneTypes.ISDN);
         phoneNumber.IsPreferred = (target.Phones.Count == 0);
-        target.Phones.Add(phoneNumber);
+        target.Phones.Add (phoneNumber);
       }
     }
 
@@ -395,7 +395,6 @@ namespace CalDavSynchronizer.Implementation.Contacts
           target.ISDNNumber = phoneNumber.FullNumber;
         }
       }
-
     }
   }
 }

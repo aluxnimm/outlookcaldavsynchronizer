@@ -44,39 +44,39 @@ namespace CalDavSynchronizer.DataAccess
       return IsResourceType ("A", "addressbook");
     }
 
-    public async Task<IReadOnlyList<Tuple<Uri, string>>> GetUserAddressBooks(bool useWellKnownUrl)
+    public async Task<IReadOnlyList<Tuple<Uri, string>>> GetUserAddressBooks (bool useWellKnownUrl)
     {
       var autodiscoveryUrl = useWellKnownUrl ? AutoDiscoveryUrl : _serverUrl;
 
-      var properties = await GetCurrentUserPrincipal(autodiscoveryUrl);
+      var properties = await GetCurrentUserPrincipal (autodiscoveryUrl);
 
-      XmlNode principal = properties.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-principal", properties.XmlNamespaceManager);
+      XmlNode principal = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-principal", properties.XmlNamespaceManager);
 
       var addressbooks = new List<Tuple<Uri, string>>();
 
       if (principal != null)
       {
-        properties = await GetAddressBookHomeSet(new Uri(autodiscoveryUrl.GetLeftPart(UriPartial.Authority) + principal.InnerText));
+        properties = await GetAddressBookHomeSet (new Uri (autodiscoveryUrl.GetLeftPart (UriPartial.Authority) + principal.InnerText));
 
-        XmlNode homeSet = properties.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/A:addressbook-home-set", properties.XmlNamespaceManager);
+        XmlNode homeSet = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/A:addressbook-home-set", properties.XmlNamespaceManager);
 
         if (homeSet != null)
         {
-          properties = await ListAddressBooks(new Uri(autodiscoveryUrl.GetLeftPart(UriPartial.Authority) + homeSet.InnerText));
+          properties = await ListAddressBooks (new Uri (autodiscoveryUrl.GetLeftPart (UriPartial.Authority) + homeSet.InnerText));
 
-          XmlNodeList responseNodes = properties.XmlDocument.SelectNodes("/D:multistatus/D:response", properties.XmlNamespaceManager);
+          XmlNodeList responseNodes = properties.XmlDocument.SelectNodes ("/D:multistatus/D:response", properties.XmlNamespaceManager);
 
           foreach (XmlElement responseElement in responseNodes)
           {
-            var urlNode = responseElement.SelectSingleNode("D:href", properties.XmlNamespaceManager);
-            var displayNameNode = responseElement.SelectSingleNode("D:propstat/D:prop/D:displayname", properties.XmlNamespaceManager);
+            var urlNode = responseElement.SelectSingleNode ("D:href", properties.XmlNamespaceManager);
+            var displayNameNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:displayname", properties.XmlNamespaceManager);
             if (urlNode != null && displayNameNode != null)
             {
-              XmlNode isCollection = responseElement.SelectSingleNode("D:propstat/D:prop/D:resourcetype/A:addressbook", properties.XmlNamespaceManager);
+              XmlNode isCollection = responseElement.SelectSingleNode ("D:propstat/D:prop/D:resourcetype/A:addressbook", properties.XmlNamespaceManager);
               if (isCollection != null)
               {
-                var uri = UriHelper.UnescapeRelativeUri(autodiscoveryUrl, urlNode.InnerText);
-                addressbooks.Add(Tuple.Create(uri, displayNameNode.InnerText));
+                var uri = UriHelper.UnescapeRelativeUri (autodiscoveryUrl, urlNode.InnerText);
+                addressbooks.Add (Tuple.Create (uri, displayNameNode.InnerText));
               }
             }
           }
@@ -87,15 +87,12 @@ namespace CalDavSynchronizer.DataAccess
 
     private Uri AutoDiscoveryUrl
     {
-      get
-      {
-        return new Uri(_serverUrl.GetLeftPart(UriPartial.Authority) + "/.well-known/carddav/");
-      }
+      get { return new Uri (_serverUrl.GetLeftPart (UriPartial.Authority) + "/.well-known/carddav/"); }
     }
 
-    private Task<XmlDocumentWithNamespaceManager> GetAddressBookHomeSet(Uri url)
+    private Task<XmlDocumentWithNamespaceManager> GetAddressBookHomeSet (Uri url)
     {
-      return _webDavClient.ExecuteWebDavRequestAndReadResponse(
+      return _webDavClient.ExecuteWebDavRequestAndReadResponse (
           url,
           "PROPFIND",
           0,
@@ -112,9 +109,9 @@ namespace CalDavSynchronizer.DataAccess
           );
     }
 
-    private Task<XmlDocumentWithNamespaceManager> ListAddressBooks(Uri url)
+    private Task<XmlDocumentWithNamespaceManager> ListAddressBooks (Uri url)
     {
-      return _webDavClient.ExecuteWebDavRequestAndReadResponse(
+      return _webDavClient.ExecuteWebDavRequestAndReadResponse (
           url,
           "PROPFIND",
           1,
