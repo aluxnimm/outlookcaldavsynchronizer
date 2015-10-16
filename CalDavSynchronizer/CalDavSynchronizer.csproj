@@ -261,7 +261,7 @@
     <Compile Include="Synchronization\IOutlookSynchronizer.cs" />
     <Compile Include="Synchronization\OutlookSynchronizer.cs" />
     <Compile Include="Scheduling\Scheduler.cs" />
-    <Compile Include="Scheduling\SynchronizationWorker.cs" />
+    <Compile Include="Scheduling\SynchronizationProfileRunner.cs" />
     <Compile Include="Implementation\Events\OutlookCaldavEventUpdateFromNewerToOlder.cs" />
     <Compile Include="Implementation\Events\OutlookEventRepository.cs" />
     <Compile Include="DataAccess\CalDavDataAccess.cs" />

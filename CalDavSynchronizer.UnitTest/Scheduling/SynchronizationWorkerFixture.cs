@@ -33,7 +33,7 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
   public class SynchronizationWorkerFixture
   {
     private ISynchronizerFactory _synchronizerFactory;
-    private SynchronizationWorker _synchronizationWorker;
+    private SynchronizationProfileRunner _synchronizationProfileRunner;
     private StubSynchronizer _stubSynchronizer;
 
 
@@ -41,21 +41,21 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
     public void SetUp ()
     {
       _synchronizerFactory = MockRepository.GenerateStub<ISynchronizerFactory>();
-      _synchronizationWorker = new SynchronizationWorker (_synchronizerFactory);
+      _synchronizationProfileRunner = new SynchronizationProfileRunner (_synchronizerFactory);
 
       var options = new Options();
       _stubSynchronizer = new StubSynchronizer();
       _synchronizerFactory.Expect (f => f.CreateSynchronizer (options)).Return (_stubSynchronizer);
-      _synchronizationWorker.UpdateOptions (options);
+      _synchronizationProfileRunner.UpdateOptions (options);
     }
 
     [Test]
     public void RunNoThrowAndRescheduleIfNotRunning ()
     {
-      var synchronizationTask1 = _synchronizationWorker.RunNoThrowAndRescheduleIfNotRunning();
-      var synchronizationTask2 = _synchronizationWorker.RunNoThrowAndRescheduleIfNotRunning();
-      var synchronizationTask3 = _synchronizationWorker.RunNoThrowAndRescheduleIfNotRunning();
-      var synchronizationTask4 = _synchronizationWorker.RunNoThrowAndRescheduleIfNotRunning();
+      var synchronizationTask1 = _synchronizationProfileRunner.RunNoThrowAndRescheduleIfNotRunning();
+      var synchronizationTask2 = _synchronizationProfileRunner.RunNoThrowAndRescheduleIfNotRunning();
+      var synchronizationTask3 = _synchronizationProfileRunner.RunNoThrowAndRescheduleIfNotRunning();
+      var synchronizationTask4 = _synchronizationProfileRunner.RunNoThrowAndRescheduleIfNotRunning();
 
       Assert.That (synchronizationTask1.IsCompleted, Is.False);
       Assert.That (synchronizationTask2.IsCompleted, Is.True);

@@ -27,7 +27,7 @@ using log4net;
 
 namespace CalDavSynchronizer.Scheduling
 {
-  public class SynchronizationWorker
+  public class SynchronizationProfileRunner
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -39,7 +39,7 @@ namespace CalDavSynchronizer.Scheduling
     private readonly ISynchronizerFactory _synchronizerFactory;
     private int _workInProgress = 0;
 
-    public SynchronizationWorker (ISynchronizerFactory synchronizerFactory)
+    public SynchronizationProfileRunner (ISynchronizerFactory synchronizerFactory)
     {
       _synchronizerFactory = synchronizerFactory;
       // Set to min, to ensure that it runs on the first run after startup
