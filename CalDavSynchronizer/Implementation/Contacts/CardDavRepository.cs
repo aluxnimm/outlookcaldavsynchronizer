@@ -87,8 +87,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
           {
             lock (result)
             {
-              foreach (var calendar in threadLocal.Item2)
-                result.Add (EntityWithVersion.Create (calendar.Item1, calendar.Item2));
+              foreach (var card in threadLocal.Item2)
+                result.Add (EntityWithVersion.Create (card.Item1, card.Item2));
             }
           });
 
@@ -137,17 +137,17 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    private static bool TryDeserialize (string iCalData, out vCard vcard, Uri uriOfCalendarForLogging, vCardStandardReader deserializer)
+    private static bool TryDeserialize (string vcardData, out vCard vcard, Uri uriOfAddressbookForLogging, vCardStandardReader deserializer)
     {
       vcard = null;
       try
       {
-        vcard = Deserialize (iCalData, deserializer);
+        vcard = Deserialize (vcardData, deserializer);
         return true;
       }
       catch (Exception x)
       {
-        s_logger.Error (string.Format ("Could not deserilaize ICalData of '{0}':\r\n{1}", uriOfCalendarForLogging, iCalData), x);
+        s_logger.Error (string.Format ("Could not deserialize vcardData of '{0}':\r\n{1}", uriOfAddressbookForLogging, vcardData), x);
         return false;
       }
     }
