@@ -235,6 +235,7 @@
     <Compile Include="Implementation\Contacts\OutlookContactRelationData.cs" />
     <Compile Include="Implementation\Contacts\OutlookContactRelationDataFactory.cs" />
     <Compile Include="Implementation\Events\TimeZoneMapper.cs" />
+    <Compile Include="Implementation\IOutlookRepository.cs" />
     <Compile Include="Implementation\TimeRangeFiltering\DateTimeRange.cs" />
     <Compile Include="Implementation\TimeRangeFiltering\DateTimeRangeProvider.cs" />
     <Compile Include="Implementation\Events\EventConflictInitialSyncStateCreationStrategyAutomatic.cs" />
@@ -257,6 +258,8 @@
     <Compile Include="Implementation\TimeRangeFiltering\NullDateTimeRangeProvider.cs" />
     <Compile Include="Properties\AssemblyInfoCommon.cs" />
     <Compile Include="Scheduling\ISynchronizerFactory.cs" />
+    <Compile Include="Synchronization\IOutlookSynchronizer.cs" />
+    <Compile Include="Synchronization\OutlookSynchronizer.cs" />
     <Compile Include="Scheduling\Scheduler.cs" />
     <Compile Include="Scheduling\SynchronizationWorker.cs" />
     <Compile Include="Implementation\Events\OutlookCaldavEventUpdateFromNewerToOlder.cs" />

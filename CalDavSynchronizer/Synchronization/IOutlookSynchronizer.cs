@@ -15,14 +15,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.Synchronization;
-using GenSync.Synchronization;
+using System.Threading.Tasks;
 
-namespace CalDavSynchronizer.Scheduling
+namespace CalDavSynchronizer.Synchronization
 {
-  public interface ISynchronizerFactory
+  public interface IOutlookSynchronizer
   {
-    IOutlookSynchronizer CreateSynchronizer (Options options);
+    Task Synchronize ();
+    Task SnychronizeIfResponsible (string outlookId, string folderEntryId, string folderStoreId);
   }
 }

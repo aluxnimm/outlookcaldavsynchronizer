@@ -27,7 +27,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class OutlookEventRepository : IEntityRepository<AppointmentItemWrapper, string, DateTime>
+  public class OutlookEventRepository : IEntityRepository<AppointmentItemWrapper, string, DateTime>, IOutlookRepository
   {
     private readonly NameSpace _mapiNameSpace;
     private readonly string _folderId;
@@ -178,6 +178,11 @@ namespace CalDavSynchronizer.Implementation.Events
       return new AppointmentItemWrapper (
           (AppointmentItem) mapiNamespace.GetItemFromID (id, folderStoreId),
           entryId => (AppointmentItem) mapiNamespace.GetItemFromID (id, folderStoreId));
+    }
+
+    public bool IsResponsibleForFolder (string folderEntryId, string folderStoreId)
+    {
+      return folderEntryId == _folderId && folderStoreId == _folderStoreId;
     }
   }
 }

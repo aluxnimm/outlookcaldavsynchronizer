@@ -27,7 +27,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public class OutlookContactRepository : IEntityRepository<GenericComObjectWrapper<ContactItem>, string, DateTime>
+  public class OutlookContactRepository : IEntityRepository<GenericComObjectWrapper<ContactItem>, string, DateTime>, IOutlookRepository
   {
     private readonly NameSpace _mapiNameSpace;
     private readonly string _folderId;
@@ -155,6 +155,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
           return Task.FromResult (result);
         }
       }
+    }
+
+    public bool IsResponsibleForFolder (string folderEntryId, string folderStoreId)
+    {
+      return folderEntryId == _folderId && folderStoreId == _folderStoreId;
     }
   }
 }

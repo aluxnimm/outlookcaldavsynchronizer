@@ -11,6 +11,7 @@ using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Events;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using CalDavSynchronizer.Scheduling;
+using CalDavSynchronizer.Synchronization;
 using DDay.iCal;
 using DDay.iCal.Serialization.iCalendar;
 using GenSync;
@@ -65,7 +66,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           NullDateTimeRangeProvider.Instance);
     }
 
-    public static ISynchronizer CreateEventSynchronizer (
+    public static IOutlookSynchronizer CreateEventSynchronizer (
         SynchronizationMode mode,
         ICalDavDataAccess calDavDataAccess,
         IEntityRelationDataAccess<string, DateTime, Uri, string> entityRelationDataAccess = null,
@@ -204,7 +205,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           .Return (Task.FromResult (
               EntityIdWithVersion.Create (new Uri ("http://bla.com"), "blubb")))
           .WhenCalled (a => calDavEvents.Add ((string) a.Arguments[0]));
-      ISynchronizer synchronizer = CreateEventSynchronizer (
+      var synchronizer = CreateEventSynchronizer (
           SynchronizationMode.ReplicateOutlookIntoServer,
           calDavDataAccess,
           entityRelationDataAccess,
@@ -253,7 +254,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
               EntityIdWithVersion.Create (new Uri ("http://bla.com"), "blubb")))
           .WhenCalled (a => { roundTrippedData = (string) a.Arguments[1]; });
 
-      ISynchronizer synchronizer = OutlookTestContext.CreateEventSynchronizer (
+      var synchronizer = OutlookTestContext.CreateEventSynchronizer (
           SynchronizationMode.ReplicateOutlookIntoServer,
           calDavDataAccess,
           entityRelationDataAccess);

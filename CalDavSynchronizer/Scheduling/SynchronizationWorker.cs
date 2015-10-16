@@ -20,6 +20,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Diagnostics;
+using CalDavSynchronizer.Synchronization;
 using CalDavSynchronizer.Utilities;
 using GenSync.Synchronization;
 using log4net;
@@ -32,7 +33,7 @@ namespace CalDavSynchronizer.Scheduling
 
     private DateTime _lastRun;
     private TimeSpan _interval;
-    private ISynchronizer _synchronizer;
+    private IOutlookSynchronizer _synchronizer;
     private string _profileName;
     private bool _inactive;
     private readonly ISynchronizerFactory _synchronizerFactory;

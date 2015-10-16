@@ -26,7 +26,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Tasks
 {
-  public class OutlookTaskRepository : IEntityRepository<TaskItemWrapper, string, DateTime>
+  public class OutlookTaskRepository : IEntityRepository<TaskItemWrapper, string, DateTime>, IOutlookRepository
   {
     private readonly Folder _taskFolder;
     private readonly NameSpace _mapiNameSpace;
@@ -139,6 +139,11 @@ namespace CalDavSynchronizer.Implementation.Tasks
           return Task.FromResult (result);
         }
       }
+    }
+
+    public bool IsResponsibleForFolder (string folderEntryId, string folderStoreId)
+    {
+      return folderEntryId == _taskFolder.EntryID && folderStoreId == _taskFolder.StoreID;
     }
   }
 }

@@ -22,6 +22,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Scheduling;
+using CalDavSynchronizer.Synchronization;
 using GenSync.Synchronization;
 using NUnit.Framework;
 using Rhino.Mocks;
@@ -68,7 +69,7 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
       Assert.That (_stubSynchronizer.RunCount, Is.EqualTo (1));
     }
 
-    private class StubSynchronizer : ISynchronizer
+    private class StubSynchronizer : IOutlookSynchronizer
     {
       private int _runCount;
       private ManualResetEventSlim _finishSynchronizationEvent = new ManualResetEventSlim();
@@ -87,6 +88,11 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
       {
         _runCount++;
         return Task.Run (() => FinishSynchronizationEvent.Wait());
+      }
+
+      public Task SnychronizeIfResponsible (string outlookId, string folderEntryId, string folderStoreId)
+      {
+        throw new NotImplementedException();
       }
     }
   }
