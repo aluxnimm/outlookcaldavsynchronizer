@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -133,7 +134,21 @@ namespace CalDavSynchronizer.Implementation.Contacts
       {
         _vCardWriter.Write (vcard, writer);
         writer.Flush();
-        return writer.GetStringBuilder().ToString();
+
+        string originalvCardString = writer.GetStringBuilder().ToString();
+        string fixedvCardString = originalvCardString;
+
+        // Reformat BDAY attribute to yyyy-MM-dd if included to work around a BUG in vCard Library
+        var bDayMatch = Regex.Match (originalvCardString, "BDAY:(.*?)\r\n");
+        if (bDayMatch.Success)
+        {
+          DateTime date;
+          if (DateTime.TryParse (bDayMatch.Groups[1].Value, out date))
+          {
+            fixedvCardString = Regex.Replace (originalvCardString, "BDAY:(.*?)\r\n", "BDAY:" + date.ToString ("yyyy-MM-dd") + "\r\n");
+          }
+        }
+        return fixedvCardString;
       }
     }
 
