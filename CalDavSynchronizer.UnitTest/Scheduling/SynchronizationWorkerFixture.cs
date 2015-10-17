@@ -52,10 +52,10 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
     [Test]
     public void RunNoThrowAndRescheduleIfNotRunning ()
     {
-      var synchronizationTask1 = _synchronizationProfileRunner.RunNoThrowAndRescheduleIfNotRunning();
-      var synchronizationTask2 = _synchronizationProfileRunner.RunNoThrowAndRescheduleIfNotRunning();
-      var synchronizationTask3 = _synchronizationProfileRunner.RunNoThrowAndRescheduleIfNotRunning();
-      var synchronizationTask4 = _synchronizationProfileRunner.RunNoThrowAndRescheduleIfNotRunning();
+      var synchronizationTask1 = _synchronizationProfileRunner.RunAndRescheduleNoThrow (true);
+      var synchronizationTask2 = _synchronizationProfileRunner.RunAndRescheduleNoThrow (true);
+      var synchronizationTask3 = _synchronizationProfileRunner.RunAndRescheduleNoThrow (true);
+      var synchronizationTask4 = _synchronizationProfileRunner.RunAndRescheduleNoThrow (true);
 
       Assert.That (synchronizationTask1.IsCompleted, Is.False);
       Assert.That (synchronizationTask2.IsCompleted, Is.True);
@@ -66,7 +66,7 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
 
       synchronizationTask1.Wait();
 
-      Assert.That (_stubSynchronizer.RunCount, Is.EqualTo (1));
+      Assert.That (_stubSynchronizer.RunCount, Is.EqualTo (2));
     }
 
     private class StubSynchronizer : IOutlookSynchronizer

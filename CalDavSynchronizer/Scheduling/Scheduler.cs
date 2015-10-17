@@ -58,7 +58,7 @@ namespace CalDavSynchronizer.Scheduling
         _ensureSynchronizationContext();
         _synchronizationTimer.Stop();
         foreach (var worker in _runnersById.Values)
-          await worker.RunIfRequiredAndReschedule();
+          await worker.RunAndRescheduleNoThrow (false);
         _synchronizationTimer.Start();
       }
       catch (Exception x)
@@ -91,7 +91,7 @@ namespace CalDavSynchronizer.Scheduling
     public async Task RunNow ()
     {
       foreach (var worker in _runnersById.Values)
-        await worker.RunNoThrowAndRescheduleIfNotRunning();
+        await worker.RunAndRescheduleNoThrow (true);
     }
   }
 }

@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,6 +28,13 @@ using log4net;
 
 namespace CalDavSynchronizer.Scheduling
 {
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <remarks>
+  /// This class is NOT threadsafe, but is safe regarding multiple entries of the same thread ( main thread)
+  /// which will is a common case when using async methods
+  /// </remarks>
   public class SynchronizationProfileRunner
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
@@ -37,7 +45,13 @@ namespace CalDavSynchronizer.Scheduling
     private string _profileName;
     private bool _inactive;
     private readonly ISynchronizerFactory _synchronizerFactory;
-    private int _workInProgress = 0;
+    private int _isRunning = 0;
+
+    private volatile bool _fullSyncPending = false;
+    // There is no threadsafe Datastructure required, since there will be no concurrent threads
+    // The concurrency in this scenario lies in the fact that the MainThread will enter multiple times, because
+    // all methods are async
+    private readonly List<PartialSync> _pendingPartialSyncs = new List<PartialSync>();
 
     public SynchronizationProfileRunner (ISynchronizerFactory synchronizerFactory)
     {
@@ -54,36 +68,54 @@ namespace CalDavSynchronizer.Scheduling
       _inactive = options.Inactive;
     }
 
-    public async Task RunIfRequiredAndReschedule ()
+    public async Task RunAndRescheduleNoThrow (bool runNow)
     {
-      if (!_inactive && _interval > TimeSpan.Zero && DateTime.UtcNow > _lastRun + _interval)
+      if (runNow || !_inactive && _interval > TimeSpan.Zero && DateTime.UtcNow > _lastRun + _interval)
       {
-        await RunNoThrowAndRescheduleIfNotRunning();
+        _fullSyncPending = true;
+        await RunAllPendingJobs();
       }
     }
 
-    public async Task RunNoThrowAndRescheduleIfNotRunning ()
+    public async Task RunIfResponsibleNoThrow (string outlookId, string folderEntryId, string folderStoreId)
     {
-      // Monitor cannot be used here, since Monitor allows recursive enter for a thread (which can easily happen in an async scenario)
-      if (Interlocked.CompareExchange (ref _workInProgress, 1, 0) == 0)
+      _pendingPartialSyncs.Add (new PartialSync (outlookId, folderEntryId, folderStoreId));
+      await RunAllPendingJobs();
+    }
+
+    private async Task RunAllPendingJobs ()
+    {
+      // Monitor cannot be used here, since Monitor allows recursive enter for a thread 
+      if (Interlocked.CompareExchange (ref _isRunning, 1, 0) == 0)
       {
         try
         {
-          await RunNoThrowAndReschedule();
+          while (_fullSyncPending || _pendingPartialSyncs.Count > 0)
+          {
+            if (_fullSyncPending)
+            {
+              _fullSyncPending = false;
+              Thread.MemoryBarrier(); // should not be required because there is just one thread entering multiple times
+              await RunAndRescheduleNoThrow();
+            }
+
+            if (_pendingPartialSyncs.Count > 0)
+            {
+              var pendingPartialSync = _pendingPartialSyncs[0];
+              _pendingPartialSyncs.RemoveAt (0);
+              Thread.MemoryBarrier(); // should not be required because there is just one thread entering multiple times
+              await RunIfResponsibleNoThrow (pendingPartialSync.OutlookId, pendingPartialSync.FolderEntryId, pendingPartialSync.FolderStoreId);
+            }
+          }
         }
         finally
         {
-          Interlocked.Exchange (ref _workInProgress, 0);
+          Interlocked.Exchange (ref _isRunning, 0);
         }
-      }
-      else
-      {
-        s_logger.InfoFormat ("Skipping run of Synchronization profile '{0}', because it is currently already running.", _profileName);
       }
     }
 
-
-    private async Task RunNoThrowAndReschedule ()
+    private async Task RunAndRescheduleNoThrow ()
     {
       if (_inactive)
         return;
@@ -110,6 +142,47 @@ namespace CalDavSynchronizer.Scheduling
       finally
       {
         _lastRun = DateTime.UtcNow;
+      }
+    }
+
+    private async Task RunIfResponsibleNoThrow (PartialSync syncJob)
+    {
+      if (_inactive)
+        return;
+
+      try
+      {
+        using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("Running synchronization profile '{0}'", _profileName)))
+        {
+          try
+          {
+            await _synchronizer.SnychronizeIfResponsible (syncJob.OutlookId, syncJob.FolderEntryId, syncJob.FolderStoreId);
+          }
+          finally
+          {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+          }
+        }
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.HandleException (x, s_logger);
+      }
+    }
+
+    private struct PartialSync
+    {
+      public readonly string OutlookId;
+      public readonly string FolderEntryId;
+      public readonly string FolderStoreId;
+
+      public PartialSync (string outlookId, string folderEntryId, string folderStoreId)
+          : this()
+      {
+        OutlookId = outlookId;
+        FolderEntryId = folderEntryId;
+        FolderStoreId = folderStoreId;
       }
     }
   }
