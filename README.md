@@ -1,6 +1,6 @@
 ## Outlook CalDav Synchronizer ##
 
-Outlook Plugin, which synchronizes events between Outlook and Google, SOGo, Horde or any other CalDAV server. Supported Outlook versions are 2013, 2010 and 2007.
+Outlook Plugin, which synchronizes events, tasks and contacts(alpha) between Outlook and Google, SOGo, Horde or any other CalDAV or CardDAV server. Supported Outlook versions are 2013, 2010 and 2007.
 
 ### Project Homepage ###
 [https://sourceforge.net/projects/outlookcaldavsynchronizer/](https://sourceforge.net/projects/outlookcaldavsynchronizer/)
@@ -39,13 +39,14 @@ This project was initially developed as a master thesis project at the [Universi
 - sync multiple calendars per profile
 - sync reminders, categories, recurrences with exceptions, importance, transparency
 - sync organizer and attendees and own response status
-- task support (alpha)
-- CardDav is planned 
+- task support (beta)
+- inital CardDAV support to sync contacts (alpha) 
 
 ### Used Libraries ###
 
 -  [DDay.iCal](http://www.ddaysoftware.com/Pages/Projects/DDay.iCal/)
 -  [Apache log4net](https://logging.apache.org/log4net/)
+-  [Thought.vCard](http://nugetmusthaves.com/Package/Thought.vCards)
 
 ### Install instructions ###
 
@@ -53,6 +54,11 @@ Download and extract the `OutlookCalDavSynchronizer-<Version>.zip` into the same
 If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=44074)
 
 ### Changlog ###
+
+#### 1.4.0 ####
+- Initial CardDAV support to sync contacts (alpha)
+- Refactoring of Autodiscovery
+- Fix options and about buttons for Outlook 2007
 
 #### 1.3.4 ####
 - Add support for Outlook 2007, credits to PierreMarieBaty (pull request #67)
