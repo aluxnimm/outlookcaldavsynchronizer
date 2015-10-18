@@ -46,6 +46,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
       target.NameSuffix = source.Inner.Suffix;
       target.AdditionalNames = source.Inner.MiddleName;
       target.Gender = MapGender2To1 (source.Inner.Gender);
+      target.FormattedName = source.Inner.FileAs;
+
 
       if (!string.IsNullOrEmpty (source.Inner.NickName))
       {
@@ -152,6 +154,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       target.Inner.Suffix = source.NameSuffix;
       target.Inner.MiddleName = source.AdditionalNames;
       target.Inner.Gender = MapGender1To2 (source.Gender);
+      target.Inner.FileAs = source.FormattedName;
 
       if (source.Nicknames.Count > 0)
       {
