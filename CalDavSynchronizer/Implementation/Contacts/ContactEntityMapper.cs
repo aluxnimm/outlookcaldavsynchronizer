@@ -37,6 +37,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
     private const string PR_EMAIL2ADDRESS = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/8094001F";
     private const string PR_EMAIL3ADDRESS = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/80a4001F";
     private const string PR_USER_X509_CERTIFICATE = "http://schemas.microsoft.com/mapi/proptag/0x3A701102";
+    private const string PR_ATTACH_DATA_BIN = "http://schemas.microsoft.com/mapi/proptag/0x37010102";
 
     public vCard Map1To2 (GenericComObjectWrapper<ContactItem> source, vCard target)
     {
@@ -141,7 +142,9 @@ namespace CalDavSynchronizer.Implementation.Contacts
         target.Websites.Add (new vCardWebsite (source.Inner.BusinessHomePage, vCardWebsiteTypes.Work));
       }
 
-      MapCertificate1To2(source.Inner, target);
+      MapCertificate1To2 (source.Inner, target);
+
+      MapPhoto1To2 (source.Inner, target);
 
       return target;
     }
@@ -253,7 +256,9 @@ namespace CalDavSynchronizer.Implementation.Contacts
         target.Inner.BusinessHomePage = sourceBusinessHomePage.Url;
       }
 
-      MapCertificate2To1(source, target.Inner);
+      MapCertificate2To1 (source, target.Inner);
+
+      MapPhoto2To1 (source, target.Inner);
 
       return target;
     }
@@ -425,6 +430,51 @@ namespace CalDavSynchronizer.Implementation.Contacts
           {
             s_logger.Error ("Could not set property PR_USER_X509_CERTIFICATE for contact.", ex);
           }
+        }
+      }
+    }
+
+    private static void MapPhoto1To2 (ContactItem source, vCard target)
+    {
+      if (source.HasPicture)
+      {
+        foreach (var att in source.Attachments.ToSafeEnumerable <Microsoft.Office.Interop.Outlook.Attachment>())
+        {
+          if (att.DisplayName == "ContactPicture.jpg")
+          {
+            using (var oPa = GenericComObjectWrapper.Create (att.PropertyAccessor))
+            {
+              try
+              {
+                byte[] rawAttachmentData = oPa.Inner.GetProperty (PR_ATTACH_DATA_BIN);
+                target.Photos.Add (new vCardPhoto (rawAttachmentData));
+              }
+              catch (COMException ex)
+              {
+                s_logger.Error("Could not getproperty PR_ATTACH_DATA_BIN to export picture for contact.", ex);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    private static void MapPhoto2To1 (vCard source, ContactItem target)
+    {
+      if (source.Photos.Count > 0)
+      {
+        vCardPhoto contactPhoto = source.Photos[0];
+
+        if (contactPhoto.IsLoaded)
+        {
+          string picturePath = Path.GetTempPath() + @"\Contact_" + target.EntryID + ".jpg";
+          using (FileStream fs = new FileStream (picturePath,FileMode.Create))
+          {
+            fs.Write (contactPhoto.GetBytes(), 0, contactPhoto.GetBytes().Length);
+            fs.Flush();
+          }
+          target.AddPicture (picturePath);
+          File.Delete (picturePath);
         }
       }
     }
