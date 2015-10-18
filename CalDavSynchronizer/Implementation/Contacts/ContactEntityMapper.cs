@@ -24,6 +24,8 @@ using Microsoft.Office.Interop.Outlook;
 using Thought.vCards;
 using log4net;
 using System.Reflection;
+using System.IO;
+
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
@@ -34,6 +36,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
     private const string PR_EMAIL1ADDRESS = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/8084001F";
     private const string PR_EMAIL2ADDRESS = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/8094001F";
     private const string PR_EMAIL3ADDRESS = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/80a4001F";
+    private const string PR_USER_X509_CERTIFICATE = "http://schemas.microsoft.com/mapi/proptag/0x3A701102";
 
     public vCard Map1To2 (GenericComObjectWrapper<ContactItem> source, vCard target)
     {
@@ -135,6 +138,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
       {
         target.Websites.Add (new vCardWebsite (source.Inner.BusinessHomePage, vCardWebsiteTypes.Work));
       }
+
+      MapCertificate1To2(source.Inner, target);
 
       return target;
     }
@@ -245,6 +250,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
         target.Inner.BusinessHomePage = sourceBusinessHomePage.Url;
       }
 
+      MapCertificate2To1(source, target.Inner);
+
       return target;
     }
 
@@ -344,6 +351,78 @@ namespace CalDavSynchronizer.Implementation.Contacts
           email3Address = source.Email3Address;
         }
         if (!string.IsNullOrEmpty(email3Address)) target.EmailAddresses.Add(new vCardEmailAddress(email3Address));
+      }
+    }
+
+    private static byte[] GetRawCert (byte[] certWrapper)
+    {
+      // strip header and footer for PidTagUserX509Certificate according to
+      // http://msdn.microsoft.com/en-us/library/hh745506%28v=exchg.80%29.aspx
+
+      using (MemoryStream ms = new MemoryStream())
+      {
+        ms.Write(certWrapper, 12, certWrapper.Length - 20);
+        byte[] o = ms.ToArray() ;
+        return o;
+      }
+    }
+
+    private static object[] BuildCertProperty (byte[] rawData)
+    {
+      // add header and footer for PidTagUserX509Certificate according to
+      // http://msdn.microsoft.com/en-us/library/hh745506%28v=exchg.80%29.aspx
+
+      using (MemoryStream ms = new MemoryStream())
+      {
+        byte[] headerWithoutLength = { 0x01, 0x00, 0x08, 0x00, 0x01, 0x00, 0x00, 0x00, 0x03, 0x00 };
+        ms.Write(headerWithoutLength, 0, headerWithoutLength.Length);
+        byte[] lengthBytes = BitConverter.GetBytes((short)(rawData.Length + 4));
+        ms.WriteByte(lengthBytes[0]);
+        ms.WriteByte(lengthBytes[1]);
+        ms.Write(rawData, 0, rawData.Length);
+        byte[] footer = { 0x06, 0x00, 0x08, 0x00, 0x01, 0x00, 0x00, 0x00, 0x20, 0x00, 0x08, 0x00, 
+                    0x07, 0x00, 0x00, 0x00, 0x02, 0x00, 0x04, 0x00 };
+        ms.Write(footer, 0, footer.Length);
+
+        object[] o = new object[] { ms.ToArray() };
+        return o;
+      }
+    }
+
+    private static void MapCertificate1To2 (ContactItem source, vCard target)
+    {
+      try
+      {
+        object[] certWrapper = source.GetPropertySafe(PR_USER_X509_CERTIFICATE);
+
+        if (certWrapper.Length > 0)
+        {
+          byte[] rawCert = GetRawCert((byte[])certWrapper[0]);
+          target.Certificates.Add(new vCardCertificate("X509", rawCert));
+        }
+      }
+      catch (COMException ex)
+      {
+        s_logger.Error("Could not get property PR_USER_X509_CERTIFICATE for contact.", ex);
+      }
+    }
+
+    private static void MapCertificate2To1 (vCard source, ContactItem target)
+    {
+      if (source.Certificates.Count > 0)
+      {
+        object[] certWrapper = BuildCertProperty (source.Certificates[0].Data);
+        using (var oPa = GenericComObjectWrapper.Create (target.PropertyAccessor))
+        {
+          try
+          {
+            oPa.Inner.SetProperty (PR_USER_X509_CERTIFICATE, certWrapper);
+          }
+          catch (COMException ex)
+          {
+            s_logger.Error ("Could not set property PR_USER_X509_CERTIFICATE for contact.", ex);
+          }
+        }
       }
     }
 
