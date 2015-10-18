@@ -16,16 +16,25 @@
 
 using System;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using DDay.iCal;
 using GenSync.EntityMapping;
 using Microsoft.Office.Interop.Outlook;
 using Thought.vCards;
+using log4net;
+using System.Reflection;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
   public class ContactEntityMapper : IEntityMapper<GenericComObjectWrapper<ContactItem>, vCard>
   {
+    private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
+
+    private const string PR_EMAIL1ADDRESS = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/8084001F";
+    private const string PR_EMAIL2ADDRESS = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/8094001F";
+    private const string PR_EMAIL3ADDRESS = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/80a4001F";
+
     public vCard Map1To2 (GenericComObjectWrapper<ContactItem> source, vCard target)
     {
       target.GivenName = source.Inner.FirstName;
@@ -51,18 +60,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
             );
       }
 
-      if (!string.IsNullOrEmpty (source.Inner.Email1Address))
-      {
-        target.EmailAddresses.Add (new vCardEmailAddress (source.Inner.Email1Address));
-      }
-      if (!string.IsNullOrEmpty (source.Inner.Email2Address))
-      {
-        target.EmailAddresses.Add (new vCardEmailAddress (source.Inner.Email2Address));
-      }
-      if (!string.IsNullOrEmpty (source.Inner.Email3Address))
-      {
-        target.EmailAddresses.Add (new vCardEmailAddress (source.Inner.Email3Address));
-      }
+      MapEmailAddresses1To2 (source.Inner, target);
 
       if (!string.IsNullOrEmpty (source.Inner.HomeAddress))
       {
@@ -112,7 +110,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         target.DeliveryAddresses.Add (otherAddress);
       }
 
-      MapPhoneNumbers1to2 (source.Inner, target);
+      MapPhoneNumbers1To2 (source.Inner, target);
 
       if (!source.Inner.Birthday.Equals (new DateTime (4501, 1, 1, 0, 0, 0)))
       {
@@ -219,7 +217,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         }
       }
 
-      MapTelephoneNumber2to1 (source, target.Inner);
+      MapTelephoneNumber2To1 (source, target.Inner);
 
       target.Inner.Birthday = source.BirthDate ?? new DateTime (4501, 1, 1);
 
@@ -280,7 +278,76 @@ namespace CalDavSynchronizer.Implementation.Contacts
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", sourceGender));
     }
 
-    private static void MapPhoneNumbers1to2 (ContactItem source, vCard target)
+    private static void MapEmailAddresses1To2 (ContactItem source, vCard target)
+    {
+      if (!string.IsNullOrEmpty(source.Email1Address))
+      {
+        string email1Address = string.Empty;
+
+        if (source.Email1AddressType == "EX")
+        {
+          try
+          {
+            email1Address = source.GetPropertySafe(PR_EMAIL1ADDRESS);
+          }
+          catch (COMException ex)
+          {
+            s_logger.Error ("Could not get property PR_EMAIL1ADDRESS for Email1Address", ex);
+          }
+        }
+        else
+        {
+          email1Address = source.Email1Address;
+        }
+        if (!string.IsNullOrEmpty(email1Address)) target.EmailAddresses.Add(new vCardEmailAddress(email1Address));
+      }
+
+      if (!string.IsNullOrEmpty(source.Email2Address))
+      {
+        string email2Address = string.Empty;
+
+        if (source.Email2AddressType == "EX")
+        {
+          try
+          {
+            email2Address = source.GetPropertySafe(PR_EMAIL2ADDRESS);
+          }
+          catch (COMException ex)
+          {
+            s_logger.Error ("Could not get property PR_EMAIL2ADDRESS for Email2Address", ex);
+          }
+        }
+        else
+        {
+          email2Address = source.Email2Address;
+        }
+        if (!string.IsNullOrEmpty(email2Address)) target.EmailAddresses.Add(new vCardEmailAddress(email2Address));
+      }
+
+      if (!string.IsNullOrEmpty(source.Email3Address))
+      {
+        string email3Address = string.Empty;
+
+        if (source.Email3AddressType == "EX")
+        {
+          try
+          {
+            email3Address = source.GetPropertySafe(PR_EMAIL3ADDRESS);
+          }
+          catch (COMException ex)
+          {
+            s_logger.Error ("Could not get property PR_EMAIL3ADDRESS for Email3Address", ex);
+          }
+        }
+        else
+        {
+          email3Address = source.Email3Address;
+        }
+        if (!string.IsNullOrEmpty(email3Address)) target.EmailAddresses.Add(new vCardEmailAddress(email3Address));
+      }
+    }
+
+    private static void MapPhoneNumbers1To2 (ContactItem source, vCard target)
     {
       if (!string.IsNullOrEmpty (source.PrimaryTelephoneNumber))
       {
@@ -350,7 +417,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    private static void MapTelephoneNumber2to1 (vCard source, ContactItem target)
+    private static void MapTelephoneNumber2To1 (vCard source, ContactItem target)
     {
       foreach (var phoneNumber in source.Phones)
       {
