@@ -66,6 +66,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
             );
       }
 
+      if (!string.IsNullOrEmpty (source.Inner.IMAddress))
+      {
+        target.IMs.Add (new vCardIMPP (source.Inner.IMAddress, IMServiceType.AIM, ItemType.HOME));
+      }
+
       MapEmailAddresses1To2 (source.Inner, target);
 
       if (!string.IsNullOrEmpty (source.Inner.HomeAddress))
@@ -175,6 +180,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
         string[] categories = new string[source.Categories.Count];
         source.Categories.CopyTo (categories, 0);
         target.Inner.Categories = string.Join (CultureInfo.CurrentCulture.TextInfo.ListSeparator, categories);
+      }
+
+      if (source.IMs.Count > 0)
+      {
+        target.Inner.IMAddress = source.IMs[0].Handle;
       }
 
       if (source.EmailAddresses.Count >= 1)
