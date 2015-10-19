@@ -201,8 +201,10 @@ namespace CalDavSynchronizer.Ui
 
         if (ConnectionTester.RequiresAutoDiscovery (enteredUri))
         {
-          autoDiscoveredUrl = await DoAutoDiscovery (enteredUri, webDavClient, true);
-          if (autoDiscoveredUrl == null)
+          var autodiscoveryResult = await DoAutoDiscovery (enteredUri, webDavClient, true);
+          if (autodiscoveryResult.RessourceUrl != null)
+            autoDiscoveredUrl = autodiscoveryResult.RessourceUrl;
+          else
             return;
         }
         else
@@ -218,10 +220,21 @@ namespace CalDavSynchronizer.Ui
           }
           else
           {
-            autoDiscoveredUrl = await DoAutoDiscovery (enteredUri, webDavClient, false) ??
-                                await DoAutoDiscovery (enteredUri, webDavClient, true);
-            if (autoDiscoveredUrl == null)
+            var autodiscoveryResult = await DoAutoDiscovery (enteredUri, webDavClient, false);
+            if (autodiscoveryResult.WasCancelled)
               return;
+            if (autodiscoveryResult.RessourceUrl != null)
+            {
+              autoDiscoveredUrl = autodiscoveryResult.RessourceUrl;
+            }
+            else
+            {
+              var autodiscoveryResult2 = await DoAutoDiscovery (enteredUri, webDavClient, true);
+              if (autodiscoveryResult2.RessourceUrl != null)
+                autoDiscoveredUrl = autodiscoveryResult2.RessourceUrl;
+              else
+                return;
+            }
           }
         }
 
@@ -385,8 +398,30 @@ namespace CalDavSynchronizer.Ui
              || synchronizationMode == SynchronizationMode.ReplicateOutlookIntoServer;
     }
 
+    private struct AutoDiscoveryResult
+    {
+      private readonly bool _wasCancelled;
+      private readonly Uri _ressourceUrl;
 
-    private async Task<Uri> DoAutoDiscovery (Uri autoDiscoveryUri, IWebDavClient webDavClient, bool useWellKnownUrl)
+      public AutoDiscoveryResult (Uri ressourceUrl, bool wasCancelled)
+          : this()
+      {
+        _wasCancelled = wasCancelled;
+        _ressourceUrl = ressourceUrl;
+      }
+
+      public bool WasCancelled
+      {
+        get { return _wasCancelled; }
+      }
+
+      public Uri RessourceUrl
+      {
+        get { return _ressourceUrl; }
+      }
+    }
+
+    private async Task<AutoDiscoveryResult> DoAutoDiscovery (Uri autoDiscoveryUri, IWebDavClient webDavClient, bool useWellKnownUrl)
     {
       IReadOnlyList<Tuple<Uri, string>> foundResources;
 
@@ -398,16 +433,16 @@ namespace CalDavSynchronizer.Ui
         using (ListCalendarsForm listCalendarsForm = new ListCalendarsForm (foundResources))
         {
           if (listCalendarsForm.ShowDialog() == DialogResult.OK)
-          {
-            return new Uri (autoDiscoveryUri.GetLeftPart (UriPartial.Authority) + listCalendarsForm.getCalendarUri());
-          }
+            return new AutoDiscoveryResult (new Uri (autoDiscoveryUri.GetLeftPart (UriPartial.Authority) + listCalendarsForm.getCalendarUri()), false);
+          else
+            return new AutoDiscoveryResult (null, true);
         }
       }
       else
       {
         MessageBox.Show ("No resources were found via autodiscovery!", c_connectionTestCaption);
       }
-      return null;
+      return new AutoDiscoveryResult (null, false);
     }
 
     private IWebDavClient CreateWebDavClient ()
