@@ -59,5 +59,10 @@ namespace CalDavSynchronizer.Ui
     {
       DialogResult = System.Windows.Forms.DialogResult.Cancel;
     }
+
+    private void dataGridView1_CellContentDoubleClick (object sender, DataGridViewCellEventArgs e)
+    {
+      DialogResult = System.Windows.Forms.DialogResult.OK;
+    }
   }
 }
