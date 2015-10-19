@@ -103,7 +103,6 @@ namespace CalDavSynchronizer.Implementation.Contacts
       if (!string.IsNullOrEmpty (source.Inner.OtherAddress))
       {
         vCardDeliveryAddress otherAddress = new vCardDeliveryAddress();
-        otherAddress.AddressType.Add (vCardDeliveryAddressTypes.Postal);
         otherAddress.City = source.Inner.OtherAddressCity;
         otherAddress.Country = source.Inner.OtherAddressCountry;
         otherAddress.PostalCode = source.Inner.OtherAddressPostalCode;
@@ -507,7 +506,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
       if (!string.IsNullOrEmpty (source.HomeFaxNumber))
       {
-        vCardPhone phoneNumber = new vCardPhone (source.HomeFaxNumber, vCardPhoneTypes.Fax);
+        vCardPhone phoneNumber = new vCardPhone (source.HomeFaxNumber, vCardPhoneTypes.Fax & vCardPhoneTypes.Home);
         phoneNumber.IsPreferred = (target.Phones.Count == 0);
         target.Phones.Add (phoneNumber);
       }
@@ -561,25 +560,38 @@ namespace CalDavSynchronizer.Implementation.Contacts
         {
           target.MobileTelephoneNumber = phoneNumber.FullNumber;
         }
-        else if (phoneNumber.IsHome)
+        else if (phoneNumber.IsHome && !phoneNumber.IsFax)
         {
-          target.HomeTelephoneNumber = phoneNumber.FullNumber;
+          if (string.IsNullOrEmpty (target.HomeTelephoneNumber))
+          {
+            target.HomeTelephoneNumber = phoneNumber.FullNumber;
+          }
+          else
+          {
+            target.Home2TelephoneNumber = phoneNumber.FullNumber;
+          }
         }
-        else if (phoneNumber.PhoneType == vCardPhoneTypes.HomeVoice)
+        else if (phoneNumber.IsWork && !phoneNumber.IsFax)
         {
-          target.Home2TelephoneNumber = phoneNumber.FullNumber;
+          if (string.IsNullOrEmpty (target.BusinessTelephoneNumber))
+          {
+            target.BusinessTelephoneNumber = phoneNumber.FullNumber;
+          }
+          else
+          {
+            target.Business2TelephoneNumber = phoneNumber.FullNumber;
+          }
         }
-        else if (phoneNumber.PhoneType == vCardPhoneTypes.Work)
+        else if (phoneNumber.IsFax)
         {
-          target.BusinessTelephoneNumber = phoneNumber.FullNumber;
-        }
-        else if (phoneNumber.PhoneType == vCardPhoneTypes.WorkVoice)
-        {
-          target.Business2TelephoneNumber = phoneNumber.FullNumber;
-        }
-        else if (phoneNumber.PhoneType == vCardPhoneTypes.WorkFax)
-        {
-          target.BusinessFaxNumber = phoneNumber.FullNumber;
+          if (phoneNumber.IsHome)
+          {
+            target.HomeFaxNumber = phoneNumber.FullNumber;
+          }
+          else
+          {
+            target.BusinessFaxNumber = phoneNumber.FullNumber;
+          }
         }
         else if (phoneNumber.IsPager)
         {
