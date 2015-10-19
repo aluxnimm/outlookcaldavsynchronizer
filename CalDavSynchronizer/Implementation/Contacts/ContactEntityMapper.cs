@@ -145,6 +145,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       MapPhoto1To2 (source.Inner, target);
 
+      if (!string.IsNullOrEmpty (source.Inner.Body))
+      {
+        target.Notes.Add (new vCardNote (source.Inner.Body));
+      }
+
       return target;
     }
 
@@ -258,6 +263,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
       MapCertificate2To1 (source, target.Inner);
 
       MapPhoto2To1 (source, target.Inner);
+
+      if (source.Notes.Count > 0)
+      {
+        target.Inner.Body = source.Notes[0].Text;
+      }
 
       return target;
     }
