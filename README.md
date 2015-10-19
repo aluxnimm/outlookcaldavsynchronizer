@@ -55,6 +55,17 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changlog ###
 
+#### 1.4.1 ####
+- Add mapping of IMAddress for contacts
+- Add mapping of contact notes
+- Fix vcard mapping for fax numbers and address type other
+- Add doubleclick eventhandler for Autodiscovery
+- Fixed TestConnection behavior, so that cancelling Autodiscovery works
+- Add mapping of contact photos
+- Mapping of FormattedName for contacts
+- Add mapping for X509 certificates for contacts (e.g. S/MIME) to vCard KEY attribute
+- Implement EmailAddress Mapping for Exchange contacts (type "EX")
+
 #### 1.4.0 ####
 - Initial CardDAV support to sync contacts (alpha)
 - Refactoring of Autodiscovery
