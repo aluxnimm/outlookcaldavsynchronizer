@@ -85,46 +85,43 @@ namespace GenSync.Synchronization
       {
         using (var totalProgress = _totalProgressFactory.Create())
         {
-          var cachedData = _entityRelationDataAccess.LoadEntityRelationData();
+          var knownEntityRelations = _entityRelationDataAccess.LoadEntityRelationData();
 
-          var aVersionsTask = _atypeRepository.GetVersions();
-          var bVersionsTask = _btypeRepository.GetVersions();
+          var newAVersionsTask = _atypeRepository.GetVersions();
+          var newBVersionsTask = _btypeRepository.GetVersions();
 
-          var aVersions = await aVersionsTask;
-          var bVersions = await bVersionsTask;
-
-          var atypeRepositoryVersions = CreateDictionary (
-              aVersions,
+          var newAVersions = CreateDictionary (
+              await newAVersionsTask,
               _atypeIdComparer);
 
-          var btypeRepositoryVersions = CreateDictionary (
-              bVersions,
+          var newBVersions = CreateDictionary (
+              await newBVersionsTask,
               _btypeIdComparer);
 
           using (var entityContainer = new EntityContainer (this, totalProgress))
           {
-            if (cachedData == null)
+            if (knownEntityRelations == null)
             {
               s_logger.Info ("Did not find entity caches. Performing initial population");
 
-              await entityContainer.FillIfEmpty (atypeRepositoryVersions.Keys, btypeRepositoryVersions.Keys);
+              await entityContainer.FillIfEmpty (newAVersions.Keys, newBVersions.Keys);
 
-              cachedData = _initialEntityMatcher.FindMatchingEntities (
+              knownEntityRelations = _initialEntityMatcher.FindMatchingEntities (
                   _entityRelationDataFactory,
                   entityContainer.AEntities,
                   entityContainer.BEntities,
-                  atypeRepositoryVersions,
-                  btypeRepositoryVersions);
+                  newAVersions,
+                  newBVersions);
             }
 
-            var newData = await Synchronize (
+            var newEntityRelations = await Synchronize (
                 totalProgress,
-                cachedData,
-                atypeRepositoryVersions,
-                btypeRepositoryVersions,
+                knownEntityRelations,
+                newAVersions,
+                newBVersions,
                 entityContainer);
 
-            _entityRelationDataAccess.SaveEntityRelationData (newData);
+            _entityRelationDataAccess.SaveEntityRelationData (newEntityRelations);
           }
         }
       }
@@ -147,61 +144,58 @@ namespace GenSync.Synchronization
 
         using (var totalProgress = _totalProgressFactory.Create())
         {
-          var cachedData = _entityRelationDataAccess.LoadEntityRelationData();
+          var knownEntityRelations = _entityRelationDataAccess.LoadEntityRelationData();
 
-          if (cachedData == null)
+          if (knownEntityRelations == null)
           {
             // TODO: perform inital entity matching
             return;
           }
 
-          var cachedDataToUse = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
-          var untouchedCachedData = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
+          var entityRelationsToUse = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
+          var entityRelationsNotToUse = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
 
-          foreach (var data in cachedData)
+          foreach (var entityRelation in knownEntityRelations)
           {
-            if (aEntitesToSynchronize.Contains (data.AtypeId))
+            if (aEntitesToSynchronize.Contains (entityRelation.AtypeId))
             {
-              bEntitesToSynchronize.Add (data.BtypeId);
-              cachedDataToUse.Add (data);
+              bEntitesToSynchronize.Add (entityRelation.BtypeId);
+              entityRelationsToUse.Add (entityRelation);
             }
-            else if (bEntitesToSynchronize.Contains (data.BtypeId))
+            else if (bEntitesToSynchronize.Contains (entityRelation.BtypeId))
             {
-              aEntitesToSynchronize.Add (data.AtypeId);
-              cachedDataToUse.Add (data);
+              aEntitesToSynchronize.Add (entityRelation.AtypeId);
+              entityRelationsToUse.Add (entityRelation);
             }
             else
             {
-              untouchedCachedData.Add (data);
+              entityRelationsNotToUse.Add (entityRelation);
             }
           }
 
-          var aVersionsTask = _atypeRepository.GetVersions (aEntitesToSynchronize);
-          var bVersionsTask = _btypeRepository.GetVersions (bEntitesToSynchronize);
+          var newAVersionsTask = _atypeRepository.GetVersions (aEntitesToSynchronize);
+          var newBVersionsTask = _btypeRepository.GetVersions (bEntitesToSynchronize);
 
-          var aVersions = await aVersionsTask;
-          var bVersions = await bVersionsTask;
-
-          var atypeRepositoryVersions = CreateDictionary (
-              aVersions,
+          var newAVersions = CreateDictionary (
+              await newAVersionsTask,
               _atypeIdComparer);
 
-          var btypeRepositoryVersions = CreateDictionary (
-              bVersions,
+          var newBVersions = CreateDictionary (
+              await newBVersionsTask,
               _btypeIdComparer);
 
           using (var entityContainer = new EntityContainer (this, totalProgress))
           {
-            var newData = await Synchronize (
+            var newEntityRelations = await Synchronize (
                 totalProgress,
-                cachedDataToUse,
-                atypeRepositoryVersions,
-                btypeRepositoryVersions,
+                entityRelationsToUse,
+                newAVersions,
+                newBVersions,
                 entityContainer);
 
-            untouchedCachedData.AddRange (newData);
+            entityRelationsNotToUse.AddRange (newEntityRelations);
 
-            _entityRelationDataAccess.SaveEntityRelationData (untouchedCachedData);
+            _entityRelationDataAccess.SaveEntityRelationData (entityRelationsNotToUse);
           }
         }
       }
@@ -215,9 +209,9 @@ namespace GenSync.Synchronization
 
     private async Task<List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>> Synchronize (
         ITotalProgressLogger totalProgress,
-        IEnumerable<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> cachedData,
-        Dictionary<TAtypeEntityId, TAtypeEntityVersion> atypeRepositoryVersions,
-        Dictionary<TBtypeEntityId, TBtypeEntityVersion> btypeRepositoryVersions,
+        IEnumerable<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> knownEntityRelations,
+        Dictionary<TAtypeEntityId, TAtypeEntityVersion> newAVersions,
+        Dictionary<TBtypeEntityId, TBtypeEntityVersion> newBVersions,
         EntityContainer entityContainer)
     {
       var entitySyncStates = new EntitySyncStateContainer<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>();
@@ -225,35 +219,35 @@ namespace GenSync.Synchronization
       var aDeltaLogInfo = new VersionDeltaLoginInformation();
       var bDeltaLogInfo = new VersionDeltaLoginInformation();
 
-      foreach (var cachedEntityData in cachedData)
+      foreach (var knownEntityRelationData in knownEntityRelations)
       {
-        TAtypeEntityVersion repositoryAVersion;
-        TBtypeEntityVersion repositoryBVersion;
+        TAtypeEntityVersion newAVersion;
+        TBtypeEntityVersion newBVersion;
 
-        var repositoryAVersionAvailable = atypeRepositoryVersions.TryGetValue (cachedEntityData.AtypeId, out repositoryAVersion);
-        var repositoryBVersionAvailable = btypeRepositoryVersions.TryGetValue (cachedEntityData.BtypeId, out repositoryBVersion);
+        var newAVersionAvailable = newAVersions.TryGetValue (knownEntityRelationData.AtypeId, out newAVersion);
+        var newBVersionAvailable = newBVersions.TryGetValue (knownEntityRelationData.BtypeId, out newBVersion);
 
-        if (repositoryAVersionAvailable)
-          atypeRepositoryVersions.Remove (cachedEntityData.AtypeId);
+        if (newAVersionAvailable)
+          newAVersions.Remove (knownEntityRelationData.AtypeId);
 
-        if (repositoryBVersionAvailable)
-          btypeRepositoryVersions.Remove (cachedEntityData.BtypeId);
+        if (newBVersionAvailable)
+          newBVersions.Remove (knownEntityRelationData.BtypeId);
 
-        var entitySyncState = CreateInitialSyncState (cachedEntityData, repositoryAVersionAvailable, repositoryAVersion, repositoryBVersionAvailable, repositoryBVersion, aDeltaLogInfo, bDeltaLogInfo);
+        var entitySyncState = CreateInitialSyncState (knownEntityRelationData, newAVersionAvailable, newAVersion, newBVersionAvailable, newBVersion, aDeltaLogInfo, bDeltaLogInfo);
 
         entitySyncStates.Add (entitySyncState);
       }
 
-      aDeltaLogInfo.IncAdded (atypeRepositoryVersions.Count);
-      bDeltaLogInfo.IncAdded (btypeRepositoryVersions.Count);
+      aDeltaLogInfo.IncAdded (newAVersions.Count);
+      bDeltaLogInfo.IncAdded (newBVersions.Count);
 
       s_logger.InfoFormat ("Atype delta: {0}", aDeltaLogInfo);
       s_logger.InfoFormat ("Btype delta: {0}", bDeltaLogInfo);
 
-      foreach (var newA in atypeRepositoryVersions)
+      foreach (var newA in newAVersions)
         entitySyncStates.Add (_initialSyncStateCreationStrategy.CreateFor_Added_NotExisting (newA.Key, newA.Value));
 
-      foreach (var newB in btypeRepositoryVersions)
+      foreach (var newB in newBVersions)
         entitySyncStates.Add (_initialSyncStateCreationStrategy.CreateFor_NotExisting_Added (newB.Key, newB.Value));
 
       HashSet<TAtypeEntityId> aEntitesToLoad = new HashSet<TAtypeEntityId>();
@@ -281,14 +275,14 @@ namespace GenSync.Synchronization
             });
       }
 
-      var newData = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
+      var newEntityRelations = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
 
-      entitySyncStates.Execute (s => s.AddNewRelationNoThrow (newData.Add));
+      entitySyncStates.Execute (s => s.AddNewRelationNoThrow (newEntityRelations.Add));
 
       entitySyncStates.Dispose();
 
 
-      return newData;
+      return newEntityRelations;
     }
 
     private static Dictionary<TKey, TValue> CreateDictionary<TKey, TValue> (IReadOnlyList<EntityIdWithVersion<TKey, TValue>> tuples, IEqualityComparer<TKey> equalityComparer)
@@ -322,86 +316,86 @@ namespace GenSync.Synchronization
     }
 
     private IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> CreateInitialSyncState (
-        IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> cachedData,
-        bool repositoryAVersionAvailable,
-        TAtypeEntityVersion repositoryAVersion,
-        bool repositoryBVersionAvailable,
-        TBtypeEntityVersion repositoryBVersion,
+        IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> knownEntityRelation,
+        bool newAVersionAvailable,
+        TAtypeEntityVersion newAVersion,
+        bool newBVersionAvailable,
+        TBtypeEntityVersion newBVersion,
         VersionDeltaLoginInformation aLogInfo,
         VersionDeltaLoginInformation bLogInfo)
     {
       IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> state;
-      if (repositoryAVersionAvailable)
+      if (newAVersionAvailable)
       {
-        var aChanged = !_atypeVersionComparer.Equals (repositoryAVersion, cachedData.AtypeVersion);
+        var aChanged = !_atypeVersionComparer.Equals (newAVersion, knownEntityRelation.AtypeVersion);
         if (aChanged)
         {
           aLogInfo.IncChanged();
-          if (repositoryBVersionAvailable)
+          if (newBVersionAvailable)
           {
-            var bChanged = !_btypeVersionComparer.Equals (repositoryBVersion, cachedData.BtypeVersion);
+            var bChanged = !_btypeVersionComparer.Equals (newBVersion, knownEntityRelation.BtypeVersion);
             if (bChanged)
             {
               bLogInfo.IncChanged();
-              state = _initialSyncStateCreationStrategy.CreateFor_Changed_Changed (cachedData, repositoryAVersion, repositoryBVersion);
+              state = _initialSyncStateCreationStrategy.CreateFor_Changed_Changed (knownEntityRelation, newAVersion, newBVersion);
             }
             else
             {
               bLogInfo.IncUnchanged();
-              state = _initialSyncStateCreationStrategy.CreateFor_Changed_Unchanged (cachedData, repositoryAVersion);
+              state = _initialSyncStateCreationStrategy.CreateFor_Changed_Unchanged (knownEntityRelation, newAVersion);
             }
           }
           else
           {
             bLogInfo.IncDeleted();
-            state = _initialSyncStateCreationStrategy.CreateFor_Changed_Deleted (cachedData, repositoryAVersion);
+            state = _initialSyncStateCreationStrategy.CreateFor_Changed_Deleted (knownEntityRelation, newAVersion);
           }
         }
         else
         {
           aLogInfo.IncUnchanged();
-          if (repositoryBVersionAvailable)
+          if (newBVersionAvailable)
           {
-            var bChanged = !_btypeVersionComparer.Equals (repositoryBVersion, cachedData.BtypeVersion);
+            var bChanged = !_btypeVersionComparer.Equals (newBVersion, knownEntityRelation.BtypeVersion);
             if (bChanged)
             {
               bLogInfo.IncChanged();
-              state = _initialSyncStateCreationStrategy.CreateFor_Unchanged_Changed (cachedData, repositoryBVersion);
+              state = _initialSyncStateCreationStrategy.CreateFor_Unchanged_Changed (knownEntityRelation, newBVersion);
             }
             else
             {
               bLogInfo.IncUnchanged();
-              state = _initialSyncStateCreationStrategy.CreateFor_Unchanged_Unchanged (cachedData);
+              state = _initialSyncStateCreationStrategy.CreateFor_Unchanged_Unchanged (knownEntityRelation);
             }
           }
           else
           {
             bLogInfo.IncDeleted();
-            state = _initialSyncStateCreationStrategy.CreateFor_Unchanged_Deleted (cachedData);
+            state = _initialSyncStateCreationStrategy.CreateFor_Unchanged_Deleted (knownEntityRelation);
           }
         }
       }
       else
       {
         aLogInfo.IncDeleted();
-        if (repositoryBVersionAvailable)
+        if (newBVersionAvailable)
         {
-          var bChanged = !_btypeVersionComparer.Equals (repositoryBVersion, cachedData.BtypeVersion);
+          var bChanged = !_btypeVersionComparer.Equals (newBVersion, knownEntityRelation.BtypeVersion);
           if (bChanged)
           {
             bLogInfo.IncChanged();
-            state = _initialSyncStateCreationStrategy.CreateFor_Deleted_Changed (cachedData, repositoryBVersion);
+            state = _initialSyncStateCreationStrategy.CreateFor_Deleted_Changed (knownEntityRelation, newBVersion);
           }
           else
           {
             bLogInfo.IncUnchanged();
-            state = _initialSyncStateCreationStrategy.CreateFor_Deleted_Unchanged (cachedData);
+            state = _initialSyncStateCreationStrategy.CreateFor_Deleted_Unchanged (knownEntityRelation);
           }
         }
         else
         {
           bLogInfo.IncDeleted();
-          state = _initialSyncStateCreationStrategy.CreateFor_Deleted_Deleted (cachedData);
+          state = _initialSyncStateCreationStrategy.CreateFor_Deleted_Deleted (knownEntityRelation);
         }
       }
       return state;
