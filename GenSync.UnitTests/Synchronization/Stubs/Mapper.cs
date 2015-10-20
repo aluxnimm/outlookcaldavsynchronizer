@@ -17,7 +17,7 @@
 using System;
 using GenSync.EntityMapping;
 
-namespace GenSync.UnitTests.Synchronization
+namespace GenSync.UnitTests.Synchronization.Stubs
 {
   internal class Mapper : IEntityMapper<string, string>
   {

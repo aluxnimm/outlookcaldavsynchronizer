@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer 
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -15,30 +15,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using GenSync.EntityRelationManagement;
 
-namespace GenSync.UnitTests.Synchronization
+namespace GenSync.UnitTests.Synchronization.Stubs
 {
-  public class Identifier
+  internal class EntityRelationDataFactory : IEntityRelationDataFactory<Identifier, int, Identifier, int>
   {
-    private readonly string _value;
-
-    public Identifier (string value)
+    public IEntityRelationData<Identifier, int, Identifier, int> Create (Identifier atypeId, int atypeVersion, Identifier btypeId, int btypeVersion)
     {
-      _value = value;
-    }
-
-    public static implicit operator Identifier (string value)
-    {
-      return new Identifier (value);
-    }
-
-    public string Value
-    {
-      get { return _value; }
+      return new EntityRelationData (atypeId, atypeVersion, btypeId, btypeVersion);
     }
   }
 }

@@ -51,6 +51,16 @@ namespace CalDavSynchronizer.Implementation.Contacts
       return GenericComObjectWrapper.Create ((Folder) _mapiNameSpace.GetFolderFromID (_folderId, _folderStoreId));
     }
 
+    public Task<IReadOnlyList<EntityIdWithVersion<string, DateTime>>> GetVersions (ICollection<string> ids)
+    {
+      return Task.FromResult<IReadOnlyList<EntityIdWithVersion<string, DateTime>>> (
+          ids
+              .Select (id => (ContactItem) _mapiNameSpace.GetItemFromID (id, _folderStoreId))
+              .ToSafeEnumerable()
+              .Select (c => EntityIdWithVersion.Create (c.EntryID, c.LastModificationTime))
+              .ToList());
+    }
+
     public Task<IReadOnlyList<EntityIdWithVersion<string, DateTime>>> GetVersions ()
     {
       var events = new List<EntityIdWithVersion<string, DateTime>>();

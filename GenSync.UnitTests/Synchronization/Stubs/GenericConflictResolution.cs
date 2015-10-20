@@ -16,7 +16,7 @@
 
 using System;
 
-namespace GenSync.UnitTests.Synchronization
+namespace GenSync.UnitTests.Synchronization.Stubs
 {
   internal enum GenericConflictResolution
   {

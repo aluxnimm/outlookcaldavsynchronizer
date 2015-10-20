@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer 
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -15,15 +15,26 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using GenSync.EntityRelationManagement;
+using System.Collections.Generic;
 
-namespace GenSync.UnitTests.Synchronization
+namespace GenSync.UnitTests.Synchronization.Stubs
 {
-  internal class EntityRelationDataFactory : IEntityRelationDataFactory<Identifier, int, Identifier, int>
+  internal class IdentifierEqualityComparer : IEqualityComparer<Identifier>
   {
-    public IEntityRelationData<Identifier, int, Identifier, int> Create (Identifier atypeId, int atypeVersion, Identifier btypeId, int btypeVersion)
+    public static readonly IEqualityComparer<Identifier> Instance = new IdentifierEqualityComparer();
+
+    private IdentifierEqualityComparer ()
     {
-      return new EntityRelationData (atypeId, atypeVersion, btypeId, btypeVersion);
+    }
+
+    public bool Equals (Identifier x, Identifier y)
+    {
+      return StringComparer.InvariantCultureIgnoreCase.Compare (x.Value, y.Value) == 0;
+    }
+
+    public int GetHashCode (Identifier obj)
+    {
+      return obj.Value.ToLower().GetHashCode();
     }
   }
 }

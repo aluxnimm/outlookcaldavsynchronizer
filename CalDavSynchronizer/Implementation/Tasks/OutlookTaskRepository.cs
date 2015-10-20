@@ -44,6 +44,16 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
     private const string c_entryIdColumnName = "EntryID";
 
+    public Task<IReadOnlyList<EntityIdWithVersion<string, DateTime>>> GetVersions (ICollection<string> ids)
+    {
+      return Task.FromResult<IReadOnlyList<EntityIdWithVersion<string, DateTime>>> (
+          ids
+              .Select (id => (TaskItem) _mapiNameSpace.GetItemFromID (id, _taskFolder.StoreID))
+              .ToSafeEnumerable()
+              .Select (c => EntityIdWithVersion.Create (c.EntryID, c.LastModificationTime))
+              .ToList());
+    }
+
     public Task<IReadOnlyList<EntityIdWithVersion<string, DateTime>>> GetVersions ()
     {
       var entities = new List<EntityIdWithVersion<string, DateTime>>();

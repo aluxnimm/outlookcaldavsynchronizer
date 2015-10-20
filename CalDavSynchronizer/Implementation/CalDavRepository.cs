@@ -55,6 +55,11 @@ namespace CalDavSynchronizer.Implementation
       _dateTimeRangeProvider = dateTimeRangeProvider;
     }
 
+    public Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetVersions (ICollection<Uri> ids)
+    {
+      throw new NotImplementedException();
+    }
+
     public Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetVersions ()
     {
       using (AutomaticStopwatch.StartInfo (s_logger, "CalDavRepository.GetVersions"))

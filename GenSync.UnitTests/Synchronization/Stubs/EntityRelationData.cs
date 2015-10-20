@@ -17,7 +17,7 @@
 using System;
 using GenSync.EntityRelationManagement;
 
-namespace GenSync.UnitTests.Synchronization
+namespace GenSync.UnitTests.Synchronization.Stubs
 {
   internal class EntityRelationData : IEntityRelationData<Identifier, int, Identifier, int>
   {

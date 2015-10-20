@@ -15,27 +15,26 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using GenSync.UnitTests.InitialEntityMatching;
 
-namespace GenSync.UnitTests.Synchronization
+namespace GenSync.UnitTests.Synchronization.Stubs
 {
-  internal class IdentifierEqualityComparer : IEqualityComparer<Identifier>
+  public class Identifier
   {
-    public static readonly IEqualityComparer<Identifier> Instance = new IdentifierEqualityComparer();
+    private readonly string _value;
 
-    private IdentifierEqualityComparer ()
+    public Identifier (string value)
     {
+      _value = value;
     }
 
-    public bool Equals (Identifier x, Identifier y)
+    public static implicit operator Identifier (string value)
     {
-      return StringComparer.InvariantCultureIgnoreCase.Compare (x.Value, y.Value) == 0;
+      return new Identifier (value);
     }
 
-    public int GetHashCode (Identifier obj)
+    public string Value
     {
-      return obj.Value.ToLower().GetHashCode();
+      get { return _value; }
     }
   }
 }

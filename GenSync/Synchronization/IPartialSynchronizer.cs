@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer 
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -15,17 +15,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using GenSync.Synchronization.StateCreationStrategies;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace GenSync.UnitTests.Synchronization
+namespace GenSync.Synchronization
 {
-  internal class OneWayReplicatorFixtureBase : SynchronizerFixtureBase
+  /// <summary>
+  /// A Synchronizer :-P
+  /// </summary>
+  public interface IPartialSynchronizer<in TAtypeEntityId, in TBtypeEntityId> : ISynchronizer
   {
-    public void Synchronize ()
-    {
-      SynchronizeInternal (
-          new OneWayInitialSyncStateCreationStrategy_AToB<Identifier, int, string, Identifier, int, string> (_factory, OneWaySyncMode.Replicate)
-          );
-    }
+    Task SynchronizePartial (IEnumerable<TAtypeEntityId> aEntityIds, IEnumerable<TBtypeEntityId> bEntityIds);
   }
 }

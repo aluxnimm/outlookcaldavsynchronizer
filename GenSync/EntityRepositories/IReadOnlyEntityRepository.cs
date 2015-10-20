@@ -25,6 +25,7 @@ namespace GenSync.EntityRepositories
   /// </summary>
   public interface IReadOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
   {
+    Task<IReadOnlyList<EntityIdWithVersion<TEntityId, TEntityVersion>>> GetVersions (ICollection<TEntityId> ids);
     Task<IReadOnlyList<EntityIdWithVersion<TEntityId, TEntityVersion>>> GetVersions ();
     Task<IReadOnlyList<EntityWithVersion<TEntityId, TEntity>>> Get (ICollection<TEntityId> ids);
     void Cleanup (IReadOnlyDictionary<TEntityId, TEntity> entities);

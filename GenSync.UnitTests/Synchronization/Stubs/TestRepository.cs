@@ -20,7 +20,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GenSync.EntityRepositories;
 
-namespace GenSync.UnitTests.Synchronization
+namespace GenSync.UnitTests.Synchronization.Stubs
 {
   internal class TestRepository : IEntityRepository<string, Identifier, int>
   {
@@ -38,6 +38,12 @@ namespace GenSync.UnitTests.Synchronization
     public TestRepository (string idPrefix)
     {
       _idPrefix = idPrefix;
+    }
+
+    public Task<IReadOnlyList<EntityIdWithVersion<Identifier, int>>> GetVersions (ICollection<Identifier> ids)
+    {
+      return Task.FromResult<IReadOnlyList<EntityIdWithVersion<Identifier, int>>> (
+          ids.Select (id => EntityIdWithVersion.Create (id, EntityVersionAndContentById[id].Item1)).ToList());
     }
 
     public Task<IReadOnlyList<EntityIdWithVersion<Identifier, int>>> GetVersions ()

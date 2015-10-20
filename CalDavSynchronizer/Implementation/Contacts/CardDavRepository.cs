@@ -44,6 +44,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
       _vCardWriter = new vCardStandardWriter();
     }
 
+    public Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetVersions (ICollection<Uri> ids)
+    {
+      throw new NotImplementedException();
+    }
+
     public async Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetVersions ()
     {
       using (AutomaticStopwatch.StartInfo (s_logger, "CardDavRepository.GetVersions"))

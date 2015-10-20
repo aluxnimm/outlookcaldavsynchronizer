@@ -7,7 +7,7 @@ using GenSync.Synchronization.States;
 using NUnit.Framework;
 using Rhino.Mocks;
 
-namespace GenSync.UnitTests.Synchronization
+namespace GenSync.UnitTests.Synchronization.Stubs
 {
   [TestFixture]
   public class SynchronizerFixture

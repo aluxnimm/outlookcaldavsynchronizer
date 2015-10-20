@@ -21,7 +21,7 @@ using NUnit.Framework;
 namespace GenSync.UnitTests.Synchronization
 {
   [TestFixture]
-  internal class OneWayReplicatorFixture : OneWayReplicatorFixtureBase
+  internal class OneWayReplicatorFixture : SynchronizerFixtureBase
   {
     [Test]
     public async Task ReplicateAtoBAddedLocal ()
@@ -31,7 +31,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize();
+        SynchronizeOneWay();
 
         AssertLocalCount (2);
         AssertLocal ("l1", 0, "Item 1");
@@ -51,7 +51,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize();
+        SynchronizeOneWay();
 
         AssertLocalCount (0);
 
@@ -69,7 +69,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize();
+        SynchronizeOneWay();
 
         AssertLocalCount (3);
         AssertLocal ("l1", 0, "Item 1");
@@ -92,7 +92,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize();
+        SynchronizeOneWay();
 
         AssertLocalCount (1);
         AssertLocal ("l2", 0, "Item 2");
@@ -111,7 +111,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize();
+        SynchronizeOneWay();
 
         AssertLocalCount (2);
         AssertLocal ("l1", 0, "Item 1");
@@ -134,7 +134,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize();
+        SynchronizeOneWay();
 
         AssertLocalCount (1);
         AssertLocal ("l1", 0, "Item 1");
@@ -154,7 +154,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize();
+        SynchronizeOneWay();
 
         AssertLocalCount (1);
         AssertLocal ("l2", 0, "Item 2");
@@ -172,7 +172,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize();
+        SynchronizeOneWay();
 
         AssertLocalCount (2);
         AssertLocal ("l1", 1, "upd Item 1");
@@ -192,7 +192,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize();
+        SynchronizeOneWay();
 
         AssertLocalCount (2);
         AssertLocal ("l1", 0, "Item 1");
@@ -213,7 +213,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize();
+        SynchronizeOneWay();
 
         AssertLocalCount (2);
         AssertLocal ("l1", 0, "Item 1");
@@ -234,7 +234,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize();
+        SynchronizeOneWay();
 
         AssertLocalCount (1);
         AssertLocal ("l2", 0, "Item 2");
@@ -255,7 +255,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize();
+        SynchronizeOneWay();
 
         AssertLocalCount (2);
         AssertLocal ("l1", 1, "upd Item 1");
@@ -277,7 +277,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize();
+        SynchronizeOneWay();
 
         AssertLocalCount (2);
         AssertLocal ("l1", 1, "upd loc Item 1");

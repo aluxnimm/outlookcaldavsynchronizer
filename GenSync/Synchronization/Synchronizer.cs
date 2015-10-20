@@ -32,7 +32,7 @@ namespace GenSync.Synchronization
   /// Synchronizes tow repositories
   /// </summary>
   public class Synchronizer<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
-      : ISynchronizer
+      : IPartialSynchronizer<TAtypeEntityId, TBtypeEntityId>
   {
     // ReSharper disable once StaticFieldInGenericType
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
@@ -125,6 +125,83 @@ namespace GenSync.Synchronization
                 entityContainer);
 
             _entityRelationDataAccess.SaveEntityRelationData (newData);
+          }
+        }
+      }
+      catch (Exception x)
+      {
+        _exceptionLogger.LogException (x, s_logger);
+      }
+
+      s_logger.DebugFormat ("Exiting.");
+    }
+
+    public async Task SynchronizePartial (IEnumerable<TAtypeEntityId> aEntityIds, IEnumerable<TBtypeEntityId> bEntityIds)
+    {
+      s_logger.InfoFormat ("Entered. Syncstrategy '{0}' with Atype='{1}' and Btype='{2}'", _initialSyncStateCreationStrategy.GetType().Name, typeof (TAtypeEntity).Name, typeof (TBtypeEntity).Name);
+
+      try
+      {
+        var aEntitesToSynchronize = new HashSet<TAtypeEntityId> (aEntityIds, _atypeIdComparer);
+        var bEntitesToSynchronize = new HashSet<TBtypeEntityId> (bEntityIds, _btypeIdComparer);
+
+        using (var totalProgress = _totalProgressFactory.Create())
+        {
+          var cachedData = _entityRelationDataAccess.LoadEntityRelationData();
+
+          if (cachedData == null)
+          {
+            // TODO: perform inital entity matching
+            return;
+          }
+
+          var cachedDataToUse = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
+          var untouchedCachedData = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
+
+          foreach (var data in cachedData)
+          {
+            if (aEntitesToSynchronize.Contains (data.AtypeId))
+            {
+              bEntitesToSynchronize.Add (data.BtypeId);
+              cachedDataToUse.Add (data);
+            }
+            else if (bEntitesToSynchronize.Contains (data.BtypeId))
+            {
+              aEntitesToSynchronize.Add (data.AtypeId);
+              cachedDataToUse.Add (data);
+            }
+            else
+            {
+              untouchedCachedData.Add (data);
+            }
+          }
+
+          var aVersionsTask = _atypeRepository.GetVersions (aEntitesToSynchronize);
+          var bVersionsTask = _btypeRepository.GetVersions (bEntitesToSynchronize);
+
+          var aVersions = await aVersionsTask;
+          var bVersions = await bVersionsTask;
+
+          var atypeRepositoryVersions = CreateDictionary (
+              aVersions,
+              _atypeIdComparer);
+
+          var btypeRepositoryVersions = CreateDictionary (
+              bVersions,
+              _btypeIdComparer);
+
+          using (var entityContainer = new EntityContainer (this, totalProgress))
+          {
+            var newData = await Synchronize (
+                totalProgress,
+                cachedDataToUse,
+                atypeRepositoryVersions,
+                btypeRepositoryVersions,
+                entityContainer);
+
+            untouchedCachedData.AddRange (newData);
+
+            _entityRelationDataAccess.SaveEntityRelationData (untouchedCachedData);
           }
         }
       }

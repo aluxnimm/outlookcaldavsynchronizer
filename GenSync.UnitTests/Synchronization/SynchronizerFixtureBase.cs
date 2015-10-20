@@ -23,7 +23,9 @@ using GenSync.InitialEntityMatching;
 using GenSync.ProgressReport;
 using GenSync.Synchronization;
 using GenSync.Synchronization.StateCreationStrategies;
+using GenSync.Synchronization.StateCreationStrategies.ConflictStrategies;
 using GenSync.Synchronization.StateFactories;
+using GenSync.UnitTests.Synchronization.Stubs;
 using NUnit.Framework;
 using Rhino.Mocks;
 
@@ -62,9 +64,62 @@ namespace GenSync.UnitTests.Synchronization
           .WhenCalled (a => { _entityRelationData = ((List<IEntityRelationData<Identifier, int, Identifier, int>>) a.Arguments[0]).Cast<EntityRelationData>().ToList(); });
     }
 
-    protected void SynchronizeInternal (IInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string> strategy)
+    protected void SynchronizeTwoWay (GenericConflictResolution winner)
     {
-      var synchronizer = new Synchronizer<Identifier, int, string, Identifier, int, string> (
+      var strategy = CreateTwoWaySyncStrategy (winner);
+      SynchronizeInternal (strategy);
+    }
+
+    protected void SynchronizePartialTwoWay (
+        GenericConflictResolution winner,
+        Identifier[] aEntitesToSynchronize,
+        Identifier[] bEntitesToSynchronize)
+    {
+      var strategy = CreateTwoWaySyncStrategy (winner);
+      PartialSynchronizeInternal (strategy, aEntitesToSynchronize, bEntitesToSynchronize);
+    }
+
+    private TwoWayInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string> CreateTwoWaySyncStrategy (GenericConflictResolution winner)
+    {
+      IConflictInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string> conflictInitialStrategy;
+      if (winner == GenericConflictResolution.AWins)
+        conflictInitialStrategy = new ConflictInitialSyncStateCreationStrategyAWins<Identifier, int, string, Identifier, int, string> (_factory);
+      else
+        conflictInitialStrategy = new ConflictInitialSyncStateCreationStrategyBWins<Identifier, int, string, Identifier, int, string> (_factory);
+
+      var strategy = new TwoWayInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string> (_factory, conflictInitialStrategy);
+      return strategy;
+    }
+
+    protected void SynchronizeOneWay ()
+    {
+      SynchronizeInternal (
+          new OneWayInitialSyncStateCreationStrategy_AToB<Identifier, int, string, Identifier, int, string> (_factory, OneWaySyncMode.Replicate)
+          );
+    }
+
+    private void SynchronizeInternal (IInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string> strategy)
+    {
+      var synchronizer = CreateSynchronizer (strategy);
+
+      synchronizer.Synchronize().Wait();
+    }
+
+    private void PartialSynchronizeInternal (
+        IInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string> strategy,
+        Identifier[] aEntitesToSynchronize = null,
+        Identifier[] bEntitesToSynchronize = null)
+    {
+      var synchronizer = CreateSynchronizer (strategy);
+
+      synchronizer.SynchronizePartial (
+          aEntitesToSynchronize ?? new Identifier[] { },
+          bEntitesToSynchronize ?? new Identifier[] { }).Wait();
+    }
+
+    private Synchronizer<Identifier, int, string, Identifier, int, string> CreateSynchronizer (IInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string> strategy)
+    {
+      return new Synchronizer<Identifier, int, string, Identifier, int, string> (
           _localRepository,
           _serverRepository,
           strategy,
@@ -75,8 +130,6 @@ namespace GenSync.UnitTests.Synchronization
           IdentifierEqualityComparer.Instance,
           NullTotalProgressFactory.Instance,
           MockRepository.GenerateMock<IExceptionLogger>());
-
-      synchronizer.Synchronize().Wait();
     }
 
     protected void ExecuteMultipleTimes (Action a)
