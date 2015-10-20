@@ -21,9 +21,9 @@ namespace GenSync.UnitTests.Synchronization
 {
   internal class OneWayReplicatorFixtureBase : SynchronizerFixtureBase
   {
-    public bool Synchronize ()
+    public void Synchronize ()
     {
-      return SynchronizeInternal (
+      SynchronizeInternal (
           new OneWayInitialSyncStateCreationStrategy_AToB<Identifier, int, string, Identifier, int, string> (_factory, OneWaySyncMode.Replicate)
           );
     }

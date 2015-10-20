@@ -62,7 +62,7 @@ namespace GenSync.UnitTests.Synchronization
           .WhenCalled (a => { _entityRelationData = ((List<IEntityRelationData<Identifier, int, Identifier, int>>) a.Arguments[0]).Cast<EntityRelationData>().ToList(); });
     }
 
-    protected bool SynchronizeInternal (IInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string> strategy)
+    protected void SynchronizeInternal (IInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string> strategy)
     {
       var synchronizer = new Synchronizer<Identifier, int, string, Identifier, int, string> (
           _localRepository,
@@ -76,7 +76,7 @@ namespace GenSync.UnitTests.Synchronization
           NullTotalProgressFactory.Instance,
           MockRepository.GenerateMock<IExceptionLogger>());
 
-      return synchronizer.Synchronize().Result;
+      synchronizer.Synchronize().Wait();
     }
 
     protected void ExecuteMultipleTimes (Action a)

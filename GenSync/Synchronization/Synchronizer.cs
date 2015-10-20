@@ -77,7 +77,7 @@ namespace GenSync.Synchronization
     }
 
 
-    public async Task<bool> Synchronize ()
+    public async Task Synchronize ()
     {
       s_logger.InfoFormat ("Entered. Syncstrategy '{0}' with Atype='{1}' and Btype='{2}'", _initialSyncStateCreationStrategy.GetType().Name, typeof (TAtypeEntity).Name, typeof (TBtypeEntity).Name);
 
@@ -230,11 +230,9 @@ namespace GenSync.Synchronization
       catch (Exception x)
       {
         _exceptionLogger.LogException (x, s_logger);
-        return false;
       }
 
       s_logger.DebugFormat ("Exiting.");
-      return true;
     }
 
     private Dictionary<TKey, TValue> CreateDictionary<TKey, TValue> (IReadOnlyList<EntityIdWithVersion<TKey, TValue>> tuples, IEqualityComparer<TKey> equalityComparer)

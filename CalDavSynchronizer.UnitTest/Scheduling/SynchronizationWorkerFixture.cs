@@ -83,14 +83,10 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
         get { return _runCount; }
       }
 
-      public Task<bool> Synchronize ()
+      public Task Synchronize ()
       {
         _runCount++;
-        return Task.Run (() =>
-        {
-          FinishSynchronizationEvent.Wait();
-          return true;
-        });
+        return Task.Run (() => FinishSynchronizationEvent.Wait());
       }
     }
   }
