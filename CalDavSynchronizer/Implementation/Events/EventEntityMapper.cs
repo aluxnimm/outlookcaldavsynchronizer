@@ -1069,7 +1069,16 @@ namespace CalDavSynchronizer.Implementation.Events
       else
       {
         targetWrapper.Inner.AllDayEvent = false;
+        using (var application = GenericComObjectWrapper.Create (targetWrapper.Inner.Application))
+        {
+          using (var tzs = GenericComObjectWrapper.Create(application.Inner.TimeZones))
+          {
+            targetWrapper.Inner.StartTimeZone = tzs.Inner[TimeZoneMapper.IanaToWindows (source.Start.TZID) ?? _localTimeZoneInfo.Id];
+            targetWrapper.Inner.EndTimeZone = tzs.Inner[TimeZoneMapper.IanaToWindows (source.End.TZID) ?? _localTimeZoneInfo.Id];
+          }
+        }
         targetWrapper.Inner.StartUTC = source.Start.UTC;
+ 
         if (source.DTEnd != null)
         {
           targetWrapper.Inner.EndUTC = source.DTEnd.UTC;
