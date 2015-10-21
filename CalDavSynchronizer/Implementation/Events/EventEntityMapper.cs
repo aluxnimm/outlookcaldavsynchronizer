@@ -825,7 +825,9 @@ namespace CalDavSynchronizer.Implementation.Events
 
                 try
                 {
-                  using (var wrapper = GenericComObjectWrapper.Create (targetRecurrencePattern.GetOccurrence (originalStart.Add (targetWrapper.Inner.Start.TimeOfDay))))
+                  var timeZone = TimeZoneInfo.FindSystemTimeZoneById (targetWrapper.Inner.StartTimeZone.ID);
+                  var originalDateLocal = TimeZoneInfo.ConvertTimeFromUtc (originalStart.Add (targetWrapper.Inner.StartUTC.TimeOfDay), timeZone);
+                  using (var wrapper = GenericComObjectWrapper.Create (targetRecurrencePattern.GetOccurrence (originalDateLocal)))
                   {
                     wrapper.Inner.Delete();
                   }
@@ -847,7 +849,7 @@ namespace CalDavSynchronizer.Implementation.Events
       }
     }
 
-    private void MapRecurrenceExceptions2To1 (IEnumerable<IEvent> exceptions, AppointmentItemWrapper targetWrapper, Microsoft.Office.Interop.Outlook.RecurrencePattern targetRecurrencePattern)
+     private void MapRecurrenceExceptions2To1 (IEnumerable<IEvent> exceptions, AppointmentItemWrapper targetWrapper, Microsoft.Office.Interop.Outlook.RecurrencePattern targetRecurrencePattern)
     {
       foreach (var recurranceException in exceptions)
       {
@@ -855,7 +857,9 @@ namespace CalDavSynchronizer.Implementation.Events
 
         try
         {
-          var targetException = targetRecurrencePattern.GetOccurrence (originalStart.Add (targetWrapper.Inner.Start.TimeOfDay));
+          var timeZone = TimeZoneInfo.FindSystemTimeZoneById (targetWrapper.Inner.StartTimeZone.ID);
+          var originalDateLocal = TimeZoneInfo.ConvertTimeFromUtc (originalStart.Add (targetWrapper.Inner.StartUTC.TimeOfDay), timeZone);
+          var targetException = targetRecurrencePattern.GetOccurrence (originalDateLocal);
           using (var exceptionWrapper = new AppointmentItemWrapper (targetException, _ => { throw new InvalidOperationException ("cannot reload exception item"); }))
 
           {
