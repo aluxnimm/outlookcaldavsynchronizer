@@ -840,9 +840,12 @@ namespace CalDavSynchronizer.Implementation.Events
 
                 try
                 {
-                  var timeZone = TimeZoneInfo.FindSystemTimeZoneById (targetWrapper.Inner.StartTimeZone.ID);
-                  var originalDateLocal = TimeZoneInfo.ConvertTimeFromUtc (originalStart.Add (targetWrapper.Inner.StartUTC.TimeOfDay), timeZone);
-                  using (var wrapper = GenericComObjectWrapper.Create (targetRecurrencePattern.GetOccurrence (originalDateLocal)))
+                  var originalExDate =  NodaTime.LocalDateTime.FromDateTime (originalStart.Add (targetWrapper.Inner.StartInStartTimeZone.TimeOfDay));
+                  NodaTime.DateTimeZone startZone = NodaTime.DateTimeZoneProviders.Bcl[targetWrapper.Inner.StartTimeZone.ID];
+                  NodaTime.ZonedDateTime zonedExDate = originalExDate.InZoneLeniently (startZone);
+                  NodaTime.ZonedDateTime localExDate = zonedExDate.WithZone (NodaTime.DateTimeZoneProviders.Bcl.GetSystemDefault());
+
+                  using (var wrapper = GenericComObjectWrapper.Create (targetRecurrencePattern.GetOccurrence (localExDate.ToDateTimeUnspecified())))
                   {
                     wrapper.Inner.Delete();
                   }
@@ -872,9 +875,13 @@ namespace CalDavSynchronizer.Implementation.Events
 
         try
         {
-          var timeZone = TimeZoneInfo.FindSystemTimeZoneById (targetWrapper.Inner.StartTimeZone.ID);
-          var originalDateLocal = TimeZoneInfo.ConvertTimeFromUtc (originalStart.Add (targetWrapper.Inner.StartUTC.TimeOfDay), timeZone);
-          var targetException = targetRecurrencePattern.GetOccurrence (originalDateLocal);
+          var originalExDate = NodaTime.LocalDateTime.FromDateTime (originalStart.Add (targetWrapper.Inner.StartInStartTimeZone.TimeOfDay));
+          NodaTime.DateTimeZone startZone = NodaTime.DateTimeZoneProviders.Bcl[targetWrapper.Inner.StartTimeZone.ID];
+          NodaTime.ZonedDateTime zonedExDate = originalExDate.InZoneLeniently (startZone);
+          NodaTime.ZonedDateTime localExDate = zonedExDate.WithZone (NodaTime.DateTimeZoneProviders.Bcl.GetSystemDefault());
+
+          var targetException = targetRecurrencePattern.GetOccurrence (localExDate.ToDateTimeUnspecified());
+
           using (var exceptionWrapper = new AppointmentItemWrapper (targetException, _ => { throw new InvalidOperationException ("cannot reload exception item"); }))
 
           {
