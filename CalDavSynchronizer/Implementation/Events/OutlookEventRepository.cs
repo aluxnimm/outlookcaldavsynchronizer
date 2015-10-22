@@ -58,9 +58,9 @@ namespace CalDavSynchronizer.Implementation.Events
       return Task.FromResult<IReadOnlyList<EntityIdWithVersion<string, DateTime>>> (
           ids
               .Select (id => (AppointmentItem) _mapiNameSpace.GetItemFromID (id, _folderStoreId))
-              .ToSafeEnumerable ()
+              .ToSafeEnumerable()
               .Select (c => EntityIdWithVersion.Create (c.EntryID, c.LastModificationTime))
-              .ToList ());
+              .ToList());
     }
 
     public Task<IReadOnlyList<EntityIdWithVersion<string, DateTime>>> GetVersions ()

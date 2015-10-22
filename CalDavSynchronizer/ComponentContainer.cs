@@ -24,6 +24,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CalDavSynchronizer.AutomaticUpdates;
+using CalDavSynchronizer.ChangeWatching;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Scheduling;
@@ -33,6 +34,7 @@ using GenSync.ProgressReport;
 using log4net;
 using log4net.Config;
 using Microsoft.Office.Interop.Outlook;
+using Application = Microsoft.Office.Interop.Outlook.Application;
 using Exception = System.Exception;
 
 namespace CalDavSynchronizer
@@ -46,14 +48,17 @@ namespace CalDavSynchronizer
     private readonly IOptionsDataAccess _optionsDataAccess;
     private readonly UpdateChecker _updateChecker;
     private readonly NameSpace _session;
+    private readonly OutlookItemChangeWatcher _itemChangeWatcher;
 
-    public ComponentContainer (NameSpace session)
+    public ComponentContainer (Application application)
     {
       try
       {
         XmlConfigurator.Configure();
 
-        _session = session;
+        _itemChangeWatcher = new OutlookItemChangeWatcher (application.Inspectors);
+        _itemChangeWatcher.ItemSaved += ItemChangeWatcher_ItemSaved;
+        _session = application.Session;
         s_logger.Info ("Startup...");
 
         EnsureSynchronizationContext();
@@ -92,6 +97,10 @@ namespace CalDavSynchronizer
       s_logger.Info ("Startup finnished");
     }
 
+    private void ItemChangeWatcher_ItemSaved (object sender, ItemSavedEventArgs e)
+    {
+    }
+
     public static void ConfigureServicePointManager ()
     {
       ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11;
@@ -111,7 +120,6 @@ namespace CalDavSynchronizer
         ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
       }
     }
-
 
     private bool ShouldCheckForNewerVersions
     {

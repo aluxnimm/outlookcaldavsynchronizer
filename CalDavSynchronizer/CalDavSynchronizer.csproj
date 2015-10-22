@@ -205,6 +205,9 @@
       <DependentUpon>CalDavSynchronizerRibbon.cs</DependentUpon>
     </Compile>
     <Compile Include="CalDavSynchronizerToolBar.cs" />
+    <Compile Include="ChangeWatching\AppointmentItemChangeWrapper.cs" />
+    <Compile Include="ChangeWatching\IOutlookItem.cs" />
+    <Compile Include="ChangeWatching\ItemSavedEventArgs.cs" />
     <Compile Include="ComponentContainer.cs" />
     <Compile Include="Contracts\ProfileEntry.cs" />
     <Compile Include="Contracts\ServerAdapterType.cs" />
@@ -256,6 +259,7 @@
     <Compile Include="Implementation\Tasks\OutlookTaskRepository.cs" />
     <Compile Include="Implementation\TimeRangeFiltering\IDateTimeRangeProvider.cs" />
     <Compile Include="Implementation\TimeRangeFiltering\NullDateTimeRangeProvider.cs" />
+    <Compile Include="ChangeWatching\OutlookItemChangeWatcher.cs" />
     <Compile Include="Properties\AssemblyInfoCommon.cs" />
     <Compile Include="Scheduling\ISynchronizerFactory.cs" />
     <Compile Include="Synchronization\IOutlookSynchronizer.cs" />
