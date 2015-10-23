@@ -65,14 +65,14 @@ namespace CalDavSynchronizer.Implementation.Events
     {
       var newTargetCalender = new iCalendar();
       var startTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(sourceWrapper.Inner.StartTimeZone.ID);
-      var startIcalTimeZone = iCalTimeZone.FromSystemTimeZone (startTimeZoneInfo, new DateTime (1970, 1, 1), true);
+      var startIcalTimeZone = iCalTimeZone.FromSystemTimeZone (startTimeZoneInfo, new DateTime (1970, 1, 1), false);
       newTargetCalender.TimeZones.Add (startIcalTimeZone);
 
       iCalTimeZone endIcalTimeZone;
       if (sourceWrapper.Inner.EndTimeZone != sourceWrapper.Inner.StartTimeZone)
       {
         var endTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(sourceWrapper.Inner.EndTimeZone.ID);
-        endIcalTimeZone = iCalTimeZone.FromSystemTimeZone(endTimeZoneInfo, new DateTime(1970, 1, 1), true);
+        endIcalTimeZone = iCalTimeZone.FromSystemTimeZone(endTimeZoneInfo, new DateTime(1970, 1, 1), false);
         newTargetCalender.TimeZones.Add(endIcalTimeZone);
       }
       else
@@ -1112,9 +1112,16 @@ namespace CalDavSynchronizer.Implementation.Events
             targetWrapper.Inner.StartTimeZone = targetWrapper.Inner.Application.TimeZones[TimeZoneMapper.IanaToWindows (source.Start.TZID) ?? _localTimeZoneInfo.Id];
           }
         }
-           
-        targetWrapper.Inner.StartUTC = source.Start.UTC;
- 
+
+        if (source.Start.IsUniversalTime)
+        {
+          targetWrapper.Inner.StartUTC = source.Start.Value;
+        }
+        else
+        {
+          targetWrapper.Inner.StartInStartTimeZone = source.Start.Value;
+        }
+
         if (source.DTEnd != null)
         {
           if (!string.IsNullOrEmpty (source.DTEnd.TZID))
@@ -1133,12 +1140,20 @@ namespace CalDavSynchronizer.Implementation.Events
               targetWrapper.Inner.EndTimeZone = targetWrapper.Inner.Application.TimeZones[TimeZoneMapper.IanaToWindows(source.DTEnd.TZID) ?? _localTimeZoneInfo.Id];
             }
           }
-          targetWrapper.Inner.EndUTC = source.DTEnd.UTC;
+
+          if (source.DTEnd.IsUniversalTime)
+          {
+            targetWrapper.Inner.EndUTC = source.DTEnd.Value;
+          }
+          else
+          {
+            targetWrapper.Inner.EndInEndTimeZone = source.DTEnd.Value;
+          }
         }
         else if (source.Start.HasTime)
         {
           targetWrapper.Inner.EndTimeZone = targetWrapper.Inner.StartTimeZone;
-          targetWrapper.Inner.EndUTC = source.Start.UTC;
+          targetWrapper.Inner.End = targetWrapper.Inner.Start;
         }
         else
         {
