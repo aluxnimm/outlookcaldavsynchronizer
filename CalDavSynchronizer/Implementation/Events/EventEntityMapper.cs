@@ -836,12 +836,21 @@ namespace CalDavSynchronizer.Implementation.Events
             {
               foreach (IPeriod exdate in exdateList)
               {
-                var originalStart = exdate.StartTime.Date;
-
                 try
                 {
-                  var originalExDate =  NodaTime.LocalDateTime.FromDateTime (originalStart.Add (targetWrapper.Inner.StartInStartTimeZone.TimeOfDay));
                   NodaTime.DateTimeZone startZone = NodaTime.DateTimeZoneProviders.Bcl[targetWrapper.Inner.StartTimeZone.ID];
+                  DateTime originalStart;
+
+                  if (exdate.StartTime.IsUniversalTime)
+                  {
+                    originalStart = NodaTime.Instant.FromDateTimeUtc (exdate.StartTime.Value).InZone (startZone).ToDateTimeUnspecified().Date;
+                  }
+                  else
+                  {
+                    originalStart = exdate.StartTime.Date;
+                  }
+                  var originalExDate =  NodaTime.LocalDateTime.FromDateTime (originalStart.Add (targetWrapper.Inner.StartInStartTimeZone.TimeOfDay));
+                  
                   NodaTime.ZonedDateTime zonedExDate = originalExDate.InZoneLeniently (startZone);
                   NodaTime.ZonedDateTime localExDate = zonedExDate.WithZone (NodaTime.DateTimeZoneProviders.Bcl.GetSystemDefault());
 
@@ -871,13 +880,22 @@ namespace CalDavSynchronizer.Implementation.Events
     {
       foreach (var recurranceException in exceptions)
       {
-        var originalStart = recurranceException.RecurrenceID.Date;
-
         try
         {
-          var originalExDate = NodaTime.LocalDateTime.FromDateTime (originalStart.Add (targetWrapper.Inner.StartInStartTimeZone.TimeOfDay));
           NodaTime.DateTimeZone startZone = NodaTime.DateTimeZoneProviders.Bcl[targetWrapper.Inner.StartTimeZone.ID];
-          NodaTime.ZonedDateTime zonedExDate = originalExDate.InZoneLeniently (startZone);
+          DateTime originalStart;
+
+          if (recurranceException.RecurrenceID.IsUniversalTime)
+          {
+            originalStart = NodaTime.Instant.FromDateTimeUtc (recurranceException.RecurrenceID.Value).InZone (startZone).ToDateTimeUnspecified().Date;
+          }
+          else
+          {
+            originalStart = recurranceException.RecurrenceID.Date;
+          }
+
+          var originalExDate =  NodaTime.LocalDateTime.FromDateTime (originalStart.Add (targetWrapper.Inner.StartInStartTimeZone.TimeOfDay));
+          NodaTime.ZonedDateTime zonedExDate = originalExDate.InZoneLeniently(startZone);
           NodaTime.ZonedDateTime localExDate = zonedExDate.WithZone (NodaTime.DateTimeZoneProviders.Bcl.GetSystemDefault());
 
           var targetException = targetRecurrencePattern.GetOccurrence (localExDate.ToDateTimeUnspecified());
