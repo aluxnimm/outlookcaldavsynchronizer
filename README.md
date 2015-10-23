@@ -47,6 +47,7 @@ This project was initially developed as a master thesis project at the [Universi
 -  [DDay.iCal](http://www.ddaysoftware.com/Pages/Projects/DDay.iCal/)
 -  [Apache log4net](https://logging.apache.org/log4net/)
 -  [Thought.vCard](http://nugetmusthaves.com/Package/Thought.vCards)
+-  [NodaTime](http://nodatime.org/)
 
 ### Install instructions ###
 
@@ -54,6 +55,14 @@ Download and extract the `OutlookCalDavSynchronizer-<Version>.zip` into the same
 If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=44074)
 
 ### Changlog ###
+
+#### 1.4.2 ####
+- Use StartTimeZone and EndTimeZone of events if different to system timezone
+- Map server timezones to Windows Timezones and set time in StartTimeZone to fix recurring events which span DST shifts (fixes bug #94)
+- Fix many cases of mapping recurrence exceptions and finding them over DST changes or if Outlook and Server are in different timezones
+- Fix for bug #101, wrong exdate calculation
+- Fix originalDate calculation of recurrence exceptions if they are on previous day in UTC
+- Don't export historical timezone data before 1970
 
 #### 1.4.1 ####
 - Add mapping of IMAddress for contacts
