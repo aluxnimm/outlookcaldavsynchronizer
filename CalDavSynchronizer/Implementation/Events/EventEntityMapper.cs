@@ -582,11 +582,11 @@ namespace CalDavSynchronizer.Implementation.Events
                     {
                       var timeZone = TimeZoneInfo.FindSystemTimeZoneById (wrapper.Inner.StartTimeZone.ID);
                       var originalDateUtc = TimeZoneInfo.ConvertTimeToUtc (wrapper.Inner.Start.Date, timeZone);
-                      iCalDateTime exDate = new iCalDateTime (originalDateUtc.Add (source.Start.TimeOfDay)) { IsUniversalTime = true };
+                      iCalDateTime exDate = new iCalDateTime (originalDateUtc.Add (source.StartInStartTimeZone.TimeOfDay)) { IsUniversalTime = true };
 
                       targetExList.Add (exDate);
                     }
-                    targetExceptionDatesByOriginalOutlookDate.Add (wrapper.Inner.Start.Date.Add (source.Start.TimeOfDay), targetExList);
+                    targetExceptionDatesByOriginalOutlookDate.Add (wrapper.Inner.Start.Date.Add (source.StartInStartTimeZone.TimeOfDay), targetExList);
                   }
                 }
               }
@@ -621,7 +621,7 @@ namespace CalDavSynchronizer.Implementation.Events
                 {
                   var timeZone = TimeZoneInfo.FindSystemTimeZoneById (source.StartTimeZone.ID);
                   var originalDateUtc = TimeZoneInfo.ConvertTimeToUtc (sourceException.OriginalDate, timeZone);
-                  iCalDateTime exDate = new iCalDateTime (originalDateUtc.Add (source.Start.TimeOfDay)) { IsUniversalTime = true };
+                  iCalDateTime exDate = new iCalDateTime (originalDateUtc.Add (source.StartInStartTimeZone.TimeOfDay)) { IsUniversalTime = true };
 
                   targetExList.Add (exDate);
                 }
