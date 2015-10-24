@@ -16,12 +16,18 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using CalDavSynchronizer.Utilities;
+using log4net;
 using Microsoft.Office.Interop.Outlook;
+using Exception = System.Exception;
 
 namespace CalDavSynchronizer.ChangeWatching
 {
   internal class OutlookItemChangeWatcher
   {
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
+
     private readonly Dictionary<IOutlookItem, bool> _isChangedByItem = new Dictionary<IOutlookItem, bool>();
 
     public event EventHandler<ItemSavedEventArgs> ItemSaved;
@@ -40,32 +46,53 @@ namespace CalDavSynchronizer.ChangeWatching
 
     private void Inspectors_NewInspector (Inspector inspector)
     {
-      var item = TryCreateItem (inspector);
-      if (item != null)
+      try
       {
-        _isChangedByItem.Add (item, false);
-        item.Closed += Item_Closed;
-        item.Saved += Item_Saved;
+        var item = TryCreateItem (inspector);
+        if (item != null)
+        {
+          _isChangedByItem.Add (item, false);
+          item.Closed += Item_Closed;
+          item.Saved += Item_Saved;
+        }
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.LogException (x, s_logger);
       }
     }
 
     private void Item_Saved (object sender, EventArgs e)
     {
-      _isChangedByItem[((IOutlookItem) sender)] = true;
+      try
+      {
+        _isChangedByItem[((IOutlookItem) sender)] = true;
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.LogException (x, s_logger);
+      }
     }
 
     private void Item_Closed (object sender, EventArgs e)
     {
-      var outlookItem = ((IOutlookItem) sender);
-      var isChanged = _isChangedByItem[outlookItem];
-      _isChangedByItem.Remove (outlookItem);
-      if (isChanged)
+      try
       {
-        var folderIds = outlookItem.FolderEntryIdAndStoreIdOrNull;
-        if (folderIds != null)
-          OnItemSaved (new ItemSavedEventArgs (outlookItem.EntryId, folderIds.Item1, folderIds.Item2));
+        var outlookItem = ((IOutlookItem) sender);
+        var isChanged = _isChangedByItem[outlookItem];
+        _isChangedByItem.Remove (outlookItem);
+        if (isChanged)
+        {
+          var folderIds = outlookItem.FolderEntryIdAndStoreIdOrNull;
+          if (folderIds != null)
+            OnItemSaved (new ItemSavedEventArgs (outlookItem.EntryId, folderIds.Item1, folderIds.Item2));
+        }
+        outlookItem.Dispose();
       }
-      outlookItem.Dispose();
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.LogException (x, s_logger);
+      }
     }
 
     private IOutlookItem TryCreateItem (Inspector inspector)
