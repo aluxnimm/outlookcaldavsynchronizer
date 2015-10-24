@@ -104,7 +104,7 @@ namespace CalDavSynchronizer.Scheduling
               var pendingPartialSync = _pendingPartialSyncs[0];
               _pendingPartialSyncs.RemoveAt (0);
               Thread.MemoryBarrier(); // should not be required because there is just one thread entering multiple times
-              await RunIfResponsibleNoThrow (pendingPartialSync.OutlookId, pendingPartialSync.FolderEntryId, pendingPartialSync.FolderStoreId);
+              await RunIfResponsibleNoThrow (pendingPartialSync);
             }
           }
         }
