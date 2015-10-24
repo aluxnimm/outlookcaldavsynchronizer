@@ -153,8 +153,8 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       calDavDataAccess
           .Expect (r => r.GetEventVersions (null))
           .IgnoreArguments()
-          .Return (Task.FromResult<IReadOnlyList<EntityIdWithVersion<Uri, string>>> (
-              new[] { EntityIdWithVersion.Create (entityUri, "v1") }));
+          .Return (Task.FromResult<IReadOnlyList<EntityVersion<Uri, string>>> (
+              new[] { EntityVersion.Create (entityUri, "v1") }));
 
       calDavDataAccess
           .Expect (r => r.GetEntities (Arg<ICollection<Uri>>.List.Equal (new[] { entityUri })))
@@ -197,13 +197,13 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       calDavDataAccess
           .Expect (r => r.GetEventVersions (null))
           .IgnoreArguments()
-          .Return (Task.FromResult<IReadOnlyList<EntityIdWithVersion<Uri, string>>> (
-              new EntityIdWithVersion<Uri, string>[] { }));
+          .Return (Task.FromResult<IReadOnlyList<EntityVersion<Uri, string>>> (
+              new EntityVersion<Uri, string>[] { }));
       calDavDataAccess
           .Expect (r => r.CreateEntity (null))
           .IgnoreArguments()
           .Return (Task.FromResult (
-              EntityIdWithVersion.Create (new Uri ("http://bla.com"), "blubb")))
+              EntityVersion.Create (new Uri ("http://bla.com"), "blubb")))
           .WhenCalled (a => calDavEvents.Add ((string) a.Arguments[0]));
       var synchronizer = CreateEventSynchronizer (
           SynchronizationMode.ReplicateOutlookIntoServer,
@@ -239,8 +239,8 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       calDavDataAccess
           .Expect (r => r.GetEventVersions (null))
           .IgnoreArguments()
-          .Return (Task.FromResult<IReadOnlyList<EntityIdWithVersion<Uri, string>>> (
-              new[] { EntityIdWithVersion.Create (entityUri, "v1") }));
+          .Return (Task.FromResult<IReadOnlyList<EntityVersion<Uri, string>>> (
+              new[] { EntityVersion.Create (entityUri, "v1") }));
 
       calDavDataAccess
           .Expect (r => r.GetEntities (Arg<ICollection<Uri>>.List.Equal (new[] { entityUri })))
@@ -250,8 +250,8 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       calDavDataAccess
           .Expect (r => r.UpdateEntity (new Uri ("http://bla.com"), null))
           .IgnoreArguments()
-          .Return (Task.FromResult<EntityIdWithVersion<Uri, string>> (
-              EntityIdWithVersion.Create (new Uri ("http://bla.com"), "blubb")))
+          .Return (Task.FromResult<EntityVersion<Uri, string>> (
+              EntityVersion.Create (new Uri ("http://bla.com"), "blubb")))
           .WhenCalled (a => { roundTrippedData = (string) a.Arguments[1]; });
 
       var synchronizer = OutlookTestContext.CreateEventSynchronizer (

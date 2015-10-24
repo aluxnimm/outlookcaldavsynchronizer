@@ -44,19 +44,19 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
     private const string c_entryIdColumnName = "EntryID";
 
-    public Task<IReadOnlyList<EntityIdWithVersion<string, DateTime>>> GetVersions (ICollection<string> ids)
+    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions (ICollection<string> ids)
     {
-      return Task.FromResult<IReadOnlyList<EntityIdWithVersion<string, DateTime>>> (
+      return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (
           ids
               .Select (id => (TaskItem) _mapiNameSpace.GetItemFromID (id, _taskFolder.StoreID))
               .ToSafeEnumerable()
-              .Select (c => EntityIdWithVersion.Create (c.EntryID, c.LastModificationTime))
+              .Select (c => EntityVersion.Create (c.EntryID, c.LastModificationTime))
               .ToList());
     }
 
-    public Task<IReadOnlyList<EntityIdWithVersion<string, DateTime>>> GetVersions ()
+    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions ()
     {
-      var entities = new List<EntityIdWithVersion<string, DateTime>>();
+      var entities = new List<EntityVersion<string, DateTime>>();
 
       using (var tableWrapper = GenericComObjectWrapper.Create ((Table) _taskFolder.GetTable()))
       {
@@ -72,12 +72,12 @@ namespace CalDavSynchronizer.Implementation.Tasks
           var entryId = (string) row[c_entryIdColumnName];
           using (var appointmentWrapper = GenericComObjectWrapper.Create ((TaskItem) _mapiNameSpace.GetItemFromID (entryId, storeId)))
           {
-            entities.Add (EntityIdWithVersion.Create (appointmentWrapper.Inner.EntryID, appointmentWrapper.Inner.LastModificationTime));
+            entities.Add (EntityVersion.Create (appointmentWrapper.Inner.EntryID, appointmentWrapper.Inner.LastModificationTime));
           }
         }
       }
 
-      return Task.FromResult<IReadOnlyList<EntityIdWithVersion<string, DateTime>>> (entities);
+      return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (entities);
     }
 
     private static readonly CultureInfo _currentCultureInfo = CultureInfo.CurrentCulture;
@@ -107,11 +107,11 @@ namespace CalDavSynchronizer.Implementation.Tasks
         wrapper.Dispose();
     }
 
-    public Task<EntityIdWithVersion<string, DateTime>> Update (string entityId, TaskItemWrapper entityToUpdate, Func<TaskItemWrapper, TaskItemWrapper> entityModifier)
+    public Task<EntityVersion<string, DateTime>> Update (string entityId, TaskItemWrapper entityToUpdate, Func<TaskItemWrapper, TaskItemWrapper> entityModifier)
     {
       entityToUpdate = entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save();
-      return Task.FromResult (new EntityIdWithVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime));
+      return Task.FromResult (new EntityVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime));
     }
 
     public Task Delete (string entityId)
@@ -128,14 +128,14 @@ namespace CalDavSynchronizer.Implementation.Tasks
       return Task.FromResult (0);
     }
 
-    public Task<EntityIdWithVersion<string, DateTime>> Create (Func<TaskItemWrapper, TaskItemWrapper> entityInitializer)
+    public Task<EntityVersion<string, DateTime>> Create (Func<TaskItemWrapper, TaskItemWrapper> entityInitializer)
     {
       using (var wrapper = new TaskItemWrapper ((TaskItem) _taskFolder.Items.Add (OlItemType.olTaskItem), entryId => (TaskItem) _mapiNameSpace.GetItemFromID (entryId, _taskFolder.StoreID)))
       {
         using (var initializedWrapper = entityInitializer (wrapper))
         {
           initializedWrapper.Inner.Save();
-          var result = new EntityIdWithVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime);
+          var result = new EntityVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime);
           return Task.FromResult (result);
         }
       }

@@ -23,15 +23,15 @@ namespace GenSync.UnitTests.Synchronization.Stubs
           .Expect (r => r.GetVersions())
           .IgnoreArguments()
           .Return (
-              Task.FromResult<IReadOnlyList<EntityIdWithVersion<string, string>>> (
-                  new[] { EntityIdWithVersion.Create ("A1", "v1"), EntityIdWithVersion.Create ("a1", "v3") }));
+              Task.FromResult<IReadOnlyList<EntityVersion<string, string>>> (
+                  new[] { EntityVersion.Create ("A1", "v1"), EntityVersion.Create ("a1", "v3") }));
 
       builder.BtypeRepository
           .Expect (r => r.GetVersions())
           .IgnoreArguments()
           .Return (
-              Task.FromResult<IReadOnlyList<EntityIdWithVersion<string, string>>> (
-                  new[] { EntityIdWithVersion.Create ("b1", "v2") }));
+              Task.FromResult<IReadOnlyList<EntityVersion<string, string>>> (
+                  new[] { EntityVersion.Create ("b1", "v2") }));
 
 
       Task<IReadOnlyList<EntityWithVersion<string, string>>> aTypeLoadTask = new Task<IReadOnlyList<EntityWithVersion<string, string>>> (

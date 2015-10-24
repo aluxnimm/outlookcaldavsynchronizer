@@ -55,12 +55,12 @@ namespace CalDavSynchronizer.Implementation
       _dateTimeRangeProvider = dateTimeRangeProvider;
     }
 
-    public Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetVersions (ICollection<Uri> ids)
+    public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetVersions (ICollection<Uri> ids)
     {
       return _calDavDataAccess.GetVersions (ids);
     }
 
-    public Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetVersions ()
+    public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetVersions ()
     {
       using (AutomaticStopwatch.StartInfo (s_logger, "CalDavRepository.GetVersions"))
       {
@@ -147,7 +147,7 @@ namespace CalDavSynchronizer.Implementation
       }
     }
 
-    public Task<EntityIdWithVersion<Uri, string>> Update (Uri entityId, IICalendar entityToUpdate, Func<IICalendar, IICalendar> entityModifier)
+    public Task<EntityVersion<Uri, string>> Update (Uri entityId, IICalendar entityToUpdate, Func<IICalendar, IICalendar> entityModifier)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
@@ -156,7 +156,7 @@ namespace CalDavSynchronizer.Implementation
       }
     }
 
-    public async Task<EntityIdWithVersion<Uri, string>> Create (Func<IICalendar, IICalendar> entityInitializer)
+    public async Task<EntityVersion<Uri, string>> Create (Func<IICalendar, IICalendar> entityInitializer)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {

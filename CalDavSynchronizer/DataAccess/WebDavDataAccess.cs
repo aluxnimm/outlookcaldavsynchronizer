@@ -183,12 +183,12 @@ namespace CalDavSynchronizer.DataAccess
           );
     }
 
-    public Task<EntityIdWithVersion<Uri, string>> UpdateEntity (Uri url, string contents)
+    public Task<EntityVersion<Uri, string>> UpdateEntity (Uri url, string contents)
     {
       return UpdateEntity (url, string.Empty, contents);
     }
 
-    private async Task<EntityIdWithVersion<Uri, string>> UpdateEntity (Uri url, string etag, string contents)
+    private async Task<EntityVersion<Uri, string>> UpdateEntity (Uri url, string etag, string contents)
     {
       s_logger.DebugFormat ("Updating entity '{0}'", url);
 
@@ -243,10 +243,10 @@ namespace CalDavSynchronizer.DataAccess
         version = await GetEtag (effectiveEventUrl);
       }
 
-      return new EntityIdWithVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveEventUrl), version);
+      return new EntityVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveEventUrl), version);
     }
 
-    protected async Task<EntityIdWithVersion<Uri, string>> CreateEntity (string name, string content)
+    protected async Task<EntityVersion<Uri, string>> CreateEntity (string name, string content)
     {
       var eventUrl = new Uri (_serverUrl, name);
 
@@ -296,7 +296,7 @@ namespace CalDavSynchronizer.DataAccess
         version = await GetEtag (effectiveEventUrl);
       }
 
-      return new EntityIdWithVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveEventUrl), version);
+      return new EntityVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveEventUrl), version);
     }
 
     public Task DeleteEntity (Uri uri)

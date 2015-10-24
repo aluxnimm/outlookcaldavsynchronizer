@@ -129,14 +129,14 @@ namespace CalDavSynchronizer.DataAccess
           );
     }
 
-    public Task<EntityIdWithVersion<Uri, string>> CreateEntity (string iCalData)
+    public Task<EntityVersion<Uri, string>> CreateEntity (string iCalData)
     {
       return CreateEntity (string.Format ("{0:D}.vcs", Guid.NewGuid()), iCalData);
     }
 
-    public async Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetContacts ()
+    public async Task<IReadOnlyList<EntityVersion<Uri, string>>> GetContacts ()
     {
-      var entities = new List<EntityIdWithVersion<Uri, string>>();
+      var entities = new List<EntityVersion<Uri, string>>();
 
       try
       {
@@ -171,7 +171,7 @@ namespace CalDavSynchronizer.DataAccess
             if (String.Compare (eTag, @"""None""", StringComparison.OrdinalIgnoreCase) != 0)
             {
               var uri = UriHelper.UnescapeRelativeUri (_serverUrl, urlNode.InnerText);
-              entities.Add (EntityIdWithVersion.Create (uri, eTag));
+              entities.Add (EntityVersion.Create (uri, eTag));
             }
           }
         }

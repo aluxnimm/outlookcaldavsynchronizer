@@ -99,7 +99,7 @@ namespace CalDavDataAccessIntegrationTests
       foreach (var evt in await _calDavDataAccess.GetEventVersions (null))
         await _calDavDataAccess.DeleteEntity (evt.Id);
 
-      var entitiesWithVersion = new List<EntityIdWithVersion<Uri, string>>();
+      var entitiesWithVersion = new List<EntityVersion<Uri, string>>();
 
       var uids = new List<string>();
 

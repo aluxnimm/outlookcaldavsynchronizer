@@ -49,7 +49,7 @@
     <Compile Include="..\CalDavSynchronizer\Properties\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
-    <Compile Include="EntityIdWithVersion.cs" />
+    <Compile Include="EntityVersion.cs" />
     <Compile Include="EntityMapping\IEntityMapper.cs" />
     <Compile Include="EntityRelationManagement\EntityRelationDataAccess.cs" />
     <Compile Include="EntityRelationManagement\IEntityRelationData.cs" />

@@ -44,12 +44,12 @@ namespace CalDavSynchronizer.Implementation.Contacts
       _vCardWriter = new vCardStandardWriter();
     }
 
-    public Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetVersions (ICollection<Uri> ids)
+    public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetVersions (ICollection<Uri> ids)
     {
       throw new NotImplementedException();
     }
 
-    public async Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetVersions ()
+    public async Task<IReadOnlyList<EntityVersion<Uri, string>>> GetVersions ()
     {
       using (AutomaticStopwatch.StartInfo (s_logger, "CardDavRepository.GetVersions"))
       {
@@ -110,7 +110,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    public Task<EntityIdWithVersion<Uri, string>> Update (Uri entityId, vCard entityToUpdate, Func<vCard, vCard> entityModifier)
+    public Task<EntityVersion<Uri, string>> Update (Uri entityId, vCard entityToUpdate, Func<vCard, vCard> entityModifier)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
@@ -122,7 +122,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    public async Task<EntityIdWithVersion<Uri, string>> Create (Func<vCard, vCard> entityInitializer)
+    public async Task<EntityVersion<Uri, string>> Create (Func<vCard, vCard> entityInitializer)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {

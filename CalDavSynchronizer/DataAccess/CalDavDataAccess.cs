@@ -139,24 +139,24 @@ namespace CalDavSynchronizer.DataAccess
 
     private const string s_calDavDateTimeFormatString = "yyyyMMddThhmmssZ";
 
-    public Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetEventVersions (DateTimeRange? range)
+    public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetEventVersions (DateTimeRange? range)
     {
       return GetEntities (range, "VEVENT");
     }
 
-    public Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetTodoVersions (DateTimeRange? range)
+    public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetTodoVersions (DateTimeRange? range)
     {
       return GetEntities (range, "VTODO");
     }
 
-    public Task<EntityIdWithVersion<Uri, string>> CreateEntity (string iCalData)
+    public Task<EntityVersion<Uri, string>> CreateEntity (string iCalData)
     {
       return CreateEntity (string.Format ("{0:D}.ics", Guid.NewGuid()), iCalData);
     }
 
-    private async Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetEntities (DateTimeRange? range, string entityType)
+    private async Task<IReadOnlyList<EntityVersion<Uri, string>>> GetEntities (DateTimeRange? range, string entityType)
     {
-      var entities = new List<EntityIdWithVersion<Uri, string>>();
+      var entities = new List<EntityVersion<Uri, string>>();
 
       try
       {
@@ -200,7 +200,7 @@ namespace CalDavSynchronizer.DataAccess
           if (urlNode != null && etagNode != null)
           {
             var uri = UriHelper.UnescapeRelativeUri (_serverUrl, urlNode.InnerText);
-            entities.Add (EntityIdWithVersion.Create (uri, etagNode.InnerText));
+            entities.Add (EntityVersion.Create (uri, etagNode.InnerText));
           }
         }
       }
@@ -263,7 +263,7 @@ namespace CalDavSynchronizer.DataAccess
       return entities;
     }
 
-    public async Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetVersions (IEnumerable<Uri> eventUrls)
+    public async Task<IReadOnlyList<EntityVersion<Uri, string>>> GetVersions (IEnumerable<Uri> eventUrls)
     {
       var requestBody = @"<?xml version=""1.0""?>
 			                    <C:calendar-multiget xmlns:C=""urn:ietf:params:xml:ns:caldav"" xmlns:D=""DAV:"">
@@ -285,7 +285,7 @@ namespace CalDavSynchronizer.DataAccess
 
       XmlNodeList responseNodes = responseXml.XmlDocument.SelectNodes ("/D:multistatus/D:response", responseXml.XmlNamespaceManager);
 
-      var entities = new List<EntityIdWithVersion<Uri, string>>();
+      var entities = new List<EntityVersion<Uri, string>>();
 
       if (responseNodes == null)
         return entities;
@@ -298,7 +298,7 @@ namespace CalDavSynchronizer.DataAccess
         var etagNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:getetag", responseXml.XmlNamespaceManager);
         if (urlNode != null && etagNode != null)
         {
-          entities.Add (EntityIdWithVersion.Create (UriHelper.UnescapeRelativeUri (_serverUrl, urlNode.InnerText), etagNode.InnerText));
+          entities.Add (EntityVersion.Create (UriHelper.UnescapeRelativeUri (_serverUrl, urlNode.InnerText), etagNode.InnerText));
         }
       }
 
