@@ -88,12 +88,12 @@ namespace CalDavSynchronizer.Implementation.Tasks
     }
 
 #pragma warning disable 1998
-    public async Task<IReadOnlyList<EntityWithVersion<string, TaskItemWrapper>>> Get (ICollection<string> ids)
+    public async Task<IReadOnlyList<EntityWithId<string, TaskItemWrapper>>> Get (ICollection<string> ids)
 #pragma warning restore 1998
     {
       var storeId = _taskFolder.StoreID;
       return ids
-          .Select (id => EntityWithVersion.Create (
+          .Select (id => EntityWithId.Create (
               id,
               new TaskItemWrapper (
                   (TaskItem) _mapiNameSpace.GetItemFromID (id, storeId),

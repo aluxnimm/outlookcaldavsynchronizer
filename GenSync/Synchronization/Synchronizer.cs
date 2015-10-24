@@ -300,7 +300,7 @@ namespace GenSync.Synchronization
       return dictionary;
     }
 
-    private static Dictionary<TKey, TValue> CreateDictionary<TKey, TValue> (IReadOnlyList<EntityWithVersion<TKey, TValue>> tuples, IEqualityComparer<TKey> equalityComparer)
+    private static Dictionary<TKey, TValue> CreateDictionary<TKey, TValue> (IReadOnlyList<EntityWithId<TKey, TValue>> tuples, IEqualityComparer<TKey> equalityComparer)
     {
       var dictionary = new Dictionary<TKey, TValue> (equalityComparer);
 

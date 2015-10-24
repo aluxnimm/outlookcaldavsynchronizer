@@ -21,23 +21,23 @@ namespace GenSync
   /// <summary>
   /// Represents the Id and the Version of an entity
   /// </summary>
-  public class EntityWithVersion<TEntityId, TEntity>
+  public class EntityWithId<TEntityId, TEntity>
   {
     public readonly TEntityId Id;
     public readonly TEntity Entity;
 
-    public EntityWithVersion (TEntityId id, TEntity entity)
+    public EntityWithId (TEntityId id, TEntity entity)
     {
       Id = id;
       Entity = entity;
     }
   }
 
-  public class EntityWithVersion
+  public class EntityWithId
   {
-    public static EntityWithVersion<TEntityId, TEntity> Create<TEntityId, TEntity> (TEntityId id, TEntity entity)
+    public static EntityWithId<TEntityId, TEntity> Create<TEntityId, TEntity> (TEntityId id, TEntity entity)
     {
-      return new EntityWithVersion<TEntityId, TEntity> (id, entity);
+      return new EntityWithId<TEntityId, TEntity> (id, entity);
     }
   }
 }

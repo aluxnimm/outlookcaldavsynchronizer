@@ -99,11 +99,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
     }
 
 #pragma warning disable 1998
-    public async Task<IReadOnlyList<EntityWithVersion<string, GenericComObjectWrapper<ContactItem>>>> Get (ICollection<string> ids)
+    public async Task<IReadOnlyList<EntityWithId<string, GenericComObjectWrapper<ContactItem>>>> Get (ICollection<string> ids)
 #pragma warning restore 1998
     {
       return ids
-          .Select (id => EntityWithVersion.Create (
+          .Select (id => EntityWithId.Create (
               id,
               GenericComObjectWrapper.Create (
                   (ContactItem) _mapiNameSpace.GetItemFromID (id, _folderStoreId))))

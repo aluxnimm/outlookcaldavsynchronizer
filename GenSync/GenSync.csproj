@@ -58,7 +58,7 @@
     <Compile Include="EntityRepositories\IEntityRepository.cs" />
     <Compile Include="EntityRepositories\IReadOnlyEntityRepository.cs" />
     <Compile Include="EntityRepositories\IWriteOnlyEntityRepository.cs" />
-    <Compile Include="EntityWithVersion.cs" />
+    <Compile Include="EntityWithId.cs" />
     <Compile Include="IExceptionLogger.cs" />
     <Compile Include="InitialEntityMatching\IInitialEntityMatcher.cs" />
     <Compile Include="InitialEntityMatching\InitialEntityMatcherByPropertyGrouping.cs" />

@@ -158,8 +158,8 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
 
       calDavDataAccess
           .Expect (r => r.GetEntities (Arg<ICollection<Uri>>.List.Equal (new[] { entityUri })))
-          .Return (Task.FromResult<IReadOnlyList<EntityWithVersion<Uri, string>>> (
-              new[] { EntityWithVersion.Create (entityUri, eventData) }));
+          .Return (Task.FromResult<IReadOnlyList<EntityWithId<Uri, string>>> (
+              new[] { EntityWithId.Create (entityUri, eventData) }));
 
       var synchronizer = OutlookTestContext.CreateEventSynchronizer (
           SynchronizationMode.ReplicateServerIntoOutlook,
@@ -244,8 +244,8 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
 
       calDavDataAccess
           .Expect (r => r.GetEntities (Arg<ICollection<Uri>>.List.Equal (new[] { entityUri })))
-          .Return (Task.FromResult<IReadOnlyList<EntityWithVersion<Uri, string>>> (
-              new[] { EntityWithVersion.Create (entityUri, existingEventData) }));
+          .Return (Task.FromResult<IReadOnlyList<EntityWithId<Uri, string>>> (
+              new[] { EntityWithId.Create (entityUri, existingEventData) }));
 
       calDavDataAccess
           .Expect (r => r.UpdateEntity (new Uri ("http://bla.com"), null))

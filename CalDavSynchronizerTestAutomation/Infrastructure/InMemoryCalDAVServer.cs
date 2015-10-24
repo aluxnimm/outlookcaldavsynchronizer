@@ -73,10 +73,10 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           eventUrls.Select (id => EntityVersion.Create (id, _entites[id].Item1)).ToList());
     }
 
-    public Task<IReadOnlyList<EntityWithVersion<Uri, string>>> GetEntities (IEnumerable<Uri> eventUrls)
+    public Task<IReadOnlyList<EntityWithId<Uri, string>>> GetEntities (IEnumerable<Uri> eventUrls)
     {
-      return Task.FromResult<IReadOnlyList<EntityWithVersion<Uri, string>>> (
-          eventUrls.Select (id => EntityWithVersion.Create (id, _entites[id].Item2)).ToList());
+      return Task.FromResult<IReadOnlyList<EntityWithId<Uri, string>>> (
+          eventUrls.Select (id => EntityWithId.Create (id, _entites[id].Item2)).ToList());
     }
 
     public Task<EntityVersion<Uri, string>> CreateEntity (string iCalData)

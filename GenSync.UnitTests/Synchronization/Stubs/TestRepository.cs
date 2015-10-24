@@ -52,10 +52,10 @@ namespace GenSync.UnitTests.Synchronization.Stubs
           EntityVersionAndContentById.Select (kv => EntityVersion.Create (kv.Key, kv.Value.Item1)).ToList());
     }
 
-    public Task<IReadOnlyList<EntityWithVersion<Identifier, string>>> Get (ICollection<Identifier> ids)
+    public Task<IReadOnlyList<EntityWithId<Identifier, string>>> Get (ICollection<Identifier> ids)
     {
-      return Task.FromResult<IReadOnlyList<EntityWithVersion<Identifier, string>>> (
-          ids.Select (id => EntityWithVersion.Create (id, EntityVersionAndContentById[id].Item2)).ToArray());
+      return Task.FromResult<IReadOnlyList<EntityWithId<Identifier, string>>> (
+          ids.Select (id => EntityWithId.Create (id, EntityVersionAndContentById[id].Item2)).ToArray());
     }
 
     public void Cleanup (IReadOnlyDictionary<Identifier, string> entities)

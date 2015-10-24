@@ -107,11 +107,11 @@ namespace CalDavSynchronizer.Implementation.Events
     }
 
 #pragma warning disable 1998
-    public async Task<IReadOnlyList<EntityWithVersion<string, AppointmentItemWrapper>>> Get (ICollection<string> ids)
+    public async Task<IReadOnlyList<EntityWithId<string, AppointmentItemWrapper>>> Get (ICollection<string> ids)
 #pragma warning restore 1998
     {
       return ids
-          .Select (id => EntityWithVersion.Create (
+          .Select (id => EntityWithId.Create (
               id,
               new AppointmentItemWrapper (
                   (AppointmentItem) _mapiNameSpace.GetItemFromID (id, _folderStoreId),
