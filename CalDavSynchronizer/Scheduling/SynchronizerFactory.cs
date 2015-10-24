@@ -115,10 +115,16 @@ namespace CalDavSynchronizer.Scheduling
           options.UserName,
           options.Password,
           timeout,
-          options.ServerAdapterType);
+          options.ServerAdapterType,
+          options.CloseAfterEachRequest);
     }
 
-    public static IWebDavClient CreateWebDavClient (string username, string password, TimeSpan timeout, ServerAdapterType serverAdapterType)
+    public static IWebDavClient CreateWebDavClient (
+        string username,
+        string password,
+        TimeSpan timeout,
+        ServerAdapterType serverAdapterType,
+        bool closeConnectionAfterEachRequest)
     {
       switch (serverAdapterType)
       {
@@ -128,7 +134,8 @@ namespace CalDavSynchronizer.Scheduling
           return new DataAccess.HttpClientBasedClient.WebDavClient (
               () => CreateHttpClient (username, password, timeout, serverAdapterType),
               productAndVersion.Item1,
-              productAndVersion.Item2);
+              productAndVersion.Item2,
+              closeConnectionAfterEachRequest);
 
         case ServerAdapterType.SynchronousWebRequestBased:
           return new DataAccess.WebRequestBasedClient.WebDavClient (
@@ -244,7 +251,8 @@ namespace CalDavSynchronizer.Scheduling
                   options.UserName,
                   options.Password,
                   _calDavConnectTimeout,
-                  options.ServerAdapterType)),
+                  options.ServerAdapterType,
+                  options.CloseAfterEachRequest)),
           new iCalendarSerializer(),
           CalDavRepository.EntityType.Todo,
           NullDateTimeRangeProvider.Instance);
@@ -297,7 +305,8 @@ namespace CalDavSynchronizer.Scheduling
                   options.UserName,
                   options.Password,
                   _calDavConnectTimeout,
-                  options.ServerAdapterType)));
+                  options.ServerAdapterType,
+                  options.CloseAfterEachRequest)));
 
       var entityRelationDataFactory = new OutlookContactRelationDataFactory();
 

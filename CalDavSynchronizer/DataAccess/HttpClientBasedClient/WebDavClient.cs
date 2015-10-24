@@ -34,14 +34,16 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
     private readonly ProductInfoHeaderValue _productInfo;
     private readonly Func<Task<HttpClient>> _httpClientFactory;
     private HttpClient _httpClient;
+    private readonly bool _closeConnectionAfterEachRequest;
 
-    public WebDavClient (Func<Task<HttpClient>> httpClientFactory, string productName, string productVersion)
+    public WebDavClient (Func<Task<HttpClient>> httpClientFactory, string productName, string productVersion, bool closeConnectionAfterEachRequest)
     {
       if (httpClientFactory == null)
         throw new ArgumentNullException ("httpClientFactory");
 
       _productInfo = new ProductInfoHeaderValue (productName, productVersion);
       _httpClientFactory = httpClientFactory;
+      _closeConnectionAfterEachRequest = closeConnectionAfterEachRequest;
     }
 
     public async Task<XmlDocumentWithNamespaceManager> ExecuteWebDavRequestAndReadResponse (
@@ -113,6 +115,8 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
         if (_httpClient == null)
         {
           _httpClient = await _httpClientFactory();
+          if (_closeConnectionAfterEachRequest)
+            _httpClient.DefaultRequestHeaders.Add ("Connection", "close");
         }
 
         response = await _httpClient.SendAsync (requestMessage);

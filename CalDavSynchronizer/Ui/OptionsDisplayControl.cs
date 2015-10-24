@@ -451,7 +451,8 @@ namespace CalDavSynchronizer.Ui
           _userNameTextBox.Text,
           _passwordTextBox.Text,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-          SelectedServerAdapterType);
+          SelectedServerAdapterType,
+          _closeConnectionAfterEachRequestCheckBox.Checked);
     }
 
 
@@ -538,6 +539,8 @@ namespace CalDavSynchronizer.Ui
         _optionsId = value.Id;
 
         SelectedServerAdapterType = value.ServerAdapterType;
+        _closeConnectionAfterEachRequestCheckBox.Checked = value.CloseAfterEachRequest;
+
 
         UpdateFolder (value.OutlookFolderEntryId, value.OutlookFolderStoreId);
         UpdateConflictResolutionComboBoxEnabled();
@@ -563,7 +566,8 @@ namespace CalDavSynchronizer.Ui
                    Id = _optionsId,
                    Inactive = _inactiveCheckBox.Checked,
                    IgnoreSynchronizationTimeRange = !_enableTimeRangeFilteringCheckBox.Checked,
-                   ServerAdapterType = SelectedServerAdapterType
+                   ServerAdapterType = SelectedServerAdapterType,
+                   CloseAfterEachRequest = _closeConnectionAfterEachRequestCheckBox.Checked
                };
       }
     }

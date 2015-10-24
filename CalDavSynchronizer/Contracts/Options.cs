@@ -48,6 +48,7 @@ namespace CalDavSynchronizer.Contracts
     // ReSharper restore MemberCanBePrivate.Global
 
     public ServerAdapterType ServerAdapterType { get; set; }
+    public bool CloseAfterEachRequest { get; set; }
 
 
     [XmlIgnore]
