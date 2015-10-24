@@ -583,7 +583,7 @@ namespace CalDavSynchronizer.Implementation.Events
                     else
                     {
                       var timeZone = TimeZoneInfo.FindSystemTimeZoneById (wrapper.Inner.StartTimeZone.ID);
-                      var originalDateUtc = TimeZoneInfo.ConvertTimeToUtc (wrapper.Inner.Start.Date, timeZone);
+                      var originalDateUtc = TimeZoneInfo.ConvertTimeToUtc (wrapper.Inner.StartInStartTimeZone.Date, timeZone);
                       iCalDateTime exDate = new iCalDateTime (originalDateUtc.Add (source.StartInStartTimeZone.TimeOfDay)) { IsUniversalTime = true };
 
                       targetExList.Add (exDate);
