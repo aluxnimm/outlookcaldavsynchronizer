@@ -151,7 +151,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       var entityUri = new Uri ("/e1", UriKind.Relative);
 
       calDavDataAccess
-          .Expect (r => r.GetEvents (null))
+          .Expect (r => r.GetEventVersions (null))
           .IgnoreArguments()
           .Return (Task.FromResult<IReadOnlyList<EntityIdWithVersion<Uri, string>>> (
               new[] { EntityIdWithVersion.Create (entityUri, "v1") }));
@@ -195,7 +195,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
 
 
       calDavDataAccess
-          .Expect (r => r.GetEvents (null))
+          .Expect (r => r.GetEventVersions (null))
           .IgnoreArguments()
           .Return (Task.FromResult<IReadOnlyList<EntityIdWithVersion<Uri, string>>> (
               new EntityIdWithVersion<Uri, string>[] { }));
@@ -237,7 +237,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       ICalDavDataAccess calDavDataAccess = MockRepository.GenerateMock<ICalDavDataAccess>();
       var entityUri = new Uri ("/e1", UriKind.Relative);
       calDavDataAccess
-          .Expect (r => r.GetEvents (null))
+          .Expect (r => r.GetEventVersions (null))
           .IgnoreArguments()
           .Return (Task.FromResult<IReadOnlyList<EntityIdWithVersion<Uri, string>>> (
               new[] { EntityIdWithVersion.Create (entityUri, "v1") }));

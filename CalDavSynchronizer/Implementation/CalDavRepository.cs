@@ -57,7 +57,7 @@ namespace CalDavSynchronizer.Implementation
 
     public Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetVersions (ICollection<Uri> ids)
     {
-      throw new NotImplementedException();
+      return _calDavDataAccess.GetVersions (ids);
     }
 
     public Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetVersions ()
@@ -68,9 +68,9 @@ namespace CalDavSynchronizer.Implementation
         {
           case EntityType.Event:
 
-            return _calDavDataAccess.GetEvents (_dateTimeRangeProvider.GetRange());
+            return _calDavDataAccess.GetEventVersions (_dateTimeRangeProvider.GetRange());
           case EntityType.Todo:
-            return _calDavDataAccess.GetTodos (_dateTimeRangeProvider.GetRange());
+            return _calDavDataAccess.GetTodoVersions (_dateTimeRangeProvider.GetRange());
           default:
             throw new NotImplementedException (string.Format ("EntityType '{0}' not implemented.", _entityType));
         }

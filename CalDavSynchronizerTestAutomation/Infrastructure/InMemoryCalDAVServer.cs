@@ -49,7 +49,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       return Task.FromResult (true);
     }
 
-    public Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetEvents (DateTimeRange? range)
+    public Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetEventVersions (DateTimeRange? range)
     {
       if (range != null)
         throw new NotSupportedException ("range not supported");
@@ -58,13 +58,19 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           _entites.Select (e => EntityIdWithVersion.Create (e.Key, e.Value.Item1)).ToList());
     }
 
-    public Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetTodos (DateTimeRange? range)
+    public Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetTodoVersions (DateTimeRange? range)
     {
       if (range != null)
         throw new NotSupportedException ("range not supported");
 
       return Task.FromResult<IReadOnlyList<EntityIdWithVersion<Uri, string>>> (
           _entites.Select (e => EntityIdWithVersion.Create (e.Key, e.Value.Item1)).ToList());
+    }
+
+    public Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetVersions (IEnumerable<Uri> eventUrls)
+    {
+      return Task.FromResult<IReadOnlyList<EntityIdWithVersion<Uri, string>>> (
+          eventUrls.Select (id => EntityIdWithVersion.Create (id, _entites[id].Item1)).ToList());
     }
 
     public Task<IReadOnlyList<EntityWithVersion<Uri, string>>> GetEntities (IEnumerable<Uri> eventUrls)

@@ -139,12 +139,12 @@ namespace CalDavSynchronizer.DataAccess
 
     private const string s_calDavDateTimeFormatString = "yyyyMMddThhmmssZ";
 
-    public Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetEvents (DateTimeRange? range)
+    public Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetEventVersions (DateTimeRange? range)
     {
       return GetEntities (range, "VEVENT");
     }
 
-    public Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetTodos (DateTimeRange? range)
+    public Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetTodoVersions (DateTimeRange? range)
     {
       return GetEntities (range, "VTODO");
     }
@@ -257,6 +257,48 @@ namespace CalDavSynchronizer.DataAccess
         if (urlNode != null && dataNode != null)
         {
           entities.Add (EntityWithVersion.Create (UriHelper.UnescapeRelativeUri (_serverUrl, urlNode.InnerText), dataNode.InnerText));
+        }
+      }
+
+      return entities;
+    }
+
+    public async Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetVersions (IEnumerable<Uri> eventUrls)
+    {
+      var requestBody = @"<?xml version=""1.0""?>
+			                    <C:calendar-multiget xmlns:C=""urn:ietf:params:xml:ns:caldav"" xmlns:D=""DAV:"">
+			                        <D:prop>
+			                            <D:getetag/>
+			                        </D:prop>
+                                        " + String.Join (Environment.NewLine, eventUrls.Select (u => string.Format ("<D:href>{0}</D:href>", u))) + @"
+                                    </C:calendar-multiget>";
+
+      var responseXml = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
+          _serverUrl,
+          "REPORT",
+          1,
+          null,
+          null,
+          "application/xml",
+          requestBody
+          );
+
+      XmlNodeList responseNodes = responseXml.XmlDocument.SelectNodes ("/D:multistatus/D:response", responseXml.XmlNamespaceManager);
+
+      var entities = new List<EntityIdWithVersion<Uri, string>>();
+
+      if (responseNodes == null)
+        return entities;
+
+      // ReSharper disable once LoopCanBeConvertedToQuery
+      // ReSharper disable once PossibleNullReferenceException
+      foreach (XmlElement responseElement in responseNodes)
+      {
+        var urlNode = responseElement.SelectSingleNode ("D:href", responseXml.XmlNamespaceManager);
+        var etagNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:getetag", responseXml.XmlNamespaceManager);
+        if (urlNode != null && etagNode != null)
+        {
+          entities.Add (EntityIdWithVersion.Create (UriHelper.UnescapeRelativeUri (_serverUrl, urlNode.InnerText), etagNode.InnerText));
         }
       }
 
