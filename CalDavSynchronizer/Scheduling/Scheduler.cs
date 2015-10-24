@@ -88,6 +88,12 @@ namespace CalDavSynchronizer.Scheduling
       _runnersById = workersById;
     }
 
+    public async Task RunIfResponsible (string outlookId, string folderEntryId, string folderStoreId)
+    {
+      foreach (var worker in _runnersById.Values)
+        await worker.RunIfResponsibleNoThrow (outlookId, folderEntryId, folderStoreId);
+    }
+
     public async Task RunNow ()
     {
       foreach (var worker in _runnersById.Values)

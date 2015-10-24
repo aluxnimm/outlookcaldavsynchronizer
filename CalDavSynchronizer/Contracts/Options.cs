@@ -49,6 +49,7 @@ namespace CalDavSynchronizer.Contracts
 
     public ServerAdapterType ServerAdapterType { get; set; }
     public bool CloseAfterEachRequest { get; set; }
+    public bool EnableChangeTriggeredSynchronization { get; set; }
 
 
     [XmlIgnore]

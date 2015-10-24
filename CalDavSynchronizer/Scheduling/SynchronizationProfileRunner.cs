@@ -46,6 +46,7 @@ namespace CalDavSynchronizer.Scheduling
     private bool _inactive;
     private readonly ISynchronizerFactory _synchronizerFactory;
     private int _isRunning = 0;
+    private bool _changeTriggeredSynchronizationEnabled;
 
     private volatile bool _fullSyncPending = false;
     // There is no threadsafe Datastructure required, since there will be no concurrent threads
@@ -66,6 +67,7 @@ namespace CalDavSynchronizer.Scheduling
       _synchronizer = _synchronizerFactory.CreateSynchronizer (options);
       _interval = TimeSpan.FromMinutes (options.SynchronizationIntervalInMinutes);
       _inactive = options.Inactive;
+      _changeTriggeredSynchronizationEnabled = options.EnableChangeTriggeredSynchronization;
     }
 
     public async Task RunAndRescheduleNoThrow (bool runNow)
@@ -79,8 +81,11 @@ namespace CalDavSynchronizer.Scheduling
 
     public async Task RunIfResponsibleNoThrow (string outlookId, string folderEntryId, string folderStoreId)
     {
-      _pendingPartialSyncs.Add (new PartialSync (outlookId, folderEntryId, folderStoreId));
-      await RunAllPendingJobs();
+      if (!_inactive && _changeTriggeredSynchronizationEnabled)
+      {
+        _pendingPartialSyncs.Add (new PartialSync (outlookId, folderEntryId, folderStoreId));
+        await RunAllPendingJobs();
+      }
     }
 
     private async Task RunAllPendingJobs ()
