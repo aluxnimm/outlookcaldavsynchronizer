@@ -205,7 +205,7 @@
       <DependentUpon>CalDavSynchronizerRibbon.cs</DependentUpon>
     </Compile>
     <Compile Include="CalDavSynchronizerToolBar.cs" />
-    <Compile Include="ChangeWatching\AppointmentItemChangeWrapper.cs" />
+    <Compile Include="ChangeWatching\AppointmentItemAdapter.cs" />
     <Compile Include="ChangeWatching\IOutlookItem.cs" />
     <Compile Include="ChangeWatching\ItemSavedEventArgs.cs" />
     <Compile Include="ComponentContainer.cs" />

@@ -72,7 +72,7 @@ namespace CalDavSynchronizer.ChangeWatching
     {
       var appointment = inspector.CurrentItem as AppointmentItem;
       if (appointment != null)
-        return new AppointmentItemChangeWrapper (inspector, appointment);
+        return new AppointmentItemAdapter (inspector, appointment);
       else
         return null;
     }

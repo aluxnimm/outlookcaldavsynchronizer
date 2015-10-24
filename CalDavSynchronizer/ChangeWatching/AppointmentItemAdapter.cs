@@ -19,7 +19,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.ChangeWatching
 {
-  internal class AppointmentItemChangeWrapper : IOutlookItem
+  internal class AppointmentItemAdapter : IOutlookItem
   {
     private AppointmentItem _appointment;
     private Inspector _inspector;
@@ -27,7 +27,7 @@ namespace CalDavSynchronizer.ChangeWatching
     public event EventHandler Saved;
     public event EventHandler Closed;
 
-    public AppointmentItemChangeWrapper (Inspector inspector, AppointmentItem appointment)
+    public AppointmentItemAdapter (Inspector inspector, AppointmentItem appointment)
     {
       _appointment = appointment;
       _inspector = inspector;
