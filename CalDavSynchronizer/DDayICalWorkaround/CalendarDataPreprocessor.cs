@@ -14,6 +14,19 @@ namespace CalDavSynchronizer.DDayICalWorkaround
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
+    public static void FixTimeZoneDSTRRules (TimeZoneInfo tz, DDay.iCal.iCalTimeZone iCalTz)
+    {
+      var adjustments = tz.GetAdjustmentRules();
+      foreach (var tziItems in iCalTz.TimeZoneInfos)
+      {
+        if (tziItems.Name.Equals ("DAYLIGHT"))
+        {
+          var matchingAdj = adjustments.FirstOrDefault(a => (a.DateStart.Year == tziItems.Start.Year)) ?? adjustments.FirstOrDefault();
+          if (matchingAdj != null && matchingAdj.DateEnd.Year != 9999) tziItems.RecurrenceRules[0].Until = DateTime.SpecifyKind (matchingAdj.DateEnd.Date.AddDays (1).Subtract (tz.BaseUtcOffset), DateTimeKind.Utc);
+        }
+      }
+    }
+
     public static string FixTimeZoneComponentOrderNoThrow (string iCalenderData)
     {
       if (string.IsNullOrEmpty (iCalenderData))
