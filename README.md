@@ -54,7 +54,12 @@ This project was initially developed as a master thesis project at the [Universi
 Download and extract the `OutlookCalDavSynchronizer-<Version>.zip` into the same folder and start setup.exe.
 If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=44074)
 
-### Changlog ###
+### Changelog ###
+
+#### 1.4.3 ####
+- Another DDay.iCal Workaround to fix VTIMEZONE generation for timezones wih changing DST rules like Moscow or Cairo
+- bugfix: Use timezone ID for comparison, avoid exporting double VTIMEZONE definitons
+- Options for not using keepalive and accepting invalid headers added
 
 #### 1.4.2 ####
 - Use StartTimeZone and EndTimeZone of events if different to system timezone
