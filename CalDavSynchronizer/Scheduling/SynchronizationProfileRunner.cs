@@ -72,7 +72,10 @@ namespace CalDavSynchronizer.Scheduling
 
     public async Task RunAndRescheduleNoThrow (bool runNow)
     {
-      if (runNow || !_inactive && _interval > TimeSpan.Zero && DateTime.UtcNow > _lastRun + _interval)
+      if (_inactive)
+        return;
+
+      if (runNow || _interval > TimeSpan.Zero && DateTime.UtcNow > _lastRun + _interval)
       {
         _fullSyncPending = true;
         await RunAllPendingJobs();
@@ -81,7 +84,10 @@ namespace CalDavSynchronizer.Scheduling
 
     public async Task RunIfResponsibleNoThrow (string outlookId, string folderEntryId, string folderStoreId)
     {
-      if (!_inactive && _changeTriggeredSynchronizationEnabled)
+      if (_inactive)
+        return;
+
+      if (_changeTriggeredSynchronizationEnabled)
       {
         _pendingPartialSyncs.Add (new PartialSync (outlookId, folderEntryId, folderStoreId));
         await RunAllPendingJobs();
@@ -122,9 +128,6 @@ namespace CalDavSynchronizer.Scheduling
 
     private async Task RunAndRescheduleNoThrow ()
     {
-      if (_inactive)
-        return;
-
       try
       {
         using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("Running synchronization profile '{0}'", _profileName)))
@@ -152,9 +155,6 @@ namespace CalDavSynchronizer.Scheduling
 
     private async Task RunIfResponsibleNoThrow (PartialSync syncJob)
     {
-      if (_inactive)
-        return;
-
       try
       {
         using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("Running synchronization profile '{0}'", _profileName)))
