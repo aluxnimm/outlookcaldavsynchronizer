@@ -69,7 +69,7 @@ namespace CalDavSynchronizer.Implementation.Events
       newTargetCalender.TimeZones.Add (startIcalTimeZone);
 
       iCalTimeZone endIcalTimeZone;
-      if (sourceWrapper.Inner.EndTimeZone != sourceWrapper.Inner.StartTimeZone)
+      if (!sourceWrapper.Inner.EndTimeZone.ID.Equals(sourceWrapper.Inner.StartTimeZone.ID))
       {
         var endTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(sourceWrapper.Inner.EndTimeZone.ID);
         endIcalTimeZone = iCalTimeZone.FromSystemTimeZone(endTimeZoneInfo, new DateTime(1970, 1, 1), false);
