@@ -99,7 +99,7 @@ namespace CalDavSynchronizer
 
     private async void ItemChangeWatcher_ItemSaved (object sender, ItemSavedEventArgs e)
     {
-      await _scheduler.RunIfResponsible (e.EntryId, e.FolderEntryId, e.FolderStoreId);
+      await _scheduler.RunResponsibleSynchronizationProfiles (e.EntryId, e.FolderEntryId, e.FolderStoreId);
     }
 
     public static void ConfigureServicePointManager ()
