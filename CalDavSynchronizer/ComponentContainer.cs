@@ -191,7 +191,7 @@ namespace CalDavSynchronizer
     {
       var profileDataAccess = new ProfileListDataAccess (Path.Combine (applicationDataDirectory, "profiles.xml"));
       var profiles = profileDataAccess.Load();
-      var profile = profiles.FirstOrDefault (p => p.ProfileName.Equals (profileName, StringComparison.OrdinalIgnoreCase));
+      var profile = profiles.FirstOrDefault (p => String.Compare (p.ProfileName, profileName, StringComparison.OrdinalIgnoreCase) == 0);
       if (profile == null)
       {
         profile = new ProfileEntry()
