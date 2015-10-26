@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -24,20 +25,26 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           .Where (t => t.GetCustomAttributes (typeof (TestFixtureAttribute), true).Any());
 
 
-      foreach (var testFixture in testFixtures)
-        Run (testFixture, excludeManual);
+      var allTests =
+          (from testFixture in testFixtures
+            from test in testFixture.GetMethods().Where (m =>
+                m.GetCustomAttributes (typeof (TestAttribute), true).Any()
+                && !(excludeManual && m.GetCustomAttributes (typeof (ContainsManualAssertAttribute), true).Any()))
+            select new
+                   {
+                       Fixture = testFixture,
+                       Test = test
+                   }).ToArray();
+
+      Array.ForEach (allTests, t => _testDisplay.SetRunPending (t.Test));
+
+      foreach (var fixture in allTests.GroupBy (t => t.Fixture))
+        Run (fixture.Key, fixture.Select (f => f.Test));
     }
 
-    private void Run (Type testFixture, bool excludeManual)
+
+    private void Run (Type testFixture, IEnumerable<MethodInfo> tests)
     {
-      var tests = testFixture.GetMethods().Where (m => m.GetCustomAttributes (typeof (TestAttribute), true).Any());
-
-      if (excludeManual)
-      {
-        tests = tests
-            .Where (t => !t.GetCustomAttributes (typeof (ContainsManualAssertAttribute), true).Any());
-      }
-
       var testFixtureInstance = testFixture.GetConstructor (Type.EmptyTypes).Invoke (new object[] { });
       foreach (var test in tests)
         Run (testFixtureInstance, test);
@@ -48,11 +55,11 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       try
       {
         test.Invoke (testFixture, new object[] { });
-        _testDisplay.AddPassed (test);
+        _testDisplay.SetPassed (test);
       }
       catch (TargetInvocationException x)
       {
-        _testDisplay.AddFailed (test, x.InnerException);
+        _testDisplay.SetFailed (test, x.InnerException);
       }
     }
   }

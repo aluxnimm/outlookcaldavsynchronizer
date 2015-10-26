@@ -21,7 +21,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       _detailsTextBox.Text = (string) e.Node.Tag;
     }
 
-    public void AddPassed (MethodInfo test)
+    public void SetPassed (MethodInfo test)
     {
       var testName = CalculateTestName (test);
       var node = GetOrCreateNode (testName);
@@ -33,7 +33,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       return string.Format ("{0}.{1}", test.DeclaringType.FullName, test.Name);
     }
 
-    public void AddFailed (MethodInfo test, Exception x)
+    public void SetFailed (MethodInfo test, Exception x)
     {
       var testName = CalculateTestName (test);
       var node = GetOrCreateNode (testName);
@@ -42,6 +42,15 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
 
       for (var n = node; n != null; n = n.Parent)
         n.ForeColor = Color.Red;
+    }
+
+    public void SetRunPending (MethodInfo test)
+    {
+      var testName = CalculateTestName (test);
+      var node = GetOrCreateNode (testName);
+
+      for (var n = node; n != null; n = n.Parent)
+        n.ForeColor = Color.Black;
     }
 
 

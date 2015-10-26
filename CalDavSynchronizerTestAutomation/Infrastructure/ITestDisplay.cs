@@ -5,7 +5,8 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
 {
   internal interface ITestDisplay
   {
-    void AddPassed (MethodInfo test);
-    void AddFailed (MethodInfo test, Exception x);
+    void SetRunPending (MethodInfo test);
+    void SetPassed (MethodInfo test);
+    void SetFailed (MethodInfo test, Exception x);
   }
 }
