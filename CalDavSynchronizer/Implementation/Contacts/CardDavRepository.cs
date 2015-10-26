@@ -122,6 +122,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
         vCard newVcard = new vCard();
+        newVcard.UniqueId = Guid.NewGuid().ToString();
         var initializedVcard = entityInitializer (newVcard);
         return await _cardDavDataAccess.CreateEntity (Serialize (initializedVcard));
       }
