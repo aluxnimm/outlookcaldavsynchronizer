@@ -139,19 +139,19 @@ namespace GenSync.Synchronization
 
       try
       {
+        var knownEntityRelations = _entityRelationDataAccess.LoadEntityRelationData();
+
+        if (knownEntityRelations == null)
+        {
+          await Synchronize();
+          return;
+        }
+
         var aEntitesToSynchronize = new HashSet<TAtypeEntityId> (aEntityIds, _atypeIdComparer);
         var bEntitesToSynchronize = new HashSet<TBtypeEntityId> (bEntityIds, _btypeIdComparer);
 
         using (var totalProgress = _totalProgressFactory.Create())
         {
-          var knownEntityRelations = _entityRelationDataAccess.LoadEntityRelationData();
-
-          if (knownEntityRelations == null)
-          {
-            // TODO: perform inital entity matching
-            return;
-          }
-
           var entityRelationsToUse = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
           var entityRelationsNotToUse = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
 
