@@ -617,36 +617,25 @@ namespace CalDavSynchronizer.Ui
     {
       if (!string.IsNullOrEmpty (folderEntryId) && !string.IsNullOrEmpty (folderStoreId))
       {
-        GenericComObjectWrapper<MAPIFolder> folderWrapper = null;
-
         try
         {
-          try
-          {
-            folderWrapper = GenericComObjectWrapper.Create (_session.GetFolderFromID (folderEntryId, folderStoreId));
-          }
-          catch (Exception x)
-          {
-            s_logger.Error (null, x);
-            _outoookFolderNameTextBox.Text = "<ERROR>";
-            _folderType = null;
-            return;
-          }
-          if (folderWrapper != null)
+          using (var folderWrapper = GenericComObjectWrapper.Create (_session.GetFolderFromID (folderEntryId, folderStoreId)))
           {
             UpdateFolder (folderWrapper.Inner);
-            return;
           }
         }
-        finally
+        catch (Exception x)
         {
-          if (folderWrapper != null)
-            folderWrapper.Dispose();
+          s_logger.Error (null, x);
+          _outoookFolderNameTextBox.Text = "<ERROR>";
+          _folderType = null;
         }
       }
-
-      _outoookFolderNameTextBox.Text = "<MISSING>";
-      _folderType = null;
+      else
+      {
+        _outoookFolderNameTextBox.Text = "<MISSING>";
+        _folderType = null;
+      }
     }
 
     private void SelectFolder ()
