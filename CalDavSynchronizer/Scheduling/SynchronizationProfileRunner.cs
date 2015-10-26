@@ -52,7 +52,7 @@ namespace CalDavSynchronizer.Scheduling
     // There is no threadsafe Datastructure required, since there will be no concurrent threads
     // The concurrency in this scenario lies in the fact that the MainThread will enter multiple times, because
     // all methods are async
-    private readonly List<PartialSync> _pendingPartialSyncs = new List<PartialSync>();
+    private readonly List<string> _pendingOutlookItems = new List<string>();
 
     public SynchronizationProfileRunner (ISynchronizerFactory synchronizerFactory)
     {
@@ -63,6 +63,9 @@ namespace CalDavSynchronizer.Scheduling
 
     public void UpdateOptions (Options options)
     {
+      _pendingOutlookItems.Clear();
+      _fullSyncPending = false;
+
       _profileName = options.Name;
       _synchronizer = _synchronizerFactory.CreateSynchronizer (options);
       _interval = TimeSpan.FromMinutes (options.SynchronizationIntervalInMinutes);
@@ -84,14 +87,17 @@ namespace CalDavSynchronizer.Scheduling
 
     public async Task RunIfResponsibleNoThrow (string outlookId, string folderEntryId, string folderStoreId)
     {
+      if (!_changeTriggeredSynchronizationEnabled)
+        return;
+
       if (_inactive)
         return;
 
-      if (_changeTriggeredSynchronizationEnabled)
-      {
-        _pendingPartialSyncs.Add (new PartialSync (outlookId, folderEntryId, folderStoreId));
-        await RunAllPendingJobs();
-      }
+      if (!_synchronizer.IsResponsible (folderEntryId, folderStoreId))
+        return;
+
+      _pendingOutlookItems.Add (outlookId);
+      await RunAllPendingJobs();
     }
 
     private async Task RunAllPendingJobs ()
@@ -101,7 +107,7 @@ namespace CalDavSynchronizer.Scheduling
       {
         try
         {
-          while (_fullSyncPending || _pendingPartialSyncs.Count > 0)
+          while (_fullSyncPending || _pendingOutlookItems.Count > 0)
           {
             if (_fullSyncPending)
             {
@@ -110,12 +116,12 @@ namespace CalDavSynchronizer.Scheduling
               await RunAndRescheduleNoThrow();
             }
 
-            if (_pendingPartialSyncs.Count > 0)
+            if (_pendingOutlookItems.Count > 0)
             {
-              var pendingPartialSync = _pendingPartialSyncs[0];
-              _pendingPartialSyncs.RemoveAt (0);
+              var itemsToSync = _pendingOutlookItems.ToArray();
+              _pendingOutlookItems.Clear();
               Thread.MemoryBarrier(); // should not be required because there is just one thread entering multiple times
-              await RunIfResponsibleNoThrow (pendingPartialSync);
+              await RunIfResponsibleNoThrow (itemsToSync);
             }
           }
         }
@@ -153,7 +159,7 @@ namespace CalDavSynchronizer.Scheduling
       }
     }
 
-    private async Task RunIfResponsibleNoThrow (PartialSync syncJob)
+    private async Task RunIfResponsibleNoThrow (IEnumerable<string> itemsToSync)
     {
       try
       {
@@ -161,7 +167,7 @@ namespace CalDavSynchronizer.Scheduling
         {
           try
           {
-            await _synchronizer.SnychronizeIfResponsible (syncJob.OutlookId, syncJob.FolderEntryId, syncJob.FolderStoreId);
+            await _synchronizer.SnychronizePartial (itemsToSync);
           }
           finally
           {
@@ -173,21 +179,6 @@ namespace CalDavSynchronizer.Scheduling
       catch (Exception x)
       {
         ExceptionHandler.Instance.HandleException (x, s_logger);
-      }
-    }
-
-    private struct PartialSync
-    {
-      public readonly string OutlookId;
-      public readonly string FolderEntryId;
-      public readonly string FolderStoreId;
-
-      public PartialSync (string outlookId, string folderEntryId, string folderStoreId)
-          : this()
-      {
-        OutlookId = outlookId;
-        FolderEntryId = folderEntryId;
-        FolderStoreId = folderStoreId;
       }
     }
   }

@@ -90,7 +90,12 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
         return Task.Run (() => FinishSynchronizationEvent.Wait());
       }
 
-      public Task SnychronizeIfResponsible (string outlookId, string folderEntryId, string folderStoreId)
+      public Task SnychronizePartial (IEnumerable<string> outlookIds)
+      {
+        throw new NotImplementedException();
+      }
+
+      public bool IsResponsible (string folderEntryId, string folderStoreId)
       {
         throw new NotImplementedException();
       }

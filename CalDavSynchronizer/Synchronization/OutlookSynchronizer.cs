@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Implementation;
 using GenSync.Synchronization;
@@ -37,10 +38,14 @@ namespace CalDavSynchronizer.Synchronization
       return _synchronizer.Synchronize();
     }
 
-    public async Task SnychronizeIfResponsible (string outlookId, string folderEntryId, string folderStoreId)
+    public async Task SnychronizePartial (IEnumerable<string> outlookIds)
     {
-      if (_outlookRepository.IsResponsibleForFolder (folderEntryId, folderStoreId))
-        await _synchronizer.SynchronizePartial (new[] { outlookId }, new Uri[] { });
+      await _synchronizer.SynchronizePartial (outlookIds, new Uri[] { });
+    }
+
+    public bool IsResponsible (string folderEntryId, string folderStoreId)
+    {
+      return _outlookRepository.IsResponsibleForFolder (folderEntryId, folderStoreId);
     }
   }
 }
