@@ -19,10 +19,13 @@ namespace CalDavSynchronizer.DDayICalWorkaround
       var adjustments = tz.GetAdjustmentRules();
       foreach (var tziItems in iCalTz.TimeZoneInfos)
       {
-        if (tziItems.Name.Equals ("DAYLIGHT"))
+        var matchingAdj = adjustments.FirstOrDefault(a => (a.DateStart.Year == tziItems.Start.Year)) ?? adjustments.FirstOrDefault();
+        if (matchingAdj != null && matchingAdj.DateEnd.Year != 9999)
         {
-          var matchingAdj = adjustments.FirstOrDefault(a => (a.DateStart.Year == tziItems.Start.Year)) ?? adjustments.FirstOrDefault();
-          if (matchingAdj != null && matchingAdj.DateEnd.Year != 9999) tziItems.RecurrenceRules[0].Until = DateTime.SpecifyKind (matchingAdj.DateEnd.Date.AddDays (1).Subtract (tz.BaseUtcOffset), DateTimeKind.Utc);
+          if (!(tziItems.Name.Equals ("STANDARD") && matchingAdj == adjustments.Last()))
+          {
+            tziItems.RecurrenceRules[0].Until = DateTime.SpecifyKind (matchingAdj.DateEnd.Date.AddDays (1).Subtract (tz.BaseUtcOffset), DateTimeKind.Utc);
+          }
         }
       }
     }
