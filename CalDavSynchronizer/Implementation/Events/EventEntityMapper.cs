@@ -566,10 +566,10 @@ namespace CalDavSynchronizer.Implementation.Events
 
                 // check if new exception is already present in target
                 // if it is found and not already present as exdate then add a new exdate to avoid 2 events
-                var targetContainsExceptionList = target.GetOccurrences (wrapper.Inner.Start, wrapper.Inner.End);
+                var targetContainsExceptionList = target.GetOccurrences (wrapper.Inner.Start.Date, wrapper.Inner.End.Date.AddDays (1));
                 if (targetContainsExceptionList.Count > 0)
                 {
-                  if (!originalOutlookDatesWithExceptions.Contains (wrapper.Inner.Start))
+                  if (!originalOutlookDatesWithExceptions.Contains (wrapper.Inner.Start) && wrapper.Inner.Start.Date != sourceException.OriginalDate.Date)
                   {
                     PeriodList targetExList = new PeriodList();
 
