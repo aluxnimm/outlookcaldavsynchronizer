@@ -56,6 +56,12 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 1.4.4 ####
+- Another fix for VTIMEZONE definition for Google, hopefully fixes US and Moscow timezone
+- Add UID when vCard is created, according to the RFC UID is mandatory
+- Another fix for recurrence exceptions and exdates for Bug #101
+- Handle exceptions when updating outlook folders or during profile loading at startup
+
 #### 1.4.3 ####
 - Another DDay.iCal Workaround to fix VTIMEZONE generation for timezones wih changing DST rules like Moscow or Cairo
 - bugfix: Use timezone ID for comparison, avoid exporting double VTIMEZONE definitons
