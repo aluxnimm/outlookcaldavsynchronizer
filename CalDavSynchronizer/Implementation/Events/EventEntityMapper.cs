@@ -547,48 +547,53 @@ namespace CalDavSynchronizer.Implementation.Events
 
           target.RecurrenceRules.Add (targetRecurrencePattern);
 
-          Dictionary<DateTime, PeriodList> targetExceptionDatesByOriginalOutlookDate = new Dictionary<DateTime, PeriodList>();
+          Dictionary<DateTime, PeriodList> targetExceptionDatesByDate = new Dictionary<DateTime, PeriodList>();
           HashSet<DateTime> originalOutlookDatesWithExceptions = new HashSet<DateTime>();
 
           foreach (var sourceException in sourceRecurrencePattern.Exceptions.ToSafeEnumerable<Exception>())
           {
             if (!sourceException.Deleted)
             {
-              targetExceptionDatesByOriginalOutlookDate.Remove (sourceException.OriginalDate);
               originalOutlookDatesWithExceptions.Add (sourceException.OriginalDate);
+            }
+          }
+          foreach (var sourceException in sourceRecurrencePattern.Exceptions.ToSafeEnumerable<Exception>())
+          {
+            if (!sourceException.Deleted)
+            {
+              targetExceptionDatesByDate.Remove (sourceException.OriginalDate.Date);
 
               var targetException = new Event();
               target.Calendar.Events.Add (targetException);
               targetException.UID = target.UID;
-              using (var wrapper = new AppointmentItemWrapper (sourceException.AppointmentItem, _ => { throw new InvalidOperationException ("Cannot reload exception AppointmentITem!"); }))
+              using (var wrapper = new AppointmentItemWrapper (sourceException.AppointmentItem, _ => { throw new InvalidOperationException("Cannot reload exception AppointmentITem!"); }))
               {
                 Map1To2 (wrapper.Inner, targetException, true, startIcalTimeZone, endIcalTimeZone);
 
                 // check if new exception is already present in target
                 // if it is found and not already present as exdate then add a new exdate to avoid 2 events
-                var targetContainsExceptionList = target.GetOccurrences (wrapper.Inner.Start.Date, wrapper.Inner.End.Date.AddDays (1));
-                if (targetContainsExceptionList.Count > 0)
+                var from = (wrapper.Inner.Start.Date < sourceException.OriginalDate.Date) ? wrapper.Inner.Start.Date : sourceException.OriginalDate.Date;
+                var to = (wrapper.Inner.Start.Date > sourceException.OriginalDate.Date) ? wrapper.Inner.Start.Date.AddDays (1) : sourceException.OriginalDate.Date.AddDays (1);
+
+                var targetContainsExceptionList = target.GetOccurrences (from, to);
+                foreach (var el in targetContainsExceptionList)
                 {
-                  if (!originalOutlookDatesWithExceptions.Contains (wrapper.Inner.Start) && wrapper.Inner.Start.Date != sourceException.OriginalDate.Date)
+                  if (!originalOutlookDatesWithExceptions.Contains (el.Period.StartTime.Value))
                   {
                     PeriodList targetExList = new PeriodList();
 
-                    if (wrapper.Inner.AllDayEvent)
+                    if (!el.Period.StartTime.HasTime)
                     {
-                      iCalDateTime exDate = new iCalDateTime (wrapper.Inner.Start);
+                      iCalDateTime exDate = new iCalDateTime (el.Period.StartTime.Date);
                       exDate.HasTime = false;
                       targetExList.Add (exDate);
                       targetExList.Parameters.Add ("VALUE", "DATE");
                     }
                     else
                     {
-                      var timeZone = TimeZoneInfo.FindSystemTimeZoneById (wrapper.Inner.StartTimeZone.ID);
-                      var originalDateUtc = TimeZoneInfo.ConvertTimeToUtc (wrapper.Inner.StartInStartTimeZone.Date, timeZone);
-                      iCalDateTime exDate = new iCalDateTime (originalDateUtc.Add (source.StartInStartTimeZone.TimeOfDay)) { IsUniversalTime = true };
-
-                      targetExList.Add (exDate);
+                      targetExList.Add (new iCalDateTime (el.Period.StartTime.UTC) { IsUniversalTime = true });
                     }
-                    targetExceptionDatesByOriginalOutlookDate.Add (wrapper.Inner.Start.Date.Add (source.StartInStartTimeZone.TimeOfDay), targetExList);
+                    targetExceptionDatesByDate.Add (el.Period.StartTime.Date, targetExList);
                   }
                 }
               }
@@ -627,11 +632,11 @@ namespace CalDavSynchronizer.Implementation.Events
 
                   targetExList.Add (exDate);
                 }
-                targetExceptionDatesByOriginalOutlookDate.Add (sourceException.OriginalDate, targetExList);
+                targetExceptionDatesByDate.Add (sourceException.OriginalDate, targetExList);
               }
             }
           }
-          target.ExceptionDates.AddRange (targetExceptionDatesByOriginalOutlookDate.Values);
+          target.ExceptionDates.AddRange (targetExceptionDatesByDate.Values);
         }
       }
     }
