@@ -40,18 +40,18 @@ namespace CalDavSynchronizer.DDayICalWorkaround
         var newCalenderData = iCalenderData;
 
         for (
-            var timeZoneMatch = Regex.Match (iCalenderData, "BEGIN:VTIMEZONE\r\n(.|\n)*?END:VTIMEZONE\r\n", RegexOptions.RightToLeft);
+            var timeZoneMatch = Regex.Match (iCalenderData, "BEGIN:VTIMEZONE\r?\n(.|\n)*?END:VTIMEZONE\r?\n", RegexOptions.RightToLeft);
             timeZoneMatch.Success;
             timeZoneMatch = timeZoneMatch.NextMatch())
         {
           var sections = new List<Tuple<Match, DateTime>>();
 
           for (
-              var sectionMatch = Regex.Match (timeZoneMatch.Value, "BEGIN:STANDARD\r\n(.|\n)*?END:STANDARD\r\n", RegexOptions.RightToLeft);
+              var sectionMatch = Regex.Match (timeZoneMatch.Value, "BEGIN:STANDARD\r?\n(.|\n)*?END:STANDARD\r?\n", RegexOptions.RightToLeft);
               sectionMatch.Success;
               sectionMatch = sectionMatch.NextMatch())
           {
-            var startMatch = Regex.Match (sectionMatch.Value, "DTSTART:(.*?)\r\n");
+            var startMatch = Regex.Match (sectionMatch.Value, "DTSTART:(.*?)\r?\n");
             if (startMatch.Success)
             {
               DateTime date;
@@ -63,11 +63,11 @@ namespace CalDavSynchronizer.DDayICalWorkaround
           }
 
           for (
-              var sectionMatch = Regex.Match (timeZoneMatch.Value, "BEGIN:DAYLIGHT\r\n(.|\n)*?END:DAYLIGHT\r\n", RegexOptions.RightToLeft);
+              var sectionMatch = Regex.Match (timeZoneMatch.Value, "BEGIN:DAYLIGHT\r?\n(.|\n)*?END:DAYLIGHT\r?\n", RegexOptions.RightToLeft);
               sectionMatch.Success;
               sectionMatch = sectionMatch.NextMatch())
           {
-            var startMatch = Regex.Match (sectionMatch.Value, "DTSTART:(.*?)\r\n");
+            var startMatch = Regex.Match (sectionMatch.Value, "DTSTART:(.*?)\r?\n");
             if (startMatch.Success)
             {
               DateTime date;
