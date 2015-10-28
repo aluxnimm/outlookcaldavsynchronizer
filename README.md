@@ -56,6 +56,10 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 1.4.5 ####
+- Fix regex in workaround for DDay.iCal timezone parsing, should fix bug #105 for syncing with Owncloud/Davdroid
+- Rework of exdate generation to work around some strange Outlook Exception Collection missing elements, fixes Bug #91 and other recurrence exceptions with complex patterns
+
 #### 1.4.4 ####
 - Another fix for VTIMEZONE definition for Google, hopefully fixes US and Moscow timezone
 - Add UID when vCard is created, according to the RFC UID is mandatory
