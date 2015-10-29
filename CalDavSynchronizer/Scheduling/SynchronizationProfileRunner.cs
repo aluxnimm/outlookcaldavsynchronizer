@@ -75,29 +75,43 @@ namespace CalDavSynchronizer.Scheduling
 
     public async Task RunAndRescheduleNoThrow (bool runNow)
     {
-      if (_inactive)
-        return;
-
-      if (runNow || _interval > TimeSpan.Zero && DateTime.UtcNow > _lastRun + _interval)
+      try
       {
-        _fullSyncPending = true;
-        await RunAllPendingJobs();
+        if (_inactive)
+          return;
+
+        if (runNow || _interval > TimeSpan.Zero && DateTime.UtcNow > _lastRun + _interval)
+        {
+          _fullSyncPending = true;
+          await RunAllPendingJobs();
+        }
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.HandleException (x, s_logger);
       }
     }
 
     public async Task RunIfResponsibleNoThrow (string outlookId, string folderEntryId, string folderStoreId)
     {
-      if (!_changeTriggeredSynchronizationEnabled)
-        return;
+      try
+      {
+        if (!_changeTriggeredSynchronizationEnabled)
+          return;
 
-      if (_inactive)
-        return;
+        if (_inactive)
+          return;
 
-      if (!_synchronizer.IsResponsible (folderEntryId, folderStoreId))
-        return;
+        if (!_synchronizer.IsResponsible (folderEntryId, folderStoreId))
+          return;
 
-      _pendingOutlookItems.Add (outlookId);
-      await RunAllPendingJobs();
+        _pendingOutlookItems.Add (outlookId);
+        await RunAllPendingJobs();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.HandleException (x, s_logger);
+      }
     }
 
     private async Task RunAllPendingJobs ()
