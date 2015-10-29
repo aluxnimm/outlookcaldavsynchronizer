@@ -149,7 +149,18 @@ namespace CalDavSynchronizer.Implementation.Contacts
             fixedvCardString = Regex.Replace (originalvCardString, "BDAY:(.*?)\r\n", "BDAY:" + date.ToString ("yyyy-MM-dd") + "\r\n");
           }
         }
-        return fixedvCardString;
+
+        string fixedvCardString2 = fixedvCardString;
+
+        // Reformat NOTE attribute since quoted-printable is deprecated
+        var noteMatch = Regex.Match (fixedvCardString, "NOTE;ENCODING=QUOTED-PRINTABLE:(.*?)\r\n");
+        if (noteMatch.Success)
+        {
+          string decodedNote = vCardStandardReader.DecodeQuotedPrintable (noteMatch.Groups[1].Value).Replace ("\r\n","\n");
+          fixedvCardString2 = Regex.Replace (fixedvCardString, "NOTE;ENCODING=QUOTED-PRINTABLE:(.*?)\r\n",_vCardWriter.EncodeEscaped ("NOTE:"+decodedNote)+"\r\n");
+        }
+        
+        return fixedvCardString2;
       }
     }
 
