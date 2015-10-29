@@ -15,17 +15,26 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 
-namespace GenSync.EntityRepositories
+namespace GenSync.UnitTests.Synchronization.Stubs
 {
-  /// <summary>
-  /// All writeoperations that a repository has to support
-  /// </summary>
-  public interface IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
+  internal class IdentifierEqualityComparer : IEqualityComparer<Identifier>
   {
-    Task Delete (TEntityId entityId);
-    Task<EntityVersion<TEntityId, TEntityVersion>> Update (TEntityId entityId, TEntity entityToUpdate, Func<TEntity, TEntity> entityModifier);
-    Task<EntityVersion<TEntityId, TEntityVersion>> Create (Func<TEntity, TEntity> entityInitializer);
+    public static readonly IEqualityComparer<Identifier> Instance = new IdentifierEqualityComparer();
+
+    private IdentifierEqualityComparer ()
+    {
+    }
+
+    public bool Equals (Identifier x, Identifier y)
+    {
+      return StringComparer.InvariantCultureIgnoreCase.Compare (x.Value, y.Value) == 0;
+    }
+
+    public int GetHashCode (Identifier obj)
+    {
+      return obj.Value.ToLower().GetHashCode();
+    }
   }
 }

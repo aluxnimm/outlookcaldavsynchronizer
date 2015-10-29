@@ -40,6 +40,7 @@
       this._conflictResolutionComboBox = new System.Windows.Forms.ComboBox();
       this._synchronizationModeComboBox = new System.Windows.Forms.ComboBox();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
+      this._closeConnectionAfterEachRequestCheckBox = new System.Windows.Forms.CheckBox();
       this._useGoogleOAuthCheckBox = new System.Windows.Forms.CheckBox();
       this.label11 = new System.Windows.Forms.Label();
       this._emailAddressTextBox = new System.Windows.Forms.TextBox();
@@ -62,8 +63,8 @@
       this.groupBox3 = new System.Windows.Forms.GroupBox();
       this._enableTimeRangeFilteringCheckBox = new System.Windows.Forms.CheckBox();
       this._timeRangeFilteringGroupBox = new System.Windows.Forms.GroupBox();
-      this._closeConnectionAfterEachRequestCheckBox = new System.Windows.Forms.CheckBox();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox = new System.Windows.Forms.CheckBox();
       this.groupBox2.SuspendLayout();
       this.groupBox1.SuspendLayout();
       this.groupBox3.SuspendLayout();
@@ -74,6 +75,7 @@
       // 
       this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupBox2.Controls.Add(this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox);
       this.groupBox2.Controls.Add(this._selectOutlookFolderButton);
       this.groupBox2.Controls.Add(this._outoookFolderNameTextBox);
       this.groupBox2.Controls.Add(this.label9);
@@ -193,6 +195,18 @@
       this.groupBox1.TabIndex = 1;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Server settings";
+      // 
+      // _closeConnectionAfterEachRequestCheckBox
+      // 
+      this._closeConnectionAfterEachRequestCheckBox.AutoSize = true;
+      this._closeConnectionAfterEachRequestCheckBox.Location = new System.Drawing.Point(11, 126);
+      this._closeConnectionAfterEachRequestCheckBox.Name = "_closeConnectionAfterEachRequestCheckBox";
+      this._closeConnectionAfterEachRequestCheckBox.Size = new System.Drawing.Size(197, 17);
+      this._closeConnectionAfterEachRequestCheckBox.TabIndex = 15;
+      this._closeConnectionAfterEachRequestCheckBox.Text = "Close connection after each request";
+      this.toolTip.SetToolTip(this._closeConnectionAfterEachRequestCheckBox, "If activated, each request uses a new connection. \r\nHas to be activated, when the" +
+        " server does not support Http-KeepAlive.");
+      this._closeConnectionAfterEachRequestCheckBox.UseVisualStyleBackColor = true;
       // 
       // _useGoogleOAuthCheckBox
       // 
@@ -413,17 +427,15 @@
       this._timeRangeFilteringGroupBox.TabIndex = 26;
       this._timeRangeFilteringGroupBox.TabStop = false;
       // 
-      // _closeConnectionAfterEachRequestCheckBox
+      // _synchronizeImmediatelyAfterOutlookItemChangeCheckBox
       // 
-      this._closeConnectionAfterEachRequestCheckBox.AutoSize = true;
-      this._closeConnectionAfterEachRequestCheckBox.Location = new System.Drawing.Point(11, 126);
-      this._closeConnectionAfterEachRequestCheckBox.Name = "_closeConnectionAfterEachRequestCheckBox";
-      this._closeConnectionAfterEachRequestCheckBox.Size = new System.Drawing.Size(197, 17);
-      this._closeConnectionAfterEachRequestCheckBox.TabIndex = 15;
-      this._closeConnectionAfterEachRequestCheckBox.Text = "Close connection after each request";
-      this.toolTip.SetToolTip(this._closeConnectionAfterEachRequestCheckBox, "If activated, each request uses a new connection. \r\nHas to be activated, when the" +
-        " server does not support Http-KeepAlive.");
-      this._closeConnectionAfterEachRequestCheckBox.UseVisualStyleBackColor = true;
+      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.AutoSize = true;
+      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Location = new System.Drawing.Point(11, 51);
+      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Name = "_synchronizeImmediatelyAfterOutlookItemChangeCheckBox";
+      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Size = new System.Drawing.Size(231, 17);
+      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.TabIndex = 14;
+      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Text = "Synchronize items immediately after change";
+      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.UseVisualStyleBackColor = true;
       // 
       // OptionsDisplayControl
       // 
@@ -489,5 +501,6 @@
     private System.Windows.Forms.CheckBox _useGoogleOAuthCheckBox;
     private System.Windows.Forms.CheckBox _closeConnectionAfterEachRequestCheckBox;
     private System.Windows.Forms.ToolTip toolTip;
+    private System.Windows.Forms.CheckBox _synchronizeImmediatelyAfterOutlookItemChangeCheckBox;
   }
 }

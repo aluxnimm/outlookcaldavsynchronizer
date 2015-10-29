@@ -28,6 +28,7 @@ using CalDavSynchronizer.Implementation.Contacts;
 using CalDavSynchronizer.Implementation.Events;
 using CalDavSynchronizer.Implementation.Tasks;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
+using CalDavSynchronizer.Synchronization;
 using CalDavSynchronizer.Utilities;
 using DDay.iCal;
 using DDay.iCal.Serialization.iCalendar;
@@ -65,7 +66,7 @@ namespace CalDavSynchronizer.Scheduling
       _calDavReadWriteTimeout = calDavReadWriteTimeout;
     }
 
-    public ISynchronizer CreateSynchronizer (Options options)
+    public IOutlookSynchronizer CreateSynchronizer (Options options)
     {
       OlItemType defaultItemType;
       string folderName;
@@ -93,7 +94,7 @@ namespace CalDavSynchronizer.Scheduling
       }
     }
 
-    private ISynchronizer CreateEventSynchronizer (Options options)
+    private OutlookSynchronizer CreateEventSynchronizer (Options options)
     {
       var calDavDataAccess = new CalDavDataAccess (
           new Uri (options.CalenderUrl),
@@ -181,7 +182,7 @@ namespace CalDavSynchronizer.Scheduling
     /// <remarks>
     /// Public because it is being used by integration tests
     /// </remarks>
-    public ISynchronizer CreateEventSynchronizer (
+    public OutlookSynchronizer CreateEventSynchronizer (
         Options options,
         ICalDavDataAccess calDavDataAccess,
         IEntityRelationDataAccess<string, DateTime, Uri, string> entityRelationDataAccess)
@@ -221,7 +222,7 @@ namespace CalDavSynchronizer.Scheduling
       var btypeIdEqualityComparer = EqualityComparer<Uri>.Default;
       var atypeIdEqualityComparer = EqualityComparer<string>.Default;
 
-      return new Synchronizer<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (
+      var synchronizer = new Synchronizer<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (
           atypeRepository,
           btypeRepository,
           InitialEventSyncStateCreationStrategyFactory.Create (
@@ -236,9 +237,11 @@ namespace CalDavSynchronizer.Scheduling
           btypeIdEqualityComparer,
           _totalProgressFactory,
           ExceptionHandler.Instance);
+
+      return new OutlookSynchronizer (synchronizer, atypeRepository);
     }
 
-    private ISynchronizer CreateTaskSynchronizer (Options options)
+    private OutlookSynchronizer CreateTaskSynchronizer (Options options)
     {
       // TODO: dispose folder like it is done for events
       var calendarFolder = (Folder) _outlookSession.GetFolderFromID (options.OutlookFolderEntryId, options.OutlookFolderStoreId);
@@ -273,7 +276,7 @@ namespace CalDavSynchronizer.Scheduling
       var btypeIdEqualityComparer = EqualityComparer<Uri>.Default;
       var atypeIdEqualityComparer = EqualityComparer<string>.Default;
 
-      return new Synchronizer<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> (
+      var synchronizer = new Synchronizer<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> (
           atypeRepository,
           btypeRepository,
           InitialTaskSyncStateCreationStrategyFactory.Create (
@@ -288,9 +291,11 @@ namespace CalDavSynchronizer.Scheduling
           btypeIdEqualityComparer,
           _totalProgressFactory,
           ExceptionHandler.Instance);
+
+      return new OutlookSynchronizer (synchronizer, atypeRepository);
     }
 
-    private ISynchronizer CreateContactSynchronizer (Options options)
+    private OutlookSynchronizer CreateContactSynchronizer (Options options)
     {
       var atypeRepository = new OutlookContactRepository (
           _outlookSession,
@@ -327,7 +332,7 @@ namespace CalDavSynchronizer.Scheduling
 
       var storageDataAccess = new EntityRelationDataAccess<string, DateTime, OutlookContactRelationData, Uri, string> (storageDataDirectory);
 
-      return new Synchronizer<string, DateTime, GenericComObjectWrapper<ContactItem>, Uri, string, vCard> (
+      var synchronizer = new Synchronizer<string, DateTime, GenericComObjectWrapper<ContactItem>, Uri, string, vCard> (
           atypeRepository,
           btypeRepository,
           InitialContactSyncStateCreationStrategyFactory.Create (
@@ -342,6 +347,8 @@ namespace CalDavSynchronizer.Scheduling
           btypeIdEqualityComparer,
           _totalProgressFactory,
           ExceptionHandler.Instance);
+
+      return new OutlookSynchronizer (synchronizer, atypeRepository);
     }
   }
 }

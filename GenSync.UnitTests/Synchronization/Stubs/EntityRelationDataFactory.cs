@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer 
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -15,29 +15,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using GenSync.EntityRelationManagement;
 
-namespace GenSync
+namespace GenSync.UnitTests.Synchronization.Stubs
 {
-  /// <summary>
-  /// Represents the Id and the Version of an entity
-  /// </summary>
-  public class EntityWithVersion<TEntityId, TEntity>
+  internal class EntityRelationDataFactory : IEntityRelationDataFactory<Identifier, int, Identifier, int>
   {
-    public readonly TEntityId Id;
-    public readonly TEntity Entity;
-
-    public EntityWithVersion (TEntityId id, TEntity entity)
+    public IEntityRelationData<Identifier, int, Identifier, int> Create (Identifier atypeId, int atypeVersion, Identifier btypeId, int btypeVersion)
     {
-      Id = id;
-      Entity = entity;
-    }
-  }
-
-  public class EntityWithVersion
-  {
-    public static EntityWithVersion<TEntityId, TEntity> Create<TEntityId, TEntity> (TEntityId id, TEntity entity)
-    {
-      return new EntityWithVersion<TEntityId, TEntity> (id, entity);
+      return new EntityRelationData (atypeId, atypeVersion, btypeId, btypeVersion);
     }
   }
 }

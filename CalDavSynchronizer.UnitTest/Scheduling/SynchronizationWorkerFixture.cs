@@ -22,6 +22,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Scheduling;
+using CalDavSynchronizer.Synchronization;
 using GenSync.Synchronization;
 using NUnit.Framework;
 using Rhino.Mocks;
@@ -32,7 +33,7 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
   public class SynchronizationWorkerFixture
   {
     private ISynchronizerFactory _synchronizerFactory;
-    private SynchronizationWorker _synchronizationWorker;
+    private SynchronizationProfileRunner _synchronizationProfileRunner;
     private StubSynchronizer _stubSynchronizer;
 
 
@@ -40,21 +41,21 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
     public void SetUp ()
     {
       _synchronizerFactory = MockRepository.GenerateStub<ISynchronizerFactory>();
-      _synchronizationWorker = new SynchronizationWorker (_synchronizerFactory);
+      _synchronizationProfileRunner = new SynchronizationProfileRunner (_synchronizerFactory);
 
       var options = new Options();
       _stubSynchronizer = new StubSynchronizer();
       _synchronizerFactory.Expect (f => f.CreateSynchronizer (options)).Return (_stubSynchronizer);
-      _synchronizationWorker.UpdateOptions (options);
+      _synchronizationProfileRunner.UpdateOptions (options);
     }
 
     [Test]
     public void RunNoThrowAndRescheduleIfNotRunning ()
     {
-      var synchronizationTask1 = _synchronizationWorker.RunNoThrowAndRescheduleIfNotRunning();
-      var synchronizationTask2 = _synchronizationWorker.RunNoThrowAndRescheduleIfNotRunning();
-      var synchronizationTask3 = _synchronizationWorker.RunNoThrowAndRescheduleIfNotRunning();
-      var synchronizationTask4 = _synchronizationWorker.RunNoThrowAndRescheduleIfNotRunning();
+      var synchronizationTask1 = _synchronizationProfileRunner.RunAndRescheduleNoThrow (true);
+      var synchronizationTask2 = _synchronizationProfileRunner.RunAndRescheduleNoThrow (true);
+      var synchronizationTask3 = _synchronizationProfileRunner.RunAndRescheduleNoThrow (true);
+      var synchronizationTask4 = _synchronizationProfileRunner.RunAndRescheduleNoThrow (true);
 
       Assert.That (synchronizationTask1.IsCompleted, Is.False);
       Assert.That (synchronizationTask2.IsCompleted, Is.True);
@@ -65,10 +66,10 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
 
       synchronizationTask1.Wait();
 
-      Assert.That (_stubSynchronizer.RunCount, Is.EqualTo (1));
+      Assert.That (_stubSynchronizer.RunCount, Is.EqualTo (2));
     }
 
-    private class StubSynchronizer : ISynchronizer
+    private class StubSynchronizer : IOutlookSynchronizer
     {
       private int _runCount;
       private ManualResetEventSlim _finishSynchronizationEvent = new ManualResetEventSlim();
@@ -83,14 +84,20 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
         get { return _runCount; }
       }
 
-      public Task<bool> Synchronize ()
+      public Task Synchronize ()
       {
         _runCount++;
-        return Task.Run (() =>
-        {
-          FinishSynchronizationEvent.Wait();
-          return true;
-        });
+        return Task.Run (() => FinishSynchronizationEvent.Wait());
+      }
+
+      public Task SnychronizePartial (IEnumerable<string> outlookIds)
+      {
+        throw new NotImplementedException();
+      }
+
+      public bool IsResponsible (string folderEntryId, string folderStoreId)
+      {
+        throw new NotImplementedException();
       }
     }
   }

@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer 
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -15,20 +15,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using GenSync.EntityMapping;
 
-namespace GenSync.UnitTests.Synchronization
+namespace CalDavSynchronizer.ChangeWatching
 {
-  internal class Mapper : IEntityMapper<string, string>
+  internal interface IOutlookItem : IDisposable
   {
-    public string Map1To2 (string source, string target)
-    {
-      return source;
-    }
-
-    public string Map2To1 (string source, string target)
-    {
-      return source;
-    }
+    event EventHandler Saved;
+    event EventHandler Closed;
+    string EntryId { get; }
+    Tuple<string, string> FolderEntryIdAndStoreIdOrNull { get; }
   }
 }

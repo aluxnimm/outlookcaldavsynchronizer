@@ -540,7 +540,7 @@ namespace CalDavSynchronizer.Ui
 
         SelectedServerAdapterType = value.ServerAdapterType;
         _closeConnectionAfterEachRequestCheckBox.Checked = value.CloseAfterEachRequest;
-
+        _synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Checked = value.EnableChangeTriggeredSynchronization;
 
         UpdateFolder (value.OutlookFolderEntryId, value.OutlookFolderStoreId);
         UpdateConflictResolutionComboBoxEnabled();
@@ -567,7 +567,8 @@ namespace CalDavSynchronizer.Ui
                    Inactive = _inactiveCheckBox.Checked,
                    IgnoreSynchronizationTimeRange = !_enableTimeRangeFilteringCheckBox.Checked,
                    ServerAdapterType = SelectedServerAdapterType,
-                   CloseAfterEachRequest = _closeConnectionAfterEachRequestCheckBox.Checked
+                   CloseAfterEachRequest = _closeConnectionAfterEachRequestCheckBox.Checked,
+                   EnableChangeTriggeredSynchronization = _synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Checked
                };
       }
     }

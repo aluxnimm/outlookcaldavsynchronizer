@@ -7,7 +7,7 @@ using GenSync.Synchronization.States;
 using NUnit.Framework;
 using Rhino.Mocks;
 
-namespace GenSync.UnitTests.Synchronization
+namespace GenSync.UnitTests.Synchronization.Stubs
 {
   [TestFixture]
   public class SynchronizerFixture
@@ -23,26 +23,26 @@ namespace GenSync.UnitTests.Synchronization
           .Expect (r => r.GetVersions())
           .IgnoreArguments()
           .Return (
-              Task.FromResult<IReadOnlyList<EntityIdWithVersion<string, string>>> (
-                  new[] { EntityIdWithVersion.Create ("A1", "v1"), EntityIdWithVersion.Create ("a1", "v3") }));
+              Task.FromResult<IReadOnlyList<EntityVersion<string, string>>> (
+                  new[] { EntityVersion.Create ("A1", "v1"), EntityVersion.Create ("a1", "v3") }));
 
       builder.BtypeRepository
           .Expect (r => r.GetVersions())
           .IgnoreArguments()
           .Return (
-              Task.FromResult<IReadOnlyList<EntityIdWithVersion<string, string>>> (
-                  new[] { EntityIdWithVersion.Create ("b1", "v2") }));
+              Task.FromResult<IReadOnlyList<EntityVersion<string, string>>> (
+                  new[] { EntityVersion.Create ("b1", "v2") }));
 
 
-      Task<IReadOnlyList<EntityWithVersion<string, string>>> aTypeLoadTask = new Task<IReadOnlyList<EntityWithVersion<string, string>>> (
-          () => new List<EntityWithVersion<string, string>> { EntityWithVersion.Create ("A1", "AAAA"), EntityWithVersion.Create ("a1", "____") });
+      Task<IReadOnlyList<EntityWithId<string, string>>> aTypeLoadTask = new Task<IReadOnlyList<EntityWithId<string, string>>> (
+          () => new List<EntityWithId<string, string>> { EntityWithId.Create ("A1", "AAAA"), EntityWithId.Create ("a1", "____") });
       aTypeLoadTask.RunSynchronously();
       builder.AtypeRepository
           .Expect (r => r.Get (Arg<ICollection<string>>.Matches (c => c.Count == 1 && c.First() == "A1")))
           .Return (aTypeLoadTask);
 
-      Task<IReadOnlyList<EntityWithVersion<string, string>>> bTypeLoadTask = new Task<IReadOnlyList<EntityWithVersion<string, string>>> (
-          () => new List<EntityWithVersion<string, string>> { EntityWithVersion.Create ("b1", "BBBB"), });
+      Task<IReadOnlyList<EntityWithId<string, string>>> bTypeLoadTask = new Task<IReadOnlyList<EntityWithId<string, string>>> (
+          () => new List<EntityWithId<string, string>> { EntityWithId.Create ("b1", "BBBB"), });
       bTypeLoadTask.RunSynchronously();
       builder.BtypeRepository
           .Expect (r => r.Get (Arg<ICollection<string>>.Matches (c => c.Count == 1 && c.First() == "b1")))

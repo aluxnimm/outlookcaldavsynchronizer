@@ -15,17 +15,26 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Threading.Tasks;
 
-namespace GenSync.EntityRepositories
+namespace GenSync.UnitTests.Synchronization.Stubs
 {
-  /// <summary>
-  /// All writeoperations that a repository has to support
-  /// </summary>
-  public interface IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
+  public class Identifier
   {
-    Task Delete (TEntityId entityId);
-    Task<EntityVersion<TEntityId, TEntityVersion>> Update (TEntityId entityId, TEntity entityToUpdate, Func<TEntity, TEntity> entityModifier);
-    Task<EntityVersion<TEntityId, TEntityVersion>> Create (Func<TEntity, TEntity> entityInitializer);
+    private readonly string _value;
+
+    public Identifier (string value)
+    {
+      _value = value;
+    }
+
+    public static implicit operator Identifier (string value)
+    {
+      return new Identifier (value);
+    }
+
+    public string Value
+    {
+      get { return _value; }
+    }
   }
 }

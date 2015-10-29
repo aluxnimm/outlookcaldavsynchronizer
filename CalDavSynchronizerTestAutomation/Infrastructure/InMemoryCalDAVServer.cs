@@ -49,36 +49,42 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       return Task.FromResult (true);
     }
 
-    public Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetEvents (DateTimeRange? range)
+    public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetEventVersions (DateTimeRange? range)
     {
       if (range != null)
         throw new NotSupportedException ("range not supported");
 
-      return Task.FromResult<IReadOnlyList<EntityIdWithVersion<Uri, string>>> (
-          _entites.Select (e => EntityIdWithVersion.Create (e.Key, e.Value.Item1)).ToList());
+      return Task.FromResult<IReadOnlyList<EntityVersion<Uri, string>>> (
+          _entites.Select (e => EntityVersion.Create (e.Key, e.Value.Item1)).ToList());
     }
 
-    public Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetTodos (DateTimeRange? range)
+    public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetTodoVersions (DateTimeRange? range)
     {
       if (range != null)
         throw new NotSupportedException ("range not supported");
 
-      return Task.FromResult<IReadOnlyList<EntityIdWithVersion<Uri, string>>> (
-          _entites.Select (e => EntityIdWithVersion.Create (e.Key, e.Value.Item1)).ToList());
+      return Task.FromResult<IReadOnlyList<EntityVersion<Uri, string>>> (
+          _entites.Select (e => EntityVersion.Create (e.Key, e.Value.Item1)).ToList());
     }
 
-    public Task<IReadOnlyList<EntityWithVersion<Uri, string>>> GetEntities (IEnumerable<Uri> eventUrls)
+    public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetVersions (IEnumerable<Uri> eventUrls)
     {
-      return Task.FromResult<IReadOnlyList<EntityWithVersion<Uri, string>>> (
-          eventUrls.Select (id => EntityWithVersion.Create (id, _entites[id].Item2)).ToList());
+      return Task.FromResult<IReadOnlyList<EntityVersion<Uri, string>>> (
+          eventUrls.Select (id => EntityVersion.Create (id, _entites[id].Item1)).ToList());
     }
 
-    public Task<EntityIdWithVersion<Uri, string>> CreateEntity (string iCalData)
+    public Task<IReadOnlyList<EntityWithId<Uri, string>>> GetEntities (IEnumerable<Uri> eventUrls)
+    {
+      return Task.FromResult<IReadOnlyList<EntityWithId<Uri, string>>> (
+          eventUrls.Select (id => EntityWithId.Create (id, _entites[id].Item2)).ToList());
+    }
+
+    public Task<EntityVersion<Uri, string>> CreateEntity (string iCalData)
     {
       var id = new Uri ("http://bla.com/" + Guid.NewGuid());
       const int version = 1;
       _entites.Add (id, Tuple.Create (version.ToString(), iCalData));
-      return Task.FromResult (EntityIdWithVersion.Create (id, version.ToString()));
+      return Task.FromResult (EntityVersion.Create (id, version.ToString()));
     }
 
     public Task DeleteEntity (Uri uri)
@@ -87,12 +93,12 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       return Task.FromResult (0);
     }
 
-    public Task<EntityIdWithVersion<Uri, string>> UpdateEntity (Uri url, string iCalData)
+    public Task<EntityVersion<Uri, string>> UpdateEntity (Uri url, string iCalData)
     {
       var version = int.Parse (_entites[url].Item1);
       var newVersion = (version + 1).ToString();
       _entites[url] = Tuple.Create (newVersion, iCalData);
-      return Task.FromResult (EntityIdWithVersion.Create (url, newVersion));
+      return Task.FromResult (EntityVersion.Create (url, newVersion));
     }
   }
 }

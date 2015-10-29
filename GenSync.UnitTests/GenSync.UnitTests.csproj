@@ -59,20 +59,19 @@
     <Compile Include="InitialEntityMatching\PersonB.cs" />
     <Compile Include="InitialEntityMatching\TestInitialEntityMatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Synchronization\EntityRelationData.cs" />
-    <Compile Include="Synchronization\EntityRelationDataFactory.cs" />
-    <Compile Include="Synchronization\GenericConflictResolution.cs" />
-    <Compile Include="Synchronization\Identifier.cs" />
-    <Compile Include="Synchronization\IdentifierEqualityComparer.cs" />
-    <Compile Include="Synchronization\Mapper.cs" />
+    <Compile Include="Synchronization\PartialSynchronizerFixture.cs" />
+    <Compile Include="Synchronization\Stubs\EntityRelationData.cs" />
+    <Compile Include="Synchronization\Stubs\EntityRelationDataFactory.cs" />
+    <Compile Include="Synchronization\Stubs\GenericConflictResolution.cs" />
+    <Compile Include="Synchronization\Stubs\Identifier.cs" />
+    <Compile Include="Synchronization\Stubs\IdentifierEqualityComparer.cs" />
+    <Compile Include="Synchronization\Stubs\Mapper.cs" />
     <Compile Include="Synchronization\OneWayReplicatorFixture.cs" />
-    <Compile Include="Synchronization\OneWayReplicatorFixtureBase.cs" />
-    <Compile Include="Synchronization\SynchronizerBuilder.cs" />
-    <Compile Include="Synchronization\SynchronizerFixture.cs" />
+    <Compile Include="Synchronization\Stubs\SynchronizerBuilder.cs" />
+    <Compile Include="Synchronization\Stubs\SynchronizerFixture.cs" />
     <Compile Include="Synchronization\SynchronizerFixtureBase.cs" />
-    <Compile Include="Synchronization\TestRepository.cs" />
+    <Compile Include="Synchronization\Stubs\TestRepository.cs" />
     <Compile Include="Synchronization\TwoWaySynchronizerFixture.cs" />
-    <Compile Include="Synchronization\TwoWaySynchronizerFixtureBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

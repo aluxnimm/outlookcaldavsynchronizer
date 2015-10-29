@@ -24,6 +24,6 @@ namespace GenSync.Synchronization
   /// </summary>
   public interface ISynchronizer
   {
-    Task<bool> Synchronize ();
+    Task Synchronize ();
   }
 }

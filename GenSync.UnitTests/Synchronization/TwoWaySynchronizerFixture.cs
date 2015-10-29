@@ -16,12 +16,13 @@
 
 using System;
 using System.Threading.Tasks;
+using GenSync.UnitTests.Synchronization.Stubs;
 using NUnit.Framework;
 
 namespace GenSync.UnitTests.Synchronization
 {
   [TestFixture]
-  internal class TwoWaySynchronizerFixture : TwoWaySynchronizerFixtureBase
+  internal class TwoWaySynchronizerFixture : SynchronizerFixtureBase
   {
     [TestCase (GenericConflictResolution.AWins)]
     [TestCase (GenericConflictResolution.BWins)]
@@ -32,7 +33,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize (conflictWinner);
+        SynchronizeTwoWay (conflictWinner);
 
         AssertLocalCount (2);
         AssertLocal ("l1", 0, "Item 1");
@@ -53,7 +54,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize (conflictWinner);
+        SynchronizeTwoWay (conflictWinner);
         AssertLocalCount (2);
         AssertLocal ("l1", 0, "Item 1");
         AssertLocal ("l2", 0, "Item 2");
@@ -75,7 +76,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize (conflictWinner);
+        SynchronizeTwoWay (conflictWinner);
         AssertLocalCount (4);
         AssertLocal ("l1", 0, "Item 1");
         AssertLocal ("l2", 0, "Item 2");
@@ -100,7 +101,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize (conflictWinner);
+        SynchronizeTwoWay (conflictWinner);
         AssertLocalCount (1);
         AssertLocal ("l2", 0, "Item 2");
 
@@ -119,7 +120,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize (conflictWinner);
+        SynchronizeTwoWay (conflictWinner);
         AssertLocalCount (1);
         AssertLocal ("l2", 0, "Item 2");
 
@@ -139,7 +140,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize (conflictWinner);
+        SynchronizeTwoWay (conflictWinner);
         AssertLocalCount (0);
 
         AssertServerCount (0);
@@ -157,7 +158,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize (conflictWinner);
+        SynchronizeTwoWay (conflictWinner);
         AssertLocalCount (1);
         AssertLocal ("l2", 0, "Item 2");
 
@@ -175,7 +176,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize (conflictWinner);
+        SynchronizeTwoWay (conflictWinner);
         AssertLocalCount (2);
         AssertLocal ("l1", 1, "upd Item 1");
         AssertLocal ("l2", 0, "Item 2");
@@ -195,7 +196,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize (conflictWinner);
+        SynchronizeTwoWay (conflictWinner);
         AssertLocalCount (2);
         AssertLocal ("l1u", 1, "upd Item 1");
         AssertLocal ("l2", 0, "Item 2");
@@ -216,7 +217,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize (conflictWinner);
+        SynchronizeTwoWay (conflictWinner);
         AssertLocalCount (2);
         AssertLocal ("l1u", 1, "upd Item 1");
         AssertLocal ("l2", 1, "upd Item 2");
@@ -237,7 +238,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize (GenericConflictResolution.AWins);
+        SynchronizeTwoWay (GenericConflictResolution.AWins);
         AssertLocalCount (1);
         AssertLocal ("l2", 0, "Item 2");
 
@@ -256,7 +257,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize (GenericConflictResolution.BWins);
+        SynchronizeTwoWay (GenericConflictResolution.BWins);
         AssertLocalCount (2);
         AssertLocal ("l3", 0, "upd Item 1");
         AssertLocal ("l2", 0, "Item 2");
@@ -277,7 +278,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize (GenericConflictResolution.AWins);
+        SynchronizeTwoWay (GenericConflictResolution.AWins);
         AssertLocalCount (2);
         AssertLocal ("l1", 1, "upd Item 1");
         AssertLocal ("l2", 0, "Item 2");
@@ -298,7 +299,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize (GenericConflictResolution.BWins);
+        SynchronizeTwoWay (GenericConflictResolution.BWins);
         AssertLocalCount (1);
         AssertLocal ("l2", 0, "Item 2");
 
@@ -316,7 +317,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize (GenericConflictResolution.AWins);
+        SynchronizeTwoWay (GenericConflictResolution.AWins);
         AssertLocalCount (2);
         AssertLocal ("l1", 1, "upd loc Item 1");
         AssertLocal ("l2", 0, "Item 2");
@@ -336,7 +337,7 @@ namespace GenSync.UnitTests.Synchronization
 
       ExecuteMultipleTimes (() =>
       {
-        Synchronize (GenericConflictResolution.BWins);
+        SynchronizeTwoWay (GenericConflictResolution.BWins);
         AssertLocalCount (2);
         AssertLocal ("l1u", 2, "upd srv Item 1");
         AssertLocal ("l2", 0, "Item 2");

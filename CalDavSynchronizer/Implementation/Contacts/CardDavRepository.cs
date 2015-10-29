@@ -44,7 +44,12 @@ namespace CalDavSynchronizer.Implementation.Contacts
       _vCardWriter = new vCardStandardWriter();
     }
 
-    public async Task<IReadOnlyList<EntityIdWithVersion<Uri, string>>> GetVersions ()
+    public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetVersions (ICollection<Uri> ids)
+    {
+      throw new NotImplementedException();
+    }
+
+    public async Task<IReadOnlyList<EntityVersion<Uri, string>>> GetVersions ()
     {
       using (AutomaticStopwatch.StartInfo (s_logger, "CardDavRepository.GetVersions"))
       {
@@ -52,10 +57,10 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    public async Task<IReadOnlyList<EntityWithVersion<Uri, vCard>>> Get (ICollection<Uri> ids)
+    public async Task<IReadOnlyList<EntityWithId<Uri, vCard>>> Get (ICollection<Uri> ids)
     {
       if (ids.Count == 0)
-        return new EntityWithVersion<Uri, vCard>[] { };
+        return new EntityWithId<Uri, vCard>[] { };
 
       using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("CardDavRepository.Get ({0} entitie(s))", ids.Count)))
       {
@@ -69,9 +74,9 @@ namespace CalDavSynchronizer.Implementation.Contacts
       // nothing to do
     }
 
-    private IReadOnlyList<EntityWithVersion<Uri, vCard>> ParallelDeserialize (IReadOnlyList<EntityWithVersion<Uri, string>> serializedEntities)
+    private IReadOnlyList<EntityWithId<Uri, vCard>> ParallelDeserialize (IReadOnlyList<EntityWithId<Uri, string>> serializedEntities)
     {
-      var result = new List<EntityWithVersion<Uri, vCard>>();
+      var result = new List<EntityWithId<Uri, vCard>>();
 
       Parallel.ForEach (
           serializedEntities,
@@ -89,7 +94,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
             lock (result)
             {
               foreach (var card in threadLocal.Item2)
-                result.Add (EntityWithVersion.Create (card.Item1, card.Item2));
+                result.Add (EntityWithId.Create (card.Item1, card.Item2));
             }
           });
 
@@ -105,7 +110,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    public Task<EntityIdWithVersion<Uri, string>> Update (Uri entityId, vCard entityToUpdate, Func<vCard, vCard> entityModifier)
+    public Task<EntityVersion<Uri, string>> Update (Uri entityId, vCard entityToUpdate, Func<vCard, vCard> entityModifier)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
@@ -117,7 +122,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    public async Task<EntityIdWithVersion<Uri, string>> Create (Func<vCard, vCard> entityInitializer)
+    public async Task<EntityVersion<Uri, string>> Create (Func<vCard, vCard> entityInitializer)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {

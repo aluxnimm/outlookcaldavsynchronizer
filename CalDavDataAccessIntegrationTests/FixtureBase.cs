@@ -96,10 +96,10 @@ namespace CalDavDataAccessIntegrationTests
     [Test]
     public async Task Test_CRUD ()
     {
-      foreach (var evt in await _calDavDataAccess.GetEvents (null))
+      foreach (var evt in await _calDavDataAccess.GetEventVersions (null))
         await _calDavDataAccess.DeleteEntity (evt.Id);
 
-      var entitiesWithVersion = new List<EntityIdWithVersion<Uri, string>>();
+      var entitiesWithVersion = new List<EntityVersion<Uri, string>>();
 
       var uids = new List<string>();
 
@@ -113,7 +113,7 @@ namespace CalDavDataAccessIntegrationTests
                     iCalendar)));
       }
 
-      var queriedEntitesWithVersion = await _calDavDataAccess.GetEvents (new DateTimeRange (DateTime.Now.AddDays (150), DateTime.Now.AddDays (450)));
+      var queriedEntitesWithVersion = await _calDavDataAccess.GetEventVersions (new DateTimeRange (DateTime.Now.AddDays (150), DateTime.Now.AddDays (450)));
 
       Assert.That (queriedEntitesWithVersion.Count, Is.EqualTo (3));
 
@@ -126,7 +126,7 @@ namespace CalDavDataAccessIntegrationTests
       var updated = await _calDavDataAccess.UpdateEntity (entitiesWithVersion[1].Id, SerializeCalendar (updatedCalendar));
 
       Assert.That (
-          (await _calDavDataAccess.GetEvents (new DateTimeRange (DateTime.Now.AddDays (150), DateTime.Now.AddDays (450)))).Count,
+          (await _calDavDataAccess.GetEventVersions (new DateTimeRange (DateTime.Now.AddDays (150), DateTime.Now.AddDays (450)))).Count,
           Is.EqualTo (2));
 
       var updatedRevertedCalendar = CreateEntity (2);
@@ -134,13 +134,13 @@ namespace CalDavDataAccessIntegrationTests
       var updateReverted = await _calDavDataAccess.UpdateEntity (updated.Id, SerializeCalendar (updatedRevertedCalendar));
 
       Assert.That (
-          (await _calDavDataAccess.GetEvents (new DateTimeRange (DateTime.Now.AddDays (150), DateTime.Now.AddDays (450)))).Count,
+          (await _calDavDataAccess.GetEventVersions (new DateTimeRange (DateTime.Now.AddDays (150), DateTime.Now.AddDays (450)))).Count,
           Is.EqualTo (3));
 
       await _calDavDataAccess.DeleteEntity (updateReverted.Id);
 
       Assert.That (
-          (await _calDavDataAccess.GetEvents (new DateTimeRange (DateTime.Now.AddDays (150), DateTime.Now.AddDays (450)))).Count,
+          (await _calDavDataAccess.GetEventVersions (new DateTimeRange (DateTime.Now.AddDays (150), DateTime.Now.AddDays (450)))).Count,
           Is.EqualTo (2));
 
       var entites = await _calDavDataAccess.GetEntities (entitiesWithVersion.Take (4).Select (e => e.Id));

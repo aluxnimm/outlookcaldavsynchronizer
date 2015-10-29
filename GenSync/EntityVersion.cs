@@ -15,27 +15,29 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using GenSync.UnitTests.InitialEntityMatching;
 
-namespace GenSync.UnitTests.Synchronization
+namespace GenSync
 {
-  internal class IdentifierEqualityComparer : IEqualityComparer<Identifier>
+  /// <summary>
+  /// Represents the Id and the Version of an entity
+  /// </summary>
+  public class EntityVersion<TEntityId, TVersion>
   {
-    public static readonly IEqualityComparer<Identifier> Instance = new IdentifierEqualityComparer();
+    public readonly TEntityId Id;
+    public readonly TVersion Version;
 
-    private IdentifierEqualityComparer ()
+    public EntityVersion (TEntityId id, TVersion version)
     {
+      Id = id;
+      Version = version;
     }
+  }
 
-    public bool Equals (Identifier x, Identifier y)
+  public class EntityVersion
+  {
+    public static EntityVersion<TEntityId, TEntity> Create<TEntityId, TEntity> (TEntityId id, TEntity entity)
     {
-      return StringComparer.InvariantCultureIgnoreCase.Compare (x.Value, y.Value) == 0;
-    }
-
-    public int GetHashCode (Identifier obj)
-    {
-      return obj.Value.ToLower().GetHashCode();
+      return new EntityVersion<TEntityId, TEntity> (id, entity);
     }
   }
 }

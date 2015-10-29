@@ -9,7 +9,7 @@ using GenSync.Synchronization;
 using GenSync.Synchronization.StateCreationStrategies;
 using Rhino.Mocks;
 
-namespace GenSync.UnitTests.Synchronization
+namespace GenSync.UnitTests.Synchronization.Stubs
 {
   internal class SynchronizerBuilder
   {

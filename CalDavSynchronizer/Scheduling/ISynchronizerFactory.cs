@@ -16,12 +16,13 @@
 
 using System;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Synchronization;
 using GenSync.Synchronization;
 
 namespace CalDavSynchronizer.Scheduling
 {
   public interface ISynchronizerFactory
   {
-    ISynchronizer CreateSynchronizer (Options options);
+    IOutlookSynchronizer CreateSynchronizer (Options options);
   }
 }

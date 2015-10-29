@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer 
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -15,30 +15,35 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace GenSync.UnitTests.Synchronization
+namespace CalDavSynchronizer.ChangeWatching
 {
-  public class Identifier
+  internal class ItemSavedEventArgs : EventArgs
   {
-    private readonly string _value;
+    private readonly string _entryId;
+    private readonly string folderEntryId;
+    private readonly string _folderStoreId;
 
-    public Identifier (string value)
+    public ItemSavedEventArgs (string entryId, string folderEntryId, string folderStoreId)
     {
-      _value = value;
+      _entryId = entryId;
+      this.folderEntryId = folderEntryId;
+      _folderStoreId = folderStoreId;
     }
 
-    public static implicit operator Identifier (string value)
+    public string EntryId
     {
-      return new Identifier (value);
+      get { return _entryId; }
     }
 
-    public string Value
+    public string FolderEntryId
     {
-      get { return _value; }
+      get { return folderEntryId; }
+    }
+
+    public string FolderStoreId
+    {
+      get { return _folderStoreId; }
     }
   }
 }

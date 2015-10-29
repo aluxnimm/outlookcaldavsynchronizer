@@ -31,7 +31,7 @@ namespace CalDavSynchronizer.Scheduling
 
     private readonly Timer _synchronizationTimer = new Timer();
 
-    private Dictionary<Guid, SynchronizationWorker> _workersById = new Dictionary<Guid, SynchronizationWorker>();
+    private Dictionary<Guid, SynchronizationProfileRunner> _runnersById = new Dictionary<Guid, SynchronizationProfileRunner>();
     private readonly TimeSpan _timerInterval = TimeSpan.FromSeconds (30);
     private readonly ISynchronizerFactory _synchronizerFactory;
     private readonly Action _ensureSynchronizationContext;
@@ -57,8 +57,8 @@ namespace CalDavSynchronizer.Scheduling
       {
         _ensureSynchronizationContext();
         _synchronizationTimer.Stop();
-        foreach (var worker in _workersById.Values)
-          await worker.RunIfRequiredAndReschedule();
+        foreach (var worker in _runnersById.Values)
+          await worker.RunAndRescheduleNoThrow (false);
         _synchronizationTimer.Start();
       }
       catch (Exception x)
@@ -69,29 +69,35 @@ namespace CalDavSynchronizer.Scheduling
 
     public void SetOptions (Options[] options)
     {
-      Dictionary<Guid, SynchronizationWorker> workersById = new Dictionary<Guid, SynchronizationWorker>();
+      Dictionary<Guid, SynchronizationProfileRunner> workersById = new Dictionary<Guid, SynchronizationProfileRunner>();
       foreach (var option in options)
       {
         try
         {
-          SynchronizationWorker worker;
-          if (!_workersById.TryGetValue (option.Id, out worker))
-            worker = new SynchronizationWorker (_synchronizerFactory);
-          worker.UpdateOptions (option);
-          workersById.Add (option.Id, worker);
+          SynchronizationProfileRunner profileRunner;
+          if (!_runnersById.TryGetValue (option.Id, out profileRunner))
+            profileRunner = new SynchronizationProfileRunner (_synchronizerFactory);
+          profileRunner.UpdateOptions (option);
+          workersById.Add (option.Id, profileRunner);
         }
         catch (Exception x)
         {
           ExceptionHandler.Instance.LogException (x, s_logger);
         }
       }
-      _workersById = workersById;
+      _runnersById = workersById;
+    }
+
+    public async Task RunResponsibleSynchronizationProfiles (string outlookId, string folderEntryId, string folderStoreId)
+    {
+      foreach (var worker in _runnersById.Values)
+        await worker.RunIfResponsibleNoThrow (outlookId, folderEntryId, folderStoreId);
     }
 
     public async Task RunNow ()
     {
-      foreach (var worker in _workersById.Values)
-        await worker.RunNoThrowAndRescheduleIfNotRunning();
+      foreach (var worker in _runnersById.Values)
+        await worker.RunAndRescheduleNoThrow (true);
     }
   }
 }
