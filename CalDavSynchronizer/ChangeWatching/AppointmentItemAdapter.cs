@@ -24,7 +24,7 @@ namespace CalDavSynchronizer.ChangeWatching
     private AppointmentItem _appointment;
     private Inspector _inspector;
 
-    public event EventHandler Saved;
+    public event EventHandler SavedOrDeleted;
     public event EventHandler Closed;
 
     public AppointmentItemAdapter (Inspector inspector, AppointmentItem appointment)
@@ -33,12 +33,18 @@ namespace CalDavSynchronizer.ChangeWatching
       _inspector = inspector;
 
       _appointment.AfterWrite += Appointment_AfterWrite;
+      _appointment.BeforeDelete += Appointment_BeforeDelete;
       ((InspectorEvents_10_Event) _inspector).Close += AppointmentItemWrapper_Close;
+    }
+
+    private void Appointment_BeforeDelete (object Item, ref bool Cancel)
+    {
+      OnSavedOrDeleted();
     }
 
     private void Appointment_AfterWrite ()
     {
-      OnSaved();
+      OnSavedOrDeleted();
     }
 
     private void AppointmentItemWrapper_Close ()
@@ -46,9 +52,9 @@ namespace CalDavSynchronizer.ChangeWatching
       OnClosed();
     }
 
-    protected virtual void OnSaved ()
+    protected virtual void OnSavedOrDeleted ()
     {
-      var handler = Saved;
+      var handler = SavedOrDeleted;
       if (handler != null)
         handler (this, EventArgs.Empty);
     }
@@ -77,6 +83,7 @@ namespace CalDavSynchronizer.ChangeWatching
     public void Dispose ()
     {
       _appointment.AfterWrite -= Appointment_AfterWrite;
+      _appointment.BeforeDelete -= Appointment_BeforeDelete;
       ((InspectorEvents_10_Event) _inspector).Close -= AppointmentItemWrapper_Close;
 
       _appointment = null;

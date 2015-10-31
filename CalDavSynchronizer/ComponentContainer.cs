@@ -57,7 +57,7 @@ namespace CalDavSynchronizer
         XmlConfigurator.Configure();
 
         _itemChangeWatcher = new OutlookItemChangeWatcher (application.Inspectors);
-        _itemChangeWatcher.ItemSaved += ItemChangeWatcher_ItemSaved;
+        _itemChangeWatcher.ItemSavedOrDeleted += ItemChangeWatcherItemSavedOrDeleted;
         _session = application.Session;
         s_logger.Info ("Startup...");
 
@@ -97,7 +97,7 @@ namespace CalDavSynchronizer
       s_logger.Info ("Startup finnished");
     }
 
-    private async void ItemChangeWatcher_ItemSaved (object sender, ItemSavedEventArgs e)
+    private async void ItemChangeWatcherItemSavedOrDeleted (object sender, ItemSavedEventArgs e)
     {
       try
       {

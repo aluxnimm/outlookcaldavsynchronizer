@@ -20,7 +20,7 @@ namespace CalDavSynchronizer.ChangeWatching
 {
   internal interface IOutlookItem : IDisposable
   {
-    event EventHandler Saved;
+    event EventHandler SavedOrDeleted;
     event EventHandler Closed;
     string EntryId { get; }
     Tuple<string, string> FolderEntryIdAndStoreIdOrNull { get; }

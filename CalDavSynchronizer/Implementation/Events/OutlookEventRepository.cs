@@ -18,17 +18,21 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using GenSync;
 using GenSync.EntityRepositories;
+using log4net;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
   public class OutlookEventRepository : IEntityRepository<AppointmentItemWrapper, string, DateTime>, IOutlookRepository
   {
+    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
+
     private readonly NameSpace _mapiNameSpace;
     private readonly string _folderId;
     private readonly string _folderStoreId;
@@ -57,7 +61,22 @@ namespace CalDavSynchronizer.Implementation.Events
     {
       return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (
           ids
-              .Select (id => (AppointmentItem) _mapiNameSpace.GetItemFromID (id, _folderStoreId))
+              .Select (id =>
+              {
+                try
+                {
+                  var item = (AppointmentItem) _mapiNameSpace.GetItemFromID (id, _folderStoreId);
+                  return item;
+                }
+                catch (COMException x)
+                {
+                  const int messageNotFoundResult = -2147221233;
+                  if (x.HResult != messageNotFoundResult)
+                    s_logger.Error ("Error while fetching entity.", x);
+                  return null;
+                }
+              })
+              .Where (i => i != null)
               .ToSafeEnumerable()
               .Select (c => EntityVersion.Create (c.EntryID, c.LastModificationTime))
               .ToList());

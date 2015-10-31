@@ -30,16 +30,16 @@ namespace CalDavSynchronizer.ChangeWatching
 
     private readonly Dictionary<IOutlookItem, bool> _isChangedByItem = new Dictionary<IOutlookItem, bool>();
 
-    public event EventHandler<ItemSavedEventArgs> ItemSaved;
+    public event EventHandler<ItemSavedEventArgs> ItemSavedOrDeleted;
 
     public OutlookItemChangeWatcher (Inspectors inspectors)
     {
       inspectors.NewInspector += Inspectors_NewInspector;
     }
 
-    protected virtual void OnItemSaved (ItemSavedEventArgs e)
+    protected virtual void OnItemSavedOrDeleted (ItemSavedEventArgs e)
     {
-      var handler = ItemSaved;
+      var handler = ItemSavedOrDeleted;
       if (handler != null)
         handler (this, e);
     }
@@ -53,7 +53,7 @@ namespace CalDavSynchronizer.ChangeWatching
         {
           _isChangedByItem.Add (item, false);
           item.Closed += Item_Closed;
-          item.Saved += Item_Saved;
+          item.SavedOrDeleted += Item_SavedOrDeleted;
         }
       }
       catch (Exception x)
@@ -62,7 +62,7 @@ namespace CalDavSynchronizer.ChangeWatching
       }
     }
 
-    private void Item_Saved (object sender, EventArgs e)
+    private void Item_SavedOrDeleted (object sender, EventArgs e)
     {
       try
       {
@@ -85,7 +85,7 @@ namespace CalDavSynchronizer.ChangeWatching
         {
           var folderIds = outlookItem.FolderEntryIdAndStoreIdOrNull;
           if (folderIds != null)
-            OnItemSaved (new ItemSavedEventArgs (outlookItem.EntryId, folderIds.Item1, folderIds.Item2));
+            OnItemSavedOrDeleted (new ItemSavedEventArgs (outlookItem.EntryId, folderIds.Item1, folderIds.Item2));
         }
         outlookItem.Dispose();
       }
