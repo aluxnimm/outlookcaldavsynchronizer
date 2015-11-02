@@ -47,8 +47,19 @@ namespace CalDavSynchronizer.Implementation.Contacts
       target.NameSuffix = source.Inner.Suffix;
       target.AdditionalNames = source.Inner.MiddleName;
       target.Gender = MapGender2To1 (source.Inner.Gender);
-      target.FormattedName = source.Inner.FileAs;
 
+      if (!string.IsNullOrEmpty (source.Inner.FileAs))
+      {
+        target.FormattedName = source.Inner.FileAs;
+      }
+      else if (!string.IsNullOrEmpty (source.Inner.CompanyAndFullName))
+      {
+        target.FormattedName = source.Inner.CompanyAndFullName;
+      }
+      else
+      {
+        target.FormattedName = "<Empty>";
+      }
 
       if (!string.IsNullOrEmpty (source.Inner.NickName))
       {
