@@ -100,9 +100,9 @@ namespace CalDavSynchronizer.DataAccess
           null,
           "application/xml",
           @"<?xml version='1.0'?>
-                        <D:propfind xmlns:D=""DAV:"" xmlns:C=""urn:ietf:params:xml:ns:carddav"">
+                        <D:propfind xmlns:D=""DAV:"" xmlns:A=""urn:ietf:params:xml:ns:carddav"">
                           <D:prop>
-                            <C:addressbook-home-set/>
+                            <A:addressbook-home-set/>
                           </D:prop>
                         </D:propfind>
                  "
@@ -194,13 +194,13 @@ namespace CalDavSynchronizer.DataAccess
     public async Task<IReadOnlyList<EntityWithId<Uri, string>>> GetEntities (IEnumerable<Uri> urls)
     {
       var requestBody = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
-   <C:addressbook-multiget xmlns:D=""DAV:"" xmlns:C=""urn:ietf:params:xml:ns:carddav"">
+   <A:addressbook-multiget xmlns:D=""DAV:"" xmlns:A=""urn:ietf:params:xml:ns:carddav"">
      <D:prop>
        <D:getetag/>
-       <C:address-data/>
+       <A:address-data/>
      </D:prop>
      " + String.Join (Environment.NewLine, urls.Select (u => string.Format ("<D:href>{0}</D:href>", u))) + @"
-   </C:addressbook-multiget>
+   </A:addressbook-multiget>
  ";
 
 
@@ -227,7 +227,7 @@ namespace CalDavSynchronizer.DataAccess
       {
         var urlNode = responseElement.SelectSingleNode ("D:href", responseXml.XmlNamespaceManager);
         var dataNode = responseElement.SelectSingleNode ("D:propstat/D:prop/A:address-data", responseXml.XmlNamespaceManager);
-        if (urlNode != null && dataNode != null)
+        if (urlNode != null && dataNode != null && !string.IsNullOrEmpty(dataNode.InnerText) )
         {
           entities.Add (EntityWithId.Create (UriHelper.UnescapeRelativeUri (_serverUrl, urlNode.InnerText), dataNode.InnerText));
         }
