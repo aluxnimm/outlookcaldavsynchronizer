@@ -652,11 +652,18 @@ namespace CalDavSynchronizer.Ui
 
       if (_folderType == OlItemType.olContactItem)
       {
+        _enableTimeRangeFilteringCheckBox.Checked = false;
+        UpdateTimeRangeFilteringGroupBoxEnabled();
         MessageBox.Show (
             "The contact synchronization is still in development and currently only beta quality!",
             "CalDav Synchronizer",
             MessageBoxButtons.OK,
             MessageBoxIcon.Warning);
+      }
+      else
+      {
+        _enableTimeRangeFilteringCheckBox.Checked = true;
+        UpdateTimeRangeFilteringGroupBoxEnabled();
       }
     }
 
