@@ -69,6 +69,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
             );
       }
 
+      target.AccessClassification = MapPrivacy1To2 (source.Inner.Sensitivity);
+
       if (!string.IsNullOrEmpty (source.Inner.Categories))
       {
         Array.ForEach (
@@ -185,6 +187,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
         source.Nicknames.CopyTo (nickNames, 0);
         target.Inner.NickName = string.Join (CultureInfo.CurrentCulture.TextInfo.ListSeparator, nickNames);
       }
+
+      target.Inner.Sensitivity = MapPrivacy2To1 (source.AccessClassification);
 
       if (source.Categories.Count > 0)
       {
@@ -321,6 +325,36 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
 
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", sourceGender));
+    }
+
+    private vCardAccessClassification MapPrivacy1To2 (OlSensitivity value)
+    {
+      switch (value)
+      {
+        case OlSensitivity.olNormal:
+          return vCardAccessClassification.Public;
+        case OlSensitivity.olPersonal:
+          return vCardAccessClassification.Private;
+        case OlSensitivity.olPrivate:
+          return vCardAccessClassification.Private;
+        case OlSensitivity.olConfidential:
+          return vCardAccessClassification.Confidential;
+      }
+      throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
+    }
+
+    private OlSensitivity MapPrivacy2To1 (vCardAccessClassification value)
+    {
+      switch (value)
+      {
+        case vCardAccessClassification.Public:
+          return OlSensitivity.olNormal;
+        case vCardAccessClassification.Private:
+          return OlSensitivity.olPrivate;
+        case vCardAccessClassification.Confidential:
+          return OlSensitivity.olConfidential;
+      }
+      return OlSensitivity.olNormal;
     }
 
     private static void MapEmailAddresses1To2 (ContactItem source, vCard target)
