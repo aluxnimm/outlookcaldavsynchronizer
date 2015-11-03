@@ -306,6 +306,12 @@
     <Compile Include="Ui\OptionsDisplayControl.Designer.cs">
       <DependentUpon>OptionsDisplayControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Ui\OptionsDisplayControl.ISettingsFaultFinder.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Ui\OptionsDisplayControl.NullSettingsFaultFinder.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Ui\OptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -358,6 +364,9 @@
       <DependentUpon>ProgressForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Ui\ProgressFormFactory.cs" />
+    <Compile Include="Ui\OptionsDisplayControl.SettingsFaultFinder.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Utilities\ExceptionHandler.cs" />
     <Compile Include="Utilities\IExceptionHandler.cs" />
     <Compile Include="Utilities\Serializer.cs" />

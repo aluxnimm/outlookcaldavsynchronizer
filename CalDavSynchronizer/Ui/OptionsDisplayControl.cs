@@ -46,6 +46,7 @@ namespace CalDavSynchronizer.Ui
     private string _folderStoreId;
     private readonly NameSpace _session;
     private Guid _optionsId;
+    private readonly ISettingsFaultFinder _faultFinder;
 
     public event EventHandler DeletionRequested;
     public event EventHandler CopyRequested;
@@ -106,6 +107,11 @@ namespace CalDavSynchronizer.Ui
     public OptionsDisplayControl (NameSpace session)
     {
       InitializeComponent();
+
+      if (bool.Parse (ConfigurationManager.AppSettings["automaticallyFixSettings"]))
+        _faultFinder = new SettingsFaultFinder (this);
+      else
+        _faultFinder = NullSettingsFaultFinder.Instance;
 
       _session = session;
       BindComboBox (_syncIntervalComboBox, _availableSyncIntervals);
@@ -212,8 +218,7 @@ namespace CalDavSynchronizer.Ui
           var result = await ConnectionTester.TestConnection (enteredUri, webDavClient);
           if (result.ResourceType != ResourceType.None)
           {
-            if (ShouldAutomaticallyFixSettings)
-              AutomaticallyFixSettings (result);
+            _faultFinder.FixSynchronizationMode (result);
 
             DisplayTestReport (result);
             return;
@@ -242,8 +247,7 @@ namespace CalDavSynchronizer.Ui
 
         var finalResult = await ConnectionTester.TestConnection (autoDiscoveredUrl, webDavClient);
 
-        if (ShouldAutomaticallyFixSettings)
-          AutomaticallyFixSettings (finalResult);
+        _faultFinder.FixSynchronizationMode (finalResult);
 
         DisplayTestReport (finalResult);
       }
@@ -257,43 +261,6 @@ namespace CalDavSynchronizer.Ui
       finally
       {
         _testConnectionButton.Enabled = true;
-      }
-    }
-
-    private static bool ShouldAutomaticallyFixSettings
-    {
-      get { return bool.Parse (ConfigurationManager.AppSettings["automaticallyFixSettings"]); }
-    }
-
-    private void AutomaticallyFixSettings (TestResult result)
-    {
-      const SynchronizationMode readOnlyDefaultMode = SynchronizationMode.ReplicateServerIntoOutlook;
-      if (result.ResourceType.HasFlag (ResourceType.Calendar))
-      {
-        if (!result.CalendarProperties.HasFlag (CalendarProperties.IsWriteable)
-            && SelectedModeRequiresWriteableServerResource)
-        {
-          _synchronizationModeComboBox.SelectedValue = readOnlyDefaultMode;
-          MessageBox.Show (
-              string.Format (
-                  "The specified Url is a read-only calendar. Synchronization mode set to '{0}'.",
-                  _availableSynchronizationModes.Single (m => m.Value == readOnlyDefaultMode).Name),
-              c_connectionTestCaption);
-        }
-      }
-
-      if (result.ResourceType.HasFlag (ResourceType.AddressBook))
-      {
-        if (!result.AddressBookProperties.HasFlag (AddressBookProperties.IsWriteable)
-            && SelectedModeRequiresWriteableServerResource)
-        {
-          _synchronizationModeComboBox.SelectedValue = readOnlyDefaultMode;
-          MessageBox.Show (
-              string.Format (
-                  "The specified Url is a read-only addressbook. Synchronization mode set to '{0}'.",
-                  _availableSynchronizationModes.Single (m => m.Value == readOnlyDefaultMode).Name),
-              c_connectionTestCaption);
-        }
       }
     }
 
@@ -650,20 +617,15 @@ namespace CalDavSynchronizer.Ui
         }
       }
 
+      _faultFinder.FixTimeRangeUsage();
+
       if (_folderType == OlItemType.olContactItem)
       {
-        _enableTimeRangeFilteringCheckBox.Checked = false;
-        UpdateTimeRangeFilteringGroupBoxEnabled();
         MessageBox.Show (
             "The contact synchronization is still in development and currently only beta quality!",
             "CalDav Synchronizer",
             MessageBoxButtons.OK,
             MessageBoxIcon.Warning);
-      }
-      else
-      {
-        _enableTimeRangeFilteringCheckBox.Checked = true;
-        UpdateTimeRangeFilteringGroupBoxEnabled();
       }
     }
 
