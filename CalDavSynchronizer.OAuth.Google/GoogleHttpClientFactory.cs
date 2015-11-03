@@ -31,7 +31,11 @@ namespace CalDavSynchronizer.OAuth.Google
               ClientId = "13856942399-rp437ddbn6406hfokpe5rqnosgnejodc.apps.googleusercontent.com",
               ClientSecret = "WG276vw5WCcc2H4SSaYJ03VO"
           },
-          new[] { "https://www.googleapis.com/auth/calendar" },
+          new[]
+          {
+              "https://www.googleapis.com/auth/calendar",
+              "https://www.googleapis.com/auth/carddav"
+          },
           user,
           CancellationToken.None);
 
