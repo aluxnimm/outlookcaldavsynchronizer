@@ -168,7 +168,8 @@ namespace CalDavSynchronizer.DataAccess
           {
             var eTag = etagNode.InnerText;
             // the directory is also included in the list. It has a etag of '"None"' and is skipped
-            if (String.Compare (eTag, @"""None""", StringComparison.OrdinalIgnoreCase) != 0)
+            // in Owncloud eTag is empty for directory
+            if (!string.IsNullOrEmpty (eTag) && String.Compare (eTag, @"""None""", StringComparison.OrdinalIgnoreCase) != 0)
             {
               var uri = UriHelper.UnescapeRelativeUri (_serverUrl, urlNode.InnerText);
               entities.Add (EntityVersion.Create (uri, eTag));
