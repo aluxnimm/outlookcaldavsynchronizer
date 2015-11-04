@@ -670,6 +670,17 @@ namespace CalDavSynchronizer.Implementation.Contacts
         {
           target.ISDNNumber = phoneNumber.FullNumber;
         }
+        else
+        {
+          if (phoneNumber.IsPreferred && string.IsNullOrEmpty (target.HomeTelephoneNumber))
+          {
+            target.HomeTelephoneNumber = phoneNumber.FullNumber;
+          }
+          else
+          {
+            target.OtherTelephoneNumber = phoneNumber.FullNumber;
+          }
+        }
       }
     }
   }
