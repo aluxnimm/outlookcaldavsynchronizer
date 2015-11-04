@@ -200,7 +200,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           .Return (Task.FromResult<IReadOnlyList<EntityVersion<Uri, string>>> (
               new EntityVersion<Uri, string>[] { }));
       calDavDataAccess
-          .Expect (r => r.CreateEntity (null))
+          .Expect (r => r.CreateEntity (null, Guid.NewGuid().ToString()))
           .IgnoreArguments()
           .Return (Task.FromResult (
               EntityVersion.Create (new Uri ("http://bla.com"), "blubb")))

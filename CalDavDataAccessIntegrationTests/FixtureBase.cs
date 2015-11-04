@@ -110,7 +110,7 @@ namespace CalDavDataAccessIntegrationTests
         entitiesWithVersion.Add (
             await _calDavDataAccess.CreateEntity (
                 SerializeCalendar (
-                    iCalendar)));
+                    iCalendar), iCalendar.Events[0].UID));
       }
 
       var queriedEntitesWithVersion = await _calDavDataAccess.GetEventVersions (new DateTimeRange (DateTime.Now.AddDays (150), DateTime.Now.AddDays (450)));
@@ -173,7 +173,7 @@ namespace CalDavDataAccessIntegrationTests
     {
       var v = await _calDavDataAccess.CreateEntity (
           SerializeCalendar (
-              CreateEntity (1)));
+              CreateEntity (1)), Guid.NewGuid().ToString());
 
       await _calDavDataAccess.DeleteEntity (v.Id);
 
@@ -201,7 +201,7 @@ namespace CalDavDataAccessIntegrationTests
     {
       var v = await _calDavDataAccess.CreateEntity (
           SerializeCalendar (
-              CreateEntity (1)));
+              CreateEntity (1)), Guid.NewGuid().ToString());
 
       await _calDavDataAccess.DeleteEntity (v.Id);
 
@@ -214,7 +214,7 @@ namespace CalDavDataAccessIntegrationTests
     public void CreateInvalidEntity ()
     {
       Assert.That (
-          async () => await _calDavDataAccess.CreateEntity ("Invalix CalDav Entity"),
+          async () => await _calDavDataAccess.CreateEntity ("Invalix CalDav Entity", Guid.NewGuid().ToString()),
           Throws.Exception);
     }
 
@@ -223,7 +223,7 @@ namespace CalDavDataAccessIntegrationTests
     {
       var v = await _calDavDataAccess.CreateEntity (
           SerializeCalendar (
-              CreateEntity (1)));
+              CreateEntity (1)), Guid.NewGuid().ToString());
 
       Assert.That (
           async () => await _calDavDataAccess.UpdateEntity (v.Id, "Invalid ICal"),

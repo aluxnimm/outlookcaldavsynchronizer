@@ -79,7 +79,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           eventUrls.Select (id => EntityWithId.Create (id, _entites[id].Item2)).ToList());
     }
 
-    public Task<EntityVersion<Uri, string>> CreateEntity (string iCalData)
+    public Task<EntityVersion<Uri, string>> CreateEntity (string iCalData, string uid)
     {
       var id = new Uri ("http://bla.com/" + Guid.NewGuid());
       const int version = 1;

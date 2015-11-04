@@ -129,7 +129,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         vCard newVcard = new vCard();
         newVcard.UniqueId = Guid.NewGuid().ToString();
         var initializedVcard = entityInitializer (newVcard);
-        return await _cardDavDataAccess.CreateEntity (Serialize (initializedVcard));
+        return await _cardDavDataAccess.CreateEntity (Serialize (initializedVcard), newVcard.UniqueId);
       }
     }
 

@@ -246,7 +246,7 @@ namespace CalDavSynchronizer.DataAccess
       return new EntityVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveEventUrl), version);
     }
 
-    protected async Task<EntityVersion<Uri, string>> CreateEntity (string name, string content)
+    protected async Task<EntityVersion<Uri, string>> CreateNewEntity (string name, string content)
     {
       var eventUrl = new Uri (_serverUrl, name);
 

@@ -129,9 +129,9 @@ namespace CalDavSynchronizer.DataAccess
           );
     }
 
-    public Task<EntityVersion<Uri, string>> CreateEntity (string iCalData)
+    public Task<EntityVersion<Uri, string>> CreateEntity (string iCalData, string uid)
     {
-      return CreateEntity (string.Format ("{0:D}.vcs", Guid.NewGuid()), iCalData);
+      return CreateNewEntity (string.Format ("{0:D}.vcs", uid), iCalData);
     }
 
     public async Task<IReadOnlyList<EntityVersion<Uri, string>>> GetContacts ()

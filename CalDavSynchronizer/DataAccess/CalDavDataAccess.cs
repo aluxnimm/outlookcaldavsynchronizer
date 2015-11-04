@@ -149,9 +149,9 @@ namespace CalDavSynchronizer.DataAccess
       return GetEntities (range, "VTODO");
     }
 
-    public Task<EntityVersion<Uri, string>> CreateEntity (string iCalData)
+    public Task<EntityVersion<Uri, string>> CreateEntity (string iCalData, string uid)
     {
-      return CreateEntity (string.Format ("{0:D}.ics", Guid.NewGuid()), iCalData);
+      return CreateNewEntity(string.Format("{0:D}.ics", uid), iCalData);
     }
 
     private async Task<IReadOnlyList<EntityVersion<Uri, string>>> GetEntities (DateTimeRange? range, string entityType)
