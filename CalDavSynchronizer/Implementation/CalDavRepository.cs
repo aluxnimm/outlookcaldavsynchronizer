@@ -162,7 +162,8 @@ namespace CalDavSynchronizer.Implementation
       {
         IICalendar newCalendar = new iCalendar();
         newCalendar = entityInitializer (newCalendar);
-        return await _calDavDataAccess.CreateEntity (SerializeCalendar (newCalendar), newCalendar.Events[0].UID);
+        var uid = (newCalendar.Events.Count > 0) ? newCalendar.Events[0].UID : newCalendar.Todos[0].UID;
+        return await _calDavDataAccess.CreateEntity (SerializeCalendar (newCalendar), uid);
       }
     }
 
