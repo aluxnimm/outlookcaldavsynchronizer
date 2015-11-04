@@ -95,7 +95,38 @@ namespace CalDavSynchronizer.DataAccess
     private async Task<string> GetEtag (Uri absoluteEntityUrl)
     {
       var headers = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (absoluteEntityUrl, "GET", null, null, null, null, null);
-      return headers.ETag.Tag;
+      if (headers.ETag != null)
+      {
+        return headers.ETag.Tag;
+      }
+      else
+      {
+        return await GetEtagViaPropfind(absoluteEntityUrl);
+      }
+    }
+
+    private async Task<string> GetEtagViaPropfind (Uri url)
+    {
+      var document = await _webDavClient.ExecuteWebDavRequestAndReadResponse(
+          url,
+          "PROPFIND",
+          0,
+          null,
+          null,
+          "application/xml",
+          @"<?xml version='1.0'?>
+                        <D:propfind xmlns:D=""DAV:"">
+                          <D:prop>
+                            <D:getetag/>
+                          </D:prop>
+                        </D:propfind>
+                 "
+          );
+
+      XmlNode eTagNode = document.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:getetag", document.XmlNamespaceManager);
+
+      return eTagNode.InnerText;
+
     }
 
     private Task<XmlDocumentWithNamespaceManager> GetAllProperties (Uri url, int depth)
