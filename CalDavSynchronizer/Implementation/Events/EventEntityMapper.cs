@@ -158,20 +158,20 @@ namespace CalDavSynchronizer.Implementation.Events
 
       MapCategories1To2 (source, target);
 
-      target.Transparency = MapTransparency1To2 (source.BusyStatus);
+      target.Properties.Add (MapTransparency1To2 (source.BusyStatus));
     }
 
-    private TransparencyType MapTransparency1To2 (OlBusyStatus value)
+    private CalendarProperty MapTransparency1To2 (OlBusyStatus value)
     {
       switch (value)
       {
         case OlBusyStatus.olBusy:
         case OlBusyStatus.olOutOfOffice:
         case OlBusyStatus.olWorkingElsewhere:
-          return TransparencyType.Opaque;
+          return new CalendarProperty ("TRANSP", "OPAQUE");
         case OlBusyStatus.olTentative:
         case OlBusyStatus.olFree:
-          return TransparencyType.Transparent;
+          return new CalendarProperty ("TRANSP", "TRANSPARENT");
       }
 
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
