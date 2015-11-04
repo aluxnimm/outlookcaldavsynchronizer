@@ -88,8 +88,9 @@ namespace CalDavSynchronizer.DataAccess
       XmlNode privilegeWriteContent = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-privilege-set/D:privilege/D:write-content", properties.XmlNamespaceManager);
       XmlNode privilegeBind = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-privilege-set/D:privilege/D:bind", properties.XmlNamespaceManager);
       XmlNode privilegeUnbind = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-privilege-set/D:privilege/D:unbind", properties.XmlNamespaceManager);
+      XmlNode privilegeWrite = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-privilege-set/D:privilege/D:write", properties.XmlNamespaceManager);
 
-      return ((privilegeWriteContent != null) && (privilegeBind != null) && (privilegeUnbind != null));
+      return ((privilegeWrite != null) || ((privilegeWriteContent != null) && (privilegeBind != null) && (privilegeUnbind != null)));
     }
 
     private async Task<string> GetEtag (Uri absoluteEntityUrl)
