@@ -63,32 +63,32 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
     public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions ()
     {
-      var events = new List<EntityVersion<string, DateTime>>();
+      var contacts = new List<EntityVersion<string, DateTime>>();
 
 
-      using (var calendarFolderWrapper = CreateFolderWrapper())
+      using (var addressbookFolderWrapper = CreateFolderWrapper())
       {
-        using (var tableWrapper = GenericComObjectWrapper.Create ((Table) calendarFolderWrapper.Inner.GetTable()))
+        using (var tableWrapper = GenericComObjectWrapper.Create((Table)addressbookFolderWrapper.Inner.GetTable("[MessageClass] = 'IPM.Contact' ")))
         {
           var table = tableWrapper.Inner;
           table.Columns.RemoveAll();
           table.Columns.Add (c_entryIdColumnName);
 
-          var storeId = calendarFolderWrapper.Inner.StoreID;
+          var storeId = addressbookFolderWrapper.Inner.StoreID;
 
           while (!table.EndOfTable)
           {
             var row = table.GetNextRow();
             var entryId = (string) row[c_entryIdColumnName];
-            using (var appointmentWrapper = GenericComObjectWrapper.Create ((ContactItem) _mapiNameSpace.GetItemFromID (entryId, storeId)))
+            using (var contactWrapper = GenericComObjectWrapper.Create ((ContactItem) _mapiNameSpace.GetItemFromID (entryId, storeId)))
             {
-              events.Add (new EntityVersion<string, DateTime> (appointmentWrapper.Inner.EntryID, appointmentWrapper.Inner.LastModificationTime));
+              contacts.Add (new EntityVersion<string, DateTime> (contactWrapper.Inner.EntryID, contactWrapper.Inner.LastModificationTime));
             }
           }
         }
       }
 
-      return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (events);
+      return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (contacts);
     }
 
     private static readonly CultureInfo _currentCultureInfo = CultureInfo.CurrentCulture;
@@ -112,8 +112,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
     public void Cleanup (IReadOnlyDictionary<string, GenericComObjectWrapper<ContactItem>> entities)
     {
-      foreach (var appointmentItemWrapper in entities.Values)
-        appointmentItemWrapper.Dispose();
+      foreach (var contactItemWrapper in entities.Values)
+        contactItemWrapper.Dispose();
     }
 
     public Task<EntityVersion<string, DateTime>> Update (string entityId, GenericComObjectWrapper<ContactItem> entityToUpdate, Func<GenericComObjectWrapper<ContactItem>, GenericComObjectWrapper<ContactItem>> entityModifier)
@@ -129,9 +129,9 @@ namespace CalDavSynchronizer.Implementation.Contacts
       if (entityWithId == null)
         return Task.FromResult (0);
 
-      using (var appointment = entityWithId.Entity)
+      using (var contact = entityWithId.Entity)
       {
-        appointment.Inner.Delete();
+        contact.Inner.Delete();
       }
 
       return Task.FromResult (0);
