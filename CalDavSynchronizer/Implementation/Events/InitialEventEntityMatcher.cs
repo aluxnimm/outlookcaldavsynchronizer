@@ -37,7 +37,7 @@ namespace CalDavSynchronizer.Implementation.Events
           evt.Summary == atypeEntity.Inner.Subject &&
           (evt.IsAllDay && atypeEntity.Inner.AllDayEvent ||
            evt.Start.UTC == atypeEntity.Inner.StartUTC &&
-           evt.DTEnd.UTC == atypeEntity.Inner.EndUTC);
+           ((evt.DTEnd == null && evt.Start.UTC == atypeEntity.Inner.EndUTC) || (evt.DTEnd != null && evt.DTEnd.UTC == atypeEntity.Inner.EndUTC )));
     }
 
     protected override string GetAtypePropertyValue (AppointmentItemWrapper atypeEntity)
