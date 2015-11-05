@@ -31,7 +31,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
 {
   public class ContactEntityMapper : IEntityMapper<GenericComObjectWrapper<ContactItem>, vCard>
   {
-    private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private const string PR_EMAIL1ADDRESS = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/8084001F";
     private const string PR_EMAIL2ADDRESS = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/8094001F";
@@ -359,7 +359,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
     private static void MapEmailAddresses1To2 (ContactItem source, vCard target)
     {
-      if (!string.IsNullOrEmpty(source.Email1Address))
+      if (!string.IsNullOrEmpty (source.Email1Address))
       {
         string email1Address = string.Empty;
 
@@ -367,7 +367,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         {
           try
           {
-            email1Address = source.GetPropertySafe(PR_EMAIL1ADDRESS);
+            email1Address = source.GetPropertySafe (PR_EMAIL1ADDRESS);
           }
           catch (COMException ex)
           {
@@ -378,10 +378,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
         {
           email1Address = source.Email1Address;
         }
-        if (!string.IsNullOrEmpty(email1Address)) target.EmailAddresses.Add(new vCardEmailAddress(email1Address));
+        if (!string.IsNullOrEmpty (email1Address))
+          target.EmailAddresses.Add (new vCardEmailAddress (email1Address));
       }
 
-      if (!string.IsNullOrEmpty(source.Email2Address))
+      if (!string.IsNullOrEmpty (source.Email2Address))
       {
         string email2Address = string.Empty;
 
@@ -389,7 +390,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         {
           try
           {
-            email2Address = source.GetPropertySafe(PR_EMAIL2ADDRESS);
+            email2Address = source.GetPropertySafe (PR_EMAIL2ADDRESS);
           }
           catch (COMException ex)
           {
@@ -400,10 +401,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
         {
           email2Address = source.Email2Address;
         }
-        if (!string.IsNullOrEmpty(email2Address)) target.EmailAddresses.Add(new vCardEmailAddress(email2Address));
+        if (!string.IsNullOrEmpty (email2Address))
+          target.EmailAddresses.Add (new vCardEmailAddress (email2Address));
       }
 
-      if (!string.IsNullOrEmpty(source.Email3Address))
+      if (!string.IsNullOrEmpty (source.Email3Address))
       {
         string email3Address = string.Empty;
 
@@ -411,7 +413,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         {
           try
           {
-            email3Address = source.GetPropertySafe(PR_EMAIL3ADDRESS);
+            email3Address = source.GetPropertySafe (PR_EMAIL3ADDRESS);
           }
           catch (COMException ex)
           {
@@ -422,7 +424,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
         {
           email3Address = source.Email3Address;
         }
-        if (!string.IsNullOrEmpty(email3Address)) target.EmailAddresses.Add(new vCardEmailAddress(email3Address));
+        if (!string.IsNullOrEmpty (email3Address))
+          target.EmailAddresses.Add (new vCardEmailAddress (email3Address));
       }
     }
 
@@ -433,8 +436,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       using (MemoryStream ms = new MemoryStream())
       {
-        ms.Write(certWrapper, 12, certWrapper.Length - 20);
-        byte[] o = ms.ToArray() ;
+        ms.Write (certWrapper, 12, certWrapper.Length - 20);
+        byte[] o = ms.ToArray();
         return o;
       }
     }
@@ -447,14 +450,17 @@ namespace CalDavSynchronizer.Implementation.Contacts
       using (MemoryStream ms = new MemoryStream())
       {
         byte[] headerWithoutLength = { 0x01, 0x00, 0x08, 0x00, 0x01, 0x00, 0x00, 0x00, 0x03, 0x00 };
-        ms.Write(headerWithoutLength, 0, headerWithoutLength.Length);
-        byte[] lengthBytes = BitConverter.GetBytes((short)(rawData.Length + 4));
-        ms.WriteByte(lengthBytes[0]);
-        ms.WriteByte(lengthBytes[1]);
-        ms.Write(rawData, 0, rawData.Length);
-        byte[] footer = { 0x06, 0x00, 0x08, 0x00, 0x01, 0x00, 0x00, 0x00, 0x20, 0x00, 0x08, 0x00, 
-                    0x07, 0x00, 0x00, 0x00, 0x02, 0x00, 0x04, 0x00 };
-        ms.Write(footer, 0, footer.Length);
+        ms.Write (headerWithoutLength, 0, headerWithoutLength.Length);
+        byte[] lengthBytes = BitConverter.GetBytes ((short) (rawData.Length + 4));
+        ms.WriteByte (lengthBytes[0]);
+        ms.WriteByte (lengthBytes[1]);
+        ms.Write (rawData, 0, rawData.Length);
+        byte[] footer =
+        {
+            0x06, 0x00, 0x08, 0x00, 0x01, 0x00, 0x00, 0x00, 0x20, 0x00, 0x08, 0x00,
+            0x07, 0x00, 0x00, 0x00, 0x02, 0x00, 0x04, 0x00
+        };
+        ms.Write (footer, 0, footer.Length);
 
         object[] o = new object[] { ms.ToArray() };
         return o;
@@ -465,17 +471,17 @@ namespace CalDavSynchronizer.Implementation.Contacts
     {
       try
       {
-        object[] certWrapper = source.GetPropertySafe(PR_USER_X509_CERTIFICATE);
+        object[] certWrapper = source.GetPropertySafe (PR_USER_X509_CERTIFICATE);
 
         if (certWrapper.Length > 0)
         {
-          byte[] rawCert = GetRawCert((byte[])certWrapper[0]);
-          target.Certificates.Add(new vCardCertificate("X509", rawCert));
+          byte[] rawCert = GetRawCert ((byte[]) certWrapper[0]);
+          target.Certificates.Add (new vCardCertificate ("X509", rawCert));
         }
       }
       catch (COMException ex)
       {
-        s_logger.Error("Could not get property PR_USER_X509_CERTIFICATE for contact.", ex);
+        s_logger.Error ("Could not get property PR_USER_X509_CERTIFICATE for contact.", ex);
       }
     }
 
@@ -502,7 +508,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
     {
       if (source.HasPicture)
       {
-        foreach (var att in source.Attachments.ToSafeEnumerable <Microsoft.Office.Interop.Outlook.Attachment>())
+        foreach (var att in source.Attachments.ToSafeEnumerable<Microsoft.Office.Interop.Outlook.Attachment>())
         {
           if (att.DisplayName == "ContactPicture.jpg")
           {
@@ -515,7 +521,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
               }
               catch (COMException ex)
               {
-                s_logger.Error("Could not getproperty PR_ATTACH_DATA_BIN to export picture for contact.", ex);
+                s_logger.Error ("Could not getproperty PR_ATTACH_DATA_BIN to export picture for contact.", ex);
               }
             }
           }
@@ -532,7 +538,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         if (contactPhoto.IsLoaded)
         {
           string picturePath = Path.GetTempPath() + @"\Contact_" + target.EntryID + ".jpg";
-          using (FileStream fs = new FileStream (picturePath,FileMode.Create))
+          using (FileStream fs = new FileStream (picturePath, FileMode.Create))
           {
             fs.Write (contactPhoto.GetBytes(), 0, contactPhoto.GetBytes().Length);
             fs.Flush();

@@ -161,10 +161,10 @@ namespace CalDavSynchronizer.Implementation.Contacts
         var noteMatch = Regex.Match (fixedvCardString, "NOTE;ENCODING=QUOTED-PRINTABLE:(.*?)\r\n");
         if (noteMatch.Success)
         {
-          string decodedNote = vCardStandardReader.DecodeQuotedPrintable (noteMatch.Groups[1].Value).Replace ("\r\n","\n");
-          fixedvCardString2 = Regex.Replace (fixedvCardString, "NOTE;ENCODING=QUOTED-PRINTABLE:(.*?)\r\n",_vCardWriter.EncodeEscaped ("NOTE:"+decodedNote)+"\r\n");
+          string decodedNote = vCardStandardReader.DecodeQuotedPrintable (noteMatch.Groups[1].Value).Replace ("\r\n", "\n");
+          fixedvCardString2 = Regex.Replace (fixedvCardString, "NOTE;ENCODING=QUOTED-PRINTABLE:(.*?)\r\n", _vCardWriter.EncodeEscaped ("NOTE:" + decodedNote) + "\r\n");
         }
-        
+
         return fixedvCardString2;
       }
     }

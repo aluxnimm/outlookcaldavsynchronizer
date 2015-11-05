@@ -68,7 +68,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       using (var addressbookFolderWrapper = CreateFolderWrapper())
       {
-        using (var tableWrapper = GenericComObjectWrapper.Create((Table)addressbookFolderWrapper.Inner.GetTable("[MessageClass] = 'IPM.Contact' ")))
+        using (var tableWrapper = GenericComObjectWrapper.Create ((Table) addressbookFolderWrapper.Inner.GetTable ("[MessageClass] = 'IPM.Contact' ")))
         {
           var table = tableWrapper.Inner;
           table.Columns.RemoveAll();

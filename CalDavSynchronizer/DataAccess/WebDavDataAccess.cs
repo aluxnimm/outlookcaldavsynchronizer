@@ -102,13 +102,13 @@ namespace CalDavSynchronizer.DataAccess
       }
       else
       {
-        return await GetEtagViaPropfind(absoluteEntityUrl);
+        return await GetEtagViaPropfind (absoluteEntityUrl);
       }
     }
 
     private async Task<string> GetEtagViaPropfind (Uri url)
     {
-      var document = await _webDavClient.ExecuteWebDavRequestAndReadResponse(
+      var document = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
           url,
           "PROPFIND",
           0,
@@ -127,7 +127,6 @@ namespace CalDavSynchronizer.DataAccess
       XmlNode eTagNode = document.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:getetag", document.XmlNamespaceManager);
 
       return eTagNode.InnerText;
-
     }
 
     private Task<XmlDocumentWithNamespaceManager> GetAllProperties (Uri url, int depth)

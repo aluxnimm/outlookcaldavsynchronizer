@@ -240,7 +240,7 @@ namespace CalDavSynchronizer.DataAccess
       {
         var urlNode = responseElement.SelectSingleNode ("D:href", responseXml.XmlNamespaceManager);
         var dataNode = responseElement.SelectSingleNode ("D:propstat/D:prop/A:address-data", responseXml.XmlNamespaceManager);
-        if (urlNode != null && dataNode != null && !string.IsNullOrEmpty(dataNode.InnerText) )
+        if (urlNode != null && dataNode != null && !string.IsNullOrEmpty (dataNode.InnerText))
         {
           entities.Add (EntityWithId.Create (UriHelper.UnescapeRelativeUri (_serverUrl, urlNode.InnerText), dataNode.InnerText));
         }

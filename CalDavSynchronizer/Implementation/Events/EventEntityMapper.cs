@@ -83,7 +83,7 @@ namespace CalDavSynchronizer.Implementation.Events
       newTargetCalender.TimeZones.Add (startIcalTimeZone);
 
       iCalTimeZone endIcalTimeZone;
- 
+
       if (endTimeZoneID != startTimeZoneID)
       {
         var endTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (endTimeZoneID);
@@ -96,7 +96,7 @@ namespace CalDavSynchronizer.Implementation.Events
       {
         endIcalTimeZone = startIcalTimeZone;
       }
-      
+
       var existingTargetEvent = existingTargetCalender.Events.FirstOrDefault (e => e.RecurrenceID == null);
 
       var newTargetEvent = new Event();
@@ -579,7 +579,7 @@ namespace CalDavSynchronizer.Implementation.Events
               var targetException = new Event();
               target.Calendar.Events.Add (targetException);
               targetException.UID = target.UID;
-              using (var wrapper = new AppointmentItemWrapper (sourceException.AppointmentItem, _ => { throw new InvalidOperationException("Cannot reload exception AppointmentITem!"); }))
+              using (var wrapper = new AppointmentItemWrapper (sourceException.AppointmentItem, _ => { throw new InvalidOperationException ("Cannot reload exception AppointmentITem!"); }))
               {
                 Map1To2 (wrapper.Inner, targetException, true, startIcalTimeZone, endIcalTimeZone);
 
@@ -885,8 +885,8 @@ namespace CalDavSynchronizer.Implementation.Events
                   {
                     originalStart = exdate.StartTime.Date;
                   }
-                  var originalExDate =  NodaTime.LocalDateTime.FromDateTime (originalStart.Add (targetWrapper.Inner.StartInStartTimeZone.TimeOfDay));
-                  
+                  var originalExDate = NodaTime.LocalDateTime.FromDateTime (originalStart.Add (targetWrapper.Inner.StartInStartTimeZone.TimeOfDay));
+
                   NodaTime.ZonedDateTime zonedExDate = originalExDate.InZoneLeniently (startZone);
                   NodaTime.ZonedDateTime localExDate = zonedExDate.WithZone (NodaTime.DateTimeZoneProviders.Bcl.GetSystemDefault());
 
@@ -912,7 +912,7 @@ namespace CalDavSynchronizer.Implementation.Events
       }
     }
 
-     private void MapRecurrenceExceptions2To1 (IEnumerable<IEvent> exceptions, AppointmentItemWrapper targetWrapper, Microsoft.Office.Interop.Outlook.RecurrencePattern targetRecurrencePattern)
+    private void MapRecurrenceExceptions2To1 (IEnumerable<IEvent> exceptions, AppointmentItemWrapper targetWrapper, Microsoft.Office.Interop.Outlook.RecurrencePattern targetRecurrencePattern)
     {
       foreach (var recurranceException in exceptions)
       {
@@ -936,8 +936,8 @@ namespace CalDavSynchronizer.Implementation.Events
             originalStart = recurranceException.RecurrenceID.Date;
           }
 
-          var originalExDate =  NodaTime.LocalDateTime.FromDateTime (originalStart.Add (targetWrapper.Inner.StartInStartTimeZone.TimeOfDay));
-          NodaTime.ZonedDateTime zonedExDate = originalExDate.InZoneLeniently(startZone);
+          var originalExDate = NodaTime.LocalDateTime.FromDateTime (originalStart.Add (targetWrapper.Inner.StartInStartTimeZone.TimeOfDay));
+          NodaTime.ZonedDateTime zonedExDate = originalExDate.InZoneLeniently (startZone);
           NodaTime.ZonedDateTime localExDate = zonedExDate.WithZone (NodaTime.DateTimeZoneProviders.Bcl.GetSystemDefault());
 
           var targetException = targetRecurrencePattern.GetOccurrence (localExDate.ToDateTimeUnspecified());
@@ -1155,17 +1155,17 @@ namespace CalDavSynchronizer.Implementation.Events
       else
       {
         targetWrapper.Inner.AllDayEvent = false;
- 
+
         if (!string.IsNullOrEmpty (source.Start.TZID))
         {
           try
-          { 
+          {
             var tzi = TimeZoneInfo.FindSystemTimeZoneById (source.Start.TZID);
             targetWrapper.Inner.StartTimeZone = targetWrapper.Inner.Application.TimeZones[source.Start.TZID];
           }
           catch (COMException ex)
           {
-            s_logger.Error("Can't set StartTimeZone of appointment.", ex);
+            s_logger.Error ("Can't set StartTimeZone of appointment.", ex);
           }
           catch (TimeZoneNotFoundException)
           {
@@ -1188,16 +1188,16 @@ namespace CalDavSynchronizer.Implementation.Events
           {
             try
             {
-              var tzi = TimeZoneInfo.FindSystemTimeZoneById(source.DTEnd.TZID);
+              var tzi = TimeZoneInfo.FindSystemTimeZoneById (source.DTEnd.TZID);
               targetWrapper.Inner.EndTimeZone = targetWrapper.Inner.Application.TimeZones[source.DTEnd.TZID];
             }
             catch (COMException ex)
             {
-              s_logger.Error("Can't set EndTimeZone of appointment.", ex);
+              s_logger.Error ("Can't set EndTimeZone of appointment.", ex);
             }
             catch (TimeZoneNotFoundException)
             {
-              targetWrapper.Inner.EndTimeZone = targetWrapper.Inner.Application.TimeZones[TimeZoneMapper.IanaToWindows(source.DTEnd.TZID) ?? _localTimeZoneInfo.Id];
+              targetWrapper.Inner.EndTimeZone = targetWrapper.Inner.Application.TimeZones[TimeZoneMapper.IanaToWindows (source.DTEnd.TZID) ?? _localTimeZoneInfo.Id];
             }
           }
 
