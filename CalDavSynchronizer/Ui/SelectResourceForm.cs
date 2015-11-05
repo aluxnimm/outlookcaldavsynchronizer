@@ -47,14 +47,20 @@ namespace CalDavSynchronizer.Ui
 
     private void _calendarDataGridView_CellContentDoubleClick (object sender, DataGridViewCellEventArgs e)
     {
-      SelectedUrl = _calendarDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString();
-      DialogResult = DialogResult.OK;
+      if (e.RowIndex >= 0)
+      {
+        SelectedUrl = _calendarDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString();
+        DialogResult = DialogResult.OK;
+      }
     }
 
     private void _addressBookDataGridView_CellContentDoubleClick (object sender, DataGridViewCellEventArgs e)
     {
-      SelectedUrl = _addressBookDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString();
-      DialogResult = DialogResult.OK;
+      if (e.RowIndex >= 0)
+      {
+        SelectedUrl = _addressBookDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString();
+        DialogResult = DialogResult.OK;
+      }
     }
 
     private void OkButton_Click (object sender, EventArgs e)
