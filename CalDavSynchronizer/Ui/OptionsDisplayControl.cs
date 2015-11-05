@@ -390,17 +390,18 @@ namespace CalDavSynchronizer.Ui
 
     private async Task<AutoDiscoveryResult> DoAutoDiscovery (Uri autoDiscoveryUri, IWebDavClient webDavClient, bool useWellKnownUrl)
     {
-      IReadOnlyList<Tuple<Uri, string>> foundResources;
-
       var calDavDataAccess = new CalDavDataAccess (autoDiscoveryUri, webDavClient);
-      foundResources = await calDavDataAccess.GetUserCalendars (useWellKnownUrl);
+      IReadOnlyList<Tuple<Uri, string>> foundCaldendars = await calDavDataAccess.GetUserCalendarsNoThrow (useWellKnownUrl);
 
-      if (foundResources.Count > 0)
+      var cardDavDataAccess = new CardDavDataAccess (autoDiscoveryUri, webDavClient);
+      IReadOnlyList<Tuple<Uri, string>> foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow (useWellKnownUrl);
+
+      if (foundCaldendars.Count > 0 || foundAddressBooks.Count > 0)
       {
-        using (ListCalendarsForm listCalendarsForm = new ListCalendarsForm (foundResources))
+        using (SelectResourceForm listCalendarsForm = new SelectResourceForm (foundCaldendars, foundAddressBooks, _folderType == OlItemType.olContactItem))
         {
           if (listCalendarsForm.ShowDialog() == DialogResult.OK)
-            return new AutoDiscoveryResult (new Uri (autoDiscoveryUri.GetLeftPart (UriPartial.Authority) + listCalendarsForm.getCalendarUri()), false);
+            return new AutoDiscoveryResult (new Uri (autoDiscoveryUri.GetLeftPart (UriPartial.Authority) + listCalendarsForm.SelectedUrl), false);
           else
             return new AutoDiscoveryResult (null, true);
         }
@@ -408,8 +409,8 @@ namespace CalDavSynchronizer.Ui
       else
       {
         MessageBox.Show ("No resources were found via autodiscovery!", c_connectionTestCaption);
+        return new AutoDiscoveryResult (null, false);
       }
-      return new AutoDiscoveryResult (null, false);
     }
 
     private IWebDavClient CreateWebDavClient ()

@@ -29,6 +29,8 @@ namespace CalDavSynchronizer.DataAccess
 {
   public class CardDavDataAccess : WebDavDataAccess, ICardDavDataAccess
   {
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
+
     public CardDavDataAccess (Uri serverUrl, IWebDavClient webDavClient)
         : base (serverUrl, webDavClient)
     {
@@ -44,45 +46,55 @@ namespace CalDavSynchronizer.DataAccess
       return IsResourceType ("A", "addressbook");
     }
 
-    public async Task<IReadOnlyList<Tuple<Uri, string>>> GetUserAddressBooks (bool useWellKnownUrl)
+    public async Task<IReadOnlyList<Tuple<Uri, string>>> GetUserAddressBooksNoThrow (bool useWellKnownUrl)
     {
-      var autodiscoveryUrl = useWellKnownUrl ? AutoDiscoveryUrl : _serverUrl;
-
-      var properties = await GetCurrentUserPrincipal (autodiscoveryUrl);
-
-      XmlNode principal = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-principal", properties.XmlNamespaceManager);
-
-      var addressbooks = new List<Tuple<Uri, string>>();
-
-      if (principal != null)
+      try
       {
-        properties = await GetAddressBookHomeSet (new Uri (autodiscoveryUrl.GetLeftPart (UriPartial.Authority) + principal.InnerText));
+        var autodiscoveryUrl = useWellKnownUrl ? AutoDiscoveryUrl : _serverUrl;
 
-        XmlNode homeSet = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/A:addressbook-home-set", properties.XmlNamespaceManager);
+        var properties = await GetCurrentUserPrincipal (autodiscoveryUrl);
 
-        if (homeSet != null)
+        XmlNode principal = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-principal", properties.XmlNamespaceManager);
+
+        var addressbooks = new List<Tuple<Uri, string>>();
+
+        if (principal != null)
         {
-          properties = await ListAddressBooks (new Uri (autodiscoveryUrl.GetLeftPart (UriPartial.Authority) + homeSet.InnerText));
+          properties = await GetAddressBookHomeSet (new Uri (autodiscoveryUrl.GetLeftPart (UriPartial.Authority) + principal.InnerText));
 
-          XmlNodeList responseNodes = properties.XmlDocument.SelectNodes ("/D:multistatus/D:response", properties.XmlNamespaceManager);
+          XmlNode homeSet = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/A:addressbook-home-set", properties.XmlNamespaceManager);
 
-          foreach (XmlElement responseElement in responseNodes)
+          if (homeSet != null)
           {
-            var urlNode = responseElement.SelectSingleNode ("D:href", properties.XmlNamespaceManager);
-            var displayNameNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:displayname", properties.XmlNamespaceManager);
-            if (urlNode != null && displayNameNode != null)
+            properties = await ListAddressBooks (new Uri (autodiscoveryUrl.GetLeftPart (UriPartial.Authority) + homeSet.InnerText));
+
+            XmlNodeList responseNodes = properties.XmlDocument.SelectNodes ("/D:multistatus/D:response", properties.XmlNamespaceManager);
+
+            foreach (XmlElement responseElement in responseNodes)
             {
-              XmlNode isCollection = responseElement.SelectSingleNode ("D:propstat/D:prop/D:resourcetype/A:addressbook", properties.XmlNamespaceManager);
-              if (isCollection != null)
+              var urlNode = responseElement.SelectSingleNode ("D:href", properties.XmlNamespaceManager);
+              var displayNameNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:displayname", properties.XmlNamespaceManager);
+              if (urlNode != null && displayNameNode != null)
               {
-                var uri = UriHelper.UnescapeRelativeUri (autodiscoveryUrl, urlNode.InnerText);
-                addressbooks.Add (Tuple.Create (uri, displayNameNode.InnerText));
+                XmlNode isCollection = responseElement.SelectSingleNode ("D:propstat/D:prop/D:resourcetype/A:addressbook", properties.XmlNamespaceManager);
+                if (isCollection != null)
+                {
+                  var uri = UriHelper.UnescapeRelativeUri (autodiscoveryUrl, urlNode.InnerText);
+                  addressbooks.Add (Tuple.Create (uri, displayNameNode.InnerText));
+                }
               }
             }
           }
         }
+        return addressbooks;
       }
-      return addressbooks;
+      catch (Exception x)
+      {
+        if (x.Message.Contains ("404"))
+          return new List<Tuple<Uri, string>>();
+        else
+          throw;
+      }
     }
 
     private Uri AutoDiscoveryUrl

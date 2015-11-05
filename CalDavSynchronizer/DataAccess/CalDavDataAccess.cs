@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Xml;
@@ -51,45 +52,55 @@ namespace CalDavSynchronizer.DataAccess
       return DoesSupportsReportSet (_serverUrl, 0, "C", "calendar-query");
     }
 
-    public async Task<IReadOnlyList<Tuple<Uri, string>>> GetUserCalendars (bool useWellKnownUrl)
+    public async Task<IReadOnlyList<Tuple<Uri, string>>> GetUserCalendarsNoThrow (bool useWellKnownUrl)
     {
-      var autodiscoveryUrl = useWellKnownUrl ? AutoDiscoveryUrl : _serverUrl;
-
-      var properties = await GetCurrentUserPrincipal (autodiscoveryUrl);
-
-      XmlNode principal = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-principal", properties.XmlNamespaceManager);
-
-      var cals = new List<Tuple<Uri, string>>();
-
-      if (principal != null)
+      try
       {
-        properties = await GetCalendarHomeSet (new Uri (autodiscoveryUrl.GetLeftPart (UriPartial.Authority) + principal.InnerText));
+        var autodiscoveryUrl = useWellKnownUrl ? AutoDiscoveryUrl : _serverUrl;
 
-        XmlNode homeSet = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/C:calendar-home-set", properties.XmlNamespaceManager);
+        var properties = await GetCurrentUserPrincipal (autodiscoveryUrl);
 
-        if (homeSet != null)
+        XmlNode principal = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-principal", properties.XmlNamespaceManager);
+
+        var cals = new List<Tuple<Uri, string>>();
+
+        if (principal != null)
         {
-          properties = await ListCalendars (new Uri (autodiscoveryUrl.GetLeftPart (UriPartial.Authority) + homeSet.InnerText));
+          properties = await GetCalendarHomeSet (new Uri (autodiscoveryUrl.GetLeftPart (UriPartial.Authority) + principal.InnerText));
 
-          XmlNodeList responseNodes = properties.XmlDocument.SelectNodes ("/D:multistatus/D:response", properties.XmlNamespaceManager);
+          XmlNode homeSet = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/C:calendar-home-set", properties.XmlNamespaceManager);
 
-          foreach (XmlElement responseElement in responseNodes)
+          if (homeSet != null)
           {
-            var urlNode = responseElement.SelectSingleNode ("D:href", properties.XmlNamespaceManager);
-            var displayNameNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:displayname", properties.XmlNamespaceManager);
-            if (urlNode != null && displayNameNode != null)
+            properties = await ListCalendars (new Uri (autodiscoveryUrl.GetLeftPart (UriPartial.Authority) + homeSet.InnerText));
+
+            XmlNodeList responseNodes = properties.XmlDocument.SelectNodes ("/D:multistatus/D:response", properties.XmlNamespaceManager);
+
+            foreach (XmlElement responseElement in responseNodes)
             {
-              XmlNode isCollection = responseElement.SelectSingleNode ("D:propstat/D:prop/D:resourcetype/C:calendar", properties.XmlNamespaceManager);
-              if (isCollection != null)
+              var urlNode = responseElement.SelectSingleNode ("D:href", properties.XmlNamespaceManager);
+              var displayNameNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:displayname", properties.XmlNamespaceManager);
+              if (urlNode != null && displayNameNode != null)
               {
-                var uri = UriHelper.UnescapeRelativeUri (autodiscoveryUrl, urlNode.InnerText);
-                cals.Add (Tuple.Create (uri, displayNameNode.InnerText));
+                XmlNode isCollection = responseElement.SelectSingleNode ("D:propstat/D:prop/D:resourcetype/C:calendar", properties.XmlNamespaceManager);
+                if (isCollection != null)
+                {
+                  var uri = UriHelper.UnescapeRelativeUri (autodiscoveryUrl, urlNode.InnerText);
+                  cals.Add (Tuple.Create (uri, displayNameNode.InnerText));
+                }
               }
             }
           }
         }
+        return cals;
       }
-      return cals;
+      catch (Exception x)
+      {
+        if (x.Message.Contains ("404"))
+          return new List<Tuple<Uri, string>>();
+        else
+          throw;
+      }
     }
 
     private Uri AutoDiscoveryUrl
@@ -151,7 +162,7 @@ namespace CalDavSynchronizer.DataAccess
 
     public Task<EntityVersion<Uri, string>> CreateEntity (string iCalData, string uid)
     {
-      return CreateNewEntity(string.Format("{0:D}.ics", uid), iCalData);
+      return CreateNewEntity (string.Format ("{0:D}.ics", uid), iCalData);
     }
 
     private async Task<IReadOnlyList<EntityVersion<Uri, string>>> GetEntities (DateTimeRange? range, string entityType)
