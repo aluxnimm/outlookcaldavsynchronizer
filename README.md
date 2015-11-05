@@ -28,19 +28,21 @@ This project was initially developed as a master thesis project at the [Universi
 - One.com
 - DAViCal
 - Baïkal
+- Yandex
 
 ### Features ###
 
 - open source AGPL, the only free Outlook CalDav plugin
 - two-way-sync
 - SSL/TLS support, support for self-signed certificates
-- Autodiscovery of calendars
+- Autodiscovery of calendars and addressbooks
 - configurable sync range
 - sync multiple calendars per profile
 - sync reminders, categories, recurrences with exceptions, importance, transparency
 - sync organizer and attendees and own response status
 - task support (beta)
-- inital CardDAV support to sync contacts (alpha) 
+- CardDAV support to sync contacts (beta)
+- change-triggered-sync 
 
 ### Used Libraries ###
 
@@ -55,6 +57,29 @@ Download and extract the `OutlookCalDavSynchronizer-<Version>.zip` into the same
 If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=44074)
 
 ### Changelog ###
+
+#### 1.5.0 ####
+- New features:
+	- Autodiscovery for CardDAV addressbooks
+	- Change-triggered partial sync (Synchronize appointment items immediately after change in Outlook)
+	- Support Yandex CalDAV server
+	- Many improvements for CardDAV
+	- Add OAuth Scope for Google CardDAV
+- bug fixes:
+	- Fix syncing contact notes with umlauts
+	- Disable TimeRangeFiltering when contact folder is chosen
+	- Ensure that FN of vcard is not empty, since it is a MUST attribute (bug #109)
+	- Map AccessClassification of vcards
+	- Ensure that vcard UID is not empty also in Updates
+	- Skip addressbook collection itself when fetching vcards from Owncloud
+	- Use existing UID for filename in PUT requests
+	- Get ETAG via propfind if it is not returned in header to avoid Null Reference
+	- Check also for Write privilege when detecting calendar access rights
+	- Map other vcard telephonenumber types
+	- Honor RevisionDate in vcard Updates if available (bug #111)
+	- Fix InitialEventEntityMatcher if DTEnd is null (bug #110)
+	- Filter only ContactItems in ContactRepository GetTable to avoid COM Exceptions, since we don't sync groups or distribution lists at the moment
+	- Avoid exception in Autodiscovery DoubleClick EventHandler when clicking the header
 
 #### 1.4.5 ####
 - Fix regex in workaround for DDay.iCal timezone parsing, should fix bug #105 for syncing with Owncloud/Davdroid
@@ -260,7 +285,7 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 #### 0.94 ####
 - Fix exception in initial mapping if event subject or summary is null
 
-### User Documentation ###
+## User Documentation ##
 
 After installing the plugin, a new ribbon called 'Caldav Synchronizer' is added in Outlook with 3 menu items. 
 - Synchronize now
@@ -277,14 +302,15 @@ The following properties need to be set for a new profile:
 
 - *Profile name*: An arbitrary name for the profile, which will be displayed at the associated tab.
 - *Server settings*:
-	- **CalDAV Url:** URL of the remote CalDAV or CardDAV server. You should use a HTTPS connection here for security reason! The Url must end with a **/** e.g. **https://myserver.com/** 
+	- **DAV Url:** URL of the remote CalDAV or CardDAV server. You should use a HTTPS connection here for security reason! The Url must end with a **/** e.g. **https://myserver.com/** 
 	- If you only have a self signed certificate, add the self signed cert to the Local Computer Trusted Root Certification Authorities. You can import the cert by running the MMC as Administrator. If that fails, see section *'Debugging and more config options'*
 	- **Username:** Username to connect to the CalDAV server
 	- **Password:** Password used for the connection. The password will be saved encrypted in the option config file.
 	- **Email address:** email address used as remote identity for the CalDAV server, necessary to synchronize the organizer
-	
+	- **Close connection after each request** Don't use KeepAlive for servers which don't support it.
 - *Outlook settings*:
 	- **Outlook Folder:** Outlook folder that should be used for synchronization
+	- **Synchronize changes immediately after change** Trigger a partial synchronization run immediately after an item is created, changed or deleted in Outlook via the Inspector dialog, works only for Appointments at the moment!
 - *Sync settings*:
 	- Synchronization settings
 		- **Outlook -> CalDav (Replicate):** syncronizes everything from outlook to caldav server (one way)
@@ -301,14 +327,19 @@ The following properties need to be set for a new profile:
 	- **Synchronization timespan future (days):** For performance reasons it is useful to sync only a given timespan of a big calendar, especially past events are normally not necessary to sync after a given timespan
 	- **Deactivate profile:** If activated, current profile is not synced anymore without the need to delete the profile
 	
-#### Google Calender settings ####
+### Google Calender and Addressbook settings ###
 
 For Google Calender use the following settings:
-CalDAV Url: `https://apidata.googleusercontent.com/caldav/v2/<your_google_calendar_id>/events/`.
+DAV Url: `https://apidata.googleusercontent.com/caldav/v2/<your_google_calendar_id>/events/`.
 Check the Use Google OAuth Checkbox instead of entering your password. When testing the settings, you will be redirected to your browser to enter your Google Account password and grant access rights to your Google Calender for OutlookCalDavSynchronizer via the safe OAuth protocol.
 For Autodiscovery of all available google calendars use the Url `https://apidata.googleusercontent.com/caldav/v2/` and press the 'Test settings' button.
 
-#### Synology NAS settings ####
+For Google Addressbook use the following settings:
+DAV Url: `https://www.googleapis.com/carddav/v1/principals/<your_google_email>/lists/default/`
+Check the Use Google OAuth Checkbox instead of entering your password. When testing the settings, you will be redirected to your browser to enter your Google Account password and grant access rights to your Google Calender for OutlookCalDavSynchronizer via the safe OAuth protocol. If you get an error with insufficient access you need to refresh the token by deleting the previous token in 
+`C:\Users\<your Username>\AppData\Roaming\Google.Apis.Auth`
+
+### Synology NAS settings ###
 
 For Synology NAS with SSL support use port 5006 and the following settings in your NAS:
 In Synology DSM Navigate to control panel > Terminal & SNMP
@@ -318,10 +349,10 @@ Now it will work on port 5006 with https.
 
 ### Autodiscovery ###
 
-You can use the exact calendar URL or the principal url and use the 'Test settings' button in the option dialog to try to autodiscover available calendars on the server. You can  then choose one of the found calendars in the new window.
-If your server has redirections for well-known Urls (./well-known/caldav/) you need to enter the server name only (without path).
+You can use the exact calendar/addressbook URL or the principal url and use the 'Test settings' button in the option dialog to try to autodiscover available calendars and addressbooks on the server. You can  then choose one of the found calendars or addressbooks in the new window.
+If your server has redirections for well-known Urls (./well-known/caldav/ and ./well-known/carddav/ ) you need to enter the server name only (without path).
 
-### Trouble Shooting ###
+## Trouble Shooting ##
 
 Options and state information is stored in the following folder:
 
