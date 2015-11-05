@@ -28,6 +28,7 @@ using GenSync;
 using GenSync.EntityRepositories;
 using log4net;
 using Thought.vCards;
+using CalDavSynchronizer.ThoughtvCardWorkaround;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
@@ -142,28 +143,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
         writer.Flush();
 
         string originalvCardString = writer.GetStringBuilder().ToString();
-        string fixedvCardString = originalvCardString;
-
-        // Reformat BDAY attribute to yyyy-MM-dd if included to work around a BUG in vCard Library
-        var bDayMatch = Regex.Match (originalvCardString, "BDAY:(.*?)\r\n");
-        if (bDayMatch.Success)
-        {
-          DateTime date;
-          if (DateTime.TryParse (bDayMatch.Groups[1].Value, out date))
-          {
-            fixedvCardString = Regex.Replace (originalvCardString, "BDAY:(.*?)\r\n", "BDAY:" + date.ToString ("yyyy-MM-dd") + "\r\n");
-          }
-        }
-
-        string fixedvCardString2 = fixedvCardString;
-
-        // Reformat NOTE attribute since quoted-printable is deprecated
-        var noteMatch = Regex.Match (fixedvCardString, "NOTE;ENCODING=QUOTED-PRINTABLE:(.*?)\r\n");
-        if (noteMatch.Success)
-        {
-          string decodedNote = vCardStandardReader.DecodeQuotedPrintable (noteMatch.Groups[1].Value).Replace ("\r\n", "\n");
-          fixedvCardString2 = Regex.Replace (fixedvCardString, "NOTE;ENCODING=QUOTED-PRINTABLE:(.*?)\r\n", _vCardWriter.EncodeEscaped ("NOTE:" + decodedNote) + "\r\n");
-        }
+        string fixedvCardString = ContactDataPreprocessor.FixBday (originalvCardString);
+        string fixedvCardString2 = ContactDataPreprocessor.FixNote (fixedvCardString, _vCardWriter);
 
         return fixedvCardString2;
       }
@@ -172,14 +153,16 @@ namespace CalDavSynchronizer.Implementation.Contacts
     private static bool TryDeserialize (string vcardData, out vCard vcard, Uri uriOfAddressbookForLogging, vCardStandardReader deserializer)
     {
       vcard = null;
+      string fixedVcardData = ContactDataPreprocessor.FixRevisionDate (vcardData);
+
       try
       {
-        vcard = Deserialize (vcardData, deserializer);
+        vcard = Deserialize (fixedVcardData, deserializer);
         return true;
       }
       catch (Exception x)
       {
-        s_logger.Error (string.Format ("Could not deserialize vcardData of '{0}':\r\n{1}", uriOfAddressbookForLogging, vcardData), x);
+        s_logger.Error (string.Format ("Could not deserialize vcardData of '{0}':\r\n{1}", uriOfAddressbookForLogging, fixedVcardData), x);
         return false;
       }
     }
