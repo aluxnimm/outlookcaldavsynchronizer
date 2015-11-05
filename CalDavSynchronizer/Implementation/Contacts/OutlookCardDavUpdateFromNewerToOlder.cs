@@ -43,15 +43,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
     {
       get
       {
-        // TODO:
-        s_logger.ErrorFormat ("This method is not yet implemented and considers outlook version always as newer.");
-        return true;
-
         // Assume that no modification means, that the item is never modified. Therefore it must be new. 
-        //if (_bEntity.RevisionDate == null)
-        //  return false;
+        if (_bEntity.RevisionDate == null)
+          return false;
 
-        //return _aEntity.Inner.LastModificationTime.ToUniversalTime() >= _bEntity.RevisionDate.Value;
+        return _aEntity.Inner.LastModificationTime.ToUniversalTime() >= _bEntity.RevisionDate.Value;
       }
     }
   }
