@@ -17,12 +17,14 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using CalDavSynchronizer.Ui.ConnectionTests;
 
 namespace CalDavSynchronizer.Ui
 {
   public partial class SelectResourceForm : Form
   {
     public string SelectedUrl { get; private set; }
+    public ResourceType ResourceType { get; private set; }
 
     public SelectResourceForm (IReadOnlyList<Tuple<Uri, string>> caldendars, IReadOnlyList<Tuple<Uri, string>> addressBooks, bool displayAddressBooksInitial)
     {
@@ -50,6 +52,7 @@ namespace CalDavSynchronizer.Ui
       if (e.RowIndex >= 0)
       {
         SelectedUrl = _calendarDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString();
+        ResourceType = ResourceType.Calendar;
         DialogResult = DialogResult.OK;
       }
     }
@@ -59,12 +62,14 @@ namespace CalDavSynchronizer.Ui
       if (e.RowIndex >= 0)
       {
         SelectedUrl = _addressBookDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString();
+        ResourceType = ResourceType.AddressBook;
         DialogResult = DialogResult.OK;
       }
     }
 
     private void OkButton_Click (object sender, EventArgs e)
     {
+
       var visibleGrid = _mainTab.SelectedTab == _calendarPage ? _calendarDataGridView : _addressBookDataGridView;
 
       if (visibleGrid.SelectedRows.Count == 0)
@@ -73,6 +78,7 @@ namespace CalDavSynchronizer.Ui
       }
       else
       {
+        ResourceType = (visibleGrid == _calendarDataGridView) ? ResourceType.Calendar : ResourceType.AddressBook;
         SelectedUrl = visibleGrid.SelectedRows[0].Cells[0].Value.ToString();
         DialogResult = DialogResult.OK;
       }

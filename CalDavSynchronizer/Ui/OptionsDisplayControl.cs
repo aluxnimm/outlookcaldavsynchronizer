@@ -204,18 +204,22 @@ namespace CalDavSynchronizer.Ui
         var webDavClient = CreateWebDavClient();
 
         Uri autoDiscoveredUrl;
+        ResourceType autoResourceType;
 
         if (ConnectionTester.RequiresAutoDiscovery (enteredUri))
         {
           var autodiscoveryResult = await DoAutoDiscovery (enteredUri, webDavClient, true);
           if (autodiscoveryResult.RessourceUrl != null)
+          {
             autoDiscoveredUrl = autodiscoveryResult.RessourceUrl;
+            autoResourceType = autodiscoveryResult.ResourceType;
+          }
           else
             return;
         }
         else
         {
-          var result = await ConnectionTester.TestConnection (enteredUri, webDavClient);
+          var result = await ConnectionTester.TestConnection (enteredUri, webDavClient, ResourceType.None);
           if (result.ResourceType != ResourceType.None)
           {
             _faultFinder.FixSynchronizationMode (result);
@@ -231,12 +235,16 @@ namespace CalDavSynchronizer.Ui
             if (autodiscoveryResult.RessourceUrl != null)
             {
               autoDiscoveredUrl = autodiscoveryResult.RessourceUrl;
+              autoResourceType = autodiscoveryResult.ResourceType;
             }
             else
             {
               var autodiscoveryResult2 = await DoAutoDiscovery (enteredUri, webDavClient, true);
               if (autodiscoveryResult2.RessourceUrl != null)
+              {
                 autoDiscoveredUrl = autodiscoveryResult2.RessourceUrl;
+                autoResourceType = autodiscoveryResult2.ResourceType;
+              }
               else
                 return;
             }
@@ -245,7 +253,7 @@ namespace CalDavSynchronizer.Ui
 
         _calenderUrlTextBox.Text = autoDiscoveredUrl.ToString();
 
-        var finalResult = await ConnectionTester.TestConnection (autoDiscoveredUrl, webDavClient);
+        var finalResult = await ConnectionTester.TestConnection (autoDiscoveredUrl, webDavClient, autoResourceType);
 
         _faultFinder.FixSynchronizationMode (finalResult);
 
@@ -369,12 +377,14 @@ namespace CalDavSynchronizer.Ui
     {
       private readonly bool _wasCancelled;
       private readonly Uri _ressourceUrl;
+      private readonly ResourceType _resourceType;
 
-      public AutoDiscoveryResult (Uri ressourceUrl, bool wasCancelled)
+      public AutoDiscoveryResult (Uri ressourceUrl, bool wasCancelled, ResourceType resourceType)
           : this()
       {
         _wasCancelled = wasCancelled;
         _ressourceUrl = ressourceUrl;
+        _resourceType = resourceType;
       }
 
       public bool WasCancelled
@@ -385,6 +395,11 @@ namespace CalDavSynchronizer.Ui
       public Uri RessourceUrl
       {
         get { return _ressourceUrl; }
+      }
+
+      public ResourceType ResourceType
+      {
+        get { return _resourceType; }
       }
     }
 
@@ -401,15 +416,15 @@ namespace CalDavSynchronizer.Ui
         using (SelectResourceForm listCalendarsForm = new SelectResourceForm (foundCaldendars, foundAddressBooks, _folderType == OlItemType.olContactItem))
         {
           if (listCalendarsForm.ShowDialog() == DialogResult.OK)
-            return new AutoDiscoveryResult (new Uri (autoDiscoveryUri.GetLeftPart (UriPartial.Authority) + listCalendarsForm.SelectedUrl), false);
+            return new AutoDiscoveryResult (new Uri (autoDiscoveryUri.GetLeftPart (UriPartial.Authority) + listCalendarsForm.SelectedUrl), false, listCalendarsForm.ResourceType);
           else
-            return new AutoDiscoveryResult (null, true);
+            return new AutoDiscoveryResult (null, true, ResourceType.None);
         }
       }
       else
       {
         MessageBox.Show ("No resources were found via autodiscovery!", c_connectionTestCaption);
-        return new AutoDiscoveryResult (null, false);
+        return new AutoDiscoveryResult (null, false, ResourceType.None);
       }
     }
 
