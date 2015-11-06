@@ -1,6 +1,6 @@
 ## Outlook CalDav Synchronizer ##
 
-Outlook Plugin, which synchronizes events, tasks and contacts(alpha) between Outlook and Google, SOGo, Horde or any other CalDAV or CardDAV server. Supported Outlook versions are 2013, 2010 and 2007.
+Outlook Plugin, which synchronizes events, tasks and contacts(beta) between Outlook and Google, SOGo, Horde or any other CalDAV or CardDAV server. Supported Outlook versions are 2016, 2013, 2010 and 2007.
 
 ### Project Homepage ###
 [https://sourceforge.net/projects/outlookcaldavsynchronizer/](https://sourceforge.net/projects/outlookcaldavsynchronizer/)
@@ -352,6 +352,10 @@ Now it will work on port 5006 with https.
 You can use the exact calendar/addressbook URL or the principal url and use the 'Test settings' button in the option dialog to try to autodiscover available calendars and addressbooks on the server. You can  then choose one of the found calendars or addressbooks in the new window.
 If your server has redirections for well-known Urls (./well-known/caldav/ and ./well-known/carddav/ ) you need to enter the server name only (without path).
 
+### Proxy Settings ###
+We use the default proxy settings from Windows IE. If you have an NTLM authenticated proxy server, you can set the according options in the app config file, see config options below. More information can be found at
+[https://msdn.microsoft.com/en-us/library/sa91de1e%28v=vs.110%29.aspx](https://msdn.microsoft.com/en-us/library/sa91de1e%28v=vs.110%29.aspx)
+
 ## Trouble Shooting ##
 
 Options and state information is stored in the following folder:
@@ -385,6 +389,11 @@ You can import the cert by running the MMC as Administrator.
 - **disableCertificateValidation** set to true to disable SSL/TLS certificate validation, major security risk, use with caution!
 - **enableSsl3** set to true to enable deprecated SSLv3, major security risk, use with caution! 
 - **enableTls12** set to false to disable TLS12, not recommended 
+
+In the section `system.net` you can define proxy settings, e.g. use of NTLM credentials
+
+    <defaultProxy useDefaultCredentials="true">
+    </defaultProxy>
 
 In the section `log4net` you can define the log level for the main log and for the caldav data access, 
     level value can be DEBUG or INFO
