@@ -41,7 +41,6 @@
       this._conflictResolutionComboBox = new System.Windows.Forms.ComboBox();
       this._synchronizationModeComboBox = new System.Windows.Forms.ComboBox();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
-      this._closeConnectionAfterEachRequestCheckBox = new System.Windows.Forms.CheckBox();
       this._useGoogleOAuthCheckBox = new System.Windows.Forms.CheckBox();
       this.label11 = new System.Windows.Forms.Label();
       this._emailAddressTextBox = new System.Windows.Forms.TextBox();
@@ -65,6 +64,7 @@
       this._enableTimeRangeFilteringCheckBox = new System.Windows.Forms.CheckBox();
       this._timeRangeFilteringGroupBox = new System.Windows.Forms.GroupBox();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this._advancedSettingsButton = new System.Windows.Forms.Button();
       this.groupBox2.SuspendLayout();
       this.groupBox1.SuspendLayout();
       this.groupBox3.SuspendLayout();
@@ -80,9 +80,9 @@
       this.groupBox2.Controls.Add(this._outoookFolderNameTextBox);
       this.groupBox2.Controls.Add(this.label9);
       this.groupBox2.Location = new System.Drawing.Point(16, 278);
-      this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
       this.groupBox2.Name = "groupBox2";
-      this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
       this.groupBox2.Size = new System.Drawing.Size(593, 98);
       this.groupBox2.TabIndex = 2;
       this.groupBox2.TabStop = false;
@@ -92,7 +92,7 @@
       // 
       this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.AutoSize = true;
       this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Location = new System.Drawing.Point(15, 63);
-      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Margin = new System.Windows.Forms.Padding(4);
       this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Name = "_synchronizeImmediatelyAfterOutlookItemChangeCheckBox";
       this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Size = new System.Drawing.Size(307, 21);
       this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.TabIndex = 14;
@@ -106,7 +106,7 @@
       // 
       this._selectOutlookFolderButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._selectOutlookFolderButton.Location = new System.Drawing.Point(548, 26);
-      this._selectOutlookFolderButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._selectOutlookFolderButton.Margin = new System.Windows.Forms.Padding(4);
       this._selectOutlookFolderButton.Name = "_selectOutlookFolderButton";
       this._selectOutlookFolderButton.Size = new System.Drawing.Size(37, 28);
       this._selectOutlookFolderButton.TabIndex = 0;
@@ -118,7 +118,7 @@
       this._outoookFolderNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this._outoookFolderNameTextBox.Location = new System.Drawing.Point(253, 28);
-      this._outoookFolderNameTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._outoookFolderNameTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._outoookFolderNameTextBox.Name = "_outoookFolderNameTextBox";
       this._outoookFolderNameTextBox.ReadOnly = true;
       this._outoookFolderNameTextBox.Size = new System.Drawing.Size(285, 22);
@@ -150,7 +150,7 @@
       this._syncIntervalComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this._syncIntervalComboBox.FormattingEnabled = true;
       this._syncIntervalComboBox.Location = new System.Drawing.Point(377, 100);
-      this._syncIntervalComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._syncIntervalComboBox.Margin = new System.Windows.Forms.Padding(4);
       this._syncIntervalComboBox.Name = "_syncIntervalComboBox";
       this._syncIntervalComboBox.Size = new System.Drawing.Size(207, 24);
       this._syncIntervalComboBox.TabIndex = 5;
@@ -182,7 +182,7 @@
       this._conflictResolutionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this._conflictResolutionComboBox.FormattingEnabled = true;
       this._conflictResolutionComboBox.Location = new System.Drawing.Point(253, 66);
-      this._conflictResolutionComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._conflictResolutionComboBox.Margin = new System.Windows.Forms.Padding(4);
       this._conflictResolutionComboBox.Name = "_conflictResolutionComboBox";
       this._conflictResolutionComboBox.Size = new System.Drawing.Size(331, 24);
       this._conflictResolutionComboBox.TabIndex = 4;
@@ -194,7 +194,7 @@
       this._synchronizationModeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this._synchronizationModeComboBox.FormattingEnabled = true;
       this._synchronizationModeComboBox.Location = new System.Drawing.Point(253, 33);
-      this._synchronizationModeComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._synchronizationModeComboBox.Margin = new System.Windows.Forms.Padding(4);
       this._synchronizationModeComboBox.Name = "_synchronizationModeComboBox";
       this._synchronizationModeComboBox.Size = new System.Drawing.Size(331, 24);
       this._synchronizationModeComboBox.TabIndex = 3;
@@ -203,7 +203,7 @@
       // 
       this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.groupBox1.Controls.Add(this._closeConnectionAfterEachRequestCheckBox);
+      this.groupBox1.Controls.Add(this._advancedSettingsButton);
       this.groupBox1.Controls.Add(this._useGoogleOAuthCheckBox);
       this.groupBox1.Controls.Add(this.label11);
       this.groupBox1.Controls.Add(this._emailAddressTextBox);
@@ -215,32 +215,19 @@
       this.groupBox1.Controls.Add(this._calenderUrlTextBox);
       this.groupBox1.Controls.Add(this.label3);
       this.groupBox1.Location = new System.Drawing.Point(16, 47);
-      this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
       this.groupBox1.Size = new System.Drawing.Size(593, 214);
       this.groupBox1.TabIndex = 1;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Server settings";
       // 
-      // _closeConnectionAfterEachRequestCheckBox
-      // 
-      this._closeConnectionAfterEachRequestCheckBox.AutoSize = true;
-      this._closeConnectionAfterEachRequestCheckBox.Location = new System.Drawing.Point(15, 155);
-      this._closeConnectionAfterEachRequestCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-      this._closeConnectionAfterEachRequestCheckBox.Name = "_closeConnectionAfterEachRequestCheckBox";
-      this._closeConnectionAfterEachRequestCheckBox.Size = new System.Drawing.Size(258, 21);
-      this._closeConnectionAfterEachRequestCheckBox.TabIndex = 15;
-      this._closeConnectionAfterEachRequestCheckBox.Text = "Close connection after each request";
-      this.toolTip.SetToolTip(this._closeConnectionAfterEachRequestCheckBox, "If activated, each request uses a new connection. \r\nHas to be activated, when the" +
-        " server does not support Http-KeepAlive.");
-      this._closeConnectionAfterEachRequestCheckBox.UseVisualStyleBackColor = true;
-      // 
       // _useGoogleOAuthCheckBox
       // 
       this._useGoogleOAuthCheckBox.AutoSize = true;
-      this._useGoogleOAuthCheckBox.Location = new System.Drawing.Point(15, 183);
-      this._useGoogleOAuthCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._useGoogleOAuthCheckBox.Location = new System.Drawing.Point(11, 178);
+      this._useGoogleOAuthCheckBox.Margin = new System.Windows.Forms.Padding(4);
       this._useGoogleOAuthCheckBox.Name = "_useGoogleOAuthCheckBox";
       this._useGoogleOAuthCheckBox.Size = new System.Drawing.Size(149, 21);
       this._useGoogleOAuthCheckBox.TabIndex = 14;
@@ -262,7 +249,7 @@
       // 
       this._emailAddressTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._emailAddressTextBox.Location = new System.Drawing.Point(341, 124);
-      this._emailAddressTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._emailAddressTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._emailAddressTextBox.Name = "_emailAddressTextBox";
       this._emailAddressTextBox.Size = new System.Drawing.Size(243, 22);
       this._emailAddressTextBox.TabIndex = 12;
@@ -270,10 +257,10 @@
       // _testConnectionButton
       // 
       this._testConnectionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._testConnectionButton.Location = new System.Drawing.Point(452, 178);
-      this._testConnectionButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._testConnectionButton.Location = new System.Drawing.Point(484, 178);
+      this._testConnectionButton.Margin = new System.Windows.Forms.Padding(4);
       this._testConnectionButton.Name = "_testConnectionButton";
-      this._testConnectionButton.Size = new System.Drawing.Size(133, 28);
+      this._testConnectionButton.Size = new System.Drawing.Size(101, 28);
       this._testConnectionButton.TabIndex = 3;
       this._testConnectionButton.Text = "Test settings";
       this._testConnectionButton.UseVisualStyleBackColor = true;
@@ -302,7 +289,7 @@
       // 
       this._passwordTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._passwordTextBox.Location = new System.Drawing.Point(341, 92);
-      this._passwordTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._passwordTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._passwordTextBox.Name = "_passwordTextBox";
       this._passwordTextBox.PasswordChar = '*';
       this._passwordTextBox.Size = new System.Drawing.Size(243, 22);
@@ -312,7 +299,7 @@
       // 
       this._userNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._userNameTextBox.Location = new System.Drawing.Point(341, 60);
-      this._userNameTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._userNameTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._userNameTextBox.Name = "_userNameTextBox";
       this._userNameTextBox.Size = new System.Drawing.Size(243, 22);
       this._userNameTextBox.TabIndex = 1;
@@ -322,7 +309,7 @@
       this._calenderUrlTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this._calenderUrlTextBox.Location = new System.Drawing.Point(77, 28);
-      this._calenderUrlTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._calenderUrlTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._calenderUrlTextBox.Name = "_calenderUrlTextBox";
       this._calenderUrlTextBox.Size = new System.Drawing.Size(505, 22);
       this._calenderUrlTextBox.TabIndex = 0;
@@ -341,7 +328,7 @@
       // 
       this.numberOfDaysInTheFuture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.numberOfDaysInTheFuture.Location = new System.Drawing.Point(412, 54);
-      this.numberOfDaysInTheFuture.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.numberOfDaysInTheFuture.Margin = new System.Windows.Forms.Padding(4);
       this.numberOfDaysInTheFuture.Name = "numberOfDaysInTheFuture";
       this.numberOfDaysInTheFuture.Size = new System.Drawing.Size(156, 22);
       this.numberOfDaysInTheFuture.TabIndex = 7;
@@ -351,7 +338,7 @@
       // 
       this.numberOfDaysInThePast.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.numberOfDaysInThePast.Location = new System.Drawing.Point(412, 22);
-      this.numberOfDaysInThePast.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.numberOfDaysInThePast.Margin = new System.Windows.Forms.Padding(4);
       this.numberOfDaysInThePast.Name = "numberOfDaysInThePast";
       this.numberOfDaysInThePast.Size = new System.Drawing.Size(156, 22);
       this.numberOfDaysInThePast.TabIndex = 6;
@@ -380,7 +367,7 @@
       // _deleteButton
       // 
       this._deleteButton.Location = new System.Drawing.Point(16, 638);
-      this._deleteButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._deleteButton.Margin = new System.Windows.Forms.Padding(4);
       this._deleteButton.Name = "_deleteButton";
       this._deleteButton.Size = new System.Drawing.Size(100, 28);
       this._deleteButton.TabIndex = 8;
@@ -392,7 +379,7 @@
       // 
       this._profileNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._profileNameTextBox.Location = new System.Drawing.Point(313, 15);
-      this._profileNameTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._profileNameTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._profileNameTextBox.Name = "_profileNameTextBox";
       this._profileNameTextBox.Size = new System.Drawing.Size(295, 22);
       this._profileNameTextBox.TabIndex = 0;
@@ -412,7 +399,7 @@
       this._inactiveCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._inactiveCheckBox.AutoSize = true;
       this._inactiveCheckBox.Location = new System.Drawing.Point(462, 642);
-      this._inactiveCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._inactiveCheckBox.Margin = new System.Windows.Forms.Padding(4);
       this._inactiveCheckBox.Name = "_inactiveCheckBox";
       this._inactiveCheckBox.Size = new System.Drawing.Size(141, 21);
       this._inactiveCheckBox.TabIndex = 26;
@@ -422,7 +409,7 @@
       // _copyButton
       // 
       this._copyButton.Location = new System.Drawing.Point(124, 638);
-      this._copyButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._copyButton.Margin = new System.Windows.Forms.Padding(4);
       this._copyButton.Name = "_copyButton";
       this._copyButton.Size = new System.Drawing.Size(100, 28);
       this._copyButton.TabIndex = 27;
@@ -443,9 +430,9 @@
       this.groupBox3.Controls.Add(this._synchronizationModeComboBox);
       this.groupBox3.Controls.Add(this.label6);
       this.groupBox3.Location = new System.Drawing.Point(16, 384);
-      this.groupBox3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.groupBox3.Margin = new System.Windows.Forms.Padding(4);
       this.groupBox3.Name = "groupBox3";
-      this.groupBox3.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.groupBox3.Padding = new System.Windows.Forms.Padding(4);
       this.groupBox3.Size = new System.Drawing.Size(593, 246);
       this.groupBox3.TabIndex = 28;
       this.groupBox3.TabStop = false;
@@ -455,7 +442,7 @@
       // 
       this._enableTimeRangeFilteringCheckBox.AutoSize = true;
       this._enableTimeRangeFilteringCheckBox.Location = new System.Drawing.Point(15, 137);
-      this._enableTimeRangeFilteringCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._enableTimeRangeFilteringCheckBox.Margin = new System.Windows.Forms.Padding(4);
       this._enableTimeRangeFilteringCheckBox.Name = "_enableTimeRangeFilteringCheckBox";
       this._enableTimeRangeFilteringCheckBox.Size = new System.Drawing.Size(157, 21);
       this._enableTimeRangeFilteringCheckBox.TabIndex = 27;
@@ -472,12 +459,24 @@
       this._timeRangeFilteringGroupBox.Controls.Add(this.numberOfDaysInThePast);
       this._timeRangeFilteringGroupBox.Controls.Add(this.numberOfDaysInTheFuture);
       this._timeRangeFilteringGroupBox.Location = new System.Drawing.Point(8, 139);
-      this._timeRangeFilteringGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._timeRangeFilteringGroupBox.Margin = new System.Windows.Forms.Padding(4);
       this._timeRangeFilteringGroupBox.Name = "_timeRangeFilteringGroupBox";
-      this._timeRangeFilteringGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._timeRangeFilteringGroupBox.Padding = new System.Windows.Forms.Padding(4);
       this._timeRangeFilteringGroupBox.Size = new System.Drawing.Size(577, 98);
       this._timeRangeFilteringGroupBox.TabIndex = 26;
       this._timeRangeFilteringGroupBox.TabStop = false;
+      // 
+      // _advancedSettingsButton
+      // 
+      this._advancedSettingsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this._advancedSettingsButton.Location = new System.Drawing.Point(343, 178);
+      this._advancedSettingsButton.Margin = new System.Windows.Forms.Padding(4);
+      this._advancedSettingsButton.Name = "_advancedSettingsButton";
+      this._advancedSettingsButton.Size = new System.Drawing.Size(133, 28);
+      this._advancedSettingsButton.TabIndex = 15;
+      this._advancedSettingsButton.Text = "Advanced settings";
+      this._advancedSettingsButton.UseVisualStyleBackColor = true;
+      this._advancedSettingsButton.Click += new System.EventHandler(this._advancedSettingsButton_Click);
       // 
       // OptionsDisplayControl
       // 
@@ -491,7 +490,7 @@
       this.Controls.Add(this.groupBox2);
       this.Controls.Add(this.groupBox1);
       this.Controls.Add(this.groupBox3);
-      this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.Margin = new System.Windows.Forms.Padding(4);
       this.Name = "OptionsDisplayControl";
       this.Size = new System.Drawing.Size(625, 703);
       this.groupBox2.ResumeLayout(false);
@@ -542,8 +541,8 @@
     private System.Windows.Forms.GroupBox _timeRangeFilteringGroupBox;
     private System.Windows.Forms.CheckBox _enableTimeRangeFilteringCheckBox;
     private System.Windows.Forms.CheckBox _useGoogleOAuthCheckBox;
-    private System.Windows.Forms.CheckBox _closeConnectionAfterEachRequestCheckBox;
     private System.Windows.Forms.ToolTip toolTip;
     private System.Windows.Forms.CheckBox _synchronizeImmediatelyAfterOutlookItemChangeCheckBox;
+    private System.Windows.Forms.Button _advancedSettingsButton;
   }
 }
