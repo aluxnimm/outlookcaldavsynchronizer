@@ -117,7 +117,8 @@ namespace CalDavSynchronizer.Scheduling
           options.Password,
           timeout,
           options.ServerAdapterType,
-          options.CloseAfterEachRequest);
+          options.CloseAfterEachRequest,
+          options.ProxyOptions);
     }
 
     public static IWebDavClient CreateWebDavClient (
@@ -125,7 +126,9 @@ namespace CalDavSynchronizer.Scheduling
         string password,
         TimeSpan timeout,
         ServerAdapterType serverAdapterType,
-        bool closeConnectionAfterEachRequest)
+        bool closeConnectionAfterEachRequest,
+        ProxyOptions proxyOptions
+      )
     {
       switch (serverAdapterType)
       {
@@ -133,7 +136,7 @@ namespace CalDavSynchronizer.Scheduling
         case ServerAdapterType.GoogleOAuth:
           var productAndVersion = GetProductAndVersion();
           return new DataAccess.HttpClientBasedClient.WebDavClient (
-              () => CreateHttpClient (username, password, timeout, serverAdapterType),
+              () => CreateHttpClient (username, password, timeout, serverAdapterType, proxyOptions),
               productAndVersion.Item1,
               productAndVersion.Item2,
               closeConnectionAfterEachRequest);
@@ -146,7 +149,7 @@ namespace CalDavSynchronizer.Scheduling
       }
     }
 
-    private static async Task<HttpClient> CreateHttpClient (string username, string password, TimeSpan calDavConnectTimeout, ServerAdapterType serverAdapterType)
+    private static async Task<HttpClient> CreateHttpClient (string username, string password, TimeSpan calDavConnectTimeout, ServerAdapterType serverAdapterType, ProxyOptions proxyOptions)
     {
       switch (serverAdapterType)
       {
@@ -156,6 +159,25 @@ namespace CalDavSynchronizer.Scheduling
           {
             httpClientHandler.Credentials = new NetworkCredential (username, password);
             httpClientHandler.AllowAutoRedirect = false;
+            if (proxyOptions.ProxyUseDefault)
+            {
+              IWebProxy p = WebRequest.GetSystemWebProxy();
+              p.Credentials = CredentialCache.DefaultCredentials;
+              httpClientHandler.Proxy = p;
+              httpClientHandler.UseProxy = true;
+            }
+            else if (proxyOptions.ProxyUseManual)
+            {
+              IWebProxy proxy = new WebProxy (proxyOptions.ProxyUrl, false);
+              proxy.Credentials = new NetworkCredential (proxyOptions.ProxyUserName, proxyOptions.ProxyPassword);
+              httpClientHandler.Proxy = proxy;
+              httpClientHandler.UseProxy = true;
+            }
+            else
+            {
+              httpClientHandler.Proxy = null;
+              httpClientHandler.UseProxy = false;
+            }
           }
           var httpClient = new HttpClient (httpClientHandler);
           httpClient.Timeout = calDavConnectTimeout;
@@ -255,7 +277,8 @@ namespace CalDavSynchronizer.Scheduling
                   options.Password,
                   _calDavConnectTimeout,
                   options.ServerAdapterType,
-                  options.CloseAfterEachRequest)),
+                  options.CloseAfterEachRequest,
+                  options.ProxyOptions)),
           new iCalendarSerializer(),
           CalDavRepository.EntityType.Todo,
           NullDateTimeRangeProvider.Instance);
@@ -311,7 +334,8 @@ namespace CalDavSynchronizer.Scheduling
                   options.Password,
                   _calDavConnectTimeout,
                   options.ServerAdapterType,
-                  options.CloseAfterEachRequest)));
+                  options.CloseAfterEachRequest,
+                  options.ProxyOptions)));
 
       var entityRelationDataFactory = new OutlookContactRelationDataFactory();
 

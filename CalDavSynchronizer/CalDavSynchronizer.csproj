@@ -210,6 +210,7 @@
     <Compile Include="ChangeWatching\ItemSavedEventArgs.cs" />
     <Compile Include="ComponentContainer.cs" />
     <Compile Include="Contracts\ProfileEntry.cs" />
+    <Compile Include="Contracts\ProxyOptions.cs" />
     <Compile Include="Contracts\ServerAdapterType.cs" />
     <Compile Include="DataAccess\HttpClientBasedClient\HttpResponseHeadersAdapter.cs" />
     <Compile Include="DataAccess\ICardDavDataAccess.cs" />
@@ -276,6 +277,12 @@
     <Compile Include="Implementation\SynchronizationMode.cs" />
     <Compile Include="Scheduling\SynchronizerFactory.cs" />
     <Compile Include="ThoughtvCardWorkaround\ContactDataPreprocessor.cs" />
+    <Compile Include="Ui\AdvancedSettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ui\AdvancedSettingsForm.Designer.cs">
+      <DependentUpon>AdvancedSettingsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Ui\ConnectionTests\AddressBookProperties.cs" />
     <Compile Include="Ui\ConnectionTests\CalendarProperties.cs" />
     <Compile Include="Ui\ConnectionTests\ConnectionTester.cs" />
@@ -324,6 +331,9 @@
     </Compile>
     <EmbeddedResource Include="CalDavSynchronizerRibbon.resx">
       <DependentUpon>CalDavSynchronizerRibbon.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ui\AdvancedSettingsForm.resx">
+      <DependentUpon>AdvancedSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\GetNewVersionForm.resx">
       <DependentUpon>GetNewVersionForm.cs</DependentUpon>
