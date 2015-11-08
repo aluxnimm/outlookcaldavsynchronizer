@@ -46,21 +46,60 @@ namespace CalDavSynchronizer.Ui
      
     }
 
-    private void OkButton_Click(object sender, EventArgs e)
+    private void OkButton_Click (object sender, EventArgs e)
     {
-      closeConnectionAfterEachRequest = _closeConnectionAfterEachRequestCheckBox.Checked;
-      DialogResult = DialogResult.OK;
+      StringBuilder errorMessageBuilder = new StringBuilder();
+      if (_useManualProxyCheckBox.Checked && !ValidateProxyUrl (errorMessageBuilder))
+      {
+        MessageBox.Show(errorMessageBuilder.ToString(), "The Proxy Url is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        DialogResult = DialogResult.None;
+      }
+      else
+      {
+        closeConnectionAfterEachRequest = _closeConnectionAfterEachRequestCheckBox.Checked;
+        DialogResult = DialogResult.OK;
+      }
     }
 
-    private void _useManualProxyCheckBox_CheckedChanged(object sender, EventArgs e)
+    private void _useManualProxyCheckBox_CheckedChanged (object sender, EventArgs e)
     {
       if (_useManualProxyCheckBox.Checked) _useSystemProxyCheckBox.Checked = false;
       _manualProxyGroupBox.Enabled = _useManualProxyCheckBox.Checked;
     }
 
-    private void _useSystemProxyCheckBox_CheckedChanged(object sender, EventArgs e)
+    private void _useSystemProxyCheckBox_CheckedChanged (object sender, EventArgs e)
     {
       if (_useSystemProxyCheckBox.Checked) _useManualProxyCheckBox.Checked = false;
+    }
+
+    private bool ValidateProxyUrl (StringBuilder errorMessageBuilder)
+    {
+      bool result = true;
+
+      if (string.IsNullOrWhiteSpace (_proxyUrlTextBox.Text))
+      {
+        errorMessageBuilder.AppendLine ("- The Proxy Url is empty.");
+        return false;
+      }
+
+      if (_proxyUrlTextBox.Text.Trim() != _proxyUrlTextBox.Text)
+      {
+        errorMessageBuilder.AppendLine ("- The Proxy Url cannot end/start with whitespaces.");
+        result = false;
+      }
+
+      try
+      {
+        var uri = new Uri (_proxyUrlTextBox.Text).ToString();
+      }
+      catch (Exception x)
+      {
+        errorMessageBuilder.AppendFormat ("- The Proxy Url is not a well formed Url. ({0})", x.Message);
+        errorMessageBuilder.AppendLine();
+        result = false;
+      }
+
+      return result;
     }
   }
 }
