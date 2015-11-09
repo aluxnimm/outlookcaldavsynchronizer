@@ -1246,7 +1246,7 @@ namespace CalDavSynchronizer.Implementation.Events
       if (source.Organizer != null)
       {
         var ownSourceAttendee = source.Attendees.FirstOrDefault (a => StringComparer.InvariantCultureIgnoreCase.Compare (a.Value != null ? a.Value.ToString() : null, _serverEmailUri) == 0);
-        if (ownSourceAttendee != null)
+        if (ownSourceAttendee != null && targetWrapper.Inner.ResponseStatus != OlResponseStatus.olResponseOrganized)
         {
           var response = MapParticipation2ToMeetingResponse (ownSourceAttendee.ParticipationStatus);
           if ((response != null) && (MapParticipation2To1 (ownSourceAttendee.ParticipationStatus) != targetWrapper.Inner.ResponseStatus))
