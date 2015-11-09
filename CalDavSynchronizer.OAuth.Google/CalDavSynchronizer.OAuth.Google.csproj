@@ -92,6 +92,7 @@
     </Compile>
     <Compile Include="GoogleHttpClientFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProxySupportedHttpClientFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
