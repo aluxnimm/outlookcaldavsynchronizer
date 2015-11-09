@@ -47,7 +47,7 @@ namespace CalDavSynchronizer.Ui
     private readonly NameSpace _session;
     private Guid _optionsId;
     private readonly ISettingsFaultFinder _faultFinder;
-    private AdvancedSettings _advancedSettings;
+    private AdvancedOptions _advancedOptions;
 
     public event EventHandler DeletionRequested;
     public event EventHandler CopyRequested;
@@ -436,8 +436,8 @@ namespace CalDavSynchronizer.Ui
           _passwordTextBox.Text,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
           SelectedServerAdapterType,
-          _advancedSettings.CloseConnectionAfterEachRequest,
-          _advancedSettings.ProxyOptions);
+          _advancedOptions.CloseConnectionAfterEachRequest,
+          _advancedOptions.ProxyOptions);
     }
 
 
@@ -526,7 +526,7 @@ namespace CalDavSynchronizer.Ui
         SelectedServerAdapterType = value.ServerAdapterType;
         _synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Checked = value.EnableChangeTriggeredSynchronization;
 
-        _advancedSettings = new AdvancedSettings (
+        _advancedOptions = new AdvancedOptions (
             value.CloseAfterEachRequest,
             value.ProxyOptions ?? new ProxyOptions());
 
@@ -555,9 +555,9 @@ namespace CalDavSynchronizer.Ui
                    Inactive = _inactiveCheckBox.Checked,
                    IgnoreSynchronizationTimeRange = !_enableTimeRangeFilteringCheckBox.Checked,
                    ServerAdapterType = SelectedServerAdapterType,
-                   CloseAfterEachRequest = _advancedSettings.CloseConnectionAfterEachRequest,
+                   CloseAfterEachRequest = _advancedOptions.CloseConnectionAfterEachRequest,
                    EnableChangeTriggeredSynchronization = _synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Checked,
-                   ProxyOptions = _advancedSettings.ProxyOptions
+                   ProxyOptions = _advancedOptions.ProxyOptions
                };
       }
     }
@@ -675,13 +675,13 @@ namespace CalDavSynchronizer.Ui
 
     private void _advancedSettingsButton_Click (object sender, EventArgs e)
     {
-      using (AdvancedSettingsForm advancedSettingsForm = new AdvancedSettingsForm())
+      using (AdvancedOptionsForm advancedOptionsForm = new AdvancedOptionsForm())
       {
-        advancedSettingsForm.Settings = _advancedSettings;
+        advancedOptionsForm.Options = _advancedOptions;
 
-        if (advancedSettingsForm.ShowDialog() == DialogResult.OK)
+        if (advancedOptionsForm.ShowDialog() == DialogResult.OK)
         {
-          _advancedSettings = advancedSettingsForm.Settings;
+          _advancedOptions = advancedOptionsForm.Options;
         }
       }
     }

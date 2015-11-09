@@ -11,18 +11,18 @@ using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer.Ui
 {
-  public partial class AdvancedSettingsForm : Form
+  public partial class AdvancedOptionsForm : Form
   {
-    public AdvancedSettingsForm ()
+    public AdvancedOptionsForm ()
     {
       InitializeComponent();
     }
 
-    public AdvancedSettings Settings
+    public AdvancedOptions Options
     {
       get
       {
-        return new AdvancedSettings (
+        return new AdvancedOptions (
             _closeConnectionAfterEachRequestCheckBox.Checked,
             new ProxyOptions()
             {
