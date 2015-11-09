@@ -27,7 +27,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public class OutlookContactRepository : IEntityRepository<GenericComObjectWrapper<ContactItem>, string, DateTime>, IOutlookRepository
+  public class OutlookContactRepository : IEntityRepository<ContactItemWrapper, string, DateTime>, IOutlookRepository
   {
     private readonly NameSpace _mapiNameSpace;
     private readonly string _folderId;
@@ -81,6 +81,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
             var row = table.GetNextRow();
             var entryId = (string) row[c_entryIdColumnName];
             using (var contactWrapper = GenericComObjectWrapper.Create ((ContactItem) _mapiNameSpace.GetItemFromID (entryId, storeId)))
+            //using (var contactWrapper = new ContactItemWrapper((ContactItem)_mapiNameSpace.GetItemFromID(entryId, storeId), id => (ContactItem)_mapiNameSpace.GetItemFromID(id, _folderStoreId)))
             {
               contacts.Add (new EntityVersion<string, DateTime> (contactWrapper.Inner.EntryID, contactWrapper.Inner.LastModificationTime));
             }
@@ -99,24 +100,25 @@ namespace CalDavSynchronizer.Implementation.Contacts
     }
 
 #pragma warning disable 1998
-    public async Task<IReadOnlyList<EntityWithId<string, GenericComObjectWrapper<ContactItem>>>> Get (ICollection<string> ids)
+    public async Task<IReadOnlyList<EntityWithId<string, ContactItemWrapper>>> Get (ICollection<string> ids)
 #pragma warning restore 1998
     {
       return ids
           .Select (id => EntityWithId.Create (
               id,
-              GenericComObjectWrapper.Create (
-                  (ContactItem) _mapiNameSpace.GetItemFromID (id, _folderStoreId))))
+              new ContactItemWrapper (
+                  (ContactItem) _mapiNameSpace.GetItemFromID (id, _folderStoreId),
+                  entryId => (ContactItem)_mapiNameSpace.GetItemFromID(entryId, _folderStoreId))))
           .ToArray();
     }
 
-    public void Cleanup (IReadOnlyDictionary<string, GenericComObjectWrapper<ContactItem>> entities)
+    public void Cleanup (IReadOnlyDictionary<string, ContactItemWrapper> entities)
     {
       foreach (var contactItemWrapper in entities.Values)
         contactItemWrapper.Dispose();
     }
 
-    public Task<EntityVersion<string, DateTime>> Update (string entityId, GenericComObjectWrapper<ContactItem> entityToUpdate, Func<GenericComObjectWrapper<ContactItem>, GenericComObjectWrapper<ContactItem>> entityModifier)
+    public Task<EntityVersion<string, DateTime>> Update (string entityId, ContactItemWrapper entityToUpdate, Func<ContactItemWrapper, ContactItemWrapper> entityModifier)
     {
       entityToUpdate = entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save();
@@ -137,20 +139,22 @@ namespace CalDavSynchronizer.Implementation.Contacts
       return Task.FromResult (0);
     }
 
-    public Task<EntityVersion<string, DateTime>> Create (Func<GenericComObjectWrapper<ContactItem>, GenericComObjectWrapper<ContactItem>> entityInitializer)
+    public Task<EntityVersion<string, DateTime>> Create (Func<ContactItemWrapper, ContactItemWrapper> entityInitializer)
     {
-      GenericComObjectWrapper<ContactItem> newWrapper;
+      ContactItemWrapper newWrapper;
 
       using (var folderWrapper = CreateFolderWrapper())
       {
-        newWrapper = GenericComObjectWrapper.Create ((ContactItem) folderWrapper.Inner.Items.Add (OlItemType.olContactItem));
+        newWrapper = new ContactItemWrapper (
+          (ContactItem)folderWrapper.Inner.Items.Add(OlItemType.olContactItem),
+          entryId => (ContactItem)_mapiNameSpace.GetItemFromID(entryId, _folderStoreId));
       }
 
       using (newWrapper)
       {
         using (var initializedWrapper = entityInitializer (newWrapper))
         {
-          initializedWrapper.Inner.Save();
+          initializedWrapper.SaveAndReload();
           var result = new EntityVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime);
           return Task.FromResult (result);
         }
