@@ -47,9 +47,7 @@ namespace CalDavSynchronizer.Ui
     private readonly NameSpace _session;
     private Guid _optionsId;
     private readonly ISettingsFaultFinder _faultFinder;
-
-    private bool _closeConnectionAfterEachRequest;
-    private ProxyOptions _proxyOptions;
+    private AdvancedSettings _advancedSettings;
 
     public event EventHandler DeletionRequested;
     public event EventHandler CopyRequested;
@@ -433,13 +431,13 @@ namespace CalDavSynchronizer.Ui
 
     private IWebDavClient CreateWebDavClient ()
     {
-      return SynchronizerFactory.CreateWebDavClient(
+      return SynchronizerFactory.CreateWebDavClient (
           _userNameTextBox.Text,
           _passwordTextBox.Text,
-          TimeSpan.Parse(ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
           SelectedServerAdapterType,
-          _closeConnectionAfterEachRequest,
-          _proxyOptions);
+          _advancedSettings.CloseConnectionAfterEachRequest,
+          _advancedSettings.ProxyOptions);
     }
 
 
@@ -526,9 +524,11 @@ namespace CalDavSynchronizer.Ui
         _optionsId = value.Id;
 
         SelectedServerAdapterType = value.ServerAdapterType;
-        _closeConnectionAfterEachRequest = value.CloseAfterEachRequest;
         _synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Checked = value.EnableChangeTriggeredSynchronization;
-        _proxyOptions = value.ProxyOptions ?? new ProxyOptions();
+
+        _advancedSettings = new AdvancedSettings (
+            value.CloseAfterEachRequest,
+            value.ProxyOptions ?? new ProxyOptions());
 
         UpdateFolder (value.OutlookFolderEntryId, value.OutlookFolderStoreId);
         UpdateConflictResolutionComboBoxEnabled();
@@ -555,9 +555,9 @@ namespace CalDavSynchronizer.Ui
                    Inactive = _inactiveCheckBox.Checked,
                    IgnoreSynchronizationTimeRange = !_enableTimeRangeFilteringCheckBox.Checked,
                    ServerAdapterType = SelectedServerAdapterType,
-                   CloseAfterEachRequest = _closeConnectionAfterEachRequest,
+                   CloseAfterEachRequest = _advancedSettings.CloseConnectionAfterEachRequest,
                    EnableChangeTriggeredSynchronization = _synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Checked,
-                   ProxyOptions = _proxyOptions
+                   ProxyOptions = _advancedSettings.ProxyOptions
                };
       }
     }
@@ -673,16 +673,16 @@ namespace CalDavSynchronizer.Ui
       _timeRangeFilteringGroupBox.Enabled = _enableTimeRangeFilteringCheckBox.Checked;
     }
 
-    private void _advancedSettingsButton_Click(object sender, EventArgs e)
+    private void _advancedSettingsButton_Click (object sender, EventArgs e)
     {
-      using (AdvancedSettingsForm advancedSettingsForm = new AdvancedSettingsForm(_closeConnectionAfterEachRequest, _proxyOptions))
+      using (AdvancedSettingsForm advancedSettingsForm = new AdvancedSettingsForm())
       {
+        advancedSettingsForm.Settings = _advancedSettings;
+
         if (advancedSettingsForm.ShowDialog() == DialogResult.OK)
         {
-          _closeConnectionAfterEachRequest = advancedSettingsForm.closeConnectionAfterEachRequest;
-          _proxyOptions = advancedSettingsForm.ProxyOptions;
+          _advancedSettings = advancedSettingsForm.Settings;
         }
-
       }
     }
   }
