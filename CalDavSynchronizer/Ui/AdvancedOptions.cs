@@ -19,12 +19,12 @@ using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer.Ui
 {
-  public class AdvancedSettings
+  public class AdvancedOptions
   {
     private readonly bool _closeConnectionAfterEachRequest;
     private readonly ProxyOptions _proxyOptions;
 
-    public AdvancedSettings (bool closeConnectionAfterEachRequest, ProxyOptions proxyOptions)
+    public AdvancedOptions (bool closeConnectionAfterEachRequest, ProxyOptions proxyOptions)
     {
       if (proxyOptions == null)
         throw new ArgumentNullException ("proxyOptions");
