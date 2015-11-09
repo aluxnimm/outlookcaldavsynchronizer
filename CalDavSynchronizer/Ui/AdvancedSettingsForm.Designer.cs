@@ -31,14 +31,14 @@
       this.OkButton = new System.Windows.Forms.Button();
       this.buttonCancel = new System.Windows.Forms.Button();
       this.groupBox2 = new System.Windows.Forms.GroupBox();
+      this._useManualProxyCheckBox = new System.Windows.Forms.CheckBox();
+      this._useSystemProxyCheckBox = new System.Windows.Forms.CheckBox();
       this.label5 = new System.Windows.Forms.Label();
       this.label4 = new System.Windows.Forms.Label();
       this._passwordTextBox = new System.Windows.Forms.TextBox();
       this._userNameTextBox = new System.Windows.Forms.TextBox();
       this._proxyUrlTextBox = new System.Windows.Forms.TextBox();
       this.label3 = new System.Windows.Forms.Label();
-      this._useManualProxyCheckBox = new System.Windows.Forms.CheckBox();
-      this._useSystemProxyCheckBox = new System.Windows.Forms.CheckBox();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
       this._closeConnectionAfterEachRequestCheckBox = new System.Windows.Forms.CheckBox();
       this._manualProxyGroupBox = new System.Windows.Forms.GroupBox();
@@ -86,6 +86,30 @@
       this.groupBox2.TabIndex = 8;
       this.groupBox2.TabStop = false;
       this.groupBox2.Text = "Proxy settings";
+      // 
+      // _useManualProxyCheckBox
+      // 
+      this._useManualProxyCheckBox.AutoSize = true;
+      this._useManualProxyCheckBox.Location = new System.Drawing.Point(17, 52);
+      this._useManualProxyCheckBox.Margin = new System.Windows.Forms.Padding(4);
+      this._useManualProxyCheckBox.Name = "_useManualProxyCheckBox";
+      this._useManualProxyCheckBox.Size = new System.Drawing.Size(230, 21);
+      this._useManualProxyCheckBox.TabIndex = 16;
+      this._useManualProxyCheckBox.Text = "Use Manual Proxy configuration";
+      this._useManualProxyCheckBox.UseVisualStyleBackColor = true;
+      this._useManualProxyCheckBox.CheckedChanged += new System.EventHandler(this._useManualProxyCheckBox_CheckedChanged);
+      // 
+      // _useSystemProxyCheckBox
+      // 
+      this._useSystemProxyCheckBox.AutoSize = true;
+      this._useSystemProxyCheckBox.Location = new System.Drawing.Point(17, 23);
+      this._useSystemProxyCheckBox.Margin = new System.Windows.Forms.Padding(4);
+      this._useSystemProxyCheckBox.Name = "_useSystemProxyCheckBox";
+      this._useSystemProxyCheckBox.Size = new System.Drawing.Size(396, 21);
+      this._useSystemProxyCheckBox.TabIndex = 15;
+      this._useSystemProxyCheckBox.Text = "Use System Default Proxy (settings from IE and config file)";
+      this._useSystemProxyCheckBox.UseVisualStyleBackColor = true;
+      this._useSystemProxyCheckBox.CheckedChanged += new System.EventHandler(this._useSystemProxyCheckBox_CheckedChanged);
       // 
       // label5
       // 
@@ -145,30 +169,6 @@
       this.label3.Size = new System.Drawing.Size(69, 17);
       this.label3.TabIndex = 18;
       this.label3.Text = "Proxy Url:";
-      // 
-      // _useManualProxyCheckBox
-      // 
-      this._useManualProxyCheckBox.AutoSize = true;
-      this._useManualProxyCheckBox.Location = new System.Drawing.Point(17, 52);
-      this._useManualProxyCheckBox.Margin = new System.Windows.Forms.Padding(4);
-      this._useManualProxyCheckBox.Name = "_useManualProxyCheckBox";
-      this._useManualProxyCheckBox.Size = new System.Drawing.Size(230, 21);
-      this._useManualProxyCheckBox.TabIndex = 16;
-      this._useManualProxyCheckBox.Text = "Use Manual Proxy configuration";
-      this._useManualProxyCheckBox.UseVisualStyleBackColor = true;
-      this._useManualProxyCheckBox.CheckedChanged += new System.EventHandler(this._useManualProxyCheckBox_CheckedChanged);
-      // 
-      // _useSystemProxyCheckBox
-      // 
-      this._useSystemProxyCheckBox.AutoSize = true;
-      this._useSystemProxyCheckBox.Location = new System.Drawing.Point(17, 23);
-      this._useSystemProxyCheckBox.Margin = new System.Windows.Forms.Padding(4);
-      this._useSystemProxyCheckBox.Name = "_useSystemProxyCheckBox";
-      this._useSystemProxyCheckBox.Size = new System.Drawing.Size(193, 21);
-      this._useSystemProxyCheckBox.TabIndex = 15;
-      this._useSystemProxyCheckBox.Text = "Use System Default Proxy";
-      this._useSystemProxyCheckBox.UseVisualStyleBackColor = true;
-      this._useSystemProxyCheckBox.CheckedChanged += new System.EventHandler(this._useSystemProxyCheckBox_CheckedChanged);
       // 
       // groupBox1
       // 

@@ -161,7 +161,7 @@ namespace CalDavSynchronizer.Scheduling
             httpClientHandler.AllowAutoRedirect = false;
             if (proxyOptions.ProxyUseDefault)
             {
-              IWebProxy proxy = WebRequest.GetSystemWebProxy();
+              IWebProxy proxy = WebRequest.DefaultWebProxy;
               proxy.Credentials = CredentialCache.DefaultCredentials;
               httpClientHandler.Proxy = proxy;
               httpClientHandler.UseProxy = true;
