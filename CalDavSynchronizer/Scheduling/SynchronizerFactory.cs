@@ -151,6 +151,8 @@ namespace CalDavSynchronizer.Scheduling
 
     private static async Task<HttpClient> CreateHttpClient (string username, string password, TimeSpan calDavConnectTimeout, ServerAdapterType serverAdapterType, ProxyOptions proxyOptions)
     {
+      IWebProxy proxy = CreateProxy (proxyOptions);
+
       switch (serverAdapterType)
       {
         case ServerAdapterType.Default:
@@ -159,41 +161,42 @@ namespace CalDavSynchronizer.Scheduling
           {
             httpClientHandler.Credentials = new NetworkCredential (username, password);
             httpClientHandler.AllowAutoRedirect = false;
-            if (proxyOptions.ProxyUseDefault)
-            {
-              IWebProxy proxy = WebRequest.DefaultWebProxy;
-              proxy.Credentials = CredentialCache.DefaultCredentials;
-              httpClientHandler.Proxy = proxy;
-              httpClientHandler.UseProxy = true;
-            }
-            else if (proxyOptions.ProxyUseManual)
-            {
-              IWebProxy proxy = new WebProxy (proxyOptions.ProxyUrl, false);
-              if (!string.IsNullOrEmpty(proxyOptions.ProxyUserName))
-              {
-                proxy.Credentials = new NetworkCredential (proxyOptions.ProxyUserName, proxyOptions.ProxyPassword);
-              }
-              else
-              {
-                proxy.Credentials = CredentialCache.DefaultCredentials;
-              }
-              httpClientHandler.Proxy = proxy;
-              httpClientHandler.UseProxy = true;
-            }
-            else
-            {
-              httpClientHandler.Proxy = null;
-              httpClientHandler.UseProxy = false;
-            }
           }
+          httpClientHandler.Proxy = proxy;
+          httpClientHandler.UseProxy = (proxy!=null); 
+
           var httpClient = new HttpClient (httpClientHandler);
           httpClient.Timeout = calDavConnectTimeout;
           return httpClient;
         case ServerAdapterType.GoogleOAuth:
-          return await OAuth.Google.GoogleHttpClientFactory.CreateHttpClient (username, GetProductWithVersion());
+          return await OAuth.Google.GoogleHttpClientFactory.CreateHttpClient (username, GetProductWithVersion(), proxy);
         default:
           throw new ArgumentOutOfRangeException ("serverAdapterType");
       }
+    }
+
+    private static IWebProxy CreateProxy (ProxyOptions proxyOptions)
+    {
+      IWebProxy proxy = null;
+
+      if (proxyOptions.ProxyUseDefault)
+      {
+        proxy = WebRequest.DefaultWebProxy;
+        proxy.Credentials = CredentialCache.DefaultCredentials;
+      }
+      else if (proxyOptions.ProxyUseManual)
+      {
+        proxy = new WebProxy (proxyOptions.ProxyUrl, false);
+        if (!string.IsNullOrEmpty (proxyOptions.ProxyUserName))
+        {
+          proxy.Credentials = new NetworkCredential (proxyOptions.ProxyUserName, proxyOptions.ProxyPassword);
+        }
+        else
+        {
+          proxy.Credentials = CredentialCache.DefaultCredentials;
+        }
+      }
+      return proxy;
     }
 
     private static Tuple<string, string> GetProductAndVersion ()
