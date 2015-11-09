@@ -315,7 +315,7 @@ namespace CalDavSynchronizer.Scheduling
 
       var entityRelationDataFactory = new OutlookContactRelationDataFactory();
 
-      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, GenericComObjectWrapper<ContactItem>, Uri, string, vCard> (
+      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, ContactItemWrapper, Uri, string, vCard> (
           new ContactEntityMapper(),
           atypeRepository,
           btypeRepository,
@@ -332,7 +332,7 @@ namespace CalDavSynchronizer.Scheduling
 
       var storageDataAccess = new EntityRelationDataAccess<string, DateTime, OutlookContactRelationData, Uri, string> (storageDataDirectory);
 
-      var synchronizer = new Synchronizer<string, DateTime, GenericComObjectWrapper<ContactItem>, Uri, string, vCard> (
+      var synchronizer = new Synchronizer<string, DateTime, ContactItemWrapper, Uri, string, vCard> (
           atypeRepository,
           btypeRepository,
           InitialContactSyncStateCreationStrategyFactory.Create (

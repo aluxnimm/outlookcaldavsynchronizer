@@ -23,19 +23,19 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  internal class InitialContactEntityMatcher : InitialEntityMatcherByPropertyGrouping<GenericComObjectWrapper<ContactItem>, string, DateTime, string, vCard, Uri, string, string>
+  internal class InitialContactEntityMatcher : InitialEntityMatcherByPropertyGrouping<ContactItemWrapper, string, DateTime, string, vCard, Uri, string, string>
   {
     public InitialContactEntityMatcher (IEqualityComparer<Uri> btypeIdEqualityComparer)
         : base (btypeIdEqualityComparer)
     {
     }
 
-    protected override bool AreEqual (GenericComObjectWrapper<ContactItem> atypeEntity, vCard btypeEntity)
+    protected override bool AreEqual (ContactItemWrapper atypeEntity, vCard btypeEntity)
     {
       return true;
     }
 
-    protected override string GetAtypePropertyValue (GenericComObjectWrapper<ContactItem> atypeEntity)
+    protected override string GetAtypePropertyValue (ContactItemWrapper atypeEntity)
     {
       return atypeEntity.Inner.FirstName + "|" + atypeEntity.Inner.LastName;
     }
