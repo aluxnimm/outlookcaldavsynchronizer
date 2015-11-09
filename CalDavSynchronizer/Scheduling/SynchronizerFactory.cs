@@ -161,15 +161,22 @@ namespace CalDavSynchronizer.Scheduling
             httpClientHandler.AllowAutoRedirect = false;
             if (proxyOptions.ProxyUseDefault)
             {
-              IWebProxy p = WebRequest.GetSystemWebProxy();
-              p.Credentials = CredentialCache.DefaultCredentials;
-              httpClientHandler.Proxy = p;
+              IWebProxy proxy = WebRequest.GetSystemWebProxy();
+              proxy.Credentials = CredentialCache.DefaultCredentials;
+              httpClientHandler.Proxy = proxy;
               httpClientHandler.UseProxy = true;
             }
             else if (proxyOptions.ProxyUseManual)
             {
               IWebProxy proxy = new WebProxy (proxyOptions.ProxyUrl, false);
-              proxy.Credentials = new NetworkCredential (proxyOptions.ProxyUserName, proxyOptions.ProxyPassword);
+              if (!string.IsNullOrEmpty(proxyOptions.ProxyUserName))
+              {
+                proxy.Credentials = new NetworkCredential (proxyOptions.ProxyUserName, proxyOptions.ProxyPassword);
+              }
+              else
+              {
+                proxy.Credentials = CredentialCache.DefaultCredentials;
+              }
               httpClientHandler.Proxy = proxy;
               httpClientHandler.UseProxy = true;
             }
