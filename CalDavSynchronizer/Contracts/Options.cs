@@ -51,6 +51,7 @@ namespace CalDavSynchronizer.Contracts
     public bool CloseAfterEachRequest { get; set; }
     public bool EnableChangeTriggeredSynchronization { get; set; }
 
+    public ProxyOptions ProxyOptions { get; set; }
 
     [XmlIgnore]
     public string Password
@@ -93,6 +94,7 @@ namespace CalDavSynchronizer.Contracts
       options.Name = "<New Profile>";
       options.Id = Guid.NewGuid();
       options.Inactive = false;
+      options.ProxyOptions = new ProxyOptions() { ProxyUseDefault = true };
       return options;
     }
   }

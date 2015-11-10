@@ -117,7 +117,8 @@ namespace CalDavSynchronizer.Scheduling
           options.Password,
           timeout,
           options.ServerAdapterType,
-          options.CloseAfterEachRequest);
+          options.CloseAfterEachRequest,
+          options.ProxyOptions);
     }
 
     public static IWebDavClient CreateWebDavClient (
@@ -125,7 +126,9 @@ namespace CalDavSynchronizer.Scheduling
         string password,
         TimeSpan timeout,
         ServerAdapterType serverAdapterType,
-        bool closeConnectionAfterEachRequest)
+        bool closeConnectionAfterEachRequest,
+        ProxyOptions proxyOptions
+      )
     {
       switch (serverAdapterType)
       {
@@ -133,7 +136,7 @@ namespace CalDavSynchronizer.Scheduling
         case ServerAdapterType.GoogleOAuth:
           var productAndVersion = GetProductAndVersion();
           return new DataAccess.HttpClientBasedClient.WebDavClient (
-              () => CreateHttpClient (username, password, timeout, serverAdapterType),
+              () => CreateHttpClient (username, password, timeout, serverAdapterType, proxyOptions),
               productAndVersion.Item1,
               productAndVersion.Item2,
               closeConnectionAfterEachRequest);
@@ -146,8 +149,10 @@ namespace CalDavSynchronizer.Scheduling
       }
     }
 
-    private static async Task<HttpClient> CreateHttpClient (string username, string password, TimeSpan calDavConnectTimeout, ServerAdapterType serverAdapterType)
+    private static async Task<HttpClient> CreateHttpClient (string username, string password, TimeSpan calDavConnectTimeout, ServerAdapterType serverAdapterType, ProxyOptions proxyOptions)
     {
+      IWebProxy proxy = CreateProxy (proxyOptions);
+
       switch (serverAdapterType)
       {
         case ServerAdapterType.Default:
@@ -157,14 +162,41 @@ namespace CalDavSynchronizer.Scheduling
             httpClientHandler.Credentials = new NetworkCredential (username, password);
             httpClientHandler.AllowAutoRedirect = false;
           }
+          httpClientHandler.Proxy = proxy;
+          httpClientHandler.UseProxy = (proxy!=null); 
+
           var httpClient = new HttpClient (httpClientHandler);
           httpClient.Timeout = calDavConnectTimeout;
           return httpClient;
         case ServerAdapterType.GoogleOAuth:
-          return await OAuth.Google.GoogleHttpClientFactory.CreateHttpClient (username, GetProductWithVersion());
+          return await OAuth.Google.GoogleHttpClientFactory.CreateHttpClient (username, GetProductWithVersion(), proxy);
         default:
           throw new ArgumentOutOfRangeException ("serverAdapterType");
       }
+    }
+
+    private static IWebProxy CreateProxy (ProxyOptions proxyOptions)
+    {
+      IWebProxy proxy = null;
+
+      if (proxyOptions.ProxyUseDefault)
+      {
+        proxy = WebRequest.DefaultWebProxy;
+        proxy.Credentials = CredentialCache.DefaultCredentials;
+      }
+      else if (proxyOptions.ProxyUseManual)
+      {
+        proxy = new WebProxy (proxyOptions.ProxyUrl, false);
+        if (!string.IsNullOrEmpty (proxyOptions.ProxyUserName))
+        {
+          proxy.Credentials = new NetworkCredential (proxyOptions.ProxyUserName, proxyOptions.ProxyPassword);
+        }
+        else
+        {
+          proxy.Credentials = CredentialCache.DefaultCredentials;
+        }
+      }
+      return proxy;
     }
 
     private static Tuple<string, string> GetProductAndVersion ()
@@ -255,7 +287,8 @@ namespace CalDavSynchronizer.Scheduling
                   options.Password,
                   _calDavConnectTimeout,
                   options.ServerAdapterType,
-                  options.CloseAfterEachRequest)),
+                  options.CloseAfterEachRequest,
+                  options.ProxyOptions)),
           new iCalendarSerializer(),
           CalDavRepository.EntityType.Todo,
           NullDateTimeRangeProvider.Instance);
@@ -311,7 +344,8 @@ namespace CalDavSynchronizer.Scheduling
                   options.Password,
                   _calDavConnectTimeout,
                   options.ServerAdapterType,
-                  options.CloseAfterEachRequest)));
+                  options.CloseAfterEachRequest,
+                  options.ProxyOptions)));
 
       var entityRelationDataFactory = new OutlookContactRelationDataFactory();
 
