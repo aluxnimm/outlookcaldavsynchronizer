@@ -58,6 +58,14 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 1.5.1 ####
+- New features:
+	- Support for proxy configuration in GUI to specify manual proxy settings and allow Basic Auth and NTLM proxies
+- bug fixes:
+	- Use ContactItemWrapper and reload Items to avoid a second sync with a changed modification time in Outlook, see ticket #111
+	- Avoid sending meeting response if meeting is self organized
+	- Avoid unnecessary connection tests during autodiscovery, fixes Google CardDAV autodiscovery
+
 #### 1.5.0 ####
 - New features:
 	- Autodiscovery for CardDAV addressbooks
@@ -307,7 +315,6 @@ The following properties need to be set for a new profile:
 	- **Username:** Username to connect to the CalDAV server
 	- **Password:** Password used for the connection. The password will be saved encrypted in the option config file.
 	- **Email address:** email address used as remote identity for the CalDAV server, necessary to synchronize the organizer
-	- **Close connection after each request** Don't use KeepAlive for servers which don't support it.
 - *Outlook settings*:
 	- **Outlook Folder:** Outlook folder that should be used for synchronization
 	- **Synchronize changes immediately after change** Trigger a partial synchronization run immediately after an item is created, changed or deleted in Outlook via the Inspector dialog, works only for Appointments at the moment!
@@ -326,6 +333,10 @@ The following properties need to be set for a new profile:
 	- **Synchronization timespan past (days)** and
 	- **Synchronization timespan future (days):** For performance reasons it is useful to sync only a given timespan of a big calendar, especially past events are normally not necessary to sync after a given timespan
 	- **Deactivate profile:** If activated, current profile is not synced anymore without the need to delete the profile
+- *Advanced Options*: Here you can configure advanced network options and proxy settings. 
+	- **Close connection after each request** Don't use KeepAlive for servers which don't support it. 
+	- **Use System Default Proxy** Use proxy settings from Internet Explorer or config file, uses default credentials if available for NTLM authentication
+	- **Use manual proxy configuration** Specify proxy URL as `http://<your-proxy-domain>:<your-proxy-port>` and optional Username and Password for Basic Authentication
 	
 ### Google Calender and Addressbook settings ###
 
@@ -353,7 +364,8 @@ You can use the exact calendar/addressbook URL or the principal url and use the 
 If your server has redirections for well-known Urls (./well-known/caldav/ and ./well-known/carddav/ ) you need to enter the server name only (without path).
 
 ### Proxy Settings ###
-We use the default proxy settings from Windows IE. If you have an NTLM authenticated proxy server, you can set the according options in the app config file, see config options below. More information can be found at
+You can now set manual proxy settings in the Advanced option dialog in each profile. To override the default proxy settings from Windows Internet Explorer you can also specify settings in the app config file, see config options below.
+More information can be found at
 [https://msdn.microsoft.com/en-us/library/sa91de1e%28v=vs.110%29.aspx](https://msdn.microsoft.com/en-us/library/sa91de1e%28v=vs.110%29.aspx)
 
 ## Trouble Shooting ##
