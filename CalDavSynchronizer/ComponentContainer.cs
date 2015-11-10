@@ -49,6 +49,7 @@ namespace CalDavSynchronizer
     private readonly UpdateChecker _updateChecker;
     private readonly NameSpace _session;
     private readonly OutlookItemChangeWatcher _itemChangeWatcher;
+    private readonly string _applicationDataDirectory;
 
     public ComponentContainer (Application application)
     {
@@ -63,16 +64,16 @@ namespace CalDavSynchronizer
 
         EnsureSynchronizationContext();
 
-        var applicationDataDirectory = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData), "CalDavSynchronizer");
+        _applicationDataDirectory = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData), "CalDavSynchronizer");
 
         _optionsDataAccess = new OptionsDataAccess (
             Path.Combine (
-                applicationDataDirectory,
-                GetOrCreateConfigFileName (applicationDataDirectory, _session.CurrentProfileName)
+                _applicationDataDirectory,
+                GetOrCreateConfigFileName (_applicationDataDirectory, _session.CurrentProfileName)
                 ));
 
         var synchronizerFactory = new SynchronizerFactory (
-            applicationDataDirectory,
+            GetProfileDataDirectory,
             new TotalProgressFactory (
                 new ProgressFormFactory(),
                 int.Parse (ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"]),
@@ -159,17 +160,53 @@ namespace CalDavSynchronizer
       {
         var options = _optionsDataAccess.LoadOptions();
         var shouldCheckForNewerVersions = ShouldCheckForNewerVersions;
-        if (OptionsForm.EditOptions (_session, options, out options, shouldCheckForNewerVersions, out shouldCheckForNewerVersions))
+        Options[] newOptions;
+        if (OptionsForm.EditOptions (_session, options, out newOptions, shouldCheckForNewerVersions, out shouldCheckForNewerVersions))
         {
-          _optionsDataAccess.SaveOptions (options);
+          _optionsDataAccess.SaveOptions (newOptions);
           ShouldCheckForNewerVersions = shouldCheckForNewerVersions;
-          _scheduler.SetOptions (options);
+          _scheduler.SetOptions (newOptions);
+          DeleteEntityChachesForChangedProfiles (options, newOptions);
         }
       }
       catch (Exception x)
       {
         ExceptionHandler.Instance.HandleException (x, s_logger);
       }
+    }
+
+    private void DeleteEntityChachesForChangedProfiles (Options[] oldOptions, Options[] newOptions)
+    {
+      var profilesForCacheDeletion =
+          oldOptions
+              .Concat (newOptions)
+              .GroupBy (o => o.Id)
+              .Where (g => g.GroupBy (o => new { o.OutlookFolderStoreId, o.OutlookFolderEntryId, o.CalenderUrl }).Count() > 1)
+              .Select (g => new { Id = g.Key, Name = g.First().Name })
+              .ToArray();
+
+      foreach (var profile in profilesForCacheDeletion)
+      {
+        try
+        {
+          s_logger.InfoFormat ("Deleting cache for profile '{0}' ('{1}')", profile.Id, profile.Name);
+
+          var profileDataDirectory = GetProfileDataDirectory (profile.Id);
+          if (Directory.Exists (profileDataDirectory))
+            Directory.Delete (profileDataDirectory, true);
+        }
+        catch (Exception x)
+        {
+          s_logger.Error (null, x);
+        }
+      }
+    }
+
+    private string GetProfileDataDirectory (Guid profileId)
+    {
+      return Path.Combine (
+          _applicationDataDirectory,
+          profileId.ToString());
     }
 
     private void UpdateChecker_NewerVersionFound (object sender, NewerVersionFoundEventArgs e)

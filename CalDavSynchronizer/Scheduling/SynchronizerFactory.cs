@@ -45,25 +45,25 @@ namespace CalDavSynchronizer.Scheduling
   public class SynchronizerFactory : ISynchronizerFactory
   {
     private readonly string _outlookEmailAddress;
-    private readonly string _applicationDataDirectory;
     private readonly ITotalProgressFactory _totalProgressFactory;
     private readonly NameSpace _outlookSession;
     private readonly TimeSpan _calDavConnectTimeout;
     private readonly TimeSpan _calDavReadWriteTimeout;
+    private readonly Func<Guid, string> _profileDataDirectoryFactory;
 
     public SynchronizerFactory (
-        string applicationDataDirectory,
+        Func<Guid, string> profileDataDirectoryFactory,
         ITotalProgressFactory totalProgressFactory,
         NameSpace outlookSession,
         TimeSpan calDavConnectTimeout,
         TimeSpan calDavReadWriteTimeout)
     {
       _outlookEmailAddress = outlookSession.CurrentUser.Address;
-      _applicationDataDirectory = applicationDataDirectory;
       _totalProgressFactory = totalProgressFactory;
       _outlookSession = outlookSession;
       _calDavConnectTimeout = calDavConnectTimeout;
       _calDavReadWriteTimeout = calDavReadWriteTimeout;
+      _profileDataDirectoryFactory = profileDataDirectoryFactory;
     }
 
     public IOutlookSynchronizer CreateSynchronizer (Options options)
@@ -100,10 +100,7 @@ namespace CalDavSynchronizer.Scheduling
           new Uri (options.CalenderUrl),
           CreateWebDavClient (options, _calDavConnectTimeout));
 
-      var storageDataDirectory = Path.Combine (
-          _applicationDataDirectory,
-          options.Id.ToString()
-          );
+      var storageDataDirectory = _profileDataDirectoryFactory (options.Id);
 
       var entityRelationDataAccess = new EntityRelationDataAccess<string, DateTime, OutlookEventRelationData, Uri, string> (storageDataDirectory);
 
@@ -128,7 +125,7 @@ namespace CalDavSynchronizer.Scheduling
         ServerAdapterType serverAdapterType,
         bool closeConnectionAfterEachRequest,
         ProxyOptions proxyOptions
-      )
+        )
     {
       switch (serverAdapterType)
       {
@@ -163,7 +160,7 @@ namespace CalDavSynchronizer.Scheduling
             httpClientHandler.AllowAutoRedirect = false;
           }
           httpClientHandler.Proxy = proxy;
-          httpClientHandler.UseProxy = (proxy!=null); 
+          httpClientHandler.UseProxy = (proxy != null);
 
           var httpClient = new HttpClient (httpClientHandler);
           httpClient.Timeout = calDavConnectTimeout;
@@ -301,10 +298,7 @@ namespace CalDavSynchronizer.Scheduling
           outlookEventRelationDataFactory,
           ExceptionHandler.Instance);
 
-      var storageDataDirectory = Path.Combine (
-          _applicationDataDirectory,
-          options.Id.ToString()
-          );
+      var storageDataDirectory = _profileDataDirectoryFactory (options.Id);
 
       var btypeIdEqualityComparer = EqualityComparer<Uri>.Default;
       var atypeIdEqualityComparer = EqualityComparer<string>.Default;
@@ -359,10 +353,7 @@ namespace CalDavSynchronizer.Scheduling
       var btypeIdEqualityComparer = EqualityComparer<Uri>.Default;
       var atypeIdEqulityComparer = EqualityComparer<string>.Default;
 
-      var storageDataDirectory = Path.Combine (
-          _applicationDataDirectory,
-          options.Id.ToString()
-          );
+      var storageDataDirectory = _profileDataDirectoryFactory (options.Id);
 
       var storageDataAccess = new EntityRelationDataAccess<string, DateTime, OutlookContactRelationData, Uri, string> (storageDataDirectory);
 

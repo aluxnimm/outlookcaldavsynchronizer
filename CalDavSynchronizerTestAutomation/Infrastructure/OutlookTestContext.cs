@@ -53,7 +53,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       _outlookRepository = new OutlookEventRepository (mapiNameSpace, s_outlookFolderEntryId, s_outlookFolderStoreId, NullDateTimeRangeProvider.Instance);
 
       s_synchronizerFactory = new SynchronizerFactory (
-          @"a:\invalid path",
+          _ => @"a:\invalid path",
           NullTotalProgressFactory.Instance,
           s_mapiNameSpace,
           TimeSpan.Zero,
