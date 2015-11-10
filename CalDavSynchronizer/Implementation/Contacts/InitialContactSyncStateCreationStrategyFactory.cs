@@ -27,14 +27,14 @@ namespace CalDavSynchronizer.Implementation.Contacts
 {
   public static class InitialContactSyncStateCreationStrategyFactory
   {
-    private static IConflictInitialSyncStateCreationStrategy<string, DateTime, GenericComObjectWrapper<ContactItem>, Uri, string, vCard> Create (IEntitySyncStateFactory<string, DateTime, GenericComObjectWrapper<ContactItem>, Uri, string, vCard> syncStateFactory, EntitySyncStateEnvironment<string, DateTime, GenericComObjectWrapper<ContactItem>, Uri, string, vCard> environment, ConflictResolution conflictResolution)
+    private static IConflictInitialSyncStateCreationStrategy<string, DateTime, ContactItemWrapper, Uri, string, vCard> Create (IEntitySyncStateFactory<string, DateTime, ContactItemWrapper, Uri, string, vCard> syncStateFactory, EntitySyncStateEnvironment<string, DateTime, ContactItemWrapper, Uri, string, vCard> environment, ConflictResolution conflictResolution)
     {
       switch (conflictResolution)
       {
         case ConflictResolution.OutlookWins:
-          return new ConflictInitialSyncStateCreationStrategyAWins<string, DateTime, GenericComObjectWrapper<ContactItem>, Uri, string, vCard> (syncStateFactory);
+          return new ConflictInitialSyncStateCreationStrategyAWins<string, DateTime, ContactItemWrapper, Uri, string, vCard> (syncStateFactory);
         case ConflictResolution.ServerWins:
-          return new ConflictInitialSyncStateCreationStrategyBWins<string, DateTime, GenericComObjectWrapper<ContactItem>, Uri, string, vCard> (syncStateFactory);
+          return new ConflictInitialSyncStateCreationStrategyBWins<string, DateTime, ContactItemWrapper, Uri, string, vCard> (syncStateFactory);
         case ConflictResolution.Automatic:
           return new ContactConflictInitialSyncStateCreationStrategyAutomatic (environment);
       }
@@ -42,25 +42,25 @@ namespace CalDavSynchronizer.Implementation.Contacts
       throw new NotImplementedException();
     }
 
-    public static IInitialSyncStateCreationStrategy<string, DateTime, GenericComObjectWrapper<ContactItem>, Uri, string, vCard> Create (IEntitySyncStateFactory<string, DateTime, GenericComObjectWrapper<ContactItem>, Uri, string, vCard> syncStateFactory, EntitySyncStateEnvironment<string, DateTime, GenericComObjectWrapper<ContactItem>, Uri, string, vCard> environment, SynchronizationMode synchronizationMode, ConflictResolution conflictResolution)
+    public static IInitialSyncStateCreationStrategy<string, DateTime, ContactItemWrapper, Uri, string, vCard> Create (IEntitySyncStateFactory<string, DateTime, ContactItemWrapper, Uri, string, vCard> syncStateFactory, EntitySyncStateEnvironment<string, DateTime, ContactItemWrapper, Uri, string, vCard> environment, SynchronizationMode synchronizationMode, ConflictResolution conflictResolution)
     {
       switch (synchronizationMode)
       {
         case SynchronizationMode.MergeInBothDirections:
           var conflictResolutionStrategy = Create (syncStateFactory, environment, conflictResolution);
-          return new TwoWayInitialSyncStateCreationStrategy<string, DateTime, GenericComObjectWrapper<ContactItem>, Uri, string, vCard> (
+          return new TwoWayInitialSyncStateCreationStrategy<string, DateTime, ContactItemWrapper, Uri, string, vCard> (
               syncStateFactory,
               conflictResolutionStrategy
               );
         case SynchronizationMode.ReplicateOutlookIntoServer:
         case SynchronizationMode.MergeOutlookIntoServer:
-          return new OneWayInitialSyncStateCreationStrategy_AToB<string, DateTime, GenericComObjectWrapper<ContactItem>, Uri, string, vCard> (
+          return new OneWayInitialSyncStateCreationStrategy_AToB<string, DateTime, ContactItemWrapper, Uri, string, vCard> (
               syncStateFactory,
               synchronizationMode == SynchronizationMode.ReplicateOutlookIntoServer ? OneWaySyncMode.Replicate : OneWaySyncMode.Merge
               );
         case SynchronizationMode.ReplicateServerIntoOutlook:
         case SynchronizationMode.MergeServerIntoOutlook:
-          return new OneWayInitialSyncStateCreationStrategy_BToA<string, DateTime, GenericComObjectWrapper<ContactItem>, Uri, string, vCard> (
+          return new OneWayInitialSyncStateCreationStrategy_BToA<string, DateTime, ContactItemWrapper, Uri, string, vCard> (
               syncStateFactory,
               synchronizationMode == SynchronizationMode.ReplicateServerIntoOutlook ? OneWaySyncMode.Replicate : OneWaySyncMode.Merge
               );

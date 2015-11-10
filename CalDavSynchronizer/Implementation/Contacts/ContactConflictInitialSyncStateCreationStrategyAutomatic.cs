@@ -26,14 +26,14 @@ using Thought.vCards;
 namespace CalDavSynchronizer.Implementation.Contacts
 {
   internal class ContactConflictInitialSyncStateCreationStrategyAutomatic
-      : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, GenericComObjectWrapper<ContactItem>, Uri, string, vCard>
+      : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, ContactItemWrapper, Uri, string, vCard>
   {
-    public ContactConflictInitialSyncStateCreationStrategyAutomatic (EntitySyncStateEnvironment<string, DateTime, GenericComObjectWrapper<ContactItem>, Uri, string, vCard> environment)
+    public ContactConflictInitialSyncStateCreationStrategyAutomatic (EntitySyncStateEnvironment<string, DateTime, ContactItemWrapper, Uri, string, vCard> environment)
         : base (environment)
     {
     }
 
-    protected override IEntitySyncState<string, DateTime, GenericComObjectWrapper<ContactItem>, Uri, string, vCard> Create_FromNewerToOlder (IEntityRelationData<string, DateTime, Uri, string> knownData, DateTime newA, string newB)
+    protected override IEntitySyncState<string, DateTime, ContactItemWrapper, Uri, string, vCard> Create_FromNewerToOlder (IEntityRelationData<string, DateTime, Uri, string> knownData, DateTime newA, string newB)
     {
       return new OutlookCardDavUpdateFromNewerToOlder (
           _environment,

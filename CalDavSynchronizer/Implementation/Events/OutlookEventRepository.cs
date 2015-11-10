@@ -179,7 +179,7 @@ namespace CalDavSynchronizer.Implementation.Events
       {
         using (var initializedWrapper = entityInitializer (newAppointmentItemWrapper))
         {
-          initializedWrapper.Inner.Save();
+          initializedWrapper.SaveAndReload();
           var result = new EntityVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime);
           return Task.FromResult (result);
         }
