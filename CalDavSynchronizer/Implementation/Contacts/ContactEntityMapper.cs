@@ -137,7 +137,6 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       if (!source.Inner.Birthday.Equals (new DateTime (4501, 1, 1, 0, 0, 0)))
       {
-        // TODO: Workaround for serializer needed, BirthDate must be YYYY-MM-DD
         target.BirthDate = source.Inner.Birthday.Date;
       }
 
