@@ -26,7 +26,7 @@ namespace CalDavSynchronizer.Implementation.ComWrappers
     public ContactItem Inner { get; private set; }
     private Func<string, ContactItem> _load;
 
-    public ContactItemWrapper(ContactItem inner, Func<string, ContactItem> load)
+    public ContactItemWrapper (ContactItem inner, Func<string, ContactItem> load)
     {
       _load = load;
       Inner = inner;
@@ -38,12 +38,12 @@ namespace CalDavSynchronizer.Implementation.ComWrappers
       var entryId = Inner.EntryID;
       DisposeInner();
       Thread.MemoryBarrier();
-      Inner = _load(entryId);
+      Inner = _load (entryId);
     }
 
     private void DisposeInner()
     {
-      Marshal.FinalReleaseComObject(Inner);
+      Marshal.FinalReleaseComObject (Inner);
       Inner = null;
     }
 
@@ -56,7 +56,7 @@ namespace CalDavSynchronizer.Implementation.ComWrappers
       }
     }
 
-    public void Replace(ContactItem inner)
+    public void Replace (ContactItem inner)
     {
       if (inner != Inner)
       {

@@ -81,7 +81,6 @@ namespace CalDavSynchronizer.Implementation.Contacts
             var row = table.GetNextRow();
             var entryId = (string) row[c_entryIdColumnName];
             using (var contactWrapper = GenericComObjectWrapper.Create ((ContactItem) _mapiNameSpace.GetItemFromID (entryId, storeId)))
-            //using (var contactWrapper = new ContactItemWrapper((ContactItem)_mapiNameSpace.GetItemFromID(entryId, storeId), id => (ContactItem)_mapiNameSpace.GetItemFromID(id, _folderStoreId)))
             {
               contacts.Add (new EntityVersion<string, DateTime> (contactWrapper.Inner.EntryID, contactWrapper.Inner.LastModificationTime));
             }
@@ -108,7 +107,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
               id,
               new ContactItemWrapper (
                   (ContactItem) _mapiNameSpace.GetItemFromID (id, _folderStoreId),
-                  entryId => (ContactItem)_mapiNameSpace.GetItemFromID(entryId, _folderStoreId))))
+                  entryId => (ContactItem)_mapiNameSpace.GetItemFromID (entryId, _folderStoreId))))
           .ToArray();
     }
 
@@ -146,8 +145,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
       using (var folderWrapper = CreateFolderWrapper())
       {
         newWrapper = new ContactItemWrapper (
-          (ContactItem)folderWrapper.Inner.Items.Add(OlItemType.olContactItem),
-          entryId => (ContactItem)_mapiNameSpace.GetItemFromID(entryId, _folderStoreId));
+          (ContactItem)folderWrapper.Inner.Items.Add (OlItemType.olContactItem),
+          entryId => (ContactItem)_mapiNameSpace.GetItemFromID (entryId, _folderStoreId));
       }
 
       using (newWrapper)
