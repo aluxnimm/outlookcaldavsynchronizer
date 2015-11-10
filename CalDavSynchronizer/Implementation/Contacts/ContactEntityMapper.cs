@@ -29,7 +29,7 @@ using System.IO;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public class ContactEntityMapper : IEntityMapper<GenericComObjectWrapper<ContactItem>, vCard>
+  public class ContactEntityMapper : IEntityMapper<ContactItemWrapper, vCard>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -39,7 +39,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
     private const string PR_USER_X509_CERTIFICATE = "http://schemas.microsoft.com/mapi/proptag/0x3A701102";
     private const string PR_ATTACH_DATA_BIN = "http://schemas.microsoft.com/mapi/proptag/0x37010102";
 
-    public vCard Map1To2 (GenericComObjectWrapper<ContactItem> source, vCard target)
+    public vCard Map1To2 (ContactItemWrapper source, vCard target)
     {
       target.GivenName = source.Inner.FirstName;
       target.FamilyName = source.Inner.LastName;
@@ -137,7 +137,6 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       if (!source.Inner.Birthday.Equals (new DateTime (4501, 1, 1, 0, 0, 0)))
       {
-        // TODO: Workaround for serializer needed, BirthDate must be YYYY-MM-DD
         target.BirthDate = source.Inner.Birthday.Date;
       }
 
@@ -171,7 +170,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       return target;
     }
 
-    public GenericComObjectWrapper<ContactItem> Map2To1 (vCard source, GenericComObjectWrapper<ContactItem> target)
+    public ContactItemWrapper Map2To1 (vCard source, ContactItemWrapper target)
     {
       target.Inner.FirstName = source.GivenName;
       target.Inner.LastName = source.FamilyName;
