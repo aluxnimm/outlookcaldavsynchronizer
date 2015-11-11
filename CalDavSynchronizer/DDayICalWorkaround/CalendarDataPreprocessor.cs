@@ -30,17 +30,17 @@ namespace CalDavSynchronizer.DDayICalWorkaround
       }
     }
 
-    public static string FixTimeZoneComponentOrderNoThrow (string iCalenderData)
+    public static string FixTimeZoneComponentOrderNoThrow (string iCalendarData)
     {
-      if (string.IsNullOrEmpty (iCalenderData))
-        return iCalenderData;
+      if (string.IsNullOrEmpty (iCalendarData))
+        return iCalendarData;
 
       try
       {
-        var newCalenderData = iCalenderData;
+        var newCalendarData = iCalendarData;
 
         for (
-            var timeZoneMatch = Regex.Match (iCalenderData, "BEGIN:VTIMEZONE\r?\n(.|\n)*?END:VTIMEZONE\r?\n", RegexOptions.RightToLeft);
+            var timeZoneMatch = Regex.Match (iCalendarData, "BEGIN:VTIMEZONE\r?\n(.|\n)*?END:VTIMEZONE\r?\n", RegexOptions.RightToLeft);
             timeZoneMatch.Success;
             timeZoneMatch = timeZoneMatch.NextMatch())
         {
@@ -95,18 +95,25 @@ namespace CalDavSynchronizer.DDayICalWorkaround
               newTimeZoneData = newTimeZoneData.Insert (firstSection.Index, section.Item1.Value);
             }
 
-            newCalenderData = newCalenderData.Remove (timeZoneMatch.Index, timeZoneMatch.Length);
-            newCalenderData = newCalenderData.Insert (timeZoneMatch.Index, newTimeZoneData);
+            newCalendarData = newCalendarData.Remove (timeZoneMatch.Index, timeZoneMatch.Length);
+            newCalendarData = newCalendarData.Insert (timeZoneMatch.Index, newTimeZoneData);
           }
         }
 
-        return newCalenderData;
+        return newCalendarData;
       }
       catch (Exception x)
       {
         s_logger.Error ("Could not process calender data. Using original data", x);
-        return iCalenderData;
+        return iCalendarData;
       }
     }
+
+     public static string NormalizeLineBreaks (string iCalendarData)
+     {
+       // Certain iCal providers like Open-Xchange deliver their data with unexpected linebreaks
+       // which causes DDay.iCal to fail. This can be fixed by normalizing the unexpected \r\r\n to \r\n
+       return iCalendarData.Replace("\r\r\n", "\r\n");
+     }
   }
 }

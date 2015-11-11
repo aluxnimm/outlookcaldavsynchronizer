@@ -106,15 +106,26 @@ namespace CalDavSynchronizer.Implementation
             (serialized, loopState, threadLocal) =>
             {
               IICalendar calendar;
+              string normalizedICalData;
 
-              if (TryDeserializeCalendar (serialized.Entity, out calendar, serialized.Id, threadLocal.Item1))
+              // fix some linebreak issues with Open-Xchange
+              if (serialized.Entity.Contains ("\r\r\n"))
+              {
+                normalizedICalData = CalendarDataPreprocessor.NormalizeLineBreaks (serialized.Entity);
+              }
+              else
+              {
+                normalizedICalData = serialized.Entity;
+              }
+
+              if (TryDeserializeCalendar (normalizedICalData, out calendar, serialized.Id, threadLocal.Item1))
               {
                 threadLocal.Item2.Add (Tuple.Create (serialized.Id, calendar));
               }
               else
               {
                 // maybe deserialization failed because of the iCal-TimeZone-Bug =>  try to fix it
-                var fixedICalData = CalendarDataPreprocessor.FixTimeZoneComponentOrderNoThrow (serialized.Entity);
+                var fixedICalData = CalendarDataPreprocessor.FixTimeZoneComponentOrderNoThrow (normalizedICalData);
                 if (TryDeserializeCalendar (fixedICalData, out calendar, serialized.Id, threadLocal.Item1))
                 {
                   threadLocal.Item2.Add (Tuple.Create (serialized.Id, calendar));
