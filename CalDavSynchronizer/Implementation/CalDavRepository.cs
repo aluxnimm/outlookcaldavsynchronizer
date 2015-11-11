@@ -107,18 +107,29 @@ namespace CalDavSynchronizer.Implementation
             {
               IICalendar calendar;
 
-              if (TryDeserializeCalendar (serialized.Entity, out calendar, serialized.Id, threadLocal.Item1))
+              var iCalendarData = serialized.Entity;
+              if (TryDeserializeCalendar (iCalendarData, out calendar, serialized.Id, threadLocal.Item1))
               {
                 threadLocal.Item2.Add (Tuple.Create (serialized.Id, calendar));
               }
               else
               {
                 // maybe deserialization failed because of the iCal-TimeZone-Bug =>  try to fix it
-                var fixedICalData = CalendarDataPreprocessor.FixTimeZoneComponentOrderNoThrow (serialized.Entity);
-                if (TryDeserializeCalendar (fixedICalData, out calendar, serialized.Id, threadLocal.Item1))
+                iCalendarData = CalendarDataPreprocessor.FixTimeZoneComponentOrderNoThrow (iCalendarData);
+                if (TryDeserializeCalendar(iCalendarData, out calendar, serialized.Id, threadLocal.Item1))
                 {
-                  threadLocal.Item2.Add (Tuple.Create (serialized.Id, calendar));
-                  s_logger.Info (string.Format ("Deserialized ICalData with reordering of TimeZone data '{0}'.", serialized.Id));
+                    threadLocal.Item2.Add(Tuple.Create(serialized.Id, calendar));
+                    s_logger.Info(string.Format("Deserialized ICalData with reordering of TimeZone data '{0}'.", serialized.Id));
+                }
+                else
+                {
+                   // last resort, some weird linebreak issue.
+                   iCalendarData = CalendarDataPreprocessor.NormalizeLinebreaks (iCalendarData);
+                   if (TryDeserializeCalendar(iCalendarData, out calendar, serialized.Id, threadLocal.Item1))
+                   {
+                      threadLocal.Item2.Add(Tuple.Create(serialized.Id, calendar));
+                      s_logger.Info(string.Format("Deserialized ICalData with reordering of TimeZone data '{0}'.", serialized.Id));
+                   }
                 }
               }
 
