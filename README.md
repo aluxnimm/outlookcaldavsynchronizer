@@ -29,6 +29,7 @@ This project was initially developed as a master thesis project at the [Universi
 - DAViCal
 - Baïkal
 - Yandex
+- OpenX-change
 
 ### Features ###
 
@@ -57,6 +58,10 @@ Download and extract the `OutlookCalDavSynchronizer-<Version>.zip` into the same
 If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=44074)
 
 ### Changelog ###
+
+#### 1.5.2 ####
+- Delete profile cache, if outlook-folder or caldav-server-url is changed, ticket #117, prevents data loss and forces new inital sync in such cases
+- Fix for linebreak issues of OpenX-change, merged from pull request #79, thx to bjoernbusch
 
 #### 1.5.1 ####
 - New features:

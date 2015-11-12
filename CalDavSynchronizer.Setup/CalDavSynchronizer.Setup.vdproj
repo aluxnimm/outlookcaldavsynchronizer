@@ -351,6 +351,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_7CA6EABF009E212789EF8F36C4A70E9D"
+        "OwnerKey" = "8:_E8BFD262316C23666C9E3094B8635548"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_7CC3F3BC54A3AFBE8D350AE08F532E7A"
         "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
         "MsmSig" = "8:_UNDEFINED"
@@ -3448,7 +3454,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:CalDavSynchronizer.OAuth.Google, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:CalDavSynchronizer.OAuth.Google, Version=1.5.1.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_E8BFD262316C23666C9E3094B8635548"
@@ -3603,7 +3609,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:GenSync, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:GenSync, Version=1.5.1.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_F5E7FDF04E965A59AC2244FBC6EF4BD0"
@@ -3740,15 +3746,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CalDavSynchronizer"
-        "ProductCode" = "8:{499526DF-D57F-4C21-B1BA-E6230E7ED2C1}"
-        "PackageCode" = "8:{C020CC8B-915A-4891-AB13-FB92BA0D65DF}"
+        "ProductCode" = "8:{2A0D2C0D-9D89-4A98-A06F-795DB45E8F46}"
+        "PackageCode" = "8:{E309EAE8-F508-46A3-ADB4-26E739CAFDEC}"
         "UpgradeCode" = "8:{691063F4-DD9A-4264-948D-3FBD2565572C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.5.1"
+        "ProductVersion" = "8:1.5.2"
         "Manufacturer" = "8:Gerhard Zehetbauer"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
