@@ -59,6 +59,10 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 1.5.3 ####
+- Avoid Nullreference Exception which prevents syncing when there are no proxy settings in config file, bug #124
+- set correct mime type text/vcard when putting contacts
+
 #### 1.5.2 ####
 - Delete profile cache, if outlook-folder or caldav-server-url is changed, ticket #117, prevents data loss and forces new inital sync in such cases
 - Fix for linebreak issues of OpenX-change, merged from pull request #79, thx to bjoernbusch
