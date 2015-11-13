@@ -141,9 +141,125 @@ namespace CalDavSynchronizer.DataAccess
           );
     }
 
-    public Task<EntityVersion<Uri, string>> CreateEntity (string iCalData, string uid)
+    public Task<EntityVersion<Uri, string>> CreateEntity (string vCardData, string uid)
     {
-      return CreateNewEntity (string.Format ("{0:D}.vcs", uid), iCalData);
+      return CreateNewEntity (string.Format ("{0:D}.vcs", uid), vCardData);
+    }
+
+    protected async Task<EntityVersion<Uri, string>> CreateNewEntity (string name, string content)
+    {
+      var contactUrl = new Uri (_serverUrl, name);
+
+      s_logger.DebugFormat ("Creating entity '{0}'", contactUrl);
+
+      IHttpHeaders responseHeaders;
+
+      try
+      {
+        responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders(
+            contactUrl,
+            "PUT",
+            null,
+            null,
+            "*",
+            "text/vcard",
+            content);
+      }
+      catch (WebException x)
+      {
+        if (x.Response != null && ((HttpWebResponse)x.Response).StatusCode == HttpStatusCode.Forbidden)
+          throw new Exception (string.Format ("Error creating contact with url '{0}' (Access denied)", contactUrl));
+        else
+          throw;
+      }
+
+      Uri effectiveContactUrl;
+      if (responseHeaders.Location != null)
+      {
+        s_logger.DebugFormat ("Server sent new location: '{0}'", responseHeaders.Location);
+        effectiveContactUrl = responseHeaders.Location.IsAbsoluteUri ? responseHeaders.Location : new Uri (_serverUrl, responseHeaders.Location);
+        s_logger.DebugFormat ("New entity location: '{0}'", effectiveContactUrl);
+      }
+      else
+      {
+        effectiveContactUrl = contactUrl;
+      }
+
+      var etag = responseHeaders.ETag;
+      string version;
+      if (etag != null)
+      {
+        version = etag.Tag;
+      }
+      else
+      {
+        version = await GetEtag (effectiveContactUrl);
+      }
+
+      return new EntityVersion<Uri, string>(UriHelper.GetUnescapedPath (effectiveContactUrl), version);
+    }
+
+    public Task<EntityVersion<Uri, string>> UpdateEntity (Uri url, string contents)
+    {
+      return UpdateEntity (url, string.Empty, contents);
+    }
+
+    private async Task<EntityVersion<Uri, string>> UpdateEntity (Uri url, string etag, string contents)
+    {
+      s_logger.DebugFormat ("Updating entity '{0}'", url);
+
+      var absoluteContactUrl = new Uri (_serverUrl, url);
+
+      s_logger.DebugFormat ("Absolute entity location: '{0}'", absoluteContactUrl);
+
+      IHttpHeaders responseHeaders;
+
+      try
+      {
+        responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders(
+            absoluteContactUrl,
+            "PUT",
+            null,
+            etag,
+            null,
+            "text/vcard",
+            contents);
+      }
+      catch (WebException x)
+      {
+        if (x.Response != null && ((HttpWebResponse)x.Response).StatusCode == HttpStatusCode.Forbidden)
+          throw new Exception (string.Format ("Error updating contact with url '{0}' and etag '{1}' (Access denied)", absoluteContactUrl, etag));
+        else
+          throw;
+      }
+
+      if (s_logger.IsDebugEnabled)
+        s_logger.DebugFormat ("Updated entity. Server response header: '{0}'", responseHeaders.ToString().Replace ("\r\n", " <CR> "));
+
+      Uri effectiveContactUrl;
+      if (responseHeaders.Location != null)
+      {
+        s_logger.DebugFormat ("Server sent new location: '{0}'", responseHeaders.Location);
+        effectiveContactUrl = responseHeaders.Location.IsAbsoluteUri ? responseHeaders.Location : new Uri (_serverUrl, responseHeaders.Location);
+        s_logger.DebugFormat ("New entity location: '{0}'", effectiveContactUrl);
+      }
+      else
+      {
+        effectiveContactUrl = absoluteContactUrl;
+      }
+
+      var newEtag = responseHeaders.ETag;
+      string version;
+      if (newEtag != null)
+      {
+        version = newEtag.Tag;
+      }
+      else
+      {
+        version = await GetEtag (effectiveContactUrl);
+      }
+
+      return new EntityVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveContactUrl), version);
     }
 
     public async Task<IReadOnlyList<EntityVersion<Uri, string>>> GetContacts ()

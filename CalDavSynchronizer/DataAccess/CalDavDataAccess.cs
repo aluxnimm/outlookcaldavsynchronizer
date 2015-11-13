@@ -165,6 +165,122 @@ namespace CalDavSynchronizer.DataAccess
       return CreateNewEntity (string.Format ("{0:D}.ics", uid), iCalData);
     }
 
+    protected async Task<EntityVersion<Uri, string>> CreateNewEntity (string name, string content)
+    {
+      var eventUrl = new Uri (_serverUrl, name);
+
+      s_logger.DebugFormat ("Creating entity '{0}'", eventUrl);
+
+      IHttpHeaders responseHeaders;
+
+      try
+      {
+        responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders(
+            eventUrl,
+            "PUT",
+            null,
+            null,
+            "*",
+            "text/calendar",
+            content);
+      }
+      catch (WebException x)
+      {
+        if (x.Response != null && ((HttpWebResponse)x.Response).StatusCode == HttpStatusCode.Forbidden)
+          throw new Exception(string.Format("Error creating event with url '{0}' (Access denied)", eventUrl));
+        else
+          throw;
+      }
+
+      Uri effectiveEventUrl;
+      if (responseHeaders.Location != null)
+      {
+        s_logger.DebugFormat ("Server sent new location: '{0}'", responseHeaders.Location);
+        effectiveEventUrl = responseHeaders.Location.IsAbsoluteUri ? responseHeaders.Location : new Uri (_serverUrl, responseHeaders.Location);
+        s_logger.DebugFormat ("New entity location: '{0}'", effectiveEventUrl);
+      }
+      else
+      {
+        effectiveEventUrl = eventUrl;
+      }
+
+      var etag = responseHeaders.ETag;
+      string version;
+      if (etag != null)
+      {
+        version = etag.Tag;
+      }
+      else
+      {
+        version = await GetEtag (effectiveEventUrl);
+      }
+
+      return new EntityVersion<Uri, string>(UriHelper.GetUnescapedPath (effectiveEventUrl), version);
+    }
+
+    public Task<EntityVersion<Uri, string>> UpdateEntity (Uri url, string contents)
+    {
+      return UpdateEntity (url, string.Empty, contents);
+    }
+
+    private async Task<EntityVersion<Uri, string>> UpdateEntity (Uri url, string etag, string contents)
+    {
+      s_logger.DebugFormat ("Updating entity '{0}'", url);
+
+      var absoluteEventUrl = new Uri(_serverUrl, url);
+
+      s_logger.DebugFormat ("Absolute entity location: '{0}'", absoluteEventUrl);
+
+      IHttpHeaders responseHeaders;
+
+      try
+      {
+        responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders(
+            absoluteEventUrl,
+            "PUT",
+            null,
+            etag,
+            null,
+            "text/calendar",
+            contents);
+      }
+      catch (WebException x)
+      {
+        if (x.Response != null && ((HttpWebResponse)x.Response).StatusCode == HttpStatusCode.Forbidden)
+          throw new Exception (string.Format ("Error updating event with url '{0}' and etag '{1}' (Access denied)", absoluteEventUrl, etag));
+        else
+          throw;
+      }
+
+      if (s_logger.IsDebugEnabled)
+        s_logger.DebugFormat ("Updated entity. Server response header: '{0}'", responseHeaders.ToString().Replace ("\r\n", " <CR> "));
+
+      Uri effectiveEventUrl;
+      if (responseHeaders.Location != null)
+      {
+        s_logger.DebugFormat ("Server sent new location: '{0}'", responseHeaders.Location);
+        effectiveEventUrl = responseHeaders.Location.IsAbsoluteUri ? responseHeaders.Location : new Uri(_serverUrl, responseHeaders.Location);
+        s_logger.DebugFormat ("New entity location: '{0}'", effectiveEventUrl);
+      }
+      else
+      {
+        effectiveEventUrl = absoluteEventUrl;
+      }
+
+      var newEtag = responseHeaders.ETag;
+      string version;
+      if (newEtag != null)
+      {
+        version = newEtag.Tag;
+      }
+      else
+      {
+        version = await GetEtag (effectiveEventUrl);
+      }
+
+      return new EntityVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveEventUrl), version);
+    }
+
     private async Task<IReadOnlyList<EntityVersion<Uri, string>>> GetEntities (DateTimeRange? range, string entityType)
     {
       var entities = new List<EntityVersion<Uri, string>>();
