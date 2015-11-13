@@ -148,7 +148,7 @@ namespace CalDavSynchronizer.Scheduling
 
     private static async Task<HttpClient> CreateHttpClient (string username, string password, TimeSpan calDavConnectTimeout, ServerAdapterType serverAdapterType, ProxyOptions proxyOptions)
     {
-      IWebProxy proxy = CreateProxy (proxyOptions);
+      IWebProxy proxy = (proxyOptions != null) ? CreateProxy (proxyOptions) : null;
 
       switch (serverAdapterType)
       {
