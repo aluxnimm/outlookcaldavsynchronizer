@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer 
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -32,5 +32,11 @@ namespace CalDavSynchronizer.Ui
       return new GenericConfigurationForm<T> (configurationElement);
     }
 
+    public IConfigurationForm<EventMappingConfiguration> Create (EventMappingConfiguration configurationElement)
+    {
+      var form = new EventMappingConfigurationForm();
+      form.Options = configurationElement;
+      return form;
+    }
   }
 }

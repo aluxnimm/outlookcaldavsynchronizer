@@ -690,6 +690,14 @@ namespace CalDavSynchronizer.Ui
 
     private MappingConfigurationBase CoreceMappingConfiguration (MappingConfigurationBase mappingConfiguration)
     {
+      switch (_folderType)
+      {
+        case OlItemType.olAppointmentItem:
+          if (mappingConfiguration == null || mappingConfiguration.GetType() != typeof (EventMappingConfiguration))
+            return new EventMappingConfiguration();
+          break;
+      }
+
       return mappingConfiguration;
     }
   }

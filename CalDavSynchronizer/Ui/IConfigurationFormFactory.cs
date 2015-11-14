@@ -22,5 +22,6 @@ namespace CalDavSynchronizer.Ui
   public interface IConfigurationFormFactory
   {
     IConfigurationForm<T> CreateGenericForm<T> (object configurationElement);
+    IConfigurationForm<EventMappingConfiguration> Create (EventMappingConfiguration configurationElement);
   }
 }

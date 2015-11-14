@@ -236,10 +236,13 @@ namespace CalDavSynchronizer.Scheduling
           CalDavRepository.EntityType.Event,
           dateTimeRangeProvider);
 
+      var mappingParameters = GetMappingParameters<EventMappingConfiguration> (options);
+
       var entityMapper = new EventEntityMapper (
           _outlookEmailAddress, new Uri ("mailto:" + options.EmailAddress),
           _outlookSession.Application.TimeZones.CurrentTimeZone.ID,
-          _outlookSession.Application.Version);
+          _outlookSession.Application.Version,
+          mappingParameters);
 
       var outlookEventRelationDataFactory = new OutlookEventRelationDataFactory();
 
