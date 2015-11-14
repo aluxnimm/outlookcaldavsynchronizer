@@ -52,6 +52,7 @@ namespace CalDavSynchronizer.Contracts
     public bool EnableChangeTriggeredSynchronization { get; set; }
 
     public ProxyOptions ProxyOptions { get; set; }
+    public MappingConfigurationBase MappingConfiguration { get; set; }
 
     [XmlIgnore]
     public string Password

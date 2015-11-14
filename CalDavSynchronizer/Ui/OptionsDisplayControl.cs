@@ -528,7 +528,8 @@ namespace CalDavSynchronizer.Ui
 
         _advancedOptions = new AdvancedOptions (
             value.CloseAfterEachRequest,
-            value.ProxyOptions ?? new ProxyOptions());
+            value.ProxyOptions ?? new ProxyOptions(),
+            value.MappingConfiguration);
 
         UpdateFolder (value.OutlookFolderEntryId, value.OutlookFolderStoreId);
         UpdateConflictResolutionComboBoxEnabled();
@@ -557,7 +558,8 @@ namespace CalDavSynchronizer.Ui
                    ServerAdapterType = SelectedServerAdapterType,
                    CloseAfterEachRequest = _advancedOptions.CloseConnectionAfterEachRequest,
                    EnableChangeTriggeredSynchronization = _synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Checked,
-                   ProxyOptions = _advancedOptions.ProxyOptions
+                   ProxyOptions = _advancedOptions.ProxyOptions,
+                   MappingConfiguration = _advancedOptions.MappingConfiguration
                };
       }
     }
@@ -675,7 +677,7 @@ namespace CalDavSynchronizer.Ui
 
     private void _advancedSettingsButton_Click (object sender, EventArgs e)
     {
-      using (AdvancedOptionsForm advancedOptionsForm = new AdvancedOptionsForm())
+      using (AdvancedOptionsForm advancedOptionsForm = new AdvancedOptionsForm (CoreceMappingConfiguration))
       {
         advancedOptionsForm.Options = _advancedOptions;
 
@@ -684,6 +686,11 @@ namespace CalDavSynchronizer.Ui
           _advancedOptions = advancedOptionsForm.Options;
         }
       }
+    }
+
+    private MappingConfigurationBase CoreceMappingConfiguration (MappingConfigurationBase mappingConfiguration)
+    {
+      return mappingConfiguration;
     }
   }
 }

@@ -42,6 +42,7 @@
       this.groupBox1 = new System.Windows.Forms.GroupBox();
       this._closeConnectionAfterEachRequestCheckBox = new System.Windows.Forms.CheckBox();
       this._manualProxyGroupBox = new System.Windows.Forms.GroupBox();
+      this._mappingConfigurationButton = new System.Windows.Forms.Button();
       this.groupBox2.SuspendLayout();
       this.groupBox1.SuspendLayout();
       this._manualProxyGroupBox.SuspendLayout();
@@ -51,7 +52,7 @@
       // 
       this.OkButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.OkButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.OkButton.Location = new System.Drawing.Point(364, 318);
+      this.OkButton.Location = new System.Drawing.Point(364, 362);
       this.OkButton.Name = "OkButton";
       this.OkButton.Size = new System.Drawing.Size(75, 23);
       this.OkButton.TabIndex = 6;
@@ -63,7 +64,7 @@
       // 
       this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.buttonCancel.Location = new System.Drawing.Point(449, 318);
+      this.buttonCancel.Location = new System.Drawing.Point(449, 362);
       this.buttonCancel.Name = "buttonCancel";
       this.buttonCancel.Size = new System.Drawing.Size(75, 23);
       this.buttonCancel.TabIndex = 7;
@@ -196,11 +197,22 @@
       this._manualProxyGroupBox.TabIndex = 10;
       this._manualProxyGroupBox.TabStop = false;
       // 
+      // _mappingConfigurationButton
+      // 
+      this._mappingConfigurationButton.Location = new System.Drawing.Point(364, 317);
+      this._mappingConfigurationButton.Name = "_mappingConfigurationButton";
+      this._mappingConfigurationButton.Size = new System.Drawing.Size(158, 23);
+      this._mappingConfigurationButton.TabIndex = 11;
+      this._mappingConfigurationButton.Text = "Mapping Configuration...";
+      this._mappingConfigurationButton.UseVisualStyleBackColor = true;
+      this._mappingConfigurationButton.Click += new System.EventHandler(this._mappingConfigurationButton_Click);
+      // 
       // AdvancedOptionsForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(534, 351);
+      this.ClientSize = new System.Drawing.Size(534, 395);
+      this.Controls.Add(this._mappingConfigurationButton);
       this.Controls.Add(this._manualProxyGroupBox);
       this.Controls.Add(this.groupBox1);
       this.Controls.Add(this.groupBox2);
@@ -237,5 +249,6 @@
     private System.Windows.Forms.Label label4;
     private System.Windows.Forms.CheckBox _closeConnectionAfterEachRequestCheckBox;
     private System.Windows.Forms.GroupBox _manualProxyGroupBox;
+    private System.Windows.Forms.Button _mappingConfigurationButton;
   }
 }
