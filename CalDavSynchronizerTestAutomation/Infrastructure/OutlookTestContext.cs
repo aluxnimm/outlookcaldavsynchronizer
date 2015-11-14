@@ -45,7 +45,12 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       if (mapiNameSpace == null)
         throw new ArgumentNullException ("mapiNameSpace");
 
-      _entityMapper = new EventEntityMapper (mapiNameSpace.CurrentUser.Address, new Uri ("mailto:" + testerServerEmailAddress), mapiNameSpace.Application.TimeZones.CurrentTimeZone.ID, mapiNameSpace.Application.Version);
+      _entityMapper = new EventEntityMapper (
+          mapiNameSpace.CurrentUser.Address,
+          new Uri ("mailto:" + testerServerEmailAddress),
+          mapiNameSpace.Application.TimeZones.CurrentTimeZone.ID,
+          mapiNameSpace.Application.Version,
+          new EventMappingConfiguration());
 
       s_outlookFolderEntryId = ConfigurationManager.AppSettings[string.Format ("{0}.OutlookFolderEntryId", Environment.MachineName)];
       s_outlookFolderStoreId = ConfigurationManager.AppSettings[string.Format ("{0}.OutlookFolderStoreId", Environment.MachineName)];

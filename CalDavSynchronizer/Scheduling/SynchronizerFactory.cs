@@ -37,6 +37,7 @@ using GenSync.EntityRepositories;
 using GenSync.ProgressReport;
 using GenSync.Synchronization;
 using GenSync.Synchronization.StateFactories;
+using log4net;
 using Microsoft.Office.Interop.Outlook;
 using Thought.vCards;
 
@@ -44,6 +45,8 @@ namespace CalDavSynchronizer.Scheduling
 {
   public class SynchronizerFactory : ISynchronizerFactory
   {
+    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
+
     private readonly string _outlookEmailAddress;
     private readonly ITotalProgressFactory _totalProgressFactory;
     private readonly NameSpace _outlookSession;
@@ -233,10 +236,13 @@ namespace CalDavSynchronizer.Scheduling
           CalDavRepository.EntityType.Event,
           dateTimeRangeProvider);
 
+      var mappingParameters = GetMappingParameters<EventMappingConfiguration> (options);
+
       var entityMapper = new EventEntityMapper (
           _outlookEmailAddress, new Uri ("mailto:" + options.EmailAddress),
           _outlookSession.Application.TimeZones.CurrentTimeZone.ID,
-          _outlookSession.Application.Version);
+          _outlookSession.Application.Version,
+          mappingParameters);
 
       var outlookEventRelationDataFactory = new OutlookEventRelationDataFactory();
 
@@ -268,6 +274,24 @@ namespace CalDavSynchronizer.Scheduling
           ExceptionHandler.Instance);
 
       return new OutlookSynchronizer (synchronizer, atypeRepository);
+    }
+
+    private T GetMappingParameters<T> (Options options)
+        where T : class, new()
+    {
+      if (options.MappingConfiguration == null)
+        return new T();
+
+      var parameters = options.MappingConfiguration as T;
+
+      if (parameters != null)
+        return parameters;
+
+      s_logger.ErrorFormat (
+          "Expected mapping parameters of type '{0}', but found type of '{1}'. Falling back to default",
+          typeof (T).Name,
+          options.MappingConfiguration.GetType().Name);
+      return new T();
     }
 
     private OutlookSynchronizer CreateTaskSynchronizer (Options options)

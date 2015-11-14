@@ -8,14 +8,30 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Utilities;
+using log4net;
 
 namespace CalDavSynchronizer.Ui
 {
   public partial class AdvancedOptionsForm : Form
   {
-    public AdvancedOptionsForm ()
+    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
+    private MappingConfigurationBase _mappingConfiguration;
+    private readonly Func<MappingConfigurationBase, MappingConfigurationBase> _coerceMappingConfiguration;
+    private readonly IConfigurationFormFactory _configurationFormFactory;
+
+    public AdvancedOptionsForm (
+        Func<MappingConfigurationBase, MappingConfigurationBase> coerceMappingConfiguration,
+        IConfigurationFormFactory configurationFormFactory)
     {
+      _configurationFormFactory = configurationFormFactory;
+      _coerceMappingConfiguration = coerceMappingConfiguration;
       InitializeComponent();
+    }
+
+    public AdvancedOptionsForm (Func<MappingConfigurationBase, MappingConfigurationBase> coerceMappingConfiguration)
+        : this (coerceMappingConfiguration, ConfigurationFormFactory.Instance)
+    {
     }
 
     public AdvancedOptions Options
@@ -31,7 +47,8 @@ namespace CalDavSynchronizer.Ui
                 ProxyUrl = _proxyUrlTextBox.Text,
                 ProxyUserName = _userNameTextBox.Text,
                 ProxyPassword = _passwordTextBox.Text
-            });
+            },
+            _mappingConfiguration);
       }
       set
       {
@@ -43,6 +60,8 @@ namespace CalDavSynchronizer.Ui
         _userNameTextBox.Text = value.ProxyOptions.ProxyUserName;
         _passwordTextBox.Text = value.ProxyOptions.ProxyPassword;
         _manualProxyGroupBox.Enabled = value.ProxyOptions.ProxyUseManual;
+
+        _mappingConfiguration = value.MappingConfiguration;
       }
     }
 
@@ -101,6 +120,29 @@ namespace CalDavSynchronizer.Ui
       }
 
       return result;
+    }
+
+    private void _mappingConfigurationButton_Click (object sender, EventArgs e)
+    {
+      try
+      {
+        var mappingConfiguration = _coerceMappingConfiguration (_mappingConfiguration);
+        if (mappingConfiguration != null)
+        {
+          var configurationForm = mappingConfiguration.CreateConfigurationForm (_configurationFormFactory);
+          if (configurationForm.Display())
+            _mappingConfiguration = configurationForm.Options;
+        }
+        else
+        {
+          MessageBox.Show ("Mapping configuration not available.");
+          return;
+        }
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.HandleException (x, s_logger);
+      }
     }
   }
 }

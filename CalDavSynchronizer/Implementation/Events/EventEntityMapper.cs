@@ -20,6 +20,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using DDay.iCal;
 using GenSync.EntityMapping;
@@ -50,10 +51,17 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly string _outlookEmailAddress;
     private readonly string _serverEmailUri;
     private readonly TimeZoneInfo _localTimeZoneInfo;
+    private readonly EventMappingConfiguration _configuration;
 
-    public EventEntityMapper (string outlookEmailAddress, Uri serverEmailAddress, string localTimeZoneId, string outlookApplicationVersion)
+    public EventEntityMapper (
+      string outlookEmailAddress,
+      Uri serverEmailAddress, 
+      string localTimeZoneId, 
+      string outlookApplicationVersion, 
+      EventMappingConfiguration configuration)
     {
       _outlookEmailAddress = outlookEmailAddress;
+      _configuration = configuration;
       _serverEmailUri = serverEmailAddress.ToString();
       _localTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (localTimeZoneId);
 
@@ -140,21 +148,29 @@ namespace CalDavSynchronizer.Implementation.Events
 
       target.Summary = source.Subject;
       target.Location = source.Location;
-      target.Description = source.Body;
+
+      if(_configuration.MapBody)
+        target.Description = source.Body;
 
       target.Priority = MapPriority1To2 (source.Importance);
 
-      bool organizerSet;
-      MapAttendees1To2 (source, target, out organizerSet);
+
+      if (_configuration.MapAttendees)
+      {
+        bool organizerSet;
+        MapAttendees1To2 (source, target, out organizerSet);
+        if (!organizerSet)
+        	MapOrganizer1To2 (source, target);
+      }
 
       if (!isRecurrenceException)
         MapRecurrance1To2 (source, target, startIcalTimeZone, endIcalTimeZone);
 
-      if (!organizerSet)
-        MapOrganizer1To2 (source, target);
-
+      
       target.Class = MapPrivacy1To2 (source.Sensitivity);
-      MapReminder1To2 (source, target);
+
+      if(_configuration.MapReminder)
+        MapReminder1To2 (source, target);
 
       MapCategories1To2 (source, target);
 
@@ -1224,11 +1240,15 @@ namespace CalDavSynchronizer.Implementation.Events
 
       targetWrapper.Inner.Subject = source.Summary;
       targetWrapper.Inner.Location = source.Location;
-      targetWrapper.Inner.Body = source.Description;
+
+      targetWrapper.Inner.Body = _configuration.MapBody ? source.Description : string.Empty;
 
       targetWrapper.Inner.Importance = MapPriority2To1 (source.Priority);
 
-      MapAttendeesAndOrganizer2To1 (source, targetWrapper.Inner);
+      if(_configuration.MapAttendees)
+        MapAttendeesAndOrganizer2To1 (source, targetWrapper.Inner);
+  
+
 
       if (!isRecurrenceException)
         MapRecurrance2To1 (source, recurrenceExceptionsOrNull, targetWrapper);
@@ -1236,7 +1256,8 @@ namespace CalDavSynchronizer.Implementation.Events
       if (!isRecurrenceException)
         targetWrapper.Inner.Sensitivity = MapPrivacy2To1 (source.Class);
 
-      MapReminder2To1 (source, targetWrapper.Inner);
+      if (_configuration.MapReminder)
+        MapReminder2To1 (source, targetWrapper.Inner);
 
       if (!isRecurrenceException)
         MapCategories2To1 (source, targetWrapper.Inner);

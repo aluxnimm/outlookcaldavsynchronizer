@@ -191,7 +191,6 @@
       // 
       this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.groupBox1.Controls.Add(this._advancedOptionsButton);
       this.groupBox1.Controls.Add(this._useGoogleOAuthCheckBox);
       this.groupBox1.Controls.Add(this.label11);
       this.groupBox1.Controls.Add(this._emailAddressTextBox);
@@ -212,7 +211,7 @@
       // _advancedOptionsButton
       // 
       this._advancedOptionsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._advancedOptionsButton.Location = new System.Drawing.Point(249, 145);
+      this._advancedOptionsButton.Location = new System.Drawing.Point(228, 518);
       this._advancedOptionsButton.Name = "_advancedOptionsButton";
       this._advancedOptionsButton.Size = new System.Drawing.Size(108, 23);
       this._advancedOptionsButton.TabIndex = 15;
@@ -443,6 +442,7 @@
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this._advancedOptionsButton);
       this.Controls.Add(this._copyButton);
       this.Controls.Add(this._inactiveCheckBox);
       this.Controls.Add(this.label10);
