@@ -25,9 +25,10 @@ namespace CalDavSynchronizer.DataAccess
   public class GeneralOptionsDataAccess : IGeneralOptionsDataAccess
   {
     private const string s_shouldCheckForNewerVersionsValueName = "CheckForNewerVersions";
+    private const string s_storeAppDataInRoamingFolder = "StoreAppDataInRoamingFolder";
     private const string s_OptionsRegistryKey = @"Software\CalDavSynchronizer";
 
-   
+
     public GeneralOptions LoadOptions ()
     {
       using (var key = OpenOptionsKey())
@@ -35,6 +36,7 @@ namespace CalDavSynchronizer.DataAccess
         return new GeneralOptions()
                {
                    ShouldCheckForNewerVersions = (int) (key.GetValue (s_shouldCheckForNewerVersionsValueName) ?? 1) != 0,
+                   StoreAppDataInRoamingFolder = (int) (key.GetValue (s_storeAppDataInRoamingFolder) ?? 0) != 0,
                };
       }
     }
@@ -44,6 +46,7 @@ namespace CalDavSynchronizer.DataAccess
       using (var key = OpenOptionsKey())
       {
         key.SetValue (s_shouldCheckForNewerVersionsValueName, options.ShouldCheckForNewerVersions ? 1 : 0);
+        key.SetValue (s_storeAppDataInRoamingFolder, options.StoreAppDataInRoamingFolder ? 1 : 0);
       }
     }
 

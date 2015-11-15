@@ -69,7 +69,10 @@ namespace CalDavSynchronizer
 
         EnsureSynchronizationContext();
 
-        _applicationDataDirectory = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData), "CalDavSynchronizer");
+        _applicationDataDirectory = Path.Combine (
+            Environment.GetFolderPath (
+                generalOptions.StoreAppDataInRoamingFolder ? Environment.SpecialFolder.ApplicationData : Environment.SpecialFolder.LocalApplicationData),
+            "CalDavSynchronizer");
 
         _optionsDataAccess = new OptionsDataAccess (
             Path.Combine (

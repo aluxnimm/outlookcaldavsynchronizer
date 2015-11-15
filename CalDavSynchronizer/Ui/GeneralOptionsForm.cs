@@ -35,9 +35,14 @@ namespace CalDavSynchronizer.Ui
         return new GeneralOptions
                {
                    ShouldCheckForNewerVersions = _checkForNewerVersionsCheckBox.Checked,
+                   StoreAppDataInRoamingFolder = _storeDataInRoamingFolderCheckBox.Checked,
                };
       }
-      set { _checkForNewerVersionsCheckBox.Checked = value.ShouldCheckForNewerVersions; }
+      set
+      {
+        _checkForNewerVersionsCheckBox.Checked = value.ShouldCheckForNewerVersions;
+        _storeDataInRoamingFolderCheckBox.Checked = value.StoreAppDataInRoamingFolder;
+      }
     }
   }
 }
