@@ -54,5 +54,10 @@ namespace CalDavSynchronizer
         aboutForm.ShowDialog();
       }
     }
+
+    private void GeneralOptionsButton_Click (object sender, RibbonControlEventArgs e)
+    {
+      ThisAddIn.ComponentContainer.ShowGeneralOptionsNoThrow ();
+    }
   }
 }

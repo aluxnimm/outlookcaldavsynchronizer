@@ -297,6 +297,12 @@
     <Compile Include="Ui\ConnectionTests\ConnectionTester.cs" />
     <Compile Include="Ui\ConnectionTests\ResourceType.cs" />
     <Compile Include="Ui\ConnectionTests\TestResult.cs" />
+    <Compile Include="Ui\GeneralOptionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ui\GeneralOptionsForm.Designer.cs">
+      <DependentUpon>GeneralOptionsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Ui\EventMappingConfigurationForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -354,6 +360,9 @@
     </Compile>
     <EmbeddedResource Include="CalDavSynchronizerRibbon.resx">
       <DependentUpon>CalDavSynchronizerRibbon.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ui\GeneralOptionsForm.resx">
+      <DependentUpon>GeneralOptionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\EventMappingConfigurationForm.resx">
       <DependentUpon>EventMappingConfigurationForm.cs</DependentUpon>
@@ -435,6 +444,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
+    <None Include="Resources\GeneralOptions.ico" />
     <Content Include="Resources\outlookcaldavsynchronizerlogoarrow.png" />
   </ItemGroup>
   <ItemGroup>

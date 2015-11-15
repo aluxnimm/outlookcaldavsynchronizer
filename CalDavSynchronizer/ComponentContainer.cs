@@ -154,20 +154,36 @@ namespace CalDavSynchronizer
       try
       {
         var options = _optionsDataAccess.LoadOptions();
-        var generalOptions = _generalOptionsDataAccess.LoadOptions();
-        var shouldCheckForNewerVersions = generalOptions.ShouldCheckForNewerVersions;
         Options[] newOptions;
-        if (OptionsForm.EditOptions (_session, options, out newOptions, shouldCheckForNewerVersions, out shouldCheckForNewerVersions))
+        if (OptionsForm.EditOptions (_session, options, out newOptions))
         {
           _optionsDataAccess.SaveOptions (newOptions);
           
-          generalOptions.ShouldCheckForNewerVersions = shouldCheckForNewerVersions;
-          _generalOptionsDataAccess.SaveOptions (generalOptions);
-
-          _updateChecker.IsEnabled = shouldCheckForNewerVersions;
-
           _scheduler.SetOptions (newOptions);
           DeleteEntityChachesForChangedProfiles (options, newOptions);
+        }
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.HandleException (x, s_logger);
+      }
+    }
+
+    public void ShowGeneralOptionsNoThrow ()
+    {
+      try
+      {
+        var generalOptions = _generalOptionsDataAccess.LoadOptions ();
+        using (var optionsForm = new GeneralOptionsForm())
+        {
+          optionsForm.Options = generalOptions;
+          if(optionsForm.Display())
+          {
+            var newOptions = optionsForm.Options;
+            _generalOptionsDataAccess.SaveOptions (newOptions);
+
+            _updateChecker.IsEnabled = newOptions.ShouldCheckForNewerVersions;
+          }
         }
       }
       catch (Exception x)

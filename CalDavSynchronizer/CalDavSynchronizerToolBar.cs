@@ -24,8 +24,11 @@ namespace CalDavSynchronizer
   internal class CalDavSynchronizerToolBar
   {
     private readonly CommandBarButton _toolBarBtnSyncNow;
+    // ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
+    private readonly CommandBarButton _toolBarBtnGeneralOptions;
     private readonly CommandBarButton _toolBarBtnOptions;
     private readonly CommandBarButton _toolBarBtnAboutMe;
+    // ReSharper restore PrivateFieldCanBeConvertedToLocalVariable
 
     private readonly ComponentContainer _componentContainer;
 
@@ -37,11 +40,18 @@ namespace CalDavSynchronizer
 
       _toolBarBtnOptions = (CommandBarButton) toolBar.Controls.Add (1, missing, missing, missing, missing);
       _toolBarBtnOptions.Style = MsoButtonStyle.msoButtonIconAndCaption;
-      _toolBarBtnOptions.Caption = "Options";
+      _toolBarBtnOptions.Caption = "Synchronization Profiles";
       _toolBarBtnOptions.FaceId = 222; // builtin icon: hand hovering above a property list
-      _toolBarBtnOptions.Tag = "View or set CalDav Synchronizer options";
-
+      _toolBarBtnOptions.Tag = "View or set CalDav Synchronization Profiles";
       _toolBarBtnOptions.Click += ToolBarBtn_Options_OnClick;
+
+
+      _toolBarBtnGeneralOptions = (CommandBarButton) toolBar.Controls.Add (1, missing, missing, missing, missing);
+      _toolBarBtnGeneralOptions.Style = MsoButtonStyle.msoButtonIconAndCaption;
+      _toolBarBtnGeneralOptions.Caption = "General Options";
+      _toolBarBtnGeneralOptions.FaceId = 222; // builtin icon: hand hovering above a property list
+      _toolBarBtnGeneralOptions.Tag = "View or set CalDav Synchronizer general options";
+      _toolBarBtnGeneralOptions.Click += ToolBarBtn_GeneralOptions_OnClick;
 
       _toolBarBtnSyncNow = (CommandBarButton) toolBar.Controls.Add (1, missing, missing, missing, missing);
       _toolBarBtnSyncNow.Style = MsoButtonStyle.msoButtonIconAndCaption;
@@ -76,6 +86,11 @@ namespace CalDavSynchronizer
     private void ToolBarBtn_Options_OnClick (CommandBarButton Ctrl, ref bool CancelDefault)
     {
       _componentContainer.ShowOptionsNoThrow();
+    }
+
+    private void ToolBarBtn_GeneralOptions_OnClick (CommandBarButton Ctrl, ref bool CancelDefault)
+    {
+      _componentContainer.ShowGeneralOptionsNoThrow ();
     }
 
     private void ToolBarBtn_SyncNow_OnClick (CommandBarButton Ctrl, ref bool CancelDefault)

@@ -34,21 +34,14 @@ namespace CalDavSynchronizer.Ui
     }
 
 
-    public static bool EditOptions (NameSpace session, Options[] options, out Options[] changedOptions, bool checkForNewerVersions, out bool changedCheckForNewerVersions)
+    public static bool EditOptions (NameSpace session, Options[] options, out Options[] changedOptions)
     {
-      changedCheckForNewerVersions = false;
-      changedOptions = null;
-
       var form = new OptionsForm (session);
       form.OptionsList = options;
-      form._checkForNewerVersionsCheckBox.Checked = checkForNewerVersions;
 
       var shouldSave = form.ShowDialog() == DialogResult.OK;
-      if (shouldSave)
-      {
         changedOptions = form.OptionsList;
-        changedCheckForNewerVersions = form._checkForNewerVersionsCheckBox.Checked;
-      }
+
       return shouldSave;
     }
 

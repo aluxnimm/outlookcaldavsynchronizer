@@ -38,6 +38,7 @@
       this.group1 = this.Factory.CreateRibbonGroup();
       this.SynchronizeNowButton = this.Factory.CreateRibbonButton();
       this.OptionsButton = this.Factory.CreateRibbonButton();
+      this.GeneralOptionsButton = this.Factory.CreateRibbonButton();
       this.AboutButton = this.Factory.CreateRibbonButton();
       this.tab1.SuspendLayout();
       this.group1.SuspendLayout();
@@ -52,6 +53,7 @@
       // 
       this.group1.Items.Add(this.SynchronizeNowButton);
       this.group1.Items.Add(this.OptionsButton);
+      this.group1.Items.Add(this.GeneralOptionsButton);
       this.group1.Items.Add(this.AboutButton);
       this.group1.Name = "group1";
       // 
@@ -66,10 +68,18 @@
       // OptionsButton
       // 
       this.OptionsButton.Image = global::CalDavSynchronizer.Properties.Resources.Options;
-      this.OptionsButton.Label = "Options";
+      this.OptionsButton.Label = "Synchronization Profiles";
       this.OptionsButton.Name = "OptionsButton";
       this.OptionsButton.ShowImage = true;
       this.OptionsButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.OptionsButton_Click);
+      // 
+      // GeneralOptionsButton
+      // 
+      this.GeneralOptionsButton.Image = global::CalDavSynchronizer.Properties.Resources.GeneralOptions;
+      this.GeneralOptionsButton.Label = "General Options";
+      this.GeneralOptionsButton.Name = "GeneralOptionsButton";
+      this.GeneralOptionsButton.ShowImage = true;
+      this.GeneralOptionsButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.GeneralOptionsButton_Click);
       // 
       // AboutButton
       // 
@@ -99,6 +109,7 @@
     internal Microsoft.Office.Tools.Ribbon.RibbonButton SynchronizeNowButton;
     internal Microsoft.Office.Tools.Ribbon.RibbonButton OptionsButton;
     internal Microsoft.Office.Tools.Ribbon.RibbonButton AboutButton;
+    internal Microsoft.Office.Tools.Ribbon.RibbonButton GeneralOptionsButton;
   }
 
   partial class ThisRibbonCollection
