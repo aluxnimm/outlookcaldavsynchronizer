@@ -25,7 +25,6 @@ namespace CalDavSynchronizer.DataAccess
   public class OptionsDataAccess : IOptionsDataAccess
   {
     private readonly string _optionsFilePath;
-    private const string s_OptionsRegistryKey = @"Software\CalDavSynchronizer";
 
     public OptionsDataAccess (string optionsFilePath)
     {
@@ -46,57 +45,6 @@ namespace CalDavSynchronizer.DataAccess
         Directory.CreateDirectory (Path.GetDirectoryName (_optionsFilePath));
 
       File.WriteAllText (_optionsFilePath, Serializer<Options[]>.Serialize (options));
-    }
-
-    public bool ShouldCheckForNewerVersions
-    {
-      get
-      {
-        using (var key = OpenOptionsKey())
-        {
-          return (int) (key.GetValue ("CheckForNewerVersions") ?? 1) != 0;
-        }
-      }
-      set
-      {
-        using (var key = OpenOptionsKey())
-        {
-          key.SetValue ("CheckForNewerVersions", value ? 1 : 0);
-        }
-      }
-    }
-
-    public Version IgnoreUpdatesTilVersion
-    {
-      get
-      {
-        using (var key = OpenOptionsKey())
-        {
-          var versionString = (string) key.GetValue ("IgnoreUpdatesTilVersion");
-          if (!string.IsNullOrEmpty (versionString))
-            return new Version (versionString);
-          else
-            return null;
-        }
-      }
-      set
-      {
-        using (var key = OpenOptionsKey())
-        {
-          if (value != null)
-            key.SetValue ("IgnoreUpdatesTilVersion", value.ToString());
-          else
-            key.DeleteValue ("IgnoreUpdatesTilVersion");
-        }
-      }
-    }
-
-    private static RegistryKey OpenOptionsKey ()
-    {
-      var key = Registry.CurrentUser.OpenSubKey (s_OptionsRegistryKey, true);
-      if (key == null)
-        key = Registry.CurrentUser.CreateSubKey (s_OptionsRegistryKey);
-      return key;
     }
   }
 }

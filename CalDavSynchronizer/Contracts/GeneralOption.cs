@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer 
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -15,13 +15,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using CalDavSynchronizer.Contracts;
 
-namespace CalDavSynchronizer.DataAccess
+namespace CalDavSynchronizer.Contracts
 {
-  public interface IOptionsDataAccess
+  public class GeneralOptions
   {
-    Options[] LoadOptions ();
-    void SaveOptions (Options[] options);
+    public bool ShouldCheckForNewerVersions { get; set; }
   }
 }

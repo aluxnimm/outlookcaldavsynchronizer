@@ -212,12 +212,15 @@
     <Compile Include="Contracts\ConfigurationBase.cs" />
     <Compile Include="Contracts\EventMappingConfiguration.cs" />
     <Compile Include="Contracts\MappingConfigurationBase.cs" />
+    <Compile Include="Contracts\GeneralOption.cs" />
     <Compile Include="Contracts\ProfileEntry.cs" />
     <Compile Include="Contracts\ProxyOptions.cs" />
     <Compile Include="Contracts\ServerAdapterType.cs" />
     <Compile Include="DataAccess\HttpClientBasedClient\HttpResponseHeadersAdapter.cs" />
     <Compile Include="DataAccess\ICardDavDataAccess.cs" />
     <Compile Include="DataAccess\IHttpHeaders.cs" />
+    <Compile Include="DataAccess\IGeneralOptionsDataAccess.cs" />
+    <Compile Include="DataAccess\GeneralOptionsDataAccess.cs" />
     <Compile Include="DataAccess\WebDavDataAccess.cs" />
     <Compile Include="DataAccess\CardDavDataAccess.cs" />
     <Compile Include="DataAccess\IWebDavClient.cs" />

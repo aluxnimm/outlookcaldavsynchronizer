@@ -46,6 +46,7 @@ namespace CalDavSynchronizer
     private readonly object _synchronizationContextLock = new object();
     private readonly Scheduler _scheduler;
     private readonly IOptionsDataAccess _optionsDataAccess;
+    private readonly IGeneralOptionsDataAccess _generalOptionsDataAccess;
     private readonly UpdateChecker _updateChecker;
     private readonly NameSpace _session;
     private readonly OutlookItemChangeWatcher _itemChangeWatcher;
@@ -56,6 +57,10 @@ namespace CalDavSynchronizer
       try
       {
         XmlConfigurator.Configure();
+
+        _generalOptionsDataAccess = new GeneralOptionsDataAccess();
+
+        var generalOptions = _generalOptionsDataAccess.LoadOptions();
 
         _itemChangeWatcher = new OutlookItemChangeWatcher (application.Inspectors);
         _itemChangeWatcher.ItemSavedOrDeleted += ItemChangeWatcherItemSavedOrDeleted;
@@ -85,9 +90,9 @@ namespace CalDavSynchronizer
         _scheduler = new Scheduler (synchronizerFactory, EnsureSynchronizationContext);
         _scheduler.SetOptions (_optionsDataAccess.LoadOptions());
 
-        _updateChecker = new UpdateChecker (new AvailableVersionService(), () => _optionsDataAccess.IgnoreUpdatesTilVersion);
+        _updateChecker = new UpdateChecker (new AvailableVersionService(), () => _generalOptionsDataAccess.IgnoreUpdatesTilVersion);
         _updateChecker.NewerVersionFound += UpdateChecker_NewerVersionFound;
-        _updateChecker.IsEnabled = _optionsDataAccess.ShouldCheckForNewerVersions;
+        _updateChecker.IsEnabled = generalOptions.ShouldCheckForNewerVersions;
       }
       catch (Exception x)
       {
@@ -130,16 +135,6 @@ namespace CalDavSynchronizer
       }
     }
 
-    private bool ShouldCheckForNewerVersions
-    {
-      get { return _optionsDataAccess.ShouldCheckForNewerVersions; }
-      set
-      {
-        _updateChecker.IsEnabled = value;
-        _optionsDataAccess.ShouldCheckForNewerVersions = value;
-      }
-    }
-
     public async Task SynchronizeNowNoThrow ()
     {
       try
@@ -159,12 +154,18 @@ namespace CalDavSynchronizer
       try
       {
         var options = _optionsDataAccess.LoadOptions();
-        var shouldCheckForNewerVersions = ShouldCheckForNewerVersions;
+        var generalOptions = _generalOptionsDataAccess.LoadOptions();
+        var shouldCheckForNewerVersions = generalOptions.ShouldCheckForNewerVersions;
         Options[] newOptions;
         if (OptionsForm.EditOptions (_session, options, out newOptions, shouldCheckForNewerVersions, out shouldCheckForNewerVersions))
         {
           _optionsDataAccess.SaveOptions (newOptions);
-          ShouldCheckForNewerVersions = shouldCheckForNewerVersions;
+          
+          generalOptions.ShouldCheckForNewerVersions = shouldCheckForNewerVersions;
+          _generalOptionsDataAccess.SaveOptions (generalOptions);
+
+          _updateChecker.IsEnabled = shouldCheckForNewerVersions;
+
           _scheduler.SetOptions (newOptions);
           DeleteEntityChachesForChangedProfiles (options, newOptions);
         }
@@ -222,13 +223,16 @@ namespace CalDavSynchronizer
         var form = new GetNewVersionForm (e.WhatsNewInformation, e.NewVersion, e.DownloadLink);
         form.TurnOffCheckForNewerVersions += delegate
         {
-          ShouldCheckForNewerVersions = false;
+          var options = _generalOptionsDataAccess.LoadOptions();
+          options.ShouldCheckForNewerVersions = false;
+          _generalOptionsDataAccess.SaveOptions (options);
+
           MessageBox.Show ("Automatic check for newer version turned off.", "CalDav Synchronizer");
         };
 
         form.IgnoreThisVersion += delegate
         {
-          _optionsDataAccess.IgnoreUpdatesTilVersion = e.NewVersion;
+          _generalOptionsDataAccess.IgnoreUpdatesTilVersion = e.NewVersion;
           MessageBox.Show (string.Format ("Waiting for newer version than '{0}'.", e.NewVersion), "CalDav Synchronizer");
         };
 

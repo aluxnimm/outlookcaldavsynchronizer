@@ -19,9 +19,10 @@ using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public interface IOptionsDataAccess
+  public interface IGeneralOptionsDataAccess
   {
-    Options[] LoadOptions ();
-    void SaveOptions (Options[] options);
+    GeneralOptions LoadOptions ();
+    void SaveOptions (GeneralOptions options);
+    Version IgnoreUpdatesTilVersion { get; set; }
   }
 }
