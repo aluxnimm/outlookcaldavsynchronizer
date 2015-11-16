@@ -13,7 +13,9 @@ Outlook Plugin, which synchronizes events, tasks and contacts(beta) between Outl
 - [Gerhard Zehetbauer](https://sourceforge.net/u/nertsch/profile/)
 - [Alexander Nimmervoll](https://sourceforge.net/u/nimm/profile/)
 
-This project was initially developed as a master thesis project at the [University of Applied Sciences Technikum Wien](http://www.technikum-wien.at), Software Engineering Degree program 
+This project was initially developed as a master thesis project at the [University of Applied Sciences Technikum Wien](http://www.technikum-wien.at), Software Engineering Degree program.
+Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you can support the project by donating on Sourceforge or directly at [Donate with Paypal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PWA2N6P5WRSJJ).
+
 
 ### Tested CalDAV Servers ###
 

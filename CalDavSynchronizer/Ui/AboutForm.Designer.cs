@@ -37,14 +37,15 @@
       this.label1 = new System.Windows.Forms.Label();
       this._linkLabelTeamMembers = new System.Windows.Forms.LinkLabel();
       this._logoPictureBox = new System.Windows.Forms.PictureBox();
+      this._linkLabelPayPal = new System.Windows.Forms.LinkLabel();
       ((System.ComponentModel.ISupportInitialize)(this._logoPictureBox)).BeginInit();
       this.SuspendLayout();
       // 
       // btnOK
       // 
       this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnOK.Location = new System.Drawing.Point(496, 438);
-      this.btnOK.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.btnOK.Location = new System.Drawing.Point(496, 493);
+      this.btnOK.Margin = new System.Windows.Forms.Padding(4);
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(100, 28);
       this.btnOK.TabIndex = 0;
@@ -57,13 +58,13 @@
       this._licenseTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this._licenseTextBox.Location = new System.Drawing.Point(16, 140);
-      this._licenseTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._licenseTextBox.Location = new System.Drawing.Point(13, 175);
+      this._licenseTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._licenseTextBox.Multiline = true;
       this._licenseTextBox.Name = "_licenseTextBox";
       this._licenseTextBox.ReadOnly = true;
       this._licenseTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      this._licenseTextBox.Size = new System.Drawing.Size(579, 290);
+      this._licenseTextBox.Size = new System.Drawing.Size(579, 296);
       this._licenseTextBox.TabIndex = 1;
       this._licenseTextBox.Text = resources.GetString("_licenseTextBox.Text");
       this._licenseTextBox.WordWrap = false;
@@ -122,21 +123,34 @@
       this._linkLabelTeamMembers.TabStop = true;
       this._linkLabelTeamMembers.Text = "<teamMembers>";
       // 
-      // pictureBox1
+      // _logoPictureBox
       // 
       this._logoPictureBox.Location = new System.Drawing.Point(448, 11);
-      this._logoPictureBox.Name = "pictureBox1";
+      this._logoPictureBox.Name = "_logoPictureBox";
       this._logoPictureBox.Size = new System.Drawing.Size(147, 102);
       this._logoPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
       this._logoPictureBox.TabIndex = 7;
       this._logoPictureBox.TabStop = false;
+      // 
+      // _linkLabelPayPal
+      // 
+      this._linkLabelPayPal.AutoSize = true;
+      this._linkLabelPayPal.Location = new System.Drawing.Point(13, 138);
+      this._linkLabelPayPal.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+      this._linkLabelPayPal.Name = "_linkLabelPayPal";
+      this._linkLabelPayPal.Size = new System.Drawing.Size(130, 17);
+      this._linkLabelPayPal.TabIndex = 8;
+      this._linkLabelPayPal.TabStop = true;
+      this._linkLabelPayPal.Text = "Donate with PayPal";
+      this._linkLabelPayPal.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
       // 
       // AboutForm
       // 
       this.AcceptButton = this.btnOK;
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(612, 481);
+      this.ClientSize = new System.Drawing.Size(612, 536);
+      this.Controls.Add(this._linkLabelPayPal);
       this.Controls.Add(this._logoPictureBox);
       this.Controls.Add(this._linkLabelTeamMembers);
       this.Controls.Add(this.label1);
@@ -147,7 +161,7 @@
       this.Controls.Add(this.btnOK);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-      this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.Margin = new System.Windows.Forms.Padding(4);
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Name = "AboutForm";
@@ -168,5 +182,6 @@
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.LinkLabel _linkLabelTeamMembers;
     private System.Windows.Forms.PictureBox _logoPictureBox;
+    private System.Windows.Forms.LinkLabel _linkLabelPayPal;
   }
 }

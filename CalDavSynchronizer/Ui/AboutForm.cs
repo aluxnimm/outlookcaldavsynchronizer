@@ -23,6 +23,8 @@ namespace CalDavSynchronizer.Ui
 {
   public partial class AboutForm : Form
   {
+    private readonly string _payPalUrl = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PWA2N6P5WRSJJ";
+
     public AboutForm ()
     {
       InitializeComponent();
@@ -58,6 +60,11 @@ namespace CalDavSynchronizer.Ui
     private void _linkLabelProject_LinkClicked (object sender, LinkLabelLinkClickedEventArgs e)
     {
       Process.Start (_linkLabelProject.Text);
+    }
+
+    private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+    {
+      Process.Start (_payPalUrl);
     }
   }
 }
