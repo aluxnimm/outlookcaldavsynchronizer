@@ -260,8 +260,17 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       target.Inner.Birthday = source.BirthDate ?? new DateTime (4501, 1, 1);
 
-      target.Inner.Department = source.Department;
-      target.Inner.CompanyName = source.Organization;
+      if (!string.IsNullOrEmpty (source.Organization))
+      {
+        string[] organizationAndDepartments = source.Organization.Split (new[] { ';' }, 2);
+        target.Inner.CompanyName = organizationAndDepartments[0];
+        target.Inner.Department = (organizationAndDepartments.Length > 1) ? organizationAndDepartments[1]: null;
+      }
+      else
+      {
+        target.Inner.CompanyName = target.Inner.Department = null;
+      }
+      
       target.Inner.JobTitle = source.Title;
       target.Inner.OfficeLocation = source.Office;
 
