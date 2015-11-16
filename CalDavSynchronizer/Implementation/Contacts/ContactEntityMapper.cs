@@ -139,9 +139,10 @@ namespace CalDavSynchronizer.Implementation.Contacts
       {
         target.BirthDate = source.Inner.Birthday.Date;
       }
-
-      target.Department = source.Inner.Department;
+      
       target.Organization = source.Inner.CompanyName;
+      if (!string.IsNullOrEmpty (source.Inner.Department)) target.Organization += ";;" + source.Inner.Department;
+
       target.Title = source.Inner.JobTitle;
       target.Office = source.Inner.OfficeLocation;
 

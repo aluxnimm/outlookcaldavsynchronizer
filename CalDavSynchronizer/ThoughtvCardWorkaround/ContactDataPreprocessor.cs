@@ -41,6 +41,20 @@ namespace CalDavSynchronizer.ThoughtvCardWorkaround
       }
     }
 
+    public static string FixOrg (string vcardData)
+    {
+      // Reformat ORG attribute to split CompanyName and Department
+      var orgMatch = Regex.Match (vcardData, @"ORG:(.*?)\\;\\;(.*?)\r?\n");
+      if (orgMatch.Success)
+      {
+        return Regex.Replace (vcardData, @"ORG:(.*?)\\;\\;(.*?)\r?\n", "ORG:" + orgMatch.Groups[1].Value + ";" + orgMatch.Groups[2].Value+ "\r\n");
+      }
+      else
+      {
+        return vcardData;
+      }
+    }
+
     public static string FixBday (string vcardData)
     {
       // Reformat BDAY attribute to yyyy-MM-dd if included to work around a BUG in vCard Library

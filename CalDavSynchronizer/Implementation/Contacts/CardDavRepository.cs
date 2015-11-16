@@ -145,8 +145,9 @@ namespace CalDavSynchronizer.Implementation.Contacts
         string originalvCardString = writer.GetStringBuilder().ToString();
         string fixedvCardString = ContactDataPreprocessor.FixBday (originalvCardString);
         string fixedvCardString2 = ContactDataPreprocessor.FixNote (fixedvCardString, _vCardWriter);
+        string fixedvCardString3 = ContactDataPreprocessor.FixOrg (fixedvCardString2);
 
-        return fixedvCardString2;
+        return fixedvCardString3;
       }
     }
 
