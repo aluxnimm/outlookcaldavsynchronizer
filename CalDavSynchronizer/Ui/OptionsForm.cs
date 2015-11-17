@@ -26,17 +26,23 @@ namespace CalDavSynchronizer.Ui
   public partial class OptionsForm : Form
   {
     private readonly NameSpace _session;
+    private readonly Func<Guid, string> _profileDataDirectoryFactory;
 
-    public OptionsForm (NameSpace session)
+    public OptionsForm (NameSpace session, Func<Guid, string> profileDataDirectoryFactory)
     {
       InitializeComponent();
       _session = session;
+      _profileDataDirectoryFactory = profileDataDirectoryFactory;
     }
 
 
-    public static bool EditOptions (NameSpace session, Options[] options, out Options[] changedOptions)
+    public static bool EditOptions (
+      NameSpace session,
+      Options[] options, 
+      out Options[] changedOptions, 
+      Func<Guid, string> profileDataDirectoryFactory)
     {
-      var form = new OptionsForm (session);
+      var form = new OptionsForm (session,profileDataDirectoryFactory);
       form.OptionsList = options;
 
       var shouldSave = form.ShowDialog() == DialogResult.OK;
@@ -65,7 +71,7 @@ namespace CalDavSynchronizer.Ui
 
     private TabPage AddTabPage (Options options)
     {
-      var optionsControl = new OptionsDisplayControl (_session);
+      var optionsControl = new OptionsDisplayControl (_session, _profileDataDirectoryFactory);
 
       var tabPage = new TabPage (options.Name);
       _tabControl.TabPages.Add (tabPage);

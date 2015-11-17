@@ -41,7 +41,6 @@
       this._conflictResolutionComboBox = new System.Windows.Forms.ComboBox();
       this._synchronizationModeComboBox = new System.Windows.Forms.ComboBox();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
-      this._advancedOptionsButton = new System.Windows.Forms.Button();
       this._useGoogleOAuthCheckBox = new System.Windows.Forms.CheckBox();
       this.label11 = new System.Windows.Forms.Label();
       this._emailAddressTextBox = new System.Windows.Forms.TextBox();
@@ -52,6 +51,7 @@
       this._userNameTextBox = new System.Windows.Forms.TextBox();
       this._calenderUrlTextBox = new System.Windows.Forms.TextBox();
       this.label3 = new System.Windows.Forms.Label();
+      this._advancedOptionsButton = new System.Windows.Forms.Button();
       this.numberOfDaysInTheFuture = new System.Windows.Forms.TextBox();
       this.numberOfDaysInThePast = new System.Windows.Forms.TextBox();
       this.label2 = new System.Windows.Forms.Label();
@@ -65,10 +65,13 @@
       this._enableTimeRangeFilteringCheckBox = new System.Windows.Forms.CheckBox();
       this._timeRangeFilteringGroupBox = new System.Windows.Forms.GroupBox();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this._browseToProfileCacheDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.groupBox2.SuspendLayout();
       this.groupBox1.SuspendLayout();
       this.groupBox3.SuspendLayout();
       this._timeRangeFilteringGroupBox.SuspendLayout();
+      this.contextMenu.SuspendLayout();
       this.SuspendLayout();
       // 
       // groupBox2
@@ -208,17 +211,6 @@
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Server settings";
       // 
-      // _advancedOptionsButton
-      // 
-      this._advancedOptionsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._advancedOptionsButton.Location = new System.Drawing.Point(228, 518);
-      this._advancedOptionsButton.Name = "_advancedOptionsButton";
-      this._advancedOptionsButton.Size = new System.Drawing.Size(108, 23);
-      this._advancedOptionsButton.TabIndex = 15;
-      this._advancedOptionsButton.Text = "Advanced options";
-      this._advancedOptionsButton.UseVisualStyleBackColor = true;
-      this._advancedOptionsButton.Click += new System.EventHandler(this._advancedSettingsButton_Click);
-      // 
       // _useGoogleOAuthCheckBox
       // 
       this._useGoogleOAuthCheckBox.AutoSize = true;
@@ -309,6 +301,17 @@
       this.label3.Size = new System.Drawing.Size(48, 13);
       this.label3.TabIndex = 6;
       this.label3.Text = "DAV Url:";
+      // 
+      // _advancedOptionsButton
+      // 
+      this._advancedOptionsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this._advancedOptionsButton.Location = new System.Drawing.Point(228, 518);
+      this._advancedOptionsButton.Name = "_advancedOptionsButton";
+      this._advancedOptionsButton.Size = new System.Drawing.Size(108, 23);
+      this._advancedOptionsButton.TabIndex = 15;
+      this._advancedOptionsButton.Text = "Advanced options";
+      this._advancedOptionsButton.UseVisualStyleBackColor = true;
+      this._advancedOptionsButton.Click += new System.EventHandler(this._advancedSettingsButton_Click);
       // 
       // numberOfDaysInTheFuture
       // 
@@ -438,10 +441,25 @@
       this._timeRangeFilteringGroupBox.TabIndex = 26;
       this._timeRangeFilteringGroupBox.TabStop = false;
       // 
+      // contextMenu
+      // 
+      this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this._browseToProfileCacheDirectoryToolStripMenuItem});
+      this.contextMenu.Name = "contextMenu";
+      this.contextMenu.Size = new System.Drawing.Size(248, 26);
+      // 
+      // _browseToProfileCacheDirectoryToolStripMenuItem
+      // 
+      this._browseToProfileCacheDirectoryToolStripMenuItem.Name = "_browseToProfileCacheDirectoryToolStripMenuItem";
+      this._browseToProfileCacheDirectoryToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
+      this._browseToProfileCacheDirectoryToolStripMenuItem.Text = "Browse to profile cache directory";
+      this._browseToProfileCacheDirectoryToolStripMenuItem.Click += new System.EventHandler(this._browseToProfileCacheDirectoryToolStripMenuItem_Click);
+      // 
       // OptionsDisplayControl
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.ContextMenuStrip = this.contextMenu;
       this.Controls.Add(this._advancedOptionsButton);
       this.Controls.Add(this._copyButton);
       this.Controls.Add(this._inactiveCheckBox);
@@ -461,6 +479,7 @@
       this.groupBox3.PerformLayout();
       this._timeRangeFilteringGroupBox.ResumeLayout(false);
       this._timeRangeFilteringGroupBox.PerformLayout();
+      this.contextMenu.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -504,5 +523,7 @@
     private System.Windows.Forms.ToolTip toolTip;
     private System.Windows.Forms.CheckBox _synchronizeImmediatelyAfterOutlookItemChangeCheckBox;
     private System.Windows.Forms.Button _advancedOptionsButton;
+    private System.Windows.Forms.ContextMenuStrip contextMenu;
+    private System.Windows.Forms.ToolStripMenuItem _browseToProfileCacheDirectoryToolStripMenuItem;
   }
 }

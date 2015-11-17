@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
@@ -30,6 +31,7 @@ using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Ui.ConnectionTests;
+using CalDavSynchronizer.Utilities;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
 using Exception = System.Exception;
@@ -52,6 +54,7 @@ namespace CalDavSynchronizer.Ui
     public event EventHandler DeletionRequested;
     public event EventHandler CopyRequested;
     public event EventHandler<HeaderEventArgs> HeaderChanged;
+    private readonly Func<Guid, string> _profileDataDirectoryFactory;
 
     private readonly IList<Item<int>> _availableSyncIntervals =
         (new Item<int>[] { new Item<int> (0, "Manual only") })
@@ -105,7 +108,7 @@ namespace CalDavSynchronizer.Ui
       UpdatePasswordEnabled();
     }
 
-    public OptionsDisplayControl (NameSpace session)
+    public OptionsDisplayControl (NameSpace session, Func<Guid, string> profileDataDirectoryFactory)
     {
       InitializeComponent();
 
@@ -115,6 +118,7 @@ namespace CalDavSynchronizer.Ui
         _faultFinder = NullSettingsFaultFinder.Instance;
 
       _session = session;
+      _profileDataDirectoryFactory = profileDataDirectoryFactory;
       BindComboBox (_syncIntervalComboBox, _availableSyncIntervals);
       BindComboBox (_conflictResolutionComboBox, _availableConflictResolutions);
       BindComboBox (_synchronizationModeComboBox, _availableSynchronizationModes);
@@ -699,6 +703,23 @@ namespace CalDavSynchronizer.Ui
       }
 
       return mappingConfiguration;
+    }
+
+    private void _browseToProfileCacheDirectoryToolStripMenuItem_Click (object sender, EventArgs e)
+    {
+      try
+      {
+        var profileDataDirectory = _profileDataDirectoryFactory (_optionsId);
+
+        if (Directory.Exists (profileDataDirectory))
+          System.Diagnostics.Process.Start (profileDataDirectory);
+        else
+          MessageBox.Show ("The directory does not exist.");
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.HandleException (x, s_logger);
+      }
     }
   }
 }
