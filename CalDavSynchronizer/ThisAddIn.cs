@@ -30,7 +30,6 @@ namespace CalDavSynchronizer
 
     private void ThisAddIn_Startup (object sender, EventArgs e)
     {
-      ComponentContainer.ConfigureServicePointManager();
       ComponentContainer = new ComponentContainer (Application);
 
       if (IsOutlookVersionSmallerThan2010)

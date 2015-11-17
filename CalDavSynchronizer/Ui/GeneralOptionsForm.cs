@@ -36,12 +36,18 @@ namespace CalDavSynchronizer.Ui
                {
                    ShouldCheckForNewerVersions = _checkForNewerVersionsCheckBox.Checked,
                    StoreAppDataInRoamingFolder = _storeDataInRoamingFolderCheckBox.Checked,
+                   DisableCertificateValidation = _disableCertificateValidationCheckbox.Checked,
+                   EnableTls12 = _enableTls12Checkbox.Checked,
+                   EnableSsl3 = _enableSsl3Checkbox.Checked
                };
       }
       set
       {
         _checkForNewerVersionsCheckBox.Checked = value.ShouldCheckForNewerVersions;
         _storeDataInRoamingFolderCheckBox.Checked = value.StoreAppDataInRoamingFolder;
+        _disableCertificateValidationCheckbox.Checked = value.DisableCertificateValidation;
+        _enableTls12Checkbox.Checked = value.EnableTls12;
+        _enableSsl3Checkbox.Checked = value.EnableSsl3;
       }
     }
   }

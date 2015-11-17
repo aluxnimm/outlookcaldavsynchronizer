@@ -62,6 +62,8 @@ namespace CalDavSynchronizer
 
         var generalOptions = _generalOptionsDataAccess.LoadOptions();
 
+        ConfigureServicePointManager (generalOptions);
+
         _itemChangeWatcher = new OutlookItemChangeWatcher (application.Inspectors);
         _itemChangeWatcher.ItemSavedOrDeleted += ItemChangeWatcherItemSavedOrDeleted;
         _session = application.Session;
@@ -118,21 +120,21 @@ namespace CalDavSynchronizer
       }
     }
 
-    public static void ConfigureServicePointManager ()
+    private void ConfigureServicePointManager (GeneralOptions options)
     {
       ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11;
 
-      if (Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"]))
+      if (options.EnableTls12)
       {
         ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
       }
 
-      if (Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"]))
+      if (options.EnableSsl3)
       {
         ServicePointManager.SecurityProtocol |= SecurityProtocolType.Ssl3;
       }
 
-      if (Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"]))
+      if (options.DisableCertificateValidation)
       {
         ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
       }
