@@ -120,19 +120,15 @@ namespace CalDavSynchronizer
       }
     }
 
-    public static void ConfigureServicePointManager (GeneralOptions options)
+    private static void ConfigureServicePointManager (GeneralOptions options)
     {
       ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11;
 
       if (options.EnableTls12)
-      {
         ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
-      }
 
       if (options.EnableSsl3)
-      {
         ServicePointManager.SecurityProtocol |= SecurityProtocolType.Ssl3;
-      }
 
       if (options.DisableCertificateValidation)
         ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
@@ -178,16 +174,18 @@ namespace CalDavSynchronizer
     {
       try
       {
-        var generalOptions = _generalOptionsDataAccess.LoadOptions ();
+        var generalOptions = _generalOptionsDataAccess.LoadOptions();
         using (var optionsForm = new GeneralOptionsForm())
         {
           optionsForm.Options = generalOptions;
-          if(optionsForm.Display())
+          if (optionsForm.Display())
           {
             var newOptions = optionsForm.Options;
-            _generalOptionsDataAccess.SaveOptions (newOptions);
 
+            ConfigureServicePointManager (newOptions);
             _updateChecker.IsEnabled = newOptions.ShouldCheckForNewerVersions;
+
+            _generalOptionsDataAccess.SaveOptions (newOptions);
           }
         }
       }

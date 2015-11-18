@@ -21,7 +21,6 @@ namespace CalDavSynchronizer.Ui
     private void _okButton_Click (object sender, EventArgs e)
     {
       DialogResult = DialogResult.OK;
-      ComponentContainer.ConfigureServicePointManager (Options);
     }
 
     public bool Display ()
