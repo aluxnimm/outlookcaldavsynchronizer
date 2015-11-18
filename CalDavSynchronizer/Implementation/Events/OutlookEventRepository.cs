@@ -107,9 +107,16 @@ namespace CalDavSynchronizer.Implementation.Events
           {
             var row = table.GetNextRow();
             var entryId = (string) row[c_entryIdColumnName];
-            using (var appointmentWrapper = GenericComObjectWrapper.Create ((AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, storeId)))
+            try
             {
-              events.Add (new EntityVersion<string, DateTime> (appointmentWrapper.Inner.EntryID, appointmentWrapper.Inner.LastModificationTime));
+              using (var appointmentWrapper = GenericComObjectWrapper.Create((AppointmentItem)_mapiNameSpace.GetItemFromID(entryId, storeId)))
+              {
+                events.Add(new EntityVersion<string, DateTime>(appointmentWrapper.Inner.EntryID, appointmentWrapper.Inner.LastModificationTime));
+              }
+            }
+            catch (COMException ex)
+            {
+              s_logger.Error ("Could not create AppointmentItem, skipping.", ex);
             }
           }
         }

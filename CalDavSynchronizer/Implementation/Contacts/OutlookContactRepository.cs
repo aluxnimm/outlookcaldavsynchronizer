@@ -24,11 +24,15 @@ using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using GenSync;
 using GenSync.EntityRepositories;
 using Microsoft.Office.Interop.Outlook;
+using System.Runtime.InteropServices;
+using log4net;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
   public class OutlookContactRepository : IEntityRepository<ContactItemWrapper, string, DateTime>, IOutlookRepository
   {
+    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
+
     private readonly NameSpace _mapiNameSpace;
     private readonly string _folderId;
     private readonly string _folderStoreId;
@@ -80,9 +84,16 @@ namespace CalDavSynchronizer.Implementation.Contacts
           {
             var row = table.GetNextRow();
             var entryId = (string) row[c_entryIdColumnName];
-            using (var contactWrapper = GenericComObjectWrapper.Create ((ContactItem) _mapiNameSpace.GetItemFromID (entryId, storeId)))
+            try
             {
-              contacts.Add (new EntityVersion<string, DateTime> (contactWrapper.Inner.EntryID, contactWrapper.Inner.LastModificationTime));
+              using (var contactWrapper = GenericComObjectWrapper.Create ((ContactItem)_mapiNameSpace.GetItemFromID (entryId, storeId)))
+              {
+                contacts.Add (new EntityVersion<string, DateTime> (contactWrapper.Inner.EntryID, contactWrapper.Inner.LastModificationTime));
+              }
+            }
+            catch (COMException ex)
+            {
+              s_logger.Error ("Could not create ContactItem, skipping.", ex);
             }
           }
         }

@@ -23,11 +23,14 @@ using CalDavSynchronizer.Implementation.ComWrappers;
 using GenSync;
 using GenSync.EntityRepositories;
 using Microsoft.Office.Interop.Outlook;
+using System.Runtime.InteropServices;
+using log4net;
 
 namespace CalDavSynchronizer.Implementation.Tasks
 {
   public class OutlookTaskRepository : IEntityRepository<TaskItemWrapper, string, DateTime>, IOutlookRepository
   {
+    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
     private readonly Folder _taskFolder;
     private readonly NameSpace _mapiNameSpace;
 
@@ -70,9 +73,16 @@ namespace CalDavSynchronizer.Implementation.Tasks
         {
           var row = table.GetNextRow();
           var entryId = (string) row[c_entryIdColumnName];
-          using (var appointmentWrapper = GenericComObjectWrapper.Create ((TaskItem) _mapiNameSpace.GetItemFromID (entryId, storeId)))
+          try
           {
-            entities.Add (EntityVersion.Create (appointmentWrapper.Inner.EntryID, appointmentWrapper.Inner.LastModificationTime));
+            using (var taskItemWrapper = GenericComObjectWrapper.Create ((TaskItem)_mapiNameSpace.GetItemFromID (entryId, storeId)))
+            {
+              entities.Add (EntityVersion.Create (taskItemWrapper.Inner.EntryID, taskItemWrapper.Inner.LastModificationTime));
+            }
+          }
+          catch (COMException ex)
+          {
+            s_logger.Error ("Could not create TaskItem, skipping.", ex);
           }
         }
       }
