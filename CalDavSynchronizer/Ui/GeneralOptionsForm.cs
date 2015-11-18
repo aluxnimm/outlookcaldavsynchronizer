@@ -38,6 +38,7 @@ namespace CalDavSynchronizer.Ui
                    StoreAppDataInRoamingFolder = _storeDataInRoamingFolderCheckBox.Checked,
                    DisableCertificateValidation = _disableCertificateValidationCheckbox.Checked,
                    EnableTls12 = _enableTls12Checkbox.Checked,
+                   EnableSsl3 = _enableSsl3Checkbox.Checked,
                    FixInvalidSettings = _fixInvalidSettingsCheckBox.Checked
                };
       }
