@@ -135,9 +135,9 @@ namespace CalDavSynchronizer
       }
 
       if (options.DisableCertificateValidation)
-      {
         ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-      }
+      else
+        ServicePointManager.ServerCertificateValidationCallback = null; 
     }
 
     public async Task SynchronizeNowNoThrow ()
