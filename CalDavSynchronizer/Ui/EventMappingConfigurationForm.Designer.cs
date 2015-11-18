@@ -99,20 +99,17 @@
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this._cancelButton;
       this.ClientSize = new System.Drawing.Size(368, 187);
-      this.ControlBox = false;
       this.Controls.Add(this._mapBodyCheckBox);
       this.Controls.Add(this._mapAttendeesCheckBox);
       this.Controls.Add(this._mapReminderCheckBox);
       this.Controls.Add(this._okButton);
       this.Controls.Add(this._cancelButton);
-      this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+      this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
       this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this.Name = "EventMappingConfigurationForm";
       this.ShowIcon = false;
-      this.ShowInTaskbar = false;
       this.Text = "Appointment Mapping";
       this.ResumeLayout(false);
-      this.PerformLayout();
 
     }
 
