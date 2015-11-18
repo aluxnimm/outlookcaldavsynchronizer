@@ -275,10 +275,19 @@ namespace CalDavSynchronizer.DataAccess
 
       public static Uri UnescapeRelativeUri (Uri baseUri, string relativeUriString)
       {
-        var relativeUri = new Uri (relativeUriString, UriKind.Relative);
+
+        var relativeUri = new Uri (DecodeUrlString (relativeUriString) , UriKind.Relative);
         var aboluteUri = new Uri (baseUri, relativeUri);
         var unescapedRelativeUri = new Uri (aboluteUri.GetComponents (UriComponents.Path | UriComponents.KeepDelimiter, UriFormat.Unescaped), UriKind.Relative);
         return unescapedRelativeUri;
+      }
+
+      public static string DecodeUrlString (string url)
+      {
+        string newUrl;
+        while ((newUrl = Uri.UnescapeDataString (url)) != url)
+          url = newUrl;
+        return newUrl;
       }
     }
   }
