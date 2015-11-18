@@ -139,7 +139,7 @@
       this.groupBox1.TabIndex = 10;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "SSL/TLS settings";
-      this._toolTip.SetToolTip(this.groupBox1, "Changing these options requires a restart of Outlook.");
+      this._toolTip.SetToolTip(this.groupBox1, "Changing these options can be a major security risk, not recommended!");
       // 
       // GeneralOptionsForm
       // 

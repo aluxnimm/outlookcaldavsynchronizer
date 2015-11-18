@@ -120,7 +120,7 @@ namespace CalDavSynchronizer
       }
     }
 
-    private void ConfigureServicePointManager (GeneralOptions options)
+    public static void ConfigureServicePointManager (GeneralOptions options)
     {
       ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11;
 
