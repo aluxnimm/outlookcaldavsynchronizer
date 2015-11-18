@@ -93,7 +93,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
             }
             catch (COMException ex)
             {
-              s_logger.Error ("Could not create ContactItem, skipping.", ex);
+              s_logger.Error ("Could not fetch ContactItem, skipping.", ex);
             }
           }
         }

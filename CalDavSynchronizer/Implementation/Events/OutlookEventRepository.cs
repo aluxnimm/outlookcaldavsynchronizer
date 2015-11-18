@@ -116,7 +116,7 @@ namespace CalDavSynchronizer.Implementation.Events
             }
             catch (COMException ex)
             {
-              s_logger.Error ("Could not create AppointmentItem, skipping.", ex);
+              s_logger.Error ("Could not fetch AppointmentItem, skipping.", ex);
             }
           }
         }

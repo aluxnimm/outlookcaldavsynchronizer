@@ -82,7 +82,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
           }
           catch (COMException ex)
           {
-            s_logger.Error ("Could not create TaskItem, skipping.", ex);
+            s_logger.Error ("Could not fetch TaskItem, skipping.", ex);
           }
         }
       }
