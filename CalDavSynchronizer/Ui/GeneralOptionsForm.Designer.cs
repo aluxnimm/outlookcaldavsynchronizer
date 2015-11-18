@@ -45,10 +45,9 @@
       // 
       this._cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this._cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this._cancelButton.Location = new System.Drawing.Point(252, 256);
-      this._cancelButton.Margin = new System.Windows.Forms.Padding(4);
+      this._cancelButton.Location = new System.Drawing.Point(189, 208);
       this._cancelButton.Name = "_cancelButton";
-      this._cancelButton.Size = new System.Drawing.Size(100, 28);
+      this._cancelButton.Size = new System.Drawing.Size(75, 23);
       this._cancelButton.TabIndex = 0;
       this._cancelButton.Text = "Cancel";
       this._cancelButton.UseVisualStyleBackColor = true;
@@ -56,10 +55,9 @@
       // _okButton
       // 
       this._okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._okButton.Location = new System.Drawing.Point(144, 256);
-      this._okButton.Margin = new System.Windows.Forms.Padding(4);
+      this._okButton.Location = new System.Drawing.Point(108, 208);
       this._okButton.Name = "_okButton";
-      this._okButton.Size = new System.Drawing.Size(100, 28);
+      this._okButton.Size = new System.Drawing.Size(75, 23);
       this._okButton.TabIndex = 1;
       this._okButton.Text = "OK";
       this._okButton.UseVisualStyleBackColor = true;
@@ -68,10 +66,9 @@
       // _checkForNewerVersionsCheckBox
       // 
       this._checkForNewerVersionsCheckBox.AutoSize = true;
-      this._checkForNewerVersionsCheckBox.Location = new System.Drawing.Point(16, 15);
-      this._checkForNewerVersionsCheckBox.Margin = new System.Windows.Forms.Padding(4);
+      this._checkForNewerVersionsCheckBox.Location = new System.Drawing.Point(12, 12);
       this._checkForNewerVersionsCheckBox.Name = "_checkForNewerVersionsCheckBox";
-      this._checkForNewerVersionsCheckBox.Size = new System.Drawing.Size(274, 21);
+      this._checkForNewerVersionsCheckBox.Size = new System.Drawing.Size(210, 17);
       this._checkForNewerVersionsCheckBox.TabIndex = 5;
       this._checkForNewerVersionsCheckBox.Text = "Automatically check for newer versions";
       this._checkForNewerVersionsCheckBox.UseVisualStyleBackColor = true;
@@ -79,10 +76,9 @@
       // _storeDataInRoamingFolderCheckBox
       // 
       this._storeDataInRoamingFolderCheckBox.AutoSize = true;
-      this._storeDataInRoamingFolderCheckBox.Location = new System.Drawing.Point(16, 43);
-      this._storeDataInRoamingFolderCheckBox.Margin = new System.Windows.Forms.Padding(4);
+      this._storeDataInRoamingFolderCheckBox.Location = new System.Drawing.Point(12, 35);
       this._storeDataInRoamingFolderCheckBox.Name = "_storeDataInRoamingFolderCheckBox";
-      this._storeDataInRoamingFolderCheckBox.Size = new System.Drawing.Size(206, 21);
+      this._storeDataInRoamingFolderCheckBox.Size = new System.Drawing.Size(155, 17);
       this._storeDataInRoamingFolderCheckBox.TabIndex = 6;
       this._storeDataInRoamingFolderCheckBox.Text = "Store data in roaming folder";
       this._toolTip.SetToolTip(this._storeDataInRoamingFolderCheckBox, "Changing this option requires a restart of Outlook.");
@@ -91,10 +87,9 @@
       // _enableTls12Checkbox
       // 
       this._enableTls12Checkbox.AutoSize = true;
-      this._enableTls12Checkbox.Location = new System.Drawing.Point(12, 52);
-      this._enableTls12Checkbox.Margin = new System.Windows.Forms.Padding(4);
+      this._enableTls12Checkbox.Location = new System.Drawing.Point(9, 42);
       this._enableTls12Checkbox.Name = "_enableTls12Checkbox";
-      this._enableTls12Checkbox.Size = new System.Drawing.Size(120, 21);
+      this._enableTls12Checkbox.Size = new System.Drawing.Size(94, 17);
       this._enableTls12Checkbox.TabIndex = 7;
       this._enableTls12Checkbox.Text = "Enable TLS12";
       this._toolTip.SetToolTip(this._enableTls12Checkbox, "Disabling is a major security risk, not recommended!");
@@ -103,10 +98,9 @@
       // _disableCertificateValidationCheckbox
       // 
       this._disableCertificateValidationCheckbox.AutoSize = true;
-      this._disableCertificateValidationCheckbox.Location = new System.Drawing.Point(12, 23);
-      this._disableCertificateValidationCheckbox.Margin = new System.Windows.Forms.Padding(4);
+      this._disableCertificateValidationCheckbox.Location = new System.Drawing.Point(9, 19);
       this._disableCertificateValidationCheckbox.Name = "_disableCertificateValidationCheckbox";
-      this._disableCertificateValidationCheckbox.Size = new System.Drawing.Size(210, 21);
+      this._disableCertificateValidationCheckbox.Size = new System.Drawing.Size(160, 17);
       this._disableCertificateValidationCheckbox.TabIndex = 8;
       this._disableCertificateValidationCheckbox.Text = "Disable Certificate Validation";
       this._toolTip.SetToolTip(this._disableCertificateValidationCheckbox, "Major security risk, not recommended!");
@@ -115,10 +109,9 @@
       // _enableSsl3Checkbox
       // 
       this._enableSsl3Checkbox.AutoSize = true;
-      this._enableSsl3Checkbox.Location = new System.Drawing.Point(12, 81);
-      this._enableSsl3Checkbox.Margin = new System.Windows.Forms.Padding(4);
+      this._enableSsl3Checkbox.Location = new System.Drawing.Point(9, 66);
       this._enableSsl3Checkbox.Name = "_enableSsl3Checkbox";
-      this._enableSsl3Checkbox.Size = new System.Drawing.Size(112, 21);
+      this._enableSsl3Checkbox.Size = new System.Drawing.Size(88, 17);
       this._enableSsl3Checkbox.TabIndex = 9;
       this._enableSsl3Checkbox.Text = "Enable SSL3";
       this._toolTip.SetToolTip(this._enableSsl3Checkbox, "Major security risk, not recommended!");
@@ -131,11 +124,9 @@
       this.groupBox1.Controls.Add(this._disableCertificateValidationCheckbox);
       this.groupBox1.Controls.Add(this._enableSsl3Checkbox);
       this.groupBox1.Controls.Add(this._enableTls12Checkbox);
-      this.groupBox1.Location = new System.Drawing.Point(4, 94);
-      this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
+      this.groupBox1.Location = new System.Drawing.Point(3, 76);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-      this.groupBox1.Size = new System.Drawing.Size(360, 114);
+      this.groupBox1.Size = new System.Drawing.Size(270, 93);
       this.groupBox1.TabIndex = 10;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "SSL/TLS settings";
@@ -144,10 +135,11 @@
       // GeneralOptionsForm
       // 
       this.AcceptButton = this._okButton;
-      this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoSize = true;
       this.CancelButton = this._cancelButton;
-      this.ClientSize = new System.Drawing.Size(368, 297);
+      this.ClientSize = new System.Drawing.Size(276, 241);
       this.ControlBox = false;
       this.Controls.Add(this.groupBox1);
       this.Controls.Add(this._storeDataInRoamingFolderCheckBox);
@@ -155,7 +147,6 @@
       this.Controls.Add(this._okButton);
       this.Controls.Add(this._cancelButton);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-      this.Margin = new System.Windows.Forms.Padding(4);
       this.Name = "GeneralOptionsForm";
       this.ShowIcon = false;
       this.ShowInTaskbar = false;
