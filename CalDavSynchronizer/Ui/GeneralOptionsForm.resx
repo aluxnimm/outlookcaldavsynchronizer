@@ -120,4 +120,17 @@
   <metadata name="_toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="_fixInvalidSettingsCheckBox.ToolTip" xml:space="preserve">
+    <value>Fixes invalid settings automatically, when 
+synchronization profiles are  edited.
+
+E.g.: if  a read-only CalDav calendar is selected 
+and the synchronization mode is set to TwoWay,
+then the synchronization mode is automatically
+set to one way, so that there are no write
+operations performed in the read-only
+calendar, which would produce errors.
+Disabling this setting might be helpful for testing,
+but you should know what you do.</value>
+  </data>
 </root>

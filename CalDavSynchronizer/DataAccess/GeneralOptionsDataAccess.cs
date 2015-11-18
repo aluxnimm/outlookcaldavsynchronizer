@@ -30,6 +30,7 @@ namespace CalDavSynchronizer.DataAccess
     private const string s_disableCertificateValidation = "DisableCertificateValidation";
     private const string s_enableTls12 = "EnableTls12";
     private const string s_enableSsl3 = "EnableSsl3";
+    private const string s_fixInvalidSettings = "FixInvalidSettings";
     private const string s_OptionsRegistryKey = @"Software\CalDavSynchronizer";
 
 
@@ -43,7 +44,8 @@ namespace CalDavSynchronizer.DataAccess
                    StoreAppDataInRoamingFolder = (int) (key.GetValue (s_storeAppDataInRoamingFolder) ?? 0) != 0,
                    DisableCertificateValidation = (int) (key.GetValue(s_disableCertificateValidation) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"] ?? bool.FalseString))) != 0,
                    EnableTls12 = (int)(key.GetValue(s_enableTls12) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"] ?? bool.TrueString))) != 0,
-                   EnableSsl3 = (int)(key.GetValue(s_enableSsl3) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"] ?? bool.FalseString))) != 0
+                   EnableSsl3 = (int)(key.GetValue(s_enableSsl3) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"] ?? bool.FalseString))) != 0,
+                   FixInvalidSettings = (int) (key.GetValue (s_fixInvalidSettings) ?? 1) != 0,
                };
       }
     }
@@ -57,6 +59,7 @@ namespace CalDavSynchronizer.DataAccess
         key.SetValue (s_disableCertificateValidation, options.DisableCertificateValidation ? 1 : 0);
         key.SetValue (s_enableTls12, options.EnableTls12 ? 1 : 0);
         key.SetValue (s_enableSsl3, options.EnableSsl3 ? 1 : 0);
+        key.SetValue (s_fixInvalidSettings, options.FixInvalidSettings ? 1 : 0);
       }
     }
 

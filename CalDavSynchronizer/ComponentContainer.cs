@@ -156,7 +156,7 @@ namespace CalDavSynchronizer
       {
         var options = _optionsDataAccess.LoadOptions();
         Options[] newOptions;
-        if (OptionsForm.EditOptions (_session, options, out newOptions, GetProfileDataDirectory))
+        if (OptionsForm.EditOptions (_session, options, out newOptions, GetProfileDataDirectory, _generalOptionsDataAccess.LoadOptions().FixInvalidSettings))
         {
           _optionsDataAccess.SaveOptions (newOptions);
           

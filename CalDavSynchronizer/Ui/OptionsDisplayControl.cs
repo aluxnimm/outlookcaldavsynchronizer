@@ -108,11 +108,14 @@ namespace CalDavSynchronizer.Ui
       UpdatePasswordEnabled();
     }
 
-    public OptionsDisplayControl (NameSpace session, Func<Guid, string> profileDataDirectoryFactory)
+    public OptionsDisplayControl (
+      NameSpace session, 
+      Func<Guid, string> profileDataDirectoryFactory,
+      bool fixInvalidSettings)
     {
       InitializeComponent();
 
-      if (bool.Parse (ConfigurationManager.AppSettings["automaticallyFixSettings"]))
+      if (fixInvalidSettings)
         _faultFinder = new SettingsFaultFinder (this);
       else
         _faultFinder = NullSettingsFaultFinder.Instance;
