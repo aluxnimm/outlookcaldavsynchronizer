@@ -586,7 +586,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
       if (!string.IsNullOrEmpty (source.HomeFaxNumber))
       {
-        vCardPhone phoneNumber = new vCardPhone (source.HomeFaxNumber, vCardPhoneTypes.Fax & vCardPhoneTypes.Home);
+        vCardPhone phoneNumber = new vCardPhone (source.HomeFaxNumber, vCardPhoneTypes.Fax | vCardPhoneTypes.Home);
         phoneNumber.IsPreferred = (target.Phones.Count == 0);
         target.Phones.Add (phoneNumber);
       }
