@@ -269,6 +269,7 @@ namespace CalDavSynchronizer.Ui
       }
       catch (Exception x)
       {
+        s_logger.Error ("Exception while testing the connection.", x);
         string message = null;
         for (Exception ex = x; ex != null; ex = ex.InnerException)
           message += ex.Message + Environment.NewLine;

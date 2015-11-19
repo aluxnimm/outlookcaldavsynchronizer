@@ -64,7 +64,7 @@ namespace CalDavSynchronizer.DataAccess
 
           XmlNode homeSet = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/A:addressbook-home-set", properties.XmlNamespaceManager);
 
-          if (homeSet != null)
+          if (homeSet != null && !string.IsNullOrEmpty (homeSet.InnerText))
           {
             properties = await ListAddressBooks (new Uri (autodiscoveryUrl.GetLeftPart (UriPartial.Authority) + homeSet.InnerText));
 
