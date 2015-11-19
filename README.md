@@ -61,6 +61,18 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 1.5.4 ####
+- New features:
+	- General options in GUI for changing SSL options and other global settings
+	- Add option to store state information in Appdata\Roaming instead of Local, Ticket #125
+	- Add mapping configuration options for Appointments (Enable or Disable mapping of reminders, attendees or the description body)
+	- Add Donate link to About Dialog
+	- Add context menu to options , which allows to open the cache directory
+- bug fixes:
+	- Fix mapping of ORG property to CompanyName and Department for vcards, ticket #127
+	- Catch COM Exceptions when trying to add invalid Outlook items in repositories, ticket #130
+	- Fix for unescaping relative urls for entity ids, ticket #129
+
 #### 1.5.3 ####
 - Avoid Nullreference Exception which prevents syncing when there are no proxy settings in config file, bug #124
 - set correct mime type text/vcard when putting contacts
@@ -306,12 +318,13 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ## User Documentation ##
 
-After installing the plugin, a new ribbon called 'Caldav Synchronizer' is added in Outlook with 3 menu items. 
+After installing the plugin, a new ribbon called 'Caldav Synchronizer' is added in Outlook with 4 menu items. 
 - Synchronize now
-- Options
+- Synchronization Profiles
+- General Options
 - About
 
-Use the Options dialog to configure different synchronization profiles. Each profile is responsible for synchronizing one Outlook calendar or task folder with a remote folder of a CalDAV server.
+Use the Synchronization Profiles dialog to configure different synchronization profiles. Each profile is responsible for synchronizing one Outlook calendar/task or contact folder with a remote folder of a CalDAV/CardDAV server.
 
 - Add adds a new empty profile
 - Delete deletes the current profile
@@ -322,9 +335,10 @@ The following properties need to be set for a new profile:
 - *Profile name*: An arbitrary name for the profile, which will be displayed at the associated tab.
 - *Server settings*:
 	- **DAV Url:** URL of the remote CalDAV or CardDAV server. You should use a HTTPS connection here for security reason! The Url must end with a **/** e.g. **https://myserver.com/** 
-	- If you only have a self signed certificate, add the self signed cert to the Local Computer Trusted Root Certification Authorities. You can import the cert by running the MMC as Administrator. If that fails, see section *'Debugging and more config options'*
+	- If you only have a self signed certificate, add the self signed cert to the Local Computer Trusted Root Certification Authorities. You can import the cert by running the MMC as Administrator. If that fails, see section *'Advanced options'*
 	- **Username:** Username to connect to the CalDAV server
 	- **Password:** Password used for the connection. The password will be saved encrypted in the option config file.
+	- **Use Google OAuth** Used for Google instead of entering the Password, see section Google below
 	- **Email address:** email address used as remote identity for the CalDAV server, necessary to synchronize the organizer
 - *Outlook settings*:
 	- **Outlook Folder:** Outlook folder that should be used for synchronization
@@ -347,7 +361,8 @@ The following properties need to be set for a new profile:
 - *Advanced Options*: Here you can configure advanced network options and proxy settings. 
 	- **Close connection after each request** Don't use KeepAlive for servers which don't support it. 
 	- **Use System Default Proxy** Use proxy settings from Internet Explorer or config file, uses default credentials if available for NTLM authentication
-	- **Use manual proxy configuration** Specify proxy URL as `http://<your-proxy-domain>:<your-proxy-port>` and optional Username and Password for Basic Authentication
+	- **Use manual proxy configuration** Specify proxy URL as `http://<your-proxy-domain>:<your-proxy-port>` and optional Username and Password for Basic Authentication.
+- *Mapping Configuration...*: Here you can configure what properties should be synced, available for appointments at the moment, you can choose if you want to map reminders, attendees and the description body.
 	
 ### Google Calender and Addressbook settings ###
 
@@ -379,14 +394,31 @@ You can now set manual proxy settings in the Advanced option dialog in each prof
 More information can be found at
 [https://msdn.microsoft.com/en-us/library/sa91de1e%28v=vs.110%29.aspx](https://msdn.microsoft.com/en-us/library/sa91de1e%28v=vs.110%29.aspx)
 
+### General Options  and SSL settings ###
+In the General Options Dialog you can change settings which are used for all synchronization profiles.
+- ** Automatically check for newer versions** set to false to disable checking for updates.
+- ** Store data in roaming folder** set to true if you need to store state and profile data in the AppData\Roaming\ directory for roaming profiles in a AD domain for example. When changing this option, a restart of Outlook is required.
+- ** Fix invalid settings ** Fixes invalid settings automatically, when synchronization profiles are edited.
+
+If you have problems with SSL/TLS and self-signed certificates, you can change the following settings at your own risk.
+The recommended way would be to add the self signed cert to the Local Computer Trusted Root Certification Authorities
+You can import the cert by running the MMC as Administrator.
+
+- **Disable Certificate Validation** set to true to disable SSL/TLS certificate validation, major security risk, use with caution!
+- **Enable Tls12** set to false to disable TLS12, not recommended 
+- **Enable Ssl3** set to true to enable deprecated SSLv3, major security risk, use with caution! 
+
 ## Trouble Shooting ##
 
-Options and state information is stored in the following folder:
+Options and state information is normally stored in the following folder:
 
     C:\Users\<Your Username>\AppData\Local\CalDavSychronizer
+If you activated Store data in roaming folder the location is changed to the following folder:
+
+    C:\Users\<Your Username>\AppData\Roaming\CalDavSychronizer
 
 There is one `options_<your outlook profile>.xml` file which stores the options for each outlook profile.
-For each sync profile there is a subfolder with state information stored in a relations.xml file after the inital sync. If you delete that folder, a fresh inital sync is performed.
+For each sync profile there is a subfolder with state information stored in a relations.xml file after the inital sync. If you delete that folder, a fresh inital sync is performed. In the Synchronization profiles dialog a context menu is available in each profile (right click), which allows to open the cache directory and read the relations.xml file.
 
 Each synchronization attempt is logged in the `log.txt` file. There you can find information about sync duration and the amount of added, deleted or modified events. Errors and Exceptions are logged aswell. For debugging information of caldav requests there is furthermore a logfile `log_calDavAccess.txt`
 
@@ -405,13 +437,6 @@ After changing parameters you have to restart Outlook.
 - **calDavReadWriteTimeout**; timeout for caldav read/write requests (default 5 sec)
 - **enableTaskSynchronization** Support for task sync (alpha) true or false
 
-If you have problems with SSL/TLS and self-signed certificates, you can change the following settings at your own risk.
-The recommended way would be to add the self signed cert to the Local Computer Trusted Root Certification Authorities
-You can import the cert by running the MMC as Administrator.
-
-- **disableCertificateValidation** set to true to disable SSL/TLS certificate validation, major security risk, use with caution!
-- **enableSsl3** set to true to enable deprecated SSLv3, major security risk, use with caution! 
-- **enableTls12** set to false to disable TLS12, not recommended 
 
 In the section `system.net` you can define proxy settings, e.g. use of NTLM credentials
 
