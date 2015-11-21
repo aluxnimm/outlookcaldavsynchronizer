@@ -54,58 +54,46 @@ namespace CalDavSynchronizer
 
     public ComponentContainer (Application application)
     {
-      try
-      {
-        XmlConfigurator.Configure();
+      _generalOptionsDataAccess = new GeneralOptionsDataAccess();
 
-        _generalOptionsDataAccess = new GeneralOptionsDataAccess();
+      var generalOptions = _generalOptionsDataAccess.LoadOptions();
 
-        var generalOptions = _generalOptionsDataAccess.LoadOptions();
+      ConfigureServicePointManager (generalOptions);
 
-        ConfigureServicePointManager (generalOptions);
+      _itemChangeWatcher = new OutlookItemChangeWatcher (application.Inspectors);
+      _itemChangeWatcher.ItemSavedOrDeleted += ItemChangeWatcherItemSavedOrDeleted;
+      _session = application.Session;
+      s_logger.Info ("Startup...");
 
-        _itemChangeWatcher = new OutlookItemChangeWatcher (application.Inspectors);
-        _itemChangeWatcher.ItemSavedOrDeleted += ItemChangeWatcherItemSavedOrDeleted;
-        _session = application.Session;
-        s_logger.Info ("Startup...");
+      EnsureSynchronizationContext();
 
-        EnsureSynchronizationContext();
+      _applicationDataDirectory = Path.Combine (
+          Environment.GetFolderPath (
+              generalOptions.StoreAppDataInRoamingFolder ? Environment.SpecialFolder.ApplicationData : Environment.SpecialFolder.LocalApplicationData),
+          "CalDavSynchronizer");
 
-        _applicationDataDirectory = Path.Combine (
-            Environment.GetFolderPath (
-                generalOptions.StoreAppDataInRoamingFolder ? Environment.SpecialFolder.ApplicationData : Environment.SpecialFolder.LocalApplicationData),
-            "CalDavSynchronizer");
+      _optionsDataAccess = new OptionsDataAccess (
+          Path.Combine (
+              _applicationDataDirectory,
+              GetOrCreateConfigFileName (_applicationDataDirectory, _session.CurrentProfileName)
+              ));
 
-        _optionsDataAccess = new OptionsDataAccess (
-            Path.Combine (
-                _applicationDataDirectory,
-                GetOrCreateConfigFileName (_applicationDataDirectory, _session.CurrentProfileName)
-                ));
+      var synchronizerFactory = new SynchronizerFactory (
+          GetProfileDataDirectory,
+          new TotalProgressFactory (
+              new ProgressFormFactory(),
+              int.Parse (ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"]),
+              ExceptionHandler.Instance),
+          _session,
+          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]));
 
-        var synchronizerFactory = new SynchronizerFactory (
-            GetProfileDataDirectory,
-            new TotalProgressFactory (
-                new ProgressFormFactory(),
-                int.Parse (ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"]),
-                ExceptionHandler.Instance),
-            _session,
-            TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-            TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]));
+      _scheduler = new Scheduler (synchronizerFactory, EnsureSynchronizationContext);
+      _scheduler.SetOptions (_optionsDataAccess.LoadOptions());
 
-        _scheduler = new Scheduler (synchronizerFactory, EnsureSynchronizationContext);
-        _scheduler.SetOptions (_optionsDataAccess.LoadOptions());
-
-        _updateChecker = new UpdateChecker (new AvailableVersionService(), () => _generalOptionsDataAccess.IgnoreUpdatesTilVersion);
-        _updateChecker.NewerVersionFound += UpdateChecker_NewerVersionFound;
-        _updateChecker.IsEnabled = generalOptions.ShouldCheckForNewerVersions;
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.LogException (x, s_logger);
-        throw;
-      }
-
-      s_logger.Info ("Startup finnished");
+      _updateChecker = new UpdateChecker (new AvailableVersionService(), () => _generalOptionsDataAccess.IgnoreUpdatesTilVersion);
+      _updateChecker.NewerVersionFound += UpdateChecker_NewerVersionFound;
+      _updateChecker.IsEnabled = generalOptions.ShouldCheckForNewerVersions;
     }
 
     private async void ItemChangeWatcherItemSavedOrDeleted (object sender, ItemSavedEventArgs e)
@@ -133,7 +121,7 @@ namespace CalDavSynchronizer
       if (options.DisableCertificateValidation)
         ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
       else
-        ServicePointManager.ServerCertificateValidationCallback = null; 
+        ServicePointManager.ServerCertificateValidationCallback = null;
     }
 
     public async Task SynchronizeNowNoThrow ()
@@ -159,7 +147,7 @@ namespace CalDavSynchronizer
         if (OptionsForm.EditOptions (_session, options, out newOptions, GetProfileDataDirectory, _generalOptionsDataAccess.LoadOptions().FixInvalidSettings))
         {
           _optionsDataAccess.SaveOptions (newOptions);
-          
+
           _scheduler.SetOptions (newOptions);
           DeleteEntityChachesForChangedProfiles (options, newOptions);
         }

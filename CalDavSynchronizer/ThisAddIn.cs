@@ -15,33 +15,44 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Reflection;
 using System.Windows.Forms;
+using CalDavSynchronizer.Utilities;
+using log4net;
+using log4net.Config;
 using Microsoft.Office.Core;
 using Microsoft.Office.Tools.Ribbon;
 using Microsoft.Office.Interop.Outlook;
 using CalDavSynchronizer.Ui;
+using Exception = System.Exception;
 
 namespace CalDavSynchronizer
 {
   public partial class ThisAddIn
   {
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
+
     private CalDavSynchronizerToolBar _calDavSynchronizerToolBar = null; // Pierre-Marie Baty -- only for Outlook < 2010
     public static ComponentContainer ComponentContainer { get; private set; }
 
     private void ThisAddIn_Startup (object sender, EventArgs e)
     {
-      ComponentContainer = new ComponentContainer (Application);
-
-      if (IsOutlookVersionSmallerThan2010)
+      try
       {
-        try
+        XmlConfigurator.Configure();
+        s_logger.Info ("Startup entered.");
+
+        ComponentContainer = new ComponentContainer (Application);
+
+        if (IsOutlookVersionSmallerThan2010)
         {
           _calDavSynchronizerToolBar = new CalDavSynchronizerToolBar (Application, ComponentContainer, missing);
         }
-        catch (System.Exception ex)
-        {
-          MessageBox.Show (ex.Message);
-        }
+        s_logger.Info ("Startup exiting.");
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.HandleException (x, s_logger);
       }
     }
 
