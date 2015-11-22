@@ -38,11 +38,12 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
     private readonly ICardDavDataAccess _cardDavDataAccess;
     private readonly vCardStandardWriter _vCardWriter;
-
+    private readonly vCardImprovedWriter _vCardImprovedWriter;
+  
     public CardDavRepository (ICardDavDataAccess cardDavDataAccess)
     {
       _cardDavDataAccess = cardDavDataAccess;
-      _vCardWriter = new vCardStandardWriter();
+      _vCardImprovedWriter = new vCardImprovedWriter();
     }
 
     public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetVersions (ICollection<Uri> ids)
@@ -137,17 +138,15 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
     private string Serialize (vCard vcard)
     {
+      string newvCardString;
+
       using (var writer = new StringWriter())
       {
-        _vCardWriter.Write (vcard, writer);
+        _vCardImprovedWriter.Write (vcard, writer);
         writer.Flush();
+        newvCardString = writer.GetStringBuilder().ToString();
 
-        string originalvCardString = writer.GetStringBuilder().ToString();
-        string fixedvCardString = ContactDataPreprocessor.FixBday (originalvCardString);
-        string fixedvCardString2 = ContactDataPreprocessor.FixNote (fixedvCardString, _vCardWriter);
-        string fixedvCardString3 = ContactDataPreprocessor.FixOrg (fixedvCardString2);
-
-        return fixedvCardString3;
+        return newvCardString;
       }
     }
 

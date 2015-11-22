@@ -284,6 +284,7 @@
     <Compile Include="Implementation\SynchronizationMode.cs" />
     <Compile Include="Scheduling\SynchronizerFactory.cs" />
     <Compile Include="ThoughtvCardWorkaround\ContactDataPreprocessor.cs" />
+    <Compile Include="ThoughtvCardWorkaround\vCardImprovedWriter.cs" />
     <Compile Include="Ui\AdvancedOptions.cs" />
     <Compile Include="Ui\AdvancedOptionsForm.cs">
       <SubType>Form</SubType>

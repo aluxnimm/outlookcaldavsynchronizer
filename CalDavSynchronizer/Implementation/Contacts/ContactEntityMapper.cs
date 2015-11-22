@@ -141,7 +141,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
       
       target.Organization = source.Inner.CompanyName;
-      if (!string.IsNullOrEmpty (source.Inner.Department)) target.Organization += ";;" + source.Inner.Department;
+      target.Department = source.Inner.Department;
 
       target.Title = source.Inner.JobTitle;
       target.Office = source.Inner.OfficeLocation;
