@@ -37,7 +37,6 @@ namespace CalDavSynchronizer.Implementation.Contacts
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private readonly ICardDavDataAccess _cardDavDataAccess;
-    private readonly vCardStandardWriter _vCardWriter;
     private readonly vCardImprovedWriter _vCardImprovedWriter;
   
     public CardDavRepository (ICardDavDataAccess cardDavDataAccess)
