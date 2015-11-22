@@ -25,7 +25,7 @@ namespace GenSync.EntityRepositories
   public interface IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
   {
     Task Delete (TEntityId entityId);
-    Task<EntityVersion<TEntityId, TEntityVersion>> Update (TEntityId entityId, TEntity entityToUpdate, Func<TEntity, TEntity> entityModifier);
+    Task<EntityVersion<TEntityId, TEntityVersion>> Update (TEntityId entityId, TEntityVersion version, TEntity entityToUpdate, Func<TEntity, TEntity> entityModifier);
     Task<EntityVersion<TEntityId, TEntityVersion>> Create (Func<TEntity, TEntity> entityInitializer);
   }
 }

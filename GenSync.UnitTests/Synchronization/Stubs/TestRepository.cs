@@ -68,9 +68,17 @@ namespace GenSync.UnitTests.Synchronization.Stubs
       return Task.FromResult (0);
     }
 
-    public Task<EntityVersion<Identifier, int>> Update (Identifier entityId, string entityToUpdate, Func<string, string> entityModifier)
+    public Task<EntityVersion<Identifier, int>> Update (
+        Identifier entityId,
+        int entityVersion,
+        string entityToUpdate,
+        Func<string, string> entityModifier)
     {
       var kv = EntityVersionAndContentById[entityId];
+
+      if (kv.Item1 != entityVersion)
+        throw new Exception ("tried to update stale version!");
+
       EntityVersionAndContentById.Remove (entityId);
 
       var newValue = entityModifier (kv.Item2);

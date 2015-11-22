@@ -16,6 +16,7 @@
 
 using System;
 using CalDavSynchronizer.Contracts;
+using NUnit.Framework;
 
 namespace CalDavDataAccessIntegrationTests
 {
@@ -29,6 +30,12 @@ namespace CalDavDataAccessIntegrationTests
     protected override ServerAdapterType? ServerAdapterTypeOverride
     {
       get { return ServerAdapterType.SynchronousWebRequestBased; }
+    }
+
+    [Ignore ("Sogo does not fail with precondition in that case")]
+    public override async System.Threading.Tasks.Task UpdateNonExistingEntity_PreconditionFails ()
+    {
+      await base.UpdateNonExistingEntity_PreconditionFails();
     }
   }
 }

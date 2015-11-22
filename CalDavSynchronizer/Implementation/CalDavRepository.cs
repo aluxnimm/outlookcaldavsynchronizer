@@ -158,12 +158,16 @@ namespace CalDavSynchronizer.Implementation
       }
     }
 
-    public Task<EntityVersion<Uri, string>> Update (Uri entityId, IICalendar entityToUpdate, Func<IICalendar, IICalendar> entityModifier)
+    public Task<EntityVersion<Uri, string>> Update (
+        Uri entityId,
+        string entityVersion,
+        IICalendar entityToUpdate,
+        Func<IICalendar, IICalendar> entityModifier)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
         var updatedEntity = entityModifier (entityToUpdate);
-        return _calDavDataAccess.UpdateEntity (entityId, SerializeCalendar (updatedEntity));
+        return _calDavDataAccess.UpdateEntity (entityId, entityVersion, SerializeCalendar (updatedEntity));
       }
     }
 

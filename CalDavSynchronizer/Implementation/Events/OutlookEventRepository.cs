@@ -109,9 +109,9 @@ namespace CalDavSynchronizer.Implementation.Events
             var entryId = (string) row[c_entryIdColumnName];
             try
             {
-              using (var appointmentWrapper = GenericComObjectWrapper.Create((AppointmentItem)_mapiNameSpace.GetItemFromID(entryId, storeId)))
+              using (var appointmentWrapper = GenericComObjectWrapper.Create ((AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, storeId)))
               {
-                events.Add(new EntityVersion<string, DateTime>(appointmentWrapper.Inner.EntryID, appointmentWrapper.Inner.LastModificationTime));
+                events.Add (new EntityVersion<string, DateTime> (appointmentWrapper.Inner.EntryID, appointmentWrapper.Inner.LastModificationTime));
               }
             }
             catch (COMException ex)
@@ -151,7 +151,11 @@ namespace CalDavSynchronizer.Implementation.Events
         appointmentItemWrapper.Dispose();
     }
 
-    public Task<EntityVersion<string, DateTime>> Update (string entityId, AppointmentItemWrapper entityToUpdate, Func<AppointmentItemWrapper, AppointmentItemWrapper> entityModifier)
+    public Task<EntityVersion<string, DateTime>> Update (
+        string entityId,
+        DateTime entityVersion,
+        AppointmentItemWrapper entityToUpdate,
+        Func<AppointmentItemWrapper, AppointmentItemWrapper> entityModifier)
     {
       entityToUpdate = entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save();

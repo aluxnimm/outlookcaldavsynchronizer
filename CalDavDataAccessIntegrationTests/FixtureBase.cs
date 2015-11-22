@@ -123,7 +123,10 @@ namespace CalDavDataAccessIntegrationTests
 
       var updatedCalendar = CreateEntity (600);
       updatedCalendar.Events[0].UID = uids[1];
-      var updated = await _calDavDataAccess.UpdateEntity (entitiesWithVersion[1].Id, SerializeCalendar (updatedCalendar));
+      var updated = await _calDavDataAccess.UpdateEntity (
+          entitiesWithVersion[1].Id,
+          entitiesWithVersion[1].Version,
+          SerializeCalendar (updatedCalendar));
 
       Assert.That (
           (await _calDavDataAccess.GetEventVersions (new DateTimeRange (DateTime.Now.AddDays (150), DateTime.Now.AddDays (450)))).Count,
@@ -131,7 +134,10 @@ namespace CalDavDataAccessIntegrationTests
 
       var updatedRevertedCalendar = CreateEntity (2);
       updatedRevertedCalendar.Events[0].UID = uids[1];
-      var updateReverted = await _calDavDataAccess.UpdateEntity (updated.Id, SerializeCalendar (updatedRevertedCalendar));
+      var updateReverted = await _calDavDataAccess.UpdateEntity (
+          updated.Id,
+          updated.Version,
+          SerializeCalendar (updatedRevertedCalendar));
 
       Assert.That (
           (await _calDavDataAccess.GetEventVersions (new DateTimeRange (DateTime.Now.AddDays (150), DateTime.Now.AddDays (450)))).Count,
@@ -169,7 +175,7 @@ namespace CalDavDataAccessIntegrationTests
 
 
     [Test]
-    public async Task UpdateNonExistingEntity ()
+    public virtual async Task UpdateNonExistingEntity_PreconditionFails ()
     {
       var v = await _calDavDataAccess.CreateEntity (
           SerializeCalendar (
@@ -177,24 +183,64 @@ namespace CalDavDataAccessIntegrationTests
 
       await _calDavDataAccess.DeleteEntity (v.Id);
 
-      try
-      {
-        v = await _calDavDataAccess.UpdateEntity (
-            v.Id,
-            SerializeCalendar (
-                CreateEntity (1)));
-        // If implementation doesn't trow, the entity must be newly created
-
-        Assert.That (
-            (await _calDavDataAccess.GetEntities (new[] { v.Id })).Count,
-            Is.EqualTo (1).Or.EqualTo (0));
-      }
-      catch (Exception x)
-      {
-        // if implementation throws, there must be an 404 Error
-        Assert.That (x.Message.Contains ("404"));
-      }
+      Assert.That (
+          async () => await _calDavDataAccess.UpdateEntity (
+              v.Id,
+              v.Version,
+              SerializeCalendar (
+                  CreateEntity (1))),
+          Throws.Exception.With.Message.Contains ("412"));
+      // 412 == precondition failed
     }
+
+    [Test]
+    public virtual async Task UpdateNonExistingEntity_CreatesNewEntity ()
+    {
+      var v = await _calDavDataAccess.CreateEntity (
+          SerializeCalendar (
+              CreateEntity (1)), Guid.NewGuid().ToString());
+
+      await _calDavDataAccess.DeleteEntity (v.Id);
+
+      v = await _calDavDataAccess.UpdateEntity (
+          v.Id,
+          v.Version,
+          SerializeCalendar (
+              CreateEntity (1)));
+      // If implementation doesn't trow, the entity must be newly created
+
+      Assert.That (
+          (await _calDavDataAccess.GetEntities (new[] { v.Id })).Count,
+          Is.EqualTo (1));
+    }
+
+
+    [Test]
+    public async Task UpdateEntityWithWrongVersion_PreconditionFails ()
+    {
+      var calendar = CreateEntity (1);
+      var v = await _calDavDataAccess.CreateEntity (
+          SerializeCalendar (calendar),
+          calendar.Events[0].UID);
+
+      calendar.Events[0].Summary += "xxx";
+
+      var v2 = await _calDavDataAccess.UpdateEntity (
+          v.Id,
+          v.Version,
+          SerializeCalendar (calendar));
+
+      calendar.Events[0].Summary += "xxx";
+
+      Assert.That (
+          async () => await _calDavDataAccess.UpdateEntity (
+              v.Id,
+              v.Version,
+              SerializeCalendar (calendar)),
+          Throws.Exception.With.Message.Contains ("412"));
+      // 412 == precondition failed
+    }
+
 
     [Test]
     public async Task DeleteNonExistingEntity ()
@@ -226,7 +272,7 @@ namespace CalDavDataAccessIntegrationTests
               CreateEntity (1)), Guid.NewGuid().ToString());
 
       Assert.That (
-          async () => await _calDavDataAccess.UpdateEntity (v.Id, "Invalid ICal"),
+          async () => await _calDavDataAccess.UpdateEntity (v.Id, v.Version, "Invalid ICal"),
           Throws.Exception);
     }
 

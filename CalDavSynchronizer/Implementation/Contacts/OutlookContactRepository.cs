@@ -128,7 +128,10 @@ namespace CalDavSynchronizer.Implementation.Contacts
         contactItemWrapper.Dispose();
     }
 
-    public Task<EntityVersion<string, DateTime>> Update (string entityId, ContactItemWrapper entityToUpdate, Func<ContactItemWrapper, ContactItemWrapper> entityModifier)
+    public Task<EntityVersion<string, DateTime>> Update (
+      string entityId, 
+      DateTime entityVersion,
+      ContactItemWrapper entityToUpdate, Func<ContactItemWrapper, ContactItemWrapper> entityModifier)
     {
       entityToUpdate = entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save();

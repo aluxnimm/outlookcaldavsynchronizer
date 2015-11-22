@@ -218,12 +218,7 @@ namespace CalDavSynchronizer.DataAccess
       return new EntityVersion<Uri, string>(UriHelper.GetUnescapedPath (effectiveEventUrl), version);
     }
 
-    public Task<EntityVersion<Uri, string>> UpdateEntity (Uri url, string contents)
-    {
-      return UpdateEntity (url, string.Empty, contents);
-    }
-
-    private async Task<EntityVersion<Uri, string>> UpdateEntity (Uri url, string etag, string contents)
+    public async Task<EntityVersion<Uri, string>> UpdateEntity (Uri url, string etag, string contents)
     {
       s_logger.DebugFormat ("Updating entity '{0}'", url);
 

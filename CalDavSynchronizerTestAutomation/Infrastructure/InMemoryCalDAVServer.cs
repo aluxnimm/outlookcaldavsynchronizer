@@ -93,10 +93,16 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       return Task.FromResult (0);
     }
 
-    public Task<EntityVersion<Uri, string>> UpdateEntity (Uri url, string iCalData)
+    public Task<EntityVersion<Uri, string>> UpdateEntity (
+        Uri url,
+        string version,
+        string iCalData)
     {
-      var version = int.Parse (_entites[url].Item1);
-      var newVersion = (version + 1).ToString();
+      var existingVersion = _entites[url].Item1;
+      if (version != existingVersion)
+        throw new Exception ("tried to update stale version!");
+
+      var newVersion = (version + "x");
       _entites[url] = Tuple.Create (newVersion, iCalData);
       return Task.FromResult (EntityVersion.Create (url, newVersion));
     }

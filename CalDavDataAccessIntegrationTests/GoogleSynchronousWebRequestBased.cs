@@ -16,6 +16,7 @@
 
 using System;
 using CalDavSynchronizer.Contracts;
+using NUnit.Framework;
 
 namespace CalDavDataAccessIntegrationTests
 {
@@ -29,6 +30,12 @@ namespace CalDavDataAccessIntegrationTests
     protected override ServerAdapterType? ServerAdapterTypeOverride
     {
       get { return ServerAdapterType.SynchronousWebRequestBased; }
+    }
+
+    [Ignore ("Google doesnt create a new entity in that case, it fails with precondition.")]
+    public override async System.Threading.Tasks.Task UpdateNonExistingEntity_CreatesNewEntity ()
+    {
+      await base.UpdateNonExistingEntity_CreatesNewEntity();
     }
   }
 }

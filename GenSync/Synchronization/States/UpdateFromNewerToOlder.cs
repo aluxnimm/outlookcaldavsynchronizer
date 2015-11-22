@@ -41,9 +41,9 @@ namespace GenSync.Synchronization.States
     public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> Resolve ()
     {
       if (AIsNewerThanB)
-        return _environment.StateFactory.Create_UpdateAtoB (_knownData, _newA);
+        return _environment.StateFactory.Create_UpdateAtoB (_knownData, _newA, _newB);
       else
-        return _environment.StateFactory.Create_UpdateBtoA (_knownData, _newB);
+        return _environment.StateFactory.Create_UpdateBtoA (_knownData, _newB, _newA);
     }
 
     protected abstract bool AIsNewerThanB { get; }

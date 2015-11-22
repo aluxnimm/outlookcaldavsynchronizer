@@ -23,16 +23,26 @@ namespace GenSync.Synchronization.States
   internal class RestoreInA<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
       : UpdateBase<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
   {
-    public RestoreInA (EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> environment, IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> knownData)
+    private readonly TAtypeEntityVersion _currentAVersion;
+
+    public RestoreInA (
+        EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> environment,
+        IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> knownData,
+        TAtypeEntityVersion currentAVersion)
         : base (environment, knownData)
     {
+      _currentAVersion = currentAVersion;
     }
 
     public override async Task<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>> PerformSyncActionNoThrow ()
     {
       try
       {
-        var newA = await _environment.ARepository.Update (_knownData.AtypeId, _aEntity, a => _environment.Mapper.Map2To1 (_bEntity, a));
+        var newA = await _environment.ARepository.Update (
+            _knownData.AtypeId,
+            _currentAVersion,
+            _aEntity,
+            a => _environment.Mapper.Map2To1 (_bEntity, a));
         return CreateDoNothing (newA.Id, newA.Version, _knownData.BtypeId, _knownData.BtypeVersion);
       }
       catch (Exception x)

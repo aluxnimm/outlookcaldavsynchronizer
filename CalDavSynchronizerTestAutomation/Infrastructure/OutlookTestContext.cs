@@ -253,11 +253,14 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
               new[] { EntityWithId.Create (entityUri, existingEventData) }));
 
       calDavDataAccess
-          .Expect (r => r.UpdateEntity (new Uri ("http://bla.com"), null))
+          .Expect (r => r.UpdateEntity (
+              new Uri ("http://bla.com"),
+              null,
+              null))
           .IgnoreArguments()
           .Return (Task.FromResult<EntityVersion<Uri, string>> (
               EntityVersion.Create (new Uri ("http://bla.com"), "blubb")))
-          .WhenCalled (a => { roundTrippedData = (string) a.Arguments[1]; });
+          .WhenCalled (a => { roundTrippedData = (string) a.Arguments[2]; });
 
       var synchronizer = OutlookTestContext.CreateEventSynchronizer (
           SynchronizationMode.ReplicateOutlookIntoServer,

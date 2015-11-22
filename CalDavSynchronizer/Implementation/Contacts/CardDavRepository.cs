@@ -112,7 +112,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    public Task<EntityVersion<Uri, string>> Update (Uri entityId, vCard entityToUpdate, Func<vCard, vCard> entityModifier)
+    public Task<EntityVersion<Uri, string>> Update (
+        Uri entityId,
+        string entityVersion,
+        vCard entityToUpdate,
+        Func<vCard, vCard> entityModifier)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
@@ -120,7 +124,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         newVcard.UniqueId = (!string.IsNullOrEmpty (entityToUpdate.UniqueId)) ? entityToUpdate.UniqueId : Guid.NewGuid().ToString();
         newVcard = entityModifier (newVcard);
 
-        return _cardDavDataAccess.UpdateEntity (entityId, Serialize (newVcard));
+        return _cardDavDataAccess.UpdateEntity (entityId, entityVersion, Serialize (newVcard));
       }
     }
 

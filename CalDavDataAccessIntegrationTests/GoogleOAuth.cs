@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using NUnit.Framework;
 
 namespace CalDavDataAccessIntegrationTests
 {
@@ -23,6 +24,12 @@ namespace CalDavDataAccessIntegrationTests
     protected override string ProfileName
     {
       get { return "TestCal-Google (OAuth)"; }
+    }
+
+    [Ignore ("Google doesnt create a new entity in that case, it fails with precondition.")]
+    public override async System.Threading.Tasks.Task UpdateNonExistingEntity_CreatesNewEntity ()
+    {
+      await base.UpdateNonExistingEntity_CreatesNewEntity();
     }
   }
 }

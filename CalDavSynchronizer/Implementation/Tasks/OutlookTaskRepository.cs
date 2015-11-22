@@ -75,7 +75,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
           var entryId = (string) row[c_entryIdColumnName];
           try
           {
-            using (var taskItemWrapper = GenericComObjectWrapper.Create ((TaskItem)_mapiNameSpace.GetItemFromID (entryId, storeId)))
+            using (var taskItemWrapper = GenericComObjectWrapper.Create ((TaskItem) _mapiNameSpace.GetItemFromID (entryId, storeId)))
             {
               entities.Add (EntityVersion.Create (taskItemWrapper.Inner.EntryID, taskItemWrapper.Inner.LastModificationTime));
             }
@@ -117,7 +117,11 @@ namespace CalDavSynchronizer.Implementation.Tasks
         wrapper.Dispose();
     }
 
-    public Task<EntityVersion<string, DateTime>> Update (string entityId, TaskItemWrapper entityToUpdate, Func<TaskItemWrapper, TaskItemWrapper> entityModifier)
+    public Task<EntityVersion<string, DateTime>> Update (
+        string entityId,
+        DateTime entityVersion,
+        TaskItemWrapper entityToUpdate,
+        Func<TaskItemWrapper, TaskItemWrapper> entityModifier)
     {
       entityToUpdate = entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save();

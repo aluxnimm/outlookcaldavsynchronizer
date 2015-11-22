@@ -28,18 +28,28 @@ namespace GenSync.Synchronization.States
     // ReSharper disable once StaticFieldInGenericType
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
     private readonly TBtypeEntityVersion _newBVersion;
+    private readonly TAtypeEntityVersion _currentAVersion;
 
-    public UpdateBToA (EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> environment, IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> knownData, TBtypeEntityVersion newBVersion)
+    public UpdateBToA (
+        EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> environment,
+        IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> knownData,
+        TBtypeEntityVersion newBVersion,
+        TAtypeEntityVersion currentAVersion)
         : base (environment, knownData)
     {
       _newBVersion = newBVersion;
+      _currentAVersion = currentAVersion;
     }
 
     public override async Task<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>> PerformSyncActionNoThrow ()
     {
       try
       {
-        var newA = await _environment.ARepository.Update (_knownData.AtypeId, _aEntity, a => _environment.Mapper.Map2To1 (_bEntity, a));
+        var newA = await _environment.ARepository.Update (
+            _knownData.AtypeId,
+            _currentAVersion,
+            _aEntity,
+            a => _environment.Mapper.Map2To1 (_bEntity, a));
         return CreateDoNothing (newA.Id, newA.Version, _knownData.BtypeId, _newBVersion);
       }
       catch (Exception x)
