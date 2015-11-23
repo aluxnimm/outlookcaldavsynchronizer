@@ -22,40 +22,46 @@ namespace CalDavSynchronizer.Ui.ConnectionTests
 {
   public static class ConnectionTester
   {
-    public static async Task<TestResult> TestConnection (Uri url, IWebDavClient webDavClient, ResourceType autoRessourceType)
+    public static async Task<TestResult> TestConnection (Uri url, IWebDavClient webDavClient, ResourceType supposedRessourceType)
     {
       var calDavDataAccess = new CalDavDataAccess (url, webDavClient);
       var cardDavDataAccess = new CardDavDataAccess (url, webDavClient);
 
       TestResult result;
 
-      if (autoRessourceType == ResourceType.None)
-      {
-        var ressourceType =
-          (await calDavDataAccess.IsResourceCalender() ? ResourceType.Calendar : ResourceType.None) |
-          (await cardDavDataAccess.IsResourceAddressBook() ? ResourceType.AddressBook : ResourceType.None);
 
-        result = new TestResult(
-          ressourceType,
-          ressourceType.HasFlag(ResourceType.Calendar) ? await GetCalendarProperties(calDavDataAccess) : CalendarProperties.None,
-          ressourceType.HasFlag(ResourceType.AddressBook) ? await GetAddressBookProperties(cardDavDataAccess) : AddressBookProperties.None);
-      }
-      else if (autoRessourceType == ResourceType.Calendar)
+      switch (supposedRessourceType)
       {
-        result = new TestResult(
-          autoRessourceType,
-          CalendarProperties.CalendarAccessSupported |
-          (await calDavDataAccess.IsWriteable() ? CalendarProperties.IsWriteable : CalendarProperties.None) |
-          (await calDavDataAccess.DoesSupportCalendarQuery() ? CalendarProperties.SupportsCalendarQuery : CalendarProperties.None),
-          AddressBookProperties.None);
-      }
-      else
-      {
-        result = new TestResult(
-          autoRessourceType,
-          CalendarProperties.None,
-          AddressBookProperties.AddressBookAccessSupported |
-          (await cardDavDataAccess.IsWriteable() ? AddressBookProperties.IsWriteable : AddressBookProperties.None));
+        case ResourceType.None:
+          var ressourceType =
+              (await calDavDataAccess.IsResourceCalender() ? ResourceType.Calendar : ResourceType.None) |
+              (await cardDavDataAccess.IsResourceAddressBook() ? ResourceType.AddressBook : ResourceType.None);
+
+          result = new TestResult (
+              ressourceType,
+              ressourceType.HasFlag (ResourceType.Calendar) ? await GetCalendarProperties (calDavDataAccess) : CalendarProperties.None,
+              ressourceType.HasFlag (ResourceType.AddressBook) ? await GetAddressBookProperties (cardDavDataAccess) : AddressBookProperties.None);
+              break;
+
+        case ResourceType.Calendar:
+          result = new TestResult (
+              supposedRessourceType,
+              CalendarProperties.CalendarAccessSupported |
+              (await calDavDataAccess.IsWriteable() ? CalendarProperties.IsWriteable : CalendarProperties.None) |
+              (await calDavDataAccess.DoesSupportCalendarQuery() ? CalendarProperties.SupportsCalendarQuery : CalendarProperties.None),
+              AddressBookProperties.None);
+          break;
+        
+        case ResourceType.AddressBook:
+          result = new TestResult (
+              supposedRessourceType,
+              CalendarProperties.None,
+              AddressBookProperties.AddressBookAccessSupported |
+              (await cardDavDataAccess.IsWriteable() ? AddressBookProperties.IsWriteable : AddressBookProperties.None));
+          break;
+        
+        default:
+          throw new ArgumentOutOfRangeException ("supposedRessourceType");
       }
 
       return result;

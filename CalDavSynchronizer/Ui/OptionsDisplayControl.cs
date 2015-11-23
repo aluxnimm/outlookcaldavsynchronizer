@@ -212,7 +212,7 @@ namespace CalDavSynchronizer.Ui
         var webDavClient = CreateWebDavClient();
 
         Uri autoDiscoveredUrl;
-        ResourceType autoResourceType;
+        ResourceType autoDiscoveredResourceType;
 
         if (ConnectionTester.RequiresAutoDiscovery (enteredUri))
         {
@@ -220,7 +220,7 @@ namespace CalDavSynchronizer.Ui
           if (autodiscoveryResult.RessourceUrl != null)
           {
             autoDiscoveredUrl = autodiscoveryResult.RessourceUrl;
-            autoResourceType = autodiscoveryResult.ResourceType;
+            autoDiscoveredResourceType = autodiscoveryResult.ResourceType;
           }
           else
             return;
@@ -243,7 +243,7 @@ namespace CalDavSynchronizer.Ui
             if (autodiscoveryResult.RessourceUrl != null)
             {
               autoDiscoveredUrl = autodiscoveryResult.RessourceUrl;
-              autoResourceType = autodiscoveryResult.ResourceType;
+              autoDiscoveredResourceType = autodiscoveryResult.ResourceType;
             }
             else
             {
@@ -251,7 +251,7 @@ namespace CalDavSynchronizer.Ui
               if (autodiscoveryResult2.RessourceUrl != null)
               {
                 autoDiscoveredUrl = autodiscoveryResult2.RessourceUrl;
-                autoResourceType = autodiscoveryResult2.ResourceType;
+                autoDiscoveredResourceType = autodiscoveryResult2.ResourceType;
               }
               else
                 return;
@@ -261,7 +261,7 @@ namespace CalDavSynchronizer.Ui
 
         _calenderUrlTextBox.Text = autoDiscoveredUrl.ToString();
 
-        var finalResult = await ConnectionTester.TestConnection (autoDiscoveredUrl, webDavClient, autoResourceType);
+        var finalResult = await ConnectionTester.TestConnection (autoDiscoveredUrl, webDavClient, autoDiscoveredResourceType);
 
         _faultFinder.FixSynchronizationMode (finalResult);
 
