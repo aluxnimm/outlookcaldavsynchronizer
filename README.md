@@ -61,6 +61,19 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 1.6.0 ####
+- New features:
+	- Provide entity version (etag) on update and set If-Match header
+	- Implement own vCardImprovedWriter to fix serialization problems of vCardStandardWriter and avoid costly Regex workarounds 
+	- Add TYPE=HOME for personal homepages
+- bug fixes:
+	- Fix mapping of HomeFaxNumber for vcards, ticket #134
+	- Log Exceptions during ConnectionTests and don't try to list calendars or adressbooks for empty homesets, fixes github issue #82
+	- Fix GetContacts for Yandex, since Yandex returns directory itself even with an etag
+	- Improve error handling
+	- Fixes TYPE subproperties needed for Yandex vcards
+	- Ensure that Etag is double quoted when adding in Entity repositories, since some caldav servers like yandex send etags without quotes
+	
 #### 1.5.4 ####
 - New features:
 	- General options in GUI for changing SSL options and other global settings
