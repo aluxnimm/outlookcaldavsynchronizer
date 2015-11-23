@@ -196,7 +196,7 @@ namespace CalDavSynchronizer.DataAccess
         version = await GetEtag (effectiveContactUrl);
       }
 
-      return new EntityVersion<Uri, string>(UriHelper.GetUnescapedPath (effectiveContactUrl), version);
+      return new EntityVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveContactUrl), UriHelper.GetQuotedEtag (version));
     }
 
     public async Task<EntityVersion<Uri, string>> UpdateEntity (Uri url, string etag, string contents)
@@ -254,7 +254,7 @@ namespace CalDavSynchronizer.DataAccess
         version = await GetEtag (effectiveContactUrl);
       }
 
-      return new EntityVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveContactUrl), version);
+      return new EntityVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveContactUrl), UriHelper.GetQuotedEtag (version));
     }
 
     public async Task<IReadOnlyList<EntityVersion<Uri, string>>> GetContacts ()
@@ -299,7 +299,7 @@ namespace CalDavSynchronizer.DataAccess
                )
             {
               var uri = UriHelper.UnescapeRelativeUri (_serverUrl, urlNode.InnerText);
-              entities.Add (EntityVersion.Create (uri, eTag));
+              entities.Add (EntityVersion.Create (uri, UriHelper.GetQuotedEtag (eTag)));
             }
           }
         }

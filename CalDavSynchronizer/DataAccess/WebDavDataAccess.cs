@@ -268,6 +268,11 @@ namespace CalDavSynchronizer.DataAccess
     /// </summary>
     protected static class UriHelper
     {
+      public static string GetQuotedEtag (string etag)
+      {
+        return etag.StartsWith("\"") ? etag : "\"" + etag + "\"";
+      }
+
       public static Uri GetUnescapedPath (Uri absoluteUri)
       {
         return new Uri (absoluteUri.GetComponents (UriComponents.Path | UriComponents.KeepDelimiter, UriFormat.Unescaped), UriKind.Relative);

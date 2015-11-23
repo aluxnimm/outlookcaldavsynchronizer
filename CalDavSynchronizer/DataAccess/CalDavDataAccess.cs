@@ -215,7 +215,7 @@ namespace CalDavSynchronizer.DataAccess
         version = await GetEtag (effectiveEventUrl);
       }
 
-      return new EntityVersion<Uri, string>(UriHelper.GetUnescapedPath (effectiveEventUrl), version);
+      return new EntityVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveEventUrl), UriHelper.GetQuotedEtag (version));
     }
 
     public async Task<EntityVersion<Uri, string>> UpdateEntity (Uri url, string etag, string contents)
@@ -273,7 +273,7 @@ namespace CalDavSynchronizer.DataAccess
         version = await GetEtag (effectiveEventUrl);
       }
 
-      return new EntityVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveEventUrl), version);
+      return new EntityVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveEventUrl), UriHelper.GetQuotedEtag (version));
     }
 
     private async Task<IReadOnlyList<EntityVersion<Uri, string>>> GetEntities (DateTimeRange? range, string entityType)
@@ -322,7 +322,7 @@ namespace CalDavSynchronizer.DataAccess
           if (urlNode != null && etagNode != null)
           {
             var uri = UriHelper.UnescapeRelativeUri (_serverUrl, urlNode.InnerText);
-            entities.Add (EntityVersion.Create (uri, etagNode.InnerText));
+            entities.Add (EntityVersion.Create (uri, UriHelper.GetQuotedEtag (etagNode.InnerText)));
           }
         }
       }
@@ -420,7 +420,8 @@ namespace CalDavSynchronizer.DataAccess
         var etagNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:getetag", responseXml.XmlNamespaceManager);
         if (urlNode != null && etagNode != null)
         {
-          entities.Add (EntityVersion.Create (UriHelper.UnescapeRelativeUri (_serverUrl, urlNode.InnerText), etagNode.InnerText));
+          entities.Add (EntityVersion.Create (UriHelper.UnescapeRelativeUri (_serverUrl, urlNode.InnerText), 
+                                              UriHelper.GetQuotedEtag (etagNode.InnerText)));
         }
       }
 
