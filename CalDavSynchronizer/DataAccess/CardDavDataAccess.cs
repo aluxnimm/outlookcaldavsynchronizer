@@ -189,14 +189,14 @@ namespace CalDavSynchronizer.DataAccess
       string version;
       if (etag != null)
       {
-        version = etag.Tag;
+        version = etag;
       }
       else
       {
         version = await GetEtag (effectiveContactUrl);
       }
 
-      return new EntityVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveContactUrl), UriHelper.GetQuotedEtag (version));
+      return new EntityVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveContactUrl), version);
     }
 
     public async Task<EntityVersion<Uri, string>> UpdateEntity (Uri url, string etag, string contents)
@@ -247,14 +247,14 @@ namespace CalDavSynchronizer.DataAccess
       string version;
       if (newEtag != null)
       {
-        version = newEtag.Tag;
+        version = newEtag;
       }
       else
       {
         version = await GetEtag (effectiveContactUrl);
       }
 
-      return new EntityVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveContactUrl), UriHelper.GetQuotedEtag (version));
+      return new EntityVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveContactUrl), version);
     }
 
     public async Task<IReadOnlyList<EntityVersion<Uri, string>>> GetContacts ()
@@ -289,7 +289,7 @@ namespace CalDavSynchronizer.DataAccess
           var etagNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:getetag", responseXml.XmlNamespaceManager);
           if (urlNode != null && etagNode != null)
           {
-            var eTag = etagNode.InnerText;
+            var eTag = HttpUtility.GetQuotedEtag(etagNode.InnerText);
             // the directory is also included in the list. It has a etag of '"None"' and is skipped
             // in Owncloud eTag is empty for directory
             // Yandex returns some eTag and the urlNode for the directory itself, so we need to filter that out aswell
@@ -299,7 +299,7 @@ namespace CalDavSynchronizer.DataAccess
                )
             {
               var uri = UriHelper.UnescapeRelativeUri (_serverUrl, urlNode.InnerText);
-              entities.Add (EntityVersion.Create (uri, UriHelper.GetQuotedEtag (eTag)));
+              entities.Add (EntityVersion.Create (uri, eTag));
             }
           }
         }

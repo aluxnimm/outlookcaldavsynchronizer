@@ -13,17 +13,15 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 using System;
-using System.Collections.Generic;
-using System.Net.Http.Headers;
 
-namespace CalDavSynchronizer.DataAccess
+internal class HttpUtility
 {
-  public interface IHttpHeaders
+  public static string GetQuotedEtag (string etag)
   {
-    bool TryGetValues (string name, out IEnumerable<string> values);
-    Uri Location { get; }
-    string ETag { get; }
+    if (string.IsNullOrEmpty (etag))
+      return etag;
+
+    return etag.StartsWith ("\"") ? etag : "\"" + etag + "\"";
   }
 }

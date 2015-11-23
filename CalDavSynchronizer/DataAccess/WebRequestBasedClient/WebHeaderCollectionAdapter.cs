@@ -61,12 +61,11 @@ namespace CalDavSynchronizer.DataAccess.WebRequestBasedClient
       }
     }
 
-    public EntityTagHeaderValue ETag
+    public string ETag
     {
       get
       {
-        var etag = _headerFromLastCall["ETag"];
-        return etag != null ? new EntityTagHeaderValue (etag) : null;
+        return HttpUtility.GetQuotedEtag (_headerFromLastCall["ETag"]);
       }
     }
   }

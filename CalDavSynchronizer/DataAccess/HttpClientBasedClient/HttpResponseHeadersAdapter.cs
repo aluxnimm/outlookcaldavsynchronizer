@@ -49,9 +49,20 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
       get { return _headersFromFirstCall.Location; }
     }
 
-    public EntityTagHeaderValue ETag
+    public string ETag
     {
-      get { return _headersFromLastCall.ETag; }
+      get
+      {
+        var etagValue = _headersFromLastCall.ETag;
+        if (etagValue != null)
+          return etagValue.Tag;
+
+        IEnumerable<string> etags;
+        if (_headersFromLastCall.TryGetValues ("etag", out etags))
+          return HttpUtility.GetQuotedEtag (etags.FirstOrDefault());
+        else
+          return null;
+      }
     }
   }
 }

@@ -98,7 +98,7 @@ namespace CalDavSynchronizer.DataAccess
       var headers = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (absoluteEntityUrl, "GET", null, null, null, null, null);
       if (headers.ETag != null)
       {
-        return headers.ETag.Tag;
+        return headers.ETag;
       }
       else
       {
@@ -106,7 +106,7 @@ namespace CalDavSynchronizer.DataAccess
       }
     }
 
-    protected async Task<string> GetEtagViaPropfind (Uri url)
+    private async Task<string> GetEtagViaPropfind (Uri url)
     {
       var document = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
           url,
@@ -126,7 +126,7 @@ namespace CalDavSynchronizer.DataAccess
 
       XmlNode eTagNode = document.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:getetag", document.XmlNamespaceManager);
 
-      return eTagNode.InnerText;
+      return HttpUtility.GetQuotedEtag(eTagNode.InnerText);
     }
 
     private Task<XmlDocumentWithNamespaceManager> GetAllProperties (Uri url, int depth)
@@ -268,11 +268,6 @@ namespace CalDavSynchronizer.DataAccess
     /// </summary>
     protected static class UriHelper
     {
-      public static string GetQuotedEtag (string etag)
-      {
-        return etag.StartsWith("\"") ? etag : "\"" + etag + "\"";
-      }
-
       public static Uri GetUnescapedPath (Uri absoluteUri)
       {
         return new Uri (absoluteUri.GetComponents (UriComponents.Path | UriComponents.KeepDelimiter, UriFormat.Unescaped), UriKind.Relative);

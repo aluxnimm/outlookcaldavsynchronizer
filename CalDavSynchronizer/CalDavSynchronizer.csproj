@@ -217,6 +217,7 @@
     <Compile Include="Contracts\ProxyOptions.cs" />
     <Compile Include="Contracts\ServerAdapterType.cs" />
     <Compile Include="DataAccess\HttpClientBasedClient\HttpResponseHeadersAdapter.cs" />
+    <Compile Include="DataAccess\HttpUtility.cs" />
     <Compile Include="DataAccess\ICardDavDataAccess.cs" />
     <Compile Include="DataAccess\IHttpHeaders.cs" />
     <Compile Include="DataAccess\IGeneralOptionsDataAccess.cs" />
