@@ -55,6 +55,7 @@
       this.group1.Items.Add(this.OptionsButton);
       this.group1.Items.Add(this.GeneralOptionsButton);
       this.group1.Items.Add(this.AboutButton);
+      this.group1.Label = "CalDav Synchronizer";
       this.group1.Name = "group1";
       // 
       // SynchronizeNowButton
@@ -62,7 +63,9 @@
       this.SynchronizeNowButton.Image = global::CalDavSynchronizer.Properties.Resources.Sync;
       this.SynchronizeNowButton.Label = "Synchronize now";
       this.SynchronizeNowButton.Name = "SynchronizeNowButton";
+      this.SynchronizeNowButton.ScreenTip = "Synchronize now";
       this.SynchronizeNowButton.ShowImage = true;
+      this.SynchronizeNowButton.SuperTip = "Start a manual synchronization of all active profiles.";
       this.SynchronizeNowButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.SynchronizeNowButton_Click);
       // 
       // OptionsButton
@@ -70,7 +73,9 @@
       this.OptionsButton.Image = global::CalDavSynchronizer.Properties.Resources.Options;
       this.OptionsButton.Label = "Synchronization Profiles";
       this.OptionsButton.Name = "OptionsButton";
+      this.OptionsButton.ScreenTip = "Synchronization Profiles";
       this.OptionsButton.ShowImage = true;
+      this.OptionsButton.SuperTip = "Configure your synchronization profiles.";
       this.OptionsButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.OptionsButton_Click);
       // 
       // GeneralOptionsButton
@@ -78,7 +83,9 @@
       this.GeneralOptionsButton.Image = global::CalDavSynchronizer.Properties.Resources.GeneralOptions;
       this.GeneralOptionsButton.Label = "General Options";
       this.GeneralOptionsButton.Name = "GeneralOptionsButton";
+      this.GeneralOptionsButton.ScreenTip = "General Options";
       this.GeneralOptionsButton.ShowImage = true;
+      this.GeneralOptionsButton.SuperTip = "Set global options for all profiles like SSL/TLS settings.";
       this.GeneralOptionsButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.GeneralOptionsButton_Click);
       // 
       // AboutButton
@@ -86,7 +93,9 @@
       this.AboutButton.Image = global::CalDavSynchronizer.Properties.Resources.About;
       this.AboutButton.Label = "About";
       this.AboutButton.Name = "AboutButton";
+      this.AboutButton.ScreenTip = "About";
       this.AboutButton.ShowImage = true;
+      this.AboutButton.SuperTip = "Information about the project and version.";
       this.AboutButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.AboutButton_Click);
       // 
       // CalDavSynchronizerRibbon
