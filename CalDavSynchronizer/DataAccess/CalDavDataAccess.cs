@@ -148,7 +148,7 @@ namespace CalDavSynchronizer.DataAccess
           );
     }
 
-    private const string s_calDavDateTimeFormatString = "yyyyMMddThhmmssZ";
+    private const string s_calDavDateTimeFormatString = "yyyyMMddTHHmmssZ";
 
     public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetEventVersions (DateTimeRange? range)
     {

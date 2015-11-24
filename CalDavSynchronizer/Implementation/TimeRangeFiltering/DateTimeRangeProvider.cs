@@ -32,8 +32,8 @@ namespace CalDavSynchronizer.Implementation.TimeRangeFiltering
     public DateTimeRange? GetRange ()
     {
       return new DateTimeRange (
-          DateTime.Now.AddDays (-_daysToSynchronizeInThePast),
-          DateTime.Now.AddDays (_daysToSynchronizeInTheFuture));
+          DateTime.Today.AddDays (-_daysToSynchronizeInThePast),
+          DateTime.Today.AddDays (1 + _daysToSynchronizeInTheFuture));
     }
   }
 }
