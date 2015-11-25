@@ -189,7 +189,7 @@ namespace CalDavSynchronizer
           oldOptions
               .Concat (newOptions)
               .GroupBy (o => o.Id)
-              .Where (g => g.GroupBy (o => new { o.OutlookFolderStoreId, o.OutlookFolderEntryId, o.CalenderUrl }).Count() > 1)
+              .Where (g => g.GroupBy (o => new { o.OutlookFolderStoreId, o.OutlookFolderEntryId, o.CalenderUrl, o.DaysToSynchronizeInTheFuture, o.DaysToSynchronizeInThePast, o.IgnoreSynchronizationTimeRange }).Count() > 1)
               .Select (g => new { Id = g.Key, Name = g.First().Name })
               .ToArray();
 
