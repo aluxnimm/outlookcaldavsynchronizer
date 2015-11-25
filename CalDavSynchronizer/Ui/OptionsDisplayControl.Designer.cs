@@ -424,6 +424,8 @@
       this._enableTimeRangeFilteringCheckBox.Size = new System.Drawing.Size(119, 17);
       this._enableTimeRangeFilteringCheckBox.TabIndex = 27;
       this._enableTimeRangeFilteringCheckBox.Text = "Use time range filter";
+      this.toolTip.SetToolTip(this._enableTimeRangeFilteringCheckBox, "Changing the time range filter setting leads to deletion of the sync cache\r\nand a" +
+  " complete resync of the calendar!");
       this._enableTimeRangeFilteringCheckBox.UseVisualStyleBackColor = true;
       this._enableTimeRangeFilteringCheckBox.CheckedChanged += new System.EventHandler(this._enableTimeRangeFilteringCheckBox_CheckedChanged);
       // 
