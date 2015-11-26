@@ -217,10 +217,25 @@ namespace CalDavSynchronizer.Ui
         if (ConnectionTester.RequiresAutoDiscovery (enteredUri))
         {
           var autodiscoveryResult = await DoAutoDiscovery (enteredUri, webDavClient, true);
+          if (autodiscoveryResult.WasCancelled) 
+            return;
           if (autodiscoveryResult.RessourceUrl != null)
           {
             autoDiscoveredUrl = autodiscoveryResult.RessourceUrl;
             autoDiscoveredResourceType = autodiscoveryResult.ResourceType;
+          }
+          else if (!enteredUri.AbsolutePath.EndsWith ("/"))
+          {
+            var autodiscoveryResult2 = await DoAutoDiscovery(new Uri (enteredUri.ToString()+"/"), webDavClient, false);
+            if (autodiscoveryResult2.WasCancelled)
+              return;
+            if (autodiscoveryResult2.RessourceUrl != null)
+            {
+              autoDiscoveredUrl = autodiscoveryResult2.RessourceUrl;
+              autoDiscoveredResourceType = autodiscoveryResult2.ResourceType;
+            }
+            else
+              return;
           }
           else
             return;
