@@ -45,7 +45,7 @@ namespace CalDavSynchronizer.Ui
       this._okButton.Location = new System.Drawing.Point(289, 599);
       this._okButton.Name = "_okButton";
       this._okButton.Size = new System.Drawing.Size(75, 23);
-      this._okButton.TabIndex = 0;
+      this._okButton.TabIndex = 40;
       this._okButton.Text = "OK";
       this._okButton.UseVisualStyleBackColor = true;
       this._okButton.Click += new System.EventHandler(this.OkButton_Click);
@@ -57,7 +57,7 @@ namespace CalDavSynchronizer.Ui
       this._cancelButton.Location = new System.Drawing.Point(370, 599);
       this._cancelButton.Name = "_cancelButton";
       this._cancelButton.Size = new System.Drawing.Size(75, 23);
-      this._cancelButton.TabIndex = 1;
+      this._cancelButton.TabIndex = 41;
       this._cancelButton.Text = "Cancel";
       this._cancelButton.UseVisualStyleBackColor = true;
       // 
@@ -89,7 +89,7 @@ namespace CalDavSynchronizer.Ui
       this._addProfileButton.Location = new System.Drawing.Point(13, 599);
       this._addProfileButton.Name = "_addProfileButton";
       this._addProfileButton.Size = new System.Drawing.Size(75, 23);
-      this._addProfileButton.TabIndex = 3;
+      this._addProfileButton.TabIndex = 43;
       this._addProfileButton.Text = "Add";
       this._addProfileButton.UseVisualStyleBackColor = true;
       this._addProfileButton.Click += new System.EventHandler(this._addProfileButton_Click);

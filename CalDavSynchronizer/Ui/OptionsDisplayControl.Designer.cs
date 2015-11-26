@@ -95,7 +95,7 @@
       this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Location = new System.Drawing.Point(11, 51);
       this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Name = "_synchronizeImmediatelyAfterOutlookItemChangeCheckBox";
       this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Size = new System.Drawing.Size(231, 17);
-      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.TabIndex = 14;
+      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.TabIndex = 12;
       this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Text = "Synchronize items immediately after change";
       this.toolTip.SetToolTip(this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox, "Trigger a partial synchronization run immediately after an item is \r\ncreated, cha" +
         "nged or deleted in Outlook via the Inspector dialog, \r\nworks only for Appointmen" +
@@ -108,7 +108,7 @@
       this._selectOutlookFolderButton.Location = new System.Drawing.Point(411, 21);
       this._selectOutlookFolderButton.Name = "_selectOutlookFolderButton";
       this._selectOutlookFolderButton.Size = new System.Drawing.Size(28, 23);
-      this._selectOutlookFolderButton.TabIndex = 0;
+      this._selectOutlookFolderButton.TabIndex = 10;
       this._selectOutlookFolderButton.Text = "...";
       this._selectOutlookFolderButton.UseVisualStyleBackColor = true;
       // 
@@ -120,7 +120,7 @@
       this._outoookFolderNameTextBox.Name = "_outoookFolderNameTextBox";
       this._outoookFolderNameTextBox.ReadOnly = true;
       this._outoookFolderNameTextBox.Size = new System.Drawing.Size(215, 20);
-      this._outoookFolderNameTextBox.TabIndex = 13;
+      this._outoookFolderNameTextBox.TabIndex = 11;
       // 
       // label9
       // 
@@ -148,7 +148,7 @@
       this._syncIntervalComboBox.Location = new System.Drawing.Point(283, 81);
       this._syncIntervalComboBox.Name = "_syncIntervalComboBox";
       this._syncIntervalComboBox.Size = new System.Drawing.Size(156, 21);
-      this._syncIntervalComboBox.TabIndex = 5;
+      this._syncIntervalComboBox.TabIndex = 22;
       // 
       // label7
       // 
@@ -177,7 +177,7 @@
       this._conflictResolutionComboBox.Location = new System.Drawing.Point(190, 54);
       this._conflictResolutionComboBox.Name = "_conflictResolutionComboBox";
       this._conflictResolutionComboBox.Size = new System.Drawing.Size(249, 21);
-      this._conflictResolutionComboBox.TabIndex = 4;
+      this._conflictResolutionComboBox.TabIndex = 21;
       // 
       // _synchronizationModeComboBox
       // 
@@ -188,7 +188,7 @@
       this._synchronizationModeComboBox.Location = new System.Drawing.Point(190, 27);
       this._synchronizationModeComboBox.Name = "_synchronizationModeComboBox";
       this._synchronizationModeComboBox.Size = new System.Drawing.Size(249, 21);
-      this._synchronizationModeComboBox.TabIndex = 3;
+      this._synchronizationModeComboBox.TabIndex = 20;
       // 
       // groupBox1
       // 
@@ -217,7 +217,7 @@
       this._useGoogleOAuthCheckBox.Location = new System.Drawing.Point(8, 145);
       this._useGoogleOAuthCheckBox.Name = "_useGoogleOAuthCheckBox";
       this._useGoogleOAuthCheckBox.Size = new System.Drawing.Size(115, 17);
-      this._useGoogleOAuthCheckBox.TabIndex = 14;
+      this._useGoogleOAuthCheckBox.TabIndex = 4;
       this._useGoogleOAuthCheckBox.Text = "Use Google OAuth";
       this._useGoogleOAuthCheckBox.UseVisualStyleBackColor = true;
       this._useGoogleOAuthCheckBox.CheckedChanged += new System.EventHandler(this._useGoogleOAuthCheckBox_CheckedChanged);
@@ -237,7 +237,7 @@
       this._emailAddressTextBox.Location = new System.Drawing.Point(256, 101);
       this._emailAddressTextBox.Name = "_emailAddressTextBox";
       this._emailAddressTextBox.Size = new System.Drawing.Size(183, 20);
-      this._emailAddressTextBox.TabIndex = 12;
+      this._emailAddressTextBox.TabIndex = 3;
       // 
       // _testConnectionButton
       // 
@@ -245,7 +245,7 @@
       this._testConnectionButton.Location = new System.Drawing.Point(363, 145);
       this._testConnectionButton.Name = "_testConnectionButton";
       this._testConnectionButton.Size = new System.Drawing.Size(76, 23);
-      this._testConnectionButton.TabIndex = 3;
+      this._testConnectionButton.TabIndex = 5;
       this._testConnectionButton.Text = "Test settings";
       this._testConnectionButton.UseVisualStyleBackColor = true;
       // 
@@ -308,7 +308,7 @@
       this._advancedOptionsButton.Location = new System.Drawing.Point(228, 518);
       this._advancedOptionsButton.Name = "_advancedOptionsButton";
       this._advancedOptionsButton.Size = new System.Drawing.Size(108, 23);
-      this._advancedOptionsButton.TabIndex = 15;
+      this._advancedOptionsButton.TabIndex = 31;
       this._advancedOptionsButton.Text = "Advanced options";
       this._advancedOptionsButton.UseVisualStyleBackColor = true;
       this._advancedOptionsButton.Click += new System.EventHandler(this._advancedSettingsButton_Click);
@@ -319,7 +319,7 @@
       this.numberOfDaysInTheFuture.Location = new System.Drawing.Point(309, 44);
       this.numberOfDaysInTheFuture.Name = "numberOfDaysInTheFuture";
       this.numberOfDaysInTheFuture.Size = new System.Drawing.Size(118, 20);
-      this.numberOfDaysInTheFuture.TabIndex = 7;
+      this.numberOfDaysInTheFuture.TabIndex = 26;
       this.numberOfDaysInTheFuture.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
       // 
       // numberOfDaysInThePast
@@ -328,7 +328,7 @@
       this.numberOfDaysInThePast.Location = new System.Drawing.Point(309, 18);
       this.numberOfDaysInThePast.Name = "numberOfDaysInThePast";
       this.numberOfDaysInThePast.Size = new System.Drawing.Size(118, 20);
-      this.numberOfDaysInThePast.TabIndex = 6;
+      this.numberOfDaysInThePast.TabIndex = 25;
       this.numberOfDaysInThePast.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
       // 
       // label2
@@ -354,7 +354,7 @@
       this._deleteButton.Location = new System.Drawing.Point(12, 518);
       this._deleteButton.Name = "_deleteButton";
       this._deleteButton.Size = new System.Drawing.Size(75, 23);
-      this._deleteButton.TabIndex = 8;
+      this._deleteButton.TabIndex = 33;
       this._deleteButton.Text = "Delete";
       this._deleteButton.UseVisualStyleBackColor = true;
       this._deleteButton.Click += new System.EventHandler(this._deleteButton_Click);
@@ -383,7 +383,7 @@
       this._inactiveCheckBox.Location = new System.Drawing.Point(342, 522);
       this._inactiveCheckBox.Name = "_inactiveCheckBox";
       this._inactiveCheckBox.Size = new System.Drawing.Size(110, 17);
-      this._inactiveCheckBox.TabIndex = 26;
+      this._inactiveCheckBox.TabIndex = 32;
       this._inactiveCheckBox.Text = "Deactivate Profile";
       this._inactiveCheckBox.UseVisualStyleBackColor = true;
       // 
@@ -392,7 +392,7 @@
       this._copyButton.Location = new System.Drawing.Point(93, 518);
       this._copyButton.Name = "_copyButton";
       this._copyButton.Size = new System.Drawing.Size(75, 23);
-      this._copyButton.TabIndex = 27;
+      this._copyButton.TabIndex = 34;
       this._copyButton.Text = "Copy";
       this._copyButton.UseVisualStyleBackColor = true;
       this._copyButton.Click += new System.EventHandler(this._copyButton_Click);
@@ -412,7 +412,7 @@
       this.groupBox3.Location = new System.Drawing.Point(12, 312);
       this.groupBox3.Name = "groupBox3";
       this.groupBox3.Size = new System.Drawing.Size(445, 200);
-      this.groupBox3.TabIndex = 28;
+      this.groupBox3.TabIndex = 3;
       this.groupBox3.TabStop = false;
       this.groupBox3.Text = "Sync settings";
       // 
@@ -422,7 +422,7 @@
       this._enableTimeRangeFilteringCheckBox.Location = new System.Drawing.Point(11, 111);
       this._enableTimeRangeFilteringCheckBox.Name = "_enableTimeRangeFilteringCheckBox";
       this._enableTimeRangeFilteringCheckBox.Size = new System.Drawing.Size(119, 17);
-      this._enableTimeRangeFilteringCheckBox.TabIndex = 27;
+      this._enableTimeRangeFilteringCheckBox.TabIndex = 23;
       this._enableTimeRangeFilteringCheckBox.Text = "Use time range filter";
       this.toolTip.SetToolTip(this._enableTimeRangeFilteringCheckBox, "Changing the time range filter setting leads to deletion of the sync cache\r\nand a" +
   " complete resync of the calendar!");
@@ -440,7 +440,7 @@
       this._timeRangeFilteringGroupBox.Location = new System.Drawing.Point(6, 113);
       this._timeRangeFilteringGroupBox.Name = "_timeRangeFilteringGroupBox";
       this._timeRangeFilteringGroupBox.Size = new System.Drawing.Size(433, 80);
-      this._timeRangeFilteringGroupBox.TabIndex = 26;
+      this._timeRangeFilteringGroupBox.TabIndex = 24;
       this._timeRangeFilteringGroupBox.TabStop = false;
       // 
       // contextMenu
