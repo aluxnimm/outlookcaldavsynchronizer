@@ -63,6 +63,7 @@ namespace CalDavSynchronizer.Ui
       this._calendarDataGridView.Size = new System.Drawing.Size(721, 306);
       this._calendarDataGridView.TabIndex = 0;
       this._calendarDataGridView.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this._calendarDataGridView_CellContentDoubleClick);
+      this._calendarDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler (this._calendarDataGridView_CellFormatting);
       // 
       // buttonCancel
       // 

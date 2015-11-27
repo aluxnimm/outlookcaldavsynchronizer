@@ -194,6 +194,7 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
         namespaceManager.AddNamespace ("D", "DAV:");
         namespaceManager.AddNamespace ("C", "urn:ietf:params:xml:ns:caldav");
         namespaceManager.AddNamespace ("A", "urn:ietf:params:xml:ns:carddav");
+        namespaceManager.AddNamespace ("E", "http://apple.com/ns/ical/");
 
         return new XmlDocumentWithNamespaceManager (responseBody, namespaceManager);
       }

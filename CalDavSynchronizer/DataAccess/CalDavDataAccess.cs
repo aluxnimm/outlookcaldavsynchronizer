@@ -52,7 +52,7 @@ namespace CalDavSynchronizer.DataAccess
       return DoesSupportsReportSet (_serverUrl, 0, "C", "calendar-query");
     }
 
-    public async Task<IReadOnlyList<Tuple<Uri, string>>> GetUserCalendarsNoThrow (bool useWellKnownUrl)
+    public async Task<IReadOnlyList<Tuple<Uri, string, string>>> GetUserCalendarsNoThrow (bool useWellKnownUrl)
     {
       try
       {
@@ -62,7 +62,7 @@ namespace CalDavSynchronizer.DataAccess
 
         XmlNode principal = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-principal", properties.XmlNamespaceManager);
 
-        var cals = new List<Tuple<Uri, string>>();
+        var cals = new List<Tuple<Uri, string, string>>();
 
         if (principal != null)
         {
@@ -85,8 +85,14 @@ namespace CalDavSynchronizer.DataAccess
                 XmlNode isCollection = responseElement.SelectSingleNode ("D:propstat/D:prop/D:resourcetype/C:calendar", properties.XmlNamespaceManager);
                 if (isCollection != null)
                 {
+                  var calendarColorNode = responseElement.SelectSingleNode("D:propstat/D:prop/E:calendar-color", properties.XmlNamespaceManager);
+                  string calendarColor=string.Empty;
+                  if (calendarColorNode != null)
+                  {
+                    calendarColor = calendarColorNode.InnerText;
+                  }
                   var uri = UriHelper.UnescapeRelativeUri (autodiscoveryUrl, urlNode.InnerText);
-                  cals.Add (Tuple.Create (uri, displayNameNode.InnerText));
+                  cals.Add (Tuple.Create (uri, displayNameNode.InnerText, calendarColor));
                 }
               }
             }
@@ -97,7 +103,7 @@ namespace CalDavSynchronizer.DataAccess
       catch (Exception x)
       {
         if (x.Message.Contains ("404") || x.Message.Contains ("405"))
-          return new List<Tuple<Uri, string>>();
+          return new List<Tuple<Uri, string, string>>();
         else
           throw;
       }
@@ -137,10 +143,11 @@ namespace CalDavSynchronizer.DataAccess
           null,
           "application/xml",
           @"<?xml version='1.0'?>
-                        <D:propfind xmlns:D=""DAV:"" xmlns:C=""urn:ietf:params:xml:ns:caldav"">
+                        <D:propfind xmlns:D=""DAV:"" xmlns:C=""urn:ietf:params:xml:ns:caldav"" xmlns:E=""http://apple.com/ns/ical/"">
                           <D:prop>
                               <D:resourcetype />
                               <D:displayname />
+                              <E:calendar-color />
                               <C:supported-calendar-component-set />
                           </D:prop>
                         </D:propfind>

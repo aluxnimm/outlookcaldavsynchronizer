@@ -18,6 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using CalDavSynchronizer.Ui.ConnectionTests;
+using System.Drawing;
+using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.Ui
 {
@@ -26,13 +28,15 @@ namespace CalDavSynchronizer.Ui
     public string SelectedUrl { get; private set; }
     public ResourceType ResourceType { get; private set; }
 
-    public SelectResourceForm (IReadOnlyList<Tuple<Uri, string>> caldendars, IReadOnlyList<Tuple<Uri, string>> addressBooks, bool displayAddressBooksInitial)
+    public SelectResourceForm (IReadOnlyList<Tuple<Uri, string, string>> caldendars, IReadOnlyList<Tuple<Uri, string>> addressBooks, bool displayAddressBooksInitial)
     {
       InitializeComponent();
       _calendarDataGridView.DataSource = caldendars;
       _calendarDataGridView.Columns[0].HeaderText = "CalDav Url";
       _calendarDataGridView.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
       _calendarDataGridView.Columns[1].HeaderText = "DisplayName";
+      _calendarDataGridView.Columns[2].HeaderText = "Col";
+      _calendarDataGridView.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
 
       _addressBookDataGridView.DataSource = addressBooks;
       _addressBookDataGridView.Columns[0].HeaderText = "CardDav Url";
@@ -64,6 +68,24 @@ namespace CalDavSynchronizer.Ui
         SelectedUrl = _addressBookDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString();
         ResourceType = ResourceType.AddressBook;
         DialogResult = DialogResult.OK;
+      }
+    }
+
+    private void _calendarDataGridView_CellFormatting (object sender, DataGridViewCellFormattingEventArgs e)
+    {
+      if (!_calendarDataGridView.Rows[e.RowIndex].IsNewRow)
+      {
+        if (e.ColumnIndex == 2)
+        {
+          if (!string.IsNullOrEmpty (e.Value.ToString()))
+          {
+            Color calColor = ColorHelper.HexToColor (e.Value.ToString());
+            e.CellStyle.ForeColor = calColor;
+            e.CellStyle.BackColor = calColor;
+            e.CellStyle.SelectionBackColor = calColor;
+            e.CellStyle.SelectionForeColor = calColor;
+          }
+        }
       }
     }
 

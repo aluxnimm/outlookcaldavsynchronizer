@@ -430,7 +430,7 @@ namespace CalDavSynchronizer.Ui
     private async Task<AutoDiscoveryResult> DoAutoDiscovery (Uri autoDiscoveryUri, IWebDavClient webDavClient, bool useWellKnownUrl)
     {
       var calDavDataAccess = new CalDavDataAccess (autoDiscoveryUri, webDavClient);
-      IReadOnlyList<Tuple<Uri, string>> foundCaldendars = await calDavDataAccess.GetUserCalendarsNoThrow (useWellKnownUrl);
+      IReadOnlyList<Tuple<Uri, string, string>> foundCaldendars = await calDavDataAccess.GetUserCalendarsNoThrow (useWellKnownUrl);
 
       var cardDavDataAccess = new CardDavDataAccess (autoDiscoveryUri, webDavClient);
       IReadOnlyList<Tuple<Uri, string>> foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow (useWellKnownUrl);

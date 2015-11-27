@@ -418,6 +418,7 @@
     <Compile Include="Ui\OptionsDisplayControl.SettingsFaultFinder.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Utilities\ColorHelper.cs" />
     <Compile Include="Utilities\ExceptionHandler.cs" />
     <Compile Include="Utilities\IExceptionHandler.cs" />
     <Compile Include="Utilities\Serializer.cs" />
