@@ -38,7 +38,7 @@ using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Ui
 {
-  public partial class OptionsDisplayControl : UserControl
+  public partial class OptionsDisplayControl : UserControl, IOptionsDisplayControl
   {
     private const string c_connectionTestCaption = "Test settings";
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
@@ -585,6 +585,11 @@ namespace CalDavSynchronizer.Ui
                    MappingConfiguration = _advancedOptions.MappingConfiguration
                };
       }
+    }
+
+    public Control UiControl
+    {
+      get { return this; }
     }
 
 

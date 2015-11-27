@@ -54,6 +54,8 @@ namespace CalDavSynchronizer.Contracts
     public ProxyOptions ProxyOptions { get; set; }
     public MappingConfigurationBase MappingConfiguration { get; set; }
 
+    public OptionsDisplayType DisplayType { get; set; }
+
     [XmlIgnore]
     public string Password
     {

@@ -209,6 +209,7 @@
     <Compile Include="ChangeWatching\IOutlookItem.cs" />
     <Compile Include="ChangeWatching\ItemSavedEventArgs.cs" />
     <Compile Include="ComponentContainer.cs" />
+    <Compile Include="Contracts\OptionsDisplayType.cs" />
     <Compile Include="Contracts\ConfigurationBase.cs" />
     <Compile Include="Contracts\EventMappingConfiguration.cs" />
     <Compile Include="Contracts\MappingConfigurationBase.cs" />
@@ -332,7 +333,10 @@
     <Compile Include="Ui\HeaderEventArgs.cs" />
     <Compile Include="Ui\IConfigurationForm.cs" />
     <Compile Include="Ui\IConfigurationFormFactory.cs" />
+    <Compile Include="Ui\IOptionsDisplayControl.cs" />
+    <Compile Include="Ui\IOptionsDisplayControlFactory.cs" />
     <Compile Include="Ui\Item.cs" />
+    <Compile Include="Ui\OptionsDisplayControlFactory.cs" />
     <Compile Include="Ui\SelectResourceForm.cs">
       <SubType>Form</SubType>
     </Compile>

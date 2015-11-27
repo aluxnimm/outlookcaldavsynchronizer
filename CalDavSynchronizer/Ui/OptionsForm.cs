@@ -25,16 +25,13 @@ namespace CalDavSynchronizer.Ui
 {
   public partial class OptionsForm : Form
   {
-    private readonly NameSpace _session;
-    private readonly Func<Guid, string> _profileDataDirectoryFactory;
-    private readonly bool _fixInvalidSettings ;
+  
+    private readonly IOptionsDisplayControlFactory _optionsDisplayControlFactory;
 
     public OptionsForm (NameSpace session, Func<Guid, string> profileDataDirectoryFactory, bool fixInvalidSettings)
     {
       InitializeComponent();
-      _session = session;
-      _profileDataDirectoryFactory = profileDataDirectoryFactory;
-      _fixInvalidSettings = fixInvalidSettings;
+      _optionsDisplayControlFactory = new OptionsDisplayControlFactory (session, profileDataDirectoryFactory, fixInvalidSettings);
     }
 
 
@@ -74,7 +71,7 @@ namespace CalDavSynchronizer.Ui
 
     private TabPage AddTabPage (Options options)
     {
-      var optionsControl = new OptionsDisplayControl (_session, _profileDataDirectoryFactory, _fixInvalidSettings);
+      var optionsControl = _optionsDisplayControlFactory.Create();
 
       var tabPage = new TabPage (options.Name);
       _tabControl.TabPages.Add (tabPage);
@@ -121,8 +118,8 @@ namespace CalDavSynchronizer.Ui
       };
 
       optionsControl.Options = options;
-      tabPage.Controls.Add (optionsControl);
-      optionsControl.Dock = DockStyle.Fill;
+      tabPage.Controls.Add (optionsControl.UiControl);
+      optionsControl.UiControl.Dock = DockStyle.Fill;
       return tabPage;
     }
 
