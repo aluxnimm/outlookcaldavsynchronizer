@@ -87,7 +87,7 @@ namespace CalDavSynchronizer.DataAccess
                 {
                   var calendarColorNode = responseElement.SelectSingleNode("D:propstat/D:prop/E:calendar-color", properties.XmlNamespaceManager);
                   string calendarColor=string.Empty;
-                  if (calendarColorNode != null)
+                  if (calendarColorNode != null && calendarColorNode.InnerText.Length >=7)
                   {
                     calendarColor = calendarColorNode.InnerText;
                   }
