@@ -40,7 +40,7 @@ namespace CalDavSynchronizer.Ui
 {
   public partial class OptionsDisplayControl : UserControl, IOptionsDisplayControl
   {
-    private const string c_connectionTestCaption = "Test settings";
+    public const string ConnectionTestCaption = "Test settings";
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private OlItemType? _folderType;
@@ -55,29 +55,6 @@ namespace CalDavSynchronizer.Ui
     public event EventHandler CopyRequested;
     public event EventHandler<HeaderEventArgs> HeaderChanged;
     private readonly Func<Guid, string> _profileDataDirectoryFactory;
-
-    private readonly IList<Item<int>> _availableSyncIntervals =
-        (new Item<int>[] { new Item<int> (0, "Manual only") })
-            .Union (Enumerable.Range (1, 12).Select (i => i * 5).Select (i => new Item<int> (i, i.ToString()))).ToList();
-
-    private readonly IList<Item<ConflictResolution>> _availableConflictResolutions = new List<Item<ConflictResolution>>()
-                                                                                     {
-                                                                                         new Item<ConflictResolution> (ConflictResolution.OutlookWins, "OutlookWins"),
-                                                                                         new Item<ConflictResolution> (ConflictResolution.ServerWins, "ServerWins"),
-                                                                                         //new Item<ConflictResolution> (ConflictResolution.Manual, "Manual"),
-                                                                                         new Item<ConflictResolution> (ConflictResolution.Automatic, "Automatic"),
-                                                                                     };
-
-
-    private readonly IList<Item<SynchronizationMode>> _availableSynchronizationModes = new List<Item<SynchronizationMode>>()
-                                                                                       {
-                                                                                           new Item<SynchronizationMode> (SynchronizationMode.ReplicateOutlookIntoServer, "Outlook \u2192 CalDav (Replicate)"),
-                                                                                           new Item<SynchronizationMode> (SynchronizationMode.ReplicateServerIntoOutlook, "Outlook \u2190 CalDav (Replicate)"),
-                                                                                           new Item<SynchronizationMode> (SynchronizationMode.MergeOutlookIntoServer, "Outlook \u2192 CalDav (Merge)"),
-                                                                                           new Item<SynchronizationMode> (SynchronizationMode.MergeServerIntoOutlook, "Outlook \u2190 CalDav (Merge)"),
-                                                                                           new Item<SynchronizationMode> (SynchronizationMode.MergeInBothDirections, "Outlook \u2190\u2192 CalDav"),
-                                                                                       };
-
 
     private ServerAdapterType SelectedServerAdapterType
     {
@@ -122,15 +99,11 @@ namespace CalDavSynchronizer.Ui
 
       _session = session;
       _profileDataDirectoryFactory = profileDataDirectoryFactory;
-      BindComboBox (_syncIntervalComboBox, _availableSyncIntervals);
-      BindComboBox (_conflictResolutionComboBox, _availableConflictResolutions);
-      BindComboBox (_synchronizationModeComboBox, _availableSynchronizationModes);
-
+    
       _testConnectionButton.Click += _testConnectionButton_Click;
       _selectOutlookFolderButton.Click += _selectOutlookFolderButton_Click;
 
       _profileNameTextBox.TextChanged += _profileNameTextBox_TextChanged;
-      _synchronizationModeComboBox.SelectedValueChanged += _synchronizationModeComboBox_SelectedValueChanged;
       _inactiveCheckBox.CheckedChanged += _inactiveCheckBox_CheckedChanged;
     }
 
@@ -144,31 +117,11 @@ namespace CalDavSynchronizer.Ui
       OnHeaderChanged();
     }
 
-    private void _synchronizationModeComboBox_SelectedValueChanged (object sender, EventArgs e)
-    {
-      UpdateConflictResolutionComboBoxEnabled();
-    }
-
-    private void UpdateConflictResolutionComboBoxEnabled ()
-    {
-      switch ((SynchronizationMode) _synchronizationModeComboBox.SelectedValue)
-      {
-        case SynchronizationMode.MergeInBothDirections:
-          _conflictResolutionComboBox.Enabled = true;
-          break;
-        default:
-          _conflictResolutionComboBox.Enabled = false;
-          break;
-      }
-    }
-
-
     private void _profileNameTextBox_TextChanged (object sender, EventArgs e)
     {
       OnHeaderChanged();
     }
-
-
+    
     private void OnHeaderChanged ()
     {
       if (HeaderChanged != null)
@@ -288,7 +241,7 @@ namespace CalDavSynchronizer.Ui
         string message = null;
         for (Exception ex = x; ex != null; ex = ex.InnerException)
           message += ex.Message + Environment.NewLine;
-        MessageBox.Show (message, c_connectionTestCaption);
+        MessageBox.Show (message, ConnectionTestCaption);
       }
       finally
       {
@@ -332,12 +285,11 @@ namespace CalDavSynchronizer.Ui
 
         if (!result.CalendarProperties.HasFlag (CalendarProperties.IsWriteable))
         {
-          var synchronizationMode = (SynchronizationMode) _synchronizationModeComboBox.SelectedValue;
-          if (RequiresWriteableServerResource (synchronizationMode))
+          if (_syncSettingsControl.SelectedModeRequiresWriteableServerResource)
           {
             errorMessageBuilder.AppendFormat (
                 "- The specified calendar is not writeable. Therefore it is not possible to use the synchronization mode '{0}'.",
-                _availableSynchronizationModes.Single (m => m.Value == synchronizationMode).Name);
+                _syncSettingsControl.SelectedModeDisplayName);
             errorMessageBuilder.AppendLine();
             hasError = true;
           }
@@ -360,12 +312,11 @@ namespace CalDavSynchronizer.Ui
 
         if (!result.AddressBookProperties.HasFlag (AddressBookProperties.IsWriteable))
         {
-          var synchronizationMode = (SynchronizationMode) _synchronizationModeComboBox.SelectedValue;
-          if (RequiresWriteableServerResource (synchronizationMode))
+          if (_syncSettingsControl.SelectedModeRequiresWriteableServerResource)
           {
             errorMessageBuilder.AppendFormat (
                 "- The specified address book is not writeable. Therefore it is not possible to use the synchronization mode '{0}'.",
-                _availableSynchronizationModes.Single (m => m.Value == synchronizationMode).Name);
+                _syncSettingsControl.SelectedModeDisplayName);
             errorMessageBuilder.AppendLine();
             hasError = true;
           }
@@ -379,24 +330,11 @@ namespace CalDavSynchronizer.Ui
       }
 
       if (hasError)
-        MessageBox.Show ("Connection test NOT successful:" + Environment.NewLine + errorMessageBuilder, c_connectionTestCaption);
+        MessageBox.Show ("Connection test NOT successful:" + Environment.NewLine + errorMessageBuilder, ConnectionTestCaption);
       else
-        MessageBox.Show ("Connection test successful.", c_connectionTestCaption);
+        MessageBox.Show ("Connection test successful.", ConnectionTestCaption);
     }
-
-
-    private bool SelectedModeRequiresWriteableServerResource
-    {
-      get { return RequiresWriteableServerResource ((SynchronizationMode) _synchronizationModeComboBox.SelectedValue); }
-    }
-
-    private static bool RequiresWriteableServerResource (SynchronizationMode synchronizationMode)
-    {
-      return synchronizationMode == SynchronizationMode.MergeInBothDirections
-             || synchronizationMode == SynchronizationMode.MergeOutlookIntoServer
-             || synchronizationMode == SynchronizationMode.ReplicateOutlookIntoServer;
-    }
-
+    
     private struct AutoDiscoveryResult
     {
       private readonly bool _wasCancelled;
@@ -447,7 +385,7 @@ namespace CalDavSynchronizer.Ui
       }
       else
       {
-        MessageBox.Show ("No resources were found via autodiscovery!", c_connectionTestCaption);
+        MessageBox.Show ("No resources were found via autodiscovery!", ConnectionTestCaption);
         return new AutoDiscoveryResult (null, false, ResourceType.None);
       }
     }
@@ -531,19 +469,12 @@ namespace CalDavSynchronizer.Ui
       {
         _inactiveCheckBox.Checked = value.Inactive;
         _profileNameTextBox.Text = value.Name;
-        numberOfDaysInThePast.Text = value.DaysToSynchronizeInThePast.ToString();
-        numberOfDaysInTheFuture.Text = value.DaysToSynchronizeInTheFuture.ToString();
 
         _emailAddressTextBox.Text = value.EmailAddress;
         _calenderUrlTextBox.Text = value.CalenderUrl;
         _userNameTextBox.Text = value.UserName;
         _passwordTextBox.Text = value.Password;
 
-        _synchronizationModeComboBox.SelectedValue = value.SynchronizationMode;
-        _conflictResolutionComboBox.SelectedValue = value.ConflictResolution;
-
-        _enableTimeRangeFilteringCheckBox.Checked = !value.IgnoreSynchronizationTimeRange;
-        _syncIntervalComboBox.SelectedValue = value.SynchronizationIntervalInMinutes;
         _optionsId = value.Id;
 
         SelectedServerAdapterType = value.ServerAdapterType;
@@ -555,35 +486,31 @@ namespace CalDavSynchronizer.Ui
             value.MappingConfiguration);
 
         UpdateFolder (value.OutlookFolderEntryId, value.OutlookFolderStoreId);
-        UpdateConflictResolutionComboBoxEnabled();
+        _syncSettingsControl.SetOptions (value);
         OnHeaderChanged();
-        UpdateTimeRangeFilteringGroupBoxEnabled();
       }
       get
       {
-        return new Options()
+        var options = new Options()
                {
                    Name = _profileNameTextBox.Text,
-                   DaysToSynchronizeInThePast = int.Parse (numberOfDaysInThePast.Text),
-                   DaysToSynchronizeInTheFuture = int.Parse (numberOfDaysInTheFuture.Text),
                    EmailAddress = _emailAddressTextBox.Text,
                    CalenderUrl = _calenderUrlTextBox.Text,
                    UserName = _userNameTextBox.Text,
                    Password = _passwordTextBox.Text,
-                   SynchronizationMode = (SynchronizationMode) _synchronizationModeComboBox.SelectedValue,
-                   ConflictResolution = (ConflictResolution) (_conflictResolutionComboBox.SelectedValue ?? ConflictResolution.Manual),
-                   SynchronizationIntervalInMinutes = (int) _syncIntervalComboBox.SelectedValue,
                    OutlookFolderEntryId = _folderEntryId,
                    OutlookFolderStoreId = _folderStoreId,
                    Id = _optionsId,
                    Inactive = _inactiveCheckBox.Checked,
-                   IgnoreSynchronizationTimeRange = !_enableTimeRangeFilteringCheckBox.Checked,
                    ServerAdapterType = SelectedServerAdapterType,
                    CloseAfterEachRequest = _advancedOptions.CloseConnectionAfterEachRequest,
                    EnableChangeTriggeredSynchronization = _synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Checked,
                    ProxyOptions = _advancedOptions.ProxyOptions,
                    MappingConfiguration = _advancedOptions.MappingConfiguration
                };
+
+        _syncSettingsControl.FillOptions (options);
+        return options;
       }
     }
 
@@ -691,16 +618,6 @@ namespace CalDavSynchronizer.Ui
     {
       if (CopyRequested != null)
         CopyRequested (this, EventArgs.Empty);
-    }
-
-    private void _enableTimeRangeFilteringCheckBox_CheckedChanged (object sender, EventArgs e)
-    {
-      UpdateTimeRangeFilteringGroupBoxEnabled();
-    }
-
-    private void UpdateTimeRangeFilteringGroupBoxEnabled ()
-    {
-      _timeRangeFilteringGroupBox.Enabled = _enableTimeRangeFilteringCheckBox.Checked;
     }
 
     private void _advancedSettingsButton_Click (object sender, EventArgs e)

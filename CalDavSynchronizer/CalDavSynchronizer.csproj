@@ -336,6 +336,12 @@
     <Compile Include="Ui\IOptionsDisplayControl.cs" />
     <Compile Include="Ui\IOptionsDisplayControlFactory.cs" />
     <Compile Include="Ui\Item.cs" />
+    <Compile Include="Ui\SyncSettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Ui\SyncSettingsControl.Designer.cs">
+      <DependentUpon>SyncSettingsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Ui\OptionsDisplayControlFactory.cs" />
     <Compile Include="Ui\SelectResourceForm.cs">
       <SubType>Form</SubType>
@@ -384,6 +390,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ui\SyncSettingsControl.resx">
+      <DependentUpon>SyncSettingsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\SelectResourceForm.resx">
       <DependentUpon>SelectResourceForm.cs</DependentUpon>

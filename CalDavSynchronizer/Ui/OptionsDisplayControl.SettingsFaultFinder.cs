@@ -34,51 +34,15 @@ namespace CalDavSynchronizer.Ui
         _ = optionsDisplayControl;
       }
 
+
       public void FixSynchronizationMode (TestResult result)
       {
-        const SynchronizationMode readOnlyDefaultMode = SynchronizationMode.ReplicateServerIntoOutlook;
-        if (result.ResourceType.HasFlag (ResourceType.Calendar))
-        {
-          if (!result.CalendarProperties.HasFlag (CalendarProperties.IsWriteable)
-              && _.SelectedModeRequiresWriteableServerResource)
-          {
-            _._synchronizationModeComboBox.SelectedValue = readOnlyDefaultMode;
-            MessageBox.Show (
-                string.Format (
-                    "The specified Url is a read-only calendar. Synchronization mode set to '{0}'.",
-                    _._availableSynchronizationModes.Single (m => m.Value == readOnlyDefaultMode).Name),
-                c_connectionTestCaption);
-          }
-        }
-
-        if (result.ResourceType.HasFlag (ResourceType.AddressBook))
-        {
-          if (!result.AddressBookProperties.HasFlag (AddressBookProperties.IsWriteable)
-              && _.SelectedModeRequiresWriteableServerResource)
-          {
-            _._synchronizationModeComboBox.SelectedValue = readOnlyDefaultMode;
-            MessageBox.Show (
-                string.Format (
-                    "The specified Url is a read-only addressbook. Synchronization mode set to '{0}'.",
-                    _._availableSynchronizationModes.Single (m => m.Value == readOnlyDefaultMode).Name),
-                c_connectionTestCaption);
-          }
-        }
+        _._syncSettingsControl.FixSynchronizationMode (result);
       }
-
 
       public void FixTimeRangeUsage ()
       {
-        if (_._folderType == OlItemType.olContactItem)
-        {
-          _._enableTimeRangeFilteringCheckBox.Checked = false;
-          _.UpdateTimeRangeFilteringGroupBoxEnabled();
-        }
-        else
-        {
-          _._enableTimeRangeFilteringCheckBox.Checked = true;
-          _.UpdateTimeRangeFilteringGroupBoxEnabled();
-        }
+        _._syncSettingsControl.FixTimeRangeUsage (_._folderType);
       }
     }
   }
