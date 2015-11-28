@@ -15,35 +15,26 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Linq;
-using System.Windows.Forms;
-using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Ui.ConnectionTests;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui
 {
-  partial class OptionsDisplayControl
+  public class NullSettingsFaultFinder : ISettingsFaultFinder
   {
-    private class SettingsFaultFinder : ISettingsFaultFinder
+    public static readonly ISettingsFaultFinder Instance = new NullSettingsFaultFinder();
+
+    private NullSettingsFaultFinder ()
     {
-      private readonly OptionsDisplayControl _;
+    }
 
-      public SettingsFaultFinder (OptionsDisplayControl optionsDisplayControl)
-      {
-        _ = optionsDisplayControl;
-      }
+    public void FixSynchronizationMode (TestResult result)
+    {
+    }
 
-
-      public void FixSynchronizationMode (TestResult result)
-      {
-        _._syncSettingsControl.FixSynchronizationMode (result);
-      }
-
-      public void FixTimeRangeUsage ()
-      {
-        _._syncSettingsControl.FixTimeRangeUsage (_._folderType);
-      }
+    public void FixTimeRangeUsage (OlItemType? folderType)
+    {
+      
     }
   }
 }

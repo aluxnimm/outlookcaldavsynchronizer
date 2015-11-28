@@ -335,7 +335,14 @@
     <Compile Include="Ui\IConfigurationFormFactory.cs" />
     <Compile Include="Ui\IOptionsDisplayControl.cs" />
     <Compile Include="Ui\IOptionsDisplayControlFactory.cs" />
+    <Compile Include="Ui\IServerSettingsControlDependencies.cs" />
     <Compile Include="Ui\Item.cs" />
+    <Compile Include="Ui\ServerSettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Ui\ServerSettingsControl.Designer.cs">
+      <DependentUpon>ServerSettingsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Ui\SyncSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -355,12 +362,8 @@
     <Compile Include="Ui\OptionsDisplayControl.Designer.cs">
       <DependentUpon>OptionsDisplayControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Ui\OptionsDisplayControl.ISettingsFaultFinder.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Ui\OptionsDisplayControl.NullSettingsFaultFinder.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="Ui\ISettingsFaultFinder.cs" />
+    <Compile Include="Ui\NullSettingsFaultFinder.cs" />
     <Compile Include="Ui\OptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -390,6 +393,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ui\ServerSettingsControl.resx">
+      <DependentUpon>ServerSettingsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\SyncSettingsControl.resx">
       <DependentUpon>SyncSettingsControl.cs</DependentUpon>
@@ -428,9 +434,7 @@
       <DependentUpon>ProgressForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Ui\ProgressFormFactory.cs" />
-    <Compile Include="Ui\OptionsDisplayControl.SettingsFaultFinder.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="Ui\SettingsFaultFinder.cs" />
     <Compile Include="Utilities\ColorHelper.cs" />
     <Compile Include="Utilities\ExceptionHandler.cs" />
     <Compile Include="Utilities\IExceptionHandler.cs" />

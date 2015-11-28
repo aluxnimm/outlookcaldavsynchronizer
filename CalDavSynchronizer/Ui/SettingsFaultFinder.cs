@@ -23,24 +23,24 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui
 {
-  partial class OptionsDisplayControl
+  public class SettingsFaultFinder : ISettingsFaultFinder
   {
-    private class NullSettingsFaultFinder : ISettingsFaultFinder
-    {
-      public static readonly ISettingsFaultFinder Instance = new NullSettingsFaultFinder();
+    private readonly SyncSettingsControl _syncSettingsControl;
 
-      private NullSettingsFaultFinder ()
+      public SettingsFaultFinder (SyncSettingsControl syncSettingsControl)
       {
-      }
-
-      public void FixSynchronizationMode (TestResult result)
-      {
+        _syncSettingsControl = syncSettingsControl;
       }
 
 
-      public void FixTimeRangeUsage ()
+    public void FixSynchronizationMode (TestResult result)
       {
+        _syncSettingsControl.FixSynchronizationMode (result);
+      }
+
+    public void FixTimeRangeUsage (OlItemType? folderType)
+      {
+        _syncSettingsControl.FixTimeRangeUsage (folderType);
       }
     }
-  }
-}
+ }
