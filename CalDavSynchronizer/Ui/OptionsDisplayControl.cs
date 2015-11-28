@@ -107,11 +107,10 @@ namespace CalDavSynchronizer.Ui
     {
       SelectFolder();
     }
-
   
     public bool Validate (StringBuilder errorMessageBuilder)
     {
-      bool result = ValidateCalendarUrl (errorMessageBuilder, true);
+      bool result = ValidateCalendarUrl (_serverSettingsControl.CalendarUrl, errorMessageBuilder, true);
 
       if (string.IsNullOrWhiteSpace (_folderStoreId) || string.IsNullOrWhiteSpace (_folderEntryId))
       {
@@ -133,23 +132,23 @@ namespace CalDavSynchronizer.Ui
       return result;
     }
 
-    private bool ValidateCalendarUrl (StringBuilder errorMessageBuilder, bool requiresTrailingSlash)
+    public static bool ValidateCalendarUrl (string calendarUrl, StringBuilder errorMessageBuilder, bool requiresTrailingSlash)
     {
       bool result = true;
 
-      if (string.IsNullOrWhiteSpace (_serverSettingsControl.CalendarUrl))
+      if (string.IsNullOrWhiteSpace (calendarUrl))
       {
         errorMessageBuilder.AppendLine ("- The CalDav/CardDav Url is empty.");
         return false;
       }
 
-      if (_serverSettingsControl.CalendarUrl.Trim () != _serverSettingsControl.CalendarUrl)
+      if (calendarUrl.Trim () != calendarUrl)
       {
         errorMessageBuilder.AppendLine ("- The CalDav/CardDav Url cannot end/start with whitespaces.");
         result = false;
       }
 
-      if (requiresTrailingSlash && !_serverSettingsControl.CalendarUrl.EndsWith ("/"))
+      if (requiresTrailingSlash && !calendarUrl.EndsWith ("/"))
       {
         errorMessageBuilder.AppendLine ("- The CalDav/CardDav Url has to end with a slash ('/').");
         result = false;
@@ -157,7 +156,7 @@ namespace CalDavSynchronizer.Ui
 
       try
       {
-        var uri = new Uri (_serverSettingsControl.CalendarUrl).ToString ();
+        var uri = new Uri (calendarUrl).ToString ();
       }
       catch (Exception x)
       {

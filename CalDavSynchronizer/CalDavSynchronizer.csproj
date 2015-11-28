@@ -294,6 +294,7 @@
     <Compile Include="Ui\AdvancedOptionsForm.Designer.cs">
       <DependentUpon>AdvancedOptionsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Ui\AutoDiscoveryResult.cs" />
     <Compile Include="Ui\ConfigurationFormFactory.cs" />
     <Compile Include="Ui\ConnectionTests\AddressBookProperties.cs" />
     <Compile Include="Ui\ConnectionTests\CalendarProperties.cs" />
@@ -337,6 +338,12 @@
     <Compile Include="Ui\IOptionsDisplayControlFactory.cs" />
     <Compile Include="Ui\IServerSettingsControlDependencies.cs" />
     <Compile Include="Ui\Item.cs" />
+    <Compile Include="Ui\GoogleServerSettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Ui\GoogleServerSettingsControl.Designer.cs">
+      <DependentUpon>GoogleServerSettingsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Ui\ServerSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -393,6 +400,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ui\GoogleServerSettingsControl.resx">
+      <DependentUpon>GoogleServerSettingsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\ServerSettingsControl.resx">
       <DependentUpon>ServerSettingsControl.cs</DependentUpon>
