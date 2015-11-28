@@ -344,6 +344,12 @@
     <Compile Include="Ui\GoogleServerSettingsControl.Designer.cs">
       <DependentUpon>GoogleServerSettingsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Ui\OutlookFolderControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Ui\OutlookFolderControl.Designer.cs">
+      <DependentUpon>OutlookFolderControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Ui\ServerSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -403,6 +409,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\GoogleServerSettingsControl.resx">
       <DependentUpon>GoogleServerSettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ui\OutlookFolderControl.resx">
+      <DependentUpon>OutlookFolderControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\ServerSettingsControl.resx">
       <DependentUpon>ServerSettingsControl.cs</DependentUpon>

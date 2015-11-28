@@ -29,11 +29,6 @@
     private void InitializeComponent ()
     {
       this.components = new System.ComponentModel.Container();
-      this.groupBox2 = new System.Windows.Forms.GroupBox();
-      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox = new System.Windows.Forms.CheckBox();
-      this._selectOutlookFolderButton = new System.Windows.Forms.Button();
-      this._outoookFolderNameTextBox = new System.Windows.Forms.TextBox();
-      this.label9 = new System.Windows.Forms.Label();
       this._advancedOptionsButton = new System.Windows.Forms.Button();
       this._deleteButton = new System.Windows.Forms.Button();
       this._profileNameTextBox = new System.Windows.Forms.TextBox();
@@ -43,69 +38,11 @@
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
       this._browseToProfileCacheDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this._syncSettingsControl = new CalDavSynchronizer.Ui.SyncSettingsControl();
       this._serverSettingsControl = new CalDavSynchronizer.Ui.ServerSettingsControl();
-      this.groupBox2.SuspendLayout();
+      this._syncSettingsControl = new CalDavSynchronizer.Ui.SyncSettingsControl();
+      this._outlookFolderControl = new CalDavSynchronizer.Ui.OutlookFolderControl();
       this.contextMenu.SuspendLayout();
       this.SuspendLayout();
-      // 
-      // groupBox2
-      // 
-      this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.groupBox2.Controls.Add(this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox);
-      this.groupBox2.Controls.Add(this._selectOutlookFolderButton);
-      this.groupBox2.Controls.Add(this._outoookFolderNameTextBox);
-      this.groupBox2.Controls.Add(this.label9);
-      this.groupBox2.Location = new System.Drawing.Point(12, 226);
-      this.groupBox2.Name = "groupBox2";
-      this.groupBox2.Size = new System.Drawing.Size(445, 80);
-      this.groupBox2.TabIndex = 2;
-      this.groupBox2.TabStop = false;
-      this.groupBox2.Text = "Outlook settings";
-      // 
-      // _synchronizeImmediatelyAfterOutlookItemChangeCheckBox
-      // 
-      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.AutoSize = true;
-      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Location = new System.Drawing.Point(11, 51);
-      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Name = "_synchronizeImmediatelyAfterOutlookItemChangeCheckBox";
-      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Size = new System.Drawing.Size(231, 17);
-      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.TabIndex = 1;
-      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Text = "Synchronize items immediately after change";
-      this.toolTip.SetToolTip(this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox, "Trigger a partial synchronization run immediately after an item is \r\ncreated, cha" +
-        "nged or deleted in Outlook via the Inspector dialog, \r\nworks only for Appointmen" +
-        "ts at the moment!");
-      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.UseVisualStyleBackColor = true;
-      // 
-      // _selectOutlookFolderButton
-      // 
-      this._selectOutlookFolderButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._selectOutlookFolderButton.Location = new System.Drawing.Point(411, 21);
-      this._selectOutlookFolderButton.Name = "_selectOutlookFolderButton";
-      this._selectOutlookFolderButton.Size = new System.Drawing.Size(28, 23);
-      this._selectOutlookFolderButton.TabIndex = 0;
-      this._selectOutlookFolderButton.Text = "...";
-      this._selectOutlookFolderButton.UseVisualStyleBackColor = true;
-      // 
-      // _outoookFolderNameTextBox
-      // 
-      this._outoookFolderNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this._outoookFolderNameTextBox.Location = new System.Drawing.Point(190, 23);
-      this._outoookFolderNameTextBox.Name = "_outoookFolderNameTextBox";
-      this._outoookFolderNameTextBox.ReadOnly = true;
-      this._outoookFolderNameTextBox.Size = new System.Drawing.Size(215, 20);
-      this._outoookFolderNameTextBox.TabIndex = 11;
-      this._outoookFolderNameTextBox.TabStop = false;
-      // 
-      // label9
-      // 
-      this.label9.AutoSize = true;
-      this.label9.Location = new System.Drawing.Point(8, 26);
-      this.label9.Name = "label9";
-      this.label9.Size = new System.Drawing.Size(76, 13);
-      this.label9.TabIndex = 13;
-      this.label9.Text = "Outlook Folder";
       // 
       // _advancedOptionsButton
       // 
@@ -180,6 +117,15 @@
       this._browseToProfileCacheDirectoryToolStripMenuItem.Text = "Browse to profile cache directory";
       this._browseToProfileCacheDirectoryToolStripMenuItem.Click += new System.EventHandler(this._browseToProfileCacheDirectoryToolStripMenuItem_Click);
       // 
+      // _serverSettingsControl
+      // 
+      this._serverSettingsControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this._serverSettingsControl.Location = new System.Drawing.Point(12, 38);
+      this._serverSettingsControl.Name = "_serverSettingsControl";
+      this._serverSettingsControl.Size = new System.Drawing.Size(445, 174);
+      this._serverSettingsControl.TabIndex = 1;
+      // 
       // _syncSettingsControl
       // 
       this._syncSettingsControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -189,34 +135,31 @@
       this._syncSettingsControl.Size = new System.Drawing.Size(445, 200);
       this._syncSettingsControl.TabIndex = 3;
       // 
-      // _serverSettingsControl
+      // _outlookFolderControl
       // 
-      this._serverSettingsControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this._outlookFolderControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this._serverSettingsControl.Location = new System.Drawing.Point(12, 38);
-      this._serverSettingsControl.Name = "_serverSettingsControl";
-      this._serverSettingsControl.Size = new System.Drawing.Size(445, 174);
-      this._serverSettingsControl.TabIndex = 1;
-      this._serverSettingsControl.TabStop = true;
+      this._outlookFolderControl.Location = new System.Drawing.Point(12, 226);
+      this._outlookFolderControl.Name = "_outlookFolderControl";
+      this._outlookFolderControl.Size = new System.Drawing.Size(445, 80);
+      this._outlookFolderControl.TabIndex = 14;
       // 
       // OptionsDisplayControl
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ContextMenuStrip = this.contextMenu;
+      this.Controls.Add(this._outlookFolderControl);
       this.Controls.Add(this._advancedOptionsButton);
       this.Controls.Add(this._copyButton);
       this.Controls.Add(this._inactiveCheckBox);
       this.Controls.Add(this.label10);
       this.Controls.Add(this._profileNameTextBox);
       this.Controls.Add(this._deleteButton);
-      this.Controls.Add(this.groupBox2);
       this.Controls.Add(this._serverSettingsControl);
       this.Controls.Add(this._syncSettingsControl);
       this.Name = "OptionsDisplayControl";
       this.Size = new System.Drawing.Size(469, 571);
-      this.groupBox2.ResumeLayout(false);
-      this.groupBox2.PerformLayout();
       this.contextMenu.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
@@ -225,10 +168,6 @@
 
     #endregion
 
-    private System.Windows.Forms.GroupBox groupBox2;
-    private System.Windows.Forms.Button _selectOutlookFolderButton;
-    private System.Windows.Forms.TextBox _outoookFolderNameTextBox;
-    private System.Windows.Forms.Label label9;
     private System.Windows.Forms.Button _deleteButton;
     private System.Windows.Forms.TextBox _profileNameTextBox;
     private System.Windows.Forms.Label label10;
@@ -236,10 +175,10 @@
     private System.Windows.Forms.Button _copyButton;
     private SyncSettingsControl _syncSettingsControl;
     private System.Windows.Forms.ToolTip toolTip;
-    private System.Windows.Forms.CheckBox _synchronizeImmediatelyAfterOutlookItemChangeCheckBox;
     private System.Windows.Forms.Button _advancedOptionsButton;
     private System.Windows.Forms.ContextMenuStrip contextMenu;
     private System.Windows.Forms.ToolStripMenuItem _browseToProfileCacheDirectoryToolStripMenuItem;
     private ServerSettingsControl _serverSettingsControl;
+    private OutlookFolderControl _outlookFolderControl;
   }
 }
