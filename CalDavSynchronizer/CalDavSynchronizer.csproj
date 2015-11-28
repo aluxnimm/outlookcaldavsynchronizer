@@ -350,6 +350,12 @@
     <Compile Include="Ui\OutlookFolderControl.Designer.cs">
       <DependentUpon>OutlookFolderControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Ui\SelectOptionsDisplayTypeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ui\SelectOptionsDisplayTypeForm.Designer.cs">
+      <DependentUpon>SelectOptionsDisplayTypeForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Ui\ServerSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -412,6 +418,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\OutlookFolderControl.resx">
       <DependentUpon>OutlookFolderControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ui\SelectOptionsDisplayTypeForm.resx">
+      <DependentUpon>SelectOptionsDisplayTypeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\ServerSettingsControl.resx">
       <DependentUpon>ServerSettingsControl.cs</DependentUpon>
