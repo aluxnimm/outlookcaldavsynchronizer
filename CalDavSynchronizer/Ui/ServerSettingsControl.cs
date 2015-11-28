@@ -95,7 +95,7 @@ namespace CalDavSynchronizer.Ui
       try
       {
         StringBuilder errorMessageBuilder = new StringBuilder();
-        if (!OptionsDisplayControl.ValidateCalendarUrl (_calenderUrlTextBox.Text, errorMessageBuilder, false))
+        if (!OptionTasks.ValidateCalendarUrl (_calenderUrlTextBox.Text, errorMessageBuilder, false))
         {
           MessageBox.Show (errorMessageBuilder.ToString(), "The CalDav/CardDav Url is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
           return;
@@ -109,7 +109,7 @@ namespace CalDavSynchronizer.Ui
 
         if (ConnectionTester.RequiresAutoDiscovery (enteredUri))
         {
-          var autodiscoveryResult = await DoAutoDiscovery (enteredUri, webDavClient, true, _dependencies.OutlookFolderType);
+          var autodiscoveryResult = await OptionTasks.DoAutoDiscovery (enteredUri, webDavClient, true, _dependencies.OutlookFolderType);
           if (autodiscoveryResult.WasCancelled)
             return;
           if (autodiscoveryResult.RessourceUrl != null)
@@ -119,7 +119,7 @@ namespace CalDavSynchronizer.Ui
           }
           else if (!enteredUri.AbsolutePath.EndsWith ("/"))
           {
-            var autodiscoveryResult2 = await DoAutoDiscovery (new Uri (enteredUri.ToString () + "/"), webDavClient, false, _dependencies.OutlookFolderType);
+            var autodiscoveryResult2 = await OptionTasks.DoAutoDiscovery (new Uri (enteredUri.ToString () + "/"), webDavClient, false, _dependencies.OutlookFolderType);
             if (autodiscoveryResult2.WasCancelled)
               return;
             if (autodiscoveryResult2.RessourceUrl != null)
@@ -140,7 +140,7 @@ namespace CalDavSynchronizer.Ui
           {
             _settingsFaultFinder.FixSynchronizationMode (result);
 
-            DisplayTestReport (
+            OptionTasks.DisplayTestReport (
                 result,
                 _dependencies.SelectedSynchronizationModeRequiresWriteableServerResource,
                 _dependencies.SelectedSynchronizationModeDisplayName,
@@ -149,7 +149,7 @@ namespace CalDavSynchronizer.Ui
           }
           else
           {
-            var autodiscoveryResult = await DoAutoDiscovery (enteredUri, webDavClient, false, _dependencies.OutlookFolderType);
+            var autodiscoveryResult = await OptionTasks.DoAutoDiscovery (enteredUri, webDavClient, false, _dependencies.OutlookFolderType);
             if (autodiscoveryResult.WasCancelled)
               return;
             if (autodiscoveryResult.RessourceUrl != null)
@@ -159,7 +159,7 @@ namespace CalDavSynchronizer.Ui
             }
             else
             {
-              var autodiscoveryResult2 = await DoAutoDiscovery (enteredUri, webDavClient, true, _dependencies.OutlookFolderType);
+              var autodiscoveryResult2 = await OptionTasks.DoAutoDiscovery (enteredUri, webDavClient, true, _dependencies.OutlookFolderType);
               if (autodiscoveryResult2.RessourceUrl != null)
               {
                 autoDiscoveredUrl = autodiscoveryResult2.RessourceUrl;
@@ -177,7 +177,7 @@ namespace CalDavSynchronizer.Ui
 
         _settingsFaultFinder.FixSynchronizationMode (finalResult);
 
-        DisplayTestReport (
+        OptionTasks.DisplayTestReport (
             finalResult,
             _dependencies.SelectedSynchronizationModeRequiresWriteableServerResource,
             _dependencies.SelectedSynchronizationModeDisplayName,
@@ -190,126 +190,11 @@ namespace CalDavSynchronizer.Ui
         string message = null;
         for (Exception ex = x; ex != null; ex = ex.InnerException)
           message += ex.Message + Environment.NewLine;
-        MessageBox.Show (message, OptionsDisplayControl.ConnectionTestCaption);
+        MessageBox.Show (message, OptionTasks.ConnectionTestCaption);
       }
       finally
       {
         _testConnectionButton.Enabled = true;
-      }
-    }
-
-    public static void DisplayTestReport (
-        TestResult result,
-        bool selectedSynchronizationModeRequiresWriteableServerResource,
-        string selectedSynchronizationModeDisplayName,
-        OlItemType? outlookFolderType)
-    {
-      bool hasError = false;
-      var errorMessageBuilder = new StringBuilder();
-
-      var isCalendar = result.ResourceType.HasFlag (ResourceType.Calendar);
-      var isAddressBook = result.ResourceType.HasFlag (ResourceType.AddressBook);
-
-      if (!isCalendar && !isAddressBook)
-      {
-        errorMessageBuilder.AppendLine ("- The specified Url is neither a calendar nor an addressbook!");
-        hasError = true;
-      }
-
-      if (isCalendar && isAddressBook)
-      {
-        errorMessageBuilder.AppendLine ("- Ressources which are a calendar and an addressbook are not valid!");
-        hasError = true;
-      }
-
-      if (isCalendar)
-      {
-        if (!result.CalendarProperties.HasFlag (CalendarProperties.CalendarAccessSupported))
-        {
-          errorMessageBuilder.AppendLine ("- The specified Url does not support calendar access.");
-          hasError = true;
-        }
-
-        if (!result.CalendarProperties.HasFlag (CalendarProperties.SupportsCalendarQuery))
-        {
-          errorMessageBuilder.AppendLine ("- The specified Url does not support calendar queries. Some features like time range filter may not work!");
-          hasError = true;
-        }
-
-        if (!result.CalendarProperties.HasFlag (CalendarProperties.IsWriteable))
-        {
-          if (selectedSynchronizationModeRequiresWriteableServerResource)
-          {
-            errorMessageBuilder.AppendFormat (
-                "- The specified calendar is not writeable. Therefore it is not possible to use the synchronization mode '{0}'.",
-                selectedSynchronizationModeDisplayName);
-            errorMessageBuilder.AppendLine();
-            hasError = true;
-          }
-        }
-
-        if (outlookFolderType != OlItemType.olAppointmentItem && outlookFolderType != OlItemType.olTaskItem)
-        {
-          errorMessageBuilder.AppendLine ("- The outlook folder is not a calendar or task folder, or there is no folder selected.");
-          hasError = true;
-        }
-      }
-
-      if (isAddressBook)
-      {
-        if (!result.AddressBookProperties.HasFlag (AddressBookProperties.AddressBookAccessSupported))
-        {
-          errorMessageBuilder.AppendLine ("- The specified Url does not support address books.");
-          hasError = true;
-        }
-
-        if (!result.AddressBookProperties.HasFlag (AddressBookProperties.IsWriteable))
-        {
-          if (selectedSynchronizationModeRequiresWriteableServerResource)
-          {
-            errorMessageBuilder.AppendFormat (
-                "- The specified address book is not writeable. Therefore it is not possible to use the synchronization mode '{0}'.",
-                selectedSynchronizationModeDisplayName);
-            errorMessageBuilder.AppendLine();
-            hasError = true;
-          }
-        }
-
-        if (outlookFolderType != OlItemType.olContactItem)
-        {
-          errorMessageBuilder.AppendLine ("- The outlook folder is not an address book, or there is no folder selected.");
-          hasError = true;
-        }
-      }
-
-      if (hasError)
-        MessageBox.Show ("Connection test NOT successful:" + Environment.NewLine + errorMessageBuilder, OptionsDisplayControl.ConnectionTestCaption);
-      else
-        MessageBox.Show ("Connection test successful.", OptionsDisplayControl.ConnectionTestCaption);
-    }
-
-    public static async Task<AutoDiscoveryResult> DoAutoDiscovery (Uri autoDiscoveryUri, IWebDavClient webDavClient, bool useWellKnownUrl,OlItemType? selectedOutlookFolderType)
-    {
-      var calDavDataAccess = new CalDavDataAccess (autoDiscoveryUri, webDavClient);
-      IReadOnlyList<Tuple<Uri, string, string>> foundCaldendars = await calDavDataAccess.GetUserCalendarsNoThrow (useWellKnownUrl);
-
-      var cardDavDataAccess = new CardDavDataAccess (autoDiscoveryUri, webDavClient);
-      IReadOnlyList<Tuple<Uri, string>> foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow (useWellKnownUrl);
-
-      if (foundCaldendars.Count > 0 || foundAddressBooks.Count > 0)
-      {
-        using (SelectResourceForm listCalendarsForm = new SelectResourceForm (foundCaldendars, foundAddressBooks, selectedOutlookFolderType == OlItemType.olContactItem))
-        {
-          if (listCalendarsForm.ShowDialog() == DialogResult.OK)
-            return new AutoDiscoveryResult (new Uri (autoDiscoveryUri.GetLeftPart (UriPartial.Authority) + listCalendarsForm.SelectedUrl), false, listCalendarsForm.ResourceType);
-          else
-            return new AutoDiscoveryResult (null, true, ResourceType.None);
-        }
-      }
-      else
-      {
-        MessageBox.Show ("No resources were found via autodiscovery!", OptionsDisplayControl.ConnectionTestCaption);
-        return new AutoDiscoveryResult (null, false, ResourceType.None);
       }
     }
 
@@ -342,11 +227,6 @@ namespace CalDavSynchronizer.Ui
       optionsToFill.Password = _passwordTextBox.Text;
 
       optionsToFill.ServerAdapterType = SelectedServerAdapterType;
-    }
-
-    public Control UiControl
-    {
-      get { return this; }
     }
 
     public string CalendarUrl

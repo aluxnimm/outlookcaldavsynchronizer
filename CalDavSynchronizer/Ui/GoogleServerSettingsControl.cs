@@ -66,7 +66,7 @@ namespace CalDavSynchronizer.Ui
       try
       {
         StringBuilder errorMessageBuilder = new StringBuilder();
-        if (!OptionsDisplayControl.ValidateCalendarUrl (_calenderUrlTextBox.Text, errorMessageBuilder, false))
+        if (!OptionTasks.ValidateCalendarUrl (_calenderUrlTextBox.Text, errorMessageBuilder, false))
         {
           MessageBox.Show (errorMessageBuilder.ToString(), "The CalDav/CardDav Url is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
           return;
@@ -80,7 +80,7 @@ namespace CalDavSynchronizer.Ui
 
         if (ConnectionTester.RequiresAutoDiscovery (enteredUri))
         {
-          var autodiscoveryResult = await ServerSettingsControl.DoAutoDiscovery (enteredUri, webDavClient, true, _dependencies.OutlookFolderType);
+          var autodiscoveryResult = await OptionTasks.DoAutoDiscovery (enteredUri, webDavClient, true, _dependencies.OutlookFolderType);
           if (autodiscoveryResult.WasCancelled)
             return;
           if (autodiscoveryResult.RessourceUrl != null)
@@ -100,7 +100,7 @@ namespace CalDavSynchronizer.Ui
           {
             _settingsFaultFinder.FixSynchronizationMode (result);
           }
-          ServerSettingsControl.DisplayTestReport (
+          OptionTasks.DisplayTestReport (
               result,
               _dependencies.SelectedSynchronizationModeRequiresWriteableServerResource,
               _dependencies.SelectedSynchronizationModeDisplayName,
@@ -112,7 +112,7 @@ namespace CalDavSynchronizer.Ui
         var finalResult = await ConnectionTester.TestConnection (autoDiscoveredUrl, webDavClient, autoDiscoveredResourceType);
         _settingsFaultFinder.FixSynchronizationMode (finalResult);
 
-        ServerSettingsControl.DisplayTestReport (
+        OptionTasks.DisplayTestReport (
             finalResult,
             _dependencies.SelectedSynchronizationModeRequiresWriteableServerResource,
             _dependencies.SelectedSynchronizationModeDisplayName,
@@ -124,7 +124,7 @@ namespace CalDavSynchronizer.Ui
         string message = null;
         for (Exception ex = x; ex != null; ex = ex.InnerException)
           message += ex.Message + Environment.NewLine;
-        MessageBox.Show (message, OptionsDisplayControl.ConnectionTestCaption);
+        MessageBox.Show (message, OptionTasks.ConnectionTestCaption);
       }
       finally
       {
@@ -148,7 +148,10 @@ namespace CalDavSynchronizer.Ui
     public void SetOptions (Options value)
     {
       _emailAddressTextBox.Text = value.EmailAddress;
-      _calenderUrlTextBox.Text = value.CalenderUrl;
+      if (!string.IsNullOrEmpty (value.CalenderUrl))
+        _calenderUrlTextBox.Text = value.CalenderUrl;
+      else
+        _calenderUrlTextBox.Text = "https://www.google.com";
     }
 
     public void FillOptions (Options optionsToFill)
@@ -157,6 +160,16 @@ namespace CalDavSynchronizer.Ui
       optionsToFill.CalenderUrl = _calenderUrlTextBox.Text;
       optionsToFill.UserName = _emailAddressTextBox.Text;
       optionsToFill.ServerAdapterType = ServerAdapterType.GoogleOAuth;
+    }
+
+    public string CalendarUrl
+    {
+      get { return _calenderUrlTextBox.Text; }
+    }
+
+    public string EmailAddress
+    {
+      get { return _emailAddressTextBox.Text; }
     }
   }
 }

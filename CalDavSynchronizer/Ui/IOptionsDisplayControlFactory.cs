@@ -15,11 +15,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer.Ui
 {
   public interface IOptionsDisplayControlFactory
   {
-    IOptionsDisplayControl Create ();
+    IOptionsDisplayControl Create (Options options);
   }
 }

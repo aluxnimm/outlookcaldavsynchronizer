@@ -25,28 +25,28 @@ namespace CalDavSynchronizer.Ui
 {
   public partial class OptionsForm : Form
   {
-  
     private readonly IOptionsDisplayControlFactory _optionsDisplayControlFactory;
 
-    public OptionsForm (NameSpace session, Func<Guid, string> profileDataDirectoryFactory, bool fixInvalidSettings)
+    public OptionsForm (NameSpace session, Func<Guid, string> profileDataDirectoryFactory, bool fixInvalidSettings, bool displayAllProfilesAsGeneric)
     {
       InitializeComponent();
-      _optionsDisplayControlFactory = new OptionsDisplayControlFactory (session, profileDataDirectoryFactory, fixInvalidSettings);
+      _optionsDisplayControlFactory =
+          new OptionsDisplayControlFactory (session, profileDataDirectoryFactory, fixInvalidSettings, displayAllProfilesAsGeneric);
     }
 
-
     public static bool EditOptions (
-      NameSpace session,
-      Options[] options, 
-      out Options[] changedOptions,
-      Func<Guid, string> profileDataDirectoryFactory,
-      bool fixInvalidSettings)
+        NameSpace session,
+        Options[] options,
+        out Options[] changedOptions,
+        Func<Guid, string> profileDataDirectoryFactory,
+        bool fixInvalidSettings,
+        bool displayAllProfilesAsGeneric)
     {
-      var form = new OptionsForm (session,profileDataDirectoryFactory, fixInvalidSettings);
+      var form = new OptionsForm (session, profileDataDirectoryFactory, fixInvalidSettings, displayAllProfilesAsGeneric);
       form.OptionsList = options;
 
       var shouldSave = form.ShowDialog() == DialogResult.OK;
-        changedOptions = form.OptionsList;
+      changedOptions = form.OptionsList;
 
       return shouldSave;
     }
@@ -57,7 +57,7 @@ namespace CalDavSynchronizer.Ui
       {
         return _tabControl.TabPages
             .Cast<TabPage>()
-            .Select (tp => ((OptionsDisplayControl) tp.Controls[0]).Options)
+            .Select (tp => ((IOptionsDisplayControl) tp.Controls[0]).Options)
             .ToArray();
       }
       set
@@ -71,7 +71,7 @@ namespace CalDavSynchronizer.Ui
 
     private TabPage AddTabPage (Options options)
     {
-      var optionsControl = _optionsDisplayControlFactory.Create();
+      var optionsControl = _optionsDisplayControlFactory.Create (options);
 
       var tabPage = new TabPage (options.Name);
       _tabControl.TabPages.Add (tabPage);
@@ -148,7 +148,7 @@ namespace CalDavSynchronizer.Ui
 
       foreach (TabPage tabPage in  _tabControl.TabPages)
       {
-        var optionsDisplayControl = (OptionsDisplayControl) tabPage.Controls[0];
+        var optionsDisplayControl = (IOptionsDisplayControl) tabPage.Controls[0];
         StringBuilder currentControlErrorMessageBuilder = new StringBuilder();
 
         if (!optionsDisplayControl.Validate (currentControlErrorMessageBuilder))
@@ -170,10 +170,16 @@ namespace CalDavSynchronizer.Ui
       return isValid;
     }
 
-
     private void _addProfileButton_Click (object sender, EventArgs e)
     {
-      AddTabPage (Options.CreateDefault (string.Empty, string.Empty));
+      var type = SelectOptionsDisplayTypeForm.QueryOptionsDisplayType();
+      if (!type.HasValue)
+        return;
+
+      Options options = Options.CreateDefault (string.Empty, string.Empty);
+      options.DisplayType = type.Value;
+
+      AddTabPage (options);
     }
   }
 }

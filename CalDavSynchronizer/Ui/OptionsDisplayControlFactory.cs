@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using CalDavSynchronizer.Contracts;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui
@@ -24,16 +25,24 @@ namespace CalDavSynchronizer.Ui
     private readonly NameSpace _session;
     private readonly Func<Guid, string> _profileDataDirectoryFactory;
     private readonly bool _fixInvalidSettings;
+    private readonly bool _displayAllProfilesAsGeneric;
 
-    public OptionsDisplayControlFactory (NameSpace session, Func<Guid, string> profileDataDirectoryFactory, bool fixInvalidSettings)
+    public OptionsDisplayControlFactory (NameSpace session, Func<Guid, string> profileDataDirectoryFactory, bool fixInvalidSettings, bool displayAllProfilesAsGeneric)
     {
       _session = session;
       _profileDataDirectoryFactory = profileDataDirectoryFactory;
       _fixInvalidSettings = fixInvalidSettings;
+      _displayAllProfilesAsGeneric = displayAllProfilesAsGeneric;
     }
 
-    public IOptionsDisplayControl Create ()
+    public IOptionsDisplayControl Create (Options options)
     {
+      if (!_displayAllProfilesAsGeneric)
+      {
+        if (options.DisplayType == OptionsDisplayType.Google || options.ServerAdapterType == ServerAdapterType.GoogleOAuth)
+          return new GoogleOptionsDisplayControl (_session, _profileDataDirectoryFactory, _fixInvalidSettings);
+      }
+
       return new OptionsDisplayControl (_session, _profileDataDirectoryFactory, _fixInvalidSettings);
     }
   }

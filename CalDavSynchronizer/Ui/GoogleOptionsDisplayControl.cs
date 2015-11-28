@@ -28,8 +28,9 @@ using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Ui
 {
-  public partial class OptionsDisplayControl : UserControl, IOptionsDisplayControl, IServerSettingsControlDependencies
+  public partial class GoogleOptionsDisplayControl : UserControl, IOptionsDisplayControl, IServerSettingsControlDependencies
   {
+    public const string ConnectionTestCaption = "Test settings";
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private Guid _optionsId;
@@ -39,7 +40,7 @@ namespace CalDavSynchronizer.Ui
     public event EventHandler<HeaderEventArgs> HeaderChanged;
     private readonly Func<Guid, string> _profileDataDirectoryFactory;
 
-    public OptionsDisplayControl (
+    public GoogleOptionsDisplayControl (
         NameSpace session,
         Func<Guid, string> profileDataDirectoryFactory,
         bool fixInvalidSettings)
@@ -93,13 +94,14 @@ namespace CalDavSynchronizer.Ui
 
     public bool Validate (StringBuilder errorMessageBuilder)
     {
-      bool result = OptionTasks.ValidateCalendarUrl (_serverSettingsControl.CalendarUrl, errorMessageBuilder, true);
+      bool result =  OptionTasks.ValidateCalendarUrl (_serverSettingsControl.CalendarUrl, errorMessageBuilder, true);
+
       result &= _outlookFolderControl.Validate (errorMessageBuilder);
-      result &= OptionTasks.ValidateEmailAddress (errorMessageBuilder,_serverSettingsControl.EmailAddress);
+      result &= OptionTasks.ValidateEmailAddress (errorMessageBuilder, _serverSettingsControl.EmailAddress);
+      
       return result;
     }
 
-  
     public Options Options
     {
       set
@@ -128,7 +130,7 @@ namespace CalDavSynchronizer.Ui
                           CloseAfterEachRequest = _advancedOptions.CloseConnectionAfterEachRequest,
                           ProxyOptions = _advancedOptions.ProxyOptions,
                           MappingConfiguration = _advancedOptions.MappingConfiguration,
-                          DisplayType = OptionsDisplayType.Generic
+                          DisplayType = OptionsDisplayType.Google
                       };
 
         _outlookFolderControl.FillOptions (options);
@@ -168,25 +170,7 @@ namespace CalDavSynchronizer.Ui
         }
       }
     }
-
-   
-    private void _browseToProfileCacheDirectoryToolStripMenuItem_Click (object sender, EventArgs e)
-    {
-      try
-      {
-        var profileDataDirectory = _profileDataDirectoryFactory (_optionsId);
-
-        if (Directory.Exists (profileDataDirectory))
-          Process.Start (profileDataDirectory);
-        else
-          MessageBox.Show ("The directory does not exist.");
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.HandleException (x, s_logger);
-      }
-    }
-
+    
     public bool CloseConnectionAfterEachRequest
     {
       get { return _advancedOptions.CloseConnectionAfterEachRequest; }

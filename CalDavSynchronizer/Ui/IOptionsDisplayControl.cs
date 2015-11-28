@@ -31,5 +31,7 @@ namespace CalDavSynchronizer.Ui
     event EventHandler<HeaderEventArgs> HeaderChanged;
     Options Options { set; get; }
     Control UiControl { get; }
+    bool Validate (StringBuilder errorMessageBuilder);
+    string ProfileName { get; }
   }
 }

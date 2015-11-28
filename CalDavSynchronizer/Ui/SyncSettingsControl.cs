@@ -171,7 +171,7 @@ namespace CalDavSynchronizer.Ui
               string.Format (
                   "The specified Url is a read-only calendar. Synchronization mode set to '{0}'.",
                   _availableSynchronizationModes.Single (m => m.Value == readOnlyDefaultMode).Name),
-              OptionsDisplayControl.ConnectionTestCaption);
+              OptionTasks.ConnectionTestCaption);
         }
       }
 
@@ -185,11 +185,10 @@ namespace CalDavSynchronizer.Ui
               string.Format (
                   "The specified Url is a read-only addressbook. Synchronization mode set to '{0}'.",
                   _availableSynchronizationModes.Single (m => m.Value == readOnlyDefaultMode).Name),
-              OptionsDisplayControl.ConnectionTestCaption);
+              OptionTasks.ConnectionTestCaption);
         }
       }
     }
-
 
     public void FixTimeRangeUsage (OlItemType? folderType)
     {
