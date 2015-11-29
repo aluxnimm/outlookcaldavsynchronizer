@@ -13,19 +13,17 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace CalDavSynchronizer.Contracts
 {
-  public class GeneralOptions
+  public enum OptionsDisplayType
   {
-    public bool StoreAppDataInRoamingFolder { get; set; }
-    public bool ShouldCheckForNewerVersions { get; set; }
-    public bool DisableCertificateValidation { get; set; }
-    public bool EnableTls12 { get; set; }
-    public bool EnableSsl3 { get; set; }
-    public bool FixInvalidSettings { get; set; }
-    public bool DisplayAllProfilesAsGeneric { get; set; }
+    Generic = 0,
+    Google
   }
 }

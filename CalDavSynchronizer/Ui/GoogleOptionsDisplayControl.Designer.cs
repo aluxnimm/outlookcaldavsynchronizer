@@ -1,6 +1,6 @@
 ﻿namespace CalDavSynchronizer.Ui
 {
-  partial class OptionsDisplayControl
+  partial class GoogleOptionsDisplayControl
   {
     /// <summary> 
     /// Required designer variable.
@@ -36,12 +36,9 @@
       this._inactiveCheckBox = new System.Windows.Forms.CheckBox();
       this._copyButton = new System.Windows.Forms.Button();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-      this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-      this._browseToProfileCacheDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this._serverSettingsControl = new CalDavSynchronizer.Ui.ServerSettingsControl();
-      this._syncSettingsControl = new CalDavSynchronizer.Ui.SyncSettingsControl();
       this._outlookFolderControl = new CalDavSynchronizer.Ui.OutlookFolderControl();
-      this.contextMenu.SuspendLayout();
+      this._serverSettingsControl = new CalDavSynchronizer.Ui.GoogleServerSettingsControl();
+      this._syncSettingsControl = new CalDavSynchronizer.Ui.SyncSettingsControl();
       this.SuspendLayout();
       // 
       // _advancedOptionsButton
@@ -103,19 +100,14 @@
       this._copyButton.UseVisualStyleBackColor = true;
       this._copyButton.Click += new System.EventHandler(this._copyButton_Click);
       // 
-      // contextMenu
+      // _outlookFolderControl
       // 
-      this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this._browseToProfileCacheDirectoryToolStripMenuItem});
-      this.contextMenu.Name = "contextMenu";
-      this.contextMenu.Size = new System.Drawing.Size(248, 26);
-      // 
-      // _browseToProfileCacheDirectoryToolStripMenuItem
-      // 
-      this._browseToProfileCacheDirectoryToolStripMenuItem.Name = "_browseToProfileCacheDirectoryToolStripMenuItem";
-      this._browseToProfileCacheDirectoryToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
-      this._browseToProfileCacheDirectoryToolStripMenuItem.Text = "Browse to profile cache directory";
-      this._browseToProfileCacheDirectoryToolStripMenuItem.Click += new System.EventHandler(this._browseToProfileCacheDirectoryToolStripMenuItem_Click);
+      this._outlookFolderControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this._outlookFolderControl.Location = new System.Drawing.Point(12, 226);
+      this._outlookFolderControl.Name = "_outlookFolderControl";
+      this._outlookFolderControl.Size = new System.Drawing.Size(445, 80);
+      this._outlookFolderControl.TabIndex = 14;
       // 
       // _serverSettingsControl
       // 
@@ -123,7 +115,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this._serverSettingsControl.Location = new System.Drawing.Point(12, 38);
       this._serverSettingsControl.Name = "_serverSettingsControl";
-      this._serverSettingsControl.Size = new System.Drawing.Size(445, 174);
+      this._serverSettingsControl.Size = new System.Drawing.Size(445, 140);
       this._serverSettingsControl.TabIndex = 1;
       // 
       // _syncSettingsControl
@@ -135,20 +127,10 @@
       this._syncSettingsControl.Size = new System.Drawing.Size(445, 200);
       this._syncSettingsControl.TabIndex = 3;
       // 
-      // _outlookFolderControl
-      // 
-      this._outlookFolderControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this._outlookFolderControl.Location = new System.Drawing.Point(12, 226);
-      this._outlookFolderControl.Name = "_outlookFolderControl";
-      this._outlookFolderControl.Size = new System.Drawing.Size(445, 80);
-      this._outlookFolderControl.TabIndex = 14;
-      // 
-      // OptionsDisplayControl
+      // GoogleOptionsDisplayControl
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ContextMenuStrip = this.contextMenu;
       this.Controls.Add(this._outlookFolderControl);
       this.Controls.Add(this._advancedOptionsButton);
       this.Controls.Add(this._copyButton);
@@ -158,9 +140,8 @@
       this.Controls.Add(this._deleteButton);
       this.Controls.Add(this._serverSettingsControl);
       this.Controls.Add(this._syncSettingsControl);
-      this.Name = "OptionsDisplayControl";
+      this.Name = "GoogleOptionsDisplayControl";
       this.Size = new System.Drawing.Size(469, 571);
-      this.contextMenu.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -176,9 +157,7 @@
     private SyncSettingsControl _syncSettingsControl;
     private System.Windows.Forms.ToolTip toolTip;
     private System.Windows.Forms.Button _advancedOptionsButton;
-    private System.Windows.Forms.ContextMenuStrip contextMenu;
-    private System.Windows.Forms.ToolStripMenuItem _browseToProfileCacheDirectoryToolStripMenuItem;
-    private ServerSettingsControl _serverSettingsControl;
+    private GoogleServerSettingsControl _serverSettingsControl;
     private OutlookFolderControl _outlookFolderControl;
   }
 }

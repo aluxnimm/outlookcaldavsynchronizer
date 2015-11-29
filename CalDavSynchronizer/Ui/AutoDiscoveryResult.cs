@@ -15,17 +15,37 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using CalDavSynchronizer.Ui.ConnectionTests;
 
-namespace CalDavSynchronizer.Contracts
+namespace CalDavSynchronizer.Ui
 {
-  public class GeneralOptions
+  public struct AutoDiscoveryResult
   {
-    public bool StoreAppDataInRoamingFolder { get; set; }
-    public bool ShouldCheckForNewerVersions { get; set; }
-    public bool DisableCertificateValidation { get; set; }
-    public bool EnableTls12 { get; set; }
-    public bool EnableSsl3 { get; set; }
-    public bool FixInvalidSettings { get; set; }
-    public bool DisplayAllProfilesAsGeneric { get; set; }
+    private readonly bool _wasCancelled;
+    private readonly Uri _ressourceUrl;
+    private readonly ResourceType _resourceType;
+
+    public AutoDiscoveryResult (Uri ressourceUrl, bool wasCancelled, ResourceType resourceType)
+        : this()
+    {
+      _wasCancelled = wasCancelled;
+      _ressourceUrl = ressourceUrl;
+      _resourceType = resourceType;
+    }
+
+    public bool WasCancelled
+    {
+      get { return _wasCancelled; }
+    }
+
+    public Uri RessourceUrl
+    {
+      get { return _ressourceUrl; }
+    }
+
+    public ResourceType ResourceType
+    {
+      get { return _resourceType; }
+    }
   }
 }

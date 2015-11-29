@@ -15,17 +15,26 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using CalDavSynchronizer.Ui.ConnectionTests;
+using Microsoft.Office.Interop.Outlook;
 
-namespace CalDavSynchronizer.Contracts
+namespace CalDavSynchronizer.Ui
 {
-  public class GeneralOptions
+  public class NullSettingsFaultFinder : ISettingsFaultFinder
   {
-    public bool StoreAppDataInRoamingFolder { get; set; }
-    public bool ShouldCheckForNewerVersions { get; set; }
-    public bool DisableCertificateValidation { get; set; }
-    public bool EnableTls12 { get; set; }
-    public bool EnableSsl3 { get; set; }
-    public bool FixInvalidSettings { get; set; }
-    public bool DisplayAllProfilesAsGeneric { get; set; }
+    public static readonly ISettingsFaultFinder Instance = new NullSettingsFaultFinder();
+
+    private NullSettingsFaultFinder ()
+    {
+    }
+
+    public void FixSynchronizationMode (TestResult result)
+    {
+    }
+
+    public void FixTimeRangeUsage (OlItemType? folderType)
+    {
+      
+    }
   }
 }

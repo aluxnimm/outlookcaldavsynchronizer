@@ -15,16 +15,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using CalDavSynchronizer.Ui.ConnectionTests;
+using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer.Ui
 {
-  partial class OptionsDisplayControl
+  public interface IOptionsDisplayControlFactory
   {
-    private interface ISettingsFaultFinder
-    {
-      void FixSynchronizationMode (TestResult result);
-      void FixTimeRangeUsage ();
-    }
+    IOptionsDisplayControl Create (Options options);
   }
 }

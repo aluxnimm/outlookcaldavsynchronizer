@@ -15,17 +15,23 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using CalDavSynchronizer.Contracts;
 
-namespace CalDavSynchronizer.Contracts
+namespace CalDavSynchronizer.Ui
 {
-  public class GeneralOptions
+  public interface IOptionsDisplayControl
   {
-    public bool StoreAppDataInRoamingFolder { get; set; }
-    public bool ShouldCheckForNewerVersions { get; set; }
-    public bool DisableCertificateValidation { get; set; }
-    public bool EnableTls12 { get; set; }
-    public bool EnableSsl3 { get; set; }
-    public bool FixInvalidSettings { get; set; }
-    public bool DisplayAllProfilesAsGeneric { get; set; }
+    event EventHandler DeletionRequested;
+    event EventHandler CopyRequested;
+    event EventHandler<HeaderEventArgs> HeaderChanged;
+    Options Options { set; get; }
+    Control UiControl { get; }
+    bool Validate (StringBuilder errorMessageBuilder);
+    string ProfileName { get; }
   }
 }
