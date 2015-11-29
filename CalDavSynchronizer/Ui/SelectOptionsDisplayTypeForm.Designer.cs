@@ -40,10 +40,10 @@
       this._genericTypeRadioButton.Checked = true;
       this._genericTypeRadioButton.Location = new System.Drawing.Point(12, 12);
       this._genericTypeRadioButton.Name = "_genericTypeRadioButton";
-      this._genericTypeRadioButton.Size = new System.Drawing.Size(62, 17);
+      this._genericTypeRadioButton.Size = new System.Drawing.Size(151, 17);
       this._genericTypeRadioButton.TabIndex = 0;
       this._genericTypeRadioButton.TabStop = true;
-      this._genericTypeRadioButton.Text = "Generic";
+      this._genericTypeRadioButton.Text = "Generic CalDAV/CardDAV";
       this._genericTypeRadioButton.UseVisualStyleBackColor = true;
       // 
       // _googleTypeRadionButton
@@ -60,7 +60,7 @@
       // 
       this._cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this._cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this._cancelButton.Location = new System.Drawing.Point(110, 77);
+      this._cancelButton.Location = new System.Drawing.Point(133, 77);
       this._cancelButton.Name = "_cancelButton";
       this._cancelButton.Size = new System.Drawing.Size(75, 23);
       this._cancelButton.TabIndex = 2;
@@ -70,7 +70,7 @@
       // _okButton
       // 
       this._okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._okButton.Location = new System.Drawing.Point(29, 77);
+      this._okButton.Location = new System.Drawing.Point(52, 77);
       this._okButton.Name = "_okButton";
       this._okButton.Size = new System.Drawing.Size(75, 23);
       this._okButton.TabIndex = 3;
@@ -84,7 +84,7 @@
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this._cancelButton;
-      this.ClientSize = new System.Drawing.Size(197, 112);
+      this.ClientSize = new System.Drawing.Size(220, 112);
       this.Controls.Add(this._okButton);
       this.Controls.Add(this._cancelButton);
       this.Controls.Add(this._googleTypeRadionButton);
