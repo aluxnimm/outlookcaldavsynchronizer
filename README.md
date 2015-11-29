@@ -61,6 +61,20 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 1.7.0 ####
+- New features
+	- GUI redesign for Google profiles to simplify setup and autodiscovery for google accounts. When creating a new sync profile you can choose between a generic CalDAV/CardDAV and a google profile. For google it is sufficient to enter the Email address and autodiscovery will try to find resources once OAuth is configured.
+	- Improvements in autodisovery logic
+	- Calendar Colors are now shown in Autodiscovery SelectResourceForm, syncing colors to Outlook categories is work in progress.
+	- Add group label to Ribbon and set ScreenTips and SuperTips
+- bug fixes
+	- Clear ol phonenumbers before updating, fixes doubling of home and work numbers, ticket #142
+	- Change TabIndex ordering, ticket #140
+	- Delete profile cache also when username is changed, helps when google id is changed , ticket #141
+	- Delete profile cache also when time range filter is modified or deactivated, ticket #138
+	- Fix calDavDateTimeFormatString and use today instead of now to filter timerange
+	- Add missing quotes to etags on system boundaries.
+
 #### 1.6.0 ####
 - New features:
 	- Provide entity version (etag) on update and set If-Match header
@@ -343,7 +357,9 @@ Use the Synchronization Profiles dialog to configure different synchronization p
 - Delete deletes the current profile
 - Copy copies the current profile to a new one
 
-The following properties need to be set for a new profile:
+When adding a new profile you can choose between a generic CalDAV/CardDAV and a google profile to simplify the google profile creation.
+
+The following properties need to be set for a new generic profile:
 
 - *Profile name*: An arbitrary name for the profile, which will be displayed at the associated tab.
 - *Server settings*:
@@ -379,13 +395,20 @@ The following properties need to be set for a new profile:
 	
 ### Google Calender and Addressbook settings ###
 
-For Google Calender use the following settings:
-DAV Url: `https://apidata.googleusercontent.com/caldav/v2/<your_google_calendar_id>/events/`.
+For Google Calender you can use the new Google type profile which simplifies the setup. You just need to enter the email address of your google account. When testing the settings, you will be redirected to your browser to enter your Google Account password and grant access rights to your Google Calender and Contacts for OutlookCalDavSynchronizer via the safe OAuth protocol. After that Autodiscovery will try to find available calendar and addressbook resources. With the button 'Edit Url' you still can manually change the Url e.g. when you want to sync a shared google calendar from another account.
+
+You can also still use the manual setup with a generic CalDAV/CardDAV profile type and the following settings:
+DAV Url: `https://apidata.googleusercontent.com/caldav/v2/<your_google_calendar_id>/events/
+`
+
 Check the Use Google OAuth Checkbox instead of entering your password. When testing the settings, you will be redirected to your browser to enter your Google Account password and grant access rights to your Google Calender for OutlookCalDavSynchronizer via the safe OAuth protocol.
-For Autodiscovery of all available google calendars use the Url `https://apidata.googleusercontent.com/caldav/v2/` and press the 'Test settings' button.
+For Autodiscovery of all available google calendars use the Url 
+`https://apidata.googleusercontent.com/caldav/v2/` 
+and press the 'Test settings' button.
 
 For Google Addressbook use the following settings:
 DAV Url: `https://www.googleapis.com/carddav/v1/principals/<your_google_email>/lists/default/`
+
 Check the Use Google OAuth Checkbox instead of entering your password. When testing the settings, you will be redirected to your browser to enter your Google Account password and grant access rights to your Google Calender for OutlookCalDavSynchronizer via the safe OAuth protocol. If you get an error with insufficient access you need to refresh the token by deleting the previous token in 
 `C:\Users\<your Username>\AppData\Roaming\Google.Apis.Auth`
 
