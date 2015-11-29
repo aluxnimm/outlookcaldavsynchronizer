@@ -144,9 +144,6 @@
       // 
       // groupBox
       // 
-      this.groupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
       this.groupBox.Controls.Add(this._enableTimeRangeFilteringCheckBox);
       this.groupBox.Controls.Add(this._timeRangeFilteringGroupBox);
       this.groupBox.Controls.Add(this.label8);
@@ -155,6 +152,7 @@
       this.groupBox.Controls.Add(this._conflictResolutionComboBox);
       this.groupBox.Controls.Add(this._synchronizationModeComboBox);
       this.groupBox.Controls.Add(this.label6);
+      this.groupBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.groupBox.Location = new System.Drawing.Point(0, 0);
       this.groupBox.Name = "groupBox";
       this.groupBox.Size = new System.Drawing.Size(400, 200);
