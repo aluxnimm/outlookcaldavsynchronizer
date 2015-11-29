@@ -171,5 +171,10 @@ namespace CalDavSynchronizer.Ui
     {
       get { return _emailAddressTextBox.Text; }
     }
+
+    private void _editUrlManuallyButton_Click (object sender, EventArgs e)
+    {
+      _calenderUrlTextBox.ReadOnly = false;
+    }
   }
 }

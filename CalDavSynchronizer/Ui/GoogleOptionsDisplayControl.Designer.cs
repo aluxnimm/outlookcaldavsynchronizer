@@ -36,9 +36,9 @@
       this._inactiveCheckBox = new System.Windows.Forms.CheckBox();
       this._copyButton = new System.Windows.Forms.Button();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-      this._serverSettingsControl = new CalDavSynchronizer.Ui.GoogleServerSettingsControl ();
-      this._syncSettingsControl = new CalDavSynchronizer.Ui.SyncSettingsControl();
       this._outlookFolderControl = new CalDavSynchronizer.Ui.OutlookFolderControl();
+      this._serverSettingsControl = new CalDavSynchronizer.Ui.GoogleServerSettingsControl();
+      this._syncSettingsControl = new CalDavSynchronizer.Ui.SyncSettingsControl();
       this.SuspendLayout();
       // 
       // _advancedOptionsButton
@@ -99,14 +99,23 @@
       this._copyButton.Text = "Copy";
       this._copyButton.UseVisualStyleBackColor = true;
       this._copyButton.Click += new System.EventHandler(this._copyButton_Click);
-       // 
+      // 
+      // _outlookFolderControl
+      // 
+      this._outlookFolderControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this._outlookFolderControl.Location = new System.Drawing.Point(12, 226);
+      this._outlookFolderControl.Name = "_outlookFolderControl";
+      this._outlookFolderControl.Size = new System.Drawing.Size(445, 80);
+      this._outlookFolderControl.TabIndex = 14;
+      // 
       // _serverSettingsControl
       // 
       this._serverSettingsControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this._serverSettingsControl.Location = new System.Drawing.Point(12, 38);
       this._serverSettingsControl.Name = "_serverSettingsControl";
-      this._serverSettingsControl.Size = new System.Drawing.Size(445, 174);
+      this._serverSettingsControl.Size = new System.Drawing.Size(445, 140);
       this._serverSettingsControl.TabIndex = 1;
       // 
       // _syncSettingsControl
@@ -118,16 +127,7 @@
       this._syncSettingsControl.Size = new System.Drawing.Size(445, 200);
       this._syncSettingsControl.TabIndex = 3;
       // 
-      // _outlookFolderControl
-      // 
-      this._outlookFolderControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this._outlookFolderControl.Location = new System.Drawing.Point(12, 226);
-      this._outlookFolderControl.Name = "_outlookFolderControl";
-      this._outlookFolderControl.Size = new System.Drawing.Size(445, 80);
-      this._outlookFolderControl.TabIndex = 14;
-      // 
-      // OptionsDisplayControl
+      // GoogleOptionsDisplayControl
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
