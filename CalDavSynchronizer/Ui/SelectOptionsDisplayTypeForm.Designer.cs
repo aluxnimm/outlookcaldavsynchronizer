@@ -85,15 +85,13 @@
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this._cancelButton;
       this.ClientSize = new System.Drawing.Size(197, 112);
-      this.ControlBox = false;
       this.Controls.Add(this._okButton);
       this.Controls.Add(this._cancelButton);
       this.Controls.Add(this._googleTypeRadionButton);
       this.Controls.Add(this._genericTypeRadioButton);
-      this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+      this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
       this.Name = "SelectOptionsDisplayTypeForm";
       this.ShowIcon = false;
-      this.ShowInTaskbar = false;
       this.Text = "Select Profile Type";
       this.ResumeLayout(false);
       this.PerformLayout();
