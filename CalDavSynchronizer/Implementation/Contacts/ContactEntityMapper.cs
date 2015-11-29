@@ -630,6 +630,9 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
     private static void MapTelephoneNumber2To1 (vCard source, ContactItem target)
     {
+      target.HomeTelephoneNumber = string.Empty;
+      target.BusinessTelephoneNumber = string.Empty;
+
       foreach (var phoneNumber in source.Phones)
       {
         if (phoneNumber.IsMain)
