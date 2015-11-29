@@ -142,7 +142,7 @@
       this._outlookFolderControl.Location = new System.Drawing.Point(12, 226);
       this._outlookFolderControl.Name = "_outlookFolderControl";
       this._outlookFolderControl.Size = new System.Drawing.Size(445, 80);
-      this._outlookFolderControl.TabIndex = 14;
+      this._outlookFolderControl.TabIndex = 2;
       // 
       // OptionsDisplayControl
       // 
