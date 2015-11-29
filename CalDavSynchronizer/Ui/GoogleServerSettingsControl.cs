@@ -151,7 +151,7 @@ namespace CalDavSynchronizer.Ui
       if (!string.IsNullOrEmpty (value.CalenderUrl))
         _calenderUrlTextBox.Text = value.CalenderUrl;
       else
-        _calenderUrlTextBox.Text = "https://www.google.com";
+        _calenderUrlTextBox.Text = "https://apidata.googleusercontent.com/caldav/v2";
     }
 
     public void FillOptions (Options optionsToFill)
