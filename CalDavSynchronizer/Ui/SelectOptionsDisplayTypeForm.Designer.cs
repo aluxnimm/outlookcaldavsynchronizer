@@ -59,6 +59,7 @@
       // _cancelButton
       // 
       this._cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this._cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
       this._cancelButton.Location = new System.Drawing.Point(110, 77);
       this._cancelButton.Name = "_cancelButton";
       this._cancelButton.Size = new System.Drawing.Size(75, 23);
@@ -79,8 +80,10 @@
       // 
       // SelectOptionsDisplayTypeForm
       // 
+      this.AcceptButton = this._okButton;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.CancelButton = this._cancelButton;
       this.ClientSize = new System.Drawing.Size(197, 112);
       this.ControlBox = false;
       this.Controls.Add(this._okButton);
