@@ -80,7 +80,7 @@ namespace CalDavSynchronizer.Ui
 
         if (ConnectionTester.RequiresAutoDiscovery (enteredUri))
         {
-          var autodiscoveryResult = await OptionTasks.DoAutoDiscovery (enteredUri, webDavClient, true, _dependencies.OutlookFolderType);
+          var autodiscoveryResult = await OptionTasks.DoAutoDiscovery (enteredUri, webDavClient, false, true, _dependencies.OutlookFolderType);
           if (autodiscoveryResult.WasCancelled)
             return;
           if (autodiscoveryResult.RessourceUrl != null)

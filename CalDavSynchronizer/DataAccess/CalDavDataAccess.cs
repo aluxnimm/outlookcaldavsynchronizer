@@ -113,8 +113,7 @@ namespace CalDavSynchronizer.DataAccess
     {
       get 
       {
-        var host = _serverUrl.GetLeftPart(UriPartial.Authority);
-        return (host == "https://apidata.googleusercontent.com") ? _serverUrl :new Uri (host + "/.well-known/caldav/"); 
+        return new Uri (_serverUrl.GetLeftPart (UriPartial.Authority) + "/.well-known/caldav/"); 
       }
     }
 
