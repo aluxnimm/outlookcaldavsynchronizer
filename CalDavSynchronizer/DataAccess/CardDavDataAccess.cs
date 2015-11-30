@@ -274,6 +274,7 @@ namespace CalDavSynchronizer.DataAccess
                         <D:propfind xmlns:D=""DAV:"">
                             <D:prop>
                               <D:getetag/>
+                              <D:getcontenttype/>
                             </D:prop>
                         </D:propfind>
                  "
@@ -287,15 +288,21 @@ namespace CalDavSynchronizer.DataAccess
         {
           var urlNode = responseElement.SelectSingleNode ("D:href", responseXml.XmlNamespaceManager);
           var etagNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:getetag", responseXml.XmlNamespaceManager);
+          var contentTypeNode = responseElement.SelectSingleNode("D:propstat/D:prop/D:getcontenttype", responseXml.XmlNamespaceManager);
+
           if (urlNode != null && etagNode != null)
           {
+            string contentType = contentTypeNode.InnerText ?? string.Empty;
             var eTag = HttpUtility.GetQuotedEtag(etagNode.InnerText);
             // the directory is also included in the list. It has a etag of '"None"' and is skipped
             // in Owncloud eTag is empty for directory
             // Yandex returns some eTag and the urlNode for the directory itself, so we need to filter that out aswell
+            // TODO: add vlist support but for now filter out sogo vlists since we can't parse them atm
+
             if (  !string.IsNullOrEmpty (eTag) && 
                   String.Compare (eTag, @"""None""", StringComparison.OrdinalIgnoreCase) != 0 && 
-                  _serverUrl.AbsolutePath != UriHelper.DecodeUrlString (urlNode.InnerText)
+                  _serverUrl.AbsolutePath != UriHelper.DecodeUrlString (urlNode.InnerText) &&
+                  contentType != "text/x-vlist"
                )
             {
               var uri = UriHelper.UnescapeRelativeUri (_serverUrl, urlNode.InnerText);
@@ -325,6 +332,7 @@ namespace CalDavSynchronizer.DataAccess
    <A:addressbook-multiget xmlns:D=""DAV:"" xmlns:A=""urn:ietf:params:xml:ns:carddav"">
      <D:prop>
        <D:getetag/>
+       <D:getcontenttype/>
        <A:address-data/>
      </D:prop>
      " + String.Join (Environment.NewLine, urls.Select (u => string.Format ("<D:href>{0}</D:href>", u))) + @"
@@ -355,7 +363,11 @@ namespace CalDavSynchronizer.DataAccess
       {
         var urlNode = responseElement.SelectSingleNode ("D:href", responseXml.XmlNamespaceManager);
         var dataNode = responseElement.SelectSingleNode ("D:propstat/D:prop/A:address-data", responseXml.XmlNamespaceManager);
-        if (urlNode != null && dataNode != null && !string.IsNullOrEmpty (dataNode.InnerText))
+        var contentTypeNode = responseElement.SelectSingleNode("D:propstat/D:prop/D:getcontenttype", responseXml.XmlNamespaceManager);
+        string contentType = contentTypeNode.InnerText ?? string.Empty;
+
+        // TODO: add vlist support but for now filter out sogo vlists since we can't parse them atm
+        if (urlNode != null && dataNode != null && !string.IsNullOrEmpty (dataNode.InnerText) && contentType != "text/x-vlist")
         {
           entities.Add (EntityWithId.Create (UriHelper.UnescapeRelativeUri (_serverUrl, urlNode.InnerText), dataNode.InnerText));
         }
