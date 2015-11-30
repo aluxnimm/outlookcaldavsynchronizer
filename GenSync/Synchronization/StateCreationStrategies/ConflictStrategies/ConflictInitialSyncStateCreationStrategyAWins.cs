@@ -45,7 +45,7 @@ namespace GenSync.Synchronization.StateCreationStrategies.ConflictStrategies
 
     public IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> Create_Deleted_Changed (IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> knownData, TBtypeEntityVersion newB)
     {
-      return _factory.Create_DeleteInB (knownData);
+      return _factory.Create_DeleteInB (knownData, newB);
     }
   }
 }

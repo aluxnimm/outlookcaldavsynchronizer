@@ -138,7 +138,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       return Task.FromResult (new EntityVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime));
     }
 
-    public Task Delete (string entityId)
+    public Task Delete (string entityId,DateTime version)
     {
       var entityWithId = Get (new[] { entityId }).Result.SingleOrDefault();
       if (entityWithId == null)

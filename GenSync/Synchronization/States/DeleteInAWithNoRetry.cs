@@ -30,12 +30,16 @@ namespace GenSync.Synchronization.States
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private readonly TAtypeEntityId _aId;
+    private readonly TAtypeEntityVersion _currentAVersion;
 
-
-    public DeleteInAWithNoRetry (EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> environment, TAtypeEntityId aId)
+    public DeleteInAWithNoRetry (
+        EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> environment,
+        TAtypeEntityId aId,
+        TAtypeEntityVersion currentAVersion)
         : base (environment)
     {
       _aId = aId;
+      _currentAVersion = currentAVersion;
     }
 
     public override void AddRequiredEntitiesToLoad (Func<TAtypeEntityId, bool> a, Func<TBtypeEntityId, bool> b)
@@ -56,7 +60,7 @@ namespace GenSync.Synchronization.States
     {
       try
       {
-        await _environment.ARepository.Delete (_aId);
+        await _environment.ARepository.Delete (_aId, _currentAVersion);
         return Discard();
       }
       catch (Exception x)

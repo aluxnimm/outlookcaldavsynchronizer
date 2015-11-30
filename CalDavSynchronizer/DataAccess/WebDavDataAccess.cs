@@ -214,12 +214,7 @@ namespace CalDavSynchronizer.DataAccess
           );
     }
 
-    public Task DeleteEntity (Uri uri)
-    {
-      return DeleteEntity (uri, string.Empty);
-    }
-
-    private async Task DeleteEntity (Uri uri, string etag)
+    public async Task DeleteEntity (Uri uri, string etag)
     {
       s_logger.DebugFormat ("Deleting entity '{0}'", uri);
 

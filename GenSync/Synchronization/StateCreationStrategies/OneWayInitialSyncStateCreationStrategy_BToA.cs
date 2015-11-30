@@ -52,9 +52,8 @@ namespace GenSync.Synchronization.StateCreationStrategies
 
     public IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> CreateFor_Changed_Deleted (IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> knownData, TAtypeEntityVersion newA)
     {
-      return _factory.Create_DeleteInA (knownData);
+      return _factory.Create_DeleteInA (knownData, newA);
     }
-
 
     public IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> CreateFor_Deleted_Changed (IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> knownData, TBtypeEntityVersion newB)
     {
@@ -73,7 +72,7 @@ namespace GenSync.Synchronization.StateCreationStrategies
 
     public IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> CreateFor_Unchanged_Deleted (IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> knownData)
     {
-      return _factory.Create_DeleteInA (knownData);
+      return _factory.Create_DeleteInA (knownData, knownData.AtypeVersion);
     }
 
     public IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> CreateFor_Unchanged_Unchanged (IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> knownData)
@@ -81,12 +80,12 @@ namespace GenSync.Synchronization.StateCreationStrategies
       return _factory.Create_DoNothing (knownData);
     }
 
-    public IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> CreateFor_Added_NotExisting (TAtypeEntityId aId, TAtypeEntityVersion a)
+    public IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> CreateFor_Added_NotExisting (TAtypeEntityId aId, TAtypeEntityVersion newA)
     {
       switch (_syncMode)
       {
         case OneWaySyncMode.Replicate:
-          return _factory.Create_DeleteInAWithNoRetry (aId, a);
+          return _factory.Create_DeleteInAWithNoRetry (aId, newA);
         case OneWaySyncMode.Merge:
           return _factory.Create_Discard();
         default:
@@ -94,9 +93,9 @@ namespace GenSync.Synchronization.StateCreationStrategies
       }
     }
 
-    public IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> CreateFor_NotExisting_Added (TBtypeEntityId bId, TBtypeEntityVersion b)
+    public IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> CreateFor_NotExisting_Added (TBtypeEntityId bId, TBtypeEntityVersion newB)
     {
-      return _factory.Create_CreateInA (bId, b);
+      return _factory.Create_CreateInA (bId, newB);
     }
   }
 }

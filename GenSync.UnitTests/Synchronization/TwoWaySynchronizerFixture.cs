@@ -97,7 +97,7 @@ namespace GenSync.UnitTests.Synchronization
     {
       await InitializeWithTwoEvents();
 
-      await _localRepository.Delete ("l1");
+      _localRepository.Delete ("l1");
 
       ExecuteMultipleTimes (() =>
       {
@@ -116,7 +116,7 @@ namespace GenSync.UnitTests.Synchronization
     {
       await InitializeWithTwoEvents();
 
-      await _serverRepository.Delete ("s1");
+      _serverRepository.Delete ("s1");
 
       ExecuteMultipleTimes (() =>
       {
@@ -135,8 +135,8 @@ namespace GenSync.UnitTests.Synchronization
     {
       await InitializeWithTwoEvents();
 
-      await _serverRepository.Delete ("s1");
-      await _localRepository.Delete ("l2");
+      _serverRepository.Delete ("s1");
+      _localRepository.Delete ("l2");
 
       ExecuteMultipleTimes (() =>
       {
@@ -153,8 +153,8 @@ namespace GenSync.UnitTests.Synchronization
     {
       await InitializeWithTwoEvents();
 
-      await _serverRepository.Delete ("s1");
-      await _localRepository.Delete ("l1");
+      _serverRepository.Delete ("s1");
+      _localRepository.Delete ("l1");
 
       ExecuteMultipleTimes (() =>
       {
@@ -233,7 +233,7 @@ namespace GenSync.UnitTests.Synchronization
     {
       await InitializeWithTwoEvents();
 
-      await _localRepository.Delete ("l1");
+      _localRepository.Delete ("l1");
       _serverRepository.UpdateWithoutIdChange ("s1", v => "upd Item 1");
 
       ExecuteMultipleTimes (() =>
@@ -252,7 +252,7 @@ namespace GenSync.UnitTests.Synchronization
     {
       await InitializeWithTwoEvents();
 
-      await _localRepository.Delete ("l1");
+      _localRepository.Delete ("l1");
       _serverRepository.UpdateWithoutIdChange ("s1", v => "upd Item 1");
 
       ExecuteMultipleTimes (() =>
@@ -273,7 +273,7 @@ namespace GenSync.UnitTests.Synchronization
     {
       await InitializeWithTwoEvents();
 
-      await _serverRepository.Delete ("s1");
+      _serverRepository.Delete ("s1");
       _localRepository.UpdateWithoutIdChange ("l1", v => "upd Item 1");
 
       ExecuteMultipleTimes (() =>
@@ -294,7 +294,7 @@ namespace GenSync.UnitTests.Synchronization
     {
       await InitializeWithTwoEvents();
 
-      await _serverRepository.Delete ("s1");
+      _serverRepository.Delete ("s1");
       _localRepository.UpdateWithoutIdChange ("l1", v => "upd Item 1");
 
       ExecuteMultipleTimes (() =>

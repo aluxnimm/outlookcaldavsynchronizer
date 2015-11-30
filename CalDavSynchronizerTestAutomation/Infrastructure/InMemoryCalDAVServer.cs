@@ -87,8 +87,14 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       return Task.FromResult (EntityVersion.Create (id, version.ToString()));
     }
 
-    public Task DeleteEntity (Uri uri)
+    public Task DeleteEntity (Uri uri, string etag)
     {
+      if (!_entites.ContainsKey (uri))
+        throw new Exception ("tried to delete non existing entity!");
+
+      if (_entites[uri].Item1 != etag)
+        throw new Exception ("tried to delete stale version!");
+
       _entites.Remove (uri);
       return Task.FromResult (0);
     }

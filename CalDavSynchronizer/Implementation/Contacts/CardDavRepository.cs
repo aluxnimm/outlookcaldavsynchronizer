@@ -103,11 +103,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
     }
 
 
-    public Task Delete (Uri entityId)
+    public Task Delete (Uri entityId, string version)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
-        return _cardDavDataAccess.DeleteEntity (entityId);
+        return _cardDavDataAccess.DeleteEntity (entityId, version);
       }
     }
 

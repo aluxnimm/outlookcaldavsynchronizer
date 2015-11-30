@@ -29,9 +29,15 @@ namespace GenSync.Synchronization.States
     // ReSharper disable once StaticFieldInGenericType
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    public DeleteInA (EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> environment, IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> knownData)
+    private readonly TAtypeEntityVersion _currentAVersion;
+
+    public DeleteInA (
+        EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> environment,
+        IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> knownData,
+        TAtypeEntityVersion currentAVersion)
         : base (environment, knownData)
     {
+      _currentAVersion = currentAVersion;
     }
 
     public override void AddRequiredEntitiesToLoad (Func<TAtypeEntityId, bool> a, Func<TBtypeEntityId, bool> b)
@@ -52,7 +58,7 @@ namespace GenSync.Synchronization.States
     {
       try
       {
-        await _environment.ARepository.Delete (_knownData.AtypeId);
+        await _environment.ARepository.Delete (_knownData.AtypeId, _currentAVersion);
         return Discard();
       }
       catch (Exception x)

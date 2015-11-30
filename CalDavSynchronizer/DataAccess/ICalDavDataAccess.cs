@@ -37,7 +37,7 @@ namespace CalDavSynchronizer.DataAccess
 
     Task<EntityVersion<Uri, string>> CreateEntity (string iCalData, string uid);
 
-    Task DeleteEntity (Uri uri);
+    Task DeleteEntity (Uri uri, string etag);
     Task<EntityVersion<Uri, string>> UpdateEntity (Uri url, string etag, string iCalData);
   }
 }

@@ -62,8 +62,19 @@ namespace GenSync.UnitTests.Synchronization.Stubs
     {
     }
 
-    public Task Delete (Identifier entityId)
+    public void Delete (Identifier entityId)
     {
+      EntityVersionAndContentById.Remove (entityId);
+    }
+
+    public Task Delete (Identifier entityId, int version)
+    {
+      if (!EntityVersionAndContentById.ContainsKey (entityId))
+        throw new Exception ("tried to delete non existing entity!");
+
+      if (EntityVersionAndContentById[entityId].Item1 != version)
+        throw new Exception ("tried to delete stale version!");
+
       EntityVersionAndContentById.Remove (entityId);
       return Task.FromResult (0);
     }
