@@ -15,13 +15,27 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Security.Cryptography;
+using System.Text;
 using System.Xml.Serialization;
+using CalDavSynchronizer.Implementation;
+using CalDavSynchronizer.Ui;
 
 namespace CalDavSynchronizer.Contracts
 {
-  [XmlInclude (typeof (ContactMappingConfiguration))]
-  [XmlInclude (typeof (EventMappingConfiguration))]
-  public abstract class MappingConfigurationBase : ConfigurationBase<MappingConfigurationBase>
+  public class ContactMappingConfiguration : MappingConfigurationBase
   {
+
+    public bool MapBirthday { get; set; }
+
+    public ContactMappingConfiguration ()
+    {
+      MapBirthday = true;
+    }
+
+    public override IConfigurationForm<MappingConfigurationBase> CreateConfigurationForm (IConfigurationFormFactory factory)
+    {
+      return factory.Create (this);
+    }
   }
 }

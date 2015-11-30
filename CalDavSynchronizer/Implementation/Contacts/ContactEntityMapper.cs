@@ -18,6 +18,7 @@ using System;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.Contracts;
 using DDay.iCal;
 using GenSync.EntityMapping;
 using Microsoft.Office.Interop.Outlook;
@@ -38,6 +39,13 @@ namespace CalDavSynchronizer.Implementation.Contacts
     private const string PR_EMAIL3ADDRESS = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/80a4001F";
     private const string PR_USER_X509_CERTIFICATE = "http://schemas.microsoft.com/mapi/proptag/0x3A701102";
     private const string PR_ATTACH_DATA_BIN = "http://schemas.microsoft.com/mapi/proptag/0x37010102";
+
+    private readonly ContactMappingConfiguration _configuration;
+
+    public ContactEntityMapper (ContactMappingConfiguration configuration)
+    {
+      _configuration = configuration;
+    }
 
     public vCard Map1To2 (ContactItemWrapper source, vCard target)
     {
@@ -135,7 +143,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       MapPhoneNumbers1To2 (source.Inner, target);
 
-      if (!source.Inner.Birthday.Equals (new DateTime (4501, 1, 1, 0, 0, 0)))
+      if (_configuration.MapBirthday && !source.Inner.Birthday.Equals (new DateTime (4501, 1, 1, 0, 0, 0)))
       {
         target.BirthDate = source.Inner.Birthday.Date;
       }
@@ -259,7 +267,10 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       MapTelephoneNumber2To1 (source, target.Inner);
 
-      target.Inner.Birthday = source.BirthDate ?? new DateTime (4501, 1, 1);
+      if (_configuration.MapBirthday)
+      {
+        target.Inner.Birthday = source.BirthDate ?? new DateTime(4501, 1, 1);
+      }
 
       if (!string.IsNullOrEmpty (source.Organization))
       {

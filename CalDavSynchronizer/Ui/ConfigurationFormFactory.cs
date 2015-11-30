@@ -38,5 +38,12 @@ namespace CalDavSynchronizer.Ui
       form.Options = configurationElement;
       return form;
     }
+
+    public IConfigurationForm<ContactMappingConfiguration> Create (ContactMappingConfiguration configurationElement)
+    {
+      var form = new ContactMappingConfigurationForm();
+      form.Options = configurationElement;
+      return form;
+    }
   }
 }

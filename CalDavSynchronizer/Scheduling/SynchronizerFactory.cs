@@ -365,10 +365,14 @@ namespace CalDavSynchronizer.Scheduling
                   options.CloseAfterEachRequest,
                   options.ProxyOptions)));
 
+      var mappingParameters = GetMappingParameters<ContactMappingConfiguration>(options);
+
+      var entityMapper = new ContactEntityMapper (mappingParameters);
+
       var entityRelationDataFactory = new OutlookContactRelationDataFactory();
 
       var syncStateFactory = new EntitySyncStateFactory<string, DateTime, ContactItemWrapper, Uri, string, vCard> (
-          new ContactEntityMapper(),
+          entityMapper,
           atypeRepository,
           btypeRepository,
           entityRelationDataFactory,

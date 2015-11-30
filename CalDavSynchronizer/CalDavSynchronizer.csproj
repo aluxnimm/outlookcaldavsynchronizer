@@ -209,6 +209,7 @@
     <Compile Include="ChangeWatching\IOutlookItem.cs" />
     <Compile Include="ChangeWatching\ItemSavedEventArgs.cs" />
     <Compile Include="ComponentContainer.cs" />
+    <Compile Include="Contracts\ContactMappingConfiguration.cs" />
     <Compile Include="Contracts\OptionsDisplayType.cs" />
     <Compile Include="Contracts\ConfigurationBase.cs" />
     <Compile Include="Contracts\EventMappingConfiguration.cs" />
@@ -301,6 +302,12 @@
     <Compile Include="Ui\ConnectionTests\ConnectionTester.cs" />
     <Compile Include="Ui\ConnectionTests\ResourceType.cs" />
     <Compile Include="Ui\ConnectionTests\TestResult.cs" />
+    <Compile Include="Ui\ContactMappingConfigurationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ui\ContactMappingConfigurationForm.Designer.cs">
+      <DependentUpon>ContactMappingConfigurationForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Ui\GeneralOptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -401,6 +408,9 @@
     </Compile>
     <EmbeddedResource Include="CalDavSynchronizerRibbon.resx">
       <DependentUpon>CalDavSynchronizerRibbon.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ui\ContactMappingConfigurationForm.resx">
+      <DependentUpon>ContactMappingConfigurationForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\GeneralOptionsForm.resx">
       <DependentUpon>GeneralOptionsForm.cs</DependentUpon>

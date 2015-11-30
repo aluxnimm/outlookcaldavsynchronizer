@@ -23,5 +23,6 @@ namespace CalDavSynchronizer.Ui
   {
     IConfigurationForm<T> CreateGenericForm<T> (object configurationElement);
     IConfigurationForm<EventMappingConfiguration> Create (EventMappingConfiguration configurationElement);
+    IConfigurationForm<ContactMappingConfiguration> Create (ContactMappingConfiguration configurationElement);
   }
 }

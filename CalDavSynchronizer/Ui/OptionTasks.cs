@@ -39,6 +39,10 @@ namespace CalDavSynchronizer.Ui
           if (mappingConfiguration == null || mappingConfiguration.GetType() != typeof (EventMappingConfiguration))
             return new EventMappingConfiguration();
           break;
+        case OlItemType.olContactItem:
+          if (mappingConfiguration == null || mappingConfiguration.GetType() != typeof (ContactMappingConfiguration))
+            return new ContactMappingConfiguration();
+          break;
       }
 
       return mappingConfiguration;
