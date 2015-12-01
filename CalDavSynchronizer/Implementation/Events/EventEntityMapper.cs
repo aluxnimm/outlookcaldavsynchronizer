@@ -1305,11 +1305,20 @@ namespace CalDavSynchronizer.Implementation.Events
       return targetWrapper;
     }
 
-    private static void MapCategories2To1 (IEvent source, AppointmentItem target)
+    private void MapCategories2To1 (IEvent source, AppointmentItem target)
     {
-      target.Categories = string.Join (CultureInfo.CurrentCulture.TextInfo.ListSeparator, source.Categories);
-    }
+      var categories = string.Join (CultureInfo.CurrentCulture.TextInfo.ListSeparator, source.Categories);
 
+      if (_configuration.UseEventCategoryAsFilter
+          && source.Categories.All (a => a != _configuration.EventCategory))
+      {
+        target.Categories = categories + CultureInfo.CurrentCulture.TextInfo.ListSeparator + _configuration.EventCategory;
+      }
+      else
+      {
+        target.Categories = categories;
+      }
+    }
 
     private void MapAttendeesAndOrganizer2To1 (IEvent source, AppointmentItem target)
     {

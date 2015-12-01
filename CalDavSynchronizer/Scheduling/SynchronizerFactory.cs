@@ -224,19 +224,20 @@ namespace CalDavSynchronizer.Scheduling
               NullDateTimeRangeProvider.Instance :
               new DateTimeRangeProvider (options.DaysToSynchronizeInThePast, options.DaysToSynchronizeInTheFuture);
 
+      var mappingParameters = GetMappingParameters<EventMappingConfiguration> (options);
+
       var atypeRepository = new OutlookEventRepository (
           _outlookSession,
           options.OutlookFolderEntryId,
           options.OutlookFolderStoreId,
-          dateTimeRangeProvider);
+          dateTimeRangeProvider,
+          mappingParameters);
 
       IEntityRepository<IICalendar, Uri, string> btypeRepository = new CalDavRepository (
           calDavDataAccess,
           new iCalendarSerializer(),
           CalDavRepository.EntityType.Event,
           dateTimeRangeProvider);
-
-      var mappingParameters = GetMappingParameters<EventMappingConfiguration> (options);
 
       var entityMapper = new EventEntityMapper (
           _outlookEmailAddress, new Uri ("mailto:" + options.EmailAddress),

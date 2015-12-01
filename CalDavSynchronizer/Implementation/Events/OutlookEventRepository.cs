@@ -19,7 +19,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading.Tasks;
+using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using GenSync;
@@ -37,8 +39,14 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly string _folderId;
     private readonly string _folderStoreId;
     private readonly IDateTimeRangeProvider _dateTimeRangeProvider;
+    private readonly EventMappingConfiguration _configuration;
 
-    public OutlookEventRepository (NameSpace mapiNameSpace, string folderId, string folderStoreId, IDateTimeRangeProvider dateTimeRangeProvider)
+    public OutlookEventRepository (
+      NameSpace mapiNameSpace, 
+      string folderId, 
+      string folderStoreId, 
+      IDateTimeRangeProvider dateTimeRangeProvider,
+      EventMappingConfiguration configuration)
     {
       if (mapiNameSpace == null)
         throw new ArgumentNullException ("mapiNameSpace");
@@ -47,6 +55,7 @@ namespace CalDavSynchronizer.Implementation.Events
       _folderId = folderId;
       _folderStoreId = folderStoreId;
       _dateTimeRangeProvider = dateTimeRangeProvider;
+      _configuration = configuration;
     }
 
     private const string c_entryIdColumnName = "EntryID";
@@ -77,9 +86,26 @@ namespace CalDavSynchronizer.Implementation.Events
                 }
               })
               .Where (i => i != null)
-              .ToSafeEnumerable()
+              .ToSafeEnumerable ()
+              .Where (DoesMatchCategoryCriterion)
               .Select (c => EntityVersion.Create (c.EntryID, c.LastModificationTime))
               .ToList());
+    }
+
+    private bool DoesMatchCategoryCriterion (AppointmentItem item)
+    {
+      if (!_configuration.UseEventCategoryAsFilter)
+        return true;
+
+      var categoryCsv = item.Categories;
+
+      if (string.IsNullOrEmpty (categoryCsv))
+        return false;
+
+     return  item.Categories
+          .Split (new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries)
+          .Select (c => c.Trim())
+          .Any (c => c == _configuration.EventCategory);
     }
 
     public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions ()
@@ -87,15 +113,25 @@ namespace CalDavSynchronizer.Implementation.Events
       var events = new List<EntityVersion<string, DateTime>>();
 
       var range = _dateTimeRangeProvider.GetRange();
-      object filter;
+      var filterBuilder = new StringBuilder();
+
+      // Table Filtering in the MSDN: https://msdn.microsoft.com/EN-US/library/office/ff867581.aspx
+      
       if (range.HasValue)
-        filter = String.Format ("[Start] < '{0}' And [End] > '{1}'", ToOutlookDateString (range.Value.To), ToOutlookDateString (range.Value.From));
-      else
-        filter = Type.Missing;
+        filterBuilder.AppendFormat("[Start] < '{0}' And [End] > '{1}'", ToOutlookDateString (range.Value.To), ToOutlookDateString (range.Value.From));
+
+      if (_configuration.UseEventCategoryAsFilter)
+      {
+        if (filterBuilder.Length > 0)
+          filterBuilder.Append (" And ");
+
+        filterBuilder.AppendFormat( "[Categories] = '{0}'", _configuration.EventCategory);
+      }
 
       using (var calendarFolderWrapper = CreateFolderWrapper())
       {
-        using (var tableWrapper = GenericComObjectWrapper.Create ((Table) calendarFolderWrapper.Inner.GetTable (filter)))
+        using (var tableWrapper = GenericComObjectWrapper.Create (
+          calendarFolderWrapper.Inner.GetTable (filterBuilder.Length > 0 ? filterBuilder.ToString() : Type.Missing)))
         {
           var table = tableWrapper.Inner;
           table.Columns.RemoveAll();
