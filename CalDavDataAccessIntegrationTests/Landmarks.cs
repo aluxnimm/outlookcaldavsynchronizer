@@ -19,29 +19,23 @@ using NUnit.Framework;
 
 namespace CalDavDataAccessIntegrationTests
 {
-  public class GoogleOAuth : FixtureBase
+  public class Landmarks : FixtureBase
   {
     protected override string ProfileName
     {
-      get { return "TestCal-Google (OAuth)"; }
+      get { return "Landmarks"; }
     }
 
-    [Ignore ("Google doesnt create a new entity in that case, it fails with precondition.")]
+    [Ignore ("Landmarks doesnt create a new entity in that case, it fails with precondition.")]
     public override async System.Threading.Tasks.Task UpdateNonExistingEntity_CreatesNewEntity ()
     {
-      await base.UpdateNonExistingEntity_CreatesNewEntity();
-    }
-    
-    [Ignore ("Google doesnt fails with preconditions on DELETE.")]
-    public override async System.Threading.Tasks.Task DeleteEntityWithWrongVersion_PreconditionFails ()
-    {
-      await base.DeleteEntityWithWrongVersion_PreconditionFails ();
+      await base.UpdateNonExistingEntity_CreatesNewEntity ();
     }
 
-    [Ignore ("Google doesnt fails with preconditions on DELETE.")]
-    public override async System.Threading.Tasks.Task DeleteNonExistingEntity_PreconditionFails ()
+     [Ignore ("Landmarks doesnt fail with 404 in that case, it fails with precondition.")]
+    public override async System.Threading.Tasks.Task DeleteNonExistingEntity_ThrowsNotFound ()
     {
-      await base.DeleteNonExistingEntity_PreconditionFails ();
-    }
+      await base.DeleteNonExistingEntity_ThrowsNotFound ();
+    } 
   }
 }

@@ -37,5 +37,17 @@ namespace CalDavDataAccessIntegrationTests
     {
       await base.UpdateNonExistingEntity_CreatesNewEntity();
     }
+
+    [Ignore ("Google doesnt fails with preconditions on DELETE.")]
+    public override async System.Threading.Tasks.Task DeleteEntityWithWrongVersion_PreconditionFails ()
+    {
+      await base.DeleteEntityWithWrongVersion_PreconditionFails();
+    }
+
+    [Ignore ("Google doesnt fails with preconditions on DELETE.")]
+    public override async System.Threading.Tasks.Task DeleteNonExistingEntity_PreconditionFails ()
+    {
+      await base.DeleteNonExistingEntity_PreconditionFails();
+    }
   }
 }

@@ -194,11 +194,11 @@ namespace CalDavDataAccessIntegrationTests
     }
 
     [Test]
-    public async Task DeleteNonExistingEntity_ThrowsNotFound ()
+    public virtual async Task DeleteNonExistingEntity_ThrowsNotFound ()
     {
       var v = await _calDavDataAccess.CreateEntity (
           SerializeCalendar (
-              CreateEntity (1)), Guid.NewGuid().ToString());
+              CreateEntity (1)), Guid.NewGuid ().ToString ());
 
       await _calDavDataAccess.DeleteEntity (v.Id, v.Version);
 
@@ -206,6 +206,44 @@ namespace CalDavDataAccessIntegrationTests
           async () => await _calDavDataAccess.DeleteEntity (v.Id, @"""bla"""),
           Throws.Exception.With.Message.Contains ("404"));
       // 404 == not found
+    }
+    
+    [Test]
+    public virtual async Task DeleteNonExistingEntity_PreconditionFails ()
+    {
+      var v = await _calDavDataAccess.CreateEntity (
+          SerializeCalendar (
+              CreateEntity (1)), Guid.NewGuid ().ToString ());
+
+      await _calDavDataAccess.DeleteEntity (v.Id, v.Version);
+
+      Assert.That (
+          async () => await _calDavDataAccess.DeleteEntity (v.Id, @"""bla"""),
+          Throws.Exception.With.Message.Contains ("412"));
+      // 412 == precondition failed
+    }
+
+    [Test]
+    public virtual async Task DeleteEntityWithWrongVersion_PreconditionFails ()
+    {
+      var calendar = CreateEntity (1);
+      var v = await _calDavDataAccess.CreateEntity (
+          SerializeCalendar (calendar),
+          calendar.Events[0].UID);
+      calendar.Events[0].Summary += "xxx";
+      var v2 = await _calDavDataAccess.UpdateEntity (
+          v.Id,
+          v.Version,
+          SerializeCalendar (calendar));
+
+      Assert.That (
+          async () => await _calDavDataAccess.DeleteEntity (v.Id, v.Version),
+          Throws.Exception.With.Message.Contains ("412"));
+      // 412 == precondition failed
+
+      Assert.That (
+          async () => await _calDavDataAccess.DeleteEntity (v2.Id, v2.Version),
+          Throws.Nothing);
     }
 
 
@@ -256,7 +294,7 @@ namespace CalDavDataAccessIntegrationTests
           Throws.Exception.With.Message.Contains ("412"));
       // 412 == precondition failed
     }
-    
+
     [Test]
     public void CreateInvalidEntity ()
     {

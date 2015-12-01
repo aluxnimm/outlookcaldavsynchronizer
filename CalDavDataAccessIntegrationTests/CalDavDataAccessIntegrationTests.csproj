@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FixtureBase.cs" />
+    <Compile Include="Landmarks.cs" />
     <Compile Include="GoogleSynchronousWebRequestBased.cs" />
     <Compile Include="GoogleOAuth.cs" />
     <Compile Include="GoogleHttpClientBased.cs" />
