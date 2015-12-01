@@ -31,7 +31,7 @@ namespace CalDavSynchronizer.Contracts
 
     public EventMappingConfiguration ()
     {
-      MapReminder =  ReminderMapping.@true;
+      MapReminder = ReminderMapping.JustUpcoming;
       MapAttendees = true;
       MapBody = true;
     }
