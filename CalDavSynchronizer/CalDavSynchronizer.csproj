@@ -209,6 +209,7 @@
     <Compile Include="ChangeWatching\IOutlookItem.cs" />
     <Compile Include="ChangeWatching\ItemSavedEventArgs.cs" />
     <Compile Include="ComponentContainer.cs" />
+    <Compile Include="Contracts\ReminderMapping.cs" />
     <Compile Include="Contracts\ContactMappingConfiguration.cs" />
     <Compile Include="Contracts\OptionsDisplayType.cs" />
     <Compile Include="Contracts\ConfigurationBase.cs" />

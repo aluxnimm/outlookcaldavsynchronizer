@@ -25,14 +25,13 @@ namespace CalDavSynchronizer.Contracts
 {
   public class EventMappingConfiguration : MappingConfigurationBase
   {
-
-    public bool MapReminder { get; set; }
+    public ReminderMapping MapReminder { get; set; }
     public bool MapAttendees { get; set; }
     public bool MapBody { get; set; }
 
     public EventMappingConfiguration ()
     {
-      MapReminder = true;
+      MapReminder =  ReminderMapping.@true;
       MapAttendees = true;
       MapBody = true;
     }

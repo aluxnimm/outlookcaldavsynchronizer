@@ -69,9 +69,9 @@ namespace CalDavSynchronizer.Ui
     {
       InitializeComponent();
 
-      BindComboBox (_syncIntervalComboBox, _availableSyncIntervals);
-      BindComboBox (_conflictResolutionComboBox, _availableConflictResolutions);
-      BindComboBox (_synchronizationModeComboBox, _availableSynchronizationModes);
+      Item.BindComboBox (_syncIntervalComboBox, _availableSyncIntervals);
+      Item.BindComboBox (_conflictResolutionComboBox, _availableConflictResolutions);
+      Item.BindComboBox (_synchronizationModeComboBox, _availableSynchronizationModes);
 
       _synchronizationModeComboBox.SelectedValueChanged += _synchronizationModeComboBox_SelectedValueChanged;
     }
@@ -93,14 +93,7 @@ namespace CalDavSynchronizer.Ui
           break;
       }
     }
-
-    private void BindComboBox (ComboBox comboBox, IEnumerable list)
-    {
-      comboBox.DataSource = list;
-      comboBox.ValueMember = "Value";
-      comboBox.DisplayMember = "Name";
-    }
-
+  
     public bool SelectedModeRequiresWriteableServerResource
     {
       get { return RequiresWriteableServerResource ((SynchronizationMode) _synchronizationModeComboBox.SelectedValue); }

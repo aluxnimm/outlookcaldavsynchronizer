@@ -169,8 +169,7 @@ namespace CalDavSynchronizer.Implementation.Events
       
       target.Class = MapPrivacy1To2 (source.Sensitivity);
 
-      if(_configuration.MapReminder)
-        MapReminder1To2 (source, target);
+      MapReminder1To2 (source, target);
 
       MapCategories1To2 (source, target);
 
@@ -221,9 +220,18 @@ namespace CalDavSynchronizer.Implementation.Events
 
     private void MapReminder1To2 (AppointmentItem source, IEvent target)
     {
+      if (_configuration.MapReminder == ReminderMapping.@false)
+        return;
+      
       if (source.ReminderSet)
       {
-        var trigger = new Trigger (TimeSpan.FromMinutes (-source.ReminderMinutesBeforeStart));
+        var reminderRelativeToStart = TimeSpan.FromMinutes (-source.ReminderMinutesBeforeStart);
+
+        if (_configuration.MapReminder == ReminderMapping.JustUpcoming
+            && source.StartUTC.Add (reminderRelativeToStart) <= DateTime.UtcNow)
+          return;
+
+        var trigger = new Trigger (reminderRelativeToStart);
 
         target.Alarms.Add (
             new Alarm()
@@ -241,6 +249,12 @@ namespace CalDavSynchronizer.Implementation.Events
 
     private void MapReminder2To1 (IEvent source, AppointmentItem target)
     {
+      if (_configuration.MapReminder == ReminderMapping.@false)
+      {
+        target.ReminderSet = false;
+        return;
+      }
+
       if (source.Alarms.Count == 0)
       {
         target.ReminderSet = false;
@@ -265,6 +279,13 @@ namespace CalDavSynchronizer.Implementation.Events
             && alarm.Trigger.Duration < TimeSpan.Zero))
       {
         s_logger.WarnFormat ("Event '{0}' alarm is not relative before event start. Ignoring.", source.Url);
+        target.ReminderSet = false;
+        return;
+      }
+
+      if (_configuration.MapReminder == ReminderMapping.JustUpcoming
+          && source.Start.UTC.Add (alarm.Trigger.Duration.Value) <= DateTime.UtcNow)
+      {
         target.ReminderSet = false;
         return;
       }
@@ -1256,8 +1277,8 @@ namespace CalDavSynchronizer.Implementation.Events
       if (!isRecurrenceException)
         targetWrapper.Inner.Sensitivity = MapPrivacy2To1 (source.Class);
 
-      if (_configuration.MapReminder)
-        MapReminder2To1 (source, targetWrapper.Inner);
+    
+      MapReminder2To1 (source, targetWrapper.Inner);
 
       if (!isRecurrenceException)
         MapCategories2To1 (source, targetWrapper.Inner);

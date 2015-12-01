@@ -13,9 +13,17 @@ namespace CalDavSynchronizer.Ui
 {
   public partial class EventMappingConfigurationForm : Form, IConfigurationForm<EventMappingConfiguration>
   {
+    private readonly IList<Item<ReminderMapping>> _availableReminderMappings = new List<Item<ReminderMapping>>()
+                                                                               {
+                                                                                   new Item<ReminderMapping> (ReminderMapping.@true, "Yes"),
+                                                                                   new Item<ReminderMapping> (ReminderMapping.@false, "No"),
+                                                                                   new Item<ReminderMapping> (ReminderMapping.JustUpcoming, "Just upcoming reminders"),
+                                                                               };
+
     public EventMappingConfigurationForm ()
     {
       InitializeComponent();
+      Item.BindComboBox (_mapReminderComboBox, _availableReminderMappings);
     }
 
     private void _okButton_Click (object sender, EventArgs e)
@@ -36,14 +44,14 @@ namespace CalDavSynchronizer.Ui
                {
                    MapAttendees = _mapAttendeesCheckBox.Checked,
                    MapBody = _mapBodyCheckBox.Checked,
-                   MapReminder = _mapReminderCheckBox.Checked,
+                   MapReminder = (ReminderMapping) _mapReminderComboBox.SelectedValue
                };
       }
       set
       {
         _mapAttendeesCheckBox.Checked = value.MapAttendees;
         _mapBodyCheckBox.Checked = value.MapBody;
-        _mapReminderCheckBox.Checked = value.MapReminder;
+        _mapReminderComboBox.SelectedValue = value.MapReminder;
       }
     }
   }

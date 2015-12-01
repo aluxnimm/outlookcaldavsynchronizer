@@ -15,31 +15,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections;
-using System.Windows.Forms;
 
-namespace CalDavSynchronizer.Ui
+namespace CalDavSynchronizer.Contracts
 {
-  internal class Item<TValue>
+  public enum ReminderMapping
   {
-    public TValue Value { get; private set; }
-
-    public string Name { get; private set; }
-
-    public Item (TValue value, string name)
-    {
-      Value = value;
-      Name = name;
-    }
-  }
-
-  internal class Item
-  {
-    public static void BindComboBox (ComboBox comboBox, IEnumerable list)
-    {
-      comboBox.DataSource = list;
-      comboBox.ValueMember = "Value";
-      comboBox.DisplayMember = "Name";
-    }
+    @false,
+    @true,
+    JustUpcoming
   }
 }
