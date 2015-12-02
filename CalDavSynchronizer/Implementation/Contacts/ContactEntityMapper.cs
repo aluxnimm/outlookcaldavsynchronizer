@@ -83,7 +83,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       {
         Array.ForEach (
             source.Inner.Categories.Split (new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries),
-            c => target.Categories.Add (c)
+            c => target.Categories.Add (c.Trim())
             );
       }
 

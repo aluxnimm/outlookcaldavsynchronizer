@@ -213,7 +213,7 @@ namespace CalDavSynchronizer.Implementation.Events
       {
         Array.ForEach (
             source.Categories.Split (new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries),
-            c => target.Categories.Add (c)
+            c => target.Categories.Add (c.Trim())
             );
       }
     }
