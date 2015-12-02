@@ -45,11 +45,6 @@ namespace CalDavSynchronizer.Ui
       InitializeComponent();
     }
 
-    public AdvancedOptionsForm (Func<MappingConfigurationBase, MappingConfigurationBase> coerceMappingConfiguration)
-        : this (coerceMappingConfiguration, ConfigurationFormFactory.Instance)
-    {
-    }
-
     public AdvancedOptions Options
     {
       get

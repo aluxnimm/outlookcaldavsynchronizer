@@ -38,6 +38,7 @@ namespace CalDavSynchronizer.Ui
     public event EventHandler CopyRequested;
     public event EventHandler<HeaderEventArgs> HeaderChanged;
     private readonly Func<Guid, string> _profileDataDirectoryFactory;
+    private readonly Lazy<IConfigurationFormFactory> _configurationFormFactory;
 
     public OptionsDisplayControl (
         NameSpace session,
@@ -60,6 +61,7 @@ namespace CalDavSynchronizer.Ui
       _profileNameTextBox.TextChanged += _profileNameTextBox_TextChanged;
       _inactiveCheckBox.CheckedChanged += _inactiveCheckBox_CheckedChanged;
       _outlookFolderControl.FolderChanged += OutlookFolderControl_FolderChanged;
+      _configurationFormFactory = OptionTasks.CreateConfigurationFormFactory(_serverSettingsControl);
     }
 
     private void OutlookFolderControl_FolderChanged (object sender, EventArgs e)
@@ -157,8 +159,10 @@ namespace CalDavSynchronizer.Ui
 
     private void _advancedSettingsButton_Click (object sender, EventArgs e)
     {
-      using (AdvancedOptionsForm advancedOptionsForm = 
-        new AdvancedOptionsForm (c => OptionTasks.CoreceMappingConfiguration(_outlookFolderControl.OutlookFolderType,c)))
+      using (AdvancedOptionsForm advancedOptionsForm =
+          new AdvancedOptionsForm (
+              c => OptionTasks.CoreceMappingConfiguration (_outlookFolderControl.OutlookFolderType, c),
+              _configurationFormFactory.Value))
       {
         advancedOptionsForm.Options = _advancedOptions;
 
@@ -169,7 +173,6 @@ namespace CalDavSynchronizer.Ui
       }
     }
 
-   
     private void _browseToProfileCacheDirectoryToolStripMenuItem_Click (object sender, EventArgs e)
     {
       try

@@ -215,5 +215,9 @@ namespace CalDavSynchronizer.Ui
       }
     }
 
+    public static Lazy<IConfigurationFormFactory> CreateConfigurationFormFactory (IServerSettingsControl serverSettingsControl)
+    {
+      return  new Lazy<IConfigurationFormFactory> (() => new ConfigurationFormFactory (serverSettingsControl.CreateCalDavDataAccess));
+    }
   }
 }

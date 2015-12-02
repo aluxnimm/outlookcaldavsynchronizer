@@ -16,15 +16,17 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.DataAccess;
 
 namespace CalDavSynchronizer.Ui
 {
   internal class ConfigurationFormFactory : IConfigurationFormFactory
   {
-    public static readonly IConfigurationFormFactory Instance = new ConfigurationFormFactory();
+    private readonly Func<ICalDavDataAccess> _calDavDataAccessFactory;
 
-    private ConfigurationFormFactory ()
+    public ConfigurationFormFactory (Func<ICalDavDataAccess> calDavDataAccessFactory)
     {
+      _calDavDataAccessFactory = calDavDataAccessFactory;
     }
 
     public IConfigurationForm<T> CreateGenericForm<T> (object configurationElement)
@@ -34,7 +36,7 @@ namespace CalDavSynchronizer.Ui
 
     public IConfigurationForm<EventMappingConfiguration> Create (EventMappingConfiguration configurationElement)
     {
-      var form = new EventMappingConfigurationForm();
+      var form = new EventMappingConfigurationForm (_calDavDataAccessFactory);
       form.Options = configurationElement;
       return form;
     }

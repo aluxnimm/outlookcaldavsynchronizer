@@ -38,7 +38,7 @@ using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Ui
 {
-  public partial class ServerSettingsControl : UserControl
+  public partial class ServerSettingsControl : UserControl, IServerSettingsControl
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -205,6 +205,11 @@ namespace CalDavSynchronizer.Ui
           SelectedServerAdapterType,
           _dependencies.CloseConnectionAfterEachRequest,
           _dependencies.ProxyOptions);
+    }
+
+    public ICalDavDataAccess CreateCalDavDataAccess ()
+    {
+      return new CalDavDataAccess (new Uri (_calenderUrlTextBox.Text), CreateWebDavClient());
     }
 
     public void SetOptions (Options value)

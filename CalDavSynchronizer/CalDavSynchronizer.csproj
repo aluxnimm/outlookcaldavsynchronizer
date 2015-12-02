@@ -342,6 +342,7 @@
     <Compile Include="Ui\HeaderEventArgs.cs" />
     <Compile Include="Ui\IConfigurationForm.cs" />
     <Compile Include="Ui\IConfigurationFormFactory.cs" />
+    <Compile Include="Ui\IServerSettingsControl.cs" />
     <Compile Include="Ui\IOptionsDisplayControl.cs" />
     <Compile Include="Ui\IOptionsDisplayControlFactory.cs" />
     <Compile Include="Ui\IServerSettingsControlDependencies.cs" />

@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -24,6 +25,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.DataAccess;
 
 namespace CalDavSynchronizer.Ui
 {
@@ -36,10 +38,15 @@ namespace CalDavSynchronizer.Ui
                                                                                    new Item<ReminderMapping> (ReminderMapping.JustUpcoming, "Just upcoming reminders"),
                                                                                };
 
-    public EventMappingConfigurationForm ()
+    private Func<ICalDavDataAccess> _calDavDataAccessFactory;
+
+
+    public EventMappingConfigurationForm (Func<ICalDavDataAccess> calDavDataAccessFactory)
     {
       InitializeComponent();
       Item.BindComboBox (_mapReminderComboBox, _availableReminderMappings);
+
+      _calDavDataAccessFactory = calDavDataAccessFactory;
     }
 
     private void _okButton_Click (object sender, EventArgs e)
