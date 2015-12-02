@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Configuration;
 using System.IO;
@@ -196,7 +197,17 @@ namespace CalDavSynchronizer
           oldOptions
               .Concat (newOptions)
               .GroupBy (o => o.Id)
-              .Where (g => g.GroupBy (o => new { o.OutlookFolderStoreId, o.OutlookFolderEntryId, o.CalenderUrl, o.UserName, o.DaysToSynchronizeInTheFuture, o.DaysToSynchronizeInThePast, o.IgnoreSynchronizationTimeRange }).Count() > 1)
+              .Where (g => g.GroupBy (o => new
+                                           {
+                                               o.OutlookFolderStoreId,
+                                               o.OutlookFolderEntryId,
+                                               o.CalenderUrl,
+                                               o.UserName,
+                                               o.DaysToSynchronizeInTheFuture,
+                                               o.DaysToSynchronizeInThePast,
+                                               o.IgnoreSynchronizationTimeRange,
+                                               UseEventCategoryAsFilter = GetMappingPropertyOrNull<EventMappingConfiguration, bool> (o.MappingConfiguration, c => c.UseEventCategoryAsFilter)
+                                           }).Count() > 1)
               .Select (g => new { Id = g.Key, Name = g.First().Name })
               .ToArray();
 
@@ -216,6 +227,19 @@ namespace CalDavSynchronizer
         }
       }
     }
+
+    private TProperty? GetMappingPropertyOrNull<TMappingConfiguration, TProperty> (MappingConfigurationBase mappingConfiguration, Func<TMappingConfiguration, TProperty?> selector)
+      where TMappingConfiguration : MappingConfigurationBase
+      where TProperty : struct
+    {
+      var typedMappingConfiguration = mappingConfiguration as TMappingConfiguration;
+      
+      if (typedMappingConfiguration != null)
+        return selector (typedMappingConfiguration);
+      else
+        return null;
+    }
+
 
     private string GetProfileDataDirectory (Guid profileId)
     {
