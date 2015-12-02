@@ -117,9 +117,9 @@ namespace CalDavSynchronizer.Ui
             autoDiscoveredUrl = autodiscoveryResult.RessourceUrl;
             autoDiscoveredResourceType = autodiscoveryResult.ResourceType;
           }
-          else if (!enteredUri.AbsolutePath.EndsWith ("/"))
+          else
           {
-            var autodiscoveryResult2 = await OptionTasks.DoAutoDiscovery (new Uri (enteredUri.ToString () + "/"), webDavClient, false, false, _dependencies.OutlookFolderType);
+            var autodiscoveryResult2 = await OptionTasks.DoAutoDiscovery (enteredUri.AbsolutePath.EndsWith ("/") ? enteredUri : new Uri (enteredUri.ToString () + "/"), webDavClient, false, false, _dependencies.OutlookFolderType);
             if (autodiscoveryResult2.WasCancelled)
               return;
             if (autodiscoveryResult2.RessourceUrl != null)
@@ -130,8 +130,6 @@ namespace CalDavSynchronizer.Ui
             else
               return;
           }
-          else
-            return;
         }
         else
         {

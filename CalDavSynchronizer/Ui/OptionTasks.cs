@@ -210,7 +210,7 @@ namespace CalDavSynchronizer.Ui
       }
       else
       {
-        MessageBox.Show ("No resources were found via autodiscovery!", OptionTasks.ConnectionTestCaption);
+        MessageBox.Show (useWellKnownCalDav ? "No resources were found via well-known URLs!" : "No resources were found via autodiscovery!", OptionTasks.ConnectionTestCaption);
         return new AutoDiscoveryResult (null, false, ResourceType.None);
       }
     }

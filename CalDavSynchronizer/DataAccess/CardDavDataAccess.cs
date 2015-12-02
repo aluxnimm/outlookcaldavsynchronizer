@@ -90,7 +90,7 @@ namespace CalDavSynchronizer.DataAccess
       }
       catch (Exception x)
       {
-        if (x.Message.Contains ("404") || x.Message.Contains ("405"))
+        if (x.Message.Contains ("404") || x.Message.Contains ("405") || x is XmlException)
           return new List<Tuple<Uri, string>>();
         else
           throw;
