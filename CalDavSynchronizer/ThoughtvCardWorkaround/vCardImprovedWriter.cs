@@ -1576,7 +1576,7 @@ namespace CalDavSynchronizer.ThoughtvCardWorkaround
 
             // A byte array should be encoded in BASE64 format.
 
-            builder.Append(";ENCODING=BASE64:");
+            builder.Append(";ENCODING=b:");
             builder.Append(EncodeBase64((byte[])property.Value));
 
           }
