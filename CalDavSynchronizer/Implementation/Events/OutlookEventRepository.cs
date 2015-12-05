@@ -116,8 +116,6 @@ namespace CalDavSynchronizer.Implementation.Events
 
     public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities)
     {
-      var events = new List<EntityVersion<string, DateTime>>();
-
       var range = _dateTimeRangeProvider.GetRange();
       var filterBuilder = new StringBuilder();
 
@@ -131,37 +129,13 @@ namespace CalDavSynchronizer.Implementation.Events
         if (filterBuilder.Length > 0)
           filterBuilder.Append (" And ");
 
-        filterBuilder.AppendFormat( "[Categories] = '{0}'", _configuration.EventCategory);
+        AddCategoryFilter (filterBuilder, _configuration.EventCategory);
       }
 
+      List<EntityVersion<string, DateTime>> events;
       using (var calendarFolderWrapper = CreateFolderWrapper())
       {
-        using (var tableWrapper = GenericComObjectWrapper.Create (
-          calendarFolderWrapper.Inner.GetTable (filterBuilder.Length > 0 ? filterBuilder.ToString() : Type.Missing)))
-        {
-          var table = tableWrapper.Inner;
-          table.Columns.RemoveAll();
-          table.Columns.Add (c_entryIdColumnName);
-
-          var storeId = calendarFolderWrapper.Inner.StoreID;
-
-          while (!table.EndOfTable)
-          {
-            var row = table.GetNextRow();
-            var entryId = (string) row[c_entryIdColumnName];
-            try
-            {
-              using (var appointmentWrapper = GenericComObjectWrapper.Create ((AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, storeId)))
-              {
-                events.Add (new EntityVersion<string, DateTime> (appointmentWrapper.Inner.EntryID, appointmentWrapper.Inner.LastModificationTime));
-              }
-            }
-            catch (COMException ex)
-            {
-              s_logger.Error ("Could not fetch AppointmentItem, skipping.", ex);
-            }
-          }
-        }
+        events = QueryFolder (_mapiNameSpace, calendarFolderWrapper, filterBuilder);
       }
 
       if (_configuration.UseEventCategoryAsFilter)
@@ -171,6 +145,44 @@ namespace CalDavSynchronizer.Implementation.Events
       }
 
       return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (events);
+    }
+
+    public static  void AddCategoryFilter (StringBuilder filterBuilder, string category)
+    {
+      filterBuilder.AppendFormat ("[Categories] = '{0}'", category);
+    }
+
+    public static List<EntityVersion<string, DateTime>> QueryFolder (NameSpace session, GenericComObjectWrapper<Folder> calendarFolderWrapper, StringBuilder filterBuilder)
+    {
+      var events = new List<EntityVersion<string, DateTime>>();
+
+      using (var tableWrapper = GenericComObjectWrapper.Create (
+          calendarFolderWrapper.Inner.GetTable (filterBuilder.Length > 0 ? filterBuilder.ToString() : Type.Missing)))
+      {
+        var table = tableWrapper.Inner;
+        table.Columns.RemoveAll();
+        table.Columns.Add (c_entryIdColumnName);
+
+        var storeId = calendarFolderWrapper.Inner.StoreID;
+
+        while (!table.EndOfTable)
+        {
+          var row = table.GetNextRow();
+          var entryId = (string) row[c_entryIdColumnName];
+          try
+          {
+            using (var appointmentWrapper = GenericComObjectWrapper.Create ((AppointmentItem) session.GetItemFromID (entryId, storeId)))
+            {
+              events.Add (new EntityVersion<string, DateTime> (appointmentWrapper.Inner.EntryID, appointmentWrapper.Inner.LastModificationTime));
+            }
+          }
+          catch (COMException ex)
+          {
+            s_logger.Error ("Could not fetch AppointmentItem, skipping.", ex);
+          }
+        }
+      }
+      return events;
     }
 
     private static readonly CultureInfo _currentCultureInfo = CultureInfo.CurrentCulture;
