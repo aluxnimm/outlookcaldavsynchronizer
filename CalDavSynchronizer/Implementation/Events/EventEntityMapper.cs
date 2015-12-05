@@ -207,14 +207,22 @@ namespace CalDavSynchronizer.Implementation.Events
     }
 
 
-    private static void MapCategories1To2 (AppointmentItem source, IEvent target)
+    private void MapCategories1To2 (AppointmentItem source, IEvent target)
     {
       if (!string.IsNullOrEmpty (source.Categories))
       {
-        Array.ForEach (
-            source.Categories.Split (new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries),
-            c => target.Categories.Add (c.Trim())
-            );
+        var useEventCategoryAsFilter = _configuration.UseEventCategoryAsFilter;
+
+        var sourceCategories =
+            source.Categories
+                .Split (new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries)
+                .Where (c => !useEventCategoryAsFilter || c != _configuration.EventCategory)
+                .Select (c => c.Trim());
+
+        foreach (var sourceCategory in sourceCategories)
+        {
+          target.Categories.Add (sourceCategory);
+        }
       }
     }
 
