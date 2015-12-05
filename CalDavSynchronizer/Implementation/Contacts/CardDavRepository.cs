@@ -45,7 +45,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       _vCardImprovedWriter = new vCardImprovedWriter();
     }
 
-    public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetVersions (ICollection<Uri> ids)
+    public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetVersions (ICollection<Uri> idsOfEntitiesToQuery)
     {
       throw new NotImplementedException();
     }

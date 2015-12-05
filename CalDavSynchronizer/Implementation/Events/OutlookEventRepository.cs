@@ -66,10 +66,10 @@ namespace CalDavSynchronizer.Implementation.Events
       return GenericComObjectWrapper.Create ((Folder) _mapiNameSpace.GetFolderFromID (_folderId, _folderStoreId));
     }
 
-    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions (ICollection<string> ids)
+    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions (ICollection<string> idsOfEntitiesToQuery)
     {
       return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (
-          ids
+          idsOfEntitiesToQuery
               .Select (id =>
               {
                 try

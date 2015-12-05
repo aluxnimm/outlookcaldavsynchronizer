@@ -40,10 +40,10 @@ namespace GenSync.UnitTests.Synchronization.Stubs
       _idPrefix = idPrefix;
     }
 
-    public Task<IReadOnlyList<EntityVersion<Identifier, int>>> GetVersions (ICollection<Identifier> ids)
+    public Task<IReadOnlyList<EntityVersion<Identifier, int>>> GetVersions (ICollection<Identifier> idsOfEntitiesToQuery)
     {
       return Task.FromResult<IReadOnlyList<EntityVersion<Identifier, int>>> (
-          ids.Select (id => EntityVersion.Create (id, EntityVersionAndContentById[id].Item1)).ToList());
+          idsOfEntitiesToQuery.Select (id => EntityVersion.Create (id, EntityVersionAndContentById[id].Item1)).ToList());
     }
 
     public Task<IReadOnlyList<EntityVersion<Identifier, int>>> GetVersions ()

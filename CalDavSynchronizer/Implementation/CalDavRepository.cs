@@ -55,9 +55,9 @@ namespace CalDavSynchronizer.Implementation
       _dateTimeRangeProvider = dateTimeRangeProvider;
     }
 
-    public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetVersions (ICollection<Uri> ids)
+    public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetVersions (ICollection<Uri> idsOfEntitiesToQuery)
     {
-      return _calDavDataAccess.GetVersions (ids);
+      return _calDavDataAccess.GetVersions (idsOfEntitiesToQuery);
     }
 
     public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetVersions ()
