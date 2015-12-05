@@ -34,7 +34,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
     {
     }
 
-    public IEnumerable<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> LoadEntityRelationData ()
+    public IReadOnlyCollection<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> LoadEntityRelationData ()
     {
       return _data;
     }

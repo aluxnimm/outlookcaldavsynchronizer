@@ -45,12 +45,12 @@ namespace CalDavSynchronizer.Implementation.Contacts
       _vCardImprovedWriter = new vCardImprovedWriter();
     }
 
-    public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetVersions (ICollection<Uri> idsOfEntitiesToQuery)
+    public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetVersions (IEnumerable<Uri> idsOfEntitiesToQuery)
     {
       throw new NotImplementedException();
     }
 
-    public async Task<IReadOnlyList<EntityVersion<Uri, string>>> GetVersions ()
+    public async Task<IReadOnlyList<EntityVersion<Uri, string>>> GetAllVersions (IEnumerable<Uri> idsOfknownEntities)
     {
       using (AutomaticStopwatch.StartInfo (s_logger, "CardDavRepository.GetVersions"))
       {

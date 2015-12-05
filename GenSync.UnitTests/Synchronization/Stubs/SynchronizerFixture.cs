@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,14 +37,14 @@ namespace GenSync.UnitTests.Synchronization.Stubs
       builder.AtypeIdComparer = StringComparer.InvariantCultureIgnoreCase;
 
       builder.AtypeRepository
-          .Expect (r => r.GetVersions())
+          .Expect (r => r.GetAllVersions (new string[] { }))
           .IgnoreArguments()
           .Return (
               Task.FromResult<IReadOnlyList<EntityVersion<string, string>>> (
                   new[] { EntityVersion.Create ("A1", "v1"), EntityVersion.Create ("a1", "v3") }));
 
       builder.BtypeRepository
-          .Expect (r => r.GetVersions())
+          .Expect (r => r.GetAllVersions (new string[] { }))
           .IgnoreArguments()
           .Return (
               Task.FromResult<IReadOnlyList<EntityVersion<string, string>>> (

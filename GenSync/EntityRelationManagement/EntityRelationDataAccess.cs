@@ -46,7 +46,7 @@ namespace GenSync.EntityRelationManagement
       File.Delete (GetFullEntityPath (s_relationStorageName));
     }
 
-    public IEnumerable<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> LoadEntityRelationData ()
+    public IReadOnlyCollection<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> LoadEntityRelationData ()
     {
       if (!DoesEntityExist (s_relationStorageName))
         return null;

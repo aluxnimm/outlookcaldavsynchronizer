@@ -205,8 +205,7 @@ namespace CalDavSynchronizer
                                                o.UserName,
                                                o.DaysToSynchronizeInTheFuture,
                                                o.DaysToSynchronizeInThePast,
-                                               o.IgnoreSynchronizationTimeRange,
-                                               UseEventCategoryAsFilter = GetMappingPropertyOrNull<EventMappingConfiguration, bool> (o.MappingConfiguration, c => c.UseEventCategoryAsFilter)
+                                               o.IgnoreSynchronizationTimeRange
                                            }).Count() > 1)
               .Select (g => new { Id = g.Key, Name = g.First().Name })
               .ToArray();

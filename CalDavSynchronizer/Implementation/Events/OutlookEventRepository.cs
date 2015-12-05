@@ -66,7 +66,12 @@ namespace CalDavSynchronizer.Implementation.Events
       return GenericComObjectWrapper.Create ((Folder) _mapiNameSpace.GetFolderFromID (_folderId, _folderStoreId));
     }
 
-    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions (ICollection<string> idsOfEntitiesToQuery)
+    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<string> idsOfEntitiesToQuery)
+    {
+      return GetVersions (idsOfEntitiesToQuery, DoesMatchCategoryCriterion);
+    }
+
+    private Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<string> idsOfEntitiesToQuery, Func<AppointmentItem,bool> predicate)
     {
       return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (
           idsOfEntitiesToQuery
@@ -87,10 +92,11 @@ namespace CalDavSynchronizer.Implementation.Events
               })
               .Where (i => i != null)
               .ToSafeEnumerable ()
-              .Where (DoesMatchCategoryCriterion)
+              .Where (predicate)
               .Select (c => EntityVersion.Create (c.EntryID, c.LastModificationTime))
               .ToList());
     }
+
 
     private bool DoesMatchCategoryCriterion (AppointmentItem item)
     {
@@ -108,7 +114,7 @@ namespace CalDavSynchronizer.Implementation.Events
           .Any (c => c == _configuration.EventCategory);
     }
 
-    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions ()
+    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities)
     {
       var events = new List<EntityVersion<string, DateTime>>();
 
@@ -156,6 +162,12 @@ namespace CalDavSynchronizer.Implementation.Events
             }
           }
         }
+      }
+
+      if (_configuration.UseEventCategoryAsFilter)
+      {
+        var knownEntitesThatWereFilteredOut = idsOfknownEntities.Except (events.Select (e => e.Id));
+        events.AddRange (GetVersions (knownEntitesThatWereFilteredOut, _ => true).Result);
       }
 
       return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (events);

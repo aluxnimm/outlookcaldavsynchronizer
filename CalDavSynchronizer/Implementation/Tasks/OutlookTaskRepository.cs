@@ -47,7 +47,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
     private const string c_entryIdColumnName = "EntryID";
 
-    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions (ICollection<string> idsOfEntitiesToQuery)
+    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<string> idsOfEntitiesToQuery)
     {
       return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (
           idsOfEntitiesToQuery
@@ -57,7 +57,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
               .ToList());
     }
 
-    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions ()
+    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities)
     {
       var entities = new List<EntityVersion<string, DateTime>>();
 

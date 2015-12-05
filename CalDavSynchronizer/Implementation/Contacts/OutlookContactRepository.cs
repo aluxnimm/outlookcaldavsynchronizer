@@ -55,7 +55,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       return GenericComObjectWrapper.Create ((Folder) _mapiNameSpace.GetFolderFromID (_folderId, _folderStoreId));
     }
 
-    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions (ICollection<string> idsOfEntitiesToQuery)
+    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<string> idsOfEntitiesToQuery)
     {
       return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (
           idsOfEntitiesToQuery
@@ -65,7 +65,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
               .ToList());
     }
 
-    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions ()
+    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities)
     {
       var contacts = new List<EntityVersion<string, DateTime>>();
 
