@@ -171,7 +171,7 @@ namespace CalDavSynchronizer.Ui
       if (_folderType == OlItemType.olContactItem)
       {
         MessageBox.Show (
-            "The contact synchronization is still in development and currently only beta quality!",
+            "The contact synchronization is still in development and doesn't support contact groups/distribution lists at the moment!",
             "CalDav Synchronizer",
             MessageBoxButtons.OK,
             MessageBoxIcon.Warning);
