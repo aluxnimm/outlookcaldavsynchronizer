@@ -32,6 +32,8 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 - Baïkal
 - Yandex
 - OpenX-change
+- Posteo
+- Landmarks
 
 ### Features ###
 
@@ -43,8 +45,8 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 - sync multiple calendars per profile
 - sync reminders, categories, recurrences with exceptions, importance, transparency
 - sync organizer and attendees and own response status
-- task support (beta)
-- CardDAV support to sync contacts (beta)
+- task support
+- CardDAV support to sync contacts (distribution lists planned)
 - change-triggered-sync 
 
 ### Used Libraries ###
@@ -60,6 +62,18 @@ Download and extract the `OutlookCalDavSynchronizer-<Version>.zip` into the same
 If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=44074)
 
 ### Changelog ###
+
+#### 1.8.0 ####
+- New features
+	- Add filtering on outlook side, so that multiple CalDAV-Calendars can be synchronized into one Outlook calendar via an Outlook category
+	- Add mapping configuration options for Contacts (Enable or Disable mapping of Birthdays, feature #12)
+	- Provide entity version (etag) on delete and set If-Match header
+	- Add option to synchronize just upcoming reminders.
+	- Autodiscovery improvemnts: Ignore xml Exceptions during Autodiscovery (needed for some wrong owncloud server paths)  and try hostname without path too if well-known not available, fixes autodiscovery for posteo (https://posteo.de:8443), Display if no resources were found via well-known URLs
+- bug fixes
+	- Filter out SOGo vlists (contenttype text/x-vlist) since we can't parse them atm, avoids syncing vlists to a empty vcard and destroying the vlist when syncing back to SOGo
+	- Trim category names for events,tasks and contacts when mapping to caldav
+	- Use ENCODING=b instead of BASE64 according to vcard 3.0 spec for binary attributes
 
 #### 1.7.0 ####
 - New features
@@ -391,8 +405,14 @@ The following properties need to be set for a new generic profile:
 	- **Close connection after each request** Don't use KeepAlive for servers which don't support it. 
 	- **Use System Default Proxy** Use proxy settings from Internet Explorer or config file, uses default credentials if available for NTLM authentication
 	- **Use manual proxy configuration** Specify proxy URL as `http://<your-proxy-domain>:<your-proxy-port>` and optional Username and Password for Basic Authentication.
-- *Mapping Configuration...*: Here you can configure what properties should be synced, available for appointments at the moment, you can choose if you want to map reminders, attendees and the description body.
+	- **Mapping Configuration...**: Here you can configure what properties should be synced, available for appointments and contacts at the moment. For appointments you can choose if you want to map reminders (just upcoming, all or none), attendees and the description body. You can also define a filter category so that multiple CalDAV-Calendars can be synchronized into one Outlook calendar via the defined category (see Category Filter below). For contacts you can configure if birthdays should be mapped or not. If birthdays are mapped, Outlook also creates an recurring appointment for every contact with a defined birthday.
 	
+### Category Filter ###
+
+If you want to sync multiple CalDAV Calendars into one Outlook Calendar you can configure an Outlook category for filtering in the 
+*Mapping Configuration...* under *Advanced Options*.
+For all events from the server the defined category is added in Outlook, when syncing back from Outlook to the server only appointments with that category are considered but the filter category is removed. In a next release it will also be possible to map the server calendar color to the Outlook category.
+
 ### Google Calender and Addressbook settings ###
 
 For Google Calender you can use the new Google type profile which simplifies the setup. You just need to enter the email address of your google account. When testing the settings, you will be redirected to your browser to enter your Google Account password and grant access rights to your Google Calender and Contacts for OutlookCalDavSynchronizer via the safe OAuth protocol. After that Autodiscovery will try to find available calendar and addressbook resources. With the button 'Edit Url' you still can manually change the Url e.g. when you want to sync a shared google calendar from another account.
