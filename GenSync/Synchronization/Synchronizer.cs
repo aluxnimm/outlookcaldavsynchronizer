@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using GenSync.EntityRelationManagement;
@@ -85,10 +86,12 @@ namespace GenSync.Synchronization
       {
         using (var totalProgress = _totalProgressFactory.Create())
         {
-          var knownEntityRelations = _entityRelationDataAccess.LoadEntityRelationData();
+          var knownEntityRelationsOrNull = _entityRelationDataAccess.LoadEntityRelationData();
 
-          var newAVersionsTask = _atypeRepository.GetVersions();
-          var newBVersionsTask = _btypeRepository.GetVersions();
+          var knownEntityRelations = knownEntityRelationsOrNull ?? new IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>[] { };
+
+          var newAVersionsTask = _atypeRepository.GetAllVersions(knownEntityRelations.Select(r => r.AtypeId));
+          var newBVersionsTask = _btypeRepository.GetAllVersions (knownEntityRelations.Select (r => r.BtypeId));
 
           var newAVersions = CreateDictionary (
               await newAVersionsTask,
@@ -100,13 +103,13 @@ namespace GenSync.Synchronization
 
           using (var entityContainer = new EntityContainer (this, totalProgress))
           {
-            if (knownEntityRelations == null)
+            if (knownEntityRelationsOrNull == null)
             {
               s_logger.Info ("Did not find entity caches. Performing initial population");
 
               await entityContainer.FillIfEmpty (newAVersions.Keys, newBVersions.Keys);
 
-              knownEntityRelations = _initialEntityMatcher.FindMatchingEntities (
+              knownEntityRelationsOrNull = _initialEntityMatcher.FindMatchingEntities (
                   _entityRelationDataFactory,
                   entityContainer.AEntities,
                   entityContainer.BEntities,
@@ -116,7 +119,7 @@ namespace GenSync.Synchronization
 
             var newEntityRelations = await Synchronize (
                 totalProgress,
-                knownEntityRelations,
+                knownEntityRelationsOrNull,
                 newAVersions,
                 newBVersions,
                 entityContainer);

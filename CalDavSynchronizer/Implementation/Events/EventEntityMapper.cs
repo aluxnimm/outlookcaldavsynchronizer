@@ -207,14 +207,22 @@ namespace CalDavSynchronizer.Implementation.Events
     }
 
 
-    private static void MapCategories1To2 (AppointmentItem source, IEvent target)
+    private void MapCategories1To2 (AppointmentItem source, IEvent target)
     {
       if (!string.IsNullOrEmpty (source.Categories))
       {
-        Array.ForEach (
-            source.Categories.Split (new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries),
-            c => target.Categories.Add (c.Trim())
-            );
+        var useEventCategoryAsFilter = _configuration.UseEventCategoryAsFilter;
+
+        var sourceCategories =
+            source.Categories
+                .Split (new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries)
+                .Where (c => !useEventCategoryAsFilter || c != _configuration.EventCategory)
+                .Select (c => c.Trim());
+
+        foreach (var sourceCategory in sourceCategories)
+        {
+          target.Categories.Add (sourceCategory);
+        }
       }
     }
 
@@ -1305,11 +1313,20 @@ namespace CalDavSynchronizer.Implementation.Events
       return targetWrapper;
     }
 
-    private static void MapCategories2To1 (IEvent source, AppointmentItem target)
+    private void MapCategories2To1 (IEvent source, AppointmentItem target)
     {
-      target.Categories = string.Join (CultureInfo.CurrentCulture.TextInfo.ListSeparator, source.Categories);
-    }
+      var categories = string.Join (CultureInfo.CurrentCulture.TextInfo.ListSeparator, source.Categories);
 
+      if (_configuration.UseEventCategoryAsFilter
+          && source.Categories.All (a => a != _configuration.EventCategory))
+      {
+        target.Categories = categories + CultureInfo.CurrentCulture.TextInfo.ListSeparator + _configuration.EventCategory;
+      }
+      else
+      {
+        target.Categories = categories;
+      }
+    }
 
     private void MapAttendeesAndOrganizer2To1 (IEvent source, AppointmentItem target)
     {

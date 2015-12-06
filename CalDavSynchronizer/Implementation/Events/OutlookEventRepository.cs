@@ -19,7 +19,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading.Tasks;
+using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using GenSync;
@@ -37,8 +39,14 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly string _folderId;
     private readonly string _folderStoreId;
     private readonly IDateTimeRangeProvider _dateTimeRangeProvider;
+    private readonly EventMappingConfiguration _configuration;
 
-    public OutlookEventRepository (NameSpace mapiNameSpace, string folderId, string folderStoreId, IDateTimeRangeProvider dateTimeRangeProvider)
+    public OutlookEventRepository (
+      NameSpace mapiNameSpace, 
+      string folderId, 
+      string folderStoreId, 
+      IDateTimeRangeProvider dateTimeRangeProvider,
+      EventMappingConfiguration configuration)
     {
       if (mapiNameSpace == null)
         throw new ArgumentNullException ("mapiNameSpace");
@@ -47,6 +55,7 @@ namespace CalDavSynchronizer.Implementation.Events
       _folderId = folderId;
       _folderStoreId = folderStoreId;
       _dateTimeRangeProvider = dateTimeRangeProvider;
+      _configuration = configuration;
     }
 
     private const string c_entryIdColumnName = "EntryID";
@@ -57,10 +66,15 @@ namespace CalDavSynchronizer.Implementation.Events
       return GenericComObjectWrapper.Create ((Folder) _mapiNameSpace.GetFolderFromID (_folderId, _folderStoreId));
     }
 
-    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions (ICollection<string> ids)
+    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<string> idsOfEntitiesToQuery)
+    {
+      return GetVersions (idsOfEntitiesToQuery, DoesMatchCategoryCriterion);
+    }
+
+    private Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<string> idsOfEntitiesToQuery, Func<AppointmentItem,bool> predicate)
     {
       return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (
-          ids
+          idsOfEntitiesToQuery
               .Select (id =>
               {
                 try
@@ -77,52 +91,98 @@ namespace CalDavSynchronizer.Implementation.Events
                 }
               })
               .Where (i => i != null)
-              .ToSafeEnumerable()
+              .ToSafeEnumerable ()
+              .Where (predicate)
               .Select (c => EntityVersion.Create (c.EntryID, c.LastModificationTime))
               .ToList());
     }
 
-    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions ()
+
+    private bool DoesMatchCategoryCriterion (AppointmentItem item)
     {
-      var events = new List<EntityVersion<string, DateTime>>();
+      if (!_configuration.UseEventCategoryAsFilter)
+        return true;
 
+      var categoryCsv = item.Categories;
+
+      if (string.IsNullOrEmpty (categoryCsv))
+        return false;
+
+     return  item.Categories
+          .Split (new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries)
+          .Select (c => c.Trim())
+          .Any (c => c == _configuration.EventCategory);
+    }
+
+    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities)
+    {
       var range = _dateTimeRangeProvider.GetRange();
-      object filter;
-      if (range.HasValue)
-        filter = String.Format ("[Start] < '{0}' And [End] > '{1}'", ToOutlookDateString (range.Value.To), ToOutlookDateString (range.Value.From));
-      else
-        filter = Type.Missing;
+      var filterBuilder = new StringBuilder();
 
+      // Table Filtering in the MSDN: https://msdn.microsoft.com/EN-US/library/office/ff867581.aspx
+      
+      if (range.HasValue)
+        filterBuilder.AppendFormat("[Start] < '{0}' And [End] > '{1}'", ToOutlookDateString (range.Value.To), ToOutlookDateString (range.Value.From));
+
+      if (_configuration.UseEventCategoryAsFilter)
+      {
+        if (filterBuilder.Length > 0)
+          filterBuilder.Append (" And ");
+
+        AddCategoryFilter (filterBuilder, _configuration.EventCategory);
+      }
+
+      List<EntityVersion<string, DateTime>> events;
       using (var calendarFolderWrapper = CreateFolderWrapper())
       {
-        using (var tableWrapper = GenericComObjectWrapper.Create ((Table) calendarFolderWrapper.Inner.GetTable (filter)))
-        {
-          var table = tableWrapper.Inner;
-          table.Columns.RemoveAll();
-          table.Columns.Add (c_entryIdColumnName);
+        events = QueryFolder (_mapiNameSpace, calendarFolderWrapper, filterBuilder);
+      }
 
-          var storeId = calendarFolderWrapper.Inner.StoreID;
-
-          while (!table.EndOfTable)
-          {
-            var row = table.GetNextRow();
-            var entryId = (string) row[c_entryIdColumnName];
-            try
-            {
-              using (var appointmentWrapper = GenericComObjectWrapper.Create ((AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, storeId)))
-              {
-                events.Add (new EntityVersion<string, DateTime> (appointmentWrapper.Inner.EntryID, appointmentWrapper.Inner.LastModificationTime));
-              }
-            }
-            catch (COMException ex)
-            {
-              s_logger.Error ("Could not fetch AppointmentItem, skipping.", ex);
-            }
-          }
-        }
+      if (_configuration.UseEventCategoryAsFilter)
+      {
+        var knownEntitesThatWereFilteredOut = idsOfknownEntities.Except (events.Select (e => e.Id));
+        events.AddRange (GetVersions (knownEntitesThatWereFilteredOut, _ => true).Result);
       }
 
       return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (events);
+    }
+
+    public static  void AddCategoryFilter (StringBuilder filterBuilder, string category)
+    {
+      filterBuilder.AppendFormat ("[Categories] = '{0}'", category);
+    }
+
+    public static List<EntityVersion<string, DateTime>> QueryFolder (NameSpace session, GenericComObjectWrapper<Folder> calendarFolderWrapper, StringBuilder filterBuilder)
+    {
+      var events = new List<EntityVersion<string, DateTime>>();
+
+      using (var tableWrapper = GenericComObjectWrapper.Create (
+          calendarFolderWrapper.Inner.GetTable (filterBuilder.Length > 0 ? filterBuilder.ToString() : Type.Missing)))
+      {
+        var table = tableWrapper.Inner;
+        table.Columns.RemoveAll();
+        table.Columns.Add (c_entryIdColumnName);
+
+        var storeId = calendarFolderWrapper.Inner.StoreID;
+
+        while (!table.EndOfTable)
+        {
+          var row = table.GetNextRow();
+          var entryId = (string) row[c_entryIdColumnName];
+          try
+          {
+            using (var appointmentWrapper = GenericComObjectWrapper.Create ((AppointmentItem) session.GetItemFromID (entryId, storeId)))
+            {
+              events.Add (new EntityVersion<string, DateTime> (appointmentWrapper.Inner.EntryID, appointmentWrapper.Inner.LastModificationTime));
+            }
+          }
+          catch (COMException ex)
+          {
+            s_logger.Error ("Could not fetch AppointmentItem, skipping.", ex);
+          }
+        }
+      }
+      return events;
     }
 
     private static readonly CultureInfo _currentCultureInfo = CultureInfo.CurrentCulture;

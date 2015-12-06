@@ -60,7 +60,8 @@ namespace CalDavSynchronizer.Ui
                {
                    MapAttendees = _mapAttendeesCheckBox.Checked,
                    MapBody = _mapBodyCheckBox.Checked,
-                   MapReminder = (ReminderMapping) _mapReminderComboBox.SelectedValue
+                   MapReminder = (ReminderMapping) _mapReminderComboBox.SelectedValue,
+                   EventCategory = _categoryTextBox.Text
                };
       }
       set
@@ -68,6 +69,7 @@ namespace CalDavSynchronizer.Ui
         _mapAttendeesCheckBox.Checked = value.MapAttendees;
         _mapBodyCheckBox.Checked = value.MapBody;
         _mapReminderComboBox.SelectedValue = value.MapReminder;
+        _categoryTextBox.Text = value.EventCategory;
       }
     }
   }

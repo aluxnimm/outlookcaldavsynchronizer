@@ -14,12 +14,15 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Configuration;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -27,15 +30,20 @@ using CalDavSynchronizer.AutomaticUpdates;
 using CalDavSynchronizer.ChangeWatching;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.Implementation.Events;
+using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Ui;
 using CalDavSynchronizer.Utilities;
+using GenSync;
 using GenSync.ProgressReport;
 using log4net;
 using log4net.Config;
 using Microsoft.Office.Interop.Outlook;
 using Application = Microsoft.Office.Interop.Outlook.Application;
 using Exception = System.Exception;
+using System.Collections.Generic;
 
 namespace CalDavSynchronizer
 {
@@ -157,11 +165,92 @@ namespace CalDavSynchronizer
 
           _scheduler.SetOptions (newOptions);
           DeleteEntityChachesForChangedProfiles (options, newOptions);
+
+          var changedOptions = CreateChangePairs (options, newOptions);
+
+          SwitchCategories (changedOptions);
         }
       }
       catch (Exception x)
       {
         ExceptionHandler.Instance.HandleException (x, s_logger);
+      }
+    }
+
+    private ChangedOptions[] CreateChangePairs (Options[] oldOptions, Options[] newOptions)
+    {
+      var newOptionsById = newOptions.ToDictionary (o => o.Id);
+
+      return (
+          from o in oldOptions
+          let no = GetNewOptionsOrNull (o, newOptionsById)
+          where no != null
+          select new ChangedOptions (o, no)).ToArray ();
+    }
+
+    private void SwitchCategories (ChangedOptions[] changedOptions)
+    {
+      foreach (var changedOption in changedOptions)
+      {
+        var oldCategory = GetMappingPropertyOrNull<EventMappingConfiguration, string> (changedOption.Old.MappingConfiguration, o => o.EventCategory);
+        var newCategory = GetMappingPropertyOrNull<EventMappingConfiguration, string> (changedOption.New.MappingConfiguration, o => o.EventCategory);
+
+        if (oldCategory != newCategory && !String.IsNullOrEmpty (oldCategory))
+        {
+          try
+          {
+            SwitchCategories (changedOption, oldCategory, newCategory);
+          }
+          catch (Exception x)
+          {
+            s_logger.Error (null, x);
+          }
+        }
+      }
+    }
+
+    private void SwitchCategories (ChangedOptions changedOption, string oldCategory, string newCategory)
+    {
+      using (var calendarFolderWrapper = GenericComObjectWrapper.Create (
+          (Folder) _session.GetFolderFromID (changedOption.New.OutlookFolderEntryId, changedOption.New.OutlookFolderStoreId)))
+      {
+        var filterBuilder = new StringBuilder();
+        OutlookEventRepository.AddCategoryFilter (filterBuilder, oldCategory);
+        var eventIds = OutlookEventRepository.QueryFolder (_session, calendarFolderWrapper, filterBuilder).Select(e => e.Id);
+        // todo concat Ids from cache
+
+        foreach (var eventId in eventIds)
+        {
+          try
+          {
+            SwitchCategories (changedOption, oldCategory, newCategory, eventId);
+          }
+          catch (Exception x)
+          {
+            s_logger.Error (null, x);
+          }
+        }
+      }
+    }
+
+    private void SwitchCategories (ChangedOptions changedOption, string oldCategory, string newCategory, string eventId)
+    {
+      using (var eventWrapper = new AppointmentItemWrapper (
+          (AppointmentItem) _session.GetItemFromID (eventId, changedOption.New.OutlookFolderStoreId),
+          entryId => (AppointmentItem) _session.GetItemFromID (entryId, changedOption.New.OutlookFolderStoreId)))
+      {
+        var categories = eventWrapper.Inner.Categories
+            .Split (new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries)
+            .Select (c => c.Trim());
+
+        eventWrapper.Inner.Categories = string.Join (
+            CultureInfo.CurrentCulture.TextInfo.ListSeparator,
+            categories
+                .Except (new[] { oldCategory })
+                .Concat (new[] { newCategory })
+                .Distinct());
+
+        eventWrapper.Inner.Save();
       }
     }
 
@@ -189,6 +278,36 @@ namespace CalDavSynchronizer
         ExceptionHandler.Instance.HandleException (x, s_logger);
       }
     }
+    
+    private struct ChangedOptions
+    {
+      private readonly Options _old;
+      private readonly Options _new;
+
+      public ChangedOptions (Options old, Options @new)
+          : this()
+      {
+        _old = old;
+        _new = @new;
+      }
+
+      public Options Old
+      {
+        get { return _old; }
+      }
+
+      public Options New
+      {
+        get { return _new; }
+      }
+    }
+
+    private Options GetNewOptionsOrNull (Options oldOptions, Dictionary<Guid, Options> newOptionsById)
+    {
+      Options newOptions;
+      newOptionsById.TryGetValue (oldOptions.Id, out newOptions);
+      return newOptions;
+    }
 
     private void DeleteEntityChachesForChangedProfiles (Options[] oldOptions, Options[] newOptions)
     {
@@ -196,7 +315,16 @@ namespace CalDavSynchronizer
           oldOptions
               .Concat (newOptions)
               .GroupBy (o => o.Id)
-              .Where (g => g.GroupBy (o => new { o.OutlookFolderStoreId, o.OutlookFolderEntryId, o.CalenderUrl, o.UserName, o.DaysToSynchronizeInTheFuture, o.DaysToSynchronizeInThePast, o.IgnoreSynchronizationTimeRange }).Count() > 1)
+              .Where (g => g.GroupBy (o => new
+                                           {
+                                               o.OutlookFolderStoreId,
+                                               o.OutlookFolderEntryId,
+                                               o.CalenderUrl,
+                                               o.UserName,
+                                               o.DaysToSynchronizeInTheFuture,
+                                               o.DaysToSynchronizeInThePast,
+                                               o.IgnoreSynchronizationTimeRange
+                                           }).Count() > 1)
               .Select (g => new { Id = g.Key, Name = g.First().Name })
               .ToArray();
 
@@ -216,6 +344,31 @@ namespace CalDavSynchronizer
         }
       }
     }
+
+    private TProperty? GetMappingPropertyOrNull<TMappingConfiguration, TProperty> (MappingConfigurationBase mappingConfiguration, Func<TMappingConfiguration, TProperty?> selector)
+      where TMappingConfiguration : MappingConfigurationBase
+      where TProperty : struct
+    {
+      var typedMappingConfiguration = mappingConfiguration as TMappingConfiguration;
+      
+      if (typedMappingConfiguration != null)
+        return selector (typedMappingConfiguration);
+      else
+        return null;
+    }
+
+    private TProperty GetMappingPropertyOrNull<TMappingConfiguration, TProperty> (MappingConfigurationBase mappingConfiguration, Func<TMappingConfiguration, TProperty> selector)
+      where TMappingConfiguration : MappingConfigurationBase
+      where TProperty : class
+    {
+      var typedMappingConfiguration = mappingConfiguration as TMappingConfiguration;
+
+      if (typedMappingConfiguration != null)
+        return selector (typedMappingConfiguration);
+      else
+        return null;
+    }
+ 
 
     private string GetProfileDataDirectory (Guid profileId)
     {

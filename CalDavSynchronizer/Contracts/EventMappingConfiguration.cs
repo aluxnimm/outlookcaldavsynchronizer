@@ -28,6 +28,13 @@ namespace CalDavSynchronizer.Contracts
     public ReminderMapping MapReminder { get; set; }
     public bool MapAttendees { get; set; }
     public bool MapBody { get; set; }
+    public string EventCategory { get; set; }
+
+    [XmlIgnore]
+    public bool UseEventCategoryAsFilter
+    {
+      get { return !string.IsNullOrEmpty (EventCategory); }
+    }
 
     public EventMappingConfiguration ()
     {

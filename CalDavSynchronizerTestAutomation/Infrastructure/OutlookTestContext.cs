@@ -45,7 +45,6 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
   public static class OutlookTestContext
   {
     private static EventEntityMapper _entityMapper;
-    private static OutlookEventRepository _outlookRepository;
     private static readonly iCalendarSerializer _calendarSerializer = new iCalendarSerializer();
     private static NameSpace s_mapiNameSpace;
     private static string s_outlookFolderEntryId;
@@ -61,17 +60,16 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       if (mapiNameSpace == null)
         throw new ArgumentNullException ("mapiNameSpace");
 
+      var eventMappingConfiguration = new EventMappingConfiguration();
       _entityMapper = new EventEntityMapper (
           mapiNameSpace.CurrentUser.Address,
           new Uri ("mailto:" + testerServerEmailAddress),
           mapiNameSpace.Application.TimeZones.CurrentTimeZone.ID,
           mapiNameSpace.Application.Version,
-          new EventMappingConfiguration());
+          eventMappingConfiguration);
 
       s_outlookFolderEntryId = ConfigurationManager.AppSettings[string.Format ("{0}.OutlookFolderEntryId", Environment.MachineName)];
       s_outlookFolderStoreId = ConfigurationManager.AppSettings[string.Format ("{0}.OutlookFolderStoreId", Environment.MachineName)];
-
-      _outlookRepository = new OutlookEventRepository (mapiNameSpace, s_outlookFolderEntryId, s_outlookFolderStoreId, NullDateTimeRangeProvider.Instance);
 
       s_synchronizerFactory = new SynchronizerFactory (
           _ => @"a:\invalid path",
@@ -84,7 +82,8 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           s_mapiNameSpace,
           s_outlookFolderEntryId,
           s_outlookFolderStoreId,
-          NullDateTimeRangeProvider.Instance);
+          NullDateTimeRangeProvider.Instance,
+          eventMappingConfiguration);
     }
 
     public static IOutlookSynchronizer CreateEventSynchronizer (
@@ -117,11 +116,6 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
     public static IEntityMapper<AppointmentItemWrapper, IICalendar> EntityMapper
     {
       get { return _entityMapper; }
-    }
-
-    public static IEntityRepository<AppointmentItemWrapper, string, DateTime> OutlookRepository
-    {
-      get { return _outlookRepository; }
     }
 
     public static IICalendar DeserializeICalendar (string iCalData)
