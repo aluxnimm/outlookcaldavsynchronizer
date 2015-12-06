@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -90,7 +91,7 @@ namespace GenSync.Synchronization
 
           var knownEntityRelations = knownEntityRelationsOrNull ?? new IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>[] { };
 
-          var newAVersionsTask = _atypeRepository.GetAllVersions(knownEntityRelations.Select(r => r.AtypeId));
+          var newAVersionsTask = _atypeRepository.GetAllVersions (knownEntityRelations.Select (r => r.AtypeId));
           var newBVersionsTask = _btypeRepository.GetAllVersions (knownEntityRelations.Select (r => r.BtypeId));
 
           var newAVersions = CreateDictionary (
@@ -153,6 +154,9 @@ namespace GenSync.Synchronization
         var aEntitesToSynchronize = new HashSet<TAtypeEntityId> (aEntityIds, _atypeIdComparer);
         var bEntitesToSynchronize = new HashSet<TBtypeEntityId> (bEntityIds, _btypeIdComparer);
 
+        var aIdsWithAwarenessLevel = new List<IdWithAwarenessLevel<TAtypeEntityId>>();
+        var bIdsWithAwarenessLevel = new List<IdWithAwarenessLevel<TBtypeEntityId>>();
+
         using (var totalProgress = _totalProgressFactory.Create())
         {
           var entityRelationsToUse = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
@@ -160,14 +164,14 @@ namespace GenSync.Synchronization
 
           foreach (var entityRelation in knownEntityRelations)
           {
-            if (aEntitesToSynchronize.Contains (entityRelation.AtypeId))
+            if (aEntitesToSynchronize.Contains (entityRelation.AtypeId) || bEntitesToSynchronize.Contains (entityRelation.BtypeId))
             {
-              bEntitesToSynchronize.Add (entityRelation.BtypeId);
-              entityRelationsToUse.Add (entityRelation);
-            }
-            else if (bEntitesToSynchronize.Contains (entityRelation.BtypeId))
-            {
-              aEntitesToSynchronize.Add (entityRelation.AtypeId);
+              aIdsWithAwarenessLevel.Add (new IdWithAwarenessLevel<TAtypeEntityId> (entityRelation.AtypeId, true));
+              bIdsWithAwarenessLevel.Add (new IdWithAwarenessLevel<TBtypeEntityId> (entityRelation.BtypeId, true));
+
+              aEntitesToSynchronize.Remove (entityRelation.AtypeId);
+              bEntitesToSynchronize.Remove (entityRelation.BtypeId);
+
               entityRelationsToUse.Add (entityRelation);
             }
             else
@@ -176,8 +180,11 @@ namespace GenSync.Synchronization
             }
           }
 
-          var newAVersionsTask = _atypeRepository.GetVersions (aEntitesToSynchronize);
-          var newBVersionsTask = _btypeRepository.GetVersions (bEntitesToSynchronize);
+          aIdsWithAwarenessLevel.AddRange (aEntitesToSynchronize.Select (id => new IdWithAwarenessLevel<TAtypeEntityId> (id, false)));
+          bIdsWithAwarenessLevel.AddRange (bEntitesToSynchronize.Select (id => new IdWithAwarenessLevel<TBtypeEntityId> (id, false)));
+
+          var newAVersionsTask = _atypeRepository.GetVersions (aIdsWithAwarenessLevel);
+          var newBVersionsTask = _btypeRepository.GetVersions (bIdsWithAwarenessLevel);
 
           var newAVersions = CreateDictionary (
               await newAVersionsTask,

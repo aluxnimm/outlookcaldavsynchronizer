@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using CalDavSynchronizer.DataAccess;
@@ -55,9 +56,9 @@ namespace CalDavSynchronizer.Implementation
       _dateTimeRangeProvider = dateTimeRangeProvider;
     }
 
-    public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetVersions (IEnumerable<Uri> idsOfEntitiesToQuery)
+    public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetVersions (IEnumerable<IdWithAwarenessLevel<Uri>> idsOfEntitiesToQuery)
     {
-      return _calDavDataAccess.GetVersions (idsOfEntitiesToQuery);
+      return _calDavDataAccess.GetVersions (idsOfEntitiesToQuery.Select(i => i.Id));
     }
 
     public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetAllVersions (IEnumerable<Uri> idsOfknownEntities)

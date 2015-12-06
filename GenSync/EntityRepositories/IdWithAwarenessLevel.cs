@@ -13,21 +13,30 @@
 // GNU Affero General Public License for more details.
 // 
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.using System;
 
 namespace GenSync.EntityRepositories
 {
-  /// <summary>
-  /// All readoperations that a repository has to support
-  /// </summary>
-  public interface IReadOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
+  public struct IdWithAwarenessLevel<TEntityId>
   {
-    Task<IReadOnlyList<EntityVersion<TEntityId, TEntityVersion>>> GetVersions (IEnumerable<IdWithAwarenessLevel<TEntityId>> idsOfEntitiesToQuery);
-    Task<IReadOnlyList<EntityVersion<TEntityId, TEntityVersion>>> GetAllVersions (IEnumerable<TEntityId> idsOfknownEntities);
-    Task<IReadOnlyList<EntityWithId<TEntityId, TEntity>>> Get (ICollection<TEntityId> ids);
-    void Cleanup (IReadOnlyDictionary<TEntityId, TEntity> entities);
+    private readonly TEntityId _id;
+    private readonly bool _isKnown;
+
+    public IdWithAwarenessLevel (TEntityId id, bool isKnown)
+        : this()
+    {
+      _id = id;
+      _isKnown = isKnown;
+    }
+
+    public TEntityId Id
+    {
+      get { return _id; }
+    }
+
+    public bool IsKnown
+    {
+      get { return _isKnown; }
+    }
   }
 }
