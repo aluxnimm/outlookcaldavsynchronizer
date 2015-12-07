@@ -26,6 +26,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.Ui
 {
@@ -77,6 +78,42 @@ namespace CalDavSynchronizer.Ui
         _mapBodyCheckBox.Checked = value.MapBody;
         _mapReminderComboBox.SelectedValue = value.MapReminder;
         _categoryTextBox.Text = value.EventCategory;
+        _mapColorCheckBox.Enabled = !string.IsNullOrEmpty(value.EventCategory);
+        _calendarColorButton.Enabled = !string.IsNullOrEmpty(value.EventCategory);
+      }
+    }
+
+    private async void _calendarColorButton_Click(object sender, EventArgs e)
+    {
+    }
+
+    private async void _mapColorCheckBox_CheckedChanged(object sender, EventArgs e)
+    {
+      if (_mapColorCheckBox.Checked)
+      {
+        string serverColor = await _calDavDataAccessFactory().GetCalendarColorNoThrow();
+
+        if (!string.IsNullOrEmpty(serverColor))
+        {
+          Color c = ColorHelper.HexToColor(serverColor);
+          Color mappedColor = ColorHelper.FindMatchingCategoryColor (c);
+
+          _calendarColorButton.BackColor = mappedColor;
+        }
+      }
+    }
+
+    private void _categoryTextBox_TextChanged(object sender, EventArgs e)
+    {
+      if (!string.IsNullOrEmpty(_categoryTextBox.Text))
+      {
+        _mapColorCheckBox.Enabled = true;
+        _calendarColorButton.Enabled = true;
+      }
+      else
+      {
+        _mapColorCheckBox.Enabled = false;
+        _calendarColorButton.Enabled = false;
       }
     }
   }

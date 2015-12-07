@@ -29,6 +29,8 @@ namespace CalDavSynchronizer.DataAccess
     Task<bool> IsCalendarAccessSupported ();
     Task<bool> IsWriteable ();
 
+    Task<string> GetCalendarColorNoThrow ();
+
     Task<IReadOnlyList<EntityVersion<Uri, string>>> GetEventVersions (DateTimeRange? range);
     Task<IReadOnlyList<EntityVersion<Uri, string>>> GetTodoVersions (DateTimeRange? range);
     Task<IReadOnlyList<EntityVersion<Uri, string>>> GetVersions (IEnumerable<Uri> eventUrls);

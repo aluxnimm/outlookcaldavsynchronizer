@@ -159,6 +159,41 @@ namespace CalDavSynchronizer.DataAccess
           );
     }
 
+    public async Task<string> GetCalendarColorNoThrow ()
+    {
+      string calendarColor = string.Empty;
+
+      try
+      {
+        var document = await _webDavClient.ExecuteWebDavRequestAndReadResponse(
+            _serverUrl,
+            "PROPFIND",
+            0,
+            null,
+            null,
+            "application/xml",
+            @"<?xml version='1.0'?>
+                      <D:propfind xmlns:D=""DAV:"" xmlns:C=""urn:ietf:params:xml:ns:caldav"" xmlns:E=""http://apple.com/ns/ical/"">
+                          <D:prop>
+                              <E:calendar-color />
+                          </D:prop>
+                      </D:propfind>
+                 "
+            );
+
+        var calendarColorNode = document.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/E:calendar-color", document.XmlNamespaceManager);
+        if (calendarColorNode != null && calendarColorNode.InnerText.Length >= 7)
+        {
+          calendarColor = calendarColorNode.InnerText;
+        }
+        return calendarColor;
+      }
+      catch (Exception x)
+      {
+        return calendarColor;
+      }
+    }
+
     private const string s_calDavDateTimeFormatString = "yyyyMMddTHHmmssZ";
 
     public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetEventVersions (DateTimeRange? range)
