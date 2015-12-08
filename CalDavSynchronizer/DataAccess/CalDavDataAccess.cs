@@ -360,7 +360,7 @@ namespace CalDavSynchronizer.DataAccess
 			                            <D:displayname/>
 			                            <C:calendar-data/>
 			                        </D:prop>
-                                        " + String.Join (Environment.NewLine, eventUrls.Select (u => string.Format ("<D:href>{0}</D:href>", u))) + @"
+                                        " + String.Join ("\r\n", eventUrls.Select (u => string.Format ("<D:href>{0}</D:href>", u))) + @"
                                     </C:calendar-multiget>";
 
       var responseXml = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
@@ -402,7 +402,7 @@ namespace CalDavSynchronizer.DataAccess
 			                        <D:prop>
 			                            <D:getetag/>
 			                        </D:prop>
-                                        " + String.Join (Environment.NewLine, eventUrls.Select (u => string.Format ("<D:href>{0}</D:href>", u))) + @"
+                                        " + String.Join ("\r\n", eventUrls.Select (u => string.Format ("<D:href>{0}</D:href>", u))) + @"
                                     </C:calendar-multiget>";
 
       var responseXml = await _webDavClient.ExecuteWebDavRequestAndReadResponse (

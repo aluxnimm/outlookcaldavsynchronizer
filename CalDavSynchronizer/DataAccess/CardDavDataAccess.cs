@@ -335,7 +335,7 @@ namespace CalDavSynchronizer.DataAccess
        <D:getcontenttype/>
        <A:address-data/>
      </D:prop>
-     " + String.Join (Environment.NewLine, urls.Select (u => string.Format ("<D:href>{0}</D:href>", u))) + @"
+     " + String.Join ("\r\n", urls.Select (u => string.Format ("<D:href>{0}</D:href>", u))) + @"
    </A:addressbook-multiget>
  ";
 
