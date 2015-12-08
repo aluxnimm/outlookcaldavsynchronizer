@@ -34,7 +34,7 @@ namespace CalDavSynchronizer.Utilities
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    private static readonly Dictionary<OlCategoryColor, string> CategoryColors = new Dictionary<OlCategoryColor, string>
+    public static readonly Dictionary<OlCategoryColor, string> CategoryColors = new Dictionary<OlCategoryColor, string>
     {
       {OlCategoryColor.olCategoryColorNone, "#FFFFFF"},
       {OlCategoryColor.olCategoryColorRed, "#E7A1A2"},
@@ -86,11 +86,11 @@ namespace CalDavSynchronizer.Utilities
       }
     }
 
-    public static Color FindMatchingCategoryColor(Color color)
+    public static OlCategoryColor FindMatchingCategoryColor(Color color)
     {
 
       double minDistance = double.MaxValue;
-      string matchingCategoryColor = string.Empty;
+      OlCategoryColor matchingCategoryColor = OlCategoryColor.olCategoryColorNone;
 
       foreach (var cat in CategoryColors)
       {
@@ -104,11 +104,11 @@ namespace CalDavSynchronizer.Utilities
         if (curDistance < minDistance)
         {
           minDistance = curDistance;
-          matchingCategoryColor = cat.Value;
+          matchingCategoryColor = cat.Key;
         }
       }
 
-      return HexToColor(matchingCategoryColor);
+      return matchingCategoryColor;
     }
 
   }

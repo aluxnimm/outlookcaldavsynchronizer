@@ -27,6 +27,7 @@ using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Utilities;
+using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui
 {
@@ -40,6 +41,7 @@ namespace CalDavSynchronizer.Ui
                                                                                };
 
     private Func<ICalDavDataAccess> _calDavDataAccessFactory;
+    private OlCategoryColor _categoryColor = OlCategoryColor.olCategoryColorNone;
 
 
     public EventMappingConfigurationForm (Func<ICalDavDataAccess> calDavDataAccessFactory)
@@ -69,7 +71,9 @@ namespace CalDavSynchronizer.Ui
                    MapAttendees = _mapAttendeesCheckBox.Checked,
                    MapBody = _mapBodyCheckBox.Checked,
                    MapReminder = (ReminderMapping) _mapReminderComboBox.SelectedValue,
-                   EventCategory = _categoryTextBox.Text
+                   EventCategory = _categoryTextBox.Text,
+                   MapCalendarColor = _mapColorCheckBox.Checked,
+                   CategoryColor = _categoryColor
                };
       }
       set
@@ -79,7 +83,10 @@ namespace CalDavSynchronizer.Ui
         _mapReminderComboBox.SelectedValue = value.MapReminder;
         _categoryTextBox.Text = value.EventCategory;
         _mapColorCheckBox.Enabled = !string.IsNullOrEmpty(value.EventCategory);
-        _calendarColorButton.Enabled = !string.IsNullOrEmpty(value.EventCategory);
+        _mapColorCheckBox.Checked = value.MapCalendarColor;
+        _calendarColorButton.Enabled = value.MapCalendarColor;
+        _categoryColor = value.CategoryColor;
+       
       }
     }
 
@@ -89,17 +96,22 @@ namespace CalDavSynchronizer.Ui
 
     private async void _mapColorCheckBox_CheckedChanged(object sender, EventArgs e)
     {
-      if (_mapColorCheckBox.Checked)
+      _calendarColorButton.Enabled = _mapColorCheckBox.Checked;
+
+      if (_mapColorCheckBox.Checked && _categoryColor == OlCategoryColor.olCategoryColorNone)
       {
         string serverColor = await _calDavDataAccessFactory().GetCalendarColorNoThrow();
 
         if (!string.IsNullOrEmpty(serverColor))
         {
           Color c = ColorHelper.HexToColor(serverColor);
-          Color mappedColor = ColorHelper.FindMatchingCategoryColor (c);
-
-          _calendarColorButton.BackColor = mappedColor;
+          _categoryColor = ColorHelper.FindMatchingCategoryColor (c);
         }
+      }
+      if (_categoryColor != OlCategoryColor.olCategoryColorNone)
+      {
+        Color mappedColor = ColorHelper.HexToColor(ColorHelper.CategoryColors[_categoryColor]);
+        _calendarColorButton.BackColor = mappedColor;
       }
     }
 

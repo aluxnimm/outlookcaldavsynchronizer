@@ -20,6 +20,7 @@ using System.Text;
 using System.Xml.Serialization;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Ui;
+using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Contracts
 {
@@ -29,6 +30,8 @@ namespace CalDavSynchronizer.Contracts
     public bool MapAttendees { get; set; }
     public bool MapBody { get; set; }
     public string EventCategory { get; set; }
+    public bool MapCalendarColor { get; set; }
+    public OlCategoryColor CategoryColor { get; set; }
 
     [XmlIgnore]
     public bool UseEventCategoryAsFilter
@@ -41,6 +44,8 @@ namespace CalDavSynchronizer.Contracts
       MapReminder = ReminderMapping.JustUpcoming;
       MapAttendees = true;
       MapBody = true;
+      MapCalendarColor = false;
+      CategoryColor = OlCategoryColor.olCategoryColorNone;
     }
 
     public override IConfigurationForm<MappingConfigurationBase> CreateConfigurationForm (IConfigurationFormFactory factory)

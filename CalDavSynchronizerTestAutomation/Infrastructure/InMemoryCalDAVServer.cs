@@ -48,7 +48,10 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
     {
       return Task.FromResult (true);
     }
-
+    public Task<string> GetCalendarColorNoThrow ()
+    {
+      return Task.FromResult (string.Empty);
+    }
     public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetEventVersions (DateTimeRange? range)
     {
       if (range != null)
