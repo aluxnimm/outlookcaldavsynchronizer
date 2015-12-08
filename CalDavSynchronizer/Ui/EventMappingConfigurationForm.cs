@@ -86,6 +86,7 @@ namespace CalDavSynchronizer.Ui
         _mapColorCheckBox.Checked = value.MapCalendarColor;
         _calendarColorButton.Enabled = value.MapCalendarColor;
         _categoryColor = value.CategoryColor;
+        if (_categoryColor != OlCategoryColor.olCategoryColorNone) _calendarColorButton.BackColor = ColorHelper.HexToColor(ColorHelper.CategoryColors[_categoryColor]);
        
       }
     }
@@ -120,7 +121,7 @@ namespace CalDavSynchronizer.Ui
       if (!string.IsNullOrEmpty(_categoryTextBox.Text))
       {
         _mapColorCheckBox.Enabled = true;
-        _calendarColorButton.Enabled = true;
+        _calendarColorButton.Enabled = _mapColorCheckBox.Checked;
       }
       else
       {

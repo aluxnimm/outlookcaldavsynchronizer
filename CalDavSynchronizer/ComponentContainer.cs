@@ -205,6 +205,34 @@ namespace CalDavSynchronizer
             s_logger.Error (null, x);
           }
         }
+
+        
+        var categoryColor = GetColorProperty<EventMappingConfiguration> (changedOption.New.MappingConfiguration, o => o.MapCalendarColor ? o.CategoryColor : OlCategoryColor.olCategoryColorNone);
+
+        if (!String.IsNullOrEmpty (newCategory) && categoryColor != OlCategoryColor.olCategoryColorNone)
+        {
+          try
+          {
+            using (var categoriesWrapper = GenericComObjectWrapper.Create (_session.Categories))
+            {
+              using (var categoryWrapper = GenericComObjectWrapper.Create (categoriesWrapper.Inner[newCategory]))
+              {
+                if (categoryWrapper.Inner == null)
+                {
+                  categoriesWrapper.Inner.Add (newCategory, categoryColor, OlCategoryShortcutKey.olCategoryShortcutKeyNone);
+                }
+                else
+                {
+                  categoryWrapper.Inner.Color = categoryColor;
+                }
+              }
+            }
+          }
+          catch (Exception x)
+          {
+            s_logger.Error (null, x);
+          }
+        }
       }
     }
 
@@ -354,6 +382,17 @@ namespace CalDavSynchronizer
         return selector (typedMappingConfiguration);
       else
         return null;
+    }
+
+    private OlCategoryColor GetColorProperty<TMappingConfiguration>(MappingConfigurationBase mappingConfiguration, Func<TMappingConfiguration, OlCategoryColor> selector)
+      where TMappingConfiguration : MappingConfigurationBase
+    {
+      var typedMappingConfiguration = mappingConfiguration as TMappingConfiguration;
+
+      if (typedMappingConfiguration != null)
+        return selector(typedMappingConfiguration);
+      else
+        return OlCategoryColor.olCategoryColorNone;
     }
 
     private TProperty GetMappingPropertyOrNull<TMappingConfiguration, TProperty> (MappingConfigurationBase mappingConfiguration, Func<TMappingConfiguration, TProperty> selector)

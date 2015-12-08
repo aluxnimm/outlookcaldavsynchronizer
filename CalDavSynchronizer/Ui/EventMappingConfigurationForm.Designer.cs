@@ -150,7 +150,7 @@
       // _calendarColorButton
       // 
       this._calendarColorButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._calendarColorButton.Location = new System.Drawing.Point(299, 67);
+      this._calendarColorButton.Location = new System.Drawing.Point(299, 62);
       this._calendarColorButton.Margin = new System.Windows.Forms.Padding(4);
       this._calendarColorButton.Name = "_calendarColorButton";
       this._calendarColorButton.Size = new System.Drawing.Size(37, 28);
@@ -165,9 +165,9 @@
       this._mapColorCheckBox.Location = new System.Drawing.Point(11, 67);
       this._mapColorCheckBox.Margin = new System.Windows.Forms.Padding(4);
       this._mapColorCheckBox.Name = "_mapColorCheckBox";
-      this._mapColorCheckBox.Size = new System.Drawing.Size(230, 21);
+      this._mapColorCheckBox.Size = new System.Drawing.Size(265, 21);
       this._mapColorCheckBox.TabIndex = 9;
-      this._mapColorCheckBox.Text = "Map Calendar Color to category";
+      this._mapColorCheckBox.Text = "Map Calendar Color to category color";
       this._mapColorCheckBox.UseVisualStyleBackColor = true;
       this._mapColorCheckBox.CheckedChanged += new System.EventHandler(this._mapColorCheckBox_CheckedChanged);
       // 
