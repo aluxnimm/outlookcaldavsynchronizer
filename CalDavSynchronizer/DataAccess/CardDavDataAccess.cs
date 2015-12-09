@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Security;
 using System.Threading.Tasks;
 using System.Xml;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
@@ -335,7 +336,7 @@ namespace CalDavSynchronizer.DataAccess
        <D:getcontenttype/>
        <A:address-data/>
      </D:prop>
-     " + String.Join ("\r\n", urls.Select (u => string.Format ("<D:href>{0}</D:href>", u))) + @"
+     " + String.Join ("\r\n", urls.Select (u => string.Format ("<D:href>{0}</D:href>", SecurityElement.Escape(u.ToString())))) + @"
    </A:addressbook-multiget>
  ";
 

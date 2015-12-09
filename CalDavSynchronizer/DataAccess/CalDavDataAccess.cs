@@ -20,6 +20,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
+using System.Security;
 using System.Threading.Tasks;
 using System.Xml;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
@@ -360,7 +361,7 @@ namespace CalDavSynchronizer.DataAccess
 			                            <D:displayname/>
 			                            <C:calendar-data/>
 			                        </D:prop>
-                                        " + String.Join ("\r\n", eventUrls.Select (u => string.Format ("<D:href>{0}</D:href>", u))) + @"
+                                        " + String.Join ("\r\n", eventUrls.Select (u => string.Format ("<D:href>{0}</D:href>", SecurityElement.Escape(u.ToString())))) + @"
                                     </C:calendar-multiget>";
 
       var responseXml = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
@@ -402,7 +403,7 @@ namespace CalDavSynchronizer.DataAccess
 			                        <D:prop>
 			                            <D:getetag/>
 			                        </D:prop>
-                                        " + String.Join ("\r\n", eventUrls.Select (u => string.Format ("<D:href>{0}</D:href>", u))) + @"
+                                        " + String.Join ("\r\n", eventUrls.Select (u => string.Format ("<D:href>{0}</D:href>", SecurityElement.Escape(u.ToString())))) + @"
                                     </C:calendar-multiget>";
 
       var responseXml = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
