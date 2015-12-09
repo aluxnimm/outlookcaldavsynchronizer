@@ -37,7 +37,8 @@
       this.label2 = new System.Windows.Forms.Label();
       this._categoryTextBox = new System.Windows.Forms.TextBox();
       this._outlookGroupBox = new System.Windows.Forms.GroupBox();
-      this._calendarColorButton = new System.Windows.Forms.Button();
+      this._calendarColorRefreshButton = new System.Windows.Forms.Button();
+      this._categoryColorPicker = new CalDavSynchronizer.Ui.ColorPicker();
       this._mapColorCheckBox = new System.Windows.Forms.CheckBox();
       this._outlookGroupBox.SuspendLayout();
       this.SuspendLayout();
@@ -46,7 +47,7 @@
       // 
       this._cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this._cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this._cancelButton.Location = new System.Drawing.Point(423, 244);
+      this._cancelButton.Location = new System.Drawing.Point(500, 244);
       this._cancelButton.Margin = new System.Windows.Forms.Padding(4);
       this._cancelButton.Name = "_cancelButton";
       this._cancelButton.Size = new System.Drawing.Size(100, 28);
@@ -57,7 +58,7 @@
       // _okButton
       // 
       this._okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._okButton.Location = new System.Drawing.Point(315, 244);
+      this._okButton.Location = new System.Drawing.Point(392, 244);
       this._okButton.Margin = new System.Windows.Forms.Padding(4);
       this._okButton.Name = "_okButton";
       this._okButton.Size = new System.Drawing.Size(100, 28);
@@ -93,10 +94,10 @@
       this._mapReminderComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._mapReminderComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this._mapReminderComboBox.FormattingEnabled = true;
-      this._mapReminderComboBox.Location = new System.Drawing.Point(328, 15);
+      this._mapReminderComboBox.Location = new System.Drawing.Point(315, 15);
       this._mapReminderComboBox.Margin = new System.Windows.Forms.Padding(4);
       this._mapReminderComboBox.Name = "_mapReminderComboBox";
-      this._mapReminderComboBox.Size = new System.Drawing.Size(193, 24);
+      this._mapReminderComboBox.Size = new System.Drawing.Size(283, 24);
       this._mapReminderComboBox.TabIndex = 5;
       // 
       // label1
@@ -126,7 +127,7 @@
       this._categoryTextBox.Location = new System.Drawing.Point(299, 28);
       this._categoryTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._categoryTextBox.Name = "_categoryTextBox";
-      this._categoryTextBox.Size = new System.Drawing.Size(199, 22);
+      this._categoryTextBox.Size = new System.Drawing.Size(276, 22);
       this._categoryTextBox.TabIndex = 8;
       this._categoryTextBox.TextChanged += new System.EventHandler(this._categoryTextBox_TextChanged);
       // 
@@ -134,7 +135,8 @@
       // 
       this._outlookGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this._outlookGroupBox.Controls.Add(this._calendarColorButton);
+      this._outlookGroupBox.Controls.Add(this._calendarColorRefreshButton);
+      this._outlookGroupBox.Controls.Add(this._categoryColorPicker);
       this._outlookGroupBox.Controls.Add(this._mapColorCheckBox);
       this._outlookGroupBox.Controls.Add(this.label2);
       this._outlookGroupBox.Controls.Add(this._categoryTextBox);
@@ -142,22 +144,35 @@
       this._outlookGroupBox.Margin = new System.Windows.Forms.Padding(4);
       this._outlookGroupBox.Name = "_outlookGroupBox";
       this._outlookGroupBox.Padding = new System.Windows.Forms.Padding(4);
-      this._outlookGroupBox.Size = new System.Drawing.Size(507, 115);
+      this._outlookGroupBox.Size = new System.Drawing.Size(584, 115);
       this._outlookGroupBox.TabIndex = 9;
       this._outlookGroupBox.TabStop = false;
       this._outlookGroupBox.Text = "Outlook settings";
       // 
-      // _calendarColorButton
+      // _calendarColorRefreshButton
       // 
-      this._calendarColorButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._calendarColorButton.Location = new System.Drawing.Point(299, 62);
-      this._calendarColorButton.Margin = new System.Windows.Forms.Padding(4);
-      this._calendarColorButton.Name = "_calendarColorButton";
-      this._calendarColorButton.Size = new System.Drawing.Size(37, 28);
-      this._calendarColorButton.TabIndex = 10;
-      this._calendarColorButton.Text = "...";
-      this._calendarColorButton.UseVisualStyleBackColor = false;
-      this._calendarColorButton.Click += new System.EventHandler(this._calendarColorButton_Click);
+      this._calendarColorRefreshButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this._calendarColorRefreshButton.Location = new System.Drawing.Point(484, 62);
+      this._calendarColorRefreshButton.Margin = new System.Windows.Forms.Padding(4);
+      this._calendarColorRefreshButton.Name = "_calendarColorRefreshButton";
+      this._calendarColorRefreshButton.Size = new System.Drawing.Size(91, 28);
+      this._calendarColorRefreshButton.TabIndex = 10;
+      this._calendarColorRefreshButton.Text = "Fetch Color";
+      this._calendarColorRefreshButton.UseVisualStyleBackColor = false;
+      this._calendarColorRefreshButton.Click += new System.EventHandler(this._calendarColorRefreshButton_Click);
+      // 
+      // _categoryColorPicker
+      // 
+      this._categoryColorPicker.BackColor = System.Drawing.Color.White;
+      this._categoryColorPicker.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+      this._categoryColorPicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this._categoryColorPicker.FormattingEnabled = true;
+      this._categoryColorPicker.Location = new System.Drawing.Point(299, 65);
+      this._categoryColorPicker.Name = "_categoryColorPicker";
+      this._categoryColorPicker.SelectedItem = null;
+      this._categoryColorPicker.SelectedValue = Microsoft.Office.Interop.Outlook.OlCategoryColor.olCategoryColorNone;
+      this._categoryColorPicker.Size = new System.Drawing.Size(148, 23);
+      this._categoryColorPicker.TabIndex = 0;
       // 
       // _mapColorCheckBox
       // 
@@ -177,7 +192,7 @@
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this._cancelButton;
-      this.ClientSize = new System.Drawing.Size(539, 287);
+      this.ClientSize = new System.Drawing.Size(616, 287);
       this.Controls.Add(this._outlookGroupBox);
       this.Controls.Add(this.label1);
       this.Controls.Add(this._mapReminderComboBox);
@@ -208,7 +223,8 @@
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.TextBox _categoryTextBox;
     private System.Windows.Forms.GroupBox _outlookGroupBox;
-    private System.Windows.Forms.Button _calendarColorButton;
+    private System.Windows.Forms.Button _calendarColorRefreshButton;
     private System.Windows.Forms.CheckBox _mapColorCheckBox;
+    private ColorPicker _categoryColorPicker;
   }
 }

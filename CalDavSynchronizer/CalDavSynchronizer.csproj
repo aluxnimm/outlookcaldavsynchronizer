@@ -300,6 +300,12 @@
       <DependentUpon>AdvancedOptionsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Ui\AutoDiscoveryResult.cs" />
+    <Compile Include="Ui\ColorPicker.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ui\ColorPicker.Designer.cs">
+      <DependentUpon>ColorPicker.cs</DependentUpon>
+    </Compile>
     <Compile Include="Ui\ConfigurationFormFactory.cs" />
     <Compile Include="Ui\ConnectionTests\AddressBookProperties.cs" />
     <Compile Include="Ui\ConnectionTests\CalendarProperties.cs" />
@@ -413,6 +419,9 @@
     </Compile>
     <EmbeddedResource Include="CalDavSynchronizerRibbon.resx">
       <DependentUpon>CalDavSynchronizerRibbon.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ui\ColorPicker.resx">
+      <DependentUpon>ColorPicker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\ContactMappingConfigurationForm.resx">
       <DependentUpon>ContactMappingConfigurationForm.cs</DependentUpon>

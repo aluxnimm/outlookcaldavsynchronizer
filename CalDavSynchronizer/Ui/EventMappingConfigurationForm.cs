@@ -41,8 +41,6 @@ namespace CalDavSynchronizer.Ui
                                                                                };
 
     private Func<ICalDavDataAccess> _calDavDataAccessFactory;
-    private OlCategoryColor _categoryColor = OlCategoryColor.olCategoryColorNone;
-
 
     public EventMappingConfigurationForm (Func<ICalDavDataAccess> calDavDataAccessFactory)
     {
@@ -50,6 +48,8 @@ namespace CalDavSynchronizer.Ui
       Item.BindComboBox (_mapReminderComboBox, _availableReminderMappings);
 
       _calDavDataAccessFactory = calDavDataAccessFactory;
+
+      _categoryColorPicker.AddCategoryColors();
     }
 
     private void _okButton_Click (object sender, EventArgs e)
@@ -73,7 +73,7 @@ namespace CalDavSynchronizer.Ui
                    MapReminder = (ReminderMapping) _mapReminderComboBox.SelectedValue,
                    EventCategory = _categoryTextBox.Text,
                    MapCalendarColor = _mapColorCheckBox.Checked,
-                   CategoryColor = _categoryColor
+                   CategoryColor = _categoryColorPicker.SelectedValue
                };
       }
       set
@@ -83,37 +83,28 @@ namespace CalDavSynchronizer.Ui
         _mapReminderComboBox.SelectedValue = value.MapReminder;
         _categoryTextBox.Text = value.EventCategory;
         _mapColorCheckBox.Enabled = !string.IsNullOrEmpty(value.EventCategory);
+        _calendarColorRefreshButton.Enabled = value.MapCalendarColor;
+        _categoryColorPicker.Enabled = value.MapCalendarColor;
+        _categoryColorPicker.SelectedValue = value.CategoryColor;
         _mapColorCheckBox.Checked = value.MapCalendarColor;
-        _calendarColorButton.Enabled = value.MapCalendarColor;
-        _categoryColor = value.CategoryColor;
-        if (_categoryColor != OlCategoryColor.olCategoryColorNone) _calendarColorButton.BackColor = ColorHelper.HexToColor(ColorHelper.CategoryColors[_categoryColor]);
-       
       }
     }
 
-    private async void _calendarColorButton_Click(object sender, EventArgs e)
+    private async void _calendarColorRefreshButton_Click(object sender, EventArgs e)
     {
+      string serverColor = await _calDavDataAccessFactory().GetCalendarColorNoThrow();
+
+      if (!string.IsNullOrEmpty(serverColor))
+      {
+        Color c = ColorHelper.HexToColor(serverColor);
+        _categoryColorPicker.SelectedValue = ColorHelper.FindMatchingCategoryColor(c);
+      }
     }
 
-    private async void _mapColorCheckBox_CheckedChanged(object sender, EventArgs e)
+    private void _mapColorCheckBox_CheckedChanged(object sender, EventArgs e)
     {
-      _calendarColorButton.Enabled = _mapColorCheckBox.Checked;
-
-      if (_mapColorCheckBox.Checked && _categoryColor == OlCategoryColor.olCategoryColorNone)
-      {
-        string serverColor = await _calDavDataAccessFactory().GetCalendarColorNoThrow();
-
-        if (!string.IsNullOrEmpty(serverColor))
-        {
-          Color c = ColorHelper.HexToColor(serverColor);
-          _categoryColor = ColorHelper.FindMatchingCategoryColor (c);
-        }
-      }
-      if (_categoryColor != OlCategoryColor.olCategoryColorNone)
-      {
-        Color mappedColor = ColorHelper.HexToColor(ColorHelper.CategoryColors[_categoryColor]);
-        _calendarColorButton.BackColor = mappedColor;
-      }
+      _calendarColorRefreshButton.Enabled = _mapColorCheckBox.Checked;
+      _categoryColorPicker.Enabled = _mapColorCheckBox.Checked;
     }
 
     private void _categoryTextBox_TextChanged(object sender, EventArgs e)
@@ -121,12 +112,14 @@ namespace CalDavSynchronizer.Ui
       if (!string.IsNullOrEmpty(_categoryTextBox.Text))
       {
         _mapColorCheckBox.Enabled = true;
-        _calendarColorButton.Enabled = _mapColorCheckBox.Checked;
+        _calendarColorRefreshButton.Enabled = _mapColorCheckBox.Checked;
+        _categoryColorPicker.Enabled = _mapColorCheckBox.Checked;
       }
       else
       {
         _mapColorCheckBox.Enabled = false;
-        _calendarColorButton.Enabled = false;
+        _calendarColorRefreshButton.Enabled = false;
+        _categoryColorPicker.Enabled = false;
       }
     }
   }
