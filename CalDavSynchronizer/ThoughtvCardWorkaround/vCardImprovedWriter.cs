@@ -14,6 +14,13 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+// This class is based on the vCardStandardWriter from Thought.vCards
+// =======================================================================
+// vCard Library for .NET
+//Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
+// See LICENSE.TXT for licensing information.
+// ======================================================================= 
 using System;
 using System.Collections.Generic;
 using System.Linq;
