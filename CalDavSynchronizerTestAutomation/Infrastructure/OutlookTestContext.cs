@@ -75,7 +75,6 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           _ => @"a:\invalid path",
           NullTotalProgressFactory.Instance,
           s_mapiNameSpace,
-          TimeSpan.Zero,
           TimeSpan.Zero);
 
       s_outlookEventRepository = new OutlookEventRepository (

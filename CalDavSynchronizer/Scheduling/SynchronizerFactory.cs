@@ -51,21 +51,18 @@ namespace CalDavSynchronizer.Scheduling
     private readonly ITotalProgressFactory _totalProgressFactory;
     private readonly NameSpace _outlookSession;
     private readonly TimeSpan _calDavConnectTimeout;
-    private readonly TimeSpan _calDavReadWriteTimeout;
     private readonly Func<Guid, string> _profileDataDirectoryFactory;
 
     public SynchronizerFactory (
         Func<Guid, string> profileDataDirectoryFactory,
         ITotalProgressFactory totalProgressFactory,
         NameSpace outlookSession,
-        TimeSpan calDavConnectTimeout,
-        TimeSpan calDavReadWriteTimeout)
+        TimeSpan calDavConnectTimeout)
     {
       _outlookEmailAddress = outlookSession.CurrentUser.Address;
       _totalProgressFactory = totalProgressFactory;
       _outlookSession = outlookSession;
       _calDavConnectTimeout = calDavConnectTimeout;
-      _calDavReadWriteTimeout = calDavReadWriteTimeout;
       _profileDataDirectoryFactory = profileDataDirectoryFactory;
     }
 

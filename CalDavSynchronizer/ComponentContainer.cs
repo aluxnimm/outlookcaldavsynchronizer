@@ -93,8 +93,7 @@ namespace CalDavSynchronizer
               int.Parse (ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"]),
               ExceptionHandler.Instance),
           _session,
-          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavReadWriteTimeout"]));
+          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]));
 
       _scheduler = new Scheduler (synchronizerFactory, EnsureSynchronizationContext);
       _scheduler.SetOptions (_optionsDataAccess.LoadOptions());
