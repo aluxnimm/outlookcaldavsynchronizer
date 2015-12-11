@@ -51,7 +51,7 @@
       this._cancelButton.Margin = new System.Windows.Forms.Padding(4);
       this._cancelButton.Name = "_cancelButton";
       this._cancelButton.Size = new System.Drawing.Size(100, 28);
-      this._cancelButton.TabIndex = 0;
+      this._cancelButton.TabIndex = 9;
       this._cancelButton.Text = "Cancel";
       this._cancelButton.UseVisualStyleBackColor = true;
       // 
@@ -62,7 +62,7 @@
       this._okButton.Margin = new System.Windows.Forms.Padding(4);
       this._okButton.Name = "_okButton";
       this._okButton.Size = new System.Drawing.Size(100, 28);
-      this._okButton.TabIndex = 1;
+      this._okButton.TabIndex = 10;
       this._okButton.Text = "OK";
       this._okButton.UseVisualStyleBackColor = true;
       this._okButton.Click += new System.EventHandler(this._okButton_Click);
@@ -74,7 +74,7 @@
       this._mapAttendeesCheckBox.Margin = new System.Windows.Forms.Padding(4);
       this._mapAttendeesCheckBox.Name = "_mapAttendeesCheckBox";
       this._mapAttendeesCheckBox.Size = new System.Drawing.Size(125, 21);
-      this._mapAttendeesCheckBox.TabIndex = 3;
+      this._mapAttendeesCheckBox.TabIndex = 2;
       this._mapAttendeesCheckBox.Text = "Map Attendees";
       this._mapAttendeesCheckBox.UseVisualStyleBackColor = true;
       // 
@@ -85,7 +85,7 @@
       this._mapBodyCheckBox.Margin = new System.Windows.Forms.Padding(4);
       this._mapBodyCheckBox.Name = "_mapBodyCheckBox";
       this._mapBodyCheckBox.Size = new System.Drawing.Size(93, 21);
-      this._mapBodyCheckBox.TabIndex = 4;
+      this._mapBodyCheckBox.TabIndex = 3;
       this._mapBodyCheckBox.Text = "Map Body";
       this._mapBodyCheckBox.UseVisualStyleBackColor = true;
       // 
@@ -98,7 +98,7 @@
       this._mapReminderComboBox.Margin = new System.Windows.Forms.Padding(4);
       this._mapReminderComboBox.Name = "_mapReminderComboBox";
       this._mapReminderComboBox.Size = new System.Drawing.Size(283, 24);
-      this._mapReminderComboBox.TabIndex = 5;
+      this._mapReminderComboBox.TabIndex = 1;
       // 
       // label1
       // 
@@ -107,7 +107,7 @@
       this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label1.Name = "label1";
       this.label1.Size = new System.Drawing.Size(99, 17);
-      this.label1.TabIndex = 6;
+      this.label1.TabIndex = 11;
       this.label1.Text = "Map reminder:";
       // 
       // label2
@@ -117,7 +117,7 @@
       this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label2.Name = "label2";
       this.label2.Size = new System.Drawing.Size(250, 17);
-      this.label2.TabIndex = 7;
+      this.label2.TabIndex = 12;
       this.label2.Text = "Sync only Appointments with category:";
       // 
       // _categoryTextBox
@@ -128,7 +128,7 @@
       this._categoryTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._categoryTextBox.Name = "_categoryTextBox";
       this._categoryTextBox.Size = new System.Drawing.Size(276, 22);
-      this._categoryTextBox.TabIndex = 8;
+      this._categoryTextBox.TabIndex = 4;
       this._categoryTextBox.TextChanged += new System.EventHandler(this._categoryTextBox_TextChanged);
       // 
       // _outlookGroupBox
@@ -145,7 +145,7 @@
       this._outlookGroupBox.Name = "_outlookGroupBox";
       this._outlookGroupBox.Padding = new System.Windows.Forms.Padding(4);
       this._outlookGroupBox.Size = new System.Drawing.Size(584, 115);
-      this._outlookGroupBox.TabIndex = 9;
+      this._outlookGroupBox.TabIndex = 8;
       this._outlookGroupBox.TabStop = false;
       this._outlookGroupBox.Text = "Outlook settings";
       // 
@@ -156,7 +156,7 @@
       this._calendarColorRefreshButton.Margin = new System.Windows.Forms.Padding(4);
       this._calendarColorRefreshButton.Name = "_calendarColorRefreshButton";
       this._calendarColorRefreshButton.Size = new System.Drawing.Size(91, 28);
-      this._calendarColorRefreshButton.TabIndex = 10;
+      this._calendarColorRefreshButton.TabIndex = 7;
       this._calendarColorRefreshButton.Text = "Fetch Color";
       this._calendarColorRefreshButton.UseVisualStyleBackColor = false;
       this._calendarColorRefreshButton.Click += new System.EventHandler(this._calendarColorRefreshButton_Click);
@@ -172,7 +172,7 @@
       this._categoryColorPicker.SelectedItem = null;
       this._categoryColorPicker.SelectedValue = Microsoft.Office.Interop.Outlook.OlCategoryColor.olCategoryColorNone;
       this._categoryColorPicker.Size = new System.Drawing.Size(148, 23);
-      this._categoryColorPicker.TabIndex = 0;
+      this._categoryColorPicker.TabIndex = 6;
       // 
       // _mapColorCheckBox
       // 
@@ -181,7 +181,7 @@
       this._mapColorCheckBox.Margin = new System.Windows.Forms.Padding(4);
       this._mapColorCheckBox.Name = "_mapColorCheckBox";
       this._mapColorCheckBox.Size = new System.Drawing.Size(265, 21);
-      this._mapColorCheckBox.TabIndex = 9;
+      this._mapColorCheckBox.TabIndex = 5;
       this._mapColorCheckBox.Text = "Map Calendar Color to category color";
       this._mapColorCheckBox.UseVisualStyleBackColor = true;
       this._mapColorCheckBox.CheckedChanged += new System.EventHandler(this._mapColorCheckBox_CheckedChanged);
