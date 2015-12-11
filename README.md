@@ -34,12 +34,14 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 - OpenX-change
 - Posteo
 - Landmarks
+- Kolab
 
 ### Features ###
 
 - open source AGPL, the only free Outlook CalDav plugin
 - two-way-sync
 - SSL/TLS support, support for self-signed certificates
+- Manual proxy configuration support for NTLM or basic auth proxies
 - Autodiscovery of calendars and addressbooks
 - configurable sync range
 - sync multiple calendars per profile
@@ -47,7 +49,11 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 - sync organizer and attendees and own response status
 - task support
 - CardDAV support to sync contacts (distribution lists planned)
-- change-triggered-sync 
+- time-triggered-sync
+- change-triggered-sync
+- manual-triggered-sync
+- Category Filtering (sync CalDAV calendar to Outlook categories)
+- map CalDAV server colors to Outlook category colors
 
 ### Used Libraries ###
 
@@ -55,6 +61,7 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 -  [Apache log4net](https://logging.apache.org/log4net/)
 -  [Thought.vCard](http://nugetmusthaves.com/Package/Thought.vCards)
 -  [NodaTime](http://nodatime.org/)
+-  [ColorMine](https://www.nuget.org/packages/ColorMine/)
 
 ### Install instructions ###
 
@@ -62,6 +69,14 @@ Download and extract the `OutlookCalDavSynchronizer-<Version>.zip` into the same
 If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=44074)
 
 ### Changelog ###
+
+#### 1.9.0 ####
+- New features
+	- Map CalDAV server colors to Outlook category colors. It is possible to choose the  category color manually or fetch the color from the server and map it to the nearest supported Outlook color.
+- bug fixes
+	- Don't use environment specific newline, in data sent to the server
+	- Escape Uris, which are inserted into XML documents
+	- Remove unused calDavReadWriteTimeout from config
 
 #### 1.8.0 ####
 - New features
@@ -407,11 +422,11 @@ The following properties need to be set for a new generic profile:
 	- **Use manual proxy configuration** Specify proxy URL as `http://<your-proxy-domain>:<your-proxy-port>` and optional Username and Password for Basic Authentication.
 	- **Mapping Configuration...**: Here you can configure what properties should be synced, available for appointments and contacts at the moment. For appointments you can choose if you want to map reminders (just upcoming, all or none), attendees and the description body. You can also define a filter category so that multiple CalDAV-Calendars can be synchronized into one Outlook calendar via the defined category (see Category Filter below). For contacts you can configure if birthdays should be mapped or not. If birthdays are mapped, Outlook also creates an recurring appointment for every contact with a defined birthday.
 	
-### Category Filter ###
+### Category Filter and Color ###
 
-If you want to sync multiple CalDAV Calendars into one Outlook Calendar you can configure an Outlook category for filtering in the 
+If you want to sync multiple CalDAV calendars into one Outlook folder you can configure an Outlook category for filtering in the 
 *Mapping Configuration...* under *Advanced Options*.
-For all events from the server the defined category is added in Outlook, when syncing back from Outlook to the server only appointments with that category are considered but the filter category is removed. In a next release it will also be possible to map the server calendar color to the Outlook category.
+For all events from the server the defined category is added in Outlook, when syncing back from Outlook to the server only appointments with that category are considered but the filter category is removed. It is also possible to choose the color of the category or to fetch the calendar color from the server and map it to the nearest supported Outlook category color.
 
 ### Google Calender and Addressbook settings ###
 
@@ -490,9 +505,7 @@ After changing parameters you have to restart Outlook.
 
 - **loadOperationThresholdForProgressDisplay**: amount of sync operations to show the progress bar (default 50)
 - **calDavConnectTimeout**: timeout for caldav connects (default 90 sec)
-- **calDavReadWriteTimeout**; timeout for caldav read/write requests (default 5 sec)
 - **enableTaskSynchronization** Support for task sync (alpha) true or false
-
 
 In the section `system.net` you can define proxy settings, e.g. use of NTLM credentials
 
