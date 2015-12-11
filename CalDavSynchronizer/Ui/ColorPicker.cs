@@ -40,20 +40,6 @@ namespace CalDavSynchronizer.Ui
 {
   public partial class ColorPicker : ComboBox
   {
-    // Data for each color in the list
-    public class ColorInfo
-    {
-      public string Text { get; set; }
-      public Color Color { get; set; }
-      public OlCategoryColor Key { get; set; }
-
-      public ColorInfo(string text, Color color, OlCategoryColor key)
-      {
-        Text = text;
-        Color = color;
-        Key = key;
-      }
-    }
 
     public ColorPicker()
     {

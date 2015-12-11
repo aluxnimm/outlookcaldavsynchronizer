@@ -300,6 +300,7 @@
       <DependentUpon>AdvancedOptionsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Ui\AutoDiscoveryResult.cs" />
+    <Compile Include="Ui\ColorInfo.cs" />
     <Compile Include="Ui\ColorPicker.cs">
       <SubType>Component</SubType>
     </Compile>
