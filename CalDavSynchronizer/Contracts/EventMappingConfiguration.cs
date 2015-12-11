@@ -30,8 +30,8 @@ namespace CalDavSynchronizer.Contracts
     public bool MapAttendees { get; set; }
     public bool MapBody { get; set; }
     public string EventCategory { get; set; }
-    public bool MapCalendarColor { get; set; }
-    public OlCategoryColor CategoryColor { get; set; }
+    public bool UseEventCategoryColorAndMapFromCalendarColor { get; set; }
+    public OlCategoryColor EventCategoryColor { get; set; }
 
     [XmlIgnore]
     public bool UseEventCategoryAsFilter
@@ -44,8 +44,8 @@ namespace CalDavSynchronizer.Contracts
       MapReminder = ReminderMapping.JustUpcoming;
       MapAttendees = true;
       MapBody = true;
-      MapCalendarColor = false;
-      CategoryColor = OlCategoryColor.olCategoryColorNone;
+      UseEventCategoryColorAndMapFromCalendarColor = false;
+      EventCategoryColor = OlCategoryColor.olCategoryColorNone;
     }
 
     public override IConfigurationForm<MappingConfigurationBase> CreateConfigurationForm (IConfigurationFormFactory factory)

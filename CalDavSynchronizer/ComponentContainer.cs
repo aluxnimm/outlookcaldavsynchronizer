@@ -191,8 +191,8 @@ namespace CalDavSynchronizer
     {
       foreach (var changedOption in changedOptions)
       {
-        var oldCategory = GetMappingPropertyOrNull<EventMappingConfiguration, string> (changedOption.Old.MappingConfiguration, o => o.EventCategory);
-        var newCategory = GetMappingPropertyOrNull<EventMappingConfiguration, string> (changedOption.New.MappingConfiguration, o => o.EventCategory);
+        var oldCategory = GetMappingRefPropertyOrNull<EventMappingConfiguration, string> (changedOption.Old.MappingConfiguration, o => o.EventCategory);
+        var newCategory = GetMappingRefPropertyOrNull<EventMappingConfiguration, string> (changedOption.New.MappingConfiguration, o => o.EventCategory);
 
         if (oldCategory != newCategory && !String.IsNullOrEmpty (oldCategory))
         {
@@ -206,31 +206,33 @@ namespace CalDavSynchronizer
           }
         }
 
-        
-        var categoryColor = GetColorProperty<EventMappingConfiguration> (changedOption.New.MappingConfiguration, o => o.MapCalendarColor ? o.CategoryColor : OlCategoryColor.olCategoryColorNone);
-
-        if (!String.IsNullOrEmpty (newCategory) && categoryColor != OlCategoryColor.olCategoryColorNone)
+        if (!String.IsNullOrEmpty (newCategory))
         {
-          try
+          var mappingConfiguration = (EventMappingConfiguration) changedOption.New.MappingConfiguration;
+
+          if (mappingConfiguration.UseEventCategoryColorAndMapFromCalendarColor)
           {
-            using (var categoriesWrapper = GenericComObjectWrapper.Create (_session.Categories))
+            try
             {
-              using (var categoryWrapper = GenericComObjectWrapper.Create (categoriesWrapper.Inner[newCategory]))
+              using (var categoriesWrapper = GenericComObjectWrapper.Create (_session.Categories))
               {
-                if (categoryWrapper.Inner == null)
+                using (var categoryWrapper = GenericComObjectWrapper.Create (categoriesWrapper.Inner[newCategory]))
                 {
-                  categoriesWrapper.Inner.Add (newCategory, categoryColor, OlCategoryShortcutKey.olCategoryShortcutKeyNone);
-                }
-                else
-                {
-                  categoryWrapper.Inner.Color = categoryColor;
+                  if (categoryWrapper.Inner == null)
+                  {
+                    categoriesWrapper.Inner.Add (newCategory, mappingConfiguration.EventCategoryColor, OlCategoryShortcutKey.olCategoryShortcutKeyNone);
+                  }
+                  else
+                  {
+                    categoryWrapper.Inner.Color = mappingConfiguration.EventCategoryColor;
+                  }
                 }
               }
             }
-          }
-          catch (Exception x)
-          {
-            s_logger.Error (null, x);
+            catch (Exception x)
+            {
+              s_logger.Error (null, x);
+            }
           }
         }
       }
@@ -372,7 +374,7 @@ namespace CalDavSynchronizer
       }
     }
 
-    private TProperty? GetMappingPropertyOrNull<TMappingConfiguration, TProperty> (MappingConfigurationBase mappingConfiguration, Func<TMappingConfiguration, TProperty?> selector)
+    private TProperty? GetMappingPropertyOrNull<TMappingConfiguration, TProperty> (MappingConfigurationBase mappingConfiguration, Func<TMappingConfiguration, TProperty> selector)
       where TMappingConfiguration : MappingConfigurationBase
       where TProperty : struct
     {
@@ -384,18 +386,7 @@ namespace CalDavSynchronizer
         return null;
     }
 
-    private OlCategoryColor GetColorProperty<TMappingConfiguration>(MappingConfigurationBase mappingConfiguration, Func<TMappingConfiguration, OlCategoryColor> selector)
-      where TMappingConfiguration : MappingConfigurationBase
-    {
-      var typedMappingConfiguration = mappingConfiguration as TMappingConfiguration;
-
-      if (typedMappingConfiguration != null)
-        return selector(typedMappingConfiguration);
-      else
-        return OlCategoryColor.olCategoryColorNone;
-    }
-
-    private TProperty GetMappingPropertyOrNull<TMappingConfiguration, TProperty> (MappingConfigurationBase mappingConfiguration, Func<TMappingConfiguration, TProperty> selector)
+    private TProperty GetMappingRefPropertyOrNull<TMappingConfiguration, TProperty> (MappingConfigurationBase mappingConfiguration, Func<TMappingConfiguration, TProperty> selector)
       where TMappingConfiguration : MappingConfigurationBase
       where TProperty : class
     {
@@ -406,7 +397,7 @@ namespace CalDavSynchronizer
       else
         return null;
     }
- 
+
 
     private string GetProfileDataDirectory (Guid profileId)
     {

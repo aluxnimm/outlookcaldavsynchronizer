@@ -154,7 +154,7 @@ namespace CalDavSynchronizer.Ui
     /// Gets the value of the selected item, or sets the selection to
     /// the item with the specified value.
     /// </summary>
-    public OlCategoryColor SelectedValue
+    public new OlCategoryColor SelectedValue
     {
       get
       {

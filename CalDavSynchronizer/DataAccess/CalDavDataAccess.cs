@@ -190,6 +190,7 @@ namespace CalDavSynchronizer.DataAccess
       }
       catch (Exception x)
       {
+        s_logger.Error (null, x);
         return calendarColor;
       }
     }
