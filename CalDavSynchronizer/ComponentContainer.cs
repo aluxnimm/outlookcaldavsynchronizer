@@ -191,8 +191,8 @@ namespace CalDavSynchronizer
     {
       foreach (var changedOption in changedOptions)
       {
-        var oldCategory = GetMappingPropertyOrNull<EventMappingConfiguration, string> (changedOption.Old.MappingConfiguration, o => o.EventCategory);
-        var newCategory = GetMappingPropertyOrNull<EventMappingConfiguration, string> (changedOption.New.MappingConfiguration, o => o.EventCategory);
+        var oldCategory = GetMappingRefPropertyOrNull<EventMappingConfiguration, string> (changedOption.Old.MappingConfiguration, o => o.EventCategory);
+        var newCategory = GetMappingRefPropertyOrNull<EventMappingConfiguration, string> (changedOption.New.MappingConfiguration, o => o.EventCategory);
 
         if (oldCategory != newCategory && !String.IsNullOrEmpty (oldCategory))
         {
@@ -203,6 +203,36 @@ namespace CalDavSynchronizer
           catch (Exception x)
           {
             s_logger.Error (null, x);
+          }
+        }
+
+        if (!String.IsNullOrEmpty (newCategory))
+        {
+          var mappingConfiguration = (EventMappingConfiguration) changedOption.New.MappingConfiguration;
+
+          if (mappingConfiguration.UseEventCategoryColorAndMapFromCalendarColor)
+          {
+            try
+            {
+              using (var categoriesWrapper = GenericComObjectWrapper.Create (_session.Categories))
+              {
+                using (var categoryWrapper = GenericComObjectWrapper.Create (categoriesWrapper.Inner[newCategory]))
+                {
+                  if (categoryWrapper.Inner == null)
+                  {
+                    categoriesWrapper.Inner.Add (newCategory, mappingConfiguration.EventCategoryColor, OlCategoryShortcutKey.olCategoryShortcutKeyNone);
+                  }
+                  else
+                  {
+                    categoryWrapper.Inner.Color = mappingConfiguration.EventCategoryColor;
+                  }
+                }
+              }
+            }
+            catch (Exception x)
+            {
+              s_logger.Error (null, x);
+            }
           }
         }
       }
@@ -344,7 +374,7 @@ namespace CalDavSynchronizer
       }
     }
 
-    private TProperty? GetMappingPropertyOrNull<TMappingConfiguration, TProperty> (MappingConfigurationBase mappingConfiguration, Func<TMappingConfiguration, TProperty?> selector)
+    private TProperty? GetMappingPropertyOrNull<TMappingConfiguration, TProperty> (MappingConfigurationBase mappingConfiguration, Func<TMappingConfiguration, TProperty> selector)
       where TMappingConfiguration : MappingConfigurationBase
       where TProperty : struct
     {
@@ -356,7 +386,7 @@ namespace CalDavSynchronizer
         return null;
     }
 
-    private TProperty GetMappingPropertyOrNull<TMappingConfiguration, TProperty> (MappingConfigurationBase mappingConfiguration, Func<TMappingConfiguration, TProperty> selector)
+    private TProperty GetMappingRefPropertyOrNull<TMappingConfiguration, TProperty> (MappingConfigurationBase mappingConfiguration, Func<TMappingConfiguration, TProperty> selector)
       where TMappingConfiguration : MappingConfigurationBase
       where TProperty : class
     {
@@ -367,7 +397,7 @@ namespace CalDavSynchronizer
       else
         return null;
     }
- 
+
 
     private string GetProfileDataDirectory (Guid profileId)
     {

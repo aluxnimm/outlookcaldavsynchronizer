@@ -26,27 +26,30 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Utilities;
+using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui
 {
   public partial class EventMappingConfigurationForm : Form, IConfigurationForm<EventMappingConfiguration>
   {
-    private readonly IList<Item<ReminderMapping>> _availableReminderMappings = new List<Item<ReminderMapping>>()
+    private readonly IList<Item<ReminderMapping>> _availableReminderMappings = new List<Item<ReminderMapping>> ()
                                                                                {
                                                                                    new Item<ReminderMapping> (ReminderMapping.@true, "Yes"),
                                                                                    new Item<ReminderMapping> (ReminderMapping.@false, "No"),
                                                                                    new Item<ReminderMapping> (ReminderMapping.JustUpcoming, "Just upcoming reminders"),
                                                                                };
 
-    private Func<ICalDavDataAccess> _calDavDataAccessFactory;
-
+    private readonly Func<ICalDavDataAccess> _calDavDataAccessFactory;
 
     public EventMappingConfigurationForm (Func<ICalDavDataAccess> calDavDataAccessFactory)
     {
-      InitializeComponent();
+      InitializeComponent ();
       Item.BindComboBox (_mapReminderComboBox, _availableReminderMappings);
 
       _calDavDataAccessFactory = calDavDataAccessFactory;
+
+      _categoryColorPicker.AddCategoryColors ();
     }
 
     private void _okButton_Click (object sender, EventArgs e)
@@ -56,7 +59,7 @@ namespace CalDavSynchronizer.Ui
 
     public bool Display ()
     {
-      return ShowDialog() == DialogResult.OK;
+      return ShowDialog () == DialogResult.OK;
     }
 
     public EventMappingConfiguration Options
@@ -64,12 +67,14 @@ namespace CalDavSynchronizer.Ui
       get
       {
         return new EventMappingConfiguration
-               {
-                   MapAttendees = _mapAttendeesCheckBox.Checked,
-                   MapBody = _mapBodyCheckBox.Checked,
-                   MapReminder = (ReminderMapping) _mapReminderComboBox.SelectedValue,
-                   EventCategory = _categoryTextBox.Text
-               };
+        {
+          MapAttendees = _mapAttendeesCheckBox.Checked,
+          MapBody = _mapBodyCheckBox.Checked,
+          MapReminder = (ReminderMapping) _mapReminderComboBox.SelectedValue,
+          EventCategory = _categoryTextBox.Text,
+          UseEventCategoryColorAndMapFromCalendarColor = _mapColorCheckBox.Checked ,
+          EventCategoryColor =  _categoryColorPicker.SelectedValue 
+        };
       }
       set
       {
@@ -77,6 +82,47 @@ namespace CalDavSynchronizer.Ui
         _mapBodyCheckBox.Checked = value.MapBody;
         _mapReminderComboBox.SelectedValue = value.MapReminder;
         _categoryTextBox.Text = value.EventCategory;
+        _categoryColorPicker.SelectedValue = value.EventCategoryColor;
+        _mapColorCheckBox.Checked = value.UseEventCategoryColorAndMapFromCalendarColor;
+
+        UpdateCategoryColorControlsEnabled ();
+      }
+    }
+
+    private async void _calendarColorRefreshButton_Click (object sender, EventArgs e)
+    {
+      string serverColor = await _calDavDataAccessFactory ().GetCalendarColorNoThrow ();
+
+      if (!string.IsNullOrEmpty (serverColor))
+      {
+        Color c = ColorHelper.HexToColor (serverColor);
+        _categoryColorPicker.SelectedValue = ColorHelper.FindMatchingCategoryColor (c);
+      }
+    }
+
+    private void _mapColorCheckBox_CheckedChanged (object sender, EventArgs e)
+    {
+      UpdateCategoryColorControlsEnabled ();
+    }
+
+    private void _categoryTextBox_TextChanged (object sender, EventArgs e)
+    {
+      UpdateCategoryColorControlsEnabled ();
+    }
+
+    private void UpdateCategoryColorControlsEnabled ()
+    {
+      if (!string.IsNullOrEmpty (_categoryTextBox.Text))
+      {
+        _mapColorCheckBox.Enabled = true;
+        _calendarColorRefreshButton.Enabled = _mapColorCheckBox.Checked;
+        _categoryColorPicker.Enabled = _mapColorCheckBox.Checked;
+      }
+      else
+      {
+        _mapColorCheckBox.Enabled = false;
+        _calendarColorRefreshButton.Enabled = false;
+        _categoryColorPicker.Enabled = false;
       }
     }
   }
