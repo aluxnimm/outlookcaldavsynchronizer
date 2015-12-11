@@ -84,7 +84,7 @@
       this.groupBox2.Name = "groupBox2";
       this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this.groupBox2.Size = new System.Drawing.Size(685, 251);
-      this.groupBox2.TabIndex = 8;
+      this.groupBox2.TabIndex = 9;
       this.groupBox2.TabStop = false;
       this.groupBox2.Text = "Proxy settings";
       // 
@@ -181,7 +181,7 @@
       this.groupBox1.Name = "groupBox1";
       this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this.groupBox1.Size = new System.Drawing.Size(685, 98);
-      this.groupBox1.TabIndex = 9;
+      this.groupBox1.TabIndex = 8;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Advanced network settings";
       // 

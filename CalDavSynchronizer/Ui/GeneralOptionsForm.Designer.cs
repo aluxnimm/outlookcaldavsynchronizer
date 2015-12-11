@@ -75,7 +75,7 @@
       this._checkForNewerVersionsCheckBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
       this._checkForNewerVersionsCheckBox.Name = "_checkForNewerVersionsCheckBox";
       this._checkForNewerVersionsCheckBox.Size = new System.Drawing.Size(210, 17);
-      this._checkForNewerVersionsCheckBox.TabIndex = 5;
+      this._checkForNewerVersionsCheckBox.TabIndex = 3;
       this._checkForNewerVersionsCheckBox.Text = "Automatically check for newer versions";
       this._checkForNewerVersionsCheckBox.UseVisualStyleBackColor = true;
       // 
@@ -86,7 +86,7 @@
       this._storeDataInRoamingFolderCheckBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
       this._storeDataInRoamingFolderCheckBox.Name = "_storeDataInRoamingFolderCheckBox";
       this._storeDataInRoamingFolderCheckBox.Size = new System.Drawing.Size(155, 17);
-      this._storeDataInRoamingFolderCheckBox.TabIndex = 6;
+      this._storeDataInRoamingFolderCheckBox.TabIndex = 4;
       this._storeDataInRoamingFolderCheckBox.Text = "Store data in roaming folder";
       this._toolTip.SetToolTip(this._storeDataInRoamingFolderCheckBox, "Changing this option requires a restart of Outlook.");
       this._storeDataInRoamingFolderCheckBox.UseVisualStyleBackColor = true;
@@ -104,7 +104,7 @@
       this._enableTls12Checkbox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
       this._enableTls12Checkbox.Name = "_enableTls12Checkbox";
       this._enableTls12Checkbox.Size = new System.Drawing.Size(94, 17);
-      this._enableTls12Checkbox.TabIndex = 7;
+      this._enableTls12Checkbox.TabIndex = 9;
       this._enableTls12Checkbox.Text = "Enable TLS12";
       this._toolTip.SetToolTip(this._enableTls12Checkbox, "Disabling is a major security risk, not recommended!");
       this._enableTls12Checkbox.UseVisualStyleBackColor = true;
@@ -128,7 +128,7 @@
       this._enableSsl3Checkbox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
       this._enableSsl3Checkbox.Name = "_enableSsl3Checkbox";
       this._enableSsl3Checkbox.Size = new System.Drawing.Size(88, 17);
-      this._enableSsl3Checkbox.TabIndex = 9;
+      this._enableSsl3Checkbox.TabIndex = 10;
       this._enableSsl3Checkbox.Text = "Enable SSL3";
       this._toolTip.SetToolTip(this._enableSsl3Checkbox, "Major security risk, not recommended!");
       this._enableSsl3Checkbox.UseVisualStyleBackColor = true;
@@ -145,7 +145,7 @@
       this.groupBox1.Name = "groupBox1";
       this.groupBox1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
       this.groupBox1.Size = new System.Drawing.Size(312, 93);
-      this.groupBox1.TabIndex = 10;
+      this.groupBox1.TabIndex = 7;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "SSL/TLS settings";
       this._toolTip.SetToolTip(this.groupBox1, "Changing these options can be a major security risk, not recommended!");
@@ -157,7 +157,7 @@
       this._fixInvalidSettingsCheckBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
       this._fixInvalidSettingsCheckBox.Name = "_fixInvalidSettingsCheckBox";
       this._fixInvalidSettingsCheckBox.Size = new System.Drawing.Size(111, 17);
-      this._fixInvalidSettingsCheckBox.TabIndex = 11;
+      this._fixInvalidSettingsCheckBox.TabIndex = 5;
       this._fixInvalidSettingsCheckBox.Text = "Fix invalid settings";
       this._toolTip.SetToolTip(this._fixInvalidSettingsCheckBox, resources.GetString("_fixInvalidSettingsCheckBox.ToolTip"));
       this._fixInvalidSettingsCheckBox.UseVisualStyleBackColor = true;
@@ -169,7 +169,7 @@
       this._displayAllProfilesAsGenericCheckBox.Margin = new System.Windows.Forms.Padding(2);
       this._displayAllProfilesAsGenericCheckBox.Name = "_displayAllProfilesAsGenericCheckBox";
       this._displayAllProfilesAsGenericCheckBox.Size = new System.Drawing.Size(197, 17);
-      this._displayAllProfilesAsGenericCheckBox.TabIndex = 12;
+      this._displayAllProfilesAsGenericCheckBox.TabIndex = 6;
       this._displayAllProfilesAsGenericCheckBox.Text = "Display all profiles as generic profiles";
       this._displayAllProfilesAsGenericCheckBox.UseVisualStyleBackColor = true;
       // 
