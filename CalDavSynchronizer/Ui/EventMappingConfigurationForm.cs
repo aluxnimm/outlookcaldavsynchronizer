@@ -37,15 +37,30 @@ namespace CalDavSynchronizer.Ui
                                                                                {
                                                                                    new Item<ReminderMapping> (ReminderMapping.@true, "Yes"),
                                                                                    new Item<ReminderMapping> (ReminderMapping.@false, "No"),
-                                                                                   new Item<ReminderMapping> (ReminderMapping.JustUpcoming, "Just upcoming reminders"),
+                                                                                   new Item<ReminderMapping> (ReminderMapping.JustUpcoming, "Just upcoming reminders")
                                                                                };
-
+    private readonly IList<Item<OlCategoryShortcutKey>> _availableShortcutKeys = new List<Item<OlCategoryShortcutKey>>()
+                                                                               {
+                                                                                   new Item<OlCategoryShortcutKey> (OlCategoryShortcutKey.olCategoryShortcutKeyNone, "None"),
+                                                                                   new Item<OlCategoryShortcutKey> (OlCategoryShortcutKey.olCategoryShortcutKeyCtrlF2, "Ctrl+F2"),
+                                                                                   new Item<OlCategoryShortcutKey> (OlCategoryShortcutKey.olCategoryShortcutKeyCtrlF3, "Ctrl+F3"),
+                                                                                   new Item<OlCategoryShortcutKey> (OlCategoryShortcutKey.olCategoryShortcutKeyCtrlF4, "Ctrl+F4"),
+                                                                                   new Item<OlCategoryShortcutKey> (OlCategoryShortcutKey.olCategoryShortcutKeyCtrlF5, "Ctrl+F5"),
+                                                                                   new Item<OlCategoryShortcutKey> (OlCategoryShortcutKey.olCategoryShortcutKeyCtrlF6, "Ctrl+F6"),
+                                                                                   new Item<OlCategoryShortcutKey> (OlCategoryShortcutKey.olCategoryShortcutKeyCtrlF7, "Ctrl+F7"),
+                                                                                   new Item<OlCategoryShortcutKey> (OlCategoryShortcutKey.olCategoryShortcutKeyCtrlF8, "Ctrl+F8"),
+                                                                                   new Item<OlCategoryShortcutKey> (OlCategoryShortcutKey.olCategoryShortcutKeyCtrlF9, "Ctrl+F9"),
+                                                                                   new Item<OlCategoryShortcutKey> (OlCategoryShortcutKey.olCategoryShortcutKeyCtrlF10, "Ctrl+F10"),
+                                                                                   new Item<OlCategoryShortcutKey> (OlCategoryShortcutKey.olCategoryShortcutKeyCtrlF11, "Ctrl+F11"),
+                                                                                   new Item<OlCategoryShortcutKey> (OlCategoryShortcutKey.olCategoryShortcutKeyCtrlF12, "Ctrl+F12")
+                                                                               };
     private readonly Func<ICalDavDataAccess> _calDavDataAccessFactory;
 
     public EventMappingConfigurationForm (Func<ICalDavDataAccess> calDavDataAccessFactory)
     {
       InitializeComponent ();
       Item.BindComboBox (_mapReminderComboBox, _availableReminderMappings);
+      Item.BindComboBox (_categoryShortcutKeycomboBox, _availableShortcutKeys);
 
       _calDavDataAccessFactory = calDavDataAccessFactory;
 
@@ -73,7 +88,8 @@ namespace CalDavSynchronizer.Ui
           MapReminder = (ReminderMapping) _mapReminderComboBox.SelectedValue,
           EventCategory = _categoryTextBox.Text,
           UseEventCategoryColorAndMapFromCalendarColor = _mapColorCheckBox.Checked ,
-          EventCategoryColor =  _categoryColorPicker.SelectedValue 
+          EventCategoryColor =  _categoryColorPicker.SelectedValue,
+          CategoryShortcutKey = (OlCategoryShortcutKey) _categoryShortcutKeycomboBox.SelectedValue
         };
       }
       set
@@ -84,7 +100,7 @@ namespace CalDavSynchronizer.Ui
         _categoryTextBox.Text = value.EventCategory;
         _categoryColorPicker.SelectedValue = value.EventCategoryColor;
         _mapColorCheckBox.Checked = value.UseEventCategoryColorAndMapFromCalendarColor;
-
+        _categoryShortcutKeycomboBox.SelectedValue = value.CategoryShortcutKey;
         UpdateCategoryColorControlsEnabled ();
       }
     }
@@ -118,6 +134,7 @@ namespace CalDavSynchronizer.Ui
         _calendarColorRefreshButton.Enabled = _mapColorCheckBox.Checked;
         _calendarColorSetButton.Enabled = _mapColorCheckBox.Checked;
         _categoryColorPicker.Enabled = _mapColorCheckBox.Checked;
+        _categoryShortcutKeycomboBox.Enabled = true;
       }
       else
       {
@@ -125,6 +142,7 @@ namespace CalDavSynchronizer.Ui
         _calendarColorRefreshButton.Enabled = false;
         _calendarColorSetButton.Enabled = false;
         _categoryColorPicker.Enabled = false;
+        _categoryShortcutKeycomboBox.Enabled = false;
       }
     }
 

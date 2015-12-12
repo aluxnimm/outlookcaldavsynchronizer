@@ -220,11 +220,12 @@ namespace CalDavSynchronizer
                 {
                   if (categoryWrapper.Inner == null)
                   {
-                    categoriesWrapper.Inner.Add (newCategory, mappingConfiguration.EventCategoryColor, OlCategoryShortcutKey.olCategoryShortcutKeyNone);
+                    categoriesWrapper.Inner.Add (newCategory, mappingConfiguration.EventCategoryColor, mappingConfiguration.CategoryShortcutKey);
                   }
                   else
                   {
                     categoryWrapper.Inner.Color = mappingConfiguration.EventCategoryColor;
+                    categoryWrapper.Inner.ShortcutKey = mappingConfiguration.CategoryShortcutKey;
                   }
                 }
               }
