@@ -116,13 +116,34 @@ namespace CalDavSynchronizer.Ui
       {
         _mapColorCheckBox.Enabled = true;
         _calendarColorRefreshButton.Enabled = _mapColorCheckBox.Checked;
+        _calendarColorSetButton.Enabled = _mapColorCheckBox.Checked;
         _categoryColorPicker.Enabled = _mapColorCheckBox.Checked;
       }
       else
       {
         _mapColorCheckBox.Enabled = false;
         _calendarColorRefreshButton.Enabled = false;
+        _calendarColorSetButton.Enabled = false;
         _categoryColorPicker.Enabled = false;
+      }
+    }
+
+    private async void _calendarColorSetButton_Click(object sender, EventArgs e)
+    {
+      if (_categoryColorPicker.SelectedValue != OlCategoryColor.olCategoryColorNone)
+      {
+        if (await _calDavDataAccessFactory().SetCalendarColorNoThrow ((ColorHelper.CategoryColors[_categoryColorPicker.SelectedValue] + "ff")))
+        {
+          MessageBox.Show ("Successfully updated the server calendar color!");
+        }
+        else
+        {
+          MessageBox.Show ("Error updating the server calendar color!");
+        }
+      }
+      else
+      {
+        MessageBox.Show ("No color set for updating the server calendar color!");
       }
     }
   }

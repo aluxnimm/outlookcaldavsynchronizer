@@ -30,6 +30,7 @@ namespace CalDavSynchronizer.DataAccess
     Task<bool> IsWriteable ();
 
     Task<string> GetCalendarColorNoThrow ();
+    Task<bool> SetCalendarColorNoThrow (string calendarColor);
 
     Task<IReadOnlyList<EntityVersion<Uri, string>>> GetEventVersions (DateTimeRange? range);
     Task<IReadOnlyList<EntityVersion<Uri, string>>> GetTodoVersions (DateTimeRange? range);
