@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Implementation;
+using GenSync.Logging;
 using GenSync.Synchronization;
 
 namespace CalDavSynchronizer.Synchronization
@@ -35,12 +36,12 @@ namespace CalDavSynchronizer.Synchronization
 
     public Task Synchronize ()
     {
-      return _synchronizer.Synchronize();
+      return _synchronizer.Synchronize (NullSynchronizationLogger.Instance);
     }
 
     public async Task SnychronizePartial (IEnumerable<string> outlookIds)
     {
-      await _synchronizer.SynchronizePartial (outlookIds, new Uri[] { });
+      await _synchronizer.SynchronizePartial (outlookIds, new Uri[] { }, NullSynchronizationLogger.Instance);
     }
 
     public bool IsResponsible (string folderEntryId, string folderStoreId)

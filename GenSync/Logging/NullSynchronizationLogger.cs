@@ -14,22 +14,39 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using GenSync.EntityMapping;
-using GenSync.Logging;
 
-namespace GenSync.UnitTests.Synchronization.Stubs
+using System;
+using GenSync.Synchronization;
+
+namespace GenSync.Logging
 {
-  internal class Mapper : IEntityMapper<string, string>
+  public class NullSynchronizationLogger : ISynchronizationLogger
   {
-    public string Map1To2 (string source, string target, IEntityMappingLogger logger)
+    public static readonly ISynchronizationLogger Instance = new NullSynchronizationLogger();
+
+    private NullSynchronizationLogger ()
     {
-      return source;
     }
 
-    public string Map2To1 (string source, string target, IEntityMappingLogger logger)
+    public void LogInitialEntityMatching ()
     {
-      return source;
+    }
+
+    public void LogAbortedDueToError (Exception exception)
+    {
+    }
+
+    public void LogDeltas (VersionDeltaLoginInformation aDeltaLogInfo, VersionDeltaLoginInformation bDeltaLogInfo)
+    {
+    }
+
+    public IEntitySynchronizationLogger CreateEntitySynchronizationLogger ()
+    {
+      return NullEntitySynchronizationLogger.Instance;
+    }
+
+    public void LogSkipLoadBecauseOfError (object entityId, Exception exception)
+    {
     }
   }
 }

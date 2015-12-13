@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -14,17 +14,13 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using System.Threading.Tasks;
-using GenSync.Logging;
 
-namespace GenSync.Synchronization
+using System;
+
+namespace GenSync.Logging
 {
-  /// <summary>
-  /// A Synchronizer :-P
-  /// </summary>
-  public interface ISynchronizer
+  public interface ILoadEntityLogger
   {
-    Task Synchronize (ISynchronizationLogger logger);
+    void LogSkipLoadBecauseOfError (object entityId, Exception exception);
   }
 }

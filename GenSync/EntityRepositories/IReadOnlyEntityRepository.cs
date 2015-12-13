@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using GenSync.Logging;
 
 namespace GenSync.EntityRepositories
 {
@@ -27,7 +28,7 @@ namespace GenSync.EntityRepositories
   {
     Task<IReadOnlyList<EntityVersion<TEntityId, TEntityVersion>>> GetVersions (IEnumerable<IdWithAwarenessLevel<TEntityId>> idsOfEntitiesToQuery);
     Task<IReadOnlyList<EntityVersion<TEntityId, TEntityVersion>>> GetAllVersions (IEnumerable<TEntityId> idsOfknownEntities);
-    Task<IReadOnlyList<EntityWithId<TEntityId, TEntity>>> Get (ICollection<TEntityId> ids);
+    Task<IReadOnlyList<EntityWithId<TEntityId, TEntity>>> Get (ICollection<TEntityId> ids, ILoadEntityLogger logger);
     void Cleanup (IReadOnlyDictionary<TEntityId, TEntity> entities);
   }
 }

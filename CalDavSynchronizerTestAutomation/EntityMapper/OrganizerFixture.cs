@@ -17,6 +17,7 @@
 using System;
 using CalDavSynchronizerTestAutomation.Infrastructure;
 using DDay.iCal;
+using GenSync.Logging;
 using Microsoft.Office.Interop.Outlook;
 using NUnit.Framework;
 
@@ -76,7 +77,7 @@ END:VCALENDAR
       var evt = OutlookTestContext.DeserializeICalendar (eventData);
       using (var outlookEvent = OutlookTestContext.CreateNewAppointment())
       {
-        OutlookTestContext.EntityMapper.Map2To1 (evt, outlookEvent);
+        OutlookTestContext.EntityMapper.Map2To1 (evt, outlookEvent, NullEntitySynchronizationLogger.Instance);
 
         _Inspector inspector = outlookEvent.Inner.GetInspector;
 
@@ -86,7 +87,7 @@ END:VCALENDAR
 
         inspector.Close (OlInspectorClose.olDiscard);
 
-        var newCalendar = OutlookTestContext.EntityMapper.Map1To2 (outlookEvent, new iCalendar());
+        var newCalendar = OutlookTestContext.EntityMapper.Map1To2 (outlookEvent, new iCalendar(), NullEntitySynchronizationLogger.Instance);
 
         Assert.That (newCalendar.Events[0].Organizer.CommonName, Is.EqualTo ("Test Account"));
         Assert.That (newCalendar.Events[0].Organizer.Value.ToString(), Is.EqualTo ("mailto:tw13test@technikum-wien.at"));

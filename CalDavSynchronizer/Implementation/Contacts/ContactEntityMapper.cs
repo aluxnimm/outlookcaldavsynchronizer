@@ -21,6 +21,7 @@ using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Contracts;
 using DDay.iCal;
 using GenSync.EntityMapping;
+using GenSync.Logging;
 using Microsoft.Office.Interop.Outlook;
 using Thought.vCards;
 using log4net;
@@ -47,7 +48,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       _configuration = configuration;
     }
 
-    public vCard Map1To2 (ContactItemWrapper source, vCard target)
+    public vCard Map1To2 (ContactItemWrapper source, vCard target, IEntityMappingLogger logger)
     {
       target.GivenName = source.Inner.FirstName;
       target.FamilyName = source.Inner.LastName;
@@ -179,7 +180,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       return target;
     }
 
-    public ContactItemWrapper Map2To1 (vCard source, ContactItemWrapper target)
+    public ContactItemWrapper Map2To1 (vCard source, ContactItemWrapper target, IEntityMappingLogger logger)
     {
       target.Inner.FirstName = source.GivenName;
       target.Inner.LastName = source.FamilyName;

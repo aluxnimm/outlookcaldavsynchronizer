@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using GenSync.Logging;
 
 namespace GenSync.Synchronization
 {
@@ -25,6 +26,9 @@ namespace GenSync.Synchronization
   /// </summary>
   public interface IPartialSynchronizer<in TAtypeEntityId, in TBtypeEntityId> : ISynchronizer
   {
-    Task SynchronizePartial (IEnumerable<TAtypeEntityId> aEntityIds, IEnumerable<TBtypeEntityId> bEntityIds);
+    Task SynchronizePartial (
+        IEnumerable<TAtypeEntityId> aEntityIds,
+        IEnumerable<TBtypeEntityId> bEntityIds,
+        ISynchronizationLogger logger);
   }
 }

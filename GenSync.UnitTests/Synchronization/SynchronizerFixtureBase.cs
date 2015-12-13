@@ -20,6 +20,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GenSync.EntityRelationManagement;
 using GenSync.InitialEntityMatching;
+using GenSync.Logging;
 using GenSync.ProgressReport;
 using GenSync.Synchronization;
 using GenSync.Synchronization.StateCreationStrategies;
@@ -102,7 +103,7 @@ namespace GenSync.UnitTests.Synchronization
     {
       var synchronizer = CreateSynchronizer (strategy);
 
-      synchronizer.Synchronize().Wait();
+      synchronizer.Synchronize (NullSynchronizationLogger.Instance).Wait();
     }
 
     private void PartialSynchronizeInternal (
@@ -114,7 +115,8 @@ namespace GenSync.UnitTests.Synchronization
 
       synchronizer.SynchronizePartial (
           aEntitesToSynchronize ?? new Identifier[] { },
-          bEntitesToSynchronize ?? new Identifier[] { }).Wait();
+          bEntitesToSynchronize ?? new Identifier[] { },
+          NullSynchronizationLogger.Instance).Wait();
     }
 
     private Synchronizer<Identifier, int, string, Identifier, int, string> CreateSynchronizer (IInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string> strategy)
