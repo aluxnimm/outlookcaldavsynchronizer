@@ -69,6 +69,7 @@
     <Compile Include="Logging\IEntitySynchronizationLogger.cs" />
     <Compile Include="Logging\EntitySynchronizationReport.cs" />
     <Compile Include="Logging\ISynchronizationLogger.cs" />
+    <Compile Include="Logging\LoadError.cs" />
     <Compile Include="Logging\NullEntitySynchronizationLogger.cs" />
     <Compile Include="Logging\NullSynchronizationLogger.cs" />
     <Compile Include="Logging\SynchronizationReport.cs" />

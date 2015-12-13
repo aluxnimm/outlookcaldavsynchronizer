@@ -80,7 +80,7 @@ namespace GenSync.Synchronization
     }
 
 
-    public async Task Synchronize (ISynchronizationLogger logger)
+    public async Task SynchronizeNoThrow (ISynchronizationLogger logger)
     {
       s_logger.InfoFormat ("Entered. Syncstrategy '{0}' with Atype='{1}' and Btype='{2}'", _initialSyncStateCreationStrategy.GetType().Name, typeof (TAtypeEntity).Name, typeof (TBtypeEntity).Name);
 
@@ -105,11 +105,11 @@ namespace GenSync.Synchronization
 
           using (var entityContainer = new EntityContainer (this, totalProgress, logger))
           {
-            logger.LogInitialEntityMatching();
-
             if (knownEntityRelationsOrNull == null)
             {
               s_logger.Info ("Did not find entity caches. Performing initial population");
+
+              logger.LogInitialEntityMatching ();
 
               await entityContainer.FillIfEmpty (newAVersions.Keys, newBVersions.Keys);
 
@@ -142,7 +142,7 @@ namespace GenSync.Synchronization
       s_logger.DebugFormat ("Exiting.");
     }
 
-    public async Task SynchronizePartial (
+    public async Task SynchronizePartialNoThrow (
         IEnumerable<TAtypeEntityId> aEntityIds,
         IEnumerable<TBtypeEntityId> bEntityIds,
         ISynchronizationLogger logger)
@@ -155,7 +155,7 @@ namespace GenSync.Synchronization
 
         if (knownEntityRelations == null)
         {
-          await Synchronize (logger);
+          await SynchronizeNoThrow (logger);
           return;
         }
 

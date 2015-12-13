@@ -14,15 +14,18 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Diagnostics;
 using CalDavSynchronizer.Synchronization;
 using CalDavSynchronizer.Utilities;
+using GenSync.Logging;
 using GenSync.Synchronization;
 using log4net;
 
@@ -42,6 +45,7 @@ namespace CalDavSynchronizer.Scheduling
     private DateTime _lastRun;
     private TimeSpan _interval;
     private IOutlookSynchronizer _synchronizer;
+    private readonly ISynchronizationReportRepository _synchronizationReportRepository;
     private string _profileName;
     private bool _inactive;
     private readonly ISynchronizerFactory _synchronizerFactory;
@@ -54,9 +58,12 @@ namespace CalDavSynchronizer.Scheduling
     // all methods are async
     private readonly List<string> _pendingOutlookItems = new List<string>();
 
-    public SynchronizationProfileRunner (ISynchronizerFactory synchronizerFactory)
+    public SynchronizationProfileRunner (
+        ISynchronizerFactory synchronizerFactory,
+        ISynchronizationReportRepository synchronizationReportRepository)
     {
       _synchronizerFactory = synchronizerFactory;
+      _synchronizationReportRepository = synchronizationReportRepository;
       // Set to min, to ensure that it runs on the first run after startup
       _lastRun = DateTime.MinValue;
     }
@@ -150,18 +157,16 @@ namespace CalDavSynchronizer.Scheduling
     {
       try
       {
+        var logger = new SynchronizationLogger (_profileName);
+        
         using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("Running synchronization profile '{0}'", _profileName)))
         {
-          try
-          {
-            await _synchronizer.Synchronize();
-          }
-          finally
-          {
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-          }
+            await _synchronizer.SynchronizeNoThrow (logger);
         }
+
+        GC.Collect ();
+        GC.WaitForPendingFinalizers ();
+        _synchronizationReportRepository.AddReport (logger.GetReport());
       }
       catch (Exception x)
       {
@@ -177,18 +182,16 @@ namespace CalDavSynchronizer.Scheduling
     {
       try
       {
+        var logger = new SynchronizationLogger (_profileName);
+        
         using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("Running synchronization profile '{0}'", _profileName)))
         {
-          try
-          {
-            await _synchronizer.SnychronizePartial (itemsToSync);
-          }
-          finally
-          {
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-          }
+          await _synchronizer.SnychronizePartialNoThrow (itemsToSync, logger);
         }
+
+        GC.Collect ();
+        GC.WaitForPendingFinalizers ();
+        _synchronizationReportRepository.AddReport (logger.GetReport());
       }
       catch (Exception x)
       {

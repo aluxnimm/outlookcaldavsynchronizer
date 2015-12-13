@@ -21,12 +21,12 @@ using GenSync.Synchronization;
 
 namespace GenSync.Logging
 {
-  internal class SynchronizationLogger : ISynchronizationLogger
+  public class SynchronizationLogger : ISynchronizationLogger
   {
-    private readonly DateTime _synchronizationTime;
+    private readonly DateTime _startTime;
     private readonly String _profileName;
     private bool _initialEntityMatchingPerformed;
-    private readonly List<Tuple<string, string>> _loadErrors = new List<Tuple<string, string>>();
+    private readonly List<LoadError> _loadErrors = new List<LoadError>();
     private string _exceptionThatLeadToAbortion;
     private string _aDelta;
     private string _bDelta;
@@ -34,9 +34,9 @@ namespace GenSync.Logging
     private readonly EntitySynchronizationLogger _currentSynchronitzationLogger;
     private readonly List<EntitySynchronizationReport> _entitySynchronizationReports = new List<EntitySynchronizationReport>();
 
-    public SynchronizationLogger (DateTime synchronizationTime, string profileName)
+    public SynchronizationLogger (string profileName)
     {
-      _synchronizationTime = synchronizationTime;
+      _startTime = DateTime.UtcNow;
       _profileName = profileName;
       _currentSynchronitzationLogger = new EntitySynchronizationLogger();
       _currentSynchronitzationLogger.Disposed += CurrentSynchronitzationLogger_Disposed;
@@ -48,12 +48,16 @@ namespace GenSync.Logging
       {
         _entitySynchronizationReports.Add (_currentSynchronitzationLogger.GetReport());
       }
-      _currentSynchronitzationLogger.Clear ();
+      _currentSynchronitzationLogger.Clear();
     }
 
     public void LogSkipLoadBecauseOfError (object entityId, Exception exception)
     {
-      _loadErrors.Add (Tuple.Create (entityId.ToString(), exception.ToString()));
+      _loadErrors.Add (new LoadError
+                       {
+                           EntityId = entityId.ToString(),
+                           Error = exception.ToString()
+                       });
     }
 
     public void LogInitialEntityMatching ()
@@ -91,8 +95,9 @@ namespace GenSync.Logging
                  InitialEntityMatchingPerformed = _initialEntityMatchingPerformed,
                  LoadErrors = _loadErrors.ToArray(),
                  ProfileName = _profileName,
-                 SynchronizationTime = _synchronizationTime,
-                 EntitySynchronizationReports = _entitySynchronizationReports.ToArray()
+                 StartTime = _startTime,
+                 EntitySynchronizationReports = _entitySynchronizationReports.ToArray(),
+                 Duration = DateTime.UtcNow - _startTime
              };
     }
   }

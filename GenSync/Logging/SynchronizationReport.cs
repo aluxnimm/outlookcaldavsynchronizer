@@ -16,18 +16,30 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Xml.Serialization;
 
 namespace GenSync.Logging
 {
   public class SynchronizationReport
   {
-    public DateTime SynchronizationTime { get; set; }
     public string ProfileName { get; set; }
+    public DateTime StartTime { get; set; }
+
+    [XmlIgnore]
+    public TimeSpan Duration { get; set; }
+
     public bool InitialEntityMatchingPerformed { get; set; }
-    public Tuple<string, string>[] LoadErrors { get; set; }
-    public string ExceptionThatLeadToAbortion { get; set; }
     public string ADelta { get; set; }
     public string BDelta { get; set; }
+    public LoadError[] LoadErrors { get; set; }
     public EntitySynchronizationReport[] EntitySynchronizationReports { get; set; }
+    public string ExceptionThatLeadToAbortion { get; set; }
+
+    [XmlElement (ElementName = "Duration")]
+    public string Duration_ForSerializationOnly
+    {
+      get { return Duration.ToString(); }
+      set { Duration = TimeSpan.Parse (value); }
+    }
   }
 }

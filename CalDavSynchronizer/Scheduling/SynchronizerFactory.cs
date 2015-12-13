@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -92,6 +93,12 @@ namespace CalDavSynchronizer.Scheduling
                   folderName,
                   defaultItemType));
       }
+    }
+
+    public ISynchronizationReportRepository CreateSynchronizationReportRepository (Guid synchronizationProfileId)
+    {
+      return new SynchronizationReportRepository (
+          Path.Combine (_profileDataDirectoryFactory (synchronizationProfileId), "SyncLogs"));
     }
 
     private OutlookSynchronizer CreateEventSynchronizer (Options options)
@@ -363,7 +370,7 @@ namespace CalDavSynchronizer.Scheduling
                   options.CloseAfterEachRequest,
                   options.ProxyOptions)));
 
-      var mappingParameters = GetMappingParameters<ContactMappingConfiguration>(options);
+      var mappingParameters = GetMappingParameters<ContactMappingConfiguration> (options);
 
       var entityMapper = new ContactEntityMapper (mappingParameters);
 

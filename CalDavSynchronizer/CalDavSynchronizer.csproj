@@ -228,6 +228,8 @@
     <Compile Include="DataAccess\IHttpHeaders.cs" />
     <Compile Include="DataAccess\IGeneralOptionsDataAccess.cs" />
     <Compile Include="DataAccess\GeneralOptionsDataAccess.cs" />
+    <Compile Include="DataAccess\ISynchronizationReportRepository.cs" />
+    <Compile Include="DataAccess\SynchronizationReportRepository.cs" />
     <Compile Include="DataAccess\WebDavDataAccess.cs" />
     <Compile Include="DataAccess\CardDavDataAccess.cs" />
     <Compile Include="DataAccess\IWebDavClient.cs" />

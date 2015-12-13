@@ -34,6 +34,7 @@ using GenSync;
 using GenSync.EntityMapping;
 using GenSync.EntityRelationManagement;
 using GenSync.EntityRepositories;
+using GenSync.Logging;
 using GenSync.ProgressReport;
 using GenSync.Synchronization;
 using Microsoft.Office.Interop.Outlook;
@@ -180,7 +181,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           calDavDataAccess,
           entityRelationDataAccess);
 
-      WaitForTask (synchronizer.Synchronize());
+      WaitForTask (synchronizer.SynchronizeNoThrow (NullSynchronizationLogger.Instance));
     }
 
     /// <remarks>
@@ -224,7 +225,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           calDavDataAccess,
           entityRelationDataAccess,
           optionsModifier);
-      WaitForTask (synchronizer.Synchronize());
+      WaitForTask (synchronizer.SynchronizeNoThrow (NullSynchronizationLogger.Instance));
       return calDavEvents;
     }
 
@@ -276,7 +277,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           calDavDataAccess,
           entityRelationDataAccess);
 
-      WaitForTask (synchronizer.Synchronize());
+      WaitForTask (synchronizer.SynchronizeNoThrow (NullSynchronizationLogger.Instance));
 
       return roundTrippedData;
     }

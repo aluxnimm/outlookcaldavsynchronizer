@@ -13,42 +13,33 @@
 // GNU Affero General Public License for more details.
 // 
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.using System;
 
 using System;
 using System.IO;
-using System.Text;
-using System.Xml.Serialization;
+using CalDavSynchronizer.Utilities;
+using GenSync.Logging;
 
-namespace CalDavSynchronizer.Utilities
+namespace CalDavSynchronizer.DataAccess
 {
-  internal static class Serializer<T>
+  public class SynchronizationReportRepository : ISynchronizationReportRepository
   {
-    private static readonly XmlSerializer _xmlSerializer = new XmlSerializer (typeof (T));
+    private readonly string _reportDirectory;
 
-    public static string Serialize (T o)
+    public SynchronizationReportRepository (string reportDirectory)
     {
-      var stringBuilder = new StringBuilder();
-
-      using (var writer = new StringWriter (stringBuilder))
-      {
-        _xmlSerializer.Serialize (writer, o);
-      }
-
-      return stringBuilder.ToString();
+      _reportDirectory = reportDirectory;
     }
 
-    public static T Deserialize (string serialized)
+    public void AddReport (SynchronizationReport report)
     {
-      using (var reader = new StringReader (serialized))
-      {
-        return (T) _xmlSerializer.Deserialize (reader);
-      }
-    }
+      if (!Directory.Exists (_reportDirectory))
+        Directory.CreateDirectory (_reportDirectory);
 
-    public static void SerializeTo (T o, Stream stream)
-    {
-      _xmlSerializer.Serialize (stream, o);
+      using (var fileStream = File.Create (Path.Combine (_reportDirectory, Guid.NewGuid().ToString() + ".log")))
+      {
+        Serializer<SynchronizationReport>.SerializeTo (report, fileStream);
+      }
     }
   }
 }

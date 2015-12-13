@@ -76,7 +76,11 @@ namespace CalDavSynchronizer.Scheduling
         {
           SynchronizationProfileRunner profileRunner;
           if (!_runnersById.TryGetValue (option.Id, out profileRunner))
-            profileRunner = new SynchronizationProfileRunner (_synchronizerFactory);
+          {
+            profileRunner = new SynchronizationProfileRunner (
+                _synchronizerFactory,
+                _synchronizerFactory.CreateSynchronizationReportRepository (option.Id));
+          }
           profileRunner.UpdateOptions (option);
           workersById.Add (option.Id, profileRunner);
         }

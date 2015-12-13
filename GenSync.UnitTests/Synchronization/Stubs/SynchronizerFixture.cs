@@ -78,7 +78,7 @@ namespace GenSync.UnitTests.Synchronization.Stubs
           .Return (new DoNothing<string, string, string, string, string, string> (knownData));
 
       var synchronizer = builder.Build();
-      await synchronizer.Synchronize (NullSynchronizationLogger.Instance);
+      await synchronizer.SynchronizeNoThrow (NullSynchronizationLogger.Instance);
 
       builder.EntityRelationDataAccess.AssertWasCalled (
           c => c.SaveEntityRelationData (Arg<List<IEntityRelationData<string, string, string, string>>>.Matches (l => l.Count == 1 && l[0] == knownData)));

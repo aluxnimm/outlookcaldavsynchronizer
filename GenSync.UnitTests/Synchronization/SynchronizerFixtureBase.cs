@@ -103,7 +103,7 @@ namespace GenSync.UnitTests.Synchronization
     {
       var synchronizer = CreateSynchronizer (strategy);
 
-      synchronizer.Synchronize (NullSynchronizationLogger.Instance).Wait();
+      synchronizer.SynchronizeNoThrow (NullSynchronizationLogger.Instance).Wait();
     }
 
     private void PartialSynchronizeInternal (
@@ -113,7 +113,7 @@ namespace GenSync.UnitTests.Synchronization
     {
       var synchronizer = CreateSynchronizer (strategy);
 
-      synchronizer.SynchronizePartial (
+      synchronizer.SynchronizePartialNoThrow (
           aEntitesToSynchronize ?? new Identifier[] { },
           bEntitesToSynchronize ?? new Identifier[] { },
           NullSynchronizationLogger.Instance).Wait();

@@ -13,18 +13,15 @@
 // GNU Affero General Public License for more details.
 // 
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.using System;
+
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using GenSync.Logging;
 
-namespace CalDavSynchronizer.Synchronization
+namespace CalDavSynchronizer.DataAccess
 {
-  public interface IOutlookSynchronizer
+  public interface ISynchronizationReportRepository
   {
-    Task SynchronizeNoThrow (ISynchronizationLogger logger);
-    Task SnychronizePartialNoThrow (IEnumerable<string> outlookIds, ISynchronizationLogger logger);
-    bool IsResponsible (string folderEntryId, string folderStoreId);
+    void AddReport (SynchronizationReport report);
   }
 }

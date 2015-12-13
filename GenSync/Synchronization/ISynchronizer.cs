@@ -25,6 +25,6 @@ namespace GenSync.Synchronization
   /// </summary>
   public interface ISynchronizer
   {
-    Task Synchronize (ISynchronizationLogger logger);
+    Task SynchronizeNoThrow (ISynchronizationLogger logger);
   }
 }
