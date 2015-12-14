@@ -210,12 +210,20 @@ namespace CalDavSynchronizer
         {
           var mappingConfiguration = (EventMappingConfiguration) changedOption.New.MappingConfiguration;
 
-          if (mappingConfiguration.UseEventCategoryColorAndMapFromCalendarColor)
+          if (mappingConfiguration.UseEventCategoryColorAndMapFromCalendarColor || mappingConfiguration.CategoryShortcutKey != OlCategoryShortcutKey.olCategoryShortcutKeyNone)
           {
             try
             {
               using (var categoriesWrapper = GenericComObjectWrapper.Create (_session.Categories))
               {
+                foreach (var existingCategory in categoriesWrapper.Inner.ToSafeEnumerable<Category>())
+                {
+                  if (existingCategory.ShortcutKey == mappingConfiguration.CategoryShortcutKey)
+                  {
+                    existingCategory.ShortcutKey = OlCategoryShortcutKey.olCategoryShortcutKeyNone;
+                  }
+                }
+                
                 using (var categoryWrapper = GenericComObjectWrapper.Create (categoriesWrapper.Inner[newCategory]))
                 {
                   if (categoryWrapper.Inner == null)
