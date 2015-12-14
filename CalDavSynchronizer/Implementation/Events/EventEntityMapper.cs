@@ -432,7 +432,8 @@ namespace CalDavSynchronizer.Implementation.Events
       var targetOrganizer = new Organizer (GetMailUrl (organizer));
       targetOrganizer.CommonName = organizer.Name;
       target.Organizer = targetOrganizer;
-      target.Organizer.Parameters.Add ("SCHEDULE-AGENT", "CLIENT");
+      if (_configuration.ScheduleAgentClient) target.Organizer.Parameters.Add ("SCHEDULE-AGENT", "CLIENT");
+      if (_configuration.SendNoAppointmentNotifications) target.Properties.Add (new CalendarProperty ("X-SOGO-SEND-APPOINTMENT-NOTIFICATIONS", "NO"));
     }
 
     private void SetOrganizer (IEvent target, string organizerCN, string organizerEmail)
@@ -440,6 +441,9 @@ namespace CalDavSynchronizer.Implementation.Events
       var targetOrganizer = new Organizer (string.Format ("MAILTO:{0}", organizerEmail));
       targetOrganizer.CommonName = organizerCN;
       target.Organizer = targetOrganizer;
+      if (_configuration.ScheduleAgentClient) target.Organizer.Parameters.Add ("SCHEDULE-AGENT", "CLIENT");
+      if (_configuration.SendNoAppointmentNotifications) target.Properties.Add (new CalendarProperty ("X-SOGO-SEND-APPOINTMENT-NOTIFICATIONS", "NO"));
+
     }
 
     private string GetMailUrl (AddressEntry addressEntry)
@@ -1059,6 +1063,7 @@ namespace CalDavSynchronizer.Implementation.Events
           attendee.ParticipationStatus = MapParticipation1To2 (recipient.MeetingResponseStatus);
           attendee.CommonName = recipient.Name;
           attendee.Role = MapAttendeeType1To2 ((OlMeetingRecipientType) recipient.Type);
+          attendee.RSVP = true;
           target.Attendees.Add (attendee);
         }
         else

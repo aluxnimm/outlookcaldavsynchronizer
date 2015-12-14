@@ -84,6 +84,8 @@ namespace CalDavSynchronizer.Ui
         return new EventMappingConfiguration
         {
           MapAttendees = _mapAttendeesCheckBox.Checked,
+          ScheduleAgentClient = _scheduleAgentClientCheckBox.Checked,
+          SendNoAppointmentNotifications = _sendNoAppointmentsNotificationsCheckBox.Checked,
           MapBody = _mapBodyCheckBox.Checked,
           MapReminder = (ReminderMapping) _mapReminderComboBox.SelectedValue,
           EventCategory = _categoryTextBox.Text,
@@ -95,6 +97,8 @@ namespace CalDavSynchronizer.Ui
       set
       {
         _mapAttendeesCheckBox.Checked = value.MapAttendees;
+        _scheduleAgentClientCheckBox.Checked = value.ScheduleAgentClient;
+        _sendNoAppointmentsNotificationsCheckBox.Checked = value.SendNoAppointmentNotifications;
         _mapBodyCheckBox.Checked = value.MapBody;
         _mapReminderComboBox.SelectedValue = value.MapReminder;
         _categoryTextBox.Text = value.EventCategory;
@@ -102,6 +106,7 @@ namespace CalDavSynchronizer.Ui
         _mapColorCheckBox.Checked = value.UseEventCategoryColorAndMapFromCalendarColor;
         _categoryShortcutKeycomboBox.SelectedValue = value.CategoryShortcutKey;
         UpdateCategoryColorControlsEnabled ();
+        UpdateSchedulingControlsEnabled();
       }
     }
 
@@ -163,6 +168,17 @@ namespace CalDavSynchronizer.Ui
       {
         MessageBox.Show ("No color set for updating the server calendar color!");
       }
+    }
+
+    private void _mapAttendeesCheckBox_CheckedChanged(object sender, EventArgs e)
+    {
+      UpdateSchedulingControlsEnabled();
+    }
+
+    private void UpdateSchedulingControlsEnabled ()
+    {
+      _scheduleAgentClientCheckBox.Enabled = _mapAttendeesCheckBox.Checked;
+      _sendNoAppointmentsNotificationsCheckBox.Enabled = _mapAttendeesCheckBox.Checked;
     }
   }
 }

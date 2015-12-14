@@ -28,6 +28,8 @@ namespace CalDavSynchronizer.Contracts
   {
     public ReminderMapping MapReminder { get; set; }
     public bool MapAttendees { get; set; }
+    public bool ScheduleAgentClient { get; set; }
+    public bool SendNoAppointmentNotifications { get; set; }
     public bool MapBody { get; set; }
     public string EventCategory { get; set; }
     public bool UseEventCategoryColorAndMapFromCalendarColor { get; set; }
@@ -44,6 +46,8 @@ namespace CalDavSynchronizer.Contracts
     {
       MapReminder = ReminderMapping.JustUpcoming;
       MapAttendees = true;
+      ScheduleAgentClient = true;
+      SendNoAppointmentNotifications = false;
       MapBody = true;
       UseEventCategoryColorAndMapFromCalendarColor = false;
       EventCategoryColor = OlCategoryColor.olCategoryColorNone;
