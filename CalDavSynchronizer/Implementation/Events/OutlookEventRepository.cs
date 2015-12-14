@@ -162,7 +162,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
     public static  void AddCategoryFilter (StringBuilder filterBuilder, string category)
     {
-      filterBuilder.AppendFormat ("[Categories] = '{0}'", category);
+      filterBuilder.AppendFormat ("[Categories] = '{0}'", category.Replace ("'","''"));
     }
 
     public static List<EntityVersion<string, DateTime>> QueryFolder (NameSpace session, GenericComObjectWrapper<Folder> calendarFolderWrapper, StringBuilder filterBuilder)
