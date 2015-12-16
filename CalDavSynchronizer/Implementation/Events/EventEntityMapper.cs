@@ -293,13 +293,13 @@ namespace CalDavSynchronizer.Implementation.Events
         return;
       }
 
-      if (_configuration.MapReminder == ReminderMapping.JustUpcoming
-          && source.Start.UTC.Add (alarm.Trigger.Duration.Value) <= DateTime.UtcNow)
+      if (_configuration.MapReminder == ReminderMapping.JustUpcoming 
+          && target.StartUTC.Add (alarm.Trigger.Duration.Value) <= DateTime.UtcNow)
       {
-        target.ReminderSet = false;
-        return;
+          target.ReminderSet = false;
+          return;
       }
-
+    
       target.ReminderSet = true;
       target.ReminderMinutesBeforeStart = -(int) alarm.Trigger.Duration.Value.TotalMinutes;
     }
