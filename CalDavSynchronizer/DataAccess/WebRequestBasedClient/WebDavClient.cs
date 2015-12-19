@@ -36,13 +36,21 @@ namespace CalDavSynchronizer.DataAccess.WebRequestBasedClient
     private readonly TimeSpan _connectTimeout;
     private readonly TimeSpan _readWriteTimeout;
     private readonly string _userAgent;
+    private readonly bool _closeConnectionAfterEachRequest;
 
-    public WebDavClient (string username, string password, TimeSpan connectTimeout, TimeSpan readWriteTimeout)
+
+    public WebDavClient (
+      string username, 
+      string password, 
+      TimeSpan connectTimeout, 
+      TimeSpan readWriteTimeout, 
+      bool closeConnectionAfterEachRequest)
     {
       _username = username;
       _password = password;
       _connectTimeout = connectTimeout;
       _readWriteTimeout = readWriteTimeout;
+      _closeConnectionAfterEachRequest = closeConnectionAfterEachRequest;
       var version = Assembly.GetExecutingAssembly().GetName().Version;
       _userAgent = string.Format ("CalDavSynchronizer/{0}.{1}", version.Major, version.Minor);
     }
@@ -53,6 +61,7 @@ namespace CalDavSynchronizer.DataAccess.WebRequestBasedClient
       request.Timeout = (int) _connectTimeout.TotalMilliseconds;
       request.ReadWriteTimeout = (int) _readWriteTimeout.TotalMilliseconds;
       request.UserAgent = _userAgent;
+      request.KeepAlive = !_closeConnectionAfterEachRequest;
 
       if (!string.IsNullOrEmpty (_username))
       {

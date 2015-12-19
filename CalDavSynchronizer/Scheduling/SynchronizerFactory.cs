@@ -140,7 +140,7 @@ namespace CalDavSynchronizer.Scheduling
 
         case ServerAdapterType.SynchronousWebRequestBased:
           return new DataAccess.WebRequestBasedClient.WebDavClient (
-              username, password, timeout, timeout);
+              username, password, timeout, timeout, closeConnectionAfterEachRequest);
         default:
           throw new ArgumentOutOfRangeException ("serverAdapterType");
       }
