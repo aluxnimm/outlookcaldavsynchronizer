@@ -130,15 +130,12 @@ namespace CalDavSynchronizer.Implementation.Events
       // Table Filtering in the MSDN: https://msdn.microsoft.com/EN-US/library/office/ff867581.aspx
 
       if (range.HasValue)
-        filterBuilder.AppendFormat ("[Start] < '{0}' And [End] > '{1}'", ToOutlookDateString (range.Value.To), ToOutlookDateString (range.Value.From));
-
+        filterBuilder.AppendFormat("@SQL=\"urn:schemas:calendar:dtstart\" < '{0}' And \"urn:schemas:calendar:dtend\" > '{1}'", ToOutlookDateString(range.Value.To), ToOutlookDateString(range.Value.From));
       if (_configuration.UseEventCategoryAsFilter)
       {
-        if (filterBuilder.Length > 0)
-          filterBuilder.Append (" And ");
-
         AddCategoryFilter (filterBuilder, _configuration.EventCategory);
       }
+      s_logger.InfoFormat("Using Outlook DASL filter: {0}", filterBuilder.ToString());
 
       List<EntityVersion<string, DateTime>> events;
       using (var calendarFolderWrapper = CreateFolderWrapper())
@@ -162,7 +159,12 @@ namespace CalDavSynchronizer.Implementation.Events
 
     public static  void AddCategoryFilter (StringBuilder filterBuilder, string category)
     {
-      filterBuilder.AppendFormat ("[Categories] = '{0}'", category.Replace ("'","''"));
+      if (filterBuilder.Length > 0)
+        filterBuilder.Append(" And ");
+      else
+        filterBuilder.Append("@SQL=");
+
+      filterBuilder.AppendFormat("\"urn:schemas-microsoft-com:office:office#Keywords\" = '{0}'", category.Replace ("'","''"));
     }
 
     public static List<EntityVersion<string, DateTime>> QueryFolder (NameSpace session, GenericComObjectWrapper<Folder> calendarFolderWrapper, StringBuilder filterBuilder)
