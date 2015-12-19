@@ -57,7 +57,7 @@ namespace CalDavSynchronizer.DataAccess.WebRequestBasedClient
       get
       {
         var location = _headerFromFirstCall["location"];
-        return !string.IsNullOrEmpty (location) ? new Uri (location) : null;
+        return !string.IsNullOrEmpty (location) ? new Uri (location, UriKind.RelativeOrAbsolute) : null;
       }
     }
 

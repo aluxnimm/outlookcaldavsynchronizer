@@ -142,10 +142,11 @@ namespace CalDavSynchronizer.DataAccess.WebRequestBasedClient
       {
         if (!string.IsNullOrEmpty (response.Headers["Location"]))
         {
-          var location = response.Headers["Location"];
+          var location = new Uri (response.Headers["Location"], UriKind.RelativeOrAbsolute);
+          var effectiveLocation = location.IsAbsoluteUri ? location : new Uri (url, location);
           using (response)
           {
-            return ExecuteWebDavRequest (new Uri (location), httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody, headersFromFirstCall ?? response.Headers);
+            return ExecuteWebDavRequest (effectiveLocation, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody, headersFromFirstCall ?? response.Headers);
           }
         }
         else
