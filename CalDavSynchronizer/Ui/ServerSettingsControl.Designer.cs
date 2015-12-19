@@ -30,7 +30,7 @@
     {
       this.components = new System.ComponentModel.Container();
       this.groupBox = new System.Windows.Forms.GroupBox();
-      this._useGoogleOAuthCheckBox = new System.Windows.Forms.CheckBox();
+      this._serverAdapterTypeControlImp = new GoogleOnlyServerAdapterControl ();
       this.label11 = new System.Windows.Forms.Label();
       this._emailAddressTextBox = new System.Windows.Forms.TextBox();
       this._testConnectionButton = new System.Windows.Forms.Button();
@@ -49,7 +49,7 @@
       this.groupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.groupBox.Controls.Add(this._useGoogleOAuthCheckBox);
+      this.groupBox.Controls.Add (this._serverAdapterTypeControlImp);
       this.groupBox.Controls.Add(this.label11);
       this.groupBox.Controls.Add(this._emailAddressTextBox);
       this.groupBox.Controls.Add(this._testConnectionButton);
@@ -68,14 +68,12 @@
       // 
       // _useGoogleOAuthCheckBox
       // 
-      this._useGoogleOAuthCheckBox.AutoSize = true;
-      this._useGoogleOAuthCheckBox.Location = new System.Drawing.Point(8, 145);
-      this._useGoogleOAuthCheckBox.Name = "_useGoogleOAuthCheckBox";
-      this._useGoogleOAuthCheckBox.Size = new System.Drawing.Size(115, 17);
-      this._useGoogleOAuthCheckBox.TabIndex = 4;
-      this._useGoogleOAuthCheckBox.Text = "Use Google OAuth";
-      this._useGoogleOAuthCheckBox.UseVisualStyleBackColor = true;
-      this._useGoogleOAuthCheckBox.CheckedChanged += new System.EventHandler(this._useGoogleOAuthCheckBox_CheckedChanged);
+      this._serverAdapterTypeControlImp.AutoSize = true;
+      this._serverAdapterTypeControlImp.Location = new System.Drawing.Point (8, 145);
+      this._serverAdapterTypeControlImp.Name = "_useGoogleOAuthCheckBox";
+      this._serverAdapterTypeControlImp.Size = new System.Drawing.Size (115, 17);
+      this._serverAdapterTypeControlImp.TabIndex = 4;
+      this._serverAdapterTypeControlImp.UseVisualStyleBackColor = true;
       // 
       // label11
       // 
@@ -182,7 +180,7 @@
     private System.Windows.Forms.Label label3;
     private System.Windows.Forms.Label label11;
     private System.Windows.Forms.TextBox _emailAddressTextBox;
-    private System.Windows.Forms.CheckBox _useGoogleOAuthCheckBox;
+    private GoogleOnlyServerAdapterControl _serverAdapterTypeControlImp;
     private System.Windows.Forms.ToolTip toolTip;
   }
 }

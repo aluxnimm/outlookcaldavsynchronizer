@@ -352,6 +352,7 @@
     <Compile Include="Ui\HeaderEventArgs.cs" />
     <Compile Include="Ui\IConfigurationForm.cs" />
     <Compile Include="Ui\IConfigurationFormFactory.cs" />
+    <Compile Include="Ui\IServerAdapterControl.cs" />
     <Compile Include="Ui\IServerSettingsControl.cs" />
     <Compile Include="Ui\IOptionsDisplayControl.cs" />
     <Compile Include="Ui\IOptionsDisplayControlFactory.cs" />
@@ -381,6 +382,15 @@
     </Compile>
     <Compile Include="Ui\SelectOptionsDisplayTypeForm.Designer.cs">
       <DependentUpon>SelectOptionsDisplayTypeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\FullServerdApterTypeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Ui\FullServerdApterTypeControl.Designer.cs">
+      <DependentUpon>FullServerdApterTypeControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\GoogleOnlyServerAdapterControl.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Ui\ServerSettingsControl.cs">
       <SubType>UserControl</SubType>
@@ -456,6 +466,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\SelectOptionsDisplayTypeForm.resx">
       <DependentUpon>SelectOptionsDisplayTypeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ui\FullServerdApterTypeControl.resx">
+      <DependentUpon>FullServerdApterTypeControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\ServerSettingsControl.resx">
       <DependentUpon>ServerSettingsControl.cs</DependentUpon>

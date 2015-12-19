@@ -44,34 +44,11 @@ namespace CalDavSynchronizer.Ui
 
     private ISettingsFaultFinder _settingsFaultFinder;
     private IServerSettingsControlDependencies _dependencies;
-
-    private ServerAdapterType SelectedServerAdapterType
-    {
-      get { return _useGoogleOAuthCheckBox.Checked ? ServerAdapterType.GoogleOAuth : ServerAdapterType.Default; }
-      set
-      {
-        switch (value)
-        {
-          case ServerAdapterType.Default:
-            _useGoogleOAuthCheckBox.Checked = false;
-            break;
-          case ServerAdapterType.GoogleOAuth:
-            _useGoogleOAuthCheckBox.Checked = true;
-            break;
-          default:
-            throw new ArgumentOutOfRangeException ("value");
-        }
-      }
-    }
+    private IServerAdapterControl _serverAdapterTypeControl;
 
     private void UpdatePasswordEnabled ()
     {
-      _passwordTextBox.Enabled = SelectedServerAdapterType != ServerAdapterType.GoogleOAuth;
-    }
-
-    private void _useGoogleOAuthCheckBox_CheckedChanged (object sender, EventArgs e)
-    {
-      UpdatePasswordEnabled();
+      _passwordTextBox.Enabled = _serverAdapterTypeControl.SelectedServerAdapterType != ServerAdapterType.GoogleOAuth;
     }
 
     public void Initialize (ISettingsFaultFinder settingsFaultFinder, IServerSettingsControlDependencies dependencies)
@@ -82,6 +59,13 @@ namespace CalDavSynchronizer.Ui
       _dependencies = dependencies;
 
       _testConnectionButton.Click += _testConnectionButton_Click;
+      _serverAdapterTypeControl = _serverAdapterTypeControlImp;
+      _serverAdapterTypeControl.SelectedServerAdapterTypeChanged += _serverAdapterTypeControl_SelectedServerAdapterTypeChanged;
+    }
+
+    void _serverAdapterTypeControl_SelectedServerAdapterTypeChanged (object sender, EventArgs e)
+    {
+      UpdatePasswordEnabled();
     }
 
     private async void _testConnectionButton_Click (object sender, EventArgs e)
@@ -202,7 +186,7 @@ namespace CalDavSynchronizer.Ui
           _userNameTextBox.Text,
           _passwordTextBox.Text,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-          SelectedServerAdapterType,
+          _serverAdapterTypeControl.SelectedServerAdapterType,
           _dependencies.CloseConnectionAfterEachRequest,
           _dependencies.ProxyOptions);
     }
@@ -219,7 +203,7 @@ namespace CalDavSynchronizer.Ui
       _userNameTextBox.Text = value.UserName;
       _passwordTextBox.Text = value.Password;
 
-      SelectedServerAdapterType = value.ServerAdapterType;
+      _serverAdapterTypeControl.SelectedServerAdapterType = value.ServerAdapterType;
     }
 
     public void FillOptions (Options optionsToFill)
@@ -229,7 +213,7 @@ namespace CalDavSynchronizer.Ui
       optionsToFill.UserName = _userNameTextBox.Text;
       optionsToFill.Password = _passwordTextBox.Text;
 
-      optionsToFill.ServerAdapterType = SelectedServerAdapterType;
+      optionsToFill.ServerAdapterType = _serverAdapterTypeControl.SelectedServerAdapterType;
     }
 
     public string CalendarUrl
