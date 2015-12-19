@@ -48,6 +48,23 @@ namespace CalDavSynchronizer.Ui
       return mappingConfiguration;
     }
 
+    public static bool ValidateCategoryName (string category, StringBuilder errorMessageBuilder)
+    {
+      bool result = true;
+
+      if (category.Contains (","))
+      {
+        errorMessageBuilder.AppendLine("- The category name must not contain commas.");
+        result = false;
+      }
+      if (category.Contains(";"))
+      {
+        errorMessageBuilder.AppendLine("- The category name must not contain semicolons.");
+        result = false;
+      }
+      return result;
+    }
+
     public static bool ValidateCalendarUrl (string calendarUrl, StringBuilder errorMessageBuilder, bool requiresTrailingSlash)
     {
       bool result = true;

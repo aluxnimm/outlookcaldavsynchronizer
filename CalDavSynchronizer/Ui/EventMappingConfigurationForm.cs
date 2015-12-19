@@ -69,7 +69,15 @@ namespace CalDavSynchronizer.Ui
 
     private void _okButton_Click (object sender, EventArgs e)
     {
-      DialogResult = DialogResult.OK;
+      StringBuilder errorMessageBuilder = new StringBuilder();
+      if (OptionTasks.ValidateCategoryName (_categoryTextBox.Text, errorMessageBuilder))
+      {
+          DialogResult = DialogResult.OK;
+      }
+      else
+      {
+        MessageBox.Show (errorMessageBuilder.ToString(), "The category name is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
     }
 
     public bool Display ()
