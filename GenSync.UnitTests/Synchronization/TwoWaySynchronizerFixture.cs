@@ -15,7 +15,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using GenSync.EntityRelationManagement;
 using GenSync.UnitTests.Synchronization.Stubs;
 using NUnit.Framework;
 
@@ -87,6 +89,61 @@ namespace GenSync.UnitTests.Synchronization
         AssertServer ("s1", 0, "Item 1");
         AssertServer ("s2", 0, "Item 2");
         AssertServer (0, "Item l");
+        AssertServer (0, "Item s");
+      });
+    }
+
+    [TestCase (GenericConflictResolution.AWins)]
+    [TestCase (GenericConflictResolution.BWins)]
+    public async Task TwoWaySynchronize_AddedBoth_NewEntitiesAreMatching (GenericConflictResolution conflictWinner)
+    {
+      await InitializeWithTwoEvents();
+
+      var addedLocal = await _localRepository.Create (v => "Item l");
+      var addedServer = await _serverRepository.Create (v => "Item s");
+      await _serverRepository.Create (v => "Item s2");
+
+      ExecuteMultipleTimes (() =>
+      {
+        SynchronizeTwoWay (
+            conflictWinner,
+            new List<IEntityRelationData<Identifier, int, Identifier, int>>
+            {
+                new EntityRelationData (addedLocal.Id, addedLocal.Version, addedServer.Id, addedServer.Version)
+            });
+        AssertLocalCount (4);
+        AssertLocal ("l1", 0, "Item 1");
+        AssertLocal ("l2", 0, "Item 2");
+        AssertLocal (0, "Item l");
+        AssertLocal ("l4", 0, "Item s2");
+
+        AssertServerCount (4);
+        AssertServer ("s1", 0, "Item 1");
+        AssertServer ("s2", 0, "Item 2");
+        AssertServer (0, "Item s");
+        AssertServer ("s4", 0, "Item s2");
+      });
+    }
+
+    [TestCase (GenericConflictResolution.AWins)]
+    [TestCase (GenericConflictResolution.BWins)]
+    public async Task TwoWaySynchronize_AddedBothWithoutExisting_NewEntitiesAreMatching (GenericConflictResolution conflictWinner)
+    {
+      var addedLocal = await _localRepository.Create (v => "Item l");
+      var addedServer = await _serverRepository.Create (v => "Item s");
+
+      ExecuteMultipleTimes (() =>
+      {
+        SynchronizeTwoWay (
+            conflictWinner,
+            new List<IEntityRelationData<Identifier, int, Identifier, int>>
+            {
+                new EntityRelationData (addedLocal.Id, addedLocal.Version, addedServer.Id, addedServer.Version)
+            });
+        AssertLocalCount (1);
+        AssertLocal (0, "Item l");
+
+        AssertServerCount (1);
         AssertServer (0, "Item s");
       });
     }

@@ -65,10 +65,12 @@ namespace GenSync.UnitTests.Synchronization
           .WhenCalled (a => { _entityRelationData = ((List<IEntityRelationData<Identifier, int, Identifier, int>>) a.Arguments[0]).Cast<EntityRelationData>().ToList(); });
     }
 
-    protected void SynchronizeTwoWay (GenericConflictResolution winner)
+    protected void SynchronizeTwoWay (
+      GenericConflictResolution winner,
+      List<IEntityRelationData<Identifier, int, Identifier, int>> matchingEntities = null)
     {
       var strategy = CreateTwoWaySyncStrategy (winner);
-      SynchronizeInternal (strategy);
+      SynchronizeInternal (strategy, matchingEntities);
     }
 
     protected void SynchronizePartialTwoWay (
@@ -99,9 +101,11 @@ namespace GenSync.UnitTests.Synchronization
           );
     }
 
-    private void SynchronizeInternal (IInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string> strategy)
+    private void SynchronizeInternal (
+      IInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string> strategy,
+      List<IEntityRelationData<Identifier, int, Identifier, int>> matchingEntities = null)
     {
-      var synchronizer = CreateSynchronizer (strategy);
+      var synchronizer = CreateSynchronizer (strategy,matchingEntities);
 
       synchronizer.SynchronizeNoThrow (NullSynchronizationLogger.Instance).Wait();
     }
@@ -119,15 +123,27 @@ namespace GenSync.UnitTests.Synchronization
           NullSynchronizationLogger.Instance).Wait();
     }
 
-    private Synchronizer<Identifier, int, string, Identifier, int, string> CreateSynchronizer (IInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string> strategy)
+    private Synchronizer<Identifier, int, string, Identifier, int, string> CreateSynchronizer (
+      IInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string> strategy,
+      List<IEntityRelationData<Identifier, int, Identifier, int>> matchingEntities = null)
     {
+      var initialEntityMatcherStub = MockRepository.GenerateStub<IInitialEntityMatcher<string, Identifier, int, string, Identifier, int>>();
+      initialEntityMatcherStub
+          .Stub (_ => _.FindMatchingEntities (
+              Arg<IEntityRelationDataFactory<Identifier, int, Identifier, int>>.Is.NotNull,
+              Arg<IReadOnlyDictionary<Identifier, string>>.Is.NotNull,
+              Arg<IReadOnlyDictionary<Identifier, string>>.Is.NotNull,
+              Arg<IReadOnlyDictionary<Identifier, int>>.Is.NotNull,
+              Arg<IReadOnlyDictionary<Identifier, int>>.Is.NotNull))
+          .Return (matchingEntities ?? new List<IEntityRelationData<Identifier, int, Identifier, int>>());
+
       return new Synchronizer<Identifier, int, string, Identifier, int, string> (
           _localRepository,
           _serverRepository,
           strategy,
           _entityRelationDataAccess,
           _entityRelationDataFactory,
-          MockRepository.GenerateStub<IInitialEntityMatcher<string, Identifier, int, string, Identifier, int>>(),
+          initialEntityMatcherStub,
           IdentifierEqualityComparer.Instance,
           IdentifierEqualityComparer.Instance,
           NullTotalProgressFactory.Instance,

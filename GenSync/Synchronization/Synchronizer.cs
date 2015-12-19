@@ -88,9 +88,8 @@ namespace GenSync.Synchronization
       {
         using (var totalProgress = _totalProgressFactory.Create())
         {
-          var knownEntityRelationsOrNull = _entityRelationDataAccess.LoadEntityRelationData();
-
-          var knownEntityRelations = knownEntityRelationsOrNull ?? new IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>[] { };
+          var knownEntityRelations = _entityRelationDataAccess.LoadEntityRelationData()
+                                     ?? new IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>[] { };
 
           var newAVersionsTask = _atypeRepository.GetAllVersions (knownEntityRelations.Select (r => r.AtypeId));
           var newBVersionsTask = _btypeRepository.GetAllVersions (knownEntityRelations.Select (r => r.BtypeId));
@@ -105,25 +104,9 @@ namespace GenSync.Synchronization
 
           using (var entityContainer = new EntityContainer (this, totalProgress, logger))
           {
-            if (knownEntityRelationsOrNull == null)
-            {
-              s_logger.Info ("Did not find entity caches. Performing initial population");
-
-              logger.LogInitialEntityMatching ();
-
-              await entityContainer.FillIfEmpty (newAVersions.Keys, newBVersions.Keys);
-
-              knownEntityRelationsOrNull = _initialEntityMatcher.FindMatchingEntities (
-                  _entityRelationDataFactory,
-                  entityContainer.AEntities,
-                  entityContainer.BEntities,
-                  newAVersions,
-                  newBVersions);
-            }
-
             var newEntityRelations = await Synchronize (
                 totalProgress,
-                knownEntityRelationsOrNull,
+                knownEntityRelations,
                 newAVersions,
                 newBVersions,
                 entityContainer,
@@ -259,25 +242,91 @@ namespace GenSync.Synchronization
         entitySyncStates.Add (entitySyncState);
       }
 
+      HashSet<TAtypeEntityId> aEntitesToLoad = new HashSet<TAtypeEntityId>();
+      HashSet<TBtypeEntityId> bEntitesToLoad = new HashSet<TBtypeEntityId>();
+      entitySyncStates.Execute (s => s.AddRequiredEntitiesToLoad (aEntitesToLoad.Add, bEntitesToLoad.Add));
+
+      if (newAVersions.Count > 0 && newBVersions.Count > 0)
+      {
+        foreach (var newA in newAVersions)
+          aEntitesToLoad.Add (newA.Key);
+
+        foreach (var newB in newBVersions)
+          bEntitesToLoad.Add (newB.Key);
+
+        await entityContainer.FillIfEmpty (aEntitesToLoad, bEntitesToLoad);
+
+        var newAtypeEntities = new Dictionary<TAtypeEntityId, TAtypeEntity> (_atypeIdComparer);
+        foreach (var newAVersion in newAVersions)
+        {
+          TAtypeEntity entity;
+          if (entityContainer.AEntities.TryGetValue (newAVersion.Key, out entity))
+            newAtypeEntities.Add (newAVersion.Key, entity);
+        }
+
+        var newBtypeEntities = new Dictionary<TBtypeEntityId, TBtypeEntity> (_btypeIdComparer);
+        foreach (var newBVersion in newBVersions)
+        {
+          TBtypeEntity entity;
+          if (entityContainer.BEntities.TryGetValue (newBVersion.Key, out entity))
+            newBtypeEntities.Add (newBVersion.Key, entity);
+        }
+
+        var matchingEntites = _initialEntityMatcher.FindMatchingEntities (
+            _entityRelationDataFactory,
+            newAtypeEntities,
+            newBtypeEntities,
+            newAVersions,
+            newBVersions);
+
+        foreach (var knownEntityRelationData in matchingEntites)
+        {
+          var newAVersion = newAVersions[knownEntityRelationData.AtypeId];
+          var newBVersion = newBVersions[knownEntityRelationData.BtypeId];
+          newAVersions.Remove (knownEntityRelationData.AtypeId);
+          newBVersions.Remove (knownEntityRelationData.BtypeId);
+          var entitySyncState = CreateInitialSyncState (knownEntityRelationData, true, newAVersion, true, newBVersion, aDeltaLogInfo, bDeltaLogInfo);
+          entitySyncStates.Add (entitySyncState);
+        }
+
+        foreach (var newA in newAVersions)
+        {
+          var syncState = _initialSyncStateCreationStrategy.CreateFor_Added_NotExisting (newA.Key, newA.Value);
+          entitySyncStates.Add (syncState);
+        }
+
+        foreach (var newB in newBVersions)
+        {
+          var syncState = _initialSyncStateCreationStrategy.CreateFor_NotExisting_Added (newB.Key, newB.Value);
+          entitySyncStates.Add (syncState);
+        }
+      }
+      else
+      {
+        foreach (var newA in newAVersions)
+        {
+          var syncState = _initialSyncStateCreationStrategy.CreateFor_Added_NotExisting (newA.Key, newA.Value);
+          syncState.AddRequiredEntitiesToLoad (aEntitesToLoad.Add, bEntitesToLoad.Add);
+          entitySyncStates.Add (syncState);
+        }
+
+        foreach (var newB in newBVersions)
+        {
+          var syncState = _initialSyncStateCreationStrategy.CreateFor_NotExisting_Added (newB.Key, newB.Value);
+          syncState.AddRequiredEntitiesToLoad (aEntitesToLoad.Add, bEntitesToLoad.Add);
+          entitySyncStates.Add (syncState);
+        }
+
+        await entityContainer.FillIfEmpty (aEntitesToLoad, bEntitesToLoad);
+      }
+
+      // all the leftovers in newAVersions and newBVersions must be the added ones 
       aDeltaLogInfo.IncAdded (newAVersions.Count);
       bDeltaLogInfo.IncAdded (newBVersions.Count);
-
       s_logger.InfoFormat ("Atype delta: {0}", aDeltaLogInfo);
       s_logger.InfoFormat ("Btype delta: {0}", bDeltaLogInfo);
       logger.LogDeltas (aDeltaLogInfo, bDeltaLogInfo);
 
-      foreach (var newA in newAVersions)
-        entitySyncStates.Add (_initialSyncStateCreationStrategy.CreateFor_Added_NotExisting (newA.Key, newA.Value));
-
-      foreach (var newB in newBVersions)
-        entitySyncStates.Add (_initialSyncStateCreationStrategy.CreateFor_NotExisting_Added (newB.Key, newB.Value));
-
-      HashSet<TAtypeEntityId> aEntitesToLoad = new HashSet<TAtypeEntityId>();
-      HashSet<TBtypeEntityId> bEntitesToLoad = new HashSet<TBtypeEntityId>();
-
-      entitySyncStates.Execute (s => s.AddRequiredEntitiesToLoad (aEntitesToLoad.Add, bEntitesToLoad.Add));
-
-      await entityContainer.FillIfEmpty (aEntitesToLoad, bEntitesToLoad);
 
       entitySyncStates.DoTransition (s => s.FetchRequiredEntities (entityContainer.AEntities, entityContainer.BEntities));
       entitySyncStates.DoTransition (s => s.Resolve());
