@@ -130,7 +130,8 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
           {
             var location = response.Headers.Location;
             response.Dispose();
-            return await ExecuteWebDavRequest (location, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody, headersFromFirstCall ?? response.Headers);
+            var effectiveLocation = location.IsAbsoluteUri ? location : new Uri (url, location);
+            return await ExecuteWebDavRequest (effectiveLocation, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody, headersFromFirstCall ?? response.Headers);
           }
           else
           {
