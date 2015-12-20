@@ -70,6 +70,17 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 1.10.0 ####
+- New features
+	- Add possibility to set server calendar color to selected category color
+	- Allow to specify shortcut key of category and improve EventMappingConfiguration UI
+	- Add scheduling configuration options to EventMappingConfiguration and set RSVP for attendees. (You can specify if you want to set SCHEDULE-AGENT:CLIENT or X-SOGO-SEND-APPOINTMENT-NOTIFICATIONS:NO for SOGo)
+- bug fixes
+	- Escape single quotes in category filter string and validate it in EventMappingConfiguration, it must not contain commas or semicolons to avoid exceptions
+	- Use DASL filter instead of JET syntax to fix category filtering for OL 2010(64bit)
+	- Take relative redirects in account. (fixes Autodiscovery for some servers based on cpanel/horde)
+	- Avoid UTC conversion from Dday.iCal library for upcoming reminder check.
+	- Use GlobalAppointmentID for new events instead of random Guid to avoid doubling events from invitations for own attendee.
 #### 1.9.0 ####
 - New features
 	- Map CalDAV server colors to Outlook category colors. It is possible to choose the  category color manually or fetch the color from the server and map it to the nearest supported Outlook color.
@@ -420,13 +431,19 @@ The following properties need to be set for a new generic profile:
 	- **Close connection after each request** Don't use KeepAlive for servers which don't support it. 
 	- **Use System Default Proxy** Use proxy settings from Internet Explorer or config file, uses default credentials if available for NTLM authentication
 	- **Use manual proxy configuration** Specify proxy URL as `http://<your-proxy-domain>:<your-proxy-port>` and optional Username and Password for Basic Authentication.
-	- **Mapping Configuration...**: Here you can configure what properties should be synced, available for appointments and contacts at the moment. For appointments you can choose if you want to map reminders (just upcoming, all or none), attendees and the description body. You can also define a filter category so that multiple CalDAV-Calendars can be synchronized into one Outlook calendar via the defined category (see Category Filter below). For contacts you can configure if birthdays should be mapped or not. If birthdays are mapped, Outlook also creates an recurring appointment for every contact with a defined birthday.
+	- **Mapping Configuration...**: Here you can configure what properties should be synced, available for appointments and contacts at the moment. 
+		- For appointments you can choose if you want to map reminders (just upcoming, all or none) and the description body. 
+		- In *Scheduling settings* you can configure if you want to map attendees and organizer and if notifications should be sent by the server. (Use *Don't send appointment notifications for SOGo servers and SCHEDULE-AGENT:CLIENT for other servers if you want to send invitations from Outlook and avoid that the server sends invitations too). 
+		-  You can also define a filter category so that multiple CalDAV-Calendars can be synchronized into one Outlook calendar via the defined category (see Category Filter and Color below). 
+		-  For contacts you can configure if birthdays should be mapped or not. If birthdays are mapped, Outlook also creates an recurring appointment for every contact with a defined birthday.
 	
 ### Category Filter and Color ###
 
 If you want to sync multiple CalDAV calendars into one Outlook folder you can configure an Outlook category for filtering in the 
 *Mapping Configuration...* under *Advanced Options*.
-For all events from the server the defined category is added in Outlook, when syncing back from Outlook to the server only appointments with that category are considered but the filter category is removed. It is also possible to choose the color of the category or to fetch the calendar color from the server and map it to the nearest supported Outlook category color.
+For all events from the server the defined category is added in Outlook, when syncing back from Outlook to the server only appointments with that category are considered but the filter category is removed. The category name must not contain any commas or semicolons!
+
+It is possible to choose the color of the category or to fetch the calendar color from the server and map it to the nearest supported Outlook category color with the button *Fetch Color*. With *Set DAV Color* it is also possible to sync the choosen category color back to set the server calendar color accordingly.
 
 ### Google Calender and Addressbook settings ###
 
@@ -512,6 +529,28 @@ In the section `system.net` you can define proxy settings, e.g. use of NTLM cred
     <defaultProxy useDefaultCredentials="true">
     </defaultProxy>
 
+In this section you can also allow UnsafeHeaderParsing if the server sends invalid http headers.
+
+    <system.net>
+    	<settings>
+    		<servicePointManager expect100Continue="false" />
+    		<httpWebRequest useUnsafeHeaderParsing="true" />
+    	</settings>
+    </system.net>
+
 In the section `log4net` you can define the log level for the main log and for the caldav data access, 
-    level value can be DEBUG or INFO
+    level value can be DEBUG or INFO, e.g. :
+
+	<root>
+      <level value="DEBUG" />
+      <appender-ref ref="MainLogAppender" />
+    </root>
     
+### Common network errors ###
+
+- System.Net.Http.HttpRequestException: Response status code does not indicate success: '401' ('Unauthorized').
+	- Wrong Username and/or Password provided.
+- System.Net.Http.HttpRequestException: An error occurred while sending the request. ---> System.Net.WebException: The underlying connection was closed: A connection that was expected to be kept alive was closed by the server.
+	- The server has KeepAlive disabled. Use *"Close connection after each request"* in **Advanced Options**.
+- System.Net.Http.HttpRequestException: An error occurred while sending the request. ---> System.Net.WebException: The server committed a protocol violation. Section=ResponseStatusLine
+	- The server sends invalid headers. Enable the commented out option **useUnsafeHeaderparsing** in the app config file, see **Debugging and more config options** above.
