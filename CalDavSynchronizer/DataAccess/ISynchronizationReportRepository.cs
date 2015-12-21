@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.using System;
 
 using System;
+using System.Collections.Generic;
 using GenSync.Logging;
 
 namespace CalDavSynchronizer.DataAccess
@@ -23,5 +24,8 @@ namespace CalDavSynchronizer.DataAccess
   public interface ISynchronizationReportRepository
   {
     void AddReport (SynchronizationReport report);
+    IReadOnlyList<SynchronizationReportName> GetAvailableReports ();
+    SynchronizationReport GetReport (SynchronizationReportName name);
+    void DeleteReport (SynchronizationReportName name);
   }
 }

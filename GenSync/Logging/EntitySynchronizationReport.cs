@@ -21,7 +21,14 @@ namespace GenSync.Logging
 {
   public class EntitySynchronizationReport
   {
-    public string[] MappingErrors { get; set; }
+    private string[] _mappingErrors;
+
+    public string[] MappingErrors
+    {
+      get { return _mappingErrors ?? new string[] {}; }
+      set { _mappingErrors = value; }
+    }
+
     public string AId { get; set; }
     public string BId { get; set; }
     public string ExceptionThatLeadToAbortion { get; set; }

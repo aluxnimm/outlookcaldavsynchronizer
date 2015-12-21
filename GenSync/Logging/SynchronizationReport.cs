@@ -16,13 +16,17 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace GenSync.Logging
 {
   public class SynchronizationReport
   {
+    private LoadError[] _loadErrors;
+    private EntitySynchronizationReport[] _entitySynchronizationReports;
     public string ProfileName { get; set; }
+    public Guid ProfileId { get; set; }
     public DateTime StartTime { get; set; }
 
     [XmlIgnore]
@@ -31,8 +35,19 @@ namespace GenSync.Logging
     public bool InitialEntityMatchingPerformed { get; set; }
     public string ADelta { get; set; }
     public string BDelta { get; set; }
-    public LoadError[] LoadErrors { get; set; }
-    public EntitySynchronizationReport[] EntitySynchronizationReports { get; set; }
+
+    public LoadError[] LoadErrors
+    {
+      get { return _loadErrors ?? new LoadError[] { }; }
+      set { _loadErrors = value; }
+    }
+
+    public EntitySynchronizationReport[] EntitySynchronizationReports
+    {
+      get { return _entitySynchronizationReports ?? new EntitySynchronizationReport[] { }; }
+      set { _entitySynchronizationReports = value; }
+    }
+
     public string ExceptionThatLeadToAbortion { get; set; }
 
     [XmlElement (ElementName = "Duration")]
@@ -40,6 +55,20 @@ namespace GenSync.Logging
     {
       get { return Duration.ToString(); }
       set { Duration = TimeSpan.Parse (value); }
+    }
+
+    public bool HasErrors
+    {
+      get
+      {
+        return !string.IsNullOrEmpty (ExceptionThatLeadToAbortion)
+               || EntitySynchronizationReports.Any (r => !string.IsNullOrEmpty (r.ExceptionThatLeadToAbortion) || r.MappingErrors.Length > 0);
+      }
+    }
+
+    public bool HasWarnings
+    {
+      get { return false; }
     }
   }
 }

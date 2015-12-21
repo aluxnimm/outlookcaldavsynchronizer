@@ -24,6 +24,7 @@ namespace GenSync.Logging
   public class SynchronizationLogger : ISynchronizationLogger
   {
     private readonly DateTime _startTime;
+    private readonly Guid _profileId;
     private readonly String _profileName;
     private bool _initialEntityMatchingPerformed;
     private readonly List<LoadError> _loadErrors = new List<LoadError>();
@@ -34,10 +35,11 @@ namespace GenSync.Logging
     private readonly EntitySynchronizationLogger _currentSynchronitzationLogger;
     private readonly List<EntitySynchronizationReport> _entitySynchronizationReports = new List<EntitySynchronizationReport>();
 
-    public SynchronizationLogger (string profileName)
+    public SynchronizationLogger (Guid profileId, string profileName)
     {
       _startTime = DateTime.UtcNow;
       _profileName = profileName;
+      _profileId = profileId;
       _currentSynchronitzationLogger = new EntitySynchronizationLogger();
       _currentSynchronitzationLogger.Disposed += CurrentSynchronitzationLogger_Disposed;
     }
@@ -94,6 +96,7 @@ namespace GenSync.Logging
                  ExceptionThatLeadToAbortion = _exceptionThatLeadToAbortion,
                  InitialEntityMatchingPerformed = _initialEntityMatchingPerformed,
                  LoadErrors = _loadErrors.ToArray(),
+                 ProfileId = _profileId,
                  ProfileName = _profileName,
                  StartTime = _startTime,
                  EntitySynchronizationReports = _entitySynchronizationReports.ToArray(),

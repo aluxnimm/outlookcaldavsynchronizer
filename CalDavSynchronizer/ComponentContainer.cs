@@ -95,12 +95,26 @@ namespace CalDavSynchronizer
           _session,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]));
 
-      _scheduler = new Scheduler (synchronizerFactory, EnsureSynchronizationContext);
+      _scheduler = new Scheduler (
+        synchronizerFactory,
+        CreateSynchronizationReportRepository(),
+        EnsureSynchronizationContext);
       _scheduler.SetOptions (_optionsDataAccess.LoadOptions());
 
       _updateChecker = new UpdateChecker (new AvailableVersionService(), () => _generalOptionsDataAccess.IgnoreUpdatesTilVersion);
       _updateChecker.NewerVersionFound += UpdateChecker_NewerVersionFound;
       _updateChecker.IsEnabled = generalOptions.ShouldCheckForNewerVersions;
+    }
+
+
+    private ISynchronizationReportRepository CreateSynchronizationReportRepository ()
+    {
+      var reportDirectory = Path.Combine (_applicationDataDirectory, "reports");
+
+      if (!Directory.Exists (reportDirectory))
+        Directory.CreateDirectory (reportDirectory);
+
+      return new SynchronizationReportRepository (reportDirectory);
     }
 
     private async void ItemChangeWatcherItemSavedOrDeleted (object sender, ItemSavedEventArgs e)

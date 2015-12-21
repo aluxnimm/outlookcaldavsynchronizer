@@ -94,13 +94,7 @@ namespace CalDavSynchronizer.Scheduling
                   defaultItemType));
       }
     }
-
-    public ISynchronizationReportRepository CreateSynchronizationReportRepository (Guid synchronizationProfileId)
-    {
-      return new SynchronizationReportRepository (
-          Path.Combine (_profileDataDirectoryFactory (synchronizationProfileId), "SyncLogs"));
-    }
-
+    
     private OutlookSynchronizer CreateEventSynchronizer (Options options)
     {
       var calDavDataAccess = new CalDavDataAccess (

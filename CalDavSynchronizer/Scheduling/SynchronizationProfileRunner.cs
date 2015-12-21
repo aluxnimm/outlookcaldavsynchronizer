@@ -47,6 +47,7 @@ namespace CalDavSynchronizer.Scheduling
     private IOutlookSynchronizer _synchronizer;
     private readonly ISynchronizationReportRepository _synchronizationReportRepository;
     private string _profileName;
+    private Guid _profileId;
     private bool _inactive;
     private readonly ISynchronizerFactory _synchronizerFactory;
     private int _isRunning = 0;
@@ -74,6 +75,7 @@ namespace CalDavSynchronizer.Scheduling
       _fullSyncPending = false;
 
       _profileName = options.Name;
+      _profileId = options.Id;
       _synchronizer = _synchronizerFactory.CreateSynchronizer (options);
       _interval = TimeSpan.FromMinutes (options.SynchronizationIntervalInMinutes);
       _inactive = options.Inactive;
@@ -157,7 +159,7 @@ namespace CalDavSynchronizer.Scheduling
     {
       try
       {
-        var logger = new SynchronizationLogger (_profileName);
+        var logger = new SynchronizationLogger (_profileId, _profileName);
         
         using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("Running synchronization profile '{0}'", _profileName)))
         {
@@ -182,7 +184,7 @@ namespace CalDavSynchronizer.Scheduling
     {
       try
       {
-        var logger = new SynchronizationLogger (_profileName);
+        var logger = new SynchronizationLogger (_profileId, _profileName);
         
         using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("Running synchronization profile '{0}'", _profileName)))
         {

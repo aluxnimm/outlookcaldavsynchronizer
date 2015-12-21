@@ -64,6 +64,7 @@
     <Compile Include="InitialEntityMatching\IInitialEntityMatcher.cs" />
     <Compile Include="InitialEntityMatching\InitialEntityMatcherByPropertyGrouping.cs" />
     <Compile Include="Logging\EntitySynchronizationLogger.cs" />
+    <Compile Include="Logging\SynchronizationReportName.cs" />
     <Compile Include="Logging\IEntityMappingLogger.cs" />
     <Compile Include="Logging\ILoadEntityLogger.cs" />
     <Compile Include="Logging\IEntitySynchronizationLogger.cs" />

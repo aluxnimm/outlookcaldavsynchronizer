@@ -46,6 +46,11 @@ namespace CalDavSynchronizer.Utilities
       }
     }
 
+    public static T DeserializeFrom (Stream stream)
+    {
+      return (T) _xmlSerializer.Deserialize (stream);
+    }
+
     public static void SerializeTo (T o, Stream stream)
     {
       _xmlSerializer.Serialize (stream, o);

@@ -25,6 +25,5 @@ namespace CalDavSynchronizer.Scheduling
   public interface ISynchronizerFactory
   {
     IOutlookSynchronizer CreateSynchronizer (Options options);
-    ISynchronizationReportRepository CreateSynchronizationReportRepository (Guid synchronizationProfileId);
   }
 }
