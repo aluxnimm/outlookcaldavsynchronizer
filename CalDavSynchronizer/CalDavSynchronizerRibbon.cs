@@ -28,10 +28,10 @@ namespace CalDavSynchronizer
   {
     private void CalDavSynchronizerRibbon_Load (object sender, RibbonUIEventArgs e)
     {
-      ThisAddIn.ComponentContainer.SynchronizationFailed += SynchronizationFailed;
+      ThisAddIn.ComponentContainer.SynchronizationFailedWhileReportsFormWasNotVisible += SynchronizationFailedWhileReportsFormWasNotVisible;
     }
 
-    private void SynchronizationFailed (object sender, EventArgs e)
+    private void SynchronizationFailedWhileReportsFormWasNotVisible (object sender, EventArgs e)
     {
       ReportsButton.Image = Resources.SyncError;
     }

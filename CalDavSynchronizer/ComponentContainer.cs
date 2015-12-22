@@ -64,7 +64,7 @@ namespace CalDavSynchronizer
     private readonly IUiService _uiService;
     private ReportsViewModel _currentReportsViewModel;
 
-    public event EventHandler SynchronizationFailed;
+    public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
 
     public ComponentContainer (Application application)
     {
@@ -119,7 +119,13 @@ namespace CalDavSynchronizer
 
     void _scheduler_SynchronizationFailed (object sender, ReportEventArgs e)
     {
-      var handler = SynchronizationFailed;
+      if (IsReportViewVisible)
+      {
+        ShowReports(); // show to bring it into foreground
+        return;
+      }
+
+      var handler = SynchronizationFailedWhileReportsFormWasNotVisible;
       if (handler != null)
         handler (this, EventArgs.Empty);
     }
@@ -522,6 +528,11 @@ namespace CalDavSynchronizer
       {
         ExceptionHandler.Instance.HandleException (x, s_logger);
       }
+    }
+
+    private bool IsReportViewVisible
+    {
+      get { return _currentReportsViewModel != null; }
     }
 
     private void ShowReports ()
