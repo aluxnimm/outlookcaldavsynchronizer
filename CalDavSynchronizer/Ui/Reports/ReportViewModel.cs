@@ -22,11 +22,12 @@ using GenSync.Logging;
 
 namespace CalDavSynchronizer.Ui.Reports
 {
-  public class ReportViewModel
+  public class ReportViewModel : ViewModelBase
   {
     private ISynchronizationReportRepository _reportRepository;
     private readonly ReportProxy _reportProxy;
     private string _asString;
+    private bool _isSelected;
 
     public ReportViewModel (ReportProxy reportProxy, ISynchronizationReportRepository reportRepository)
     {
@@ -59,11 +60,22 @@ namespace CalDavSynchronizer.Ui.Reports
       get { return _asString ?? (_asString = Serializer<SynchronizationReport>.Serialize (_reportProxy.Value)); }
     }
 
+    public bool IsSelected
+    {
+      get { return _isSelected; }
+      set { CheckedPropertyChange (ref _isSelected, value, () => IsSelected); }
+    }
+
+    public void Delete ()
+    {
+      _reportRepository.DeleteReport (_reportProxy.Name);
+    }
+
     public static readonly ReportViewModel DesignInstance;
 
     static ReportViewModel ()
     {
-      DesignInstance = CreateDesignInstance(true, true);
+      DesignInstance = CreateDesignInstance (true, true);
     }
 
 

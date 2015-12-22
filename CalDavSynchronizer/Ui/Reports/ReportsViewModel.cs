@@ -17,19 +17,23 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
 using CalDavSynchronizer.DataAccess;
 
 namespace CalDavSynchronizer.Ui.Reports
 {
   public class ReportsViewModel : ViewModelBase
   {
-    private readonly List<ReportViewModel> _reports = new List<ReportViewModel>();
+    private readonly ObservableCollection<ReportViewModel> _reports = new ObservableCollection<ReportViewModel> ();
+    private readonly DelegateCommand _deleteSelectedCommand;
 
     public static ReportsViewModel Create (Dictionary<Guid, string> currentProfileNamesById, ISynchronizationReportRepository reportRepository)
     {
       var reportNames = reportRepository.GetAvailableReports();
 
-      var reports = new List<ReportViewModel>();
+      var reports = new ObservableCollection<ReportViewModel> ();
       foreach (var reportName in reportNames)
       {
         string profileName;
@@ -45,28 +49,46 @@ namespace CalDavSynchronizer.Ui.Reports
       return new ReportsViewModel (reports);
     }
 
-    private ReportsViewModel (List<ReportViewModel> reports)
+    private ReportsViewModel (ObservableCollection<ReportViewModel> reports)
     {
       _reports = reports;
+      _deleteSelectedCommand = new DelegateCommand (DeleteSelected, _ => Reports.Any (r => r.IsSelected));
     }
 
-    public List<ReportViewModel> Reports
+    private void DeleteSelected (object parameter)
+    {
+      for (int i = Reports.Count - 1; i >= 0; i--)
+      {
+        var report = Reports[i];
+        if (report.IsSelected)
+        {
+          report.Delete();
+          Reports.RemoveAt (i);
+        }
+      }
+    }
+
+    public ObservableCollection<ReportViewModel> Reports
     {
       get { return _reports; }
     }
 
+    public DelegateCommand DeleteSelectedCommand
+    {
+      get { return _deleteSelectedCommand; }
+    }
 
     public static readonly ReportsViewModel DesignInstance;
 
     static ReportsViewModel ()
     {
       DesignInstance = new ReportsViewModel (
-          new List<ReportViewModel>
+          new ObservableCollection<ReportViewModel>
           {
               ReportViewModel.CreateDesignInstance(),
-              ReportViewModel.CreateDesignInstance(true),
-              ReportViewModel.CreateDesignInstance(false, true),
-              ReportViewModel.CreateDesignInstance(true, true),
+              ReportViewModel.CreateDesignInstance (true),
+              ReportViewModel.CreateDesignInstance (false, true),
+              ReportViewModel.CreateDesignInstance (true, true),
           });
     }
   }
