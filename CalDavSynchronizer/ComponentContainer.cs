@@ -63,11 +63,7 @@ namespace CalDavSynchronizer
     private readonly ISynchronizationReportRepository _synchronizationReportRepository;
     private readonly IUiService _uiService;
 
-    public event EventHandler<ReportEventArgs> SynchronizationFinished 
-    {
-      add { _synchronizationReportRepository.ReportAdded += value; }
-      remove { _synchronizationReportRepository.ReportAdded -= value; }
-    }
+    public event EventHandler SynchronizationFailed;
 
     public ComponentContainer (Application application)
     {
@@ -113,9 +109,18 @@ namespace CalDavSynchronizer
         EnsureSynchronizationContext);
       _scheduler.SetOptions (_optionsDataAccess.LoadOptions());
 
+      _scheduler.SynchronizationFailed += _scheduler_SynchronizationFailed;
+
       _updateChecker = new UpdateChecker (new AvailableVersionService(), () => _generalOptionsDataAccess.IgnoreUpdatesTilVersion);
       _updateChecker.NewerVersionFound += UpdateChecker_NewerVersionFound;
       _updateChecker.IsEnabled = generalOptions.ShouldCheckForNewerVersions;
+    }
+
+    void _scheduler_SynchronizationFailed (object sender, ReportEventArgs e)
+    {
+      var handler = SynchronizationFailed;
+      if (handler != null)
+        handler (this, EventArgs.Empty);
     }
     
     private ISynchronizationReportRepository CreateSynchronizationReportRepository ()

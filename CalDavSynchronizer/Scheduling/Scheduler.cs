@@ -38,6 +38,8 @@ namespace CalDavSynchronizer.Scheduling
     private readonly ISynchronizationReportRepository _synchronizationReportRepository;
     private readonly Action _ensureSynchronizationContext;
 
+    public event EventHandler<ReportEventArgs> SynchronizationFailed;
+
     public Scheduler (
       ISynchronizerFactory synchronizerFactory, 
       ISynchronizationReportRepository synchronizationReportRepository,
@@ -88,6 +90,7 @@ namespace CalDavSynchronizer.Scheduling
             profileRunner = new SynchronizationProfileRunner (
                 _synchronizerFactory,
                 _synchronizationReportRepository);
+            profileRunner.SynchronizationFailed += profileRunner_SynchronizationFailed;
           }
           profileRunner.UpdateOptions (option);
           workersById.Add (option.Id, profileRunner);
@@ -98,6 +101,13 @@ namespace CalDavSynchronizer.Scheduling
         }
       }
       _runnersById = workersById;
+    }
+
+    void profileRunner_SynchronizationFailed (object sender, ReportEventArgs e)
+    {
+      var handler = SynchronizationFailed;
+      if (handler != null)
+        handler (this, e);
     }
 
     public async Task RunResponsibleSynchronizationProfiles (string outlookId, string folderEntryId, string folderStoreId)
