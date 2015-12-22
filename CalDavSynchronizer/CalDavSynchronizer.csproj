@@ -237,6 +237,7 @@
     <Compile Include="DataAccess\GeneralOptionsDataAccess.cs" />
     <Compile Include="DataAccess\ISynchronizationReportRepository.cs" />
     <Compile Include="DataAccess\NullSynchronizationReportRepository.cs" />
+    <Compile Include="DataAccess\ReportEventArgs.cs" />
     <Compile Include="DataAccess\SynchronizationReportRepository.cs" />
     <Compile Include="DataAccess\WebDavDataAccess.cs" />
     <Compile Include="DataAccess\CardDavDataAccess.cs" />
@@ -576,6 +577,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
+    <None Include="Resources\SyncError.png" />
     <None Include="Resources\report.ico" />
     <None Include="Resources\GeneralOptions.ico" />
     <Content Include="Resources\outlookcaldavsynchronizerlogoarrow.png" />

@@ -63,6 +63,12 @@ namespace CalDavSynchronizer
     private readonly ISynchronizationReportRepository _synchronizationReportRepository;
     private readonly IUiService _uiService;
 
+    public event EventHandler<ReportEventArgs> SynchronizationFinished 
+    {
+      add { _synchronizationReportRepository.ReportAdded += value; }
+      remove { _synchronizationReportRepository.ReportAdded -= value; }
+    }
+
     public ComponentContainer (Application application)
     {
       _uiService = new UiService();
@@ -100,7 +106,7 @@ namespace CalDavSynchronizer
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]));
 
       _synchronizationReportRepository = CreateSynchronizationReportRepository();
-      
+
       _scheduler = new Scheduler (
         synchronizerFactory,
         _synchronizationReportRepository,
@@ -111,8 +117,7 @@ namespace CalDavSynchronizer
       _updateChecker.NewerVersionFound += UpdateChecker_NewerVersionFound;
       _updateChecker.IsEnabled = generalOptions.ShouldCheckForNewerVersions;
     }
-
-
+    
     private ISynchronizationReportRepository CreateSynchronizationReportRepository ()
     {
       var reportDirectory = Path.Combine (_applicationDataDirectory, "reports");

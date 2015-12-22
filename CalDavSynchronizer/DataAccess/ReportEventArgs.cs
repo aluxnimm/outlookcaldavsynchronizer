@@ -16,19 +16,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.using System;
 
 using System;
-using System.Collections.Generic;
-using System.IO;
 using GenSync.Logging;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public interface ISynchronizationReportRepository
+  public class ReportEventArgs : EventArgs
   {
-    event EventHandler<ReportEventArgs> ReportAdded;
-    void AddReport (SynchronizationReport report);
-    IReadOnlyList<SynchronizationReportName> GetAvailableReports ();
-    SynchronizationReport GetReport (SynchronizationReportName name);
-    void DeleteReport (SynchronizationReportName name);
-    Stream GetReportStream (SynchronizationReportName name);
+    private readonly SynchronizationReport _report;
+
+    public ReportEventArgs (SynchronizationReport report)
+    {
+      _report = report;
+    }
+
+    public SynchronizationReport Report
+    {
+      get { return _report; }
+    }
   }
 }

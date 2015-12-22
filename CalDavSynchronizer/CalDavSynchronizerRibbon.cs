@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Reflection;
+using CalDavSynchronizer.Properties;
 using CalDavSynchronizer.Ui;
 using CalDavSynchronizer.Utilities;
 using log4net;
@@ -27,6 +28,15 @@ namespace CalDavSynchronizer
   {
     private void CalDavSynchronizerRibbon_Load (object sender, RibbonUIEventArgs e)
     {
+      ThisAddIn.ComponentContainer.SynchronizationFinished += ComponentContainer_SynchronizationFinished;
+    }
+
+    void ComponentContainer_SynchronizationFinished (object sender, DataAccess.ReportEventArgs e)
+    {
+      if (e.Report.HasErrors || e.Report.HasWarnings)
+      {
+        ReportsButton.Image = Resources.SyncError;
+      }
     }
 
     private async void SynchronizeNowButton_Click (object sender, RibbonControlEventArgs e)
@@ -62,6 +72,7 @@ namespace CalDavSynchronizer
 
     private void ReportsButton_Click (object sender, RibbonControlEventArgs e)
     {
+      ReportsButton.Image = Resources.report;
       ThisAddIn.ComponentContainer.ShowReportsNoThrow ();
     }
   }

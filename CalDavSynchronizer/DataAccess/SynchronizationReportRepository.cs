@@ -32,6 +32,15 @@ namespace CalDavSynchronizer.DataAccess
       _reportDirectory = reportDirectory;
     }
 
+    public event EventHandler<ReportEventArgs> ReportAdded;
+
+    protected virtual void OnReportAdded (SynchronizationReport report)
+    {
+      var handler = ReportAdded;
+      if (handler != null)
+        handler (this, new ReportEventArgs (report));
+    }
+
     public void AddReport (SynchronizationReport report)
     {
       var reportName = GetNextFreeName (_reportDirectory, report);
@@ -40,6 +49,8 @@ namespace CalDavSynchronizer.DataAccess
       {
         Serializer<SynchronizationReport>.SerializeTo (report, fileStream);
       }
+
+      OnReportAdded (report);
     }
 
     public IReadOnlyList<SynchronizationReportName> GetAvailableReports ()
@@ -50,7 +61,7 @@ namespace CalDavSynchronizer.DataAccess
       foreach (var fileName in fileNames)
       {
         SynchronizationReportName name;
-        if (SynchronizationReportName.TryParse (Path.GetFileName(fileName), out name))
+        if (SynchronizationReportName.TryParse (Path.GetFileName (fileName), out name))
           names.Add (name);
       }
 
@@ -59,7 +70,7 @@ namespace CalDavSynchronizer.DataAccess
 
     public SynchronizationReport GetReport (SynchronizationReportName name)
     {
-      using (var fileStream = File.OpenRead (Path.Combine (_reportDirectory, name.ToString ())))
+      using (var fileStream = File.OpenRead (Path.Combine (_reportDirectory, name.ToString())))
       {
         return Serializer<SynchronizationReport>.DeserializeFrom (fileStream);
       }
@@ -72,7 +83,7 @@ namespace CalDavSynchronizer.DataAccess
 
     public Stream GetReportStream (SynchronizationReportName name)
     {
-      return File.OpenRead (Path.Combine (_reportDirectory, name.ToString ()));
+      return File.OpenRead (Path.Combine (_reportDirectory, name.ToString()));
     }
 
     private SynchronizationReportName GetNextFreeName (string directory, SynchronizationReport report)
