@@ -16,22 +16,27 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.using System;
 
 using System;
+using System.Reflection;
 using System.Windows.Input;
+using CalDavSynchronizer.Utilities;
+using log4net;
 
 public class DelegateCommand : ICommand
 {
+  private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
+
   private readonly Predicate<object> _canExecute;
   private readonly Action<object> _execute;
 
   public event EventHandler CanExecuteChanged;
 
   public DelegateCommand (Action<object> execute)
-    : this (execute, null)
+      : this (execute, null)
   {
   }
 
   public DelegateCommand (Action<object> execute,
-                 Predicate<object> canExecute)
+      Predicate<object> canExecute)
   {
     _execute = execute;
     _canExecute = canExecute;
@@ -49,7 +54,14 @@ public class DelegateCommand : ICommand
 
   public void Execute (object parameter)
   {
-    _execute (parameter);
+    try
+    {
+      _execute (parameter);
+    }
+    catch (Exception x)
+    {
+      ExceptionHandler.Instance.HandleException (x, s_logger);
+    }
   }
 
   public void RaiseCanExecuteChanged ()
