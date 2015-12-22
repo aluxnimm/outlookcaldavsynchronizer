@@ -62,6 +62,7 @@ namespace CalDavSynchronizer
     private readonly string _applicationDataDirectory;
     private readonly ISynchronizationReportRepository _synchronizationReportRepository;
     private readonly IUiService _uiService;
+    private ReportsViewModel _currentReportsViewModel;
 
     public event EventHandler SynchronizationFailed;
 
@@ -525,11 +526,20 @@ namespace CalDavSynchronizer
 
     private void ShowReports ()
     {
-      var viewModel = new ReportsViewModel(
-           _synchronizationReportRepository,
-          _optionsDataAccess.LoadOptions().ToDictionary (o => o.Id, o => o.Name));
+      if (_currentReportsViewModel == null)
+      {
+        _currentReportsViewModel = new ReportsViewModel (
+            _synchronizationReportRepository,
+            _optionsDataAccess.LoadOptions().ToDictionary (o => o.Id, o => o.Name));
 
-      _uiService.Show (viewModel);
+        _currentReportsViewModel.ReportsClosed += delegate { _currentReportsViewModel = null; };
+
+        _uiService.Show (_currentReportsViewModel);
+      }
+      else
+      {
+        _currentReportsViewModel.RequireBringToFront();
+      }
     }
   }
 }

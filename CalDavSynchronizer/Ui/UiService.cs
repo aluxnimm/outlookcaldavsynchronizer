@@ -35,7 +35,11 @@ namespace CalDavSynchronizer.Ui
       window.Text = "Synchronization Reports";
       window.Child = view;
       window.Show();
-      SetWindowSizeToQuarterOfScreenSize(window);
+      window.FormClosed += delegate { reportsViewModel.NotifyReportsClosed(); };
+
+      reportsViewModel.RequiresBringToFront += delegate { window.BringToFront(); };
+
+      SetWindowSizeToQuarterOfScreenSize (window);
     }
 
     private static void SetWindowSizeToQuarterOfScreenSize (GenericElementHostWindow window)

@@ -35,6 +35,23 @@ namespace CalDavSynchronizer.Ui.Reports
     private readonly ISynchronizationReportRepository _reportRepository;
     private readonly Dictionary<Guid, string> _currentProfileNamesById;
 
+    public event EventHandler RequiresBringToFront;
+
+    public virtual void RequireBringToFront ()
+    {
+      var handler = RequiresBringToFront;
+      if (handler != null)
+        handler (this, EventArgs.Empty);
+    }
+
+    public event EventHandler ReportsClosed;
+
+    public virtual void NotifyReportsClosed ()
+    {
+      var handler = ReportsClosed;
+      if (handler != null)
+        handler (this, EventArgs.Empty);
+    }
 
     public ReportsViewModel (
         ISynchronizationReportRepository reportRepository,
