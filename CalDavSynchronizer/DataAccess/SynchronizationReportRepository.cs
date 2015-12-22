@@ -70,6 +70,11 @@ namespace CalDavSynchronizer.DataAccess
       File.Delete (Path.Combine (_reportDirectory, name.ToString()));
     }
 
+    public Stream GetReportStream (SynchronizationReportName name)
+    {
+      return File.OpenRead (Path.Combine (_reportDirectory, name.ToString ()));
+    }
+
     private SynchronizationReportName GetNextFreeName (string directory, SynchronizationReport report)
     {
       var reportName = SynchronizationReportName.Create (report.ProfileId, report.StartTime, report.HasWarnings, report.HasErrors);

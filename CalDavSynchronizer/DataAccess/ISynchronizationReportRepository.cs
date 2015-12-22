@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using GenSync.Logging;
 
 namespace CalDavSynchronizer.DataAccess
@@ -27,5 +28,6 @@ namespace CalDavSynchronizer.DataAccess
     IReadOnlyList<SynchronizationReportName> GetAvailableReports ();
     SynchronizationReport GetReport (SynchronizationReportName name);
     void DeleteReport (SynchronizationReportName name);
+    Stream GetReportStream (SynchronizationReportName name);
   }
 }

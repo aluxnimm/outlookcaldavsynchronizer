@@ -35,6 +35,11 @@ namespace CalDavSynchronizer.Ui.Reports
       _reportProxy = reportProxy;
     }
 
+    public SynchronizationReportName ReportName
+    {
+      get { return _reportProxy.Name; }
+    }
+
     public bool HasErrors
     {
       get { return _reportProxy.Name.HasErrors; }

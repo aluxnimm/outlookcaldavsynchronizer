@@ -19,21 +19,26 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using CalDavSynchronizer.DataAccess;
+using Microsoft.Win32;
 
 namespace CalDavSynchronizer.Ui.Reports
 {
   public class ReportsViewModel : ViewModelBase
   {
-    private readonly ObservableCollection<ReportViewModel> _reports = new ObservableCollection<ReportViewModel> ();
+    private readonly ObservableCollection<ReportViewModel> _reports = new ObservableCollection<ReportViewModel>();
     private readonly DelegateCommand _deleteSelectedCommand;
+    private readonly DelegateCommand _saveSelectedCommand;
+    private ISynchronizationReportRepository _reportRepository;
 
     public static ReportsViewModel Create (Dictionary<Guid, string> currentProfileNamesById, ISynchronizationReportRepository reportRepository)
     {
       var reportNames = reportRepository.GetAvailableReports();
 
-      var reports = new ObservableCollection<ReportViewModel> ();
+      var reports = new ObservableCollection<ReportViewModel>();
       foreach (var reportName in reportNames)
       {
         string profileName;
@@ -46,13 +51,44 @@ namespace CalDavSynchronizer.Ui.Reports
         reports.Add (reportViewModel);
       }
 
-      return new ReportsViewModel (reports);
+      return new ReportsViewModel (reports, reportRepository);
     }
 
-    private ReportsViewModel (ObservableCollection<ReportViewModel> reports)
+    private ReportsViewModel (ObservableCollection<ReportViewModel> reports, ISynchronizationReportRepository reportRepository)
     {
       _reports = reports;
+      this._reportRepository = reportRepository;
       _deleteSelectedCommand = new DelegateCommand (DeleteSelected, _ => Reports.Any (r => r.IsSelected));
+      _saveSelectedCommand = new DelegateCommand (SaveSelected, _ => Reports.Any (r => r.IsSelected));
+    }
+
+
+    private void SaveSelected (object parameter)
+    {
+      SaveFileDialog dialog = new SaveFileDialog();
+      dialog.Filter = "Zip archives|*.zip";
+      dialog.FileName = "SynchronizationReports.zip";
+      dialog.Title = "Save selected reports";
+      if (dialog.ShowDialog() ?? false)
+      {
+        using (var fileStream = new FileStream (dialog.FileName, FileMode.Create))
+        {
+          using (var archive = new ZipArchive (fileStream,ZipArchiveMode.Create))
+          {
+            foreach (var report in Reports.Where (r => r.IsSelected))
+            {
+              var entry = archive.CreateEntry (report.ReportName.ToString(), CompressionLevel.Optimal);
+              using (var entryStream = entry.Open())
+              {
+                using (var reportStream = _reportRepository.GetReportStream (report.ReportName))
+                {
+                  reportStream.CopyTo (entryStream);
+                }
+              }
+            }
+          }
+        }
+      }
     }
 
     private void DeleteSelected (object parameter)
@@ -78,6 +114,11 @@ namespace CalDavSynchronizer.Ui.Reports
       get { return _deleteSelectedCommand; }
     }
 
+    public DelegateCommand SaveSelectedCommand
+    {
+      get { return _saveSelectedCommand; }
+    }
+
     public static readonly ReportsViewModel DesignInstance;
 
     static ReportsViewModel ()
@@ -89,7 +130,8 @@ namespace CalDavSynchronizer.Ui.Reports
               ReportViewModel.CreateDesignInstance (true),
               ReportViewModel.CreateDesignInstance (false, true),
               ReportViewModel.CreateDesignInstance (true, true),
-          });
+          },
+          NullSynchronizationReportRepository.Instance);
     }
   }
 }

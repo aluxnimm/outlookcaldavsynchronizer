@@ -27,6 +27,7 @@
       </ListView.ItemTemplate>
         <ListView.ContextMenu>
           <ContextMenu>
+            <MenuItem Header="Save selected to Zip file" Command="{Binding SaveSelectedCommand}"></MenuItem>
             <MenuItem Header="Delete selected" Command="{Binding DeleteSelectedCommand}"></MenuItem>
           </ContextMenu>
         </ListView.ContextMenu>
