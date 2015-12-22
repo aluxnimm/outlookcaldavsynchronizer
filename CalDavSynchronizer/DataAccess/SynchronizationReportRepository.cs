@@ -32,6 +32,15 @@ namespace CalDavSynchronizer.DataAccess
       _reportDirectory = reportDirectory;
     }
 
+    public event EventHandler<ReportAddedEventArgs> ReportAdded;
+
+    protected virtual void OnReportAdded (SynchronizationReportName name, SynchronizationReport report)
+    {
+      var handler = ReportAdded;
+      if (handler != null)
+        handler (this, new ReportAddedEventArgs (report, name));
+    }
+
     public void AddReport (SynchronizationReport report)
     {
       var reportName = GetNextFreeName (_reportDirectory, report);
@@ -40,6 +49,8 @@ namespace CalDavSynchronizer.DataAccess
       {
         Serializer<SynchronizationReport>.SerializeTo (report, fileStream);
       }
+
+      OnReportAdded (reportName, report);
     }
 
     public IReadOnlyList<SynchronizationReportName> GetAvailableReports ()

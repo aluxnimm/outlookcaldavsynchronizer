@@ -30,6 +30,15 @@ namespace CalDavSynchronizer.DataAccess
     {
     }
 
+    public event EventHandler<ReportAddedEventArgs> ReportAdded;
+
+    protected virtual void OnReportAdded (ReportAddedEventArgs e)
+    {
+      var handler = ReportAdded;
+      if (handler != null)
+        handler (this, e);
+    }
+
     public void AddReport (SynchronizationReport report)
     {
     }

@@ -525,9 +525,9 @@ namespace CalDavSynchronizer
 
     private void ShowReports ()
     {
-      var viewModel = ReportsViewModel.Create (
-          _optionsDataAccess.LoadOptions().ToDictionary (o => o.Id, o => o.Name),
-          _synchronizationReportRepository);
+      var viewModel = new ReportsViewModel(
+           _synchronizationReportRepository,
+          _optionsDataAccess.LoadOptions().ToDictionary (o => o.Id, o => o.Name));
 
       _uiService.Show (viewModel);
     }

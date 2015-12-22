@@ -18,11 +18,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using CalDavSynchronizer.DataAccess;
+using GenSync.Logging;
 using Microsoft.Win32;
 
 namespace CalDavSynchronizer.Ui.Reports
@@ -32,36 +32,54 @@ namespace CalDavSynchronizer.Ui.Reports
     private readonly ObservableCollection<ReportViewModel> _reports = new ObservableCollection<ReportViewModel>();
     private readonly DelegateCommand _deleteSelectedCommand;
     private readonly DelegateCommand _saveSelectedCommand;
-    private ISynchronizationReportRepository _reportRepository;
+    private readonly ISynchronizationReportRepository _reportRepository;
+    private readonly Dictionary<Guid, string> _currentProfileNamesById;
 
-    public static ReportsViewModel Create (Dictionary<Guid, string> currentProfileNamesById, ISynchronizationReportRepository reportRepository)
+
+    public ReportsViewModel (
+        ISynchronizationReportRepository reportRepository,
+        Dictionary<Guid, string> currentProfileNamesById)
     {
-      var reportNames = reportRepository.GetAvailableReports();
-
-      var reports = new ObservableCollection<ReportViewModel>();
-      foreach (var reportName in reportNames)
-      {
-        string profileName;
-        if (!currentProfileNamesById.TryGetValue (reportName.SyncronizationProfileId, out profileName))
-          profileName = "<Not existing anymore>";
-
-        var reportNameClosureLocal = reportName;
-        var reportProxy = new ReportProxy (reportName, () => reportRepository.GetReport (reportNameClosureLocal), profileName);
-        var reportViewModel = new ReportViewModel (reportProxy, reportRepository);
-        reports.Add (reportViewModel);
-      }
-
-      return new ReportsViewModel (reports, reportRepository);
-    }
-
-    private ReportsViewModel (ObservableCollection<ReportViewModel> reports, ISynchronizationReportRepository reportRepository)
-    {
-      _reports = reports;
-      this._reportRepository = reportRepository;
+      _reportRepository = reportRepository;
+      _currentProfileNamesById = currentProfileNamesById;
       _deleteSelectedCommand = new DelegateCommand (DeleteSelected, _ => Reports.Any (r => r.IsSelected));
       _saveSelectedCommand = new DelegateCommand (SaveSelected, _ => Reports.Any (r => r.IsSelected));
+
+      foreach (var reportName in reportRepository.GetAvailableReports())
+        AddReportViewModel (reportName);
+
+      // Regarding to race conditions it doesn't matter when the handler is added
+      // since everything happens in the ui thread
+      _reportRepository.ReportAdded += ReportRepository_ReportAdded;
     }
 
+    private void ReportRepository_ReportAdded (object sender, ReportAddedEventArgs e)
+    {
+      AddReportViewModel (e.ReportName, e.Report);
+    }
+
+    private void AddReportViewModel (SynchronizationReportName reportName)
+    {
+      string profileName;
+      if (!_currentProfileNamesById.TryGetValue (reportName.SyncronizationProfileId, out profileName))
+        profileName = "<Not existing anymore>";
+
+      var reportProxy = new ReportProxy (reportName, () => _reportRepository.GetReport (reportName), profileName);
+      var reportViewModel = new ReportViewModel (reportProxy, _reportRepository);
+      _reports.Add (reportViewModel);
+    }
+
+
+    private void AddReportViewModel (SynchronizationReportName reportName, SynchronizationReport report)
+    {
+      string profileName;
+      if (!_currentProfileNamesById.TryGetValue (reportName.SyncronizationProfileId, out profileName))
+        profileName = "<Not existing anymore>";
+
+      var reportProxy = new ReportProxy (reportName, () => report, profileName);
+      var reportViewModel = new ReportViewModel (reportProxy, _reportRepository);
+      _reports.Add (reportViewModel);
+    }
 
     private void SaveSelected (object parameter)
     {
@@ -73,7 +91,7 @@ namespace CalDavSynchronizer.Ui.Reports
       {
         using (var fileStream = new FileStream (dialog.FileName, FileMode.Create))
         {
-          using (var archive = new ZipArchive (fileStream,ZipArchiveMode.Create))
+          using (var archive = new ZipArchive (fileStream, ZipArchiveMode.Create))
           {
             foreach (var report in Reports.Where (r => r.IsSelected))
             {
@@ -124,14 +142,13 @@ namespace CalDavSynchronizer.Ui.Reports
     static ReportsViewModel ()
     {
       DesignInstance = new ReportsViewModel (
-          new ObservableCollection<ReportViewModel>
-          {
-              ReportViewModel.CreateDesignInstance(),
-              ReportViewModel.CreateDesignInstance (true),
-              ReportViewModel.CreateDesignInstance (false, true),
-              ReportViewModel.CreateDesignInstance (true, true),
-          },
-          NullSynchronizationReportRepository.Instance);
+          NullSynchronizationReportRepository.Instance,
+          new Dictionary<Guid, string>());
+
+      DesignInstance._reports.Add (ReportViewModel.CreateDesignInstance());
+      DesignInstance._reports.Add (ReportViewModel.CreateDesignInstance (true));
+      DesignInstance._reports.Add (ReportViewModel.CreateDesignInstance (false, true));
+      DesignInstance._reports.Add (ReportViewModel.CreateDesignInstance (true, true));
     }
   }
 }
