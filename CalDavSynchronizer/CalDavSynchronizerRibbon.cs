@@ -59,5 +59,10 @@ namespace CalDavSynchronizer
     {
       ThisAddIn.ComponentContainer.ShowGeneralOptionsNoThrow ();
     }
+
+    private void ReportsButton_Click (object sender, RibbonControlEventArgs e)
+    {
+      ThisAddIn.ComponentContainer.ShowReportsNoThrow ();
+    }
   }
 }

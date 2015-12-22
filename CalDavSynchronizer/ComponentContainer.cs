@@ -35,6 +35,7 @@ using CalDavSynchronizer.Implementation.Events;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Ui;
+using CalDavSynchronizer.Ui.Reports;
 using CalDavSynchronizer.Utilities;
 using GenSync;
 using GenSync.ProgressReport;
@@ -59,9 +60,12 @@ namespace CalDavSynchronizer
     private readonly NameSpace _session;
     private readonly OutlookItemChangeWatcher _itemChangeWatcher;
     private readonly string _applicationDataDirectory;
+    private readonly ISynchronizationReportRepository _synchronizationReportRepository;
+    private readonly IUiService _uiService;
 
     public ComponentContainer (Application application)
     {
+      _uiService = new UiService();
       _generalOptionsDataAccess = new GeneralOptionsDataAccess();
 
       var generalOptions = _generalOptionsDataAccess.LoadOptions();
@@ -95,9 +99,11 @@ namespace CalDavSynchronizer
           _session,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]));
 
+      _synchronizationReportRepository = CreateSynchronizationReportRepository();
+      
       _scheduler = new Scheduler (
         synchronizerFactory,
-        CreateSynchronizationReportRepository(),
+        _synchronizationReportRepository,
         EnsureSynchronizationContext);
       _scheduler.SetOptions (_optionsDataAccess.LoadOptions());
 
@@ -493,6 +499,27 @@ namespace CalDavSynchronizer
           SynchronizationContext.SetSynchronizationContext (new WindowsFormsSynchronizationContext());
         }
       }
+    }
+
+    public void ShowReportsNoThrow ()
+    {
+      try
+      {
+        ShowReports();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.HandleException (x, s_logger);
+      }
+    }
+
+    private void ShowReports ()
+    {
+      var viewModel = ReportsViewModel.Create (
+          _optionsDataAccess.LoadOptions().ToDictionary (o => o.Id, o => o.Name),
+          _synchronizationReportRepository);
+
+      _uiService.Show (viewModel);
     }
   }
 }
