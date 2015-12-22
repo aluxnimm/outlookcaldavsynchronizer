@@ -21,54 +21,57 @@ using System.Windows.Input;
 using CalDavSynchronizer.Utilities;
 using log4net;
 
-public class DelegateCommand : ICommand
+namespace CalDavSynchronizer.Ui
 {
-  private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
-
-  private readonly Predicate<object> _canExecute;
-  private readonly Action<object> _execute;
-
-  public event EventHandler CanExecuteChanged;
-
-  public DelegateCommand (Action<object> execute)
-      : this (execute, null)
+  public class DelegateCommand : ICommand
   {
-  }
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-  public DelegateCommand (Action<object> execute,
-      Predicate<object> canExecute)
-  {
-    _execute = execute;
-    _canExecute = canExecute;
-  }
+    private readonly Predicate<object> _canExecute;
+    private readonly Action<object> _execute;
 
-  public bool CanExecute (object parameter)
-  {
-    if (_canExecute == null)
+    public event EventHandler CanExecuteChanged;
+
+    public DelegateCommand (Action<object> execute)
+        : this (execute, null)
     {
-      return true;
     }
 
-    return _canExecute (parameter);
-  }
-
-  public void Execute (object parameter)
-  {
-    try
+    public DelegateCommand (Action<object> execute,
+        Predicate<object> canExecute)
     {
-      _execute (parameter);
+      _execute = execute;
+      _canExecute = canExecute;
     }
-    catch (Exception x)
-    {
-      ExceptionHandler.Instance.HandleException (x, s_logger);
-    }
-  }
 
-  public void RaiseCanExecuteChanged ()
-  {
-    if (CanExecuteChanged != null)
+    public bool CanExecute (object parameter)
     {
-      CanExecuteChanged (this, EventArgs.Empty);
+      if (_canExecute == null)
+      {
+        return true;
+      }
+
+      return _canExecute (parameter);
+    }
+
+    public void Execute (object parameter)
+    {
+      try
+      {
+        _execute (parameter);
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.HandleException (x, s_logger);
+      }
+    }
+
+    public void RaiseCanExecuteChanged ()
+    {
+      if (CanExecuteChanged != null)
+      {
+        CanExecuteChanged (this, EventArgs.Empty);
+      }
     }
   }
 }
