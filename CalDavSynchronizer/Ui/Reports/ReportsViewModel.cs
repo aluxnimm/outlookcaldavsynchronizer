@@ -64,8 +64,9 @@ namespace CalDavSynchronizer.Ui.Reports
           new List<ReportViewModel>
           {
               ReportViewModel.CreateDesignInstance(),
-              ReportViewModel.CreateDesignInstance(),
-              ReportViewModel.CreateDesignInstance(),
+              ReportViewModel.CreateDesignInstance(true),
+              ReportViewModel.CreateDesignInstance(false, true),
+              ReportViewModel.CreateDesignInstance(true, true),
           });
     }
   }

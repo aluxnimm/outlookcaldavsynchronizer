@@ -9,5 +9,17 @@
   <DockPanel HorizontalAlignment="Stretch">
     <TextBlock Text="{Binding ProfileName}"></TextBlock>
     <TextBlock TextAlignment="Right"  DockPanel.Dock="Right" Text="{Binding StartTime,StringFormat=g}"></TextBlock>
+    <DockPanel.Style>
+      <Style TargetType="DockPanel">
+        <Style.Triggers>
+          <DataTrigger Binding="{Binding HasWarnings}" Value="true">
+            <Setter Property="Background" Value="#ffff99"></Setter>
+          </DataTrigger>
+          <DataTrigger Binding="{Binding HasErrors}" Value="true">
+            <Setter Property="Background" Value="#ff9999"></Setter>
+          </DataTrigger>
+        </Style.Triggers>
+      </Style>
+    </DockPanel.Style>
   </DockPanel>
 </UserControl>

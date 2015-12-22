@@ -63,17 +63,17 @@ namespace CalDavSynchronizer.Ui.Reports
 
     static ReportViewModel ()
     {
-      DesignInstance = CreateDesignInstance();
+      DesignInstance = CreateDesignInstance(true, true);
     }
 
 
-    public static ReportViewModel CreateDesignInstance ()
+    public static ReportViewModel CreateDesignInstance (bool hasWarnings = false, bool hasErrors = false)
     {
       var report = new SynchronizationReport();
       report.ADelta = "This is the ADelta";
       report.BDelta = "This is the BDelta";
 
-      var reportName = SynchronizationReportName.Create (Guid.NewGuid(), new DateTime (2000, 10, 10), true, true);
+      var reportName = SynchronizationReportName.Create (Guid.NewGuid(), new DateTime (2000, 10, 10), hasWarnings, hasErrors);
 
       var proxy = new ReportProxy (reportName, () => report, "The profile name");
 
