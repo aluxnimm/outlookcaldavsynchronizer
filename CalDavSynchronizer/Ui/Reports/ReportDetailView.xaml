@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{x:Static viewModels:ReportViewModel.DesignInstance}">
-  <TextBlock Text="{Binding AsString}">
-    
-  </TextBlock>
+  <TextBox Text="{Binding AsString, Mode=OneWay}" IsReadOnly="True">
+
+  </TextBox>
 </UserControl>
