@@ -13,7 +13,7 @@
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="Auto" />
       <ColumnDefinition Width="2" />
-      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
     <GridSplitter Background="DarkGray"  ResizeDirection="Columns" Grid.Column="1" 
                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
@@ -27,8 +27,8 @@
       </ListView.ItemTemplate>
         <ListView.ContextMenu>
           <ContextMenu>
-            <MenuItem Header="Save selected to Zip file" Command="{Binding SaveSelectedCommand}"></MenuItem>
-            <MenuItem Header="Delete selected" Command="{Binding DeleteSelectedCommand}"></MenuItem>
+            <MenuItem Header="Save selected to Zip file" Command="{Binding SaveSelectedCommand}" />
+            <MenuItem Header="Delete selected" Command="{Binding DeleteSelectedCommand}" />
           </ContextMenu>
         </ListView.ContextMenu>
         <ListView.ItemContainerStyle>
@@ -37,8 +37,9 @@
           </Style>
         </ListView.ItemContainerStyle>
       </ListView>
-
-    <views:ReportDetailView Grid.Column="2" DataContext="{Binding ElementName=ReportList,Path=SelectedItem}" />
+      <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <views:ReportDetailView  DataContext="{Binding ElementName=ReportList,Path=SelectedItem}" />
+      </ScrollViewer>
       <Grid.Style>
         <Style   TargetType="Grid">
           <Style.Triggers>
