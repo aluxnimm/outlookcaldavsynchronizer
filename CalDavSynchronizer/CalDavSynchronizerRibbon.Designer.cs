@@ -105,7 +105,9 @@
       this.ReportsButton.Image = global::CalDavSynchronizer.Properties.Resources.report;
       this.ReportsButton.Label = "Reports";
       this.ReportsButton.Name = "ReportsButton";
+      this.ReportsButton.ScreenTip = "Reports";
       this.ReportsButton.ShowImage = true;
+      this.ReportsButton.SuperTip = "Show reports of last sync runs.";
       this.ReportsButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.ReportsButton_Click);
       // 
       // CalDavSynchronizerRibbon
