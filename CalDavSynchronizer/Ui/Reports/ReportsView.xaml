@@ -8,11 +8,12 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{x:Static viewModels:ReportsViewModel.DesignInstance}">
+  <Grid>
     <Grid>
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="Auto"></ColumnDefinition>
-      <ColumnDefinition Width="2"></ColumnDefinition>
-      <ColumnDefinition Width="Auto"></ColumnDefinition>
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition Width="2" />
+      <ColumnDefinition Width="Auto" />
     </Grid.ColumnDefinitions>
     <GridSplitter Background="DarkGray"  ResizeDirection="Columns" Grid.Column="1" 
                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
@@ -21,14 +22,40 @@
      <ListView Name="ReportList" Grid.Column="0" ItemsSource="{Binding Reports}">
       <ListView.ItemTemplate>
         <DataTemplate>
-              <views:ReportView></views:ReportView>
-          </DataTemplate>
+              <views:ReportView />
+        </DataTemplate>
       </ListView.ItemTemplate>
     </ListView>
 
-    <views:ReportDetailView Grid.Column="2" DataContext="{Binding ElementName=ReportList,Path=SelectedItem}">
-      
-    </views:ReportDetailView>
-      
+    <views:ReportDetailView Grid.Column="2" DataContext="{Binding ElementName=ReportList,Path=SelectedItem}" />
+      <Grid.Style>
+        <Style   TargetType="Grid">
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding Reports.Count}" Value="0">
+              <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </Grid.Style>
+    </Grid>
+    <TextBlock 
+      TextAlignment="Center" VerticalAlignment="Center"
+      Foreground="Red" 
+      FontSize="14"
+      FontWeight="Bold"
+      Text="No reports available!">
+      <TextBlock.Style>
+        <Style   TargetType="TextBlock">
+          <Style.Setters>
+            <Setter Property="Visibility" Value="Collapsed" />
+          </Style.Setters>
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding Reports.Count}" Value="0">
+              <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </TextBlock.Style>
+    </TextBlock>
   </Grid>
 </UserControl>
