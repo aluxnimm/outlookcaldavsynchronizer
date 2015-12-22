@@ -537,7 +537,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
             {
               try
               {
-                byte[] rawAttachmentData = oPa.Inner.GetProperty (PR_ATTACH_DATA_BIN);
+                byte[] rawAttachmentData = (byte[]) oPa.Inner.GetProperty (PR_ATTACH_DATA_BIN);
                 target.Photos.Add (new vCardPhoto (rawAttachmentData));
               }
               catch (COMException ex)
