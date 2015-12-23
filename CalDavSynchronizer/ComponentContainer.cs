@@ -140,17 +140,17 @@ namespace CalDavSynchronizer
 
     private void _synchronizationReportRepository_ReportAdded (object sender, ReportAddedEventArgs e)
     {
+      if (IsReportsViewVisible)
+      {
+        ShowReports (); // show to bring it into foreground
+        return;
+      }
+
       var hasErrors = e.Report.HasErrors;
       var hasWarnings = e.Report.HasWarnings;
 
       if (hasErrors || hasWarnings)
       {
-        if (IsReportViewVisible)
-        {
-          ShowReports(); // show to bring it into foreground
-          return;
-        }
-
         if (hasWarnings && _showReportsWithWarningsImmediately
             || hasErrors && _showReportsWithErrorsImmediately)
         {
@@ -567,7 +567,7 @@ namespace CalDavSynchronizer
       }
     }
 
-    private bool IsReportViewVisible
+    private bool IsReportsViewVisible
     {
       get { return _currentReportsViewModel != null; }
     }
