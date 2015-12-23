@@ -67,6 +67,8 @@ namespace CalDavSynchronizer
     private readonly FilteringSynchronizationReportRepositoryWrapper _filteringSynchronizationReportRepository;
     private readonly IUiService _uiService;
     private ReportsViewModel _currentReportsViewModel;
+    private bool _showReportsWithWarningsImmediately;
+    private bool _showReportsWithErrorsImmediately;
 
     public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
 
@@ -113,9 +115,9 @@ namespace CalDavSynchronizer
       _synchronizationReportRepository = CreateSynchronizationReportRepository();
 
       _filteringSynchronizationReportRepository = new FilteringSynchronizationReportRepositoryWrapper (_synchronizationReportRepository);
-      UpdateFilteringSynchronizationReportRepositoryForLogging(generalOptions);
+      UpdateGeneralOptionDependencies(generalOptions);
 
-      _synchronizationReportRepository.ReportAdded += _synchronizationReportRepository_ReportAdded;
+      _filteringSynchronizationReportRepository.ReportAdded += _synchronizationReportRepository_ReportAdded;
       _scheduler = new Scheduler (
         synchronizerFactory,
         _filteringSynchronizationReportRepository,
@@ -127,19 +129,34 @@ namespace CalDavSynchronizer
       _updateChecker.IsEnabled = generalOptions.ShouldCheckForNewerVersions;
     }
 
-    private void UpdateFilteringSynchronizationReportRepositoryForLogging (GeneralOptions generalOptions)
+    private void UpdateGeneralOptionDependencies (GeneralOptions generalOptions)
     {
       _filteringSynchronizationReportRepository.AcceptAddingReportsWithJustWarnings = generalOptions.LogReportsWithWarnings;
       _filteringSynchronizationReportRepository.AcceptAddingReportsWithoutWarningsOrErrors = generalOptions.LogReportsWithoutWarningsOrErrors;
+
+      _showReportsWithErrorsImmediately = generalOptions.ShowReportsWithErrorsImmediately;
+      _showReportsWithWarningsImmediately = generalOptions.ShowReportsWithWarningsImmediately;
     }
 
-    void _synchronizationReportRepository_ReportAdded (object sender, ReportAddedEventArgs e)
+    private void _synchronizationReportRepository_ReportAdded (object sender, ReportAddedEventArgs e)
     {
-      if (e.Report.HasErrors || e.Report.HasWarnings)
+      var hasErrors = e.Report.HasErrors;
+      var hasWarnings = e.Report.HasWarnings;
+
+      if (hasErrors || hasWarnings)
       {
         if (IsReportViewVisible)
         {
-          ShowReports (); // show to bring it into foreground
+          ShowReports(); // show to bring it into foreground
+          return;
+        }
+
+        if (hasWarnings && _showReportsWithWarningsImmediately
+            || hasErrors && _showReportsWithErrorsImmediately)
+        {
+          ShowReports();
+          var reportNameAsString = e.ReportName.ToString();
+          _currentReportsViewModel.Reports.Single (r => r.ReportName.ToString() == reportNameAsString).IsSelected = true;
           return;
         }
 
@@ -364,7 +381,7 @@ namespace CalDavSynchronizer
             _updateChecker.IsEnabled = newOptions.ShouldCheckForNewerVersions;
 
             _generalOptionsDataAccess.SaveOptions (newOptions);
-            UpdateFilteringSynchronizationReportRepositoryForLogging (newOptions);
+            UpdateGeneralOptionDependencies (newOptions);
           }
         }
       }
