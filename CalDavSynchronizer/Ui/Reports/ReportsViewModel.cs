@@ -68,6 +68,9 @@ namespace CalDavSynchronizer.Ui.Reports
       // Regarding to race conditions it doesn't matter when the handler is added
       // since everything happens in the ui thread
       _reportRepository.ReportAdded += ReportRepository_ReportAdded;
+
+      if (Reports.Count > 0)
+        Reports[0].IsSelected = true;
     }
 
     private void ReportRepository_ReportAdded (object sender, ReportAddedEventArgs e)
