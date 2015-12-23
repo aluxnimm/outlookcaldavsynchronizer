@@ -7,16 +7,22 @@
              mc:Ignorable="d" 
              d:DataContext="{x:Static viewModels:ReportViewModel.DesignInstance}">
   <DockPanel HorizontalAlignment="Stretch">
-    <TextBlock Text="{Binding ProfileName}"></TextBlock>
-    <TextBlock TextAlignment="Right"  DockPanel.Dock="Right" Text="{Binding StartTime,StringFormat=g}"></TextBlock>
+    <TextBlock>
+      <TextBlock.Text>
+        <MultiBinding StringFormat="{}{0} - {1:G}">
+              <Binding  Path="ProfileName" />
+              <Binding  Path="StartTime" />
+            </MultiBinding>
+      </TextBlock.Text>
+    </TextBlock>
     <DockPanel.Style>
       <Style TargetType="DockPanel">
         <Style.Triggers>
           <DataTrigger Binding="{Binding HasWarnings}" Value="true">
-            <Setter Property="Background" Value="#ffff99"></Setter>
+            <Setter Property="Background" Value="#ffff99" />
           </DataTrigger>
           <DataTrigger Binding="{Binding HasErrors}" Value="true">
-            <Setter Property="Background" Value="#ff9999"></Setter>
+            <Setter Property="Background" Value="#ff9999" />
           </DataTrigger>
         </Style.Triggers>
       </Style>
