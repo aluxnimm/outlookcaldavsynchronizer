@@ -27,5 +27,9 @@ namespace CalDavSynchronizer.Contracts
     public bool EnableSsl3 { get; set; }
     public bool FixInvalidSettings { get; set; }
     public bool DisplayAllProfilesAsGeneric { get; set; }
+    public bool LogReportsWithWarnings { get; set; }
+    public bool LogReportsWithoutWarningsOrErrors { get; set; }
+    public bool ShowReportsWithWarningsImmediately { get; set; }
+    public bool ShowReportsWithErrorsImmediately { get; set; }
   }
 }
