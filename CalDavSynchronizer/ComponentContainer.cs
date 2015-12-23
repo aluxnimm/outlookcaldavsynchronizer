@@ -25,7 +25,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Markup;
 using CalDavSynchronizer.AutomaticUpdates;
 using CalDavSynchronizer.ChangeWatching;
 using CalDavSynchronizer.Contracts;
@@ -45,6 +47,7 @@ using Microsoft.Office.Interop.Outlook;
 using Application = Microsoft.Office.Interop.Outlook.Application;
 using Exception = System.Exception;
 using System.Collections.Generic;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace CalDavSynchronizer
 {
@@ -72,6 +75,10 @@ namespace CalDavSynchronizer
       _generalOptionsDataAccess = new GeneralOptionsDataAccess();
 
       var generalOptions = _generalOptionsDataAccess.LoadOptions();
+
+      FrameworkElement.LanguageProperty.OverrideMetadata (
+        typeof (FrameworkElement), 
+        new FrameworkPropertyMetadata (XmlLanguage.GetLanguage (CultureInfo.CurrentCulture.IetfLanguageTag)));
 
       ConfigureServicePointManager (generalOptions);
 
