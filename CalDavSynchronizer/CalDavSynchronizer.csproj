@@ -237,6 +237,7 @@
     <Compile Include="DataAccess\WebRequestBasedClient\WebHeaderCollectionAdapter.cs" />
     <Compile Include="DataAccess\WebRequestBasedClient\WebDavClient.cs" />
     <Compile Include="DDayICalWorkaround\CalendarDataPreprocessor.cs" />
+    <Compile Include="Implementation\Common\CommonEntityMapper.cs" />
     <Compile Include="Implementation\ComWrappers\ContactItemWrapper.cs" />
     <Compile Include="Implementation\ComWrappers\TaskItemWrapper.cs" />
     <Compile Include="Implementation\ComWrappers\AppointmentItemWrapper.cs" />

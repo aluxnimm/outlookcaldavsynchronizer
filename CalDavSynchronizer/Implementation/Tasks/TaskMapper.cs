@@ -20,6 +20,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.Implementation.Common;
 using DDay.iCal;
 using GenSync.EntityMapping;
 using log4net;
@@ -101,9 +102,9 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       target.Properties.Set ("STATUS", MapStatus1To2 (source.Inner.Status));
 
-      target.Priority = MapPriority1To2 (source.Inner.Importance);
+      target.Priority = CommonEntityMapper.MapPriority1To2 (source.Inner.Importance);
 
-      target.Class = MapPrivacy1To2 (source.Inner.Sensitivity);
+      target.Class = CommonEntityMapper.MapPrivacy1To2 (source.Inner.Sensitivity);
 
       MapReminder1To2 (source, target);
 
@@ -125,37 +126,6 @@ namespace CalDavSynchronizer.Implementation.Tasks
           return "NEEDS-ACTION";
       }
 
-      throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
-    }
-
-    private int MapPriority1To2 (OlImportance value)
-    {
-      switch (value)
-      {
-        case OlImportance.olImportanceLow:
-          return 9;
-        case OlImportance.olImportanceNormal:
-          return 5;
-        case OlImportance.olImportanceHigh:
-          return 1;
-      }
-
-      throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
-    }
-
-    private string MapPrivacy1To2 (OlSensitivity value)
-    {
-      switch (value)
-      {
-        case OlSensitivity.olNormal:
-          return "PUBLIC";
-        case OlSensitivity.olPersonal:
-          return "PRIVATE"; // not sure
-        case OlSensitivity.olPrivate:
-          return "PRIVATE";
-        case OlSensitivity.olConfidential:
-          return "CONFIDENTIAL";
-      }
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
     }
 
@@ -236,7 +206,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
               break;
             case OlRecurrenceType.olRecursWeekly:
               targetRecurrencePattern.Frequency = FrequencyType.Weekly;
-              MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+              CommonEntityMapper.MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
               break;
             case OlRecurrenceType.olRecursMonthly:
               targetRecurrencePattern.Frequency = FrequencyType.Monthly;
@@ -248,16 +218,16 @@ namespace CalDavSynchronizer.Implementation.Tasks
               if (sourceRecurrencePattern.Instance == 5)
               {
                 targetRecurrencePattern.BySetPosition.Add (-1);
-                MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+                CommonEntityMapper.MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
               }
               else if (sourceRecurrencePattern.Instance > 0)
               {
                 targetRecurrencePattern.BySetPosition.Add (sourceRecurrencePattern.Instance);
-                MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+                CommonEntityMapper.MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
               }
               else
               {
-                MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+                CommonEntityMapper.MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
               }
               break;
             case OlRecurrenceType.olRecursYearly:
@@ -270,16 +240,16 @@ namespace CalDavSynchronizer.Implementation.Tasks
               if (sourceRecurrencePattern.Instance == 5)
               {
                 targetRecurrencePattern.BySetPosition.Add (-1);
-                MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+                CommonEntityMapper.MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
               }
               else if (sourceRecurrencePattern.Instance > 0)
               {
                 targetRecurrencePattern.BySetPosition.Add (sourceRecurrencePattern.Instance);
-                MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+                CommonEntityMapper.MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
               }
               else
               {
-                MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
+                CommonEntityMapper.MapDayOfWeek1To2 (sourceRecurrencePattern.DayOfWeekMask, targetRecurrencePattern.ByDay);
               }
               targetRecurrencePattern.ByMonth.Add (sourceRecurrencePattern.MonthOfYear);
               break;
@@ -288,24 +258,6 @@ namespace CalDavSynchronizer.Implementation.Tasks
           target.RecurrenceRules.Add (targetRecurrencePattern);
         }
       }
-    }
-
-    private void MapDayOfWeek1To2 (OlDaysOfWeek source, IList<IWeekDay> target)
-    {
-      if ((source & OlDaysOfWeek.olMonday) > 0)
-        target.Add (new WeekDay (DayOfWeek.Monday));
-      if ((source & OlDaysOfWeek.olTuesday) > 0)
-        target.Add (new WeekDay (DayOfWeek.Tuesday));
-      if ((source & OlDaysOfWeek.olWednesday) > 0)
-        target.Add (new WeekDay (DayOfWeek.Wednesday));
-      if ((source & OlDaysOfWeek.olThursday) > 0)
-        target.Add (new WeekDay (DayOfWeek.Thursday));
-      if ((source & OlDaysOfWeek.olFriday) > 0)
-        target.Add (new WeekDay (DayOfWeek.Friday));
-      if ((source & OlDaysOfWeek.olSaturday) > 0)
-        target.Add (new WeekDay (DayOfWeek.Saturday));
-      if ((source & OlDaysOfWeek.olSunday) > 0)
-        target.Add (new WeekDay (DayOfWeek.Sunday));
     }
 
     public TaskItemWrapper Map2To1 (IICalendar sourceCalendar, TaskItemWrapper target)
@@ -338,9 +290,9 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       target.Inner.PercentComplete = source.PercentComplete;
 
-      target.Inner.Importance = MapPriority2To1 (source.Priority);
+      target.Inner.Importance = CommonEntityMapper.MapPriority2To1 (source.Priority);
 
-      target.Inner.Sensitivity = MapPrivacy2To1 (source.Class);
+      target.Inner.Sensitivity = CommonEntityMapper.MapPrivacy2To1 (source.Class);
 
       target.Inner.Status = MapStatus2To1 (source.Status);
 
@@ -351,28 +303,6 @@ namespace CalDavSynchronizer.Implementation.Tasks
       MapRecurrance2To1 (source, target);
 
       return target;
-    }
-
-    private OlImportance MapPriority2To1 (int value)
-    {
-      switch (value)
-      {
-        case 7:
-        case 8:
-        case 9:
-          return OlImportance.olImportanceLow;
-        case 0:
-        case 3:
-        case 4:
-        case 5:
-        case 6:
-          return OlImportance.olImportanceNormal;
-        case 1:
-        case 2:
-          return OlImportance.olImportanceHigh;
-      }
-
-      throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
     }
 
     private OlTaskStatus MapStatus2To1 (TodoStatus value)
@@ -395,20 +325,6 @@ namespace CalDavSynchronizer.Implementation.Tasks
     private static void MapCategories2To1 (ITodo source, TaskItemWrapper target)
     {
       target.Inner.Categories = string.Join (CultureInfo.CurrentCulture.TextInfo.ListSeparator, source.Categories);
-    }
-
-    private OlSensitivity MapPrivacy2To1 (string value)
-    {
-      switch (value)
-      {
-        case "PUBLIC":
-          return OlSensitivity.olNormal;
-        case "PRIVATE":
-          return OlSensitivity.olPrivate;
-        case "CONFIDENTIAL":
-          return OlSensitivity.olConfidential;
-      }
-      return OlSensitivity.olNormal;
     }
 
     private void MapReminder2To1 (ITodo source, TaskItemWrapper target)
@@ -463,7 +379,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
               if (sourceRecurrencePattern.ByDay.Count > 0)
               {
                 targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursWeekly;
-                targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1 (sourceRecurrencePattern.ByDay);
+                targetRecurrencePattern.DayOfWeekMask = CommonEntityMapper.MapDayOfWeek2To1 (sourceRecurrencePattern.ByDay);
               }
               else
               {
@@ -490,7 +406,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
                 {
                   targetRecurrencePattern.Instance = (sourceRecurrencePattern.BySetPosition[0] >= 0) ? sourceRecurrencePattern.BySetPosition[0] : 5;
                 }
-                targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1 (sourceRecurrencePattern.ByDay);
+                targetRecurrencePattern.DayOfWeekMask = CommonEntityMapper.MapDayOfWeek2To1 (sourceRecurrencePattern.ByDay);
               }
               else if (sourceRecurrencePattern.ByMonthDay.Count > 0)
               {
@@ -522,7 +438,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
                 }
                 targetRecurrencePattern.Instance = sourceRecurrencePattern.ByWeekNo[0];
 
-                targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1 (sourceRecurrencePattern.ByDay);
+                targetRecurrencePattern.DayOfWeekMask = CommonEntityMapper.MapDayOfWeek2To1 (sourceRecurrencePattern.ByDay);
               }
               else if (sourceRecurrencePattern.ByMonth.Count > 0 && sourceRecurrencePattern.ByMonthDay.Count > 0)
               {
@@ -553,7 +469,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
                 {
                   targetRecurrencePattern.Instance = (sourceRecurrencePattern.BySetPosition[0] >= 0) ? sourceRecurrencePattern.BySetPosition[0] : 5;
                 }
-                targetRecurrencePattern.DayOfWeekMask = MapDayOfWeek2To1 (sourceRecurrencePattern.ByDay);
+                targetRecurrencePattern.DayOfWeekMask = CommonEntityMapper.MapDayOfWeek2To1 (sourceRecurrencePattern.ByDay);
               }
               else
               {
@@ -578,40 +494,6 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
         targetWrapper.SaveAndReload();
       }
-    }
-
-    private OlDaysOfWeek MapDayOfWeek2To1 (IList<IWeekDay> source)
-    {
-      OlDaysOfWeek target = 0;
-
-      foreach (var day in source)
-      {
-        switch (day.DayOfWeek)
-        {
-          case DayOfWeek.Monday:
-            target |= OlDaysOfWeek.olMonday;
-            break;
-          case DayOfWeek.Tuesday:
-            target |= OlDaysOfWeek.olTuesday;
-            break;
-          case DayOfWeek.Wednesday:
-            target |= OlDaysOfWeek.olWednesday;
-            break;
-          case DayOfWeek.Thursday:
-            target |= OlDaysOfWeek.olThursday;
-            break;
-          case DayOfWeek.Friday:
-            target |= OlDaysOfWeek.olFriday;
-            break;
-          case DayOfWeek.Saturday:
-            target |= OlDaysOfWeek.olSaturday;
-            break;
-          case DayOfWeek.Sunday:
-            target |= OlDaysOfWeek.olSunday;
-            break;
-        }
-      }
-      return target;
     }
   }
 }
