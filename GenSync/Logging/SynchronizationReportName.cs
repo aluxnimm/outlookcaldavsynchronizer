@@ -68,7 +68,7 @@ namespace GenSync.Logging
 
     public override string ToString ()
     {
-      return string.Format ("{0}{1:yyyyMMddhhmmss}{2}{3}{4}.log", _syncronizationProfileId, _startTime, _hasWarnings ? 1 : 0, _hasErrors ? 1 : 0, _sequenceNumber);
+      return string.Format ("{0}{1:yyyyMMddHHmmss}{2}{3}{4}.log", _syncronizationProfileId, _startTime, _hasWarnings ? 1 : 0, _hasErrors ? 1 : 0, _sequenceNumber);
     }
 
     public static bool TryParse (string value, out SynchronizationReportName name)
@@ -77,11 +77,11 @@ namespace GenSync.Logging
       if (match.Success)
       {
         name = new SynchronizationReportName (
-            new Guid(match.Groups["id"].Value),
-            DateTime.ParseExact (match.Groups["start"].Value, "yyyyMMddhhmmss", CultureInfo.InvariantCulture),
+            new Guid (match.Groups["id"].Value),
+            DateTime.SpecifyKind (DateTime.ParseExact (match.Groups["start"].Value, "yyyyMMddHHmmss", CultureInfo.InvariantCulture), DateTimeKind.Utc),
             match.Groups["warnings"].Value == "1",
             match.Groups["errors"].Value == "1",
-            int.Parse(match.Groups["sequence"].Value));
+            int.Parse (match.Groups["sequence"].Value));
         return true;
       }
       else

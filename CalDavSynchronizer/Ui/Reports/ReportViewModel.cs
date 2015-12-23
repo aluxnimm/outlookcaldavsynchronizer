@@ -57,7 +57,7 @@ namespace CalDavSynchronizer.Ui.Reports
 
     public DateTime StartTime
     {
-      get { return _reportProxy.Name.StartTime; }
+      get { return _reportProxy.Name.StartTime.ToLocalTime(); }
     }
 
     public string AsString
