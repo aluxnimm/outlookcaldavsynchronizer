@@ -17,13 +17,14 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using GenSync.Logging;
 
 namespace CalDavSynchronizer.Synchronization
 {
   public interface IOutlookSynchronizer
   {
-    Task Synchronize ();
-    Task SnychronizePartial (IEnumerable<string> outlookIds);
+    Task SynchronizeNoThrow (ISynchronizationLogger logger);
+    Task SnychronizePartialNoThrow (IEnumerable<string> outlookIds, ISynchronizationLogger logger);
     bool IsResponsible (string folderEntryId, string folderStoreId);
   }
 }

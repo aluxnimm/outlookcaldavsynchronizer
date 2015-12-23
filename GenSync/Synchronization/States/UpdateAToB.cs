@@ -17,6 +17,7 @@
 using System;
 using System.Threading.Tasks;
 using GenSync.EntityRelationManagement;
+using GenSync.Logging;
 
 namespace GenSync.Synchronization.States
 {
@@ -37,19 +38,24 @@ namespace GenSync.Synchronization.States
       _currentBVersion = currentBVersion;
     }
 
-    public override async Task<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>> PerformSyncActionNoThrow ()
+    public override async Task<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>> PerformSyncActionNoThrow (
+        IEntitySynchronizationLogger logger)
     {
       try
       {
+        logger.SetAId (_knownData.AtypeId);
+        logger.SetBId (_knownData.BtypeId);
         var newB = await _environment.BRepository.Update (
             _knownData.BtypeId,
             _currentBVersion,
             _bEntity,
-            b => _environment.Mapper.Map1To2 (_aEntity, b));
+            b => _environment.Mapper.Map1To2 (_aEntity, b, logger));
+        logger.SetBId (newB.Id);
         return CreateDoNothing (_knownData.AtypeId, _newAVersion, newB.Id, newB.Version);
       }
       catch (Exception x)
       {
+        logger.LogAbortedDueToError (x);
         LogException (x);
         return CreateDoNothing();
       }

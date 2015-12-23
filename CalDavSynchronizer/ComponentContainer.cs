@@ -25,7 +25,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Markup;
 using CalDavSynchronizer.AutomaticUpdates;
 using CalDavSynchronizer.ChangeWatching;
 using CalDavSynchronizer.Contracts;
@@ -35,6 +37,7 @@ using CalDavSynchronizer.Implementation.Events;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Ui;
+using CalDavSynchronizer.Ui.Reports;
 using CalDavSynchronizer.Utilities;
 using GenSync;
 using GenSync.ProgressReport;
@@ -44,6 +47,7 @@ using Microsoft.Office.Interop.Outlook;
 using Application = Microsoft.Office.Interop.Outlook.Application;
 using Exception = System.Exception;
 using System.Collections.Generic;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace CalDavSynchronizer
 {
@@ -59,12 +63,25 @@ namespace CalDavSynchronizer
     private readonly NameSpace _session;
     private readonly OutlookItemChangeWatcher _itemChangeWatcher;
     private readonly string _applicationDataDirectory;
+    private readonly ISynchronizationReportRepository _synchronizationReportRepository;
+    private readonly FilteringSynchronizationReportRepositoryWrapper _filteringSynchronizationReportRepository;
+    private readonly IUiService _uiService;
+    private ReportsViewModel _currentReportsViewModel;
+    private bool _showReportsWithWarningsImmediately;
+    private bool _showReportsWithErrorsImmediately;
+
+    public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
 
     public ComponentContainer (Application application)
     {
+      _uiService = new UiService();
       _generalOptionsDataAccess = new GeneralOptionsDataAccess();
 
       var generalOptions = _generalOptionsDataAccess.LoadOptions();
+
+      FrameworkElement.LanguageProperty.OverrideMetadata (
+        typeof (FrameworkElement), 
+        new FrameworkPropertyMetadata (XmlLanguage.GetLanguage (CultureInfo.CurrentCulture.IetfLanguageTag)));
 
       ConfigureServicePointManager (generalOptions);
 
@@ -95,12 +112,68 @@ namespace CalDavSynchronizer
           _session,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]));
 
-      _scheduler = new Scheduler (synchronizerFactory, EnsureSynchronizationContext);
+      _synchronizationReportRepository = CreateSynchronizationReportRepository();
+
+      _filteringSynchronizationReportRepository = new FilteringSynchronizationReportRepositoryWrapper (_synchronizationReportRepository);
+      UpdateGeneralOptionDependencies(generalOptions);
+
+      _filteringSynchronizationReportRepository.ReportAdded += _synchronizationReportRepository_ReportAdded;
+      _scheduler = new Scheduler (
+        synchronizerFactory,
+        _filteringSynchronizationReportRepository,
+        EnsureSynchronizationContext);
       _scheduler.SetOptions (_optionsDataAccess.LoadOptions());
 
       _updateChecker = new UpdateChecker (new AvailableVersionService(), () => _generalOptionsDataAccess.IgnoreUpdatesTilVersion);
       _updateChecker.NewerVersionFound += UpdateChecker_NewerVersionFound;
       _updateChecker.IsEnabled = generalOptions.ShouldCheckForNewerVersions;
+    }
+
+    private void UpdateGeneralOptionDependencies (GeneralOptions generalOptions)
+    {
+      _filteringSynchronizationReportRepository.AcceptAddingReportsWithJustWarnings = generalOptions.LogReportsWithWarnings;
+      _filteringSynchronizationReportRepository.AcceptAddingReportsWithoutWarningsOrErrors = generalOptions.LogReportsWithoutWarningsOrErrors;
+
+      _showReportsWithErrorsImmediately = generalOptions.ShowReportsWithErrorsImmediately;
+      _showReportsWithWarningsImmediately = generalOptions.ShowReportsWithWarningsImmediately;
+    }
+
+    private void _synchronizationReportRepository_ReportAdded (object sender, ReportAddedEventArgs e)
+    {
+      if (IsReportsViewVisible)
+      {
+        ShowReports (); // show to bring it into foreground
+        return;
+      }
+
+      var hasErrors = e.Report.HasErrors;
+      var hasWarnings = e.Report.HasWarnings;
+
+      if (hasErrors || hasWarnings)
+      {
+        if (hasWarnings && _showReportsWithWarningsImmediately
+            || hasErrors && _showReportsWithErrorsImmediately)
+        {
+          ShowReports();
+          var reportNameAsString = e.ReportName.ToString();
+          _currentReportsViewModel.Reports.Single (r => r.ReportName.ToString() == reportNameAsString).IsSelected = true;
+          return;
+        }
+
+        var handler = SynchronizationFailedWhileReportsFormWasNotVisible;
+        if (handler != null)
+          handler (this, EventArgs.Empty);
+      }
+    }
+
+    private ISynchronizationReportRepository CreateSynchronizationReportRepository ()
+    {
+      var reportDirectory = Path.Combine (_applicationDataDirectory, "reports");
+
+      if (!Directory.Exists (reportDirectory))
+        Directory.CreateDirectory (reportDirectory);
+
+      return new SynchronizationReportRepository (reportDirectory);
     }
 
     private async void ItemChangeWatcherItemSavedOrDeleted (object sender, ItemSavedEventArgs e)
@@ -308,6 +381,7 @@ namespace CalDavSynchronizer
             _updateChecker.IsEnabled = newOptions.ShouldCheckForNewerVersions;
 
             _generalOptionsDataAccess.SaveOptions (newOptions);
+            UpdateGeneralOptionDependencies (newOptions);
           }
         }
       }
@@ -478,6 +552,41 @@ namespace CalDavSynchronizer
         {
           SynchronizationContext.SetSynchronizationContext (new WindowsFormsSynchronizationContext());
         }
+      }
+    }
+
+    public void ShowReportsNoThrow ()
+    {
+      try
+      {
+        ShowReports();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.HandleException (x, s_logger);
+      }
+    }
+
+    private bool IsReportsViewVisible
+    {
+      get { return _currentReportsViewModel != null; }
+    }
+
+    private void ShowReports ()
+    {
+      if (_currentReportsViewModel == null)
+      {
+        _currentReportsViewModel = new ReportsViewModel (
+            _synchronizationReportRepository,
+            _optionsDataAccess.LoadOptions().ToDictionary (o => o.Id, o => o.Name));
+
+        _currentReportsViewModel.ReportsClosed += delegate { _currentReportsViewModel = null; };
+
+        _uiService.Show (_currentReportsViewModel);
+      }
+      else
+      {
+        _currentReportsViewModel.RequireBringToFront();
       }
     }
   }

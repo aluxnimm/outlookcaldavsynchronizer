@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.IO;
 using CalDavSynchronizer.Contracts;
@@ -34,7 +35,12 @@ namespace CalDavSynchronizer.DataAccess
     private const string s_OptionsRegistryKey = @"Software\CalDavSynchronizer";
     private const string s_DisplayAllProfilesAsGeneric = "DisplayAllProfilesAsGeneric";
 
-    
+    private const string s_LogReportsWithoutWarningsOrErrors = "LogReportsWithoutWarningsOrErrors";
+    private const string s_LogReportsWithWarnings = "LogReportsWithWarnings";
+    private const string s_ShowReportsWithWarningsImmediately = "ShowReportsWithWarningsImmediately";
+    private const string s_ShowReportsWithErrorsImmediately = "ShowReportsWithErrorsImmediately";
+
+
     public GeneralOptions LoadOptions ()
     {
       using (var key = OpenOptionsKey())
@@ -43,11 +49,15 @@ namespace CalDavSynchronizer.DataAccess
                {
                    ShouldCheckForNewerVersions = (int) (key.GetValue (s_shouldCheckForNewerVersionsValueName) ?? 1) != 0,
                    StoreAppDataInRoamingFolder = (int) (key.GetValue (s_storeAppDataInRoamingFolder) ?? 0) != 0,
-                   DisableCertificateValidation = (int) (key.GetValue(s_disableCertificateValidation) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"] ?? bool.FalseString))) != 0,
-                   EnableTls12 = (int)(key.GetValue(s_enableTls12) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"] ?? bool.TrueString))) != 0,
-                   EnableSsl3 = (int)(key.GetValue(s_enableSsl3) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"] ?? bool.FalseString))) != 0,
+                   DisableCertificateValidation = (int) (key.GetValue (s_disableCertificateValidation) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"] ?? bool.FalseString))) != 0,
+                   EnableTls12 = (int) (key.GetValue (s_enableTls12) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"] ?? bool.TrueString))) != 0,
+                   EnableSsl3 = (int) (key.GetValue (s_enableSsl3) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"] ?? bool.FalseString))) != 0,
                    FixInvalidSettings = (int) (key.GetValue (s_fixInvalidSettings) ?? 1) != 0,
                    DisplayAllProfilesAsGeneric = (int) (key.GetValue (s_DisplayAllProfilesAsGeneric) ?? 0) != 0,
+                   LogReportsWithoutWarningsOrErrors = (int) (key.GetValue (s_LogReportsWithoutWarningsOrErrors) ?? 0) != 0,
+                   LogReportsWithWarnings = (int) (key.GetValue (s_LogReportsWithWarnings) ?? 1) != 0,
+                   ShowReportsWithWarningsImmediately = (int) (key.GetValue (s_ShowReportsWithWarningsImmediately) ?? 0) != 0,
+                   ShowReportsWithErrorsImmediately = (int) (key.GetValue (s_ShowReportsWithErrorsImmediately) ?? 1) != 0,
                };
       }
     }
@@ -63,6 +73,10 @@ namespace CalDavSynchronizer.DataAccess
         key.SetValue (s_enableSsl3, options.EnableSsl3 ? 1 : 0);
         key.SetValue (s_fixInvalidSettings, options.FixInvalidSettings ? 1 : 0);
         key.SetValue (s_DisplayAllProfilesAsGeneric, options.DisplayAllProfilesAsGeneric ? 1 : 0);
+        key.SetValue (s_LogReportsWithoutWarningsOrErrors, options.LogReportsWithoutWarningsOrErrors ? 1 : 0);
+        key.SetValue (s_LogReportsWithWarnings, options.LogReportsWithWarnings ? 1 : 0);
+        key.SetValue (s_ShowReportsWithWarningsImmediately, options.ShowReportsWithWarningsImmediately ? 1 : 0);
+        key.SetValue (s_ShowReportsWithErrorsImmediately, options.ShowReportsWithErrorsImmediately ? 1 : 0);
       }
     }
 

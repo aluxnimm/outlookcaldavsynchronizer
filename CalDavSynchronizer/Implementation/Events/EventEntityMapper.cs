@@ -25,6 +25,7 @@ using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Common;
 using DDay.iCal;
 using GenSync.EntityMapping;
+using GenSync.Logging;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
 using Exception = Microsoft.Office.Interop.Outlook.Exception;
@@ -70,7 +71,7 @@ namespace CalDavSynchronizer.Implementation.Events
       _outlookMajorVersion = Convert.ToInt32 (outlookMajorVersionString);
     }
 
-    public IICalendar Map1To2 (AppointmentItemWrapper sourceWrapper, IICalendar existingTargetCalender)
+    public IICalendar Map1To2 (AppointmentItemWrapper sourceWrapper, IICalendar existingTargetCalender, IEntityMappingLogger logger)
     {
       var newTargetCalender = new iCalendar();
 
@@ -1040,7 +1041,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
     private const int s_mailtoSchemaLength = 7; // length of "mailto:"
 
-    public AppointmentItemWrapper Map2To1 (IICalendar sourceCalendar, AppointmentItemWrapper target)
+    public AppointmentItemWrapper Map2To1 (IICalendar sourceCalendar, AppointmentItemWrapper target, IEntityMappingLogger logger)
     {
       IEvent sourceMasterEvent = null;
       IReadOnlyCollection<IEvent> sourceExceptionEvents;

@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using GenSync;
 using GenSync.EntityRepositories;
+using GenSync.Logging;
 using Microsoft.Office.Interop.Outlook;
 using System.Runtime.InteropServices;
 using log4net;
@@ -98,7 +99,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
     }
 
 #pragma warning disable 1998
-    public async Task<IReadOnlyList<EntityWithId<string, TaskItemWrapper>>> Get (ICollection<string> ids)
+    public async Task<IReadOnlyList<EntityWithId<string, TaskItemWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger)
 #pragma warning restore 1998
     {
       var storeId = _taskFolder.StoreID;
@@ -130,7 +131,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
     public Task Delete (string entityId, DateTime version)
     {
-      var entityWithId = Get (new[] { entityId }).Result.SingleOrDefault();
+      var entityWithId = Get (new[] { entityId }, NullSynchronizationLogger.Instance).Result.SingleOrDefault ();
       if (entityWithId == null)
         return Task.FromResult (0);
 

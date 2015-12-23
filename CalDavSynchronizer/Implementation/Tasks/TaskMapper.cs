@@ -23,6 +23,7 @@ using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Common;
 using DDay.iCal;
 using GenSync.EntityMapping;
+using GenSync.Logging;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
 using Exception = Microsoft.Office.Interop.Outlook.Exception;
@@ -42,7 +43,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       _localTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (localTimeZoneId);
     }
 
-    public IICalendar Map1To2 (TaskItemWrapper source, IICalendar existingTargetCalender)
+    public IICalendar Map1To2 (TaskItemWrapper source, IICalendar existingTargetCalender, IEntityMappingLogger logger)
     {
       var newTargetCalender = new iCalendar();
       var localIcalTimeZone = iCalTimeZone.FromSystemTimeZone (_localTimeZoneInfo, new DateTime (1970, 1, 1), true);
@@ -260,7 +261,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       }
     }
 
-    public TaskItemWrapper Map2To1 (IICalendar sourceCalendar, TaskItemWrapper target)
+    public TaskItemWrapper Map2To1 (IICalendar sourceCalendar, TaskItemWrapper target, IEntityMappingLogger logger)
     {
       var source = sourceCalendar.Todos[0];
       return Map2To1 (source, target);

@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Synchronization;
 using GenSync.Synchronization;
 

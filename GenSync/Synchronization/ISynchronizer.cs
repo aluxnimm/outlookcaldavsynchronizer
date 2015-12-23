@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Threading.Tasks;
+using GenSync.Logging;
 
 namespace GenSync.Synchronization
 {
@@ -24,6 +25,6 @@ namespace GenSync.Synchronization
   /// </summary>
   public interface ISynchronizer
   {
-    Task Synchronize ();
+    Task SynchronizeNoThrow (ISynchronizationLogger logger);
   }
 }

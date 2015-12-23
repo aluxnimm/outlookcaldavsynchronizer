@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.IO;
 using System.Text;
@@ -43,6 +44,16 @@ namespace CalDavSynchronizer.Utilities
       {
         return (T) _xmlSerializer.Deserialize (reader);
       }
+    }
+
+    public static T DeserializeFrom (Stream stream)
+    {
+      return (T) _xmlSerializer.Deserialize (stream);
+    }
+
+    public static void SerializeTo (T o, Stream stream)
+    {
+      _xmlSerializer.Serialize (stream, o);
     }
   }
 }

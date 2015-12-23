@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GenSync.EntityRepositories;
+using GenSync.Logging;
 
 namespace GenSync.UnitTests.Synchronization.Stubs
 {
@@ -52,7 +53,7 @@ namespace GenSync.UnitTests.Synchronization.Stubs
           EntityVersionAndContentById.Select (kv => EntityVersion.Create (kv.Key, kv.Value.Item1)).ToList());
     }
 
-    public Task<IReadOnlyList<EntityWithId<Identifier, string>>> Get (ICollection<Identifier> ids)
+    public Task<IReadOnlyList<EntityWithId<Identifier, string>>> Get (ICollection<Identifier> ids, ILoadEntityLogger logger)
     {
       return Task.FromResult<IReadOnlyList<EntityWithId<Identifier, string>>> (
           ids.Select (id => EntityWithId.Create (id, EntityVersionAndContentById[id].Item2)).ToArray());

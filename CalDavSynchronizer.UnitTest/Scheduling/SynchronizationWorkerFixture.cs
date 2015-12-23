@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,8 +22,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Synchronization;
+using GenSync.Logging;
 using GenSync.Synchronization;
 using NUnit.Framework;
 using Rhino.Mocks;
@@ -36,12 +39,13 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
     private SynchronizationProfileRunner _synchronizationProfileRunner;
     private StubSynchronizer _stubSynchronizer;
 
-
     [SetUp]
     public void SetUp ()
     {
       _synchronizerFactory = MockRepository.GenerateStub<ISynchronizerFactory>();
-      _synchronizationProfileRunner = new SynchronizationProfileRunner (_synchronizerFactory);
+      _synchronizationProfileRunner = new SynchronizationProfileRunner (
+          _synchronizerFactory,
+          MockRepository.GenerateStub<ISynchronizationReportRepository>());
 
       var options = new Options();
       _stubSynchronizer = new StubSynchronizer();
@@ -84,13 +88,13 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
         get { return _runCount; }
       }
 
-      public Task Synchronize ()
+      public Task SynchronizeNoThrow (ISynchronizationLogger logger)
       {
         _runCount++;
         return Task.Run (() => FinishSynchronizationEvent.Wait());
       }
 
-      public Task SnychronizePartial (IEnumerable<string> outlookIds)
+      public Task SnychronizePartialNoThrow (IEnumerable<string> outlookIds, ISynchronizationLogger logger)
       {
         throw new NotImplementedException();
       }

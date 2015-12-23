@@ -134,10 +134,13 @@
     <Reference Include="NodaTime">
       <HintPath>..\packages\NodaTime.1.3.1\lib\net35-Client\NodaTime.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Extensions">
@@ -149,6 +152,7 @@
     <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -157,6 +161,9 @@
     <Reference Include="Thought.vCards">
       <HintPath>..\packages\Thought.vCards.1.0.7\lib\net40\Thought.vCards.dll</HintPath>
     </Reference>
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Office.Tools.v4.0.Framework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
@@ -228,6 +235,12 @@
     <Compile Include="DataAccess\IHttpHeaders.cs" />
     <Compile Include="DataAccess\IGeneralOptionsDataAccess.cs" />
     <Compile Include="DataAccess\GeneralOptionsDataAccess.cs" />
+    <Compile Include="DataAccess\ISynchronizationReportRepository.cs" />
+    <Compile Include="DataAccess\FilteringSynchronizationReportRepositoryWrapper.cs" />
+    <Compile Include="DataAccess\NullSynchronizationReportRepository.cs" />
+    <Compile Include="DataAccess\ReportAddedEventArgs.cs" />
+    <Compile Include="DataAccess\ReportEventArgs.cs" />
+    <Compile Include="DataAccess\SynchronizationReportRepository.cs" />
     <Compile Include="DataAccess\WebDavDataAccess.cs" />
     <Compile Include="DataAccess\CardDavDataAccess.cs" />
     <Compile Include="DataAccess\IWebDavClient.cs" />
@@ -301,6 +314,7 @@
       <DependentUpon>AdvancedOptionsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Ui\AutoDiscoveryResult.cs" />
+    <Compile Include="Ui\DelegateCommand.cs" />
     <Compile Include="Ui\ColorInfo.cs" />
     <Compile Include="Ui\ColorPicker.cs">
       <SubType>Component</SubType>
@@ -338,6 +352,12 @@
     <Compile Include="Ui\GenericConfigurationForm.Designer.cs">
       <DependentUpon>GenericConfigurationForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Ui\GenericElementHostWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ui\GenericElementHostWindow.Designer.cs">
+      <DependentUpon>GenericElementHostWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Ui\GetNewVersionForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -371,6 +391,7 @@
     <Compile Include="Ui\GoogleOptionsDisplayControl.Designer.cs">
       <DependentUpon>GoogleOptionsDisplayControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Ui\IUiService.cs" />
     <Compile Include="Ui\OptionTasks.cs" />
     <Compile Include="Ui\OutlookFolderControl.cs">
       <SubType>UserControl</SubType>
@@ -378,6 +399,18 @@
     <Compile Include="Ui\OutlookFolderControl.Designer.cs">
       <DependentUpon>OutlookFolderControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Ui\Reports\ReportDetailView.xaml.cs">
+      <DependentUpon>ReportDetailView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\Reports\ReportProxy.cs" />
+    <Compile Include="Ui\Reports\ReportsView.xaml.cs">
+      <DependentUpon>ReportsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\Reports\ReportView.xaml.cs">
+      <DependentUpon>ReportView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\Reports\ReportViewModel.cs" />
+    <Compile Include="Ui\Reports\ReportsViewModel.cs" />
     <Compile Include="Ui\SelectOptionsDisplayTypeForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -450,6 +483,9 @@
     <EmbeddedResource Include="Ui\AdvancedOptionsForm.resx">
       <DependentUpon>AdvancedOptionsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Ui\GenericElementHostWindow.resx">
+      <DependentUpon>GenericElementHostWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Ui\GetNewVersionForm.resx">
       <DependentUpon>GetNewVersionForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -512,6 +548,8 @@
     </Compile>
     <Compile Include="Ui\ProgressFormFactory.cs" />
     <Compile Include="Ui\SettingsFaultFinder.cs" />
+    <Compile Include="Ui\UiService.cs" />
+    <Compile Include="Ui\ViewModelBasecs.cs" />
     <Compile Include="Utilities\ColorHelper.cs" />
     <Compile Include="Utilities\ExceptionHandler.cs" />
     <Compile Include="Utilities\IExceptionHandler.cs" />
@@ -541,6 +579,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
+    <None Include="Resources\SyncError.png" />
+    <None Include="Resources\report.ico" />
     <None Include="Resources\GeneralOptions.ico" />
     <Content Include="Resources\outlookcaldavsynchronizerlogoarrow.png" />
   </ItemGroup>
@@ -555,6 +595,20 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Page Include="Ui\Reports\ReportDetailView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Ui\Reports\ReportsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Ui\Reports\ReportView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

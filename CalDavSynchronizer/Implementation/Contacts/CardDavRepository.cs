@@ -26,6 +26,7 @@ using CalDavSynchronizer.Diagnostics;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using GenSync;
 using GenSync.EntityRepositories;
+using GenSync.Logging;
 using log4net;
 using Thought.vCards;
 using CalDavSynchronizer.ThoughtvCardWorkaround;
@@ -58,7 +59,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    public async Task<IReadOnlyList<EntityWithId<Uri, vCard>>> Get (ICollection<Uri> ids)
+    public async Task<IReadOnlyList<EntityWithId<Uri, vCard>>> Get (ICollection<Uri> ids, ILoadEntityLogger logger)
     {
       if (ids.Count == 0)
         return new EntityWithId<Uri, vCard>[] { };

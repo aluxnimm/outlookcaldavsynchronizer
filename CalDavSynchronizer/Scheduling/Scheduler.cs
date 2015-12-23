@@ -20,6 +20,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Utilities;
 using log4net;
 
@@ -34,15 +35,22 @@ namespace CalDavSynchronizer.Scheduling
     private Dictionary<Guid, SynchronizationProfileRunner> _runnersById = new Dictionary<Guid, SynchronizationProfileRunner>();
     private readonly TimeSpan _timerInterval = TimeSpan.FromSeconds (30);
     private readonly ISynchronizerFactory _synchronizerFactory;
+    private readonly ISynchronizationReportRepository _synchronizationReportRepository;
     private readonly Action _ensureSynchronizationContext;
 
-    public Scheduler (ISynchronizerFactory synchronizerFactory, Action ensureSynchronizationContext)
+    public Scheduler (
+      ISynchronizerFactory synchronizerFactory, 
+      ISynchronizationReportRepository synchronizationReportRepository,
+      Action ensureSynchronizationContext)
     {
       if (synchronizerFactory == null)
         throw new ArgumentNullException ("synchronizerFactory");
       if (ensureSynchronizationContext == null)
         throw new ArgumentNullException ("ensureSynchronizationContext");
+      if (synchronizationReportRepository == null)
+        throw new ArgumentNullException ("synchronizationReportRepository");
 
+      _synchronizationReportRepository = synchronizationReportRepository;
       _synchronizerFactory = synchronizerFactory;
       _ensureSynchronizationContext = ensureSynchronizationContext;
       _synchronizationTimer.Tick += _synchronizationTimer_Tick;
@@ -76,7 +84,11 @@ namespace CalDavSynchronizer.Scheduling
         {
           SynchronizationProfileRunner profileRunner;
           if (!_runnersById.TryGetValue (option.Id, out profileRunner))
-            profileRunner = new SynchronizationProfileRunner (_synchronizerFactory);
+          {
+            profileRunner = new SynchronizationProfileRunner (
+                _synchronizerFactory,
+                _synchronizationReportRepository);
+          }
           profileRunner.UpdateOptions (option);
           workersById.Add (option.Id, profileRunner);
         }

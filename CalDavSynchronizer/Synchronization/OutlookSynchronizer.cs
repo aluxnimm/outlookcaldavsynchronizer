@@ -14,10 +14,12 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Implementation;
+using GenSync.Logging;
 using GenSync.Synchronization;
 
 namespace CalDavSynchronizer.Synchronization
@@ -33,14 +35,14 @@ namespace CalDavSynchronizer.Synchronization
       _outlookRepository = outlookRepository;
     }
 
-    public Task Synchronize ()
+    public Task SynchronizeNoThrow (ISynchronizationLogger logger)
     {
-      return _synchronizer.Synchronize();
+      return _synchronizer.SynchronizeNoThrow (logger);
     }
 
-    public async Task SnychronizePartial (IEnumerable<string> outlookIds)
+    public async Task SnychronizePartialNoThrow (IEnumerable<string> outlookIds, ISynchronizationLogger logger)
     {
-      await _synchronizer.SynchronizePartial (outlookIds, new Uri[] { });
+      await _synchronizer.SynchronizePartialNoThrow (outlookIds, new Uri[] { }, logger);
     }
 
     public bool IsResponsible (string folderEntryId, string folderStoreId)

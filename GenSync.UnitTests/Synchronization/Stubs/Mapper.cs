@@ -16,17 +16,18 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using GenSync.EntityMapping;
+using GenSync.Logging;
 
 namespace GenSync.UnitTests.Synchronization.Stubs
 {
   internal class Mapper : IEntityMapper<string, string>
   {
-    public string Map1To2 (string source, string target)
+    public string Map1To2 (string source, string target, IEntityMappingLogger logger)
     {
       return source;
     }
 
-    public string Map2To1 (string source, string target)
+    public string Map2To1 (string source, string target, IEntityMappingLogger logger)
     {
       return source;
     }

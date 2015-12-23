@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using GenSync.EntityRelationManagement;
+using GenSync.Logging;
 using log4net;
 
 namespace GenSync.Synchronization.States
@@ -39,7 +40,8 @@ namespace GenSync.Synchronization.States
 
     public abstract IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> Resolve ();
 
-    public abstract Task<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>> PerformSyncActionNoThrow ();
+    public abstract Task<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>> PerformSyncActionNoThrow (
+        IEntitySynchronizationLogger logger);
 
     public abstract void AddNewRelationNoThrow (Action<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> addAction);
 

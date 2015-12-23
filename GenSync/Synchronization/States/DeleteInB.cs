@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using GenSync.EntityRelationManagement;
+using GenSync.Logging;
 using log4net;
 
 namespace GenSync.Synchronization.States
@@ -53,15 +54,18 @@ namespace GenSync.Synchronization.States
       return this;
     }
 
-    public override async Task<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>> PerformSyncActionNoThrow ()
+    public override async Task<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>> PerformSyncActionNoThrow (
+        IEntitySynchronizationLogger logger)
     {
       try
       {
+        logger.SetBId (_knownData.BtypeId);
         await _environment.BRepository.Delete (_knownData.BtypeId, _currentBVersion);
         return Discard();
       }
       catch (Exception x)
       {
+        logger.LogAbortedDueToError (x);
         LogException (x);
         return CreateDoNothing();
       }

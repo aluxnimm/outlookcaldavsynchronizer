@@ -29,6 +29,7 @@ using DDay.iCal.Serialization;
 using DDay.iCal.Serialization.iCalendar;
 using GenSync;
 using GenSync.EntityRepositories;
+using GenSync.Logging;
 using log4net;
 
 namespace CalDavSynchronizer.Implementation
@@ -78,7 +79,7 @@ namespace CalDavSynchronizer.Implementation
       }
     }
 
-    public async Task<IReadOnlyList<EntityWithId<Uri, IICalendar>>> Get (ICollection<Uri> ids)
+    public async Task<IReadOnlyList<EntityWithId<Uri, IICalendar>>> Get (ICollection<Uri> ids, ILoadEntityLogger logger)
     {
       if (ids.Count == 0)
         return new EntityWithId<Uri, IICalendar>[] { };
