@@ -35,6 +35,7 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 - Posteo
 - Landmarks
 - Kolab
+- Zoho Calendar
 
 ### Features ###
 
@@ -54,6 +55,7 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 - manual-triggered-sync
 - Category Filtering (sync CalDAV calendar to Outlook categories)
 - map CalDAV server colors to Outlook category colors
+- show reports of last sync runs
 
 ### Used Libraries ###
 
@@ -69,6 +71,13 @@ Download and extract the `OutlookCalDavSynchronizer-<Version>.zip` into the same
 If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=44074)
 
 ### Changelog ###
+
+#### 1.11.0 ####
+- New features
+	- Advanced Logging and configurable Synchronization Reports after each sync run. You can configure if reports should be generated for each sync run or only if errors or warnings occur and if the reports should be shown immediately after the sync run. You can also delete or zip reports from the Reports window.
+	- Support for Zoho Calendar, patch provided from Suki Hirata <thirata@outlook.com>
+- Bug fixes
+	- Factor out common mapping functions for events and tasks and map priority 1-9 according to RFC5545 
 
 #### 1.10.0 ####
 - New features
@@ -385,11 +394,12 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ## User Documentation ##
 
-After installing the plugin, a new ribbon called 'Caldav Synchronizer' is added in Outlook with 4 menu items. 
+After installing the plugin, a new ribbon called 'Caldav Synchronizer' is added in Outlook with 5 menu items. 
 - Synchronize now
 - Synchronization Profiles
 - General Options
 - About
+- Reports
 
 Use the Synchronization Profiles dialog to configure different synchronization profiles. Each profile is responsible for synchronizing one Outlook calendar/task or contact folder with a remote folder of a CalDAV/CardDAV server.
 
@@ -482,11 +492,12 @@ You can now set manual proxy settings in the Advanced option dialog in each prof
 More information can be found at
 [https://msdn.microsoft.com/en-us/library/sa91de1e%28v=vs.110%29.aspx](https://msdn.microsoft.com/en-us/library/sa91de1e%28v=vs.110%29.aspx)
 
-### General Options  and SSL settings ###
+### General Options and SSL settings ###
 In the General Options Dialog you can change settings which are used for all synchronization profiles.
-- ** Automatically check for newer versions** set to false to disable checking for updates.
-- ** Store data in roaming folder** set to true if you need to store state and profile data in the AppData\Roaming\ directory for roaming profiles in a AD domain for example. When changing this option, a restart of Outlook is required.
-- ** Fix invalid settings ** Fixes invalid settings automatically, when synchronization profiles are edited.
+
+- **Automatically check for newer versions** set to false to disable checking for updates.
+- **Store data in roaming folder** set to true if you need to store state and profile data in the AppData\Roaming\ directory for roaming profiles in a AD domain for example. When changing this option, a restart of Outlook is required.
+- **Fix invalid settings** Fixes invalid settings automatically, when synchronization profiles are edited.
 
 If you have problems with SSL/TLS and self-signed certificates, you can change the following settings at your own risk.
 The recommended way would be to add the self signed cert to the Local Computer Trusted Root Certification Authorities
@@ -495,6 +506,15 @@ You can import the cert by running the MMC as Administrator.
 - **Disable Certificate Validation** set to true to disable SSL/TLS certificate validation, major security risk, use with caution!
 - **Enable Tls12** set to false to disable TLS12, not recommended 
 - **Enable Ssl3** set to true to enable deprecated SSLv3, major security risk, use with caution! 
+
+### Reports of sync runs ###
+
+You can also configure Synchronization reports for all profiles, this can be configured via general Options:
+
+- **Log** You can choose if you want to generate reports for *"Only sync runs with errors"* or *"Sync runs with errors or warnings"* or *"All sync runs"*.
+- **Show immediately** configures if the Sync reports should be shown immediately after a sync run with errors, with warnings or errors, or not at all.
+
+You can show reports manually with the **Reports** button in the CalDav Synchronizer Ribbon. There you can choose from available reports (shown as profile name with timestamp of the sync run) and see informations about items synced and if there were any warnings or errors. You can also delete reports or add them to a zip file via the context menu. If the last sync run lead to any errors, a warning symbol is shown in the Ribbon or the Report window opens if configured in the general options.
 
 ## Trouble Shooting ##
 
