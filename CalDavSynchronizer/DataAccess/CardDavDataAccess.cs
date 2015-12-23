@@ -55,11 +55,16 @@ namespace CalDavSynchronizer.DataAccess
 
         var properties = await GetCurrentUserPrincipal (autodiscoveryUrl);
 
-        XmlNode principal = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-principal", properties.XmlNamespaceManager);
+        XmlNode principal = properties.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-principal", properties.XmlNamespaceManager);
+
+        if (null == principal)
+        {
+          principal = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:principal-URL", properties.XmlNamespaceManager);
+        }
 
         var addressbooks = new List<Tuple<Uri, string>>();
 
-        if (principal != null)
+        if (principal != null && !string.IsNullOrEmpty (principal.InnerText))
         {
           properties = await GetAddressBookHomeSet (new Uri (autodiscoveryUrl.GetLeftPart (UriPartial.Authority) + principal.InnerText));
 

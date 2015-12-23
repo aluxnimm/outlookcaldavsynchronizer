@@ -61,11 +61,18 @@ namespace CalDavSynchronizer.DataAccess
 
         var properties = await GetCurrentUserPrincipal (autodiscoveryUrl);
 
-        XmlNode principal = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-principal", properties.XmlNamespaceManager);
+        XmlNode principal = properties.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-principal", properties.XmlNamespaceManager);
+
+        // changes to handle Zoho Calendar
+        // patch from Suki Hirata <thirata@outlook.com>
+        if (null == principal)
+        {
+          principal = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:principal-URL", properties.XmlNamespaceManager);
+        }
 
         var cals = new List<Tuple<Uri, string, string>>();
 
-        if (principal != null)
+        if (principal != null && !string.IsNullOrEmpty (principal.InnerText))
         {
           properties = await GetCalendarHomeSet (new Uri (autodiscoveryUrl.GetLeftPart (UriPartial.Authority) + principal.InnerText));
 
