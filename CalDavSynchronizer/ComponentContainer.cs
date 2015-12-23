@@ -110,33 +110,34 @@ namespace CalDavSynchronizer
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]));
 
       _synchronizationReportRepository = CreateSynchronizationReportRepository();
-
+      _synchronizationReportRepository.ReportAdded += _synchronizationReportRepository_ReportAdded;
       _scheduler = new Scheduler (
         synchronizerFactory,
         _synchronizationReportRepository,
         EnsureSynchronizationContext);
       _scheduler.SetOptions (_optionsDataAccess.LoadOptions());
 
-      _scheduler.SynchronizationFailed += _scheduler_SynchronizationFailed;
-
       _updateChecker = new UpdateChecker (new AvailableVersionService(), () => _generalOptionsDataAccess.IgnoreUpdatesTilVersion);
       _updateChecker.NewerVersionFound += UpdateChecker_NewerVersionFound;
       _updateChecker.IsEnabled = generalOptions.ShouldCheckForNewerVersions;
     }
 
-    void _scheduler_SynchronizationFailed (object sender, ReportEventArgs e)
+    void _synchronizationReportRepository_ReportAdded (object sender, ReportAddedEventArgs e)
     {
-      if (IsReportViewVisible)
+      if (e.Report.HasErrors || e.Report.HasWarnings)
       {
-        ShowReports(); // show to bring it into foreground
-        return;
-      }
+        if (IsReportViewVisible)
+        {
+          ShowReports (); // show to bring it into foreground
+          return;
+        }
 
-      var handler = SynchronizationFailedWhileReportsFormWasNotVisible;
-      if (handler != null)
-        handler (this, EventArgs.Empty);
+        var handler = SynchronizationFailedWhileReportsFormWasNotVisible;
+        if (handler != null)
+          handler (this, EventArgs.Empty);
+      }
     }
-    
+
     private ISynchronizationReportRepository CreateSynchronizationReportRepository ()
     {
       var reportDirectory = Path.Combine (_applicationDataDirectory, "reports");

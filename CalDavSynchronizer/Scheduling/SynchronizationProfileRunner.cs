@@ -59,18 +59,6 @@ namespace CalDavSynchronizer.Scheduling
     // all methods are async
     private readonly List<string> _pendingOutlookItems = new List<string>();
 
-    public event EventHandler<ReportEventArgs> SynchronizationFailed;
-
-    protected virtual void RaiseIfSynchronizationFailed (SynchronizationReport report)
-    {
-      if (report.HasWarnings || report.HasErrors)
-      {
-        var handler = SynchronizationFailed;
-        if (handler != null)
-          handler (this, new ReportEventArgs (report));
-      }
-    }
-
     public SynchronizationProfileRunner (
         ISynchronizerFactory synchronizerFactory,
         ISynchronizationReportRepository synchronizationReportRepository)
@@ -182,7 +170,6 @@ namespace CalDavSynchronizer.Scheduling
         GC.WaitForPendingFinalizers ();
         var synchronizationReport = logger.GetReport();
         _synchronizationReportRepository.AddReport (synchronizationReport);
-        RaiseIfSynchronizationFailed (synchronizationReport);
       }
       catch (Exception x)
       {
@@ -209,7 +196,6 @@ namespace CalDavSynchronizer.Scheduling
         GC.WaitForPendingFinalizers ();
         var synchronizationReport = logger.GetReport();
         _synchronizationReportRepository.AddReport (synchronizationReport);
-        RaiseIfSynchronizationFailed (synchronizationReport);
       }
       catch (Exception x)
       {
