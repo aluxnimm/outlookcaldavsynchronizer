@@ -64,6 +64,7 @@ namespace CalDavSynchronizer
     private readonly OutlookItemChangeWatcher _itemChangeWatcher;
     private readonly string _applicationDataDirectory;
     private readonly ISynchronizationReportRepository _synchronizationReportRepository;
+    private readonly FilteringSynchronizationReportRepositoryWrapper _filteringSynchronizationReportRepository;
     private readonly IUiService _uiService;
     private ReportsViewModel _currentReportsViewModel;
 
@@ -110,16 +111,26 @@ namespace CalDavSynchronizer
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]));
 
       _synchronizationReportRepository = CreateSynchronizationReportRepository();
+
+      _filteringSynchronizationReportRepository = new FilteringSynchronizationReportRepositoryWrapper (_synchronizationReportRepository);
+      UpdateFilteringSynchronizationReportRepositoryForLogging(generalOptions);
+
       _synchronizationReportRepository.ReportAdded += _synchronizationReportRepository_ReportAdded;
       _scheduler = new Scheduler (
         synchronizerFactory,
-        _synchronizationReportRepository,
+        _filteringSynchronizationReportRepository,
         EnsureSynchronizationContext);
       _scheduler.SetOptions (_optionsDataAccess.LoadOptions());
 
       _updateChecker = new UpdateChecker (new AvailableVersionService(), () => _generalOptionsDataAccess.IgnoreUpdatesTilVersion);
       _updateChecker.NewerVersionFound += UpdateChecker_NewerVersionFound;
       _updateChecker.IsEnabled = generalOptions.ShouldCheckForNewerVersions;
+    }
+
+    private void UpdateFilteringSynchronizationReportRepositoryForLogging (GeneralOptions generalOptions)
+    {
+      _filteringSynchronizationReportRepository.AcceptAddingReportsWithJustWarnings = generalOptions.LogReportsWithWarnings;
+      _filteringSynchronizationReportRepository.AcceptAddingReportsWithoutWarningsOrErrors = generalOptions.LogReportsWithoutWarningsOrErrors;
     }
 
     void _synchronizationReportRepository_ReportAdded (object sender, ReportAddedEventArgs e)
@@ -353,6 +364,7 @@ namespace CalDavSynchronizer
             _updateChecker.IsEnabled = newOptions.ShouldCheckForNewerVersions;
 
             _generalOptionsDataAccess.SaveOptions (newOptions);
+            UpdateFilteringSynchronizationReportRepositoryForLogging (newOptions);
           }
         }
       }

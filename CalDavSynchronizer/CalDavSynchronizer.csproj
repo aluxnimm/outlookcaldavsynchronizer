@@ -236,6 +236,7 @@
     <Compile Include="DataAccess\IGeneralOptionsDataAccess.cs" />
     <Compile Include="DataAccess\GeneralOptionsDataAccess.cs" />
     <Compile Include="DataAccess\ISynchronizationReportRepository.cs" />
+    <Compile Include="DataAccess\FilteringSynchronizationReportRepositoryWrapper.cs" />
     <Compile Include="DataAccess\NullSynchronizationReportRepository.cs" />
     <Compile Include="DataAccess\ReportAddedEventArgs.cs" />
     <Compile Include="DataAccess\ReportEventArgs.cs" />
