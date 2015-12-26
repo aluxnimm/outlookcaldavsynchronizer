@@ -35,6 +35,15 @@ namespace CalDavSynchronizer
     private CalDavSynchronizerToolBar _calDavSynchronizerToolBar = null; // Pierre-Marie Baty -- only for Outlook < 2010
     public static ComponentContainer ComponentContainer { get; private set; }
 
+    public static event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
+
+    private void OnSynchronizationFailedWhileReportsFormWasNotVisible ()
+    {
+      var handler = SynchronizationFailedWhileReportsFormWasNotVisible;
+      if (handler != null)
+        handler (this, EventArgs.Empty);
+    }
+
     private void ThisAddIn_Startup (object sender, EventArgs e)
     {
       try
@@ -43,6 +52,7 @@ namespace CalDavSynchronizer
         s_logger.Info ("Startup entered.");
 
         ComponentContainer = new ComponentContainer (Application);
+        ComponentContainer.SynchronizationFailedWhileReportsFormWasNotVisible += ComponentContainer_SynchronizationFailedWhileReportsFormWasNotVisible;
 
         if (IsOutlookVersionSmallerThan2010)
         {
@@ -54,6 +64,11 @@ namespace CalDavSynchronizer
       {
         ExceptionHandler.Instance.HandleException (x, s_logger);
       }
+    }
+
+    void ComponentContainer_SynchronizationFailedWhileReportsFormWasNotVisible (object sender, EventArgs e)
+    {
+      OnSynchronizationFailedWhileReportsFormWasNotVisible();
     }
 
     private static bool IsOutlookVersionSmallerThan2010

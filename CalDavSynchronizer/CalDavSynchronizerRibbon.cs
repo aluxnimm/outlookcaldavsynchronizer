@@ -28,7 +28,7 @@ namespace CalDavSynchronizer
   {
     private void CalDavSynchronizerRibbon_Load (object sender, RibbonUIEventArgs e)
     {
-      ThisAddIn.ComponentContainer.SynchronizationFailedWhileReportsFormWasNotVisible += SynchronizationFailedWhileReportsFormWasNotVisible;
+      ThisAddIn.SynchronizationFailedWhileReportsFormWasNotVisible += SynchronizationFailedWhileReportsFormWasNotVisible;
     }
 
     private void SynchronizationFailedWhileReportsFormWasNotVisible (object sender, EventArgs e)
