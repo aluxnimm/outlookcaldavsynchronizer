@@ -94,7 +94,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       if (source.Inner.Complete && source.Inner.DateCompleted != _dateNull)
       {
-        target.Completed = new iCalDateTime (source.Inner.DateCompleted.Year, source.Inner.DateCompleted.Month, source.Inner.DateCompleted.Day, false);
+        target.Completed = new iCalDateTime (source.Inner.DateCompleted.ToUniversalTime()) { IsUniversalTime = true };
       }
 
       target.PercentComplete = source.Inner.PercentComplete;
@@ -281,7 +281,15 @@ namespace CalDavSynchronizer.Implementation.Tasks
       }
       if (source.Completed != null)
       {
-        target.Inner.DateCompleted = source.Completed.Date;
+        if (source.Completed.IsUniversalTime)
+        {
+          NodaTime.DateTimeZone localZone = NodaTime.DateTimeZoneProviders.Bcl.GetSystemDefault();
+          target.Inner.DateCompleted = NodaTime.Instant.FromDateTimeUtc (source.Completed.Value).InZone (localZone).ToDateTimeUnspecified().Date;
+        }
+        else
+        {
+          target.Inner.DateCompleted = source.Completed.Date;
+        }
         target.Inner.Complete = true;
       }
       else
