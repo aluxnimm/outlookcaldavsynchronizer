@@ -68,7 +68,7 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 ### Install instructions ###
 
 Download and extract the `OutlookCalDavSynchronizer-<Version>.zip` into the same folder and start setup.exe.
-If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=44074)
+If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=48217)
 
 ### Changelog ###
 
