@@ -1187,7 +1187,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
       targetWrapper.Inner.BusyStatus = MapTransparency2To1 (source.Transparency);
 
-      if (source.Organizer != null)
+      if (_configuration.MapAttendees && source.Organizer != null)
       {
         var ownSourceAttendee = source.Attendees.FirstOrDefault (a => StringComparer.InvariantCultureIgnoreCase.Compare (a.Value != null ? a.Value.ToString() : null, _serverEmailUri) == 0);
         if (ownSourceAttendee != null && targetWrapper.Inner.ResponseStatus != OlResponseStatus.olResponseOrganized)
