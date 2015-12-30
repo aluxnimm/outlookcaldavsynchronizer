@@ -179,7 +179,7 @@ namespace CalDavSynchronizer.Ui
       Options options = Options.CreateDefault (string.Empty, string.Empty);
       options.DisplayType = type.Value;
 
-      AddTabPage (options);
+      _tabControl.SelectedTab = AddTabPage (options);
     }
   }
 }
