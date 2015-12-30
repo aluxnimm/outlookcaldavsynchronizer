@@ -38,6 +38,7 @@ namespace CalDavSynchronizer.Ui
     public event EventHandler DeletionRequested;
     public event EventHandler CopyRequested;
     public event EventHandler<HeaderEventArgs> HeaderChanged;
+    private readonly Func<Guid, string> _profileDataDirectoryFactory;
     private readonly Lazy<IConfigurationFormFactory> _configurationFormFactory;
 
     public GoogleOptionsDisplayControl (
@@ -60,6 +61,7 @@ namespace CalDavSynchronizer.Ui
       _profileNameTextBox.TextChanged += _profileNameTextBox_TextChanged;
       _inactiveCheckBox.CheckedChanged += _inactiveCheckBox_CheckedChanged;
       _outlookFolderControl.FolderChanged += OutlookFolderControl_FolderChanged;
+      _profileDataDirectoryFactory = profileDataDirectoryFactory;
 
       _configurationFormFactory = OptionTasks.CreateConfigurationFormFactory(_serverSettingsControl);
     }
@@ -197,6 +199,23 @@ namespace CalDavSynchronizer.Ui
     public string SelectedSynchronizationModeDisplayName
     {
       get { return _syncSettingsControl.SelectedModeDisplayName; }
+    }
+
+    private void _browseToProfileCacheDirectoryToolStripMenuItem_Click (object sender, EventArgs e)
+    {
+      try
+      {
+        var profileDataDirectory = _profileDataDirectoryFactory (_optionsId);
+
+        if (Directory.Exists (profileDataDirectory))
+          Process.Start (profileDataDirectory);
+        else
+          MessageBox.Show ("The directory does not exist.");
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.HandleException (x, s_logger);
+      }
     }
   }
 }
