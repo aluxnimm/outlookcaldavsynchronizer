@@ -38,6 +38,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
     private readonly string _folderId;
     private readonly string _folderStoreId;
 
+    private const string PR_ASSOCIATED_BIRTHDAY_APPOINTMENT_ID = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/804D0102";
+
     public OutlookContactRepository (NameSpace mapiNameSpace, string folderId, string folderStoreId)
     {
       if (mapiNameSpace == null)
@@ -147,6 +149,21 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       using (var contact = entityWithId.Entity)
       {
+        if (!contact.Inner.Birthday.Equals (new DateTime(4501, 1, 1, 0, 0, 0)))
+        {
+          try
+          {
+            Byte[] ba = contact.Inner.GetPropertySafe (PR_ASSOCIATED_BIRTHDAY_APPOINTMENT_ID);
+            string birthdayAppointmentItemID = BitConverter.ToString (ba).Replace ("-", string.Empty);
+            AppointmentItemWrapper birthdayWrapper = new AppointmentItemWrapper ((AppointmentItem)_mapiNameSpace.GetItemFromID (birthdayAppointmentItemID), 
+                                                                                  entryId => (AppointmentItem)_mapiNameSpace.GetItemFromID (birthdayAppointmentItemID));
+            birthdayWrapper.Inner.Delete();
+          }
+          catch (COMException ex)
+          {
+            s_logger.Error ("Could not delete associated Birthday Appointment.", ex);
+          }
+        }
         contact.Inner.Delete();
       }
 
