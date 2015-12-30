@@ -214,5 +214,23 @@ namespace CalDavSynchronizer.Ui
     {
       get { return _syncSettingsControl.SelectedModeDisplayName; }
     }
+
+    private void _resetButton_Click (object sender, EventArgs e)
+    {
+      try
+      {
+        s_logger.InfoFormat ("Deleting cache for profile '{0}'", ProfileName);
+
+        var profileDataDirectory = _profileDataDirectoryFactory (_optionsId);
+        if (Directory.Exists (profileDataDirectory))
+          Directory.Delete (profileDataDirectory, true);
+
+        MessageBox.Show("A new intial sync will be performed with the next sync run!", "Profile cache deleted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+      }
+      catch (Exception x)
+      {
+        s_logger.Error (null, x);
+      }
+    }
   }
 }

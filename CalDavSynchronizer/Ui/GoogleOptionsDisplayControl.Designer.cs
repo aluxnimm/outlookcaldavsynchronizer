@@ -41,16 +41,17 @@
       this._syncSettingsControl = new CalDavSynchronizer.Ui.SyncSettingsControl();
       this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
       this._browseToProfileCacheDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this._resetButton = new System.Windows.Forms.Button();
       this.contextMenu.SuspendLayout();
       this.SuspendLayout();
       // 
       // _advancedOptionsButton
       // 
       this._advancedOptionsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._advancedOptionsButton.Location = new System.Drawing.Point(304, 638);
+      this._advancedOptionsButton.Location = new System.Drawing.Point(359, 638);
       this._advancedOptionsButton.Margin = new System.Windows.Forms.Padding(4);
       this._advancedOptionsButton.Name = "_advancedOptionsButton";
-      this._advancedOptionsButton.Size = new System.Drawing.Size(144, 28);
+      this._advancedOptionsButton.Size = new System.Drawing.Size(139, 28);
       this._advancedOptionsButton.TabIndex = 6;
       this._advancedOptionsButton.Text = "Advanced options";
       this._advancedOptionsButton.UseVisualStyleBackColor = true;
@@ -61,7 +62,7 @@
       this._deleteButton.Location = new System.Drawing.Point(16, 638);
       this._deleteButton.Margin = new System.Windows.Forms.Padding(4);
       this._deleteButton.Name = "_deleteButton";
-      this._deleteButton.Size = new System.Drawing.Size(100, 28);
+      this._deleteButton.Size = new System.Drawing.Size(59, 28);
       this._deleteButton.TabIndex = 4;
       this._deleteButton.Text = "Delete";
       this._deleteButton.UseVisualStyleBackColor = true;
@@ -90,20 +91,20 @@
       // 
       this._inactiveCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._inactiveCheckBox.AutoSize = true;
-      this._inactiveCheckBox.Location = new System.Drawing.Point(462, 642);
+      this._inactiveCheckBox.Location = new System.Drawing.Point(506, 643);
       this._inactiveCheckBox.Margin = new System.Windows.Forms.Padding(4);
       this._inactiveCheckBox.Name = "_inactiveCheckBox";
-      this._inactiveCheckBox.Size = new System.Drawing.Size(141, 21);
+      this._inactiveCheckBox.Size = new System.Drawing.Size(97, 21);
       this._inactiveCheckBox.TabIndex = 7;
-      this._inactiveCheckBox.Text = "Deactivate Profile";
+      this._inactiveCheckBox.Text = "Deactivate";
       this._inactiveCheckBox.UseVisualStyleBackColor = true;
       // 
       // _copyButton
       // 
-      this._copyButton.Location = new System.Drawing.Point(124, 638);
+      this._copyButton.Location = new System.Drawing.Point(83, 638);
       this._copyButton.Margin = new System.Windows.Forms.Padding(4);
       this._copyButton.Name = "_copyButton";
-      this._copyButton.Size = new System.Drawing.Size(100, 28);
+      this._copyButton.Size = new System.Drawing.Size(59, 28);
       this._copyButton.TabIndex = 5;
       this._copyButton.Text = "Copy";
       this._copyButton.UseVisualStyleBackColor = true;
@@ -145,7 +146,7 @@
       this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this._browseToProfileCacheDirectoryToolStripMenuItem});
       this.contextMenu.Name = "contextMenu";
-      this.contextMenu.Size = new System.Drawing.Size(298, 56);
+      this.contextMenu.Size = new System.Drawing.Size(298, 28);
       // 
       // _browseToProfileCacheDirectoryToolStripMenuItem
       // 
@@ -154,11 +155,23 @@
       this._browseToProfileCacheDirectoryToolStripMenuItem.Text = "Browse to profile cache directory";
       this._browseToProfileCacheDirectoryToolStripMenuItem.Click += new System.EventHandler(this._browseToProfileCacheDirectoryToolStripMenuItem_Click);
       // 
+      // _resetButton
+      // 
+      this._resetButton.Location = new System.Drawing.Point(150, 638);
+      this._resetButton.Margin = new System.Windows.Forms.Padding(4);
+      this._resetButton.Name = "_resetButton";
+      this._resetButton.Size = new System.Drawing.Size(98, 28);
+      this._resetButton.TabIndex = 15;
+      this._resetButton.Text = "Reset Cache";
+      this._resetButton.UseVisualStyleBackColor = true;
+      this._resetButton.Click += new System.EventHandler(this._resetButton_Click);
+      // 
       // GoogleOptionsDisplayControl
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ContextMenuStrip = this.contextMenu;
+      this.Controls.Add(this._resetButton);
       this.Controls.Add(this._outlookFolderControl);
       this.Controls.Add(this._advancedOptionsButton);
       this.Controls.Add(this._copyButton);
@@ -191,5 +204,6 @@
     private OutlookFolderControl _outlookFolderControl;
     private System.Windows.Forms.ContextMenuStrip contextMenu;
     private System.Windows.Forms.ToolStripMenuItem _browseToProfileCacheDirectoryToolStripMenuItem;
+    private System.Windows.Forms.Button _resetButton;
   }
 }
