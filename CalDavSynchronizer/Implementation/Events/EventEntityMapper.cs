@@ -115,7 +115,7 @@ namespace CalDavSynchronizer.Implementation.Events
         newTargetEvent.UID = existingTargetEvent.UID;
       else
         newTargetEvent.UID = sourceWrapper.Inner.GlobalAppointmentID;
-
+      
       newTargetCalender.Events.Add (newTargetEvent);
 
       Map1To2 (sourceWrapper.Inner, newTargetEvent, false, startIcalTimeZone, endIcalTimeZone);
@@ -777,13 +777,19 @@ namespace CalDavSynchronizer.Implementation.Events
                 {
                   s_logger.WarnFormat ("Event '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.Url);
                 }
-                targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
+                if (sourceRecurrencePattern.ByMonth[0] != targetRecurrencePattern.MonthOfYear)
+                {
+                    targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
+                }
 
                 if (sourceRecurrencePattern.ByMonthDay.Count > 1)
                 {
                   s_logger.WarnFormat ("Event '{0}' contains more than one days in a monthly recurrence rule. Since outlook supports only one day, all except the first one will be ignored.", source.Url);
                 }
-                targetRecurrencePattern.DayOfMonth = sourceRecurrencePattern.ByMonthDay[0];
+                if (sourceRecurrencePattern.ByMonthDay[0] != targetRecurrencePattern.DayOfMonth)
+                {
+                  targetRecurrencePattern.DayOfMonth = sourceRecurrencePattern.ByMonthDay[0];
+                }
               }
               else if (sourceRecurrencePattern.ByMonth.Count > 0 && sourceRecurrencePattern.ByDay.Count > 0)
               {
