@@ -39,7 +39,8 @@ namespace CalDavSynchronizer.DataAccess
     private const string s_LogReportsWithWarnings = "LogReportsWithWarnings";
     private const string s_ShowReportsWithWarningsImmediately = "ShowReportsWithWarningsImmediately";
     private const string s_ShowReportsWithErrorsImmediately = "ShowReportsWithErrorsImmediately";
-
+    private const string s_MaxReportAgeInDays = "MaxReportAgeInDays";
+    
 
     public GeneralOptions LoadOptions ()
     {
@@ -58,6 +59,7 @@ namespace CalDavSynchronizer.DataAccess
                    LogReportsWithWarnings = (int) (key.GetValue (s_LogReportsWithWarnings) ?? 1) != 0,
                    ShowReportsWithWarningsImmediately = (int) (key.GetValue (s_ShowReportsWithWarningsImmediately) ?? 0) != 0,
                    ShowReportsWithErrorsImmediately = (int) (key.GetValue (s_ShowReportsWithErrorsImmediately) ?? 1) != 0,
+                   MaxReportAgeInDays = (int) (key.GetValue (s_MaxReportAgeInDays) ?? 1),
                };
       }
     }
@@ -77,6 +79,7 @@ namespace CalDavSynchronizer.DataAccess
         key.SetValue (s_LogReportsWithWarnings, options.LogReportsWithWarnings ? 1 : 0);
         key.SetValue (s_ShowReportsWithWarningsImmediately, options.ShowReportsWithWarningsImmediately ? 1 : 0);
         key.SetValue (s_ShowReportsWithErrorsImmediately, options.ShowReportsWithErrorsImmediately ? 1 : 0);
+        key.SetValue (s_MaxReportAgeInDays, options.MaxReportAgeInDays);
       }
     }
 

@@ -35,6 +35,7 @@ using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Events;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
+using CalDavSynchronizer.Reports;
 using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Ui;
 using CalDavSynchronizer.Ui.Reports;
@@ -69,6 +70,7 @@ namespace CalDavSynchronizer
     private ReportsViewModel _currentReportsViewModel;
     private bool _showReportsWithWarningsImmediately;
     private bool _showReportsWithErrorsImmediately;
+    private ReportGarbageCollection _reportGarbageCollection;
 
     public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
 
@@ -127,6 +129,8 @@ namespace CalDavSynchronizer
       _updateChecker = new UpdateChecker (new AvailableVersionService(), () => _generalOptionsDataAccess.IgnoreUpdatesTilVersion);
       _updateChecker.NewerVersionFound += UpdateChecker_NewerVersionFound;
       _updateChecker.IsEnabled = generalOptions.ShouldCheckForNewerVersions;
+
+      _reportGarbageCollection = new ReportGarbageCollection (_synchronizationReportRepository, TimeSpan.FromDays (generalOptions.MaxReportAgeInDays));
     }
 
     private void UpdateGeneralOptionDependencies (GeneralOptions generalOptions)
@@ -379,6 +383,7 @@ namespace CalDavSynchronizer
 
             ConfigureServicePointManager (newOptions);
             _updateChecker.IsEnabled = newOptions.ShouldCheckForNewerVersions;
+            _reportGarbageCollection.MaxAge = TimeSpan.FromDays (newOptions.MaxReportAgeInDays);
 
             _generalOptionsDataAccess.SaveOptions (newOptions);
             UpdateGeneralOptionDependencies (newOptions);

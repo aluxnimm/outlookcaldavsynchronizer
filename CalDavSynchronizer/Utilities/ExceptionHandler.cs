@@ -39,7 +39,7 @@ namespace CalDavSynchronizer.Utilities
     {
       var additionMessage = GetAdditionMessageNoThrow (exception);
       logger.Logger.Log (typeof (ExceptionHandler), Level.Error, additionMessage, exception);
-      MessageBox.Show (exception.ToString());
+      MessageBox.Show (exception.ToString(), "CalDav Synchronizer");
     }
 
     public void LogException (Exception exception, ILog logger)

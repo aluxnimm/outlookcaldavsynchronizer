@@ -89,6 +89,7 @@ namespace CalDavSynchronizer.Ui
                    LogReportsWithWarnings = reportLogMode == ReportLogMode.All || reportLogMode == ReportLogMode.WarningsOrErrors,
                    ShowReportsWithErrorsImmediately = reportPopupMode == ReportPopupMode.JustErrors || reportPopupMode == ReportPopupMode.WarningsAndErrors,
                    ShowReportsWithWarningsImmediately = reportPopupMode == ReportPopupMode.WarningsAndErrors,
+                   MaxReportAgeInDays = int.Parse(_maxReportAgeInDays.Text)
                };
       }
       set
@@ -102,6 +103,7 @@ namespace CalDavSynchronizer.Ui
         _displayAllProfilesAsGenericCheckBox.Checked = value.DisplayAllProfilesAsGeneric;
         _reportLogModeComboBox.SelectedValue = GetReportLogMode (value);
         _reportPopupModeComboBox.SelectedValue = GetReportPopupMode (value);
+        _maxReportAgeInDays.Text = value.MaxReportAgeInDays.ToString();
       }
     }
 

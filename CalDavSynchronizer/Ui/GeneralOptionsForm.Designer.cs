@@ -46,6 +46,8 @@
       this._reportLogModeComboBox = new System.Windows.Forms.ComboBox();
       this.label2 = new System.Windows.Forms.Label();
       this.label1 = new System.Windows.Forms.Label();
+      this.label3 = new System.Windows.Forms.Label();
+      this._maxReportAgeInDays = new System.Windows.Forms.TextBox();
       this.groupBox1.SuspendLayout();
       this.groupBox2.SuspendLayout();
       this.SuspendLayout();
@@ -54,7 +56,7 @@
       // 
       this._cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this._cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this._cancelButton.Location = new System.Drawing.Point(295, 334);
+      this._cancelButton.Location = new System.Drawing.Point(295, 340);
       this._cancelButton.Margin = new System.Windows.Forms.Padding(2);
       this._cancelButton.Name = "_cancelButton";
       this._cancelButton.Size = new System.Drawing.Size(75, 23);
@@ -65,7 +67,7 @@
       // _okButton
       // 
       this._okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._okButton.Location = new System.Drawing.Point(214, 334);
+      this._okButton.Location = new System.Drawing.Point(214, 340);
       this._okButton.Margin = new System.Windows.Forms.Padding(2);
       this._okButton.Name = "_okButton";
       this._okButton.Size = new System.Drawing.Size(75, 23);
@@ -183,13 +185,15 @@
       // 
       this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupBox2.Controls.Add(this._maxReportAgeInDays);
+      this.groupBox2.Controls.Add(this.label3);
       this.groupBox2.Controls.Add(this._reportPopupModeComboBox);
       this.groupBox2.Controls.Add(this._reportLogModeComboBox);
       this.groupBox2.Controls.Add(this.label2);
       this.groupBox2.Controls.Add(this.label1);
       this.groupBox2.Location = new System.Drawing.Point(3, 215);
       this.groupBox2.Name = "groupBox2";
-      this.groupBox2.Size = new System.Drawing.Size(375, 100);
+      this.groupBox2.Size = new System.Drawing.Size(375, 110);
       this.groupBox2.TabIndex = 8;
       this.groupBox2.TabStop = false;
       this.groupBox2.Text = "Synchronization reports";
@@ -234,13 +238,30 @@
       this.label1.TabIndex = 0;
       this.label1.Text = "Log:";
       // 
+      // label3
+      // 
+      this.label3.AutoSize = true;
+      this.label3.Location = new System.Drawing.Point(9, 80);
+      this.label3.Name = "label3";
+      this.label3.Size = new System.Drawing.Size(157, 13);
+      this.label3.TabIndex = 4;
+      this.label3.Text = "Delete reports older than (days):";
+      // 
+      // _maxReportAgeInDays
+      // 
+      this._maxReportAgeInDays.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this._maxReportAgeInDays.Location = new System.Drawing.Point(263, 77);
+      this._maxReportAgeInDays.Name = "_maxReportAgeInDays";
+      this._maxReportAgeInDays.Size = new System.Drawing.Size(99, 20);
+      this._maxReportAgeInDays.TabIndex = 5;
+      // 
       // GeneralOptionsForm
       // 
       this.AcceptButton = this._okButton;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this._cancelButton;
-      this.ClientSize = new System.Drawing.Size(377, 361);
+      this.ClientSize = new System.Drawing.Size(377, 367);
       this.Controls.Add(this.groupBox2);
       this.Controls.Add(this._displayAllProfilesAsGenericCheckBox);
       this.Controls.Add(this._fixInvalidSettingsCheckBox);
@@ -281,5 +302,7 @@
     private System.Windows.Forms.ComboBox _reportLogModeComboBox;
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.Label label1;
+    private System.Windows.Forms.TextBox _maxReportAgeInDays;
+    private System.Windows.Forms.Label label3;
   }
 }

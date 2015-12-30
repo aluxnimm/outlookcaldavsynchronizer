@@ -31,5 +31,6 @@ namespace CalDavSynchronizer.Contracts
     public bool LogReportsWithoutWarningsOrErrors { get; set; }
     public bool ShowReportsWithWarningsImmediately { get; set; }
     public bool ShowReportsWithErrorsImmediately { get; set; }
+    public int MaxReportAgeInDays { get; set; }
   }
 }
