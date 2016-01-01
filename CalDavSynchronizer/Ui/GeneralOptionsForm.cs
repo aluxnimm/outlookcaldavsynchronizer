@@ -16,14 +16,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
+using log4net;
+using log4net.Appender;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 
 namespace CalDavSynchronizer.Ui
 {
   public partial class GeneralOptionsForm : Form, IConfigurationForm<GeneralOptions>
   {
+    private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
+
     private readonly IList<Item<ReportLogMode>> _availableReportLogModes = new List<Item<ReportLogMode>>()
                                                                            {
                                                                                new Item<ReportLogMode> (ReportLogMode.OnlyWithErrors, "Only sync runs with errors"),
@@ -36,6 +44,12 @@ namespace CalDavSynchronizer.Ui
                                                                                    new Item<ReportPopupMode> (ReportPopupMode.NoPopup, "No"),
                                                                                    new Item<ReportPopupMode> (ReportPopupMode.JustErrors, "Just errors"),
                                                                                    new Item<ReportPopupMode> (ReportPopupMode.WarningsAndErrors, "Errors and warnings")
+                                                                               };
+
+    private readonly IList<Item<LogLevel>> _availableLogLevels = new List<Item<LogLevel>>()
+                                                                               {
+                                                                                   new Item<LogLevel> (LogLevel.Info, "Info"),
+                                                                                   new Item<LogLevel> (LogLevel.Debug, "Debug")
                                                                                };
 
     private enum ReportLogMode
@@ -52,12 +66,20 @@ namespace CalDavSynchronizer.Ui
       WarningsAndErrors
     }
 
+    private enum LogLevel
+    {
+      Info,
+      Debug
+    }
+
+
     public GeneralOptionsForm ()
     {
       InitializeComponent();
 
       Item.BindComboBox (_reportLogModeComboBox, _availableReportLogModes);
       Item.BindComboBox (_reportPopupModeComboBox, _availableReportPopupModes);
+      Item.BindComboBox (_logLevelComboBox, _availableLogLevels);
     }
 
     private void _okButton_Click (object sender, EventArgs e)
@@ -76,6 +98,8 @@ namespace CalDavSynchronizer.Ui
       {
         var reportLogMode = ((ReportLogMode) _reportLogModeComboBox.SelectedValue);
         var reportPopupMode = ((ReportPopupMode) _reportPopupModeComboBox.SelectedValue);
+        var logLevel = ((LogLevel) _logLevelComboBox.SelectedValue);
+
         return new GeneralOptions
                {
                    ShouldCheckForNewerVersions = _checkForNewerVersionsCheckBox.Checked,
@@ -89,7 +113,8 @@ namespace CalDavSynchronizer.Ui
                    LogReportsWithWarnings = reportLogMode == ReportLogMode.All || reportLogMode == ReportLogMode.WarningsOrErrors,
                    ShowReportsWithErrorsImmediately = reportPopupMode == ReportPopupMode.JustErrors || reportPopupMode == ReportPopupMode.WarningsAndErrors,
                    ShowReportsWithWarningsImmediately = reportPopupMode == ReportPopupMode.WarningsAndErrors,
-                   MaxReportAgeInDays = int.Parse(_maxReportAgeInDays.Text)
+                   MaxReportAgeInDays = int.Parse(_maxReportAgeInDays.Text),
+                   EnableDebugLog = logLevel == LogLevel.Debug
                };
       }
       set
@@ -104,6 +129,7 @@ namespace CalDavSynchronizer.Ui
         _reportLogModeComboBox.SelectedValue = GetReportLogMode (value);
         _reportPopupModeComboBox.SelectedValue = GetReportPopupMode (value);
         _maxReportAgeInDays.Text = value.MaxReportAgeInDays.ToString();
+        _logLevelComboBox.SelectedValue = value.EnableDebugLog ? LogLevel.Debug : LogLevel.Info;
       }
     }
 
@@ -140,6 +166,54 @@ namespace CalDavSynchronizer.Ui
       else
       {
         return ReportPopupMode.NoPopup;
+      }
+    }
+
+    private void _showLogButton_Click (object sender, EventArgs e)
+    {
+      FileAppender fileAppender = s_logger.Logger.Repository
+                 .GetAppenders().FirstOrDefault (appender => appender is FileAppender) as FileAppender;
+
+      try
+      {
+        if (fileAppender != null && File.Exists (((FileAppender)fileAppender).File))
+        {
+          Process.Start (((FileAppender)fileAppender).File);
+        }
+      }
+      catch (Exception x)
+      {
+        s_logger.Error (null, x);
+      }
+    }
+
+    private void _clearLogButton_Click (object sender, EventArgs e)
+    {
+      FileAppender fileAppender = s_logger.Logger.Repository
+                 .GetAppenders().FirstOrDefault (appender => appender is FileAppender) as FileAppender;
+
+
+      if (fileAppender != null && File.Exists (((FileAppender)fileAppender).File))
+      {
+        string path = ((FileAppender)fileAppender).File;
+
+        FileStream fs = null;
+        try
+        {
+          fs = new FileStream (path, FileMode.Create);
+        }
+        catch (Exception ex)
+        {
+          s_logger.Error ("Could not clear the log file!", ex);
+        }
+        finally
+        {
+          if (fs != null)
+          {
+            fs.Close();
+          }
+
+        }
       }
     }
   }

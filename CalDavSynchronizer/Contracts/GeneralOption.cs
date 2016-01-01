@@ -17,7 +17,7 @@
 using System;
 
 namespace CalDavSynchronizer.Contracts
-{
+{ 
   public class GeneralOptions
   {
     public bool StoreAppDataInRoamingFolder { get; set; }
@@ -32,5 +32,6 @@ namespace CalDavSynchronizer.Contracts
     public bool ShowReportsWithWarningsImmediately { get; set; }
     public bool ShowReportsWithErrorsImmediately { get; set; }
     public int MaxReportAgeInDays { get; set; }
+    public bool EnableDebugLog { get; set; }
   }
 }

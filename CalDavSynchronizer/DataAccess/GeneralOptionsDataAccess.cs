@@ -21,6 +21,9 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Utilities;
 using Microsoft.Win32;
 using System.Configuration;
+using log4net;
+using log4net.Repository.Hierarchy;
+using log4net.Core;
 
 namespace CalDavSynchronizer.DataAccess
 {
@@ -40,12 +43,15 @@ namespace CalDavSynchronizer.DataAccess
     private const string s_ShowReportsWithWarningsImmediately = "ShowReportsWithWarningsImmediately";
     private const string s_ShowReportsWithErrorsImmediately = "ShowReportsWithErrorsImmediately";
     private const string s_MaxReportAgeInDays = "MaxReportAgeInDays";
-    
+
+    private const string s_EnableDebugLog = "EnableDebugLog";
 
     public GeneralOptions LoadOptions ()
     {
       using (var key = OpenOptionsKey())
       {
+        int debugEnabledInConfig = ((Hierarchy)LogManager.GetRepository()).Root.Level == Level.Debug ? 1 : 0;
+
         return new GeneralOptions()
                {
                    ShouldCheckForNewerVersions = (int) (key.GetValue (s_shouldCheckForNewerVersionsValueName) ?? 1) != 0,
@@ -60,6 +66,7 @@ namespace CalDavSynchronizer.DataAccess
                    ShowReportsWithWarningsImmediately = (int) (key.GetValue (s_ShowReportsWithWarningsImmediately) ?? 0) != 0,
                    ShowReportsWithErrorsImmediately = (int) (key.GetValue (s_ShowReportsWithErrorsImmediately) ?? 1) != 0,
                    MaxReportAgeInDays = (int) (key.GetValue (s_MaxReportAgeInDays) ?? 1),
+                   EnableDebugLog = (int) (key.GetValue (s_EnableDebugLog) ?? debugEnabledInConfig) != 0
                };
       }
     }
@@ -80,6 +87,7 @@ namespace CalDavSynchronizer.DataAccess
         key.SetValue (s_ShowReportsWithWarningsImmediately, options.ShowReportsWithWarningsImmediately ? 1 : 0);
         key.SetValue (s_ShowReportsWithErrorsImmediately, options.ShowReportsWithErrorsImmediately ? 1 : 0);
         key.SetValue (s_MaxReportAgeInDays, options.MaxReportAgeInDays);
+        key.SetValue (s_EnableDebugLog, options.EnableDebugLog ? 1 : 0);
       }
     }
 

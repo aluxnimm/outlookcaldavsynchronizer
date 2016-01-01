@@ -44,6 +44,8 @@ using GenSync;
 using GenSync.ProgressReport;
 using log4net;
 using log4net.Config;
+using log4net.Repository.Hierarchy;
+using log4net.Core;
 using Microsoft.Office.Interop.Outlook;
 using Application = Microsoft.Office.Interop.Outlook.Application;
 using Exception = System.Exception;
@@ -86,6 +88,7 @@ namespace CalDavSynchronizer
         new FrameworkPropertyMetadata (XmlLanguage.GetLanguage (CultureInfo.CurrentCulture.IetfLanguageTag)));
 
       ConfigureServicePointManager (generalOptions);
+      ConfigureLogLevel (generalOptions.EnableDebugLog);
 
       _itemChangeWatcher = new OutlookItemChangeWatcher (application.Inspectors);
       _itemChangeWatcher.ItemSavedOrDeleted += ItemChangeWatcherItemSavedOrDeleted;
@@ -206,6 +209,19 @@ namespace CalDavSynchronizer
         ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
       else
         ServicePointManager.ServerCertificateValidationCallback = null;
+    }
+
+    private void ConfigureLogLevel (bool debugLogLevel)
+    {
+      if (debugLogLevel)
+      {
+        ((Hierarchy)LogManager.GetRepository()).Root.Level = Level.Debug;
+      }
+      else
+      {
+        ((Hierarchy)LogManager.GetRepository()).Root.Level = Level.Info;
+      }
+      ((Hierarchy)LogManager.GetRepository()).RaiseConfigurationChanged (EventArgs.Empty);
     }
 
     public async Task SynchronizeNowNoThrow ()
@@ -382,6 +398,8 @@ namespace CalDavSynchronizer
             var newOptions = optionsForm.Options;
 
             ConfigureServicePointManager (newOptions);
+            ConfigureLogLevel (newOptions.EnableDebugLog);
+
             _updateChecker.IsEnabled = newOptions.ShouldCheckForNewerVersions;
             _reportGarbageCollection.MaxAge = TimeSpan.FromDays (newOptions.MaxReportAgeInDays);
 
