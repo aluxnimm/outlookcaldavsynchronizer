@@ -72,6 +72,24 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 1.12.0 ####
+- New features
+	- Match added entities with every sync run, this should avoid duplicates and errors, when same event is added in both server and client e.g. a (autoaccepted) meeting invitation.
+	- Add "Reset Cache" button to delete the sync cache and start a new initial sync with the next sync run.
+	- Delete associated birthday appointment if deleting ContactItem in Outlook, feature #21.
+	- Cleanup outdated synchronization reports with configurable timespan.
+- Bug fixes
+	- Fix issues which might occur due to load behavior of controls.
+	- Fix exporting of DateCompleted for tasks, according to the RFC it must be a DATE-TIME value, see ticket #156
+	- Convert DateCompleted for tasks from UTC to local date when mapping back to Outlook.
+	- Add Reports to ToolBar Buttons for OL2007.
+	- Update Meeting Response only if MapAttendees is set in MappingConfiguration.
+	- Fix yearly recurrence with interval=1, patch provided by Jonathan Westerholt, ticket #159
+	- Revert "Use GlobalAppointmentID for new events instead of random Guid to avoid doubling events from invitations for own attendee". This caused problems with Google when recreating deleted events with same UID.
+	- Cleanup outdated synchronization reports.
+	- Add context menu which allows to open the cache directory also to Google profile type.
+	- Select the new tab in OptionsForm when a new profile is added.
+
 #### 1.11.0 ####
 - New features
 	- Advanced Logging and configurable Synchronization Reports after each sync run. You can configure if reports should be generated for each sync run or only if errors or warnings occur and if the reports should be shown immediately after the sync run. You can also delete or zip reports from the Reports window.
@@ -403,9 +421,10 @@ After installing the plugin, a new ribbon called 'Caldav Synchronizer' is added 
 
 Use the Synchronization Profiles dialog to configure different synchronization profiles. Each profile is responsible for synchronizing one Outlook calendar/task or contact folder with a remote folder of a CalDAV/CardDAV server.
 
-- Add adds a new empty profile
-- Delete deletes the current profile
-- Copy copies the current profile to a new one
+- **Add** adds a new empty profile
+- **Delete** deletes the current profile
+- **Copy** copies the current profile to a new one
+- **Reset cache** delete the sync cache and start a new initial sync with the next sync run.
 
 When adding a new profile you can choose between a generic CalDAV/CardDAV and a google profile to simplify the google profile creation.
 
@@ -435,8 +454,8 @@ The following properties need to be set for a new generic profile:
 		- **Automatic:** If event is modified in Outlook and in CalDav server since last snyc, use the last recent modified version. If an event is modified in Outlook and deleted in CalDav server since last snyc, delete it also in Outlook. If an event is deleted in Outlook and modified in CalDav server, also delete it in CalDav server
 	- **Synchronization interval (minutes):** Choose the interval for synchronization in minutes, if 'Manual only' is choosen, there is no automatic sync but you can use the 'Synchronize now' menu item.
 	- **Synchronization timespan past (days)** and
-	- **Synchronization timespan future (days):** For performance reasons it is useful to sync only a given timespan of a big calendar, especially past events are normally not necessary to sync after a given timespan
-	- **Deactivate profile:** If activated, current profile is not synced anymore without the need to delete the profile
+	- **Synchronization timespan future (days)** For performance reasons it is useful to sync only a given timespan of a big calendar, especially past events are normally not necessary to sync after a given timespan
+	- **Deactivate** If activated, current profile is not synced anymore without the need to delete the profile
 - *Advanced Options*: Here you can configure advanced network options and proxy settings. 
 	- **Close connection after each request** Don't use KeepAlive for servers which don't support it. 
 	- **Use System Default Proxy** Use proxy settings from Internet Explorer or config file, uses default credentials if available for NTLM authentication
@@ -513,6 +532,7 @@ You can also configure Synchronization reports for all profiles, this can be con
 
 - **Log** You can choose if you want to generate reports for *"Only sync runs with errors"* or *"Sync runs with errors or warnings"* or *"All sync runs"*.
 - **Show immediately** configures if the Sync reports should be shown immediately after a sync run with errors, with warnings or errors, or not at all.
+- **Delete reports older than (days)** Automatically delete reports which are older than the days configured.
 
 You can show reports manually with the **Reports** button in the CalDav Synchronizer Ribbon. There you can choose from available reports (shown as profile name with timestamp of the sync run) and see informations about items synced and if there were any warnings or errors. You can also delete reports or add them to a zip file via the context menu. If the last sync run lead to any errors, a warning symbol is shown in the Ribbon or the Report window opens if configured in the general options.
 
