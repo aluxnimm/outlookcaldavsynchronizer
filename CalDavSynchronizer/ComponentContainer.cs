@@ -187,6 +187,7 @@ namespace CalDavSynchronizer
     {
       try
       {
+        EnsureSynchronizationContext();
         await _scheduler.RunResponsibleSynchronizationProfiles (e.EntryId, e.FolderEntryId, e.FolderStoreId);
       }
       catch (Exception x)
@@ -582,6 +583,7 @@ namespace CalDavSynchronizer
     {
       try
       {
+        EnsureSynchronizationContext();
         ShowReports();
       }
       catch (Exception x)
@@ -599,13 +601,21 @@ namespace CalDavSynchronizer
     {
       if (_currentReportsViewModel == null)
       {
-        _currentReportsViewModel = new ReportsViewModel (
-            _synchronizationReportRepository,
-            _optionsDataAccess.LoadOptions().ToDictionary (o => o.Id, o => o.Name));
+        try
+        {
+          _currentReportsViewModel = new ReportsViewModel (
+              _synchronizationReportRepository,
+              _optionsDataAccess.LoadOptions().ToDictionary (o => o.Id, o => o.Name));
 
-        _currentReportsViewModel.ReportsClosed += delegate { _currentReportsViewModel = null; };
+          _currentReportsViewModel.ReportsClosed += delegate { _currentReportsViewModel = null; };
 
-        _uiService.Show (_currentReportsViewModel);
+          _uiService.Show (_currentReportsViewModel);
+        }
+        catch
+        {
+          _currentReportsViewModel = null;
+          throw;
+        }
       }
       else
       {
