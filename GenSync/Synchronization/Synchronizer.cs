@@ -174,8 +174,17 @@ namespace GenSync.Synchronization
           aIdsWithAwarenessLevel.AddRange (aEntitesToSynchronize.Select (id => new IdWithAwarenessLevel<TAtypeEntityId> (id, false)));
           bIdsWithAwarenessLevel.AddRange (bEntitesToSynchronize.Select (id => new IdWithAwarenessLevel<TBtypeEntityId> (id, false)));
 
-          var newAVersionsTask = _atypeRepository.GetVersions (aIdsWithAwarenessLevel);
-          var newBVersionsTask = _btypeRepository.GetVersions (bIdsWithAwarenessLevel);
+          Task<IReadOnlyList<EntityVersion<TAtypeEntityId, TAtypeEntityVersion>>> newAVersionsTask;
+          if (aIdsWithAwarenessLevel.Count > 0)
+            newAVersionsTask = _atypeRepository.GetVersions (aIdsWithAwarenessLevel);
+          else
+            newAVersionsTask = Task.FromResult<IReadOnlyList<EntityVersion<TAtypeEntityId, TAtypeEntityVersion>>> (new EntityVersion<TAtypeEntityId, TAtypeEntityVersion>[] { });
+
+          Task<IReadOnlyList<EntityVersion<TBtypeEntityId, TBtypeEntityVersion>>> newBVersionsTask;
+          if (bIdsWithAwarenessLevel.Count > 0)
+            newBVersionsTask = _btypeRepository.GetVersions (bIdsWithAwarenessLevel);
+          else
+            newBVersionsTask = Task.FromResult<IReadOnlyList<EntityVersion<TBtypeEntityId, TBtypeEntityVersion>>> (new EntityVersion<TBtypeEntityId, TBtypeEntityVersion>[] { });
 
           var newAVersions = CreateDictionary (
               await newAVersionsTask,
@@ -510,14 +519,14 @@ namespace GenSync.Synchronization
           using (_totalProgress.StartARepositoryLoad())
           {
             _aEntities = CreateDictionary (
-                await _context._atypeRepository.Get (aEntitiesToLoad, _logger),
+                aEntitiesToLoad.Count > 0 ? await _context._atypeRepository.Get (aEntitiesToLoad, _logger) : new EntityWithId<TAtypeEntityId, TAtypeEntity>[] { },
                 _context._atypeIdComparer);
           }
 
           using (_totalProgress.StartBRepositoryLoad())
           {
             _bEntities = CreateDictionary (
-                await _context._btypeRepository.Get (bEntitiesToLoad, _logger),
+                bEntitiesToLoad.Count > 0 ? await _context._btypeRepository.Get (bEntitiesToLoad, _logger) : new EntityWithId<TBtypeEntityId, TBtypeEntity>[] { },
                 _context._btypeIdComparer);
           }
         }
