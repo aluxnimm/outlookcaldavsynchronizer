@@ -281,11 +281,9 @@ namespace GenSync.Synchronization
 
         foreach (var knownEntityRelationData in matchingEntites)
         {
-          var newAVersion = newAVersions[knownEntityRelationData.AtypeId];
-          var newBVersion = newBVersions[knownEntityRelationData.BtypeId];
           newAVersions.Remove (knownEntityRelationData.AtypeId);
           newBVersions.Remove (knownEntityRelationData.BtypeId);
-          var entitySyncState = CreateInitialSyncState (knownEntityRelationData, true, newAVersion, true, newBVersion, aDeltaLogInfo, bDeltaLogInfo);
+          var entitySyncState = _initialSyncStateCreationStrategy.CreateFor_Unchanged_Unchanged (knownEntityRelationData);
           entitySyncStates.Add (entitySyncState);
         }
 
