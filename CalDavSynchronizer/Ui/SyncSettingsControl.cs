@@ -44,6 +44,7 @@ namespace CalDavSynchronizer.Ui
 
     private readonly IList<Item<int>> _availableSyncIntervals =
         (new Item<int>[] { new Item<int> (0, "Manual only") })
+            .Union (Enumerable.Range (1, 2).Select (i => new Item<int> (i, i.ToString())))
             .Union (Enumerable.Range (1, 12).Select (i => i * 5).Select (i => new Item<int> (i, i.ToString()))).ToList();
 
     private readonly IList<Item<ConflictResolution>> _availableConflictResolutions = new List<Item<ConflictResolution>>()
