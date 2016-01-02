@@ -42,6 +42,8 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly IDateTimeRangeProvider _dateTimeRangeProvider;
     private readonly EventMappingConfiguration _configuration;
 
+    public const string PR_MESSAGE_CLASS_DASLFILTER = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Appointment'";
+
     public OutlookEventRepository (
       NameSpace mapiNameSpace, 
       string folderId, 
@@ -126,12 +128,12 @@ namespace CalDavSynchronizer.Implementation.Events
     public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities)
     {
       var range = _dateTimeRangeProvider.GetRange();
-      var filterBuilder = new StringBuilder();
 
       // Table Filtering in the MSDN: https://msdn.microsoft.com/EN-US/library/office/ff867581.aspx
+      var filterBuilder = new StringBuilder (PR_MESSAGE_CLASS_DASLFILTER);
 
       if (range.HasValue)
-        filterBuilder.AppendFormat("@SQL=\"urn:schemas:calendar:dtstart\" < '{0}' And \"urn:schemas:calendar:dtend\" > '{1}'", ToOutlookDateString(range.Value.To), ToOutlookDateString(range.Value.From));
+        filterBuilder.AppendFormat (" And \"urn:schemas:calendar:dtstart\" < '{0}' And \"urn:schemas:calendar:dtend\" > '{1}'", ToOutlookDateString(range.Value.To), ToOutlookDateString(range.Value.From));
       if (_configuration.UseEventCategoryAsFilter)
       {
         AddCategoryFilter (filterBuilder, _configuration.EventCategory);
@@ -158,14 +160,9 @@ namespace CalDavSynchronizer.Implementation.Events
       return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (events);
     }
 
-    public static  void AddCategoryFilter (StringBuilder filterBuilder, string category)
+    public static void AddCategoryFilter (StringBuilder filterBuilder, string category)
     {
-      if (filterBuilder.Length > 0)
-        filterBuilder.Append(" And ");
-      else
-        filterBuilder.Append("@SQL=");
-
-      filterBuilder.AppendFormat("\"urn:schemas-microsoft-com:office:office#Keywords\" = '{0}'", category.Replace ("'","''"));
+      filterBuilder.AppendFormat (" And \"urn:schemas-microsoft-com:office:office#Keywords\" = '{0}'", category.Replace ("'","''"));
     }
 
     public static List<EntityVersion<string, DateTime>> QueryFolder (NameSpace session, GenericComObjectWrapper<Folder> calendarFolderWrapper, StringBuilder filterBuilder)

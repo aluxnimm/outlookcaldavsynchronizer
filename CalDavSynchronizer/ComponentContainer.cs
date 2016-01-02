@@ -346,7 +346,7 @@ namespace CalDavSynchronizer
       using (var calendarFolderWrapper = GenericComObjectWrapper.Create (
           (Folder) _session.GetFolderFromID (changedOption.New.OutlookFolderEntryId, changedOption.New.OutlookFolderStoreId)))
       {
-        var filterBuilder = new StringBuilder();
+        var filterBuilder = new StringBuilder (OutlookEventRepository.PR_MESSAGE_CLASS_DASLFILTER);
         OutlookEventRepository.AddCategoryFilter (filterBuilder, oldCategory);
         var eventIds = OutlookEventRepository.QueryFolder (_session, calendarFolderWrapper, filterBuilder).Select(e => e.Id);
         // todo concat Ids from cache
