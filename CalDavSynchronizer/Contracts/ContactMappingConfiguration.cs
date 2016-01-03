@@ -28,9 +28,12 @@ namespace CalDavSynchronizer.Contracts
 
     public bool MapBirthday { get; set; }
 
+    public bool MapContactPhoto { get; set; }
+
     public ContactMappingConfiguration ()
     {
       MapBirthday = true;
+      MapContactPhoto = true;
     }
 
     public override IConfigurationForm<MappingConfigurationBase> CreateConfigurationForm (IConfigurationFormFactory factory)

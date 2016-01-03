@@ -51,11 +51,13 @@ namespace CalDavSynchronizer.Ui
         return new ContactMappingConfiguration
                {
                    MapBirthday = _mapBirthdayCheckBox.Checked,
+                   MapContactPhoto = _mapContactPhotoCheckBox.Checked
                };
       }
       set
       {
         _mapBirthdayCheckBox.Checked = value.MapBirthday;
+        _mapContactPhotoCheckBox.Checked = value.MapContactPhoto;
       }
     }
   }

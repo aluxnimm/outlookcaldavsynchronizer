@@ -170,7 +170,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       MapCertificate1To2 (source.Inner, target);
 
-      MapPhoto1To2 (source.Inner, target);
+      if (_configuration.MapContactPhoto) MapPhoto1To2 (source.Inner, target);
 
       if (!string.IsNullOrEmpty (source.Inner.Body))
       {
@@ -308,7 +308,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       MapCertificate2To1 (source, target.Inner);
 
-      MapPhoto2To1 (source, target.Inner);
+      if (_configuration.MapContactPhoto) MapPhoto2To1 (source, target.Inner);
 
       if (source.Notes.Count > 0)
       {

@@ -31,13 +31,14 @@
       this._cancelButton = new System.Windows.Forms.Button();
       this._okButton = new System.Windows.Forms.Button();
       this._mapBirthdayCheckBox = new System.Windows.Forms.CheckBox();
+      this._mapContactPhotoCheckBox = new System.Windows.Forms.CheckBox();
       this.SuspendLayout();
       // 
       // _cancelButton
       // 
       this._cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this._cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this._cancelButton.Location = new System.Drawing.Point(252, 96);
+      this._cancelButton.Location = new System.Drawing.Point(252, 118);
       this._cancelButton.Margin = new System.Windows.Forms.Padding(4);
       this._cancelButton.Name = "_cancelButton";
       this._cancelButton.Size = new System.Drawing.Size(100, 28);
@@ -48,7 +49,7 @@
       // _okButton
       // 
       this._okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._okButton.Location = new System.Drawing.Point(144, 96);
+      this._okButton.Location = new System.Drawing.Point(144, 118);
       this._okButton.Margin = new System.Windows.Forms.Padding(4);
       this._okButton.Name = "_okButton";
       this._okButton.Size = new System.Drawing.Size(100, 28);
@@ -63,10 +64,21 @@
       this._mapBirthdayCheckBox.Location = new System.Drawing.Point(16, 15);
       this._mapBirthdayCheckBox.Margin = new System.Windows.Forms.Padding(4);
       this._mapBirthdayCheckBox.Name = "_mapBirthdayCheckBox";
-      this._mapBirthdayCheckBox.Size = new System.Drawing.Size(120, 21);
+      this._mapBirthdayCheckBox.Size = new System.Drawing.Size(113, 21);
       this._mapBirthdayCheckBox.TabIndex = 2;
       this._mapBirthdayCheckBox.Text = "Map Birthday";
       this._mapBirthdayCheckBox.UseVisualStyleBackColor = true;
+      // 
+      // _mapContactPhotoCheckBox
+      // 
+      this._mapContactPhotoCheckBox.AutoSize = true;
+      this._mapContactPhotoCheckBox.Location = new System.Drawing.Point(16, 44);
+      this._mapContactPhotoCheckBox.Margin = new System.Windows.Forms.Padding(4);
+      this._mapContactPhotoCheckBox.Name = "_mapContactPhotoCheckBox";
+      this._mapContactPhotoCheckBox.Size = new System.Drawing.Size(150, 21);
+      this._mapContactPhotoCheckBox.TabIndex = 3;
+      this._mapContactPhotoCheckBox.Text = "Map Contact Photo";
+      this._mapContactPhotoCheckBox.UseVisualStyleBackColor = true;
       // 
       // ContactMappingConfigurationForm
       // 
@@ -74,7 +86,8 @@
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this._cancelButton;
-      this.ClientSize = new System.Drawing.Size(368, 139);
+      this.ClientSize = new System.Drawing.Size(368, 161);
+      this.Controls.Add(this._mapContactPhotoCheckBox);
       this.Controls.Add(this._mapBirthdayCheckBox);
       this.Controls.Add(this._okButton);
       this.Controls.Add(this._cancelButton);
@@ -84,6 +97,7 @@
       this.ShowIcon = false;
       this.Text = "Contact Mapping";
       this.ResumeLayout(false);
+      this.PerformLayout();
 
     }
 
@@ -92,5 +106,6 @@
     private System.Windows.Forms.Button _cancelButton;
     private System.Windows.Forms.Button _okButton;
     private System.Windows.Forms.CheckBox _mapBirthdayCheckBox;
+    private System.Windows.Forms.CheckBox _mapContactPhotoCheckBox;
   }
 }
