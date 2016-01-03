@@ -48,6 +48,10 @@ namespace CalDavSynchronizer
     {
       try
       {
+        // Sometimes outlook raises this event multiple times (seems to be a bug)
+        if (ComponentContainer != null)
+          return;
+
         XmlConfigurator.Configure();
         s_logger.Info ("Startup entered.");
 
