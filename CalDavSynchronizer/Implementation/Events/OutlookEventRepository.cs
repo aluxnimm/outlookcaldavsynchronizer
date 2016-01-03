@@ -170,7 +170,7 @@ namespace CalDavSynchronizer.Implementation.Events
       var events = new List<EntityVersion<string, DateTime>>();
 
       using (var tableWrapper = GenericComObjectWrapper.Create (
-          calendarFolderWrapper.Inner.GetTable (filterBuilder.Length > 0 ? filterBuilder.ToString() : Type.Missing)))
+          calendarFolderWrapper.Inner.GetTable (filterBuilder.ToString())))
       {
         var table = tableWrapper.Inner;
         table.Columns.RemoveAll();

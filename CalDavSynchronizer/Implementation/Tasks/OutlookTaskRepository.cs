@@ -35,6 +35,8 @@ namespace CalDavSynchronizer.Implementation.Tasks
     private readonly Folder _taskFolder;
     private readonly NameSpace _mapiNameSpace;
 
+    private const string PR_MESSAGE_CLASS_DASLFILTER = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Task'";
+
     public OutlookTaskRepository (Folder taskFolder, NameSpace mapiNameSpace)
     {
       if (taskFolder == null)
@@ -62,7 +64,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
     {
       var entities = new List<EntityVersion<string, DateTime>>();
 
-      using (var tableWrapper = GenericComObjectWrapper.Create ((Table) _taskFolder.GetTable()))
+      using (var tableWrapper = GenericComObjectWrapper.Create ((Table)_taskFolder.GetTable (PR_MESSAGE_CLASS_DASLFILTER)))
       {
         var table = tableWrapper.Inner;
         table.Columns.RemoveAll();
