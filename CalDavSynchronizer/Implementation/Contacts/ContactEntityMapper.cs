@@ -521,6 +521,10 @@ namespace CalDavSynchronizer.Implementation.Contacts
           {
             s_logger.Error ("Could not set property PR_USER_X509_CERTIFICATE for contact.", ex);
           }
+          catch (System.UnauthorizedAccessException ex)
+          {
+            s_logger.Error ("Could not access PR_USER_X509_CERTIFICATE for contact.", ex);
+          }
         }
       }
     }
@@ -542,7 +546,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
               }
               catch (COMException ex)
               {
-                s_logger.Error ("Could not getproperty PR_ATTACH_DATA_BIN to export picture for contact.", ex);
+                s_logger.Error ("Could not get property PR_ATTACH_DATA_BIN to export picture for contact.", ex);
+              }
+              catch (System.UnauthorizedAccessException ex)
+              {
+                s_logger.Error ("Could not access PR_ATTACH_DATA_BIN to export picture for contact.", ex);
               }
             }
           }
