@@ -95,6 +95,7 @@ namespace CalDavSynchronizer.Ui
           ScheduleAgentClient = _scheduleAgentClientCheckBox.Checked,
           SendNoAppointmentNotifications = _sendNoAppointmentsNotificationsCheckBox.Checked,
           MapBody = _mapBodyCheckBox.Checked,
+          CreateEventsInUTC = _createInUTCCheckBox.Checked,
           MapReminder = (ReminderMapping) _mapReminderComboBox.SelectedValue,
           EventCategory = _categoryTextBox.Text,
           UseEventCategoryColorAndMapFromCalendarColor = _mapColorCheckBox.Checked ,
@@ -108,6 +109,7 @@ namespace CalDavSynchronizer.Ui
         _scheduleAgentClientCheckBox.Checked = value.ScheduleAgentClient;
         _sendNoAppointmentsNotificationsCheckBox.Checked = value.SendNoAppointmentNotifications;
         _mapBodyCheckBox.Checked = value.MapBody;
+        _createInUTCCheckBox.Checked = value.CreateEventsInUTC;
         _mapReminderComboBox.SelectedValue = value.MapReminder;
         _categoryTextBox.Text = value.EventCategory;
         _categoryColorPicker.SelectedValue = value.EventCategoryColor;

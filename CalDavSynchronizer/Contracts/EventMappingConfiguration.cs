@@ -31,6 +31,7 @@ namespace CalDavSynchronizer.Contracts
     public bool ScheduleAgentClient { get; set; }
     public bool SendNoAppointmentNotifications { get; set; }
     public bool MapBody { get; set; }
+    public bool CreateEventsInUTC { get; set; }
     public string EventCategory { get; set; }
     public bool UseEventCategoryColorAndMapFromCalendarColor { get; set; }
     public OlCategoryColor EventCategoryColor { get; set; }
@@ -49,6 +50,7 @@ namespace CalDavSynchronizer.Contracts
       ScheduleAgentClient = true;
       SendNoAppointmentNotifications = false;
       MapBody = true;
+      CreateEventsInUTC = false;
       UseEventCategoryColorAndMapFromCalendarColor = false;
       EventCategoryColor = OlCategoryColor.olCategoryColorNone;
       CategoryShortcutKey = OlCategoryShortcutKey.olCategoryShortcutKeyNone;
