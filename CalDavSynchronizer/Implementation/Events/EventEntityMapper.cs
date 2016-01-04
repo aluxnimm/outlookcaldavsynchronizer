@@ -659,62 +659,69 @@ namespace CalDavSynchronizer.Implementation.Events
             {
               targetExceptionDatesByDate.Remove (sourceException.OriginalDate.Date);
 
-              var targetException = new Event();
-              target.Calendar.Events.Add (targetException);
-              targetException.UID = target.UID;
-              using (var wrapper = new AppointmentItemWrapper (sourceException.AppointmentItem, _ => { throw new InvalidOperationException ("Cannot reload exception AppointmentITem!"); }))
+              try
               {
-                Map1To2 (wrapper.Inner, targetException, true, startIcalTimeZone, endIcalTimeZone);
-
-                // check if new exception is already present in target
-                // if it is found and not already present as exdate then add a new exdate to avoid 2 events
-                var from = (wrapper.Inner.Start.Date < sourceException.OriginalDate.Date) ? wrapper.Inner.Start.Date : sourceException.OriginalDate.Date;
-                var to = (wrapper.Inner.Start.Date > sourceException.OriginalDate.Date) ? wrapper.Inner.Start.Date.AddDays (1) : sourceException.OriginalDate.Date.AddDays (1);
-
-                var targetContainsExceptionList = target.GetOccurrences (from, to);
-                foreach (var el in targetContainsExceptionList)
+                using (var wrapper = new AppointmentItemWrapper(sourceException.AppointmentItem, _ => { throw new InvalidOperationException("Cannot reload exception AppointmentITem!"); }))
                 {
-                  if (!originalOutlookDatesWithExceptions.Contains (el.Period.StartTime.Value))
-                  {
-                    PeriodList targetExList = new PeriodList();
+                  var targetException = new Event();
+                  target.Calendar.Events.Add (targetException);
+                  targetException.UID = target.UID;
+                  Map1To2 (wrapper.Inner, targetException, true, startIcalTimeZone, endIcalTimeZone);
 
-                    if (!el.Period.StartTime.HasTime)
+                  // check if new exception is already present in target
+                  // if it is found and not already present as exdate then add a new exdate to avoid 2 events
+                  var from = (wrapper.Inner.Start.Date < sourceException.OriginalDate.Date) ? wrapper.Inner.Start.Date : sourceException.OriginalDate.Date;
+                  var to = (wrapper.Inner.Start.Date > sourceException.OriginalDate.Date) ? wrapper.Inner.Start.Date.AddDays (1) : sourceException.OriginalDate.Date.AddDays (1);
+
+                  var targetContainsExceptionList = target.GetOccurrences (from, to);
+                  foreach (var el in targetContainsExceptionList)
+                  {
+                    if (!originalOutlookDatesWithExceptions.Contains (el.Period.StartTime.Value))
                     {
-                      iCalDateTime exDate = new iCalDateTime (el.Period.StartTime.Date);
-                      exDate.HasTime = false;
-                      targetExList.Add (exDate);
-                      targetExList.Parameters.Add ("VALUE", "DATE");
+                      PeriodList targetExList = new PeriodList();
+
+                      if (!el.Period.StartTime.HasTime)
+                      {
+                        iCalDateTime exDate = new iCalDateTime (el.Period.StartTime.Date);
+                        exDate.HasTime = false;
+                        targetExList.Add (exDate);
+                        targetExList.Parameters.Add ("VALUE", "DATE");
+                      }
+                      else
+                      {
+                        targetExList.Add (new iCalDateTime (el.Period.StartTime.UTC) { IsUniversalTime = true });
+                      }
+                      targetExceptionDatesByDate.Add (el.Period.StartTime.Date, targetExList);
                     }
-                    else
+                  }
+
+                  if (source.AllDayEvent)
+                  {
+                    // Outlook's AllDayEvent relates to Start and not not StartUtc!!!
+                    targetException.RecurrenceID = new iCalDateTime (sourceException.OriginalDate);
+                    targetException.RecurrenceID.HasTime = false;
+                  }
+                  else
+                  {
+                    string startTimeZoneID;
+                    using (var startTimeZone = GenericComObjectWrapper.Create (source.StartTimeZone))
                     {
-                      targetExList.Add (new iCalDateTime (el.Period.StartTime.UTC) { IsUniversalTime = true });
+                      startTimeZoneID = startTimeZone.Inner.ID;
                     }
-                    targetExceptionDatesByDate.Add (el.Period.StartTime.Date, targetExList);
+                    var timeZone = TimeZoneInfo.FindSystemTimeZoneById (startTimeZoneID);
+                    var originalDateUtc = TimeZoneInfo.ConvertTimeToUtc (sourceException.OriginalDate, timeZone);
+                    targetException.RecurrenceID = new iCalDateTime (originalDateUtc) { IsUniversalTime = true };
                   }
                 }
               }
-
-              if (source.AllDayEvent)
+              catch (COMException ex)
               {
-                // Outlook's AllDayEvent relates to Start and not not StartUtc!!!
-                targetException.RecurrenceID = new iCalDateTime (sourceException.OriginalDate);
-                targetException.RecurrenceID.HasTime = false;
-              }
-              else
-              {
-                string startTimeZoneID;
-                using (var startTimeZone = GenericComObjectWrapper.Create (source.StartTimeZone))
-                {
-                  startTimeZoneID = startTimeZone.Inner.ID;
-                }
-                var timeZone = TimeZoneInfo.FindSystemTimeZoneById (startTimeZoneID);
-                var originalDateUtc = TimeZoneInfo.ConvertTimeToUtc (sourceException.OriginalDate, timeZone);
-                targetException.RecurrenceID = new iCalDateTime (originalDateUtc) { IsUniversalTime = true };
+                s_logger.Error ("Can't get AppointmentItem of Exception, ignoring!", ex);
               }
             }
             else
             {
-              if (!originalOutlookDatesWithExceptions.Contains (sourceException.OriginalDate))
+              if (!originalOutlookDatesWithExceptions.Contains(sourceException.OriginalDate))
               {
                 PeriodList targetExList = new PeriodList();
 
@@ -734,7 +741,7 @@ namespace CalDavSynchronizer.Implementation.Events
                   }
                   var timeZone = TimeZoneInfo.FindSystemTimeZoneById (startTimeZoneID);
                   var originalDateUtc = TimeZoneInfo.ConvertTimeToUtc (sourceException.OriginalDate, timeZone);
-                  iCalDateTime exDate = new iCalDateTime (originalDateUtc.Add (source.StartInStartTimeZone.TimeOfDay)) { IsUniversalTime = true };
+                  iCalDateTime exDate = new iCalDateTime (originalDateUtc.Add(source.StartInStartTimeZone.TimeOfDay)) { IsUniversalTime = true };
 
                   targetExList.Add (exDate);
                 }
