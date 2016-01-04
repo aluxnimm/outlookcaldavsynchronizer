@@ -401,7 +401,7 @@ namespace CalDavSynchronizer.Implementation.Events
         {
           if (StringComparer.InvariantCultureIgnoreCase.Compare (organizerWrapper.Inner.Name, source.Organizer) == 0)
           {
-            SetOrganizer (target, organizerWrapper.Inner);
+            SetOrganizer (target, organizerWrapper.Inner, organizerWrapper.Inner.Address);
           }
           else
           {
@@ -411,10 +411,11 @@ namespace CalDavSynchronizer.Implementation.Events
       }
     }
 
-    private void SetOrganizer (IEvent target, AddressEntry organizer)
+    private void SetOrganizer (IEvent target, AddressEntry organizer, string address)
     {
-      var targetOrganizer = new Organizer (GetMailUrl (organizer));
-      targetOrganizer.CommonName = organizer.Name;
+      string organizerEmail = GetMailUrlOrNull (organizer, address);
+      var targetOrganizer = (organizerEmail != null) ? new Organizer (organizerEmail) : new Organizer();
+      if (organizer != null) targetOrganizer.CommonName = organizer.Name;
       target.Organizer = targetOrganizer;
       if (_configuration.ScheduleAgentClient) target.Organizer.Parameters.Add ("SCHEDULE-AGENT", "CLIENT");
       if (_configuration.SendNoAppointmentNotifications) target.Properties.Add (new CalendarProperty ("X-SOGO-SEND-APPOINTMENT-NOTIFICATIONS", "NO"));
@@ -422,101 +423,141 @@ namespace CalDavSynchronizer.Implementation.Events
 
     private void SetOrganizer (IEvent target, string organizerCN, string organizerEmail)
     {
-      var targetOrganizer = new Organizer (string.Format ("MAILTO:{0}", organizerEmail));
-      targetOrganizer.CommonName = organizerCN;
-      target.Organizer = targetOrganizer;
-      if (_configuration.ScheduleAgentClient) target.Organizer.Parameters.Add ("SCHEDULE-AGENT", "CLIENT");
-      if (_configuration.SendNoAppointmentNotifications) target.Properties.Add (new CalendarProperty ("X-SOGO-SEND-APPOINTMENT-NOTIFICATIONS", "NO"));
+      Organizer targetOrganizer;
 
-    }
-
-    private string GetMailUrl (AddressEntry addressEntry)
-    {
-      string emailAddress = string.Empty;
-      if (addressEntry == null)
-        return emailAddress;
-
-      if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeUserAddressEntry
-          || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeRemoteUserAddressEntry
-          || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeAgentAddressEntry
-          || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeOrganizationAddressEntry
-          || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangePublicFolderAddressEntry)
+      if (organizerEmail != null)
       {
-        using (var exchUser = GenericComObjectWrapper.Create (addressEntry.GetExchangeUser()))
+        var emailAddress = string.Format ("MAILTO:{0}", organizerEmail);
+        if (Uri.IsWellFormedUriString (emailAddress, UriKind.Absolute))
         {
-          if (exchUser != null)
-          {
-            emailAddress = exchUser.Inner.PrimarySmtpAddress;
-          }
-        }
-      }
-      else if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeDistributionListAddressEntry
-               || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olOutlookDistributionListAddressEntry)
-      {
-        using (var exchDL = GenericComObjectWrapper.Create (addressEntry.GetExchangeDistributionList()))
-        {
-          if (exchDL != null)
-          {
-            emailAddress = exchDL.Inner.PrimarySmtpAddress;
-          }
-        }
-      }
-      else if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olSmtpAddressEntry
-               || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olLdapAddressEntry)
-      {
-        emailAddress = addressEntry.Address;
-      }
-      else if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olOutlookContactAddressEntry)
-      {
-        if (addressEntry.Type == "EX")
-        {
-          using (var exchContact = GenericComObjectWrapper.Create (addressEntry.GetContact()))
-          {
-            if (exchContact != null)
-            {
-              if (exchContact.Inner.Email1AddressType == "EX")
-              {
-                try
-                {
-                  emailAddress = exchContact.Inner.GetPropertySafe (PR_EMAIL1ADDRESS);
-                }
-                catch (COMException ex)
-                {
-                  s_logger.Error ("Could not get property PR_EMAIL1ADDRESS for adressEntry", ex);
-                }
-              }
-              else
-              {
-                emailAddress = exchContact.Inner.Email1Address;
-              }
-            }
-          }
+          targetOrganizer = new Organizer (emailAddress);
         }
         else
         {
-          emailAddress = addressEntry.Address;
+          s_logger.ErrorFormat ("Invalid email address URI {0} for organizer", organizerEmail);
+          targetOrganizer = new Organizer();
         }
       }
       else
       {
-        try
+        targetOrganizer = new Organizer();
+      }
+      
+      targetOrganizer.CommonName = organizerCN;
+      target.Organizer = targetOrganizer;
+      if (_configuration.ScheduleAgentClient) target.Organizer.Parameters.Add ("SCHEDULE-AGENT", "CLIENT");
+      if (_configuration.SendNoAppointmentNotifications) target.Properties.Add (new CalendarProperty ("X-SOGO-SEND-APPOINTMENT-NOTIFICATIONS", "NO"));
+    }
+
+    private string GetMailUrlOrNull (AddressEntry addressEntry, string address)
+    {
+      string emailAddress = address;
+
+      if (addressEntry != null)
+      {
+        if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeUserAddressEntry
+            || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeRemoteUserAddressEntry
+            || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeAgentAddressEntry
+            || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeOrganizationAddressEntry
+            || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangePublicFolderAddressEntry)
         {
-          emailAddress = addressEntry.GetPropertySafe (PR_SMTP_ADDRESS);
+          try
+          {
+            using (var exchUser = GenericComObjectWrapper.Create (addressEntry.GetExchangeUser()))
+            {
+              if (exchUser.Inner != null)
+              {
+                emailAddress = exchUser.Inner.PrimarySmtpAddress;
+              }
+            }
+          }
+          catch (COMException ex)
+          {
+            s_logger.Error ("Could not get email address from adressEntry.GetExchangeUser()", ex);
+          }
         }
-        catch (COMException ex)
+        else if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeDistributionListAddressEntry
+                 || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olOutlookDistributionListAddressEntry)
         {
-          s_logger.Error ("Could not get property PR_SMTP_ADDRESS for adressEntry", ex);
+          try
+          {
+            using (var exchDL = GenericComObjectWrapper.Create (addressEntry.GetExchangeDistributionList()))
+            {
+              if (exchDL.Inner != null)
+              {
+                emailAddress = exchDL.Inner.PrimarySmtpAddress;
+              }
+            }
+          }
+          catch (COMException ex)
+          {
+            s_logger.Error ("Could not get email address from adressEntry.GetExchangeDistributionList()", ex);
+          }
+        }
+        else if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olSmtpAddressEntry
+                 || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olLdapAddressEntry)
+        {
+          emailAddress = addressEntry.Address;
+        }
+        else if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olOutlookContactAddressEntry)
+        {
+          if (addressEntry.Type == "EX")
+          {
+            try
+            {
+              using (var exchContact = GenericComObjectWrapper.Create (addressEntry.GetContact()))
+              {
+                if (exchContact.Inner != null)
+                {
+                  if (exchContact.Inner.Email1AddressType == "EX")
+                  {
+                    emailAddress = exchContact.Inner.GetPropertySafe (PR_EMAIL1ADDRESS);
+                  }
+                  else
+                  {
+                    emailAddress = exchContact.Inner.Email1Address;
+                  }
+                }
+              }
+            }
+            catch (COMException ex)
+            {
+              s_logger.Error ("Could not get email address from adressEntry.GetContact()", ex);
+            }
+          }
+          else
+          {
+            emailAddress = addressEntry.Address;
+          }
+        }
+        else
+        {
+          try
+          {
+            emailAddress = addressEntry.GetPropertySafe (PR_SMTP_ADDRESS);
+          }
+          catch (COMException ex)
+          {
+            s_logger.Error ("Could not get property PR_SMTP_ADDRESS for adressEntry", ex);
+          }
         }
       }
 
-      emailAddress = string.Format ("MAILTO:{0}", emailAddress);
-      if (!Uri.IsWellFormedUriString (emailAddress, UriKind.Absolute))
+      if (!string.IsNullOrEmpty (emailAddress))
       {
-        s_logger.ErrorFormat ("Invalid email address URI {0} for addressEntry", emailAddress);
-        s_logger.DebugFormat ("emailaddress: {0} AdressEntryType: {1} AdressEntryUserType: {2} addressEntry.Address: {3}", emailAddress, addressEntry.Type, addressEntry.AddressEntryUserType, addressEntry.Address);
-        emailAddress = string.Empty;
+        var emailAddressUriString = string.Format("MAILTO:{0}", emailAddress);
+        if (!Uri.IsWellFormedUriString(emailAddressUriString, UriKind.Absolute))
+        {
+          s_logger.ErrorFormat("Invalid email address URI {0} for attendee.", emailAddressUriString);
+          return null;
+        }
+        return emailAddressUriString;
       }
-      return emailAddress;
+      else
+      {
+        return null;
+      }
+     
     }
 
     private void MapRecurrance1To2 (AppointmentItem source, IEvent target, iCalTimeZone startIcalTimeZone, iCalTimeZone endIcalTimeZone)
@@ -959,7 +1000,15 @@ namespace CalDavSynchronizer.Implementation.Events
           {
             using (var entryWrapper = GenericComObjectWrapper.Create (recipient.AddressEntry))
             {
-              attendee = new Attendee (GetMailUrl (entryWrapper.Inner));
+              var recipientMailUrl = GetMailUrlOrNull (entryWrapper.Inner, recipient.Address);
+              if (recipientMailUrl != null)
+              {
+                attendee = new Attendee (recipientMailUrl);
+              }
+              else
+              {
+                attendee = new Attendee();
+              }
             }
           }
           else
@@ -983,7 +1032,15 @@ namespace CalDavSynchronizer.Implementation.Events
             {
               using (var entryWrapper = GenericComObjectWrapper.Create (recipient.AddressEntry))
               {
-                ownAttendee = new Attendee (GetMailUrl (entryWrapper.Inner));
+                var recipientMailUrl = GetMailUrlOrNull (entryWrapper.Inner, recipient.Address);
+                if (recipientMailUrl != null)
+                {
+                  ownAttendee = new Attendee (recipientMailUrl);
+                }
+                else
+                {
+                  ownAttendee = new Attendee();
+                }
               }
             }
             else
@@ -1003,19 +1060,12 @@ namespace CalDavSynchronizer.Implementation.Events
           {
             using (var entryWrapper = GenericComObjectWrapper.Create (recipient.AddressEntry))
             {
-              if (entryWrapper.Inner != null)
-              {
-                SetOrganizer (target, entryWrapper.Inner);
-              }
-              else
-              {
-                SetOrganizer (target, recipient.Name, string.Empty);
-              }
+              SetOrganizer (target, entryWrapper.Inner, recipient.Address);
             }
           }
           else
           {
-            SetOrganizer (target, recipient.Name, string.Empty);
+            SetOrganizer (target, recipient.Name, null);
           }
 
           organizerSet = true;
@@ -1406,7 +1456,7 @@ namespace CalDavSynchronizer.Implementation.Events
         {
           using (var entryWrapper = GenericComObjectWrapper.Create (recipient.AddressEntry))
           {
-            indexByEmailAddresses[GetMailUrl (entryWrapper.Inner)] = recipient;
+            indexByEmailAddresses[GetMailUrlOrNull (entryWrapper.Inner, recipient.Address) ?? recipient.Name] = recipient;
           }
         }
         else
