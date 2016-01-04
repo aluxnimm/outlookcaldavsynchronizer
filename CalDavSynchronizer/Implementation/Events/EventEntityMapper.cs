@@ -433,6 +433,8 @@ namespace CalDavSynchronizer.Implementation.Events
     private string GetMailUrl (AddressEntry addressEntry)
     {
       string emailAddress = string.Empty;
+      if (addressEntry == null)
+        return emailAddress;
 
       if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeUserAddressEntry
           || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeRemoteUserAddressEntry
@@ -1001,7 +1003,14 @@ namespace CalDavSynchronizer.Implementation.Events
           {
             using (var entryWrapper = GenericComObjectWrapper.Create (recipient.AddressEntry))
             {
-              SetOrganizer (target, entryWrapper.Inner);
+              if (entryWrapper.Inner != null)
+              {
+                SetOrganizer (target, entryWrapper.Inner);
+              }
+              else
+              {
+                SetOrganizer (target, recipient.Name, string.Empty);
+              }
             }
           }
           else
