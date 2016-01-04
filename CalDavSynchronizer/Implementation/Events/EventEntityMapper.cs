@@ -83,31 +83,38 @@ namespace CalDavSynchronizer.Implementation.Events
         string startTimeZoneID;
         string endTimeZoneID;
 
-        using (var startTimeZone = GenericComObjectWrapper.Create(sourceWrapper.Inner.StartTimeZone))
+        try
         {
-          startTimeZoneID = startTimeZone.Inner.ID;
-        }
-        using (var endTimeZone = GenericComObjectWrapper.Create(sourceWrapper.Inner.EndTimeZone))
-        {
-          endTimeZoneID = endTimeZone.Inner.ID;
-        }
+          using (var startTimeZone = GenericComObjectWrapper.Create (sourceWrapper.Inner.StartTimeZone))
+          {
+            startTimeZoneID = startTimeZone.Inner.ID;
+          }
+          using (var endTimeZone = GenericComObjectWrapper.Create (sourceWrapper.Inner.EndTimeZone))
+          {
+            endTimeZoneID = endTimeZone.Inner.ID;
+          }
 
-        var startTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(startTimeZoneID);
-        startIcalTimeZone = iCalTimeZone.FromSystemTimeZone(startTimeZoneInfo, new DateTime(1970, 1, 1), false);
-        DDayICalWorkaround.CalendarDataPreprocessor.FixTimeZoneDSTRRules(startTimeZoneInfo, startIcalTimeZone);
-        newTargetCalender.TimeZones.Add(startIcalTimeZone);
+          var startTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (startTimeZoneID);
+          startIcalTimeZone = iCalTimeZone.FromSystemTimeZone(startTimeZoneInfo, new DateTime(1970, 1, 1), false);
+          DDayICalWorkaround.CalendarDataPreprocessor.FixTimeZoneDSTRRules (startTimeZoneInfo, startIcalTimeZone);
+          newTargetCalender.TimeZones.Add (startIcalTimeZone);
 
-        if (endTimeZoneID != startTimeZoneID)
-        {
-          var endTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(endTimeZoneID);
+          if (endTimeZoneID != startTimeZoneID)
+          {
+            var endTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (endTimeZoneID);
 
-          endIcalTimeZone = iCalTimeZone.FromSystemTimeZone(endTimeZoneInfo, new DateTime(1970, 1, 1), false);
-          DDayICalWorkaround.CalendarDataPreprocessor.FixTimeZoneDSTRRules(endTimeZoneInfo, endIcalTimeZone);
-          newTargetCalender.TimeZones.Add(endIcalTimeZone);
+            endIcalTimeZone = iCalTimeZone.FromSystemTimeZone (endTimeZoneInfo, new DateTime(1970, 1, 1), false);
+            DDayICalWorkaround.CalendarDataPreprocessor.FixTimeZoneDSTRRules (endTimeZoneInfo, endIcalTimeZone);
+            newTargetCalender.TimeZones.Add (endIcalTimeZone);
+          }
+          else
+          {
+            endIcalTimeZone = startIcalTimeZone;
+          }
         }
-        else
+        catch (COMException ex)
         {
-          endIcalTimeZone = startIcalTimeZone;
+          s_logger.Warn ("Can't get Timezone of AppointmentItem, using UTC", ex);
         }
       }
 
@@ -145,7 +152,7 @@ namespace CalDavSynchronizer.Implementation.Events
       }
       else
       {
-        if (_configuration.CreateEventsInUTC)
+        if (_configuration.CreateEventsInUTC || startIcalTimeZone == null || endIcalTimeZone == null)
         {
           target.Start = new iCalDateTime (source.StartUTC) { IsUniversalTime = true };
           target.DTEnd = new iCalDateTime (source.EndUTC) { IsUniversalTime = true };
