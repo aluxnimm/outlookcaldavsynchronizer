@@ -36,6 +36,7 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 - Landmarks
 - Kolab
 - Zoho Calendar
+- GMX
 
 ### Features ###
 
@@ -71,6 +72,22 @@ Download and extract the `OutlookCalDavSynchronizer-<Version>.zip` into the same
 If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=48217)
 
 ### Changelog ###
+
+#### 1.13.0 ####
+- New features
+	- Support for GMX calendar, new events need to be created in UTC see section GMX in README.
+	- Implement  Show/Clear Log and log level configuration in General Options (feature 22).
+	- Add also 1 min and 2 min to avaiable Sync Intervals since requested multiple times.
+	- Add option to disable mapping of contact photos in ContactMappingConfiguration, since it is not working properly in OL 2007.
+- Bug fixes
+	- EnsureSynchronizationContext on callbacks from Outlook, fixes errors when showing synchronization reports when synchronizung items immediately after changes.
+	- Do not perform empty queries to repositories, fixes HTTP 400 errors with GMX.
+	- Use PR_MESSAGE_CLASS to filter only AppointmentItems/TaskItems in OutlookRepositories, should fix casting errors when other items are in the folder.
+	- Fix button layout in MappingConfiguration and OptionsDisplay.
+	- Add EventMappingConfiguration to create events in UTC, needed for GMX for example, since local Windows Timezone leads to HTTP 403 error, ticket #162.
+	- Catch System.UnauthorizedAccessExceptions in ContactEntityMapper.
+	- Execute startup code just once, should fix error in ticket #161.
+	- Avoid NullreferenceException when AdressEntry of recipient can't be fetched, ticket #163.
 
 #### 1.12.0 ####
 - New features
@@ -440,7 +457,7 @@ The following properties need to be set for a new generic profile:
 	- **Email address:** email address used as remote identity for the CalDAV server, necessary to synchronize the organizer
 - *Outlook settings*:
 	- **Outlook Folder:** Outlook folder that should be used for synchronization
-	- **Synchronize changes immediately after change** Trigger a partial synchronization run immediately after an item is created, changed or deleted in Outlook via the Inspector dialog, works only for Appointments at the moment!
+	- **Synchronize items immediately after change** Trigger a partial synchronization run immediately an item is created, changed or deleted in Outlook via the Inspector dialog, works only for Appointments at the moment!
 - *Sync settings*:
 	- Synchronization settings
 		- **Outlook -> CalDav (Replicate):** syncronizes everything from outlook to caldav server (one way)
@@ -461,10 +478,12 @@ The following properties need to be set for a new generic profile:
 	- **Use System Default Proxy** Use proxy settings from Internet Explorer or config file, uses default credentials if available for NTLM authentication
 	- **Use manual proxy configuration** Specify proxy URL as `http://<your-proxy-domain>:<your-proxy-port>` and optional Username and Password for Basic Authentication.
 	- **Mapping Configuration...**: Here you can configure what properties should be synced, available for appointments and contacts at the moment. 
-		- For appointments you can choose if you want to map reminders (just upcoming, all or none) and the description body. 
+		- For appointments you can choose if you want to map reminders (just upcoming, all or none) and the description body.
+		- *Create events on server in UTC:* Use UTC instead of Outlook Appointment Timezone for creating events on CalDAV server. Needed for GMX for example. Not recommended for general use, because recurrence exceptions over DST changes can't be mapped and Appointments with different start and end timezones can't be represented.
 		- In *Scheduling settings* you can configure if you want to map attendees and organizer and if notifications should be sent by the server. (Use *Don't send appointment notifications for SOGo servers and SCHEDULE-AGENT:CLIENT for other servers if you want to send invitations from Outlook and avoid that the server sends invitations too). 
 		-  You can also define a filter category so that multiple CalDAV-Calendars can be synchronized into one Outlook calendar via the defined category (see Category Filter and Color below). 
 		-  For contacts you can configure if birthdays should be mapped or not. If birthdays are mapped, Outlook also creates an recurring appointment for every contact with a defined birthday.
+		-  You can also configure if contact photos should be mapped or not. Contact photo mapping from Outlook to the server doesn't work in Outlook 2007.
 	
 ### Category Filter and Color ###
 
@@ -481,7 +500,6 @@ For Google Calender you can use the new Google type profile which simplifies the
 You can also still use the manual setup with a generic CalDAV/CardDAV profile type and the following settings:
 DAV Url: `https://apidata.googleusercontent.com/caldav/v2/<your_google_calendar_id>/events/
 `
-
 Check the Use Google OAuth Checkbox instead of entering your password. When testing the settings, you will be redirected to your browser to enter your Google Account password and grant access rights to your Google Calender for OutlookCalDavSynchronizer via the safe OAuth protocol.
 For Autodiscovery of all available google calendars use the Url 
 `https://apidata.googleusercontent.com/caldav/v2/` 
@@ -492,6 +510,13 @@ DAV Url: `https://www.googleapis.com/carddav/v1/principals/<your_google_email>/l
 
 Check the Use Google OAuth Checkbox instead of entering your password. When testing the settings, you will be redirected to your browser to enter your Google Account password and grant access rights to your Google Calender for OutlookCalDavSynchronizer via the safe OAuth protocol. If you get an error with insufficient access you need to refresh the token by deleting the previous token in 
 `C:\Users\<your Username>\AppData\Roaming\Google.Apis.Auth`
+
+### GMX calendar settings ###
+
+For GMX calendar use the DAV Url `https://caldav.gmx.net`
+Since GMX doesn't allow to create events with the Windows Timezone IDs, you must activate  the `Create events on server in UTC` checkbox in Advanced options - Mapping Configuration to avoid erros when creating events and syncing from Outlook to GMX.
+
+For GMX addressbook use the DAV Url `https://carddav.gmx.net`
 
 ### Synology NAS settings ###
 
@@ -526,6 +551,8 @@ You can import the cert by running the MMC as Administrator.
 - **Enable Tls12** set to false to disable TLS12, not recommended 
 - **Enable Ssl3** set to true to enable deprecated SSLv3, major security risk, use with caution! 
 
+In the **General Logging** section you can show or clear the log file and define the log level. Possible log levels are `INFO` and  `DEBUG`.
+
 ### Reports of sync runs ###
 
 You can also configure Synchronization reports for all profiles, this can be configured via general Options:
@@ -548,7 +575,7 @@ If you activated Store data in roaming folder the location is changed to the fol
 There is one `options_<your outlook profile>.xml` file which stores the options for each outlook profile.
 For each sync profile there is a subfolder with state information stored in a relations.xml file after the inital sync. If you delete that folder, a fresh inital sync is performed. In the Synchronization profiles dialog a context menu is available in each profile (right click), which allows to open the cache directory and read the relations.xml file.
 
-Each synchronization attempt is logged in the `log.txt` file. There you can find information about sync duration and the amount of added, deleted or modified events. Errors and Exceptions are logged aswell. For debugging information of caldav requests there is furthermore a logfile `log_calDavAccess.txt`
+Each synchronization attempt is logged in the `log.txt` file. There you can find information about sync duration and the amount of added, deleted or modified events. Errors and Exceptions are logged aswell. You can view and clear the log file in **General Options**. There you can also change the log level from `INFO` to `DEBUG`. 
 
  
 ### Debugging and more config options ###
@@ -562,7 +589,7 @@ After changing parameters you have to restart Outlook.
 
 - **loadOperationThresholdForProgressDisplay**: amount of sync operations to show the progress bar (default 50)
 - **calDavConnectTimeout**: timeout for caldav connects (default 90 sec)
-- **enableTaskSynchronization** Support for task sync (alpha) true or false
+- **enableTaskSynchronization** Support for task sync true or false
 
 In the section `system.net` you can define proxy settings, e.g. use of NTLM credentials
 
@@ -578,7 +605,7 @@ In this section you can also allow UnsafeHeaderParsing if the server sends inval
     	</settings>
     </system.net>
 
-In the section `log4net` you can define the log level for the main log and for the caldav data access, 
+In the section `log4net` you can define the log level for the main log (also possible in general options now) and for the caldav data access, 
     level value can be DEBUG or INFO, e.g. :
 
 	<root>
