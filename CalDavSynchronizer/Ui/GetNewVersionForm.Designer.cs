@@ -59,6 +59,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this._newFeaturesTextBox.Location = new System.Drawing.Point(12, 132);
       this._newFeaturesTextBox.Multiline = true;
+      this._newFeaturesTextBox.WordWrap = true;
       this._newFeaturesTextBox.Name = "_newFeaturesTextBox";
       this._newFeaturesTextBox.ReadOnly = true;
       this._newFeaturesTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
