@@ -382,27 +382,35 @@ namespace CalDavSynchronizer.Implementation.Events
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
     }
 
-    private AddressEntry GetEventOrganizer (AppointmentItem source)
+    private AddressEntry GetEventOrganizerOrNull (AppointmentItem source)
     {
-      if (_outlookMajorVersion < 14)
+      try
       {
-        // Microsoft recommends this way for Outlook 2007. May still work with Outlook 2010+
-        using (var propertyAccessor = GenericComObjectWrapper.Create (source.PropertyAccessor))
+        if (_outlookMajorVersion < 14)
         {
-          string organizerEntryID = propertyAccessor.Inner.BinaryToString (propertyAccessor.Inner.GetProperty (PR_SENT_REPRESENTING_ENTRYID));
-          return Globals.ThisAddIn.Application.Session.GetAddressEntryFromID (organizerEntryID);
+          // Microsoft recommends this way for Outlook 2007. May still work with Outlook 2010+
+          using (var propertyAccessor = GenericComObjectWrapper.Create (source.PropertyAccessor))
+          {
+            string organizerEntryID = propertyAccessor.Inner.BinaryToString (propertyAccessor.Inner.GetProperty (PR_SENT_REPRESENTING_ENTRYID));
+            return Globals.ThisAddIn.Application.Session.GetAddressEntryFromID (organizerEntryID);
+          }
+        }
+        else
+        {
+          // NB this works with Outlook 2010 but crashes with Outlook 2007
+          return source.GetOrganizer();
         }
       }
-      else
+      catch (COMException ex)
       {
-        // NB this works with Outlook 2010 but crashes with Outlook 2007
-        return source.GetOrganizer();
+        s_logger.Error ("Can't get organizer of appointment", ex);
+        return null;
       }
     }
 
     private void MapOrganizer1To2 (AppointmentItem source, IEvent target)
     {
-      using (var organizerWrapper = GenericComObjectWrapper.Create (GetEventOrganizer (source)))
+      using (var organizerWrapper = GenericComObjectWrapper.Create (GetEventOrganizerOrNull (source)))
       {
         if (organizerWrapper.Inner != null && source.MeetingStatus != OlMeetingStatus.olNonMeeting)
         {
