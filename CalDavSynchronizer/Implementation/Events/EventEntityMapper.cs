@@ -1177,7 +1177,15 @@ namespace CalDavSynchronizer.Implementation.Events
       if (source.IsAllDay)
       {
         targetWrapper.Inner.Start = source.Start.Value;
-        targetWrapper.Inner.End = source.End.Value;
+        if (source.End == null || source.End.Value <= source.Start.Value)
+        {
+          s_logger.Error ("Invalid EndDate of appointment, setting to StartDate + 1 day.");
+          targetWrapper.Inner.End = source.Start.Value.AddDays (1);
+        }
+        else
+        {
+          targetWrapper.Inner.End = source.End.Value;
+        }
         targetWrapper.Inner.AllDayEvent = true;
       }
       else
@@ -1229,13 +1237,29 @@ namespace CalDavSynchronizer.Implementation.Events
             }
           }
 
-          if (source.DTEnd.IsUniversalTime)
+          try
           {
-            targetWrapper.Inner.EndUTC = source.DTEnd.Value;
+            if (source.DTEnd.IsUniversalTime)
+            {
+              targetWrapper.Inner.EndUTC = source.DTEnd.Value;
+            }
+            else
+            {
+              targetWrapper.Inner.EndInEndTimeZone = source.DTEnd.Value;
+            }
           }
-          else
+          catch (COMException ex)
           {
-            targetWrapper.Inner.EndInEndTimeZone = source.DTEnd.Value;
+            s_logger.Error ("Invalid EndTime of appointment, setting StartTime.", ex);
+            if (source.Start.HasTime)
+            {
+              targetWrapper.Inner.EndTimeZone = targetWrapper.Inner.StartTimeZone;
+              targetWrapper.Inner.End = targetWrapper.Inner.Start;
+            }
+            else
+            {
+              targetWrapper.Inner.EndUTC = source.Start.AddDays (1).UTC;
+            }
           }
         }
         else if (source.Start.HasTime)
