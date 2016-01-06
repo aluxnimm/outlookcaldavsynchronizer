@@ -1396,7 +1396,7 @@ namespace CalDavSynchronizer.Implementation.Events
           }
         }
 
-        if (source.Organizer != null)
+        if (source.Organizer != null && source.Organizer.Value != null)
         {
           string sourceOrganizerEmail = string.Empty;
 
@@ -1415,7 +1415,15 @@ namespace CalDavSynchronizer.Implementation.Events
 
             target.MeetingStatus = OlMeetingStatus.olMeetingReceived;
 
-            targetRecipient = target.Recipients.Add (source.Organizer.CommonName + "<" + sourceOrganizerEmail + ">");
+            if (!string.IsNullOrEmpty (source.Organizer.CommonName))
+            {
+              targetRecipient = target.Recipients.Add (source.Organizer.CommonName + "<" + sourceOrganizerEmail + ">");
+            }
+            else
+            {
+              targetRecipient = target.Recipients.Add (sourceOrganizerEmail);
+            }
+
             recipientsToDispose.Add (targetRecipient);
             targetRecipientsWhichShouldRemain.Add (targetRecipient);
             targetRecipient.Type = (int) OlMeetingRecipientType.olOrganizer;
@@ -1428,35 +1436,38 @@ namespace CalDavSynchronizer.Implementation.Events
               {
                 using (var organizerAddressEntry = GenericComObjectWrapper.Create (targetRecipient.AddressEntry))
                 {
-                  organizerID = organizerAddressEntry.Inner.ID;
+                  organizerID = organizerAddressEntry.Inner != null ? organizerAddressEntry.Inner.ID : null;
                 }
               }
 
-              var propertyTagsSentRepresenting = new object[] { PR_SENT_REPRESENTING_NAME, PR_SENT_REPRESENTING_EMAIL_ADDRESS, PR_SENT_REPRESENTING_ADDRTYPE, PR_SENT_REPRESENTING_ENTRYID };
-              var propertyTagsSender = new object[] { PR_SENDER_NAME, PR_SENDER_EMAIL_ADDRESS, PR_SENT_REPRESENTING_ADDRTYPE, PR_SENDER_ENTRYID };
-              object[] propertyValues;
-
-              if (source.Organizer.CommonName != null)
+              if (organizerID != null && oPa.Inner != null)
               {
-                propertyValues = new object[] { source.Organizer.CommonName, sourceOrganizerEmail, "SMTP", oPa.Inner.StringToBinary (organizerID) };
-              }
-              else
-              {
-                propertyValues = new object[] { sourceOrganizerEmail, sourceOrganizerEmail, "SMTP", oPa.Inner.StringToBinary (organizerID) };
-              }
+                var propertyTagsSentRepresenting = new object[] { PR_SENT_REPRESENTING_NAME, PR_SENT_REPRESENTING_EMAIL_ADDRESS, PR_SENT_REPRESENTING_ADDRTYPE, PR_SENT_REPRESENTING_ENTRYID };
+                var propertyTagsSender = new object[] { PR_SENDER_NAME, PR_SENDER_EMAIL_ADDRESS, PR_SENT_REPRESENTING_ADDRTYPE, PR_SENDER_ENTRYID };
+                object[] propertyValues;
 
-              try
-              {
-                oPa.Inner.SetProperties (propertyTagsSentRepresenting, propertyValues);
-
-                if (_outlookMajorVersion >= 15)
+                if (source.Organizer.CommonName != null)
                 {
-                  oPa.Inner.SetProperties (propertyTagsSender, propertyValues);
+                  propertyValues = new object[] { source.Organizer.CommonName, sourceOrganizerEmail, "SMTP", oPa.Inner.StringToBinary(organizerID) };
                 }
-              }
-              catch (COMException ex)
-              {
-                s_logger.Error ("Could not set property PR_SENDER_* for organizer", ex);
+                else
+                {
+                  propertyValues = new object[] { sourceOrganizerEmail, sourceOrganizerEmail, "SMTP", oPa.Inner.StringToBinary(organizerID) };
+                }
+
+                try
+                {
+                  oPa.Inner.SetProperties (propertyTagsSentRepresenting, propertyValues);
+
+                  if (_outlookMajorVersion >= 15)
+                  {
+                    oPa.Inner.SetProperties (propertyTagsSender, propertyValues);
+                  }
+                }
+                catch (COMException ex)
+                {
+                  s_logger.Error ("Could not set property PR_SENDER_* for organizer", ex);
+                }
               }
             }
           }
