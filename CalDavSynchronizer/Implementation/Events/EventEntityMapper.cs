@@ -420,7 +420,17 @@ namespace CalDavSynchronizer.Implementation.Events
           }
           else
           {
-            SetOrganizer (target, source.Organizer, source.GetPropertySafe (PR_SENDER_EMAIL_ADDRESS));
+            string organizerEmail = null;
+
+            try
+            {
+              organizerEmail = source.GetPropertySafe (PR_SENDER_EMAIL_ADDRESS);
+            }
+            catch (COMException ex)
+            {
+              s_logger.Error ("Can't access property of appointment", ex);
+            }
+            SetOrganizer (target, source.Organizer, organizerEmail);
           }
         }
       }
