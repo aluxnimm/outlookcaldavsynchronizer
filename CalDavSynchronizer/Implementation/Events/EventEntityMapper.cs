@@ -410,27 +410,30 @@ namespace CalDavSynchronizer.Implementation.Events
 
     private void MapOrganizer1To2 (AppointmentItem source, IEvent target)
     {
-      using (var organizerWrapper = GenericComObjectWrapper.Create (GetEventOrganizerOrNull (source)))
+      if (source.MeetingStatus != OlMeetingStatus.olNonMeeting)
       {
-        if (organizerWrapper.Inner != null && source.MeetingStatus != OlMeetingStatus.olNonMeeting)
+        using (var organizerWrapper = GenericComObjectWrapper.Create (GetEventOrganizerOrNull (source)))
         {
-          if (StringComparer.InvariantCultureIgnoreCase.Compare (organizerWrapper.Inner.Name, source.Organizer) == 0)
+          if (organizerWrapper.Inner != null)
           {
-            SetOrganizer (target, organizerWrapper.Inner, organizerWrapper.Inner.Address);
-          }
-          else
-          {
-            string organizerEmail = null;
+            if (StringComparer.InvariantCultureIgnoreCase.Compare (organizerWrapper.Inner.Name, source.Organizer) == 0)
+            {
+              SetOrganizer (target, organizerWrapper.Inner, organizerWrapper.Inner.Address);
+            }
+            else
+            {
+              string organizerEmail = null;
 
-            try
-            {
-              organizerEmail = source.GetPropertySafe (PR_SENDER_EMAIL_ADDRESS);
+              try
+              {
+                organizerEmail = source.GetPropertySafe (PR_SENDER_EMAIL_ADDRESS);
+              }
+              catch (COMException ex)
+              {
+                s_logger.Error ("Can't access property PR_SENDER_EMAIL_ADDRESS of appointment", ex);
+              }
+              SetOrganizer (target, source.Organizer, organizerEmail);
             }
-            catch (COMException ex)
-            {
-              s_logger.Error ("Can't access property of appointment", ex);
-            }
-            SetOrganizer (target, source.Organizer, organizerEmail);
           }
         }
       }
