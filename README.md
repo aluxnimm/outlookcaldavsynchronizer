@@ -73,6 +73,18 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 1.13.2 ####
+- Bug fixes
+	- Refactor SetOrganizer and GetMailUrl in EventEntityMapper to avoid Nullreference Exceptions and catch COMExceptions.
+	- Catch COMExceptions when accessing timezone of AppointmentItem and fallback to UTC in that case.
+	- Catch COMException when AppointmentItem of an Exception doesn't exist, ignore that exception then since we can't get the changes. This happens when the recurring event is not in the local Outlook timezone.
+	- Set WordWrap in newFeaturesTextBox for better readability of new features, feature request 24.
+	- Check for invalid DTEND of vevents and catch COMException when trying to set EndTime, use DTSTART in those cases.
+	- Catch COMException in GetEventOrganizer(), fixes issues with OL2007.
+	- Avoid possible NullReferenceExceptions in MapAttendeesandOrganizer2To1.
+	- Catch possible COMException in MapOrganizer1To2.
+	- Catch UriFormatException also in Map2To1 when the server sends invalid attendee email adresses, ticket #168.
+
 #### 1.13.0 ####
 - New features
 	- Support for GMX calendar, new events need to be created in UTC see section GMX in README.
