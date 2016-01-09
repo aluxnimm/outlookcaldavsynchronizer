@@ -47,6 +47,8 @@ namespace CalDavSynchronizer.Implementation.Tasks
     {
       var newTargetCalender = new iCalendar();
       var localIcalTimeZone = iCalTimeZone.FromSystemTimeZone (_localTimeZoneInfo, new DateTime (1970, 1, 1), true);
+     
+      DDayICalWorkaround.CalendarDataPreprocessor.FixTimeZoneDSTRRules (_localTimeZoneInfo, localIcalTimeZone);
       newTargetCalender.TimeZones.Add (localIcalTimeZone);
 
       var existingTargetTodo = existingTargetCalender.Todos.FirstOrDefault (e => e.RecurrenceID == null);
@@ -77,24 +79,22 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       if (source.Inner.StartDate != _dateNull)
       {
-        target.Start = new iCalDateTime (source.Inner.StartDate.Year, source.Inner.StartDate.Month, source.Inner.StartDate.Day, false);
+        target.Start = new iCalDateTime (source.Inner.StartDate.Year, source.Inner.StartDate.Month, source.Inner.StartDate.Day, true);
+        target.Start.SetTimeZone (localIcalTimeZone);
       }
 
       if (source.Inner.DueDate != _dateNull)
       {
-        if (source.Inner.DueDate == source.Inner.StartDate)
-        {
-          target.Duration = default(TimeSpan);
-        }
-        else
-        {
-          target.Due = new iCalDateTime (source.Inner.DueDate.Year, source.Inner.DueDate.Month, source.Inner.DueDate.Day, false);
-        }
+        target.Due = new iCalDateTime (source.Inner.DueDate.Year, source.Inner.DueDate.Month, source.Inner.DueDate.Day, 23, 59, 59);
+        target.Due.SetTimeZone (localIcalTimeZone);
+        // Workaround for a bug in DDay.iCal, according to RFC5545 DUE must not occur together with DURATION
+        target.Properties.Remove (new CalendarProperty ("DURATION"));
       }
 
       if (source.Inner.Complete && source.Inner.DateCompleted != _dateNull)
       {
-        target.Completed = new iCalDateTime (source.Inner.DateCompleted.ToUniversalTime()) { IsUniversalTime = true };
+        target.Completed = new iCalDateTime (source.Inner.DateCompleted.Year, source.Inner.DateCompleted.Month, source.Inner.DateCompleted.Day, true);
+        target.Completed.SetTimeZone (localIcalTimeZone);
       }
 
       target.PercentComplete = source.Inner.PercentComplete;
@@ -272,18 +272,39 @@ namespace CalDavSynchronizer.Implementation.Tasks
       target.Inner.Subject = source.Summary;
       target.Inner.Body = source.Description;
 
+      NodaTime.DateTimeZone localZone = NodaTime.DateTimeZoneProviders.Bcl.GetSystemDefault();
+
       if (source.Start != null)
-        target.Inner.StartDate = source.Start.Date;
+      {
+        if (source.Start.IsUniversalTime)
+        {
+          target.Inner.StartDate = NodaTime.Instant.FromDateTimeUtc (source.Start.Value).InZone (localZone).ToDateTimeUnspecified().Date;
+        }
+        else
+        {
+          target.Inner.StartDate = source.Start.Date;
+        }
+      }
+       
       if (source.Due != null)
       {
         if (source.Start == null || source.Start.Value <= source.Due.Value)
-          target.Inner.DueDate = source.Due.Date;
+        {
+          if (source.Due.IsUniversalTime)
+          {
+            target.Inner.DueDate = NodaTime.Instant.FromDateTimeUtc (source.Due.Value).InZone (localZone).ToDateTimeUnspecified().Date;
+          }
+          else
+          {
+            target.Inner.DueDate = source.Due.Date;
+          }
+        }
+          
       }
       if (source.Completed != null)
       {
         if (source.Completed.IsUniversalTime)
         {
-          NodaTime.DateTimeZone localZone = NodaTime.DateTimeZoneProviders.Bcl.GetSystemDefault();
           target.Inner.DateCompleted = NodaTime.Instant.FromDateTimeUtc (source.Completed.Value).InZone (localZone).ToDateTimeUnspecified().Date;
         }
         else
