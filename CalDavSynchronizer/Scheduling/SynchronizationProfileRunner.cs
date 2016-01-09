@@ -125,6 +125,12 @@ namespace CalDavSynchronizer.Scheduling
 
     private async Task RunAllPendingJobs ()
     {
+      if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+      {
+        s_logger.WarnFormat ("Skipping synchronization profile '{0}' (Id: '{1}') because network is not available", _profileName, _profileId);
+        return;
+      }
+
       // Monitor cannot be used here, since Monitor allows recursive enter for a thread 
       if (Interlocked.CompareExchange (ref _isRunning, 1, 0) == 0)
       {
