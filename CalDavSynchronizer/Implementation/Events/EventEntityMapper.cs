@@ -1054,6 +1054,7 @@ namespace CalDavSynchronizer.Implementation.Events
           attendee.ParticipationStatus = MapParticipation1To2 (recipient.MeetingResponseStatus);
           attendee.CommonName = recipient.Name;
           attendee.Role = MapAttendeeType1To2 ((OlMeetingRecipientType) recipient.Type);
+          if ((OlMeetingRecipientType)recipient.Type == OlMeetingRecipientType.olResource) attendee.Type = "RESOURCE";
           attendee.RSVP = true;
           target.Attendees.Add (attendee);
         }
@@ -1121,11 +1122,10 @@ namespace CalDavSynchronizer.Implementation.Events
         case OlMeetingRecipientType.olOptional:
           return "OPT-PARTICIPANT";
         case OlMeetingRecipientType.olRequired:
-          return "REQ-PARTICIPANT";
         case OlMeetingRecipientType.olResource:
-          return "CHAIR";
-        case OlMeetingRecipientType.olOrganizer:
           return "REQ-PARTICIPANT";
+        case OlMeetingRecipientType.olOrganizer:
+          return "CHAIR";
       }
 
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", recipientType));
@@ -1142,10 +1142,13 @@ namespace CalDavSynchronizer.Implementation.Events
         case "REQ-PARTICIPANT":
           return OlMeetingRecipientType.olRequired;
         case "CHAIR":
+          return OlMeetingRecipientType.olOrganizer;
+        case "X-LOCATION":
           return OlMeetingRecipientType.olResource;
+        // according to the RFC 5545 unknown values must be treated as REQ-PARTICIPANT
+        default:
+          return OlMeetingRecipientType.olRequired;
       }
-
-      throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", recipientType));
     }
 
 
@@ -1417,6 +1420,7 @@ namespace CalDavSynchronizer.Implementation.Events
             recipientsToDispose.Add (targetRecipient);
             targetRecipientsWhichShouldRemain.Add (targetRecipient);
             targetRecipient.Type = (int) MapAttendeeType2To1 (attendee.Role);
+            if (attendee.Type == "RESOURCE" || attendee.Type == "ROOM") targetRecipient.Type = (int) OlMeetingRecipientType.olResource;
             targetRecipient.Resolve();
           }
         }
