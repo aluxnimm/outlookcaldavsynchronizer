@@ -43,22 +43,26 @@
       this._categoryShortcutKeycomboBox = new System.Windows.Forms.ComboBox();
       this._calendarColorSetButton = new System.Windows.Forms.Button();
       this._calendarColorRefreshButton = new System.Windows.Forms.Button();
+      this._categoryColorPicker = new CalDavSynchronizer.Ui.ColorPicker();
       this._mapColorCheckBox = new System.Windows.Forms.CheckBox();
-      this.groupBox1 = new System.Windows.Forms.GroupBox();
+      this._schedulingGroupBox = new System.Windows.Forms.GroupBox();
       this._sendNoAppointmentsNotificationsCheckBox = new System.Windows.Forms.CheckBox();
       this._scheduleAgentClientCheckBox = new System.Windows.Forms.CheckBox();
       this._createInUTCCheckBox = new System.Windows.Forms.CheckBox();
       this._toolTip = new System.Windows.Forms.ToolTip(this.components);
-      this._categoryColorPicker = new CalDavSynchronizer.Ui.ColorPicker();
+      this._privacyGroupBox = new System.Windows.Forms.GroupBox();
+      this._mapClassConfidentialToSensitivityPrivateCheckBox = new System.Windows.Forms.CheckBox();
+      this._mapSensitivityPrivateToClassConfindentialCheckBox = new System.Windows.Forms.CheckBox();
       this._outlookGroupBox.SuspendLayout();
-      this.groupBox1.SuspendLayout();
+      this._schedulingGroupBox.SuspendLayout();
+      this._privacyGroupBox.SuspendLayout();
       this.SuspendLayout();
       // 
       // _cancelButton
       // 
       this._cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this._cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this._cancelButton.Location = new System.Drawing.Point(624, 413);
+      this._cancelButton.Location = new System.Drawing.Point(624, 471);
       this._cancelButton.Margin = new System.Windows.Forms.Padding(4);
       this._cancelButton.Name = "_cancelButton";
       this._cancelButton.Size = new System.Drawing.Size(100, 28);
@@ -69,7 +73,7 @@
       // _okButton
       // 
       this._okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._okButton.Location = new System.Drawing.Point(516, 413);
+      this._okButton.Location = new System.Drawing.Point(516, 471);
       this._okButton.Margin = new System.Windows.Forms.Padding(4);
       this._okButton.Name = "_okButton";
       this._okButton.Size = new System.Drawing.Size(100, 28);
@@ -155,7 +159,7 @@
       this._outlookGroupBox.Controls.Add(this._mapColorCheckBox);
       this._outlookGroupBox.Controls.Add(this.label2);
       this._outlookGroupBox.Controls.Add(this._categoryTextBox);
-      this._outlookGroupBox.Location = new System.Drawing.Point(19, 256);
+      this._outlookGroupBox.Location = new System.Drawing.Point(19, 314);
       this._outlookGroupBox.Margin = new System.Windows.Forms.Padding(4);
       this._outlookGroupBox.Name = "_outlookGroupBox";
       this._outlookGroupBox.Padding = new System.Windows.Forms.Padding(4);
@@ -209,6 +213,20 @@
       this._calendarColorRefreshButton.UseVisualStyleBackColor = false;
       this._calendarColorRefreshButton.Click += new System.EventHandler(this._calendarColorRefreshButton_Click);
       // 
+      // _categoryColorPicker
+      // 
+      this._categoryColorPicker.BackColor = System.Drawing.Color.White;
+      this._categoryColorPicker.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+      this._categoryColorPicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this._categoryColorPicker.FormattingEnabled = true;
+      this._categoryColorPicker.Location = new System.Drawing.Point(299, 65);
+      this._categoryColorPicker.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+      this._categoryColorPicker.Name = "_categoryColorPicker";
+      this._categoryColorPicker.SelectedItem = null;
+      this._categoryColorPicker.SelectedValue = Microsoft.Office.Interop.Outlook.OlCategoryColor.olCategoryColorNone;
+      this._categoryColorPicker.Size = new System.Drawing.Size(148, 23);
+      this._categoryColorPicker.TabIndex = 10;
+      // 
       // _mapColorCheckBox
       // 
       this._mapColorCheckBox.AutoSize = true;
@@ -221,21 +239,21 @@
       this._mapColorCheckBox.UseVisualStyleBackColor = true;
       this._mapColorCheckBox.CheckedChanged += new System.EventHandler(this._mapColorCheckBox_CheckedChanged);
       // 
-      // groupBox1
+      // _schedulingGroupBox
       // 
-      this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this._schedulingGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.groupBox1.Controls.Add(this._sendNoAppointmentsNotificationsCheckBox);
-      this.groupBox1.Controls.Add(this._scheduleAgentClientCheckBox);
-      this.groupBox1.Controls.Add(this._mapAttendeesCheckBox);
-      this.groupBox1.Location = new System.Drawing.Point(19, 132);
-      this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
-      this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-      this.groupBox1.Size = new System.Drawing.Size(708, 116);
-      this.groupBox1.TabIndex = 5;
-      this.groupBox1.TabStop = false;
-      this.groupBox1.Text = "Scheduling settings";
+      this._schedulingGroupBox.Controls.Add(this._sendNoAppointmentsNotificationsCheckBox);
+      this._schedulingGroupBox.Controls.Add(this._scheduleAgentClientCheckBox);
+      this._schedulingGroupBox.Controls.Add(this._mapAttendeesCheckBox);
+      this._schedulingGroupBox.Location = new System.Drawing.Point(19, 194);
+      this._schedulingGroupBox.Margin = new System.Windows.Forms.Padding(4);
+      this._schedulingGroupBox.Name = "_schedulingGroupBox";
+      this._schedulingGroupBox.Padding = new System.Windows.Forms.Padding(4);
+      this._schedulingGroupBox.Size = new System.Drawing.Size(708, 116);
+      this._schedulingGroupBox.TabIndex = 6;
+      this._schedulingGroupBox.TabStop = false;
+      this._schedulingGroupBox.Text = "Scheduling settings";
       // 
       // _sendNoAppointmentsNotificationsCheckBox
       // 
@@ -277,19 +295,42 @@
       this._toolTip.InitialDelay = 500;
       this._toolTip.ReshowDelay = 100;
       // 
-      // _categoryColorPicker
+      // _privacyGroupBox
       // 
-      this._categoryColorPicker.BackColor = System.Drawing.Color.White;
-      this._categoryColorPicker.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-      this._categoryColorPicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this._categoryColorPicker.FormattingEnabled = true;
-      this._categoryColorPicker.Location = new System.Drawing.Point(299, 65);
-      this._categoryColorPicker.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-      this._categoryColorPicker.Name = "_categoryColorPicker";
-      this._categoryColorPicker.SelectedItem = null;
-      this._categoryColorPicker.SelectedValue = Microsoft.Office.Interop.Outlook.OlCategoryColor.olCategoryColorNone;
-      this._categoryColorPicker.Size = new System.Drawing.Size(148, 23);
-      this._categoryColorPicker.TabIndex = 10;
+      this._privacyGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this._privacyGroupBox.Controls.Add(this._mapClassConfidentialToSensitivityPrivateCheckBox);
+      this._privacyGroupBox.Controls.Add(this._mapSensitivityPrivateToClassConfindentialCheckBox);
+      this._privacyGroupBox.Location = new System.Drawing.Point(19, 107);
+      this._privacyGroupBox.Margin = new System.Windows.Forms.Padding(4);
+      this._privacyGroupBox.Name = "_privacyGroupBox";
+      this._privacyGroupBox.Padding = new System.Windows.Forms.Padding(4);
+      this._privacyGroupBox.Size = new System.Drawing.Size(708, 79);
+      this._privacyGroupBox.TabIndex = 5;
+      this._privacyGroupBox.TabStop = false;
+      this._privacyGroupBox.Text = "Privacy settings";
+      // 
+      // _mapClassConfidentialToSensitivityPrivateCheckBox
+      // 
+      this._mapClassConfidentialToSensitivityPrivateCheckBox.AutoSize = true;
+      this._mapClassConfidentialToSensitivityPrivateCheckBox.Location = new System.Drawing.Point(12, 52);
+      this._mapClassConfidentialToSensitivityPrivateCheckBox.Margin = new System.Windows.Forms.Padding(4);
+      this._mapClassConfidentialToSensitivityPrivateCheckBox.Name = "_mapClassConfidentialToSensitivityPrivateCheckBox";
+      this._mapClassConfidentialToSensitivityPrivateCheckBox.Size = new System.Drawing.Size(528, 21);
+      this._mapClassConfidentialToSensitivityPrivateCheckBox.TabIndex = 5;
+      this._mapClassConfidentialToSensitivityPrivateCheckBox.Text = "Map DAV CLASS:CONFIDENTIAL to Outlook Private flag instead of Confidential";
+      this._mapClassConfidentialToSensitivityPrivateCheckBox.UseVisualStyleBackColor = true;
+      // 
+      // _mapSensitivityPrivateToClassConfindentialCheckBox
+      // 
+      this._mapSensitivityPrivateToClassConfindentialCheckBox.AutoSize = true;
+      this._mapSensitivityPrivateToClassConfindentialCheckBox.Location = new System.Drawing.Point(12, 23);
+      this._mapSensitivityPrivateToClassConfindentialCheckBox.Margin = new System.Windows.Forms.Padding(4);
+      this._mapSensitivityPrivateToClassConfindentialCheckBox.Name = "_mapSensitivityPrivateToClassConfindentialCheckBox";
+      this._mapSensitivityPrivateToClassConfindentialCheckBox.Size = new System.Drawing.Size(512, 21);
+      this._mapSensitivityPrivateToClassConfindentialCheckBox.TabIndex = 4;
+      this._mapSensitivityPrivateToClassConfindentialCheckBox.Text = "Map Outlook Private flag to DAV CLASS:CONFIDENTIAL instead of PRIVATE";
+      this._mapSensitivityPrivateToClassConfindentialCheckBox.UseVisualStyleBackColor = true;
       // 
       // EventMappingConfigurationForm
       // 
@@ -297,9 +338,10 @@
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this._cancelButton;
-      this.ClientSize = new System.Drawing.Size(740, 456);
+      this.ClientSize = new System.Drawing.Size(740, 514);
+      this.Controls.Add(this._privacyGroupBox);
       this.Controls.Add(this._createInUTCCheckBox);
-      this.Controls.Add(this.groupBox1);
+      this.Controls.Add(this._schedulingGroupBox);
       this.Controls.Add(this._outlookGroupBox);
       this.Controls.Add(this.label1);
       this.Controls.Add(this._mapReminderComboBox);
@@ -313,8 +355,10 @@
       this.Text = "Appointment Mapping";
       this._outlookGroupBox.ResumeLayout(false);
       this._outlookGroupBox.PerformLayout();
-      this.groupBox1.ResumeLayout(false);
-      this.groupBox1.PerformLayout();
+      this._schedulingGroupBox.ResumeLayout(false);
+      this._schedulingGroupBox.PerformLayout();
+      this._privacyGroupBox.ResumeLayout(false);
+      this._privacyGroupBox.PerformLayout();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -337,10 +381,13 @@
     private System.Windows.Forms.Button _calendarColorSetButton;
     private System.Windows.Forms.Label label3;
     private System.Windows.Forms.ComboBox _categoryShortcutKeycomboBox;
-    private System.Windows.Forms.GroupBox groupBox1;
+    private System.Windows.Forms.GroupBox _schedulingGroupBox;
     private System.Windows.Forms.CheckBox _sendNoAppointmentsNotificationsCheckBox;
     private System.Windows.Forms.CheckBox _scheduleAgentClientCheckBox;
     private System.Windows.Forms.CheckBox _createInUTCCheckBox;
     private System.Windows.Forms.ToolTip _toolTip;
+    private System.Windows.Forms.GroupBox _privacyGroupBox;
+    private System.Windows.Forms.CheckBox _mapClassConfidentialToSensitivityPrivateCheckBox;
+    private System.Windows.Forms.CheckBox _mapSensitivityPrivateToClassConfindentialCheckBox;
   }
 }

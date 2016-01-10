@@ -105,7 +105,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       target.Priority = CommonEntityMapper.MapPriority1To2 (source.Inner.Importance);
 
-      target.Class = CommonEntityMapper.MapPrivacy1To2 (source.Inner.Sensitivity);
+      target.Class = CommonEntityMapper.MapPrivacy1To2 (source.Inner.Sensitivity, false);
 
       MapReminder1To2 (source, target);
 
@@ -322,7 +322,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       target.Inner.Importance = CommonEntityMapper.MapPriority2To1 (source.Priority);
 
-      target.Inner.Sensitivity = CommonEntityMapper.MapPrivacy2To1 (source.Class);
+      target.Inner.Sensitivity = CommonEntityMapper.MapPrivacy2To1 (source.Class, false);
 
       target.Inner.Status = MapStatus2To1 (source.Status);
 

@@ -76,7 +76,7 @@ namespace CalDavSynchronizer.Implementation.Common
       return target;
     }
 
-    public static string MapPrivacy1To2 (OlSensitivity value)
+    public static string MapPrivacy1To2 (OlSensitivity value, bool mapPrivateToConfidential)
     {
       switch (value)
       {
@@ -85,14 +85,14 @@ namespace CalDavSynchronizer.Implementation.Common
         case OlSensitivity.olPersonal:
           return "PRIVATE"; // not sure
         case OlSensitivity.olPrivate:
-          return "PRIVATE";
+          return mapPrivateToConfidential ? "CONFIDENTIAL" : "PRIVATE";
         case OlSensitivity.olConfidential:
           return "CONFIDENTIAL";
       }
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
     }
 
-    public static OlSensitivity MapPrivacy2To1 (string value)
+    public static OlSensitivity MapPrivacy2To1 (string value, bool mapConfidentialToPrivate)
     {
       switch (value)
       {
@@ -101,7 +101,7 @@ namespace CalDavSynchronizer.Implementation.Common
         case "PRIVATE":
           return OlSensitivity.olPrivate;
         case "CONFIDENTIAL":
-          return OlSensitivity.olConfidential;
+          return mapConfidentialToPrivate ? OlSensitivity.olPrivate : OlSensitivity.olConfidential;
       }
       return OlSensitivity.olNormal;
     }

@@ -92,6 +92,8 @@ namespace CalDavSynchronizer.Ui
         return new EventMappingConfiguration
         {
           MapAttendees = _mapAttendeesCheckBox.Checked,
+          MapSensitivityPrivateToClassConfidential = _mapSensitivityPrivateToClassConfindentialCheckBox.Checked,
+          MapClassConfidentialToSensitivityPrivate = _mapClassConfidentialToSensitivityPrivateCheckBox.Checked,
           ScheduleAgentClient = _scheduleAgentClientCheckBox.Checked,
           SendNoAppointmentNotifications = _sendNoAppointmentsNotificationsCheckBox.Checked,
           MapBody = _mapBodyCheckBox.Checked,
@@ -106,6 +108,8 @@ namespace CalDavSynchronizer.Ui
       set
       {
         _mapAttendeesCheckBox.Checked = value.MapAttendees;
+        _mapSensitivityPrivateToClassConfindentialCheckBox.Checked = value.MapSensitivityPrivateToClassConfidential;
+        _mapClassConfidentialToSensitivityPrivateCheckBox.Checked = value.MapClassConfidentialToSensitivityPrivate;
         _scheduleAgentClientCheckBox.Checked = value.ScheduleAgentClient;
         _sendNoAppointmentsNotificationsCheckBox.Checked = value.SendNoAppointmentNotifications;
         _mapBodyCheckBox.Checked = value.MapBody;

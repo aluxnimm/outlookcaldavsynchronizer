@@ -27,6 +27,8 @@ namespace CalDavSynchronizer.Contracts
   public class EventMappingConfiguration : MappingConfigurationBase
   {
     public ReminderMapping MapReminder { get; set; }
+    public bool MapSensitivityPrivateToClassConfidential { get; set; }
+    public bool MapClassConfidentialToSensitivityPrivate { get; set; }
     public bool MapAttendees { get; set; }
     public bool ScheduleAgentClient { get; set; }
     public bool SendNoAppointmentNotifications { get; set; }
@@ -46,6 +48,8 @@ namespace CalDavSynchronizer.Contracts
     public EventMappingConfiguration ()
     {
       MapReminder = ReminderMapping.JustUpcoming;
+      MapSensitivityPrivateToClassConfidential = false;
+      MapClassConfidentialToSensitivityPrivate = false;
       MapAttendees = true;
       ScheduleAgentClient = true;
       SendNoAppointmentNotifications = false;

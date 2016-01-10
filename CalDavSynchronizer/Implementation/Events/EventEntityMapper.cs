@@ -188,7 +188,7 @@ namespace CalDavSynchronizer.Implementation.Events
         MapRecurrance1To2 (source, target, startIcalTimeZone, endIcalTimeZone);
 
       
-      target.Class = CommonEntityMapper.MapPrivacy1To2 (source.Sensitivity);
+      target.Class = CommonEntityMapper.MapPrivacy1To2 (source.Sensitivity, _configuration.MapSensitivityPrivateToClassConfidential);
 
       MapReminder1To2 (source, target);
 
@@ -1314,7 +1314,7 @@ namespace CalDavSynchronizer.Implementation.Events
         MapRecurrance2To1 (source, recurrenceExceptionsOrNull, targetWrapper);
 
       if (!isRecurrenceException)
-        targetWrapper.Inner.Sensitivity = CommonEntityMapper.MapPrivacy2To1 (source.Class);
+        targetWrapper.Inner.Sensitivity = CommonEntityMapper.MapPrivacy2To1 (source.Class, _configuration.MapClassConfidentialToSensitivityPrivate);
 
     
       MapReminder2To1 (source, targetWrapper.Inner);
