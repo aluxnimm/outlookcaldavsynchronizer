@@ -127,7 +127,7 @@ namespace CalDavSynchronizer
         synchronizerFactory,
         _filteringSynchronizationReportRepository,
         EnsureSynchronizationContext);
-      _scheduler.SetOptions (_optionsDataAccess.LoadOptions());
+      _scheduler.SetOptions (_optionsDataAccess.LoadOptions(), generalOptions.CheckIfOnline);
 
       _updateChecker = new UpdateChecker (new AvailableVersionService(), () => _generalOptionsDataAccess.IgnoreUpdatesTilVersion);
       _updateChecker.NewerVersionFound += UpdateChecker_NewerVersionFound;
@@ -255,8 +255,7 @@ namespace CalDavSynchronizer
             generalOptions.DisplayAllProfilesAsGeneric))
         {
           _optionsDataAccess.SaveOptions (newOptions);
-
-          _scheduler.SetOptions (newOptions);
+          _scheduler.SetOptions (newOptions, generalOptions.CheckIfOnline);
           DeleteEntityChachesForChangedProfiles (options, newOptions);
 
           var changedOptions = CreateChangePairs (options, newOptions);
@@ -406,6 +405,7 @@ namespace CalDavSynchronizer
 
             _generalOptionsDataAccess.SaveOptions (newOptions);
             UpdateGeneralOptionDependencies (newOptions);
+            _scheduler.SetOptions (_optionsDataAccess.LoadOptions(), newOptions.CheckIfOnline);
           }
         }
       }

@@ -30,6 +30,7 @@ namespace CalDavSynchronizer.DataAccess
   public class GeneralOptionsDataAccess : IGeneralOptionsDataAccess
   {
     private const string s_shouldCheckForNewerVersionsValueName = "CheckForNewerVersions";
+    private const string s_checkIfOnline = "CheckIfOnline";
     private const string s_storeAppDataInRoamingFolder = "StoreAppDataInRoamingFolder";
     private const string s_disableCertificateValidation = "DisableCertificateValidation";
     private const string s_enableTls12 = "EnableTls12";
@@ -55,6 +56,7 @@ namespace CalDavSynchronizer.DataAccess
         return new GeneralOptions()
                {
                    ShouldCheckForNewerVersions = (int) (key.GetValue (s_shouldCheckForNewerVersionsValueName) ?? 1) != 0,
+                   CheckIfOnline = (int) (key.GetValue (s_checkIfOnline) ?? 1) != 0,
                    StoreAppDataInRoamingFolder = (int) (key.GetValue (s_storeAppDataInRoamingFolder) ?? 0) != 0,
                    DisableCertificateValidation = (int) (key.GetValue (s_disableCertificateValidation) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"] ?? bool.FalseString))) != 0,
                    EnableTls12 = (int) (key.GetValue (s_enableTls12) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"] ?? bool.TrueString))) != 0,
@@ -76,6 +78,7 @@ namespace CalDavSynchronizer.DataAccess
       using (var key = OpenOptionsKey())
       {
         key.SetValue (s_shouldCheckForNewerVersionsValueName, options.ShouldCheckForNewerVersions ? 1 : 0);
+        key.SetValue (s_checkIfOnline, options.CheckIfOnline ? 1 : 0);
         key.SetValue (s_storeAppDataInRoamingFolder, options.StoreAppDataInRoamingFolder ? 1 : 0);
         key.SetValue (s_disableCertificateValidation, options.DisableCertificateValidation ? 1 : 0);
         key.SetValue (s_enableTls12, options.EnableTls12 ? 1 : 0);
