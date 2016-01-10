@@ -359,8 +359,10 @@ namespace CalDavSynchronizer.Implementation.Events
           return OlResponseStatus.olResponseNotResponded;
         case null:
           return OlResponseStatus.olResponseNone;
+        // according to the RFC 5545 not recognized values must be treated the same way as NEEDS-ACTION
+        default:
+          return OlResponseStatus.olResponseNotResponded;
       }
-      throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
     }
 
 
