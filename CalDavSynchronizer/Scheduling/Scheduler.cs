@@ -75,7 +75,7 @@ namespace CalDavSynchronizer.Scheduling
       }
     }
 
-    public void SetOptions (Options[] options)
+    public void SetOptions (Options[] options, bool checkIfOnline)
     {
       Dictionary<Guid, SynchronizationProfileRunner> workersById = new Dictionary<Guid, SynchronizationProfileRunner>();
       foreach (var option in options)
@@ -89,7 +89,7 @@ namespace CalDavSynchronizer.Scheduling
                 _synchronizerFactory,
                 _synchronizationReportRepository);
           }
-          profileRunner.UpdateOptions (option);
+          profileRunner.UpdateOptions (option, checkIfOnline);
           workersById.Add (option.Id, profileRunner);
         }
         catch (Exception x)

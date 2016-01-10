@@ -103,6 +103,7 @@ namespace CalDavSynchronizer.Ui
         return new GeneralOptions
                {
                    ShouldCheckForNewerVersions = _checkForNewerVersionsCheckBox.Checked,
+                   CheckIfOnline = _checkIfOnlineCheckBox.Checked,
                    StoreAppDataInRoamingFolder = _storeDataInRoamingFolderCheckBox.Checked,
                    DisableCertificateValidation = _disableCertificateValidationCheckbox.Checked,
                    EnableTls12 = _enableTls12Checkbox.Checked,
@@ -120,6 +121,7 @@ namespace CalDavSynchronizer.Ui
       set
       {
         _checkForNewerVersionsCheckBox.Checked = value.ShouldCheckForNewerVersions;
+        _checkIfOnlineCheckBox.Checked = value.CheckIfOnline;
         _storeDataInRoamingFolderCheckBox.Checked = value.StoreAppDataInRoamingFolder;
         _disableCertificateValidationCheckbox.Checked = value.DisableCertificateValidation;
         _enableTls12Checkbox.Checked = value.EnableTls12;

@@ -52,6 +52,7 @@ namespace CalDavSynchronizer.Scheduling
     private readonly ISynchronizerFactory _synchronizerFactory;
     private int _isRunning = 0;
     private bool _changeTriggeredSynchronizationEnabled;
+    private bool _checkIfOnline;
 
     private volatile bool _fullSyncPending = false;
     // There is no threadsafe Datastructure required, since there will be no concurrent threads
@@ -69,7 +70,7 @@ namespace CalDavSynchronizer.Scheduling
       _lastRun = DateTime.MinValue;
     }
 
-    public void UpdateOptions (Options options)
+    public void UpdateOptions (Options options, bool checkIfOnline)
     {
       _pendingOutlookItems.Clear();
       _fullSyncPending = false;
@@ -80,6 +81,7 @@ namespace CalDavSynchronizer.Scheduling
       _interval = TimeSpan.FromMinutes (options.SynchronizationIntervalInMinutes);
       _inactive = options.Inactive;
       _changeTriggeredSynchronizationEnabled = options.EnableChangeTriggeredSynchronization;
+      _checkIfOnline = checkIfOnline;
     }
 
     public async Task RunAndRescheduleNoThrow (bool runNow)
@@ -123,9 +125,28 @@ namespace CalDavSynchronizer.Scheduling
       }
     }
 
+    private bool IsOnline() 
+    {
+      if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+      {
+        try
+        {
+          System.Net.IPHostEntry dummy = System.Net.Dns.GetHostEntry ("www.google.com");
+          return true;
+        }
+        catch (System.Net.Sockets.SocketException)
+        {
+          return false;
+        }
+      }
+      else
+        return false;
+    }
+
     private async Task RunAllPendingJobs ()
     {
-      if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+ 
+      if (_checkIfOnline && !IsOnline())
       {
         s_logger.WarnFormat ("Skipping synchronization profile '{0}' (Id: '{1}') because network is not available", _profileName, _profileId);
         return;

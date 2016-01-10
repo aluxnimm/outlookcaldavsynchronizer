@@ -53,6 +53,7 @@
       this._clearLogButton = new System.Windows.Forms.Button();
       this._logLevelComboBox = new System.Windows.Forms.ComboBox();
       this.label6 = new System.Windows.Forms.Label();
+      this._checkIfOnlineCheckBox = new System.Windows.Forms.CheckBox();
       this.groupBox1.SuspendLayout();
       this.groupBox2.SuspendLayout();
       this.groupBox3.SuspendLayout();
@@ -62,7 +63,7 @@
       // 
       this._cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this._cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this._cancelButton.Location = new System.Drawing.Point(393, 518);
+      this._cancelButton.Location = new System.Drawing.Point(393, 551);
       this._cancelButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._cancelButton.Name = "_cancelButton";
       this._cancelButton.Size = new System.Drawing.Size(100, 28);
@@ -73,7 +74,7 @@
       // _okButton
       // 
       this._okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._okButton.Location = new System.Drawing.Point(285, 518);
+      this._okButton.Location = new System.Drawing.Point(285, 551);
       this._okButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._okButton.Name = "_okButton";
       this._okButton.Size = new System.Drawing.Size(100, 28);
@@ -96,11 +97,11 @@
       // _storeDataInRoamingFolderCheckBox
       // 
       this._storeDataInRoamingFolderCheckBox.AutoSize = true;
-      this._storeDataInRoamingFolderCheckBox.Location = new System.Drawing.Point(16, 43);
+      this._storeDataInRoamingFolderCheckBox.Location = new System.Drawing.Point(16, 65);
       this._storeDataInRoamingFolderCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._storeDataInRoamingFolderCheckBox.Name = "_storeDataInRoamingFolderCheckBox";
       this._storeDataInRoamingFolderCheckBox.Size = new System.Drawing.Size(206, 21);
-      this._storeDataInRoamingFolderCheckBox.TabIndex = 4;
+      this._storeDataInRoamingFolderCheckBox.TabIndex = 5;
       this._storeDataInRoamingFolderCheckBox.Text = "Store data in roaming folder";
       this._toolTip.SetToolTip(this._storeDataInRoamingFolderCheckBox, "Changing this option requires a restart of Outlook.");
       this._storeDataInRoamingFolderCheckBox.UseVisualStyleBackColor = true;
@@ -118,7 +119,7 @@
       this._enableTls12Checkbox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._enableTls12Checkbox.Name = "_enableTls12Checkbox";
       this._enableTls12Checkbox.Size = new System.Drawing.Size(120, 21);
-      this._enableTls12Checkbox.TabIndex = 9;
+      this._enableTls12Checkbox.TabIndex = 10;
       this._enableTls12Checkbox.Text = "Enable TLS12";
       this._toolTip.SetToolTip(this._enableTls12Checkbox, "Disabling is a major security risk, not recommended!");
       this._enableTls12Checkbox.UseVisualStyleBackColor = true;
@@ -130,7 +131,7 @@
       this._disableCertificateValidationCheckbox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._disableCertificateValidationCheckbox.Name = "_disableCertificateValidationCheckbox";
       this._disableCertificateValidationCheckbox.Size = new System.Drawing.Size(210, 21);
-      this._disableCertificateValidationCheckbox.TabIndex = 8;
+      this._disableCertificateValidationCheckbox.TabIndex = 9;
       this._disableCertificateValidationCheckbox.Text = "Disable Certificate Validation";
       this._toolTip.SetToolTip(this._disableCertificateValidationCheckbox, "Major security risk, not recommended!");
       this._disableCertificateValidationCheckbox.UseVisualStyleBackColor = true;
@@ -142,7 +143,7 @@
       this._enableSsl3Checkbox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._enableSsl3Checkbox.Name = "_enableSsl3Checkbox";
       this._enableSsl3Checkbox.Size = new System.Drawing.Size(112, 21);
-      this._enableSsl3Checkbox.TabIndex = 10;
+      this._enableSsl3Checkbox.TabIndex = 11;
       this._enableSsl3Checkbox.Text = "Enable SSL3";
       this._toolTip.SetToolTip(this._enableSsl3Checkbox, "Major security risk, not recommended!");
       this._enableSsl3Checkbox.UseVisualStyleBackColor = true;
@@ -154,12 +155,12 @@
       this.groupBox1.Controls.Add(this._disableCertificateValidationCheckbox);
       this.groupBox1.Controls.Add(this._enableSsl3Checkbox);
       this.groupBox1.Controls.Add(this._enableTls12Checkbox);
-      this.groupBox1.Location = new System.Drawing.Point(4, 144);
+      this.groupBox1.Location = new System.Drawing.Point(4, 174);
       this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this.groupBox1.Name = "groupBox1";
       this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this.groupBox1.Size = new System.Drawing.Size(500, 114);
-      this.groupBox1.TabIndex = 7;
+      this.groupBox1.TabIndex = 8;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "SSL/TLS settings";
       this._toolTip.SetToolTip(this.groupBox1, "Changing these options can be a major security risk, not recommended!");
@@ -167,11 +168,11 @@
       // _fixInvalidSettingsCheckBox
       // 
       this._fixInvalidSettingsCheckBox.AutoSize = true;
-      this._fixInvalidSettingsCheckBox.Location = new System.Drawing.Point(16, 71);
+      this._fixInvalidSettingsCheckBox.Location = new System.Drawing.Point(16, 90);
       this._fixInvalidSettingsCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._fixInvalidSettingsCheckBox.Name = "_fixInvalidSettingsCheckBox";
       this._fixInvalidSettingsCheckBox.Size = new System.Drawing.Size(144, 21);
-      this._fixInvalidSettingsCheckBox.TabIndex = 5;
+      this._fixInvalidSettingsCheckBox.TabIndex = 6;
       this._fixInvalidSettingsCheckBox.Text = "Fix invalid settings";
       this._toolTip.SetToolTip(this._fixInvalidSettingsCheckBox, resources.GetString("_fixInvalidSettingsCheckBox.ToolTip"));
       this._fixInvalidSettingsCheckBox.UseVisualStyleBackColor = true;
@@ -179,11 +180,11 @@
       // _displayAllProfilesAsGenericCheckBox
       // 
       this._displayAllProfilesAsGenericCheckBox.AutoSize = true;
-      this._displayAllProfilesAsGenericCheckBox.Location = new System.Drawing.Point(16, 100);
+      this._displayAllProfilesAsGenericCheckBox.Location = new System.Drawing.Point(16, 115);
       this._displayAllProfilesAsGenericCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._displayAllProfilesAsGenericCheckBox.Name = "_displayAllProfilesAsGenericCheckBox";
       this._displayAllProfilesAsGenericCheckBox.Size = new System.Drawing.Size(264, 21);
-      this._displayAllProfilesAsGenericCheckBox.TabIndex = 6;
+      this._displayAllProfilesAsGenericCheckBox.TabIndex = 7;
       this._displayAllProfilesAsGenericCheckBox.Text = "Display all profiles as generic profiles";
       this._displayAllProfilesAsGenericCheckBox.UseVisualStyleBackColor = true;
       // 
@@ -197,12 +198,12 @@
       this.groupBox2.Controls.Add(this._reportLogModeComboBox);
       this.groupBox2.Controls.Add(this.label2);
       this.groupBox2.Controls.Add(this.label1);
-      this.groupBox2.Location = new System.Drawing.Point(4, 265);
+      this.groupBox2.Location = new System.Drawing.Point(4, 294);
       this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
       this.groupBox2.Name = "groupBox2";
       this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
       this.groupBox2.Size = new System.Drawing.Size(500, 135);
-      this.groupBox2.TabIndex = 8;
+      this.groupBox2.TabIndex = 9;
       this.groupBox2.TabStop = false;
       this.groupBox2.Text = "Synchronization reports";
       // 
@@ -213,7 +214,7 @@
       this._maxReportAgeInDays.Margin = new System.Windows.Forms.Padding(4);
       this._maxReportAgeInDays.Name = "_maxReportAgeInDays";
       this._maxReportAgeInDays.Size = new System.Drawing.Size(131, 22);
-      this._maxReportAgeInDays.TabIndex = 5;
+      this._maxReportAgeInDays.TabIndex = 6;
       // 
       // label3
       // 
@@ -277,12 +278,12 @@
       this.groupBox3.Controls.Add(this._clearLogButton);
       this.groupBox3.Controls.Add(this._logLevelComboBox);
       this.groupBox3.Controls.Add(this.label6);
-      this.groupBox3.Location = new System.Drawing.Point(4, 404);
+      this.groupBox3.Location = new System.Drawing.Point(4, 437);
       this.groupBox3.Margin = new System.Windows.Forms.Padding(4);
       this.groupBox3.Name = "groupBox3";
       this.groupBox3.Padding = new System.Windows.Forms.Padding(4);
       this.groupBox3.Size = new System.Drawing.Size(500, 108);
-      this.groupBox3.TabIndex = 9;
+      this.groupBox3.TabIndex = 10;
       this.groupBox3.TabStop = false;
       this.groupBox3.Text = "General Logging";
       // 
@@ -332,13 +333,28 @@
       this.label6.TabIndex = 0;
       this.label6.Text = "Log Level:";
       // 
+      // _checkIfOnlineCheckBox
+      // 
+      this._checkIfOnlineCheckBox.AutoSize = true;
+      this._checkIfOnlineCheckBox.Location = new System.Drawing.Point(16, 40);
+      this._checkIfOnlineCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+      this._checkIfOnlineCheckBox.Name = "_checkIfOnlineCheckBox";
+      this._checkIfOnlineCheckBox.Size = new System.Drawing.Size(297, 21);
+      this._checkIfOnlineCheckBox.TabIndex = 4;
+      this._checkIfOnlineCheckBox.Text = "Check Internet connection before sync run";
+      this._toolTip.SetToolTip(this._checkIfOnlineCheckBox, "Checks if a network interface is up\r\nand if www.google.com can be resolved.\r\nShou" +
+        "ld avoid error reports when network is not available after\r\ncoming back from hib" +
+        "ernate for example.");
+      this._checkIfOnlineCheckBox.UseVisualStyleBackColor = true;
+      // 
       // GeneralOptionsForm
       // 
       this.AcceptButton = this._okButton;
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this._cancelButton;
-      this.ClientSize = new System.Drawing.Size(503, 552);
+      this.ClientSize = new System.Drawing.Size(503, 585);
+      this.Controls.Add(this._checkIfOnlineCheckBox);
       this.Controls.Add(this.groupBox3);
       this.Controls.Add(this.groupBox2);
       this.Controls.Add(this._displayAllProfilesAsGenericCheckBox);
@@ -389,5 +405,6 @@
     private System.Windows.Forms.Button _clearLogButton;
     private System.Windows.Forms.ComboBox _logLevelComboBox;
     private System.Windows.Forms.Label label6;
+    private System.Windows.Forms.CheckBox _checkIfOnlineCheckBox;
   }
 }
