@@ -405,6 +405,7 @@ namespace CalDavSynchronizer
 
             _generalOptionsDataAccess.SaveOptions (newOptions);
             UpdateGeneralOptionDependencies (newOptions);
+            _scheduler.SetOptions (_optionsDataAccess.LoadOptions(), newOptions.CheckIfOnline);
           }
         }
       }

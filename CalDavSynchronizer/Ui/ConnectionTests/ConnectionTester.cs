@@ -22,6 +22,24 @@ namespace CalDavSynchronizer.Ui.ConnectionTests
 {
   public static class ConnectionTester
   {
+    public static bool IsOnline()
+    {
+      if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+      {
+        try
+        {
+          System.Net.IPHostEntry dummy = System.Net.Dns.GetHostEntry ("www.google.com");
+          return true;
+        }
+        catch (System.Net.Sockets.SocketException)
+        {
+          return false;
+        }
+      }
+      else
+        return false;
+    }
+
     public static async Task<TestResult> TestConnection (Uri url, IWebDavClient webDavClient, ResourceType supposedRessourceType)
     {
       var calDavDataAccess = new CalDavDataAccess (url, webDavClient);

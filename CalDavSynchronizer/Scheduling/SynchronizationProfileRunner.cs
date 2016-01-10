@@ -25,6 +25,7 @@ using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Diagnostics;
 using CalDavSynchronizer.Synchronization;
 using CalDavSynchronizer.Utilities;
+using CalDavSynchronizer.Ui.ConnectionTests;
 using GenSync.Logging;
 using GenSync.Synchronization;
 using log4net;
@@ -125,28 +126,10 @@ namespace CalDavSynchronizer.Scheduling
       }
     }
 
-    private bool IsOnline() 
-    {
-      if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
-      {
-        try
-        {
-          System.Net.IPHostEntry dummy = System.Net.Dns.GetHostEntry ("www.google.com");
-          return true;
-        }
-        catch (System.Net.Sockets.SocketException)
-        {
-          return false;
-        }
-      }
-      else
-        return false;
-    }
-
     private async Task RunAllPendingJobs ()
     {
  
-      if (_checkIfOnline && !IsOnline())
+      if (_checkIfOnline && !ConnectionTester.IsOnline())
       {
         s_logger.WarnFormat ("Skipping synchronization profile '{0}' (Id: '{1}') because network is not available", _profileName, _profileId);
         return;
