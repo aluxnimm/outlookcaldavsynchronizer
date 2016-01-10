@@ -378,10 +378,10 @@ namespace CalDavSynchronizer.Implementation.Events
           return OlMeetingResponse.olMeetingTentative;
         case "NEEDS-ACTION":
         case "DELEGATED":
-        case null:
+        // according to the RFC 5545 not recognized values must be treated the same way as NEEDS-ACTION
+        default:
           return null;
       }
-      throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
     }
 
     private AddressEntry GetEventOrganizerOrNull (AppointmentItem source)
