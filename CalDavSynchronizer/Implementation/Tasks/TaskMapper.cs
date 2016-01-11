@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Common;
 using DDay.iCal;
@@ -396,7 +397,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
           var targetRecurrencePattern = targetRecurrencePatternWrapper.Inner;
           if (source.RecurrenceRules.Count > 1)
           {
-            s_logger.WarnFormat ("Task '{0}' contains more than one recurrence rule. Since outlook supports only one rule, all except the first one will be ignored.", source.Url);
+            s_logger.WarnFormat ("Task '{0}' contains more than one recurrence rule. Since outlook supports only one rule, all except the first one will be ignored.", source.UID);
           }
           var sourceRecurrencePattern = source.RecurrenceRules[0];
 
@@ -422,7 +423,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
                 targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursMonthNth;
                 if (sourceRecurrencePattern.ByWeekNo.Count > 1)
                 {
-                  s_logger.WarnFormat ("Task '{0}' contains more than one week in a monthly recurrence rule. Since outlook supports only one week, all except the first one will be ignored.", source.Url);
+                  s_logger.WarnFormat ("Task '{0}' contains more than one week in a monthly recurrence rule. Since outlook supports only one week, all except the first one will be ignored.", source.UID);
                 }
                 else if (sourceRecurrencePattern.ByWeekNo.Count > 0)
                 {
@@ -443,7 +444,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
                 targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursMonthly;
                 if (sourceRecurrencePattern.ByMonthDay.Count > 1)
                 {
-                  s_logger.WarnFormat ("Task '{0}' contains more than one days in a monthly recurrence rule. Since outlook supports only one day, all except the first one will be ignored.", source.Url);
+                  s_logger.WarnFormat ("Task '{0}' contains more than one days in a monthly recurrence rule. Since outlook supports only one day, all except the first one will be ignored.", source.UID);
                 }
                 targetRecurrencePattern.DayOfMonth = sourceRecurrencePattern.ByMonthDay[0];
               }
@@ -458,13 +459,13 @@ namespace CalDavSynchronizer.Implementation.Tasks
                 targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursYearNth;
                 if (sourceRecurrencePattern.ByMonth.Count > 1)
                 {
-                  s_logger.WarnFormat ("Task '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.Url);
+                  s_logger.WarnFormat ("Task '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.UID);
                 }
                 targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
 
                 if (sourceRecurrencePattern.ByWeekNo.Count > 1)
                 {
-                  s_logger.WarnFormat ("Task '{0}' contains more than one week in a yearly recurrence rule. Since outlook supports only one week, all except the first one will be ignored.", source.Url);
+                  s_logger.WarnFormat ("Task '{0}' contains more than one week in a yearly recurrence rule. Since outlook supports only one week, all except the first one will be ignored.", source.UID);
                 }
                 targetRecurrencePattern.Instance = sourceRecurrencePattern.ByWeekNo[0];
 
@@ -475,7 +476,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
                 targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursYearly;
                 if (sourceRecurrencePattern.ByMonth.Count > 1)
                 {
-                  s_logger.WarnFormat ("Task '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.Url);
+                  s_logger.WarnFormat ("Task '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.UID);
                 }
                 if (sourceRecurrencePattern.ByMonth[0] != targetRecurrencePattern.MonthOfYear)
                 {
@@ -484,7 +485,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
                 if (sourceRecurrencePattern.ByMonthDay.Count > 1)
                 {
-                  s_logger.WarnFormat ("Task '{0}' contains more than one days in a monthly recurrence rule. Since outlook supports only one day, all except the first one will be ignored.", source.Url);
+                  s_logger.WarnFormat ("Task '{0}' contains more than one days in a monthly recurrence rule. Since outlook supports only one day, all except the first one will be ignored.", source.UID);
                 }
                 if (sourceRecurrencePattern.ByMonthDay[0] != targetRecurrencePattern.DayOfMonth)
                 {
@@ -496,7 +497,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
                 targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursYearNth;
                 if (sourceRecurrencePattern.ByMonth.Count > 1)
                 {
-                  s_logger.WarnFormat ("Task '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.Url);
+                  s_logger.WarnFormat ("Task '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.UID);
                 }
                 targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
 
@@ -513,13 +514,20 @@ namespace CalDavSynchronizer.Implementation.Tasks
               }
               break;
             default:
-              s_logger.WarnFormat ("Recurring task '{0}' contains the Frequency '{1}', which is not supported by outlook. Ignoring recurrence rule.", source.Url, sourceRecurrencePattern.Frequency);
+              s_logger.WarnFormat ("Recurring task '{0}' contains the Frequency '{1}', which is not supported by outlook. Ignoring recurrence rule.", source.UID, sourceRecurrencePattern.Frequency);
               targetWrapper.Inner.ClearRecurrencePattern();
               break;
           }
 
-          targetRecurrencePattern.Interval = (targetRecurrencePattern.RecurrenceType == OlRecurrenceType.olRecursYearly ||
-                                              targetRecurrencePattern.RecurrenceType == OlRecurrenceType.olRecursYearNth) ? sourceRecurrencePattern.Interval * 12 : sourceRecurrencePattern.Interval;
+          try
+          {
+            targetRecurrencePattern.Interval = (targetRecurrencePattern.RecurrenceType == OlRecurrenceType.olRecursYearly ||
+                                                targetRecurrencePattern.RecurrenceType == OlRecurrenceType.olRecursYearNth) ? sourceRecurrencePattern.Interval * 12 : sourceRecurrencePattern.Interval;
+          }
+          catch (COMException ex)
+          {
+            s_logger.Warn (string.Format ("Recurring task '{0}' contains the Interval '{1}', which is not supported by outlook. Ignoring interval.", source.UID, sourceRecurrencePattern.Interval), ex);
+          }
 
           if (sourceRecurrencePattern.Count >= 0)
             targetRecurrencePattern.Occurrences = sourceRecurrencePattern.Count;
