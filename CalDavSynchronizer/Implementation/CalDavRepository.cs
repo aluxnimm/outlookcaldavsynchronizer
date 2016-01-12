@@ -108,7 +108,7 @@ namespace CalDavSynchronizer.Implementation
             (serialized, loopState, threadLocal) =>
             {
               IICalendar calendar;
-              string normalizedICalData;
+              string normalizedICalData, fixedICalData;
 
               // fix some linebreak issues with Open-Xchange
               if (serialized.Entity.Contains ("\r\r\n"))
@@ -120,15 +120,27 @@ namespace CalDavSynchronizer.Implementation
                 normalizedICalData = serialized.Entity;
               }
 
-              if (TryDeserializeCalendar (normalizedICalData, out calendar, serialized.Id, threadLocal.Item1))
+              // emClient sets DTSTART in VTIMEZONE to year 0001, which causes a 90 sec delay in DDay.iCal to evaluate the recurrence rule.
+              // If we find such a DTSTART we replace it 0001 with 1970 since the historic data is not valid anyway and avoid the performance issue.
+              if (normalizedICalData.Contains ("DTSTART:00010101"))
+              {
+                fixedICalData = CalendarDataPreprocessor.FixInvalidDTSTARTInTimeZoneNoThrow (normalizedICalData);
+                s_logger.InfoFormat ("Changed DTSTART from year 0001 to 1970 in VTIMEZONE of ICalData '{0}'.", serialized.Id);
+              }
+              else
+              {
+                fixedICalData = normalizedICalData;
+              }
+
+              if (TryDeserializeCalendar (fixedICalData, out calendar, serialized.Id, threadLocal.Item1))
               {
                 threadLocal.Item2.Add (Tuple.Create (serialized.Id, calendar));
               }
               else
               {
                 // maybe deserialization failed because of the iCal-TimeZone-Bug =>  try to fix it
-                var fixedICalData = CalendarDataPreprocessor.FixTimeZoneComponentOrderNoThrow (normalizedICalData);
-                if (TryDeserializeCalendar (fixedICalData, out calendar, serialized.Id, threadLocal.Item1))
+                var fixedICalData2 = CalendarDataPreprocessor.FixTimeZoneComponentOrderNoThrow (fixedICalData);
+                if (TryDeserializeCalendar (fixedICalData2, out calendar, serialized.Id, threadLocal.Item1))
                 {
                   threadLocal.Item2.Add (Tuple.Create (serialized.Id, calendar));
                   s_logger.Info (string.Format ("Deserialized ICalData with reordering of TimeZone data '{0}'.", serialized.Id));

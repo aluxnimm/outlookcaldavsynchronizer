@@ -46,6 +46,32 @@ namespace CalDavSynchronizer.DDayICalWorkaround
       }
     }
 
+    public static string FixInvalidDTSTARTInTimeZoneNoThrow (string iCalendarData)
+    {
+      if (string.IsNullOrEmpty (iCalendarData))
+        return iCalendarData;
+
+      try
+      {
+        string fixedIcalendarData = iCalendarData;
+
+        for (
+            var timeZoneMatch = Regex.Match (iCalendarData, "BEGIN:VTIMEZONE\r?\n(.|\n)*?END:VTIMEZONE\r?\n", RegexOptions.RightToLeft);
+            timeZoneMatch.Success;
+            timeZoneMatch = timeZoneMatch.NextMatch())
+        {
+          var fixedTimeZone = timeZoneMatch.Value.Replace ("DTSTART:00010101", "DTSTART:19700101");
+          fixedIcalendarData = fixedIcalendarData.Replace (timeZoneMatch.Value, fixedTimeZone);
+        }
+        return fixedIcalendarData;
+      }
+      catch (Exception x)
+      {
+        s_logger.Error ("Could not process calender data. Using original data", x);
+        return iCalendarData;
+      }
+    }
+
     public static string FixTimeZoneComponentOrderNoThrow (string iCalendarData)
     {
       if (string.IsNullOrEmpty (iCalendarData))
