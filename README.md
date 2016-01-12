@@ -73,6 +73,20 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 1.14.0 ####
+- New features
+	- Skip sync runs, if network is not available to avoid error reports in that case, add general option to check Internet connection with dns query to www.google.com. If you are in a local network without dns or google.com blocked, disable this option.
+	- Implement EventMappingConfiguration options for syncing private flag to CLASS:CONFIDENTIAL and vice versa, feature request 15.
+- Bug fixes
+	- Fix mapping outlook task dates to DTSTART and DUE, use local timezone and time 00:00:00 for start, 23:59:59 for due values and remove DURATION to be RFC 5545 compliant, see ticket #170. Use also localtime for COMPLETED instead of UTC to be consistent and fix VTIMEZONE DST rules for tasks.
+	- Fix yearly recurrence with interval=1 for tasks.
+	- Treat not recognized PARTSTAT same way as NEEDS-ACTION according to RFC 5545.
+	- Fix mapping of attendees with type resource/room or unknown role, map X-LOCATION to type resource, set CUTYPE=RESOURCE for resources.
+	- Catch COMException when setting recurrence interval and ignore invalid intervals for Appointments and Tasks, ticket #174.
+	- Fix logging uid of events for recurrence errors.
+	- Avoid COMException for invalid organizer in MapAttendeesAndOrganizer2To1, skip organizer if no email and no CN is valid.
+	- Replace year 0001 with 1970 in VTIMEZONE definitions before deserializing icaldata, since DDay.iCal is extremely slow otherwise, needed for emClient, see ticket #150.
+
 #### 1.13.2 ####
 - Bug fixes
 	- Refactor SetOrganizer and GetMailUrl in EventEntityMapper to avoid Nullreference Exceptions and catch COMExceptions.
@@ -492,6 +506,7 @@ The following properties need to be set for a new generic profile:
 	- **Mapping Configuration...**: Here you can configure what properties should be synced, available for appointments and contacts at the moment. 
 		- For appointments you can choose if you want to map reminders (just upcoming, all or none) and the description body.
 		- *Create events on server in UTC:* Use UTC instead of Outlook Appointment Timezone for creating events on CalDAV server. Needed for GMX for example. Not recommended for general use, because recurrence exceptions over DST changes can't be mapped and Appointments with different start and end timezones can't be represented.
+		- In *Privacy settings* you can configure if you want to map Outlook private appointments to CLASS:CONFIDENTIAL and vice versa. This could be useful for Owncloud for example, if you share your calendar with others and they should see start/end dates of your private appointments.
 		- In *Scheduling settings* you can configure if you want to map attendees and organizer and if notifications should be sent by the server. (Use *Don't send appointment notifications for SOGo servers and SCHEDULE-AGENT:CLIENT for other servers if you want to send invitations from Outlook and avoid that the server sends invitations too). 
 		-  You can also define a filter category so that multiple CalDAV-Calendars can be synchronized into one Outlook calendar via the defined category (see Category Filter and Color below). 
 		-  For contacts you can configure if birthdays should be mapped or not. If birthdays are mapped, Outlook also creates an recurring appointment for every contact with a defined birthday.
@@ -552,6 +567,7 @@ More information can be found at
 In the General Options Dialog you can change settings which are used for all synchronization profiles.
 
 - **Automatically check for newer versions** set to false to disable checking for updates.
+- **Check Internet connection before sync run** checks if an interface is up and if www.google.com can be resolved with a DNS query before each sync run to avoid error reports if network is unavailable after hibernate for example. Disable this option if you are in a local network without DNS or google.com blocked.
 - **Store data in roaming folder** set to true if you need to store state and profile data in the AppData\Roaming\ directory for roaming profiles in a AD domain for example. When changing this option, a restart of Outlook is required.
 - **Fix invalid settings** Fixes invalid settings automatically, when synchronization profiles are edited.
 
