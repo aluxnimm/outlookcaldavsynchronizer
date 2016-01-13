@@ -743,6 +743,10 @@ namespace CalDavSynchronizer.Implementation.Events
               {
                 s_logger.Error ("Can't get AppointmentItem of Exception, ignoring!", ex);
               }
+              catch (System.ArgumentException x)
+              {
+                s_logger.Error ("Can't get AppointmentItem of Exception, ignoring!", x);
+              }
             }
             else
             {
