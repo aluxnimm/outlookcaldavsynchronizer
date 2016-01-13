@@ -1075,7 +1075,7 @@ namespace CalDavSynchronizer.Implementation.Events
         }
         else
         {
-          if ((source.MeetingStatus == OlMeetingStatus.olMeetingReceived) && (!ownAttendeeSet))
+          if ((source.MeetingStatus == OlMeetingStatus.olMeetingReceived || source.MeetingStatus == OlMeetingStatus.olMeetingReceivedAndCanceled) && (!ownAttendeeSet))
           {
             Attendee ownAttendee;
 
@@ -1099,7 +1099,7 @@ namespace CalDavSynchronizer.Implementation.Events
               ownAttendee = new Attendee();
             }
             ownAttendee.CommonName = recipient.Name;
-            ownAttendee.ParticipationStatus = MapParticipation1To2 (source.ResponseStatus);
+            ownAttendee.ParticipationStatus = (source.MeetingStatus == OlMeetingStatus.olMeetingReceivedAndCanceled) ? "DECLINED" : MapParticipation1To2 (source.ResponseStatus);
             ownAttendee.Role = MapAttendeeType1To2 ((OlMeetingRecipientType) recipient.Type);
             target.Attendees.Add (ownAttendee);
             ownAttendeeSet = true;
