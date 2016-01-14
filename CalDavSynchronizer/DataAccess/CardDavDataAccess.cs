@@ -149,7 +149,7 @@ namespace CalDavSynchronizer.DataAccess
 
     public Task<EntityVersion<Uri, string>> CreateEntity (string vCardData, string uid)
     {
-      return CreateNewEntity (string.Format ("{0:D}.vcs", uid), vCardData);
+      return CreateNewEntity (string.Format ("{0:D}.vcf", uid), vCardData);
     }
 
     protected async Task<EntityVersion<Uri, string>> CreateNewEntity (string name, string content)
