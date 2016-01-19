@@ -646,12 +646,23 @@ namespace CalDavSynchronizer.Implementation.Contacts
         phoneNumber.IsPreferred = (target.Phones.Count == 0);
         target.Phones.Add (phoneNumber);
       }
+      if (!string.IsNullOrEmpty (source.OtherTelephoneNumber))
+      {
+        vCardPhone phoneNumber = new vCardPhone (source.OtherTelephoneNumber, vCardPhoneTypes.Voice);
+        target.Phones.Add (phoneNumber);
+      }
+      if (!string.IsNullOrEmpty (source.OtherFaxNumber))
+      {
+        vCardPhone phoneNumber = new vCardPhone (source.OtherFaxNumber, vCardPhoneTypes.Fax);
+        target.Phones.Add (phoneNumber);
+      }
     }
 
     private static void MapTelephoneNumber2To1 (vCard source, ContactItem target)
     {
       target.HomeTelephoneNumber = string.Empty;
       target.BusinessTelephoneNumber = string.Empty;
+      target.BusinessFaxNumber = string.Empty;
 
       foreach (var phoneNumber in source.Phones)
       {
@@ -693,7 +704,14 @@ namespace CalDavSynchronizer.Implementation.Contacts
           }
           else
           {
-            target.BusinessFaxNumber = phoneNumber.FullNumber;
+            if (string.IsNullOrEmpty (target.BusinessFaxNumber))
+            {
+              target.BusinessFaxNumber = phoneNumber.FullNumber;
+            }
+            else
+            {
+              target.OtherFaxNumber = phoneNumber.FullNumber;
+            }
           }
         }
         else if (phoneNumber.IsPager)

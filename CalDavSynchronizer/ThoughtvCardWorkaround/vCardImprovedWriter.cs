@@ -1118,7 +1118,13 @@ namespace CalDavSynchronizer.ThoughtvCardWorkaround
             property.Subproperties.Add("TYPE", "CELL");
 
           if (phone.IsFax)
+          {
+            if (!phone.IsHome && !phone.IsWork)
+            {
+              property.Subproperties.Add("TYPE", "OTHER");
+            }
             property.Subproperties.Add("TYPE", "FAX");
+          }
 
           if (phone.IsHome)
             property.Subproperties.Add("TYPE", "HOME");
@@ -1142,10 +1148,20 @@ namespace CalDavSynchronizer.ThoughtvCardWorkaround
             property.Subproperties.Add("TYPE", "VIDEO");
 
           if (phone.IsVoice)
+          {
+            if (!phone.IsHome && !phone.IsWork)
+            {
+              property.Subproperties.Add("TYPE", "OTHER");
+            }
             property.Subproperties.Add("TYPE", "VOICE");
+
+          }
 
           if (phone.IsWork)
             property.Subproperties.Add("TYPE", "WORK");
+
+          if (phone.IsMain)
+            property.Subproperties.Add("TYPE", "MAIN");
 
           property.Value = phone.FullNumber;
           properties.Add(property);
