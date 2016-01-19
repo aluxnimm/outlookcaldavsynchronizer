@@ -1357,6 +1357,10 @@ namespace CalDavSynchronizer.Implementation.Events
         if (source.Status == EventStatus.Cancelled)
         {
           targetWrapper.Inner.MeetingStatus = OlMeetingStatus.olMeetingReceivedAndCanceled;
+          if (string.IsNullOrEmpty (targetWrapper.Inner.Subject)) 
+            targetWrapper.Inner.Subject = "Cancelled: ";
+          else if (!targetWrapper.Inner.Subject.StartsWith ("Cancelled: ")) 
+            targetWrapper.Inner.Subject = "Cancelled: " + targetWrapper.Inner.Subject;
         }
         else if (ownSourceAttendee != null && targetWrapper.Inner.ResponseStatus != OlResponseStatus.olResponseOrganized)
         {
