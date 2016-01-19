@@ -1354,7 +1354,11 @@ namespace CalDavSynchronizer.Implementation.Events
           }
         );
 
-        if (ownSourceAttendee != null && targetWrapper.Inner.ResponseStatus != OlResponseStatus.olResponseOrganized)
+        if (source.Status == EventStatus.Cancelled)
+        {
+          targetWrapper.Inner.MeetingStatus = OlMeetingStatus.olMeetingReceivedAndCanceled;
+        }
+        else if (ownSourceAttendee != null && targetWrapper.Inner.ResponseStatus != OlResponseStatus.olResponseOrganized)
         {
           var response = MapParticipation2ToMeetingResponse (ownSourceAttendee.ParticipationStatus);
           if ((response != null) && (MapParticipation2To1 (ownSourceAttendee.ParticipationStatus) != targetWrapper.Inner.ResponseStatus))
