@@ -40,6 +40,7 @@
       this._enableSsl3Checkbox = new System.Windows.Forms.CheckBox();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
       this._fixInvalidSettingsCheckBox = new System.Windows.Forms.CheckBox();
+      this._checkIfOnlineCheckBox = new System.Windows.Forms.CheckBox();
       this._displayAllProfilesAsGenericCheckBox = new System.Windows.Forms.CheckBox();
       this.groupBox2 = new System.Windows.Forms.GroupBox();
       this._maxReportAgeInDays = new System.Windows.Forms.TextBox();
@@ -53,7 +54,6 @@
       this._clearLogButton = new System.Windows.Forms.Button();
       this._logLevelComboBox = new System.Windows.Forms.ComboBox();
       this.label6 = new System.Windows.Forms.Label();
-      this._checkIfOnlineCheckBox = new System.Windows.Forms.CheckBox();
       this.groupBox1.SuspendLayout();
       this.groupBox2.SuspendLayout();
       this.groupBox3.SuspendLayout();
@@ -176,6 +176,18 @@
       this._fixInvalidSettingsCheckBox.Text = "Fix invalid settings";
       this._toolTip.SetToolTip(this._fixInvalidSettingsCheckBox, resources.GetString("_fixInvalidSettingsCheckBox.ToolTip"));
       this._fixInvalidSettingsCheckBox.UseVisualStyleBackColor = true;
+      // 
+      // _checkIfOnlineCheckBox
+      // 
+      this._checkIfOnlineCheckBox.AutoSize = true;
+      this._checkIfOnlineCheckBox.Location = new System.Drawing.Point(16, 40);
+      this._checkIfOnlineCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+      this._checkIfOnlineCheckBox.Name = "_checkIfOnlineCheckBox";
+      this._checkIfOnlineCheckBox.Size = new System.Drawing.Size(297, 21);
+      this._checkIfOnlineCheckBox.TabIndex = 4;
+      this._checkIfOnlineCheckBox.Text = "Check Internet connection before sync run";
+      this._toolTip.SetToolTip(this._checkIfOnlineCheckBox, resources.GetString("_checkIfOnlineCheckBox.ToolTip"));
+      this._checkIfOnlineCheckBox.UseVisualStyleBackColor = true;
       // 
       // _displayAllProfilesAsGenericCheckBox
       // 
@@ -332,20 +344,6 @@
       this.label6.Size = new System.Drawing.Size(74, 17);
       this.label6.TabIndex = 0;
       this.label6.Text = "Log Level:";
-      // 
-      // _checkIfOnlineCheckBox
-      // 
-      this._checkIfOnlineCheckBox.AutoSize = true;
-      this._checkIfOnlineCheckBox.Location = new System.Drawing.Point(16, 40);
-      this._checkIfOnlineCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-      this._checkIfOnlineCheckBox.Name = "_checkIfOnlineCheckBox";
-      this._checkIfOnlineCheckBox.Size = new System.Drawing.Size(297, 21);
-      this._checkIfOnlineCheckBox.TabIndex = 4;
-      this._checkIfOnlineCheckBox.Text = "Check Internet connection before sync run";
-      this._toolTip.SetToolTip(this._checkIfOnlineCheckBox, "Checks if a network interface is up\r\nand if www.google.com can be resolved.\r\nShou" +
-        "ld avoid error reports when network is not available after\r\ncoming back from hib" +
-        "ernate for example.");
-      this._checkIfOnlineCheckBox.UseVisualStyleBackColor = true;
       // 
       // GeneralOptionsForm
       // 

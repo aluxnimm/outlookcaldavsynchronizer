@@ -133,4 +133,11 @@ calendar, which would produce errors.
 Disabling this setting might be helpful for testing,
 but you should know what you do.</value>
   </data>
+  <data name="_checkIfOnlineCheckBox.ToolTip" xml:space="preserve">
+    <value>Checks if a network interface is up
+and try DNS query to dns.msftncsi.com first and if that fails try to download
+http://www.msftncsi.com/ncsi.txt with the configured proxy settings.
+Should avoid error reports when network is not available after
+coming back from hibernate for example.</value>
+  </data>
 </root>
