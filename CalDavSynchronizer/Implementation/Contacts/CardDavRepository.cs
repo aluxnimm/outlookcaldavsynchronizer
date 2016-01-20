@@ -158,15 +158,16 @@ namespace CalDavSynchronizer.Implementation.Contacts
     {
       vcard = null;
       string fixedVcardData = ContactDataPreprocessor.FixRevisionDate (vcardData);
+      string fixedVcardData2 = ContactDataPreprocessor.FixUrlType (fixedVcardData);
 
       try
       {
-        vcard = Deserialize (fixedVcardData, deserializer);
+        vcard = Deserialize (fixedVcardData2, deserializer);
         return true;
       }
       catch (Exception x)
       {
-        s_logger.Error (string.Format ("Could not deserialize vcardData of '{0}':\r\n{1}", uriOfAddressbookForLogging, fixedVcardData), x);
+        s_logger.Error (string.Format ("Could not deserialize vcardData of '{0}':\r\n{1}", uriOfAddressbookForLogging, fixedVcardData2), x);
         return false;
       }
     }

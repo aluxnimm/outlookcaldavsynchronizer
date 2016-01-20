@@ -155,10 +155,6 @@ namespace CalDavSynchronizer.Implementation.Contacts
       target.Title = source.Inner.JobTitle;
       target.Office = source.Inner.OfficeLocation;
 
-      if (!string.IsNullOrEmpty (source.Inner.WebPage))
-      {
-        target.Websites.Add (new vCardWebsite (source.Inner.WebPage));
-      }
       if (!string.IsNullOrEmpty (source.Inner.PersonalHomePage))
       {
         target.Websites.Add (new vCardWebsite (source.Inner.PersonalHomePage, vCardWebsiteTypes.Personal));
@@ -287,24 +283,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       target.Inner.JobTitle = source.Title;
       target.Inner.OfficeLocation = source.Office;
 
-      vCardWebsite sourceWebSite;
-
-      if ((sourceWebSite = source.Websites.GetFirstChoice (vCardWebsiteTypes.Default)) != null)
-      {
-        target.Inner.WebPage = sourceWebSite.Url;
-      }
-      vCardWebsite sourceHomePage;
-
-      if ((sourceHomePage = source.Websites.GetFirstChoice (vCardWebsiteTypes.Personal)) != null)
-      {
-        target.Inner.PersonalHomePage = sourceHomePage.Url;
-      }
-      vCardWebsite sourceBusinessHomePage;
-
-      if ((sourceBusinessHomePage = source.Websites.GetFirstChoice (vCardWebsiteTypes.Work)) != null)
-      {
-        target.Inner.BusinessHomePage = sourceBusinessHomePage.Url;
-      }
+      MapHomePage2To1 (source, target.Inner);
 
       MapCertificate2To1 (source, target.Inner);
 
@@ -575,6 +554,32 @@ namespace CalDavSynchronizer.Implementation.Contacts
           target.AddPicture (picturePath);
           File.Delete (picturePath);
         }
+      }
+    }
+
+    private static void MapHomePage2To1 (vCard source, ContactItem target)
+    {
+      vCardWebsite sourceWebSite;
+
+      target.WebPage = null;
+      target.BusinessHomePage = null;
+      target.PersonalHomePage = null;
+
+      if ((sourceWebSite = source.Websites.GetFirstChoice (vCardWebsiteTypes.Default)) != null)
+      {
+        target.WebPage = sourceWebSite.Url;
+      }
+      vCardWebsite sourceHomePage;
+
+      if ((sourceHomePage = source.Websites.GetFirstChoice (vCardWebsiteTypes.Personal)) != null)
+      {
+        target.PersonalHomePage = sourceHomePage.Url;
+      }
+      vCardWebsite sourceBusinessHomePage;
+
+      if ((sourceBusinessHomePage = source.Websites.GetFirstChoice (vCardWebsiteTypes.Work)) != null)
+      {
+        target.BusinessHomePage = sourceBusinessHomePage.Url;
       }
     }
 
