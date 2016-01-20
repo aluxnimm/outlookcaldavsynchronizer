@@ -49,6 +49,7 @@ namespace CalDavSynchronizer.Scheduling
     private readonly ISynchronizationReportRepository _synchronizationReportRepository;
     private string _profileName;
     private Guid _profileId;
+    private ProxyOptions _proxyOptions;
     private bool _inactive;
     private readonly ISynchronizerFactory _synchronizerFactory;
     private int _isRunning = 0;
@@ -78,6 +79,7 @@ namespace CalDavSynchronizer.Scheduling
 
       _profileName = options.Name;
       _profileId = options.Id;
+      _proxyOptions = options.ProxyOptions;
       _synchronizer = _synchronizerFactory.CreateSynchronizer (options);
       _interval = TimeSpan.FromMinutes (options.SynchronizationIntervalInMinutes);
       _inactive = options.Inactive;
@@ -129,7 +131,7 @@ namespace CalDavSynchronizer.Scheduling
     private async Task RunAllPendingJobs ()
     {
  
-      if (_checkIfOnline && !ConnectionTester.IsOnline())
+      if (_checkIfOnline && !ConnectionTester.IsOnline (_proxyOptions))
       {
         s_logger.WarnFormat ("Skipping synchronization profile '{0}' (Id: '{1}') because network is not available", _profileName, _profileId);
         return;

@@ -173,7 +173,7 @@ namespace CalDavSynchronizer.Scheduling
       }
     }
 
-    private static IWebProxy CreateProxy (ProxyOptions proxyOptions)
+    public static IWebProxy CreateProxy (ProxyOptions proxyOptions)
     {
       IWebProxy proxy = null;
 

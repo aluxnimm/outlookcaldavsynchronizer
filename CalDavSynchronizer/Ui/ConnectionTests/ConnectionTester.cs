@@ -15,23 +15,41 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Scheduling;
+using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer.Ui.ConnectionTests
 {
   public static class ConnectionTester
   {
-    public static bool IsOnline()
+    public static bool IsOnline (ProxyOptions proxyOptions)
     {
       if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
       {
+        // Use NCSI to detect network status according to https://technet.microsoft.com/en-us/library/ee126135(v=WS.10).aspx
+        // try DNS first
         try
         {
-          System.Net.IPHostEntry dummy = System.Net.Dns.GetHostEntry ("www.google.com");
+          IPHostEntry hostEntry = Dns.GetHostEntry ("dns.msftncsi.com");
+          IPAddress ipAddress = Array.Find (hostEntry.AddressList, ip => ip.AddressFamily == AddressFamily.InterNetwork);
+          if (ipAddress != null && ipAddress.ToString() == "131.107.255.255") return true;
+        }
+        catch (Exception) {}
+        // if DNS failed, try to download the ncsi.txt
+        try
+        {
+          var client = new WebClient();
+          IWebProxy proxy = (proxyOptions != null) ? SynchronizerFactory.CreateProxy (proxyOptions) : null;
+          client.Proxy = proxy;
+          var txt = client.DownloadString (new Uri ("http://www.msftncsi.com/ncsi.txt"));
+          if (txt != "Microsoft NCSI") return false;
           return true;
         }
-        catch (System.Net.Sockets.SocketException)
+        catch (Exception)
         {
           return false;
         }
