@@ -73,6 +73,17 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 1.14.2 ####
+- Bug fixes
+	- Fix every workday recurrence and avoid INTERVAL=0 which is wrongly set from Outlook Object Model, fixes problem with certain versions of SabreDAV/OwnCloud, where INTERVAL=0 leads to an internal server error
+	- Catch also possible ArgumentException in  MapRecurrence1To2 when trying to get AppointmentItem of a changed occurence.
+	- Improve handling of DECLINED and cancelled meetings.
+	- Prefix AppointmentItem Subject with "Cancelled: " if event status is CANCELLED
+	- Use extension .vcf instead of .vcs for newly created vcards.
+	- Improve mapping of phonenumbers, map Outlook OtherPhoneNumber and OtherFaxNumber and set TYPE=MAIN for PrimaryPhoneNumber.
+	- Improve mapping of HOME and WORK URLs for vcards.
+	- Refactor IsOnline() check to avoid problems in proxy environments, ticket #189
+
 #### 1.14.0 ####
 - New features
 	- Skip sync runs, if network is not available to avoid error reports in that case, add general option to check Internet connection with dns query to www.google.com. If you are in a local network without dns or google.com blocked, disable this option.
@@ -567,7 +578,7 @@ More information can be found at
 In the General Options Dialog you can change settings which are used for all synchronization profiles.
 
 - **Automatically check for newer versions** set to false to disable checking for updates.
-- **Check Internet connection before sync run** checks if an interface is up and if www.google.com can be resolved with a DNS query before each sync run to avoid error reports if network is unavailable after hibernate for example. Disable this option if you are in a local network without DNS or google.com blocked.
+- **Check Internet connection before sync run** checks if an interface is up and try DNS query to dns.msftncsi.com first and if that fails try to download http://www.msftncsi.com/ncsi.txt with the configured proxy before each sync run to avoid error reports if network is unavailable after hibernate for example. Disable this option if you are in a local network where DNS and that URL is blocked.
 - **Store data in roaming folder** set to true if you need to store state and profile data in the AppData\Roaming\ directory for roaming profiles in a AD domain for example. When changing this option, a restart of Outlook is required.
 - **Fix invalid settings** Fixes invalid settings automatically, when synchronization profiles are edited.
 

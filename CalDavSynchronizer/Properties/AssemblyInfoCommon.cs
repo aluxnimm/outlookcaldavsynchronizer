@@ -29,4 +29,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct ("CalDavSynchronizer")]
 [assembly: AssemblyCopyright ("Copyright © 2015 Gerhard Zehetbauer")]
 [assembly: AssemblyTrademark ("")]
-[assembly: AssemblyVersion ("1.14.0.0")]
+[assembly: AssemblyVersion ("1.14.2.0")]
