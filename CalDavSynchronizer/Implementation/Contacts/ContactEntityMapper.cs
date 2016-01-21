@@ -668,6 +668,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
       target.HomeTelephoneNumber = string.Empty;
       target.BusinessTelephoneNumber = string.Empty;
       target.BusinessFaxNumber = string.Empty;
+      target.PrimaryTelephoneNumber = string.Empty;
+      target.MobileTelephoneNumber = string.Empty;
 
       foreach (var phoneNumber in source.Phones)
       {
@@ -676,6 +678,10 @@ namespace CalDavSynchronizer.Implementation.Contacts
           target.PrimaryTelephoneNumber = phoneNumber.FullNumber;
         }
         else if (phoneNumber.IsCellular)
+        {
+          target.MobileTelephoneNumber = phoneNumber.FullNumber;
+        }
+        else if (phoneNumber.IsiPhone && string.IsNullOrEmpty (target.MobileTelephoneNumber))
         {
           target.MobileTelephoneNumber = phoneNumber.FullNumber;
         }
@@ -733,7 +739,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
         }
         else
         {
-          if (phoneNumber.IsPreferred && string.IsNullOrEmpty (target.HomeTelephoneNumber))
+          if (phoneNumber.IsPreferred && string.IsNullOrEmpty (target.PrimaryTelephoneNumber))
+          {
+            target.PrimaryTelephoneNumber = phoneNumber.FullNumber;
+          }
+          else if (phoneNumber.IsPreferred && string.IsNullOrEmpty (target.HomeTelephoneNumber))
           {
             target.HomeTelephoneNumber = phoneNumber.FullNumber;
           }
