@@ -34,7 +34,7 @@ namespace CalDavSynchronizer.Ui
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OptionsForm));
       this._okButton = new System.Windows.Forms.Button();
       this._cancelButton = new System.Windows.Forms.Button();
-      this._tabControl = new System.Windows.Forms.TabControl();
+      this._tabControl = new DraggableTabControl ();
       this._tabImageList = new System.Windows.Forms.ImageList(this.components);
       this._addProfileButton = new System.Windows.Forms.Button();
       this.SuspendLayout();
@@ -120,7 +120,7 @@ namespace CalDavSynchronizer.Ui
 
     private System.Windows.Forms.Button _okButton;
     private System.Windows.Forms.Button _cancelButton;
-    private System.Windows.Forms.TabControl _tabControl;
+    private DraggableTabControl _tabControl;
     private System.Windows.Forms.Button _addProfileButton;
     private System.Windows.Forms.ImageList _tabImageList;
 

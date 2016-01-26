@@ -335,6 +335,9 @@
     <Compile Include="Ui\ContactMappingConfigurationForm.Designer.cs">
       <DependentUpon>ContactMappingConfigurationForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Ui\DraggableTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Ui\GeneralOptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
