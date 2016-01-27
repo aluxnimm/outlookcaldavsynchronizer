@@ -57,6 +57,7 @@ namespace CalDavSynchronizer
   public class ComponentContainer
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
+    private const int c_requiredEntityCacheVersion = 0;
 
     private readonly object _synchronizationContextLock = new object();
     private readonly Scheduler _scheduler;
@@ -127,13 +128,29 @@ namespace CalDavSynchronizer
         synchronizerFactory,
         _filteringSynchronizationReportRepository,
         EnsureSynchronizationContext);
-      _scheduler.SetOptions (_optionsDataAccess.LoadOptions(), generalOptions.CheckIfOnline);
+      var options = _optionsDataAccess.LoadOptions();
+
+      DeleteEntityChachesWithWrongVersion (options);
+
+      _scheduler.SetOptions (options, generalOptions.CheckIfOnline);
 
       _updateChecker = new UpdateChecker (new AvailableVersionService(), () => _generalOptionsDataAccess.IgnoreUpdatesTilVersion);
       _updateChecker.NewerVersionFound += UpdateChecker_NewerVersionFound;
       _updateChecker.IsEnabled = generalOptions.ShouldCheckForNewerVersions;
 
       _reportGarbageCollection = new ReportGarbageCollection (_synchronizationReportRepository, TimeSpan.FromDays (generalOptions.MaxReportAgeInDays));
+    }
+
+    private void DeleteEntityChachesWithWrongVersion (Options[] options)
+    {
+      var currentEntityCacheVersion = _generalOptionsDataAccess.EntityCacheVersion;
+      if (currentEntityCacheVersion != c_requiredEntityCacheVersion)
+      {
+        s_logger.InfoFormat ("Image requires cache version '{0}',but caches have version '{1}'. Deleting caches.", c_requiredEntityCacheVersion, currentEntityCacheVersion);
+
+        if (DeleteCachesForProfiles (options.Select (p => Tuple.Create (p.Id, p.Name))))
+          _generalOptionsDataAccess.EntityCacheVersion = c_requiredEntityCacheVersion;
+      }
     }
 
     private void UpdateGeneralOptionDependencies (GeneralOptions generalOptions)
@@ -461,24 +478,34 @@ namespace CalDavSynchronizer
                                                o.DaysToSynchronizeInThePast,
                                                o.IgnoreSynchronizationTimeRange
                                            }).Count() > 1)
-              .Select (g => new { Id = g.Key, Name = g.First().Name })
+              .Select (g => Tuple.Create (g.Key, g.First().Name))
               .ToArray();
 
-      foreach (var profile in profilesForCacheDeletion)
+      DeleteCachesForProfiles (profilesForCacheDeletion);
+    }
+
+    private bool DeleteCachesForProfiles (IEnumerable<Tuple<Guid,string>> profileIdWithNames)
+    {
+      bool allCachesDeleted = true;
+
+      foreach (var profileIdWithName in profileIdWithNames)
       {
         try
         {
-          s_logger.InfoFormat ("Deleting cache for profile '{0}' ('{1}')", profile.Id, profile.Name);
+          s_logger.InfoFormat ("Deleting cache for profile '{0}' ('{1}')", profileIdWithName.Item1, profileIdWithName.Item2);
 
-          var profileDataDirectory = GetProfileDataDirectory (profile.Id);
+          var profileDataDirectory = GetProfileDataDirectory (profileIdWithName.Item1);
           if (Directory.Exists (profileDataDirectory))
             Directory.Delete (profileDataDirectory, true);
         }
         catch (Exception x)
         {
           s_logger.Error (null, x);
+          allCachesDeleted = false;
         }
       }
+
+      return allCachesDeleted;
     }
 
     private TProperty? GetMappingPropertyOrNull<TMappingConfiguration, TProperty> (MappingConfigurationBase mappingConfiguration, Func<TMappingConfiguration, TProperty> selector)

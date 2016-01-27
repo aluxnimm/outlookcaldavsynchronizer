@@ -24,5 +24,6 @@ namespace CalDavSynchronizer.DataAccess
     GeneralOptions LoadOptions ();
     void SaveOptions (GeneralOptions options);
     Version IgnoreUpdatesTilVersion { get; set; }
+    int EntityCacheVersion { get; set; }
   }
 }

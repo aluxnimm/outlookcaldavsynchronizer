@@ -46,12 +46,13 @@ namespace CalDavSynchronizer.DataAccess
     private const string s_MaxReportAgeInDays = "MaxReportAgeInDays";
 
     private const string s_EnableDebugLog = "EnableDebugLog";
+    private const string s_EntityCacheVersion = "EntityCacheVersion";
 
     public GeneralOptions LoadOptions ()
     {
       using (var key = OpenOptionsKey())
       {
-        int debugEnabledInConfig = ((Hierarchy)LogManager.GetRepository()).Root.Level == Level.Debug ? 1 : 0;
+        int debugEnabledInConfig = ((Hierarchy) LogManager.GetRepository()).Root.Level == Level.Debug ? 1 : 0;
 
         return new GeneralOptions()
                {
@@ -115,6 +116,24 @@ namespace CalDavSynchronizer.DataAccess
             key.SetValue ("IgnoreUpdatesTilVersion", value.ToString());
           else
             key.DeleteValue ("IgnoreUpdatesTilVersion");
+        }
+      }
+    }
+
+    public int EntityCacheVersion
+    {
+      get
+      {
+        using (var key = OpenOptionsKey())
+        {
+          return (int) (key.GetValue (s_EntityCacheVersion) ?? 0);
+        }
+      }
+      set
+      {
+        using (var key = OpenOptionsKey())
+        {
+          key.SetValue (s_EntityCacheVersion, value);
         }
       }
     }
