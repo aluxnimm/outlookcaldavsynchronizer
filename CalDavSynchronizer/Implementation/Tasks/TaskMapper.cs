@@ -533,7 +533,12 @@ namespace CalDavSynchronizer.Implementation.Tasks
             targetRecurrencePattern.Occurrences = sourceRecurrencePattern.Count;
 
           if (sourceRecurrencePattern.Until != default(DateTime))
-            targetRecurrencePattern.PatternEndDate = sourceRecurrencePattern.Until;
+          {
+            if (sourceRecurrencePattern.Until.Date >= targetRecurrencePattern.PatternStartDate)
+              targetRecurrencePattern.PatternEndDate = sourceRecurrencePattern.Until.Date;
+            else
+              targetRecurrencePattern.PatternEndDate = targetRecurrencePattern.PatternStartDate;
+          }
         }
 
         targetWrapper.SaveAndReload();

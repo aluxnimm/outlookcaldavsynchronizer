@@ -928,7 +928,13 @@ namespace CalDavSynchronizer.Implementation.Events
             targetRecurrencePattern.Occurrences = sourceRecurrencePattern.Count;
 
           if (sourceRecurrencePattern.Until != default(DateTime))
-            targetRecurrencePattern.PatternEndDate = sourceRecurrencePattern.Until;
+          {
+            if (sourceRecurrencePattern.Until.Date >= targetRecurrencePattern.PatternStartDate)
+              targetRecurrencePattern.PatternEndDate = sourceRecurrencePattern.Until.Date;
+            else
+              targetRecurrencePattern.PatternEndDate = targetRecurrencePattern.PatternStartDate;
+          }
+            
         }
         // Due to limitations out outlook, the Appointment has to be saved here. Otherwise 'targetRecurrencePattern.GetOccurrence ()'
         // will throw an exception
