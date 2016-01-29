@@ -37,6 +37,7 @@ namespace CalDavSynchronizer.DataAccess.WebRequestBasedClient
     private readonly TimeSpan _readWriteTimeout;
     private readonly string _userAgent;
     private readonly bool _closeConnectionAfterEachRequest;
+    private readonly bool _preemptiveAuthentication;
 
 
     public WebDavClient (
@@ -44,13 +45,15 @@ namespace CalDavSynchronizer.DataAccess.WebRequestBasedClient
       string password, 
       TimeSpan connectTimeout, 
       TimeSpan readWriteTimeout, 
-      bool closeConnectionAfterEachRequest)
+      bool closeConnectionAfterEachRequest,
+      bool preemptiveAuthentication)
     {
       _username = username;
       _password = password;
       _connectTimeout = connectTimeout;
       _readWriteTimeout = readWriteTimeout;
       _closeConnectionAfterEachRequest = closeConnectionAfterEachRequest;
+      _preemptiveAuthentication = preemptiveAuthentication;
       var version = Assembly.GetExecutingAssembly().GetName().Version;
       _userAgent = string.Format ("CalDavSynchronizer/{0}.{1}", version.Major, version.Minor);
     }
@@ -65,7 +68,7 @@ namespace CalDavSynchronizer.DataAccess.WebRequestBasedClient
 
       if (!string.IsNullOrEmpty (_username))
       {
-        request.PreAuthenticate = true;
+        request.PreAuthenticate = _preemptiveAuthentication;
         request.Credentials = new NetworkCredential (_username, _password);
       }
       request.AllowAutoRedirect = false;

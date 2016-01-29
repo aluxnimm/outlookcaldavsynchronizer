@@ -141,6 +141,7 @@ namespace CalDavSynchronizer.Ui
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
           ServerAdapterType.GoogleOAuth,
           _dependencies.CloseConnectionAfterEachRequest,
+          _dependencies.PreemptiveAuthentication,
           _dependencies.ProxyOptions);
     }
 

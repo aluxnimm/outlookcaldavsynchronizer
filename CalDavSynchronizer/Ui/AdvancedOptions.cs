@@ -22,15 +22,17 @@ namespace CalDavSynchronizer.Ui
   public class AdvancedOptions
   {
     private readonly bool _closeConnectionAfterEachRequest;
+    private readonly bool _preemptiveAuthentication;
     private readonly ProxyOptions _proxyOptions;
     private readonly MappingConfigurationBase _mappingConfiguration;
 
-    public AdvancedOptions (bool closeConnectionAfterEachRequest, ProxyOptions proxyOptions, MappingConfigurationBase mappingConfiguration)
+    public AdvancedOptions (bool closeConnectionAfterEachRequest, bool preemptiveAuthentication, ProxyOptions proxyOptions, MappingConfigurationBase mappingConfiguration)
     {
       if (proxyOptions == null)
         throw new ArgumentNullException ("proxyOptions");
 
       _closeConnectionAfterEachRequest = closeConnectionAfterEachRequest;
+      _preemptiveAuthentication = preemptiveAuthentication;
       _proxyOptions = proxyOptions;
       _mappingConfiguration = mappingConfiguration;
     }
@@ -38,6 +40,11 @@ namespace CalDavSynchronizer.Ui
     public bool CloseConnectionAfterEachRequest
     {
       get { return _closeConnectionAfterEachRequest; }
+    }
+
+    public bool PreemptiveAuthentication
+    {
+      get { return _preemptiveAuthentication; }
     }
 
     public ProxyOptions ProxyOptions

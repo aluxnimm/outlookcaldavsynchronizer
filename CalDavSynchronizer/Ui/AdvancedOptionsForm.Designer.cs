@@ -43,6 +43,7 @@
       this._closeConnectionAfterEachRequestCheckBox = new System.Windows.Forms.CheckBox();
       this._manualProxyGroupBox = new System.Windows.Forms.GroupBox();
       this._mappingConfigurationButton = new System.Windows.Forms.Button();
+      this._preemptiveAuthenticationCheckBox = new System.Windows.Forms.CheckBox();
       this.groupBox2.SuspendLayout();
       this.groupBox1.SuspendLayout();
       this._manualProxyGroupBox.SuspendLayout();
@@ -53,7 +54,7 @@
       this.OkButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.OkButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
       this.OkButton.Location = new System.Drawing.Point(485, 446);
-      this.OkButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.OkButton.Margin = new System.Windows.Forms.Padding(4);
       this.OkButton.Name = "OkButton";
       this.OkButton.Size = new System.Drawing.Size(100, 28);
       this.OkButton.TabIndex = 6;
@@ -66,7 +67,7 @@
       this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
       this.buttonCancel.Location = new System.Drawing.Point(599, 446);
-      this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.buttonCancel.Margin = new System.Windows.Forms.Padding(4);
       this.buttonCancel.Name = "buttonCancel";
       this.buttonCancel.Size = new System.Drawing.Size(100, 28);
       this.buttonCancel.TabIndex = 7;
@@ -80,9 +81,9 @@
       this.groupBox2.Controls.Add(this._useManualProxyCheckBox);
       this.groupBox2.Controls.Add(this._useSystemProxyCheckBox);
       this.groupBox2.Location = new System.Drawing.Point(13, 132);
-      this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
       this.groupBox2.Name = "groupBox2";
-      this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
       this.groupBox2.Size = new System.Drawing.Size(685, 251);
       this.groupBox2.TabIndex = 9;
       this.groupBox2.TabStop = false;
@@ -92,7 +93,7 @@
       // 
       this._useManualProxyCheckBox.AutoSize = true;
       this._useManualProxyCheckBox.Location = new System.Drawing.Point(17, 52);
-      this._useManualProxyCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._useManualProxyCheckBox.Margin = new System.Windows.Forms.Padding(4);
       this._useManualProxyCheckBox.Name = "_useManualProxyCheckBox";
       this._useManualProxyCheckBox.Size = new System.Drawing.Size(230, 21);
       this._useManualProxyCheckBox.TabIndex = 16;
@@ -104,7 +105,7 @@
       // 
       this._useSystemProxyCheckBox.AutoSize = true;
       this._useSystemProxyCheckBox.Location = new System.Drawing.Point(17, 23);
-      this._useSystemProxyCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._useSystemProxyCheckBox.Margin = new System.Windows.Forms.Padding(4);
       this._useSystemProxyCheckBox.Name = "_useSystemProxyCheckBox";
       this._useSystemProxyCheckBox.Size = new System.Drawing.Size(396, 21);
       this._useSystemProxyCheckBox.TabIndex = 15;
@@ -136,7 +137,7 @@
       // 
       this._passwordTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._passwordTextBox.Location = new System.Drawing.Point(409, 95);
-      this._passwordTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._passwordTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._passwordTextBox.Name = "_passwordTextBox";
       this._passwordTextBox.PasswordChar = '*';
       this._passwordTextBox.Size = new System.Drawing.Size(243, 22);
@@ -146,7 +147,7 @@
       // 
       this._userNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._userNameTextBox.Location = new System.Drawing.Point(409, 63);
-      this._userNameTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._userNameTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._userNameTextBox.Name = "_userNameTextBox";
       this._userNameTextBox.Size = new System.Drawing.Size(243, 22);
       this._userNameTextBox.TabIndex = 19;
@@ -156,7 +157,7 @@
       this._proxyUrlTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this._proxyUrlTextBox.Location = new System.Drawing.Point(155, 31);
-      this._proxyUrlTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._proxyUrlTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._proxyUrlTextBox.Name = "_proxyUrlTextBox";
       this._proxyUrlTextBox.Size = new System.Drawing.Size(497, 22);
       this._proxyUrlTextBox.TabIndex = 17;
@@ -175,11 +176,12 @@
       // 
       this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupBox1.Controls.Add(this._preemptiveAuthenticationCheckBox);
       this.groupBox1.Controls.Add(this._closeConnectionAfterEachRequestCheckBox);
       this.groupBox1.Location = new System.Drawing.Point(13, 26);
-      this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
       this.groupBox1.Size = new System.Drawing.Size(685, 98);
       this.groupBox1.TabIndex = 8;
       this.groupBox1.TabStop = false;
@@ -189,7 +191,7 @@
       // 
       this._closeConnectionAfterEachRequestCheckBox.AutoSize = true;
       this._closeConnectionAfterEachRequestCheckBox.Location = new System.Drawing.Point(17, 23);
-      this._closeConnectionAfterEachRequestCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._closeConnectionAfterEachRequestCheckBox.Margin = new System.Windows.Forms.Padding(4);
       this._closeConnectionAfterEachRequestCheckBox.Name = "_closeConnectionAfterEachRequestCheckBox";
       this._closeConnectionAfterEachRequestCheckBox.Size = new System.Drawing.Size(258, 21);
       this._closeConnectionAfterEachRequestCheckBox.TabIndex = 16;
@@ -207,9 +209,9 @@
       this._manualProxyGroupBox.Controls.Add(this._proxyUrlTextBox);
       this._manualProxyGroupBox.Controls.Add(this._userNameTextBox);
       this._manualProxyGroupBox.Location = new System.Drawing.Point(21, 213);
-      this._manualProxyGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._manualProxyGroupBox.Margin = new System.Windows.Forms.Padding(4);
       this._manualProxyGroupBox.Name = "_manualProxyGroupBox";
-      this._manualProxyGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._manualProxyGroupBox.Padding = new System.Windows.Forms.Padding(4);
       this._manualProxyGroupBox.Size = new System.Drawing.Size(660, 139);
       this._manualProxyGroupBox.TabIndex = 10;
       this._manualProxyGroupBox.TabStop = false;
@@ -217,13 +219,24 @@
       // _mappingConfigurationButton
       // 
       this._mappingConfigurationButton.Location = new System.Drawing.Point(485, 401);
-      this._mappingConfigurationButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._mappingConfigurationButton.Margin = new System.Windows.Forms.Padding(4);
       this._mappingConfigurationButton.Name = "_mappingConfigurationButton";
       this._mappingConfigurationButton.Size = new System.Drawing.Size(214, 28);
       this._mappingConfigurationButton.TabIndex = 11;
       this._mappingConfigurationButton.Text = "Mapping Configuration...";
       this._mappingConfigurationButton.UseVisualStyleBackColor = true;
       this._mappingConfigurationButton.Click += new System.EventHandler(this._mappingConfigurationButton_Click);
+      // 
+      // _preemptiveAuthenticationCheckBox
+      // 
+      this._preemptiveAuthenticationCheckBox.AutoSize = true;
+      this._preemptiveAuthenticationCheckBox.Location = new System.Drawing.Point(17, 52);
+      this._preemptiveAuthenticationCheckBox.Margin = new System.Windows.Forms.Padding(4);
+      this._preemptiveAuthenticationCheckBox.Name = "_preemptiveAuthenticationCheckBox";
+      this._preemptiveAuthenticationCheckBox.Size = new System.Drawing.Size(224, 21);
+      this._preemptiveAuthenticationCheckBox.TabIndex = 17;
+      this._preemptiveAuthenticationCheckBox.Text = "Use Preemptive Authentication";
+      this._preemptiveAuthenticationCheckBox.UseVisualStyleBackColor = true;
       // 
       // AdvancedOptionsForm
       // 
@@ -268,5 +281,6 @@
     private System.Windows.Forms.CheckBox _closeConnectionAfterEachRequestCheckBox;
     private System.Windows.Forms.GroupBox _manualProxyGroupBox;
     private System.Windows.Forms.Button _mappingConfigurationButton;
+    private System.Windows.Forms.CheckBox _preemptiveAuthenticationCheckBox;
   }
 }

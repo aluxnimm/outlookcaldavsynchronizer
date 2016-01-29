@@ -116,6 +116,7 @@ namespace CalDavSynchronizer.Scheduling
           timeout,
           options.ServerAdapterType,
           options.CloseAfterEachRequest,
+          options.PreemptiveAuthentication,
           options.ProxyOptions);
     }
 
@@ -125,6 +126,7 @@ namespace CalDavSynchronizer.Scheduling
         TimeSpan timeout,
         ServerAdapterType serverAdapterType,
         bool closeConnectionAfterEachRequest,
+        bool preemptiveAuthentication,
         ProxyOptions proxyOptions
         )
     {
@@ -134,20 +136,20 @@ namespace CalDavSynchronizer.Scheduling
         case ServerAdapterType.GoogleOAuth:
           var productAndVersion = GetProductAndVersion();
           return new DataAccess.HttpClientBasedClient.WebDavClient (
-              () => CreateHttpClient (username, password, timeout, serverAdapterType, proxyOptions),
+              () => CreateHttpClient (username, password, timeout, serverAdapterType, proxyOptions, preemptiveAuthentication),
               productAndVersion.Item1,
               productAndVersion.Item2,
               closeConnectionAfterEachRequest);
 
         case ServerAdapterType.SynchronousWebRequestBased:
           return new DataAccess.WebRequestBasedClient.WebDavClient (
-              username, password, timeout, timeout, closeConnectionAfterEachRequest);
+              username, password, timeout, timeout, closeConnectionAfterEachRequest, preemptiveAuthentication);
         default:
           throw new ArgumentOutOfRangeException ("serverAdapterType");
       }
     }
 
-    private static async Task<HttpClient> CreateHttpClient (string username, string password, TimeSpan calDavConnectTimeout, ServerAdapterType serverAdapterType, ProxyOptions proxyOptions)
+    private static async Task<HttpClient> CreateHttpClient (string username, string password, TimeSpan calDavConnectTimeout, ServerAdapterType serverAdapterType, ProxyOptions proxyOptions, bool preemptiveAuthentication)
     {
       IWebProxy proxy = (proxyOptions != null) ? CreateProxy (proxyOptions) : null;
 
@@ -159,6 +161,7 @@ namespace CalDavSynchronizer.Scheduling
           {
             httpClientHandler.Credentials = new NetworkCredential (username, password);
             httpClientHandler.AllowAutoRedirect = false;
+            httpClientHandler.PreAuthenticate = preemptiveAuthentication;
           }
           httpClientHandler.Proxy = proxy;
           httpClientHandler.UseProxy = (proxy != null);
@@ -308,6 +311,7 @@ namespace CalDavSynchronizer.Scheduling
                   _calDavConnectTimeout,
                   options.ServerAdapterType,
                   options.CloseAfterEachRequest,
+                  options.PreemptiveAuthentication,
                   options.ProxyOptions)),
           new iCalendarSerializer(),
           CalDavRepository.EntityType.Todo,
@@ -362,6 +366,7 @@ namespace CalDavSynchronizer.Scheduling
                   _calDavConnectTimeout,
                   options.ServerAdapterType,
                   options.CloseAfterEachRequest,
+                  options.PreemptiveAuthentication,
                   options.ProxyOptions)));
 
       var mappingParameters = GetMappingParameters<ContactMappingConfiguration> (options);

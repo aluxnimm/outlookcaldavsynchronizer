@@ -188,6 +188,7 @@ namespace CalDavSynchronizer.Ui
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
           _serverAdapterTypeControl.SelectedServerAdapterType,
           _dependencies.CloseConnectionAfterEachRequest,
+          _dependencies.PreemptiveAuthentication,
           _dependencies.ProxyOptions);
     }
 

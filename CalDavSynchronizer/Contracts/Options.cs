@@ -49,6 +49,7 @@ namespace CalDavSynchronizer.Contracts
 
     public ServerAdapterType ServerAdapterType { get; set; }
     public bool CloseAfterEachRequest { get; set; }
+    public bool PreemptiveAuthentication { get; set; }
     public bool EnableChangeTriggeredSynchronization { get; set; }
 
     public ProxyOptions ProxyOptions { get; set; }
@@ -97,6 +98,7 @@ namespace CalDavSynchronizer.Contracts
       options.Name = "<New Profile>";
       options.Id = Guid.NewGuid();
       options.Inactive = false;
+      options.PreemptiveAuthentication = true;
       options.ProxyOptions = new ProxyOptions() { ProxyUseDefault = true };
       return options;
     }

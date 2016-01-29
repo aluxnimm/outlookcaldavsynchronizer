@@ -112,6 +112,7 @@ namespace CalDavSynchronizer.Ui
 
         _advancedOptions = new AdvancedOptions (
             value.CloseAfterEachRequest,
+            value.PreemptiveAuthentication,
             value.ProxyOptions ?? new ProxyOptions(),
             value.MappingConfiguration);
 
@@ -128,6 +129,7 @@ namespace CalDavSynchronizer.Ui
                           Id = _optionsId,
                           Inactive = _inactiveCheckBox.Checked,
                           CloseAfterEachRequest = _advancedOptions.CloseConnectionAfterEachRequest,
+                          PreemptiveAuthentication = _advancedOptions.PreemptiveAuthentication,
                           ProxyOptions = _advancedOptions.ProxyOptions,
                           MappingConfiguration = _advancedOptions.MappingConfiguration,
                           DisplayType = OptionsDisplayType.Generic
@@ -194,7 +196,10 @@ namespace CalDavSynchronizer.Ui
     {
       get { return _advancedOptions.CloseConnectionAfterEachRequest; }
     }
-
+    public bool PreemptiveAuthentication
+    {
+      get { return _advancedOptions.PreemptiveAuthentication; }
+    }
     public ProxyOptions ProxyOptions
     {
       get { return _advancedOptions.ProxyOptions; }
