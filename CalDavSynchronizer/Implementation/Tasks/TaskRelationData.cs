@@ -24,17 +24,8 @@ namespace CalDavSynchronizer.Implementation.Tasks
   {
     public string AtypeId { get; set; }
     public DateTime AtypeVersion { get; set; }
-
-    [XmlIgnore]
+    
     public Uri BtypeId { get; set; }
-
-    [XmlElement ("BtypeId")]
-    public string SerializableBtypeId
-    {
-      get { return BtypeId.ToString(); }
-      set { BtypeId = new Uri (value, UriKind.Relative); }
-    }
-
     public string BtypeVersion { get; set; }
   }
 }

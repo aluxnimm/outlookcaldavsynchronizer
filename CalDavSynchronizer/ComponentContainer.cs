@@ -57,7 +57,7 @@ namespace CalDavSynchronizer
   public class ComponentContainer
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
-    private const int c_requiredEntityCacheVersion = 0;
+    private const int c_requiredEntityCacheVersion = 1;
 
     private readonly object _synchronizationContextLock = new object();
     private readonly Scheduler _scheduler;

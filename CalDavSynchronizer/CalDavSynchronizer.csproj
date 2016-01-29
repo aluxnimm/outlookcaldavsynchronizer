@@ -289,6 +289,7 @@
     <Compile Include="Implementation\TimeRangeFiltering\IDateTimeRangeProvider.cs" />
     <Compile Include="Implementation\TimeRangeFiltering\NullDateTimeRangeProvider.cs" />
     <Compile Include="ChangeWatching\OutlookItemChangeWatcher.cs" />
+    <Compile Include="DataAccess\WebResourceName.cs" />
     <Compile Include="Properties\AssemblyInfoCommon.cs" />
     <Compile Include="Reports\ReportGarbageCollection.cs" />
     <Compile Include="Scheduling\ISynchronizerFactory.cs" />

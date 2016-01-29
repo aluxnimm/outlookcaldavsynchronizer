@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using DDay.iCal;
 using GenSync.EntityRelationManagement;
@@ -24,9 +25,9 @@ using GenSync.Synchronization.States;
 namespace CalDavSynchronizer.Implementation.Tasks
 {
   internal class TaskUpdateFromNewerToOlder
-      : UpdateFromNewerToOlder<string, DateTime, TaskItemWrapper, Uri, string, IICalendar>
+      : UpdateFromNewerToOlder<string, DateTime, TaskItemWrapper, WebResourceName, string, IICalendar>
   {
-    public TaskUpdateFromNewerToOlder (EntitySyncStateEnvironment<string, DateTime, TaskItemWrapper, Uri, string, IICalendar> environment, IEntityRelationData<string, DateTime, Uri, string> knownData, DateTime newA, string newB)
+    public TaskUpdateFromNewerToOlder (EntitySyncStateEnvironment<string, DateTime, TaskItemWrapper, WebResourceName, string, IICalendar> environment, IEntityRelationData<string, DateTime, WebResourceName, string> knownData, DateTime newA, string newB)
         : base (environment, knownData, newA, newB)
     {
     }

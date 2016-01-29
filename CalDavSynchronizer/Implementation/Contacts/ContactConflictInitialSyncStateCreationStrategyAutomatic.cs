@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using GenSync.EntityRelationManagement;
 using GenSync.Synchronization;
@@ -26,14 +27,14 @@ using Thought.vCards;
 namespace CalDavSynchronizer.Implementation.Contacts
 {
   internal class ContactConflictInitialSyncStateCreationStrategyAutomatic
-      : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, ContactItemWrapper, Uri, string, vCard>
+      : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard>
   {
-    public ContactConflictInitialSyncStateCreationStrategyAutomatic (EntitySyncStateEnvironment<string, DateTime, ContactItemWrapper, Uri, string, vCard> environment)
+    public ContactConflictInitialSyncStateCreationStrategyAutomatic (EntitySyncStateEnvironment<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard> environment)
         : base (environment)
     {
     }
 
-    protected override IEntitySyncState<string, DateTime, ContactItemWrapper, Uri, string, vCard> Create_FromNewerToOlder (IEntityRelationData<string, DateTime, Uri, string> knownData, DateTime newA, string newB)
+    protected override IEntitySyncState<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard> Create_FromNewerToOlder (IEntityRelationData<string, DateTime, WebResourceName, string> knownData, DateTime newA, string newB)
     {
       return new OutlookCardDavUpdateFromNewerToOlder (
           _environment,

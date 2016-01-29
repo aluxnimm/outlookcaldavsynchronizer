@@ -235,22 +235,22 @@ namespace CalDavSynchronizer.DataAccess
 
     private const string s_calDavDateTimeFormatString = "yyyyMMddTHHmmssZ";
 
-    public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetEventVersions (DateTimeRange? range)
+    public Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetEventVersions (DateTimeRange? range)
     {
       return GetEntities (range, "VEVENT");
     }
 
-    public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetTodoVersions (DateTimeRange? range)
+    public Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetTodoVersions (DateTimeRange? range)
     {
       return GetEntities (range, "VTODO");
     }
 
-    public Task<EntityVersion<Uri, string>> CreateEntity (string iCalData, string uid)
+    public Task<EntityVersion<WebResourceName, string>> CreateEntity (string iCalData, string uid)
     {
       return CreateNewEntity (string.Format ("{0:D}.ics", uid), iCalData);
     }
 
-    protected async Task<EntityVersion<Uri, string>> CreateNewEntity (string name, string content)
+    protected async Task<EntityVersion<WebResourceName, string>> CreateNewEntity (string name, string content)
     {
       var eventUrl = new Uri (_serverUrl, name);
 
@@ -300,14 +300,14 @@ namespace CalDavSynchronizer.DataAccess
         version = await GetEtag (effectiveEventUrl);
       }
 
-      return new EntityVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveEventUrl), version);
+      return new EntityVersion<WebResourceName, string> (new WebResourceName(effectiveEventUrl), version);
     }
 
-    public async Task<EntityVersion<Uri, string>> UpdateEntity (Uri url, string etag, string contents)
+    public async Task<EntityVersion<WebResourceName, string>> UpdateEntity (WebResourceName url, string etag, string contents)
     {
       s_logger.DebugFormat ("Updating entity '{0}'", url);
 
-      var absoluteEventUrl = new Uri(_serverUrl, url);
+      var absoluteEventUrl = new Uri(_serverUrl, url.OriginalAbsolutePath);
 
       s_logger.DebugFormat ("Absolute entity location: '{0}'", absoluteEventUrl);
 
@@ -358,12 +358,12 @@ namespace CalDavSynchronizer.DataAccess
         version = await GetEtag (effectiveEventUrl);
       }
 
-      return new EntityVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveEventUrl), version);
+      return new EntityVersion<WebResourceName, string> (new WebResourceName(effectiveEventUrl), version);
     }
 
-    private async Task<IReadOnlyList<EntityVersion<Uri, string>>> GetEntities (DateTimeRange? range, string entityType)
+    private async Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetEntities (DateTimeRange? range, string entityType)
     {
-      var entities = new List<EntityVersion<Uri, string>>();
+      var entities = new List<EntityVersion<WebResourceName, string>>();
 
       try
       {
@@ -406,7 +406,7 @@ namespace CalDavSynchronizer.DataAccess
           var etagNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:getetag", responseXml.XmlNamespaceManager);
           if (urlNode != null && etagNode != null)
           {
-            var uri = UriHelper.UnescapeRelativeUri (_serverUrl, urlNode.InnerText);
+            var uri = new WebResourceName(urlNode.InnerText);
             entities.Add (EntityVersion.Create (uri, HttpUtility.GetQuotedEtag (etagNode.InnerText)));
           }
         }
@@ -426,7 +426,7 @@ namespace CalDavSynchronizer.DataAccess
       return entities;
     }
 
-    public async Task<IReadOnlyList<EntityWithId<Uri, string>>> GetEntities (IEnumerable<Uri> eventUrls)
+    public async Task<IReadOnlyList<EntityWithId<WebResourceName, string>>> GetEntities (IEnumerable<WebResourceName> eventUrls)
     {
       var requestBody = @"<?xml version=""1.0""?>
 			                    <C:calendar-multiget xmlns:C=""urn:ietf:params:xml:ns:caldav"" xmlns:D=""DAV:"">
@@ -435,7 +435,7 @@ namespace CalDavSynchronizer.DataAccess
 			                            <D:displayname/>
 			                            <C:calendar-data/>
 			                        </D:prop>
-                                        " + String.Join ("\r\n", eventUrls.Select (u => string.Format ("<D:href>{0}</D:href>", SecurityElement.Escape(u.ToString())))) + @"
+                                        " + String.Join ("\r\n", eventUrls.Select (u => string.Format ("<D:href>{0}</D:href>", SecurityElement.Escape(u.OriginalAbsolutePath)))) + @"
                                     </C:calendar-multiget>";
 
       var responseXml = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
@@ -450,7 +450,7 @@ namespace CalDavSynchronizer.DataAccess
 
       XmlNodeList responseNodes = responseXml.XmlDocument.SelectNodes ("/D:multistatus/D:response", responseXml.XmlNamespaceManager);
 
-      var entities = new List<EntityWithId<Uri, string>>();
+      var entities = new List<EntityWithId<WebResourceName, string>>();
 
       if (responseNodes == null)
         return entities;
@@ -463,21 +463,21 @@ namespace CalDavSynchronizer.DataAccess
         var dataNode = responseElement.SelectSingleNode ("D:propstat/D:prop/C:calendar-data", responseXml.XmlNamespaceManager);
         if (urlNode != null && dataNode != null)
         {
-          entities.Add (EntityWithId.Create (UriHelper.UnescapeRelativeUri (_serverUrl, urlNode.InnerText), dataNode.InnerText));
+          entities.Add (EntityWithId.Create (new WebResourceName(urlNode.InnerText), dataNode.InnerText));
         }
       }
 
       return entities;
     }
 
-    public async Task<IReadOnlyList<EntityVersion<Uri, string>>> GetVersions (IEnumerable<Uri> eventUrls)
+    public async Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetVersions (IEnumerable<WebResourceName> eventUrls)
     {
       var requestBody = @"<?xml version=""1.0""?>
 			                    <C:calendar-multiget xmlns:C=""urn:ietf:params:xml:ns:caldav"" xmlns:D=""DAV:"">
 			                        <D:prop>
 			                            <D:getetag/>
 			                        </D:prop>
-                                        " + String.Join ("\r\n", eventUrls.Select (u => string.Format ("<D:href>{0}</D:href>", SecurityElement.Escape(u.ToString())))) + @"
+                                        " + String.Join ("\r\n", eventUrls.Select (u => string.Format ("<D:href>{0}</D:href>", SecurityElement.Escape(u.OriginalAbsolutePath)))) + @"
                                     </C:calendar-multiget>";
 
       var responseXml = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
@@ -492,7 +492,7 @@ namespace CalDavSynchronizer.DataAccess
 
       XmlNodeList responseNodes = responseXml.XmlDocument.SelectNodes ("/D:multistatus/D:response", responseXml.XmlNamespaceManager);
 
-      var entities = new List<EntityVersion<Uri, string>>();
+      var entities = new List<EntityVersion<WebResourceName, string>>();
 
       if (responseNodes == null)
         return entities;
@@ -505,7 +505,7 @@ namespace CalDavSynchronizer.DataAccess
         var etagNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:getetag", responseXml.XmlNamespaceManager);
         if (urlNode != null && etagNode != null)
         {
-          entities.Add (EntityVersion.Create (UriHelper.UnescapeRelativeUri (_serverUrl, urlNode.InnerText),
+          entities.Add (EntityVersion.Create (new WebResourceName (urlNode.InnerText),
                                               HttpUtility.GetQuotedEtag (etagNode.InnerText)));
         }
       }

@@ -15,13 +15,14 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using CalDavSynchronizer.DataAccess;
 using GenSync.EntityRelationManagement;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class OutlookEventRelationDataFactory : IEntityRelationDataFactory<string, DateTime, Uri, string>
+  public class OutlookEventRelationDataFactory : IEntityRelationDataFactory<string, DateTime, WebResourceName, string>
   {
-    public IEntityRelationData<string, DateTime, Uri, string> Create (string atypeId, DateTime atypeVersion, Uri btypeId, string btypeVersion)
+    public IEntityRelationData<string, DateTime, WebResourceName, string> Create (string atypeId, DateTime atypeVersion, WebResourceName btypeId, string btypeVersion)
     {
       return new OutlookEventRelationData()
              {

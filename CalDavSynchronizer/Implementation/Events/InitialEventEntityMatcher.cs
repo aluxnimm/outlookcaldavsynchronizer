@@ -16,15 +16,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
+using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using DDay.iCal;
 using GenSync.InitialEntityMatching;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  internal class InitialEventEntityMatcher : InitialEntityMatcherByPropertyGrouping<AppointmentItemWrapper, string, DateTime, string, IICalendar, Uri, string, string>
+  internal class InitialEventEntityMatcher : InitialEntityMatcherByPropertyGrouping<AppointmentItemWrapper, string, DateTime, string, IICalendar, WebResourceName, string, string>
   {
-    public InitialEventEntityMatcher (IEqualityComparer<Uri> btypeIdEqualityComparer)
+    public InitialEventEntityMatcher (IEqualityComparer<WebResourceName> btypeIdEqualityComparer)
         : base (btypeIdEqualityComparer)
     {
     }

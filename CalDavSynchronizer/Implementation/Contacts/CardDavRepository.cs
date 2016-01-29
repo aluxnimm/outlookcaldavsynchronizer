@@ -33,7 +33,7 @@ using CalDavSynchronizer.ThoughtvCardWorkaround;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public class CardDavRepository : IEntityRepository<vCard, Uri, string>
+  public class CardDavRepository : IEntityRepository<vCard, WebResourceName, string>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -46,12 +46,12 @@ namespace CalDavSynchronizer.Implementation.Contacts
       _vCardImprovedWriter = new vCardImprovedWriter();
     }
 
-    public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetVersions (IEnumerable<IdWithAwarenessLevel<Uri>> idsOfEntitiesToQuery)
+    public Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetVersions (IEnumerable<IdWithAwarenessLevel<WebResourceName>> idsOfEntitiesToQuery)
     {
       throw new NotImplementedException();
     }
 
-    public async Task<IReadOnlyList<EntityVersion<Uri, string>>> GetAllVersions (IEnumerable<Uri> idsOfknownEntities)
+    public async Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetAllVersions (IEnumerable<WebResourceName> idsOfknownEntities)
     {
       using (AutomaticStopwatch.StartInfo (s_logger, "CardDavRepository.GetVersions"))
       {
@@ -59,10 +59,10 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    public async Task<IReadOnlyList<EntityWithId<Uri, vCard>>> Get (ICollection<Uri> ids, ILoadEntityLogger logger)
+    public async Task<IReadOnlyList<EntityWithId<WebResourceName, vCard>>> Get (ICollection<WebResourceName> ids, ILoadEntityLogger logger)
     {
       if (ids.Count == 0)
-        return new EntityWithId<Uri, vCard>[] { };
+        return new EntityWithId<WebResourceName, vCard>[] { };
 
       using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("CardDavRepository.Get ({0} entitie(s))", ids.Count)))
       {
@@ -71,18 +71,18 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    public void Cleanup (IReadOnlyDictionary<Uri, vCard> entities)
+    public void Cleanup (IReadOnlyDictionary<WebResourceName, vCard> entities)
     {
       // nothing to do
     }
 
-    private IReadOnlyList<EntityWithId<Uri, vCard>> ParallelDeserialize (IReadOnlyList<EntityWithId<Uri, string>> serializedEntities)
+    private IReadOnlyList<EntityWithId<WebResourceName, vCard>> ParallelDeserialize (IReadOnlyList<EntityWithId<WebResourceName, string>> serializedEntities)
     {
-      var result = new List<EntityWithId<Uri, vCard>>();
+      var result = new List<EntityWithId<WebResourceName, vCard>>();
 
       Parallel.ForEach (
           serializedEntities,
-          () => Tuple.Create (new vCardStandardReader(), new List<Tuple<Uri, vCard>>()),
+          () => Tuple.Create (new vCardStandardReader(), new List<Tuple<WebResourceName, vCard>>()),
           (serialized, loopState, threadLocal) =>
           {
             vCard vcard;
@@ -104,7 +104,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
     }
 
 
-    public Task Delete (Uri entityId, string version)
+    public Task Delete (WebResourceName entityId, string version)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
@@ -112,8 +112,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    public Task<EntityVersion<Uri, string>> Update (
-        Uri entityId,
+    public Task<EntityVersion<WebResourceName, string>> Update (
+        WebResourceName entityId,
         string entityVersion,
         vCard entityToUpdate,
         Func<vCard, vCard> entityModifier)
@@ -128,7 +128,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    public async Task<EntityVersion<Uri, string>> Create (Func<vCard, vCard> entityInitializer)
+    public async Task<EntityVersion<WebResourceName, string>> Create (Func<vCard, vCard> entityInitializer)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
@@ -154,7 +154,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    private static bool TryDeserialize (string vcardData, out vCard vcard, Uri uriOfAddressbookForLogging, vCardStandardReader deserializer)
+    private static bool TryDeserialize (string vcardData, out vCard vcard, WebResourceName uriOfAddressbookForLogging, vCardStandardReader deserializer)
     {
       vcard = null;
       string fixedVcardData = ContactDataPreprocessor.FixRevisionDate (vcardData);

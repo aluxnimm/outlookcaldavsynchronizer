@@ -21,6 +21,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using CalDavSynchronizer.DataAccess;
 using GenSync.EntityRelationManagement;
 
 namespace CalDavSynchronizerTestAutomation.Infrastructure
@@ -46,7 +47,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
   }
 
 
-  internal class InMemoryEntityRelationStorage : InMemoryEntityRelationStorage<string, DateTime, IEntityRelationData<string, DateTime, Uri, string>, Uri, string>
+  internal class InMemoryEntityRelationStorage : InMemoryEntityRelationStorage<string, DateTime, IEntityRelationData<string, DateTime, WebResourceName, string>, WebResourceName, string>
   {
   }
 }
