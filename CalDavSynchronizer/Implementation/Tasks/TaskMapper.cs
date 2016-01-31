@@ -94,8 +94,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       if (source.Inner.Complete && source.Inner.DateCompleted != _dateNull)
       {
-        target.Completed = new iCalDateTime (source.Inner.DateCompleted.Year, source.Inner.DateCompleted.Month, source.Inner.DateCompleted.Day, true);
-        target.Completed.SetTimeZone (localIcalTimeZone);
+        target.Completed = new iCalDateTime (source.Inner.DateCompleted.ToUniversalTime()) { IsUniversalTime = true };
       }
 
       target.PercentComplete = source.Inner.PercentComplete;
