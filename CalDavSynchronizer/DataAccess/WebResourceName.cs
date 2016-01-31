@@ -52,6 +52,16 @@ namespace CalDavSynchronizer.DataAccess
       
     }
 
+    public override int GetHashCode ()
+    {
+      return Comparer.GetHashCode (this);
+    }
+
+    public override bool Equals (object obj)
+    {
+      return Comparer.Equals (this, obj as WebResourceName);
+    }
+
     public static readonly IEqualityComparer<WebResourceName> Comparer = new WebResourceNameEqualityComparer();
 
     private class WebResourceNameEqualityComparer : IEqualityComparer<WebResourceName>
