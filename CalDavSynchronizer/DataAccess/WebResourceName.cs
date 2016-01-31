@@ -60,6 +60,12 @@ namespace CalDavSynchronizer.DataAccess
 
       public bool Equals (WebResourceName x, WebResourceName y)
       {
+        if (x == null)
+          return y == null;
+
+        if (y == null)
+          return false;
+
         return s_stringComparer.Equals (x.Id, y.Id);
       }
 
