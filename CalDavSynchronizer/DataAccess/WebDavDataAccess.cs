@@ -263,11 +263,6 @@ namespace CalDavSynchronizer.DataAccess
     /// </summary>
     protected static class UriHelper
     {
-      public static Uri GetUnescapedPath (Uri absoluteUri)
-      {
-        return new Uri (absoluteUri.GetComponents (UriComponents.Path | UriComponents.KeepDelimiter, UriFormat.Unescaped), UriKind.Relative);
-      }
-
       public static Uri UnescapeRelativeUri (Uri baseUri, string relativeUriString)
       {
 
