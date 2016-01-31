@@ -163,7 +163,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
     {
       var calDavDataAccess = MockRepository.GenerateMock<ICalDavDataAccess>();
 
-      var entityUri = new WebResourceName("e1");
+      var entityUri = new WebResourceName("/e1");
 
       calDavDataAccess
           .Expect (r => r.GetEventVersions (null))
