@@ -34,11 +34,54 @@ namespace CalDavSynchronizer.Implementation.Events
     {
       var evt = btypeEntity.Events[0];
 
-      return
-          evt.Summary == atypeEntity.Inner.Subject &&
-          (evt.IsAllDay && atypeEntity.Inner.AllDayEvent ||
-           evt.Start.UTC == atypeEntity.Inner.StartUTC &&
-           ((evt.DTEnd == null && evt.Start.UTC == atypeEntity.Inner.EndUTC) || (evt.DTEnd != null && evt.DTEnd.UTC == atypeEntity.Inner.EndUTC)));
+      if (evt.Summary == atypeEntity.Inner.Subject)
+      {
+        if (evt.IsAllDay && atypeEntity.Inner.AllDayEvent)
+        {
+          if (evt.Start.Value == atypeEntity.Inner.Start)
+          {
+            if (evt.End == null)
+              return evt.Start.Value.AddDays(1) == atypeEntity.Inner.End;
+            else
+              return evt.End.Value == atypeEntity.Inner.End;
+          }
+          else return false;
+        }
+        else if (!evt.IsAllDay)
+        {
+          if (evt.Start.IsUniversalTime)
+          {
+            if (evt.Start.Value == atypeEntity.Inner.StartUTC)
+            {
+              if (evt.DTEnd == null)
+                return evt.Start.Value == atypeEntity.Inner.EndUTC;
+              else
+              {
+                if (evt.DTEnd.IsUniversalTime)
+                  return evt.DTEnd.Value == atypeEntity.Inner.EndUTC;
+                else
+                  return evt.DTEnd.Value == atypeEntity.Inner.EndInEndTimeZone;
+              }
+            }
+            else return false;
+          }
+          else if (evt.Start.Value == atypeEntity.Inner.StartInStartTimeZone)
+          {
+            if (evt.DTEnd == null)
+              return evt.Start.Value == atypeEntity.Inner.EndInEndTimeZone;
+            else
+            {
+              if (evt.DTEnd.IsUniversalTime)
+                return evt.DTEnd.Value == atypeEntity.Inner.EndUTC;
+              else
+                return evt.DTEnd.Value == atypeEntity.Inner.EndInEndTimeZone;
+            }
+          }
+          else
+            return false;
+        }
+      }
+      return false;
     }
 
     protected override string GetAtypePropertyValue (AppointmentItemWrapper atypeEntity)
