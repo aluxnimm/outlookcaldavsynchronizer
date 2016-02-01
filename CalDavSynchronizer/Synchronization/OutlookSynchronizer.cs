@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
 using GenSync.Logging;
 using GenSync.Synchronization;
@@ -26,10 +27,10 @@ namespace CalDavSynchronizer.Synchronization
 {
   public class OutlookSynchronizer : IOutlookSynchronizer
   {
-    private readonly IPartialSynchronizer<string, Uri> _synchronizer;
+    private readonly IPartialSynchronizer<string, WebResourceName> _synchronizer;
     private readonly IOutlookRepository _outlookRepository;
 
-    public OutlookSynchronizer (IPartialSynchronizer<string, Uri> synchronizer, IOutlookRepository outlookRepository)
+    public OutlookSynchronizer (IPartialSynchronizer<string, WebResourceName> synchronizer, IOutlookRepository outlookRepository)
     {
       _synchronizer = synchronizer;
       _outlookRepository = outlookRepository;
@@ -42,7 +43,7 @@ namespace CalDavSynchronizer.Synchronization
 
     public async Task SnychronizePartialNoThrow (IEnumerable<string> outlookIds, ISynchronizationLogger logger)
     {
-      await _synchronizer.SynchronizePartialNoThrow (outlookIds, new Uri[] { }, logger);
+      await _synchronizer.SynchronizePartialNoThrow (outlookIds, new WebResourceName[] { }, logger);
     }
 
     public bool IsResponsible (string folderEntryId, string folderStoreId)

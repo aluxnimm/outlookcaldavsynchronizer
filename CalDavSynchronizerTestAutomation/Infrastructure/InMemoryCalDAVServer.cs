@@ -27,7 +27,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
 {
   internal class InMemoryCalDAVServer : ICalDavDataAccess
   {
-    private readonly Dictionary<Uri, Tuple<string, string>> _entites = new Dictionary<Uri, Tuple<string, string>>();
+    private readonly Dictionary<WebResourceName, Tuple<string, string>> _entites = new Dictionary<WebResourceName, Tuple<string, string>>(WebResourceName.Comparer);
 
     public Task<bool> IsResourceCalender ()
     {
@@ -58,45 +58,45 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       throw new NotImplementedException();
     }
 
-    public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetEventVersions (DateTimeRange? range)
+    public Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetEventVersions (DateTimeRange? range)
     {
       if (range != null)
         throw new NotSupportedException ("range not supported");
 
-      return Task.FromResult<IReadOnlyList<EntityVersion<Uri, string>>> (
+      return Task.FromResult<IReadOnlyList<EntityVersion<WebResourceName, string>>> (
           _entites.Select (e => EntityVersion.Create (e.Key, e.Value.Item1)).ToList());
     }
 
-    public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetTodoVersions (DateTimeRange? range)
+    public Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetTodoVersions (DateTimeRange? range)
     {
       if (range != null)
         throw new NotSupportedException ("range not supported");
 
-      return Task.FromResult<IReadOnlyList<EntityVersion<Uri, string>>> (
+      return Task.FromResult<IReadOnlyList<EntityVersion<WebResourceName, string>>> (
           _entites.Select (e => EntityVersion.Create (e.Key, e.Value.Item1)).ToList());
     }
 
-    public Task<IReadOnlyList<EntityVersion<Uri, string>>> GetVersions (IEnumerable<Uri> eventUrls)
+    public Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetVersions (IEnumerable<WebResourceName> eventUrls)
     {
-      return Task.FromResult<IReadOnlyList<EntityVersion<Uri, string>>> (
+      return Task.FromResult<IReadOnlyList<EntityVersion<WebResourceName, string>>> (
           eventUrls.Select (id => EntityVersion.Create (id, _entites[id].Item1)).ToList());
     }
 
-    public Task<IReadOnlyList<EntityWithId<Uri, string>>> GetEntities (IEnumerable<Uri> eventUrls)
+    public Task<IReadOnlyList<EntityWithId<WebResourceName, string>>> GetEntities (IEnumerable<WebResourceName> eventUrls)
     {
-      return Task.FromResult<IReadOnlyList<EntityWithId<Uri, string>>> (
+      return Task.FromResult<IReadOnlyList<EntityWithId<WebResourceName, string>>> (
           eventUrls.Select (id => EntityWithId.Create (id, _entites[id].Item2)).ToList());
     }
 
-    public Task<EntityVersion<Uri, string>> CreateEntity (string iCalData, string uid)
+    public Task<EntityVersion<WebResourceName, string>> CreateEntity (string iCalData, string uid)
     {
-      var id = new Uri ("http://bla.com/" + Guid.NewGuid());
+      var id = new WebResourceName( Guid.NewGuid().ToString());
       const int version = 1;
       _entites.Add (id, Tuple.Create (version.ToString(), iCalData));
       return Task.FromResult (EntityVersion.Create (id, version.ToString()));
     }
 
-    public Task DeleteEntity (Uri uri, string etag)
+    public Task DeleteEntity (WebResourceName uri, string etag)
     {
       if (!_entites.ContainsKey (uri))
         throw new Exception ("tried to delete non existing entity!");
@@ -108,8 +108,8 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       return Task.FromResult (0);
     }
 
-    public Task<EntityVersion<Uri, string>> UpdateEntity (
-        Uri url,
+    public Task<EntityVersion<WebResourceName, string>> UpdateEntity (
+        WebResourceName url,
         string version,
         string iCalData)
     {

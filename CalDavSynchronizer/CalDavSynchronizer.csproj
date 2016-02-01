@@ -250,6 +250,7 @@
     <Compile Include="DataAccess\WebRequestBasedClient\WebHeaderCollectionAdapter.cs" />
     <Compile Include="DataAccess\WebRequestBasedClient\WebDavClient.cs" />
     <Compile Include="DDayICalWorkaround\CalendarDataPreprocessor.cs" />
+    <Compile Include="EntityCacheVersionConversion\Version0To1.cs" />
     <Compile Include="Implementation\Common\CommonEntityMapper.cs" />
     <Compile Include="Implementation\ComWrappers\ContactItemWrapper.cs" />
     <Compile Include="Implementation\ComWrappers\TaskItemWrapper.cs" />
@@ -289,6 +290,7 @@
     <Compile Include="Implementation\TimeRangeFiltering\IDateTimeRangeProvider.cs" />
     <Compile Include="Implementation\TimeRangeFiltering\NullDateTimeRangeProvider.cs" />
     <Compile Include="ChangeWatching\OutlookItemChangeWatcher.cs" />
+    <Compile Include="DataAccess\WebResourceName.cs" />
     <Compile Include="Properties\AssemblyInfoCommon.cs" />
     <Compile Include="Reports\ReportGarbageCollection.cs" />
     <Compile Include="Scheduling\ISynchronizerFactory.cs" />

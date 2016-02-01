@@ -147,12 +147,12 @@ namespace CalDavSynchronizer.DataAccess
           );
     }
 
-    public Task<EntityVersion<Uri, string>> CreateEntity (string vCardData, string uid)
+    public Task<EntityVersion<WebResourceName, string>> CreateEntity (string vCardData, string uid)
     {
       return CreateNewEntity (string.Format ("{0:D}.vcf", uid), vCardData);
     }
 
-    protected async Task<EntityVersion<Uri, string>> CreateNewEntity (string name, string content)
+    protected async Task<EntityVersion<WebResourceName, string>> CreateNewEntity (string name, string content)
     {
       var contactUrl = new Uri (_serverUrl, name);
 
@@ -202,14 +202,14 @@ namespace CalDavSynchronizer.DataAccess
         version = await GetEtag (effectiveContactUrl);
       }
 
-      return new EntityVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveContactUrl), version);
+      return new EntityVersion<WebResourceName, string> (new WebResourceName(effectiveContactUrl), version);
     }
 
-    public async Task<EntityVersion<Uri, string>> UpdateEntity (Uri url, string etag, string contents)
+    public async Task<EntityVersion<WebResourceName, string>> UpdateEntity (WebResourceName url, string etag, string contents)
     {
       s_logger.DebugFormat ("Updating entity '{0}'", url);
 
-      var absoluteContactUrl = new Uri (_serverUrl, url);
+      var absoluteContactUrl = new Uri (_serverUrl, url.OriginalAbsolutePath);
 
       s_logger.DebugFormat ("Absolute entity location: '{0}'", absoluteContactUrl);
 
@@ -260,12 +260,12 @@ namespace CalDavSynchronizer.DataAccess
         version = await GetEtag (effectiveContactUrl);
       }
 
-      return new EntityVersion<Uri, string> (UriHelper.GetUnescapedPath (effectiveContactUrl), version);
+      return new EntityVersion<WebResourceName, string> (new WebResourceName(effectiveContactUrl), version);
     }
 
-    public async Task<IReadOnlyList<EntityVersion<Uri, string>>> GetContacts ()
+    public async Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetContacts ()
     {
-      var entities = new List<EntityVersion<Uri, string>>();
+      var entities = new List<EntityVersion<WebResourceName, string>>();
 
       try
       {
@@ -311,8 +311,7 @@ namespace CalDavSynchronizer.DataAccess
                   contentType != "text/x-vlist"
                )
             {
-              var uri = UriHelper.UnescapeRelativeUri (_serverUrl, urlNode.InnerText);
-              entities.Add (EntityVersion.Create (uri, eTag));
+              entities.Add (EntityVersion.Create (new WebResourceName(urlNode.InnerText), eTag));
             }
           }
         }
@@ -332,7 +331,7 @@ namespace CalDavSynchronizer.DataAccess
       return entities;
     }
 
-    public async Task<IReadOnlyList<EntityWithId<Uri, string>>> GetEntities (IEnumerable<Uri> urls)
+    public async Task<IReadOnlyList<EntityWithId<WebResourceName, string>>> GetEntities (IEnumerable<WebResourceName> urls)
     {
       var requestBody = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
    <A:addressbook-multiget xmlns:D=""DAV:"" xmlns:A=""urn:ietf:params:xml:ns:carddav"">
@@ -341,7 +340,7 @@ namespace CalDavSynchronizer.DataAccess
        <D:getcontenttype/>
        <A:address-data/>
      </D:prop>
-     " + String.Join ("\r\n", urls.Select (u => string.Format ("<D:href>{0}</D:href>", SecurityElement.Escape(u.ToString())))) + @"
+     " + String.Join ("\r\n", urls.Select (u => string.Format ("<D:href>{0}</D:href>", SecurityElement.Escape(u.OriginalAbsolutePath)))) + @"
    </A:addressbook-multiget>
  ";
 
@@ -358,7 +357,7 @@ namespace CalDavSynchronizer.DataAccess
 
       XmlNodeList responseNodes = responseXml.XmlDocument.SelectNodes ("/D:multistatus/D:response", responseXml.XmlNamespaceManager);
 
-      var entities = new List<EntityWithId<Uri, string>>();
+      var entities = new List<EntityWithId<WebResourceName, string>>();
 
       if (responseNodes == null)
         return entities;
@@ -375,7 +374,7 @@ namespace CalDavSynchronizer.DataAccess
         // TODO: add vlist support but for now filter out sogo vlists since we can't parse them atm
         if (urlNode != null && dataNode != null && !string.IsNullOrEmpty (dataNode.InnerText) && contentType != "text/x-vlist")
         {
-          entities.Add (EntityWithId.Create (UriHelper.UnescapeRelativeUri (_serverUrl, urlNode.InnerText), dataNode.InnerText));
+          entities.Add (EntityWithId.Create (new WebResourceName(urlNode.InnerText), dataNode.InnerText));
         }
       }
 

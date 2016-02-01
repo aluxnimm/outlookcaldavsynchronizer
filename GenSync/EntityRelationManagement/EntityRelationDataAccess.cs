@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,36 +23,44 @@ using System.Xml.Serialization;
 
 namespace GenSync.EntityRelationManagement
 {
+  public static class EntityRelationDataAccess
+  {
+    private const string s_relationStorageName = "relations.xml";
+
+    public static string GetRelationStoragePath (string profileDataDirectory)
+    {
+      return Path.Combine (profileDataDirectory, s_relationStorageName);
+    }
+  }
+
   /// <summary>
   /// Defaultimplementation for IEntityRelationDataAccess, which uses  an XML-file as underlying storage
   /// </summary>
   public class EntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TEntityRelationData, TBtypeEntityId, TBtypeEntityVersion> : IEntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
       where TEntityRelationData : IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
   {
-    private const string s_relationStorageName = "relations.xml";
-
     private readonly XmlSerializer _serializer = new XmlSerializer (typeof (List<TEntityRelationData>));
-    private readonly string _dataDirectory;
+    private readonly string _relationStorageFile;
 
     public EntityRelationDataAccess (string dataDirectory)
     {
-      _dataDirectory = dataDirectory;
+      _relationStorageFile = EntityRelationDataAccess.GetRelationStoragePath (dataDirectory);
     }
 
     public void DeleteCaches ()
     {
-      if (!Directory.Exists (_dataDirectory))
+      if (!File.Exists (_relationStorageFile))
         return;
 
-      File.Delete (GetFullEntityPath (s_relationStorageName));
+      File.Delete (_relationStorageFile);
     }
 
     public IReadOnlyCollection<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> LoadEntityRelationData ()
     {
-      if (!DoesEntityExist (s_relationStorageName))
+      if (!File.Exists (_relationStorageFile))
         return null;
 
-      using (var stream = CreateInputStream (s_relationStorageName))
+      using (var stream = CreateInputStream())
       {
         var result = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
         foreach (var d in (List<TEntityRelationData>) _serializer.Deserialize (stream))
@@ -65,35 +74,25 @@ namespace GenSync.EntityRelationManagement
 
     public void SaveEntityRelationData (List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> data)
     {
-      if (!Directory.Exists (_dataDirectory))
-        Directory.CreateDirectory (_dataDirectory);
+      if (!Directory.Exists (Path.GetDirectoryName (_relationStorageFile)))
+        Directory.CreateDirectory (Path.GetDirectoryName (_relationStorageFile));
 
       var typedData = data.Cast<TEntityRelationData>().ToList();
 
-      using (var stream = CreateOutputStream (s_relationStorageName))
+      using (var stream = CreateOutputStream())
       {
         _serializer.Serialize (stream, typedData);
       }
     }
 
-    private bool DoesEntityExist (string entityId)
+    private Stream CreateOutputStream ()
     {
-      return File.Exists (GetFullEntityPath (entityId));
+      return new FileStream (_relationStorageFile, FileMode.Create, FileAccess.Write);
     }
 
-    private Stream CreateOutputStream (string entityId)
+    private Stream CreateInputStream ()
     {
-      return new FileStream (GetFullEntityPath (entityId), FileMode.Create, FileAccess.Write);
-    }
-
-    private string GetFullEntityPath (string entityId)
-    {
-      return Path.Combine (_dataDirectory, entityId);
-    }
-
-    private Stream CreateInputStream (string entityId)
-    {
-      return new FileStream (GetFullEntityPath (entityId), FileMode.Open, FileAccess.Read);
+      return new FileStream (_relationStorageFile, FileMode.Open, FileAccess.Read);
     }
   }
 }

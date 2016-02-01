@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using GenSync;
 
@@ -32,15 +33,15 @@ namespace CalDavSynchronizer.DataAccess
     Task<string> GetCalendarColorNoThrow ();
     Task<bool> SetCalendarColorNoThrow (string calendarColor);
 
-    Task<IReadOnlyList<EntityVersion<Uri, string>>> GetEventVersions (DateTimeRange? range);
-    Task<IReadOnlyList<EntityVersion<Uri, string>>> GetTodoVersions (DateTimeRange? range);
-    Task<IReadOnlyList<EntityVersion<Uri, string>>> GetVersions (IEnumerable<Uri> eventUrls);
+    Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetEventVersions (DateTimeRange? range);
+    Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetTodoVersions (DateTimeRange? range);
+    Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetVersions (IEnumerable<WebResourceName> eventUrls);
 
-    Task<IReadOnlyList<EntityWithId<Uri, string>>> GetEntities (IEnumerable<Uri> eventUrls);
+    Task<IReadOnlyList<EntityWithId<WebResourceName, string>>> GetEntities (IEnumerable<WebResourceName> eventUrls);
 
-    Task<EntityVersion<Uri, string>> CreateEntity (string iCalData, string uid);
+    Task<EntityVersion<WebResourceName, string>> CreateEntity (string iCalData, string uid);
 
-    Task DeleteEntity (Uri uri, string etag);
-    Task<EntityVersion<Uri, string>> UpdateEntity (Uri url, string etag, string iCalData);
+    Task DeleteEntity (WebResourceName uri, string etag);
+    Task<EntityVersion<WebResourceName, string>> UpdateEntity (WebResourceName url, string etag, string iCalData);
   }
 }

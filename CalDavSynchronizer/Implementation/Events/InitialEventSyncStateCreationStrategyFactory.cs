@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using DDay.iCal;
 using GenSync.Synchronization;
@@ -26,14 +27,14 @@ namespace CalDavSynchronizer.Implementation.Events
 {
   public static class InitialEventSyncStateCreationStrategyFactory
   {
-    private static IConflictInitialSyncStateCreationStrategy<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> Create (IEntitySyncStateFactory<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> syncStateFactory, EntitySyncStateEnvironment<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> environment, ConflictResolution conflictResolution)
+    private static IConflictInitialSyncStateCreationStrategy<string, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar> Create (IEntitySyncStateFactory<string, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar> syncStateFactory, EntitySyncStateEnvironment<string, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar> environment, ConflictResolution conflictResolution)
     {
       switch (conflictResolution)
       {
         case ConflictResolution.OutlookWins:
-          return new ConflictInitialSyncStateCreationStrategyAWins<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (syncStateFactory);
+          return new ConflictInitialSyncStateCreationStrategyAWins<string, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar> (syncStateFactory);
         case ConflictResolution.ServerWins:
-          return new ConflictInitialSyncStateCreationStrategyBWins<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (syncStateFactory);
+          return new ConflictInitialSyncStateCreationStrategyBWins<string, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar> (syncStateFactory);
         case ConflictResolution.Automatic:
           return new EventConflictInitialSyncStateCreationStrategyAutomatic (environment);
       }
@@ -41,25 +42,25 @@ namespace CalDavSynchronizer.Implementation.Events
       throw new NotImplementedException();
     }
 
-    public static IInitialSyncStateCreationStrategy<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> Create (IEntitySyncStateFactory<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> syncStateFactory, EntitySyncStateEnvironment<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> environment, SynchronizationMode synchronizationMode, ConflictResolution conflictResolution)
+    public static IInitialSyncStateCreationStrategy<string, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar> Create (IEntitySyncStateFactory<string, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar> syncStateFactory, EntitySyncStateEnvironment<string, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar> environment, SynchronizationMode synchronizationMode, ConflictResolution conflictResolution)
     {
       switch (synchronizationMode)
       {
         case SynchronizationMode.MergeInBothDirections:
           var conflictResolutionStrategy = Create (syncStateFactory, environment, conflictResolution);
-          return new TwoWayInitialSyncStateCreationStrategy<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (
+          return new TwoWayInitialSyncStateCreationStrategy<string, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar> (
               syncStateFactory,
               conflictResolutionStrategy
               );
         case SynchronizationMode.ReplicateOutlookIntoServer:
         case SynchronizationMode.MergeOutlookIntoServer:
-          return new OneWayInitialSyncStateCreationStrategy_AToB<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (
+          return new OneWayInitialSyncStateCreationStrategy_AToB<string, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar> (
               syncStateFactory,
               synchronizationMode == SynchronizationMode.ReplicateOutlookIntoServer ? OneWaySyncMode.Replicate : OneWaySyncMode.Merge
               );
         case SynchronizationMode.ReplicateServerIntoOutlook:
         case SynchronizationMode.MergeServerIntoOutlook:
-          return new OneWayInitialSyncStateCreationStrategy_BToA<string, DateTime, AppointmentItemWrapper, Uri, string, IICalendar> (
+          return new OneWayInitialSyncStateCreationStrategy_BToA<string, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar> (
               syncStateFactory,
               synchronizationMode == SynchronizationMode.ReplicateServerIntoOutlook ? OneWaySyncMode.Replicate : OneWaySyncMode.Merge
               );

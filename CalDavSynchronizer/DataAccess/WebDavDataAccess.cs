@@ -214,11 +214,11 @@ namespace CalDavSynchronizer.DataAccess
           );
     }
 
-    public async Task DeleteEntity (Uri uri, string etag)
+    public async Task DeleteEntity (WebResourceName uri, string etag)
     {
       s_logger.DebugFormat ("Deleting entity '{0}'", uri);
 
-      var absoluteEventUrl = new Uri (_serverUrl, uri);
+      var absoluteEventUrl = new Uri (_serverUrl, uri.OriginalAbsolutePath);
 
       s_logger.DebugFormat ("Absolute entity location: '{0}'", absoluteEventUrl);
 
@@ -263,11 +263,6 @@ namespace CalDavSynchronizer.DataAccess
     /// </summary>
     protected static class UriHelper
     {
-      public static Uri GetUnescapedPath (Uri absoluteUri)
-      {
-        return new Uri (absoluteUri.GetComponents (UriComponents.Path | UriComponents.KeepDelimiter, UriFormat.Unescaped), UriKind.Relative);
-      }
-
       public static Uri UnescapeRelativeUri (Uri baseUri, string relativeUriString)
       {
 

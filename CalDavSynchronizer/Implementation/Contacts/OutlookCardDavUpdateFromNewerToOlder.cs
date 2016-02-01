@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using GenSync.EntityRelationManagement;
 using GenSync.Synchronization;
@@ -26,13 +27,13 @@ using Thought.vCards;
 namespace CalDavSynchronizer.Implementation.Contacts
 {
   internal class OutlookCardDavUpdateFromNewerToOlder
-      : UpdateFromNewerToOlder<string, DateTime, ContactItemWrapper, Uri, string, vCard>
+      : UpdateFromNewerToOlder<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
 
     public OutlookCardDavUpdateFromNewerToOlder (
-        EntitySyncStateEnvironment<string, DateTime, ContactItemWrapper, Uri, string, vCard> environment,
-        IEntityRelationData<string, DateTime, Uri, string> knownData,
+        EntitySyncStateEnvironment<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard> environment,
+        IEntityRelationData<string, DateTime, WebResourceName, string> knownData,
         DateTime newA,
         string newB)
         : base (environment, knownData, newA, newB)

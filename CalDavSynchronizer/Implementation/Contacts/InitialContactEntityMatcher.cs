@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
+using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using GenSync.InitialEntityMatching;
 using Microsoft.Office.Interop.Outlook;
@@ -23,9 +24,9 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  internal class InitialContactEntityMatcher : InitialEntityMatcherByPropertyGrouping<ContactItemWrapper, string, DateTime, string, vCard, Uri, string, string>
+  internal class InitialContactEntityMatcher : InitialEntityMatcherByPropertyGrouping<ContactItemWrapper, string, DateTime, string, vCard, WebResourceName, string, string>
   {
-    public InitialContactEntityMatcher (IEqualityComparer<Uri> btypeIdEqualityComparer)
+    public InitialContactEntityMatcher (IEqualityComparer<WebResourceName> btypeIdEqualityComparer)
         : base (btypeIdEqualityComparer)
     {
     }

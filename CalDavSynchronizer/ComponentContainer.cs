@@ -50,6 +50,7 @@ using Microsoft.Office.Interop.Outlook;
 using Application = Microsoft.Office.Interop.Outlook.Application;
 using Exception = System.Exception;
 using System.Collections.Generic;
+using GenSync.EntityRelationManagement;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace CalDavSynchronizer
@@ -57,7 +58,8 @@ namespace CalDavSynchronizer
   public class ComponentContainer
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
-    private const int c_requiredEntityCacheVersion = 0;
+    // ReSharper disable once ConvertToConstant.Local
+    private readonly int c_requiredEntityCacheVersion = 1;
 
     private readonly object _synchronizationContextLock = new object();
     private readonly Scheduler _scheduler;
@@ -130,7 +132,7 @@ namespace CalDavSynchronizer
         EnsureSynchronizationContext);
       var options = _optionsDataAccess.LoadOptions();
 
-      DeleteEntityChachesWithWrongVersion (options);
+      EnsureCacheCompatibility (options);
 
       _scheduler.SetOptions (options, generalOptions.CheckIfOnline);
 
@@ -141,13 +143,29 @@ namespace CalDavSynchronizer
       _reportGarbageCollection = new ReportGarbageCollection (_synchronizationReportRepository, TimeSpan.FromDays (generalOptions.MaxReportAgeInDays));
     }
 
-    private void DeleteEntityChachesWithWrongVersion (Options[] options)
+    private void EnsureCacheCompatibility (Options[] options)
     {
       var currentEntityCacheVersion = _generalOptionsDataAccess.EntityCacheVersion;
-      if (currentEntityCacheVersion != c_requiredEntityCacheVersion)
+
+      if (currentEntityCacheVersion == 0 && c_requiredEntityCacheVersion == 1)
+      {
+        try
+        {
+          s_logger.InfoFormat ("Converting caches from 0 to 1");
+          EntityCacheVersionConversion.Version0To1.Convert (
+            options.Select (o => EntityRelationDataAccess.GetRelationStoragePath(GetProfileDataDirectory (o.Id))).ToArray());
+          _generalOptionsDataAccess.EntityCacheVersion = c_requiredEntityCacheVersion;
+        }
+        catch (Exception x)
+        {
+          s_logger.Error ("Error during conversion. Deleting caches",x);
+          if (DeleteCachesForProfiles (options.Select (p => Tuple.Create (p.Id, p.Name))))
+            _generalOptionsDataAccess.EntityCacheVersion = c_requiredEntityCacheVersion;
+        }
+      }
+      else if (currentEntityCacheVersion != c_requiredEntityCacheVersion)
       {
         s_logger.InfoFormat ("Image requires cache version '{0}',but caches have version '{1}'. Deleting caches.", c_requiredEntityCacheVersion, currentEntityCacheVersion);
-
         if (DeleteCachesForProfiles (options.Select (p => Tuple.Create (p.Id, p.Name))))
           _generalOptionsDataAccess.EntityCacheVersion = c_requiredEntityCacheVersion;
       }
