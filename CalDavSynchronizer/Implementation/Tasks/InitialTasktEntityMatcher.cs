@@ -32,9 +32,71 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
     protected override bool AreEqual (TaskItemWrapper atypeEntity, IICalendar btypeEntity)
     {
-      // TODO: find a rule, when two tasks are considered to be equal (maybe subject is not enough)
+      var task = btypeEntity.Todos[0];
 
-      return atypeEntity.Inner.Subject == btypeEntity.Todos[0].Summary;
+      if (atypeEntity.Inner.Subject == task.Summary)
+      {
+        NodaTime.DateTimeZone localZone = NodaTime.DateTimeZoneProviders.Bcl.GetSystemDefault();
+        DateTime dateNull = new DateTime (4501, 1, 1, 0, 0, 0);
+
+        if (task.Start != null)
+        {
+          if (task.Start.IsUniversalTime)
+          {
+            if (atypeEntity.Inner.StartDate == NodaTime.Instant.FromDateTimeUtc (task.Start.Value).InZone (localZone).ToDateTimeUnspecified().Date)
+            {
+              if (task.Due != null)
+              {
+                if (task.Due.IsUniversalTime)
+                {
+                  return atypeEntity.Inner.DueDate == NodaTime.Instant.FromDateTimeUtc (task.Due.Value).InZone (localZone).ToDateTimeUnspecified().Date;
+                }
+                else
+                {
+                  return atypeEntity.Inner.DueDate == task.Due.Date;
+                }
+              }
+              return atypeEntity.Inner.DueDate == dateNull;
+            }
+            else
+              return false;
+          }
+          else
+          {
+            if (atypeEntity.Inner.StartDate == task.Start.Date)
+            {
+              if (task.Due != null)
+              {
+                if (task.Due.IsUniversalTime)
+                {
+                  return atypeEntity.Inner.DueDate == NodaTime.Instant.FromDateTimeUtc (task.Due.Value).InZone (localZone).ToDateTimeUnspecified().Date;
+                }
+                else
+                {
+                  return atypeEntity.Inner.DueDate == task.Due.Date;
+                }
+              }
+              return atypeEntity.Inner.DueDate == dateNull;
+            }
+            else
+              return false;
+          }
+        }
+        else if (task.Due != null)
+        {
+          if (task.Due.IsUniversalTime)
+          {
+            return atypeEntity.Inner.StartDate == dateNull && atypeEntity.Inner.DueDate == NodaTime.Instant.FromDateTimeUtc (task.Due.Value).InZone (localZone).ToDateTimeUnspecified().Date;
+          }
+          else
+          {
+            return atypeEntity.Inner.StartDate == dateNull && atypeEntity.Inner.DueDate == task.Due.Date;
+          }
+        }
+        else
+          return atypeEntity.Inner.StartDate == dateNull && atypeEntity.Inner.DueDate == dateNull;
+      }
+      return false;
     }
 
     protected override string GetAtypePropertyValue (TaskItemWrapper atypeEntity)
