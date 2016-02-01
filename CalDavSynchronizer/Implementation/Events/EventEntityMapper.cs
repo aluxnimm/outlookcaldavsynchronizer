@@ -482,14 +482,24 @@ namespace CalDavSynchronizer.Implementation.Events
     private string GetMailUrlOrNull (AddressEntry addressEntry, string address)
     {
       string emailAddress = address;
+      OlAddressEntryUserType type;
 
       if (addressEntry != null)
       {
-        if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeUserAddressEntry
-            || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeRemoteUserAddressEntry
-            || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeAgentAddressEntry
-            || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeOrganizationAddressEntry
-            || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangePublicFolderAddressEntry)
+        try
+        {
+          type = addressEntry.AddressEntryUserType;
+        }
+        catch (COMException ex)
+        {
+          s_logger.Error ("Could not get type rom adressEntry", ex);
+          return null;
+        }
+        if (type == OlAddressEntryUserType.olExchangeUserAddressEntry
+            || type == OlAddressEntryUserType.olExchangeRemoteUserAddressEntry
+            || type == OlAddressEntryUserType.olExchangeAgentAddressEntry
+            || type == OlAddressEntryUserType.olExchangeOrganizationAddressEntry
+            || type == OlAddressEntryUserType.olExchangePublicFolderAddressEntry)
         {
           try
           {
@@ -506,8 +516,8 @@ namespace CalDavSynchronizer.Implementation.Events
             s_logger.Error ("Could not get email address from adressEntry.GetExchangeUser()", ex);
           }
         }
-        else if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olExchangeDistributionListAddressEntry
-                 || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olOutlookDistributionListAddressEntry)
+        else if (type == OlAddressEntryUserType.olExchangeDistributionListAddressEntry
+                 || type == OlAddressEntryUserType.olOutlookDistributionListAddressEntry)
         {
           try
           {
@@ -524,12 +534,12 @@ namespace CalDavSynchronizer.Implementation.Events
             s_logger.Error ("Could not get email address from adressEntry.GetExchangeDistributionList()", ex);
           }
         }
-        else if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olSmtpAddressEntry
-                 || addressEntry.AddressEntryUserType == OlAddressEntryUserType.olLdapAddressEntry)
+        else if (type == OlAddressEntryUserType.olSmtpAddressEntry
+                 || type == OlAddressEntryUserType.olLdapAddressEntry)
         {
           emailAddress = addressEntry.Address;
         }
-        else if (addressEntry.AddressEntryUserType == OlAddressEntryUserType.olOutlookContactAddressEntry)
+        else if (type == OlAddressEntryUserType.olOutlookContactAddressEntry)
         {
           if (addressEntry.Type == "EX")
           {
