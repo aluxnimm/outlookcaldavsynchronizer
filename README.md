@@ -73,6 +73,20 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 1.15.0 ####
+- WARNING: This version changes the internal cache structure, when downgrading to an older version, the cache gets cleared and a new inital sync is performed!
+- New features
+	- Improved handling of Uris, Use custom class WebResourceName instead of System.Uri to identify WebDAV resources. This should fix various issues with filenames with wrongly encoded special chars like slashes or spaces especially for Owncloud, see ticket #193 and discussions.
+	- Add advanced option for preemptive authentication and set it to default for new profiles, feature request from ticket #198.
+	- Make Options-Tabs draggable.
+	- Delete caches if they have a version, other than the required version and implement cache conversion from version 0 to 1. 
+	- Improve InitialTaskEntityMatcher and also compare Start and Due Date if available for matching tasks.
+- Bug fixes
+	- Set PatternEndDate of Recurrence to PatternStartDate if it is an invalid date before the start in the vevent to avoid COMException, ticket #197.
+	- Don't set task completed in local timezone, COMPLETED of vtodo must be in UTC, fix regression introduced in 1.14.0.
+	- Avoid UTC conversion in InitialEventEntityMatcher and use local timezone to avoid Nullreference Exceptions from Dday.iCal library in some strange timezone cases, ticket #154. Also fix matching of allday events and check if date matches.
+	- Catch COMException when getting AddressEntryUserType of Recipient, ticket 109 from github.
+
 #### 1.14.2 ####
 - Bug fixes
 	- Fix every workday recurrence and avoid INTERVAL=0 which is wrongly set from Outlook Object Model, fixes problem with certain versions of SabreDAV/OwnCloud, where INTERVAL=0 leads to an internal server error
@@ -512,6 +526,7 @@ The following properties need to be set for a new generic profile:
 	- **Deactivate** If activated, current profile is not synced anymore without the need to delete the profile
 - *Advanced Options*: Here you can configure advanced network options and proxy settings. 
 	- **Close connection after each request** Don't use KeepAlive for servers which don't support it. 
+	- **Use Preemptive Authentication** Send Authentication header with each request to avoid 401 responses and resending the request, disable only if the server has problems with preemptive authentication.
 	- **Use System Default Proxy** Use proxy settings from Internet Explorer or config file, uses default credentials if available for NTLM authentication
 	- **Use manual proxy configuration** Specify proxy URL as `http://<your-proxy-domain>:<your-proxy-port>` and optional Username and Password for Basic Authentication.
 	- **Mapping Configuration...**: Here you can configure what properties should be synced, available for appointments and contacts at the moment. 

@@ -1333,11 +1333,6 @@
             "AssemblyAsmDisplayName" = "8:Google.Apis.Auth.PlatformServices, Version=1.9.3.19383, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_04870D7D4A839211DAAAA65D3EF800DB"
-                    {
-                    "Name" = "8:Google.Apis.Auth.PlatformServices.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Google.Apis.Auth.PlatformServices.dll"
             "TargetName" = "8:"
@@ -2407,11 +2402,6 @@
             "AssemblyAsmDisplayName" = "8:Google.Apis.PlatformServices, Version=1.9.3.19381, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_696D6D706F49E1AB6843503E550C44D4"
-                    {
-                    "Name" = "8:Google.Apis.PlatformServices.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Google.Apis.PlatformServices.dll"
             "TargetName" = "8:"
@@ -3047,11 +3037,6 @@
             "AssemblyAsmDisplayName" = "8:Google.Apis.Auth, Version=1.9.3.19379, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_B471EFFCC3CF3B0CF704088BA68BAC49"
-                    {
-                    "Name" = "8:Google.Apis.Auth.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Google.Apis.Auth.dll"
             "TargetName" = "8:"
@@ -3078,11 +3063,6 @@
             "AssemblyAsmDisplayName" = "8:Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_B73B5594B4E8B24DFD408537CC132C55"
-                    {
-                    "Name" = "8:Newtonsoft.Json.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Newtonsoft.Json.dll"
             "TargetName" = "8:"
@@ -3233,11 +3213,6 @@
             "AssemblyAsmDisplayName" = "8:Google.Apis.Core, Version=1.9.3.19379, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_C68DC14662888E6E5221C10A0B40BC1D"
-                    {
-                    "Name" = "8:Google.Apis.Core.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Google.Apis.Core.dll"
             "TargetName" = "8:"
@@ -3357,11 +3332,6 @@
             "AssemblyAsmDisplayName" = "8:BouncyCastle.Crypto, Version=1.7.4137.9688, Culture=neutral, PublicKeyToken=a4292a325f69b123, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_CFB268FF5B7D07503738871DD777090D"
-                    {
-                    "Name" = "8:BouncyCastle.Crypto.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:BouncyCastle.Crypto.dll"
             "TargetName" = "8:"
@@ -3540,14 +3510,9 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:CalDavSynchronizer.OAuth.Google, Version=1.14.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:CalDavSynchronizer.OAuth.Google, Version=1.14.2.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_E8BFD262316C23666C9E3094B8635548"
-                    {
-                    "Name" = "8:CalDavSynchronizer.OAuth.Google.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:CalDavSynchronizer.OAuth.Google.dll"
             "TargetName" = "8:"
@@ -3695,14 +3660,9 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:GenSync, Version=1.14.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:GenSync, Version=1.14.2.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_F5E7FDF04E965A59AC2244FBC6EF4BD0"
-                    {
-                    "Name" = "8:GenSync.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:GenSync.dll"
             "TargetName" = "8:"
@@ -3832,15 +3792,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CalDavSynchronizer"
-        "ProductCode" = "8:{D74BC4BD-D5B2-4D34-A99B-0747B769F5BF}"
-        "PackageCode" = "8:{607AFC82-59F4-4720-A68E-DFBD0EBBD253}"
+        "ProductCode" = "8:{DEA64DB7-6295-483A-961A-A2548B16ABF7}"
+        "PackageCode" = "8:{7079D617-4DDE-405E-9743-E0CE39529409}"
         "UpgradeCode" = "8:{691063F4-DD9A-4264-948D-3FBD2565572C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.14.2"
+        "ProductVersion" = "8:1.15.0"
         "Manufacturer" = "8:Gerhard Zehetbauer"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
