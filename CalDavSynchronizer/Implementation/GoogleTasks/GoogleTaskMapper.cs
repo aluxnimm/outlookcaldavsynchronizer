@@ -14,30 +14,27 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
+using CalDavSynchronizer.Implementation.ComWrappers;
+using GenSync.EntityMapping;
+using GenSync.Logging;
+using Google.Apis.Tasks.v1.Data;
 
-namespace GenSync
+namespace CalDavSynchronizer.Implementation.GoogleTasks
 {
-  /// <summary>
-  /// Represents the Id and the Version of an entity
-  /// </summary>
-  public class EntityVersion<TEntityId, TVersion>
+  class GoogleTaskMapper : IEntityMapper<TaskItemWrapper, Task>
   {
-    public readonly TEntityId Id;
-    public readonly TVersion Version;
-
-    public EntityVersion (TEntityId id, TVersion version)
+    public Task Map1To2 (TaskItemWrapper source, Task target, IEntityMappingLogger logger)
     {
-      Id = id;
-      Version = version;
+      target.Title = source.Inner.Subject;
+      return target; 
     }
-  }
 
-  public class EntityVersion
-  {
-    public static EntityVersion<TEntityId, TVersion> Create<TEntityId, TVersion> (TEntityId id, TVersion version)
+    public TaskItemWrapper Map2To1 (Task source, TaskItemWrapper target, IEntityMappingLogger logger)
     {
-      return new EntityVersion<TEntityId, TVersion> (id, version);
+      target.Inner.Subject = source.Title;
+      return target;
     }
   }
 }

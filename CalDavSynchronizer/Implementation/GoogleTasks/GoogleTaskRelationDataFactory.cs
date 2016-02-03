@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -14,30 +14,24 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
+using CalDavSynchronizer.Implementation.Tasks;
+using GenSync.EntityRelationManagement;
 
-namespace GenSync
+namespace CalDavSynchronizer.Implementation.GoogleTasks
 {
-  /// <summary>
-  /// Represents the Id and the Version of an entity
-  /// </summary>
-  public class EntityVersion<TEntityId, TVersion>
+  public class GoogleTaskRelationDataFactory : IEntityRelationDataFactory<string, DateTime, string, string>
   {
-    public readonly TEntityId Id;
-    public readonly TVersion Version;
-
-    public EntityVersion (TEntityId id, TVersion version)
+    public IEntityRelationData<string, DateTime, string, string> Create (string atypeId, DateTime atypeVersion, string btypeId, string btypeVersion)
     {
-      Id = id;
-      Version = version;
-    }
-  }
-
-  public class EntityVersion
-  {
-    public static EntityVersion<TEntityId, TVersion> Create<TEntityId, TVersion> (TEntityId id, TVersion version)
-    {
-      return new EntityVersion<TEntityId, TVersion> (id, version);
+      return new GoogleTaskRelationData()
+             {
+                 AtypeId = atypeId,
+                 AtypeVersion = atypeVersion,
+                 BtypeId = btypeId,
+                 BtypeVersion = btypeVersion
+             };
     }
   }
 }
