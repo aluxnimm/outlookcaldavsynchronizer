@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace CalDavSynchronizer.Ui.Reports
+namespace CalDavSynchronizer.Ui.Reports.Views
 {
   /// <summary>
-  /// Interaction logic for ReportView.xaml
+  /// Interaction logic for SynchronizationReportView.xaml
   /// </summary>
-  public partial class ReportView : UserControl
+  public partial class EntitySynchronizationReportView : UserControl
   {
-    public ReportView ()
+    public EntitySynchronizationReportView ()
     {
       InitializeComponent ();
     }

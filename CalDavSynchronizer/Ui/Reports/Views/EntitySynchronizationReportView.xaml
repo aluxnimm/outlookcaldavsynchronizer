@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="CalDavSynchronizer.Ui.Reports.Views.EntitySynchronizationReportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Reports.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="300"
+             d:DataContext="{x:Static viewModels:ReportViewModel.EntitySynchronizationReportDesignInstance}" >
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto"></ColumnDefinition>
+      <ColumnDefinition Width="*"></ColumnDefinition>
+    </Grid.ColumnDefinitions>
+
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"></RowDefinition>
+      <RowDefinition Height="Auto"></RowDefinition>
+      <RowDefinition Height="Auto"></RowDefinition>
+      <RowDefinition Height="Auto"></RowDefinition>
+    </Grid.RowDefinitions>
+
+    <TextBlock FontWeight="Bold">AId:</TextBlock>
+    <TextBox IsReadOnly="True" Grid.Row="0" Grid.Column="1"  Text="{Binding AId}"></TextBox>
+
+    <TextBlock FontWeight="Bold" Grid.Row="1" Grid.Column="0">BId:</TextBlock>
+    <TextBox IsReadOnly="True" Grid.Row="1" Grid.Column="1" Text="{Binding BId}"></TextBox>
+
+    <TextBlock FontWeight="Bold" Grid.Row="2" Grid.Column="0">MappingErrors:</TextBlock>
+    <ListView Grid.Row="2" Grid.Column="1" ItemsSource="{Binding MappingErrors}"></ListView>
+
+    <TextBlock FontWeight="Bold" Grid.Row="3" Grid.Column="0">ExceptionThatLeadToAbortion:</TextBlock>
+    <TextBox IsReadOnly="True" Grid.Row="3" Grid.Column="1" Text="{Binding ExceptionThatLeadToAbortion}"></TextBox>
+  </Grid>
+</UserControl>

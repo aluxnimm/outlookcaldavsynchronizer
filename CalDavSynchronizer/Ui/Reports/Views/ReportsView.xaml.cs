@@ -18,7 +18,7 @@
 using System;
 using System.Windows.Controls;
 
-namespace CalDavSynchronizer.Ui.Reports
+namespace CalDavSynchronizer.Ui.Reports.Views
 {
   /// <summary>
   /// Interaction logic for ReportsView.xaml

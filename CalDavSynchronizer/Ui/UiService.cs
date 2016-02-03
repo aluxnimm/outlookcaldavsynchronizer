@@ -20,6 +20,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using CalDavSynchronizer.Properties;
 using CalDavSynchronizer.Ui.Reports;
+using CalDavSynchronizer.Ui.Reports.ViewModels;
+using CalDavSynchronizer.Ui.Reports.Views;
 
 namespace CalDavSynchronizer.Ui
 {

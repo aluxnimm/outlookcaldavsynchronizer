@@ -39,6 +39,7 @@ using CalDavSynchronizer.Reports;
 using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Ui;
 using CalDavSynchronizer.Ui.Reports;
+using CalDavSynchronizer.Ui.Reports.ViewModels;
 using CalDavSynchronizer.Utilities;
 using GenSync;
 using GenSync.ProgressReport;

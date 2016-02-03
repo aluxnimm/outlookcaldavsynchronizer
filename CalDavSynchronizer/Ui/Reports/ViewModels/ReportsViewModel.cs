@@ -25,7 +25,7 @@ using CalDavSynchronizer.DataAccess;
 using GenSync.Logging;
 using Microsoft.Win32;
 
-namespace CalDavSynchronizer.Ui.Reports
+namespace CalDavSynchronizer.Ui.Reports.ViewModels
 {
   public class ReportsViewModel : ViewModelBase
   {

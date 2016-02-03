@@ -20,6 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Ui.Reports;
+using CalDavSynchronizer.Ui.Reports.ViewModels;
 
 namespace CalDavSynchronizer.Ui
 {

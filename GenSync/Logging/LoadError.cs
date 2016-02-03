@@ -21,7 +21,8 @@ namespace GenSync.Logging
 {
   public struct LoadError
   {
-    public string EntityId;
-    public string Error;
+    public string EntityId { get; set; }
+    public string Error { get; set; }
+    public bool IsAEntity { get; set; }
   }
 }

@@ -1,0 +1,73 @@
+﻿<UserControl x:Class="CalDavSynchronizer.Ui.Reports.Views.SynchronizationReportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Reports.ViewModels"
+             xmlns:views="clr-namespace:CalDavSynchronizer.Ui.Reports.Views"
+             mc:Ignorable="d" 
+           
+             d:DataContext="{x:Static viewModels:ReportViewModel.ReportDesignInstance}">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto"></ColumnDefinition>
+      <ColumnDefinition Width="*"></ColumnDefinition>
+    </Grid.ColumnDefinitions>
+
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"></RowDefinition>
+      <RowDefinition Height="Auto"></RowDefinition>
+      <RowDefinition Height="Auto"></RowDefinition>
+      <RowDefinition Height="Auto"></RowDefinition>
+      <RowDefinition Height="Auto"></RowDefinition>
+      <RowDefinition Height="Auto"></RowDefinition>
+      <RowDefinition Height="Auto"></RowDefinition>
+      <RowDefinition Height="Auto"></RowDefinition>
+      <RowDefinition Height="Auto"></RowDefinition>
+      <RowDefinition Height="Auto"></RowDefinition>
+    </Grid.RowDefinitions>
+
+    <TextBlock FontWeight="Bold">Profile name:</TextBlock>
+    <TextBox IsReadOnly="True" Grid.Row="0" Grid.Column="1"  Text="{Binding ProfileName}"></TextBox>
+
+    <TextBlock FontWeight="Bold" Grid.Row="1" Grid.Column="0">Profile Id:</TextBlock>
+    <TextBox IsReadOnly="True" Grid.Row="1" Grid.Column="1" Text="{Binding ProfileId}"></TextBox>
+
+    <TextBlock FontWeight="Bold" Grid.Row="2" Grid.Column="0">StartTime:</TextBlock>
+    <TextBox IsReadOnly="True" Grid.Row="2" Grid.Column="1" Text="{Binding StartTime}"></TextBox>
+
+    <TextBlock FontWeight="Bold" Grid.Row="3" Grid.Column="0">Duration:</TextBlock>
+    <TextBox IsReadOnly="True" Grid.Row="3" Grid.Column="1" Text="{Binding Duration}"></TextBox>
+
+    <TextBlock FontWeight="Bold" Grid.Row="4" Grid.Column="0">Initial matching performed:</TextBlock>
+    <TextBox IsReadOnly="True" Grid.Row="4" Grid.Column="1" Text="{Binding InitialEntityMatchingPerformed}"></TextBox>
+    
+    <TextBlock FontWeight="Bold" Grid.Row="5" Grid.Column="0">A Delta:</TextBlock>
+    <TextBox IsReadOnly="True" Grid.Row="5" Grid.Column="1" Text="{Binding ADelta}"></TextBox>
+
+    <TextBlock FontWeight="Bold" Grid.Row="6" Grid.Column="0">B Delta:</TextBlock>
+    <TextBox IsReadOnly="True" Grid.Row="6" Grid.Column="1" Text="{Binding BDelta}"></TextBox>
+
+    <TextBlock FontWeight="Bold" Grid.Row="7" Grid.Column="0">Exception that lead to abortion:</TextBlock>
+    <TextBox IsReadOnly="True" Grid.Row="7" Grid.Column="1" Text="{Binding ExceptionThatLeadToAbortion}"></TextBox>
+
+    <TextBlock FontWeight="Bold" Grid.Row="8" Grid.Column="0">Load Errors:</TextBlock>
+    <ListView Grid.Row="8" Grid.Column="1" ItemsSource="{Binding LoadErrors}">
+      <ListView.ItemTemplate>
+        <DataTemplate>
+        <views:LoadErrorView></views:LoadErrorView>
+        </DataTemplate>
+      </ListView.ItemTemplate>
+    </ListView>
+
+    <TextBlock FontWeight="Bold" Grid.Row="9" Grid.Column="0">Entity sync reports:</TextBlock>
+    <ListView Grid.Row="9" Grid.Column="1" ItemsSource="{Binding EntitySynchronizationReports}">
+      <ListView.ItemTemplate>
+        <DataTemplate>
+          <views:EntitySynchronizationReportView></views:EntitySynchronizationReportView>
+        </DataTemplate>
+      </ListView.ItemTemplate>
+    </ListView>
+
+  </Grid>
+</UserControl>

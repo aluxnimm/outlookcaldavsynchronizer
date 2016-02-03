@@ -405,18 +405,27 @@
     <Compile Include="Ui\OutlookFolderControl.Designer.cs">
       <DependentUpon>OutlookFolderControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Ui\Reports\ReportDetailView.xaml.cs">
+    <Compile Include="Ui\Reports\Views\ReportDetailView.xaml.cs">
       <DependentUpon>ReportDetailView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Ui\Reports\ReportProxy.cs" />
-    <Compile Include="Ui\Reports\ReportsView.xaml.cs">
+    <Compile Include="Ui\Reports\ViewModels\ReportProxy.cs" />
+    <Compile Include="Ui\Reports\Views\ReportsView.xaml.cs">
       <DependentUpon>ReportsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Ui\Reports\ReportView.xaml.cs">
+    <Compile Include="Ui\Reports\Views\ReportView.xaml.cs">
       <DependentUpon>ReportView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Ui\Reports\ReportViewModel.cs" />
-    <Compile Include="Ui\Reports\ReportsViewModel.cs" />
+    <Compile Include="Ui\Reports\ViewModels\ReportViewModel.cs" />
+    <Compile Include="Ui\Reports\ViewModels\ReportsViewModel.cs" />
+    <Compile Include="Ui\Reports\Views\LoadErrorView.xaml.cs">
+      <DependentUpon>LoadErrorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\Reports\Views\EntitySynchronizationReportView.xaml.cs">
+      <DependentUpon>EntitySynchronizationReportView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\Reports\Views\SynchronizationReportView.xaml.cs">
+      <DependentUpon>SynchronizationReportView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Ui\SelectOptionsDisplayTypeForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -602,15 +611,27 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Page Include="Ui\Reports\ReportDetailView.xaml">
+    <Page Include="Ui\Reports\Views\ReportDetailView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Ui\Reports\ReportsView.xaml">
+    <Page Include="Ui\Reports\Views\ReportsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Ui\Reports\ReportView.xaml">
+    <Page Include="Ui\Reports\Views\ReportView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Ui\Reports\Views\LoadErrorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\Reports\Views\EntitySynchronizationReportView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\Reports\Views\SynchronizationReportView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

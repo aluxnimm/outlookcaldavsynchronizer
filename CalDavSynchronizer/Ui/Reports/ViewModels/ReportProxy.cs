@@ -18,7 +18,7 @@
 using System;
 using GenSync.Logging;
 
-namespace CalDavSynchronizer.Ui.Reports
+namespace CalDavSynchronizer.Ui.Reports.ViewModels
 {
   public class ReportProxy
   {
