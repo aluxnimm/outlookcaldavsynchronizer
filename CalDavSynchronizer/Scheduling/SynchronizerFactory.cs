@@ -18,15 +18,16 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Contacts;
 using CalDavSynchronizer.Implementation.Events;
+using CalDavSynchronizer.Implementation.GoogleTasks;
 using CalDavSynchronizer.Implementation.Tasks;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using CalDavSynchronizer.Synchronization;
@@ -38,6 +39,9 @@ using GenSync.EntityRepositories;
 using GenSync.ProgressReport;
 using GenSync.Synchronization;
 using GenSync.Synchronization.StateFactories;
+using Google.Apis.Services;
+using Google.Apis.Tasks.v1;
+using Google.Apis.Tasks.v1.Data;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
 using Thought.vCards;
@@ -83,7 +87,10 @@ namespace CalDavSynchronizer.Scheduling
         case OlItemType.olAppointmentItem:
           return CreateEventSynchronizer (options);
         case OlItemType.olTaskItem:
-          return CreateTaskSynchronizer (options);
+          if (options.ServerAdapterType == ServerAdapterType.GoogleOAuth)
+            return CreateGoogleTaskSynchronizer (options);
+          else
+            return CreateTaskSynchronizer (options);
         case OlItemType.olContactItem:
           return CreateContactSynchronizer (options);
         default:
@@ -95,7 +102,7 @@ namespace CalDavSynchronizer.Scheduling
       }
     }
     
-    private OutlookSynchronizer CreateEventSynchronizer (Options options)
+    private IOutlookSynchronizer CreateEventSynchronizer (Options options)
     {
       var calDavDataAccess = new CalDavDataAccess (
           new Uri (options.CalenderUrl),
@@ -149,7 +156,7 @@ namespace CalDavSynchronizer.Scheduling
       }
     }
 
-    private static async Task<HttpClient> CreateHttpClient (string username, string password, TimeSpan calDavConnectTimeout, ServerAdapterType serverAdapterType, ProxyOptions proxyOptions, bool preemptiveAuthentication)
+    private static async System.Threading.Tasks.Task<HttpClient> CreateHttpClient (string username, string password, TimeSpan calDavConnectTimeout, ServerAdapterType serverAdapterType, ProxyOptions proxyOptions, bool preemptiveAuthentication)
     {
       IWebProxy proxy = (proxyOptions != null) ? CreateProxy (proxyOptions) : null;
 
@@ -215,7 +222,7 @@ namespace CalDavSynchronizer.Scheduling
     /// <remarks>
     /// Public because it is being used by integration tests
     /// </remarks>
-    public OutlookSynchronizer CreateEventSynchronizer (
+    public IOutlookSynchronizer CreateEventSynchronizer (
         Options options,
         ICalDavDataAccess calDavDataAccess,
         IEntityRelationDataAccess<string, DateTime, WebResourceName, string> entityRelationDataAccess)
@@ -275,7 +282,7 @@ namespace CalDavSynchronizer.Scheduling
           _totalProgressFactory,
           ExceptionHandler.Instance);
 
-      return new OutlookSynchronizer (synchronizer, atypeRepository);
+      return new OutlookSynchronizer<WebResourceName> (synchronizer, atypeRepository);
     }
 
     private T GetMappingParameters<T> (Options options)
@@ -296,7 +303,7 @@ namespace CalDavSynchronizer.Scheduling
       return new T();
     }
 
-    private OutlookSynchronizer CreateTaskSynchronizer (Options options)
+    private IOutlookSynchronizer CreateTaskSynchronizer (Options options)
     {
       var atypeRepository = new OutlookTaskRepository (_outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId);
 
@@ -344,10 +351,59 @@ namespace CalDavSynchronizer.Scheduling
           _totalProgressFactory,
           ExceptionHandler.Instance);
 
-      return new OutlookSynchronizer (synchronizer, atypeRepository);
+      return new OutlookSynchronizer<WebResourceName> (synchronizer, atypeRepository);
     }
 
-    private OutlookSynchronizer CreateContactSynchronizer (Options options)
+    private IOutlookSynchronizer CreateGoogleTaskSynchronizer (Options options)
+    {
+      var atypeRepository = new OutlookTaskRepository (_outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId);
+
+      var credential = System.Threading.Tasks.Task.Run (() => OAuth.Google.GoogleHttpClientFactory.LoginToGoogle (options.UserName).Result).Result;
+      var tasksService = new TasksService (new BaseClientService.Initializer ()
+      {
+        HttpClientInitializer = credential,
+        ApplicationName = "Outlook CalDav Synchronizer",
+      });
+
+      TaskLists taskLists = tasksService.Tasklists.List ().Execute ();
+      var taskList = taskLists.Items.First(l => l.Title == "nertsch77's list");
+
+      var btypeRepository = new GoogleTaskRepository (tasksService, taskList);
+
+      
+      var relationDataFactory = new GoogleTaskRelationDataFactory ();
+      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, TaskItemWrapper, string, string, Task> (
+          new GoogleTaskMapper (),
+          atypeRepository,
+          btypeRepository,
+          relationDataFactory,
+          ExceptionHandler.Instance);
+
+      var storageDataDirectory = _profileDataDirectoryFactory (options.Id);
+
+      var btypeIdEqualityComparer = EqualityComparer<string>.Default;
+      var atypeIdEqualityComparer = EqualityComparer<string>.Default;
+
+      var synchronizer = new Synchronizer<string, DateTime, TaskItemWrapper, string, string, Task> (
+          atypeRepository,
+          btypeRepository,
+          InitialGoogleTaskSyncStateCreationStrategyFactory.Create (
+              syncStateFactory,
+              syncStateFactory.Environment,
+              options.SynchronizationMode,
+              options.ConflictResolution),
+          new EntityRelationDataAccess<string, DateTime, GoogleTaskRelationData, string, string> (storageDataDirectory),
+          relationDataFactory,
+          new InitialGoogleTastEntityMatcher (btypeIdEqualityComparer),
+          atypeIdEqualityComparer,
+          btypeIdEqualityComparer,
+          _totalProgressFactory,
+          ExceptionHandler.Instance);
+
+      return new OutlookSynchronizer<string> (synchronizer, atypeRepository);
+    }
+
+    private IOutlookSynchronizer CreateContactSynchronizer (Options options)
     {
       var atypeRepository = new OutlookContactRepository (
           _outlookSession,
@@ -403,7 +459,7 @@ namespace CalDavSynchronizer.Scheduling
           _totalProgressFactory,
           ExceptionHandler.Instance);
 
-      return new OutlookSynchronizer (synchronizer, atypeRepository);
+      return new OutlookSynchronizer<WebResourceName> (synchronizer, atypeRepository);
     }
   }
 }

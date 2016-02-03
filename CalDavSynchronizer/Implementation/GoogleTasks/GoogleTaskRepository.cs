@@ -32,36 +32,39 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
 {
   class GoogleTaskRepository : IEntityRepository<Task, string, string>
   {
-    private readonly TasksService _taskService;
+    private readonly TasksService _tasksService;
     private readonly TaskList _taskList;
 
-    public GoogleTaskRepository (TasksService taskService, TaskList taskList)
+    public GoogleTaskRepository (TasksService tasksService, TaskList taskList)
     {
-      if (taskService == null)
-        throw new ArgumentNullException (nameof (taskService));
+      if (tasksService == null)
+        throw new ArgumentNullException (nameof (tasksService));
       if (taskList == null)
         throw new ArgumentNullException (nameof (taskList));
 
-      _taskService = taskService;
+      _tasksService = tasksService;
       _taskList = taskList;
     }
 
 
     public System.Threading.Tasks.Task Delete (string entityId, string version)
     {
-      _taskService.Tasks.Delete (_taskList.Id, entityId);
+      _tasksService.Tasks.Delete (_taskList.Id, entityId);
       return System.Threading.Tasks.Task.FromResult (0);
     }
 
-    public Task<EntityVersion<string, string>> Update (string entityId, string version, Task entityToUpdate, Func<Task, Task> entityModifier)
+    public async Task<EntityVersion<string, string>> Update (string entityId, string version, Task entityToUpdate, Func<Task, Task> entityModifier)
     {
-      throw new NotImplementedException();
+      var task = await _tasksService.Tasks.Get (_taskList.Id, entityId).ExecuteAsync();
+      task = entityModifier (task);
+      var result = await _tasksService.Tasks.Update (task, _taskList.Id, entityId).ExecuteAsync();
+      return EntityVersion.Create (result.Id, result.ETag);
     }
 
     public async Task<EntityVersion<string, string>> Create (Func<Task, Task> entityInitializer)
     {
       var task = entityInitializer (new Task());
-      var result = await _taskService.Tasks.Insert (task, _taskList.Id).ExecuteAsync();
+      var result = await _tasksService.Tasks.Insert (task, _taskList.Id).ExecuteAsync();
       return EntityVersion.Create (result.Id, result.ETag);
     }
 
@@ -72,15 +75,18 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
 
     public async Task<IReadOnlyList<EntityVersion<string, string>>> GetAllVersions (IEnumerable<string> idsOfknownEntities)
     {
-      var request = _taskService.Tasks.List (_taskList.Id);
-      request.Fields = "Etag";
+      var request = _tasksService.Tasks.List (_taskList.Id);
+      // TODO: do load only etags
       var result = await request.ExecuteAsync();
       return result.Items.Select (t => EntityVersion.Create (t.Id, t.ETag)).ToArray();
     }
 
     public async Task<IReadOnlyList<EntityWithId<string, Task>>> Get (ICollection<string> ids, ILoadEntityLogger logger)
     {
-      var request = _taskService.Tasks.List (_taskList.Id);
+      var request = _tasksService.Tasks.List (_taskList.Id);
+
+      // TODO: do not load all Tasks
+
       var result = await request.ExecuteAsync();
       return result.Items.Select (t => EntityWithId.Create (t.Id, t)).ToArray();
     }

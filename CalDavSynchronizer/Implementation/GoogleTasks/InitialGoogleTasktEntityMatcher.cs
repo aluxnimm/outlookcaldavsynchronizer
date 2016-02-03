@@ -24,9 +24,9 @@ using Google.Apis.Tasks.v1.Data;
 
 namespace CalDavSynchronizer.Implementation.GoogleTasks
 {
-  internal class InitialGoogleTasktEntityMatcher : InitialEntityMatcherByPropertyGrouping<TaskItemWrapper, string, DateTime, string, Task, string, string, string>
+  internal class InitialGoogleTastEntityMatcher : InitialEntityMatcherByPropertyGrouping<TaskItemWrapper, string, DateTime, string, Task, string, string, string>
   {
-    public InitialGoogleTasktEntityMatcher (IEqualityComparer<string> btypeIdEqualityComparer)
+    public InitialGoogleTastEntityMatcher (IEqualityComparer<string> btypeIdEqualityComparer)
         : base (btypeIdEqualityComparer)
     {
     }
