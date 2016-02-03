@@ -36,7 +36,7 @@ namespace CalDavSynchronizer.OAuth.Google
       return client;
     }
 
-    private static async Task<UserCredential> LoginToGoogle (string user)
+    public static async Task<UserCredential> LoginToGoogle (string user)
     {
       UserCredential credential = await GoogleWebAuthorizationBroker.AuthorizeAsync (
           new ClientSecrets
@@ -47,7 +47,8 @@ namespace CalDavSynchronizer.OAuth.Google
           new[]
           {
               "https://www.googleapis.com/auth/calendar",
-              "https://www.googleapis.com/auth/carddav"
+              "https://www.googleapis.com/auth/carddav",
+              "https://www.googleapis.com/auth/tasks"
           },
           user,
           CancellationToken.None);
