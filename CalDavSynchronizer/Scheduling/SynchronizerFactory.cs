@@ -298,9 +298,7 @@ namespace CalDavSynchronizer.Scheduling
 
     private OutlookSynchronizer CreateTaskSynchronizer (Options options)
     {
-      // TODO: dispose folder like it is done for events
-      var calendarFolder = (Folder) _outlookSession.GetFolderFromID (options.OutlookFolderEntryId, options.OutlookFolderStoreId);
-      var atypeRepository = new OutlookTaskRepository (calendarFolder, _outlookSession);
+      var atypeRepository = new OutlookTaskRepository (_outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId);
 
       var btypeRepository = new CalDavRepository (
           new CalDavDataAccess (
