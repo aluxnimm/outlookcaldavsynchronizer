@@ -33,8 +33,20 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
 
     protected override bool AreEqual (TaskItemWrapper atypeEntity, Task btypeEntity)
     {
-      return atypeEntity.Inner.Subject == btypeEntity.Title;
-      // TODO: check also date
+      if (atypeEntity.Inner.Subject == btypeEntity.Title)
+      {
+        DateTime dateNull = new DateTime (4501, 1, 1, 0, 0, 0);
+
+        if (btypeEntity.Due == null)
+        {
+          return atypeEntity.Inner.DueDate == dateNull;
+        }
+        else
+        {
+          return atypeEntity.Inner.DueDate == btypeEntity.Due.Value.Date;
+        }
+      }
+      return false;
     }
 
     protected override string GetAtypePropertyValue (TaskItemWrapper atypeEntity)
