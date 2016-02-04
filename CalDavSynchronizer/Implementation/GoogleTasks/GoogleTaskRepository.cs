@@ -24,6 +24,7 @@ using GenSync;
 using GenSync.EntityMapping;
 using GenSync.EntityRepositories;
 using GenSync.Logging;
+using Google.Apis.Discovery;
 using Google.Apis.Tasks.v1;
 using Google.Apis.Tasks.v1.Data;
 using Task = Google.Apis.Tasks.v1.Data.Task;
@@ -49,14 +50,17 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
 
     public System.Threading.Tasks.Task Delete (string entityId, string version)
     {
-      return _tasksService.Tasks.Delete (_taskList.Id, entityId).ExecuteAsync();
+      var deleteRequest =   _tasksService.Tasks.Delete (_taskList.Id, entityId);
+      // Todo: how to set etag ?
+      return deleteRequest.ExecuteAsync();
     }
 
     public async Task<EntityVersion<string, string>> Update (string entityId, string version, Task entityToUpdate, Func<Task, Task> entityModifier)
     {
-      var task = await _tasksService.Tasks.Get (_taskList.Id, entityId).ExecuteAsync();
-      task = entityModifier (task);
-      var result = await _tasksService.Tasks.Update (task, _taskList.Id, entityId).ExecuteAsync();
+      entityToUpdate = entityModifier (entityToUpdate);
+      var updateRequest = _tasksService.Tasks.Update (entityToUpdate, _taskList.Id, entityId);
+      updateRequest.ETagAction = Google.Apis.ETagAction.IfMatch;
+      var result = await updateRequest.ExecuteAsync();
       return EntityVersion.Create (result.Id, result.ETag);
     }
 
@@ -75,19 +79,24 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
     public async Task<IReadOnlyList<EntityVersion<string, string>>> GetAllVersions (IEnumerable<string> idsOfknownEntities)
     {
       var request = _tasksService.Tasks.List (_taskList.Id);
-      // TODO: do load only etags
+      request.Fields = "items(etag,id)";
       var result = await request.ExecuteAsync();
       return result.Items.Select (t => EntityVersion.Create (t.Id, t.ETag)).ToArray();
     }
 
     public async Task<IReadOnlyList<EntityWithId<string, Task>>> Get (ICollection<string> ids, ILoadEntityLogger logger)
     {
-      var request = _tasksService.Tasks.List (_taskList.Id);
+      var items = new List<EntityWithId<string, Task>> ();
 
-      // TODO: do not load all Tasks
+      // All the requests are awaited sequentially in a loop, because creating all the requests at once ant awaiting them after the loop would
+      // probably open up too many connections
+      foreach (var id in ids)
+      {
+        var item = await _tasksService.Tasks.Get (_taskList.Id, id).ExecuteAsync();
+        items.Add (EntityWithId.Create (item.Id, item));
+      }
 
-      var result = await request.ExecuteAsync();
-      return result.Items.Select (t => EntityWithId.Create (t.Id, t)).ToArray();
+      return items;
     }
 
     public void Cleanup (IReadOnlyDictionary<string, Task> entities)
