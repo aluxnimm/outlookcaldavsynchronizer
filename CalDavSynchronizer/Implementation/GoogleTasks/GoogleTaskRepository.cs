@@ -49,8 +49,7 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
 
     public System.Threading.Tasks.Task Delete (string entityId, string version)
     {
-      _tasksService.Tasks.Delete (_taskList.Id, entityId);
-      return System.Threading.Tasks.Task.FromResult (0);
+      return _tasksService.Tasks.Delete (_taskList.Id, entityId).ExecuteAsync();
     }
 
     public async Task<EntityVersion<string, string>> Update (string entityId, string version, Task entityToUpdate, Func<Task, Task> entityModifier)
