@@ -237,12 +237,12 @@ namespace CalDavSynchronizer.DataAccess
 
     public Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetEventVersions (DateTimeRange? range)
     {
-      return GetEntities (range, "VEVENT");
+      return GetVersions (range, "VEVENT");
     }
 
     public Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetTodoVersions (DateTimeRange? range)
     {
-      return GetEntities (range, "VTODO");
+      return GetVersions (range, "VTODO");
     }
 
     public Task<EntityVersion<WebResourceName, string>> CreateEntity (string iCalData, string uid)
@@ -361,7 +361,7 @@ namespace CalDavSynchronizer.DataAccess
       return new EntityVersion<WebResourceName, string> (new WebResourceName(effectiveEventUrl), version);
     }
 
-    private async Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetEntities (DateTimeRange? range, string entityType)
+    private async Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetVersions (DateTimeRange? range, string entityType)
     {
       var entities = new List<EntityVersion<WebResourceName, string>>();
 
@@ -411,15 +411,11 @@ namespace CalDavSynchronizer.DataAccess
           }
         }
       }
-      catch (WebException x)
+      catch (HttpRequestException x)
       {
-        if (x.Response != null)
-        {
-          var httpWebResponse = (HttpWebResponse) x.Response;
-
-          if (httpWebResponse.StatusCode == HttpStatusCode.NotFound)
-            return entities;
-        }
+        // Workaround for Synology NAS, which returns 404 insteaod of an empty response if no events are present
+        if (x.Message.Contains ("'404' ('NotFound')") && await IsResourceCalender())
+          return entities;
 
         throw;
       }
