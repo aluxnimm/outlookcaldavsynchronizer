@@ -14,32 +14,31 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
-using System.Security.Cryptography;
-using System.Text;
-using System.Xml.Serialization;
-using CalDavSynchronizer.Implementation;
-using CalDavSynchronizer.Ui;
-using CalDavSynchronizer.Ui.Options.Mapping;
+using CalDavSynchronizer.Ui.ConnectionTests;
+using Microsoft.Office.Interop.Outlook;
 
-namespace CalDavSynchronizer.Contracts
+namespace CalDavSynchronizer.Ui.Options
 {
-  public class ContactMappingConfiguration : MappingConfigurationBase
+  public class SettingsFaultFinder : ISettingsFaultFinder
   {
+    private readonly SyncSettingsControl _syncSettingsControl;
 
-    public bool MapBirthday { get; set; }
+      public SettingsFaultFinder (SyncSettingsControl syncSettingsControl)
+      {
+        _syncSettingsControl = syncSettingsControl;
+      }
 
-    public bool MapContactPhoto { get; set; }
 
-    public ContactMappingConfiguration ()
-    {
-      MapBirthday = true;
-      MapContactPhoto = true;
+    public void FixSynchronizationMode (TestResult result)
+      {
+        _syncSettingsControl.FixSynchronizationMode (result);
+      }
+
+    public void FixTimeRangeUsage (OlItemType? folderType)
+      {
+        _syncSettingsControl.FixTimeRangeUsage (folderType);
+      }
     }
-
-    public override IConfigurationForm<MappingConfigurationBase> CreateConfigurationForm (IConfigurationFormFactory factory)
-    {
-      return factory.Create (this);
-    }
-  }
-}
+ }

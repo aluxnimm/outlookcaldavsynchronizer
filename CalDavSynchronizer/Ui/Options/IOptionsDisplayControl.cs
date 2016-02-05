@@ -14,32 +14,21 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
-using System.Security.Cryptography;
 using System.Text;
-using System.Xml.Serialization;
-using CalDavSynchronizer.Implementation;
-using CalDavSynchronizer.Ui;
-using CalDavSynchronizer.Ui.Options.Mapping;
+using System.Windows.Forms;
 
-namespace CalDavSynchronizer.Contracts
+namespace CalDavSynchronizer.Ui.Options
 {
-  public class ContactMappingConfiguration : MappingConfigurationBase
+  public interface IOptionsDisplayControl
   {
-
-    public bool MapBirthday { get; set; }
-
-    public bool MapContactPhoto { get; set; }
-
-    public ContactMappingConfiguration ()
-    {
-      MapBirthday = true;
-      MapContactPhoto = true;
-    }
-
-    public override IConfigurationForm<MappingConfigurationBase> CreateConfigurationForm (IConfigurationFormFactory factory)
-    {
-      return factory.Create (this);
-    }
+    event EventHandler DeletionRequested;
+    event EventHandler CopyRequested;
+    event EventHandler<HeaderEventArgs> HeaderChanged;
+    Contracts.Options Options { set; get; }
+    Control UiControl { get; }
+    bool Validate (StringBuilder errorMessageBuilder);
+    string ProfileName { get; }
   }
 }

@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -14,14 +14,20 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using CalDavSynchronizer.Ui;
-using CalDavSynchronizer.Ui.Options.Mapping;
 
-namespace CalDavSynchronizer.Contracts
+using System;
+using CalDavSynchronizer.Contracts;
+using Microsoft.Office.Interop.Outlook;
+
+namespace CalDavSynchronizer.Ui.Options
 {
-  public abstract class ConfigurationBase<TDerived>
+  public interface IServerSettingsControlDependencies
   {
-    public abstract IConfigurationForm<TDerived> CreateConfigurationForm (IConfigurationFormFactory factory);
+    bool CloseConnectionAfterEachRequest { get; }
+    bool PreemptiveAuthentication { get; }
+    ProxyOptions ProxyOptions { get; }
+    OlItemType? OutlookFolderType { get; }
+    bool SelectedSynchronizationModeRequiresWriteableServerResource { get; }
+    string SelectedSynchronizationModeDisplayName { get; }
   }
 }

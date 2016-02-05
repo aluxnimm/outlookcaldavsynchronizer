@@ -14,32 +14,39 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
-using System.Security.Cryptography;
-using System.Text;
-using System.Xml.Serialization;
-using CalDavSynchronizer.Implementation;
-using CalDavSynchronizer.Ui;
-using CalDavSynchronizer.Ui.Options.Mapping;
+using CalDavSynchronizer.Ui.ConnectionTests;
 
-namespace CalDavSynchronizer.Contracts
+namespace CalDavSynchronizer.Ui.Options
 {
-  public class ContactMappingConfiguration : MappingConfigurationBase
+  public struct AutoDiscoveryResult
   {
+    private readonly bool _wasCancelled;
+    private readonly Uri _ressourceUrl;
+    private readonly ResourceType _resourceType;
 
-    public bool MapBirthday { get; set; }
-
-    public bool MapContactPhoto { get; set; }
-
-    public ContactMappingConfiguration ()
+    public AutoDiscoveryResult (Uri ressourceUrl, bool wasCancelled, ResourceType resourceType)
+        : this()
     {
-      MapBirthday = true;
-      MapContactPhoto = true;
+      _wasCancelled = wasCancelled;
+      _ressourceUrl = ressourceUrl;
+      _resourceType = resourceType;
     }
 
-    public override IConfigurationForm<MappingConfigurationBase> CreateConfigurationForm (IConfigurationFormFactory factory)
+    public bool WasCancelled
     {
-      return factory.Create (this);
+      get { return _wasCancelled; }
+    }
+
+    public Uri RessourceUrl
+    {
+      get { return _ressourceUrl; }
+    }
+
+    public ResourceType ResourceType
+    {
+      get { return _resourceType; }
     }
   }
 }
