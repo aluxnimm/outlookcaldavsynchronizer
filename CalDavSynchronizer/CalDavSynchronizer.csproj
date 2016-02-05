@@ -482,9 +482,6 @@
     <Compile Include="Ui\Options\FullServerdApterTypeControl.Designer.cs">
       <DependentUpon>FullServerdApterTypeControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Ui\Options\GoogleOnlyServerAdapterControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Ui\Options\ServerSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

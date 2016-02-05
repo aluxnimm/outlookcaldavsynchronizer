@@ -42,9 +42,9 @@ namespace CalDavSynchronizer.Ui.Options
             | System.Windows.Forms.AnchorStyles.Right)));
       this._serverAdapterTypeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this._serverAdapterTypeComboBox.FormattingEnabled = true;
-      this._serverAdapterTypeComboBox.Location = new System.Drawing.Point(112, 0);
+      this._serverAdapterTypeComboBox.Location = new System.Drawing.Point(89, 0);
       this._serverAdapterTypeComboBox.Name = "_serverAdapterTypeComboBox";
-      this._serverAdapterTypeComboBox.Size = new System.Drawing.Size(188, 21);
+      this._serverAdapterTypeComboBox.Size = new System.Drawing.Size(211, 21);
       this._serverAdapterTypeComboBox.TabIndex = 20;
       // 
       // label1
@@ -52,9 +52,9 @@ namespace CalDavSynchronizer.Ui.Options
       this.label1.AutoSize = true;
       this.label1.Location = new System.Drawing.Point(3, 3);
       this.label1.Name = "label1";
-      this.label1.Size = new System.Drawing.Size(103, 13);
+      this.label1.Size = new System.Drawing.Size(80, 13);
       this.label1.TabIndex = 19;
-      this.label1.Text = "Server adapter type:";
+      this.label1.Text = "Server adapter:";
       // 
       // FullServerdApterTypeControl
       // 
