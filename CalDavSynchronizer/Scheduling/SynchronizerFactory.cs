@@ -87,7 +87,7 @@ namespace CalDavSynchronizer.Scheduling
         case OlItemType.olAppointmentItem:
           return CreateEventSynchronizer (options);
         case OlItemType.olTaskItem:
-          if (options.ServerAdapterType == ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth)
+          if (options.ServerAdapterType == ServerAdapterType.GoogleTaskApi)
             return CreateGoogleTaskSynchronizer (options);
           else
             return CreateTaskSynchronizer (options);
@@ -358,15 +358,12 @@ namespace CalDavSynchronizer.Scheduling
     {
       var atypeRepository = new OutlookTaskRepository (_outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId);
 
-      var credential = System.Threading.Tasks.Task.Run (() => OAuth.Google.GoogleHttpClientFactory.LoginToGoogle (options.UserName).Result).Result;
-      var tasksService = new TasksService (new BaseClientService.Initializer ()
-      {
-        HttpClientInitializer = credential,
-        ApplicationName = "Outlook CalDav Synchronizer",
-      });
+      var tasksService = System.Threading.Tasks.Task.Run (() => OAuth.Google.GoogleHttpClientFactory.LoginToGoogleTasksService (options.UserName).Result).Result;
 
-      TaskLists taskLists = tasksService.Tasklists.List ().Execute ();
-      var taskList = taskLists.Items.First(l => l.Title == "nertsch77's list");
+      var taskList = tasksService.Tasklists.Get (options.CalenderUrl).Execute();
+
+      if (taskList == null)
+        throw new System.Exception ($"Profile '{options.Name}' (Id: '{options.Id}'): task list '{options.CalenderUrl}' not found.");
 
       var btypeRepository = new GoogleTaskRepository (tasksService, taskList);
 

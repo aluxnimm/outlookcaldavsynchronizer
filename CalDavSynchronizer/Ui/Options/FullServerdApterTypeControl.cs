@@ -33,6 +33,7 @@ namespace CalDavSynchronizer.Ui.Options
                                                                                        new Item<ServerAdapterType> (ServerAdapterType.WebDavHttpClientBased, "WebDav"),
                                                                                        new Item<ServerAdapterType> (ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth, "WebDav with GoogleOAuth"),
                                                                                        new Item<ServerAdapterType> (ServerAdapterType.WebDavSynchronousWebRequestBased, "WebDav (Synchronous)"),
+                                                                                       new Item<ServerAdapterType> (ServerAdapterType.GoogleTaskApi, "Google Task-API"),
                                                                                    };
 
     public event EventHandler SelectedServerAdapterTypeChanged;

@@ -23,6 +23,7 @@ namespace CalDavSynchronizer.Ui.ConnectionTests
   {
     None = 0,
     Calendar = 1,
-    AddressBook = 2
+    AddressBook = 2,
+    TaskList = 3,
   }
 }

@@ -99,7 +99,7 @@ namespace CalDavSynchronizer.Ui.Options
 
     public bool Validate (StringBuilder errorMessageBuilder)
     {
-      bool result =  OptionTasks.ValidateCalendarUrl (_serverSettingsControl.CalendarUrl, errorMessageBuilder, true);
+      bool result =  OptionTasks.ValidateWebDavUrl (_serverSettingsControl.CalendarUrl, errorMessageBuilder, true);
 
       result &= _outlookFolderControl.Validate (errorMessageBuilder);
       result &= OptionTasks.ValidateEmailAddress (errorMessageBuilder, _serverSettingsControl.EmailAddress);

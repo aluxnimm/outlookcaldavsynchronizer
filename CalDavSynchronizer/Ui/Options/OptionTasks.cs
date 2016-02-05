@@ -67,23 +67,23 @@ namespace CalDavSynchronizer.Ui.Options
       return result;
     }
 
-    public static bool ValidateCalendarUrl (string calendarUrl, StringBuilder errorMessageBuilder, bool requiresTrailingSlash)
+    public static bool ValidateWebDavUrl (string webDavUrl, StringBuilder errorMessageBuilder, bool requiresTrailingSlash)
     {
       bool result = true;
 
-      if (string.IsNullOrWhiteSpace (calendarUrl))
+      if (string.IsNullOrWhiteSpace (webDavUrl))
       {
         errorMessageBuilder.AppendLine ("- The CalDav/CardDav Url is empty.");
         return false;
       }
 
-      if (calendarUrl.Trim() != calendarUrl)
+      if (webDavUrl.Trim() != webDavUrl)
       {
         errorMessageBuilder.AppendLine ("- The CalDav/CardDav Url cannot end/start with whitespaces.");
         result = false;
       }
 
-      if (requiresTrailingSlash && !calendarUrl.EndsWith ("/"))
+      if (requiresTrailingSlash && !webDavUrl.EndsWith ("/"))
       {
         errorMessageBuilder.AppendLine ("- The CalDav/CardDav Url has to end with a slash ('/').");
         result = false;
@@ -91,7 +91,7 @@ namespace CalDavSynchronizer.Ui.Options
 
       try
       {
-        var uri = new Uri (calendarUrl).ToString();
+        var uri = new Uri (webDavUrl).ToString();
       }
       catch (Exception x)
       {
@@ -219,9 +219,14 @@ namespace CalDavSynchronizer.Ui.Options
 
       if (foundCaldendars.Count > 0 || foundAddressBooks.Count > 0)
       {
-        using (SelectResourceForm listCalendarsForm = new SelectResourceForm (foundCaldendars, foundAddressBooks, selectedOutlookFolderType == OlItemType.olContactItem))
+        using (SelectResourceForm listCalendarsForm =
+            new SelectResourceForm (
+                foundCaldendars,
+                foundAddressBooks,
+                new Tuple<string, string>[0],
+                selectedOutlookFolderType == OlItemType.olContactItem ? ResourceType.AddressBook : ResourceType.Calendar))
         {
-          if (listCalendarsForm.ShowDialog () == DialogResult.OK)
+          if (listCalendarsForm.ShowDialog() == DialogResult.OK)
             return new AutoDiscoveryResult (new Uri (autoDiscoveryUri.GetLeftPart (UriPartial.Authority) + listCalendarsForm.SelectedUrl), false, listCalendarsForm.ResourceType);
           else
             return new AutoDiscoveryResult (null, true, ResourceType.None);

@@ -37,12 +37,16 @@ namespace CalDavSynchronizer.Ui.Options
       this._mainTab = new System.Windows.Forms.TabControl();
       this._calendarPage = new System.Windows.Forms.TabPage();
       this._addressBookPage = new System.Windows.Forms.TabPage();
+      this._tasksPage = new System.Windows.Forms.TabPage();
+      this._tasksDataGridView = new System.Windows.Forms.DataGridView();
       this.OkButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this._calendarDataGridView)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this._addressBookDataGridView)).BeginInit();
       this._mainTab.SuspendLayout();
       this._calendarPage.SuspendLayout();
       this._addressBookPage.SuspendLayout();
+      this._tasksPage.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this._tasksDataGridView)).BeginInit();
       this.SuspendLayout();
       // 
       // _calendarDataGridView
@@ -64,7 +68,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._calendarDataGridView.Size = new System.Drawing.Size(721, 306);
       this._calendarDataGridView.TabIndex = 0;
       this._calendarDataGridView.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this._calendarDataGridView_CellContentDoubleClick);
-      this._calendarDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler (this._calendarDataGridView_CellFormatting);
+      this._calendarDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this._calendarDataGridView_CellFormatting);
       // 
       // buttonCancel
       // 
@@ -105,6 +109,7 @@ namespace CalDavSynchronizer.Ui.Options
             | System.Windows.Forms.AnchorStyles.Right)));
       this._mainTab.Controls.Add(this._calendarPage);
       this._mainTab.Controls.Add(this._addressBookPage);
+      this._mainTab.Controls.Add(this._tasksPage);
       this._mainTab.Location = new System.Drawing.Point(12, 6);
       this._mainTab.Name = "_mainTab";
       this._mainTab.SelectedIndex = 0;
@@ -132,6 +137,36 @@ namespace CalDavSynchronizer.Ui.Options
       this._addressBookPage.TabIndex = 1;
       this._addressBookPage.Text = "Address Books";
       this._addressBookPage.UseVisualStyleBackColor = true;
+      // 
+      // _tasksPage
+      // 
+      this._tasksPage.Controls.Add(this._tasksDataGridView);
+      this._tasksPage.Location = new System.Drawing.Point(4, 22);
+      this._tasksPage.Name = "_tasksPage";
+      this._tasksPage.Size = new System.Drawing.Size(727, 312);
+      this._tasksPage.TabIndex = 2;
+      this._tasksPage.Text = "Google-Tasks";
+      this._tasksPage.UseVisualStyleBackColor = true;
+      // 
+      // _tasksDataGridView
+      // 
+      this._tasksDataGridView.AllowUserToAddRows = false;
+      this._tasksDataGridView.AllowUserToDeleteRows = false;
+      this._tasksDataGridView.AllowUserToResizeRows = false;
+      this._tasksDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+      this._tasksDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+      this._tasksDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this._tasksDataGridView.Location = new System.Drawing.Point(0, 0);
+      this._tasksDataGridView.Margin = new System.Windows.Forms.Padding(2);
+      this._tasksDataGridView.MultiSelect = false;
+      this._tasksDataGridView.Name = "_tasksDataGridView";
+      this._tasksDataGridView.ReadOnly = true;
+      this._tasksDataGridView.RowHeadersVisible = false;
+      this._tasksDataGridView.RowTemplate.Height = 24;
+      this._tasksDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+      this._tasksDataGridView.Size = new System.Drawing.Size(727, 312);
+      this._tasksDataGridView.TabIndex = 4;
+      this._tasksDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this._tasksDataGridView_CellContentClick);
       // 
       // OkButton
       // 
@@ -164,6 +199,8 @@ namespace CalDavSynchronizer.Ui.Options
       this._mainTab.ResumeLayout(false);
       this._calendarPage.ResumeLayout(false);
       this._addressBookPage.ResumeLayout(false);
+      this._tasksPage.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this._tasksDataGridView)).EndInit();
       this.ResumeLayout(false);
 
     }
@@ -177,5 +214,7 @@ namespace CalDavSynchronizer.Ui.Options
     private TabPage _calendarPage;
     private TabPage _addressBookPage;
     private Button OkButton;
+    private TabPage _tasksPage;
+    private DataGridView _tasksDataGridView;
   }
 }

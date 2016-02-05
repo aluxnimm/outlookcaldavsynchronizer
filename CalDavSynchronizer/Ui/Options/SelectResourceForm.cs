@@ -29,7 +29,11 @@ namespace CalDavSynchronizer.Ui.Options
     public string SelectedUrl { get; private set; }
     public ResourceType ResourceType { get; private set; }
 
-    public SelectResourceForm (IReadOnlyList<Tuple<Uri, string, string>> caldendars, IReadOnlyList<Tuple<Uri, string>> addressBooks, bool displayAddressBooksInitial)
+    public SelectResourceForm (
+      IReadOnlyList<Tuple<Uri, string, string>> caldendars, 
+      IReadOnlyList<Tuple<Uri, string>> addressBooks, 
+      IReadOnlyList<Tuple<string, string>> taskLists,
+      ResourceType initialResourceTabToDisplay)
     {
       InitializeComponent();
       _calendarDataGridView.DataSource = caldendars;
@@ -44,7 +48,25 @@ namespace CalDavSynchronizer.Ui.Options
       _addressBookDataGridView.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
       _addressBookDataGridView.Columns[1].HeaderText = "DisplayName";
 
-      _mainTab.SelectedTab = displayAddressBooksInitial ? _addressBookPage : _calendarPage;
+      _tasksDataGridView.DataSource = taskLists;
+      _tasksDataGridView.Columns[0].HeaderText = "Task List Id";
+      _tasksDataGridView.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+      _tasksDataGridView.Columns[0].Visible = false;
+      _tasksDataGridView.Columns[1].HeaderText = "Task List";
+
+      switch (initialResourceTabToDisplay)
+      {
+        case ResourceType.None:
+        case ResourceType.AddressBook:
+          _mainTab.SelectedTab = _addressBookPage;
+          break;
+        case ResourceType.Calendar:
+          _mainTab.SelectedTab = _calendarPage;
+          break;
+        case ResourceType.TaskList:
+          _mainTab.SelectedTab = _tasksPage;
+          break;
+      }
     }
 
     private void buttonCancel_Click (object sender, EventArgs e)
@@ -92,17 +114,45 @@ namespace CalDavSynchronizer.Ui.Options
 
     private void OkButton_Click (object sender, EventArgs e)
     {
+      DataGridView visibleGrid = null;
 
-      var visibleGrid = _mainTab.SelectedTab == _calendarPage ? _calendarDataGridView : _addressBookDataGridView;
+      if (_mainTab.SelectedTab == _calendarPage)
+      {
+        visibleGrid = _calendarDataGridView;
+        ResourceType = ResourceType.Calendar;
+      }
+      else if (_mainTab.SelectedTab == _addressBookPage)
+      {
+        visibleGrid = _addressBookDataGridView;
+        ResourceType = ResourceType.AddressBook;
+      }
+      if (_mainTab.SelectedTab == _tasksPage)
+      {
+        visibleGrid = _tasksDataGridView;
+        ResourceType = ResourceType.TaskList;
+      }
+
+      if (visibleGrid == null)
+        throw new NotImplementedException();
 
       if (visibleGrid.SelectedRows.Count == 0)
       {
+        ResourceType = ResourceType.None;
         MessageBox.Show ("No ressource selected!");
       }
       else
       {
-        ResourceType = (visibleGrid == _calendarDataGridView) ? ResourceType.Calendar : ResourceType.AddressBook;
         SelectedUrl = visibleGrid.SelectedRows[0].Cells[0].Value.ToString();
+        DialogResult = DialogResult.OK;
+      }
+    }
+
+    private void _tasksDataGridView_CellContentClick (object sender, DataGridViewCellEventArgs e)
+    {
+      if (e.RowIndex >= 0)
+      {
+        SelectedUrl = _tasksDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString ();
+        ResourceType = ResourceType.TaskList;
         DialogResult = DialogResult.OK;
       }
     }
