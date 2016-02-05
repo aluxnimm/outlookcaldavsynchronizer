@@ -131,7 +131,7 @@ namespace CalDavSynchronizer.Ui.Options
           _emailAddressTextBox.Text,
           null,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-          ServerAdapterType.GoogleOAuth,
+          ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth,
           _dependencies.CloseConnectionAfterEachRequest,
           _dependencies.PreemptiveAuthentication,
           _dependencies.ProxyOptions);
@@ -156,7 +156,7 @@ namespace CalDavSynchronizer.Ui.Options
       optionsToFill.EmailAddress = _emailAddressTextBox.Text;
       optionsToFill.CalenderUrl = _calenderUrlTextBox.Text;
       optionsToFill.UserName = _emailAddressTextBox.Text;
-      optionsToFill.ServerAdapterType = ServerAdapterType.GoogleOAuth;
+      optionsToFill.ServerAdapterType = ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth;
     }
 
     public string CalendarUrl

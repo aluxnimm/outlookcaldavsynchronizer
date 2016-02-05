@@ -29,7 +29,7 @@ namespace CalDavDataAccessIntegrationTests
 
     protected override ServerAdapterType? ServerAdapterTypeOverride
     {
-      get { return ServerAdapterType.Default; }
+      get { return ServerAdapterType.WebDavHttpClientBased; }
     }
 
     [Ignore ("Zimbra always returns false")]

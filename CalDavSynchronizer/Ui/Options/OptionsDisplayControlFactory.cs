@@ -40,7 +40,7 @@ namespace CalDavSynchronizer.Ui.Options
     {
       if (!_displayAllProfilesAsGeneric)
       {
-        if (options.DisplayType == OptionsDisplayType.Google || options.ServerAdapterType == ServerAdapterType.GoogleOAuth)
+        if (options.DisplayType == OptionsDisplayType.Google || options.ServerAdapterType == ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth)
           return new GoogleOptionsDisplayControl (_session, _profileDataDirectoryFactory, _fixInvalidSettings);
       }
 

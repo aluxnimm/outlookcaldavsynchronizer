@@ -38,12 +38,12 @@ namespace CalDavSynchronizer.Ui.Options
 
     public ServerAdapterType SelectedServerAdapterType
     {
-      get { return Checked ? ServerAdapterType.GoogleOAuth : ServerAdapterType.Default; }
+      get { return Checked ? ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth : ServerAdapterType.WebDavHttpClientBased; }
       set
       {
         switch (value)
         {
-          case ServerAdapterType.GoogleOAuth:
+          case ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth:
             Checked = true;
             break;
           default:

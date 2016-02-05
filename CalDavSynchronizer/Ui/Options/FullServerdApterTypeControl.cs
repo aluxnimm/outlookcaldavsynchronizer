@@ -30,9 +30,9 @@ namespace CalDavSynchronizer.Ui.Options
 
     private readonly IList<Item<ServerAdapterType>> _availableServerAdapterTypes = new List<Item<ServerAdapterType>>()
                                                                                    {
-                                                                                       new Item<ServerAdapterType> (ServerAdapterType.Default, "Default"),
-                                                                                       new Item<ServerAdapterType> (ServerAdapterType.GoogleOAuth, "GoogleOAuth"),
-                                                                                       new Item<ServerAdapterType> (ServerAdapterType.SynchronousWebRequestBased, "Sync WebRequest based"),
+                                                                                       new Item<ServerAdapterType> (ServerAdapterType.WebDavHttpClientBased, "WebDav"),
+                                                                                       new Item<ServerAdapterType> (ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth, "WebDav with GoogleOAuth"),
+                                                                                       new Item<ServerAdapterType> (ServerAdapterType.WebDavSynchronousWebRequestBased, "WebDav (Synchronous)"),
                                                                                    };
 
     public event EventHandler SelectedServerAdapterTypeChanged;

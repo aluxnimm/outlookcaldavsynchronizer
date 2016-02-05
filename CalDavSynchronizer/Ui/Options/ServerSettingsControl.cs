@@ -40,7 +40,7 @@ namespace CalDavSynchronizer.Ui.Options
 
     private void UpdatePasswordEnabled ()
     {
-      _passwordTextBox.Enabled = _serverAdapterTypeControl.SelectedServerAdapterType != ServerAdapterType.GoogleOAuth;
+      _passwordTextBox.Enabled = _serverAdapterTypeControl.SelectedServerAdapterType != ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth;
     }
 
     public void Initialize (ISettingsFaultFinder settingsFaultFinder, IServerSettingsControlDependencies dependencies)
