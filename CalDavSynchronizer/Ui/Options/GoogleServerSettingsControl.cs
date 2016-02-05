@@ -58,7 +58,7 @@ namespace CalDavSynchronizer.Ui.Options
       try
       {
         StringBuilder errorMessageBuilder = new StringBuilder();
-        if (!OptionTasks.ValidateCalendarUrl (_calenderUrlTextBox.Text, errorMessageBuilder, false))
+        if (!OptionTasks.ValidateWebDavUrl (_calenderUrlTextBox.Text, errorMessageBuilder, false))
         {
           MessageBox.Show (errorMessageBuilder.ToString(), "The CalDav/CardDav Url is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
           return;

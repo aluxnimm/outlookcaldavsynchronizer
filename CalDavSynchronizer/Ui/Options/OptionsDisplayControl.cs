@@ -97,13 +97,17 @@ namespace CalDavSynchronizer.Ui.Options
 
     public bool Validate (StringBuilder errorMessageBuilder)
     {
-      bool result = OptionTasks.ValidateCalendarUrl (_serverSettingsControl.CalendarUrl, errorMessageBuilder, true);
+      bool result = true;
+
+      if (_serverSettingsControl.SelectedServerAdapterType != ServerAdapterType.GoogleTaskApi)
+        result &= OptionTasks.ValidateWebDavUrl (_serverSettingsControl.CalendarUrl, errorMessageBuilder, true);
+
       result &= _outlookFolderControl.Validate (errorMessageBuilder);
-      result &= OptionTasks.ValidateEmailAddress (errorMessageBuilder,_serverSettingsControl.EmailAddress);
+      result &= OptionTasks.ValidateEmailAddress (errorMessageBuilder, _serverSettingsControl.EmailAddress);
       return result;
     }
 
-  
+
     public Contracts.Options Options
     {
       set

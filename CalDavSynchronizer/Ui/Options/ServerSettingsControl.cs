@@ -17,16 +17,20 @@
 
 using System;
 using System.Configuration;
+using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Ui.ConnectionTests;
+using Google.Apis.Services;
+using Google.Apis.Tasks.v1;
+using Google.Apis.Tasks.v1.Data;
 using log4net;
 using Exception = System.Exception;
+using Task = System.Threading.Tasks.Task;
 
 namespace CalDavSynchronizer.Ui.Options
 {
@@ -70,93 +74,10 @@ namespace CalDavSynchronizer.Ui.Options
       _testConnectionButton.Enabled = false;
       try
       {
-        StringBuilder errorMessageBuilder = new StringBuilder();
-        if (!OptionTasks.ValidateCalendarUrl (_calenderUrlTextBox.Text, errorMessageBuilder, false))
-        {
-          MessageBox.Show (errorMessageBuilder.ToString(), "The CalDav/CardDav Url is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
-          return;
-        }
-
-        var enteredUri = new Uri (_calenderUrlTextBox.Text);
-        var webDavClient = CreateWebDavClient();
-
-        Uri autoDiscoveredUrl;
-        ResourceType autoDiscoveredResourceType;
-
-        if (ConnectionTester.RequiresAutoDiscovery (enteredUri))
-        {
-          var autodiscoveryResult = await OptionTasks.DoAutoDiscovery (enteredUri, webDavClient, true, true, _dependencies.OutlookFolderType);
-          if (autodiscoveryResult.WasCancelled)
-            return;
-          if (autodiscoveryResult.RessourceUrl != null)
-          {
-            autoDiscoveredUrl = autodiscoveryResult.RessourceUrl;
-            autoDiscoveredResourceType = autodiscoveryResult.ResourceType;
-          }
-          else
-          {
-            var autodiscoveryResult2 = await OptionTasks.DoAutoDiscovery (enteredUri.AbsolutePath.EndsWith ("/") ? enteredUri : new Uri (enteredUri.ToString () + "/"), webDavClient, false, false, _dependencies.OutlookFolderType);
-            if (autodiscoveryResult2.WasCancelled)
-              return;
-            if (autodiscoveryResult2.RessourceUrl != null)
-            {
-              autoDiscoveredUrl = autodiscoveryResult2.RessourceUrl;
-              autoDiscoveredResourceType = autodiscoveryResult2.ResourceType;
-            }
-            else
-              return;
-          }
-        }
+        if (_serverAdapterTypeControl.SelectedServerAdapterType == ServerAdapterType.GoogleTaskApi)
+          await TestGoogleTaskApiConnection();
         else
-        {
-          var result = await ConnectionTester.TestConnection (enteredUri, webDavClient, ResourceType.None);
-          if (result.ResourceType != ResourceType.None)
-          {
-            _settingsFaultFinder.FixSynchronizationMode (result);
-
-            OptionTasks.DisplayTestReport (
-                result,
-                _dependencies.SelectedSynchronizationModeRequiresWriteableServerResource,
-                _dependencies.SelectedSynchronizationModeDisplayName,
-                _dependencies.OutlookFolderType);
-            return;
-          }
-          else
-          {
-            var autodiscoveryResult = await OptionTasks.DoAutoDiscovery (enteredUri, webDavClient, false, false, _dependencies.OutlookFolderType);
-            if (autodiscoveryResult.WasCancelled)
-              return;
-            if (autodiscoveryResult.RessourceUrl != null)
-            {
-              autoDiscoveredUrl = autodiscoveryResult.RessourceUrl;
-              autoDiscoveredResourceType = autodiscoveryResult.ResourceType;
-            }
-            else
-            {
-              var autodiscoveryResult2 = await OptionTasks.DoAutoDiscovery (enteredUri, webDavClient, true, true, _dependencies.OutlookFolderType);
-              if (autodiscoveryResult2.RessourceUrl != null)
-              {
-                autoDiscoveredUrl = autodiscoveryResult2.RessourceUrl;
-                autoDiscoveredResourceType = autodiscoveryResult2.ResourceType;
-              }
-              else
-                return;
-            }
-          }
-        }
-
-        _calenderUrlTextBox.Text = autoDiscoveredUrl.ToString();
-
-        var finalResult = await ConnectionTester.TestConnection (autoDiscoveredUrl, webDavClient, autoDiscoveredResourceType);
-
-        _settingsFaultFinder.FixSynchronizationMode (finalResult);
-
-        OptionTasks.DisplayTestReport (
-            finalResult,
-            _dependencies.SelectedSynchronizationModeRequiresWriteableServerResource,
-            _dependencies.SelectedSynchronizationModeDisplayName,
-            _dependencies.OutlookFolderType);
-        ;
+          await TestWebDavConnection();
       }
       catch (Exception x)
       {
@@ -171,6 +92,118 @@ namespace CalDavSynchronizer.Ui.Options
         _testConnectionButton.Enabled = true;
       }
     }
+
+    private async Task TestGoogleTaskApiConnection ()
+    {
+      var service = await OAuth.Google.GoogleHttpClientFactory.LoginToGoogleTasksService (_userNameTextBox.Text);
+
+      TaskLists taskLists = await service.Tasklists.List().ExecuteAsync();
+
+      using (SelectResourceForm selectResourceForm =
+          new SelectResourceForm (
+              new Tuple<Uri, string, string>[0],
+              new Tuple<Uri, string>[0],
+              taskLists.Items.Select (i => Tuple.Create(i.Id,i.Title)).ToArray(),
+              ResourceType.TaskList))
+      {
+        if (selectResourceForm.ShowDialog() == DialogResult.OK)
+          _calenderUrlTextBox.Text = selectResourceForm.SelectedUrl;
+
+      }
+    }
+
+
+    private async Task TestWebDavConnection ()
+    {
+      StringBuilder errorMessageBuilder = new StringBuilder();
+      if (!OptionTasks.ValidateWebDavUrl (_calenderUrlTextBox.Text, errorMessageBuilder, false))
+      {
+        MessageBox.Show (errorMessageBuilder.ToString(), "The CalDav/CardDav Url is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return;
+      }
+
+      var enteredUri = new Uri (_calenderUrlTextBox.Text);
+      var webDavClient = CreateWebDavClient();
+
+      Uri autoDiscoveredUrl;
+      ResourceType autoDiscoveredResourceType;
+
+      if (ConnectionTester.RequiresAutoDiscovery (enteredUri))
+      {
+        var autodiscoveryResult = await OptionTasks.DoAutoDiscovery (enteredUri, webDavClient, true, true, _dependencies.OutlookFolderType);
+        if (autodiscoveryResult.WasCancelled)
+          return;
+        if (autodiscoveryResult.RessourceUrl != null)
+        {
+          autoDiscoveredUrl = autodiscoveryResult.RessourceUrl;
+          autoDiscoveredResourceType = autodiscoveryResult.ResourceType;
+        }
+        else
+        {
+          var autodiscoveryResult2 = await OptionTasks.DoAutoDiscovery (enteredUri.AbsolutePath.EndsWith ("/") ? enteredUri : new Uri (enteredUri.ToString() + "/"), webDavClient, false, false, _dependencies.OutlookFolderType);
+          if (autodiscoveryResult2.WasCancelled)
+            return;
+          if (autodiscoveryResult2.RessourceUrl != null)
+          {
+            autoDiscoveredUrl = autodiscoveryResult2.RessourceUrl;
+            autoDiscoveredResourceType = autodiscoveryResult2.ResourceType;
+          }
+          else
+            return;
+        }
+      }
+      else
+      {
+        var result = await ConnectionTester.TestConnection (enteredUri, webDavClient, ResourceType.None);
+        if (result.ResourceType != ResourceType.None)
+        {
+          _settingsFaultFinder.FixSynchronizationMode (result);
+
+          OptionTasks.DisplayTestReport (
+              result,
+              _dependencies.SelectedSynchronizationModeRequiresWriteableServerResource,
+              _dependencies.SelectedSynchronizationModeDisplayName,
+              _dependencies.OutlookFolderType);
+          return;
+        }
+        else
+        {
+          var autodiscoveryResult = await OptionTasks.DoAutoDiscovery (enteredUri, webDavClient, false, false, _dependencies.OutlookFolderType);
+          if (autodiscoveryResult.WasCancelled)
+            return;
+          if (autodiscoveryResult.RessourceUrl != null)
+          {
+            autoDiscoveredUrl = autodiscoveryResult.RessourceUrl;
+            autoDiscoveredResourceType = autodiscoveryResult.ResourceType;
+          }
+          else
+          {
+            var autodiscoveryResult2 = await OptionTasks.DoAutoDiscovery (enteredUri, webDavClient, true, true, _dependencies.OutlookFolderType);
+            if (autodiscoveryResult2.RessourceUrl != null)
+            {
+              autoDiscoveredUrl = autodiscoveryResult2.RessourceUrl;
+              autoDiscoveredResourceType = autodiscoveryResult2.ResourceType;
+            }
+            else
+              return;
+          }
+        }
+      }
+
+      _calenderUrlTextBox.Text = autoDiscoveredUrl.ToString();
+
+      var finalResult = await ConnectionTester.TestConnection (autoDiscoveredUrl, webDavClient, autoDiscoveredResourceType);
+
+      _settingsFaultFinder.FixSynchronizationMode (finalResult);
+
+      OptionTasks.DisplayTestReport (
+          finalResult,
+          _dependencies.SelectedSynchronizationModeRequiresWriteableServerResource,
+          _dependencies.SelectedSynchronizationModeDisplayName,
+          _dependencies.OutlookFolderType);
+    }
+
+
 
     private IWebDavClient CreateWebDavClient ()
     {
@@ -218,5 +251,7 @@ namespace CalDavSynchronizer.Ui.Options
     {
       get { return _emailAddressTextBox.Text; }
     }
+
+    public ServerAdapterType SelectedServerAdapterType => _serverAdapterTypeControl.SelectedServerAdapterType;
   }
 }
