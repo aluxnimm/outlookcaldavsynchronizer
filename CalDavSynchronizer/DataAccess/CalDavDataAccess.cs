@@ -419,6 +419,17 @@ namespace CalDavSynchronizer.DataAccess
 
         throw;
       }
+      catch (WebException x)
+      {
+        var httpWebResponse = (HttpWebResponse) x.Response;
+
+        if (httpWebResponse?.StatusCode == HttpStatusCode.NotFound)
+          return entities;
+
+        throw;
+      }
+
+
       return entities;
     }
 
