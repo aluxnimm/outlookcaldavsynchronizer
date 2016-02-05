@@ -52,6 +52,11 @@ namespace CalDavSynchronizer.DataAccess
       
     }
 
+    public override string ToString ()
+    {
+      return OriginalAbsolutePath;
+    }
+
     public override int GetHashCode ()
     {
       return Comparer.GetHashCode (this);
