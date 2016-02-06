@@ -39,11 +39,13 @@ namespace CalDavSynchronizer.Ui.Options
       this._emailAddressTextBox = new System.Windows.Forms.TextBox();
       this._testConnectionButton = new System.Windows.Forms.Button();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this._doAutodiscoveryButton = new System.Windows.Forms.Button();
       this.groupBox.SuspendLayout();
       this.SuspendLayout();
       // 
       // groupBox
       // 
+      this.groupBox.Controls.Add(this._doAutodiscoveryButton);
       this.groupBox.Controls.Add(this._editUrlManuallyButton);
       this.groupBox.Controls.Add(this.label3);
       this.groupBox.Controls.Add(this._calenderUrlTextBox);
@@ -115,6 +117,17 @@ namespace CalDavSynchronizer.Ui.Options
       this._testConnectionButton.Text = "Test settings";
       this._testConnectionButton.UseVisualStyleBackColor = true;
       // 
+      // _doAutodiscoveryButton
+      // 
+      this._doAutodiscoveryButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this._doAutodiscoveryButton.Location = new System.Drawing.Point(243, 103);
+      this._doAutodiscoveryButton.Name = "_doAutodiscoveryButton";
+      this._doAutodiscoveryButton.Size = new System.Drawing.Size(114, 23);
+      this._doAutodiscoveryButton.TabIndex = 15;
+      this._doAutodiscoveryButton.Text = "Do Autodiscovery";
+      this._doAutodiscoveryButton.UseVisualStyleBackColor = true;
+      this._doAutodiscoveryButton.Click += new System.EventHandler(this._doAutodiscoveryButton_Click);
+      // 
       // GoogleServerSettingsControl
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -138,5 +151,6 @@ namespace CalDavSynchronizer.Ui.Options
     private System.Windows.Forms.Label label3;
     private System.Windows.Forms.TextBox _calenderUrlTextBox;
     private System.Windows.Forms.Button _editUrlManuallyButton;
+    private System.Windows.Forms.Button _doAutodiscoveryButton;
   }
 }
