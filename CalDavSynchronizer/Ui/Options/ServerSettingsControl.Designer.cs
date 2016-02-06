@@ -60,8 +60,10 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox.Controls.Add(this._calenderUrlTextBox);
       this.groupBox.Controls.Add(this.label3);
       this.groupBox.Location = new System.Drawing.Point(0, 0);
+      this.groupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this.groupBox.Name = "groupBox";
-      this.groupBox.Size = new System.Drawing.Size(445, 174);
+      this.groupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.groupBox.Size = new System.Drawing.Size(593, 214);
       this.groupBox.TabIndex = 1;
       this.groupBox.TabStop = false;
       this.groupBox.Text = "Server settings";
@@ -69,26 +71,29 @@ namespace CalDavSynchronizer.Ui.Options
       // label11
       // 
       this.label11.AutoSize = true;
-      this.label11.Location = new System.Drawing.Point(6, 104);
+      this.label11.Location = new System.Drawing.Point(8, 128);
+      this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label11.Name = "label11";
-      this.label11.Size = new System.Drawing.Size(75, 13);
+      this.label11.Size = new System.Drawing.Size(101, 17);
       this.label11.TabIndex = 13;
       this.label11.Text = "Email address:";
       // 
       // _emailAddressTextBox
       // 
       this._emailAddressTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._emailAddressTextBox.Location = new System.Drawing.Point(256, 101);
+      this._emailAddressTextBox.Location = new System.Drawing.Point(310, 124);
+      this._emailAddressTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this._emailAddressTextBox.Name = "_emailAddressTextBox";
-      this._emailAddressTextBox.Size = new System.Drawing.Size(183, 20);
+      this._emailAddressTextBox.Size = new System.Drawing.Size(274, 22);
       this._emailAddressTextBox.TabIndex = 3;
       // 
       // _testConnectionButton
       // 
       this._testConnectionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._testConnectionButton.Location = new System.Drawing.Point(363, 145);
+      this._testConnectionButton.Location = new System.Drawing.Point(484, 178);
+      this._testConnectionButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this._testConnectionButton.Name = "_testConnectionButton";
-      this._testConnectionButton.Size = new System.Drawing.Size(76, 23);
+      this._testConnectionButton.Size = new System.Drawing.Size(101, 28);
       this._testConnectionButton.TabIndex = 5;
       this._testConnectionButton.Text = "Test settings";
       this._testConnectionButton.UseVisualStyleBackColor = true;
@@ -96,63 +101,70 @@ namespace CalDavSynchronizer.Ui.Options
       // label5
       // 
       this.label5.AutoSize = true;
-      this.label5.Location = new System.Drawing.Point(6, 78);
+      this.label5.Location = new System.Drawing.Point(8, 96);
+      this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label5.Name = "label5";
-      this.label5.Size = new System.Drawing.Size(56, 13);
+      this.label5.Size = new System.Drawing.Size(73, 17);
       this.label5.TabIndex = 11;
       this.label5.Text = "Password:";
       // 
       // label4
       // 
       this.label4.AutoSize = true;
-      this.label4.Location = new System.Drawing.Point(6, 52);
+      this.label4.Location = new System.Drawing.Point(8, 64);
+      this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label4.Name = "label4";
-      this.label4.Size = new System.Drawing.Size(58, 13);
+      this.label4.Size = new System.Drawing.Size(77, 17);
       this.label4.TabIndex = 10;
       this.label4.Text = "Username:";
       // 
       // _passwordTextBox
       // 
       this._passwordTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._passwordTextBox.Location = new System.Drawing.Point(256, 75);
+      this._passwordTextBox.Location = new System.Drawing.Point(310, 92);
+      this._passwordTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this._passwordTextBox.Name = "_passwordTextBox";
       this._passwordTextBox.PasswordChar = '*';
-      this._passwordTextBox.Size = new System.Drawing.Size(183, 20);
+      this._passwordTextBox.Size = new System.Drawing.Size(274, 22);
       this._passwordTextBox.TabIndex = 2;
       // 
       // _userNameTextBox
       // 
       this._userNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._userNameTextBox.Location = new System.Drawing.Point(256, 49);
+      this._userNameTextBox.Location = new System.Drawing.Point(310, 60);
+      this._userNameTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this._userNameTextBox.Name = "_userNameTextBox";
-      this._userNameTextBox.Size = new System.Drawing.Size(183, 20);
+      this._userNameTextBox.Size = new System.Drawing.Size(274, 22);
       this._userNameTextBox.TabIndex = 1;
       // 
       // _calenderUrlTextBox
       // 
       this._calenderUrlTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this._calenderUrlTextBox.Location = new System.Drawing.Point(58, 23);
+      this._calenderUrlTextBox.Location = new System.Drawing.Point(77, 28);
+      this._calenderUrlTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this._calenderUrlTextBox.Name = "_calenderUrlTextBox";
-      this._calenderUrlTextBox.Size = new System.Drawing.Size(380, 20);
+      this._calenderUrlTextBox.Size = new System.Drawing.Size(505, 22);
       this._calenderUrlTextBox.TabIndex = 0;
       // 
       // label3
       // 
       this.label3.AutoSize = true;
-      this.label3.Location = new System.Drawing.Point(6, 26);
+      this.label3.Location = new System.Drawing.Point(8, 32);
+      this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label3.Name = "label3";
-      this.label3.Size = new System.Drawing.Size(48, 13);
+      this.label3.Size = new System.Drawing.Size(62, 17);
       this.label3.TabIndex = 6;
       this.label3.Text = "DAV Url:";
       // 
       // ServerSettingsControl
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.groupBox);
+      this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this.Name = "ServerSettingsControl";
-      this.Size = new System.Drawing.Size(445, 174);
+      this.Size = new System.Drawing.Size(593, 214);
       this.groupBox.ResumeLayout(false);
       this.groupBox.PerformLayout();
       this.ResumeLayout(false);
