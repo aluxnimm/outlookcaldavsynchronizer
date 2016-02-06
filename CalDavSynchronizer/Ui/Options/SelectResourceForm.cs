@@ -48,11 +48,18 @@ namespace CalDavSynchronizer.Ui.Options
       _addressBookDataGridView.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
       _addressBookDataGridView.Columns[1].HeaderText = "DisplayName";
 
-      _tasksDataGridView.DataSource = taskLists;
-      _tasksDataGridView.Columns[0].HeaderText = "Task List Id";
-      _tasksDataGridView.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-      _tasksDataGridView.Columns[0].Visible = false;
-      _tasksDataGridView.Columns[1].HeaderText = "Task List";
+      if (taskLists.Count > 0)
+      {
+        _tasksDataGridView.DataSource = taskLists;
+        _tasksDataGridView.Columns[0].HeaderText = "Task List Id";
+        _tasksDataGridView.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+        _tasksDataGridView.Columns[0].Visible = false;
+        _tasksDataGridView.Columns[1].HeaderText = "Task List";
+      }
+      else if (initialResourceTabToDisplay != ResourceType.TaskList)
+      {
+        _mainTab.TabPages.Remove (_tasksPage);
+      }
 
       switch (initialResourceTabToDisplay)
       {
@@ -147,7 +154,7 @@ namespace CalDavSynchronizer.Ui.Options
       }
     }
 
-    private void _tasksDataGridView_CellContentClick (object sender, DataGridViewCellEventArgs e)
+    private void _tasksDataGridView_CellContentDoubleClick (object sender, DataGridViewCellEventArgs e)
     {
       if (e.RowIndex >= 0)
       {

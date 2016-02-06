@@ -166,7 +166,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._tasksDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
       this._tasksDataGridView.Size = new System.Drawing.Size(727, 312);
       this._tasksDataGridView.TabIndex = 4;
-      this._tasksDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this._tasksDataGridView_CellContentClick);
+      this._tasksDataGridView.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this._tasksDataGridView_CellContentDoubleClick);
       // 
       // OkButton
       // 
