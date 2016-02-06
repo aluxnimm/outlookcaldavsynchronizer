@@ -34,6 +34,7 @@ namespace CalDavSynchronizer.Ui.Options
 {
   public partial class GoogleServerSettingsControl : UserControl, IServerSettingsControl
   {
+    private const string c_googleDavBaseUrl = "https://apidata.googleusercontent.com/caldav/v2";
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private ISettingsFaultFinder _settingsFaultFinder;
@@ -47,6 +48,16 @@ namespace CalDavSynchronizer.Ui.Options
       _dependencies = dependencies;
 
       _testConnectionButton.Click += _testConnectionButton_Click;
+    }
+
+    private async void _doAutodiscoveryButton_Click (object sender, EventArgs e)
+    {
+      if (UsedServerAdapterType == ServerAdapterType.GoogleTaskApi)
+        _calenderUrlTextBox.Text = string.Empty;
+      else
+        _calenderUrlTextBox.Text = c_googleDavBaseUrl;
+
+      await TestServerConnection ();
     }
 
     private async void _testConnectionButton_Click (object sender, EventArgs e)
@@ -181,7 +192,7 @@ namespace CalDavSynchronizer.Ui.Options
       if (!string.IsNullOrEmpty (value.CalenderUrl))
         _calenderUrlTextBox.Text = value.CalenderUrl;
       else
-        _calenderUrlTextBox.Text = "https://apidata.googleusercontent.com/caldav/v2";
+        _calenderUrlTextBox.Text = c_googleDavBaseUrl;
     }
 
     public void FillOptions (Contracts.Options optionsToFill)
@@ -206,5 +217,7 @@ namespace CalDavSynchronizer.Ui.Options
     {
       _calenderUrlTextBox.ReadOnly = false;
     }
+
+   
   }
 }
