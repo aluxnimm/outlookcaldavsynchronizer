@@ -135,19 +135,19 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._outlookFolderControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this._outlookFolderControl.Location = new System.Drawing.Point(12, 226);
+      this._outlookFolderControl.Location = new System.Drawing.Point(12, 38);
       this._outlookFolderControl.Name = "_outlookFolderControl";
       this._outlookFolderControl.Size = new System.Drawing.Size(445, 80);
-      this._outlookFolderControl.TabIndex = 2;
+      this._outlookFolderControl.TabIndex = 1;
       // 
       // _serverSettingsControl
       // 
       this._serverSettingsControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this._serverSettingsControl.Location = new System.Drawing.Point(12, 38);
+      this._serverSettingsControl.Location = new System.Drawing.Point(12, 132);
       this._serverSettingsControl.Name = "_serverSettingsControl";
       this._serverSettingsControl.Size = new System.Drawing.Size(445, 174);
-      this._serverSettingsControl.TabIndex = 1;
+      this._serverSettingsControl.TabIndex = 2;
       // 
       // _syncSettingsControl
       // 
