@@ -40,13 +40,7 @@ namespace CalDavSynchronizer.Ui.Options
 
     private ISettingsFaultFinder _settingsFaultFinder;
     private IServerSettingsControlDependencies _dependencies;
-    private IServerAdapterControl _serverAdapterTypeControl;
-
-    private void UpdatePasswordEnabled ()
-    {
-      _passwordTextBox.Enabled = _serverAdapterTypeControl.SelectedServerAdapterType != ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth;
-    }
-
+    
     public void Initialize (ISettingsFaultFinder settingsFaultFinder, IServerSettingsControlDependencies dependencies)
     {
       InitializeComponent();
@@ -55,13 +49,6 @@ namespace CalDavSynchronizer.Ui.Options
       _dependencies = dependencies;
 
       _testConnectionButton.Click += _testConnectionButton_Click;
-      _serverAdapterTypeControl = _serverAdapterTypeControlImp;
-      _serverAdapterTypeControl.SelectedServerAdapterTypeChanged += _serverAdapterTypeControl_SelectedServerAdapterTypeChanged;
-    }
-
-    void _serverAdapterTypeControl_SelectedServerAdapterTypeChanged (object sender, EventArgs e)
-    {
-      UpdatePasswordEnabled();
     }
 
     private async void _testConnectionButton_Click (object sender, EventArgs e)
@@ -74,10 +61,7 @@ namespace CalDavSynchronizer.Ui.Options
       _testConnectionButton.Enabled = false;
       try
       {
-        if (_serverAdapterTypeControl.SelectedServerAdapterType == ServerAdapterType.GoogleTaskApi)
-          await TestGoogleTaskApiConnection();
-        else
-          await TestWebDavConnection();
+        await TestWebDavConnection();
       }
       catch (Exception x)
       {
@@ -92,26 +76,6 @@ namespace CalDavSynchronizer.Ui.Options
         _testConnectionButton.Enabled = true;
       }
     }
-
-    private async Task TestGoogleTaskApiConnection ()
-    {
-      var service = await OAuth.Google.GoogleHttpClientFactory.LoginToGoogleTasksService (_userNameTextBox.Text);
-
-      TaskLists taskLists = await service.Tasklists.List().ExecuteAsync();
-
-      using (SelectResourceForm selectResourceForm =
-          new SelectResourceForm (
-              new Tuple<Uri, string, string>[0],
-              new Tuple<Uri, string>[0],
-              taskLists.Items.Select (i => Tuple.Create(i.Id,i.Title)).ToArray(),
-              ResourceType.TaskList))
-      {
-        if (selectResourceForm.ShowDialog() == DialogResult.OK)
-          _calenderUrlTextBox.Text = selectResourceForm.SelectedUrl;
-
-      }
-    }
-
 
     private async Task TestWebDavConnection ()
     {
@@ -211,7 +175,7 @@ namespace CalDavSynchronizer.Ui.Options
           _userNameTextBox.Text,
           _passwordTextBox.Text,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-          _serverAdapterTypeControl.SelectedServerAdapterType,
+          ServerAdapterType.WebDavHttpClientBased,
           _dependencies.CloseConnectionAfterEachRequest,
           _dependencies.PreemptiveAuthentication,
           _dependencies.ProxyOptions);
@@ -228,8 +192,6 @@ namespace CalDavSynchronizer.Ui.Options
       _calenderUrlTextBox.Text = value.CalenderUrl;
       _userNameTextBox.Text = value.UserName;
       _passwordTextBox.Text = value.Password;
-
-      _serverAdapterTypeControl.SelectedServerAdapterType = value.ServerAdapterType;
     }
 
     public void FillOptions (Contracts.Options optionsToFill)
@@ -238,8 +200,7 @@ namespace CalDavSynchronizer.Ui.Options
       optionsToFill.CalenderUrl = _calenderUrlTextBox.Text;
       optionsToFill.UserName = _userNameTextBox.Text;
       optionsToFill.Password = _passwordTextBox.Text;
-
-      optionsToFill.ServerAdapterType = _serverAdapterTypeControl.SelectedServerAdapterType;
+      optionsToFill.ServerAdapterType = ServerAdapterType.WebDavHttpClientBased;
     }
 
     public string CalendarUrl
@@ -251,7 +212,5 @@ namespace CalDavSynchronizer.Ui.Options
     {
       get { return _emailAddressTextBox.Text; }
     }
-
-    public ServerAdapterType SelectedServerAdapterType => _serverAdapterTypeControl.SelectedServerAdapterType;
   }
 }

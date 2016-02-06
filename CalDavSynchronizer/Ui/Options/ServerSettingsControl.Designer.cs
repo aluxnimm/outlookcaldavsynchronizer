@@ -42,7 +42,6 @@ namespace CalDavSynchronizer.Ui.Options
       this._calenderUrlTextBox = new System.Windows.Forms.TextBox();
       this.label3 = new System.Windows.Forms.Label();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-      this._serverAdapterTypeControlImp = new CalDavSynchronizer.Ui.Options.FullServerdApterTypeControl();
       this.groupBox.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -51,7 +50,6 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.groupBox.Controls.Add(this._serverAdapterTypeControlImp);
       this.groupBox.Controls.Add(this.label11);
       this.groupBox.Controls.Add(this._emailAddressTextBox);
       this.groupBox.Controls.Add(this._testConnectionButton);
@@ -148,17 +146,6 @@ namespace CalDavSynchronizer.Ui.Options
       this.label3.TabIndex = 6;
       this.label3.Text = "DAV Url:";
       // 
-      // _serverAdapterTypeControlImp
-      // 
-      this._serverAdapterTypeControlImp.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this._serverAdapterTypeControlImp.AutoSize = true;
-      this._serverAdapterTypeControlImp.Location = new System.Drawing.Point(8, 145);
-      this._serverAdapterTypeControlImp.Name = "_serverAdapterTypeControlImp";
-      this._serverAdapterTypeControlImp.SelectedServerAdapterType = CalDavSynchronizer.Contracts.ServerAdapterType.WebDavHttpClientBased;
-      this._serverAdapterTypeControlImp.Size = new System.Drawing.Size(305, 24);
-      this._serverAdapterTypeControlImp.TabIndex = 4;
-      // 
       // ServerSettingsControl
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -184,7 +171,6 @@ namespace CalDavSynchronizer.Ui.Options
     private System.Windows.Forms.Label label3;
     private System.Windows.Forms.Label label11;
     private System.Windows.Forms.TextBox _emailAddressTextBox;
-    private FullServerdApterTypeControl _serverAdapterTypeControlImp;
     private System.Windows.Forms.ToolTip toolTip;
   }
 }
