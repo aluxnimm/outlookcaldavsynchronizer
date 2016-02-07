@@ -62,8 +62,6 @@ namespace CalDavSynchronizer.Ui.Options
 
     private async void _testConnectionButton_Click (object sender, EventArgs e)
     {
-      if (UsedServerAdapterType == ServerAdapterType.GoogleTaskApi)
-        _calenderUrlTextBox.Text = c_googleDavBaseUrl;
       await TestServerConnection();
     }
 
@@ -97,6 +95,27 @@ namespace CalDavSynchronizer.Ui.Options
       if (!OptionTasks.ValidateGoogleEmailAddress (errorMessageBuilder, _emailAddressTextBox.Text)) 
       {
         MessageBox.Show (errorMessageBuilder.ToString(), "The Email Address is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return;
+      }
+      if (UsedServerAdapterType == ServerAdapterType.GoogleTaskApi &&
+          !string.IsNullOrWhiteSpace (_calenderUrlTextBox.Text) &&
+          _calenderUrlTextBox.Text != c_googleDavBaseUrl)
+      {
+        var service = await OAuth.Google.GoogleHttpClientFactory.LoginToGoogleTasksService (_emailAddressTextBox.Text);
+
+        try
+        {
+          TaskList task = await service.Tasklists.Get (_calenderUrlTextBox.Text).ExecuteAsync();
+        }
+        catch (Exception)
+        {
+          errorMessageBuilder.AppendFormat ("The tasklist with id '{0}' is invalid.", _calenderUrlTextBox.Text);
+          MessageBox.Show(errorMessageBuilder.ToString(), "The tasklist is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          return;
+        }
+        TestResult result = new TestResult (ResourceType.TaskList, CalendarProperties.None, AddressBookProperties.None);
+
+        OptionTasks.DisplayTestReport (result, false, _dependencies.SelectedSynchronizationModeDisplayName, _dependencies.OutlookFolderType);
         return;
       }
 
