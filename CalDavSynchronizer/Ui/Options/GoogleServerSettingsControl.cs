@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Reflection;
@@ -27,6 +28,7 @@ using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Ui.ConnectionTests;
 using Google.Apis.Tasks.v1.Data;
 using log4net;
+using Microsoft.Office.Interop.Outlook;
 using Exception = System.Exception;
 using Task = System.Threading.Tasks.Task;
 
@@ -39,6 +41,7 @@ namespace CalDavSynchronizer.Ui.Options
 
     private ISettingsFaultFinder _settingsFaultFinder;
     private IServerSettingsControlDependencies _dependencies;
+    public ServerAdapterType UsedServerAdapterType { get; private set; }
 
     public void Initialize (ISettingsFaultFinder settingsFaultFinder, IServerSettingsControlDependencies dependencies)
     {
@@ -52,33 +55,25 @@ namespace CalDavSynchronizer.Ui.Options
 
     private async void _doAutodiscoveryButton_Click (object sender, EventArgs e)
     {
-      if (UsedServerAdapterType == ServerAdapterType.GoogleTaskApi)
-        _calenderUrlTextBox.Text = string.Empty;
-      else
-        _calenderUrlTextBox.Text = c_googleDavBaseUrl;
+      _calenderUrlTextBox.Text = c_googleDavBaseUrl;
 
       await TestServerConnection ();
     }
 
     private async void _testConnectionButton_Click (object sender, EventArgs e)
     {
+      if (UsedServerAdapterType == ServerAdapterType.GoogleTaskApi)
+        _calenderUrlTextBox.Text = c_googleDavBaseUrl;
       await TestServerConnection();
     }
-
-
-    public ServerAdapterType UsedServerAdapterType =>
-        _dependencies.OutlookFolderType == Microsoft.Office.Interop.Outlook.OlItemType.olTaskItem ?
-             ServerAdapterType.GoogleTaskApi : ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth;
 
     private async Task TestServerConnection ()
     {
       _testConnectionButton.Enabled = false;
+      _doAutodiscoveryButton.Enabled = false;
       try
       {
-        if (UsedServerAdapterType == ServerAdapterType.GoogleTaskApi)
-          await TestGoogleTaskApiConnection();
-        else
-          await TestWebDavConnection();
+        await TestGoogleConnection();
       }
       catch (Exception x)
       {
@@ -91,34 +86,23 @@ namespace CalDavSynchronizer.Ui.Options
       finally
       {
         _testConnectionButton.Enabled = true;
+        _doAutodiscoveryButton.Enabled = true;
       }
     }
 
-    private async Task TestGoogleTaskApiConnection ()
-    {
-      var service = await OAuth.Google.GoogleHttpClientFactory.LoginToGoogleTasksService (_emailAddressTextBox.Text);
-
-      TaskLists taskLists = await service.Tasklists.List ().ExecuteAsync ();
-
-      using (SelectResourceForm selectResourceForm =
-          new SelectResourceForm (
-              new Tuple<Uri, string, string>[0],
-              new Tuple<Uri, string>[0],
-              taskLists.Items.Select (i => Tuple.Create (i.Id, i.Title)).ToArray (),
-              ResourceType.TaskList))
-      {
-        if (selectResourceForm.ShowDialog () == DialogResult.OK)
-          _calenderUrlTextBox.Text = selectResourceForm.SelectedUrl;
-
-      }
-    }
-
-    private async Task TestWebDavConnection ()
+    private async Task TestGoogleConnection ()
     {
       StringBuilder errorMessageBuilder = new StringBuilder ();
+
+      if (!OptionTasks.ValidateGoogleEmailAddress (errorMessageBuilder, _emailAddressTextBox.Text)) 
+      {
+        MessageBox.Show (errorMessageBuilder.ToString(), "The Email Address is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return;
+      }
+
       if (!OptionTasks.ValidateWebDavUrl (_calenderUrlTextBox.Text, errorMessageBuilder, false))
       {
-        MessageBox.Show (errorMessageBuilder.ToString (), "The CalDav/CardDav Url is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show (errorMessageBuilder.ToString(), "The CalDav/CardDav Url is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
         return;
       }
 
@@ -130,17 +114,66 @@ namespace CalDavSynchronizer.Ui.Options
 
       if (ConnectionTester.RequiresAutoDiscovery (enteredUri))
       {
-        var autodiscoveryResult = await OptionTasks.DoAutoDiscovery (enteredUri, webDavClient, false, true, _dependencies.OutlookFolderType);
-        if (autodiscoveryResult.WasCancelled)
-          return;
-        if (autodiscoveryResult.RessourceUrl != null)
+        var calDavDataAccess = new CalDavDataAccess(enteredUri, webDavClient);
+        IReadOnlyList<Tuple<Uri, string, string>> foundCaldendars = await calDavDataAccess.GetUserCalendarsNoThrow(false);
+
+        var cardDavDataAccess = new CardDavDataAccess(enteredUri, webDavClient);
+        IReadOnlyList<Tuple<Uri, string>> foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow(true);
+
+        var service = await OAuth.Google.GoogleHttpClientFactory.LoginToGoogleTasksService(_emailAddressTextBox.Text);
+
+        TaskLists taskLists = await service.Tasklists.List().ExecuteAsync();
+
+        if (foundCaldendars.Count > 0 || foundAddressBooks.Count > 0 || taskLists.Items.Any())
         {
-          autoDiscoveredUrl = autodiscoveryResult.RessourceUrl;
-          autoDiscoveredResourceType = autodiscoveryResult.ResourceType;
+          ResourceType initalResourceType;
+          if (_dependencies.OutlookFolderType == OlItemType.olContactItem)
+          {
+            initalResourceType = ResourceType.AddressBook;
+          }
+          else if (_dependencies.OutlookFolderType == OlItemType.olTaskItem)
+          {
+            initalResourceType = ResourceType.TaskList;
+          }
+          else
+          {
+            initalResourceType = ResourceType.Calendar;
+          }
+
+          using (SelectResourceForm listCalendarsForm =
+              new SelectResourceForm(
+                  foundCaldendars,
+                  foundAddressBooks,
+                  taskLists.Items.Select(i => Tuple.Create(i.Id, i.Title)).ToArray(),
+                  initalResourceType))
+          {
+            if (listCalendarsForm.ShowDialog() == DialogResult.OK)
+            {
+              if (listCalendarsForm.ResourceType == ResourceType.TaskList)
+              {
+                autoDiscoveredUrl = null;
+                _calenderUrlTextBox.Text = listCalendarsForm.SelectedUrl;
+                UsedServerAdapterType = ServerAdapterType.GoogleTaskApi;
+              }
+              else
+              {
+                autoDiscoveredUrl = new Uri(enteredUri.GetLeftPart(UriPartial.Authority) + listCalendarsForm.SelectedUrl);
+                UsedServerAdapterType = ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth;
+              }
+              autoDiscoveredResourceType = listCalendarsForm.ResourceType;
+            }
+            else
+            {
+              autoDiscoveredUrl = null;
+              autoDiscoveredResourceType = ResourceType.None;
+            }
+          }
         }
         else
         {
-          return;
+          MessageBox.Show("No resources were found via autodiscovery!", OptionTasks.ConnectionTestCaption);
+          autoDiscoveredUrl = null;
+          autoDiscoveredResourceType = ResourceType.None;
         }
       }
       else
@@ -158,15 +191,25 @@ namespace CalDavSynchronizer.Ui.Options
         return;
       }
 
-      _calenderUrlTextBox.Text = autoDiscoveredUrl.ToString ();
-      var finalResult = await ConnectionTester.TestConnection (autoDiscoveredUrl, webDavClient, autoDiscoveredResourceType);
-      _settingsFaultFinder.FixSynchronizationMode (finalResult);
+      if (autoDiscoveredUrl != null)
+      {
+        _calenderUrlTextBox.Text = autoDiscoveredUrl.ToString();
+        var finalResult =
+          await ConnectionTester.TestConnection(autoDiscoveredUrl, webDavClient, autoDiscoveredResourceType);
+        _settingsFaultFinder.FixSynchronizationMode(finalResult);
 
-      OptionTasks.DisplayTestReport (
+        OptionTasks.DisplayTestReport(
           finalResult,
           _dependencies.SelectedSynchronizationModeRequiresWriteableServerResource,
           _dependencies.SelectedSynchronizationModeDisplayName,
           _dependencies.OutlookFolderType);
+      }
+      else if (UsedServerAdapterType == ServerAdapterType.GoogleTaskApi)
+      {
+        TestResult result = new TestResult(ResourceType.TaskList, CalendarProperties.None, AddressBookProperties.None);
+
+        OptionTasks.DisplayTestReport (result,false,_dependencies.SelectedSynchronizationModeDisplayName, _dependencies.OutlookFolderType);
+      }
     }
 
     private IWebDavClient CreateWebDavClient ()
@@ -193,6 +236,7 @@ namespace CalDavSynchronizer.Ui.Options
         _calenderUrlTextBox.Text = value.CalenderUrl;
       else
         _calenderUrlTextBox.Text = c_googleDavBaseUrl;
+      UsedServerAdapterType = value.ServerAdapterType;
     }
 
     public void FillOptions (Contracts.Options optionsToFill)
