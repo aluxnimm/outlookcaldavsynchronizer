@@ -56,9 +56,8 @@ namespace CalDavSynchronizer.Ui.Options
       else
         faultFinder = NullSettingsFaultFinder.Instance;
 
+      _outlookFolderControl.Initialize(session, faultFinder);
       _serverSettingsControl.Initialize (faultFinder, this);
-
-      _outlookFolderControl.Initialize (session, faultFinder);
 
       _profileNameTextBox.TextChanged += _profileNameTextBox_TextChanged;
       _inactiveCheckBox.CheckedChanged += _inactiveCheckBox_CheckedChanged;
@@ -105,7 +104,7 @@ namespace CalDavSynchronizer.Ui.Options
         result &= OptionTasks.ValidateWebDavUrl (_serverSettingsControl.CalendarUrl, errorMessageBuilder, true);
 
       result &= _outlookFolderControl.Validate (errorMessageBuilder);
-      result &= OptionTasks.ValidateEmailAddress (errorMessageBuilder, _serverSettingsControl.EmailAddress);
+      result &= OptionTasks.ValidateGoogleEmailAddress (errorMessageBuilder, _serverSettingsControl.EmailAddress);
 
       return result;
     }

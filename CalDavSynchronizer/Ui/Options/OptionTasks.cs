@@ -103,6 +103,16 @@ namespace CalDavSynchronizer.Ui.Options
       return result;
     }
 
+    public static bool ValidateGoogleEmailAddress (StringBuilder errorMessageBuilder, string emailAddress)
+    {
+      if (string.IsNullOrWhiteSpace (emailAddress))
+      {
+        errorMessageBuilder.Append ("- The Email Address is empty.");
+        return false;
+      }
+      return ValidateEmailAddress (errorMessageBuilder, emailAddress);
+
+    }
     public static bool ValidateEmailAddress (StringBuilder errorMessageBuilder, string emailAddress)
     {
       try
@@ -130,8 +140,17 @@ namespace CalDavSynchronizer.Ui.Options
 
       var isCalendar = result.ResourceType.HasFlag (ResourceType.Calendar);
       var isAddressBook = result.ResourceType.HasFlag (ResourceType.AddressBook);
+      var isGoogleTask = result.ResourceType.HasFlag (ResourceType.TaskList);
 
-      if (!isCalendar && !isAddressBook)
+      if (isGoogleTask)
+      {
+        if (outlookFolderType != OlItemType.olTaskItem)
+        {
+          errorMessageBuilder.AppendLine ("- The outlook folder is not a task folder, or there is no folder selected.");
+          hasError = true;
+        }
+      }
+      else if (!isCalendar && !isAddressBook)
       {
         errorMessageBuilder.AppendLine ("- The specified Url is neither a calendar nor an addressbook!");
         hasError = true;

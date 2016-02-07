@@ -19,6 +19,7 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using CalDavSynchronizer.Contracts;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options
@@ -178,6 +179,9 @@ namespace CalDavSynchronizer.Ui.Options
 
       Contracts.Options options = Contracts.Options.CreateDefault (string.Empty, string.Empty);
       options.DisplayType = type.Value;
+      options.ServerAdapterType = (type == OptionsDisplayType.Google)
+        ? ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth
+        : ServerAdapterType.WebDavHttpClientBased;
 
       _tabControl.SelectedTab = AddTabPage (options);
     }
