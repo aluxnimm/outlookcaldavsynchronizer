@@ -360,10 +360,16 @@ namespace CalDavSynchronizer.Scheduling
 
       var tasksService = System.Threading.Tasks.Task.Run (() => OAuth.Google.GoogleHttpClientFactory.LoginToGoogleTasksService (options.UserName).Result).Result;
 
-      var taskList = tasksService.Tasklists.Get (options.CalenderUrl).Execute();
-
-      if (taskList == null)
-        throw new System.Exception ($"Profile '{options.Name}' (Id: '{options.Id}'): task list '{options.CalenderUrl}' not found.");
+      TaskList taskList;
+      try
+      {
+        taskList = tasksService.Tasklists.Get (options.CalenderUrl).Execute();
+      }
+      catch (Google.GoogleApiException)
+      {
+        s_logger.ErrorFormat ($"Profile '{options.Name}' (Id: '{options.Id}'): task list '{options.CalenderUrl}' not found.");
+        throw;
+      }
 
       var btypeRepository = new GoogleTaskRepository (tasksService, taskList);
 
