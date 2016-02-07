@@ -136,6 +136,7 @@ namespace CalDavSynchronizer.Ui.Options
         OlItemType? outlookFolderType)
     {
       bool hasError = false;
+      bool hasWarning = false;
       var errorMessageBuilder = new StringBuilder ();
 
       var isCalendar = result.ResourceType.HasFlag (ResourceType.Calendar);
@@ -173,7 +174,7 @@ namespace CalDavSynchronizer.Ui.Options
         if (!result.CalendarProperties.HasFlag (CalendarProperties.SupportsCalendarQuery))
         {
           errorMessageBuilder.AppendLine ("- The specified Url does not support calendar queries. Some features like time range filter may not work!");
-          hasError = true;
+          hasWarning = true;
         }
 
         if (!result.CalendarProperties.HasFlag (CalendarProperties.IsWriteable))
@@ -224,6 +225,8 @@ namespace CalDavSynchronizer.Ui.Options
 
       if (hasError)
         MessageBox.Show ("Connection test NOT successful:" + Environment.NewLine + errorMessageBuilder, OptionTasks.ConnectionTestCaption);
+      else if (hasWarning)
+        MessageBox.Show ("Connection test successful BUT:" + Environment.NewLine + errorMessageBuilder, OptionTasks.ConnectionTestCaption, MessageBoxButtons.OK, MessageBoxIcon.Warning);
       else
         MessageBox.Show ("Connection test successful.", OptionTasks.ConnectionTestCaption);
     }
