@@ -38,13 +38,14 @@
       this._linkLabelTeamMembers = new System.Windows.Forms.LinkLabel();
       this._logoPictureBox = new System.Windows.Forms.PictureBox();
       this._linkLabelPayPal = new System.Windows.Forms.LinkLabel();
+      this._linkLabelHelp = new System.Windows.Forms.LinkLabel();
       ((System.ComponentModel.ISupportInitialize)(this._logoPictureBox)).BeginInit();
       this.SuspendLayout();
       // 
       // btnOK
       // 
       this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnOK.Location = new System.Drawing.Point(496, 493);
+      this.btnOK.Location = new System.Drawing.Point(495, 529);
       this.btnOK.Margin = new System.Windows.Forms.Padding(4);
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(100, 28);
@@ -58,13 +59,13 @@
       this._licenseTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this._licenseTextBox.Location = new System.Drawing.Point(13, 175);
+      this._licenseTextBox.Location = new System.Drawing.Point(15, 198);
       this._licenseTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._licenseTextBox.Multiline = true;
       this._licenseTextBox.Name = "_licenseTextBox";
       this._licenseTextBox.ReadOnly = true;
       this._licenseTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      this._licenseTextBox.Size = new System.Drawing.Size(579, 296);
+      this._licenseTextBox.Size = new System.Drawing.Size(579, 323);
       this._licenseTextBox.TabIndex = 1;
       this._licenseTextBox.Text = resources.GetString("_licenseTextBox.Text");
       this._licenseTextBox.WordWrap = false;
@@ -142,14 +143,27 @@
       this._linkLabelPayPal.TabIndex = 8;
       this._linkLabelPayPal.TabStop = true;
       this._linkLabelPayPal.Text = "Donate with PayPal";
-      this._linkLabelPayPal.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+      this._linkLabelPayPal.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelPayPal_LinkClicked);
+      // 
+      // _linkLabelHelp
+      // 
+      this._linkLabelHelp.AutoSize = true;
+      this._linkLabelHelp.Location = new System.Drawing.Point(13, 168);
+      this._linkLabelHelp.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+      this._linkLabelHelp.Name = "_linkLabelHelp";
+      this._linkLabelHelp.Size = new System.Drawing.Size(132, 17);
+      this._linkLabelHelp.TabIndex = 9;
+      this._linkLabelHelp.TabStop = true;
+      this._linkLabelHelp.Text = "Help Page and Wiki";
+      this._linkLabelHelp.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelHelp_LinkClicked);
       // 
       // AboutForm
       // 
       this.AcceptButton = this.btnOK;
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(612, 536);
+      this.ClientSize = new System.Drawing.Size(612, 563);
+      this.Controls.Add(this._linkLabelHelp);
       this.Controls.Add(this._linkLabelPayPal);
       this.Controls.Add(this._logoPictureBox);
       this.Controls.Add(this._linkLabelTeamMembers);
@@ -183,5 +197,6 @@
     private System.Windows.Forms.LinkLabel _linkLabelTeamMembers;
     private System.Windows.Forms.PictureBox _logoPictureBox;
     private System.Windows.Forms.LinkLabel _linkLabelPayPal;
+    private System.Windows.Forms.LinkLabel _linkLabelHelp;
   }
 }
