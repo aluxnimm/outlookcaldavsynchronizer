@@ -120,6 +120,11 @@
   <metadata name="_toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="_categoryTextBox.ToolTip" xml:space="preserve">
+    <value>Enter the name of the Outlook category for filtering.
+If the category doesn't exist, it will be created in Outlook.
+If activated, only appointments belonging to that category are synced to the server.</value>
+  </data>
   <data name="_createInUTCCheckBox.ToolTip" xml:space="preserve">
     <value>Use UTC instead of Outlook Appointment Timezone for creating events on CalDAV server.
 Needed for GMX for example. Not recommended for general use, 
