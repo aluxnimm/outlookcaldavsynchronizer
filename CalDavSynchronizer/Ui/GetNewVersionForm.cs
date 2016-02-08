@@ -16,13 +16,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
+using System.Net;
 using System.Reflection;
 using System.Windows.Forms;
+using log4net;
 
 namespace CalDavSynchronizer.Ui
 {
   public partial class GetNewVersionForm : Form
   {
+    private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
+
     private readonly string _newVersionDownloadUrl;
 
     public event EventHandler TurnOffCheckForNewerVersions;
@@ -77,6 +83,40 @@ namespace CalDavSynchronizer.Ui
     private void _ignoreThisVersionLinkLabel_LinkClicked (object sender, LinkLabelLinkClickedEventArgs e)
     {
       OnIgnoreThisVersion();
+    }
+
+    private void installButton_Click(object sender, EventArgs e)
+    {
+      WebClient client = new WebClient();
+      IWebProxy proxy = WebRequest.DefaultWebProxy;
+      proxy.Credentials = CredentialCache.DefaultCredentials;
+      client.Proxy = proxy;
+
+      string tmpFile = Path.GetTempFileName();
+      string tmpPath = Path.GetTempPath() + "\\CalDavSynchronizer\\";
+      try
+      {
+        client.DownloadFile (new Uri (_newVersionDownloadUrl), tmpFile);
+        using (FileStream zipFileToOpen = new FileStream (tmpFile, FileMode.Open))
+        using (ZipArchive archive = new ZipArchive (zipFileToOpen, ZipArchiveMode.Read))
+        {
+          foreach (ZipArchiveEntry file in archive.Entries)
+          {
+            string completeFileName = Path.Combine (tmpPath, file.FullName);
+            file.ExtractToFile (completeFileName, true);
+          }
+        }
+        File.Delete (tmpFile);
+        MessageBox.Show ("You need to restart Outlook after installing the new version!", "Outlook Restart required",
+          MessageBoxButtons.OK, MessageBoxIcon.Information);
+        Process.Start (tmpPath + "\\setup.exe");
+        DialogResult = DialogResult.OK;
+      }
+      catch (Exception ex)
+      {
+        s_logger.Warn ("Can't download and extract new version", ex);
+        MessageBox.Show ("Can't download and extract new version!", "CalDav Synchronizer Download failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
     }
   }
 }

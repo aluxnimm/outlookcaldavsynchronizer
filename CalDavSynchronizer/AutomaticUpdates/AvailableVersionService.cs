@@ -32,6 +32,10 @@ namespace CalDavSynchronizer.AutomaticUpdates
     public Version GetVersionOfDefaultDownload ()
     {
       var client = new WebClient();
+      IWebProxy proxy = WebRequest.DefaultWebProxy;
+      proxy.Credentials = CredentialCache.DefaultCredentials;
+      client.Proxy = proxy;
+
       var site = client.DownloadString (new Uri ("https://sourceforge.net/projects/outlookcaldavsynchronizer/files/"));
 
       var match = Regex.Match (site, @"OutlookCalDavSynchronizer-(?<Major>\d+).(?<Minor>\d+).(?<Build>\d+).zip");
@@ -56,6 +60,10 @@ namespace CalDavSynchronizer.AutomaticUpdates
       try
       {
         var client = new WebClient();
+        IWebProxy proxy = WebRequest.DefaultWebProxy;
+        proxy.Credentials = CredentialCache.DefaultCredentials;
+        client.Proxy = proxy;
+
         var readme = client.DownloadString (new Uri ("http://sourceforge.net/p/outlookcaldavsynchronizer/code/ci/master/tree/README.md?format=raw"))
             .Replace ("\n", Environment.NewLine);
 
