@@ -45,7 +45,6 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this._categoryShortcutKeycomboBox = new System.Windows.Forms.ComboBox();
       this._calendarColorSetButton = new System.Windows.Forms.Button();
       this._calendarColorRefreshButton = new System.Windows.Forms.Button();
-      this._categoryColorPicker = new CalDavSynchronizer.Ui.ColorPicker();
       this._mapColorCheckBox = new System.Windows.Forms.CheckBox();
       this._schedulingGroupBox = new System.Windows.Forms.GroupBox();
       this._sendNoAppointmentsNotificationsCheckBox = new System.Windows.Forms.CheckBox();
@@ -55,6 +54,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this._privacyGroupBox = new System.Windows.Forms.GroupBox();
       this._mapClassConfidentialToSensitivityPrivateCheckBox = new System.Windows.Forms.CheckBox();
       this._mapSensitivityPrivateToClassConfindentialCheckBox = new System.Windows.Forms.CheckBox();
+      this._categoryColorPicker = new CalDavSynchronizer.Ui.ColorPicker();
       this._outlookGroupBox.SuspendLayout();
       this._schedulingGroupBox.SuspendLayout();
       this._privacyGroupBox.SuspendLayout();
@@ -134,9 +134,9 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this.label2.Location = new System.Drawing.Point(8, 32);
       this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label2.Name = "label2";
-      this.label2.Size = new System.Drawing.Size(250, 17);
+      this.label2.Size = new System.Drawing.Size(276, 17);
       this.label2.TabIndex = 16;
-      this.label2.Text = "Sync only Appointments with category:";
+      this.label2.Text = "Sync only Appointments with this category:";
       // 
       // _categoryTextBox
       // 
@@ -147,6 +147,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this._categoryTextBox.Name = "_categoryTextBox";
       this._categoryTextBox.Size = new System.Drawing.Size(400, 22);
       this._categoryTextBox.TabIndex = 7;
+      this._toolTip.SetToolTip(this._categoryTextBox, resources.GetString("_categoryTextBox.ToolTip"));
       this._categoryTextBox.TextChanged += new System.EventHandler(this._categoryTextBox_TextChanged);
       // 
       // _outlookGroupBox
@@ -214,20 +215,6 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this._calendarColorRefreshButton.Text = "Fetch Color";
       this._calendarColorRefreshButton.UseVisualStyleBackColor = false;
       this._calendarColorRefreshButton.Click += new System.EventHandler(this._calendarColorRefreshButton_Click);
-      // 
-      // _categoryColorPicker
-      // 
-      this._categoryColorPicker.BackColor = System.Drawing.Color.White;
-      this._categoryColorPicker.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-      this._categoryColorPicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this._categoryColorPicker.FormattingEnabled = true;
-      this._categoryColorPicker.Location = new System.Drawing.Point(299, 65);
-      this._categoryColorPicker.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-      this._categoryColorPicker.Name = "_categoryColorPicker";
-      this._categoryColorPicker.SelectedItem = null;
-      this._categoryColorPicker.SelectedValue = Microsoft.Office.Interop.Outlook.OlCategoryColor.olCategoryColorNone;
-      this._categoryColorPicker.Size = new System.Drawing.Size(148, 23);
-      this._categoryColorPicker.TabIndex = 10;
       // 
       // _mapColorCheckBox
       // 
@@ -333,6 +320,20 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this._mapSensitivityPrivateToClassConfindentialCheckBox.TabIndex = 4;
       this._mapSensitivityPrivateToClassConfindentialCheckBox.Text = "Map Outlook Private flag to DAV CLASS:CONFIDENTIAL instead of PRIVATE";
       this._mapSensitivityPrivateToClassConfindentialCheckBox.UseVisualStyleBackColor = true;
+      // 
+      // _categoryColorPicker
+      // 
+      this._categoryColorPicker.BackColor = System.Drawing.Color.White;
+      this._categoryColorPicker.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+      this._categoryColorPicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this._categoryColorPicker.FormattingEnabled = true;
+      this._categoryColorPicker.Location = new System.Drawing.Point(299, 65);
+      this._categoryColorPicker.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+      this._categoryColorPicker.Name = "_categoryColorPicker";
+      this._categoryColorPicker.SelectedItem = null;
+      this._categoryColorPicker.SelectedValue = Microsoft.Office.Interop.Outlook.OlCategoryColor.olCategoryColorNone;
+      this._categoryColorPicker.Size = new System.Drawing.Size(148, 23);
+      this._categoryColorPicker.TabIndex = 10;
       // 
       // EventMappingConfigurationForm
       // 
