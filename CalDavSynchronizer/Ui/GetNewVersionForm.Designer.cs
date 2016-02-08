@@ -38,15 +38,17 @@
       this._logoPictureBox = new System.Windows.Forms.PictureBox();
       this.WhatsNewLabel = new System.Windows.Forms.Label();
       this._ignoreThisVersionLinkLabel = new System.Windows.Forms.LinkLabel();
+      this.installButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this._logoPictureBox)).BeginInit();
       this.SuspendLayout();
       // 
       // btnOK
       // 
       this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnOK.Location = new System.Drawing.Point(372, 428);
+      this.btnOK.Location = new System.Drawing.Point(496, 527);
+      this.btnOK.Margin = new System.Windows.Forms.Padding(4);
       this.btnOK.Name = "btnOK";
-      this.btnOK.Size = new System.Drawing.Size(75, 23);
+      this.btnOK.Size = new System.Drawing.Size(100, 28);
       this.btnOK.TabIndex = 0;
       this.btnOK.Text = "OK";
       this.btnOK.UseVisualStyleBackColor = true;
@@ -57,13 +59,13 @@
       this._newFeaturesTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this._newFeaturesTextBox.Location = new System.Drawing.Point(12, 132);
+      this._newFeaturesTextBox.Location = new System.Drawing.Point(16, 162);
+      this._newFeaturesTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._newFeaturesTextBox.Multiline = true;
-      this._newFeaturesTextBox.WordWrap = true;
       this._newFeaturesTextBox.Name = "_newFeaturesTextBox";
       this._newFeaturesTextBox.ReadOnly = true;
       this._newFeaturesTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      this._newFeaturesTextBox.Size = new System.Drawing.Size(435, 290);
+      this._newFeaturesTextBox.Size = new System.Drawing.Size(579, 356);
       this._newFeaturesTextBox.TabIndex = 1;
       this._newFeaturesTextBox.WordWrap = false;
       // 
@@ -71,27 +73,30 @@
       // 
       this._captionLabel.AutoSize = true;
       this._captionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this._captionLabel.Location = new System.Drawing.Point(7, 9);
+      this._captionLabel.Location = new System.Drawing.Point(9, 11);
+      this._captionLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this._captionLabel.Name = "_captionLabel";
-      this._captionLabel.Size = new System.Drawing.Size(263, 26);
+      this._captionLabel.Size = new System.Drawing.Size(320, 31);
       this._captionLabel.TabIndex = 2;
       this._captionLabel.Text = "Version {0} is available!";
       // 
       // _currentVersionLabel
       // 
       this._currentVersionLabel.AutoSize = true;
-      this._currentVersionLabel.Location = new System.Drawing.Point(9, 40);
+      this._currentVersionLabel.Location = new System.Drawing.Point(12, 49);
+      this._currentVersionLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this._currentVersionLabel.Name = "_currentVersionLabel";
-      this._currentVersionLabel.Size = new System.Drawing.Size(98, 13);
+      this._currentVersionLabel.Size = new System.Drawing.Size(131, 17);
       this._currentVersionLabel.TabIndex = 3;
       this._currentVersionLabel.Text = "Current version: {0}";
       // 
       // _downloadNewVersionLinkLabel
       // 
       this._downloadNewVersionLinkLabel.AutoSize = true;
-      this._downloadNewVersionLinkLabel.Location = new System.Drawing.Point(9, 62);
+      this._downloadNewVersionLinkLabel.Location = new System.Drawing.Point(12, 76);
+      this._downloadNewVersionLinkLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this._downloadNewVersionLinkLabel.Name = "_downloadNewVersionLinkLabel";
-      this._downloadNewVersionLinkLabel.Size = new System.Drawing.Size(115, 13);
+      this._downloadNewVersionLinkLabel.Size = new System.Drawing.Size(149, 17);
       this._downloadNewVersionLinkLabel.TabIndex = 4;
       this._downloadNewVersionLinkLabel.TabStop = true;
       this._downloadNewVersionLinkLabel.Text = "Download new version";
@@ -100,9 +105,10 @@
       // _doNotCheckForNewerVersionsLinkLabel
       // 
       this._doNotCheckForNewerVersionsLinkLabel.AutoSize = true;
-      this._doNotCheckForNewerVersionsLinkLabel.Location = new System.Drawing.Point(9, 87);
+      this._doNotCheckForNewerVersionsLinkLabel.Location = new System.Drawing.Point(12, 107);
+      this._doNotCheckForNewerVersionsLinkLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this._doNotCheckForNewerVersionsLinkLabel.Name = "_doNotCheckForNewerVersionsLinkLabel";
-      this._doNotCheckForNewerVersionsLinkLabel.Size = new System.Drawing.Size(199, 13);
+      this._doNotCheckForNewerVersionsLinkLabel.Size = new System.Drawing.Size(263, 17);
       this._doNotCheckForNewerVersionsLinkLabel.TabIndex = 6;
       this._doNotCheckForNewerVersionsLinkLabel.TabStop = true;
       this._doNotCheckForNewerVersionsLinkLabel.Text = "Do not check for newer version anymore";
@@ -110,10 +116,10 @@
       // 
       // _logoPictureBox
       // 
-      this._logoPictureBox.Location = new System.Drawing.Point(336, 9);
-      this._logoPictureBox.Margin = new System.Windows.Forms.Padding(2);
+      this._logoPictureBox.Location = new System.Drawing.Point(448, 11);
+      this._logoPictureBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._logoPictureBox.Name = "_logoPictureBox";
-      this._logoPictureBox.Size = new System.Drawing.Size(110, 83);
+      this._logoPictureBox.Size = new System.Drawing.Size(147, 102);
       this._logoPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
       this._logoPictureBox.TabIndex = 7;
       this._logoPictureBox.TabStop = false;
@@ -122,29 +128,44 @@
       // 
       this.WhatsNewLabel.AutoSize = true;
       this.WhatsNewLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
-      this.WhatsNewLabel.Location = new System.Drawing.Point(9, 112);
+      this.WhatsNewLabel.Location = new System.Drawing.Point(12, 138);
+      this.WhatsNewLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.WhatsNewLabel.Name = "WhatsNewLabel";
-      this.WhatsNewLabel.Size = new System.Drawing.Size(107, 17);
+      this.WhatsNewLabel.Size = new System.Drawing.Size(126, 20);
       this.WhatsNewLabel.TabIndex = 8;
       this.WhatsNewLabel.Text = "Whats\'s new?";
       // 
       // _ignoreThisVersionLinkLabel
       // 
       this._ignoreThisVersionLinkLabel.AutoSize = true;
-      this._ignoreThisVersionLinkLabel.Location = new System.Drawing.Point(132, 62);
+      this._ignoreThisVersionLinkLabel.Location = new System.Drawing.Point(176, 76);
+      this._ignoreThisVersionLinkLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this._ignoreThisVersionLinkLabel.Name = "_ignoreThisVersionLinkLabel";
-      this._ignoreThisVersionLinkLabel.Size = new System.Drawing.Size(93, 13);
+      this._ignoreThisVersionLinkLabel.Size = new System.Drawing.Size(124, 17);
       this._ignoreThisVersionLinkLabel.TabIndex = 9;
       this._ignoreThisVersionLinkLabel.TabStop = true;
       this._ignoreThisVersionLinkLabel.Text = "Ignore this version";
       this._ignoreThisVersionLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this._ignoreThisVersionLinkLabel_LinkClicked);
       // 
+      // installButton
+      // 
+      this.installButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.installButton.Location = new System.Drawing.Point(345, 526);
+      this.installButton.Margin = new System.Windows.Forms.Padding(4);
+      this.installButton.Name = "installButton";
+      this.installButton.Size = new System.Drawing.Size(143, 28);
+      this.installButton.TabIndex = 10;
+      this.installButton.Text = "Install new version";
+      this.installButton.UseVisualStyleBackColor = true;
+      this.installButton.Click += new System.EventHandler(this.installButton_Click);
+      // 
       // GetNewVersionForm
       // 
       this.AcceptButton = this.btnOK;
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(459, 463);
+      this.ClientSize = new System.Drawing.Size(612, 570);
+      this.Controls.Add(this.installButton);
       this.Controls.Add(this._ignoreThisVersionLinkLabel);
       this.Controls.Add(this.WhatsNewLabel);
       this.Controls.Add(this._logoPictureBox);
@@ -156,6 +177,7 @@
       this.Controls.Add(this.btnOK);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+      this.Margin = new System.Windows.Forms.Padding(4);
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Name = "GetNewVersionForm";
@@ -177,5 +199,6 @@
     private System.Windows.Forms.PictureBox _logoPictureBox;
     private System.Windows.Forms.Label WhatsNewLabel;
     private System.Windows.Forms.LinkLabel _ignoreThisVersionLinkLabel;
+    private System.Windows.Forms.Button installButton;
   }
 }
