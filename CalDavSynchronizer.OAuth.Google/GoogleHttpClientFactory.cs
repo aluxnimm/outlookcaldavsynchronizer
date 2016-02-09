@@ -18,18 +18,23 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Http;
 using Google.Apis.Services;
 using Google.Apis.Tasks.v1;
 using Google.Apis.Tasks.v1.Data;
+using log4net;
 
 namespace CalDavSynchronizer.OAuth.Google
 {
   public static class GoogleHttpClientFactory
   {
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
+
     public static async Task<HttpClient> CreateHttpClient (string user, string userAgentHeader, IWebProxy proxy)
     {
       var userCredential = await LoginToGoogle (user);
@@ -68,15 +73,31 @@ namespace CalDavSynchronizer.OAuth.Google
     /// </remarks>
     public static async Task<TasksService> LoginToGoogleTasksService (string user)
     {
-      var credential = await OAuth.Google.GoogleHttpClientFactory.LoginToGoogle (user);
+      var credential = await LoginToGoogle (user);
+      var service = CreateTaskService (credential);
 
-      var service = new TasksService (new BaseClientService.Initializer ()
+      try
       {
-        HttpClientInitializer = credential,
-        ApplicationName = "Outlook CalDav Synchronizer",
-      });
+        await service.Tasklists.List().ExecuteAsync();
+        return service;
+      }
+      catch (GoogleApiException x)
+      {
+        s_logger.Error ("Trying to access google task service failed. Revoking  token and reauthorizing.", x);
 
-      return service;
+        await credential.RevokeTokenAsync (CancellationToken.None);
+        await GoogleWebAuthorizationBroker.ReauthorizeAsync (credential, CancellationToken.None);
+        return CreateTaskService (credential);
+      }
+    }
+
+    private static TasksService CreateTaskService (UserCredential credential)
+    {
+      return new TasksService (new BaseClientService.Initializer
+                               {
+                                   HttpClientInitializer = credential,
+                                   ApplicationName = "Outlook CalDav Synchronizer",
+                               });
     }
   }
 }
