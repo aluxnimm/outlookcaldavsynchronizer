@@ -35,9 +35,9 @@ namespace GenSync
 
   public class EntityVersion
   {
-    public static EntityVersion<TEntityId, TEntity> Create<TEntityId, TEntity> (TEntityId id, TEntity entity)
+    public static EntityVersion<TEntityId, TVersion> Create<TEntityId, TVersion> (TEntityId id, TVersion version)
     {
-      return new EntityVersion<TEntityId, TEntity> (id, entity);
+      return new EntityVersion<TEntityId, TVersion> (id, version);
     }
   }
 }

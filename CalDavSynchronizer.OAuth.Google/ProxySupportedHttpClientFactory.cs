@@ -21,7 +21,7 @@ using Google.Apis.Http;
 
 namespace CalDavSynchronizer.OAuth.Google
 {
-  public class ProxySupportedHttpClientFactory : HttpClientFactory
+  internal class ProxySupportedHttpClientFactory : HttpClientFactory
   {
     private readonly IWebProxy _proxy;
 

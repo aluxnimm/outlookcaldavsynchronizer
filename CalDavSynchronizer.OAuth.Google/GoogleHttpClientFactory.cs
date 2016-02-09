@@ -15,12 +15,16 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Http;
+using Google.Apis.Services;
+using Google.Apis.Tasks.v1;
+using Google.Apis.Tasks.v1.Data;
 
 namespace CalDavSynchronizer.OAuth.Google
 {
@@ -47,12 +51,32 @@ namespace CalDavSynchronizer.OAuth.Google
           new[]
           {
               "https://www.googleapis.com/auth/calendar",
-              "https://www.googleapis.com/auth/carddav"
+              "https://www.googleapis.com/auth/carddav",
+              "https://www.googleapis.com/auth/tasks"
           },
           user,
           CancellationToken.None);
 
       return credential;
+    }
+
+
+    /// <remarks>
+    /// This has to be done here, since UserCredential cannot be used in CalDavSynchronizer,
+    /// since it leads to a 'The "FindRibbons" task failed unexpectedly' Error
+    /// ( see https://connect.microsoft.com/VisualStudio/feedback/details/651634/the-findribbons-task-failed-unexpectedly)
+    /// </remarks>
+    public static async Task<TasksService> LoginToGoogleTasksService (string user)
+    {
+      var credential = await OAuth.Google.GoogleHttpClientFactory.LoginToGoogle (user);
+
+      var service = new TasksService (new BaseClientService.Initializer ()
+      {
+        HttpClientInitializer = credential,
+        ApplicationName = "Outlook CalDav Synchronizer",
+      });
+
+      return service;
     }
   }
 }
