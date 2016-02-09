@@ -14,15 +14,27 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
+using System.Net;
 
-internal class HttpUtility
+namespace CalDavSynchronizer.DataAccess
 {
-  public static string GetQuotedEtag (string etag)
+  internal class HttpUtility
   {
-    if (string.IsNullOrEmpty (etag))
-      return etag;
+    public static WebClient CreateWebClient()
+    {
+      var client = new WebClient();
+      var proxy = WebRequest.DefaultWebProxy;
+      proxy.Credentials = CredentialCache.DefaultCredentials;
+      client.Proxy = proxy;
+      return client;
+    }
 
-    return etag.StartsWith ("\"") ? etag : "\"" + etag + "\"";
+    public static string GetQuotedEtag (string etag)
+    {
+      if (string.IsNullOrEmpty (etag))
+        return etag;
+
+      return etag.StartsWith ("\"") ? etag : "\"" + etag + "\"";
+    }
   }
 }

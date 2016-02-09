@@ -19,10 +19,10 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
-using System.Net;
 using System.Reflection;
 using System.Windows.Forms;
 using log4net;
+using CalDavSynchronizer.DataAccess;
 
 namespace CalDavSynchronizer.Ui
 {
@@ -91,7 +91,7 @@ namespace CalDavSynchronizer.Ui
       try
       {
         var archivePath = Path.GetTempFileName();
-        using (var client = CreateWebClient())
+        using (var client = HttpUtility.CreateWebClient())
         {
           client.DownloadFile (new Uri (_newVersionDownloadUrl), archivePath);
         }
@@ -115,15 +115,6 @@ namespace CalDavSynchronizer.Ui
         s_logger.Warn ("Can't download and extract new version", ex);
         MessageBox.Show ("Can't download and extract new version!", "CalDav Synchronizer Download failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
-    }
-
-    private static WebClient CreateWebClient ()
-    {
-      var client = new WebClient();
-      var proxy = WebRequest.DefaultWebProxy;
-      proxy.Credentials = CredentialCache.DefaultCredentials;
-      client.Proxy = proxy;
-      return client;
     }
   }
 }
