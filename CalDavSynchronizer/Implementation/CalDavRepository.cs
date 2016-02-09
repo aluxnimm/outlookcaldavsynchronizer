@@ -18,8 +18,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
+using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.DDayICalWorkaround;
 using CalDavSynchronizer.Diagnostics;
@@ -42,6 +44,7 @@ namespace CalDavSynchronizer.Implementation
     private readonly IStringSerializer _calendarSerializer;
     private readonly EntityType _entityType;
     private readonly IDateTimeRangeProvider _dateTimeRangeProvider;
+    private readonly bool _deleteAndCreateOnUpdateError403;
 
     public enum EntityType
     {
@@ -49,8 +52,14 @@ namespace CalDavSynchronizer.Implementation
       Todo
     }
 
-    public CalDavRepository (ICalDavDataAccess calDavDataAccess, IStringSerializer calendarSerializer, EntityType entityType, IDateTimeRangeProvider dateTimeRangeProvider)
+    public CalDavRepository (
+      ICalDavDataAccess calDavDataAccess,
+      IStringSerializer calendarSerializer,
+      EntityType entityType,
+      IDateTimeRangeProvider dateTimeRangeProvider,
+      bool deleteAndCreateOnUpdateError403)
     {
+      _deleteAndCreateOnUpdateError403 = deleteAndCreateOnUpdateError403;
       _calDavDataAccess = calDavDataAccess;
       _calendarSerializer = calendarSerializer;
       _entityType = entityType;
@@ -172,7 +181,7 @@ namespace CalDavSynchronizer.Implementation
       }
     }
 
-    public Task<EntityVersion<WebResourceName, string>> Update (
+    public async Task<EntityVersion<WebResourceName, string>> Update (
         WebResourceName entityId,
         string entityVersion,
         IICalendar entityToUpdate,
@@ -181,7 +190,31 @@ namespace CalDavSynchronizer.Implementation
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
         var updatedEntity = entityModifier (entityToUpdate);
-        return _calDavDataAccess.UpdateEntity (entityId, entityVersion, SerializeCalendar (updatedEntity));
+        try
+        {
+          return await _calDavDataAccess.UpdateEntity (entityId, entityVersion, SerializeCalendar (updatedEntity));
+        }
+        catch (HttpRequestException ex)
+        {
+          if (_deleteAndCreateOnUpdateError403 && ex.Message.Contains ("'403' ('Forbidden')"))
+          {
+            s_logger.Warn ("Server returned '403' ('Forbidden') for update, trying Delete and Recreate instead...");
+
+            await Delete (entityId, entityVersion);
+
+            var uid = Guid.NewGuid().ToString();
+            if (updatedEntity.Events.Count > 0)
+              updatedEntity.Events[0].UID = uid;
+            else
+              updatedEntity.Todos[0].UID = uid;
+
+            return await _calDavDataAccess.CreateEntity (SerializeCalendar (updatedEntity), uid);
+          }
+          else
+          {
+            throw;
+          }
+        }
       }
     }
 
