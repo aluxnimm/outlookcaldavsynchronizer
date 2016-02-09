@@ -15,13 +15,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using log4net;
+using CalDavSynchronizer.DataAccess;
 
 namespace CalDavSynchronizer.AutomaticUpdates
 {
@@ -31,15 +27,14 @@ namespace CalDavSynchronizer.AutomaticUpdates
 
     public Version GetVersionOfDefaultDownload ()
     {
-      var client = new WebClient();
-      IWebProxy proxy = WebRequest.DefaultWebProxy;
-      proxy.Credentials = CredentialCache.DefaultCredentials;
-      client.Proxy = proxy;
+      string site;
 
-      var site = client.DownloadString (new Uri ("https://sourceforge.net/projects/outlookcaldavsynchronizer/files/"));
-
+      using (var client = HttpUtility.CreateWebClient())
+      {
+        site = client.DownloadString (new Uri ("https://sourceforge.net/projects/outlookcaldavsynchronizer/files/"));
+      }
       var match = Regex.Match (site, @"OutlookCalDavSynchronizer-(?<Major>\d+).(?<Minor>\d+).(?<Build>\d+).zip");
-
+      
       if (match.Success)
       {
         var availableVersion = new Version (
@@ -59,13 +54,14 @@ namespace CalDavSynchronizer.AutomaticUpdates
     {
       try
       {
-        var client = new WebClient();
-        IWebProxy proxy = WebRequest.DefaultWebProxy;
-        proxy.Credentials = CredentialCache.DefaultCredentials;
-        client.Proxy = proxy;
+        string readme;
 
-        var readme = client.DownloadString (new Uri ("http://sourceforge.net/p/outlookcaldavsynchronizer/code/ci/master/tree/README.md?format=raw"))
+        using (var client = HttpUtility.CreateWebClient())
+        {
+          readme = client.DownloadString (
+            new Uri ("http://sourceforge.net/p/outlookcaldavsynchronizer/code/ci/master/tree/README.md?format=raw"))
             .Replace ("\n", Environment.NewLine);
+        }
 
         var start = Find (readme, newVersion);
         var end = Find (readme, oldVersion);

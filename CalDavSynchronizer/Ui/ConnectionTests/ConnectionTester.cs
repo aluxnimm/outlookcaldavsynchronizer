@@ -17,6 +17,7 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection.Emit;
 using System.Threading.Tasks;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Scheduling;
@@ -42,10 +43,13 @@ namespace CalDavSynchronizer.Ui.ConnectionTests
         // if DNS failed, try to download the ncsi.txt
         try
         {
-          var client = new WebClient();
-          IWebProxy proxy = (proxyOptions != null) ? SynchronizerFactory.CreateProxy (proxyOptions) : null;
-          client.Proxy = proxy;
-          var txt = client.DownloadString (new Uri ("http://www.msftncsi.com/ncsi.txt"));
+          string txt;
+          using (var client = new WebClient())
+          {
+            IWebProxy proxy = (proxyOptions != null) ? SynchronizerFactory.CreateProxy (proxyOptions) : null;
+            client.Proxy = proxy;
+            txt = client.DownloadString (new Uri ("http://www.msftncsi.com/ncsi.txt"));
+          }
           if (txt != "Microsoft NCSI") return false;
           return true;
         }
