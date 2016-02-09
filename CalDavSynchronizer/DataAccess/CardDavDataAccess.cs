@@ -158,26 +158,14 @@ namespace CalDavSynchronizer.DataAccess
 
       s_logger.DebugFormat ("Creating entity '{0}'", contactUrl);
 
-      IHttpHeaders responseHeaders;
-
-      try
-      {
-        responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders(
-            contactUrl,
-            "PUT",
-            null,
-            null,
-            "*",
-            "text/vcard",
-            content);
-      }
-      catch (WebException x)
-      {
-        if (x.Response != null && ((HttpWebResponse)x.Response).StatusCode == HttpStatusCode.Forbidden)
-          throw new Exception (string.Format ("Error creating contact with url '{0}' (Access denied)", contactUrl));
-        else
-          throw;
-      }
+      IHttpHeaders responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (
+        contactUrl,
+        "PUT",
+        null,
+        null,
+        "*",
+        "text/vcard",
+        content);
 
       Uri effectiveContactUrl;
       if (responseHeaders.Location != null)
@@ -213,26 +201,14 @@ namespace CalDavSynchronizer.DataAccess
 
       s_logger.DebugFormat ("Absolute entity location: '{0}'", absoluteContactUrl);
 
-      IHttpHeaders responseHeaders;
-
-      try
-      {
-        responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders(
-            absoluteContactUrl,
-            "PUT",
-            null,
-            etag,
-            null,
-            "text/vcard",
-            contents);
-      }
-      catch (WebException x)
-      {
-        if (x.Response != null && ((HttpWebResponse)x.Response).StatusCode == HttpStatusCode.Forbidden)
-          throw new Exception (string.Format ("Error updating contact with url '{0}' and etag '{1}' (Access denied)", absoluteContactUrl, etag));
-        else
-          throw;
-      }
+      IHttpHeaders responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders(
+        absoluteContactUrl,
+        "PUT",
+        null,
+        etag,
+        null,
+        "text/vcard",
+        contents);
 
       if (s_logger.IsDebugEnabled)
         s_logger.DebugFormat ("Updated entity. Server response header: '{0}'", responseHeaders.ToString().Replace ("\r\n", " <CR> "));

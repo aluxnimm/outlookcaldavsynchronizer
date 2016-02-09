@@ -256,26 +256,14 @@ namespace CalDavSynchronizer.DataAccess
 
       s_logger.DebugFormat ("Creating entity '{0}'", eventUrl);
 
-      IHttpHeaders responseHeaders;
-
-      try
-      {
-        responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders(
-            eventUrl,
-            "PUT",
-            null,
-            null,
-            "*",
-            "text/calendar",
-            content);
-      }
-      catch (WebException x)
-      {
-        if (x.Response != null && ((HttpWebResponse)x.Response).StatusCode == HttpStatusCode.Forbidden)
-          throw new Exception(string.Format("Error creating event with url '{0}' (Access denied)", eventUrl));
-        else
-          throw;
-      }
+      IHttpHeaders responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders(
+        eventUrl,
+        "PUT",
+        null,
+        null,
+        "*",
+        "text/calendar",
+        content);
 
       Uri effectiveEventUrl;
       if (responseHeaders.Location != null)
@@ -311,27 +299,15 @@ namespace CalDavSynchronizer.DataAccess
 
       s_logger.DebugFormat ("Absolute entity location: '{0}'", absoluteEventUrl);
 
-      IHttpHeaders responseHeaders;
-
-      try
-      {
-        responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders(
-            absoluteEventUrl,
-            "PUT",
-            null,
-            etag,
-            null,
-            "text/calendar",
-            contents);
-      }
-      catch (WebException x)
-      {
-        if (x.Response != null && ((HttpWebResponse)x.Response).StatusCode == HttpStatusCode.Forbidden)
-          throw new Exception (string.Format ("Error updating event with url '{0}' and etag '{1}' (Access denied)", absoluteEventUrl, etag));
-        else
-          throw;
-      }
-
+      IHttpHeaders responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders(
+        absoluteEventUrl,
+        "PUT",
+        null,
+        etag,
+        null,
+        "text/calendar",
+        contents);
+      
       if (s_logger.IsDebugEnabled)
         s_logger.DebugFormat ("Updated entity. Server response header: '{0}'", responseHeaders.ToString().Replace ("\r\n", " <CR> "));
 

@@ -222,32 +222,14 @@ namespace CalDavSynchronizer.DataAccess
 
       s_logger.DebugFormat ("Absolute entity location: '{0}'", absoluteEventUrl);
 
-      IHttpHeaders responseHeaders;
-
-      try
-      {
-        responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (
-            absoluteEventUrl,
-            "DELETE",
-            null,
-            etag,
-            null,
-            null,
-            string.Empty);
-      }
-      catch (WebException x)
-      {
-        if (x.Response != null)
-        {
-          var httpWebResponse = (HttpWebResponse) x.Response;
-
-
-          if (httpWebResponse.StatusCode == HttpStatusCode.Forbidden)
-            throw new Exception (string.Format ("Error deleting event with url '{0}' and etag '{1}' (Access denied)", uri, etag));
-        }
-
-        throw;
-      }
+      IHttpHeaders responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (
+        absoluteEventUrl,
+        "DELETE",
+        null,
+        etag,
+        null,
+        null,
+        string.Empty);
 
       IEnumerable<string> errorValues;
       if (responseHeaders.TryGetValues ("X-Dav-Error", out errorValues))
