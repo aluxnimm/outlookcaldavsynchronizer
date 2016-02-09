@@ -245,7 +245,8 @@ namespace CalDavSynchronizer.Scheduling
           calDavDataAccess,
           new iCalendarSerializer(),
           CalDavRepository.EntityType.Event,
-          dateTimeRangeProvider);
+          dateTimeRangeProvider,
+          options.ServerAdapterType == ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth);
 
       var entityMapper = new EventEntityMapper (
           _outlookEmailAddress, new Uri ("mailto:" + options.EmailAddress),
@@ -320,7 +321,8 @@ namespace CalDavSynchronizer.Scheduling
                   options.ProxyOptions)),
           new iCalendarSerializer(),
           CalDavRepository.EntityType.Todo,
-          NullDateTimeRangeProvider.Instance);
+          NullDateTimeRangeProvider.Instance,
+          false);
 
       var outlookEventRelationDataFactory = new OutlookEventRelationDataFactory();
       var syncStateFactory = new EntitySyncStateFactory<string, DateTime, TaskItemWrapper, WebResourceName, string, IICalendar> (
