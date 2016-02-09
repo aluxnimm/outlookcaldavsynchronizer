@@ -50,6 +50,7 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 - sync reminders, categories, recurrences with exceptions, importance, transparency
 - sync organizer and attendees and own response status
 - task support
+- Google Tasklists support (sync via Google Task Api with Outlook task folders)
 - CardDAV support to sync contacts (distribution lists planned)
 - time-triggered-sync
 - change-triggered-sync
@@ -72,6 +73,21 @@ Download and extract the `OutlookCalDavSynchronizer-<Version>.zip` into the same
 If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=48217)
 
 ### Changelog ###
+
+#### 1.16.0 ####
+- New features
+	- Google task support added. You can sync google tasklists to Outlook task folders via the Google Task Api. Just use a google profile and choose a task folder and do autodisocery to select the google tasklist.
+	- Improved UpdateChecker, add button to automatically download and extract the new version and start the installer.
+	- Improved Synchronisation reports with formatted view.
+	- Small UI improvements and layout changes.
+	- Add Link to Helppage and Wiki in About Dialog.
+	- Improve Autodiscovery in google profiles and add button to start a new autodiscovery.
+- Bug fixes
+	- fix workaround for Synology NAS empty collections wrongly returning 404 NotFound, ticket #203.
+	- Perform delete and create new , if an update for a Google-event returns HTTP-error 403, ticket #205.
+	- Fix logging of server resource uri in sync reports.
+	- Fix wrong handling of folder in OutlookTaskRepository.
+	- Properly dispose WebClient in UpdateChecker and IsOnline check.
 
 #### 1.15.0 ####
 - WARNING: This version changes the internal cache structure, when downgrading to an older version, the cache gets cleared and a new inital sync is performed!
@@ -492,34 +508,33 @@ Use the Synchronization Profiles dialog to configure different synchronization p
 - **Add** adds a new empty profile
 - **Delete** deletes the current profile
 - **Copy** copies the current profile to a new one
-- **Reset cache** delete the sync cache and start a new initial sync with the next sync run.
+- **Clear cache** delete the sync cache and start a new initial sync with the next sync run.
 
 When adding a new profile you can choose between a generic CalDAV/CardDAV and a google profile to simplify the google profile creation.
 
 The following properties need to be set for a new generic profile:
 
 - *Profile name*: An arbitrary name for the profile, which will be displayed at the associated tab.
+- - *Outlook settings*:
+	- **Outlook Folder:** Outlook folder that should be used for synchronization. You can choose a calendar, contact or task folder. Depending on the folder type, the matching server resource type in the server settings must be used.
+	- **Synchronize items immediately after change** Trigger a partial synchronization run immediately an item is created, changed or deleted in Outlook via the Inspector dialog, works only for Appointments at the moment!
 - *Server settings*:
 	- **DAV Url:** URL of the remote CalDAV or CardDAV server. You should use a HTTPS connection here for security reason! The Url must end with a **/** e.g. **https://myserver.com/** 
 	- If you only have a self signed certificate, add the self signed cert to the Local Computer Trusted Root Certification Authorities. You can import the cert by running the MMC as Administrator. If that fails, see section *'Advanced options'*
 	- **Username:** Username to connect to the CalDAV server
 	- **Password:** Password used for the connection. The password will be saved encrypted in the option config file.
-	- **Use Google OAuth** Used for Google instead of entering the Password, see section Google below
 	- **Email address:** email address used as remote identity for the CalDAV server, necessary to synchronize the organizer
-- *Outlook settings*:
-	- **Outlook Folder:** Outlook folder that should be used for synchronization
-	- **Synchronize items immediately after change** Trigger a partial synchronization run immediately an item is created, changed or deleted in Outlook via the Inspector dialog, works only for Appointments at the moment!
 - *Sync settings*:
 	- Synchronization settings
-		- **Outlook -> CalDav (Replicate):** syncronizes everything from outlook to caldav server (one way)
-		- **Outlook <- CalDav (Replicate):** synchronizes everything from caldav server to outlook (one way)
-		- **Outlook -> CalDav (Merge):** synchronizes everything from outlook to caldav server but don't change events created in caldav server
-		- **Outlook <- CalDav (Merge):** synchronizes everything from caldav server to outlook but don't change events created in outlook
-		- **Outlook <-> CalDav:** 2-way synchronization between Outlook and CalDav server with one of the following conflict resolution
-	- Conflict resolution (only used in 2-way synchronization mode)
-		- **Outlook Wins:** If an event is modified in Outlook and in CalDav server since last snyc, use the Outlook version. If an event is modified in Outlook and deleted in CalDav server since last snyc, also use the Outlook version. If an event is deleted in Outlook and modified in CalDav server, also delete it in CalDav server.
-		- **Server Wins:** If an event is modified in Outlook and in CalDav server since last snyc, use the CalDav server version. If an event is modified in Outlook and deleted in CalDav server since last snyc, also delete it in Outlook. If an event is deleted in Outlook and modified in CalDav server, recreate it in Outlook.
-		- **Automatic:** If event is modified in Outlook and in CalDav server since last snyc, use the last recent modified version. If an event is modified in Outlook and deleted in CalDav server since last snyc, delete it also in Outlook. If an event is deleted in Outlook and modified in CalDav server, also delete it in CalDav server
+		- **Outlook -> Server (Replicate):** syncronizes everything from Outlook to the server (one way)
+		- **Outlook <- Server (Replicate):** synchronizes everything from the server to Outlook (one way)
+		- **Outlook -> Server (Merge):** synchronizes everything from Outlook to the server but don't change events created in on the server
+		- **Outlook <- Server (Merge):** synchronizes everything from the server to Outlook but don't change events created in Outlook
+		- **Outlook <-> Server (Two-Way):** Two-Way synchronization between Outlook and the server with one of the following conflict resolution
+	- Conflict resolution (only used in Two-Way synchronization mode)
+		- **Outlook Wins:** If an event is modified in Outlook and in the server since last snyc, use the Outlook version. If an event is modified in Outlook and deleted in the server since last snyc, also use the Outlook version. If an event is deleted in Outlook and modified in the server, also delete it in the server.
+		- **Server Wins:** If an event is modified in Outlook and in the server since last snyc, use the server version. If an event is modified in Outlook and deleted in the server since last snyc, also delete it in Outlook. If an event is deleted in Outlook and modified in the server, recreate it in Outlook.
+		- **Automatic:** If event is modified in Outlook and in the server since last snyc, use the last recent modified version. If an event is modified in Outlook and deleted in the server since last snyc, delete it also in Outlook. If an event is deleted in Outlook and modified in the server, also delete it in the server
 	- **Synchronization interval (minutes):** Choose the interval for synchronization in minutes, if 'Manual only' is choosen, there is no automatic sync but you can use the 'Synchronize now' menu item.
 	- **Synchronization timespan past (days)** and
 	- **Synchronization timespan future (days)** For performance reasons it is useful to sync only a given timespan of a big calendar, especially past events are normally not necessary to sync after a given timespan
@@ -546,22 +561,11 @@ For all events from the server the defined category is added in Outlook, when sy
 
 It is possible to choose the color of the category or to fetch the calendar color from the server and map it to the nearest supported Outlook category color with the button *Fetch Color*. With *Set DAV Color* it is also possible to sync the choosen category color back to set the server calendar color accordingly.
 
-### Google Calender and Addressbook settings ###
+### Google Calender / Addressbooks / Tasks settings ###
 
-For Google Calender you can use the new Google type profile which simplifies the setup. You just need to enter the email address of your google account. When testing the settings, you will be redirected to your browser to enter your Google Account password and grant access rights to your Google Calender and Contacts for OutlookCalDavSynchronizer via the safe OAuth protocol. After that Autodiscovery will try to find available calendar and addressbook resources. With the button 'Edit Url' you still can manually change the Url e.g. when you want to sync a shared google calendar from another account.
+For Google you can use the new Google type profile which simplifies the setup. You just need to enter the email address of your google account. When testing the settings, you will be redirected to your browser to enter your Google Account password and grant access rights to your Google Calender, Contacts and Tasks for OutlookCalDavSynchronizer via the safe OAuth protocol. After that Autodiscovery will try to find available calendar, addressbook and task resources. For tasks you can choose the tasklist you want to sync with an Outlook task folder and the id of the task list is shown in the Discovered Url. With the button 'Edit Url' you still can manually change the Url e.g. when you want to sync a shared google calendar from another account.
 
-You can also still use the manual setup with a generic CalDAV/CardDAV profile type and the following settings:
-DAV Url: `https://apidata.googleusercontent.com/caldav/v2/<your_google_calendar_id>/events/
-`
-Check the Use Google OAuth Checkbox instead of entering your password. When testing the settings, you will be redirected to your browser to enter your Google Account password and grant access rights to your Google Calender for OutlookCalDavSynchronizer via the safe OAuth protocol.
-For Autodiscovery of all available google calendars use the Url 
-`https://apidata.googleusercontent.com/caldav/v2/` 
-and press the 'Test settings' button.
-
-For Google Addressbook use the following settings:
-DAV Url: `https://www.googleapis.com/carddav/v1/principals/<your_google_email>/lists/default/`
-
-Check the Use Google OAuth Checkbox instead of entering your password. When testing the settings, you will be redirected to your browser to enter your Google Account password and grant access rights to your Google Calender for OutlookCalDavSynchronizer via the safe OAuth protocol. If you get an error with insufficient access you need to refresh the token by deleting the previous token in 
+If you get an error with insufficient access you need to refresh the token by deleting the previous token in 
 `C:\Users\<your Username>\AppData\Roaming\Google.Apis.Auth`
 
 ### GMX calendar settings ###
