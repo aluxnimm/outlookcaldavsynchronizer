@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -27,7 +28,7 @@ namespace CalDavSynchronizer.Ui
 {
   public partial class GetNewVersionForm : Form
   {
-    private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private readonly string _newVersionDownloadUrl;
 
@@ -85,31 +86,28 @@ namespace CalDavSynchronizer.Ui
       OnIgnoreThisVersion();
     }
 
-    private void installButton_Click(object sender, EventArgs e)
+    private void installButton_Click (object sender, EventArgs e)
     {
-      WebClient client = new WebClient();
-      IWebProxy proxy = WebRequest.DefaultWebProxy;
-      proxy.Credentials = CredentialCache.DefaultCredentials;
-      client.Proxy = proxy;
-
-      string tmpFile = Path.GetTempFileName();
-      string tmpPath = Path.GetTempPath() + "\\CalDavSynchronizer\\";
       try
       {
-        client.DownloadFile (new Uri (_newVersionDownloadUrl), tmpFile);
-        using (FileStream zipFileToOpen = new FileStream (tmpFile, FileMode.Open))
-        using (ZipArchive archive = new ZipArchive (zipFileToOpen, ZipArchiveMode.Read))
+        var archivePath = Path.GetTempFileName();
+        using (var client = CreateWebClient())
         {
-          foreach (ZipArchiveEntry file in archive.Entries)
-          {
-            string completeFileName = Path.Combine (tmpPath, file.FullName);
-            file.ExtractToFile (completeFileName, true);
-          }
+          client.DownloadFile (new Uri (_newVersionDownloadUrl), archivePath);
         }
-        File.Delete (tmpFile);
-        MessageBox.Show ("You need to restart Outlook after installing the new version!", "Outlook Restart required",
-          MessageBoxButtons.OK, MessageBoxIcon.Information);
-        Process.Start (tmpPath + "\\setup.exe");
+
+        var extractDirectory = Path.Combine (Path.GetTempPath(), "CalDavSynchronizer", Guid.NewGuid().ToString());
+        Directory.CreateDirectory (extractDirectory);
+        ZipFile.ExtractToDirectory (archivePath, extractDirectory);
+        File.Delete (archivePath);
+
+        MessageBox.Show (
+            "You need to restart Outlook after installing the new version!",
+            "Outlook Restart required",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Information);
+
+        Process.Start (Path.Combine (extractDirectory, "setup.exe"));
         DialogResult = DialogResult.OK;
       }
       catch (Exception ex)
@@ -117,6 +115,15 @@ namespace CalDavSynchronizer.Ui
         s_logger.Warn ("Can't download and extract new version", ex);
         MessageBox.Show ("Can't download and extract new version!", "CalDav Synchronizer Download failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
+    }
+
+    private static WebClient CreateWebClient ()
+    {
+      var client = new WebClient();
+      var proxy = WebRequest.DefaultWebProxy;
+      proxy.Credentials = CredentialCache.DefaultCredentials;
+      client.Proxy = proxy;
+      return client;
     }
   }
 }
