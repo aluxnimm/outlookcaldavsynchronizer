@@ -50,6 +50,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupBox.BackColor = System.Drawing.SystemColors.Window;
       this.groupBox.Controls.Add(this.label11);
       this.groupBox.Controls.Add(this._emailAddressTextBox);
       this.groupBox.Controls.Add(this._testConnectionButton);
@@ -60,9 +61,9 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox.Controls.Add(this._calenderUrlTextBox);
       this.groupBox.Controls.Add(this.label3);
       this.groupBox.Location = new System.Drawing.Point(0, 0);
-      this.groupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.groupBox.Margin = new System.Windows.Forms.Padding(4);
       this.groupBox.Name = "groupBox";
-      this.groupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.groupBox.Padding = new System.Windows.Forms.Padding(4);
       this.groupBox.Size = new System.Drawing.Size(593, 214);
       this.groupBox.TabIndex = 1;
       this.groupBox.TabStop = false;
@@ -82,7 +83,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._emailAddressTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._emailAddressTextBox.Location = new System.Drawing.Point(310, 124);
-      this._emailAddressTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._emailAddressTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._emailAddressTextBox.Name = "_emailAddressTextBox";
       this._emailAddressTextBox.Size = new System.Drawing.Size(274, 22);
       this._emailAddressTextBox.TabIndex = 3;
@@ -91,7 +92,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._testConnectionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._testConnectionButton.Location = new System.Drawing.Point(484, 178);
-      this._testConnectionButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._testConnectionButton.Margin = new System.Windows.Forms.Padding(4);
       this._testConnectionButton.Name = "_testConnectionButton";
       this._testConnectionButton.Size = new System.Drawing.Size(101, 28);
       this._testConnectionButton.TabIndex = 5;
@@ -122,7 +123,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._passwordTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._passwordTextBox.Location = new System.Drawing.Point(310, 92);
-      this._passwordTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._passwordTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._passwordTextBox.Name = "_passwordTextBox";
       this._passwordTextBox.PasswordChar = '*';
       this._passwordTextBox.Size = new System.Drawing.Size(274, 22);
@@ -132,7 +133,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._userNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._userNameTextBox.Location = new System.Drawing.Point(310, 60);
-      this._userNameTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._userNameTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._userNameTextBox.Name = "_userNameTextBox";
       this._userNameTextBox.Size = new System.Drawing.Size(274, 22);
       this._userNameTextBox.TabIndex = 1;
@@ -142,7 +143,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._calenderUrlTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this._calenderUrlTextBox.Location = new System.Drawing.Point(77, 28);
-      this._calenderUrlTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._calenderUrlTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._calenderUrlTextBox.Name = "_calenderUrlTextBox";
       this._calenderUrlTextBox.Size = new System.Drawing.Size(505, 22);
       this._calenderUrlTextBox.TabIndex = 0;
@@ -161,8 +162,9 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.BackColor = System.Drawing.SystemColors.Window;
       this.Controls.Add(this.groupBox);
-      this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.Margin = new System.Windows.Forms.Padding(4);
       this.Name = "ServerSettingsControl";
       this.Size = new System.Drawing.Size(593, 214);
       this.groupBox.ResumeLayout(false);

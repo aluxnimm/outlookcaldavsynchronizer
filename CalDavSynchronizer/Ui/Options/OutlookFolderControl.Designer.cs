@@ -50,8 +50,10 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox.Controls.Add(this._outoookFolderNameTextBox);
       this.groupBox.Controls.Add(this.label9);
       this.groupBox.Location = new System.Drawing.Point(0, 0);
+      this.groupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this.groupBox.Name = "groupBox";
-      this.groupBox.Size = new System.Drawing.Size(445, 80);
+      this.groupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.groupBox.Size = new System.Drawing.Size(593, 98);
       this.groupBox.TabIndex = 2;
       this.groupBox.TabStop = false;
       this.groupBox.Text = "Outlook settings";
@@ -59,9 +61,10 @@ namespace CalDavSynchronizer.Ui.Options
       // _synchronizeImmediatelyAfterOutlookItemChangeCheckBox
       // 
       this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.AutoSize = true;
-      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Location = new System.Drawing.Point(11, 51);
+      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Location = new System.Drawing.Point(15, 63);
+      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Name = "_synchronizeImmediatelyAfterOutlookItemChangeCheckBox";
-      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Size = new System.Drawing.Size(231, 17);
+      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Size = new System.Drawing.Size(307, 21);
       this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.TabIndex = 1;
       this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Text = "Synchronize items immediately after change";
       this.toolTip.SetToolTip(this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox, "Trigger a partial synchronization run immediately after an item is \r\ncreated, cha" +
@@ -72,9 +75,10 @@ namespace CalDavSynchronizer.Ui.Options
       // _selectOutlookFolderButton
       // 
       this._selectOutlookFolderButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._selectOutlookFolderButton.Location = new System.Drawing.Point(411, 21);
+      this._selectOutlookFolderButton.Location = new System.Drawing.Point(548, 26);
+      this._selectOutlookFolderButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this._selectOutlookFolderButton.Name = "_selectOutlookFolderButton";
-      this._selectOutlookFolderButton.Size = new System.Drawing.Size(28, 23);
+      this._selectOutlookFolderButton.Size = new System.Drawing.Size(37, 28);
       this._selectOutlookFolderButton.TabIndex = 0;
       this._selectOutlookFolderButton.Text = "...";
       this._selectOutlookFolderButton.UseVisualStyleBackColor = true;
@@ -83,29 +87,34 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._outoookFolderNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this._outoookFolderNameTextBox.Location = new System.Drawing.Point(190, 23);
+      this._outoookFolderNameTextBox.BackColor = System.Drawing.SystemColors.Window;
+      this._outoookFolderNameTextBox.Location = new System.Drawing.Point(253, 28);
+      this._outoookFolderNameTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this._outoookFolderNameTextBox.Name = "_outoookFolderNameTextBox";
       this._outoookFolderNameTextBox.ReadOnly = true;
-      this._outoookFolderNameTextBox.Size = new System.Drawing.Size(215, 20);
+      this._outoookFolderNameTextBox.Size = new System.Drawing.Size(285, 22);
       this._outoookFolderNameTextBox.TabIndex = 11;
       this._outoookFolderNameTextBox.TabStop = false;
       // 
       // label9
       // 
       this.label9.AutoSize = true;
-      this.label9.Location = new System.Drawing.Point(8, 26);
+      this.label9.Location = new System.Drawing.Point(11, 32);
+      this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label9.Name = "label9";
-      this.label9.Size = new System.Drawing.Size(76, 13);
+      this.label9.Size = new System.Drawing.Size(101, 17);
       this.label9.TabIndex = 13;
       this.label9.Text = "Outlook Folder";
       // 
       // OutlookFolderControl
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.BackColor = System.Drawing.SystemColors.Window;
       this.Controls.Add(this.groupBox);
+      this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this.Name = "OutlookFolderControl";
-      this.Size = new System.Drawing.Size(445, 80);
+      this.Size = new System.Drawing.Size(593, 98);
       this.groupBox.ResumeLayout(false);
       this.groupBox.PerformLayout();
       this.ResumeLayout(false);

@@ -40,9 +40,10 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._genericTypeRadioButton.AutoSize = true;
       this._genericTypeRadioButton.Checked = true;
-      this._genericTypeRadioButton.Location = new System.Drawing.Point(12, 12);
+      this._genericTypeRadioButton.Location = new System.Drawing.Point(16, 15);
+      this._genericTypeRadioButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this._genericTypeRadioButton.Name = "_genericTypeRadioButton";
-      this._genericTypeRadioButton.Size = new System.Drawing.Size(151, 17);
+      this._genericTypeRadioButton.Size = new System.Drawing.Size(193, 21);
       this._genericTypeRadioButton.TabIndex = 0;
       this._genericTypeRadioButton.TabStop = true;
       this._genericTypeRadioButton.Text = "Generic CalDAV/CardDAV";
@@ -51,9 +52,10 @@ namespace CalDavSynchronizer.Ui.Options
       // _googleTypeRadionButton
       // 
       this._googleTypeRadionButton.AutoSize = true;
-      this._googleTypeRadionButton.Location = new System.Drawing.Point(12, 35);
+      this._googleTypeRadionButton.Location = new System.Drawing.Point(16, 43);
+      this._googleTypeRadionButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this._googleTypeRadionButton.Name = "_googleTypeRadionButton";
-      this._googleTypeRadionButton.Size = new System.Drawing.Size(59, 17);
+      this._googleTypeRadionButton.Size = new System.Drawing.Size(75, 21);
       this._googleTypeRadionButton.TabIndex = 1;
       this._googleTypeRadionButton.Text = "Google";
       this._googleTypeRadionButton.UseVisualStyleBackColor = true;
@@ -62,9 +64,10 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this._cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this._cancelButton.Location = new System.Drawing.Point(133, 77);
+      this._cancelButton.Location = new System.Drawing.Point(177, 95);
+      this._cancelButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this._cancelButton.Name = "_cancelButton";
-      this._cancelButton.Size = new System.Drawing.Size(75, 23);
+      this._cancelButton.Size = new System.Drawing.Size(100, 28);
       this._cancelButton.TabIndex = 2;
       this._cancelButton.Text = "Cancel";
       this._cancelButton.UseVisualStyleBackColor = true;
@@ -72,9 +75,10 @@ namespace CalDavSynchronizer.Ui.Options
       // _okButton
       // 
       this._okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._okButton.Location = new System.Drawing.Point(52, 77);
+      this._okButton.Location = new System.Drawing.Point(69, 95);
+      this._okButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this._okButton.Name = "_okButton";
-      this._okButton.Size = new System.Drawing.Size(75, 23);
+      this._okButton.Size = new System.Drawing.Size(100, 28);
       this._okButton.TabIndex = 3;
       this._okButton.Text = "Ok";
       this._okButton.UseVisualStyleBackColor = true;
@@ -83,15 +87,17 @@ namespace CalDavSynchronizer.Ui.Options
       // SelectOptionsDisplayTypeForm
       // 
       this.AcceptButton = this._okButton;
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.BackColor = System.Drawing.SystemColors.Window;
       this.CancelButton = this._cancelButton;
-      this.ClientSize = new System.Drawing.Size(220, 112);
+      this.ClientSize = new System.Drawing.Size(293, 138);
       this.Controls.Add(this._okButton);
       this.Controls.Add(this._cancelButton);
       this.Controls.Add(this._googleTypeRadionButton);
       this.Controls.Add(this._genericTypeRadioButton);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+      this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this.Name = "SelectOptionsDisplayTypeForm";
       this.ShowIcon = false;
       this.Text = "Select Profile Type";

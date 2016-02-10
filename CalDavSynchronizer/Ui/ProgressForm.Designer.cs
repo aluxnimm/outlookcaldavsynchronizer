@@ -35,7 +35,7 @@
       // _progressBar
       // 
       this._progressBar.Location = new System.Drawing.Point(16, 15);
-      this._progressBar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._progressBar.Margin = new System.Windows.Forms.Padding(4);
       this._progressBar.Name = "_progressBar";
       this._progressBar.Size = new System.Drawing.Size(425, 28);
       this._progressBar.TabIndex = 0;
@@ -53,12 +53,13 @@
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.BackColor = System.Drawing.SystemColors.Window;
       this.ClientSize = new System.Drawing.Size(456, 112);
       this.ControlBox = false;
       this.Controls.Add(this._messageLabel);
       this.Controls.Add(this._progressBar);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-      this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.Margin = new System.Windows.Forms.Padding(4);
       this.Name = "ProgressForm";
       this.ShowIcon = false;
       this.Text = "CalDavSynchronizer - Synchronizing...";
