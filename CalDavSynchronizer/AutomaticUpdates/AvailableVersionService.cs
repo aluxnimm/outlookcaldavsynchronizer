@@ -60,7 +60,7 @@ namespace CalDavSynchronizer.AutomaticUpdates
         {
           readme = client.DownloadString (
             new Uri ("http://sourceforge.net/p/outlookcaldavsynchronizer/code/ci/master/tree/README.md?format=raw"))
-            .Replace ("\n", Environment.NewLine);
+            .Replace ("\n", Environment.NewLine).Replace("\t", "   ");
         }
 
         var start = Find (readme, newVersion);

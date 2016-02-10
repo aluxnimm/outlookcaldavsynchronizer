@@ -45,7 +45,7 @@
       // btnOK
       // 
       this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnOK.Location = new System.Drawing.Point(496, 527);
+      this.btnOK.Location = new System.Drawing.Point(749, 527);
       this.btnOK.Margin = new System.Windows.Forms.Padding(4);
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(100, 28);
@@ -65,9 +65,9 @@
       this._newFeaturesTextBox.Name = "_newFeaturesTextBox";
       this._newFeaturesTextBox.ReadOnly = true;
       this._newFeaturesTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      this._newFeaturesTextBox.Size = new System.Drawing.Size(579, 356);
+      this._newFeaturesTextBox.Size = new System.Drawing.Size(832, 356);
       this._newFeaturesTextBox.TabIndex = 1;
-      this._newFeaturesTextBox.WordWrap = false;
+      this._newFeaturesTextBox.WordWrap = true;
       // 
       // _captionLabel
       // 
@@ -116,7 +116,8 @@
       // 
       // _logoPictureBox
       // 
-      this._logoPictureBox.Location = new System.Drawing.Point(448, 11);
+      this._logoPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this._logoPictureBox.Location = new System.Drawing.Point(706, 11);
       this._logoPictureBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._logoPictureBox.Name = "_logoPictureBox";
       this._logoPictureBox.Size = new System.Drawing.Size(147, 102);
@@ -150,7 +151,7 @@
       // installButton
       // 
       this.installButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.installButton.Location = new System.Drawing.Point(345, 526);
+      this.installButton.Location = new System.Drawing.Point(598, 526);
       this.installButton.Margin = new System.Windows.Forms.Padding(4);
       this.installButton.Name = "installButton";
       this.installButton.Size = new System.Drawing.Size(143, 28);
@@ -164,7 +165,7 @@
       this.AcceptButton = this.btnOK;
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(612, 570);
+      this.ClientSize = new System.Drawing.Size(865, 570);
       this.Controls.Add(this.installButton);
       this.Controls.Add(this._ignoreThisVersionLinkLabel);
       this.Controls.Add(this.WhatsNewLabel);
@@ -175,11 +176,8 @@
       this.Controls.Add(this._captionLabel);
       this.Controls.Add(this._newFeaturesTextBox);
       this.Controls.Add(this.btnOK);
-      this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Margin = new System.Windows.Forms.Padding(4);
-      this.MaximizeBox = false;
-      this.MinimizeBox = false;
       this.Name = "GetNewVersionForm";
       this.Text = "CalDav Synchronizer";
       ((System.ComponentModel.ISupportInitialize)(this._logoPictureBox)).EndInit();
