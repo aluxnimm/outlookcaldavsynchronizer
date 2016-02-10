@@ -59,6 +59,7 @@
       this._licenseTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this._licenseTextBox.BackColor = System.Drawing.SystemColors.Window;
       this._licenseTextBox.Location = new System.Drawing.Point(15, 198);
       this._licenseTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._licenseTextBox.Multiline = true;
@@ -162,6 +163,7 @@
       this.AcceptButton = this.btnOK;
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.BackColor = System.Drawing.SystemColors.Window;
       this.ClientSize = new System.Drawing.Size(612, 563);
       this.Controls.Add(this._linkLabelHelp);
       this.Controls.Add(this._linkLabelPayPal);

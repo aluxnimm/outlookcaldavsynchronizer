@@ -54,9 +54,9 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox.Controls.Add(this._testConnectionButton);
       this.groupBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.groupBox.Location = new System.Drawing.Point(0, 0);
-      this.groupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.groupBox.Margin = new System.Windows.Forms.Padding(4);
       this.groupBox.Name = "groupBox";
-      this.groupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.groupBox.Padding = new System.Windows.Forms.Padding(4);
       this.groupBox.Size = new System.Drawing.Size(593, 172);
       this.groupBox.TabIndex = 1;
       this.groupBox.TabStop = false;
@@ -66,7 +66,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._doAutodiscoveryButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._doAutodiscoveryButton.Location = new System.Drawing.Point(310, 127);
-      this._doAutodiscoveryButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._doAutodiscoveryButton.Margin = new System.Windows.Forms.Padding(4);
       this._doAutodiscoveryButton.Name = "_doAutodiscoveryButton";
       this._doAutodiscoveryButton.Size = new System.Drawing.Size(166, 28);
       this._doAutodiscoveryButton.TabIndex = 15;
@@ -78,7 +78,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._editUrlManuallyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._editUrlManuallyButton.Location = new System.Drawing.Point(484, 60);
-      this._editUrlManuallyButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._editUrlManuallyButton.Margin = new System.Windows.Forms.Padding(4);
       this._editUrlManuallyButton.Name = "_editUrlManuallyButton";
       this._editUrlManuallyButton.Size = new System.Drawing.Size(100, 28);
       this._editUrlManuallyButton.TabIndex = 14;
@@ -100,8 +100,9 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._calenderUrlTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this._calenderUrlTextBox.BackColor = System.Drawing.SystemColors.Window;
       this._calenderUrlTextBox.Location = new System.Drawing.Point(109, 28);
-      this._calenderUrlTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._calenderUrlTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._calenderUrlTextBox.Name = "_calenderUrlTextBox";
       this._calenderUrlTextBox.ReadOnly = true;
       this._calenderUrlTextBox.Size = new System.Drawing.Size(475, 22);
@@ -121,7 +122,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._emailAddressTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._emailAddressTextBox.Location = new System.Drawing.Point(310, 95);
-      this._emailAddressTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._emailAddressTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._emailAddressTextBox.Name = "_emailAddressTextBox";
       this._emailAddressTextBox.Size = new System.Drawing.Size(274, 22);
       this._emailAddressTextBox.TabIndex = 3;
@@ -130,7 +131,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._testConnectionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._testConnectionButton.Location = new System.Drawing.Point(484, 127);
-      this._testConnectionButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._testConnectionButton.Margin = new System.Windows.Forms.Padding(4);
       this._testConnectionButton.Name = "_testConnectionButton";
       this._testConnectionButton.Size = new System.Drawing.Size(101, 28);
       this._testConnectionButton.TabIndex = 5;
@@ -141,8 +142,9 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.BackColor = System.Drawing.SystemColors.Window;
       this.Controls.Add(this.groupBox);
-      this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.Margin = new System.Windows.Forms.Padding(4);
       this.Name = "GoogleServerSettingsControl";
       this.Size = new System.Drawing.Size(593, 172);
       this.groupBox.ResumeLayout(false);

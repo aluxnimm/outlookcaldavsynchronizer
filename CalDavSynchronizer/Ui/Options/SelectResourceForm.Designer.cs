@@ -57,15 +57,15 @@ namespace CalDavSynchronizer.Ui.Options
       this._calendarDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
       this._calendarDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
       this._calendarDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this._calendarDataGridView.Location = new System.Drawing.Point(3, 3);
-      this._calendarDataGridView.Margin = new System.Windows.Forms.Padding(2);
+      this._calendarDataGridView.Location = new System.Drawing.Point(4, 4);
+      this._calendarDataGridView.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._calendarDataGridView.MultiSelect = false;
       this._calendarDataGridView.Name = "_calendarDataGridView";
       this._calendarDataGridView.ReadOnly = true;
       this._calendarDataGridView.RowHeadersVisible = false;
       this._calendarDataGridView.RowTemplate.Height = 24;
       this._calendarDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-      this._calendarDataGridView.Size = new System.Drawing.Size(721, 306);
+      this._calendarDataGridView.Size = new System.Drawing.Size(964, 379);
       this._calendarDataGridView.TabIndex = 0;
       this._calendarDataGridView.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this._calendarDataGridView_CellContentDoubleClick);
       this._calendarDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this._calendarDataGridView_CellFormatting);
@@ -74,9 +74,10 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.buttonCancel.Location = new System.Drawing.Point(672, 350);
+      this.buttonCancel.Location = new System.Drawing.Point(896, 431);
+      this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this.buttonCancel.Name = "buttonCancel";
-      this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+      this.buttonCancel.Size = new System.Drawing.Size(100, 28);
       this.buttonCancel.TabIndex = 2;
       this.buttonCancel.Text = "Cancel";
       this.buttonCancel.UseVisualStyleBackColor = true;
@@ -90,15 +91,15 @@ namespace CalDavSynchronizer.Ui.Options
       this._addressBookDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
       this._addressBookDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
       this._addressBookDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this._addressBookDataGridView.Location = new System.Drawing.Point(3, 3);
-      this._addressBookDataGridView.Margin = new System.Windows.Forms.Padding(2);
+      this._addressBookDataGridView.Location = new System.Drawing.Point(4, 4);
+      this._addressBookDataGridView.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._addressBookDataGridView.MultiSelect = false;
       this._addressBookDataGridView.Name = "_addressBookDataGridView";
       this._addressBookDataGridView.ReadOnly = true;
       this._addressBookDataGridView.RowHeadersVisible = false;
       this._addressBookDataGridView.RowTemplate.Height = 24;
       this._addressBookDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-      this._addressBookDataGridView.Size = new System.Drawing.Size(721, 306);
+      this._addressBookDataGridView.Size = new System.Drawing.Size(964, 379);
       this._addressBookDataGridView.TabIndex = 3;
       this._addressBookDataGridView.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this._addressBookDataGridView_CellContentDoubleClick);
       // 
@@ -110,19 +111,21 @@ namespace CalDavSynchronizer.Ui.Options
       this._mainTab.Controls.Add(this._calendarPage);
       this._mainTab.Controls.Add(this._addressBookPage);
       this._mainTab.Controls.Add(this._tasksPage);
-      this._mainTab.Location = new System.Drawing.Point(12, 6);
+      this._mainTab.Location = new System.Drawing.Point(16, 7);
+      this._mainTab.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this._mainTab.Name = "_mainTab";
       this._mainTab.SelectedIndex = 0;
-      this._mainTab.Size = new System.Drawing.Size(735, 338);
+      this._mainTab.Size = new System.Drawing.Size(980, 416);
       this._mainTab.TabIndex = 4;
       // 
       // _calendarPage
       // 
       this._calendarPage.Controls.Add(this._calendarDataGridView);
-      this._calendarPage.Location = new System.Drawing.Point(4, 22);
+      this._calendarPage.Location = new System.Drawing.Point(4, 25);
+      this._calendarPage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this._calendarPage.Name = "_calendarPage";
-      this._calendarPage.Padding = new System.Windows.Forms.Padding(3);
-      this._calendarPage.Size = new System.Drawing.Size(727, 312);
+      this._calendarPage.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._calendarPage.Size = new System.Drawing.Size(972, 387);
       this._calendarPage.TabIndex = 0;
       this._calendarPage.Text = "Calendars";
       this._calendarPage.UseVisualStyleBackColor = true;
@@ -130,10 +133,11 @@ namespace CalDavSynchronizer.Ui.Options
       // _addressBookPage
       // 
       this._addressBookPage.Controls.Add(this._addressBookDataGridView);
-      this._addressBookPage.Location = new System.Drawing.Point(4, 22);
+      this._addressBookPage.Location = new System.Drawing.Point(4, 25);
+      this._addressBookPage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this._addressBookPage.Name = "_addressBookPage";
-      this._addressBookPage.Padding = new System.Windows.Forms.Padding(3);
-      this._addressBookPage.Size = new System.Drawing.Size(727, 312);
+      this._addressBookPage.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._addressBookPage.Size = new System.Drawing.Size(972, 387);
       this._addressBookPage.TabIndex = 1;
       this._addressBookPage.Text = "Address Books";
       this._addressBookPage.UseVisualStyleBackColor = true;
@@ -141,9 +145,10 @@ namespace CalDavSynchronizer.Ui.Options
       // _tasksPage
       // 
       this._tasksPage.Controls.Add(this._tasksDataGridView);
-      this._tasksPage.Location = new System.Drawing.Point(4, 22);
+      this._tasksPage.Location = new System.Drawing.Point(4, 25);
+      this._tasksPage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this._tasksPage.Name = "_tasksPage";
-      this._tasksPage.Size = new System.Drawing.Size(727, 312);
+      this._tasksPage.Size = new System.Drawing.Size(972, 387);
       this._tasksPage.TabIndex = 2;
       this._tasksPage.Text = "Google-Tasks";
       this._tasksPage.UseVisualStyleBackColor = true;
@@ -157,14 +162,14 @@ namespace CalDavSynchronizer.Ui.Options
       this._tasksDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
       this._tasksDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
       this._tasksDataGridView.Location = new System.Drawing.Point(0, 0);
-      this._tasksDataGridView.Margin = new System.Windows.Forms.Padding(2);
+      this._tasksDataGridView.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._tasksDataGridView.MultiSelect = false;
       this._tasksDataGridView.Name = "_tasksDataGridView";
       this._tasksDataGridView.ReadOnly = true;
       this._tasksDataGridView.RowHeadersVisible = false;
       this._tasksDataGridView.RowTemplate.Height = 24;
       this._tasksDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-      this._tasksDataGridView.Size = new System.Drawing.Size(727, 312);
+      this._tasksDataGridView.Size = new System.Drawing.Size(972, 387);
       this._tasksDataGridView.TabIndex = 4;
       this._tasksDataGridView.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this._tasksDataGridView_CellContentDoubleClick);
       // 
@@ -172,9 +177,10 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this.OkButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.OkButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.OkButton.Location = new System.Drawing.Point(591, 350);
+      this.OkButton.Location = new System.Drawing.Point(788, 431);
+      this.OkButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this.OkButton.Name = "OkButton";
-      this.OkButton.Size = new System.Drawing.Size(75, 23);
+      this.OkButton.Size = new System.Drawing.Size(100, 28);
       this.OkButton.TabIndex = 5;
       this.OkButton.Text = "OK";
       this.OkButton.UseVisualStyleBackColor = true;
@@ -183,14 +189,15 @@ namespace CalDavSynchronizer.Ui.Options
       // SelectResourceForm
       // 
       this.AcceptButton = this.OkButton;
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.BackColor = System.Drawing.SystemColors.Window;
       this.CancelButton = this.buttonCancel;
-      this.ClientSize = new System.Drawing.Size(754, 379);
+      this.ClientSize = new System.Drawing.Size(1005, 466);
       this.Controls.Add(this.OkButton);
       this.Controls.Add(this._mainTab);
       this.Controls.Add(this.buttonCancel);
-      this.Margin = new System.Windows.Forms.Padding(2);
+      this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this.Name = "SelectResourceForm";
       this.ShowIcon = false;
       this.Text = "Select Resource";

@@ -59,6 +59,7 @@
       this._newFeaturesTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this._newFeaturesTextBox.BackColor = System.Drawing.SystemColors.Window;
       this._newFeaturesTextBox.Location = new System.Drawing.Point(16, 162);
       this._newFeaturesTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._newFeaturesTextBox.Multiline = true;
@@ -165,6 +166,7 @@
       this.AcceptButton = this.btnOK;
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.BackColor = System.Drawing.SystemColors.Window;
       this.ClientSize = new System.Drawing.Size(865, 570);
       this.Controls.Add(this.installButton);
       this.Controls.Add(this._ignoreThisVersionLinkLabel);

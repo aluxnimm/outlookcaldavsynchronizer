@@ -42,10 +42,10 @@ namespace CalDavSynchronizer.Ui.Options
       this._proxyUrlTextBox = new System.Windows.Forms.TextBox();
       this.label3 = new System.Windows.Forms.Label();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
+      this._preemptiveAuthenticationCheckBox = new System.Windows.Forms.CheckBox();
       this._closeConnectionAfterEachRequestCheckBox = new System.Windows.Forms.CheckBox();
       this._manualProxyGroupBox = new System.Windows.Forms.GroupBox();
       this._mappingConfigurationButton = new System.Windows.Forms.Button();
-      this._preemptiveAuthenticationCheckBox = new System.Windows.Forms.CheckBox();
       this.groupBox2.SuspendLayout();
       this.groupBox1.SuspendLayout();
       this._manualProxyGroupBox.SuspendLayout();
@@ -189,6 +189,17 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Advanced network settings";
       // 
+      // _preemptiveAuthenticationCheckBox
+      // 
+      this._preemptiveAuthenticationCheckBox.AutoSize = true;
+      this._preemptiveAuthenticationCheckBox.Location = new System.Drawing.Point(17, 52);
+      this._preemptiveAuthenticationCheckBox.Margin = new System.Windows.Forms.Padding(4);
+      this._preemptiveAuthenticationCheckBox.Name = "_preemptiveAuthenticationCheckBox";
+      this._preemptiveAuthenticationCheckBox.Size = new System.Drawing.Size(224, 21);
+      this._preemptiveAuthenticationCheckBox.TabIndex = 17;
+      this._preemptiveAuthenticationCheckBox.Text = "Use Preemptive Authentication";
+      this._preemptiveAuthenticationCheckBox.UseVisualStyleBackColor = true;
+      // 
       // _closeConnectionAfterEachRequestCheckBox
       // 
       this._closeConnectionAfterEachRequestCheckBox.AutoSize = true;
@@ -229,21 +240,11 @@ namespace CalDavSynchronizer.Ui.Options
       this._mappingConfigurationButton.UseVisualStyleBackColor = true;
       this._mappingConfigurationButton.Click += new System.EventHandler(this._mappingConfigurationButton_Click);
       // 
-      // _preemptiveAuthenticationCheckBox
-      // 
-      this._preemptiveAuthenticationCheckBox.AutoSize = true;
-      this._preemptiveAuthenticationCheckBox.Location = new System.Drawing.Point(17, 52);
-      this._preemptiveAuthenticationCheckBox.Margin = new System.Windows.Forms.Padding(4);
-      this._preemptiveAuthenticationCheckBox.Name = "_preemptiveAuthenticationCheckBox";
-      this._preemptiveAuthenticationCheckBox.Size = new System.Drawing.Size(224, 21);
-      this._preemptiveAuthenticationCheckBox.TabIndex = 17;
-      this._preemptiveAuthenticationCheckBox.Text = "Use Preemptive Authentication";
-      this._preemptiveAuthenticationCheckBox.UseVisualStyleBackColor = true;
-      // 
       // AdvancedOptionsForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.BackColor = System.Drawing.SystemColors.Window;
       this.ClientSize = new System.Drawing.Size(712, 486);
       this.Controls.Add(this._mappingConfigurationButton);
       this.Controls.Add(this._manualProxyGroupBox);

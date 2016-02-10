@@ -87,6 +87,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this.AcceptButton = this._okButton;
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.BackColor = System.Drawing.SystemColors.Window;
       this.CancelButton = this._cancelButton;
       this.ClientSize = new System.Drawing.Size(368, 161);
       this.Controls.Add(this._mapContactPhotoCheckBox);
