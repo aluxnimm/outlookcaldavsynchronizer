@@ -127,7 +127,8 @@ namespace CalDavSynchronizer.Ui.Options
               result,
               _dependencies.SelectedSynchronizationModeRequiresWriteableServerResource,
               _dependencies.SelectedSynchronizationModeDisplayName,
-              _dependencies.OutlookFolderType);
+              _dependencies.OutlookFolderType,
+              ServerAdapterType.WebDavHttpClientBased);
           return;
         }
         else
@@ -164,7 +165,8 @@ namespace CalDavSynchronizer.Ui.Options
           finalResult,
           _dependencies.SelectedSynchronizationModeRequiresWriteableServerResource,
           _dependencies.SelectedSynchronizationModeDisplayName,
-          _dependencies.OutlookFolderType);
+          _dependencies.OutlookFolderType,
+          ServerAdapterType.WebDavHttpClientBased);
     }
 
 

@@ -133,7 +133,8 @@ namespace CalDavSynchronizer.Ui.Options
         TestResult result,
         bool selectedSynchronizationModeRequiresWriteableServerResource,
         string selectedSynchronizationModeDisplayName,
-        OlItemType? outlookFolderType)
+        OlItemType? outlookFolderType,
+        ServerAdapterType serverAdapterType)
     {
       bool hasError = false;
       bool hasWarning = false;
@@ -189,7 +190,15 @@ namespace CalDavSynchronizer.Ui.Options
           }
         }
 
-        if (outlookFolderType != OlItemType.olAppointmentItem && outlookFolderType != OlItemType.olTaskItem)
+        if (serverAdapterType == ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth)
+        {
+          if (outlookFolderType != OlItemType.olAppointmentItem)
+          {
+            errorMessageBuilder.AppendLine ("- The outlook folder is not a calendar folder, or there is no folder selected.");
+            hasError = true;
+          }
+        }
+        else if (outlookFolderType != OlItemType.olAppointmentItem && outlookFolderType != OlItemType.olTaskItem)
         {
           errorMessageBuilder.AppendLine ("- The outlook folder is not a calendar or task folder, or there is no folder selected.");
           hasError = true;
