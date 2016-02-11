@@ -115,7 +115,7 @@ namespace CalDavSynchronizer.Ui.Options
         }
         TestResult result = new TestResult (ResourceType.TaskList, CalendarProperties.None, AddressBookProperties.None);
 
-        OptionTasks.DisplayTestReport (result, false, _dependencies.SelectedSynchronizationModeDisplayName, _dependencies.OutlookFolderType);
+        OptionTasks.DisplayTestReport (result, false, _dependencies.SelectedSynchronizationModeDisplayName, _dependencies.OutlookFolderType, UsedServerAdapterType);
         return;
       }
 
@@ -206,7 +206,8 @@ namespace CalDavSynchronizer.Ui.Options
             result,
             _dependencies.SelectedSynchronizationModeRequiresWriteableServerResource,
             _dependencies.SelectedSynchronizationModeDisplayName,
-            _dependencies.OutlookFolderType);
+            _dependencies.OutlookFolderType,
+            UsedServerAdapterType);
         return;
       }
 
@@ -221,13 +222,14 @@ namespace CalDavSynchronizer.Ui.Options
           finalResult,
           _dependencies.SelectedSynchronizationModeRequiresWriteableServerResource,
           _dependencies.SelectedSynchronizationModeDisplayName,
-          _dependencies.OutlookFolderType);
+          _dependencies.OutlookFolderType,
+          UsedServerAdapterType);
       }
       else if (UsedServerAdapterType == ServerAdapterType.GoogleTaskApi)
       {
         TestResult result = new TestResult(ResourceType.TaskList, CalendarProperties.None, AddressBookProperties.None);
 
-        OptionTasks.DisplayTestReport (result,false,_dependencies.SelectedSynchronizationModeDisplayName, _dependencies.OutlookFolderType);
+        OptionTasks.DisplayTestReport (result,false,_dependencies.SelectedSynchronizationModeDisplayName, _dependencies.OutlookFolderType, UsedServerAdapterType);
       }
     }
 
