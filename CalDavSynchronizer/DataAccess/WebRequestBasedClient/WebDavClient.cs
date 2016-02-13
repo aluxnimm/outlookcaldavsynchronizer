@@ -84,12 +84,19 @@ namespace CalDavSynchronizer.DataAccess.WebRequestBasedClient
         string mediaType,
         string requestBody)
     {
-      using (var response = ExecuteWebDavRequest (url, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody).Item2)
+      try
       {
-        using (var responseStream = response.GetResponseStream())
+        using (var response = ExecuteWebDavRequest (url, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody).Item2)
         {
-          return Task.FromResult (CreateXmlDocument (responseStream));
+          using (var responseStream = response.GetResponseStream())
+          {
+            return Task.FromResult (CreateXmlDocument (responseStream));
+          }
         }
+      }
+      catch (WebException x)
+      {
+        throw WebDavClientException.Create (x);
       }
     }
 
@@ -102,11 +109,18 @@ namespace CalDavSynchronizer.DataAccess.WebRequestBasedClient
         string mediaType,
         string requestBody)
     {
-      var result = ExecuteWebDavRequest (url, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody);
-
-      using (var response = result.Item2)
+      try
       {
-        return Task.FromResult<IHttpHeaders> (new WebHeaderCollectionAdapter (result.Item1, response.Headers));
+        var result = ExecuteWebDavRequest (url, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody);
+
+        using (var response = result.Item2)
+        {
+          return Task.FromResult<IHttpHeaders> (new WebHeaderCollectionAdapter (result.Item1, response.Headers));
+        }
+      }
+      catch (WebException x)
+      {
+        throw WebDavClientException.Create (x);
       }
     }
 

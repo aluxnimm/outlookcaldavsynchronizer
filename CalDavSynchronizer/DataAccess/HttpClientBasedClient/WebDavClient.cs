@@ -55,12 +55,19 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
         string mediaType,
         string requestBody)
     {
-      using (var response = ExecuteWebDavRequest (url, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody))
+      try
       {
-        using (var responseStream = await (await response).Item2.Content.ReadAsStreamAsync())
+        using (var response = ExecuteWebDavRequest (url, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody))
         {
-          return CreateXmlDocument (responseStream);
+          using (var responseStream = await (await response).Item2.Content.ReadAsStreamAsync())
+          {
+            return CreateXmlDocument (responseStream);
+          }
         }
+      }
+      catch (HttpRequestException x)
+      {
+        throw WebDavClientException.Create (x);
       }
     }
 
@@ -73,10 +80,17 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
         string mediaType,
         string requestBody)
     {
-      var result = await ExecuteWebDavRequest (url, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody);
-      using (var response = result.Item2)
+      try
       {
-        return new HttpResponseHeadersAdapter (result.Item1, response.Headers);
+        var result = await ExecuteWebDavRequest (url, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody);
+        using (var response = result.Item2)
+        {
+          return new HttpResponseHeadersAdapter (result.Item1, response.Headers);
+        }
+      }
+      catch (HttpRequestException x)
+      {
+        throw WebDavClientException.Create (x);
       }
     }
 
@@ -174,12 +188,7 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
           response.EnsureSuccessStatusCode();
         }
 
-        throw new HttpRequestException (
-            string.Format (
-                "Response status code does not indicate success: '{0}' ('{1}'). Message:\r\n{2}",
-                (int) response.StatusCode,
-                response.StatusCode,
-                responseMessage));
+        throw new WebDavClientException (response.StatusCode, response.StatusCode.ToString(), responseMessage);
       }
     }
 

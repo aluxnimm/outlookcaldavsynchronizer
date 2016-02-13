@@ -194,9 +194,9 @@ namespace CalDavSynchronizer.Implementation
         {
           return await _calDavDataAccess.UpdateEntity (entityId, entityVersion, SerializeCalendar (updatedEntity));
         }
-        catch (HttpRequestException ex)
+        catch (WebDavClientException ex)
         {
-          if (_deleteAndCreateOnUpdateError403 && ex.Message.Contains ("'403' ('Forbidden')"))
+          if (_deleteAndCreateOnUpdateError403 && ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
           {
             s_logger.Warn ("Server returned '403' ('Forbidden') for update, trying Delete and Recreate instead...");
 

@@ -387,24 +387,14 @@ namespace CalDavSynchronizer.DataAccess
           }
         }
       }
-      catch (HttpRequestException x)
+      catch (WebDavClientException x)
       {
         // Workaround for Synology NAS, which returns 404 insteaod of an empty response if no events are present
-        if (x.Message.Contains ("'404' ('NotFound')") && await IsResourceCalender())
+        if (x.StatusCode == HttpStatusCode.NotFound && await IsResourceCalender())
           return entities;
 
         throw;
       }
-      catch (WebException x)
-      {
-        var httpWebResponse = (HttpWebResponse) x.Response;
-
-        if (httpWebResponse?.StatusCode == HttpStatusCode.NotFound)
-          return entities;
-
-        throw;
-      }
-
 
       return entities;
     }
