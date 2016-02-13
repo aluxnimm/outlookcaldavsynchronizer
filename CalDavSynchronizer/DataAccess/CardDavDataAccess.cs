@@ -270,37 +270,32 @@ namespace CalDavSynchronizer.DataAccess
         {
           var urlNode = responseElement.SelectSingleNode ("D:href", responseXml.XmlNamespaceManager);
           var etagNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:getetag", responseXml.XmlNamespaceManager);
-          var contentTypeNode = responseElement.SelectSingleNode("D:propstat/D:prop/D:getcontenttype", responseXml.XmlNamespaceManager);
+          var contentTypeNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:getcontenttype", responseXml.XmlNamespaceManager);
 
           if (urlNode != null && etagNode != null)
           {
             string contentType = contentTypeNode.InnerText ?? string.Empty;
-            var eTag = HttpUtility.GetQuotedEtag(etagNode.InnerText);
+            var eTag = HttpUtility.GetQuotedEtag (etagNode.InnerText);
             // the directory is also included in the list. It has a etag of '"None"' and is skipped
             // in Owncloud eTag is empty for directory
             // Yandex returns some eTag and the urlNode for the directory itself, so we need to filter that out aswell
             // TODO: add vlist support but for now filter out sogo vlists since we can't parse them atm
 
-            if (  !string.IsNullOrEmpty (eTag) && 
-                  String.Compare (eTag, @"""None""", StringComparison.OrdinalIgnoreCase) != 0 && 
-                  _serverUrl.AbsolutePath != UriHelper.DecodeUrlString (urlNode.InnerText) &&
-                  contentType != "text/x-vlist"
-               )
+            if (!string.IsNullOrEmpty (eTag) &&
+                String.Compare (eTag, @"""None""", StringComparison.OrdinalIgnoreCase) != 0 &&
+                _serverUrl.AbsolutePath != UriHelper.DecodeUrlString (urlNode.InnerText) &&
+                contentType != "text/x-vlist"
+                )
             {
-              entities.Add (EntityVersion.Create (new WebResourceName(urlNode.InnerText), eTag));
+              entities.Add (EntityVersion.Create (new WebResourceName (urlNode.InnerText), eTag));
             }
           }
         }
       }
-      catch (WebException x)
+      catch (WebDavClientException x)
       {
-        if (x.Response != null)
-        {
-          var httpWebResponse = (HttpWebResponse) x.Response;
-
-          if (httpWebResponse.StatusCode == HttpStatusCode.NotFound)
-            return entities;
-        }
+        if (x.StatusCode == HttpStatusCode.NotFound)
+          return entities;
 
         throw;
       }
