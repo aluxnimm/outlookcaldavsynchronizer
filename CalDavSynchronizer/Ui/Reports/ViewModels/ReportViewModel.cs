@@ -39,16 +39,11 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
       _parent = parent;
       _reportProxy = reportProxy;
 
-      OpenAEntityCommand = new DelegateCommand (parameter =>
-      {
-        OpenAEntity ((EntitySynchronizationReport) parameter);
-      });
+      OpenAEntityCommand = new DelegateCommand (parameter => { OpenAEntity ((EntitySynchronizationReport) parameter); });
 
-      OpenBEntityCommand = new DelegateCommand (parameter =>
-      {
-        OpenBEntity ((EntitySynchronizationReport) parameter);
-      });
+      OpenBEntityCommand = new DelegateCommand (parameter => { OpenBEntity ((EntitySynchronizationReport) parameter); });
 
+      OpenEntityWithLoadErrorCommand = new DelegateCommand (parameter => { OpenEntityWithLoadError ((LoadError) parameter); });
     }
 
     public SynchronizationReportName ReportName => _reportProxy.Name;
@@ -60,6 +55,7 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
 
     public ICommand OpenAEntityCommand { get; }
     public ICommand OpenBEntityCommand { get; }
+    public ICommand OpenEntityWithLoadErrorCommand { get; }
 
     private void OpenAEntity (EntitySynchronizationReport entitySynchronizationReport)
     {
@@ -71,6 +67,13 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
       _parent.DiplayBEntity (_reportProxy.Value.ProfileId, entitySynchronizationReport.BId);
     }
 
+    private void OpenEntityWithLoadError (LoadError loadError)
+    {
+      if (loadError.IsAEntity)
+        _parent.DiplayAEntity (_reportProxy.Value.ProfileId, loadError.EntityId);
+      else
+        _parent.DiplayBEntity (_reportProxy.Value.ProfileId, loadError.EntityId);
+    }
 
     public string AsString => _asString ?? (_asString = Serializer<SynchronizationReport>.Serialize (_reportProxy.Value));
 
