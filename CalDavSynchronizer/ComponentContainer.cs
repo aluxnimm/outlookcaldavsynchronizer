@@ -57,7 +57,7 @@ using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace CalDavSynchronizer
 {
-  public class ComponentContainer
+  public class ComponentContainer: IReportsViewModelParent
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
     // ReSharper disable once ConvertToConstant.Local
@@ -77,7 +77,8 @@ namespace CalDavSynchronizer
     private ReportsViewModel _currentReportsViewModel;
     private bool _showReportsWithWarningsImmediately;
     private bool _showReportsWithErrorsImmediately;
-    private ReportGarbageCollection _reportGarbageCollection;
+    private readonly ReportGarbageCollection _reportGarbageCollection;
+    private readonly SynchronizerFactory _synchronizerFactory;
 
     public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
 
@@ -113,7 +114,7 @@ namespace CalDavSynchronizer
               GetOrCreateConfigFileName (_applicationDataDirectory, _session.CurrentProfileName)
               ));
 
-      var synchronizerFactory = new SynchronizerFactory (
+      _synchronizerFactory = new SynchronizerFactory (
           GetProfileDataDirectory,
           new TotalProgressFactory (
               new ProgressFormFactory(),
@@ -129,7 +130,7 @@ namespace CalDavSynchronizer
 
       _filteringSynchronizationReportRepository.ReportAdded += _synchronizationReportRepository_ReportAdded;
       _scheduler = new Scheduler (
-        synchronizerFactory,
+        _synchronizerFactory,
         _filteringSynchronizationReportRepository,
         EnsureSynchronizationContext);
       var options = _optionsDataAccess.LoadOptions();
@@ -652,7 +653,8 @@ namespace CalDavSynchronizer
         {
           _currentReportsViewModel = new ReportsViewModel (
               _synchronizationReportRepository,
-              _optionsDataAccess.LoadOptions().ToDictionary (o => o.Id, o => o.Name));
+              _optionsDataAccess.LoadOptions().ToDictionary (o => o.Id, o => o.Name),
+              this);
 
           _currentReportsViewModel.ReportsClosed += delegate { _currentReportsViewModel = null; };
 
@@ -669,5 +671,96 @@ namespace CalDavSynchronizer
         _currentReportsViewModel.RequireBringToFront();
       }
     }
+
+    public void DiplayAEntity (Guid synchronizationProfileId, string entityId)
+    {
+      var options = GetOptionsOrNull(synchronizationProfileId);
+      if (options == null)
+        return;
+
+      var item = _session.GetItemFromID (entityId, options.OutlookFolderStoreId);
+
+      var appointment = item as AppointmentItem;
+      if (appointment != null)
+      {
+        appointment.GetInspector.Activate ();
+        return;
+      }
+
+      var task = item as TaskItem;
+      if (task != null)
+      {
+        task.GetInspector.Activate ();
+        return;
+      }
+      
+      var contact = item as ContactItem;
+      if (contact != null)
+      {
+        contact.GetInspector.Activate ();
+        return;
+      }
+    }
+
+    public async void DiplayBEntity (Guid synchronizationProfileId, string entityId)
+    {
+      try
+      {
+        var options = GetOptionsOrNull (synchronizationProfileId);
+        if (options == null)
+          return;
+
+        SynchronizerFactory.AvailableSynchronizerComponents availableSynchronizerComponents;
+
+        _synchronizerFactory.CreateSynchronizer (options,out availableSynchronizerComponents);
+
+        if (availableSynchronizerComponents.CalDavDataAccess != null)
+        {
+          var entityName = new WebResourceName { Id = entityId, OriginalAbsolutePath = entityId };
+          var entities = await availableSynchronizerComponents.CalDavDataAccess.GetEntities (new[] { entityName });
+          DisplayFirstEntityIfAvailable (entities);
+        }
+        else if (availableSynchronizerComponents.CardDavDataAccess != null)
+        {
+          var entityName = new WebResourceName { Id = entityId, OriginalAbsolutePath = entityId };
+          var entities = await availableSynchronizerComponents.CardDavDataAccess.GetEntities (new[] { entityName });
+          DisplayFirstEntityIfAvailable (entities);
+        }
+        else
+        {
+          MessageBox.Show ($"The type of profile '{options.Name}' doesn't provide a way to display server entities.");
+        }
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.HandleException (x, s_logger);
+      }
+    }
+
+    private static void DisplayFirstEntityIfAvailable (IReadOnlyList<EntityWithId<WebResourceName, string>> entities)
+    {
+      if (entities.Count == 0)
+      {
+        MessageBox.Show ("The selected entity does not exist anymore.");
+        return;
+      }
+
+      var tempFileName = Path.GetTempFileName();
+      var tempTextFileName = tempFileName + ".txt";
+      File.Move (tempFileName, tempTextFileName);
+
+      File.WriteAllText (tempTextFileName, entities[0].Entity);
+      System.Diagnostics.Process.Start (tempTextFileName);
+    }
+
+    private Options GetOptionsOrNull (Guid synchronizationProfileId)
+    {
+      var allOptions = _optionsDataAccess.LoadOptions ();
+      var options = allOptions.FirstOrDefault (o => o.Id == synchronizationProfileId);
+      if (options == null)
+        MessageBox.Show ("The profile for the selected report doesn't exist anymore!");
+      return options;
+    }
+
   }
 }

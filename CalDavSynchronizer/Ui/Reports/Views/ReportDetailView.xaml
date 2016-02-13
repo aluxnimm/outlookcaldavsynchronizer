@@ -10,17 +10,19 @@
              d:DesignHeight="600" d:DesignWidth="700"
              d:DataContext="{x:Static viewModels:ReportViewModel.DesignInstance}">
   <UserControl.Resources>
-    <DataTemplate  DataType="{x:Type logging:SynchronizationReport}">
+    <DataTemplate  DataType="{x:Type viewModels:ReportViewModel}">
       <views:SynchronizationReportView DataContext="{Binding}"></views:SynchronizationReportView>
     </DataTemplate>
   </UserControl.Resources>
   <TabControl>
     <TabItem Header="Raw">
-      <TextBox Text="{Binding AsString, Mode=OneWay}" IsReadOnly="True">
-      </TextBox>
+      <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <TextBox Text="{Binding AsString, Mode=OneWay}" IsReadOnly="True">
+        </TextBox>
+      </ScrollViewer>
     </TabItem>
     <TabItem Header="Formatted">
-      <ContentControl Content="{Binding Report, Mode=OneWay}">
+      <ContentControl Content="{Binding Mode=OneWay}">
 
       </ContentControl>
     </TabItem>

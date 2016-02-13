@@ -26,7 +26,7 @@
     <TextBox IsReadOnly="True" Grid.Row="1" Grid.Column="1" Text="{Binding IsAEntity}"></TextBox>
 
     <TextBlock FontWeight="Bold" Grid.Row="2" Grid.Column="0">Error:</TextBlock>
-    <TextBox IsReadOnly="True" Grid.Row="2" Grid.Column="1" Text="{Binding Error}"></TextBox>
+    <TextBox HorizontalScrollBarVisibility="Auto" IsReadOnly="True" Grid.Row="2" Grid.Column="1" Text="{Binding Error}"></TextBox>
 
   
   </Grid>
