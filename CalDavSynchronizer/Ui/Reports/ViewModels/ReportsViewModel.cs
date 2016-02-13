@@ -27,13 +27,14 @@ using Microsoft.Win32;
 
 namespace CalDavSynchronizer.Ui.Reports.ViewModels
 {
-  public class ReportsViewModel : ViewModelBase
+  public class ReportsViewModel : ViewModelBase, IReportViewModelParent
   {
     private readonly ObservableCollection<ReportViewModel> _reports = new ObservableCollection<ReportViewModel>();
     private readonly DelegateCommand _deleteSelectedCommand;
     private readonly DelegateCommand _saveSelectedCommand;
     private readonly ISynchronizationReportRepository _reportRepository;
     private readonly Dictionary<Guid, string> _currentProfileNamesById;
+    private readonly IReportsViewModelParent _parent;
 
     public event EventHandler RequiresBringToFront;
 
@@ -55,10 +56,11 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
 
     public ReportsViewModel (
         ISynchronizationReportRepository reportRepository,
-        Dictionary<Guid, string> currentProfileNamesById)
+        Dictionary<Guid, string> currentProfileNamesById, IReportsViewModelParent parent)
     {
       _reportRepository = reportRepository;
       _currentProfileNamesById = currentProfileNamesById;
+      _parent = parent;
       _deleteSelectedCommand = new DelegateCommand (DeleteSelected, _ => Reports.Any (r => r.IsSelected));
       _saveSelectedCommand = new DelegateCommand (SaveSelected, _ => Reports.Any (r => r.IsSelected));
 
@@ -85,7 +87,7 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
         profileName = "<Not existing anymore>";
 
       var reportProxy = new ReportProxy (reportName, () => _reportRepository.GetReport (reportName), profileName);
-      var reportViewModel = new ReportViewModel (reportProxy, _reportRepository);
+      var reportViewModel = new ReportViewModel (reportProxy, _reportRepository, this);
       _reports.Add (reportViewModel);
     }
 
@@ -97,7 +99,7 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
         profileName = "<Not existing anymore>";
 
       var reportProxy = new ReportProxy (reportName, () => report, profileName);
-      var reportViewModel = new ReportViewModel (reportProxy, _reportRepository);
+      var reportViewModel = new ReportViewModel (reportProxy, _reportRepository, this);
       _reports.Add (reportViewModel);
     }
 
@@ -163,12 +165,23 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
     {
       DesignInstance = new ReportsViewModel (
           NullSynchronizationReportRepository.Instance,
-          new Dictionary<Guid, string>());
+          new Dictionary<Guid, string>(),
+          NullReportsViewModelParent.Instance);
 
       DesignInstance._reports.Add (ReportViewModel.CreateDesignInstance());
       DesignInstance._reports.Add (ReportViewModel.CreateDesignInstance (true));
       DesignInstance._reports.Add (ReportViewModel.CreateDesignInstance (false, true));
       DesignInstance._reports.Add (ReportViewModel.CreateDesignInstance (true, true));
+    }
+
+    public void DiplayAEntity (Guid synchronizationProfileId, string entityId)
+    {
+      _parent.DiplayAEntity (synchronizationProfileId, entityId);
+    }
+
+    public void DiplayBEntity (Guid synchronizationProfileId, string entityId)
+    {
+      _parent.DiplayBEntity (synchronizationProfileId, entityId);
     }
   }
 }

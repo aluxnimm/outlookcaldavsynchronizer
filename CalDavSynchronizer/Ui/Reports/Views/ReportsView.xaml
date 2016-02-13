@@ -37,9 +37,8 @@
           </Style>
         </ListView.ItemContainerStyle>
       </ListView>
-      <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-        <views:ReportDetailView  DataContext="{Binding ElementName=ReportList,Path=SelectedItem}" />
-      </ScrollViewer>
+        <views:ReportDetailView Grid.Column="2"  DataContext="{Binding ElementName=ReportList,Path=SelectedItem}" />
+
       <Grid.Style>
         <Style   TargetType="Grid">
           <Style.Triggers>

@@ -450,6 +450,12 @@
     <Compile Include="Ui\Options\OutlookFolderControl.Designer.cs">
       <DependentUpon>OutlookFolderControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Ui\Reports\IEntityDisplay.cs" />
+    <Compile Include="Ui\Reports\ViewModels\IReportsViewModelParent.cs" />
+    <Compile Include="Ui\Reports\ViewModels\IReportViewModelParent.cs" />
+    <Compile Include="Ui\Reports\ViewModels\NullReportsViewModelParent.cs" />
+    <Compile Include="Ui\Reports\ViewModels\NullReportViewModelParent.cs" />
+    <Compile Include="Ui\Reports\ViewModels\ReportViewModel.DesignInstance.cs" />
     <Compile Include="Ui\Reports\Views\ReportDetailView.xaml.cs">
       <DependentUpon>ReportDetailView.xaml</DependentUpon>
     </Compile>

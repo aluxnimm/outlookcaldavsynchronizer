@@ -7,7 +7,8 @@
              xmlns:views="clr-namespace:CalDavSynchronizer.Ui.Reports.Views"
              mc:Ignorable="d" 
            
-             d:DataContext="{x:Static viewModels:ReportViewModel.ReportDesignInstance}">
+             d:DataContext="{x:Static viewModels:ReportViewModel.DesignInstance}">
+  <ScrollViewer VerticalScrollBarVisibility="Auto">
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -28,31 +29,31 @@
     </Grid.RowDefinitions>
 
     <TextBlock FontWeight="Bold">Profile name:</TextBlock>
-    <TextBox IsReadOnly="True" Grid.Row="0" Grid.Column="1"  Text="{Binding ProfileName}"></TextBox>
+    <TextBox IsReadOnly="True" Grid.Row="0" Grid.Column="1"  Text="{Binding Report.ProfileName, Mode=OneTime}"></TextBox>
 
     <TextBlock FontWeight="Bold" Grid.Row="1" Grid.Column="0">Profile Id:</TextBlock>
-    <TextBox IsReadOnly="True" Grid.Row="1" Grid.Column="1" Text="{Binding ProfileId}"></TextBox>
+    <TextBox IsReadOnly="True" Grid.Row="1" Grid.Column="1" Text="{Binding Report.ProfileId, Mode=OneTime}"></TextBox>
 
     <TextBlock FontWeight="Bold" Grid.Row="2" Grid.Column="0">StartTime:</TextBlock>
-    <TextBox IsReadOnly="True" Grid.Row="2" Grid.Column="1" Text="{Binding StartTime}"></TextBox>
+    <TextBox IsReadOnly="True" Grid.Row="2" Grid.Column="1" Text="{Binding Report.StartTime, Mode=OneTime}"></TextBox>
 
     <TextBlock FontWeight="Bold" Grid.Row="3" Grid.Column="0">Duration:</TextBlock>
-    <TextBox IsReadOnly="True" Grid.Row="3" Grid.Column="1" Text="{Binding Duration}"></TextBox>
+    <TextBox IsReadOnly="True" Grid.Row="3" Grid.Column="1" Text="{Binding Report.Duration, Mode=OneTime}"></TextBox>
 
     <TextBlock FontWeight="Bold" Grid.Row="4" Grid.Column="0">Initial matching performed:</TextBlock>
-    <TextBox IsReadOnly="True" Grid.Row="4" Grid.Column="1" Text="{Binding InitialEntityMatchingPerformed}"></TextBox>
+    <TextBox IsReadOnly="True" Grid.Row="4" Grid.Column="1" Text="{Binding Report.InitialEntityMatchingPerformed, Mode=OneTime}"></TextBox>
     
     <TextBlock FontWeight="Bold" Grid.Row="5" Grid.Column="0">A Delta:</TextBlock>
-    <TextBox IsReadOnly="True" Grid.Row="5" Grid.Column="1" Text="{Binding ADelta}"></TextBox>
+    <TextBox IsReadOnly="True" Grid.Row="5" Grid.Column="1" Text="{Binding Report.ADelta, Mode=OneTime}"></TextBox>
 
     <TextBlock FontWeight="Bold" Grid.Row="6" Grid.Column="0">B Delta:</TextBlock>
-    <TextBox IsReadOnly="True" Grid.Row="6" Grid.Column="1" Text="{Binding BDelta}"></TextBox>
+    <TextBox IsReadOnly="True" Grid.Row="6" Grid.Column="1" Text="{Binding Report.BDelta, Mode=OneTime}"></TextBox>
 
     <TextBlock FontWeight="Bold" Grid.Row="7" Grid.Column="0">Exception that lead to abortion:</TextBlock>
-    <TextBox IsReadOnly="True" Grid.Row="7" Grid.Column="1" Text="{Binding ExceptionThatLeadToAbortion}"></TextBox>
+    <TextBox HorizontalScrollBarVisibility="Auto" IsReadOnly="True" Grid.Row="7" Grid.Column="1" Text="{Binding Report.ExceptionThatLeadToAbortion, Mode=OneTime}"></TextBox>
 
     <TextBlock FontWeight="Bold" Grid.Row="8" Grid.Column="0">Load Errors:</TextBlock>
-    <ListView Grid.Row="8" Grid.Column="1" ItemsSource="{Binding LoadErrors}">
+    <ListView Grid.Row="8" Grid.Column="1" ItemsSource="{Binding Report.LoadErrors, Mode=OneTime}">
       <ListView.ItemTemplate>
         <DataTemplate>
         <views:LoadErrorView></views:LoadErrorView>
@@ -61,7 +62,7 @@
     </ListView>
 
     <TextBlock FontWeight="Bold" Grid.Row="9" Grid.Column="0">Entity sync reports:</TextBlock>
-    <ListView Grid.Row="9" Grid.Column="1" ItemsSource="{Binding EntitySynchronizationReports}">
+    <ListView Grid.Row="9" Grid.Column="1" ItemsSource="{Binding Report.EntitySynchronizationReports, Mode=OneTime}">
       <ListView.ItemTemplate>
         <DataTemplate>
           <views:EntitySynchronizationReportView></views:EntitySynchronizationReportView>
@@ -70,4 +71,5 @@
     </ListView>
 
   </Grid>
+  </ScrollViewer>
 </UserControl>
