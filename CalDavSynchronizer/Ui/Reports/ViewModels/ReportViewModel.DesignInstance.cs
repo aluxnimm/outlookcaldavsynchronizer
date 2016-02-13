@@ -60,8 +60,8 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
                                                   {
                                                       new EntitySynchronizationReport()
                                                       {
-                                                          AId = "The aid",
-                                                          BId = "The bid",
+                                                          AId = "0000000028D820BC0737DB4C8B99236D4EE6B04E0700025B101ADEE08447AD25B60FE763ED76003C4B923C400000025B101ADEE08447AD25B60FE763ED7600797457C1F90000",
+                                                          BId = "/SOGo/dav/se13m017/Calendar/personal/ef7fe2af-b38f-44d6-89aa-356ee1fc0940.ics",
                                                           ExceptionThatLeadToAbortion = CreateException ("Strange exception"),
                                                           MappingErrors = new[]
                                                                           {
@@ -71,8 +71,8 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
                                                       },
                                                       new EntitySynchronizationReport()
                                                       {
-                                                          AId = "Another aid",
-                                                          BId = "Another bid",
+                                                          AId = "ANOTHER028D820BC0737DB4C8B99236D4EE6B04E0700025B101ADEE08447AD25B60FE763ED76003C4B923C400000025B101ADEE08447AD25B60FE763ED7600797457C1F90000",
+                                                          BId = "/SOGo/dav/se13m017/Calendar/personal/ef7fe2af-b38f-44d6-89aa-356ee1fc0940another.ics",
                                                           ExceptionThatLeadToAbortion = CreateException ("Another exception"),
                                                           MappingErrors = new[]
                                                                           {
@@ -95,8 +95,8 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
 
     public static EntitySynchronizationReport EntitySynchronizationReportDesignInstance => new EntitySynchronizationReport
                                                                                            {
-                                                                                               AId = "The aid",
-                                                                                               BId = "The bid",
+                                                                                               AId = "0000000028D820BC0737DB4C8B99236D4EE6B04E0700025B101ADEE08447AD25B60FE763ED76003C4B923C400000025B101ADEE08447AD25B60FE763ED7600797457C1F90000",
+                                                                                               BId = "/SOGo/dav/se13m017/Calendar/personal/ef7fe2af-b38f-44d6-89aa-356ee1fc0940.ics",
                                                                                                ExceptionThatLeadToAbortion = CreateException ("Strange exception"),
                                                                                                MappingErrors = new[]
                                                                                                                {
