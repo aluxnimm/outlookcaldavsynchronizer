@@ -41,14 +41,24 @@ namespace GenSync.Logging
     {
     }
 
-    public void LogMappingError (Exception exception)
+    public void LogMappingError (string message)
     {
-      _mappingErrors.Add (exception.ToString());
+      _mappingErrors.Add (message);
+    }
+
+    public void LogMappingError (string message, Exception exception)
+    {
+      _mappingErrors.Add (message + " : " + exception.ToString());
     }
 
     public void LogMappingWarning (string warning)
     {
       _mappingWarnings.Add (warning);
+    }
+
+    public void LogMappingWarning (string warning, Exception exception)
+    {
+      _mappingWarnings.Add (warning + " : " + exception.ToString ());
     }
 
     public void SetAId (object id)
