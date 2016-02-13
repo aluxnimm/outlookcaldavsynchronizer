@@ -22,11 +22,18 @@ namespace GenSync.Logging
   public class EntitySynchronizationReport
   {
     private string[] _mappingErrors;
+    private string[] _mappingWarnings;
 
     public string[] MappingErrors
     {
       get { return _mappingErrors ?? new string[] {}; }
       set { _mappingErrors = value; }
+    }
+
+    public string[] MappingWarnings
+    {
+      get { return _mappingWarnings ?? new string[] { }; }
+      set { _mappingWarnings = value; }
     }
 
     public string AId { get; set; }

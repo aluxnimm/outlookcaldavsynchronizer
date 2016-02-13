@@ -43,6 +43,11 @@ namespace GenSync.Logging
     {
     }
 
+    public void LogMappingWarning (string warning)
+    {
+      
+    }
+
     public void Dispose ()
     {
       

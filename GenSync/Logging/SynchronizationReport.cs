@@ -62,13 +62,11 @@ namespace GenSync.Logging
       get
       {
         return !string.IsNullOrEmpty (ExceptionThatLeadToAbortion)
-               || EntitySynchronizationReports.Any (r => !string.IsNullOrEmpty (r.ExceptionThatLeadToAbortion) || r.MappingErrors.Length > 0);
+               || EntitySynchronizationReports.Any (r => !string.IsNullOrEmpty (r.ExceptionThatLeadToAbortion) || r.MappingErrors.Length > 0)
+               || LoadErrors.Length > 0;
       }
     }
 
-    public bool HasWarnings
-    {
-      get { return false; }
-    }
+    public bool HasWarnings => EntitySynchronizationReports.Any (r => r.MappingWarnings.Length > 0);
   }
 }
