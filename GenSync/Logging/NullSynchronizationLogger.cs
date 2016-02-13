@@ -23,10 +23,13 @@ namespace GenSync.Logging
   public class NullSynchronizationLogger : ISynchronizationLogger
   {
     public static readonly ISynchronizationLogger Instance = new NullSynchronizationLogger();
-
+  
     private NullSynchronizationLogger ()
     {
     }
+
+    public ILoadEntityLogger ALoadEntityLogger => NullLoadEntityLogger.Instance;
+    public ILoadEntityLogger BLoadEntityLogger => NullLoadEntityLogger.Instance;
 
     public void LogInitialEntityMatching ()
     {
@@ -43,10 +46,6 @@ namespace GenSync.Logging
     public IEntitySynchronizationLogger CreateEntitySynchronizationLogger ()
     {
       return NullEntitySynchronizationLogger.Instance;
-    }
-
-    public void LogSkipLoadBecauseOfError (object entityId, Exception exception)
-    {
     }
   }
 }

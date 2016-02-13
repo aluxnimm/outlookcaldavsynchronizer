@@ -28,12 +28,15 @@ namespace GenSync.Logging
     private readonly String _profileName;
     private bool _initialEntityMatchingPerformed;
     private readonly List<LoadError> _loadErrors = new List<LoadError>();
+    private readonly object _loadErrorsLock = new Object();
     private string _exceptionThatLeadToAbortion;
     private string _aDelta;
     private string _bDelta;
 
     private readonly EntitySynchronizationLogger _currentSynchronitzationLogger;
     private readonly List<EntitySynchronizationReport> _entitySynchronizationReports = new List<EntitySynchronizationReport>();
+    private readonly ILoadEntityLogger _aLoadEntityLogger;
+    private readonly ILoadEntityLogger _bLoadEntityLogger;
 
     public SynchronizationLogger (Guid profileId, string profileName)
     {
@@ -42,6 +45,8 @@ namespace GenSync.Logging
       _profileId = profileId;
       _currentSynchronitzationLogger = new EntitySynchronizationLogger();
       _currentSynchronitzationLogger.Disposed += CurrentSynchronitzationLogger_Disposed;
+      _aLoadEntityLogger = new LoadEntityLogger (_loadErrors, _loadErrorsLock, true);
+      _bLoadEntityLogger = new LoadEntityLogger (_loadErrors, _loadErrorsLock, false);
     }
 
     private void CurrentSynchronitzationLogger_Disposed (object sender, EventArgs e)
@@ -53,14 +58,8 @@ namespace GenSync.Logging
       _currentSynchronitzationLogger.Clear();
     }
 
-    public void LogSkipLoadBecauseOfError (object entityId, Exception exception)
-    {
-      _loadErrors.Add (new LoadError
-                       {
-                           EntityId = entityId.ToString(),
-                           Error = exception.ToString()
-                       });
-    }
+    public ILoadEntityLogger ALoadEntityLogger => _aLoadEntityLogger;
+    public ILoadEntityLogger BLoadEntityLogger => _bLoadEntityLogger;
 
     public void LogInitialEntityMatching ()
     {

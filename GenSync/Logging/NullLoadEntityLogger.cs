@@ -19,11 +19,17 @@ using System;
 
 namespace GenSync.Logging
 {
-  /// <remarks>
-  /// Has to be implemented thread safe
-  /// </remarks>
-  public interface ILoadEntityLogger
+  public class NullLoadEntityLogger : ILoadEntityLogger
   {
-    void LogSkipLoadBecauseOfError (object entityId, Exception exception);
+    public static readonly ILoadEntityLogger Instance = new NullLoadEntityLogger ();
+
+    private NullLoadEntityLogger ()
+    {
+    }
+
+    public void LogSkipLoadBecauseOfError (object entityId, Exception exception)
+    {
+      
+    }
   }
 }

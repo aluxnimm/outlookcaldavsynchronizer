@@ -67,7 +67,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("CardDavRepository.Get ({0} entitie(s))", ids.Count)))
       {
         var entities = await _cardDavDataAccess.GetEntities (ids);
-        return ParallelDeserialize (entities);
+        return ParallelDeserialize (entities, logger);
       }
     }
 
@@ -76,7 +76,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       // nothing to do
     }
 
-    private IReadOnlyList<EntityWithId<WebResourceName, vCard>> ParallelDeserialize (IReadOnlyList<EntityWithId<WebResourceName, string>> serializedEntities)
+    private IReadOnlyList<EntityWithId<WebResourceName, vCard>> ParallelDeserialize (IReadOnlyList<EntityWithId<WebResourceName, string>> serializedEntities, ILoadEntityLogger logger)
     {
       var result = new List<EntityWithId<WebResourceName, vCard>>();
 
@@ -87,7 +87,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
           {
             vCard vcard;
 
-            if (TryDeserialize (serialized.Entity, out vcard, serialized.Id, threadLocal.Item1))
+            if (TryDeserialize (serialized.Entity, out vcard, serialized.Id, threadLocal.Item1, logger))
               threadLocal.Item2.Add (Tuple.Create (serialized.Id, vcard));
             return threadLocal;
           },
@@ -154,7 +154,12 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    private static bool TryDeserialize (string vcardData, out vCard vcard, WebResourceName uriOfAddressbookForLogging, vCardStandardReader deserializer)
+    private static bool TryDeserialize (
+      string vcardData, 
+      out vCard vcard, 
+      WebResourceName uriOfAddressbookForLogging, 
+      vCardStandardReader deserializer,
+      ILoadEntityLogger logger)
     {
       vcard = null;
       string fixedVcardData = ContactDataPreprocessor.FixRevisionDate (vcardData);
@@ -168,6 +173,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       catch (Exception x)
       {
         s_logger.Error (string.Format ("Could not deserialize vcardData of '{0}':\r\n{1}", uriOfAddressbookForLogging, fixedVcardData2), x);
+        logger.LogSkipLoadBecauseOfError (uriOfAddressbookForLogging, x);
         return false;
       }
     }
