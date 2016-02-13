@@ -42,11 +42,11 @@
 
     <TextBlock FontWeight="Bold" Grid.Row="4" Grid.Column="0">Initial matching performed:</TextBlock>
     <TextBox IsReadOnly="True" Grid.Row="4" Grid.Column="1" Text="{Binding Report.InitialEntityMatchingPerformed, Mode=OneTime}"></TextBox>
-    
-    <TextBlock FontWeight="Bold" Grid.Row="5" Grid.Column="0">A Delta:</TextBlock>
+
+      <TextBlock FontWeight="Bold" Grid.Row="5" Grid.Column="0">Outlook Delta:</TextBlock>
     <TextBox IsReadOnly="True" Grid.Row="5" Grid.Column="1" Text="{Binding Report.ADelta, Mode=OneTime}"></TextBox>
 
-    <TextBlock FontWeight="Bold" Grid.Row="6" Grid.Column="0">B Delta:</TextBlock>
+      <TextBlock FontWeight="Bold" Grid.Row="6" Grid.Column="0">Server Delta:</TextBlock>
     <TextBox IsReadOnly="True" Grid.Row="6" Grid.Column="1" Text="{Binding Report.BDelta, Mode=OneTime}"></TextBox>
 
     <TextBlock FontWeight="Bold" Grid.Row="7" Grid.Column="0">Exception that lead to abortion:</TextBlock>

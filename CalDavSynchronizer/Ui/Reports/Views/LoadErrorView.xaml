@@ -20,7 +20,7 @@
       <RowDefinition Height="Auto"></RowDefinition>
     </Grid.RowDefinitions>
 
-    <TextBlock FontWeight="Bold">EntityId:</TextBlock>
+    <TextBlock FontWeight="Bold">Entity Id:</TextBlock>
     <TextBlock Grid.Row="0" Grid.Column="1">
         <Hyperlink 
           Command="{Binding Path=DataContext.OpenEntityWithLoadErrorCommand, RelativeSource={RelativeSource AncestorType=views:SynchronizationReportView}}"
@@ -29,8 +29,8 @@
         </Hyperlink>
     </TextBlock>
 
-    <TextBlock FontWeight="Bold" Grid.Row="1" Grid.Column="0">IsAEntity:</TextBlock>
-    <TextBox IsReadOnly="True" Grid.Row="1" Grid.Column="1" Text="{Binding IsAEntity}"></TextBox>
+    <TextBlock FontWeight="Bold" Grid.Row="1" Grid.Column="0">Is Outlook Entity:</TextBlock>
+    <CheckBox IsEnabled="False" Grid.Row="1" Grid.Column="1" IsChecked="{Binding IsAEntity}"></CheckBox>
 
     <TextBlock FontWeight="Bold" Grid.Row="2" Grid.Column="0">Error:</TextBlock>
     <TextBox HorizontalScrollBarVisibility="Auto" IsReadOnly="True" Grid.Row="2" Grid.Column="1" Text="{Binding Error}"></TextBox>

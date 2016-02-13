@@ -21,7 +21,7 @@
       <RowDefinition Height="Auto"></RowDefinition>
     </Grid.RowDefinitions>
 
-    <TextBlock FontWeight="Bold">AId:</TextBlock>
+    <TextBlock FontWeight="Bold">Outlook Id:</TextBlock>
     <TextBlock Grid.Row="0" Grid.Column="1">
         <Hyperlink 
           Command="{Binding Path=DataContext.OpenAEntityCommand, RelativeSource={RelativeSource AncestorType=views:SynchronizationReportView}}"
@@ -31,7 +31,7 @@
     </TextBlock>
    
 
-    <TextBlock FontWeight="Bold" Grid.Row="1" Grid.Column="0">BId:</TextBlock>
+    <TextBlock FontWeight="Bold" Grid.Row="1" Grid.Column="0">Server Id:</TextBlock>
     <TextBlock Grid.Row="1" Grid.Column="1">
         <Hyperlink 
           Command="{Binding Path=DataContext.OpenBEntityCommand, RelativeSource={RelativeSource AncestorType=views:SynchronizationReportView}}"
@@ -40,10 +40,10 @@
         </Hyperlink>
     </TextBlock>
     
-    <TextBlock FontWeight="Bold" Grid.Row="2" Grid.Column="0">MappingErrors:</TextBlock>
+    <TextBlock FontWeight="Bold" Grid.Row="2" Grid.Column="0">Mapping Errors:</TextBlock>
     <ListView Grid.Row="2" Grid.Column="1" ItemsSource="{Binding MappingErrors}"></ListView>
 
-    <TextBlock FontWeight="Bold" Grid.Row="3" Grid.Column="0">ExceptionThatLeadToAbortion:</TextBlock>
+    <TextBlock FontWeight="Bold" Grid.Row="3" Grid.Column="0">Exception that lead to abortion:</TextBlock>
     <TextBox HorizontalScrollBarVisibility="Auto" IsReadOnly="True" Grid.Row="3" Grid.Column="1" Text="{Binding ExceptionThatLeadToAbortion}"></TextBox>
   </Grid>
 </UserControl>
