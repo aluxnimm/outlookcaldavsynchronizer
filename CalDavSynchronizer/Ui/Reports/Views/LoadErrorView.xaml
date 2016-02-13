@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Reports.ViewModels"
+             xmlns:views="clr-namespace:CalDavSynchronizer.Ui.Reports.Views"
              mc:Ignorable="d" 
              d:DesignHeight="300"
              d:DataContext="{x:Static viewModels:ReportViewModel.LoadErrorDesignInstance}" >
@@ -20,7 +21,13 @@
     </Grid.RowDefinitions>
 
     <TextBlock FontWeight="Bold">EntityId:</TextBlock>
-    <TextBox IsReadOnly="True" Grid.Row="0" Grid.Column="1"  Text="{Binding EntityId}"></TextBox>
+    <TextBlock Grid.Row="0" Grid.Column="1">
+        <Hyperlink 
+          Command="{Binding Path=DataContext.OpenEntityWithLoadErrorCommand, RelativeSource={RelativeSource AncestorType=views:SynchronizationReportView}}"
+          CommandParameter="{Binding}">
+          <TextBlock Text="{Binding EntityId}"></TextBlock>
+        </Hyperlink>
+    </TextBlock>
 
     <TextBlock FontWeight="Bold" Grid.Row="1" Grid.Column="0">IsAEntity:</TextBlock>
     <TextBox IsReadOnly="True" Grid.Row="1" Grid.Column="1" Text="{Binding IsAEntity}"></TextBox>
