@@ -26,7 +26,6 @@ namespace GenSync.Logging
     private readonly DateTime _startTime;
     private readonly Guid _profileId;
     private readonly String _profileName;
-    private bool _initialEntityMatchingPerformed;
     private readonly List<LoadError> _loadErrors = new List<LoadError>();
     private readonly object _loadErrorsLock = new Object();
     private string _exceptionThatLeadToAbortion;
@@ -61,11 +60,6 @@ namespace GenSync.Logging
     public ILoadEntityLogger ALoadEntityLogger => _aLoadEntityLogger;
     public ILoadEntityLogger BLoadEntityLogger => _bLoadEntityLogger;
 
-    public void LogInitialEntityMatching ()
-    {
-      _initialEntityMatchingPerformed = true;
-    }
-
     public void LogAbortedDueToError (Exception exception)
     {
       _exceptionThatLeadToAbortion = exception.ToString();
@@ -93,7 +87,6 @@ namespace GenSync.Logging
                  ADelta = _aDelta,
                  BDelta = _bDelta,
                  ExceptionThatLeadToAbortion = _exceptionThatLeadToAbortion,
-                 InitialEntityMatchingPerformed = _initialEntityMatchingPerformed,
                  LoadErrors = _loadErrors.ToArray(),
                  ProfileId = _profileId,
                  ProfileName = _profileName,
