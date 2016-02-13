@@ -93,7 +93,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         target.IMs.Add (new vCardIMPP (source.Inner.IMAddress, IMServiceType.AIM, ItemType.HOME));
       }
 
-      MapEmailAddresses1To2 (source.Inner, target);
+      MapEmailAddresses1To2 (source.Inner, target, logger);
 
       if (!string.IsNullOrEmpty (source.Inner.HomeAddress))
       {
@@ -164,9 +164,9 @@ namespace CalDavSynchronizer.Implementation.Contacts
         target.Websites.Add (new vCardWebsite (source.Inner.BusinessHomePage, vCardWebsiteTypes.Work));
       }
 
-      MapCertificate1To2 (source.Inner, target);
+      MapCertificate1To2 (source.Inner, target, logger);
 
-      if (_configuration.MapContactPhoto) MapPhoto1To2 (source.Inner, target);
+      if (_configuration.MapContactPhoto) MapPhoto1To2 (source.Inner, target, logger);
 
       if (!string.IsNullOrEmpty (source.Inner.Body))
       {
@@ -285,7 +285,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       MapHomePage2To1 (source, target.Inner);
 
-      MapCertificate2To1 (source, target.Inner);
+      MapCertificate2To1 (source, target.Inner, logger);
 
       if (_configuration.MapContactPhoto) MapPhoto2To1 (source, target.Inner);
 
@@ -357,7 +357,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       return OlSensitivity.olNormal;
     }
 
-    private static void MapEmailAddresses1To2 (ContactItem source, vCard target)
+    private static void MapEmailAddresses1To2 (ContactItem source, vCard target, IEntityMappingLogger logger)
     {
       if (!string.IsNullOrEmpty (source.Email1Address))
       {
@@ -372,6 +372,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
           catch (COMException ex)
           {
             s_logger.Error ("Could not get property PR_EMAIL1ADDRESS for Email1Address", ex);
+            logger.LogMappingError ("Could not get property PR_EMAIL1ADDRESS for Email1Address", ex);
           }
         }
         else
@@ -395,6 +396,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
           catch (COMException ex)
           {
             s_logger.Error ("Could not get property PR_EMAIL2ADDRESS for Email2Address", ex);
+            logger.LogMappingError ("Could not get property PR_EMAIL2ADDRESS for Email2Address", ex);
           }
         }
         else
@@ -418,6 +420,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
           catch (COMException ex)
           {
             s_logger.Error ("Could not get property PR_EMAIL3ADDRESS for Email3Address", ex);
+            logger.LogMappingError ("Could not get property PR_EMAIL3ADDRESS for Email3Address", ex);
           }
         }
         else
@@ -467,7 +470,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    private static void MapCertificate1To2 (ContactItem source, vCard target)
+    private static void MapCertificate1To2 (ContactItem source, vCard target, IEntityMappingLogger logger)
     {
       try
       {
@@ -482,10 +485,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
       catch (COMException ex)
       {
         s_logger.Error ("Could not get property PR_USER_X509_CERTIFICATE for contact.", ex);
+        logger.LogMappingError ("Could not get property PR_USER_X509_CERTIFICATE for contact.", ex);
       }
     }
 
-    private static void MapCertificate2To1 (vCard source, ContactItem target)
+    private static void MapCertificate2To1 (vCard source, ContactItem target, IEntityMappingLogger logger)
     {
       if (source.Certificates.Count > 0)
       {
@@ -499,16 +503,18 @@ namespace CalDavSynchronizer.Implementation.Contacts
           catch (COMException ex)
           {
             s_logger.Error ("Could not set property PR_USER_X509_CERTIFICATE for contact.", ex);
+            logger.LogMappingError ("Could not set property PR_USER_X509_CERTIFICATE for contact.", ex);
           }
           catch (System.UnauthorizedAccessException ex)
           {
             s_logger.Error ("Could not access PR_USER_X509_CERTIFICATE for contact.", ex);
+            logger.LogMappingError ("Could not access PR_USER_X509_CERTIFICATE for contact.", ex);
           }
         }
       }
     }
 
-    private static void MapPhoto1To2 (ContactItem source, vCard target)
+    private static void MapPhoto1To2 (ContactItem source, vCard target, IEntityMappingLogger logger)
     {
       if (source.HasPicture)
       {
