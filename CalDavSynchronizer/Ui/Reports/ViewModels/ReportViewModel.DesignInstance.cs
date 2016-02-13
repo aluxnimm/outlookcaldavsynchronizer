@@ -67,7 +67,12 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
                                                                           {
                                                                               CreateException ("Mapping error 1"),
                                                                               "Mapping error 2",
-                                                                          }
+                                                                          },
+                                                          MappingWarnings = new[]
+                                                                            {
+                                                                                CreateException ("Mapping warning 1"),
+                                                                                "Mapping warning 2",
+                                                                            }
                                                       },
                                                       new EntitySynchronizationReport()
                                                       {
@@ -78,7 +83,12 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
                                                                           {
                                                                               CreateException ("Another Mapping error 1"),
                                                                               "Another Mapping error 2",
-                                                                          }
+                                                                          },
+                                                          MappingWarnings = new[]
+                                                                            {
+                                                                                CreateException ("Mapping warning 1"),
+                                                                                "Mapping warning 2",
+                                                                            }
                                                       }
                                                   }
                };
@@ -102,7 +112,12 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
                                                                                                                {
                                                                                                                    CreateException ("Mapping error 1"),
                                                                                                                    "Mapping error 2",
-                                                                                                               }
+                                                                                                               },
+                                                                                               MappingWarnings = new[]
+                                                                                                                 {
+                                                                                                                     CreateException ("Mapping warning 1"),
+                                                                                                                     "Mapping warning 2",
+                                                                                                                 }
                                                                                            };
 
     public static ReportViewModel CreateDesignInstance (bool hasWarnings = false, bool hasErrors = false)

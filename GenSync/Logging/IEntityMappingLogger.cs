@@ -22,5 +22,6 @@ namespace GenSync.Logging
   public interface IEntityMappingLogger : IDisposable
   {
     void LogMappingError (Exception exception);
+    void LogMappingWarning (string warning);
   }
 }

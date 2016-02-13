@@ -51,7 +51,7 @@ namespace GenSync.Logging
 
     private void CurrentSynchronitzationLogger_Disposed (object sender, EventArgs e)
     {
-      if (_currentSynchronitzationLogger.HasErrors)
+      if (_currentSynchronitzationLogger.HasErrorsOrWarnings)
       {
         _entitySynchronizationReports.Add (_currentSynchronitzationLogger.GetReport());
       }

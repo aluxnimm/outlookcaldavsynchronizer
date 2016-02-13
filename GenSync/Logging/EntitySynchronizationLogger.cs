@@ -23,13 +23,14 @@ namespace GenSync.Logging
   public class EntitySynchronizationLogger : IEntitySynchronizationLogger
   {
     private readonly List<string> _mappingErrors = new List<string>();
+    private readonly List<string> _mappingWarnings = new List<string>();
     private string _aId;
     private string _bId;
     private string _exceptionThatLeadToAbortion;
 
     public event EventHandler Disposed;
 
-     void OnDisposed ()
+    void OnDisposed ()
     {
       var handler = Disposed;
       if (handler != null)
@@ -43,6 +44,11 @@ namespace GenSync.Logging
     public void LogMappingError (Exception exception)
     {
       _mappingErrors.Add (exception.ToString());
+    }
+
+    public void LogMappingWarning (string warning)
+    {
+      _mappingWarnings.Add (warning);
     }
 
     public void SetAId (object id)
@@ -67,7 +73,8 @@ namespace GenSync.Logging
                  AId = _aId,
                  BId = _bId,
                  ExceptionThatLeadToAbortion = _exceptionThatLeadToAbortion,
-                 MappingErrors = _mappingErrors.ToArray()
+                 MappingErrors = _mappingErrors.ToArray(),
+                 MappingWarnings = _mappingWarnings.ToArray()
              };
     }
 
@@ -77,12 +84,13 @@ namespace GenSync.Logging
       _bId = string.Empty;
       _exceptionThatLeadToAbortion = String.Empty;
       _mappingErrors.Clear();
+      _mappingWarnings.Clear();
     }
 
-    public bool HasErrors
-    {
-      get { return _mappingErrors.Count > 0 || !string.IsNullOrEmpty (_exceptionThatLeadToAbortion); }
-    }
+    public bool HasErrorsOrWarnings =>
+        _mappingErrors.Count > 0
+        || _mappingWarnings.Count > 0
+        || !string.IsNullOrEmpty (_exceptionThatLeadToAbortion);
 
     public void Dispose ()
     {
