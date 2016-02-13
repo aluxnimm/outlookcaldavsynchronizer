@@ -96,7 +96,7 @@ namespace CalDavSynchronizer.Implementation
       using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("CalDavRepository.Get ({0} entitie(s))", ids.Count)))
       {
         var entities = await _calDavDataAccess.GetEntities (ids);
-        return await ParallelDeserialize (entities);
+        return await ParallelDeserialize (entities, logger);
       }
     }
 
@@ -105,7 +105,7 @@ namespace CalDavSynchronizer.Implementation
       // nothing to do
     }
 
-    private Task<IReadOnlyList<EntityWithId<WebResourceName, IICalendar>>> ParallelDeserialize (IReadOnlyList<EntityWithId<WebResourceName, string>> serializedEntities)
+    private Task<IReadOnlyList<EntityWithId<WebResourceName, IICalendar>>> ParallelDeserialize (IReadOnlyList<EntityWithId<WebResourceName, string>> serializedEntities, ILoadEntityLogger logger)
     {
       return Task.Factory.StartNew (() =>
       {
@@ -141,7 +141,7 @@ namespace CalDavSynchronizer.Implementation
                 fixedICalData = normalizedICalData;
               }
 
-              if (TryDeserializeCalendar (fixedICalData, out calendar, serialized.Id, threadLocal.Item1))
+              if (TryDeserializeCalendar (fixedICalData, out calendar, serialized.Id, threadLocal.Item1, NullLoadEntityLogger.Instance))
               {
                 threadLocal.Item2.Add (Tuple.Create (serialized.Id, calendar));
               }
@@ -149,7 +149,7 @@ namespace CalDavSynchronizer.Implementation
               {
                 // maybe deserialization failed because of the iCal-TimeZone-Bug =>  try to fix it
                 var fixedICalData2 = CalendarDataPreprocessor.FixTimeZoneComponentOrderNoThrow (fixedICalData);
-                if (TryDeserializeCalendar (fixedICalData2, out calendar, serialized.Id, threadLocal.Item1))
+                if (TryDeserializeCalendar (fixedICalData2, out calendar, serialized.Id, threadLocal.Item1, logger))
                 {
                   threadLocal.Item2.Add (Tuple.Create (serialized.Id, calendar));
                   s_logger.Info (string.Format ("Deserialized ICalData with reordering of TimeZone data '{0}'.", serialized.Id));
@@ -235,7 +235,12 @@ namespace CalDavSynchronizer.Implementation
       return _calendarSerializer.SerializeToString (calendar);
     }
 
-    private static bool TryDeserializeCalendar (string iCalData, out IICalendar calendar, WebResourceName uriOfCalendarForLogging, IStringSerializer calendarSerializer)
+    private static bool TryDeserializeCalendar (
+      string iCalData, 
+      out IICalendar calendar, 
+      WebResourceName uriOfCalendarForLogging, 
+      IStringSerializer calendarSerializer,
+      ILoadEntityLogger logger)
     {
       calendar = null;
       try
@@ -247,6 +252,7 @@ namespace CalDavSynchronizer.Implementation
       {
         s_logger.Error (string.Format ("Could not deserialize ICalData of '{0}'.", uriOfCalendarForLogging.OriginalAbsolutePath));
         s_logger.Debug (string.Format ("ICalData:\r\n{0}", iCalData), x);
+        logger.LogSkipLoadBecauseOfError (uriOfCalendarForLogging, x);
         return false;
       }
     }

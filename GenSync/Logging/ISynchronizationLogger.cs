@@ -20,8 +20,11 @@ using GenSync.Synchronization;
 
 namespace GenSync.Logging
 {
-  public interface ISynchronizationLogger : ILoadEntityLogger
+  public interface ISynchronizationLogger 
   {
+    ILoadEntityLogger ALoadEntityLogger { get; }
+    ILoadEntityLogger BLoadEntityLogger { get; }
+
     void LogInitialEntityMatching ();
     void LogAbortedDueToError (Exception exception);
     void LogDeltas (VersionDeltaLoginInformation aDeltaLogInfo, VersionDeltaLoginInformation bDeltaLogInfo);

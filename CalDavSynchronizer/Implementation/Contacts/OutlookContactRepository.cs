@@ -143,7 +143,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
     public Task Delete (string entityId,DateTime version)
     {
-      var entityWithId = Get (new[] { entityId }, NullSynchronizationLogger.Instance).Result.SingleOrDefault ();
+      var entityWithId = Get (new[] { entityId }, NullLoadEntityLogger.Instance).Result.SingleOrDefault ();
       if (entityWithId == null)
         return Task.FromResult (0);
 

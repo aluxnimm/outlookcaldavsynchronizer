@@ -102,7 +102,7 @@ namespace GenSync.Synchronization
               await newBVersionsTask,
               _btypeIdComparer);
 
-          using (var entityContainer = new EntityContainer (this, totalProgress, logger))
+          using (var entityContainer = new EntityContainer (this, totalProgress, logger.ALoadEntityLogger, logger.BLoadEntityLogger))
           {
             var newEntityRelations = await Synchronize (
                 totalProgress,
@@ -194,7 +194,7 @@ namespace GenSync.Synchronization
               await newBVersionsTask,
               _btypeIdComparer);
 
-          using (var entityContainer = new EntityContainer (this, totalProgress, logger))
+          using (var entityContainer = new EntityContainer (this, totalProgress, logger.ALoadEntityLogger, logger.BLoadEntityLogger))
           {
             var newEntityRelations = await Synchronize (
                 totalProgress,
@@ -489,16 +489,19 @@ namespace GenSync.Synchronization
       private readonly ITotalProgressLogger _totalProgress;
       private Dictionary<TAtypeEntityId, TAtypeEntity> _aEntities;
       private Dictionary<TBtypeEntityId, TBtypeEntity> _bEntities;
-      private readonly ILoadEntityLogger _logger;
+      private readonly ILoadEntityLogger _aLogger;
+      private readonly ILoadEntityLogger _bLogger;
 
       public EntityContainer (
           Synchronizer<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> context,
           ITotalProgressLogger totalProgress,
-          ILoadEntityLogger logger)
+          ILoadEntityLogger aLogger,
+          ILoadEntityLogger bLogger)
       {
         _context = context;
         _totalProgress = totalProgress;
-        _logger = logger;
+        _aLogger = aLogger;
+        _bLogger = bLogger;
       }
 
       public IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> AEntities
@@ -519,14 +522,14 @@ namespace GenSync.Synchronization
           using (_totalProgress.StartARepositoryLoad())
           {
             _aEntities = CreateDictionary (
-                aEntitiesToLoad.Count > 0 ? await _context._atypeRepository.Get (aEntitiesToLoad, _logger) : new EntityWithId<TAtypeEntityId, TAtypeEntity>[] { },
+                aEntitiesToLoad.Count > 0 ? await _context._atypeRepository.Get (aEntitiesToLoad, _aLogger) : new EntityWithId<TAtypeEntityId, TAtypeEntity>[] { },
                 _context._atypeIdComparer);
           }
 
           using (_totalProgress.StartBRepositoryLoad())
           {
             _bEntities = CreateDictionary (
-                bEntitiesToLoad.Count > 0 ? await _context._btypeRepository.Get (bEntitiesToLoad, _logger) : new EntityWithId<TBtypeEntityId, TBtypeEntity>[] { },
+                bEntitiesToLoad.Count > 0 ? await _context._btypeRepository.Get (bEntitiesToLoad, _bLogger) : new EntityWithId<TBtypeEntityId, TBtypeEntity>[] { },
                 _context._btypeIdComparer);
           }
         }
