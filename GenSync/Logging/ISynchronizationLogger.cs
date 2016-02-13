@@ -25,7 +25,6 @@ namespace GenSync.Logging
     ILoadEntityLogger ALoadEntityLogger { get; }
     ILoadEntityLogger BLoadEntityLogger { get; }
 
-    void LogInitialEntityMatching ();
     void LogAbortedDueToError (Exception exception);
     void LogDeltas (VersionDeltaLoginInformation aDeltaLogInfo, VersionDeltaLoginInformation bDeltaLogInfo);
     IEntitySynchronizationLogger CreateEntitySynchronizationLogger ();

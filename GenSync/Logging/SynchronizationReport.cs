@@ -32,7 +32,6 @@ namespace GenSync.Logging
     [XmlIgnore]
     public TimeSpan Duration { get; set; }
 
-    public bool InitialEntityMatchingPerformed { get; set; }
     public string ADelta { get; set; }
     public string BDelta { get; set; }
 

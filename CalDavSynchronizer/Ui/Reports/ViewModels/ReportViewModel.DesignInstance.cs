@@ -35,7 +35,6 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
                {
                    Duration = TimeSpan.FromSeconds (200),
                    ExceptionThatLeadToAbortion = CreateException ("Exception that lead to abortion"),
-                   InitialEntityMatchingPerformed = true,
                    ProfileId = Guid.NewGuid(),
                    ProfileName = "Profile name",
                    ADelta = "This is the ADelta",

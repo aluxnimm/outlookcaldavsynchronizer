@@ -25,7 +25,6 @@
       <RowDefinition Height="Auto"></RowDefinition>
       <RowDefinition Height="Auto"></RowDefinition>
       <RowDefinition Height="Auto"></RowDefinition>
-      <RowDefinition Height="Auto"></RowDefinition>
     </Grid.RowDefinitions>
 
     <TextBlock FontWeight="Bold">Profile name:</TextBlock>
@@ -40,20 +39,17 @@
     <TextBlock FontWeight="Bold" Grid.Row="3" Grid.Column="0">Duration:</TextBlock>
     <TextBox IsReadOnly="True" Grid.Row="3" Grid.Column="1" Text="{Binding Report.Duration, Mode=OneTime}"></TextBox>
 
-    <TextBlock FontWeight="Bold" Grid.Row="4" Grid.Column="0">Initial matching performed:</TextBlock>
-    <TextBox IsReadOnly="True" Grid.Row="4" Grid.Column="1" Text="{Binding Report.InitialEntityMatchingPerformed, Mode=OneTime}"></TextBox>
+      <TextBlock FontWeight="Bold" Grid.Row="4" Grid.Column="0">Outlook Delta:</TextBlock>
+    <TextBox IsReadOnly="True" Grid.Row="4" Grid.Column="1" Text="{Binding Report.ADelta, Mode=OneTime}"></TextBox>
 
-      <TextBlock FontWeight="Bold" Grid.Row="5" Grid.Column="0">Outlook Delta:</TextBlock>
-    <TextBox IsReadOnly="True" Grid.Row="5" Grid.Column="1" Text="{Binding Report.ADelta, Mode=OneTime}"></TextBox>
+      <TextBlock FontWeight="Bold" Grid.Row="5" Grid.Column="0">Server Delta:</TextBlock>
+    <TextBox IsReadOnly="True" Grid.Row="5" Grid.Column="1" Text="{Binding Report.BDelta, Mode=OneTime}"></TextBox>
 
-      <TextBlock FontWeight="Bold" Grid.Row="6" Grid.Column="0">Server Delta:</TextBlock>
-    <TextBox IsReadOnly="True" Grid.Row="6" Grid.Column="1" Text="{Binding Report.BDelta, Mode=OneTime}"></TextBox>
+    <TextBlock FontWeight="Bold" Grid.Row="6" Grid.Column="0">Exception that lead to abortion:</TextBlock>
+    <TextBox HorizontalScrollBarVisibility="Auto" IsReadOnly="True" Grid.Row="6" Grid.Column="1" Text="{Binding Report.ExceptionThatLeadToAbortion, Mode=OneTime}"></TextBox>
 
-    <TextBlock FontWeight="Bold" Grid.Row="7" Grid.Column="0">Exception that lead to abortion:</TextBlock>
-    <TextBox HorizontalScrollBarVisibility="Auto" IsReadOnly="True" Grid.Row="7" Grid.Column="1" Text="{Binding Report.ExceptionThatLeadToAbortion, Mode=OneTime}"></TextBox>
-
-    <TextBlock FontWeight="Bold" Grid.Row="8" Grid.Column="0">Load Errors:</TextBlock>
-    <ListView Grid.Row="8" Grid.Column="1" ItemsSource="{Binding Report.LoadErrors, Mode=OneTime}">
+    <TextBlock FontWeight="Bold" Grid.Row="7" Grid.Column="0">Load Errors:</TextBlock>
+    <ListView Grid.Row="7" Grid.Column="1" ItemsSource="{Binding Report.LoadErrors, Mode=OneTime}">
       <ListView.ItemTemplate>
         <DataTemplate>
         <views:LoadErrorView></views:LoadErrorView>
@@ -61,8 +57,8 @@
       </ListView.ItemTemplate>
     </ListView>
 
-    <TextBlock FontWeight="Bold" Grid.Row="9" Grid.Column="0">Entity sync reports:</TextBlock>
-    <ListView Grid.Row="9" Grid.Column="1" ItemsSource="{Binding Report.EntitySynchronizationReports, Mode=OneTime}">
+    <TextBlock FontWeight="Bold" Grid.Row="8" Grid.Column="0">Entity sync reports:</TextBlock>
+    <ListView Grid.Row="8" Grid.Column="1" ItemsSource="{Binding Report.EntitySynchronizationReports, Mode=OneTime}">
       <ListView.ItemTemplate>
         <DataTemplate>
           <views:EntitySynchronizationReportView></views:EntitySynchronizationReportView>
