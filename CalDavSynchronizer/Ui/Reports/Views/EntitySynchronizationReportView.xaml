@@ -10,7 +10,6 @@
              d:DataContext="{x:Static viewModels:ReportViewModel.EntitySynchronizationReportDesignInstance}" >
   <Grid>
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="Auto"></ColumnDefinition>
       <ColumnDefinition Width="*"></ColumnDefinition>
     </Grid.ColumnDefinitions>
 
@@ -18,16 +17,19 @@
       <RowDefinition Height="Auto"></RowDefinition>
       <RowDefinition Height="Auto"></RowDefinition>
       <RowDefinition Height="Auto"></RowDefinition>
+      <RowDefinition Height="Auto"></RowDefinition>
+      <RowDefinition Height="Auto"></RowDefinition>
+      <RowDefinition Height="Auto"></RowDefinition>
     </Grid.RowDefinitions>
 
    
-    <TextBlock FontWeight="Bold" Grid.Row="0" Grid.Column="0">Mapping Warnings:</TextBlock>
-    <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="0" Grid.Column="1" ItemsSource="{Binding MappingWarnings}"></ListView>
+    <TextBlock FontWeight="Bold" Grid.Row="0" >Mapping Warnings:</TextBlock>
+    <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1" ItemsSource="{Binding MappingWarnings}"></ListView>
 
-    <TextBlock FontWeight="Bold" Grid.Row="1" Grid.Column="0">Mapping Errors:</TextBlock>
-    <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding MappingErrors}"></ListView>
+    <TextBlock FontWeight="Bold" Grid.Row="2">Mapping Errors:</TextBlock>
+    <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="3"  ItemsSource="{Binding MappingErrors}"></ListView>
 
-    <TextBlock FontWeight="Bold" Grid.Row="2" Grid.Column="0">Exception that lead to abortion:</TextBlock>
-    <TextBox IsReadOnly="True" Grid.Row="2" Grid.Column="1" Text="{Binding ExceptionThatLeadToAbortion}"></TextBox>
+    <TextBlock FontWeight="Bold" Grid.Row="4" Grid.Column="0">Exception that lead to abortion:</TextBlock>
+    <TextBox IsReadOnly="True" Grid.Row="5"  Text="{Binding ExceptionThatLeadToAbortion}"></TextBox>
   </Grid>
 </UserControl>
