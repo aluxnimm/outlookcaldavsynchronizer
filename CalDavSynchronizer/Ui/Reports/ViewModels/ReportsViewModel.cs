@@ -159,19 +159,22 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
       get { return _saveSelectedCommand; }
     }
 
-    public static readonly ReportsViewModel DesignInstance;
-
-    static ReportsViewModel ()
+    public static ReportsViewModel DesignInstance
     {
-      DesignInstance = new ReportsViewModel (
-          NullSynchronizationReportRepository.Instance,
-          new Dictionary<Guid, string>(),
-          NullReportsViewModelParent.Instance);
+      get
+      {
+        var designInstance = new ReportsViewModel (
+            NullSynchronizationReportRepository.Instance,
+            new Dictionary<Guid, string>(),
+            NullReportsViewModelParent.Instance);
 
-      DesignInstance._reports.Add (ReportViewModel.CreateDesignInstance());
-      DesignInstance._reports.Add (ReportViewModel.CreateDesignInstance (true));
-      DesignInstance._reports.Add (ReportViewModel.CreateDesignInstance (false, true));
-      DesignInstance._reports.Add (ReportViewModel.CreateDesignInstance (true, true));
+        designInstance._reports.Add (ReportViewModel.CreateDesignInstance());
+        designInstance._reports.Add (ReportViewModel.CreateDesignInstance (true));
+        designInstance._reports.Add (ReportViewModel.CreateDesignInstance (false, true));
+        designInstance._reports.Add (ReportViewModel.CreateDesignInstance (true, true));
+
+        return designInstance;
+      }
     }
 
     public void DiplayAEntity (Guid synchronizationProfileId, string entityId)

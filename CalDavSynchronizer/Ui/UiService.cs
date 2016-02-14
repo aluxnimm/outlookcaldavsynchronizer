@@ -41,13 +41,15 @@ namespace CalDavSynchronizer.Ui
 
       reportsViewModel.RequiresBringToFront += delegate { window.BringToFront(); };
 
-      SetWindowSizeToQuarterOfScreenSize (window);
+      SetWindowSize (window, 0.75);
     }
 
-    private static void SetWindowSizeToQuarterOfScreenSize (GenericElementHostWindow window)
+    private static void SetWindowSize (GenericElementHostWindow window, double ratioToCurrentScreensize)
     {
       var screenSize = Screen.FromControl (window).Bounds;
-      window.Size = new System.Drawing.Size (screenSize.Size.Width / 2, screenSize.Size.Height / 2);
+      window.Size = new Size (
+        (int)(screenSize.Size.Width * ratioToCurrentScreensize), 
+        (int)( screenSize.Size.Height * ratioToCurrentScreensize));
     }
   }
 }
