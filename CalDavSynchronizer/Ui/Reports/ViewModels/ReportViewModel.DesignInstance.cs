@@ -27,7 +27,7 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
   {
     public static ReportViewModel DesignInstance => CreateDesignInstance();
 
-    static SynchronizationReport ReportDesignInstance
+    static SynchronizationReport SynchronizationReportDesignInstance
     {
       get
       {
@@ -44,15 +44,21 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
                                 {
                                     new LoadError()
                                     {
-                                        EntityId = "Entity 2",
+                                        EntityId = "/SOGo/dav/se13m017/Calendar/personal/ef7fe2af-b38f-44d6-89aa-356ee1fc0940.ics",
                                         Error = CreateException ("Doesnt work..."),
+                                        IsAEntity = false
+                                    },
+                                    new LoadError()
+                                    {
+                                        EntityId = "0000000028D820BC0737DB4C8B99236D4EE6B04E0700025B101ADEE08447AD25B60FE763ED76003C4B923C400000025B101ADEE08447AD25B60FE763ED7600797457C1F90000",
+                                        Error = "Dont want to...",
                                         IsAEntity = true
                                     },
                                     new LoadError()
                                     {
-                                        EntityId = "Entity 2",
-                                        Error = "Dont want to...",
-                                        IsAEntity = false
+                                        EntityId = "1200000028D820BC0737DB4C8B99236D4EE6B04E0700025B101ADEE08447AD25B60FE763ED76003C4B923C400000025B101ADEE08447AD25B60FE763ED7600797457C1F90000",
+                                        Error = "Dont still want to...",
+                                        IsAEntity = true
                                     },
                                 },
                    EntitySynchronizationReports = new[]
@@ -123,7 +129,7 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
     {
       var reportName = SynchronizationReportName.Create (Guid.NewGuid(), new DateTime (2000, 10, 10), hasWarnings, hasErrors);
 
-      var proxy = new ReportProxy (reportName, () => ReportDesignInstance, "The profile name");
+      var proxy = new ReportProxy (reportName, () => SynchronizationReportDesignInstance, "The profile name");
 
       return new ReportViewModel (proxy, NullSynchronizationReportRepository.Instance, NullReportViewModelParent.Instance);
     }

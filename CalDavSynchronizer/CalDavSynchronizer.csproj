@@ -468,9 +468,6 @@
     </Compile>
     <Compile Include="Ui\Reports\ViewModels\ReportViewModel.cs" />
     <Compile Include="Ui\Reports\ViewModels\ReportsViewModel.cs" />
-    <Compile Include="Ui\Reports\Views\LoadErrorView.xaml.cs">
-      <DependentUpon>LoadErrorView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Ui\Reports\Views\EntitySynchronizationReportView.xaml.cs">
       <DependentUpon>EntitySynchronizationReportView.xaml</DependentUpon>
     </Compile>
@@ -670,10 +667,6 @@
     <Page Include="Ui\Reports\Views\ReportView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Ui\Reports\Views\LoadErrorView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Ui\Reports\Views\EntitySynchronizationReportView.xaml">
       <Generator>MSBuild:Compile</Generator>

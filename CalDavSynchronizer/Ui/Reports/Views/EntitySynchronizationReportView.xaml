@@ -18,36 +18,16 @@
       <RowDefinition Height="Auto"></RowDefinition>
       <RowDefinition Height="Auto"></RowDefinition>
       <RowDefinition Height="Auto"></RowDefinition>
-      <RowDefinition Height="Auto"></RowDefinition>
-      <RowDefinition Height="Auto"></RowDefinition>
     </Grid.RowDefinitions>
 
-    <TextBlock FontWeight="Bold">Outlook Id:</TextBlock>
-    <TextBlock Grid.Row="0" Grid.Column="1">
-        <Hyperlink 
-          Command="{Binding Path=DataContext.OpenAEntityCommand, RelativeSource={RelativeSource AncestorType=views:SynchronizationReportView}}"
-          CommandParameter="{Binding}">
-          <TextBlock Text="{Binding AId}"></TextBlock>
-        </Hyperlink>
-    </TextBlock>
    
+    <TextBlock FontWeight="Bold" Grid.Row="0" Grid.Column="0">Mapping Warnings:</TextBlock>
+    <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="0" Grid.Column="1" ItemsSource="{Binding MappingWarnings}"></ListView>
 
-    <TextBlock FontWeight="Bold" Grid.Row="1" Grid.Column="0">Server Id:</TextBlock>
-    <TextBlock Grid.Row="1" Grid.Column="1">
-        <Hyperlink 
-          Command="{Binding Path=DataContext.OpenBEntityCommand, RelativeSource={RelativeSource AncestorType=views:SynchronizationReportView}}"
-          CommandParameter="{Binding}">
-          <TextBlock Text="{Binding BId}"></TextBlock>
-        </Hyperlink>
-    </TextBlock>
+    <TextBlock FontWeight="Bold" Grid.Row="1" Grid.Column="0">Mapping Errors:</TextBlock>
+    <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding MappingErrors}"></ListView>
 
-    <TextBlock FontWeight="Bold" Grid.Row="2" Grid.Column="0">Mapping Warnings:</TextBlock>
-    <ListView Grid.Row="2" Grid.Column="1" ItemsSource="{Binding MappingWarnings}"></ListView>
-
-    <TextBlock FontWeight="Bold" Grid.Row="3" Grid.Column="0">Mapping Errors:</TextBlock>
-    <ListView Grid.Row="3" Grid.Column="1" ItemsSource="{Binding MappingErrors}"></ListView>
-
-    <TextBlock FontWeight="Bold" Grid.Row="4" Grid.Column="0">Exception that lead to abortion:</TextBlock>
-    <TextBox HorizontalScrollBarVisibility="Auto" IsReadOnly="True" Grid.Row="4" Grid.Column="1" Text="{Binding ExceptionThatLeadToAbortion}"></TextBox>
+    <TextBlock FontWeight="Bold" Grid.Row="2" Grid.Column="0">Exception that lead to abortion:</TextBlock>
+    <TextBox IsReadOnly="True" Grid.Row="2" Grid.Column="1" Text="{Binding ExceptionThatLeadToAbortion}"></TextBox>
   </Grid>
 </UserControl>

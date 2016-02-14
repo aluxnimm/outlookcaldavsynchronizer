@@ -9,22 +9,15 @@
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="700"
              d:DataContext="{x:Static viewModels:ReportViewModel.DesignInstance}">
-  <UserControl.Resources>
-    <DataTemplate  DataType="{x:Type viewModels:ReportViewModel}">
-      <views:SynchronizationReportView DataContext="{Binding}"></views:SynchronizationReportView>
-    </DataTemplate>
-  </UserControl.Resources>
   <TabControl>
+    <TabItem Header="Formatted">
+      <views:SynchronizationReportView></views:SynchronizationReportView>
+    </TabItem>
     <TabItem Header="Raw">
       <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
         <TextBox Text="{Binding AsString, Mode=OneWay}" IsReadOnly="True">
         </TextBox>
       </ScrollViewer>
-    </TabItem>
-    <TabItem Header="Formatted">
-      <ContentControl Content="{Binding Mode=OneWay}">
-
-      </ContentControl>
     </TabItem>
   </TabControl>
 </UserControl>
