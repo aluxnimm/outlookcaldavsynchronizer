@@ -38,6 +38,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
     private readonly string _folderId;
     private readonly string _folderStoreId;
 
+    public const string PR_MESSAGE_CLASS_DASLFILTER = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" ci_startswith 'IPM.Contact'";
+
     private const string PR_ASSOCIATED_BIRTHDAY_APPOINTMENT_ID = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/804D0102";
 
     public OutlookContactRepository (NameSpace mapiNameSpace, string folderId, string folderStoreId)
@@ -75,7 +77,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       using (var addressbookFolderWrapper = CreateFolderWrapper())
       {
-        using (var tableWrapper = GenericComObjectWrapper.Create ((Table) addressbookFolderWrapper.Inner.GetTable ("[MessageClass] = 'IPM.Contact' ")))
+        using (var tableWrapper = GenericComObjectWrapper.Create ((Table) addressbookFolderWrapper.Inner.GetTable (PR_MESSAGE_CLASS_DASLFILTER)))
         {
           var table = tableWrapper.Inner;
           table.Columns.RemoveAll();
