@@ -10,7 +10,7 @@
              d:DataContext="{x:Static viewModels:ReportViewModel.DesignInstance}">
   <UserControl.Resources>
     <Style TargetType="TextBlock">
-        <Setter Property="Margin" Value="2"></Setter>
+      <Setter Property="Margin" Value="2"></Setter>
     </Style>
     <Style TargetType="TextBox">
       <Setter Property="Margin" Value="2"></Setter>
@@ -66,14 +66,14 @@
         <TabItem HeaderStringFormat="LoadErrors ({0})" Header="{Binding Report.LoadErrors.Length}">
           <DataGrid ItemsSource="{Binding Report.LoadErrors, Mode=OneTime}" AutoGenerateColumns="False" FrozenColumnCount="2">
             <DataGrid.Columns>
-              <DataGridTemplateColumn Header="Id" IsReadOnly="True">
+              <DataGridTemplateColumn Header="Id" IsReadOnly="True" Width="100">
                 <DataGridTemplateColumn.CellTemplate>
                   <DataTemplate>
                     <TextBlock >
                       <Hyperlink ToolTip="{Binding EntityId}"
                         Command="{Binding Path=DataContext.OpenEntityWithLoadErrorCommand, RelativeSource={RelativeSource AncestorType=views:SynchronizationReportView}}"
                         CommandParameter="{Binding}">
-                        <TextBlock TextTrimming="CharacterEllipsis" MaxWidth="100" Text="{Binding EntityId}"></TextBlock>
+                        <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding EntityId}"></TextBlock>
                       </Hyperlink>      
                     </TextBlock>
                   </DataTemplate>
@@ -86,49 +86,49 @@
         </TabItem>
         <TabItem HeaderStringFormat="Entity sync reports ({0})" Header="{Binding Report.EntitySynchronizationReports.Length}">
           <DockPanel>
-            
-          
-          <DataGrid
+
+
+            <DataGrid
             CanUserResizeRows="False"
             Name="EntitySynchronizationReportList"
             DockPanel.Dock="Left" 
             AutoGenerateColumns="False" 
             ItemsSource="{Binding Report.EntitySynchronizationReports, Mode=OneTime}" RowHeaderWidth="20">
-            <DataGrid.Columns>
-              <DataGridTemplateColumn Header="Outlook Id" IsReadOnly="True">
-                <DataGridTemplateColumn.CellTemplate>
-                  <DataTemplate>
-                    <TextBlock >
+              <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Outlook Id" IsReadOnly="True" Width="100">
+                  <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                      <TextBlock >
                       <Hyperlink ToolTip="{Binding AId}"
                         Command="{Binding Path=DataContext.OpenAEntityCommand, RelativeSource={RelativeSource AncestorType=views:SynchronizationReportView}}"
                         CommandParameter="{Binding}">
-                        <TextBlock TextTrimming="CharacterEllipsis" MaxWidth="100" Text="{Binding AId}"></TextBlock>
+                        <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding AId}"></TextBlock>
                       </Hyperlink>      
                     </TextBlock>
-                  </DataTemplate>
-                </DataGridTemplateColumn.CellTemplate>
-              </DataGridTemplateColumn>
-              <DataGridTemplateColumn Header="Server Id" IsReadOnly="True">
-                <DataGridTemplateColumn.CellTemplate>
-                  <DataTemplate>
-                    <TextBlock >
+                    </DataTemplate>
+                  </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Server Id" IsReadOnly="True" Width="100">
+                  <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                      <TextBlock >
                       <Hyperlink ToolTip="{Binding BId}"
                         Command="{Binding Path=DataContext.OpenBEntityCommand, RelativeSource={RelativeSource AncestorType=views:SynchronizationReportView}}"
                         CommandParameter="{Binding}">
-                        <TextBlock TextTrimming="CharacterEllipsis" MaxWidth="100" Text="{Binding BId}"></TextBlock>
+                        <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding BId}"></TextBlock>
                       </Hyperlink>      
                     </TextBlock>
-                  </DataTemplate>
-                </DataGridTemplateColumn.CellTemplate>
-              </DataGridTemplateColumn>
-            </DataGrid.Columns>
-          </DataGrid>
+                    </DataTemplate>
+                  </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+              </DataGrid.Columns>
+            </DataGrid>
 
             <ScrollViewer HorizontalScrollBarVisibility="Auto">
-            <views:EntitySynchronizationReportView DataContext="{Binding ElementName=EntitySynchronizationReportList,Path=SelectedItem}"></views:EntitySynchronizationReportView>
+              <views:EntitySynchronizationReportView DataContext="{Binding ElementName=EntitySynchronizationReportList,Path=SelectedItem}"></views:EntitySynchronizationReportView>
             </ScrollViewer>
           </DockPanel>
-         
+
         </TabItem>
       </TabControl>
 
