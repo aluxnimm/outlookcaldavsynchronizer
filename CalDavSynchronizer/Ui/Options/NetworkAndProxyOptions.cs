@@ -20,14 +20,13 @@ using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer.Ui.Options
 {
-  public class AdvancedOptions
+  public class NetworkAndProxyOptions
   {
     private readonly bool _closeConnectionAfterEachRequest;
     private readonly bool _preemptiveAuthentication;
     private readonly ProxyOptions _proxyOptions;
-    private readonly MappingConfigurationBase _mappingConfiguration;
 
-    public AdvancedOptions (bool closeConnectionAfterEachRequest, bool preemptiveAuthentication, ProxyOptions proxyOptions, MappingConfigurationBase mappingConfiguration)
+    public NetworkAndProxyOptions (bool closeConnectionAfterEachRequest, bool preemptiveAuthentication, ProxyOptions proxyOptions)
     {
       if (proxyOptions == null)
         throw new ArgumentNullException ("proxyOptions");
@@ -35,7 +34,6 @@ namespace CalDavSynchronizer.Ui.Options
       _closeConnectionAfterEachRequest = closeConnectionAfterEachRequest;
       _preemptiveAuthentication = preemptiveAuthentication;
       _proxyOptions = proxyOptions;
-      _mappingConfiguration = mappingConfiguration;
     }
 
     public bool CloseConnectionAfterEachRequest
@@ -51,11 +49,6 @@ namespace CalDavSynchronizer.Ui.Options
     public ProxyOptions ProxyOptions
     {
       get { return _proxyOptions; }
-    }
-
-    public MappingConfigurationBase MappingConfiguration
-    {
-      get { return _mappingConfiguration; }
     }
   }
 }

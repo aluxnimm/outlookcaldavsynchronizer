@@ -41,6 +41,8 @@ namespace CalDavSynchronizer.Ui.Options
 
     private ISettingsFaultFinder _settingsFaultFinder;
     private IServerSettingsControlDependencies _dependencies;
+    private NetworkAndProxyOptions _networkAndProxyOptions;
+
     public ServerAdapterType UsedServerAdapterType { get; private set; }
 
     public void Initialize (ISettingsFaultFinder settingsFaultFinder, IServerSettingsControlDependencies dependencies)
@@ -240,9 +242,9 @@ namespace CalDavSynchronizer.Ui.Options
           null,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
           ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth,
-          _dependencies.CloseConnectionAfterEachRequest,
-          _dependencies.PreemptiveAuthentication,
-          _dependencies.ProxyOptions);
+          _networkAndProxyOptions.CloseConnectionAfterEachRequest,
+          _networkAndProxyOptions.PreemptiveAuthentication,
+          _networkAndProxyOptions.ProxyOptions);
     }
 
     public ICalDavDataAccess CreateCalDavDataAccess ()
@@ -258,6 +260,8 @@ namespace CalDavSynchronizer.Ui.Options
       else
         _calenderUrlTextBox.Text = c_googleDavBaseUrl;
       UsedServerAdapterType = value.ServerAdapterType;
+      _networkAndProxyOptions = new NetworkAndProxyOptions (value.CloseAfterEachRequest, value.PreemptiveAuthentication, value.ProxyOptions);
+
     }
 
     public void FillOptions (Contracts.Options optionsToFill)
@@ -266,6 +270,9 @@ namespace CalDavSynchronizer.Ui.Options
       optionsToFill.CalenderUrl = _calenderUrlTextBox.Text;
       optionsToFill.UserName = _emailAddressTextBox.Text;
       optionsToFill.ServerAdapterType = UsedServerAdapterType;
+      optionsToFill.CloseAfterEachRequest = _networkAndProxyOptions.CloseConnectionAfterEachRequest;
+      optionsToFill.PreemptiveAuthentication = _networkAndProxyOptions.PreemptiveAuthentication;
+      optionsToFill.ProxyOptions = _networkAndProxyOptions.ProxyOptions;
     }
 
     public string CalendarUrl
@@ -283,6 +290,17 @@ namespace CalDavSynchronizer.Ui.Options
       _calenderUrlTextBox.ReadOnly = false;
     }
 
-   
+    private void _networkAndProxyOptionsButton_Click (object sender, EventArgs e)
+    {
+      using (NetworkAndProxyOptionsForm networkAndProxyOptionsForm = new NetworkAndProxyOptionsForm())
+      {
+        networkAndProxyOptionsForm.Options= _networkAndProxyOptions;
+
+        if (networkAndProxyOptionsForm.ShowDialog() == DialogResult.OK)
+        {
+          _networkAndProxyOptions = networkAndProxyOptionsForm.Options;
+        }
+      }
+    }
   }
 }

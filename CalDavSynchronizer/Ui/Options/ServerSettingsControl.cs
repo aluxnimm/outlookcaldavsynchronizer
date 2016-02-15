@@ -40,6 +40,7 @@ namespace CalDavSynchronizer.Ui.Options
 
     private ISettingsFaultFinder _settingsFaultFinder;
     private IServerSettingsControlDependencies _dependencies;
+    private NetworkAndProxyOptions _networkAndProxyOptions;
     
     public void Initialize (ISettingsFaultFinder settingsFaultFinder, IServerSettingsControlDependencies dependencies)
     {
@@ -178,9 +179,9 @@ namespace CalDavSynchronizer.Ui.Options
           _passwordTextBox.Text,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
           ServerAdapterType.WebDavHttpClientBased,
-          _dependencies.CloseConnectionAfterEachRequest,
-          _dependencies.PreemptiveAuthentication,
-          _dependencies.ProxyOptions);
+          _networkAndProxyOptions.CloseConnectionAfterEachRequest,
+          _networkAndProxyOptions.PreemptiveAuthentication,
+          _networkAndProxyOptions.ProxyOptions);
     }
 
     public ICalDavDataAccess CreateCalDavDataAccess ()
@@ -194,6 +195,7 @@ namespace CalDavSynchronizer.Ui.Options
       _calenderUrlTextBox.Text = value.CalenderUrl;
       _userNameTextBox.Text = value.UserName;
       _passwordTextBox.Text = value.Password;
+      _networkAndProxyOptions = new NetworkAndProxyOptions (value.CloseAfterEachRequest, value.PreemptiveAuthentication, value.ProxyOptions);
     }
 
     public void FillOptions (Contracts.Options optionsToFill)
@@ -203,6 +205,9 @@ namespace CalDavSynchronizer.Ui.Options
       optionsToFill.UserName = _userNameTextBox.Text;
       optionsToFill.Password = _passwordTextBox.Text;
       optionsToFill.ServerAdapterType = ServerAdapterType.WebDavHttpClientBased;
+      optionsToFill.CloseAfterEachRequest = _networkAndProxyOptions.CloseConnectionAfterEachRequest;
+      optionsToFill.PreemptiveAuthentication = _networkAndProxyOptions.PreemptiveAuthentication;
+      optionsToFill.ProxyOptions = _networkAndProxyOptions.ProxyOptions;
     }
 
     public string CalendarUrl
@@ -213,6 +218,19 @@ namespace CalDavSynchronizer.Ui.Options
     public string EmailAddress
     {
       get { return _emailAddressTextBox.Text; }
+    }
+
+    private void _networkAndProxyOptionsButton_Click (object sender, EventArgs e)
+    {
+      using (NetworkAndProxyOptionsForm networkAndProxyOptionsForm = new NetworkAndProxyOptionsForm())
+      {
+        networkAndProxyOptionsForm.Options = _networkAndProxyOptions;
+
+        if (networkAndProxyOptionsForm.ShowDialog() == DialogResult.OK)
+        {
+          _networkAndProxyOptions = networkAndProxyOptionsForm.Options;
+        }
+      }
     }
   }
 }
