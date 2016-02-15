@@ -62,8 +62,8 @@
 
       </Grid>
 
-      <TabControl>
-        <TabItem HeaderStringFormat="LoadErrors ({0})" Header="{Binding Report.LoadErrors.Length}">
+      <TabControl Name="ErrorsTabControl">
+        <TabItem Name="LoadErrorsTabItem" HeaderStringFormat="LoadErrors ({0})" Header="{Binding Report.LoadErrors.Length}">
           <DataGrid ItemsSource="{Binding Report.LoadErrors, Mode=OneTime}" AutoGenerateColumns="False" FrozenColumnCount="2">
             <DataGrid.Columns>
               <DataGridTemplateColumn Header="Id" IsReadOnly="True" Width="100">
@@ -84,7 +84,7 @@
             </DataGrid.Columns>
           </DataGrid>
         </TabItem>
-        <TabItem HeaderStringFormat="Entity sync reports ({0})" Header="{Binding Report.EntitySynchronizationReports.Length}">
+        <TabItem Name="EntitySyncReportsTabItem" HeaderStringFormat="Entity sync reports ({0})" Header="{Binding Report.EntitySynchronizationReports.Length}">
           <DockPanel>
 
 
