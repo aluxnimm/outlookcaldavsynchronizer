@@ -1,6 +1,6 @@
 ## Outlook CalDav Synchronizer ##
 
-Outlook Plugin, which synchronizes events, tasks and contacts(beta) between Outlook and Google, SOGo, Horde or any other CalDAV or CardDAV server. Supported Outlook versions are 2016, 2013, 2010 and 2007.
+Outlook Plugin, which synchronizes events, tasks and contacts between Outlook and Google, SOGo, Horde or any other CalDAV or CardDAV server. Supported Outlook versions are 2016, 2013, 2010 and 2007.
 
 ### Project Homepage ###
 [https://sourceforge.net/projects/outlookcaldavsynchronizer/](https://sourceforge.net/projects/outlookcaldavsynchronizer/)
@@ -73,6 +73,17 @@ Download and extract the `OutlookCalDavSynchronizer-<Version>.zip` into the same
 If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=48217)
 
 ### Changelog ###
+
+#### 1.17.0 ####
+- New features
+	- Improved formatted view for sync reports with possibility to view Outlook and server entities causing mapping warnings or errors.
+	- Improve UI. Rename Advanced Options to Network and proxy options and move button to server settings. Move Mapping Configuration button from advanced options form to main profile configuration form.
+	- Use prefix comparison in Outlook Repositories to filter also custom message_classes.
+- Bug fixes
+	- Fix test settings and don't allow an Outlook task folder for google calendar but only for a google tasklist.
+	- Change BackColor of all UI forms and textboxes to SystemColors.Window.
+	- Fix wordrap in changelog textbox of update window and make window resizable, feature request 24.
+	- Use empty password, if decrypting password fails, ticket #165.
 
 #### 1.16.0 ####
 - New features
@@ -509,6 +520,7 @@ Use the Synchronization Profiles dialog to configure different synchronization p
 - **Delete** deletes the current profile
 - **Copy** copies the current profile to a new one
 - **Clear cache** delete the sync cache and start a new initial sync with the next sync run.
+- **Deactivate** If activated, current profile is not synced anymore without the need to delete the profile.
 
 When adding a new profile you can choose between a generic CalDAV/CardDAV and a google profile to simplify the google profile creation.
 
@@ -523,7 +535,13 @@ The following properties need to be set for a new generic profile:
 	- If you only have a self signed certificate, add the self signed cert to the Local Computer Trusted Root Certification Authorities. You can import the cert by running the MMC as Administrator. If that fails, see section *'Advanced options'*
 	- **Username:** Username to connect to the CalDAV server
 	- **Password:** Password used for the connection. The password will be saved encrypted in the option config file.
-	- **Email address:** email address used as remote identity for the CalDAV server, necessary to synchronize the organizer
+	- **Email address:** email address used as remote identity for the CalDAV server, necessary to synchronize the organizer.
+	- **Network and proxy options**: Here you can configure advanced network options and proxy settings. 
+		- **Close connection after each request** Don't use KeepAlive for servers which don't support it. 
+		- **Use Preemptive Authentication** Send Authentication header with each request to avoid 401 responses and resending the request, disable only if the server has problems with preemptive authentication.
+		- **Use System Default Proxy** Use proxy settings from Internet Explorer or config file, uses default credentials if available for NTLM authentication.
+		- **Use manual proxy configuration** Specify proxy URL as `http://<your-proxy-domain>:<your-proxy-port>` and optional Username and Password for Basic Authentication.
+
 - *Sync settings*:
 	- Synchronization settings
 		- **Outlook -> Server (Replicate):** syncronizes everything from Outlook to the server (one way)
@@ -537,14 +555,8 @@ The following properties need to be set for a new generic profile:
 		- **Automatic:** If event is modified in Outlook and in the server since last snyc, use the last recent modified version. If an event is modified in Outlook and deleted in the server since last snyc, delete it also in Outlook. If an event is deleted in Outlook and modified in the server, also delete it in the server
 	- **Synchronization interval (minutes):** Choose the interval for synchronization in minutes, if 'Manual only' is choosen, there is no automatic sync but you can use the 'Synchronize now' menu item.
 	- **Synchronization timespan past (days)** and
-	- **Synchronization timespan future (days)** For performance reasons it is useful to sync only a given timespan of a big calendar, especially past events are normally not necessary to sync after a given timespan
-	- **Deactivate** If activated, current profile is not synced anymore without the need to delete the profile
-- *Advanced Options*: Here you can configure advanced network options and proxy settings. 
-	- **Close connection after each request** Don't use KeepAlive for servers which don't support it. 
-	- **Use Preemptive Authentication** Send Authentication header with each request to avoid 401 responses and resending the request, disable only if the server has problems with preemptive authentication.
-	- **Use System Default Proxy** Use proxy settings from Internet Explorer or config file, uses default credentials if available for NTLM authentication
-	- **Use manual proxy configuration** Specify proxy URL as `http://<your-proxy-domain>:<your-proxy-port>` and optional Username and Password for Basic Authentication.
-	- **Mapping Configuration...**: Here you can configure what properties should be synced, available for appointments and contacts at the moment. 
+	- **Synchronization timespan future (days)** For performance reasons it is useful to sync only a given timespan of a big calendar, especially past events are normally not necessary to sync after a given timespan.
+	- **Mapping Configuration**: Here you can configure what properties should be synced, only available for appointments and contacts at the moment. 
 		- For appointments you can choose if you want to map reminders (just upcoming, all or none) and the description body.
 		- *Create events on server in UTC:* Use UTC instead of Outlook Appointment Timezone for creating events on CalDAV server. Needed for GMX for example. Not recommended for general use, because recurrence exceptions over DST changes can't be mapped and Appointments with different start and end timezones can't be represented.
 		- In *Privacy settings* you can configure if you want to map Outlook private appointments to CLASS:CONFIDENTIAL and vice versa. This could be useful for Owncloud for example, if you share your calendar with others and they should see start/end dates of your private appointments.
@@ -589,7 +601,7 @@ You can use the exact calendar/addressbook URL or the principal url and use the 
 If your server has redirections for well-known Urls (./well-known/caldav/ and ./well-known/carddav/ ) you need to enter the server name only (without path).
 
 ### Proxy Settings ###
-You can now set manual proxy settings in the Advanced option dialog in each profile. To override the default proxy settings from Windows Internet Explorer you can also specify settings in the app config file, see config options below.
+You can now set manual proxy settings in the *Network and proxy options* dialog in each profile. To override the default proxy settings from Windows Internet Explorer you can also specify settings in the app config file, see config options below.
 More information can be found at
 [https://msdn.microsoft.com/en-us/library/sa91de1e%28v=vs.110%29.aspx](https://msdn.microsoft.com/en-us/library/sa91de1e%28v=vs.110%29.aspx)
 
@@ -676,6 +688,6 @@ In the section `log4net` you can define the log level for the main log (also pos
 - System.Net.Http.HttpRequestException: Response status code does not indicate success: '401' ('Unauthorized').
 	- Wrong Username and/or Password provided.
 - System.Net.Http.HttpRequestException: An error occurred while sending the request. ---> System.Net.WebException: The underlying connection was closed: A connection that was expected to be kept alive was closed by the server.
-	- The server has KeepAlive disabled. Use *"Close connection after each request"* in **Advanced Options**.
+	- The server has KeepAlive disabled. Use *"Close connection after each request"* in **Network and proxy options**.
 - System.Net.Http.HttpRequestException: An error occurred while sending the request. ---> System.Net.WebException: The server committed a protocol violation. Section=ResponseStatusLine
 	- The server sends invalid headers. Enable the commented out option **useUnsafeHeaderparsing** in the app config file, see **Debugging and more config options** above.
