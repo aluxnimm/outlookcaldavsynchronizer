@@ -25,38 +25,30 @@ using log4net;
 
 namespace CalDavSynchronizer.Ui.Options
 {
-  public partial class AdvancedOptionsForm : Form
+  public partial class NetworkAndProxyOptionsForm : Form
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
-    private MappingConfigurationBase _mappingConfiguration;
-    private readonly Func<MappingConfigurationBase, MappingConfigurationBase> _coerceMappingConfiguration;
-    private readonly IConfigurationFormFactory _configurationFormFactory;
 
-    public AdvancedOptionsForm (
-        Func<MappingConfigurationBase, MappingConfigurationBase> coerceMappingConfiguration,
-        IConfigurationFormFactory configurationFormFactory)
+    public NetworkAndProxyOptionsForm ()
     {
-      _configurationFormFactory = configurationFormFactory;
-      _coerceMappingConfiguration = coerceMappingConfiguration;
       InitializeComponent();
     }
 
-    public AdvancedOptions Options
+    public NetworkAndProxyOptions Options
     {
       get
       {
-        return new AdvancedOptions (
-            _closeConnectionAfterEachRequestCheckBox.Checked,
-            _preemptiveAuthenticationCheckBox.Checked,
-            new ProxyOptions()
-            {
-                ProxyUseDefault = _useSystemProxyCheckBox.Checked,
-                ProxyUseManual = _useManualProxyCheckBox.Checked,
-                ProxyUrl = _proxyUrlTextBox.Text,
-                ProxyUserName = _userNameTextBox.Text,
-                ProxyPassword = _passwordTextBox.Text
-            },
-            _mappingConfiguration);
+        return new NetworkAndProxyOptions(
+          _closeConnectionAfterEachRequestCheckBox.Checked,
+          _preemptiveAuthenticationCheckBox.Checked,
+          new ProxyOptions()
+          {
+            ProxyUseDefault = _useSystemProxyCheckBox.Checked,
+            ProxyUseManual = _useManualProxyCheckBox.Checked,
+            ProxyUrl = _proxyUrlTextBox.Text,
+            ProxyUserName = _userNameTextBox.Text,
+            ProxyPassword = _passwordTextBox.Text
+          });
       }
       set
       {
@@ -68,8 +60,6 @@ namespace CalDavSynchronizer.Ui.Options
         _userNameTextBox.Text = value.ProxyOptions.ProxyUserName;
         _passwordTextBox.Text = value.ProxyOptions.ProxyPassword;
         _manualProxyGroupBox.Enabled = value.ProxyOptions.ProxyUseManual;
-
-        _mappingConfiguration = value.MappingConfiguration;
       }
     }
 
@@ -130,27 +120,5 @@ namespace CalDavSynchronizer.Ui.Options
       return result;
     }
 
-    private void _mappingConfigurationButton_Click (object sender, EventArgs e)
-    {
-      try
-      {
-        var mappingConfiguration = _coerceMappingConfiguration (_mappingConfiguration);
-        if (mappingConfiguration != null)
-        {
-          var configurationForm = mappingConfiguration.CreateConfigurationForm (_configurationFormFactory);
-          if (configurationForm.Display())
-            _mappingConfiguration = configurationForm.Options;
-        }
-        else
-        {
-          MessageBox.Show ("Mapping configuration not available.");
-          return;
-        }
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.HandleException (x, s_logger);
-      }
-    }
   }
 }

@@ -23,9 +23,6 @@ namespace CalDavSynchronizer.Ui.Options
 {
   public interface IServerSettingsControlDependencies
   {
-    bool CloseConnectionAfterEachRequest { get; }
-    bool PreemptiveAuthentication { get; }
-    ProxyOptions ProxyOptions { get; }
     OlItemType? OutlookFolderType { get; }
     bool SelectedSynchronizationModeRequiresWriteableServerResource { get; }
     string SelectedSynchronizationModeDisplayName { get; }

@@ -2,7 +2,7 @@
 
 namespace CalDavSynchronizer.Ui.Options
 {
-  partial class AdvancedOptionsForm
+  partial class NetworkAndProxyOptionsForm
   {
     /// <summary>
     /// Required designer variable.
@@ -45,7 +45,6 @@ namespace CalDavSynchronizer.Ui.Options
       this._preemptiveAuthenticationCheckBox = new System.Windows.Forms.CheckBox();
       this._closeConnectionAfterEachRequestCheckBox = new System.Windows.Forms.CheckBox();
       this._manualProxyGroupBox = new System.Windows.Forms.GroupBox();
-      this._mappingConfigurationButton = new System.Windows.Forms.Button();
       this.groupBox2.SuspendLayout();
       this.groupBox1.SuspendLayout();
       this._manualProxyGroupBox.SuspendLayout();
@@ -229,24 +228,12 @@ namespace CalDavSynchronizer.Ui.Options
       this._manualProxyGroupBox.TabIndex = 10;
       this._manualProxyGroupBox.TabStop = false;
       // 
-      // _mappingConfigurationButton
-      // 
-      this._mappingConfigurationButton.Location = new System.Drawing.Point(485, 401);
-      this._mappingConfigurationButton.Margin = new System.Windows.Forms.Padding(4);
-      this._mappingConfigurationButton.Name = "_mappingConfigurationButton";
-      this._mappingConfigurationButton.Size = new System.Drawing.Size(214, 28);
-      this._mappingConfigurationButton.TabIndex = 11;
-      this._mappingConfigurationButton.Text = "Mapping Configuration...";
-      this._mappingConfigurationButton.UseVisualStyleBackColor = true;
-      this._mappingConfigurationButton.Click += new System.EventHandler(this._mappingConfigurationButton_Click);
-      // 
       // AdvancedOptionsForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.SystemColors.Window;
       this.ClientSize = new System.Drawing.Size(712, 486);
-      this.Controls.Add(this._mappingConfigurationButton);
       this.Controls.Add(this._manualProxyGroupBox);
       this.Controls.Add(this.groupBox1);
       this.Controls.Add(this.groupBox2);
@@ -256,7 +243,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this.Name = "AdvancedOptionsForm";
       this.ShowIcon = false;
-      this.Text = "Advanced Options";
+      this.Text = "Network and Proxy Options";
       this.groupBox2.ResumeLayout(false);
       this.groupBox2.PerformLayout();
       this.groupBox1.ResumeLayout(false);
@@ -283,7 +270,6 @@ namespace CalDavSynchronizer.Ui.Options
     private System.Windows.Forms.Label label4;
     private System.Windows.Forms.CheckBox _closeConnectionAfterEachRequestCheckBox;
     private System.Windows.Forms.GroupBox _manualProxyGroupBox;
-    private System.Windows.Forms.Button _mappingConfigurationButton;
     private System.Windows.Forms.CheckBox _preemptiveAuthenticationCheckBox;
   }
 }

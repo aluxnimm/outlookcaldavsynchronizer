@@ -35,12 +35,13 @@ namespace CalDavSynchronizer.Ui.Options
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private Guid _optionsId;
-    private AdvancedOptions _advancedOptions;
+    private NetworkAndProxyOptions _networkAndProxyOptions;
     public event EventHandler DeletionRequested;
     public event EventHandler CopyRequested;
     public event EventHandler<HeaderEventArgs> HeaderChanged;
     private readonly Func<Guid, string> _profileDataDirectoryFactory;
     private readonly Lazy<IConfigurationFormFactory> _configurationFormFactory;
+    private MappingConfigurationBase _mappingConfiguration;
 
     public OptionsDisplayControl (
         NameSpace session,
@@ -112,11 +113,11 @@ namespace CalDavSynchronizer.Ui.Options
         _profileNameTextBox.Text = value.Name;
         _optionsId = value.Id;
 
-        _advancedOptions = new AdvancedOptions (
+        _networkAndProxyOptions = new NetworkAndProxyOptions (
             value.CloseAfterEachRequest,
             value.PreemptiveAuthentication,
-            value.ProxyOptions ?? new ProxyOptions(),
-            value.MappingConfiguration);
+            value.ProxyOptions ?? new ProxyOptions());
+        _mappingConfiguration = value.MappingConfiguration;
 
         _outlookFolderControl.SetOptions (value);
         _serverSettingsControl.SetOptions (value);
@@ -130,10 +131,10 @@ namespace CalDavSynchronizer.Ui.Options
                           Name = _profileNameTextBox.Text,
                           Id = _optionsId,
                           Inactive = _inactiveCheckBox.Checked,
-                          CloseAfterEachRequest = _advancedOptions.CloseConnectionAfterEachRequest,
-                          PreemptiveAuthentication = _advancedOptions.PreemptiveAuthentication,
-                          ProxyOptions = _advancedOptions.ProxyOptions,
-                          MappingConfiguration = _advancedOptions.MappingConfiguration,
+                          CloseAfterEachRequest = _networkAndProxyOptions.CloseConnectionAfterEachRequest,
+                          PreemptiveAuthentication = _networkAndProxyOptions.PreemptiveAuthentication,
+                          ProxyOptions = _networkAndProxyOptions.ProxyOptions,
+                          MappingConfiguration = _mappingConfiguration,
                           DisplayType = OptionsDisplayType.Generic
                       };
 
@@ -161,19 +162,25 @@ namespace CalDavSynchronizer.Ui.Options
         CopyRequested (this, EventArgs.Empty);
     }
 
-    private void _advancedSettingsButton_Click (object sender, EventArgs e)
+    private void _mappingConfigurationButton_Click (object sender, EventArgs e)
     {
-      using (AdvancedOptionsForm advancedOptionsForm =
-          new AdvancedOptionsForm (
-              c => OptionTasks.CoreceMappingConfiguration (_outlookFolderControl.OutlookFolderType, c),
-              _configurationFormFactory.Value))
+      try
       {
-        advancedOptionsForm.Options = _advancedOptions;
-
-        if (advancedOptionsForm.ShowDialog() == DialogResult.OK)
+        var mappingConfiguration = OptionTasks.CoreceMappingConfiguration (_outlookFolderControl.OutlookFolderType, _mappingConfiguration);
+        if (mappingConfiguration != null)
         {
-          _advancedOptions = advancedOptionsForm.Options;
+          var configurationForm = mappingConfiguration.CreateConfigurationForm (_configurationFormFactory.Value);
+          if (configurationForm.Display())
+            _mappingConfiguration = configurationForm.Options;
         }
+        else
+        {
+          MessageBox.Show ("Mapping configuration not available.");
+        }
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.HandleException (x, s_logger);
       }
     }
 
@@ -192,19 +199,6 @@ namespace CalDavSynchronizer.Ui.Options
       {
         ExceptionHandler.Instance.HandleException (x, s_logger);
       }
-    }
-
-    public bool CloseConnectionAfterEachRequest
-    {
-      get { return _advancedOptions.CloseConnectionAfterEachRequest; }
-    }
-    public bool PreemptiveAuthentication
-    {
-      get { return _advancedOptions.PreemptiveAuthentication; }
-    }
-    public ProxyOptions ProxyOptions
-    {
-      get { return _advancedOptions.ProxyOptions; }
     }
 
     public OlItemType? OutlookFolderType

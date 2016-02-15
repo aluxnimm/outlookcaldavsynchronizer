@@ -42,6 +42,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._calenderUrlTextBox = new System.Windows.Forms.TextBox();
       this.label3 = new System.Windows.Forms.Label();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this._networkAndProxyOptionsButton = new System.Windows.Forms.Button();
       this.groupBox.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -51,6 +52,7 @@ namespace CalDavSynchronizer.Ui.Options
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.groupBox.BackColor = System.Drawing.SystemColors.Window;
+      this.groupBox.Controls.Add(this._networkAndProxyOptionsButton);
       this.groupBox.Controls.Add(this.label11);
       this.groupBox.Controls.Add(this._emailAddressTextBox);
       this.groupBox.Controls.Add(this._testConnectionButton);
@@ -158,6 +160,18 @@ namespace CalDavSynchronizer.Ui.Options
       this.label3.TabIndex = 6;
       this.label3.Text = "DAV Url:";
       // 
+      // _networkAndProxyOptionsButton
+      // 
+      this._networkAndProxyOptionsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this._networkAndProxyOptionsButton.Location = new System.Drawing.Point(8, 178);
+      this._networkAndProxyOptionsButton.Margin = new System.Windows.Forms.Padding(4);
+      this._networkAndProxyOptionsButton.Name = "_networkAndProxyOptionsButton";
+      this._networkAndProxyOptionsButton.Size = new System.Drawing.Size(202, 28);
+      this._networkAndProxyOptionsButton.TabIndex = 14;
+      this._networkAndProxyOptionsButton.Text = "Network and proxy options";
+      this._networkAndProxyOptionsButton.UseVisualStyleBackColor = true;
+      this._networkAndProxyOptionsButton.Click += new System.EventHandler(this._networkAndProxyOptionsButton_Click);
+      // 
       // ServerSettingsControl
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -186,5 +200,6 @@ namespace CalDavSynchronizer.Ui.Options
     private System.Windows.Forms.Label label11;
     private System.Windows.Forms.TextBox _emailAddressTextBox;
     private System.Windows.Forms.ToolTip toolTip;
+    private System.Windows.Forms.Button _networkAndProxyOptionsButton;
   }
 }

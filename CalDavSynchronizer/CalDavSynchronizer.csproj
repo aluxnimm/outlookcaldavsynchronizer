@@ -355,12 +355,12 @@
     <Compile Include="Scheduling\SynchronizerFactory.cs" />
     <Compile Include="ThoughtvCardWorkaround\ContactDataPreprocessor.cs" />
     <Compile Include="ThoughtvCardWorkaround\vCardImprovedWriter.cs" />
-    <Compile Include="Ui\Options\AdvancedOptions.cs" />
-    <Compile Include="Ui\Options\AdvancedOptionsForm.cs">
+    <Compile Include="Ui\Options\NetworkAndProxyOptions.cs" />
+    <Compile Include="Ui\Options\NetworkAndProxyOptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Ui\Options\AdvancedOptionsForm.Designer.cs">
-      <DependentUpon>AdvancedOptionsForm.cs</DependentUpon>
+    <Compile Include="Ui\Options\NetworkAndProxyOptionsForm.Designer.cs">
+      <DependentUpon>NetworkAndProxyOptionsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Ui\Options\AutoDiscoveryResult.cs" />
     <Compile Include="Ui\DelegateCommand.cs" />
@@ -540,8 +540,8 @@
     <EmbeddedResource Include="Ui\Options\Mapping\GenericConfigurationForm.resx">
       <DependentUpon>GenericConfigurationForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Ui\Options\AdvancedOptionsForm.resx">
-      <DependentUpon>AdvancedOptionsForm.cs</DependentUpon>
+    <EmbeddedResource Include="Ui\Options\NetworkAndProxyOptionsForm.resx">
+      <DependentUpon>NetworkAndProxyOptionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\GenericElementHostWindow.resx">
       <DependentUpon>GenericElementHostWindow.cs</DependentUpon>

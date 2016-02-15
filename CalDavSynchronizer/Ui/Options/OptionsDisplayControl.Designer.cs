@@ -31,7 +31,7 @@ namespace CalDavSynchronizer.Ui.Options
     private void InitializeComponent ()
     {
       this.components = new System.ComponentModel.Container();
-      this._advancedOptionsButton = new System.Windows.Forms.Button();
+      this._mappingConfigurationButton = new System.Windows.Forms.Button();
       this._deleteButton = new System.Windows.Forms.Button();
       this._profileNameTextBox = new System.Windows.Forms.TextBox();
       this.label10 = new System.Windows.Forms.Label();
@@ -47,17 +47,17 @@ namespace CalDavSynchronizer.Ui.Options
       this.contextMenu.SuspendLayout();
       this.SuspendLayout();
       // 
-      // _advancedOptionsButton
+      // _mappingConfigurationButton
       // 
-      this._advancedOptionsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._advancedOptionsButton.Location = new System.Drawing.Point(359, 638);
-      this._advancedOptionsButton.Margin = new System.Windows.Forms.Padding(4);
-      this._advancedOptionsButton.Name = "_advancedOptionsButton";
-      this._advancedOptionsButton.Size = new System.Drawing.Size(139, 28);
-      this._advancedOptionsButton.TabIndex = 6;
-      this._advancedOptionsButton.Text = "Advanced options";
-      this._advancedOptionsButton.UseVisualStyleBackColor = true;
-      this._advancedOptionsButton.Click += new System.EventHandler(this._advancedSettingsButton_Click);
+      this._mappingConfigurationButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this._mappingConfigurationButton.Location = new System.Drawing.Point(332, 638);
+      this._mappingConfigurationButton.Margin = new System.Windows.Forms.Padding(4);
+      this._mappingConfigurationButton.Name = "_mappingConfigurationButton";
+      this._mappingConfigurationButton.Size = new System.Drawing.Size(172, 28);
+      this._mappingConfigurationButton.TabIndex = 6;
+      this._mappingConfigurationButton.Text = "Mapping configuration";
+      this._mappingConfigurationButton.UseVisualStyleBackColor = true;
+      this._mappingConfigurationButton.Click += new System.EventHandler(this._mappingConfigurationButton_Click);
       // 
       // _deleteButton
       // 
@@ -93,7 +93,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._inactiveCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._inactiveCheckBox.AutoSize = true;
-      this._inactiveCheckBox.Location = new System.Drawing.Point(507, 642);
+      this._inactiveCheckBox.Location = new System.Drawing.Point(512, 643);
       this._inactiveCheckBox.Margin = new System.Windows.Forms.Padding(4);
       this._inactiveCheckBox.Name = "_inactiveCheckBox";
       this._inactiveCheckBox.Size = new System.Drawing.Size(97, 21);
@@ -118,12 +118,12 @@ namespace CalDavSynchronizer.Ui.Options
       this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this._browseToProfileCacheDirectoryToolStripMenuItem});
       this.contextMenu.Name = "contextMenu";
-      this.contextMenu.Size = new System.Drawing.Size(304, 30);
+      this.contextMenu.Size = new System.Drawing.Size(298, 28);
       // 
       // _browseToProfileCacheDirectoryToolStripMenuItem
       // 
       this._browseToProfileCacheDirectoryToolStripMenuItem.Name = "_browseToProfileCacheDirectoryToolStripMenuItem";
-      this._browseToProfileCacheDirectoryToolStripMenuItem.Size = new System.Drawing.Size(303, 26);
+      this._browseToProfileCacheDirectoryToolStripMenuItem.Size = new System.Drawing.Size(297, 24);
       this._browseToProfileCacheDirectoryToolStripMenuItem.Text = "Browse to profile cache directory";
       this._browseToProfileCacheDirectoryToolStripMenuItem.Click += new System.EventHandler(this._browseToProfileCacheDirectoryToolStripMenuItem_Click);
       // 
@@ -177,7 +177,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.ContextMenuStrip = this.contextMenu;
       this.Controls.Add(this._resetButton);
       this.Controls.Add(this._outlookFolderControl);
-      this.Controls.Add(this._advancedOptionsButton);
+      this.Controls.Add(this._mappingConfigurationButton);
       this.Controls.Add(this._copyButton);
       this.Controls.Add(this._inactiveCheckBox);
       this.Controls.Add(this.label10);
@@ -203,7 +203,7 @@ namespace CalDavSynchronizer.Ui.Options
     private System.Windows.Forms.Button _copyButton;
     private SyncSettingsControl _syncSettingsControl;
     private System.Windows.Forms.ToolTip toolTip;
-    private System.Windows.Forms.Button _advancedOptionsButton;
+    private System.Windows.Forms.Button _mappingConfigurationButton;
     private System.Windows.Forms.ContextMenuStrip contextMenu;
     private System.Windows.Forms.ToolStripMenuItem _browseToProfileCacheDirectoryToolStripMenuItem;
     private ServerSettingsControl _serverSettingsControl;

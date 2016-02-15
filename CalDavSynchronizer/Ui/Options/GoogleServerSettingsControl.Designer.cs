@@ -40,11 +40,13 @@ namespace CalDavSynchronizer.Ui.Options
       this._emailAddressTextBox = new System.Windows.Forms.TextBox();
       this._testConnectionButton = new System.Windows.Forms.Button();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this._networkAndProxyOptionsButton = new System.Windows.Forms.Button();
       this.groupBox.SuspendLayout();
       this.SuspendLayout();
       // 
       // groupBox
       // 
+      this.groupBox.Controls.Add(this._networkAndProxyOptionsButton);
       this.groupBox.Controls.Add(this._doAutodiscoveryButton);
       this.groupBox.Controls.Add(this._editUrlManuallyButton);
       this.groupBox.Controls.Add(this.label3);
@@ -65,7 +67,7 @@ namespace CalDavSynchronizer.Ui.Options
       // _doAutodiscoveryButton
       // 
       this._doAutodiscoveryButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._doAutodiscoveryButton.Location = new System.Drawing.Point(310, 127);
+      this._doAutodiscoveryButton.Location = new System.Drawing.Point(310, 136);
       this._doAutodiscoveryButton.Margin = new System.Windows.Forms.Padding(4);
       this._doAutodiscoveryButton.Name = "_doAutodiscoveryButton";
       this._doAutodiscoveryButton.Size = new System.Drawing.Size(166, 28);
@@ -130,13 +132,25 @@ namespace CalDavSynchronizer.Ui.Options
       // _testConnectionButton
       // 
       this._testConnectionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._testConnectionButton.Location = new System.Drawing.Point(484, 127);
+      this._testConnectionButton.Location = new System.Drawing.Point(484, 136);
       this._testConnectionButton.Margin = new System.Windows.Forms.Padding(4);
       this._testConnectionButton.Name = "_testConnectionButton";
       this._testConnectionButton.Size = new System.Drawing.Size(101, 28);
       this._testConnectionButton.TabIndex = 5;
       this._testConnectionButton.Text = "Test settings";
       this._testConnectionButton.UseVisualStyleBackColor = true;
+      // 
+      // _networkAndProxyOptionsButton
+      // 
+      this._networkAndProxyOptionsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this._networkAndProxyOptionsButton.Location = new System.Drawing.Point(8, 136);
+      this._networkAndProxyOptionsButton.Margin = new System.Windows.Forms.Padding(4);
+      this._networkAndProxyOptionsButton.Name = "_networkAndProxyOptionsButton";
+      this._networkAndProxyOptionsButton.Size = new System.Drawing.Size(217, 28);
+      this._networkAndProxyOptionsButton.TabIndex = 16;
+      this._networkAndProxyOptionsButton.Text = "Network and proxy options";
+      this._networkAndProxyOptionsButton.UseVisualStyleBackColor = true;
+      this._networkAndProxyOptionsButton.Click += new System.EventHandler(this._networkAndProxyOptionsButton_Click);
       // 
       // GoogleServerSettingsControl
       // 
@@ -164,5 +178,6 @@ namespace CalDavSynchronizer.Ui.Options
     private System.Windows.Forms.TextBox _calenderUrlTextBox;
     private System.Windows.Forms.Button _editUrlManuallyButton;
     private System.Windows.Forms.Button _doAutodiscoveryButton;
+    private System.Windows.Forms.Button _networkAndProxyOptionsButton;
   }
 }
