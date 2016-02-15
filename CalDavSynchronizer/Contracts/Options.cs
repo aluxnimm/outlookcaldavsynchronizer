@@ -19,11 +19,14 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Serialization;
 using CalDavSynchronizer.Implementation;
+using log4net;
 
 namespace CalDavSynchronizer.Contracts
 {
   public class Options
   {
+    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod ().DeclaringType);
+
     private const int c_saltLength = 17;
 
     public bool Inactive { get; set; }
@@ -68,8 +71,16 @@ namespace CalDavSynchronizer.Contracts
         var salt = Convert.FromBase64String (Salt);
 
         var data = Convert.FromBase64String (ProtectedPassword);
-        var transformedData = ProtectedData.Unprotect (data, salt, DataProtectionScope.CurrentUser);
-        return Encoding.Unicode.GetString (transformedData);
+        try
+        {
+          var transformedData = ProtectedData.Unprotect (data, salt, DataProtectionScope.CurrentUser);
+          return Encoding.Unicode.GetString (transformedData);
+        }
+        catch (CryptographicException x)
+        {
+          s_logger.Error ("Error while decrypting password. Using empty password", x);
+          return string.Empty;
+        }
       }
       set
       {
