@@ -314,6 +314,8 @@
     <Compile Include="Implementation\GoogleTasks\GoogleTasktEntityConflictSyncStateFactory_Automatic.cs" />
     <Compile Include="Implementation\GoogleTasks\InitialGoogleTaskSyncStateCreationStrategyFactory.cs" />
     <Compile Include="Implementation\GoogleTasks\InitialGoogleTasktEntityMatcher.cs" />
+    <Compile Include="Implementation\DaslFilterProvider.cs" />
+    <Compile Include="Implementation\IDaslFilterProvider.cs" />
     <Compile Include="Implementation\IOutlookRepository.cs" />
     <Compile Include="Implementation\TimeRangeFiltering\DateTimeRange.cs" />
     <Compile Include="Implementation\TimeRangeFiltering\DateTimeRangeProvider.cs" />

@@ -53,6 +53,7 @@ using Microsoft.Office.Interop.Outlook;
 using Application = Microsoft.Office.Interop.Outlook.Application;
 using Exception = System.Exception;
 using System.Collections.Generic;
+using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Ui.Options;
 using GenSync.EntityRelationManagement;
 using MessageBox = System.Windows.Forms.MessageBox;
@@ -81,6 +82,8 @@ namespace CalDavSynchronizer
     private bool _showReportsWithErrorsImmediately;
     private readonly ReportGarbageCollection _reportGarbageCollection;
     private readonly SynchronizerFactory _synchronizerFactory;
+    private readonly DaslFilterProvider _daslFilterProvider;
+
 
     public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
 
@@ -90,6 +93,8 @@ namespace CalDavSynchronizer
       _generalOptionsDataAccess = new GeneralOptionsDataAccess();
 
       var generalOptions = _generalOptionsDataAccess.LoadOptions();
+
+      _daslFilterProvider = new DaslFilterProvider(generalOptions.IncludeCustomMessageClasses);
 
       FrameworkElement.LanguageProperty.OverrideMetadata (
         typeof (FrameworkElement), 
@@ -123,7 +128,8 @@ namespace CalDavSynchronizer
               int.Parse (ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"]),
               ExceptionHandler.Instance),
           _session,
-          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]));
+          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+          _daslFilterProvider);
 
       _synchronizationReportRepository = CreateSynchronizationReportRepository();
 
@@ -184,12 +190,7 @@ namespace CalDavSynchronizer
       _showReportsWithErrorsImmediately = generalOptions.ShowReportsWithErrorsImmediately;
       _showReportsWithWarningsImmediately = generalOptions.ShowReportsWithWarningsImmediately;
 
-      OutlookEventRepository.PR_MESSAGE_CLASS_DASLFILTER = generalOptions.IncludeCustomMessageClasses ? "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" ci_startswith 'IPM.Appointment'"
-        : "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Appointment'";
-      OutlookTaskRepository.PR_MESSAGE_CLASS_DASLFILTER = generalOptions.IncludeCustomMessageClasses ? "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" ci_startswith 'IPM.Task'"
-        : "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Task'";
-      OutlookContactRepository.PR_MESSAGE_CLASS_DASLFILTER = generalOptions.IncludeCustomMessageClasses ? "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" ci_startswith 'IPM.Contact'"
-        : "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Contact'";
+      _daslFilterProvider.SetDoIncludeCustomMessageClasses (generalOptions.IncludeCustomMessageClasses);
     }
 
     private void _synchronizationReportRepository_ReportAdded (object sender, ReportAddedEventArgs e)
@@ -391,7 +392,7 @@ namespace CalDavSynchronizer
       using (var calendarFolderWrapper = GenericComObjectWrapper.Create (
           (Folder) _session.GetFolderFromID (changedOption.New.OutlookFolderEntryId, changedOption.New.OutlookFolderStoreId)))
       {
-        var filterBuilder = new StringBuilder (OutlookEventRepository.PR_MESSAGE_CLASS_DASLFILTER);
+        var filterBuilder = new StringBuilder (_daslFilterProvider.AppointmentFilter);
         OutlookEventRepository.AddCategoryFilter (filterBuilder, oldCategory);
         var eventIds = OutlookEventRepository.QueryFolder (_session, calendarFolderWrapper, filterBuilder).Select(e => e.Id);
         // todo concat Ids from cache

@@ -37,19 +37,21 @@ namespace CalDavSynchronizer.Implementation.Contacts
     private readonly NameSpace _mapiNameSpace;
     private readonly string _folderId;
     private readonly string _folderStoreId;
-
-    public static string PR_MESSAGE_CLASS_DASLFILTER = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Task'";
-
+    private readonly IDaslFilterProvider _daslFilterProvider;
+    
     private const string PR_ASSOCIATED_BIRTHDAY_APPOINTMENT_ID = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/804D0102";
 
-    public OutlookContactRepository (NameSpace mapiNameSpace, string folderId, string folderStoreId)
+    public OutlookContactRepository (NameSpace mapiNameSpace, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider)
     {
       if (mapiNameSpace == null)
-        throw new ArgumentNullException ("mapiNameSpace");
+        throw new ArgumentNullException (nameof (mapiNameSpace));
+      if (daslFilterProvider == null)
+        throw new ArgumentNullException (nameof (daslFilterProvider));
 
       _mapiNameSpace = mapiNameSpace;
       _folderId = folderId;
       _folderStoreId = folderStoreId;
+      _daslFilterProvider = daslFilterProvider;
     }
 
     private const string c_entryIdColumnName = "EntryID";
@@ -77,7 +79,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       using (var addressbookFolderWrapper = CreateFolderWrapper())
       {
-        using (var tableWrapper = GenericComObjectWrapper.Create ((Table) addressbookFolderWrapper.Inner.GetTable (PR_MESSAGE_CLASS_DASLFILTER)))
+        using (var tableWrapper = GenericComObjectWrapper.Create ((Table) addressbookFolderWrapper.Inner.GetTable (_daslFilterProvider.ContactFilter)))
         {
           var table = tableWrapper.Inner;
           table.Columns.RemoveAll();

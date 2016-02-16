@@ -35,13 +35,14 @@ namespace CalDavSynchronizer.Implementation.Tasks
     private readonly NameSpace _mapiNameSpace;
     private readonly string _folderId;
     private readonly string _folderStoreId;
+    private readonly IDaslFilterProvider _daslFilterProvider;
 
-    public static string PR_MESSAGE_CLASS_DASLFILTER = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Contact'";
-
-    public OutlookTaskRepository (NameSpace mapiNameSpace, string folderId, string folderStoreId)
+    public OutlookTaskRepository (NameSpace mapiNameSpace, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider)
     {
       if (mapiNameSpace == null)
         throw new ArgumentNullException (nameof (mapiNameSpace));
+      if (daslFilterProvider == null)
+        throw new ArgumentNullException (nameof (daslFilterProvider));
       if (String.IsNullOrEmpty (folderId))
         throw new ArgumentException ("Argument is null or empty", nameof (folderId));
       if (String.IsNullOrEmpty (folderStoreId))
@@ -50,6 +51,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       _mapiNameSpace = mapiNameSpace;
       _folderId = folderId;
       _folderStoreId = folderStoreId;
+      _daslFilterProvider = daslFilterProvider;
     }
 
     private const string c_entryIdColumnName = "EntryID";
@@ -74,7 +76,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       var entities = new List<EntityVersion<string, DateTime>>();
 
       using (var taskFolderWrapper = CreateFolderWrapper ())
-      using (var tableWrapper = GenericComObjectWrapper.Create ((Table) taskFolderWrapper.Inner.GetTable (PR_MESSAGE_CLASS_DASLFILTER)))
+      using (var tableWrapper = GenericComObjectWrapper.Create ((Table) taskFolderWrapper.Inner.GetTable (_daslFilterProvider.TaskFilter)))
       {
         var table = tableWrapper.Inner;
         table.Columns.RemoveAll ();

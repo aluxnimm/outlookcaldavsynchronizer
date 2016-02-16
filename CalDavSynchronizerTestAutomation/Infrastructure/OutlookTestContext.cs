@@ -72,18 +72,22 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       s_outlookFolderEntryId = ConfigurationManager.AppSettings[string.Format ("{0}.OutlookFolderEntryId", Environment.MachineName)];
       s_outlookFolderStoreId = ConfigurationManager.AppSettings[string.Format ("{0}.OutlookFolderStoreId", Environment.MachineName)];
 
+      var daslFilterProvider = new DaslFilterProvider (false);
+
       s_synchronizerFactory = new SynchronizerFactory (
           _ => @"a:\invalid path",
           NullTotalProgressFactory.Instance,
           s_mapiNameSpace,
-          TimeSpan.Zero);
+          TimeSpan.Zero,
+          daslFilterProvider);
 
       s_outlookEventRepository = new OutlookEventRepository (
           s_mapiNameSpace,
           s_outlookFolderEntryId,
           s_outlookFolderStoreId,
           NullDateTimeRangeProvider.Instance,
-          eventMappingConfiguration);
+          eventMappingConfiguration,
+          daslFilterProvider);
     }
 
     public static IOutlookSynchronizer CreateEventSynchronizer (

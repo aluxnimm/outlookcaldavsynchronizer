@@ -41,24 +41,31 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly string _folderStoreId;
     private readonly IDateTimeRangeProvider _dateTimeRangeProvider;
     private readonly EventMappingConfiguration _configuration;
-
-    public static string PR_MESSAGE_CLASS_DASLFILTER = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Appointment'";
-
+    private readonly IDaslFilterProvider _daslFilterProvider;
+    
     public OutlookEventRepository (
       NameSpace mapiNameSpace, 
       string folderId, 
       string folderStoreId, 
       IDateTimeRangeProvider dateTimeRangeProvider,
-      EventMappingConfiguration configuration)
+      EventMappingConfiguration configuration,
+      IDaslFilterProvider daslFilterProvider)
     {
       if (mapiNameSpace == null)
-        throw new ArgumentNullException ("mapiNameSpace");
+        throw new ArgumentNullException (nameof (mapiNameSpace));
+      if (dateTimeRangeProvider == null)
+        throw new ArgumentNullException (nameof (dateTimeRangeProvider));
+      if (configuration == null)
+        throw new ArgumentNullException (nameof (configuration));
+      if (daslFilterProvider == null)
+        throw new ArgumentNullException (nameof (daslFilterProvider));
 
       _mapiNameSpace = mapiNameSpace;
       _folderId = folderId;
       _folderStoreId = folderStoreId;
       _dateTimeRangeProvider = dateTimeRangeProvider;
       _configuration = configuration;
+      _daslFilterProvider = daslFilterProvider;
     }
 
     private const string c_entryIdColumnName = "EntryID";
@@ -130,7 +137,7 @@ namespace CalDavSynchronizer.Implementation.Events
       var range = _dateTimeRangeProvider.GetRange();
 
       // Table Filtering in the MSDN: https://msdn.microsoft.com/EN-US/library/office/ff867581.aspx
-      var filterBuilder = new StringBuilder (PR_MESSAGE_CLASS_DASLFILTER);
+      var filterBuilder = new StringBuilder (_daslFilterProvider.AppointmentFilter);
 
       if (range.HasValue)
         filterBuilder.AppendFormat (" And \"urn:schemas:calendar:dtstart\" < '{0}' And \"urn:schemas:calendar:dtend\" > '{1}'", ToOutlookDateString(range.Value.To), ToOutlookDateString(range.Value.From));
