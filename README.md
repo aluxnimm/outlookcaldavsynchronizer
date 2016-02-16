@@ -589,11 +589,15 @@ For GMX addressbook use the DAV Url `https://carddav.gmx.net`
 
 ### Synology NAS settings ###
 
+When test settings for you synology NAS profile, you can ignore the warning "The specified Url does not support calendar queries. Some features like time range filter may not work!".
+But a user reported, that "Disable directory browsing" setting **must not** be enabled for the calendar folder for proper syncing.
+
 For Synology NAS with SSL support use port 5006 and the following settings in your NAS:
 In Synology DSM Navigate to control panel > Terminal & SNMP
 Select Enable SSH 
 Then enter Advanced Settings and set it to High
 Now it will work on port 5006 with https.
+
 
 ### Autodiscovery ###
 
