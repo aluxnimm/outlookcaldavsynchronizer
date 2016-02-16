@@ -34,6 +34,8 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Events;
+using CalDavSynchronizer.Implementation.Tasks;
+using CalDavSynchronizer.Implementation.Contacts;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using CalDavSynchronizer.Reports;
 using CalDavSynchronizer.Scheduling;
@@ -121,8 +123,7 @@ namespace CalDavSynchronizer
               int.Parse (ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"]),
               ExceptionHandler.Instance),
           _session,
-          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-          generalOptions.IncludeCustomMessageClasses);
+          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]));
 
       _synchronizationReportRepository = CreateSynchronizationReportRepository();
 
@@ -182,6 +183,13 @@ namespace CalDavSynchronizer
 
       _showReportsWithErrorsImmediately = generalOptions.ShowReportsWithErrorsImmediately;
       _showReportsWithWarningsImmediately = generalOptions.ShowReportsWithWarningsImmediately;
+
+      OutlookEventRepository.PR_MESSAGE_CLASS_DASLFILTER = generalOptions.IncludeCustomMessageClasses ? "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" ci_startswith 'IPM.Appointment'"
+        : "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Appointment'";
+      OutlookTaskRepository.PR_MESSAGE_CLASS_DASLFILTER = generalOptions.IncludeCustomMessageClasses ? "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" ci_startswith 'IPM.Task'"
+        : "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Task'";
+      OutlookContactRepository.PR_MESSAGE_CLASS_DASLFILTER = generalOptions.IncludeCustomMessageClasses ? "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" ci_startswith 'IPM.Contact'"
+        : "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Contact'";
     }
 
     private void _synchronizationReportRepository_ReportAdded (object sender, ReportAddedEventArgs e)
@@ -298,7 +306,7 @@ namespace CalDavSynchronizer
 
           var changedOptions = CreateChangePairs (options, newOptions);
 
-          SwitchCategories (changedOptions, generalOptions.IncludeCustomMessageClasses);
+          SwitchCategories (changedOptions);
         }
       }
       catch (Exception x)
@@ -318,7 +326,7 @@ namespace CalDavSynchronizer
           select new ChangedOptions (o, no)).ToArray ();
     }
 
-    private void SwitchCategories (ChangedOptions[] changedOptions, bool includeCustomMessageClasses)
+    private void SwitchCategories (ChangedOptions[] changedOptions)
     {
       foreach (var changedOption in changedOptions)
       {
@@ -329,7 +337,7 @@ namespace CalDavSynchronizer
         {
           try
           {
-            SwitchCategories (changedOption, oldCategory, newCategory, includeCustomMessageClasses);
+            SwitchCategories (changedOption, oldCategory, newCategory);
           }
           catch (Exception x)
           {
@@ -378,14 +386,12 @@ namespace CalDavSynchronizer
       }
     }
 
-    private void SwitchCategories (ChangedOptions changedOption, string oldCategory, string newCategory, bool includeCustomMessageClasses)
+    private void SwitchCategories (ChangedOptions changedOption, string oldCategory, string newCategory)
     {
       using (var calendarFolderWrapper = GenericComObjectWrapper.Create (
           (Folder) _session.GetFolderFromID (changedOption.New.OutlookFolderEntryId, changedOption.New.OutlookFolderStoreId)))
       {
-        var daslFilter = includeCustomMessageClasses ? "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" ci_startswith 'IPM.Appointment'"
-          : "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Appointment'";
-        var filterBuilder = new StringBuilder (daslFilter);
+        var filterBuilder = new StringBuilder (OutlookEventRepository.PR_MESSAGE_CLASS_DASLFILTER);
         OutlookEventRepository.AddCategoryFilter (filterBuilder, oldCategory);
         var eventIds = OutlookEventRepository.QueryFolder (_session, calendarFolderWrapper, filterBuilder).Select(e => e.Id);
         // todo concat Ids from cache

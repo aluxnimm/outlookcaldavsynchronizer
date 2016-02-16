@@ -54,15 +54,13 @@ namespace CalDavSynchronizer.Scheduling
     private readonly ITotalProgressFactory _totalProgressFactory;
     private readonly NameSpace _outlookSession;
     private readonly TimeSpan _calDavConnectTimeout;
-    private readonly bool _includeCustomMessageClasses;
     private readonly Func<Guid, string> _profileDataDirectoryFactory;
 
     public SynchronizerFactory (
         Func<Guid, string> profileDataDirectoryFactory,
         ITotalProgressFactory totalProgressFactory,
         NameSpace outlookSession,
-        TimeSpan calDavConnectTimeout,
-        bool includeCustomMessageClasses
+        TimeSpan calDavConnectTimeout
         )
     {
       _outlookEmailAddress = outlookSession.CurrentUser.Address;
@@ -70,7 +68,6 @@ namespace CalDavSynchronizer.Scheduling
       _outlookSession = outlookSession;
       _calDavConnectTimeout = calDavConnectTimeout;
       _profileDataDirectoryFactory = profileDataDirectoryFactory;
-      _includeCustomMessageClasses = includeCustomMessageClasses;
     }
 
     /// <summary>
@@ -261,8 +258,7 @@ namespace CalDavSynchronizer.Scheduling
           options.OutlookFolderEntryId,
           options.OutlookFolderStoreId,
           dateTimeRangeProvider,
-          mappingParameters,
-          _includeCustomMessageClasses);
+          mappingParameters);
 
       IEntityRepository<IICalendar, WebResourceName, string> btypeRepository = new CalDavRepository (
           calDavDataAccess,
@@ -329,7 +325,7 @@ namespace CalDavSynchronizer.Scheduling
 
     private IOutlookSynchronizer CreateTaskSynchronizer (Options options, AvailableSynchronizerComponents componentsToFill)
     {
-      var atypeRepository = new OutlookTaskRepository (_outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId, _includeCustomMessageClasses);
+      var atypeRepository = new OutlookTaskRepository (_outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId);
 
       var calDavDataAccess = new CalDavDataAccess (
           new Uri (options.CalenderUrl),
@@ -385,7 +381,7 @@ namespace CalDavSynchronizer.Scheduling
 
     private IOutlookSynchronizer CreateGoogleTaskSynchronizer (Options options)
     {
-      var atypeRepository = new OutlookTaskRepository (_outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId, _includeCustomMessageClasses);
+      var atypeRepository = new OutlookTaskRepository (_outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId);
 
       var tasksService = System.Threading.Tasks.Task.Run (() => OAuth.Google.GoogleHttpClientFactory.LoginToGoogleTasksService (options.UserName).Result).Result;
 
@@ -440,8 +436,7 @@ namespace CalDavSynchronizer.Scheduling
       var atypeRepository = new OutlookContactRepository (
           _outlookSession,
           options.OutlookFolderEntryId,
-          options.OutlookFolderStoreId,
-          _includeCustomMessageClasses );
+          options.OutlookFolderStoreId);
 
 
       var cardDavDataAccess = new CardDavDataAccess (

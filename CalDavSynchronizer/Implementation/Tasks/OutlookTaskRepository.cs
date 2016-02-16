@@ -36,9 +36,9 @@ namespace CalDavSynchronizer.Implementation.Tasks
     private readonly string _folderId;
     private readonly string _folderStoreId;
 
-    private readonly string PR_MESSAGE_CLASS_DASLFILTER;
+    public static string PR_MESSAGE_CLASS_DASLFILTER = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Contact'";
 
-    public OutlookTaskRepository (NameSpace mapiNameSpace, string folderId, string folderStoreId, bool includeCustomMessageClasses)
+    public OutlookTaskRepository (NameSpace mapiNameSpace, string folderId, string folderStoreId)
     {
       if (mapiNameSpace == null)
         throw new ArgumentNullException (nameof (mapiNameSpace));
@@ -50,8 +50,6 @@ namespace CalDavSynchronizer.Implementation.Tasks
       _mapiNameSpace = mapiNameSpace;
       _folderId = folderId;
       _folderStoreId = folderStoreId;
-      PR_MESSAGE_CLASS_DASLFILTER = includeCustomMessageClasses ? "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" ci_startswith 'IPM.Task'" 
-        : "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Task'";
     }
 
     private const string c_entryIdColumnName = "EntryID";
