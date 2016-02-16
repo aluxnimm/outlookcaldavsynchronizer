@@ -21,8 +21,8 @@ namespace CalDavSynchronizer.Implementation
 {
   public interface IDaslFilterProvider
   {
-    string AppointmentFilter { get; }
-    string TaskFilter { get; }
-    string ContactFilter { get; }
+    string GetAppointmentFilter (bool isInstantSearchEnabled);
+    string GetTaskFilter (bool isInstantSearchEnabled);
+    string GetContactFilter (bool isInstantSearchEnabled);
   }
 }

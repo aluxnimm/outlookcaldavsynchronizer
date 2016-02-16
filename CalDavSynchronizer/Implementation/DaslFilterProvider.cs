@@ -28,6 +28,13 @@ namespace CalDavSynchronizer.Implementation
 {
   public class DaslFilterProvider : IDaslFilterProvider
   {
+    private const string c_appointmentFilterLike = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" ci_startswith 'IPM.Appointment'";
+    private const string c_appointmentFilterExact = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Appointment'";
+    private const string c_taskFilterLike = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" ci_startswith 'IPM.Task'";
+    private const string c_taskFilterExact = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Task'";
+    private const string c_contactFilterLike = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" ci_startswith 'IPM.Contact'";
+    private const string c_contactFilterExact = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Contact'";
+
     private string _appointmentFilter;
     private string _taskFilter;
     private string _contactFilter;
@@ -40,18 +47,19 @@ namespace CalDavSynchronizer.Implementation
     public void SetDoIncludeCustomMessageClasses (bool value)
     {
       _appointmentFilter = value
-          ? "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" ci_startswith 'IPM.Appointment'"
-          : "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Appointment'";
+          ? c_appointmentFilterLike
+          : c_appointmentFilterExact;
       _taskFilter = value
-          ? "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" ci_startswith 'IPM.Task'"
-          : "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Task'";
+          ? c_taskFilterLike
+          : c_taskFilterExact;
       _contactFilter = value
-          ? "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" ci_startswith 'IPM.Contact'"
-          : "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Contact'";
+          ? c_contactFilterLike
+          : c_contactFilterExact;
     }
-
-    public string AppointmentFilter => _appointmentFilter;
-    public string TaskFilter => _taskFilter;
-    public string ContactFilter => _contactFilter;
+    
+    /// <param name="isInstantSearchEnabled">specifies, if the filter should be created for a folder on which instant search is enabled</param>
+    public string GetAppointmentFilter (bool isInstantSearchEnabled) => isInstantSearchEnabled ? _appointmentFilter : c_appointmentFilterExact;
+    public string GetTaskFilter (bool isInstantSearchEnabled) => isInstantSearchEnabled ? _taskFilter : c_taskFilterExact;
+    public string GetContactFilter (bool isInstantSearchEnabled) => isInstantSearchEnabled ? _contactFilter : c_contactFilterExact;
   }
 }

@@ -136,20 +136,20 @@ namespace CalDavSynchronizer.Implementation.Events
     {
       var range = _dateTimeRangeProvider.GetRange();
 
-      // Table Filtering in the MSDN: https://msdn.microsoft.com/EN-US/library/office/ff867581.aspx
-      var filterBuilder = new StringBuilder (_daslFilterProvider.AppointmentFilter);
-
-      if (range.HasValue)
-        filterBuilder.AppendFormat (" And \"urn:schemas:calendar:dtstart\" < '{0}' And \"urn:schemas:calendar:dtend\" > '{1}'", ToOutlookDateString(range.Value.To), ToOutlookDateString(range.Value.From));
-      if (_configuration.UseEventCategoryAsFilter)
-      {
-        AddCategoryFilter (filterBuilder, _configuration.EventCategory);
-      }
-      s_logger.InfoFormat("Using Outlook DASL filter: {0}", filterBuilder.ToString());
-
       List<EntityVersion<string, DateTime>> events;
       using (var calendarFolderWrapper = CreateFolderWrapper())
       {
+        // Table Filtering in the MSDN: https://msdn.microsoft.com/EN-US/library/office/ff867581.aspx
+        var filterBuilder = new StringBuilder (_daslFilterProvider.GetAppointmentFilter (calendarFolderWrapper.Inner.Store.IsInstantSearchEnabled));
+
+        if (range.HasValue)
+          filterBuilder.AppendFormat (" And \"urn:schemas:calendar:dtstart\" < '{0}' And \"urn:schemas:calendar:dtend\" > '{1}'", ToOutlookDateString (range.Value.To), ToOutlookDateString (range.Value.From));
+        if (_configuration.UseEventCategoryAsFilter)
+        {
+          AddCategoryFilter (filterBuilder, _configuration.EventCategory);
+        }
+        s_logger.InfoFormat ("Using Outlook DASL filter: {0}", filterBuilder.ToString());
+
         events = QueryFolder (_mapiNameSpace, calendarFolderWrapper, filterBuilder);
       }
 

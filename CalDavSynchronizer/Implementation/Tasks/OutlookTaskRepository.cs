@@ -76,15 +76,16 @@ namespace CalDavSynchronizer.Implementation.Tasks
       var entities = new List<EntityVersion<string, DateTime>>();
 
       using (var taskFolderWrapper = CreateFolderWrapper ())
-      using (var tableWrapper = GenericComObjectWrapper.Create ((Table) taskFolderWrapper.Inner.GetTable (_daslFilterProvider.TaskFilter)))
+      using (var tableWrapper = 
+        GenericComObjectWrapper.Create (taskFolderWrapper.Inner.GetTable (_daslFilterProvider.GetTaskFilter (taskFolderWrapper.Inner.Store.IsInstantSearchEnabled))))
       {
         var table = tableWrapper.Inner;
-        table.Columns.RemoveAll ();
+        table.Columns.RemoveAll();
         table.Columns.Add (c_entryIdColumnName);
 
         while (!table.EndOfTable)
         {
-          var row = table.GetNextRow ();
+          var row = table.GetNextRow();
           var entryId = (string) row[c_entryIdColumnName];
           try
           {
