@@ -79,37 +79,13 @@ namespace CalDavSynchronizer.Ui.Options
       optionsToFill.EnableChangeTriggeredSynchronization = _synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Checked;
     }
 
-    private bool IsTaskSynchronizationEnabled
-    {
-      get
-      {
-        bool enabled;
-        if (bool.TryParse (ConfigurationManager.AppSettings["enableTaskSynchronization"], out enabled))
-          return enabled;
-        else
-          return false;
-      }
-    }
-
     private void UpdateFolder (MAPIFolder folder)
     {
-      if (IsTaskSynchronizationEnabled)
+      if (folder.DefaultItemType != OlItemType.olAppointmentItem && folder.DefaultItemType != OlItemType.olTaskItem && folder.DefaultItemType != OlItemType.olContactItem)
       {
-        if (folder.DefaultItemType != OlItemType.olAppointmentItem && folder.DefaultItemType != OlItemType.olTaskItem && folder.DefaultItemType != OlItemType.olContactItem)
-        {
-          string wrongFolderMessage = string.Format ("Wrong ItemType in folder '{0}'. It should be a calendar, task or contact folder.", folder.Name);
-          MessageBox.Show (wrongFolderMessage, "Configuration Error");
-          return;
-        }
-      }
-      else
-      {
-        if (folder.DefaultItemType != OlItemType.olAppointmentItem && folder.DefaultItemType != OlItemType.olContactItem)
-        {
-          string wrongFolderMessage = string.Format ("Wrong ItemType in folder '{0}'. It should be a calendar or contact folder.", folder.Name);
-          MessageBox.Show (wrongFolderMessage, "Configuration Error");
-          return;
-        }
+        string wrongFolderMessage = string.Format ("Wrong ItemType in folder '{0}'. It should be a calendar, task or contact folder.", folder.Name);
+        MessageBox.Show (wrongFolderMessage, "Configuration Error");
+        return;
       }
 
       _folderEntryId = folder.EntryID;
