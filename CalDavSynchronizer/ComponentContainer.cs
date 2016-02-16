@@ -392,7 +392,13 @@ namespace CalDavSynchronizer
       using (var calendarFolderWrapper = GenericComObjectWrapper.Create (
           (Folder) _session.GetFolderFromID (changedOption.New.OutlookFolderEntryId, changedOption.New.OutlookFolderStoreId)))
       {
-        var filterBuilder = new StringBuilder (_daslFilterProvider.GetAppointmentFilter(calendarFolderWrapper.Inner.Store.IsInstantSearchEnabled));
+        bool isInstantSearchEnabled = false;
+
+        using (var store = GenericComObjectWrapper.Create (calendarFolderWrapper.Inner.Store))
+        {
+          if (store.Inner != null) isInstantSearchEnabled = store.Inner.IsInstantSearchEnabled;
+        }
+        var filterBuilder = new StringBuilder (_daslFilterProvider.GetAppointmentFilter (isInstantSearchEnabled));
         OutlookEventRepository.AddCategoryFilter (filterBuilder, oldCategory);
         var eventIds = OutlookEventRepository.QueryFolder (_session, calendarFolderWrapper, filterBuilder).Select(e => e.Id);
         // todo concat Ids from cache

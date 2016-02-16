@@ -139,8 +139,14 @@ namespace CalDavSynchronizer.Implementation.Events
       List<EntityVersion<string, DateTime>> events;
       using (var calendarFolderWrapper = CreateFolderWrapper())
       {
+        bool isInstantSearchEnabled = false;
+
+        using (var store = GenericComObjectWrapper.Create (calendarFolderWrapper.Inner.Store))
+        {
+          if (store.Inner != null) isInstantSearchEnabled = store.Inner.IsInstantSearchEnabled;
+        }
         // Table Filtering in the MSDN: https://msdn.microsoft.com/EN-US/library/office/ff867581.aspx
-        var filterBuilder = new StringBuilder (_daslFilterProvider.GetAppointmentFilter (calendarFolderWrapper.Inner.Store.IsInstantSearchEnabled));
+        var filterBuilder = new StringBuilder (_daslFilterProvider.GetAppointmentFilter (isInstantSearchEnabled));
 
         if (range.HasValue)
           filterBuilder.AppendFormat (" And \"urn:schemas:calendar:dtstart\" < '{0}' And \"urn:schemas:calendar:dtend\" > '{1}'", ToOutlookDateString (range.Value.To), ToOutlookDateString (range.Value.From));

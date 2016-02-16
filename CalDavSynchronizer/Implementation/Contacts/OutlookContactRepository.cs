@@ -79,8 +79,14 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       using (var addressbookFolderWrapper = CreateFolderWrapper())
       {
+        bool isInstantSearchEnabled = false;
+
+        using (var store = GenericComObjectWrapper.Create (addressbookFolderWrapper.Inner.Store))
+        {
+          if (store.Inner != null) isInstantSearchEnabled = store.Inner.IsInstantSearchEnabled;
+        }
         using (var tableWrapper = 
-          GenericComObjectWrapper.Create (addressbookFolderWrapper.Inner.GetTable (_daslFilterProvider.GetContactFilter(addressbookFolderWrapper.Inner.Store.IsInstantSearchEnabled))))
+          GenericComObjectWrapper.Create (addressbookFolderWrapper.Inner.GetTable (_daslFilterProvider.GetContactFilter (isInstantSearchEnabled))))
         {
           var table = tableWrapper.Inner;
           table.Columns.RemoveAll();

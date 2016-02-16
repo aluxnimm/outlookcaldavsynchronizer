@@ -75,28 +75,41 @@ namespace CalDavSynchronizer.Implementation.Tasks
     {
       var entities = new List<EntityVersion<string, DateTime>>();
 
-      using (var taskFolderWrapper = CreateFolderWrapper ())
-      using (var tableWrapper = 
-        GenericComObjectWrapper.Create (taskFolderWrapper.Inner.GetTable (_daslFilterProvider.GetTaskFilter (taskFolderWrapper.Inner.Store.IsInstantSearchEnabled))))
+      using (var taskFolderWrapper = CreateFolderWrapper())
       {
-        var table = tableWrapper.Inner;
-        table.Columns.RemoveAll();
-        table.Columns.Add (c_entryIdColumnName);
+        bool isInstantSearchEnabled = false;
 
-        while (!table.EndOfTable)
+        using (var store = GenericComObjectWrapper.Create (taskFolderWrapper.Inner.Store))
         {
-          var row = table.GetNextRow();
-          var entryId = (string) row[c_entryIdColumnName];
-          try
+          if (store.Inner != null) isInstantSearchEnabled = store.Inner.IsInstantSearchEnabled;
+        }
+        using (var tableWrapper =
+          GenericComObjectWrapper.Create (
+            taskFolderWrapper.Inner.GetTable (
+              _daslFilterProvider.GetTaskFilter (isInstantSearchEnabled))))
+        {
+          var table = tableWrapper.Inner;
+          table.Columns.RemoveAll();
+          table.Columns.Add (c_entryIdColumnName);
+
+          while (!table.EndOfTable)
           {
-            using (var taskItemWrapper = GenericComObjectWrapper.Create ((TaskItem) _mapiNameSpace.GetItemFromID (entryId, _folderStoreId)))
+            var row = table.GetNextRow();
+            var entryId = (string) row[c_entryIdColumnName];
+            try
             {
-              entities.Add (EntityVersion.Create (taskItemWrapper.Inner.EntryID, taskItemWrapper.Inner.LastModificationTime));
+              using (
+                var taskItemWrapper =
+                  GenericComObjectWrapper.Create((TaskItem) _mapiNameSpace.GetItemFromID (entryId, _folderStoreId)))
+              {
+                entities.Add (EntityVersion.Create (taskItemWrapper.Inner.EntryID,
+                  taskItemWrapper.Inner.LastModificationTime));
+              }
             }
-          }
-          catch (COMException ex)
-          {
-            s_logger.Error ("Could not fetch TaskItem, skipping.", ex);
+            catch (COMException ex)
+            {
+              s_logger.Error ("Could not fetch TaskItem, skipping.", ex);
+            }
           }
         }
       }
