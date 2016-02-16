@@ -38,11 +38,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
     private readonly string _folderId;
     private readonly string _folderStoreId;
 
-    public const string PR_MESSAGE_CLASS_DASLFILTER = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" ci_startswith 'IPM.Contact'";
+    public readonly string PR_MESSAGE_CLASS_DASLFILTER;
 
     private const string PR_ASSOCIATED_BIRTHDAY_APPOINTMENT_ID = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/804D0102";
 
-    public OutlookContactRepository (NameSpace mapiNameSpace, string folderId, string folderStoreId)
+    public OutlookContactRepository (NameSpace mapiNameSpace, string folderId, string folderStoreId, bool includeCustomMessageClasses)
     {
       if (mapiNameSpace == null)
         throw new ArgumentNullException ("mapiNameSpace");
@@ -50,6 +50,9 @@ namespace CalDavSynchronizer.Implementation.Contacts
       _mapiNameSpace = mapiNameSpace;
       _folderId = folderId;
       _folderStoreId = folderStoreId;
+
+      PR_MESSAGE_CLASS_DASLFILTER = includeCustomMessageClasses ? "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" ci_startswith 'IPM.Contact'"
+        : "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Contact'";
     }
 
     private const string c_entryIdColumnName = "EntryID";

@@ -26,25 +26,20 @@ namespace CalDavSynchronizer.Ui.Options
     private readonly NameSpace _session;
     private readonly Func<Guid, string> _profileDataDirectoryFactory;
     private readonly bool _fixInvalidSettings;
-    private readonly bool _displayAllProfilesAsGeneric;
 
-    public OptionsDisplayControlFactory (NameSpace session, Func<Guid, string> profileDataDirectoryFactory, bool fixInvalidSettings, bool displayAllProfilesAsGeneric)
+    public OptionsDisplayControlFactory (NameSpace session, Func<Guid, string> profileDataDirectoryFactory, bool fixInvalidSettings)
     {
       _session = session;
       _profileDataDirectoryFactory = profileDataDirectoryFactory;
       _fixInvalidSettings = fixInvalidSettings;
-      _displayAllProfilesAsGeneric = displayAllProfilesAsGeneric;
     }
 
     public IOptionsDisplayControl Create (Contracts.Options options)
     {
-      if (!_displayAllProfilesAsGeneric)
-      {
-        if (options.DisplayType == OptionsDisplayType.Google
+      if (options.DisplayType == OptionsDisplayType.Google
             || options.ServerAdapterType == ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth
             || options.ServerAdapterType == ServerAdapterType.GoogleTaskApi)
-          return new GoogleOptionsDisplayControl (_session, _profileDataDirectoryFactory, _fixInvalidSettings);
-      }
+        return new GoogleOptionsDisplayControl (_session, _profileDataDirectoryFactory, _fixInvalidSettings);
 
       return new OptionsDisplayControl (_session, _profileDataDirectoryFactory, _fixInvalidSettings);
     }

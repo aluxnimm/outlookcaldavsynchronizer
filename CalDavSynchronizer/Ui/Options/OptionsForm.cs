@@ -28,11 +28,11 @@ namespace CalDavSynchronizer.Ui.Options
   {
     private readonly IOptionsDisplayControlFactory _optionsDisplayControlFactory;
 
-    public OptionsForm (NameSpace session, Func<Guid, string> profileDataDirectoryFactory, bool fixInvalidSettings, bool displayAllProfilesAsGeneric)
+    public OptionsForm (NameSpace session, Func<Guid, string> profileDataDirectoryFactory, bool fixInvalidSettings)
     {
       InitializeComponent();
       _optionsDisplayControlFactory =
-          new OptionsDisplayControlFactory (session, profileDataDirectoryFactory, fixInvalidSettings, displayAllProfilesAsGeneric);
+          new OptionsDisplayControlFactory (session, profileDataDirectoryFactory, fixInvalidSettings);
     }
 
     public static bool EditOptions (
@@ -40,10 +40,9 @@ namespace CalDavSynchronizer.Ui.Options
         Contracts.Options[] options,
         out Contracts.Options[] changedOptions,
         Func<Guid, string> profileDataDirectoryFactory,
-        bool fixInvalidSettings,
-        bool displayAllProfilesAsGeneric)
+        bool fixInvalidSettings )
     {
-      var form = new OptionsForm (session, profileDataDirectoryFactory, fixInvalidSettings, displayAllProfilesAsGeneric);
+      var form = new OptionsForm (session, profileDataDirectoryFactory, fixInvalidSettings);
       form.OptionsList = options;
 
       var shouldSave = form.ShowDialog() == DialogResult.OK;

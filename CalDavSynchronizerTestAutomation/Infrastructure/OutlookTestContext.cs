@@ -76,14 +76,16 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           _ => @"a:\invalid path",
           NullTotalProgressFactory.Instance,
           s_mapiNameSpace,
-          TimeSpan.Zero);
+          TimeSpan.Zero,
+          false);
 
       s_outlookEventRepository = new OutlookEventRepository (
           s_mapiNameSpace,
           s_outlookFolderEntryId,
           s_outlookFolderStoreId,
           NullDateTimeRangeProvider.Instance,
-          eventMappingConfiguration);
+          eventMappingConfiguration,
+          false);
     }
 
     public static IOutlookSynchronizer CreateEventSynchronizer (

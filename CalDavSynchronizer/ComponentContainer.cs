@@ -121,7 +121,8 @@ namespace CalDavSynchronizer
               int.Parse (ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"]),
               ExceptionHandler.Instance),
           _session,
-          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]));
+          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+          generalOptions.IncludeCustomMessageClasses);
 
       _synchronizationReportRepository = CreateSynchronizationReportRepository();
 
@@ -289,8 +290,7 @@ namespace CalDavSynchronizer
             options,
             out newOptions,
             GetProfileDataDirectory,
-            generalOptions.FixInvalidSettings,
-            generalOptions.DisplayAllProfilesAsGeneric))
+            generalOptions.FixInvalidSettings ))
         {
           _optionsDataAccess.SaveOptions (newOptions);
           _scheduler.SetOptions (newOptions, generalOptions.CheckIfOnline);
@@ -298,7 +298,7 @@ namespace CalDavSynchronizer
 
           var changedOptions = CreateChangePairs (options, newOptions);
 
-          SwitchCategories (changedOptions);
+          SwitchCategories (changedOptions, generalOptions.IncludeCustomMessageClasses);
         }
       }
       catch (Exception x)
@@ -318,7 +318,7 @@ namespace CalDavSynchronizer
           select new ChangedOptions (o, no)).ToArray ();
     }
 
-    private void SwitchCategories (ChangedOptions[] changedOptions)
+    private void SwitchCategories (ChangedOptions[] changedOptions, bool includeCustomMessageClasses)
     {
       foreach (var changedOption in changedOptions)
       {
@@ -329,7 +329,7 @@ namespace CalDavSynchronizer
         {
           try
           {
-            SwitchCategories (changedOption, oldCategory, newCategory);
+            SwitchCategories (changedOption, oldCategory, newCategory, includeCustomMessageClasses);
           }
           catch (Exception x)
           {
@@ -378,12 +378,14 @@ namespace CalDavSynchronizer
       }
     }
 
-    private void SwitchCategories (ChangedOptions changedOption, string oldCategory, string newCategory)
+    private void SwitchCategories (ChangedOptions changedOption, string oldCategory, string newCategory, bool includeCustomMessageClasses)
     {
       using (var calendarFolderWrapper = GenericComObjectWrapper.Create (
           (Folder) _session.GetFolderFromID (changedOption.New.OutlookFolderEntryId, changedOption.New.OutlookFolderStoreId)))
       {
-        var filterBuilder = new StringBuilder (OutlookEventRepository.PR_MESSAGE_CLASS_DASLFILTER);
+        var daslFilter = includeCustomMessageClasses ? "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" ci_startswith 'IPM.Appointment'"
+          : "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Appointment'";
+        var filterBuilder = new StringBuilder (daslFilter);
         OutlookEventRepository.AddCategoryFilter (filterBuilder, oldCategory);
         var eventIds = OutlookEventRepository.QueryFolder (_session, calendarFolderWrapper, filterBuilder).Select(e => e.Id);
         // todo concat Ids from cache

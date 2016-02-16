@@ -37,7 +37,7 @@ namespace CalDavSynchronizer.DataAccess
     private const string s_enableSsl3 = "EnableSsl3";
     private const string s_fixInvalidSettings = "FixInvalidSettings";
     private const string s_OptionsRegistryKey = @"Software\CalDavSynchronizer";
-    private const string s_DisplayAllProfilesAsGeneric = "DisplayAllProfilesAsGeneric";
+    private const string s_IncludeCustomMessageClasses = "IncludeCustomMessageClasses";
 
     private const string s_LogReportsWithoutWarningsOrErrors = "LogReportsWithoutWarningsOrErrors";
     private const string s_LogReportsWithWarnings = "LogReportsWithWarnings";
@@ -63,7 +63,7 @@ namespace CalDavSynchronizer.DataAccess
                    EnableTls12 = (int) (key.GetValue (s_enableTls12) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"] ?? bool.TrueString))) != 0,
                    EnableSsl3 = (int) (key.GetValue (s_enableSsl3) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"] ?? bool.FalseString))) != 0,
                    FixInvalidSettings = (int) (key.GetValue (s_fixInvalidSettings) ?? 1) != 0,
-                   DisplayAllProfilesAsGeneric = (int) (key.GetValue (s_DisplayAllProfilesAsGeneric) ?? 0) != 0,
+                   IncludeCustomMessageClasses = (int) (key.GetValue (s_IncludeCustomMessageClasses) ?? 0) != 0,
                    LogReportsWithoutWarningsOrErrors = (int) (key.GetValue (s_LogReportsWithoutWarningsOrErrors) ?? 0) != 0,
                    LogReportsWithWarnings = (int) (key.GetValue (s_LogReportsWithWarnings) ?? 1) != 0,
                    ShowReportsWithWarningsImmediately = (int) (key.GetValue (s_ShowReportsWithWarningsImmediately) ?? 0) != 0,
@@ -85,7 +85,7 @@ namespace CalDavSynchronizer.DataAccess
         key.SetValue (s_enableTls12, options.EnableTls12 ? 1 : 0);
         key.SetValue (s_enableSsl3, options.EnableSsl3 ? 1 : 0);
         key.SetValue (s_fixInvalidSettings, options.FixInvalidSettings ? 1 : 0);
-        key.SetValue (s_DisplayAllProfilesAsGeneric, options.DisplayAllProfilesAsGeneric ? 1 : 0);
+        key.SetValue (s_IncludeCustomMessageClasses, options.IncludeCustomMessageClasses ? 1 : 0);
         key.SetValue (s_LogReportsWithoutWarningsOrErrors, options.LogReportsWithoutWarningsOrErrors ? 1 : 0);
         key.SetValue (s_LogReportsWithWarnings, options.LogReportsWithWarnings ? 1 : 0);
         key.SetValue (s_ShowReportsWithWarningsImmediately, options.ShowReportsWithWarningsImmediately ? 1 : 0);

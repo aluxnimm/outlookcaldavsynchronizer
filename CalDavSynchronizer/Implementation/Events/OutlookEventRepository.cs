@@ -42,14 +42,15 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly IDateTimeRangeProvider _dateTimeRangeProvider;
     private readonly EventMappingConfiguration _configuration;
 
-    public const string PR_MESSAGE_CLASS_DASLFILTER = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" ci_startswith 'IPM.Appointment'";
+    public readonly string PR_MESSAGE_CLASS_DASLFILTER;
 
     public OutlookEventRepository (
       NameSpace mapiNameSpace, 
       string folderId, 
       string folderStoreId, 
       IDateTimeRangeProvider dateTimeRangeProvider,
-      EventMappingConfiguration configuration)
+      EventMappingConfiguration configuration,
+      bool includeCustomMessageClasses)
     {
       if (mapiNameSpace == null)
         throw new ArgumentNullException ("mapiNameSpace");
@@ -59,6 +60,9 @@ namespace CalDavSynchronizer.Implementation.Events
       _folderStoreId = folderStoreId;
       _dateTimeRangeProvider = dateTimeRangeProvider;
       _configuration = configuration;
+
+      PR_MESSAGE_CLASS_DASLFILTER = includeCustomMessageClasses ? "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" ci_startswith 'IPM.Appointment'"
+        : "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Appointment'";
     }
 
     private const string c_entryIdColumnName = "EntryID";

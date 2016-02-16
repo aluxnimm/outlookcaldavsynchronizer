@@ -110,7 +110,7 @@ namespace CalDavSynchronizer.Ui.Options
                    EnableTls12 = _enableTls12Checkbox.Checked,
                    EnableSsl3 = _enableSsl3Checkbox.Checked,
                    FixInvalidSettings = _fixInvalidSettingsCheckBox.Checked,
-                   DisplayAllProfilesAsGeneric = _displayAllProfilesAsGenericCheckBox.Checked,
+                   IncludeCustomMessageClasses = _includeCustomMessageClassesCheckBox.Checked,
                    LogReportsWithoutWarningsOrErrors = reportLogMode == ReportLogMode.All,
                    LogReportsWithWarnings = reportLogMode == ReportLogMode.All || reportLogMode == ReportLogMode.WarningsOrErrors,
                    ShowReportsWithErrorsImmediately = reportPopupMode == ReportPopupMode.JustErrors || reportPopupMode == ReportPopupMode.WarningsAndErrors,
@@ -128,7 +128,7 @@ namespace CalDavSynchronizer.Ui.Options
         _enableTls12Checkbox.Checked = value.EnableTls12;
         _enableSsl3Checkbox.Checked = value.EnableSsl3;
         _fixInvalidSettingsCheckBox.Checked = value.FixInvalidSettings;
-        _displayAllProfilesAsGenericCheckBox.Checked = value.DisplayAllProfilesAsGeneric;
+        _includeCustomMessageClassesCheckBox.Checked = value.IncludeCustomMessageClasses;
         _reportLogModeComboBox.SelectedValue = GetReportLogMode (value);
         _reportPopupModeComboBox.SelectedValue = GetReportPopupMode (value);
         _maxReportAgeInDays.Text = value.MaxReportAgeInDays.ToString();

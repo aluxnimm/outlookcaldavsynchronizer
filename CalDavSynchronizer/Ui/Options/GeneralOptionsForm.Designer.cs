@@ -43,7 +43,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox1 = new System.Windows.Forms.GroupBox();
       this._fixInvalidSettingsCheckBox = new System.Windows.Forms.CheckBox();
       this._checkIfOnlineCheckBox = new System.Windows.Forms.CheckBox();
-      this._displayAllProfilesAsGenericCheckBox = new System.Windows.Forms.CheckBox();
+      this._includeCustomMessageClassesCheckBox = new System.Windows.Forms.CheckBox();
       this.groupBox2 = new System.Windows.Forms.GroupBox();
       this._maxReportAgeInDays = new System.Windows.Forms.TextBox();
       this.label3 = new System.Windows.Forms.Label();
@@ -191,16 +191,19 @@ namespace CalDavSynchronizer.Ui.Options
       this._toolTip.SetToolTip(this._checkIfOnlineCheckBox, resources.GetString("_checkIfOnlineCheckBox.ToolTip"));
       this._checkIfOnlineCheckBox.UseVisualStyleBackColor = true;
       // 
-      // _displayAllProfilesAsGenericCheckBox
+      // _includeCustomMessageClassesCheckBox
       // 
-      this._displayAllProfilesAsGenericCheckBox.AutoSize = true;
-      this._displayAllProfilesAsGenericCheckBox.Location = new System.Drawing.Point(16, 115);
-      this._displayAllProfilesAsGenericCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-      this._displayAllProfilesAsGenericCheckBox.Name = "_displayAllProfilesAsGenericCheckBox";
-      this._displayAllProfilesAsGenericCheckBox.Size = new System.Drawing.Size(264, 21);
-      this._displayAllProfilesAsGenericCheckBox.TabIndex = 7;
-      this._displayAllProfilesAsGenericCheckBox.Text = "Display all profiles as generic profiles";
-      this._displayAllProfilesAsGenericCheckBox.UseVisualStyleBackColor = true;
+      this._includeCustomMessageClassesCheckBox.AutoSize = true;
+      this._includeCustomMessageClassesCheckBox.Location = new System.Drawing.Point(16, 115);
+      this._includeCustomMessageClassesCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+      this._includeCustomMessageClassesCheckBox.Name = "_includeCustomMessageClassesCheckBox";
+      this._includeCustomMessageClassesCheckBox.Size = new System.Drawing.Size(335, 21);
+      this._includeCustomMessageClassesCheckBox.TabIndex = 7;
+      this._includeCustomMessageClassesCheckBox.Text = "Include custom message classes in Outlook filter";
+      this._toolTip.SetToolTip(this._includeCustomMessageClassesCheckBox, "Use prefix filter to include also custom message_classes in filter for Outlook fo" +
+        "lders. \r\nThis option needs Windows Search Service enabled.\r\nWhen changing this o" +
+        "ption, Outlook needs to be restarted!\r\n");
+      this._includeCustomMessageClassesCheckBox.UseVisualStyleBackColor = true;
       // 
       // groupBox2
       // 
@@ -358,7 +361,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.Controls.Add(this._checkIfOnlineCheckBox);
       this.Controls.Add(this.groupBox3);
       this.Controls.Add(this.groupBox2);
-      this.Controls.Add(this._displayAllProfilesAsGenericCheckBox);
+      this.Controls.Add(this._includeCustomMessageClassesCheckBox);
       this.Controls.Add(this._fixInvalidSettingsCheckBox);
       this.Controls.Add(this.groupBox1);
       this.Controls.Add(this._storeDataInRoamingFolderCheckBox);
@@ -393,7 +396,7 @@ namespace CalDavSynchronizer.Ui.Options
     private System.Windows.Forms.CheckBox _enableSsl3Checkbox;
     private System.Windows.Forms.GroupBox groupBox1;
     private System.Windows.Forms.CheckBox _fixInvalidSettingsCheckBox;
-    private System.Windows.Forms.CheckBox _displayAllProfilesAsGenericCheckBox;
+    private System.Windows.Forms.CheckBox _includeCustomMessageClassesCheckBox;
     private System.Windows.Forms.GroupBox groupBox2;
     private System.Windows.Forms.ComboBox _reportPopupModeComboBox;
     private System.Windows.Forms.ComboBox _reportLogModeComboBox;
