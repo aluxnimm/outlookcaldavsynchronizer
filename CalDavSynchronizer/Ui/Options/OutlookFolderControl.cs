@@ -137,7 +137,7 @@ namespace CalDavSynchronizer.Ui.Options
       {
         MessageBox.Show (
             "The contact synchronization is still in development and doesn't support contact groups/distribution lists at the moment!",
-            "CalDav Synchronizer",
+            ComponentContainer.MessageBoxTitle,
             MessageBoxButtons.OK,
             MessageBoxIcon.Warning);
       }

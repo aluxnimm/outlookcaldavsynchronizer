@@ -62,6 +62,7 @@ namespace CalDavSynchronizer
 {
   public class ComponentContainer: IReportsViewModelParent
   {
+    public const string MessageBoxTitle = "CalDav Synchronizer";
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
     // ReSharper disable once ConvertToConstant.Local
     private readonly int c_requiredEntityCacheVersion = 1;
@@ -83,6 +84,7 @@ namespace CalDavSynchronizer
     private readonly ReportGarbageCollection _reportGarbageCollection;
     private readonly SynchronizerFactory _synchronizerFactory;
     private readonly DaslFilterProvider _daslFilterProvider;
+    private readonly IAvailableVersionService _availableVersionService;
 
 
     public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
@@ -147,7 +149,8 @@ namespace CalDavSynchronizer
 
       _scheduler.SetOptions (options, generalOptions.CheckIfOnline);
 
-      _updateChecker = new UpdateChecker (new AvailableVersionService(), () => _generalOptionsDataAccess.IgnoreUpdatesTilVersion);
+      _availableVersionService = new AvailableVersionService();
+      _updateChecker = new UpdateChecker (_availableVersionService, () => _generalOptionsDataAccess.IgnoreUpdatesTilVersion);
       _updateChecker.NewerVersionFound += UpdateChecker_NewerVersionFound;
       _updateChecker.IsEnabled = generalOptions.ShouldCheckForNewerVersions;
 
@@ -582,6 +585,40 @@ namespace CalDavSynchronizer
       SynchronizationContext.Current.Send (_ => ShowGetNewVersionForm (e), null);
     }
 
+    public async void CheckForUpdatesNowNoThrow ()
+    {
+      try
+      {
+        s_logger.Info ("CheckForUpdates manually triggered");
+        EnsureSynchronizationContext ();
+
+        var availableVersion = await Task.Run((Func<Version>)_availableVersionService.GetVersionOfDefaultDownload);
+        if (availableVersion == null)
+        {
+          MessageBox.Show ("Did not find any default Version!", MessageBoxTitle);
+          return;
+        }
+
+        var currentVersion = Assembly.GetExecutingAssembly ().GetName ().Version;
+        if (availableVersion > currentVersion)
+        {
+          ShowGetNewVersionForm(
+              new NewerVersionFoundEventArgs (
+                  availableVersion,
+                  _availableVersionService.GetWhatsNewNoThrow (currentVersion, availableVersion),
+                  _availableVersionService.DownloadLink));
+        }
+        else
+        {
+          MessageBox.Show ("No newer Version available.", MessageBoxTitle);
+        }
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.HandleException (x, s_logger);
+      }
+    }
+
     private void ShowGetNewVersionForm (NewerVersionFoundEventArgs e)
     {
       try
@@ -593,13 +630,13 @@ namespace CalDavSynchronizer
           options.ShouldCheckForNewerVersions = false;
           _generalOptionsDataAccess.SaveOptions (options);
 
-          MessageBox.Show ("Automatic check for newer version turned off.", "CalDav Synchronizer");
+          MessageBox.Show ("Automatic check for newer version turned off.", MessageBoxTitle);
         };
 
         form.IgnoreThisVersion += delegate
         {
           _generalOptionsDataAccess.IgnoreUpdatesTilVersion = e.NewVersion;
-          MessageBox.Show (string.Format ("Waiting for newer version than '{0}'.", e.NewVersion), "CalDav Synchronizer");
+          MessageBox.Show (string.Format ("Waiting for newer version than '{0}'.", e.NewVersion),  MessageBoxTitle);
         };
 
         form.ShowDialog();

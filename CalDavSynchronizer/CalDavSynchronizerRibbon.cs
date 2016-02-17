@@ -56,7 +56,7 @@ namespace CalDavSynchronizer
 
     private void AboutButton_Click (object sender, RibbonControlEventArgs e)
     {
-      using (var aboutForm = new AboutForm())
+      using (var aboutForm = new AboutForm(ThisAddIn.ComponentContainer.CheckForUpdatesNowNoThrow))
       {
         aboutForm.ShowDialog();
       }

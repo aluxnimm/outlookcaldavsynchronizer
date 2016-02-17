@@ -25,9 +25,11 @@ namespace CalDavSynchronizer.Ui
   {
     private readonly string _payPalUrl = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PWA2N6P5WRSJJ";
     private readonly string _helpUrl = "https://sourceforge.net/p/outlookcaldavsynchronizer/wiki/Home/";
+    private readonly Action _checkForUpdatesAction;
 
-    public AboutForm ()
+    public AboutForm (Action checkForUpdatesAction)
     {
+      _checkForUpdatesAction = checkForUpdatesAction;
       InitializeComponent();
       _versionLabel.Text = string.Format (_versionLabel.Text, Assembly.GetExecutingAssembly().GetName().Version);
 
@@ -71,6 +73,11 @@ namespace CalDavSynchronizer.Ui
     private void linkLabelHelp_LinkClicked (object sender, LinkLabelLinkClickedEventArgs e)
     {
       Process.Start (_helpUrl);
+    }
+
+    private void _checkForUpdatesButton_Click (object sender, EventArgs e)
+    {
+      _checkForUpdatesAction();
     }
   }
 }
