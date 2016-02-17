@@ -74,6 +74,16 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 1.18.0 ####
+- New features
+	- Deactivate prefix filter for custom message_classes by default and make it configurable as general option, since Windows Search Service was needed and not available in all setups.
+	- Add manual "Check for Update" button in about box.
+- Bug fixes
+	- proper check for IsInstantSearchEnabled for the store when using prefix filter.
+	- Remove unused DisplayAllProfilesAsGeneric general option.
+	- Remove unneeded enableTaskSynchronization in app.config.
+	- Change mapping errors to warnings for logging.
+
 #### 1.17.0 ####
 - New features
 	- Improved formatted view for sync reports with possibility to view Outlook and server entities causing mapping warnings or errors.
@@ -622,6 +632,7 @@ In the General Options Dialog you can change settings which are used for all syn
 - **Check Internet connection before sync run** checks if an interface is up and try DNS query to dns.msftncsi.com first and if that fails try to download http://www.msftncsi.com/ncsi.txt with the configured proxy before each sync run to avoid error reports if network is unavailable after hibernate for example. Disable this option if you are in a local network where DNS and that URL is blocked.
 - **Store data in roaming folder** set to true if you need to store state and profile data in the AppData\Roaming\ directory for roaming profiles in a AD domain for example. When changing this option, a restart of Outlook is required.
 - **Fix invalid settings** Fixes invalid settings automatically, when synchronization profiles are edited.
+- **Include custom message classes in Outlook filter** Disabled by default, enable only if you have custom forms with message_classes other than the default IPM.Appointment/Contact/Task. For better performance, Windows Search Service shouldn't be deactivated if this option is enabled.
 
 If you have problems with SSL/TLS and self-signed certificates, you can change the following settings at your own risk.
 The recommended way would be to add the self signed cert to the Local Computer Trusted Root Certification Authorities
