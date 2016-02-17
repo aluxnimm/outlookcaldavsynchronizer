@@ -201,7 +201,8 @@ namespace CalDavSynchronizer.Ui.Options
       this._includeCustomMessageClassesCheckBox.TabIndex = 7;
       this._includeCustomMessageClassesCheckBox.Text = "Include custom message classes in Outlook filter";
       this._toolTip.SetToolTip(this._includeCustomMessageClassesCheckBox, "Use prefix filter to include also custom message_classes in filter for Outlook fo" +
-        "lders. \r\nThis option needs Windows Search Service enabled.\r\n");
+        "lders. \r\nFor better performance, Windows Search Service shouldn\'t be deactivated" +
+        " if this option is enabled.");
       this._includeCustomMessageClassesCheckBox.UseVisualStyleBackColor = true;
       // 
       // groupBox2
