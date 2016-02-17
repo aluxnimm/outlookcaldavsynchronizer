@@ -14,33 +14,45 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
+using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
-using NUnit.Framework;
 
-namespace CalDavDataAccessIntegrationTests
+namespace CalDavSynchronizer.Ui.Options.Mapping
 {
-  public class ZimbraSynchronousWebRequestBased : FixtureBase
+  public partial class ContactMappingConfigurationForm : Form, IConfigurationForm<ContactMappingConfiguration>
   {
-    protected override string ProfileName
+    public ContactMappingConfigurationForm ()
     {
-      get { return "TestCal-Zimbra"; }
+      InitializeComponent();
     }
 
-    protected override ServerAdapterType? ServerAdapterTypeOverride
+    private void _okButton_Click (object sender, EventArgs e)
     {
-      get { return ServerAdapterType.WebDavSynchronousWebRequestBased; }
+      DialogResult = DialogResult.OK;
     }
 
-    [Ignore ("Zimbra always returns false")]
-    public override System.Threading.Tasks.Task DoesSupportCalendarQuery ()
+    public bool Display ()
     {
-      return base.DoesSupportCalendarQuery();
+      return ShowDialog() == DialogResult.OK;
     }
 
-    protected override bool DeletedEntitesAreJustMarkedAsDeletedAndStillAvailableViaCalendarMultigetReport
+    public ContactMappingConfiguration Options
     {
-      get { return true; }
+      get
+      {
+        return new ContactMappingConfiguration
+               {
+                   MapBirthday = _mapBirthdayCheckBox.Checked,
+                   MapContactPhoto = _mapContactPhotoCheckBox.Checked
+               };
+      }
+      set
+      {
+        _mapBirthdayCheckBox.Checked = value.MapBirthday;
+        _mapContactPhotoCheckBox.Checked = value.MapContactPhoto;
+      }
     }
   }
 }

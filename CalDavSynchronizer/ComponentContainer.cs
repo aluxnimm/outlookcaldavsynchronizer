@@ -51,6 +51,7 @@ using Microsoft.Office.Interop.Outlook;
 using Application = Microsoft.Office.Interop.Outlook.Application;
 using Exception = System.Exception;
 using System.Collections.Generic;
+using CalDavSynchronizer.Ui.Options;
 using GenSync.EntityRelationManagement;
 using MessageBox = System.Windows.Forms.MessageBox;
 

@@ -14,16 +14,20 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
 
-namespace CalDavSynchronizer.Ui.ConnectionTests
+using System;
+using CalDavSynchronizer.Contracts;
+using Microsoft.Office.Interop.Outlook;
+
+namespace CalDavSynchronizer.Ui.Options
 {
-  [Flags]
-  public enum ResourceType
+  public interface IServerSettingsControlDependencies
   {
-    None = 0,
-    Calendar = 1,
-    AddressBook = 2,
-    TaskList = 4,
+    bool CloseConnectionAfterEachRequest { get; }
+    bool PreemptiveAuthentication { get; }
+    ProxyOptions ProxyOptions { get; }
+    OlItemType? OutlookFolderType { get; }
+    bool SelectedSynchronizationModeRequiresWriteableServerResource { get; }
+    string SelectedSynchronizationModeDisplayName { get; }
   }
 }

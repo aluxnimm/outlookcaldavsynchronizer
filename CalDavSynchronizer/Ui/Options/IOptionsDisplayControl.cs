@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -14,16 +14,21 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
 
-namespace CalDavSynchronizer.Ui.ConnectionTests
+using System;
+using System.Text;
+using System.Windows.Forms;
+
+namespace CalDavSynchronizer.Ui.Options
 {
-  [Flags]
-  public enum ResourceType
+  public interface IOptionsDisplayControl
   {
-    None = 0,
-    Calendar = 1,
-    AddressBook = 2,
-    TaskList = 4,
+    event EventHandler DeletionRequested;
+    event EventHandler CopyRequested;
+    event EventHandler<HeaderEventArgs> HeaderChanged;
+    Contracts.Options Options { set; get; }
+    Control UiControl { get; }
+    bool Validate (StringBuilder errorMessageBuilder);
+    string ProfileName { get; }
   }
 }

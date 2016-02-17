@@ -14,16 +14,14 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
 
-namespace CalDavSynchronizer.Ui.ConnectionTests
+using System;
+using CalDavSynchronizer.DataAccess;
+
+namespace CalDavSynchronizer.Ui.Options
 {
-  [Flags]
-  public enum ResourceType
+  public interface IServerSettingsControl
   {
-    None = 0,
-    Calendar = 1,
-    AddressBook = 2,
-    TaskList = 4,
+    ICalDavDataAccess CreateCalDavDataAccess ();
   }
 }

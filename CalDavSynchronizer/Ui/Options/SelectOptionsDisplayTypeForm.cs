@@ -14,33 +14,38 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
+using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
-using NUnit.Framework;
 
-namespace CalDavDataAccessIntegrationTests
+namespace CalDavSynchronizer.Ui.Options
 {
-  public class ZimbraSynchronousWebRequestBased : FixtureBase
+  public partial class SelectOptionsDisplayTypeForm : Form
   {
-    protected override string ProfileName
+    public SelectOptionsDisplayTypeForm ()
     {
-      get { return "TestCal-Zimbra"; }
+      InitializeComponent();
     }
 
-    protected override ServerAdapterType? ServerAdapterTypeOverride
+    private void _okButton_Click (object sender, EventArgs e)
     {
-      get { return ServerAdapterType.WebDavSynchronousWebRequestBased; }
+      DialogResult = DialogResult.OK;
     }
 
-    [Ignore ("Zimbra always returns false")]
-    public override System.Threading.Tasks.Task DoesSupportCalendarQuery ()
+    public static OptionsDisplayType? QueryOptionsDisplayType ()
     {
-      return base.DoesSupportCalendarQuery();
-    }
+      var form = new SelectOptionsDisplayTypeForm();
+      if (form.ShowDialog() == DialogResult.OK)
+      {
+        if (form._genericTypeRadioButton.Checked)
+          return OptionsDisplayType.Generic;
 
-    protected override bool DeletedEntitesAreJustMarkedAsDeletedAndStillAvailableViaCalendarMultigetReport
-    {
-      get { return true; }
+        if (form._googleTypeRadionButton.Checked)
+          return OptionsDisplayType.Google;
+      }
+
+      return null;
     }
   }
 }

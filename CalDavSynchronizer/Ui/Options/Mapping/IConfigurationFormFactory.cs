@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -14,16 +14,16 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
 
-namespace CalDavSynchronizer.Ui.ConnectionTests
+using System;
+using CalDavSynchronizer.Contracts;
+
+namespace CalDavSynchronizer.Ui.Options.Mapping
 {
-  [Flags]
-  public enum ResourceType
+  public interface IConfigurationFormFactory
   {
-    None = 0,
-    Calendar = 1,
-    AddressBook = 2,
-    TaskList = 4,
+    IConfigurationForm<T> CreateGenericForm<T> (object configurationElement);
+    IConfigurationForm<EventMappingConfiguration> Create (EventMappingConfiguration configurationElement);
+    IConfigurationForm<ContactMappingConfiguration> Create (ContactMappingConfiguration configurationElement);
   }
 }

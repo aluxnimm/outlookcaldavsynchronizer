@@ -14,16 +14,23 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
 
-namespace CalDavSynchronizer.Ui.ConnectionTests
+using System;
+using Microsoft.Office.Interop.Outlook;
+
+namespace CalDavSynchronizer.Ui.Options
 {
-  [Flags]
-  public enum ResourceType
+  public class HeaderEventArgs : EventArgs
   {
-    None = 0,
-    Calendar = 1,
-    AddressBook = 2,
-    TaskList = 4,
+    public HeaderEventArgs (string name, bool isInactive, OlItemType? folderItemType)
+    {
+      FolderItemType = folderItemType;
+      IsInactive = isInactive;
+      Name = name;
+    }
+
+    public string Name { get; private set; }
+    public bool IsInactive { get; private set; }
+    public OlItemType? FolderItemType { get; private set; }
   }
 }
