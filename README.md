@@ -560,11 +560,17 @@ The following properties need to be set for a new generic profile:
 		- For appointments you can choose if you want to map reminders (just upcoming, all or none) and the description body.
 		- *Create events on server in UTC:* Use UTC instead of Outlook Appointment Timezone for creating events on CalDAV server. Needed for GMX for example. Not recommended for general use, because recurrence exceptions over DST changes can't be mapped and Appointments with different start and end timezones can't be represented.
 		- In *Privacy settings* you can configure if you want to map Outlook private appointments to CLASS:CONFIDENTIAL and vice versa. This could be useful for Owncloud for example, if you share your calendar with others and they should see start/end dates of your private appointments.
-		- In *Scheduling settings* you can configure if you want to map attendees and organizer and if notifications should be sent by the server. (Use *Don't send appointment notifications for SOGo servers and SCHEDULE-AGENT:CLIENT for other servers if you want to send invitations from Outlook and avoid that the server sends invitations too). 
-		-  You can also define a filter category so that multiple CalDAV-Calendars can be synchronized into one Outlook calendar via the defined category (see Category Filter and Color below). 
-		-  For contacts you can configure if birthdays should be mapped or not. If birthdays are mapped, Outlook also creates an recurring appointment for every contact with a defined birthday.
-		-  You can also configure if contact photos should be mapped or not. Contact photo mapping from Outlook to the server doesn't work in Outlook 2007.
+		- In *Scheduling settings* you can configure if you want to map attendees and organizer and if notifications should be sent by the server. 
+		- Use *Don't send appointment notifications for SOGo servers and SCHEDULE-AGENT=CLIENT for other servers if you want to send invitations from Outlook and avoid that the server sends invitations too, but be aware that not all servers (e.g. Google) support the SCHEDULE-AGENT=CLIENT setting. 
+		- You can also define a filter category so that multiple CalDAV-Calendars can be synchronized into one Outlook calendar via the defined category (see Category Filter and Color below). 
+		- For contacts you can configure if birthdays should be mapped or not. If birthdays are mapped, Outlook also creates an recurring appointment for every contact with a defined birthday.
+		- You can also configure if contact photos should be mapped or not. Contact photo mapping from Outlook to the server doesn't work in Outlook 2007.
 	
+### Scheduling settings and resources ###
+
+If your server supports resources (for SOGo see [http://wiki.sogo.nu/ResourceConfiguration](http://wiki.sogo.nu/ResourceConfiguration))
+disable "set SCHEDULE-AGENT=CLIENT" in Mapping Configuration, so that the server can handle the resource invitation mails, add the resource email adress as attendee in the Outlook appointment and choose type ressource (house icon) for it.
+ 
 ### Category Filter and Color ###
 
 If you want to sync multiple CalDAV calendars into one Outlook folder you can configure an Outlook category for filtering in the 
@@ -589,7 +595,7 @@ For GMX addressbook use the DAV Url `https://carddav.gmx.net`
 
 ### Synology NAS settings ###
 
-When test settings for you synology NAS profile, you can ignore the warning "The specified Url does not support calendar queries. Some features like time range filter may not work!".
+When test settings for your synology NAS profile, you can ignore the warning "The specified Url does not support calendar queries. Some features like time range filter may not work!".
 But a user reported, that "Disable directory browsing" setting **must not** be enabled for the calendar folder for proper syncing.
 
 For Synology NAS with SSL support use port 5006 and the following settings in your NAS:
