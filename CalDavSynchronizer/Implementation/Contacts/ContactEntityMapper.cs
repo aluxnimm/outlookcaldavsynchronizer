@@ -371,8 +371,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
           }
           catch (COMException ex)
           {
-            s_logger.Error ("Could not get property PR_EMAIL1ADDRESS for Email1Address", ex);
-            logger.LogMappingError ("Could not get property PR_EMAIL1ADDRESS for Email1Address", ex);
+            s_logger.Warn ("Could not get property PR_EMAIL1ADDRESS for Email1Address", ex);
+            logger.LogMappingWarning ("Could not get property PR_EMAIL1ADDRESS for Email1Address", ex);
           }
         }
         else
@@ -395,8 +395,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
           }
           catch (COMException ex)
           {
-            s_logger.Error ("Could not get property PR_EMAIL2ADDRESS for Email2Address", ex);
-            logger.LogMappingError ("Could not get property PR_EMAIL2ADDRESS for Email2Address", ex);
+            s_logger.Warn ("Could not get property PR_EMAIL2ADDRESS for Email2Address", ex);
+            logger.LogMappingWarning ("Could not get property PR_EMAIL2ADDRESS for Email2Address", ex);
           }
         }
         else
@@ -419,8 +419,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
           }
           catch (COMException ex)
           {
-            s_logger.Error ("Could not get property PR_EMAIL3ADDRESS for Email3Address", ex);
-            logger.LogMappingError ("Could not get property PR_EMAIL3ADDRESS for Email3Address", ex);
+            s_logger.Warn ("Could not get property PR_EMAIL3ADDRESS for Email3Address", ex);
+            logger.LogMappingWarning ("Could not get property PR_EMAIL3ADDRESS for Email3Address", ex);
           }
         }
         else
@@ -484,8 +484,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
       catch (COMException ex)
       {
-        s_logger.Error ("Could not get property PR_USER_X509_CERTIFICATE for contact.", ex);
-        logger.LogMappingError ("Could not get property PR_USER_X509_CERTIFICATE for contact.", ex);
+        s_logger.Warn ("Could not get property PR_USER_X509_CERTIFICATE for contact.", ex);
+        logger.LogMappingWarning ("Could not get property PR_USER_X509_CERTIFICATE for contact.", ex);
       }
     }
 
@@ -502,13 +502,13 @@ namespace CalDavSynchronizer.Implementation.Contacts
           }
           catch (COMException ex)
           {
-            s_logger.Error ("Could not set property PR_USER_X509_CERTIFICATE for contact.", ex);
-            logger.LogMappingError ("Could not set property PR_USER_X509_CERTIFICATE for contact.", ex);
+            s_logger.Warn ("Could not set property PR_USER_X509_CERTIFICATE for contact.", ex);
+            logger.LogMappingWarning ("Could not set property PR_USER_X509_CERTIFICATE for contact.", ex);
           }
           catch (System.UnauthorizedAccessException ex)
           {
-            s_logger.Error ("Could not access PR_USER_X509_CERTIFICATE for contact.", ex);
-            logger.LogMappingError ("Could not access PR_USER_X509_CERTIFICATE for contact.", ex);
+            s_logger.Warn ("Could not access PR_USER_X509_CERTIFICATE for contact.", ex);
+            logger.LogMappingWarning ("Could not access PR_USER_X509_CERTIFICATE for contact.", ex);
           }
         }
       }
@@ -531,11 +531,13 @@ namespace CalDavSynchronizer.Implementation.Contacts
               }
               catch (COMException ex)
               {
-                s_logger.Error ("Could not get property PR_ATTACH_DATA_BIN to export picture for contact.", ex);
+                s_logger.Warn ("Could not get property PR_ATTACH_DATA_BIN to export picture for contact.", ex);
+                logger.LogMappingWarning ("Could not get property PR_ATTACH_DATA_BIN to export picture for contact.", ex);
               }
               catch (System.UnauthorizedAccessException ex)
               {
-                s_logger.Error ("Could not access PR_ATTACH_DATA_BIN to export picture for contact.", ex);
+                s_logger.Warn ("Could not access PR_ATTACH_DATA_BIN to export picture for contact.", ex);
+                logger.LogMappingWarning ("Could not get property PR_ATTACH_DATA_BIN to export picture for contact.", ex);
               }
             }
           }

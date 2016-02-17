@@ -411,8 +411,8 @@ namespace CalDavSynchronizer.Implementation.Events
       }
       catch (COMException ex)
       {
-        s_logger.Error ("Can't get organizer of appointment", ex);
-        logger.LogMappingError ("Can't get organizer of appointment", ex);
+        s_logger.Warn ("Can't get organizer of appointment", ex);
+        logger.LogMappingWarning ("Can't get organizer of appointment", ex);
         return null;
       }
     }
@@ -439,8 +439,8 @@ namespace CalDavSynchronizer.Implementation.Events
               }
               catch (COMException ex)
               {
-                s_logger.Error ("Can't access property PR_SENDER_EMAIL_ADDRESS of appointment", ex);
-                logger.LogMappingError ("Can't access property PR_SENDER_EMAIL_ADDRESS of appointment", ex);
+                s_logger.Warn ("Can't access property PR_SENDER_EMAIL_ADDRESS of appointment", ex);
+                logger.LogMappingWarning ("Can't access property PR_SENDER_EMAIL_ADDRESS of appointment", ex);
               }
               SetOrganizer (target, source.Organizer, organizerEmail, logger);
             }
@@ -472,8 +472,8 @@ namespace CalDavSynchronizer.Implementation.Events
         }
         else
         {
-          s_logger.ErrorFormat ("Invalid email address URI {0} for organizer", organizerEmail);
-          logger.LogMappingError ($"Invalid email address Uri '{organizerEmail}' for organizer");
+          s_logger.WarnFormat ("Invalid email address URI {0} for organizer", organizerEmail);
+          logger.LogMappingWarning ($"Invalid email address Uri '{organizerEmail}' for organizer");
           targetOrganizer = new Organizer();
         }
       }
@@ -501,8 +501,8 @@ namespace CalDavSynchronizer.Implementation.Events
         }
         catch (COMException ex)
         {
-          s_logger.Error ("Could not get type from AddressEntry", ex);
-          logger.LogMappingError ("Could not get type from AddressEntry", ex);
+          s_logger.Warn ("Could not get type from AddressEntry", ex);
+          logger.LogMappingWarning ("Could not get type from AddressEntry", ex);
           return null;
         }
         if (type == OlAddressEntryUserType.olExchangeUserAddressEntry
@@ -523,8 +523,8 @@ namespace CalDavSynchronizer.Implementation.Events
           }
           catch (COMException ex)
           {
-            s_logger.Error ("Could not get email address from adressEntry.GetExchangeUser()", ex);
-            logger.LogMappingError ("Could not get email address from adressEntry.GetExchangeUser()", ex);
+            s_logger.Warn ("Could not get email address from adressEntry.GetExchangeUser()", ex);
+            logger.LogMappingWarning ("Could not get email address from adressEntry.GetExchangeUser()", ex);
           }
         }
         else if (type == OlAddressEntryUserType.olExchangeDistributionListAddressEntry
@@ -542,8 +542,8 @@ namespace CalDavSynchronizer.Implementation.Events
           }
           catch (COMException ex)
           {
-            s_logger.Error ("Could not get email address from adressEntry.GetExchangeDistributionList()", ex);
-            logger.LogMappingError ("Could not get email address from adressEntry.GetExchangeDistributionList()", ex);
+            s_logger.Warn ("Could not get email address from adressEntry.GetExchangeDistributionList()", ex);
+            logger.LogMappingWarning ("Could not get email address from adressEntry.GetExchangeDistributionList()", ex);
           }
         }
         else if (type == OlAddressEntryUserType.olSmtpAddressEntry
@@ -574,8 +574,8 @@ namespace CalDavSynchronizer.Implementation.Events
             }
             catch (COMException ex)
             {
-              s_logger.Error ("Could not get email address from adressEntry.GetContact()", ex);
-              logger.LogMappingError ("Could not get email address from adressEntry.GetContact()", ex);
+              s_logger.Warn ("Could not get email address from adressEntry.GetContact()", ex);
+              logger.LogMappingWarning ("Could not get email address from adressEntry.GetContact()", ex);
             }
           }
           else
@@ -591,8 +591,8 @@ namespace CalDavSynchronizer.Implementation.Events
           }
           catch (COMException ex)
           {
-            s_logger.Error ("Could not get property PR_SMTP_ADDRESS for adressEntry", ex);
-            logger.LogMappingError ("Could not get property PR_SMTP_ADDRESS for adressEntry", ex);
+            s_logger.Warn ("Could not get property PR_SMTP_ADDRESS for adressEntry", ex);
+            logger.LogMappingWarning ("Could not get property PR_SMTP_ADDRESS for adressEntry", ex);
           }
         }
       }
@@ -602,8 +602,8 @@ namespace CalDavSynchronizer.Implementation.Events
         var emailAddressUriString = string.Format("MAILTO:{0}", emailAddress);
         if (!Uri.IsWellFormedUriString(emailAddressUriString, UriKind.Absolute))
         {
-          s_logger.ErrorFormat("Invalid email address URI {0} for attendee.", emailAddressUriString);
-          logger.LogMappingError($"Invalid email address Uri '{emailAddressUriString}' for attendee.");
+          s_logger.WarnFormat ("Invalid email address URI {0} for attendee.", emailAddressUriString);
+          logger.LogMappingWarning ($"Invalid email address Uri '{emailAddressUriString}' for attendee.");
           return null;
         }
         return emailAddressUriString;
@@ -766,13 +766,13 @@ namespace CalDavSynchronizer.Implementation.Events
               }
               catch (COMException ex)
               {
-                s_logger.Error ("Can't get AppointmentItem of Exception, ignoring!", ex);
-                logger.LogMappingError ("Can't get AppointmentItem of Exception, ignoring!", ex);
+                s_logger.Warn ("Can't get AppointmentItem of Exception, ignoring!", ex);
+                logger.LogMappingWarning ("Can't get AppointmentItem of Exception, ignoring!", ex);
               }
               catch (ArgumentException x)
               {
-                s_logger.Error ("Can't get AppointmentItem of Exception, ignoring!", x);
-                logger.LogMappingError ("Can't get AppointmentItem of Exception, ignoring!", x);
+                s_logger.Warn ("Can't get AppointmentItem of Exception, ignoring!", x);
+                logger.LogMappingWarning ("Can't get AppointmentItem of Exception, ignoring!", x);
               }
             }
             else
@@ -1019,8 +1019,8 @@ namespace CalDavSynchronizer.Implementation.Events
                 }
                 catch (COMException ex)
                 {
-                  s_logger.Error ("Can't find occurence of exception", ex);
-                  logger.LogMappingError ("Can't find occurence of exception", ex);
+                  s_logger.Warn ("Can't find occurence of exception, ignoring.", ex);
+                  logger.LogMappingWarning ("Can't find occurence of exception, ignoring.", ex);
                 }
               }
             }
@@ -1086,8 +1086,8 @@ namespace CalDavSynchronizer.Implementation.Events
         }
         catch (COMException ex)
         {
-          s_logger.Error ("Can't find occurence of exception or exception can't be saved", ex);
-          logger.LogMappingError ("Can't find occurence of exception or exception can't be saved", ex);
+          s_logger.Warn ("Can't find occurence of exception or exception can't be saved, ignoring.", ex);
+          logger.LogMappingWarning ("Can't find occurence of exception or exception can't be saved, ignoring.", ex);
         }
       }
     }
@@ -1280,8 +1280,8 @@ namespace CalDavSynchronizer.Implementation.Events
         targetWrapper.Inner.Start = source.Start.Value;
         if (source.End == null || source.End.Value <= source.Start.Value)
         {
-          s_logger.Error ("Invalid EndDate of appointment, setting to StartDate + 1 day.");
-          logger.LogMappingError ("Invalid EndDate of appointment, setting to StartDate + 1 day.");
+          s_logger.Warn ("Invalid EndDate of appointment, setting to StartDate + 1 day.");
+          logger.LogMappingWarning ("Invalid EndDate of appointment, setting to StartDate + 1 day.");
           targetWrapper.Inner.End = source.Start.Value.AddDays (1);
         }
         else
@@ -1303,8 +1303,8 @@ namespace CalDavSynchronizer.Implementation.Events
           }
           catch (COMException ex)
           {
-            s_logger.Error ("Can't set StartTimeZone of appointment.", ex);
-            logger.LogMappingError ("Can't set StartTimeZone of appointment.", ex);
+            s_logger.Warn ("Can't set StartTimeZone of appointment.", ex);
+            logger.LogMappingWarning ("Can't set StartTimeZone of appointment.", ex);
           }
           catch (TimeZoneNotFoundException)
           {
@@ -1332,8 +1332,8 @@ namespace CalDavSynchronizer.Implementation.Events
             }
             catch (COMException ex)
             {
-              s_logger.Error ("Can't set EndTimeZone of appointment.", ex);
-              logger.LogMappingError ("Can't set EndTimeZone of appointment.", ex);
+              s_logger.Warn ("Can't set EndTimeZone of appointment.", ex);
+              logger.LogMappingWarning ("Can't set EndTimeZone of appointment.", ex);
             }
             catch (TimeZoneNotFoundException)
             {
@@ -1354,8 +1354,8 @@ namespace CalDavSynchronizer.Implementation.Events
           }
           catch (COMException ex)
           {
-            s_logger.Error ("Invalid EndTime of appointment, setting StartTime.", ex);
-            logger.LogMappingError ("Invalid EndTime of appointment, setting StartTime.", ex);
+            s_logger.Warn ("Invalid EndTime of appointment, setting StartTime.", ex);
+            logger.LogMappingWarning ("Invalid EndTime of appointment, setting StartTime.", ex);
             if (source.Start.HasTime)
             {
               targetWrapper.Inner.EndTimeZone = targetWrapper.Inner.StartTimeZone;
@@ -1488,8 +1488,8 @@ namespace CalDavSynchronizer.Implementation.Events
             }
             catch (UriFormatException ex)
             {
-              s_logger.Error ("Ignoring invalid Uri in attendee email.", ex);
-              logger.LogMappingError ("Ignoring invalid Uri in attendee email.", ex);
+              s_logger.Warn ("Ignoring invalid Uri in attendee email.", ex);
+              logger.LogMappingWarning ("Ignoring invalid Uri in attendee email.", ex);
             }
           }
           if (attendeeEmail.Length >= s_mailtoSchemaLength && !string.IsNullOrEmpty (attendeeEmail.Substring (s_mailtoSchemaLength)))
@@ -1532,8 +1532,8 @@ namespace CalDavSynchronizer.Implementation.Events
           }
           catch (UriFormatException ex)
           {
-            s_logger.Error ("Ignoring invalid Uri in organizer email.", ex);
-            logger.LogMappingError ("Ignoring invalid Uri in organizer email.", ex);
+            s_logger.Warn ("Ignoring invalid Uri in organizer email.", ex);
+            logger.LogMappingWarning ("Ignoring invalid Uri in organizer email.", ex);
           }
 
           if (StringComparer.InvariantCultureIgnoreCase.Compare (sourceOrganizerEmail, _outlookEmailAddress) != 0)
@@ -1599,8 +1599,8 @@ namespace CalDavSynchronizer.Implementation.Events
                   }
                   catch (COMException ex)
                   {
-                    s_logger.Error ("Could not set property PR_SENDER_* for organizer", ex);
-                    logger.LogMappingError ("Could not set property PR_SENDER_* for organizer", ex);
+                    s_logger.Warn ("Could not set property PR_SENDER_* for organizer", ex);
+                    logger.LogMappingWarning ("Could not set property PR_SENDER_* for organizer", ex);
                   }
                 }
               }
