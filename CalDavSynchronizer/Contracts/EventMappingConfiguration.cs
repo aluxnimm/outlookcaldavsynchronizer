@@ -20,6 +20,7 @@ using System.Text;
 using System.Xml.Serialization;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Ui;
+using CalDavSynchronizer.Ui.Options.Mapping;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Contracts

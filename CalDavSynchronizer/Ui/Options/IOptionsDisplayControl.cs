@@ -14,33 +14,21 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
-using CalDavSynchronizer.Contracts;
-using NUnit.Framework;
+using System.Text;
+using System.Windows.Forms;
 
-namespace CalDavDataAccessIntegrationTests
+namespace CalDavSynchronizer.Ui.Options
 {
-  public class ZimbraSynchronousWebRequestBased : FixtureBase
+  public interface IOptionsDisplayControl
   {
-    protected override string ProfileName
-    {
-      get { return "TestCal-Zimbra"; }
-    }
-
-    protected override ServerAdapterType? ServerAdapterTypeOverride
-    {
-      get { return ServerAdapterType.WebDavSynchronousWebRequestBased; }
-    }
-
-    [Ignore ("Zimbra always returns false")]
-    public override System.Threading.Tasks.Task DoesSupportCalendarQuery ()
-    {
-      return base.DoesSupportCalendarQuery();
-    }
-
-    protected override bool DeletedEntitesAreJustMarkedAsDeletedAndStillAvailableViaCalendarMultigetReport
-    {
-      get { return true; }
-    }
+    event EventHandler DeletionRequested;
+    event EventHandler CopyRequested;
+    event EventHandler<HeaderEventArgs> HeaderChanged;
+    Contracts.Options Options { set; get; }
+    Control UiControl { get; }
+    bool Validate (StringBuilder errorMessageBuilder);
+    string ProfileName { get; }
   }
 }

@@ -29,7 +29,7 @@ namespace CalDavDataAccessIntegrationTests
 
     protected override ServerAdapterType? ServerAdapterTypeOverride
     {
-      get { return ServerAdapterType.SynchronousWebRequestBased; }
+      get { return ServerAdapterType.WebDavSynchronousWebRequestBased; }
     }
 
     [Ignore ("Google doesnt create a new entity in that case, it fails with precondition.")]

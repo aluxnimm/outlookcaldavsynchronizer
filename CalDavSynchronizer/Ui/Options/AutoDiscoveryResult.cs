@@ -14,33 +14,39 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
-using CalDavSynchronizer.Contracts;
-using NUnit.Framework;
+using CalDavSynchronizer.Ui.ConnectionTests;
 
-namespace CalDavDataAccessIntegrationTests
+namespace CalDavSynchronizer.Ui.Options
 {
-  public class ZimbraSynchronousWebRequestBased : FixtureBase
+  public struct AutoDiscoveryResult
   {
-    protected override string ProfileName
+    private readonly bool _wasCancelled;
+    private readonly Uri _ressourceUrl;
+    private readonly ResourceType _resourceType;
+
+    public AutoDiscoveryResult (Uri ressourceUrl, bool wasCancelled, ResourceType resourceType)
+        : this()
     {
-      get { return "TestCal-Zimbra"; }
+      _wasCancelled = wasCancelled;
+      _ressourceUrl = ressourceUrl;
+      _resourceType = resourceType;
     }
 
-    protected override ServerAdapterType? ServerAdapterTypeOverride
+    public bool WasCancelled
     {
-      get { return ServerAdapterType.WebDavSynchronousWebRequestBased; }
+      get { return _wasCancelled; }
     }
 
-    [Ignore ("Zimbra always returns false")]
-    public override System.Threading.Tasks.Task DoesSupportCalendarQuery ()
+    public Uri RessourceUrl
     {
-      return base.DoesSupportCalendarQuery();
+      get { return _ressourceUrl; }
     }
 
-    protected override bool DeletedEntitesAreJustMarkedAsDeletedAndStillAvailableViaCalendarMultigetReport
+    public ResourceType ResourceType
     {
-      get { return true; }
+      get { return _resourceType; }
     }
   }
 }

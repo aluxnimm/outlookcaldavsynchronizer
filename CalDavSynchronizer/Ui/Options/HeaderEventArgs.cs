@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -14,32 +14,23 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
-using System.Security.Cryptography;
-using System.Text;
-using System.Xml.Serialization;
-using CalDavSynchronizer.Implementation;
-using CalDavSynchronizer.Ui;
-using CalDavSynchronizer.Ui.Options.Mapping;
+using Microsoft.Office.Interop.Outlook;
 
-namespace CalDavSynchronizer.Contracts
+namespace CalDavSynchronizer.Ui.Options
 {
-  public class ContactMappingConfiguration : MappingConfigurationBase
+  public class HeaderEventArgs : EventArgs
   {
-
-    public bool MapBirthday { get; set; }
-
-    public bool MapContactPhoto { get; set; }
-
-    public ContactMappingConfiguration ()
+    public HeaderEventArgs (string name, bool isInactive, OlItemType? folderItemType)
     {
-      MapBirthday = true;
-      MapContactPhoto = true;
+      FolderItemType = folderItemType;
+      IsInactive = isInactive;
+      Name = name;
     }
 
-    public override IConfigurationForm<MappingConfigurationBase> CreateConfigurationForm (IConfigurationFormFactory factory)
-    {
-      return factory.Create (this);
-    }
+    public string Name { get; private set; }
+    public bool IsInactive { get; private set; }
+    public OlItemType? FolderItemType { get; private set; }
   }
 }
