@@ -22,6 +22,8 @@ using CalDavSynchronizer.Properties;
 using CalDavSynchronizer.Ui.Reports;
 using CalDavSynchronizer.Ui.Reports.ViewModels;
 using CalDavSynchronizer.Ui.Reports.Views;
+using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
+using CalDavSynchronizer.Ui.SystrayNotification.Views;
 
 namespace CalDavSynchronizer.Ui
 {
@@ -42,6 +44,20 @@ namespace CalDavSynchronizer.Ui
       reportsViewModel.RequiresBringToFront += delegate { window.BringToFront(); };
 
       SetWindowSize (window, 0.75);
+    }
+
+    public void Show (ProfileStatusesViewModel viewModel)
+    {
+      var view = new ProfileStatusesView ();
+      view.DataContext = viewModel;
+
+      var window = new GenericElementHostWindow ();
+
+      window.Text = "Synchronization Status";
+      window.Child = view;
+      window.Show ();
+    
+      SetWindowSize (window, 0.3);
     }
 
     private static void SetWindowSize (GenericElementHostWindow window, double ratioToCurrentScreensize)

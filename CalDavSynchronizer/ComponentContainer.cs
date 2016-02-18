@@ -50,6 +50,7 @@ using Exception = System.Exception;
 using System.Collections.Generic;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Ui.Options;
+using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
 using GenSync.EntityRelationManagement;
 using GenSync.Logging;
 using MessageBox = System.Windows.Forms.MessageBox;
@@ -82,6 +83,7 @@ namespace CalDavSynchronizer
     private readonly SynchronizerFactory _synchronizerFactory;
     private readonly DaslFilterProvider _daslFilterProvider;
     private readonly IAvailableVersionService _availableVersionService;
+    private readonly ProfileStatusesViewModel _profileStatusesViewModel;
 
 
     public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
@@ -142,6 +144,10 @@ namespace CalDavSynchronizer
 
       EnsureCacheCompatibility (options);
 
+
+      _profileStatusesViewModel = new ProfileStatusesViewModel();
+      _profileStatusesViewModel.EnsureProfilesDisplayed (options);
+
       _scheduler.SetOptions (options, generalOptions.CheckIfOnline);
 
       _availableVersionService = new AvailableVersionService();
@@ -194,6 +200,7 @@ namespace CalDavSynchronizer
     public void PostReport (SynchronizationReport report)
     {
       SaveAndShowReport(report);
+      _profileStatusesViewModel.Update (report);
     }
 
     private void SaveAndShowReport (SynchronizationReport report)
@@ -313,6 +320,7 @@ namespace CalDavSynchronizer
         {
           _optionsDataAccess.SaveOptions (newOptions);
           _scheduler.SetOptions (newOptions, generalOptions.CheckIfOnline);
+          _profileStatusesViewModel.EnsureProfilesDisplayed (newOptions);
           DeleteEntityChachesForChangedProfiles (options, newOptions);
 
           var changedOptions = CreateChangePairs (options, newOptions);
@@ -690,8 +698,8 @@ namespace CalDavSynchronizer
     {
       try
       {
-        EnsureSynchronizationContext();
-        ShowReports();
+        EnsureSynchronizationContext ();
+        ShowReports ();
       }
       catch (Exception x)
       {
@@ -729,6 +737,24 @@ namespace CalDavSynchronizer
       {
         _currentReportsViewModel.RequireBringToFront();
       }
+    }
+
+    public void ShowProfileStatusesNoThrow ()
+    {
+      try
+      {
+        EnsureSynchronizationContext ();
+        ShowProfileStatuses ();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.HandleException (x, s_logger);
+      }
+    }
+
+    private void ShowProfileStatuses ()
+    {
+      _uiService.Show (_profileStatusesViewModel);
     }
 
     public void DiplayAEntity (Guid synchronizationProfileId, string entityId)

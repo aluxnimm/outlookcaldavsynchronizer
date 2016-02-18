@@ -15,19 +15,19 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.using System;
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CalDavSynchronizer.Ui.Reports;
-using CalDavSynchronizer.Ui.Reports.ViewModels;
-using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
+using System;
+using System.Windows.Controls;
 
-namespace CalDavSynchronizer.Ui
+namespace CalDavSynchronizer.Ui.SystrayNotification.Views
 {
-  public interface  IUiService
+  /// <summary>
+  /// Interaction logic for ReportsView.xaml
+  /// </summary>
+  public partial class ProfileStatusesView : UserControl
   {
-     void Show (ReportsViewModel reportsViewModel);
-     void Show (ProfileStatusesViewModel viewModel);
+    public ProfileStatusesView ()
+    {
+      InitializeComponent();
+    }
   }
 }

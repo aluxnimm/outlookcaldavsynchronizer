@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="CalDavSynchronizer.Ui.SystrayNotification.Views.ProfileStatusesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.SystrayNotification.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{x:Static viewModels:ProfileStatusesViewModel.DesignInstance}">
+    <DataGrid ItemsSource="{Binding Profiles}" AutoGenerateColumns="False" >
+      <DataGrid.Columns>
+        <DataGridTextColumn Binding="{Binding ProfileName}" Header="Profile" IsReadOnly="True" />
+      <DataGridTextColumn Binding="{Binding LastResult}" Header="Status" IsReadOnly="True" />
+      <DataGridTextColumn Binding="{Binding LastRunMinutesAgo}" Header="Last run" IsReadOnly="True" />
+    </DataGrid.Columns>
+    </DataGrid>
+</UserControl>
+

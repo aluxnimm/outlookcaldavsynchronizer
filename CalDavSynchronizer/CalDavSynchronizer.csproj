@@ -610,6 +610,11 @@
     </Compile>
     <Compile Include="Ui\ProgressFormFactory.cs" />
     <Compile Include="Ui\Options\SettingsFaultFinder.cs" />
+    <Compile Include="Ui\SystrayNotification\ViewModels\ProfileStatusesViewModel.cs" />
+    <Compile Include="Ui\SystrayNotification\ViewModels\ProfileStatusViewModel.cs" />
+    <Compile Include="Ui\SystrayNotification\Views\ProfileStatusesViewModel.xaml.cs">
+      <DependentUpon>ProfileStatusesViewModel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Ui\UiService.cs" />
     <Compile Include="Ui\ViewModelBasecs.cs" />
     <Compile Include="Utilities\ColorHelper.cs" />
@@ -677,6 +682,10 @@
     <Page Include="Ui\Reports\Views\SynchronizationReportView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Ui\SystrayNotification\Views\ProfileStatusesViewModel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <PropertyGroup>
