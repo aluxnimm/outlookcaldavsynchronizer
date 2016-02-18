@@ -112,12 +112,4 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
       return viewModel;
     }
   }
-
-
-  public enum SyncronizationRunResult
-  {
-    Ok,
-    Warning,
-    Error
-  }
 }

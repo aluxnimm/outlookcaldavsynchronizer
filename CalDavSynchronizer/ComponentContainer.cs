@@ -50,6 +50,7 @@ using Exception = System.Exception;
 using System.Collections.Generic;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Ui.Options;
+using CalDavSynchronizer.Ui.SystrayNotification;
 using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
 using GenSync.EntityRelationManagement;
 using GenSync.Logging;
@@ -84,13 +85,13 @@ namespace CalDavSynchronizer
     private readonly DaslFilterProvider _daslFilterProvider;
     private readonly IAvailableVersionService _availableVersionService;
     private readonly ProfileStatusesViewModel _profileStatusesViewModel;
+    private readonly TrayNotifier _trayNotifier;
 
 
     public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
 
     public ComponentContainer (Application application)
     {
-      _uiService = new UiService();
       _generalOptionsDataAccess = new GeneralOptionsDataAccess();
 
       var generalOptions = _generalOptionsDataAccess.LoadOptions();
@@ -156,6 +157,15 @@ namespace CalDavSynchronizer
       _updateChecker.IsEnabled = generalOptions.ShouldCheckForNewerVersions;
 
       _reportGarbageCollection = new ReportGarbageCollection (_synchronizationReportRepository, TimeSpan.FromDays (generalOptions.MaxReportAgeInDays));
+
+      _trayNotifier = new TrayNotifier();
+      _trayNotifier.ShowProfileStatusesRequested += _trayNotifier_ShowProfileStatusesRequested;
+      _uiService = new UiService (_profileStatusesViewModel);
+    }
+
+    private void _trayNotifier_ShowProfileStatusesRequested (object sender, EventArgs e)
+    {
+      ShowProfileStatusesNoThrow();
     }
 
     private void EnsureCacheCompatibility (Options[] options)
@@ -201,6 +211,7 @@ namespace CalDavSynchronizer
     {
       SaveAndShowReport(report);
       _profileStatusesViewModel.Update (report);
+      _trayNotifier.NotifyUser (report);
     }
 
     private void SaveAndShowReport (SynchronizationReport report)
@@ -754,7 +765,7 @@ namespace CalDavSynchronizer
 
     private void ShowProfileStatuses ()
     {
-      _uiService.Show (_profileStatusesViewModel);
+      _uiService.ShowProfileStatusesWindow();
     }
 
     public void DiplayAEntity (Guid synchronizationProfileId, string entityId)

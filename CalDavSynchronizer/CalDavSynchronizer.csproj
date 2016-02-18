@@ -339,6 +339,11 @@
     <Compile Include="ChangeWatching\OutlookItemChangeWatcher.cs" />
     <Compile Include="DataAccess\WebResourceName.cs" />
     <Compile Include="Properties\AssemblyInfoCommon.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Reports\ISynchronizationReportSink.cs" />
     <Compile Include="Reports\ReportGarbageCollection.cs" />
     <Compile Include="Scheduling\ISynchronizerFactory.cs" />
@@ -586,14 +591,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <EmbeddedResource Include="Ui\ProgressForm.resx">
       <DependentUpon>ProgressForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -612,9 +612,11 @@
     <Compile Include="Ui\Options\SettingsFaultFinder.cs" />
     <Compile Include="Ui\SystrayNotification\ViewModels\ProfileStatusesViewModel.cs" />
     <Compile Include="Ui\SystrayNotification\ViewModels\ProfileStatusViewModel.cs" />
+    <Compile Include="Ui\SystrayNotification\SyncronizationRunResult.cs" />
     <Compile Include="Ui\SystrayNotification\Views\ProfileStatusesViewModel.xaml.cs">
       <DependentUpon>ProfileStatusesViewModel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Ui\SystrayNotification\TrayNotifier.cs" />
     <Compile Include="Ui\UiService.cs" />
     <Compile Include="Ui\ViewModelBasecs.cs" />
     <Compile Include="Utilities\ColorHelper.cs" />
@@ -649,6 +651,7 @@
     <None Include="Resources\SyncError.png" />
     <None Include="Resources\report.ico" />
     <None Include="Resources\GeneralOptions.ico" />
+    <None Include="Resources\ok.ico" />
     <Content Include="Resources\outlookcaldavsynchronizerlogoarrow.png" />
   </ItemGroup>
   <ItemGroup>

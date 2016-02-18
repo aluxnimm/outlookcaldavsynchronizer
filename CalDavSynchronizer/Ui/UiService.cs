@@ -29,6 +29,23 @@ namespace CalDavSynchronizer.Ui
 {
   internal class UiService : IUiService
   {
+    private readonly GenericElementHostWindow _profileStatusesWindow;
+
+    public UiService (ProfileStatusesViewModel viewModel)
+    {
+      var view = new ProfileStatusesView();
+      view.DataContext = viewModel;
+      _profileStatusesWindow = new GenericElementHostWindow();
+      _profileStatusesWindow.Text = "Synchronization Status";
+      _profileStatusesWindow.Child = view;
+      _profileStatusesWindow.FormClosing += (sender, e) =>
+      {
+        e.Cancel = true;
+        _profileStatusesWindow.Visible = false;
+      };
+    }
+
+
     public void Show (ReportsViewModel reportsViewModel)
     {
       var view = new ReportsView();
@@ -46,26 +63,21 @@ namespace CalDavSynchronizer.Ui
       SetWindowSize (window, 0.75);
     }
 
-    public void Show (ProfileStatusesViewModel viewModel)
+    public void ShowProfileStatusesWindow ()
     {
-      var view = new ProfileStatusesView ();
-      view.DataContext = viewModel;
-
-      var window = new GenericElementHostWindow ();
-
-      window.Text = "Synchronization Status";
-      window.Child = view;
-      window.Show ();
-    
-      SetWindowSize (window, 0.3);
+      if (_profileStatusesWindow.Visible)
+        _profileStatusesWindow.BringToFront();
+      else
+        _profileStatusesWindow.Visible = true;
     }
+
 
     private static void SetWindowSize (GenericElementHostWindow window, double ratioToCurrentScreensize)
     {
       var screenSize = Screen.FromControl (window).Bounds;
       window.Size = new Size (
-        (int)(screenSize.Size.Width * ratioToCurrentScreensize), 
-        (int)( screenSize.Size.Height * ratioToCurrentScreensize));
+          (int) (screenSize.Size.Width * ratioToCurrentScreensize),
+          (int) (screenSize.Size.Height * ratioToCurrentScreensize));
     }
   }
 }

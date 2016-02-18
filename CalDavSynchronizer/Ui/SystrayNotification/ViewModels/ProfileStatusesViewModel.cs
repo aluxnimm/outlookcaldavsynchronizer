@@ -92,8 +92,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
       var profileStatusViewModel = GetOrCreateProfileStatusViewModel (report.ProfileId);
       profileStatusViewModel.Update (report);
     }
-
-
+    
     public static ProfileStatusesViewModel DesignInstance
     {
       get
