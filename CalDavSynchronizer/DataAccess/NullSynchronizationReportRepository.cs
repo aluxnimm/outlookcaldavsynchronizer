@@ -39,8 +39,9 @@ namespace CalDavSynchronizer.DataAccess
         handler (this, e);
     }
 
-    public void AddReport (SynchronizationReport report)
+    public SynchronizationReportName AddReport (SynchronizationReport report)
     {
+      throw new NotSupportedException();
     }
 
     public IReadOnlyList<SynchronizationReportName> GetAvailableReports ()

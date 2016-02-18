@@ -20,7 +20,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Reports;
 using CalDavSynchronizer.Utilities;
 using log4net;
 
@@ -35,22 +35,22 @@ namespace CalDavSynchronizer.Scheduling
     private Dictionary<Guid, SynchronizationProfileRunner> _runnersById = new Dictionary<Guid, SynchronizationProfileRunner>();
     private readonly TimeSpan _timerInterval = TimeSpan.FromSeconds (30);
     private readonly ISynchronizerFactory _synchronizerFactory;
-    private readonly ISynchronizationReportRepository _synchronizationReportRepository;
+    private readonly ISynchronizationReportSink _reportSink;
     private readonly Action _ensureSynchronizationContext;
 
     public Scheduler (
-      ISynchronizerFactory synchronizerFactory, 
-      ISynchronizationReportRepository synchronizationReportRepository,
+      ISynchronizerFactory synchronizerFactory,
+      ISynchronizationReportSink reportSink,
       Action ensureSynchronizationContext)
     {
       if (synchronizerFactory == null)
-        throw new ArgumentNullException ("synchronizerFactory");
+        throw new ArgumentNullException (nameof (synchronizerFactory));
       if (ensureSynchronizationContext == null)
-        throw new ArgumentNullException ("ensureSynchronizationContext");
-      if (synchronizationReportRepository == null)
-        throw new ArgumentNullException ("synchronizationReportRepository");
+        throw new ArgumentNullException (nameof (ensureSynchronizationContext));
+      if (reportSink == null)
+        throw new ArgumentNullException (nameof (reportSink));
 
-      _synchronizationReportRepository = synchronizationReportRepository;
+      _reportSink = reportSink;
       _synchronizerFactory = synchronizerFactory;
       _ensureSynchronizationContext = ensureSynchronizationContext;
       _synchronizationTimer.Tick += _synchronizationTimer_Tick;
@@ -87,7 +87,7 @@ namespace CalDavSynchronizer.Scheduling
           {
             profileRunner = new SynchronizationProfileRunner (
                 _synchronizerFactory,
-                _synchronizationReportRepository);
+                _reportSink);
           }
           profileRunner.UpdateOptions (option, checkIfOnline);
           workersById.Add (option.Id, profileRunner);

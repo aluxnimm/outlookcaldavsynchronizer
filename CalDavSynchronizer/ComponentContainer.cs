@@ -34,19 +34,14 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Events;
-using CalDavSynchronizer.Implementation.Tasks;
-using CalDavSynchronizer.Implementation.Contacts;
-using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using CalDavSynchronizer.Reports;
 using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Ui;
-using CalDavSynchronizer.Ui.Reports;
 using CalDavSynchronizer.Ui.Reports.ViewModels;
 using CalDavSynchronizer.Utilities;
 using GenSync;
 using GenSync.ProgressReport;
 using log4net;
-using log4net.Config;
 using log4net.Repository.Hierarchy;
 using log4net.Core;
 using Microsoft.Office.Interop.Outlook;
@@ -56,11 +51,12 @@ using System.Collections.Generic;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Ui.Options;
 using GenSync.EntityRelationManagement;
+using GenSync.Logging;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace CalDavSynchronizer
 {
-  public class ComponentContainer: IReportsViewModelParent
+  public class ComponentContainer: IReportsViewModelParent, ISynchronizationReportSink
   {
     public const string MessageBoxTitle = "CalDav Synchronizer";
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
@@ -76,11 +72,12 @@ namespace CalDavSynchronizer
     private readonly OutlookItemChangeWatcher _itemChangeWatcher;
     private readonly string _applicationDataDirectory;
     private readonly ISynchronizationReportRepository _synchronizationReportRepository;
-    private readonly FilteringSynchronizationReportRepositoryWrapper _filteringSynchronizationReportRepository;
     private readonly IUiService _uiService;
     private ReportsViewModel _currentReportsViewModel;
     private bool _showReportsWithWarningsImmediately;
     private bool _showReportsWithErrorsImmediately;
+    private bool _logReportsWithJustWarnings;
+    private bool _logReportsWithoutWarningsOrErrors;
     private readonly ReportGarbageCollection _reportGarbageCollection;
     private readonly SynchronizerFactory _synchronizerFactory;
     private readonly DaslFilterProvider _daslFilterProvider;
@@ -135,13 +132,11 @@ namespace CalDavSynchronizer
 
       _synchronizationReportRepository = CreateSynchronizationReportRepository();
 
-      _filteringSynchronizationReportRepository = new FilteringSynchronizationReportRepositoryWrapper (_synchronizationReportRepository);
       UpdateGeneralOptionDependencies(generalOptions);
 
-      _filteringSynchronizationReportRepository.ReportAdded += _synchronizationReportRepository_ReportAdded;
       _scheduler = new Scheduler (
         _synchronizerFactory,
-        _filteringSynchronizationReportRepository,
+        this,
         EnsureSynchronizationContext);
       var options = _optionsDataAccess.LoadOptions();
 
@@ -187,8 +182,8 @@ namespace CalDavSynchronizer
 
     private void UpdateGeneralOptionDependencies (GeneralOptions generalOptions)
     {
-      _filteringSynchronizationReportRepository.AcceptAddingReportsWithJustWarnings = generalOptions.LogReportsWithWarnings;
-      _filteringSynchronizationReportRepository.AcceptAddingReportsWithoutWarningsOrErrors = generalOptions.LogReportsWithoutWarningsOrErrors;
+      _logReportsWithJustWarnings = generalOptions.LogReportsWithWarnings;
+      _logReportsWithoutWarningsOrErrors = generalOptions.LogReportsWithoutWarningsOrErrors;
 
       _showReportsWithErrorsImmediately = generalOptions.ShowReportsWithErrorsImmediately;
       _showReportsWithWarningsImmediately = generalOptions.ShowReportsWithWarningsImmediately;
@@ -196,31 +191,43 @@ namespace CalDavSynchronizer
       _daslFilterProvider.SetDoIncludeCustomMessageClasses (generalOptions.IncludeCustomMessageClasses);
     }
 
-    private void _synchronizationReportRepository_ReportAdded (object sender, ReportAddedEventArgs e)
+    public void PostReport (SynchronizationReport report)
     {
-      if (IsReportsViewVisible)
-      {
-        ShowReports (); // show to bring it into foreground
-        return;
-      }
+      SaveAndShowReport(report);
+    }
 
-      var hasErrors = e.Report.HasErrors;
-      var hasWarnings = e.Report.HasWarnings;
-
-      if (hasErrors || hasWarnings)
+    private void SaveAndShowReport (SynchronizationReport report)
+    {
+      if (report.HasErrors
+          || _logReportsWithJustWarnings && report.HasWarnings
+          || _logReportsWithoutWarningsOrErrors)
       {
-        if (hasWarnings && _showReportsWithWarningsImmediately
-            || hasErrors && _showReportsWithErrorsImmediately)
+        var reportName = _synchronizationReportRepository.AddReport (report);
+
+        if (IsReportsViewVisible)
         {
-          ShowReports();
-          var reportNameAsString = e.ReportName.ToString();
-          _currentReportsViewModel.Reports.Single (r => r.ReportName.ToString() == reportNameAsString).IsSelected = true;
+          ShowReports(); // show to bring it into foreground
           return;
         }
 
-        var handler = SynchronizationFailedWhileReportsFormWasNotVisible;
-        if (handler != null)
-          handler (this, EventArgs.Empty);
+        var hasErrors = report.HasErrors;
+        var hasWarnings = report.HasWarnings;
+
+        if (hasErrors || hasWarnings)
+        {
+          if (hasWarnings && _showReportsWithWarningsImmediately
+              || hasErrors && _showReportsWithErrorsImmediately)
+          {
+            ShowReports();
+            var reportNameAsString = reportName.ToString();
+            _currentReportsViewModel.Reports.Single (r => r.ReportName.ToString() == reportNameAsString).IsSelected = true;
+            return;
+          }
+
+          var handler = SynchronizationFailedWhileReportsFormWasNotVisible;
+          if (handler != null)
+            handler (this, EventArgs.Empty);
+        }
       }
     }
 

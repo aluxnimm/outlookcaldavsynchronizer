@@ -273,7 +273,6 @@
     <Compile Include="DataAccess\IGeneralOptionsDataAccess.cs" />
     <Compile Include="DataAccess\GeneralOptionsDataAccess.cs" />
     <Compile Include="DataAccess\ISynchronizationReportRepository.cs" />
-    <Compile Include="DataAccess\FilteringSynchronizationReportRepositoryWrapper.cs" />
     <Compile Include="DataAccess\NullSynchronizationReportRepository.cs" />
     <Compile Include="DataAccess\ReportAddedEventArgs.cs" />
     <Compile Include="DataAccess\ReportEventArgs.cs" />
@@ -340,6 +339,7 @@
     <Compile Include="ChangeWatching\OutlookItemChangeWatcher.cs" />
     <Compile Include="DataAccess\WebResourceName.cs" />
     <Compile Include="Properties\AssemblyInfoCommon.cs" />
+    <Compile Include="Reports\ISynchronizationReportSink.cs" />
     <Compile Include="Reports\ReportGarbageCollection.cs" />
     <Compile Include="Scheduling\ISynchronizerFactory.cs" />
     <Compile Include="Synchronization\IOutlookSynchronizer.cs" />
