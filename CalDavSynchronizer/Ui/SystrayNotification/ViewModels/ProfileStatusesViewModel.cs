@@ -34,7 +34,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
     private readonly Timer _timer;
 
     public ObservableCollection<ProfileStatusViewModel> Profiles { get; } = new ObservableCollection<ProfileStatusViewModel>();
-    private Dictionary<Guid, ProfileStatusViewModel> _profileStatusViewModelsById = new Dictionary<Guid, ProfileStatusViewModel>();
+    private readonly Dictionary<Guid, ProfileStatusViewModel> _profileStatusViewModelsById = new Dictionary<Guid, ProfileStatusViewModel>();
 
     public ProfileStatusesViewModel ()
     {
@@ -73,24 +73,29 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
 
     public void EnsureProfilesDisplayed (Contracts.Options[] profiles)
     {
+      HashSet<Guid> existingProfiles = new HashSet<Guid>();
+
       foreach (var profile in profiles)
       {
-        if (profile.Inactive)
-        {
-          RemoveIfAvailable (profile.Id);
-        }
-        else
-        {
-          var profileStatusViewModel = GetOrCreateProfileStatusViewModel (profile.Id);
-          profileStatusViewModel.Update (profile);
-        }
+        existingProfiles.Add (profile.Id);
+        var profileStatusViewModel = GetOrCreateProfileStatusViewModel (profile.Id);
+        profileStatusViewModel.Update (profile);
+      }
+
+      foreach (var kv in _profileStatusViewModelsById)
+      {
+        if (!existingProfiles.Contains (kv.Key))
+          Profiles.Remove (kv.Value);
       }
     }
 
     public void Update (SynchronizationReport report)
     {
-      var profileStatusViewModel = GetOrCreateProfileStatusViewModel (report.ProfileId);
-      profileStatusViewModel.Update (report);
+      ProfileStatusViewModel profileStatusViewModel;
+      if (_profileStatusViewModelsById.TryGetValue (report.ProfileId, out profileStatusViewModel))
+      {
+        profileStatusViewModel.Update (report);
+      }
     }
     
     public static ProfileStatusesViewModel DesignInstance

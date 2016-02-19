@@ -29,6 +29,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
   public class ProfileStatusViewModel : INotifyPropertyChanged
   {
     private string _profileName;
+    private bool _isActive;
 
     DateTime? _lastSyncronizationRun;
     SyncronizationRunResult? _lastResult;
@@ -73,9 +74,20 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
       }
     }
 
+    public bool IsActive
+    {
+      get { return _isActive; }
+      private set
+      {
+        _isActive = value;
+        OnPropertyChanged();
+      }
+    }
+
     public void Update (Contracts.Options profile)
     {
       ProfileName = profile.Name;
+      IsActive = !profile.Inactive;
     }
 
     public void Update (SynchronizationReport report)
@@ -109,6 +121,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
       viewModel._profileName = profileName;
       viewModel._lastResult = status;
       viewModel._lastRunMinutesAgo = lastRunMinutesAgo;
+      viewModel.IsActive = true;
       return viewModel;
     }
   }

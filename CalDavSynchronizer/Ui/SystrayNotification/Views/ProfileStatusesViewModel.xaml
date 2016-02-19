@@ -32,9 +32,18 @@
         
       <DataGridTextColumn Binding="{Binding LastRunMinutesAgo}" Header="Last run minutes ago" IsReadOnly="True" />
     </DataGrid.Columns>
-      
-      
-    </DataGrid>
+
+    <DataGrid.RowStyle>
+      <Style TargetType="{x:Type DataGridRow}">
+        <Style.Triggers>
+          <DataTrigger Binding="{Binding IsActive}" Value="False">
+            <Setter Property="Visibility" Value="Collapsed"/>
+          </DataTrigger>
+        </Style.Triggers>
+      </Style>
+    </DataGrid.RowStyle>
+
+  </DataGrid>
   <!---->
 </UserControl>
 
