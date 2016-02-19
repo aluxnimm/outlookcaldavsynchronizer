@@ -44,7 +44,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._okButton.Location = new System.Drawing.Point(385, 737);
-      this._okButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._okButton.Margin = new System.Windows.Forms.Padding(4);
       this._okButton.Name = "_okButton";
       this._okButton.Size = new System.Drawing.Size(100, 28);
       this._okButton.TabIndex = 40;
@@ -57,7 +57,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
       this._cancelButton.Location = new System.Drawing.Point(493, 737);
-      this._cancelButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._cancelButton.Margin = new System.Windows.Forms.Padding(4);
       this._cancelButton.Name = "_cancelButton";
       this._cancelButton.Size = new System.Drawing.Size(100, 28);
       this._cancelButton.TabIndex = 41;
@@ -79,7 +79,7 @@ namespace CalDavSynchronizer.Ui.Options
       // _addProfileButton
       // 
       this._addProfileButton.Location = new System.Drawing.Point(17, 737);
-      this._addProfileButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._addProfileButton.Margin = new System.Windows.Forms.Padding(4);
       this._addProfileButton.Name = "_addProfileButton";
       this._addProfileButton.Size = new System.Drawing.Size(100, 28);
       this._addProfileButton.TabIndex = 43;
@@ -109,13 +109,13 @@ namespace CalDavSynchronizer.Ui.Options
       this.BackColor = System.Drawing.SystemColors.Window;
       this.CancelButton = this._cancelButton;
       this.ClientSize = new System.Drawing.Size(609, 782);
-      this.ControlBox = false;
       this.Controls.Add(this._addProfileButton);
       this.Controls.Add(this._tabControl);
       this.Controls.Add(this._cancelButton);
       this.Controls.Add(this._okButton);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-      this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+      this.Margin = new System.Windows.Forms.Padding(4);
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Name = "OptionsForm";

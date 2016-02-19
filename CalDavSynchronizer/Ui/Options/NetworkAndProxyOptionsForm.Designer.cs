@@ -30,6 +30,7 @@ namespace CalDavSynchronizer.Ui.Options
     /// </summary>
     private void InitializeComponent()
     {
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NetworkAndProxyOptionsForm));
       this.OkButton = new System.Windows.Forms.Button();
       this.buttonCancel = new System.Windows.Forms.Button();
       this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -228,7 +229,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._manualProxyGroupBox.TabIndex = 10;
       this._manualProxyGroupBox.TabStop = false;
       // 
-      // AdvancedOptionsForm
+      // NetworkAndProxyOptionsForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -240,9 +241,9 @@ namespace CalDavSynchronizer.Ui.Options
       this.Controls.Add(this.buttonCancel);
       this.Controls.Add(this.OkButton);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-      this.Name = "AdvancedOptionsForm";
-      this.ShowIcon = false;
+      this.Name = "NetworkAndProxyOptionsForm";
       this.Text = "Network and Proxy Options";
       this.groupBox2.ResumeLayout(false);
       this.groupBox2.PerformLayout();

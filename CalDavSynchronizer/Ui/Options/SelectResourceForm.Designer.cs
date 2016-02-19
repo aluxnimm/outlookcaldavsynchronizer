@@ -31,6 +31,7 @@ namespace CalDavSynchronizer.Ui.Options
     /// </summary>
     private void InitializeComponent()
     {
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SelectResourceForm));
       this._calendarDataGridView = new System.Windows.Forms.DataGridView();
       this.buttonCancel = new System.Windows.Forms.Button();
       this._addressBookDataGridView = new System.Windows.Forms.DataGridView();
@@ -75,7 +76,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
       this.buttonCancel.Location = new System.Drawing.Point(896, 431);
-      this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.buttonCancel.Margin = new System.Windows.Forms.Padding(4);
       this.buttonCancel.Name = "buttonCancel";
       this.buttonCancel.Size = new System.Drawing.Size(100, 28);
       this.buttonCancel.TabIndex = 2;
@@ -112,7 +113,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._mainTab.Controls.Add(this._addressBookPage);
       this._mainTab.Controls.Add(this._tasksPage);
       this._mainTab.Location = new System.Drawing.Point(16, 7);
-      this._mainTab.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._mainTab.Margin = new System.Windows.Forms.Padding(4);
       this._mainTab.Name = "_mainTab";
       this._mainTab.SelectedIndex = 0;
       this._mainTab.Size = new System.Drawing.Size(980, 416);
@@ -122,9 +123,9 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._calendarPage.Controls.Add(this._calendarDataGridView);
       this._calendarPage.Location = new System.Drawing.Point(4, 25);
-      this._calendarPage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._calendarPage.Margin = new System.Windows.Forms.Padding(4);
       this._calendarPage.Name = "_calendarPage";
-      this._calendarPage.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._calendarPage.Padding = new System.Windows.Forms.Padding(4);
       this._calendarPage.Size = new System.Drawing.Size(972, 387);
       this._calendarPage.TabIndex = 0;
       this._calendarPage.Text = "Calendars";
@@ -134,9 +135,9 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._addressBookPage.Controls.Add(this._addressBookDataGridView);
       this._addressBookPage.Location = new System.Drawing.Point(4, 25);
-      this._addressBookPage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._addressBookPage.Margin = new System.Windows.Forms.Padding(4);
       this._addressBookPage.Name = "_addressBookPage";
-      this._addressBookPage.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._addressBookPage.Padding = new System.Windows.Forms.Padding(4);
       this._addressBookPage.Size = new System.Drawing.Size(972, 387);
       this._addressBookPage.TabIndex = 1;
       this._addressBookPage.Text = "Address Books";
@@ -146,7 +147,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._tasksPage.Controls.Add(this._tasksDataGridView);
       this._tasksPage.Location = new System.Drawing.Point(4, 25);
-      this._tasksPage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._tasksPage.Margin = new System.Windows.Forms.Padding(4);
       this._tasksPage.Name = "_tasksPage";
       this._tasksPage.Size = new System.Drawing.Size(972, 387);
       this._tasksPage.TabIndex = 2;
@@ -178,7 +179,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.OkButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.OkButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
       this.OkButton.Location = new System.Drawing.Point(788, 431);
-      this.OkButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.OkButton.Margin = new System.Windows.Forms.Padding(4);
       this.OkButton.Name = "OkButton";
       this.OkButton.Size = new System.Drawing.Size(100, 28);
       this.OkButton.TabIndex = 5;
@@ -197,9 +198,9 @@ namespace CalDavSynchronizer.Ui.Options
       this.Controls.Add(this.OkButton);
       this.Controls.Add(this._mainTab);
       this.Controls.Add(this.buttonCancel);
+      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this.Name = "SelectResourceForm";
-      this.ShowIcon = false;
       this.Text = "Select Resource";
       ((System.ComponentModel.ISupportInitialize)(this._calendarDataGridView)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this._addressBookDataGridView)).EndInit();
