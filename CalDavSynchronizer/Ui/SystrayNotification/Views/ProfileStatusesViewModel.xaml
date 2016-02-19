@@ -9,10 +9,32 @@
              d:DataContext="{x:Static viewModels:ProfileStatusesViewModel.DesignInstance}">
     <DataGrid ItemsSource="{Binding Profiles}" AutoGenerateColumns="False" >
       <DataGrid.Columns>
-        <DataGridTextColumn Binding="{Binding ProfileName}" Header="Profile" IsReadOnly="True" />
-      <DataGridTextColumn Binding="{Binding LastResult}" Header="Status" IsReadOnly="True" />
-      <DataGridTextColumn Binding="{Binding LastRunMinutesAgo}" Header="Last run" IsReadOnly="True" />
+      <DataGridTextColumn Binding="{Binding ProfileName}" Header="Profile" IsReadOnly="True" />
+
+      <DataGridTemplateColumn Header="Status" >
+        <DataGridTemplateColumn.CellTemplate>
+          <DataTemplate>
+            <Image Name="StatusImage"  Height="16" Width="16"></Image>
+            <DataTemplate.Triggers>
+              <DataTrigger Binding="{Binding LastResult}" Value="Ok">
+                <Setter TargetName="StatusImage" Property="Source" Value="pack://application:,,,/CalDavSynchronizer;component/Resources/ok.ico"></Setter>
+              </DataTrigger>
+              <DataTrigger Binding="{Binding LastResult}" Value="Warning">
+                <Setter TargetName="StatusImage" Property="Source" Value="pack://application:,,,/CalDavSynchronizer;component/Resources/warning.ico"></Setter>
+              </DataTrigger>
+              <DataTrigger Binding="{Binding LastResult}" Value="Error">
+                <Setter TargetName="StatusImage" Property="Source" Value="pack://application:,,,/CalDavSynchronizer;component/Resources/error.ico"></Setter>
+              </DataTrigger>
+            </DataTemplate.Triggers>
+          </DataTemplate>
+        </DataGridTemplateColumn.CellTemplate>
+      </DataGridTemplateColumn>
+        
+      <DataGridTextColumn Binding="{Binding LastRunMinutesAgo}" Header="Last run minutes ago" IsReadOnly="True" />
     </DataGrid.Columns>
+      
+      
     </DataGrid>
+  <!---->
 </UserControl>
 

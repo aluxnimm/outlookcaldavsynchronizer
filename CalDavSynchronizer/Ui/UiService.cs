@@ -38,6 +38,7 @@ namespace CalDavSynchronizer.Ui
       _profileStatusesWindow = new GenericElementHostWindow();
       _profileStatusesWindow.Text = "Synchronization Status";
       _profileStatusesWindow.Child = view;
+      _profileStatusesWindow.Size = new Size (400, 300);
       _profileStatusesWindow.FormClosing += (sender, e) =>
       {
         e.Cancel = true;

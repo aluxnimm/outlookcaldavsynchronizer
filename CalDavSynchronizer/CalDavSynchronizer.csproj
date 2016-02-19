@@ -648,10 +648,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
+    <Resource Include="Resources\warning.ico" />
     <None Include="Resources\SyncError.png" />
     <None Include="Resources\report.ico" />
     <None Include="Resources\GeneralOptions.ico" />
-    <None Include="Resources\ok.ico" />
+    <Resource Include="Resources\ok.ico" />
+    <None Include="Resources\ApplicationIcon.ico" />
+    <Resource Include="Resources\error.ico" />
     <Content Include="Resources\outlookcaldavsynchronizerlogoarrow.png" />
   </ItemGroup>
   <ItemGroup>

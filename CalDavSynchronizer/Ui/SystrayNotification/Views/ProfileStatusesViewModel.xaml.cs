@@ -16,7 +16,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.using System;
 
 using System;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace CalDavSynchronizer.Ui.SystrayNotification.Views
 {

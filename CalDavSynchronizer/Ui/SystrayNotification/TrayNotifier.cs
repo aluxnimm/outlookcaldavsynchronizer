@@ -9,7 +9,6 @@ namespace CalDavSynchronizer.Ui.SystrayNotification
   class TrayNotifier
   {
     private readonly NotifyIcon _nofifyIcon;
-    private SyncronizationRunResult _worstRunResult;
     public event EventHandler ShowProfileStatusesRequested;
 
     public TrayNotifier ()
@@ -22,8 +21,8 @@ namespace CalDavSynchronizer.Ui.SystrayNotification
       // can of course use your own custom icon too.
       _nofifyIcon = new NotifyIcon();
       _nofifyIcon.Text = ComponentContainer.MessageBoxTitle;
-      _nofifyIcon.Icon = Resources.Ok;
-
+      _nofifyIcon.Icon = Resources.ApplicationIcon;
+      
       // Add menu to tray icon and show it.
       _nofifyIcon.ContextMenu = trayMenu;
       _nofifyIcon.Visible = true;
@@ -37,32 +36,6 @@ namespace CalDavSynchronizer.Ui.SystrayNotification
 
     public void NotifyUser (SynchronizationReport report)
     {
-      var currentResult =
-          report.HasErrors
-              ? SyncronizationRunResult.Error
-              : report.HasWarnings
-                  ? SyncronizationRunResult.Warning
-                  : SyncronizationRunResult.Ok;
-
-
-      _worstRunResult = (SyncronizationRunResult) Math.Max ((int) _worstRunResult, (int) currentResult);
-
-      switch (_worstRunResult)
-      {
-        case SyncronizationRunResult.Ok:
-          _nofifyIcon.Icon = Resources.Ok;
-          break;
-        case SyncronizationRunResult.Warning:
-          _nofifyIcon.Icon = SystemIcons.Warning;
-          break;
-        case SyncronizationRunResult.Error:
-          _nofifyIcon.Icon = SystemIcons.Error;
-          break;
-        default:
-          _nofifyIcon.Icon = SystemIcons.Question;
-          break;
-      }
-
       if (report.HasErrors)
       {
         _nofifyIcon.ShowBalloonTip (
