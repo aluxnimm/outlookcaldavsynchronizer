@@ -46,8 +46,15 @@
           </DataTemplate>
         </DataGridTemplateColumn.CellTemplate>
       </DataGridTemplateColumn>
-        
-      <DataGridTextColumn Binding="{Binding LastRunMinutesAgo}" Header="Last run minutes ago" IsReadOnly="True" />
+
+      <DataGridTextColumn  Binding="{Binding LastRunMinutesAgo}" Header="Last run minutes ago" IsReadOnly="True" >
+        <DataGridTextColumn.ElementStyle>
+          <Style TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="Padding" Value="0,0,10,0"></Setter>
+          </Style>
+        </DataGridTextColumn.ElementStyle>
+      </DataGridTextColumn>
     </DataGrid.Columns>
 
     <DataGrid.RowStyle>

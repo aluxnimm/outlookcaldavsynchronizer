@@ -111,8 +111,8 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
 
         viewModel.Profiles.Add (ProfileStatusViewModel.CreateDesignInstance ("Profile 1", null, null));
         viewModel.Profiles.Add (ProfileStatusViewModel.CreateDesignInstance ("Profile 2", SyncronizationRunResult.Ok, 7));
-        viewModel.Profiles.Add (ProfileStatusViewModel.CreateDesignInstance ("Profile 3", SyncronizationRunResult.Warning, 8));
-        viewModel.Profiles.Add (ProfileStatusViewModel.CreateDesignInstance ("Profile 4", SyncronizationRunResult.Error, 9));
+        viewModel.Profiles.Add (ProfileStatusViewModel.CreateDesignInstance ("Profile 3", SyncronizationRunResult.Warning, 839));
+        viewModel.Profiles.Add (ProfileStatusViewModel.CreateDesignInstance ("Profile 4", SyncronizationRunResult.Error, 93));
 
         return viewModel;
       }
