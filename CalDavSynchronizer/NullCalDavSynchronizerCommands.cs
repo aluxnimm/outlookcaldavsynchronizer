@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.using System;
 
 using System;
+using System.Threading.Tasks;
 
 namespace CalDavSynchronizer
 {
@@ -32,9 +33,34 @@ namespace CalDavSynchronizer
       
     }
 
-    public void ShowLatestSynchronizationReportCommand (Guid profileId)
+    public void ShowGeneralOptionsNoThrow ()
     {
       
+    }
+
+    public void ShowAboutNoThrow ()
+    {
+     
+    }
+
+    public void ShowLatestSynchronizationReportNoThrow (Guid profileId)
+    {
+      
+    }
+
+    public void ShowProfileStatusesNoThrow ()
+    {
+      
+    }
+
+    public Task SynchronizeNowNoThrow ()
+    {
+      return Task.FromResult (0);
+    }
+
+    public void ShowReportsNoThrow ()
+    {
+     
     }
   }
 }

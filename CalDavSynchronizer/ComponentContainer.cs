@@ -158,16 +158,10 @@ namespace CalDavSynchronizer
 
       _reportGarbageCollection = new ReportGarbageCollection (_synchronizationReportRepository, TimeSpan.FromDays (generalOptions.MaxReportAgeInDays));
 
-      _trayNotifier = new TrayNotifier();
-      _trayNotifier.ShowProfileStatusesRequested += _trayNotifier_ShowProfileStatusesRequested;
+      _trayNotifier = new TrayNotifier(this);
       _uiService = new UiService (_profileStatusesViewModel);
     }
-
-    private void _trayNotifier_ShowProfileStatusesRequested (object sender, EventArgs e)
-    {
-      ShowProfileStatusesNoThrow();
-    }
-
+    
     private void EnsureCacheCompatibility (Options[] options)
     {
       var currentEntityCacheVersion = _generalOptionsDataAccess.EntityCacheVersion;
@@ -361,10 +355,17 @@ namespace CalDavSynchronizer
       }
     }
 
-    public void ShowLatestSynchronizationReportCommand (Guid profileId)
+    public void ShowLatestSynchronizationReportNoThrow (Guid profileId)
     {
-      ShowReports();
-      _currentReportsViewModel.ShowLatestSynchronizationReportCommand (profileId);
+      try
+      {
+        ShowReports();
+        _currentReportsViewModel.ShowLatestSynchronizationReportCommand (profileId);
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.HandleException (x, s_logger);
+      }
     }
 
     private ChangedOptions[] CreateChangePairs (Options[] oldOptions, Options[] newOptions)
@@ -788,6 +789,21 @@ namespace CalDavSynchronizer
     private void ShowProfileStatuses ()
     {
       _uiService.ShowProfileStatusesWindow();
+    }
+
+    public void ShowAboutNoThrow ()
+    {
+      try
+      {
+        using (var aboutForm = new AboutForm (ThisAddIn.ComponentContainer.CheckForUpdatesNowNoThrow))
+        {
+          aboutForm.ShowDialog();
+        }
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.HandleException (x, s_logger);
+      }
     }
 
     public void DiplayAEntity (Guid synchronizationProfileId, string entityId)

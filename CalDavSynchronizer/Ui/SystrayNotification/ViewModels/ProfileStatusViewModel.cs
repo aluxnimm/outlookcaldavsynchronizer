@@ -52,7 +52,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
       });
       ShowLatestSynchronizationReportCommand = new DelegateCommand (_ =>
       {
-        _calDavSynchronizerCommands.ShowLatestSynchronizationReportCommand (ProfileId);
+        _calDavSynchronizerCommands.ShowLatestSynchronizationReportNoThrow (ProfileId);
       });
     }
     

@@ -41,8 +41,10 @@
       this.GeneralOptionsButton = this.Factory.CreateRibbonButton();
       this.AboutButton = this.Factory.CreateRibbonButton();
       this.ReportsButton = this.Factory.CreateRibbonButton();
+      this.StatusesButton = this.Factory.CreateRibbonButton();
       this.tab1.SuspendLayout();
       this.group1.SuspendLayout();
+      this.SuspendLayout();
       // 
       // tab1
       // 
@@ -57,6 +59,7 @@
       this.group1.Items.Add(this.GeneralOptionsButton);
       this.group1.Items.Add(this.AboutButton);
       this.group1.Items.Add(this.ReportsButton);
+      this.group1.Items.Add(this.StatusesButton);
       this.group1.Label = "CalDav Synchronizer";
       this.group1.Name = "group1";
       // 
@@ -110,6 +113,14 @@
       this.ReportsButton.SuperTip = "Show reports of last sync runs.";
       this.ReportsButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.ReportsButton_Click);
       // 
+      // StatusesButton
+      // 
+      this.StatusesButton.Image = global::CalDavSynchronizer.Properties.Resources.report;
+      this.StatusesButton.Label = "Status";
+      this.StatusesButton.Name = "StatusesButton";
+      this.StatusesButton.ShowImage = true;
+      this.StatusesButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.StatusesButton_Click);
+      // 
       // CalDavSynchronizerRibbon
       // 
       this.Name = "CalDavSynchronizerRibbon";
@@ -120,6 +131,7 @@
       this.tab1.PerformLayout();
       this.group1.ResumeLayout(false);
       this.group1.PerformLayout();
+      this.ResumeLayout(false);
 
     }
 
@@ -132,6 +144,7 @@
     internal Microsoft.Office.Tools.Ribbon.RibbonButton AboutButton;
     internal Microsoft.Office.Tools.Ribbon.RibbonButton GeneralOptionsButton;
     internal Microsoft.Office.Tools.Ribbon.RibbonButton ReportsButton;
+    internal Microsoft.Office.Tools.Ribbon.RibbonButton StatusesButton;
   }
 
   partial class ThisRibbonCollection

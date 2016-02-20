@@ -9,12 +9,24 @@ namespace CalDavSynchronizer.Ui.SystrayNotification
   class TrayNotifier
   {
     private readonly NotifyIcon _nofifyIcon;
-    public event EventHandler ShowProfileStatusesRequested;
+    private readonly ICalDavSynchronizerCommands _calDavSynchronizerCommands;
+    
 
-    public TrayNotifier ()
+    public TrayNotifier (ICalDavSynchronizerCommands calDavSynchronizerCommands)
     {
+      if (calDavSynchronizerCommands == null)
+        throw new ArgumentNullException (nameof (calDavSynchronizerCommands));
+      _calDavSynchronizerCommands = calDavSynchronizerCommands;
+
       var trayMenu = new ContextMenu();
-      trayMenu.MenuItems.Add ("Exit", delegate { });
+      trayMenu.MenuItems.Add ("Synchronize now", delegate { _calDavSynchronizerCommands.SynchronizeNowNoThrow(); });
+      trayMenu.MenuItems.Add ("Reports", delegate { _calDavSynchronizerCommands.ShowReportsNoThrow(); });
+      trayMenu.MenuItems.Add ("Status", delegate { _calDavSynchronizerCommands.ShowProfileStatusesNoThrow(); });
+      trayMenu.MenuItems.Add ("-");
+      trayMenu.MenuItems.Add ("Synchronization profiles", delegate { _calDavSynchronizerCommands.ShowOptionsNoThrow(); });
+      trayMenu.MenuItems.Add ("General options", delegate { _calDavSynchronizerCommands.ShowGeneralOptionsNoThrow (); });
+      trayMenu.MenuItems.Add ("-");
+      trayMenu.MenuItems.Add ("About", delegate { _calDavSynchronizerCommands.ShowAboutNoThrow (); });
 
       // Create a tray icon. In this example we use a
       // standard system icon for simplicity, but you
@@ -31,7 +43,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification
 
     private void _nofifyIcon_MouseDoubleClick (object sender, MouseEventArgs e)
     {
-      OnShowProfileStatusesRequested();
+      _calDavSynchronizerCommands.ShowProfileStatusesNoThrow();
     }
 
     public void NotifyUser (SynchronizationReport report)
@@ -53,10 +65,6 @@ namespace CalDavSynchronizer.Ui.SystrayNotification
             ToolTipIcon.Warning);
       }
     }
-
-    private void OnShowProfileStatusesRequested ()
-    {
-      ShowProfileStatusesRequested?.Invoke (this, EventArgs.Empty);
-    }
+    
   }
 }

@@ -14,13 +14,20 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
+using System.Threading.Tasks;
 
 namespace CalDavSynchronizer
 {
   public interface ICalDavSynchronizerCommands
   {
     void ShowOptionsNoThrow (Guid? initialVisibleProfile = null);
-    void ShowLatestSynchronizationReportCommand (Guid profileId);
+    void ShowGeneralOptionsNoThrow ();
+    void ShowAboutNoThrow ();
+    void ShowLatestSynchronizationReportNoThrow (Guid profileId);
+    void ShowProfileStatusesNoThrow ();
+    Task SynchronizeNowNoThrow ();
+    void ShowReportsNoThrow ();
   }
 }
