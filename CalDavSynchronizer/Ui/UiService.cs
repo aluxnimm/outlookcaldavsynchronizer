@@ -37,6 +37,9 @@ namespace CalDavSynchronizer.Ui
       view.DataContext = viewModel;
       _profileStatusesWindow = new GenericElementHostWindow();
       _profileStatusesWindow.Text = "Synchronization Status";
+      _profileStatusesWindow.Icon = Resources.ApplicationIcon;
+      _profileStatusesWindow.ShowIcon = true;
+      _profileStatusesWindow.BackColor = SystemColors.Window;
       _profileStatusesWindow.Child = view;
       _profileStatusesWindow.Size = new Size (400, 300);
       _profileStatusesWindow.FormClosing += (sender, e) =>
@@ -55,6 +58,9 @@ namespace CalDavSynchronizer.Ui
       var window = new GenericElementHostWindow();
 
       window.Text = "Synchronization Reports";
+      window.Icon = Resources.ApplicationIcon;
+      window.ShowIcon = true;
+      window.BackColor = SystemColors.Window;
       window.Child = view;
       window.Show();
       window.FormClosed += delegate { reportsViewModel.NotifyReportsClosed(); };
