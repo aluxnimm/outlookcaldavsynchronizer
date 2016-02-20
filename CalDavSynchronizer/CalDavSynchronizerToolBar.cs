@@ -116,10 +116,7 @@ namespace CalDavSynchronizer
 
     private void ToolBarBtn_About_OnClick (CommandBarButton Ctrl, ref bool CancelDefault)
     {
-      using (var aboutForm = new AboutForm(_componentContainer.CheckForUpdatesNowNoThrow))
-      {
-        aboutForm.ShowDialog();
-      }
+      _componentContainer.ShowAboutNoThrow();
     }
 
     private void ToolBarBtn_Reports_OnClick(CommandBarButton Ctrl, ref bool CancelDefault)
