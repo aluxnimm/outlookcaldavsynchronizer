@@ -10,7 +10,7 @@
     <DataGrid ItemsSource="{Binding Profiles}" AutoGenerateColumns="False" >
       <DataGrid.Columns>
   
-      <DataGridTemplateColumn Header="Profile">
+      <DataGridTemplateColumn Header="Profile" Width="*">
         <DataGridTemplateColumn.CellTemplate>
           <DataTemplate>
             <TextBlock >
