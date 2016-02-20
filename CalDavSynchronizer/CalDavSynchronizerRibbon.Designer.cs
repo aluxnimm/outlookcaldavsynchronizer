@@ -118,7 +118,9 @@
       this.StatusesButton.Image = global::CalDavSynchronizer.Properties.Resources.report;
       this.StatusesButton.Label = "Status";
       this.StatusesButton.Name = "StatusesButton";
+      this.StatusesButton.ScreenTip = "Status";
       this.StatusesButton.ShowImage = true;
+      this.StatusesButton.SuperTip = "Show status of sync runs.";
       this.StatusesButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.StatusesButton_Click);
       // 
       // CalDavSynchronizerRibbon
