@@ -35,9 +35,14 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
 
     public ObservableCollection<ProfileStatusViewModel> Profiles { get; } = new ObservableCollection<ProfileStatusViewModel>();
     private readonly Dictionary<Guid, ProfileStatusViewModel> _profileStatusViewModelsById = new Dictionary<Guid, ProfileStatusViewModel>();
+    private readonly ICalDavSynchronizerCommands _calDavSynchronizerCommands;
 
-    public ProfileStatusesViewModel ()
+    public ProfileStatusesViewModel (ICalDavSynchronizerCommands calDavSynchronizerCommands)
     {
+      if (calDavSynchronizerCommands == null)
+        throw new ArgumentNullException (nameof (calDavSynchronizerCommands));
+
+      _calDavSynchronizerCommands = calDavSynchronizerCommands;
       _timer = new Timer();
       _timer.Tick += delegate
       {
@@ -53,7 +58,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
       ProfileStatusViewModel profileStatusViewModel;
       if (!_profileStatusViewModelsById.TryGetValue (profileId, out profileStatusViewModel))
       {
-        profileStatusViewModel = new ProfileStatusViewModel (profileId);
+        profileStatusViewModel = new ProfileStatusViewModel (profileId, _calDavSynchronizerCommands);
         Profiles.Add (profileStatusViewModel);
         _profileStatusViewModelsById.Add (profileId, profileStatusViewModel);
       }
@@ -102,7 +107,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
     {
       get
       {
-        var viewModel = new ProfileStatusesViewModel();
+        var viewModel = new ProfileStatusesViewModel(NullCalDavSynchronizerCommands.Instance);
 
         viewModel.Profiles.Add (ProfileStatusViewModel.CreateDesignInstance ("Profile 1", null, null));
         viewModel.Profiles.Add (ProfileStatusViewModel.CreateDesignInstance ("Profile 2", SyncronizationRunResult.Ok, 7));

@@ -288,6 +288,7 @@
     <Compile Include="DataAccess\WebRequestBasedClient\WebDavClient.cs" />
     <Compile Include="DDayICalWorkaround\CalendarDataPreprocessor.cs" />
     <Compile Include="EntityCacheVersionConversion\Version0To1.cs" />
+    <Compile Include="ICalDavSynchronizerCommands.cs" />
     <Compile Include="Implementation\Common\CommonEntityMapper.cs" />
     <Compile Include="Implementation\ComWrappers\ContactItemWrapper.cs" />
     <Compile Include="Implementation\ComWrappers\TaskItemWrapper.cs" />
@@ -338,6 +339,7 @@
     <Compile Include="Implementation\TimeRangeFiltering\NullDateTimeRangeProvider.cs" />
     <Compile Include="ChangeWatching\OutlookItemChangeWatcher.cs" />
     <Compile Include="DataAccess\WebResourceName.cs" />
+    <Compile Include="NullCalDavSynchronizerCommands.cs" />
     <Compile Include="Properties\AssemblyInfoCommon.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -715,7 +717,7 @@
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{BAA0C2D2-18E2-41B9-852F-F413020CAA33}">
-        <ProjectProperties HostName="Outlook" HostPackage="{29A7B9D7-A7F1-4328-8EF0-6B2D1A56B2C1}" OfficeVersion="15.0" VstxVersion="4.0" ApplicationType="Outlook" Language="cs" TemplatesPath="" DebugInfoExeName="#Software\Microsoft\Office\15.0\Outlook\InstallRoot\Path#outlook.exe" AddItemTemplatesGuid="{A58A78EB-1C92-4DDD-80CF-E8BD872ABFC4}" />
+        <ProjectProperties HostName="Outlook" HostPackage="{29A7B9D7-A7F1-4328-8EF0-6B2D1A56B2C1}" OfficeVersion="15.0" VstxVersion="4.0" ApplicationType="Outlook" Language="cs" TemplatesPath="" DebugInfoExeName="#Software\Microsoft\Office\16.0\Outlook\InstallRoot\Path#outlook.exe" AddItemTemplatesGuid="{A58A78EB-1C92-4DDD-80CF-E8BD872ABFC4}" />
         <Host Name="Outlook" GeneratedCodeNamespace="CalDavSynchronizer" IconIndex="0">
           <HostItem Name="ThisAddIn" Code="ThisAddIn.cs" CanonicalName="AddIn" CanActivate="false" IconIndex="1" Blueprint="ThisAddIn.Designer.xml" GeneratedCode="ThisAddIn.Designer.cs" />
         </Host>

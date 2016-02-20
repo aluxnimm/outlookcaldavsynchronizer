@@ -22,6 +22,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using GenSync.Logging;
 
 namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
@@ -35,14 +36,24 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
     SyncronizationRunResult? _lastResult;
 
     private int? _lastRunMinutesAgo;
+    private readonly ICalDavSynchronizerCommands _calDavSynchronizerCommands;
 
-
-    public ProfileStatusViewModel (Guid profileId)
+    public ProfileStatusViewModel (Guid profileId, ICalDavSynchronizerCommands calDavSynchronizerCommands)
     {
-      ProfileId = profileId;
-    }
+      if (calDavSynchronizerCommands == null)
+        throw new ArgumentNullException (nameof (calDavSynchronizerCommands));
 
+      ProfileId = profileId;
+      _calDavSynchronizerCommands = calDavSynchronizerCommands;
+
+      ShowOptionsCommand = new DelegateCommand (_ =>
+      {
+        _calDavSynchronizerCommands.ShowOptionsNoThrow (ProfileId);
+      });
+    }
+    
     public Guid ProfileId { get; }
+    public ICommand ShowOptionsCommand { get; }
 
     public int? LastRunMinutesAgo
     {
@@ -117,7 +128,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
 
     public static ProfileStatusViewModel CreateDesignInstance (string profileName, SyncronizationRunResult? status, int? lastRunMinutesAgo)
     {
-      var viewModel = new ProfileStatusViewModel (Guid.NewGuid());
+      var viewModel = new ProfileStatusViewModel (Guid.NewGuid(), NullCalDavSynchronizerCommands.Instance);
       viewModel._profileName = profileName;
       viewModel._lastResult = status;
       viewModel._lastRunMinutesAgo = lastRunMinutesAgo;

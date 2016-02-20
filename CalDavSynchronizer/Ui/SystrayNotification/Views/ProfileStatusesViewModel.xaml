@@ -9,7 +9,19 @@
              d:DataContext="{x:Static viewModels:ProfileStatusesViewModel.DesignInstance}">
     <DataGrid ItemsSource="{Binding Profiles}" AutoGenerateColumns="False" >
       <DataGrid.Columns>
-      <DataGridTextColumn Binding="{Binding ProfileName}" Header="Profile" IsReadOnly="True" />
+  
+      <DataGridTemplateColumn Header="Profile">
+        <DataGridTemplateColumn.CellTemplate>
+          <DataTemplate>
+            <TextBlock >
+                      <Hyperlink ToolTip="Click to open configuration."
+                        Command="{Binding ShowOptionsCommand}">
+                        <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding ProfileName}"></TextBlock>
+                      </Hyperlink>      
+                    </TextBlock>
+          </DataTemplate>
+        </DataGridTemplateColumn.CellTemplate>
+      </DataGridTemplateColumn>
 
       <DataGridTemplateColumn Header="Status" >
         <DataGridTemplateColumn.CellTemplate>

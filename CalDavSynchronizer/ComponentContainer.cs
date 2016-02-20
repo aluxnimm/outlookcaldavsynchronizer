@@ -58,7 +58,7 @@ using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace CalDavSynchronizer
 {
-  public class ComponentContainer: IReportsViewModelParent, ISynchronizationReportSink
+  public class ComponentContainer: IReportsViewModelParent, ISynchronizationReportSink, ICalDavSynchronizerCommands
   {
     public const string MessageBoxTitle = "CalDav Synchronizer";
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
@@ -86,7 +86,7 @@ namespace CalDavSynchronizer
     private readonly IAvailableVersionService _availableVersionService;
     private readonly ProfileStatusesViewModel _profileStatusesViewModel;
     private readonly TrayNotifier _trayNotifier;
-
+    private OptionsForm _currentVisibleOptionsFormOrNull;
 
     public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
 
@@ -146,7 +146,7 @@ namespace CalDavSynchronizer
       EnsureCacheCompatibility (options);
 
 
-      _profileStatusesViewModel = new ProfileStatusesViewModel();
+      _profileStatusesViewModel = new ProfileStatusesViewModel(this);
       _profileStatusesViewModel.EnsureProfilesDisplayed (options);
 
       _scheduler.SetOptions (options, generalOptions.CheckIfOnline);
@@ -315,28 +315,44 @@ namespace CalDavSynchronizer
       }
     }
 
-    public void ShowOptionsNoThrow ()
+    public void ShowOptionsNoThrow (Guid? initialVisibleProfile = null)
     {
       try
       {
-        var options = _optionsDataAccess.LoadOptions();
-        Options[] newOptions;
-        GeneralOptions generalOptions = _generalOptionsDataAccess.LoadOptions();
-        if (OptionsForm.EditOptions (
-            _session,
-            options,
-            out newOptions,
-            GetProfileDataDirectory,
-            generalOptions.FixInvalidSettings ))
+        if (_currentVisibleOptionsFormOrNull == null)
         {
-          _optionsDataAccess.SaveOptions (newOptions);
-          _scheduler.SetOptions (newOptions, generalOptions.CheckIfOnline);
-          _profileStatusesViewModel.EnsureProfilesDisplayed (newOptions);
-          DeleteEntityChachesForChangedProfiles (options, newOptions);
+          var options = _optionsDataAccess.LoadOptions();
+          GeneralOptions generalOptions = _generalOptionsDataAccess.LoadOptions();
+          try
+          {
+            _currentVisibleOptionsFormOrNull = new OptionsForm (_session, GetProfileDataDirectory, generalOptions.FixInvalidSettings);
+            _currentVisibleOptionsFormOrNull.OptionsList = options;
 
-          var changedOptions = CreateChangePairs (options, newOptions);
+            if (initialVisibleProfile.HasValue)
+              _currentVisibleOptionsFormOrNull.ShowProfile (initialVisibleProfile.Value);
 
-          SwitchCategories (changedOptions);
+            if (_currentVisibleOptionsFormOrNull.ShowDialog() == DialogResult.OK)
+            {
+              var newOptions = _currentVisibleOptionsFormOrNull.OptionsList;
+              _optionsDataAccess.SaveOptions (newOptions);
+              _scheduler.SetOptions (newOptions, generalOptions.CheckIfOnline);
+              _profileStatusesViewModel.EnsureProfilesDisplayed (newOptions);
+              DeleteEntityChachesForChangedProfiles (options, newOptions);
+
+              var changedOptions = CreateChangePairs (options, newOptions);
+              SwitchCategories (changedOptions);
+            }
+          }
+          finally
+          {
+            _currentVisibleOptionsFormOrNull = null;
+          }
+        }
+        else
+        {
+          _currentVisibleOptionsFormOrNull.BringToFront();
+          if (initialVisibleProfile.HasValue)
+            _currentVisibleOptionsFormOrNull.ShowProfile (initialVisibleProfile.Value);
         }
       }
       catch (Exception x)
