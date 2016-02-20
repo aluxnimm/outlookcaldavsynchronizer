@@ -25,7 +25,7 @@ namespace CalDavSynchronizer.DataAccess
   public interface ISynchronizationReportRepository
   {
     event EventHandler<ReportAddedEventArgs> ReportAdded;
-    void AddReport (SynchronizationReport report);
+    SynchronizationReportName AddReport (SynchronizationReport report);
     IReadOnlyList<SynchronizationReportName> GetAvailableReports ();
     SynchronizationReport GetReport (SynchronizationReportName name);
     void DeleteReport (SynchronizationReportName name);

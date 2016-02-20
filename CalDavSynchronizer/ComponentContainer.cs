@@ -34,19 +34,14 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Events;
-using CalDavSynchronizer.Implementation.Tasks;
-using CalDavSynchronizer.Implementation.Contacts;
-using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using CalDavSynchronizer.Reports;
 using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Ui;
-using CalDavSynchronizer.Ui.Reports;
 using CalDavSynchronizer.Ui.Reports.ViewModels;
 using CalDavSynchronizer.Utilities;
 using GenSync;
 using GenSync.ProgressReport;
 using log4net;
-using log4net.Config;
 using log4net.Repository.Hierarchy;
 using log4net.Core;
 using Microsoft.Office.Interop.Outlook;
@@ -55,12 +50,15 @@ using Exception = System.Exception;
 using System.Collections.Generic;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Ui.Options;
+using CalDavSynchronizer.Ui.SystrayNotification;
+using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
 using GenSync.EntityRelationManagement;
+using GenSync.Logging;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace CalDavSynchronizer
 {
-  public class ComponentContainer: IReportsViewModelParent
+  public class ComponentContainer: IReportsViewModelParent, ISynchronizationReportSink, ICalDavSynchronizerCommands, IDisposable
   {
     public const string MessageBoxTitle = "CalDav Synchronizer";
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
@@ -76,22 +74,24 @@ namespace CalDavSynchronizer
     private readonly OutlookItemChangeWatcher _itemChangeWatcher;
     private readonly string _applicationDataDirectory;
     private readonly ISynchronizationReportRepository _synchronizationReportRepository;
-    private readonly FilteringSynchronizationReportRepositoryWrapper _filteringSynchronizationReportRepository;
     private readonly IUiService _uiService;
     private ReportsViewModel _currentReportsViewModel;
     private bool _showReportsWithWarningsImmediately;
     private bool _showReportsWithErrorsImmediately;
+    private bool _logReportsWithJustWarnings;
+    private bool _logReportsWithoutWarningsOrErrors;
     private readonly ReportGarbageCollection _reportGarbageCollection;
     private readonly SynchronizerFactory _synchronizerFactory;
     private readonly DaslFilterProvider _daslFilterProvider;
     private readonly IAvailableVersionService _availableVersionService;
-
+    private readonly ProfileStatusesViewModel _profileStatusesViewModel;
+    private readonly TrayNotifier _trayNotifier;
+    private OptionsForm _currentVisibleOptionsFormOrNull;
 
     public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
 
     public ComponentContainer (Application application)
     {
-      _uiService = new UiService();
       _generalOptionsDataAccess = new GeneralOptionsDataAccess();
 
       var generalOptions = _generalOptionsDataAccess.LoadOptions();
@@ -135,17 +135,19 @@ namespace CalDavSynchronizer
 
       _synchronizationReportRepository = CreateSynchronizationReportRepository();
 
-      _filteringSynchronizationReportRepository = new FilteringSynchronizationReportRepositoryWrapper (_synchronizationReportRepository);
       UpdateGeneralOptionDependencies(generalOptions);
 
-      _filteringSynchronizationReportRepository.ReportAdded += _synchronizationReportRepository_ReportAdded;
       _scheduler = new Scheduler (
         _synchronizerFactory,
-        _filteringSynchronizationReportRepository,
+        this,
         EnsureSynchronizationContext);
       var options = _optionsDataAccess.LoadOptions();
 
       EnsureCacheCompatibility (options);
+
+
+      _profileStatusesViewModel = new ProfileStatusesViewModel(this);
+      _profileStatusesViewModel.EnsureProfilesDisplayed (options);
 
       _scheduler.SetOptions (options, generalOptions.CheckIfOnline);
 
@@ -155,8 +157,11 @@ namespace CalDavSynchronizer
       _updateChecker.IsEnabled = generalOptions.ShouldCheckForNewerVersions;
 
       _reportGarbageCollection = new ReportGarbageCollection (_synchronizationReportRepository, TimeSpan.FromDays (generalOptions.MaxReportAgeInDays));
-    }
 
+      _trayNotifier = new TrayNotifier(this);
+      _uiService = new UiService (_profileStatusesViewModel);
+    }
+    
     private void EnsureCacheCompatibility (Options[] options)
     {
       var currentEntityCacheVersion = _generalOptionsDataAccess.EntityCacheVersion;
@@ -187,8 +192,8 @@ namespace CalDavSynchronizer
 
     private void UpdateGeneralOptionDependencies (GeneralOptions generalOptions)
     {
-      _filteringSynchronizationReportRepository.AcceptAddingReportsWithJustWarnings = generalOptions.LogReportsWithWarnings;
-      _filteringSynchronizationReportRepository.AcceptAddingReportsWithoutWarningsOrErrors = generalOptions.LogReportsWithoutWarningsOrErrors;
+      _logReportsWithJustWarnings = generalOptions.LogReportsWithWarnings;
+      _logReportsWithoutWarningsOrErrors = generalOptions.LogReportsWithoutWarningsOrErrors;
 
       _showReportsWithErrorsImmediately = generalOptions.ShowReportsWithErrorsImmediately;
       _showReportsWithWarningsImmediately = generalOptions.ShowReportsWithWarningsImmediately;
@@ -196,31 +201,45 @@ namespace CalDavSynchronizer
       _daslFilterProvider.SetDoIncludeCustomMessageClasses (generalOptions.IncludeCustomMessageClasses);
     }
 
-    private void _synchronizationReportRepository_ReportAdded (object sender, ReportAddedEventArgs e)
+    public void PostReport (SynchronizationReport report)
     {
-      if (IsReportsViewVisible)
-      {
-        ShowReports (); // show to bring it into foreground
-        return;
-      }
+      SaveAndShowReport(report);
+      _profileStatusesViewModel.Update (report);
+      _trayNotifier.NotifyUser (report);
+    }
 
-      var hasErrors = e.Report.HasErrors;
-      var hasWarnings = e.Report.HasWarnings;
-
-      if (hasErrors || hasWarnings)
+    private void SaveAndShowReport (SynchronizationReport report)
+    {
+      if (report.HasErrors
+          || _logReportsWithJustWarnings && report.HasWarnings
+          || _logReportsWithoutWarningsOrErrors)
       {
-        if (hasWarnings && _showReportsWithWarningsImmediately
-            || hasErrors && _showReportsWithErrorsImmediately)
+        var reportName = _synchronizationReportRepository.AddReport (report);
+
+        if (IsReportsViewVisible)
         {
-          ShowReports();
-          var reportNameAsString = e.ReportName.ToString();
-          _currentReportsViewModel.Reports.Single (r => r.ReportName.ToString() == reportNameAsString).IsSelected = true;
+          ShowReports(); // show to bring it into foreground
           return;
         }
 
-        var handler = SynchronizationFailedWhileReportsFormWasNotVisible;
-        if (handler != null)
-          handler (this, EventArgs.Empty);
+        var hasErrors = report.HasErrors;
+        var hasWarnings = report.HasWarnings;
+
+        if (hasErrors || hasWarnings)
+        {
+          if (hasWarnings && _showReportsWithWarningsImmediately
+              || hasErrors && _showReportsWithErrorsImmediately)
+          {
+            ShowReports();
+            var reportNameAsString = reportName.ToString();
+            _currentReportsViewModel.Reports.Single (r => r.ReportName.ToString() == reportNameAsString).IsSelected = true;
+            return;
+          }
+
+          var handler = SynchronizationFailedWhileReportsFormWasNotVisible;
+          if (handler != null)
+            handler (this, EventArgs.Empty);
+        }
       }
     }
 
@@ -290,28 +309,58 @@ namespace CalDavSynchronizer
       }
     }
 
-    public void ShowOptionsNoThrow ()
+    public void ShowOptionsNoThrow (Guid? initialVisibleProfile = null)
     {
       try
       {
-        var options = _optionsDataAccess.LoadOptions();
-        Options[] newOptions;
-        GeneralOptions generalOptions = _generalOptionsDataAccess.LoadOptions();
-        if (OptionsForm.EditOptions (
-            _session,
-            options,
-            out newOptions,
-            GetProfileDataDirectory,
-            generalOptions.FixInvalidSettings ))
+        if (_currentVisibleOptionsFormOrNull == null)
         {
-          _optionsDataAccess.SaveOptions (newOptions);
-          _scheduler.SetOptions (newOptions, generalOptions.CheckIfOnline);
-          DeleteEntityChachesForChangedProfiles (options, newOptions);
+          var options = _optionsDataAccess.LoadOptions();
+          GeneralOptions generalOptions = _generalOptionsDataAccess.LoadOptions();
+          try
+          {
+            _currentVisibleOptionsFormOrNull = new OptionsForm (_session, GetProfileDataDirectory, generalOptions.FixInvalidSettings);
+            _currentVisibleOptionsFormOrNull.OptionsList = options;
 
-          var changedOptions = CreateChangePairs (options, newOptions);
+            if (initialVisibleProfile.HasValue)
+              _currentVisibleOptionsFormOrNull.ShowProfile (initialVisibleProfile.Value);
 
-          SwitchCategories (changedOptions);
+            if (_currentVisibleOptionsFormOrNull.ShowDialog() == DialogResult.OK)
+            {
+              var newOptions = _currentVisibleOptionsFormOrNull.OptionsList;
+              _optionsDataAccess.SaveOptions (newOptions);
+              _scheduler.SetOptions (newOptions, generalOptions.CheckIfOnline);
+              _profileStatusesViewModel.EnsureProfilesDisplayed (newOptions);
+              DeleteEntityChachesForChangedProfiles (options, newOptions);
+
+              var changedOptions = CreateChangePairs (options, newOptions);
+              SwitchCategories (changedOptions);
+            }
+          }
+          finally
+          {
+            _currentVisibleOptionsFormOrNull = null;
+          }
         }
+        else
+        {
+          _currentVisibleOptionsFormOrNull.BringToFront();
+          if (initialVisibleProfile.HasValue)
+            _currentVisibleOptionsFormOrNull.ShowProfile (initialVisibleProfile.Value);
+        }
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.HandleException (x, s_logger);
+      }
+    }
+
+    public void ShowLatestSynchronizationReportNoThrow (Guid profileId)
+    {
+      try
+      {
+        ShowReports();
+        _currentReportsViewModel.ShowLatestSynchronizationReportCommand (profileId);
       }
       catch (Exception x)
       {
@@ -683,8 +732,8 @@ namespace CalDavSynchronizer
     {
       try
       {
-        EnsureSynchronizationContext();
-        ShowReports();
+        EnsureSynchronizationContext ();
+        ShowReports ();
       }
       catch (Exception x)
       {
@@ -721,6 +770,39 @@ namespace CalDavSynchronizer
       else
       {
         _currentReportsViewModel.RequireBringToFront();
+      }
+    }
+
+    public void ShowProfileStatusesNoThrow ()
+    {
+      try
+      {
+        EnsureSynchronizationContext ();
+        ShowProfileStatuses ();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.HandleException (x, s_logger);
+      }
+    }
+
+    private void ShowProfileStatuses ()
+    {
+      _uiService.ShowProfileStatusesWindow();
+    }
+
+    public void ShowAboutNoThrow ()
+    {
+      try
+      {
+        using (var aboutForm = new AboutForm (ThisAddIn.ComponentContainer.CheckForUpdatesNowNoThrow))
+        {
+          aboutForm.ShowDialog();
+        }
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.HandleException (x, s_logger);
       }
     }
 
@@ -814,5 +896,9 @@ namespace CalDavSynchronizer
       return options;
     }
 
+    public void Dispose ()
+    {
+      _trayNotifier.Dispose();
+    }
   }
 }

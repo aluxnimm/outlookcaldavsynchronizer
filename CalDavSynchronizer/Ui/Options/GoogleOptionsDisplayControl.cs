@@ -73,10 +73,8 @@ namespace CalDavSynchronizer.Ui.Options
       OnHeaderChanged();
     }
 
-    public string ProfileName
-    {
-      get { return _profileNameTextBox.Text; }
-    }
+    public string ProfileName => _profileNameTextBox.Text;
+    public Guid ProfileId => _optionsId;
 
     private void _inactiveCheckBox_CheckedChanged (object sender, EventArgs e)
     {

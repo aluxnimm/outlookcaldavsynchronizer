@@ -21,11 +21,13 @@ using System.Text;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Ui.Reports;
 using CalDavSynchronizer.Ui.Reports.ViewModels;
+using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
 
 namespace CalDavSynchronizer.Ui
 {
-  public interface  IUiService
+  public interface IUiService
   {
-     void Show (ReportsViewModel reportsViewModel);
+    void Show (ReportsViewModel reportsViewModel);
+    void ShowProfileStatusesWindow ();
   }
 }

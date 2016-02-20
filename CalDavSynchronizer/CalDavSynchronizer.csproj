@@ -273,7 +273,6 @@
     <Compile Include="DataAccess\IGeneralOptionsDataAccess.cs" />
     <Compile Include="DataAccess\GeneralOptionsDataAccess.cs" />
     <Compile Include="DataAccess\ISynchronizationReportRepository.cs" />
-    <Compile Include="DataAccess\FilteringSynchronizationReportRepositoryWrapper.cs" />
     <Compile Include="DataAccess\NullSynchronizationReportRepository.cs" />
     <Compile Include="DataAccess\ReportAddedEventArgs.cs" />
     <Compile Include="DataAccess\ReportEventArgs.cs" />
@@ -289,6 +288,7 @@
     <Compile Include="DataAccess\WebRequestBasedClient\WebDavClient.cs" />
     <Compile Include="DDayICalWorkaround\CalendarDataPreprocessor.cs" />
     <Compile Include="EntityCacheVersionConversion\Version0To1.cs" />
+    <Compile Include="ICalDavSynchronizerCommands.cs" />
     <Compile Include="Implementation\Common\CommonEntityMapper.cs" />
     <Compile Include="Implementation\ComWrappers\ContactItemWrapper.cs" />
     <Compile Include="Implementation\ComWrappers\TaskItemWrapper.cs" />
@@ -339,7 +339,14 @@
     <Compile Include="Implementation\TimeRangeFiltering\NullDateTimeRangeProvider.cs" />
     <Compile Include="ChangeWatching\OutlookItemChangeWatcher.cs" />
     <Compile Include="DataAccess\WebResourceName.cs" />
+    <Compile Include="NullCalDavSynchronizerCommands.cs" />
     <Compile Include="Properties\AssemblyInfoCommon.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\ISynchronizationReportSink.cs" />
     <Compile Include="Reports\ReportGarbageCollection.cs" />
     <Compile Include="Scheduling\ISynchronizerFactory.cs" />
     <Compile Include="Synchronization\IOutlookSynchronizer.cs" />
@@ -586,14 +593,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <EmbeddedResource Include="Ui\ProgressForm.resx">
       <DependentUpon>ProgressForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -610,6 +612,13 @@
     </Compile>
     <Compile Include="Ui\ProgressFormFactory.cs" />
     <Compile Include="Ui\Options\SettingsFaultFinder.cs" />
+    <Compile Include="Ui\SystrayNotification\ViewModels\ProfileStatusesViewModel.cs" />
+    <Compile Include="Ui\SystrayNotification\ViewModels\ProfileStatusViewModel.cs" />
+    <Compile Include="Ui\SystrayNotification\SyncronizationRunResult.cs" />
+    <Compile Include="Ui\SystrayNotification\Views\ProfileStatusesViewModel.xaml.cs">
+      <DependentUpon>ProfileStatusesViewModel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\SystrayNotification\TrayNotifier.cs" />
     <Compile Include="Ui\UiService.cs" />
     <Compile Include="Ui\ViewModelBasecs.cs" />
     <Compile Include="Utilities\ColorHelper.cs" />
@@ -641,9 +650,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
+    <Resource Include="Resources\warning.ico" />
     <None Include="Resources\SyncError.png" />
     <None Include="Resources\report.ico" />
     <None Include="Resources\GeneralOptions.ico" />
+    <Resource Include="Resources\ok.ico" />
+    <None Include="Resources\ApplicationIcon.ico" />
+    <Resource Include="Resources\error.ico" />
     <Content Include="Resources\outlookcaldavsynchronizerlogoarrow.png" />
   </ItemGroup>
   <ItemGroup>
@@ -677,6 +690,10 @@
     <Page Include="Ui\Reports\Views\SynchronizationReportView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Ui\SystrayNotification\Views\ProfileStatusesViewModel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <PropertyGroup>

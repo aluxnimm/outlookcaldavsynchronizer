@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -16,20 +16,18 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Text;
-using System.Windows.Forms;
+using System.Threading.Tasks;
 
-namespace CalDavSynchronizer.Ui.Options
+namespace CalDavSynchronizer
 {
-  public interface IOptionsDisplayControl
+  public interface ICalDavSynchronizerCommands
   {
-    event EventHandler DeletionRequested;
-    event EventHandler CopyRequested;
-    event EventHandler<HeaderEventArgs> HeaderChanged;
-    Contracts.Options Options { set; get; }
-    Control UiControl { get; }
-    bool Validate (StringBuilder errorMessageBuilder);
-    string ProfileName { get; }
-    Guid ProfileId { get; }
+    void ShowOptionsNoThrow (Guid? initialVisibleProfile = null);
+    void ShowGeneralOptionsNoThrow ();
+    void ShowAboutNoThrow ();
+    void ShowLatestSynchronizationReportNoThrow (Guid profileId);
+    void ShowProfileStatusesNoThrow ();
+    Task SynchronizeNowNoThrow ();
+    void ShowReportsNoThrow ();
   }
 }

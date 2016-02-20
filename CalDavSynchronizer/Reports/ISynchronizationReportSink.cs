@@ -16,20 +16,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Text;
-using System.Windows.Forms;
+using GenSync.Logging;
 
-namespace CalDavSynchronizer.Ui.Options
+namespace CalDavSynchronizer.Reports
 {
-  public interface IOptionsDisplayControl
+  public interface ISynchronizationReportSink
   {
-    event EventHandler DeletionRequested;
-    event EventHandler CopyRequested;
-    event EventHandler<HeaderEventArgs> HeaderChanged;
-    Contracts.Options Options { set; get; }
-    Control UiControl { get; }
-    bool Validate (StringBuilder errorMessageBuilder);
-    string ProfileName { get; }
-    Guid ProfileId { get; }
+    void PostReport (SynchronizationReport report);
   }
 }

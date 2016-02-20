@@ -41,7 +41,7 @@ namespace CalDavSynchronizer.DataAccess
         handler (this, new ReportAddedEventArgs (report, name));
     }
 
-    public void AddReport (SynchronizationReport report)
+    public SynchronizationReportName AddReport (SynchronizationReport report)
     {
       var reportName = GetNextFreeName (_reportDirectory, report);
 
@@ -51,6 +51,7 @@ namespace CalDavSynchronizer.DataAccess
       }
 
       OnReportAdded (reportName, report);
+      return reportName;
     }
 
     public IReadOnlyList<SynchronizationReportName> GetAvailableReports ()

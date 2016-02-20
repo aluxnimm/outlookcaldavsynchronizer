@@ -22,11 +22,34 @@ using CalDavSynchronizer.Properties;
 using CalDavSynchronizer.Ui.Reports;
 using CalDavSynchronizer.Ui.Reports.ViewModels;
 using CalDavSynchronizer.Ui.Reports.Views;
+using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
+using CalDavSynchronizer.Ui.SystrayNotification.Views;
 
 namespace CalDavSynchronizer.Ui
 {
   internal class UiService : IUiService
   {
+    private readonly GenericElementHostWindow _profileStatusesWindow;
+
+    public UiService (ProfileStatusesViewModel viewModel)
+    {
+      var view = new ProfileStatusesView();
+      view.DataContext = viewModel;
+      _profileStatusesWindow = new GenericElementHostWindow();
+      _profileStatusesWindow.Text = "Synchronization Status";
+      _profileStatusesWindow.Icon = Resources.ApplicationIcon;
+      _profileStatusesWindow.ShowIcon = true;
+      _profileStatusesWindow.BackColor = SystemColors.Window;
+      _profileStatusesWindow.Child = view;
+      _profileStatusesWindow.Size = new Size (400, 300);
+      _profileStatusesWindow.FormClosing += (sender, e) =>
+      {
+        e.Cancel = true;
+        _profileStatusesWindow.Visible = false;
+      };
+    }
+
+
     public void Show (ReportsViewModel reportsViewModel)
     {
       var view = new ReportsView();
@@ -35,6 +58,9 @@ namespace CalDavSynchronizer.Ui
       var window = new GenericElementHostWindow();
 
       window.Text = "Synchronization Reports";
+      window.Icon = Resources.ApplicationIcon;
+      window.ShowIcon = true;
+      window.BackColor = SystemColors.Window;
       window.Child = view;
       window.Show();
       window.FormClosed += delegate { reportsViewModel.NotifyReportsClosed(); };
@@ -44,12 +70,21 @@ namespace CalDavSynchronizer.Ui
       SetWindowSize (window, 0.75);
     }
 
+    public void ShowProfileStatusesWindow ()
+    {
+      if (_profileStatusesWindow.Visible)
+        _profileStatusesWindow.BringToFront();
+      else
+        _profileStatusesWindow.Visible = true;
+    }
+
+
     private static void SetWindowSize (GenericElementHostWindow window, double ratioToCurrentScreensize)
     {
       var screenSize = Screen.FromControl (window).Bounds;
       window.Size = new Size (
-        (int)(screenSize.Size.Width * ratioToCurrentScreensize), 
-        (int)( screenSize.Size.Height * ratioToCurrentScreensize));
+          (int) (screenSize.Size.Width * ratioToCurrentScreensize),
+          (int) (screenSize.Size.Height * ratioToCurrentScreensize));
     }
   }
 }

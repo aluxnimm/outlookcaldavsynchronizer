@@ -13,23 +13,25 @@
 // GNU Affero General Public License for more details.
 // 
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.using System;
 
 using System;
-using System.Text;
-using System.Windows.Forms;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
-namespace CalDavSynchronizer.Ui.Options
+namespace CalDavSynchronizer.Ui.SystrayNotification.Views
 {
-  public interface IOptionsDisplayControl
+  /// <summary>
+  /// Interaction logic for ReportsView.xaml
+  /// </summary>
+  public partial class ProfileStatusesView : UserControl
   {
-    event EventHandler DeletionRequested;
-    event EventHandler CopyRequested;
-    event EventHandler<HeaderEventArgs> HeaderChanged;
-    Contracts.Options Options { set; get; }
-    Control UiControl { get; }
-    bool Validate (StringBuilder errorMessageBuilder);
-    string ProfileName { get; }
-    Guid ProfileId { get; }
+    public ProfileStatusesView ()
+    {
+      InitializeComponent();
+    }
   }
 }

@@ -35,23 +35,7 @@ namespace CalDavSynchronizer.Ui.Options
           new OptionsDisplayControlFactory (session, profileDataDirectoryFactory, fixInvalidSettings);
     }
 
-    public static bool EditOptions (
-        NameSpace session,
-        Contracts.Options[] options,
-        out Contracts.Options[] changedOptions,
-        Func<Guid, string> profileDataDirectoryFactory,
-        bool fixInvalidSettings )
-    {
-      var form = new OptionsForm (session, profileDataDirectoryFactory, fixInvalidSettings);
-      form.OptionsList = options;
-
-      var shouldSave = form.ShowDialog() == DialogResult.OK;
-      changedOptions = form.OptionsList;
-
-      return shouldSave;
-    }
-
-    private Contracts.Options[] OptionsList
+    public Contracts.Options[] OptionsList
     {
       get
       {
@@ -183,6 +167,19 @@ namespace CalDavSynchronizer.Ui.Options
         : ServerAdapterType.WebDavHttpClientBased;
 
       _tabControl.SelectedTab = AddTabPage (options);
+    }
+
+    public void ShowProfile (Guid value)
+    {
+      foreach (TabPage tabPage in _tabControl.TabPages)
+      {
+        var optionsDisplayControl = (IOptionsDisplayControl) tabPage.Controls[0];
+        if (optionsDisplayControl.ProfileId == value)
+        {
+          _tabControl.SelectedTab = tabPage;
+          return;
+        }
+      }
     }
   }
 }

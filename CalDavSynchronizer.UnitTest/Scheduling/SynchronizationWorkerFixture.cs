@@ -22,7 +22,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Reports;
 using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Synchronization;
 using GenSync.Logging;
@@ -45,7 +45,7 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
       _synchronizerFactory = MockRepository.GenerateStub<ISynchronizerFactory>();
       _synchronizationProfileRunner = new SynchronizationProfileRunner (
           _synchronizerFactory,
-          MockRepository.GenerateStub<ISynchronizationReportRepository>());
+          MockRepository.GenerateStub<ISynchronizationReportSink>());
 
       var options = new Options();
       _stubSynchronizer = new StubSynchronizer();

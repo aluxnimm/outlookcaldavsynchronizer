@@ -30,6 +30,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
     /// </summary>
     private void InitializeComponent ()
     {
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ContactMappingConfigurationForm));
       this._cancelButton = new System.Windows.Forms.Button();
       this._okButton = new System.Windows.Forms.Button();
       this._mapBirthdayCheckBox = new System.Windows.Forms.CheckBox();
@@ -95,9 +96,9 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this.Controls.Add(this._okButton);
       this.Controls.Add(this._cancelButton);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Margin = new System.Windows.Forms.Padding(4);
       this.Name = "ContactMappingConfigurationForm";
-      this.ShowIcon = false;
       this.Text = "Contact Mapping";
       this.ResumeLayout(false);
       this.PerformLayout();

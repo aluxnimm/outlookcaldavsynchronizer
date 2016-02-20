@@ -56,10 +56,7 @@ namespace CalDavSynchronizer
 
     private void AboutButton_Click (object sender, RibbonControlEventArgs e)
     {
-      using (var aboutForm = new AboutForm(ThisAddIn.ComponentContainer.CheckForUpdatesNowNoThrow))
-      {
-        aboutForm.ShowDialog();
-      }
+      ThisAddIn.ComponentContainer.ShowAboutNoThrow();
     }
 
     private void GeneralOptionsButton_Click (object sender, RibbonControlEventArgs e)
@@ -71,6 +68,11 @@ namespace CalDavSynchronizer
     {
       ReportsButton.Image = Resources.report;
       ThisAddIn.ComponentContainer.ShowReportsNoThrow ();
+    }
+
+    private void StatusesButton_Click (object sender, RibbonControlEventArgs e)
+    {
+      ThisAddIn.ComponentContainer.ShowProfileStatusesNoThrow ();
     }
   }
 }

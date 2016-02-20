@@ -50,6 +50,7 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
     public bool HasErrors => _reportProxy.Name.HasErrors;
     public bool HasWarnings => _reportProxy.Name.HasWarnings;
     public string ProfileName => _reportProxy.ProfileName;
+    public Guid ProfileId => _reportProxy.Name.SyncronizationProfileId;
     public DateTime StartTime => _reportProxy.Name.StartTime.ToLocalTime();
     public SynchronizationReport Report => _reportProxy.Value;
 

@@ -21,8 +21,8 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Diagnostics;
+using CalDavSynchronizer.Reports;
 using CalDavSynchronizer.Synchronization;
 using CalDavSynchronizer.Utilities;
 using CalDavSynchronizer.Ui.ConnectionTests;
@@ -46,7 +46,7 @@ namespace CalDavSynchronizer.Scheduling
     private DateTime _lastRun;
     private TimeSpan _interval;
     private IOutlookSynchronizer _synchronizer;
-    private readonly ISynchronizationReportRepository _synchronizationReportRepository;
+    private readonly ISynchronizationReportSink _reportSink;
     private string _profileName;
     private Guid _profileId;
     private ProxyOptions _proxyOptions;
@@ -64,10 +64,10 @@ namespace CalDavSynchronizer.Scheduling
 
     public SynchronizationProfileRunner (
         ISynchronizerFactory synchronizerFactory,
-        ISynchronizationReportRepository synchronizationReportRepository)
+        ISynchronizationReportSink reportSink)
     {
       _synchronizerFactory = synchronizerFactory;
-      _synchronizationReportRepository = synchronizationReportRepository;
+      _reportSink = reportSink;
       // Set to min, to ensure that it runs on the first run after startup
       _lastRun = DateTime.MinValue;
     }
@@ -181,7 +181,7 @@ namespace CalDavSynchronizer.Scheduling
         GC.Collect ();
         GC.WaitForPendingFinalizers ();
         var synchronizationReport = logger.GetReport();
-        _synchronizationReportRepository.AddReport (synchronizationReport);
+        _reportSink.PostReport (synchronizationReport);
       }
       catch (Exception x)
       {
@@ -207,7 +207,7 @@ namespace CalDavSynchronizer.Scheduling
         GC.Collect ();
         GC.WaitForPendingFinalizers ();
         var synchronizationReport = logger.GetReport();
-        _synchronizationReportRepository.AddReport (synchronizationReport);
+        _reportSink.PostReport (synchronizationReport);
       }
       catch (Exception x)
       {

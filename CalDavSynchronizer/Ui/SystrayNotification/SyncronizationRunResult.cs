@@ -13,23 +13,16 @@
 // GNU Affero General Public License for more details.
 // 
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.using System;
 
 using System;
-using System.Text;
-using System.Windows.Forms;
 
-namespace CalDavSynchronizer.Ui.Options
+namespace CalDavSynchronizer.Ui.SystrayNotification
 {
-  public interface IOptionsDisplayControl
+  public enum SyncronizationRunResult
   {
-    event EventHandler DeletionRequested;
-    event EventHandler CopyRequested;
-    event EventHandler<HeaderEventArgs> HeaderChanged;
-    Contracts.Options Options { set; get; }
-    Control UiControl { get; }
-    bool Validate (StringBuilder errorMessageBuilder);
-    string ProfileName { get; }
-    Guid ProfileId { get; }
+    Ok = 0,
+    Warning = 1,
+    Error = 2
   }
 }
