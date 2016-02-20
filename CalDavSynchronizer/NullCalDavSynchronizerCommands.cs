@@ -31,5 +31,10 @@ namespace CalDavSynchronizer
     {
       
     }
+
+    public void ShowLatestSynchronizationReportCommand (Guid profileId)
+    {
+      
+    }
   }
 }

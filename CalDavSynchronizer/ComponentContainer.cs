@@ -361,6 +361,12 @@ namespace CalDavSynchronizer
       }
     }
 
+    public void ShowLatestSynchronizationReportCommand (Guid profileId)
+    {
+      ShowReports();
+      _currentReportsViewModel.ShowLatestSynchronizationReportCommand (profileId);
+    }
+
     private ChangedOptions[] CreateChangePairs (Options[] oldOptions, Options[] newOptions)
     {
       var newOptionsById = newOptions.ToDictionary (o => o.Id);

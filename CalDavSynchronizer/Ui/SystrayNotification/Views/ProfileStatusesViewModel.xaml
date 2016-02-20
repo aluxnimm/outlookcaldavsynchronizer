@@ -26,7 +26,12 @@
       <DataGridTemplateColumn Header="Status" >
         <DataGridTemplateColumn.CellTemplate>
           <DataTemplate>
-            <Image Name="StatusImage"  Height="16" Width="16"></Image>
+            <TextBlock HorizontalAlignment="Center">
+              <Hyperlink ToolTip="Click to open latest synchronization report."
+                          Command="{Binding ShowLatestSynchronizationReportCommand}">
+                <Image Name="StatusImage"  Height="16" Width="16"></Image>
+              </Hyperlink>
+            </TextBlock>
             <DataTemplate.Triggers>
               <DataTrigger Binding="{Binding LastResult}" Value="Ok">
                 <Setter TargetName="StatusImage" Property="Source" Value="pack://application:,,,/CalDavSynchronizer;component/Resources/ok.ico"></Setter>

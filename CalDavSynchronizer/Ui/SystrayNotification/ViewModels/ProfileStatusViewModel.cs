@@ -50,11 +50,16 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
       {
         _calDavSynchronizerCommands.ShowOptionsNoThrow (ProfileId);
       });
+      ShowLatestSynchronizationReportCommand = new DelegateCommand (_ =>
+      {
+        _calDavSynchronizerCommands.ShowLatestSynchronizationReportCommand (ProfileId);
+      });
     }
     
     public Guid ProfileId { get; }
     public ICommand ShowOptionsCommand { get; }
-
+    public ICommand ShowLatestSynchronizationReportCommand { get; }
+    
     public int? LastRunMinutesAgo
     {
       get { return _lastRunMinutesAgo; }

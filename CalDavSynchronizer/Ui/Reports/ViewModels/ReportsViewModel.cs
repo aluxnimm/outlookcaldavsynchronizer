@@ -144,20 +144,9 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
       }
     }
 
-    public ObservableCollection<ReportViewModel> Reports
-    {
-      get { return _reports; }
-    }
-
-    public DelegateCommand DeleteSelectedCommand
-    {
-      get { return _deleteSelectedCommand; }
-    }
-
-    public DelegateCommand SaveSelectedCommand
-    {
-      get { return _saveSelectedCommand; }
-    }
+    public ObservableCollection<ReportViewModel> Reports => _reports;
+    public DelegateCommand DeleteSelectedCommand => _deleteSelectedCommand;
+    public DelegateCommand SaveSelectedCommand => _saveSelectedCommand;
 
     public static ReportsViewModel DesignInstance
     {
@@ -185,6 +174,21 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
     public void DiplayBEntity (Guid synchronizationProfileId, string entityId)
     {
       _parent.DiplayBEntity (synchronizationProfileId, entityId);
+    }
+
+    public void ShowLatestSynchronizationReportCommand (Guid profileId)
+    {
+      foreach (var report in _reports)
+        report.IsSelected = false;
+
+      ReportViewModel latestReport = null;
+
+      foreach (var report in _reports.Where (r => r.ProfileId == profileId))
+        if (latestReport == null || report.StartTime > latestReport.StartTime)
+          latestReport = report;
+  
+      if (latestReport != null)
+        latestReport.IsSelected = true;
     }
   }
 }
