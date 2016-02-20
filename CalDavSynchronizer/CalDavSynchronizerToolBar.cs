@@ -29,6 +29,7 @@ namespace CalDavSynchronizer
     private readonly CommandBarButton _toolBarBtnOptions;
     private readonly CommandBarButton _toolBarBtnAboutMe;
     private readonly CommandBarButton _toolBarBtnReports;
+    private readonly CommandBarButton _toolBarBtnStatus;
     // ReSharper restore PrivateFieldCanBeConvertedToLocalVariable
 
     private readonly ComponentContainer _componentContainer;
@@ -75,6 +76,13 @@ namespace CalDavSynchronizer
       _toolBarBtnReports.Tag = "Show reports of last sync runs";
       _toolBarBtnReports.Click += ToolBarBtn_Reports_OnClick;
 
+      _toolBarBtnStatus = (CommandBarButton) toolBar.Controls.Add (1, missing, missing, missing, missing);
+      _toolBarBtnStatus.Style = MsoButtonStyle.msoButtonIconAndCaption;
+      _toolBarBtnStatus.Caption = "Status";
+      _toolBarBtnStatus.FaceId = 433; // builtin icon: statistics
+      _toolBarBtnStatus.Tag = "Show  syncronization status";
+      _toolBarBtnStatus.Click += ToolBarBtn_Status_OnClick;
+
       toolBar.Visible = true;
     }
 
@@ -117,6 +125,11 @@ namespace CalDavSynchronizer
     private void ToolBarBtn_Reports_OnClick(CommandBarButton Ctrl, ref bool CancelDefault)
     {
       _componentContainer.ShowReportsNoThrow();
+    }
+
+    private void ToolBarBtn_Status_OnClick (CommandBarButton Ctrl, ref bool CancelDefault)
+    {
+      _componentContainer.ShowProfileStatusesNoThrow ();
     }
   }
 }
