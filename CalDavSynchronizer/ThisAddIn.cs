@@ -57,7 +57,7 @@ namespace CalDavSynchronizer
 
         ComponentContainer = new ComponentContainer (Application);
         ComponentContainer.SynchronizationFailedWhileReportsFormWasNotVisible += ComponentContainer_SynchronizationFailedWhileReportsFormWasNotVisible;
-
+        ((ApplicationEvents_Event) Application).Quit += ThisAddIn_Quit;
         if (IsOutlookVersionSmallerThan2010)
         {
           _calDavSynchronizerToolBar = new CalDavSynchronizerToolBar (Application, ComponentContainer, missing);
@@ -68,6 +68,11 @@ namespace CalDavSynchronizer
       {
         ExceptionHandler.Instance.HandleException (x, s_logger);
       }
+    }
+
+    private void ThisAddIn_Quit ()
+    {
+      ComponentContainer.Dispose();
     }
 
     void ComponentContainer_SynchronizationFailedWhileReportsFormWasNotVisible (object sender, EventArgs e)

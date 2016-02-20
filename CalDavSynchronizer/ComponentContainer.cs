@@ -58,7 +58,7 @@ using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace CalDavSynchronizer
 {
-  public class ComponentContainer: IReportsViewModelParent, ISynchronizationReportSink, ICalDavSynchronizerCommands
+  public class ComponentContainer: IReportsViewModelParent, ISynchronizationReportSink, ICalDavSynchronizerCommands, IDisposable
   {
     public const string MessageBoxTitle = "CalDav Synchronizer";
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
@@ -896,5 +896,9 @@ namespace CalDavSynchronizer
       return options;
     }
 
+    public void Dispose ()
+    {
+      _trayNotifier.Dispose();
+    }
   }
 }

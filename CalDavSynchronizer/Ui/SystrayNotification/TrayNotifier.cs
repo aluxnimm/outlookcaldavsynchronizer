@@ -6,7 +6,7 @@ using GenSync.Logging;
 
 namespace CalDavSynchronizer.Ui.SystrayNotification
 {
-  class TrayNotifier
+  class TrayNotifier : IDisposable
   {
     private readonly NotifyIcon _nofifyIcon;
     private readonly ICalDavSynchronizerCommands _calDavSynchronizerCommands;
@@ -65,6 +65,12 @@ namespace CalDavSynchronizer.Ui.SystrayNotification
             ToolTipIcon.Warning);
       }
     }
-    
+
+    public void Dispose ()
+    {
+      _nofifyIcon.Visible = false;
+      _nofifyIcon.Icon = null;
+      _nofifyIcon.Dispose();
+    }
   }
 }
