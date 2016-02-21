@@ -25,5 +25,6 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
     IConfigurationForm<T> CreateGenericForm<T> (object configurationElement);
     IConfigurationForm<EventMappingConfiguration> Create (EventMappingConfiguration configurationElement);
     IConfigurationForm<ContactMappingConfiguration> Create (ContactMappingConfiguration configurationElement);
+    IConfigurationForm<TaskMappingConfiguration> Create (TaskMappingConfiguration configurationElement);
   }
 }

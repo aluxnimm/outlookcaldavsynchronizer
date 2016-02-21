@@ -328,6 +328,8 @@ namespace CalDavSynchronizer.Scheduling
 
     private IOutlookSynchronizer CreateTaskSynchronizer (Options options, AvailableSynchronizerComponents componentsToFill)
     {
+      var mappingParameters = GetMappingParameters<TaskMappingConfiguration> (options);
+
       var atypeRepository = new OutlookTaskRepository (_outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId, _daslFilterProvider);
 
       var calDavDataAccess = new CalDavDataAccess (
@@ -352,7 +354,7 @@ namespace CalDavSynchronizer.Scheduling
 
       var outlookEventRelationDataFactory = new OutlookEventRelationDataFactory();
       var syncStateFactory = new EntitySyncStateFactory<string, DateTime, TaskItemWrapper, WebResourceName, string, IICalendar> (
-          new TaskMapper (_outlookSession.Application.TimeZones.CurrentTimeZone.ID),
+          new TaskMapper (_outlookSession.Application.TimeZones.CurrentTimeZone.ID, mappingParameters),
           atypeRepository,
           btypeRepository,
           outlookEventRelationDataFactory,

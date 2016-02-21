@@ -20,6 +20,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Common;
 using DDay.iCal;
@@ -37,11 +38,13 @@ namespace CalDavSynchronizer.Implementation.Tasks
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
     private readonly DateTime _dateNull;
     private readonly TimeZoneInfo _localTimeZoneInfo;
+    private readonly TaskMappingConfiguration _configuration;
 
-    public TaskMapper (string localTimeZoneId)
+    public TaskMapper (string localTimeZoneId, TaskMappingConfiguration configuration)
     {
       _dateNull = new DateTime (4501, 1, 1, 0, 0, 0);
       _localTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (localTimeZoneId);
+      _configuration = configuration;
     }
 
     public IICalendar Map1To2 (TaskItemWrapper source, IICalendar existingTargetCalender, IEntityMappingLogger logger)
@@ -76,7 +79,9 @@ namespace CalDavSynchronizer.Implementation.Tasks
     public void Map1To2 (TaskItemWrapper source, ITodo target, iCalTimeZone localIcalTimeZone)
     {
       target.Summary = source.Inner.Subject;
-      target.Description = source.Inner.Body;
+
+      if (_configuration.MapBody)
+        target.Description = source.Inner.Body;
 
       if (source.Inner.StartDate != _dateNull)
       {
@@ -103,7 +108,8 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       target.Properties.Set ("STATUS", MapStatus1To2 (source.Inner.Status));
 
-      target.Priority = CommonEntityMapper.MapPriority1To2 (source.Inner.Importance);
+      if (_configuration.MapPriority)
+        target.Priority = CommonEntityMapper.MapPriority1To2 (source.Inner.Importance);
 
       target.Class = CommonEntityMapper.MapPrivacy1To2 (source.Inner.Sensitivity, false);
 
@@ -143,8 +149,15 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
     private void MapReminder1To2 (TaskItemWrapper source, ITodo target)
     {
+      if (_configuration.MapReminder == ReminderMapping.@false)
+        return;
+
       if (source.Inner.ReminderSet)
       {
+        if (_configuration.MapReminder == ReminderMapping.JustUpcoming
+            && source.Inner.ReminderTime <= DateTime.Now)
+          return;
+
         var trigger = new Trigger();
 
         if (source.Inner.StartDate != _dateNull)
@@ -270,7 +283,8 @@ namespace CalDavSynchronizer.Implementation.Tasks
     public TaskItemWrapper Map2To1 (ITodo source, TaskItemWrapper target, IEntityMappingLogger logger)
     {
       target.Inner.Subject = source.Summary;
-      target.Inner.Body = source.Description;
+
+      target.Inner.Body = _configuration.MapBody ? source.Description : string.Empty;
 
       NodaTime.DateTimeZone localZone = NodaTime.DateTimeZoneProviders.Bcl.GetSystemDefault();
 
@@ -320,7 +334,8 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       target.Inner.PercentComplete = source.PercentComplete;
 
-      target.Inner.Importance = CommonEntityMapper.MapPriority2To1 (source.Priority);
+      if (_configuration.MapPriority)
+        target.Inner.Importance = CommonEntityMapper.MapPriority2To1 (source.Priority);
 
       target.Inner.Sensitivity = CommonEntityMapper.MapPrivacy2To1 (source.Class, false);
 
@@ -359,11 +374,11 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
     private void MapReminder2To1 (ITodo source, TaskItemWrapper target, IEntityMappingLogger logger)
     {
-      if (source.Alarms.Count == 0)
-      {
-        target.Inner.ReminderSet = false;
-        return;
-      }
+      target.Inner.ReminderSet = false;
+
+      if (_configuration.MapReminder == ReminderMapping.@false) return;
+
+      if (source.Alarms.Count == 0) return;
 
       if (source.Alarms.Count > 1)
       {
@@ -372,21 +387,26 @@ namespace CalDavSynchronizer.Implementation.Tasks
       }
       var alarm = source.Alarms[0];
 
-      target.Inner.ReminderSet = true;
-
       if (alarm.Trigger.IsRelative && alarm.Trigger.Related == TriggerRelation.Start && alarm.Trigger.Duration.HasValue && source.Start != null)
       {
-        target.Inner.ReminderTime = TimeZoneInfo.ConvertTimeFromUtc (source.Start.UTC, _localTimeZoneInfo).Add (alarm.Trigger.Duration.Value);
+        var reminderTime = TimeZoneInfo.ConvertTimeFromUtc (source.Start.UTC, _localTimeZoneInfo).Add (alarm.Trigger.Duration.Value);
+
+        if (_configuration.MapReminder == ReminderMapping.JustUpcoming && reminderTime < DateTime.Now) return;
+        target.Inner.ReminderSet = true;
+        target.Inner.ReminderTime = reminderTime;
       }
       else if (alarm.Trigger.IsRelative && alarm.Trigger.Related == TriggerRelation.End && alarm.Trigger.Duration.HasValue && source.Due != null)
       {
-        target.Inner.ReminderTime = TimeZoneInfo.ConvertTimeFromUtc (source.Due.UTC, _localTimeZoneInfo).Add (alarm.Trigger.Duration.Value);
+        var reminderTime = TimeZoneInfo.ConvertTimeFromUtc (source.Due.UTC, _localTimeZoneInfo).Add (alarm.Trigger.Duration.Value);
+
+        if (_configuration.MapReminder == ReminderMapping.JustUpcoming && reminderTime < DateTime.Now) return;
+        target.Inner.ReminderSet = true;
+        target.Inner.ReminderTime = reminderTime;
       }
       else
       {
         s_logger.WarnFormat ("Task '{0}' alarm is not supported. Ignoring.", source.UID);
         logger.LogMappingWarning ("Task alarm is not supported. Ignoring.");
-        target.Inner.ReminderSet = false;
       }
     }
 

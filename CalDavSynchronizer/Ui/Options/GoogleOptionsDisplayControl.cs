@@ -168,7 +168,8 @@ namespace CalDavSynchronizer.Ui.Options
     {
       try
       {
-        var mappingConfiguration = OptionTasks.CoreceMappingConfiguration (_outlookFolderControl.OutlookFolderType, _mappingConfiguration);
+        var mappingConfiguration = OptionTasks.CoreceMappingConfiguration (_outlookFolderControl.OutlookFolderType, _mappingConfiguration,
+                                                                           _serverSettingsControl.UsedServerAdapterType == ServerAdapterType.GoogleTaskApi);
         if (mappingConfiguration != null)
         {
           var configurationForm = mappingConfiguration.CreateConfigurationForm (_configurationFormFactory.Value);

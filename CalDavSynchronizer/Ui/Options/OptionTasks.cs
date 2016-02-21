@@ -33,7 +33,7 @@ namespace CalDavSynchronizer.Ui.Options
   {
     public const string ConnectionTestCaption = "Test settings";
 
-    public static MappingConfigurationBase CoreceMappingConfiguration (OlItemType? outlookFolderType, MappingConfigurationBase mappingConfiguration)
+    public static MappingConfigurationBase CoreceMappingConfiguration (OlItemType? outlookFolderType, MappingConfigurationBase mappingConfiguration, bool isGoogleTaskProfile)
     {
       switch (outlookFolderType)
       {
@@ -44,6 +44,10 @@ namespace CalDavSynchronizer.Ui.Options
         case OlItemType.olContactItem:
           if (mappingConfiguration == null || mappingConfiguration.GetType() != typeof (ContactMappingConfiguration))
             return new ContactMappingConfiguration();
+          break;
+        case OlItemType.olTaskItem:
+          if (!isGoogleTaskProfile && (mappingConfiguration == null || mappingConfiguration.GetType() != typeof(TaskMappingConfiguration)))
+            return new TaskMappingConfiguration();
           break;
       }
 

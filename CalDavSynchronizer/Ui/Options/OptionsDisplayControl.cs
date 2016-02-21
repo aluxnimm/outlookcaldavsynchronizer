@@ -164,7 +164,7 @@ namespace CalDavSynchronizer.Ui.Options
     {
       try
       {
-        var mappingConfiguration = OptionTasks.CoreceMappingConfiguration (_outlookFolderControl.OutlookFolderType, _mappingConfiguration);
+        var mappingConfiguration = OptionTasks.CoreceMappingConfiguration (_outlookFolderControl.OutlookFolderType, _mappingConfiguration, false);
         if (mappingConfiguration != null)
         {
           var configurationForm = mappingConfiguration.CreateConfigurationForm (_configurationFormFactory.Value);

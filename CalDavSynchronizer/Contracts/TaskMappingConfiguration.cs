@@ -14,15 +14,26 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using System.Xml.Serialization;
+using CalDavSynchronizer.Ui.Options.Mapping;
 
 namespace CalDavSynchronizer.Contracts
 {
-  [XmlInclude (typeof (ContactMappingConfiguration))]
-  [XmlInclude (typeof (EventMappingConfiguration))]
-  [XmlInclude (typeof (TaskMappingConfiguration))]
-  public abstract class MappingConfigurationBase : ConfigurationBase<MappingConfigurationBase>
+  public class TaskMappingConfiguration : MappingConfigurationBase
   {
+    public ReminderMapping MapReminder { get; set; }
+    public bool MapPriority { get; set; }
+    public bool MapBody { get; set; }
+
+    public TaskMappingConfiguration ()
+    {
+      MapReminder = ReminderMapping.JustUpcoming;
+      MapPriority = true;
+      MapBody = true;
+    }
+
+    public override IConfigurationForm<MappingConfigurationBase> CreateConfigurationForm (IConfigurationFormFactory factory)
+    {
+      return factory.Create (this);
+    }
   }
 }

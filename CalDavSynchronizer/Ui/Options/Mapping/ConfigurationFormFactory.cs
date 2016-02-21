@@ -48,5 +48,11 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       form.Options = configurationElement;
       return form;
     }
+    public IConfigurationForm<TaskMappingConfiguration> Create (TaskMappingConfiguration configurationElement)
+    {
+      var form = new TaskMappingConfigurationForm();
+      form.Options = configurationElement;
+      return form;
+    }
   }
 }
