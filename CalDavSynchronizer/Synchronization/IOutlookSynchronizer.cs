@@ -25,6 +25,5 @@ namespace CalDavSynchronizer.Synchronization
   {
     Task SynchronizeNoThrow (ISynchronizationLogger logger);
     Task SnychronizePartialNoThrow (IEnumerable<string> outlookIds, ISynchronizationLogger logger);
-    bool IsResponsible (string folderEntryId, string folderStoreId);
   }
 }

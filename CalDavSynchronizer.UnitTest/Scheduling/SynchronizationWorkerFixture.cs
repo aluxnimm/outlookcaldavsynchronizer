@@ -21,6 +21,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CalDavSynchronizer.ChangeWatching;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Reports;
 using CalDavSynchronizer.Scheduling;
@@ -45,7 +46,9 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
       _synchronizerFactory = MockRepository.GenerateStub<ISynchronizerFactory>();
       _synchronizationProfileRunner = new SynchronizationProfileRunner (
           _synchronizerFactory,
-          MockRepository.GenerateStub<ISynchronizationReportSink>());
+          MockRepository.GenerateStub<ISynchronizationReportSink>(),
+          MockRepository.GenerateStub<IFolderChangeWatcherFactory> (),
+          delegate { });
 
       var options = new Options();
       _stubSynchronizer = new StubSynchronizer();

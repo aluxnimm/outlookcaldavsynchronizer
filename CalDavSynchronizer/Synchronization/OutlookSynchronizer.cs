@@ -28,12 +28,10 @@ namespace CalDavSynchronizer.Synchronization
   public class OutlookSynchronizer<TBtypeEntityId> : IOutlookSynchronizer
   {
     private readonly IPartialSynchronizer<string, TBtypeEntityId> _synchronizer;
-    private readonly IOutlookRepository _outlookRepository;
-
-    public OutlookSynchronizer (IPartialSynchronizer<string, TBtypeEntityId> synchronizer, IOutlookRepository outlookRepository)
+ 
+    public OutlookSynchronizer (IPartialSynchronizer<string, TBtypeEntityId> synchronizer)
     {
       _synchronizer = synchronizer;
-      _outlookRepository = outlookRepository;
     }
 
     public Task SynchronizeNoThrow (ISynchronizationLogger logger)
@@ -44,11 +42,6 @@ namespace CalDavSynchronizer.Synchronization
     public async Task SnychronizePartialNoThrow (IEnumerable<string> outlookIds, ISynchronizationLogger logger)
     {
       await _synchronizer.SynchronizePartialNoThrow (outlookIds, new TBtypeEntityId[] { }, logger);
-    }
-
-    public bool IsResponsible (string folderEntryId, string folderStoreId)
-    {
-      return _outlookRepository.IsResponsibleForFolder (folderEntryId, folderStoreId);
     }
   }
 }

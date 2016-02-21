@@ -24,7 +24,7 @@ using Exception = System.Exception;
 
 namespace CalDavSynchronizer.ChangeWatching
 {
-  internal class OutlookItemChangeWatcher
+  internal class OutlookItemChangeWatcher : IItemCollectionChangeWatcher
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -102,6 +102,11 @@ namespace CalDavSynchronizer.ChangeWatching
         return new AppointmentItemAdapter (inspector, appointment);
       else
         return null;
+    }
+
+    public void Dispose ()
+    {
+      
     }
   }
 }

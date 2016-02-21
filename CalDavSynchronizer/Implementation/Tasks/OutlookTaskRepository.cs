@@ -29,7 +29,7 @@ using log4net;
 
 namespace CalDavSynchronizer.Implementation.Tasks
 {
-  public class OutlookTaskRepository : IEntityRepository<TaskItemWrapper, string, DateTime>, IOutlookRepository
+  public class OutlookTaskRepository : IEntityRepository<TaskItemWrapper, string, DateTime>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
     private readonly NameSpace _mapiNameSpace;
@@ -180,11 +180,6 @@ namespace CalDavSynchronizer.Implementation.Tasks
           return Task.FromResult (result);
         }
       }
-    }
-
-    public bool IsResponsibleForFolder (string folderEntryId, string folderStoreId)
-    {
-      return folderEntryId == _folderId && folderStoreId == _folderStoreId;
     }
   }
 }

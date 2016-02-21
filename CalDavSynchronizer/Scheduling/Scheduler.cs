@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CalDavSynchronizer.ChangeWatching;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Reports;
 using CalDavSynchronizer.Utilities;
@@ -36,23 +37,28 @@ namespace CalDavSynchronizer.Scheduling
     private readonly TimeSpan _timerInterval = TimeSpan.FromSeconds (30);
     private readonly ISynchronizerFactory _synchronizerFactory;
     private readonly ISynchronizationReportSink _reportSink;
+    private readonly IFolderChangeWatcherFactory _folderChangeWatcherFactory;
     private readonly Action _ensureSynchronizationContext;
 
     public Scheduler (
       ISynchronizerFactory synchronizerFactory,
       ISynchronizationReportSink reportSink,
-      Action ensureSynchronizationContext)
+      Action ensureSynchronizationContext, 
+      IFolderChangeWatcherFactory folderChangeWatcherFactory)
     {
       if (synchronizerFactory == null)
         throw new ArgumentNullException (nameof (synchronizerFactory));
       if (ensureSynchronizationContext == null)
         throw new ArgumentNullException (nameof (ensureSynchronizationContext));
+      if (folderChangeWatcherFactory == null)
+        throw new ArgumentNullException (nameof (folderChangeWatcherFactory));
       if (reportSink == null)
         throw new ArgumentNullException (nameof (reportSink));
 
       _reportSink = reportSink;
       _synchronizerFactory = synchronizerFactory;
       _ensureSynchronizationContext = ensureSynchronizationContext;
+      _folderChangeWatcherFactory = folderChangeWatcherFactory;
       _synchronizationTimer.Tick += _synchronizationTimer_Tick;
       _synchronizationTimer.Interval = (int) _timerInterval.TotalMilliseconds;
       _synchronizationTimer.Start();
@@ -87,7 +93,9 @@ namespace CalDavSynchronizer.Scheduling
           {
             profileRunner = new SynchronizationProfileRunner (
                 _synchronizerFactory,
-                _reportSink);
+                _reportSink,
+                _folderChangeWatcherFactory,
+                _ensureSynchronizationContext);
           }
           profileRunner.UpdateOptions (option, checkIfOnline);
           workersById.Add (option.Id, profileRunner);
@@ -98,12 +106,6 @@ namespace CalDavSynchronizer.Scheduling
         }
       }
       _runnersById = workersById;
-    }
-
-    public async Task RunResponsibleSynchronizationProfiles (string outlookId, string folderEntryId, string folderStoreId)
-    {
-      foreach (var worker in _runnersById.Values)
-        await worker.RunIfResponsibleNoThrow (outlookId, folderEntryId, folderStoreId);
     }
 
     public async Task RunNow ()

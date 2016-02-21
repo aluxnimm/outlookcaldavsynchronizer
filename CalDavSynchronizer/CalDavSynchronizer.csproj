@@ -253,6 +253,11 @@
     </Compile>
     <Compile Include="CalDavSynchronizerToolBar.cs" />
     <Compile Include="ChangeWatching\AppointmentItemAdapter.cs" />
+    <Compile Include="ChangeWatching\FolderChangeWatcher.cs" />
+    <Compile Include="ChangeWatching\FolderChangeWatcherFactory.cs" />
+    <Compile Include="ChangeWatching\NullItemCollectionChangeWatcher.cs" />
+    <Compile Include="ChangeWatching\IItemCollectionChangeWatcher.cs" />
+    <Compile Include="ChangeWatching\IFolderChangeWatcherFactory.cs" />
     <Compile Include="ChangeWatching\IOutlookItem.cs" />
     <Compile Include="ChangeWatching\ItemSavedEventArgs.cs" />
     <Compile Include="ComponentContainer.cs" />
@@ -316,7 +321,6 @@
     <Compile Include="Implementation\GoogleTasks\InitialGoogleTasktEntityMatcher.cs" />
     <Compile Include="Implementation\DaslFilterProvider.cs" />
     <Compile Include="Implementation\IDaslFilterProvider.cs" />
-    <Compile Include="Implementation\IOutlookRepository.cs" />
     <Compile Include="Implementation\TimeRangeFiltering\DateTimeRange.cs" />
     <Compile Include="Implementation\TimeRangeFiltering\DateTimeRangeProvider.cs" />
     <Compile Include="Implementation\Events\EventConflictInitialSyncStateCreationStrategyAutomatic.cs" />
@@ -717,7 +721,7 @@
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{BAA0C2D2-18E2-41B9-852F-F413020CAA33}">
-        <ProjectProperties HostName="Outlook" HostPackage="{29A7B9D7-A7F1-4328-8EF0-6B2D1A56B2C1}" OfficeVersion="15.0" VstxVersion="4.0" ApplicationType="Outlook" Language="cs" TemplatesPath="" DebugInfoExeName="#Software\Microsoft\Office\15.0\Outlook\InstallRoot\Path#outlook.exe" AddItemTemplatesGuid="{A58A78EB-1C92-4DDD-80CF-E8BD872ABFC4}" />
+        <ProjectProperties HostName="Outlook" HostPackage="{29A7B9D7-A7F1-4328-8EF0-6B2D1A56B2C1}" OfficeVersion="15.0" VstxVersion="4.0" ApplicationType="Outlook" Language="cs" TemplatesPath="" DebugInfoExeName="#Software\Microsoft\Office\16.0\Outlook\InstallRoot\Path#outlook.exe" AddItemTemplatesGuid="{A58A78EB-1C92-4DDD-80CF-E8BD872ABFC4}" />
         <Host Name="Outlook" GeneratedCodeNamespace="CalDavSynchronizer" IconIndex="0">
           <HostItem Name="ThisAddIn" Code="ThisAddIn.cs" CanonicalName="AddIn" CanActivate="false" IconIndex="1" Blueprint="ThisAddIn.Designer.xml" GeneratedCode="ThisAddIn.Designer.cs" />
         </Host>

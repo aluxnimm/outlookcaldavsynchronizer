@@ -13,37 +13,12 @@
 // GNU Affero General Public License for more details.
 // 
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.using System;
 
 namespace CalDavSynchronizer.ChangeWatching
 {
-  public class ItemSavedEventArgs : EventArgs
+  public interface IFolderChangeWatcherFactory
   {
-    private readonly string _entryId;
-    private readonly string folderEntryId;
-    private readonly string _folderStoreId;
-
-    public ItemSavedEventArgs (string entryId, string folderEntryId, string folderStoreId)
-    {
-      _entryId = entryId;
-      this.folderEntryId = folderEntryId;
-      _folderStoreId = folderStoreId;
-    }
-
-    public string EntryId
-    {
-      get { return _entryId; }
-    }
-
-    public string FolderEntryId
-    {
-      get { return folderEntryId; }
-    }
-
-    public string FolderStoreId
-    {
-      get { return _folderStoreId; }
-    }
+    IItemCollectionChangeWatcher Create (string folderEntryId, string folderStoreId);
   }
 }

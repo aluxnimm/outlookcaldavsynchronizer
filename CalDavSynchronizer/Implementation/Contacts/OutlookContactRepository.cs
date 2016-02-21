@@ -30,7 +30,7 @@ using log4net;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public class OutlookContactRepository : IEntityRepository<ContactItemWrapper, string, DateTime>, IOutlookRepository
+  public class OutlookContactRepository : IEntityRepository<ContactItemWrapper, string, DateTime>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -201,11 +201,6 @@ namespace CalDavSynchronizer.Implementation.Contacts
           return Task.FromResult (result);
         }
       }
-    }
-
-    public bool IsResponsibleForFolder (string folderEntryId, string folderStoreId)
-    {
-      return folderEntryId == _folderId && folderStoreId == _folderStoreId;
     }
   }
 }

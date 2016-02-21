@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using CalDavSynchronizer.ChangeWatching;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Diagnostics;
 using CalDavSynchronizer.Reports;
@@ -53,8 +54,10 @@ namespace CalDavSynchronizer.Scheduling
     private bool _inactive;
     private readonly ISynchronizerFactory _synchronizerFactory;
     private int _isRunning = 0;
-    private bool _changeTriggeredSynchronizationEnabled;
     private bool _checkIfOnline;
+    private readonly IFolderChangeWatcherFactory _folderChangeWatcherFactory;
+    private IItemCollectionChangeWatcher _folderChangeWatcher;
+    private readonly Action _ensureSynchronizationContext;
 
     private volatile bool _fullSyncPending = false;
     // There is no threadsafe Datastructure required, since there will be no concurrent threads
@@ -64,10 +67,23 @@ namespace CalDavSynchronizer.Scheduling
 
     public SynchronizationProfileRunner (
         ISynchronizerFactory synchronizerFactory,
-        ISynchronizationReportSink reportSink)
+        ISynchronizationReportSink reportSink, 
+        IFolderChangeWatcherFactory folderChangeWatcherFactory, 
+        Action ensureSynchronizationContext)
     {
+      if (synchronizerFactory == null)
+        throw new ArgumentNullException (nameof (synchronizerFactory));
+      if (reportSink == null)
+        throw new ArgumentNullException (nameof (reportSink));
+      if (folderChangeWatcherFactory == null)
+        throw new ArgumentNullException (nameof (folderChangeWatcherFactory));
+      if (ensureSynchronizationContext == null)
+        throw new ArgumentNullException (nameof (ensureSynchronizationContext));
+
       _synchronizerFactory = synchronizerFactory;
       _reportSink = reportSink;
+      _folderChangeWatcherFactory = folderChangeWatcherFactory;
+      _ensureSynchronizationContext = ensureSynchronizationContext;
       // Set to min, to ensure that it runs on the first run after startup
       _lastRun = DateTime.MinValue;
     }
@@ -83,8 +99,35 @@ namespace CalDavSynchronizer.Scheduling
       _synchronizer = _synchronizerFactory.CreateSynchronizer (options);
       _interval = TimeSpan.FromMinutes (options.SynchronizationIntervalInMinutes);
       _inactive = options.Inactive;
-      _changeTriggeredSynchronizationEnabled = options.EnableChangeTriggeredSynchronization;
       _checkIfOnline = checkIfOnline;
+
+      if (_folderChangeWatcher != null)
+      {
+        _folderChangeWatcher.ItemSavedOrDeleted -= FolderChangeWatcher_ItemSavedOrDeleted;
+        _folderChangeWatcher.Dispose();
+        _folderChangeWatcher = null;
+      }
+
+      if (!_inactive && options.EnableChangeTriggeredSynchronization)
+      {
+        _folderChangeWatcher =
+            _folderChangeWatcherFactory.Create (options.OutlookFolderEntryId, options.OutlookFolderStoreId);
+        _folderChangeWatcher.ItemSavedOrDeleted += FolderChangeWatcher_ItemSavedOrDeleted;
+      }
+    }
+
+    private async void FolderChangeWatcher_ItemSavedOrDeleted (object sender, ItemSavedEventArgs e)
+    {
+      try
+      {
+        _ensureSynchronizationContext();
+        _pendingOutlookItems.Add (e.EntryId);
+        await RunAllPendingJobs ();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.HandleException (x, s_logger);
+      }
     }
 
     public async Task RunAndRescheduleNoThrow (bool runNow)
@@ -105,29 +148,7 @@ namespace CalDavSynchronizer.Scheduling
         ExceptionHandler.Instance.HandleException (x, s_logger);
       }
     }
-
-    public async Task RunIfResponsibleNoThrow (string outlookId, string folderEntryId, string folderStoreId)
-    {
-      try
-      {
-        if (!_changeTriggeredSynchronizationEnabled)
-          return;
-
-        if (_inactive)
-          return;
-
-        if (!_synchronizer.IsResponsible (folderEntryId, folderStoreId))
-          return;
-
-        _pendingOutlookItems.Add (outlookId);
-        await RunAllPendingJobs();
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.HandleException (x, s_logger);
-      }
-    }
-
+   
     private async Task RunAllPendingJobs ()
     {
  
@@ -156,7 +177,7 @@ namespace CalDavSynchronizer.Scheduling
               var itemsToSync = _pendingOutlookItems.ToArray();
               _pendingOutlookItems.Clear();
               Thread.MemoryBarrier(); // should not be required because there is just one thread entering multiple times
-              await RunIfResponsibleNoThrow (itemsToSync);
+              await RunPartialNoThrow (itemsToSync);
             }
           }
         }
@@ -193,7 +214,7 @@ namespace CalDavSynchronizer.Scheduling
       }
     }
 
-    private async Task RunIfResponsibleNoThrow (IEnumerable<string> itemsToSync)
+    private async Task RunPartialNoThrow (IEnumerable<string> itemsToSync)
     {
       try
       {

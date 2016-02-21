@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -15,15 +15,27 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CalDavSynchronizer.Implementation
+namespace CalDavSynchronizer.ChangeWatching
 {
-  public interface IOutlookRepository
+  class NullItemCollectionChangeWatcher : IItemCollectionChangeWatcher
   {
-    bool IsResponsibleForFolder (string folderEntryId, string folderStoreId);
+    public static readonly IItemCollectionChangeWatcher Instance = new NullItemCollectionChangeWatcher();
+
+    private NullItemCollectionChangeWatcher ()
+    {
+    }
+
+    public void Dispose ()
+    {
+      
+    }
+
+    public event EventHandler<ItemSavedEventArgs> ItemSavedOrDeleted;
+
+    protected virtual void OnItemSavedOrDeleted (ItemSavedEventArgs e)
+    {
+      ItemSavedOrDeleted?.Invoke (this, e);
+    }
   }
 }

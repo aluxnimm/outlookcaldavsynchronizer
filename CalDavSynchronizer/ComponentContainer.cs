@@ -71,7 +71,6 @@ namespace CalDavSynchronizer
     private readonly IGeneralOptionsDataAccess _generalOptionsDataAccess;
     private readonly UpdateChecker _updateChecker;
     private readonly NameSpace _session;
-    private readonly OutlookItemChangeWatcher _itemChangeWatcher;
     private readonly string _applicationDataDirectory;
     private readonly ISynchronizationReportRepository _synchronizationReportRepository;
     private readonly IUiService _uiService;
@@ -105,8 +104,6 @@ namespace CalDavSynchronizer
       ConfigureServicePointManager (generalOptions);
       ConfigureLogLevel (generalOptions.EnableDebugLog);
 
-      _itemChangeWatcher = new OutlookItemChangeWatcher (application.Inspectors);
-      _itemChangeWatcher.ItemSavedOrDeleted += ItemChangeWatcherItemSavedOrDeleted;
       _session = application.Session;
       s_logger.Info ("Startup...");
 
@@ -140,7 +137,10 @@ namespace CalDavSynchronizer
       _scheduler = new Scheduler (
         _synchronizerFactory,
         this,
-        EnsureSynchronizationContext);
+        EnsureSynchronizationContext,
+        new FolderChangeWatcherFactory (
+          new OutlookItemChangeWatcher (application.Inspectors)));
+
       var options = _optionsDataAccess.LoadOptions();
 
       EnsureCacheCompatibility (options);
@@ -252,20 +252,7 @@ namespace CalDavSynchronizer
 
       return new SynchronizationReportRepository (reportDirectory);
     }
-
-    private async void ItemChangeWatcherItemSavedOrDeleted (object sender, ItemSavedEventArgs e)
-    {
-      try
-      {
-        EnsureSynchronizationContext();
-        await _scheduler.RunResponsibleSynchronizationProfiles (e.EntryId, e.FolderEntryId, e.FolderStoreId);
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.LogException (x, s_logger);
-      }
-    }
-
+    
     private static void ConfigureServicePointManager (GeneralOptions options)
     {
       ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11;
