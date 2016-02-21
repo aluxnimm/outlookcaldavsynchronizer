@@ -81,9 +81,16 @@ namespace CalDavSynchronizer.Implementation.Contacts
       {
         bool isInstantSearchEnabled = false;
 
-        using (var store = GenericComObjectWrapper.Create (addressbookFolderWrapper.Inner.Store))
+        try
         {
-          if (store.Inner != null) isInstantSearchEnabled = store.Inner.IsInstantSearchEnabled;
+          using (var store = GenericComObjectWrapper.Create (addressbookFolderWrapper.Inner.Store))
+          {
+            if (store.Inner != null) isInstantSearchEnabled = store.Inner.IsInstantSearchEnabled;
+          }
+        }
+        catch (COMException)
+        {
+          s_logger.Info ("Can't access IsInstantSearchEnabled property of store, defaulting to false.");
         }
         using (var tableWrapper = 
           GenericComObjectWrapper.Create (addressbookFolderWrapper.Inner.GetTable (_daslFilterProvider.GetContactFilter (isInstantSearchEnabled))))

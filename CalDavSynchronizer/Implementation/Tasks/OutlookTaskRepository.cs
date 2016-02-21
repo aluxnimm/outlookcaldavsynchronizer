@@ -79,9 +79,16 @@ namespace CalDavSynchronizer.Implementation.Tasks
       {
         bool isInstantSearchEnabled = false;
 
-        using (var store = GenericComObjectWrapper.Create (taskFolderWrapper.Inner.Store))
+        try
         {
-          if (store.Inner != null) isInstantSearchEnabled = store.Inner.IsInstantSearchEnabled;
+          using (var store = GenericComObjectWrapper.Create (taskFolderWrapper.Inner.Store))
+          {
+            if (store.Inner != null) isInstantSearchEnabled = store.Inner.IsInstantSearchEnabled;
+          }
+        }
+        catch (COMException)
+        {
+          s_logger.Info ("Can't access IsInstantSearchEnabled property of store, defaulting to false.");
         }
         using (var tableWrapper =
           GenericComObjectWrapper.Create (

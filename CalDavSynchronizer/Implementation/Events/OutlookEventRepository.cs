@@ -29,6 +29,7 @@ using GenSync.EntityRepositories;
 using GenSync.Logging;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
+using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
@@ -141,10 +142,18 @@ namespace CalDavSynchronizer.Implementation.Events
       {
         bool isInstantSearchEnabled = false;
 
-        using (var store = GenericComObjectWrapper.Create (calendarFolderWrapper.Inner.Store))
+        try
         {
-          if (store.Inner != null) isInstantSearchEnabled = store.Inner.IsInstantSearchEnabled;
+          using (var store = GenericComObjectWrapper.Create(calendarFolderWrapper.Inner.Store))
+          {
+            if (store.Inner != null) isInstantSearchEnabled = store.Inner.IsInstantSearchEnabled;
+          }
         }
+        catch (COMException)
+        {
+          s_logger.Info ("Can't access IsInstantSearchEnabled property of store, defaulting to false.");
+        }
+
         // Table Filtering in the MSDN: https://msdn.microsoft.com/EN-US/library/office/ff867581.aspx
         var filterBuilder = new StringBuilder (_daslFilterProvider.GetAppointmentFilter (isInstantSearchEnabled));
 
