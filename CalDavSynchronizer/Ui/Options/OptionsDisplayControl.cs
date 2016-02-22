@@ -35,7 +35,6 @@ namespace CalDavSynchronizer.Ui.Options
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private Guid _optionsId;
-    private NetworkAndProxyOptions _networkAndProxyOptions;
     public event EventHandler DeletionRequested;
     public event EventHandler CopyRequested;
     public event EventHandler<HeaderEventArgs> HeaderChanged;
@@ -111,10 +110,6 @@ namespace CalDavSynchronizer.Ui.Options
         _profileNameTextBox.Text = value.Name;
         _optionsId = value.Id;
 
-        _networkAndProxyOptions = new NetworkAndProxyOptions (
-            value.CloseAfterEachRequest,
-            value.PreemptiveAuthentication,
-            value.ProxyOptions ?? new ProxyOptions());
         _mappingConfiguration = value.MappingConfiguration;
 
         _outlookFolderControl.SetOptions (value);
@@ -129,9 +124,6 @@ namespace CalDavSynchronizer.Ui.Options
                           Name = _profileNameTextBox.Text,
                           Id = _optionsId,
                           Inactive = _inactiveCheckBox.Checked,
-                          CloseAfterEachRequest = _networkAndProxyOptions.CloseConnectionAfterEachRequest,
-                          PreemptiveAuthentication = _networkAndProxyOptions.PreemptiveAuthentication,
-                          ProxyOptions = _networkAndProxyOptions.ProxyOptions,
                           MappingConfiguration = _mappingConfiguration,
                           DisplayType = OptionsDisplayType.Generic
                       };
