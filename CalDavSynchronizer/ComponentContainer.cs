@@ -48,6 +48,7 @@ using Microsoft.Office.Interop.Outlook;
 using Application = Microsoft.Office.Interop.Outlook.Application;
 using Exception = System.Exception;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.SystrayNotification;
@@ -433,9 +434,16 @@ namespace CalDavSynchronizer
       {
         bool isInstantSearchEnabled = false;
 
-        using (var store = GenericComObjectWrapper.Create (calendarFolderWrapper.Inner.Store))
+        try
         {
-          if (store.Inner != null) isInstantSearchEnabled = store.Inner.IsInstantSearchEnabled;
+          using (var store = GenericComObjectWrapper.Create (calendarFolderWrapper.Inner.Store))
+          {
+            if (store.Inner != null) isInstantSearchEnabled = store.Inner.IsInstantSearchEnabled;
+          }
+        }
+        catch (COMException)
+        {
+          s_logger.Info ("Can't access IsInstantSearchEnabled property of store, defaulting to false.");
         }
         var filterBuilder = new StringBuilder (_daslFilterProvider.GetAppointmentFilter (isInstantSearchEnabled));
         OutlookEventRepository.AddCategoryFilter (filterBuilder, oldCategory);
