@@ -16,37 +16,80 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.ChangeWatching
 {
   class FolderChangeWatcher : IItemCollectionChangeWatcher
   {
-    private readonly IItemCollectionChangeWatcher _applicationScopeChangeWatcher;
+    private readonly Items _folderItems;
+    private readonly Folder _folder;
+
     private readonly string _folderEntryId;
     private readonly string _folderStoreId;
 
     public event EventHandler<ItemSavedEventArgs> ItemSavedOrDeleted;
 
-    public FolderChangeWatcher (string folderEntryId, string folderStoreId, IItemCollectionChangeWatcher applicationScopeChangeWatcher)
+    public FolderChangeWatcher (Folder folder, string folderEntryId, string folderStoreId)
     {
-      if (applicationScopeChangeWatcher == null)
-        throw new ArgumentNullException (nameof (applicationScopeChangeWatcher));
+      if (folder == null)
+        throw new ArgumentNullException (nameof (folder));
+
+      _folder = folder;
+      _folderItems = folder.Items;
 
       _folderEntryId = folderEntryId;
       _folderStoreId = folderStoreId;
-      _applicationScopeChangeWatcher = applicationScopeChangeWatcher;
-      _applicationScopeChangeWatcher.ItemSavedOrDeleted += _applicationScopeChangeWatcher_ItemSavedOrDeleted;
+
+      _folder.BeforeItemMove += FolderEvents_BeforeItemMove;
+      _folderItems.ItemAdd += _folderItems_ItemAdd;
+      _folderItems.ItemChange += _folderItems_ItemChange;
     }
 
-    private void _applicationScopeChangeWatcher_ItemSavedOrDeleted (object sender, ItemSavedEventArgs e)
+    private void FolderEvents_BeforeItemMove (object item, MAPIFolder moveTo, ref bool cancel)
     {
-      if (e.FolderEntryId == _folderEntryId && e.FolderStoreId == _folderStoreId)
-        ItemSavedOrDeleted?.Invoke (this, e);
+      OnItemSavedOrDeleted (item);
+    }
+
+    private void _folderItems_ItemChange (object item)
+    {
+      OnItemSavedOrDeleted (item);
+    }
+
+    private void _folderItems_ItemAdd (object item)
+    {
+      OnItemSavedOrDeleted (item);
     }
 
     public void Dispose ()
     {
-      _applicationScopeChangeWatcher.ItemSavedOrDeleted -= _applicationScopeChangeWatcher_ItemSavedOrDeleted;
+      _folderItems.ItemAdd -= _folderItems_ItemAdd;
+      _folderItems.ItemChange -= _folderItems_ItemChange;
+      _folder.BeforeItemMove -= FolderEvents_BeforeItemMove;
+
+      Marshal.FinalReleaseComObject (_folderItems);
+      Marshal.FinalReleaseComObject (_folder);
+    }
+
+    private void OnItemSavedOrDeleted (object item)
+    {
+      var entryId =
+          (item as AppointmentItem)?.EntryID
+          ?? (item as TaskItem)?.EntryID
+          ?? (item as ContactItem)?.EntryID;
+
+      if (entryId != null)
+        OnItemSavedOrDeleted (entryId);
+    }
+
+    protected virtual void OnItemSavedOrDeleted (string entryId)
+    {
+      ItemSavedOrDeleted?.Invoke (
+          this,
+          new ItemSavedEventArgs (entryId, _folderEntryId, _folderStoreId));
     }
   }
 }

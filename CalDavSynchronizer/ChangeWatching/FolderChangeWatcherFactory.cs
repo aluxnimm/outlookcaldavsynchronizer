@@ -16,24 +16,26 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.using System;
 
 using System;
+using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.ChangeWatching
 {
   public class FolderChangeWatcherFactory : IFolderChangeWatcherFactory
   {
-    private readonly IItemCollectionChangeWatcher _applicationScopeChangeWatcher;
+    private readonly NameSpace _mapiNamespace;
 
-    public FolderChangeWatcherFactory (IItemCollectionChangeWatcher applicationScopeChangeWatcher)
+    public FolderChangeWatcherFactory (NameSpace mapiNamespace)
     {
-      if (applicationScopeChangeWatcher == null)
-        throw new ArgumentNullException (nameof (applicationScopeChangeWatcher));
+      if (mapiNamespace == null)
+        throw new ArgumentNullException (nameof (mapiNamespace));
 
-      _applicationScopeChangeWatcher = applicationScopeChangeWatcher;
+      _mapiNamespace = mapiNamespace;
     }
 
     public IItemCollectionChangeWatcher Create (string folderEntryId, string folderStoreId)
     {
-      return new FolderChangeWatcher (folderEntryId, folderStoreId, _applicationScopeChangeWatcher);
+      var folder = (Folder)_mapiNamespace.GetFolderFromID (folderEntryId, folderStoreId);
+      return new FolderChangeWatcher (folder, folderEntryId, folderStoreId);
     }
   }
 }

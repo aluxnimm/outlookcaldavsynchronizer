@@ -252,13 +252,11 @@
       <DependentUpon>CalDavSynchronizerRibbon.cs</DependentUpon>
     </Compile>
     <Compile Include="CalDavSynchronizerToolBar.cs" />
-    <Compile Include="ChangeWatching\AppointmentItemAdapter.cs" />
     <Compile Include="ChangeWatching\FolderChangeWatcher.cs" />
     <Compile Include="ChangeWatching\FolderChangeWatcherFactory.cs" />
     <Compile Include="ChangeWatching\NullItemCollectionChangeWatcher.cs" />
     <Compile Include="ChangeWatching\IItemCollectionChangeWatcher.cs" />
     <Compile Include="ChangeWatching\IFolderChangeWatcherFactory.cs" />
-    <Compile Include="ChangeWatching\IOutlookItem.cs" />
     <Compile Include="ChangeWatching\ItemSavedEventArgs.cs" />
     <Compile Include="ComponentContainer.cs" />
     <Compile Include="Contracts\TaskMappingConfiguration.cs" />
@@ -342,7 +340,6 @@
     <Compile Include="Implementation\Tasks\OutlookTaskRepository.cs" />
     <Compile Include="Implementation\TimeRangeFiltering\IDateTimeRangeProvider.cs" />
     <Compile Include="Implementation\TimeRangeFiltering\NullDateTimeRangeProvider.cs" />
-    <Compile Include="ChangeWatching\OutlookItemChangeWatcher.cs" />
     <Compile Include="DataAccess\WebResourceName.cs" />
     <Compile Include="NullCalDavSynchronizerCommands.cs" />
     <Compile Include="Properties\AssemblyInfoCommon.cs" />
