@@ -37,6 +37,7 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 - Kolab
 - Zoho Calendar
 - GMX
+- Tine 2.0
 
 ### Features ###
 
@@ -57,7 +58,8 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 - manual-triggered-sync
 - Category Filtering (sync CalDAV calendar to Outlook categories)
 - map CalDAV server colors to Outlook category colors
-- show reports of last sync runs
+- show reports of last sync runs and status
+- System TrayIcon with notifications
 
 ### Used Libraries ###
 
@@ -73,6 +75,15 @@ Download and extract the `OutlookCalDavSynchronizer-<Version>.zip` into the same
 If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=48217)
 
 ### Changelog ###
+
+#### 1.19.0 ####
+- New features
+	- Add System TrayIcon with notifications of sync runs with errors and warnings and context menu.
+	- Add Synchronitation Status with info about last sync run time and status, accessible from the TrayIcon or the ribbon.
+	- Add TaskMappingConfiguration with possibility to toggle reminder, priority and body mapping.
+- Bug fixes
+	- Catch COMException when accessing IsInstantSearchEnabled of Outlook store, ticket #223.
+	- Fix Error, when opening legacy profiles without proxy options, ticket #224.
 
 #### 1.18.0 ####
 - New features
@@ -517,12 +528,13 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ## User Documentation ##
 
-After installing the plugin, a new ribbon called 'Caldav Synchronizer' is added in Outlook with 5 menu items. 
+After installing the plugin, a new ribbon called 'Caldav Synchronizer' is added in Outlook with 6 menu items. 
 - Synchronize now
 - Synchronization Profiles
 - General Options
 - About
 - Reports
+- Status
 
 Use the Synchronization Profiles dialog to configure different synchronization profiles. Each profile is responsible for synchronizing one Outlook calendar/task or contact folder with a remote folder of a CalDAV/CardDAV server.
 
@@ -566,7 +578,7 @@ The following properties need to be set for a new generic profile:
 	- **Synchronization interval (minutes):** Choose the interval for synchronization in minutes, if 'Manual only' is choosen, there is no automatic sync but you can use the 'Synchronize now' menu item.
 	- **Synchronization timespan past (days)** and
 	- **Synchronization timespan future (days)** For performance reasons it is useful to sync only a given timespan of a big calendar, especially past events are normally not necessary to sync after a given timespan.
-	- **Mapping Configuration**: Here you can configure what properties should be synced, only available for appointments and contacts at the moment. 
+	- **Mapping Configuration**: Here you can configure what properties should be synced.
 		- For appointments you can choose if you want to map reminders (just upcoming, all or none) and the description body.
 		- *Create events on server in UTC:* Use UTC instead of Outlook Appointment Timezone for creating events on CalDAV server. Needed for GMX for example. Not recommended for general use, because recurrence exceptions over DST changes can't be mapped and Appointments with different start and end timezones can't be represented.
 		- In *Privacy settings* you can configure if you want to map Outlook private appointments to CLASS:CONFIDENTIAL and vice versa. This could be useful for Owncloud for example, if you share your calendar with others and they should see start/end dates of your private appointments.
@@ -575,6 +587,7 @@ The following properties need to be set for a new generic profile:
 		- You can also define a filter category so that multiple CalDAV-Calendars can be synchronized into one Outlook calendar via the defined category (see Category Filter and Color below). 
 		- For contacts you can configure if birthdays should be mapped or not. If birthdays are mapped, Outlook also creates an recurring appointment for every contact with a defined birthday.
 		- You can also configure if contact photos should be mapped or not. Contact photo mapping from Outlook to the server doesn't work in Outlook 2007.
+		- For tasks (not for Google task profiles) you can configure if you want to map reminders (just upcoming, all or none), the priority of the task and the description body.
 	
 ### Scheduling settings and resources ###
 
@@ -653,6 +666,10 @@ You can also configure Synchronization reports for all profiles, this can be con
 - **Delete reports older than (days)** Automatically delete reports which are older than the days configured.
 
 You can show reports manually with the **Reports** button in the CalDav Synchronizer Ribbon. There you can choose from available reports (shown as profile name with timestamp of the sync run) and see informations about items synced and if there were any warnings or errors. You can also delete reports or add them to a zip file via the context menu. If the last sync run lead to any errors, a warning symbol is shown in the Ribbon or the Report window opens if configured in the general options.
+
+### Synchronization Status and System TrayIcon with Notifications ###
+
+With the **Status** button in the CalDav Synchronizer Ribbon or via doubleclick from the TrayIcon you can access the status of the active sync profiles with their last sync run shown in minutes ago and the status OK, error, or warning. When clicking on the profile name you get to the according sync profile settings, when clicking the status icon, you can open the according sync report. When a sync run has any errors or warnings you will get a notification from the CalDav Synchronizer TrayIcon.
 
 ## Trouble Shooting ##
 
