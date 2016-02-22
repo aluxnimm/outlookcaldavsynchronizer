@@ -195,7 +195,7 @@ namespace CalDavSynchronizer.Ui.Options
       _calenderUrlTextBox.Text = value.CalenderUrl;
       _userNameTextBox.Text = value.UserName;
       _passwordTextBox.Text = value.Password;
-      _networkAndProxyOptions = new NetworkAndProxyOptions (value.CloseAfterEachRequest, value.PreemptiveAuthentication, value.ProxyOptions);
+      _networkAndProxyOptions = new NetworkAndProxyOptions (value.CloseAfterEachRequest, value.PreemptiveAuthentication, value.ProxyOptions ?? new ProxyOptions());
     }
 
     public void FillOptions (Contracts.Options optionsToFill)

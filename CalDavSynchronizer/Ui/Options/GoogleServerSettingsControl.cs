@@ -260,7 +260,7 @@ namespace CalDavSynchronizer.Ui.Options
       else
         _calenderUrlTextBox.Text = c_googleDavBaseUrl;
       UsedServerAdapterType = value.ServerAdapterType;
-      _networkAndProxyOptions = new NetworkAndProxyOptions (value.CloseAfterEachRequest, value.PreemptiveAuthentication, value.ProxyOptions);
+      _networkAndProxyOptions = new NetworkAndProxyOptions (value.CloseAfterEachRequest, value.PreemptiveAuthentication, value.ProxyOptions ?? new ProxyOptions());
 
     }
 
