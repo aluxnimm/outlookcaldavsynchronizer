@@ -81,7 +81,14 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
       var request = _tasksService.Tasks.List (_taskList.Id);
       request.Fields = "items(etag,id)";
       var result = await request.ExecuteAsync();
-      return result.Items.Select (t => EntityVersion.Create (t.Id, t.ETag)).ToArray();
+      if (result.Items != null)
+      {
+        return result.Items.Select (t => EntityVersion.Create (t.Id, t.ETag)).ToArray();
+      }
+      else
+      {
+        return new List<EntityVersion<string, string>>();
+      }
     }
 
     public async Task<IReadOnlyList<EntityWithId<string, Task>>> Get (ICollection<string> ids, ILoadEntityLogger logger)
