@@ -192,6 +192,10 @@ namespace CalDavSynchronizer.Implementation.Contacts
         source.Nicknames.CopyTo (nickNames, 0);
         target.Inner.NickName = string.Join (CultureInfo.CurrentCulture.TextInfo.ListSeparator, nickNames);
       }
+      else
+      {
+        target.Inner.NickName = string.Empty;
+      }
 
       target.Inner.Sensitivity = MapPrivacy2To1 (source.AccessClassification);
 
@@ -201,12 +205,26 @@ namespace CalDavSynchronizer.Implementation.Contacts
         source.Categories.CopyTo (categories, 0);
         target.Inner.Categories = string.Join (CultureInfo.CurrentCulture.TextInfo.ListSeparator, categories);
       }
+      else
+      {
+        target.Inner.Categories = string.Empty;
+      }
 
       if (source.IMs.Count > 0)
       {
         target.Inner.IMAddress = source.IMs[0].Handle;
       }
+      else
+      {
+        target.Inner.IMAddress = string.Empty;
+      }
 
+      target.Inner.Email1Address = string.Empty;
+      target.Inner.Email1DisplayName = string.Empty;
+      target.Inner.Email2Address = string.Empty;
+      target.Inner.Email2DisplayName = string.Empty;
+      target.Inner.Email3Address = string.Empty;
+      target.Inner.Email3DisplayName = string.Empty;
       if (source.EmailAddresses.Count >= 1)
       {
         target.Inner.Email1Address = source.EmailAddresses[0].Address;
@@ -222,45 +240,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         }
       }
 
-      foreach (var sourceAddress in source.DeliveryAddresses)
-      {
-        if (sourceAddress.IsHome)
-        {
-          target.Inner.HomeAddressCity = sourceAddress.City;
-          target.Inner.HomeAddressCountry = sourceAddress.Country;
-          target.Inner.HomeAddressPostalCode = sourceAddress.PostalCode;
-          target.Inner.HomeAddressState = sourceAddress.Region;
-          target.Inner.HomeAddressStreet = sourceAddress.Street;
-          if (sourceAddress.IsPreferred)
-          {
-            target.Inner.SelectedMailingAddress = OlMailingAddress.olHome;
-          }
-        }
-        else if (sourceAddress.IsWork)
-        {
-          target.Inner.BusinessAddressCity = sourceAddress.City;
-          target.Inner.BusinessAddressCountry = sourceAddress.Country;
-          target.Inner.BusinessAddressPostalCode = sourceAddress.PostalCode;
-          target.Inner.BusinessAddressState = sourceAddress.Region;
-          target.Inner.BusinessAddressStreet = sourceAddress.Street;
-          if (sourceAddress.IsPreferred)
-          {
-            target.Inner.SelectedMailingAddress = OlMailingAddress.olBusiness;
-          }
-        }
-        else
-        {
-          target.Inner.OtherAddressCity = sourceAddress.City;
-          target.Inner.OtherAddressCountry = sourceAddress.Country;
-          target.Inner.OtherAddressPostalCode = sourceAddress.PostalCode;
-          target.Inner.OtherAddressState = sourceAddress.Region;
-          target.Inner.OtherAddressStreet = sourceAddress.Street;
-          if (sourceAddress.IsPreferred)
-          {
-            target.Inner.SelectedMailingAddress = OlMailingAddress.olOther;
-          }
-        }
-      }
+      MapPostalAdresses2To1 (source, target.Inner);
 
       MapTelephoneNumber2To1 (source, target.Inner);
 
@@ -292,6 +272,10 @@ namespace CalDavSynchronizer.Implementation.Contacts
       if (source.Notes.Count > 0)
       {
         target.Inner.Body = source.Notes[0].Text;
+      }
+      else
+      {
+        target.Inner.Body = string.Empty;
       }
 
       return target;
@@ -758,6 +742,75 @@ namespace CalDavSynchronizer.Implementation.Contacts
           else
           {
             target.OtherTelephoneNumber = phoneNumber.FullNumber;
+          }
+        }
+      }
+    }
+
+    private static void MapPostalAdresses2To1 (vCard source, ContactItem target)
+    {
+      target.HomeAddress = string.Empty;
+      target.HomeAddressStreet = string.Empty;
+      target.HomeAddressCity = string.Empty;
+      target.HomeAddressPostalCode = string.Empty;
+      target.HomeAddressCountry = string.Empty;
+      target.HomeAddressState = string.Empty;
+      target.HomeAddressPostOfficeBox = string.Empty;
+
+      target.BusinessAddress = string.Empty;
+      target.BusinessAddressStreet = string.Empty;
+      target.BusinessAddressCity = string.Empty;
+      target.BusinessAddressPostalCode = string.Empty;
+      target.BusinessAddressCountry = string.Empty;
+      target.BusinessAddressState = string.Empty;
+      target.BusinessAddressPostOfficeBox = string.Empty;
+
+      target.OtherAddress = string.Empty;
+      target.OtherAddressStreet = string.Empty;
+      target.OtherAddressCity = string.Empty;
+      target.OtherAddressPostalCode = string.Empty;
+      target.OtherAddressCountry = string.Empty;
+      target.OtherAddressState = string.Empty;
+      target.OtherAddressPostOfficeBox = string.Empty;
+
+      target.SelectedMailingAddress = OlMailingAddress.olNone;
+
+      foreach (var sourceAddress in source.DeliveryAddresses)
+      {
+        if (sourceAddress.IsHome)
+        {
+          target.HomeAddressCity = sourceAddress.City;
+          target.HomeAddressCountry = sourceAddress.Country;
+          target.HomeAddressPostalCode = sourceAddress.PostalCode;
+          target.HomeAddressState = sourceAddress.Region;
+          target.HomeAddressStreet = sourceAddress.Street;
+          if (sourceAddress.IsPreferred)
+          {
+            target.SelectedMailingAddress = OlMailingAddress.olHome;
+          }
+        }
+        else if (sourceAddress.IsWork)
+        {
+          target.BusinessAddressCity = sourceAddress.City;
+          target.BusinessAddressCountry = sourceAddress.Country;
+          target.BusinessAddressPostalCode = sourceAddress.PostalCode;
+          target.BusinessAddressState = sourceAddress.Region;
+          target.BusinessAddressStreet = sourceAddress.Street;
+          if (sourceAddress.IsPreferred)
+          {
+            target.SelectedMailingAddress = OlMailingAddress.olBusiness;
+          }
+        }
+        else
+        {
+          target.OtherAddressCity = sourceAddress.City;
+          target.OtherAddressCountry = sourceAddress.Country;
+          target.OtherAddressPostalCode = sourceAddress.PostalCode;
+          target.OtherAddressState = sourceAddress.Region;
+          target.OtherAddressStreet = sourceAddress.Street;
+          if (sourceAddress.IsPreferred)
+          {
+            target.SelectedMailingAddress = OlMailingAddress.olOther;
           }
         }
       }
