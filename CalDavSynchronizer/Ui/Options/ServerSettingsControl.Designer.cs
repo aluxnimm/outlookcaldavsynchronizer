@@ -32,6 +32,8 @@ namespace CalDavSynchronizer.Ui.Options
     {
       this.components = new System.ComponentModel.Container();
       this.groupBox = new System.Windows.Forms.GroupBox();
+      this._useAccountPasswordCheckBox = new System.Windows.Forms.CheckBox();
+      this._networkAndProxyOptionsButton = new System.Windows.Forms.Button();
       this.label11 = new System.Windows.Forms.Label();
       this._emailAddressTextBox = new System.Windows.Forms.TextBox();
       this._testConnectionButton = new System.Windows.Forms.Button();
@@ -42,7 +44,6 @@ namespace CalDavSynchronizer.Ui.Options
       this._calenderUrlTextBox = new System.Windows.Forms.TextBox();
       this.label3 = new System.Windows.Forms.Label();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-      this._networkAndProxyOptionsButton = new System.Windows.Forms.Button();
       this.groupBox.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -52,6 +53,7 @@ namespace CalDavSynchronizer.Ui.Options
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.groupBox.BackColor = System.Drawing.SystemColors.Window;
+      this.groupBox.Controls.Add(this._useAccountPasswordCheckBox);
       this.groupBox.Controls.Add(this._networkAndProxyOptionsButton);
       this.groupBox.Controls.Add(this.label11);
       this.groupBox.Controls.Add(this._emailAddressTextBox);
@@ -71,10 +73,34 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox.TabStop = false;
       this.groupBox.Text = "Server settings";
       // 
+      // _useAccountPasswordCheckBox
+      // 
+      this._useAccountPasswordCheckBox.AutoSize = true;
+      this._useAccountPasswordCheckBox.Location = new System.Drawing.Point(11, 117);
+      this._useAccountPasswordCheckBox.Margin = new System.Windows.Forms.Padding(4);
+      this._useAccountPasswordCheckBox.Name = "_useAccountPasswordCheckBox";
+      this._useAccountPasswordCheckBox.Size = new System.Drawing.Size(252, 21);
+      this._useAccountPasswordCheckBox.TabIndex = 4;
+      this._useAccountPasswordCheckBox.Text = "Use IMAP/POP3 Account Password";
+      this._useAccountPasswordCheckBox.UseVisualStyleBackColor = true;
+      this._useAccountPasswordCheckBox.CheckedChanged += new System.EventHandler(this._useAccountPasswordCheckBox_CheckedChanged);
+      // 
+      // _networkAndProxyOptionsButton
+      // 
+      this._networkAndProxyOptionsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this._networkAndProxyOptionsButton.Location = new System.Drawing.Point(8, 178);
+      this._networkAndProxyOptionsButton.Margin = new System.Windows.Forms.Padding(4);
+      this._networkAndProxyOptionsButton.Name = "_networkAndProxyOptionsButton";
+      this._networkAndProxyOptionsButton.Size = new System.Drawing.Size(202, 28);
+      this._networkAndProxyOptionsButton.TabIndex = 14;
+      this._networkAndProxyOptionsButton.Text = "Network and proxy options";
+      this._networkAndProxyOptionsButton.UseVisualStyleBackColor = true;
+      this._networkAndProxyOptionsButton.Click += new System.EventHandler(this._networkAndProxyOptionsButton_Click);
+      // 
       // label11
       // 
       this.label11.AutoSize = true;
-      this.label11.Location = new System.Drawing.Point(8, 128);
+      this.label11.Location = new System.Drawing.Point(8, 148);
       this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label11.Name = "label11";
       this.label11.Size = new System.Drawing.Size(101, 17);
@@ -84,11 +110,11 @@ namespace CalDavSynchronizer.Ui.Options
       // _emailAddressTextBox
       // 
       this._emailAddressTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._emailAddressTextBox.Location = new System.Drawing.Point(310, 124);
+      this._emailAddressTextBox.Location = new System.Drawing.Point(311, 145);
       this._emailAddressTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._emailAddressTextBox.Name = "_emailAddressTextBox";
       this._emailAddressTextBox.Size = new System.Drawing.Size(274, 22);
-      this._emailAddressTextBox.TabIndex = 3;
+      this._emailAddressTextBox.TabIndex = 4;
       // 
       // _testConnectionButton
       // 
@@ -160,18 +186,6 @@ namespace CalDavSynchronizer.Ui.Options
       this.label3.TabIndex = 6;
       this.label3.Text = "DAV Url:";
       // 
-      // _networkAndProxyOptionsButton
-      // 
-      this._networkAndProxyOptionsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this._networkAndProxyOptionsButton.Location = new System.Drawing.Point(8, 178);
-      this._networkAndProxyOptionsButton.Margin = new System.Windows.Forms.Padding(4);
-      this._networkAndProxyOptionsButton.Name = "_networkAndProxyOptionsButton";
-      this._networkAndProxyOptionsButton.Size = new System.Drawing.Size(202, 28);
-      this._networkAndProxyOptionsButton.TabIndex = 14;
-      this._networkAndProxyOptionsButton.Text = "Network and proxy options";
-      this._networkAndProxyOptionsButton.UseVisualStyleBackColor = true;
-      this._networkAndProxyOptionsButton.Click += new System.EventHandler(this._networkAndProxyOptionsButton_Click);
-      // 
       // ServerSettingsControl
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -201,5 +215,6 @@ namespace CalDavSynchronizer.Ui.Options
     private System.Windows.Forms.TextBox _emailAddressTextBox;
     private System.Windows.Forms.ToolTip toolTip;
     private System.Windows.Forms.Button _networkAndProxyOptionsButton;
+    private System.Windows.Forms.CheckBox _useAccountPasswordCheckBox;
   }
 }

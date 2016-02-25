@@ -182,7 +182,7 @@ namespace CalDavSynchronizer.Ui.Options
     {
       return SynchronizerFactory.CreateWebDavClient (
           _userNameTextBox.Text,
-          _passwordTextBox.Text,
+          _useAccountPasswordCheckBox.Checked ? Contracts.Options.GetAccountPassword() : _passwordTextBox.Text,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
           ServerAdapterType.WebDavHttpClientBased,
           _networkAndProxyOptions.CloseConnectionAfterEachRequest,
@@ -200,8 +200,10 @@ namespace CalDavSynchronizer.Ui.Options
       _emailAddressTextBox.Text = value.EmailAddress;
       _calenderUrlTextBox.Text = value.CalenderUrl;
       _userNameTextBox.Text = value.UserName;
-      _passwordTextBox.Text = value.Password;
+      _useAccountPasswordCheckBox.Checked = value.UseAccountPassword;
+      _passwordTextBox.Text = _useAccountPasswordCheckBox.Checked ? string.Empty : value.Password;
       _networkAndProxyOptions = new NetworkAndProxyOptions (value.CloseAfterEachRequest, value.PreemptiveAuthentication, value.ProxyOptions ?? new ProxyOptions());
+      UpdatePasswordControlEnabled();
     }
 
     public void FillOptions (Contracts.Options optionsToFill)
@@ -210,6 +212,7 @@ namespace CalDavSynchronizer.Ui.Options
       optionsToFill.CalenderUrl = _calenderUrlTextBox.Text;
       optionsToFill.UserName = _userNameTextBox.Text;
       optionsToFill.Password = _passwordTextBox.Text;
+      optionsToFill.UseAccountPassword = _useAccountPasswordCheckBox.Checked;
       optionsToFill.ServerAdapterType = ServerAdapterType.WebDavHttpClientBased;
       optionsToFill.CloseAfterEachRequest = _networkAndProxyOptions.CloseConnectionAfterEachRequest;
       optionsToFill.PreemptiveAuthentication = _networkAndProxyOptions.PreemptiveAuthentication;
@@ -237,6 +240,17 @@ namespace CalDavSynchronizer.Ui.Options
           _networkAndProxyOptions = networkAndProxyOptionsForm.Options;
         }
       }
+    }
+
+    private void _useAccountPasswordCheckBox_CheckedChanged(object sender, EventArgs e)
+    {
+      UpdatePasswordControlEnabled();
+    }
+
+    private void UpdatePasswordControlEnabled()
+    {
+      _passwordTextBox.Enabled = !_useAccountPasswordCheckBox.Checked;
+      if (_useAccountPasswordCheckBox.Checked) _passwordTextBox.Text = string.Empty;
     }
   }
 }

@@ -15,11 +15,14 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Serialization;
 using CalDavSynchronizer.Implementation;
 using log4net;
+using Microsoft.Win32;
+using System.Windows;
 
 namespace CalDavSynchronizer.Contracts
 {
@@ -49,7 +52,7 @@ namespace CalDavSynchronizer.Contracts
     public string Salt { get; set; }
     public string ProtectedPassword { get; set; }
     // ReSharper restore MemberCanBePrivate.Global
-
+    public bool UseAccountPassword { get; set; }
     public ServerAdapterType ServerAdapterType { get; set; }
     public bool CloseAfterEachRequest { get; set; }
     public bool PreemptiveAuthentication { get; set; }
@@ -65,6 +68,9 @@ namespace CalDavSynchronizer.Contracts
     {
       get
       {
+        if (UseAccountPassword)
+          return GetAccountPassword();
+
         if (string.IsNullOrEmpty (ProtectedPassword))
           return string.Empty;
 
@@ -94,7 +100,63 @@ namespace CalDavSynchronizer.Contracts
       }
     }
 
+    public static string GetAccountPassword()
+    {
+      string profileName = Globals.ThisAddIn.Application.Session.CurrentProfileName;
+      string outlookVersion = Globals.ThisAddIn.Application.Version;
+      var outlookVersions =outlookVersion.Split (new char[] { '.' });
+      string outlookRegString = outlookVersions[0] + "." + outlookVersions[1];
+      int outlookMajorVersion = Convert.ToInt32 (outlookVersions[0]);
+      string profileRegKeyName;
 
+      if (outlookMajorVersion < 15)
+      {
+        profileRegKeyName = @"Software\Microsoft\Windows NT\CurrentVersion\Windows Messaging Subsystem\Profiles\" + profileName +
+                            @"\9375CFF0413111d3B88A00104B2A6676";
+      }
+      else
+      {
+        profileRegKeyName = @"Software\Microsoft\Office\" + outlookRegString + @"\Outlook\Profiles\" + profileName +
+                            @"\9375CFF0413111d3B88A00104B2A6676";
+      }
+      try
+      {
+        using (RegistryKey profileKey = Registry.CurrentUser.OpenSubKey(profileRegKeyName))
+        {
+          foreach (string subKeyName in profileKey.GetSubKeyNames())
+          {
+            using (RegistryKey subKey = profileKey.OpenSubKey(subKeyName))
+            {
+              foreach (string accountValueName in subKey.GetValueNames())
+              {
+                if (accountValueName == "IMAP Password" || accountValueName == "POP3 Password")
+                {
+                  var passwordValue = (byte[]) subKey.GetValue(accountValueName);
+                  var encPassword = passwordValue.Skip(1).ToArray();
+                  try
+                  {
+                    var clearPassword = ProtectedData.Unprotect(encPassword, null, DataProtectionScope.CurrentUser);
+                    string result = Encoding.Unicode.GetString(clearPassword).TrimEnd('\0');
+                    return result;
+                  }
+                  catch (CryptographicException x)
+                  {
+                    s_logger.Error("Error while decrypting account password. Using empty password", x);
+                    return string.Empty;
+                  }
+                }
+              }
+            }
+          }
+          return string.Empty;
+        }
+      }
+      catch (Exception ex)
+      {
+        s_logger.Error ("Error while fetching account password from registry. Using empty password", ex);
+        return string.Empty;
+      }
+    }
     public static Options CreateDefault (string outlookFolderEntryId, string outlookFolderStoreId, OptionsDisplayType type)
     {
       var options = new Options();
