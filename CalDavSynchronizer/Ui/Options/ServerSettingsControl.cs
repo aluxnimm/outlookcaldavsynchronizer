@@ -41,7 +41,6 @@ namespace CalDavSynchronizer.Ui.Options
     private ISettingsFaultFinder _settingsFaultFinder;
     private IServerSettingsControlDependencies _dependencies;
     private NetworkAndProxyOptions _networkAndProxyOptions;
-    private string _folderStoreId;
     
     public void Initialize (ISettingsFaultFinder settingsFaultFinder, IServerSettingsControlDependencies dependencies)
     {
@@ -183,7 +182,7 @@ namespace CalDavSynchronizer.Ui.Options
     {
       return SynchronizerFactory.CreateWebDavClient (
           _userNameTextBox.Text,
-          _useAccountPasswordCheckBox.Checked ? Contracts.Options.GetAccountPassword (_folderStoreId) : _passwordTextBox.Text,
+          _useAccountPasswordCheckBox.Checked ? Contracts.Options.GetAccountPassword (_dependencies.FolderStoreId) : _passwordTextBox.Text,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
           ServerAdapterType.WebDavHttpClientBased,
           _networkAndProxyOptions.CloseConnectionAfterEachRequest,
@@ -202,7 +201,6 @@ namespace CalDavSynchronizer.Ui.Options
       _calenderUrlTextBox.Text = value.CalenderUrl;
       _userNameTextBox.Text = value.UserName;
       _useAccountPasswordCheckBox.Checked = value.UseAccountPassword;
-      _folderStoreId = value.OutlookFolderStoreId;
       _passwordTextBox.Text = _useAccountPasswordCheckBox.Checked ? string.Empty : value.Password;
       _networkAndProxyOptions = new NetworkAndProxyOptions (value.CloseAfterEachRequest, value.PreemptiveAuthentication, value.ProxyOptions ?? new ProxyOptions());
       UpdatePasswordControlEnabled();

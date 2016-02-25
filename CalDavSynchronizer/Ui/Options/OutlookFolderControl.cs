@@ -148,6 +148,11 @@ namespace CalDavSynchronizer.Ui.Options
       get { return _folderType; }
     }
 
+    public string FolderStoreId
+    {
+      get { return _folderStoreId; }
+    }
+
     public bool Validate (StringBuilder errorMessageBuilder)
     {
       bool result = true;
