@@ -129,9 +129,12 @@ namespace CalDavSynchronizer.Contracts
       {
         foreach (Account account in Globals.ThisAddIn.Application.Session.Accounts.ToSafeEnumerable<Account>())
         {
-          if (account.DeliveryStore.StoreID == storeId)
+          using (var deliveryStore = GenericComObjectWrapper.Create (account.DeliveryStore))
           {
-            accountName = account.DisplayName;
+            if (deliveryStore.Inner !=null && deliveryStore.Inner.StoreID == storeId)
+            {
+              accountName = account.DisplayName;
+            }
           }
         }
       }
