@@ -16,13 +16,17 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Serialization;
 using CalDavSynchronizer.Implementation;
 using log4net;
 using Microsoft.Win32;
-using System.Windows;
+using Microsoft.Office.Interop.Outlook;
+using Application = System.Windows.Application;
+using Exception = System.Exception;
+using CalDavSynchronizer.Implementation.ComWrappers;
 
 namespace CalDavSynchronizer.Contracts
 {
@@ -69,7 +73,7 @@ namespace CalDavSynchronizer.Contracts
       get
       {
         if (UseAccountPassword)
-          return GetAccountPassword();
+          return GetAccountPassword (OutlookFolderStoreId);
 
         if (string.IsNullOrEmpty (ProtectedPassword))
           return string.Empty;
@@ -100,7 +104,7 @@ namespace CalDavSynchronizer.Contracts
       }
     }
 
-    public static string GetAccountPassword()
+    public static string GetAccountPassword(string storeId)
     {
       string profileName = Globals.ThisAddIn.Application.Session.CurrentProfileName;
       string outlookVersion = Globals.ThisAddIn.Application.Version;
@@ -119,24 +123,46 @@ namespace CalDavSynchronizer.Contracts
         profileRegKeyName = @"Software\Microsoft\Office\" + outlookRegString + @"\Outlook\Profiles\" + profileName +
                             @"\9375CFF0413111d3B88A00104B2A6676";
       }
+
+      string accountName = null;
       try
       {
-        using (RegistryKey profileKey = Registry.CurrentUser.OpenSubKey(profileRegKeyName))
+        foreach (Account account in Globals.ThisAddIn.Application.Session.Accounts.ToSafeEnumerable<Account>())
+        {
+          if (account.DeliveryStore.StoreID == storeId)
+          {
+            accountName = account.DisplayName;
+          }
+        }
+      }
+      catch (COMException ex)
+      {
+        s_logger.Error("Can't access Account Name of folder.", ex);
+      }
+      try
+      {
+        using (RegistryKey profileKey = Registry.CurrentUser.OpenSubKey (profileRegKeyName))
         {
           foreach (string subKeyName in profileKey.GetSubKeyNames())
           {
-            using (RegistryKey subKey = profileKey.OpenSubKey(subKeyName))
+            using (RegistryKey subKey = profileKey.OpenSubKey (subKeyName))
             {
-              foreach (string accountValueName in subKey.GetValueNames())
+              foreach (string subKeyValueName in subKey.GetValueNames())
               {
-                if (accountValueName == "IMAP Password" || accountValueName == "POP3 Password")
+                if (accountName != null && subKeyValueName == "Account Name")
                 {
-                  var passwordValue = (byte[]) subKey.GetValue(accountValueName);
-                  var encPassword = passwordValue.Skip(1).ToArray();
+                  var registryAccountNameValue = (byte[])subKey.GetValue (subKeyValueName);
+                  string registryAccountName = Encoding.Unicode.GetString (registryAccountNameValue).TrimEnd ('\0');
+                  if (registryAccountName != accountName) break;
+                }
+                if (subKeyValueName == "IMAP Password" || subKeyValueName == "POP3 Password")
+                {
+                  var passwordValue = (byte[]) subKey.GetValue (subKeyValueName);
+                  var encPassword = passwordValue.Skip (1).ToArray();
                   try
                   {
-                    var clearPassword = ProtectedData.Unprotect(encPassword, null, DataProtectionScope.CurrentUser);
-                    string result = Encoding.Unicode.GetString(clearPassword).TrimEnd('\0');
+                    var clearPassword = ProtectedData.Unprotect (encPassword, null, DataProtectionScope.CurrentUser);
+                    string result = Encoding.Unicode.GetString (clearPassword).TrimEnd ('\0');
                     return result;
                   }
                   catch (CryptographicException x)
