@@ -24,7 +24,7 @@ namespace CalDavSynchronizer.Ui.Options
   public interface IServerSettingsControlDependencies
   {
     OlItemType? OutlookFolderType { get; }
-    string FolderStoreId { get;  }
+    string FolderAccountName { get;  }
     bool SelectedSynchronizationModeRequiresWriteableServerResource { get; }
     string SelectedSynchronizationModeDisplayName { get; }
   }

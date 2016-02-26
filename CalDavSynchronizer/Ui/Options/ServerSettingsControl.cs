@@ -182,7 +182,7 @@ namespace CalDavSynchronizer.Ui.Options
     {
       return SynchronizerFactory.CreateWebDavClient (
           _userNameTextBox.Text,
-          _useAccountPasswordCheckBox.Checked ? Contracts.Options.GetAccountPassword (_dependencies.FolderStoreId) : _passwordTextBox.Text,
+          _useAccountPasswordCheckBox.Checked ? Contracts.Options.GetAccountPassword (_dependencies.FolderAccountName) : _passwordTextBox.Text,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
           ServerAdapterType.WebDavHttpClientBased,
           _networkAndProxyOptions.CloseConnectionAfterEachRequest,

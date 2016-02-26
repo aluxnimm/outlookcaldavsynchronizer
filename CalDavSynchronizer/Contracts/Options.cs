@@ -16,17 +16,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Serialization;
 using CalDavSynchronizer.Implementation;
 using log4net;
 using Microsoft.Win32;
-using Microsoft.Office.Interop.Outlook;
 using Application = System.Windows.Application;
 using Exception = System.Exception;
-using CalDavSynchronizer.Implementation.ComWrappers;
 
 namespace CalDavSynchronizer.Contracts
 {
@@ -41,6 +38,7 @@ namespace CalDavSynchronizer.Contracts
     public Guid Id { get; set; }
     public string OutlookFolderEntryId { get; set; }
     public string OutlookFolderStoreId { get; set; }
+    public string OutlookFolderAccountName { get; set; }
 
     public bool IgnoreSynchronizationTimeRange { get; set; }
     public int DaysToSynchronizeInThePast { get; set; }
@@ -73,7 +71,7 @@ namespace CalDavSynchronizer.Contracts
       get
       {
         if (UseAccountPassword)
-          return GetAccountPassword (OutlookFolderStoreId);
+          return GetAccountPassword (OutlookFolderAccountName);
 
         if (string.IsNullOrEmpty (ProtectedPassword))
           return string.Empty;
@@ -104,7 +102,7 @@ namespace CalDavSynchronizer.Contracts
       }
     }
 
-    public static string GetAccountPassword(string storeId)
+    public static string GetAccountPassword (string folderAccountName)
     {
       string profileName = Globals.ThisAddIn.Application.Session.CurrentProfileName;
       string outlookVersion = Globals.ThisAddIn.Application.Version;
@@ -124,24 +122,7 @@ namespace CalDavSynchronizer.Contracts
                             @"\9375CFF0413111d3B88A00104B2A6676";
       }
 
-      string accountName = null;
-      try
-      {
-        foreach (Account account in Globals.ThisAddIn.Application.Session.Accounts.ToSafeEnumerable<Account>())
-        {
-          using (var deliveryStore = GenericComObjectWrapper.Create (account.DeliveryStore))
-          {
-            if (deliveryStore.Inner !=null && deliveryStore.Inner.StoreID == storeId)
-            {
-              accountName = account.DisplayName;
-            }
-          }
-        }
-      }
-      catch (COMException ex)
-      {
-        s_logger.Error("Can't access Account Name of folder.", ex);
-      }
+ 
       try
       {
         using (RegistryKey profileKey = Registry.CurrentUser.OpenSubKey (profileRegKeyName))
@@ -150,13 +131,13 @@ namespace CalDavSynchronizer.Contracts
           {
             using (RegistryKey subKey = profileKey.OpenSubKey (subKeyName))
             {
-              if (accountName != null)
+              if (folderAccountName != null)
               {
                 var registryAccountNameValue = (byte[])subKey.GetValue ("Account Name");
                 if (registryAccountNameValue != null)
                 {
                   string registryAccountName = Encoding.Unicode.GetString (registryAccountNameValue).TrimEnd ('\0');
-                  if (registryAccountName != accountName) continue;
+                  if (registryAccountName != folderAccountName) continue;
                 }
               }
 

@@ -198,9 +198,9 @@ namespace CalDavSynchronizer.Ui.Options
       get { return _outlookFolderControl.OutlookFolderType; }
     }
 
-    public string FolderStoreId
+    public string FolderAccountName
     {
-      get { return _outlookFolderControl.FolderStoreId; }
+      get { return _outlookFolderControl.FolderAccountName; }
     }
 
     public bool SelectedSynchronizationModeRequiresWriteableServerResource
