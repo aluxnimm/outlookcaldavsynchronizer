@@ -124,6 +124,10 @@ namespace CalDavSynchronizer.Contracts
           return "https://dav.fruux.com";
         case OptionsDisplayType.Posteo:
           return "https://posteo.de:8443";
+        case OptionsDisplayType.Yandex:
+          return "https://caldav.yandex.ru";
+        case OptionsDisplayType.GmxCalendar:
+          return "https://caldav.gmx.net";
         default:
           return null;
       }

@@ -29,6 +29,8 @@ namespace CalDavSynchronizer.Ui.Options
       _logoGooglePictureBox.Image = Properties.Resources.logo_google;
       _logoFruuxPictureBox.Image = Properties.Resources.logo_fruux;
       _logoPosteoPictureBox.Image = Properties.Resources.logo_posteo;
+      _logoYandexPictureBox.Image = Properties.Resources.logo_yandex;
+      _logoGmxCalendarPictureBox.Image = Properties.Resources.logo_gmx;
     }
 
     private void _okButton_Click (object sender, EventArgs e)
@@ -43,15 +45,16 @@ namespace CalDavSynchronizer.Ui.Options
       {
         if (form._genericTypeRadioButton.Checked)
           return OptionsDisplayType.Generic;
-
         if (form._googleTypeRadionButton.Checked)
           return OptionsDisplayType.Google;
-
         if (form._fruuxTypeRadioButton.Checked)
           return OptionsDisplayType.Fruux;
-
         if (form._posteoTypeRadioButton.Checked)
           return OptionsDisplayType.Posteo;
+        if (form._yandexTypeRadioButton.Checked)
+          return OptionsDisplayType.Yandex;
+        if (form._gmxCalendarTypeRadioButton.Checked)
+          return OptionsDisplayType.GmxCalendar;
       }
 
       return null;

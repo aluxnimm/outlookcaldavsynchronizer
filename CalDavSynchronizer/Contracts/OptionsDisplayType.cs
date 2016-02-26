@@ -27,6 +27,8 @@ namespace CalDavSynchronizer.Contracts
     Generic = 0,
     Google,
     Fruux,
-    Posteo
+    Posteo,
+    Yandex,
+    GmxCalendar
   }
 }

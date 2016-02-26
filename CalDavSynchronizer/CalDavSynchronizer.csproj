@@ -674,6 +674,8 @@
     <None Include="Resources\logo_fruux.png" />
     <None Include="Resources\logo_posteo.png" />
     <None Include="Resources\logo_google.png" />
+    <None Include="Resources\logo_yandex.png" />
+    <None Include="Resources\logo_gmx.png" />
     <Content Include="Resources\outlookcaldavsynchronizerlogoarrow.png" />
   </ItemGroup>
   <ItemGroup>
