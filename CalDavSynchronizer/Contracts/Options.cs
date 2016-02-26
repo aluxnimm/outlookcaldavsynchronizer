@@ -150,30 +150,30 @@ namespace CalDavSynchronizer.Contracts
           {
             using (RegistryKey subKey = profileKey.OpenSubKey (subKeyName))
             {
-              foreach (string subKeyValueName in subKey.GetValueNames())
+              if (accountName != null)
               {
-                if (accountName != null && subKeyValueName == "Account Name")
+                var registryAccountNameValue = (byte[])subKey.GetValue ("Account Name");
+                if (registryAccountNameValue != null)
                 {
-                  var registryAccountNameValue = (byte[])subKey.GetValue (subKeyValueName);
                   string registryAccountName = Encoding.Unicode.GetString (registryAccountNameValue).TrimEnd ('\0');
-                  if (registryAccountName != accountName) break;
+                  if (registryAccountName != accountName) continue;
                 }
-                if (subKeyValueName == "IMAP Password" || subKeyValueName == "POP3 Password")
-                {
-                  var passwordValue = (byte[]) subKey.GetValue (subKeyValueName);
-                  var encPassword = passwordValue.Skip (1).ToArray();
-                  try
-                  {
-                    var clearPassword = ProtectedData.Unprotect (encPassword, null, DataProtectionScope.CurrentUser);
-                    string result = Encoding.Unicode.GetString (clearPassword).TrimEnd ('\0');
-                    return result;
-                  }
-                  catch (CryptographicException x)
-                  {
-                    s_logger.Error("Error while decrypting account password. Using empty password", x);
-                    return string.Empty;
-                  }
-                }
+              }
+
+              var passwordValue = (byte[])subKey.GetValue ("IMAP Password") ?? (byte[])subKey.GetValue ("POP3 Password");
+
+              if (passwordValue == null) continue;
+              var encPassword = passwordValue.Skip (1).ToArray();
+              try
+              {
+                var clearPassword = ProtectedData.Unprotect(encPassword, null, DataProtectionScope.CurrentUser);
+                string result = Encoding.Unicode.GetString(clearPassword).TrimEnd('\0');
+                return result;
+              }
+              catch (CryptographicException x)
+              {
+                s_logger.Error("Error while decrypting account password. Using empty password", x);
+                return string.Empty;
               }
             }
           }
