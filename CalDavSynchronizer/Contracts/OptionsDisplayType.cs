@@ -25,6 +25,8 @@ namespace CalDavSynchronizer.Contracts
   public enum OptionsDisplayType
   {
     Generic = 0,
-    Google
+    Google,
+    Fruux,
+    Posteo
   }
 }

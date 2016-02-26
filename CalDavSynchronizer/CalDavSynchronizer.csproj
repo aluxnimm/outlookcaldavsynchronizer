@@ -671,6 +671,9 @@
     <Resource Include="Resources\ok.ico" />
     <None Include="Resources\ApplicationIcon.ico" />
     <Resource Include="Resources\error.ico" />
+    <None Include="Resources\logo_fruux.png" />
+    <None Include="Resources\logo_posteo.png" />
+    <None Include="Resources\logo_google.png" />
     <Content Include="Resources\outlookcaldavsynchronizerlogoarrow.png" />
   </ItemGroup>
   <ItemGroup>

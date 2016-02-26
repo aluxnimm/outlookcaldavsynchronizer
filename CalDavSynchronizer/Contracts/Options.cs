@@ -95,7 +95,7 @@ namespace CalDavSynchronizer.Contracts
     }
 
 
-    public static Options CreateDefault (string outlookFolderEntryId, string outlookFolderStoreId)
+    public static Options CreateDefault (string outlookFolderEntryId, string outlookFolderStoreId, OptionsDisplayType type)
     {
       var options = new Options();
 
@@ -111,7 +111,22 @@ namespace CalDavSynchronizer.Contracts
       options.Inactive = false;
       options.PreemptiveAuthentication = true;
       options.ProxyOptions = new ProxyOptions() { ProxyUseDefault = true };
+      options.DisplayType = type;
+      options.CalenderUrl = PopulateDavUrl (options.DisplayType);
       return options;
+    }
+
+    private static string PopulateDavUrl (OptionsDisplayType type)
+    {
+      switch (type)
+      {
+        case OptionsDisplayType.Fruux:
+          return "https://dav.fruux.com";
+        case OptionsDisplayType.Posteo:
+          return "https://posteo.de:8443";
+        default:
+          return null;
+      }
     }
   }
 }

@@ -26,6 +26,9 @@ namespace CalDavSynchronizer.Ui.Options
     public SelectOptionsDisplayTypeForm ()
     {
       InitializeComponent();
+      _logoGooglePictureBox.Image = Properties.Resources.logo_google;
+      _logoFruuxPictureBox.Image = Properties.Resources.logo_fruux;
+      _logoPosteoPictureBox.Image = Properties.Resources.logo_posteo;
     }
 
     private void _okButton_Click (object sender, EventArgs e)
@@ -43,6 +46,12 @@ namespace CalDavSynchronizer.Ui.Options
 
         if (form._googleTypeRadionButton.Checked)
           return OptionsDisplayType.Google;
+
+        if (form._fruuxTypeRadioButton.Checked)
+          return OptionsDisplayType.Fruux;
+
+        if (form._posteoTypeRadioButton.Checked)
+          return OptionsDisplayType.Posteo;
       }
 
       return null;

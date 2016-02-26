@@ -160,7 +160,7 @@ namespace CalDavSynchronizer.Ui.Options
       if (!type.HasValue)
         return;
 
-      Contracts.Options options = Contracts.Options.CreateDefault (string.Empty, string.Empty);
+      Contracts.Options options = Contracts.Options.CreateDefault (string.Empty, string.Empty, type.Value);
       options.DisplayType = type.Value;
       options.ServerAdapterType = (type == OptionsDisplayType.Google)
         ? ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth

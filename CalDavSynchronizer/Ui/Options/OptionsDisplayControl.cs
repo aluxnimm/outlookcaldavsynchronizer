@@ -41,6 +41,7 @@ namespace CalDavSynchronizer.Ui.Options
     private readonly Func<Guid, string> _profileDataDirectoryFactory;
     private readonly Lazy<IConfigurationFormFactory> _configurationFormFactory;
     private MappingConfigurationBase _mappingConfiguration;
+    private OptionsDisplayType _displayType;
 
     public OptionsDisplayControl (
         NameSpace session,
@@ -111,6 +112,7 @@ namespace CalDavSynchronizer.Ui.Options
         _optionsId = value.Id;
 
         _mappingConfiguration = value.MappingConfiguration;
+        _displayType = value.DisplayType;
 
         _outlookFolderControl.SetOptions (value);
         _serverSettingsControl.SetOptions (value);
@@ -125,7 +127,7 @@ namespace CalDavSynchronizer.Ui.Options
                           Id = _optionsId,
                           Inactive = _inactiveCheckBox.Checked,
                           MappingConfiguration = _mappingConfiguration,
-                          DisplayType = OptionsDisplayType.Generic
+                          DisplayType = _displayType
                       };
 
         _outlookFolderControl.FillOptions (options);
