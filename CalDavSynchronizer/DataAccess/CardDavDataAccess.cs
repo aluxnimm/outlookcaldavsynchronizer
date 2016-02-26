@@ -105,7 +105,7 @@ namespace CalDavSynchronizer.DataAccess
 
     private Uri AutoDiscoveryUrl
     {
-      get { return new Uri (_serverUrl.GetLeftPart (UriPartial.Authority) + "/.well-known/carddav/"); }
+      get { return new Uri (_serverUrl.GetLeftPart (UriPartial.Authority) + "/.well-known/carddav"); }
     }
 
     private Task<XmlDocumentWithNamespaceManager> GetAddressBookHomeSet (Uri url)

@@ -121,7 +121,7 @@ namespace CalDavSynchronizer.DataAccess
     {
       get 
       {
-        return new Uri (_serverUrl.GetLeftPart (UriPartial.Authority) + "/.well-known/caldav/"); 
+        return new Uri (_serverUrl.GetLeftPart (UriPartial.Authority) + "/.well-known/caldav"); 
       }
     }
 
