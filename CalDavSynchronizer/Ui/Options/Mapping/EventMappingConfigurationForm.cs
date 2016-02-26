@@ -18,17 +18,24 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Utilities;
 using Microsoft.Office.Interop.Outlook;
+using CalDavSynchronizer.Implementation.ComWrappers;
+using log4net;
+using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Ui.Options.Mapping
 {
   public partial class EventMappingConfigurationForm : Form, IConfigurationForm<EventMappingConfiguration>
   {
+    private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
+
     private readonly IList<Item<ReminderMapping>> _availableReminderMappings = new List<Item<ReminderMapping>> ()
                                                                                {
                                                                                    new Item<ReminderMapping> (ReminderMapping.@true, "Yes"),
@@ -58,15 +65,30 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       Item.BindComboBox (_mapReminderComboBox, _availableReminderMappings);
       Item.BindComboBox (_categoryShortcutKeycomboBox, _availableShortcutKeys);
 
-      _calDavDataAccessFactory = calDavDataAccessFactory;
+      _categoryNameComboBox.Items.Add ("");
+      try
+      {
+        using (var categoriesWrapper = GenericComObjectWrapper.Create (Globals.ThisAddIn.Application.Session.Categories))
+        {
+          foreach (var category in categoriesWrapper.Inner.ToSafeEnumerable<Category>())
+          {
+            _categoryNameComboBox.Items.Add (category.Name);
+          }
+        }
+      }
+      catch (COMException ex)
+      {
+        s_logger.Error ("Can't access Outlook categories.", ex);
+      }
 
+      _calDavDataAccessFactory = calDavDataAccessFactory;
       _categoryColorPicker.AddCategoryColors ();
     }
 
     private void _okButton_Click (object sender, EventArgs e)
     {
       StringBuilder errorMessageBuilder = new StringBuilder();
-      if (OptionTasks.ValidateCategoryName (_categoryTextBox.Text, errorMessageBuilder))
+      if (OptionTasks.ValidateCategoryName (_categoryNameComboBox.Text, errorMessageBuilder))
       {
           DialogResult = DialogResult.OK;
       }
@@ -95,7 +117,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
           MapBody = _mapBodyCheckBox.Checked,
           CreateEventsInUTC = _createInUTCCheckBox.Checked,
           MapReminder = (ReminderMapping) _mapReminderComboBox.SelectedValue,
-          EventCategory = _categoryTextBox.Text,
+          EventCategory = _categoryNameComboBox.Text,
           UseEventCategoryColorAndMapFromCalendarColor = _mapColorCheckBox.Checked ,
           EventCategoryColor =  _categoryColorPicker.SelectedValue,
           CategoryShortcutKey = (OlCategoryShortcutKey) _categoryShortcutKeycomboBox.SelectedValue
@@ -111,7 +133,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
         _mapBodyCheckBox.Checked = value.MapBody;
         _createInUTCCheckBox.Checked = value.CreateEventsInUTC;
         _mapReminderComboBox.SelectedValue = value.MapReminder;
-        _categoryTextBox.Text = value.EventCategory;
+        _categoryNameComboBox.Text = value.EventCategory;
         _categoryColorPicker.SelectedValue = value.EventCategoryColor;
         _mapColorCheckBox.Checked = value.UseEventCategoryColorAndMapFromCalendarColor;
         _categoryShortcutKeycomboBox.SelectedValue = value.CategoryShortcutKey;
@@ -136,14 +158,14 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       UpdateCategoryColorControlsEnabled ();
     }
 
-    private void _categoryTextBox_TextChanged (object sender, EventArgs e)
+    private void _categoryNameComboBox_TextChanged (object sender, EventArgs e)
     {
       UpdateCategoryColorControlsEnabled ();
     }
 
     private void UpdateCategoryColorControlsEnabled ()
     {
-      if (!string.IsNullOrEmpty (_categoryTextBox.Text))
+      if (!string.IsNullOrEmpty (_categoryNameComboBox.Text))
       {
         _mapColorCheckBox.Enabled = true;
         _calendarColorRefreshButton.Enabled = _mapColorCheckBox.Checked;

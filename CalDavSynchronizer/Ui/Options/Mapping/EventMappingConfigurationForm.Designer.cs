@@ -39,12 +39,13 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this._mapReminderComboBox = new System.Windows.Forms.ComboBox();
       this.label1 = new System.Windows.Forms.Label();
       this.label2 = new System.Windows.Forms.Label();
-      this._categoryTextBox = new System.Windows.Forms.TextBox();
       this._outlookGroupBox = new System.Windows.Forms.GroupBox();
+      this._categoryNameComboBox = new System.Windows.Forms.ComboBox();
       this.label3 = new System.Windows.Forms.Label();
       this._categoryShortcutKeycomboBox = new System.Windows.Forms.ComboBox();
       this._calendarColorSetButton = new System.Windows.Forms.Button();
       this._calendarColorRefreshButton = new System.Windows.Forms.Button();
+      this._categoryColorPicker = new CalDavSynchronizer.Ui.ColorPicker();
       this._mapColorCheckBox = new System.Windows.Forms.CheckBox();
       this._schedulingGroupBox = new System.Windows.Forms.GroupBox();
       this._sendNoAppointmentsNotificationsCheckBox = new System.Windows.Forms.CheckBox();
@@ -54,7 +55,6 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this._privacyGroupBox = new System.Windows.Forms.GroupBox();
       this._mapClassConfidentialToSensitivityPrivateCheckBox = new System.Windows.Forms.CheckBox();
       this._mapSensitivityPrivateToClassConfindentialCheckBox = new System.Windows.Forms.CheckBox();
-      this._categoryColorPicker = new CalDavSynchronizer.Ui.ColorPicker();
       this._outlookGroupBox.SuspendLayout();
       this._schedulingGroupBox.SuspendLayout();
       this._privacyGroupBox.SuspendLayout();
@@ -138,22 +138,11 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this.label2.TabIndex = 16;
       this.label2.Text = "Sync only Appointments with this category:";
       // 
-      // _categoryTextBox
-      // 
-      this._categoryTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this._categoryTextBox.Location = new System.Drawing.Point(299, 28);
-      this._categoryTextBox.Margin = new System.Windows.Forms.Padding(4);
-      this._categoryTextBox.Name = "_categoryTextBox";
-      this._categoryTextBox.Size = new System.Drawing.Size(400, 22);
-      this._categoryTextBox.TabIndex = 7;
-      this._toolTip.SetToolTip(this._categoryTextBox, resources.GetString("_categoryTextBox.ToolTip"));
-      this._categoryTextBox.TextChanged += new System.EventHandler(this._categoryTextBox_TextChanged);
-      // 
       // _outlookGroupBox
       // 
       this._outlookGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this._outlookGroupBox.Controls.Add(this._categoryNameComboBox);
       this._outlookGroupBox.Controls.Add(this.label3);
       this._outlookGroupBox.Controls.Add(this._categoryShortcutKeycomboBox);
       this._outlookGroupBox.Controls.Add(this._calendarColorSetButton);
@@ -161,7 +150,6 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this._outlookGroupBox.Controls.Add(this._categoryColorPicker);
       this._outlookGroupBox.Controls.Add(this._mapColorCheckBox);
       this._outlookGroupBox.Controls.Add(this.label2);
-      this._outlookGroupBox.Controls.Add(this._categoryTextBox);
       this._outlookGroupBox.Location = new System.Drawing.Point(19, 314);
       this._outlookGroupBox.Margin = new System.Windows.Forms.Padding(4);
       this._outlookGroupBox.Name = "_outlookGroupBox";
@@ -170,6 +158,18 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this._outlookGroupBox.TabIndex = 7;
       this._outlookGroupBox.TabStop = false;
       this._outlookGroupBox.Text = "Outlook settings";
+      // 
+      // _categoryNameComboBox
+      // 
+      this._categoryNameComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this._categoryNameComboBox.FormattingEnabled = true;
+      this._categoryNameComboBox.Location = new System.Drawing.Point(299, 29);
+      this._categoryNameComboBox.Margin = new System.Windows.Forms.Padding(4);
+      this._categoryNameComboBox.Name = "_categoryNameComboBox";
+      this._categoryNameComboBox.Size = new System.Drawing.Size(399, 24);
+      this._categoryNameComboBox.TabIndex = 7;
+      this._toolTip.SetToolTip(this._categoryNameComboBox, resources.GetString("_categoryNameComboBox.ToolTip"));
+      this._categoryNameComboBox.TextChanged += new System.EventHandler(this._categoryNameComboBox_TextChanged);
       // 
       // label3
       // 
@@ -215,6 +215,20 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this._calendarColorRefreshButton.Text = "Fetch Color";
       this._calendarColorRefreshButton.UseVisualStyleBackColor = false;
       this._calendarColorRefreshButton.Click += new System.EventHandler(this._calendarColorRefreshButton_Click);
+      // 
+      // _categoryColorPicker
+      // 
+      this._categoryColorPicker.BackColor = System.Drawing.Color.White;
+      this._categoryColorPicker.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+      this._categoryColorPicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this._categoryColorPicker.FormattingEnabled = true;
+      this._categoryColorPicker.Location = new System.Drawing.Point(299, 65);
+      this._categoryColorPicker.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+      this._categoryColorPicker.Name = "_categoryColorPicker";
+      this._categoryColorPicker.SelectedItem = null;
+      this._categoryColorPicker.SelectedValue = Microsoft.Office.Interop.Outlook.OlCategoryColor.olCategoryColorNone;
+      this._categoryColorPicker.Size = new System.Drawing.Size(148, 23);
+      this._categoryColorPicker.TabIndex = 10;
       // 
       // _mapColorCheckBox
       // 
@@ -321,20 +335,6 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this._mapSensitivityPrivateToClassConfindentialCheckBox.Text = "Map Outlook Private flag to DAV CLASS:CONFIDENTIAL instead of PRIVATE";
       this._mapSensitivityPrivateToClassConfindentialCheckBox.UseVisualStyleBackColor = true;
       // 
-      // _categoryColorPicker
-      // 
-      this._categoryColorPicker.BackColor = System.Drawing.Color.White;
-      this._categoryColorPicker.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-      this._categoryColorPicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this._categoryColorPicker.FormattingEnabled = true;
-      this._categoryColorPicker.Location = new System.Drawing.Point(299, 65);
-      this._categoryColorPicker.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-      this._categoryColorPicker.Name = "_categoryColorPicker";
-      this._categoryColorPicker.SelectedItem = null;
-      this._categoryColorPicker.SelectedValue = Microsoft.Office.Interop.Outlook.OlCategoryColor.olCategoryColorNone;
-      this._categoryColorPicker.Size = new System.Drawing.Size(148, 23);
-      this._categoryColorPicker.TabIndex = 10;
-      // 
       // EventMappingConfigurationForm
       // 
       this.AcceptButton = this._okButton;
@@ -377,7 +377,6 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
     private System.Windows.Forms.ComboBox _mapReminderComboBox;
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.Label label2;
-    private System.Windows.Forms.TextBox _categoryTextBox;
     private System.Windows.Forms.GroupBox _outlookGroupBox;
     private System.Windows.Forms.Button _calendarColorRefreshButton;
     private System.Windows.Forms.CheckBox _mapColorCheckBox;
@@ -393,5 +392,6 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
     private System.Windows.Forms.GroupBox _privacyGroupBox;
     private System.Windows.Forms.CheckBox _mapClassConfidentialToSensitivityPrivateCheckBox;
     private System.Windows.Forms.CheckBox _mapSensitivityPrivateToClassConfindentialCheckBox;
+    private System.Windows.Forms.ComboBox _categoryNameComboBox;
   }
 }
