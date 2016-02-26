@@ -114,7 +114,10 @@ namespace CalDavSynchronizer.Ui.Options
             autoDiscoveredResourceType = autodiscoveryResult2.ResourceType;
           }
           else
+          {
+            MessageBox.Show ("No resources were found via autodiscovery!", OptionTasks.ConnectionTestCaption);
             return;
+          }
         }
       }
       else
@@ -151,7 +154,10 @@ namespace CalDavSynchronizer.Ui.Options
               autoDiscoveredResourceType = autodiscoveryResult2.ResourceType;
             }
             else
+            {
+              MessageBox.Show ("No resources were found via autodiscovery!", OptionTasks.ConnectionTestCaption);
               return;
+            }
           }
         }
       }
