@@ -50,6 +50,8 @@
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
     <Compile Include="EntityRepositories\IdWithAwarenessLevel.cs" />
+    <Compile Include="IdWithHints.cs" />
+    <Compile Include="IIdWithHints.cs" />
     <Compile Include="EntityVersion.cs" />
     <Compile Include="EntityMapping\IEntityMapper.cs" />
     <Compile Include="EntityRelationManagement\EntityRelationDataAccess.cs" />

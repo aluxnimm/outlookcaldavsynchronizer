@@ -15,16 +15,23 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using GenSync;
-using GenSync.Logging;
+using GenSync.EntityRepositories;
 
-namespace CalDavSynchronizer.Synchronization
+namespace GenSync
 {
-  public interface IOutlookSynchronizer
+  /// <summary>
+  /// Represents an Id of an Entity with an optional hints.
+  /// Specifying the hints can prevent the synchronizer from calling <see cref="IReadOnlyEntityRepository{TEntity,TEntityId,TEntityVersion}.GetVersions(System.Collections.Generic.IEnumerable{IdWithAwarenessLevel{TEntityId}})"/>
+  /// Specifying wrong hints can cause items to be not synced, but it is guaranteed that specifying wrong hints has no other effects (e.g. duplicating events).
+  /// </summary>
+  public interface IIdWithHints<out TEntityId, out TVersion>
   {
-    Task SynchronizeNoThrow (ISynchronizationLogger logger);
-    Task SnychronizePartialNoThrow (IEnumerable<IIdWithHints<string, DateTime>> outlookIds, ISynchronizationLogger logger);
+    TEntityId Id { get; }
+    /// <remarks>
+    ///Is allowed to throw an exception, if IsVersionSpecified returns false!
+    /// </remarks>
+    TVersion VersionHint { get; }
+    bool IsVersionHintSpecified { get; }
+    bool? WasDeletedHint { get; }
   }
 }

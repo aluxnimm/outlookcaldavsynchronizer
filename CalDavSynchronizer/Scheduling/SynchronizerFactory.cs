@@ -305,7 +305,7 @@ namespace CalDavSynchronizer.Scheduling
           _totalProgressFactory,
           ExceptionHandler.Instance);
 
-      return new OutlookSynchronizer<WebResourceName> (synchronizer);
+      return new OutlookSynchronizer<WebResourceName, string> (synchronizer);
     }
 
     private T GetMappingParameters<T> (Options options)
@@ -381,7 +381,7 @@ namespace CalDavSynchronizer.Scheduling
           _totalProgressFactory,
           ExceptionHandler.Instance);
 
-      return new OutlookSynchronizer<WebResourceName> (synchronizer);
+      return new OutlookSynchronizer<WebResourceName, string> (synchronizer);
     }
 
     private IOutlookSynchronizer CreateGoogleTaskSynchronizer (Options options)
@@ -433,7 +433,7 @@ namespace CalDavSynchronizer.Scheduling
           _totalProgressFactory,
           ExceptionHandler.Instance);
 
-      return new OutlookSynchronizer<string> (synchronizer);
+      return new OutlookSynchronizer<string, string> (synchronizer);
     }
 
     private IOutlookSynchronizer CreateContactSynchronizer (Options options, AvailableSynchronizerComponents componentsToFill)
@@ -497,7 +497,7 @@ namespace CalDavSynchronizer.Scheduling
           _totalProgressFactory,
           ExceptionHandler.Instance);
 
-      return new OutlookSynchronizer<WebResourceName> (synchronizer);
+      return new OutlookSynchronizer<WebResourceName, string> (synchronizer);
     }
   }
 }

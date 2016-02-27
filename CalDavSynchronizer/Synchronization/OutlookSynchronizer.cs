@@ -20,17 +20,21 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
+using GenSync;
 using GenSync.Logging;
 using GenSync.Synchronization;
 
 namespace CalDavSynchronizer.Synchronization
 {
-  public class OutlookSynchronizer<TBtypeEntityId> : IOutlookSynchronizer
+  public class OutlookSynchronizer<TBtypeEntityId, TBtypeEntityVersion> : IOutlookSynchronizer
   {
-    private readonly IPartialSynchronizer<string, TBtypeEntityId> _synchronizer;
- 
-    public OutlookSynchronizer (IPartialSynchronizer<string, TBtypeEntityId> synchronizer)
+    private readonly IPartialSynchronizer<string, DateTime, TBtypeEntityId, TBtypeEntityVersion> _synchronizer;
+
+    public OutlookSynchronizer (IPartialSynchronizer<string, DateTime, TBtypeEntityId, TBtypeEntityVersion> synchronizer)
     {
+      if (synchronizer == null)
+        throw new ArgumentNullException (nameof (synchronizer));
+
       _synchronizer = synchronizer;
     }
 
@@ -39,9 +43,9 @@ namespace CalDavSynchronizer.Synchronization
       return _synchronizer.SynchronizeNoThrow (logger);
     }
 
-    public async Task SnychronizePartialNoThrow (IEnumerable<string> outlookIds, ISynchronizationLogger logger)
+    public async Task SnychronizePartialNoThrow (IEnumerable<IIdWithHints<string, DateTime>> outlookIds, ISynchronizationLogger logger)
     {
-      await _synchronizer.SynchronizePartialNoThrow (outlookIds, new TBtypeEntityId[] { }, logger);
+      await _synchronizer.SynchronizePartialNoThrow (outlookIds, new IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>[] { }, logger);
     }
   }
 }

@@ -28,6 +28,7 @@ using CalDavSynchronizer.Reports;
 using CalDavSynchronizer.Synchronization;
 using CalDavSynchronizer.Utilities;
 using CalDavSynchronizer.Ui.ConnectionTests;
+using GenSync;
 using GenSync.Logging;
 using GenSync.Synchronization;
 using log4net;
@@ -243,7 +244,7 @@ namespace CalDavSynchronizer.Scheduling
 
         using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("Partial sync: Running synchronization profile '{0}'", _profileName)))
         {
-          await _synchronizer.SnychronizePartialNoThrow (itemsToSync, logger);
+          await _synchronizer.SnychronizePartialNoThrow (itemsToSync.Select(i => IdWithHints.Create(i, (DateTime?)null, null)).ToArray(), logger);
         }
 
         GC.Collect();
