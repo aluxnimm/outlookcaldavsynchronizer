@@ -373,8 +373,9 @@ namespace CalDavSynchronizer
       {
         var oldCategory = GetMappingRefPropertyOrNull<EventMappingConfiguration, string> (changedOption.Old.MappingConfiguration, o => o.EventCategory);
         var newCategory = GetMappingRefPropertyOrNull<EventMappingConfiguration, string> (changedOption.New.MappingConfiguration, o => o.EventCategory);
+        var negateFilter = GetMappingPropertyOrNull<EventMappingConfiguration, bool> (changedOption.New.MappingConfiguration, o => o.UseEventCategoryNotFilter);
 
-        if (oldCategory != newCategory && !String.IsNullOrEmpty (oldCategory))
+        if (oldCategory != newCategory && !String.IsNullOrEmpty (oldCategory) && !negateFilter.Value)
         {
           try
           {
@@ -446,7 +447,7 @@ namespace CalDavSynchronizer
           s_logger.Info ("Can't access IsInstantSearchEnabled property of store, defaulting to false.");
         }
         var filterBuilder = new StringBuilder (_daslFilterProvider.GetAppointmentFilter (isInstantSearchEnabled));
-        OutlookEventRepository.AddCategoryFilter (filterBuilder, oldCategory);
+        OutlookEventRepository.AddCategoryFilter (filterBuilder, oldCategory, false);
         var eventIds = OutlookEventRepository.QueryFolder (_session, calendarFolderWrapper, filterBuilder).Select(e => e.Id);
         // todo concat Ids from cache
 

@@ -118,7 +118,8 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
           CreateEventsInUTC = _createInUTCCheckBox.Checked,
           MapReminder = (ReminderMapping) _mapReminderComboBox.SelectedValue,
           EventCategory = _categoryNameComboBox.Text,
-          UseEventCategoryColorAndMapFromCalendarColor = _mapColorCheckBox.Checked ,
+          EventCategoryNotFilter = _categoryNotFilterCheckBox.Checked,
+          UseEventCategoryColorAndMapFromCalendarColor = _mapColorCheckBox.Checked,
           EventCategoryColor =  _categoryColorPicker.SelectedValue,
           CategoryShortcutKey = (OlCategoryShortcutKey) _categoryShortcutKeycomboBox.SelectedValue
         };
@@ -134,6 +135,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
         _createInUTCCheckBox.Checked = value.CreateEventsInUTC;
         _mapReminderComboBox.SelectedValue = value.MapReminder;
         _categoryNameComboBox.Text = value.EventCategory;
+        _categoryNotFilterCheckBox.Checked = value.EventCategoryNotFilter;
         _categoryColorPicker.SelectedValue = value.EventCategoryColor;
         _mapColorCheckBox.Checked = value.UseEventCategoryColorAndMapFromCalendarColor;
         _categoryShortcutKeycomboBox.SelectedValue = value.CategoryShortcutKey;
@@ -167,6 +169,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
     {
       if (!string.IsNullOrEmpty (_categoryNameComboBox.Text))
       {
+        _categoryNotFilterCheckBox.Enabled = true;
         _mapColorCheckBox.Enabled = true;
         _calendarColorRefreshButton.Enabled = _mapColorCheckBox.Checked;
         _calendarColorSetButton.Enabled = _mapColorCheckBox.Checked;
@@ -175,6 +178,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       }
       else
       {
+        _categoryNotFilterCheckBox.Enabled = false;
         _mapColorCheckBox.Enabled = false;
         _calendarColorRefreshButton.Enabled = false;
         _calendarColorSetButton.Enabled = false;

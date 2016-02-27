@@ -45,7 +45,6 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this._categoryShortcutKeycomboBox = new System.Windows.Forms.ComboBox();
       this._calendarColorSetButton = new System.Windows.Forms.Button();
       this._calendarColorRefreshButton = new System.Windows.Forms.Button();
-      this._categoryColorPicker = new CalDavSynchronizer.Ui.ColorPicker();
       this._mapColorCheckBox = new System.Windows.Forms.CheckBox();
       this._schedulingGroupBox = new System.Windows.Forms.GroupBox();
       this._sendNoAppointmentsNotificationsCheckBox = new System.Windows.Forms.CheckBox();
@@ -55,6 +54,9 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this._privacyGroupBox = new System.Windows.Forms.GroupBox();
       this._mapClassConfidentialToSensitivityPrivateCheckBox = new System.Windows.Forms.CheckBox();
       this._mapSensitivityPrivateToClassConfindentialCheckBox = new System.Windows.Forms.CheckBox();
+      this._categoryNotFilterCheckBox = new System.Windows.Forms.CheckBox();
+      this.label4 = new System.Windows.Forms.Label();
+      this._categoryColorPicker = new CalDavSynchronizer.Ui.ColorPicker();
       this._outlookGroupBox.SuspendLayout();
       this._schedulingGroupBox.SuspendLayout();
       this._privacyGroupBox.SuspendLayout();
@@ -64,7 +66,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       // 
       this._cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this._cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this._cancelButton.Location = new System.Drawing.Point(624, 471);
+      this._cancelButton.Location = new System.Drawing.Point(624, 545);
       this._cancelButton.Margin = new System.Windows.Forms.Padding(4);
       this._cancelButton.Name = "_cancelButton";
       this._cancelButton.Size = new System.Drawing.Size(100, 28);
@@ -75,7 +77,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       // _okButton
       // 
       this._okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._okButton.Location = new System.Drawing.Point(516, 471);
+      this._okButton.Location = new System.Drawing.Point(516, 545);
       this._okButton.Margin = new System.Windows.Forms.Padding(4);
       this._okButton.Name = "_okButton";
       this._okButton.Size = new System.Drawing.Size(100, 28);
@@ -131,17 +133,19 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       // label2
       // 
       this.label2.AutoSize = true;
-      this.label2.Location = new System.Drawing.Point(8, 32);
+      this.label2.Location = new System.Drawing.Point(9, 64);
       this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label2.Name = "label2";
-      this.label2.Size = new System.Drawing.Size(276, 17);
+      this.label2.Size = new System.Drawing.Size(147, 17);
       this.label2.TabIndex = 16;
-      this.label2.Text = "Sync only Appointments with this category:";
+      this.label2.Text = "Outlook category filter";
       // 
       // _outlookGroupBox
       // 
       this._outlookGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this._outlookGroupBox.Controls.Add(this.label4);
+      this._outlookGroupBox.Controls.Add(this._categoryNotFilterCheckBox);
       this._outlookGroupBox.Controls.Add(this._categoryNameComboBox);
       this._outlookGroupBox.Controls.Add(this.label3);
       this._outlookGroupBox.Controls.Add(this._categoryShortcutKeycomboBox);
@@ -154,7 +158,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this._outlookGroupBox.Margin = new System.Windows.Forms.Padding(4);
       this._outlookGroupBox.Name = "_outlookGroupBox";
       this._outlookGroupBox.Padding = new System.Windows.Forms.Padding(4);
-      this._outlookGroupBox.Size = new System.Drawing.Size(708, 149);
+      this._outlookGroupBox.Size = new System.Drawing.Size(708, 223);
       this._outlookGroupBox.TabIndex = 7;
       this._outlookGroupBox.TabStop = false;
       this._outlookGroupBox.Text = "Outlook settings";
@@ -163,18 +167,19 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       // 
       this._categoryNameComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._categoryNameComboBox.FormattingEnabled = true;
-      this._categoryNameComboBox.Location = new System.Drawing.Point(299, 29);
+      this._categoryNameComboBox.Location = new System.Drawing.Point(299, 61);
       this._categoryNameComboBox.Margin = new System.Windows.Forms.Padding(4);
       this._categoryNameComboBox.Name = "_categoryNameComboBox";
       this._categoryNameComboBox.Size = new System.Drawing.Size(399, 24);
       this._categoryNameComboBox.TabIndex = 7;
-      this._toolTip.SetToolTip(this._categoryNameComboBox, resources.GetString("_categoryNameComboBox.ToolTip"));
+      this._toolTip.SetToolTip(this._categoryNameComboBox, "Enter the name of the Outlook category for filtering.\r\nIf the category doesn\'t ex" +
+        "ist, it will be created in Outlook.");
       this._categoryNameComboBox.TextChanged += new System.EventHandler(this._categoryNameComboBox_TextChanged);
       // 
       // label3
       // 
       this.label3.AutoSize = true;
-      this.label3.Location = new System.Drawing.Point(8, 103);
+      this.label3.Location = new System.Drawing.Point(9, 182);
       this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label3.Name = "label3";
       this.label3.Size = new System.Drawing.Size(154, 17);
@@ -186,7 +191,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this._categoryShortcutKeycomboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._categoryShortcutKeycomboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this._categoryShortcutKeycomboBox.FormattingEnabled = true;
-      this._categoryShortcutKeycomboBox.Location = new System.Drawing.Point(299, 103);
+      this._categoryShortcutKeycomboBox.Location = new System.Drawing.Point(299, 179);
       this._categoryShortcutKeycomboBox.Margin = new System.Windows.Forms.Padding(4);
       this._categoryShortcutKeycomboBox.Name = "_categoryShortcutKeycomboBox";
       this._categoryShortcutKeycomboBox.Size = new System.Drawing.Size(148, 24);
@@ -195,7 +200,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       // _calendarColorSetButton
       // 
       this._calendarColorSetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._calendarColorSetButton.Location = new System.Drawing.Point(573, 64);
+      this._calendarColorSetButton.Location = new System.Drawing.Point(573, 138);
       this._calendarColorSetButton.Margin = new System.Windows.Forms.Padding(4);
       this._calendarColorSetButton.Name = "_calendarColorSetButton";
       this._calendarColorSetButton.Size = new System.Drawing.Size(125, 28);
@@ -207,7 +212,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       // _calendarColorRefreshButton
       // 
       this._calendarColorRefreshButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._calendarColorRefreshButton.Location = new System.Drawing.Point(467, 64);
+      this._calendarColorRefreshButton.Location = new System.Drawing.Point(466, 138);
       this._calendarColorRefreshButton.Margin = new System.Windows.Forms.Padding(4);
       this._calendarColorRefreshButton.Name = "_calendarColorRefreshButton";
       this._calendarColorRefreshButton.Size = new System.Drawing.Size(99, 28);
@@ -216,29 +221,15 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this._calendarColorRefreshButton.UseVisualStyleBackColor = false;
       this._calendarColorRefreshButton.Click += new System.EventHandler(this._calendarColorRefreshButton_Click);
       // 
-      // _categoryColorPicker
-      // 
-      this._categoryColorPicker.BackColor = System.Drawing.Color.White;
-      this._categoryColorPicker.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-      this._categoryColorPicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this._categoryColorPicker.FormattingEnabled = true;
-      this._categoryColorPicker.Location = new System.Drawing.Point(299, 65);
-      this._categoryColorPicker.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-      this._categoryColorPicker.Name = "_categoryColorPicker";
-      this._categoryColorPicker.SelectedItem = null;
-      this._categoryColorPicker.SelectedValue = Microsoft.Office.Interop.Outlook.OlCategoryColor.olCategoryColorNone;
-      this._categoryColorPicker.Size = new System.Drawing.Size(148, 23);
-      this._categoryColorPicker.TabIndex = 10;
-      // 
       // _mapColorCheckBox
       // 
       this._mapColorCheckBox.AutoSize = true;
-      this._mapColorCheckBox.Location = new System.Drawing.Point(11, 66);
+      this._mapColorCheckBox.Location = new System.Drawing.Point(12, 143);
       this._mapColorCheckBox.Margin = new System.Windows.Forms.Padding(4);
       this._mapColorCheckBox.Name = "_mapColorCheckBox";
-      this._mapColorCheckBox.Size = new System.Drawing.Size(265, 21);
+      this._mapColorCheckBox.Size = new System.Drawing.Size(261, 21);
       this._mapColorCheckBox.TabIndex = 9;
-      this._mapColorCheckBox.Text = "Map Calendar Color to category color";
+      this._mapColorCheckBox.Text = "Map calendar color to category color";
       this._mapColorCheckBox.UseVisualStyleBackColor = true;
       this._mapColorCheckBox.CheckedChanged += new System.EventHandler(this._mapColorCheckBox_CheckedChanged);
       // 
@@ -335,6 +326,42 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this._mapSensitivityPrivateToClassConfindentialCheckBox.Text = "Map Outlook Private flag to DAV CLASS:CONFIDENTIAL instead of PRIVATE";
       this._mapSensitivityPrivateToClassConfindentialCheckBox.UseVisualStyleBackColor = true;
       // 
+      // _categoryNotFilterCheckBox
+      // 
+      this._categoryNotFilterCheckBox.AutoSize = true;
+      this._categoryNotFilterCheckBox.Location = new System.Drawing.Point(12, 93);
+      this._categoryNotFilterCheckBox.Margin = new System.Windows.Forms.Padding(4);
+      this._categoryNotFilterCheckBox.Name = "_categoryNotFilterCheckBox";
+      this._categoryNotFilterCheckBox.Size = new System.Drawing.Size(406, 21);
+      this._categoryNotFilterCheckBox.TabIndex = 19;
+      this._categoryNotFilterCheckBox.Text = "Negate filter and sync all Appointments except this category";
+      this._categoryNotFilterCheckBox.UseVisualStyleBackColor = true;
+      // 
+      // label4
+      // 
+      this.label4.AutoSize = true;
+      this.label4.Location = new System.Drawing.Point(8, 30);
+      this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+      this.label4.Name = "label4";
+      this.label4.Size = new System.Drawing.Size(584, 17);
+      this.label4.TabIndex = 20;
+      this.label4.Text = "Only sync Appointments with this category and assign this category to newly creat" +
+    "ed events";
+      // 
+      // _categoryColorPicker
+      // 
+      this._categoryColorPicker.BackColor = System.Drawing.Color.White;
+      this._categoryColorPicker.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+      this._categoryColorPicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this._categoryColorPicker.FormattingEnabled = true;
+      this._categoryColorPicker.Location = new System.Drawing.Point(299, 141);
+      this._categoryColorPicker.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+      this._categoryColorPicker.Name = "_categoryColorPicker";
+      this._categoryColorPicker.SelectedItem = null;
+      this._categoryColorPicker.SelectedValue = Microsoft.Office.Interop.Outlook.OlCategoryColor.olCategoryColorNone;
+      this._categoryColorPicker.Size = new System.Drawing.Size(148, 23);
+      this._categoryColorPicker.TabIndex = 10;
+      // 
       // EventMappingConfigurationForm
       // 
       this.AcceptButton = this._okButton;
@@ -342,7 +369,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.SystemColors.Window;
       this.CancelButton = this._cancelButton;
-      this.ClientSize = new System.Drawing.Size(740, 514);
+      this.ClientSize = new System.Drawing.Size(740, 588);
       this.Controls.Add(this._privacyGroupBox);
       this.Controls.Add(this._createInUTCCheckBox);
       this.Controls.Add(this._schedulingGroupBox);
@@ -393,5 +420,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
     private System.Windows.Forms.CheckBox _mapClassConfidentialToSensitivityPrivateCheckBox;
     private System.Windows.Forms.CheckBox _mapSensitivityPrivateToClassConfindentialCheckBox;
     private System.Windows.Forms.ComboBox _categoryNameComboBox;
+    private System.Windows.Forms.CheckBox _categoryNotFilterCheckBox;
+    private System.Windows.Forms.Label label4;
   }
 }

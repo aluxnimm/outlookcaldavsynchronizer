@@ -119,18 +119,19 @@ namespace CalDavSynchronizer.Implementation.Events
     
     private bool DoesMatchCategoryCriterion (AppointmentItem item)
     {
-      if (!_configuration.UseEventCategoryAsFilter)
+      if (!_configuration.UseEventCategoryAsFilter && !_configuration.UseEventCategoryNotFilter)
         return true;
 
       var categoryCsv = item.Categories;
 
       if (string.IsNullOrEmpty (categoryCsv))
-        return false;
+        return _configuration.UseEventCategoryNotFilter;
 
-     return  item.Categories
+      var found = item.Categories
           .Split (new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries)
           .Select (c => c.Trim())
           .Any (c => c == _configuration.EventCategory);
+      return _configuration.UseEventCategoryNotFilter ? !found : found;
     }
 
     public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities)
@@ -161,7 +162,11 @@ namespace CalDavSynchronizer.Implementation.Events
           filterBuilder.AppendFormat (" And \"urn:schemas:calendar:dtstart\" < '{0}' And \"urn:schemas:calendar:dtend\" > '{1}'", ToOutlookDateString (range.Value.To), ToOutlookDateString (range.Value.From));
         if (_configuration.UseEventCategoryAsFilter)
         {
-          AddCategoryFilter (filterBuilder, _configuration.EventCategory);
+          AddCategoryFilter (filterBuilder, _configuration.EventCategory, false);
+        }
+        if (_configuration.UseEventCategoryNotFilter)
+        {
+          AddCategoryFilter(filterBuilder, _configuration.EventCategory, true);
         }
         s_logger.InfoFormat ("Using Outlook DASL filter: {0}", filterBuilder.ToString());
 
@@ -182,9 +187,10 @@ namespace CalDavSynchronizer.Implementation.Events
       return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (events);
     }
 
-    public static void AddCategoryFilter (StringBuilder filterBuilder, string category)
+    public static void AddCategoryFilter (StringBuilder filterBuilder, string category, bool negate)
     {
-      filterBuilder.AppendFormat (" And \"urn:schemas-microsoft-com:office:office#Keywords\" = '{0}'", category.Replace ("'","''"));
+      var negateFilter = negate ? "Not" : "";
+      filterBuilder.AppendFormat (" And "+ negateFilter + "(\"urn:schemas-microsoft-com:office:office#Keywords\" = '{0}')", category.Replace ("'","''"));
     }
 
     public static List<EntityVersion<string, DateTime>> QueryFolder (NameSpace session, GenericComObjectWrapper<Folder> calendarFolderWrapper, StringBuilder filterBuilder)
