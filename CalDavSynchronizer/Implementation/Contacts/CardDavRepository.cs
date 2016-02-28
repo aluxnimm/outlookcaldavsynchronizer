@@ -48,14 +48,14 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
     public Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetVersions (IEnumerable<IdWithAwarenessLevel<WebResourceName>> idsOfEntitiesToQuery)
     {
-      throw new NotImplementedException();
+      return _cardDavDataAccess.GetVersions (idsOfEntitiesToQuery.Select (i => i.Id));
     }
 
     public async Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetAllVersions (IEnumerable<WebResourceName> idsOfknownEntities)
     {
       using (AutomaticStopwatch.StartInfo (s_logger, "CardDavRepository.GetVersions"))
       {
-        return await _cardDavDataAccess.GetContacts();
+        return await _cardDavDataAccess.GetAllVersions();
       }
     }
 

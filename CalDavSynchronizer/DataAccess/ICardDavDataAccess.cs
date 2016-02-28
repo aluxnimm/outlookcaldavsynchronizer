@@ -25,7 +25,8 @@ namespace CalDavSynchronizer.DataAccess
 {
   public interface ICardDavDataAccess
   {
-    Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetContacts ();
+    Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetAllVersions ();
+    Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetVersions (IEnumerable<WebResourceName> urls);
     Task<IReadOnlyList<EntityWithId<WebResourceName, string>>> GetEntities (IEnumerable<WebResourceName> eventUrls);
     Task<EntityVersion<WebResourceName, string>> CreateEntity (string iCalData, string uid);
     Task DeleteEntity (WebResourceName uri, string etag);

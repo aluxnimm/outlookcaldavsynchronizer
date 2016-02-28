@@ -239,10 +239,42 @@ namespace CalDavSynchronizer.DataAccess
       return new EntityVersion<WebResourceName, string> (new WebResourceName(effectiveContactUrl), version);
     }
 
-    public async Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetContacts ()
+    public async Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetVersions (IEnumerable<WebResourceName> urls)
     {
-      var entities = new List<EntityVersion<WebResourceName, string>>();
+      var requestBody = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
+                           <A:addressbook-multiget xmlns:D=""DAV:"" xmlns:A=""urn:ietf:params:xml:ns:carddav"">
+                             <D:prop>
+                               <D:getetag/>
+                               <D:getcontenttype/>
+                             </D:prop>
+                             " + String.Join ("\r\n", urls.Select (u => string.Format ("<D:href>{0}</D:href>", SecurityElement.Escape (u.OriginalAbsolutePath)))) + @"
+                           </A:addressbook-multiget>
+                         ";
+      try
+      {
+        var responseXml = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
+            _serverUrl,
+            "REPORT",
+            0,
+            null,
+            null,
+            "application/xml",
+            requestBody
+            );
 
+        return ExtractVersions (responseXml);
+      }
+      catch (WebDavClientException x)
+      {
+        if (x.StatusCode == HttpStatusCode.NotFound)
+          return new EntityVersion<WebResourceName, string>[] { };
+
+        throw;
+      }
+    }
+
+    public async Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetAllVersions ()
+    {
       try
       {
         var responseXml = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
@@ -262,43 +294,51 @@ namespace CalDavSynchronizer.DataAccess
                  "
             );
 
-        XmlNodeList responseNodes = responseXml.XmlDocument.SelectNodes ("/D:multistatus/D:response", responseXml.XmlNamespaceManager);
-
-        // ReSharper disable once LoopCanBeConvertedToQuery
-        // ReSharper disable once PossibleNullReferenceException
-        foreach (XmlElement responseElement in responseNodes)
-        {
-          var urlNode = responseElement.SelectSingleNode ("D:href", responseXml.XmlNamespaceManager);
-          var etagNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:getetag", responseXml.XmlNamespaceManager);
-          var contentTypeNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:getcontenttype", responseXml.XmlNamespaceManager);
-
-          if (urlNode != null && etagNode != null)
-          {
-            string contentType = contentTypeNode.InnerText ?? string.Empty;
-            var eTag = HttpUtility.GetQuotedEtag (etagNode.InnerText);
-            // the directory is also included in the list. It has a etag of '"None"' and is skipped
-            // in Owncloud eTag is empty for directory
-            // Yandex returns some eTag and the urlNode for the directory itself, so we need to filter that out aswell
-            // TODO: add vlist support but for now filter out sogo vlists since we can't parse them atm
-
-            if (!string.IsNullOrEmpty (eTag) &&
-                String.Compare (eTag, @"""None""", StringComparison.OrdinalIgnoreCase) != 0 &&
-                _serverUrl.AbsolutePath != UriHelper.DecodeUrlString (urlNode.InnerText) &&
-                contentType != "text/x-vlist"
-                )
-            {
-              entities.Add (EntityVersion.Create (new WebResourceName (urlNode.InnerText), eTag));
-            }
-          }
-        }
+        return ExtractVersions(responseXml);
       }
       catch (WebDavClientException x)
       {
         if (x.StatusCode == HttpStatusCode.NotFound)
-          return entities;
+          return new EntityVersion<WebResourceName, string>[] {};
 
         throw;
       }
+    }
+
+    private IReadOnlyList<EntityVersion<WebResourceName, string>> ExtractVersions (XmlDocumentWithNamespaceManager responseXml)
+    {
+      var entities = new List<EntityVersion<WebResourceName, string>> ();
+
+      XmlNodeList responseNodes = responseXml.XmlDocument.SelectNodes ("/D:multistatus/D:response", responseXml.XmlNamespaceManager);
+
+      // ReSharper disable once LoopCanBeConvertedToQuery
+      // ReSharper disable once PossibleNullReferenceException
+      foreach (XmlElement responseElement in responseNodes)
+      {
+        var urlNode = responseElement.SelectSingleNode ("D:href", responseXml.XmlNamespaceManager);
+        var etagNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:getetag", responseXml.XmlNamespaceManager);
+        var contentTypeNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:getcontenttype", responseXml.XmlNamespaceManager);
+
+        if (urlNode != null && etagNode != null)
+        {
+          string contentType = contentTypeNode.InnerText ?? string.Empty;
+          var eTag = HttpUtility.GetQuotedEtag (etagNode.InnerText);
+          // the directory is also included in the list. It has a etag of '"None"' and is skipped
+          // in Owncloud eTag is empty for directory
+          // Yandex returns some eTag and the urlNode for the directory itself, so we need to filter that out aswell
+          // TODO: add vlist support but for now filter out sogo vlists since we can't parse them atm
+
+          if (!string.IsNullOrEmpty (eTag) &&
+              String.Compare (eTag, @"""None""", StringComparison.OrdinalIgnoreCase) != 0 &&
+              _serverUrl.AbsolutePath != UriHelper.DecodeUrlString (urlNode.InnerText) &&
+              contentType != "text/x-vlist"
+              )
+          {
+            entities.Add (EntityVersion.Create (new WebResourceName (urlNode.InnerText), eTag));
+          }
+        }
+      }
+
       return entities;
     }
 
