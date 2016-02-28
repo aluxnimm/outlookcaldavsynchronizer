@@ -38,6 +38,7 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 - Zoho Calendar
 - GMX
 - Tine 2.0
+- Fruux
 
 ### Features ###
 
@@ -76,6 +77,17 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 1.20.0 ####
+- New features
+	- New implementation of partial sync, which triggers immediately after an item is created, changed or deleted in Outlook (with a 10 seconds delay), works also for contacts and tasks now.
+	- Add option to use IMAP/Pop3 Password from Outlook Account associated with the folder, the password is fetched from the Windows registry entry of the Outlook profile.
+	- Add checkbox to sync all Outlook appointments except a defined category (negates the category filter) in EventMappingConfiguration, feature request 30.
+	- Use ComboBox with all available Outlook categories instead of TextBox to choose category filter.
+	- Add account types for Fruux, Posteo, Yandex and GMX with predefined DAV Urls and add logos to the account select dialog.
+- Bug fixes
+	- Fix well-known URIs according to RFC, they contain no trailing slash, fixes autodisovery for fruux.
+	- Avoid ArgumentNullException for GoogleTasks if tasklist is empty, ticket #229.
+	- clear contact attributes in Outlook when attributes are removed on server, fixes some update mapping issues from server to outlook for CardDAV.
 #### 1.19.0 ####
 - New features
 	- Add System TrayIcon with notifications of sync runs with errors and warnings and context menu.
@@ -544,19 +556,20 @@ Use the Synchronization Profiles dialog to configure different synchronization p
 - **Clear cache** delete the sync cache and start a new initial sync with the next sync run.
 - **Deactivate** If activated, current profile is not synced anymore without the need to delete the profile.
 
-When adding a new profile you can choose between a generic CalDAV/CardDAV and a google profile to simplify the google profile creation.
+When adding a new profile you can choose between a generic CalDAV/CardDAV, a google profile to simplify the google profile creation and predefined CalDAV/CardDAV profiles for Fruux, Posteo, Yandex and GMX where the DAV Url for autodiscovery is already entered. 
 
 The following properties need to be set for a new generic profile:
 
 - *Profile name*: An arbitrary name for the profile, which will be displayed at the associated tab.
 - - *Outlook settings*:
 	- **Outlook Folder:** Outlook folder that should be used for synchronization. You can choose a calendar, contact or task folder. Depending on the folder type, the matching server resource type in the server settings must be used.
-	- **Synchronize items immediately after change** Trigger a partial synchronization run immediately an item is created, changed or deleted in Outlook via the Inspector dialog, works only for Appointments at the moment!
+	- **Synchronize items immediately after change** Trigger a partial synchronization run immediately after an item is created, changed or deleted in Outlook (with a 10 seconds delay).
 - *Server settings*:
 	- **DAV Url:** URL of the remote CalDAV or CardDAV server. You should use a HTTPS connection here for security reason! The Url must end with a **/** e.g. **https://myserver.com/** 
 	- If you only have a self signed certificate, add the self signed cert to the Local Computer Trusted Root Certification Authorities. You can import the cert by running the MMC as Administrator. If that fails, see section *'Advanced options'*
 	- **Username:** Username to connect to the CalDAV server
 	- **Password:** Password used for the connection. The password will be saved encrypted in the option config file.
+	- ** Use IMAP/POP3 Account Password** Instead of entering the password you can use the IMAP/Pop3 Password from the Outlook Account associated with the folder, the password is fetched from the Windows registry entry of the Outlook profile. 
 	- **Email address:** email address used as remote identity for the CalDAV server, necessary to synchronize the organizer.
 	- **Network and proxy options**: Here you can configure advanced network options and proxy settings. 
 		- **Close connection after each request** Don't use KeepAlive for servers which don't support it. 
@@ -596,11 +609,10 @@ disable "set SCHEDULE-AGENT=CLIENT" in Mapping Configuration, so that the server
  
 ### Category Filter and Color ###
 
-If you want to sync multiple CalDAV calendars into one Outlook folder you can configure an Outlook category for filtering in the 
-*Mapping Configuration...* under *Advanced Options*.
+If you want to sync multiple CalDAV calendars into one Outlook folder you can configure an Outlook category for filtering in the *Mapping Configuration*. You can choose a category from the dropdown list of all available Outlook categories or enter a new category name.
 For all events from the server the defined category is added in Outlook, when syncing back from Outlook to the server only appointments with that category are considered but the filter category is removed. The category name must not contain any commas or semicolons!
-
-It is possible to choose the color of the category or to fetch the calendar color from the server and map it to the nearest supported Outlook category color with the button *Fetch Color*. With *Set DAV Color* it is also possible to sync the choosen category color back to set the server calendar color accordingly.
+With the checkbox below you can also negate the filter and sync all appointments except this category.
+It is possible to choose the color of the category or to fetch the calendar color from the server and map it to the nearest supported Outlook category color with the button *Fetch Color*. With *Set DAV Color* it is also possible to sync the choosen category color back to set the server calendar color accordingly. With *Category Shortcut Key* you can define the shortcut key of the selected category for easier access when creating appointments.
 
 ### Google Calender / Addressbooks / Tasks settings ###
 
@@ -611,8 +623,8 @@ If you get an error with insufficient access you need to refresh the token by de
 
 ### GMX calendar settings ###
 
-For GMX calendar use the DAV Url `https://caldav.gmx.net`
-Since GMX doesn't allow to create events with the Windows Timezone IDs, you must activate  the `Create events on server in UTC` checkbox in Advanced options - Mapping Configuration to avoid erros when creating events and syncing from Outlook to GMX.
+For GMX calendar use the GMX Calendar account type, which sets the autodiscovery DAV Url `https://caldav.gmx.net`
+Since GMX doesn't allow to create events with the Windows Timezone IDs, for the GMX account type the `Create events on server in UTC` checkbox in Mapping Configuration is checked by default to avoid errors when creating events and syncing from Outlook to GMX.
 
 For GMX addressbook use the DAV Url `https://carddav.gmx.net`
 
