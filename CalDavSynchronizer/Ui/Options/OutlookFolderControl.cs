@@ -18,6 +18,7 @@
 using System;
 using System.Configuration;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using CalDavSynchronizer.Implementation.ComWrappers;
@@ -35,6 +36,7 @@ namespace CalDavSynchronizer.Ui.Options
     private OlItemType? _folderType;
     private string _folderEntryId;
     private string _folderStoreId;
+    private string _folderAccountName;
     private NameSpace _session;
     private ISettingsFaultFinder _faultFinder;
 
@@ -69,17 +71,18 @@ namespace CalDavSynchronizer.Ui.Options
     {
       _synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Checked = value.EnableChangeTriggeredSynchronization;
 
-      UpdateFolder (value.OutlookFolderEntryId, value.OutlookFolderStoreId);
+      UpdateFolder (value.OutlookFolderEntryId, value.OutlookFolderStoreId, value.OutlookFolderAccountName);
     }
 
     public void FillOptions (Contracts.Options optionsToFill)
     {
       optionsToFill.OutlookFolderEntryId = _folderEntryId;
       optionsToFill.OutlookFolderStoreId = _folderStoreId;
+      optionsToFill.OutlookFolderAccountName = _folderAccountName;
       optionsToFill.EnableChangeTriggeredSynchronization = _synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Checked;
     }
 
-    private void UpdateFolder (MAPIFolder folder)
+    private void UpdateFolder (MAPIFolder folder, string folderAccountName)
     {
       if (folder.DefaultItemType != OlItemType.olAppointmentItem && folder.DefaultItemType != OlItemType.olTaskItem && folder.DefaultItemType != OlItemType.olContactItem)
       {
@@ -90,12 +93,13 @@ namespace CalDavSynchronizer.Ui.Options
 
       _folderEntryId = folder.EntryID;
       _folderStoreId = folder.StoreID;
+      _folderAccountName = folderAccountName;
       _outoookFolderNameTextBox.Text = folder.Name;
       _folderType = folder.DefaultItemType;
       OnFolderChanged();
     }
 
-    private void UpdateFolder (string folderEntryId, string folderStoreId)
+    private void UpdateFolder (string folderEntryId, string folderStoreId, string folderAccountName)
     {
       if (!string.IsNullOrEmpty (folderEntryId) && !string.IsNullOrEmpty (folderStoreId))
       {
@@ -103,7 +107,8 @@ namespace CalDavSynchronizer.Ui.Options
         {
           using (var folderWrapper = GenericComObjectWrapper.Create (_session.GetFolderFromID (folderEntryId, folderStoreId)))
           {
-            UpdateFolder (folderWrapper.Inner);
+            var updatedFolderAccountName = folderAccountName ?? GetFolderAccountNameOrNull(folderWrapper.Inner);
+            UpdateFolder (folderWrapper.Inner, updatedFolderAccountName);
           }
         }
         catch (Exception x)
@@ -127,7 +132,8 @@ namespace CalDavSynchronizer.Ui.Options
       {
         using (var folderWrapper = GenericComObjectWrapper.Create (folder))
         {
-          UpdateFolder (folderWrapper.Inner);
+          var folderAccountName = GetFolderAccountNameOrNull (folderWrapper.Inner);
+          UpdateFolder (folderWrapper.Inner, folderAccountName);
         }
       }
 
@@ -143,9 +149,35 @@ namespace CalDavSynchronizer.Ui.Options
       }
     }
 
+    private string GetFolderAccountNameOrNull (MAPIFolder folder)
+    {
+      try
+      {
+        foreach (Account account in _session.Accounts.ToSafeEnumerable<Account>())
+        {
+          using (var deliveryStore = GenericComObjectWrapper.Create(account.DeliveryStore))
+          {
+            if (deliveryStore.Inner != null && deliveryStore.Inner.StoreID == folder.StoreID)
+            {
+              return account.DisplayName;
+            }
+          }
+        }
+      }
+      catch (COMException ex)
+      {
+        s_logger.Error("Can't access Account Name of folder.", ex);
+      }
+      return null;
+    }
     public OlItemType? OutlookFolderType
     {
       get { return _folderType; }
+    }
+
+    public string FolderAccountName
+    {
+      get { return _folderAccountName; }
     }
 
     public bool Validate (StringBuilder errorMessageBuilder)

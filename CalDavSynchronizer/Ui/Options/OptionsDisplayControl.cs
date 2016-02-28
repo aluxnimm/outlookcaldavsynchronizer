@@ -46,7 +46,8 @@ namespace CalDavSynchronizer.Ui.Options
     public OptionsDisplayControl (
         NameSpace session,
         Func<Guid, string> profileDataDirectoryFactory,
-        bool fixInvalidSettings)
+        bool fixInvalidSettings, 
+        IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
     {
       ISettingsFaultFinder faultFinder;
       InitializeComponent();
@@ -56,7 +57,7 @@ namespace CalDavSynchronizer.Ui.Options
       else
         faultFinder = NullSettingsFaultFinder.Instance;
 
-      _serverSettingsControl.Initialize (faultFinder, this);
+      _serverSettingsControl.Initialize (faultFinder, this, outlookAccountPasswordProvider);
 
       _outlookFolderControl.Initialize (session, faultFinder);
       _profileDataDirectoryFactory = profileDataDirectoryFactory;
@@ -196,6 +197,11 @@ namespace CalDavSynchronizer.Ui.Options
     public OlItemType? OutlookFolderType
     {
       get { return _outlookFolderControl.OutlookFolderType; }
+    }
+
+    public string FolderAccountName
+    {
+      get { return _outlookFolderControl.FolderAccountName; }
     }
 
     public bool SelectedSynchronizationModeRequiresWriteableServerResource

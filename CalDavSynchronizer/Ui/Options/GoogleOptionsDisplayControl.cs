@@ -184,6 +184,11 @@ namespace CalDavSynchronizer.Ui.Options
       get { return _outlookFolderControl.OutlookFolderType; }
     }
 
+    public string FolderAccountName
+    {
+      get { return _outlookFolderControl.FolderAccountName; }
+    }
+
     public bool SelectedSynchronizationModeRequiresWriteableServerResource
     {
       get { return _syncSettingsControl.SelectedModeRequiresWriteableServerResource; }

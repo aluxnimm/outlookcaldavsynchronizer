@@ -341,7 +341,9 @@
     <Compile Include="Implementation\TimeRangeFiltering\IDateTimeRangeProvider.cs" />
     <Compile Include="Implementation\TimeRangeFiltering\NullDateTimeRangeProvider.cs" />
     <Compile Include="DataAccess\WebResourceName.cs" />
+    <Compile Include="IOutlookAccountPasswordProvider.cs" />
     <Compile Include="NullCalDavSynchronizerCommands.cs" />
+    <Compile Include="OutlookAccountPasswordProvider.cs" />
     <Compile Include="Properties\AssemblyInfoCommon.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

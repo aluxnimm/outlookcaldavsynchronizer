@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -16,16 +16,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using CalDavSynchronizer.Contracts;
-using Microsoft.Office.Interop.Outlook;
 
-namespace CalDavSynchronizer.Ui.Options
+namespace CalDavSynchronizer
 {
-  public interface IServerSettingsControlDependencies
+  public interface IOutlookAccountPasswordProvider
   {
-    OlItemType? OutlookFolderType { get; }
-    string FolderAccountName { get;  }
-    bool SelectedSynchronizationModeRequiresWriteableServerResource { get; }
-    string SelectedSynchronizationModeDisplayName { get; }
+    string GetPassword (string accountNameOrNull);
   }
 }

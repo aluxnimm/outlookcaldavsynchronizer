@@ -26,12 +26,18 @@ namespace CalDavSynchronizer.Ui.Options
     private readonly NameSpace _session;
     private readonly Func<Guid, string> _profileDataDirectoryFactory;
     private readonly bool _fixInvalidSettings;
+    private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
 
-    public OptionsDisplayControlFactory (NameSpace session, Func<Guid, string> profileDataDirectoryFactory, bool fixInvalidSettings)
+    public OptionsDisplayControlFactory (
+      NameSpace session, 
+      Func<Guid, string> profileDataDirectoryFactory, 
+      bool fixInvalidSettings, 
+      IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
     {
       _session = session;
       _profileDataDirectoryFactory = profileDataDirectoryFactory;
       _fixInvalidSettings = fixInvalidSettings;
+      _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
     }
 
     public IOptionsDisplayControl Create (Contracts.Options options)
@@ -41,7 +47,11 @@ namespace CalDavSynchronizer.Ui.Options
             || options.ServerAdapterType == ServerAdapterType.GoogleTaskApi)
         return new GoogleOptionsDisplayControl (_session, _profileDataDirectoryFactory, _fixInvalidSettings);
 
-      return new OptionsDisplayControl (_session, _profileDataDirectoryFactory, _fixInvalidSettings);
+      return new OptionsDisplayControl (
+        _session, 
+        _profileDataDirectoryFactory, 
+        _fixInvalidSettings,
+        _outlookAccountPasswordProvider);
     }
   }
 }

@@ -41,14 +41,18 @@ namespace CalDavSynchronizer.Ui.Options
     private ISettingsFaultFinder _settingsFaultFinder;
     private IServerSettingsControlDependencies _dependencies;
     private NetworkAndProxyOptions _networkAndProxyOptions;
-    
-    public void Initialize (ISettingsFaultFinder settingsFaultFinder, IServerSettingsControlDependencies dependencies)
+    private IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
+
+    public void Initialize (
+      ISettingsFaultFinder settingsFaultFinder, 
+      IServerSettingsControlDependencies dependencies,
+      IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
     {
       InitializeComponent();
 
       _settingsFaultFinder = settingsFaultFinder;
       _dependencies = dependencies;
-
+      _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
       _testConnectionButton.Click += _testConnectionButton_Click;
     }
 
@@ -182,7 +186,7 @@ namespace CalDavSynchronizer.Ui.Options
     {
       return SynchronizerFactory.CreateWebDavClient (
           _userNameTextBox.Text,
-          _passwordTextBox.Text,
+          _useAccountPasswordCheckBox.Checked ? _outlookAccountPasswordProvider.GetPassword (_dependencies.FolderAccountName) : _passwordTextBox.Text,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
           ServerAdapterType.WebDavHttpClientBased,
           _networkAndProxyOptions.CloseConnectionAfterEachRequest,
@@ -200,8 +204,10 @@ namespace CalDavSynchronizer.Ui.Options
       _emailAddressTextBox.Text = value.EmailAddress;
       _calenderUrlTextBox.Text = value.CalenderUrl;
       _userNameTextBox.Text = value.UserName;
+      _useAccountPasswordCheckBox.Checked = value.UseAccountPassword;
       _passwordTextBox.Text = value.Password;
       _networkAndProxyOptions = new NetworkAndProxyOptions (value.CloseAfterEachRequest, value.PreemptiveAuthentication, value.ProxyOptions ?? new ProxyOptions());
+      UpdatePasswordControlEnabled();
     }
 
     public void FillOptions (Contracts.Options optionsToFill)
@@ -210,6 +216,7 @@ namespace CalDavSynchronizer.Ui.Options
       optionsToFill.CalenderUrl = _calenderUrlTextBox.Text;
       optionsToFill.UserName = _userNameTextBox.Text;
       optionsToFill.Password = _passwordTextBox.Text;
+      optionsToFill.UseAccountPassword = _useAccountPasswordCheckBox.Checked;
       optionsToFill.ServerAdapterType = ServerAdapterType.WebDavHttpClientBased;
       optionsToFill.CloseAfterEachRequest = _networkAndProxyOptions.CloseConnectionAfterEachRequest;
       optionsToFill.PreemptiveAuthentication = _networkAndProxyOptions.PreemptiveAuthentication;
@@ -237,6 +244,16 @@ namespace CalDavSynchronizer.Ui.Options
           _networkAndProxyOptions = networkAndProxyOptionsForm.Options;
         }
       }
+    }
+
+    private void _useAccountPasswordCheckBox_CheckedChanged(object sender, EventArgs e)
+    {
+      UpdatePasswordControlEnabled();
+    }
+
+    private void UpdatePasswordControlEnabled()
+    {
+      _passwordTextBox.Enabled = !_useAccountPasswordCheckBox.Checked;
     }
   }
 }

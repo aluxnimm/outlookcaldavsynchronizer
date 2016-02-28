@@ -14,7 +14,9 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Serialization;
@@ -25,7 +27,7 @@ namespace CalDavSynchronizer.Contracts
 {
   public class Options
   {
-    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod ().DeclaringType);
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private const int c_saltLength = 17;
 
@@ -34,6 +36,7 @@ namespace CalDavSynchronizer.Contracts
     public Guid Id { get; set; }
     public string OutlookFolderEntryId { get; set; }
     public string OutlookFolderStoreId { get; set; }
+    public string OutlookFolderAccountName { get; set; }
 
     public bool IgnoreSynchronizationTimeRange { get; set; }
     public int DaysToSynchronizeInThePast { get; set; }
@@ -49,7 +52,7 @@ namespace CalDavSynchronizer.Contracts
     public string Salt { get; set; }
     public string ProtectedPassword { get; set; }
     // ReSharper restore MemberCanBePrivate.Global
-
+    public bool UseAccountPassword { get; set; }
     public ServerAdapterType ServerAdapterType { get; set; }
     public bool CloseAfterEachRequest { get; set; }
     public bool PreemptiveAuthentication { get; set; }
@@ -59,6 +62,13 @@ namespace CalDavSynchronizer.Contracts
     public MappingConfigurationBase MappingConfiguration { get; set; }
 
     public OptionsDisplayType DisplayType { get; set; }
+
+    public string GetEffectivePassword (IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
+    {
+      return UseAccountPassword
+          ? outlookAccountPasswordProvider.GetPassword (OutlookFolderAccountName)
+          : Password;
+    }
 
     [XmlIgnore]
     public string Password
@@ -93,7 +103,6 @@ namespace CalDavSynchronizer.Contracts
         ProtectedPassword = Convert.ToBase64String (transformedData);
       }
     }
-
 
     public static Options CreateDefault (string outlookFolderEntryId, string outlookFolderStoreId, OptionsDisplayType type)
     {
