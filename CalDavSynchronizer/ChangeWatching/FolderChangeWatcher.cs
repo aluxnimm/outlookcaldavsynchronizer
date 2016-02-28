@@ -19,6 +19,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using GenSync;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.ChangeWatching
@@ -51,17 +52,17 @@ namespace CalDavSynchronizer.ChangeWatching
 
     private void FolderEvents_BeforeItemMove (object item, MAPIFolder moveTo, ref bool cancel)
     {
-      OnItemSavedOrDeleted (item);
+      OnItemSavedOrDeleted (item, true);
     }
 
     private void _folderItems_ItemChange (object item)
     {
-      OnItemSavedOrDeleted (item);
+      OnItemSavedOrDeleted (item, false);
     }
 
     private void _folderItems_ItemAdd (object item)
     {
-      OnItemSavedOrDeleted (item);
+      OnItemSavedOrDeleted (item, false);
     }
 
     public void Dispose ()
@@ -74,22 +75,41 @@ namespace CalDavSynchronizer.ChangeWatching
       Marshal.FinalReleaseComObject (_folder);
     }
 
-    private void OnItemSavedOrDeleted (object item)
+    private void OnItemSavedOrDeleted (object item, bool wasDeleted)
     {
-      var entryId =
-          (item as AppointmentItem)?.EntryID
-          ?? (item as TaskItem)?.EntryID
-          ?? (item as ContactItem)?.EntryID;
+      IIdWithHints<string, DateTime> entryId = null;
+
+      var appointment = item as AppointmentItem;
+      if (appointment != null)
+      {
+        entryId = IdWithHints.Create (appointment.EntryID, (DateTime?) appointment.LastModificationTime, wasDeleted);
+      }
+      else
+      {
+        var task = item as TaskItem;
+        if (task != null)
+        {
+          entryId = IdWithHints.Create (task.EntryID, (DateTime?) task.LastModificationTime, wasDeleted);
+        }
+        else
+        {
+          var contact = item as ContactItem;
+          if (contact != null)
+          {
+            entryId = IdWithHints.Create (contact.EntryID, (DateTime?) contact.LastModificationTime, wasDeleted);
+          }
+        }
+      }
 
       if (entryId != null)
         OnItemSavedOrDeleted (entryId);
     }
 
-    protected virtual void OnItemSavedOrDeleted (string entryId)
+    protected virtual void OnItemSavedOrDeleted (IIdWithHints<string, DateTime> entryId)
     {
       ItemSavedOrDeleted?.Invoke (
           this,
-          new ItemSavedEventArgs (entryId, _folderEntryId, _folderStoreId));
+          new ItemSavedEventArgs (entryId));
     }
   }
 }
