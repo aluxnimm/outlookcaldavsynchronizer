@@ -50,9 +50,9 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox.Controls.Add(this._outoookFolderNameTextBox);
       this.groupBox.Controls.Add(this.label9);
       this.groupBox.Location = new System.Drawing.Point(0, 0);
-      this.groupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.groupBox.Margin = new System.Windows.Forms.Padding(4);
       this.groupBox.Name = "groupBox";
-      this.groupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.groupBox.Padding = new System.Windows.Forms.Padding(4);
       this.groupBox.Size = new System.Drawing.Size(593, 98);
       this.groupBox.TabIndex = 2;
       this.groupBox.TabStop = false;
@@ -62,21 +62,20 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.AutoSize = true;
       this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Location = new System.Drawing.Point(15, 63);
-      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Margin = new System.Windows.Forms.Padding(4);
       this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Name = "_synchronizeImmediatelyAfterOutlookItemChangeCheckBox";
       this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Size = new System.Drawing.Size(307, 21);
       this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.TabIndex = 1;
       this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Text = "Synchronize items immediately after change";
-      this.toolTip.SetToolTip(this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox, "Trigger a partial synchronization run immediately after an item is \r\ncreated, cha" +
-        "nged or deleted in Outlook via the Inspector dialog, \r\nworks only for Appointmen" +
-        "ts at the moment!");
+      this.toolTip.SetToolTip(this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox, "Trigger a partial synchronization run immediately after \r\nan item is created, cha" +
+        "nged or deleted in Outlook\r\n(with a 10 seconds delay).");
       this._synchronizeImmediatelyAfterOutlookItemChangeCheckBox.UseVisualStyleBackColor = true;
       // 
       // _selectOutlookFolderButton
       // 
       this._selectOutlookFolderButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._selectOutlookFolderButton.Location = new System.Drawing.Point(548, 26);
-      this._selectOutlookFolderButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._selectOutlookFolderButton.Margin = new System.Windows.Forms.Padding(4);
       this._selectOutlookFolderButton.Name = "_selectOutlookFolderButton";
       this._selectOutlookFolderButton.Size = new System.Drawing.Size(37, 28);
       this._selectOutlookFolderButton.TabIndex = 0;
@@ -89,7 +88,7 @@ namespace CalDavSynchronizer.Ui.Options
             | System.Windows.Forms.AnchorStyles.Right)));
       this._outoookFolderNameTextBox.BackColor = System.Drawing.SystemColors.Window;
       this._outoookFolderNameTextBox.Location = new System.Drawing.Point(253, 28);
-      this._outoookFolderNameTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._outoookFolderNameTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._outoookFolderNameTextBox.Name = "_outoookFolderNameTextBox";
       this._outoookFolderNameTextBox.ReadOnly = true;
       this._outoookFolderNameTextBox.Size = new System.Drawing.Size(285, 22);
@@ -112,7 +111,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.SystemColors.Window;
       this.Controls.Add(this.groupBox);
-      this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.Margin = new System.Windows.Forms.Padding(4);
       this.Name = "OutlookFolderControl";
       this.Size = new System.Drawing.Size(593, 98);
       this.groupBox.ResumeLayout(false);
