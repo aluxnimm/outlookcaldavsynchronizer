@@ -53,8 +53,19 @@ namespace CalDavSynchronizer
       }
     }
 
+    string ConvertRegistryValueToString (object value)
+    {
+      if (value == null)
+        return null;
+      
+      var binaryValue =  value as byte[];
+      if(binaryValue != null)
+        return Encoding.Unicode.GetString (binaryValue).TrimEnd ('\0');
 
-    public string GetPassword (string accountName)
+      return value as string;
+    }
+
+    public string GetPassword (string accountNameOrNull)
     {
       try
       {
@@ -64,15 +75,11 @@ namespace CalDavSynchronizer
           {
             using (RegistryKey subKey = profileKey.OpenSubKey (subKeyName))
             {
-              if (accountName != null)
+              if (accountNameOrNull != null)
               {
-                var registryAccountNameValue = (byte[]) subKey.GetValue ("Account Name");
-                if (registryAccountNameValue != null)
-                {
-                  string registryAccountName = Encoding.Unicode.GetString (registryAccountNameValue).TrimEnd ('\0');
-                  if (registryAccountName != accountName)
-                    continue;
-                }
+                var registryAccountName = ConvertRegistryValueToString (subKey.GetValue ("Account Name"));
+                if (registryAccountName != accountNameOrNull)
+                  continue;
               }
 
               var passwordValue = (byte[]) subKey.GetValue ("IMAP Password") ?? (byte[]) subKey.GetValue ("POP3 Password");

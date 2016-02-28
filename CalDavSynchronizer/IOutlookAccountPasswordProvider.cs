@@ -21,6 +21,6 @@ namespace CalDavSynchronizer
 {
   public interface IOutlookAccountPasswordProvider
   {
-    string GetPassword (string accountName);
+    string GetPassword (string accountNameOrNull);
   }
 }
