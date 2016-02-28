@@ -119,19 +119,19 @@ namespace CalDavSynchronizer.Implementation.Events
     
     private bool DoesMatchCategoryCriterion (AppointmentItem item)
     {
-      if (!_configuration.UseEventCategoryAsFilter && !_configuration.UseEventCategoryNotFilter)
+      if (!_configuration.UseEventCategoryAsFilter)
         return true;
 
       var categoryCsv = item.Categories;
 
       if (string.IsNullOrEmpty (categoryCsv))
-        return _configuration.UseEventCategoryNotFilter;
+        return _configuration.InvertEventCategoryFilter;
 
       var found = item.Categories
           .Split (new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries)
           .Select (c => c.Trim())
           .Any (c => c == _configuration.EventCategory);
-      return _configuration.UseEventCategoryNotFilter ? !found : found;
+      return _configuration.InvertEventCategoryFilter ? !found : found;
     }
 
     public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities)
@@ -162,12 +162,9 @@ namespace CalDavSynchronizer.Implementation.Events
           filterBuilder.AppendFormat (" And \"urn:schemas:calendar:dtstart\" < '{0}' And \"urn:schemas:calendar:dtend\" > '{1}'", ToOutlookDateString (range.Value.To), ToOutlookDateString (range.Value.From));
         if (_configuration.UseEventCategoryAsFilter)
         {
-          AddCategoryFilter (filterBuilder, _configuration.EventCategory, false);
+          AddCategoryFilter (filterBuilder, _configuration.EventCategory, _configuration.InvertEventCategoryFilter);
         }
-        if (_configuration.UseEventCategoryNotFilter)
-        {
-          AddCategoryFilter(filterBuilder, _configuration.EventCategory, true);
-        }
+
         s_logger.InfoFormat ("Using Outlook DASL filter: {0}", filterBuilder.ToString());
 
         events = QueryFolder (_mapiNameSpace, calendarFolderWrapper, filterBuilder);

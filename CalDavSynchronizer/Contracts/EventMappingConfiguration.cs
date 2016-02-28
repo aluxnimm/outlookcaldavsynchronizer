@@ -36,7 +36,7 @@ namespace CalDavSynchronizer.Contracts
     public bool MapBody { get; set; }
     public bool CreateEventsInUTC { get; set; }
     public string EventCategory { get; set; }
-    public bool EventCategoryNotFilter { get; set; }
+    public bool InvertEventCategoryFilter { get; set; }
     public bool UseEventCategoryColorAndMapFromCalendarColor { get; set; }
     public OlCategoryColor EventCategoryColor { get; set; }
     public OlCategoryShortcutKey CategoryShortcutKey { get; set; }
@@ -44,13 +44,9 @@ namespace CalDavSynchronizer.Contracts
     [XmlIgnore]
     public bool UseEventCategoryAsFilter
     {
-      get { return !string.IsNullOrEmpty (EventCategory) && !EventCategoryNotFilter; }
+      get { return !string.IsNullOrEmpty (EventCategory); }
     }
-    [XmlIgnore]
-    public bool UseEventCategoryNotFilter
-    {
-      get { return !string.IsNullOrEmpty(EventCategory) && EventCategoryNotFilter; }
-    }
+    
     public EventMappingConfiguration ()
     {
       MapReminder = ReminderMapping.JustUpcoming;
@@ -61,7 +57,7 @@ namespace CalDavSynchronizer.Contracts
       SendNoAppointmentNotifications = false;
       MapBody = true;
       CreateEventsInUTC = false;
-      EventCategoryNotFilter = false;
+      InvertEventCategoryFilter = false;
       UseEventCategoryColorAndMapFromCalendarColor = false;
       EventCategoryColor = OlCategoryColor.olCategoryColorNone;
       CategoryShortcutKey = OlCategoryShortcutKey.olCategoryShortcutKeyNone;

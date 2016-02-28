@@ -54,7 +54,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this._privacyGroupBox = new System.Windows.Forms.GroupBox();
       this._mapClassConfidentialToSensitivityPrivateCheckBox = new System.Windows.Forms.CheckBox();
       this._mapSensitivityPrivateToClassConfindentialCheckBox = new System.Windows.Forms.CheckBox();
-      this._categoryNotFilterCheckBox = new System.Windows.Forms.CheckBox();
+      this._invertCategoryFilterCheckBox = new System.Windows.Forms.CheckBox();
       this.label4 = new System.Windows.Forms.Label();
       this._categoryColorPicker = new CalDavSynchronizer.Ui.ColorPicker();
       this._outlookGroupBox.SuspendLayout();
@@ -145,7 +145,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this._outlookGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this._outlookGroupBox.Controls.Add(this.label4);
-      this._outlookGroupBox.Controls.Add(this._categoryNotFilterCheckBox);
+      this._outlookGroupBox.Controls.Add(this._invertCategoryFilterCheckBox);
       this._outlookGroupBox.Controls.Add(this._categoryNameComboBox);
       this._outlookGroupBox.Controls.Add(this.label3);
       this._outlookGroupBox.Controls.Add(this._categoryShortcutKeycomboBox);
@@ -328,14 +328,14 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       // 
       // _categoryNotFilterCheckBox
       // 
-      this._categoryNotFilterCheckBox.AutoSize = true;
-      this._categoryNotFilterCheckBox.Location = new System.Drawing.Point(12, 93);
-      this._categoryNotFilterCheckBox.Margin = new System.Windows.Forms.Padding(4);
-      this._categoryNotFilterCheckBox.Name = "_categoryNotFilterCheckBox";
-      this._categoryNotFilterCheckBox.Size = new System.Drawing.Size(406, 21);
-      this._categoryNotFilterCheckBox.TabIndex = 19;
-      this._categoryNotFilterCheckBox.Text = "Negate filter and sync all Appointments except this category";
-      this._categoryNotFilterCheckBox.UseVisualStyleBackColor = true;
+      this._invertCategoryFilterCheckBox.AutoSize = true;
+      this._invertCategoryFilterCheckBox.Location = new System.Drawing.Point(12, 93);
+      this._invertCategoryFilterCheckBox.Margin = new System.Windows.Forms.Padding(4);
+      this._invertCategoryFilterCheckBox.Name = "_invertCategoryFilterCheckBox";
+      this._invertCategoryFilterCheckBox.Size = new System.Drawing.Size(406, 21);
+      this._invertCategoryFilterCheckBox.TabIndex = 19;
+      this._invertCategoryFilterCheckBox.Text = "Negate filter and sync all Appointments except this category";
+      this._invertCategoryFilterCheckBox.UseVisualStyleBackColor = true;
       // 
       // label4
       // 
@@ -420,7 +420,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
     private System.Windows.Forms.CheckBox _mapClassConfidentialToSensitivityPrivateCheckBox;
     private System.Windows.Forms.CheckBox _mapSensitivityPrivateToClassConfindentialCheckBox;
     private System.Windows.Forms.ComboBox _categoryNameComboBox;
-    private System.Windows.Forms.CheckBox _categoryNotFilterCheckBox;
+    private System.Windows.Forms.CheckBox _invertCategoryFilterCheckBox;
     private System.Windows.Forms.Label label4;
   }
 }

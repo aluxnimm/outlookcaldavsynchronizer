@@ -373,7 +373,7 @@ namespace CalDavSynchronizer
       {
         var oldCategory = GetMappingRefPropertyOrNull<EventMappingConfiguration, string> (changedOption.Old.MappingConfiguration, o => o.EventCategory);
         var newCategory = GetMappingRefPropertyOrNull<EventMappingConfiguration, string> (changedOption.New.MappingConfiguration, o => o.EventCategory);
-        var negateFilter = GetMappingPropertyOrNull<EventMappingConfiguration, bool> (changedOption.New.MappingConfiguration, o => o.UseEventCategoryNotFilter);
+        var negateFilter = GetMappingPropertyOrNull<EventMappingConfiguration, bool> (changedOption.New.MappingConfiguration, o => o.InvertEventCategoryFilter);
 
         if (oldCategory != newCategory && !String.IsNullOrEmpty (oldCategory) && !negateFilter.Value)
         {
