@@ -104,12 +104,10 @@ namespace CalDavSynchronizer.Contracts
       }
     }
 
-    public static Options CreateDefault (string outlookFolderEntryId, string outlookFolderStoreId, OptionsDisplayType type)
+    public static Options CreateDefault (OptionsDisplayType type)
     {
       var options = new Options();
 
-      options.OutlookFolderEntryId = outlookFolderEntryId;
-      options.OutlookFolderStoreId = outlookFolderStoreId;
       options.ConflictResolution = ConflictResolution.Automatic;
       options.DaysToSynchronizeInTheFuture = 180;
       options.DaysToSynchronizeInThePast = 60;
@@ -122,6 +120,15 @@ namespace CalDavSynchronizer.Contracts
       options.ProxyOptions = new ProxyOptions() { ProxyUseDefault = true };
       options.DisplayType = type;
       options.CalenderUrl = PopulateDavUrl (options.DisplayType);
+
+      if (type == OptionsDisplayType.GmxCalendar)
+      {
+        options.MappingConfiguration = new EventMappingConfiguration
+        {
+          CreateEventsInUTC = true
+        };
+      }
+
       return options;
     }
 
