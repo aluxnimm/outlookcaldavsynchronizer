@@ -41,14 +41,18 @@ namespace CalDavSynchronizer.Ui.Options
     private ISettingsFaultFinder _settingsFaultFinder;
     private IServerSettingsControlDependencies _dependencies;
     private NetworkAndProxyOptions _networkAndProxyOptions;
-    
-    public void Initialize (ISettingsFaultFinder settingsFaultFinder, IServerSettingsControlDependencies dependencies)
+    private IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
+
+    public void Initialize (
+      ISettingsFaultFinder settingsFaultFinder, 
+      IServerSettingsControlDependencies dependencies,
+      IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
     {
       InitializeComponent();
 
       _settingsFaultFinder = settingsFaultFinder;
       _dependencies = dependencies;
-
+      _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
       _testConnectionButton.Click += _testConnectionButton_Click;
     }
 
@@ -182,7 +186,7 @@ namespace CalDavSynchronizer.Ui.Options
     {
       return SynchronizerFactory.CreateWebDavClient (
           _userNameTextBox.Text,
-          _useAccountPasswordCheckBox.Checked ? Contracts.Options.GetAccountPassword (_dependencies.FolderAccountName) : _passwordTextBox.Text,
+          _useAccountPasswordCheckBox.Checked ? _outlookAccountPasswordProvider.GetPassword (_dependencies.FolderAccountName) : _passwordTextBox.Text,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
           ServerAdapterType.WebDavHttpClientBased,
           _networkAndProxyOptions.CloseConnectionAfterEachRequest,

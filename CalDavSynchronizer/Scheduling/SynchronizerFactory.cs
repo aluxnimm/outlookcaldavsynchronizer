@@ -56,19 +56,25 @@ namespace CalDavSynchronizer.Scheduling
     private readonly TimeSpan _calDavConnectTimeout;
     private readonly Func<Guid, string> _profileDataDirectoryFactory;
     private readonly IDaslFilterProvider _daslFilterProvider;
+    private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
 
     public SynchronizerFactory (
         Func<Guid, string> profileDataDirectoryFactory,
         ITotalProgressFactory totalProgressFactory,
         NameSpace outlookSession,
         TimeSpan calDavConnectTimeout, 
-        IDaslFilterProvider daslFilterProvider)
+        IDaslFilterProvider daslFilterProvider, 
+        IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
     {
+      if (outlookAccountPasswordProvider == null)
+        throw new ArgumentNullException (nameof (outlookAccountPasswordProvider));
+
       _outlookEmailAddress = outlookSession.CurrentUser.Address;
       _totalProgressFactory = totalProgressFactory;
       _outlookSession = outlookSession;
       _calDavConnectTimeout = calDavConnectTimeout;
       _daslFilterProvider = daslFilterProvider;
+      _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
       _profileDataDirectoryFactory = profileDataDirectoryFactory;
     }
 
@@ -120,12 +126,12 @@ namespace CalDavSynchronizer.Scheduling
                   defaultItemType));
       }
     }
-    
+
     private IOutlookSynchronizer CreateEventSynchronizer (Options options,AvailableSynchronizerComponents componentsToFill)
     {
       var calDavDataAccess = new CalDavDataAccess (
           new Uri (options.CalenderUrl),
-          CreateWebDavClient (options, _calDavConnectTimeout));
+          CreateWebDavClient (options, _calDavConnectTimeout, _outlookAccountPasswordProvider));
 
       componentsToFill.CalDavDataAccess = calDavDataAccess;
 
@@ -136,11 +142,14 @@ namespace CalDavSynchronizer.Scheduling
       return CreateEventSynchronizer (options, calDavDataAccess, entityRelationDataAccess);
     }
 
-    public static IWebDavClient CreateWebDavClient (Options options, TimeSpan timeout)
+    public static IWebDavClient CreateWebDavClient (
+      Options options, 
+      TimeSpan timeout, 
+      IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
     {
       return CreateWebDavClient (
           options.UserName,
-          options.Password,
+          options.GetEffectivePassword(outlookAccountPasswordProvider),
           timeout,
           options.ServerAdapterType,
           options.CloseAfterEachRequest,
@@ -336,7 +345,7 @@ namespace CalDavSynchronizer.Scheduling
           new Uri (options.CalenderUrl),
           CreateWebDavClient (
               options.UserName,
-              options.Password,
+              options.GetEffectivePassword(_outlookAccountPasswordProvider),
               _calDavConnectTimeout,
               options.ServerAdapterType,
               options.CloseAfterEachRequest,
@@ -449,7 +458,7 @@ namespace CalDavSynchronizer.Scheduling
           new Uri (options.CalenderUrl),
           CreateWebDavClient (
               options.UserName,
-              options.Password,
+              options.GetEffectivePassword(_outlookAccountPasswordProvider),
               _calDavConnectTimeout,
               options.ServerAdapterType,
               options.CloseAfterEachRequest,

@@ -20,6 +20,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using CalDavSynchronizer;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
@@ -79,7 +80,8 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           NullTotalProgressFactory.Instance,
           s_mapiNameSpace,
           TimeSpan.Zero,
-          daslFilterProvider);
+          daslFilterProvider,
+          new OutlookAccountPasswordProvider (mapiNameSpace.CurrentProfileName, mapiNameSpace.Application.Version));
 
       s_outlookEventRepository = new OutlookEventRepository (
           s_mapiNameSpace,

@@ -87,11 +87,15 @@ namespace CalDavSynchronizer
     private readonly ProfileStatusesViewModel _profileStatusesViewModel;
     private readonly TrayNotifier _trayNotifier;
     private OptionsForm _currentVisibleOptionsFormOrNull;
+    private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
 
     public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
 
+
     public ComponentContainer (Application application)
     {
+      s_logger.Info ("Startup...");
+
       _generalOptionsDataAccess = new GeneralOptionsDataAccess();
 
       var generalOptions = _generalOptionsDataAccess.LoadOptions();
@@ -106,9 +110,10 @@ namespace CalDavSynchronizer
       ConfigureLogLevel (generalOptions.EnableDebugLog);
 
       _session = application.Session;
-      s_logger.Info ("Startup...");
 
-      EnsureSynchronizationContext();
+      _outlookAccountPasswordProvider = new OutlookAccountPasswordProvider (_session.CurrentProfileName, application.Version);
+
+      EnsureSynchronizationContext ();
 
       _applicationDataDirectory = Path.Combine (
           Environment.GetFolderPath (
@@ -129,7 +134,8 @@ namespace CalDavSynchronizer
               ExceptionHandler.Instance),
           _session,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
-          _daslFilterProvider);
+          _daslFilterProvider,
+          _outlookAccountPasswordProvider);
 
       _synchronizationReportRepository = CreateSynchronizationReportRepository();
 
@@ -307,7 +313,12 @@ namespace CalDavSynchronizer
           GeneralOptions generalOptions = _generalOptionsDataAccess.LoadOptions();
           try
           {
-            _currentVisibleOptionsFormOrNull = new OptionsForm (_session, GetProfileDataDirectory, generalOptions.FixInvalidSettings);
+            _currentVisibleOptionsFormOrNull = new OptionsForm (
+              _session,
+              GetProfileDataDirectory, 
+              generalOptions.FixInvalidSettings,
+              _outlookAccountPasswordProvider);
+
             _currentVisibleOptionsFormOrNull.OptionsList = options;
 
             if (initialVisibleProfile.HasValue)

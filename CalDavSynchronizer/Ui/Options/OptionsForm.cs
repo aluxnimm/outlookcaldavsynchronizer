@@ -28,11 +28,19 @@ namespace CalDavSynchronizer.Ui.Options
   {
     private readonly IOptionsDisplayControlFactory _optionsDisplayControlFactory;
 
-    public OptionsForm (NameSpace session, Func<Guid, string> profileDataDirectoryFactory, bool fixInvalidSettings)
+    public OptionsForm (
+      NameSpace session, 
+      Func<Guid, string> profileDataDirectoryFactory, 
+      bool fixInvalidSettings, 
+      IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
     {
       InitializeComponent();
       _optionsDisplayControlFactory =
-          new OptionsDisplayControlFactory (session, profileDataDirectoryFactory, fixInvalidSettings);
+          new OptionsDisplayControlFactory (
+            session, 
+            profileDataDirectoryFactory, 
+            fixInvalidSettings,
+            outlookAccountPasswordProvider);
     }
 
     public Contracts.Options[] OptionsList
