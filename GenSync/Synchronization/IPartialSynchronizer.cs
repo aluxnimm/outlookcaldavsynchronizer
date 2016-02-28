@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -24,11 +25,11 @@ namespace GenSync.Synchronization
   /// <summary>
   /// A Synchronizer :-P
   /// </summary>
-  public interface IPartialSynchronizer<in TAtypeEntityId, in TBtypeEntityId> : ISynchronizer
+  public interface IPartialSynchronizer<in TAtypeEntityId, in TAtypeEntityVersion, in TBtypeEntityId, in TBtypeEntityVersion> : ISynchronizer
   {
     Task SynchronizePartialNoThrow (
-        IEnumerable<TAtypeEntityId> aEntityIds,
-        IEnumerable<TBtypeEntityId> bEntityIds,
+        IEnumerable<IIdWithHints<TAtypeEntityId, TAtypeEntityVersion>> aIds,
+        IEnumerable<IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>> bIds,
         ISynchronizationLogger logger);
   }
 }

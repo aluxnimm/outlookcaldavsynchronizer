@@ -43,8 +43,16 @@ namespace GenSync.UnitTests.Synchronization.Stubs
 
     public Task<IReadOnlyList<EntityVersion<Identifier, int>>> GetVersions (IEnumerable<IdWithAwarenessLevel<Identifier>> idsOfEntitiesToQuery)
     {
-      return Task.FromResult<IReadOnlyList<EntityVersion<Identifier, int>>> (
-          idsOfEntitiesToQuery.Select (id => EntityVersion.Create (id.Id, EntityVersionAndContentById[id.Id].Item1)).ToList());
+      List<EntityVersion<Identifier, int>> result = new List<EntityVersion<Identifier, int>>();
+
+      foreach (var id in idsOfEntitiesToQuery)
+      {
+        Tuple<int, string> versionAndContent;
+        if (EntityVersionAndContentById.TryGetValue (id.Id, out versionAndContent))
+          result.Add (EntityVersion.Create (id.Id, versionAndContent.Item1));
+      }
+
+      return Task.FromResult<IReadOnlyList<EntityVersion<Identifier, int>>> (result);
     }
 
     public Task<IReadOnlyList<EntityVersion<Identifier, int>>> GetAllVersions (IEnumerable<Identifier> idsOfknownEntities)

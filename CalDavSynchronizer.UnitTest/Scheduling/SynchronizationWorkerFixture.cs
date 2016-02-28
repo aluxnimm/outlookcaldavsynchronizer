@@ -26,6 +26,7 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Reports;
 using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Synchronization;
+using GenSync;
 using GenSync.Logging;
 using GenSync.Synchronization;
 using NUnit.Framework;
@@ -97,12 +98,7 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
         return Task.Run (() => FinishSynchronizationEvent.Wait());
       }
 
-      public Task SnychronizePartialNoThrow (IEnumerable<string> outlookIds, ISynchronizationLogger logger)
-      {
-        throw new NotImplementedException();
-      }
-
-      public bool IsResponsible (string folderEntryId, string folderStoreId)
+      public Task SnychronizePartialNoThrow (IEnumerable<IIdWithHints<string, DateTime>> outlookIds, ISynchronizationLogger logger)
       {
         throw new NotImplementedException();
       }

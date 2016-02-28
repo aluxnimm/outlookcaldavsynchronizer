@@ -16,7 +16,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,6 +29,7 @@ using CalDavSynchronizer.Reports;
 using CalDavSynchronizer.Synchronization;
 using CalDavSynchronizer.Utilities;
 using CalDavSynchronizer.Ui.ConnectionTests;
+using GenSync;
 using GenSync.Logging;
 using GenSync.Synchronization;
 using log4net;
@@ -63,12 +66,15 @@ namespace CalDavSynchronizer.Scheduling
     // There is no threadsafe Datastructure required, since there will be no concurrent threads
     // The concurrency in this scenario lies in the fact that the MainThread will enter multiple times, because
     // all methods are async
-    private readonly List<string> _pendingOutlookItems = new List<string>();
+    private readonly ConcurrentDictionary<string, IIdWithHints<string, DateTime>> _pendingOutlookItems = new ConcurrentDictionary<string, IIdWithHints<string, DateTime>>();
+    // Since events for itemchange are raised by outlook multiple times, the partialsync is delayed.
+    // This will prevent that subsequent change events for the same item trigger subsequent sync runs, provided they are within this time frame
+    private readonly TimeSpan _partialSyncDelay = TimeSpan.FromSeconds (10);
 
     public SynchronizationProfileRunner (
         ISynchronizerFactory synchronizerFactory,
-        ISynchronizationReportSink reportSink, 
-        IFolderChangeWatcherFactory folderChangeWatcherFactory, 
+        ISynchronizationReportSink reportSink,
+        IFolderChangeWatcherFactory folderChangeWatcherFactory,
         Action ensureSynchronizationContext)
     {
       if (synchronizerFactory == null)
@@ -121,8 +127,13 @@ namespace CalDavSynchronizer.Scheduling
       try
       {
         _ensureSynchronizationContext();
-        _pendingOutlookItems.Add (e.EntryId);
-        await RunAllPendingJobs ();
+        _pendingOutlookItems.AddOrUpdate (e.EntryId.Id, e.EntryId, (key, existingValue) => e.EntryId.VersionHint > existingValue.VersionHint ? e.EntryId : existingValue);
+        if (s_logger.IsDebugEnabled)
+        {
+          s_logger.Debug ($"Partial sync:  '{_pendingOutlookItems.Count}' items pending after registering item '{e.EntryId}' as pending sync item.");
+        }
+        await Task.Delay (_partialSyncDelay);
+        await RunAllPendingJobs();
       }
       catch (Exception x)
       {
@@ -148,10 +159,9 @@ namespace CalDavSynchronizer.Scheduling
         ExceptionHandler.Instance.HandleException (x, s_logger);
       }
     }
-   
+
     private async Task RunAllPendingJobs ()
     {
- 
       if (_checkIfOnline && !ConnectionTester.IsOnline (_proxyOptions))
       {
         s_logger.WarnFormat ("Skipping synchronization profile '{0}' (Id: '{1}') because network is not available", _profileName, _profileId);
@@ -174,8 +184,12 @@ namespace CalDavSynchronizer.Scheduling
 
             if (_pendingOutlookItems.Count > 0)
             {
-              var itemsToSync = _pendingOutlookItems.ToArray();
+              var itemsToSync = _pendingOutlookItems.Values.ToArray();
               _pendingOutlookItems.Clear();
+              if (s_logger.IsDebugEnabled)
+              {
+                s_logger.Debug ($"Partial sync: Going to sync '{itemsToSync.Length}' pending items ( {string.Join (", ", itemsToSync.Select (id => id.Id))} ).");
+              }
               Thread.MemoryBarrier(); // should not be required because there is just one thread entering multiple times
               await RunPartialNoThrow (itemsToSync);
             }
@@ -193,14 +207,14 @@ namespace CalDavSynchronizer.Scheduling
       try
       {
         var logger = new SynchronizationLogger (_profileId, _profileName);
-        
+
         using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("Running synchronization profile '{0}'", _profileName)))
         {
-            await _synchronizer.SynchronizeNoThrow (logger);
+          await _synchronizer.SynchronizeNoThrow (logger);
         }
 
-        GC.Collect ();
-        GC.WaitForPendingFinalizers ();
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
         var synchronizationReport = logger.GetReport();
         _reportSink.PostReport (synchronizationReport);
       }
@@ -214,19 +228,19 @@ namespace CalDavSynchronizer.Scheduling
       }
     }
 
-    private async Task RunPartialNoThrow (IEnumerable<string> itemsToSync)
+    private async Task RunPartialNoThrow (IIdWithHints<string, DateTime>[] itemsToSync)
     {
       try
       {
         var logger = new SynchronizationLogger (_profileId, _profileName);
-        
-        using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("Running synchronization profile '{0}'", _profileName)))
+
+        using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("Partial sync: Running synchronization profile '{0}'", _profileName)))
         {
           await _synchronizer.SnychronizePartialNoThrow (itemsToSync, logger);
         }
 
-        GC.Collect ();
-        GC.WaitForPendingFinalizers ();
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
         var synchronizationReport = logger.GetReport();
         _reportSink.PostReport (synchronizationReport);
       }

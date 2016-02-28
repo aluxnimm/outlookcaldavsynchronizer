@@ -140,7 +140,7 @@ namespace CalDavSynchronizer
         this,
         EnsureSynchronizationContext,
         new FolderChangeWatcherFactory (
-          new OutlookItemChangeWatcher (application.Inspectors)));
+          _session));
 
       var options = _optionsDataAccess.LoadOptions();
 

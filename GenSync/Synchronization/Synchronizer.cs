@@ -35,7 +35,7 @@ namespace GenSync.Synchronization
   /// Synchronizes tow repositories
   /// </summary>
   public class Synchronizer<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
-      : IPartialSynchronizer<TAtypeEntityId, TBtypeEntityId>
+      : IPartialSynchronizer<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
   {
     // ReSharper disable once StaticFieldInGenericType
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
@@ -126,11 +126,15 @@ namespace GenSync.Synchronization
     }
 
     public async Task SynchronizePartialNoThrow (
-        IEnumerable<TAtypeEntityId> aEntityIds,
-        IEnumerable<TBtypeEntityId> bEntityIds,
+        IEnumerable<IIdWithHints<TAtypeEntityId, TAtypeEntityVersion>> aIds,
+        IEnumerable<IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>> bIds,
         ISynchronizationLogger logger)
     {
-      s_logger.InfoFormat ("Entered. Syncstrategy '{0}' with Atype='{1}' and Btype='{2}'", _initialSyncStateCreationStrategy.GetType().Name, typeof (TAtypeEntity).Name, typeof (TBtypeEntity).Name);
+      s_logger.InfoFormat (
+          "Entered partial. Syncstrategy '{0}' with Atype='{1}' and Btype='{2}'",
+          _initialSyncStateCreationStrategy.GetType().Name,
+          typeof (TAtypeEntity).Name,
+          typeof (TBtypeEntity).Name);
 
       try
       {
@@ -142,8 +146,8 @@ namespace GenSync.Synchronization
           return;
         }
 
-        var aEntitesToSynchronize = new HashSet<TAtypeEntityId> (aEntityIds, _atypeIdComparer);
-        var bEntitesToSynchronize = new HashSet<TBtypeEntityId> (bEntityIds, _btypeIdComparer);
+        var requestedAIdsById = aIds.ToDictionary (e => e.Id, _atypeIdComparer);
+        var requestedBIdsById = bIds.ToDictionary (e => e.Id, _btypeIdComparer);
 
         var aIdsWithAwarenessLevel = new List<IdWithAwarenessLevel<TAtypeEntityId>>();
         var bIdsWithAwarenessLevel = new List<IdWithAwarenessLevel<TBtypeEntityId>>();
@@ -155,13 +159,40 @@ namespace GenSync.Synchronization
 
           foreach (var entityRelation in knownEntityRelations)
           {
-            if (aEntitesToSynchronize.Contains (entityRelation.AtypeId) || bEntitesToSynchronize.Contains (entityRelation.BtypeId))
+            IIdWithHints<TAtypeEntityId, TAtypeEntityVersion> aIdWithHints;
+            bool isACausingSync;
+            if (requestedAIdsById.TryGetValue (entityRelation.AtypeId, out aIdWithHints))
+            {
+              requestedAIdsById.Remove (entityRelation.AtypeId);
+              isACausingSync =
+                  (aIdWithHints.WasDeletedHint ?? false) ||
+                  !aIdWithHints.IsVersionHintSpecified ||
+                  !_atypeVersionComparer.Equals (entityRelation.AtypeVersion, aIdWithHints.VersionHint);
+            }
+            else
+            {
+              isACausingSync = false;
+            }
+
+            IIdWithHints<TBtypeEntityId, TBtypeEntityVersion> bIdWithHints;
+            bool isBCausingSync;
+            if (requestedBIdsById.TryGetValue (entityRelation.BtypeId, out bIdWithHints))
+            {
+              requestedBIdsById.Remove (entityRelation.BtypeId);
+              isBCausingSync =
+                  (bIdWithHints.WasDeletedHint ?? false) ||
+                  !bIdWithHints.IsVersionHintSpecified ||
+                  !_btypeVersionComparer.Equals (entityRelation.BtypeVersion, bIdWithHints.VersionHint);
+            }
+            else
+            {
+              isBCausingSync = false;
+            }
+
+            if (isACausingSync || isBCausingSync)
             {
               aIdsWithAwarenessLevel.Add (new IdWithAwarenessLevel<TAtypeEntityId> (entityRelation.AtypeId, true));
               bIdsWithAwarenessLevel.Add (new IdWithAwarenessLevel<TBtypeEntityId> (entityRelation.BtypeId, true));
-
-              aEntitesToSynchronize.Remove (entityRelation.AtypeId);
-              bEntitesToSynchronize.Remove (entityRelation.BtypeId);
 
               entityRelationsToUse.Add (entityRelation);
             }
@@ -171,8 +202,14 @@ namespace GenSync.Synchronization
             }
           }
 
-          aIdsWithAwarenessLevel.AddRange (aEntitesToSynchronize.Select (id => new IdWithAwarenessLevel<TAtypeEntityId> (id, false)));
-          bIdsWithAwarenessLevel.AddRange (bEntitesToSynchronize.Select (id => new IdWithAwarenessLevel<TBtypeEntityId> (id, false)));
+          aIdsWithAwarenessLevel.AddRange (requestedAIdsById.Where (kv => !(kv.Value.WasDeletedHint ?? false)).Select (kv => new IdWithAwarenessLevel<TAtypeEntityId> (kv.Key, false)));
+          bIdsWithAwarenessLevel.AddRange (requestedBIdsById.Where (kv => !(kv.Value.WasDeletedHint ?? false)).Select (kv => new IdWithAwarenessLevel<TBtypeEntityId> (kv.Key, false)));
+
+          if (aIdsWithAwarenessLevel.Count == 0 && bIdsWithAwarenessLevel.Count == 0)
+          {
+            s_logger.InfoFormat ("Exiting partial since there is nothing to synchronize.");
+            return;
+          }
 
           Task<IReadOnlyList<EntityVersion<TAtypeEntityId, TAtypeEntityVersion>>> newAVersionsTask;
           if (aIdsWithAwarenessLevel.Count > 0)

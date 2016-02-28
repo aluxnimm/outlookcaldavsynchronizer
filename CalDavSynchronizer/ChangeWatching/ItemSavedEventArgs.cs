@@ -15,35 +15,22 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using GenSync;
 
 namespace CalDavSynchronizer.ChangeWatching
 {
   public class ItemSavedEventArgs : EventArgs
   {
-    private readonly string _entryId;
-    private readonly string folderEntryId;
-    private readonly string _folderStoreId;
+    private readonly IIdWithHints<string,DateTime> _entryId;
 
-    public ItemSavedEventArgs (string entryId, string folderEntryId, string folderStoreId)
+    public ItemSavedEventArgs (IIdWithHints<string, DateTime> entryId)
     {
+      if (entryId == null)
+        throw new ArgumentNullException (nameof (entryId));
+
       _entryId = entryId;
-      this.folderEntryId = folderEntryId;
-      _folderStoreId = folderStoreId;
     }
 
-    public string EntryId
-    {
-      get { return _entryId; }
-    }
-
-    public string FolderEntryId
-    {
-      get { return folderEntryId; }
-    }
-
-    public string FolderStoreId
-    {
-      get { return _folderStoreId; }
-    }
+    public IIdWithHints<string, DateTime> EntryId => _entryId;
   }
 }

@@ -75,8 +75,8 @@ namespace GenSync.UnitTests.Synchronization
 
     protected void SynchronizePartialTwoWay (
         GenericConflictResolution winner,
-        Identifier[] aEntitesToSynchronize,
-        Identifier[] bEntitesToSynchronize)
+        IIdWithHints<Identifier, int>[] aEntitesToSynchronize,
+        IIdWithHints<Identifier, int>[] bEntitesToSynchronize)
     {
       var strategy = CreateTwoWaySyncStrategy (winner);
       PartialSynchronizeInternal (strategy, aEntitesToSynchronize, bEntitesToSynchronize);
@@ -112,14 +112,14 @@ namespace GenSync.UnitTests.Synchronization
 
     private void PartialSynchronizeInternal (
         IInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string> strategy,
-        Identifier[] aEntitesToSynchronize = null,
-        Identifier[] bEntitesToSynchronize = null)
+        IIdWithHints<Identifier,int>[] aEntitesToSynchronize = null,
+        IIdWithHints<Identifier, int>[] bEntitesToSynchronize = null)
     {
       var synchronizer = CreateSynchronizer (strategy);
 
       synchronizer.SynchronizePartialNoThrow (
-          aEntitesToSynchronize ?? new Identifier[] { },
-          bEntitesToSynchronize ?? new Identifier[] { },
+          aEntitesToSynchronize ?? new IIdWithHints<Identifier, int>[] { },
+          bEntitesToSynchronize ?? new IIdWithHints<Identifier, int>[] { },
           NullSynchronizationLogger.Instance).Wait();
     }
 
