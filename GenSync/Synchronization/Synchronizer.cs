@@ -126,8 +126,8 @@ namespace GenSync.Synchronization
     }
 
     public async Task SynchronizePartialNoThrow (
-        IEnumerable<IIdWithHints<TAtypeEntityId, TAtypeEntityVersion>> aEntityIds,
-        IEnumerable<IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>> bEntityIds,
+        IEnumerable<IIdWithHints<TAtypeEntityId, TAtypeEntityVersion>> aIds,
+        IEnumerable<IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>> bIds,
         ISynchronizationLogger logger)
     {
       s_logger.InfoFormat (
@@ -146,8 +146,8 @@ namespace GenSync.Synchronization
           return;
         }
 
-        var aEntitesToSynchronize = aEntityIds.ToDictionary (e => e.Id, _atypeIdComparer);
-        var bEntitesToSynchronize = bEntityIds.ToDictionary (e => e.Id, _btypeIdComparer);
+        var requestedAIdsById = aIds.ToDictionary (e => e.Id, _atypeIdComparer);
+        var requestedBIdsById = bIds.ToDictionary (e => e.Id, _btypeIdComparer);
 
         var aIdsWithAwarenessLevel = new List<IdWithAwarenessLevel<TAtypeEntityId>>();
         var bIdsWithAwarenessLevel = new List<IdWithAwarenessLevel<TBtypeEntityId>>();
@@ -160,36 +160,36 @@ namespace GenSync.Synchronization
           foreach (var entityRelation in knownEntityRelations)
           {
             IIdWithHints<TAtypeEntityId, TAtypeEntityVersion> aIdWithHints;
-            bool aCausesSync;
-            if (aEntitesToSynchronize.TryGetValue (entityRelation.AtypeId, out aIdWithHints))
+            bool isACausingSync;
+            if (requestedAIdsById.TryGetValue (entityRelation.AtypeId, out aIdWithHints))
             {
-              aEntitesToSynchronize.Remove (entityRelation.AtypeId);
-              aCausesSync =
+              requestedAIdsById.Remove (entityRelation.AtypeId);
+              isACausingSync =
                   (aIdWithHints.WasDeletedHint ?? false) ||
                   !aIdWithHints.IsVersionHintSpecified ||
                   !_atypeVersionComparer.Equals (entityRelation.AtypeVersion, aIdWithHints.VersionHint);
             }
             else
             {
-              aCausesSync = false;
+              isACausingSync = false;
             }
 
             IIdWithHints<TBtypeEntityId, TBtypeEntityVersion> bIdWithHints;
-            bool bCausesSync;
-            if (bEntitesToSynchronize.TryGetValue (entityRelation.BtypeId, out bIdWithHints))
+            bool isBCausingSync;
+            if (requestedBIdsById.TryGetValue (entityRelation.BtypeId, out bIdWithHints))
             {
-              bEntitesToSynchronize.Remove (entityRelation.BtypeId);
-              bCausesSync =
+              requestedBIdsById.Remove (entityRelation.BtypeId);
+              isBCausingSync =
                   (bIdWithHints.WasDeletedHint ?? false) ||
                   !bIdWithHints.IsVersionHintSpecified ||
                   !_btypeVersionComparer.Equals (entityRelation.BtypeVersion, bIdWithHints.VersionHint);
             }
             else
             {
-              bCausesSync = false;
+              isBCausingSync = false;
             }
 
-            if (aCausesSync || bCausesSync)
+            if (isACausingSync || isBCausingSync)
             {
               aIdsWithAwarenessLevel.Add (new IdWithAwarenessLevel<TAtypeEntityId> (entityRelation.AtypeId, true));
               bIdsWithAwarenessLevel.Add (new IdWithAwarenessLevel<TBtypeEntityId> (entityRelation.BtypeId, true));
@@ -202,8 +202,8 @@ namespace GenSync.Synchronization
             }
           }
 
-          aIdsWithAwarenessLevel.AddRange (aEntitesToSynchronize.Where (kv => !(kv.Value.WasDeletedHint ?? false)).Select (kv => new IdWithAwarenessLevel<TAtypeEntityId> (kv.Key, false)));
-          bIdsWithAwarenessLevel.AddRange (bEntitesToSynchronize.Where (kv => !(kv.Value.WasDeletedHint ?? false)).Select (kv => new IdWithAwarenessLevel<TBtypeEntityId> (kv.Key, false)));
+          aIdsWithAwarenessLevel.AddRange (requestedAIdsById.Where (kv => !(kv.Value.WasDeletedHint ?? false)).Select (kv => new IdWithAwarenessLevel<TAtypeEntityId> (kv.Key, false)));
+          bIdsWithAwarenessLevel.AddRange (requestedBIdsById.Where (kv => !(kv.Value.WasDeletedHint ?? false)).Select (kv => new IdWithAwarenessLevel<TBtypeEntityId> (kv.Key, false)));
 
           if (aIdsWithAwarenessLevel.Count == 0 && bIdsWithAwarenessLevel.Count == 0)
           {

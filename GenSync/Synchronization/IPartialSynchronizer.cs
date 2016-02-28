@@ -28,8 +28,8 @@ namespace GenSync.Synchronization
   public interface IPartialSynchronizer<in TAtypeEntityId, in TAtypeEntityVersion, in TBtypeEntityId, in TBtypeEntityVersion> : ISynchronizer
   {
     Task SynchronizePartialNoThrow (
-        IEnumerable<IIdWithHints<TAtypeEntityId, TAtypeEntityVersion>> aEntityIds,
-        IEnumerable<IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>> bEntityIds,
+        IEnumerable<IIdWithHints<TAtypeEntityId, TAtypeEntityVersion>> aIds,
+        IEnumerable<IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>> bIds,
         ISynchronizationLogger logger);
   }
 }
