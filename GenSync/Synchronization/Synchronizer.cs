@@ -164,7 +164,10 @@ namespace GenSync.Synchronization
             if (aEntitesToSynchronize.TryGetValue (entityRelation.AtypeId, out aIdWithHints))
             {
               aEntitesToSynchronize.Remove (entityRelation.AtypeId);
-              aCausesSync = !aIdWithHints.IsVersionHintSpecified || !_atypeVersionComparer.Equals (entityRelation.AtypeVersion, aIdWithHints.VersionHint);
+              aCausesSync =
+                  (aIdWithHints.WasDeletedHint ?? false) ||
+                  !aIdWithHints.IsVersionHintSpecified ||
+                  !_atypeVersionComparer.Equals (entityRelation.AtypeVersion, aIdWithHints.VersionHint);
             }
             else
             {
@@ -176,7 +179,10 @@ namespace GenSync.Synchronization
             if (bEntitesToSynchronize.TryGetValue (entityRelation.BtypeId, out bIdWithHints))
             {
               bEntitesToSynchronize.Remove (entityRelation.BtypeId);
-              bCausesSync = !bIdWithHints.IsVersionHintSpecified || !_btypeVersionComparer.Equals (entityRelation.BtypeVersion, bIdWithHints.VersionHint);
+              bCausesSync =
+                  (bIdWithHints.WasDeletedHint ?? false) ||
+                  !bIdWithHints.IsVersionHintSpecified ||
+                  !_btypeVersionComparer.Equals (entityRelation.BtypeVersion, bIdWithHints.VersionHint);
             }
             else
             {
@@ -196,7 +202,7 @@ namespace GenSync.Synchronization
             }
           }
 
-          aIdsWithAwarenessLevel.AddRange (aEntitesToSynchronize.Where(kv => !(kv.Value.WasDeletedHint ?? false)).Select (kv => new IdWithAwarenessLevel<TAtypeEntityId> (kv.Key, false)));
+          aIdsWithAwarenessLevel.AddRange (aEntitesToSynchronize.Where (kv => !(kv.Value.WasDeletedHint ?? false)).Select (kv => new IdWithAwarenessLevel<TAtypeEntityId> (kv.Key, false)));
           bIdsWithAwarenessLevel.AddRange (bEntitesToSynchronize.Where (kv => !(kv.Value.WasDeletedHint ?? false)).Select (kv => new IdWithAwarenessLevel<TBtypeEntityId> (kv.Key, false)));
 
           if (aIdsWithAwarenessLevel.Count == 0 && bIdsWithAwarenessLevel.Count == 0)
