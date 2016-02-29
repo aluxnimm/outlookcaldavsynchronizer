@@ -70,8 +70,8 @@ namespace CalDavSynchronizer.Ui.Options
     public void SetOptions (Contracts.Options value)
     {
       _synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Checked = value.EnableChangeTriggeredSynchronization;
-
-      UpdateFolder (value.OutlookFolderEntryId, value.OutlookFolderStoreId, value.OutlookFolderAccountName);
+      _folderAccountName = value.OutlookFolderAccountName;
+      UpdateFolder (value.OutlookFolderEntryId, value.OutlookFolderStoreId);
     }
 
     public void FillOptions (Contracts.Options optionsToFill)
@@ -82,7 +82,7 @@ namespace CalDavSynchronizer.Ui.Options
       optionsToFill.EnableChangeTriggeredSynchronization = _synchronizeImmediatelyAfterOutlookItemChangeCheckBox.Checked;
     }
 
-    private void UpdateFolder (MAPIFolder folder, string folderAccountName)
+    private void UpdateFolder (MAPIFolder folder)
     {
       if (folder.DefaultItemType != OlItemType.olAppointmentItem && folder.DefaultItemType != OlItemType.olTaskItem && folder.DefaultItemType != OlItemType.olContactItem)
       {
@@ -93,13 +93,12 @@ namespace CalDavSynchronizer.Ui.Options
 
       _folderEntryId = folder.EntryID;
       _folderStoreId = folder.StoreID;
-      _folderAccountName = folderAccountName;
       _outoookFolderNameTextBox.Text = folder.Name;
       _folderType = folder.DefaultItemType;
       OnFolderChanged();
     }
 
-    private void UpdateFolder (string folderEntryId, string folderStoreId, string folderAccountName)
+    private void UpdateFolder (string folderEntryId, string folderStoreId)
     {
       if (!string.IsNullOrEmpty (folderEntryId) && !string.IsNullOrEmpty (folderStoreId))
       {
@@ -107,8 +106,7 @@ namespace CalDavSynchronizer.Ui.Options
         {
           using (var folderWrapper = GenericComObjectWrapper.Create (_session.GetFolderFromID (folderEntryId, folderStoreId)))
           {
-            var updatedFolderAccountName = folderAccountName ?? GetFolderAccountNameOrNull(folderWrapper.Inner);
-            UpdateFolder (folderWrapper.Inner, updatedFolderAccountName);
+            UpdateFolder (folderWrapper.Inner);
           }
         }
         catch (Exception x)
@@ -132,8 +130,8 @@ namespace CalDavSynchronizer.Ui.Options
       {
         using (var folderWrapper = GenericComObjectWrapper.Create (folder))
         {
-          var folderAccountName = GetFolderAccountNameOrNull (folderWrapper.Inner);
-          UpdateFolder (folderWrapper.Inner, folderAccountName);
+          UpdateFolder (folderWrapper.Inner);
+          UpdateFolderAccountName();
         }
       }
 
@@ -149,7 +147,13 @@ namespace CalDavSynchronizer.Ui.Options
       }
     }
 
-    private string GetFolderAccountNameOrNull (MAPIFolder folder)
+    public void UpdateFolderAccountName ()
+    {
+      if (!ThisAddIn.IsOutlookVersionSmallerThan2010)
+        _folderAccountName = GetFolderAccountNameOrNull (_folderStoreId);
+    }
+
+    private string GetFolderAccountNameOrNull (string folderStoreId)
     {
       try
       {
@@ -157,7 +161,7 @@ namespace CalDavSynchronizer.Ui.Options
         {
           using (var deliveryStore = GenericComObjectWrapper.Create(account.DeliveryStore))
           {
-            if (deliveryStore.Inner != null && deliveryStore.Inner.StoreID == folder.StoreID)
+            if (deliveryStore.Inner != null && deliveryStore.Inner.StoreID == folderStoreId)
             {
               return account.DisplayName;
             }
@@ -170,6 +174,7 @@ namespace CalDavSynchronizer.Ui.Options
       }
       return null;
     }
+
     public OlItemType? OutlookFolderType
     {
       get { return _folderType; }
@@ -192,5 +197,6 @@ namespace CalDavSynchronizer.Ui.Options
 
       return result;
     }
+
   }
 }

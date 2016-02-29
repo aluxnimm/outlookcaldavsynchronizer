@@ -204,7 +204,9 @@ namespace CalDavSynchronizer.Ui.Options
       _emailAddressTextBox.Text = value.EmailAddress;
       _calenderUrlTextBox.Text = value.CalenderUrl;
       _userNameTextBox.Text = value.UserName;
+      _ignoreAccountPasswordCheckBoxCheckedChanged = true;
       _useAccountPasswordCheckBox.Checked = value.UseAccountPassword;
+      _ignoreAccountPasswordCheckBoxCheckedChanged = false;
       _passwordTextBox.Text = value.Password;
       _networkAndProxyOptions = new NetworkAndProxyOptions (value.CloseAfterEachRequest, value.PreemptiveAuthentication, value.ProxyOptions ?? new ProxyOptions());
       UpdatePasswordControlEnabled();
@@ -246,9 +248,15 @@ namespace CalDavSynchronizer.Ui.Options
       }
     }
 
+    private bool _ignoreAccountPasswordCheckBoxCheckedChanged = false;
     private void _useAccountPasswordCheckBox_CheckedChanged(object sender, EventArgs e)
     {
+      if (_ignoreAccountPasswordCheckBoxCheckedChanged)
+        return;
+
       UpdatePasswordControlEnabled();
+      if (_useAccountPasswordCheckBox.Checked)
+        _dependencies.UpdateFolderAccountName();
     }
 
     private void UpdatePasswordControlEnabled()

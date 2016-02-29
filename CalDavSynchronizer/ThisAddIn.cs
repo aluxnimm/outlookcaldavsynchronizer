@@ -80,7 +80,7 @@ namespace CalDavSynchronizer
       OnSynchronizationFailedWhileReportsFormWasNotVisible();
     }
 
-    private static bool IsOutlookVersionSmallerThan2010
+    public static bool IsOutlookVersionSmallerThan2010
     {
       get { return Convert.ToInt32 (Globals.ThisAddIn.Application.Version.Split (new[] { '.' })[0]) < 14; }
     }

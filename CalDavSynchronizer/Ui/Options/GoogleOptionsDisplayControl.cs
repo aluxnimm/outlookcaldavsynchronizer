@@ -189,6 +189,11 @@ namespace CalDavSynchronizer.Ui.Options
       get { return _outlookFolderControl.FolderAccountName; }
     }
 
+    public void UpdateFolderAccountName ()
+    {
+      _outlookFolderControl.UpdateFolderAccountName();
+    }
+
     public bool SelectedSynchronizationModeRequiresWriteableServerResource
     {
       get { return _syncSettingsControl.SelectedModeRequiresWriteableServerResource; }
