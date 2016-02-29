@@ -77,6 +77,9 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 1.20.3 ####
+- Bug fixes
+	- Fix Outlook crash when opening synchronization profiles for Outlook 2007 (ticket #230,#231).
 #### 1.20.0 ####
 - New features
 	- New implementation of partial sync, which triggers immediately after an item is created, changed or deleted in Outlook (with a 10 seconds delay), works also for contacts and tasks now.
