@@ -164,9 +164,9 @@ namespace CalDavSynchronizer.Ui.Options
           }
         }
       }
-      catch (COMException ex)
+      catch (Exception ex)
       {
-        s_logger.Error("Can't access Account Name of folder.", ex);
+        s_logger.Error ("Can't access Account Name of folder.", ex);
       }
       return null;
     }
