@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
@@ -103,7 +104,7 @@ namespace CalDavSynchronizer.Ui.Options
           !string.IsNullOrWhiteSpace (_calenderUrlTextBox.Text) &&
           _calenderUrlTextBox.Text != c_googleDavBaseUrl)
       {
-        var service = await OAuth.Google.GoogleHttpClientFactory.LoginToGoogleTasksService (_emailAddressTextBox.Text);
+        var service = await OAuth.Google.GoogleHttpClientFactory.LoginToGoogleTasksService (_emailAddressTextBox.Text,GetProxyIfConfigured());
 
         try
         {
@@ -141,7 +142,7 @@ namespace CalDavSynchronizer.Ui.Options
         var cardDavDataAccess = new CardDavDataAccess(enteredUri, webDavClient);
         IReadOnlyList<Tuple<Uri, string>> foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow(true);
 
-        var service = await OAuth.Google.GoogleHttpClientFactory.LoginToGoogleTasksService(_emailAddressTextBox.Text);
+        var service = await OAuth.Google.GoogleHttpClientFactory.LoginToGoogleTasksService(_emailAddressTextBox.Text, GetProxyIfConfigured());
 
         TaskLists taskLists = await service.Tasklists.List().ExecuteAsync();
 
@@ -233,6 +234,11 @@ namespace CalDavSynchronizer.Ui.Options
 
         OptionTasks.DisplayTestReport (result,false,_dependencies.SelectedSynchronizationModeDisplayName, _dependencies.OutlookFolderType, UsedServerAdapterType);
       }
+    }
+
+    private IWebProxy GetProxyIfConfigured ()
+    {
+      return _networkAndProxyOptions.ProxyOptions != null ? SynchronizerFactory.CreateProxy (_networkAndProxyOptions.ProxyOptions) : null;
     }
 
     private IWebDavClient CreateWebDavClient ()

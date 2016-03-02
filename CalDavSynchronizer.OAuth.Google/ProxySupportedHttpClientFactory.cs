@@ -23,19 +23,19 @@ namespace CalDavSynchronizer.OAuth.Google
 {
   internal class ProxySupportedHttpClientFactory : HttpClientFactory
   {
-    private readonly IWebProxy _proxy;
+    private readonly IWebProxy _proxyOrNull;
 
-    public ProxySupportedHttpClientFactory (IWebProxy proxy)
+    public ProxySupportedHttpClientFactory (IWebProxy proxyOrNull)
     {
-      _proxy = proxy;
+      _proxyOrNull = proxyOrNull;
     }
 
     protected override HttpMessageHandler CreateHandler (CreateHttpClientArgs args)
     {
       var webRequestHandler = new WebRequestHandler()
                               {
-                                  Proxy = _proxy,
-                                  UseProxy = (_proxy != null),
+                                  Proxy = _proxyOrNull,
+                                  UseProxy = (_proxyOrNull != null),
                                   UseCookies = false
                               };
 

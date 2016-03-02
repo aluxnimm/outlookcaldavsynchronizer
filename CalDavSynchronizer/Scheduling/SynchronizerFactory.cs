@@ -397,7 +397,9 @@ namespace CalDavSynchronizer.Scheduling
     {
       var atypeRepository = new OutlookTaskRepository (_outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId, _daslFilterProvider);
 
-      var tasksService = System.Threading.Tasks.Task.Run (() => OAuth.Google.GoogleHttpClientFactory.LoginToGoogleTasksService (options.UserName).Result).Result;
+      IWebProxy proxy = options.ProxyOptions != null ? CreateProxy (options.ProxyOptions) : null;
+
+      var tasksService = System.Threading.Tasks.Task.Run (() => OAuth.Google.GoogleHttpClientFactory.LoginToGoogleTasksService (options.UserName,proxy).Result).Result;
 
       TaskList taskList;
       try
