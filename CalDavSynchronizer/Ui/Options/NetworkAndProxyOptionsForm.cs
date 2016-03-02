@@ -41,6 +41,7 @@ namespace CalDavSynchronizer.Ui.Options
         return new NetworkAndProxyOptions(
           _closeConnectionAfterEachRequestCheckBox.Checked,
           _preemptiveAuthenticationCheckBox.Checked,
+          _forceBasicAuthenticationCheckBox.Checked,
           new ProxyOptions()
           {
             ProxyUseDefault = _useSystemProxyCheckBox.Checked,
@@ -54,6 +55,7 @@ namespace CalDavSynchronizer.Ui.Options
       {
         _closeConnectionAfterEachRequestCheckBox.Checked = value.CloseConnectionAfterEachRequest;
         _preemptiveAuthenticationCheckBox.Checked = value.PreemptiveAuthentication;
+        _forceBasicAuthenticationCheckBox.Checked = value.ForceBasicAuthentication;
         _useSystemProxyCheckBox.Checked = value.ProxyOptions.ProxyUseDefault;
         _useManualProxyCheckBox.Checked = value.ProxyOptions.ProxyUseManual;
         _proxyUrlTextBox.Text = value.ProxyOptions.ProxyUrl;

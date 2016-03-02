@@ -17,6 +17,7 @@
 
 using System;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.ConnectionTests;
 
 namespace CalDavSynchronizer.Ui.Options
 {
@@ -24,15 +25,17 @@ namespace CalDavSynchronizer.Ui.Options
   {
     private readonly bool _closeConnectionAfterEachRequest;
     private readonly bool _preemptiveAuthentication;
+    private readonly bool _forceBasicAuthentication;
     private readonly ProxyOptions _proxyOptions;
 
-    public NetworkAndProxyOptions (bool closeConnectionAfterEachRequest, bool preemptiveAuthentication, ProxyOptions proxyOptions)
+    public NetworkAndProxyOptions (bool closeConnectionAfterEachRequest, bool preemptiveAuthentication, bool forceBasicAuthentication, ProxyOptions proxyOptions)
     {
       if (proxyOptions == null)
         throw new ArgumentNullException ("proxyOptions");
 
       _closeConnectionAfterEachRequest = closeConnectionAfterEachRequest;
       _preemptiveAuthentication = preemptiveAuthentication;
+      _forceBasicAuthentication = forceBasicAuthentication;
       _proxyOptions = proxyOptions;
     }
 
@@ -44,6 +47,11 @@ namespace CalDavSynchronizer.Ui.Options
     public bool PreemptiveAuthentication
     {
       get { return _preemptiveAuthentication; }
+    }
+
+    public bool ForceBasicAuthentication
+    {
+      get { return _forceBasicAuthentication; }
     }
 
     public ProxyOptions ProxyOptions

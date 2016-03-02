@@ -56,6 +56,7 @@ namespace CalDavSynchronizer.Contracts
     public ServerAdapterType ServerAdapterType { get; set; }
     public bool CloseAfterEachRequest { get; set; }
     public bool PreemptiveAuthentication { get; set; }
+    public bool ForceBasicAuthentication { get; set; }
     public bool EnableChangeTriggeredSynchronization { get; set; }
 
     public ProxyOptions ProxyOptions { get; set; }
@@ -117,6 +118,7 @@ namespace CalDavSynchronizer.Contracts
       options.Id = Guid.NewGuid();
       options.Inactive = false;
       options.PreemptiveAuthentication = true;
+      options.ForceBasicAuthentication = false;
       options.ProxyOptions = new ProxyOptions() { ProxyUseDefault = true };
       options.DisplayType = type;
       options.CalenderUrl = PopulateDavUrl (options.DisplayType);

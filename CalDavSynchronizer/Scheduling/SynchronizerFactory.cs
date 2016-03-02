@@ -150,20 +150,24 @@ namespace CalDavSynchronizer.Scheduling
       return CreateWebDavClient (
           options.UserName,
           options.GetEffectivePassword(outlookAccountPasswordProvider),
+          options.CalenderUrl,
           timeout,
           options.ServerAdapterType,
           options.CloseAfterEachRequest,
           options.PreemptiveAuthentication,
+          options.ForceBasicAuthentication,
           options.ProxyOptions);
     }
 
     public static IWebDavClient CreateWebDavClient (
         string username,
         string password,
+        string serverUrl,
         TimeSpan timeout,
         ServerAdapterType serverAdapterType,
         bool closeConnectionAfterEachRequest,
         bool preemptiveAuthentication,
+        bool forceBasicAuthentication,
         ProxyOptions proxyOptions
         )
     {
@@ -173,20 +177,27 @@ namespace CalDavSynchronizer.Scheduling
         case ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth:
           var productAndVersion = GetProductAndVersion();
           return new DataAccess.HttpClientBasedClient.WebDavClient (
-              () => CreateHttpClient (username, password, timeout, serverAdapterType, proxyOptions, preemptiveAuthentication),
+              () => CreateHttpClient (username, password, serverUrl, timeout, serverAdapterType, proxyOptions, preemptiveAuthentication, forceBasicAuthentication),
               productAndVersion.Item1,
               productAndVersion.Item2,
               closeConnectionAfterEachRequest);
 
         case ServerAdapterType.WebDavSynchronousWebRequestBased:
           return new DataAccess.WebRequestBasedClient.WebDavClient (
-              username, password, timeout, timeout, closeConnectionAfterEachRequest, preemptiveAuthentication);
+              username, password, serverUrl, timeout, timeout, closeConnectionAfterEachRequest, preemptiveAuthentication, forceBasicAuthentication);
         default:
           throw new ArgumentOutOfRangeException ("serverAdapterType");
       }
     }
 
-    private static async System.Threading.Tasks.Task<HttpClient> CreateHttpClient (string username, string password, TimeSpan calDavConnectTimeout, ServerAdapterType serverAdapterType, ProxyOptions proxyOptions, bool preemptiveAuthentication)
+    private static async System.Threading.Tasks.Task<HttpClient> CreateHttpClient ( string username, 
+                                                                                    string password,
+                                                                                    string serverUrl, 
+                                                                                    TimeSpan calDavConnectTimeout, 
+                                                                                    ServerAdapterType serverAdapterType, 
+                                                                                    ProxyOptions proxyOptions, 
+                                                                                    bool preemptiveAuthentication,
+                                                                                    bool forceBasicAuthentication )
     {
       IWebProxy proxy = (proxyOptions != null) ? CreateProxy (proxyOptions) : null;
 
@@ -196,7 +207,18 @@ namespace CalDavSynchronizer.Scheduling
           var httpClientHandler = new HttpClientHandler();
           if (!string.IsNullOrEmpty (username))
           {
-            httpClientHandler.Credentials = new NetworkCredential (username, password);
+            var credentials = new NetworkCredential (username, password);
+            if (forceBasicAuthentication)
+            {
+              var cache = new CredentialCache();
+              cache.Add (new Uri (new Uri (serverUrl).GetLeftPart (UriPartial.Authority)), "Basic", credentials);
+              httpClientHandler.Credentials = cache;
+            }
+            else
+            {
+              httpClientHandler.Credentials = credentials;
+            }
+
             httpClientHandler.AllowAutoRedirect = false;
             httpClientHandler.PreAuthenticate = preemptiveAuthentication;
           }
@@ -346,10 +368,12 @@ namespace CalDavSynchronizer.Scheduling
           CreateWebDavClient (
               options.UserName,
               options.GetEffectivePassword(_outlookAccountPasswordProvider),
+              options.CalenderUrl,
               _calDavConnectTimeout,
               options.ServerAdapterType,
               options.CloseAfterEachRequest,
               options.PreemptiveAuthentication,
+              options.ForceBasicAuthentication,
               options.ProxyOptions));
 
       componentsToFill.CalDavDataAccess = calDavDataAccess;
@@ -461,10 +485,12 @@ namespace CalDavSynchronizer.Scheduling
           CreateWebDavClient (
               options.UserName,
               options.GetEffectivePassword(_outlookAccountPasswordProvider),
+              options.CalenderUrl,
               _calDavConnectTimeout,
               options.ServerAdapterType,
               options.CloseAfterEachRequest,
               options.PreemptiveAuthentication,
+              options.ForceBasicAuthentication,
               options.ProxyOptions));
 
       componentsToFill.CardDavDataAccess = cardDavDataAccess;

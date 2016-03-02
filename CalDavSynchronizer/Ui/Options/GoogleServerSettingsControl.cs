@@ -246,10 +246,12 @@ namespace CalDavSynchronizer.Ui.Options
       return SynchronizerFactory.CreateWebDavClient (
           _emailAddressTextBox.Text,
           null,
+          _calenderUrlTextBox.Text,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
           ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth,
           _networkAndProxyOptions.CloseConnectionAfterEachRequest,
           _networkAndProxyOptions.PreemptiveAuthentication,
+          _networkAndProxyOptions.ForceBasicAuthentication,
           _networkAndProxyOptions.ProxyOptions);
     }
 
@@ -266,7 +268,7 @@ namespace CalDavSynchronizer.Ui.Options
       else
         _calenderUrlTextBox.Text = c_googleDavBaseUrl;
       UsedServerAdapterType = value.ServerAdapterType;
-      _networkAndProxyOptions = new NetworkAndProxyOptions (value.CloseAfterEachRequest, value.PreemptiveAuthentication, value.ProxyOptions ?? new ProxyOptions());
+      _networkAndProxyOptions = new NetworkAndProxyOptions (value.CloseAfterEachRequest, value.PreemptiveAuthentication, value.ForceBasicAuthentication, value.ProxyOptions ?? new ProxyOptions());
 
     }
 
@@ -278,6 +280,7 @@ namespace CalDavSynchronizer.Ui.Options
       optionsToFill.ServerAdapterType = UsedServerAdapterType;
       optionsToFill.CloseAfterEachRequest = _networkAndProxyOptions.CloseConnectionAfterEachRequest;
       optionsToFill.PreemptiveAuthentication = _networkAndProxyOptions.PreemptiveAuthentication;
+      optionsToFill.ForceBasicAuthentication = _networkAndProxyOptions.ForceBasicAuthentication;
       optionsToFill.ProxyOptions = _networkAndProxyOptions.ProxyOptions;
     }
 

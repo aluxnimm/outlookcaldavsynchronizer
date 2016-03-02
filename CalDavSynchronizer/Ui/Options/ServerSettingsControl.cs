@@ -187,10 +187,12 @@ namespace CalDavSynchronizer.Ui.Options
       return SynchronizerFactory.CreateWebDavClient (
           _userNameTextBox.Text,
           _useAccountPasswordCheckBox.Checked ? _outlookAccountPasswordProvider.GetPassword (_dependencies.FolderAccountName) : _passwordTextBox.Text,
+          _calenderUrlTextBox.Text,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
           ServerAdapterType.WebDavHttpClientBased,
           _networkAndProxyOptions.CloseConnectionAfterEachRequest,
           _networkAndProxyOptions.PreemptiveAuthentication,
+          _networkAndProxyOptions.ForceBasicAuthentication,
           _networkAndProxyOptions.ProxyOptions);
     }
 
@@ -208,7 +210,7 @@ namespace CalDavSynchronizer.Ui.Options
       _useAccountPasswordCheckBox.Checked = value.UseAccountPassword;
       _ignoreAccountPasswordCheckBoxCheckedChanged = false;
       _passwordTextBox.Text = value.Password;
-      _networkAndProxyOptions = new NetworkAndProxyOptions (value.CloseAfterEachRequest, value.PreemptiveAuthentication, value.ProxyOptions ?? new ProxyOptions());
+      _networkAndProxyOptions = new NetworkAndProxyOptions (value.CloseAfterEachRequest, value.PreemptiveAuthentication, value.ForceBasicAuthentication, value.ProxyOptions ?? new ProxyOptions());
       UpdatePasswordControlEnabled();
     }
 
@@ -222,6 +224,7 @@ namespace CalDavSynchronizer.Ui.Options
       optionsToFill.ServerAdapterType = ServerAdapterType.WebDavHttpClientBased;
       optionsToFill.CloseAfterEachRequest = _networkAndProxyOptions.CloseConnectionAfterEachRequest;
       optionsToFill.PreemptiveAuthentication = _networkAndProxyOptions.PreemptiveAuthentication;
+      optionsToFill.ForceBasicAuthentication = _networkAndProxyOptions.ForceBasicAuthentication;
       optionsToFill.ProxyOptions = _networkAndProxyOptions.ProxyOptions;
     }
 

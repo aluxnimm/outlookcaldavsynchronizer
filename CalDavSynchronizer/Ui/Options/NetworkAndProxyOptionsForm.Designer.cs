@@ -46,6 +46,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._preemptiveAuthenticationCheckBox = new System.Windows.Forms.CheckBox();
       this._closeConnectionAfterEachRequestCheckBox = new System.Windows.Forms.CheckBox();
       this._manualProxyGroupBox = new System.Windows.Forms.GroupBox();
+      this._forceBasicAuthenticationCheckBox = new System.Windows.Forms.CheckBox();
       this.groupBox2.SuspendLayout();
       this.groupBox1.SuspendLayout();
       this._manualProxyGroupBox.SuspendLayout();
@@ -80,9 +81,10 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupBox2.Controls.Add(this._manualProxyGroupBox);
       this.groupBox2.Controls.Add(this._useManualProxyCheckBox);
       this.groupBox2.Controls.Add(this._useSystemProxyCheckBox);
-      this.groupBox2.Location = new System.Drawing.Point(13, 132);
+      this.groupBox2.Location = new System.Drawing.Point(13, 159);
       this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
       this.groupBox2.Name = "groupBox2";
       this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
@@ -178,13 +180,14 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupBox1.Controls.Add(this._forceBasicAuthenticationCheckBox);
       this.groupBox1.Controls.Add(this._preemptiveAuthenticationCheckBox);
       this.groupBox1.Controls.Add(this._closeConnectionAfterEachRequestCheckBox);
       this.groupBox1.Location = new System.Drawing.Point(13, 26);
       this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
       this.groupBox1.Name = "groupBox1";
       this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-      this.groupBox1.Size = new System.Drawing.Size(685, 98);
+      this.groupBox1.Size = new System.Drawing.Size(685, 125);
       this.groupBox1.TabIndex = 8;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Advanced network settings";
@@ -221,7 +224,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._manualProxyGroupBox.Controls.Add(this.label3);
       this._manualProxyGroupBox.Controls.Add(this._proxyUrlTextBox);
       this._manualProxyGroupBox.Controls.Add(this._userNameTextBox);
-      this._manualProxyGroupBox.Location = new System.Drawing.Point(21, 213);
+      this._manualProxyGroupBox.Location = new System.Drawing.Point(17, 81);
       this._manualProxyGroupBox.Margin = new System.Windows.Forms.Padding(4);
       this._manualProxyGroupBox.Name = "_manualProxyGroupBox";
       this._manualProxyGroupBox.Padding = new System.Windows.Forms.Padding(4);
@@ -229,13 +232,23 @@ namespace CalDavSynchronizer.Ui.Options
       this._manualProxyGroupBox.TabIndex = 10;
       this._manualProxyGroupBox.TabStop = false;
       // 
+      // _forceBasicAuthenticationCheckBox
+      // 
+      this._forceBasicAuthenticationCheckBox.AutoSize = true;
+      this._forceBasicAuthenticationCheckBox.Location = new System.Drawing.Point(17, 81);
+      this._forceBasicAuthenticationCheckBox.Margin = new System.Windows.Forms.Padding(4);
+      this._forceBasicAuthenticationCheckBox.Name = "_forceBasicAuthenticationCheckBox";
+      this._forceBasicAuthenticationCheckBox.Size = new System.Drawing.Size(198, 21);
+      this._forceBasicAuthenticationCheckBox.TabIndex = 18;
+      this._forceBasicAuthenticationCheckBox.Text = "Force Basic Authentication";
+      this._forceBasicAuthenticationCheckBox.UseVisualStyleBackColor = true;
+      // 
       // NetworkAndProxyOptionsForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.SystemColors.Window;
       this.ClientSize = new System.Drawing.Size(712, 486);
-      this.Controls.Add(this._manualProxyGroupBox);
       this.Controls.Add(this.groupBox1);
       this.Controls.Add(this.groupBox2);
       this.Controls.Add(this.buttonCancel);
@@ -272,5 +285,6 @@ namespace CalDavSynchronizer.Ui.Options
     private System.Windows.Forms.CheckBox _closeConnectionAfterEachRequestCheckBox;
     private System.Windows.Forms.GroupBox _manualProxyGroupBox;
     private System.Windows.Forms.CheckBox _preemptiveAuthenticationCheckBox;
+    private System.Windows.Forms.CheckBox _forceBasicAuthenticationCheckBox;
   }
 }

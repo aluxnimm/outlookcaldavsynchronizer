@@ -33,27 +33,33 @@ namespace CalDavSynchronizer.DataAccess.WebRequestBasedClient
     private readonly string _username;
     // TODO: consider to use SecureString
     private readonly string _password;
+    private readonly string _serverUrl;
     private readonly TimeSpan _connectTimeout;
     private readonly TimeSpan _readWriteTimeout;
     private readonly string _userAgent;
     private readonly bool _closeConnectionAfterEachRequest;
     private readonly bool _preemptiveAuthentication;
+    private readonly bool _forceBasicAuthentication;
 
 
     public WebDavClient (
       string username, 
-      string password, 
+      string password,
+      string serverUrl, 
       TimeSpan connectTimeout, 
       TimeSpan readWriteTimeout, 
       bool closeConnectionAfterEachRequest,
-      bool preemptiveAuthentication)
+      bool preemptiveAuthentication,
+      bool forceBasicAuthentication)
     {
       _username = username;
       _password = password;
+      _serverUrl = serverUrl;
       _connectTimeout = connectTimeout;
       _readWriteTimeout = readWriteTimeout;
       _closeConnectionAfterEachRequest = closeConnectionAfterEachRequest;
       _preemptiveAuthentication = preemptiveAuthentication;
+      _forceBasicAuthentication = forceBasicAuthentication;
       var version = Assembly.GetExecutingAssembly().GetName().Version;
       _userAgent = string.Format ("CalDavSynchronizer/{0}.{1}", version.Major, version.Minor);
     }
@@ -69,7 +75,17 @@ namespace CalDavSynchronizer.DataAccess.WebRequestBasedClient
       if (!string.IsNullOrEmpty (_username))
       {
         request.PreAuthenticate = _preemptiveAuthentication;
-        request.Credentials = new NetworkCredential (_username, _password);
+        var credentials = new NetworkCredential (_username, _password);
+        if (_forceBasicAuthentication)
+        {
+          var cache = new CredentialCache();
+          cache.Add (new Uri (new Uri (_serverUrl).GetLeftPart (UriPartial.Authority)), "Basic", credentials);
+          request.Credentials = cache;
+        }
+        else
+        {
+          request.Credentials = credentials;
+        }
       }
       request.AllowAutoRedirect = false;
       return request;
