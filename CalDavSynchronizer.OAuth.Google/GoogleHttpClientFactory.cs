@@ -80,7 +80,7 @@ namespace CalDavSynchronizer.OAuth.Google
     {
 
       var credential = await LoginToGoogle (user, proxyOrNull);
-      var service = CreateTaskService (credential);
+      var service = CreateTaskService (credential, proxyOrNull);
 
       try
       {
@@ -93,14 +93,15 @@ namespace CalDavSynchronizer.OAuth.Google
 
         await credential.RevokeTokenAsync (CancellationToken.None);
         await GoogleWebAuthorizationBroker.ReauthorizeAsync (credential, CancellationToken.None);
-        return CreateTaskService (credential);
+        return CreateTaskService (credential, proxyOrNull);
       }
     }
 
-    private static TasksService CreateTaskService (UserCredential credential)
+    private static TasksService CreateTaskService (UserCredential credential, IWebProxy proxyOrNull)
     {
       return new TasksService (new BaseClientService.Initializer
                                {
+                                   HttpClientFactory = new ProxySupportedHttpClientFactory (proxyOrNull),
                                    HttpClientInitializer = credential,
                                    ApplicationName = "Outlook CalDav Synchronizer",
                                });
