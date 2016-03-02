@@ -100,20 +100,23 @@ namespace CalDavSynchronizer
 
       var generalOptions = _generalOptionsDataAccess.LoadOptions();
 
-      _daslFilterProvider = new DaslFilterProvider(generalOptions.IncludeCustomMessageClasses);
+      _daslFilterProvider = new DaslFilterProvider (generalOptions.IncludeCustomMessageClasses);
 
       FrameworkElement.LanguageProperty.OverrideMetadata (
-        typeof (FrameworkElement), 
-        new FrameworkPropertyMetadata (XmlLanguage.GetLanguage (CultureInfo.CurrentCulture.IetfLanguageTag)));
+          typeof (FrameworkElement),
+          new FrameworkPropertyMetadata (XmlLanguage.GetLanguage (CultureInfo.CurrentCulture.IetfLanguageTag)));
 
       ConfigureServicePointManager (generalOptions);
       ConfigureLogLevel (generalOptions.EnableDebugLog);
 
       _session = application.Session;
 
-      _outlookAccountPasswordProvider = new OutlookAccountPasswordProvider (_session.CurrentProfileName, application.Version);
+      _outlookAccountPasswordProvider =
+          string.IsNullOrEmpty (_session.CurrentProfileName)
+              ? NullOutlookAccountPasswordProvider.Instance
+              : new OutlookAccountPasswordProvider (_session.CurrentProfileName, application.Version);
 
-      EnsureSynchronizationContext ();
+      EnsureSynchronizationContext();
 
       _applicationDataDirectory = Path.Combine (
           Environment.GetFolderPath (
@@ -139,21 +142,21 @@ namespace CalDavSynchronizer
 
       _synchronizationReportRepository = CreateSynchronizationReportRepository();
 
-      UpdateGeneralOptionDependencies(generalOptions);
+      UpdateGeneralOptionDependencies (generalOptions);
 
       _scheduler = new Scheduler (
-        _synchronizerFactory,
-        this,
-        EnsureSynchronizationContext,
-        new FolderChangeWatcherFactory (
-          _session));
+          _synchronizerFactory,
+          this,
+          EnsureSynchronizationContext,
+          new FolderChangeWatcherFactory (
+              _session));
 
       var options = _optionsDataAccess.LoadOptions();
 
       EnsureCacheCompatibility (options);
 
 
-      _profileStatusesViewModel = new ProfileStatusesViewModel(this);
+      _profileStatusesViewModel = new ProfileStatusesViewModel (this);
       _profileStatusesViewModel.EnsureProfilesDisplayed (options);
 
       _scheduler.SetOptions (options, generalOptions.CheckIfOnline);
@@ -165,10 +168,10 @@ namespace CalDavSynchronizer
 
       _reportGarbageCollection = new ReportGarbageCollection (_synchronizationReportRepository, TimeSpan.FromDays (generalOptions.MaxReportAgeInDays));
 
-      _trayNotifier = new TrayNotifier(this);
+      _trayNotifier = new TrayNotifier (this);
       _uiService = new UiService (_profileStatusesViewModel);
     }
-    
+
     private void EnsureCacheCompatibility (Options[] options)
     {
       var currentEntityCacheVersion = _generalOptionsDataAccess.EntityCacheVersion;
