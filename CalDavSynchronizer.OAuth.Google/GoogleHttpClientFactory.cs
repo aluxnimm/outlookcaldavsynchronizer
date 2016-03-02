@@ -23,6 +23,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Google;
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Http;
 using Google.Apis.Services;
 using Google.Apis.Tasks.v1;
@@ -37,7 +38,7 @@ namespace CalDavSynchronizer.OAuth.Google
 
     public static async Task<HttpClient> CreateHttpClient (string user, string userAgentHeader, IWebProxy proxy)
     {
-      var userCredential = await LoginToGoogle (user);
+      var userCredential = await LoginToGoogle (user,proxy);
 
       var client = new ProxySupportedHttpClientFactory (proxy).CreateHttpClient (new CreateHttpClientArgs() { ApplicationName = userAgentHeader });
       userCredential.Initialize (client);
@@ -45,14 +46,18 @@ namespace CalDavSynchronizer.OAuth.Google
       return client;
     }
 
-    private static async Task<UserCredential> LoginToGoogle (string user)
+    private static async Task<UserCredential> LoginToGoogle (string user, IWebProxy proxyOrNull)
     {
+      GoogleAuthorizationCodeFlow.Initializer initializer = new GoogleAuthorizationCodeFlow.Initializer ();
+      initializer.ClientSecrets = new ClientSecrets
+                                  {
+                                      ClientId = "13856942399-rp437ddbn6406hfokpe5rqnosgnejodc.apps.googleusercontent.com",
+                                      ClientSecret = "WG276vw5WCcc2H4SSaYJ03VO"
+                                  };
+      initializer.HttpClientFactory = new ProxySupportedHttpClientFactory (proxyOrNull);
+
       UserCredential credential = await GoogleWebAuthorizationBroker.AuthorizeAsync (
-          new ClientSecrets
-          {
-              ClientId = "13856942399-rp437ddbn6406hfokpe5rqnosgnejodc.apps.googleusercontent.com",
-              ClientSecret = "WG276vw5WCcc2H4SSaYJ03VO"
-          },
+          initializer,
           new[]
           {
               "https://www.googleapis.com/auth/calendar",
@@ -71,10 +76,11 @@ namespace CalDavSynchronizer.OAuth.Google
     /// since it leads to a 'The "FindRibbons" task failed unexpectedly' Error
     /// ( see https://connect.microsoft.com/VisualStudio/feedback/details/651634/the-findribbons-task-failed-unexpectedly)
     /// </remarks>
-    public static async Task<TasksService> LoginToGoogleTasksService (string user)
+    public static async Task<TasksService> LoginToGoogleTasksService (string user,IWebProxy proxyOrNull)
     {
-      var credential = await LoginToGoogle (user);
-      var service = CreateTaskService (credential);
+
+      var credential = await LoginToGoogle (user, proxyOrNull);
+      var service = CreateTaskService (credential, proxyOrNull);
 
       try
       {
@@ -87,14 +93,15 @@ namespace CalDavSynchronizer.OAuth.Google
 
         await credential.RevokeTokenAsync (CancellationToken.None);
         await GoogleWebAuthorizationBroker.ReauthorizeAsync (credential, CancellationToken.None);
-        return CreateTaskService (credential);
+        return CreateTaskService (credential, proxyOrNull);
       }
     }
 
-    private static TasksService CreateTaskService (UserCredential credential)
+    private static TasksService CreateTaskService (UserCredential credential, IWebProxy proxyOrNull)
     {
       return new TasksService (new BaseClientService.Initializer
                                {
+                                   HttpClientFactory = new ProxySupportedHttpClientFactory (proxyOrNull),
                                    HttpClientInitializer = credential,
                                    ApplicationName = "Outlook CalDav Synchronizer",
                                });
