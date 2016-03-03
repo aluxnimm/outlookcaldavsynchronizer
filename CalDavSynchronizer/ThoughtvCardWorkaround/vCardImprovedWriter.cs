@@ -333,7 +333,7 @@ namespace CalDavSynchronizer.ThoughtvCardWorkaround
 
             values.Add(string.Empty);
             values.Add(string.Empty);
-            values.Add(address.Street);
+            values.Add(!string.IsNullOrEmpty(address.Street) ? address.Street.Replace("\r\n", "\n") : string.Empty);
             values.Add(address.City);
             values.Add(address.Region);
             values.Add(address.PostalCode);
@@ -827,7 +827,7 @@ namespace CalDavSynchronizer.ThoughtvCardWorkaround
             vCardProperty property = new vCardProperty();
 
             property.Name = "NOTE";
-            property.Value = note.Text;
+            property.Value = note.Text.Replace("\r\n","\n");
 
             if (!string.IsNullOrEmpty(note.Language))
             {
