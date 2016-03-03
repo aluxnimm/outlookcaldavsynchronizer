@@ -307,6 +307,8 @@ namespace CalDavSynchronizer.DataAccess
 
     private IReadOnlyList<EntityVersion<WebResourceName, string>> ExtractVersions (XmlDocumentWithNamespaceManager responseXml)
     {
+      s_logger.Debug ("Entered ExtractVersions.");
+
       var entities = new List<EntityVersion<WebResourceName, string>> ();
 
       XmlNodeList responseNodes = responseXml.XmlDocument.SelectNodes ("/D:multistatus/D:response", responseXml.XmlNamespaceManager);
@@ -334,16 +336,22 @@ namespace CalDavSynchronizer.DataAccess
               contentType != "text/x-vlist"
               )
           {
+            if (s_logger.IsDebugEnabled)
+              s_logger.DebugFormat ($"'{urlNode.InnerText}': '{eTag}'");
             entities.Add (EntityVersion.Create (new WebResourceName (urlNode.InnerText), eTag));
           }
         }
       }
 
+      s_logger.Debug ("Exiting ExtractVersions.");
       return entities;
     }
 
     public async Task<IReadOnlyList<EntityWithId<WebResourceName, string>>> GetEntities (IEnumerable<WebResourceName> urls)
     {
+      s_logger.Debug ("Entered GetEntities.");
+    
+
       var requestBody = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
    <A:addressbook-multiget xmlns:D=""DAV:"" xmlns:A=""urn:ietf:params:xml:ns:carddav"">
      <D:prop>
@@ -351,7 +359,15 @@ namespace CalDavSynchronizer.DataAccess
        <D:getcontenttype/>
        <A:address-data/>
      </D:prop>
-     " + String.Join ("\r\n", urls.Select (u => string.Format ("<D:href>{0}</D:href>", SecurityElement.Escape(u.OriginalAbsolutePath)))) + @"
+     " + 
+     String.Join ("\r\n", urls.Select (u => 
+     {
+        if (s_logger.IsDebugEnabled)
+          s_logger.Debug ($"Requesting: '{u}'");
+
+        return $"<D:href>{SecurityElement.Escape (u.OriginalAbsolutePath)}</D:href>";
+     })) 
+     + @"
    </A:addressbook-multiget>
  ";
 
@@ -385,10 +401,13 @@ namespace CalDavSynchronizer.DataAccess
         // TODO: add vlist support but for now filter out sogo vlists since we can't parse them atm
         if (urlNode != null && dataNode != null && !string.IsNullOrEmpty (dataNode.InnerText) && contentType != "text/x-vlist")
         {
+          if (s_logger.IsDebugEnabled)
+            s_logger.DebugFormat ($"Got: '{urlNode.InnerText}'");
           entities.Add (EntityWithId.Create (new WebResourceName(urlNode.InnerText), dataNode.InnerText));
         }
       }
 
+      s_logger.Debug ("Exiting GetEntities.");
       return entities;
     }
   }
