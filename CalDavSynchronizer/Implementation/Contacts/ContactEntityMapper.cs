@@ -57,6 +57,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
       target.AdditionalNames = source.Inner.MiddleName;
       target.Gender = MapGender2To1 (source.Inner.Gender);
 
+      MapEmailAddresses1To2(source.Inner, target, logger);
+
       if (!string.IsNullOrEmpty (source.Inner.FileAs))
       {
         target.FormattedName = source.Inner.FileAs;
@@ -64,6 +66,10 @@ namespace CalDavSynchronizer.Implementation.Contacts
       else if (!string.IsNullOrEmpty (source.Inner.CompanyAndFullName))
       {
         target.FormattedName = source.Inner.CompanyAndFullName;
+      }
+      else if (target.EmailAddresses.Count >= 1)
+      {
+        target.FormattedName = target.EmailAddresses[0].Address;
       }
       else
       {
@@ -92,8 +98,6 @@ namespace CalDavSynchronizer.Implementation.Contacts
       {
         target.IMs.Add (new vCardIMPP (source.Inner.IMAddress, IMServiceType.AIM, ItemType.HOME));
       }
-
-      MapEmailAddresses1To2 (source.Inner, target, logger);
 
       if (!string.IsNullOrEmpty (source.Inner.HomeAddress))
       {
