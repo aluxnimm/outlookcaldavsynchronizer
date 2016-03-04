@@ -39,6 +39,8 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 - GMX
 - Tine 2.0
 - Fruux
+- Mac OS X Server
+- iCloud
 
 ### Features ###
 
@@ -77,6 +79,15 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 1.21.0 ####
+- New features
+	- Implement option in network and proxy options to force basic authentication, needed for some servers where negotiation or digest auth are not working properly, fixes connection problems with OS X servers.
+	- Add general option to enable/disable tray icon.
+	- Improve debug logging.
+- Bug fixes
+	- Use NullOutlookAccountPasswordProvider if Outlook profile name is null, ticket #239.
+	- Fix proxy support in Google tasklibrary and oauth requests, ticket #234.
+	- Fix line breaks in vcard notes and street addresses to avoid \r.
 #### 1.20.3 ####
 - Bug fixes
 	- Fix Outlook crash when opening synchronization profiles for Outlook 2007 (ticket #230,#231).
@@ -577,6 +588,7 @@ The following properties need to be set for a new generic profile:
 	- **Network and proxy options**: Here you can configure advanced network options and proxy settings. 
 		- **Close connection after each request** Don't use KeepAlive for servers which don't support it. 
 		- **Use Preemptive Authentication** Send Authentication header with each request to avoid 401 responses and resending the request, disable only if the server has problems with preemptive authentication.
+		- **Force basic authentication** Set basic authentication headers to avoid problems with negotiation or digest authentication with servers like OS X. This is only recommended if you use a secure HTTPS connection, otherwise passwords are sent in cleartext.
 		- **Use System Default Proxy** Use proxy settings from Internet Explorer or config file, uses default credentials if available for NTLM authentication.
 		- **Use manual proxy configuration** Specify proxy URL as `http://<your-proxy-domain>:<your-proxy-port>` and optional Username and Password for Basic Authentication.
 
@@ -642,6 +654,21 @@ Select Enable SSH
 Then enter Advanced Settings and set it to High
 Now it will work on port 5006 with https.
 
+### iCloud settings ###
+
+To find the correct DAV url for iCloud you need some Informations from the MacOS, where you are connected with your calendar.
+
+Open with Textedit: `~/Library/Calendars/*.caldav/Info.plist` 
+(Its in the hidden User-Library)
+
+Check iCloud Path: PrincipalURL 
+    `<string>https://p**-caldav.icloud.com/*********/principal/</string>`
+
+Check: DefaultCalendarPath 
+    `<string>/*********/calendars/********-****-****-****-************</string>`
+
+Then you get the DAV url of the calendar:
+    `https://p**-caldav.icloud.com/*********/calendars/********-****-****-****-************/`
 
 ### Autodiscovery ###
 
@@ -661,6 +688,7 @@ In the General Options Dialog you can change settings which are used for all syn
 - **Store data in roaming folder** set to true if you need to store state and profile data in the AppData\Roaming\ directory for roaming profiles in a AD domain for example. When changing this option, a restart of Outlook is required.
 - **Fix invalid settings** Fixes invalid settings automatically, when synchronization profiles are edited.
 - **Include custom message classes in Outlook filter** Disabled by default, enable only if you have custom forms with message_classes other than the default IPM.Appointment/Contact/Task. For better performance, Windows Search Service shouldn't be deactivated if this option is enabled.
+- **Enable Tray Icon** Enabled by default, you can disable the tray icon in the Windows Taskbar if you don't need it.
 
 If you have problems with SSL/TLS and self-signed certificates, you can change the following settings at your own risk.
 The recommended way would be to add the self signed cert to the Local Computer Trusted Root Certification Authorities
