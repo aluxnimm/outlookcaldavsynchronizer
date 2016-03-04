@@ -6,7 +6,7 @@ using GenSync.Logging;
 
 namespace CalDavSynchronizer.Ui.SystrayNotification
 {
-  class TrayNotifier : IDisposable
+  class TrayNotifier : ITrayNotifier
   {
     private readonly NotifyIcon _nofifyIcon;
     private readonly ICalDavSynchronizerCommands _calDavSynchronizerCommands;

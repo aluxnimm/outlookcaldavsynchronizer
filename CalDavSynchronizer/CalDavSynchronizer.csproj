@@ -626,6 +626,8 @@
     </Compile>
     <Compile Include="Ui\ProgressFormFactory.cs" />
     <Compile Include="Ui\Options\SettingsFaultFinder.cs" />
+    <Compile Include="Ui\SystrayNotification\ITrayNotifier.cs" />
+    <Compile Include="Ui\SystrayNotification\NullTrayNotifier.cs" />
     <Compile Include="Ui\SystrayNotification\ViewModels\ProfileStatusesViewModel.cs" />
     <Compile Include="Ui\SystrayNotification\ViewModels\ProfileStatusViewModel.cs" />
     <Compile Include="Ui\SystrayNotification\SyncronizationRunResult.cs" />
