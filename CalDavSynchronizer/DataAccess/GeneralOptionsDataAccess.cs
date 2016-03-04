@@ -46,6 +46,7 @@ namespace CalDavSynchronizer.DataAccess
     private const string s_MaxReportAgeInDays = "MaxReportAgeInDays";
 
     private const string s_EnableDebugLog = "EnableDebugLog";
+    private const string s_EnableTrayIcon = "EnableTrayIcon";
     private const string s_EntityCacheVersion = "EntityCacheVersion";
 
     public GeneralOptions LoadOptions ()
@@ -69,7 +70,8 @@ namespace CalDavSynchronizer.DataAccess
                    ShowReportsWithWarningsImmediately = (int) (key.GetValue (s_ShowReportsWithWarningsImmediately) ?? 0) != 0,
                    ShowReportsWithErrorsImmediately = (int) (key.GetValue (s_ShowReportsWithErrorsImmediately) ?? 1) != 0,
                    MaxReportAgeInDays = (int) (key.GetValue (s_MaxReportAgeInDays) ?? 1),
-                   EnableDebugLog = (int) (key.GetValue (s_EnableDebugLog) ?? debugEnabledInConfig) != 0
+                   EnableDebugLog = (int) (key.GetValue (s_EnableDebugLog) ?? debugEnabledInConfig) != 0,
+                   EnableTrayIcon = (int) (key.GetValue (s_EnableTrayIcon) ?? 1) != 0
                };
       }
     }
@@ -92,6 +94,7 @@ namespace CalDavSynchronizer.DataAccess
         key.SetValue (s_ShowReportsWithErrorsImmediately, options.ShowReportsWithErrorsImmediately ? 1 : 0);
         key.SetValue (s_MaxReportAgeInDays, options.MaxReportAgeInDays);
         key.SetValue (s_EnableDebugLog, options.EnableDebugLog ? 1 : 0);
+        key.SetValue (s_EnableTrayIcon, options.EnableTrayIcon ? 1 : 0);
       }
     }
 

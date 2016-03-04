@@ -85,7 +85,7 @@ namespace CalDavSynchronizer
     private readonly DaslFilterProvider _daslFilterProvider;
     private readonly IAvailableVersionService _availableVersionService;
     private readonly ProfileStatusesViewModel _profileStatusesViewModel;
-    private readonly TrayNotifier _trayNotifier;
+    private TrayNotifier _trayNotifier;
     private OptionsForm _currentVisibleOptionsFormOrNull;
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
 
@@ -168,7 +168,7 @@ namespace CalDavSynchronizer
 
       _reportGarbageCollection = new ReportGarbageCollection (_synchronizationReportRepository, TimeSpan.FromDays (generalOptions.MaxReportAgeInDays));
 
-      _trayNotifier = new TrayNotifier (this);
+      _trayNotifier = generalOptions.EnableTrayIcon ? new TrayNotifier (this) : null;
       _uiService = new UiService (_profileStatusesViewModel);
     }
 
@@ -215,7 +215,7 @@ namespace CalDavSynchronizer
     {
       SaveAndShowReport(report);
       _profileStatusesViewModel.Update (report);
-      _trayNotifier.NotifyUser (report);
+      _trayNotifier?.NotifyUser (report);
     }
 
     private void SaveAndShowReport (SynchronizationReport report)
@@ -521,6 +521,16 @@ namespace CalDavSynchronizer
             _generalOptionsDataAccess.SaveOptions (newOptions);
             UpdateGeneralOptionDependencies (newOptions);
             _scheduler.SetOptions (_optionsDataAccess.LoadOptions(), newOptions.CheckIfOnline);
+
+            if (newOptions.EnableTrayIcon)
+            {
+              if (_trayNotifier == null) _trayNotifier = new TrayNotifier (this);
+            }
+            else
+            {
+              _trayNotifier?.Dispose();
+              _trayNotifier = null;
+            }
           }
         }
       }
@@ -908,7 +918,8 @@ namespace CalDavSynchronizer
 
     public void Dispose ()
     {
-      _trayNotifier.Dispose();
+      _trayNotifier?.Dispose();
+      _trayNotifier = null;
     }
   }
 }

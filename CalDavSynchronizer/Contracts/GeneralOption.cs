@@ -34,5 +34,6 @@ namespace CalDavSynchronizer.Contracts
     public bool ShowReportsWithErrorsImmediately { get; set; }
     public int MaxReportAgeInDays { get; set; }
     public bool EnableDebugLog { get; set; }
+    public bool EnableTrayIcon { get; set; }
   }
 }

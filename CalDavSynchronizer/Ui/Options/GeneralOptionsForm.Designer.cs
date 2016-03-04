@@ -56,6 +56,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._clearLogButton = new System.Windows.Forms.Button();
       this._logLevelComboBox = new System.Windows.Forms.ComboBox();
       this.label6 = new System.Windows.Forms.Label();
+      this._enableTrayIconCheckBox = new System.Windows.Forms.CheckBox();
       this.groupBox1.SuspendLayout();
       this.groupBox2.SuspendLayout();
       this.groupBox3.SuspendLayout();
@@ -92,7 +93,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._checkForNewerVersionsCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._checkForNewerVersionsCheckBox.Name = "_checkForNewerVersionsCheckBox";
       this._checkForNewerVersionsCheckBox.Size = new System.Drawing.Size(274, 21);
-      this._checkForNewerVersionsCheckBox.TabIndex = 3;
+      this._checkForNewerVersionsCheckBox.TabIndex = 2;
       this._checkForNewerVersionsCheckBox.Text = "Automatically check for newer versions";
       this._checkForNewerVersionsCheckBox.UseVisualStyleBackColor = true;
       // 
@@ -103,7 +104,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._storeDataInRoamingFolderCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._storeDataInRoamingFolderCheckBox.Name = "_storeDataInRoamingFolderCheckBox";
       this._storeDataInRoamingFolderCheckBox.Size = new System.Drawing.Size(206, 21);
-      this._storeDataInRoamingFolderCheckBox.TabIndex = 5;
+      this._storeDataInRoamingFolderCheckBox.TabIndex = 3;
       this._storeDataInRoamingFolderCheckBox.Text = "Store data in roaming folder";
       this._toolTip.SetToolTip(this._storeDataInRoamingFolderCheckBox, "Changing this option requires a restart of Outlook.");
       this._storeDataInRoamingFolderCheckBox.UseVisualStyleBackColor = true;
@@ -174,7 +175,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._fixInvalidSettingsCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._fixInvalidSettingsCheckBox.Name = "_fixInvalidSettingsCheckBox";
       this._fixInvalidSettingsCheckBox.Size = new System.Drawing.Size(144, 21);
-      this._fixInvalidSettingsCheckBox.TabIndex = 6;
+      this._fixInvalidSettingsCheckBox.TabIndex = 5;
       this._fixInvalidSettingsCheckBox.Text = "Fix invalid settings";
       this._toolTip.SetToolTip(this._fixInvalidSettingsCheckBox, resources.GetString("_fixInvalidSettingsCheckBox.ToolTip"));
       this._fixInvalidSettingsCheckBox.UseVisualStyleBackColor = true;
@@ -186,7 +187,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._checkIfOnlineCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._checkIfOnlineCheckBox.Name = "_checkIfOnlineCheckBox";
       this._checkIfOnlineCheckBox.Size = new System.Drawing.Size(297, 21);
-      this._checkIfOnlineCheckBox.TabIndex = 4;
+      this._checkIfOnlineCheckBox.TabIndex = 3;
       this._checkIfOnlineCheckBox.Text = "Check Internet connection before sync run";
       this._toolTip.SetToolTip(this._checkIfOnlineCheckBox, resources.GetString("_checkIfOnlineCheckBox.ToolTip"));
       this._checkIfOnlineCheckBox.UseVisualStyleBackColor = true;
@@ -198,7 +199,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._includeCustomMessageClassesCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._includeCustomMessageClassesCheckBox.Name = "_includeCustomMessageClassesCheckBox";
       this._includeCustomMessageClassesCheckBox.Size = new System.Drawing.Size(335, 21);
-      this._includeCustomMessageClassesCheckBox.TabIndex = 7;
+      this._includeCustomMessageClassesCheckBox.TabIndex = 6;
       this._includeCustomMessageClassesCheckBox.Text = "Include custom message classes in Outlook filter";
       this._toolTip.SetToolTip(this._includeCustomMessageClassesCheckBox, "Use prefix filter to include also custom message_classes in filter for Outlook fo" +
         "lders. \r\nFor better performance, Windows Search Service shouldn\'t be deactivated" +
@@ -350,6 +351,20 @@ namespace CalDavSynchronizer.Ui.Options
       this.label6.TabIndex = 0;
       this.label6.Text = "Log Level:";
       // 
+      // _enableTrayIconCheckBox
+      // 
+      this._enableTrayIconCheckBox.AutoSize = true;
+      this._enableTrayIconCheckBox.Location = new System.Drawing.Point(16, 140);
+      this._enableTrayIconCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+      this._enableTrayIconCheckBox.Name = "_enableTrayIconCheckBox";
+      this._enableTrayIconCheckBox.Size = new System.Drawing.Size(137, 21);
+      this._enableTrayIconCheckBox.TabIndex = 7;
+      this._enableTrayIconCheckBox.Text = "Enable Tray Icon";
+      this._toolTip.SetToolTip(this._enableTrayIconCheckBox, "Use prefix filter to include also custom message_classes in filter for Outlook fo" +
+        "lders. \r\nFor better performance, Windows Search Service shouldn\'t be deactivated" +
+        " if this option is enabled.");
+      this._enableTrayIconCheckBox.UseVisualStyleBackColor = true;
+      // 
       // GeneralOptionsForm
       // 
       this.AcceptButton = this._okButton;
@@ -358,6 +373,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.BackColor = System.Drawing.SystemColors.Window;
       this.CancelButton = this._cancelButton;
       this.ClientSize = new System.Drawing.Size(503, 585);
+      this.Controls.Add(this._enableTrayIconCheckBox);
       this.Controls.Add(this._checkIfOnlineCheckBox);
       this.Controls.Add(this.groupBox3);
       this.Controls.Add(this.groupBox2);
@@ -410,5 +426,6 @@ namespace CalDavSynchronizer.Ui.Options
     private System.Windows.Forms.ComboBox _logLevelComboBox;
     private System.Windows.Forms.Label label6;
     private System.Windows.Forms.CheckBox _checkIfOnlineCheckBox;
+    private System.Windows.Forms.CheckBox _enableTrayIconCheckBox;
   }
 }

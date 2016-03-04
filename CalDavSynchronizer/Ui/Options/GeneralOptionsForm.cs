@@ -116,7 +116,8 @@ namespace CalDavSynchronizer.Ui.Options
                    ShowReportsWithErrorsImmediately = reportPopupMode == ReportPopupMode.JustErrors || reportPopupMode == ReportPopupMode.WarningsAndErrors,
                    ShowReportsWithWarningsImmediately = reportPopupMode == ReportPopupMode.WarningsAndErrors,
                    MaxReportAgeInDays = int.Parse(_maxReportAgeInDays.Text),
-                   EnableDebugLog = logLevel == LogLevel.Debug
+                   EnableDebugLog = logLevel == LogLevel.Debug,
+                   EnableTrayIcon = _enableTrayIconCheckBox.Checked
                };
       }
       set
@@ -133,6 +134,7 @@ namespace CalDavSynchronizer.Ui.Options
         _reportPopupModeComboBox.SelectedValue = GetReportPopupMode (value);
         _maxReportAgeInDays.Text = value.MaxReportAgeInDays.ToString();
         _logLevelComboBox.SelectedValue = value.EnableDebugLog ? LogLevel.Debug : LogLevel.Info;
+        _enableTrayIconCheckBox.Checked = value.EnableTrayIcon;
       }
     }
 
