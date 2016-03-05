@@ -30,18 +30,21 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
     /// </summary>
     private void InitializeComponent ()
     {
+      this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ContactMappingConfigurationForm));
       this._cancelButton = new System.Windows.Forms.Button();
       this._okButton = new System.Windows.Forms.Button();
       this._mapBirthdayCheckBox = new System.Windows.Forms.CheckBox();
       this._mapContactPhotoCheckBox = new System.Windows.Forms.CheckBox();
+      this._fixPhoneNumberFormatCheckBox = new System.Windows.Forms.CheckBox();
+      this._toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.SuspendLayout();
       // 
       // _cancelButton
       // 
       this._cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this._cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this._cancelButton.Location = new System.Drawing.Point(252, 118);
+      this._cancelButton.Location = new System.Drawing.Point(252, 147);
       this._cancelButton.Margin = new System.Windows.Forms.Padding(4);
       this._cancelButton.Name = "_cancelButton";
       this._cancelButton.Size = new System.Drawing.Size(100, 28);
@@ -52,7 +55,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       // _okButton
       // 
       this._okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._okButton.Location = new System.Drawing.Point(144, 118);
+      this._okButton.Location = new System.Drawing.Point(144, 147);
       this._okButton.Margin = new System.Windows.Forms.Padding(4);
       this._okButton.Name = "_okButton";
       this._okButton.Size = new System.Drawing.Size(100, 28);
@@ -70,6 +73,8 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this._mapBirthdayCheckBox.Size = new System.Drawing.Size(113, 21);
       this._mapBirthdayCheckBox.TabIndex = 2;
       this._mapBirthdayCheckBox.Text = "Map Birthday";
+      this._toolTip.SetToolTip(this._mapBirthdayCheckBox, "Outlook automatically creates birthday appointments in your calendar\r\nwhen the bi" +
+        "rthday is added to a contact item.");
       this._mapBirthdayCheckBox.UseVisualStyleBackColor = true;
       // 
       // _mapContactPhotoCheckBox
@@ -81,7 +86,27 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this._mapContactPhotoCheckBox.Size = new System.Drawing.Size(150, 21);
       this._mapContactPhotoCheckBox.TabIndex = 3;
       this._mapContactPhotoCheckBox.Text = "Map Contact Photo";
+      this._toolTip.SetToolTip(this._mapContactPhotoCheckBox, "Not supported in OL 2007.");
       this._mapContactPhotoCheckBox.UseVisualStyleBackColor = true;
+      // 
+      // _fixPhoneNumberFormatCheckBox
+      // 
+      this._fixPhoneNumberFormatCheckBox.AutoSize = true;
+      this._fixPhoneNumberFormatCheckBox.Location = new System.Drawing.Point(16, 73);
+      this._fixPhoneNumberFormatCheckBox.Margin = new System.Windows.Forms.Padding(4);
+      this._fixPhoneNumberFormatCheckBox.Name = "_fixPhoneNumberFormatCheckBox";
+      this._fixPhoneNumberFormatCheckBox.Size = new System.Drawing.Size(246, 21);
+      this._fixPhoneNumberFormatCheckBox.TabIndex = 4;
+      this._fixPhoneNumberFormatCheckBox.Text = "Fix imported phone number format";
+      this._toolTip.SetToolTip(this._fixPhoneNumberFormatCheckBox, "Convert numbers like +1 23 45678 9 \r\nto +1 (23) 45678 - 9 \r\nso that Outlook can s" +
+        "how country and area code.");
+      this._fixPhoneNumberFormatCheckBox.UseVisualStyleBackColor = true;
+      // 
+      // _toolTip
+      // 
+      this._toolTip.AutoPopDelay = 30000;
+      this._toolTip.InitialDelay = 500;
+      this._toolTip.ReshowDelay = 100;
       // 
       // ContactMappingConfigurationForm
       // 
@@ -90,7 +115,8 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.SystemColors.Window;
       this.CancelButton = this._cancelButton;
-      this.ClientSize = new System.Drawing.Size(368, 161);
+      this.ClientSize = new System.Drawing.Size(368, 190);
+      this.Controls.Add(this._fixPhoneNumberFormatCheckBox);
       this.Controls.Add(this._mapContactPhotoCheckBox);
       this.Controls.Add(this._mapBirthdayCheckBox);
       this.Controls.Add(this._okButton);
@@ -111,5 +137,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
     private System.Windows.Forms.Button _okButton;
     private System.Windows.Forms.CheckBox _mapBirthdayCheckBox;
     private System.Windows.Forms.CheckBox _mapContactPhotoCheckBox;
+    private System.Windows.Forms.CheckBox _fixPhoneNumberFormatCheckBox;
+    private System.Windows.Forms.ToolTip _toolTip;
   }
 }

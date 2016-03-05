@@ -27,6 +27,7 @@ using Thought.vCards;
 using log4net;
 using System.Reflection;
 using System.IO;
+using System.Text.RegularExpressions;
 
 
 namespace CalDavSynchronizer.Implementation.Contacts
@@ -659,7 +660,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    private static void MapTelephoneNumber2To1 (vCard source, ContactItem target)
+    private void MapTelephoneNumber2To1 (vCard source, ContactItem target)
     {
       target.HomeTelephoneNumber = string.Empty;
       target.BusinessTelephoneNumber = string.Empty;
@@ -669,85 +670,103 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       foreach (var phoneNumber in source.Phones)
       {
+        string sourceNumber = _configuration.FixPhoneNumberFormat ? 
+                              FixPhoneNumberFormat (phoneNumber.FullNumber) : phoneNumber.FullNumber;
         if (phoneNumber.IsMain)
         {
-          target.PrimaryTelephoneNumber = phoneNumber.FullNumber;
+          target.PrimaryTelephoneNumber = sourceNumber;
         }
         else if (phoneNumber.IsCellular)
         {
-          target.MobileTelephoneNumber = phoneNumber.FullNumber;
+          target.MobileTelephoneNumber = sourceNumber;
         }
         else if (phoneNumber.IsiPhone && string.IsNullOrEmpty (target.MobileTelephoneNumber))
         {
-          target.MobileTelephoneNumber = phoneNumber.FullNumber;
+          target.MobileTelephoneNumber = sourceNumber;
         }
         else if (phoneNumber.IsHome && !phoneNumber.IsFax)
         {
           if (string.IsNullOrEmpty (target.HomeTelephoneNumber))
           {
-            target.HomeTelephoneNumber = phoneNumber.FullNumber;
+            target.HomeTelephoneNumber = sourceNumber;
           }
           else
           {
-            target.Home2TelephoneNumber = phoneNumber.FullNumber;
+            target.Home2TelephoneNumber = sourceNumber;
           }
         }
         else if (phoneNumber.IsWork && !phoneNumber.IsFax)
         {
           if (string.IsNullOrEmpty (target.BusinessTelephoneNumber))
           {
-            target.BusinessTelephoneNumber = phoneNumber.FullNumber;
+            target.BusinessTelephoneNumber = sourceNumber;
           }
           else
           {
-            target.Business2TelephoneNumber = phoneNumber.FullNumber;
+            target.Business2TelephoneNumber = sourceNumber;
           }
         }
         else if (phoneNumber.IsFax)
         {
           if (phoneNumber.IsHome)
           {
-            target.HomeFaxNumber = phoneNumber.FullNumber;
+            target.HomeFaxNumber = sourceNumber;
           }
           else
           {
             if (string.IsNullOrEmpty (target.BusinessFaxNumber))
             {
-              target.BusinessFaxNumber = phoneNumber.FullNumber;
+              target.BusinessFaxNumber = sourceNumber;
             }
             else
             {
-              target.OtherFaxNumber = phoneNumber.FullNumber;
+              target.OtherFaxNumber = sourceNumber;
             }
           }
         }
         else if (phoneNumber.IsPager)
         {
-          target.PagerNumber = phoneNumber.FullNumber;
+          target.PagerNumber = sourceNumber;
         }
         else if (phoneNumber.IsCar)
         {
-          target.CarTelephoneNumber = phoneNumber.FullNumber;
+          target.CarTelephoneNumber = sourceNumber;
         }
         else if (phoneNumber.IsISDN)
         {
-          target.ISDNNumber = phoneNumber.FullNumber;
+          target.ISDNNumber = sourceNumber;
         }
         else
         {
           if (phoneNumber.IsPreferred && string.IsNullOrEmpty (target.PrimaryTelephoneNumber))
           {
-            target.PrimaryTelephoneNumber = phoneNumber.FullNumber;
+            target.PrimaryTelephoneNumber = sourceNumber;
           }
           else if (phoneNumber.IsPreferred && string.IsNullOrEmpty (target.HomeTelephoneNumber))
           {
-            target.HomeTelephoneNumber = phoneNumber.FullNumber;
+            target.HomeTelephoneNumber = sourceNumber;
           }
           else
           {
-            target.OtherTelephoneNumber = phoneNumber.FullNumber;
+            target.OtherTelephoneNumber = sourceNumber;
           }
         }
+      }
+    }
+
+    private static string FixPhoneNumberFormat (string number)
+    {
+      // Reformat telephone numbers so that Outlook can split country/area code and extension
+      var match = Regex.Match (number, @"(\+\d+) (\d+) (\d+)( \d+)?");
+      if (match.Success)
+      {
+        string ext = string.IsNullOrEmpty (match.Groups[4].Value) ? string.Empty : " - " + match.Groups[4].Value;
+          
+        return match.Groups[1].Value + " ( " + match.Groups[2].Value + " ) " + match.Groups[3].Value + ext;
+      }
+      else
+      {
+        return number;
       }
     }
 

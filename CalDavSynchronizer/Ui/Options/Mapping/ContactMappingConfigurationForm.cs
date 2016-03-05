@@ -45,13 +45,15 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
         return new ContactMappingConfiguration
                {
                    MapBirthday = _mapBirthdayCheckBox.Checked,
-                   MapContactPhoto = _mapContactPhotoCheckBox.Checked
+                   MapContactPhoto = _mapContactPhotoCheckBox.Checked,
+                   FixPhoneNumberFormat = _fixPhoneNumberFormatCheckBox.Checked
                };
       }
       set
       {
         _mapBirthdayCheckBox.Checked = value.MapBirthday;
         _mapContactPhotoCheckBox.Checked = value.MapContactPhoto;
+        _fixPhoneNumberFormatCheckBox.Checked = value.FixPhoneNumberFormat;
       }
     }
   }

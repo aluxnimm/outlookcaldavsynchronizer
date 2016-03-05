@@ -31,10 +31,13 @@ namespace CalDavSynchronizer.Contracts
 
     public bool MapContactPhoto { get; set; }
 
+    public bool FixPhoneNumberFormat { get; set; }
+
     public ContactMappingConfiguration ()
     {
       MapBirthday = true;
       MapContactPhoto = true;
+      FixPhoneNumberFormat = false;
     }
 
     public override IConfigurationForm<MappingConfigurationBase> CreateConfigurationForm (IConfigurationFormFactory factory)
