@@ -52,10 +52,15 @@
           <RowDefinition />
         </Grid.RowDefinitions>
         <TextBlock>Sync only Appointments with this category:</TextBlock>
-        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" />
+        <TextBox Text="{Binding EventCategory,UpdateSourceTrigger=PropertyChanged}"  Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" />
 
-        <CheckBox Grid.Row="1" Grid.Column="0">Map Calendar Color to category color</CheckBox>
+        <CheckBox   
+          IsEnabled="{Binding UseEventCategoryAsFilter}"
+          IsChecked="{Binding UseEventCategoryColorAndMapFromCalendarColor}" 
+          Grid.Row="1" 
+          Grid.Column="0">Map Calendar Color to category color</CheckBox>
         <ComboBox  
+          IsEnabled="{Binding UseEventCategoryAsFilterAndMapColor}"
           ItemsSource="{Binding AvailableEventCategoryColors}"
           SelectedValuePath="Value"
           SelectedValue="{Binding EventCategoryColor}"
@@ -72,11 +77,18 @@
             </DataTemplate>
           </ComboBox.ItemTemplate>
         </ComboBox>
-        <Button Grid.Row="1" Grid.Column="2">Fetch Color</Button>
-        <Button Grid.Row="1" Grid.Column="3">Set DAV Color</Button>
+        <Button 
+          IsEnabled="{Binding UseEventCategoryAsFilterAndMapColor}"
+          Grid.Row="1" 
+          Grid.Column="2">Fetch Color</Button>
+        <Button
+          IsEnabled="{Binding UseEventCategoryAsFilterAndMapColor}"
+          Grid.Row="1" 
+          Grid.Column="3">Set DAV Color</Button>
 
         <TextBlock Grid.Row="2" Grid.Column="0">Category Shortcut Key:</TextBlock>
         <ComboBox   
+          IsEnabled="{Binding UseEventCategoryAsFilter}"
           ItemsSource="{Binding AvailableShortcutKeys}"
           DisplayMemberPath="Name"
           SelectedValuePath="Value"

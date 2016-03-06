@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 {
-  public class EventMappingConfigurationViewModel : INotifyPropertyChanged, IOptionsViewModel
+  public class EventMappingConfigurationViewModel : ViewModelBase, IOptionsViewModel
   {
     private OlCategoryShortcutKey _categoryShortcutKey;
     private bool _createEventsInUtc;
@@ -79,8 +79,16 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       {
         _eventCategory = value;
         OnPropertyChanged();
+        // ReSharper disable once ExplicitCallerInfoArgument
+        OnPropertyChanged(nameof(UseEventCategoryAsFilter));
+        // ReSharper disable once ExplicitCallerInfoArgument
+        OnPropertyChanged (nameof(UseEventCategoryAsFilterAndMapColor));
       }
     }
+
+    public bool UseEventCategoryAsFilter => !String.IsNullOrEmpty (_eventCategory);
+    public bool UseEventCategoryAsFilterAndMapColor => !String.IsNullOrEmpty (_eventCategory) && _useEventCategoryColorAndMapFromCalendarColor;
+
 
     public OlCategoryColor EventCategoryColor
     {
@@ -179,10 +187,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       {
         _useEventCategoryColorAndMapFromCalendarColor = value;
         OnPropertyChanged();
+        // ReSharper disable once ExplicitCallerInfoArgument
+        OnPropertyChanged (nameof (UseEventCategoryAsFilterAndMapColor));
       }
     }
 
-    public event PropertyChangedEventHandler PropertyChanged;
+
 
     public void SetOptions (CalDavSynchronizer.Contracts.Options options)
     {
@@ -232,11 +242,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
 
     public IEnumerable<IOptionsViewModel> SubOptions => new IOptionsViewModel[] { };
-
-    protected virtual void OnPropertyChanged ([CallerMemberName] string propertyName = null)
-    {
-      PropertyChanged?.Invoke (this, new PropertyChangedEventArgs (propertyName));
-    }
 
     public static EventMappingConfigurationViewModel DesignInstance = new EventMappingConfigurationViewModel
                                                                       {
