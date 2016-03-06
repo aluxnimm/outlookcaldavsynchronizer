@@ -34,36 +34,38 @@ namespace CalDavSynchronizer.Utilities
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    public static readonly Dictionary<OlCategoryColor, string> CategoryColors = new Dictionary<OlCategoryColor, string>
+    public static readonly Dictionary<OlCategoryColor, int> CategoryColors = new Dictionary<OlCategoryColor, int>
     {
-      {OlCategoryColor.olCategoryColorNone, "#FFFFFF"},
-      {OlCategoryColor.olCategoryColorRed, "#E7A1A2"},
-      {OlCategoryColor.olCategoryColorOrange, "#F9BA89"},
-      {OlCategoryColor.olCategoryColorPeach, "#F7DD8F"},
-      {OlCategoryColor.olCategoryColorYellow, "#FCFA90"},
-      {OlCategoryColor.olCategoryColorGreen, "#78D168"},
-      {OlCategoryColor.olCategoryColorTeal, "#9FDCC9"},
-      {OlCategoryColor.olCategoryColorOlive, "#C6D2B0"},
-      {OlCategoryColor.olCategoryColorBlue, "#9DB7E8"},
-      {OlCategoryColor.olCategoryColorPurple, "#B5A1E2"},
-      {OlCategoryColor.olCategoryColorMaroon, "#daaec2"},
-      {OlCategoryColor.olCategoryColorSteel, "#dad9dc"},
-      {OlCategoryColor.olCategoryColorDarkSteel, "#6b7994"},
-      {OlCategoryColor.olCategoryColorGray, "#bfbfbf"},
-      {OlCategoryColor.olCategoryColorDarkGray, "#6f6f6f"},
-      {OlCategoryColor.olCategoryColorBlack, "#4f4f4f"},
-      {OlCategoryColor.olCategoryColorDarkRed, "#c11a25"},
-      {OlCategoryColor.olCategoryColorDarkOrange, "#e2620d"},
-      {OlCategoryColor.olCategoryColorDarkPeach, "#c79930"},
-      {OlCategoryColor.olCategoryColorDarkYellow, "#b9b300"},
-      {OlCategoryColor.olCategoryColorDarkGreen, "#368f2b"},
-      {OlCategoryColor.olCategoryColorDarkTeal, "#329b7a"},
-      {OlCategoryColor.olCategoryColorDarkOlive, "#778b45"},
-      {OlCategoryColor.olCategoryColorDarkBlue, "#2858a5"},
-      {OlCategoryColor.olCategoryColorDarkPurple, "#5c3fa3"},
-      {OlCategoryColor.olCategoryColorDarkMaroon, "#93446b"}
+      {OlCategoryColor.olCategoryColorNone, RgbToArgb(0xFFFFFF)},
+      {OlCategoryColor.olCategoryColorRed, RgbToArgb(0xE7A1A2)},
+      {OlCategoryColor.olCategoryColorOrange, RgbToArgb(0xF9BA89)},
+      {OlCategoryColor.olCategoryColorPeach, RgbToArgb(0xF7DD8F)},
+      {OlCategoryColor.olCategoryColorYellow, RgbToArgb(0xFCFA90)},
+      {OlCategoryColor.olCategoryColorGreen, RgbToArgb(0x78D168)},
+      {OlCategoryColor.olCategoryColorTeal, RgbToArgb(0x9FDCC9)},
+      {OlCategoryColor.olCategoryColorOlive, RgbToArgb(0xC6D2B0)},
+      {OlCategoryColor.olCategoryColorBlue, RgbToArgb(0x9DB7E8)},
+      {OlCategoryColor.olCategoryColorPurple, RgbToArgb(0xB5A1E2)},
+      {OlCategoryColor.olCategoryColorMaroon, RgbToArgb(0xdaaec2)},
+      {OlCategoryColor.olCategoryColorSteel, RgbToArgb(0xdad9dc)},
+      {OlCategoryColor.olCategoryColorDarkSteel, RgbToArgb(0x6b7994)},
+      {OlCategoryColor.olCategoryColorGray, RgbToArgb(0xbfbfbf)},
+      {OlCategoryColor.olCategoryColorDarkGray, RgbToArgb(0x6f6f6f)},
+      {OlCategoryColor.olCategoryColorBlack, RgbToArgb(0x4f4f4f)},
+      {OlCategoryColor.olCategoryColorDarkRed, RgbToArgb(0xc11a25)},
+      {OlCategoryColor.olCategoryColorDarkOrange, RgbToArgb(0xe2620d)},
+      {OlCategoryColor.olCategoryColorDarkPeach, RgbToArgb(0xc79930)},
+      {OlCategoryColor.olCategoryColorDarkYellow, RgbToArgb(0xb9b300)},
+      {OlCategoryColor.olCategoryColorDarkGreen, RgbToArgb(0x368f2b)},
+      {OlCategoryColor.olCategoryColorDarkTeal, RgbToArgb(0x329b7a)},
+      {OlCategoryColor.olCategoryColorDarkOlive, RgbToArgb(0x778b45)},
+      {OlCategoryColor.olCategoryColorDarkBlue, RgbToArgb(0x2858a5)},
+      {OlCategoryColor.olCategoryColorDarkPurple, RgbToArgb(0x5c3fa3)},
+      {OlCategoryColor.olCategoryColorDarkMaroon, RgbToArgb(0x93446b)}
     };
 
+
+    private static int RgbToArgb (int value) => 0xff << 24 | value;
 
     public static Color HexToColor (string hexColor)
     {
@@ -94,7 +96,7 @@ namespace CalDavSynchronizer.Utilities
 
       foreach (var cat in CategoryColors)
       {
-        Color catColor = HexToColor(cat.Value);
+        Color catColor = Color.FromArgb(cat.Value);
 
         var a = new Rgb { R = color.R, G = color.G, B = color.B };
         var b = new Rgb { R = catColor.R, G = catColor.G, B = catColor.B };

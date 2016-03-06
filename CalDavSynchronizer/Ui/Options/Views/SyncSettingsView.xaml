@@ -1,0 +1,74 @@
+﻿<UserControl x:Class="CalDavSynchronizer.Ui.Options.Views.SyncSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels"
+             mc:Ignorable="d"
+             d:DataContext="{x:Static viewModels:SyncSettingsViewModel.DesignInstance}">
+  <GroupBox Header="Sync settings">
+    <DockPanel>
+      <Grid DockPanel.Dock="Top">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition />
+          <RowDefinition />
+          <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <TextBlock>Synchronization Mode:</TextBlock>
+        <ComboBox
+          ItemsSource="{Binding AvailableSynchronizationModes}"
+          DisplayMemberPath="Name"
+          SelectedValuePath="Value"
+          SelectedValue="{Binding Mode}"
+          MinWidth="150" Grid.Row="0" Grid.Column="1" />
+
+        <TextBlock Grid.Row="1" Grid.Column="0">Conflict Resolution:</TextBlock>
+        <ComboBox
+          ItemsSource="{Binding AvailableConflictResolutions}"
+          DisplayMemberPath="Name"
+          SelectedValuePath="Value"
+          SelectedValue="{Binding Resolution}"
+           MinWidth="150" Grid.Row="1" Grid.Column="1" />
+
+        <TextBlock Grid.Row="2" Grid.Column="0">Synchronization interval (minutes):</TextBlock>
+        <ComboBox
+          ItemsSource="{Binding AvailableSyncIntervals}"
+          DisplayMemberPath="Name"
+          SelectedValuePath="Value"
+          SelectedValue="{Binding SynchronizationIntervalInMinutes}"
+           MinWidth="100" Grid.Row="2" Grid.Column="1" />
+
+      </Grid>
+      <GroupBox>
+        <GroupBox.Header>
+          <CheckBox Content="Use time range filter" IsChecked="{Binding UseSynchronizationTimeRange}" />
+        </GroupBox.Header>
+
+        <Grid DockPanel.Dock="Top" IsEnabled="{Binding UseSynchronizationTimeRange}">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+          </Grid.RowDefinitions>
+
+          <TextBlock>Synchronization timespan past (days):</TextBlock>
+          <TextBox HorizontalAlignment="Right" MinWidth="60" Grid.Row="0" Grid.Column="1" Text="{Binding DaysToSynchronizeInThePast}" />
+
+          <TextBlock Grid.Row="1" Grid.Column="0">Synchronization timespan future (days):</TextBlock>
+          <TextBox HorizontalAlignment="Right" MinWidth="60" Grid.Row="1" Grid.Column="1" Text="{Binding DaysToSynchronizeInTheFuture}" />
+
+        </Grid>
+
+      </GroupBox>
+
+    </DockPanel>
+  </GroupBox>
+</UserControl>

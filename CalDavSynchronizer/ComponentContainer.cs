@@ -169,7 +169,7 @@ namespace CalDavSynchronizer
       _reportGarbageCollection = new ReportGarbageCollection (_synchronizationReportRepository, TimeSpan.FromDays (generalOptions.MaxReportAgeInDays));
 
       _trayNotifier = generalOptions.EnableTrayIcon ? new TrayNotifier (this) : NullTrayNotifer.Instance;
-      _uiService = new UiService (_profileStatusesViewModel);
+      _uiService = new UiService (_profileStatusesViewModel,_session, _outlookAccountPasswordProvider);
     }
 
     private void EnsureCacheCompatibility (Options[] options)
@@ -350,6 +350,22 @@ namespace CalDavSynchronizer
           if (initialVisibleProfile.HasValue)
             _currentVisibleOptionsFormOrNull.ShowProfile (initialVisibleProfile.Value);
         }
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.HandleException (x, s_logger);
+      }
+    }
+
+    public void ShowOptionsWpfNoThrow ()
+    {
+      try
+      {
+        var options = _optionsDataAccess.LoadOptions();
+        GeneralOptions generalOptions = _generalOptionsDataAccess.LoadOptions();
+
+        _uiService.ShowOptions (options, generalOptions.FixInvalidSettings);
+
       }
       catch (Exception x)
       {

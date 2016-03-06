@@ -1,0 +1,89 @@
+﻿<UserControl x:Class="CalDavSynchronizer.Ui.Options.Views.Mapping.EventMappingConfigurationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mapping="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels.Mapping"
+             xmlns:views="clr-namespace:CalDavSynchronizer.Ui.Options.Views"
+             mc:Ignorable="d"
+             d:DataContext="{x:Static  mapping:EventMappingConfigurationViewModel.DesignInstance}"
+             >
+
+  <StackPanel>
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <TextBlock>Map reminder:</TextBlock>
+      <ComboBox 
+          ItemsSource="{Binding AvailableReminderMappings}"
+          DisplayMemberPath="Name"
+          SelectedValuePath="Value"
+          SelectedValue="{Binding MapReminder}"
+        Grid.Column="1" />
+    </Grid>
+    <CheckBox>Map Body</CheckBox>
+    <CheckBox>Create events on server in UTC</CheckBox>
+    <GroupBox Header="Privacy settings">
+      <StackPanel>
+        <CheckBox>Map Outlook Private flag to DAV CLASS:CONFIDENTIAL instead of PRIVATE</CheckBox>
+        <CheckBox>Map DAV CLASS:CONFIDENTIAL to Outlook Private flag instead of Confidential</CheckBox>
+      </StackPanel>
+    </GroupBox>
+    <GroupBox Header="Scheduling settings">
+      <StackPanel>
+        <CheckBox>Map Organizer and Attendees</CheckBox>
+        <CheckBox>Set SCHEDULE-AGENT=CLIENT</CheckBox>
+        <CheckBox>Don't send appointment notifications (from SOGo)</CheckBox>
+      </StackPanel>
+    </GroupBox>
+    <GroupBox Header="Outlook settings">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition />
+          <RowDefinition />
+          <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBlock>Sync only Appointments with this category:</TextBlock>
+        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" />
+
+        <CheckBox Grid.Row="1" Grid.Column="0">Map Calendar Color to category color</CheckBox>
+        <ComboBox  
+          ItemsSource="{Binding AvailableEventCategoryColors}"
+          SelectedValuePath="Value"
+          SelectedValue="{Binding EventCategoryColor}"
+          Grid.Row="1" Grid.Column="1" >
+          <ComboBox.Resources>
+            <views:OlCategoryColorConverter x:Key="OlCategoryColorConverter"></views:OlCategoryColorConverter>
+          </ComboBox.Resources>
+          <ComboBox.ItemTemplate>
+            <DataTemplate>
+              <StackPanel Orientation="Horizontal">
+                <Rectangle Margin="0,1,3,0" Width="16" Height="10" Stroke="Black" Fill="{Binding Value,Converter={StaticResource OlCategoryColorConverter}}"  />
+                <TextBlock Text="{Binding Name}" />
+              </StackPanel>
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+        <Button Grid.Row="1" Grid.Column="2">Fetch Color</Button>
+        <Button Grid.Row="1" Grid.Column="3">Set DAV Color</Button>
+
+        <TextBlock Grid.Row="2" Grid.Column="0">Category Shortcut Key:</TextBlock>
+        <ComboBox   
+          ItemsSource="{Binding AvailableShortcutKeys}"
+          DisplayMemberPath="Name"
+          SelectedValuePath="Value"
+          SelectedValue="{Binding CategoryShortcutKey}"
+                    Grid.Row="2" Grid.Column="1" />
+      </Grid>
+    </GroupBox>
+  </StackPanel>
+
+</UserControl>

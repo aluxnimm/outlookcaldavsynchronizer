@@ -81,7 +81,7 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
     public bool IsSelected
     {
       get { return _isSelected; }
-      set { CheckedPropertyChange (ref _isSelected, value, () => IsSelected); }
+      set { CheckedPropertyChange (ref _isSelected, value); }
     }
 
     public void Delete ()

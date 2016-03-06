@@ -20,7 +20,7 @@ using System.Windows.Forms;
 
 namespace CalDavSynchronizer.Ui
 {
-  internal class Item<TValue>
+  public class Item<TValue>
   {
     public TValue Value { get; private set; }
 

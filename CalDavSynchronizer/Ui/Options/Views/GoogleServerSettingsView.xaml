@@ -1,0 +1,40 @@
+﻿<UserControl x:Class="CalDavSynchronizer.Ui.Options.Views.GoogleServerSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels"
+             mc:Ignorable="d"
+             d:DataContext="{x:Static viewModels:GoogleServerSettingsViewModel.DesignInstance}"
+             >
+  <GroupBox Header="Server settings">
+    <DockPanel>
+      <Grid DockPanel.Dock="Top">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition />
+          <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition />
+          <RowDefinition />
+          <RowDefinition />
+          <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <TextBlock>Detected Url:</TextBlock>
+        <TextBox Text="{Binding CalenderUrl}" IsEnabled="{Binding IsChecked,ElementName=EditUrlToggleButton}" MinWidth="300" Grid.Row="0" Grid.Column="1" />
+
+        <ToggleButton x:Name="EditUrlToggleButton" HorizontalAlignment="Right" Content="Edit Url" Grid.Row="1" Grid.Column="1" />
+
+        <TextBlock Grid.Row="2" Grid.Column="0">Email address:</TextBlock>
+        <TextBox Text="{Binding EmailAddress}" HorizontalAlignment="Right" MinWidth="150" Grid.Row="2" Grid.Column="1" />
+
+      </Grid>
+      <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">
+        <Button Command="{Binding TestConnectionCommand}" HorizontalAlignment="Right">Test settings</Button>
+        <Button Command="{Binding DoAutoDiscoveryCommand}" HorizontalAlignment="Right">Do Autodiscovery</Button>
+
+      </StackPanel>
+    </DockPanel>
+  </GroupBox>
+</UserControl>

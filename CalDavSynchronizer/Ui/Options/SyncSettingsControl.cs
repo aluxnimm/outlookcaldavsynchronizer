@@ -27,7 +27,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options
 {
-  public partial class SyncSettingsControl : UserControl
+  public partial class SyncSettingsControl : UserControl, ISyncSettingsControl
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -45,7 +45,7 @@ namespace CalDavSynchronizer.Ui.Options
                                                                                      };
 
 
-    private readonly IList<Item<SynchronizationMode>> _availableSynchronizationModes = new List<Item<SynchronizationMode>>()
+    public  IList<Item<SynchronizationMode>> AvailableSynchronizationModes => new List<Item<SynchronizationMode>>()
                                                                                        {
                                                                                            new Item<SynchronizationMode> (SynchronizationMode.ReplicateOutlookIntoServer, "Outlook \u2192 Server (Replicate)"),
                                                                                            new Item<SynchronizationMode> (SynchronizationMode.ReplicateServerIntoOutlook, "Outlook \u2190 Server (Replicate)"),
@@ -61,7 +61,7 @@ namespace CalDavSynchronizer.Ui.Options
 
       Item.BindComboBox (_syncIntervalComboBox, _availableSyncIntervals);
       Item.BindComboBox (_conflictResolutionComboBox, _availableConflictResolutions);
-      Item.BindComboBox (_synchronizationModeComboBox, _availableSynchronizationModes);
+      Item.BindComboBox (_synchronizationModeComboBox, AvailableSynchronizationModes);
 
       _synchronizationModeComboBox.SelectedValueChanged += _synchronizationModeComboBox_SelectedValueChanged;
     }
@@ -84,26 +84,16 @@ namespace CalDavSynchronizer.Ui.Options
       }
     }
   
-    public bool SelectedModeRequiresWriteableServerResource
-    {
-      get { return RequiresWriteableServerResource ((SynchronizationMode) _synchronizationModeComboBox.SelectedValue); }
-    }
-
+  
     public string SelectedModeDisplayName 
     {
       get
       {
         var selectedMOde = (SynchronizationMode) _synchronizationModeComboBox.SelectedValue;
-        return _availableSynchronizationModes.Single (m => m.Value == selectedMOde).Name;
+        return AvailableSynchronizationModes.Single (m => m.Value == selectedMOde).Name;
       }
     }
 
-    private static bool RequiresWriteableServerResource (SynchronizationMode synchronizationMode)
-    {
-      return synchronizationMode == SynchronizationMode.MergeInBothDirections
-             || synchronizationMode == SynchronizationMode.MergeOutlookIntoServer
-             || synchronizationMode == SynchronizationMode.ReplicateOutlookIntoServer;
-    }
 
     public void SetOptions (Contracts.Options value)
     {
@@ -141,48 +131,20 @@ namespace CalDavSynchronizer.Ui.Options
       _timeRangeFilteringGroupBox.Enabled = _enableTimeRangeFilteringCheckBox.Checked;
     }
 
-    public void FixSynchronizationMode (TestResult result)
-    {
-      const SynchronizationMode readOnlyDefaultMode = SynchronizationMode.ReplicateServerIntoOutlook;
-      if (result.ResourceType.HasFlag (ResourceType.Calendar))
-      {
-        if (!result.CalendarProperties.HasFlag (CalendarProperties.IsWriteable)
-            && SelectedModeRequiresWriteableServerResource)
-        {
-          _synchronizationModeComboBox.SelectedValue = readOnlyDefaultMode;
-          MessageBox.Show (
-              string.Format (
-                  "The specified Url is a read-only calendar. Synchronization mode set to '{0}'.",
-                  _availableSynchronizationModes.Single (m => m.Value == readOnlyDefaultMode).Name),
-              OptionTasks.ConnectionTestCaption);
-        }
-      }
 
-      if (result.ResourceType.HasFlag (ResourceType.AddressBook))
-      {
-        if (!result.AddressBookProperties.HasFlag (AddressBookProperties.IsWriteable)
-            && SelectedModeRequiresWriteableServerResource)
-        {
-          _synchronizationModeComboBox.SelectedValue = readOnlyDefaultMode;
-          MessageBox.Show (
-              string.Format (
-                  "The specified Url is a read-only addressbook. Synchronization mode set to '{0}'.",
-                  _availableSynchronizationModes.Single (m => m.Value == readOnlyDefaultMode).Name),
-              OptionTasks.ConnectionTestCaption);
-        }
-      }
+    public SynchronizationMode Mode
+    {
+
+      get { return (SynchronizationMode) _synchronizationModeComboBox.SelectedValue; }
+      set {  _synchronizationModeComboBox.SelectedValue = value; }
     }
-
-    public void FixTimeRangeUsage (OlItemType? folderType)
+   
+    public bool UseSynchronizationTimeRange
     {
-      if (folderType == OlItemType.olContactItem)
+      get { return _enableTimeRangeFilteringCheckBox.Checked; }
+      set
       {
-        _enableTimeRangeFilteringCheckBox.Checked = false;
-        UpdateTimeRangeFilteringGroupBoxEnabled();
-      }
-      else
-      {
-        _enableTimeRangeFilteringCheckBox.Checked = true;
+        _enableTimeRangeFilteringCheckBox.Checked = value;
         UpdateTimeRangeFilteringGroupBoxEnabled();
       }
     }

@@ -29,5 +29,6 @@ namespace CalDavSynchronizer.Ui
   {
     void Show (ReportsViewModel reportsViewModel);
     void ShowProfileStatusesWindow ();
+    Contracts.Options[] ShowOptions (Contracts.Options[] options, bool fixInvalidSettings);
   }
 }

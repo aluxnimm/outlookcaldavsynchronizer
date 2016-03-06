@@ -42,6 +42,7 @@
       this.AboutButton = this.Factory.CreateRibbonButton();
       this.ReportsButton = this.Factory.CreateRibbonButton();
       this.StatusesButton = this.Factory.CreateRibbonButton();
+      this._synchronizationProfilesWpfButton = this.Factory.CreateRibbonButton();
       this.tab1.SuspendLayout();
       this.group1.SuspendLayout();
       this.SuspendLayout();
@@ -60,6 +61,7 @@
       this.group1.Items.Add(this.AboutButton);
       this.group1.Items.Add(this.ReportsButton);
       this.group1.Items.Add(this.StatusesButton);
+      this.group1.Items.Add(this._synchronizationProfilesWpfButton);
       this.group1.Label = "CalDav Synchronizer";
       this.group1.Name = "group1";
       // 
@@ -123,6 +125,14 @@
       this.StatusesButton.SuperTip = "Show status of sync runs.";
       this.StatusesButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.StatusesButton_Click);
       // 
+      // _synchronizationProfilesWpfButton
+      // 
+      this._synchronizationProfilesWpfButton.Image = global::CalDavSynchronizer.Properties.Resources.Options;
+      this._synchronizationProfilesWpfButton.Label = "Synchronization Profiles (WPF)";
+      this._synchronizationProfilesWpfButton.Name = "_synchronizationProfilesWpfButton";
+      this._synchronizationProfilesWpfButton.ShowImage = true;
+      this._synchronizationProfilesWpfButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this._synchronizationProfilesWpfButton_Click);
+      // 
       // CalDavSynchronizerRibbon
       // 
       this.Name = "CalDavSynchronizerRibbon";
@@ -147,6 +157,7 @@
     internal Microsoft.Office.Tools.Ribbon.RibbonButton GeneralOptionsButton;
     internal Microsoft.Office.Tools.Ribbon.RibbonButton ReportsButton;
     internal Microsoft.Office.Tools.Ribbon.RibbonButton StatusesButton;
+    internal Microsoft.Office.Tools.Ribbon.RibbonButton _synchronizationProfilesWpfButton;
   }
 
   partial class ThisRibbonCollection

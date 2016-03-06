@@ -30,6 +30,7 @@ namespace CalDavSynchronizer.Contracts
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private const int c_saltLength = 17;
+    private static Random s_random = new Random ();
 
     public bool Inactive { get; set; }
     public string Name { get; set; }
@@ -96,7 +97,7 @@ namespace CalDavSynchronizer.Contracts
       set
       {
         byte[] salt = new byte[c_saltLength];
-        new Random().NextBytes (salt);
+        s_random.NextBytes (salt);
         Salt = Convert.ToBase64String (salt);
 
         var data = Encoding.Unicode.GetBytes (value);

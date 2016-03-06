@@ -17,15 +17,18 @@
 
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
-using CalDavSynchronizer.Contracts;
+using log4net;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options
 {
   public partial class OptionsForm : Form
   {
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod ().DeclaringType);
+
     private readonly IOptionsDisplayControlFactory _optionsDisplayControlFactory;
 
     public OptionsForm (
@@ -164,14 +167,9 @@ namespace CalDavSynchronizer.Ui.Options
 
     private void _addProfileButton_Click (object sender, EventArgs e)
     {
-      var type = SelectOptionsDisplayTypeForm.QueryOptionsDisplayType();
-      if (!type.HasValue)
+      var options = OptionTasks.CreateNewSynchronizationProfileOrNull();
+      if (options == null)
         return;
-
-      Contracts.Options options = Contracts.Options.CreateDefault (type.Value);
-      options.ServerAdapterType = (type == OptionsDisplayType.Google)
-        ? ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth
-        : ServerAdapterType.WebDavHttpClientBased;
 
       _tabControl.SelectedTab = AddTabPage (options);
     }

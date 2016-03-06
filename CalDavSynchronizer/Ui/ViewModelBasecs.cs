@@ -18,35 +18,27 @@
 using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 
 namespace CalDavSynchronizer.Ui
 {
   public class ViewModelBase : INotifyPropertyChanged
   {
-    protected void OnPropertyChanged<T> (Expression<Func<T>> propertyExpression)
-    {
-      if (PropertyChanged != null)
-      {
-        PropertyChanged (this, new PropertyChangedEventArgs (GetPropertyName (propertyExpression)));
-      }
-    }
-
     public event PropertyChangedEventHandler PropertyChanged;
 
-
-    public static string GetPropertyName<T> (Expression<Func<T>> propertyExpression)
+    protected virtual void OnPropertyChanged ([CallerMemberName] string propertyName = null)
     {
-      MemberExpression expression = propertyExpression.Body as MemberExpression;
-      return expression.Member.Name;
+      PropertyChanged?.Invoke (this, new PropertyChangedEventArgs (propertyName));
     }
 
 
-    protected void CheckedPropertyChange<T> (ref T backingField, T newValue, Expression<Func<T>> propertyExpression)
+    protected void CheckedPropertyChange<T> (ref T backingField, T newValue, [CallerMemberName] string propertyName = null)
     {
       if (!Equals (backingField, newValue))
       {
         backingField = newValue;
-        OnPropertyChanged (propertyExpression);
+        // ReSharper disable once ExplicitCallerInfoArgument
+        OnPropertyChanged (propertyName);
       }
     }
   }

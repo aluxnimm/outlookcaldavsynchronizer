@@ -18,21 +18,37 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Windows.Forms.Integration;
+using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Properties;
+using CalDavSynchronizer.Ui.Options.ViewModels;
+using CalDavSynchronizer.Ui.Options.Views;
 using CalDavSynchronizer.Ui.Reports;
 using CalDavSynchronizer.Ui.Reports.ViewModels;
 using CalDavSynchronizer.Ui.Reports.Views;
 using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
 using CalDavSynchronizer.Ui.SystrayNotification.Views;
+using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui
 {
   internal class UiService : IUiService
   {
     private readonly GenericElementHostWindow _profileStatusesWindow;
+    private readonly NameSpace _session;
+    private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
 
-    public UiService (ProfileStatusesViewModel viewModel)
+    public UiService (ProfileStatusesViewModel viewModel, NameSpace session, IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
     {
+      if (viewModel == null)
+        throw new ArgumentNullException (nameof (viewModel));
+      if (session == null)
+        throw new ArgumentNullException (nameof (session));
+      if (outlookAccountPasswordProvider == null)
+
+        throw new ArgumentNullException (nameof (outlookAccountPasswordProvider));
+      _session = session;
+      _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
       var view = new ProfileStatusesView();
       view.DataContext = viewModel;
       _profileStatusesWindow = new GenericElementHostWindow();
@@ -76,6 +92,20 @@ namespace CalDavSynchronizer.Ui
         _profileStatusesWindow.BringToFront();
       else
         _profileStatusesWindow.Visible = true;
+    }
+
+    public Contracts.Options[] ShowOptions (Contracts.Options[] options, bool fixInvalidSettings)
+    {
+      var viewModel = new OptionsCollectionViewModel (_session, fixInvalidSettings, _outlookAccountPasswordProvider);
+      viewModel.OptionsCollection = options;
+      var window = new OptionsWindow();
+      window.DataContext = viewModel;
+      ElementHost.EnableModelessKeyboardInterop (window);
+
+      if (window.ShowDialog().GetValueOrDefault (false))
+        return viewModel.OptionsCollection;
+      else
+        return null;
     }
 
 

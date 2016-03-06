@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Ui.Options.Mapping;
 using CalDavSynchronizer.Utilities;
 using log4net;
@@ -209,9 +210,9 @@ namespace CalDavSynchronizer.Ui.Options
       _outlookFolderControl.UpdateFolderAccountName ();
     }
 
-    public bool SelectedSynchronizationModeRequiresWriteableServerResource
+    public SynchronizationMode SelectedSynchronizationMode
     {
-      get { return _syncSettingsControl.SelectedModeRequiresWriteableServerResource; }
+      get { return _syncSettingsControl.Mode; }
     }
 
     public string SelectedSynchronizationModeDisplayName
