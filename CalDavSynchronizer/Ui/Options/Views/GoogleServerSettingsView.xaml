@@ -11,8 +11,9 @@
     <DockPanel>
       <Grid DockPanel.Dock="Top">
         <Grid.ColumnDefinitions>
-          <ColumnDefinition />
-          <ColumnDefinition />
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
           <RowDefinition />
@@ -22,12 +23,12 @@
         </Grid.RowDefinitions>
 
         <TextBlock>Detected Url:</TextBlock>
-        <TextBox Text="{Binding CalenderUrl}" IsEnabled="{Binding IsChecked,ElementName=EditUrlToggleButton}" MinWidth="300" Grid.Row="0" Grid.Column="1" />
+        <TextBox Text="{Binding CalenderUrl}" IsEnabled="{Binding IsChecked,ElementName=EditUrlToggleButton}" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" />
 
-        <ToggleButton x:Name="EditUrlToggleButton" HorizontalAlignment="Right" Content="Edit Url" Grid.Row="1" Grid.Column="1" />
+        <ToggleButton x:Name="EditUrlToggleButton" HorizontalAlignment="Right" Content="Edit Url" Grid.Row="1" Grid.Column="2" />
 
         <TextBlock Grid.Row="2" Grid.Column="0">Email address:</TextBlock>
-        <TextBox Text="{Binding EmailAddress}" HorizontalAlignment="Right" MinWidth="150" Grid.Row="2" Grid.Column="1" />
+        <TextBox Text="{Binding EmailAddress}"  Grid.Row="2" Grid.Column="2" />
 
       </Grid>
       <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">

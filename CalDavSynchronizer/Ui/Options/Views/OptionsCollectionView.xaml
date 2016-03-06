@@ -21,6 +21,10 @@
       <Setter Property="Padding" Value="12,1"></Setter>
     </Style>
 
+    <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource {x:Type FrameworkElement}}">
+      <Setter Property="Padding" Value="12,1"></Setter>
+    </Style>
+
     <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type FrameworkElement}}">
     </Style>
 
