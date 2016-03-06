@@ -120,7 +120,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       MappingConfigurationViewModel = OptionTasks.CoerceMappingConfiguration (
           MappingConfigurationViewModel,
           _outlookFolderViewModel.OutlookFolderType,
-          _serverSettingsViewModel.ServerAdapterType == ServerAdapterType.GoogleTaskApi);
+          _serverSettingsViewModel.ServerAdapterType == ServerAdapterType.GoogleTaskApi,
+          _mappingConfigurationViewModelFactory);
     }
 
 

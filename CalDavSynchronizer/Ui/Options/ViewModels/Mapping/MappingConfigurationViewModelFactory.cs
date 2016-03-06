@@ -9,25 +9,34 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 {
   class MappingConfigurationViewModelFactory : IMappingConfigurationViewModelFactory
   {
-    public static readonly IMappingConfigurationViewModelFactory Instance = new MappingConfigurationViewModelFactory ();
+    private readonly IReadOnlyList<string> _availableCategories;
 
-    private MappingConfigurationViewModelFactory ()
+    public MappingConfigurationViewModelFactory (IReadOnlyList<string> availableCategories)
     {
+      if (availableCategories == null)
+        throw new ArgumentNullException (nameof (availableCategories));
+      _availableCategories = availableCategories;
     }
 
     public EventMappingConfigurationViewModel Create (EventMappingConfiguration configurationElement)
     {
-      return new EventMappingConfigurationViewModel();
+      var eventMappingConfigurationViewModel = new EventMappingConfigurationViewModel(_availableCategories);
+      eventMappingConfigurationViewModel.SetOptions (configurationElement);
+      return eventMappingConfigurationViewModel;
     }
 
     public ContactMappingConfigurationViewModel Create (ContactMappingConfiguration configurationElement)
     {
-      return new ContactMappingConfigurationViewModel();
+      var contactMappingConfigurationViewModel = new ContactMappingConfigurationViewModel();
+      contactMappingConfigurationViewModel.SetOptions (configurationElement);
+      return contactMappingConfigurationViewModel;
     }
 
     public TaskMappingConfigurationViewModel Create (TaskMappingConfiguration configurationElement)
     {
-      return new TaskMappingConfigurationViewModel();
+      var taskMappingConfigurationViewModel = new TaskMappingConfigurationViewModel();
+      taskMappingConfigurationViewModel.SetOptions (configurationElement);
+      return taskMappingConfigurationViewModel;
     }
   }
 }

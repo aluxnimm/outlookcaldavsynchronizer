@@ -17,9 +17,11 @@
 
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Properties;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.Options.Views;
@@ -96,7 +98,18 @@ namespace CalDavSynchronizer.Ui
 
     public Contracts.Options[] ShowOptions (Contracts.Options[] options, bool fixInvalidSettings)
     {
-      var viewModel = new OptionsCollectionViewModel (_session, fixInvalidSettings, _outlookAccountPasswordProvider);
+      string[] categories;
+      using (var categoriesWrapper = GenericComObjectWrapper.Create (_session.Categories))
+      {
+        categories = categoriesWrapper.Inner.ToSafeEnumerable<Category>().Select (c => c.Name).ToArray();
+      }
+
+      var viewModel = new OptionsCollectionViewModel (
+        _session, 
+        fixInvalidSettings, 
+        _outlookAccountPasswordProvider,
+        categories);
+
       viewModel.OptionsCollection = options;
       var window = new OptionsWindow();
       window.DataContext = viewModel;
@@ -107,6 +120,7 @@ namespace CalDavSynchronizer.Ui
       else
         return null;
     }
+
 
 
     private static void SetWindowSize (GenericElementHostWindow window, double ratioToCurrentScreensize)

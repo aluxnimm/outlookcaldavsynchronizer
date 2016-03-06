@@ -43,8 +43,11 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
     public void SetOptions (CalDavSynchronizer.Contracts.Options options)
     {
-      var mappingConfiguration = options.MappingConfiguration as ContactMappingConfiguration ?? new ContactMappingConfiguration();
+      SetOptions(options.MappingConfiguration as ContactMappingConfiguration ?? new ContactMappingConfiguration());
+    }
 
+    public void SetOptions (ContactMappingConfiguration mappingConfiguration)
+    {
       MapBirthday = mappingConfiguration.MapBirthday;
       MapContactPhoto = mappingConfiguration.MapContactPhoto;
     }

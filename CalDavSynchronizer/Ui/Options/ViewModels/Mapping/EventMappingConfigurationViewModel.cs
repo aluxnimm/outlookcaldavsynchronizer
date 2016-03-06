@@ -192,12 +192,16 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       }
     }
 
+    public IReadOnlyList<string> AvailableCategories { get; }
 
 
     public void SetOptions (CalDavSynchronizer.Contracts.Options options)
     {
-      var mappingConfiguration = options.MappingConfiguration as EventMappingConfiguration ?? new EventMappingConfiguration();
+      SetOptions(options.MappingConfiguration as EventMappingConfiguration ?? new EventMappingConfiguration());
+    }
 
+    public void SetOptions (EventMappingConfiguration mappingConfiguration)
+    {
       CategoryShortcutKey = mappingConfiguration.CategoryShortcutKey;
       CreateEventsInUtc = mappingConfiguration.CreateEventsInUTC;
       EventCategory = mappingConfiguration.EventCategory;
@@ -243,7 +247,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
     public IEnumerable<IOptionsViewModel> SubOptions => new IOptionsViewModel[] { };
 
-    public static EventMappingConfigurationViewModel DesignInstance = new EventMappingConfigurationViewModel
+    public static EventMappingConfigurationViewModel DesignInstance = new EventMappingConfigurationViewModel(new[] {"Cat1","Cat2"})
                                                                       {
                                                                           CategoryShortcutKey = OlCategoryShortcutKey.olCategoryShortcutKeyCtrlF4,
                                                                           CreateEventsInUtc = true,
@@ -259,5 +263,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                                                           SendNoAppointmentNotifications = true,
                                                                           UseEventCategoryColorAndMapFromCalendarColor = true
                                                                       };
+
+    public EventMappingConfigurationViewModel (IReadOnlyList<string> availableCategories)
+    {
+      if (availableCategories == null)
+        throw new ArgumentNullException (nameof (availableCategories));
+      AvailableCategories = availableCategories;
+    }
   }
 }

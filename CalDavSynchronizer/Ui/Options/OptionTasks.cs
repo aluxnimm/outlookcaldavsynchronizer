@@ -68,7 +68,11 @@ namespace CalDavSynchronizer.Ui.Options
       return mappingConfiguration;
     }
 
-    public static IOptionsViewModel CoerceMappingConfiguration (IOptionsViewModel currentMappingConfiguration, OlItemType? outlookFolderType, bool isGoogleTaskProfile)
+    public static IOptionsViewModel CoerceMappingConfiguration (
+      IOptionsViewModel currentMappingConfiguration, 
+      OlItemType? outlookFolderType, 
+      bool isGoogleTaskProfile,
+      IMappingConfigurationViewModelFactory factory)
     {
       if (isGoogleTaskProfile)
         return null;
@@ -76,11 +80,11 @@ namespace CalDavSynchronizer.Ui.Options
       switch (outlookFolderType)
       {
         case OlItemType.olAppointmentItem:
-          return currentMappingConfiguration as EventMappingConfigurationViewModel ?? new EventMappingConfigurationViewModel();
+          return currentMappingConfiguration as EventMappingConfigurationViewModel ?? factory.Create (new EventMappingConfiguration ());
         case OlItemType.olContactItem:
-          return currentMappingConfiguration as ContactMappingConfigurationViewModel ?? new ContactMappingConfigurationViewModel ();
+          return currentMappingConfiguration as ContactMappingConfigurationViewModel ?? factory.Create(new ContactMappingConfiguration());
         case OlItemType.olTaskItem:
-          return currentMappingConfiguration as TaskMappingConfigurationViewModel ?? new TaskMappingConfigurationViewModel ();
+          return currentMappingConfiguration as TaskMappingConfigurationViewModel ?? factory.Create (new TaskMappingConfiguration ());
         default:
           return null;
       }

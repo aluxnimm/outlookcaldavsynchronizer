@@ -52,18 +52,22 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       }
     }
 
-    public static ContactMappingConfigurationViewModel DesignInstance => new ContactMappingConfigurationViewModel
+    public static TaskMappingConfigurationViewModel DesignInstance => new TaskMappingConfigurationViewModel
                                                                          {
-                                                                             MapBirthday = true,
-                                                                             MapContactPhoto = true
+                                                                              MapBody = true,
+                                                                              MapPriority = true,
+                                                                              MapReminder = ReminderMapping.JustUpcoming
                                                                          };
 
     public event PropertyChangedEventHandler PropertyChanged;
 
     public void SetOptions (CalDavSynchronizer.Contracts.Options options)
     {
-      var mappingConfiguration = options.MappingConfiguration as TaskMappingConfiguration ?? new TaskMappingConfiguration();
+      SetOptions(options.MappingConfiguration as TaskMappingConfiguration ?? new TaskMappingConfiguration());
+    }
 
+    public void SetOptions (TaskMappingConfiguration mappingConfiguration)
+    {
       MapBody = mappingConfiguration.MapBody;
       MapPriority = mappingConfiguration.MapPriority;
       MapReminder = mappingConfiguration.MapReminder;

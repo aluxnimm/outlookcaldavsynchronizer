@@ -23,19 +23,19 @@
           SelectedValue="{Binding MapReminder}"
         Grid.Column="1" />
     </Grid>
-    <CheckBox>Map Body</CheckBox>
-    <CheckBox>Create events on server in UTC</CheckBox>
+    <CheckBox IsChecked="{Binding MapBody}">Map Body</CheckBox>
+    <CheckBox IsChecked="{Binding CreateEventsInUtc}">Create events on server in UTC</CheckBox>
     <GroupBox Header="Privacy settings">
       <StackPanel>
-        <CheckBox>Map Outlook Private flag to DAV CLASS:CONFIDENTIAL instead of PRIVATE</CheckBox>
-        <CheckBox>Map DAV CLASS:CONFIDENTIAL to Outlook Private flag instead of Confidential</CheckBox>
+        <CheckBox  IsChecked="{Binding MapSensitivityPrivateToClassConfidential}">Map Outlook Private flag to DAV CLASS:CONFIDENTIAL instead of PRIVATE</CheckBox>
+        <CheckBox  IsChecked="{Binding MapClassConfidentialToSensitivityPrivate}">Map DAV CLASS:CONFIDENTIAL to Outlook Private flag instead of Confidential</CheckBox>
       </StackPanel>
     </GroupBox>
     <GroupBox Header="Scheduling settings">
       <StackPanel>
-        <CheckBox>Map Organizer and Attendees</CheckBox>
-        <CheckBox>Set SCHEDULE-AGENT=CLIENT</CheckBox>
-        <CheckBox>Don't send appointment notifications (from SOGo)</CheckBox>
+        <CheckBox  IsChecked="{Binding MapAttendees}">Map Organizer and Attendees</CheckBox>
+        <CheckBox  IsChecked="{Binding ScheduleAgentClient}">Set SCHEDULE-AGENT=CLIENT</CheckBox>
+        <CheckBox  IsChecked="{Binding SendNoAppointmentNotifications}">Don't send appointment notifications (from SOGo)</CheckBox>
       </StackPanel>
     </GroupBox>
     <GroupBox Header="Outlook settings">
@@ -52,7 +52,13 @@
           <RowDefinition />
         </Grid.RowDefinitions>
         <TextBlock>Sync only Appointments with this category:</TextBlock>
-        <TextBox Text="{Binding EventCategory,UpdateSourceTrigger=PropertyChanged}"  Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" />
+        <ComboBox 
+          IsEditable="True" 
+          Text="{Binding EventCategory,UpdateSourceTrigger=PropertyChanged}"  
+          ItemsSource="{Binding AvailableCategories}"
+          Grid.Row="0" 
+          Grid.Column="1" 
+          Grid.ColumnSpan="3" />
 
         <CheckBox   
           IsEnabled="{Binding UseEventCategoryAsFilter}"

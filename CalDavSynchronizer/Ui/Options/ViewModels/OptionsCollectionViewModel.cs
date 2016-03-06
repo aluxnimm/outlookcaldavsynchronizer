@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options.ViewModels.Mapping;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
@@ -14,13 +15,22 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private readonly bool _fixInvalidSettings;
     public event EventHandler<CloseEventArgs> CloseRequested;
 
-    public OptionsCollectionViewModel (NameSpace session, bool fixInvalidSettings, IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
+    public OptionsCollectionViewModel (
+      NameSpace session,
+      bool fixInvalidSettings,
+      IOutlookAccountPasswordProvider outlookAccountPasswordProvider,
+      IReadOnlyList<string> availableEventCategories)
     {
       _fixInvalidSettings = fixInvalidSettings;
       if (session == null)
         throw new ArgumentNullException (nameof (session));
 
-      _optionsViewModelFactory = new OptionsViewModelFactory (session, this, outlookAccountPasswordProvider);
+
+      _optionsViewModelFactory = new OptionsViewModelFactory (
+        session,
+        this,
+        outlookAccountPasswordProvider,
+        new MappingConfigurationViewModelFactory(availableEventCategories));
       AddCommand = new DelegateCommand (_ => Add());
       CloseCommand = new DelegateCommand (shouldSaveNewOptions => Close((bool)shouldSaveNewOptions));
     }
@@ -96,7 +106,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
           var viewModel = new OptionsCollectionViewModel (
               new DesignOutlookSession(),
               false,
-              NullOutlookAccountPasswordProvider.Instance);
+              NullOutlookAccountPasswordProvider.Instance,
+              new[] {"Cat1","Cat2"});
           viewModel.Options.Add (GenericOptionsViewModel.DesignInstance);
           viewModel.Options.Add (GenericOptionsViewModel.DesignInstance);
           return viewModel;

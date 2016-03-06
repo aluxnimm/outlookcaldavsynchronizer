@@ -12,8 +12,13 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private readonly IOptionsViewModelParent _optionsViewModelParent;
     private readonly NameSpace _session;
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
+    private IMappingConfigurationViewModelFactory _mappingConfigurationViewModelFactory;
 
-    public OptionsViewModelFactory (NameSpace session, IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
+    public OptionsViewModelFactory (
+      NameSpace session, 
+      IOptionsViewModelParent optionsViewModelParent, 
+      IOutlookAccountPasswordProvider outlookAccountPasswordProvider,
+      IMappingConfigurationViewModelFactory mappingConfigurationViewModelFactory)
     {
       if (session == null)
         throw new ArgumentNullException (nameof (session));
@@ -21,9 +26,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         throw new ArgumentNullException (nameof (optionsViewModelParent));
       if (outlookAccountPasswordProvider == null)
         throw new ArgumentNullException (nameof (outlookAccountPasswordProvider));
+      if (mappingConfigurationViewModelFactory == null)
+        throw new ArgumentNullException (nameof (mappingConfigurationViewModelFactory));
 
       _optionsViewModelParent = optionsViewModelParent;
       _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
+      _mappingConfigurationViewModelFactory = mappingConfigurationViewModelFactory;
       _session = session;
     }
 
@@ -42,7 +50,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
           IsGoogleProfile (options)
               ? CreateGoogleServerSettingsViewModel
               : new Func<ISettingsFaultFinder, ICurrentOptions, IServerSettingsViewModel> (CreateServerSettingsViewModel),
-          MappingConfigurationViewModelFactory.Instance);
+          _mappingConfigurationViewModelFactory);
 
       optionsViewModel.SetOptions (options);
       return optionsViewModel;
