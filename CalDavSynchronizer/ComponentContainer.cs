@@ -330,13 +330,8 @@ namespace CalDavSynchronizer
             if (_currentVisibleOptionsFormOrNull.ShowDialog() == DialogResult.OK)
             {
               var newOptions = _currentVisibleOptionsFormOrNull.OptionsList;
-              _optionsDataAccess.SaveOptions (newOptions);
-              _scheduler.SetOptions (newOptions, generalOptions.CheckIfOnline);
-              _profileStatusesViewModel.EnsureProfilesDisplayed (newOptions);
-              DeleteEntityChachesForChangedProfiles (options, newOptions);
 
-              var changedOptions = CreateChangePairs (options, newOptions);
-              SwitchCategories (changedOptions);
+              ApplyNewOptions (options, newOptions, generalOptions);
             }
           }
           finally
@@ -357,6 +352,16 @@ namespace CalDavSynchronizer
       }
     }
 
+    private void ApplyNewOptions (Options[] oldOptions, Options[] newOptions, GeneralOptions generalOptions)
+    {
+      _optionsDataAccess.SaveOptions (newOptions);
+      _scheduler.SetOptions (newOptions, generalOptions.CheckIfOnline);
+      _profileStatusesViewModel.EnsureProfilesDisplayed (newOptions);
+      DeleteEntityChachesForChangedProfiles (oldOptions, newOptions);
+      var changedOptions = CreateChangePairs (oldOptions, newOptions);
+      SwitchCategories (changedOptions);
+    }
+
     public void ShowOptionsWpfNoThrow ()
     {
       try
@@ -364,7 +369,12 @@ namespace CalDavSynchronizer
         var options = _optionsDataAccess.LoadOptions();
         GeneralOptions generalOptions = _generalOptionsDataAccess.LoadOptions();
 
-        _uiService.ShowOptions (options, generalOptions.FixInvalidSettings);
+        var newOptions = _uiService.ShowOptions (options, generalOptions.FixInvalidSettings);
+        if (newOptions != null)
+        {
+          _optionsDataAccess.BackupOptions();
+          ApplyNewOptions (options, newOptions, generalOptions);
+        }
 
       }
       catch (Exception x)

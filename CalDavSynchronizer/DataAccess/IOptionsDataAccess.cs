@@ -23,5 +23,6 @@ namespace CalDavSynchronizer.DataAccess
   {
     Options[] LoadOptions ();
     void SaveOptions (Options[] options);
+    void BackupOptions ();
   }
 }

@@ -46,5 +46,13 @@ namespace CalDavSynchronizer.DataAccess
 
       File.WriteAllText (_optionsFilePath, Serializer<Options[]>.Serialize (options));
     }
+
+    public void BackupOptions ()
+    {
+      if (File.Exists (_optionsFilePath))
+      {
+        File.Copy (_optionsFilePath, _optionsFilePath + ".bak", true);
+      }
+    }
   }
 }
