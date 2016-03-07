@@ -169,7 +169,7 @@ namespace CalDavSynchronizer
       _reportGarbageCollection = new ReportGarbageCollection (_synchronizationReportRepository, TimeSpan.FromDays (generalOptions.MaxReportAgeInDays));
 
       _trayNotifier = generalOptions.EnableTrayIcon ? new TrayNotifier (this) : NullTrayNotifer.Instance;
-      _uiService = new UiService (_profileStatusesViewModel,_session, _outlookAccountPasswordProvider);
+      _uiService = new UiService (_profileStatusesViewModel,_session, _outlookAccountPasswordProvider, GetProfileDataDirectory);
     }
 
     private void EnsureCacheCompatibility (Options[] options)

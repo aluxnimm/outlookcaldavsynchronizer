@@ -15,7 +15,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     private OptionsDisplayType _displayType;
     private string _name;
-    private Guid _id;
     private IEnumerable<IOptionsSection> _sections;
     private IEnumerable<IOptionsViewModel> _subOptions;
 
@@ -58,6 +57,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       }
     }
 
+    public Guid Id { get; private set; }
+
     public void SetOptions (CalDavSynchronizer.Contracts.Options options)
     {
       foreach (var section in Sections)
@@ -67,7 +68,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         subViewModel.SetOptions (options);
       IsActive = !options.Inactive;
       Name = options.Name;
-      _id = options.Id;
+      Id = options.Id;
       _displayType = options.DisplayType;
 
       SetOptionsOverride (options);
@@ -89,7 +90,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       options.DisplayType = _displayType;
       options.Inactive = !IsActive;
       options.Name = Name;
-      options.Id = _id;
+      options.Id = Id;
     }
 
     public bool Validate (StringBuilder errorBuilder)

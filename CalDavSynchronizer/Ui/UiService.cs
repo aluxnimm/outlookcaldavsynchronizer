@@ -39,8 +39,13 @@ namespace CalDavSynchronizer.Ui
     private readonly GenericElementHostWindow _profileStatusesWindow;
     private readonly NameSpace _session;
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
+    private readonly Func<Guid, string> _profileDataDirectoryFactory;
 
-    public UiService (ProfileStatusesViewModel viewModel, NameSpace session, IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
+    public UiService (
+      ProfileStatusesViewModel viewModel,
+      NameSpace session, 
+      IOutlookAccountPasswordProvider outlookAccountPasswordProvider,
+      Func<Guid, string> profileDataDirectoryFactory)
     {
       if (viewModel == null)
         throw new ArgumentNullException (nameof (viewModel));
@@ -49,8 +54,11 @@ namespace CalDavSynchronizer.Ui
       if (outlookAccountPasswordProvider == null)
 
         throw new ArgumentNullException (nameof (outlookAccountPasswordProvider));
+      if (profileDataDirectoryFactory == null)
+        throw new ArgumentNullException (nameof (profileDataDirectoryFactory));
       _session = session;
       _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
+      _profileDataDirectoryFactory = profileDataDirectoryFactory;
       var view = new ProfileStatusesView();
       view.DataContext = viewModel;
       _profileStatusesWindow = new GenericElementHostWindow();
@@ -108,7 +116,8 @@ namespace CalDavSynchronizer.Ui
         _session, 
         fixInvalidSettings, 
         _outlookAccountPasswordProvider,
-        categories);
+        categories,
+        _profileDataDirectoryFactory);
 
       viewModel.OptionsCollection = options;
       var window = new OptionsWindow();

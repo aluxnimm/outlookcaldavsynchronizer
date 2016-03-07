@@ -1,29 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Reflection;
+using System.Windows;
 using System.Windows.Input;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Ui.Options.ViewModels.Mapping;
+using log4net;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
   public class OptionsCollectionViewModel : IOptionsViewModelParent
   {
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
+
     private readonly ObservableCollection<OptionsViewModelBase> _options = new ObservableCollection<OptionsViewModelBase>();
     private readonly IOptionsViewModelFactory _optionsViewModelFactory;
     private readonly bool _fixInvalidSettings;
     public event EventHandler<CloseEventArgs> CloseRequested;
+    private readonly Func<Guid, string> _profileDataDirectoryFactory;
 
     public OptionsCollectionViewModel (
       NameSpace session,
       bool fixInvalidSettings,
       IOutlookAccountPasswordProvider outlookAccountPasswordProvider,
-      IReadOnlyList<string> availableEventCategories)
+      IReadOnlyList<string> availableEventCategories, 
+      Func<Guid, string> profileDataDirectoryFactory)
     {
       _fixInvalidSettings = fixInvalidSettings;
+      _profileDataDirectoryFactory = profileDataDirectoryFactory;
       if (session == null)
         throw new ArgumentNullException (nameof (session));
+      if (profileDataDirectoryFactory == null)
+        throw new ArgumentNullException (nameof (profileDataDirectoryFactory));
 
 
       _optionsViewModelFactory = new OptionsViewModelFactory (
@@ -96,6 +107,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     public void RequestCacheDeletion (OptionsViewModelBase viewModel)
     {
+     
+        s_logger.InfoFormat ("Deleting cache for profile '{0}'", viewModel.Name);
+
+        var profileDataDirectory = _profileDataDirectoryFactory (viewModel.Id);
+        if (Directory.Exists (profileDataDirectory))
+          Directory.Delete (profileDataDirectory, true);
+
+        MessageBox.Show ("A new intial sync will be performed with the next sync run!", "Profile cache deleted",MessageBoxButton.OK, MessageBoxImage.Information);
+    
     }
 
     public static OptionsCollectionViewModel DesignInstance
@@ -107,7 +127,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
               new DesignOutlookSession(),
               false,
               NullOutlookAccountPasswordProvider.Instance,
-              new[] {"Cat1","Cat2"});
+              new[] {"Cat1","Cat2"},
+              _ => string.Empty);
           viewModel.Options.Add (GenericOptionsViewModel.DesignInstance);
           viewModel.Options.Add (GenericOptionsViewModel.DesignInstance);
           return viewModel;
