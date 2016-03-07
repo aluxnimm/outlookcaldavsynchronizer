@@ -35,9 +35,10 @@
         <TextBox Text="{Binding UserName}"  Grid.Row="1" Grid.Column="2" />
 
         <TextBlock Grid.Row="2" Grid.Column="0">Password:</TextBlock>
-        <TextBox Text="{Binding Password}"
-                 IsEnabled="{Binding IsChecked, ElementName=UseAccountPasswordCheckBox, Converter={StaticResource BooleanNotConverter}}"
-                  Grid.Row="2" Grid.Column="2" />
+        <PasswordBox x:Name="_passwordBox"
+                     PasswordChar="*" 
+                     IsEnabled="{Binding IsChecked, ElementName=UseAccountPasswordCheckBox, Converter={StaticResource BooleanNotConverter}}"
+                     Grid.Row="2" Grid.Column="2" />
 
         <CheckBox IsChecked="{Binding UseAccountPassword}" x:Name="UseAccountPasswordCheckBox" Grid.Row="3" Grid.ColumnSpan="2" Grid.Column="2">Use IMAP/POP3 account password</CheckBox>
 
