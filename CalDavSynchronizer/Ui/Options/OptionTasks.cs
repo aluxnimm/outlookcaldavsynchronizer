@@ -284,7 +284,7 @@ namespace CalDavSynchronizer.Ui.Options
     public static async Task<AutoDiscoveryResult> DoAutoDiscovery (Uri autoDiscoveryUri, IWebDavClient webDavClient, bool useWellKnownCalDav, bool useWellKnownCardDav, OlItemType? selectedOutlookFolderType)
     {
       var calDavDataAccess = new CalDavDataAccess (autoDiscoveryUri, webDavClient);
-      IReadOnlyList<Tuple<Uri, string, string>> foundCaldendars = await calDavDataAccess.GetUserCalendarsNoThrow (useWellKnownCalDav);
+      var foundCaldendars = await calDavDataAccess.GetUserCalendarsNoThrow (useWellKnownCalDav);
 
       var cardDavDataAccess = new CardDavDataAccess (autoDiscoveryUri, webDavClient);
       IReadOnlyList<Tuple<Uri, string>> foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow (useWellKnownCardDav);
@@ -498,7 +498,7 @@ namespace CalDavSynchronizer.Ui.Options
       if (ConnectionTester.RequiresAutoDiscovery (enteredUri))
       {
         var calDavDataAccess = new CalDavDataAccess (enteredUri, webDavClient);
-        IReadOnlyList<Tuple<Uri, string, string>> foundCaldendars = await calDavDataAccess.GetUserCalendarsNoThrow (false);
+        var foundCaldendars = await calDavDataAccess.GetUserCalendarsNoThrow (false);
 
         var cardDavDataAccess = new CardDavDataAccess (enteredUri, webDavClient);
         IReadOnlyList<Tuple<Uri, string>> foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow (true);

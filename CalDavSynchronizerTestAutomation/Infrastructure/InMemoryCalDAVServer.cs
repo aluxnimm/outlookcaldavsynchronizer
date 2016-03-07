@@ -21,6 +21,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
+using CalDavSynchronizer.Utilities;
 using GenSync;
 
 namespace CalDavSynchronizerTestAutomation.Infrastructure
@@ -48,12 +49,12 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
     {
       return Task.FromResult (true);
     }
-    public Task<string> GetCalendarColorNoThrow ()
+    public Task<ArgbColor?> GetCalendarColorNoThrow ()
     {
-      return Task.FromResult (string.Empty);
+      return Task.FromResult ((ArgbColor?)null);
     }
 
-    public Task<bool> SetCalendarColorNoThrow (string calendarColor)
+    public Task<bool> SetCalendarColorNoThrow (ArgbColor argbColor)
     {
       throw new NotImplementedException();
     }

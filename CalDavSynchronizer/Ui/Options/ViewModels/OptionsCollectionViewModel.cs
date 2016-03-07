@@ -30,7 +30,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         session,
         this,
         outlookAccountPasswordProvider,
-        new MappingConfigurationViewModelFactory(availableEventCategories));
+        availableEventCategories);
       AddCommand = new DelegateCommand (_ => Add());
       CloseCommand = new DelegateCommand (shouldSaveNewOptions => Close((bool)shouldSaveNewOptions));
     }

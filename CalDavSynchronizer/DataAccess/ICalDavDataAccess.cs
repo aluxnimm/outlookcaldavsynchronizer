@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
+using CalDavSynchronizer.Utilities;
 using GenSync;
 
 namespace CalDavSynchronizer.DataAccess
@@ -30,8 +31,8 @@ namespace CalDavSynchronizer.DataAccess
     Task<bool> IsCalendarAccessSupported ();
     Task<bool> IsWriteable ();
 
-    Task<string> GetCalendarColorNoThrow ();
-    Task<bool> SetCalendarColorNoThrow (string calendarColor);
+    Task<ArgbColor?> GetCalendarColorNoThrow ();
+    Task<bool> SetCalendarColorNoThrow (ArgbColor color);
 
     Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetEventVersions (DateTimeRange? range);
     Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetTodoVersions (DateTimeRange? range);

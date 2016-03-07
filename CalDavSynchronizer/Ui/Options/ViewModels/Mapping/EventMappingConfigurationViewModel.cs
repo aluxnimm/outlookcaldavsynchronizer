@@ -7,11 +7,15 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Utilities;
 using Microsoft.Office.Interop.Outlook;
 using System.Linq;
+using System.Windows.Input;
+using log4net;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 {
   public class EventMappingConfigurationViewModel : ViewModelBase, IOptionsViewModel
   {
+    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);
+
     private OlCategoryShortcutKey _categoryShortcutKey;
     private bool _createEventsInUtc;
     private string _eventCategory;
@@ -25,6 +29,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     private bool _scheduleAgentClient;
     private bool _sendNoAppointmentNotifications;
     private bool _useEventCategoryColorAndMapFromCalendarColor;
+    private readonly ICurrentOptions _currentOptions;
 
     public IList<Item<ReminderMapping>> AvailableReminderMappings { get; } = new List<Item<ReminderMapping>>
                                                                              {
@@ -51,6 +56,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
     public IList<Item<OlCategoryColor>> AvailableEventCategoryColors { get; } = 
       ColorHelper.CategoryColors.Select (kv => new Item<OlCategoryColor> (kv.Key, kv.Key.ToString().Substring (15))).ToList();
+
+    public ICommand GetServerCalendarColorCommand { get; }
+    public ICommand SetServerCalendarColorCommand { get; }
 
     public OlCategoryShortcutKey CategoryShortcutKey
     {
@@ -247,7 +255,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
     public IEnumerable<IOptionsViewModel> SubOptions => new IOptionsViewModel[] { };
 
-    public static EventMappingConfigurationViewModel DesignInstance = new EventMappingConfigurationViewModel(new[] {"Cat1","Cat2"})
+    public static EventMappingConfigurationViewModel DesignInstance = new EventMappingConfigurationViewModel(new[] {"Cat1","Cat2"}, new DesignCurrentOptions())
                                                                       {
                                                                           CategoryShortcutKey = OlCategoryShortcutKey.olCategoryShortcutKeyCtrlF4,
                                                                           CreateEventsInUtc = true,
@@ -264,11 +272,60 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                                                           UseEventCategoryColorAndMapFromCalendarColor = true
                                                                       };
 
-    public EventMappingConfigurationViewModel (IReadOnlyList<string> availableCategories)
+    public EventMappingConfigurationViewModel (IReadOnlyList<string> availableCategories, ICurrentOptions currentOptions)
     {
       if (availableCategories == null)
         throw new ArgumentNullException (nameof (availableCategories));
+      if (currentOptions == null)
+        throw new ArgumentNullException (nameof (currentOptions));
+
       AvailableCategories = availableCategories;
+      _currentOptions = currentOptions;
+      SetServerCalendarColorCommand = new DelegateCommand (_ => SetServerCalendarColor());
+      GetServerCalendarColorCommand = new DelegateCommand (_ => GetServerCalendarColor());
+    }
+
+    private async void GetServerCalendarColor ()
+    {
+      try
+      {
+        var serverColor = await _currentOptions.CreateCalDavDataAccess().GetCalendarColorNoThrow();
+
+        if (serverColor != null)
+        {
+          EventCategoryColor = ColorHelper.FindMatchingCategoryColor (serverColor.Value);
+        }
+      }
+      catch (System.Exception x)
+      {
+        ExceptionHandler.Instance.HandleException (x, s_logger);
+      }
+    }
+
+    private async void SetServerCalendarColor ()
+    {
+      try
+      {
+        if (EventCategoryColor != OlCategoryColor.olCategoryColorNone)
+        {
+          if (await _currentOptions.CreateCalDavDataAccess ().SetCalendarColorNoThrow (ColorHelper.CategoryColors[EventCategoryColor]))
+          {
+            System.Windows.MessageBox.Show ("Successfully updated the server calendar color!");
+          }
+          else
+          {
+            System.Windows.MessageBox.Show ("Error updating the server calendar color!");
+          }
+        }
+        else
+        {
+          System.Windows.MessageBox.Show ("No color set for updating the server calendar color!");
+        }
+      }
+      catch (System.Exception x)
+      {
+        ExceptionHandler.Instance.HandleException (x, s_logger);
+      }
     }
   }
 }

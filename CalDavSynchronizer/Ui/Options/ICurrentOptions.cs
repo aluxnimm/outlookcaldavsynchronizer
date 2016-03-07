@@ -22,5 +22,6 @@ namespace CalDavSynchronizer.Ui.Options
 
     IWebDavClient CreateWebDavClient ();
     IWebProxy GetProxyIfConfigured ();
+    ICalDavDataAccess CreateCalDavDataAccess ();
   }
 }

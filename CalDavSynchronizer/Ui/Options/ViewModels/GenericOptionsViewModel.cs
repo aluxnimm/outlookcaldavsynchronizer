@@ -29,15 +29,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         bool fixInvalidSettings,
         IOutlookAccountPasswordProvider outlookAccountPasswordProvider,
         Func<ISettingsFaultFinder, ICurrentOptions, IServerSettingsViewModel> serverSettingsViewModelFactory,
-        IMappingConfigurationViewModelFactory mappingConfigurationViewModelFactory)
+        Func<ICurrentOptions, IMappingConfigurationViewModelFactory> mappingConfigurationViewModelFactoryFactory)
         : base (parent)
     {
       if (session == null)
         throw new ArgumentNullException (nameof (session));
       if (outlookAccountPasswordProvider == null)
         throw new ArgumentNullException (nameof (outlookAccountPasswordProvider));
-      if (mappingConfigurationViewModelFactory == null)
-        throw new ArgumentNullException (nameof (mappingConfigurationViewModelFactory));
+      if (mappingConfigurationViewModelFactoryFactory == null)
+        throw new ArgumentNullException (nameof (mappingConfigurationViewModelFactoryFactory));
 
       _syncSettingsViewModel = new SyncSettingsViewModel();
       _networkSettingsViewModel = new NetworkSettingsViewModel();
@@ -45,7 +45,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       var faultFinder = fixInvalidSettings ? new SettingsFaultFinder (_syncSettingsViewModel) : NullSettingsFaultFinder.Instance;
       _serverSettingsViewModel = serverSettingsViewModelFactory (faultFinder, this);
       _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
-      _mappingConfigurationViewModelFactory = mappingConfigurationViewModelFactory;
+      _mappingConfigurationViewModelFactory = mappingConfigurationViewModelFactoryFactory(this);
       _outlookFolderViewModel = new OutlookFolderViewModel (session, faultFinder);
       _outlookFolderViewModel.PropertyChanged += OutlookFolderViewModel_PropertyChanged;
       _serverSettingsViewModel.PropertyChanged += ServerSettingsViewModel_PropertyChanged;
@@ -152,6 +152,11 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     public IWebProxy GetProxyIfConfigured ()
     {
       return SynchronizerFactory.CreateProxy (_networkSettingsViewModel.CreateProxyOptions());
+    }
+
+    public ICalDavDataAccess CreateCalDavDataAccess ()
+    {
+      return new CalDavDataAccess (new Uri (_serverSettingsViewModel.CalenderUrl), CreateWebDavClient ());
     }
 
     public OlItemType? OutlookFolderType => _outlookFolderViewModel.OutlookFolderType;

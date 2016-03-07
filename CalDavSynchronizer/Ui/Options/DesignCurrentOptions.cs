@@ -35,6 +35,11 @@ namespace CalDavSynchronizer.Ui.Options
       throw new NotImplementedException();
     }
 
+    public ICalDavDataAccess CreateCalDavDataAccess ()
+    {
+      throw new NotImplementedException();
+    }
+
     public OlItemType? OutlookFolderType
     {
       get { throw new NotImplementedException(); }

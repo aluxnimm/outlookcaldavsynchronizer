@@ -21,7 +21,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -48,6 +47,7 @@ using Microsoft.Office.Interop.Outlook;
 using Application = Microsoft.Office.Interop.Outlook.Application;
 using Exception = System.Exception;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Ui.Options;
@@ -62,7 +62,7 @@ namespace CalDavSynchronizer
   public class ComponentContainer: IReportsViewModelParent, ISynchronizationReportSink, ICalDavSynchronizerCommands, IDisposable
   {
     public const string MessageBoxTitle = "CalDav Synchronizer";
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
+    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
     // ReSharper disable once ConvertToConstant.Local
     private readonly int c_requiredEntityCacheVersion = 1;
 

@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -24,6 +25,7 @@ using System.Security;
 using System.Threading.Tasks;
 using System.Xml;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
+using CalDavSynchronizer.Utilities;
 using GenSync;
 using log4net;
 
@@ -53,7 +55,7 @@ namespace CalDavSynchronizer.DataAccess
       return DoesSupportsReportSet (_serverUrl, 0, "C", "calendar-query");
     }
 
-    public async Task<IReadOnlyList<Tuple<Uri, string, string>>> GetUserCalendarsNoThrow (bool useWellKnownUrl)
+    public async Task<IReadOnlyList<Tuple<Uri, string, ArgbColor?>>> GetUserCalendarsNoThrow (bool useWellKnownUrl)
     {
       try
       {
@@ -70,7 +72,7 @@ namespace CalDavSynchronizer.DataAccess
           principal = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:principal-URL", properties.XmlNamespaceManager);
         }
 
-        var cals = new List<Tuple<Uri, string, string>>();
+        var cals = new List<Tuple<Uri, string, ArgbColor?>>();
 
         if (principal != null && !string.IsNullOrEmpty (principal.InnerText))
         {
@@ -94,10 +96,10 @@ namespace CalDavSynchronizer.DataAccess
                 if (isCollection != null)
                 {
                   var calendarColorNode = responseElement.SelectSingleNode("D:propstat/D:prop/E:calendar-color", properties.XmlNamespaceManager);
-                  string calendarColor=string.Empty;
+                  ArgbColor? calendarColor = null;
                   if (calendarColorNode != null && calendarColorNode.InnerText.Length >=7)
                   {
-                    calendarColor = calendarColorNode.InnerText;
+                    calendarColor = ArgbColor.FromRgbaHexStringWithOptionalANoThrow(calendarColorNode.InnerText);
                   }
                   var uri = UriHelper.UnescapeRelativeUri (autodiscoveryUrl, urlNode.InnerText);
                   cals.Add (Tuple.Create (uri, displayNameNode.InnerText, calendarColor));
@@ -111,7 +113,7 @@ namespace CalDavSynchronizer.DataAccess
       catch (Exception x)
       {
         if (x.Message.Contains ("404") || x.Message.Contains ("405") || x is XmlException)
-          return new List<Tuple<Uri, string, string>>();
+          return new List<Tuple<Uri, string, ArgbColor?>>();
         else
           throw;
       }
@@ -166,10 +168,8 @@ namespace CalDavSynchronizer.DataAccess
           );
     }
 
-    public async Task<string> GetCalendarColorNoThrow ()
+    public async Task<ArgbColor?> GetCalendarColorNoThrow ()
     {
-      string calendarColor = string.Empty;
-
       try
       {
         var document = await _webDavClient.ExecuteWebDavRequestAndReadResponse(
@@ -191,18 +191,20 @@ namespace CalDavSynchronizer.DataAccess
         var calendarColorNode = document.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/E:calendar-color", document.XmlNamespaceManager);
         if (calendarColorNode != null && calendarColorNode.InnerText.Length >= 7)
         {
-          calendarColor = calendarColorNode.InnerText;
+          return ArgbColor.FromRgbaHexStringWithOptionalANoThrow (calendarColorNode.InnerText);
         }
-        return calendarColor;
+        return null;
       }
       catch (Exception x)
       {
         s_logger.Error (null, x);
-        return calendarColor;
+        return null;
       }
     }
+    
+    
 
-    public async Task<bool> SetCalendarColorNoThrow (string calendarColor)
+    public async Task<bool> SetCalendarColorNoThrow (ArgbColor color)
     {
       try
       {
@@ -222,7 +224,7 @@ namespace CalDavSynchronizer.DataAccess
                           </D:prop>
                         </D:set>
                       </D:propertyupdate>
-                 ", calendarColor)
+                 ", color.ToRgbaHexString())
             );
         return true;
       }

@@ -84,10 +84,12 @@
           </ComboBox.ItemTemplate>
         </ComboBox>
         <Button 
+          Command="{Binding GetServerCalendarColorCommand}"
           IsEnabled="{Binding UseEventCategoryAsFilterAndMapColor}"
           Grid.Row="1" 
           Grid.Column="2">Fetch Color</Button>
         <Button
+          Command="{Binding SetServerCalendarColorCommand}"
           IsEnabled="{Binding UseEventCategoryAsFilterAndMapColor}"
           Grid.Row="1" 
           Grid.Column="3">Set DAV Color</Button>

@@ -16,7 +16,7 @@ namespace CalDavSynchronizer.Ui.Options.Views
 
       if (value is OlCategoryColor)
       {
-        var values = BitConverter.GetBytes (ColorHelper.CategoryColors[(OlCategoryColor) value]);
+        var values = BitConverter.GetBytes (ColorHelper.CategoryColors[(OlCategoryColor) value].ArgbValue);
         var color = Color.FromArgb (values[3], values[2], values[1], values[0]);
         var brush = new SolidColorBrush (color);
         brush.Freeze();
