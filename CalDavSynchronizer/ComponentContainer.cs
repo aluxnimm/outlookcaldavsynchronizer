@@ -51,6 +51,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Ui.Options;
+using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.SystrayNotification;
 using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
 using GenSync.EntityRelationManagement;
@@ -169,7 +170,7 @@ namespace CalDavSynchronizer
       _reportGarbageCollection = new ReportGarbageCollection (_synchronizationReportRepository, TimeSpan.FromDays (generalOptions.MaxReportAgeInDays));
 
       _trayNotifier = generalOptions.EnableTrayIcon ? new TrayNotifier (this) : NullTrayNotifer.Instance;
-      _uiService = new UiService (_profileStatusesViewModel,_session, _outlookAccountPasswordProvider, GetProfileDataDirectory);
+      _uiService = new UiService (_profileStatusesViewModel);
     }
 
     private void EnsureCacheCompatibility (Options[] options)
@@ -362,18 +363,32 @@ namespace CalDavSynchronizer
       SwitchCategories (changedOptions);
     }
 
-    public void ShowOptionsWpfNoThrow ()
+    public void ShowOptionsWpfNoThrow (Guid? initialVisibleProfile = null)
     {
       try
       {
         var options = _optionsDataAccess.LoadOptions();
         GeneralOptions generalOptions = _generalOptionsDataAccess.LoadOptions();
 
-        var newOptions = _uiService.ShowOptions (options, generalOptions.FixInvalidSettings);
-        if (newOptions != null)
+        string[] categories;
+        using (var categoriesWrapper = GenericComObjectWrapper.Create (_session.Categories))
+        {
+          categories = categoriesWrapper.Inner.ToSafeEnumerable<Category>().Select (c => c.Name).ToArray();
+        }
+
+        var viewModel = new OptionsCollectionViewModel (
+            _session,
+            generalOptions.FixInvalidSettings,
+            _outlookAccountPasswordProvider,
+            categories,
+            GetProfileDataDirectory);
+
+        viewModel.SetOptionsCollection(options);
+
+        if (_uiService.ShowOptions (viewModel))
         {
           _optionsDataAccess.BackupOptions();
-          ApplyNewOptions (options, newOptions, generalOptions);
+          ApplyNewOptions (options, viewModel.GetOptionsCollection(), generalOptions);
         }
 
       }

@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.Reports;
 using CalDavSynchronizer.Ui.Reports.ViewModels;
 using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
@@ -29,6 +30,6 @@ namespace CalDavSynchronizer.Ui
   {
     void Show (ReportsViewModel reportsViewModel);
     void ShowProfileStatusesWindow ();
-    Contracts.Options[] ShowOptions (Contracts.Options[] options, bool fixInvalidSettings);
+    bool ShowOptions (OptionsCollectionViewModel viewModel);
   }
 }

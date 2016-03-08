@@ -67,30 +67,31 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     public ObservableCollection<OptionsViewModelBase> Options => _options;
 
 
-    public CalDavSynchronizer.Contracts.Options[] OptionsCollection
+    public void SetOptionsCollection (Contracts.Options[] value, Guid? initialSelectedProfileId = null)
     {
-      get
-      {
-        var optionsCollection = new List<CalDavSynchronizer.Contracts.Options>();
-        foreach (var viewModel in _options)
-        {
-          var options = new CalDavSynchronizer.Contracts.Options();
-          viewModel.FillOptions (options);
-          optionsCollection.Add (options);
-        }
-        return optionsCollection.ToArray();
-      }
-      set
-      {
-        _options.Clear();
-        foreach (var vm in _optionsViewModelFactory.Create (value, _fixInvalidSettings))
-          _options.Add (vm);
+      _options.Clear();
+      foreach (var vm in _optionsViewModelFactory.Create (value, _fixInvalidSettings))
+        _options.Add (vm);
 
-        var first = _options.FirstOrDefault (o => o.IsActive) ?? _options.FirstOrDefault();
-        if (first != null)
-          first.IsSelected = true;
+      var initialSelectedProfile =
+          (initialSelectedProfileId != null ? _options.FirstOrDefault (o => o.Id == initialSelectedProfileId.Value) : null)
+          ?? _options.FirstOrDefault (o => o.IsActive)
+          ?? _options.FirstOrDefault();
 
+      if (initialSelectedProfile != null)
+        initialSelectedProfile.IsSelected = true;
+    }
+
+    public Contracts.Options[] GetOptionsCollection ()
+    {
+      var optionsCollection = new List<CalDavSynchronizer.Contracts.Options>();
+      foreach (var viewModel in _options)
+      {
+        var options = new CalDavSynchronizer.Contracts.Options();
+        viewModel.FillOptions (options);
+        optionsCollection.Add (options);
       }
+      return optionsCollection.ToArray();
     }
 
     public void RequestDeletion (OptionsViewModelBase viewModel)
