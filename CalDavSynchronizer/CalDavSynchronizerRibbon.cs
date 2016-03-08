@@ -74,10 +74,5 @@ namespace CalDavSynchronizer
     {
       ThisAddIn.ComponentContainer.ShowProfileStatusesNoThrow ();
     }
-
-    private void _synchronizationProfilesWpfButton_Click (object sender, RibbonControlEventArgs e)
-    {
-      ThisAddIn.ComponentContainer.ShowOptionsWpfNoThrow();
-    }
   }
 }

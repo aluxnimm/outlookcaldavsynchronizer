@@ -13,7 +13,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  public class OptionsCollectionViewModel : IOptionsViewModelParent
+  public class OptionsCollectionViewModel : IOptionsViewModelParent, ISynchronizationProfilesViewModel
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -22,6 +22,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private readonly bool _fixInvalidSettings;
     public event EventHandler<CloseEventArgs> CloseRequested;
     private readonly Func<Guid, string> _profileDataDirectoryFactory;
+    public event EventHandler RequestBringIntoView;
 
     public OptionsCollectionViewModel (
       NameSpace session,
@@ -141,6 +142,19 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
           return viewModel;
         }
       }
+    }
+
+    public void ShowProfile (Guid value)
+    {
+      var selectedProfile = _options.FirstOrDefault (o => o.Id == value);
+
+      if (selectedProfile != null)
+        selectedProfile.IsSelected = true;
+    }
+
+    public void BringToFront ()
+    {
+      RequestBringIntoView?.Invoke (this, EventArgs.Empty);
     }
   }
 }

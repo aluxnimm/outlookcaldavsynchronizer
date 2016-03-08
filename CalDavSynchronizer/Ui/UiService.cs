@@ -94,10 +94,15 @@ namespace CalDavSynchronizer.Ui
       window.DataContext = viewModel;
       ElementHost.EnableModelessKeyboardInterop (window);
 
+      viewModel.RequestBringIntoView += delegate
+      {
+        window.BringIntoView();
+      };
+
       return window.ShowDialog().GetValueOrDefault (false);
     }
 
-
+  
 
     private static void SetWindowSize (GenericElementHostWindow window, double ratioToCurrentScreensize)
     {

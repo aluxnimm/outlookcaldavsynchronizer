@@ -25,7 +25,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options
 {
-  public partial class OptionsForm : Form
+  public partial class OptionsForm : Form, ISynchronizationProfilesViewModel
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod ().DeclaringType);
 
