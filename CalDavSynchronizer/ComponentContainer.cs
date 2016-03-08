@@ -317,8 +317,13 @@ namespace CalDavSynchronizer
           GeneralOptions generalOptions = _generalOptionsDataAccess.LoadOptions();
           try
           {
-            var newOptions = ShowWinFormOptions (initialVisibleProfile, generalOptions, options);
-            if(newOptions != null)
+            Options[] newOptions;
+            if (generalOptions.UseNewOptionUi)
+              newOptions = ShowWpfOptions (initialVisibleProfile, generalOptions, options);
+            else
+              newOptions = ShowWinFormOptions (initialVisibleProfile, generalOptions, options);
+
+            if (newOptions != null)
               ApplyNewOptions (options, newOptions, generalOptions);
           }
           finally
