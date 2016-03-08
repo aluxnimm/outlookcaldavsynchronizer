@@ -24,5 +24,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
   {
     string Name { get; }
     IEnumerable<IOptionsViewModel> SubOptions { get; }
+    bool IsSelected { get; set; }
   }
 }

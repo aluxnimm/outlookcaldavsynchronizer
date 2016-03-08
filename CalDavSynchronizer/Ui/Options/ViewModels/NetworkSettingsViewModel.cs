@@ -19,6 +19,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private bool _proxyUseManual;
     private string _proxyUserName;
     private bool _forceBasicAuthentication;
+    private bool _isSelected;
 
     public bool CloseConnectionAfterEachRequest
     {
@@ -153,6 +154,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         OnPropertyChanged();
       }
     }
-    
+
+    public bool IsSelected
+    {
+      get { return _isSelected; }
+      set
+      {
+        _isSelected = value;
+        OnPropertyChanged();
+      }
+    }
   }
 }

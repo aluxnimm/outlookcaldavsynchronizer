@@ -14,6 +14,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     private bool _mapBody;
     private bool _mapPriority;
     private ReminderMapping _mapReminder;
+    private bool _isSelected;
 
     public IList<Item<ReminderMapping>> AvailableReminderMappings => new List<Item<ReminderMapping>>
                                                                      {
@@ -52,12 +53,23 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       }
     }
 
+    public bool IsSelected
+    {
+      get { return _isSelected; }
+      set
+      {
+        _isSelected = value;
+        OnPropertyChanged ();
+      }
+    }
+
     public static TaskMappingConfigurationViewModel DesignInstance => new TaskMappingConfigurationViewModel
                                                                          {
                                                                               MapBody = true,
                                                                               MapPriority = true,
                                                                               MapReminder = ReminderMapping.JustUpcoming
                                                                          };
+
 
     public event PropertyChangedEventHandler PropertyChanged;
 

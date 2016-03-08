@@ -17,6 +17,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private string _name;
     private IEnumerable<IOptionsSection> _sections;
     private IEnumerable<IOptionsViewModel> _subOptions;
+    private bool _isSelected;
 
     protected OptionsViewModelBase (IOptionsViewModelParent parent)
     {
@@ -54,6 +55,16 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       {
         _name = value;
         OnPropertyChanged();
+      }
+    }
+
+    public bool IsSelected
+    {
+      get { return _isSelected; }
+      set
+      {
+        _isSelected = value;
+        OnPropertyChanged ();
       }
     }
 

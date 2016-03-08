@@ -200,6 +200,16 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       }
     }
 
+    public bool IsSelected
+    {
+      get { return _isSelected; }
+      set
+      {
+        _isSelected = value;
+        OnPropertyChanged ();
+      }
+    }
+
     public IReadOnlyList<string> AvailableCategories { get; }
 
 
@@ -271,6 +281,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                                                           SendNoAppointmentNotifications = true,
                                                                           UseEventCategoryColorAndMapFromCalendarColor = true
                                                                       };
+
+    private bool _isSelected;
 
     public EventMappingConfigurationViewModel (IReadOnlyList<string> availableCategories, ICurrentOptions currentOptions)
     {

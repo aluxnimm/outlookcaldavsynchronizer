@@ -11,6 +11,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
   {
     private bool _mapBirthday;
     private bool _mapContactPhoto;
+    private bool _isSelected;
 
     public bool MapBirthday
     {
@@ -29,6 +30,16 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       {
         _mapContactPhoto = value;
         OnPropertyChanged();
+      }
+    }
+
+    public bool IsSelected
+    {
+      get { return _isSelected; }
+      set
+      {
+        _isSelected = value;
+        OnPropertyChanged ();
       }
     }
 

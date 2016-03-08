@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
@@ -84,6 +85,11 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         _options.Clear();
         foreach (var vm in _optionsViewModelFactory.Create (value, _fixInvalidSettings))
           _options.Add (vm);
+
+        var first = _options.FirstOrDefault (o => o.IsActive) ?? _options.FirstOrDefault();
+        if (first != null)
+          first.IsSelected = true;
+
       }
     }
 
