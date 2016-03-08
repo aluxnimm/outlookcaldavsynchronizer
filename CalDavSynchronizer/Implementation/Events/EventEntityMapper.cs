@@ -1456,7 +1456,7 @@ namespace CalDavSynchronizer.Implementation.Events
     {
       var categories = string.Join (CultureInfo.CurrentCulture.TextInfo.ListSeparator, source.Categories);
 
-      if (_configuration.UseEventCategoryAsFilter
+      if (_configuration.UseEventCategoryAsFilter && !_configuration.InvertEventCategoryFilter
           && source.Categories.All (a => a != _configuration.EventCategory))
       {
         target.Categories = categories + CultureInfo.CurrentCulture.TextInfo.ListSeparator + _configuration.EventCategory;
