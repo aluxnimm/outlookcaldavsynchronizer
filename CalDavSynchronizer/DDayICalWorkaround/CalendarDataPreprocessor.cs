@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using DDay.iCal;
 using log4net;
 
 namespace CalDavSynchronizer.DDayICalWorkaround
@@ -30,20 +31,63 @@ namespace CalDavSynchronizer.DDayICalWorkaround
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    public static void FixTimeZoneDSTRRules (TimeZoneInfo tz, DDay.iCal.iCalTimeZone iCalTz)
+    public static void FixTimeZoneDSTRRules(TimeZoneInfo tz, DDay.iCal.iCalTimeZone iCalTz)
     {
       var adjustments = tz.GetAdjustmentRules();
       foreach (var tziItems in iCalTz.TimeZoneInfos)
       {
-        var matchingAdj = adjustments.FirstOrDefault (a => (a.DateStart.Year == tziItems.Start.Year)) ?? adjustments.FirstOrDefault();
-        if (matchingAdj != null && matchingAdj.DateEnd.Year != 9999)
+        var matchingAdj = adjustments.FirstOrDefault(a => (a.DateStart.Year == tziItems.Start.Year)) ?? adjustments.FirstOrDefault();
+        if (matchingAdj != null)
         {
-          if (!(tziItems.Name.Equals ("STANDARD") && matchingAdj == adjustments.Last()))
+          if ((matchingAdj.DateEnd.Year != 9999) && !(tziItems.Name.Equals("STANDARD") && matchingAdj == adjustments.Last()))
           {
-            tziItems.RecurrenceRules[0].Until = DateTime.SpecifyKind (matchingAdj.DateEnd.Date.AddDays (1).Subtract (tz.BaseUtcOffset), DateTimeKind.Utc);
+            tziItems.RecurrenceRules[0].Until =
+              DateTime.SpecifyKind(matchingAdj.DateEnd.Date.AddDays(1).Subtract(tz.BaseUtcOffset), DateTimeKind.Utc);
+          }
+          if (tziItems.Name.Equals("STANDARD"))
+          {
+            if (!matchingAdj.DaylightTransitionEnd.IsFixedDateRule)
+            {
+              var startYear = tziItems.Start.Year;
+              tziItems.Start = CalcTransitionStart(matchingAdj.DaylightTransitionEnd, startYear);
+            }
+          }
+          else
+          {
+            if (!matchingAdj.DaylightTransitionStart.IsFixedDateRule)
+            {
+              var startYear = tziItems.Start.Year;
+              tziItems.Start = CalcTransitionStart(matchingAdj.DaylightTransitionStart, startYear);
+            }
           }
         }
       }
+    }
+
+    private static iCalDateTime CalcTransitionStart(TimeZoneInfo.TransitionTime transition, int year)
+    {
+      // For non-fixed date rules, get local calendar
+      Calendar cal = CultureInfo.CurrentCulture.Calendar;
+      // Get first day of week for transition
+      // For example, the 3rd week starts no earlier than the 15th of the month
+      int startOfWeek = transition.Week * 7 - 6;
+      // What day of the week does the month start on?
+      int firstDayOfWeek = (int)cal.GetDayOfWeek(new DateTime(year, transition.Month, 1));
+      // Determine how much start date has to be adjusted
+      int transitionDay;
+      int changeDayOfWeek = (int)transition.DayOfWeek;
+
+      if (firstDayOfWeek <= changeDayOfWeek)
+        transitionDay = startOfWeek + (changeDayOfWeek - firstDayOfWeek);
+      else
+        transitionDay = startOfWeek + (7 - firstDayOfWeek + changeDayOfWeek);
+
+      // Adjust for months with no fifth week
+      if (transitionDay > cal.GetDaysInMonth(year, transition.Month))
+        transitionDay -= 7;
+
+      return new iCalDateTime(new DateTime( year, transition.Month, transitionDay,
+                                            transition.TimeOfDay.Hour, transition.TimeOfDay.Minute, transition.TimeOfDay.Second));
     }
 
     public static string FixInvalidDTSTARTInTimeZoneNoThrow (string iCalendarData)
