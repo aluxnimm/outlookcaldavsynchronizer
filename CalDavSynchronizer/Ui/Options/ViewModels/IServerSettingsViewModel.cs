@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Security;
 using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
@@ -11,6 +12,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     string UserName { get; }
     string CalenderUrl { get; set; }
     bool UseAccountPassword { get; }
-    string Password { get; }
+    SecureString Password { get; }
   }
 }

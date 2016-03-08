@@ -17,10 +17,12 @@
 
 using System;
 using System.Reflection;
+using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Serialization;
 using CalDavSynchronizer.Implementation;
+using CalDavSynchronizer.Utilities;
 using log4net;
 
 namespace CalDavSynchronizer.Contracts
@@ -65,7 +67,7 @@ namespace CalDavSynchronizer.Contracts
 
     public OptionsDisplayType DisplayType { get; set; }
 
-    public string GetEffectivePassword (IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
+    public SecureString GetEffectivePassword (IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
     {
       return UseAccountPassword
           ? outlookAccountPasswordProvider.GetPassword (OutlookFolderAccountName)
@@ -73,12 +75,12 @@ namespace CalDavSynchronizer.Contracts
     }
 
     [XmlIgnore]
-    public string Password
+    public SecureString Password
     {
       get
       {
         if (string.IsNullOrEmpty (ProtectedPassword))
-          return string.Empty;
+          return new SecureString();
 
         var salt = Convert.FromBase64String (Salt);
 
@@ -86,12 +88,12 @@ namespace CalDavSynchronizer.Contracts
         try
         {
           var transformedData = ProtectedData.Unprotect (data, salt, DataProtectionScope.CurrentUser);
-          return Encoding.Unicode.GetString (transformedData);
+          return SecureStringUtility.ToSecureString (Encoding.Unicode.GetString (transformedData));
         }
         catch (CryptographicException x)
         {
           s_logger.Error ("Error while decrypting password. Using empty password", x);
-          return string.Empty;
+          return new SecureString ();
         }
       }
       set
@@ -100,7 +102,7 @@ namespace CalDavSynchronizer.Contracts
         s_random.NextBytes (salt);
         Salt = Convert.ToBase64String (salt);
 
-        var data = Encoding.Unicode.GetBytes (value);
+        var data = Encoding.Unicode.GetBytes (SecureStringUtility.ToUnsecureString(value));
         var transformedData = ProtectedData.Protect (data, salt, DataProtectionScope.CurrentUser);
         ProtectedPassword = Convert.ToBase64String (transformedData);
       }

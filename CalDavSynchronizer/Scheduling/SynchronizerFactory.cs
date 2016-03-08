@@ -21,6 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
@@ -161,7 +162,7 @@ namespace CalDavSynchronizer.Scheduling
 
     public static IWebDavClient CreateWebDavClient (
         string username,
-        string password,
+        SecureString password,
         string serverUrl,
         TimeSpan timeout,
         ServerAdapterType serverAdapterType,
@@ -190,8 +191,8 @@ namespace CalDavSynchronizer.Scheduling
       }
     }
 
-    private static async System.Threading.Tasks.Task<HttpClient> CreateHttpClient ( string username, 
-                                                                                    string password,
+    private static async System.Threading.Tasks.Task<HttpClient> CreateHttpClient ( string username,
+                                                                                    SecureString password,
                                                                                     string serverUrl, 
                                                                                     TimeSpan calDavConnectTimeout, 
                                                                                     ServerAdapterType serverAdapterType, 

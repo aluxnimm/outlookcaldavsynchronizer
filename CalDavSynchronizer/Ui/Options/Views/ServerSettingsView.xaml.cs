@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Controls;
 using CalDavSynchronizer.Ui.Options.ViewModels;
+using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.Ui.Options.Views
 {
@@ -20,8 +21,7 @@ namespace CalDavSynchronizer.Ui.Options.Views
 
     private void PasswordBox_PasswordChanged (object sender, System.Windows.RoutedEventArgs e)
     {
-      if (_passwordBox.Password != _viewModel.Password)
-        _viewModel.Password = _passwordBox.Password;
+      _viewModel.Password = _passwordBox.SecurePassword;
     }
 
     private void ServerSettingsView_DataContextChanged (object sender, System.Windows.DependencyPropertyChangedEventArgs e)
@@ -29,15 +29,9 @@ namespace CalDavSynchronizer.Ui.Options.Views
       _viewModel = e.NewValue as ServerSettingsViewModel;
       if (_viewModel != null)
       {
-        _passwordBox.Password = _viewModel.Password;
-        _viewModel.PropertyChanged += ViewModel_PropertyChanged;
+        // Password is just a OneWayBinding. Therefore just set the initial value
+        _passwordBox.Password = SecureStringUtility.ToUnsecureString (_viewModel.Password);
       }
-    }
-
-    private void ViewModel_PropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
-    {
-      if (e.PropertyName == nameof (ServerSettingsViewModel.Password))
-        _passwordBox.Password = _viewModel.Password;
     }
   }
 }

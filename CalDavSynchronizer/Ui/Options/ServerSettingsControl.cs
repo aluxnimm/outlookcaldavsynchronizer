@@ -27,6 +27,7 @@ using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Ui.ConnectionTests;
+using CalDavSynchronizer.Utilities;
 using Google.Apis.Services;
 using Google.Apis.Tasks.v1;
 using Google.Apis.Tasks.v1.Data;
@@ -103,7 +104,9 @@ namespace CalDavSynchronizer.Ui.Options
     {
       return SynchronizerFactory.CreateWebDavClient (
           _userNameTextBox.Text,
-          _useAccountPasswordCheckBox.Checked ? _outlookAccountPasswordProvider.GetPassword (_dependencies.FolderAccountName) : _passwordTextBox.Text,
+          _useAccountPasswordCheckBox.Checked
+              ? _outlookAccountPasswordProvider.GetPassword (_dependencies.FolderAccountName)
+              : SecureStringUtility.ToSecureString (_passwordTextBox.Text),
           _calenderUrlTextBox.Text,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
           ServerAdapterType.WebDavHttpClientBased,
@@ -131,7 +134,7 @@ namespace CalDavSynchronizer.Ui.Options
       _ignoreAccountPasswordCheckBoxCheckedChanged = true;
       _useAccountPasswordCheckBox.Checked = value.UseAccountPassword;
       _ignoreAccountPasswordCheckBoxCheckedChanged = false;
-      _passwordTextBox.Text = value.Password;
+      _passwordTextBox.Text = SecureStringUtility.ToUnsecureString(value.Password);
       _networkAndProxyOptions = new NetworkAndProxyOptions (value.CloseAfterEachRequest, value.PreemptiveAuthentication, value.ForceBasicAuthentication, value.ProxyOptions ?? new ProxyOptions());
       UpdatePasswordControlEnabled();
     }
@@ -141,7 +144,7 @@ namespace CalDavSynchronizer.Ui.Options
       optionsToFill.EmailAddress = _emailAddressTextBox.Text;
       optionsToFill.CalenderUrl = _calenderUrlTextBox.Text;
       optionsToFill.UserName = _userNameTextBox.Text;
-      optionsToFill.Password = _passwordTextBox.Text;
+      optionsToFill.Password = SecureStringUtility.ToSecureString(_passwordTextBox.Text);
       optionsToFill.UseAccountPassword = _useAccountPasswordCheckBox.Checked;
       optionsToFill.ServerAdapterType = ServerAdapterType.WebDavHttpClientBased;
       optionsToFill.CloseAfterEachRequest = _networkAndProxyOptions.CloseConnectionAfterEachRequest;

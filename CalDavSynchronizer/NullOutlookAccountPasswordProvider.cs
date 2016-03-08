@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Security;
 
 namespace CalDavSynchronizer
 {
@@ -28,9 +29,9 @@ namespace CalDavSynchronizer
     }
 
 
-    public string GetPassword (string accountNameOrNull)
+    public SecureString GetPassword (string accountNameOrNull)
     {
-      return string.Empty;
+      return new SecureString();
     }
   }
 }

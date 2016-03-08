@@ -17,10 +17,12 @@
 
 using System;
 using System.Reflection;
+using System.Security;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Utilities;
 using log4net;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
@@ -31,7 +33,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     private string _calenderUrl;
     private string _emailAddress;
-    private string _password;
+    private SecureString _password;
     private bool _useAccountPassword;
     private string _userName;
     private readonly ISettingsFaultFinder _settingsFaultFinder;
@@ -72,7 +74,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       }
     }
 
-    public string Password
+    public SecureString Password
     {
       get { return _password; }
       set
@@ -106,7 +108,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
                                                             {
                                                                 CalenderUrl = "http://calendar.url",
                                                                 EmailAddress = "bla@dot.com",
-                                                                Password = "password",
+                                                                Password = SecureStringUtility.ToSecureString("password"),
                                                                 UseAccountPassword = true,
                                                                 UserName = "username"
                                                             };

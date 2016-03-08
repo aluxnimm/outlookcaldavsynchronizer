@@ -18,8 +18,10 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Security;
 using System.Security.Cryptography;
 using System.Text;
+using CalDavSynchronizer.Utilities;
 using log4net;
 using Microsoft.Win32;
 
@@ -65,7 +67,7 @@ namespace CalDavSynchronizer
       return value as string;
     }
 
-    public string GetPassword (string accountNameOrNull)
+    public SecureString GetPassword (string accountNameOrNull)
     {
       try
       {
@@ -90,23 +92,22 @@ namespace CalDavSynchronizer
               try
               {
                 var clearPassword = ProtectedData.Unprotect (encPassword, null, DataProtectionScope.CurrentUser);
-                string result = Encoding.Unicode.GetString (clearPassword).TrimEnd ('\0');
-                return result;
+                return SecureStringUtility.ToSecureString(Encoding.Unicode.GetString (clearPassword).TrimEnd ('\0'));
               }
               catch (CryptographicException x)
               {
                 s_logger.Error ("Error while decrypting account password. Using empty password", x);
-                return string.Empty;
+                return new SecureString ();
               }
             }
           }
-          return string.Empty;
+          return new SecureString();
         }
       }
       catch (Exception ex)
       {
         s_logger.Error ("Error while fetching account password from registry. Using empty password", ex);
-        return string.Empty;
+        return new SecureString ();
       }
     }
   }

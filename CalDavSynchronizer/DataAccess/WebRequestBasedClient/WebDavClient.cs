@@ -19,6 +19,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -31,8 +32,7 @@ namespace CalDavSynchronizer.DataAccess.WebRequestBasedClient
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private readonly string _username;
-    // TODO: consider to use SecureString
-    private readonly string _password;
+    private readonly SecureString _password;
     private readonly string _serverUrl;
     private readonly TimeSpan _connectTimeout;
     private readonly TimeSpan _readWriteTimeout;
@@ -44,7 +44,7 @@ namespace CalDavSynchronizer.DataAccess.WebRequestBasedClient
 
     public WebDavClient (
       string username, 
-      string password,
+      SecureString password,
       string serverUrl, 
       TimeSpan connectTimeout, 
       TimeSpan readWriteTimeout, 

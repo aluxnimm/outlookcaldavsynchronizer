@@ -701,6 +701,7 @@
     <Compile Include="Utilities\ColorHelper.cs" />
     <Compile Include="Utilities\ExceptionHandler.cs" />
     <Compile Include="Utilities\IExceptionHandler.cs" />
+    <Compile Include="Utilities\SecureStringUtility.cs" />
     <Compile Include="Utilities\Serializer.cs" />
     <Compile Include="Implementation\ConflictResolution.cs" />
     <Compile Include="Implementation\Events\EventEntityMapper.cs" />

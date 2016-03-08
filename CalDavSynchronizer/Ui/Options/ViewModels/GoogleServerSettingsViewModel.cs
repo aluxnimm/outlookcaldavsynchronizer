@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Security;
 using System.Text;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -89,9 +90,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return false; }
     }
 
-    public string Password
+    public SecureString Password
     {
-      get { return string.Empty; }
+      get { return new SecureString(); }
     }
 
     ServerAdapterType IServerSettingsViewModel.ServerAdapterType
@@ -135,7 +136,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     {
       options.CalenderUrl = _calenderUrl;
       options.UserName = _emailAddress;
-      options.Password = string.Empty;
+      options.Password = new SecureString();
       options.EmailAddress = _emailAddress;
       options.UseAccountPassword = false;
       options.DisplayType = CalDavSynchronizer.Contracts.OptionsDisplayType.Google;
