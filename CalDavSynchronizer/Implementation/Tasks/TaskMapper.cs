@@ -104,7 +104,8 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       target.PercentComplete = source.Inner.PercentComplete;
 
-      MapRecurrance1To2 (source.Inner, target, localIcalTimeZone);
+      if (_configuration.MapRecurringTasks)
+        MapRecurrance1To2 (source.Inner, target, localIcalTimeZone);
 
       target.Properties.Set ("STATUS", MapStatus1To2 (source.Inner.Status));
 
@@ -345,7 +346,8 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       MapReminder2To1 (source, target, logger);
 
-      MapRecurrance2To1 (source, target, logger);
+      if (_configuration.MapRecurringTasks)
+        MapRecurrance2To1 (source, target, logger);
 
       return target;
     }

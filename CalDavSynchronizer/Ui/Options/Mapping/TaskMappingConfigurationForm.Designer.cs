@@ -37,13 +37,14 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this._mapBodyCheckBox = new System.Windows.Forms.CheckBox();
       this._mapReminderLabel = new System.Windows.Forms.Label();
       this._mapReminderComboBox = new System.Windows.Forms.ComboBox();
+      this._mapRecurringTasksCheckBox = new System.Windows.Forms.CheckBox();
       this.SuspendLayout();
       // 
       // _cancelButton
       // 
       this._cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this._cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this._cancelButton.Location = new System.Drawing.Point(443, 118);
+      this._cancelButton.Location = new System.Drawing.Point(443, 164);
       this._cancelButton.Margin = new System.Windows.Forms.Padding(4);
       this._cancelButton.Name = "_cancelButton";
       this._cancelButton.Size = new System.Drawing.Size(100, 28);
@@ -54,7 +55,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       // _okButton
       // 
       this._okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._okButton.Location = new System.Drawing.Point(335, 118);
+      this._okButton.Location = new System.Drawing.Point(335, 164);
       this._okButton.Margin = new System.Windows.Forms.Padding(4);
       this._okButton.Name = "_okButton";
       this._okButton.Size = new System.Drawing.Size(100, 28);
@@ -106,6 +107,17 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this._mapReminderComboBox.Size = new System.Drawing.Size(283, 24);
       this._mapReminderComboBox.TabIndex = 2;
       // 
+      // _mapRecurringTasksCheckBox
+      // 
+      this._mapRecurringTasksCheckBox.AutoSize = true;
+      this._mapRecurringTasksCheckBox.Location = new System.Drawing.Point(13, 101);
+      this._mapRecurringTasksCheckBox.Margin = new System.Windows.Forms.Padding(4);
+      this._mapRecurringTasksCheckBox.Name = "_mapRecurringTasksCheckBox";
+      this._mapRecurringTasksCheckBox.Size = new System.Drawing.Size(165, 21);
+      this._mapRecurringTasksCheckBox.TabIndex = 6;
+      this._mapRecurringTasksCheckBox.Text = "Map Recurring Tasks";
+      this._mapRecurringTasksCheckBox.UseVisualStyleBackColor = true;
+      // 
       // TaskMappingConfigurationForm
       // 
       this.AcceptButton = this._okButton;
@@ -113,7 +125,8 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.SystemColors.Window;
       this.CancelButton = this._cancelButton;
-      this.ClientSize = new System.Drawing.Size(559, 161);
+      this.ClientSize = new System.Drawing.Size(559, 207);
+      this.Controls.Add(this._mapRecurringTasksCheckBox);
       this.Controls.Add(this._mapReminderLabel);
       this.Controls.Add(this._mapReminderComboBox);
       this.Controls.Add(this._mapBodyCheckBox);
@@ -138,5 +151,6 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
     private System.Windows.Forms.CheckBox _mapBodyCheckBox;
     private System.Windows.Forms.Label _mapReminderLabel;
     private System.Windows.Forms.ComboBox _mapReminderComboBox;
+    private System.Windows.Forms.CheckBox _mapRecurringTasksCheckBox;
   }
 }

@@ -55,7 +55,8 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
                {
                   MapReminder = (ReminderMapping)_mapReminderComboBox.SelectedValue,
                   MapPriority = _mapPriorityCheckBox.Checked,
-                  MapBody = _mapBodyCheckBox.Checked
+                  MapBody = _mapBodyCheckBox.Checked,
+                  MapRecurringTasks = _mapRecurringTasksCheckBox.Checked
                };
       }
       set
@@ -63,6 +64,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
         _mapReminderComboBox.SelectedValue = value.MapReminder;
         _mapPriorityCheckBox.Checked = value.MapPriority;
         _mapBodyCheckBox.Checked = value.MapBody;
+        _mapRecurringTasksCheckBox.Checked = value.MapRecurringTasks;
       }
     }
   }

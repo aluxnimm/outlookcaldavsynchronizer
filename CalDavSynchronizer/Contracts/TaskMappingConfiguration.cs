@@ -23,12 +23,14 @@ namespace CalDavSynchronizer.Contracts
     public ReminderMapping MapReminder { get; set; }
     public bool MapPriority { get; set; }
     public bool MapBody { get; set; }
+    public bool MapRecurringTasks { get; set; }
 
     public TaskMappingConfiguration ()
     {
       MapReminder = ReminderMapping.JustUpcoming;
       MapPriority = true;
       MapBody = true;
+      MapRecurringTasks = true;
     }
 
     public override IConfigurationForm<MappingConfigurationBase> CreateConfigurationForm (IConfigurationFormFactory factory)
