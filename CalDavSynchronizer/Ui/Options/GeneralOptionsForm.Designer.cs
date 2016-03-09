@@ -44,6 +44,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._fixInvalidSettingsCheckBox = new System.Windows.Forms.CheckBox();
       this._checkIfOnlineCheckBox = new System.Windows.Forms.CheckBox();
       this._includeCustomMessageClassesCheckBox = new System.Windows.Forms.CheckBox();
+      this._enableTrayIconCheckBox = new System.Windows.Forms.CheckBox();
       this.groupBox2 = new System.Windows.Forms.GroupBox();
       this._maxReportAgeInDays = new System.Windows.Forms.TextBox();
       this.label3 = new System.Windows.Forms.Label();
@@ -56,7 +57,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._clearLogButton = new System.Windows.Forms.Button();
       this._logLevelComboBox = new System.Windows.Forms.ComboBox();
       this.label6 = new System.Windows.Forms.Label();
-      this._enableTrayIconCheckBox = new System.Windows.Forms.CheckBox();
+      this._useNewOptionUiCheckBox = new System.Windows.Forms.CheckBox();
       this.groupBox1.SuspendLayout();
       this.groupBox2.SuspendLayout();
       this.groupBox3.SuspendLayout();
@@ -66,7 +67,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this._cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this._cancelButton.Location = new System.Drawing.Point(393, 551);
+      this._cancelButton.Location = new System.Drawing.Point(393, 584);
       this._cancelButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._cancelButton.Name = "_cancelButton";
       this._cancelButton.Size = new System.Drawing.Size(100, 28);
@@ -77,7 +78,7 @@ namespace CalDavSynchronizer.Ui.Options
       // _okButton
       // 
       this._okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._okButton.Location = new System.Drawing.Point(285, 551);
+      this._okButton.Location = new System.Drawing.Point(285, 584);
       this._okButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._okButton.Name = "_okButton";
       this._okButton.Size = new System.Drawing.Size(100, 28);
@@ -158,7 +159,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox1.Controls.Add(this._disableCertificateValidationCheckbox);
       this.groupBox1.Controls.Add(this._enableSsl3Checkbox);
       this.groupBox1.Controls.Add(this._enableTls12Checkbox);
-      this.groupBox1.Location = new System.Drawing.Point(4, 174);
+      this.groupBox1.Location = new System.Drawing.Point(4, 207);
       this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this.groupBox1.Name = "groupBox1";
       this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -206,6 +207,18 @@ namespace CalDavSynchronizer.Ui.Options
         " if this option is enabled.");
       this._includeCustomMessageClassesCheckBox.UseVisualStyleBackColor = true;
       // 
+      // _enableTrayIconCheckBox
+      // 
+      this._enableTrayIconCheckBox.AutoSize = true;
+      this._enableTrayIconCheckBox.Location = new System.Drawing.Point(16, 140);
+      this._enableTrayIconCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+      this._enableTrayIconCheckBox.Name = "_enableTrayIconCheckBox";
+      this._enableTrayIconCheckBox.Size = new System.Drawing.Size(137, 21);
+      this._enableTrayIconCheckBox.TabIndex = 7;
+      this._enableTrayIconCheckBox.Text = "Enable Tray Icon";
+      this._toolTip.SetToolTip(this._enableTrayIconCheckBox, "Enables the systray icon in the Windows taskbar.");
+      this._enableTrayIconCheckBox.UseVisualStyleBackColor = true;
+      // 
       // groupBox2
       // 
       this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -216,7 +229,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox2.Controls.Add(this._reportLogModeComboBox);
       this.groupBox2.Controls.Add(this.label2);
       this.groupBox2.Controls.Add(this.label1);
-      this.groupBox2.Location = new System.Drawing.Point(4, 294);
+      this.groupBox2.Location = new System.Drawing.Point(4, 327);
       this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
       this.groupBox2.Name = "groupBox2";
       this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
@@ -296,7 +309,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox3.Controls.Add(this._clearLogButton);
       this.groupBox3.Controls.Add(this._logLevelComboBox);
       this.groupBox3.Controls.Add(this.label6);
-      this.groupBox3.Location = new System.Drawing.Point(4, 437);
+      this.groupBox3.Location = new System.Drawing.Point(4, 470);
       this.groupBox3.Margin = new System.Windows.Forms.Padding(4);
       this.groupBox3.Name = "groupBox3";
       this.groupBox3.Padding = new System.Windows.Forms.Padding(4);
@@ -351,19 +364,17 @@ namespace CalDavSynchronizer.Ui.Options
       this.label6.TabIndex = 0;
       this.label6.Text = "Log Level:";
       // 
-      // _enableTrayIconCheckBox
+      // _useNewOptionUiCheckBox
       // 
-      this._enableTrayIconCheckBox.AutoSize = true;
-      this._enableTrayIconCheckBox.Location = new System.Drawing.Point(16, 140);
-      this._enableTrayIconCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-      this._enableTrayIconCheckBox.Name = "_enableTrayIconCheckBox";
-      this._enableTrayIconCheckBox.Size = new System.Drawing.Size(137, 21);
-      this._enableTrayIconCheckBox.TabIndex = 7;
-      this._enableTrayIconCheckBox.Text = "Enable Tray Icon";
-      this._toolTip.SetToolTip(this._enableTrayIconCheckBox, "Use prefix filter to include also custom message_classes in filter for Outlook fo" +
-        "lders. \r\nFor better performance, Windows Search Service shouldn\'t be deactivated" +
-        " if this option is enabled.");
-      this._enableTrayIconCheckBox.UseVisualStyleBackColor = true;
+      this._useNewOptionUiCheckBox.AutoSize = true;
+      this._useNewOptionUiCheckBox.Location = new System.Drawing.Point(16, 165);
+      this._useNewOptionUiCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+      this._useNewOptionUiCheckBox.Name = "_useNewOptionUiCheckBox";
+      this._useNewOptionUiCheckBox.Size = new System.Drawing.Size(228, 21);
+      this._useNewOptionUiCheckBox.TabIndex = 8;
+      this._useNewOptionUiCheckBox.Text = "Use Modern UI for sync profiles";
+      this._toolTip.SetToolTip(this._useNewOptionUiCheckBox, "Use new WPF dialog for sync profile configuration.");
+      this._useNewOptionUiCheckBox.UseVisualStyleBackColor = true;
       // 
       // GeneralOptionsForm
       // 
@@ -372,7 +383,8 @@ namespace CalDavSynchronizer.Ui.Options
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.SystemColors.Window;
       this.CancelButton = this._cancelButton;
-      this.ClientSize = new System.Drawing.Size(503, 585);
+      this.ClientSize = new System.Drawing.Size(503, 618);
+      this.Controls.Add(this._useNewOptionUiCheckBox);
       this.Controls.Add(this._enableTrayIconCheckBox);
       this.Controls.Add(this._checkIfOnlineCheckBox);
       this.Controls.Add(this.groupBox3);
@@ -427,5 +439,6 @@ namespace CalDavSynchronizer.Ui.Options
     private System.Windows.Forms.Label label6;
     private System.Windows.Forms.CheckBox _checkIfOnlineCheckBox;
     private System.Windows.Forms.CheckBox _enableTrayIconCheckBox;
+    private System.Windows.Forms.CheckBox _useNewOptionUiCheckBox;
   }
 }

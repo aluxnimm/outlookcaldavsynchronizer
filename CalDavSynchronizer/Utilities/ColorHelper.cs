@@ -23,6 +23,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Data;
 using System.Reflection;
+using CalDavSynchronizer.DataAccess;
 using log4net;
 using ColorMine;
 using ColorMine.ColorSpaces;
@@ -34,67 +35,46 @@ namespace CalDavSynchronizer.Utilities
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    public static readonly Dictionary<OlCategoryColor, string> CategoryColors = new Dictionary<OlCategoryColor, string>
+    public static readonly Dictionary<OlCategoryColor, ArgbColor> CategoryColors = new Dictionary<OlCategoryColor, ArgbColor>
     {
-      {OlCategoryColor.olCategoryColorNone, "#FFFFFF"},
-      {OlCategoryColor.olCategoryColorRed, "#E7A1A2"},
-      {OlCategoryColor.olCategoryColorOrange, "#F9BA89"},
-      {OlCategoryColor.olCategoryColorPeach, "#F7DD8F"},
-      {OlCategoryColor.olCategoryColorYellow, "#FCFA90"},
-      {OlCategoryColor.olCategoryColorGreen, "#78D168"},
-      {OlCategoryColor.olCategoryColorTeal, "#9FDCC9"},
-      {OlCategoryColor.olCategoryColorOlive, "#C6D2B0"},
-      {OlCategoryColor.olCategoryColorBlue, "#9DB7E8"},
-      {OlCategoryColor.olCategoryColorPurple, "#B5A1E2"},
-      {OlCategoryColor.olCategoryColorMaroon, "#daaec2"},
-      {OlCategoryColor.olCategoryColorSteel, "#dad9dc"},
-      {OlCategoryColor.olCategoryColorDarkSteel, "#6b7994"},
-      {OlCategoryColor.olCategoryColorGray, "#bfbfbf"},
-      {OlCategoryColor.olCategoryColorDarkGray, "#6f6f6f"},
-      {OlCategoryColor.olCategoryColorBlack, "#4f4f4f"},
-      {OlCategoryColor.olCategoryColorDarkRed, "#c11a25"},
-      {OlCategoryColor.olCategoryColorDarkOrange, "#e2620d"},
-      {OlCategoryColor.olCategoryColorDarkPeach, "#c79930"},
-      {OlCategoryColor.olCategoryColorDarkYellow, "#b9b300"},
-      {OlCategoryColor.olCategoryColorDarkGreen, "#368f2b"},
-      {OlCategoryColor.olCategoryColorDarkTeal, "#329b7a"},
-      {OlCategoryColor.olCategoryColorDarkOlive, "#778b45"},
-      {OlCategoryColor.olCategoryColorDarkBlue, "#2858a5"},
-      {OlCategoryColor.olCategoryColorDarkPurple, "#5c3fa3"},
-      {OlCategoryColor.olCategoryColorDarkMaroon, "#93446b"}
+      {OlCategoryColor.olCategoryColorNone, ArgbColor.FromRgb(0xFFFFFF)},
+      {OlCategoryColor.olCategoryColorRed, ArgbColor.FromRgb(0xE7A1A2)},
+      {OlCategoryColor.olCategoryColorOrange, ArgbColor.FromRgb(0xF9BA89)},
+      {OlCategoryColor.olCategoryColorPeach, ArgbColor.FromRgb(0xF7DD8F)},
+      {OlCategoryColor.olCategoryColorYellow, ArgbColor.FromRgb(0xFCFA90)},
+      {OlCategoryColor.olCategoryColorGreen, ArgbColor.FromRgb(0x78D168)},
+      {OlCategoryColor.olCategoryColorTeal, ArgbColor.FromRgb(0x9FDCC9)},
+      {OlCategoryColor.olCategoryColorOlive, ArgbColor.FromRgb(0xC6D2B0)},
+      {OlCategoryColor.olCategoryColorBlue, ArgbColor.FromRgb(0x9DB7E8)},
+      {OlCategoryColor.olCategoryColorPurple, ArgbColor.FromRgb(0xB5A1E2)},
+      {OlCategoryColor.olCategoryColorMaroon, ArgbColor.FromRgb(0xdaaec2)},
+      {OlCategoryColor.olCategoryColorSteel, ArgbColor.FromRgb(0xdad9dc)},
+      {OlCategoryColor.olCategoryColorDarkSteel, ArgbColor.FromRgb(0x6b7994)},
+      {OlCategoryColor.olCategoryColorGray, ArgbColor.FromRgb(0xbfbfbf)},
+      {OlCategoryColor.olCategoryColorDarkGray, ArgbColor.FromRgb(0x6f6f6f)},
+      {OlCategoryColor.olCategoryColorBlack, ArgbColor.FromRgb(0x4f4f4f)},
+      {OlCategoryColor.olCategoryColorDarkRed, ArgbColor.FromRgb(0xc11a25)},
+      {OlCategoryColor.olCategoryColorDarkOrange, ArgbColor.FromRgb(0xe2620d)},
+      {OlCategoryColor.olCategoryColorDarkPeach, ArgbColor.FromRgb(0xc79930)},
+      {OlCategoryColor.olCategoryColorDarkYellow, ArgbColor.FromRgb(0xb9b300)},
+      {OlCategoryColor.olCategoryColorDarkGreen, ArgbColor.FromRgb(0x368f2b)},
+      {OlCategoryColor.olCategoryColorDarkTeal, ArgbColor.FromRgb(0x329b7a)},
+      {OlCategoryColor.olCategoryColorDarkOlive, ArgbColor.FromRgb(0x778b45)},
+      {OlCategoryColor.olCategoryColorDarkBlue, ArgbColor.FromRgb(0x2858a5)},
+      {OlCategoryColor.olCategoryColorDarkPurple, ArgbColor.FromRgb(0x5c3fa3)},
+      {OlCategoryColor.olCategoryColorDarkMaroon, ArgbColor.FromRgb(0x93446b)}
     };
-
-
-    public static Color HexToColor (string hexColor)
+    
+    public static OlCategoryColor FindMatchingCategoryColor(ArgbColor argbColor)
     {
-      try
-      {
-        string color = hexColor.Replace ("#", "");
-        byte r = Byte.Parse (color.Substring (0, 2), NumberStyles.HexNumber);
-        byte g = Byte.Parse (color.Substring (2, 2), NumberStyles.HexNumber);
-        byte b = Byte.Parse (color.Substring (4, 2), NumberStyles.HexNumber);
-        byte a = (color.Length == 8) ? Byte.Parse (color.Substring (6, 2), NumberStyles.HexNumber) : Convert.ToByte (255);
-
-        return Color.FromArgb (a, r, g, b);
-      }
-      catch (System.Exception x)
-      {
-        s_logger.WarnFormat ("Could not parse calendar color '{0}'. Using gray", hexColor);
-        s_logger.Debug (x);
-        // Return gray if caldav color is invalid
-        return Color.Gray;
-      }
-    }
-
-    public static OlCategoryColor FindMatchingCategoryColor(Color color)
-    {
+      var color = Color.FromArgb (argbColor.ArgbValue);
 
       double minDistance = double.MaxValue;
       OlCategoryColor matchingCategoryColor = OlCategoryColor.olCategoryColorNone;
 
       foreach (var cat in CategoryColors)
       {
-        Color catColor = HexToColor(cat.Value);
+        Color catColor = Color.FromArgb(cat.Value.ArgbValue);
 
         var a = new Rgb { R = color.R, G = color.G, B = color.B };
         var b = new Rgb { R = catColor.R, G = catColor.G, B = catColor.B };

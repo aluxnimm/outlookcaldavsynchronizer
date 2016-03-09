@@ -18,23 +18,27 @@
 using System;
 using System.Configuration;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Ui.ConnectionTests;
+using CalDavSynchronizer.Utilities;
 using Google.Apis.Services;
 using Google.Apis.Tasks.v1;
 using Google.Apis.Tasks.v1.Data;
 using log4net;
+using Microsoft.Office.Interop.Outlook;
 using Exception = System.Exception;
 using Task = System.Threading.Tasks.Task;
 
 namespace CalDavSynchronizer.Ui.Options
 {
-  public partial class ServerSettingsControl : UserControl, IServerSettingsControl
+  public partial class ServerSettingsControl : UserControl, IServerSettingsControl, ICurrentOptions
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -66,7 +70,7 @@ namespace CalDavSynchronizer.Ui.Options
       _testConnectionButton.Enabled = false;
       try
       {
-        await TestWebDavConnection();
+        await OptionTasks.TestWebDavConnection(this,_settingsFaultFinder);
       }
       catch (Exception x)
       {
@@ -82,111 +86,27 @@ namespace CalDavSynchronizer.Ui.Options
       }
     }
 
-    private async Task TestWebDavConnection ()
+
+    public SynchronizationMode SynchronizationMode => _dependencies.SelectedSynchronizationMode;
+
+    public string SynchronizationModeDisplayName => _dependencies.SelectedSynchronizationModeDisplayName;
+
+    public string ServerUrl
     {
-      StringBuilder errorMessageBuilder = new StringBuilder();
-      if (!OptionTasks.ValidateWebDavUrl (_calenderUrlTextBox.Text, errorMessageBuilder, false))
-      {
-        MessageBox.Show (errorMessageBuilder.ToString(), "The CalDav/CardDav Url is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        return;
-      }
-
-      var enteredUri = new Uri (_calenderUrlTextBox.Text);
-      var webDavClient = CreateWebDavClient();
-
-      Uri autoDiscoveredUrl;
-      ResourceType autoDiscoveredResourceType;
-
-      if (ConnectionTester.RequiresAutoDiscovery (enteredUri))
-      {
-        var autodiscoveryResult = await OptionTasks.DoAutoDiscovery (enteredUri, webDavClient, true, true, _dependencies.OutlookFolderType);
-        if (autodiscoveryResult.WasCancelled)
-          return;
-        if (autodiscoveryResult.RessourceUrl != null)
-        {
-          autoDiscoveredUrl = autodiscoveryResult.RessourceUrl;
-          autoDiscoveredResourceType = autodiscoveryResult.ResourceType;
-        }
-        else
-        {
-          var autodiscoveryResult2 = await OptionTasks.DoAutoDiscovery (enteredUri.AbsolutePath.EndsWith ("/") ? enteredUri : new Uri (enteredUri.ToString() + "/"), webDavClient, false, false, _dependencies.OutlookFolderType);
-          if (autodiscoveryResult2.WasCancelled)
-            return;
-          if (autodiscoveryResult2.RessourceUrl != null)
-          {
-            autoDiscoveredUrl = autodiscoveryResult2.RessourceUrl;
-            autoDiscoveredResourceType = autodiscoveryResult2.ResourceType;
-          }
-          else
-          {
-            MessageBox.Show ("No resources were found via autodiscovery!", OptionTasks.ConnectionTestCaption);
-            return;
-          }
-        }
-      }
-      else
-      {
-        var result = await ConnectionTester.TestConnection (enteredUri, webDavClient, ResourceType.None);
-        if (result.ResourceType != ResourceType.None)
-        {
-          _settingsFaultFinder.FixSynchronizationMode (result);
-
-          OptionTasks.DisplayTestReport (
-              result,
-              _dependencies.SelectedSynchronizationModeRequiresWriteableServerResource,
-              _dependencies.SelectedSynchronizationModeDisplayName,
-              _dependencies.OutlookFolderType,
-              ServerAdapterType.WebDavHttpClientBased);
-          return;
-        }
-        else
-        {
-          var autodiscoveryResult = await OptionTasks.DoAutoDiscovery (enteredUri, webDavClient, false, false, _dependencies.OutlookFolderType);
-          if (autodiscoveryResult.WasCancelled)
-            return;
-          if (autodiscoveryResult.RessourceUrl != null)
-          {
-            autoDiscoveredUrl = autodiscoveryResult.RessourceUrl;
-            autoDiscoveredResourceType = autodiscoveryResult.ResourceType;
-          }
-          else
-          {
-            var autodiscoveryResult2 = await OptionTasks.DoAutoDiscovery (enteredUri, webDavClient, true, true, _dependencies.OutlookFolderType);
-            if (autodiscoveryResult2.RessourceUrl != null)
-            {
-              autoDiscoveredUrl = autodiscoveryResult2.RessourceUrl;
-              autoDiscoveredResourceType = autodiscoveryResult2.ResourceType;
-            }
-            else
-            {
-              MessageBox.Show ("No resources were found via autodiscovery!", OptionTasks.ConnectionTestCaption);
-              return;
-            }
-          }
-        }
-      }
-
-      _calenderUrlTextBox.Text = autoDiscoveredUrl.ToString();
-
-      var finalResult = await ConnectionTester.TestConnection (autoDiscoveredUrl, webDavClient, autoDiscoveredResourceType);
-
-      _settingsFaultFinder.FixSynchronizationMode (finalResult);
-
-      OptionTasks.DisplayTestReport (
-          finalResult,
-          _dependencies.SelectedSynchronizationModeRequiresWriteableServerResource,
-          _dependencies.SelectedSynchronizationModeDisplayName,
-          _dependencies.OutlookFolderType,
-          ServerAdapterType.WebDavHttpClientBased);
+      get { return _calenderUrlTextBox.Text; }
+      set { _calenderUrlTextBox.Text = value; }
     }
 
+    public OlItemType? OutlookFolderType => _dependencies.OutlookFolderType;
 
 
-    private IWebDavClient CreateWebDavClient ()
+    public IWebDavClient CreateWebDavClient ()
     {
       return SynchronizerFactory.CreateWebDavClient (
           _userNameTextBox.Text,
-          _useAccountPasswordCheckBox.Checked ? _outlookAccountPasswordProvider.GetPassword (_dependencies.FolderAccountName) : _passwordTextBox.Text,
+          _useAccountPasswordCheckBox.Checked
+              ? _outlookAccountPasswordProvider.GetPassword (_dependencies.FolderAccountName)
+              : SecureStringUtility.ToSecureString (_passwordTextBox.Text),
           _calenderUrlTextBox.Text,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
           ServerAdapterType.WebDavHttpClientBased,
@@ -194,6 +114,11 @@ namespace CalDavSynchronizer.Ui.Options
           _networkAndProxyOptions.PreemptiveAuthentication,
           _networkAndProxyOptions.ForceBasicAuthentication,
           _networkAndProxyOptions.ProxyOptions);
+    }
+
+    public IWebProxy GetProxyIfConfigured ()
+    {
+      return SynchronizerFactory.CreateProxy (_networkAndProxyOptions.ProxyOptions);
     }
 
     public ICalDavDataAccess CreateCalDavDataAccess ()
@@ -209,7 +134,7 @@ namespace CalDavSynchronizer.Ui.Options
       _ignoreAccountPasswordCheckBoxCheckedChanged = true;
       _useAccountPasswordCheckBox.Checked = value.UseAccountPassword;
       _ignoreAccountPasswordCheckBoxCheckedChanged = false;
-      _passwordTextBox.Text = value.Password;
+      _passwordTextBox.Text = SecureStringUtility.ToUnsecureString(value.Password);
       _networkAndProxyOptions = new NetworkAndProxyOptions (value.CloseAfterEachRequest, value.PreemptiveAuthentication, value.ForceBasicAuthentication, value.ProxyOptions ?? new ProxyOptions());
       UpdatePasswordControlEnabled();
     }
@@ -219,7 +144,7 @@ namespace CalDavSynchronizer.Ui.Options
       optionsToFill.EmailAddress = _emailAddressTextBox.Text;
       optionsToFill.CalenderUrl = _calenderUrlTextBox.Text;
       optionsToFill.UserName = _userNameTextBox.Text;
-      optionsToFill.Password = _passwordTextBox.Text;
+      optionsToFill.Password = SecureStringUtility.ToSecureString(_passwordTextBox.Text);
       optionsToFill.UseAccountPassword = _useAccountPasswordCheckBox.Checked;
       optionsToFill.ServerAdapterType = ServerAdapterType.WebDavHttpClientBased;
       optionsToFill.CloseAfterEachRequest = _networkAndProxyOptions.CloseConnectionAfterEachRequest;
@@ -236,6 +161,12 @@ namespace CalDavSynchronizer.Ui.Options
     public string EmailAddress
     {
       get { return _emailAddressTextBox.Text; }
+    }
+
+    public ServerAdapterType ServerAdapterType
+    {
+      get { return ServerAdapterType.WebDavHttpClientBased; }
+      set { throw new NotSupportedException ("Cannot change ServerAdapterType of general profile."); }
     }
 
     private void _networkAndProxyOptionsButton_Click (object sender, EventArgs e)

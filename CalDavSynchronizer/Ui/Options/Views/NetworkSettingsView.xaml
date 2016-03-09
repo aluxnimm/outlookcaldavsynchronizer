@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="CalDavSynchronizer.Ui.Options.Views.NetworkSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels"
+             mc:Ignorable="d"
+             d:DataContext="{x:Static viewModels:NetworkSettingsViewModel.DesignInstance}">
+
+  <DockPanel>
+    <GroupBox DockPanel.Dock="Top" Header="Advanced network settings">
+      <StackPanel>
+        <CheckBox IsChecked="{Binding CloseConnectionAfterEachRequest}">Close connection after each request</CheckBox>
+        <CheckBox IsChecked="{Binding PreemptiveAuthentication}">Use preemptive authentication</CheckBox>
+        <CheckBox IsChecked="{Binding ForceBasicAuthentication}">Force Basic Authentication</CheckBox>
+      </StackPanel>
+    </GroupBox>
+    <GroupBox Header="Proxy settings">
+      <StackPanel>
+        <CheckBox IsChecked="{Binding ProxyUseDefault}">Use system default proxy (settings from IE and config file)</CheckBox>
+        <GroupBox >
+          <GroupBox.Header>
+            <CheckBox FontWeight="Bold" Margin="0" IsChecked="{Binding ProxyUseManual}">Use manual proxy configuration</CheckBox>
+          </GroupBox.Header>
+          <Grid IsEnabled="{Binding ProxyUseManual}">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition />
+              <RowDefinition />
+              <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <TextBlock>Proxy Url:</TextBlock>
+            <TextBox Text="{Binding ProxyUrl}" Grid.Row="0" Grid.Column="1" />
+
+            <TextBlock Grid.Row="1" Grid.Column="0">Username (optional):</TextBlock>
+            <TextBox Text="{Binding ProxyUserName}" Grid.Row="1" Grid.Column="1" />
+
+            <TextBlock Grid.Row="2" Grid.Column="0">Password (optional):</TextBlock>
+            <TextBox Text="{Binding ProxyPassword}" Grid.Row="2" Grid.Column="1" />
+          </Grid>
+        </GroupBox>
+      </StackPanel>
+    </GroupBox>
+
+  </DockPanel>
+
+</UserControl>

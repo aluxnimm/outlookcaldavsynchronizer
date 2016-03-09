@@ -149,31 +149,10 @@ namespace CalDavSynchronizer.Ui.Options
 
     public void UpdateFolderAccountName ()
     {
-      if (!ThisAddIn.IsOutlookVersionSmallerThan2010)
-        _folderAccountName = GetFolderAccountNameOrNull (_folderStoreId);
+        _folderAccountName = OptionTasks.GetFolderAccountNameOrNull (_session, _folderStoreId);
     }
 
-    private string GetFolderAccountNameOrNull (string folderStoreId)
-    {
-      try
-      {
-        foreach (Account account in _session.Accounts.ToSafeEnumerable<Account>())
-        {
-          using (var deliveryStore = GenericComObjectWrapper.Create(account.DeliveryStore))
-          {
-            if (deliveryStore.Inner != null && deliveryStore.Inner.StoreID == folderStoreId)
-            {
-              return account.DisplayName;
-            }
-          }
-        }
-      }
-      catch (Exception ex)
-      {
-        s_logger.Error ("Can't access Account Name of folder.", ex);
-      }
-      return null;
-    }
+    
 
     public OlItemType? OutlookFolderType
     {

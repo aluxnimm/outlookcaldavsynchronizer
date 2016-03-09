@@ -21,6 +21,8 @@ using System.Xml.Serialization;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Ui;
 using CalDavSynchronizer.Ui.Options.Mapping;
+using CalDavSynchronizer.Ui.Options.ViewModels;
+using CalDavSynchronizer.Ui.Options.ViewModels.Mapping;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Contracts
@@ -64,6 +66,11 @@ namespace CalDavSynchronizer.Contracts
     }
 
     public override IConfigurationForm<MappingConfigurationBase> CreateConfigurationForm (IConfigurationFormFactory factory)
+    {
+      return factory.Create (this);
+    }
+
+    public override IOptionsViewModel CreateConfigurationViewModel (IMappingConfigurationViewModelFactory factory)
     {
       return factory.Create (this);
     }

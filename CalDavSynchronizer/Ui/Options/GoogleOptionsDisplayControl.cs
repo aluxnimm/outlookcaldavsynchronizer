@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Ui.Options.Mapping;
 using CalDavSynchronizer.Utilities;
 using log4net;
@@ -98,7 +99,7 @@ namespace CalDavSynchronizer.Ui.Options
     {
       bool result = true;
 
-      if (_serverSettingsControl.UsedServerAdapterType != ServerAdapterType.GoogleTaskApi)
+      if (_serverSettingsControl.ServerAdapterType != ServerAdapterType.GoogleTaskApi)
         result &= OptionTasks.ValidateWebDavUrl (_serverSettingsControl.CalendarUrl, errorMessageBuilder, true);
 
       result &= _outlookFolderControl.Validate (errorMessageBuilder);
@@ -161,7 +162,7 @@ namespace CalDavSynchronizer.Ui.Options
       try
       {
         var mappingConfiguration = OptionTasks.CoreceMappingConfiguration (_outlookFolderControl.OutlookFolderType, _mappingConfiguration,
-                                                                           _serverSettingsControl.UsedServerAdapterType == ServerAdapterType.GoogleTaskApi);
+                                                                           _serverSettingsControl.ServerAdapterType == ServerAdapterType.GoogleTaskApi);
         if (mappingConfiguration != null)
         {
           var configurationForm = mappingConfiguration.CreateConfigurationForm (_configurationFormFactory.Value);
@@ -194,9 +195,9 @@ namespace CalDavSynchronizer.Ui.Options
       _outlookFolderControl.UpdateFolderAccountName();
     }
 
-    public bool SelectedSynchronizationModeRequiresWriteableServerResource
+    public SynchronizationMode SelectedSynchronizationMode
     {
-      get { return _syncSettingsControl.SelectedModeRequiresWriteableServerResource; }
+      get { return  _syncSettingsControl.SynchronizationMode; }
     }
 
     public string SelectedSynchronizationModeDisplayName

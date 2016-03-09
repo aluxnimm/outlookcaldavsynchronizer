@@ -65,13 +65,10 @@ namespace CalDavSynchronizer.Ui
         ExceptionHandler.Instance.HandleException (x, s_logger);
       }
     }
-
+    
     public void RaiseCanExecuteChanged ()
     {
-      if (CanExecuteChanged != null)
-      {
-        CanExecuteChanged (this, EventArgs.Empty);
-      }
+      CanExecuteChanged?.Invoke (this, EventArgs.Empty);
     }
   }
 }

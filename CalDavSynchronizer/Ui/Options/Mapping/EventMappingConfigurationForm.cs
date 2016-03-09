@@ -146,12 +146,11 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
 
     private async void _calendarColorRefreshButton_Click (object sender, EventArgs e)
     {
-      string serverColor = await _calDavDataAccessFactory ().GetCalendarColorNoThrow ();
+      var serverColor = await _calDavDataAccessFactory ().GetCalendarColorNoThrow ();
 
-      if (!string.IsNullOrEmpty (serverColor))
+      if (serverColor != null)
       {
-        Color c = ColorHelper.HexToColor (serverColor);
-        _categoryColorPicker.SelectedValue = ColorHelper.FindMatchingCategoryColor (c);
+        _categoryColorPicker.SelectedValue = ColorHelper.FindMatchingCategoryColor (serverColor.Value);
       }
     }
 
@@ -191,7 +190,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
     {
       if (_categoryColorPicker.SelectedValue != OlCategoryColor.olCategoryColorNone)
       {
-        if (await _calDavDataAccessFactory().SetCalendarColorNoThrow ((ColorHelper.CategoryColors[_categoryColorPicker.SelectedValue] + "ff")))
+        if (await _calDavDataAccessFactory().SetCalendarColorNoThrow ((ColorHelper.CategoryColors[_categoryColorPicker.SelectedValue])))
         {
           MessageBox.Show ("Successfully updated the server calendar color!");
         }

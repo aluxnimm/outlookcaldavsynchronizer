@@ -15,6 +15,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using CalDavSynchronizer.Ui.Options.Mapping;
+using CalDavSynchronizer.Ui.Options.ViewModels;
+using CalDavSynchronizer.Ui.Options.ViewModels.Mapping;
 
 namespace CalDavSynchronizer.Contracts
 {
@@ -34,6 +36,11 @@ namespace CalDavSynchronizer.Contracts
     }
 
     public override IConfigurationForm<MappingConfigurationBase> CreateConfigurationForm (IConfigurationFormFactory factory)
+    {
+      return factory.Create (this);
+    }
+
+    public override IOptionsViewModel CreateConfigurationViewModel (IMappingConfigurationViewModelFactory factory)
     {
       return factory.Create (this);
     }

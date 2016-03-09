@@ -270,6 +270,8 @@
     <Compile Include="Contracts\ProfileEntry.cs" />
     <Compile Include="Contracts\ProxyOptions.cs" />
     <Compile Include="Contracts\ServerAdapterType.cs" />
+    <Compile Include="Ui\Options\ISynchronizationProfilesViewModel.cs" />
+    <Compile Include="Utilities\ArgbColor.cs" />
     <Compile Include="DataAccess\HttpClientBasedClient\HttpResponseHeadersAdapter.cs" />
     <Compile Include="DataAccess\HttpUtility.cs" />
     <Compile Include="DataAccess\ICardDavDataAccess.cs" />
@@ -369,6 +371,10 @@
     <Compile Include="Scheduling\SynchronizerFactory.cs" />
     <Compile Include="ThoughtvCardWorkaround\ContactDataPreprocessor.cs" />
     <Compile Include="ThoughtvCardWorkaround\vCardImprovedWriter.cs" />
+    <Compile Include="Ui\DelegateCommandWithoutCanExecuteDelegation.cs" />
+    <Compile Include="Ui\Options\DesignCurrentOptions.cs" />
+    <Compile Include="Ui\Options\ICurrentOptions.cs" />
+    <Compile Include="Ui\Options\ISyncSettingsControl.cs" />
     <Compile Include="Ui\Options\Mapping\TaskMappingConfigurationForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -470,6 +476,62 @@
     </Compile>
     <Compile Include="Ui\Options\OutlookFolderControl.Designer.cs">
       <DependentUpon>OutlookFolderControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\Options\ViewModels\CloseEventArgs.cs" />
+    <Compile Include="Ui\Options\ViewModels\DesignOptionsViewModelParent.cs" />
+    <Compile Include="Ui\Options\ViewModels\DesignOutlookSession.cs" />
+    <Compile Include="Ui\Options\ViewModels\GenericOptionsViewModel.cs" />
+    <Compile Include="Ui\Options\ViewModels\GoogleServerSettingsViewModel.cs" />
+    <Compile Include="Ui\Options\ViewModels\IOptionsSection.cs" />
+    <Compile Include="Ui\Options\ViewModels\IOptionsViewModel.cs" />
+    <Compile Include="Ui\Options\ViewModels\IOptionsViewModelFactory.cs" />
+    <Compile Include="Ui\Options\ViewModels\IOptionsViewModelParent.cs" />
+    <Compile Include="Ui\Options\ViewModels\IServerSettingsViewModel.cs" />
+    <Compile Include="Ui\Options\ViewModels\Mapping\ContactMappingConfigurationViewModel.cs" />
+    <Compile Include="Ui\Options\ViewModels\Mapping\EventMappingConfigurationViewModel.cs" />
+    <Compile Include="Ui\Options\ViewModels\Mapping\IMappingConfigurationViewModelFactory.cs" />
+    <Compile Include="Ui\Options\ViewModels\Mapping\MappingConfigurationViewModelFactory.cs" />
+    <Compile Include="Ui\Options\ViewModels\Mapping\TaskMappingConfigurationViewModel.cs" />
+    <Compile Include="Ui\Options\ViewModels\NetworkSettingsViewModel.cs" />
+    <Compile Include="Ui\Options\ViewModels\NullOptionsViewModelFactory.cs" />
+    <Compile Include="Ui\Options\ViewModels\OptionsCollectionViewModel.cs" />
+    <Compile Include="Ui\Options\ViewModels\OptionsViewModelBase.cs" />
+    <Compile Include="Ui\Options\ViewModels\OptionsViewModelFactory.cs" />
+    <Compile Include="Ui\Options\ViewModels\OutlookFolderViewModel.cs" />
+    <Compile Include="Ui\Options\ViewModels\ServerSettingsViewModel.cs" />
+    <Compile Include="Ui\Options\ViewModels\SyncSettingsViewModel.cs" />
+    <Compile Include="Ui\Options\Views\OlItemTypeToImageConverter.cs" />
+    <Compile Include="Ui\Options\Views\OlCategoryColorConverter.cs" />
+    <Compile Include="Ui\Options\Views\BooleanNotConverter.cs" />
+    <Compile Include="Ui\Options\Views\GoogleServerSettingsView.xaml.cs">
+      <DependentUpon>GoogleServerSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\Options\Views\Mapping\ContactMappingConfigurationView.xaml.cs">
+      <DependentUpon>ContactMappingConfigurationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\Options\Views\Mapping\EventMappingConfigurationView.xaml.cs">
+      <DependentUpon>EventMappingConfigurationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\Options\Views\Mapping\TaskMappingConfigurationView.xaml.cs">
+      <DependentUpon>TaskMappingConfigurationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\Options\Views\NetworkSettingsView.xaml.cs">
+      <DependentUpon>NetworkSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\Options\Views\OptionsCollectionView.xaml.cs">
+      <DependentUpon>OptionsCollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\Options\Views\OptionsWindow.xaml.cs">
+      <DependentUpon>OptionsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\Options\Views\OutlookFolderView.xaml.cs">
+      <DependentUpon>OutlookFolderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\Options\Views\ServerSettingsView.xaml.cs">
+      <DependentUpon>ServerSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\Options\Views\SyncSettingsView.xaml.cs">
+      <DependentUpon>SyncSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Ui\Reports\ViewModels\IReportsViewModelParent.cs" />
     <Compile Include="Ui\Reports\ViewModels\IReportViewModelParent.cs" />
@@ -640,6 +702,7 @@
     <Compile Include="Utilities\ColorHelper.cs" />
     <Compile Include="Utilities\ExceptionHandler.cs" />
     <Compile Include="Utilities\IExceptionHandler.cs" />
+    <Compile Include="Utilities\SecureStringUtility.cs" />
     <Compile Include="Utilities\Serializer.cs" />
     <Compile Include="Implementation\ConflictResolution.cs" />
     <Compile Include="Implementation\Events\EventEntityMapper.cs" />
@@ -666,6 +729,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
+    <Resource Include="Resources\Task.gif" />
+    <Resource Include="Resources\TaskDisabled.gif" />
     <Resource Include="Resources\warning.ico" />
     <None Include="Resources\SyncError.png" />
     <None Include="Resources\report.ico" />
@@ -678,6 +743,10 @@
     <None Include="Resources\logo_google.png" />
     <None Include="Resources\logo_yandex.png" />
     <None Include="Resources\logo_gmx.png" />
+    <Resource Include="Resources\Appointment.gif" />
+    <Resource Include="Resources\AppointmentDisabled.gif" />
+    <Resource Include="Resources\Contact.gif" />
+    <Resource Include="Resources\ContactDisabled.gif" />
     <Content Include="Resources\outlookcaldavsynchronizerlogoarrow.png" />
   </ItemGroup>
   <ItemGroup>
@@ -692,6 +761,46 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Page Include="Ui\Options\Views\GoogleServerSettingsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\Options\Views\Mapping\ContactMappingConfigurationView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\Options\Views\Mapping\EventMappingConfigurationView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\Options\Views\Mapping\TaskMappingConfigurationView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\Options\Views\NetworkSettingsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\Options\Views\OptionsCollectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\Options\Views\OptionsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\Options\Views\OutlookFolderView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\Options\Views\ServerSettingsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\Options\Views\SyncSettingsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Ui\Reports\Views\ReportDetailView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -21,7 +21,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -48,9 +47,11 @@ using Microsoft.Office.Interop.Outlook;
 using Application = Microsoft.Office.Interop.Outlook.Application;
 using Exception = System.Exception;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Ui.Options;
+using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.SystrayNotification;
 using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
 using GenSync.EntityRelationManagement;
@@ -59,10 +60,10 @@ using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace CalDavSynchronizer
 {
-  public class ComponentContainer: IReportsViewModelParent, ISynchronizationReportSink, ICalDavSynchronizerCommands, IDisposable
+  public class ComponentContainer : IReportsViewModelParent, ISynchronizationReportSink, ICalDavSynchronizerCommands, IDisposable
   {
     public const string MessageBoxTitle = "CalDav Synchronizer";
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
+    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
     // ReSharper disable once ConvertToConstant.Local
     private readonly int c_requiredEntityCacheVersion = 1;
 
@@ -86,7 +87,7 @@ namespace CalDavSynchronizer
     private readonly IAvailableVersionService _availableVersionService;
     private readonly ProfileStatusesViewModel _profileStatusesViewModel;
     private ITrayNotifier _trayNotifier;
-    private OptionsForm _currentVisibleOptionsFormOrNull;
+    private ISynchronizationProfilesViewModel _currentVisibleOptionsFormOrNull;
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
 
     public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
@@ -182,12 +183,12 @@ namespace CalDavSynchronizer
         {
           s_logger.InfoFormat ("Converting caches from 0 to 1");
           EntityCacheVersionConversion.Version0To1.Convert (
-            options.Select (o => EntityRelationDataAccess.GetRelationStoragePath(GetProfileDataDirectory (o.Id))).ToArray());
+              options.Select (o => EntityRelationDataAccess.GetRelationStoragePath (GetProfileDataDirectory (o.Id))).ToArray());
           _generalOptionsDataAccess.EntityCacheVersion = c_requiredEntityCacheVersion;
         }
         catch (Exception x)
         {
-          s_logger.Error ("Error during conversion. Deleting caches",x);
+          s_logger.Error ("Error during conversion. Deleting caches", x);
           if (DeleteCachesForProfiles (options.Select (p => Tuple.Create (p.Id, p.Name))))
             _generalOptionsDataAccess.EntityCacheVersion = c_requiredEntityCacheVersion;
         }
@@ -213,7 +214,7 @@ namespace CalDavSynchronizer
 
     public void PostReport (SynchronizationReport report)
     {
-      SaveAndShowReport(report);
+      SaveAndShowReport (report);
       _profileStatusesViewModel.Update (report);
       _trayNotifier.NotifyUser (report);
     }
@@ -262,7 +263,7 @@ namespace CalDavSynchronizer
 
       return new SynchronizationReportRepository (reportDirectory);
     }
-    
+
     private static void ConfigureServicePointManager (GeneralOptions options)
     {
       ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11;
@@ -283,13 +284,13 @@ namespace CalDavSynchronizer
     {
       if (debugLogLevel)
       {
-        ((Hierarchy)LogManager.GetRepository()).Root.Level = Level.Debug;
+        ((Hierarchy) LogManager.GetRepository()).Root.Level = Level.Debug;
       }
       else
       {
-        ((Hierarchy)LogManager.GetRepository()).Root.Level = Level.Info;
+        ((Hierarchy) LogManager.GetRepository()).Root.Level = Level.Info;
       }
-      ((Hierarchy)LogManager.GetRepository()).RaiseConfigurationChanged (EventArgs.Empty);
+      ((Hierarchy) LogManager.GetRepository()).RaiseConfigurationChanged (EventArgs.Empty);
     }
 
     public async Task SynchronizeNowNoThrow ()
@@ -316,28 +317,14 @@ namespace CalDavSynchronizer
           GeneralOptions generalOptions = _generalOptionsDataAccess.LoadOptions();
           try
           {
-            _currentVisibleOptionsFormOrNull = new OptionsForm (
-              _session,
-              GetProfileDataDirectory, 
-              generalOptions.FixInvalidSettings,
-              _outlookAccountPasswordProvider);
+            Options[] newOptions;
+            if (generalOptions.UseNewOptionUi)
+              newOptions = ShowWpfOptions (initialVisibleProfile, generalOptions, options);
+            else
+              newOptions = ShowWinFormOptions (initialVisibleProfile, generalOptions, options);
 
-            _currentVisibleOptionsFormOrNull.OptionsList = options;
-
-            if (initialVisibleProfile.HasValue)
-              _currentVisibleOptionsFormOrNull.ShowProfile (initialVisibleProfile.Value);
-
-            if (_currentVisibleOptionsFormOrNull.ShowDialog() == DialogResult.OK)
-            {
-              var newOptions = _currentVisibleOptionsFormOrNull.OptionsList;
-              _optionsDataAccess.SaveOptions (newOptions);
-              _scheduler.SetOptions (newOptions, generalOptions.CheckIfOnline);
-              _profileStatusesViewModel.EnsureProfilesDisplayed (newOptions);
-              DeleteEntityChachesForChangedProfiles (options, newOptions);
-
-              var changedOptions = CreateChangePairs (options, newOptions);
-              SwitchCategories (changedOptions);
-            }
+            if (newOptions != null)
+              ApplyNewOptions (options, newOptions, generalOptions);
           }
           finally
           {
@@ -355,6 +342,64 @@ namespace CalDavSynchronizer
       {
         ExceptionHandler.Instance.HandleException (x, s_logger);
       }
+    }
+
+    private Options[] ShowWinFormOptions (Guid? initialVisibleProfile, GeneralOptions generalOptions, Options[] options)
+    {
+      var optionsForm = new OptionsForm (
+          _session,
+          GetProfileDataDirectory,
+          generalOptions.FixInvalidSettings,
+          _outlookAccountPasswordProvider);
+
+      _currentVisibleOptionsFormOrNull = optionsForm;
+
+      optionsForm.OptionsList = options;
+
+      if (initialVisibleProfile.HasValue)
+        _currentVisibleOptionsFormOrNull.ShowProfile (initialVisibleProfile.Value);
+
+      if (optionsForm.ShowDialog() == DialogResult.OK)
+        return optionsForm.OptionsList;
+      else
+        return null;
+    }
+    
+    public Options[] ShowWpfOptions (Guid? initialSelectedProfileId, GeneralOptions generalOptions, Options[] options)
+    {
+      string[] categories;
+      using (var categoriesWrapper = GenericComObjectWrapper.Create (_session.Categories))
+      {
+        categories = categoriesWrapper.Inner.ToSafeEnumerable<Category>().Select (c => c.Name).ToArray();
+      }
+
+      var viewModel = new OptionsCollectionViewModel (
+          _session,
+          generalOptions.FixInvalidSettings,
+          _outlookAccountPasswordProvider,
+          categories,
+          GetProfileDataDirectory);
+
+      _currentVisibleOptionsFormOrNull = viewModel;
+
+      viewModel.SetOptionsCollection (options, initialSelectedProfileId);
+
+      if (_uiService.ShowOptions (viewModel))
+        return viewModel.GetOptionsCollection();
+      else
+        return null;
+    }
+
+    private void ApplyNewOptions (Options[] oldOptions, Options[] newOptions, GeneralOptions generalOptions)
+    {
+      _optionsDataAccess.BackupOptions ();
+
+      _optionsDataAccess.SaveOptions (newOptions);
+      _scheduler.SetOptions (newOptions, generalOptions.CheckIfOnline);
+      _profileStatusesViewModel.EnsureProfilesDisplayed (newOptions);
+      DeleteEntityChachesForChangedProfiles (oldOptions, newOptions);
+      var changedOptions = CreateChangePairs (oldOptions, newOptions);
+      SwitchCategories (changedOptions);
     }
 
     public void ShowLatestSynchronizationReportNoThrow (Guid profileId)

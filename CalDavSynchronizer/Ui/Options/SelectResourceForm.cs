@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Ui.ConnectionTests;
 using CalDavSynchronizer.Utilities;
 
@@ -30,7 +31,7 @@ namespace CalDavSynchronizer.Ui.Options
     public ResourceType ResourceType { get; private set; }
 
     public SelectResourceForm (
-      IReadOnlyList<Tuple<Uri, string, string>> caldendars, 
+      IReadOnlyList<Tuple<Uri, string, ArgbColor?>> caldendars, 
       IReadOnlyList<Tuple<Uri, string>> addressBooks, 
       IReadOnlyList<Tuple<string, string>> taskLists,
       ResourceType initialResourceTabToDisplay)
@@ -107,9 +108,9 @@ namespace CalDavSynchronizer.Ui.Options
       {
         if (e.ColumnIndex == 2)
         {
-          if (!string.IsNullOrEmpty (e.Value.ToString()))
+          if (e.Value != null)
           {
-            Color calColor = ColorHelper.HexToColor (e.Value.ToString());
+            Color calColor = Color.FromArgb(((ArgbColor)e.Value).ArgbValue);
             e.CellStyle.ForeColor = calColor;
             e.CellStyle.BackColor = calColor;
             e.CellStyle.SelectionBackColor = calColor;

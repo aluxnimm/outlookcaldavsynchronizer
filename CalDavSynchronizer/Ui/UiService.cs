@@ -17,13 +17,20 @@
 
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Forms.Integration;
+using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Properties;
+using CalDavSynchronizer.Ui.Options.ViewModels;
+using CalDavSynchronizer.Ui.Options.Views;
 using CalDavSynchronizer.Ui.Reports;
 using CalDavSynchronizer.Ui.Reports.ViewModels;
 using CalDavSynchronizer.Ui.Reports.Views;
 using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
 using CalDavSynchronizer.Ui.SystrayNotification.Views;
+using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui
 {
@@ -31,8 +38,11 @@ namespace CalDavSynchronizer.Ui
   {
     private readonly GenericElementHostWindow _profileStatusesWindow;
 
-    public UiService (ProfileStatusesViewModel viewModel)
+    public UiService (      ProfileStatusesViewModel viewModel)
     {
+      if (viewModel == null)
+        throw new ArgumentNullException (nameof (viewModel));
+  
       var view = new ProfileStatusesView();
       view.DataContext = viewModel;
       _profileStatusesWindow = new GenericElementHostWindow();
@@ -78,6 +88,21 @@ namespace CalDavSynchronizer.Ui
         _profileStatusesWindow.Visible = true;
     }
 
+    public bool ShowOptions (OptionsCollectionViewModel viewModel)
+    {
+      var window = new OptionsWindow();
+      window.DataContext = viewModel;
+      ElementHost.EnableModelessKeyboardInterop (window);
+
+      viewModel.RequestBringIntoView += delegate
+      {
+        window.BringIntoView();
+      };
+
+      return window.ShowDialog().GetValueOrDefault (false);
+    }
+
+  
 
     private static void SetWindowSize (GenericElementHostWindow window, double ratioToCurrentScreensize)
     {

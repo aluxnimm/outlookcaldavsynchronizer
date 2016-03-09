@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="CalDavSynchronizer.Ui.Options.Views.OutlookFolderView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels"
+             mc:Ignorable="d"
+             d:DataContext="{x:Static viewModels:OutlookFolderViewModel.DesignInstance}">
+
+  <GroupBox Header="Outlook Settings">
+
+
+    <StackPanel>
+      <DockPanel>
+        <TextBlock DockPanel.Dock="Left">Outlook folder:</TextBlock>
+        <Button Command="{Binding SelectFolderCommand}" DockPanel.Dock="Right">...</Button>
+        <TextBox VerticalAlignment="Center" IsReadOnly="True" Text="{Binding SelectedFolderName, Mode=OneWay}" />
+      </DockPanel>
+      <CheckBox IsChecked="{Binding EnableChangeTriggeredSynchronization}">Synchronize items immediately after change</CheckBox>
+    </StackPanel>
+  </GroupBox>
+
+</UserControl>
