@@ -23,6 +23,7 @@
     </Grid>
     <CheckBox IsChecked="{Binding MapPriority}">Map Priority</CheckBox>
     <CheckBox IsChecked="{Binding MapBody}">Map Body</CheckBox>
-  </StackPanel>
+    <CheckBox IsChecked="{Binding MapRecurringTasks}">Map Recurring Tasks</CheckBox>
+    </StackPanel>
 
 </UserControl>

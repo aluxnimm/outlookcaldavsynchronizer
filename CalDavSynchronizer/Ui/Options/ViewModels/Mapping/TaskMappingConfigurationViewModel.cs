@@ -29,6 +29,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     private readonly ObservableCollection<IOptionsViewModel> _subOptions = new ObservableCollection<IOptionsViewModel>();
     private bool _mapBody;
     private bool _mapPriority;
+    private bool _mapRecurringTasks;
     private ReminderMapping _mapReminder;
     private bool _isSelected;
 
@@ -59,6 +60,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       }
     }
 
+    public bool MapRecurringTasks
+    {
+      get { return _mapRecurringTasks; }
+      set
+      {
+        _mapRecurringTasks = value;
+        OnPropertyChanged();
+      }
+    }
     public ReminderMapping MapReminder
     {
       get { return _mapReminder; }
@@ -83,6 +93,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                                                          {
                                                                               MapBody = true,
                                                                               MapPriority = true,
+                                                                              MapRecurringTasks = true,
                                                                               MapReminder = ReminderMapping.JustUpcoming
                                                                          };
 
@@ -98,6 +109,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     {
       MapBody = mappingConfiguration.MapBody;
       MapPriority = mappingConfiguration.MapPriority;
+      MapRecurringTasks = mappingConfiguration.MapRecurringTasks;
       MapReminder = mappingConfiguration.MapReminder;
     }
 
@@ -107,6 +119,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                      {
                                          MapBody = _mapBody,
                                          MapPriority = _mapPriority,
+                                         MapRecurringTasks = _mapRecurringTasks,
                                          MapReminder = _mapReminder
                                      };
     }
