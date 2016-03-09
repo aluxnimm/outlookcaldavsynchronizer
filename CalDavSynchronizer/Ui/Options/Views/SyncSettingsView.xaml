@@ -24,7 +24,7 @@
           ItemsSource="{Binding AvailableSynchronizationModes}"
           DisplayMemberPath="Name"
           SelectedValuePath="Value"
-          SelectedValue="{Binding Mode}"
+          SelectedValue="{Binding SynchronizationMode}"
           MinWidth="150" Grid.Row="0" Grid.Column="1" />
 
         <TextBlock Grid.Row="1" Grid.Column="0">Conflict Resolution:</TextBlock>

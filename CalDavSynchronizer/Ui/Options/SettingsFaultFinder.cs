@@ -44,9 +44,9 @@ namespace CalDavSynchronizer.Ui.Options
       if (result.ResourceType.HasFlag (ResourceType.Calendar))
       {
         if (!result.CalendarProperties.HasFlag (CalendarProperties.IsWriteable)
-            && OptionTasks.DoesModeRequireWriteableServerResource(_syncSettingsControl.Mode))
+            && OptionTasks.DoesModeRequireWriteableServerResource(_syncSettingsControl.SynchronizationMode))
         {
-          _syncSettingsControl.Mode = readOnlyDefaultMode;
+          _syncSettingsControl.SynchronizationMode = readOnlyDefaultMode;
           MessageBox.Show (
               string.Format (
                   "The specified Url is a read-only calendar. Synchronization mode set to '{0}'.",
@@ -58,9 +58,9 @@ namespace CalDavSynchronizer.Ui.Options
       if (result.ResourceType.HasFlag (ResourceType.AddressBook))
       {
         if (!result.AddressBookProperties.HasFlag (AddressBookProperties.IsWriteable)
-            && OptionTasks.DoesModeRequireWriteableServerResource(_syncSettingsControl.Mode))
+            && OptionTasks.DoesModeRequireWriteableServerResource(_syncSettingsControl.SynchronizationMode))
         {
-          _syncSettingsControl.Mode = readOnlyDefaultMode;
+          _syncSettingsControl.SynchronizationMode = readOnlyDefaultMode;
           MessageBox.Show (
               string.Format (
                   "The specified Url is a read-only addressbook. Synchronization mode set to '{0}'.",

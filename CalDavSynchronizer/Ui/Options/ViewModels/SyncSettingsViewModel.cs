@@ -8,7 +8,7 @@ using CalDavSynchronizer.Implementation;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  internal class SyncSettingsViewModel : ViewModelBase, IOptionsSection, ISyncSettingsControl
+  internal class SyncSettingsViewModel : ViewModelBase, IOptionsSection
   {
     private ConflictResolution _conflictResolution;
     private int _daysToSynchronizeInTheFuture;
@@ -17,7 +17,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private SynchronizationMode _synchronizationMode;
     private bool _useSynchronizationTimeRange;
 
-    public SynchronizationMode Mode
+    public SynchronizationMode SynchronizationMode
     {
       get { return _synchronizationMode; }
       set
@@ -77,7 +77,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       }
     }
 
-    public string SelectedSynchronizationModeDisplayName => AvailableSynchronizationModes.First (m => m.Value == Mode).Name;
+    public string SelectedSynchronizationModeDisplayName => AvailableSynchronizationModes.First (m => m.Value == SynchronizationMode).Name;
 
     public IList<Item<int>> AvailableSyncIntervals =>
         new[] { new Item<int> (0, "Manual only") }
@@ -104,7 +104,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     public static SyncSettingsViewModel DesignInstance { get; } = new SyncSettingsViewModel
                                                                   {
-                                                                      Mode = SynchronizationMode.MergeInBothDirections,
+                                                                      SynchronizationMode = SynchronizationMode.MergeInBothDirections,
                                                                       Resolution = ConflictResolution.Automatic,
                                                                       UseSynchronizationTimeRange = true,
                                                                       DaysToSynchronizeInTheFuture = 33,
@@ -114,7 +114,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     public void SetOptions (CalDavSynchronizer.Contracts.Options options)
     {
-      Mode = options.SynchronizationMode;
+      SynchronizationMode = options.SynchronizationMode;
       Resolution = options.ConflictResolution;
       SynchronizationIntervalInMinutes = options.SynchronizationIntervalInMinutes;
       UseSynchronizationTimeRange = !options.IgnoreSynchronizationTimeRange;

@@ -12,7 +12,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  internal class GenericOptionsViewModel : OptionsViewModelBase, ICurrentOptions
+  internal class GenericOptionsViewModel : OptionsViewModelBase, ICurrentOptions, ISyncSettingsControl
   {
     private readonly ObservableCollection<IOptionsViewModel> _subOptions = new ObservableCollection<IOptionsViewModel>();
     private readonly NetworkSettingsViewModel _networkSettingsViewModel;
@@ -42,7 +42,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       _syncSettingsViewModel = new SyncSettingsViewModel();
       _networkSettingsViewModel = new NetworkSettingsViewModel();
 
-      var faultFinder = fixInvalidSettings ? new SettingsFaultFinder (_syncSettingsViewModel) : NullSettingsFaultFinder.Instance;
+      var faultFinder = fixInvalidSettings ? new SettingsFaultFinder (this) : NullSettingsFaultFinder.Instance;
       _serverSettingsViewModel = serverSettingsViewModelFactory (faultFinder, this);
       _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
       _mappingConfigurationViewModelFactory = mappingConfigurationViewModelFactoryFactory(this);
@@ -125,7 +125,20 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     }
 
 
-    public SynchronizationMode SynchronizationMode => _syncSettingsViewModel.Mode;
+    public SynchronizationMode SynchronizationMode
+    {
+      get { return _syncSettingsViewModel.SynchronizationMode; }
+      set { _syncSettingsViewModel.SynchronizationMode = value; }
+    }
+
+    public IList<Item<SynchronizationMode>> AvailableSynchronizationModes => _syncSettingsViewModel.AvailableSynchronizationModes;
+
+    public bool UseSynchronizationTimeRange
+    {
+      get { return _syncSettingsViewModel.UseSynchronizationTimeRange; }
+      set { _syncSettingsViewModel.UseSynchronizationTimeRange = value; }
+    }
+
     public string SynchronizationModeDisplayName => _syncSettingsViewModel.SelectedSynchronizationModeDisplayName;
 
     public string ServerUrl

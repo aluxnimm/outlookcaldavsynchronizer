@@ -9,7 +9,7 @@ namespace CalDavSynchronizer.Ui.Options
 {
   public interface ISyncSettingsControl
   {
-    SynchronizationMode Mode { get; set; }
+    SynchronizationMode SynchronizationMode { get; set; }
     IList<Item<SynchronizationMode>> AvailableSynchronizationModes { get; }
     bool UseSynchronizationTimeRange { get; set; }
   }

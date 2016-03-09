@@ -212,7 +212,7 @@ namespace CalDavSynchronizer.Ui.Options
 
     public SynchronizationMode SelectedSynchronizationMode
     {
-      get { return _syncSettingsControl.Mode; }
+      get { return _syncSettingsControl.SynchronizationMode; }
     }
 
     public string SelectedSynchronizationModeDisplayName

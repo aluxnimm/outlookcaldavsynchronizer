@@ -132,7 +132,7 @@ namespace CalDavSynchronizer.Ui.Options
     }
 
 
-    public SynchronizationMode Mode
+    public SynchronizationMode SynchronizationMode
     {
 
       get { return (SynchronizationMode) _synchronizationModeComboBox.SelectedValue; }
