@@ -736,7 +736,7 @@
     <None Include="Resources\report.ico" />
     <None Include="Resources\GeneralOptions.ico" />
     <Resource Include="Resources\ok.ico" />
-    <None Include="Resources\ApplicationIcon.ico" />
+    <Resource Include="Resources\ApplicationIcon.ico" />
     <Resource Include="Resources\error.ico" />
     <None Include="Resources\logo_fruux.png" />
     <None Include="Resources\logo_posteo.png" />
@@ -747,6 +747,9 @@
     <Resource Include="Resources\AppointmentDisabled.gif" />
     <Resource Include="Resources\Contact.gif" />
     <Resource Include="Resources\ContactDisabled.gif" />
+    <Resource Include="Resources\folder-calendar.png" />
+    <Resource Include="Resources\folder-contacts.png" />
+    <Resource Include="Resources\folder-tasks.png" />
     <Content Include="Resources\outlookcaldavsynchronizerlogoarrow.png" />
   </ItemGroup>
   <ItemGroup>

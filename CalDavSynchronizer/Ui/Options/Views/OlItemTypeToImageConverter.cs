@@ -16,11 +16,11 @@ namespace CalDavSynchronizer.Ui.Options.Views
       switch ((OlItemType?) value)
       {
         case OlItemType.olAppointmentItem:
-          return BitmapFrame.Create (new Uri ("pack://application:,,,/CalDavSynchronizer;component/Resources/Appointment.gif"));
+          return BitmapFrame.Create (new Uri ("pack://application:,,,/CalDavSynchronizer;component/Resources/folder-calendar.png"));
         case OlItemType.olTaskItem:
-          return BitmapFrame.Create (new Uri ("pack://application:,,,/CalDavSynchronizer;component/Resources/Task.gif"));
+          return BitmapFrame.Create (new Uri ("pack://application:,,,/CalDavSynchronizer;component/Resources/folder-tasks.png"));
         case OlItemType.olContactItem:
-          return BitmapFrame.Create (new Uri ("pack://application:,,,/CalDavSynchronizer;component/Resources/Contact.gif"));
+          return BitmapFrame.Create (new Uri ("pack://application:,,,/CalDavSynchronizer;component/Resources/folder-contacts.png"));
         default:
           return Binding.DoNothing;
       }

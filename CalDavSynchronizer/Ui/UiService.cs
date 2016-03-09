@@ -20,6 +20,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
+using System.Windows.Media.Imaging;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Properties;
@@ -92,6 +93,7 @@ namespace CalDavSynchronizer.Ui
     {
       var window = new OptionsWindow();
       window.DataContext = viewModel;
+      window.Icon = BitmapFrame.Create (new Uri ("pack://application:,,,/CalDavSynchronizer;component/Resources/ApplicationIcon.ico"));
       ElementHost.EnableModelessKeyboardInterop (window);
 
       viewModel.RequestBringIntoView += delegate
