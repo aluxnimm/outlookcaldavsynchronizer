@@ -10,13 +10,13 @@
              d:DataContext="{x:Static viewModels:ReportViewModel.DesignInstance}">
   <UserControl.Resources>
     <Style TargetType="TextBlock">
-      <Setter Property="Margin" Value="2"></Setter>
+      <Setter Property="Margin" Value="2" />
     </Style>
     <Style TargetType="TextBox">
-      <Setter Property="Margin" Value="2"></Setter>
+      <Setter Property="Margin" Value="2" />
     </Style>
     <Style TargetType="ListView">
-      <Setter Property="Margin" Value="2"></Setter>
+      <Setter Property="Margin" Value="2" />
     </Style>
 
   </UserControl.Resources>
@@ -25,40 +25,40 @@
 
       <Grid DockPanel.Dock="Top">
         <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="Auto"></ColumnDefinition>
-          <ColumnDefinition Width="*"></ColumnDefinition>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
-          <RowDefinition Height="Auto"></RowDefinition>
-          <RowDefinition Height="Auto"></RowDefinition>
-          <RowDefinition Height="Auto"></RowDefinition>
-          <RowDefinition Height="Auto"></RowDefinition>
-          <RowDefinition Height="Auto"></RowDefinition>
-          <RowDefinition Height="Auto"></RowDefinition>
-          <RowDefinition Height="Auto"></RowDefinition>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <TextBlock FontWeight="Bold">Profile name:</TextBlock>
-        <TextBox IsReadOnly="True" Grid.Row="0" Grid.Column="1"  Text="{Binding Report.ProfileName, Mode=OneTime}"></TextBox>
+        <TextBox IsReadOnly="True" Grid.Row="0" Grid.Column="1"  Text="{Binding Report.ProfileName, Mode=OneTime}" />
 
         <TextBlock FontWeight="Bold" Grid.Row="1" Grid.Column="0">Profile Id:</TextBlock>
-        <TextBox IsReadOnly="True" Grid.Row="1" Grid.Column="1" Text="{Binding Report.ProfileId, Mode=OneTime}"></TextBox>
+        <TextBox IsReadOnly="True" Grid.Row="1" Grid.Column="1" Text="{Binding Report.ProfileId, Mode=OneTime}" />
 
         <TextBlock FontWeight="Bold" Grid.Row="2" Grid.Column="0">StartTime:</TextBlock>
-        <TextBox IsReadOnly="True" Grid.Row="2" Grid.Column="1" Text="{Binding Report.StartTime, Mode=OneTime}"></TextBox>
+        <TextBox IsReadOnly="True" Grid.Row="2" Grid.Column="1" Text="{Binding Report.StartTime, Mode=OneTime}" />
 
         <TextBlock FontWeight="Bold" Grid.Row="3" Grid.Column="0">Duration:</TextBlock>
-        <TextBox IsReadOnly="True" Grid.Row="3" Grid.Column="1" Text="{Binding Report.Duration, Mode=OneTime}"></TextBox>
+        <TextBox IsReadOnly="True" Grid.Row="3" Grid.Column="1" Text="{Binding Report.Duration, Mode=OneTime}" />
 
         <TextBlock FontWeight="Bold" Grid.Row="4" Grid.Column="0">Outlook Delta:</TextBlock>
-        <TextBox IsReadOnly="True" Grid.Row="4" Grid.Column="1" Text="{Binding Report.ADelta, Mode=OneTime}"></TextBox>
+        <TextBox IsReadOnly="True" Grid.Row="4" Grid.Column="1" Text="{Binding Report.ADelta, Mode=OneTime}" />
 
         <TextBlock FontWeight="Bold" Grid.Row="5" Grid.Column="0">Server Delta:</TextBlock>
-        <TextBox IsReadOnly="True" Grid.Row="5" Grid.Column="1" Text="{Binding Report.BDelta, Mode=OneTime}"></TextBox>
+        <TextBox IsReadOnly="True" Grid.Row="5" Grid.Column="1" Text="{Binding Report.BDelta, Mode=OneTime}" />
 
         <TextBlock FontWeight="Bold" Grid.Row="6" Grid.Column="0">Exception that lead to abortion:</TextBlock>
-        <TextBox HorizontalScrollBarVisibility="Auto" IsReadOnly="True" Grid.Row="6" Grid.Column="1" Text="{Binding Report.ExceptionThatLeadToAbortion, Mode=OneTime}"></TextBox>
+        <TextBox HorizontalScrollBarVisibility="Auto" IsReadOnly="True" Grid.Row="6" Grid.Column="1" Text="{Binding Report.ExceptionThatLeadToAbortion, Mode=OneTime}" />
 
       </Grid>
 
@@ -73,14 +73,14 @@
                       <Hyperlink ToolTip="{Binding EntityId}"
                         Command="{Binding Path=DataContext.OpenEntityWithLoadErrorCommand, RelativeSource={RelativeSource AncestorType=views:SynchronizationReportView}}"
                         CommandParameter="{Binding}">
-                        <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding EntityId}"></TextBlock>
+                        <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding EntityId}" />
                       </Hyperlink>      
                     </TextBlock>
                   </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
               </DataGridTemplateColumn>
-              <DataGridCheckBoxColumn Binding="{Binding IsAEntity}" Header="Outlook" IsReadOnly="True"></DataGridCheckBoxColumn>
-              <DataGridTextColumn Binding="{Binding Error}" Header="Error" IsReadOnly="True"></DataGridTextColumn>
+              <DataGridCheckBoxColumn Binding="{Binding IsAEntity}" Header="Outlook" IsReadOnly="True" />
+              <DataGridTextColumn Binding="{Binding Error}" Header="Error" IsReadOnly="True" />
             </DataGrid.Columns>
           </DataGrid>
         </TabItem>
@@ -102,7 +102,7 @@
                       <Hyperlink ToolTip="{Binding AId}"
                         Command="{Binding Path=DataContext.OpenAEntityCommand, RelativeSource={RelativeSource AncestorType=views:SynchronizationReportView}}"
                         CommandParameter="{Binding}">
-                        <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding AId}"></TextBlock>
+                        <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding AId}" />
                       </Hyperlink>      
                     </TextBlock>
                     </DataTemplate>
@@ -115,7 +115,7 @@
                       <Hyperlink ToolTip="{Binding BId}"
                         Command="{Binding Path=DataContext.OpenBEntityCommand, RelativeSource={RelativeSource AncestorType=views:SynchronizationReportView}}"
                         CommandParameter="{Binding}">
-                        <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding BId}"></TextBlock>
+                        <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding BId}" />
                       </Hyperlink>      
                     </TextBlock>
                     </DataTemplate>
@@ -125,7 +125,7 @@
             </DataGrid>
 
             <ScrollViewer HorizontalScrollBarVisibility="Auto">
-              <views:EntitySynchronizationReportView DataContext="{Binding ElementName=EntitySynchronizationReportList,Path=SelectedItem}"></views:EntitySynchronizationReportView>
+              <views:EntitySynchronizationReportView DataContext="{Binding ElementName=EntitySynchronizationReportList,Path=SelectedItem}" />
             </ScrollViewer>
           </DockPanel>
 

@@ -10,26 +10,26 @@
              d:DataContext="{x:Static viewModels:ReportViewModel.EntitySynchronizationReportDesignInstance}" >
   <Grid>
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="*"></ColumnDefinition>
+      <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
 
     <Grid.RowDefinitions>
-      <RowDefinition Height="Auto"></RowDefinition>
-      <RowDefinition Height="Auto"></RowDefinition>
-      <RowDefinition Height="Auto"></RowDefinition>
-      <RowDefinition Height="Auto"></RowDefinition>
-      <RowDefinition Height="Auto"></RowDefinition>
-      <RowDefinition Height="Auto"></RowDefinition>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
 
    
     <TextBlock FontWeight="Bold" Grid.Row="0" >Mapping Warnings:</TextBlock>
-    <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1" ItemsSource="{Binding MappingWarnings}"></ListView>
+    <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1" ItemsSource="{Binding MappingWarnings}" />
 
     <TextBlock FontWeight="Bold" Grid.Row="2">Mapping Errors:</TextBlock>
-    <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="3"  ItemsSource="{Binding MappingErrors}"></ListView>
+    <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="3"  ItemsSource="{Binding MappingErrors}" />
 
     <TextBlock FontWeight="Bold" Grid.Row="4" Grid.Column="0">Exception that lead to abortion:</TextBlock>
-    <TextBox IsReadOnly="True" Grid.Row="5"  Text="{Binding ExceptionThatLeadToAbortion}"></TextBox>
+    <TextBox IsReadOnly="True" Grid.Row="5"  Text="{Binding ExceptionThatLeadToAbortion}" />
   </Grid>
 </UserControl>

@@ -16,7 +16,7 @@
             <TextBlock >
                       <Hyperlink ToolTip="Click to open configuration."
                         Command="{Binding ShowOptionsCommand}">
-                        <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding ProfileName}"></TextBlock>
+                        <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding ProfileName}" />
                       </Hyperlink>      
                     </TextBlock>
           </DataTemplate>
@@ -29,18 +29,18 @@
             <TextBlock HorizontalAlignment="Center">
               <Hyperlink ToolTip="Click to open latest synchronization report."
                           Command="{Binding ShowLatestSynchronizationReportCommand}">
-                <Image Name="StatusImage"  Height="16" Width="16"></Image>
+                <Image Name="StatusImage"  Height="16" Width="16" />
               </Hyperlink>
             </TextBlock>
             <DataTemplate.Triggers>
               <DataTrigger Binding="{Binding LastResult}" Value="Ok">
-                <Setter TargetName="StatusImage" Property="Source" Value="pack://application:,,,/CalDavSynchronizer;component/Resources/ok.ico"></Setter>
+                <Setter TargetName="StatusImage" Property="Source" Value="pack://application:,,,/CalDavSynchronizer;component/Resources/ok.ico" />
               </DataTrigger>
               <DataTrigger Binding="{Binding LastResult}" Value="Warning">
-                <Setter TargetName="StatusImage" Property="Source" Value="pack://application:,,,/CalDavSynchronizer;component/Resources/warning.ico"></Setter>
+                <Setter TargetName="StatusImage" Property="Source" Value="pack://application:,,,/CalDavSynchronizer;component/Resources/warning.ico" />
               </DataTrigger>
               <DataTrigger Binding="{Binding LastResult}" Value="Error">
-                <Setter TargetName="StatusImage" Property="Source" Value="pack://application:,,,/CalDavSynchronizer;component/Resources/error.ico"></Setter>
+                <Setter TargetName="StatusImage" Property="Source" Value="pack://application:,,,/CalDavSynchronizer;component/Resources/error.ico" />
               </DataTrigger>
             </DataTemplate.Triggers>
           </DataTemplate>
@@ -51,7 +51,7 @@
         <DataGridTextColumn.ElementStyle>
           <Style TargetType="TextBlock">
             <Setter Property="HorizontalAlignment" Value="Right" />
-            <Setter Property="Padding" Value="0,0,10,0"></Setter>
+            <Setter Property="Padding" Value="0,0,10,0" />
           </Style>
         </DataGridTextColumn.ElementStyle>
       </DataGridTextColumn>

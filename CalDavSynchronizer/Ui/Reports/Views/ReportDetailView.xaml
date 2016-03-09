@@ -11,12 +11,11 @@
              d:DataContext="{x:Static viewModels:ReportViewModel.DesignInstance}">
   <TabControl>
     <TabItem Header="Formatted">
-      <views:SynchronizationReportView></views:SynchronizationReportView>
+      <views:SynchronizationReportView />
     </TabItem>
     <TabItem Header="Raw">
       <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-        <TextBox Text="{Binding AsString, Mode=OneWay}" IsReadOnly="True">
-        </TextBox>
+        <TextBox Text="{Binding AsString, Mode=OneWay}" IsReadOnly="True" />
       </ScrollViewer>
     </TabItem>
   </TabControl>

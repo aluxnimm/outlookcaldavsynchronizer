@@ -6,5 +6,5 @@
         xmlns:views="clr-namespace:CalDavSynchronizer.Ui.Options.Views"
         mc:Ignorable="d"
         Title="Options" Height="620" Width="820">
-  <views:OptionsCollectionView Margin="3"></views:OptionsCollectionView>
+  <views:OptionsCollectionView Margin="3" />
 </Window>
