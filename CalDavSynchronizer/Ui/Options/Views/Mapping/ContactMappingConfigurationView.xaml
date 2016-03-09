@@ -10,6 +10,7 @@
   <StackPanel>
     <CheckBox IsChecked="{Binding MapBirthday}">Map Birthday</CheckBox>
     <CheckBox IsChecked="{Binding MapContactPhoto}">Map Contact Photo</CheckBox>
+    <CheckBox IsChecked="{Binding FixPhoneNumberFormat}">Fix imported phone number format</CheckBox>
   </StackPanel>
 
 </UserControl>

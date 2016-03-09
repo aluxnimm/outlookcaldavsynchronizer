@@ -27,6 +27,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
   {
     private bool _mapBirthday;
     private bool _mapContactPhoto;
+    private bool _fixPhoneNumberFormat;
     private bool _isSelected;
 
     public bool MapBirthday
@@ -49,6 +50,16 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       }
     }
 
+    public bool FixPhoneNumberFormat
+    {
+      get { return _fixPhoneNumberFormat; }
+      set
+      {
+        _fixPhoneNumberFormat = value;
+        OnPropertyChanged();
+      }
+    }
+
     public bool IsSelected
     {
       get { return _isSelected; }
@@ -62,7 +73,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     public static ContactMappingConfigurationViewModel DesignInstance => new ContactMappingConfigurationViewModel
                                                                          {
                                                                              MapBirthday = true,
-                                                                             MapContactPhoto = true
+                                                                             MapContactPhoto = true,
+                                                                             FixPhoneNumberFormat = false
                                                                          };
 
     public event PropertyChangedEventHandler PropertyChanged;
@@ -77,6 +89,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     {
       MapBirthday = mappingConfiguration.MapBirthday;
       MapContactPhoto = mappingConfiguration.MapContactPhoto;
+      FixPhoneNumberFormat = mappingConfiguration.FixPhoneNumberFormat;
     }
 
     public void FillOptions (CalDavSynchronizer.Contracts.Options options)
@@ -84,7 +97,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       options.MappingConfiguration = new ContactMappingConfiguration
                                      {
                                          MapBirthday = _mapBirthday,
-                                         MapContactPhoto = _mapContactPhoto
+                                         MapContactPhoto = _mapContactPhoto,
+                                         FixPhoneNumberFormat = _fixPhoneNumberFormat
                                      };
     }
 
