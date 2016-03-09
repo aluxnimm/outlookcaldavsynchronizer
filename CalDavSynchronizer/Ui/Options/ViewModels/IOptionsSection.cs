@@ -24,6 +24,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
   {
     void SetOptions (CalDavSynchronizer.Contracts.Options options);
     void FillOptions (CalDavSynchronizer.Contracts.Options options);
-    bool Validate (StringBuilder errorBuilder);
+    bool Validate (StringBuilder errorMessageBuilder);
   }
 }

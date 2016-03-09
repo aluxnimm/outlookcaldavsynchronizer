@@ -97,7 +97,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
     public string Name => "Task mapping configuration";
 
-    public bool Validate (StringBuilder errorBuilder)
+    public bool Validate (StringBuilder errorMessageBuilder)
     {
       return true;
     }

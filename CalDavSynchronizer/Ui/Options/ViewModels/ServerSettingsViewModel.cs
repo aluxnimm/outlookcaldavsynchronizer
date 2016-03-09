@@ -139,9 +139,11 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     }
 
 
-    public bool Validate (StringBuilder errorBuilder)
+    public bool Validate (StringBuilder errorMessageBuilder)
     {
-      return true;
+      var result = OptionTasks.ValidateWebDavUrl (CalenderUrl, errorMessageBuilder, true);
+      result &= OptionTasks.ValidateEmailAddress (errorMessageBuilder, EmailAddress);
+      return result;
     }
 
     private async void TestConnection ()

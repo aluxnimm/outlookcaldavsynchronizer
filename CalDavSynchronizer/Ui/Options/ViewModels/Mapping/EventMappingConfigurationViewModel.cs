@@ -257,7 +257,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
     public string Name => "Event mapping configuration";
 
-    public bool Validate (StringBuilder errorBuilder)
+    public bool Validate (StringBuilder errorMessageBuilder)
     {
       return true;
     }

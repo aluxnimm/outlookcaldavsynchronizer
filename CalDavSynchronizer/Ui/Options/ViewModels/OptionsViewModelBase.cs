@@ -104,14 +104,17 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       options.Id = Id;
     }
 
-    public bool Validate (StringBuilder errorBuilder)
+    public bool Validate (StringBuilder errorMessageBuilder)
     {
-      // foreach(var section in Sections)
-      //  section.Validate (options);
+      bool isValid = true;
 
-      //foreach (var subViewModel in SubViewModels)
-      //  subViewModel.Validate (options);
-      return true;
+      foreach (var section in Sections)
+        isValid &=  section.Validate (errorMessageBuilder);
+
+      foreach (var subViewModel in SubOptions)
+        isValid &= subViewModel.Validate (errorMessageBuilder);
+
+      return isValid;
     }
 
     protected abstract IEnumerable<IOptionsViewModel> CreateSubOptions ();

@@ -138,7 +138,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     public string Name => "Network settings";
 
-    public bool Validate (StringBuilder errorBuilder)
+    public bool Validate (StringBuilder errorMessageBuilder)
     {
       return true;
     }

@@ -74,7 +74,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
     public string Name => "Contact mapping configuration";
 
-    public bool Validate (StringBuilder errorBuilder)
+    public bool Validate (StringBuilder errorMessageBuilder)
     {
       return true;
     }

@@ -148,9 +148,17 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       }
     }
 
-    public bool Validate (StringBuilder errorBuilder)
+    public bool Validate (StringBuilder errorMessageBuilder)
     {
-      return true;
+      bool result = true;
+
+      if (_selectedFolder == null)
+      {
+        errorMessageBuilder.AppendLine ("- There is no Outlook Folder selected.");
+        result = false;
+      }
+
+      return result;
     }
 
     private void SelectFolder ()

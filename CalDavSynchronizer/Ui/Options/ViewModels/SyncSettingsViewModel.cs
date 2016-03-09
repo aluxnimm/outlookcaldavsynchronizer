@@ -132,7 +132,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       options.DaysToSynchronizeInTheFuture = _daysToSynchronizeInTheFuture;
     }
 
-    public bool Validate (StringBuilder errorBuilder)
+    public bool Validate (StringBuilder errorMessageBuilder)
     {
       return true;
     }

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using CalDavSynchronizer.Contracts;
@@ -50,7 +51,49 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     private void Close (bool shouldSaveNewOptions)
     {
+      if (shouldSaveNewOptions)
+      {
+        OptionsViewModelBase firstViewModelWithError;
+        string errorMessage;
+        if (!Validate (out errorMessage, out firstViewModelWithError))
+        {
+          MessageBox.Show (errorMessage, "Some Options contain invalid Values",MessageBoxButton.OK,MessageBoxImage.Error);
+          if (firstViewModelWithError != null)
+            firstViewModelWithError.IsSelected = true;
+          return;
+        }
+      }
+
       CloseRequested?.Invoke (this, new CloseEventArgs (shouldSaveNewOptions));
+    }
+
+    private bool Validate (out string errorMessage, out OptionsViewModelBase firstViewModelWithError)
+    {
+      StringBuilder errorMessageBuilder = new StringBuilder ();
+      bool isValid = true;
+      firstViewModelWithError = null;
+
+      foreach (var viewModel in _options)
+      {
+        StringBuilder currentControlErrorMessageBuilder = new StringBuilder ();
+
+        if (!viewModel.Validate (currentControlErrorMessageBuilder))
+        {
+          if (errorMessageBuilder.Length > 0)
+            errorMessageBuilder.AppendLine ();
+
+          errorMessageBuilder.AppendFormat ("Profile '{0}'", viewModel.Name);
+          errorMessageBuilder.AppendLine ();
+          errorMessageBuilder.Append (currentControlErrorMessageBuilder);
+
+          isValid = false;
+          if (firstViewModelWithError == null)
+            firstViewModelWithError = viewModel;
+        }
+      }
+
+      errorMessage = errorMessageBuilder.ToString ();
+      return isValid;
     }
 
     private void Add ()

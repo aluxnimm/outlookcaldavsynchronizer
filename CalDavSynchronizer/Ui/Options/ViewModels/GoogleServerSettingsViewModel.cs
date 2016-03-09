@@ -143,9 +143,16 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       options.ServerAdapterType = ServerAdapterType;
     }
 
-    public bool Validate (StringBuilder errorBuilder)
+    public bool Validate (StringBuilder errorMessageBuilder)
     {
-      return true;
+      bool result = true;
+
+      if (ServerAdapterType != ServerAdapterType.GoogleTaskApi)
+        result &= OptionTasks.ValidateWebDavUrl (CalenderUrl, errorMessageBuilder, true);
+
+      result &= OptionTasks.ValidateGoogleEmailAddress (errorMessageBuilder, EmailAddress);
+
+      return result;
     }
   }
 }
