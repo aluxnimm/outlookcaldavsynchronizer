@@ -729,8 +729,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
-    <Resource Include="Resources\Task.gif" />
-    <Resource Include="Resources\TaskDisabled.gif" />
     <Resource Include="Resources\warning.ico" />
     <None Include="Resources\SyncError.png" />
     <None Include="Resources\report.ico" />
@@ -743,13 +741,9 @@
     <None Include="Resources\logo_google.png" />
     <None Include="Resources\logo_yandex.png" />
     <None Include="Resources\logo_gmx.png" />
-    <Resource Include="Resources\Appointment.gif" />
-    <Resource Include="Resources\AppointmentDisabled.gif" />
-    <Resource Include="Resources\Contact.gif" />
-    <Resource Include="Resources\ContactDisabled.gif" />
-    <Resource Include="Resources\folder-calendar.png" />
-    <Resource Include="Resources\folder-contacts.png" />
-    <Resource Include="Resources\folder-tasks.png" />
+    <Resource Include="Resources\Appointment.png" />
+    <Resource Include="Resources\Contact.png" />
+    <Resource Include="Resources\Task.png" />
     <Content Include="Resources\outlookcaldavsynchronizerlogoarrow.png" />
   </ItemGroup>
   <ItemGroup>
