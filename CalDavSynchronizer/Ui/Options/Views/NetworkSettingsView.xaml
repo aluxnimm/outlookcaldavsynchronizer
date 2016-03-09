@@ -20,7 +20,7 @@
         <CheckBox IsChecked="{Binding ProxyUseDefault}">Use system default proxy (settings from IE and config file)</CheckBox>
         <GroupBox >
           <GroupBox.Header>
-            <CheckBox Margin="0" IsChecked="{Binding ProxyUseManual}">Use manual proxy configuration</CheckBox>
+            <CheckBox FontWeight="Bold" Margin="0" IsChecked="{Binding ProxyUseManual}">Use manual proxy configuration</CheckBox>
           </GroupBox.Header>
           <Grid IsEnabled="{Binding ProxyUseManual}">
             <Grid.ColumnDefinitions>

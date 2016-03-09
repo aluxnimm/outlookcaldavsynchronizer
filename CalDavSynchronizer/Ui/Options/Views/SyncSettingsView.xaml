@@ -46,7 +46,7 @@
       </Grid>
       <GroupBox>
         <GroupBox.Header>
-          <CheckBox Margin="0" Content="Use time range filter" IsChecked="{Binding UseSynchronizationTimeRange}" />
+          <CheckBox FontWeight="Bold" Margin="0" Content="Use time range filter" IsChecked="{Binding UseSynchronizationTimeRange}" />
         </GroupBox.Header>
 
         <Grid DockPanel.Dock="Top" IsEnabled="{Binding UseSynchronizationTimeRange}">
