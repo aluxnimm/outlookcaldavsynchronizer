@@ -48,7 +48,7 @@
     <ControlTemplate x:Key="GroupBoxControlTemplate" TargetType="{x:Type GroupBox}">
       <DockPanel SnapsToDevicePixels="True">
         <Border x:Name="Header" Background="{x:Static SystemColors.ControlLightBrush}" Padding="3" DockPanel.Dock="Top">
-          <ContentPresenter TextBlock.FontWeight="Bold" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" ContentStringFormat="{TemplateBinding HeaderStringFormat}" ContentSource="Header" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+          <ContentPresenter TextBlock.Foreground="{x:Static SystemColors.ControlDarkDarkBrush}" TextBlock.FontWeight="Bold" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" ContentStringFormat="{TemplateBinding HeaderStringFormat}" ContentSource="Header" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
         </Border>
         <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
       </DockPanel>
