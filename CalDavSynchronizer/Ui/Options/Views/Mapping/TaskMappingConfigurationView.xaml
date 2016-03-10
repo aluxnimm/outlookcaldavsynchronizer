@@ -6,24 +6,24 @@
              xmlns:mapping="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels.Mapping"
              mc:Ignorable="d"
              d:DataContext="{x:Static mapping:TaskMappingConfigurationViewModel.DesignInstance}">
-
-  <StackPanel>
-    <Grid>
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="*" />
-        <ColumnDefinition Width="*" />
-      </Grid.ColumnDefinitions>
-      <TextBlock>Map reminder:</TextBlock>
-      <ComboBox 
-          ItemsSource="{Binding AvailableReminderMappings}"
-          DisplayMemberPath="Name"
-          SelectedValuePath="Value"
-          SelectedValue="{Binding MapReminder}"
-        Grid.Column="1" />
-    </Grid>
-    <CheckBox IsChecked="{Binding MapPriority}">Map Priority</CheckBox>
-    <CheckBox IsChecked="{Binding MapBody}">Map Body</CheckBox>
-    <CheckBox IsChecked="{Binding MapRecurringTasks}">Map Recurring Tasks</CheckBox>
-    </StackPanel>
-
+    <GroupBox Header="General task mapping settings">
+        <StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock>Map reminder:</TextBlock>
+                <ComboBox 
+                    ItemsSource="{Binding AvailableReminderMappings}"
+                    DisplayMemberPath="Name"
+                    SelectedValuePath="Value"
+                    SelectedValue="{Binding MapReminder}"
+                    Grid.Column="1" />
+            </Grid>
+            <CheckBox IsChecked="{Binding MapPriority}">Map Priority</CheckBox>
+            <CheckBox IsChecked="{Binding MapBody}">Map Body</CheckBox>
+            <CheckBox IsChecked="{Binding MapRecurringTasks}">Map Recurring Tasks</CheckBox>
+        </StackPanel>
+    </GroupBox>
 </UserControl>

@@ -6,11 +6,12 @@
              xmlns:mapping="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels.Mapping"
              mc:Ignorable="d"
              d:DataContext="{x:Static mapping:ContactMappingConfigurationViewModel.DesignInstance}">
-
-  <StackPanel>
-    <CheckBox IsChecked="{Binding MapBirthday}" ToolTip="Outlook automatically creates birthday appointments in your calendar &#x0a;when the birthday is added to a contact item.">Map Birthday</CheckBox>
-    <CheckBox IsChecked="{Binding MapContactPhoto}" ToolTip="Not supported in OL 2007.">Map Contact Photo</CheckBox>
-    <CheckBox IsChecked="{Binding FixPhoneNumberFormat}" ToolTip="Convert numbers like +1 23 45678 9 &#x0a;to +1 (23) 45678 - 9 &#x0a;so that Outlook can show country and area code.">Fix imported phone number format</CheckBox>
-  </StackPanel>
+    <GroupBox Header="General contact mapping settings">
+        <StackPanel>
+            <CheckBox IsChecked="{Binding MapBirthday}" ToolTip="Outlook automatically creates birthday appointments in your calendar &#x0a;when the birthday is added to a contact item.">Map Birthday</CheckBox>
+            <CheckBox IsChecked="{Binding MapContactPhoto}" ToolTip="Not supported in OL 2007.">Map Contact Photo</CheckBox>
+            <CheckBox IsChecked="{Binding FixPhoneNumberFormat}" ToolTip="Convert numbers like +1 23 45678 9 &#x0a;to +1 (23) 45678 - 9 &#x0a;so that Outlook can show country and area code.">Fix imported phone number format</CheckBox>
+        </StackPanel>
+    </GroupBox>
 
 </UserControl>
