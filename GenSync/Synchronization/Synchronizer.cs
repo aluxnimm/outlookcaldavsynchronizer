@@ -158,35 +158,8 @@ namespace GenSync.Synchronization
 
           foreach (var entityRelation in knownEntityRelations)
           {
-            IIdWithHints<TAtypeEntityId, TAtypeEntityVersion> aIdWithHints;
-            bool isACausingSync;
-            if (requestedAIdsById.TryGetValue (entityRelation.AtypeId, out aIdWithHints))
-            {
-              requestedAIdsById.Remove (entityRelation.AtypeId);
-              isACausingSync =
-                  (aIdWithHints.WasDeletedHint ?? false) ||
-                  !aIdWithHints.IsVersionHintSpecified ||
-                  !_atypeVersionComparer.Equals (entityRelation.AtypeVersion, aIdWithHints.VersionHint);
-            }
-            else
-            {
-              isACausingSync = false;
-            }
-
-            IIdWithHints<TBtypeEntityId, TBtypeEntityVersion> bIdWithHints;
-            bool isBCausingSync;
-            if (requestedBIdsById.TryGetValue (entityRelation.BtypeId, out bIdWithHints))
-            {
-              requestedBIdsById.Remove (entityRelation.BtypeId);
-              isBCausingSync =
-                  (bIdWithHints.WasDeletedHint ?? false) ||
-                  !bIdWithHints.IsVersionHintSpecified ||
-                  !_btypeVersionComparer.Equals (entityRelation.BtypeVersion, bIdWithHints.VersionHint);
-            }
-            else
-            {
-              isBCausingSync = false;
-            }
+            var isACausingSync = RemoveAFromRequestedAndCheckIfCausesSync(requestedAIdsById, entityRelation);
+            var isBCausingSync = RemoveBFromRequestedAndCheckIfCausesSync(requestedBIdsById, entityRelation);
 
             if (isACausingSync || isBCausingSync)
             {
@@ -253,6 +226,48 @@ namespace GenSync.Synchronization
       }
 
       s_logger.DebugFormat ("Exiting.");
+    }
+
+    private static bool RemoveAFromRequestedAndCheckIfCausesSync (
+      Dictionary<TAtypeEntityId, IIdWithHints<TAtypeEntityId, TAtypeEntityVersion>> requestedAIdsById, 
+      IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> entityRelation)
+    {
+      IIdWithHints<TAtypeEntityId, TAtypeEntityVersion> aIdWithHints;
+      bool isACausingSync;
+      if (requestedAIdsById.TryGetValue (entityRelation.AtypeId, out aIdWithHints))
+      {
+        requestedAIdsById.Remove (entityRelation.AtypeId);
+        isACausingSync =
+            (aIdWithHints.WasDeletedHint ?? false) ||
+            !aIdWithHints.IsVersionHintSpecified ||
+            !_atypeVersionComparer.Equals (entityRelation.AtypeVersion, aIdWithHints.VersionHint);
+      }
+      else
+      {
+        isACausingSync = false;
+      }
+      return isACausingSync;
+    }
+
+    private static bool RemoveBFromRequestedAndCheckIfCausesSync (
+      Dictionary<TBtypeEntityId, IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>> requestedBIdsById, 
+      IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> entityRelation)
+    {
+      IIdWithHints<TBtypeEntityId, TBtypeEntityVersion> bIdWithHints;
+      bool isBCausingSync;
+      if (requestedBIdsById.TryGetValue (entityRelation.BtypeId, out bIdWithHints))
+      {
+        requestedBIdsById.Remove (entityRelation.BtypeId);
+        isBCausingSync =
+            (bIdWithHints.WasDeletedHint ?? false) ||
+            !bIdWithHints.IsVersionHintSpecified ||
+            !_btypeVersionComparer.Equals (entityRelation.BtypeVersion, bIdWithHints.VersionHint);
+      }
+      else
+      {
+        isBCausingSync = false;
+      }
+      return isBCausingSync;
     }
 
     private async Task<List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>> Synchronize (
