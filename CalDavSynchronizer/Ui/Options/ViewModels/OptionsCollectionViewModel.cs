@@ -117,8 +117,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       var options = OptionTasks.CreateNewSynchronizationProfileOrNull();
       if (options != null)
       {
-        foreach (var vm in _optionsViewModelFactory.Create (new[] { options }, _fixInvalidSettings))
+        foreach (var vm in _optionsViewModelFactory.Create(new[] {options}, _fixInvalidSettings))
           _options.Add (vm);
+        ShowProfile (options.Id);
       }
     }
 
