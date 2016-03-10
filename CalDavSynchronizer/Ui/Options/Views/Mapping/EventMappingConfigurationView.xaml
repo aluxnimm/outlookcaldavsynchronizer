@@ -24,7 +24,7 @@
         Grid.Column="1" />
     </Grid>
     <CheckBox IsChecked="{Binding MapBody}">Map Body</CheckBox>
-    <CheckBox IsChecked="{Binding CreateEventsInUtc}">Create events on server in UTC</CheckBox>
+    <CheckBox IsChecked="{Binding CreateEventsInUtc}" ToolTip="Use UTC instead of Outlook Appointment Timezone for creating events on CalDAV server. &#x0a;Needed for GMX for example. Not recommended for general use, &#x0a;because recurrence exceptions over DST changes can't be mapped and &#x0a;Appointments with different start and end timezones can't be represented.">Create events on server in UTC</CheckBox>
     <GroupBox Header="Privacy settings">
       <StackPanel>
         <CheckBox  IsChecked="{Binding MapSensitivityPrivateToClassConfidential}">Map Outlook Private flag to DAV CLASS:CONFIDENTIAL instead of PRIVATE</CheckBox>
@@ -58,7 +58,7 @@
           ItemsSource="{Binding AvailableCategories}"
           Grid.Row="0" 
           Grid.Column="1" 
-          Grid.ColumnSpan="3" />
+          Grid.ColumnSpan="3" ToolTip="Enter the name of the Outlook category for filtering. &#x0a;If the category does not exist, it will be created in Outlook." />
 
         <CheckBox   
           IsEnabled="{Binding UseEventCategoryAsFilter}"

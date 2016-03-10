@@ -46,7 +46,7 @@
       </Grid>
       <GroupBox>
         <GroupBox.Header>
-          <CheckBox Foreground="{x:Static SystemColors.ControlDarkDarkBrush}" FontWeight="Bold" Margin="0" Content="Use time range filter" IsChecked="{Binding UseSynchronizationTimeRange}" />
+          <CheckBox Foreground="{x:Static SystemColors.ControlDarkDarkBrush}" FontWeight="Bold" Margin="0" Content="Use time range filter" IsChecked="{Binding UseSynchronizationTimeRange}" ToolTip="Changing the time range filter setting leads to deletion of the sync cache &#x0a;and a complete resync of the calendar!" />
         </GroupBox.Header>
 
         <Grid DockPanel.Dock="Top" IsEnabled="{Binding UseSynchronizationTimeRange}">
