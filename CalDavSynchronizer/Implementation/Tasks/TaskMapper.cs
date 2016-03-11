@@ -99,7 +99,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       if (source.Inner.Complete && source.Inner.DateCompleted != _dateNull)
       {
-        target.Completed = new iCalDateTime (source.Inner.DateCompleted.ToUniversalTime()) { IsUniversalTime = true };
+        target.Completed = new iCalDateTime (source.Inner.DateCompleted.ToUniversalTime()) { IsUniversalTime = true, HasTime = true};
       }
 
       target.PercentComplete = source.Inner.PercentComplete;
