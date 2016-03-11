@@ -18,12 +18,16 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using CalDavSynchronizer.Properties;
+using CalDavSynchronizer.Utilities;
 using GenSync.Logging;
+using log4net;
 
 namespace CalDavSynchronizer.Ui.SystrayNotification
 {
   class TrayNotifier : ITrayNotifier
   {
+    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);
+
     private readonly NotifyIcon _nofifyIcon;
     private readonly ICalDavSynchronizerCommands _calDavSynchronizerCommands;
     
@@ -35,14 +39,14 @@ namespace CalDavSynchronizer.Ui.SystrayNotification
       _calDavSynchronizerCommands = calDavSynchronizerCommands;
 
       var trayMenu = new ContextMenu();
-      trayMenu.MenuItems.Add ("Synchronize now", delegate { _calDavSynchronizerCommands.SynchronizeNowNoThrow(); });
-      trayMenu.MenuItems.Add ("Reports", delegate { _calDavSynchronizerCommands.ShowReportsNoThrow(); });
-      trayMenu.MenuItems.Add ("Status", delegate { _calDavSynchronizerCommands.ShowProfileStatusesNoThrow(); });
+      trayMenu.MenuItems.Add ("Synchronize now", delegate { SynchronizeNow(); });
+      trayMenu.MenuItems.Add ("Reports", delegate { ShowReports(); });
+      trayMenu.MenuItems.Add ("Status", delegate { ShowProfileStatuses(); });
       trayMenu.MenuItems.Add ("-");
-      trayMenu.MenuItems.Add ("Synchronization profiles", delegate { _calDavSynchronizerCommands.ShowOptionsNoThrow(); });
-      trayMenu.MenuItems.Add ("General options", delegate { _calDavSynchronizerCommands.ShowGeneralOptionsNoThrow (); });
+      trayMenu.MenuItems.Add ("Synchronization profiles", delegate { ShowOptions(); });
+      trayMenu.MenuItems.Add ("General options", delegate { ShowGeneralOptions(); });
       trayMenu.MenuItems.Add ("-");
-      trayMenu.MenuItems.Add ("About", delegate { _calDavSynchronizerCommands.ShowAboutNoThrow (); });
+      trayMenu.MenuItems.Add ("About", delegate { ShowAbout(); });
 
       // Create a tray icon. In this example we use a
       // standard system icon for simplicity, but you
@@ -57,9 +61,88 @@ namespace CalDavSynchronizer.Ui.SystrayNotification
       _nofifyIcon.MouseDoubleClick += _nofifyIcon_MouseDoubleClick;
     }
 
+    private void ShowAbout ()
+    {
+      try
+      {
+        _calDavSynchronizerCommands.ShowAbout();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
+      }
+    }
+
+    private void ShowProfileStatuses ()
+    {
+      try
+      {
+        _calDavSynchronizerCommands.ShowProfileStatuses();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
+      }
+    }
+
+    private void ShowReports ()
+    {
+      try
+      {
+        _calDavSynchronizerCommands.ShowReports();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
+      }
+    }
+
+    private void ShowGeneralOptions ()
+    {
+      try
+      {
+        _calDavSynchronizerCommands.ShowGeneralOptions();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
+      }
+    }
+
+    private void ShowOptions ()
+    {
+      try
+      {
+        _calDavSynchronizerCommands.ShowOptions();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
+      }
+    }
+
+    private void SynchronizeNow ()
+    {
+      try
+      {
+      _calDavSynchronizerCommands.SynchronizeNow();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
+      }
+    }
+
     private void _nofifyIcon_MouseDoubleClick (object sender, MouseEventArgs e)
     {
-      _calDavSynchronizerCommands.ShowProfileStatusesNoThrow();
+      try
+      {
+        _calDavSynchronizerCommands.ShowProfileStatuses();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
+      }
     }
 
     public void NotifyUser (SynchronizationReport report)

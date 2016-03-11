@@ -21,12 +21,12 @@ namespace CalDavSynchronizer
 {
   public interface ICalDavSynchronizerCommands
   {
-    void ShowOptionsNoThrow (Guid? initialVisibleProfile = null);
-    void ShowGeneralOptionsNoThrow ();
-    void ShowAboutNoThrow ();
-    void ShowLatestSynchronizationReportNoThrow (Guid profileId);
-    void ShowProfileStatusesNoThrow ();
-    Task SynchronizeNowNoThrow ();
-    void ShowReportsNoThrow ();
+    void ShowOptions (Guid? initialVisibleProfile = null);
+    void ShowGeneralOptions ();
+    void ShowAbout ();
+    void ShowLatestSynchronizationReport (Guid profileId);
+    void ShowProfileStatuses ();
+    Task SynchronizeNow ();
+    void ShowReports ();
   }
 }

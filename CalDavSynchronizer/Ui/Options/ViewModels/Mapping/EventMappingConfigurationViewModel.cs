@@ -326,7 +326,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       }
       catch (System.Exception x)
       {
-        ExceptionHandler.Instance.HandleException (x, s_logger);
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
       }
     }
 
@@ -352,7 +352,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       }
       catch (System.Exception x)
       {
-        ExceptionHandler.Instance.HandleException (x, s_logger);
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
       }
     }
   }

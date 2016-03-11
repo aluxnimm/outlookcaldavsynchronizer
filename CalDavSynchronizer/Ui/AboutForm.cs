@@ -17,17 +17,22 @@
 using System;
 using System.Diagnostics;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using CalDavSynchronizer.Utilities;
+using log4net;
 
 namespace CalDavSynchronizer.Ui
 {
   public partial class AboutForm : Form
   {
+    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);
+
     private readonly string _payPalUrl = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PWA2N6P5WRSJJ";
     private readonly string _helpUrl = "https://sourceforge.net/p/outlookcaldavsynchronizer/wiki/Home/";
-    private readonly Action _checkForUpdatesAction;
+    private readonly Func<Task> _checkForUpdatesAction;
 
-    public AboutForm (Action checkForUpdatesAction)
+    public AboutForm (Func<Task> checkForUpdatesAction)
     {
       _checkForUpdatesAction = checkForUpdatesAction;
       InitializeComponent();
@@ -75,9 +80,16 @@ namespace CalDavSynchronizer.Ui
       Process.Start (_helpUrl);
     }
 
-    private void _checkForUpdatesButton_Click (object sender, EventArgs e)
+    private async void _checkForUpdatesButton_Click (object sender, EventArgs e)
     {
-      _checkForUpdatesAction();
+      try
+      {
+        await _checkForUpdatesAction();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
+      }
     }
   }
 }

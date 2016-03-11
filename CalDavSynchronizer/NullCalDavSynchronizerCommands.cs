@@ -27,37 +27,37 @@ namespace CalDavSynchronizer
     {
     }
 
-    public void ShowOptionsNoThrow (Guid? initialVisibleProfile = null)
+    public void ShowOptions (Guid? initialVisibleProfile = null)
     {
       
     }
 
-    public void ShowGeneralOptionsNoThrow ()
+    public void ShowGeneralOptions ()
     {
       
     }
 
-    public void ShowAboutNoThrow ()
+    public void ShowAbout ()
     {
      
     }
 
-    public void ShowLatestSynchronizationReportNoThrow (Guid profileId)
+    public void ShowLatestSynchronizationReport (Guid profileId)
     {
       
     }
 
-    public void ShowProfileStatusesNoThrow ()
+    public void ShowProfileStatuses ()
     {
       
     }
 
-    public Task SynchronizeNowNoThrow ()
+    public Task SynchronizeNow ()
     {
       return Task.FromResult (0);
     }
 
-    public void ShowReportsNoThrow ()
+    public void ShowReports ()
     {
      
     }

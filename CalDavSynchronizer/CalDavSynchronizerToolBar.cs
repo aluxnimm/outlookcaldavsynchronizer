@@ -16,13 +16,18 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using CalDavSynchronizer.Ui;
+using CalDavSynchronizer.Utilities;
+using log4net;
 using Microsoft.Office.Core;
 using Microsoft.Office.Interop.Outlook;
+using Exception = System.Exception;
 
 namespace CalDavSynchronizer
 {
   internal class CalDavSynchronizerToolBar
   {
+    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);
+
     private readonly CommandBarButton _toolBarBtnSyncNow;
     // ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
     private readonly CommandBarButton _toolBarBtnGeneralOptions;
@@ -88,25 +93,46 @@ namespace CalDavSynchronizer
 
     private async void ManualSynchronize ()
     {
-      _toolBarBtnSyncNow.Enabled = false;
       try
       {
-        await _componentContainer.SynchronizeNowNoThrow();
+        _toolBarBtnSyncNow.Enabled = false;
+        try
+        {
+          await _componentContainer.SynchronizeNow();
+        }
+        finally
+        {
+          _toolBarBtnSyncNow.Enabled = true;
+        }
       }
-      finally
+      catch (Exception x)
       {
-        _toolBarBtnSyncNow.Enabled = true;
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
       }
     }
 
     private void ToolBarBtn_Options_OnClick (CommandBarButton Ctrl, ref bool CancelDefault)
     {
-      _componentContainer.ShowOptionsNoThrow();
+      try
+      {
+        _componentContainer.ShowOptions();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
+      }
     }
 
     private void ToolBarBtn_GeneralOptions_OnClick (CommandBarButton Ctrl, ref bool CancelDefault)
     {
-      _componentContainer.ShowGeneralOptionsNoThrow ();
+      try
+      {
+        _componentContainer.ShowGeneralOptions();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
+      }
     }
 
     private void ToolBarBtn_SyncNow_OnClick (CommandBarButton Ctrl, ref bool CancelDefault)
@@ -116,17 +142,38 @@ namespace CalDavSynchronizer
 
     private void ToolBarBtn_About_OnClick (CommandBarButton Ctrl, ref bool CancelDefault)
     {
-      _componentContainer.ShowAboutNoThrow();
+      try
+      {
+        _componentContainer.ShowAbout();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
+      }
     }
 
-    private void ToolBarBtn_Reports_OnClick(CommandBarButton Ctrl, ref bool CancelDefault)
+    private void ToolBarBtn_Reports_OnClick (CommandBarButton Ctrl, ref bool CancelDefault)
     {
-      _componentContainer.ShowReportsNoThrow();
+      try
+      {
+        _componentContainer.ShowReports();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
+      }
     }
 
     private void ToolBarBtn_Status_OnClick (CommandBarButton Ctrl, ref bool CancelDefault)
     {
-      _componentContainer.ShowProfileStatusesNoThrow ();
+      try
+      {
+      _componentContainer.ShowProfileStatuses ();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
+      }
     }
   }
 }

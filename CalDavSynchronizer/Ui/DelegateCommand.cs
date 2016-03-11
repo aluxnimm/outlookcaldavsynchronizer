@@ -61,7 +61,7 @@ namespace CalDavSynchronizer.Ui
       }
       catch (Exception x)
       {
-        ExceptionHandler.Instance.HandleException (x, s_logger);
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
       }
     }
     

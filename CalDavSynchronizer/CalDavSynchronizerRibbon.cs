@@ -15,9 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using System.Reflection;
 using CalDavSynchronizer.Properties;
-using CalDavSynchronizer.Ui;
 using CalDavSynchronizer.Utilities;
 using log4net;
 using Microsoft.Office.Tools.Ribbon;
@@ -26,6 +24,8 @@ namespace CalDavSynchronizer
 {
   public partial class CalDavSynchronizerRibbon
   {
+    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);
+
     private void CalDavSynchronizerRibbon_Load (object sender, RibbonUIEventArgs e)
     {
       ThisAddIn.SynchronizationFailedWhileReportsFormWasNotVisible += SynchronizationFailedWhileReportsFormWasNotVisible;
@@ -38,41 +38,83 @@ namespace CalDavSynchronizer
 
     private async void SynchronizeNowButton_Click (object sender, RibbonControlEventArgs e)
     {
-      SynchronizeNowButton.Enabled = false;
       try
       {
-        await ThisAddIn.ComponentContainer.SynchronizeNowNoThrow();
+        SynchronizeNowButton.Enabled = false;
+        try
+        {
+          await ThisAddIn.ComponentContainer.SynchronizeNow();
+        }
+        finally
+        {
+          SynchronizeNowButton.Enabled = true;
+        }
       }
-      finally
+      catch (Exception x)
       {
-        SynchronizeNowButton.Enabled = true;
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
       }
     }
 
     private void OptionsButton_Click (object sender, RibbonControlEventArgs e)
     {
-      ThisAddIn.ComponentContainer.ShowOptionsNoThrow();
+      try
+      {
+        ThisAddIn.ComponentContainer.ShowOptions();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
+      }
     }
 
     private void AboutButton_Click (object sender, RibbonControlEventArgs e)
     {
-      ThisAddIn.ComponentContainer.ShowAboutNoThrow();
+      try
+      {
+        ThisAddIn.ComponentContainer.ShowAbout();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
+      }
     }
 
     private void GeneralOptionsButton_Click (object sender, RibbonControlEventArgs e)
     {
-      ThisAddIn.ComponentContainer.ShowGeneralOptionsNoThrow ();
+      try
+      {
+        ThisAddIn.ComponentContainer.ShowGeneralOptions();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
+      }
     }
 
     private void ReportsButton_Click (object sender, RibbonControlEventArgs e)
     {
-      ReportsButton.Image = Resources.report;
-      ThisAddIn.ComponentContainer.ShowReportsNoThrow ();
+      try
+      {
+        ReportsButton.Image = Resources.report;
+        ThisAddIn.ComponentContainer.ShowReports();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
+      }
     }
 
     private void StatusesButton_Click (object sender, RibbonControlEventArgs e)
     {
-      ThisAddIn.ComponentContainer.ShowProfileStatusesNoThrow ();
+      try
+      {
+        ThisAddIn.ComponentContainer.ShowProfileStatuses();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
+      }
     }
   }
 }

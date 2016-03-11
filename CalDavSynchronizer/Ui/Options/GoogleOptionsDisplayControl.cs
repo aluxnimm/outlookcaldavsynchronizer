@@ -175,7 +175,7 @@ namespace CalDavSynchronizer.Ui.Options
       }
       catch (Exception x)
       {
-        ExceptionHandler.Instance.HandleException (x, s_logger);
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
       }
     }
 
@@ -217,7 +217,7 @@ namespace CalDavSynchronizer.Ui.Options
       }
       catch (Exception x)
       {
-        ExceptionHandler.Instance.HandleException (x, s_logger);
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
       }
     }
 

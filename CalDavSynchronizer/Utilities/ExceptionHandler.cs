@@ -35,7 +35,7 @@ namespace CalDavSynchronizer.Utilities
     {
     }
 
-    public void HandleException (Exception exception, ILog logger)
+    public void DisplayException (Exception exception, ILog logger)
     {
       var additionMessage = GetAdditionMessageNoThrow (exception);
       logger.Logger.Log (typeof (ExceptionHandler), Level.Error, additionMessage, exception);

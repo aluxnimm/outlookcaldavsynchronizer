@@ -21,6 +21,6 @@ namespace CalDavSynchronizer.Utilities
 {
   internal interface IExceptionHandler : GenSync.IExceptionLogger
   {
-    void HandleException (Exception x, ILog logger);
+    void DisplayException (Exception x, ILog logger);
   }
 }

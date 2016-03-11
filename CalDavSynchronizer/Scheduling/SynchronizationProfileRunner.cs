@@ -136,7 +136,7 @@ namespace CalDavSynchronizer.Scheduling
       }
       catch (Exception x)
       {
-        ExceptionHandler.Instance.HandleException (x, s_logger);
+        s_logger.Error (null, x);
       }
     }
 
@@ -155,7 +155,7 @@ namespace CalDavSynchronizer.Scheduling
       }
       catch (Exception x)
       {
-        ExceptionHandler.Instance.HandleException (x, s_logger);
+        s_logger.Error (null, x);
       }
     }
 
@@ -219,7 +219,7 @@ namespace CalDavSynchronizer.Scheduling
       }
       catch (Exception x)
       {
-        ExceptionHandler.Instance.HandleException (x, s_logger);
+        s_logger.Error (null, x);
       }
       finally
       {
@@ -245,7 +245,7 @@ namespace CalDavSynchronizer.Scheduling
       }
       catch (Exception x)
       {
-        ExceptionHandler.Instance.HandleException (x, s_logger);
+        s_logger.Error (null, x);
       }
     }
   }

@@ -228,7 +228,7 @@ namespace CalDavSynchronizer
 
         if (IsReportsViewVisible)
         {
-          ShowReports(); // show to bring it into foreground
+          ShowReportsImplementation(); // show to bring it into foreground
           return;
         }
 
@@ -240,7 +240,7 @@ namespace CalDavSynchronizer
           if (hasWarnings && _showReportsWithWarningsImmediately
               || hasErrors && _showReportsWithErrorsImmediately)
           {
-            ShowReports();
+            ShowReportsImplementation();
             var reportNameAsString = reportName.ToString();
             _currentReportsViewModel.Reports.Single (r => r.ReportName.ToString() == reportNameAsString).IsSelected = true;
             return;
@@ -292,54 +292,40 @@ namespace CalDavSynchronizer
       ((Hierarchy) LogManager.GetRepository()).RaiseConfigurationChanged (EventArgs.Empty);
     }
 
-    public async Task SynchronizeNowNoThrow ()
+    public async Task SynchronizeNow ()
     {
-      try
-      {
-        s_logger.Info ("Synchronization manually triggered");
-        EnsureSynchronizationContext();
-        await _scheduler.RunNow();
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.HandleException (x, s_logger);
-      }
+      s_logger.Info ("Synchronization manually triggered");
+      EnsureSynchronizationContext();
+      await _scheduler.RunNow();
     }
 
-    public void ShowOptionsNoThrow (Guid? initialVisibleProfile = null)
+    public void ShowOptions (Guid? initialVisibleProfile = null)
     {
-      try
+      if (_currentVisibleOptionsFormOrNull == null)
       {
-        if (_currentVisibleOptionsFormOrNull == null)
+        var options = _optionsDataAccess.LoadOptions();
+        GeneralOptions generalOptions = _generalOptionsDataAccess.LoadOptions();
+        try
         {
-          var options = _optionsDataAccess.LoadOptions();
-          GeneralOptions generalOptions = _generalOptionsDataAccess.LoadOptions();
-          try
-          {
-            Options[] newOptions;
-            if (generalOptions.UseNewOptionUi)
-              newOptions = ShowWpfOptions (initialVisibleProfile, generalOptions, options);
-            else
-              newOptions = ShowWinFormOptions (initialVisibleProfile, generalOptions, options);
+          Options[] newOptions;
+          if (generalOptions.UseNewOptionUi)
+            newOptions = ShowWpfOptions (initialVisibleProfile, generalOptions, options);
+          else
+            newOptions = ShowWinFormOptions (initialVisibleProfile, generalOptions, options);
 
-            if (newOptions != null)
-              ApplyNewOptions (options, newOptions, generalOptions);
-          }
-          finally
-          {
-            _currentVisibleOptionsFormOrNull = null;
-          }
+          if (newOptions != null)
+            ApplyNewOptions (options, newOptions, generalOptions);
         }
-        else
+        finally
         {
-          _currentVisibleOptionsFormOrNull.BringToFront();
-          if (initialVisibleProfile.HasValue)
-            _currentVisibleOptionsFormOrNull.ShowProfile (initialVisibleProfile.Value);
+          _currentVisibleOptionsFormOrNull = null;
         }
       }
-      catch (Exception x)
+      else
       {
-        ExceptionHandler.Instance.HandleException (x, s_logger);
+        _currentVisibleOptionsFormOrNull.BringToFront();
+        if (initialVisibleProfile.HasValue)
+          _currentVisibleOptionsFormOrNull.ShowProfile (initialVisibleProfile.Value);
       }
     }
 
@@ -401,17 +387,10 @@ namespace CalDavSynchronizer
       SwitchCategories (changedOptions);
     }
 
-    public void ShowLatestSynchronizationReportNoThrow (Guid profileId)
+    public void ShowLatestSynchronizationReport (Guid profileId)
     {
-      try
-      {
-        ShowReports();
-        _currentReportsViewModel.ShowLatestSynchronizationReportCommand (profileId);
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.HandleException (x, s_logger);
-      }
+      ShowReportsImplementation();
+      _currentReportsViewModel.ShowLatestSynchronizationReportCommand (profileId);
     }
 
     private ChangedOptions[] CreateChangePairs (Options[] oldOptions, Options[] newOptions)
@@ -544,42 +523,35 @@ namespace CalDavSynchronizer
       }
     }
 
-    public void ShowGeneralOptionsNoThrow ()
+    public void ShowGeneralOptions ()
     {
-      try
+      var generalOptions = _generalOptionsDataAccess.LoadOptions();
+      using (var optionsForm = new GeneralOptionsForm())
       {
-        var generalOptions = _generalOptionsDataAccess.LoadOptions();
-        using (var optionsForm = new GeneralOptionsForm())
+        optionsForm.Options = generalOptions;
+        if (optionsForm.Display())
         {
-          optionsForm.Options = generalOptions;
-          if (optionsForm.Display())
+          var newOptions = optionsForm.Options;
+
+          ConfigureServicePointManager (newOptions);
+          ConfigureLogLevel (newOptions.EnableDebugLog);
+
+          _updateChecker.IsEnabled = newOptions.ShouldCheckForNewerVersions;
+          _reportGarbageCollection.MaxAge = TimeSpan.FromDays (newOptions.MaxReportAgeInDays);
+
+          _generalOptionsDataAccess.SaveOptions (newOptions);
+          UpdateGeneralOptionDependencies (newOptions);
+          _scheduler.SetOptions (_optionsDataAccess.LoadOptions(), newOptions.CheckIfOnline);
+
+          if (newOptions.EnableTrayIcon != generalOptions.EnableTrayIcon)
           {
-            var newOptions = optionsForm.Options;
-
-            ConfigureServicePointManager (newOptions);
-            ConfigureLogLevel (newOptions.EnableDebugLog);
-
-            _updateChecker.IsEnabled = newOptions.ShouldCheckForNewerVersions;
-            _reportGarbageCollection.MaxAge = TimeSpan.FromDays (newOptions.MaxReportAgeInDays);
-
-            _generalOptionsDataAccess.SaveOptions (newOptions);
-            UpdateGeneralOptionDependencies (newOptions);
-            _scheduler.SetOptions (_optionsDataAccess.LoadOptions(), newOptions.CheckIfOnline);
-
-            if (newOptions.EnableTrayIcon != generalOptions.EnableTrayIcon)
-            {
-              _trayNotifier.Dispose();
-              _trayNotifier = newOptions.EnableTrayIcon ? new TrayNotifier(this) : NullTrayNotifer.Instance;
-            }
+            _trayNotifier.Dispose();
+            _trayNotifier = newOptions.EnableTrayIcon ? new TrayNotifier (this) : NullTrayNotifer.Instance;
           }
         }
       }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.HandleException (x, s_logger);
-      }
     }
-    
+
     private struct ChangedOptions
     {
       private readonly Options _old;
@@ -694,37 +666,30 @@ namespace CalDavSynchronizer
       SynchronizationContext.Current.Send (_ => ShowGetNewVersionForm (e), null);
     }
 
-    public async void CheckForUpdatesNowNoThrow ()
+    private async Task CheckForUpdatesNow ()
     {
-      try
+      s_logger.Info ("CheckForUpdates manually triggered");
+      EnsureSynchronizationContext();
+
+      var availableVersion = await Task.Run ((Func<Version>) _availableVersionService.GetVersionOfDefaultDownload);
+      if (availableVersion == null)
       {
-        s_logger.Info ("CheckForUpdates manually triggered");
-        EnsureSynchronizationContext ();
-
-        var availableVersion = await Task.Run((Func<Version>)_availableVersionService.GetVersionOfDefaultDownload);
-        if (availableVersion == null)
-        {
-          MessageBox.Show ("Did not find any default Version!", MessageBoxTitle);
-          return;
-        }
-
-        var currentVersion = Assembly.GetExecutingAssembly ().GetName ().Version;
-        if (availableVersion > currentVersion)
-        {
-          ShowGetNewVersionForm(
-              new NewerVersionFoundEventArgs (
-                  availableVersion,
-                  _availableVersionService.GetWhatsNewNoThrow (currentVersion, availableVersion),
-                  _availableVersionService.DownloadLink));
-        }
-        else
-        {
-          MessageBox.Show ("No newer Version available.", MessageBoxTitle);
-        }
+        MessageBox.Show ("Did not find any default Version!", MessageBoxTitle);
+        return;
       }
-      catch (Exception x)
+
+      var currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
+      if (availableVersion > currentVersion)
       {
-        ExceptionHandler.Instance.HandleException (x, s_logger);
+        ShowGetNewVersionForm (
+            new NewerVersionFoundEventArgs (
+                availableVersion,
+                _availableVersionService.GetWhatsNewNoThrow (currentVersion, availableVersion),
+                _availableVersionService.DownloadLink));
+      }
+      else
+      {
+        MessageBox.Show ("No newer Version available.", MessageBoxTitle);
       }
     }
 
@@ -788,17 +753,10 @@ namespace CalDavSynchronizer
       }
     }
 
-    public void ShowReportsNoThrow ()
+    public void ShowReports ()
     {
-      try
-      {
-        EnsureSynchronizationContext ();
-        ShowReports ();
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.HandleException (x, s_logger);
-      }
+      EnsureSynchronizationContext();
+      ShowReportsImplementation();
     }
 
     private bool IsReportsViewVisible
@@ -806,7 +764,7 @@ namespace CalDavSynchronizer
       get { return _currentReportsViewModel != null; }
     }
 
-    private void ShowReports ()
+    private void ShowReportsImplementation ()
     {
       if (_currentReportsViewModel == null)
       {
@@ -833,36 +791,17 @@ namespace CalDavSynchronizer
       }
     }
 
-    public void ShowProfileStatusesNoThrow ()
+    public void ShowProfileStatuses ()
     {
-      try
-      {
-        EnsureSynchronizationContext ();
-        ShowProfileStatuses ();
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.HandleException (x, s_logger);
-      }
-    }
-
-    private void ShowProfileStatuses ()
-    {
+      EnsureSynchronizationContext();
       _uiService.ShowProfileStatusesWindow();
     }
 
-    public void ShowAboutNoThrow ()
+    public void ShowAbout ()
     {
-      try
+      using (var aboutForm = new AboutForm (ThisAddIn.ComponentContainer.CheckForUpdatesNow))
       {
-        using (var aboutForm = new AboutForm (ThisAddIn.ComponentContainer.CheckForUpdatesNowNoThrow))
-        {
-          aboutForm.ShowDialog();
-        }
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.HandleException (x, s_logger);
+        aboutForm.ShowDialog();
       }
     }
 
@@ -927,7 +866,7 @@ namespace CalDavSynchronizer
       }
       catch (Exception x)
       {
-        ExceptionHandler.Instance.HandleException (x, s_logger);
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
       }
     }
 
