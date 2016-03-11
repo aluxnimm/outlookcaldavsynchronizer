@@ -871,7 +871,15 @@ namespace CalDavSynchronizer.Implementation.Events
                   s_logger.WarnFormat ("Event '{0}' contains more than one days in a monthly recurrence rule. Since outlook supports only one day, all except the first one will be ignored.", source.UID);
                   logger.LogMappingWarning ("Event contains more than one days in a monthly recurrence rule. Since outlook supports only one day, all except the first one will be ignored.");
                 }
-                targetRecurrencePattern.DayOfMonth = sourceRecurrencePattern.ByMonthDay[0];
+                try
+                {
+                  targetRecurrencePattern.DayOfMonth = sourceRecurrencePattern.ByMonthDay[0];
+                }
+                catch (COMException ex)
+                {
+                  s_logger.Warn ($"Recurring event '{source.UID}' contains invalid BYMONTHDAY '{sourceRecurrencePattern.ByMonthDay[0]}', which will be ignored.", ex);
+                  logger.LogMappingWarning ($"Recurring event '{source.UID}' contains invalid BYMONTHDAY '{sourceRecurrencePattern.ByMonthDay[0]}', which will be ignored.", ex);
+                }
               }
               else
               {
@@ -918,7 +926,15 @@ namespace CalDavSynchronizer.Implementation.Events
                 }
                 if (sourceRecurrencePattern.ByMonthDay[0] != targetRecurrencePattern.DayOfMonth)
                 {
-                  targetRecurrencePattern.DayOfMonth = sourceRecurrencePattern.ByMonthDay[0];
+                  try
+                  {
+                    targetRecurrencePattern.DayOfMonth = sourceRecurrencePattern.ByMonthDay[0];
+                  }
+                  catch (COMException ex)
+                  {
+                    s_logger.Warn ($"Recurring event '{source.UID}' contains invalid BYMONTHDAY '{sourceRecurrencePattern.ByMonthDay[0]}', which will be ignored.", ex);
+                    logger.LogMappingWarning ($"Recurring event '{source.UID}' contains invalid BYMONTHDAY '{sourceRecurrencePattern.ByMonthDay[0]}', which will be ignored.", ex);
+                  }
                 }
               }
               else if (sourceRecurrencePattern.ByMonth.Count > 0 && sourceRecurrencePattern.ByDay.Count > 0)
