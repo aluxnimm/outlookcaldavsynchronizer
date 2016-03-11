@@ -316,21 +316,8 @@ namespace GenSync.Synchronization
 
         await entityContainer.FillIfEmpty (aEntitesToLoad, bEntitesToLoad);
 
-        var newAtypeEntities = new Dictionary<TAtypeEntityId, TAtypeEntity> (_atypeIdComparer);
-        foreach (var newAVersion in newAVersions)
-        {
-          TAtypeEntity entity;
-          if (entityContainer.AEntities.TryGetValue (newAVersion.Key, out entity))
-            newAtypeEntities.Add (newAVersion.Key, entity);
-        }
-
-        var newBtypeEntities = new Dictionary<TBtypeEntityId, TBtypeEntity> (_btypeIdComparer);
-        foreach (var newBVersion in newBVersions)
-        {
-          TBtypeEntity entity;
-          if (entityContainer.BEntities.TryGetValue (newBVersion.Key, out entity))
-            newBtypeEntities.Add (newBVersion.Key, entity);
-        }
+        var newAtypeEntities = GetSubSet (entityContainer.AEntities, newAVersions.Keys, _atypeIdComparer);
+        var newBtypeEntities = GetSubSet (entityContainer.BEntities, newBVersions.Keys, _btypeIdComparer);
 
         var matchingEntites = _initialEntityMatcher.FindMatchingEntities (
             _entityRelationDataFactory,
@@ -415,6 +402,18 @@ namespace GenSync.Synchronization
 
 
       return newEntityRelations;
+    }
+    
+    private static Dictionary<TId, TEntity> GetSubSet<TId, TEntity> (IReadOnlyDictionary<TId, TEntity> set, IEnumerable<TId> subSetIds, IEqualityComparer<TId> idComparer)
+    {
+      var subSet = new Dictionary<TId, TEntity> (idComparer);
+      foreach (var id in subSetIds)
+      {
+        TEntity entity;
+        if (set.TryGetValue (id, out entity))
+          subSet.Add (id, entity);
+      }
+      return subSet;
     }
 
     private static Dictionary<TKey, TValue> CreateDictionary<TKey, TValue> (IReadOnlyList<EntityVersion<TKey, TValue>> tuples, IEqualityComparer<TKey> equalityComparer)
