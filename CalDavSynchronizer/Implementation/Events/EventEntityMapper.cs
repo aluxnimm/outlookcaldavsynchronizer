@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -56,11 +57,11 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly EventMappingConfiguration _configuration;
 
     public EventEntityMapper (
-      string outlookEmailAddress,
-      Uri serverEmailAddress, 
-      string localTimeZoneId, 
-      string outlookApplicationVersion, 
-      EventMappingConfiguration configuration)
+        string outlookEmailAddress,
+        Uri serverEmailAddress,
+        string localTimeZoneId,
+        string outlookApplicationVersion,
+        EventMappingConfiguration configuration)
     {
       _outlookEmailAddress = outlookEmailAddress;
       _configuration = configuration;
@@ -95,7 +96,7 @@ namespace CalDavSynchronizer.Implementation.Events
           }
 
           var startTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (startTimeZoneID);
-          startIcalTimeZone = iCalTimeZone.FromSystemTimeZone(startTimeZoneInfo, new DateTime(1970, 1, 1), false);
+          startIcalTimeZone = iCalTimeZone.FromSystemTimeZone (startTimeZoneInfo, new DateTime (1970, 1, 1), false);
           DDayICalWorkaround.CalendarDataPreprocessor.FixTimeZoneDSTRRules (startTimeZoneInfo, startIcalTimeZone);
           newTargetCalender.TimeZones.Add (startIcalTimeZone);
 
@@ -103,7 +104,7 @@ namespace CalDavSynchronizer.Implementation.Events
           {
             var endTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (endTimeZoneID);
 
-            endIcalTimeZone = iCalTimeZone.FromSystemTimeZone (endTimeZoneInfo, new DateTime(1970, 1, 1), false);
+            endIcalTimeZone = iCalTimeZone.FromSystemTimeZone (endTimeZoneInfo, new DateTime (1970, 1, 1), false);
             DDayICalWorkaround.CalendarDataPreprocessor.FixTimeZoneDSTRRules (endTimeZoneInfo, endIcalTimeZone);
             newTargetCalender.TimeZones.Add (endIcalTimeZone);
           }
@@ -125,7 +126,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
       if (existingTargetEvent != null)
         newTargetEvent.UID = existingTargetEvent.UID;
-      
+
       newTargetCalender.Events.Add (newTargetEvent);
 
       Map1To2 (sourceWrapper.Inner, newTargetEvent, false, startIcalTimeZone, endIcalTimeZone, logger);
@@ -171,7 +172,7 @@ namespace CalDavSynchronizer.Implementation.Events
       target.Summary = source.Subject;
       target.Location = source.Location;
 
-      if(_configuration.MapBody)
+      if (_configuration.MapBody)
         target.Description = source.Body;
 
       target.Priority = CommonEntityMapper.MapPriority1To2 (source.Importance);
@@ -182,13 +183,13 @@ namespace CalDavSynchronizer.Implementation.Events
         bool organizerSet;
         MapAttendees1To2 (source, target, out organizerSet, logger);
         if (!organizerSet)
-        	MapOrganizer1To2 (source, target, logger);
+          MapOrganizer1To2 (source, target, logger);
       }
 
       if (!isRecurrenceException)
         MapRecurrance1To2 (source, target, startIcalTimeZone, endIcalTimeZone, logger);
 
-      
+
       target.Class = CommonEntityMapper.MapPrivacy1To2 (source.Sensitivity, _configuration.MapSensitivityPrivateToClassConfidential);
 
       MapReminder1To2 (source, target);
@@ -252,7 +253,7 @@ namespace CalDavSynchronizer.Implementation.Events
     {
       if (_configuration.MapReminder == ReminderMapping.@false)
         return;
-      
+
       if (source.ReminderSet)
       {
         var reminderRelativeToStart = TimeSpan.FromMinutes (-source.ReminderMinutesBeforeStart);
@@ -318,13 +319,13 @@ namespace CalDavSynchronizer.Implementation.Events
         return;
       }
 
-      if (_configuration.MapReminder == ReminderMapping.JustUpcoming 
+      if (_configuration.MapReminder == ReminderMapping.JustUpcoming
           && target.StartUTC.Add (alarm.Trigger.Duration.Value) <= DateTime.UtcNow)
       {
-          target.ReminderSet = false;
-          return;
+        target.ReminderSet = false;
+        return;
       }
-    
+
       target.ReminderSet = true;
       target.ReminderMinutesBeforeStart = -(int) alarm.Trigger.Duration.Value.TotalMinutes;
     }
@@ -453,10 +454,13 @@ namespace CalDavSynchronizer.Implementation.Events
     {
       string organizerEmail = GetMailUrlOrNull (organizer, address, logger);
       var targetOrganizer = (organizerEmail != null) ? new Organizer (organizerEmail) : new Organizer();
-      if (organizer != null) targetOrganizer.CommonName = organizer.Name;
+      if (organizer != null)
+        targetOrganizer.CommonName = organizer.Name;
       target.Organizer = targetOrganizer;
-      if (_configuration.ScheduleAgentClient) target.Organizer.Parameters.Add ("SCHEDULE-AGENT", "CLIENT");
-      if (_configuration.SendNoAppointmentNotifications) target.Properties.Add (new CalendarProperty ("X-SOGO-SEND-APPOINTMENT-NOTIFICATIONS", "NO"));
+      if (_configuration.ScheduleAgentClient)
+        target.Organizer.Parameters.Add ("SCHEDULE-AGENT", "CLIENT");
+      if (_configuration.SendNoAppointmentNotifications)
+        target.Properties.Add (new CalendarProperty ("X-SOGO-SEND-APPOINTMENT-NOTIFICATIONS", "NO"));
     }
 
     private void SetOrganizer (IEvent target, string organizerCN, string organizerEmail, IEntityMappingLogger logger)
@@ -481,11 +485,13 @@ namespace CalDavSynchronizer.Implementation.Events
       {
         targetOrganizer = new Organizer();
       }
-      
+
       targetOrganizer.CommonName = organizerCN;
       target.Organizer = targetOrganizer;
-      if (_configuration.ScheduleAgentClient) target.Organizer.Parameters.Add ("SCHEDULE-AGENT", "CLIENT");
-      if (_configuration.SendNoAppointmentNotifications) target.Properties.Add (new CalendarProperty ("X-SOGO-SEND-APPOINTMENT-NOTIFICATIONS", "NO"));
+      if (_configuration.ScheduleAgentClient)
+        target.Organizer.Parameters.Add ("SCHEDULE-AGENT", "CLIENT");
+      if (_configuration.SendNoAppointmentNotifications)
+        target.Properties.Add (new CalendarProperty ("X-SOGO-SEND-APPOINTMENT-NOTIFICATIONS", "NO"));
     }
 
     private string GetMailUrlOrNull (AddressEntry addressEntry, string address, IEntityMappingLogger logger)
@@ -599,8 +605,8 @@ namespace CalDavSynchronizer.Implementation.Events
 
       if (!string.IsNullOrEmpty (emailAddress))
       {
-        var emailAddressUriString = string.Format("MAILTO:{0}", emailAddress);
-        if (!Uri.IsWellFormedUriString(emailAddressUriString, UriKind.Absolute))
+        var emailAddressUriString = string.Format ("MAILTO:{0}", emailAddress);
+        if (!Uri.IsWellFormedUriString (emailAddressUriString, UriKind.Absolute))
         {
           s_logger.WarnFormat ("Invalid email address URI {0} for attendee.", emailAddressUriString);
           logger.LogMappingWarning ($"Invalid email address Uri '{emailAddressUriString}' for attendee.");
@@ -612,7 +618,6 @@ namespace CalDavSynchronizer.Implementation.Events
       {
         return null;
       }
-     
     }
 
     private void MapRecurrance1To2 (AppointmentItem source, IEvent target, iCalTimeZone startIcalTimeZone, iCalTimeZone endIcalTimeZone, IEntityMappingLogger logger)
@@ -711,7 +716,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
               try
               {
-                using (var wrapper = new AppointmentItemWrapper(sourceException.AppointmentItem, _ => { throw new InvalidOperationException("Cannot reload exception AppointmentITem!"); }))
+                using (var wrapper = new AppointmentItemWrapper (sourceException.AppointmentItem, _ => { throw new InvalidOperationException ("Cannot reload exception AppointmentITem!"); }))
                 {
                   var targetException = new Event();
                   target.Calendar.Events.Add (targetException);
@@ -777,7 +782,7 @@ namespace CalDavSynchronizer.Implementation.Events
             }
             else
             {
-              if (!originalOutlookDatesWithExceptions.Contains(sourceException.OriginalDate))
+              if (!originalOutlookDatesWithExceptions.Contains (sourceException.OriginalDate))
               {
                 PeriodList targetExList = new PeriodList();
 
@@ -797,7 +802,7 @@ namespace CalDavSynchronizer.Implementation.Events
                   }
                   var timeZone = TimeZoneInfo.FindSystemTimeZoneById (startTimeZoneID);
                   var originalDateUtc = TimeZoneInfo.ConvertTimeToUtc (sourceException.OriginalDate, timeZone);
-                  iCalDateTime exDate = new iCalDateTime (originalDateUtc.Add(source.StartInStartTimeZone.TimeOfDay)) { IsUniversalTime = true };
+                  iCalDateTime exDate = new iCalDateTime (originalDateUtc.Add (source.StartInStartTimeZone.TimeOfDay)) { IsUniversalTime = true };
 
                   targetExList.Add (exDate);
                 }
@@ -916,7 +921,7 @@ namespace CalDavSynchronizer.Implementation.Events
                 }
                 if (sourceRecurrencePattern.ByMonth[0] != targetRecurrencePattern.MonthOfYear)
                 {
-                    targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
+                  targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
                 }
 
                 if (sourceRecurrencePattern.ByMonthDay.Count > 1)
@@ -987,7 +992,6 @@ namespace CalDavSynchronizer.Implementation.Events
             else
               targetRecurrencePattern.PatternEndDate = targetRecurrencePattern.PatternStartDate;
           }
-            
         }
         // Due to limitations out outlook, the Appointment has to be saved here. Otherwise 'targetRecurrencePattern.GetOccurrence ()'
         // will throw an exception
@@ -1044,26 +1048,26 @@ namespace CalDavSynchronizer.Implementation.Events
           // to prevent skipping of occurences while moving (outlook throws exception when skipping occurences), moving has to be done in two steps
           // first move all exceptions which are preponed from earliest to latest
           MapRecurrenceExceptions2To1 (
-            exceptions.Where (e => e.Start.UTC < e.RecurrenceID.Date).OrderBy (e => e.Start.UTC),
-            targetWrapper, 
-            targetRecurrencePattern,
-            logger);
+              exceptions.Where (e => e.Start.UTC < e.RecurrenceID.Date).OrderBy (e => e.Start.UTC),
+              targetWrapper,
+              targetRecurrencePattern,
+              logger);
           // then move all exceptions which are postponed or are not moved from last to first
           MapRecurrenceExceptions2To1 (
-            exceptions.Where (e => e.Start.UTC >= e.RecurrenceID.Date).OrderByDescending (e => e.Start.UTC), 
-            targetWrapper, 
-            targetRecurrencePattern,
-            logger);
+              exceptions.Where (e => e.Start.UTC >= e.RecurrenceID.Date).OrderByDescending (e => e.Start.UTC),
+              targetWrapper,
+              targetRecurrencePattern,
+              logger);
           // HINT: this algorith will only prevent skipping while moving. If the final state contains skipped occurences, outlook will throw an exception anyway
         }
       }
     }
 
     private void MapRecurrenceExceptions2To1 (
-      IEnumerable<IEvent> exceptions,
-      AppointmentItemWrapper targetWrapper, 
-      Microsoft.Office.Interop.Outlook.RecurrencePattern targetRecurrencePattern, 
-      IEntityMappingLogger logger)
+        IEnumerable<IEvent> exceptions,
+        AppointmentItemWrapper targetWrapper,
+        Microsoft.Office.Interop.Outlook.RecurrencePattern targetRecurrencePattern,
+        IEntityMappingLogger logger)
     {
       foreach (var recurranceException in exceptions)
       {
@@ -1142,7 +1146,8 @@ namespace CalDavSynchronizer.Implementation.Events
           attendee.ParticipationStatus = MapParticipation1To2 (recipient.MeetingResponseStatus);
           attendee.CommonName = recipient.Name;
           attendee.Role = MapAttendeeType1To2 ((OlMeetingRecipientType) recipient.Type);
-          if ((OlMeetingRecipientType)recipient.Type == OlMeetingRecipientType.olResource) attendee.Type = "RESOURCE";
+          if ((OlMeetingRecipientType) recipient.Type == OlMeetingRecipientType.olResource)
+            attendee.Type = "RESOURCE";
           attendee.RSVP = true;
           target.Attendees.Add (attendee);
         }
@@ -1279,11 +1284,11 @@ namespace CalDavSynchronizer.Implementation.Events
 
 
     private AppointmentItemWrapper Map2To1 (
-      IEvent source, 
-      IReadOnlyCollection<IEvent> recurrenceExceptionsOrNull,
-      AppointmentItemWrapper targetWrapper, 
-      bool isRecurrenceException, 
-      IEntityMappingLogger logger)
+        IEvent source,
+        IReadOnlyCollection<IEvent> recurrenceExceptionsOrNull,
+        AppointmentItemWrapper targetWrapper,
+        bool isRecurrenceException,
+        IEntityMappingLogger logger)
     {
       if (!isRecurrenceException && targetWrapper.Inner.IsRecurring)
       {
@@ -1402,9 +1407,8 @@ namespace CalDavSynchronizer.Implementation.Events
 
       targetWrapper.Inner.Importance = CommonEntityMapper.MapPriority2To1 (source.Priority);
 
-      if(_configuration.MapAttendees)
+      if (_configuration.MapAttendees)
         MapAttendeesAndOrganizer2To1 (source, targetWrapper.Inner, logger);
-  
 
 
       if (!isRecurrenceException)
@@ -1413,7 +1417,7 @@ namespace CalDavSynchronizer.Implementation.Events
       if (!isRecurrenceException)
         targetWrapper.Inner.Sensitivity = CommonEntityMapper.MapPrivacy2To1 (source.Class, _configuration.MapClassConfidentialToSensitivityPrivate);
 
-    
+
       MapReminder2To1 (source, targetWrapper.Inner, logger);
 
       if (!isRecurrenceException)
@@ -1423,25 +1427,25 @@ namespace CalDavSynchronizer.Implementation.Events
 
       if (_configuration.MapAttendees && source.Organizer != null)
       {
-        var ownSourceAttendee = source.Attendees.FirstOrDefault( (a) => 
+        var ownSourceAttendee = source.Attendees.FirstOrDefault ((a) =>
+        {
+          try
           {
-            try
-            {
-              return StringComparer.InvariantCultureIgnoreCase.Compare (a.Value != null ? a.Value.ToString() : null, _serverEmailUri) == 0;        
-            }
-            catch (UriFormatException)
-            {
-              return false;
-            }
+            return StringComparer.InvariantCultureIgnoreCase.Compare (a.Value != null ? a.Value.ToString() : null, _serverEmailUri) == 0;
           }
-        );
+          catch (UriFormatException)
+          {
+            return false;
+          }
+        }
+            );
 
         if (source.Status == EventStatus.Cancelled)
         {
           targetWrapper.Inner.MeetingStatus = OlMeetingStatus.olMeetingReceivedAndCanceled;
-          if (string.IsNullOrEmpty (targetWrapper.Inner.Subject)) 
+          if (string.IsNullOrEmpty (targetWrapper.Inner.Subject))
             targetWrapper.Inner.Subject = "Cancelled: ";
-          else if (!targetWrapper.Inner.Subject.StartsWith ("Cancelled: ")) 
+          else if (!targetWrapper.Inner.Subject.StartsWith ("Cancelled: "))
             targetWrapper.Inner.Subject = "Cancelled: " + targetWrapper.Inner.Subject;
         }
         else if (ownSourceAttendee != null && targetWrapper.Inner.ResponseStatus != OlResponseStatus.olResponseOrganized)
@@ -1455,7 +1459,7 @@ namespace CalDavSynchronizer.Implementation.Events
             }
             else
             {
-              using (var newMeetingItem = GenericComObjectWrapper.Create (targetWrapper.Inner.Respond(response.Value)))
+              using (var newMeetingItem = GenericComObjectWrapper.Create (targetWrapper.Inner.Respond (response.Value)))
               {
                 var newAppointment = newMeetingItem.Inner.GetAssociatedAppointment (false);
                 targetWrapper.Replace (newAppointment);
@@ -1533,7 +1537,8 @@ namespace CalDavSynchronizer.Implementation.Events
             recipientsToDispose.Add (targetRecipient);
             targetRecipientsWhichShouldRemain.Add (targetRecipient);
             targetRecipient.Type = (int) MapAttendeeType2To1 (attendee.Role);
-            if (attendee.Type == "RESOURCE" || attendee.Type == "ROOM") targetRecipient.Type = (int) OlMeetingRecipientType.olResource;
+            if (attendee.Type == "RESOURCE" || attendee.Type == "ROOM")
+              targetRecipient.Type = (int) OlMeetingRecipientType.olResource;
             targetRecipient.Resolve();
           }
         }
@@ -1660,7 +1665,7 @@ namespace CalDavSynchronizer.Implementation.Events
       foreach (Recipient recipient in appointment.Recipients)
       {
         disposeList.Add (recipient);
-        if (! string.IsNullOrEmpty (recipient.Address))
+        if (!string.IsNullOrEmpty (recipient.Address))
         {
           using (var entryWrapper = GenericComObjectWrapper.Create (recipient.AddressEntry))
           {
