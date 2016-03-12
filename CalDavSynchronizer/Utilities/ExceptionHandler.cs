@@ -25,7 +25,7 @@ using log4net.Core;
 
 namespace CalDavSynchronizer.Utilities
 {
-  internal class ExceptionHandler : IExceptionHandler
+  public class ExceptionHandler : IExceptionHandler
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 

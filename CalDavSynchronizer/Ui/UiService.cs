@@ -38,7 +38,7 @@ namespace CalDavSynchronizer.Ui
   {
     private readonly GenericElementHostWindow _profileStatusesWindow;
 
-    public UiService (      ProfileStatusesViewModel viewModel)
+    public UiService (ProfileStatusesViewModel viewModel)
     {
       if (viewModel == null)
         throw new ArgumentNullException (nameof (viewModel));

@@ -38,8 +38,10 @@
       this.group1 = this.Factory.CreateRibbonGroup();
       this.StartTestsButton = this.Factory.CreateRibbonButton();
       this.StartTestsExcludeManualButton = this.Factory.CreateRibbonButton();
+      this.ImportIcsData = this.Factory.CreateRibbonButton();
       this.tab1.SuspendLayout();
       this.group1.SuspendLayout();
+      this.SuspendLayout();
       // 
       // tab1
       // 
@@ -52,6 +54,7 @@
       // 
       this.group1.Items.Add(this.StartTestsButton);
       this.group1.Items.Add(this.StartTestsExcludeManualButton);
+      this.group1.Items.Add(this.ImportIcsData);
       this.group1.Name = "group1";
       // 
       // StartTestsButton
@@ -66,6 +69,12 @@
       this.StartTestsExcludeManualButton.Name = "StartTestsExcludeManualButton";
       this.StartTestsExcludeManualButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.StartTestsExcludeManualButton_Click);
       // 
+      // ImportIcsData
+      // 
+      this.ImportIcsData.Label = "Import ICS Data";
+      this.ImportIcsData.Name = "ImportIcsData";
+      this.ImportIcsData.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.ImportIcsData_Click);
+      // 
       // CalDavSynchronizerTestRibbon
       // 
       this.Name = "CalDavSynchronizerTestRibbon";
@@ -76,6 +85,7 @@
       this.tab1.PerformLayout();
       this.group1.ResumeLayout(false);
       this.group1.PerformLayout();
+      this.ResumeLayout(false);
 
     }
 
@@ -85,6 +95,7 @@
     internal Microsoft.Office.Tools.Ribbon.RibbonGroup group1;
     internal Microsoft.Office.Tools.Ribbon.RibbonButton StartTestsButton;
     internal Microsoft.Office.Tools.Ribbon.RibbonButton StartTestsExcludeManualButton;
+    internal Microsoft.Office.Tools.Ribbon.RibbonButton ImportIcsData;
   }
 
   partial class ThisRibbonCollection

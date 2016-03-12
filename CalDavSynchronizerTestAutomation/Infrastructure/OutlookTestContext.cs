@@ -46,7 +46,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
 {
   public static class OutlookTestContext
   {
-    private static EventEntityMapper _entityMapper;
+    private static EventEntityMapper s_entityMapper;
     private static readonly iCalendarSerializer _calendarSerializer = new iCalendarSerializer();
     private static NameSpace s_mapiNameSpace;
     private static string s_outlookFolderEntryId;
@@ -63,7 +63,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
         throw new ArgumentNullException ("mapiNameSpace");
 
       var eventMappingConfiguration = new EventMappingConfiguration();
-      _entityMapper = new EventEntityMapper (
+      s_entityMapper = new EventEntityMapper (
           mapiNameSpace.CurrentUser.Address,
           new Uri ("mailto:" + testerServerEmailAddress),
           mapiNameSpace.Application.TimeZones.CurrentTimeZone.ID,
@@ -121,7 +121,12 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
 
     public static IEntityMapper<AppointmentItemWrapper, IICalendar> EntityMapper
     {
-      get { return _entityMapper; }
+      get { return s_entityMapper; }
+    }
+
+    public static OutlookEventRepository EventRepository
+    {
+      get { return s_outlookEventRepository; }
     }
 
     public static IICalendar DeserializeICalendar (string iCalData)

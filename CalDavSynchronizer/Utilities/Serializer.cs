@@ -21,7 +21,7 @@ using System.Xml.Serialization;
 
 namespace CalDavSynchronizer.Utilities
 {
-  internal static class Serializer<T>
+  public static class Serializer<T>
   {
     private static readonly XmlSerializer _xmlSerializer = new XmlSerializer (typeof (T));
 

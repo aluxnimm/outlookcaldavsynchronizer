@@ -19,7 +19,7 @@ using log4net;
 
 namespace CalDavSynchronizer.Utilities
 {
-  internal interface IExceptionHandler : GenSync.IExceptionLogger
+  public interface IExceptionHandler : GenSync.IExceptionLogger
   {
     void DisplayException (Exception x, ILog logger);
   }
