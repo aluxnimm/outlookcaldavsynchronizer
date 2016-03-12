@@ -1273,7 +1273,7 @@ namespace CalDavSynchronizer.Implementation.Events
         }
 
         // TODO
-        // Maybe it is a goo idea to sort the exception events here by RecurrenceId
+        // Maybe it is a good idea to sort the exception events here by RecurrenceId
       }
 
       if (sourceMasterEvent == null)
@@ -1288,7 +1288,7 @@ namespace CalDavSynchronizer.Implementation.Events
     private void AddMasterEvent (IICalendar calendar)
     {
       if (calendar.Events.Count < 2)
-        throw new ArgumentException ("Calendar har to contain at least two events", nameof (calendar));
+        throw new ArgumentException ("Calendar has to contain at least two events", nameof (calendar));
 
       var sortedEvents = calendar.Events.OrderBy (e => e.RecurrenceID).ToArray();
 
@@ -1296,6 +1296,10 @@ namespace CalDavSynchronizer.Implementation.Events
       var firstException = sortedEvents[0];
       masterEvent.Start = firstException.RecurrenceID;
       masterEvent.Summary = firstException.Summary;
+      masterEvent.Location = firstException.Location;
+      masterEvent.Class = firstException.Class;
+      masterEvent.Categories = firstException.Categories;
+      masterEvent.Organizer = firstException.Organizer;
 
       var sortedExceptionsWithDistance =
           new[] { new { Event = firstException, DistanceFromMasterInDays = 0 } }
