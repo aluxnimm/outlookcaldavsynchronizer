@@ -80,7 +80,7 @@ namespace CalDavSynchronizer.Ui
       Process.Start (_helpUrl);
     }
 
-    private async void _checkForUpdatesButton_Click (object sender, EventArgs e)
+    private async void _checkForUpdatesButton_ClickAsync (object sender, EventArgs e)
     {
       try
       {

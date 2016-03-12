@@ -835,7 +835,7 @@ namespace CalDavSynchronizer
       }
     }
 
-    public async void DiplayBEntity (Guid synchronizationProfileId, string entityId)
+    public async void DiplayBEntityAsync (Guid synchronizationProfileId, string entityId)
     {
       try
       {

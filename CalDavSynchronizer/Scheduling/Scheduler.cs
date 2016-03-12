@@ -59,13 +59,13 @@ namespace CalDavSynchronizer.Scheduling
       _synchronizerFactory = synchronizerFactory;
       _ensureSynchronizationContext = ensureSynchronizationContext;
       _folderChangeWatcherFactory = folderChangeWatcherFactory;
-      _synchronizationTimer.Tick += _synchronizationTimer_Tick;
+      _synchronizationTimer.Tick += _synchronizationTimer_TickAsync;
       _synchronizationTimer.Interval = (int) _timerInterval.TotalMilliseconds;
       _synchronizationTimer.Start();
     }
 
 
-    private async void _synchronizationTimer_Tick (object sender, EventArgs e)
+    private async void _synchronizationTimer_TickAsync (object sender, EventArgs e)
     {
       try
       {

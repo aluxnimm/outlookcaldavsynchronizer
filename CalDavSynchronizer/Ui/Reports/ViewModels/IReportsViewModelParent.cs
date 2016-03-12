@@ -25,6 +25,6 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
   public interface IReportsViewModelParent
   {
     void DiplayAEntity (Guid synchronizationProfileId, string entityId);
-    void DiplayBEntity (Guid synchronizationProfileId, string entityId);
+    void DiplayBEntityAsync (Guid synchronizationProfileId, string entityId);
   }
 }

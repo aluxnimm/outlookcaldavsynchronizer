@@ -160,7 +160,7 @@
       this._checkForUpdatesButton.TabIndex = 10;
       this._checkForUpdatesButton.Text = "Check for Updates";
       this._checkForUpdatesButton.UseVisualStyleBackColor = true;
-      this._checkForUpdatesButton.Click += new System.EventHandler(this._checkForUpdatesButton_Click);
+      this._checkForUpdatesButton.Click += new System.EventHandler(this._checkForUpdatesButton_ClickAsync);
       // 
       // AboutForm
       // 

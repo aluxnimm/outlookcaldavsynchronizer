@@ -51,17 +51,17 @@ namespace CalDavSynchronizer.Ui.Options
       _settingsFaultFinder = settingsFaultFinder;
       _dependencies = dependencies;
 
-      _testConnectionButton.Click += _testConnectionButton_Click;
+      _testConnectionButton.Click += _testConnectionButton_ClickAsync;
     }
 
-    private async void _doAutodiscoveryButton_Click (object sender, EventArgs e)
+    private async void _doAutodiscoveryButton_ClickAsync (object sender, EventArgs e)
     {
       _calenderUrlTextBox.Text = OptionTasks.GoogleDavBaseUrl;
 
       await TestServerConnection ();
     }
 
-    private async void _testConnectionButton_Click (object sender, EventArgs e)
+    private async void _testConnectionButton_ClickAsync (object sender, EventArgs e)
     {
       await TestServerConnection();
     }

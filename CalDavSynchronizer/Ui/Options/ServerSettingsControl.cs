@@ -56,10 +56,10 @@ namespace CalDavSynchronizer.Ui.Options
       _settingsFaultFinder = settingsFaultFinder;
       _dependencies = dependencies;
       _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
-      _testConnectionButton.Click += _testConnectionButton_Click;
+      _testConnectionButton.Click += TestConnectionButton_ClickAsync;
     }
 
-    private async void _testConnectionButton_Click (object sender, EventArgs e)
+    private async void TestConnectionButton_ClickAsync (object sender, EventArgs e)
     {
       await TestServerConnection();
     }

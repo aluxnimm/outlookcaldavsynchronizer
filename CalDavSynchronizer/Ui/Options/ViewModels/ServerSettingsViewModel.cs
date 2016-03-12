@@ -48,7 +48,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
       _settingsFaultFinder = settingsFaultFinder;
       _currentOptions = currentOptions;
-      _testConnectionCommand = new DelegateCommandWithoutCanExecuteDelegation (_ => TestConnection());
+      _testConnectionCommand = new DelegateCommandWithoutCanExecuteDelegation (_ => TestConnectionAsync());
     }
 
     public ICommand TestConnectionCommand => _testConnectionCommand;
@@ -145,7 +145,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       return result;
     }
 
-    private async void TestConnection ()
+    private async void TestConnectionAsync ()
     {
       _testConnectionCommand.SetCanExecute (false);
       try

@@ -31,7 +31,7 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
 
     }
 
-    public void DiplayBEntity (Guid synchronizationProfileId, string entityId)
+    public void DiplayBEntityAsync (Guid synchronizationProfileId, string entityId)
     {
 
     }

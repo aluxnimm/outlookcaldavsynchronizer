@@ -207,7 +207,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this._calendarColorSetButton.TabIndex = 12;
       this._calendarColorSetButton.Text = "Set DAV Color";
       this._calendarColorSetButton.UseVisualStyleBackColor = false;
-      this._calendarColorSetButton.Click += new System.EventHandler(this._calendarColorSetButton_Click);
+      this._calendarColorSetButton.Click += new System.EventHandler(this.CalendarColorSetButton_ClickAsync);
       // 
       // _calendarColorRefreshButton
       // 
@@ -219,7 +219,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       this._calendarColorRefreshButton.TabIndex = 11;
       this._calendarColorRefreshButton.Text = "Fetch Color";
       this._calendarColorRefreshButton.UseVisualStyleBackColor = false;
-      this._calendarColorRefreshButton.Click += new System.EventHandler(this._calendarColorRefreshButton_Click);
+      this._calendarColorRefreshButton.Click += new System.EventHandler(this.CalendarColorRefreshButton_ClickAsync);
       // 
       // _mapColorCheckBox
       // 

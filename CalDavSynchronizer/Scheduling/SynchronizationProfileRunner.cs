@@ -108,7 +108,7 @@ namespace CalDavSynchronizer.Scheduling
 
       if (_folderChangeWatcher != null)
       {
-        _folderChangeWatcher.ItemSavedOrDeleted -= FolderChangeWatcher_ItemSavedOrDeleted;
+        _folderChangeWatcher.ItemSavedOrDeleted -= FolderChangeWatcher_ItemSavedOrDeletedAsync;
         _folderChangeWatcher.Dispose();
         _folderChangeWatcher = null;
       }
@@ -117,11 +117,11 @@ namespace CalDavSynchronizer.Scheduling
       {
         _folderChangeWatcher =
             _folderChangeWatcherFactory.Create (options.OutlookFolderEntryId, options.OutlookFolderStoreId);
-        _folderChangeWatcher.ItemSavedOrDeleted += FolderChangeWatcher_ItemSavedOrDeleted;
+        _folderChangeWatcher.ItemSavedOrDeleted += FolderChangeWatcher_ItemSavedOrDeletedAsync;
       }
     }
 
-    private async void FolderChangeWatcher_ItemSavedOrDeleted (object sender, ItemSavedEventArgs e)
+    private async void FolderChangeWatcher_ItemSavedOrDeletedAsync (object sender, ItemSavedEventArgs e)
     {
       try
       {

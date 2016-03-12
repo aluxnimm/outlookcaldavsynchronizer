@@ -143,7 +143,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       }
     }
 
-    private async void _calendarColorRefreshButton_Click (object sender, EventArgs e)
+    private async void CalendarColorRefreshButton_ClickAsync (object sender, EventArgs e)
     {
       var serverColor = await _calDavDataAccessFactory ().GetCalendarColorNoThrow ();
 
@@ -185,7 +185,7 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       }
     }
 
-    private async void _calendarColorSetButton_Click(object sender, EventArgs e)
+    private async void CalendarColorSetButton_ClickAsync(object sender, EventArgs e)
     {
       if (_categoryColorPicker.SelectedValue != OlCategoryColor.olCategoryColorNone)
       {

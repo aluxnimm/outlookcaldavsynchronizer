@@ -36,7 +36,7 @@ namespace CalDavSynchronizer
       ReportsButton.Image = Resources.SyncError;
     }
 
-    private async void SynchronizeNowButton_Click (object sender, RibbonControlEventArgs e)
+    private async void SynchronizeNowButton_ClickAsync (object sender, RibbonControlEventArgs e)
     {
       try
       {

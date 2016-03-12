@@ -91,7 +91,7 @@ namespace CalDavSynchronizer
       toolBar.Visible = true;
     }
 
-    private async void ManualSynchronize ()
+    private async void ManualSynchronizeAsync ()
     {
       try
       {
@@ -137,7 +137,7 @@ namespace CalDavSynchronizer
 
     private void ToolBarBtn_SyncNow_OnClick (CommandBarButton Ctrl, ref bool CancelDefault)
     {
-      ManualSynchronize();
+      ManualSynchronizeAsync();
     }
 
     private void ToolBarBtn_About_OnClick (CommandBarButton Ctrl, ref bool CancelDefault)

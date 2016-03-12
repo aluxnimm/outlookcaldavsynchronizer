@@ -309,11 +309,11 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
       AvailableCategories = availableCategories;
       _currentOptions = currentOptions;
-      SetServerCalendarColorCommand = new DelegateCommand (_ => SetServerCalendarColor());
-      GetServerCalendarColorCommand = new DelegateCommand (_ => GetServerCalendarColor());
+      SetServerCalendarColorCommand = new DelegateCommand (_ => SetServerCalendarColorAsync());
+      GetServerCalendarColorCommand = new DelegateCommand (_ => GetServerCalendarColorAsync());
     }
 
-    private async void GetServerCalendarColor ()
+    private async void GetServerCalendarColorAsync ()
     {
       try
       {
@@ -330,7 +330,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       }
     }
 
-    private async void SetServerCalendarColor ()
+    private async void SetServerCalendarColorAsync ()
     {
       try
       {

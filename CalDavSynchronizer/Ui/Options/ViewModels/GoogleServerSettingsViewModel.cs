@@ -48,10 +48,10 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       _settingsFaultFinder = settingsFaultFinder;
       _currentOptions = currentOptions;
       _doAutoDiscoveryCommand = new DelegateCommandWithoutCanExecuteDelegation (_ => DoAutoDiscovery());
-      _testConnectionCommand = new DelegateCommandWithoutCanExecuteDelegation (_ => TestConnection());
+      _testConnectionCommand = new DelegateCommandWithoutCanExecuteDelegation (_ => TestConnectionAsync());
     }
 
-    private async void TestConnection ()
+    private async void TestConnectionAsync ()
     {
       _testConnectionCommand.SetCanExecute (false);
       _doAutoDiscoveryCommand.SetCanExecute (false);
@@ -77,7 +77,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private void DoAutoDiscovery ()
     {
       CalenderUrl = OptionTasks.GoogleDavBaseUrl;
-      TestConnection();
+      TestConnectionAsync();
     }
 
     public ICommand DoAutoDiscoveryCommand => _doAutoDiscoveryCommand;
