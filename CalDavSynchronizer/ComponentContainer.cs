@@ -370,15 +370,18 @@ namespace CalDavSynchronizer
       viewModel.SetOptionsCollection (options, initialSelectedProfileId);
 
       if (_uiService.ShowOptions (viewModel))
+      {
+        _optionsDataAccess.EnsureBackupExists ("Wpf");
         return viewModel.GetOptionsCollection();
+      }
       else
+      {
         return null;
+      }
     }
 
     private void ApplyNewOptions (Options[] oldOptions, Options[] newOptions, GeneralOptions generalOptions)
     {
-      _optionsDataAccess.BackupOptions ();
-
       _optionsDataAccess.SaveOptions (newOptions);
       _scheduler.SetOptions (newOptions, generalOptions.CheckIfOnline);
       _profileStatusesViewModel.EnsureProfilesDisplayed (newOptions);
