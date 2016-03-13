@@ -79,6 +79,17 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 1.23.0 ####
+- New features
+	- First implementation of a complete redesign of Synchronization Profiles GUI using WPF framework.
+	- General option to switch between modern WPF and standard WinForms GUI.
+	- Improve update handling and download README after installing new version.
+- Bug fixes
+	- Ignore invalid BYMONTHDAY values in recurrence rules, catch COMException and log it as warning.
+	- Set HasTime for completed of vtodo to avoid VALUE=DATE for GMT timezone to be RFC compliant, ticket #247.
+	- Improve exception Handling.
+	- Ensure SynchronizationContext BEFORE invoking async methods, wrap all invocations of async methods with a try-catch, ticket #248.
+	- Try to reconstruct master event and properly sync exceptions to Outlook, if server resource consists of recurrence exceptions only.
 #### 1.22.0 ####
 - New features
 	- Add option to enable/disable mapping of recurring tasks in TaskMappingConfiguration to avoid problems with servers that don't support recurring tasks.
@@ -576,13 +587,13 @@ Use the Synchronization Profiles dialog to configure different synchronization p
 - **Delete** deletes the current profile
 - **Copy** copies the current profile to a new one
 - **Clear cache** delete the sync cache and start a new initial sync with the next sync run.
-- **Deactivate** If activated, current profile is not synced anymore without the need to delete the profile.
+- **Is active ** If deactivated, current profile is not synced anymore without the need to delete the profile.
 
 When adding a new profile you can choose between a generic CalDAV/CardDAV, a google profile to simplify the google profile creation and predefined CalDAV/CardDAV profiles for Fruux, Posteo, Yandex and GMX where the DAV Url for autodiscovery is already entered. 
 
 The following properties need to be set for a new generic profile:
 
-- *Profile name*: An arbitrary name for the profile, which will be displayed at the associated tab.
+- *Profile name*: An arbitrary name for the profile, which will be displayed in the tree view.
 - - *Outlook settings*:
 	- **Outlook Folder:** Outlook folder that should be used for synchronization. You can choose a calendar, contact or task folder. Depending on the folder type, the matching server resource type in the server settings must be used.
 	- **Synchronize items immediately after change** Trigger a partial synchronization run immediately after an item is created, changed or deleted in Outlook (with a 10 seconds delay).
@@ -593,13 +604,6 @@ The following properties need to be set for a new generic profile:
 	- **Password:** Password used for the connection. The password will be saved encrypted in the option config file.
 	- ** Use IMAP/POP3 Account Password** Instead of entering the password you can use the IMAP/Pop3 Password from the Outlook Account associated with the folder, the password is fetched from the Windows registry entry of the Outlook profile. 
 	- **Email address:** email address used as remote identity for the CalDAV server, necessary to synchronize the organizer.
-	- **Network and proxy options**: Here you can configure advanced network options and proxy settings. 
-		- **Close connection after each request** Don't use KeepAlive for servers which don't support it. 
-		- **Use Preemptive Authentication** Send Authentication header with each request to avoid 401 responses and resending the request, disable only if the server has problems with preemptive authentication.
-		- **Force basic authentication** Set basic authentication headers to avoid problems with negotiation or digest authentication with servers like OS X. This is only recommended if you use a secure HTTPS connection, otherwise passwords are sent in cleartext.
-		- **Use System Default Proxy** Use proxy settings from Internet Explorer or config file, uses default credentials if available for NTLM authentication.
-		- **Use manual proxy configuration** Specify proxy URL as `http://<your-proxy-domain>:<your-proxy-port>` and optional Username and Password for Basic Authentication.
-
 - *Sync settings*:
 	- Synchronization settings
 		- **Outlook -> Server (Replicate):** syncronizes everything from Outlook to the server (one way)
@@ -614,18 +618,28 @@ The following properties need to be set for a new generic profile:
 	- **Synchronization interval (minutes):** Choose the interval for synchronization in minutes, if 'Manual only' is choosen, there is no automatic sync but you can use the 'Synchronize now' menu item.
 	- **Synchronization timespan past (days)** and
 	- **Synchronization timespan future (days)** For performance reasons it is useful to sync only a given timespan of a big calendar, especially past events are normally not necessary to sync after a given timespan.
-	- **Mapping Configuration**: Here you can configure what properties should be synced.
-		- For appointments you can choose if you want to map reminders (just upcoming, all or none) and the description body.
-		- *Create events on server in UTC:* Use UTC instead of Outlook Appointment Timezone for creating events on CalDAV server. Needed for GMX for example. Not recommended for general use, because recurrence exceptions over DST changes can't be mapped and Appointments with different start and end timezones can't be represented.
-		- In *Privacy settings* you can configure if you want to map Outlook private appointments to CLASS:CONFIDENTIAL and vice versa. This could be useful for Owncloud for example, if you share your calendar with others and they should see start/end dates of your private appointments.
-		- In *Scheduling settings* you can configure if you want to map attendees and organizer and if notifications should be sent by the server. 
-		- Use *Don't send appointment notifications for SOGo servers and SCHEDULE-AGENT=CLIENT for other servers if you want to send invitations from Outlook and avoid that the server sends invitations too, but be aware that not all servers (e.g. Google) support the SCHEDULE-AGENT=CLIENT setting. 
-		- You can also define a filter category so that multiple CalDAV-Calendars can be synchronized into one Outlook calendar via the defined category (see Category Filter and Color below). 
-		- For contacts you can configure if birthdays should be mapped or not. If birthdays are mapped, Outlook also creates an recurring appointment for every contact with a defined birthday.
-		- You can also configure if contact photos should be mapped or not. Contact photo mapping from Outlook to the server doesn't work in Outlook 2007.
-		- Fix imported phone number format adds round brackets to the area code of phone numbers, so that Outlook can show correct phone number details with country and area code, e.g. +1 23 45678 is mapped to +1 (23) 45678.
-		- For tasks (not for Google task profiles) you can configure if you want to map reminders (just upcoming, all or none), the priority of the task, the description body and if recurring tasks should be synchronized.
+
+If you expand the tree view of the profile you can configure network and proxy options and mapping configuration options.
+
+- **Network and proxy options**: Here you can configure advanced network options and proxy settings. 
+	- **Close connection after each request** Don't use KeepAlive for servers which don't support it. 
+	- **Use Preemptive Authentication** Send Authentication header with each request to avoid 401 responses and resending the request, disable only if the server has problems with preemptive authentication.
+	- **Force basic authentication** Set basic authentication headers to avoid problems with negotiation or digest authentication with servers like OS X. This is only recommended if you use a secure HTTPS connection, otherwise passwords are sent in cleartext.
+	- **Use System Default Proxy** Use proxy settings from Internet Explorer or config file, uses default credentials if available for NTLM authentication.
+	- **Use manual proxy configuration** Specify proxy URL as `http://<your-proxy-domain>:<your-proxy-port>` and optional Username and Password for Basic Authentication.
 	
+- **Mapping Configuration**: Here you can configure what properties should be synced.
+	- For appointments you can choose if you want to map reminders (just upcoming, all or none) and the description body.
+	- *Create events on server in UTC:* Use UTC instead of Outlook Appointment Timezone for creating events on CalDAV server. Needed for GMX for example. Not recommended for general use, because recurrence exceptions over DST changes can't be mapped and Appointments with different start and end timezones can't be represented.
+	- In *Privacy settings* you can configure if you want to map Outlook private appointments to CLASS:CONFIDENTIAL and vice versa. This could be useful for Owncloud for example, if you share your calendar with others and they should see start/end dates of your private appointments.
+	- In *Scheduling settings* you can configure if you want to map attendees and organizer and if notifications should be sent by the server. 
+	- Use *Don't send appointment notifications for SOGo servers and SCHEDULE-AGENT=CLIENT for other servers if you want to send invitations from Outlook and avoid that the server sends invitations too, but be aware that not all servers (e.g. Google) support the SCHEDULE-AGENT=CLIENT setting. 
+	- You can also define a filter category so that multiple CalDAV-Calendars can be synchronized into one Outlook calendar via the defined category (see Category Filter and Color below). 
+	- For contacts you can configure if birthdays should be mapped or not. If birthdays are mapped, Outlook also creates an recurring appointment for every contact with a defined birthday.
+	- You can also configure if contact photos should be mapped or not. Contact photo mapping from Outlook to the server doesn't work in Outlook 2007.
+	- Fix imported phone number format adds round brackets to the area code of phone numbers, so that Outlook can show correct phone number details with country and area code, e.g. +1 23 45678 is mapped to +1 (23) 45678.
+	- For tasks (not for Google task profiles) you can configure if you want to map reminders (just upcoming, all or none), the priority of the task, the description body and if recurring tasks should be synchronized.	
+
 ### Scheduling settings and resources ###
 
 If your server supports resources (for SOGo see [http://wiki.sogo.nu/ResourceConfiguration](http://wiki.sogo.nu/ResourceConfiguration))
@@ -698,6 +712,7 @@ In the General Options Dialog you can change settings which are used for all syn
 - **Fix invalid settings** Fixes invalid settings automatically, when synchronization profiles are edited.
 - **Include custom message classes in Outlook filter** Disabled by default, enable only if you have custom forms with message_classes other than the default IPM.Appointment/Contact/Task. For better performance, Windows Search Service shouldn't be deactivated if this option is enabled.
 - **Enable Tray Icon** Enabled by default, you can disable the tray icon in the Windows Taskbar if you don't need it.
+- **Use modern UI for sync profiles** Enabled by default, complete redesign of the synchronization profiles dialog using WPF, switches to the old WinForms UI if disabled. 
 
 If you have problems with SSL/TLS and self-signed certificates, you can change the following settings at your own risk.
 The recommended way would be to add the self signed cert to the Local Computer Trusted Root Certification Authorities
