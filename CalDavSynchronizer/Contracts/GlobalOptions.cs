@@ -22,5 +22,9 @@ namespace CalDavSynchronizer.Contracts
   {
     public bool IsInstallNewVersionEnabled { get; set; }
 
+    public GlobalOptions ()
+    {
+      IsInstallNewVersionEnabled = true;
+    }
   }
 }
