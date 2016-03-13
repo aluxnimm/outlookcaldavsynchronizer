@@ -62,6 +62,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _proxyUseDefault; }
       set
       {
+        if (value)
+          ProxyUseManual = false;
+
         _proxyUseDefault = value;
         OnPropertyChanged();
       }
@@ -72,6 +75,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _proxyUseManual; }
       set
       {
+        if (value)
+          ProxyUseDefault = false;
+
         _proxyUseManual = value;
         OnPropertyChanged();
       }
