@@ -761,7 +761,7 @@ namespace CalDavSynchronizer
     {
       lock (_synchronizationContextLock)
       {
-        if (!(SynchronizationContext.Current is WindowsFormsSynchronizationContext))
+        if (SynchronizationContext.Current == null)
         {
           SynchronizationContext.SetSynchronizationContext (new WindowsFormsSynchronizationContext());
         }
