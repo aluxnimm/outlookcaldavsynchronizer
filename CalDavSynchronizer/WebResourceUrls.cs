@@ -25,6 +25,7 @@ namespace CalDavSynchronizer
     public static Uri SiteContainingCurrentVersion => new Uri ("https://sourceforge.net/projects/outlookcaldavsynchronizer/files/");
     public static Uri LatestVersionZipFile => new Uri ("https://sourceforge.net/projects/outlookcaldavsynchronizer/files/latest/download?source=files");
     public static Uri ReadMeFile => new Uri ("http://sourceforge.net/p/outlookcaldavsynchronizer/code/ci/master/tree/README.md?format=raw");
+    public static Uri ReadMeFileDownloadSite => new Uri ("https://sourceforge.net/projects/outlookcaldavsynchronizer/files/README.md/download");
     public static Uri HelpSite => new Uri ("https://sourceforge.net/p/outlookcaldavsynchronizer/wiki/Home/");
     public static Uri DonationSite => new Uri("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PWA2N6P5WRSJJ");
     public static Uri ProjectHomeSite => new Uri("http://sourceforge.net/projects/outlookcaldavsynchronizer/");

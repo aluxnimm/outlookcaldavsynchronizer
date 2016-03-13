@@ -29,6 +29,7 @@ namespace CalDavSynchronizer.Ui
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
+    private static Process _latestSetupProcess;
     private readonly Uri _newVersionDownloadUrl;
 
     public event EventHandler TurnOffCheckForNewerVersions;
@@ -115,7 +116,25 @@ namespace CalDavSynchronizer.Ui
             MessageBoxButtons.OK,
             MessageBoxIcon.Information);
 
-        Process.Start (Path.Combine (extractDirectory, "setup.exe"));
+        // process hast to be a GC root to prevent it from being garbage collected.
+        _latestSetupProcess = Process.Start (Path.Combine (extractDirectory, "setup.exe"));
+        if (_latestSetupProcess != null)
+        {
+          _latestSetupProcess.EnableRaisingEvents = true;
+          _latestSetupProcess.Exited += delegate
+          {
+            try
+            {
+              _latestSetupProcess = null;
+              Process.Start (WebResourceUrls.ReadMeFileDownloadSite.ToString());
+            }
+            catch (Exception x)
+            {
+              s_logger.Error ("Error while downloading readme.md", x);
+            }
+          };
+        }
+
         DialogResult = DialogResult.OK;
       }
       catch (Exception ex)
