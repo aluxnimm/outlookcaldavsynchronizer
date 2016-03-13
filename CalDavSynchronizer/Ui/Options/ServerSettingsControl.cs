@@ -63,7 +63,8 @@ namespace CalDavSynchronizer.Ui.Options
     {
       try
       {
-        TestServerConnectionAsync();
+        ComponentContainer.EnsureSynchronizationContext ();
+        TestServerConnectionAsync ();
       }
       catch (Exception x)
       {

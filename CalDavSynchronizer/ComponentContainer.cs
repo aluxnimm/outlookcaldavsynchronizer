@@ -66,7 +66,7 @@ namespace CalDavSynchronizer
     // ReSharper disable once ConvertToConstant.Local
     private readonly int c_requiredEntityCacheVersion = 1;
 
-    private readonly object _synchronizationContextLock = new object();
+    private static readonly object _synchronizationContextLock = new object();
     private readonly Scheduler _scheduler;
     private readonly IOptionsDataAccess _optionsDataAccess;
     private readonly IGeneralOptionsDataAccess _generalOptionsDataAccess;
@@ -297,7 +297,6 @@ namespace CalDavSynchronizer
       try
       {
         s_logger.Info ("Synchronization manually triggered");
-        EnsureSynchronizationContext();
         await _scheduler.RunNow();
       }
       catch (Exception x)
@@ -681,7 +680,6 @@ namespace CalDavSynchronizer
       try
       {
         s_logger.Info ("CheckForUpdates manually triggered");
-        EnsureSynchronizationContext();
 
         var availableVersion = await Task.Run ((Func<Version>) _availableVersionService.GetVersionOfDefaultDownload);
         if (availableVersion == null)
@@ -759,7 +757,7 @@ namespace CalDavSynchronizer
     /// <summary>
     /// Ensures that the syncronizationcontext is not null ( it seems to be a bug that the synchronizationcontext is null in Office Addins)
     /// </summary>
-    private void EnsureSynchronizationContext ()
+    public static void EnsureSynchronizationContext ()
     {
       lock (_synchronizationContextLock)
       {

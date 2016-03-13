@@ -108,7 +108,7 @@ namespace CalDavSynchronizer.Scheduling
 
       if (_folderChangeWatcher != null)
       {
-        _folderChangeWatcher.ItemSavedOrDeleted -= FolderChangeWatcher_ItemSavedOrDeletedAsync;
+        _folderChangeWatcher.ItemSavedOrDeleted -= FolderChangeWatcher_ItemSavedOrDeleted;
         _folderChangeWatcher.Dispose();
         _folderChangeWatcher = null;
       }
@@ -117,15 +117,27 @@ namespace CalDavSynchronizer.Scheduling
       {
         _folderChangeWatcher =
             _folderChangeWatcherFactory.Create (options.OutlookFolderEntryId, options.OutlookFolderStoreId);
-        _folderChangeWatcher.ItemSavedOrDeleted += FolderChangeWatcher_ItemSavedOrDeletedAsync;
+        _folderChangeWatcher.ItemSavedOrDeleted += FolderChangeWatcher_ItemSavedOrDeleted;
       }
     }
 
-    private async void FolderChangeWatcher_ItemSavedOrDeletedAsync (object sender, ItemSavedEventArgs e)
+    private void FolderChangeWatcher_ItemSavedOrDeleted (object sender, ItemSavedEventArgs e)
     {
       try
       {
         _ensureSynchronizationContext();
+        FolderChangeWatcher_ItemSavedOrDeletedAsync (e);
+      }
+      catch (Exception x)
+      {
+        s_logger.Error (null, x);
+      }
+    }
+
+    private async void FolderChangeWatcher_ItemSavedOrDeletedAsync (ItemSavedEventArgs e)
+    {
+      try
+      {
         _pendingOutlookItems.AddOrUpdate (e.EntryId.Id, e.EntryId, (key, existingValue) => e.EntryId.VersionHint > existingValue.VersionHint ? e.EntryId : existingValue);
         if (s_logger.IsDebugEnabled)
         {

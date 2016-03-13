@@ -59,6 +59,7 @@ namespace CalDavSynchronizer.Ui.Options
     {
       try
       {
+        ComponentContainer.EnsureSynchronizationContext();
         _calenderUrlTextBox.Text = OptionTasks.GoogleDavBaseUrl;
         TestServerConnectionAsync();
       }
@@ -72,7 +73,8 @@ namespace CalDavSynchronizer.Ui.Options
     {
       try
       {
-        TestServerConnectionAsync();
+        ComponentContainer.EnsureSynchronizationContext ();
+        TestServerConnectionAsync ();
       }
       catch (Exception x)
       {

@@ -125,6 +125,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification
     {
       try
       {
+        ComponentContainer.EnsureSynchronizationContext();
         _calDavSynchronizerCommands.SynchronizeNowAsync();
       }
       catch (Exception x)

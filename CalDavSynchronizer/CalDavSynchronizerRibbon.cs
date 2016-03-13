@@ -43,7 +43,8 @@ namespace CalDavSynchronizer
         SynchronizeNowButton.Enabled = false;
         try
         {
-           ThisAddIn.ComponentContainer.SynchronizeNowAsync();
+          ComponentContainer.EnsureSynchronizationContext ();
+          ThisAddIn.ComponentContainer.SynchronizeNowAsync();
         }
         finally
         {

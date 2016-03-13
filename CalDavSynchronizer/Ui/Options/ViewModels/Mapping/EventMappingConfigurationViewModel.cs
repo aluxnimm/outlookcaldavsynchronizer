@@ -309,8 +309,16 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
       AvailableCategories = availableCategories;
       _currentOptions = currentOptions;
-      SetServerCalendarColorCommand = new DelegateCommand (_ => SetServerCalendarColorAsync());
-      GetServerCalendarColorCommand = new DelegateCommand (_ => GetServerCalendarColorAsync());
+      SetServerCalendarColorCommand = new DelegateCommand (_ =>
+      {
+        ComponentContainer.EnsureSynchronizationContext();
+        SetServerCalendarColorAsync();
+      });
+      GetServerCalendarColorCommand = new DelegateCommand (_ =>
+      {
+        ComponentContainer.EnsureSynchronizationContext();
+        GetServerCalendarColorAsync();
+      });
     }
 
     private async void GetServerCalendarColorAsync ()

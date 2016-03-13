@@ -148,7 +148,8 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
     {
       try
       {
-        RefreshCalendarColor();
+        ComponentContainer.EnsureSynchronizationContext ();
+        RefreshCalendarColor ();
       }
       catch (Exception x)
       {
@@ -209,7 +210,8 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
     {
       try
       {
-        SetCalendarColor();
+        ComponentContainer.EnsureSynchronizationContext ();
+        SetCalendarColor ();
       }
       catch (Exception x)
       {

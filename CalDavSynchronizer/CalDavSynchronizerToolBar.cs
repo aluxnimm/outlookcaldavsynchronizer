@@ -98,6 +98,7 @@ namespace CalDavSynchronizer
         _toolBarBtnSyncNow.Enabled = false;
         try
         {
+          ComponentContainer.EnsureSynchronizationContext ();
           _componentContainer.SynchronizeNowAsync();
         }
         finally

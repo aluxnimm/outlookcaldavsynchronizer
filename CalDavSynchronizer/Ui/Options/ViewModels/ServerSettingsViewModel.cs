@@ -48,7 +48,11 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
       _settingsFaultFinder = settingsFaultFinder;
       _currentOptions = currentOptions;
-      _testConnectionCommand = new DelegateCommandWithoutCanExecuteDelegation (_ => TestConnectionAsync());
+      _testConnectionCommand = new DelegateCommandWithoutCanExecuteDelegation (_ =>
+      {
+        ComponentContainer.EnsureSynchronizationContext();
+        TestConnectionAsync();
+      });
     }
 
     public ICommand TestConnectionCommand => _testConnectionCommand;

@@ -84,7 +84,8 @@ namespace CalDavSynchronizer.Ui
     {
       try
       {
-         _checkForUpdatesActionAsync();
+        ComponentContainer.EnsureSynchronizationContext ();
+        _checkForUpdatesActionAsync ();
       }
       catch (Exception x)
       {

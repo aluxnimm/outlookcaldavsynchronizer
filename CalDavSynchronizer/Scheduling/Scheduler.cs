@@ -69,6 +69,7 @@ namespace CalDavSynchronizer.Scheduling
     {
       try
       {
+        _ensureSynchronizationContext();
         RunTimeTriggeredSynchronization();
       }
       catch (Exception x)
@@ -81,7 +82,6 @@ namespace CalDavSynchronizer.Scheduling
     {
       try
       {
-        _ensureSynchronizationContext();
         _synchronizationTimer.Stop();
         foreach (var worker in _runnersById.Values)
           await worker.RunAndRescheduleNoThrow (false);

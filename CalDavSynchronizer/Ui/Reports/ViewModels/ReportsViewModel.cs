@@ -172,6 +172,7 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
 
     public void DiplayBEntity (Guid synchronizationProfileId, string entityId)
     {
+      ComponentContainer.EnsureSynchronizationContext ();
       _parent.DiplayBEntityAsync (synchronizationProfileId, entityId);
     }
 
