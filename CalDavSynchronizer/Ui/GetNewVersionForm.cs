@@ -53,7 +53,11 @@ namespace CalDavSynchronizer.Ui
       InitializeComponent();
     }
 
-    public GetNewVersionForm (string whatsNew, Version newVersion, string newVersionDownloadUrl)
+    public GetNewVersionForm (
+      string whatsNew, 
+      Version newVersion, 
+      string newVersionDownloadUrl,
+      bool isInstallNewVersionEnabled)
     {
       InitializeComponent();
 
@@ -63,6 +67,11 @@ namespace CalDavSynchronizer.Ui
       _newFeaturesTextBox.Text = whatsNew;
 
       _logoPictureBox.Image = Properties.Resources.outlookcaldavsynchronizerlogoarrow;
+
+      if (!isInstallNewVersionEnabled)
+      {
+        installButton.Visible = false;
+      }
     }
 
     private void btnOK_Click (object sender, EventArgs e)

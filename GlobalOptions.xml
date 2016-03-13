@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-16"?>
+<GlobalOptions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <IsInstallNewVersionEnabled>true</IsInstallNewVersionEnabled>
+</GlobalOptions>

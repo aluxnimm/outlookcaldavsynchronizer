@@ -260,6 +260,7 @@
     <Compile Include="ChangeWatching\IFolderChangeWatcherFactory.cs" />
     <Compile Include="ChangeWatching\ItemSavedEventArgs.cs" />
     <Compile Include="ComponentContainer.cs" />
+    <Compile Include="Contracts\GlobalOptions.cs" />
     <Compile Include="Contracts\TaskMappingConfiguration.cs" />
     <Compile Include="Contracts\ReminderMapping.cs" />
     <Compile Include="Contracts\ContactMappingConfiguration.cs" />
@@ -271,6 +272,8 @@
     <Compile Include="Contracts\ProfileEntry.cs" />
     <Compile Include="Contracts\ProxyOptions.cs" />
     <Compile Include="Contracts\ServerAdapterType.cs" />
+    <Compile Include="DataAccess\GlobalOptionsDataAccess.cs" />
+    <Compile Include="DataAccess\IGlobalOptionsDataAccess.cs" />
     <Compile Include="Ui\Options\ISynchronizationProfilesViewModel.cs" />
     <Compile Include="Utilities\ArgbColor.cs" />
     <Compile Include="DataAccess\HttpClientBasedClient\HttpResponseHeadersAdapter.cs" />

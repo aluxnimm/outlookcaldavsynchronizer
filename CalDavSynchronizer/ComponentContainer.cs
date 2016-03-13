@@ -712,7 +712,12 @@ namespace CalDavSynchronizer
     {
       try
       {
-        var form = new GetNewVersionForm (e.WhatsNewInformation, e.NewVersion, e.DownloadLink);
+        var form = new GetNewVersionForm (
+          e.WhatsNewInformation, 
+          e.NewVersion, 
+          e.DownloadLink,
+          new GlobalOptionsDataAccess().LoadGlobalOptionsNoThrow().IsInstallNewVersionEnabled);
+
         form.TurnOffCheckForNewerVersions += delegate
         {
           var options = _generalOptionsDataAccess.LoadOptions();
