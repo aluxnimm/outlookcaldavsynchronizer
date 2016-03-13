@@ -292,11 +292,18 @@ namespace CalDavSynchronizer
       ((Hierarchy) LogManager.GetRepository()).RaiseConfigurationChanged (EventArgs.Empty);
     }
 
-    public async Task SynchronizeNow ()
+    public async void SynchronizeNowAsync ()
     {
-      s_logger.Info ("Synchronization manually triggered");
-      EnsureSynchronizationContext();
-      await _scheduler.RunNow();
+      try
+      {
+        s_logger.Info ("Synchronization manually triggered");
+        EnsureSynchronizationContext();
+        await _scheduler.RunNow();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
+      }
     }
 
     public void ShowOptions (Guid? initialVisibleProfile = null)
@@ -669,30 +676,37 @@ namespace CalDavSynchronizer
       SynchronizationContext.Current.Send (_ => ShowGetNewVersionForm (e), null);
     }
 
-    private async Task CheckForUpdatesNow ()
+    private async void CheckForUpdatesNowAsync ()
     {
-      s_logger.Info ("CheckForUpdates manually triggered");
-      EnsureSynchronizationContext();
+      try
+      {
+        s_logger.Info ("CheckForUpdates manually triggered");
+        EnsureSynchronizationContext();
 
-      var availableVersion = await Task.Run ((Func<Version>) _availableVersionService.GetVersionOfDefaultDownload);
-      if (availableVersion == null)
-      {
-        MessageBox.Show ("Did not find any default Version!", MessageBoxTitle);
-        return;
-      }
+        var availableVersion = await Task.Run ((Func<Version>) _availableVersionService.GetVersionOfDefaultDownload);
+        if (availableVersion == null)
+        {
+          MessageBox.Show ("Did not find any default Version!", MessageBoxTitle);
+          return;
+        }
 
-      var currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
-      if (availableVersion > currentVersion)
-      {
-        ShowGetNewVersionForm (
-            new NewerVersionFoundEventArgs (
-                availableVersion,
-                _availableVersionService.GetWhatsNewNoThrow (currentVersion, availableVersion),
-                _availableVersionService.DownloadLink));
+        var currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
+        if (availableVersion > currentVersion)
+        {
+          ShowGetNewVersionForm (
+              new NewerVersionFoundEventArgs (
+                  availableVersion,
+                  _availableVersionService.GetWhatsNewNoThrow (currentVersion, availableVersion),
+                  _availableVersionService.DownloadLink));
+        }
+        else
+        {
+          MessageBox.Show ("No newer Version available.", MessageBoxTitle);
+        }
       }
-      else
+      catch (Exception x)
       {
-        MessageBox.Show ("No newer Version available.", MessageBoxTitle);
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
       }
     }
 
@@ -802,7 +816,7 @@ namespace CalDavSynchronizer
 
     public void ShowAbout ()
     {
-      using (var aboutForm = new AboutForm (ThisAddIn.ComponentContainer.CheckForUpdatesNow))
+      using (var aboutForm = new AboutForm (ThisAddIn.ComponentContainer.CheckForUpdatesNowAsync))
       {
         aboutForm.ShowDialog();
       }

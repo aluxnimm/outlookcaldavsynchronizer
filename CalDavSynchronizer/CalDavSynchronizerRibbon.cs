@@ -36,14 +36,14 @@ namespace CalDavSynchronizer
       ReportsButton.Image = Resources.SyncError;
     }
 
-    private async void SynchronizeNowButton_ClickAsync (object sender, RibbonControlEventArgs e)
+    private void SynchronizeNowButton_Click (object sender, RibbonControlEventArgs e)
     {
       try
       {
         SynchronizeNowButton.Enabled = false;
         try
         {
-          await ThisAddIn.ComponentContainer.SynchronizeNow();
+           ThisAddIn.ComponentContainer.SynchronizeNowAsync();
         }
         finally
         {

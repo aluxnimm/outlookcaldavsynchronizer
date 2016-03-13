@@ -71,7 +71,7 @@
       this.SynchronizeNowButton.ScreenTip = "Synchronize now";
       this.SynchronizeNowButton.ShowImage = true;
       this.SynchronizeNowButton.SuperTip = "Start a manual synchronization of all active profiles.";
-      this.SynchronizeNowButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.SynchronizeNowButton_ClickAsync);
+      this.SynchronizeNowButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.SynchronizeNowButton_Click);
       // 
       // OptionsButton
       // 

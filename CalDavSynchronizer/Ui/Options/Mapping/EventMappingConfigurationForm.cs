@@ -20,6 +20,7 @@ using System.Drawing;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
@@ -143,13 +144,32 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       }
     }
 
-    private async void CalendarColorRefreshButton_ClickAsync (object sender, EventArgs e)
+    private void CalendarColorRefreshButton_Click (object sender, EventArgs e)
     {
-      var serverColor = await _calDavDataAccessFactory ().GetCalendarColorNoThrow ();
-
-      if (serverColor != null)
+      try
       {
-        _categoryColorPicker.SelectedValue = ColorHelper.FindMatchingCategoryColor (serverColor.Value);
+        RefreshCalendarColor();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
+      }
+    }
+
+    private async void RefreshCalendarColor ()
+    {
+      try
+      {
+        var serverColor = await _calDavDataAccessFactory().GetCalendarColorNoThrow();
+
+        if (serverColor != null)
+        {
+          _categoryColorPicker.SelectedValue = ColorHelper.FindMatchingCategoryColor (serverColor.Value);
+        }
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
       }
     }
 
@@ -185,22 +205,41 @@ namespace CalDavSynchronizer.Ui.Options.Mapping
       }
     }
 
-    private async void CalendarColorSetButton_ClickAsync(object sender, EventArgs e)
+    private void CalendarColorSetButton_Click (object sender, EventArgs e)
     {
-      if (_categoryColorPicker.SelectedValue != OlCategoryColor.olCategoryColorNone)
+      try
       {
-        if (await _calDavDataAccessFactory().SetCalendarColorNoThrow ((ColorHelper.CategoryColors[_categoryColorPicker.SelectedValue])))
+        SetCalendarColor();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
+      }
+    }
+
+    private async void SetCalendarColor ()
+    {
+      try
+      {
+        if (_categoryColorPicker.SelectedValue != OlCategoryColor.olCategoryColorNone)
         {
-          MessageBox.Show ("Successfully updated the server calendar color!");
+          if (await _calDavDataAccessFactory().SetCalendarColorNoThrow ((ColorHelper.CategoryColors[_categoryColorPicker.SelectedValue])))
+          {
+            MessageBox.Show ("Successfully updated the server calendar color!");
+          }
+          else
+          {
+            MessageBox.Show ("Error updating the server calendar color!");
+          }
         }
         else
         {
-          MessageBox.Show ("Error updating the server calendar color!");
+          MessageBox.Show ("No color set for updating the server calendar color!");
         }
       }
-      else
+      catch (Exception x)
       {
-        MessageBox.Show ("No color set for updating the server calendar color!");
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
       }
     }
 

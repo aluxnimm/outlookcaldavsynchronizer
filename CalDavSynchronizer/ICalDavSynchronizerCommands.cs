@@ -26,7 +26,7 @@ namespace CalDavSynchronizer
     void ShowAbout ();
     void ShowLatestSynchronizationReport (Guid profileId);
     void ShowProfileStatuses ();
-    Task SynchronizeNow ();
+    void SynchronizeNowAsync ();
     void ShowReports ();
   }
 }

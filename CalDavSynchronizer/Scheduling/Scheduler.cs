@@ -59,13 +59,25 @@ namespace CalDavSynchronizer.Scheduling
       _synchronizerFactory = synchronizerFactory;
       _ensureSynchronizationContext = ensureSynchronizationContext;
       _folderChangeWatcherFactory = folderChangeWatcherFactory;
-      _synchronizationTimer.Tick += _synchronizationTimer_TickAsync;
+      _synchronizationTimer.Tick += SynchronizationTimer_Tick;
       _synchronizationTimer.Interval = (int) _timerInterval.TotalMilliseconds;
       _synchronizationTimer.Start();
     }
 
 
-    private async void _synchronizationTimer_TickAsync (object sender, EventArgs e)
+    private void SynchronizationTimer_Tick (object sender, EventArgs e)
+    {
+      try
+      {
+        RunTimeTriggeredSynchronization();
+      }
+      catch (Exception x)
+      {
+        s_logger.Error (null, x);
+      }
+    }
+
+    private async void RunTimeTriggeredSynchronization ()
     {
       try
       {
@@ -77,7 +89,7 @@ namespace CalDavSynchronizer.Scheduling
       }
       catch (Exception x)
       {
-        ExceptionHandler.Instance.LogException (x, s_logger);
+        s_logger.Error (null, x);
       }
     }
 

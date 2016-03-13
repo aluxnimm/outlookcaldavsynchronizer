@@ -27,6 +27,7 @@ using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Ui.ConnectionTests;
+using CalDavSynchronizer.Utilities;
 using Google.Apis.Tasks.v1.Data;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
@@ -51,22 +52,35 @@ namespace CalDavSynchronizer.Ui.Options
       _settingsFaultFinder = settingsFaultFinder;
       _dependencies = dependencies;
 
-      _testConnectionButton.Click += _testConnectionButton_ClickAsync;
+      _testConnectionButton.Click += TestConnectionButton_Click;
     }
 
-    private async void _doAutodiscoveryButton_ClickAsync (object sender, EventArgs e)
+    private void DoAutodiscoveryButton_Click (object sender, EventArgs e)
     {
-      _calenderUrlTextBox.Text = OptionTasks.GoogleDavBaseUrl;
-
-      await TestServerConnection ();
+      try
+      {
+        _calenderUrlTextBox.Text = OptionTasks.GoogleDavBaseUrl;
+        TestServerConnectionAsync();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
+      }
     }
 
-    private async void _testConnectionButton_ClickAsync (object sender, EventArgs e)
+    private void TestConnectionButton_Click (object sender, EventArgs e)
     {
-      await TestServerConnection();
+      try
+      {
+        TestServerConnectionAsync();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
+      }
     }
 
-    private async Task TestServerConnection ()
+    private async void TestServerConnectionAsync ()
     {
       _testConnectionButton.Enabled = false;
       _doAutodiscoveryButton.Enabled = false;

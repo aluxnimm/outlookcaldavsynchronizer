@@ -74,7 +74,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._doAutodiscoveryButton.TabIndex = 15;
       this._doAutodiscoveryButton.Text = "Do Autodiscovery";
       this._doAutodiscoveryButton.UseVisualStyleBackColor = true;
-      this._doAutodiscoveryButton.Click += new System.EventHandler(this._doAutodiscoveryButton_ClickAsync);
+      this._doAutodiscoveryButton.Click += new System.EventHandler(this.DoAutodiscoveryButton_Click);
       // 
       // _editUrlManuallyButton
       // 

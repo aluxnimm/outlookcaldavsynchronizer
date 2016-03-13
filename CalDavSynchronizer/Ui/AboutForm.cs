@@ -30,11 +30,11 @@ namespace CalDavSynchronizer.Ui
 
     private readonly string _payPalUrl = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PWA2N6P5WRSJJ";
     private readonly string _helpUrl = "https://sourceforge.net/p/outlookcaldavsynchronizer/wiki/Home/";
-    private readonly Func<Task> _checkForUpdatesAction;
+    private readonly Action _checkForUpdatesActionAsync;
 
-    public AboutForm (Func<Task> checkForUpdatesAction)
+    public AboutForm (Action checkForUpdatesActionAsync)
     {
-      _checkForUpdatesAction = checkForUpdatesAction;
+      _checkForUpdatesActionAsync = checkForUpdatesActionAsync;
       InitializeComponent();
       _versionLabel.Text = string.Format (_versionLabel.Text, Assembly.GetExecutingAssembly().GetName().Version);
 
@@ -80,11 +80,11 @@ namespace CalDavSynchronizer.Ui
       Process.Start (_helpUrl);
     }
 
-    private async void _checkForUpdatesButton_ClickAsync (object sender, EventArgs e)
+    private void CheckForUpdatesButton_Click (object sender, EventArgs e)
     {
       try
       {
-        await _checkForUpdatesAction();
+         _checkForUpdatesActionAsync();
       }
       catch (Exception x)
       {
