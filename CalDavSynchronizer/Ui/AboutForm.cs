@@ -28,8 +28,6 @@ namespace CalDavSynchronizer.Ui
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);
 
-    private readonly string _payPalUrl = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PWA2N6P5WRSJJ";
-    private readonly string _helpUrl = "https://sourceforge.net/p/outlookcaldavsynchronizer/wiki/Home/";
     private readonly Action _checkForUpdatesActionAsync;
 
     public AboutForm (Action checkForUpdatesActionAsync)
@@ -37,6 +35,8 @@ namespace CalDavSynchronizer.Ui
       _checkForUpdatesActionAsync = checkForUpdatesActionAsync;
       InitializeComponent();
       _versionLabel.Text = string.Format (_versionLabel.Text, Assembly.GetExecutingAssembly().GetName().Version);
+
+      this._linkLabelProject.Text = WebResourceUrls.ProjectHomeSite.ToString();
 
       _linkLabelTeamMembers.LinkClicked += _linkLabelTeamMembers_LinkClicked;
       _linkLabelTeamMembers.Text = string.Empty;
@@ -72,12 +72,12 @@ namespace CalDavSynchronizer.Ui
 
     private void linkLabelPayPal_LinkClicked (object sender, LinkLabelLinkClickedEventArgs e)
     {
-      Process.Start (_payPalUrl);
+      Process.Start (WebResourceUrls.DonationSite.ToString());
     }
 
     private void linkLabelHelp_LinkClicked (object sender, LinkLabelLinkClickedEventArgs e)
     {
-      Process.Start (_helpUrl);
+      Process.Start (WebResourceUrls.HelpSite.ToString());
     }
 
     private void CheckForUpdatesButton_Click (object sender, EventArgs e)

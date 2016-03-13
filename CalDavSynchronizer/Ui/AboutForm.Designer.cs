@@ -97,7 +97,6 @@
       this._linkLabelProject.Size = new System.Drawing.Size(290, 13);
       this._linkLabelProject.TabIndex = 4;
       this._linkLabelProject.TabStop = true;
-      this._linkLabelProject.Text = "http://sourceforge.net/projects/outlookcaldavsynchronizer/";
       this._linkLabelProject.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this._linkLabelProject_LinkClicked);
       // 
       // label1

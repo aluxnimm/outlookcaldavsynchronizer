@@ -34,9 +34,7 @@ namespace CalDavSynchronizer.DataAccess
       {
         using (var client = HttpUtility.CreateWebClient())
         {
-          return Serializer<GlobalOptions>.Deserialize (
-              client.DownloadString (
-                  new Uri ("http://sourceforge.net/p/outlookcaldavsynchronizer/code/ci/master/tree/GlobalOptions.xml?format=raw")));
+          return Serializer<GlobalOptions>.Deserialize (client.DownloadString (WebResourceUrls.GlobalOptionsFile));
         }
       }
       catch (Exception x)

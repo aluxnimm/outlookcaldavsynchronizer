@@ -29,7 +29,7 @@ namespace CalDavSynchronizer.Ui
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    private readonly string _newVersionDownloadUrl;
+    private readonly Uri _newVersionDownloadUrl;
 
     public event EventHandler TurnOffCheckForNewerVersions;
     public event EventHandler IgnoreThisVersion;
@@ -56,7 +56,7 @@ namespace CalDavSynchronizer.Ui
     public GetNewVersionForm (
       string whatsNew, 
       Version newVersion, 
-      string newVersionDownloadUrl,
+      Uri newVersionDownloadUrl,
       bool isInstallNewVersionEnabled)
     {
       InitializeComponent();
@@ -81,7 +81,7 @@ namespace CalDavSynchronizer.Ui
 
     private void _downloadNewVersionLinkLabel_LinkClicked (object sender, LinkLabelLinkClickedEventArgs e)
     {
-      Process.Start (_newVersionDownloadUrl);
+      Process.Start (_newVersionDownloadUrl.ToString());
     }
 
     private void _doNotCheckForNewerVersionsLinkLabel_LinkClicked (object sender, LinkLabelLinkClickedEventArgs e)
@@ -101,7 +101,7 @@ namespace CalDavSynchronizer.Ui
         var archivePath = Path.GetTempFileName();
         using (var client = HttpUtility.CreateWebClient())
         {
-          client.DownloadFile (new Uri (_newVersionDownloadUrl), archivePath);
+          client.DownloadFile (_newVersionDownloadUrl, archivePath);
         }
 
         var extractDirectory = Path.Combine (Path.GetTempPath(), "CalDavSynchronizer", Guid.NewGuid().ToString());

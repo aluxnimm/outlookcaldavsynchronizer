@@ -22,6 +22,6 @@ namespace CalDavSynchronizer.AutomaticUpdates
   {
     Version GetVersionOfDefaultDownload ();
     string GetWhatsNewNoThrow (Version oldVersion, Version newVersion);
-    string DownloadLink { get; }
+    Uri DownloadLink { get; }
   }
 }

@@ -21,10 +21,10 @@ namespace CalDavSynchronizer.AutomaticUpdates
   public class NewerVersionFoundEventArgs : EventArgs
   {
     private readonly string _whatsNewInformation;
-    private readonly string _downloadLink;
+    private readonly Uri _downloadLink;
     private readonly Version _newVersion;
 
-    public NewerVersionFoundEventArgs (Version newVersion, string whatsNewInformation, string downloadLink)
+    public NewerVersionFoundEventArgs (Version newVersion, string whatsNewInformation, Uri downloadLink)
     {
       _newVersion = newVersion;
       _whatsNewInformation = whatsNewInformation;
@@ -36,7 +36,7 @@ namespace CalDavSynchronizer.AutomaticUpdates
       get { return _whatsNewInformation; }
     }
 
-    public string DownloadLink
+    public Uri DownloadLink
     {
       get { return _downloadLink; }
     }

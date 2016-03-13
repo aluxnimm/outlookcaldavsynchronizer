@@ -31,7 +31,7 @@ namespace CalDavSynchronizer.AutomaticUpdates
 
       using (var client = HttpUtility.CreateWebClient())
       {
-        site = client.DownloadString (new Uri ("https://sourceforge.net/projects/outlookcaldavsynchronizer/files/"));
+        site = client.DownloadString (WebResourceUrls.SiteContainingCurrentVersion);
       }
       var match = Regex.Match (site, @"OutlookCalDavSynchronizer-(?<Major>\d+).(?<Minor>\d+).(?<Build>\d+).zip");
       
@@ -58,9 +58,9 @@ namespace CalDavSynchronizer.AutomaticUpdates
 
         using (var client = HttpUtility.CreateWebClient())
         {
-          readme = client.DownloadString (
-            new Uri ("http://sourceforge.net/p/outlookcaldavsynchronizer/code/ci/master/tree/README.md?format=raw"))
-            .Replace ("\n", Environment.NewLine).Replace("\t", "   ");
+          readme = client
+              .DownloadString (WebResourceUrls.ReadMeFile)
+              .Replace ("\n", Environment.NewLine).Replace ("\t", "   ");
         }
 
         var start = Find (readme, newVersion);
@@ -93,9 +93,9 @@ namespace CalDavSynchronizer.AutomaticUpdates
       return match.Success ? match.Index : -1;
     }
 
-    public string DownloadLink
+    public Uri DownloadLink
     {
-      get { return "https://sourceforge.net/projects/outlookcaldavsynchronizer/files/latest/download?source=files"; }
+      get { return WebResourceUrls.LatestVersionZipFile; }
     }
   }
 }
