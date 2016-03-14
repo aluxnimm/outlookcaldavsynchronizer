@@ -360,6 +360,7 @@
     <Compile Include="Reports\ISynchronizationReportSink.cs" />
     <Compile Include="Reports\ReportGarbageCollection.cs" />
     <Compile Include="Scheduling\ISynchronizerFactory.cs" />
+    <Compile Include="Synchronization\NullOutlookSynchronizer.cs" />
     <Compile Include="Synchronization\IOutlookSynchronizer.cs" />
     <Compile Include="Synchronization\OutlookSynchronizer.cs" />
     <Compile Include="Scheduling\Scheduler.cs" />

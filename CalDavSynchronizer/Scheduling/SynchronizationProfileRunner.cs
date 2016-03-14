@@ -101,7 +101,7 @@ namespace CalDavSynchronizer.Scheduling
       _profileName = options.Name;
       _profileId = options.Id;
       _proxyOptions = options.ProxyOptions;
-      _synchronizer = _synchronizerFactory.CreateSynchronizer (options);
+      _synchronizer = options.Inactive ? NullOutlookSynchronizer.Instance : _synchronizerFactory.CreateSynchronizer (options);
       _interval = TimeSpan.FromMinutes (options.SynchronizationIntervalInMinutes);
       _inactive = options.Inactive;
       _checkIfOnline = checkIfOnline;
