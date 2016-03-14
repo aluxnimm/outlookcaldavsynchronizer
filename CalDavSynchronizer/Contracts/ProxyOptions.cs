@@ -15,15 +15,20 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Reflection;
+using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Serialization;
 using CalDavSynchronizer.Implementation;
+using CalDavSynchronizer.Utilities;
+using log4net;
 
 namespace CalDavSynchronizer.Contracts
 {
   public class ProxyOptions
   {
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
     private const int c_saltLength = 17;
 
     // ReSharper disable MemberCanBePrivate.Global
@@ -37,18 +42,26 @@ namespace CalDavSynchronizer.Contracts
     public string ProxyUserName { get; set; }
 
     [XmlIgnore]
-    public string ProxyPassword
+    public SecureString ProxyPassword
     {
       get
       {
         if (string.IsNullOrEmpty(ProxyProtectedPassword))
-          return string.Empty;
+          return new SecureString();
 
         var salt = Convert.FromBase64String(ProxySalt);
 
         var data = Convert.FromBase64String(ProxyProtectedPassword);
-        var transformedData = ProtectedData.Unprotect(data, salt, DataProtectionScope.CurrentUser);
-        return Encoding.Unicode.GetString(transformedData);
+        try
+        {
+          var transformedData = ProtectedData.Unprotect(data, salt, DataProtectionScope.CurrentUser);
+          return SecureStringUtility.ToSecureString (Encoding.Unicode.GetString(transformedData));
+        }
+        catch (CryptographicException x)
+        {
+          s_logger.Error("Error while decrypting proxy password. Using empty password", x);
+          return new SecureString();
+        }
       }
       set
       {
@@ -56,7 +69,7 @@ namespace CalDavSynchronizer.Contracts
         new Random().NextBytes(salt);
         ProxySalt = Convert.ToBase64String(salt);
 
-        var data = Encoding.Unicode.GetBytes(value);
+        var data = Encoding.Unicode.GetBytes (SecureStringUtility.ToUnsecureString(value));
         var transformedData = ProtectedData.Protect(data, salt, DataProtectionScope.CurrentUser);
         ProxyProtectedPassword = Convert.ToBase64String(transformedData);
       }

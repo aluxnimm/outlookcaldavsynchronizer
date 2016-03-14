@@ -47,7 +47,7 @@ namespace CalDavSynchronizer.Ui.Options
             ProxyUseManual = _useManualProxyCheckBox.Checked,
             ProxyUrl = _proxyUrlTextBox.Text,
             ProxyUserName = _userNameTextBox.Text,
-            ProxyPassword = _passwordTextBox.Text
+            ProxyPassword = SecureStringUtility.ToSecureString (_passwordTextBox.Text)
           });
       }
       set
@@ -59,7 +59,7 @@ namespace CalDavSynchronizer.Ui.Options
         _useManualProxyCheckBox.Checked = value.ProxyOptions.ProxyUseManual;
         _proxyUrlTextBox.Text = value.ProxyOptions.ProxyUrl;
         _userNameTextBox.Text = value.ProxyOptions.ProxyUserName;
-        _passwordTextBox.Text = value.ProxyOptions.ProxyPassword;
+        _passwordTextBox.Text = SecureStringUtility.ToUnsecureString (value.ProxyOptions.ProxyPassword);
         _manualProxyGroupBox.Enabled = value.ProxyOptions.ProxyUseManual;
       }
     }

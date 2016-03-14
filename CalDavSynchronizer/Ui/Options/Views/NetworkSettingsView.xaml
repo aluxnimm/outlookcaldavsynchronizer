@@ -40,7 +40,9 @@
             <TextBox Text="{Binding ProxyUserName}" Grid.Row="1" Grid.Column="1" />
 
             <TextBlock Grid.Row="2" Grid.Column="0">Password (optional):</TextBlock>
-            <TextBox Text="{Binding ProxyPassword}" Grid.Row="2" Grid.Column="1" />
+            <PasswordBox x:Name="_passwordBox"
+                     PasswordChar="*" 
+                     Grid.Row="2" Grid.Column="1" />
           </Grid>
         </GroupBox>
       </StackPanel>

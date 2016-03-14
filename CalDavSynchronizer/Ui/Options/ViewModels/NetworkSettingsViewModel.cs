@@ -19,8 +19,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Security;
 using System.Text;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
@@ -29,7 +31,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private readonly ObservableCollection<IOptionsViewModel> _subOptions = new ObservableCollection<IOptionsViewModel>();
     private bool _closeConnectionAfterEachRequest;
     private bool _preemptiveAuthentication;
-    private string _proxyPassword;
+    private SecureString _proxyPassword;
     private string _proxyUrl;
     private bool _proxyUseDefault;
     private bool _proxyUseManual;
@@ -103,7 +105,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       }
     }
 
-    public string ProxyPassword
+    public SecureString ProxyPassword
     {
       get { return _proxyPassword; }
       set
@@ -117,7 +119,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
                                                              {
                                                                  CloseConnectionAfterEachRequest = true,
                                                                  PreemptiveAuthentication = true,
-                                                                 ProxyPassword = "proxypassword",
+                                                                 ProxyPassword = SecureStringUtility.ToSecureString ("proxypassword"),
                                                                  ProxyUrl = "proxyurl",
                                                                  ProxyUseDefault = true,
                                                                  ProxyUseManual = true,
