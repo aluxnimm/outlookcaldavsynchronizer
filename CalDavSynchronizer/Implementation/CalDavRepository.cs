@@ -71,7 +71,7 @@ namespace CalDavSynchronizer.Implementation
       return _calDavDataAccess.GetVersions (idsOfEntitiesToQuery.Select(i => i.Id));
     }
 
-    public Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetAllVersions (IEnumerable<WebResourceName> idsOfknownEntities)
+    public async Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetAllVersions (IEnumerable<WebResourceName> idsOfknownEntities)
     {
       using (AutomaticStopwatch.StartInfo (s_logger, "CalDavRepository.GetVersions"))
       {
@@ -79,9 +79,9 @@ namespace CalDavSynchronizer.Implementation
         {
           case EntityType.Event:
 
-            return _calDavDataAccess.GetEventVersions (_dateTimeRangeProvider.GetRange());
+            return await _calDavDataAccess.GetEventVersions (_dateTimeRangeProvider.GetRange());
           case EntityType.Todo:
-            return _calDavDataAccess.GetTodoVersions (_dateTimeRangeProvider.GetRange());
+            return await _calDavDataAccess.GetTodoVersions (_dateTimeRangeProvider.GetRange());
           default:
             throw new NotImplementedException (string.Format ("EntityType '{0}' not implemented.", _entityType));
         }
@@ -173,11 +173,11 @@ namespace CalDavSynchronizer.Implementation
     }
 
 
-    public Task Delete (WebResourceName entityId, string version)
+    public async Task Delete (WebResourceName entityId, string version)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
-        return _calDavDataAccess.DeleteEntity (entityId, version);
+        await _calDavDataAccess.DeleteEntity (entityId, version);
       }
     }
 
