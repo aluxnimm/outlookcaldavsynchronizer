@@ -74,8 +74,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     private static bool IsGoogleProfile (Contracts.Options options)
     {
-      return options.DisplayType == OptionsDisplayType.Google
-             || options.ServerAdapterType == ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth
+      return options.ServerAdapterType == ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth
              || options.ServerAdapterType == ServerAdapterType.GoogleTaskApi;
     }
 

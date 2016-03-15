@@ -64,8 +64,6 @@ namespace CalDavSynchronizer.Contracts
     public ProxyOptions ProxyOptions { get; set; }
     public MappingConfigurationBase MappingConfiguration { get; set; }
 
-    public OptionsDisplayType DisplayType { get; set; }
-
     public SecureString GetEffectivePassword (IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
     {
       return UseAccountPassword
@@ -107,7 +105,7 @@ namespace CalDavSynchronizer.Contracts
       }
     }
 
-    public static Options CreateDefault (OptionsDisplayType type)
+    public static Options CreateDefault (ProfileType type)
     {
       var options = new Options();
 
@@ -122,10 +120,9 @@ namespace CalDavSynchronizer.Contracts
       options.PreemptiveAuthentication = true;
       options.ForceBasicAuthentication = false;
       options.ProxyOptions = new ProxyOptions() { ProxyUseDefault = true };
-      options.DisplayType = type;
-      options.CalenderUrl = PopulateDavUrl (options.DisplayType);
+      options.CalenderUrl = PopulateDavUrl (type);
 
-      if (type == OptionsDisplayType.GmxCalendar)
+      if (type == ProfileType.GmxCalendar)
       {
         options.MappingConfiguration = new EventMappingConfiguration
         {
@@ -136,17 +133,17 @@ namespace CalDavSynchronizer.Contracts
       return options;
     }
 
-    private static string PopulateDavUrl (OptionsDisplayType type)
+    private static string PopulateDavUrl (ProfileType type)
     {
       switch (type)
       {
-        case OptionsDisplayType.Fruux:
+        case ProfileType.Fruux:
           return "https://dav.fruux.com";
-        case OptionsDisplayType.Posteo:
+        case ProfileType.Posteo:
           return "https://posteo.de:8443";
-        case OptionsDisplayType.Yandex:
+        case ProfileType.Yandex:
           return "https://caldav.yandex.ru";
-        case OptionsDisplayType.GmxCalendar:
+        case ProfileType.GmxCalendar:
           return "https://caldav.gmx.net";
         default:
           return null;

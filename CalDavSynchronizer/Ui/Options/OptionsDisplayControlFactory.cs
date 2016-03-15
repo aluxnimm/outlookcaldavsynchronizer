@@ -41,16 +41,15 @@ namespace CalDavSynchronizer.Ui.Options
 
     public IOptionsDisplayControl Create (Contracts.Options options)
     {
-      if (options.DisplayType == OptionsDisplayType.Google
-            || options.ServerAdapterType == ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth
-            || options.ServerAdapterType == ServerAdapterType.GoogleTaskApi)
+      if (options.ServerAdapterType == ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth
+          || options.ServerAdapterType == ServerAdapterType.GoogleTaskApi)
         return new GoogleOptionsDisplayControl (_session, _profileDataDirectoryFactory, _fixInvalidSettings);
 
       return new OptionsDisplayControl (
-        _session, 
-        _profileDataDirectoryFactory, 
-        _fixInvalidSettings,
-        _outlookAccountPasswordProvider);
+          _session,
+          _profileDataDirectoryFactory,
+          _fixInvalidSettings,
+          _outlookAccountPasswordProvider);
     }
   }
 }

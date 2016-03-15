@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace CalDavSynchronizer.Contracts
 {
-  public enum OptionsDisplayType
+  public enum ProfileType
   {
     Generic = 0,
     Google,

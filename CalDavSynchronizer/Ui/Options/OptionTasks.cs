@@ -603,12 +603,12 @@ namespace CalDavSynchronizer.Ui.Options
 
     public static Contracts.Options CreateNewSynchronizationProfileOrNull ()
     {
-      var type = SelectOptionsDisplayTypeForm.QueryOptionsDisplayType ();
+      var type = SelectOptionsDisplayTypeForm.QueryProfileType ();
       if (!type.HasValue)
         return null;
 
       var options = Contracts.Options.CreateDefault (type.Value);
-      options.ServerAdapterType = (type == OptionsDisplayType.Google)
+      options.ServerAdapterType = (type == ProfileType.Google)
           ? ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth
           : ServerAdapterType.WebDavHttpClientBased;
       return options;

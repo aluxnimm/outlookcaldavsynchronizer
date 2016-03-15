@@ -37,23 +37,23 @@ namespace CalDavSynchronizer.Ui.Options
       DialogResult = DialogResult.OK;
     }
 
-    public static OptionsDisplayType? QueryOptionsDisplayType ()
+    public static ProfileType? QueryProfileType ()
     {
       var form = new SelectOptionsDisplayTypeForm();
       if (form.ShowDialog() == DialogResult.OK)
       {
         if (form._genericTypeRadioButton.Checked)
-          return OptionsDisplayType.Generic;
+          return ProfileType.Generic;
         if (form._googleTypeRadionButton.Checked)
-          return OptionsDisplayType.Google;
+          return ProfileType.Google;
         if (form._fruuxTypeRadioButton.Checked)
-          return OptionsDisplayType.Fruux;
+          return ProfileType.Fruux;
         if (form._posteoTypeRadioButton.Checked)
-          return OptionsDisplayType.Posteo;
+          return ProfileType.Posteo;
         if (form._yandexTypeRadioButton.Checked)
-          return OptionsDisplayType.Yandex;
+          return ProfileType.Yandex;
         if (form._gmxCalendarTypeRadioButton.Checked)
-          return OptionsDisplayType.GmxCalendar;
+          return ProfileType.GmxCalendar;
       }
 
       return null;

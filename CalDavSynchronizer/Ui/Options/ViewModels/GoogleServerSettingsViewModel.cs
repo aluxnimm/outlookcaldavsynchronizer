@@ -160,7 +160,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       options.Password = new SecureString();
       options.EmailAddress = _emailAddress;
       options.UseAccountPassword = false;
-      options.DisplayType = CalDavSynchronizer.Contracts.OptionsDisplayType.Google;
       options.ServerAdapterType = ServerAdapterType;
     }
 

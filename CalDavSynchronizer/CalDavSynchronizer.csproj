@@ -264,7 +264,7 @@
     <Compile Include="Contracts\TaskMappingConfiguration.cs" />
     <Compile Include="Contracts\ReminderMapping.cs" />
     <Compile Include="Contracts\ContactMappingConfiguration.cs" />
-    <Compile Include="Contracts\OptionsDisplayType.cs" />
+    <Compile Include="Contracts\ProfileType.cs" />
     <Compile Include="Contracts\ConfigurationBase.cs" />
     <Compile Include="Contracts\EventMappingConfiguration.cs" />
     <Compile Include="Contracts\MappingConfigurationBase.cs" />

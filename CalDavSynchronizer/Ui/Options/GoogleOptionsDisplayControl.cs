@@ -129,7 +129,6 @@ namespace CalDavSynchronizer.Ui.Options
                           Id = _optionsId,
                           Inactive = _inactiveCheckBox.Checked,
                           MappingConfiguration = _mappingConfiguration,
-                          DisplayType = OptionsDisplayType.Google
                       };
 
         _outlookFolderControl.FillOptions (options);

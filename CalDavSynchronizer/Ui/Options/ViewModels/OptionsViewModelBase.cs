@@ -29,7 +29,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private readonly IOptionsViewModelParent _parent;
     private bool _isActive;
 
-    private OptionsDisplayType _displayType;
     private string _name;
     private IEnumerable<IOptionsSection> _sections;
     private IEnumerable<IOptionsViewModel> _subOptions;
@@ -96,7 +95,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       IsActive = !options.Inactive;
       Name = options.Name;
       Id = options.Id;
-      _displayType = options.DisplayType;
 
       SetOptionsOverride (options);
     }
@@ -114,7 +112,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       foreach (var subViewModel in SubOptions)
         subViewModel.FillOptions (options);
 
-      options.DisplayType = _displayType;
       options.Inactive = !IsActive;
       options.Name = Name;
       options.Id = Id;
