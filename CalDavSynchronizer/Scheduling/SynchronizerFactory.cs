@@ -27,6 +27,7 @@ using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Contacts;
 using CalDavSynchronizer.Implementation.Events;
+using CalDavSynchronizer.Implementation.GoogleContacts;
 using CalDavSynchronizer.Implementation.GoogleTasks;
 using CalDavSynchronizer.Implementation.Tasks;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
@@ -40,9 +41,11 @@ using GenSync.ProgressReport;
 using GenSync.Synchronization;
 using GenSync.Synchronization.StateFactories;
 using Google.Apis.Tasks.v1.Data;
+using Google.Contacts;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
 using Thought.vCards;
+using ContactEntityMapper = CalDavSynchronizer.Implementation.Contacts.ContactEntityMapper;
 
 namespace CalDavSynchronizer.Scheduling
 {
@@ -117,7 +120,10 @@ namespace CalDavSynchronizer.Scheduling
           else
             return CreateTaskSynchronizer (options, synchronizerComponents);
         case OlItemType.olContactItem:
-          return CreateContactSynchronizer (options, synchronizerComponents);
+          if (options.ServerAdapterType == ServerAdapterType.GoogleContactApi)
+            return CreateGoogleContactSynchronizer (options, synchronizerComponents);
+          else
+            return CreateContactSynchronizer (options, synchronizerComponents);
         default:
           throw new NotSupportedException (
               string.Format (
@@ -535,6 +541,59 @@ namespace CalDavSynchronizer.Scheduling
           ExceptionHandler.Instance);
 
       return new OutlookSynchronizer<WebResourceName, string> (synchronizer);
+    }
+
+    private IOutlookSynchronizer CreateGoogleContactSynchronizer (Options options, AvailableSynchronizerComponents componentsToFill)
+    {
+      var atypeRepository = new OutlookContactRepository (
+          _outlookSession,
+          options.OutlookFolderEntryId,
+          options.OutlookFolderStoreId,
+          _daslFilterProvider);
+
+      IWebProxy proxy = options.ProxyOptions != null ? CreateProxy (options.ProxyOptions) : null;
+
+      var contactFacade = System.Threading.Tasks.Task.Run (() => OAuth.Google.GoogleHttpClientFactory.LoginToContactsService (options.UserName, proxy).Result).Result;
+
+      var btypeRepository = new GoogleContactRepository (contactFacade);
+
+      var mappingParameters = GetMappingParameters<ContactMappingConfiguration> (options);
+
+      var entityMapper = new GoogleContactEntityMapper (mappingParameters);
+
+      var entityRelationDataFactory = new GoogleContactRelationDataFactory ();
+
+      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, ContactItemWrapper, string, string, Contact> (
+          entityMapper,
+          atypeRepository,
+          btypeRepository,
+          entityRelationDataFactory,
+          ExceptionHandler.Instance);
+
+      var btypeIdEqualityComparer = EqualityComparer<string>.Default;
+      var atypeIdEqulityComparer = EqualityComparer<string>.Default;
+
+      var storageDataDirectory = _profileDataDirectoryFactory (options.Id);
+
+      var storageDataAccess = new EntityRelationDataAccess<string, DateTime, GoogleContactRelationData, string, string> (storageDataDirectory);
+
+      var synchronizer = new Synchronizer<string, DateTime, ContactItemWrapper, string, string, Contact> (
+          atypeRepository,
+          btypeRepository,
+          InitialGoogleContactSyncStateCreationStrategyFactory.Create (
+              syncStateFactory,
+              syncStateFactory.Environment,
+              options.SynchronizationMode,
+              options.ConflictResolution),
+          storageDataAccess,
+          entityRelationDataFactory,
+          new InitialGoogleContactEntityMatcher (btypeIdEqualityComparer),
+          atypeIdEqulityComparer,
+          btypeIdEqualityComparer,
+          _totalProgressFactory,
+          ExceptionHandler.Instance);
+
+      return new OutlookSynchronizer<string, string> (synchronizer);
     }
   }
 }

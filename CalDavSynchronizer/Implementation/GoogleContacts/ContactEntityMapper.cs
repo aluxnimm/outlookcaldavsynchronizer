@@ -26,13 +26,13 @@ using log4net;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  public class ContactEntityMapper : IEntityMapper<ContactItemWrapper, Contact>
+  public class GoogleContactEntityMapper : IEntityMapper<ContactItemWrapper, Contact>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private readonly ContactMappingConfiguration _configuration;
 
-    public ContactEntityMapper (ContactMappingConfiguration configuration)
+    public GoogleContactEntityMapper (ContactMappingConfiguration configuration)
     {
       _configuration = configuration;
     }

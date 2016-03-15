@@ -30,6 +30,8 @@ namespace CalDavSynchronizer.Contracts
     [XmlEnum ("SynchronousWebRequestBased")]
     WebDavSynchronousWebRequestBased,
 
-    GoogleTaskApi
+    GoogleTaskApi,
+
+    GoogleContactApi
   }
 }
