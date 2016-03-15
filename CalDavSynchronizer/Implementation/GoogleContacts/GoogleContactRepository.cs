@@ -25,13 +25,11 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
     public Task Delete (string entityId, string version)
     {
-      // calculate url
-      // https://developers.google.com/google-apps/contacts/v3/#retrieving_contacts_using_query_parameters
-      // Contact contact = cr.Retrieve<Contact>("https://www.google.com/m8/feeds/contacts/default/full/contactId");
 
-      Uri feedUri = new Uri (ContactsQuery.CreateContactsUri ("default"));
-      var contactUrl = new Uri (feedUri, entityId);
-      return Task.Run (() => _contactFacade.Delete (contactUrl, version));
+      var httpsUrl = GetContactUrl(entityId);
+
+      return Task.Run (() => _contactFacade.Delete (httpsUrl, version));
+  
     }
 
     public Task<EntityVersion<string, string>> Update (string entityId, string version, Contact entityToUpdate, Func<Contact, Contact> entityModifier)
@@ -67,14 +65,27 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       return Task.Run (() => (IReadOnlyList<EntityVersion<string, string>>) _contactFacade.GetContacts().Entries.Select (c => EntityVersion.Create (c.Id, c.ETag)).ToArray());
     }
 
-    public Task<IReadOnlyList<EntityWithId<string, Contact>>> Get (ICollection<string> ids, ILoadEntityLogger logger)
+    public async Task<IReadOnlyList<EntityWithId<string, Contact>>> Get (ICollection<string> ids, ILoadEntityLogger logger)
     {
-      return Task.Run (() => (IReadOnlyList<EntityWithId<string, Contact>>) _contactFacade.GetContacts().Entries.Select (c => EntityWithId.Create (c.Id, c)).ToArray());
+      var result = new List<EntityWithId<string, Contact>>();
+
+      foreach (var id in ids)
+      {
+        var contact = await Task.Run (() => _contactFacade.Retrieve<Contact> (GetContactUrl (id)));
+        result.Add (EntityWithId.Create (contact.Id, contact));
+      }
+
+      return result;
     }
 
     public void Cleanup (IReadOnlyDictionary<string, Contact> entities)
     {
 
+    }
+
+    private static Uri GetContactUrl (string entityId)
+    {
+      return new Uri (Uri.UriSchemeHttps + "://" + new Uri (entityId).GetComponents (UriComponents.HttpRequestUrl & ~UriComponents.Scheme, UriFormat.Unescaped));
     }
   }
 }
