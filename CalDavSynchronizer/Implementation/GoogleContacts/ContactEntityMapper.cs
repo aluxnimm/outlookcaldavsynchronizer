@@ -18,8 +18,10 @@
 using System;
 using System.Diagnostics.SymbolStore;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Xaml;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation.ComWrappers;
@@ -98,6 +100,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
           Primary = true,
         });
       }
+      target.Location = source.Inner.OfficeLocation;
 
       if (!string.IsNullOrEmpty (source.Inner.PersonalHomePage))
       {
@@ -411,10 +414,244 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
     public ContactItemWrapper Map2To1 (Contact source, ContactItemWrapper target, IEntityMappingLogger logger)
     {
-      target.Inner.FirstName = source.Name.GivenName;
-      target.Inner.LastName = source.Name.FamilyName;
+      if (source.Name != null)
+      {
+        target.Inner.FirstName = source.Name.GivenName;
+        target.Inner.LastName = source.Name.FamilyName;
+        target.Inner.Title = source.Name.NamePrefix;
+        target.Inner.Suffix = source.Name.NameSuffix;
+        target.Inner.MiddleName = source.Name.AdditionalName;
+      }
+
+      if (string.IsNullOrEmpty(target.Inner.FileAs))
+      {
+        if (!string.IsNullOrEmpty (source.Title))
+        {
+          target.Inner.FileAs = source.Title;
+        }
+        else if (!string.IsNullOrEmpty (source.Name?.FullName))
+        {
+          target.Inner.FileAs = source.Name.FullName;
+        }
+        else if (!string.IsNullOrEmpty (source.Organizations?[0].Name))
+        {
+          target.Inner.FileAs = source.Organizations[0].Name;
+        }
+        else if (!string.IsNullOrEmpty (source.Emails?[0].Address))
+        {
+          target.Inner.FileAs = source.Emails[0].Address;
+        }
+      }
+
+      MapPostalAddresses2To1 (source, target.Inner);
+
+      MapPhoneNumbers2To1 (source, target.Inner);
+
+      target.Inner.Email1Address = source.Emails?[0].Address;
+      target.Inner.Email2Address = source.Emails?[1].Address;
+      target.Inner.Email3Address = source.Emails?[2].Address;
+
+      target.Inner.NickName = source.ContactEntry.Nickname;
+      target.Inner.Initials = source.ContactEntry.Initials;
+
+      target.Inner.CompanyName = source.Organizations?[0].Name;
+      target.Inner.Department = source.Organizations?[0].Department;
+      target.Inner.JobTitle = source.Organizations?[0].Title;
+      target.Inner.OfficeLocation = source.Location;
+
+      target.Inner.PersonalHomePage = source.ContactEntry.Websites.FirstOrDefault (w => w.Primary || w.Rel != ContactsRelationships.IsWork)?.Href;
+      target.Inner.BusinessHomePage = source.ContactEntry.Websites.FirstOrDefault (w => w.Rel == ContactsRelationships.IsWork)?.Href;
+
+      if (_configuration.MapBirthday)
+      {
+        DateTime birthday;
+        if (DateTime.TryParse (source.ContactEntry.Birthday, out birthday))
+        {
+          if (birthday.Date.Equals (target.Inner.Birthday)) target.Inner.Birthday = birthday;
+        }
+        else
+        {
+          target.Inner.Birthday = new DateTime (4501, 1, 1);
+        }
+      }
+
+      target.Inner.Body = source.Content;
 
       return target;
+    }
+
+    private void MapPhoneNumbers2To1 (Contact source, ContactItem target)
+    {
+      target.HomeTelephoneNumber = string.Empty;
+      target.BusinessTelephoneNumber = string.Empty;
+      target.BusinessFaxNumber = string.Empty;
+      target.PrimaryTelephoneNumber = string.Empty;
+      target.MobileTelephoneNumber = string.Empty;
+
+      foreach (var phoneNumber in source.Phonenumbers)
+      {
+        string sourceNumber = _configuration.FixPhoneNumberFormat ?
+                              FixPhoneNumberFormat (phoneNumber.Value) : phoneNumber.Value;
+
+        switch (phoneNumber.Rel)
+        {
+          case ContactsRelationships.IsMain:
+            target.PrimaryTelephoneNumber = sourceNumber;
+            break;
+          case ContactsRelationships.IsMobile:
+            target.MobileTelephoneNumber = sourceNumber;
+            break;
+          case ContactsRelationships.IsHome:
+            if (string.IsNullOrEmpty (target.HomeTelephoneNumber))
+            {
+              target.HomeTelephoneNumber = sourceNumber;
+            }
+            else
+            {
+              target.Home2TelephoneNumber = sourceNumber;
+            }
+            break;
+          case ContactsRelationships.IsWork:
+            if (string.IsNullOrEmpty (target.BusinessTelephoneNumber))
+            {
+              target.BusinessTelephoneNumber = sourceNumber;
+            }
+            else
+            {
+              target.Business2TelephoneNumber = sourceNumber;
+            }
+            break;
+          case ContactsRelationships.IsHomeFax:
+            target.HomeFaxNumber = sourceNumber;
+            break;
+          case ContactsRelationships.IsWorkFax:
+            target.BusinessFaxNumber = sourceNumber;
+            break;
+          case ContactsRelationships.IsOtherFax:
+            target.OtherFaxNumber = sourceNumber;
+            break;
+          case ContactsRelationships.IsPager:
+            target.PagerNumber = sourceNumber;
+            break;
+          case ContactsRelationships.IsCar:
+            target.CarTelephoneNumber = sourceNumber;
+            break;
+          case ContactsRelationships.IsISDN:
+            target.ISDNNumber = sourceNumber;
+            break;
+          case ContactsRelationships.IsAssistant:
+            target.AssistantTelephoneNumber = sourceNumber;
+            break;
+          default:
+            if (phoneNumber.Primary && string.IsNullOrEmpty (target.PrimaryTelephoneNumber))
+            {
+              target.PrimaryTelephoneNumber = sourceNumber;
+            }
+            else if (phoneNumber.Primary && string.IsNullOrEmpty (target.HomeTelephoneNumber))
+            {
+              target.HomeTelephoneNumber = sourceNumber;
+            }
+            else
+            {
+              target.OtherTelephoneNumber = sourceNumber;
+            }
+            break;
+        }
+      }
+    }
+
+    private static string FixPhoneNumberFormat(string number)
+    {
+      // Reformat telephone numbers so that Outlook can split country/area code and extension
+      var match = Regex.Match(number, @"(\+\d+) (\d+) (\d+)( \d+)?");
+      if (match.Success)
+      {
+        string ext = string.IsNullOrEmpty(match.Groups[4].Value) ? string.Empty : " - " + match.Groups[4].Value;
+
+        return match.Groups[1].Value + " ( " + match.Groups[2].Value + " ) " + match.Groups[3].Value + ext;
+      }
+      else
+      {
+        return number;
+      }
+    }
+
+    private static void MapPostalAddresses2To1 (Contact source, ContactItem target)
+    {
+      target.HomeAddress = string.Empty;
+      target.HomeAddressStreet = string.Empty;
+      target.HomeAddressCity = string.Empty;
+      target.HomeAddressPostalCode = string.Empty;
+      target.HomeAddressCountry = string.Empty;
+      target.HomeAddressState = string.Empty;
+      target.HomeAddressPostOfficeBox = string.Empty;
+
+      target.BusinessAddress = string.Empty;
+      target.BusinessAddressStreet = string.Empty;
+      target.BusinessAddressCity = string.Empty;
+      target.BusinessAddressPostalCode = string.Empty;
+      target.BusinessAddressCountry = string.Empty;
+      target.BusinessAddressState = string.Empty;
+      target.BusinessAddressPostOfficeBox = string.Empty;
+
+      target.OtherAddress = string.Empty;
+      target.OtherAddressStreet = string.Empty;
+      target.OtherAddressCity = string.Empty;
+      target.OtherAddressPostalCode = string.Empty;
+      target.OtherAddressCountry = string.Empty;
+      target.OtherAddressState = string.Empty;
+      target.OtherAddressPostOfficeBox = string.Empty;
+
+      target.SelectedMailingAddress = OlMailingAddress.olNone;
+
+      foreach (var sourceAddress in source.PostalAddresses)
+      {
+        if (sourceAddress.Rel == ContactsRelationships.IsHome)
+        {
+          target.HomeAddressCity = sourceAddress.City;
+          target.HomeAddressCountry = sourceAddress.Country;
+          target.HomeAddressPostalCode = sourceAddress.Postcode;
+          target.HomeAddressState = sourceAddress.Region;
+          target.HomeAddressStreet = sourceAddress.Street;
+          target.HomeAddressPostOfficeBox = sourceAddress.Pobox;
+          if (string.IsNullOrEmpty(target.HomeAddress))
+            target.HomeAddress = sourceAddress.FormattedAddress;
+          if (sourceAddress.Primary)
+          {
+            target.SelectedMailingAddress = OlMailingAddress.olHome;
+          }
+        }
+        else if (sourceAddress.Rel == ContactsRelationships.IsWork)
+        {
+          target.BusinessAddressCity = sourceAddress.City;
+          target.BusinessAddressCountry = sourceAddress.Country;
+          target.BusinessAddressPostalCode = sourceAddress.Postcode;
+          target.BusinessAddressState = sourceAddress.Region;
+          target.BusinessAddressStreet = sourceAddress.Street;
+          target.BusinessAddressPostOfficeBox = sourceAddress.Pobox;
+          if (string.IsNullOrEmpty(target.BusinessAddress))
+            target.BusinessAddress = sourceAddress.FormattedAddress;
+          if (sourceAddress.Primary)
+          {
+            target.SelectedMailingAddress = OlMailingAddress.olBusiness;
+          }
+        }
+        else
+        {
+          target.OtherAddressCity = sourceAddress.City;
+          target.OtherAddressCountry = sourceAddress.Country;
+          target.OtherAddressPostalCode = sourceAddress.Postcode;
+          target.OtherAddressState = sourceAddress.Region;
+          target.OtherAddressStreet = sourceAddress.Street;
+          target.OtherAddressPostOfficeBox = sourceAddress.Pobox;
+          if (string.IsNullOrEmpty(target.OtherAddress))
+            target.OtherAddress = sourceAddress.FormattedAddress;
+          if (sourceAddress.Primary)
+          {
+            target.SelectedMailingAddress = OlMailingAddress.olOther;
+          }
+        }
+      }
     }
   }
 }
