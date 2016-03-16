@@ -265,18 +265,27 @@ namespace CalDavSynchronizer.Implementation.Events
         var trigger = new Trigger (reminderRelativeToStart);
 
         target.Alarms.Add (
-            new Alarm()
-            {
-                Trigger = trigger,
-                Description = "This is an event reminder"
-            }
-            );
-
+          new Alarm()
+          {
+            Description = "This is an event reminder"
+          }
+          );
+        // Fix DDay.iCal TimeSpan 0 serialization
+        if (reminderRelativeToStart == TimeSpan.Zero)
+        {
+          target.Alarms[0].Properties.Add (new CalendarProperty ("TRIGGER", "-P0D"));
+        }
+        else
+        {
+          target.Alarms[0].Trigger = trigger;
+        }
         // Fix for google, since Google wants ACTION property DISPLAY in uppercase
         var actionProperty = new CalendarProperty ("ACTION", "DISPLAY");
         target.Alarms[0].Properties.Add (actionProperty);
+
       }
     }
+    
 
     private void MapReminder2To1 (IEvent source, AppointmentItem target, IEntityMappingLogger logger)
     {
@@ -311,7 +320,7 @@ namespace CalDavSynchronizer.Implementation.Events
       if (!(alarm.Trigger.IsRelative
             && alarm.Trigger.Related == TriggerRelation.Start
             && alarm.Trigger.Duration.HasValue
-            && alarm.Trigger.Duration < TimeSpan.Zero))
+            && alarm.Trigger.Duration <= TimeSpan.Zero))
       {
         s_logger.WarnFormat ("Event '{0}' alarm is not relative before event start. Ignoring.", source.Url);
         logger.LogMappingWarning ("Alarm is not relative before event start. Ignoring.");
