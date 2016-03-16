@@ -32,12 +32,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     private string _calenderUrl;
     private string _emailAddress;
+    private ServerAdapterType _serverAdapterType;
     private readonly DelegateCommandWithoutCanExecuteDelegation _testConnectionCommand;
     private readonly ISettingsFaultFinder _settingsFaultFinder;
     private readonly ICurrentOptions _currentOptions;
     private readonly DelegateCommandWithoutCanExecuteDelegation _doAutoDiscoveryCommand;
-
-
+    
     public GoogleServerSettingsViewModel (ISettingsFaultFinder settingsFaultFinder, ICurrentOptions currentOptions)
     {
       if (settingsFaultFinder == null)
@@ -87,10 +87,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     public ICommand DoAutoDiscoveryCommand => _doAutoDiscoveryCommand;
     public ICommand TestConnectionCommand => _testConnectionCommand;
-
-    public ServerAdapterType ServerAdapterType { get; private set; }
-
-
+    
     public string UserName
     {
       get { return _emailAddress; }
@@ -116,10 +113,10 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return new SecureString(); }
     }
 
-    ServerAdapterType IServerSettingsViewModel.ServerAdapterType
+    public ServerAdapterType ServerAdapterType
     {
-      get { return ServerAdapterType; }
-      set { ServerAdapterType = value; OnPropertyChanged (); }
+      get { return _serverAdapterType; }
+      set { _serverAdapterType = value; OnPropertyChanged (); }
     }
 
     public string EmailAddress
@@ -150,7 +147,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         CalenderUrl = options.CalenderUrl;
       else
         CalenderUrl = OptionTasks.GoogleDavBaseUrl;
-      ServerAdapterType = options.ServerAdapterType;
+      _serverAdapterType = options.ServerAdapterType;
     }
 
     public void FillOptions (CalDavSynchronizer.Contracts.Options options)
@@ -160,14 +157,14 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       options.Password = new SecureString();
       options.EmailAddress = _emailAddress;
       options.UseAccountPassword = false;
-      options.ServerAdapterType = ServerAdapterType;
+      options.ServerAdapterType = _serverAdapterType;
     }
 
     public bool Validate (StringBuilder errorMessageBuilder)
     {
       bool result = true;
 
-      if (ServerAdapterType != ServerAdapterType.GoogleTaskApi)
+      if (_serverAdapterType != ServerAdapterType.GoogleTaskApi)
         result &= OptionTasks.ValidateWebDavUrl (CalenderUrl, errorMessageBuilder, true);
 
       result &= OptionTasks.ValidateGoogleEmailAddress (errorMessageBuilder, EmailAddress);
