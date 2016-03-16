@@ -64,7 +64,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       _mappingConfigurationViewModelFactory = mappingConfigurationViewModelFactoryFactory(this);
       _outlookFolderViewModel = new OutlookFolderViewModel (session, faultFinder);
       _outlookFolderViewModel.PropertyChanged += OutlookFolderViewModel_PropertyChanged;
-      _serverSettingsViewModel.PropertyChanged += ServerSettingsViewModel_PropertyChanged;
     }
 
     /// <remarks>
@@ -104,12 +103,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       MappingConfigurationViewModel?.SetOptions (options);
     }
 
-    private void ServerSettingsViewModel_PropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
-    {
-      if (e.PropertyName == nameof (IServerSettingsViewModel.ServerAdapterType))
-        CoerceMappingConfiguration();
-    }
-
     private void OutlookFolderViewModel_PropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
       if (e.PropertyName == nameof (OutlookFolderViewModel.OutlookFolderType))
@@ -117,6 +110,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         CoerceMappingConfiguration();
         // ReSharper disable once ExplicitCallerInfoArgument
         OnPropertyChanged (nameof (OutlookFolderType));
+        OnOutlookFolderTypeChanged();
       }
     }
 
@@ -136,7 +130,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       MappingConfigurationViewModel = OptionTasks.CoerceMappingConfiguration (
           MappingConfigurationViewModel,
           _outlookFolderViewModel.OutlookFolderType,
-          _serverSettingsViewModel.ServerAdapterType == ServerAdapterType.GoogleTaskApi,
+          _serverSettingsViewModel.IsGoogle,
           _mappingConfigurationViewModelFactory);
     }
 
@@ -189,14 +183,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     }
 
     public OlItemType? OutlookFolderType => _outlookFolderViewModel.OutlookFolderType;
+    public event EventHandler OutlookFolderTypeChanged;
 
     public string EmailAddress => _serverSettingsViewModel.EmailAddress;
-
-    public ServerAdapterType ServerAdapterType
-    {
-      get { return _serverSettingsViewModel.ServerAdapterType; }
-      set { _serverSettingsViewModel.ServerAdapterType = value; }
-    }
 
     public static GenericOptionsViewModel DesignInstance => new GenericOptionsViewModel (
         new DesignOptionsViewModelParent(),
@@ -209,5 +198,10 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
                                                                 IsActive = true,
                                                                 Name = "Test Profile",
                                                             };
+
+    protected virtual void OnOutlookFolderTypeChanged ()
+    {
+      OutlookFolderTypeChanged?.Invoke (this, EventArgs.Empty);
+    }
   }
 }

@@ -44,6 +44,7 @@ namespace CalDavSynchronizer.Ui.Options
     private ISettingsFaultFinder _settingsFaultFinder;
     private IServerSettingsControlDependencies _dependencies;
     private NetworkAndProxyOptions _networkAndProxyOptions;
+    private ServerAdapterType _serverAdapterType;
 
     public void Initialize (ISettingsFaultFinder settingsFaultFinder, IServerSettingsControlDependencies dependencies)
     {
@@ -60,7 +61,10 @@ namespace CalDavSynchronizer.Ui.Options
       try
       {
         ComponentContainer.EnsureSynchronizationContext();
-        _calenderUrlTextBox.Text = OptionTasks.GoogleDavBaseUrl;
+        if (_serverAdapterType == ServerAdapterType.GoogleTaskApi)
+          _calenderUrlTextBox.Text = string.Empty;
+        else
+          _calenderUrlTextBox.Text = OptionTasks.GoogleDavBaseUrl;
         TestServerConnectionAsync();
       }
       catch (Exception x)
@@ -136,7 +140,7 @@ namespace CalDavSynchronizer.Ui.Options
         _calenderUrlTextBox.Text = value.CalenderUrl;
       else
         _calenderUrlTextBox.Text = OptionTasks.GoogleDavBaseUrl;
-      ServerAdapterType = value.ServerAdapterType;
+      _serverAdapterType = value.ServerAdapterType;
       _networkAndProxyOptions = new NetworkAndProxyOptions (value.CloseAfterEachRequest, value.PreemptiveAuthentication, value.ForceBasicAuthentication, value.ProxyOptions ?? new ProxyOptions());
 
     }
@@ -146,11 +150,19 @@ namespace CalDavSynchronizer.Ui.Options
       optionsToFill.EmailAddress = _emailAddressTextBox.Text;
       optionsToFill.CalenderUrl = _calenderUrlTextBox.Text;
       optionsToFill.UserName = _emailAddressTextBox.Text;
-      optionsToFill.ServerAdapterType = ServerAdapterType;
+      optionsToFill.ServerAdapterType = _serverAdapterType;
       optionsToFill.CloseAfterEachRequest = _networkAndProxyOptions.CloseConnectionAfterEachRequest;
       optionsToFill.PreemptiveAuthentication = _networkAndProxyOptions.PreemptiveAuthentication;
       optionsToFill.ForceBasicAuthentication = _networkAndProxyOptions.ForceBasicAuthentication;
       optionsToFill.ProxyOptions = _networkAndProxyOptions.ProxyOptions;
+    }
+
+    public void CoerceServerAdapterType (OlItemType? itemType)
+    {
+      if (itemType == OlItemType.olTaskItem)
+        _serverAdapterType = ServerAdapterType.GoogleTaskApi;
+      else
+        _serverAdapterType = ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth;
     }
 
     public string CalendarUrl
@@ -169,10 +181,9 @@ namespace CalDavSynchronizer.Ui.Options
     }
 
     public OlItemType? OutlookFolderType => _dependencies.OutlookFolderType;
+    public event EventHandler OutlookFolderTypeChanged;
 
     public string EmailAddress => _emailAddressTextBox.Text;
-
-    public ServerAdapterType ServerAdapterType { get; set; }
 
 
     private void _editUrlManuallyButton_Click (object sender, EventArgs e)
@@ -191,6 +202,11 @@ namespace CalDavSynchronizer.Ui.Options
           _networkAndProxyOptions = networkAndProxyOptionsForm.Options;
         }
       }
+    }
+
+    protected virtual void OnOutlookFolderTypeChanged ()
+    {
+      OutlookFolderTypeChanged?.Invoke (this, EventArgs.Empty);
     }
   }
 }

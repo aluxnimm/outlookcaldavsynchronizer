@@ -61,6 +61,8 @@ namespace CalDavSynchronizer.Ui.Options
       get { throw new NotImplementedException(); }
     }
 
+    public event EventHandler OutlookFolderTypeChanged;
+
     public string EmailAddress
     {
       get { throw new NotImplementedException(); }
@@ -70,6 +72,11 @@ namespace CalDavSynchronizer.Ui.Options
     {
       get { throw new NotImplementedException(); }
       set { throw new NotImplementedException(); }
+    }
+
+    protected virtual void OnOutlookFolderTypeChanged ()
+    {
+      OutlookFolderTypeChanged?.Invoke (this, EventArgs.Empty);
     }
   }
 }

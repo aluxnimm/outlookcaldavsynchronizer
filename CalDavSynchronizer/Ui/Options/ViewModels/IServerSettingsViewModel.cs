@@ -21,13 +21,14 @@ using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  internal interface IServerSettingsViewModel : IOptionsSection, INotifyPropertyChanged
+  internal interface IServerSettingsViewModel : IOptionsSection
   {
-    ServerAdapterType ServerAdapterType { get; set; }
+    ServerAdapterType ServerAdapterType { get; }
     string EmailAddress { get; }
     string UserName { get; }
     string CalenderUrl { get; set; }
     bool UseAccountPassword { get; }
     SecureString Password { get; }
+    bool IsGoogle { get; }
   }
 }

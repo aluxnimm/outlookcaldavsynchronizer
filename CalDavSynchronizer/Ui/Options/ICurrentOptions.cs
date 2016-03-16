@@ -33,8 +33,8 @@ namespace CalDavSynchronizer.Ui.Options
     string SynchronizationModeDisplayName { get; }
     string ServerUrl { get; set; }
     OlItemType? OutlookFolderType { get; }
+    event EventHandler OutlookFolderTypeChanged;
     string EmailAddress { get; }
-    ServerAdapterType ServerAdapterType { get; set; }
 
     IWebDavClient CreateWebDavClient ();
     IWebProxy GetProxyIfConfigured ();

@@ -30,6 +30,7 @@ using CalDavSynchronizer.Ui.ConnectionTests;
 using CalDavSynchronizer.Ui.Options.Mapping;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.Options.ViewModels.Mapping;
+using CalDavSynchronizer.Utilities;
 using Google.Apis.Tasks.v1.Data;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
@@ -46,7 +47,7 @@ namespace CalDavSynchronizer.Ui.Options
     public const string GoogleDavBaseUrl = "https://apidata.googleusercontent.com/caldav/v2";
 
 
-    public static MappingConfigurationBase CoreceMappingConfiguration (OlItemType? outlookFolderType, MappingConfigurationBase mappingConfiguration, bool isGoogleTaskProfile)
+    public static MappingConfigurationBase CoreceMappingConfiguration (OlItemType? outlookFolderType, MappingConfigurationBase mappingConfiguration, bool isGoogleProfile)
     {
       switch (outlookFolderType)
       {
@@ -59,7 +60,7 @@ namespace CalDavSynchronizer.Ui.Options
             return new ContactMappingConfiguration();
           break;
         case OlItemType.olTaskItem:
-          if (!isGoogleTaskProfile && (mappingConfiguration == null || mappingConfiguration.GetType() != typeof (TaskMappingConfiguration)))
+          if (!isGoogleProfile && (mappingConfiguration == null || mappingConfiguration.GetType() != typeof (TaskMappingConfiguration)))
             return new TaskMappingConfiguration();
           break;
       }
@@ -68,22 +69,21 @@ namespace CalDavSynchronizer.Ui.Options
     }
 
     public static IOptionsViewModel CoerceMappingConfiguration (
-      IOptionsViewModel currentMappingConfiguration, 
-      OlItemType? outlookFolderType, 
-      bool isGoogleTaskProfile,
-      IMappingConfigurationViewModelFactory factory)
+        IOptionsViewModel currentMappingConfiguration,
+        OlItemType? outlookFolderType,
+        bool isGoogleProfile,
+        IMappingConfigurationViewModelFactory factory)
     {
-      if (isGoogleTaskProfile)
-        return null;
-
       switch (outlookFolderType)
       {
         case OlItemType.olAppointmentItem:
-          return currentMappingConfiguration as EventMappingConfigurationViewModel ?? factory.Create (new EventMappingConfiguration ());
+          return currentMappingConfiguration as EventMappingConfigurationViewModel ?? factory.Create (new EventMappingConfiguration());
         case OlItemType.olContactItem:
-          return currentMappingConfiguration as ContactMappingConfigurationViewModel ?? factory.Create(new ContactMappingConfiguration());
+          return currentMappingConfiguration as ContactMappingConfigurationViewModel ?? factory.Create (new ContactMappingConfiguration());
         case OlItemType.olTaskItem:
-          return currentMappingConfiguration as TaskMappingConfigurationViewModel ?? factory.Create (new TaskMappingConfiguration ());
+          return isGoogleProfile
+              ? null
+              : currentMappingConfiguration as TaskMappingConfigurationViewModel ?? factory.Create (new TaskMappingConfiguration());
         default:
           return null;
       }
@@ -173,8 +173,7 @@ namespace CalDavSynchronizer.Ui.Options
         TestResult result,
         SynchronizationMode synchronizationMode,
         string selectedSynchronizationModeDisplayName,
-        OlItemType? outlookFolderType,
-        ServerAdapterType serverAdapterType)
+        OlItemType outlookFolderType)
     {
       bool hasError = false;
       bool hasWarning = false;
@@ -182,21 +181,7 @@ namespace CalDavSynchronizer.Ui.Options
 
       var isCalendar = result.ResourceType.HasFlag (ResourceType.Calendar);
       var isAddressBook = result.ResourceType.HasFlag (ResourceType.AddressBook);
-      var isGoogleTask = result.ResourceType.HasFlag (ResourceType.TaskList);
-
-      if (isGoogleTask)
-      {
-        if (outlookFolderType != OlItemType.olTaskItem)
-        {
-          errorMessageBuilder.AppendLine ("- The outlook folder is not a task folder, or there is no folder selected.");
-          hasError = true;
-        }
-      }
-      else if (!isCalendar && !isAddressBook)
-      {
-        errorMessageBuilder.AppendLine ("- The specified Url is neither a calendar nor an addressbook!");
-        hasError = true;
-      }
+      var isTaskList = result.ResourceType.HasFlag (ResourceType.TaskList);
 
       if (isCalendar && isAddressBook)
       {
@@ -204,72 +189,76 @@ namespace CalDavSynchronizer.Ui.Options
         hasError = true;
       }
 
-      if (isCalendar)
+      switch (outlookFolderType)
       {
-        if (!result.CalendarProperties.HasFlag (CalendarProperties.CalendarAccessSupported))
-        {
-          errorMessageBuilder.AppendLine ("- The specified Url does not support calendar access.");
-          hasError = true;
-        }
-
-        if (!result.CalendarProperties.HasFlag (CalendarProperties.SupportsCalendarQuery))
-        {
-          errorMessageBuilder.AppendLine ("- The specified Url does not support calendar queries. Some features like time range filter may not work!");
-          hasWarning = true;
-        }
-
-        if (!result.CalendarProperties.HasFlag (CalendarProperties.IsWriteable))
-        {
-          if (DoesModeRequireWriteableServerResource (synchronizationMode))
+        case OlItemType.olAppointmentItem:
+          if (isCalendar)
           {
-            errorMessageBuilder.AppendFormat (
-                "- The specified calendar is not writeable. Therefore it is not possible to use the synchronization mode '{0}'.",
-                selectedSynchronizationModeDisplayName);
-            errorMessageBuilder.AppendLine();
+            if (!result.CalendarProperties.HasFlag (CalendarProperties.CalendarAccessSupported))
+            {
+              errorMessageBuilder.AppendLine ("- The specified Url does not support calendar access.");
+              hasError = true;
+            }
+
+            if (!result.CalendarProperties.HasFlag (CalendarProperties.SupportsCalendarQuery))
+            {
+              errorMessageBuilder.AppendLine ("- The specified Url does not support calendar queries. Some features like time range filter may not work!");
+              hasWarning = true;
+            }
+
+            if (!result.CalendarProperties.HasFlag (CalendarProperties.IsWriteable))
+            {
+              if (DoesModeRequireWriteableServerResource (synchronizationMode))
+              {
+                errorMessageBuilder.AppendFormat (
+                    "- The specified calendar is not writeable. Therefore it is not possible to use the synchronization mode '{0}'.",
+                    selectedSynchronizationModeDisplayName);
+                errorMessageBuilder.AppendLine();
+                hasError = true;
+              }
+            }
+          }
+          else
+          {
+            errorMessageBuilder.AppendLine ("- The specified Url is not a calendar!");
             hasError = true;
           }
-        }
+          break;
 
-        if (serverAdapterType == ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth)
-        {
-          if (outlookFolderType != OlItemType.olAppointmentItem)
+        case OlItemType.olContactItem:
+          if (isAddressBook)
           {
-            errorMessageBuilder.AppendLine ("- The outlook folder is not a calendar folder, or there is no folder selected.");
+            if (!result.AddressBookProperties.HasFlag (AddressBookProperties.AddressBookAccessSupported))
+            {
+              errorMessageBuilder.AppendLine ("- The specified Url does not support address books.");
+              hasError = true;
+            }
+
+            if (!result.AddressBookProperties.HasFlag (AddressBookProperties.IsWriteable))
+            {
+              if (DoesModeRequireWriteableServerResource (synchronizationMode))
+              {
+                errorMessageBuilder.AppendFormat (
+                    "- The specified address book is not writeable. Therefore it is not possible to use the synchronization mode '{0}'.",
+                    selectedSynchronizationModeDisplayName);
+                errorMessageBuilder.AppendLine();
+                hasError = true;
+              }
+            }
+          }
+          else
+          {
+            errorMessageBuilder.AppendLine ("- The specified Url is not an addressbook!");
             hasError = true;
           }
-        }
-        else if (outlookFolderType != OlItemType.olAppointmentItem && outlookFolderType != OlItemType.olTaskItem)
-        {
-          errorMessageBuilder.AppendLine ("- The outlook folder is not a calendar or task folder, or there is no folder selected.");
-          hasError = true;
-        }
-      }
-
-      if (isAddressBook)
-      {
-        if (!result.AddressBookProperties.HasFlag (AddressBookProperties.AddressBookAccessSupported))
-        {
-          errorMessageBuilder.AppendLine ("- The specified Url does not support address books.");
-          hasError = true;
-        }
-
-        if (!result.AddressBookProperties.HasFlag (AddressBookProperties.IsWriteable))
-        {
-          if (DoesModeRequireWriteableServerResource (synchronizationMode))
+          break;
+        case OlItemType.olTaskItem:
+          if (!isTaskList)
           {
-            errorMessageBuilder.AppendFormat (
-                "- The specified address book is not writeable. Therefore it is not possible to use the synchronization mode '{0}'.",
-                selectedSynchronizationModeDisplayName);
-            errorMessageBuilder.AppendLine();
+            errorMessageBuilder.AppendLine ("- The specified Url is not an task list!");
             hasError = true;
           }
-        }
-
-        if (outlookFolderType != OlItemType.olContactItem)
-        {
-          errorMessageBuilder.AppendLine ("- The outlook folder is not an address book, or there is no folder selected.");
-          hasError = true;
-        }
+          break;
       }
 
       if (hasError)
@@ -350,6 +339,14 @@ namespace CalDavSynchronizer.Ui.Options
 
     public static async Task TestWebDavConnection (ICurrentOptions environment, ISettingsFaultFinder settingsFaultFinder)
     {
+      if (environment.OutlookFolderType == null)
+      {
+        MessageBox.Show ("Please select an Outlook folder to specify the item type for this profile", ConnectionTestCaption);
+        return;
+      }
+
+      var outlookFolderType = environment.OutlookFolderType.Value;
+      
       StringBuilder errorMessageBuilder = new StringBuilder();
       if (!ValidateWebDavUrl (environment.ServerUrl, errorMessageBuilder, false))
       {
@@ -401,8 +398,7 @@ namespace CalDavSynchronizer.Ui.Options
               result,
               environment.SynchronizationMode,
               environment.SynchronizationModeDisplayName,
-              environment.OutlookFolderType,
-              ServerAdapterType.WebDavHttpClientBased);
+              outlookFolderType);
           return;
         }
         else
@@ -442,12 +438,19 @@ namespace CalDavSynchronizer.Ui.Options
           finalResult,
           environment.SynchronizationMode,
           environment.SynchronizationModeDisplayName,
-          environment.OutlookFolderType,
-          ServerAdapterType.WebDavHttpClientBased);
+          outlookFolderType);
     }
 
     public static async Task TestGoogleConnection (ICurrentOptions currentOptions, ISettingsFaultFinder settingsFaultFinder)
     {
+      if (currentOptions.OutlookFolderType == null)
+      {
+        MessageBox.Show ("Please select an Outlook folder to specify the item type for this profile", ConnectionTestCaption);
+        return;
+      }
+
+      var outlookFolderType = currentOptions.OutlookFolderType.Value;
+
       StringBuilder errorMessageBuilder = new StringBuilder();
 
       if (!ValidateGoogleEmailAddress (errorMessageBuilder, currentOptions.EmailAddress))
@@ -455,30 +458,10 @@ namespace CalDavSynchronizer.Ui.Options
         MessageBox.Show (errorMessageBuilder.ToString(), "The Email Address is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
         return;
       }
-      if (currentOptions.ServerAdapterType == ServerAdapterType.GoogleTaskApi &&
-          !string.IsNullOrWhiteSpace (currentOptions.ServerUrl) &&
-          currentOptions.ServerUrl != GoogleDavBaseUrl)
+
+      if (outlookFolderType == OlItemType.olTaskItem)
       {
-        var service = await GoogleHttpClientFactory.LoginToGoogleTasksService (currentOptions.EmailAddress, currentOptions.GetProxyIfConfigured());
-
-        try
-        {
-          TaskList task = await service.Tasklists.Get (currentOptions.ServerUrl).ExecuteAsync();
-        }
-        catch (Exception)
-        {
-          errorMessageBuilder.AppendFormat ("The tasklist with id '{0}' is invalid.", currentOptions.ServerUrl);
-          MessageBox.Show (errorMessageBuilder.ToString(), "The tasklist is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
-          return;
-        }
-        TestResult result = new TestResult (ResourceType.TaskList, CalendarProperties.None, AddressBookProperties.None);
-
-        DisplayTestReport (
-            result,
-            currentOptions.SynchronizationMode,
-            currentOptions.SynchronizationModeDisplayName,
-            currentOptions.OutlookFolderType,
-            currentOptions.ServerAdapterType);
+        await TestGoogleTaskConnection(currentOptions, errorMessageBuilder, outlookFolderType);
         return;
       }
 
@@ -502,11 +485,7 @@ namespace CalDavSynchronizer.Ui.Options
         var cardDavDataAccess = new CardDavDataAccess (enteredUri, webDavClient);
         IReadOnlyList<Tuple<Uri, string>> foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow (true);
 
-        var service = await GoogleHttpClientFactory.LoginToGoogleTasksService (currentOptions.EmailAddress, currentOptions.GetProxyIfConfigured());
-
-        TaskLists taskLists = await service.Tasklists.List().ExecuteAsync();
-
-        if (foundCaldendars.Count > 0 || foundAddressBooks.Count > 0 || taskLists.Items.Any())
+        if (foundCaldendars.Count > 0 || foundAddressBooks.Count > 0)
         {
           ResourceType initalResourceType;
           if (currentOptions.OutlookFolderType == OlItemType.olContactItem)
@@ -526,7 +505,7 @@ namespace CalDavSynchronizer.Ui.Options
               new SelectResourceForm (
                   foundCaldendars,
                   foundAddressBooks,
-                  taskLists.Items.Select (i => Tuple.Create (i.Id, i.Title)).ToArray(),
+                  new Tuple<string, string>[] {},
                   initalResourceType))
           {
             if (listCalendarsForm.ShowDialog() == DialogResult.OK)
@@ -535,12 +514,10 @@ namespace CalDavSynchronizer.Ui.Options
               {
                 autoDiscoveredUrl = null;
                 currentOptions.ServerUrl = listCalendarsForm.SelectedUrl;
-                currentOptions.ServerAdapterType = ServerAdapterType.GoogleTaskApi;
               }
               else
               {
                 autoDiscoveredUrl = new Uri (enteredUri.GetLeftPart (UriPartial.Authority) + listCalendarsForm.SelectedUrl);
-                currentOptions.ServerAdapterType = ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth;
               }
               autoDiscoveredResourceType = listCalendarsForm.ResourceType;
             }
@@ -569,8 +546,7 @@ namespace CalDavSynchronizer.Ui.Options
             result,
             currentOptions.SynchronizationMode,
             currentOptions.SynchronizationModeDisplayName,
-            currentOptions.OutlookFolderType,
-            currentOptions.ServerAdapterType);
+            outlookFolderType);
         return;
       }
 
@@ -585,10 +561,9 @@ namespace CalDavSynchronizer.Ui.Options
             finalResult,
             currentOptions.SynchronizationMode,
             currentOptions.SynchronizationModeDisplayName,
-            currentOptions.OutlookFolderType,
-            currentOptions.ServerAdapterType);
+            outlookFolderType);
       }
-      else if (currentOptions.ServerAdapterType == ServerAdapterType.GoogleTaskApi)
+      else if (outlookFolderType == OlItemType.olTaskItem)
       {
         TestResult result = new TestResult (ResourceType.TaskList, CalendarProperties.None, AddressBookProperties.None);
 
@@ -596,9 +571,54 @@ namespace CalDavSynchronizer.Ui.Options
             result,
             currentOptions.SynchronizationMode,
             currentOptions.SynchronizationModeDisplayName,
-            currentOptions.OutlookFolderType,
-            currentOptions.ServerAdapterType);
+            outlookFolderType);
       }
+    }
+
+    private static async Task TestGoogleTaskConnection (ICurrentOptions currentOptions, StringBuilder errorMessageBuilder, OlItemType outlookFolderType)
+    {
+      var service = await GoogleHttpClientFactory.LoginToGoogleTasksService (currentOptions.EmailAddress, currentOptions.GetProxyIfConfigured());
+
+      if (string.IsNullOrEmpty (currentOptions.ServerUrl))
+      {
+        TaskLists taskLists = await service.Tasklists.List().ExecuteAsync();
+
+        if (taskLists.Items.Any())
+        {
+
+          using (SelectResourceForm listCalendarsForm =
+              new SelectResourceForm (
+                  new Tuple<Uri, string, ArgbColor?>[] { },
+                  new Tuple<Uri, string>[] { },
+                  taskLists.Items.Select (i => Tuple.Create (i.Id, i.Title)).ToArray(),
+                  ResourceType.TaskList))
+          {
+            if (listCalendarsForm.ShowDialog() == DialogResult.OK)
+              currentOptions.ServerUrl = listCalendarsForm.SelectedUrl;
+            else
+              return;
+          }
+        }
+
+      }
+
+      try
+      {
+        await service.Tasklists.Get (currentOptions.ServerUrl).ExecuteAsync();
+      }
+      catch (Exception)
+      {
+        errorMessageBuilder.AppendFormat ("The tasklist with id '{0}' is invalid.", currentOptions.ServerUrl);
+        MessageBox.Show (errorMessageBuilder.ToString(), "The tasklist is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return;
+      }
+      TestResult result = new TestResult (ResourceType.TaskList, CalendarProperties.None, AddressBookProperties.None);
+
+      DisplayTestReport (
+          result,
+          currentOptions.SynchronizationMode,
+          currentOptions.SynchronizationModeDisplayName,
+          outlookFolderType);
     }
 
     public static Contracts.Options CreateNewSynchronizationProfileOrNull ()

@@ -105,6 +105,7 @@ namespace CalDavSynchronizer.Ui.Options
     }
 
     public OlItemType? OutlookFolderType => _dependencies.OutlookFolderType;
+    public event EventHandler OutlookFolderTypeChanged;
 
 
     public IWebDavClient CreateWebDavClient ()
@@ -203,6 +204,11 @@ namespace CalDavSynchronizer.Ui.Options
     private void UpdatePasswordControlEnabled()
     {
       _passwordTextBox.Enabled = !_useAccountPasswordCheckBox.Checked;
+    }
+
+    protected virtual void OnOutlookFolderTypeChanged ()
+    {
+      OutlookFolderTypeChanged?.Invoke (this, EventArgs.Empty);
     }
   }
 }

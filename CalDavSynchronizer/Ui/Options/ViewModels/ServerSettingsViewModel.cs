@@ -135,12 +135,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       options.ServerAdapterType = ServerAdapterType.WebDavHttpClientBased;
     }
 
-    public ServerAdapterType ServerAdapterType
-    {
-      get { return ServerAdapterType.WebDavHttpClientBased; }
-      set { throw new NotSupportedException ("Cannot change ServerAdapterType of general profile."); }
-    }
+    public ServerAdapterType ServerAdapterType { get; } = ServerAdapterType.WebDavHttpClientBased;
 
+    public bool IsGoogle { get; } = false;
 
     public bool Validate (StringBuilder errorMessageBuilder)
     {

@@ -70,6 +70,7 @@ namespace CalDavSynchronizer.Ui.Options
     private void OutlookFolderControl_FolderChanged (object sender, EventArgs e)
     {
       OnHeaderChanged();
+      _serverSettingsControl.CoerceServerAdapterType (_outlookFolderControl.OutlookFolderType);
     }
 
     public string ProfileName => _profileNameTextBox.Text;
@@ -98,7 +99,7 @@ namespace CalDavSynchronizer.Ui.Options
     {
       bool result = true;
 
-      if (_serverSettingsControl.ServerAdapterType != ServerAdapterType.GoogleTaskApi)
+      if (_outlookFolderControl.OutlookFolderType != OlItemType.olTaskItem)
         result &= OptionTasks.ValidateWebDavUrl (_serverSettingsControl.CalendarUrl, errorMessageBuilder, true);
 
       result &= _outlookFolderControl.Validate (errorMessageBuilder);
@@ -159,8 +160,7 @@ namespace CalDavSynchronizer.Ui.Options
     {
       try
       {
-        var mappingConfiguration = OptionTasks.CoreceMappingConfiguration (_outlookFolderControl.OutlookFolderType, _mappingConfiguration,
-                                                                           _serverSettingsControl.ServerAdapterType == ServerAdapterType.GoogleTaskApi);
+        var mappingConfiguration = OptionTasks.CoreceMappingConfiguration (_outlookFolderControl.OutlookFolderType, _mappingConfiguration, true);
         if (mappingConfiguration != null)
         {
           var configurationForm = mappingConfiguration.CreateConfigurationForm (_configurationFormFactory.Value);

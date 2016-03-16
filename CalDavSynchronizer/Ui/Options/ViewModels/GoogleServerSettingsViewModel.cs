@@ -23,6 +23,8 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using CalDavSynchronizer.Contracts;
 using log4net;
+using Microsoft.Office.Interop.Outlook;
+using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
@@ -47,12 +49,21 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
       _settingsFaultFinder = settingsFaultFinder;
       _currentOptions = currentOptions;
+      _currentOptions.OutlookFolderTypeChanged += CurrentOptions_OutlookFolderTypeChanged;
       _doAutoDiscoveryCommand = new DelegateCommandWithoutCanExecuteDelegation (_ => DoAutoDiscovery());
       _testConnectionCommand = new DelegateCommandWithoutCanExecuteDelegation (_ =>
       {
         ComponentContainer.EnsureSynchronizationContext();
         TestConnectionAsync();
       });
+    }
+
+    private void CurrentOptions_OutlookFolderTypeChanged (object sender, EventArgs e)
+    {
+      if (_currentOptions.OutlookFolderType == OlItemType.olTaskItem)
+        _serverAdapterType = ServerAdapterType.GoogleTaskApi;
+      else
+        _serverAdapterType = ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth;
     }
 
     private async void TestConnectionAsync ()
@@ -80,9 +91,13 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     private void DoAutoDiscovery ()
     {
-      CalenderUrl = OptionTasks.GoogleDavBaseUrl;
-      ComponentContainer.EnsureSynchronizationContext ();
-      TestConnectionAsync ();
+      if (_serverAdapterType == ServerAdapterType.GoogleTaskApi)
+        CalenderUrl = string.Empty;
+      else
+        CalenderUrl = OptionTasks.GoogleDavBaseUrl;
+
+      ComponentContainer.EnsureSynchronizationContext();
+      TestConnectionAsync();
     }
 
     public ICommand DoAutoDiscoveryCommand => _doAutoDiscoveryCommand;
@@ -113,12 +128,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return new SecureString(); }
     }
 
-    public ServerAdapterType ServerAdapterType
-    {
-      get { return _serverAdapterType; }
-      set { _serverAdapterType = value; OnPropertyChanged (); }
-    }
-
     public string EmailAddress
     {
       get { return _emailAddress; }
@@ -131,14 +140,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       }
     }
 
-
-
     public static GoogleServerSettingsViewModel DesignInstance => new GoogleServerSettingsViewModel (NullSettingsFaultFinder.Instance,new DesignCurrentOptions())
                                                                   {
                                                                       CalenderUrl = "http://calendar.url",
                                                                       EmailAddress = "bla@dot.com"
                                                                   };
 
+    public ServerAdapterType ServerAdapterType => _serverAdapterType;
+
+    public bool IsGoogle { get; } = true;
 
     public void SetOptions (CalDavSynchronizer.Contracts.Options options)
     {
