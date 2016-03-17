@@ -8,6 +8,7 @@
              xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels"
              xmlns:views="clr-namespace:CalDavSynchronizer.Ui.Options.Views"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:outlook="clr-namespace:Microsoft.Office.Interop.Outlook;assembly=Microsoft.Office.Interop.Outlook"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{x:Static  viewModels:OptionsCollectionViewModel.DesignInstance}">
@@ -164,6 +165,52 @@
             <ItemsControl ItemsSource="{Binding Sections}" />
           </DockPanel>
         </DataTemplate>
+
+       
+
+        <DataTemplate DataType="{x:Type viewModels:GenericOptionsViewModel}">
+          <DockPanel>
+            <DockPanel DockPanel.Dock="Top">
+              <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="Name:" />
+              <TextBox Text="{Binding Name}" />
+            </DockPanel>
+            <DockPanel DockPanel.Dock="Bottom" >
+              <Button Command="{Binding DeleteCommand}" DockPanel.Dock="Left">Delete</Button>
+              <Button  Command="{Binding CopyCommand}" DockPanel.Dock="Left">Copy</Button>
+              <Button  Command="{Binding ClearCacheCommand}" DockPanel.Dock="Left">Clear cache</Button>
+              <CheckBox IsChecked="{Binding IsActive}" DockPanel.Dock="Right">Is active</CheckBox>
+              <UIElement />
+            </DockPanel>
+
+            <StackPanel>
+              <views:OutlookFolderView DataContext="{Binding OutlookFolderViewModel}" />
+              <ContentControl Content="{Binding ServerSettingsViewModel}" />
+              <views:SyncSettingsView DataContext="{Binding SyncSettingsViewModel}" />
+
+              <ContentControl Content="{Binding TimeRangeViewModel}" >
+                <ContentControl.Style>
+                  <Style TargetType="{x:Type ContentControl}">
+                    <Style.Setters>
+                      <Setter Property="Visibility" Value="Collapsed"></Setter>
+                    </Style.Setters>
+                    <Style.Triggers>
+                      <!--<DataTrigger Binding="{Binding OutlookFolderType}" Value="{x:Static outlook:OlItemType.olAppointmentItem}" >-->
+                      <DataTrigger Binding="{Binding OutlookFolderType}" Value="{x:Static viewModels:GenericOptionsViewModel.olTaskItem}" >
+                        <Setter Property="Visibility" Value="Visible" />
+                      </DataTrigger>
+                      <DataTrigger Binding="{Binding OutlookFolderType}" Value="{x:Static viewModels:GenericOptionsViewModel.olAppointmentItem}" >
+                        <Setter Property="Visibility" Value="Visible" />
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </ContentControl.Style>
+              </ContentControl>
+              
+            </StackPanel>
+          </DockPanel>
+        </DataTemplate>
+
+     
       </ContentControl.Resources>
 
     </ContentControl>

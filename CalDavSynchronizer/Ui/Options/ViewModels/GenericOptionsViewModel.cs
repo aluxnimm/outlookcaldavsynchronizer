@@ -184,6 +184,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       return new CalDavDataAccess (new Uri (_serverSettingsViewModel.CalenderUrl), CreateWebDavClient ());
     }
 
+    public static OlItemType olAppointmentItem { get; } = OlItemType.olAppointmentItem;
+    public static OlItemType olTaskItem { get; } = OlItemType.olTaskItem;
+
     public OlItemType? OutlookFolderType => _outlookFolderViewModel.OutlookFolderType;
     public event EventHandler OutlookFolderTypeChanged;
 
@@ -193,13 +196,33 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         new DesignOptionsViewModelParent(),
         NetworkSettingsViewModel.DesignInstance,
         OutlookFolderViewModel.DesignInstance,
-        ServerSettingsViewModel.DesignInstance,
+        ViewModels.ServerSettingsViewModel.DesignInstance,
         SyncSettingsViewModel.DesignInstance,
         EventMappingConfigurationViewModel.DesignInstance)
                                                             {
                                                                 IsActive = true,
                                                                 Name = "Test Profile",
                                                             };
+
+    public OutlookFolderViewModel OutlookFolderViewModel
+    {
+      get { return _outlookFolderViewModel; }
+    }
+
+    public IServerSettingsViewModel ServerSettingsViewModel
+    {
+      get { return _serverSettingsViewModel; }
+    }
+
+    public SyncSettingsViewModel SyncSettingsViewModel
+    {
+      get { return _syncSettingsViewModel; }
+    }
+
+    public TimeRangeViewModel TimeRangeViewModel
+    {
+      get { return _timeRangeViewModel; }
+    }
 
     protected virtual void OnOutlookFolderTypeChanged ()
     {
