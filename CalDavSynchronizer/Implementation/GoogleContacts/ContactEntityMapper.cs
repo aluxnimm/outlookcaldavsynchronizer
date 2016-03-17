@@ -433,11 +433,11 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         {
           target.Inner.FileAs = source.Name.FullName;
         }
-        else if (!string.IsNullOrEmpty (source.Organizations?[0].Name))
+        else if (source.Organizations.Count > 0 && !string.IsNullOrEmpty (source.Organizations[0].Name))
         {
           target.Inner.FileAs = source.Organizations[0].Name;
         }
-        else if (!string.IsNullOrEmpty (source.Emails?[0].Address))
+        else if (source.Emails.Count > 0 && !string.IsNullOrEmpty (source.Emails[0].Address))
         {
           target.Inner.FileAs = source.Emails[0].Address;
         }
@@ -472,9 +472,18 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       target.Inner.NickName = source.ContactEntry.Nickname;
       target.Inner.Initials = source.ContactEntry.Initials;
 
-      target.Inner.CompanyName = source.Organizations?[0].Name;
-      target.Inner.Department = source.Organizations?[0].Department;
-      target.Inner.JobTitle = source.Organizations?[0].Title;
+      if (source.Organizations.Count > 0)
+      {
+        target.Inner.CompanyName = source.Organizations[0].Name;
+        target.Inner.Department = source.Organizations[0].Department;
+        target.Inner.JobTitle = source.Organizations[0].Title;
+      }
+      else
+      {
+        target.Inner.CompanyName = string.Empty;
+        target.Inner.Department = string.Empty;
+        target.Inner.JobTitle = string.Empty;
+      }
       target.Inner.OfficeLocation = source.Location;
 
       target.Inner.PersonalHomePage = source.ContactEntry.Websites.FirstOrDefault (w => w.Primary || w.Rel != ContactsRelationships.IsWork)?.Href;
