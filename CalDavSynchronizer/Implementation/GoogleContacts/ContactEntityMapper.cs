@@ -447,9 +447,27 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
       MapPhoneNumbers2To1 (source, target.Inner);
 
-      target.Inner.Email1Address = source.Emails?[0].Address;
-      target.Inner.Email2Address = source.Emails?[1].Address;
-      target.Inner.Email3Address = source.Emails?[2].Address;
+      target.Inner.Email1Address = string.Empty;
+      target.Inner.Email1DisplayName = string.Empty;
+      target.Inner.Email2Address = string.Empty;
+      target.Inner.Email2DisplayName = string.Empty;
+      target.Inner.Email3Address = string.Empty;
+      target.Inner.Email3DisplayName = string.Empty;
+      if (source.Emails.Count >= 1)
+      {
+        target.Inner.Email1Address = source.Emails[0].Address;
+        if (!string.IsNullOrEmpty(source.Emails[0].Label)) target.Inner.Email1DisplayName = source.Emails[0].Label;
+      }
+      if (source.Emails.Count >= 2)
+      {
+        target.Inner.Email2Address = source.Emails[1].Address;
+        if (!string.IsNullOrEmpty(source.Emails[1].Label)) target.Inner.Email2DisplayName = source.Emails[1].Label;
+      }
+      if (source.Emails.Count >= 3)
+      {
+        target.Inner.Email3Address = source.Emails[2].Address;
+        if (!string.IsNullOrEmpty(source.Emails[2].Label)) target.Inner.Email3DisplayName = source.Emails[2].Label;
+      }
 
       target.Inner.NickName = source.ContactEntry.Nickname;
       target.Inner.Initials = source.ContactEntry.Initials;
