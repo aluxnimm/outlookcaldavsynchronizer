@@ -27,11 +27,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
   internal class SyncSettingsViewModel : ViewModelBase, IOptionsSection
   {
     private ConflictResolution _conflictResolution;
-    private int _daysToSynchronizeInTheFuture;
-    private int _daysToSynchronizeInThePast;
     private int _synchronizationIntervalInMinutes;
     private SynchronizationMode _synchronizationMode;
-    private bool _useSynchronizationTimeRange;
 
     public SynchronizationMode SynchronizationMode
     {
@@ -59,36 +56,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       set
       {
         _synchronizationIntervalInMinutes = value;
-        OnPropertyChanged();
-      }
-    }
-
-    public bool UseSynchronizationTimeRange
-    {
-      get { return _useSynchronizationTimeRange; }
-      set
-      {
-        _useSynchronizationTimeRange = value;
-        OnPropertyChanged();
-      }
-    }
-
-    public int DaysToSynchronizeInThePast
-    {
-      get { return _daysToSynchronizeInThePast; }
-      set
-      {
-        _daysToSynchronizeInThePast = value;
-        OnPropertyChanged();
-      }
-    }
-
-    public int DaysToSynchronizeInTheFuture
-    {
-      get { return _daysToSynchronizeInTheFuture; }
-      set
-      {
-        _daysToSynchronizeInTheFuture = value;
         OnPropertyChanged();
       }
     }
@@ -122,9 +89,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
                                                                   {
                                                                       SynchronizationMode = SynchronizationMode.MergeInBothDirections,
                                                                       Resolution = ConflictResolution.Automatic,
-                                                                      UseSynchronizationTimeRange = true,
-                                                                      DaysToSynchronizeInTheFuture = 33,
-                                                                      DaysToSynchronizeInThePast = 44,
                                                                       SynchronizationIntervalInMinutes = 20
                                                                   };
 
@@ -133,9 +97,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       SynchronizationMode = options.SynchronizationMode;
       Resolution = options.ConflictResolution;
       SynchronizationIntervalInMinutes = options.SynchronizationIntervalInMinutes;
-      UseSynchronizationTimeRange = !options.IgnoreSynchronizationTimeRange;
-      DaysToSynchronizeInThePast = options.DaysToSynchronizeInThePast;
-      DaysToSynchronizeInTheFuture = options.DaysToSynchronizeInTheFuture;
     }
 
     public void FillOptions (CalDavSynchronizer.Contracts.Options options)
@@ -143,9 +104,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       options.SynchronizationMode = _synchronizationMode;
       options.ConflictResolution = _conflictResolution;
       options.SynchronizationIntervalInMinutes = _synchronizationIntervalInMinutes;
-      options.IgnoreSynchronizationTimeRange = !_useSynchronizationTimeRange;
-      options.DaysToSynchronizeInThePast = _daysToSynchronizeInThePast;
-      options.DaysToSynchronizeInTheFuture = _daysToSynchronizeInTheFuture;
     }
 
     public bool Validate (StringBuilder errorMessageBuilder)

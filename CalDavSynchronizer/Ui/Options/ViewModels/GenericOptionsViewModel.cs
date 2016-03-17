@@ -35,6 +35,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private readonly OutlookFolderViewModel _outlookFolderViewModel;
     private readonly IServerSettingsViewModel _serverSettingsViewModel;
     private readonly SyncSettingsViewModel _syncSettingsViewModel;
+    private readonly TimeRangeViewModel _timeRangeViewModel;
     private IOptionsViewModel _mappingConfigurationViewModel;
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
     private readonly IMappingConfigurationViewModelFactory _mappingConfigurationViewModelFactory;
@@ -64,6 +65,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       _mappingConfigurationViewModelFactory = mappingConfigurationViewModelFactoryFactory(this);
       _outlookFolderViewModel = new OutlookFolderViewModel (session, faultFinder);
       _outlookFolderViewModel.PropertyChanged += OutlookFolderViewModel_PropertyChanged;
+      _timeRangeViewModel = new TimeRangeViewModel();
     }
 
     /// <remarks>
@@ -122,7 +124,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     protected override IEnumerable<IOptionsSection> CreateSections ()
     {
-      return new IOptionsSection[] { _outlookFolderViewModel, _serverSettingsViewModel, _syncSettingsViewModel };
+      return new IOptionsSection[] { _outlookFolderViewModel, _serverSettingsViewModel, _syncSettingsViewModel, _timeRangeViewModel };
     }
 
     private void CoerceMappingConfiguration ()
@@ -145,8 +147,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     public bool UseSynchronizationTimeRange
     {
-      get { return _syncSettingsViewModel.UseSynchronizationTimeRange; }
-      set { _syncSettingsViewModel.UseSynchronizationTimeRange = value; }
+      get { return _timeRangeViewModel.UseSynchronizationTimeRange; }
+      set { _timeRangeViewModel.UseSynchronizationTimeRange = value; }
     }
 
     public string SynchronizationModeDisplayName => _syncSettingsViewModel.SelectedSynchronizationModeDisplayName;

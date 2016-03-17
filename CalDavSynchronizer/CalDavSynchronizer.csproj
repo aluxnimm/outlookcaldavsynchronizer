@@ -275,6 +275,10 @@
     <Compile Include="DataAccess\GlobalOptionsDataAccess.cs" />
     <Compile Include="DataAccess\IGlobalOptionsDataAccess.cs" />
     <Compile Include="Ui\Options\ISynchronizationProfilesViewModel.cs" />
+    <Compile Include="Ui\Options\ViewModels\TimeRangeViewModel.cs" />
+    <Compile Include="Ui\Options\Views\TimeRangeView.xaml.cs">
+      <DependentUpon>TimeRangeView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\ArgbColor.cs" />
     <Compile Include="DataAccess\HttpClientBasedClient\HttpResponseHeadersAdapter.cs" />
     <Compile Include="DataAccess\HttpUtility.cs" />
@@ -796,6 +800,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Ui\Options\Views\ServerSettingsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\Options\Views\TimeRangeView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

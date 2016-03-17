@@ -7,7 +7,6 @@
              mc:Ignorable="d"
              d:DataContext="{x:Static viewModels:SyncSettingsViewModel.DesignInstance}">
   <GroupBox Header="Sync settings">
-    <DockPanel>
       <Grid DockPanel.Dock="Top">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*" />
@@ -44,31 +43,5 @@
            MinWidth="100" Grid.Row="2" Grid.Column="1" />
 
       </Grid>
-      <GroupBox>
-        <GroupBox.Header>
-          <CheckBox Foreground="{x:Static SystemColors.ControlDarkDarkBrush}" FontWeight="Bold" Margin="0" Content="Use time range filter" IsChecked="{Binding UseSynchronizationTimeRange}" ToolTip="Changing the time range filter setting leads to deletion of the sync cache &#x0a;and a complete resync of the calendar!" />
-        </GroupBox.Header>
-
-        <Grid DockPanel.Dock="Top" IsEnabled="{Binding UseSynchronizationTimeRange}">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-          </Grid.ColumnDefinitions>
-          <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-          </Grid.RowDefinitions>
-
-          <TextBlock>Synchronization timespan past (days):</TextBlock>
-          <TextBox HorizontalAlignment="Right" MinWidth="60" Grid.Row="0" Grid.Column="1" Text="{Binding DaysToSynchronizeInThePast}" />
-
-          <TextBlock Grid.Row="1" Grid.Column="0">Synchronization timespan future (days):</TextBlock>
-          <TextBox HorizontalAlignment="Right" MinWidth="60" Grid.Row="1" Grid.Column="1" Text="{Binding DaysToSynchronizeInTheFuture}" />
-
-        </Grid>
-
-      </GroupBox>
-
-    </DockPanel>
   </GroupBox>
 </UserControl>

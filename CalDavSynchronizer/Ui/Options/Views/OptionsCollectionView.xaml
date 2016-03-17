@@ -141,6 +141,10 @@
           <views:OutlookFolderView />
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type viewModels:TimeRangeViewModel}">
+          <views:TimeRangeView />
+        </DataTemplate>
+
         <views:BooleanNotConverter x:Key="BooleanNotConverter" />
 
         <DataTemplate DataType="{x:Type viewModels:OptionsViewModelBase}">
