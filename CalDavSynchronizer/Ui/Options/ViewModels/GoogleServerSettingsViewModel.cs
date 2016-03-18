@@ -67,7 +67,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       set
       {
         _calenderUrl = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _calenderUrl, value);
       }
     }
 
@@ -86,10 +86,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return UserName; }
       set
       {
-        UserName = value;
-        OnPropertyChanged();
-        // ReSharper disable once ExplicitCallerInfoArgument
-        OnPropertyChanged (nameof (UserName));
+        if (!Equals (UserName, value))
+        {
+          UserName = value;
+          // ReSharper disable once ExplicitCallerInfoArgument
+          OnPropertyChanged (nameof (UserName));
+        }
       }
     }
 

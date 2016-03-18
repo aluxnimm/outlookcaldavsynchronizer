@@ -35,8 +35,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _synchronizationMode; }
       set
       {
-        _synchronizationMode = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _synchronizationMode, value);
         // ReSharper disable once ExplicitCallerInfoArgument
         OnPropertyChanged(nameof(ConflictResolutionAvailable));
       }
@@ -49,8 +48,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _conflictResolution; }
       set
       {
-        _conflictResolution = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _conflictResolution, value);
       }
     }
 
@@ -59,8 +57,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _synchronizationIntervalInMinutes; }
       set
       {
-        _synchronizationIntervalInMinutes = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _synchronizationIntervalInMinutes, value);
       }
     }
 

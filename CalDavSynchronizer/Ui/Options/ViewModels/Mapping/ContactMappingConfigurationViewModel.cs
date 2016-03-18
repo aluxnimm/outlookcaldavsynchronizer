@@ -23,7 +23,7 @@ using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 {
-  public class ContactMappingConfigurationViewModel : INotifyPropertyChanged, IOptionsViewModel
+  public class ContactMappingConfigurationViewModel : ViewModelBase, IOptionsViewModel
   {
     private bool _mapBirthday;
     private bool _mapContactPhoto;
@@ -35,8 +35,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _mapBirthday; }
       set
       {
-        _mapBirthday = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _mapBirthday, value);
       }
     }
 
@@ -45,8 +44,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _mapContactPhoto; }
       set
       {
-        _mapContactPhoto = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _mapContactPhoto, value);
       }
     }
 
@@ -55,8 +53,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _fixPhoneNumberFormat; }
       set
       {
-        _fixPhoneNumberFormat = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _fixPhoneNumberFormat, value);
       }
     }
 
@@ -65,8 +62,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _isSelected; }
       set
       {
-        _isSelected = value;
-        OnPropertyChanged ();
+        CheckedPropertyChange (ref _isSelected, value);
       }
     }
 
@@ -77,9 +73,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                                                              FixPhoneNumberFormat = false
                                                                          };
 
-    public event PropertyChangedEventHandler PropertyChanged;
-
-
+    
     public void SetOptions (CalDavSynchronizer.Contracts.Options options)
     {
       SetOptions(options.MappingConfiguration as ContactMappingConfiguration ?? new ContactMappingConfiguration());
@@ -110,10 +104,5 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     }
 
     public IEnumerable<IOptionsViewModel> SubOptions => new IOptionsViewModel[] { };
-
-    protected virtual void OnPropertyChanged ([CallerMemberName] string propertyName = null)
-    {
-      PropertyChanged?.Invoke (this, new PropertyChangedEventArgs (propertyName));
-    }
   }
 }

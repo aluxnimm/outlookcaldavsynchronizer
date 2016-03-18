@@ -69,8 +69,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _enableChangeTriggeredSynchronization; }
       set
       {
-        _enableChangeTriggeredSynchronization = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _enableChangeTriggeredSynchronization, value);
       }
     }
 
@@ -79,8 +78,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _selectedFolderName; }
       private set
       {
-        _selectedFolderName = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _selectedFolderName, value);
       }
     }
 
@@ -98,8 +96,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _selectedFolderType; }
       set
       {
-        _selectedFolderType = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _selectedFolderType, value);
       }
     }
 
