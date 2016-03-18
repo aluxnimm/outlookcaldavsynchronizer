@@ -14,9 +14,9 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using System.Reflection;
 using System.Security;
 using System.Text;
 using System.Windows.Forms;
@@ -30,16 +30,14 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
   internal class GoogleServerSettingsViewModel : ViewModelBase, IServerSettingsViewModel
   {
-    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-    private string _calenderUrl;
-    private string _emailAddress;
-    private ServerAdapterType _serverAdapterType;
-    private readonly DelegateCommandWithoutCanExecuteDelegation _testConnectionCommand;
-    private readonly ISettingsFaultFinder _settingsFaultFinder;
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodBase.GetCurrentMethod().DeclaringType);
     private readonly ICurrentOptions _currentOptions;
     private readonly DelegateCommandWithoutCanExecuteDelegation _doAutoDiscoveryCommand;
-    
+    private readonly ISettingsFaultFinder _settingsFaultFinder;
+    private readonly DelegateCommandWithoutCanExecuteDelegation _testConnectionCommand;
+
+    private string _calenderUrl;
+
     public GoogleServerSettingsViewModel (ISettingsFaultFinder settingsFaultFinder, ICurrentOptions currentOptions)
     {
       if (settingsFaultFinder == null)
@@ -58,55 +56,10 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       });
     }
 
-    private void CurrentOptions_OutlookFolderTypeChanged (object sender, EventArgs e)
-    {
-      if (_currentOptions.OutlookFolderType == OlItemType.olTaskItem)
-        _serverAdapterType = ServerAdapterType.GoogleTaskApi;
-      else
-        _serverAdapterType = ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth;
-    }
-
-    private async void TestConnectionAsync ()
-    {
-      _testConnectionCommand.SetCanExecute (false);
-      _doAutoDiscoveryCommand.SetCanExecute (false);
-      try
-      {
-        await OptionTasks.TestGoogleConnection (_currentOptions, _settingsFaultFinder);
-      }
-      catch (Exception x)
-      {
-        s_logger.Error ("Exception while testing the connection.", x);
-        string message = null;
-        for (Exception ex = x; ex != null; ex = ex.InnerException)
-          message += ex.Message + Environment.NewLine;
-        MessageBox.Show (message, OptionTasks.ConnectionTestCaption);
-      }
-      finally
-      {
-        _testConnectionCommand.SetCanExecute (true);
-        _doAutoDiscoveryCommand.SetCanExecute (true);
-      }
-    }
-
-    private void DoAutoDiscovery ()
-    {
-      if (_serverAdapterType == ServerAdapterType.GoogleTaskApi)
-        CalenderUrl = string.Empty;
-      else
-        CalenderUrl = OptionTasks.GoogleDavBaseUrl;
-
-      ComponentContainer.EnsureSynchronizationContext();
-      TestConnectionAsync();
-    }
-
     public ICommand DoAutoDiscoveryCommand => _doAutoDiscoveryCommand;
     public ICommand TestConnectionCommand => _testConnectionCommand;
-    
-    public string UserName
-    {
-      get { return _emailAddress; }
-    }
+
+    public string UserName { get; private set; }
 
     public string CalenderUrl
     {
@@ -130,56 +83,103 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     public string EmailAddress
     {
-      get { return _emailAddress; }
+      get { return UserName; }
       set
       {
-        _emailAddress = value;
+        UserName = value;
         OnPropertyChanged();
         // ReSharper disable once ExplicitCallerInfoArgument
         OnPropertyChanged (nameof (UserName));
       }
     }
 
-    public static GoogleServerSettingsViewModel DesignInstance => new GoogleServerSettingsViewModel (NullSettingsFaultFinder.Instance,new DesignCurrentOptions())
-                                                                  {
-                                                                      CalenderUrl = "http://calendar.url",
-                                                                      EmailAddress = "bla@dot.com"
-                                                                  };
-
-    public ServerAdapterType ServerAdapterType => _serverAdapterType;
+    public ServerAdapterType ServerAdapterType { get; private set; }
 
     public bool IsGoogle { get; } = true;
 
-    public void SetOptions (CalDavSynchronizer.Contracts.Options options)
+    public void SetOptions (Contracts.Options options)
     {
       EmailAddress = options.EmailAddress;
       if (!string.IsNullOrEmpty (options.CalenderUrl))
         CalenderUrl = options.CalenderUrl;
       else
         CalenderUrl = OptionTasks.GoogleDavBaseUrl;
-      _serverAdapterType = options.ServerAdapterType;
+      ServerAdapterType = options.ServerAdapterType;
     }
 
-    public void FillOptions (CalDavSynchronizer.Contracts.Options options)
+    public void FillOptions (Contracts.Options options)
     {
       options.CalenderUrl = _calenderUrl;
-      options.UserName = _emailAddress;
+      options.UserName = UserName;
       options.Password = new SecureString();
-      options.EmailAddress = _emailAddress;
+      options.EmailAddress = UserName;
       options.UseAccountPassword = false;
-      options.ServerAdapterType = _serverAdapterType;
+      options.ServerAdapterType = ServerAdapterType;
     }
 
     public bool Validate (StringBuilder errorMessageBuilder)
     {
-      bool result = true;
+      var result = true;
 
-      if (_serverAdapterType != ServerAdapterType.GoogleTaskApi)
+      if (ServerAdapterType != ServerAdapterType.GoogleTaskApi)
         result &= OptionTasks.ValidateWebDavUrl (CalenderUrl, errorMessageBuilder, true);
 
       result &= OptionTasks.ValidateGoogleEmailAddress (errorMessageBuilder, EmailAddress);
 
       return result;
     }
+
+    private void CurrentOptions_OutlookFolderTypeChanged (object sender, EventArgs e)
+    {
+      UpdateServeradapterType();
+    }
+
+    private void UpdateServeradapterType ()
+    {
+      if (_currentOptions.OutlookFolderType == OlItemType.olTaskItem)
+        ServerAdapterType = ServerAdapterType.GoogleTaskApi;
+      else
+        ServerAdapterType = ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth;
+    }
+
+    private async void TestConnectionAsync ()
+    {
+      _testConnectionCommand.SetCanExecute (false);
+      _doAutoDiscoveryCommand.SetCanExecute (false);
+      try
+      {
+        await OptionTasks.TestGoogleConnection (_currentOptions, _settingsFaultFinder);
+      }
+      catch (Exception x)
+      {
+        s_logger.Error ("Exception while testing the connection.", x);
+        string message = null;
+        for (var ex = x; ex != null; ex = ex.InnerException)
+          message += ex.Message + Environment.NewLine;
+        MessageBox.Show (message, OptionTasks.ConnectionTestCaption);
+      }
+      finally
+      {
+        _testConnectionCommand.SetCanExecute (true);
+        _doAutoDiscoveryCommand.SetCanExecute (true);
+      }
+    }
+
+    private void DoAutoDiscovery ()
+    {
+      if (ServerAdapterType == ServerAdapterType.GoogleTaskApi)
+        CalenderUrl = string.Empty;
+      else
+        CalenderUrl = OptionTasks.GoogleDavBaseUrl;
+
+      ComponentContainer.EnsureSynchronizationContext();
+      TestConnectionAsync();
+    }
+
+    public static GoogleServerSettingsViewModel DesignInstance => new GoogleServerSettingsViewModel (NullSettingsFaultFinder.Instance, new DesignCurrentOptions ())
+    {
+      CalenderUrl = "http://calendar.url",
+      EmailAddress = "bla@dot.com"
+    };
   }
 }
