@@ -127,7 +127,7 @@ namespace CalDavSynchronizer.OAuth.Google
                            RefreshToken = credential.Token.RefreshToken
                        };
 
-      var contactsRequest = new ContactsRequest (new RequestSettings ("Outlook CalDav Synchronizer", parameters));
+      var contactsRequest = new ContactsRequest (new RequestSettings ("Outlook CalDav Synchronizer", parameters) {AutoPaging = true});
 
       if (proxyOrNull != null)
         contactsRequest.Proxy = proxyOrNull;
