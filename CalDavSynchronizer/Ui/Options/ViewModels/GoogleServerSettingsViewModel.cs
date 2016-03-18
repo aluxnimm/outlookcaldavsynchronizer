@@ -66,7 +66,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _calenderUrl; }
       set
       {
-        _calenderUrl = value;
         CheckedPropertyChange (ref _calenderUrl, value);
       }
     }
