@@ -10,7 +10,7 @@
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:outlook="clr-namespace:Microsoft.Office.Interop.Outlook;assembly=Microsoft.Office.Interop.Outlook"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300"
+             d:DesignHeight="500" d:DesignWidth="600"
              d:DataContext="{x:Static  viewModels:OptionsCollectionViewModel.DesignInstance}">
 
   <UserControl.Resources>
@@ -81,8 +81,26 @@
       </UniformGrid>
       <UIElement />
     </DockPanel>
-    
-    <TreeView MinWidth="220" MaxWidth="300" Margin="3"  DockPanel.Dock="Left" ItemsSource="{Binding Options}" x:Name="OptionsTree">
+  
+  <DockPanel>
+      <ToolBar DockPanel.Dock="Top">
+        <Button Command="{Binding AddCommand}" ToolTip="Add new profile" >
+          <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Add.png"></Image>
+        </Button>
+        <Button Command="{Binding DeleteSelectedCommand}" ToolTip="Delete selected profile">
+          <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Delete.png"></Image>
+        </Button>
+        <Button Command="{Binding CopySelectedCommand}" ToolTip="Copy selected profile">
+          <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Copy.png"></Image>
+        </Button>
+        <Button Command="{Binding MoveSelectedUpCommand}" ToolTip="Move selected profile up">
+          <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/MoveUp.png"></Image>
+        </Button>
+        <Button Command="{Binding MoveSelectedDownCommand}" ToolTip="Move selected profile down">
+          <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/MoveDown.png"></Image>
+        </Button>
+      </ToolBar>
+    <TreeView MinWidth="220" MaxWidth="300" Margin="3"  ItemsSource="{Binding Options}" x:Name="OptionsTree">
       <TreeView.Resources>
         <views:OlItemTypeToImageConverter x:Key="OlItemTypeToImageConverter" />
       </TreeView.Resources>
@@ -106,7 +124,7 @@
         </Style>
       </TreeView.ItemContainerStyle>
     </TreeView>
-   
+    </DockPanel>
     <ContentControl Content="{Binding ElementName=OptionsTree,Path=SelectedItem}">
 
       <ContentControl.Resources>

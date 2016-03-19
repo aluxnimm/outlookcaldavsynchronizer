@@ -63,7 +63,58 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         availableEventCategories);
       AddCommand = new DelegateCommand (_ => Add());
       CloseCommand = new DelegateCommand (shouldSaveNewOptions => Close((bool)shouldSaveNewOptions));
+      DeleteSelectedCommand = new DelegateCommand (_ => DeleteSelected (), _ => CanDeleteSelected);
+      CopySelectedCommand = new DelegateCommand (_ => CopySelected (), _ => CanCopySelected);
+      MoveSelectedUpCommand = new DelegateCommand (_ => MoveSelectedUp (), _ => CanMoveSelectedUp);
+      MoveSelectedDownCommand = new DelegateCommand (_ => MoveSelectedDown (), _ => CanMoveSelectedDown);
     }
+
+    private bool CanMoveSelectedDown => SelectedOrNull != null;
+    private bool CanMoveSelectedUp => SelectedOrNull != null;
+    private bool CanCopySelected => SelectedOrNull != null;
+    private bool CanDeleteSelected => SelectedOrNull != null;
+
+    private void MoveSelectedDown ()
+    {
+      var selected = SelectedOrNull;
+      if (selected != null)
+      {
+        var index = _options.IndexOf (selected);
+        var newIndex = Math.Min (index + 1, _options.Count - 1);
+        System.Diagnostics.Debug.WriteLine ($"{index} => {newIndex}");
+        _options.Move (index, newIndex);
+        selected.IsSelected = true;
+      }
+    }
+
+    private void MoveSelectedUp ()
+    {
+      var selected = SelectedOrNull;
+      if (selected != null)
+      {
+        var index = _options.IndexOf (selected);
+        var newIndex = Math.Max (index - 1, 0);
+        System.Diagnostics.Debug.WriteLine ($"{index} => {newIndex}");
+        _options.Move (index, newIndex);
+        selected.IsSelected = true;
+      }
+    }
+
+    private void CopySelected ()
+    {
+      var selected = SelectedOrNull;
+      if (selected != null)
+        RequestCopy (selected);
+    }
+
+    private void DeleteSelected ()
+    {
+      var selected = SelectedOrNull;
+      if (selected != null)
+        RequestDeletion (selected);
+    }
+
+    OptionsViewModelBase SelectedOrNull => _options.FirstOrDefault (o => o.IsSelected);
 
     private void Close (bool shouldSaveNewOptions)
     {
@@ -125,6 +176,10 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     public ICommand AddCommand { get; }
     public ICommand CloseCommand { get; }
+    public ICommand DeleteSelectedCommand { get; }
+    public ICommand CopySelectedCommand { get; }
+    public ICommand MoveSelectedUpCommand { get; }
+    public ICommand MoveSelectedDownCommand { get; }
     public ObservableCollection<OptionsViewModelBase> Options => _options;
 
 
@@ -157,7 +212,10 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     public void RequestDeletion (OptionsViewModelBase viewModel)
     {
+      var index = _options.IndexOf (viewModel);
       _options.Remove (viewModel);
+      if (_options.Count > 0)
+        _options[Math.Max (0, Math.Min (_options.Count - 1, index))].IsSelected = true;
     }
 
     public void RequestCopy (OptionsViewModelBase viewModel)
@@ -171,6 +229,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
       foreach (var vm in _optionsViewModelFactory.Create (new[] { options }, _fixInvalidSettings))
         _options.Insert (index, vm);
+
+      ShowProfile (options.Id);
     }
 
     public void RequestCacheDeletion (OptionsViewModelBase viewModel)
@@ -197,7 +257,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
               NullOutlookAccountPasswordProvider.Instance,
               new[] {"Cat1","Cat2"},
               _ => string.Empty);
-          viewModel.Options.Add (GenericOptionsViewModel.DesignInstance);
+          var genericOptionsViewModel = GenericOptionsViewModel.DesignInstance;
+          genericOptionsViewModel.IsSelected = true;
+          viewModel.Options.Add (genericOptionsViewModel);
           viewModel.Options.Add (GenericOptionsViewModel.DesignInstance);
           return viewModel;
         }

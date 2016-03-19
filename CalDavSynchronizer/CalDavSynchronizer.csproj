@@ -753,6 +753,11 @@
     <Resource Include="Resources\Appointment.png" />
     <Resource Include="Resources\Contact.png" />
     <Resource Include="Resources\Task.png" />
+    <Resource Include="Resources\MoveDown.png" />
+    <Resource Include="Resources\MoveUp.png" />
+    <Resource Include="Resources\Add.png" />
+    <Resource Include="Resources\Copy.png" />
+    <Resource Include="Resources\Delete.png" />
     <Content Include="Resources\outlookcaldavsynchronizerlogoarrow.png" />
   </ItemGroup>
   <ItemGroup>
