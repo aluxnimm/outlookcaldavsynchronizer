@@ -37,6 +37,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private readonly DelegateCommandWithoutCanExecuteDelegation _testConnectionCommand;
 
     private string _calenderUrl;
+    private bool _useGoogleNativeApi;
+    private bool _useGoogleNativeApiAvailable;
 
     public GoogleServerSettingsViewModel (ISettingsFaultFinder settingsFaultFinder, ICurrentOptions currentOptions)
     {
@@ -94,7 +96,36 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       }
     }
 
-    public ServerAdapterType ServerAdapterType { get; private set; }
+    public bool UseGoogleNativeApi
+    {
+      get { return _useGoogleNativeApi; }
+      set
+      {
+        CheckedPropertyChange (ref _useGoogleNativeApi, value);
+      }
+    }
+
+    public bool UseGoogleNativeApiAvailable
+    {
+      get { return _useGoogleNativeApiAvailable; }
+      set { CheckedPropertyChange (ref _useGoogleNativeApiAvailable, value); }
+    }
+
+    public ServerAdapterType ServerAdapterType
+    {
+      get
+      {
+        switch (_currentOptions.OutlookFolderType)
+        {
+          case OlItemType.olTaskItem:
+            return ServerAdapterType.GoogleTaskApi;
+          case OlItemType.olContactItem:
+            return UseGoogleNativeApi ? ServerAdapterType.GoogleContactApi : ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth;
+          default:
+            return ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth;
+        }
+      }
+    }
 
     public bool IsGoogle { get; } = true;
 
@@ -105,7 +136,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         CalenderUrl = options.CalenderUrl;
       else
         CalenderUrl = OptionTasks.GoogleDavBaseUrl;
-      ServerAdapterType = options.ServerAdapterType;
+
+      UseGoogleNativeApi = options.ServerAdapterType == ServerAdapterType.GoogleContactApi || options.ServerAdapterType == ServerAdapterType.GoogleTaskApi;
+      UpdateUseGoogleNativeApiAvailable();
     }
 
     public void FillOptions (Contracts.Options options)
@@ -132,15 +165,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     private void CurrentOptions_OutlookFolderTypeChanged (object sender, EventArgs e)
     {
-      UpdateServeradapterType();
+      UpdateUseGoogleNativeApiAvailable();
     }
 
-    private void UpdateServeradapterType ()
+    private void UpdateUseGoogleNativeApiAvailable ()
     {
-      if (_currentOptions.OutlookFolderType == OlItemType.olTaskItem)
-        ServerAdapterType = ServerAdapterType.GoogleTaskApi;
-      else
-        ServerAdapterType = ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth;
+      UseGoogleNativeApiAvailable = _currentOptions.OutlookFolderType == OlItemType.olContactItem;
     }
 
     private async void TestConnectionAsync ()
@@ -180,7 +210,11 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     public static GoogleServerSettingsViewModel DesignInstance => new GoogleServerSettingsViewModel (NullSettingsFaultFinder.Instance, new DesignCurrentOptions ())
     {
       CalenderUrl = "http://calendar.url",
-      EmailAddress = "bla@dot.com"
+      EmailAddress = "bla@dot.com",
+      UseGoogleNativeApiAvailable = true,
+      _useGoogleNativeApi = true
     };
+
+   
   }
 }
