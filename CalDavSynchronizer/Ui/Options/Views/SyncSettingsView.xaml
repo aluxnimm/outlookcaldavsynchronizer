@@ -28,6 +28,7 @@
 
         <TextBlock Grid.Row="1" Grid.Column="0">Conflict Resolution:</TextBlock>
         <ComboBox
+          IsEnabled="{Binding ConflictResolutionAvailable}"
           ItemsSource="{Binding AvailableConflictResolutions}"
           DisplayMemberPath="Name"
           SelectedValuePath="Value"

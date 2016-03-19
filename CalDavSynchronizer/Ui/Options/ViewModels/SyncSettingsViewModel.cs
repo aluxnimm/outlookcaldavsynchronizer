@@ -37,8 +37,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       {
         _synchronizationMode = value;
         OnPropertyChanged();
+        // ReSharper disable once ExplicitCallerInfoArgument
+        OnPropertyChanged(nameof(ConflictResolutionAvailable));
       }
     }
+
+    public bool ConflictResolutionAvailable => _synchronizationMode == SynchronizationMode.MergeInBothDirections;
 
     public ConflictResolution Resolution
     {
