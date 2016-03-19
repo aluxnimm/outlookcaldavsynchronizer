@@ -66,7 +66,6 @@
   
   <DockPanel>
     <DockPanel DockPanel.Dock="Bottom">
-      <Button Command="{Binding AddCommand}" DockPanel.Dock="Left">Add</Button>
       <UniformGrid DockPanel.Dock="Right" Columns="2" Rows="1">
         <Button Command="{Binding CloseCommand}" Content="Ok">
           <Button.CommandParameter>
@@ -173,10 +172,7 @@
               <TextBox Text="{Binding Name}" />
             </DockPanel>
             <DockPanel DockPanel.Dock="Bottom" >
-              <Button Command="{Binding DeleteCommand}" DockPanel.Dock="Left">Delete</Button>
-              <Button  Command="{Binding CopyCommand}" DockPanel.Dock="Left">Copy</Button>
               <Button  Command="{Binding ClearCacheCommand}" DockPanel.Dock="Left">Clear cache</Button>
-              <CheckBox IsChecked="{Binding IsActive}" DockPanel.Dock="Right">Is active</CheckBox>
               <UIElement />
             </DockPanel>
 
@@ -193,10 +189,7 @@
               <TextBox Text="{Binding Name}" />
             </DockPanel>
             <DockPanel DockPanel.Dock="Bottom" >
-              <Button Command="{Binding DeleteCommand}" DockPanel.Dock="Left">Delete</Button>
-              <Button  Command="{Binding CopyCommand}" DockPanel.Dock="Left">Copy</Button>
               <Button  Command="{Binding ClearCacheCommand}" DockPanel.Dock="Left">Clear cache</Button>
-              <CheckBox IsChecked="{Binding IsActive}" DockPanel.Dock="Right">Is active</CheckBox>
               <UIElement />
             </DockPanel>
 

@@ -40,15 +40,11 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         throw new ArgumentNullException (nameof (parent));
 
       _parent = parent;
-      CopyCommand = new DelegateCommand (_ => _parent.RequestCopy (this));
-      DeleteCommand = new DelegateCommand (_ => _parent.RequestDeletion (this));
       ClearCacheCommand = new DelegateCommand (_ => _parent.RequestCacheDeletion (this));
     }
 
     public IEnumerable<IOptionsSection> Sections => _sections ?? (_sections = CreateSections());
 
-    public ICommand CopyCommand { get; }
-    public ICommand DeleteCommand { get; }
     public ICommand ClearCacheCommand { get; }
 
     public bool IsActive

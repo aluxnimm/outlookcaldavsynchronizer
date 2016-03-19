@@ -104,14 +104,14 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     {
       var selected = SelectedOrNull;
       if (selected != null)
-        RequestCopy (selected);
+        Copy (selected);
     }
 
     private void DeleteSelected ()
     {
       var selected = SelectedOrNull;
       if (selected != null)
-        RequestDeletion (selected);
+        Delete (selected);
     }
 
     OptionsViewModelBase SelectedOrNull => _options.FirstOrDefault (o => o.IsSelected);
@@ -210,7 +210,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       return optionsCollection.ToArray();
     }
 
-    public void RequestDeletion (OptionsViewModelBase viewModel)
+    private void Delete (OptionsViewModelBase viewModel)
     {
       var index = _options.IndexOf (viewModel);
       _options.Remove (viewModel);
@@ -218,7 +218,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         _options[Math.Max (0, Math.Min (_options.Count - 1, index))].IsSelected = true;
     }
 
-    public void RequestCopy (OptionsViewModelBase viewModel)
+    private void Copy (OptionsViewModelBase viewModel)
     {
       var options = new CalDavSynchronizer.Contracts.Options();
       viewModel.FillOptions (options);
