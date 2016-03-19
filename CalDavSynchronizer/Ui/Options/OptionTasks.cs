@@ -465,6 +465,12 @@ namespace CalDavSynchronizer.Ui.Options
         return;
       }
 
+      if (outlookFolderType == OlItemType.olContactItem && currentOptions.ServerAdapterType == ServerAdapterType.GoogleContactApi)
+      {
+        await TestGoogleContactsConnection (currentOptions, errorMessageBuilder, outlookFolderType);
+        return;
+      }
+
       if (!ValidateWebDavUrl (currentOptions.ServerUrl, errorMessageBuilder, false))
       {
         MessageBox.Show (errorMessageBuilder.ToString(), "The CalDav/CardDav Url is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -606,13 +612,41 @@ namespace CalDavSynchronizer.Ui.Options
       {
         await service.Tasklists.Get (currentOptions.ServerUrl).ExecuteAsync();
       }
-      catch (Exception)
+      catch (Exception x)
       {
+        s_logger.Error (null, x);
         errorMessageBuilder.AppendFormat ("The tasklist with id '{0}' is invalid.", currentOptions.ServerUrl);
         MessageBox.Show (errorMessageBuilder.ToString(), "The tasklist is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
         return;
       }
       TestResult result = new TestResult (ResourceType.TaskList, CalendarProperties.None, AddressBookProperties.None);
+
+      DisplayTestReport (
+          result,
+          currentOptions.SynchronizationMode,
+          currentOptions.SynchronizationModeDisplayName,
+          outlookFolderType);
+    }
+
+    private static async Task TestGoogleContactsConnection (ICurrentOptions currentOptions, StringBuilder errorMessageBuilder, OlItemType outlookFolderType)
+    {
+      var service = await GoogleHttpClientFactory.LoginToContactsService (currentOptions.EmailAddress, currentOptions.GetProxyIfConfigured());
+
+      try
+      {
+        await Task.Run (() => service.GetGroups());
+        currentOptions.ServerUrl = string.Empty;
+      }
+      catch (Exception x)
+      {
+        s_logger.Error (null, x);
+        MessageBox.Show (x.Message, ConnectionTestCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return;
+      }
+      TestResult result = new TestResult (
+          ResourceType.AddressBook,
+          CalendarProperties.None,
+          AddressBookProperties.AddressBookAccessSupported | AddressBookProperties.IsWriteable);
 
       DisplayTestReport (
           result,

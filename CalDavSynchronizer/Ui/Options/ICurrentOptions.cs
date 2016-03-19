@@ -35,6 +35,7 @@ namespace CalDavSynchronizer.Ui.Options
     OlItemType? OutlookFolderType { get; }
     event EventHandler OutlookFolderTypeChanged;
     string EmailAddress { get; }
+    ServerAdapterType ServerAdapterType { get; }
 
     IWebDavClient CreateWebDavClient ();
     IWebProxy GetProxyIfConfigured ();
