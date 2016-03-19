@@ -329,11 +329,12 @@ namespace CalDavSynchronizer.Scheduling
       var synchronizer = new Synchronizer<string, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar> (
           atypeRepository,
           btypeRepository,
-          InitialEventSyncStateCreationStrategyFactory.Create (
+          InitialSyncStateCreationStrategyFactory<string, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar>.Create (
               syncStateFactory,
               syncStateFactory.Environment,
               options.SynchronizationMode,
-              options.ConflictResolution),
+              options.ConflictResolution,
+              e => new EventConflictInitialSyncStateCreationStrategyAutomatic (e)),
           entityRelationDataAccess,
           outlookEventRelationDataFactory,
           new InitialEventEntityMatcher (btypeIdEqualityComparer),
@@ -407,11 +408,12 @@ namespace CalDavSynchronizer.Scheduling
       var synchronizer = new Synchronizer<string, DateTime, TaskItemWrapper, WebResourceName, string, IICalendar> (
           atypeRepository,
           btypeRepository,
-          InitialTaskSyncStateCreationStrategyFactory.Create (
+          InitialSyncStateCreationStrategyFactory<string, DateTime, TaskItemWrapper, WebResourceName, string, IICalendar>.Create (
               syncStateFactory,
               syncStateFactory.Environment,
               options.SynchronizationMode,
-              options.ConflictResolution),
+              options.ConflictResolution,
+              e => new TaskConflictInitialSyncStateCreationStrategyAutomatic (e)),
           new EntityRelationDataAccess<string, DateTime, OutlookEventRelationData, WebResourceName, string> (storageDataDirectory),
           outlookEventRelationDataFactory,
           new InitialTaskEntityMatcher (btypeIdEqualityComparer),
@@ -461,11 +463,12 @@ namespace CalDavSynchronizer.Scheduling
       var synchronizer = new Synchronizer<string, DateTime, TaskItemWrapper, string, string, Task> (
           atypeRepository,
           btypeRepository,
-          InitialGoogleTaskSyncStateCreationStrategyFactory.Create (
+          InitialSyncStateCreationStrategyFactory<string, DateTime, TaskItemWrapper, string, string, Task>.Create (
               syncStateFactory,
               syncStateFactory.Environment,
               options.SynchronizationMode,
-              options.ConflictResolution),
+              options.ConflictResolution,
+              e => new GoogleTaskConflictInitialSyncStateCreationStrategyAutomatic (e)),
           new EntityRelationDataAccess<string, DateTime, GoogleTaskRelationData, string, string> (storageDataDirectory),
           relationDataFactory,
           new InitialGoogleTastEntityMatcher (btypeIdEqualityComparer),
@@ -527,11 +530,12 @@ namespace CalDavSynchronizer.Scheduling
       var synchronizer = new Synchronizer<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard> (
           atypeRepository,
           btypeRepository,
-          InitialContactSyncStateCreationStrategyFactory.Create (
+          InitialSyncStateCreationStrategyFactory<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard>.Create (
               syncStateFactory,
               syncStateFactory.Environment,
               options.SynchronizationMode,
-              options.ConflictResolution),
+              options.ConflictResolution,
+              e => new ContactConflictInitialSyncStateCreationStrategyAutomatic (e)),
           storageDataAccess,
           entityRelationDataFactory,
           new InitialContactEntityMatcher (btypeIdEqualityComparer),
@@ -580,11 +584,12 @@ namespace CalDavSynchronizer.Scheduling
       var synchronizer = new Synchronizer<string, DateTime, ContactItemWrapper, string, string, Contact> (
           atypeRepository,
           btypeRepository,
-          InitialGoogleContactSyncStateCreationStrategyFactory.Create (
+          InitialSyncStateCreationStrategyFactory<string, DateTime, ContactItemWrapper, string, string, Contact>.Create (
               syncStateFactory,
               syncStateFactory.Environment,
               options.SynchronizationMode,
-              options.ConflictResolution),
+              options.ConflictResolution,
+              e => new GoogleContactConflictInitialSyncStateCreationStrategyAutomatic (e)),
           storageDataAccess,
           entityRelationDataFactory,
           new InitialGoogleContactEntityMatcher (btypeIdEqualityComparer),

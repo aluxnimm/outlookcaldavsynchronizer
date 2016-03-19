@@ -291,7 +291,7 @@
     <Compile Include="Implementation\GoogleContacts\GoogleContactRepository.cs" />
     <Compile Include="Implementation\GoogleContacts\GoogleContactRelationData.cs" />
     <Compile Include="Implementation\GoogleContacts\GoogleContactRelationDataFactory.cs" />
-    <Compile Include="Implementation\GoogleContacts\InitialGoogleContactSyncStateCreationStrategyFactory.cs" />
+    <Compile Include="Implementation\InitialSyncStateCreationStrategyFactory.cs" />
     <Compile Include="Implementation\GoogleContacts\InitialGoogleContactEntityMatcher.cs" />
     <Compile Include="Implementation\GoogleContacts\GoogleContactUpdateFromNewerToOlder.cs" />
     <Compile Include="Ui\Options\ISynchronizationProfilesViewModel.cs" />
@@ -334,7 +334,6 @@
     <Compile Include="Implementation\Contacts\ContactConflictInitialSyncStateCreationStrategyAutomatic.cs" />
     <Compile Include="Implementation\Contacts\ContactEntityMapper.cs" />
     <Compile Include="Implementation\Contacts\InitialContactEntityMatcher.cs" />
-    <Compile Include="Implementation\Contacts\InitialContactSyncStateCreationStrategyFactory.cs" />
     <Compile Include="Implementation\Contacts\OutlookCardDavUpdateFromNewerToOlder.cs" />
     <Compile Include="Implementation\Contacts\OutlookContactRepository.cs" />
     <Compile Include="Implementation\Contacts\OutlookContactRelationData.cs" />
@@ -346,7 +345,6 @@
     <Compile Include="Implementation\GoogleTasks\GoogleTaskRelationDataFactory.cs" />
     <Compile Include="Implementation\GoogleTasks\GoogleTaskUpdateFromNewerToOlder.cs" />
     <Compile Include="Implementation\GoogleTasks\GoogleTasktEntityConflictSyncStateFactory_Automatic.cs" />
-    <Compile Include="Implementation\GoogleTasks\InitialGoogleTaskSyncStateCreationStrategyFactory.cs" />
     <Compile Include="Implementation\GoogleTasks\InitialGoogleTasktEntityMatcher.cs" />
     <Compile Include="Implementation\DaslFilterProvider.cs" />
     <Compile Include="Implementation\IDaslFilterProvider.cs" />
@@ -359,8 +357,6 @@
     <Compile Include="DataAccess\XmlDocumentWithNamespaceManager.cs" />
     <Compile Include="Diagnostics\AutomaticStopwatch.cs" />
     <Compile Include="Implementation\CalDavRepository.cs" />
-    <Compile Include="Implementation\Events\InitialEventSyncStateCreationStrategyFactory.cs" />
-    <Compile Include="Implementation\Tasks\InitialEventSyncStateCreationStrategyFactory.cs" />
     <Compile Include="Implementation\Tasks\TasktEntityConflictSyncStateFactory_Automatic.cs" />
     <Compile Include="Implementation\Tasks\InitialTasktEntityMatcher.cs" />
     <Compile Include="Implementation\Tasks\TaskRelationData.cs" />
