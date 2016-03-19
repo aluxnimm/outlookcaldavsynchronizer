@@ -155,7 +155,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     {
       var result = true;
 
-      if (ServerAdapterType != ServerAdapterType.GoogleTaskApi)
+      var serverAdapterType = ServerAdapterType;
+      if (serverAdapterType != ServerAdapterType.GoogleTaskApi && serverAdapterType != ServerAdapterType.GoogleContactApi)
         result &= OptionTasks.ValidateWebDavUrl (CalenderUrl, errorMessageBuilder, true);
 
       result &= OptionTasks.ValidateGoogleEmailAddress (errorMessageBuilder, EmailAddress);
