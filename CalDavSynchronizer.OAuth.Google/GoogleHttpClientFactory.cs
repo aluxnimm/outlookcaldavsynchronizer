@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Linq;
 using System.Net;
@@ -28,6 +29,9 @@ using Google.Apis.Http;
 using Google.Apis.Services;
 using Google.Apis.Tasks.v1;
 using Google.Apis.Tasks.v1.Data;
+using Google.Contacts;
+using Google.GData.Client;
+using Google.GData.Contacts;
 using log4net;
 
 namespace CalDavSynchronizer.OAuth.Google
@@ -36,9 +40,15 @@ namespace CalDavSynchronizer.OAuth.Google
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
+    private static ClientSecrets CreateClientSecrets () => new ClientSecrets
+                                                           {
+                                                               ClientId = "13856942399-rp437ddbn6406hfokpe5rqnosgnejodc.apps.googleusercontent.com",
+                                                               ClientSecret = "WG276vw5WCcc2H4SSaYJ03VO"
+                                                           };
+
     public static async Task<HttpClient> CreateHttpClient (string user, string userAgentHeader, IWebProxy proxy)
     {
-      var userCredential = await LoginToGoogle (user,proxy);
+      var userCredential = await LoginToGoogle (user, proxy);
 
       var client = new ProxySupportedHttpClientFactory (proxy).CreateHttpClient (new CreateHttpClientArgs() { ApplicationName = userAgentHeader });
       userCredential.Initialize (client);
@@ -48,12 +58,9 @@ namespace CalDavSynchronizer.OAuth.Google
 
     private static async Task<UserCredential> LoginToGoogle (string user, IWebProxy proxyOrNull)
     {
-      GoogleAuthorizationCodeFlow.Initializer initializer = new GoogleAuthorizationCodeFlow.Initializer ();
-      initializer.ClientSecrets = new ClientSecrets
-                                  {
-                                      ClientId = "13856942399-rp437ddbn6406hfokpe5rqnosgnejodc.apps.googleusercontent.com",
-                                      ClientSecret = "WG276vw5WCcc2H4SSaYJ03VO"
-                                  };
+      GoogleAuthorizationCodeFlow.Initializer initializer = new GoogleAuthorizationCodeFlow.Initializer();
+
+      initializer.ClientSecrets = CreateClientSecrets();
       initializer.HttpClientFactory = new ProxySupportedHttpClientFactory (proxyOrNull);
 
       UserCredential credential = await GoogleWebAuthorizationBroker.AuthorizeAsync (
@@ -62,7 +69,8 @@ namespace CalDavSynchronizer.OAuth.Google
           {
               "https://www.googleapis.com/auth/calendar",
               "https://www.googleapis.com/auth/carddav",
-              "https://www.googleapis.com/auth/tasks"
+              "https://www.googleapis.com/auth/tasks",
+              "https://www.google.com/m8/feeds/" // => contacts
           },
           user,
           CancellationToken.None);
@@ -76,9 +84,8 @@ namespace CalDavSynchronizer.OAuth.Google
     /// since it leads to a 'The "FindRibbons" task failed unexpectedly' Error
     /// ( see https://connect.microsoft.com/VisualStudio/feedback/details/651634/the-findribbons-task-failed-unexpectedly)
     /// </remarks>
-    public static async Task<TasksService> LoginToGoogleTasksService (string user,IWebProxy proxyOrNull)
+    public static async Task<TasksService> LoginToGoogleTasksService (string user, IWebProxy proxyOrNull)
     {
-
       var credential = await LoginToGoogle (user, proxyOrNull);
       var service = CreateTaskService (credential, proxyOrNull);
 
@@ -105,6 +112,27 @@ namespace CalDavSynchronizer.OAuth.Google
                                    HttpClientInitializer = credential,
                                    ApplicationName = "Outlook CalDav Synchronizer",
                                });
+    }
+
+    public static async Task<ContactsRequest> LoginToContactsService (string user, IWebProxy proxyOrNull)
+    {
+      var clientSecrets = CreateClientSecrets();
+      var credential = await LoginToGoogle (user, proxyOrNull);
+
+      var parameters = new OAuth2Parameters
+                       {
+                           ClientId = clientSecrets.ClientId,
+                           ClientSecret = clientSecrets.ClientSecret,
+                           AccessToken = credential.Token.AccessToken,
+                           RefreshToken = credential.Token.RefreshToken
+                       };
+
+      var contactsRequest = new ContactsRequest (new RequestSettings ("Outlook CalDav Synchronizer", parameters) {AutoPaging = true});
+
+      if (proxyOrNull != null)
+        contactsRequest.Proxy = proxyOrNull;
+
+      return contactsRequest;
     }
   }
 }

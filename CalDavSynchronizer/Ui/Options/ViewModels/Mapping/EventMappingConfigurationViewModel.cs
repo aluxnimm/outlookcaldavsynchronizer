@@ -81,8 +81,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _categoryShortcutKey; }
       set
       {
-        _categoryShortcutKey = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _categoryShortcutKey, value);
       }
     }
 
@@ -91,8 +90,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _createEventsInUtc; }
       set
       {
-        _createEventsInUtc = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _createEventsInUtc, value);
       }
     }
 
@@ -101,10 +99,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _eventCategory; }
       set
       {
-        _eventCategory = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _eventCategory, value);
         // ReSharper disable once ExplicitCallerInfoArgument
-        OnPropertyChanged(nameof(UseEventCategoryAsFilter));
+        OnPropertyChanged (nameof(UseEventCategoryAsFilter));
         // ReSharper disable once ExplicitCallerInfoArgument
         OnPropertyChanged (nameof(UseEventCategoryAsFilterAndMapColor));
       }
@@ -119,8 +116,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _eventCategoryColor; }
       set
       {
-        _eventCategoryColor = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _eventCategoryColor, value);
       }
     }
 
@@ -129,8 +125,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _invertEventCategoryFilter; }
       set
       {
-        _invertEventCategoryFilter = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _invertEventCategoryFilter, value);
       }
     }
 
@@ -139,8 +134,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _mapAttendees; }
       set
       {
-        _mapAttendees = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _mapAttendees, value);
       }
     }
 
@@ -149,8 +143,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _mapBody; }
       set
       {
-        _mapBody = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _mapBody, value);
       }
     }
 
@@ -159,8 +152,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _mapClassConfidentialToSensitivityPrivate; }
       set
       {
-        _mapClassConfidentialToSensitivityPrivate = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _mapClassConfidentialToSensitivityPrivate, value);
       }
     }
 
@@ -169,8 +161,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _mapReminder; }
       set
       {
-        _mapReminder = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _mapReminder, value);
       }
     }
 
@@ -179,8 +170,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _mapSensitivityPrivateToClassConfidential; }
       set
       {
-        _mapSensitivityPrivateToClassConfidential = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _mapSensitivityPrivateToClassConfidential, value);
       }
     }
 
@@ -189,8 +179,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _scheduleAgentClient; }
       set
       {
-        _scheduleAgentClient = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _scheduleAgentClient, value);
       }
     }
 
@@ -199,8 +188,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _sendNoAppointmentNotifications; }
       set
       {
-        _sendNoAppointmentNotifications = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _sendNoAppointmentNotifications, value);
       }
     }
 
@@ -209,8 +197,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _useEventCategoryColorAndMapFromCalendarColor; }
       set
       {
-        _useEventCategoryColorAndMapFromCalendarColor = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _useEventCategoryColorAndMapFromCalendarColor, value);
         // ReSharper disable once ExplicitCallerInfoArgument
         OnPropertyChanged (nameof (UseEventCategoryAsFilterAndMapColor));
       }
@@ -221,8 +208,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _isSelected; }
       set
       {
-        _isSelected = value;
-        OnPropertyChanged ();
+        CheckedPropertyChange (ref _isSelected, value);
       }
     }
 

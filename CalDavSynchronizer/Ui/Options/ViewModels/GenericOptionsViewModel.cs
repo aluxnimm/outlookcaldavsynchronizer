@@ -159,6 +159,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       set { _serverSettingsViewModel.CalenderUrl = value; }
     }
 
+    public ServerAdapterType ServerAdapterType => _serverSettingsViewModel.ServerAdapterType;
 
     public IWebDavClient CreateWebDavClient ()
     {

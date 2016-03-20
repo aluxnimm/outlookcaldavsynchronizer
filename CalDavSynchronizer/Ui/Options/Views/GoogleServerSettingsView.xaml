@@ -31,11 +31,18 @@
         <TextBox Text="{Binding EmailAddress}"  Grid.Row="2" Grid.Column="2" />
 
       </Grid>
-      <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">
-        <Button Command="{Binding TestConnectionCommand}" HorizontalAlignment="Right">Test settings</Button>
-        <Button Command="{Binding DoAutoDiscoveryCommand}" HorizontalAlignment="Right">Do Autodiscovery</Button>
-
-      </StackPanel>
+      <DockPanel >
+        <DockPanel.Resources>
+          <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></BooleanToVisibilityConverter>
+        </DockPanel.Resources>
+        <Button DockPanel.Dock="Right" Command="{Binding TestConnectionCommand}" HorizontalAlignment="Right">Test settings</Button>
+        <Button DockPanel.Dock="Right" Command="{Binding DoAutoDiscoveryCommand}" HorizontalAlignment="Right">Do Autodiscovery</Button>
+        <CheckBox 
+          Visibility="{Binding UseGoogleNativeApiAvailable,Converter={StaticResource BooleanToVisibilityConverter}}"
+          IsChecked="{Binding UseGoogleNativeApi}" 
+          DockPanel.Dock="Left">Use Google native API</CheckBox>
+        <UIElement></UIElement>
+      </DockPanel>
     </DockPanel>
   </GroupBox>
 </UserControl>

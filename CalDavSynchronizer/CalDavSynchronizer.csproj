@@ -148,6 +148,18 @@
       <HintPath>..\packages\Google.Apis.Tasks.v1.1.10.0.420\lib\portable-net40+sl50+win+wpa81+wp80\Google.Apis.Tasks.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Google.GData.Client, Version=2.2.0.0, Culture=neutral, PublicKeyToken=04a59ca9b0273830, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.GData.Client.2.2.0.0\lib\Google.GData.Client.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Google.GData.Contacts, Version=2.2.0.0, Culture=neutral, PublicKeyToken=7e065189dd4b982f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.GData.Contacts.2.2.0.0\lib\Google.GData.Contacts.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Google.GData.Extensions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=0b4c5df2ebf20876, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.GData.Extensions.2.2.0.0\lib\Google.GData.Extensions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
@@ -274,6 +286,14 @@
     <Compile Include="Contracts\ServerAdapterType.cs" />
     <Compile Include="DataAccess\GlobalOptionsDataAccess.cs" />
     <Compile Include="DataAccess\IGlobalOptionsDataAccess.cs" />
+    <Compile Include="Implementation\GoogleContacts\GoogleContactConflictInitialSyncStateCreationStrategyAutomatic.cs" />
+    <Compile Include="Implementation\GoogleContacts\ContactEntityMapper.cs" />
+    <Compile Include="Implementation\GoogleContacts\GoogleContactRepository.cs" />
+    <Compile Include="Implementation\GoogleContacts\GoogleContactRelationData.cs" />
+    <Compile Include="Implementation\GoogleContacts\GoogleContactRelationDataFactory.cs" />
+    <Compile Include="Implementation\InitialSyncStateCreationStrategyFactory.cs" />
+    <Compile Include="Implementation\GoogleContacts\InitialGoogleContactEntityMatcher.cs" />
+    <Compile Include="Implementation\GoogleContacts\GoogleContactUpdateFromNewerToOlder.cs" />
     <Compile Include="Ui\Options\ISynchronizationProfilesViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\TimeRangeViewModel.cs" />
     <Compile Include="Ui\Options\Views\TimeRangeView.xaml.cs">
@@ -314,7 +334,6 @@
     <Compile Include="Implementation\Contacts\ContactConflictInitialSyncStateCreationStrategyAutomatic.cs" />
     <Compile Include="Implementation\Contacts\ContactEntityMapper.cs" />
     <Compile Include="Implementation\Contacts\InitialContactEntityMatcher.cs" />
-    <Compile Include="Implementation\Contacts\InitialContactSyncStateCreationStrategyFactory.cs" />
     <Compile Include="Implementation\Contacts\OutlookCardDavUpdateFromNewerToOlder.cs" />
     <Compile Include="Implementation\Contacts\OutlookContactRepository.cs" />
     <Compile Include="Implementation\Contacts\OutlookContactRelationData.cs" />
@@ -326,7 +345,6 @@
     <Compile Include="Implementation\GoogleTasks\GoogleTaskRelationDataFactory.cs" />
     <Compile Include="Implementation\GoogleTasks\GoogleTaskUpdateFromNewerToOlder.cs" />
     <Compile Include="Implementation\GoogleTasks\GoogleTasktEntityConflictSyncStateFactory_Automatic.cs" />
-    <Compile Include="Implementation\GoogleTasks\InitialGoogleTaskSyncStateCreationStrategyFactory.cs" />
     <Compile Include="Implementation\GoogleTasks\InitialGoogleTasktEntityMatcher.cs" />
     <Compile Include="Implementation\DaslFilterProvider.cs" />
     <Compile Include="Implementation\IDaslFilterProvider.cs" />
@@ -339,8 +357,6 @@
     <Compile Include="DataAccess\XmlDocumentWithNamespaceManager.cs" />
     <Compile Include="Diagnostics\AutomaticStopwatch.cs" />
     <Compile Include="Implementation\CalDavRepository.cs" />
-    <Compile Include="Implementation\Events\InitialEventSyncStateCreationStrategyFactory.cs" />
-    <Compile Include="Implementation\Tasks\InitialEventSyncStateCreationStrategyFactory.cs" />
     <Compile Include="Implementation\Tasks\TasktEntityConflictSyncStateFactory_Automatic.cs" />
     <Compile Include="Implementation\Tasks\InitialTasktEntityMatcher.cs" />
     <Compile Include="Implementation\Tasks\TaskRelationData.cs" />

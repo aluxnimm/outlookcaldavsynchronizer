@@ -114,6 +114,8 @@ namespace CalDavSynchronizer.Ui.Options
       return _networkAndProxyOptions.ProxyOptions != null ? SynchronizerFactory.CreateProxy (_networkAndProxyOptions.ProxyOptions) : null;
     }
 
+    public ServerAdapterType ServerAdapterType => _serverAdapterType;
+
     public IWebDavClient CreateWebDavClient ()
     {
       return SynchronizerFactory.CreateWebDavClient (

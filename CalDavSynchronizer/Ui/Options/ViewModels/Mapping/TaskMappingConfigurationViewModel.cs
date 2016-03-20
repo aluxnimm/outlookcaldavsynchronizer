@@ -24,7 +24,7 @@ using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 {
-  public class TaskMappingConfigurationViewModel : INotifyPropertyChanged, IOptionsViewModel
+  public class TaskMappingConfigurationViewModel : ViewModelBase, IOptionsViewModel
   {
     private readonly ObservableCollection<IOptionsViewModel> _subOptions = new ObservableCollection<IOptionsViewModel>();
     private bool _mapBody;
@@ -45,8 +45,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _mapBody; }
       set
       {
-        _mapBody = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _mapBody, value);
       }
     }
 
@@ -55,8 +54,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _mapPriority; }
       set
       {
-        _mapPriority = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _mapPriority, value);
       }
     }
 
@@ -65,8 +63,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _mapRecurringTasks; }
       set
       {
-        _mapRecurringTasks = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _mapRecurringTasks, value);
       }
     }
     public ReminderMapping MapReminder
@@ -74,8 +71,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _mapReminder; }
       set
       {
-        _mapReminder = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _mapReminder, value);
       }
     }
 
@@ -84,8 +80,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _isSelected; }
       set
       {
-        _isSelected = value;
-        OnPropertyChanged ();
+        CheckedPropertyChange (ref _isSelected, value);
       }
     }
 
@@ -97,8 +92,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                                                               MapReminder = ReminderMapping.JustUpcoming
                                                                          };
 
-
-    public event PropertyChangedEventHandler PropertyChanged;
 
     public void SetOptions (CalDavSynchronizer.Contracts.Options options)
     {
@@ -132,10 +125,5 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     }
 
     public IEnumerable<IOptionsViewModel> SubOptions => _subOptions;
-
-    protected virtual void OnPropertyChanged ([CallerMemberName] string propertyName = null)
-    {
-      PropertyChanged?.Invoke (this, new PropertyChangedEventArgs (propertyName));
-    }
   }
 }

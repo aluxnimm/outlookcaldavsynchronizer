@@ -74,8 +74,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     private static bool IsGoogleProfile (Contracts.Options options)
     {
-      return options.ServerAdapterType == ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth
-             || options.ServerAdapterType == ServerAdapterType.GoogleTaskApi;
+      return options.ServerAdapterType == ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth ||
+             options.ServerAdapterType == ServerAdapterType.GoogleTaskApi ||
+             options.ServerAdapterType == ServerAdapterType.GoogleContactApi;
     }
 
     IServerSettingsViewModel CreateGoogleServerSettingsViewModel (ISettingsFaultFinder settingsFaultFinder, ICurrentOptions currentOptions)

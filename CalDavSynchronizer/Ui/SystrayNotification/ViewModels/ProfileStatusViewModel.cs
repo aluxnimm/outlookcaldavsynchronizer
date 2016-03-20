@@ -26,7 +26,7 @@ using GenSync.Logging;
 
 namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
 {
-  public class ProfileStatusViewModel : INotifyPropertyChanged
+  public class ProfileStatusViewModel : ViewModelBase
   {
     private string _profileName;
     private bool _isActive;
@@ -64,8 +64,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
       get { return _lastRunMinutesAgo; }
       private set
       {
-        _lastRunMinutesAgo = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _lastRunMinutesAgo, value);
       }
     }
 
@@ -74,8 +73,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
       get { return _lastResult; }
       private set
       {
-        _lastResult = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _lastResult, value);
       }
     }
 
@@ -84,8 +82,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
       get { return _profileName; }
       private set
       {
-        _profileName = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _profileName, value);
       }
     }
 
@@ -94,8 +91,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
       get { return _isActive; }
       private set
       {
-        _isActive = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _isActive, value);
       }
     }
 
@@ -121,14 +117,6 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
     {
       LastRunMinutesAgo = (int?) (DateTime.UtcNow - _lastSyncronizationRun)?.TotalMinutes;
     }
-
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    protected virtual void OnPropertyChanged ([CallerMemberName] string propertyName = null)
-    {
-      PropertyChanged?.Invoke (this, new PropertyChangedEventArgs (propertyName));
-    }
-
 
     public static ProfileStatusViewModel CreateDesignInstance (string profileName, SyncronizationRunResult? status, int? lastRunMinutesAgo)
     {

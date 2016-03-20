@@ -35,8 +35,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _useSynchronizationTimeRange; }
       set
       {
-        _useSynchronizationTimeRange = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _useSynchronizationTimeRange, value);
       }
     }
 
@@ -45,8 +44,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _daysToSynchronizeInThePast; }
       set
       {
-        _daysToSynchronizeInThePast = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _daysToSynchronizeInThePast, value);
       }
     }
 
@@ -55,8 +53,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _daysToSynchronizeInTheFuture; }
       set
       {
-        _daysToSynchronizeInTheFuture = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _daysToSynchronizeInTheFuture, value);
       }
     }
 

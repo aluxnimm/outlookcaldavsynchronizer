@@ -62,8 +62,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _calenderUrl; }
       set
       {
-        _calenderUrl = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _calenderUrl, value);
       }
     }
 
@@ -72,8 +71,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _userName; }
       set
       {
-        _userName = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _userName, value);
       }
     }
 
@@ -82,8 +80,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _password; }
       set
       {
-        _password = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _password, value);
       }
     }
 
@@ -92,8 +89,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _emailAddress; }
       set
       {
-        _emailAddress = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _emailAddress, value);
       }
     }
 
@@ -102,8 +98,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _useAccountPassword; }
       set
       {
-        _useAccountPassword = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _useAccountPassword, value);
       }
     }
 

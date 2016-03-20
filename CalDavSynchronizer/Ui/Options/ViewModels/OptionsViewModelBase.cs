@@ -52,8 +52,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _isActive; }
       set
       {
-        _isActive = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _isActive, value);
       }
     }
     
@@ -64,8 +63,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _name; }
       set
       {
-        _name = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _name, value);
       }
     }
 
@@ -74,8 +72,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _isSelected; }
       set
       {
-        _isSelected = value;
-        OnPropertyChanged ();
+        CheckedPropertyChange (ref _isSelected, value);
       }
     }
 

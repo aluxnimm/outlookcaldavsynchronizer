@@ -44,8 +44,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _closeConnectionAfterEachRequest; }
       set
       {
-        _closeConnectionAfterEachRequest = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _closeConnectionAfterEachRequest, value);
       }
     }
 
@@ -54,8 +53,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _preemptiveAuthentication; }
       set
       {
-        _preemptiveAuthentication = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _preemptiveAuthentication, value);
       }
     }
 
@@ -67,8 +65,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         if (value)
           ProxyUseManual = false;
 
-        _proxyUseDefault = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _proxyUseDefault, value);
       }
     }
 
@@ -80,8 +77,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         if (value)
           ProxyUseDefault = false;
 
-        _proxyUseManual = value;
-        OnPropertyChanged();
+        CheckedPropertyChange(ref _proxyUseManual, value);
       }
     }
 
@@ -90,8 +86,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _proxyUrl; }
       set
       {
-        _proxyUrl = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _proxyUrl, value);
       }
     }
 
@@ -100,8 +95,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _proxyUserName; }
       set
       {
-        _proxyUserName = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _proxyUserName, value);
       }
     }
 
@@ -110,8 +104,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _proxyPassword; }
       set
       {
-        _proxyPassword = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _proxyPassword, value);
       }
     }
 
@@ -174,8 +167,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _forceBasicAuthentication; }
       set
       {
-        _forceBasicAuthentication = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _forceBasicAuthentication, value);
       }
     }
 
@@ -184,8 +176,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _isSelected; }
       set
       {
-        _isSelected = value;
-        OnPropertyChanged();
+        CheckedPropertyChange (ref _isSelected, value);
       }
     }
   }
