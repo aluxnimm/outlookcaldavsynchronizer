@@ -163,9 +163,7 @@
           <views:TimeRangeView />
         </DataTemplate>
 
-        <views:BooleanNotConverter x:Key="BooleanNotConverter" />
-
-        <DataTemplate DataType="{x:Type viewModels:OptionsViewModelBase}">
+        <ControlTemplate TargetType="ContentControl" x:Key="OptionsControlTemplate">
           <DockPanel>
             <DockPanel DockPanel.Dock="Top">
               <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="Name:" />
@@ -176,28 +174,22 @@
               <UIElement />
             </DockPanel>
 
-            <ItemsControl ItemsSource="{Binding Sections}" />
+            <ContentPresenter></ContentPresenter>
           </DockPanel>
+        </ControlTemplate>
+        
+        <DataTemplate DataType="{x:Type viewModels:OptionsViewModelBase}">
+          <ContentControl Template="{StaticResource OptionsControlTemplate}">
+            <ItemsControl ItemsSource="{Binding Sections}" />
+          </ContentControl>
         </DataTemplate>
 
-       
-
         <DataTemplate DataType="{x:Type viewModels:GenericOptionsViewModel}">
-          <DockPanel>
-            <DockPanel DockPanel.Dock="Top">
-              <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="Name:" />
-              <TextBox Text="{Binding Name}" />
-            </DockPanel>
-            <DockPanel DockPanel.Dock="Bottom" >
-              <Button  Command="{Binding ClearCacheCommand}" DockPanel.Dock="Left">Clear cache</Button>
-              <UIElement />
-            </DockPanel>
-
+          <ContentControl Template="{StaticResource OptionsControlTemplate}">
             <StackPanel>
               <views:OutlookFolderView DataContext="{Binding OutlookFolderViewModel}" />
               <ContentControl Content="{Binding ServerSettingsViewModel}" />
               <views:SyncSettingsView DataContext="{Binding SyncSettingsViewModel}" />
-
               <ContentControl Content="{Binding TimeRangeViewModel}" >
                 <ContentControl.Style>
                   <Style TargetType="{x:Type ContentControl}">
@@ -216,10 +208,11 @@
                   </Style>
                 </ContentControl.Style>
               </ContentControl>
-              
             </StackPanel>
-          </DockPanel>
+          </ContentControl>
         </DataTemplate>
+
+       
 
      
       </ContentControl.Resources>
