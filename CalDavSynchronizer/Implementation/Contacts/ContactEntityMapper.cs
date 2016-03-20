@@ -251,7 +251,15 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       if (_configuration.MapBirthday)
       {
-        target.Inner.Birthday = source.BirthDate ?? new DateTime(4501, 1, 1);
+        if (source.BirthDate.HasValue)
+        {
+          if (!source.BirthDate.Value.Date.Equals (target.Inner.Birthday))
+            target.Inner.Birthday = source.BirthDate.Value;
+        }
+        else
+        {
+          target.Inner.Birthday = new DateTime (4501, 1, 1);
+        }       
       }
 
       if (!string.IsNullOrEmpty (source.Organization))

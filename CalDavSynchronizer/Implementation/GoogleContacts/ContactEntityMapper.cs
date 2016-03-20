@@ -494,7 +494,8 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         DateTime birthday;
         if (DateTime.TryParse (source.ContactEntry.Birthday, out birthday))
         {
-          if (birthday.Date.Equals (target.Inner.Birthday)) target.Inner.Birthday = birthday;
+          if (!birthday.Date.Equals (target.Inner.Birthday))
+            target.Inner.Birthday = birthday;
         }
         else
         {
