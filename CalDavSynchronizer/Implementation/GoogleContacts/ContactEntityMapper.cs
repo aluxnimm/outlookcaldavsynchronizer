@@ -22,6 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 using System.Xaml;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation.ComWrappers;
@@ -102,12 +103,13 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       }
       target.Location = source.Inner.OfficeLocation;
 
+      target.ContactEntry.Websites.Clear();
       if (!string.IsNullOrEmpty (source.Inner.PersonalHomePage))
       {
         target.ContactEntry.Websites.Add (new Website()
         {
           Href = source.Inner.PersonalHomePage,
-          Rel = ContactsRelationships.IsHome,
+          Rel = "home-page",
           Primary = true,
         });
       }
@@ -116,7 +118,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         target.ContactEntry.Websites.Add(new Website()
         {
           Href = source.Inner.BusinessHomePage,
-          Rel = ContactsRelationships.IsWork,
+          Rel = "work",
           Primary = target.ContactEntry.Websites.Count == 0,
         });
       }
@@ -284,6 +286,8 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
     private static void MapPhoneNumbers1To2 (ContactItem source, Contact target)
     {
+      target.Phonenumbers.Clear();
+
       if (!string.IsNullOrEmpty (source.PrimaryTelephoneNumber))
       {
         target.Phonenumbers.Add (new PhoneNumber()
@@ -486,8 +490,21 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       }
       target.Inner.OfficeLocation = source.Location;
 
-      target.Inner.PersonalHomePage = source.ContactEntry.Websites.FirstOrDefault (w => w.Primary || w.Rel != ContactsRelationships.IsWork)?.Href;
-      target.Inner.BusinessHomePage = source.ContactEntry.Websites.FirstOrDefault (w => w.Rel == ContactsRelationships.IsWork)?.Href;
+      target.Inner.BusinessHomePage = string.Empty;
+      target.Inner.PersonalHomePage = string.Empty;
+
+      if (source.ContactEntry.Websites.Count == 1)
+        target.Inner.BusinessHomePage = source.ContactEntry.Websites[0].Href;
+      else
+      {
+        foreach (var site in source.ContactEntry.Websites)
+        {
+          if (site.Primary || site.Rel == "work")
+            target.Inner.BusinessHomePage = site.Href;
+          else
+            target.Inner.PersonalHomePage = site.Href;
+        }
+      }
 
       if (_configuration.MapBirthday)
       {
