@@ -47,6 +47,14 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
     private const string PR_USER_X509_CERTIFICATE = "http://schemas.microsoft.com/mapi/proptag/0x3A701102";
     private const string PR_ATTACH_DATA_BIN = "http://schemas.microsoft.com/mapi/proptag/0x37010102";
 
+    internal static DateTime OU_OUTLOOK_DATE_NONE = new DateTime(4501, 1, 1);
+    private const string REL_SPOUSE = "spouse";
+    private const string REL_CHILD = "child";
+    private const string REL_MANAGER = "manager";
+    private const string REL_ASSISTANT = "assistant";
+    private const string REL_ANNIVERSARY = "anniversary";
+    private const string REL_HOMEPAGE = "home-page";
+
     private readonly ContactMappingConfiguration _configuration;
 
     public GoogleContactEntityMapper (ContactMappingConfiguration configuration)
@@ -132,8 +140,98 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         target.ContactEntry.Birthday = null;
       }
 
+
+      #region birthday
+      if (_configuration.MapBirthday && !source.Inner.Birthday.Equals(OU_OUTLOOK_DATE_NONE))
+      {
+          target.ContactEntry.Birthday = source.Inner.Birthday.ToString("yyyy-MM-dd");
+      }
+      else
+      {
+          target.ContactEntry.Birthday = null;
+      }
+      #endregion birthday
+
+      #region anniversary
+      //Todo: Check, if (_configuration.MapAnniversary)
+      //{
+
+      //First remove anniversary
+      foreach (Event ev in target.ContactEntry.Events)
+      {
+          if (ev.Relation != null && ev.Relation.Equals(REL_ANNIVERSARY))
+          {
+              target.ContactEntry.Events.Remove(ev);
+              break;
+          }
+      }
+      try
+      {
+          //Then add it again if existing
+          if (!source.Inner.Anniversary.Equals(OU_OUTLOOK_DATE_NONE)) //earlier also || source.Inner.Birthday.Year < 1900
+          {
+              Event ev = new Event();
+              ev.Relation = REL_ANNIVERSARY;
+              ev.When = new When();
+              ev.When.AllDay = true;
+              ev.When.StartTime = source.Inner.Anniversary.Date;
+              target.ContactEntry.Events.Add(ev);
+          }
+      }
+      catch (System.Exception ex)
+      {
+          logger.LogMappingError("Anniversary couldn't be updated from Outlook to Google for '" + source.Inner.FileAs + "': " + ex.Message, ex);
+      }
+      //}
+
+      #endregion anniversary
+
+      #region relations (spouse, child, manager and assistant)
+      //First remove spouse, child, manager and assistant
+      for (int i = target.ContactEntry.Relations.Count - 1; i >= 0; i--)
+      {
+          Relation rel = target.ContactEntry.Relations[i];
+          if (rel.Rel != null && (rel.Rel.Equals(REL_SPOUSE) || rel.Rel.Equals(REL_CHILD) || rel.Rel.Equals(REL_MANAGER) || rel.Rel.Equals(REL_ASSISTANT)))
+              target.ContactEntry.Relations.RemoveAt(i);
+      }
+      //Then add spouse again if existing
+      if (!string.IsNullOrEmpty(source.Inner.Spouse))
+      {
+          Relation rel = new Relation();
+          rel.Rel = REL_SPOUSE;
+          rel.Value = source.Inner.Spouse;
+          target.ContactEntry.Relations.Add(rel);
+      }
+      //Then add children again if existing
+      if (!string.IsNullOrEmpty(source.Inner.Children))
+      {
+          Relation rel = new Relation();
+          rel.Rel = REL_CHILD;
+          rel.Value = source.Inner.Children;
+          target.ContactEntry.Relations.Add(rel);
+      }
+      //Then add manager again if existing
+      if (!string.IsNullOrEmpty(source.Inner.ManagerName))
+      {
+          Relation rel = new Relation();
+          rel.Rel = REL_MANAGER;
+          rel.Value = source.Inner.ManagerName;
+          target.ContactEntry.Relations.Add(rel);
+      }
+      //Then add assistant again if existing
+      if (!string.IsNullOrEmpty(source.Inner.AssistantName))
+      {
+          Relation rel = new Relation();
+          rel.Rel = REL_ASSISTANT;
+          rel.Value = source.Inner.AssistantName;
+          target.ContactEntry.Relations.Add(rel);
+      }
+      #endregion relations (spouse, child, manager and assistant)
+
+
+
       target.Content = !string.IsNullOrEmpty(source.Inner.Body) ? 
-                        System.Security.SecurityElement.Escape (source.Inner.Body) : null;
+                  System.Security.SecurityElement.Escape (source.Inner.Body) : null;
 
       return target;
     }
@@ -506,19 +604,64 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         }
       }
 
+      #region birthday
       if (_configuration.MapBirthday)
       {
-        DateTime birthday;
-        if (DateTime.TryParse (source.ContactEntry.Birthday, out birthday))
-        {
-          if (!birthday.Date.Equals (target.Inner.Birthday))
-            target.Inner.Birthday = birthday;
-        }
-        else
-        {
-          target.Inner.Birthday = new DateTime (4501, 1, 1);
-        }
+          DateTime birthday;
+          if (DateTime.TryParse(source.ContactEntry.Birthday, out birthday))
+          {
+              if (!birthday.Date.Equals(target.Inner.Birthday))
+                  target.Inner.Birthday = birthday;
+          }
+          else
+          {
+              target.Inner.Birthday = OU_OUTLOOK_DATE_NONE;
+          }
       }
+      #endregion birthday
+
+      #region anniversary
+      bool found = false;
+      try
+      {
+          foreach (Event ev in source.ContactEntry.Events)
+          {
+              if (ev.Relation != null && ev.Relation.Equals(REL_ANNIVERSARY))
+              {
+                  if (!ev.When.StartTime.Date.Equals(target.Inner.Anniversary.Date)) //Only update if not already equal to avoid recreating the calendar item again and again
+                      target.Inner.Anniversary = ev.When.StartTime.Date;
+                  found = true;
+                  break;
+              }
+          }
+          if (!found)
+              target.Inner.Anniversary = OU_OUTLOOK_DATE_NONE; //set to empty in the end
+      }
+      catch (System.Exception ex)
+      {
+          logger.LogMappingError("Anniversary couldn't be updated from Google to Outlook for '" + target.Inner.FileAs + "': " + ex.Message, ex);
+      }
+      #endregion anniversary
+
+      #region relations (spouse, child, manager, assistant)
+      target.Inner.Children = string.Empty;
+      target.Inner.Spouse = string.Empty;
+      target.Inner.ManagerName = string.Empty;
+      target.Inner.AssistantName = string.Empty;
+      foreach (Relation rel in source.ContactEntry.Relations)
+      {
+          if (rel.Rel != null && rel.Rel.Equals(REL_CHILD))
+              target.Inner.Children = rel.Value;
+          else if (rel.Rel != null && rel.Rel.Equals(REL_SPOUSE))
+              target.Inner.Spouse = rel.Value;
+          else if (rel.Rel != null && rel.Rel.Equals(REL_MANAGER))
+              target.Inner.ManagerName = rel.Value;
+          else if (rel.Rel != null && rel.Rel.Equals(REL_ASSISTANT))
+              target.Inner.AssistantName = rel.Value;
+      }
+      #endregion relations (spouse, child, manager, assistant)
+
+
 
       target.Inner.Body = source.Content;
 
