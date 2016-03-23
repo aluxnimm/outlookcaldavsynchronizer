@@ -72,7 +72,7 @@ namespace CalDavSynchronizer.DataAccess
     {
       using (var fileStream = File.OpenRead (Path.Combine (_reportDirectory, name.ToString())))
       {
-        return Serializer<SynchronizationReport>.DeserializeFrom (fileStream);
+        return Serializer<SynchronizationReport>.DeserializeFromWithoutCharacterCheck (fileStream);
       }
     }
 

@@ -17,6 +17,7 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace CalDavSynchronizer.Utilities
@@ -45,9 +46,15 @@ namespace CalDavSynchronizer.Utilities
       }
     }
 
-    public static T DeserializeFrom (Stream stream)
+    public static T DeserializeFromWithoutCharacterCheck (Stream stream)
     {
-      return (T) _xmlSerializer.Deserialize (stream);
+      XmlReaderSettings settings = new XmlReaderSettings ();
+      settings.CheckCharacters = false;
+     
+      using (var reader = XmlReader.Create (stream, settings))
+      {
+        return (T) _xmlSerializer.Deserialize (reader);
+      }
     }
 
     public static void SerializeTo (T o, Stream stream)
