@@ -54,6 +54,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
     private const string REL_ASSISTANT = "assistant";
     private const string REL_ANNIVERSARY = "anniversary";
     private const string REL_HOMEPAGE = "home-page";
+    private const string REL_WORK = "work";
 
     private readonly ContactMappingConfiguration _configuration;
 
@@ -64,18 +65,8 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
     public Contact Map1To2 (ContactItemWrapper source, Contact target, IEntityMappingLogger logger)
     {
-      target.Name = new Name()
-      {
-        GivenName = source.Inner.FirstName,
-        FamilyName = source.Inner.LastName,
-        FullName = source.Inner.FullName,
-        AdditionalName = source.Inner.MiddleName,
-        NamePrefix = source.Inner.Title,
-        NameSuffix = source.Inner.Suffix,
-      };
 
-      MapEmailAddresses1To2(source.Inner, target, logger);
-
+      #region Title/FileAs
       if (!string.IsNullOrEmpty(source.Inner.FileAs))
       {
         target.Title = source.Inner.FileAs;
@@ -84,21 +75,70 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       {
         target.Title = source.Inner.CompanyAndFullName;
       }
-      else if (target.Emails.Count >= 1)
+      else if (!string.IsNullOrEmpty(source.Inner.FullName))
       {
-        target.Title = target.Emails[0].Address;
+        target.Title = source.Inner.FullName;
+      }
+      else if (!string.IsNullOrEmpty(source.Inner.CompanyName))
+      {
+        target.Title = source.Inner.CompanyName;
+      }
+      else if (!string.IsNullOrEmpty(source.Inner.Email1Address))
+      {
+        target.Title = source.Inner.Email1Address;
+      }
+      #endregion Title/FileAs
+
+      #region Name
+      Name name = new Name()
+      {
+        GivenName = source.Inner.FirstName,
+        FamilyName = source.Inner.LastName,        
+        AdditionalName = source.Inner.MiddleName,
+        NamePrefix = source.Inner.Title,
+        NameSuffix = source.Inner.Suffix,
+      };
+
+      //Use the Google's full name to save a unique identifier. When saving the FullName, it always overwrites the Google Title
+      if (!string.IsNullOrEmpty(source.Inner.FullName)) //Only if source.FullName has a value, i.e. not only a company or email contact
+      {
+        name.FullName = source.Inner.FileAs;        
       }
 
-      MapPostalAddresses1To2 (source.Inner, target);
+      target.Name = name;
+
+      #endregion Name
+
+      MapEmailAddresses1To2(source.Inner, target, logger);         
+
+      MapPostalAddresses1To2(source.Inner, target);
 
       MapPhoneNumbers1To2 (source.Inner, target);
 
       target.ContactEntry.Nickname = source.Inner.NickName;
       target.ContactEntry.Initials = source.Inner.Initials;
 
+      #region company
       target.Organizations.Clear();
-      if (!string.IsNullOrEmpty(source.Inner.CompanyName) || !string.IsNullOrEmpty(source.Inner.Department) ||
-          !string.IsNullOrEmpty(source.Inner.JobTitle))
+      if (!string.IsNullOrEmpty(source.Inner.Companies))
+      {
+        //Companies are expected to be in form of "[Company]; [Company]".
+        string[] companiesRaw = source.Inner.Companies.Split(';');
+        foreach (string companyRaw in companiesRaw)
+        {
+          Organization company = new Organization();
+          company.Name = (target.Organizations.Count == 0) ? source.Inner.CompanyName : null;
+          company.Title = (target.Organizations.Count == 0) ? source.Inner.JobTitle : null;
+          company.Department = (target.Organizations.Count == 0) ? source.Inner.Department : null;
+          company.Primary = target.Organizations.Count == 0;
+          company.Rel = ContactsRelationships.IsWork;
+          target.Organizations.Add(company);
+        }
+      }
+
+
+      if (target.Organizations.Count == 0 && (!string.IsNullOrEmpty(source.Inner.CompanyName) || !string.IsNullOrEmpty(source.Inner.Department) ||
+          !string.IsNullOrEmpty(source.Inner.JobTitle)))
       {
         target.Organizations.Add (new Organization()
         {
@@ -109,15 +149,16 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
           Primary = true,
         });
       }
+      #endregion company
       target.Location = source.Inner.OfficeLocation;
 
       target.ContactEntry.Websites.Clear();
-      if (!string.IsNullOrEmpty (source.Inner.PersonalHomePage))
+      if (!string.IsNullOrEmpty (source.Inner.WebPage)) //ToDo: PersonalHomePage is not considered yet, but also not visible in Outlook
       {
         target.ContactEntry.Websites.Add (new Website()
         {
-          Href = source.Inner.PersonalHomePage,
-          Rel = "home-page",
+          Href = source.Inner.WebPage,
+          Rel = REL_HOMEPAGE,
           Primary = true,
         });
       }
@@ -126,19 +167,10 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         target.ContactEntry.Websites.Add(new Website()
         {
           Href = source.Inner.BusinessHomePage,
-          Rel = "work",
+          Rel = REL_WORK,
           Primary = target.ContactEntry.Websites.Count == 0,
         });
-      }
-
-      if (_configuration.MapBirthday && !source.Inner.Birthday.Equals (new DateTime (4501, 1, 1, 0, 0, 0)))
-      {
-        target.ContactEntry.Birthday = source.Inner.Birthday.ToString ("yyyy-MM-dd");
-      }
-      else
-      {
-        target.ContactEntry.Birthday = null;
-      }
+      }      
 
 
       #region birthday
@@ -228,10 +260,38 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       }
       #endregion relations (spouse, child, manager and assistant)
 
+      #region IMs
+      target.IMs.Clear();
 
+      if (!string.IsNullOrEmpty(source.Inner.IMAddress))
+      {
+        //IMAddress are expected to be in form of ([Protocol]: [Address]; [Protocol]: [Address])
+        string[] imsRaw = source.Inner.IMAddress.Split(';');
+        foreach (string imRaw in imsRaw)
+        {
+          string[] imDetails = imRaw.Trim().Split(':');
+          IMAddress im = new IMAddress();
+          if (imDetails.Length == 1)
+            im.Address = imDetails[0].Trim();
+          else
+          {
+            im.Protocol = imDetails[0].Trim();
+            im.Address = imDetails[1].Trim();
+          }
+
+          //Only add the im Address if not empty (to avoid Google exception "address" empty)
+          if (!string.IsNullOrEmpty(im.Address))
+          {
+            im.Primary = target.IMs.Count == 0;
+            im.Rel = ContactsRelationships.IsHome;
+            target.IMs.Add(im);
+          }
+        }
+      }
+      #endregion IMs
 
       target.Content = !string.IsNullOrEmpty(source.Inner.Body) ? 
-                  System.Security.SecurityElement.Escape (source.Inner.Body) : null;
+                        System.Security.SecurityElement.Escape (source.Inner.Body) : null;
 
       return target;
     }
@@ -523,17 +583,19 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         target.Inner.Title = source.Name.NamePrefix;
         target.Inner.Suffix = source.Name.NameSuffix;
         target.Inner.MiddleName = source.Name.AdditionalName;
+        if (string.IsNullOrEmpty(target.Inner.FullName)) //The Outlook fullName is automatically set, so don't assign it from Google, unless the structured properties were empty
+          target.Inner.FullName = source.Name.FullName;
       }
 
       if (string.IsNullOrEmpty(target.Inner.FileAs))
       {
         if (!string.IsNullOrEmpty (source.Title))
         {
-          target.Inner.FileAs = source.Title;
+          target.Inner.FileAs = source.Title.Replace("\r\n", "\n").Replace("\n", "\r\n"); //Replace twice to not replace a \r\n by \r\r\n. This is necessary because \r\n are saved as \n only to google and \r\n is saved on Outlook side to separate the single parts of the FullName
         }
         else if (!string.IsNullOrEmpty (source.Name?.FullName))
         {
-          target.Inner.FileAs = source.Name.FullName;
+          target.Inner.FileAs = source.Name.FullName.Replace("\r\n", "\n").Replace("\n", "\r\n"); //Replace twice to not replace a \r\n by \r\r\n. This is necessary because \r\n are saved as \n only to google and \r\n is saved on Outlook side to separate the single parts of the FullName
         }
         else if (source.Organizations.Count > 0 && !string.IsNullOrEmpty (source.Organizations[0].Name))
         {
@@ -574,33 +636,42 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       target.Inner.NickName = source.ContactEntry.Nickname;
       target.Inner.Initials = source.ContactEntry.Initials;
 
-      if (source.Organizations.Count > 0)
+      #region companies
+      target.Inner.Companies = string.Empty;
+      target.Inner.CompanyName = string.Empty;
+      target.Inner.JobTitle = string.Empty;
+      target.Inner.Department = string.Empty;
+      foreach (Organization company in source.Organizations)
       {
-        target.Inner.CompanyName = source.Organizations[0].Name;
-        target.Inner.Department = source.Organizations[0].Department;
-        target.Inner.JobTitle = source.Organizations[0].Title;
+        if (string.IsNullOrEmpty(company.Name) && string.IsNullOrEmpty(company.Title) && string.IsNullOrEmpty(company.Department))
+          continue;
+
+        if (company.Primary || company.Equals(source.Organizations[0]))
+        {//Per default copy the first company, but if there is a primary existing, use the primary
+          target.Inner.CompanyName = company.Name;
+          target.Inner.JobTitle = company.Title;
+          target.Inner.Department = company.Department;
+        }
+        if (!string.IsNullOrEmpty(target.Inner.Companies))
+          target.Inner.Companies += "; ";
+        target.Inner.Companies += company.Name;
       }
-      else
-      {
-        target.Inner.CompanyName = string.Empty;
-        target.Inner.Department = string.Empty;
-        target.Inner.JobTitle = string.Empty;
-      }
+      #endregion companies
       target.Inner.OfficeLocation = source.Location;
 
       target.Inner.BusinessHomePage = string.Empty;
-      target.Inner.PersonalHomePage = string.Empty;
-
+      target.Inner.WebPage = string.Empty;
+      
       if (source.ContactEntry.Websites.Count == 1)
-        target.Inner.BusinessHomePage = source.ContactEntry.Websites[0].Href;
+        target.Inner.WebPage = source.ContactEntry.Websites[0].Href;
       else
       {
         foreach (var site in source.ContactEntry.Websites)
         {
-          if (site.Primary || site.Rel == "work")
+          if (site.Primary || site.Rel == REL_HOMEPAGE)
+            target.Inner.WebPage = site.Href;
+          else if (site.Rel == REL_WORK)
             target.Inner.BusinessHomePage = site.Href;
-          else
-            target.Inner.PersonalHomePage = site.Href;
         }
       }
 
@@ -661,7 +732,18 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       }
       #endregion relations (spouse, child, manager, assistant)
 
-
+      #region IM
+      target.Inner.IMAddress = string.Empty;
+      foreach (IMAddress im in source.IMs)
+      {
+        if (!string.IsNullOrEmpty(target.Inner.IMAddress))
+          target.Inner.IMAddress += "; ";
+        if (!string.IsNullOrEmpty(im.Protocol) && !im.Protocol.Equals("None", StringComparison.InvariantCultureIgnoreCase))
+          target.Inner.IMAddress += im.Protocol + ": " + im.Address;
+        else
+          target.Inner.IMAddress += im.Address;
+      }
+      #endregion IM
 
       target.Inner.Body = source.Content;
 
