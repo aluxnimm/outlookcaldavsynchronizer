@@ -907,12 +907,10 @@ namespace CalDavSynchronizer.ThoughtvCardWorkaround
 
             if (photo.IsLoaded)
             {
-
-              properties.Add(
-                  new vCardProperty("PHOTO", photo.GetBytes()));
-
+              var property = new vCardProperty ("PHOTO", photo.GetBytes());
+              property.Subproperties.Add ("TYPE", "JPEG");
+              properties.Add (property);
             }
-
           }
           else
           {
