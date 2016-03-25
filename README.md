@@ -79,6 +79,14 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 1.24.0 ####
+- New features
+	- Add general option to ignore invalid characters in server response.
+	- Implement reordering of synchronization profiles in the WPF UI
+- Bug fixes
+	- Fix VALARM trigger handling if duration is zero, ticket #253.
+	- Fix display issues for reports #259.
+	- Add missing check box in WPF EventMappingConfigurationView (Negate filter and sync all Appointments except this category)
 #### 1.23.0 ####
 - New features
 	- First implementation of a complete redesign of Synchronization Profiles GUI using WPF framework.
