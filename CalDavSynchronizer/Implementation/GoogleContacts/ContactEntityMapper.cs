@@ -212,7 +212,8 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       }
       catch (System.Exception ex)
       {
-          logger.LogMappingError("Anniversary couldn't be updated from Outlook to Google for '" + source.Inner.FileAs + "': " + ex.Message, ex);
+        s_logger.Warn ("Anniversary couldn't be updated from Outlook to Google for '" + source.Inner.FileAs + "': " + ex.Message, ex);
+        logger.LogMappingWarning ("Anniversary couldn't be updated from Outlook to Google for '" + source.Inner.FileAs + "': " + ex.Message, ex);
       }
       //}
 
@@ -710,7 +711,8 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       }
       catch (System.Exception ex)
       {
-          logger.LogMappingError("Anniversary couldn't be updated from Google to Outlook for '" + target.Inner.FileAs + "': " + ex.Message, ex);
+        s_logger.Warn ("Anniversary couldn't be updated from Google to Outlook for '" + target.Inner.FileAs + "': " + ex.Message, ex);
+        logger.LogMappingWarning ("Anniversary couldn't be updated from Google to Outlook for '" + target.Inner.FileAs + "': " + ex.Message, ex);
       }
       #endregion anniversary
 
