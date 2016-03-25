@@ -74,7 +74,7 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 
 ### Install instructions ###
 
-Download and extract the `OutlookCalDavSynchronizer-<Version>.zip` into the same folder and start setup.exe.
+Download and extract the `OutlookCalDavSynchronizer-<Version>.zip` into any directory and start setup.exe. You can change the default install path, but you need to use a directory on the `C:\` drive.
 If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=48217)
 
 ### Changelog ###
@@ -86,7 +86,11 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 - Bug fixes
 	- Fix VALARM trigger handling if duration is zero, ticket #253.
 	- Fix display issues for reports #259.
-	- Add missing check box in WPF EventMappingConfigurationView (Negate filter and sync all Appointments except this category)
+	- Add missing check box in WPF EventMappingConfigurationView (Negate filter and sync all Appointments except this category).
+	- Hide TimeRangeView for all folder types except Appointments and Tasks.
+	- Fix proxy settings in new WPF UI.
+	- Disable ConflictResolution for OneWay synchronization in WPF UI.
+
 #### 1.23.0 ####
 - New features
 	- First implementation of a complete redesign of Synchronization Profiles GUI using WPF framework.
@@ -98,6 +102,7 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 	- Improve exception Handling.
 	- Ensure SynchronizationContext BEFORE invoking async methods, wrap all invocations of async methods with a try-catch, ticket #248.
 	- Try to reconstruct master event and properly sync exceptions to Outlook, if server resource consists of recurrence exceptions only.
+
 #### 1.22.0 ####
 - New features
 	- Add option to enable/disable mapping of recurring tasks in TaskMappingConfiguration to avoid problems with servers that don't support recurring tasks.
@@ -106,6 +111,7 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 - Bug fixes
 	- Fix VTIMETONE DTSTART generation for timezones with yearly floating DST rules like Jerusalem when syncing to Google, ticket #244. (Workaround for a bug in the DDay.iCal library)
 	- Don't add filter category to Outlook categories if Negate filter is activated, ticket #245.
+
 #### 1.21.0 ####
 - New features
 	- Implement option in network and proxy options to force basic authentication, needed for some servers where negotiation or digest auth are not working properly, fixes connection problems with OS X servers.
@@ -115,9 +121,11 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 	- Use NullOutlookAccountPasswordProvider if Outlook profile name is null, ticket #239.
 	- Fix proxy support in Google tasklibrary and oauth requests, ticket #234.
 	- Fix line breaks in vcard notes and street addresses to avoid \r.
+
 #### 1.20.3 ####
 - Bug fixes
 	- Fix Outlook crash when opening synchronization profiles for Outlook 2007 (ticket #230,#231).
+
 #### 1.20.0 ####
 - New features
 	- New implementation of partial sync, which triggers immediately after an item is created, changed or deleted in Outlook (with a 10 seconds delay), works also for contacts and tasks now.
@@ -129,6 +137,7 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 	- Fix well-known URIs according to RFC, they contain no trailing slash, fixes autodisovery for fruux.
 	- Avoid ArgumentNullException for GoogleTasks if tasklist is empty, ticket #229.
 	- clear contact attributes in Outlook when attributes are removed on server, fixes some update mapping issues from server to outlook for CardDAV.
+
 #### 1.19.0 ####
 - New features
 	- Add System TrayIcon with notifications of sync runs with errors and warnings and context menu.
@@ -721,6 +730,7 @@ In the General Options Dialog you can change settings which are used for all syn
 - **Include custom message classes in Outlook filter** Disabled by default, enable only if you have custom forms with message_classes other than the default IPM.Appointment/Contact/Task. For better performance, Windows Search Service shouldn't be deactivated if this option is enabled.
 - **Enable Tray Icon** Enabled by default, you can disable the tray icon in the Windows Taskbar if you don't need it.
 - **Use modern UI for sync profiles** Enabled by default, complete redesign of the synchronization profiles dialog using WPF, switches to the old WinForms UI if disabled. 
+- **Accept invalid chars in server response** If checked invalid characters in XML server responses are allowed. A typical invalid char, sent by some servers is Form feed (0x0C).
 
 If you have problems with SSL/TLS and self-signed certificates, you can change the following settings at your own risk.
 The recommended way would be to add the self signed cert to the Local Computer Trusted Root Certification Authorities
