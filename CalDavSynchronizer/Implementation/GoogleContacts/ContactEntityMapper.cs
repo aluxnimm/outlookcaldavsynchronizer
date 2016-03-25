@@ -294,6 +294,8 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       target.Content = !string.IsNullOrEmpty(source.Inner.Body) ? 
                         System.Security.SecurityElement.Escape (source.Inner.Body) : null;
 
+      target.ContactEntry.Sensitivity = MapPrivacy1To2 (source.Inner.Sensitivity);
+
       return target;
     }
 
@@ -575,6 +577,22 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       }
     }
 
+    public static string MapPrivacy1To2 (OlSensitivity value)
+    {
+      switch (value)
+      {
+        case OlSensitivity.olNormal:
+          return "normal";
+        case OlSensitivity.olPersonal:
+          return "personal"; 
+        case OlSensitivity.olPrivate:
+          return "private";
+        case OlSensitivity.olConfidential:
+          return "confidential";
+      }
+      throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
+    }
+
     public ContactItemWrapper Map2To1 (Contact source, ContactItemWrapper target, IEntityMappingLogger logger)
     {
       if (source.Name != null)
@@ -748,6 +766,8 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       #endregion IM
 
       target.Inner.Body = source.Content;
+
+      target.Inner.Sensitivity = MapPrivacy2To1 (source.ContactEntry.Sensitivity);
 
       return target;
     }
@@ -924,6 +944,21 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
           }
         }
       }
+    }
+    public static OlSensitivity MapPrivacy2To1(string value)
+    {
+      switch (value)
+      {
+        case "public":
+          return OlSensitivity.olNormal;
+        case "personal":
+          return OlSensitivity.olPersonal;
+        case "private":
+          return OlSensitivity.olPrivate;
+        case "confidential":
+          return OlSensitivity.olConfidential;
+      }
+      return OlSensitivity.olNormal;
     }
   }
 }
