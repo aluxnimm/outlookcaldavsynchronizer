@@ -93,8 +93,13 @@ namespace CalDavSynchronizer.Scheduling
       }
     }
 
-    public void SetOptions (Options[] options, bool checkIfOnline)
+    public void SetOptions (Options[] options, GeneralOptions generalOptions)
     {
+      if (options == null)
+        throw new ArgumentNullException (nameof (options));
+      if (generalOptions == null)
+        throw new ArgumentNullException (nameof (generalOptions));
+
       Dictionary<Guid, SynchronizationProfileRunner> workersById = new Dictionary<Guid, SynchronizationProfileRunner>();
       foreach (var option in options)
       {
@@ -109,7 +114,7 @@ namespace CalDavSynchronizer.Scheduling
                 _folderChangeWatcherFactory,
                 _ensureSynchronizationContext);
           }
-          profileRunner.UpdateOptions (option, checkIfOnline);
+          profileRunner.UpdateOptions (option, generalOptions);
           workersById.Add (option.Id, profileRunner);
         }
         catch (Exception x)

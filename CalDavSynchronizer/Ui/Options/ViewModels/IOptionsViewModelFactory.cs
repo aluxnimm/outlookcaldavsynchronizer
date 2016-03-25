@@ -16,11 +16,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
+using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
   internal interface IOptionsViewModelFactory
   {
-    List<OptionsViewModelBase> Create (ICollection<CalDavSynchronizer.Contracts.Options> options, bool fixInvalidSettings);
+    List<OptionsViewModelBase> Create (ICollection<CalDavSynchronizer.Contracts.Options> options, GeneralOptions generalOptions);
   }
 }

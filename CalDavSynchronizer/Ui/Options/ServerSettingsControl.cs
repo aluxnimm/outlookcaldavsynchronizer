@@ -45,18 +45,30 @@ namespace CalDavSynchronizer.Ui.Options
     private IServerSettingsControlDependencies _dependencies;
     private NetworkAndProxyOptions _networkAndProxyOptions;
     private IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
+    private GeneralOptions _generalOptions;
 
     public void Initialize (
       ISettingsFaultFinder settingsFaultFinder, 
       IServerSettingsControlDependencies dependencies,
-      IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
+      IOutlookAccountPasswordProvider outlookAccountPasswordProvider,
+      GeneralOptions generalOptions)
     {
+      if (settingsFaultFinder == null)
+        throw new ArgumentNullException (nameof (settingsFaultFinder));
+      if (dependencies == null)
+        throw new ArgumentNullException (nameof (dependencies));
+      if (outlookAccountPasswordProvider == null)
+        throw new ArgumentNullException (nameof (outlookAccountPasswordProvider));
+      if (generalOptions == null)
+        throw new ArgumentNullException (nameof (generalOptions));
+
       InitializeComponent();
 
       _settingsFaultFinder = settingsFaultFinder;
       _dependencies = dependencies;
       _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
       _testConnectionButton.Click += TestConnectionButton_Click;
+      _generalOptions = generalOptions;
     }
 
     private void TestConnectionButton_Click (object sender, EventArgs e)
@@ -121,7 +133,8 @@ namespace CalDavSynchronizer.Ui.Options
           _networkAndProxyOptions.CloseConnectionAfterEachRequest,
           _networkAndProxyOptions.PreemptiveAuthentication,
           _networkAndProxyOptions.ForceBasicAuthentication,
-          _networkAndProxyOptions.ProxyOptions);
+          _networkAndProxyOptions.ProxyOptions,
+          _generalOptions.AcceptInvalidCharsInServerResponse);
     }
 
     public IWebProxy GetProxyIfConfigured ()

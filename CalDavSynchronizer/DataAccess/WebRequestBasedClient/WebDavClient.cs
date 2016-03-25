@@ -27,7 +27,7 @@ using log4net;
 
 namespace CalDavSynchronizer.DataAccess.WebRequestBasedClient
 {
-  public class WebDavClient : IWebDavClient
+  public class WebDavClient : WebDavClientBase, IWebDavClient
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -50,7 +50,9 @@ namespace CalDavSynchronizer.DataAccess.WebRequestBasedClient
       TimeSpan readWriteTimeout, 
       bool closeConnectionAfterEachRequest,
       bool preemptiveAuthentication,
-      bool forceBasicAuthentication)
+      bool forceBasicAuthentication,
+      bool acceptInvalidChars) 
+      : base (acceptInvalidChars)
     {
       _username = username;
       _password = password;
@@ -198,22 +200,6 @@ namespace CalDavSynchronizer.DataAccess.WebRequestBasedClient
       }
 
       return Tuple.Create (headersFromFirstCall ?? response.Headers, response);
-    }
-
-    private XmlDocumentWithNamespaceManager CreateXmlDocument (Stream webDavXmlStream)
-    {
-      using (var reader = new StreamReader (webDavXmlStream, Encoding.UTF8))
-      {
-        XmlDocument responseBody = new XmlDocument();
-        responseBody.Load (reader);
-
-        XmlNamespaceManager namespaceManager = new XmlNamespaceManager (responseBody.NameTable);
-        namespaceManager.AddNamespace ("D", "DAV:");
-        namespaceManager.AddNamespace ("C", "urn:ietf:params:xml:ns:caldav");
-        namespaceManager.AddNamespace ("A", "urn:ietf:params:xml:ns:carddav");
-
-        return new XmlDocumentWithNamespaceManager (responseBody, namespaceManager);
-      }
     }
   }
 }

@@ -159,7 +159,7 @@ namespace CalDavSynchronizer
       _profileStatusesViewModel = new ProfileStatusesViewModel (this);
       _profileStatusesViewModel.EnsureProfilesDisplayed (options);
 
-      _scheduler.SetOptions (options, generalOptions.CheckIfOnline);
+      _scheduler.SetOptions (options, generalOptions);
 
       _availableVersionService = new AvailableVersionService();
       _updateChecker = new UpdateChecker (_availableVersionService, () => _generalOptionsDataAccess.IgnoreUpdatesTilVersion);
@@ -340,7 +340,7 @@ namespace CalDavSynchronizer
       var optionsForm = new OptionsForm (
           _session,
           GetProfileDataDirectory,
-          generalOptions.FixInvalidSettings,
+          generalOptions,
           _outlookAccountPasswordProvider);
 
       _currentVisibleOptionsFormOrNull = optionsForm;
@@ -366,7 +366,7 @@ namespace CalDavSynchronizer
 
       var viewModel = new OptionsCollectionViewModel (
           _session,
-          generalOptions.FixInvalidSettings,
+          generalOptions,
           _outlookAccountPasswordProvider,
           categories,
           GetProfileDataDirectory);
@@ -389,7 +389,7 @@ namespace CalDavSynchronizer
     private void ApplyNewOptions (Options[] oldOptions, Options[] newOptions, GeneralOptions generalOptions)
     {
       _optionsDataAccess.SaveOptions (newOptions);
-      _scheduler.SetOptions (newOptions, generalOptions.CheckIfOnline);
+      _scheduler.SetOptions (newOptions, generalOptions);
       _profileStatusesViewModel.EnsureProfilesDisplayed (newOptions);
       DeleteEntityChachesForChangedProfiles (oldOptions, newOptions);
       var changedOptions = CreateChangePairs (oldOptions, newOptions);
@@ -550,7 +550,7 @@ namespace CalDavSynchronizer
 
           _generalOptionsDataAccess.SaveOptions (newOptions);
           UpdateGeneralOptionDependencies (newOptions);
-          _scheduler.SetOptions (_optionsDataAccess.LoadOptions(), newOptions.CheckIfOnline);
+          _scheduler.SetOptions (_optionsDataAccess.LoadOptions(), newOptions);
 
           if (newOptions.EnableTrayIcon != generalOptions.EnableTrayIcon)
           {
@@ -865,7 +865,7 @@ namespace CalDavSynchronizer
 
         SynchronizerFactory.AvailableSynchronizerComponents availableSynchronizerComponents;
 
-        _synchronizerFactory.CreateSynchronizer (options,out availableSynchronizerComponents);
+        _synchronizerFactory.CreateSynchronizer (options,_generalOptionsDataAccess.LoadOptions(), out availableSynchronizerComponents);
 
         if (availableSynchronizerComponents.CalDavDataAccess != null)
         {

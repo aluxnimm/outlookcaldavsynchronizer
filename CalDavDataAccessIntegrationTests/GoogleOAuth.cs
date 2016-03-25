@@ -23,7 +23,7 @@ namespace CalDavDataAccessIntegrationTests
   {
     protected override string ProfileName
     {
-      get { return "TestCal-Google (OAuth)"; }
+      get { return "Google-TestCal"; }
     }
 
     [Ignore ("Google doesnt create a new entity in that case, it fails with precondition.")]

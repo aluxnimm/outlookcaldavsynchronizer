@@ -48,6 +48,7 @@ namespace CalDavSynchronizer.DataAccess
     private const string s_EnableTrayIcon = "EnableTrayIcon";
     private const string s_EntityCacheVersion = "EntityCacheVersion";
     private const string s_UseNewOptionUi = "UseNewOptionUi";
+    private const string s_AcceptInvalidCharsInServerResponse = "AcceptInvalidCharsInServerResponse";
 
     public GeneralOptions LoadOptions ()
     {
@@ -72,7 +73,8 @@ namespace CalDavSynchronizer.DataAccess
                    MaxReportAgeInDays = (int) (key.GetValue (s_MaxReportAgeInDays) ?? 1),
                    EnableDebugLog = (int) (key.GetValue (s_EnableDebugLog) ?? debugEnabledInConfig) != 0,
                    EnableTrayIcon = (int) (key.GetValue (s_EnableTrayIcon) ?? 1) != 0,
-                   UseNewOptionUi = (int) (key.GetValue (s_UseNewOptionUi) ?? 1) != 0
+                   UseNewOptionUi = (int) (key.GetValue (s_UseNewOptionUi) ?? 1) != 0,
+                   AcceptInvalidCharsInServerResponse = (int) (key.GetValue (s_AcceptInvalidCharsInServerResponse) ?? 0) != 0
         };
       }
     }
@@ -97,6 +99,7 @@ namespace CalDavSynchronizer.DataAccess
         key.SetValue (s_EnableDebugLog, options.EnableDebugLog ? 1 : 0);
         key.SetValue (s_EnableTrayIcon, options.EnableTrayIcon ? 1 : 0);
         key.SetValue (s_UseNewOptionUi, options.UseNewOptionUi ? 1 : 0);
+        key.SetValue (s_AcceptInvalidCharsInServerResponse, options.AcceptInvalidCharsInServerResponse ? 1 : 0);
       }
     }
 

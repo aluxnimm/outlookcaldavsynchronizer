@@ -24,18 +24,27 @@ namespace CalDavSynchronizer.Ui.Options
   {
     private readonly NameSpace _session;
     private readonly Func<Guid, string> _profileDataDirectoryFactory;
-    private readonly bool _fixInvalidSettings;
+    private readonly GeneralOptions _generalOptions;
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
 
     public OptionsDisplayControlFactory (
       NameSpace session, 
-      Func<Guid, string> profileDataDirectoryFactory, 
-      bool fixInvalidSettings, 
+      Func<Guid, string> profileDataDirectoryFactory,
+      GeneralOptions generalOptions, 
       IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
     {
+      if (session == null)
+        throw new ArgumentNullException (nameof (session));
+      if (profileDataDirectoryFactory == null)
+        throw new ArgumentNullException (nameof (profileDataDirectoryFactory));
+      if (generalOptions == null)
+        throw new ArgumentNullException (nameof (generalOptions));
+      if (outlookAccountPasswordProvider == null)
+        throw new ArgumentNullException (nameof (outlookAccountPasswordProvider));
+
       _session = session;
       _profileDataDirectoryFactory = profileDataDirectoryFactory;
-      _fixInvalidSettings = fixInvalidSettings;
+      _generalOptions = generalOptions;
       _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
     }
 
@@ -43,12 +52,12 @@ namespace CalDavSynchronizer.Ui.Options
     {
       if (options.ServerAdapterType == ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth
           || options.ServerAdapterType == ServerAdapterType.GoogleTaskApi)
-        return new GoogleOptionsDisplayControl (_session, _profileDataDirectoryFactory, _fixInvalidSettings);
+        return new GoogleOptionsDisplayControl (_session, _profileDataDirectoryFactory, _generalOptions);
 
       return new OptionsDisplayControl (
           _session,
           _profileDataDirectoryFactory,
-          _fixInvalidSettings,
+          _generalOptions,
           _outlookAccountPasswordProvider);
     }
   }

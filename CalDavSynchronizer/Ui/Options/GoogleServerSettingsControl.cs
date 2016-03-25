@@ -45,11 +45,16 @@ namespace CalDavSynchronizer.Ui.Options
     private IServerSettingsControlDependencies _dependencies;
     private NetworkAndProxyOptions _networkAndProxyOptions;
     private ServerAdapterType _serverAdapterType;
+    private GeneralOptions _generalOptions;
 
-    public void Initialize (ISettingsFaultFinder settingsFaultFinder, IServerSettingsControlDependencies dependencies)
+    public void Initialize (ISettingsFaultFinder settingsFaultFinder, IServerSettingsControlDependencies dependencies, GeneralOptions generalOptions)
     {
+      if (generalOptions == null)
+        throw new ArgumentNullException (nameof (generalOptions));
+
       InitializeComponent();
 
+      _generalOptions = generalOptions;
       _settingsFaultFinder = settingsFaultFinder;
       _dependencies = dependencies;
 
@@ -127,7 +132,8 @@ namespace CalDavSynchronizer.Ui.Options
           _networkAndProxyOptions.CloseConnectionAfterEachRequest,
           _networkAndProxyOptions.PreemptiveAuthentication,
           _networkAndProxyOptions.ForceBasicAuthentication,
-          _networkAndProxyOptions.ProxyOptions);
+          _networkAndProxyOptions.ProxyOptions,
+          _generalOptions.AcceptInvalidCharsInServerResponse);
     }
 
     public ICalDavDataAccess CreateCalDavDataAccess ()

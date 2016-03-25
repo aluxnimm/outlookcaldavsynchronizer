@@ -51,17 +51,23 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       _session = session;
     }
 
-    public List<OptionsViewModelBase> Create (ICollection<CalDavSynchronizer.Contracts.Options> options, bool fixInvalidSettings)
+    public List<OptionsViewModelBase> Create (ICollection<CalDavSynchronizer.Contracts.Options> options, GeneralOptions generalOptions)
     {
-      return options.Select (o => Create (o, fixInvalidSettings)).ToList();
+      if (options == null)
+        throw new ArgumentNullException (nameof (options));
+      if (generalOptions == null)
+        throw new ArgumentNullException (nameof (generalOptions));
+
+      return options.Select (o => Create (o, generalOptions)).ToList();
     }
 
-    public OptionsViewModelBase Create (CalDavSynchronizer.Contracts.Options options, bool fixInvalidSettings)
+    private OptionsViewModelBase Create (CalDavSynchronizer.Contracts.Options options, GeneralOptions generalOptions)
     {
+
       var optionsViewModel = new GenericOptionsViewModel (
           _session,
           _optionsViewModelParent,
-          fixInvalidSettings,
+          generalOptions,
           _outlookAccountPasswordProvider,
           IsGoogleProfile (options)
               ? CreateGoogleServerSettingsViewModel

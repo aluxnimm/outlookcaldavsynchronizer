@@ -19,6 +19,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
+using CalDavSynchronizer.Contracts;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
 
@@ -33,15 +34,24 @@ namespace CalDavSynchronizer.Ui.Options
     public OptionsForm (
       NameSpace session, 
       Func<Guid, string> profileDataDirectoryFactory, 
-      bool fixInvalidSettings, 
+      GeneralOptions generalOptions, 
       IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
     {
+      if (session == null)
+        throw new ArgumentNullException (nameof (session));
+      if (profileDataDirectoryFactory == null)
+        throw new ArgumentNullException (nameof (profileDataDirectoryFactory));
+      if (generalOptions == null)
+        throw new ArgumentNullException (nameof (generalOptions));
+      if (outlookAccountPasswordProvider == null)
+        throw new ArgumentNullException (nameof (outlookAccountPasswordProvider));
+
       InitializeComponent();
       _optionsDisplayControlFactory =
           new OptionsDisplayControlFactory (
             session, 
             profileDataDirectoryFactory, 
-            fixInvalidSettings,
+            generalOptions,
             outlookAccountPasswordProvider);
     }
 

@@ -45,18 +45,21 @@ namespace CalDavSynchronizer.Ui.Options
     public OptionsDisplayControl (
         NameSpace session,
         Func<Guid, string> profileDataDirectoryFactory,
-        bool fixInvalidSettings, 
+        GeneralOptions generalOptions, 
         IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
     {
+      if (generalOptions == null)
+        throw new ArgumentNullException (nameof (generalOptions));
+
       ISettingsFaultFinder faultFinder;
       InitializeComponent();
 
-      if (fixInvalidSettings)
+      if (generalOptions.FixInvalidSettings)
         faultFinder = new SettingsFaultFinder (_syncSettingsControl);
       else
         faultFinder = NullSettingsFaultFinder.Instance;
 
-      _serverSettingsControl.Initialize (faultFinder, this, outlookAccountPasswordProvider);
+      _serverSettingsControl.Initialize (faultFinder, this, outlookAccountPasswordProvider, generalOptions);
 
       _outlookFolderControl.Initialize (session, faultFinder);
       _profileDataDirectoryFactory = profileDataDirectoryFactory;

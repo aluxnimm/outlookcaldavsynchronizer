@@ -24,6 +24,6 @@ namespace CalDavSynchronizer.Scheduling
 {
   public interface ISynchronizerFactory
   {
-    IOutlookSynchronizer CreateSynchronizer (Options options);
+    IOutlookSynchronizer CreateSynchronizer (Options options, GeneralOptions generalOptions);
   }
 }

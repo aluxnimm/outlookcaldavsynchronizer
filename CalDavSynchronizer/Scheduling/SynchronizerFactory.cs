@@ -91,14 +91,24 @@ namespace CalDavSynchronizer.Scheduling
       public ICardDavDataAccess CardDavDataAccess;
     }
 
-    public IOutlookSynchronizer CreateSynchronizer (Options options)
+    public IOutlookSynchronizer CreateSynchronizer (Options options, GeneralOptions generalOptions)
     {
+      if (options == null)
+        throw new ArgumentNullException (nameof (options));
+      if (generalOptions == null)
+        throw new ArgumentNullException (nameof (generalOptions));
+
       AvailableSynchronizerComponents synchronizerComponents;
-      return CreateSynchronizer (options, out synchronizerComponents);
+      return CreateSynchronizer (options, generalOptions, out synchronizerComponents);
     }
 
-    public IOutlookSynchronizer CreateSynchronizer (Options options,out AvailableSynchronizerComponents synchronizerComponents)
+    public IOutlookSynchronizer CreateSynchronizer (Options options, GeneralOptions generalOptions, out AvailableSynchronizerComponents synchronizerComponents)
     {
+      if (options == null)
+        throw new ArgumentNullException (nameof (options));
+      if (generalOptions == null)
+        throw new ArgumentNullException (nameof (generalOptions));
+
       synchronizerComponents = new AvailableSynchronizerComponents();
 
       OlItemType defaultItemType;
@@ -113,17 +123,17 @@ namespace CalDavSynchronizer.Scheduling
       switch (defaultItemType)
       {
         case OlItemType.olAppointmentItem:
-          return CreateEventSynchronizer (options, synchronizerComponents);
+          return CreateEventSynchronizer (options, generalOptions, synchronizerComponents);
         case OlItemType.olTaskItem:
           if (options.ServerAdapterType == ServerAdapterType.GoogleTaskApi)
             return CreateGoogleTaskSynchronizer (options);
           else
-            return CreateTaskSynchronizer (options, synchronizerComponents);
+            return CreateTaskSynchronizer (options, generalOptions, synchronizerComponents);
         case OlItemType.olContactItem:
           if (options.ServerAdapterType == ServerAdapterType.GoogleContactApi)
             return CreateGoogleContactSynchronizer (options, synchronizerComponents);
           else
-            return CreateContactSynchronizer (options, synchronizerComponents);
+            return CreateContactSynchronizer (options, generalOptions, synchronizerComponents);
         default:
           throw new NotSupportedException (
               string.Format (
@@ -133,11 +143,11 @@ namespace CalDavSynchronizer.Scheduling
       }
     }
 
-    private IOutlookSynchronizer CreateEventSynchronizer (Options options,AvailableSynchronizerComponents componentsToFill)
+    private IOutlookSynchronizer CreateEventSynchronizer (Options options, GeneralOptions generalOptions ,AvailableSynchronizerComponents componentsToFill)
     {
       var calDavDataAccess = new CalDavDataAccess (
           new Uri (options.CalenderUrl),
-          CreateWebDavClient (options, _calDavConnectTimeout, _outlookAccountPasswordProvider));
+          CreateWebDavClient (options, _calDavConnectTimeout, _outlookAccountPasswordProvider, generalOptions));
 
       componentsToFill.CalDavDataAccess = calDavDataAccess;
 
@@ -151,8 +161,14 @@ namespace CalDavSynchronizer.Scheduling
     public static IWebDavClient CreateWebDavClient (
       Options options, 
       TimeSpan timeout, 
-      IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
+      IOutlookAccountPasswordProvider outlookAccountPasswordProvider,
+      GeneralOptions generalOptions)
     {
+      if (outlookAccountPasswordProvider == null)
+        throw new ArgumentNullException (nameof (outlookAccountPasswordProvider));
+      if (generalOptions == null)
+        throw new ArgumentNullException (nameof (generalOptions));
+
       return CreateWebDavClient (
           options.UserName,
           options.GetEffectivePassword(outlookAccountPasswordProvider),
@@ -162,7 +178,8 @@ namespace CalDavSynchronizer.Scheduling
           options.CloseAfterEachRequest,
           options.PreemptiveAuthentication,
           options.ForceBasicAuthentication,
-          options.ProxyOptions);
+          options.ProxyOptions,
+          generalOptions.AcceptInvalidCharsInServerResponse);
     }
 
     public static IWebDavClient CreateWebDavClient (
@@ -174,7 +191,8 @@ namespace CalDavSynchronizer.Scheduling
         bool closeConnectionAfterEachRequest,
         bool preemptiveAuthentication,
         bool forceBasicAuthentication,
-        ProxyOptions proxyOptions
+        ProxyOptions proxyOptions,
+        bool acceptInvalidChars
         )
     {
       switch (serverAdapterType)
@@ -186,11 +204,12 @@ namespace CalDavSynchronizer.Scheduling
               () => CreateHttpClient (username, password, serverUrl, timeout, serverAdapterType, proxyOptions, preemptiveAuthentication, forceBasicAuthentication),
               productAndVersion.Item1,
               productAndVersion.Item2,
-              closeConnectionAfterEachRequest);
+              closeConnectionAfterEachRequest,
+              acceptInvalidChars);
 
         case ServerAdapterType.WebDavSynchronousWebRequestBased:
           return new DataAccess.WebRequestBasedClient.WebDavClient (
-              username, password, serverUrl, timeout, timeout, closeConnectionAfterEachRequest, preemptiveAuthentication, forceBasicAuthentication);
+              username, password, serverUrl, timeout, timeout, closeConnectionAfterEachRequest, preemptiveAuthentication, forceBasicAuthentication, acceptInvalidChars);
         default:
           throw new ArgumentOutOfRangeException ("serverAdapterType");
       }
@@ -364,7 +383,7 @@ namespace CalDavSynchronizer.Scheduling
       return new T();
     }
 
-    private IOutlookSynchronizer CreateTaskSynchronizer (Options options, AvailableSynchronizerComponents componentsToFill)
+    private IOutlookSynchronizer CreateTaskSynchronizer (Options options, GeneralOptions generalOptions, AvailableSynchronizerComponents componentsToFill)
     {
       var mappingParameters = GetMappingParameters<TaskMappingConfiguration> (options);
 
@@ -381,7 +400,8 @@ namespace CalDavSynchronizer.Scheduling
               options.CloseAfterEachRequest,
               options.PreemptiveAuthentication,
               options.ForceBasicAuthentication,
-              options.ProxyOptions));
+              options.ProxyOptions,
+              generalOptions.AcceptInvalidCharsInServerResponse));
 
       componentsToFill.CalDavDataAccess = calDavDataAccess;
 
@@ -480,14 +500,13 @@ namespace CalDavSynchronizer.Scheduling
       return new OutlookSynchronizer<string, string> (synchronizer);
     }
 
-    private IOutlookSynchronizer CreateContactSynchronizer (Options options, AvailableSynchronizerComponents componentsToFill)
+    private IOutlookSynchronizer CreateContactSynchronizer (Options options, GeneralOptions generalOptions, AvailableSynchronizerComponents componentsToFill)
     {
       var atypeRepository = new OutlookContactRepository (
           _outlookSession,
           options.OutlookFolderEntryId,
           options.OutlookFolderStoreId,
           _daslFilterProvider);
-
 
       var cardDavDataAccess = new CardDavDataAccess (
           new Uri (options.CalenderUrl),
@@ -500,7 +519,8 @@ namespace CalDavSynchronizer.Scheduling
               options.CloseAfterEachRequest,
               options.PreemptiveAuthentication,
               options.ForceBasicAuthentication,
-              options.ProxyOptions));
+              options.ProxyOptions,
+              generalOptions.AcceptInvalidCharsInServerResponse));
 
       componentsToFill.CardDavDataAccess = cardDavDataAccess;
 

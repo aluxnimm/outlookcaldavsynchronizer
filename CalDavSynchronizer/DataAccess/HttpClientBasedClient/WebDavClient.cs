@@ -27,7 +27,7 @@ using log4net;
 
 namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
 {
-  public class WebDavClient : IWebDavClient
+  public class WebDavClient : WebDavClientBase, IWebDavClient
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -36,7 +36,13 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
     private HttpClient _httpClient;
     private readonly bool _closeConnectionAfterEachRequest;
 
-    public WebDavClient (Func<Task<HttpClient>> httpClientFactory, string productName, string productVersion, bool closeConnectionAfterEachRequest)
+    public WebDavClient (
+      Func<Task<HttpClient>> httpClientFactory, 
+      string productName, 
+      string productVersion,
+      bool closeConnectionAfterEachRequest, 
+      bool acceptInvalidChars) 
+      : base (acceptInvalidChars)
     {
       if (httpClientFactory == null)
         throw new ArgumentNullException ("httpClientFactory");
@@ -192,22 +198,6 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
       }
     }
 
-    private XmlDocumentWithNamespaceManager CreateXmlDocument (Stream webDavXmlStream)
-    {
-      using (var reader = new StreamReader (webDavXmlStream, Encoding.UTF8))
-      {
-        XmlDocument responseBody = new XmlDocument();
-        responseBody.Load (reader);
-
-        XmlNamespaceManager namespaceManager = new XmlNamespaceManager (responseBody.NameTable);
-
-        namespaceManager.AddNamespace ("D", "DAV:");
-        namespaceManager.AddNamespace ("C", "urn:ietf:params:xml:ns:caldav");
-        namespaceManager.AddNamespace ("A", "urn:ietf:params:xml:ns:carddav");
-        namespaceManager.AddNamespace ("E", "http://apple.com/ns/ical/");
-
-        return new XmlDocumentWithNamespaceManager (responseBody, namespaceManager);
-      }
-    }
+   
   }
 }

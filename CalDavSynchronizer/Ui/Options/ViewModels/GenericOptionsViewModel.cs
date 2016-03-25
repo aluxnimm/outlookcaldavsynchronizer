@@ -37,13 +37,14 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private readonly SyncSettingsViewModel _syncSettingsViewModel;
     private readonly TimeRangeViewModel _timeRangeViewModel;
     private IOptionsViewModel _mappingConfigurationViewModel;
+    private readonly GeneralOptions _generalOptions;
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
     private readonly IMappingConfigurationViewModelFactory _mappingConfigurationViewModelFactory;
 
     public GenericOptionsViewModel (
         NameSpace session,
         IOptionsViewModelParent parent,
-        bool fixInvalidSettings,
+        GeneralOptions generalOptions,
         IOutlookAccountPasswordProvider outlookAccountPasswordProvider,
         Func<ISettingsFaultFinder, ICurrentOptions, IServerSettingsViewModel> serverSettingsViewModelFactory,
         Func<ICurrentOptions, IMappingConfigurationViewModelFactory> mappingConfigurationViewModelFactoryFactory)
@@ -51,6 +52,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     {
       if (session == null)
         throw new ArgumentNullException (nameof (session));
+      if (generalOptions == null)
+        throw new ArgumentNullException (nameof (generalOptions));
       if (outlookAccountPasswordProvider == null)
         throw new ArgumentNullException (nameof (outlookAccountPasswordProvider));
       if (mappingConfigurationViewModelFactoryFactory == null)
@@ -59,8 +62,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       _syncSettingsViewModel = new SyncSettingsViewModel();
       _networkSettingsViewModel = new NetworkSettingsViewModel();
 
-      var faultFinder = fixInvalidSettings ? new SettingsFaultFinder (this) : NullSettingsFaultFinder.Instance;
+      var faultFinder = generalOptions.FixInvalidSettings ? new SettingsFaultFinder (this) : NullSettingsFaultFinder.Instance;
       _serverSettingsViewModel = serverSettingsViewModelFactory (faultFinder, this);
+      _generalOptions = generalOptions;
       _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
       _mappingConfigurationViewModelFactory = mappingConfigurationViewModelFactoryFactory(this);
       _outlookFolderViewModel = new OutlookFolderViewModel (session, faultFinder);
@@ -172,7 +176,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
           _networkSettingsViewModel.CloseConnectionAfterEachRequest,
           _networkSettingsViewModel.PreemptiveAuthentication,
           _networkSettingsViewModel.ForceBasicAuthentication,
-          _networkSettingsViewModel.CreateProxyOptions());
+          _networkSettingsViewModel.CreateProxyOptions(),
+          _generalOptions.AcceptInvalidCharsInServerResponse);
     }
 
     public IWebProxy GetProxyIfConfigured ()

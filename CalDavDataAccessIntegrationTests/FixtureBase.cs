@@ -67,9 +67,10 @@ namespace CalDavDataAccessIntegrationTests
       _calDavDataAccess = new CalDavDataAccess (
           new Uri (options.CalenderUrl),
           SynchronizerFactory.CreateWebDavClient (
-            options, 
-            TimeSpan.FromSeconds (30),
-            new OutlookAccountPasswordProvider ("Outlook", "16.0.0.4266")));
+              options,
+              TimeSpan.FromSeconds (30),
+              new OutlookAccountPasswordProvider ("Outlook", "16.0.0.4266"),
+              new GeneralOptionsDataAccess().LoadOptions()));
     }
 
     [Test]

@@ -42,22 +42,28 @@ namespace CalDavSynchronizer.Ui.Options
     private readonly Func<Guid, string> _profileDataDirectoryFactory;
     private readonly Lazy<IConfigurationFormFactory> _configurationFormFactory;
     private MappingConfigurationBase _mappingConfiguration;
+    private readonly GeneralOptions _generalOptions;
 
     public GoogleOptionsDisplayControl (
         NameSpace session,
         Func<Guid, string> profileDataDirectoryFactory,
-        bool fixInvalidSettings)
+        GeneralOptions generalOptions)
     {
+      if (generalOptions == null)
+        throw new ArgumentNullException (nameof (generalOptions));
+
+      _generalOptions = generalOptions;
+
       ISettingsFaultFinder faultFinder;
       InitializeComponent();
 
-      if (fixInvalidSettings)
+      if (generalOptions.FixInvalidSettings)
         faultFinder = new SettingsFaultFinder (_syncSettingsControl);
       else
         faultFinder = NullSettingsFaultFinder.Instance;
 
       _outlookFolderControl.Initialize(session, faultFinder);
-      _serverSettingsControl.Initialize (faultFinder, this);
+      _serverSettingsControl.Initialize (faultFinder, this, _generalOptions);
 
       _profileNameTextBox.TextChanged += _profileNameTextBox_TextChanged;
       _inactiveCheckBox.CheckedChanged += _inactiveCheckBox_CheckedChanged;

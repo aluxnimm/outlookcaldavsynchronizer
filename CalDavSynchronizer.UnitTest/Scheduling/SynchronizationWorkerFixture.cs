@@ -51,9 +51,10 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
           delegate { });
 
       var options = new Options();
+      var generalOptions = new GeneralOptions();
       _stubSynchronizer = new StubSynchronizer();
-      _synchronizerFactory.Expect (f => f.CreateSynchronizer (options)).Return (_stubSynchronizer);
-      _synchronizationProfileRunner.UpdateOptions (options, false);
+      _synchronizerFactory.Expect (f => f.CreateSynchronizer (options, generalOptions)).Return (_stubSynchronizer);
+      _synchronizationProfileRunner.UpdateOptions (options, generalOptions);
     }
 
     [Test]

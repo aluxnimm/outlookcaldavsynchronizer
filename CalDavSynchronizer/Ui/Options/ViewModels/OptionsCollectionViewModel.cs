@@ -36,24 +36,27 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     private readonly ObservableCollection<OptionsViewModelBase> _options = new ObservableCollection<OptionsViewModelBase>();
     private readonly IOptionsViewModelFactory _optionsViewModelFactory;
-    private readonly bool _fixInvalidSettings;
+    private readonly GeneralOptions _generalOptions;
     public event EventHandler<CloseEventArgs> CloseRequested;
     private readonly Func<Guid, string> _profileDataDirectoryFactory;
     public event EventHandler RequestBringIntoView;
 
     public OptionsCollectionViewModel (
       NameSpace session,
-      bool fixInvalidSettings,
+      GeneralOptions generalOptions,
       IOutlookAccountPasswordProvider outlookAccountPasswordProvider,
       IReadOnlyList<string> availableEventCategories, 
       Func<Guid, string> profileDataDirectoryFactory)
     {
-      _fixInvalidSettings = fixInvalidSettings;
       _profileDataDirectoryFactory = profileDataDirectoryFactory;
       if (session == null)
         throw new ArgumentNullException (nameof (session));
+      if (generalOptions == null)
+        throw new ArgumentNullException (nameof (generalOptions));
       if (profileDataDirectoryFactory == null)
         throw new ArgumentNullException (nameof (profileDataDirectoryFactory));
+
+      _generalOptions = generalOptions;
 
 
       _optionsViewModelFactory = new OptionsViewModelFactory (
@@ -168,7 +171,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       var options = OptionTasks.CreateNewSynchronizationProfileOrNull();
       if (options != null)
       {
-        foreach (var vm in _optionsViewModelFactory.Create(new[] {options}, _fixInvalidSettings))
+        foreach (var vm in _optionsViewModelFactory.Create(new[] {options}, _generalOptions))
           _options.Add (vm);
         ShowProfile (options.Id);
       }
@@ -186,7 +189,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     public void SetOptionsCollection (Contracts.Options[] value, Guid? initialSelectedProfileId = null)
     {
       _options.Clear();
-      foreach (var vm in _optionsViewModelFactory.Create (value, _fixInvalidSettings))
+      foreach (var vm in _optionsViewModelFactory.Create (value, _generalOptions))
         _options.Add (vm);
 
       var initialSelectedProfile =
@@ -227,7 +230,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
       var index = _options.IndexOf (viewModel) + 1;
 
-      foreach (var vm in _optionsViewModelFactory.Create (new[] { options }, _fixInvalidSettings))
+      foreach (var vm in _optionsViewModelFactory.Create (new[] { options }, _generalOptions))
         _options.Insert (index, vm);
 
       ShowProfile (options.Id);
@@ -253,7 +256,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         {
           var viewModel = new OptionsCollectionViewModel (
               new DesignOutlookSession(),
-              false,
+              new GeneralOptions { AcceptInvalidCharsInServerResponse = true},
               NullOutlookAccountPasswordProvider.Instance,
               new[] {"Cat1","Cat2"},
               _ => string.Empty);
