@@ -55,6 +55,9 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
     private const string REL_ANNIVERSARY = "anniversary";
     private const string REL_HOMEPAGE = "home-page";
     private const string REL_WORK = "work";
+    private const string REL_HOME = "home";
+    private const string REL_BLOG = "blog";
+    private const string REL_FTP = "ftp";
 
     private readonly ContactMappingConfiguration _configuration;
 
@@ -153,7 +156,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       target.Location = source.Inner.OfficeLocation;
 
       target.ContactEntry.Websites.Clear();
-      if (!string.IsNullOrEmpty (source.Inner.WebPage)) //ToDo: PersonalHomePage is not considered yet, but also not visible in Outlook
+      if (!string.IsNullOrEmpty (source.Inner.WebPage))
       {
         target.ContactEntry.Websites.Add (new Website()
         {
@@ -170,8 +173,25 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
           Rel = REL_WORK,
           Primary = target.ContactEntry.Websites.Count == 0,
         });
-      }      
-
+      }
+      if (!string.IsNullOrEmpty(source.Inner.PersonalHomePage))
+      {
+        target.ContactEntry.Websites.Add(new Website()
+        {
+          Href = source.Inner.PersonalHomePage,
+          Rel = REL_HOME,
+          Primary = target.ContactEntry.Websites.Count == 0,
+        });
+      }
+      if (!string.IsNullOrEmpty(source.Inner.FTPSite))
+      {
+        target.ContactEntry.Websites.Add(new Website()
+        {
+          Href = source.Inner.FTPSite,
+          Rel = REL_FTP,
+          Primary = target.ContactEntry.Websites.Count == 0,
+        });
+      }
 
       #region birthday
       if (_configuration.MapBirthday && !source.Inner.Birthday.Equals(OU_OUTLOOK_DATE_NONE))
@@ -691,6 +711,10 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
             target.Inner.WebPage = site.Href;
           else if (site.Rel == REL_WORK)
             target.Inner.BusinessHomePage = site.Href;
+          else if (site.Rel == REL_HOME || site.Rel == REL_BLOG)
+            target.Inner.PersonalHomePage = site.Href;
+          else if (site.Rel == REL_FTP)
+            target.Inner.FTPSite = site.Href;
         }
       }
 
