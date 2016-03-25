@@ -28,6 +28,7 @@ using log4net;
 using System.Reflection;
 using System.IO;
 using System.Text.RegularExpressions;
+using Exception = System.Exception;
 
 
 namespace CalDavSynchronizer.Implementation.Contacts
@@ -280,7 +281,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       MapCertificate2To1 (source, target.Inner, logger);
 
-      if (_configuration.MapContactPhoto) MapPhoto2To1 (source, target.Inner);
+      if (_configuration.MapContactPhoto) MapPhoto2To1 (source, target.Inner, logger);
 
       if (source.Notes.Count > 0)
       {
@@ -542,7 +543,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    private static void MapPhoto2To1 (vCard source, ContactItem target)
+    private static void MapPhoto2To1 (vCard source, ContactItem target, IEntityMappingLogger logger)
     {
       if (source.Photos.Count > 0)
       {
@@ -550,14 +551,31 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
         if (contactPhoto.IsLoaded)
         {
-          string picturePath = Path.GetTempPath() + @"\Contact_" + target.EntryID + ".jpg";
-          using (FileStream fs = new FileStream (picturePath, FileMode.Create))
+          try
           {
-            fs.Write (contactPhoto.GetBytes(), 0, contactPhoto.GetBytes().Length);
-            fs.Flush();
+            string picturePath = Path.GetTempPath() + @"\Contact_" + target.EntryID + ".jpg";
+
+            using (FileStream fs = new FileStream (picturePath, FileMode.Create))
+            {
+              fs.Write (contactPhoto.GetBytes(), 0, contactPhoto.GetBytes().Length);
+              fs.Flush();
+            }
+            try
+            {
+              target.AddPicture (picturePath);
+            }
+            catch (COMException x)
+            {
+              s_logger.Warn ("Could not add picture for contact.", x);
+              logger.LogMappingWarning ("Could not add picture for contact.", x);
+            }
+            File.Delete (picturePath);
           }
-          target.AddPicture (picturePath);
-          File.Delete (picturePath);
+          catch (Exception ex)
+          {
+            s_logger.Warn ("Could not add picture for contact.", ex);
+            logger.LogMappingWarning ("Could not add picture for contact.", ex);
+          }
         }
       }
     }
