@@ -358,7 +358,6 @@ namespace CalDavSynchronizer.Ui.Options
       var webDavClient = environment.CreateWebDavClient();
 
       Uri autoDiscoveredUrl;
-      ResourceType autoDiscoveredResourceType;
 
       if (ConnectionTester.RequiresAutoDiscovery (enteredUri))
       {
@@ -368,7 +367,6 @@ namespace CalDavSynchronizer.Ui.Options
         if (autodiscoveryResult.RessourceUrl != null)
         {
           autoDiscoveredUrl = autodiscoveryResult.RessourceUrl;
-          autoDiscoveredResourceType = autodiscoveryResult.ResourceType;
         }
         else
         {
@@ -378,7 +376,6 @@ namespace CalDavSynchronizer.Ui.Options
           if (autodiscoveryResult2.RessourceUrl != null)
           {
             autoDiscoveredUrl = autodiscoveryResult2.RessourceUrl;
-            autoDiscoveredResourceType = autodiscoveryResult2.ResourceType;
           }
           else
           {
@@ -389,7 +386,7 @@ namespace CalDavSynchronizer.Ui.Options
       }
       else
       {
-        var result = await ConnectionTester.TestConnection (enteredUri, webDavClient, ResourceType.None);
+        var result = await ConnectionTester.TestConnection (enteredUri, webDavClient);
         if (result.ResourceType != ResourceType.None)
         {
           settingsFaultFinder.FixSynchronizationMode (result);
@@ -409,7 +406,6 @@ namespace CalDavSynchronizer.Ui.Options
           if (autodiscoveryResult.RessourceUrl != null)
           {
             autoDiscoveredUrl = autodiscoveryResult.RessourceUrl;
-            autoDiscoveredResourceType = autodiscoveryResult.ResourceType;
           }
           else
           {
@@ -417,7 +413,6 @@ namespace CalDavSynchronizer.Ui.Options
             if (autodiscoveryResult2.RessourceUrl != null)
             {
               autoDiscoveredUrl = autodiscoveryResult2.RessourceUrl;
-              autoDiscoveredResourceType = autodiscoveryResult2.ResourceType;
             }
             else
             {
@@ -430,7 +425,7 @@ namespace CalDavSynchronizer.Ui.Options
 
       environment.ServerUrl = autoDiscoveredUrl.ToString();
 
-      var finalResult = await ConnectionTester.TestConnection (autoDiscoveredUrl, webDavClient, autoDiscoveredResourceType);
+      var finalResult = await ConnectionTester.TestConnection (autoDiscoveredUrl, webDavClient);
 
       settingsFaultFinder.FixSynchronizationMode (finalResult);
 
@@ -481,7 +476,6 @@ namespace CalDavSynchronizer.Ui.Options
       var webDavClient = currentOptions.CreateWebDavClient();
 
       Uri autoDiscoveredUrl;
-      ResourceType autoDiscoveredResourceType;
 
       if (ConnectionTester.RequiresAutoDiscovery (enteredUri))
       {
@@ -511,7 +505,7 @@ namespace CalDavSynchronizer.Ui.Options
               new SelectResourceForm (
                   foundCaldendars,
                   foundAddressBooks,
-                  new Tuple<string, string>[] {},
+                  new Tuple<string, string>[] { },
                   initalResourceType))
           {
             if (listCalendarsForm.ShowDialog() == DialogResult.OK)
@@ -525,12 +519,10 @@ namespace CalDavSynchronizer.Ui.Options
               {
                 autoDiscoveredUrl = new Uri (enteredUri.GetLeftPart (UriPartial.Authority) + listCalendarsForm.SelectedUrl);
               }
-              autoDiscoveredResourceType = listCalendarsForm.ResourceType;
             }
             else
             {
               autoDiscoveredUrl = null;
-              autoDiscoveredResourceType = ResourceType.None;
             }
           }
         }
@@ -538,41 +530,33 @@ namespace CalDavSynchronizer.Ui.Options
         {
           MessageBox.Show ("No resources were found via autodiscovery!", ConnectionTestCaption);
           autoDiscoveredUrl = null;
-          autoDiscoveredResourceType = ResourceType.None;
         }
       }
       else
       {
-        var result = await ConnectionTester.TestConnection (enteredUri, webDavClient, ResourceType.None);
-        if (result.ResourceType != ResourceType.None)
-        {
-          settingsFaultFinder.FixSynchronizationMode (result);
-        }
-        DisplayTestReport (
-            result,
-            currentOptions.SynchronizationMode,
-            currentOptions.SynchronizationModeDisplayName,
-            outlookFolderType);
-        return;
+        autoDiscoveredUrl = null;
       }
 
       if (autoDiscoveredUrl != null)
       {
-        currentOptions.ServerUrl = autoDiscoveredUrl.ToString();
-        var finalResult =
-            await ConnectionTester.TestConnection (autoDiscoveredUrl, webDavClient, autoDiscoveredResourceType);
-        settingsFaultFinder.FixSynchronizationMode (finalResult);
-
-        DisplayTestReport (
-            finalResult,
-            currentOptions.SynchronizationMode,
-            currentOptions.SynchronizationModeDisplayName,
-            outlookFolderType);
+        currentOptions.ServerUrl = autoDiscoveredUrl.ToString ();
       }
-      else if (outlookFolderType == OlItemType.olTaskItem)
-      {
-        TestResult result = new TestResult (ResourceType.TaskList, CalendarProperties.None, AddressBookProperties.None);
 
+      
+      var result = await ConnectionTester.TestConnection (new Uri(currentOptions.ServerUrl), webDavClient);
+
+      if (result.ResourceType != ResourceType.None)
+      {
+        settingsFaultFinder.FixSynchronizationMode (result);
+      }
+
+      if (outlookFolderType == OlItemType.olContactItem)
+      {
+        // Google Addressbook doesn't have any properties. As long as there doesn't occur an exception, the test is successful.
+        MessageBox.Show ("Connection test successful.", ConnectionTestCaption);
+      }
+      else
+      {
         DisplayTestReport (
             result,
             currentOptions.SynchronizationMode,
