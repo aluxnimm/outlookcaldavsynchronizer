@@ -29,7 +29,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
     public Task Delete (string entityId, string version)
     {
-      var httpsUrl = GetContactUrl (entityId);
+      var httpsUrl = GetContactUrl (entityId, ContactsQuery.fullProjection);
 
       return Task.Run (() => _contactFacade.Delete (httpsUrl, version));
     }
@@ -69,24 +69,32 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
     public async Task<IReadOnlyList<EntityWithId<string, Contact>>> Get (ICollection<string> ids, ILoadEntityLogger logger)
     {
-      var result = new List<EntityWithId<string, Contact>>();
+      var requestContacts = new List<Contact>();
 
       foreach (var id in ids)
       {
-        var contact = await Task.Run (() => _contactFacade.Retrieve<Contact> (GetContactUrl (id)));
-        result.Add (EntityWithId.Create (contact.Id, contact));
+        var contact = new Contact();
+        contact.Id = GetContactUrl (id, ContactsQuery.fullProjection).ToString();
+        contact.BatchData = new GDataBatchEntryData (contact.Id, GDataBatchOperationType.query);
+        requestContacts.Add (contact);
       }
+      
+      var contactsFeed = await Task.Run (() =>
+          _contactFacade.Batch (
+              requestContacts,
+              _contactFacade.GetContacts(),
+              GDataBatchOperationType.query));
 
-      return result;
+      return contactsFeed.Entries.Select (c => EntityWithId.Create (c.Id, c)).ToList();
     }
 
     public void Cleanup (IReadOnlyDictionary<string, Contact> entities)
     {
     }
 
-    private Uri GetContactUrl (string entityId)
+    private Uri GetContactUrl (string entityId, string projection)
     {
-      return new Uri (ContactsQuery.CreateContactsUri (_userName, ContactsQuery.fullProjection) + "/" + new Uri (entityId).Segments.Last());
+      return new Uri (ContactsQuery.CreateContactsUri (_userName, projection) + "/" + new Uri (entityId).Segments.Last());
     }
   }
 }
