@@ -605,7 +605,8 @@ namespace CalDavSynchronizer
                                                o.UserName,
                                                o.DaysToSynchronizeInTheFuture,
                                                o.DaysToSynchronizeInThePast,
-                                               o.IgnoreSynchronizationTimeRange
+                                               o.IgnoreSynchronizationTimeRange,
+                                               o.ServerAdapterType
                                            }).Count() > 1)
               .Select (g => Tuple.Create (g.Key, g.First().Name))
               .ToArray();
