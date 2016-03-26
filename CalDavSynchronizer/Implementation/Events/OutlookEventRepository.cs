@@ -22,6 +22,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using GenSync;
@@ -83,7 +84,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
       foreach (var id in idsOfEntitiesToQuery)
       {
-        var appointment = GetAppointmentItemOrNull (id.Id);
+        var appointment = _mapiNameSpace.GetEntryOrNull<AppointmentItem> (id.Id, _folderStoreId);
         if (appointment != null)
         {
           try
@@ -99,22 +100,6 @@ namespace CalDavSynchronizer.Implementation.Events
       }
 
       return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> ( result);
-    }
-
-    private AppointmentItem GetAppointmentItemOrNull (string id)
-    {
-      try
-      {
-        var item = (AppointmentItem) _mapiNameSpace.GetItemFromID (id, _folderStoreId);
-        return item;
-      }
-      catch (COMException x)
-      {
-        const int messageNotFoundResult = -2147221233;
-        if (x.HResult != messageNotFoundResult)
-          s_logger.Error ("Error while fetching entity.", x);
-        return null;
-      }
     }
     
     private bool DoesMatchCategoryCriterion (AppointmentItem item)
@@ -175,7 +160,7 @@ namespace CalDavSynchronizer.Implementation.Events
         var knownEntitesThatWereFilteredOut = idsOfknownEntities.Except (events.Select (e => e.Id));
         events.AddRange (
             knownEntitesThatWereFilteredOut
-                .Select (GetAppointmentItemOrNull)
+                .Select (id => _mapiNameSpace.GetEntryOrNull<AppointmentItem> (id, _folderStoreId))
                 .Where (i => i != null)
                 .ToSafeEnumerable()
                 .Select (c => EntityVersion.Create (c.EntryID, c.LastModificationTime)));

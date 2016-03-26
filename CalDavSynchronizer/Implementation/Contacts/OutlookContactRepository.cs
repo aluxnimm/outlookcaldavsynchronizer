@@ -26,6 +26,7 @@ using GenSync.EntityRepositories;
 using GenSync.Logging;
 using Microsoft.Office.Interop.Outlook;
 using System.Runtime.InteropServices;
+using CalDavSynchronizer.Implementation.Common;
 using log4net;
 
 namespace CalDavSynchronizer.Implementation.Contacts
@@ -66,7 +67,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
     {
       return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (
           idsOfEntitiesToQuery
-              .Select (id => (ContactItem) _mapiNameSpace.GetItemFromID (id.Id, _folderStoreId))
+              .Select (id =>  _mapiNameSpace.GetEntryOrNull<ContactItem> (id.Id, _folderStoreId))
+              .Where (e => e != null)
               .ToSafeEnumerable()
               .Select (c => EntityVersion.Create (c.EntryID, c.LastModificationTime))
               .ToList());
@@ -92,8 +94,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
         {
           s_logger.Info ("Can't access IsInstantSearchEnabled property of store, defaulting to false.");
         }
-        using (var tableWrapper = 
-          GenericComObjectWrapper.Create (addressbookFolderWrapper.Inner.GetTable (_daslFilterProvider.GetContactFilter (isInstantSearchEnabled))))
+        using (var tableWrapper =
+            GenericComObjectWrapper.Create (addressbookFolderWrapper.Inner.GetTable (_daslFilterProvider.GetContactFilter (isInstantSearchEnabled))))
         {
           var table = tableWrapper.Inner;
           table.Columns.RemoveAll();
@@ -105,16 +107,14 @@ namespace CalDavSynchronizer.Implementation.Contacts
           {
             var row = table.GetNextRow();
             var entryId = (string) row[c_entryIdColumnName];
-            try
+
+            var contact = _mapiNameSpace.GetEntryOrNull<ContactItem> (entryId, storeId);
+            if (contact != null)
             {
-              using (var contactWrapper = GenericComObjectWrapper.Create ((ContactItem)_mapiNameSpace.GetItemFromID (entryId, storeId)))
+              using (var contactWrapper = GenericComObjectWrapper.Create (contact))
               {
                 contacts.Add (new EntityVersion<string, DateTime> (contactWrapper.Inner.EntryID, contactWrapper.Inner.LastModificationTime));
               }
-            }
-            catch (COMException ex)
-            {
-              s_logger.Error ("Could not fetch ContactItem, skipping.", ex);
             }
           }
         }

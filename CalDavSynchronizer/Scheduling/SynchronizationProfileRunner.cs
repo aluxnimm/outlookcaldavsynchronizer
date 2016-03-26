@@ -146,7 +146,7 @@ namespace CalDavSynchronizer.Scheduling
         _pendingOutlookItems.AddOrUpdate (e.EntryId.Id, e.EntryId, (key, existingValue) => e.EntryId.VersionHint > existingValue.VersionHint ? e.EntryId : existingValue);
         if (s_logger.IsDebugEnabled)
         {
-          s_logger.Debug ($"Partial sync:  '{_pendingOutlookItems.Count}' items pending after registering item '{e.EntryId}' as pending sync item.");
+          s_logger.Debug ($"Partial sync:  '{_pendingOutlookItems.Count}' items pending after registering item '{e.EntryId.Id}' as pending sync item.");
         }
         await Task.Delay (_partialSyncDelay);
         await RunAllPendingJobs();

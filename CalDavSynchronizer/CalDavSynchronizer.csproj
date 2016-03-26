@@ -287,6 +287,7 @@
     <Compile Include="DataAccess\GlobalOptionsDataAccess.cs" />
     <Compile Include="DataAccess\IGlobalOptionsDataAccess.cs" />
     <Compile Include="DataAccess\WebDavClientBase.cs" />
+    <Compile Include="Implementation\Common\NameSpaceExtensions.cs" />
     <Compile Include="Implementation\GoogleContacts\GoogleContactConflictInitialSyncStateCreationStrategyAutomatic.cs" />
     <Compile Include="Implementation\GoogleContacts\ContactEntityMapper.cs" />
     <Compile Include="Implementation\GoogleContacts\GoogleContactRepository.cs" />

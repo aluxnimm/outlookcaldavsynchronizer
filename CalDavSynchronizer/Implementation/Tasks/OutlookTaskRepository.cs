@@ -25,6 +25,7 @@ using GenSync.EntityRepositories;
 using GenSync.Logging;
 using Microsoft.Office.Interop.Outlook;
 using System.Runtime.InteropServices;
+using CalDavSynchronizer.Implementation.Common;
 using log4net;
 
 namespace CalDavSynchronizer.Implementation.Tasks
@@ -60,7 +61,8 @@ namespace CalDavSynchronizer.Implementation.Tasks
     {
       return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (
           idsOfEntitiesToQuery
-              .Select (id => (TaskItem) _mapiNameSpace.GetItemFromID (id.Id, _folderStoreId))
+              .Select (id => _mapiNameSpace.GetEntryOrNull<TaskItem> (id.Id, _folderStoreId))
+              .Where (e => e != null)
               .ToSafeEnumerable()
               .Select (c => EntityVersion.Create (c.EntryID, c.LastModificationTime))
               .ToList());
@@ -83,7 +85,8 @@ namespace CalDavSynchronizer.Implementation.Tasks
         {
           using (var store = GenericComObjectWrapper.Create (taskFolderWrapper.Inner.Store))
           {
-            if (store.Inner != null) isInstantSearchEnabled = store.Inner.IsInstantSearchEnabled;
+            if (store.Inner != null)
+              isInstantSearchEnabled = store.Inner.IsInstantSearchEnabled;
           }
         }
         catch (COMException)
@@ -91,9 +94,9 @@ namespace CalDavSynchronizer.Implementation.Tasks
           s_logger.Info ("Can't access IsInstantSearchEnabled property of store, defaulting to false.");
         }
         using (var tableWrapper =
-          GenericComObjectWrapper.Create (
-            taskFolderWrapper.Inner.GetTable (
-              _daslFilterProvider.GetTaskFilter (isInstantSearchEnabled))))
+            GenericComObjectWrapper.Create (
+                taskFolderWrapper.Inner.GetTable (
+                    _daslFilterProvider.GetTaskFilter (isInstantSearchEnabled))))
         {
           var table = tableWrapper.Inner;
           table.Columns.RemoveAll();
@@ -103,19 +106,15 @@ namespace CalDavSynchronizer.Implementation.Tasks
           {
             var row = table.GetNextRow();
             var entryId = (string) row[c_entryIdColumnName];
-            try
+
+            var task = _mapiNameSpace.GetEntryOrNull<TaskItem> (entryId, _folderStoreId);
+            if (task != null)
             {
-              using (
-                var taskItemWrapper =
-                  GenericComObjectWrapper.Create((TaskItem) _mapiNameSpace.GetItemFromID (entryId, _folderStoreId)))
+              using (var taskItemWrapper = GenericComObjectWrapper.Create (task))
               {
                 entities.Add (EntityVersion.Create (taskItemWrapper.Inner.EntryID,
-                  taskItemWrapper.Inner.LastModificationTime));
+                    taskItemWrapper.Inner.LastModificationTime));
               }
-            }
-            catch (COMException ex)
-            {
-              s_logger.Error ("Could not fetch TaskItem, skipping.", ex);
             }
           }
         }
