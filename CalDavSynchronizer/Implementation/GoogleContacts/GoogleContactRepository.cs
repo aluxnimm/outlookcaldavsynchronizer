@@ -64,7 +64,16 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
     public Task<IReadOnlyList<EntityVersion<string, string>>> GetAllVersions (IEnumerable<string> idsOfknownEntities)
     {
-      return Task.Run (() => (IReadOnlyList<EntityVersion<string, string>>) _contactFacade.GetContacts().Entries.Select (c => EntityVersion.Create (c.Id, c.ETag)).ToArray());
+      var query = new ContactsQuery (ContactsQuery.CreateContactsUri (_userName, ContactsQuery.baseProjection));
+      return Task.Run (() =>
+      {
+        var contactsFeed = _contactFacade.Service.Query (query);
+        var contacts = contactsFeed.Entries
+            .Cast<ContactEntry>()
+            .Select (c => EntityVersion.Create (c.Id.AbsoluteUri.ToString(), c.Etag))
+            .ToArray();
+        return (IReadOnlyList<EntityVersion<string, string>>) contacts;
+      });
     }
 
     public async Task<IReadOnlyList<EntityWithId<string, Contact>>> Get (ICollection<string> ids, ILoadEntityLogger logger)
