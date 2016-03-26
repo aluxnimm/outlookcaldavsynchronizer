@@ -37,9 +37,8 @@
         </DockPanel.Resources>
         <Button DockPanel.Dock="Right" Command="{Binding TestConnectionCommand}" HorizontalAlignment="Right">Test settings</Button>
         <Button DockPanel.Dock="Right" Command="{Binding DoAutoDiscoveryCommand}" HorizontalAlignment="Right">Do Autodiscovery</Button>
-        <!--Visibility="{Binding UseGoogleNativeApiAvailable,Converter={StaticResource BooleanToVisibilityConverter}}"-->
         <CheckBox 
-          Visibility="Collapsed"
+          Visibility="{Binding UseGoogleNativeApiAvailable,Converter={StaticResource BooleanToVisibilityConverter}}"
           IsChecked="{Binding UseGoogleNativeApi}" 
           DockPanel.Dock="Left">Use Google native API</CheckBox>
         <UIElement></UIElement>
