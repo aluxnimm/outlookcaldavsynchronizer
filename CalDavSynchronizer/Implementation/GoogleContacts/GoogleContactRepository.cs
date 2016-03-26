@@ -77,26 +77,62 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       });
     }
 
-    public async Task<IReadOnlyList<EntityWithId<string, Contact>>> Get (ICollection<string> ids, ILoadEntityLogger logger)
+    public Task<IReadOnlyList<EntityWithId<string, Contact>>> Get (ICollection<string> ids, ILoadEntityLogger logger)
     {
-      var requestContacts = new List<Contact>();
-
-      foreach (var id in ids)
+      return Task.Run (() =>
       {
-        var contact = new Contact();
-        contact.Id = GetContactUrl (id, ContactsQuery.fullProjection).ToString();
-        contact.BatchData = new GDataBatchEntryData (contact.Id, GDataBatchOperationType.query);
-        requestContacts.Add (contact);
-      }
-      
-      var contactsFeed = await Task.Run (() =>
-          _contactFacade.Batch (
-              requestContacts,
-              _contactFacade.GetContacts(),
-              GDataBatchOperationType.query));
+        var result = ExecuteChunked (
+            new List<EntityWithId<string, Contact>>(),
+            ids.ToList(),
+            () => new List<Contact>(),
+            (id, contactList) =>
+            {
+              var contact = new Contact();
+              contact.Id = GetContactUrl (id, ContactsQuery.fullProjection).ToString();
+              contact.BatchData = new GDataBatchEntryData (contact.Id, GDataBatchOperationType.query);
+              contactList.Add (contact);
+            },
+            (contactList, r) =>
+            {
+              var contactsFeed = _contactFacade.Batch (
+                  contactList,
+                  _contactFacade.GetContacts(),
+                  GDataBatchOperationType.query);
 
-      return contactsFeed.Entries.Select (c => EntityWithId.Create (c.Id, c)).ToList();
+              if (contactsFeed != null)
+                r.AddRange (contactsFeed.Entries.Select (c => EntityWithId.Create (c.Id, c)));
+            });
+
+        return (IReadOnlyList<EntityWithId<string, Contact>>) result;
+
+      });
     }
+
+    private TResult ExecuteChunked<TItem, TChunkLocal, TResult> (
+        TResult resultToProcess,
+        IReadOnlyList<TItem> items,
+        Func<TChunkLocal> chunkLocalFactory,
+        Action<TItem, TChunkLocal> processItem,
+        Action<TChunkLocal, TResult> processChunk)
+    {
+      const int maxBatchSize = 100;
+
+      for (int i = 0; i < items.Count; i += maxBatchSize)
+      {
+        var chunkLocal = chunkLocalFactory();
+        var currentBatchEnd = Math.Min (items.Count, i + maxBatchSize);
+
+        for (int k = i; k < currentBatchEnd; k++)
+        {
+          processItem (items[k], chunkLocal);
+        }
+
+        processChunk (chunkLocal, resultToProcess);
+      }
+
+      return resultToProcess;
+    }
+
 
     public void Cleanup (IReadOnlyDictionary<string, Contact> entities)
     {
