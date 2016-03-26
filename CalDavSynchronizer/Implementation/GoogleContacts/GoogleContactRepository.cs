@@ -14,22 +14,24 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
   class GoogleContactRepository : IEntityRepository<Contact, string, string>
   {
     private readonly ContactsRequest _contactFacade;
+    private readonly string _userName;
 
-    public GoogleContactRepository (ContactsRequest contactFacade)
+    public GoogleContactRepository (ContactsRequest contactFacade, string userName)
     {
       if (contactFacade == null)
         throw new ArgumentNullException (nameof (contactFacade));
+      if (String.IsNullOrEmpty (userName))
+        throw new ArgumentException ("Argument is null or empty", nameof (userName));
 
+      _userName = userName;
       _contactFacade = contactFacade;
     }
 
     public Task Delete (string entityId, string version)
     {
-
-      var httpsUrl = GetContactUrl(entityId);
+      var httpsUrl = GetContactUrl (entityId);
 
       return Task.Run (() => _contactFacade.Delete (httpsUrl, version));
-  
     }
 
     public Task<EntityVersion<string, string>> Update (string entityId, string version, Contact entityToUpdate, Func<Contact, Contact> entityModifier)
@@ -46,7 +48,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
     {
       var contact = entityInitializer (new Contact());
       Uri feedUri = new Uri (ContactsQuery.CreateContactsUri ("default"));
-      return Task.Run(() =>
+      return Task.Run (() =>
       {
         var newContact = _contactFacade.Insert (feedUri, contact);
         return EntityVersion.Create (newContact.Id, newContact.ETag);
@@ -80,12 +82,11 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
     public void Cleanup (IReadOnlyDictionary<string, Contact> entities)
     {
-
     }
 
-    private static Uri GetContactUrl (string entityId)
+    private Uri GetContactUrl (string entityId)
     {
-      return new Uri (Uri.UriSchemeHttps + "://" + new Uri (entityId).GetComponents (UriComponents.HttpRequestUrl & ~UriComponents.Scheme, UriFormat.Unescaped));
+      return new Uri (ContactsQuery.CreateContactsUri (_userName, ContactsQuery.fullProjection) + "/" + new Uri (entityId).Segments.Last());
     }
   }
 }

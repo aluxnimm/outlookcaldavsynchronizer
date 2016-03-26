@@ -579,7 +579,7 @@ namespace CalDavSynchronizer.Scheduling
 
       var contactFacade = System.Threading.Tasks.Task.Run (() => OAuth.Google.GoogleHttpClientFactory.LoginToContactsService (options.UserName, proxy).Result).Result;
 
-      var btypeRepository = new GoogleContactRepository (contactFacade);
+      var btypeRepository = new GoogleContactRepository (contactFacade, options.UserName);
 
       var mappingParameters = GetMappingParameters<ContactMappingConfiguration> (options);
 
