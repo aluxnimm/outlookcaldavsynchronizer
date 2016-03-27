@@ -29,18 +29,14 @@ namespace GenSync.Synchronization
   public class EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
   {
     public IEntityMapper<TAtypeEntity, TBtypeEntity> Mapper { get; private set; }
-    public IWriteOnlyEntityRepository<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> ARepository { get; private set; }
-    public IWriteOnlyEntityRepository<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> BRepository { get; private set; }
     public IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> DataFactory { get; private set; }
     public IEntitySyncStateFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> StateFactory { get; private set; }
     public IExceptionLogger ExceptionLogger { get; private set; }
 
-    public EntitySyncStateEnvironment (IEntityMapper<TAtypeEntity, TBtypeEntity> mapper, IWriteOnlyEntityRepository<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> aRepository, IWriteOnlyEntityRepository<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> bRepository, IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> dataFactory, IEntitySyncStateFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> stateFactory, IExceptionLogger exceptionLogger)
+    public EntitySyncStateEnvironment (IEntityMapper<TAtypeEntity, TBtypeEntity> mapper, IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> dataFactory, IEntitySyncStateFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> stateFactory, IExceptionLogger exceptionLogger)
     {
       ExceptionLogger = exceptionLogger;
       Mapper = mapper;
-      ARepository = aRepository;
-      BRepository = bRepository;
       DataFactory = dataFactory;
       StateFactory = stateFactory;
     }

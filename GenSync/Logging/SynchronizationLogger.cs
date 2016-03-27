@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GenSync.Synchronization;
 
 namespace GenSync.Logging
@@ -31,8 +32,7 @@ namespace GenSync.Logging
     private string _aDelta;
     private string _bDelta;
 
-    private readonly EntitySynchronizationLogger _currentSynchronitzationLogger;
-    private readonly List<EntitySynchronizationReport> _entitySynchronizationReports = new List<EntitySynchronizationReport>();
+    private readonly List<EntitySynchronizationLogger> _entitySynchronizationLoggers = new List<EntitySynchronizationLogger> ();
     private readonly ILoadEntityLogger _aLoadEntityLogger;
     private readonly ILoadEntityLogger _bLoadEntityLogger;
 
@@ -41,21 +41,10 @@ namespace GenSync.Logging
       _startTime = DateTime.UtcNow;
       _profileName = profileName;
       _profileId = profileId;
-      _currentSynchronitzationLogger = new EntitySynchronizationLogger();
-      _currentSynchronitzationLogger.Disposed += CurrentSynchronitzationLogger_Disposed;
       _aLoadEntityLogger = new LoadEntityLogger (_loadErrors, _loadErrorsLock, true);
       _bLoadEntityLogger = new LoadEntityLogger (_loadErrors, _loadErrorsLock, false);
     }
-
-    private void CurrentSynchronitzationLogger_Disposed (object sender, EventArgs e)
-    {
-      if (_currentSynchronitzationLogger.HasErrorsOrWarnings)
-      {
-        _entitySynchronizationReports.Add (_currentSynchronitzationLogger.GetReport());
-      }
-      _currentSynchronitzationLogger.Clear();
-    }
-
+    
     public ILoadEntityLogger ALoadEntityLogger => _aLoadEntityLogger;
     public ILoadEntityLogger BLoadEntityLogger => _bLoadEntityLogger;
 
@@ -72,16 +61,15 @@ namespace GenSync.Logging
 
     public IEntitySynchronizationLogger CreateEntitySynchronizationLogger ()
     {
-      // Due to performance optimizations, this implementation reuses the instance
-      // of EntitySynchronizationLogger. This means that this Implementation can only be used
-      // for Synchronizers, which synchronize the entities subsequently
-      return _currentSynchronitzationLogger;
-    }
+      EntitySynchronizationLogger logger = new EntitySynchronizationLogger();
+      _entitySynchronizationLoggers.Add (logger);
 
+      return logger;
+    }
 
     public SynchronizationReport GetReport ()
     {
-      return new SynchronizationReport()
+      return new SynchronizationReport
              {
                  ADelta = _aDelta,
                  BDelta = _bDelta,
@@ -90,7 +78,10 @@ namespace GenSync.Logging
                  ProfileId = _profileId,
                  ProfileName = _profileName,
                  StartTime = _startTime,
-                 EntitySynchronizationReports = _entitySynchronizationReports.ToArray(),
+                 EntitySynchronizationReports = _entitySynchronizationLoggers
+                     .Where (l => l.HasErrorsOrWarnings)
+                     .Select (l => l.GetReport())
+                     .ToArray(),
                  Duration = DateTime.UtcNow - _startTime
              };
     }

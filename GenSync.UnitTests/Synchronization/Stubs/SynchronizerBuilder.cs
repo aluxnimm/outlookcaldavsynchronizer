@@ -45,6 +45,8 @@ namespace GenSync.UnitTests.Synchronization.Stubs
       return new Synchronizer<string, string, string, string, string, string> (
           AtypeRepository,
           BtypeRepository,
+          BatchEntityRepositoryAdapter.Create(AtypeRepository),
+          BatchEntityRepositoryAdapter.Create(BtypeRepository),
           InitialSyncStateCreationStrategy,
           EntityRelationDataAccess,
           EntityRelationDataFactory,

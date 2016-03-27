@@ -48,16 +48,19 @@ namespace GenSync.Synchronization
     private readonly IInitialEntityMatcher<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> _initialEntityMatcher;
     private readonly IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> _entityRelationDataFactory;
     private readonly IEntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> _entityRelationDataAccess;
-    private readonly IEntityRepository<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> _atypeRepository;
-    private readonly IEntityRepository<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> _btypeRepository;
+    private readonly IReadOnlyEntityRepository<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> _atypeRepository;
+    private readonly IReadOnlyEntityRepository<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> _btypeRepository;
     private readonly IInitialSyncStateCreationStrategy<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _initialSyncStateCreationStrategy;
     private readonly ITotalProgressFactory _totalProgressFactory;
     private readonly IExceptionLogger _exceptionLogger;
-
+    private readonly IBatchWriteOnlyEntityRepository<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> _atypeWriteRepository;
+    private readonly IBatchWriteOnlyEntityRepository<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> _btypeWriteRepository;
 
     public Synchronizer (
-        IEntityRepository<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> atypeRepository,
-        IEntityRepository<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> btypeRepository,
+        IReadOnlyEntityRepository<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> atypeRepository,
+        IReadOnlyEntityRepository<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> btypeRepository,
+        IBatchWriteOnlyEntityRepository<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> atypeWriteRepository,
+        IBatchWriteOnlyEntityRepository<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> btypeWriteRepository,
         IInitialSyncStateCreationStrategy<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> initialSyncStateCreationStrategy,
         IEntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> entityRelationDataAccess,
         IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> entityRelationDataFactory,
@@ -71,6 +74,8 @@ namespace GenSync.Synchronization
       _atypeIdComparer = atypeIdComparer;
       _btypeIdComparer = btypeIdComparer;
       _exceptionLogger = exceptionLogger;
+      _atypeWriteRepository = atypeWriteRepository;
+      _btypeWriteRepository = btypeWriteRepository;
       _atypeRepository = atypeRepository;
       _btypeRepository = btypeRepository;
       _entityRelationDataAccess = entityRelationDataAccess;
@@ -158,8 +163,8 @@ namespace GenSync.Synchronization
 
           foreach (var entityRelation in knownEntityRelations)
           {
-            var isACausingSync = RemoveAFromRequestedAndCheckIfCausesSync(requestedAIdsById, entityRelation);
-            var isBCausingSync = RemoveBFromRequestedAndCheckIfCausesSync(requestedBIdsById, entityRelation);
+            var isACausingSync = RemoveAFromRequestedAndCheckIfCausesSync (requestedAIdsById, entityRelation);
+            var isBCausingSync = RemoveBFromRequestedAndCheckIfCausesSync (requestedBIdsById, entityRelation);
 
             if (isACausingSync || isBCausingSync)
             {
@@ -229,8 +234,8 @@ namespace GenSync.Synchronization
     }
 
     private static bool RemoveAFromRequestedAndCheckIfCausesSync (
-      Dictionary<TAtypeEntityId, IIdWithHints<TAtypeEntityId, TAtypeEntityVersion>> requestedAIdsById, 
-      IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> entityRelation)
+        Dictionary<TAtypeEntityId, IIdWithHints<TAtypeEntityId, TAtypeEntityVersion>> requestedAIdsById,
+        IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> entityRelation)
     {
       IIdWithHints<TAtypeEntityId, TAtypeEntityVersion> aIdWithHints;
       bool isACausingSync;
@@ -250,8 +255,8 @@ namespace GenSync.Synchronization
     }
 
     private static bool RemoveBFromRequestedAndCheckIfCausesSync (
-      Dictionary<TBtypeEntityId, IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>> requestedBIdsById, 
-      IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> entityRelation)
+        Dictionary<TBtypeEntityId, IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>> requestedBIdsById,
+        IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> entityRelation)
     {
       IIdWithHints<TBtypeEntityId, TBtypeEntityVersion> bIdWithHints;
       bool isBCausingSync;
@@ -380,19 +385,18 @@ namespace GenSync.Synchronization
       // an state is allowed only to resolve to another state, if the following states requires equal or less entities!
       entitySyncStates.DoTransition (s => s.FetchRequiredEntities (entityContainer.AEntities, entityContainer.BEntities));
 
-      using (var progress = totalProgress.StartProcessing (entitySyncStates.Count))
+      var aJobs = new JobList<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion>();
+      var bJobs = new JobList<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion>();
+
+      entitySyncStates.Execute (s => s.AddSyncronizationJob (aJobs, bJobs, logger.CreateEntitySynchronizationLogger()));
+
+      using (var progress = totalProgress.StartProcessing (aJobs.TotalJobCount + bJobs.TotalJobCount))
       {
-        await entitySyncStates.DoTransition (
-            async s =>
-            {
-              using (var entityLogger = logger.CreateEntitySynchronizationLogger())
-              {
-                var nextState = await s.PerformSyncActionNoThrow (entityLogger);
-                progress.Increase();
-                return nextState;
-              }
-            });
+        await _atypeWriteRepository.PerformOperations (aJobs.CreateJobs, aJobs.UpdateJobs, aJobs.DeleteJobs, progress);
+        await _btypeWriteRepository.PerformOperations (bJobs.CreateJobs, bJobs.UpdateJobs, bJobs.DeleteJobs, progress);
       }
+
+      entitySyncStates.DoTransition (s => s.NotifyJobExecuted());
 
       var newEntityRelations = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
 
@@ -403,7 +407,7 @@ namespace GenSync.Synchronization
 
       return newEntityRelations;
     }
-    
+
     private static Dictionary<TId, TEntity> GetSubSet<TId, TEntity> (IReadOnlyDictionary<TId, TEntity> set, IEnumerable<TId> subSetIds, IEqualityComparer<TId> idComparer)
     {
       var subSet = new Dictionary<TId, TEntity> (idComparer);

@@ -15,14 +15,18 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using GenSync.ProgressReport;
 
-namespace GenSync.Logging
+namespace GenSync.EntityRepositories
 {
-  public interface IEntitySynchronizationLogger : IEntityMappingLogger
+  public interface IBatchWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
   {
-    void SetAId (object id);
-    void SetBId (object id);
-    void LogAbortedDueToError (Exception exception);
-    void LogAbortedDueToError (string errorMessage);
+    Task PerformOperations (
+        IEnumerable<ICreateJob<TEntity, TEntityId, TEntityVersion>> createJobs,
+        IEnumerable<IUpdateJob<TEntity, TEntityId, TEntityVersion>> updateJobs,
+        IEnumerable<IDeleteJob<TEntityId, TEntityVersion>> deleteJobs,
+        IProgressLogger progressLogger);
   }
 }

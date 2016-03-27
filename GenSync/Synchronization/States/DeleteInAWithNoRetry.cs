@@ -14,11 +14,13 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using GenSync.EntityRelationManagement;
+using GenSync.EntityRepositories;
 using GenSync.Logging;
 using log4net;
 
@@ -32,6 +34,7 @@ namespace GenSync.Synchronization.States
 
     private readonly TAtypeEntityId _aId;
     private readonly TAtypeEntityVersion _currentAVersion;
+    private IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _nextStateAfterJobExecution;
 
     public DeleteInAWithNoRetry (
         EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> environment,
@@ -57,26 +60,88 @@ namespace GenSync.Synchronization.States
       return this;
     }
 
-    public override async Task<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>> PerformSyncActionNoThrow (
-        IEntitySynchronizationLogger logger)
-    {
-      try
-      {
-        logger.SetAId (_aId);
-        await _environment.ARepository.Delete (_aId, _currentAVersion);
-        return Discard();
-      }
-      catch (Exception x)
-      {
-        logger.LogAbortedDueToError (x);
-        LogException (x);
-        return Discard();
-      }
-    }
-
     public override void AddNewRelationNoThrow (Action<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> addAction)
     {
       s_logger.Error ("This state should have been left via PerformSyncActionNoThrow!");
+    }
+
+    public override void AddSyncronizationJob (
+        IJobList<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> aJobs,
+        IJobList<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> bJobs,
+        IEntitySynchronizationLogger logger)
+    {
+      logger.SetAId (_aId);
+      aJobs.AddDeleteJob (new JobWrapper (this, logger));
+    }
+
+    private void NotifyOperationSuceeded ()
+    {
+      _nextStateAfterJobExecution = Discard();
+    }
+
+    private void NotifyOperationFailed (Exception exception, IEntitySynchronizationLogger logger)
+    {
+      logger.LogAbortedDueToError (exception);
+      LogException (exception);
+      SetNextStateAsFailed();
+    }
+
+    private void NotifyOperationFailed (string errorMessage, IEntitySynchronizationLogger logger)
+    {
+      logger.LogAbortedDueToError (errorMessage);
+      SetNextStateAsFailed ();
+    }
+
+    public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> NotifyJobExecuted ()
+    {
+      if (_nextStateAfterJobExecution == null)
+      {
+        s_logger.Error ($"{nameof (_nextStateAfterJobExecution)} was not set. Defaulting to failed state.");
+        SetNextStateAsFailed();
+      }
+      return _nextStateAfterJobExecution;
+    }
+
+    private void SetNextStateAsFailed ()
+    {
+      _nextStateAfterJobExecution = Discard();
+    }
+
+    struct JobWrapper : IDeleteJob<TAtypeEntityId, TAtypeEntityVersion>
+    {
+      private readonly DeleteInAWithNoRetry<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _state;
+      readonly IEntitySynchronizationLogger _logger;
+
+      public JobWrapper (
+          DeleteInAWithNoRetry<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> state,
+          IEntitySynchronizationLogger logger)
+      {
+        if (state == null)
+          throw new ArgumentNullException (nameof (state));
+        if (logger == null)
+          throw new ArgumentNullException (nameof (logger));
+
+        _state = state;
+        _logger = logger;
+      }
+
+      public TAtypeEntityId EntityId => _state._aId;
+      public TAtypeEntityVersion Version => _state._currentAVersion;
+
+      public void NotifyOperationSuceeded ()
+      {
+        _state.NotifyOperationSuceeded();
+      }
+
+      public void NotifyOperationFailed (Exception exception)
+      {
+        _state.NotifyOperationFailed (exception, _logger);
+      }
+
+      public void NotifyOperationFailed (string errorMessage)
+      {
+        _state.NotifyOperationFailed (errorMessage, _logger);
+      }
     }
   }
 }

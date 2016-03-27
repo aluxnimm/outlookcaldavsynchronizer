@@ -16,13 +16,17 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 
-namespace GenSync.Logging
+namespace GenSync.EntityRepositories
 {
-  public interface IEntitySynchronizationLogger : IEntityMappingLogger
+  public interface IUpdateJob<TEntity, TEntityId, TEntityVersion>
   {
-    void SetAId (object id);
-    void SetBId (object id);
-    void LogAbortedDueToError (Exception exception);
-    void LogAbortedDueToError (string errorMessage);
+    TEntityId EntityId { get; }
+    TEntityVersion Version { get; }
+    TEntity EntityToUpdate { get; }
+    TEntity UpdateEntity (TEntity entity);
+
+    void NotifyOperationSuceeded (EntityVersion<TEntityId, TEntityVersion> result);
+    void NotifyOperationFailed (Exception exception);
+    void NotifyOperationFailed (string errorMessage);
   }
 }

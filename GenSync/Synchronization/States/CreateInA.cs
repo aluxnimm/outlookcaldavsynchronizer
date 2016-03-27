@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using GenSync.EntityRelationManagement;
+using GenSync.EntityRepositories;
 using GenSync.Logging;
 using log4net;
 
@@ -33,7 +34,7 @@ namespace GenSync.Synchronization.States
     private readonly TBtypeEntityId _bId;
     private readonly TBtypeEntityVersion _bVersion;
     private TBtypeEntity _bEntity;
-
+    private IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _nextStateAfterJobExecution;
 
     public CreateInA (EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> environment, TBtypeEntityId bId, TBtypeEntityVersion bVersion)
         : base (environment)
@@ -64,24 +65,6 @@ namespace GenSync.Synchronization.States
       return this;
     }
 
-    public override async Task<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>> PerformSyncActionNoThrow (
-        IEntitySynchronizationLogger logger)
-    {
-      try
-      {
-        logger.SetBId (_bId);
-        var newA = await _environment.ARepository.Create (a => _environment.Mapper.Map2To1 (_bEntity, a, logger));
-        logger.SetAId (newA.Id);
-        return CreateDoNothing (newA.Id, newA.Version, _bId, _bVersion);
-      }
-      catch (Exception x)
-      {
-        logger.LogAbortedDueToError (x);
-        LogException (x);
-        return Discard();
-      }
-    }
-
     public override void AddNewRelationNoThrow (Action<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> addAction)
     {
       s_logger.Error ("This state should have been left via PerformSyncActionNoThrow!");
@@ -90,6 +73,93 @@ namespace GenSync.Synchronization.States
     public override void Dispose ()
     {
       _bEntity = default(TBtypeEntity);
+    }
+
+    public override void AddSyncronizationJob (
+        IJobList<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> aJobs,
+        IJobList<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> bJobs,
+        IEntitySynchronizationLogger logger)
+    {
+      logger.SetBId (_bId);
+      aJobs.AddCreateJob (new JobWrapper (this, logger));
+    }
+
+    private TAtypeEntity InitializeEntity (TAtypeEntity entity, IEntityMappingLogger logger)
+    {
+      return _environment.Mapper.Map2To1 (_bEntity, entity, logger);
+    }
+
+    private void NotifyOperationSuceeded (EntityVersion<TAtypeEntityId, TAtypeEntityVersion> newVersion, IEntitySynchronizationLogger logger)
+    {
+      logger.SetAId (newVersion.Id);
+      _nextStateAfterJobExecution = CreateDoNothing (newVersion.Id, newVersion.Version, _bId, _bVersion);
+    }
+
+    private void NotifyOperationFailed (Exception exception, IEntitySynchronizationLogger logger)
+    {
+      logger.LogAbortedDueToError (exception);
+      LogException (exception);
+      SetNextStateAsFailed();
+    }
+
+    private void NotifyOperationFailed (string errorMessage, IEntitySynchronizationLogger logger)
+    {
+      logger.LogAbortedDueToError (errorMessage);
+      SetNextStateAsFailed ();
+    }
+
+    public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> NotifyJobExecuted ()
+    {
+      if (_nextStateAfterJobExecution == null)
+      {
+        s_logger.Error ($"{nameof (_nextStateAfterJobExecution)} was not set. Defaulting to failed state.");
+        SetNextStateAsFailed();
+      }
+      return _nextStateAfterJobExecution;
+    }
+
+    private void SetNextStateAsFailed ()
+    {
+      _nextStateAfterJobExecution = Discard();
+    }
+
+    struct JobWrapper : ICreateJob<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion>
+    {
+      private readonly CreateInA<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _state;
+      readonly IEntitySynchronizationLogger _logger;
+
+      public JobWrapper (
+          CreateInA<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> state,
+          IEntitySynchronizationLogger logger)
+      {
+        if (state == null)
+          throw new ArgumentNullException (nameof (state));
+        if (logger == null)
+          throw new ArgumentNullException (nameof (logger));
+
+        _state = state;
+        _logger = logger;
+      }
+
+      public TAtypeEntity InitializeEntity (TAtypeEntity entity)
+      {
+        return _state.InitializeEntity (entity, _logger);
+      }
+
+      public void NotifyOperationSuceeded (EntityVersion<TAtypeEntityId, TAtypeEntityVersion> result)
+      {
+        _state.NotifyOperationSuceeded (result, _logger);
+      }
+
+      public void NotifyOperationFailed (Exception exception)
+      {
+        _state.NotifyOperationFailed (exception, _logger);
+      }
+
+      public void NotifyOperationFailed (string errorMessage)
+      {
+        _state.NotifyOperationFailed (errorMessage, _logger);
+      }
     }
   }
 }

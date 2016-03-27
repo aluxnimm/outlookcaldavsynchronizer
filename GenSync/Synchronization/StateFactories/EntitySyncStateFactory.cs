@@ -31,12 +31,13 @@ namespace GenSync.Synchronization.StateFactories
     private readonly EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _environment;
 
 
-    public EntitySyncStateFactory (IEntityMapper<TAtypeEntity, TBtypeEntity> mapper, IWriteOnlyEntityRepository<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> aRepository, IWriteOnlyEntityRepository<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> bRepository, IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> dataFactory, IExceptionLogger exceptionLogger)
+    public EntitySyncStateFactory (
+        IEntityMapper<TAtypeEntity, TBtypeEntity> mapper,
+        IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> dataFactory,
+        IExceptionLogger exceptionLogger)
     {
       _environment = new EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> (
           mapper,
-          aRepository,
-          bRepository,
           dataFactory,
           this,
           exceptionLogger);

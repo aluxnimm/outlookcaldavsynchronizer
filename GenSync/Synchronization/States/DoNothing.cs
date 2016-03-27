@@ -45,10 +45,13 @@ namespace GenSync.Synchronization.States
       return this;
     }
 
-    public Task<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>> PerformSyncActionNoThrow (
-        IEntitySynchronizationLogger logger)
+    public void AddSyncronizationJob (IJobList<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> aJobs, IJobList<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> bJobs, IEntitySynchronizationLogger logger)
     {
-      return Task.FromResult<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>> (this);
+    }
+
+    public IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> NotifyJobExecuted ()
+    {
+      return this;
     }
 
     public void AddNewRelationNoThrow (Action<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> addAction)

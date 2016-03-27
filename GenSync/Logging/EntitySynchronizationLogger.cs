@@ -75,6 +75,11 @@ namespace GenSync.Logging
       _exceptionThatLeadToAbortion = exception.ToString();
     }
 
+    public void LogAbortedDueToError (string errorMessage)
+    {
+      _exceptionThatLeadToAbortion = errorMessage;
+    }
+
     public EntitySynchronizationReport GetReport ()
     {
       return new EntitySynchronizationReport()

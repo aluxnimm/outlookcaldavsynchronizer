@@ -50,7 +50,12 @@
     <Compile Include="..\CalDavSynchronizer\Properties\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
+    <Compile Include="EntityRepositories\BatchEntityRepositoryAdapter.cs" />
+    <Compile Include="EntityRepositories\ICreateJob.cs" />
+    <Compile Include="EntityRepositories\IDeleteJob.cs" />
     <Compile Include="EntityRepositories\IdWithAwarenessLevel.cs" />
+    <Compile Include="EntityRepositories\IUpdateJob.cs" />
+    <Compile Include="EntityRepositories\IWriteOnlyEntityRepository.cs" />
     <Compile Include="IdWithHints.cs" />
     <Compile Include="IIdWithHints.cs" />
     <Compile Include="EntityVersion.cs" />
@@ -61,7 +66,7 @@
     <Compile Include="EntityRelationManagement\IEntityRelationDataFactory.cs" />
     <Compile Include="EntityRepositories\IEntityRepository.cs" />
     <Compile Include="EntityRepositories\IReadOnlyEntityRepository.cs" />
-    <Compile Include="EntityRepositories\IWriteOnlyEntityRepository.cs" />
+    <Compile Include="EntityRepositories\IBatchWriteOnlyEntityRepository.cs" />
     <Compile Include="EntityWithId.cs" />
     <Compile Include="IExceptionLogger.cs" />
     <Compile Include="InitialEntityMatching\IInitialEntityMatcher.cs" />
@@ -97,6 +102,7 @@
     <Compile Include="Synchronization\EntitySyncStateEnvironment.cs" />
     <Compile Include="Synchronization\IPartialSynchronizer.cs" />
     <Compile Include="Synchronization\ISynchronizer.cs" />
+    <Compile Include="Synchronization\JobList.cs" />
     <Compile Include="Synchronization\StateCreationStrategies\ConflictStrategies\ConflictInitialSyncStateCreationStrategyAutomatic.cs" />
     <Compile Include="Synchronization\StateCreationStrategies\ConflictStrategies\ConflictInitialSyncStateCreationStrategyAWins.cs" />
     <Compile Include="Synchronization\StateCreationStrategies\ConflictStrategies\ConflictInitialSyncStateCreationStrategyBWins.cs" />
@@ -117,6 +123,7 @@
     <Compile Include="Synchronization\States\Discard.cs" />
     <Compile Include="Synchronization\States\DoNothing.cs" />
     <Compile Include="Synchronization\States\IEntitySyncState.cs" />
+    <Compile Include="Synchronization\IJobList.cs" />
     <Compile Include="Synchronization\States\RestoreInA.cs" />
     <Compile Include="Synchronization\States\RestoreInB.cs" />
     <Compile Include="Synchronization\States\StateBase.cs" />

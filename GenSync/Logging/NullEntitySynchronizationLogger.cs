@@ -38,6 +38,11 @@ namespace GenSync.Logging
     {
     }
 
+    public void LogAbortedDueToError (string errorMessage)
+    {
+      
+    }
+
     public void LogMappingError (string message)
     {
       

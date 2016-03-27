@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GenSync.EntityRelationManagement;
+using GenSync.EntityRepositories;
 using GenSync.InitialEntityMatching;
 using GenSync.Logging;
 using GenSync.ProgressReport;
@@ -51,8 +52,6 @@ namespace GenSync.UnitTests.Synchronization
 
       _factory = new EntitySyncStateFactory<Identifier, int, string, Identifier, int, string> (
           new Mapper(),
-          _localRepository,
-          _serverRepository,
           _entityRelationDataFactory,
           MockRepository.GenerateMock<IExceptionLogger>()
           );
@@ -137,9 +136,14 @@ namespace GenSync.UnitTests.Synchronization
               Arg<IReadOnlyDictionary<Identifier, int>>.Is.NotNull))
           .Return (matchingEntities ?? new List<IEntityRelationData<Identifier, int, Identifier, int>>());
 
+      var atypeWriteRepository = BatchEntityRepositoryAdapter.Create (_localRepository);
+      var btypeWriteRepository = BatchEntityRepositoryAdapter.Create (_serverRepository);
+
       return new Synchronizer<Identifier, int, string, Identifier, int, string> (
           _localRepository,
           _serverRepository,
+          atypeWriteRepository,
+          btypeWriteRepository,
           strategy,
           _entityRelationDataAccess,
           _entityRelationDataFactory,
