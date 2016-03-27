@@ -130,7 +130,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         foreach (string companyRaw in companiesRaw)
         {
           Organization company = new Organization();
-          company.Name = (target.Organizations.Count == 0) ? source.Inner.CompanyName : null;
+          company.Name = (target.Organizations.Count == 0) ? source.Inner.CompanyName : companyRaw;
           company.Title = (target.Organizations.Count == 0) ? source.Inner.JobTitle : null;
           company.Department = (target.Organizations.Count == 0) ? source.Inner.Department : null;
           company.Primary = target.Organizations.Count == 0;
@@ -138,7 +138,6 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
           target.Organizations.Add(company);
         }
       }
-
 
       if (target.Organizations.Count == 0 && (!string.IsNullOrEmpty(source.Inner.CompanyName) || !string.IsNullOrEmpty(source.Inner.Department) ||
           !string.IsNullOrEmpty(source.Inner.JobTitle)))
@@ -153,6 +152,9 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         });
       }
       #endregion company
+
+      target.ContactEntry.Occupation = source.Inner.Profession;
+
       target.Location = source.Inner.OfficeLocation;
 
       target.ContactEntry.Websites.Clear();
@@ -315,6 +317,24 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
                         System.Security.SecurityElement.Escape (source.Inner.Body) : null;
 
       target.ContactEntry.Sensitivity = MapPrivacy1To2 (source.Inner.Sensitivity);
+
+      target.Languages.Clear();
+      if (!string.IsNullOrEmpty (source.Inner.Language))
+      {
+        foreach (var lang in source.Inner.Language.Split (';'))
+        {
+          target.Languages.Add (new Language () { Label = lang});
+        }
+      }
+
+      target.ContactEntry.Hobbies.Clear();
+      if (!string.IsNullOrEmpty (source.Inner.Hobby))
+      {
+        foreach (var hobby in source.Inner.Hobby.Split (';'))
+        {
+          target.ContactEntry.Hobbies.Add (new Hobby (hobby));
+        }
+      }
 
       return target;
     }
@@ -696,6 +716,9 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         target.Inner.Companies += company.Name;
       }
       #endregion companies
+
+      target.Inner.Profession = source.ContactEntry.Occupation;
+
       target.Inner.OfficeLocation = source.Location;
 
       target.Inner.BusinessHomePage = string.Empty;
@@ -792,6 +815,14 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       target.Inner.Body = source.Content;
 
       target.Inner.Sensitivity = MapPrivacy2To1 (source.ContactEntry.Sensitivity);
+
+      target.Inner.Language = string.Empty;
+      if (source.Languages.Count >0)
+        target.Inner.Language = string.Join (";", source.Languages.Select (l => l.Label));
+
+      target.Inner.Hobby = string.Empty;
+      if (source.ContactEntry.Hobbies.Count >0)
+        target.Inner.Hobby = string.Join (";", source.ContactEntry.Hobbies.Select (h => h.Value));
 
       return target;
     }
