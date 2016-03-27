@@ -114,20 +114,40 @@ namespace CalDavSynchronizer.OAuth.Google
                                });
     }
 
+    private static OAuth2Parameters CreateOAuth2Parameters (ClientSecrets clientSecrets, UserCredential credential)
+    {
+      return new OAuth2Parameters
+      {
+        ClientId = clientSecrets.ClientId,
+        ClientSecret = clientSecrets.ClientSecret,
+        AccessToken = credential.Token.AccessToken,
+        RefreshToken = credential.Token.RefreshToken
+      };
+    }
     public static async Task<ContactsRequest> LoginToContactsService (string user, IWebProxy proxyOrNull)
     {
       var clientSecrets = CreateClientSecrets();
       var credential = await LoginToGoogle (user, proxyOrNull);
 
-      var parameters = new OAuth2Parameters
-                       {
-                           ClientId = clientSecrets.ClientId,
-                           ClientSecret = clientSecrets.ClientSecret,
-                           AccessToken = credential.Token.AccessToken,
-                           RefreshToken = credential.Token.RefreshToken
-                       };
+      var parameters = CreateOAuth2Parameters (clientSecrets, credential);
 
       var contactsRequest = new ContactsRequest (new RequestSettings ("Outlook CalDav Synchronizer", parameters) {AutoPaging = true});
+
+      ContactsQuery query = new ContactsQuery (ContactsQuery.CreateContactsUri ("default"));
+      query.NumberToRetrieve = 1;
+      try
+      {
+        var feed = contactsRequest.Service.Query (query);
+      }
+      catch (GDataRequestException x)
+      {
+        s_logger.Error ("Trying to access google contacts API failed. Revoking  token and reauthorizing.", x);
+
+        await credential.RevokeTokenAsync (CancellationToken.None);
+        await GoogleWebAuthorizationBroker.ReauthorizeAsync (credential, CancellationToken.None);
+        parameters = CreateOAuth2Parameters (clientSecrets, credential);
+        contactsRequest = new ContactsRequest (new RequestSettings ("Outlook CalDav Synchronizer", parameters) { AutoPaging = true });
+      }
 
       if (proxyOrNull != null)
         contactsRequest.Proxy = proxyOrNull;
