@@ -644,13 +644,13 @@ namespace CalDavSynchronizer.Scheduling
       var storageDataAccess = new EntityRelationDataAccess<string, DateTime, GoogleContactRelationData, string, string> (storageDataDirectory);
 
       var atypeWriteRepository = BatchEntityRepositoryAdapter.Create (atypeRepository);
-      var btypeWriteRepository = BatchEntityRepositoryAdapter.Create (btypeRepository);
+     
 
       var synchronizer = new Synchronizer<string, DateTime, ContactItemWrapper, string, string, Contact> (
           atypeRepository,
           btypeRepository,
           atypeWriteRepository,
-          btypeWriteRepository,
+          btypeRepository,
           InitialSyncStateCreationStrategyFactory<string, DateTime, ContactItemWrapper, string, string, Contact>.Create (
               syncStateFactory,
               syncStateFactory.Environment,
