@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -16,19 +16,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-using GenSync.Logging;
 
-namespace GenSync.EntityRepositories
+namespace GenSync.Synchronization
 {
-  /// <summary>
-  /// All readoperations that a repository has to support
-  /// </summary>
-  public interface IReadOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext>
+  public interface ISynchronizationContextFactory<out TContext>
   {
-    Task<IReadOnlyList<EntityVersion<TEntityId, TEntityVersion>>> GetVersions (IEnumerable<IdWithAwarenessLevel<TEntityId>> idsOfEntitiesToQuery);
-    Task<IReadOnlyList<EntityVersion<TEntityId, TEntityVersion>>> GetAllVersions (IEnumerable<TEntityId> idsOfknownEntities);
-    Task<IReadOnlyList<EntityWithId<TEntityId, TEntity>>> Get (ICollection<TEntityId> ids, ILoadEntityLogger logger, TContext context);
-    void Cleanup (IReadOnlyDictionary<TEntityId, TEntity> entities);
+    TContext Create ();
   }
 }

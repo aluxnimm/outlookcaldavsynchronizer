@@ -33,7 +33,7 @@ using CalDavSynchronizer.ThoughtvCardWorkaround;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public class CardDavRepository : IEntityRepository<vCard, WebResourceName, string>
+  public class CardDavRepository : IEntityRepository<vCard, WebResourceName, string, int>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -59,7 +59,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    public async Task<IReadOnlyList<EntityWithId<WebResourceName, vCard>>> Get (ICollection<WebResourceName> ids, ILoadEntityLogger logger)
+    public async Task<IReadOnlyList<EntityWithId<WebResourceName, vCard>>> Get (ICollection<WebResourceName> ids, ILoadEntityLogger logger, int context)
     {
       if (ids.Count == 0)
         return new EntityWithId<WebResourceName, vCard>[] { };

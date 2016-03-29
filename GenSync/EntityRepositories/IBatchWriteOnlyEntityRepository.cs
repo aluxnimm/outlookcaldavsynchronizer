@@ -21,12 +21,13 @@ using GenSync.ProgressReport;
 
 namespace GenSync.EntityRepositories
 {
-  public interface IBatchWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
+  public interface IBatchWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext>
   {
     Task PerformOperations (
         IEnumerable<ICreateJob<TEntity, TEntityId, TEntityVersion>> createJobs,
         IEnumerable<IUpdateJob<TEntity, TEntityId, TEntityVersion>> updateJobs,
         IEnumerable<IDeleteJob<TEntityId, TEntityVersion>> deleteJobs,
-        IProgressLogger progressLogger);
+        IProgressLogger progressLogger,
+        TContext context);
   }
 }

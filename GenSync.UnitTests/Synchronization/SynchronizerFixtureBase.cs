@@ -122,7 +122,7 @@ namespace GenSync.UnitTests.Synchronization
           NullSynchronizationLogger.Instance).Wait();
     }
 
-    private Synchronizer<Identifier, int, string, Identifier, int, string> CreateSynchronizer (
+    private Synchronizer<Identifier, int, string, Identifier, int, string, int> CreateSynchronizer (
       IInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string> strategy,
       List<IEntityRelationData<Identifier, int, Identifier, int>> matchingEntities = null)
     {
@@ -139,7 +139,7 @@ namespace GenSync.UnitTests.Synchronization
       var atypeWriteRepository = BatchEntityRepositoryAdapter.Create (_localRepository);
       var btypeWriteRepository = BatchEntityRepositoryAdapter.Create (_serverRepository);
 
-      return new Synchronizer<Identifier, int, string, Identifier, int, string> (
+      return new Synchronizer<Identifier, int, string, Identifier, int, string, int> (
           _localRepository,
           _serverRepository,
           atypeWriteRepository,
@@ -151,7 +151,8 @@ namespace GenSync.UnitTests.Synchronization
           IdentifierEqualityComparer.Instance,
           IdentifierEqualityComparer.Instance,
           NullTotalProgressFactory.Instance,
-          MockRepository.GenerateMock<IExceptionLogger>());
+          MockRepository.GenerateMock<IExceptionLogger>(),
+          NullSynchronizationContextFactory.Instance);
     }
 
     protected void ExecuteMultipleTimes (Action a)

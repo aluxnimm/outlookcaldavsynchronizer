@@ -31,8 +31,8 @@ namespace GenSync.UnitTests.Synchronization.Stubs
   {
     public SynchronizerBuilder ()
     {
-      AtypeRepository = MockRepository.GenerateMock<IEntityRepository<string, string, string>>();
-      BtypeRepository = MockRepository.GenerateMock<IEntityRepository<string, string, string>>();
+      AtypeRepository = MockRepository.GenerateMock<IEntityRepository<string, string, string, int>>();
+      BtypeRepository = MockRepository.GenerateMock<IEntityRepository<string, string, string, int>>();
       EntityMapper = MockRepository.GenerateMock<IEntityMapper<string, string>>();
       EntityRelationDataAccess = MockRepository.GenerateMock<IEntityRelationDataAccess<string, string, string, string>>();
       EntityRelationDataFactory = MockRepository.GenerateMock<IEntityRelationDataFactory<string, string, string, string>>();
@@ -40,9 +40,9 @@ namespace GenSync.UnitTests.Synchronization.Stubs
       InitialSyncStateCreationStrategy = MockRepository.GenerateMock<IInitialSyncStateCreationStrategy<string, string, string, string, string, string>>();
     }
 
-    public Synchronizer<string, string, string, string, string, string> Build ()
+    public Synchronizer<string, string, string, string, string, string,int> Build ()
     {
-      return new Synchronizer<string, string, string, string, string, string> (
+      return new Synchronizer<string, string, string, string, string, string, int> (
           AtypeRepository,
           BtypeRepository,
           BatchEntityRepositoryAdapter.Create(AtypeRepository),
@@ -54,7 +54,8 @@ namespace GenSync.UnitTests.Synchronization.Stubs
           AtypeIdComparer,
           BtypeIdComparer,
           new NullTotalProgressFactory(),
-          MockRepository.GenerateMock<IExceptionLogger>());
+          MockRepository.GenerateMock<IExceptionLogger>(),
+          NullSynchronizationContextFactory.Instance);
     }
 
     public IEntityRelationDataAccess<string, string, string, string> EntityRelationDataAccess { get; set; }
@@ -71,8 +72,8 @@ namespace GenSync.UnitTests.Synchronization.Stubs
 
     public IEntityMapper<string, string> EntityMapper { get; set; }
 
-    public IEntityRepository<string, string, string> BtypeRepository { get; set; }
+    public IEntityRepository<string, string, string, int> BtypeRepository { get; set; }
 
-    public IEntityRepository<string, string, string> AtypeRepository { get; set; }
+    public IEntityRepository<string, string, string, int> AtypeRepository { get; set; }
   }
 }

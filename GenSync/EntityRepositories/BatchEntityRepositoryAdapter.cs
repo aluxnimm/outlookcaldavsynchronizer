@@ -23,8 +23,8 @@ using GenSync.ProgressReport;
 
 namespace GenSync.EntityRepositories
 {
-  public class BatchEntityRepositoryAdapter<TEntity, TEntityId, TEntityVersion> :
-      IBatchWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
+  public class BatchEntityRepositoryAdapter<TEntity, TEntityId, TEntityVersion, TContext> :
+      IBatchWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext>
   {
     private readonly IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion> _inner;
 
@@ -40,7 +40,8 @@ namespace GenSync.EntityRepositories
         IEnumerable<ICreateJob<TEntity, TEntityId, TEntityVersion>> createJobs,
         IEnumerable<IUpdateJob<TEntity, TEntityId, TEntityVersion>> updateJobs,
         IEnumerable<IDeleteJob<TEntityId, TEntityVersion>> deleteJobs,
-        IProgressLogger progressLogger)
+        IProgressLogger progressLogger,
+        TContext context)
     {
       foreach (var job in createJobs)
       {
@@ -88,10 +89,10 @@ namespace GenSync.EntityRepositories
 
   public static class BatchEntityRepositoryAdapter
   {
-    public static IBatchWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
+    public static IBatchWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, int>
         Create<TEntity, TEntityId, TEntityVersion> (IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion> inner)
     {
-      return new BatchEntityRepositoryAdapter<TEntity, TEntityId, TEntityVersion> (inner);
+      return new BatchEntityRepositoryAdapter<TEntity, TEntityId, TEntityVersion, int> (inner);
     }
   }
 }

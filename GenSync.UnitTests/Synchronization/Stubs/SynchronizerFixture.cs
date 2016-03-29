@@ -55,14 +55,20 @@ namespace GenSync.UnitTests.Synchronization.Stubs
           () => new List<EntityWithId<string, string>> { EntityWithId.Create ("A1", "AAAA"), EntityWithId.Create ("a1", "____") });
       aTypeLoadTask.RunSynchronously();
       builder.AtypeRepository
-          .Expect (r => r.Get (Arg<ICollection<string>>.Matches (c => c.Count == 1 && c.First() == "A1"), Arg<ILoadEntityLogger>.Is.NotNull))
+          .Expect (r => r.Get (
+              Arg<ICollection<string>>.Matches (c => c.Count == 1 && c.First() == "A1"),
+              Arg<ILoadEntityLogger>.Is.NotNull,
+              Arg<int>.Is.Anything))
           .Return (aTypeLoadTask);
 
       Task<IReadOnlyList<EntityWithId<string, string>>> bTypeLoadTask = new Task<IReadOnlyList<EntityWithId<string, string>>> (
           () => new List<EntityWithId<string, string>> { EntityWithId.Create ("b1", "BBBB"), });
       bTypeLoadTask.RunSynchronously();
       builder.BtypeRepository
-          .Expect (r => r.Get (Arg<ICollection<string>>.Matches (c => c.Count == 1 && c.First() == "b1"), Arg<ILoadEntityLogger>.Is.NotNull))
+          .Expect (r => r.Get (
+              Arg<ICollection<string>>.Matches (c => c.Count == 1 && c.First() == "b1"),
+              Arg<ILoadEntityLogger>.Is.NotNull,
+              Arg<int>.Is.Anything))
           .Return (bTypeLoadTask);
 
 

@@ -351,7 +351,7 @@ namespace CalDavSynchronizer.Scheduling
           mappingParameters,
           _daslFilterProvider);
 
-      IEntityRepository<IICalendar, WebResourceName, string> btypeRepository = new CalDavRepository (
+      IEntityRepository<IICalendar, WebResourceName, string, int> btypeRepository = new CalDavRepository (
           calDavDataAccess,
           new iCalendarSerializer(),
           CalDavRepository.EntityType.Event,
@@ -378,7 +378,7 @@ namespace CalDavSynchronizer.Scheduling
       var aTypeWriteRepository = BatchEntityRepositoryAdapter.Create (atypeRepository);
       var bTypeWriteRepository = BatchEntityRepositoryAdapter.Create (btypeRepository);
 
-      var synchronizer = new Synchronizer<string, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar> (
+      var synchronizer = new Synchronizer<string, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, int> (
           atypeRepository,
           btypeRepository,
           aTypeWriteRepository,
@@ -395,7 +395,8 @@ namespace CalDavSynchronizer.Scheduling
           atypeIdEqualityComparer,
           btypeIdEqualityComparer,
           _totalProgressFactory,
-          ExceptionHandler.Instance);
+          ExceptionHandler.Instance,
+          NullSynchronizationContextFactory.Instance);
 
       return new OutlookSynchronizer<WebResourceName, string> (synchronizer);
     }
@@ -461,7 +462,7 @@ namespace CalDavSynchronizer.Scheduling
       var atypeWriteRepository = BatchEntityRepositoryAdapter.Create (atypeRepository);
       var btypeWriteRepository = BatchEntityRepositoryAdapter.Create (btypeRepository);
 
-      var synchronizer = new Synchronizer<string, DateTime, TaskItemWrapper, WebResourceName, string, IICalendar> (
+      var synchronizer = new Synchronizer<string, DateTime, TaskItemWrapper, WebResourceName, string, IICalendar, int> (
           atypeRepository,
           btypeRepository,
           atypeWriteRepository,
@@ -478,7 +479,8 @@ namespace CalDavSynchronizer.Scheduling
           atypeIdEqualityComparer,
           btypeIdEqualityComparer,
           _totalProgressFactory,
-          ExceptionHandler.Instance);
+          ExceptionHandler.Instance,
+          NullSynchronizationContextFactory.Instance);
 
       return new OutlookSynchronizer<WebResourceName, string> (synchronizer);
     }
@@ -519,7 +521,7 @@ namespace CalDavSynchronizer.Scheduling
       var atypeWriteRepository = BatchEntityRepositoryAdapter.Create (atypeRepository);
       var btypeWriteRepository = BatchEntityRepositoryAdapter.Create (btypeRepository);
 
-      var synchronizer = new Synchronizer<string, DateTime, TaskItemWrapper, string, string, Task> (
+      var synchronizer = new Synchronizer<string, DateTime, TaskItemWrapper, string, string, Task, int> (
           atypeRepository,
           btypeRepository,
           atypeWriteRepository,
@@ -536,7 +538,8 @@ namespace CalDavSynchronizer.Scheduling
           atypeIdEqualityComparer,
           btypeIdEqualityComparer,
           _totalProgressFactory,
-          ExceptionHandler.Instance);
+          ExceptionHandler.Instance,
+          NullSynchronizationContextFactory.Instance);
 
       return new OutlookSynchronizer<string, string> (synchronizer);
     }
@@ -565,7 +568,7 @@ namespace CalDavSynchronizer.Scheduling
 
       componentsToFill.CardDavDataAccess = cardDavDataAccess;
 
-      IEntityRepository<vCard, WebResourceName, string> btypeRepository = new CardDavRepository (
+      IEntityRepository<vCard, WebResourceName, string, int> btypeRepository = new CardDavRepository (
           cardDavDataAccess);
 
       var mappingParameters = GetMappingParameters<ContactMappingConfiguration> (options);
@@ -589,7 +592,7 @@ namespace CalDavSynchronizer.Scheduling
       var atypeWriteRepository = BatchEntityRepositoryAdapter.Create (atypeRepository);
       var btypeWriteRepository = BatchEntityRepositoryAdapter.Create (btypeRepository);
 
-      var synchronizer = new Synchronizer<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard> (
+      var synchronizer = new Synchronizer<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard, int> (
           atypeRepository,
           btypeRepository,
           atypeWriteRepository,
@@ -606,7 +609,8 @@ namespace CalDavSynchronizer.Scheduling
           atypeIdEqulityComparer,
           btypeIdEqualityComparer,
           _totalProgressFactory,
-          ExceptionHandler.Instance);
+          ExceptionHandler.Instance,
+          NullSynchronizationContextFactory.Instance);
 
       return new OutlookSynchronizer<WebResourceName, string> (synchronizer);
     }
@@ -646,7 +650,7 @@ namespace CalDavSynchronizer.Scheduling
       var atypeWriteRepository = BatchEntityRepositoryAdapter.Create (atypeRepository);
      
 
-      var synchronizer = new Synchronizer<string, DateTime, ContactItemWrapper, string, string, Contact> (
+      var synchronizer = new Synchronizer<string, DateTime, ContactItemWrapper, string, string, Contact, int> (
           atypeRepository,
           btypeRepository,
           atypeWriteRepository,
@@ -663,7 +667,8 @@ namespace CalDavSynchronizer.Scheduling
           atypeIdEqulityComparer,
           btypeIdEqualityComparer,
           _totalProgressFactory,
-          ExceptionHandler.Instance);
+          ExceptionHandler.Instance,
+          NullSynchronizationContextFactory.Instance);
 
       return new OutlookSynchronizer<string, string> (synchronizer);
     }

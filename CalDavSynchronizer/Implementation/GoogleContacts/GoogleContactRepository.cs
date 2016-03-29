@@ -15,7 +15,7 @@ using log4net;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  class GoogleContactRepository : IReadOnlyEntityRepository<Contact, string, string>, IBatchWriteOnlyEntityRepository<Contact, string, string>
+  class GoogleContactRepository : IReadOnlyEntityRepository<Contact, string, string, int>, IBatchWriteOnlyEntityRepository<Contact, string, string, int>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);
 
@@ -33,7 +33,12 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       _contactFacade = contactFacade;
     }
 
-    public async Task PerformOperations (IEnumerable<ICreateJob<Contact, string, string>> createJobs, IEnumerable<IUpdateJob<Contact, string, string>> updateJobs, IEnumerable<IDeleteJob<string, string>> deleteJobs, IProgressLogger progressLogger)
+    public async Task PerformOperations (
+      IEnumerable<ICreateJob<Contact, string, string>> createJobs,
+      IEnumerable<IUpdateJob<Contact, string, string>>
+      updateJobs, IEnumerable<IDeleteJob<string, string>> deleteJobs, 
+      IProgressLogger progressLogger,
+      int context)
     {
       try
       {
@@ -255,7 +260,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       });
     }
 
-    public Task<IReadOnlyList<EntityWithId<string, Contact>>> Get (ICollection<string> ids, ILoadEntityLogger logger)
+    public Task<IReadOnlyList<EntityWithId<string, Contact>>> Get (ICollection<string> ids, ILoadEntityLogger logger, int context)
     {
       return Task.Run (() =>
       {

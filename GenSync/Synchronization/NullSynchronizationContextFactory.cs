@@ -16,12 +16,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 
-namespace GenSync.EntityRepositories
+namespace GenSync.Synchronization
 {
-  /// <summary>
-  /// Represents an Repository, which contains entites that have to be synced
-  /// </summary>
-  public interface IEntityRepository<TEntity, TEntityId, TEntityVersion, TContext> : IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>, IReadOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext>
+  public class NullSynchronizationContextFactory : ISynchronizationContextFactory<int>
   {
+    public static readonly ISynchronizationContextFactory<int> Instance = new NullSynchronizationContextFactory();
+
+    private NullSynchronizationContextFactory ()
+    {
+    }
+
+    public int Create ()
+    {
+      return 0;
+    }
   }
 }

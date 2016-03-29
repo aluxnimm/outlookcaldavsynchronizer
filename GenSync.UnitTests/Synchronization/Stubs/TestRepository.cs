@@ -23,7 +23,7 @@ using GenSync.Logging;
 
 namespace GenSync.UnitTests.Synchronization.Stubs
 {
-  internal class TestRepository : IEntityRepository<string, Identifier, int>
+  internal class TestRepository : IEntityRepository<string, Identifier, int, int>
   {
     private readonly string _idPrefix;
 
@@ -61,7 +61,7 @@ namespace GenSync.UnitTests.Synchronization.Stubs
           EntityVersionAndContentById.Select (kv => EntityVersion.Create (kv.Key, kv.Value.Item1)).ToList());
     }
 
-    public Task<IReadOnlyList<EntityWithId<Identifier, string>>> Get (ICollection<Identifier> ids, ILoadEntityLogger logger)
+    public Task<IReadOnlyList<EntityWithId<Identifier, string>>> Get (ICollection<Identifier> ids, ILoadEntityLogger logger, int context)
     {
       return Task.FromResult<IReadOnlyList<EntityWithId<Identifier, string>>> (
           ids.Select (id => EntityWithId.Create (id, EntityVersionAndContentById[id].Item2)).ToArray());

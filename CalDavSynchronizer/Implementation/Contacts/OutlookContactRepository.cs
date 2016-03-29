@@ -31,7 +31,7 @@ using log4net;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public class OutlookContactRepository : IEntityRepository<ContactItemWrapper, string, DateTime>
+  public class OutlookContactRepository : IEntityRepository<ContactItemWrapper, string, DateTime, int>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -131,7 +131,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
     }
 
 #pragma warning disable 1998
-    public async Task<IReadOnlyList<EntityWithId<string, ContactItemWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger)
+    public async Task<IReadOnlyList<EntityWithId<string, ContactItemWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger, int context)
 #pragma warning restore 1998
     {
       return ids
@@ -161,7 +161,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
     public Task Delete (string entityId,DateTime version)
     {
-      var entityWithId = Get (new[] { entityId }, NullLoadEntityLogger.Instance).Result.SingleOrDefault ();
+      var entityWithId = Get (new[] { entityId }, NullLoadEntityLogger.Instance, 0).Result.SingleOrDefault ();
       if (entityWithId == null)
         return Task.FromResult (0);
 
