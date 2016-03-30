@@ -24,9 +24,9 @@ namespace GenSync.EntityRepositories
   public interface IBatchWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext>
   {
     Task PerformOperations (
-        IEnumerable<ICreateJob<TEntity, TEntityId, TEntityVersion>> createJobs,
-        IEnumerable<IUpdateJob<TEntity, TEntityId, TEntityVersion>> updateJobs,
-        IEnumerable<IDeleteJob<TEntityId, TEntityVersion>> deleteJobs,
+        IReadOnlyList<ICreateJob<TEntity, TEntityId, TEntityVersion>> createJobs,
+        IReadOnlyList<IUpdateJob<TEntity, TEntityId, TEntityVersion>> updateJobs,
+        IReadOnlyList<IDeleteJob<TEntityId, TEntityVersion>> deleteJobs,
         IProgressLogger progressLogger,
         TContext context);
   }
