@@ -15,7 +15,7 @@ using log4net;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  class GoogleContactRepository : IReadOnlyEntityRepository<Contact, string, string, int>, IBatchWriteOnlyEntityRepository<Contact, string, string, int>
+  class GoogleContactRepository : IReadOnlyEntityRepository<GoogleContactWrapper, string, string, GoogleGroupCache>, IBatchWriteOnlyEntityRepository<GoogleContactWrapper, string, string, GoogleGroupCache>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);
 
@@ -34,15 +34,36 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
     }
 
     public async Task PerformOperations (
-      IEnumerable<ICreateJob<Contact, string, string>> createJobs,
-      IEnumerable<IUpdateJob<Contact, string, string>>
+      IEnumerable<ICreateJob<GoogleContactWrapper, string, string>> createJobs,
+      IEnumerable<IUpdateJob<GoogleContactWrapper, string, string>>
       updateJobs, IEnumerable<IDeleteJob<string, string>> deleteJobs, 
       IProgressLogger progressLogger,
-      int context)
+      GoogleGroupCache context)
     {
+      var createRequestsAndJobs = CreateCreateRequests (createJobs);
+      var updateRequestsAndJobs = CreateUpdateRequests (updateJobs);
+
+      foreach (var contactWrapper in createRequestsAndJobs.Item1)
+      {
+        contactWrapper.Contact.GroupMembership.Clear();
+        foreach (var group in contactWrapper.Groups)
+        {
+          contactWrapper.Contact.GroupMembership.Add (new GroupMembership() { HRef = await context.GetOrCreateGroupId (group) });
+        }
+      }
+
+      foreach (var contactWrapper in updateRequestsAndJobs.Item1)
+      {
+        contactWrapper.Contact.GroupMembership.Clear ();
+        foreach (var group in contactWrapper.Groups)
+        {
+          contactWrapper.Contact.GroupMembership.Add (new GroupMembership () { HRef = await context.GetOrCreateGroupId (group) });
+        }
+      }
+
       try
       {
-        await RunCreateBatch (createJobs);
+        await RunCreateBatch (createRequestsAndJobs);
       }
       catch (Exception x)
       {
@@ -50,7 +71,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       }
       try
       {
-        await RunUpdateBatch (updateJobs);
+        await RunUpdateBatch (updateRequestsAndJobs);
       }
       catch (Exception x)
       {
@@ -66,32 +87,15 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       }
     }
 
-    private async Task RunCreateBatch (IEnumerable<ICreateJob<Contact, string, string>> jobs)
+    private async Task RunCreateBatch (Tuple<List<GoogleContactWrapper>, List<ICreateJob<GoogleContactWrapper, string, string>>> requestsAndJobs)
     {
-      var requests = new List<Contact>();
-
-      var jobList = jobs.ToList();
-      foreach (var job in jobList)
-      {
-        try
-        {
-          var contact = job.InitializeEntity (new Contact());
-          contact.BatchData = new GDataBatchEntryData (GDataBatchOperationType.insert);
-          requests.Add (contact);
-        }
-        catch (Exception x)
-        {
-          job.NotifyOperationFailed (x);
-        }
-      }
-
       var responses = await Task.Run (() =>
       {
         var result = ExecuteChunked (
             new List<Contact>(),
-            requests.ToList(),
+            requestsAndJobs.Item1,
             () => new List<Contact>(),
-            (contact, contactList) => { contactList.Add (contact); },
+            (contact, contactList) => { contactList.Add (contact.Contact); },
             (contactList, r) =>
             {
               var contactsFeed = _contactFacade.Batch (
@@ -110,32 +114,29 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
         if (contact.BatchData.Status.Reason == "Created")
         {
-          jobList[i].NotifyOperationSuceeded (EntityVersion.Create (contact.Id, contact.ETag));
+          requestsAndJobs.Item2[i].NotifyOperationSuceeded (EntityVersion.Create (contact.Id, contact.ETag));
         }
         else
         {
           var sw = new StringWriter ();
           using (var writer = new XmlTextWriter (sw))
             contact.BatchData.Save (writer);
-          jobList[i].NotifyOperationFailed (sw.GetStringBuilder ().ToString ());
+          requestsAndJobs.Item2[i].NotifyOperationFailed (sw.GetStringBuilder ().ToString ());
         }
       }
     }
 
-    private async Task RunUpdateBatch (IEnumerable<IUpdateJob<Contact, string, string>> jobs)
+    private static Tuple<List<GoogleContactWrapper>, List<ICreateJob<GoogleContactWrapper, string, string>>> CreateCreateRequests (IEnumerable<ICreateJob<GoogleContactWrapper, string, string>> jobs)
     {
-      var jobsById = new Dictionary<string, IUpdateJob<Contact, string, string>>();
-      var requests = new List<Contact>();
-
-      foreach (var job in jobs)
+      var requests = new List<GoogleContactWrapper> ();
+      var jobList = jobs.ToList ();
+      foreach (var job in jobList)
       {
         try
         {
-          var updatedContact = job.UpdateEntity (job.EntityToUpdate);
-          updatedContact.BatchData = new GDataBatchEntryData (GDataBatchOperationType.update);
-          requests.Add (updatedContact);
-          jobsById.Add (job.EntityId, job);
-
+          var contact = job.InitializeEntity (new GoogleContactWrapper (new Contact ()));
+          contact.Contact.BatchData = new GDataBatchEntryData (GDataBatchOperationType.insert);
+          requests.Add (contact);
         }
         catch (Exception x)
         {
@@ -143,13 +144,18 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         }
       }
 
+      return Tuple.Create (requests, jobList);
+    }
+
+    private async Task RunUpdateBatch (Tuple<List<GoogleContactWrapper>, Dictionary<string, IUpdateJob<GoogleContactWrapper, string, string>>> requestsAndJobs)
+    {
       var responses = await Task.Run (() =>
       {
         var result = ExecuteChunked (
             new List<Contact>(),
-            requests.ToList(),
+            requestsAndJobs.Item1,
             () => new List<Contact>(),
-            (contact, contactList) => { contactList.Add (contact); },
+            (contact, contactList) => { contactList.Add (contact.Contact); },
             (contactList, r) =>
             {
               var contactsFeed = _contactFacade.Batch (
@@ -164,8 +170,8 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
       foreach (var contact in responses)
       {
-        IUpdateJob<Contact, string, string> job;
-        if (jobsById.TryGetValue (contact.Id, out job))
+        IUpdateJob<GoogleContactWrapper, string, string> job;
+        if (requestsAndJobs.Item2.TryGetValue (contact.Id, out job))
         {
           if (contact.BatchData.Status.Reason == "Success")
           {
@@ -180,6 +186,30 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
           }
         }
       }
+    }
+
+    Tuple<List<GoogleContactWrapper>, Dictionary<string, IUpdateJob<GoogleContactWrapper, string, string>>> CreateUpdateRequests (IEnumerable<IUpdateJob<GoogleContactWrapper, string, string>> jobs)
+    {
+      var jobsById = new Dictionary<string, IUpdateJob<GoogleContactWrapper, string, string>>();
+      var requests = new List<GoogleContactWrapper> ();
+
+      foreach (var job in jobs)
+      {
+        try
+        {
+          var updatedContact = job.UpdateEntity (job.EntityToUpdate);
+          updatedContact.Contact.BatchData = new GDataBatchEntryData (GDataBatchOperationType.update);
+          requests.Add (updatedContact);
+          jobsById.Add (job.EntityId, job);
+
+        }
+        catch (Exception x)
+        {
+          job.NotifyOperationFailed (x);
+        }
+      }
+
+      return Tuple.Create (requests, jobsById);
     }
 
     private async Task RunDeleteBatch (IEnumerable<IDeleteJob<string, string>> jobs)
@@ -260,14 +290,14 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       });
     }
 
-    public Task<IReadOnlyList<EntityWithId<string, Contact>>> Get (ICollection<string> ids, ILoadEntityLogger logger, int context)
+    public Task<IReadOnlyList<EntityWithId<string, GoogleContactWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger, GoogleGroupCache context)
     {
       return Task.Run (() =>
       {
         var result = ExecuteChunked (
-            new List<EntityWithId<string, Contact>>(),
+            new List<EntityWithId<string, GoogleContactWrapper>>(),
             ids.ToList(),
-            () => new List<Contact>(),
+            () => new List<Contact> (),
             (id, contactList) =>
             {
               var contact = new Contact();
@@ -283,10 +313,22 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
                   GDataBatchOperationType.query);
 
               if (contactsFeed != null)
-                r.AddRange (contactsFeed.Entries.Select (c => EntityWithId.Create (c.Id, c)));
+                r.AddRange (contactsFeed.Entries.Select (c => EntityWithId.Create (c.Id, new GoogleContactWrapper(c))));
             });
 
-        return (IReadOnlyList<EntityWithId<string, Contact>>) result;
+
+        var groups = _contactFacade.GetGroups().Entries.ToDictionary (g => g.Id);
+        context.SetGroups (groups.Values);
+
+        foreach (var contactWrapper in result)
+        {
+          foreach (var group in contactWrapper.Entity.Contact.GroupMembership)
+          {
+            contactWrapper.Entity.Groups.Add (groups[group.HRef].Title);
+          }
+        }
+
+        return (IReadOnlyList<EntityWithId<string, GoogleContactWrapper>>) result;
       });
     }
 
@@ -316,7 +358,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
     }
 
 
-    public void Cleanup (IReadOnlyDictionary<string, Contact> entities)
+    public void Cleanup (IReadOnlyDictionary<string, GoogleContactWrapper> entities)
     {
     }
 

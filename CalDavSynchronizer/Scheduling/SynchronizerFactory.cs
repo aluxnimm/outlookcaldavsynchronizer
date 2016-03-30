@@ -546,7 +546,7 @@ namespace CalDavSynchronizer.Scheduling
 
     private IOutlookSynchronizer CreateContactSynchronizer (Options options, GeneralOptions generalOptions, AvailableSynchronizerComponents componentsToFill)
     {
-      var atypeRepository = new OutlookContactRepository (
+      var atypeRepository = new OutlookContactRepository<int> (
           _outlookSession,
           options.OutlookFolderEntryId,
           options.OutlookFolderStoreId,
@@ -617,7 +617,7 @@ namespace CalDavSynchronizer.Scheduling
 
     private IOutlookSynchronizer CreateGoogleContactSynchronizer (Options options, AvailableSynchronizerComponents componentsToFill)
     {
-      var atypeRepository = new OutlookContactRepository (
+      var atypeRepository = new OutlookContactRepository<GoogleGroupCache> (
           _outlookSession,
           options.OutlookFolderEntryId,
           options.OutlookFolderStoreId,
@@ -635,7 +635,7 @@ namespace CalDavSynchronizer.Scheduling
 
       var entityRelationDataFactory = new GoogleContactRelationDataFactory ();
 
-      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, ContactItemWrapper, string, string, Contact> (
+      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, ContactItemWrapper, string, string, GoogleContactWrapper> (
           entityMapper,
           entityRelationDataFactory,
           ExceptionHandler.Instance);
@@ -647,15 +647,14 @@ namespace CalDavSynchronizer.Scheduling
 
       var storageDataAccess = new EntityRelationDataAccess<string, DateTime, GoogleContactRelationData, string, string> (storageDataDirectory);
 
-      var atypeWriteRepository = BatchEntityRepositoryAdapter.Create (atypeRepository);
-     
+      var atypeWriteRepository = BatchEntityRepositoryAdapter.Create<ContactItemWrapper, string, DateTime, GoogleGroupCache> (atypeRepository);
 
-      var synchronizer = new Synchronizer<string, DateTime, ContactItemWrapper, string, string, Contact, int> (
+      var synchronizer = new Synchronizer<string, DateTime, ContactItemWrapper, string, string, GoogleContactWrapper, GoogleGroupCache> (
           atypeRepository,
           btypeRepository,
           atypeWriteRepository,
           btypeRepository,
-          InitialSyncStateCreationStrategyFactory<string, DateTime, ContactItemWrapper, string, string, Contact>.Create (
+          InitialSyncStateCreationStrategyFactory<string, DateTime, ContactItemWrapper, string, string, GoogleContactWrapper>.Create (
               syncStateFactory,
               syncStateFactory.Environment,
               options.SynchronizationMode,
@@ -668,7 +667,7 @@ namespace CalDavSynchronizer.Scheduling
           btypeIdEqualityComparer,
           _totalProgressFactory,
           ExceptionHandler.Instance,
-          NullSynchronizationContextFactory.Instance);
+          new GoogleContactContextFactory(contactFacade));
 
       return new OutlookSynchronizer<string, string> (synchronizer);
     }

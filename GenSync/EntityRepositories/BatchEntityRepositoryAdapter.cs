@@ -94,5 +94,11 @@ namespace GenSync.EntityRepositories
     {
       return new BatchEntityRepositoryAdapter<TEntity, TEntityId, TEntityVersion, int> (inner);
     }
+
+     public static IBatchWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext>
+        Create<TEntity, TEntityId, TEntityVersion, TContext> (IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion> inner)
+    {
+      return new BatchEntityRepositoryAdapter<TEntity, TEntityId, TEntityVersion, TContext> (inner);
+    }
   }
 }
