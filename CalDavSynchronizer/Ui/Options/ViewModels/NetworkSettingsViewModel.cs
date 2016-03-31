@@ -112,6 +112,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
                                                              {
                                                                  CloseConnectionAfterEachRequest = true,
                                                                  PreemptiveAuthentication = true,
+                                                                 ForceBasicAuthentication = true,
                                                                  ProxyPassword = SecureStringUtility.ToSecureString ("proxypassword"),
                                                                  ProxyUrl = "proxyurl",
                                                                  ProxyUseDefault = true,
@@ -126,6 +127,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
       CloseConnectionAfterEachRequest = options.CloseAfterEachRequest;
       PreemptiveAuthentication = options.PreemptiveAuthentication;
+      ForceBasicAuthentication = options.ForceBasicAuthentication;
       ProxyUseDefault = proxyOptions.ProxyUseDefault;
       ProxyUseManual = proxyOptions.ProxyUseManual;
       ProxyUrl = proxyOptions.ProxyUrl;
