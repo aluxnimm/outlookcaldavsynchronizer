@@ -323,7 +323,7 @@ namespace CalDavSynchronizer.DataAccess
 
         if (urlNode != null && etagNode != null)
         {
-          string contentType = contentTypeNode.InnerText ?? string.Empty;
+          string contentType = contentTypeNode?.InnerText ?? string.Empty;
           var eTag = HttpUtility.GetQuotedEtag (etagNode.InnerText);
           // the directory is also included in the list. It has a etag of '"None"' and is skipped
           // in Owncloud eTag is empty for directory
