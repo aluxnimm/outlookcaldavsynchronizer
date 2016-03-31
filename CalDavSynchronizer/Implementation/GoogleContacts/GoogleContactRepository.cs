@@ -77,9 +77,13 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       foreach (var contactWrapper in contacts)
       {
         contactWrapper.Contact.GroupMembership.Clear();
-        foreach (var group in contactWrapper.Groups)
+        groupCache.AddDefaultGroupToContact (contactWrapper.Contact);
+
+        foreach (var groupName in contactWrapper.Groups)
         {
-          contactWrapper.Contact.GroupMembership.Add (new GroupMembership() { HRef = await groupCache.GetOrCreateGroupId (group) });
+          var group = await groupCache.GetOrCreateGroup (groupName);
+          if (!groupCache.IsDefaultGroup (group))
+            contactWrapper.Contact.GroupMembership.Add (new GroupMembership() { HRef = group.Id });
         }
       }
     }
@@ -321,7 +325,8 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         {
           foreach (var group in contactWrapper.Entity.Contact.GroupMembership)
           {
-            contactWrapper.Entity.Groups.Add (groups[group.HRef].Title);
+            if (!context.IsDefaultGroupId(group.HRef))
+              contactWrapper.Entity.Groups.Add (groups[group.HRef].Title);
           }
         }
 
