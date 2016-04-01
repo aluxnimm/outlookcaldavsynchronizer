@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Security;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
@@ -72,7 +73,32 @@ namespace CalDavSynchronizer.Scheduling
       if (outlookAccountPasswordProvider == null)
         throw new ArgumentNullException (nameof (outlookAccountPasswordProvider));
 
-      _outlookEmailAddress = outlookSession.CurrentUser.Address;
+      try
+      {
+        using (var currentUser = GenericComObjectWrapper.Create (outlookSession.CurrentUser))
+        {
+          using (var addressEntry = GenericComObjectWrapper.Create (currentUser.Inner.AddressEntry))
+          {
+            if (addressEntry.Inner.Type == "EX")
+            {
+              using (var exchangeUser = GenericComObjectWrapper.Create (addressEntry.Inner.GetExchangeUser()))
+              {
+                _outlookEmailAddress = exchangeUser.Inner.PrimarySmtpAddress;
+              }
+            }
+            else
+            {
+              _outlookEmailAddress = currentUser.Inner.Address;
+            }
+          }
+        }
+      }
+      catch (COMException ex)
+      {
+        s_logger.Error ("Can't access currentuser email adress.", ex);
+        _outlookEmailAddress = string.Empty;
+      }
+
       _totalProgressFactory = totalProgressFactory;
       _outlookSession = outlookSession;
       _calDavConnectTimeout = calDavConnectTimeout;
