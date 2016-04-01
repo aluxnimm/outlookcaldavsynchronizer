@@ -73,22 +73,29 @@ namespace CalDavSynchronizer.Scheduling
       if (outlookAccountPasswordProvider == null)
         throw new ArgumentNullException (nameof (outlookAccountPasswordProvider));
 
+      _outlookEmailAddress = string.Empty;
       try
       {
         using (var currentUser = GenericComObjectWrapper.Create (outlookSession.CurrentUser))
         {
-          using (var addressEntry = GenericComObjectWrapper.Create (currentUser.Inner.AddressEntry))
+          if (currentUser.Inner != null)
           {
-            if (addressEntry.Inner.Type == "EX")
+            using (var addressEntry = GenericComObjectWrapper.Create (currentUser.Inner.AddressEntry))
             {
-              using (var exchangeUser = GenericComObjectWrapper.Create (addressEntry.Inner.GetExchangeUser()))
+              if (addressEntry.Inner != null)
               {
-                _outlookEmailAddress = exchangeUser.Inner.PrimarySmtpAddress;
+                if (addressEntry.Inner.Type == "EX")
+                {
+                  using (var exchangeUser = GenericComObjectWrapper.Create (addressEntry.Inner.GetExchangeUser()))
+                  {
+                    _outlookEmailAddress = exchangeUser.Inner?.PrimarySmtpAddress ?? string.Empty;
+                  }
+                }
+                else
+                {
+                  _outlookEmailAddress = currentUser.Inner.Address;
+                }
               }
-            }
-            else
-            {
-              _outlookEmailAddress = currentUser.Inner.Address;
             }
           }
         }
@@ -96,7 +103,6 @@ namespace CalDavSynchronizer.Scheduling
       catch (COMException ex)
       {
         s_logger.Error ("Can't access currentuser email adress.", ex);
-        _outlookEmailAddress = string.Empty;
       }
 
       _totalProgressFactory = totalProgressFactory;
