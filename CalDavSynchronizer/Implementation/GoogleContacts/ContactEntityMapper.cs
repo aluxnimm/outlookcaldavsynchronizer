@@ -18,6 +18,7 @@
 using System;
 using System.Diagnostics.SymbolStore;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -340,8 +341,43 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
       targetWrapper.Groups.Clear ();
       targetWrapper.Groups.AddRange (CommonEntityMapper.SplitCategoryString (source.Inner.Categories));
-      
+
+      if (_configuration.MapContactPhoto)
+        MapPhoto1To2 (source.Inner, targetWrapper, logger);
+
       return targetWrapper;
+    }
+
+    private void MapPhoto1To2 (ContactItem source, GoogleContactWrapper target, IEntityMappingLogger logger)
+    {
+      target.PhotoOrNull = null;
+
+      if (source.HasPicture)
+      {
+        foreach (var att in source.Attachments.ToSafeEnumerable<Attachment>())
+        {
+          if (att.DisplayName == "ContactPicture.jpg")
+          {
+            using (var oPa = GenericComObjectWrapper.Create (att.PropertyAccessor))
+            {
+              try
+              {
+                target.PhotoOrNull = (byte[]) oPa.Inner.GetProperty (PR_ATTACH_DATA_BIN);
+              }
+              catch (COMException ex)
+              {
+                s_logger.Warn ("Could not get property PR_ATTACH_DATA_BIN to export picture for contact.", ex);
+                logger.LogMappingWarning ("Could not get property PR_ATTACH_DATA_BIN to export picture for contact.", ex);
+              }
+              catch (System.UnauthorizedAccessException ex)
+              {
+                s_logger.Warn ("Could not access PR_ATTACH_DATA_BIN to export picture for contact.", ex);
+                logger.LogMappingWarning ("Could not get property PR_ATTACH_DATA_BIN to export picture for contact.", ex);
+              }
+            }
+          }
+        }
+      }
     }
 
     private static void MapEmailAddresses1To2 (ContactItem source, Contact target, IEntityMappingLogger logger)
@@ -833,7 +869,26 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
       target.Inner.Categories = string.Join (CultureInfo.CurrentCulture.TextInfo.ListSeparator, sourceWrapper.Groups);
 
+      if (_configuration.MapContactPhoto)
+        MapPhoto2To1 (sourceWrapper, target.Inner, logger);
+
       return target;
+    }
+
+    private void MapPhoto2To1 (GoogleContactWrapper source, ContactItem target, IEntityMappingLogger logger)
+    {
+      if (source.PhotoOrNull != null)
+      {
+        string picturePath = Path.GetTempPath() + @"\Contact_" + target.EntryID + ".jpg";
+        File.WriteAllBytes (picturePath, source.PhotoOrNull);
+        target.AddPicture (picturePath);
+        File.Delete (picturePath);
+      }
+      else
+      {
+        if (target.HasPicture)
+          target.RemovePicture();
+      }
     }
 
     private void MapPhoneNumbers2To1 (Contact source, ContactItem target)

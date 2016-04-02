@@ -12,6 +12,6 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
     [XmlAttribute("c")]
     public string ContactEtag { get; set; }
     [XmlAttribute("p")]
-    public string PhotoEtag { get; set; }
+    public string PhotoEtag { get; set; } // currently usage of PhotoEtag is not required, since changing the photo also updates the etag of the contact 
   }
 }

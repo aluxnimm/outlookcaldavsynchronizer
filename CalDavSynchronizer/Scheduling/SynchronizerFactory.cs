@@ -635,9 +635,12 @@ namespace CalDavSynchronizer.Scheduling
 
       var contactFacade = System.Threading.Tasks.Task.Run (() => OAuth.Google.GoogleHttpClientFactory.LoginToContactsService (options.UserName, proxy).Result).Result;
 
-      var btypeRepository = new GoogleContactRepository (contactFacade, options.UserName);
-
       var mappingParameters = GetMappingParameters<ContactMappingConfiguration> (options);
+
+      var atypeIdEqulityComparer = EqualityComparer<string>.Default;
+      var btypeIdEqualityComparer = EqualityComparer<string>.Default;
+
+      var btypeRepository = new GoogleContactRepository (contactFacade, options.UserName, mappingParameters, btypeIdEqualityComparer);
 
       var entityMapper = new GoogleContactEntityMapper (mappingParameters);
 
@@ -647,9 +650,6 @@ namespace CalDavSynchronizer.Scheduling
           entityMapper,
           entityRelationDataFactory,
           ExceptionHandler.Instance);
-
-      var btypeIdEqualityComparer = EqualityComparer<string>.Default;
-      var atypeIdEqulityComparer = EqualityComparer<string>.Default;
 
       var storageDataDirectory = _profileDataDirectoryFactory (options.Id);
 
