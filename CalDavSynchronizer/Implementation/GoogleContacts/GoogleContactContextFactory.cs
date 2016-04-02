@@ -10,23 +10,23 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
   class GoogleContactContextFactory : ISynchronizationContextFactory<GoogleContactContext>
   {
-    private readonly ContactsRequest _contactFacade;
+    private readonly IGoogleApiOperationExecutor _apiOperationExecutor;
     private readonly IEqualityComparer<string> _contactIdComparer;
 
-    public GoogleContactContextFactory (ContactsRequest contactFacade, IEqualityComparer<string> contactIdComparer)
+    public GoogleContactContextFactory (IGoogleApiOperationExecutor apiOperationExecutor, IEqualityComparer<string> contactIdComparer)
     {
-      if (contactFacade == null)
-        throw new ArgumentNullException (nameof (contactFacade));
+      if (apiOperationExecutor == null)
+        throw new ArgumentNullException (nameof (apiOperationExecutor));
       if (contactIdComparer == null)
         throw new ArgumentNullException (nameof (contactIdComparer));
 
-      _contactFacade = contactFacade;
+      _apiOperationExecutor = apiOperationExecutor;
       _contactIdComparer = contactIdComparer;
     }
 
     public async Task<GoogleContactContext> Create ()
     {
-      var context = await Task.FromResult(new GoogleContactContext(new GoogleGroupCache(_contactFacade), _contactFacade, _contactIdComparer));
+      var context = await Task.FromResult(new GoogleContactContext(new GoogleGroupCache(_apiOperationExecutor), _apiOperationExecutor, _contactIdComparer));
       await context.FillCaches();
       return context;
     }

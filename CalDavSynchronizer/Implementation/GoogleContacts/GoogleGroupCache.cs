@@ -11,23 +11,23 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
   public class GoogleGroupCache
   {
     readonly Dictionary<string, Group> _groupsByName = new Dictionary<string, Group>();
-    private readonly ContactsRequest _contactFacade;
+    private readonly IGoogleApiOperationExecutor _apiOperationExecutor;
 
     private string _defaultGroupIdOrNull;
 
-    public GoogleGroupCache (ContactsRequest contactFacade)
+    public GoogleGroupCache (IGoogleApiOperationExecutor apiOperationExecutor)
     {
-      if (contactFacade == null)
-        throw new ArgumentNullException (nameof (contactFacade));
+      if (apiOperationExecutor == null)
+        throw new ArgumentNullException (nameof (apiOperationExecutor));
 
-      _contactFacade = contactFacade;
+      _apiOperationExecutor = apiOperationExecutor;
     }
 
     public IEnumerable<Group> Groups => _groupsByName.Values;
 
     public async Task Fill ()
     {
-      SetGroups (await Task.Run(() => _contactFacade.GetGroups().Entries));
+      SetGroups (await Task.Run(() => _apiOperationExecutor.Execute(f => f.GetGroups().Entries)));
     }
 
     void SetGroups (IEnumerable<Group> existingGroups)
@@ -72,7 +72,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         var groupRequest = new Group();
         groupRequest.Title = name;
 
-        return _contactFacade.Insert (new Uri ("https://www.google.com/m8/feeds/groups/default/full"), groupRequest);
+        return _apiOperationExecutor.Execute(f => f.Insert (new Uri ("https://www.google.com/m8/feeds/groups/default/full"), groupRequest));
       });
     }
 

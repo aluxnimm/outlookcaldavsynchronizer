@@ -633,14 +633,15 @@ namespace CalDavSynchronizer.Scheduling
 
       IWebProxy proxy = options.ProxyOptions != null ? CreateProxy (options.ProxyOptions) : null;
 
-      var contactFacade = System.Threading.Tasks.Task.Run (() => OAuth.Google.GoogleHttpClientFactory.LoginToContactsService (options.UserName, proxy).Result).Result;
+      var googleApiExecutor = new GoogleApiOperationExecutor (
+          System.Threading.Tasks.Task.Run (() => OAuth.Google.GoogleHttpClientFactory.LoginToContactsService (options.UserName, proxy).Result).Result);
 
       var mappingParameters = GetMappingParameters<ContactMappingConfiguration> (options);
 
       var atypeIdEqulityComparer = EqualityComparer<string>.Default;
       var btypeIdEqualityComparer = EqualityComparer<string>.Default;
 
-      var btypeRepository = new GoogleContactRepository (contactFacade, options.UserName, mappingParameters, btypeIdEqualityComparer);
+      var btypeRepository = new GoogleContactRepository (googleApiExecutor, options.UserName, mappingParameters, btypeIdEqualityComparer);
 
       var entityMapper = new GoogleContactEntityMapper (mappingParameters);
 
@@ -675,7 +676,7 @@ namespace CalDavSynchronizer.Scheduling
           btypeIdEqualityComparer,
           _totalProgressFactory,
           ExceptionHandler.Instance,
-          new GoogleContactContextFactory(contactFacade, btypeIdEqualityComparer),
+          new GoogleContactContextFactory(googleApiExecutor, btypeIdEqualityComparer),
           EqualityComparer<DateTime>.Default,
           new GoogleContactVersionComparer());
 
