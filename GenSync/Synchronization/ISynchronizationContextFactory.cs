@@ -22,8 +22,8 @@ using System.Threading.Tasks;
 
 namespace GenSync.Synchronization
 {
-  public interface ISynchronizationContextFactory<out TContext>
+  public interface ISynchronizationContextFactory<TContext>
   {
-    TContext Create ();
+    Task<TContext> Create ();
   }
 }

@@ -17,9 +17,9 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       _contactFacade = contactFacade;
     }
 
-    public GoogleContactContext Create ()
+    public Task<GoogleContactContext> Create ()
     {
-      return new GoogleContactContext(new GoogleGroupCache(_contactFacade));
+      return Task.FromResult(new GoogleContactContext(new GoogleGroupCache(_contactFacade)));
     }
   }
 }

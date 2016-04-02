@@ -102,7 +102,7 @@ namespace GenSync.Synchronization
           var knownEntityRelations = _entityRelationDataAccess.LoadEntityRelationData()
                                      ?? new IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>[] { };
 
-          var synchronizationContext = _contextFactory.Create();
+          var synchronizationContext = await _contextFactory.Create();
 
           var newAVersionsTask = _atypeRepository.GetAllVersions (knownEntityRelations.Select (r => r.AtypeId), synchronizationContext);
           var newBVersionsTask = _btypeRepository.GetAllVersions (knownEntityRelations.Select (r => r.BtypeId), synchronizationContext);
@@ -198,7 +198,7 @@ namespace GenSync.Synchronization
             return;
           }
 
-          var synchronizationContext = _contextFactory.Create();
+          var synchronizationContext = await _contextFactory.Create();
 
           Task<IReadOnlyList<EntityVersion<TAtypeEntityId, TAtypeEntityVersion>>> newAVersionsTask;
           if (aIdsWithAwarenessLevel.Count > 0)

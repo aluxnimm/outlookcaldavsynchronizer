@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Threading.Tasks;
 
 namespace GenSync.Synchronization
 {
@@ -26,9 +27,9 @@ namespace GenSync.Synchronization
     {
     }
 
-    public int Create ()
+    public Task<int> Create ()
     {
-      return 0;
+      return Task.FromResult(0);
     }
   }
 }
