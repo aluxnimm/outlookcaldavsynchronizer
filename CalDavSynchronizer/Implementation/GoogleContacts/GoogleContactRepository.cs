@@ -280,58 +280,35 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
     public Task<IReadOnlyList<EntityVersion<string, GoogleContactVersion>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, GoogleContactContext context)
     {
-      var query = new ContactsQuery (ContactsQuery.CreateContactsUri (_userName, ContactsQuery.baseProjection));
-      query.NumberToRetrieve = int.MaxValue;
-      return Task.Run (() =>
-      {
-        var contactsFeed = _contactFacade.Service.Query (query);
-        var contacts = contactsFeed.Entries
-            .Cast<ContactEntry>()
-            .Select (c => EntityVersion.Create (c.Id.AbsoluteUri.ToString(), new GoogleContactVersion { ContactEtag = c.Etag }))
-            .ToArray();
-        return (IReadOnlyList<EntityVersion<string, GoogleContactVersion>>) contacts;
-      });
+      var contacts = context.ContactsById.Values
+          .Select (c => EntityVersion.Create (c.Id, new GoogleContactVersion { ContactEtag = c.ETag }))
+          .ToArray();
+      return Task.FromResult<IReadOnlyList<EntityVersion<string, GoogleContactVersion>>> (contacts);
     }
 
     public Task<IReadOnlyList<EntityWithId<string, GoogleContactWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger, GoogleContactContext context)
     {
-      return Task.Run (() =>
+
+      var result = new List<EntityWithId<string, GoogleContactWrapper>>();
+      foreach (var id in ids)
       {
-        var result = ExecuteChunked (
-            new List<EntityWithId<string, GoogleContactWrapper>>(),
-            ids.Select(id =>
-            {
-              var contact = new Contact ();
-              contact.Id = GetContactUrl (id, ContactsQuery.fullProjection).ToString ();
-              contact.BatchData = new GDataBatchEntryData (contact.Id, GDataBatchOperationType.query);
-              return contact;
-            }),
-            (contactList, r) =>
-            {
-              var contactsFeed = _contactFacade.Batch (
-                  contactList,
-                  _contactFacade.GetContacts(),
-                  GDataBatchOperationType.query);
+        Contact contact;
+        if (context.ContactsById.TryGetValue (id, out contact))
+          result.Add (EntityWithId.Create (contact.Id, new GoogleContactWrapper (contact)));
+      }
 
-              if (contactsFeed != null)
-                r.AddRange (contactsFeed.Entries.Select (c => EntityWithId.Create (c.Id, new GoogleContactWrapper(c))));
-            });
+      var groups = context.GroupCache.Groups.ToDictionary (g => g.Id);
 
-
-        var groups = _contactFacade.GetGroups().Entries.ToDictionary (g => g.Id);
-        context.GroupCache.SetGroups (groups.Values);
-
-        foreach (var contactWrapper in result)
+      foreach (var contactWrapper in result)
+      {
+        foreach (var group in contactWrapper.Entity.Contact.GroupMembership)
         {
-          foreach (var group in contactWrapper.Entity.Contact.GroupMembership)
-          {
-            if (!context.GroupCache.IsDefaultGroupId(group.HRef))
-              contactWrapper.Entity.Groups.Add (groups[group.HRef].Title);
-          }
+          if (!context.GroupCache.IsDefaultGroupId (group.HRef))
+            contactWrapper.Entity.Groups.Add (groups[group.HRef].Title);
         }
+      }
 
-        return (IReadOnlyList<EntityWithId<string, GoogleContactWrapper>>) result;
-      });
+      return Task.FromResult<IReadOnlyList<EntityWithId<string, GoogleContactWrapper>>> (result);
     }
 
     private TExecutionContext ExecuteChunked<TItem, TExecutionContext> (

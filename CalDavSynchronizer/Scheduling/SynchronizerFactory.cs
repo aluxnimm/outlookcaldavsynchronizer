@@ -675,7 +675,7 @@ namespace CalDavSynchronizer.Scheduling
           btypeIdEqualityComparer,
           _totalProgressFactory,
           ExceptionHandler.Instance,
-          new GoogleContactContextFactory(contactFacade),
+          new GoogleContactContextFactory(contactFacade, btypeIdEqualityComparer),
           EqualityComparer<DateTime>.Default,
           new GoogleContactVersionComparer());
 

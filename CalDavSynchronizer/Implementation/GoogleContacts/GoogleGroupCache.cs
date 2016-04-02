@@ -23,7 +23,14 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       _contactFacade = contactFacade;
     }
 
-    public void SetGroups (IEnumerable<Group> existingGroups)
+    public IEnumerable<Group> Groups => _groupsByName.Values;
+
+    public async Task Fill ()
+    {
+      SetGroups (await Task.Run(() => _contactFacade.GetGroups().Entries));
+    }
+
+    void SetGroups (IEnumerable<Group> existingGroups)
     {
       foreach (var group in existingGroups)
       {
