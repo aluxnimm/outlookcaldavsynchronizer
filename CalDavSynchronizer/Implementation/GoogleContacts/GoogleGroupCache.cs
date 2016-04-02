@@ -8,7 +8,7 @@ using Google.GData.Contacts;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  class GoogleGroupCache
+  public class GoogleGroupCache
   {
     readonly Dictionary<string, Group> _groupsByName = new Dictionary<string, Group>();
     private readonly ContactsRequest _contactFacade;

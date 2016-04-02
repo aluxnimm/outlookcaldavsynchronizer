@@ -8,7 +8,7 @@ using Google.Contacts;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  class GoogleContactContextFactory : ISynchronizationContextFactory<GoogleGroupCache>
+  class GoogleContactContextFactory : ISynchronizationContextFactory<GoogleContactContext>
   {
     private readonly ContactsRequest _contactFacade;
 
@@ -17,9 +17,9 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       _contactFacade = contactFacade;
     }
 
-    public GoogleGroupCache Create ()
+    public GoogleContactContext Create ()
     {
-      return new GoogleGroupCache(_contactFacade);
+      return new GoogleContactContext(new GoogleGroupCache(_contactFacade));
     }
   }
 }

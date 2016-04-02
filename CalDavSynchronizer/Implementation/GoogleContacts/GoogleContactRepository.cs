@@ -15,7 +15,7 @@ using log4net;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  class GoogleContactRepository : IReadOnlyEntityRepository<GoogleContactWrapper, string, GoogleContactVersion, GoogleGroupCache>, IBatchWriteOnlyEntityRepository<GoogleContactWrapper, string, GoogleContactVersion, GoogleGroupCache>
+  class GoogleContactRepository : IReadOnlyEntityRepository<GoogleContactWrapper, string, GoogleContactVersion, GoogleContactContext>, IBatchWriteOnlyEntityRepository<GoogleContactWrapper, string, GoogleContactVersion, GoogleContactContext>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);
 
@@ -38,13 +38,13 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       IReadOnlyList<IUpdateJob<GoogleContactWrapper, string, GoogleContactVersion>> updateJobs,
       IReadOnlyList<IDeleteJob<string, GoogleContactVersion>> deleteJobs, 
       IProgressLogger progressLogger,
-      GoogleGroupCache context)
+      GoogleContactContext context)
     {
       var createRequestsAndJobs = CreateCreateRequests (createJobs);
       var updateRequestsAndJobs = CreateUpdateRequests (updateJobs);
 
-      await AssignGroupsToContacts (createRequestsAndJobs.Item1, context);
-      await AssignGroupsToContacts (updateRequestsAndJobs.Item1, context);
+      await AssignGroupsToContacts (createRequestsAndJobs.Item1, context.GroupCache);
+      await AssignGroupsToContacts (updateRequestsAndJobs.Item1, context.GroupCache);
       
       try
       {
@@ -293,7 +293,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       });
     }
 
-    public Task<IReadOnlyList<EntityWithId<string, GoogleContactWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger, GoogleGroupCache context)
+    public Task<IReadOnlyList<EntityWithId<string, GoogleContactWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger, GoogleContactContext context)
     {
       return Task.Run (() =>
       {
@@ -319,13 +319,13 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
 
         var groups = _contactFacade.GetGroups().Entries.ToDictionary (g => g.Id);
-        context.SetGroups (groups.Values);
+        context.GroupCache.SetGroups (groups.Values);
 
         foreach (var contactWrapper in result)
         {
           foreach (var group in contactWrapper.Entity.Contact.GroupMembership)
           {
-            if (!context.IsDefaultGroupId(group.HRef))
+            if (!context.GroupCache.IsDefaultGroupId(group.HRef))
               contactWrapper.Entity.Groups.Add (groups[group.HRef].Title);
           }
         }

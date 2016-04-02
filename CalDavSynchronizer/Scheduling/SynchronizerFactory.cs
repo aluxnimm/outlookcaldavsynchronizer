@@ -625,7 +625,7 @@ namespace CalDavSynchronizer.Scheduling
 
     private IOutlookSynchronizer CreateGoogleContactSynchronizer (Options options, AvailableSynchronizerComponents componentsToFill)
     {
-      var atypeRepository = new OutlookContactRepository<GoogleGroupCache> (
+      var atypeRepository = new OutlookContactRepository<GoogleContactContext> (
           _outlookSession,
           options.OutlookFolderEntryId,
           options.OutlookFolderStoreId,
@@ -655,9 +655,9 @@ namespace CalDavSynchronizer.Scheduling
 
       var storageDataAccess = new EntityRelationDataAccess<string, DateTime, GoogleContactRelationData, string, GoogleContactVersion> (storageDataDirectory);
 
-      var atypeWriteRepository = BatchEntityRepositoryAdapter.Create<ContactItemWrapper, string, DateTime, GoogleGroupCache> (atypeRepository);
+      var atypeWriteRepository = BatchEntityRepositoryAdapter.Create<ContactItemWrapper, string, DateTime, GoogleContactContext> (atypeRepository);
 
-      var synchronizer = new Synchronizer<string, DateTime, ContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, GoogleGroupCache> (
+      var synchronizer = new Synchronizer<string, DateTime, ContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, GoogleContactContext> (
           atypeRepository,
           btypeRepository,
           atypeWriteRepository,
