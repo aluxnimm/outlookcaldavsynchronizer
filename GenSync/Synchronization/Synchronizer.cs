@@ -39,8 +39,8 @@ namespace GenSync.Synchronization
     // ReSharper disable once StaticFieldInGenericType
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    private static readonly IEqualityComparer<TAtypeEntityVersion> _atypeVersionComparer = EqualityComparer<TAtypeEntityVersion>.Default;
-    private static readonly IEqualityComparer<TBtypeEntityVersion> _btypeVersionComparer = EqualityComparer<TBtypeEntityVersion>.Default;
+    private readonly IEqualityComparer<TAtypeEntityVersion> _atypeVersionComparer;
+    private readonly IEqualityComparer<TBtypeEntityVersion> _btypeVersionComparer;
 
     private readonly IEqualityComparer<TAtypeEntityId> _atypeIdComparer;
     private readonly IEqualityComparer<TBtypeEntityId> _btypeIdComparer;
@@ -69,7 +69,9 @@ namespace GenSync.Synchronization
         IEqualityComparer<TAtypeEntityId> atypeIdComparer, IEqualityComparer<TBtypeEntityId> btypeIdComparer,
         ITotalProgressFactory totalProgressFactory,
         IExceptionLogger exceptionLogger,
-        ISynchronizationContextFactory<TContext> contextFactory)
+        ISynchronizationContextFactory<TContext> contextFactory, 
+        IEqualityComparer<TAtypeEntityVersion> atypeVersionComparer, 
+        IEqualityComparer<TBtypeEntityVersion> btypeVersionComparer)
     {
       _initialSyncStateCreationStrategy = initialSyncStateCreationStrategy;
       _totalProgressFactory = totalProgressFactory;
@@ -77,6 +79,8 @@ namespace GenSync.Synchronization
       _btypeIdComparer = btypeIdComparer;
       _exceptionLogger = exceptionLogger;
       _contextFactory = contextFactory;
+      _atypeVersionComparer = atypeVersionComparer;
+      _btypeVersionComparer = btypeVersionComparer;
       _atypeWriteRepository = atypeWriteRepository;
       _btypeWriteRepository = btypeWriteRepository;
       _atypeRepository = atypeRepository;
@@ -236,7 +240,7 @@ namespace GenSync.Synchronization
       s_logger.DebugFormat ("Exiting.");
     }
 
-    private static bool RemoveAFromRequestedAndCheckIfCausesSync (
+    private bool RemoveAFromRequestedAndCheckIfCausesSync (
         Dictionary<TAtypeEntityId, IIdWithHints<TAtypeEntityId, TAtypeEntityVersion>> requestedAIdsById,
         IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> entityRelation)
     {
@@ -257,7 +261,7 @@ namespace GenSync.Synchronization
       return isACausingSync;
     }
 
-    private static bool RemoveBFromRequestedAndCheckIfCausesSync (
+    private bool RemoveBFromRequestedAndCheckIfCausesSync (
         Dictionary<TBtypeEntityId, IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>> requestedBIdsById,
         IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> entityRelation)
     {

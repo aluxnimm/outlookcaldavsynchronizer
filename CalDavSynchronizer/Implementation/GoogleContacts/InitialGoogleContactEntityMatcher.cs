@@ -23,7 +23,7 @@ using Google.Contacts;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  internal class InitialGoogleContactEntityMatcher : InitialEntityMatcherByPropertyGrouping<ContactItemWrapper, string, DateTime, string, GoogleContactWrapper, string, string, string>
+  internal class InitialGoogleContactEntityMatcher : InitialEntityMatcherByPropertyGrouping<ContactItemWrapper, string, DateTime, string, GoogleContactWrapper, string, GoogleContactVersion, string>
   {
     public InitialGoogleContactEntityMatcher (IEqualityComparer<string> btypeIdEqualityComparer)
         : base (btypeIdEqualityComparer)

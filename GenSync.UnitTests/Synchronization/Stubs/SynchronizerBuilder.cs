@@ -55,7 +55,9 @@ namespace GenSync.UnitTests.Synchronization.Stubs
           BtypeIdComparer,
           new NullTotalProgressFactory(),
           MockRepository.GenerateMock<IExceptionLogger>(),
-          NullSynchronizationContextFactory.Instance);
+          NullSynchronizationContextFactory.Instance,
+          EqualityComparer<string>.Default,
+          EqualityComparer<string>.Default);
     }
 
     public IEntityRelationDataAccess<string, string, string, string> EntityRelationDataAccess { get; set; }

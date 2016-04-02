@@ -291,9 +291,11 @@
     <Compile Include="Implementation\GoogleContacts\GoogleContactContextFactory.cs" />
     <Compile Include="Implementation\GoogleContacts\GoogleContactConflictInitialSyncStateCreationStrategyAutomatic.cs" />
     <Compile Include="Implementation\GoogleContacts\ContactEntityMapper.cs" />
+    <Compile Include="Implementation\GoogleContacts\GoogleContactVersion.cs" />
     <Compile Include="Implementation\GoogleContacts\GoogleContactRepository.cs" />
     <Compile Include="Implementation\GoogleContacts\GoogleContactRelationData.cs" />
     <Compile Include="Implementation\GoogleContacts\GoogleContactRelationDataFactory.cs" />
+    <Compile Include="Implementation\GoogleContacts\GoogleContactVersionComparer.cs" />
     <Compile Include="Implementation\GoogleContacts\GoogleContactWrapper.cs" />
     <Compile Include="Implementation\GoogleContacts\GoogleGroupCache.cs" />
     <Compile Include="Implementation\InitialSyncStateCreationStrategyFactory.cs" />

@@ -20,9 +20,9 @@ using GenSync.EntityRelationManagement;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  public class GoogleContactRelationDataFactory : IEntityRelationDataFactory<string, DateTime, string, string>
+  public class GoogleContactRelationDataFactory : IEntityRelationDataFactory<string, DateTime, string, GoogleContactVersion>
   {
-    public IEntityRelationData<string, DateTime, string, string> Create (string atypeId, DateTime atypeVersion, string btypeId, string btypeVersion)
+    public IEntityRelationData<string, DateTime, string, GoogleContactVersion> Create (string atypeId, DateTime atypeVersion, string btypeId, GoogleContactVersion btypeVersion)
     {
       return new GoogleContactRelationData()
              {
