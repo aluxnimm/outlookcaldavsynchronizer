@@ -41,7 +41,7 @@ namespace GenSync.UnitTests.Synchronization.Stubs
       _idPrefix = idPrefix;
     }
 
-    public Task<IReadOnlyList<EntityVersion<Identifier, int>>> GetVersions (IEnumerable<IdWithAwarenessLevel<Identifier>> idsOfEntitiesToQuery)
+    public Task<IReadOnlyList<EntityVersion<Identifier, int>>> GetVersions (IEnumerable<IdWithAwarenessLevel<Identifier>> idsOfEntitiesToQuery, int context)
     {
       List<EntityVersion<Identifier, int>> result = new List<EntityVersion<Identifier, int>>();
 
@@ -55,7 +55,7 @@ namespace GenSync.UnitTests.Synchronization.Stubs
       return Task.FromResult<IReadOnlyList<EntityVersion<Identifier, int>>> (result);
     }
 
-    public Task<IReadOnlyList<EntityVersion<Identifier, int>>> GetAllVersions (IEnumerable<Identifier> idsOfknownEntities)
+    public Task<IReadOnlyList<EntityVersion<Identifier, int>>> GetAllVersions (IEnumerable<Identifier> idsOfknownEntities, int context)
     {
       return Task.FromResult<IReadOnlyList<EntityVersion<Identifier, int>>> (
           EntityVersionAndContentById.Select (kv => EntityVersion.Create (kv.Key, kv.Value.Item1)).ToList());
