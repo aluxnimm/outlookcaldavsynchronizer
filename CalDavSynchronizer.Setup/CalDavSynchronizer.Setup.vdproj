@@ -3441,7 +3441,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:GenSync, Version=1.23.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:GenSync, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_B58123E61DC2DA042E81E3082B3DE706"
@@ -3968,7 +3968,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:CalDavSynchronizer.OAuth.Google, Version=1.23.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:CalDavSynchronizer.OAuth.Google, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_E9D19B0C3E83B8FB9760572852AF4635"
@@ -4229,15 +4229,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CalDavSynchronizer"
-        "ProductCode" = "8:{2E00B8E9-289C-41F4-A0EB-4CFD1E0F93AE}"
-        "PackageCode" = "8:{B055EE81-F0CA-4379-94C5-1649003ABCD2}"
+        "ProductCode" = "8:{0F9F1604-1025-4887-AA93-5FBC383B035B}"
+        "PackageCode" = "8:{E6EAFB17-D2B5-414F-81D7-AD6A3DBA5760}"
         "UpgradeCode" = "8:{691063F4-DD9A-4264-948D-3FBD2565572C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.24.0"
+        "ProductVersion" = "8:2.0.0"
         "Manufacturer" = "8:Gerhard Zehetbauer"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
