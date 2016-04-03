@@ -13,24 +13,16 @@
 // GNU Affero General Public License for more details.
 // 
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.using System;
 
 using System;
-using GenSync.EntityRelationManagement;
+using Google.Contacts;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  public class GoogleContactRelationDataFactory : IEntityRelationDataFactory<string, DateTime, string, GoogleContactVersion>
+  public interface IGoogleApiOperationExecutor
   {
-    public IEntityRelationData<string, DateTime, string, GoogleContactVersion> Create (string atypeId, DateTime atypeVersion, string btypeId, GoogleContactVersion btypeVersion)
-    {
-      return new GoogleContactRelationData()
-             {
-                 AtypeId = atypeId,
-                 AtypeVersion = atypeVersion,
-                 BtypeId = btypeId,
-                 BtypeVersion = btypeVersion
-             };
-    }
+    T Execute<T> (Func<ContactsRequest, T> operation);
+    void Execute (Action<ContactsRequest> operation);
   }
 }

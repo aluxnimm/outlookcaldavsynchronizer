@@ -37,14 +37,14 @@ namespace GenSync.UnitTests.Synchronization.Stubs
       builder.AtypeIdComparer = StringComparer.InvariantCultureIgnoreCase;
 
       builder.AtypeRepository
-          .Expect (r => r.GetAllVersions (new string[] { }))
+          .Expect (r => r.GetAllVersions (new string[] { },0))
           .IgnoreArguments()
           .Return (
               Task.FromResult<IReadOnlyList<EntityVersion<string, string>>> (
                   new[] { EntityVersion.Create ("A1", "v1"), EntityVersion.Create ("a1", "v3") }));
 
       builder.BtypeRepository
-          .Expect (r => r.GetAllVersions (new string[] { }))
+          .Expect (r => r.GetAllVersions (new string[] { }, 0))
           .IgnoreArguments()
           .Return (
               Task.FromResult<IReadOnlyList<EntityVersion<string, string>>> (

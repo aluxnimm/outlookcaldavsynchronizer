@@ -8,18 +8,30 @@ using Google.Contacts;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  class GoogleContactContextFactory : ISynchronizationContextFactory<GoogleGroupCache>
+  class GoogleContactContextFactory : ISynchronizationContextFactory<GoogleContactContext>
   {
-    private readonly ContactsRequest _contactFacade;
+    private readonly IGoogleApiOperationExecutor _apiOperationExecutor;
+    private readonly IEqualityComparer<string> _contactIdComparer;
 
-    public GoogleContactContextFactory (ContactsRequest contactFacade)
+    public GoogleContactContextFactory (IGoogleApiOperationExecutor apiOperationExecutor, IEqualityComparer<string> contactIdComparer)
     {
-      _contactFacade = contactFacade;
+      if (apiOperationExecutor == null)
+        throw new ArgumentNullException (nameof (apiOperationExecutor));
+      if (contactIdComparer == null)
+        throw new ArgumentNullException (nameof (contactIdComparer));
+
+      _apiOperationExecutor = apiOperationExecutor;
+      _contactIdComparer = contactIdComparer;
     }
 
-    public GoogleGroupCache Create ()
+    public async Task<GoogleContactContext> Create ()
     {
-      return new GoogleGroupCache(_contactFacade);
+      return await Task.Run (() =>
+      {
+        var context = new GoogleContactContext (new GoogleGroupCache (_apiOperationExecutor), _apiOperationExecutor, _contactIdComparer);
+        context.FillCaches();
+        return context;
+      });
     }
   }
 }

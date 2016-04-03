@@ -152,7 +152,9 @@ namespace GenSync.UnitTests.Synchronization
           IdentifierEqualityComparer.Instance,
           NullTotalProgressFactory.Instance,
           MockRepository.GenerateMock<IExceptionLogger>(),
-          NullSynchronizationContextFactory.Instance);
+          NullSynchronizationContextFactory.Instance,
+          EqualityComparer<int>.Default,
+          EqualityComparer<int>.Default);
     }
 
     protected void ExecuteMultipleTimes (Action a)

@@ -8,22 +8,29 @@ using Google.GData.Contacts;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  class GoogleGroupCache
+  public class GoogleGroupCache
   {
     readonly Dictionary<string, Group> _groupsByName = new Dictionary<string, Group>();
-    private readonly ContactsRequest _contactFacade;
+    private readonly IGoogleApiOperationExecutor _apiOperationExecutor;
 
     private string _defaultGroupIdOrNull;
 
-    public GoogleGroupCache (ContactsRequest contactFacade)
+    public GoogleGroupCache (IGoogleApiOperationExecutor apiOperationExecutor)
     {
-      if (contactFacade == null)
-        throw new ArgumentNullException (nameof (contactFacade));
+      if (apiOperationExecutor == null)
+        throw new ArgumentNullException (nameof (apiOperationExecutor));
 
-      _contactFacade = contactFacade;
+      _apiOperationExecutor = apiOperationExecutor;
     }
 
-    public void SetGroups (IEnumerable<Group> existingGroups)
+    public IEnumerable<Group> Groups => _groupsByName.Values;
+
+    public void Fill ()
+    {
+      SetGroups (_apiOperationExecutor.Execute (f => f.GetGroups().Entries));
+    }
+
+    void SetGroups (IEnumerable<Group> existingGroups)
     {
       foreach (var group in existingGroups)
       {
@@ -33,12 +40,12 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       }
     }
 
-    public async Task<Group> GetOrCreateGroup (string groupName)
+    public Group GetOrCreateGroup (string groupName)
     {
       Group group;
       if (!_groupsByName.TryGetValue (groupName, out group))
       {
-        group = await CreateGroup (groupName);
+        group = CreateGroup (groupName);
         _groupsByName.Add (groupName, group);
       }
 
@@ -58,15 +65,12 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       return StringComparer.InvariantCultureIgnoreCase.Compare (group.SystemGroup, "contacts") == 0;
     }
 
-    Task<Group> CreateGroup (string name)
+    Group CreateGroup (string name)
     {
-      return Task.Run (() =>
-      {
-        var groupRequest = new Group();
-        groupRequest.Title = name;
+      var groupRequest = new Group();
+      groupRequest.Title = name;
 
-        return _contactFacade.Insert (new Uri ("https://www.google.com/m8/feeds/groups/default/full"), groupRequest);
-      });
+      return _apiOperationExecutor.Execute (f => f.Insert (new Uri ("https://www.google.com/m8/feeds/groups/default/full"), groupRequest));
     }
 
 

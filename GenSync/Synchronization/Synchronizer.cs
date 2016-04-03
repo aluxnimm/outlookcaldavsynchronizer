@@ -39,8 +39,8 @@ namespace GenSync.Synchronization
     // ReSharper disable once StaticFieldInGenericType
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    private static readonly IEqualityComparer<TAtypeEntityVersion> _atypeVersionComparer = EqualityComparer<TAtypeEntityVersion>.Default;
-    private static readonly IEqualityComparer<TBtypeEntityVersion> _btypeVersionComparer = EqualityComparer<TBtypeEntityVersion>.Default;
+    private readonly IEqualityComparer<TAtypeEntityVersion> _atypeVersionComparer;
+    private readonly IEqualityComparer<TBtypeEntityVersion> _btypeVersionComparer;
 
     private readonly IEqualityComparer<TAtypeEntityId> _atypeIdComparer;
     private readonly IEqualityComparer<TBtypeEntityId> _btypeIdComparer;
@@ -69,7 +69,9 @@ namespace GenSync.Synchronization
         IEqualityComparer<TAtypeEntityId> atypeIdComparer, IEqualityComparer<TBtypeEntityId> btypeIdComparer,
         ITotalProgressFactory totalProgressFactory,
         IExceptionLogger exceptionLogger,
-        ISynchronizationContextFactory<TContext> contextFactory)
+        ISynchronizationContextFactory<TContext> contextFactory, 
+        IEqualityComparer<TAtypeEntityVersion> atypeVersionComparer, 
+        IEqualityComparer<TBtypeEntityVersion> btypeVersionComparer)
     {
       _initialSyncStateCreationStrategy = initialSyncStateCreationStrategy;
       _totalProgressFactory = totalProgressFactory;
@@ -77,6 +79,8 @@ namespace GenSync.Synchronization
       _btypeIdComparer = btypeIdComparer;
       _exceptionLogger = exceptionLogger;
       _contextFactory = contextFactory;
+      _atypeVersionComparer = atypeVersionComparer;
+      _btypeVersionComparer = btypeVersionComparer;
       _atypeWriteRepository = atypeWriteRepository;
       _btypeWriteRepository = btypeWriteRepository;
       _atypeRepository = atypeRepository;
@@ -98,8 +102,10 @@ namespace GenSync.Synchronization
           var knownEntityRelations = _entityRelationDataAccess.LoadEntityRelationData()
                                      ?? new IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>[] { };
 
-          var newAVersionsTask = _atypeRepository.GetAllVersions (knownEntityRelations.Select (r => r.AtypeId));
-          var newBVersionsTask = _btypeRepository.GetAllVersions (knownEntityRelations.Select (r => r.BtypeId));
+          var synchronizationContext = await _contextFactory.Create();
+
+          var newAVersionsTask = _atypeRepository.GetAllVersions (knownEntityRelations.Select (r => r.AtypeId), synchronizationContext);
+          var newBVersionsTask = _btypeRepository.GetAllVersions (knownEntityRelations.Select (r => r.BtypeId), synchronizationContext);
 
           var newAVersions = CreateDictionary (
               await newAVersionsTask,
@@ -117,7 +123,8 @@ namespace GenSync.Synchronization
                 newAVersions,
                 newBVersions,
                 entityContainer,
-                logger);
+                logger,
+                synchronizationContext);
 
             _entityRelationDataAccess.SaveEntityRelationData (newEntityRelations);
           }
@@ -191,15 +198,17 @@ namespace GenSync.Synchronization
             return;
           }
 
+          var synchronizationContext = await _contextFactory.Create();
+
           Task<IReadOnlyList<EntityVersion<TAtypeEntityId, TAtypeEntityVersion>>> newAVersionsTask;
           if (aIdsWithAwarenessLevel.Count > 0)
-            newAVersionsTask = _atypeRepository.GetVersions (aIdsWithAwarenessLevel);
+            newAVersionsTask = _atypeRepository.GetVersions (aIdsWithAwarenessLevel, synchronizationContext);
           else
             newAVersionsTask = Task.FromResult<IReadOnlyList<EntityVersion<TAtypeEntityId, TAtypeEntityVersion>>> (new EntityVersion<TAtypeEntityId, TAtypeEntityVersion>[] { });
 
           Task<IReadOnlyList<EntityVersion<TBtypeEntityId, TBtypeEntityVersion>>> newBVersionsTask;
           if (bIdsWithAwarenessLevel.Count > 0)
-            newBVersionsTask = _btypeRepository.GetVersions (bIdsWithAwarenessLevel);
+            newBVersionsTask = _btypeRepository.GetVersions (bIdsWithAwarenessLevel, synchronizationContext);
           else
             newBVersionsTask = Task.FromResult<IReadOnlyList<EntityVersion<TBtypeEntityId, TBtypeEntityVersion>>> (new EntityVersion<TBtypeEntityId, TBtypeEntityVersion>[] { });
 
@@ -219,7 +228,8 @@ namespace GenSync.Synchronization
                 newAVersions,
                 newBVersions,
                 entityContainer,
-                logger);
+                logger,
+                synchronizationContext);
 
             entityRelationsNotToUse.AddRange (newEntityRelations);
 
@@ -236,7 +246,7 @@ namespace GenSync.Synchronization
       s_logger.DebugFormat ("Exiting.");
     }
 
-    private static bool RemoveAFromRequestedAndCheckIfCausesSync (
+    private bool RemoveAFromRequestedAndCheckIfCausesSync (
         Dictionary<TAtypeEntityId, IIdWithHints<TAtypeEntityId, TAtypeEntityVersion>> requestedAIdsById,
         IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> entityRelation)
     {
@@ -257,7 +267,7 @@ namespace GenSync.Synchronization
       return isACausingSync;
     }
 
-    private static bool RemoveBFromRequestedAndCheckIfCausesSync (
+    private bool RemoveBFromRequestedAndCheckIfCausesSync (
         Dictionary<TBtypeEntityId, IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>> requestedBIdsById,
         IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> entityRelation)
     {
@@ -284,7 +294,8 @@ namespace GenSync.Synchronization
         Dictionary<TAtypeEntityId, TAtypeEntityVersion> newAVersions,
         Dictionary<TBtypeEntityId, TBtypeEntityVersion> newBVersions,
         EntityContainer entityContainer,
-        ISynchronizationLogger logger)
+        ISynchronizationLogger logger,
+        TContext synchronizationContext)
     {
       var entitySyncStates = new EntitySyncStateContainer<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>();
 
@@ -313,8 +324,6 @@ namespace GenSync.Synchronization
       HashSet<TAtypeEntityId> aEntitesToLoad = new HashSet<TAtypeEntityId>();
       HashSet<TBtypeEntityId> bEntitesToLoad = new HashSet<TBtypeEntityId>();
       entitySyncStates.Execute (s => s.AddRequiredEntitiesToLoad (aEntitesToLoad.Add, bEntitesToLoad.Add));
-
-      var synchronizationContext = _contextFactory.Create ();
 
       if (newAVersions.Count > 0 && newBVersions.Count > 0)
       {

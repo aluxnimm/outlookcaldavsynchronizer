@@ -17,6 +17,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       Contact = contact;
     }
 
+    public byte[] PhotoOrNull { get; set; }
     public Contact Contact { get; }
     public List<string> Groups { get; } = new List<string>();
   }

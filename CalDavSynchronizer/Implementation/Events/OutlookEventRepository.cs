@@ -78,7 +78,7 @@ namespace CalDavSynchronizer.Implementation.Events
       return GenericComObjectWrapper.Create ((Folder) _mapiNameSpace.GetFolderFromID (_folderId, _folderStoreId));
     }
 
-    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery)
+    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, int context)
     {
       var result = new List<EntityVersion<string, DateTime>>();
 
@@ -119,7 +119,7 @@ namespace CalDavSynchronizer.Implementation.Events
       return _configuration.InvertEventCategoryFilter ? !found : found;
     }
 
-    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities)
+    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, int context)
     {
       var range = _dateTimeRangeProvider.GetRange();
 
