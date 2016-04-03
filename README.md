@@ -79,6 +79,21 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 1.25.0 ####
+- New features
+	- Add support for Google Contacts API to sync Outlook contact folders with Google contacts which improves mapping and performance, since the Google CardDAV API has some issues (first official release, beta)
+	- Support for google contact groups, which are synced to Outlook categories.
+	- Sync contact photos, WebPages, Notes, Sensitivity, Hobbies for google contacts.
+	- Added mapping for anniversary, relations (spouse, child, etc.) and IMs for google contacts (Contribution from Florian Saller [https://sourceforge.net/u/floriwan/profile/](https://sourceforge.net/u/floriwan/profile/), thank you!)
+	- Improve generic synchronizer to support batch-write operations and introduce Synchronization Context.
+- Bug fixes
+	- Add TYPE=JPEG to vcard photo attributes and catch exceptions in MapPhoto2To1.
+	- Catch COM-Exception, when fetching Items from Outlook (ticket #263 Error when deleting contacts with Synchronize changes immediately after changes activated).
+	- Fix possible Nullreference Exception in CardDavDataAccess.
+	- Fix ForceBasicAuthentication checkbox in WPF UI.
+	- Fix and simplify connection testing.
+	- Delete contact photo in Outlook if it was deleted on the CardDav server.
+
 #### 1.24.0 ####
 - New features
 	- Add general option to ignore invalid characters in server response.
@@ -671,7 +686,16 @@ It is possible to choose the color of the category or to fetch the calendar colo
 
 ### Google Calender / Addressbooks / Tasks settings ###
 
-For Google you can use the new Google type profile which simplifies the setup. You just need to enter the email address of your google account. When testing the settings, you will be redirected to your browser to enter your Google Account password and grant access rights to your Google Calender, Contacts and Tasks for OutlookCalDavSynchronizer via the safe OAuth protocol. After that Autodiscovery will try to find available calendar, addressbook and task resources. For tasks you can choose the tasklist you want to sync with an Outlook task folder and the id of the task list is shown in the Discovered Url. With the button 'Edit Url' you still can manually change the Url e.g. when you want to sync a shared google calendar from another account.
+For Google you can use the new Google type profile which simplifies the setup. You just need to enter the email address of your google account. When testing the settings, you will be redirected to your browser to enter your Google Account password and grant access rights to your Google Calender, Contacts and Tasks for OutlookCalDavSynchronizer via the safe OAuth protocol. After that Autodiscovery will try to find available calendar, addressbook and task resources. 
+
+For contacts you can activate the checkbox **Use Google native API**. This should improve performance and other mapping issues, since the Google Contacts API supports more features than the generic CardDAV API. Compared to CardDAV this adds:
+
+- Support for google contact groups, which are synced to Outlook categories.
+- Added mapping for anniversary, relations (spouse, child, etc.) and IMs for google contacts (Contribution from Florian Saller, thank you!).
+
+When switching betwwen native API and CardDAV the sync cache is cleared and a complete initial sync is performed during next sync run.
+
+For tasks you can choose the tasklist you want to sync with an Outlook task folder and the id of the task list is shown in the Discovered Url. With the button 'Edit Url' you still can manually change the Url e.g. when you want to sync a shared google calendar from another account.
 
 If you get an error with insufficient access you need to refresh the token by deleting the previous token in 
 `C:\Users\<your Username>\AppData\Roaming\Google.Apis.Auth`
