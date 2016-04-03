@@ -40,7 +40,7 @@
         <CheckBox 
           Visibility="{Binding UseGoogleNativeApiAvailable,Converter={StaticResource BooleanToVisibilityConverter}}"
           IsChecked="{Binding UseGoogleNativeApi}" 
-          DockPanel.Dock="Left">Use Google native API</CheckBox>
+          DockPanel.Dock="Left">Use Google native API (BETA)</CheckBox>
         <UIElement></UIElement>
       </DockPanel>
     </DockPanel>
