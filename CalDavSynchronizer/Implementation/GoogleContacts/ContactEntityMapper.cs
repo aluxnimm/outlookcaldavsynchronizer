@@ -879,15 +879,41 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
     {
       if (source.PhotoOrNull != null)
       {
-        string picturePath = Path.GetTempPath() + @"\Contact_" + target.EntryID + ".jpg";
-        File.WriteAllBytes (picturePath, source.PhotoOrNull);
-        target.AddPicture (picturePath);
-        File.Delete (picturePath);
+        try
+        {
+          string picturePath = Path.GetTempPath() + @"\Contact_" + target.EntryID + ".jpg";
+          File.WriteAllBytes (picturePath, source.PhotoOrNull);
+          try
+          {
+            target.AddPicture (picturePath);
+          }
+          catch (COMException x)
+          {
+            s_logger.Warn ("Could not add picture for contact.", x);
+            logger.LogMappingWarning ("Could not add picture for contact.", x);
+          }
+          File.Delete (picturePath);
+        }
+        catch (System.Exception ex)
+        {
+          s_logger.Warn ("Could not add picture for contact.", ex);
+          logger.LogMappingWarning ("Could not add picture for contact.", ex);
+        }
       }
       else
       {
         if (target.HasPicture)
-          target.RemovePicture();
+        {
+          try
+          {
+            target.RemovePicture();
+          }
+          catch (COMException x)
+          {
+            s_logger.Warn ("Could not remove picture for contact.", x);
+            logger.LogMappingWarning ("Could not remove picture for contact.", x);
+          }
+        }
       }
     }
 
