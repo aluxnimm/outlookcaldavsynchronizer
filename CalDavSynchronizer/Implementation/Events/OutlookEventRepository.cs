@@ -34,7 +34,7 @@ using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class OutlookEventRepository : IEntityRepository<AppointmentItemWrapper, string, DateTime>
+  public class OutlookEventRepository : IEntityRepository<AppointmentItemWrapper, string, DateTime, int>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -216,7 +216,7 @@ namespace CalDavSynchronizer.Implementation.Events
     }
 
 #pragma warning disable 1998
-    public async Task<IReadOnlyList<EntityWithId<string, AppointmentItemWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger)
+    public async Task<IReadOnlyList<EntityWithId<string, AppointmentItemWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger, int context)
 #pragma warning restore 1998
     {
       return ids
@@ -247,7 +247,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
     public Task Delete (string entityId, DateTime version)
     {
-      var entityWithId = Get (new[] { entityId }, NullLoadEntityLogger.Instance).Result.SingleOrDefault();
+      var entityWithId = Get (new[] { entityId }, NullLoadEntityLogger.Instance, 0).Result.SingleOrDefault();
       if (entityWithId == null)
         return Task.FromResult (0);
 

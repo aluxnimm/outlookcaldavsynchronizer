@@ -25,6 +25,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xaml;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using GenSync.EntityMapping;
 using GenSync.Logging;
@@ -37,7 +38,7 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  public class GoogleContactEntityMapper : IEntityMapper<ContactItemWrapper, Contact>
+  public class GoogleContactEntityMapper : IEntityMapper<ContactItemWrapper, GoogleContactWrapper>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -66,8 +67,9 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       _configuration = configuration;
     }
 
-    public Contact Map1To2 (ContactItemWrapper source, Contact target, IEntityMappingLogger logger)
+    public GoogleContactWrapper Map1To2 (ContactItemWrapper source, GoogleContactWrapper targetWrapper, IEntityMappingLogger logger)
     {
+      var target = targetWrapper.Contact;
 
       #region Title/FileAs
       if (!string.IsNullOrEmpty(source.Inner.FileAs))
@@ -336,7 +338,10 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         }
       }
 
-      return target;
+      targetWrapper.Groups.Clear ();
+      targetWrapper.Groups.AddRange (CommonEntityMapper.SplitCategoryString (source.Inner.Categories));
+      
+      return targetWrapper;
     }
 
     private static void MapEmailAddresses1To2 (ContactItem source, Contact target, IEntityMappingLogger logger)
@@ -633,8 +638,10 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
     }
 
-    public ContactItemWrapper Map2To1 (Contact source, ContactItemWrapper target, IEntityMappingLogger logger)
+    public ContactItemWrapper Map2To1 (GoogleContactWrapper sourceWrapper, ContactItemWrapper target, IEntityMappingLogger logger)
     {
+      var source = sourceWrapper.Contact;
+
       if (source.Name != null)
       {
         target.Inner.FirstName = source.Name.GivenName;
@@ -823,6 +830,8 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       target.Inner.Hobby = string.Empty;
       if (source.ContactEntry.Hobbies.Count >0)
         target.Inner.Hobby = string.Join (";", source.ContactEntry.Hobbies.Select (h => h.Value));
+
+      target.Inner.Categories = string.Join (CultureInfo.CurrentCulture.TextInfo.ListSeparator, sourceWrapper.Groups);
 
       return target;
     }

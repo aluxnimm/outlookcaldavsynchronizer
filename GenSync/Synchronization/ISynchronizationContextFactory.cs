@@ -16,18 +16,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-using GenSync.ProgressReport;
 
-namespace GenSync.EntityRepositories
+namespace GenSync.Synchronization
 {
-  public interface IBatchWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext>
+  public interface ISynchronizationContextFactory<out TContext>
   {
-    Task PerformOperations (
-        IReadOnlyList<ICreateJob<TEntity, TEntityId, TEntityVersion>> createJobs,
-        IReadOnlyList<IUpdateJob<TEntity, TEntityId, TEntityVersion>> updateJobs,
-        IReadOnlyList<IDeleteJob<TEntityId, TEntityVersion>> deleteJobs,
-        IProgressLogger progressLogger,
-        TContext context);
+    TContext Create ();
   }
 }

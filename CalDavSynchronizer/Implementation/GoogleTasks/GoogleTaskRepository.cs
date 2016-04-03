@@ -30,7 +30,7 @@ using Task = Google.Apis.Tasks.v1.Data.Task;
 
 namespace CalDavSynchronizer.Implementation.GoogleTasks
 {
-  class GoogleTaskRepository : IEntityRepository<Task, string, string>
+  class GoogleTaskRepository : IEntityRepository<Task, string, string, int>
   {
     private readonly TasksService _tasksService;
     private readonly TaskList _taskList;
@@ -93,7 +93,7 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
       }
     }
 
-    public async Task<IReadOnlyList<EntityWithId<string, Task>>> Get (ICollection<string> ids, ILoadEntityLogger logger)
+    public async Task<IReadOnlyList<EntityWithId<string, Task>>> Get (ICollection<string> ids, ILoadEntityLogger logger, int context)
     {
       var items = new List<EntityWithId<string, Task>> ();
 

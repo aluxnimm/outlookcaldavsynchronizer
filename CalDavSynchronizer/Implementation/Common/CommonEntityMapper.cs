@@ -16,6 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using DDay.iCal;
 using Microsoft.Office.Interop.Outlook;
 
@@ -141,6 +143,22 @@ namespace CalDavSynchronizer.Implementation.Common
       }
 
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
+    }
+
+    public static string[] SplitCategoryString (string categoryStringOrNull)
+    {
+      if (!string.IsNullOrEmpty (categoryStringOrNull))
+      {
+        return
+            categoryStringOrNull
+                .Split (new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries)
+                .Select (c => c.Trim ())
+                .ToArray ();
+      }
+      else
+      {
+        return new string[] { };
+      }
     }
   }
 }

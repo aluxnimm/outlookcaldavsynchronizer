@@ -23,14 +23,14 @@ using Google.Contacts;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  internal class InitialGoogleContactEntityMatcher : InitialEntityMatcherByPropertyGrouping<ContactItemWrapper, string, DateTime, string, Contact, string, string, string>
+  internal class InitialGoogleContactEntityMatcher : InitialEntityMatcherByPropertyGrouping<ContactItemWrapper, string, DateTime, string, GoogleContactWrapper, string, string, string>
   {
     public InitialGoogleContactEntityMatcher (IEqualityComparer<string> btypeIdEqualityComparer)
         : base (btypeIdEqualityComparer)
     {
     }
 
-    protected override bool AreEqual (ContactItemWrapper atypeEntity, Contact btypeEntity)
+    protected override bool AreEqual (ContactItemWrapper atypeEntity, GoogleContactWrapper btypeEntity)
     {
       return true;
     }
@@ -40,9 +40,9 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       return atypeEntity.Inner.FirstName + "|" + atypeEntity.Inner.LastName;
     }
 
-    protected override string GetBtypePropertyValue (Contact btypeEntity)
+    protected override string GetBtypePropertyValue (GoogleContactWrapper btypeEntity)
     {
-      return btypeEntity.Name.GivenName + "|" + btypeEntity.Name.FamilyName;
+      return btypeEntity.Contact.Name.GivenName + "|" + btypeEntity.Contact.Name.FamilyName;
     }
 
     protected override string MapAtypePropertyValue (string value)

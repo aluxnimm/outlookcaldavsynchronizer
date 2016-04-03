@@ -236,11 +236,8 @@ namespace CalDavSynchronizer.Implementation.Events
       {
         var useEventCategoryAsFilter = _configuration.UseEventCategoryAsFilter;
 
-        var sourceCategories =
-            source.Categories
-                .Split (new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries)
-                .Where (c => !useEventCategoryAsFilter || c != _configuration.EventCategory)
-                .Select (c => c.Trim());
+        var sourceCategories = CommonEntityMapper.SplitCategoryString (source.Categories)
+                .Where (c => !useEventCategoryAsFilter || c != _configuration.EventCategory);
 
         foreach (var sourceCategory in sourceCategories)
         {

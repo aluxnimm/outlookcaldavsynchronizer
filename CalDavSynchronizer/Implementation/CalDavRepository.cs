@@ -36,7 +36,7 @@ using log4net;
 
 namespace CalDavSynchronizer.Implementation
 {
-  public class CalDavRepository : IEntityRepository<IICalendar, WebResourceName, string>
+  public class CalDavRepository : IEntityRepository<IICalendar, WebResourceName, string, int>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -88,7 +88,7 @@ namespace CalDavSynchronizer.Implementation
       }
     }
 
-    public async Task<IReadOnlyList<EntityWithId<WebResourceName, IICalendar>>> Get (ICollection<WebResourceName> ids, ILoadEntityLogger logger)
+    public async Task<IReadOnlyList<EntityWithId<WebResourceName, IICalendar>>> Get (ICollection<WebResourceName> ids, ILoadEntityLogger logger, int context)
     {
       if (ids.Count == 0)
         return new EntityWithId<WebResourceName, IICalendar>[] { };

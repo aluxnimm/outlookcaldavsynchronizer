@@ -15,19 +15,20 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using GenSync.ProgressReport;
 
-namespace GenSync.EntityRepositories
+namespace GenSync.Synchronization
 {
-  public interface IBatchWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext>
+  public class NullSynchronizationContextFactory : ISynchronizationContextFactory<int>
   {
-    Task PerformOperations (
-        IReadOnlyList<ICreateJob<TEntity, TEntityId, TEntityVersion>> createJobs,
-        IReadOnlyList<IUpdateJob<TEntity, TEntityId, TEntityVersion>> updateJobs,
-        IReadOnlyList<IDeleteJob<TEntityId, TEntityVersion>> deleteJobs,
-        IProgressLogger progressLogger,
-        TContext context);
+    public static readonly ISynchronizationContextFactory<int> Instance = new NullSynchronizationContextFactory();
+
+    private NullSynchronizationContextFactory ()
+    {
+    }
+
+    public int Create ()
+    {
+      return 0;
+    }
   }
 }
