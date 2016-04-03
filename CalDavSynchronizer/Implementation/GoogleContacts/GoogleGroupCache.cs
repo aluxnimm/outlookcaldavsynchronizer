@@ -25,9 +25,9 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
     public IEnumerable<Group> Groups => _groupsByName.Values;
 
-    public async Task Fill ()
+    public void Fill ()
     {
-      SetGroups (await Task.Run(() => _apiOperationExecutor.Execute(f => f.GetGroups().Entries)));
+      SetGroups (_apiOperationExecutor.Execute (f => f.GetGroups().Entries));
     }
 
     void SetGroups (IEnumerable<Group> existingGroups)
@@ -40,12 +40,12 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       }
     }
 
-    public async Task<Group> GetOrCreateGroup (string groupName)
+    public Group GetOrCreateGroup (string groupName)
     {
       Group group;
       if (!_groupsByName.TryGetValue (groupName, out group))
       {
-        group = await CreateGroup (groupName);
+        group = CreateGroup (groupName);
         _groupsByName.Add (groupName, group);
       }
 
@@ -65,15 +65,12 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       return StringComparer.InvariantCultureIgnoreCase.Compare (group.SystemGroup, "contacts") == 0;
     }
 
-    Task<Group> CreateGroup (string name)
+    Group CreateGroup (string name)
     {
-      return Task.Run (() =>
-      {
-        var groupRequest = new Group();
-        groupRequest.Title = name;
+      var groupRequest = new Group();
+      groupRequest.Title = name;
 
-        return _apiOperationExecutor.Execute(f => f.Insert (new Uri ("https://www.google.com/m8/feeds/groups/default/full"), groupRequest));
-      });
+      return _apiOperationExecutor.Execute (f => f.Insert (new Uri ("https://www.google.com/m8/feeds/groups/default/full"), groupRequest));
     }
 
 

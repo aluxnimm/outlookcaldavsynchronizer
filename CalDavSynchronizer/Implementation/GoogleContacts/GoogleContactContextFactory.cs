@@ -26,9 +26,12 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
     public async Task<GoogleContactContext> Create ()
     {
-      var context = await Task.FromResult(new GoogleContactContext(new GoogleGroupCache(_apiOperationExecutor), _apiOperationExecutor, _contactIdComparer));
-      await context.FillCaches();
-      return context;
+      return await Task.Run (() =>
+      {
+        var context = new GoogleContactContext (new GoogleGroupCache (_apiOperationExecutor), _apiOperationExecutor, _contactIdComparer);
+        context.FillCaches();
+        return context;
+      });
     }
   }
 }

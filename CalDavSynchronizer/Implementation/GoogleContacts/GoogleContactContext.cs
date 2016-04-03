@@ -30,10 +30,10 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       _contactsById = new Dictionary<string, Contact> (contactIdComparer);
     }
 
-    public async Task FillCaches ()
+    public void FillCaches ()
     {
-      await GroupCache.Fill();
-      foreach (var contact in await Task.Run (() => _apiOperationExecutor.Execute(f => f.GetContacts().Entries.ToArray())))
+      GroupCache.Fill();
+      foreach (var contact in _apiOperationExecutor.Execute(f => f.GetContacts().Entries.ToArray()))
       {
         _contactsById.Add (contact.Id, contact);
       }
