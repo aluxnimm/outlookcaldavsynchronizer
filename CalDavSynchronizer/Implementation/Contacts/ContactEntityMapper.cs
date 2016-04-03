@@ -554,12 +554,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
           try
           {
             string picturePath = Path.GetTempPath() + @"\Contact_" + target.EntryID + ".jpg";
-
-            using (FileStream fs = new FileStream (picturePath, FileMode.Create))
-            {
-              fs.Write (contactPhoto.GetBytes(), 0, contactPhoto.GetBytes().Length);
-              fs.Flush();
-            }
+            File.WriteAllBytes (picturePath, contactPhoto.GetBytes());
             try
             {
               target.AddPicture (picturePath);
@@ -575,6 +570,21 @@ namespace CalDavSynchronizer.Implementation.Contacts
           {
             s_logger.Warn ("Could not add picture for contact.", ex);
             logger.LogMappingWarning ("Could not add picture for contact.", ex);
+          }
+        }
+      }
+      else
+      {
+        if (target.HasPicture)
+        {
+          try
+          {
+            target.RemovePicture();
+          }
+          catch (COMException x)
+          {
+            s_logger.Warn ("Could not remove picture for contact.", x);
+            logger.LogMappingWarning ("Could not remove picture for contact.", x);
           }
         }
       }
