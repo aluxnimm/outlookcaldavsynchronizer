@@ -38,6 +38,7 @@
         <Button DockPanel.Dock="Right" Command="{Binding TestConnectionCommand}" HorizontalAlignment="Right">Test settings</Button>
         <Button DockPanel.Dock="Right" Command="{Binding DoAutoDiscoveryCommand}" HorizontalAlignment="Right">Do Autodiscovery</Button>
         <CheckBox 
+          ToolTip="Use Google Contacts API instead of CardDAV &#xA;to sync Outlook contact folders with Google contacts &#xA;which improves mapping and performance."
           Visibility="{Binding UseGoogleNativeApiAvailable,Converter={StaticResource BooleanToVisibilityConverter}}"
           IsChecked="{Binding UseGoogleNativeApi}" 
           DockPanel.Dock="Left">Use Google native API (BETA)</CheckBox>
