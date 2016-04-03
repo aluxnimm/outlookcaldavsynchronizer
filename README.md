@@ -79,13 +79,13 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
-#### 1.25.0 ####
+#### 2.0.0 ####
 - New features
 	- Add support for Google Contacts API to sync Outlook contact folders with Google contacts which improves mapping and performance, since the Google CardDAV API has some issues (first official release, beta)
 	- Support for google contact groups, which are synced to Outlook categories.
 	- Sync contact photos, WebPages, Notes, Sensitivity, Hobbies for google contacts.
 	- Added mapping for anniversary, relations (spouse, child, etc.) and IMs for google contacts (Contribution from Florian Saller [https://sourceforge.net/u/floriwan/profile/](https://sourceforge.net/u/floriwan/profile/), thank you!)
-	- Improve generic synchronizer to support batch-write operations and introduce Synchronization Context.
+	- Remove legacy synchronization profile settings user interface.
 - Bug fixes
 	- Add TYPE=JPEG to vcard photo attributes and catch exceptions in MapPhoto2To1.
 	- Catch COM-Exception, when fetching Items from Outlook (ticket #263 Error when deleting contacts with Synchronize changes immediately after changes activated).
