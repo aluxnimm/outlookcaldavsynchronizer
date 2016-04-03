@@ -14,13 +14,9 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
-using System.Security.Cryptography;
-using System.Text;
 using System.Xml.Serialization;
-using CalDavSynchronizer.Implementation;
-using CalDavSynchronizer.Ui;
-using CalDavSynchronizer.Ui.Options.Mapping;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.Options.ViewModels.Mapping;
 using Microsoft.Office.Interop.Outlook;
@@ -48,7 +44,7 @@ namespace CalDavSynchronizer.Contracts
     {
       get { return !string.IsNullOrEmpty (EventCategory); }
     }
-    
+
     public EventMappingConfiguration ()
     {
       MapReminder = ReminderMapping.JustUpcoming;
@@ -63,11 +59,6 @@ namespace CalDavSynchronizer.Contracts
       UseEventCategoryColorAndMapFromCalendarColor = false;
       EventCategoryColor = OlCategoryColor.olCategoryColorNone;
       CategoryShortcutKey = OlCategoryShortcutKey.olCategoryShortcutKeyNone;
-    }
-
-    public override IConfigurationForm<MappingConfigurationBase> CreateConfigurationForm (IConfigurationFormFactory factory)
-    {
-      return factory.Create (this);
     }
 
     public override IOptionsViewModel CreateConfigurationViewModel (IMappingConfigurationViewModelFactory factory)

@@ -14,13 +14,8 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
-using System.Security.Cryptography;
-using System.Text;
-using System.Xml.Serialization;
-using CalDavSynchronizer.Implementation;
-using CalDavSynchronizer.Ui;
-using CalDavSynchronizer.Ui.Options.Mapping;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.Options.ViewModels.Mapping;
 
@@ -28,7 +23,6 @@ namespace CalDavSynchronizer.Contracts
 {
   public class ContactMappingConfiguration : MappingConfigurationBase
   {
-
     public bool MapBirthday { get; set; }
 
     public bool MapContactPhoto { get; set; }
@@ -40,11 +34,6 @@ namespace CalDavSynchronizer.Contracts
       MapBirthday = true;
       MapContactPhoto = true;
       FixPhoneNumberFormat = false;
-    }
-
-    public override IConfigurationForm<MappingConfigurationBase> CreateConfigurationForm (IConfigurationFormFactory factory)
-    {
-      return factory.Create (this);
     }
 
     public override IOptionsViewModel CreateConfigurationViewModel (IMappingConfigurationViewModelFactory factory)

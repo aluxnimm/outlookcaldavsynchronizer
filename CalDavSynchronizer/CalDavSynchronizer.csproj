@@ -277,7 +277,6 @@
     <Compile Include="Contracts\ReminderMapping.cs" />
     <Compile Include="Contracts\ContactMappingConfiguration.cs" />
     <Compile Include="Contracts\ProfileType.cs" />
-    <Compile Include="Contracts\ConfigurationBase.cs" />
     <Compile Include="Contracts\EventMappingConfiguration.cs" />
     <Compile Include="Contracts\MappingConfigurationBase.cs" />
     <Compile Include="Contracts\GeneralOption.cs" />
@@ -410,19 +409,6 @@
     <Compile Include="Ui\Options\DesignCurrentOptions.cs" />
     <Compile Include="Ui\Options\ICurrentOptions.cs" />
     <Compile Include="Ui\Options\ISyncSettingsControl.cs" />
-    <Compile Include="Ui\Options\Mapping\TaskMappingConfigurationForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Ui\Options\Mapping\TaskMappingConfigurationForm.Designer.cs">
-      <DependentUpon>TaskMappingConfigurationForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Ui\Options\NetworkAndProxyOptions.cs" />
-    <Compile Include="Ui\Options\NetworkAndProxyOptionsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Ui\Options\NetworkAndProxyOptionsForm.Designer.cs">
-      <DependentUpon>NetworkAndProxyOptionsForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Ui\Options\AutoDiscoveryResult.cs" />
     <Compile Include="Ui\DelegateCommand.cs" />
     <Compile Include="Ui\ColorInfo.cs" />
@@ -432,18 +418,11 @@
     <Compile Include="Ui\ColorPicker.Designer.cs">
       <DependentUpon>ColorPicker.cs</DependentUpon>
     </Compile>
-    <Compile Include="Ui\Options\Mapping\ConfigurationFormFactory.cs" />
     <Compile Include="Ui\ConnectionTests\AddressBookProperties.cs" />
     <Compile Include="Ui\ConnectionTests\CalendarProperties.cs" />
     <Compile Include="Ui\ConnectionTests\ConnectionTester.cs" />
     <Compile Include="Ui\ConnectionTests\ResourceType.cs" />
     <Compile Include="Ui\ConnectionTests\TestResult.cs" />
-    <Compile Include="Ui\Options\Mapping\ContactMappingConfigurationForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Ui\Options\Mapping\ContactMappingConfigurationForm.Designer.cs">
-      <DependentUpon>ContactMappingConfigurationForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Ui\DraggableTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -452,18 +431,6 @@
     </Compile>
     <Compile Include="Ui\Options\GeneralOptionsForm.Designer.cs">
       <DependentUpon>GeneralOptionsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Ui\Options\Mapping\EventMappingConfigurationForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Ui\Options\Mapping\EventMappingConfigurationForm.Designer.cs">
-      <DependentUpon>EventMappingConfigurationForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Ui\Options\Mapping\GenericConfigurationForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Ui\Options\Mapping\GenericConfigurationForm.Designer.cs">
-      <DependentUpon>GenericConfigurationForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Ui\GenericElementHostWindow.cs">
       <SubType>Form</SubType>
@@ -483,35 +450,9 @@
     <Compile Include="Ui\AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Ui\Options\HeaderEventArgs.cs" />
-    <Compile Include="Ui\Options\Mapping\IConfigurationForm.cs" />
-    <Compile Include="Ui\Options\Mapping\IConfigurationFormFactory.cs" />
-    <Compile Include="Ui\Options\IServerAdapterControl.cs" />
-    <Compile Include="Ui\Options\IServerSettingsControl.cs" />
-    <Compile Include="Ui\Options\IOptionsDisplayControl.cs" />
-    <Compile Include="Ui\Options\IOptionsDisplayControlFactory.cs" />
-    <Compile Include="Ui\Options\IServerSettingsControlDependencies.cs" />
     <Compile Include="Ui\Item.cs" />
-    <Compile Include="Ui\Options\GoogleServerSettingsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Ui\Options\GoogleServerSettingsControl.Designer.cs">
-      <DependentUpon>GoogleServerSettingsControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Ui\Options\GoogleOptionsDisplayControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Ui\Options\GoogleOptionsDisplayControl.Designer.cs">
-      <DependentUpon>GoogleOptionsDisplayControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Ui\IUiService.cs" />
     <Compile Include="Ui\Options\OptionTasks.cs" />
-    <Compile Include="Ui\Options\OutlookFolderControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Ui\Options\OutlookFolderControl.Designer.cs">
-      <DependentUpon>OutlookFolderControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Ui\Options\ViewModels\CloseEventArgs.cs" />
     <Compile Include="Ui\Options\ViewModels\DesignOptionsViewModelParent.cs" />
     <Compile Include="Ui\Options\ViewModels\DesignOutlookSession.cs" />
@@ -597,45 +538,14 @@
     <Compile Include="Ui\Options\SelectOptionsDisplayTypeForm.Designer.cs">
       <DependentUpon>SelectOptionsDisplayTypeForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Ui\Options\FullServerdApterTypeControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Ui\Options\FullServerdApterTypeControl.Designer.cs">
-      <DependentUpon>FullServerdApterTypeControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Ui\Options\ServerSettingsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Ui\Options\ServerSettingsControl.Designer.cs">
-      <DependentUpon>ServerSettingsControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Ui\Options\SyncSettingsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Ui\Options\SyncSettingsControl.Designer.cs">
-      <DependentUpon>SyncSettingsControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Ui\Options\OptionsDisplayControlFactory.cs" />
     <Compile Include="Ui\Options\SelectResourceForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Ui\Options\SelectResourceForm.Designer.cs">
       <DependentUpon>SelectResourceForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Ui\Options\OptionsDisplayControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Ui\Options\OptionsDisplayControl.Designer.cs">
-      <DependentUpon>OptionsDisplayControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Ui\Options\ISettingsFaultFinder.cs" />
     <Compile Include="Ui\Options\NullSettingsFaultFinder.cs" />
-    <Compile Include="Ui\Options\OptionsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Ui\Options\OptionsForm.Designer.cs">
-      <DependentUpon>OptionsForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -646,23 +556,8 @@
     <EmbeddedResource Include="Ui\ColorPicker.resx">
       <DependentUpon>ColorPicker.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Ui\Options\Mapping\TaskMappingConfigurationForm.resx">
-      <DependentUpon>TaskMappingConfigurationForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Ui\Options\Mapping\ContactMappingConfigurationForm.resx">
-      <DependentUpon>ContactMappingConfigurationForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Ui\Options\GeneralOptionsForm.resx">
       <DependentUpon>GeneralOptionsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Ui\Options\Mapping\EventMappingConfigurationForm.resx">
-      <DependentUpon>EventMappingConfigurationForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Ui\Options\Mapping\GenericConfigurationForm.resx">
-      <DependentUpon>GenericConfigurationForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Ui\Options\NetworkAndProxyOptionsForm.resx">
-      <DependentUpon>NetworkAndProxyOptionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\GenericElementHostWindow.resx">
       <DependentUpon>GenericElementHostWindow.cs</DependentUpon>
@@ -673,35 +568,11 @@
     <EmbeddedResource Include="Ui\AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Ui\Options\GoogleServerSettingsControl.resx">
-      <DependentUpon>GoogleServerSettingsControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Ui\Options\GoogleOptionsDisplayControl.resx">
-      <DependentUpon>GoogleOptionsDisplayControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Ui\Options\OutlookFolderControl.resx">
-      <DependentUpon>OutlookFolderControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Ui\Options\SelectOptionsDisplayTypeForm.resx">
       <DependentUpon>SelectOptionsDisplayTypeForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Ui\Options\FullServerdApterTypeControl.resx">
-      <DependentUpon>FullServerdApterTypeControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Ui\Options\ServerSettingsControl.resx">
-      <DependentUpon>ServerSettingsControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Ui\Options\SyncSettingsControl.resx">
-      <DependentUpon>SyncSettingsControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Ui\Options\SelectResourceForm.resx">
       <DependentUpon>SelectResourceForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Ui\Options\OptionsDisplayControl.resx">
-      <DependentUpon>OptionsDisplayControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Ui\Options\OptionsForm.resx">
-      <DependentUpon>OptionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

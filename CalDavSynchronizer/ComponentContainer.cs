@@ -313,11 +313,7 @@ namespace CalDavSynchronizer
         GeneralOptions generalOptions = _generalOptionsDataAccess.LoadOptions();
         try
         {
-          Options[] newOptions;
-          if (generalOptions.UseNewOptionUi)
-            newOptions = ShowWpfOptions (initialVisibleProfile, generalOptions, options);
-          else
-            newOptions = ShowWinFormOptions (initialVisibleProfile, generalOptions, options);
+          var newOptions = ShowWpfOptions (initialVisibleProfile, generalOptions, options);
 
           if (newOptions != null)
             ApplyNewOptions (options, newOptions, generalOptions);
@@ -333,27 +329,6 @@ namespace CalDavSynchronizer
         if (initialVisibleProfile.HasValue)
           _currentVisibleOptionsFormOrNull.ShowProfile (initialVisibleProfile.Value);
       }
-    }
-
-    private Options[] ShowWinFormOptions (Guid? initialVisibleProfile, GeneralOptions generalOptions, Options[] options)
-    {
-      var optionsForm = new OptionsForm (
-          _session,
-          GetProfileDataDirectory,
-          generalOptions,
-          _outlookAccountPasswordProvider);
-
-      _currentVisibleOptionsFormOrNull = optionsForm;
-
-      optionsForm.OptionsList = options;
-
-      if (initialVisibleProfile.HasValue)
-        _currentVisibleOptionsFormOrNull.ShowProfile (initialVisibleProfile.Value);
-
-      if (optionsForm.ShowDialog() == DialogResult.OK)
-        return optionsForm.OptionsList;
-      else
-        return null;
     }
     
     public Options[] ShowWpfOptions (Guid? initialSelectedProfileId, GeneralOptions generalOptions, Options[] options)

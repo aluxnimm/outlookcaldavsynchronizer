@@ -22,13 +22,12 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.Ui.Options.Mapping;
 using log4net;
 using log4net.Appender;
 
 namespace CalDavSynchronizer.Ui.Options
 {
-  public partial class GeneralOptionsForm : Form, IConfigurationForm<GeneralOptions>
+  public partial class GeneralOptionsForm : Form
   {
     private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -117,7 +116,6 @@ namespace CalDavSynchronizer.Ui.Options
                    MaxReportAgeInDays = int.Parse(_maxReportAgeInDays.Text),
                    EnableDebugLog = logLevel == LogLevel.Debug,
                    EnableTrayIcon = _enableTrayIconCheckBox.Checked,
-                   UseNewOptionUi = _useNewOptionUiCheckBox.Checked,
                    AcceptInvalidCharsInServerResponse = _acceptInvalidCharsInServerResponseCheckBox.Checked
         };
       }
@@ -136,7 +134,6 @@ namespace CalDavSynchronizer.Ui.Options
         _maxReportAgeInDays.Text = value.MaxReportAgeInDays.ToString();
         _logLevelComboBox.SelectedValue = value.EnableDebugLog ? LogLevel.Debug : LogLevel.Info;
         _enableTrayIconCheckBox.Checked = value.EnableTrayIcon;
-        _useNewOptionUiCheckBox.Checked = value.UseNewOptionUi;
         _acceptInvalidCharsInServerResponseCheckBox.Checked = value.AcceptInvalidCharsInServerResponse;
       }
     }

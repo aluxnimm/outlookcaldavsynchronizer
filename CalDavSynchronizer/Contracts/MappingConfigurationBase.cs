@@ -16,7 +16,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Xml.Serialization;
-using CalDavSynchronizer.Ui.Options.Mapping;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.Options.ViewModels.Mapping;
 
@@ -25,7 +24,7 @@ namespace CalDavSynchronizer.Contracts
   [XmlInclude (typeof (ContactMappingConfiguration))]
   [XmlInclude (typeof (EventMappingConfiguration))]
   [XmlInclude (typeof (TaskMappingConfiguration))]
-  public abstract class MappingConfigurationBase : ConfigurationBase<MappingConfigurationBase>
+  public abstract class MappingConfigurationBase 
   {
     public abstract IOptionsViewModel CreateConfigurationViewModel (IMappingConfigurationViewModelFactory factory);
   }

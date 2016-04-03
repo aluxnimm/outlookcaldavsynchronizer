@@ -27,7 +27,6 @@ using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.OAuth.Google;
 using CalDavSynchronizer.Ui.ConnectionTests;
-using CalDavSynchronizer.Ui.Options.Mapping;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.Options.ViewModels.Mapping;
 using CalDavSynchronizer.Utilities;
@@ -45,28 +44,6 @@ namespace CalDavSynchronizer.Ui.Options
 
     public const string ConnectionTestCaption = "Test settings";
     public const string GoogleDavBaseUrl = "https://apidata.googleusercontent.com/caldav/v2";
-
-
-    public static MappingConfigurationBase CoreceMappingConfiguration (OlItemType? outlookFolderType, MappingConfigurationBase mappingConfiguration, bool isGoogleProfile)
-    {
-      switch (outlookFolderType)
-      {
-        case OlItemType.olAppointmentItem:
-          if (mappingConfiguration == null || mappingConfiguration.GetType() != typeof (EventMappingConfiguration))
-            return new EventMappingConfiguration();
-          break;
-        case OlItemType.olContactItem:
-          if (mappingConfiguration == null || mappingConfiguration.GetType() != typeof (ContactMappingConfiguration))
-            return new ContactMappingConfiguration();
-          break;
-        case OlItemType.olTaskItem:
-          if (!isGoogleProfile && (mappingConfiguration == null || mappingConfiguration.GetType() != typeof (TaskMappingConfiguration)))
-            return new TaskMappingConfiguration();
-          break;
-      }
-
-      return mappingConfiguration;
-    }
 
     public static IOptionsViewModel CoerceMappingConfiguration (
         IOptionsViewModel currentMappingConfiguration,
@@ -88,7 +65,6 @@ namespace CalDavSynchronizer.Ui.Options
           return null;
       }
     }
-
 
     public static bool ValidateCategoryName (string category, StringBuilder errorMessageBuilder)
     {
@@ -297,12 +273,7 @@ namespace CalDavSynchronizer.Ui.Options
         return new AutoDiscoveryResult (null, false, ResourceType.None);
       }
     }
-
-    public static Lazy<IConfigurationFormFactory> CreateConfigurationFormFactory (IServerSettingsControl serverSettingsControl)
-    {
-      return new Lazy<IConfigurationFormFactory> (() => new ConfigurationFormFactory (serverSettingsControl.CreateCalDavDataAccess));
-    }
-
+    
     public static string GetFolderAccountNameOrNull (NameSpace session, string folderStoreId)
     {
       if (ThisAddIn.IsOutlookVersionSmallerThan2010)

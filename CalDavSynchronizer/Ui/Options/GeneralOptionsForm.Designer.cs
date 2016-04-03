@@ -45,7 +45,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._checkIfOnlineCheckBox = new System.Windows.Forms.CheckBox();
       this._includeCustomMessageClassesCheckBox = new System.Windows.Forms.CheckBox();
       this._enableTrayIconCheckBox = new System.Windows.Forms.CheckBox();
-      this._useNewOptionUiCheckBox = new System.Windows.Forms.CheckBox();
+      this._acceptInvalidCharsInServerResponseCheckBox = new System.Windows.Forms.CheckBox();
       this.groupBox2 = new System.Windows.Forms.GroupBox();
       this._maxReportAgeInDays = new System.Windows.Forms.TextBox();
       this.label3 = new System.Windows.Forms.Label();
@@ -58,7 +58,6 @@ namespace CalDavSynchronizer.Ui.Options
       this._clearLogButton = new System.Windows.Forms.Button();
       this._logLevelComboBox = new System.Windows.Forms.ComboBox();
       this.label6 = new System.Windows.Forms.Label();
-      this._acceptInvalidCharsInServerResponseCheckBox = new System.Windows.Forms.CheckBox();
       this.groupBox1.SuspendLayout();
       this.groupBox2.SuspendLayout();
       this.groupBox3.SuspendLayout();
@@ -68,8 +67,8 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this._cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this._cancelButton.Location = new System.Drawing.Point(295, 495);
-      this._cancelButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this._cancelButton.Location = new System.Drawing.Point(295, 474);
+      this._cancelButton.Margin = new System.Windows.Forms.Padding(2);
       this._cancelButton.Name = "_cancelButton";
       this._cancelButton.Size = new System.Drawing.Size(75, 23);
       this._cancelButton.TabIndex = 0;
@@ -79,8 +78,8 @@ namespace CalDavSynchronizer.Ui.Options
       // _okButton
       // 
       this._okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._okButton.Location = new System.Drawing.Point(214, 495);
-      this._okButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this._okButton.Location = new System.Drawing.Point(214, 474);
+      this._okButton.Margin = new System.Windows.Forms.Padding(2);
       this._okButton.Name = "_okButton";
       this._okButton.Size = new System.Drawing.Size(75, 23);
       this._okButton.TabIndex = 1;
@@ -92,7 +91,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._checkForNewerVersionsCheckBox.AutoSize = true;
       this._checkForNewerVersionsCheckBox.Location = new System.Drawing.Point(12, 12);
-      this._checkForNewerVersionsCheckBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this._checkForNewerVersionsCheckBox.Margin = new System.Windows.Forms.Padding(2);
       this._checkForNewerVersionsCheckBox.Name = "_checkForNewerVersionsCheckBox";
       this._checkForNewerVersionsCheckBox.Size = new System.Drawing.Size(210, 17);
       this._checkForNewerVersionsCheckBox.TabIndex = 2;
@@ -103,7 +102,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._storeDataInRoamingFolderCheckBox.AutoSize = true;
       this._storeDataInRoamingFolderCheckBox.Location = new System.Drawing.Point(12, 53);
-      this._storeDataInRoamingFolderCheckBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this._storeDataInRoamingFolderCheckBox.Margin = new System.Windows.Forms.Padding(2);
       this._storeDataInRoamingFolderCheckBox.Name = "_storeDataInRoamingFolderCheckBox";
       this._storeDataInRoamingFolderCheckBox.Size = new System.Drawing.Size(155, 17);
       this._storeDataInRoamingFolderCheckBox.TabIndex = 3;
@@ -121,7 +120,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._enableTls12Checkbox.AutoSize = true;
       this._enableTls12Checkbox.Location = new System.Drawing.Point(9, 42);
-      this._enableTls12Checkbox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this._enableTls12Checkbox.Margin = new System.Windows.Forms.Padding(2);
       this._enableTls12Checkbox.Name = "_enableTls12Checkbox";
       this._enableTls12Checkbox.Size = new System.Drawing.Size(94, 17);
       this._enableTls12Checkbox.TabIndex = 10;
@@ -133,7 +132,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._disableCertificateValidationCheckbox.AutoSize = true;
       this._disableCertificateValidationCheckbox.Location = new System.Drawing.Point(9, 19);
-      this._disableCertificateValidationCheckbox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this._disableCertificateValidationCheckbox.Margin = new System.Windows.Forms.Padding(2);
       this._disableCertificateValidationCheckbox.Name = "_disableCertificateValidationCheckbox";
       this._disableCertificateValidationCheckbox.Size = new System.Drawing.Size(160, 17);
       this._disableCertificateValidationCheckbox.TabIndex = 9;
@@ -145,7 +144,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._enableSsl3Checkbox.AutoSize = true;
       this._enableSsl3Checkbox.Location = new System.Drawing.Point(9, 66);
-      this._enableSsl3Checkbox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this._enableSsl3Checkbox.Margin = new System.Windows.Forms.Padding(2);
       this._enableSsl3Checkbox.Name = "_enableSsl3Checkbox";
       this._enableSsl3Checkbox.Size = new System.Drawing.Size(88, 17);
       this._enableSsl3Checkbox.TabIndex = 11;
@@ -160,10 +159,10 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox1.Controls.Add(this._disableCertificateValidationCheckbox);
       this.groupBox1.Controls.Add(this._enableSsl3Checkbox);
       this.groupBox1.Controls.Add(this._enableTls12Checkbox);
-      this.groupBox1.Location = new System.Drawing.Point(3, 189);
-      this.groupBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this.groupBox1.Location = new System.Drawing.Point(3, 167);
+      this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
       this.groupBox1.Size = new System.Drawing.Size(375, 93);
       this.groupBox1.TabIndex = 8;
       this.groupBox1.TabStop = false;
@@ -174,7 +173,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._fixInvalidSettingsCheckBox.AutoSize = true;
       this._fixInvalidSettingsCheckBox.Location = new System.Drawing.Point(12, 73);
-      this._fixInvalidSettingsCheckBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this._fixInvalidSettingsCheckBox.Margin = new System.Windows.Forms.Padding(2);
       this._fixInvalidSettingsCheckBox.Name = "_fixInvalidSettingsCheckBox";
       this._fixInvalidSettingsCheckBox.Size = new System.Drawing.Size(111, 17);
       this._fixInvalidSettingsCheckBox.TabIndex = 5;
@@ -186,7 +185,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._checkIfOnlineCheckBox.AutoSize = true;
       this._checkIfOnlineCheckBox.Location = new System.Drawing.Point(12, 32);
-      this._checkIfOnlineCheckBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this._checkIfOnlineCheckBox.Margin = new System.Windows.Forms.Padding(2);
       this._checkIfOnlineCheckBox.Name = "_checkIfOnlineCheckBox";
       this._checkIfOnlineCheckBox.Size = new System.Drawing.Size(228, 17);
       this._checkIfOnlineCheckBox.TabIndex = 3;
@@ -198,7 +197,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._includeCustomMessageClassesCheckBox.AutoSize = true;
       this._includeCustomMessageClassesCheckBox.Location = new System.Drawing.Point(12, 93);
-      this._includeCustomMessageClassesCheckBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this._includeCustomMessageClassesCheckBox.Margin = new System.Windows.Forms.Padding(2);
       this._includeCustomMessageClassesCheckBox.Name = "_includeCustomMessageClassesCheckBox";
       this._includeCustomMessageClassesCheckBox.Size = new System.Drawing.Size(254, 17);
       this._includeCustomMessageClassesCheckBox.TabIndex = 6;
@@ -212,7 +211,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._enableTrayIconCheckBox.AutoSize = true;
       this._enableTrayIconCheckBox.Location = new System.Drawing.Point(12, 114);
-      this._enableTrayIconCheckBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this._enableTrayIconCheckBox.Margin = new System.Windows.Forms.Padding(2);
       this._enableTrayIconCheckBox.Name = "_enableTrayIconCheckBox";
       this._enableTrayIconCheckBox.Size = new System.Drawing.Size(107, 17);
       this._enableTrayIconCheckBox.TabIndex = 7;
@@ -220,17 +219,18 @@ namespace CalDavSynchronizer.Ui.Options
       this._toolTip.SetToolTip(this._enableTrayIconCheckBox, "Enables the systray icon in the Windows taskbar.");
       this._enableTrayIconCheckBox.UseVisualStyleBackColor = true;
       // 
-      // _useNewOptionUiCheckBox
+      // _acceptInvalidCharsInServerResponseCheckBox
       // 
-      this._useNewOptionUiCheckBox.AutoSize = true;
-      this._useNewOptionUiCheckBox.Location = new System.Drawing.Point(12, 134);
-      this._useNewOptionUiCheckBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-      this._useNewOptionUiCheckBox.Name = "_useNewOptionUiCheckBox";
-      this._useNewOptionUiCheckBox.Size = new System.Drawing.Size(174, 17);
-      this._useNewOptionUiCheckBox.TabIndex = 8;
-      this._useNewOptionUiCheckBox.Text = "Use Modern UI for sync profiles";
-      this._toolTip.SetToolTip(this._useNewOptionUiCheckBox, "Use new WPF dialog for sync profile configuration.");
-      this._useNewOptionUiCheckBox.UseVisualStyleBackColor = true;
+      this._acceptInvalidCharsInServerResponseCheckBox.AutoSize = true;
+      this._acceptInvalidCharsInServerResponseCheckBox.Location = new System.Drawing.Point(12, 134);
+      this._acceptInvalidCharsInServerResponseCheckBox.Margin = new System.Windows.Forms.Padding(2);
+      this._acceptInvalidCharsInServerResponseCheckBox.Name = "_acceptInvalidCharsInServerResponseCheckBox";
+      this._acceptInvalidCharsInServerResponseCheckBox.Size = new System.Drawing.Size(214, 17);
+      this._acceptInvalidCharsInServerResponseCheckBox.TabIndex = 11;
+      this._acceptInvalidCharsInServerResponseCheckBox.Text = "Accept invalid chars in server response.";
+      this._toolTip.SetToolTip(this._acceptInvalidCharsInServerResponseCheckBox, "If checked invalid characters in XML server responses are allowed.\r\nA typical inv" +
+        "alid char, sent by some servers is \'Form feed\' (0x0C).");
+      this._acceptInvalidCharsInServerResponseCheckBox.UseVisualStyleBackColor = true;
       // 
       // groupBox2
       // 
@@ -242,7 +242,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox2.Controls.Add(this._reportLogModeComboBox);
       this.groupBox2.Controls.Add(this.label2);
       this.groupBox2.Controls.Add(this.label1);
-      this.groupBox2.Location = new System.Drawing.Point(3, 287);
+      this.groupBox2.Location = new System.Drawing.Point(3, 266);
       this.groupBox2.Name = "groupBox2";
       this.groupBox2.Size = new System.Drawing.Size(375, 110);
       this.groupBox2.TabIndex = 9;
@@ -314,7 +314,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox3.Controls.Add(this._clearLogButton);
       this.groupBox3.Controls.Add(this._logLevelComboBox);
       this.groupBox3.Controls.Add(this.label6);
-      this.groupBox3.Location = new System.Drawing.Point(3, 403);
+      this.groupBox3.Location = new System.Drawing.Point(3, 382);
       this.groupBox3.Name = "groupBox3";
       this.groupBox3.Size = new System.Drawing.Size(375, 88);
       this.groupBox3.TabIndex = 10;
@@ -325,7 +325,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._showLogButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this._showLogButton.Location = new System.Drawing.Point(9, 50);
-      this._showLogButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this._showLogButton.Margin = new System.Windows.Forms.Padding(2);
       this._showLogButton.Name = "_showLogButton";
       this._showLogButton.Size = new System.Drawing.Size(75, 23);
       this._showLogButton.TabIndex = 3;
@@ -337,7 +337,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._clearLogButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this._clearLogButton.Location = new System.Drawing.Point(144, 50);
-      this._clearLogButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this._clearLogButton.Margin = new System.Windows.Forms.Padding(2);
       this._clearLogButton.Name = "_clearLogButton";
       this._clearLogButton.Size = new System.Drawing.Size(75, 23);
       this._clearLogButton.TabIndex = 4;
@@ -365,19 +365,6 @@ namespace CalDavSynchronizer.Ui.Options
       this.label6.TabIndex = 0;
       this.label6.Text = "Log Level:";
       // 
-      // _acceptInvalidCharsInServerResponseCheckBox
-      // 
-      this._acceptInvalidCharsInServerResponseCheckBox.AutoSize = true;
-      this._acceptInvalidCharsInServerResponseCheckBox.Location = new System.Drawing.Point(12, 155);
-      this._acceptInvalidCharsInServerResponseCheckBox.Margin = new System.Windows.Forms.Padding(2);
-      this._acceptInvalidCharsInServerResponseCheckBox.Name = "_acceptInvalidCharsInServerResponseCheckBox";
-      this._acceptInvalidCharsInServerResponseCheckBox.Size = new System.Drawing.Size(214, 17);
-      this._acceptInvalidCharsInServerResponseCheckBox.TabIndex = 11;
-      this._acceptInvalidCharsInServerResponseCheckBox.Text = "Accept invalid chars in server response.";
-      this._toolTip.SetToolTip(this._acceptInvalidCharsInServerResponseCheckBox, "If checked invalid characters in XML server responses are allowed.\r\nA typical inv" +
-        "alid char, sent by some servers is \'Form feed\' (0x0C).");
-      this._acceptInvalidCharsInServerResponseCheckBox.UseVisualStyleBackColor = true;
-      // 
       // GeneralOptionsForm
       // 
       this.AcceptButton = this._okButton;
@@ -385,9 +372,8 @@ namespace CalDavSynchronizer.Ui.Options
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.SystemColors.Window;
       this.CancelButton = this._cancelButton;
-      this.ClientSize = new System.Drawing.Size(377, 523);
+      this.ClientSize = new System.Drawing.Size(377, 502);
       this.Controls.Add(this._acceptInvalidCharsInServerResponseCheckBox);
-      this.Controls.Add(this._useNewOptionUiCheckBox);
       this.Controls.Add(this._enableTrayIconCheckBox);
       this.Controls.Add(this._checkIfOnlineCheckBox);
       this.Controls.Add(this.groupBox3);
@@ -401,7 +387,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.Controls.Add(this._cancelButton);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-      this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this.Margin = new System.Windows.Forms.Padding(2);
       this.Name = "GeneralOptionsForm";
       this.Text = "General Options";
       this.groupBox1.ResumeLayout(false);
@@ -442,7 +428,6 @@ namespace CalDavSynchronizer.Ui.Options
     private System.Windows.Forms.Label label6;
     private System.Windows.Forms.CheckBox _checkIfOnlineCheckBox;
     private System.Windows.Forms.CheckBox _enableTrayIconCheckBox;
-    private System.Windows.Forms.CheckBox _useNewOptionUiCheckBox;
     private System.Windows.Forms.CheckBox _acceptInvalidCharsInServerResponseCheckBox;
   }
 }
