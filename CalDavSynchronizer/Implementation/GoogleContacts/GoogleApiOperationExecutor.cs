@@ -19,18 +19,24 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Google.Contacts;
+using Google.GData.Client;
 using log4net;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
   class GoogleApiOperationExecutor : IGoogleApiOperationExecutor
   {
-    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);
+    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
     readonly ContactsRequest _contactFacade;
+    const int c_exponentialBackoffBaseMilliseconds = 100;
+    const int c_exponentialBackoffMaxRetries = 6;
+    private readonly Random _exponentialBackoffRandom = new Random();
 
     public GoogleApiOperationExecutor (ContactsRequest contactFacade)
     {
@@ -41,7 +47,23 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
     public T Execute<T> (Func<ContactsRequest, T> operation)
     {
-      return operation (_contactFacade);
+      for (int retryCount = 0;; retryCount++)
+      {
+        try
+        {
+          return operation (_contactFacade);
+        }
+        catch (GDataRequestException x) when
+            ((((x.InnerException as WebException)
+                ?.Response as HttpWebResponse)
+                ?.StatusCode == HttpStatusCode.ServiceUnavailable) &&
+             retryCount < c_exponentialBackoffMaxRetries)
+        {
+          var sleepMilliseconds = (int) Math.Pow (2, retryCount) * c_exponentialBackoffBaseMilliseconds + _exponentialBackoffRandom.Next (c_exponentialBackoffBaseMilliseconds);
+          s_logger.Warn ($"Retrying operation in ${sleepMilliseconds}ms.");
+          Thread.Sleep (sleepMilliseconds);
+        }
+      }
     }
 
     public void Execute (Action<ContactsRequest> operation)
