@@ -303,6 +303,9 @@
     <Compile Include="Implementation\InitialSyncStateCreationStrategyFactory.cs" />
     <Compile Include="Implementation\GoogleContacts\InitialGoogleContactEntityMatcher.cs" />
     <Compile Include="Implementation\GoogleContacts\GoogleContactUpdateFromNewerToOlder.cs" />
+    <Compile Include="Scheduling\ISynchronizationRunLogger.cs" />
+    <Compile Include="Scheduling\SchedulerStatusEventArgs.cs" />
+    <Compile Include="Scheduling\SynchronizationStatus.cs" />
     <Compile Include="Ui\Options\ISynchronizationProfilesViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\TimeRangeViewModel.cs" />
     <Compile Include="Ui\Options\Views\TimeRangeView.xaml.cs">

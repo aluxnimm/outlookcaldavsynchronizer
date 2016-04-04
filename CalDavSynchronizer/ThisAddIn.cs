@@ -17,6 +17,7 @@
 using System;
 using System.Reflection;
 using System.Windows.Forms;
+using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Utilities;
 using log4net;
 using log4net.Config;
@@ -36,7 +37,7 @@ namespace CalDavSynchronizer
     public static ComponentContainer ComponentContainer { get; private set; }
 
     public static event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
-
+    public static event EventHandler<SchedulerStatusEventArgs> StatusChanged;
     private void OnSynchronizationFailedWhileReportsFormWasNotVisible ()
     {
       var handler = SynchronizationFailedWhileReportsFormWasNotVisible;
@@ -57,6 +58,7 @@ namespace CalDavSynchronizer
 
         ComponentContainer = new ComponentContainer (Application);
         ComponentContainer.SynchronizationFailedWhileReportsFormWasNotVisible += ComponentContainer_SynchronizationFailedWhileReportsFormWasNotVisible;
+        ComponentContainer.StatusChanged += ComponentContainer_StatusChanged;
         ((ApplicationEvents_Event) Application).Quit += ThisAddIn_Quit;
         if (IsOutlookVersionSmallerThan2010)
         {
@@ -68,6 +70,11 @@ namespace CalDavSynchronizer
       {
         ExceptionHandler.Instance.DisplayException (x, s_logger);
       }
+    }
+
+    private void ComponentContainer_StatusChanged (object sender, Scheduling.SchedulerStatusEventArgs e)
+    {
+      StatusChanged?.Invoke (null, e);
     }
 
     private void ThisAddIn_Quit ()

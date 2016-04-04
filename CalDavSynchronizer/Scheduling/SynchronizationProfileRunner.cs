@@ -60,6 +60,7 @@ namespace CalDavSynchronizer.Scheduling
     private readonly IFolderChangeWatcherFactory _folderChangeWatcherFactory;
     private IItemCollectionChangeWatcher _folderChangeWatcher;
     private readonly Action _ensureSynchronizationContext;
+    private readonly ISynchronizationRunLogger _runLogger;
 
     private volatile bool _fullSyncPending = false;
     // There is no threadsafe Datastructure required, since there will be no concurrent threads
@@ -74,7 +75,8 @@ namespace CalDavSynchronizer.Scheduling
         ISynchronizerFactory synchronizerFactory,
         ISynchronizationReportSink reportSink,
         IFolderChangeWatcherFactory folderChangeWatcherFactory,
-        Action ensureSynchronizationContext)
+        Action ensureSynchronizationContext, 
+        ISynchronizationRunLogger runLogger)
     {
       if (synchronizerFactory == null)
         throw new ArgumentNullException (nameof (synchronizerFactory));
@@ -84,11 +86,14 @@ namespace CalDavSynchronizer.Scheduling
         throw new ArgumentNullException (nameof (folderChangeWatcherFactory));
       if (ensureSynchronizationContext == null)
         throw new ArgumentNullException (nameof (ensureSynchronizationContext));
+      if (runLogger == null)
+        throw new ArgumentNullException (nameof (runLogger));
 
       _synchronizerFactory = synchronizerFactory;
       _reportSink = reportSink;
       _folderChangeWatcherFactory = folderChangeWatcherFactory;
       _ensureSynchronizationContext = ensureSynchronizationContext;
+      _runLogger = runLogger;
       // Set to min, to ensure that it runs on the first run after startup
       _lastRun = DateTime.MinValue;
     }
@@ -149,7 +154,10 @@ namespace CalDavSynchronizer.Scheduling
           s_logger.Debug ($"Partial sync:  '{_pendingOutlookItems.Count}' items pending after registering item '{e.EntryId.Id}' as pending sync item.");
         }
         await Task.Delay (_partialSyncDelay);
-        await RunAllPendingJobs();
+        using (_runLogger.LogStartSynchronizationRun())
+        {
+          await RunAllPendingJobs();
+        }
       }
       catch (Exception x)
       {

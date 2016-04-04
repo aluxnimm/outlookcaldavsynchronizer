@@ -29,6 +29,12 @@ namespace CalDavSynchronizer
     private void CalDavSynchronizerRibbon_Load (object sender, RibbonUIEventArgs e)
     {
       ThisAddIn.SynchronizationFailedWhileReportsFormWasNotVisible += SynchronizationFailedWhileReportsFormWasNotVisible;
+      ThisAddIn.StatusChanged += ThisAddIn_StatusChanged;
+    }
+
+    private void ThisAddIn_StatusChanged (object sender, Scheduling.SchedulerStatusEventArgs e)
+    {
+      SynchronizeNowButton.Enabled = !e.IsRunning;
     }
 
     private void SynchronizationFailedWhileReportsFormWasNotVisible (object sender, EventArgs e)
@@ -40,16 +46,8 @@ namespace CalDavSynchronizer
     {
       try
       {
-        SynchronizeNowButton.Enabled = false;
-        try
-        {
-          ComponentContainer.EnsureSynchronizationContext ();
-          ThisAddIn.ComponentContainer.SynchronizeNowAsync();
-        }
-        finally
-        {
-          SynchronizeNowButton.Enabled = true;
-        }
+        ComponentContainer.EnsureSynchronizationContext();
+        ThisAddIn.ComponentContainer.SynchronizeNowAsync();
       }
       catch (Exception x)
       {

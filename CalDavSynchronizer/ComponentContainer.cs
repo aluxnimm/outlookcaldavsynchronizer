@@ -88,15 +88,22 @@ namespace CalDavSynchronizer
     private ITrayNotifier _trayNotifier;
     private ISynchronizationProfilesViewModel _currentVisibleOptionsFormOrNull;
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
+    private readonly SynchronizationStatus _synchronizationStatus;
 
     public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
-
+    public event EventHandler<SchedulerStatusEventArgs> StatusChanged
+    {
+      add { _synchronizationStatus.StatusChanged += value; }
+      remove { _synchronizationStatus.StatusChanged -= value; }
+    }
 
     public ComponentContainer (Application application)
     {
       s_logger.Info ("Startup...");
 
       _generalOptionsDataAccess = new GeneralOptionsDataAccess();
+
+      _synchronizationStatus = new SynchronizationStatus();
 
       var generalOptions = _generalOptionsDataAccess.LoadOptions();
 
@@ -149,7 +156,8 @@ namespace CalDavSynchronizer
           this,
           EnsureSynchronizationContext,
           new FolderChangeWatcherFactory (
-              _session));
+              _session),
+          _synchronizationStatus);
 
       var options = _optionsDataAccess.LoadOptions();
 

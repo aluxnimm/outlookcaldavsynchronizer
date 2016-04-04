@@ -39,12 +39,14 @@ namespace CalDavSynchronizer.Scheduling
     private readonly ISynchronizationReportSink _reportSink;
     private readonly IFolderChangeWatcherFactory _folderChangeWatcherFactory;
     private readonly Action _ensureSynchronizationContext;
+    private readonly ISynchronizationRunLogger _runLogger;
 
     public Scheduler (
       ISynchronizerFactory synchronizerFactory,
       ISynchronizationReportSink reportSink,
       Action ensureSynchronizationContext, 
-      IFolderChangeWatcherFactory folderChangeWatcherFactory)
+      IFolderChangeWatcherFactory folderChangeWatcherFactory,
+      ISynchronizationRunLogger runLogger)
     {
       if (synchronizerFactory == null)
         throw new ArgumentNullException (nameof (synchronizerFactory));
@@ -52,6 +54,8 @@ namespace CalDavSynchronizer.Scheduling
         throw new ArgumentNullException (nameof (ensureSynchronizationContext));
       if (folderChangeWatcherFactory == null)
         throw new ArgumentNullException (nameof (folderChangeWatcherFactory));
+      if (runLogger == null)
+        throw new ArgumentNullException (nameof (runLogger));
       if (reportSink == null)
         throw new ArgumentNullException (nameof (reportSink));
 
@@ -59,6 +63,7 @@ namespace CalDavSynchronizer.Scheduling
       _synchronizerFactory = synchronizerFactory;
       _ensureSynchronizationContext = ensureSynchronizationContext;
       _folderChangeWatcherFactory = folderChangeWatcherFactory;
+      _runLogger = runLogger;
       _synchronizationTimer.Tick += SynchronizationTimer_Tick;
       _synchronizationTimer.Interval = (int) _timerInterval.TotalMilliseconds;
       _synchronizationTimer.Start();
@@ -83,8 +88,11 @@ namespace CalDavSynchronizer.Scheduling
       try
       {
         _synchronizationTimer.Stop();
-        foreach (var worker in _runnersById.Values)
-          await worker.RunAndRescheduleNoThrow (false);
+        using (_runLogger.LogStartSynchronizationRun())
+        {
+          foreach (var worker in _runnersById.Values)
+            await worker.RunAndRescheduleNoThrow (false);
+        }
         _synchronizationTimer.Start();
       }
       catch (Exception x)
@@ -112,7 +120,8 @@ namespace CalDavSynchronizer.Scheduling
                 _synchronizerFactory,
                 _reportSink,
                 _folderChangeWatcherFactory,
-                _ensureSynchronizationContext);
+                _ensureSynchronizationContext,
+                _runLogger);
           }
           profileRunner.UpdateOptions (option, generalOptions);
           workersById.Add (option.Id, profileRunner);
@@ -127,8 +136,11 @@ namespace CalDavSynchronizer.Scheduling
 
     public async Task RunNow ()
     {
-      foreach (var worker in _runnersById.Values)
-        await worker.RunAndRescheduleNoThrow (true);
+      using (_runLogger.LogStartSynchronizationRun())
+      {
+        foreach (var worker in _runnersById.Values)
+          await worker.RunAndRescheduleNoThrow (true);
+      }
     }
   }
 }
