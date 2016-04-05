@@ -46,6 +46,12 @@ namespace CalDavSynchronizer.ThoughtvCardWorkaround
       return Regex.Replace (vcardData, "URL;((TYPE=)?(HOME|WORK)):(.*?)\r?\n", m => "URL;" + m.Groups[3].Value.ToUpper() + ":" + m.Groups[4].Value + "\r\n", RegexOptions.IgnoreCase);
     }
 
+    public static string FixPhoto (string vcardData)
+    {
+      // Remove X-ABCROP-RECTANGLE since the Deserializer can't parse it
+      return Regex.Replace (vcardData, "X-ABCROP-RECTANGLE.*?;", "", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+    }
+
     public static string FixOrg (string vcardData)
     {
       // Reformat ORG attribute to split CompanyName and Department
