@@ -49,7 +49,7 @@ namespace CalDavSynchronizer.ThoughtvCardWorkaround
     public static string FixPhoto (string vcardData)
     {
       // Remove X-ABCROP-RECTANGLE since the Deserializer can't parse it
-      return Regex.Replace (vcardData, "X-ABCROP-RECTANGLE.*?;", "", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+      return Regex.Replace (vcardData, "PHOTO(;.*?)?;X-ABCROP-RECTANGLE(.*?)(;.*?)?:", m => "PHOTO" + (m.Groups[1].Success ? m.Groups[1].Value : string.Empty) + (m.Groups[3].Success ? m.Groups[3].Value : string.Empty)+":" , RegexOptions.IgnoreCase | RegexOptions.Singleline);
     }
 
     public static string FixOrg (string vcardData)
