@@ -382,9 +382,11 @@ namespace CalDavSynchronizer.DataAccess
         {
           var urlNode = responseElement.SelectSingleNode ("D:href", responseXml.XmlNamespaceManager);
           var etagNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:getetag", responseXml.XmlNamespaceManager);
-          if (urlNode != null && etagNode != null)
+          if (urlNode != null &&
+              etagNode != null &&
+              _serverUrl.AbsolutePath != UriHelper.DecodeUrlString (urlNode.InnerText))
           {
-            var uri = new WebResourceName(urlNode.InnerText);
+            var uri = new WebResourceName (urlNode.InnerText);
             entities.Add (EntityVersion.Create (uri, HttpUtility.GetQuotedEtag (etagNode.InnerText)));
           }
         }
