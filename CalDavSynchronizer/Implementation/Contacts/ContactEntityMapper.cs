@@ -543,10 +543,12 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    private static void MapPhoto2To1 (vCard source, ContactItem target, IEntityMappingLogger logger)
+    private void MapPhoto2To1 (vCard source, ContactItem target, IEntityMappingLogger logger)
     {
       if (source.Photos.Count > 0)
       {
+        if (target.HasPicture && _configuration.KeepOutlookPhoto) return;
+
         vCardPhoto contactPhoto = source.Photos[0];
 
         if (contactPhoto.IsLoaded)

@@ -26,6 +26,7 @@ namespace CalDavSynchronizer.Contracts
     public bool MapBirthday { get; set; }
 
     public bool MapContactPhoto { get; set; }
+    public bool KeepOutlookPhoto { get; set; }
 
     public bool FixPhoneNumberFormat { get; set; }
 
@@ -33,6 +34,7 @@ namespace CalDavSynchronizer.Contracts
     {
       MapBirthday = true;
       MapContactPhoto = true;
+      KeepOutlookPhoto = false;
       FixPhoneNumberFormat = false;
     }
 

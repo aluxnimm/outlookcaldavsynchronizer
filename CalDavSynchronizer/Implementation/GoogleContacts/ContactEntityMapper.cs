@@ -879,6 +879,8 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
     {
       if (source.PhotoOrNull != null)
       {
+        if (target.HasPicture && _configuration.KeepOutlookPhoto) return;
+
         try
         {
           string picturePath = Path.GetTempPath() + @"\Contact_" + target.EntryID + ".jpg";

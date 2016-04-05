@@ -27,6 +27,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
   {
     private bool _mapBirthday;
     private bool _mapContactPhoto;
+    private bool _keepOutlookPhoto;
     private bool _fixPhoneNumberFormat;
     private bool _isSelected;
 
@@ -45,6 +46,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       set
       {
         CheckedPropertyChange (ref _mapContactPhoto, value);
+      }
+    }
+
+    public bool KeepOutlookPhoto
+    {
+      get { return _keepOutlookPhoto; }
+      set
+      {
+        CheckedPropertyChange(ref _keepOutlookPhoto, value);
       }
     }
 
@@ -70,6 +80,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                                                          {
                                                                              MapBirthday = true,
                                                                              MapContactPhoto = true,
+                                                                             KeepOutlookPhoto = false,
                                                                              FixPhoneNumberFormat = false
                                                                          };
 
@@ -83,6 +94,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     {
       MapBirthday = mappingConfiguration.MapBirthday;
       MapContactPhoto = mappingConfiguration.MapContactPhoto;
+      KeepOutlookPhoto = mappingConfiguration.KeepOutlookPhoto;
       FixPhoneNumberFormat = mappingConfiguration.FixPhoneNumberFormat;
     }
 
@@ -92,6 +104,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                      {
                                          MapBirthday = _mapBirthday,
                                          MapContactPhoto = _mapContactPhoto,
+                                         KeepOutlookPhoto = _keepOutlookPhoto,
                                          FixPhoneNumberFormat = _fixPhoneNumberFormat
                                      };
     }
