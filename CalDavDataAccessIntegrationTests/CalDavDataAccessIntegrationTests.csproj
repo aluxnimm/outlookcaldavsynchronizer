@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FixtureBase.cs" />
+    <Compile Include="Mail_ru.cs" />
     <Compile Include="Landmarks.cs" />
     <Compile Include="GoogleSynchronousWebRequestBased.cs" />
     <Compile Include="GoogleOAuth.cs" />

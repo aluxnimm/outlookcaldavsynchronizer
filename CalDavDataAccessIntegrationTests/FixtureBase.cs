@@ -74,7 +74,7 @@ namespace CalDavDataAccessIntegrationTests
     }
 
     [Test]
-    public async Task IsResourceCalender ()
+    public virtual async Task IsResourceCalender ()
     {
       Assert.That (await _calDavDataAccess.IsResourceCalender(), Is.True);
     }
@@ -98,7 +98,7 @@ namespace CalDavDataAccessIntegrationTests
     }
 
     [Test]
-    public async Task Test_CRUD ()
+    public virtual async Task Test_CRUD ()
     {
       foreach (var evt in await _calDavDataAccess.GetEventVersions (null))
         await _calDavDataAccess.DeleteEntity (evt.Id, evt.Version);
@@ -171,6 +171,53 @@ namespace CalDavDataAccessIntegrationTests
       }
     }
 
+
+    public virtual async Task Test_CRUD_WithoutTimeRangeFilter ()
+    {
+      foreach (var evt in await _calDavDataAccess.GetEventVersions (null))
+        await _calDavDataAccess.DeleteEntity (evt.Id, evt.Version);
+
+      var entitiesWithVersion = new List<EntityVersion<WebResourceName, string>> ();
+
+      var uids = new List<string> ();
+
+      for (int i = 1; i <= 5; i++)
+      {
+        var iCalendar = CreateEntity (i);
+        uids.Add (iCalendar.Events[0].UID);
+        entitiesWithVersion.Add (
+            await _calDavDataAccess.CreateEntity (
+                SerializeCalendar (
+                    iCalendar), iCalendar.Events[0].UID));
+      }
+
+      var queriedEntitesWithVersion = await _calDavDataAccess.GetEventVersions (new DateTimeRange (DateTime.Now.AddDays (150), DateTime.Now.AddDays (450)));
+
+      Assert.That (queriedEntitesWithVersion.Count, Is.EqualTo (5));
+
+      CollectionAssert.AreEquivalent (
+          queriedEntitesWithVersion.Select (e => e.Id),
+          entitiesWithVersion.Select (e => e.Id));
+
+      var updatedCalendar = CreateEntity (600);
+      updatedCalendar.Events[0].UID = uids[1];
+      var updated = await _calDavDataAccess.UpdateEntity (
+          entitiesWithVersion[1].Id,
+          entitiesWithVersion[1].Version,
+          SerializeCalendar (updatedCalendar));
+
+      var queried2 = await _calDavDataAccess.GetEventVersions (new DateTimeRange (DateTime.Now.AddDays (150), DateTime.Now.AddDays (450)));
+
+      var updatedVersion = queried2.FirstOrDefault (v => WebResourceName.Comparer.Equals(v.Id,updated.Id));
+      Assert.That (updatedVersion, Is.Not.Null);
+      Assert.That (updatedVersion.Version, Is.EqualTo (updated.Version));
+
+
+      await _calDavDataAccess.DeleteEntity (updated.Id, updated.Version);
+
+      var queried3 = await _calDavDataAccess.GetEventVersions (new DateTimeRange (DateTime.Now.AddDays (150), DateTime.Now.AddDays (450)));
+      Assert.That (queried3.Count,Is.EqualTo (4));
+    }
 
     protected virtual bool DeletedEntitesAreJustMarkedAsDeletedAndStillAvailableViaCalendarMultigetReport
     {
