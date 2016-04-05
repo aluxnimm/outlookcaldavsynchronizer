@@ -38,8 +38,8 @@
     <GroupBox Header="Scheduling settings">
       <StackPanel>
         <CheckBox  IsChecked="{Binding MapAttendees}">Map Organizer and Attendees</CheckBox>
-        <CheckBox  IsChecked="{Binding ScheduleAgentClient}">Set SCHEDULE-AGENT=CLIENT</CheckBox>
-        <CheckBox  IsChecked="{Binding SendNoAppointmentNotifications}">Don't send appointment notifications (from SOGo)</CheckBox>
+        <CheckBox  IsEnabled="{Binding MapAttendees}" IsChecked="{Binding ScheduleAgentClient}">Set SCHEDULE-AGENT=CLIENT</CheckBox>
+        <CheckBox  IsEnabled="{Binding MapAttendees}" IsChecked="{Binding SendNoAppointmentNotifications}">Don't send appointment notifications (from SOGo)</CheckBox>
       </StackPanel>
     </GroupBox>
     <GroupBox Header="Outlook settings">
