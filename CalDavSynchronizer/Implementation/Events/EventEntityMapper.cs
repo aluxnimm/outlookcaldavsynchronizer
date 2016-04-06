@@ -752,7 +752,8 @@ namespace CalDavSynchronizer.Implementation.Events
                       {
                         targetExList.Add (new iCalDateTime (el.Period.StartTime.UTC) { IsUniversalTime = true });
                       }
-                      targetExceptionDatesByDate.Add (el.Period.StartTime.Date, targetExList);
+                      if (!targetExceptionDatesByDate.ContainsKey (el.Period.StartTime.Date))
+                        targetExceptionDatesByDate.Add (el.Period.StartTime.Date, targetExList);
                     }
                   }
 
@@ -812,7 +813,8 @@ namespace CalDavSynchronizer.Implementation.Events
 
                   targetExList.Add (exDate);
                 }
-                targetExceptionDatesByDate.Add (sourceException.OriginalDate, targetExList);
+                if (!targetExceptionDatesByDate.ContainsKey (sourceException.OriginalDate))
+                  targetExceptionDatesByDate.Add (sourceException.OriginalDate, targetExList);
               }
             }
           }
