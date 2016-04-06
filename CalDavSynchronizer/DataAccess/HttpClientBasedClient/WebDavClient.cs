@@ -35,13 +35,15 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
     private readonly Func<Task<HttpClient>> _httpClientFactory;
     private HttpClient _httpClient;
     private readonly bool _closeConnectionAfterEachRequest;
+    private readonly bool _sendEtagsWithoutQuote;
 
     public WebDavClient (
       Func<Task<HttpClient>> httpClientFactory, 
       string productName, 
       string productVersion,
       bool closeConnectionAfterEachRequest, 
-      bool acceptInvalidChars) 
+      bool acceptInvalidChars,
+      bool sendEtagsWithoutQuote) 
       : base (acceptInvalidChars)
     {
       if (httpClientFactory == null)
@@ -50,6 +52,7 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
       _productInfo = new ProductInfoHeaderValue (productName, productVersion);
       _httpClientFactory = httpClientFactory;
       _closeConnectionAfterEachRequest = closeConnectionAfterEachRequest;
+      _sendEtagsWithoutQuote = sendEtagsWithoutQuote;
     }
 
     public async Task<XmlDocumentWithNamespaceManager> ExecuteWebDavRequestAndReadResponse (
@@ -122,7 +125,12 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
           requestMessage.Headers.Add ("Depth", depth.ToString());
 
         if (!string.IsNullOrEmpty (ifMatch))
-          requestMessage.Headers.Add ("If-Match", ifMatch);
+        {
+          if (_sendEtagsWithoutQuote)
+            requestMessage.Headers.TryAddWithoutValidation ("If-Match", ifMatch.Trim('\"'));
+          else
+            requestMessage.Headers.Add ("If-Match", ifMatch);
+        }
 
         if (!string.IsNullOrEmpty (ifNoneMatch))
           requestMessage.Headers.Add ("If-None-Match", ifNoneMatch);

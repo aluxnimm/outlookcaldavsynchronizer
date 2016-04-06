@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using NUnit.Framework;
 
@@ -24,12 +25,12 @@ namespace CalDavDataAccessIntegrationTests
   {
     protected override string ProfileName
     {
-      get { return "TestCal-Google"; }
+      get { return "Google-TestCal"; }
     }
 
     protected override ServerAdapterType? ServerAdapterTypeOverride
     {
-      get { return ServerAdapterType.WebDavHttpClientBased; }
+      get { return ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth; }
     }
 
     [Ignore ("Google doesnt create a new entity in that case, it fails with precondition.")]
@@ -48,6 +49,12 @@ namespace CalDavDataAccessIntegrationTests
     public override async System.Threading.Tasks.Task DeleteNonExistingEntity_PreconditionFails ()
     {
       await base.DeleteNonExistingEntity_PreconditionFails();
+    }
+
+    [Test]
+    public override async Task Test_CRUD ()
+    {
+      await base.Test_CRUD ();
     }
   }
 }

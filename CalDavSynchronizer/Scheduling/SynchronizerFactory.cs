@@ -237,11 +237,25 @@ namespace CalDavSynchronizer.Scheduling
               productAndVersion.Item1,
               productAndVersion.Item2,
               closeConnectionAfterEachRequest,
-              acceptInvalidChars);
+              acceptInvalidChars,
+              RequiresEtagsWithoutQuotes(serverUrl));
 
         default:
           throw new ArgumentOutOfRangeException ("serverAdapterType");
       }
+    }
+
+    private static bool RequiresEtagsWithoutQuotes (string serverUrl)
+    {
+      var authorityParts = new Uri (serverUrl).Authority.ToLower().Split('.');
+      if (authorityParts.Length >= 2)
+      {
+        var length = authorityParts.Length;
+        if (authorityParts[length - 1] == "ru" && authorityParts[length - 2] == "mail")
+          return true;
+      }
+
+      return false;
     }
 
     private static async System.Threading.Tasks.Task<HttpClient> CreateHttpClient ( string username,
