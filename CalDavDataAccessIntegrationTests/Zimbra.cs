@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -20,34 +20,27 @@ using NUnit.Framework;
 
 namespace CalDavDataAccessIntegrationTests
 {
-  public class GoogleSynchronousWebRequestBased : FixtureBase
+  public class Zimbra : FixtureBase
   {
     protected override string ProfileName
     {
-      get { return "TestCal-Google"; }
+      get { return "TestCal-Zimbra"; }
     }
 
     protected override ServerAdapterType? ServerAdapterTypeOverride
     {
-      get { return ServerAdapterType.WebDavSynchronousWebRequestBased; }
+      get { return ServerAdapterType.WebDavHttpClientBased; }
     }
 
-    [Ignore ("Google doesnt create a new entity in that case, it fails with precondition.")]
-    public override async System.Threading.Tasks.Task UpdateNonExistingEntity_CreatesNewEntity ()
+    [Ignore ("Zimbra always returns false")]
+    public override System.Threading.Tasks.Task DoesSupportCalendarQuery ()
     {
-      await base.UpdateNonExistingEntity_CreatesNewEntity();
+      return base.DoesSupportCalendarQuery();
     }
 
-    [Ignore ("Google doesnt fails with preconditions on DELETE.")]
-    public override async System.Threading.Tasks.Task DeleteEntityWithWrongVersion_PreconditionFails ()
+    protected override bool DeletedEntitesAreJustMarkedAsDeletedAndStillAvailableViaCalendarMultigetReport
     {
-      await base.DeleteEntityWithWrongVersion_PreconditionFails ();
-    }
-
-    [Ignore ("Google doesnt fails with preconditions on DELETE.")]
-    public override async System.Threading.Tasks.Task DeleteNonExistingEntity_PreconditionFails ()
-    {
-      await base.DeleteNonExistingEntity_PreconditionFails ();
+      get { return true; }
     }
   }
 }

@@ -27,9 +27,6 @@ namespace CalDavSynchronizer.Contracts
     [XmlEnum ("GoogleOAuth")]
     WebDavHttpClientBasedWithGoogleOAuth,
 
-    [XmlEnum ("SynchronousWebRequestBased")]
-    WebDavSynchronousWebRequestBased,
-
     GoogleTaskApi,
 
     GoogleContactApi

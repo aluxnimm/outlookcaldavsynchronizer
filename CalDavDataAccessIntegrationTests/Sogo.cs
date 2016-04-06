@@ -20,27 +20,34 @@ using NUnit.Framework;
 
 namespace CalDavDataAccessIntegrationTests
 {
-  public class ZimbraSynchronousWebRequestBased : FixtureBase
+  public class Sogo : FixtureBase
   {
     protected override string ProfileName
     {
-      get { return "TestCal-Zimbra"; }
+      get { return "Sogo-TestCal"; }
     }
 
     protected override ServerAdapterType? ServerAdapterTypeOverride
     {
-      get { return ServerAdapterType.WebDavSynchronousWebRequestBased; }
+      get { return ServerAdapterType.WebDavHttpClientBased; }
     }
 
-    [Ignore ("Zimbra always returns false")]
-    public override System.Threading.Tasks.Task DoesSupportCalendarQuery ()
+    [Ignore ("Sogo does not fail with precondition in that case")]
+    public override async System.Threading.Tasks.Task UpdateNonExistingEntity_PreconditionFails ()
     {
-      return base.DoesSupportCalendarQuery();
+      await base.UpdateNonExistingEntity_PreconditionFails();
     }
 
-    protected override bool DeletedEntitesAreJustMarkedAsDeletedAndStillAvailableViaCalendarMultigetReport
+    [Ignore ("Sogo doesnt fails with preconditions on DELETE.")]
+    public override async System.Threading.Tasks.Task DeleteEntityWithWrongVersion_PreconditionFails ()
     {
-      get { return true; }
+      await base.DeleteEntityWithWrongVersion_PreconditionFails();
+    }
+
+    [Ignore ("Sogo doesnt fails with preconditions on DELETE.")]
+    public override async System.Threading.Tasks.Task DeleteNonExistingEntity_PreconditionFails ()
+    {
+      await base.DeleteNonExistingEntity_PreconditionFails();
     }
   }
 }

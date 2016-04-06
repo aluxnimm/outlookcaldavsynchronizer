@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -20,11 +20,11 @@ using NUnit.Framework;
 
 namespace CalDavDataAccessIntegrationTests
 {
-  public class SogoHttpClientBased : FixtureBase
+  public class Google : FixtureBase
   {
     protected override string ProfileName
     {
-      get { return "Sogo-TestCal"; }
+      get { return "TestCal-Google"; }
     }
 
     protected override ServerAdapterType? ServerAdapterTypeOverride
@@ -32,19 +32,19 @@ namespace CalDavDataAccessIntegrationTests
       get { return ServerAdapterType.WebDavHttpClientBased; }
     }
 
-    [Ignore ("Sogo does not fail with precondition in that case")]
-    public override async System.Threading.Tasks.Task UpdateNonExistingEntity_PreconditionFails ()
+    [Ignore ("Google doesnt create a new entity in that case, it fails with precondition.")]
+    public override async System.Threading.Tasks.Task UpdateNonExistingEntity_CreatesNewEntity ()
     {
-      await base.UpdateNonExistingEntity_PreconditionFails();
+      await base.UpdateNonExistingEntity_CreatesNewEntity();
     }
 
-    [Ignore ("Sogo doesnt fails with preconditions on DELETE.")]
+    [Ignore ("Google doesnt fails with preconditions on DELETE.")]
     public override async System.Threading.Tasks.Task DeleteEntityWithWrongVersion_PreconditionFails ()
     {
       await base.DeleteEntityWithWrongVersion_PreconditionFails();
     }
 
-    [Ignore ("Sogo doesnt fails with preconditions on DELETE.")]
+    [Ignore ("Google doesnt fails with preconditions on DELETE.")]
     public override async System.Threading.Tasks.Task DeleteNonExistingEntity_PreconditionFails ()
     {
       await base.DeleteNonExistingEntity_PreconditionFails();
