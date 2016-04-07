@@ -36,6 +36,7 @@ using Google.GData.Extensions;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
 using Thought.vCards;
+using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
@@ -790,12 +791,22 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
           DateTime birthday;
           if (DateTime.TryParse(source.ContactEntry.Birthday, out birthday))
           {
-              if (!birthday.Date.Equals(target.Inner.Birthday))
-                  target.Inner.Birthday = birthday;
+            if (!birthday.Date.Equals (target.Inner.Birthday))
+            {
+              try
+              {
+                target.Inner.Birthday = birthday;
+              }
+              catch (COMException ex)
+              {
+                s_logger.Warn ("Could not update contact birthday.", ex);
+                logger.LogMappingWarning ("Could not update contact birthday.", ex);
+              }
+            }
           }
           else
           {
-              target.Inner.Birthday = OU_OUTLOOK_DATE_NONE;
+            target.Inner.Birthday = OU_OUTLOOK_DATE_NONE;
           }
       }
       #endregion birthday

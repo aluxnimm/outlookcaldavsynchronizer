@@ -255,7 +255,17 @@ namespace CalDavSynchronizer.Implementation.Contacts
         if (source.BirthDate.HasValue)
         {
           if (!source.BirthDate.Value.Date.Equals (target.Inner.Birthday))
-            target.Inner.Birthday = source.BirthDate.Value;
+          {
+            try
+            {
+              target.Inner.Birthday = source.BirthDate.Value;
+            }
+            catch (COMException ex)
+            {
+              s_logger.Warn ("Could not update contact birthday.", ex);
+              logger.LogMappingWarning ("Could not update contact birthday.", ex);
+            }
+          }
         }
         else
         {
