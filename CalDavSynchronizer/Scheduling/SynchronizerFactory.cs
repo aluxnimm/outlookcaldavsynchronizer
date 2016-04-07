@@ -25,6 +25,7 @@ using System.Security;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
+using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Contacts;
 using CalDavSynchronizer.Implementation.Events;
@@ -38,6 +39,7 @@ using DDay.iCal;
 using DDay.iCal.Serialization.iCalendar;
 using GenSync.EntityRelationManagement;
 using GenSync.EntityRepositories;
+using GenSync.Logging;
 using GenSync.ProgressReport;
 using GenSync.Synchronization;
 using GenSync.Synchronization.StateFactories;
@@ -84,17 +86,7 @@ namespace CalDavSynchronizer.Scheduling
             {
               if (addressEntry.Inner != null)
               {
-                if (addressEntry.Inner.Type == "EX")
-                {
-                  using (var exchangeUser = GenericComObjectWrapper.Create (addressEntry.Inner.GetExchangeUser()))
-                  {
-                    _outlookEmailAddress = exchangeUser.Inner?.PrimarySmtpAddress ?? string.Empty;
-                  }
-                }
-                else
-                {
-                  _outlookEmailAddress = currentUser.Inner.Address;
-                }
+                _outlookEmailAddress = OutlookUtility.GetEmailAdressOrNull (addressEntry.Inner, NullEntitySynchronizationLogger.Instance, s_logger) ?? string.Empty;
               }
             }
           }

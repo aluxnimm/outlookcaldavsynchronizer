@@ -38,8 +38,6 @@ namespace CalDavSynchronizer.Implementation.Events
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    private const string PR_SMTP_ADDRESS = "http://schemas.microsoft.com/mapi/proptag/0x39FE001E";
-    private const string PR_EMAIL1ADDRESS = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/8084001F";
     private const string PR_SENDER_NAME = "http://schemas.microsoft.com/mapi/proptag/0x0C1A001E";
     private const string PR_SENDER_EMAIL_ADDRESS = "http://schemas.microsoft.com/mapi/proptag/0x0C1F001E";
     private const string PR_SENT_REPRESENTING_NAME = "http://schemas.microsoft.com/mapi/proptag/0x0042001E";
@@ -500,118 +498,17 @@ namespace CalDavSynchronizer.Implementation.Events
         target.Properties.Add (new CalendarProperty ("X-SOGO-SEND-APPOINTMENT-NOTIFICATIONS", "NO"));
     }
 
-    private string GetMailUrlOrNull (AddressEntry addressEntry, string address, IEntityMappingLogger logger)
+    private string GetMailUrlOrNull (AddressEntry addressEntry, string defaultMailAddress, IEntityMappingLogger logger)
     {
-      string emailAddress = address;
-      OlAddressEntryUserType type;
+      return CreateMailUriOrNull(OutlookUtility.GetEmailAdressOrNull(addressEntry, logger,s_logger) ?? defaultMailAddress, logger);
+    }
+    
 
-      if (addressEntry != null)
+    private static string CreateMailUriOrNull (string emailAddressOrNull, IEntityMappingLogger logger)
+    {
+      if (!string.IsNullOrEmpty (emailAddressOrNull))
       {
-        try
-        {
-          type = addressEntry.AddressEntryUserType;
-        }
-        catch (COMException ex)
-        {
-          s_logger.Warn ("Could not get type from AddressEntry", ex);
-          logger.LogMappingWarning ("Could not get type from AddressEntry", ex);
-          return null;
-        }
-        if (type == OlAddressEntryUserType.olExchangeUserAddressEntry
-            || type == OlAddressEntryUserType.olExchangeRemoteUserAddressEntry
-            || type == OlAddressEntryUserType.olExchangeAgentAddressEntry
-            || type == OlAddressEntryUserType.olExchangeOrganizationAddressEntry
-            || type == OlAddressEntryUserType.olExchangePublicFolderAddressEntry)
-        {
-          try
-          {
-            using (var exchUser = GenericComObjectWrapper.Create (addressEntry.GetExchangeUser()))
-            {
-              if (exchUser.Inner != null)
-              {
-                emailAddress = exchUser.Inner.PrimarySmtpAddress;
-              }
-            }
-          }
-          catch (COMException ex)
-          {
-            s_logger.Warn ("Could not get email address from adressEntry.GetExchangeUser()", ex);
-            logger.LogMappingWarning ("Could not get email address from adressEntry.GetExchangeUser()", ex);
-          }
-        }
-        else if (type == OlAddressEntryUserType.olExchangeDistributionListAddressEntry
-                 || type == OlAddressEntryUserType.olOutlookDistributionListAddressEntry)
-        {
-          try
-          {
-            using (var exchDL = GenericComObjectWrapper.Create (addressEntry.GetExchangeDistributionList()))
-            {
-              if (exchDL.Inner != null)
-              {
-                emailAddress = exchDL.Inner.PrimarySmtpAddress;
-              }
-            }
-          }
-          catch (COMException ex)
-          {
-            s_logger.Warn ("Could not get email address from adressEntry.GetExchangeDistributionList()", ex);
-            logger.LogMappingWarning ("Could not get email address from adressEntry.GetExchangeDistributionList()", ex);
-          }
-        }
-        else if (type == OlAddressEntryUserType.olSmtpAddressEntry
-                 || type == OlAddressEntryUserType.olLdapAddressEntry)
-        {
-          emailAddress = addressEntry.Address;
-        }
-        else if (type == OlAddressEntryUserType.olOutlookContactAddressEntry)
-        {
-          if (addressEntry.Type == "EX")
-          {
-            try
-            {
-              using (var exchContact = GenericComObjectWrapper.Create (addressEntry.GetContact()))
-              {
-                if (exchContact.Inner != null)
-                {
-                  if (exchContact.Inner.Email1AddressType == "EX")
-                  {
-                    emailAddress = exchContact.Inner.GetPropertySafe (PR_EMAIL1ADDRESS);
-                  }
-                  else
-                  {
-                    emailAddress = exchContact.Inner.Email1Address;
-                  }
-                }
-              }
-            }
-            catch (COMException ex)
-            {
-              s_logger.Warn ("Could not get email address from adressEntry.GetContact()", ex);
-              logger.LogMappingWarning ("Could not get email address from adressEntry.GetContact()", ex);
-            }
-          }
-          else
-          {
-            emailAddress = addressEntry.Address;
-          }
-        }
-        else
-        {
-          try
-          {
-            emailAddress = addressEntry.GetPropertySafe (PR_SMTP_ADDRESS);
-          }
-          catch (COMException ex)
-          {
-            s_logger.Warn ("Could not get property PR_SMTP_ADDRESS for adressEntry", ex);
-            logger.LogMappingWarning ("Could not get property PR_SMTP_ADDRESS for adressEntry", ex);
-          }
-        }
-      }
-
-      if (!string.IsNullOrEmpty (emailAddress))
-      {
-        var emailAddressUriString = string.Format ("MAILTO:{0}", emailAddress);
+        var emailAddressUriString = string.Format ("MAILTO:{0}", emailAddressOrNull);
         if (!Uri.IsWellFormedUriString (emailAddressUriString, UriKind.Absolute))
         {
           s_logger.WarnFormat ("Invalid email address URI {0} for attendee.", emailAddressUriString);
@@ -1127,23 +1024,26 @@ namespace CalDavSynchronizer.Implementation.Events
 
       foreach (var recipient in source.Recipients.ToSafeEnumerable<Recipient>())
       {
-        if (!IsOwnIdentity (recipient))
+        string recipientMailAddressOrNull;
+        using (var entryWrapper = GenericComObjectWrapper.Create (recipient.AddressEntry))
+        {
+          recipientMailAddressOrNull = OutlookUtility.GetEmailAdressOrNull (entryWrapper.Inner, logger, s_logger);
+        }
+
+        if (!IsOwnIdentity (recipientMailAddressOrNull))
         {
           Attendee attendee;
 
           if (!string.IsNullOrEmpty (recipient.Address))
           {
-            using (var entryWrapper = GenericComObjectWrapper.Create (recipient.AddressEntry))
+            var recipientMailUrl = CreateMailUriOrNull (recipientMailAddressOrNull ?? recipient.Address, logger);
+            if (recipientMailUrl != null)
             {
-              var recipientMailUrl = GetMailUrlOrNull (entryWrapper.Inner, recipient.Address, logger);
-              if (recipientMailUrl != null)
-              {
-                attendee = new Attendee (recipientMailUrl);
-              }
-              else
-              {
-                attendee = new Attendee();
-              }
+              attendee = new Attendee (recipientMailUrl);
+            }
+            else
+            {
+              attendee = new Attendee();
             }
           }
           else
@@ -1169,7 +1069,7 @@ namespace CalDavSynchronizer.Implementation.Events
             {
               using (var entryWrapper = GenericComObjectWrapper.Create (recipient.AddressEntry))
               {
-                var recipientMailUrl = GetMailUrlOrNull (entryWrapper.Inner, recipient.Address, logger);
+                var recipientMailUrl = CreateMailUriOrNull (recipientMailAddressOrNull ?? recipient.Address, logger);
                 if (recipientMailUrl != null)
                 {
                   ownAttendee = new Attendee (recipientMailUrl);
@@ -1212,9 +1112,16 @@ namespace CalDavSynchronizer.Implementation.Events
 
     private bool IsOwnIdentity (Recipient recipient)
     {
-      return StringComparer.InvariantCultureIgnoreCase.Compare (recipient.Address, _outlookEmailAddress) == 0;
+      string mailAddress;
+      using (var wrapper = GenericComObjectWrapper.Create (recipient.AddressEntry))
+        mailAddress = OutlookUtility.GetEmailAdressOrNull (wrapper.Inner, NullEntitySynchronizationLogger.Instance, s_logger);
+      return IsOwnIdentity (mailAddress);
     }
 
+    private bool IsOwnIdentity (string mailAddress)
+    {
+      return StringComparer.InvariantCultureIgnoreCase.Compare (mailAddress, _outlookEmailAddress) == 0;
+    }
 
     public string MapAttendeeType1To2 (OlMeetingRecipientType recipientType)
     {
