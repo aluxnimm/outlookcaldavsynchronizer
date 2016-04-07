@@ -1067,17 +1067,14 @@ namespace CalDavSynchronizer.Implementation.Events
 
             if (!string.IsNullOrEmpty (recipient.Address))
             {
-              using (var entryWrapper = GenericComObjectWrapper.Create (recipient.AddressEntry))
+              var recipientMailUrl = CreateMailUriOrNull (recipientMailAddressOrNull ?? recipient.Address, logger);
+              if (recipientMailUrl != null)
               {
-                var recipientMailUrl = CreateMailUriOrNull (recipientMailAddressOrNull ?? recipient.Address, logger);
-                if (recipientMailUrl != null)
-                {
-                  ownAttendee = new Attendee (recipientMailUrl);
-                }
-                else
-                {
-                  ownAttendee = new Attendee();
-                }
+                ownAttendee = new Attendee (recipientMailUrl);
+              }
+              else
+              {
+                ownAttendee = new Attendee();
               }
             }
             else
