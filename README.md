@@ -41,6 +41,7 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 - Fruux
 - Mac OS X Server
 - iCloud
+- mail.ru
 
 ### Features ###
 
@@ -54,6 +55,7 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 - sync reminders, categories, recurrences with exceptions, importance, transparency
 - sync organizer and attendees and own response status
 - task support
+- Google native Contacts API support with mapping of Google contact groups to Outlook categories.
 - Google Tasklists support (sync via Google Task Api with Outlook task folders)
 - CardDAV support to sync contacts (distribution lists planned)
 - time-triggered-sync
@@ -78,6 +80,20 @@ Download and extract the `OutlookCalDavSynchronizer-<Version>.zip` into any dire
 If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=48217)
 
 ### Changelog ###
+
+#### 2.0.1 ####
+- New features
+	- Initial support for mail.ru
+	- Add option to keep Outlook photo in contact mapping configuration.
+- Bug fixes
+	- Preserve current mapping configuration, if no folder selected.
+	- Fix own identity handling in event mapping (especially for Exchange accounts).
+	- Fix possible Nullreference Exception in CardDavDataAccess.GetEntities.
+	- Check if key exists before adding to targetExceptionDatesByDate in MapRecurrence1To2, ticket #270.
+	- Skip directoryresource, if returned from calendar-query, since mail.ru returns directory itself even with an etag.
+	- Disable other checkboxes in schedule settings when Map Attendees is unchecked.
+	- Remove X-ABCROP-RECTANGLE from vcard photo attributes since the deserializer can't parse the base64 value, ticket #274.
+	- Disable sync now button during synchronization runs.
 
 #### 2.0.0 ####
 - New features
@@ -668,7 +684,7 @@ If you expand the tree view of the profile you can configure network and proxy o
 	- Use *Don't send appointment notifications for SOGo servers and SCHEDULE-AGENT=CLIENT for other servers if you want to send invitations from Outlook and avoid that the server sends invitations too, but be aware that not all servers (e.g. Google) support the SCHEDULE-AGENT=CLIENT setting. 
 	- You can also define a filter category so that multiple CalDAV-Calendars can be synchronized into one Outlook calendar via the defined category (see Category Filter and Color below). 
 	- For contacts you can configure if birthdays should be mapped or not. If birthdays are mapped, Outlook also creates an recurring appointment for every contact with a defined birthday.
-	- You can also configure if contact photos should be mapped or not. Contact photo mapping from Outlook to the server doesn't work in Outlook 2007.
+	- You can also configure if contact photos should be mapped or not. Contact photo mapping from Outlook to the server doesn't work in Outlook 2007. You can also add an option to not overwrite the contact photo in Outlook when it changes on the server, which could happen due to other mobile clients reducing the resolution for example.
 	- Fix imported phone number format adds round brackets to the area code of phone numbers, so that Outlook can show correct phone number details with country and area code, e.g. +1 23 45678 is mapped to +1 (23) 45678.
 	- For tasks (not for Google task profiles) you can configure if you want to map reminders (just upcoming, all or none), the priority of the task, the description body and if recurring tasks should be synchronized.	
 
