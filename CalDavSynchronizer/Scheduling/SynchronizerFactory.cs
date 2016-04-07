@@ -244,7 +244,10 @@ namespace CalDavSynchronizer.Scheduling
       {
         var length = authorityParts.Length;
         if (authorityParts[length - 1] == "ru" && authorityParts[length - 2] == "mail")
+        {
+          s_logger.Info ($"Detected url which requires etags without quotes ('{serverUrl}')");
           return true;
+        }
       }
 
       return false;
