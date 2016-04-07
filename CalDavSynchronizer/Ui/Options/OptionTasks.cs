@@ -62,7 +62,7 @@ namespace CalDavSynchronizer.Ui.Options
               ? null
               : currentMappingConfiguration as TaskMappingConfigurationViewModel ?? factory.Create (new TaskMappingConfiguration());
         default:
-          return null;
+          return currentMappingConfiguration;
       }
     }
 
