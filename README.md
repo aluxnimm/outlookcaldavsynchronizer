@@ -86,6 +86,7 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 	- Initial support for mail.ru
 	- Add option to keep Outlook photo in contact mapping configuration.
 - Bug fixes
+	- Catch COMException if birthday can't be set in Outlook, ticket #276.
 	- Preserve current mapping configuration, if no folder selected.
 	- Fix own identity handling in event mapping (especially for Exchange accounts).
 	- Fix possible Nullreference Exception in CardDavDataAccess.GetEntities.
