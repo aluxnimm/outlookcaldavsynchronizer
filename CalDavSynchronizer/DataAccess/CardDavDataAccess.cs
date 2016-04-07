@@ -396,7 +396,7 @@ namespace CalDavSynchronizer.DataAccess
         var urlNode = responseElement.SelectSingleNode ("D:href", responseXml.XmlNamespaceManager);
         var dataNode = responseElement.SelectSingleNode ("D:propstat/D:prop/A:address-data", responseXml.XmlNamespaceManager);
         var contentTypeNode = responseElement.SelectSingleNode("D:propstat/D:prop/D:getcontenttype", responseXml.XmlNamespaceManager);
-        string contentType = contentTypeNode.InnerText ?? string.Empty;
+        string contentType = contentTypeNode?.InnerText ?? string.Empty;
 
         // TODO: add vlist support but for now filter out sogo vlists since we can't parse them atm
         if (urlNode != null && dataNode != null && !string.IsNullOrEmpty (dataNode.InnerText) && contentType != "text/x-vlist")
