@@ -195,9 +195,24 @@ namespace CalDavSynchronizer.Implementation.Events
       MapCategories1To2 (source, target);
 
       target.Properties.Add (MapTransparency1To2 (source.BusyStatus));
+      target.Properties.Add (MapStatus1To2 (source.BusyStatus));
     }
 
-    private CalendarProperty MapTransparency1To2 (OlBusyStatus value)
+    private static CalendarProperty MapStatus1To2 (OlBusyStatus value)
+    {
+      switch (value)
+      {
+        case OlBusyStatus.olTentative:                        //TRANSPARENT/tentative
+        case OlBusyStatus.olOutOfOffice:                      //OPAQUE/tentative   
+          return new CalendarProperty ("STATUS", "TENTATIVE");
+        case OlBusyStatus.olBusy:                             //OPAQUE/confirmed
+        case OlBusyStatus.olWorkingElsewhere:                 //OPAQUE/confirmed, duplicate status mapping, but not really used, because not available in Outlook GUI
+        case OlBusyStatus.olFree:                             //TRANSPARENT/confirmed
+        default:
+          return new CalendarProperty ("STATUS", "CONFIRMED");
+      }
+    }
+    private static CalendarProperty MapTransparency1To2 (OlBusyStatus value)
     {
       switch (value)
       {
@@ -214,17 +229,19 @@ namespace CalDavSynchronizer.Implementation.Events
     }
 
 
-    private OlBusyStatus MapTransparency2To1 (TransparencyType value)
+    private static OlBusyStatus MapTransparency2To1 (TransparencyType value, EventStatus status)
     {
-      switch (value)
-      {
-        case TransparencyType.Opaque:
-          return OlBusyStatus.olBusy;
-        case TransparencyType.Transparent:
-          return OlBusyStatus.olFree;
-      }
-
-      throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
+      if (status.Equals (EventStatus.Confirmed) && (value.Equals (TransparencyType.Opaque)))
+        return OlBusyStatus.olBusy;
+      else if ((status.Equals (EventStatus.Confirmed) && value.Equals (TransparencyType.Transparent))
+             || status.Equals (EventStatus.Cancelled))
+        return OlBusyStatus.olFree;
+      else if (status.Equals (EventStatus.Tentative) && (value.Equals (TransparencyType.Opaque)))
+        return OlBusyStatus.olOutOfOffice;
+      else if (status.Equals (EventStatus.Tentative))
+        return OlBusyStatus.olTentative;
+      else //should never happen, but not really used, because not available in Outlook GUI
+        return OlBusyStatus.olWorkingElsewhere;
     }
 
 
@@ -1409,7 +1426,7 @@ namespace CalDavSynchronizer.Implementation.Events
       if (!isRecurrenceException)
         MapCategories2To1 (source, targetWrapper.Inner);
 
-      targetWrapper.Inner.BusyStatus = MapTransparency2To1 (source.Transparency);
+      targetWrapper.Inner.BusyStatus = MapTransparency2To1 (source.Transparency, source.Status);
 
       if (_configuration.MapAttendees && source.Organizer != null)
       {
