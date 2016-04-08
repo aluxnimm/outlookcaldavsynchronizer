@@ -682,7 +682,7 @@ namespace CalDavSynchronizer.Scheduling
           btypeIdEqualityComparer,
           _totalProgressFactory,
           ExceptionHandler.Instance,
-          new GoogleContactContextFactory(googleApiExecutor, btypeIdEqualityComparer),
+          new GoogleContactContextFactory(googleApiExecutor, btypeIdEqualityComparer, options.UserName),
           EqualityComparer<DateTime>.Default,
           new GoogleContactVersionComparer());
 
