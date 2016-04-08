@@ -25,6 +25,11 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
     public IEnumerable<Group> Groups => _groupsByName.Values;
 
+    public string DefaultGroupIdOrNull
+    {
+      get { return _defaultGroupIdOrNull; }
+    }
+
     public void Fill ()
     {
       SetGroups (_apiOperationExecutor.Execute (f => f.GetGroups().Entries));

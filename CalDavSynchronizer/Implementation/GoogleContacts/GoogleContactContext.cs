@@ -44,6 +44,9 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       var query = new ContactsQuery (ContactsQuery.CreateContactsUri (_userName, ContactsQuery.fullProjection));
       query.NumberToRetrieve = int.MaxValue;
 
+      if (GroupCache.DefaultGroupIdOrNull != null)
+        query.Group = GroupCache.DefaultGroupIdOrNull;
+
       var contacts = _apiOperationExecutor.Execute (f =>
       {
         var contactsFeed = f.Get<Contact> (query);
