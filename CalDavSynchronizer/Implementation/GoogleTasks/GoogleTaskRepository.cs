@@ -47,14 +47,15 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
     }
 
 
-    public System.Threading.Tasks.Task Delete (string entityId, string version)
+    public async System.Threading.Tasks.Task<bool> TryDelete (string entityId, string version)
     {
       var deleteRequest =   _tasksService.Tasks.Delete (_taskList.Id, entityId);
       // Todo: how to set etag ?
-      return deleteRequest.ExecuteAsync();
+      await deleteRequest.ExecuteAsync();
+      return true;
     }
 
-    public async Task<EntityVersion<string, string>> Update (string entityId, string version, Task entityToUpdate, Func<Task, Task> entityModifier)
+    public async Task<EntityVersion<string, string>> TryUpdate (string entityId, string version, Task entityToUpdate, Func<Task, Task> entityModifier)
     {
       entityToUpdate = entityModifier (entityToUpdate);
       var updateRequest = _tasksService.Tasks.Update (entityToUpdate, _taskList.Id, entityId);

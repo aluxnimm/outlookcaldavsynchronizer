@@ -274,7 +274,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
               new[] { EntityWithId.Create (entityUri, existingEventData) }));
 
       calDavDataAccess
-          .Expect (r => r.UpdateEntity (
+          .Expect (r => r.TryUpdateEntity (
               new WebResourceName("http://bla.com"),
               null,
               null))

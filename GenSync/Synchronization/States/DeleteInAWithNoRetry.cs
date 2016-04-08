@@ -79,6 +79,11 @@ namespace GenSync.Synchronization.States
       _nextStateAfterJobExecution = Discard();
     }
 
+    private void NotifyEntityNotFound ()
+    {
+      SetNextStateAsFailed();
+    }
+
     private void NotifyOperationFailed (Exception exception, IEntitySynchronizationLogger logger)
     {
       logger.LogAbortedDueToError (exception);
@@ -131,6 +136,11 @@ namespace GenSync.Synchronization.States
       public void NotifyOperationSuceeded ()
       {
         _state.NotifyOperationSuceeded();
+      }
+
+      public void NotifyEntityNotFound ()
+      {
+        _state.NotifyEntityNotFound ();
       }
 
       public void NotifyOperationFailed (Exception exception)

@@ -173,15 +173,15 @@ namespace CalDavSynchronizer.Implementation
     }
 
 
-    public async Task Delete (WebResourceName entityId, string version)
+    public async Task<bool> TryDelete (WebResourceName entityId, string version)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
-        await _calDavDataAccess.DeleteEntity (entityId, version);
+        return await _calDavDataAccess.TryDeleteEntity (entityId, version);
       }
     }
 
-    public async Task<EntityVersion<WebResourceName, string>> Update (
+    public async Task<EntityVersion<WebResourceName, string>> TryUpdate (
         WebResourceName entityId,
         string entityVersion,
         IICalendar entityToUpdate,
@@ -192,7 +192,7 @@ namespace CalDavSynchronizer.Implementation
         var updatedEntity = entityModifier (entityToUpdate);
         try
         {
-          return await _calDavDataAccess.UpdateEntity (entityId, entityVersion, SerializeCalendar (updatedEntity));
+          return await _calDavDataAccess.TryUpdateEntity (entityId, entityVersion, SerializeCalendar (updatedEntity));
         }
         catch (WebDavClientException ex)
         {
@@ -200,7 +200,7 @@ namespace CalDavSynchronizer.Implementation
           {
             s_logger.Warn ("Server returned '403' ('Forbidden') for update, trying Delete and Recreate instead...");
 
-            await Delete (entityId, entityVersion);
+            await TryDelete (entityId, entityVersion);
 
             var uid = Guid.NewGuid().ToString();
             if (updatedEntity.Events.Count > 0)

@@ -60,6 +60,11 @@ namespace GenSync.Synchronization.States
       _nextStateAfterJobExecution = CreateDoNothing (_knownData.AtypeId, _knownData.AtypeVersion, result.Id, result.Version);
     }
 
+    private void NotifyEntityNotFound ()
+    {
+      SetNextStateAsFailed ();
+    }
+
     private void NotifyOperationFailed (Exception exception, IEntitySynchronizationLogger logger)
     {
       logger.LogAbortedDueToError (exception);
@@ -118,6 +123,11 @@ namespace GenSync.Synchronization.States
       public void NotifyOperationSuceeded (EntityVersion<TBtypeEntityId, TBtypeEntityVersion> result)
       {
         _state.NotifyOperationSuceeded (result, _logger);
+      }
+
+      public void NotifyEntityNotFound ()
+      {
+        _state.NotifyEntityNotFound ();
       }
 
       public void NotifyOperationFailed (Exception exception)

@@ -97,7 +97,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       return Task.FromResult (EntityVersion.Create (id, version.ToString()));
     }
 
-    public Task DeleteEntity (WebResourceName uri, string etag)
+    public Task<bool> TryDeleteEntity (WebResourceName uri, string etag)
     {
       if (!_entites.ContainsKey (uri))
         throw new Exception ("tried to delete non existing entity!");
@@ -106,10 +106,10 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
         throw new Exception ("tried to delete stale version!");
 
       _entites.Remove (uri);
-      return Task.FromResult (0);
+      return Task.FromResult (true);
     }
 
-    public Task<EntityVersion<WebResourceName, string>> UpdateEntity (
+    public Task<EntityVersion<WebResourceName, string>> TryUpdateEntity (
         WebResourceName url,
         string version,
         string iCalData)

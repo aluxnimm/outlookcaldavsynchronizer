@@ -26,6 +26,7 @@ namespace GenSync.EntityRepositories
     TEntity UpdateEntity (TEntity entity);
 
     void NotifyOperationSuceeded (EntityVersion<TEntityId, TEntityVersion> result);
+    void NotifyEntityNotFound ();
     void NotifyOperationFailed (Exception exception);
     void NotifyOperationFailed (string errorMessage);
   }

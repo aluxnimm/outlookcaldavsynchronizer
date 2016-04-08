@@ -293,7 +293,7 @@ namespace CalDavSynchronizer.DataAccess
       return new EntityVersion<WebResourceName, string> (new WebResourceName(effectiveEventUrl), version);
     }
 
-    public async Task<EntityVersion<WebResourceName, string>> UpdateEntity (WebResourceName url, string etag, string contents)
+    public async Task<EntityVersion<WebResourceName, string>> TryUpdateEntity (WebResourceName url, string etag, string contents)
     {
       s_logger.DebugFormat ("Updating entity '{0}'", url);
 
@@ -301,15 +301,24 @@ namespace CalDavSynchronizer.DataAccess
 
       s_logger.DebugFormat ("Absolute entity location: '{0}'", absoluteEventUrl);
 
-      IHttpHeaders responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders(
-        absoluteEventUrl,
-        "PUT",
-        null,
-        etag,
-        null,
-        "text/calendar",
-        contents);
-      
+      IHttpHeaders responseHeaders;
+
+      try
+      {
+      responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders(
+          absoluteEventUrl,
+          "PUT",
+          null,
+          etag,
+          null,
+          "text/calendar",
+          contents);
+      }
+      catch (WebDavClientException x) when (x.StatusCode == HttpStatusCode.NotFound || x.StatusCode == HttpStatusCode.PreconditionFailed)
+      {
+        return null;
+      }
+
       if (s_logger.IsDebugEnabled)
         s_logger.DebugFormat ("Updated entity. Server response header: '{0}'", responseHeaders.ToString().Replace ("\r\n", " <CR> "));
 

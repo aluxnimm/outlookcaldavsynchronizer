@@ -101,7 +101,7 @@ namespace CalDavDataAccessIntegrationTests
     public virtual async Task Test_CRUD ()
     {
       foreach (var evt in await _calDavDataAccess.GetEventVersions (null))
-        await _calDavDataAccess.DeleteEntity (evt.Id, evt.Version);
+        await _calDavDataAccess.TryDeleteEntity (evt.Id, evt.Version);
 
       var entitiesWithVersion = new List<EntityVersion<WebResourceName, string>>();
 
@@ -127,7 +127,7 @@ namespace CalDavDataAccessIntegrationTests
 
       var updatedCalendar = CreateEntity (600);
       updatedCalendar.Events[0].UID = uids[1];
-      var updated = await _calDavDataAccess.UpdateEntity (
+      var updated = await _calDavDataAccess.TryUpdateEntity (
           entitiesWithVersion[1].Id,
           entitiesWithVersion[1].Version,
           SerializeCalendar (updatedCalendar));
@@ -138,7 +138,7 @@ namespace CalDavDataAccessIntegrationTests
 
       var updatedRevertedCalendar = CreateEntity (2);
       updatedRevertedCalendar.Events[0].UID = uids[1];
-      var updateReverted = await _calDavDataAccess.UpdateEntity (
+      var updateReverted = await _calDavDataAccess.TryUpdateEntity (
           updated.Id,
           updated.Version,
           SerializeCalendar (updatedRevertedCalendar));
@@ -147,7 +147,7 @@ namespace CalDavDataAccessIntegrationTests
           (await _calDavDataAccess.GetEventVersions (new DateTimeRange (DateTime.Now.AddDays (150), DateTime.Now.AddDays (450)))).Count,
           Is.EqualTo (3));
 
-      await _calDavDataAccess.DeleteEntity (updateReverted.Id, updateReverted.Version);
+      await _calDavDataAccess.TryDeleteEntity (updateReverted.Id, updateReverted.Version);
 
       Assert.That (
           (await _calDavDataAccess.GetEventVersions (new DateTimeRange (DateTime.Now.AddDays (150), DateTime.Now.AddDays (450)))).Count,
@@ -175,7 +175,7 @@ namespace CalDavDataAccessIntegrationTests
     public virtual async Task Test_CRUD_WithoutTimeRangeFilter ()
     {
       foreach (var evt in await _calDavDataAccess.GetEventVersions (null))
-        await _calDavDataAccess.DeleteEntity (evt.Id, evt.Version);
+        await _calDavDataAccess.TryDeleteEntity (evt.Id, evt.Version);
 
       var entitiesWithVersion = new List<EntityVersion<WebResourceName, string>> ();
 
@@ -201,7 +201,7 @@ namespace CalDavDataAccessIntegrationTests
 
       var updatedCalendar = CreateEntity (600);
       updatedCalendar.Events[0].UID = uids[1];
-      var updated = await _calDavDataAccess.UpdateEntity (
+      var updated = await _calDavDataAccess.TryUpdateEntity (
           entitiesWithVersion[1].Id,
           entitiesWithVersion[1].Version,
           SerializeCalendar (updatedCalendar));
@@ -213,7 +213,7 @@ namespace CalDavDataAccessIntegrationTests
       Assert.That (updatedVersion.Version, Is.EqualTo (updated.Version));
 
 
-      await _calDavDataAccess.DeleteEntity (updated.Id, updated.Version);
+      await _calDavDataAccess.TryDeleteEntity (updated.Id, updated.Version);
 
       var queried3 = await _calDavDataAccess.GetEventVersions (new DateTimeRange (DateTime.Now.AddDays (150), DateTime.Now.AddDays (450)));
       Assert.That (queried3.Count,Is.EqualTo (4));
@@ -223,127 +223,87 @@ namespace CalDavDataAccessIntegrationTests
     {
       get { return false; }
     }
-
+   
 
     [Test]
-    public virtual async Task UpdateNonExistingEntity_PreconditionFails ()
+    public async Task TryDeleteNonExistingEntity ()
     {
       var v = await _calDavDataAccess.CreateEntity (
           SerializeCalendar (
               CreateEntity (1)), Guid.NewGuid().ToString());
 
-      await _calDavDataAccess.DeleteEntity (v.Id, v.Version);
+      Assert.That (
+          await _calDavDataAccess.TryDeleteEntity (v.Id, v.Version),
+          Is.True);
 
       Assert.That (
-          async () => await _calDavDataAccess.UpdateEntity (
+          await _calDavDataAccess.TryDeleteEntity (v.Id, @"""bla"""),
+          Is.False);
+    }
+
+    [Test]
+    public virtual async Task TryDeleteEntityWithWrongVersion ()
+    {
+      var calendar = CreateEntity (1);
+      var v = await _calDavDataAccess.CreateEntity (
+          SerializeCalendar (calendar),
+          calendar.Events[0].UID);
+      calendar.Events[0].Summary += "xxx";
+      var v2 = await _calDavDataAccess.TryUpdateEntity (
+          v.Id,
+          v.Version,
+          SerializeCalendar (calendar));
+
+      Assert.That (
+          await _calDavDataAccess.TryDeleteEntity (v.Id, v.Version),
+          Is.False);
+
+      Assert.That (
+          await _calDavDataAccess.TryDeleteEntity (v2.Id, v2.Version),
+          Is.True);
+    }
+    
+    [Test]
+    public async Task UpdateEntityWithWrongVersion ()
+    {
+      var calendar = CreateEntity (1);
+      var v = await _calDavDataAccess.CreateEntity (
+          SerializeCalendar (calendar),
+          calendar.Events[0].UID);
+
+      calendar.Events[0].Summary += "xxx";
+
+      var v2 = await _calDavDataAccess.TryUpdateEntity (
+          v.Id,
+          v.Version,
+          SerializeCalendar (calendar));
+
+      calendar.Events[0].Summary += "xxx";
+
+      Assert.That (
+          await _calDavDataAccess.TryUpdateEntity (
+              v.Id,
+              v.Version,
+              SerializeCalendar (calendar)),
+          Is.Null);
+    }
+
+    [Test]
+    public virtual async Task UpdateNonExistingEntity ()
+    {
+      var v = await _calDavDataAccess.CreateEntity (
+          SerializeCalendar (
+              CreateEntity (1)), Guid.NewGuid ().ToString ());
+
+      await _calDavDataAccess.TryDeleteEntity (v.Id, v.Version);
+
+      Assert.That (
+          await _calDavDataAccess.TryUpdateEntity (
               v.Id,
               v.Version,
               SerializeCalendar (
                   CreateEntity (1))),
-          Throws.Exception.With.Message.Contains ("412"));
-      // 412 == precondition failed
-    }
-
-    [Test]
-    public virtual async Task DeleteNonExistingEntity_ThrowsNotFound ()
-    {
-      var v = await _calDavDataAccess.CreateEntity (
-          SerializeCalendar (
-              CreateEntity (1)), Guid.NewGuid ().ToString ());
-
-      await _calDavDataAccess.DeleteEntity (v.Id, v.Version);
-
-      Assert.That (
-          async () => await _calDavDataAccess.DeleteEntity (v.Id, @"""bla"""),
-          Throws.Exception.With.Message.Contains ("404"));
-      // 404 == not found
-    }
-    
-    [Test]
-    public virtual async Task DeleteNonExistingEntity_PreconditionFails ()
-    {
-      var v = await _calDavDataAccess.CreateEntity (
-          SerializeCalendar (
-              CreateEntity (1)), Guid.NewGuid ().ToString ());
-
-      await _calDavDataAccess.DeleteEntity (v.Id, v.Version);
-
-      Assert.That (
-          async () => await _calDavDataAccess.DeleteEntity (v.Id, @"""bla"""),
-          Throws.Exception.With.Message.Contains ("412"));
-      // 412 == precondition failed
-    }
-
-    [Test]
-    public virtual async Task DeleteEntityWithWrongVersion_PreconditionFails ()
-    {
-      var calendar = CreateEntity (1);
-      var v = await _calDavDataAccess.CreateEntity (
-          SerializeCalendar (calendar),
-          calendar.Events[0].UID);
-      calendar.Events[0].Summary += "xxx";
-      var v2 = await _calDavDataAccess.UpdateEntity (
-          v.Id,
-          v.Version,
-          SerializeCalendar (calendar));
-
-      Assert.That (
-          async () => await _calDavDataAccess.DeleteEntity (v.Id, v.Version),
-          Throws.Exception.With.Message.Contains ("412"));
-      // 412 == precondition failed
-
-      Assert.That (
-          async () => await _calDavDataAccess.DeleteEntity (v2.Id, v2.Version),
-          Throws.Nothing);
-    }
-
-
-    [Test]
-    public virtual async Task UpdateNonExistingEntity_CreatesNewEntity ()
-    {
-      var v = await _calDavDataAccess.CreateEntity (
-          SerializeCalendar (
-              CreateEntity (1)), Guid.NewGuid().ToString());
-
-      await _calDavDataAccess.DeleteEntity (v.Id, v.Version);
-
-      v = await _calDavDataAccess.UpdateEntity (
-          v.Id,
-          v.Version,
-          SerializeCalendar (
-              CreateEntity (1)));
-      // If implementation doesn't trow, the entity must be newly created
-
-      Assert.That (
-          (await _calDavDataAccess.GetEntities (new[] { v.Id })).Count,
-          Is.EqualTo (1));
-    }
-
-
-    [Test]
-    public async Task UpdateEntityWithWrongVersion_PreconditionFails ()
-    {
-      var calendar = CreateEntity (1);
-      var v = await _calDavDataAccess.CreateEntity (
-          SerializeCalendar (calendar),
-          calendar.Events[0].UID);
-
-      calendar.Events[0].Summary += "xxx";
-
-      var v2 = await _calDavDataAccess.UpdateEntity (
-          v.Id,
-          v.Version,
-          SerializeCalendar (calendar));
-
-      calendar.Events[0].Summary += "xxx";
-
-      Assert.That (
-          async () => await _calDavDataAccess.UpdateEntity (
-              v.Id,
-              v.Version,
-              SerializeCalendar (calendar)),
-          Throws.Exception.With.Message.Contains ("412"));
-      // 412 == precondition failed
+          Is.Null);
     }
 
     [Test]
@@ -362,7 +322,7 @@ namespace CalDavDataAccessIntegrationTests
               CreateEntity (1)), Guid.NewGuid().ToString());
 
       Assert.That (
-          async () => await _calDavDataAccess.UpdateEntity (v.Id, v.Version, "Invalid ICal"),
+          async () => await _calDavDataAccess.TryUpdateEntity (v.Id, v.Version, "Invalid ICal"),
           Throws.Exception);
     }
 

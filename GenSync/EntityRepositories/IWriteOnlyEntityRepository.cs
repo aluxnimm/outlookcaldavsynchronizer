@@ -25,8 +25,17 @@ namespace GenSync.EntityRepositories
   /// </summary>
   public interface IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion>
   {
-    Task Delete (TEntityId entityId, TEntityVersion version);
-    Task<EntityVersion<TEntityId, TEntityVersion>> Update (TEntityId entityId, TEntityVersion version, TEntity entityToUpdate, Func<TEntity, TEntity> entityModifier);
+    /// <returns>
+    /// true: Entity was found an deleted.
+    /// false: Entity was not found
+    /// </returns>
+    Task<bool> TryDelete (TEntityId entityId, TEntityVersion version);
+    /// <returns>
+    /// Id and Version of the updated entity
+    /// or
+    /// Null if entity was not found
+    /// </returns>
+    Task<EntityVersion<TEntityId, TEntityVersion>> TryUpdate (TEntityId entityId, TEntityVersion version, TEntity entityToUpdate, Func<TEntity, TEntity> entityModifier);
     Task<EntityVersion<TEntityId, TEntityVersion>> Create (Func<TEntity, TEntity> entityInitializer);
   }
 }

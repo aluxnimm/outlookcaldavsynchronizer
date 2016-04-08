@@ -23,6 +23,7 @@ namespace GenSync.EntityRepositories
     TEntityId EntityId { get; }
     TEntityVersion Version { get; }
     void NotifyOperationSuceeded ();
+    void NotifyEntityNotFound ();
     void NotifyOperationFailed (Exception exception);
     void NotifyOperationFailed (string errorMessage);
   }

@@ -104,15 +104,15 @@ namespace CalDavSynchronizer.Implementation.Contacts
     }
 
 
-    public async Task Delete (WebResourceName entityId, string version)
+    public async Task<bool> TryDelete (WebResourceName entityId, string version)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
-        await _cardDavDataAccess.DeleteEntity (entityId, version);
+        return await _cardDavDataAccess.TryDeleteEntity (entityId, version);
       }
     }
 
-    public async Task<EntityVersion<WebResourceName, string>> Update (
+    public async Task<EntityVersion<WebResourceName, string>> TryUpdate (
         WebResourceName entityId,
         string entityVersion,
         vCard entityToUpdate,
@@ -124,7 +124,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         newVcard.UniqueId = (!string.IsNullOrEmpty (entityToUpdate.UniqueId)) ? entityToUpdate.UniqueId : Guid.NewGuid().ToString();
         newVcard = entityModifier (newVcard);
 
-        return await _cardDavDataAccess.UpdateEntity (entityId, entityVersion, Serialize (newVcard));
+        return await _cardDavDataAccess.TryUpdateEntity (entityId, entityVersion, Serialize (newVcard));
       }
     }
 

@@ -149,7 +149,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
         wrapper.Dispose();
     }
 
-    public Task<EntityVersion<string, DateTime>> Update (
+    public Task<EntityVersion<string, DateTime>> TryUpdate (
         string entityId,
         DateTime entityVersion,
         TaskItemWrapper entityToUpdate,
@@ -160,18 +160,18 @@ namespace CalDavSynchronizer.Implementation.Tasks
       return Task.FromResult (new EntityVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime));
     }
 
-    public Task Delete (string entityId, DateTime version)
+    public Task<bool> TryDelete (string entityId, DateTime version)
     {
       var entityWithId = Get (new[] { entityId }, NullLoadEntityLogger.Instance, 0).Result.SingleOrDefault ();
       if (entityWithId == null)
-        return Task.FromResult (0);
+        return Task.FromResult (true);
 
       using (var entity = entityWithId.Entity)
       {
         entity.Inner.Delete();
       }
 
-      return Task.FromResult (0);
+      return Task.FromResult (true);
     }
 
     public Task<EntityVersion<string, DateTime>> Create (Func<TaskItemWrapper, TaskItemWrapper> entityInitializer)

@@ -214,7 +214,7 @@ namespace CalDavSynchronizer.DataAccess
           );
     }
 
-    public async Task DeleteEntity (WebResourceName uri, string etag)
+    public async Task<bool> TryDeleteEntity (WebResourceName uri, string etag)
     {
       s_logger.DebugFormat ("Deleting entity '{0}'", uri);
 
@@ -222,14 +222,23 @@ namespace CalDavSynchronizer.DataAccess
 
       s_logger.DebugFormat ("Absolute entity location: '{0}'", absoluteEventUrl);
 
-      IHttpHeaders responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (
-        absoluteEventUrl,
-        "DELETE",
-        null,
-        etag,
-        null,
-        null,
-        string.Empty);
+      IHttpHeaders responseHeaders = null;
+
+      try
+      {
+        responseHeaders = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (
+            absoluteEventUrl,
+            "DELETE",
+            null,
+            etag,
+            null,
+            null,
+            string.Empty);
+      }
+      catch (WebDavClientException x) when (x.StatusCode == HttpStatusCode.NotFound  || x.StatusCode == HttpStatusCode.PreconditionFailed)
+      {
+          return false;
+      }
 
       IEnumerable<string> errorValues;
       if (responseHeaders.TryGetValues ("X-Dav-Error", out errorValues))
@@ -238,6 +247,8 @@ namespace CalDavSynchronizer.DataAccess
         if (errorList.Any (v => v != "200 No error"))
           throw new Exception (string.Format ("Error deleting entity with url '{0}' and etag '{1}': {2}", uri, etag, string.Join (",", errorList)));
       }
+
+      return true;
     }
 
     /// <summary>

@@ -149,7 +149,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         contactItemWrapper.Dispose();
     }
 
-    public Task<EntityVersion<string, DateTime>> Update (
+    public Task<EntityVersion<string, DateTime>> TryUpdate (
       string entityId, 
       DateTime entityVersion,
       ContactItemWrapper entityToUpdate, Func<ContactItemWrapper, ContactItemWrapper> entityModifier)
@@ -159,11 +159,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
       return Task.FromResult (new EntityVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime));
     }
 
-    public Task Delete (string entityId,DateTime version)
+    public Task<bool> TryDelete (string entityId,DateTime version)
     {
       var entityWithId = Get (new[] { entityId }, NullLoadEntityLogger.Instance, default(Tcontext)).Result.SingleOrDefault ();
       if (entityWithId == null)
-        return Task.FromResult (0);
+        return Task.FromResult (true);
 
       using (var contact = entityWithId.Entity)
       {
@@ -185,7 +185,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         contact.Inner.Delete();
       }
 
-      return Task.FromResult (0);
+      return Task.FromResult (true);
     }
 
     public Task<EntityVersion<string, DateTime>> Create (Func<ContactItemWrapper, ContactItemWrapper> entityInitializer)

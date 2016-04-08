@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace CalDavDataAccessIntegrationTests
@@ -26,22 +27,10 @@ namespace CalDavDataAccessIntegrationTests
       get { return "Google-TestCal"; }
     }
 
-    [Ignore ("Google doesnt create a new entity in that case, it fails with precondition.")]
-    public override async System.Threading.Tasks.Task UpdateNonExistingEntity_CreatesNewEntity ()
+    [Ignore ("Google performs deletion even with wrong etag.")]
+    public async override Task TryDeleteEntityWithWrongVersion ()
     {
-      await base.UpdateNonExistingEntity_CreatesNewEntity();
-    }
-    
-    [Ignore ("Google doesnt fails with preconditions on DELETE.")]
-    public override async System.Threading.Tasks.Task DeleteEntityWithWrongVersion_PreconditionFails ()
-    {
-      await base.DeleteEntityWithWrongVersion_PreconditionFails ();
-    }
-
-    [Ignore ("Google doesnt fails with preconditions on DELETE.")]
-    public override async System.Threading.Tasks.Task DeleteNonExistingEntity_PreconditionFails ()
-    {
-      await base.DeleteNonExistingEntity_PreconditionFails ();
+      await base.TryDeleteEntityWithWrongVersion ();
     }
   }
 }

@@ -76,7 +76,7 @@ namespace GenSync.UnitTests.Synchronization.Stubs
       EntityVersionAndContentById.Remove (entityId);
     }
 
-    public Task Delete (Identifier entityId, int version)
+    public Task<bool> TryDelete (Identifier entityId, int version)
     {
       if (!EntityVersionAndContentById.ContainsKey (entityId))
         throw new Exception ("tried to delete non existing entity!");
@@ -85,10 +85,10 @@ namespace GenSync.UnitTests.Synchronization.Stubs
         throw new Exception ("tried to delete stale version!");
 
       EntityVersionAndContentById.Remove (entityId);
-      return Task.FromResult (0);
+      return Task.FromResult (true);
     }
 
-    public Task<EntityVersion<Identifier, int>> Update (
+    public Task<EntityVersion<Identifier, int>> TryUpdate (
         Identifier entityId,
         int entityVersion,
         string entityToUpdate,

@@ -61,8 +61,11 @@ namespace GenSync.EntityRepositories
       {
         try
         {
-          var result = await _inner.Update (job.EntityId, job.Version, job.EntityToUpdate, job.UpdateEntity);
-          job.NotifyOperationSuceeded (result);
+          var result = await _inner.TryUpdate (job.EntityId, job.Version, job.EntityToUpdate, job.UpdateEntity);
+          if (result != null)
+            job.NotifyOperationSuceeded (result);
+          else
+            job.NotifyEntityNotFound();
         }
         catch (Exception x)
         {
@@ -75,8 +78,10 @@ namespace GenSync.EntityRepositories
       {
         try
         {
-          await _inner.Delete (job.EntityId, job.Version);
-          job.NotifyOperationSuceeded();
+          if (await _inner.TryDelete (job.EntityId, job.Version))
+            job.NotifyOperationSuceeded();
+          else
+            job.NotifyEntityNotFound();
         }
         catch (Exception x)
         {

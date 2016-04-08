@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using NUnit.Framework;
 
@@ -31,23 +32,16 @@ namespace CalDavDataAccessIntegrationTests
     {
       get { return ServerAdapterType.WebDavHttpClientBased; }
     }
-
-    [Ignore ("Sogo does not fail with precondition in that case")]
-    public override async System.Threading.Tasks.Task UpdateNonExistingEntity_PreconditionFails ()
+ 
+    public async override Task TryDeleteEntityWithWrongVersion ()
     {
-      await base.UpdateNonExistingEntity_PreconditionFails();
+      await base.TryDeleteEntityWithWrongVersion ();
     }
 
-    [Ignore ("Sogo doesnt fails with preconditions on DELETE.")]
-    public override async System.Threading.Tasks.Task DeleteEntityWithWrongVersion_PreconditionFails ()
+    [Ignore ("Sogo creates a new entity, when updating a non existing one")]
+    public override Task UpdateNonExistingEntity ()
     {
-      await base.DeleteEntityWithWrongVersion_PreconditionFails();
-    }
-
-    [Ignore ("Sogo doesnt fails with preconditions on DELETE.")]
-    public override async System.Threading.Tasks.Task DeleteNonExistingEntity_PreconditionFails ()
-    {
-      await base.DeleteNonExistingEntity_PreconditionFails();
+      return base.UpdateNonExistingEntity ();
     }
   }
 }
