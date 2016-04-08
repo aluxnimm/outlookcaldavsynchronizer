@@ -18,7 +18,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using System.Xml.Serialization;
+using log4net;
 
 namespace GenSync.EntityRelationManagement
 {
@@ -38,8 +40,11 @@ namespace GenSync.EntityRelationManagement
   public class EntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TEntityRelationData, TBtypeEntityId, TBtypeEntityVersion> : IEntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
       where TEntityRelationData : IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
   {
+    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);
+
     private readonly XmlSerializer _serializer = new XmlSerializer (typeof (List<TEntityRelationData>));
     private readonly string _relationStorageFile;
+    private bool _ignoreInvalidXml = true;
 
     public EntityRelationDataAccess (string dataDirectory)
     {
@@ -61,14 +66,35 @@ namespace GenSync.EntityRelationManagement
 
       using (var stream = CreateInputStream())
       {
-        var result = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
-        foreach (var d in (List<TEntityRelationData>) _serializer.Deserialize (stream))
+        List<TEntityRelationData> entityRelationDatas;
+
+        try
         {
-          result.Add (d);
+          entityRelationDatas = (List<TEntityRelationData>) _serializer.Deserialize (stream);
+        }
+        catch (Exception x) when (_ignoreInvalidXml && IsXmlException(x))
+        {
+          s_logger.Warn ("Error when deserializing EntityRelationData. Ignoring error.", x);
+          return null;
         }
 
-        return result;
+        return entityRelationDatas
+          .Select (d => (IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>) d)
+          .ToList();
       }
+    }
+
+    private static bool IsXmlException (Exception x)
+    {
+      for (var ex = x; ex != null; ex = ex.InnerException)
+      {
+        if (ex is XmlException)
+        {
+          return true;
+        }
+      }
+
+      return false;
     }
 
     public void SaveEntityRelationData (List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> data)
@@ -82,6 +108,8 @@ namespace GenSync.EntityRelationManagement
       {
         _serializer.Serialize (stream, typedData);
       }
+
+      _ignoreInvalidXml = false;
     }
 
     private Stream CreateOutputStream ()
