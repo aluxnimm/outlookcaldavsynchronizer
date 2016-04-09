@@ -657,6 +657,7 @@
     <Resource Include="Resources\Add.png" />
     <Resource Include="Resources\Copy.png" />
     <Resource Include="Resources\Delete.png" />
+    <Resource Include="Resources\logo_sarenet.png" />
     <Content Include="Resources\outlookcaldavsynchronizerlogoarrow.png" />
   </ItemGroup>
   <ItemGroup>

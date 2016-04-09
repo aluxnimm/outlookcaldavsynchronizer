@@ -145,6 +145,8 @@ namespace CalDavSynchronizer.Contracts
           return "https://caldav.yandex.ru";
         case ProfileType.GmxCalendar:
           return "https://caldav.gmx.net";
+        case ProfileType.Sarenet:
+          return "https://configurator.organizer.sarenet.es/androidconfigurator.php";
         default:
           return null;
       }

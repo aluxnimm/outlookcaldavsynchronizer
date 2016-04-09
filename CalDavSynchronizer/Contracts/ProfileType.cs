@@ -29,6 +29,7 @@ namespace CalDavSynchronizer.Contracts
     Fruux,
     Posteo,
     Yandex,
-    GmxCalendar
+    GmxCalendar,
+    Sarenet
   }
 }
