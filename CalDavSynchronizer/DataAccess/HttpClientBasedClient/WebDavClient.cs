@@ -66,11 +66,12 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
     {
       try
       {
-        using (var response = ExecuteWebDavRequest (url, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody))
+        var response = await ExecuteWebDavRequest (url, httpMethod, depth, ifMatch, ifNoneMatch, mediaType, requestBody);
+        using (response.Item2)
         {
-          using (var responseStream = await (await response).Item2.Content.ReadAsStreamAsync())
+          using (var responseStream = await response.Item2.Content.ReadAsStreamAsync())
           {
-            return CreateXmlDocument (responseStream);
+            return CreateXmlDocument (responseStream, response.Item3);
           }
         }
       }
@@ -103,7 +104,7 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
       }
     }
 
-    private async Task<Tuple<HttpResponseHeaders, HttpResponseMessage>> ExecuteWebDavRequest (
+    private async Task<Tuple<HttpResponseHeaders, HttpResponseMessage,Uri>> ExecuteWebDavRequest (
         Uri url,
         string httpMethod,
         int? depth,
@@ -169,7 +170,7 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
 
         await EnsureSuccessStatusCode (response);
 
-        return Tuple.Create (headersFromFirstCall ?? response.Headers, response);
+        return Tuple.Create (headersFromFirstCall ?? response.Headers, response, url);
       }
       catch (Exception)
       {

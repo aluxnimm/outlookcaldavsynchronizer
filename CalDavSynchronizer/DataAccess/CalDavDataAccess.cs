@@ -61,47 +61,38 @@ namespace CalDavSynchronizer.DataAccess
       {
         var autodiscoveryUrl = useWellKnownUrl ? AutoDiscoveryUrl : _serverUrl;
 
-        var properties = await GetCurrentUserPrincipal (autodiscoveryUrl);
-
-        XmlNode principal = properties.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-principal", properties.XmlNamespaceManager);
-
-        // changes to handle Zoho Calendar
-        // patch from Suki Hirata <thirata@outlook.com>
-        if (null == principal)
-        {
-          principal = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:principal-URL", properties.XmlNamespaceManager);
-        }
+        var currentUserPrincipalUrl = await GetCurrentUserPrincipalUrl (autodiscoveryUrl);
 
         var cals = new List<Tuple<Uri, string, ArgbColor?>>();
 
-        if (principal != null && !string.IsNullOrEmpty (principal.InnerText))
+        if (currentUserPrincipalUrl != null)
         {
-          properties = await GetCalendarHomeSet (new Uri (autodiscoveryUrl.GetLeftPart (UriPartial.Authority) + principal.InnerText));
+          var calendarHomeSetProperties = await GetCalendarHomeSet (currentUserPrincipalUrl);
 
-          XmlNode homeSet = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/C:calendar-home-set", properties.XmlNamespaceManager);
+          XmlNode homeSetNode = calendarHomeSetProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/C:calendar-home-set", calendarHomeSetProperties.XmlNamespaceManager);
 
-          if (homeSet != null && !string.IsNullOrEmpty (homeSet.InnerText))
+          if (homeSetNode != null && !string.IsNullOrEmpty (homeSetNode.InnerText))
           {
-            properties = await ListCalendars (new Uri (autodiscoveryUrl.GetLeftPart (UriPartial.Authority) + homeSet.InnerText));
+            var calendarDocument = await ListCalendars (new Uri (calendarHomeSetProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + homeSetNode.InnerText));
 
-            XmlNodeList responseNodes = properties.XmlDocument.SelectNodes ("/D:multistatus/D:response", properties.XmlNamespaceManager);
+            XmlNodeList responseNodes = calendarDocument.XmlDocument.SelectNodes ("/D:multistatus/D:response", calendarDocument.XmlNamespaceManager);
 
             foreach (XmlElement responseElement in responseNodes)
             {
-              var urlNode = responseElement.SelectSingleNode ("D:href", properties.XmlNamespaceManager);
-              var displayNameNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:displayname", properties.XmlNamespaceManager);
+              var urlNode = responseElement.SelectSingleNode ("D:href", calendarDocument.XmlNamespaceManager);
+              var displayNameNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:displayname", calendarDocument.XmlNamespaceManager);
               if (urlNode != null && displayNameNode != null)
               {
-                XmlNode isCollection = responseElement.SelectSingleNode ("D:propstat/D:prop/D:resourcetype/C:calendar", properties.XmlNamespaceManager);
+                XmlNode isCollection = responseElement.SelectSingleNode ("D:propstat/D:prop/D:resourcetype/C:calendar", calendarDocument.XmlNamespaceManager);
                 if (isCollection != null)
                 {
-                  var calendarColorNode = responseElement.SelectSingleNode("D:propstat/D:prop/E:calendar-color", properties.XmlNamespaceManager);
+                  var calendarColorNode = responseElement.SelectSingleNode("D:propstat/D:prop/E:calendar-color", calendarDocument.XmlNamespaceManager);
                   ArgbColor? calendarColor = null;
                   if (calendarColorNode != null && calendarColorNode.InnerText.Length >=7)
                   {
                     calendarColor = ArgbColor.FromRgbaHexStringWithOptionalANoThrow(calendarColorNode.InnerText);
                   }
-                  var uri = UriHelper.UnescapeRelativeUri (autodiscoveryUrl, urlNode.InnerText);
+                  var uri = UriHelper.UnescapeRelativeUri (calendarDocument.DocumentUri, urlNode.InnerText);
                   cals.Add (Tuple.Create (uri, displayNameNode.InnerText, calendarColor));
                 }
               }
@@ -118,6 +109,20 @@ namespace CalDavSynchronizer.DataAccess
           throw;
       }
     }
+
+    private async Task<Uri> GetCurrentUserPrincipalUrl (Uri calenderUrl)
+    {
+      var principalProperties = await GetCurrentUserPrincipal (calenderUrl);
+
+      XmlNode principalUrlNode = principalProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-principal", principalProperties.XmlNamespaceManager) ??
+                                 principalProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:principal-URL", principalProperties.XmlNamespaceManager);
+
+      if (principalUrlNode != null && !string.IsNullOrEmpty (principalUrlNode.InnerText))
+        return new Uri (principalProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + principalUrlNode.InnerText);
+      else
+        return null;
+    }
+
 
     private Uri AutoDiscoveryUrl
     {

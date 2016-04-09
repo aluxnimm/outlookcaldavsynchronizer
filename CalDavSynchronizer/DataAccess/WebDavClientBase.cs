@@ -31,7 +31,7 @@ namespace CalDavSynchronizer.DataAccess
       _acceptInvalidChars = acceptInvalidChars;
     }
 
-    protected XmlDocumentWithNamespaceManager CreateXmlDocument (Stream webDavXmlStream)
+    protected XmlDocumentWithNamespaceManager CreateXmlDocument (Stream webDavXmlStream, Uri uri)
     {
       var responseBody = DeserializeXmlStream (webDavXmlStream);
 
@@ -42,7 +42,7 @@ namespace CalDavSynchronizer.DataAccess
       namespaceManager.AddNamespace ("A", "urn:ietf:params:xml:ns:carddav");
       namespaceManager.AddNamespace ("E", "http://apple.com/ns/ical/");
 
-      return new XmlDocumentWithNamespaceManager (responseBody, namespaceManager);
+      return new XmlDocumentWithNamespaceManager (responseBody, namespaceManager, uri);
     }
 
     private XmlDocument DeserializeXmlStream (Stream webDavXmlStream)

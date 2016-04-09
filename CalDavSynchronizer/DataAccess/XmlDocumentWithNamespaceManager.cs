@@ -21,13 +21,15 @@ namespace CalDavSynchronizer.DataAccess
 {
   public class XmlDocumentWithNamespaceManager
   {
-    public XmlDocumentWithNamespaceManager (XmlDocument xmlDocument, XmlNamespaceManager xmlNamespaceManager)
+    public XmlDocumentWithNamespaceManager (XmlDocument xmlDocument, XmlNamespaceManager xmlNamespaceManager, Uri documentUri)
     {
       XmlDocument = xmlDocument;
       XmlNamespaceManager = xmlNamespaceManager;
+      DocumentUri = documentUri;
     }
 
-    public XmlDocument XmlDocument { get; private set; }
-    public XmlNamespaceManager XmlNamespaceManager { get; private set; }
+    public XmlDocument XmlDocument { get;  }
+    public XmlNamespaceManager XmlNamespaceManager { get; }
+    public Uri DocumentUri { get; }
   }
 }
