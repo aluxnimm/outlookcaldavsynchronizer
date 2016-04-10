@@ -26,29 +26,30 @@ namespace CalDavSynchronizer.Ui.Options
 {
   public partial class SelectResourceForm : Form
   {
-    public string SelectedUrl { get; private set; }
+    public object SelectedObject { get; private set; }
     public ResourceType ResourceType { get; private set; }
 
     public SelectResourceForm (
-      IReadOnlyList<Tuple<Uri, string, ArgbColor?>> caldendars, 
-      IReadOnlyList<Tuple<Uri, string>> addressBooks, 
-      IReadOnlyList<Tuple<string, string>> taskLists,
-      ResourceType initialResourceTabToDisplay)
+      ResourceType initialResourceTabToDisplay,
+      IReadOnlyList<CalendarData> caldendars = null, 
+      IReadOnlyList<AddressBookData> addressBooks = null, 
+      IReadOnlyList<TaskListData> taskLists = null)
     {
       InitializeComponent();
-      _calendarDataGridView.DataSource = caldendars;
+
+      _calendarDataGridView.DataSource = caldendars ?? new CalendarData[] {};
       _calendarDataGridView.Columns[0].HeaderText = "CalDav Url";
       _calendarDataGridView.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
       _calendarDataGridView.Columns[1].HeaderText = "DisplayName";
       _calendarDataGridView.Columns[2].HeaderText = "Col";
       _calendarDataGridView.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
 
-      _addressBookDataGridView.DataSource = addressBooks;
+      _addressBookDataGridView.DataSource = addressBooks ?? new AddressBookData[] { };
       _addressBookDataGridView.Columns[0].HeaderText = "CardDav Url";
       _addressBookDataGridView.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
       _addressBookDataGridView.Columns[1].HeaderText = "DisplayName";
 
-      if (taskLists.Count > 0)
+      if (taskLists?.Count > 0)
       {
         _tasksDataGridView.DataSource = taskLists;
         _tasksDataGridView.Columns[0].HeaderText = "Task List Id";
@@ -85,7 +86,7 @@ namespace CalDavSynchronizer.Ui.Options
     {
       if (e.RowIndex >= 0)
       {
-        SelectedUrl = _calendarDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString();
+        SelectedObject = _calendarDataGridView.Rows[e.RowIndex].DataBoundItem;
         ResourceType = ResourceType.Calendar;
         DialogResult = DialogResult.OK;
       }
@@ -95,7 +96,7 @@ namespace CalDavSynchronizer.Ui.Options
     {
       if (e.RowIndex >= 0)
       {
-        SelectedUrl = _addressBookDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString();
+        SelectedObject = _addressBookDataGridView.Rows[e.RowIndex].DataBoundItem;
         ResourceType = ResourceType.AddressBook;
         DialogResult = DialogResult.OK;
       }
@@ -149,7 +150,7 @@ namespace CalDavSynchronizer.Ui.Options
       }
       else
       {
-        SelectedUrl = visibleGrid.SelectedRows[0].Cells[0].Value.ToString();
+        SelectedObject = visibleGrid.SelectedRows[0].DataBoundItem;
         DialogResult = DialogResult.OK;
       }
     }
@@ -158,7 +159,7 @@ namespace CalDavSynchronizer.Ui.Options
     {
       if (e.RowIndex >= 0)
       {
-        SelectedUrl = _tasksDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString ();
+        SelectedObject = _tasksDataGridView.Rows[e.RowIndex].DataBoundItem;
         ResourceType = ResourceType.TaskList;
         DialogResult = DialogResult.OK;
       }

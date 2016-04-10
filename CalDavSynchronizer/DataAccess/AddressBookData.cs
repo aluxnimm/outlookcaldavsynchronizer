@@ -14,31 +14,21 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
-using CalDavSynchronizer.Ui.ConnectionTests;
+using CalDavSynchronizer.Utilities;
 
-namespace CalDavSynchronizer.Ui.Options
+namespace CalDavSynchronizer.DataAccess
 {
-  public struct AutoDiscoveryResult
+  public class AddressBookData
   {
-    private readonly AutoDiscoverResultStatus _status;
-    private readonly Uri _ressourceUrl;
+    public Uri Uri { get; }
+    public string Name { get; }
 
-    public AutoDiscoveryResult (Uri ressourceUrl, AutoDiscoverResultStatus status)
-        : this()
+    public AddressBookData (Uri uri, string name)
     {
-      _status = status;
-      _ressourceUrl = ressourceUrl;
-    }
-
-    public AutoDiscoverResultStatus Status
-    {
-      get { return _status; }
-    }
-
-    public Uri RessourceUrl
-    {
-      get { return _ressourceUrl; }
+      Uri = uri;
+      Name = name;
     }
   }
 }

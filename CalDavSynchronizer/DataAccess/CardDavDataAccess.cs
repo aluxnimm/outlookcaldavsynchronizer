@@ -47,7 +47,7 @@ namespace CalDavSynchronizer.DataAccess
       return IsResourceType ("A", "addressbook");
     }
 
-    public async Task<IReadOnlyList<Tuple<Uri, string>>> GetUserAddressBooksNoThrow (bool useWellKnownUrl)
+    public async Task<IReadOnlyList<AddressBookData>> GetUserAddressBooksNoThrow (bool useWellKnownUrl)
     {
       try
       {
@@ -62,7 +62,7 @@ namespace CalDavSynchronizer.DataAccess
           principal = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:principal-URL", properties.XmlNamespaceManager);
         }
 
-        var addressbooks = new List<Tuple<Uri, string>>();
+        var addressbooks = new List<AddressBookData> ();
 
         if (principal != null && !string.IsNullOrEmpty (principal.InnerText))
         {
@@ -85,8 +85,7 @@ namespace CalDavSynchronizer.DataAccess
                 XmlNode isCollection = responseElement.SelectSingleNode ("D:propstat/D:prop/D:resourcetype/A:addressbook", properties.XmlNamespaceManager);
                 if (isCollection != null)
                 {
-                  var uri = UriHelper.UnescapeRelativeUri (autodiscoveryUrl, urlNode.InnerText);
-                  addressbooks.Add (Tuple.Create (uri, displayNameNode.InnerText));
+                  addressbooks.Add (new AddressBookData (new Uri(autodiscoveryUrl, urlNode.InnerText), displayNameNode.InnerText));
                 }
               }
             }
@@ -97,7 +96,7 @@ namespace CalDavSynchronizer.DataAccess
       catch (Exception x)
       {
         if (x.Message.Contains ("404") || x.Message.Contains ("405") || x is XmlException)
-          return new List<Tuple<Uri, string>>();
+          return new AddressBookData[] {};
         else
           throw;
       }

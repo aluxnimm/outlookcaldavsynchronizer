@@ -283,9 +283,12 @@
     <Compile Include="Contracts\ProfileEntry.cs" />
     <Compile Include="Contracts\ProxyOptions.cs" />
     <Compile Include="Contracts\ServerAdapterType.cs" />
+    <Compile Include="DataAccess\TaskListData.cs" />
+    <Compile Include="DataAccess\AddressBookData.cs" />
     <Compile Include="DataAccess\GlobalOptionsDataAccess.cs" />
     <Compile Include="DataAccess\IGlobalOptionsDataAccess.cs" />
     <Compile Include="DataAccess\WebDavClientBase.cs" />
+    <Compile Include="DataAccess\CalendarData.cs" />
     <Compile Include="Implementation\Common\NameSpaceExtensions.cs" />
     <Compile Include="Implementation\Common\OutlookUtility.cs" />
     <Compile Include="Implementation\GoogleContacts\GoogleApiOperationExecutor.cs" />
@@ -307,6 +310,7 @@
     <Compile Include="Scheduling\ISynchronizationRunLogger.cs" />
     <Compile Include="Scheduling\SchedulerStatusEventArgs.cs" />
     <Compile Include="Scheduling\SynchronizationStatus.cs" />
+    <Compile Include="Ui\Options\AutoDiscoverResultStatus.cs" />
     <Compile Include="Ui\Options\ISynchronizationProfilesViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\TimeRangeViewModel.cs" />
     <Compile Include="Ui\Options\Views\TimeRangeView.xaml.cs">

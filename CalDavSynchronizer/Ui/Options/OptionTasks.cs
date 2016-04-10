@@ -245,35 +245,72 @@ namespace CalDavSynchronizer.Ui.Options
         MessageBox.Show ("Connection test successful.", ConnectionTestCaption);
     }
 
-    public static async Task<AutoDiscoveryResult> DoAutoDiscovery (Uri autoDiscoveryUri, IWebDavClient webDavClient, bool useWellKnownCalDav, bool useWellKnownCardDav, OlItemType? selectedOutlookFolderType)
+    public static async Task<AutoDiscoveryResult> DoAutoDiscovery (Uri autoDiscoveryUri, IWebDavClient webDavClient, bool useWellKnownCalDav, bool useWellKnownCardDav, OlItemType selectedOutlookFolderType)
     {
-      var calDavDataAccess = new CalDavDataAccess (autoDiscoveryUri, webDavClient);
-      var foundCaldendars = await calDavDataAccess.GetUserCalendarsNoThrow (useWellKnownCalDav);
 
-      var cardDavDataAccess = new CardDavDataAccess (autoDiscoveryUri, webDavClient);
-      IReadOnlyList<Tuple<Uri, string>> foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow (useWellKnownCardDav);
-
-      if (foundCaldendars.Count > 0 || foundAddressBooks.Count > 0)
+      switch (selectedOutlookFolderType)
       {
-        using (SelectResourceForm listCalendarsForm =
-            new SelectResourceForm (
-                foundCaldendars,
-                foundAddressBooks,
-                new Tuple<string, string>[0],
-                selectedOutlookFolderType == OlItemType.olContactItem ? ResourceType.AddressBook : ResourceType.Calendar))
-        {
-          if (listCalendarsForm.ShowDialog() == DialogResult.OK)
-            return new AutoDiscoveryResult (new Uri (autoDiscoveryUri.GetLeftPart (UriPartial.Authority) + listCalendarsForm.SelectedUrl), false, listCalendarsForm.ResourceType);
+        case OlItemType.olAppointmentItem:
+        case OlItemType.olTaskItem:
+          var calDavDataAccess = new CalDavDataAccess (autoDiscoveryUri, webDavClient);
+          var foundCaldendars = await calDavDataAccess.GetUserCalendarsNoThrow (useWellKnownCalDav);
+          if (foundCaldendars.Count == 0)
+            return new AutoDiscoveryResult (null, AutoDiscoverResultStatus.NoResourcesFound);
+          var selectedCalendar = SelectCalendar (foundCaldendars);
+          if (selectedCalendar != null)
+            return new AutoDiscoveryResult (selectedCalendar.Uri, AutoDiscoverResultStatus.ResourceSelected);
           else
-            return new AutoDiscoveryResult (null, true, ResourceType.None);
-        }
-      }
-      else
-      {
-        return new AutoDiscoveryResult (null, false, ResourceType.None);
+            return new AutoDiscoveryResult (null, AutoDiscoverResultStatus.UserCancelled);
+        case OlItemType.olContactItem:
+          var cardDavDataAccess = new CardDavDataAccess (autoDiscoveryUri, webDavClient);
+          var foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow (useWellKnownCardDav);
+          if (foundAddressBooks.Count == 0)
+            return new AutoDiscoveryResult (null, AutoDiscoverResultStatus.NoResourcesFound);
+          var selectedAddressBook = SelectAddressBook (foundAddressBooks);
+          if (selectedAddressBook != null)
+            return new AutoDiscoveryResult (selectedAddressBook.Uri, AutoDiscoverResultStatus.ResourceSelected);
+          else
+            return new AutoDiscoveryResult (null, AutoDiscoverResultStatus.UserCancelled);
+        default:
+          throw new NotImplementedException ($"'{selectedOutlookFolderType}' not implemented.");
       }
     }
-    
+
+
+    static CalendarData SelectCalendar (IReadOnlyList<CalendarData> items)
+    {
+      using (SelectResourceForm selectResourceForm = new SelectResourceForm (ResourceType.Calendar, items))
+      {
+        if (selectResourceForm.ShowDialog() == DialogResult.OK)
+          return (CalendarData) selectResourceForm.SelectedObject;
+        else
+          return null;
+      }
+    }
+
+    static AddressBookData SelectAddressBook (IReadOnlyList<AddressBookData> items)
+    {
+      using (SelectResourceForm selectResourceForm = new SelectResourceForm (ResourceType.AddressBook,null, items))
+      {
+        if (selectResourceForm.ShowDialog () == DialogResult.OK)
+          return (AddressBookData) selectResourceForm.SelectedObject;
+        else
+          return null;
+      }
+    }
+
+    static TaskListData SelectTaskList (IReadOnlyList<TaskListData> items)
+    {
+      using (SelectResourceForm selectResourceForm = new SelectResourceForm (ResourceType.TaskList, null, null, items))
+      {
+        if (selectResourceForm.ShowDialog () == DialogResult.OK)
+          return (TaskListData) selectResourceForm.SelectedObject;
+        else
+          return null;
+      }
+    }
+
+
     public static string GetFolderAccountNameOrNull (NameSpace session, string folderStoreId)
     {
       if (ThisAddIn.IsOutlookVersionSmallerThan2010)
@@ -332,27 +369,32 @@ namespace CalDavSynchronizer.Ui.Options
 
       if (ConnectionTester.RequiresAutoDiscovery (enteredUri))
       {
-        var autodiscoveryResult = await DoAutoDiscovery (enteredUri, webDavClient, true, true, environment.OutlookFolderType);
-        if (autodiscoveryResult.WasCancelled)
-          return;
-        if (autodiscoveryResult.RessourceUrl != null)
+        var autodiscoveryResult = await DoAutoDiscovery (enteredUri, webDavClient, true, true, outlookFolderType);
+        switch (autodiscoveryResult.Status)
         {
-          autoDiscoveredUrl = autodiscoveryResult.RessourceUrl;
-        }
-        else
-        {
-          var autodiscoveryResult2 = await DoAutoDiscovery (enteredUri.AbsolutePath.EndsWith ("/") ? enteredUri : new Uri (enteredUri.ToString() + "/"), webDavClient, false, false, environment.OutlookFolderType);
-          if (autodiscoveryResult2.WasCancelled)
+          case AutoDiscoverResultStatus.UserCancelled:
             return;
-          if (autodiscoveryResult2.RessourceUrl != null)
-          {
-            autoDiscoveredUrl = autodiscoveryResult2.RessourceUrl;
-          }
-          else
-          {
-            MessageBox.Show ("No resources were found via autodiscovery!", ConnectionTestCaption);
-            return;
-          }
+          case AutoDiscoverResultStatus.ResourceSelected:
+            autoDiscoveredUrl = autodiscoveryResult.RessourceUrl;
+            break;
+          case AutoDiscoverResultStatus.NoResourcesFound:
+            var autodiscoveryResult2 = await DoAutoDiscovery (enteredUri.AbsolutePath.EndsWith ("/") ? enteredUri : new Uri (enteredUri.ToString() + "/"), webDavClient, false, false, outlookFolderType);
+            switch (autodiscoveryResult2.Status)
+            {
+              case AutoDiscoverResultStatus.UserCancelled:
+                return;
+              case AutoDiscoverResultStatus.ResourceSelected:
+                autoDiscoveredUrl = autodiscoveryResult2.RessourceUrl;
+                break;
+              case AutoDiscoverResultStatus.NoResourcesFound:
+                MessageBox.Show ("No resources were found via autodiscovery!", ConnectionTestCaption);
+                return;
+              default:
+                throw new NotImplementedException (autodiscoveryResult2.Status.ToString ());
+            }
+            break;
+          default:
+            throw new NotImplementedException (autodiscoveryResult.Status.ToString());
         }
       }
       else
@@ -371,26 +413,34 @@ namespace CalDavSynchronizer.Ui.Options
         }
         else
         {
-          var autodiscoveryResult = await DoAutoDiscovery (enteredUri, webDavClient, false, false, environment.OutlookFolderType);
-          if (autodiscoveryResult.WasCancelled)
-            return;
-          if (autodiscoveryResult.RessourceUrl != null)
+          var autodiscoveryResult = await DoAutoDiscovery (enteredUri, webDavClient, false, false, outlookFolderType);
+          switch (autodiscoveryResult.Status)
           {
-            autoDiscoveredUrl = autodiscoveryResult.RessourceUrl;
-          }
-          else
-          {
-            var autodiscoveryResult2 = await DoAutoDiscovery (enteredUri, webDavClient, true, true, environment.OutlookFolderType);
-            if (autodiscoveryResult2.RessourceUrl != null)
-            {
-              autoDiscoveredUrl = autodiscoveryResult2.RessourceUrl;
-            }
-            else
-            {
-              MessageBox.Show ("No resources were found via autodiscovery!", ConnectionTestCaption);
+            case AutoDiscoverResultStatus.UserCancelled:
               return;
-            }
+            case AutoDiscoverResultStatus.ResourceSelected:
+              autoDiscoveredUrl = autodiscoveryResult.RessourceUrl;
+              break;
+            case AutoDiscoverResultStatus.NoResourcesFound:
+              var autodiscoveryResult2 = await DoAutoDiscovery (enteredUri, webDavClient, true, true, outlookFolderType);
+              switch (autodiscoveryResult2.Status)
+              {
+                case AutoDiscoverResultStatus.UserCancelled:
+                  return;
+                case AutoDiscoverResultStatus.ResourceSelected:
+                  autoDiscoveredUrl = autodiscoveryResult2.RessourceUrl;
+                  break;
+                case AutoDiscoverResultStatus.NoResourcesFound:
+                  MessageBox.Show ("No resources were found via autodiscovery!", ConnectionTestCaption);
+                  return;
+                default:
+                  throw new NotImplementedException (autodiscoveryResult2.Status.ToString ());
+              }
+              break;
+            default:
+              throw new NotImplementedException (autodiscoveryResult.Status.ToString ());
           }
+         
         }
       }
 
@@ -450,57 +500,15 @@ namespace CalDavSynchronizer.Ui.Options
 
       if (ConnectionTester.RequiresAutoDiscovery (enteredUri))
       {
-        var calDavDataAccess = new CalDavDataAccess (enteredUri, webDavClient);
-        var foundCaldendars = await calDavDataAccess.GetUserCalendarsNoThrow (false);
-
-        var cardDavDataAccess = new CardDavDataAccess (enteredUri, webDavClient);
-        IReadOnlyList<Tuple<Uri, string>> foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow (true);
-
-        if (foundCaldendars.Count > 0 || foundAddressBooks.Count > 0)
+        var autoDiscoveryResult = await DoAutoDiscovery (enteredUri, webDavClient, false, true, outlookFolderType);
+        switch (autoDiscoveryResult.Status)
         {
-          ResourceType initalResourceType;
-          if (currentOptions.OutlookFolderType == OlItemType.olContactItem)
-          {
-            initalResourceType = ResourceType.AddressBook;
-          }
-          else if (currentOptions.OutlookFolderType == OlItemType.olTaskItem)
-          {
-            initalResourceType = ResourceType.TaskList;
-          }
-          else
-          {
-            initalResourceType = ResourceType.Calendar;
-          }
-
-          using (SelectResourceForm listCalendarsForm =
-              new SelectResourceForm (
-                  foundCaldendars,
-                  foundAddressBooks,
-                  new Tuple<string, string>[] { },
-                  initalResourceType))
-          {
-            if (listCalendarsForm.ShowDialog() == DialogResult.OK)
-            {
-              if (listCalendarsForm.ResourceType == ResourceType.TaskList)
-              {
-                autoDiscoveredUrl = null;
-                currentOptions.ServerUrl = listCalendarsForm.SelectedUrl;
-              }
-              else
-              {
-                autoDiscoveredUrl = new Uri (enteredUri.GetLeftPart (UriPartial.Authority) + listCalendarsForm.SelectedUrl);
-              }
-            }
-            else
-            {
-              autoDiscoveredUrl = null;
-            }
-          }
-        }
-        else
-        {
-          MessageBox.Show ("No resources were found via autodiscovery!", ConnectionTestCaption);
-          autoDiscoveredUrl = null;
+          case AutoDiscoverResultStatus.ResourceSelected:
+            autoDiscoveredUrl = autoDiscoveryResult.RessourceUrl;
+            break;
+          default:
+            autoDiscoveredUrl = null;
+            break;
         }
       }
       else
@@ -512,7 +520,6 @@ namespace CalDavSynchronizer.Ui.Options
       {
         currentOptions.ServerUrl = autoDiscoveredUrl.ToString ();
       }
-
       
       var result = await ConnectionTester.TestConnection (new Uri(currentOptions.ServerUrl), webDavClient);
 
@@ -546,21 +553,12 @@ namespace CalDavSynchronizer.Ui.Options
 
         if (taskLists.Items.Any())
         {
-
-          using (SelectResourceForm listCalendarsForm =
-              new SelectResourceForm (
-                  new Tuple<Uri, string, ArgbColor?>[] { },
-                  new Tuple<Uri, string>[] { },
-                  taskLists.Items.Select (i => Tuple.Create (i.Id, i.Title)).ToArray(),
-                  ResourceType.TaskList))
-          {
-            if (listCalendarsForm.ShowDialog() == DialogResult.OK)
-              currentOptions.ServerUrl = listCalendarsForm.SelectedUrl;
-            else
-              return;
-          }
+          var selectedTaskList = SelectTaskList (taskLists.Items.Select (i => new TaskListData (i.Id, i.Title)).ToArray());
+          if (selectedTaskList != null)
+            currentOptions.ServerUrl = selectedTaskList.Id;
+          else
+            return;
         }
-
       }
 
       try

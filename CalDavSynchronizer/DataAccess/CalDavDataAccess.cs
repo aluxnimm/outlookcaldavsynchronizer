@@ -55,7 +55,7 @@ namespace CalDavSynchronizer.DataAccess
       return DoesSupportsReportSet (_serverUrl, 0, "C", "calendar-query");
     }
 
-    public async Task<IReadOnlyList<Tuple<Uri, string, ArgbColor?>>> GetUserCalendarsNoThrow (bool useWellKnownUrl)
+    public async Task<IReadOnlyList<CalendarData>> GetUserCalendarsNoThrow (bool useWellKnownUrl)
     {
       try
       {
@@ -63,7 +63,7 @@ namespace CalDavSynchronizer.DataAccess
 
         var currentUserPrincipalUrl = await GetCurrentUserPrincipalUrl (autodiscoveryUrl);
 
-        var cals = new List<Tuple<Uri, string, ArgbColor?>>();
+        var calendars = new List<CalendarData>();
 
         if (currentUserPrincipalUrl != null)
         {
@@ -92,19 +92,19 @@ namespace CalDavSynchronizer.DataAccess
                   {
                     calendarColor = ArgbColor.FromRgbaHexStringWithOptionalANoThrow(calendarColorNode.InnerText);
                   }
-                  var uri = UriHelper.UnescapeRelativeUri (calendarDocument.DocumentUri, urlNode.InnerText);
-                  cals.Add (Tuple.Create (uri, displayNameNode.InnerText, calendarColor));
+
+                  calendars.Add (new CalendarData (new Uri(calendarDocument.DocumentUri, urlNode.InnerText), displayNameNode.InnerText, calendarColor));
                 }
               }
             }
           }
         }
-        return cals;
+        return calendars;
       }
       catch (Exception x)
       {
         if (x.Message.Contains ("404") || x.Message.Contains ("405") || x is XmlException)
-          return new List<Tuple<Uri, string, ArgbColor?>>();
+          return new CalendarData[] { };
         else
           throw;
       }
