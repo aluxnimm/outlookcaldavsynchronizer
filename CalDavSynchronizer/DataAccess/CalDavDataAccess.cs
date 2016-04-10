@@ -109,21 +109,7 @@ namespace CalDavSynchronizer.DataAccess
           throw;
       }
     }
-
-    private async Task<Uri> GetCurrentUserPrincipalUrl (Uri calenderUrl)
-    {
-      var principalProperties = await GetCurrentUserPrincipal (calenderUrl);
-
-      XmlNode principalUrlNode = principalProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-principal", principalProperties.XmlNamespaceManager) ??
-                                 principalProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:principal-URL", principalProperties.XmlNamespaceManager);
-
-      if (principalUrlNode != null && !string.IsNullOrEmpty (principalUrlNode.InnerText))
-        return new Uri (principalProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + principalUrlNode.InnerText);
-      else
-        return null;
-    }
-
-
+    
     private Uri AutoDiscoveryUrl
     {
       get 

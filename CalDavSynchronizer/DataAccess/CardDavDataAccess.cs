@@ -53,39 +53,32 @@ namespace CalDavSynchronizer.DataAccess
       {
         var autodiscoveryUrl = useWellKnownUrl ? AutoDiscoveryUrl : _serverUrl;
 
-        var properties = await GetCurrentUserPrincipal (autodiscoveryUrl);
+        var currentUserPrincipalUrl = await GetCurrentUserPrincipalUrl (autodiscoveryUrl);
 
-        XmlNode principal = properties.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-principal", properties.XmlNamespaceManager);
+        var addressbooks = new List<AddressBookData>();
 
-        if (null == principal)
+        if (currentUserPrincipalUrl != null)
         {
-          principal = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:principal-URL", properties.XmlNamespaceManager);
-        }
+          var addressBookHomeSetProperties = await GetAddressBookHomeSet (currentUserPrincipalUrl);
 
-        var addressbooks = new List<AddressBookData> ();
+          XmlNode homeSetNode = addressBookHomeSetProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/A:addressbook-home-set", addressBookHomeSetProperties.XmlNamespaceManager);
 
-        if (principal != null && !string.IsNullOrEmpty (principal.InnerText))
-        {
-          properties = await GetAddressBookHomeSet (new Uri (autodiscoveryUrl.GetLeftPart (UriPartial.Authority) + principal.InnerText));
-
-          XmlNode homeSet = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/A:addressbook-home-set", properties.XmlNamespaceManager);
-
-          if (homeSet != null && !string.IsNullOrEmpty (homeSet.InnerText))
+          if (homeSetNode != null && !string.IsNullOrEmpty (homeSetNode.InnerText))
           {
-            properties = await ListAddressBooks (new Uri (autodiscoveryUrl.GetLeftPart (UriPartial.Authority) + homeSet.InnerText));
+            var addressBookDocument = await ListAddressBooks (new Uri (addressBookHomeSetProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + homeSetNode.InnerText));
 
-            XmlNodeList responseNodes = properties.XmlDocument.SelectNodes ("/D:multistatus/D:response", properties.XmlNamespaceManager);
+            XmlNodeList responseNodes = addressBookDocument.XmlDocument.SelectNodes ("/D:multistatus/D:response", addressBookDocument.XmlNamespaceManager);
 
             foreach (XmlElement responseElement in responseNodes)
             {
-              var urlNode = responseElement.SelectSingleNode ("D:href", properties.XmlNamespaceManager);
-              var displayNameNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:displayname", properties.XmlNamespaceManager);
+              var urlNode = responseElement.SelectSingleNode ("D:href", addressBookDocument.XmlNamespaceManager);
+              var displayNameNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:displayname", addressBookDocument.XmlNamespaceManager);
               if (urlNode != null && displayNameNode != null)
               {
-                XmlNode isCollection = responseElement.SelectSingleNode ("D:propstat/D:prop/D:resourcetype/A:addressbook", properties.XmlNamespaceManager);
+                XmlNode isCollection = responseElement.SelectSingleNode ("D:propstat/D:prop/D:resourcetype/A:addressbook", addressBookDocument.XmlNamespaceManager);
                 if (isCollection != null)
                 {
-                  addressbooks.Add (new AddressBookData (new Uri(autodiscoveryUrl, urlNode.InnerText), displayNameNode.InnerText));
+                  addressbooks.Add (new AddressBookData (new Uri (addressBookDocument.DocumentUri, urlNode.InnerText), displayNameNode.InnerText));
                 }
               }
             }
@@ -96,7 +89,7 @@ namespace CalDavSynchronizer.DataAccess
       catch (Exception x)
       {
         if (x.Message.Contains ("404") || x.Message.Contains ("405") || x is XmlException)
-          return new AddressBookData[] {};
+          return new AddressBookData[] { };
         else
           throw;
       }
