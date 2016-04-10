@@ -48,6 +48,7 @@ namespace CalDavSynchronizer.Ui.Options
       _addressBookDataGridView.Columns[0].HeaderText = "CardDav Url";
       _addressBookDataGridView.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
       _addressBookDataGridView.Columns[1].HeaderText = "DisplayName";
+      _addressBookDataGridView.CellFormatting += _addressBookDataGridView_CellFormatting;
 
       if (taskLists?.Count > 0)
       {
@@ -117,6 +118,18 @@ namespace CalDavSynchronizer.Ui.Options
             e.CellStyle.SelectionForeColor = calColor;
           }
         }
+        if (e.ColumnIndex == 0)
+        {
+          e.Value = (e.Value as Uri)?.AbsolutePath;
+        }
+      }
+    }
+
+    private void _addressBookDataGridView_CellFormatting (object sender, DataGridViewCellFormattingEventArgs e)
+    {
+      if (e.ColumnIndex == 0)
+      {
+        e.Value = (e.Value as Uri)?.AbsolutePath;
       }
     }
 
