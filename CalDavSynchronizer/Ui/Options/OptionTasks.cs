@@ -27,6 +27,7 @@ using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.OAuth.Google;
 using CalDavSynchronizer.Ui.ConnectionTests;
+using CalDavSynchronizer.Ui.Options.ResourceSelection.ViewModels;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.Options.ViewModels.Mapping;
 using CalDavSynchronizer.Utilities;
@@ -279,10 +280,10 @@ namespace CalDavSynchronizer.Ui.Options
 
     static CalendarData SelectCalendar (IReadOnlyList<CalendarData> items)
     {
-      using (SelectResourceForm selectResourceForm = new SelectResourceForm (ResourceType.Calendar, items))
+      using (SelectResourceForm selectResourceForm = new SelectResourceForm (ResourceType.Calendar, items.Select (d => new CalendarDataViewModel (d)).ToArray ()))
       {
-        if (selectResourceForm.ShowDialog() == DialogResult.OK)
-          return (CalendarData) selectResourceForm.SelectedObject;
+        if (selectResourceForm.ShowDialog () == DialogResult.OK)
+          return ((CalendarDataViewModel) selectResourceForm.SelectedObject).Model;
         else
           return null;
       }
@@ -290,10 +291,10 @@ namespace CalDavSynchronizer.Ui.Options
 
     static AddressBookData SelectAddressBook (IReadOnlyList<AddressBookData> items)
     {
-      using (SelectResourceForm selectResourceForm = new SelectResourceForm (ResourceType.AddressBook,null, items))
+      using (SelectResourceForm selectResourceForm = new SelectResourceForm (ResourceType.AddressBook,null, items.Select (d => new AddressBookDataViewModel (d)).ToArray ()))
       {
         if (selectResourceForm.ShowDialog () == DialogResult.OK)
-          return (AddressBookData) selectResourceForm.SelectedObject;
+          return ((AddressBookDataViewModel) selectResourceForm.SelectedObject).Model;
         else
           return null;
       }
@@ -301,10 +302,10 @@ namespace CalDavSynchronizer.Ui.Options
 
     static TaskListData SelectTaskList (IReadOnlyList<TaskListData> items)
     {
-      using (SelectResourceForm selectResourceForm = new SelectResourceForm (ResourceType.TaskList, null, null, items))
+      using (SelectResourceForm selectResourceForm = new SelectResourceForm (ResourceType.TaskList, null, null, items.Select (d => new TaskListDataViewModel (d)).ToArray ()))
       {
         if (selectResourceForm.ShowDialog () == DialogResult.OK)
-          return (TaskListData) selectResourceForm.SelectedObject;
+          return ((TaskListDataViewModel) selectResourceForm.SelectedObject).Model;
         else
           return null;
       }

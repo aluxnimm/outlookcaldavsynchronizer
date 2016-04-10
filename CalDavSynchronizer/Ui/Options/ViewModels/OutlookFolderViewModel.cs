@@ -38,17 +38,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private NameSpace _session;
     private ISettingsFaultFinder _faultFinder;
 
-    class FolderDescriptor
-    {
-      public string FolderId { get; }
-      public string StoreId { get; }
-
-      public FolderDescriptor (string folderId, string storeId)
-      {
-        FolderId = folderId;
-        StoreId = storeId;
-      }
-    }
+    
 
     public OutlookFolderViewModel (NameSpace session, ISettingsFaultFinder faultFinder)
     {
