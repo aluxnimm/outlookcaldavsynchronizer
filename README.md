@@ -751,6 +751,15 @@ Check: DefaultCalendarPath
 Then you get the DAV url of the calendar:
     `https://p**-caldav.icloud.com/*********/calendars/********-****-****-****-************/`
 
+### One.com settings ###
+
+The one.com caldav server has problems with escaping, so if your calendar url looks something like
+
+    https://caldav.one.com/calendars/users/USERNAME@DOMAIN.COM/calendar/
+use the url
+
+    https://caldav.one.com/calendars/users/USERNAME%40DOMAIN.COM/calendar/
+
 ### Autodiscovery ###
 
 You can use the exact calendar/addressbook URL or the principal url and use the 'Test settings' button in the option dialog to try to autodiscover available calendars and addressbooks on the server. You can  then choose one of the found calendars or addressbooks in the new window.
