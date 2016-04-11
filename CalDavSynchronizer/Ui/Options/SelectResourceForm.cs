@@ -47,6 +47,7 @@ namespace CalDavSynchronizer.Ui.Options
         _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Uri)].HeaderText = "CalDav Url";
         _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Uri)].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
         _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Name)].HeaderText = "DisplayName";
+        _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Name)].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
         _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Color)].HeaderText = "Col";
         _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Color)].AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
         _calendarDataGridView.Columns[nameof (CalendarDataViewModel.SelectedFolder)].Visible = false;
@@ -107,6 +108,75 @@ namespace CalDavSynchronizer.Ui.Options
           _mainTab.SelectedTab = _tasksPage;
           break;
       }
+    }
+
+    public SelectResourceForm (
+        ResourceType initialResourceTabToDisplay,
+        NameSpace session,
+        IReadOnlyList<CalendarDataViewModel> caldendars = null,
+        IReadOnlyList<AddressBookDataViewModel> addressBooks = null,
+        IReadOnlyList<TaskListDataViewModel> taskLists = null)
+        : this (initialResourceTabToDisplay, caldendars, addressBooks, taskLists)
+    {
+      Width = (int)(Width * 1.4);
+
+      if (caldendars != null)
+        SetupFolderSelectionColumns (_calendarDataGridView, session, OlItemType.olAppointmentItem, OlItemType.olTaskItem);
+
+      if (addressBooks != null)
+        SetupFolderSelectionColumns (_addressBookDataGridView, session, OlItemType.olContactItem);
+
+      if (taskLists != null)
+        SetupFolderSelectionColumns (_tasksDataGridView, session, OlItemType.olTaskItem);
+    }
+
+    private static void SetupFolderSelectionColumns (DataGridView dataGridView, NameSpace session, params OlItemType[] allowedFolderType)
+    {
+      var folderColumn = new DataGridViewTextBoxColumn();
+      folderColumn.HeaderText = "Selected Outlook Folder";
+      folderColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+      dataGridView.Columns.Add (folderColumn);
+
+      var selectFolderColumn = new DataGridViewButtonColumn();
+      selectFolderColumn.UseColumnTextForButtonValue = true;
+      selectFolderColumn.Text = "...";
+      selectFolderColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+      dataGridView.Columns.Add (selectFolderColumn);
+
+      var removeFolderColumn = new DataGridViewButtonColumn();
+      removeFolderColumn.UseColumnTextForButtonValue = true;
+      removeFolderColumn.Text = "x";
+      removeFolderColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+      dataGridView.Columns.Add (removeFolderColumn);
+
+      dataGridView.CellContentClick += (sender, e) =>
+      {
+        var column = dataGridView.Columns[e.ColumnIndex];
+        var row = dataGridView.Rows[e.RowIndex];
+        var viewModel = (ResourceDataViewModelBase) row.DataBoundItem;
+        var folderCell = row.Cells[folderColumn.Index];
+
+        if (column == selectFolderColumn)
+        {
+          var folder = session.PickFolder();
+          if (folder != null)
+          {
+            if (Array.IndexOf (allowedFolderType, folder.DefaultItemType) == -1)
+            {
+              MessageBox.Show ($"Folder has to have item type '{String.Join (", ", allowedFolderType)}'.", "Select folder", MessageBoxButtons.OK, MessageBoxIcon.Error);
+              return;
+            }
+
+            folderCell.Value = folder.Name;
+            viewModel.SelectedFolder = new FolderDescriptor (folder.EntryID, folder.StoreID);
+          }
+        }
+        else if (column == removeFolderColumn)
+        {
+          viewModel.SelectedFolder = null;
+          folderCell.Value = null;
+        }
+      };
     }
 
     private void buttonCancel_Click (object sender, EventArgs e)
