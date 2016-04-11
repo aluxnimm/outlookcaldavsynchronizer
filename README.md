@@ -81,6 +81,18 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 2.0.2 ####
+- New features
+	- Improve event mapping of TRANSP and STATUS to Outlook BusyStatus. (contributed by Florian Saller).
+	- Improve Autodiscovery.
+	- Add ProfileType for Sarenet.
+- Bug fixes
+	- Ignore invalid-xml-errors in EntityRelationDataAccess unless a new version has been saved.
+	- Fetch all Google Contacts with a single request to avoid 503 errors.
+	- Query just contacts from Default Group from Google Contacts API.
+	- Do not log an error if delete or update fails because of concurrency effects.
+	- Only access AddressEntry if recipient can be resolved and catch possible COMExceptions.
+
 #### 2.0.1 ####
 - New features
 	- Initial support for mail.ru
