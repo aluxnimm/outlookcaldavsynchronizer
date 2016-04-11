@@ -1041,10 +1041,21 @@ namespace CalDavSynchronizer.Implementation.Events
 
       foreach (var recipient in source.Recipients.ToSafeEnumerable<Recipient>())
       {
-        string recipientMailAddressOrNull;
-        using (var entryWrapper = GenericComObjectWrapper.Create (recipient.AddressEntry))
+        string recipientMailAddressOrNull = null;
+        try
         {
-          recipientMailAddressOrNull = OutlookUtility.GetEmailAdressOrNull (entryWrapper.Inner, logger, s_logger);
+          if (recipient.Resolve())
+          {
+            using (var entryWrapper = GenericComObjectWrapper.Create (recipient.AddressEntry))
+            {
+              recipientMailAddressOrNull = OutlookUtility.GetEmailAdressOrNull (entryWrapper.Inner, logger, s_logger);
+            }
+          }
+        }
+        catch (COMException ex)
+        {
+          s_logger.Warn ("Can't get AddressEntry of recipient", ex);
+          logger.LogMappingWarning ("Can't get AddressEntry of recipient", ex);
         }
 
         if (!IsOwnIdentity (recipientMailAddressOrNull))
@@ -1124,12 +1135,27 @@ namespace CalDavSynchronizer.Implementation.Events
       }
     }
 
-    private bool IsOwnIdentity (Recipient recipient)
+    private bool IsOwnIdentity (Recipient recipient, IEntityMappingLogger logger)
     {
-      string mailAddress;
-      using (var wrapper = GenericComObjectWrapper.Create (recipient.AddressEntry))
-        mailAddress = OutlookUtility.GetEmailAdressOrNull (wrapper.Inner, NullEntitySynchronizationLogger.Instance, s_logger);
-      return IsOwnIdentity (mailAddress);
+      try
+      {
+        if (recipient.Resolve())
+        {
+          string mailAddress;
+          using (var wrapper = GenericComObjectWrapper.Create (recipient.AddressEntry))
+            mailAddress = OutlookUtility.GetEmailAdressOrNull (wrapper.Inner, NullEntitySynchronizationLogger.Instance,
+              s_logger);
+          return IsOwnIdentity (mailAddress);
+        }
+        else
+          return false;
+      }
+      catch (COMException ex)
+      {
+        s_logger.Warn ("Can't get AddressEntry of recipient", ex);
+        logger.LogMappingWarning ("Can't get AddressEntry of recipient", ex);
+        return false;
+      }
     }
 
     private bool IsOwnIdentity (string mailAddress)
@@ -1648,7 +1674,7 @@ namespace CalDavSynchronizer.Implementation.Events
         {
           var recipient = target.Recipients[i];
           recipientsToDispose.Add (recipient);
-          if (!IsOwnIdentity (recipient))
+          if (!IsOwnIdentity (recipient, logger))
           {
             if (!targetRecipientsWhichShouldRemain.Contains (recipient))
               target.Recipients.Remove (i);
