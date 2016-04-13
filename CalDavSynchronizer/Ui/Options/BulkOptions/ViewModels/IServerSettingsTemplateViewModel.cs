@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -16,25 +16,21 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
+using System.Security;
+using System.Threading.Tasks;
+using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ViewModels
+namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 {
-  class DesignOptionsViewModelParent : IOptionsViewModelParent
+  internal interface IServerSettingsTemplateViewModel 
   {
-    public void RequestCacheDeletion (IOptionsViewModel viewModel)
-    {
-      
-    }
+    Task<ServerResources> GetServerResources (NetworkSettingsViewModel networkSettings, GeneralOptions generalOptions);
+    void SetOptions (Contracts.Options options);
 
-    public void RequestRemoval (IOptionsViewModel viewModel)
-    {
-    
-    }
-
-    public void RequestAdd (IReadOnlyCollection<Contracts.Options> options)
-    {
-    
-    }
+    void FillOptions (Contracts.Options options, CalendarData resource);
+    void FillOptions (Contracts.Options options, AddressBookData resource);
+    void FillOptions (Contracts.Options options, TaskListData resource);
   }
 }

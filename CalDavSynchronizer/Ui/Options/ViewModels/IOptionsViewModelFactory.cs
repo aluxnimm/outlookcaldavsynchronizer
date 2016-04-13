@@ -23,5 +23,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
   internal interface IOptionsViewModelFactory
   {
     List<IOptionsViewModel> Create (IReadOnlyCollection<CalDavSynchronizer.Contracts.Options> options, GeneralOptions generalOptions);
+    IOptionsViewModel CreateTemplate (CalDavSynchronizer.Contracts.Options options, GeneralOptions generalOptions, ProfileType type);
   }
 }

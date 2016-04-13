@@ -8,6 +8,8 @@
              xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels"
              xmlns:views="clr-namespace:CalDavSynchronizer.Ui.Options.Views"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:bulkOptionsViewModels="clr-namespace:CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels"
+             xmlns:bulkOptionsViews="clr-namespace:CalDavSynchronizer.Ui.Options.BulkOptions.Views"
              mc:Ignorable="d"
              d:DesignHeight="500" d:DesignWidth="600"
              d:DataContext="{x:Static  viewModels:OptionsCollectionViewModel.DesignInstance}">
@@ -84,6 +86,9 @@
       <ToolBar DockPanel.Dock="Top">
         <Button Command="{Binding AddCommand}" ToolTip="Add new profile" >
           <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Add.png"></Image>
+        </Button>
+        <Button Command="{Binding AddMultipleCommand}" ToolTip="Add multiple profiles" >
+          <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/AddMultiple.png"></Image>
         </Button>
         <Button Command="{Binding DeleteSelectedCommand}" ToolTip="Delete selected profile">
           <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Delete.png"></Image>
@@ -162,6 +167,15 @@
           <views:TimeRangeView />
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type bulkOptionsViewModels:ServerSettingsTemplateViewModel}">
+          <bulkOptionsViews:ServerSettingsTemplateView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type bulkOptionsViewModels:GoogleServerSettingsTemplateViewModel}">
+          <bulkOptionsViews:GoogleServerSettingsTemplateView />
+        </DataTemplate>
+
+
         <ControlTemplate TargetType="ContentControl" x:Key="OptionsControlTemplate">
           <DockPanel>
             <DockPanel DockPanel.Dock="Top">
@@ -211,9 +225,17 @@
           </ContentControl>
         </DataTemplate>
 
-       
+        <DataTemplate DataType="{x:Type bulkOptionsViewModels:MultipleOptionsTemplateViewModel}">
+            <StackPanel>
+              <DockPanel DockPanel.Dock="Top">
+                <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="Name:" />
+                <TextBox Text="{Binding Name}" />
+              </DockPanel>
+              <ContentControl Content="{Binding ServerSettingsViewModel}" />
+            <Button HorizontalAlignment="Right" Command="{Binding DiscoverResourcesCommand}">Discover resources and assign to outlook folders</Button>
+            </StackPanel>
+        </DataTemplate>
 
-     
       </ContentControl.Resources>
 
     </ContentControl>

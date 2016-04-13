@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
 using CalDavSynchronizer.Ui.Options.ViewModels.Mapping;
 using Microsoft.Office.Interop.Outlook;
 
@@ -59,6 +60,21 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         throw new ArgumentNullException (nameof (generalOptions));
 
       return options.Select (o => Create (o, generalOptions)).ToList();
+    }
+
+    public IOptionsViewModel CreateTemplate (Contracts.Options options, GeneralOptions generalOptions, ProfileType type)
+    {
+      var optionsViewModel = new MultipleOptionsTemplateViewModel (
+         _session,
+         _optionsViewModelParent,
+         generalOptions,
+         IsGoogleProfile (options)
+             ? (IServerSettingsTemplateViewModel) new GoogleServerSettingsTemplateViewModel ()
+             : new ServerSettingsTemplateViewModel(),
+         type);
+
+      optionsViewModel.SetOptions (options);
+      return optionsViewModel;
     }
 
     private IOptionsViewModel Create (CalDavSynchronizer.Contracts.Options options, GeneralOptions generalOptions)

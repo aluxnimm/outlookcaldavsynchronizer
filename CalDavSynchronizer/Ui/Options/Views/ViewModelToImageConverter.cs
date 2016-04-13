@@ -22,6 +22,7 @@ using System.Windows.Media.Imaging;
 using CalDavSynchronizer.Utilities;
 using Microsoft.Office.Interop.Outlook;
 using System.Linq;
+using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.Ui.Options.Views
@@ -39,6 +40,9 @@ namespace CalDavSynchronizer.Ui.Options.Views
         case OlItemType.olContactItem:
           return BitmapFrame.Create (new Uri ("pack://application:,,,/CalDavSynchronizer;component/Resources/Contact.png"));
       }
+
+      if (value is MultipleOptionsTemplateViewModel)
+        return BitmapFrame.Create (new Uri ("pack://application:,,,/CalDavSynchronizer;component/Resources/AddMultiple.png"));
 
       return Binding.DoNothing;
     }

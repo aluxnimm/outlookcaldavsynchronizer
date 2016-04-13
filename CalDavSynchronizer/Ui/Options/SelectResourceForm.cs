@@ -44,9 +44,8 @@ namespace CalDavSynchronizer.Ui.Options
         _calendarDataGridView.DataSource = caldendars;
 
         // ReSharper disable PossibleNullReferenceException
-        _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Uri)].HeaderText = "CalDav Url";
-        _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Uri)].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-        _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Name)].HeaderText = "DisplayName";
+        _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Uri)].Visible = false;
+        _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Name)].HeaderText = "Name";
         _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Name)].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
         _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Color)].HeaderText = "Col";
         _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Color)].AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
@@ -65,9 +64,9 @@ namespace CalDavSynchronizer.Ui.Options
       {
         // ReSharper disable PossibleNullReferenceException
         _addressBookDataGridView.DataSource = addressBooks;
-        _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.Uri)].HeaderText = "CardDav Url";
-        _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.Uri)].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-        _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.Name)].HeaderText = "DisplayName";
+        _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.Uri)].Visible = false;
+        _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.Name)].HeaderText = "Name";
+        _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.Name)].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
         _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.SelectedFolder)].Visible = false;
         _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.Model)].Visible = false;
         _addressBookDataGridView.CellFormatting += _addressBookDataGridView_CellFormatting;
@@ -82,10 +81,9 @@ namespace CalDavSynchronizer.Ui.Options
       {
         // ReSharper disable PossibleNullReferenceException
         _tasksDataGridView.DataSource = taskLists;
-        _tasksDataGridView.Columns[nameof (TaskListDataViewModel.Id)].HeaderText = "Task List Id";
-        _tasksDataGridView.Columns[nameof (TaskListDataViewModel.Id)].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
         _tasksDataGridView.Columns[nameof (TaskListDataViewModel.Id)].Visible = false;
-        _tasksDataGridView.Columns[nameof (TaskListDataViewModel.Name)].HeaderText = "Task List";
+        _tasksDataGridView.Columns[nameof (TaskListDataViewModel.Name)].HeaderText = "Name";
+        _tasksDataGridView.Columns[nameof (TaskListDataViewModel.Name)].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
         _tasksDataGridView.Columns[nameof (TaskListDataViewModel.SelectedFolder)].Visible = false;
         _tasksDataGridView.Columns[nameof (TaskListDataViewModel.Model)].Visible = false;
         // ReSharper restore PossibleNullReferenceException
@@ -118,10 +116,8 @@ namespace CalDavSynchronizer.Ui.Options
         IReadOnlyList<TaskListDataViewModel> taskLists = null)
         : this (initialResourceTabToDisplay, caldendars, addressBooks, taskLists)
     {
-      Width = (int)(Width * 1.4);
-
       if (caldendars != null)
-        SetupFolderSelectionColumns (_calendarDataGridView, session, OlItemType.olAppointmentItem, OlItemType.olTaskItem);
+        SetupFolderSelectionColumns (_calendarDataGridView, session, OlItemType.olAppointmentItem);
 
       if (addressBooks != null)
         SetupFolderSelectionColumns (_addressBookDataGridView, session, OlItemType.olContactItem);

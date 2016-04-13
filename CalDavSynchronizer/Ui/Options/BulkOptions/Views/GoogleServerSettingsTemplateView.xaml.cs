@@ -16,25 +16,18 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
+using System.Windows.Controls;
 
-namespace CalDavSynchronizer.Ui.Options.ViewModels
+namespace CalDavSynchronizer.Ui.Options.BulkOptions.Views
 {
-  class DesignOptionsViewModelParent : IOptionsViewModelParent
+  /// <summary>
+  ///   Interaction logic for ReportView.xaml
+  /// </summary>
+  public partial class GoogleServerSettingsTemplateView : UserControl
   {
-    public void RequestCacheDeletion (IOptionsViewModel viewModel)
+    public GoogleServerSettingsTemplateView ()
     {
-      
-    }
-
-    public void RequestRemoval (IOptionsViewModel viewModel)
-    {
-    
-    }
-
-    public void RequestAdd (IReadOnlyCollection<Contracts.Options> options)
-    {
-    
+      InitializeComponent();
     }
   }
 }

@@ -611,7 +611,13 @@ namespace CalDavSynchronizer.Ui.Options
 
     public static Contracts.Options CreateNewSynchronizationProfileOrNull ()
     {
-      var type = SelectOptionsDisplayTypeForm.QueryProfileType ();
+      ProfileType? type;
+      return CreateNewSynchronizationProfileOrNull (out type);
+    }
+
+    public static Contracts.Options CreateNewSynchronizationProfileOrNull (out ProfileType? type)
+    {
+      type = SelectOptionsDisplayTypeForm.QueryProfileType ();
       if (!type.HasValue)
         return null;
 

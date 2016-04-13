@@ -29,5 +29,10 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     {
       return new List<IOptionsViewModel>();
     }
+
+    public IOptionsViewModel CreateTemplate (Contracts.Options options, GeneralOptions generalOptions, ProfileType type)
+    {
+      throw new NotSupportedException();
+    }
   }
 }

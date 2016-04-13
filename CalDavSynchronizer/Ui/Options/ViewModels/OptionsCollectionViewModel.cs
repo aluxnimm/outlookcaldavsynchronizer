@@ -65,6 +65,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         outlookAccountPasswordProvider,
         availableEventCategories);
       AddCommand = new DelegateCommand (_ => Add());
+      AddMultipleCommand = new DelegateCommand (_ => AddMultiple());
       CloseCommand = new DelegateCommand (shouldSaveNewOptions => Close((bool)shouldSaveNewOptions));
       DeleteSelectedCommand = new DelegateCommand (_ => DeleteSelected (), _ => CanDeleteSelected);
       CopySelectedCommand = new DelegateCommand (_ => CopySelected (), _ => CanCopySelected);
@@ -177,7 +178,21 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       }
     }
 
+    private void AddMultiple ()
+    {
+      ProfileType? profileType;
+      var options = OptionTasks.CreateNewSynchronizationProfileOrNull (out profileType);
+      if (options != null)
+      {
+        // ReSharper disable once PossibleInvalidOperationException
+        var optionsViewModel = _optionsViewModelFactory.CreateTemplate ( options , _generalOptions, profileType.Value);
+        _options.Add (optionsViewModel);
+        ShowProfile (options.Id);
+      }
+    }
+
     public ICommand AddCommand { get; }
+    public ICommand AddMultipleCommand { get; }
     public ICommand CloseCommand { get; }
     public ICommand DeleteSelectedCommand { get; }
     public ICommand CopySelectedCommand { get; }
@@ -249,6 +264,19 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
         MessageBox.Show ("A new intial sync will be performed with the next sync run!", "Profile cache deleted",MessageBoxButton.OK, MessageBoxImage.Information);
     
+    }
+
+    public void RequestRemoval (IOptionsViewModel viewModel)
+    {
+      Delete (viewModel);
+    }
+
+    public void RequestAdd (IReadOnlyCollection<Contracts.Options> options)
+    {
+      foreach (var vm in _optionsViewModelFactory.Create (options, _generalOptions))
+        _options.Add (vm);
+      if (options.Any())
+        ShowProfile (options.First().Id);
     }
 
     public static OptionsCollectionViewModel DesignInstance

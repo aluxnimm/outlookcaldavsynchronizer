@@ -311,12 +311,23 @@
     <Compile Include="Scheduling\SchedulerStatusEventArgs.cs" />
     <Compile Include="Scheduling\SynchronizationStatus.cs" />
     <Compile Include="Ui\Options\AutoDiscoverResultStatus.cs" />
+    <Compile Include="Ui\Options\BulkOptions\ViewModels\GoogleServerSettingsTemplateViewModel.cs" />
+    <Compile Include="Ui\Options\BulkOptions\ViewModels\IServerSettingsTemplateViewModel.cs" />
+    <Compile Include="Ui\Options\BulkOptions\ViewModels\ServerResources.cs" />
+    <Compile Include="Ui\Options\BulkOptions\ViewModels\ServerSettingsTemplateViewModel.cs" />
+    <Compile Include="Ui\Options\BulkOptions\Views\GoogleServerSettingsTemplateView.xaml.cs">
+      <DependentUpon>GoogleServerSettingsTemplateView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\Options\BulkOptions\Views\ServerSettingsTemplateView.xaml.cs">
+      <DependentUpon>ServerSettingsTemplateView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Ui\Options\ISynchronizationProfilesViewModel.cs" />
     <Compile Include="Ui\Options\FolderDescriptor.cs" />
     <Compile Include="Ui\Options\ResourceSelection\ViewModels\ResourceDataViewModelBase.cs" />
     <Compile Include="Ui\Options\ResourceSelection\ViewModels\AddressBookDataViewModel.cs" />
     <Compile Include="Ui\Options\ResourceSelection\ViewModels\CalendarDataViewModel.cs" />
     <Compile Include="Ui\Options\ResourceSelection\ViewModels\TaskListDataViewModel.cs" />
+    <Compile Include="Ui\Options\BulkOptions\ViewModels\MultipleOptionsTemplateViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\ISubOptionsViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\TimeRangeViewModel.cs" />
     <Compile Include="Ui\Options\Views\TimeRangeView.xaml.cs">
@@ -668,6 +679,7 @@
     <Resource Include="Resources\Copy.png" />
     <Resource Include="Resources\Delete.png" />
     <Resource Include="Resources\logo_sarenet.png" />
+    <Resource Include="Resources\AddMultiple.png" />
     <Content Include="Resources\outlookcaldavsynchronizerlogoarrow.png" />
   </ItemGroup>
   <ItemGroup>
@@ -682,6 +694,14 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Page Include="Ui\Options\BulkOptions\Views\GoogleServerSettingsTemplateView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\Options\BulkOptions\Views\ServerSettingsTemplateView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Ui\Options\Views\GoogleServerSettingsView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
