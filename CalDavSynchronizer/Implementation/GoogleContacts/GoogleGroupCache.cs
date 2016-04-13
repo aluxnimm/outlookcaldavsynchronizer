@@ -39,12 +39,38 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
     {
       foreach (var group in existingGroups)
       {
-        _groupsByName.Add (group.Title, group);
-        if (IsDefaultGroup (group))
-          _defaultGroupIdOrNull = group.Id;
+        Group existingGroup;
+        Group winningGroup;
+        if (_groupsByName.TryGetValue (group.Title, out existingGroup))
+        {
+          if (!string.IsNullOrEmpty (existingGroup.SystemGroup))
+          {
+            winningGroup = existingGroup;
+          }
+          else if (!string.IsNullOrEmpty (group.SystemGroup))
+          {
+            winningGroup = group;
+          }
+          else
+          {
+            if (string.CompareOrdinal (group.Id, existingGroup.Id) > 0)
+              winningGroup = group;
+            else
+              winningGroup = existingGroup;
+          }
+        }
+        else
+        {
+          winningGroup = group;
+        }
+
+        _groupsByName[winningGroup.Title] = winningGroup;
+
+        if (IsDefaultGroup (winningGroup))
+          _defaultGroupIdOrNull = winningGroup.Id;
       }
     }
-
+    
     public Group GetOrCreateGroup (string groupName)
     {
       Group group;
