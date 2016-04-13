@@ -60,7 +60,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
              retryCount < c_exponentialBackoffMaxRetries)
         {
           var sleepMilliseconds = (int) Math.Pow (2, retryCount) * c_exponentialBackoffBaseMilliseconds + _exponentialBackoffRandom.Next (c_exponentialBackoffBaseMilliseconds);
-          s_logger.Warn ($"Retrying operation in ${sleepMilliseconds}ms.");
+          s_logger.Warn ($"Retrying operation in {sleepMilliseconds}ms.");
           Thread.Sleep (sleepMilliseconds);
         }
       }
