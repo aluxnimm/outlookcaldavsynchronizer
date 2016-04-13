@@ -488,7 +488,7 @@
     <Compile Include="Ui\Options\ViewModels\OutlookFolderViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\ServerSettingsViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\SyncSettingsViewModel.cs" />
-    <Compile Include="Ui\Options\Views\OlItemTypeToImageConverter.cs" />
+    <Compile Include="Ui\Options\Views\ViewModelToImageConverter.cs" />
     <Compile Include="Ui\Options\Views\OlCategoryColorConverter.cs" />
     <Compile Include="Ui\Options\Views\BooleanNotConverter.cs" />
     <Compile Include="Ui\Options\Views\GoogleServerSettingsView.xaml.cs">

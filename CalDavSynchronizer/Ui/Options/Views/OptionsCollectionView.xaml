@@ -8,7 +8,6 @@
              xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels"
              xmlns:views="clr-namespace:CalDavSynchronizer.Ui.Options.Views"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
-             xmlns:outlook="clr-namespace:Microsoft.Office.Interop.Outlook;assembly=Microsoft.Office.Interop.Outlook"
              mc:Ignorable="d"
              d:DesignHeight="500" d:DesignWidth="600"
              d:DataContext="{x:Static  viewModels:OptionsCollectionViewModel.DesignInstance}">
@@ -101,12 +100,12 @@
       </ToolBar>
     <TreeView MinWidth="220" MaxWidth="300" Margin="3"  ItemsSource="{Binding Options}" x:Name="OptionsTree">
       <TreeView.Resources>
-        <views:OlItemTypeToImageConverter x:Key="OlItemTypeToImageConverter" />
+          <views:ViewModelToImageConverter x:Key="ViewModelToImageConverter" />
       </TreeView.Resources>
      <TreeView.ItemTemplate>
         <HierarchicalDataTemplate ItemsSource="{Binding SubOptions}">
           <StackPanel Orientation="Horizontal" Margin="0,2,3,1">
-            <Image Height="16" Width="16" Source="{Binding OutlookFolderType,Converter={StaticResource OlItemTypeToImageConverter}}" />
+              <Image Height="16" Width="16" Source="{Binding Converter={StaticResource ViewModelToImageConverter}}" />
             <CheckBox Margin="2,0" IsEnabled="{Binding SupportsIsActive}"  IsChecked="{Binding IsActive}" />
             <TextBlock Text="{Binding Name}" />
           </StackPanel>
