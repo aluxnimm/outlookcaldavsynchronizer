@@ -38,7 +38,7 @@ namespace CalDavSynchronizer.Contracts
       FixPhoneNumberFormat = false;
     }
 
-    public override IOptionsViewModel CreateConfigurationViewModel (IMappingConfigurationViewModelFactory factory)
+    public override ISubOptionsViewModel CreateConfigurationViewModel (IMappingConfigurationViewModelFactory factory)
     {
       return factory.Create (this);
     }

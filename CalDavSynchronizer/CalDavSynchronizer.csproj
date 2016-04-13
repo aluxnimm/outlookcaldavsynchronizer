@@ -317,6 +317,7 @@
     <Compile Include="Ui\Options\ResourceSelection\ViewModels\AddressBookDataViewModel.cs" />
     <Compile Include="Ui\Options\ResourceSelection\ViewModels\CalendarDataViewModel.cs" />
     <Compile Include="Ui\Options\ResourceSelection\ViewModels\TaskListDataViewModel.cs" />
+    <Compile Include="Ui\Options\ViewModels\ISubOptionsViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\TimeRangeViewModel.cs" />
     <Compile Include="Ui\Options\Views\TimeRangeView.xaml.cs">
       <DependentUpon>TimeRangeView.xaml</DependentUpon>

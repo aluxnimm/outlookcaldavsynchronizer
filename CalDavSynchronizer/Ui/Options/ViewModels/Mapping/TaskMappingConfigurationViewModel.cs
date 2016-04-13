@@ -24,9 +24,9 @@ using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 {
-  public class TaskMappingConfigurationViewModel : ViewModelBase, IOptionsViewModel
+  public class TaskMappingConfigurationViewModel : ViewModelBase, ISubOptionsViewModel
   {
-    private readonly ObservableCollection<IOptionsViewModel> _subOptions = new ObservableCollection<IOptionsViewModel>();
+    private readonly ObservableCollection<ISubOptionsViewModel> _subOptions = new ObservableCollection<ISubOptionsViewModel>();
     private bool _mapBody;
     private bool _mapPriority;
     private bool _mapRecurringTasks;
@@ -124,6 +124,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       return true;
     }
 
-    public IEnumerable<IOptionsViewModel> SubOptions => _subOptions;
+    public IEnumerable<ISubOptionsViewModel> SubOptions => _subOptions;
   }
 }

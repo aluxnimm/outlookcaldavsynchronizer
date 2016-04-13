@@ -46,8 +46,8 @@ namespace CalDavSynchronizer.Ui.Options
     public const string ConnectionTestCaption = "Test settings";
     public const string GoogleDavBaseUrl = "https://apidata.googleusercontent.com/caldav/v2";
 
-    public static IOptionsViewModel CoerceMappingConfiguration (
-        IOptionsViewModel currentMappingConfiguration,
+    public static ISubOptionsViewModel CoerceMappingConfiguration (
+        ISubOptionsViewModel currentMappingConfiguration,
         OlItemType? outlookFolderType,
         bool isGoogleProfile,
         IMappingConfigurationViewModelFactory factory)

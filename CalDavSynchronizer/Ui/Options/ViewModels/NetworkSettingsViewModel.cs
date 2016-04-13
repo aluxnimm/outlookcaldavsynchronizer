@@ -26,9 +26,9 @@ using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  internal class NetworkSettingsViewModel : ViewModelBase, IOptionsViewModel
+  internal class NetworkSettingsViewModel : ViewModelBase, ISubOptionsViewModel
   {
-    private readonly ObservableCollection<IOptionsViewModel> _subOptions = new ObservableCollection<IOptionsViewModel>();
+    private readonly ObservableCollection<ISubOptionsViewModel> _subOptions = new ObservableCollection<ISubOptionsViewModel>();
     private bool _closeConnectionAfterEachRequest;
     private bool _preemptiveAuthentication;
     private SecureString _proxyPassword;
@@ -162,7 +162,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       return true;
     }
 
-    public IEnumerable<IOptionsViewModel> SubOptions => _subOptions;
+    public IEnumerable<ISubOptionsViewModel> SubOptions => _subOptions;
 
     public bool ForceBasicAuthentication
     {

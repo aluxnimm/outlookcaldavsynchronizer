@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
@@ -24,9 +25,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
   {
     public static readonly IOptionsViewModelFactory Instance = new NullOptionsViewModelFactory();
 
-    public List<OptionsViewModelBase> Create (ICollection<CalDavSynchronizer.Contracts.Options> options, GeneralOptions generalOptions)
+    public List<IOptionsViewModel> Create (IReadOnlyCollection<Contracts.Options> options, GeneralOptions generalOptions)
     {
-      return new List<OptionsViewModelBase>();
+      return new List<IOptionsViewModel>();
     }
   }
 }

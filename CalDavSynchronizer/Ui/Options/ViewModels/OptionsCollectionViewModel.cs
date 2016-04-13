@@ -34,7 +34,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    private readonly ObservableCollection<OptionsViewModelBase> _options = new ObservableCollection<OptionsViewModelBase>();
+    private readonly ObservableCollection<IOptionsViewModel> _options = new ObservableCollection<IOptionsViewModel> ();
     private readonly IOptionsViewModelFactory _optionsViewModelFactory;
     private readonly GeneralOptions _generalOptions;
     public event EventHandler<CloseEventArgs> CloseRequested;
@@ -117,13 +117,13 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         Delete (selected);
     }
 
-    OptionsViewModelBase SelectedOrNull => _options.FirstOrDefault (o => o.IsSelected);
+    IOptionsViewModel SelectedOrNull => _options.FirstOrDefault (o => o.IsSelected);
 
     private void Close (bool shouldSaveNewOptions)
     {
       if (shouldSaveNewOptions)
       {
-        OptionsViewModelBase firstViewModelWithError;
+        IOptionsViewModel firstViewModelWithError;
         string errorMessage;
         if (!Validate (out errorMessage, out firstViewModelWithError))
         {
@@ -137,7 +137,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       CloseRequested?.Invoke (this, new CloseEventArgs (shouldSaveNewOptions));
     }
 
-    private bool Validate (out string errorMessage, out OptionsViewModelBase firstViewModelWithError)
+    private bool Validate (out string errorMessage, out IOptionsViewModel firstViewModelWithError)
     {
       StringBuilder errorMessageBuilder = new StringBuilder ();
       bool isValid = true;
@@ -183,7 +183,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     public ICommand CopySelectedCommand { get; }
     public ICommand MoveSelectedUpCommand { get; }
     public ICommand MoveSelectedDownCommand { get; }
-    public ObservableCollection<OptionsViewModelBase> Options => _options;
+    public ObservableCollection<IOptionsViewModel> Options => _options;
 
 
     public void SetOptionsCollection (Contracts.Options[] value, Guid? initialSelectedProfileId = null)
@@ -206,14 +206,14 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       var optionsCollection = new List<CalDavSynchronizer.Contracts.Options>();
       foreach (var viewModel in _options)
       {
-        var options = new CalDavSynchronizer.Contracts.Options();
-        viewModel.FillOptions (options);
-        optionsCollection.Add (options);
+        var options = viewModel.GetOptionsOrNull();
+        if (options != null)
+          optionsCollection.Add (options);
       }
       return optionsCollection.ToArray();
     }
 
-    private void Delete (OptionsViewModelBase viewModel)
+    private void Delete (IOptionsViewModel viewModel)
     {
       var index = _options.IndexOf (viewModel);
       _options.Remove (viewModel);
@@ -221,22 +221,24 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         _options[Math.Max (0, Math.Min (_options.Count - 1, index))].IsSelected = true;
     }
 
-    private void Copy (OptionsViewModelBase viewModel)
+    private void Copy (IOptionsViewModel viewModel)
     {
-      var options = new CalDavSynchronizer.Contracts.Options();
-      viewModel.FillOptions (options);
-      options.Id = Guid.NewGuid();
-      options.Name += " (Copy)";
+      var options = viewModel.GetOptionsOrNull ();
+      if (options != null)
+      {
+        options.Id = Guid.NewGuid();
+        options.Name += " (Copy)";
 
-      var index = _options.IndexOf (viewModel) + 1;
+        var index = _options.IndexOf (viewModel) + 1;
 
-      foreach (var vm in _optionsViewModelFactory.Create (new[] { options }, _generalOptions))
-        _options.Insert (index, vm);
+        foreach (var vm in _optionsViewModelFactory.Create (new[] { options }, _generalOptions))
+          _options.Insert (index, vm);
 
-      ShowProfile (options.Id);
+        ShowProfile (options.Id);
+      }
     }
 
-    public void RequestCacheDeletion (OptionsViewModelBase viewModel)
+    public void RequestCacheDeletion (IOptionsViewModel viewModel)
     {
      
         s_logger.InfoFormat ("Deleting cache for profile '{0}'", viewModel.Name);

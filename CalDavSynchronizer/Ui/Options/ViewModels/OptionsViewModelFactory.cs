@@ -51,7 +51,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       _session = session;
     }
 
-    public List<OptionsViewModelBase> Create (ICollection<CalDavSynchronizer.Contracts.Options> options, GeneralOptions generalOptions)
+    public List<IOptionsViewModel> Create (IReadOnlyCollection<Contracts.Options> options, GeneralOptions generalOptions)
     {
       if (options == null)
         throw new ArgumentNullException (nameof (options));
@@ -61,7 +61,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       return options.Select (o => Create (o, generalOptions)).ToList();
     }
 
-    private OptionsViewModelBase Create (CalDavSynchronizer.Contracts.Options options, GeneralOptions generalOptions)
+    private IOptionsViewModel Create (CalDavSynchronizer.Contracts.Options options, GeneralOptions generalOptions)
     {
 
       var optionsViewModel = new GenericOptionsViewModel (

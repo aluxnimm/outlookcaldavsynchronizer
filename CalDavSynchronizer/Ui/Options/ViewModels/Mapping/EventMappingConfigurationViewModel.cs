@@ -28,7 +28,7 @@ using log4net;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 {
-  public class EventMappingConfigurationViewModel : ViewModelBase, IOptionsViewModel
+  public class EventMappingConfigurationViewModel : ViewModelBase, ISubOptionsViewModel
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);
 
@@ -265,7 +265,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     }
 
 
-    public IEnumerable<IOptionsViewModel> SubOptions => new IOptionsViewModel[] { };
+    public IEnumerable<ISubOptionsViewModel> SubOptions => new ISubOptionsViewModel[] { };
 
     public static EventMappingConfigurationViewModel DesignInstance = new EventMappingConfigurationViewModel(new[] {"Cat1","Cat2"}, new DesignCurrentOptions())
                                                                       {

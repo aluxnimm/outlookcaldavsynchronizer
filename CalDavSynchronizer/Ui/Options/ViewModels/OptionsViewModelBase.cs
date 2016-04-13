@@ -31,7 +31,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     private string _name;
     private IEnumerable<IOptionsSection> _sections;
-    private IEnumerable<IOptionsViewModel> _subOptions;
+    private IEnumerable<ISubOptionsViewModel> _subOptions;
     private bool _isSelected;
 
     protected OptionsViewModelBase (IOptionsViewModelParent parent)
@@ -56,7 +56,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       }
     }
     
-    public IEnumerable<IOptionsViewModel> SubOptions => _subOptions ?? (_subOptions = CreateSubOptions());
+    public IEnumerable<ISubOptionsViewModel> SubOptions => _subOptions ?? (_subOptions = CreateSubOptions());
+
+    public bool SupportsIsActive { get; } = true;
 
     public string Name
     {
@@ -97,8 +99,10 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     }
 
-    public void FillOptions (CalDavSynchronizer.Contracts.Options options)
+    public Contracts.Options GetOptionsOrNull ()
     {
+      var options = new Contracts.Options();
+
       foreach (var section in Sections)
         section.FillOptions (options);
 
@@ -108,6 +112,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       options.Inactive = !IsActive;
       options.Name = Name;
       options.Id = Id;
+
+      return options;
     }
 
     public bool Validate (StringBuilder errorMessageBuilder)
@@ -123,7 +129,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       return isValid;
     }
 
-    protected abstract IEnumerable<IOptionsViewModel> CreateSubOptions ();
+    protected abstract IEnumerable<ISubOptionsViewModel> CreateSubOptions ();
     protected abstract IEnumerable<IOptionsSection> CreateSections ();
   }
 }
