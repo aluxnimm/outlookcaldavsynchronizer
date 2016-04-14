@@ -54,7 +54,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       _testConnectionCommand = new DelegateCommandWithoutCanExecuteDelegation (_ =>
       {
         ComponentContainer.EnsureSynchronizationContext();
-        TestConnectionAsync();
+        TestConnectionAsync (CalenderUrl);
       });
     }
 
@@ -174,13 +174,14 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       UseGoogleNativeApiAvailable = _currentOptions.OutlookFolderType == OlItemType.olContactItem;
     }
 
-    private async void TestConnectionAsync ()
+    private async void TestConnectionAsync (string oldCalendarUrl)
     {
       _testConnectionCommand.SetCanExecute (false);
       _doAutoDiscoveryCommand.SetCanExecute (false);
       try
       {
-        await OptionTasks.TestGoogleConnection (_currentOptions, _settingsFaultFinder);
+        if (!await OptionTasks.TestGoogleConnection(_currentOptions, _settingsFaultFinder))
+          CalenderUrl = oldCalendarUrl;
       }
       catch (Exception x)
       {
@@ -199,13 +200,14 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     private void DoAutoDiscovery ()
     {
+      var oldCalendarUrl = CalenderUrl;
       if (ServerAdapterType == ServerAdapterType.GoogleTaskApi)
         CalenderUrl = string.Empty;
       else
         CalenderUrl = OptionTasks.GoogleDavBaseUrl;
 
       ComponentContainer.EnsureSynchronizationContext();
-      TestConnectionAsync();
+      TestConnectionAsync (oldCalendarUrl);
     }
 
     public static GoogleServerSettingsViewModel DesignInstance => new GoogleServerSettingsViewModel (NullSettingsFaultFinder.Instance, new DesignCurrentOptions ())

@@ -467,12 +467,12 @@ namespace CalDavSynchronizer.Ui.Options
           outlookFolderType);
     }
 
-    public static async Task TestGoogleConnection (ICurrentOptions currentOptions, ISettingsFaultFinder settingsFaultFinder)
+    public static async Task<bool> TestGoogleConnection (ICurrentOptions currentOptions, ISettingsFaultFinder settingsFaultFinder)
     {
       if (currentOptions.OutlookFolderType == null)
       {
         MessageBox.Show ("Please select an Outlook folder to specify the item type for this profile", ConnectionTestCaption);
-        return;
+        return false;
       }
 
       var outlookFolderType = currentOptions.OutlookFolderType.Value;
@@ -482,25 +482,23 @@ namespace CalDavSynchronizer.Ui.Options
       if (!ValidateGoogleEmailAddress (errorMessageBuilder, currentOptions.EmailAddress))
       {
         MessageBox.Show (errorMessageBuilder.ToString(), "The Email Address is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        return;
+        return false;
       }
 
       if (outlookFolderType == OlItemType.olTaskItem)
       {
-        await TestGoogleTaskConnection(currentOptions, errorMessageBuilder, outlookFolderType);
-        return;
+        return await TestGoogleTaskConnection(currentOptions, errorMessageBuilder, outlookFolderType);
       }
 
       if (outlookFolderType == OlItemType.olContactItem && currentOptions.ServerAdapterType == ServerAdapterType.GoogleContactApi)
       {
-        await TestGoogleContactsConnection (currentOptions, errorMessageBuilder, outlookFolderType);
-        return;
+        return await TestGoogleContactsConnection (currentOptions, errorMessageBuilder, outlookFolderType);
       }
 
       if (!ValidateWebDavUrl (currentOptions.ServerUrl, errorMessageBuilder, false))
       {
         MessageBox.Show (errorMessageBuilder.ToString(), "The CalDav/CardDav Url is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        return;
+        return false;
       }
 
       var enteredUri = new Uri (currentOptions.ServerUrl);
@@ -513,6 +511,8 @@ namespace CalDavSynchronizer.Ui.Options
         var autoDiscoveryResult = await DoAutoDiscovery (enteredUri, webDavClient, false, true, outlookFolderType);
         switch (autoDiscoveryResult.Status)
         {
+          case AutoDiscoverResultStatus.UserCancelled:
+            return false;
           case AutoDiscoverResultStatus.ResourceSelected:
             autoDiscoveredUrl = autoDiscoveryResult.RessourceUrl;
             break;
@@ -542,6 +542,7 @@ namespace CalDavSynchronizer.Ui.Options
       {
         // Google Addressbook doesn't have any properties. As long as there doesn't occur an exception, the test is successful.
         MessageBox.Show ("Connection test successful.", ConnectionTestCaption);
+        return true;
       }
       else
       {
@@ -550,10 +551,11 @@ namespace CalDavSynchronizer.Ui.Options
             currentOptions.SynchronizationMode,
             currentOptions.SynchronizationModeDisplayName,
             outlookFolderType);
+        return true;
       }
     }
 
-    private static async Task TestGoogleTaskConnection (ICurrentOptions currentOptions, StringBuilder errorMessageBuilder, OlItemType outlookFolderType)
+    private static async Task<bool> TestGoogleTaskConnection (ICurrentOptions currentOptions, StringBuilder errorMessageBuilder, OlItemType outlookFolderType)
     {
       var service = await GoogleHttpClientFactory.LoginToGoogleTasksService (currentOptions.EmailAddress, currentOptions.GetProxyIfConfigured());
 
@@ -567,7 +569,7 @@ namespace CalDavSynchronizer.Ui.Options
           if (selectedTaskList != null)
             currentOptions.ServerUrl = selectedTaskList.Id;
           else
-            return;
+            return false;
         }
       }
 
@@ -580,7 +582,7 @@ namespace CalDavSynchronizer.Ui.Options
         s_logger.Error (null, x);
         errorMessageBuilder.AppendFormat ("The tasklist with id '{0}' is invalid.", currentOptions.ServerUrl);
         MessageBox.Show (errorMessageBuilder.ToString(), "The tasklist is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        return;
+        return false;
       }
       TestResult result = new TestResult (ResourceType.TaskList, CalendarProperties.None, AddressBookProperties.None);
 
@@ -589,9 +591,10 @@ namespace CalDavSynchronizer.Ui.Options
           currentOptions.SynchronizationMode,
           currentOptions.SynchronizationModeDisplayName,
           outlookFolderType);
+      return true;
     }
 
-    private static async Task TestGoogleContactsConnection (ICurrentOptions currentOptions, StringBuilder errorMessageBuilder, OlItemType outlookFolderType)
+    private static async Task<bool> TestGoogleContactsConnection (ICurrentOptions currentOptions, StringBuilder errorMessageBuilder, OlItemType outlookFolderType)
     {
       var service = await GoogleHttpClientFactory.LoginToContactsService (currentOptions.EmailAddress, currentOptions.GetProxyIfConfigured());
 
@@ -604,7 +607,7 @@ namespace CalDavSynchronizer.Ui.Options
       {
         s_logger.Error (null, x);
         MessageBox.Show (x.Message, ConnectionTestCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
-        return;
+        return false;
       }
       TestResult result = new TestResult (
           ResourceType.AddressBook,
@@ -616,6 +619,7 @@ namespace CalDavSynchronizer.Ui.Options
           currentOptions.SynchronizationMode,
           currentOptions.SynchronizationModeDisplayName,
           outlookFolderType);
+      return true;
     }
 
     public static Contracts.Options CreateNewSynchronizationProfileOrNull ()
