@@ -33,15 +33,15 @@ namespace CalDavSynchronizer.Ui.Options
 
     public SelectResourceForm (
       ResourceType initialResourceTabToDisplay,
-      IReadOnlyList<CalendarDataViewModel> caldendars = null, 
+      IReadOnlyList<CalendarDataViewModel> calendars = null, 
       IReadOnlyList<AddressBookDataViewModel> addressBooks = null, 
       IReadOnlyList<TaskListDataViewModel> taskLists = null)
     {
       InitializeComponent();
 
-      if (caldendars != null)
+      if (calendars != null)
       {
-        _calendarDataGridView.DataSource = caldendars;
+        _calendarDataGridView.DataSource = calendars;
 
         // ReSharper disable PossibleNullReferenceException
         _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Uri)].Visible = false;
@@ -111,12 +111,12 @@ namespace CalDavSynchronizer.Ui.Options
     public SelectResourceForm (
         ResourceType initialResourceTabToDisplay,
         NameSpace session,
-        IReadOnlyList<CalendarDataViewModel> caldendars = null,
+        IReadOnlyList<CalendarDataViewModel> calendars = null,
         IReadOnlyList<AddressBookDataViewModel> addressBooks = null,
         IReadOnlyList<TaskListDataViewModel> taskLists = null)
-        : this (initialResourceTabToDisplay, caldendars, addressBooks, taskLists)
+        : this (initialResourceTabToDisplay, calendars, addressBooks, taskLists)
     {
-      if (caldendars != null)
+      if (calendars != null)
         SetupFolderSelectionColumns (_calendarDataGridView, session, OlItemType.olAppointmentItem);
 
       if (addressBooks != null)
