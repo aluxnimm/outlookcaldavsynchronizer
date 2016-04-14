@@ -25,6 +25,7 @@ using System.Security;
 using System.Threading.Tasks;
 using System.Xml;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
+using CalDavSynchronizer.Ui.ConnectionTests;
 using CalDavSynchronizer.Utilities;
 using GenSync;
 using log4net;
@@ -86,6 +87,14 @@ namespace CalDavSynchronizer.DataAccess
                 XmlNode isCollection = responseElement.SelectSingleNode ("D:propstat/D:prop/D:resourcetype/C:calendar", calendarDocument.XmlNamespaceManager);
                 if (isCollection != null)
                 {
+                  XmlNode supportedComponentsNode = responseElement.SelectSingleNode ("D:propstat/D:prop/C:supported-calendar-component-set", calendarDocument.XmlNamespaceManager);
+                  ResourceType type = ResourceType.None;
+                  if (supportedComponentsNode != null)
+                  {
+                    if (supportedComponentsNode.InnerXml.Contains ("VEVENT")) type |= ResourceType.Calendar;
+                    if (supportedComponentsNode.InnerXml.Contains ("VTODO")) type |= ResourceType.TaskList;
+                  }
+
                   var calendarColorNode = responseElement.SelectSingleNode("D:propstat/D:prop/E:calendar-color", calendarDocument.XmlNamespaceManager);
                   ArgbColor? calendarColor = null;
                   if (calendarColorNode != null && calendarColorNode.InnerText.Length >=7)
@@ -93,7 +102,7 @@ namespace CalDavSynchronizer.DataAccess
                     calendarColor = ArgbColor.FromRgbaHexStringWithOptionalANoThrow(calendarColorNode.InnerText);
                   }
 
-                  calendars.Add (new CalendarData (new Uri(calendarDocument.DocumentUri, urlNode.InnerText), displayNameNode.InnerText, calendarColor));
+                  calendars.Add (new CalendarData (new Uri(calendarDocument.DocumentUri, urlNode.InnerText), displayNameNode.InnerText, calendarColor, type));
                 }
               }
             }

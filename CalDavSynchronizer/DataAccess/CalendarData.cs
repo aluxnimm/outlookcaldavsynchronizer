@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using CalDavSynchronizer.Ui.ConnectionTests;
 using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.DataAccess
@@ -25,12 +26,14 @@ namespace CalDavSynchronizer.DataAccess
     public Uri Uri { get; }
     public string Name { get; }
     public ArgbColor? Color { get; }
+    public ResourceType Type { get; }
 
-    public CalendarData (Uri uri, string name, ArgbColor? color)
+    public CalendarData (Uri uri, string name, ArgbColor? color, ResourceType type)
     {
       Uri = uri;
       Name = name;
       Color = color;
+      Type = type;
     }
   }
 }

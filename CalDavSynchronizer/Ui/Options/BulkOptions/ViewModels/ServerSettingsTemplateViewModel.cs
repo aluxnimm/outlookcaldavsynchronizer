@@ -27,6 +27,7 @@ using System.Windows.Input;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Scheduling;
+using CalDavSynchronizer.Ui.ConnectionTests;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Utilities;
 using log4net;
@@ -116,9 +117,9 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       var foundCaldendars = await calDavDataAccess.GetUserCalendarsNoThrow (true);
       var cardDavDataAccess = new CardDavDataAccess (url, webDavClient);
       var foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow (true);
-      var tasks = foundCaldendars.Select (c => new TaskListData (c.Uri.ToString(), c.Name)).ToArray();
-
-      return new ServerResources (foundCaldendars, foundAddressBooks, tasks);
+      var tasks = foundCaldendars.Where (a => (a.Type & ResourceType.TaskList) == ResourceType.TaskList).Select (c => new TaskListData (c.Uri.ToString(), c.Name)).ToArray();
+      var calendars = foundCaldendars.Where (a => (a.Type & ResourceType.Calendar) == ResourceType.Calendar).ToArray();
+      return new ServerResources (calendars, foundAddressBooks, tasks);
     }
     
     public static ServerSettingsTemplateViewModel DesignInstance = new ServerSettingsTemplateViewModel()
