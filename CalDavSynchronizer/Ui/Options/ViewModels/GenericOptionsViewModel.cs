@@ -157,12 +157,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     public string SynchronizationModeDisplayName => _syncSettingsViewModel.SelectedSynchronizationModeDisplayName;
 
-    public string ServerUrl
-    {
-      get { return _serverSettingsViewModel.CalenderUrl; }
-      set { _serverSettingsViewModel.CalenderUrl = value; }
-    }
-
     public ServerAdapterType ServerAdapterType => _serverSettingsViewModel.ServerAdapterType;
 
     public IWebDavClient CreateWebDavClient ()

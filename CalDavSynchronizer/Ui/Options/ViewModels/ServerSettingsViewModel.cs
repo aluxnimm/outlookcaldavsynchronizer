@@ -146,7 +146,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       _testConnectionCommand.SetCanExecute (false);
       try
       {
-        await OptionTasks.TestWebDavConnection (_currentOptions, _settingsFaultFinder);
+        CalenderUrl = await OptionTasks.TestWebDavConnection (_currentOptions, _settingsFaultFinder, CalenderUrl);
       }
       catch (Exception x)
       {
