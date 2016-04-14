@@ -252,14 +252,27 @@ namespace CalDavSynchronizer.Ui.Options
       switch (selectedOutlookFolderType)
       {
         case OlItemType.olAppointmentItem:
-        case OlItemType.olTaskItem:
           var calDavDataAccess = new CalDavDataAccess (autoDiscoveryUri, webDavClient);
-          var foundCaldendars = await calDavDataAccess.GetUserCalendarsNoThrow (useWellKnownCalDav);
-          if (foundCaldendars.Count == 0)
+          var foundCalendars = await calDavDataAccess.GetUserCalendarsNoThrow (useWellKnownCalDav);
+          IReadOnlyList<CalendarData> filteredCalendars = foundCalendars.Where (a => (a.Type & ResourceType.Calendar) == ResourceType.Calendar).ToArray();
+
+          if (filteredCalendars.Count == 0)
             return new AutoDiscoveryResult (null, AutoDiscoverResultStatus.NoResourcesFound);
-          var selectedCalendar = SelectCalendar (foundCaldendars);
+          var selectedCalendar = SelectCalendar (filteredCalendars);
           if (selectedCalendar != null)
             return new AutoDiscoveryResult (selectedCalendar.Uri, AutoDiscoverResultStatus.ResourceSelected);
+          else
+            return new AutoDiscoveryResult (null, AutoDiscoverResultStatus.UserCancelled);
+        case OlItemType.olTaskItem:
+          var calDavDataAccessTasks = new CalDavDataAccess (autoDiscoveryUri, webDavClient);
+          var foundTasks = await calDavDataAccessTasks.GetUserCalendarsNoThrow (useWellKnownCalDav);
+          IReadOnlyList<TaskListData> filteredTasks = foundTasks.Where (a => (a.Type & ResourceType.TaskList) == ResourceType.TaskList).Select (c => new TaskListData (c.Uri.ToString(), c.Name)).ToArray();
+
+          if (foundTasks.Count == 0)
+            return new AutoDiscoveryResult (null, AutoDiscoverResultStatus.NoResourcesFound);
+          var selectedTask = SelectTaskList (filteredTasks);
+          if (selectedTask != null)
+            return new AutoDiscoveryResult (new Uri (selectedTask.Id), AutoDiscoverResultStatus.ResourceSelected);
           else
             return new AutoDiscoveryResult (null, AutoDiscoverResultStatus.UserCancelled);
         case OlItemType.olContactItem:
