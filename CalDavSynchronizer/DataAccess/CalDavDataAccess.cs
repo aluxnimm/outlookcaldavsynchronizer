@@ -25,6 +25,7 @@ using System.Security;
 using System.Threading.Tasks;
 using System.Xml;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
+using CalDavSynchronizer.Ui.ConnectionTests;
 using CalDavSynchronizer.Utilities;
 using GenSync;
 using log4net;
@@ -55,7 +56,7 @@ namespace CalDavSynchronizer.DataAccess
       return DoesSupportsReportSet (_serverUrl, 0, "C", "calendar-query");
     }
 
-    public async Task<IReadOnlyList<CalendarData>> GetUserCalendarsNoThrow (bool useWellKnownUrl)
+    public async Task<CalDavResources> GetUserResourcesNoThrow (bool useWellKnownUrl)
     {
       try
       {
@@ -64,6 +65,7 @@ namespace CalDavSynchronizer.DataAccess
         var currentUserPrincipalUrl = await GetCurrentUserPrincipalUrl (autodiscoveryUrl);
 
         var calendars = new List<CalendarData>();
+        var taskLists = new List<TaskListData>();
 
         if (currentUserPrincipalUrl != null)
         {
@@ -93,18 +95,25 @@ namespace CalDavSynchronizer.DataAccess
                     calendarColor = ArgbColor.FromRgbaHexStringWithOptionalANoThrow(calendarColorNode.InnerText);
                   }
 
-                  calendars.Add (new CalendarData (new Uri(calendarDocument.DocumentUri, urlNode.InnerText), displayNameNode.InnerText, calendarColor));
+                  XmlNode supportedComponentsNode = responseElement.SelectSingleNode ("D:propstat/D:prop/C:supported-calendar-component-set", calendarDocument.XmlNamespaceManager);
+                  if (supportedComponentsNode != null)
+                  {
+                    if (supportedComponentsNode.InnerXml.Contains ("VEVENT"))
+                      calendars.Add (new CalendarData (new Uri (calendarDocument.DocumentUri, urlNode.InnerText), displayNameNode.InnerText, calendarColor));
+                    if (supportedComponentsNode.InnerXml.Contains ("VTODO"))
+                      taskLists.Add (new TaskListData (new Uri (calendarDocument.DocumentUri, urlNode.InnerText).ToString(), displayNameNode.InnerText));
+                  }
                 }
               }
             }
           }
         }
-        return calendars;
+        return new CalDavResources(calendars, taskLists);
       }
       catch (Exception x)
       {
         if (x.Message.Contains ("404") || x.Message.Contains ("405") || x is XmlException)
-          return new CalendarData[] { };
+          return new CalDavResources (new CalendarData[] { }, new TaskListData[] {});
         else
           throw;
       }

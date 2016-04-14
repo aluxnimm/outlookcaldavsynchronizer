@@ -27,6 +27,7 @@ using System.Windows.Input;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Scheduling;
+using CalDavSynchronizer.Ui.ConnectionTests;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Utilities;
 using log4net;
@@ -113,14 +114,13 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 
       var webDavClient = CreateWebDavClient (networkSettings, generalOptions);
       var calDavDataAccess = new CalDavDataAccess (url, webDavClient);
-      var foundCaldendars = await calDavDataAccess.GetUserCalendarsNoThrow (true);
+      var calDavResources = await calDavDataAccess.GetUserResourcesNoThrow (true);
       var cardDavDataAccess = new CardDavDataAccess (url, webDavClient);
       var foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow (true);
-      var tasks = foundCaldendars.Select (c => new TaskListData (c.Uri.ToString(), c.Name)).ToArray();
 
-      return new ServerResources (foundCaldendars, foundAddressBooks, tasks);
+      return new ServerResources (calDavResources.CalendarResources, foundAddressBooks, calDavResources.TaskListResources);
     }
-    
+
     public static ServerSettingsTemplateViewModel DesignInstance = new ServerSettingsTemplateViewModel()
                                                                    {
                                                                        CalenderUrl = "http://bulkurl",

@@ -114,7 +114,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 
       var webDavClient = CreateWebDavClient (networkSettings, generalOptions);
       var calDavDataAccess = new CalDavDataAccess (url, webDavClient);
-      var foundCaldendars = await calDavDataAccess.GetUserCalendarsNoThrow (false);
+      var foundResources = await calDavDataAccess.GetUserResourcesNoThrow (false);
 
       var foundAddressBooks = new[] { new AddressBookData (new Uri ("googleApi://defaultAddressBook"), "Default AddressBook") };
 
@@ -122,7 +122,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       var taskLists = await service.Tasklists.List().ExecuteAsync();
       var taskListsData = taskLists?.Items.Select (i => new TaskListData (i.Id, i.Title)).ToArray() ?? new TaskListData[] { };
 
-      return new ServerResources (foundCaldendars, foundAddressBooks, taskListsData);
+      return new ServerResources (foundResources.CalendarResources, foundAddressBooks, taskListsData);
     }
 
 

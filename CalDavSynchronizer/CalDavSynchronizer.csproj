@@ -283,6 +283,7 @@
     <Compile Include="Contracts\ProfileEntry.cs" />
     <Compile Include="Contracts\ProxyOptions.cs" />
     <Compile Include="Contracts\ServerAdapterType.cs" />
+    <Compile Include="DataAccess\CalDavResources.cs" />
     <Compile Include="DataAccess\TaskListData.cs" />
     <Compile Include="DataAccess\AddressBookData.cs" />
     <Compile Include="DataAccess\GlobalOptionsDataAccess.cs" />

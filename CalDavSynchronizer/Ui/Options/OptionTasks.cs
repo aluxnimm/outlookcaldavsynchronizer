@@ -252,14 +252,23 @@ namespace CalDavSynchronizer.Ui.Options
       switch (selectedOutlookFolderType)
       {
         case OlItemType.olAppointmentItem:
-        case OlItemType.olTaskItem:
           var calDavDataAccess = new CalDavDataAccess (autoDiscoveryUri, webDavClient);
-          var foundCaldendars = await calDavDataAccess.GetUserCalendarsNoThrow (useWellKnownCalDav);
-          if (foundCaldendars.Count == 0)
+          var foundCalendars = (await calDavDataAccess.GetUserResourcesNoThrow (useWellKnownCalDav)).CalendarResources;
+          if (foundCalendars.Count == 0)
             return new AutoDiscoveryResult (null, AutoDiscoverResultStatus.NoResourcesFound);
-          var selectedCalendar = SelectCalendar (foundCaldendars);
+          var selectedCalendar = SelectCalendar (foundCalendars);
           if (selectedCalendar != null)
             return new AutoDiscoveryResult (selectedCalendar.Uri, AutoDiscoverResultStatus.ResourceSelected);
+          else
+            return new AutoDiscoveryResult (null, AutoDiscoverResultStatus.UserCancelled);
+        case OlItemType.olTaskItem:
+          var calDavDataAccessTasks = new CalDavDataAccess (autoDiscoveryUri, webDavClient);
+          var foundTasks = (await calDavDataAccessTasks.GetUserResourcesNoThrow (useWellKnownCalDav)).TaskListResources;
+          if (foundTasks.Count == 0)
+            return new AutoDiscoveryResult (null, AutoDiscoverResultStatus.NoResourcesFound);
+          var selectedTask = SelectTaskList (foundTasks);
+          if (selectedTask != null)
+            return new AutoDiscoveryResult (new Uri (selectedTask.Id), AutoDiscoverResultStatus.ResourceSelected);
           else
             return new AutoDiscoveryResult (null, AutoDiscoverResultStatus.UserCancelled);
         case OlItemType.olContactItem:
