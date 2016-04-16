@@ -763,6 +763,10 @@ Check: DefaultCalendarPath
 Then you get the DAV url of the calendar:
     `https://p**-caldav.icloud.com/*********/calendars/********-****-****-****-************/`
 
+For syncing iCloud contacts with CardDAV use the following URL
+
+    https://contacts.icloud.com:443/<YOUR UNIQUE USERID>/carddavhome/card/
+
 ### One.com settings ###
 
 The one.com caldav server has problems with escaping, so if your calendar url looks something like
