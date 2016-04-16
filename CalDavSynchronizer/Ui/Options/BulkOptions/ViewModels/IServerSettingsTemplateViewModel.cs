@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -14,26 +14,23 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Security;
+using System.Threading.Tasks;
+using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ViewModels
+namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 {
-  public interface IOptionsViewModel 
+  internal interface IServerSettingsTemplateViewModel 
   {
-    bool IsActive { get; set; }
-    bool SupportsIsActive { get; }
-
-    string Name { get; set; }
-    Guid Id { get; }
-
-    IEnumerable<ISubOptionsViewModel> SubOptions { get; }
-    bool IsSelected { get; set; }
-
+    Task<ServerResources> GetServerResources (NetworkSettingsViewModel networkSettings, GeneralOptions generalOptions);
     void SetOptions (Contracts.Options options);
-    Contracts.Options GetOptionsOrNull ();
-    bool Validate (StringBuilder errorMessageBuilder);
 
+    void FillOptions (Contracts.Options options, CalendarData resource);
+    void FillOptions (Contracts.Options options, AddressBookData resource);
+    void FillOptions (Contracts.Options options, TaskListData resource);
   }
 }

@@ -20,7 +20,9 @@ using System.Drawing;
 using System.Windows.Forms;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Ui.ConnectionTests;
+using CalDavSynchronizer.Ui.Options.ResourceSelection.ViewModels;
 using CalDavSynchronizer.Utilities;
+using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options
 {
@@ -31,34 +33,62 @@ namespace CalDavSynchronizer.Ui.Options
 
     public SelectResourceForm (
       ResourceType initialResourceTabToDisplay,
-      IReadOnlyList<CalendarData> caldendars = null, 
-      IReadOnlyList<AddressBookData> addressBooks = null, 
-      IReadOnlyList<TaskListData> taskLists = null)
+      IReadOnlyList<CalendarDataViewModel> calendars = null, 
+      IReadOnlyList<AddressBookDataViewModel> addressBooks = null, 
+      IReadOnlyList<TaskListDataViewModel> taskLists = null)
     {
       InitializeComponent();
 
-      _calendarDataGridView.DataSource = caldendars ?? new CalendarData[] {};
-      _calendarDataGridView.Columns[0].HeaderText = "CalDav Url";
-      _calendarDataGridView.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-      _calendarDataGridView.Columns[1].HeaderText = "DisplayName";
-      _calendarDataGridView.Columns[2].HeaderText = "Col";
-      _calendarDataGridView.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
-
-      _addressBookDataGridView.DataSource = addressBooks ?? new AddressBookData[] { };
-      _addressBookDataGridView.Columns[0].HeaderText = "CardDav Url";
-      _addressBookDataGridView.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-      _addressBookDataGridView.Columns[1].HeaderText = "DisplayName";
-      _addressBookDataGridView.CellFormatting += _addressBookDataGridView_CellFormatting;
-
-      if (taskLists?.Count > 0)
+      if (calendars != null)
       {
-        _tasksDataGridView.DataSource = taskLists;
-        _tasksDataGridView.Columns[0].HeaderText = "Task List Id";
-        _tasksDataGridView.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-        _tasksDataGridView.Columns[0].Visible = false;
-        _tasksDataGridView.Columns[1].HeaderText = "Task List";
+        _calendarDataGridView.DataSource = calendars;
+
+        // ReSharper disable PossibleNullReferenceException
+        _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Uri)].Visible = false;
+        _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Name)].HeaderText = "Name";
+        _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Name)].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+        _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Color)].HeaderText = "Col";
+        _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Color)].AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+        _calendarDataGridView.Columns[nameof (CalendarDataViewModel.SelectedFolder)].Visible = false;
+        _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Model)].Visible = false;
+
+
+        // ReSharper restore PossibleNullReferenceException
       }
-      else if (initialResourceTabToDisplay != ResourceType.TaskList)
+      else
+      {
+        _mainTab.TabPages.Remove (_calendarPage);
+      }
+
+      if (addressBooks != null)
+      {
+        // ReSharper disable PossibleNullReferenceException
+        _addressBookDataGridView.DataSource = addressBooks;
+        _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.Uri)].Visible = false;
+        _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.Name)].HeaderText = "Name";
+        _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.Name)].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+        _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.SelectedFolder)].Visible = false;
+        _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.Model)].Visible = false;
+        _addressBookDataGridView.CellFormatting += _addressBookDataGridView_CellFormatting;
+        // ReSharper restore PossibleNullReferenceException
+      }
+      else
+      {
+        _mainTab.TabPages.Remove (_addressBookPage);
+      }
+
+      if (taskLists != null)
+      {
+        // ReSharper disable PossibleNullReferenceException
+        _tasksDataGridView.DataSource = taskLists;
+        _tasksDataGridView.Columns[nameof (TaskListDataViewModel.Id)].Visible = false;
+        _tasksDataGridView.Columns[nameof (TaskListDataViewModel.Name)].HeaderText = "Name";
+        _tasksDataGridView.Columns[nameof (TaskListDataViewModel.Name)].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+        _tasksDataGridView.Columns[nameof (TaskListDataViewModel.SelectedFolder)].Visible = false;
+        _tasksDataGridView.Columns[nameof (TaskListDataViewModel.Model)].Visible = false;
+        // ReSharper restore PossibleNullReferenceException
+      }
+      else
       {
         _mainTab.TabPages.Remove (_tasksPage);
       }
@@ -76,6 +106,73 @@ namespace CalDavSynchronizer.Ui.Options
           _mainTab.SelectedTab = _tasksPage;
           break;
       }
+    }
+
+    public SelectResourceForm (
+        ResourceType initialResourceTabToDisplay,
+        NameSpace session,
+        IReadOnlyList<CalendarDataViewModel> calendars = null,
+        IReadOnlyList<AddressBookDataViewModel> addressBooks = null,
+        IReadOnlyList<TaskListDataViewModel> taskLists = null)
+        : this (initialResourceTabToDisplay, calendars, addressBooks, taskLists)
+    {
+      if (calendars != null)
+        SetupFolderSelectionColumns (_calendarDataGridView, session, OlItemType.olAppointmentItem);
+
+      if (addressBooks != null)
+        SetupFolderSelectionColumns (_addressBookDataGridView, session, OlItemType.olContactItem);
+
+      if (taskLists != null)
+        SetupFolderSelectionColumns (_tasksDataGridView, session, OlItemType.olTaskItem);
+    }
+
+    private static void SetupFolderSelectionColumns (DataGridView dataGridView, NameSpace session, params OlItemType[] allowedFolderType)
+    {
+      var folderColumn = new DataGridViewTextBoxColumn();
+      folderColumn.HeaderText = "Selected Outlook Folder";
+      folderColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+      dataGridView.Columns.Add (folderColumn);
+
+      var selectFolderColumn = new DataGridViewButtonColumn();
+      selectFolderColumn.UseColumnTextForButtonValue = true;
+      selectFolderColumn.Text = "...";
+      selectFolderColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+      dataGridView.Columns.Add (selectFolderColumn);
+
+      var removeFolderColumn = new DataGridViewButtonColumn();
+      removeFolderColumn.UseColumnTextForButtonValue = true;
+      removeFolderColumn.Text = "x";
+      removeFolderColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+      dataGridView.Columns.Add (removeFolderColumn);
+
+      dataGridView.CellContentClick += (sender, e) =>
+      {
+        var column = dataGridView.Columns[e.ColumnIndex];
+        var row = dataGridView.Rows[e.RowIndex];
+        var viewModel = (ResourceDataViewModelBase) row.DataBoundItem;
+        var folderCell = row.Cells[folderColumn.Index];
+
+        if (column == selectFolderColumn)
+        {
+          var folder = session.PickFolder();
+          if (folder != null)
+          {
+            if (Array.IndexOf (allowedFolderType, folder.DefaultItemType) == -1)
+            {
+              MessageBox.Show ($"Folder has to have item type '{String.Join (", ", allowedFolderType)}'.", "Select folder", MessageBoxButtons.OK, MessageBoxIcon.Error);
+              return;
+            }
+
+            folderCell.Value = folder.Name;
+            viewModel.SelectedFolder = new FolderDescriptor (folder.EntryID, folder.StoreID);
+          }
+        }
+        else if (column == removeFolderColumn)
+        {
+          viewModel.SelectedFolder = null;
+          folderCell.Value = null;
+        }
+      };
     }
 
     private void buttonCancel_Click (object sender, EventArgs e)
@@ -107,7 +204,8 @@ namespace CalDavSynchronizer.Ui.Options
     {
       if (!_calendarDataGridView.Rows[e.RowIndex].IsNewRow)
       {
-        if (e.ColumnIndex == 2)
+        var columnName = _calendarDataGridView.Columns[e.ColumnIndex].Name;
+        if (columnName == nameof(CalendarDataViewModel.Color))
         {
           if (e.Value != null)
           {
@@ -118,7 +216,7 @@ namespace CalDavSynchronizer.Ui.Options
             e.CellStyle.SelectionForeColor = calColor;
           }
         }
-        if (e.ColumnIndex == 0)
+        else if (columnName == nameof (CalendarDataViewModel.Uri))
         {
           e.Value = (e.Value as Uri)?.AbsolutePath;
         }
@@ -127,7 +225,8 @@ namespace CalDavSynchronizer.Ui.Options
 
     private void _addressBookDataGridView_CellFormatting (object sender, DataGridViewCellFormattingEventArgs e)
     {
-      if (e.ColumnIndex == 0)
+      var columnName = _addressBookDataGridView.Columns[e.ColumnIndex].Name;
+      if (columnName == nameof (AddressBookDataViewModel.Uri))
       {
         e.Value = (e.Value as Uri)?.AbsolutePath;
       }

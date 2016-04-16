@@ -23,7 +23,7 @@ using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 {
-  public class ContactMappingConfigurationViewModel : ViewModelBase, IOptionsViewModel
+  public class ContactMappingConfigurationViewModel : ViewModelBase, ISubOptionsViewModel
   {
     private bool _mapBirthday;
     private bool _mapContactPhoto;
@@ -116,6 +116,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       return true;
     }
 
-    public IEnumerable<IOptionsViewModel> SubOptions => new IOptionsViewModel[] { };
+    public IEnumerable<ISubOptionsViewModel> SubOptions => new ISubOptionsViewModel[] { };
   }
 }

@@ -14,26 +14,25 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace CalDavSynchronizer.Ui.Options.ViewModels
+namespace CalDavSynchronizer.DataAccess
 {
-  public interface IOptionsViewModel 
+  public class CalDavResources
   {
-    bool IsActive { get; set; }
-    bool SupportsIsActive { get; }
+    public CalDavResources (IReadOnlyList<CalendarData> calendarResources, IReadOnlyList<TaskListData> taskTaskListResources)
+    {
+      if (calendarResources == null)
+        throw new ArgumentNullException (nameof (calendarResources));
+      if (taskTaskListResources == null)
+        throw new ArgumentNullException (nameof (taskTaskListResources));
+      CalendarResources = calendarResources;
+      TaskListResources = taskTaskListResources;
+    }
 
-    string Name { get; set; }
-    Guid Id { get; }
-
-    IEnumerable<ISubOptionsViewModel> SubOptions { get; }
-    bool IsSelected { get; set; }
-
-    void SetOptions (Contracts.Options options);
-    Contracts.Options GetOptionsOrNull ();
-    bool Validate (StringBuilder errorMessageBuilder);
-
+    public IReadOnlyList<CalendarData> CalendarResources { get; }
+    public IReadOnlyList<TaskListData> TaskListResources { get; }
   }
 }

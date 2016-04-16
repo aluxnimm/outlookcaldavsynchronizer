@@ -14,26 +14,15 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
-using System.Collections.Generic;
-using System.Text;
+using CalDavSynchronizer.DataAccess;
 
-namespace CalDavSynchronizer.Ui.Options.ViewModels
+namespace CalDavSynchronizer.Ui.Options.ResourceSelection.ViewModels
 {
-  public interface IOptionsViewModel 
+  public abstract class ResourceDataViewModelBase
   {
-    bool IsActive { get; set; }
-    bool SupportsIsActive { get; }
-
-    string Name { get; set; }
-    Guid Id { get; }
-
-    IEnumerable<ISubOptionsViewModel> SubOptions { get; }
-    bool IsSelected { get; set; }
-
-    void SetOptions (Contracts.Options options);
-    Contracts.Options GetOptionsOrNull ();
-    bool Validate (StringBuilder errorMessageBuilder);
-
+    public FolderDescriptor SelectedFolder { get; set; }
+    public abstract string Name { get; }
   }
 }

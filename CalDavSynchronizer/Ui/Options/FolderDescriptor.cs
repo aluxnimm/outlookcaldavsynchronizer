@@ -13,27 +13,19 @@
 // GNU Affero General Public License for more details.
 // 
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using System.Collections.Generic;
-using System.Text;
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.using System;
 
-namespace CalDavSynchronizer.Ui.Options.ViewModels
+namespace CalDavSynchronizer.Ui.Options
 {
-  public interface IOptionsViewModel 
+  public class FolderDescriptor
   {
-    bool IsActive { get; set; }
-    bool SupportsIsActive { get; }
+    public string FolderId { get; }
+    public string StoreId { get; }
 
-    string Name { get; set; }
-    Guid Id { get; }
-
-    IEnumerable<ISubOptionsViewModel> SubOptions { get; }
-    bool IsSelected { get; set; }
-
-    void SetOptions (Contracts.Options options);
-    Contracts.Options GetOptionsOrNull ();
-    bool Validate (StringBuilder errorMessageBuilder);
-
+    public FolderDescriptor (string folderId, string storeId)
+    {
+      FolderId = folderId;
+      StoreId = storeId;
+    }
   }
 }

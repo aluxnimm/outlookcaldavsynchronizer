@@ -8,7 +8,8 @@
              xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels"
              xmlns:views="clr-namespace:CalDavSynchronizer.Ui.Options.Views"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
-             xmlns:outlook="clr-namespace:Microsoft.Office.Interop.Outlook;assembly=Microsoft.Office.Interop.Outlook"
+             xmlns:bulkOptionsViewModels="clr-namespace:CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels"
+             xmlns:bulkOptionsViews="clr-namespace:CalDavSynchronizer.Ui.Options.BulkOptions.Views"
              mc:Ignorable="d"
              d:DesignHeight="500" d:DesignWidth="600"
              d:DataContext="{x:Static  viewModels:OptionsCollectionViewModel.DesignInstance}">
@@ -86,6 +87,9 @@
         <Button Command="{Binding AddCommand}" ToolTip="Add new profile" >
           <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Add.png"></Image>
         </Button>
+        <Button Command="{Binding AddMultipleCommand}" ToolTip="Add multiple profiles" >
+          <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/AddMultiple.png"></Image>
+        </Button>
         <Button Command="{Binding DeleteSelectedCommand}" ToolTip="Delete selected profile">
           <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Delete.png"></Image>
         </Button>
@@ -101,13 +105,13 @@
       </ToolBar>
     <TreeView MinWidth="220" MaxWidth="300" Margin="3"  ItemsSource="{Binding Options}" x:Name="OptionsTree">
       <TreeView.Resources>
-        <views:OlItemTypeToImageConverter x:Key="OlItemTypeToImageConverter" />
+          <views:ViewModelToImageConverter x:Key="ViewModelToImageConverter" />
       </TreeView.Resources>
      <TreeView.ItemTemplate>
         <HierarchicalDataTemplate ItemsSource="{Binding SubOptions}">
           <StackPanel Orientation="Horizontal" Margin="0,2,3,1">
-            <Image Height="16" Width="16" Source="{Binding OutlookFolderType,Converter={StaticResource OlItemTypeToImageConverter}}" />
-            <CheckBox Margin="2,0" IsChecked="{Binding IsActive}" />
+              <Image Height="16" Width="16" Source="{Binding Converter={StaticResource ViewModelToImageConverter}}" />
+            <CheckBox Margin="2,0" IsEnabled="{Binding SupportsIsActive}"  IsChecked="{Binding IsActive}" />
             <TextBlock Text="{Binding Name}" />
           </StackPanel>
           <HierarchicalDataTemplate.ItemTemplate>
@@ -163,6 +167,15 @@
           <views:TimeRangeView />
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type bulkOptionsViewModels:ServerSettingsTemplateViewModel}">
+          <bulkOptionsViews:ServerSettingsTemplateView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type bulkOptionsViewModels:GoogleServerSettingsTemplateViewModel}">
+          <bulkOptionsViews:GoogleServerSettingsTemplateView />
+        </DataTemplate>
+
+
         <ControlTemplate TargetType="ContentControl" x:Key="OptionsControlTemplate">
           <DockPanel>
             <DockPanel DockPanel.Dock="Top">
@@ -212,9 +225,17 @@
           </ContentControl>
         </DataTemplate>
 
-       
+        <DataTemplate DataType="{x:Type bulkOptionsViewModels:MultipleOptionsTemplateViewModel}">
+            <StackPanel>
+              <DockPanel DockPanel.Dock="Top">
+                <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="Name:" />
+                <TextBox Text="{Binding Name}" />
+              </DockPanel>
+              <ContentControl Content="{Binding ServerSettingsViewModel}" />
+            <Button HorizontalAlignment="Right" Command="{Binding DiscoverResourcesCommand}">Discover resources and assign to outlook folders</Button>
+            </StackPanel>
+        </DataTemplate>
 
-     
       </ContentControl.Resources>
 
     </ContentControl>

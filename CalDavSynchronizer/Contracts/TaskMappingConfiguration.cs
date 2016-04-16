@@ -34,7 +34,7 @@ namespace CalDavSynchronizer.Contracts
       MapRecurringTasks = true;
     }
 
-    public override IOptionsViewModel CreateConfigurationViewModel (IMappingConfigurationViewModelFactory factory)
+    public override ISubOptionsViewModel CreateConfigurationViewModel (IMappingConfigurationViewModelFactory factory)
     {
       return factory.Create (this);
     }

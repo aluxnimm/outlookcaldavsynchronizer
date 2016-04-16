@@ -31,7 +31,6 @@ namespace CalDavSynchronizer.Ui.Options
   {
     SynchronizationMode SynchronizationMode { get; }
     string SynchronizationModeDisplayName { get; }
-    string ServerUrl { get; set; }
     OlItemType? OutlookFolderType { get; }
     event EventHandler OutlookFolderTypeChanged;
     string EmailAddress { get; }

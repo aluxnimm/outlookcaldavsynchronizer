@@ -14,26 +14,24 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
-using System.Collections.Generic;
-using System.Text;
+using CalDavSynchronizer.DataAccess;
 
-namespace CalDavSynchronizer.Ui.Options.ViewModels
+namespace CalDavSynchronizer.Ui.Options.ResourceSelection.ViewModels
 {
-  public interface IOptionsViewModel 
+  public class AddressBookDataViewModel : ResourceDataViewModelBase
   {
-    bool IsActive { get; set; }
-    bool SupportsIsActive { get; }
+    public AddressBookData Model { get; }
 
-    string Name { get; set; }
-    Guid Id { get; }
+    public AddressBookDataViewModel (AddressBookData model)
+    {
+      if (model == null)
+        throw new ArgumentNullException (nameof (model));
+      Model = model;
+    }
 
-    IEnumerable<ISubOptionsViewModel> SubOptions { get; }
-    bool IsSelected { get; set; }
-
-    void SetOptions (Contracts.Options options);
-    Contracts.Options GetOptionsOrNull ();
-    bool Validate (StringBuilder errorMessageBuilder);
-
+    public Uri Uri => Model.Uri;
+    public override string Name => Model.Name;
   }
 }

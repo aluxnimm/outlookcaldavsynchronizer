@@ -22,14 +22,16 @@ using System.Windows.Media.Imaging;
 using CalDavSynchronizer.Utilities;
 using Microsoft.Office.Interop.Outlook;
 using System.Linq;
+using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
+using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.Ui.Options.Views
 {
-  public class OlItemTypeToImageConverter : IValueConverter
+  public class ViewModelToImageConverter : IValueConverter
   {
     public object Convert (object value, Type targetType, object parameter, CultureInfo culture)
     {
-      switch ((OlItemType?) value)
+      switch ((value as GenericOptionsViewModel)?.OutlookFolderType)
       {
         case OlItemType.olAppointmentItem:
           return BitmapFrame.Create (new Uri ("pack://application:,,,/CalDavSynchronizer;component/Resources/Appointment.png"));
@@ -37,9 +39,12 @@ namespace CalDavSynchronizer.Ui.Options.Views
           return BitmapFrame.Create (new Uri ("pack://application:,,,/CalDavSynchronizer;component/Resources/Task.png"));
         case OlItemType.olContactItem:
           return BitmapFrame.Create (new Uri ("pack://application:,,,/CalDavSynchronizer;component/Resources/Contact.png"));
-        default:
-          return Binding.DoNothing;
       }
+
+      if (value is MultipleOptionsTemplateViewModel)
+        return BitmapFrame.Create (new Uri ("pack://application:,,,/CalDavSynchronizer;component/Resources/AddMultiple.png"));
+
+      return Binding.DoNothing;
     }
 
     public object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture)

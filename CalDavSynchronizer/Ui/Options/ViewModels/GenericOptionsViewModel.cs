@@ -30,13 +30,13 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
   internal class GenericOptionsViewModel : OptionsViewModelBase, ICurrentOptions, ISyncSettingsControl
   {
-    private readonly ObservableCollection<IOptionsViewModel> _subOptions = new ObservableCollection<IOptionsViewModel>();
+    private readonly ObservableCollection<ISubOptionsViewModel> _subOptions = new ObservableCollection<ISubOptionsViewModel>();
     private readonly NetworkSettingsViewModel _networkSettingsViewModel;
     private readonly OutlookFolderViewModel _outlookFolderViewModel;
     private readonly IServerSettingsViewModel _serverSettingsViewModel;
     private readonly SyncSettingsViewModel _syncSettingsViewModel;
     private readonly TimeRangeViewModel _timeRangeViewModel;
-    private IOptionsViewModel _mappingConfigurationViewModel;
+    private ISubOptionsViewModel _mappingConfigurationViewModel;
     private readonly GeneralOptions _generalOptions;
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
     private readonly IMappingConfigurationViewModelFactory _mappingConfigurationViewModelFactory;
@@ -75,7 +75,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     /// <remarks>
     /// Just for creating the DesingInstance
     /// </remarks>
-    public GenericOptionsViewModel (IOptionsViewModelParent parent, NetworkSettingsViewModel networkSettingsViewModel, OutlookFolderViewModel outlookFolderViewModel, IServerSettingsViewModel serverSettingsViewModel, SyncSettingsViewModel syncSettingsViewModel, IOptionsViewModel mappingConfigurationViewModel)
+    public GenericOptionsViewModel (IOptionsViewModelParent parent, NetworkSettingsViewModel networkSettingsViewModel, OutlookFolderViewModel outlookFolderViewModel, IServerSettingsViewModel serverSettingsViewModel, SyncSettingsViewModel syncSettingsViewModel, ISubOptionsViewModel mappingConfigurationViewModel)
         : base (parent)
     {
       _networkSettingsViewModel = networkSettingsViewModel;
@@ -85,7 +85,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       MappingConfigurationViewModel = mappingConfigurationViewModel;
     }
 
-    private IOptionsViewModel MappingConfigurationViewModel
+    private ISubOptionsViewModel MappingConfigurationViewModel
     {
       get { return _mappingConfigurationViewModel; }
       set
@@ -120,7 +120,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       }
     }
 
-    protected override IEnumerable<IOptionsViewModel> CreateSubOptions ()
+    protected override IEnumerable<ISubOptionsViewModel> CreateSubOptions ()
     {
       _subOptions.Add (_networkSettingsViewModel);
       return _subOptions;
@@ -156,12 +156,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     }
 
     public string SynchronizationModeDisplayName => _syncSettingsViewModel.SelectedSynchronizationModeDisplayName;
-
-    public string ServerUrl
-    {
-      get { return _serverSettingsViewModel.CalenderUrl; }
-      set { _serverSettingsViewModel.CalenderUrl = value; }
-    }
 
     public ServerAdapterType ServerAdapterType => _serverSettingsViewModel.ServerAdapterType;
 

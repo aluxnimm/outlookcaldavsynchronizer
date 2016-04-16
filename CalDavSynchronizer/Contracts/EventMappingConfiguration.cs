@@ -61,7 +61,7 @@ namespace CalDavSynchronizer.Contracts
       CategoryShortcutKey = OlCategoryShortcutKey.olCategoryShortcutKeyNone;
     }
 
-    public override IOptionsViewModel CreateConfigurationViewModel (IMappingConfigurationViewModelFactory factory)
+    public override ISubOptionsViewModel CreateConfigurationViewModel (IMappingConfigurationViewModelFactory factory)
     {
       return factory.Create (this);
     }
