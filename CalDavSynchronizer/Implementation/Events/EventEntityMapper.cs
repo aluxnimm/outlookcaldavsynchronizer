@@ -361,14 +361,14 @@ namespace CalDavSynchronizer.Implementation.Events
           return "DECLINED";
         case OlResponseStatus.olResponseNone:
           return null;
-        case OlResponseStatus.olResponseNotResponded:
-          return "NEEDS-ACTION";
         case OlResponseStatus.olResponseOrganized:
           return "ACCEPTED";
         case OlResponseStatus.olResponseTentative:
           return "TENTATIVE";
+        case OlResponseStatus.olResponseNotResponded:
+        default:
+          return "NEEDS-ACTION";
       }
-      throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
     }
 
     private OlResponseStatus MapParticipation2To1 (string value)
