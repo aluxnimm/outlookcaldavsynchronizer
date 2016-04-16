@@ -43,5 +43,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       AddressBooks = addressBooks;
       TaskLists = taskLists;
     }
+
+    public bool ContainsResources => Calendars.Count > 0 || AddressBooks.Count > 0 || TaskLists.Count > 0;
   }
 }

@@ -114,12 +114,19 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 
       var webDavClient = CreateWebDavClient (networkSettings, generalOptions);
       var calDavDataAccess = new CalDavDataAccess (url, webDavClient);
-      var calDavResources = await calDavDataAccess.GetUserResourcesNoThrow (true);
       var cardDavDataAccess = new CardDavDataAccess (url, webDavClient);
-      var foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow (true);
 
+      var resources = await GetUserResources (calDavDataAccess, cardDavDataAccess, true);
+      return resources.ContainsResources ? resources : await GetUserResources (calDavDataAccess, cardDavDataAccess, false);
+    }
+
+    private static async Task<ServerResources> GetUserResources (CalDavDataAccess calDavDataAccess, CardDavDataAccess cardDavDataAccess, bool useWellKNownUrl)
+    {
+      var calDavResources = await calDavDataAccess.GetUserResourcesNoThrow (useWellKNownUrl);
+      var foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow (useWellKNownUrl);
       return new ServerResources (calDavResources.CalendarResources, foundAddressBooks, calDavResources.TaskListResources);
     }
+
 
     public static ServerSettingsTemplateViewModel DesignInstance = new ServerSettingsTemplateViewModel()
                                                                    {
