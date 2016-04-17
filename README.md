@@ -81,6 +81,14 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 2.1.0 ####
+- New features
+	- Implement Bulk profile creation to add multiple profiles at once and choose the folder for each discovered server resource (calendar, addressbook and task).
+	- Query supported-calendar-component-set and filter out VEVENT and VTODO resources for autodisovery.
+- Bug fixes
+	- add functionality to cope with multiple groups with the same name for Google Contacts API.
+	- Restore old CalendarUrl when Google Autodiscovery has error or was cancelled.
+	- Map ResponseStatus default to NEEDS-ACTION in MapParticipation1To2 to avoid exception.
 #### 2.0.2 ####
 - New features
 	- Improve event mapping of TRANSP and STATUS to Outlook BusyStatus. (contributed by Florian Saller).
@@ -643,14 +651,16 @@ After installing the plugin, a new ribbon called 'Caldav Synchronizer' is added 
 - Status
 
 Use the Synchronization Profiles dialog to configure different synchronization profiles. Each profile is responsible for synchronizing one Outlook calendar/task or contact folder with a remote folder of a CalDAV/CardDAV server.
+The toolbar on the left upper part provides the following options: 
 
-- **Add** adds a new empty profile
-- **Delete** deletes the current profile
-- **Copy** copies the current profile to a new one
-- **Clear cache** delete the sync cache and start a new initial sync with the next sync run.
-- **Is active ** If deactivated, current profile is not synced anymore without the need to delete the profile.
+- **Add new profile** adds a new empty profile
+- **Add multiple profiles** bulk profile creation to add multiple profiles at once and choose the folder for each discovered server resource (calendar, addressbook and task)
+- **Delete selected profile** deletes the current profile
+- **Copy selected profile** copies the current profile to a new one
+- **Move selected profile up** change ordering in the tree view
+- **Move selected profile down** change ordering in the tree view
 
-When adding a new profile you can choose between a generic CalDAV/CardDAV, a google profile to simplify the google profile creation and predefined CalDAV/CardDAV profiles for Fruux, Posteo, Yandex and GMX where the DAV Url for autodiscovery is already entered. 
+When adding a new profile you can choose between a generic CalDAV/CardDAV, a google profile to simplify the google profile creation and predefined CalDAV/CardDAV profiles for Fruux, Posteo, Yandex, GMX and Sarenet where the DAV Url for autodiscovery is already entered. 
 
 The following properties need to be set for a new generic profile:
 
@@ -679,6 +689,9 @@ The following properties need to be set for a new generic profile:
 	- **Synchronization interval (minutes):** Choose the interval for synchronization in minutes, if 'Manual only' is choosen, there is no automatic sync but you can use the 'Synchronize now' menu item.
 	- **Synchronization timespan past (days)** and
 	- **Synchronization timespan future (days)** For performance reasons it is useful to sync only a given timespan of a big calendar, especially past events are normally not necessary to sync after a given timespan.
+
+- **Clear cache** delete the sync cache and start a new initial sync with the next sync run.
+- **Is active checkbox in the tree view** If deactivated, current profile is not synced anymore without the need to delete the profile.
 
 If you expand the tree view of the profile you can configure network and proxy options and mapping configuration options.
 
@@ -765,7 +778,13 @@ Then you get the DAV url of the calendar:
 
 For syncing iCloud contacts with CardDAV use the following URL
 
-    https://contacts.icloud.com:443/<YOUR UNIQUE USERID>/carddavhome/card/
+    https://contacts.icloud.com:443/<YOUR UNIQUE Apple USER_ID>/carddavhome/card/
+
+There are PHP files available to determine your Apple USER_ID, see
+
+    https://icloud.niftyside.com/
+
+    https://github.com/muhlba91/icloud
 
 ### One.com settings ###
 
