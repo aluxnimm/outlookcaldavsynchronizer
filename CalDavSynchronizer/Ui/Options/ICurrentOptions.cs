@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,8 +37,8 @@ namespace CalDavSynchronizer.Ui.Options
     string EmailAddress { get; }
     ServerAdapterType ServerAdapterType { get; }
 
-    IWebDavClient CreateWebDavClient ();
     IWebProxy GetProxyIfConfigured ();
+    IWebDavClient CreateWebDavClient (Uri url);
     ICalDavDataAccess CreateCalDavDataAccess ();
   }
 }

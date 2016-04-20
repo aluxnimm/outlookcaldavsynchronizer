@@ -41,7 +41,7 @@ namespace CalDavSynchronizer.Ui.Options
       set { throw new NotImplementedException(); }
     }
 
-    public IWebDavClient CreateWebDavClient ()
+    public IWebDavClient CreateWebDavClient (Uri url)
     {
       throw new NotImplementedException();
     }

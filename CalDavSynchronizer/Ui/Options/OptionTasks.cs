@@ -373,7 +373,7 @@ namespace CalDavSynchronizer.Ui.Options
       }
 
       var enteredUri = new Uri (url);
-      var webDavClient = environment.CreateWebDavClient();
+      var webDavClient = environment.CreateWebDavClient(enteredUri);
 
       Uri autoDiscoveredUrl;
 
@@ -503,7 +503,7 @@ namespace CalDavSynchronizer.Ui.Options
       }
 
       var enteredUri = new Uri (url);
-      var webDavClient = currentOptions.CreateWebDavClient();
+      var webDavClient = currentOptions.CreateWebDavClient(enteredUri);
 
       Uri autoDiscoveredUrl;
 

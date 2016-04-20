@@ -159,12 +159,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     public ServerAdapterType ServerAdapterType => _serverSettingsViewModel.ServerAdapterType;
 
-    public IWebDavClient CreateWebDavClient ()
+    public IWebDavClient CreateWebDavClient (Uri url)
     {
       return SynchronizerFactory.CreateWebDavClient (
           _serverSettingsViewModel.UserName,
           _serverSettingsViewModel.UseAccountPassword ? _outlookAccountPasswordProvider.GetPassword (_outlookFolderViewModel.FolderAccountName) : _serverSettingsViewModel.Password,
-          _serverSettingsViewModel.CalenderUrl,
+          url.ToString(),
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
           _serverSettingsViewModel.ServerAdapterType,
           _networkSettingsViewModel.CloseConnectionAfterEachRequest,
@@ -181,7 +181,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     public ICalDavDataAccess CreateCalDavDataAccess ()
     {
-      return new CalDavDataAccess (new Uri (_serverSettingsViewModel.CalenderUrl), CreateWebDavClient ());
+      var calendarUrl = new Uri (_serverSettingsViewModel.CalenderUrl);
+      return new CalDavDataAccess (calendarUrl, CreateWebDavClient (calendarUrl));
     }
 
     public static OlItemType olAppointmentItem { get; } = OlItemType.olAppointmentItem;
