@@ -160,4 +160,7 @@
   <data name="logo_sarenet" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\logo_sarenet.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="logo_landmarks" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\logo_landmarks.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

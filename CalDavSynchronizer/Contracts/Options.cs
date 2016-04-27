@@ -147,6 +147,9 @@ namespace CalDavSynchronizer.Contracts
           return "https://caldav.gmx.net";
         case ProfileType.Sarenet:
           return "https://configurator.organizer.sarenet.es/androidconfigurator.php";
+        case ProfileType.Landmarks:
+          return "https://dav.landmarks.skyrise.de/";
+
         default:
           return null;
       }
