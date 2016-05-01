@@ -19,12 +19,15 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using GenSync;
+using log4net;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.ChangeWatching
 {
   class FolderChangeWatcher : IItemCollectionChangeWatcher
   {
+    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);
+
     private readonly Items _folderItems;
     private readonly Folder _folder;
 
@@ -51,17 +54,17 @@ namespace CalDavSynchronizer.ChangeWatching
 
     private void FolderEvents_BeforeItemMove (object item, MAPIFolder moveTo, ref bool cancel)
     {
-      OnItemSavedOrDeleted (item, true);
+      OnItemSavedOrDeleted (item,  ItemAction.Delete);
     }
 
     private void _folderItems_ItemChange (object item)
     {
-      OnItemSavedOrDeleted (item, false);
+      OnItemSavedOrDeleted (item, ItemAction.Change);
     }
 
     private void _folderItems_ItemAdd (object item)
     {
-      OnItemSavedOrDeleted (item, false);
+      OnItemSavedOrDeleted (item, ItemAction.Add);
     }
 
     public void Dispose ()
@@ -74,13 +77,16 @@ namespace CalDavSynchronizer.ChangeWatching
       Marshal.FinalReleaseComObject (_folder);
     }
 
-    private void OnItemSavedOrDeleted (object item, bool wasDeleted)
+    private void OnItemSavedOrDeleted (object item, ItemAction action)
     {
       IIdWithHints<string, DateTime> entryId = null;
+
+      bool wasDeleted = action == ItemAction.Delete;
 
       var appointment = item as AppointmentItem;
       if (appointment != null)
       {
+        s_logger.Debug ($"'{nameof (ItemAction)}.{action}': Appointment '{appointment.Subject}' '{appointment.EntryID}' ");
         entryId = IdWithHints.Create (appointment.EntryID, (DateTime?) appointment.LastModificationTime, wasDeleted);
       }
       else
@@ -88,6 +94,7 @@ namespace CalDavSynchronizer.ChangeWatching
         var task = item as TaskItem;
         if (task != null)
         {
+          s_logger.Debug ($"'{nameof (ItemAction)}.{action}': Task '{task.Subject}' '{task.EntryID}' ");
           entryId = IdWithHints.Create (task.EntryID, (DateTime?) task.LastModificationTime, wasDeleted);
         }
         else
@@ -95,6 +102,7 @@ namespace CalDavSynchronizer.ChangeWatching
           var contact = item as ContactItem;
           if (contact != null)
           {
+            s_logger.Debug ($"'{nameof (ItemAction)}.{action}': Contact '{contact.LastNameAndFirstName}' '{contact.EntryID}' ");
             entryId = IdWithHints.Create (contact.EntryID, (DateTime?) contact.LastModificationTime, wasDeleted);
           }
         }

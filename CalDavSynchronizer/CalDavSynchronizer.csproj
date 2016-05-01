@@ -267,6 +267,7 @@
     <Compile Include="CalDavSynchronizerToolBar.cs" />
     <Compile Include="ChangeWatching\FolderChangeWatcher.cs" />
     <Compile Include="ChangeWatching\FolderChangeWatcherFactory.cs" />
+    <Compile Include="ChangeWatching\ItemAction.cs" />
     <Compile Include="ChangeWatching\NullItemCollectionChangeWatcher.cs" />
     <Compile Include="ChangeWatching\IItemCollectionChangeWatcher.cs" />
     <Compile Include="ChangeWatching\IFolderChangeWatcherFactory.cs" />
