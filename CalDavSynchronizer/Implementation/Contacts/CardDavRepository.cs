@@ -71,6 +71,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
+    public Task VerifyUnknownEntities (Dictionary<WebResourceName, string> unknownEntites)
+    {
+      return Task.FromResult (0);
+    }
+
     public void Cleanup (IReadOnlyDictionary<WebResourceName, vCard> entities)
     {
       // nothing to do

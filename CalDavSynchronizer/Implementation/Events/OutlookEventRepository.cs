@@ -44,14 +44,16 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly IDateTimeRangeProvider _dateTimeRangeProvider;
     private readonly EventMappingConfiguration _configuration;
     private readonly IDaslFilterProvider _daslFilterProvider;
-    
+    private readonly IInvitationChecker _invitationChecker;
+
     public OutlookEventRepository (
       NameSpace mapiNameSpace, 
       string folderId, 
       string folderStoreId, 
       IDateTimeRangeProvider dateTimeRangeProvider,
       EventMappingConfiguration configuration,
-      IDaslFilterProvider daslFilterProvider)
+      IDaslFilterProvider daslFilterProvider, 
+      IInvitationChecker invitationChecker)
     {
       if (mapiNameSpace == null)
         throw new ArgumentNullException (nameof (mapiNameSpace));
@@ -61,6 +63,8 @@ namespace CalDavSynchronizer.Implementation.Events
         throw new ArgumentNullException (nameof (configuration));
       if (daslFilterProvider == null)
         throw new ArgumentNullException (nameof (daslFilterProvider));
+      if (invitationChecker == null)
+        throw new ArgumentNullException (nameof (invitationChecker));
 
       _mapiNameSpace = mapiNameSpace;
       _folderId = folderId;
@@ -68,6 +72,7 @@ namespace CalDavSynchronizer.Implementation.Events
       _dateTimeRangeProvider = dateTimeRangeProvider;
       _configuration = configuration;
       _daslFilterProvider = daslFilterProvider;
+      _invitationChecker = invitationChecker;
     }
 
     private const string c_entryIdColumnName = "EntryID";
@@ -226,6 +231,21 @@ namespace CalDavSynchronizer.Implementation.Events
                   (AppointmentItem) _mapiNameSpace.GetItemFromID (id, _folderStoreId),
                   entryId => (AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, _folderStoreId))))
           .ToArray();
+    }
+
+    public async Task VerifyUnknownEntities (Dictionary<string, DateTime> unknownEntites)
+    {
+      foreach(var unknownEntity in await Get(unknownEntites.Keys,NullLoadEntityLogger.Instance,0))
+      {
+        using (unknownEntity.Entity)
+        {
+          if (_invitationChecker.IsInvitationFromServerIdentityToOutlookIdentity (unknownEntity.Entity.Inner))
+          {
+            unknownEntites.Remove (unknownEntity.Id);
+            unknownEntity.Entity.Inner.Delete();
+          }
+        }
+      }
     }
 
     public void Cleanup (IReadOnlyDictionary<string, AppointmentItemWrapper> entities)

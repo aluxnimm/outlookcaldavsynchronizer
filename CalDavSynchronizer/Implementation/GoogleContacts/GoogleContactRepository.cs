@@ -397,6 +397,11 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       return result;
     }
 
+    public Task VerifyUnknownEntities (Dictionary<string, GoogleContactVersion> unknownEntites)
+    {
+      return Task.FromResult (0);
+    }
+
     bool UpdatePhoto (Contact contact, byte[] photoOrNull)
     {
       if (!_contactMappingConfiguration.MapContactPhoto)

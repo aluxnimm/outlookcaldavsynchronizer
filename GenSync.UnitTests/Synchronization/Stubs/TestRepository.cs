@@ -67,6 +67,11 @@ namespace GenSync.UnitTests.Synchronization.Stubs
           ids.Select (id => EntityWithId.Create (id, EntityVersionAndContentById[id].Item2)).ToArray());
     }
 
+    public Task VerifyUnknownEntities (Dictionary<Identifier, int> unknownEntites)
+    {
+      return Task.FromResult (0);
+    }
+
     public void Cleanup (IReadOnlyDictionary<Identifier, string> entities)
     {
     }

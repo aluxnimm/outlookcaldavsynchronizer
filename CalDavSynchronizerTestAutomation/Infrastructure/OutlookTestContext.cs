@@ -89,7 +89,8 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           s_outlookFolderStoreId,
           NullDateTimeRangeProvider.Instance,
           eventMappingConfiguration,
-          daslFilterProvider);
+          daslFilterProvider,
+          MockRepository.GenerateStub<IInvitationChecker>());
     }
 
     public static IOutlookSynchronizer CreateEventSynchronizer (

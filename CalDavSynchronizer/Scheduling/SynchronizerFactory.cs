@@ -355,7 +355,8 @@ namespace CalDavSynchronizer.Scheduling
           options.OutlookFolderStoreId,
           dateTimeRangeProvider,
           mappingParameters,
-          _daslFilterProvider);
+          _daslFilterProvider,
+          new InvitationChecker(options.EmailAddress,_outlookEmailAddress));
 
       IEntityRepository<IICalendar, WebResourceName, string, int> btypeRepository = new CalDavRepository (
           calDavDataAccess,

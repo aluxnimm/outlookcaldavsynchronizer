@@ -468,24 +468,14 @@ namespace CalDavSynchronizer.Implementation.Events
             }
             else
             {
-              string organizerEmail = null;
-
-              try
-              {
-                organizerEmail = source.GetPropertySafe (PR_SENDER_EMAIL_ADDRESS);
-              }
-              catch (COMException ex)
-              {
-                s_logger.Warn ("Can't access property PR_SENDER_EMAIL_ADDRESS of appointment", ex);
-                logger.LogMappingWarning ("Can't access property PR_SENDER_EMAIL_ADDRESS of appointment", ex);
-              }
+              string organizerEmail = OutlookUtility.GetSenderEmailAddressOrNull (source, logger, s_logger);
               SetOrganizer (target, source.Organizer, organizerEmail, logger);
             }
           }
         }
       }
     }
-
+   
     private void SetOrganizer (IEvent target, AddressEntry organizer, string address, IEntityMappingLogger logger)
     {
       string organizerEmail = GetMailUrlOrNull (organizer, address, logger);

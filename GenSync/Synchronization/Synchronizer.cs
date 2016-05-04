@@ -325,6 +325,9 @@ namespace GenSync.Synchronization
       HashSet<TBtypeEntityId> bEntitesToLoad = new HashSet<TBtypeEntityId>();
       entitySyncStates.Execute (s => s.AddRequiredEntitiesToLoad (aEntitesToLoad.Add, bEntitesToLoad.Add));
 
+      await _atypeRepository.VerifyUnknownEntities (newAVersions);
+      await _btypeRepository.VerifyUnknownEntities (newBVersions);
+
       if (newAVersions.Count > 0 && newBVersions.Count > 0)
       {
         foreach (var newA in newAVersions)

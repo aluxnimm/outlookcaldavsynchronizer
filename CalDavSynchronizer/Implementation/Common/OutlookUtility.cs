@@ -32,6 +32,7 @@ namespace CalDavSynchronizer.Implementation.Common
   {
     private const string PR_SMTP_ADDRESS = "http://schemas.microsoft.com/mapi/proptag/0x39FE001E";
     private const string PR_EMAIL1ADDRESS = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/8084001F";
+    private const string PR_SENDER_EMAIL_ADDRESS = "http://schemas.microsoft.com/mapi/proptag/0x0C1F001E";
 
     public static string GetEmailAdressOrNull (AddressEntry addressEntry, IEntityMappingLogger logger, ILog generalLogger)
     {
@@ -143,5 +144,20 @@ namespace CalDavSynchronizer.Implementation.Common
 
       return null;
     }
+
+    public static string GetSenderEmailAddressOrNull (AppointmentItem source, IEntityMappingLogger logger, ILog generalLogger)
+    {
+      try
+      {
+        return source.GetPropertySafe (PR_SENDER_EMAIL_ADDRESS);
+      }
+      catch (COMException ex)
+      {
+        generalLogger.Warn ("Can't access property PR_SENDER_EMAIL_ADDRESS of appointment", ex);
+        logger.LogMappingWarning ("Can't access property PR_SENDER_EMAIL_ADDRESS of appointment", ex);
+        return null;
+      }
+    }
+
   }
 }
