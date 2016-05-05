@@ -143,6 +143,11 @@ namespace CalDavSynchronizer.Implementation.Tasks
           .ToArray();
     }
 
+    public Task VerifyUnknownEntities (Dictionary<string, DateTime> unknownEntites)
+    {
+      return Task.FromResult (0);
+    }
+
     public void Cleanup (IReadOnlyDictionary<string, TaskItemWrapper> entities)
     {
       foreach (var wrapper in entities.Values)

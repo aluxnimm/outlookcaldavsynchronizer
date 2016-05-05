@@ -427,38 +427,11 @@ namespace CalDavSynchronizer.Implementation.Events
       }
     }
 
-    private AddressEntry GetEventOrganizerOrNull (AppointmentItem source, IEntityMappingLogger logger)
-    {
-      try
-      {
-        if (_outlookMajorVersion < 14)
-        {
-          // Microsoft recommends this way for Outlook 2007. May still work with Outlook 2010+
-          using (var propertyAccessor = GenericComObjectWrapper.Create (source.PropertyAccessor))
-          {
-            string organizerEntryID = propertyAccessor.Inner.BinaryToString (propertyAccessor.Inner.GetProperty (PR_SENT_REPRESENTING_ENTRYID));
-            return Globals.ThisAddIn.Application.Session.GetAddressEntryFromID (organizerEntryID);
-          }
-        }
-        else
-        {
-          // NB this works with Outlook 2010 but crashes with Outlook 2007
-          return source.GetOrganizer();
-        }
-      }
-      catch (COMException ex)
-      {
-        s_logger.Warn ("Can't get organizer of appointment", ex);
-        logger.LogMappingWarning ("Can't get organizer of appointment", ex);
-        return null;
-      }
-    }
-
     private void MapOrganizer1To2 (AppointmentItem source, IEvent target, IEntityMappingLogger logger)
     {
       if (source.MeetingStatus != OlMeetingStatus.olNonMeeting)
       {
-        using (var organizerWrapper = GenericComObjectWrapper.Create (GetEventOrganizerOrNull (source, logger)))
+        using (var organizerWrapper = GenericComObjectWrapper.Create (OutlookUtility.GetEventOrganizerOrNull (source, logger, s_logger, _outlookMajorVersion)))
         {
           if (organizerWrapper.Inner != null)
           {
@@ -468,24 +441,14 @@ namespace CalDavSynchronizer.Implementation.Events
             }
             else
             {
-              string organizerEmail = null;
-
-              try
-              {
-                organizerEmail = source.GetPropertySafe (PR_SENDER_EMAIL_ADDRESS);
-              }
-              catch (COMException ex)
-              {
-                s_logger.Warn ("Can't access property PR_SENDER_EMAIL_ADDRESS of appointment", ex);
-                logger.LogMappingWarning ("Can't access property PR_SENDER_EMAIL_ADDRESS of appointment", ex);
-              }
+              string organizerEmail = OutlookUtility.GetSenderEmailAddressOrNull (source, logger, s_logger);
               SetOrganizer (target, source.Organizer, organizerEmail, logger);
             }
           }
         }
       }
     }
-
+   
     private void SetOrganizer (IEvent target, AddressEntry organizer, string address, IEntityMappingLogger logger)
     {
       string organizerEmail = GetMailUrlOrNull (organizer, address, logger);

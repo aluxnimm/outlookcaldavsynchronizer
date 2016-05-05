@@ -100,6 +100,11 @@ namespace CalDavSynchronizer.Implementation
       }
     }
 
+    public Task VerifyUnknownEntities (Dictionary<WebResourceName, string> unknownEntites)
+    {
+      return Task.FromResult (0);
+    }
+
     public void Cleanup (IReadOnlyDictionary<WebResourceName, IICalendar> entities)
     {
       // nothing to do

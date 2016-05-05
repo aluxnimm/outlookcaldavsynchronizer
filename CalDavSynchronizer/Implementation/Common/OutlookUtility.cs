@@ -32,6 +32,8 @@ namespace CalDavSynchronizer.Implementation.Common
   {
     private const string PR_SMTP_ADDRESS = "http://schemas.microsoft.com/mapi/proptag/0x39FE001E";
     private const string PR_EMAIL1ADDRESS = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/8084001F";
+    private const string PR_SENDER_EMAIL_ADDRESS = "http://schemas.microsoft.com/mapi/proptag/0x0C1F001E";
+    private const string PR_SENT_REPRESENTING_ENTRYID = "http://schemas.microsoft.com/mapi/proptag/0x00410102";
 
     public static string GetEmailAdressOrNull (AddressEntry addressEntry, IEntityMappingLogger logger, ILog generalLogger)
     {
@@ -143,5 +145,47 @@ namespace CalDavSynchronizer.Implementation.Common
 
       return null;
     }
+
+    public static string GetSenderEmailAddressOrNull (AppointmentItem source, IEntityMappingLogger logger, ILog generalLogger)
+    {
+      try
+      {
+        return source.GetPropertySafe (PR_SENDER_EMAIL_ADDRESS);
+      }
+      catch (COMException ex)
+      {
+        generalLogger.Warn ("Can't access property PR_SENDER_EMAIL_ADDRESS of appointment", ex);
+        logger.LogMappingWarning ("Can't access property PR_SENDER_EMAIL_ADDRESS of appointment", ex);
+        return null;
+      }
+    }
+
+    public static AddressEntry GetEventOrganizerOrNull (AppointmentItem source, IEntityMappingLogger logger, ILog generalLogger, int outlookMajorVersion)
+    {
+      try
+      {
+        if (outlookMajorVersion < 14)
+        {
+          // Microsoft recommends this way for Outlook 2007. May still work with Outlook 2010+
+          using (var propertyAccessor = GenericComObjectWrapper.Create (source.PropertyAccessor))
+          {
+            string organizerEntryID = propertyAccessor.Inner.BinaryToString (propertyAccessor.Inner.GetProperty(PR_SENT_REPRESENTING_ENTRYID));
+            return Globals.ThisAddIn.Application.Session.GetAddressEntryFromID (organizerEntryID);
+          }
+        }
+        else
+        {
+          // NB this works with Outlook 2010 but crashes with Outlook 2007
+          return source.GetOrganizer();
+        }
+      }
+      catch (COMException ex)
+      {
+        generalLogger.Warn ("Can't get organizer of appointment", ex);
+        logger.LogMappingWarning ("Can't get organizer of appointment", ex);
+        return null;
+      }
+    }
+
   }
 }

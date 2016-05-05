@@ -109,6 +109,11 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
       return items;
     }
 
+    public System.Threading.Tasks.Task VerifyUnknownEntities (Dictionary<string, string> unknownEntites)
+    {
+      return System.Threading.Tasks.Task.FromResult (0);
+    }
+
     public void Cleanup (IReadOnlyDictionary<string, Task> entities)
     {
     }
