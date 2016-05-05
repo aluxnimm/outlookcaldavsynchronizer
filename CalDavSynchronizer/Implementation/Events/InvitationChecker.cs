@@ -53,7 +53,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
     private bool IsMeeting (AppointmentItem appointment)
     {
-      return appointment.MeetingStatus != OlMeetingStatus.olNonMeeting;
+      return appointment.MeetingStatus == OlMeetingStatus.olMeetingReceived;
     }
 
     private bool IsServerIdentityOrganizer (AppointmentItem appointment)
