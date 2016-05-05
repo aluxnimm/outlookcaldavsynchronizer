@@ -52,8 +52,14 @@ namespace CalDavSynchronizer.Implementation.Events
     {
       return
           _isServerIdentityDifferentThanOutlookIdentity &&
+          IsMeeting (appointment) &&
           IsServerIdentityOrganizer (appointment) &&
           IsOutlookIdentityInvited (appointment);
+    }
+
+    private bool IsMeeting (AppointmentItem appointment)
+    {
+      return appointment.MeetingStatus != OlMeetingStatus.olNonMeeting;
     }
 
     private bool IsServerIdentityOrganizer (AppointmentItem appointment)
