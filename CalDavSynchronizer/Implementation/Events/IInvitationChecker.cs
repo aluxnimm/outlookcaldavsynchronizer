@@ -21,6 +21,6 @@ namespace CalDavSynchronizer.Implementation.Events
 {
   public interface IInvitationChecker
   {
-    bool IsInvitationFromServerIdentityToOutlookIdentity (AppointmentItem appointment);
+    bool IsMeetingInvitationFromServerIdentity (AppointmentItem appointment);
   }
 }

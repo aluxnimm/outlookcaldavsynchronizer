@@ -44,7 +44,7 @@ namespace CalDavSynchronizer.Implementation.Events
       _outlookMajorVersion = Convert.ToInt32(outlookMajorVersionString);
     }
 
-    public bool IsInvitationFromServerIdentityToOutlookIdentity (AppointmentItem appointment)
+    public bool IsMeetingInvitationFromServerIdentity (AppointmentItem appointment)
     {
       return
           IsMeeting (appointment) &&

@@ -235,12 +235,15 @@ namespace CalDavSynchronizer.Implementation.Events
 
     public async Task VerifyUnknownEntities (Dictionary<string, DateTime> unknownEntites)
     {
-      foreach(var unknownEntity in await Get(unknownEntites.Keys,NullLoadEntityLogger.Instance,0))
+      foreach (var unknownEntity in await Get (unknownEntites.Keys, NullLoadEntityLogger.Instance, 0))
       {
         using (unknownEntity.Entity)
         {
-          if (_invitationChecker.IsInvitationFromServerIdentityToOutlookIdentity (unknownEntity.Entity.Inner))
+          if (_invitationChecker.IsMeetingInvitationFromServerIdentity (unknownEntity.Entity.Inner))
           {
+            var subjectForLogging = s_logger.IsDebugEnabled ? "'" + unknownEntity.Entity.Inner.Subject + "' " : string.Empty;
+            s_logger.Info ($"Deleting meeting invitation {subjectForLogging}('{unknownEntity.Id}') from server identity.");
+
             unknownEntites.Remove (unknownEntity.Id);
             try
             {
