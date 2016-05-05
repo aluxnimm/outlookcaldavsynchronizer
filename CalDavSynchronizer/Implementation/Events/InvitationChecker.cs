@@ -47,13 +47,14 @@ namespace CalDavSynchronizer.Implementation.Events
     public bool IsMeetingInvitationFromServerIdentity (AppointmentItem appointment)
     {
       return
-          IsMeeting (appointment) &&
+          IsMeetingReceived (appointment) &&
           IsServerIdentityOrganizer (appointment);
     }
 
-    private bool IsMeeting (AppointmentItem appointment)
+    private bool IsMeetingReceived (AppointmentItem appointment)
     {
-      return appointment.MeetingStatus == OlMeetingStatus.olMeetingReceived;
+      return  appointment.MeetingStatus == OlMeetingStatus.olMeetingReceived ||
+              appointment.MeetingStatus == OlMeetingStatus.olMeetingReceivedAndCanceled;
     }
 
     private bool IsServerIdentityOrganizer (AppointmentItem appointment)
