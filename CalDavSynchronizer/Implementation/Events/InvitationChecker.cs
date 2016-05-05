@@ -17,11 +17,13 @@
 
 using System;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using GenSync.Logging;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
+using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
@@ -29,16 +31,21 @@ namespace CalDavSynchronizer.Implementation.Events
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodBase.GetCurrentMethod ().DeclaringType);
 
+    private readonly int _outlookMajorVersion;
+
     private readonly string _serverEmailAddress;
     private readonly string _outlookEmailAddress;
     private readonly bool _isServerIdentityDifferentThanOutlookIdentity;
 
-    public InvitationChecker (string serverEmailAddress, string outlookEmailAddress)
+    public InvitationChecker (string serverEmailAddress, string outlookEmailAddress, string outlookApplicationVersion)
 
     {
       _serverEmailAddress = serverEmailAddress;
       _outlookEmailAddress = outlookEmailAddress;
       _isServerIdentityDifferentThanOutlookIdentity = string.Compare (_outlookEmailAddress, _serverEmailAddress, StringComparison.OrdinalIgnoreCase) != 0;
+
+      string outlookMajorVersionString = outlookApplicationVersion.Split(new char[] { '.' })[0];
+      _outlookMajorVersion = Convert.ToInt32(outlookMajorVersionString);
     }
 
     public bool IsInvitationFromServerIdentityToOutlookIdentity (AppointmentItem appointment)
@@ -51,7 +58,9 @@ namespace CalDavSynchronizer.Implementation.Events
 
     private bool IsServerIdentityOrganizer (AppointmentItem appointment)
     {
-      using (var organizerWrapper = GenericComObjectWrapper.Create (appointment.GetOrganizer ()))
+      using (var organizerWrapper = GenericComObjectWrapper.Create (
+              OutlookUtility.GetEventOrganizerOrNull (appointment, NullEntitySynchronizationLogger.Instance, s_logger,_outlookMajorVersion)
+            ))
       {
         var organizerEmail =
             OutlookUtility.GetEmailAdressOrNull (organizerWrapper.Inner, NullEntitySynchronizationLogger.Instance, s_logger) ??
@@ -65,19 +74,27 @@ namespace CalDavSynchronizer.Implementation.Events
     {
       foreach (var recipient in appointment.Recipients.ToSafeEnumerable<Recipient> ())
       {
-        if (recipient.Resolve ())
+        try
         {
-          using (var entryWrapper = GenericComObjectWrapper.Create (recipient.AddressEntry))
+          if (recipient.Resolve())
           {
-            var recipientMailAddressOrNull = OutlookUtility.GetEmailAdressOrNull (entryWrapper.Inner, NullEntitySynchronizationLogger.Instance, s_logger);
-            if (!string.IsNullOrEmpty (recipientMailAddressOrNull))
+            using (var entryWrapper = GenericComObjectWrapper.Create (recipient.AddressEntry))
             {
-              if (string.Compare (recipientMailAddressOrNull, _outlookEmailAddress, StringComparison.OrdinalIgnoreCase) == 0)
+              var recipientMailAddressOrNull = OutlookUtility.GetEmailAdressOrNull (entryWrapper.Inner,
+                NullEntitySynchronizationLogger.Instance, s_logger);
+              if (!string.IsNullOrEmpty (recipientMailAddressOrNull))
               {
-                return true;
+                if (string.Compare (recipientMailAddressOrNull, _outlookEmailAddress, StringComparison.OrdinalIgnoreCase) == 0)
+                {
+                  return true;
+                }
               }
             }
           }
+        }
+        catch (COMException ex)
+        {
+          s_logger.Warn ("Can't get AddressEntry of recipient", ex);
         }
       }
 

@@ -242,7 +242,14 @@ namespace CalDavSynchronizer.Implementation.Events
           if (_invitationChecker.IsInvitationFromServerIdentityToOutlookIdentity (unknownEntity.Entity.Inner))
           {
             unknownEntites.Remove (unknownEntity.Id);
-            unknownEntity.Entity.Inner.Delete();
+            try
+            {
+              unknownEntity.Entity.Inner.Delete();
+            }
+            catch (COMException ex)
+            {
+              s_logger.Warn ("Could not delete AppointmentItem", ex);
+            }
           }
         }
       }
