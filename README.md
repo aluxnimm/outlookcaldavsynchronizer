@@ -42,6 +42,7 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 - Mac OS X Server
 - iCloud
 - mail.ru
+- Radicale
 
 ### Features ###
 
@@ -81,6 +82,15 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 2.1.1 ####
+- New features
+	- Add ProfileType for Landmarks.
+- Bug fixes
+	- Avoid sync loops and delete new events, when they represent an invitation from server identity.
+	- Fix event mapping of TRANSP to Outlook BusyStatus and use
+X-MICROSOFT-CDO-BUSYSTATUS.
+	- Fix Autodiscovery behavior in case of url textbox is empty.
+
 #### 2.1.0 ####
 - New features
 	- Implement Bulk profile creation to add multiple profiles at once and choose the folder for each discovered server resource (calendar, addressbook and task).
@@ -89,6 +99,7 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 	- add functionality to cope with multiple groups with the same name for Google Contacts API.
 	- Restore old CalendarUrl when Google Autodiscovery has error or was cancelled.
 	- Map ResponseStatus default to NEEDS-ACTION in MapParticipation1To2 to avoid exception.
+
 #### 2.0.2 ####
 - New features
 	- Improve event mapping of TRANSP and STATUS to Outlook BusyStatus. (contributed by Florian Saller).
