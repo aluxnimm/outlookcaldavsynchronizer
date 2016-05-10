@@ -26,6 +26,7 @@ namespace CalDavSynchronizer.Contracts
     Yandex,
     GmxCalendar,
     Sarenet,
-    Landmarks
+    Landmarks,
+    Sogo
   }
 }

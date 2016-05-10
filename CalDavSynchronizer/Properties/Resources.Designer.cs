@@ -153,6 +153,16 @@ namespace CalDavSynchronizer.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap logo_sogo {
+            get {
+                object obj = ResourceManager.GetObject("logo_sogo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap logo_yandex {
             get {
                 object obj = ResourceManager.GetObject("logo_yandex", resourceCulture);

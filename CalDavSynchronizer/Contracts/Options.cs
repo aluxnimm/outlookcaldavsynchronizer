@@ -129,6 +129,14 @@ namespace CalDavSynchronizer.Contracts
           CreateEventsInUTC = true
         };
       }
+      else if (type == ProfileType.Sogo)
+      {
+        options.MappingConfiguration = new EventMappingConfiguration
+        {
+          ScheduleAgentClient = false,
+          SendNoAppointmentNotifications = true
+        };
+      }
 
       return options;
     }
@@ -149,6 +157,8 @@ namespace CalDavSynchronizer.Contracts
           return "https://configurator.organizer.sarenet.es/androidconfigurator.php";
         case ProfileType.Landmarks:
           return "https://dav.landmarks.skyrise.de/";
+        case ProfileType.Sogo:
+          return "https://sogo.example.com/SOGo/";
 
         default:
           return null;

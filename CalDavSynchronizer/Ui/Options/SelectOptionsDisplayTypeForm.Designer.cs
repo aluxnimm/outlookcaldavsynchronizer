@@ -47,6 +47,8 @@ namespace CalDavSynchronizer.Ui.Options
       this._sarenetTypeRadioButton = new System.Windows.Forms.RadioButton();
       this._logoLandmarksPictureBox = new System.Windows.Forms.PictureBox();
       this._landmarksTypeRadioButton = new System.Windows.Forms.RadioButton();
+      this._logoSogoPictureBox = new System.Windows.Forms.PictureBox();
+      this._sogoTypeRadioButton = new System.Windows.Forms.RadioButton();
       ((System.ComponentModel.ISupportInitialize)(this._logoFruuxPictureBox)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this._logoGooglePictureBox)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this._logoPosteoPictureBox)).BeginInit();
@@ -54,6 +56,7 @@ namespace CalDavSynchronizer.Ui.Options
       ((System.ComponentModel.ISupportInitialize)(this._logoGmxCalendarPictureBox)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this._logoSarenetPictureBox)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this._logoLandmarksPictureBox)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this._logoSogoPictureBox)).BeginInit();
       this.SuspendLayout();
       // 
       // _genericTypeRadioButton
@@ -162,7 +165,7 @@ namespace CalDavSynchronizer.Ui.Options
       // _logoYandexPictureBox
       // 
       this._logoYandexPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._logoYandexPictureBox.Location = new System.Drawing.Point(315, 48);
+      this._logoYandexPictureBox.Location = new System.Drawing.Point(333, 102);
       this._logoYandexPictureBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._logoYandexPictureBox.Name = "_logoYandexPictureBox";
       this._logoYandexPictureBox.Size = new System.Drawing.Size(98, 31);
@@ -173,7 +176,7 @@ namespace CalDavSynchronizer.Ui.Options
       // _yandexTypeRadioButton
       // 
       this._yandexTypeRadioButton.AutoSize = true;
-      this._yandexTypeRadioButton.Location = new System.Drawing.Point(420, 58);
+      this._yandexTypeRadioButton.Location = new System.Drawing.Point(438, 112);
       this._yandexTypeRadioButton.Margin = new System.Windows.Forms.Padding(4);
       this._yandexTypeRadioButton.Name = "_yandexTypeRadioButton";
       this._yandexTypeRadioButton.Size = new System.Drawing.Size(76, 21);
@@ -184,7 +187,7 @@ namespace CalDavSynchronizer.Ui.Options
       // _logoGmxCalendarPictureBox
       // 
       this._logoGmxCalendarPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._logoGmxCalendarPictureBox.Location = new System.Drawing.Point(315, 102);
+      this._logoGmxCalendarPictureBox.Location = new System.Drawing.Point(333, 156);
       this._logoGmxCalendarPictureBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._logoGmxCalendarPictureBox.Name = "_logoGmxCalendarPictureBox";
       this._logoGmxCalendarPictureBox.Size = new System.Drawing.Size(98, 40);
@@ -195,7 +198,7 @@ namespace CalDavSynchronizer.Ui.Options
       // _gmxCalendarTypeRadioButton
       // 
       this._gmxCalendarTypeRadioButton.AutoSize = true;
-      this._gmxCalendarTypeRadioButton.Location = new System.Drawing.Point(420, 112);
+      this._gmxCalendarTypeRadioButton.Location = new System.Drawing.Point(438, 166);
       this._gmxCalendarTypeRadioButton.Margin = new System.Windows.Forms.Padding(4);
       this._gmxCalendarTypeRadioButton.Name = "_gmxCalendarTypeRadioButton";
       this._gmxCalendarTypeRadioButton.Size = new System.Drawing.Size(121, 21);
@@ -206,7 +209,7 @@ namespace CalDavSynchronizer.Ui.Options
       // _logoSarenetPictureBox
       // 
       this._logoSarenetPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._logoSarenetPictureBox.Location = new System.Drawing.Point(315, 155);
+      this._logoSarenetPictureBox.Location = new System.Drawing.Point(333, 209);
       this._logoSarenetPictureBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._logoSarenetPictureBox.Name = "_logoSarenetPictureBox";
       this._logoSarenetPictureBox.Size = new System.Drawing.Size(98, 40);
@@ -217,7 +220,7 @@ namespace CalDavSynchronizer.Ui.Options
       // _sarenetTypeRadioButton
       // 
       this._sarenetTypeRadioButton.AutoSize = true;
-      this._sarenetTypeRadioButton.Location = new System.Drawing.Point(420, 165);
+      this._sarenetTypeRadioButton.Location = new System.Drawing.Point(438, 219);
       this._sarenetTypeRadioButton.Margin = new System.Windows.Forms.Padding(4);
       this._sarenetTypeRadioButton.Name = "_sarenetTypeRadioButton";
       this._sarenetTypeRadioButton.Size = new System.Drawing.Size(79, 21);
@@ -247,6 +250,28 @@ namespace CalDavSynchronizer.Ui.Options
       this._landmarksTypeRadioButton.Text = "Landmarks";
       this._landmarksTypeRadioButton.UseVisualStyleBackColor = true;
       // 
+      // _logoSogoPictureBox
+      // 
+      this._logoSogoPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this._logoSogoPictureBox.Location = new System.Drawing.Point(324, 47);
+      this._logoSogoPictureBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+      this._logoSogoPictureBox.Name = "_logoSogoPictureBox";
+      this._logoSogoPictureBox.Size = new System.Drawing.Size(109, 51);
+      this._logoSogoPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+      this._logoSogoPictureBox.TabIndex = 20;
+      this._logoSogoPictureBox.TabStop = false;
+      // 
+      // _sogoTypeRadioButton
+      // 
+      this._sogoTypeRadioButton.AutoSize = true;
+      this._sogoTypeRadioButton.Location = new System.Drawing.Point(440, 58);
+      this._sogoTypeRadioButton.Margin = new System.Windows.Forms.Padding(4);
+      this._sogoTypeRadioButton.Name = "_sogoTypeRadioButton";
+      this._sogoTypeRadioButton.Size = new System.Drawing.Size(68, 21);
+      this._sogoTypeRadioButton.TabIndex = 19;
+      this._sogoTypeRadioButton.Text = "SOGo";
+      this._sogoTypeRadioButton.UseVisualStyleBackColor = true;
+      // 
       // SelectOptionsDisplayTypeForm
       // 
       this.AcceptButton = this._okButton;
@@ -255,6 +280,8 @@ namespace CalDavSynchronizer.Ui.Options
       this.BackColor = System.Drawing.SystemColors.Window;
       this.CancelButton = this._cancelButton;
       this.ClientSize = new System.Drawing.Size(557, 360);
+      this.Controls.Add(this._logoSogoPictureBox);
+      this.Controls.Add(this._sogoTypeRadioButton);
       this.Controls.Add(this._logoLandmarksPictureBox);
       this.Controls.Add(this._landmarksTypeRadioButton);
       this.Controls.Add(this._logoSarenetPictureBox);
@@ -284,6 +311,7 @@ namespace CalDavSynchronizer.Ui.Options
       ((System.ComponentModel.ISupportInitialize)(this._logoGmxCalendarPictureBox)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this._logoSarenetPictureBox)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this._logoLandmarksPictureBox)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this._logoSogoPictureBox)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -308,5 +336,7 @@ namespace CalDavSynchronizer.Ui.Options
     private System.Windows.Forms.RadioButton _sarenetTypeRadioButton;
     private System.Windows.Forms.PictureBox _logoLandmarksPictureBox;
     private System.Windows.Forms.RadioButton _landmarksTypeRadioButton;
+    private System.Windows.Forms.PictureBox _logoSogoPictureBox;
+    private System.Windows.Forms.RadioButton _sogoTypeRadioButton;
   }
 }

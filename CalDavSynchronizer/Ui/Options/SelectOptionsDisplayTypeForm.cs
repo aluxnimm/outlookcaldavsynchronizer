@@ -32,6 +32,7 @@ namespace CalDavSynchronizer.Ui.Options
       _logoGmxCalendarPictureBox.Image = Properties.Resources.logo_gmx;
       _logoSarenetPictureBox.Image = Properties.Resources.logo_sarenet;
       _logoLandmarksPictureBox.Image = Properties.Resources.logo_landmarks;
+      _logoSogoPictureBox.Image = Properties.Resources.logo_sogo;
     }
 
     private void _okButton_Click (object sender, EventArgs e)
@@ -60,6 +61,8 @@ namespace CalDavSynchronizer.Ui.Options
           return ProfileType.Sarenet;
         if (form._landmarksTypeRadioButton.Checked)
           return ProfileType.Landmarks;
+        if (form._sogoTypeRadioButton.Checked)
+          return ProfileType.Sogo;
       }
 
       return null;
