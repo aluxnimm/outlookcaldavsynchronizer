@@ -82,6 +82,12 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 2.1.2 ####
+- New features
+	- Add ProfileType for SOGo.
+- Bug fixes
+	- Fix detecting deleted appointments from folders in local pst data files when using category filter, ticket #297.
+
 #### 2.1.1 ####
 - New features
 	- Add ProfileType for Landmarks.
@@ -671,7 +677,7 @@ The toolbar on the left upper part provides the following options:
 - **Move selected profile up** change ordering in the tree view
 - **Move selected profile down** change ordering in the tree view
 
-When adding a new profile you can choose between a generic CalDAV/CardDAV, a google profile to simplify the google profile creation and predefined CalDAV/CardDAV profiles for Fruux, Posteo, Yandex, GMX and Sarenet where the DAV Url for autodiscovery is already entered. 
+When adding a new profile you can choose between a generic CalDAV/CardDAV, a google profile to simplify the google profile creation and predefined CalDAV/CardDAV profiles for SOGo, Fruux, Posteo, Yandex, GMX, Sarenet and Landmarks where the DAV Url for autodiscovery is already entered. 
 
 The following properties need to be set for a new generic profile:
 
