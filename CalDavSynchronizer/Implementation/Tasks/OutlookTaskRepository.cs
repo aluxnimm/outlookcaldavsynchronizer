@@ -61,7 +61,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
     {
       return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (
           idsOfEntitiesToQuery
-              .Select (id => _mapiNameSpace.GetEntryOrNull<TaskItem> (id.Id, _folderStoreId))
+              .Select (id => _mapiNameSpace.GetEntryOrNull<TaskItem> (id.Id, _folderId, _folderStoreId))
               .Where (e => e != null)
               .ToSafeEnumerable()
               .Select (c => EntityVersion.Create (c.EntryID, c.LastModificationTime))
@@ -107,7 +107,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
             var row = table.GetNextRow();
             var entryId = (string) row[c_entryIdColumnName];
 
-            var task = _mapiNameSpace.GetEntryOrNull<TaskItem> (entryId, _folderStoreId);
+            var task = _mapiNameSpace.GetEntryOrNull<TaskItem> (entryId, _folderId, _folderStoreId);
             if (task != null)
             {
               using (var taskItemWrapper = GenericComObjectWrapper.Create (task))

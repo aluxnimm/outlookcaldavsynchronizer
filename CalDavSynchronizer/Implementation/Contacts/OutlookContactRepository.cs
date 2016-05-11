@@ -67,7 +67,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
     {
       return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (
           idsOfEntitiesToQuery
-              .Select (id =>  _mapiNameSpace.GetEntryOrNull<ContactItem> (id.Id, _folderStoreId))
+              .Select (id =>  _mapiNameSpace.GetEntryOrNull<ContactItem> (id.Id, _folderId, _folderStoreId))
               .Where (e => e != null)
               .ToSafeEnumerable()
               .Select (c => EntityVersion.Create (c.EntryID, c.LastModificationTime))
@@ -108,7 +108,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
             var row = table.GetNextRow();
             var entryId = (string) row[c_entryIdColumnName];
 
-            var contact = _mapiNameSpace.GetEntryOrNull<ContactItem> (entryId, storeId);
+            var contact = _mapiNameSpace.GetEntryOrNull<ContactItem> (entryId, _folderId, storeId);
             if (contact != null)
             {
               using (var contactWrapper = GenericComObjectWrapper.Create (contact))

@@ -89,7 +89,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
       foreach (var id in idsOfEntitiesToQuery)
       {
-        var appointment = _mapiNameSpace.GetEntryOrNull<AppointmentItem> (id.Id, _folderStoreId);
+        var appointment = _mapiNameSpace.GetEntryOrNull<AppointmentItem> (id.Id, _folderId, _folderStoreId);
         if (appointment != null)
         {
           try
@@ -165,7 +165,7 @@ namespace CalDavSynchronizer.Implementation.Events
         var knownEntitesThatWereFilteredOut = idsOfknownEntities.Except (events.Select (e => e.Id));
         events.AddRange (
             knownEntitesThatWereFilteredOut
-                .Select (id => _mapiNameSpace.GetEntryOrNull<AppointmentItem> (id, _folderStoreId))
+                .Select (id => _mapiNameSpace.GetEntryOrNull<AppointmentItem> (id, _folderId, _folderStoreId))
                 .Where (i => i != null)
                 .ToSafeEnumerable()
                 .Select (c => EntityVersion.Create (c.EntryID, c.LastModificationTime)));
