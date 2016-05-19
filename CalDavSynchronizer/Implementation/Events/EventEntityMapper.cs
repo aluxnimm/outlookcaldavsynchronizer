@@ -168,6 +168,10 @@ namespace CalDavSynchronizer.Implementation.Events
       }
 
       target.Summary = source.Subject;
+      if (!string.IsNullOrEmpty (target.Summary) && 
+          target.Summary.StartsWith ("Cancelled: "))
+        target.Status = EventStatus.Cancelled;
+
       target.Location = source.Location;
 
       if (_configuration.MapBody)
@@ -1406,8 +1410,15 @@ namespace CalDavSynchronizer.Implementation.Events
         }
       }
 
-
       targetWrapper.Inner.Subject = source.Summary;
+      if (source.Status == EventStatus.Cancelled)
+      {
+        if (string.IsNullOrEmpty (targetWrapper.Inner.Subject))
+          targetWrapper.Inner.Subject = "Cancelled: ";
+        else if (!targetWrapper.Inner.Subject.StartsWith ("Cancelled: "))
+          targetWrapper.Inner.Subject = "Cancelled: " + targetWrapper.Inner.Subject;
+      }
+
       targetWrapper.Inner.Location = source.Location;
 
       targetWrapper.Inner.Body = _configuration.MapBody ? source.Description : string.Empty;
@@ -1450,10 +1461,6 @@ namespace CalDavSynchronizer.Implementation.Events
         if (source.Status == EventStatus.Cancelled)
         {
           targetWrapper.Inner.MeetingStatus = OlMeetingStatus.olMeetingReceivedAndCanceled;
-          if (string.IsNullOrEmpty (targetWrapper.Inner.Subject))
-            targetWrapper.Inner.Subject = "Cancelled: ";
-          else if (!targetWrapper.Inner.Subject.StartsWith ("Cancelled: "))
-            targetWrapper.Inner.Subject = "Cancelled: " + targetWrapper.Inner.Subject;
         }
         else if (ownSourceAttendee != null && targetWrapper.Inner.ResponseStatus != OlResponseStatus.olResponseOrganized)
         {
