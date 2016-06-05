@@ -1310,7 +1310,11 @@ namespace CalDavSynchronizer.Implementation.Events
       if (source.IsAllDay)
       {
         targetWrapper.Inner.Start = source.Start.Value;
-        if (source.End == null || source.End.Value <= source.Start.Value)
+        if (source.End == null)
+        {
+          targetWrapper.Inner.End = source.Start.Value.AddDays (1);
+        }
+        else if (source.End.Value <= source.Start.Value)
         {
           s_logger.Warn ("Invalid EndDate of appointment, setting to StartDate + 1 day.");
           logger.LogMappingWarning ("Invalid EndDate of appointment, setting to StartDate + 1 day.");
