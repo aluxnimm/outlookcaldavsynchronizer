@@ -34,6 +34,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
     private OlCategoryShortcutKey _categoryShortcutKey;
     private bool _createEventsInUtc;
+    private bool _useGlobalAppointmentID;
     private string _eventCategory;
     private OlCategoryColor _eventCategoryColor;
     private bool _invertEventCategoryFilter;
@@ -91,6 +92,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       set
       {
         CheckedPropertyChange (ref _createEventsInUtc, value);
+      }
+    }
+
+    public bool UseGlobalAppointmendID
+    {
+      get { return _useGlobalAppointmentID; }
+      set
+      {
+        CheckedPropertyChange (ref _useGlobalAppointmentID, value);
       }
     }
 
@@ -224,6 +234,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     {
       CategoryShortcutKey = mappingConfiguration.CategoryShortcutKey;
       CreateEventsInUtc = mappingConfiguration.CreateEventsInUTC;
+      UseGlobalAppointmendID = mappingConfiguration.UseGlobalAppointmentID;
       EventCategory = mappingConfiguration.EventCategory;
       EventCategoryColor = mappingConfiguration.EventCategoryColor;
       InvertEventCategoryFilter = mappingConfiguration.InvertEventCategoryFilter;
@@ -243,6 +254,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                      {
                                          CategoryShortcutKey = _categoryShortcutKey,
                                          CreateEventsInUTC = _createEventsInUtc,
+                                         UseGlobalAppointmentID = _useGlobalAppointmentID,
                                          EventCategory = _eventCategory,
                                          EventCategoryColor = _eventCategoryColor,
                                          InvertEventCategoryFilter = _invertEventCategoryFilter,
@@ -271,6 +283,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                                                       {
                                                                           CategoryShortcutKey = OlCategoryShortcutKey.olCategoryShortcutKeyCtrlF4,
                                                                           CreateEventsInUtc = true,
+                                                                          UseGlobalAppointmendID = true,
                                                                           EventCategory = "TheCategory",
                                                                           EventCategoryColor = OlCategoryColor.olCategoryColorDarkMaroon,
                                                                           InvertEventCategoryFilter = true,

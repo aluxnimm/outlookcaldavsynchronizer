@@ -27,6 +27,7 @@
           </Grid>
           <CheckBox IsChecked="{Binding MapBody}">Map Body</CheckBox>
           <CheckBox IsChecked="{Binding CreateEventsInUtc}" ToolTip="Use UTC instead of Outlook Appointment Timezone for creating events on CalDAV server. &#x0a;Needed for GMX for example. Not recommended for general use, &#x0a;because recurrence exceptions over DST changes can't be mapped and &#x0a;Appointments with different start and end timezones can't be represented.">Create events on server in UTC</CheckBox>
+          <CheckBox IsChecked="{Binding UseGlobalAppointmendID}" ToolTip="Use Outlook GlobalAppointmendID instead of random Guid for UID attribute in new CalDAV events. &#x0a; Can avoid duplicate events from invitations.">Use GlobalAppointmentID for UID attribute</CheckBox>
         </StackPanel>
       </GroupBox>
     <GroupBox Header="Privacy settings">

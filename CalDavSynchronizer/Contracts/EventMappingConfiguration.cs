@@ -33,6 +33,7 @@ namespace CalDavSynchronizer.Contracts
     public bool SendNoAppointmentNotifications { get; set; }
     public bool MapBody { get; set; }
     public bool CreateEventsInUTC { get; set; }
+    public bool UseGlobalAppointmentID { get; set; }
     public string EventCategory { get; set; }
     public bool InvertEventCategoryFilter { get; set; }
     public bool UseEventCategoryColorAndMapFromCalendarColor { get; set; }
@@ -55,6 +56,7 @@ namespace CalDavSynchronizer.Contracts
       SendNoAppointmentNotifications = false;
       MapBody = true;
       CreateEventsInUTC = false;
+      UseGlobalAppointmentID = false;
       InvertEventCategoryFilter = false;
       UseEventCategoryColorAndMapFromCalendarColor = false;
       EventCategoryColor = OlCategoryColor.olCategoryColorNone;

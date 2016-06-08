@@ -124,6 +124,8 @@ namespace CalDavSynchronizer.Implementation.Events
 
       if (existingTargetEvent != null)
         newTargetEvent.UID = existingTargetEvent.UID;
+      else if (_configuration.UseGlobalAppointmentID)
+        newTargetEvent.UID = sourceWrapper.Inner.GlobalAppointmentID;
 
       newTargetCalender.Events.Add (newTargetEvent);
 
