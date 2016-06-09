@@ -82,6 +82,13 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 2.1.3 ####
+- New features
+	- Add event mapping configuration to use Outlook GlobalAppointmentID for UID attribute, ticket #318.
+- Bug fixes
+	- Don't log warning if DTEND is not set for allday events, ticket #316.
+	- Prefix summary of events and not only meetings with status cancelled, since Android uses this instead of exdates for recurrence exceptions, ticket #307.
+
 #### 2.1.2 ####
 - New features
 	- Add ProfileType for SOGo.
@@ -722,6 +729,7 @@ If you expand the tree view of the profile you can configure network and proxy o
 - **Mapping Configuration**: Here you can configure what properties should be synced.
 	- For appointments you can choose if you want to map reminders (just upcoming, all or none) and the description body.
 	- *Create events on server in UTC:* Use UTC instead of Outlook Appointment Timezone for creating events on CalDAV server. Needed for GMX for example. Not recommended for general use, because recurrence exceptions over DST changes can't be mapped and Appointments with different start and end timezones can't be represented.
+	- *Use GlobalAppointmentID for UID attribute:* Use Outlook GlobalAppointmendID instead of random Guid for UID attribute in new CalDAV events. This can avoid duplicate events from invitations.
 	- In *Privacy settings* you can configure if you want to map Outlook private appointments to CLASS:CONFIDENTIAL and vice versa. This could be useful for Owncloud for example, if you share your calendar with others and they should see start/end dates of your private appointments.
 	- In *Scheduling settings* you can configure if you want to map attendees and organizer and if notifications should be sent by the server. 
 	- Use *Don't send appointment notifications for SOGo servers and SCHEDULE-AGENT=CLIENT for other servers if you want to send invitations from Outlook and avoid that the server sends invitations too, but be aware that not all servers (e.g. Google) support the SCHEDULE-AGENT=CLIENT setting. 
