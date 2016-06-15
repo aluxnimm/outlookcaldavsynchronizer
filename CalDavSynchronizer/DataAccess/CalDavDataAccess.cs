@@ -72,43 +72,48 @@ namespace CalDavSynchronizer.DataAccess
           var calendarHomeSetProperties = await GetCalendarHomeSet (currentUserPrincipalUrl);
 
           XmlNode homeSetNode = calendarHomeSetProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/C:calendar-home-set", calendarHomeSetProperties.XmlNamespaceManager);
-
-          if (homeSetNode != null && !string.IsNullOrEmpty (homeSetNode.InnerText))
+          if (homeSetNode != null && homeSetNode.HasChildNodes)
           {
-            var calendarDocument = await ListCalendars (new Uri (calendarHomeSetProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + homeSetNode.InnerText));
-
-            XmlNodeList responseNodes = calendarDocument.XmlDocument.SelectNodes ("/D:multistatus/D:response", calendarDocument.XmlNamespaceManager);
-
-            foreach (XmlElement responseElement in responseNodes)
-            {
-              var urlNode = responseElement.SelectSingleNode ("D:href", calendarDocument.XmlNamespaceManager);
-              var displayNameNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:displayname", calendarDocument.XmlNamespaceManager);
-              if (urlNode != null && displayNameNode != null)
+            foreach (XmlNode homeSetNodeHref in homeSetNode.ChildNodes)
+            {  
+              if (!string.IsNullOrEmpty (homeSetNodeHref.InnerText))
               {
-                XmlNode isCollection = responseElement.SelectSingleNode ("D:propstat/D:prop/D:resourcetype/C:calendar", calendarDocument.XmlNamespaceManager);
-                if (isCollection != null)
-                {
-                  var calendarColorNode = responseElement.SelectSingleNode("D:propstat/D:prop/E:calendar-color", calendarDocument.XmlNamespaceManager);
-                  ArgbColor? calendarColor = null;
-                  if (calendarColorNode != null && calendarColorNode.InnerText.Length >=7)
-                  {
-                    calendarColor = ArgbColor.FromRgbaHexStringWithOptionalANoThrow(calendarColorNode.InnerText);
-                  }
+                var calendarDocument = await ListCalendars (new Uri (calendarHomeSetProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + homeSetNodeHref.InnerText));
 
-                  XmlNode supportedComponentsNode = responseElement.SelectSingleNode ("D:propstat/D:prop/C:supported-calendar-component-set", calendarDocument.XmlNamespaceManager);
-                  if (supportedComponentsNode != null)
+                XmlNodeList responseNodes = calendarDocument.XmlDocument.SelectNodes ("/D:multistatus/D:response",calendarDocument.XmlNamespaceManager);
+
+                foreach (XmlElement responseElement in responseNodes)
+                {
+                  var urlNode = responseElement.SelectSingleNode ("D:href", calendarDocument.XmlNamespaceManager);
+                  var displayNameNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:displayname", calendarDocument.XmlNamespaceManager);
+                  if (urlNode != null && displayNameNode != null)
                   {
-                    if (supportedComponentsNode.InnerXml.Contains ("VEVENT"))
-                      calendars.Add (new CalendarData (new Uri (calendarDocument.DocumentUri, urlNode.InnerText), displayNameNode.InnerText, calendarColor));
-                    if (supportedComponentsNode.InnerXml.Contains ("VTODO"))
-                      taskLists.Add (new TaskListData (new Uri (calendarDocument.DocumentUri, urlNode.InnerText).ToString(), displayNameNode.InnerText));
+                    XmlNode isCollection = responseElement.SelectSingleNode ("D:propstat/D:prop/D:resourcetype/C:calendar", calendarDocument.XmlNamespaceManager);
+                    if (isCollection != null)
+                    {
+                      var calendarColorNode = responseElement.SelectSingleNode ("D:propstat/D:prop/E:calendar-color", calendarDocument.XmlNamespaceManager);
+                      ArgbColor? calendarColor = null;
+                      if (calendarColorNode != null && calendarColorNode.InnerText.Length >= 7)
+                      {
+                        calendarColor = ArgbColor.FromRgbaHexStringWithOptionalANoThrow (calendarColorNode.InnerText);
+                      }
+
+                      XmlNode supportedComponentsNode = responseElement.SelectSingleNode ("D:propstat/D:prop/C:supported-calendar-component-set", calendarDocument.XmlNamespaceManager);
+                      if (supportedComponentsNode != null)
+                      {
+                          if (supportedComponentsNode.InnerXml.Contains ("VEVENT"))
+                            calendars.Add (new CalendarData (new Uri (calendarDocument.DocumentUri, urlNode.InnerText), displayNameNode.InnerText, calendarColor));
+                          if (supportedComponentsNode.InnerXml.Contains ("VTODO"))
+                            taskLists.Add (new TaskListData (new Uri (calendarDocument.DocumentUri, urlNode.InnerText).ToString(), displayNameNode.InnerText));
+                      }
+                    }
                   }
                 }
               }
             }
           }
         }
-        return new CalDavResources(calendars, taskLists);
+        return new CalDavResources (calendars, taskLists);
       }
       catch (Exception x)
       {

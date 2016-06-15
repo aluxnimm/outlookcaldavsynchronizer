@@ -63,22 +63,28 @@ namespace CalDavSynchronizer.DataAccess
 
           XmlNode homeSetNode = addressBookHomeSetProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/A:addressbook-home-set", addressBookHomeSetProperties.XmlNamespaceManager);
 
-          if (homeSetNode != null && !string.IsNullOrEmpty (homeSetNode.InnerText))
+          if (homeSetNode != null && homeSetNode.HasChildNodes)
           {
-            var addressBookDocument = await ListAddressBooks (new Uri (addressBookHomeSetProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + homeSetNode.InnerText));
-
-            XmlNodeList responseNodes = addressBookDocument.XmlDocument.SelectNodes ("/D:multistatus/D:response", addressBookDocument.XmlNamespaceManager);
-
-            foreach (XmlElement responseElement in responseNodes)
+            foreach (XmlNode homeSetNodeHref in homeSetNode.ChildNodes)
             {
-              var urlNode = responseElement.SelectSingleNode ("D:href", addressBookDocument.XmlNamespaceManager);
-              var displayNameNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:displayname", addressBookDocument.XmlNamespaceManager);
-              if (urlNode != null && displayNameNode != null)
+              if (!string.IsNullOrEmpty (homeSetNodeHref.InnerText))
               {
-                XmlNode isCollection = responseElement.SelectSingleNode ("D:propstat/D:prop/D:resourcetype/A:addressbook", addressBookDocument.XmlNamespaceManager);
-                if (isCollection != null)
+                var addressBookDocument = await ListAddressBooks (new Uri (addressBookHomeSetProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + homeSetNodeHref.InnerText));
+
+                XmlNodeList responseNodes = addressBookDocument.XmlDocument.SelectNodes ("/D:multistatus/D:response", addressBookDocument.XmlNamespaceManager);
+
+                foreach (XmlElement responseElement in responseNodes)
                 {
-                  addressbooks.Add (new AddressBookData (new Uri (addressBookDocument.DocumentUri, urlNode.InnerText), displayNameNode.InnerText));
+                  var urlNode = responseElement.SelectSingleNode ("D:href", addressBookDocument.XmlNamespaceManager);
+                  var displayNameNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:displayname", addressBookDocument.XmlNamespaceManager);
+                  if (urlNode != null && displayNameNode != null)
+                  {
+                    XmlNode isCollection = responseElement.SelectSingleNode ("D:propstat/D:prop/D:resourcetype/A:addressbook", addressBookDocument.XmlNamespaceManager);
+                    if (isCollection != null)
+                    {
+                      addressbooks.Add (new AddressBookData (new Uri (addressBookDocument.DocumentUri, urlNode.InnerText), displayNameNode.InnerText));
+                    }
+                  }
                 }
               }
             }
