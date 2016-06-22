@@ -1439,8 +1439,8 @@ namespace CalDavSynchronizer.Implementation.Events
         MapRecurrance2To1 (source, recurrenceExceptionsOrNull, targetWrapper, logger);
 
       if (!isRecurrenceException)
-        targetWrapper.Inner.Sensitivity = CommonEntityMapper.MapPrivacy2To1 (source.Class, _configuration.MapClassConfidentialToSensitivityPrivate);
-
+        targetWrapper.Inner.Sensitivity = CommonEntityMapper.MapPrivacy2To1 (source.Class, 
+          _configuration.MapClassConfidentialToSensitivityPrivate, _configuration.MapClassPublicToSensitivityPrivate);
 
       MapReminder2To1 (source, targetWrapper.Inner, logger);
 

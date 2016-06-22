@@ -41,6 +41,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     private bool _mapAttendees;
     private bool _mapBody;
     private bool _mapClassConfidentialToSensitivityPrivate;
+    private bool _mapClassPublicToSensitivityPrivate;
     private ReminderMapping _mapReminder;
     private bool _mapSensitivityPrivateToClassConfidential;
     private bool _scheduleAgentClient;
@@ -166,6 +167,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       }
     }
 
+    public bool MapClassPublicToSensitivityPrivate
+    {
+      get { return _mapClassPublicToSensitivityPrivate; }
+      set
+      {
+        CheckedPropertyChange (ref _mapClassPublicToSensitivityPrivate, value);
+      }
+    }
+
     public ReminderMapping MapReminder
     {
       get { return _mapReminder; }
@@ -241,6 +251,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       MapAttendees = mappingConfiguration.MapAttendees;
       MapBody = mappingConfiguration.MapBody;
       MapClassConfidentialToSensitivityPrivate = mappingConfiguration.MapClassConfidentialToSensitivityPrivate;
+      MapClassPublicToSensitivityPrivate = mappingConfiguration.MapClassPublicToSensitivityPrivate;
       MapReminder = mappingConfiguration.MapReminder;
       MapSensitivityPrivateToClassConfidential = mappingConfiguration.MapSensitivityPrivateToClassConfidential;
       ScheduleAgentClient = mappingConfiguration.ScheduleAgentClient;
@@ -263,6 +274,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                          MapClassConfidentialToSensitivityPrivate = _mapClassConfidentialToSensitivityPrivate,
                                          MapReminder = _mapReminder,
                                          MapSensitivityPrivateToClassConfidential = _mapSensitivityPrivateToClassConfidential,
+                                         MapClassPublicToSensitivityPrivate = _mapClassPublicToSensitivityPrivate,
                                          ScheduleAgentClient = _scheduleAgentClient,
                                          SendNoAppointmentNotifications = _sendNoAppointmentNotifications,
                                          UseEventCategoryColorAndMapFromCalendarColor = _useEventCategoryColorAndMapFromCalendarColor
@@ -290,6 +302,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                                                           MapAttendees = true,
                                                                           MapBody = true,
                                                                           MapClassConfidentialToSensitivityPrivate = true,
+                                                                          MapClassPublicToSensitivityPrivate = true,
                                                                           MapReminder = ReminderMapping.JustUpcoming,
                                                                           MapSensitivityPrivateToClassConfidential = true,
                                                                           ScheduleAgentClient = true,

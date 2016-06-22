@@ -354,7 +354,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       if (_configuration.MapPriority)
         target.Inner.Importance = CommonEntityMapper.MapPriority2To1 (source.Priority);
 
-      target.Inner.Sensitivity = CommonEntityMapper.MapPrivacy2To1 (source.Class, false);
+      target.Inner.Sensitivity = CommonEntityMapper.MapPrivacy2To1 (source.Class, false, false);
 
       target.Inner.Status = MapStatus2To1 (source.Status);
 

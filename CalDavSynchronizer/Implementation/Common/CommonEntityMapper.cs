@@ -94,12 +94,12 @@ namespace CalDavSynchronizer.Implementation.Common
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
     }
 
-    public static OlSensitivity MapPrivacy2To1 (string value, bool mapConfidentialToPrivate)
+    public static OlSensitivity MapPrivacy2To1 (string value, bool mapConfidentialToPrivate, bool mapPublicToPrivate)
     {
       switch (value)
       {
         case "PUBLIC":
-          return OlSensitivity.olNormal;
+          return mapPublicToPrivate ? OlSensitivity.olPrivate : OlSensitivity.olNormal;
         case "PRIVATE":
           return OlSensitivity.olPrivate;
         case "CONFIDENTIAL":
