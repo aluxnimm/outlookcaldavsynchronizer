@@ -91,6 +91,7 @@ namespace CalDavSynchronizer.Ui.Options
       if (string.IsNullOrWhiteSpace (webDavUrl))
       {
         errorMessageBuilder.AppendLine ("- The CalDav/CardDav Url is empty.");
+        errorMessageBuilder.AppendLine ("- If you don't know the Url you can also enter the Email address and try to discover it.");
         return false;
       }
 
@@ -246,6 +247,36 @@ namespace CalDavSynchronizer.Ui.Options
         MessageBox.Show ("Connection test successful.", ConnectionTestCaption);
     }
 
+    public static string DoSrvLookup (string serverEmail, OlItemType selectedOutlookFolderType)
+    {
+      string emailDomain = serverEmail.Substring(serverEmail.IndexOf('@') + 1);
+      string lookupUrl = "https://" + emailDomain;
+      string srvBase = selectedOutlookFolderType == OlItemType.olContactItem ? "_carddav" : "_caldav";
+      string lookupString = srvBase + "s._tcp." + emailDomain;
+
+      var srvRecordsCaldavs = DnsQueryHelper.GetSRVRecordList (lookupString);
+      if (srvRecordsCaldavs.Count > 0)
+      {
+        lookupUrl = "https://" + srvRecordsCaldavs[0];
+        var txtRecords = DnsQueryHelper.GetTxtRecord (lookupString);
+        if (txtRecords != null && txtRecords.StartsWith ("path="))
+          lookupUrl += txtRecords.Substring (txtRecords.IndexOf ('=')+1);
+      }
+      else
+      {
+        lookupString = srvBase + "._tcp." + emailDomain;
+        var srvRecordsCaldav = DnsQueryHelper.GetSRVRecordList (lookupString);
+        if (srvRecordsCaldav.Count > 0)
+        {
+          lookupUrl = "http://" + srvRecordsCaldav[0];
+          var txtRecords = DnsQueryHelper.GetTxtRecord (lookupString);
+          if (txtRecords != null && txtRecords.StartsWith ("path="))
+            lookupUrl += txtRecords.Substring (txtRecords.IndexOf ('=')+1);
+        }
+      }
+      return lookupUrl;
+    }
+
     public static async Task<AutoDiscoveryResult> DoAutoDiscovery (Uri autoDiscoveryUri, IWebDavClient webDavClient, bool useWellKnownCalDav, bool useWellKnownCardDav, OlItemType selectedOutlookFolderType)
     {
 
@@ -355,7 +386,7 @@ namespace CalDavSynchronizer.Ui.Options
     }
 
 
-    public static async Task<string> TestWebDavConnection (ICurrentOptions environment, ISettingsFaultFinder settingsFaultFinder, string url)
+    public static async Task<string> TestWebDavConnection (ICurrentOptions environment, ISettingsFaultFinder settingsFaultFinder, string url, string serverEmail)
     {
       if (environment.OutlookFolderType == null)
       {
@@ -364,16 +395,29 @@ namespace CalDavSynchronizer.Ui.Options
       }
 
       var outlookFolderType = environment.OutlookFolderType.Value;
-      
+
+      string serverUrl=url;
       StringBuilder errorMessageBuilder = new StringBuilder();
-      if (!ValidateWebDavUrl (url, errorMessageBuilder, false))
+
+      if (string.IsNullOrEmpty (url) && !string.IsNullOrEmpty (serverEmail))
+      {
+        if (!ValidateEmailAddress (errorMessageBuilder, serverEmail))
+        {
+          MessageBox.Show (errorMessageBuilder.ToString(), "The Email Address is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          return url;
+        }
+        serverUrl = DoSrvLookup (serverEmail, outlookFolderType);
+      }
+
+ 
+      if (!ValidateWebDavUrl (serverUrl, errorMessageBuilder, false))
       {
         MessageBox.Show (errorMessageBuilder.ToString(), "The CalDav/CardDav Url is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
         return url;
       }
 
-      var enteredUri = new Uri (url);
-      var webDavClient = environment.CreateWebDavClient(enteredUri);
+      var enteredUri = new Uri (serverUrl);
+      var webDavClient = environment.CreateWebDavClient (enteredUri);
 
       Uri autoDiscoveredUrl;
 
