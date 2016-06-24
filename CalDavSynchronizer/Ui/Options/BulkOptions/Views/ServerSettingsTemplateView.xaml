@@ -28,7 +28,7 @@
         </Grid.Resources>
 
         <TextBlock>DAV Url:</TextBlock>
-        <TextBox Text="{Binding CalenderUrl}"  Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" />
+        <TextBox Text="{Binding CalenderUrl}"  Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" ToolTip="Enter the DAV resource url or the server address and discover the available resources. &#x0a;If you leave the DAV Url empty, it can also be discovered from the Email address via DNS lookups." />
 
         <TextBlock Grid.Row="1" Grid.Column="0">Username:</TextBlock>
         <TextBox Text="{Binding UserName}"  Grid.Row="1" Grid.Column="2" />
@@ -41,7 +41,7 @@
 
 
         <TextBlock Grid.Row="4" Grid.Column="0">Email address:</TextBlock>
-        <TextBox Text="{Binding EmailAddress}" Grid.Row="4" Grid.Column="2" />
+        <TextBox Text="{Binding EmailAddress}" Grid.Row="4" Grid.Column="2" ToolTip="Enter the email address of the server identity. &#x0a;It can also be used to discover the DAV Url if you leave the url textbox empty." />
 
       </Grid>
     </DockPanel>

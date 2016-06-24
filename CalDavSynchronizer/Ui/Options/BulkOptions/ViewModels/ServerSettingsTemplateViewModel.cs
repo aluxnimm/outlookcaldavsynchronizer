@@ -17,20 +17,16 @@
 
 using System;
 using System.Configuration;
-using System.Linq;
 using System.Reflection;
 using System.Security;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Scheduling;
-using CalDavSynchronizer.Ui.ConnectionTests;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Utilities;
 using log4net;
+using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 {
@@ -109,21 +105,37 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 
     public async Task<ServerResources> GetServerResources (NetworkSettingsViewModel networkSettings, GeneralOptions generalOptions)
     {
-      var trimmedUrl = CalenderUrl.Trim();
-      var url = new Uri (trimmedUrl.EndsWith ("/") ? trimmedUrl : trimmedUrl + "/");
+      string caldavUrlString = CalenderUrl;
+      string carddavUrlString = CalenderUrl;
 
-      var webDavClient = CreateWebDavClient (networkSettings, generalOptions);
-      var calDavDataAccess = new CalDavDataAccess (url, webDavClient);
-      var cardDavDataAccess = new CardDavDataAccess (url, webDavClient);
+      if (string.IsNullOrEmpty (CalenderUrl) && !string.IsNullOrEmpty (EmailAddress))
+      {
+        caldavUrlString = OptionTasks.DoSrvLookup(EmailAddress, OlItemType.olAppointmentItem);
+        carddavUrlString = OptionTasks.DoSrvLookup(EmailAddress, OlItemType.olContactItem);
+      }
+ 
+      var trimmedCaldavUrl = caldavUrlString.Trim();
+      var caldavUrl = new Uri (trimmedCaldavUrl.EndsWith ("/") ? trimmedCaldavUrl : trimmedCaldavUrl + "/");
 
-      var resources = await GetUserResources (calDavDataAccess, cardDavDataAccess, true);
-      return resources.ContainsResources ? resources : await GetUserResources (calDavDataAccess, cardDavDataAccess, false);
+      var trimmedCarddavUrl = carddavUrlString.Trim();
+      var carddavUrl = new Uri (trimmedCarddavUrl.EndsWith("/") ? trimmedCarddavUrl : trimmedCarddavUrl + "/");
+
+      var webDavClientCaldav = CreateWebDavClient (networkSettings, generalOptions, trimmedCaldavUrl);
+      var webDavClientCarddav = CreateWebDavClient (networkSettings, generalOptions, trimmedCarddavUrl);
+      var calDavDataAccess = new CalDavDataAccess (caldavUrl, webDavClientCaldav);
+      var cardDavDataAccess = new CardDavDataAccess (carddavUrl, webDavClientCarddav);
+
+      return await GetUserResources (calDavDataAccess, cardDavDataAccess);
     }
 
-    private static async Task<ServerResources> GetUserResources (CalDavDataAccess calDavDataAccess, CardDavDataAccess cardDavDataAccess, bool useWellKNownUrl)
+    private static async Task<ServerResources> GetUserResources (CalDavDataAccess calDavDataAccess, CardDavDataAccess cardDavDataAccess)
     {
-      var calDavResources = await calDavDataAccess.GetUserResourcesNoThrow (useWellKNownUrl);
-      var foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow (useWellKNownUrl);
+      var calDavResources = await calDavDataAccess.GetUserResourcesNoThrow (true);
+      if (calDavResources.CalendarResources.Count == 0 && calDavResources.TaskListResources.Count == 0)
+        calDavResources = await calDavDataAccess.GetUserResourcesNoThrow (false);
+      var foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow (true);
+      if (foundAddressBooks.Count == 0)
+        foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow (false);
       return new ServerResources (calDavResources.CalendarResources, foundAddressBooks, calDavResources.TaskListResources);
     }
 
@@ -136,12 +148,12 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
                                                                        UserName = "username",
                                                                    };
 
-    private IWebDavClient CreateWebDavClient (NetworkSettingsViewModel networkSettings, GeneralOptions generalOptions)
+    private IWebDavClient CreateWebDavClient (NetworkSettingsViewModel networkSettings, GeneralOptions generalOptions, string davUrl)
     {
       return SynchronizerFactory.CreateWebDavClient (
           UserName,
           Password,
-          CalenderUrl,
+          davUrl,
           TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
            ServerAdapterType.WebDavHttpClientBased,
           networkSettings.CloseConnectionAfterEachRequest,
