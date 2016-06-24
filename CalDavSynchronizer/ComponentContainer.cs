@@ -72,6 +72,7 @@ namespace CalDavSynchronizer
     private readonly IGeneralOptionsDataAccess _generalOptionsDataAccess;
     private readonly UpdateChecker _updateChecker;
     private readonly NameSpace _session;
+    private readonly SyncObject _syncObject;
     private readonly string _applicationDataDirectory;
     private readonly ISynchronizationReportRepository _synchronizationReportRepository;
     private readonly IUiService _uiService;
@@ -178,6 +179,22 @@ namespace CalDavSynchronizer
 
       _trayNotifier = generalOptions.EnableTrayIcon ? new TrayNotifier (this) : NullTrayNotifer.Instance;
       _uiService = new UiService (_profileStatusesViewModel);
+
+      using (var syncObjects = GenericComObjectWrapper.Create (_session.SyncObjects))
+      {
+        if (syncObjects.Inner != null && syncObjects.Inner.Count > 0)
+        {
+          _syncObject = syncObjects.Inner[1];
+          if (generalOptions.TriggerSyncAfterSendReceive)
+            _syncObject.SyncEnd += _sync_SyncEnd;
+        }
+      }
+    }
+    private void _sync_SyncEnd()
+    {
+      s_logger.Info ("Snyc triggered after Outlook Send/Receive finished");
+      EnsureSynchronizationContext();
+      SynchronizeNowAsync();
     }
 
     private void EnsureCacheCompatibility (Options[] options)
@@ -539,6 +556,14 @@ namespace CalDavSynchronizer
           {
             _trayNotifier.Dispose();
             _trayNotifier = newOptions.EnableTrayIcon ? new TrayNotifier (this) : NullTrayNotifer.Instance;
+          }
+
+          if (_syncObject != null && newOptions.TriggerSyncAfterSendReceive != generalOptions.TriggerSyncAfterSendReceive)
+          {
+            if (newOptions.TriggerSyncAfterSendReceive)
+              _syncObject.SyncEnd += _sync_SyncEnd;
+            else
+              _syncObject.SyncEnd -= _sync_SyncEnd;
           }
         }
       }

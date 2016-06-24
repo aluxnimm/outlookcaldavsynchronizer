@@ -17,7 +17,7 @@
 using System;
 
 namespace CalDavSynchronizer.Contracts
-{ 
+{
   public class GeneralOptions
   {
     public bool AcceptInvalidCharsInServerResponse { get; set; }
@@ -36,5 +36,6 @@ namespace CalDavSynchronizer.Contracts
     public int MaxReportAgeInDays { get; set; }
     public bool EnableDebugLog { get; set; }
     public bool EnableTrayIcon { get; set; }
+    public bool TriggerSyncAfterSendReceive { get; set; }
   }
 }
