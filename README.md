@@ -82,6 +82,14 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 
 ### Changelog ###
 
+#### 2.2.0 ####
+- New features
+	- Add general option to trigger sync after Outlook Send/Receive finishes, github issue 141.
+	- Add event mapping configuration parameter to map CLASS:PUBLIC to Outlook Private flag, feature request 45.
+	- Implement DNS SRV and TXT lookups for autodiscovery from email address.
+- Bug fixes
+	- Fix autodiscovery when server returns multiple calendar-home-set hrefs, github issue 139.
+
 #### 2.1.3 ####
 - New features
 	- Add event mapping configuration to use Outlook GlobalAppointmentID for UID attribute, ticket #318.
@@ -698,7 +706,8 @@ The following properties need to be set for a new generic profile:
 	- **Username:** Username to connect to the CalDAV server
 	- **Password:** Password used for the connection. The password will be saved encrypted in the option config file.
 	- ** Use IMAP/POP3 Account Password** Instead of entering the password you can use the IMAP/Pop3 Password from the Outlook Account associated with the folder, the password is fetched from the Windows registry entry of the Outlook profile. 
-	- **Email address:** email address used as remote identity for the CalDAV server, necessary to synchronize the organizer.
+	- **Email address:** email address used as remote identity for the CalDAV server, necessary to synchronize the organizer. The email address can also be used for autodiscovery via DNS lookups, see section Autodiscovery.
+
 - *Sync settings*:
 	- Synchronization settings
 		- **Outlook -> Server (Replicate):** syncronizes everything from Outlook to the server (one way)
@@ -730,7 +739,7 @@ If you expand the tree view of the profile you can configure network and proxy o
 	- For appointments you can choose if you want to map reminders (just upcoming, all or none) and the description body.
 	- *Create events on server in UTC:* Use UTC instead of Outlook Appointment Timezone for creating events on CalDAV server. Needed for GMX for example. Not recommended for general use, because recurrence exceptions over DST changes can't be mapped and Appointments with different start and end timezones can't be represented.
 	- *Use GlobalAppointmentID for UID attribute:* Use Outlook GlobalAppointmendID instead of random Guid for UID attribute in new CalDAV events. This can avoid duplicate events from invitations.
-	- In *Privacy settings* you can configure if you want to map Outlook private appointments to CLASS:CONFIDENTIAL and vice versa. This could be useful for Owncloud for example, if you share your calendar with others and they should see start/end dates of your private appointments.
+	- In *Privacy settings* you can configure if you want to map Outlook private appointments to CLASS:CONFIDENTIAL and vice versa. This could be useful for Owncloud for example, if you share your calendar with others and they should see start/end dates of your private appointments. You can also map all CLASS:PUBLIC events to Outlook private appointments.
 	- In *Scheduling settings* you can configure if you want to map attendees and organizer and if notifications should be sent by the server. 
 	- Use *Don't send appointment notifications for SOGo servers and SCHEDULE-AGENT=CLIENT for other servers if you want to send invitations from Outlook and avoid that the server sends invitations too, but be aware that not all servers (e.g. Google) support the SCHEDULE-AGENT=CLIENT setting. 
 	- You can also define a filter category so that multiple CalDAV-Calendars can be synchronized into one Outlook calendar via the defined category (see Category Filter and Color below). 
@@ -822,8 +831,11 @@ use the url
 
 ### Autodiscovery ###
 
-You can use the exact calendar/addressbook URL or the principal url and use the 'Test settings' button in the option dialog to try to autodiscover available calendars and addressbooks on the server. You can  then choose one of the found calendars or addressbooks in the new window.
-If your server has redirections for well-known Urls (./well-known/caldav/ and ./well-known/carddav/ ) you need to enter the server name only (without path).
+You can use the exact calendar/addressbook URL or the principal url and use the 'Test  or discover settings' button in the option dialog to try to autodiscover available calendars and addressbooks on the server. You can  then choose one of the found calendars or addressbooks in the new window.
+If your server has redirections for well-known Urls (./well-known/caldav/ and ./well-known/carddav/ ) you need to enter the server name only (without path). If your domain configured DNS SRV and/or TXT lookups it is also possible leave the DAV url empty and discover it from the entered Email Address via DNS lookups, for example:
+
+    _carddavs._tcp 86400 IN SRV 10 20 443 dav.example.org.
+    _caldavs._tcp 86400 IN SRV 10 20 443 dav.example.org.
 
 ### Proxy Settings ###
 You can now set manual proxy settings in the *Network and proxy options* dialog in each profile. To override the default proxy settings from Windows Internet Explorer you can also specify settings in the app config file, see config options below.
@@ -841,6 +853,7 @@ In the General Options Dialog you can change settings which are used for all syn
 - **Enable Tray Icon** Enabled by default, you can disable the tray icon in the Windows Taskbar if you don't need it.
 - **Use modern UI for sync profiles** Enabled by default, complete redesign of the synchronization profiles dialog using WPF, switches to the old WinForms UI if disabled. 
 - **Accept invalid chars in server response** If checked invalid characters in XML server responses are allowed. A typical invalid char, sent by some servers is Form feed (0x0C).
+- **Trigger sync after Outlook Send/Receive** If checked a manual sync is triggered after the Outlook Send/Receive finishes.
 
 If you have problems with SSL/TLS and self-signed certificates, you can change the following settings at your own risk.
 The recommended way would be to add the self signed cert to the Local Computer Trusted Root Certification Authorities
