@@ -105,15 +105,20 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 
     public async Task<ServerResources> GetServerResources (NetworkSettingsViewModel networkSettings, GeneralOptions generalOptions)
     {
-      string caldavUrlString = CalenderUrl;
-      string carddavUrlString = CalenderUrl;
+      string caldavUrlString ;
+      string carddavUrlString;
 
       if (string.IsNullOrEmpty (CalenderUrl) && !string.IsNullOrEmpty (EmailAddress))
       {
-        caldavUrlString = OptionTasks.DoSrvLookup(EmailAddress, OlItemType.olAppointmentItem);
-        carddavUrlString = OptionTasks.DoSrvLookup(EmailAddress, OlItemType.olContactItem);
+        caldavUrlString = OptionTasks.DoSrvLookup (EmailAddress, OlItemType.olAppointmentItem);
+        carddavUrlString = OptionTasks.DoSrvLookup (EmailAddress, OlItemType.olContactItem);
       }
- 
+      else
+      {
+        caldavUrlString = CalenderUrl;
+        carddavUrlString = CalenderUrl;
+      }
+
       var trimmedCaldavUrl = caldavUrlString.Trim();
       var caldavUrl = new Uri (trimmedCaldavUrl.EndsWith ("/") ? trimmedCaldavUrl : trimmedCaldavUrl + "/");
 
