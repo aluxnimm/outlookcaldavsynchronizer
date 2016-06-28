@@ -144,7 +144,6 @@ namespace CalDavSynchronizer
               int.Parse (ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"]),
               ExceptionHandler.Instance),
           _session,
-          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
           _daslFilterProvider,
           _outlookAccountPasswordProvider);
 

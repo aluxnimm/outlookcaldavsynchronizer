@@ -79,7 +79,6 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           _ => @"a:\invalid path",
           NullTotalProgressFactory.Instance,
           s_mapiNameSpace,
-          TimeSpan.Zero,
           daslFilterProvider,
           new OutlookAccountPasswordProvider (mapiNameSpace.CurrentProfileName, mapiNameSpace.Application.Version));
 

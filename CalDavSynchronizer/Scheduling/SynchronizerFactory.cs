@@ -59,7 +59,6 @@ namespace CalDavSynchronizer.Scheduling
     private readonly string _outlookEmailAddress;
     private readonly ITotalProgressFactory _totalProgressFactory;
     private readonly NameSpace _outlookSession;
-    private readonly TimeSpan _calDavConnectTimeout;
     private readonly Func<Guid, string> _profileDataDirectoryFactory;
     private readonly IDaslFilterProvider _daslFilterProvider;
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
@@ -68,7 +67,6 @@ namespace CalDavSynchronizer.Scheduling
         Func<Guid, string> profileDataDirectoryFactory,
         ITotalProgressFactory totalProgressFactory,
         NameSpace outlookSession,
-        TimeSpan calDavConnectTimeout, 
         IDaslFilterProvider daslFilterProvider, 
         IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
     {
@@ -99,7 +97,6 @@ namespace CalDavSynchronizer.Scheduling
 
       _totalProgressFactory = totalProgressFactory;
       _outlookSession = outlookSession;
-      _calDavConnectTimeout = calDavConnectTimeout;
       _daslFilterProvider = daslFilterProvider;
       _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
       _profileDataDirectoryFactory = profileDataDirectoryFactory;
@@ -171,7 +168,7 @@ namespace CalDavSynchronizer.Scheduling
     {
       var calDavDataAccess = new CalDavDataAccess (
           new Uri (options.CalenderUrl),
-          CreateWebDavClient (options, _calDavConnectTimeout, _outlookAccountPasswordProvider, generalOptions));
+          CreateWebDavClient (options, _outlookAccountPasswordProvider, generalOptions));
 
       componentsToFill.CalDavDataAccess = calDavDataAccess;
 
@@ -184,7 +181,6 @@ namespace CalDavSynchronizer.Scheduling
 
     public static IWebDavClient CreateWebDavClient (
       Options options, 
-      TimeSpan timeout, 
       IOutlookAccountPasswordProvider outlookAccountPasswordProvider,
       GeneralOptions generalOptions)
     {
@@ -197,7 +193,7 @@ namespace CalDavSynchronizer.Scheduling
           options.UserName,
           options.GetEffectivePassword(outlookAccountPasswordProvider),
           options.CalenderUrl,
-          timeout,
+          generalOptions.CalDavConnectTimeout,
           options.ServerAdapterType,
           options.CloseAfterEachRequest,
           options.PreemptiveAuthentication,
@@ -440,7 +436,7 @@ namespace CalDavSynchronizer.Scheduling
               options.UserName,
               options.GetEffectivePassword(_outlookAccountPasswordProvider),
               options.CalenderUrl,
-              _calDavConnectTimeout,
+              generalOptions.CalDavConnectTimeout,
               options.ServerAdapterType,
               options.CloseAfterEachRequest,
               options.PreemptiveAuthentication,
@@ -571,7 +567,7 @@ namespace CalDavSynchronizer.Scheduling
               options.UserName,
               options.GetEffectivePassword(_outlookAccountPasswordProvider),
               options.CalenderUrl,
-              _calDavConnectTimeout,
+              generalOptions.CalDavConnectTimeout,
               options.ServerAdapterType,
               options.CloseAfterEachRequest,
               options.PreemptiveAuthentication,

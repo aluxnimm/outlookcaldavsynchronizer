@@ -132,7 +132,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
           EmailAddress,
           SecureStringUtility.ToSecureString (string.Empty),
           CalenderUrl,
-          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+          generalOptions.CalDavConnectTimeout,
           ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth,
           networkSettings.CloseConnectionAfterEachRequest,
           networkSettings.PreemptiveAuthentication,

@@ -20,6 +20,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
 using log4net;
@@ -83,12 +84,62 @@ namespace CalDavSynchronizer.Ui.Options
 
     private void _okButton_Click (object sender, EventArgs e)
     {
-      DialogResult = DialogResult.OK;
+      string errorMessage;
+      if (Validate (out errorMessage))
+      {
+        DialogResult = DialogResult.OK;
+      }
+      else
+      { 
+        MessageBox.Show (errorMessage, "Some options contain invalid values", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
     }
 
     public bool Display ()
     {
       return ShowDialog() == DialogResult.OK;
+    }
+
+    private bool Validate (out string errorMessage)
+    {
+      StringBuilder errorMessageBuilder = new StringBuilder();
+      bool isValid = true;
+
+      try
+      {
+        var timeout = int.Parse (_calDavConnectTimeoutTextBox.Text);
+        if (timeout < 1)
+        {
+          errorMessageBuilder.AppendLine ("- CalDavConnectTimeout must be > 0");
+          isValid = false;
+        }
+        else
+        {
+          var timespan = TimeSpan.FromSeconds(timeout);
+        }
+      }
+      catch (Exception)
+      {
+        errorMessageBuilder.AppendLine ("- Invalid CalDavConnectTimeout");
+        isValid = false;
+      }
+      try
+      {
+        var maxReportAge = int.Parse (_maxReportAgeInDays.Text);
+        if (maxReportAge < 1)
+        {
+          errorMessageBuilder.AppendLine ("- Max Report Age must be > 0");
+          isValid = false;
+        }
+      }
+      catch (Exception)
+      {
+        errorMessageBuilder.AppendLine ("- Invalid Max Report Age");
+        isValid = false;
+      }
+
+      errorMessage = errorMessageBuilder.ToString();
+      return isValid;
     }
 
     public GeneralOptions Options
@@ -107,6 +158,7 @@ namespace CalDavSynchronizer.Ui.Options
                    DisableCertificateValidation = _disableCertificateValidationCheckbox.Checked,
                    EnableTls12 = _enableTls12Checkbox.Checked,
                    EnableSsl3 = _enableSsl3Checkbox.Checked,
+                   CalDavConnectTimeout = TimeSpan.FromSeconds (int.Parse (_calDavConnectTimeoutTextBox.Text)),
                    FixInvalidSettings = _fixInvalidSettingsCheckBox.Checked,
                    IncludeCustomMessageClasses = _includeCustomMessageClassesCheckBox.Checked,
                    LogReportsWithoutWarningsOrErrors = reportLogMode == ReportLogMode.All,
@@ -128,6 +180,7 @@ namespace CalDavSynchronizer.Ui.Options
         _disableCertificateValidationCheckbox.Checked = value.DisableCertificateValidation;
         _enableTls12Checkbox.Checked = value.EnableTls12;
         _enableSsl3Checkbox.Checked = value.EnableSsl3;
+        _calDavConnectTimeoutTextBox.Text = ((int) value.CalDavConnectTimeout.TotalSeconds).ToString();
         _fixInvalidSettingsCheckBox.Checked = value.FixInvalidSettings;
         _includeCustomMessageClassesCheckBox.Checked = value.IncludeCustomMessageClasses;
         _reportLogModeComboBox.SelectedValue = GetReportLogMode (value);

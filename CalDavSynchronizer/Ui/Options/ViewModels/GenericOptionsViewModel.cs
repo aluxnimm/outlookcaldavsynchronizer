@@ -165,7 +165,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
           _serverSettingsViewModel.UserName,
           _serverSettingsViewModel.UseAccountPassword ? _outlookAccountPasswordProvider.GetPassword (_outlookFolderViewModel.FolderAccountName) : _serverSettingsViewModel.Password,
           url.ToString(),
-          TimeSpan.Parse (ConfigurationManager.AppSettings["calDavConnectTimeout"]),
+          _generalOptions.CalDavConnectTimeout,
           _serverSettingsViewModel.ServerAdapterType,
           _networkSettingsViewModel.CloseConnectionAfterEachRequest,
           _networkSettingsViewModel.PreemptiveAuthentication,
