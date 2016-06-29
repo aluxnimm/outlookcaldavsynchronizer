@@ -44,6 +44,7 @@ namespace CalDavSynchronizer.Ui
       _progressBar.Maximum = value;
     }
 
+    protected override bool ShowWithoutActivation => true;
 
     void IDisposable.Dispose ()
     {
