@@ -98,14 +98,14 @@ namespace CalDavSynchronizer.Implementation.Common
     {
       switch (value)
       {
-        case "PUBLIC":
-          return mapPublicToPrivate ? OlSensitivity.olPrivate : OlSensitivity.olNormal;
         case "PRIVATE":
           return OlSensitivity.olPrivate;
         case "CONFIDENTIAL":
           return mapConfidentialToPrivate ? OlSensitivity.olPrivate : OlSensitivity.olConfidential;
+        case "PUBLIC":
+        default:
+          return mapPublicToPrivate ? OlSensitivity.olPrivate : OlSensitivity.olNormal;
       }
-      return OlSensitivity.olNormal;
     }
 
     public static int MapPriority1To2 (OlImportance value)

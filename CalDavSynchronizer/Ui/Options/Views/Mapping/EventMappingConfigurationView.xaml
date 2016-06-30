@@ -34,7 +34,7 @@
       <StackPanel>
         <CheckBox  IsChecked="{Binding MapSensitivityPrivateToClassConfidential}">Map Outlook Private flag to DAV CLASS:CONFIDENTIAL instead of PRIVATE</CheckBox>
         <CheckBox  IsChecked="{Binding MapClassConfidentialToSensitivityPrivate}">Map DAV CLASS:CONFIDENTIAL to Outlook Private flag instead of Confidential</CheckBox>
-        <CheckBox  IsChecked="{Binding MapClassPublicToSensitivityPrivate}">Map DAV CLASS:PUBLIC to Outlook Private flag instead of Public</CheckBox>
+        <CheckBox  IsChecked="{Binding MapClassPublicToSensitivityPrivate}">Map DAV CLASS:PUBLIC and default events to Outlook Private flag instead of Public</CheckBox>
       </StackPanel>
     </GroupBox>
     <GroupBox Header="Scheduling settings">
