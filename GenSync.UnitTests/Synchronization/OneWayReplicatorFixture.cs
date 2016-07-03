@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Threading.Tasks;
+using GenSync.Synchronization;
 using NUnit.Framework;
 
 namespace GenSync.UnitTests.Synchronization
@@ -26,8 +27,8 @@ namespace GenSync.UnitTests.Synchronization
     [Test]
     public async Task ReplicateAtoBAddedLocal ()
     {
-      await _localRepository.Create (v => "Item 1");
-      await _localRepository.Create (v => "Item 2");
+      await _localRepository.Create (v => "Item 1", NullSynchronizationContextFactory.Instance.Create ().Result);
+      await _localRepository.Create (v => "Item 2", NullSynchronizationContextFactory.Instance.Create().Result);
 
       ExecuteMultipleTimes (() =>
       {
@@ -46,8 +47,8 @@ namespace GenSync.UnitTests.Synchronization
     [Test]
     public async Task ReplicateAtoBAddedServer ()
     {
-      await _serverRepository.Create (v => "Item 1");
-      await _serverRepository.Create (v => "Item 2");
+      await _serverRepository.Create (v => "Item 1", NullSynchronizationContextFactory.Instance.Create ().Result);
+      await _serverRepository.Create (v => "Item 2", NullSynchronizationContextFactory.Instance.Create ().Result);
 
       ExecuteMultipleTimes (() =>
       {
@@ -64,8 +65,8 @@ namespace GenSync.UnitTests.Synchronization
     {
       await InitializeWithTwoEvents();
 
-      await _localRepository.Create (v => "Item l");
-      await _serverRepository.Create (v => "Item s");
+      await _localRepository.Create (v => "Item l", NullSynchronizationContextFactory.Instance.Create ().Result);
+      await _serverRepository.Create (v => "Item s", NullSynchronizationContextFactory.Instance.Create ().Result);
 
       ExecuteMultipleTimes (() =>
       {

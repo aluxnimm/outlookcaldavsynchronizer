@@ -47,7 +47,7 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
     }
 
 
-    public async System.Threading.Tasks.Task<bool> TryDelete (string entityId, string version)
+    public async System.Threading.Tasks.Task<bool> TryDelete (string entityId, string version, int context)
     {
       var deleteRequest =   _tasksService.Tasks.Delete (_taskList.Id, entityId);
       // Todo: how to set etag ?
@@ -55,7 +55,7 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
       return true;
     }
 
-    public async Task<EntityVersion<string, string>> TryUpdate (string entityId, string version, Task entityToUpdate, Func<Task, Task> entityModifier)
+    public async Task<EntityVersion<string, string>> TryUpdate (string entityId, string version, Task entityToUpdate, Func<Task, Task> entityModifier, int context)
     {
       entityToUpdate = entityModifier (entityToUpdate);
       var updateRequest = _tasksService.Tasks.Update (entityToUpdate, _taskList.Id, entityId);
@@ -64,7 +64,7 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
       return EntityVersion.Create (result.Id, result.ETag);
     }
 
-    public async Task<EntityVersion<string, string>> Create (Func<Task, Task> entityInitializer)
+    public async Task<EntityVersion<string, string>> Create (Func<Task, Task> entityInitializer, int context)
     {
       var task = entityInitializer (new Task());
       var result = await _tasksService.Tasks.Insert (task, _taskList.Id).ExecuteAsync();
@@ -109,7 +109,7 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
       return items;
     }
 
-    public System.Threading.Tasks.Task VerifyUnknownEntities (Dictionary<string, string> unknownEntites)
+    public System.Threading.Tasks.Task VerifyUnknownEntities (Dictionary<string, string> unknownEntites, int context)
     {
       return System.Threading.Tasks.Task.FromResult (0);
     }

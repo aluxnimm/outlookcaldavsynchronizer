@@ -26,9 +26,9 @@ namespace GenSync.EntityRepositories
   public class BatchEntityRepositoryAdapter<TEntity, TEntityId, TEntityVersion, TContext> :
       IBatchWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext>
   {
-    private readonly IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion> _inner;
+    private readonly IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext> _inner;
 
-    public BatchEntityRepositoryAdapter (IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion> inner)
+    public BatchEntityRepositoryAdapter (IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext> inner)
     {
       if (inner == null)
         throw new ArgumentNullException (nameof (inner));
@@ -47,7 +47,7 @@ namespace GenSync.EntityRepositories
       {
         try
         {
-          var result = await _inner.Create (job.InitializeEntity);
+          var result = await _inner.Create (job.InitializeEntity, context);
           job.NotifyOperationSuceeded (result);
         }
         catch (Exception x)
@@ -61,7 +61,7 @@ namespace GenSync.EntityRepositories
       {
         try
         {
-          var result = await _inner.TryUpdate (job.EntityId, job.Version, job.EntityToUpdate, job.UpdateEntity);
+          var result = await _inner.TryUpdate (job.EntityId, job.Version, job.EntityToUpdate, job.UpdateEntity, context);
           if (result != null)
             job.NotifyOperationSuceeded (result);
           else
@@ -78,7 +78,7 @@ namespace GenSync.EntityRepositories
       {
         try
         {
-          if (await _inner.TryDelete (job.EntityId, job.Version))
+          if (await _inner.TryDelete (job.EntityId, job.Version, context))
             job.NotifyOperationSuceeded();
           else
             job.NotifyEntityNotFound();
@@ -95,13 +95,13 @@ namespace GenSync.EntityRepositories
   public static class BatchEntityRepositoryAdapter
   {
     public static IBatchWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, int>
-        Create<TEntity, TEntityId, TEntityVersion> (IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion> inner)
+        Create<TEntity, TEntityId, TEntityVersion> (IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, int> inner)
     {
       return new BatchEntityRepositoryAdapter<TEntity, TEntityId, TEntityVersion, int> (inner);
     }
 
      public static IBatchWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext>
-        Create<TEntity, TEntityId, TEntityVersion, TContext> (IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion> inner)
+        Create<TEntity, TEntityId, TEntityVersion, TContext> (IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext> inner)
     {
       return new BatchEntityRepositoryAdapter<TEntity, TEntityId, TEntityVersion, TContext> (inner);
     }

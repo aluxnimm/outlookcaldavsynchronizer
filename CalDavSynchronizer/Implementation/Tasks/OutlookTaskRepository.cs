@@ -143,7 +143,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
           .ToArray();
     }
 
-    public Task VerifyUnknownEntities (Dictionary<string, DateTime> unknownEntites)
+    public Task VerifyUnknownEntities (Dictionary<string, DateTime> unknownEntites, int context)
     {
       return Task.FromResult (0);
     }
@@ -158,14 +158,18 @@ namespace CalDavSynchronizer.Implementation.Tasks
         string entityId,
         DateTime entityVersion,
         TaskItemWrapper entityToUpdate,
-        Func<TaskItemWrapper, TaskItemWrapper> entityModifier)
+        Func<TaskItemWrapper, TaskItemWrapper> entityModifier,
+        int context)
     {
       entityToUpdate = entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save();
       return Task.FromResult (new EntityVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime));
     }
 
-    public Task<bool> TryDelete (string entityId, DateTime version)
+    public Task<bool> TryDelete (
+      string entityId, 
+      DateTime version,
+      int context)
     {
       var entityWithId = Get (new[] { entityId }, NullLoadEntityLogger.Instance, 0).Result.SingleOrDefault ();
       if (entityWithId == null)
@@ -179,7 +183,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       return Task.FromResult (true);
     }
 
-    public Task<EntityVersion<string, DateTime>> Create (Func<TaskItemWrapper, TaskItemWrapper> entityInitializer)
+    public Task<EntityVersion<string, DateTime>> Create (Func<TaskItemWrapper, TaskItemWrapper> entityInitializer, int context)
     {
       using (var taskFolderWrapper = CreateFolderWrapper ())
       using (var wrapper = new TaskItemWrapper ((TaskItem) taskFolderWrapper.Inner.Items.Add (OlItemType.olTaskItem), entryId => (TaskItem) _mapiNameSpace.GetItemFromID (entryId, _folderStoreId)))

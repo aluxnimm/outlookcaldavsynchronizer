@@ -33,13 +33,13 @@ namespace CalDavSynchronizer.Implementation.Contacts
 {
   public class OutlookContactRepository<Tcontext> : IEntityRepository<ContactItemWrapper, string, DateTime, Tcontext>
   {
-    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
+    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod ().DeclaringType);
 
     private readonly NameSpace _mapiNameSpace;
     private readonly string _folderId;
     private readonly string _folderStoreId;
     private readonly IDaslFilterProvider _daslFilterProvider;
-    
+
     private const string PR_ASSOCIATED_BIRTHDAY_APPOINTMENT_ID = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/804D0102";
 
     public OutlookContactRepository (NameSpace mapiNameSpace, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider)
@@ -67,19 +67,19 @@ namespace CalDavSynchronizer.Implementation.Contacts
     {
       return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (
           idsOfEntitiesToQuery
-              .Select (id =>  _mapiNameSpace.GetEntryOrNull<ContactItem> (id.Id, _folderId, _folderStoreId))
+              .Select (id => _mapiNameSpace.GetEntryOrNull<ContactItem> (id.Id, _folderId, _folderStoreId))
               .Where (e => e != null)
-              .ToSafeEnumerable()
+              .ToSafeEnumerable ()
               .Select (c => EntityVersion.Create (c.EntryID, c.LastModificationTime))
-              .ToList());
+              .ToList ());
     }
 
     public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, Tcontext context)
     {
-      var contacts = new List<EntityVersion<string, DateTime>>();
+      var contacts = new List<EntityVersion<string, DateTime>> ();
 
 
-      using (var addressbookFolderWrapper = CreateFolderWrapper())
+      using (var addressbookFolderWrapper = CreateFolderWrapper ())
       {
         bool isInstantSearchEnabled = false;
 
@@ -87,7 +87,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
         {
           using (var store = GenericComObjectWrapper.Create (addressbookFolderWrapper.Inner.Store))
           {
-            if (store.Inner != null) isInstantSearchEnabled = store.Inner.IsInstantSearchEnabled;
+            if (store.Inner != null)
+              isInstantSearchEnabled = store.Inner.IsInstantSearchEnabled;
           }
         }
         catch (COMException)
@@ -98,14 +99,14 @@ namespace CalDavSynchronizer.Implementation.Contacts
             GenericComObjectWrapper.Create (addressbookFolderWrapper.Inner.GetTable (_daslFilterProvider.GetContactFilter (isInstantSearchEnabled))))
         {
           var table = tableWrapper.Inner;
-          table.Columns.RemoveAll();
+          table.Columns.RemoveAll ();
           table.Columns.Add (c_entryIdColumnName);
 
           var storeId = addressbookFolderWrapper.Inner.StoreID;
 
           while (!table.EndOfTable)
           {
-            var row = table.GetNextRow();
+            var row = table.GetNextRow ();
             var entryId = (string) row[c_entryIdColumnName];
 
             var contact = _mapiNameSpace.GetEntryOrNull<ContactItem> (entryId, _folderId, storeId);
@@ -139,11 +140,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
               id,
               new ContactItemWrapper (
                   (ContactItem) _mapiNameSpace.GetItemFromID (id, _folderStoreId),
-                  entryId => (ContactItem)_mapiNameSpace.GetItemFromID (entryId, _folderStoreId))))
-          .ToArray();
+                  entryId => (ContactItem) _mapiNameSpace.GetItemFromID (entryId, _folderStoreId))))
+          .ToArray ();
     }
 
-    public Task VerifyUnknownEntities (Dictionary<string, DateTime> unknownEntites)
+    public Task VerifyUnknownEntities (Dictionary<string, DateTime> unknownEntites, Tcontext context)
     {
       return Task.FromResult (0);
     }
@@ -151,64 +152,69 @@ namespace CalDavSynchronizer.Implementation.Contacts
     public void Cleanup (IReadOnlyDictionary<string, ContactItemWrapper> entities)
     {
       foreach (var contactItemWrapper in entities.Values)
-        contactItemWrapper.Dispose();
+        contactItemWrapper.Dispose ();
     }
 
     public Task<EntityVersion<string, DateTime>> TryUpdate (
-      string entityId, 
+      string entityId,
       DateTime entityVersion,
-      ContactItemWrapper entityToUpdate, Func<ContactItemWrapper, ContactItemWrapper> entityModifier)
+      ContactItemWrapper entityToUpdate,
+      Func<ContactItemWrapper, ContactItemWrapper> entityModifier,
+      Tcontext context)
     {
       entityToUpdate = entityModifier (entityToUpdate);
-      entityToUpdate.Inner.Save();
+      entityToUpdate.Inner.Save ();
       return Task.FromResult (new EntityVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime));
     }
 
-    public Task<bool> TryDelete (string entityId,DateTime version)
+    public Task<bool> TryDelete (
+      string entityId,
+      DateTime version,
+      Tcontext context)
     {
-      var entityWithId = Get (new[] { entityId }, NullLoadEntityLogger.Instance, default(Tcontext)).Result.SingleOrDefault ();
+      var entityWithId = Get (new[] { entityId }, NullLoadEntityLogger.Instance, default (Tcontext)).Result.SingleOrDefault ();
       if (entityWithId == null)
         return Task.FromResult (true);
 
       using (var contact = entityWithId.Entity)
       {
-        if (!contact.Inner.Birthday.Equals (new DateTime(4501, 1, 1, 0, 0, 0)))
+        if (!contact.Inner.Birthday.Equals (new DateTime (4501, 1, 1, 0, 0, 0)))
         {
           try
           {
             Byte[] ba = contact.Inner.GetPropertySafe (PR_ASSOCIATED_BIRTHDAY_APPOINTMENT_ID);
             string birthdayAppointmentItemID = BitConverter.ToString (ba).Replace ("-", string.Empty);
-            AppointmentItemWrapper birthdayWrapper = new AppointmentItemWrapper ((AppointmentItem)_mapiNameSpace.GetItemFromID (birthdayAppointmentItemID), 
-                                                                                  entryId => (AppointmentItem)_mapiNameSpace.GetItemFromID (birthdayAppointmentItemID));
-            birthdayWrapper.Inner.Delete();
+            AppointmentItemWrapper birthdayWrapper = new AppointmentItemWrapper ((AppointmentItem) _mapiNameSpace.GetItemFromID (birthdayAppointmentItemID),
+                                                                                  entryId => (AppointmentItem) _mapiNameSpace.GetItemFromID (birthdayAppointmentItemID));
+            birthdayWrapper.Inner.Delete ();
           }
           catch (COMException ex)
           {
             s_logger.Error ("Could not delete associated Birthday Appointment.", ex);
           }
         }
-        contact.Inner.Delete();
+        contact.Inner.Delete ();
       }
 
       return Task.FromResult (true);
     }
 
-    public Task<EntityVersion<string, DateTime>> Create (Func<ContactItemWrapper, ContactItemWrapper> entityInitializer)
+    public Task<EntityVersion<string, DateTime>> Create (Func<ContactItemWrapper, ContactItemWrapper> entityInitializer, Tcontext context)
     {
       ContactItemWrapper newWrapper;
 
-      using (var folderWrapper = CreateFolderWrapper())
+      using (var folderWrapper = CreateFolderWrapper ())
       {
         newWrapper = new ContactItemWrapper (
-          (ContactItem)folderWrapper.Inner.Items.Add (OlItemType.olContactItem),
-          entryId => (ContactItem)_mapiNameSpace.GetItemFromID (entryId, _folderStoreId));
+          (ContactItem) folderWrapper.Inner.Items.Add (OlItemType.olContactItem),
+          entryId => (ContactItem) _mapiNameSpace.GetItemFromID (entryId, _folderStoreId));
       }
 
       using (newWrapper)
       {
         using (var initializedWrapper = entityInitializer (newWrapper))
         {
-          initializedWrapper.SaveAndReload();
+          initializedWrapper.SaveAndReload ();
           var result = new EntityVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime);
           return Task.FromResult (result);
         }

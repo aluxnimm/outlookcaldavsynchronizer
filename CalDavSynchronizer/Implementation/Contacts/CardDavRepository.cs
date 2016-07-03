@@ -71,7 +71,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    public Task VerifyUnknownEntities (Dictionary<WebResourceName, string> unknownEntites)
+    public Task VerifyUnknownEntities (Dictionary<WebResourceName, string> unknownEntites, int context)
     {
       return Task.FromResult (0);
     }
@@ -109,7 +109,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
     }
 
 
-    public async Task<bool> TryDelete (WebResourceName entityId, string version)
+    public async Task<bool> TryDelete (WebResourceName entityId, string version, int context)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
@@ -121,7 +121,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
         WebResourceName entityId,
         string entityVersion,
         vCard entityToUpdate,
-        Func<vCard, vCard> entityModifier)
+        Func<vCard, vCard> entityModifier, 
+        int context)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
@@ -133,7 +134,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    public async Task<EntityVersion<WebResourceName, string>> Create (Func<vCard, vCard> entityInitializer)
+    public async Task<EntityVersion<WebResourceName, string>> Create (Func<vCard, vCard> entityInitializer, int context)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {

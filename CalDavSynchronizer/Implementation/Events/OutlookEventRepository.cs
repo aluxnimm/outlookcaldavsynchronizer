@@ -233,7 +233,10 @@ namespace CalDavSynchronizer.Implementation.Events
           .ToArray();
     }
 
-    public async Task VerifyUnknownEntities (Dictionary<string, DateTime> unknownEntites)
+    public async Task VerifyUnknownEntities (
+      Dictionary<string, 
+      DateTime> unknownEntites,
+      int context)
     {
       foreach (var unknownEntity in await Get (unknownEntites.Keys, NullLoadEntityLogger.Instance, 0))
       {
@@ -268,14 +271,15 @@ namespace CalDavSynchronizer.Implementation.Events
         string entityId,
         DateTime entityVersion,
         AppointmentItemWrapper entityToUpdate,
-        Func<AppointmentItemWrapper, AppointmentItemWrapper> entityModifier)
+        Func<AppointmentItemWrapper, AppointmentItemWrapper> entityModifier,
+        int context)
     {
       entityToUpdate = entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save();
       return Task.FromResult (new EntityVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime));
     }
 
-    public Task<bool> TryDelete (string entityId, DateTime version)
+    public Task<bool> TryDelete (string entityId, DateTime version, int context)
     {
       var entityWithId = Get (new[] { entityId }, NullLoadEntityLogger.Instance, 0).Result.SingleOrDefault();
       if (entityWithId == null)
@@ -288,7 +292,9 @@ namespace CalDavSynchronizer.Implementation.Events
       return Task.FromResult (true);
     }
 
-    public Task<EntityVersion<string, DateTime>> Create (Func<AppointmentItemWrapper, AppointmentItemWrapper> entityInitializer)
+    public Task<EntityVersion<string, DateTime>> Create (
+      Func<AppointmentItemWrapper, AppointmentItemWrapper> entityInitializer,
+      int context)
     {
       AppointmentItemWrapper newAppointmentItemWrapper;
 

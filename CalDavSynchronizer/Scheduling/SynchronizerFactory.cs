@@ -354,7 +354,7 @@ namespace CalDavSynchronizer.Scheduling
           _daslFilterProvider,
           new InvitationChecker (options.EmailAddress, _outlookSession.Application.Version));
 
-      IEntityRepository<IICalendar, WebResourceName, string, int> btypeRepository = new CalDavRepository (
+      IEntityRepository<IICalendar, WebResourceName, string, int> btypeRepository = new CalDavRepository<int> (
           calDavDataAccess,
           new iCalendarSerializer(),
           CalDavRepository.EntityType.Event,
@@ -446,7 +446,7 @@ namespace CalDavSynchronizer.Scheduling
 
       componentsToFill.CalDavDataAccess = calDavDataAccess;
 
-      var btypeRepository = new CalDavRepository (
+      var btypeRepository = new CalDavRepository<int> (
           calDavDataAccess,
           new iCalendarSerializer(),
           CalDavRepository.EntityType.Todo,

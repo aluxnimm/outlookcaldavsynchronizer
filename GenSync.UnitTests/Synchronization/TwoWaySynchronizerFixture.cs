@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GenSync.EntityRelationManagement;
+using GenSync.Synchronization;
 using GenSync.UnitTests.Synchronization.Stubs;
 using NUnit.Framework;
 
@@ -30,8 +31,8 @@ namespace GenSync.UnitTests.Synchronization
     [TestCase (GenericConflictResolution.BWins)]
     public async Task TwoWaySynchronize_AddedLocal (GenericConflictResolution conflictWinner)
     {
-      await _localRepository.Create (v => "Item 1");
-      await _localRepository.Create (v => "Item 2");
+      await _localRepository.Create (v => "Item 1", NullSynchronizationContextFactory.Instance.Create ().Result);
+      await _localRepository.Create (v => "Item 2", NullSynchronizationContextFactory.Instance.Create ().Result);
 
       ExecuteMultipleTimes (() =>
       {
@@ -51,8 +52,8 @@ namespace GenSync.UnitTests.Synchronization
     [TestCase (GenericConflictResolution.BWins)]
     public async Task TwoWaySynchronize_AddedServer (GenericConflictResolution conflictWinner)
     {
-      await _serverRepository.Create (v => "Item 1");
-      await _serverRepository.Create (v => "Item 2");
+      await _serverRepository.Create (v => "Item 1", NullSynchronizationContextFactory.Instance.Create ().Result);
+      await _serverRepository.Create (v => "Item 2", NullSynchronizationContextFactory.Instance.Create ().Result);
 
       ExecuteMultipleTimes (() =>
       {
@@ -73,8 +74,8 @@ namespace GenSync.UnitTests.Synchronization
     {
       await InitializeWithTwoEvents();
 
-      await _localRepository.Create (v => "Item l");
-      await _serverRepository.Create (v => "Item s");
+      await _localRepository.Create (v => "Item l", NullSynchronizationContextFactory.Instance.Create ().Result);
+      await _serverRepository.Create (v => "Item s", NullSynchronizationContextFactory.Instance.Create ().Result);
 
       ExecuteMultipleTimes (() =>
       {
@@ -99,9 +100,9 @@ namespace GenSync.UnitTests.Synchronization
     {
       await InitializeWithTwoEvents();
 
-      var addedLocal = await _localRepository.Create (v => "Item l");
-      var addedServer = await _serverRepository.Create (v => "Item s");
-      await _serverRepository.Create (v => "Item s2");
+      var addedLocal = await _localRepository.Create (v => "Item l", NullSynchronizationContextFactory.Instance.Create ().Result);
+      var addedServer = await _serverRepository.Create (v => "Item s", NullSynchronizationContextFactory.Instance.Create ().Result);
+      await _serverRepository.Create (v => "Item s2", NullSynchronizationContextFactory.Instance.Create ().Result);
 
       ExecuteMultipleTimes (() =>
       {
@@ -129,8 +130,8 @@ namespace GenSync.UnitTests.Synchronization
     [TestCase (GenericConflictResolution.BWins)]
     public async Task TwoWaySynchronize_AddedBothWithoutExisting_NewEntitiesAreMatching (GenericConflictResolution conflictWinner)
     {
-      var addedLocal = await _localRepository.Create (v => "Item l");
-      var addedServer = await _serverRepository.Create (v => "Item s");
+      var addedLocal = await _localRepository.Create (v => "Item l", NullSynchronizationContextFactory.Instance.Create ().Result);
+      var addedServer = await _serverRepository.Create (v => "Item s", NullSynchronizationContextFactory.Instance.Create ().Result);
 
       ExecuteMultipleTimes (() =>
       {

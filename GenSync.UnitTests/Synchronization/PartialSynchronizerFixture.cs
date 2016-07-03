@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GenSync.Synchronization;
 using GenSync.UnitTests.Synchronization.Stubs;
 using NUnit.Framework;
 
@@ -249,8 +250,8 @@ namespace GenSync.UnitTests.Synchronization
     [TestCase (GenericConflictResolution.BWins)]
     public async Task TwoWaySynchronize_AddedLocal_WithoutHint (GenericConflictResolution conflictWinner)
     {
-      await _localRepository.Create (v => "Item 1");
-      await _localRepository.Create (v => "Item 2");
+      await _localRepository.Create (v => "Item 1", NullSynchronizationContextFactory.Instance.Create ().Result);
+      await _localRepository.Create (v => "Item 2", NullSynchronizationContextFactory.Instance.Create ().Result);
 
       ExecuteMultipleTimes (() =>
       {
@@ -288,8 +289,8 @@ namespace GenSync.UnitTests.Synchronization
     [TestCase (GenericConflictResolution.BWins)]
     public async Task TwoWaySynchronize_AddedLocal_WithHint (GenericConflictResolution conflictWinner)
     {
-      await _localRepository.Create (v => "Item 1");
-      await _localRepository.Create (v => "Item 2");
+      await _localRepository.Create (v => "Item 1", NullSynchronizationContextFactory.Instance.Create ().Result);
+      await _localRepository.Create (v => "Item 2", NullSynchronizationContextFactory.Instance.Create ().Result);
 
       ExecuteMultipleTimes (() =>
       {
@@ -327,8 +328,8 @@ namespace GenSync.UnitTests.Synchronization
     [TestCase (GenericConflictResolution.BWins)]
     public async Task TwoWaySynchronize_AddedLocal_WithWrongHint (GenericConflictResolution conflictWinner)
     {
-      await _localRepository.Create (v => "Item 1");
-      await _localRepository.Create (v => "Item 2");
+      await _localRepository.Create (v => "Item 1", NullSynchronizationContextFactory.Instance.Create ().Result);
+      await _localRepository.Create (v => "Item 2", NullSynchronizationContextFactory.Instance.Create ().Result);
 
       ExecuteMultipleTimes (() =>
       {
