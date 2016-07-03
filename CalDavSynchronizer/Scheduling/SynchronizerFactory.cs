@@ -354,7 +354,7 @@ namespace CalDavSynchronizer.Scheduling
           _daslFilterProvider,
           new InvitationChecker (options.EmailAddress, _outlookSession.Application.Version));
 
-      IEntityRepository<IICalendar, WebResourceName, string, int> btypeRepository = new CalDavRepository<int> (
+      IEntityRepository<IICalendar, WebResourceName, string, IEventSynchronizationContext> btypeRepository = new CalDavRepository<IEventSynchronizationContext> (
           calDavDataAccess,
           new iCalendarSerializer(),
           CalDavRepository.EntityType.Event,
@@ -381,7 +381,7 @@ namespace CalDavSynchronizer.Scheduling
       var aTypeWriteRepository = BatchEntityRepositoryAdapter.Create (atypeRepository);
       var bTypeWriteRepository = BatchEntityRepositoryAdapter.Create (btypeRepository);
 
-      var synchronizer = new Synchronizer<string, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, int> (
+      var synchronizer = new Synchronizer<string, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> (
           atypeRepository,
           btypeRepository,
           aTypeWriteRepository,
@@ -399,7 +399,7 @@ namespace CalDavSynchronizer.Scheduling
           btypeIdEqualityComparer,
           _totalProgressFactory,
           ExceptionHandler.Instance,
-          NullSynchronizationContextFactory.Instance,
+          new EventSynchronizationContextFactory(),
           EqualityComparer<DateTime>.Default,
           EqualityComparer<string>.Default);
 

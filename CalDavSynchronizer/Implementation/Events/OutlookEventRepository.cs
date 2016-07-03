@@ -34,7 +34,7 @@ using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class OutlookEventRepository : IEntityRepository<AppointmentItemWrapper, string, DateTime, int>
+  public class OutlookEventRepository : IEntityRepository<AppointmentItemWrapper, string, DateTime, IEventSynchronizationContext>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -83,7 +83,7 @@ namespace CalDavSynchronizer.Implementation.Events
       return GenericComObjectWrapper.Create ((Folder) _mapiNameSpace.GetFolderFromID (_folderId, _folderStoreId));
     }
 
-    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, int context)
+    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, IEventSynchronizationContext context)
     {
       var result = new List<EntityVersion<string, DateTime>>();
 
@@ -124,7 +124,7 @@ namespace CalDavSynchronizer.Implementation.Events
       return _configuration.InvertEventCategoryFilter ? !found : found;
     }
 
-    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, int context)
+    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, IEventSynchronizationContext context)
     {
       var range = _dateTimeRangeProvider.GetRange();
 
@@ -221,7 +221,7 @@ namespace CalDavSynchronizer.Implementation.Events
     }
 
 #pragma warning disable 1998
-    public async Task<IReadOnlyList<EntityWithId<string, AppointmentItemWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger, int context)
+    public async Task<IReadOnlyList<EntityWithId<string, AppointmentItemWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger, IEventSynchronizationContext context)
 #pragma warning restore 1998
     {
       return ids
@@ -233,12 +233,9 @@ namespace CalDavSynchronizer.Implementation.Events
           .ToArray();
     }
 
-    public async Task VerifyUnknownEntities (
-      Dictionary<string, 
-      DateTime> unknownEntites,
-      int context)
+    public async Task VerifyUnknownEntities (Dictionary<string, DateTime> unknownEntites, IEventSynchronizationContext context)
     {
-      foreach (var unknownEntity in await Get (unknownEntites.Keys, NullLoadEntityLogger.Instance, 0))
+      foreach (var unknownEntity in await Get (unknownEntites.Keys, NullLoadEntityLogger.Instance, context))
       {
         using (unknownEntity.Entity)
         {
@@ -272,16 +269,16 @@ namespace CalDavSynchronizer.Implementation.Events
         DateTime entityVersion,
         AppointmentItemWrapper entityToUpdate,
         Func<AppointmentItemWrapper, AppointmentItemWrapper> entityModifier,
-        int context)
+        IEventSynchronizationContext context)
     {
       entityToUpdate = entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save();
       return Task.FromResult (new EntityVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime));
     }
 
-    public Task<bool> TryDelete (string entityId, DateTime version, int context)
+    public Task<bool> TryDelete (string entityId, DateTime version, IEventSynchronizationContext context)
     {
-      var entityWithId = Get (new[] { entityId }, NullLoadEntityLogger.Instance, 0).Result.SingleOrDefault();
+      var entityWithId = Get (new[] { entityId }, NullLoadEntityLogger.Instance, context).Result.SingleOrDefault();
       if (entityWithId == null)
         return Task.FromResult (true);
 
@@ -292,9 +289,7 @@ namespace CalDavSynchronizer.Implementation.Events
       return Task.FromResult (true);
     }
 
-    public Task<EntityVersion<string, DateTime>> Create (
-      Func<AppointmentItemWrapper, AppointmentItemWrapper> entityInitializer,
-      int context)
+    public Task<EntityVersion<string, DateTime>> Create (Func<AppointmentItemWrapper, AppointmentItemWrapper> entityInitializer, IEventSynchronizationContext context)
     {
       AppointmentItemWrapper newAppointmentItemWrapper;
 

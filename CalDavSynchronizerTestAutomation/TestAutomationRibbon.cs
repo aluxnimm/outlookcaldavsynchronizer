@@ -86,7 +86,7 @@ namespace CalDavSynchronizerTestAutomation
                 OutlookTestContext.DeserializeICalendar (dataInputWindow.Item2.Text),
                 appointmentWrapper,
                 entitySynchronizationLogger),
-            0);
+            NullEventSynchronizationContext.Instance);
 
         var reportWindow = CreateWindowWithTextBox();
         reportWindow.Item2.Text = "SynchronizationReport:\r\n" + Serializer<EntitySynchronizationReport>.Serialize (entitySynchronizationLogger.GetReport());
