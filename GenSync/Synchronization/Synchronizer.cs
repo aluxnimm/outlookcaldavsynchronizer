@@ -128,6 +128,8 @@ namespace GenSync.Synchronization
 
             _entityRelationDataAccess.SaveEntityRelationData (newEntityRelations);
           }
+
+          await _contextFactory.SynchronizationFinished (synchronizationContext);
         }
       }
       catch (Exception x)
@@ -235,6 +237,8 @@ namespace GenSync.Synchronization
 
             _entityRelationDataAccess.SaveEntityRelationData (entityRelationsNotToUse);
           }
+
+          await _contextFactory.SynchronizationFinished (synchronizationContext);
         }
       }
       catch (Exception x)

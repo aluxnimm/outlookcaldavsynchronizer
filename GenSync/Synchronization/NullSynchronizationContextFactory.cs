@@ -31,5 +31,10 @@ namespace GenSync.Synchronization
     {
       return Task.FromResult(0);
     }
+
+    public Task SynchronizationFinished (int context)
+    {
+      return Task.FromResult(0);
+    }
   }
 }

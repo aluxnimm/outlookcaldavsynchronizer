@@ -25,5 +25,7 @@ namespace GenSync.Synchronization
   public interface ISynchronizationContextFactory<TContext>
   {
     Task<TContext> Create ();
+    Task SynchronizationFinished (TContext context);
   }
+  
 }
