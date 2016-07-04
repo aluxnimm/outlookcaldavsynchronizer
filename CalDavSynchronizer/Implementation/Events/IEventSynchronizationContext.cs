@@ -17,11 +17,14 @@
 
 using System;
 using System.Threading.Tasks;
+using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
   public interface IEventSynchronizationContext
   {
     Task NotifySynchronizationFinished ();
+    void AnnounceAppointment (AppointmentItem appointment);
+    void AnnounceAppointmentDeleted (AppointmentItem inner);
   }
 }

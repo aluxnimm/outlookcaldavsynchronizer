@@ -21,9 +21,9 @@ namespace GenSync
   /// <summary>
   /// Represents the Id and the Version of an entity
   /// </summary>
-  public class EntityVersion<TEntityId, TVersion>
+  public class EntityVersion<TEntityId, TVersion> : IEntity<TEntityId>
   {
-    public readonly TEntityId Id;
+    public TEntityId Id { get; }
     public readonly TVersion Version;
 
     public EntityVersion (TEntityId id, TVersion version)

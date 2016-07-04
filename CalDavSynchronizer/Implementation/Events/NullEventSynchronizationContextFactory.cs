@@ -13,26 +13,35 @@
 // GNU Affero General Public License for more details.
 // 
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.using System;
+
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using CalDavSynchronizer.DataAccess;
+using DDay.iCal;
+using GenSync.EntityRelationManagement;
+using GenSync.EntityRepositories;
+using GenSync.Synchronization;
 
-namespace GenSync.Synchronization
+namespace CalDavSynchronizer.Implementation.Events
 {
-  public class NullSynchronizationContextFactory : ISynchronizationContextFactory<int>
+  public class NullEventSynchronizationContextFactory : ISynchronizationContextFactory<IEventSynchronizationContext>
   {
-    public static readonly ISynchronizationContextFactory<int> Instance = new NullSynchronizationContextFactory ();
+    public static readonly ISynchronizationContextFactory<IEventSynchronizationContext> Instance = new NullEventSynchronizationContextFactory();
 
-    private NullSynchronizationContextFactory ()
+    private NullEventSynchronizationContextFactory ()
     {
     }
 
-    public Task<int> Create ()
+    public Task<IEventSynchronizationContext> Create ()
     {
-      return Task.FromResult (0);
+      return Task.FromResult (NullEventSynchronizationContext.Instance);
     }
 
-    public Task SynchronizationFinished (int context)
+    public Task SynchronizationFinished (IEventSynchronizationContext context)
     {
       return Task.FromResult (0);
     }

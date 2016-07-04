@@ -399,7 +399,7 @@ namespace CalDavSynchronizer.Scheduling
           btypeIdEqualityComparer,
           _totalProgressFactory,
           ExceptionHandler.Instance,
-          new EventSynchronizationContextFactory(),
+          new EventSynchronizationContextFactory(atypeRepository, btypeRepository, entityRelationDataAccess, mappingParameters.CleanupDuplicateEvents),
           EqualityComparer<DateTime>.Default,
           EqualityComparer<string>.Default);
 
@@ -577,7 +577,7 @@ namespace CalDavSynchronizer.Scheduling
 
       componentsToFill.CardDavDataAccess = cardDavDataAccess;
 
-      IEntityRepository<vCard, WebResourceName, string, int> btypeRepository = new CardDavRepository (
+      var btypeRepository = new CardDavRepository (
           cardDavDataAccess);
 
       var mappingParameters = GetMappingParameters<ContactMappingConfiguration> (options);

@@ -95,7 +95,10 @@ namespace CalDavSynchronizer.Implementation.Events
           try
           {
             if (id.IsKnown || DoesMatchCategoryCriterion (appointment))
+            {
               result.Add (EntityVersion.Create (id.Id, appointment.LastModificationTime));
+              context.AnnounceAppointment (appointment);
+            }
           }
           finally
           {
@@ -126,18 +129,32 @@ namespace CalDavSynchronizer.Implementation.Events
 
     public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, IEventSynchronizationContext context)
     {
-      var range = _dateTimeRangeProvider.GetRange();
+      return GetAll (
+          idsOfknownEntities,
+          context,
+          a =>
+          {
+            context.AnnounceAppointment (a);
+            return new EntityVersion<string, DateTime> (a.EntryID, a.LastModificationTime);
+          });
+    }
 
-      List<EntityVersion<string, DateTime>> events;
-      using (var calendarFolderWrapper = CreateFolderWrapper())
+    private Task<IReadOnlyList<T>> GetAll<T> (IEnumerable<string> idsOfknownEntities, IEventSynchronizationContext context, Func<AppointmentItem,T> selector)
+      where T : IEntity<string>
+    {
+      var range = _dateTimeRangeProvider.GetRange ();
+
+      List<T> events;
+      using (var calendarFolderWrapper = CreateFolderWrapper ())
       {
         bool isInstantSearchEnabled = false;
 
         try
         {
-          using (var store = GenericComObjectWrapper.Create(calendarFolderWrapper.Inner.Store))
+          using (var store = GenericComObjectWrapper.Create (calendarFolderWrapper.Inner.Store))
           {
-            if (store.Inner != null) isInstantSearchEnabled = store.Inner.IsInstantSearchEnabled;
+            if (store.Inner != null)
+              isInstantSearchEnabled = store.Inner.IsInstantSearchEnabled;
           }
         }
         catch (COMException)
@@ -155,9 +172,9 @@ namespace CalDavSynchronizer.Implementation.Events
           AddCategoryFilter (filterBuilder, _configuration.EventCategory, _configuration.InvertEventCategoryFilter);
         }
 
-        s_logger.InfoFormat ("Using Outlook DASL filter: {0}", filterBuilder.ToString());
+        s_logger.InfoFormat ("Using Outlook DASL filter: {0}", filterBuilder.ToString ());
 
-        events = QueryFolder (_mapiNameSpace, calendarFolderWrapper, filterBuilder);
+        events = QueryFolder (_mapiNameSpace, calendarFolderWrapper, filterBuilder, selector);
       }
 
       if (_configuration.UseEventCategoryAsFilter)
@@ -167,12 +184,13 @@ namespace CalDavSynchronizer.Implementation.Events
             knownEntitesThatWereFilteredOut
                 .Select (id => _mapiNameSpace.GetEntryOrNull<AppointmentItem> (id, _folderId, _folderStoreId))
                 .Where (i => i != null)
-                .ToSafeEnumerable()
-                .Select (c => EntityVersion.Create (c.EntryID, c.LastModificationTime)));
+                .ToSafeEnumerable ()
+                .Select (selector));
       }
 
-      return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (events);
+      return Task.FromResult<IReadOnlyList<T>> (events);
     }
+
 
     public static void AddCategoryFilter (StringBuilder filterBuilder, string category, bool negate)
     {
@@ -180,9 +198,26 @@ namespace CalDavSynchronizer.Implementation.Events
       filterBuilder.AppendFormat (" And "+ negateFilter + "(\"urn:schemas-microsoft-com:office:office#Keywords\" = '{0}')", category.Replace ("'","''"));
     }
 
-    public static List<EntityVersion<string, DateTime>> QueryFolder (NameSpace session, GenericComObjectWrapper<Folder> calendarFolderWrapper, StringBuilder filterBuilder)
+    public static List<EntityVersion<string, DateTime>> QueryFolder (
+        NameSpace session,
+        GenericComObjectWrapper<Folder> calendarFolderWrapper,
+        StringBuilder filterBuilder)
     {
-      var events = new List<EntityVersion<string, DateTime>>();
+      return QueryFolder (
+          session,
+          calendarFolderWrapper,
+          filterBuilder,
+          a => new EntityVersion<string, DateTime> (a.EntryID, a.LastModificationTime));
+    }
+
+    static List<T> QueryFolder<T> (
+        NameSpace session,
+        GenericComObjectWrapper<Folder> calendarFolderWrapper,
+        StringBuilder filterBuilder,
+        Func<AppointmentItem, T> selector)
+      where T : IEntity<string>
+    {
+      var events = new List<T>();
 
       using (var tableWrapper = GenericComObjectWrapper.Create (
           calendarFolderWrapper.Inner.GetTable (filterBuilder.ToString())))
@@ -201,7 +236,7 @@ namespace CalDavSynchronizer.Implementation.Events
           {
             using (var appointmentWrapper = GenericComObjectWrapper.Create ((AppointmentItem) session.GetItemFromID (entryId, storeId)))
             {
-              events.Add (new EntityVersion<string, DateTime> (appointmentWrapper.Inner.EntryID, appointmentWrapper.Inner.LastModificationTime));
+              events.Add (selector (appointmentWrapper.Inner));
             }
           }
           catch (COMException ex)
@@ -245,6 +280,7 @@ namespace CalDavSynchronizer.Implementation.Events
             s_logger.Info ($"Deleting meeting invitation {subjectForLogging}('{unknownEntity.Id}') from server identity.");
 
             unknownEntites.Remove (unknownEntity.Id);
+            context.AnnounceAppointmentDeleted (unknownEntity.Entity.Inner);
             try
             {
               unknownEntity.Entity.Inner.Delete();
@@ -273,6 +309,7 @@ namespace CalDavSynchronizer.Implementation.Events
     {
       entityToUpdate = entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save();
+      context.AnnounceAppointment (entityToUpdate.Inner);
       return Task.FromResult (new EntityVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime));
     }
 
@@ -284,6 +321,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
       using (var appointment = entityWithId.Entity)
       {
+        context.AnnounceAppointmentDeleted (appointment.Inner);
         appointment.Inner.Delete();
       }
       return Task.FromResult (true);
@@ -305,6 +343,7 @@ namespace CalDavSynchronizer.Implementation.Events
         using (var initializedWrapper = entityInitializer (newAppointmentItemWrapper))
         {
           initializedWrapper.SaveAndReload();
+          context.AnnounceAppointment (initializedWrapper.Inner);
           var result = new EntityVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime);
           return Task.FromResult (result);
         }

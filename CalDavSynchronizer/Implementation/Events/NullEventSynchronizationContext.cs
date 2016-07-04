@@ -18,6 +18,7 @@
 using System;
 using System.Threading.Tasks;
 using GenSync.ProgressReport;
+using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
@@ -31,7 +32,17 @@ namespace CalDavSynchronizer.Implementation.Events
 
     public Task NotifySynchronizationFinished ()
     {
-      return Task.FromResult(0);
+      return Task.FromResult (0);
+    }
+
+    public void AnnounceAppointment (AppointmentItem appointment)
+    {
+      
+    }
+
+    public void AnnounceAppointmentDeleted (AppointmentItem inner)
+    {
+     
     }
   }
 }

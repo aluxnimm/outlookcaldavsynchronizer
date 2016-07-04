@@ -293,7 +293,9 @@
     <Compile Include="DataAccess\CalendarData.cs" />
     <Compile Include="Implementation\Common\NameSpaceExtensions.cs" />
     <Compile Include="Implementation\Common\OutlookUtility.cs" />
+    <Compile Include="Implementation\Events\NullEventSynchronizationContextFactory.cs" />
     <Compile Include="Implementation\Events\EventSynchronizationContextFactory.cs" />
+    <Compile Include="Implementation\Events\DuplicateEventCleaner.cs" />
     <Compile Include="Implementation\Events\IEventSynchronizationContext.cs" />
     <Compile Include="Implementation\Events\IInvitationChecker.cs" />
     <Compile Include="Implementation\Events\InvitationChecker.cs" />

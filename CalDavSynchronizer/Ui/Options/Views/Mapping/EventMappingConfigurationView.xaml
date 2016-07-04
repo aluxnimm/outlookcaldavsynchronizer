@@ -45,6 +45,7 @@
       </StackPanel>
     </GroupBox>
     <GroupBox Header="Outlook settings">
+      <StackPanel>
       <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*"/>
@@ -117,6 +118,8 @@
           SelectedValue="{Binding CategoryShortcutKey}"
                     Grid.Row="3" Grid.Column="1" />
       </Grid>
+      <CheckBox  IsChecked="{Binding CleanupDuplicateEvents}">Cleanup duplicate events after each sync run</CheckBox>
+      </StackPanel>
     </GroupBox>
   </StackPanel>
 

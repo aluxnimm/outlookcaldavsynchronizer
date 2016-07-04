@@ -13,28 +13,12 @@
 // GNU Affero General Public License for more details.
 // 
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using System.Threading.Tasks;
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.using System;
 
-namespace GenSync.Synchronization
+namespace GenSync
 {
-  public class NullSynchronizationContextFactory : ISynchronizationContextFactory<int>
+  public interface IEntity<out TEntityId>
   {
-    public static readonly ISynchronizationContextFactory<int> Instance = new NullSynchronizationContextFactory ();
-
-    private NullSynchronizationContextFactory ()
-    {
-    }
-
-    public Task<int> Create ()
-    {
-      return Task.FromResult (0);
-    }
-
-    public Task SynchronizationFinished (int context)
-    {
-      return Task.FromResult (0);
-    }
+    TEntityId Id { get; }
   }
 }

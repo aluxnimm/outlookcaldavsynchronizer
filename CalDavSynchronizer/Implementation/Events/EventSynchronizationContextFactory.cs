@@ -15,19 +15,54 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.using System;
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CalDavSynchronizer.DataAccess;
+using DDay.iCal;
+using GenSync.EntityRelationManagement;
+using GenSync.EntityRepositories;
 using GenSync.Synchronization;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
   public class EventSynchronizationContextFactory : ISynchronizationContextFactory<IEventSynchronizationContext>
   {
+    private readonly OutlookEventRepository _outlookRepository;
+    private readonly IEntityRepository<IICalendar, WebResourceName, string, IEventSynchronizationContext> _btypeRepository;
+    private readonly IEntityRelationDataAccess<string, DateTime, WebResourceName, string> _entityRelationDataAccess;
+    private readonly bool _cleanupDuplicateEvents;
+
+    public EventSynchronizationContextFactory(
+      OutlookEventRepository outlookRepository,
+      IEntityRepository<IICalendar, WebResourceName, string, IEventSynchronizationContext> btypeRepository,
+      IEntityRelationDataAccess<string, DateTime, WebResourceName, string> entityRelationDataAccess,
+      bool cleanupDuplicateEvents)
+    {
+      if (outlookRepository == null)
+        throw new ArgumentNullException (nameof (outlookRepository));
+      if (btypeRepository == null)
+        throw new ArgumentNullException (nameof (btypeRepository));
+      if (entityRelationDataAccess == null)
+        throw new ArgumentNullException (nameof (entityRelationDataAccess));
+
+      _outlookRepository = outlookRepository;
+      _btypeRepository = btypeRepository;
+      _entityRelationDataAccess = entityRelationDataAccess;
+      _cleanupDuplicateEvents = cleanupDuplicateEvents;
+    }
+
     public Task<IEventSynchronizationContext> Create ()
     {
-      return Task.FromResult (NullEventSynchronizationContext.Instance);
+      return Task.FromResult(
+        _cleanupDuplicateEvents
+          ? new DuplicateEventCleaner(
+            _outlookRepository,
+            _btypeRepository,
+            _entityRelationDataAccess)
+          : NullEventSynchronizationContext.Instance);
     }
 
     public async Task SynchronizationFinished (IEventSynchronizationContext context)
