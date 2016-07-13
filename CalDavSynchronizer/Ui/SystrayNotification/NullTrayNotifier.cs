@@ -27,7 +27,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification
     {
     }
 
-    public void NotifyUser (SynchronizationReport report)
+    public void NotifyUser (SynchronizationReport report, bool notifyWarnings, bool notifyErrors)
     {
     }
 

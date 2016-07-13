@@ -21,6 +21,6 @@ namespace CalDavSynchronizer.Ui.SystrayNotification
 {
   public interface ITrayNotifier : IDisposable
   {
-    void NotifyUser (SynchronizationReport report);
+    void NotifyUser (SynchronizationReport report, bool notifyWarnings, bool notifyErrors);
   }
 }

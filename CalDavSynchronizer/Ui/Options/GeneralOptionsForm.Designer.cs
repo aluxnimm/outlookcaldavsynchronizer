@@ -46,6 +46,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._includeCustomMessageClassesCheckBox = new System.Windows.Forms.CheckBox();
       this._enableTrayIconCheckBox = new System.Windows.Forms.CheckBox();
       this._acceptInvalidCharsInServerResponseCheckBox = new System.Windows.Forms.CheckBox();
+      this._triggerSyncAfterSendReceiveCheckBox = new System.Windows.Forms.CheckBox();
       this.groupBox2 = new System.Windows.Forms.GroupBox();
       this._maxReportAgeInDays = new System.Windows.Forms.TextBox();
       this.label3 = new System.Windows.Forms.Label();
@@ -58,7 +59,6 @@ namespace CalDavSynchronizer.Ui.Options
       this._clearLogButton = new System.Windows.Forms.Button();
       this._logLevelComboBox = new System.Windows.Forms.ComboBox();
       this.label6 = new System.Windows.Forms.Label();
-      this._triggerSyncAfterSendReceiveCheckBox = new System.Windows.Forms.CheckBox();
       this._calDavConnectTimeoutTextBox = new System.Windows.Forms.TextBox();
       this.label4 = new System.Windows.Forms.Label();
       this.groupBox1.SuspendLayout();
@@ -235,6 +235,19 @@ namespace CalDavSynchronizer.Ui.Options
         "alid char, sent by some servers is \'Form feed\' (0x0C).");
       this._acceptInvalidCharsInServerResponseCheckBox.UseVisualStyleBackColor = true;
       // 
+      // _triggerSyncAfterSendReceiveCheckBox
+      // 
+      this._triggerSyncAfterSendReceiveCheckBox.AutoSize = true;
+      this._triggerSyncAfterSendReceiveCheckBox.Location = new System.Drawing.Point(16, 190);
+      this._triggerSyncAfterSendReceiveCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+      this._triggerSyncAfterSendReceiveCheckBox.Name = "_triggerSyncAfterSendReceiveCheckBox";
+      this._triggerSyncAfterSendReceiveCheckBox.Size = new System.Drawing.Size(287, 21);
+      this._triggerSyncAfterSendReceiveCheckBox.TabIndex = 9;
+      this._triggerSyncAfterSendReceiveCheckBox.Text = "Trigger sync after Outlook Send/Receive";
+      this._toolTip.SetToolTip(this._triggerSyncAfterSendReceiveCheckBox, "If checked a manual sync is always triggered after the Outlook Send/Receive finis" +
+        "hes.");
+      this._triggerSyncAfterSendReceiveCheckBox.UseVisualStyleBackColor = true;
+      // 
       // groupBox2
       // 
       this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -246,9 +259,9 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox2.Controls.Add(this.label2);
       this.groupBox2.Controls.Add(this.label1);
       this.groupBox2.Location = new System.Drawing.Point(4, 430);
-      this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
       this.groupBox2.Name = "groupBox2";
-      this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
       this.groupBox2.Size = new System.Drawing.Size(500, 135);
       this.groupBox2.TabIndex = 16;
       this.groupBox2.TabStop = false;
@@ -258,7 +271,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._maxReportAgeInDays.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this._maxReportAgeInDays.Location = new System.Drawing.Point(351, 95);
-      this._maxReportAgeInDays.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._maxReportAgeInDays.Margin = new System.Windows.Forms.Padding(4);
       this._maxReportAgeInDays.Name = "_maxReportAgeInDays";
       this._maxReportAgeInDays.Size = new System.Drawing.Size(131, 22);
       this._maxReportAgeInDays.TabIndex = 6;
@@ -280,7 +293,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._reportPopupModeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this._reportPopupModeComboBox.FormattingEnabled = true;
       this._reportPopupModeComboBox.Location = new System.Drawing.Point(192, 62);
-      this._reportPopupModeComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._reportPopupModeComboBox.Margin = new System.Windows.Forms.Padding(4);
       this._reportPopupModeComboBox.Name = "_reportPopupModeComboBox";
       this._reportPopupModeComboBox.Size = new System.Drawing.Size(289, 24);
       this._reportPopupModeComboBox.TabIndex = 3;
@@ -292,7 +305,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._reportLogModeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this._reportLogModeComboBox.FormattingEnabled = true;
       this._reportLogModeComboBox.Location = new System.Drawing.Point(192, 28);
-      this._reportLogModeComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._reportLogModeComboBox.Margin = new System.Windows.Forms.Padding(4);
       this._reportLogModeComboBox.Name = "_reportLogModeComboBox";
       this._reportLogModeComboBox.Size = new System.Drawing.Size(289, 24);
       this._reportLogModeComboBox.TabIndex = 2;
@@ -303,9 +316,11 @@ namespace CalDavSynchronizer.Ui.Options
       this.label2.Location = new System.Drawing.Point(12, 65);
       this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label2.Name = "label2";
-      this.label2.Size = new System.Drawing.Size(124, 17);
+      this.label2.Size = new System.Drawing.Size(161, 17);
       this.label2.TabIndex = 1;
-      this.label2.Text = "Show immediately:";
+      this.label2.Text = "Show reports and notify:";
+      this._toolTip.SetToolTip(this.label2, "Show synchronization reports immediately and\r\nnotify in systray icon (if enabled)" +
+        "");
       // 
       // label1
       // 
@@ -326,9 +341,9 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox3.Controls.Add(this._logLevelComboBox);
       this.groupBox3.Controls.Add(this.label6);
       this.groupBox3.Location = new System.Drawing.Point(4, 573);
-      this.groupBox3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.groupBox3.Margin = new System.Windows.Forms.Padding(4);
       this.groupBox3.Name = "groupBox3";
-      this.groupBox3.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.groupBox3.Padding = new System.Windows.Forms.Padding(4);
       this.groupBox3.Size = new System.Drawing.Size(500, 108);
       this.groupBox3.TabIndex = 17;
       this.groupBox3.TabStop = false;
@@ -365,7 +380,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._logLevelComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this._logLevelComboBox.FormattingEnabled = true;
       this._logLevelComboBox.Location = new System.Drawing.Point(192, 28);
-      this._logLevelComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._logLevelComboBox.Margin = new System.Windows.Forms.Padding(4);
       this._logLevelComboBox.Name = "_logLevelComboBox";
       this._logLevelComboBox.Size = new System.Drawing.Size(289, 24);
       this._logLevelComboBox.TabIndex = 2;
@@ -379,19 +394,6 @@ namespace CalDavSynchronizer.Ui.Options
       this.label6.Size = new System.Drawing.Size(74, 17);
       this.label6.TabIndex = 0;
       this.label6.Text = "Log Level:";
-      // 
-      // _triggerSyncAfterSendReceiveCheckBox
-      // 
-      this._triggerSyncAfterSendReceiveCheckBox.AutoSize = true;
-      this._triggerSyncAfterSendReceiveCheckBox.Location = new System.Drawing.Point(16, 190);
-      this._triggerSyncAfterSendReceiveCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-      this._triggerSyncAfterSendReceiveCheckBox.Name = "_triggerSyncAfterSendReceiveCheckBox";
-      this._triggerSyncAfterSendReceiveCheckBox.Size = new System.Drawing.Size(287, 21);
-      this._triggerSyncAfterSendReceiveCheckBox.TabIndex = 9;
-      this._triggerSyncAfterSendReceiveCheckBox.Text = "Trigger sync after Outlook Send/Receive";
-      this._toolTip.SetToolTip(this._triggerSyncAfterSendReceiveCheckBox, "If checked a manual sync is always triggered after the Outlook Send/Receive finis" +
-        "hes.");
-      this._triggerSyncAfterSendReceiveCheckBox.UseVisualStyleBackColor = true;
       // 
       // _calDavConnectTimeoutTextBox
       // 
@@ -408,7 +410,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.label4.Location = new System.Drawing.Point(13, 223);
       this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label4.Name = "label4";
-      this.label4.Size = new System.Drawing.Size(211, 17);
+      this.label4.Size = new System.Drawing.Size(226, 17);
       this.label4.TabIndex = 11;
       this.label4.Text = "CalDav Connection Timeout (secs)";
       // 

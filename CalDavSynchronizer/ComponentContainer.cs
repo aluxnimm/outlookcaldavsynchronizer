@@ -239,7 +239,7 @@ namespace CalDavSynchronizer
     {
       SaveAndShowReport (report);
       _profileStatusesViewModel.Update (report);
-      _trayNotifier.NotifyUser (report);
+      _trayNotifier.NotifyUser (report, _showReportsWithWarningsImmediately, _showReportsWithErrorsImmediately);
     }
 
     private void SaveAndShowReport (SynchronizationReport report)

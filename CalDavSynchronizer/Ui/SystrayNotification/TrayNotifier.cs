@@ -146,9 +146,9 @@ namespace CalDavSynchronizer.Ui.SystrayNotification
       }
     }
 
-    public void NotifyUser (SynchronizationReport report)
+    public void NotifyUser (SynchronizationReport report, bool notifyWarnings, bool notifyErrors)
     {
-      if (report.HasErrors)
+      if (report.HasErrors && notifyErrors)
       {
         _nofifyIcon.ShowBalloonTip (
             10 * 1000,
@@ -156,7 +156,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification
             $"Syncronization profile '{report.ProfileName}' executed with error(s).",
             ToolTipIcon.Error);
       }
-      else if (report.HasWarnings)
+      else if (report.HasWarnings && notifyWarnings)
       {
         _nofifyIcon.ShowBalloonTip (
             10 * 1000,
