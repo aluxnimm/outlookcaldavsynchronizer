@@ -1620,14 +1620,7 @@ namespace CalDavSynchronizer.Implementation.Events
                   var propertyTagsSender = new object[] { PR_SENDER_NAME, PR_SENDER_EMAIL_ADDRESS, PR_SENT_REPRESENTING_ADDRTYPE, PR_SENDER_ENTRYID };
                   object[] propertyValues;
 
-                  if (source.Organizer.CommonName != null)
-                  {
-                    propertyValues = new object[] { source.Organizer.CommonName + "<" + sourceOrganizerEmail + ">", sourceOrganizerEmail, "SMTP", oPa.Inner.StringToBinary (organizerID) };
-                  }
-                  else
-                  {
-                    propertyValues = new object[] { sourceOrganizerEmail, sourceOrganizerEmail, "SMTP", oPa.Inner.StringToBinary (organizerID) };
-                  }
+                  propertyValues = new object[] { targetRecipient.Name, sourceOrganizerEmail, "SMTP", oPa.Inner.StringToBinary (organizerID) };
 
                   try
                   {
