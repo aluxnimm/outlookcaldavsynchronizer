@@ -1622,7 +1622,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
                   if (source.Organizer.CommonName != null)
                   {
-                    propertyValues = new object[] { source.Organizer.CommonName, sourceOrganizerEmail, "SMTP", oPa.Inner.StringToBinary (organizerID) };
+                    propertyValues = new object[] { source.Organizer.CommonName + "<" + sourceOrganizerEmail + ">", sourceOrganizerEmail, "SMTP", oPa.Inner.StringToBinary (organizerID) };
                   }
                   else
                   {
