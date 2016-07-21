@@ -39,18 +39,19 @@ namespace CalDavSynchronizer
 
     private readonly ComponentContainer _componentContainer;
 
-    public CalDavSynchronizerToolBar (Application application, ComponentContainer componentContainer, object missing)
+    public CalDavSynchronizerToolBar (Explorer explorer, ComponentContainer componentContainer, object missing, bool wireClickEvents)
     {
       _componentContainer = componentContainer;
 
-      var toolBar = application.ActiveExplorer().CommandBars.Add ("CalDav Synchronizer", MsoBarPosition.msoBarTop, false, true);
+      var toolBar = explorer.CommandBars.Add ("CalDav Synchronizer", MsoBarPosition.msoBarTop, false, true);
 
       _toolBarBtnOptions = (CommandBarButton) toolBar.Controls.Add (1, missing, missing, missing, missing);
       _toolBarBtnOptions.Style = MsoButtonStyle.msoButtonIconAndCaption;
       _toolBarBtnOptions.Caption = "Synchronization Profiles";
       _toolBarBtnOptions.FaceId = 222; // builtin icon: hand hovering above a property list
       _toolBarBtnOptions.Tag = "View or set CalDav Synchronization Profiles";
-      _toolBarBtnOptions.Click += ToolBarBtn_Options_OnClick;
+      if(wireClickEvents)
+        _toolBarBtnOptions.Click += ToolBarBtn_Options_OnClick;
 
 
       _toolBarBtnGeneralOptions = (CommandBarButton) toolBar.Controls.Add (1, missing, missing, missing, missing);
@@ -58,35 +59,40 @@ namespace CalDavSynchronizer
       _toolBarBtnGeneralOptions.Caption = "General Options";
       _toolBarBtnGeneralOptions.FaceId = 222; // builtin icon: hand hovering above a property list
       _toolBarBtnGeneralOptions.Tag = "View or set CalDav Synchronizer general options";
-      _toolBarBtnGeneralOptions.Click += ToolBarBtn_GeneralOptions_OnClick;
+      if (wireClickEvents)
+        _toolBarBtnGeneralOptions.Click += ToolBarBtn_GeneralOptions_OnClick;
 
       _toolBarBtnSyncNow = (CommandBarButton) toolBar.Controls.Add (1, missing, missing, missing, missing);
       _toolBarBtnSyncNow.Style = MsoButtonStyle.msoButtonIconAndCaption;
       _toolBarBtnSyncNow.Caption = "Synchronize";
       _toolBarBtnSyncNow.FaceId = 107; // builtin icon: lightning hovering above a calendar table
       _toolBarBtnSyncNow.Tag = "Synchronize now";
-      _toolBarBtnSyncNow.Click += ToolBarBtn_SyncNow_OnClick;
+      if (wireClickEvents)
+        _toolBarBtnSyncNow.Click += ToolBarBtn_SyncNow_OnClick;
 
       _toolBarBtnAboutMe = (CommandBarButton) toolBar.Controls.Add (1, missing, missing, missing, missing);
       _toolBarBtnAboutMe.Style = MsoButtonStyle.msoButtonIconAndCaption;
       _toolBarBtnAboutMe.Caption = "About";
       _toolBarBtnAboutMe.FaceId = 487; // builtin icon: blue round sign with "i" letter
       _toolBarBtnAboutMe.Tag = "About CalDav Synchronizer";
-      _toolBarBtnAboutMe.Click += ToolBarBtn_About_OnClick;
+      if (wireClickEvents)
+        _toolBarBtnAboutMe.Click += ToolBarBtn_About_OnClick;
 
       _toolBarBtnReports = (CommandBarButton) toolBar.Controls.Add(1, missing, missing, missing, missing);
       _toolBarBtnReports.Style = MsoButtonStyle.msoButtonIconAndCaption;
       _toolBarBtnReports.Caption = "Reports";
       _toolBarBtnReports.FaceId = 433; // builtin icon: statistics
       _toolBarBtnReports.Tag = "Show reports of last sync runs";
-      _toolBarBtnReports.Click += ToolBarBtn_Reports_OnClick;
+      if (wireClickEvents)
+        _toolBarBtnReports.Click += ToolBarBtn_Reports_OnClick;
 
       _toolBarBtnStatus = (CommandBarButton) toolBar.Controls.Add (1, missing, missing, missing, missing);
       _toolBarBtnStatus.Style = MsoButtonStyle.msoButtonIconAndCaption;
       _toolBarBtnStatus.Caption = "Status";
       _toolBarBtnStatus.FaceId = 433; // builtin icon: statistics
       _toolBarBtnStatus.Tag = "Show  syncronization status";
-      _toolBarBtnStatus.Click += ToolBarBtn_Status_OnClick;
+      if (wireClickEvents)
+        _toolBarBtnStatus.Click += ToolBarBtn_Status_OnClick;
 
       toolBar.Visible = true;
     }
