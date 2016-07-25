@@ -608,8 +608,8 @@ namespace CalDavSynchronizer.Implementation.Events
           foreach (var sourceException in sourceRecurrencePattern.Exceptions.ToSafeEnumerable<Exception>())
           {
             if (!sourceException.Deleted)
-            {
-              originalOutlookDatesWithExceptions.Add (sourceException.OriginalDate);
+            { 
+              originalOutlookDatesWithExceptions.Add (sourceException.OriginalDate.Date.Add (source.StartInStartTimeZone.TimeOfDay));
             }
           }
           foreach (var sourceException in sourceRecurrencePattern.Exceptions.ToSafeEnumerable<Exception>())
@@ -663,13 +663,7 @@ namespace CalDavSynchronizer.Implementation.Events
                   }
                   else
                   {
-                    string startTimeZoneID;
-                    using (var startTimeZone = GenericComObjectWrapper.Create (source.StartTimeZone))
-                    {
-                      startTimeZoneID = startTimeZone.Inner.ID;
-                    }
-                    var timeZone = TimeZoneInfo.FindSystemTimeZoneById (startTimeZoneID);
-                    var originalDateUtc = TimeZoneInfo.ConvertTimeToUtc (sourceException.OriginalDate, timeZone);
+                    var originalDateUtc = TimeZoneInfo.ConvertTimeToUtc (sourceException.OriginalDate, TimeZoneInfo.Local);
                     targetException.RecurrenceID = new iCalDateTime (originalDateUtc) { IsUniversalTime = true };
                   }
                 }
