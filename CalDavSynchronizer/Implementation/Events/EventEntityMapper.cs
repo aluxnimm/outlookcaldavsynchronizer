@@ -29,7 +29,9 @@ using GenSync.EntityMapping;
 using GenSync.Logging;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
+using NodaTime;
 using Exception = Microsoft.Office.Interop.Outlook.Exception;
+using Period = DDay.iCal.Period;
 using RecurrencePattern = DDay.iCal.RecurrencePattern;
 
 namespace CalDavSynchronizer.Implementation.Events
@@ -663,7 +665,10 @@ namespace CalDavSynchronizer.Implementation.Events
                   }
                   else
                   {
-                    var originalDateUtc = TimeZoneInfo.ConvertTimeToUtc (sourceException.OriginalDate, TimeZoneInfo.Local);
+                    DateTimeZone tz = DateTimeZoneProviders.Bcl.GetSystemDefault();
+                    LocalDateTime localExDateTime = LocalDateTime.FromDateTime (sourceException.OriginalDate);
+                    ZonedDateTime zonedExDateTime = tz.AtLeniently (localExDateTime);
+                    var originalDateUtc = zonedExDateTime.ToDateTimeUtc(); 
                     targetException.RecurrenceID = new iCalDateTime (originalDateUtc) { IsUniversalTime = true };
                   }
                 }
