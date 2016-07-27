@@ -86,9 +86,18 @@ namespace CalDavSynchronizer
       {
         // For every explorer there has to be a toolbar created, but only the first toolbar is allowed to have wired events and only a reference to the first toolbar is stored
         var calDavSynchronizerToolBar = new CalDavSynchronizerToolBar(activeExplorer, ComponentContainer, missing, _calDavSynchronizerToolBar == null);
+        calDavSynchronizerToolBar.Settings = ComponentContainer.LoadToolBarSettings();
         if (_calDavSynchronizerToolBar == null)
+        {
           _calDavSynchronizerToolBar = calDavSynchronizerToolBar;
+          ((ExplorerEvents_10_Event) activeExplorer).Close += FirstExplorer_Close;
+        }
       }
+    }
+
+    private void FirstExplorer_Close ()
+    {
+      ComponentContainer.SaveToolBarSettings(_calDavSynchronizerToolBar.Settings);
     }
 
     private void Explorers_NewExplorer(Explorer newExplorer)

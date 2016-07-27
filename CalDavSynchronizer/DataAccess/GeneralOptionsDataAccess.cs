@@ -50,6 +50,7 @@ namespace CalDavSynchronizer.DataAccess
     private const string s_EntityCacheVersion = "EntityCacheVersion";
     private const string s_AcceptInvalidCharsInServerResponse = "AcceptInvalidCharsInServerResponse";
     private const string s_TriggerSyncAfterSendReceive = "TriggerSyncAfterSendReceive";
+    private const string s_ToolbarSettings = "ToolbarSettings";
 
     public GeneralOptions LoadOptions ()
     {
@@ -130,7 +131,7 @@ namespace CalDavSynchronizer.DataAccess
         }
       }
     }
-
+    
     public int EntityCacheVersion
     {
       get
@@ -146,6 +147,29 @@ namespace CalDavSynchronizer.DataAccess
         {
           key.SetValue (s_EntityCacheVersion, value);
         }
+      }
+    }
+
+    public void SaveToolBarSettings(ToolbarSettings settings)
+    {
+      using (var key = OpenOptionsKey())
+      {
+        if (settings != null)
+          key.SetValue(s_ToolbarSettings, Serializer<ToolbarSettings>.Serialize(settings));
+        else
+          key.DeleteValue(s_ToolbarSettings);
+      }
+    }
+
+    public ToolbarSettings LoadToolBarSettings()
+    {
+      using (var key = OpenOptionsKey())
+      {
+        var settings = (string) key.GetValue(s_ToolbarSettings);
+        if (!string.IsNullOrEmpty(settings))
+          return Serializer<ToolbarSettings>.Deserialize(settings);
+        else
+          return new ToolbarSettings();
       }
     }
 
