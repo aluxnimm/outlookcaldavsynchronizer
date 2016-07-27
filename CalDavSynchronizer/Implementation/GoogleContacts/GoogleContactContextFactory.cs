@@ -37,5 +37,10 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         return context;
       });
     }
+
+    public Task SynchronizationFinished (GoogleContactContext context)
+    {
+      return Task.FromResult(0);
+    }
   }
 }

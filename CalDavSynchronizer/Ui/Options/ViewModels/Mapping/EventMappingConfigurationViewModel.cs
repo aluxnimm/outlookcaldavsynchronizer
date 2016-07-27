@@ -48,6 +48,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     private bool _sendNoAppointmentNotifications;
     private bool _useEventCategoryColorAndMapFromCalendarColor;
     private readonly ICurrentOptions _currentOptions;
+    private bool _cleanupDuplicateEvents;
 
     public IList<Item<ReminderMapping>> AvailableReminderMappings { get; } = new List<Item<ReminderMapping>>
                                                                              {
@@ -102,6 +103,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       set
       {
         CheckedPropertyChange (ref _useGlobalAppointmentID, value);
+      }
+    }
+
+    public bool CleanupDuplicateEvents
+    {
+      get { return _cleanupDuplicateEvents; }
+      set
+      {
+        CheckedPropertyChange (ref _cleanupDuplicateEvents, value);
       }
     }
 
@@ -257,6 +267,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       ScheduleAgentClient = mappingConfiguration.ScheduleAgentClient;
       SendNoAppointmentNotifications = mappingConfiguration.SendNoAppointmentNotifications;
       UseEventCategoryColorAndMapFromCalendarColor = mappingConfiguration.UseEventCategoryColorAndMapFromCalendarColor;
+      CleanupDuplicateEvents = mappingConfiguration.CleanupDuplicateEvents;
     }
 
     public void FillOptions (CalDavSynchronizer.Contracts.Options options)
@@ -277,8 +288,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                          MapClassPublicToSensitivityPrivate = _mapClassPublicToSensitivityPrivate,
                                          ScheduleAgentClient = _scheduleAgentClient,
                                          SendNoAppointmentNotifications = _sendNoAppointmentNotifications,
-                                         UseEventCategoryColorAndMapFromCalendarColor = _useEventCategoryColorAndMapFromCalendarColor
-                                     };
+                                         UseEventCategoryColorAndMapFromCalendarColor = _useEventCategoryColorAndMapFromCalendarColor,
+                                         CleanupDuplicateEvents = _cleanupDuplicateEvents
+      };
     }
 
     public string Name => "Event mapping configuration";

@@ -40,6 +40,7 @@ namespace CalDavSynchronizer.Contracts
     public bool UseEventCategoryColorAndMapFromCalendarColor { get; set; }
     public OlCategoryColor EventCategoryColor { get; set; }
     public OlCategoryShortcutKey CategoryShortcutKey { get; set; }
+    public bool CleanupDuplicateEvents { get; set; }
 
     [XmlIgnore]
     public bool UseEventCategoryAsFilter
@@ -63,6 +64,7 @@ namespace CalDavSynchronizer.Contracts
       UseEventCategoryColorAndMapFromCalendarColor = false;
       EventCategoryColor = OlCategoryColor.olCategoryColorNone;
       CategoryShortcutKey = OlCategoryShortcutKey.olCategoryShortcutKeyNone;
+      CleanupDuplicateEvents = false;
     }
 
     public override ISubOptionsViewModel CreateConfigurationViewModel (IMappingConfigurationViewModelFactory factory)

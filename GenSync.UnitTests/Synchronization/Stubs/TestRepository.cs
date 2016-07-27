@@ -67,7 +67,7 @@ namespace GenSync.UnitTests.Synchronization.Stubs
           ids.Select (id => EntityWithId.Create (id, EntityVersionAndContentById[id].Item2)).ToArray());
     }
 
-    public Task VerifyUnknownEntities (Dictionary<Identifier, int> unknownEntites)
+    public Task VerifyUnknownEntities (Dictionary<Identifier, int> unknownEntites, int context)
     {
       return Task.FromResult (0);
     }
@@ -81,7 +81,7 @@ namespace GenSync.UnitTests.Synchronization.Stubs
       EntityVersionAndContentById.Remove (entityId);
     }
 
-    public Task<bool> TryDelete (Identifier entityId, int version)
+    public Task<bool> TryDelete (Identifier entityId, int version, int context)
     {
       if (!EntityVersionAndContentById.ContainsKey (entityId))
         throw new Exception ("tried to delete non existing entity!");
@@ -97,7 +97,8 @@ namespace GenSync.UnitTests.Synchronization.Stubs
         Identifier entityId,
         int entityVersion,
         string entityToUpdate,
-        Func<string, string> entityModifier)
+        Func<string, string> entityModifier, 
+        int context)
     {
       var kv = EntityVersionAndContentById[entityId];
 
@@ -127,7 +128,7 @@ namespace GenSync.UnitTests.Synchronization.Stubs
     }
 
 
-    public Task<EntityVersion<Identifier, int>> Create (Func<string, string> entityInitializer)
+    public Task<EntityVersion<Identifier, int>> Create (Func<string, string> entityInitializer, int context)
     {
       var newValue = entityInitializer (string.Empty);
       var entityId = _idPrefix + _nextId++;

@@ -14,16 +14,35 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
 
-namespace GenSync.EntityRepositories
+using System;
+using System.Threading.Tasks;
+using GenSync.ProgressReport;
+using Microsoft.Office.Interop.Outlook;
+
+namespace CalDavSynchronizer.Implementation.Events
 {
-  /// <summary>
-  /// Represents an Repository, which contains entites that have to be synced
-  /// </summary>
-  public interface IEntityRepository<TEntity, TEntityId, TEntityVersion, TContext> : 
-    IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext>, 
-    IReadOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext>
+  public class NullEventSynchronizationContext : IEventSynchronizationContext
   {
+    public static readonly IEventSynchronizationContext Instance = new NullEventSynchronizationContext ();
+
+    private NullEventSynchronizationContext ()
+    {
+    }
+
+    public Task NotifySynchronizationFinished ()
+    {
+      return Task.FromResult (0);
+    }
+
+    public void AnnounceAppointment (AppointmentItem appointment)
+    {
+      
+    }
+
+    public void AnnounceAppointmentDeleted (AppointmentItem inner)
+    {
+     
+    }
   }
 }

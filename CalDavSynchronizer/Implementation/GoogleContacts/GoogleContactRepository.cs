@@ -397,7 +397,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       return result;
     }
 
-    public Task VerifyUnknownEntities (Dictionary<string, GoogleContactVersion> unknownEntites)
+    public Task VerifyUnknownEntities (Dictionary<string, GoogleContactVersion> unknownEntites, GoogleContactContext context)
     {
       return Task.FromResult (0);
     }

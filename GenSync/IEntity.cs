@@ -13,17 +13,12 @@
 // GNU Affero General Public License for more details.
 // 
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.using System;
 
-namespace GenSync.EntityRepositories
+namespace GenSync
 {
-  /// <summary>
-  /// Represents an Repository, which contains entites that have to be synced
-  /// </summary>
-  public interface IEntityRepository<TEntity, TEntityId, TEntityVersion, TContext> : 
-    IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext>, 
-    IReadOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext>
+  public interface IEntity<out TEntityId>
   {
+    TEntityId Id { get; }
   }
 }

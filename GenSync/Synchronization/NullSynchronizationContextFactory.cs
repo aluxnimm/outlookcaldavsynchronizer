@@ -21,7 +21,7 @@ namespace GenSync.Synchronization
 {
   public class NullSynchronizationContextFactory : ISynchronizationContextFactory<int>
   {
-    public static readonly ISynchronizationContextFactory<int> Instance = new NullSynchronizationContextFactory();
+    public static readonly ISynchronizationContextFactory<int> Instance = new NullSynchronizationContextFactory ();
 
     private NullSynchronizationContextFactory ()
     {
@@ -29,7 +29,12 @@ namespace GenSync.Synchronization
 
     public Task<int> Create ()
     {
-      return Task.FromResult(0);
+      return Task.FromResult (0);
+    }
+
+    public Task SynchronizationFinished (int context)
+    {
+      return Task.FromResult (0);
     }
   }
 }
