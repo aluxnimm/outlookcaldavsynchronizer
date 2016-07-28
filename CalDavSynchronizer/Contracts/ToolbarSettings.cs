@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -14,18 +14,19 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using CalDavSynchronizer.Contracts;
 
-namespace CalDavSynchronizer.DataAccess
+using System;
+using Microsoft.Office.Core;
+
+
+namespace CalDavSynchronizer.Contracts
 {
-  public interface IGeneralOptionsDataAccess
+  public class ToolbarSettings
   {
-    GeneralOptions LoadOptions ();
-    void SaveOptions (GeneralOptions options);
-    Version IgnoreUpdatesTilVersion { get; set; }
-    int EntityCacheVersion { get; set; }
-    void SaveToolBarSettings(ToolbarSettings settings);
-    ToolbarSettings LoadToolBarSettings();
+    public int Top { get; set; }
+    public int Left { get; set; }
+    public bool Visible { get; set; } = true;
+    public MsoBarPosition Position { get; set; }
+    public int RowIndex { get; set; }
   }
 }

@@ -33,7 +33,8 @@ namespace CalDavSynchronizer
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    private CalDavSynchronizerToolBar _calDavSynchronizerToolBar = null; // Pierre-Marie Baty -- only for Outlook < 2010
+    private CalDavSynchronizerToolBar _calDavSynchronizerToolBar; // Pierre-Marie Baty -- only for Outlook < 2010
+    private Explorers _explorers;
     public static ComponentContainer ComponentContainer { get; private set; }
 
     public static event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
@@ -60,15 +61,55 @@ namespace CalDavSynchronizer
         ComponentContainer.SynchronizationFailedWhileReportsFormWasNotVisible += ComponentContainer_SynchronizationFailedWhileReportsFormWasNotVisible;
         ComponentContainer.StatusChanged += ComponentContainer_StatusChanged;
         ((ApplicationEvents_Event) Application).Quit += ThisAddIn_Quit;
-        if (IsOutlookVersionSmallerThan2010)
-        {
-          _calDavSynchronizerToolBar = new CalDavSynchronizerToolBar (Application, ComponentContainer, missing);
-        }
+
+        _explorers = Application.Explorers;
+        _explorers.NewExplorer += Explorers_NewExplorer;
+
+        AddToolBarIfRequired();
+
         s_logger.Info ("Startup exiting.");
       }
       catch (Exception x)
       {
         ExceptionHandler.Instance.DisplayException (x, s_logger);
+      }
+    }
+
+    private void AddToolBarIfRequired()
+    {
+      if (!IsOutlookVersionSmallerThan2010)
+        return;
+
+      var activeExplorer = Application.ActiveExplorer();
+
+      if (activeExplorer != null)
+      {
+        // For every explorer there has to be a toolbar created, but only the first toolbar is allowed to have wired events and only a reference to the first toolbar is stored
+        var calDavSynchronizerToolBar = new CalDavSynchronizerToolBar(activeExplorer, ComponentContainer, missing, _calDavSynchronizerToolBar == null);
+        calDavSynchronizerToolBar.Settings = ComponentContainer.LoadToolBarSettings();
+        if (_calDavSynchronizerToolBar == null)
+        {
+          _calDavSynchronizerToolBar = calDavSynchronizerToolBar;
+          ((ExplorerEvents_10_Event) activeExplorer).Close += FirstExplorer_Close;
+        }
+      }
+    }
+
+    private void FirstExplorer_Close ()
+    {
+      ComponentContainer.SaveToolBarSettings(_calDavSynchronizerToolBar.Settings);
+    }
+
+    private void Explorers_NewExplorer(Explorer newExplorer)
+    {
+      try
+      {
+        newExplorer.Activate();
+        AddToolBarIfRequired();
+      }
+      catch (Exception x)
+      {
+        ExceptionHandler.Instance.DisplayException(x, s_logger);
       }
     }
 
