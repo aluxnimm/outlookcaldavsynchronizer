@@ -79,8 +79,23 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 
 Download and extract the `OutlookCalDavSynchronizer-<Version>.zip` into any directory and start setup.exe. You can change the default install path, but you need to use a directory on the `C:\` drive.
 If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=48217)
+YOu should also update manually to the latest Visual Studio 2010 Tools for Office Runtime (Version 10.0.60724) if you have an older version installed, since some COMExceptions have been fixed.
 
 ### Changelog ###
+
+#### 2.3.0 ####
+- New features
+	- Save Outlook 2007 toolBar position and visibility in Registry, github issue 102.
+	- Implement duplicate event cleanup in Event mapping configuration.
+	- Add CalDavConnectTimeout as general option (feature 46).
+- Bug fixes
+	- Fix commandbar for OL2007, ticket #339
+	- Some fixes for recurrence exceptions if timezone of appointment is different to Outlook local timezone.
+	- Fix setting organizer name in Outlook from CommonName and Email.
+	- Use general option to show reports for warnings and/or errors also for systray notifications, github issue 143.
+	- Map also default events to private when mapping option is activated, ticket #329.
+	- Do not steal focus when showing ProgressForm (#328 Window steal focus when initiating sync).
+	- validate input in GeneralOptionsForm.
 
 #### 2.2.0 ####
 - New features
@@ -742,7 +757,8 @@ If you expand the tree view of the profile you can configure network and proxy o
 	- In *Privacy settings* you can configure if you want to map Outlook private appointments to CLASS:CONFIDENTIAL and vice versa. This could be useful for Owncloud for example, if you share your calendar with others and they should see start/end dates of your private appointments. You can also map all CLASS:PUBLIC events to Outlook private appointments.
 	- In *Scheduling settings* you can configure if you want to map attendees and organizer and if notifications should be sent by the server. 
 	- Use *Don't send appointment notifications for SOGo servers and SCHEDULE-AGENT=CLIENT for other servers if you want to send invitations from Outlook and avoid that the server sends invitations too, but be aware that not all servers (e.g. Google) support the SCHEDULE-AGENT=CLIENT setting. 
-	- You can also define a filter category so that multiple CalDAV-Calendars can be synchronized into one Outlook calendar via the defined category (see Category Filter and Color below). 
+	- In *Outlook settings* you can also define a filter category so that multiple CalDAV-Calendars can be synchronized into one Outlook calendar via the defined category (see Category Filter and Color below).
+	- *Cleanup duplicate events after each sync run:* removes duplicate Outlook appointments based on start,end,subject and body of the events after each sync run, be aware of possible performance penalties with this option enabled.
 	- For contacts you can configure if birthdays should be mapped or not. If birthdays are mapped, Outlook also creates an recurring appointment for every contact with a defined birthday.
 	- You can also configure if contact photos should be mapped or not. Contact photo mapping from Outlook to the server doesn't work in Outlook 2007. You can also add an option to not overwrite the contact photo in Outlook when it changes on the server, which could happen due to other mobile clients reducing the resolution for example.
 	- Fix imported phone number format adds round brackets to the area code of phone numbers, so that Outlook can show correct phone number details with country and area code, e.g. +1 23 45678 is mapped to +1 (23) 45678.
@@ -854,6 +870,7 @@ In the General Options Dialog you can change settings which are used for all syn
 - **Use modern UI for sync profiles** Enabled by default, complete redesign of the synchronization profiles dialog using WPF, switches to the old WinForms UI if disabled. 
 - **Accept invalid chars in server response** If checked invalid characters in XML server responses are allowed. A typical invalid char, sent by some servers is Form feed (0x0C).
 - **Trigger sync after Outlook Send/Receive** If checked a manual sync is triggered after the Outlook Send/Receive finishes.
+- **CalDav Connection Timeout (secs)** For slow server connections you can increaste the timeout value (default 90 secs).
 
 If you have problems with SSL/TLS and self-signed certificates, you can change the following settings at your own risk.
 The recommended way would be to add the self signed cert to the Local Computer Trusted Root Certification Authorities
