@@ -83,6 +83,11 @@ YOu should also update manually to the latest Visual Studio 2010 Tools for Offic
 
 ### Changelog ###
 
+#### 2.3.1 ####
+- Bug fixes
+	- Fix OL2007 toolbar positioning and saving, ticket #351.
+	- Use only Start, End and Subject for DuplicateEventCleaner, ticket #330.
+
 #### 2.3.0 ####
 - New features
 	- Save Outlook 2007 toolBar position and visibility in Registry, github issue 102.
@@ -758,7 +763,7 @@ If you expand the tree view of the profile you can configure network and proxy o
 	- In *Scheduling settings* you can configure if you want to map attendees and organizer and if notifications should be sent by the server. 
 	- Use *Don't send appointment notifications for SOGo servers and SCHEDULE-AGENT=CLIENT for other servers if you want to send invitations from Outlook and avoid that the server sends invitations too, but be aware that not all servers (e.g. Google) support the SCHEDULE-AGENT=CLIENT setting. 
 	- In *Outlook settings* you can also define a filter category so that multiple CalDAV-Calendars can be synchronized into one Outlook calendar via the defined category (see Category Filter and Color below).
-	- *Cleanup duplicate events after each sync run:* removes duplicate Outlook appointments based on start,end,subject and body of the events after each sync run, be aware of possible performance penalties with this option enabled.
+	- *Cleanup duplicate events after each sync run:* removes duplicate Outlook appointments based on start,end and subject of the events after each sync run, be aware of possible performance penalties with this option enabled.
 	- For contacts you can configure if birthdays should be mapped or not. If birthdays are mapped, Outlook also creates an recurring appointment for every contact with a defined birthday.
 	- You can also configure if contact photos should be mapped or not. Contact photo mapping from Outlook to the server doesn't work in Outlook 2007. You can also add an option to not overwrite the contact photo in Outlook when it changes on the server, which could happen due to other mobile clients reducing the resolution for example.
 	- Fix imported phone number format adds round brackets to the area code of phone numbers, so that Outlook can show correct phone number details with country and area code, e.g. +1 23 45678 is mapped to +1 (23) 45678.
