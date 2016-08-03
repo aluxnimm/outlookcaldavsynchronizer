@@ -76,14 +76,13 @@ namespace CalDavSynchronizer.Implementation.Events
       return GetDuplicationRelevantData (item).GetHashCode ();
     }
 
-    private static Tuple<DateTime, DateTime, string, string> GetDuplicationRelevantData (AppointmentItem item)
+    private static Tuple<DateTime, DateTime, string> GetDuplicationRelevantData (AppointmentItem item)
     {
       return Tuple
           .Create (
               item.Start,
               item.End,
-              item.Subject,
-              item.Body);
+              item.Subject);
     }
 
     private async Task DeleteDuplicates ()
