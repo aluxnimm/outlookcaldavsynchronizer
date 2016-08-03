@@ -45,7 +45,7 @@ namespace CalDavSynchronizer
     {
       _componentContainer = componentContainer;
 
-      _toolBar = explorer.CommandBars.Add("CalDav Synchronizer", MsoBarPosition.msoBarFloating, false, true);
+      _toolBar = explorer.CommandBars.Add("CalDav Synchronizer", MsoBarPosition.msoBarTop, false, true);
 
       _toolBarBtnOptions = (CommandBarButton) _toolBar.Controls.Add (1, missing, missing, missing, missing);
       _toolBarBtnOptions.Style = MsoButtonStyle.msoButtonIconAndCaption;
@@ -204,14 +204,10 @@ namespace CalDavSynchronizer
 
         _toolBar.RowIndex = value.RowIndex;
 
-        _toolBar.Top = value.Top != 0
-          ? value.Top
-          : System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height/2;
+        _toolBar.Top = value.Top;
 
-        _toolBar.Left = value.Left != 0
-          ? value.Left
-          : System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width/2;
-
+        _toolBar.Left = value.Left;
+       
         _toolBar.Visible = value.Visible;
       }
     }

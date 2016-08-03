@@ -23,6 +23,7 @@ using System.Configuration;
 using log4net;
 using log4net.Repository.Hierarchy;
 using log4net.Core;
+using Microsoft.Office.Core;
 
 namespace CalDavSynchronizer.DataAccess
 {
@@ -169,7 +170,11 @@ namespace CalDavSynchronizer.DataAccess
         if (!string.IsNullOrEmpty(settings))
           return Serializer<ToolbarSettings>.Deserialize(settings);
         else
-          return new ToolbarSettings();
+          return new ToolbarSettings()
+          {
+            Position = MsoBarPosition.msoBarTop,
+            RowIndex = 2
+          };
       }
     }
 

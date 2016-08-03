@@ -35,6 +35,7 @@ namespace CalDavSynchronizer
 
     private CalDavSynchronizerToolBar _calDavSynchronizerToolBar; // Pierre-Marie Baty -- only for Outlook < 2010
     private Explorers _explorers;
+    private Explorer _activeExplorer;
     public static ComponentContainer ComponentContainer { get; private set; }
 
     public static event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
@@ -80,17 +81,17 @@ namespace CalDavSynchronizer
       if (!IsOutlookVersionSmallerThan2010)
         return;
 
-      var activeExplorer = Application.ActiveExplorer();
+      _activeExplorer = Application.ActiveExplorer();
 
-      if (activeExplorer != null)
+      if (_activeExplorer != null)
       {
         // For every explorer there has to be a toolbar created, but only the first toolbar is allowed to have wired events and only a reference to the first toolbar is stored
-        var calDavSynchronizerToolBar = new CalDavSynchronizerToolBar(activeExplorer, ComponentContainer, missing, _calDavSynchronizerToolBar == null);
+        var calDavSynchronizerToolBar = new CalDavSynchronizerToolBar(_activeExplorer, ComponentContainer, missing, _calDavSynchronizerToolBar == null);
         calDavSynchronizerToolBar.Settings = ComponentContainer.LoadToolBarSettings();
         if (_calDavSynchronizerToolBar == null)
         {
           _calDavSynchronizerToolBar = calDavSynchronizerToolBar;
-          ((ExplorerEvents_10_Event) activeExplorer).Close += FirstExplorer_Close;
+          ((ExplorerEvents_10_Event) _activeExplorer).Close += FirstExplorer_Close;
         }
       }
     }
