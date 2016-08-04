@@ -158,7 +158,7 @@ namespace CalDavSynchronizer.Contracts
         case ProfileType.Landmarks:
           return "https://dav.landmarks.skyrise.de/";
         case ProfileType.Sogo:
-          return "https://sogo.example.com/SOGo/";
+          return "https://sogo.example.com/SOGo/dav/";
 
         default:
           return null;
