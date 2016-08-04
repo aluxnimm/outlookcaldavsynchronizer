@@ -41,7 +41,7 @@
           ToolTip="Use Google Contacts API instead of CardDAV &#xA;to sync Outlook contact folders with Google contacts &#xA;which improves mapping and performance."
           Visibility="{Binding UseGoogleNativeApiAvailable,Converter={StaticResource BooleanToVisibilityConverter}}"
           IsChecked="{Binding UseGoogleNativeApi}" 
-          DockPanel.Dock="Left">Use Google native API (BETA)</CheckBox>
+          DockPanel.Dock="Left">Use Google native API</CheckBox>
         <UIElement></UIElement>
       </DockPanel>
     </DockPanel>
