@@ -47,6 +47,8 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
     private readonly ProfileType _profileType;
     private readonly GeneralOptions _generalOptions;
     private readonly DelegateCommandWithoutCanExecuteDelegation _discoverResourcesCommand;
+    private readonly DelegateCommandWithoutCanExecuteDelegation _getAccountSettingsCommand;
+
     private string _name;
     private bool _isSelected;
     private readonly NameSpace _session;
@@ -75,6 +77,12 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
         DiscoverResourcesAsync();
       });
 
+      _getAccountSettingsCommand = new DelegateCommandWithoutCanExecuteDelegation(_ =>
+      {
+        ComponentContainer.EnsureSynchronizationContext();
+        GetAccountSettings();
+      });
+
       _networkSettingsViewModel = new NetworkSettingsViewModel();
 
       SubOptions = new[] { _networkSettingsViewModel };
@@ -84,6 +92,26 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       _generalOptions = generalOptions;
     }
 
+    private void GetAccountSettings()
+    {
+      _getAccountSettingsCommand.SetCanExecute(false);
+      try
+      {
+        _serverSettingsViewModel.DiscoverAccountServerSettings();
+      }
+      catch (Exception x)
+      {
+        s_logger.Error("Exception while getting account settings.", x);
+        string message = null;
+        for (Exception ex = x; ex != null; ex = ex.InnerException)
+          message += ex.Message + Environment.NewLine;
+        MessageBox.Show(message, "Account settings");
+      }
+      finally
+      {
+        _getAccountSettingsCommand.SetCanExecute(true);
+      }
+    }
 
     private async void DiscoverResourcesAsync ()
     {
@@ -155,6 +183,8 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
     public IServerSettingsTemplateViewModel ServerSettingsViewModel => _serverSettingsViewModel;
 
     public ICommand DiscoverResourcesCommand => _discoverResourcesCommand;
+    public ICommand GetAccountSettingsCommand => _getAccountSettingsCommand;
+
     public bool IsActive { get; set; }
     public bool SupportsIsActive { get; } = false;
     public Guid Id { get; private set; }

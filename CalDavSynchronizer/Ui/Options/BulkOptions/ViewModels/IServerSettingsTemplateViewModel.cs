@@ -27,6 +27,8 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
   internal interface IServerSettingsTemplateViewModel 
   {
     Task<ServerResources> GetServerResources (NetworkSettingsViewModel networkSettings, GeneralOptions generalOptions);
+    void DiscoverAccountServerSettings();
+
     void SetOptions (Contracts.Options options);
 
     void FillOptions (Contracts.Options options, CalendarData resource);

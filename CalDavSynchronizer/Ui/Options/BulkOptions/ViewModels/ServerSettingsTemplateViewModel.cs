@@ -16,7 +16,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Configuration;
 using System.Reflection;
 using System.Security;
 using System.Threading.Tasks;
@@ -36,11 +35,14 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 
     private string _calenderUrl;
     private string _emailAddress;
+    private bool _useAccountPassword;
     private SecureString _password;
     private string _userName;
+    private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
 
-    public ServerSettingsTemplateViewModel ()
+    public ServerSettingsTemplateViewModel (IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
     {
+      _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
     }
 
     public string CalenderUrl
@@ -53,6 +55,14 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
     {
       get { return _userName; }
       set { CheckedPropertyChange (ref _userName, value); }
+    }
+    public bool UseAccountPassword
+    {
+      get { return _useAccountPassword; }
+      set
+      {
+        CheckedPropertyChange (ref _useAccountPassword, value);
+      }
     }
 
     public SecureString Password
@@ -71,6 +81,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
     {
       CalenderUrl = options.CalenderUrl;
       UserName = options.UserName;
+      UseAccountPassword = options.UseAccountPassword;
       Password = options.Password;
       EmailAddress = options.EmailAddress;
     }
@@ -99,7 +110,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       options.UserName = _userName;
       options.Password = _password;
       options.EmailAddress = _emailAddress;
-      options.UseAccountPassword = false;
+      options.UseAccountPassword = _useAccountPassword;
       options.ServerAdapterType = ServerAdapterType.WebDavHttpClientBased;
     }
 
@@ -110,8 +121,9 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 
       if (string.IsNullOrEmpty (CalenderUrl) && !string.IsNullOrEmpty (EmailAddress))
       {
-        caldavUrlString = OptionTasks.DoSrvLookup (EmailAddress, OlItemType.olAppointmentItem);
-        carddavUrlString = OptionTasks.DoSrvLookup (EmailAddress, OlItemType.olContactItem);
+        bool success;
+        caldavUrlString = OptionTasks.DoSrvLookup (EmailAddress, OlItemType.olAppointmentItem, out success);
+        carddavUrlString = OptionTasks.DoSrvLookup (EmailAddress, OlItemType.olContactItem, out success);
       }
       else
       {
@@ -133,6 +145,19 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       return await GetUserResources (calDavDataAccess, cardDavDataAccess);
     }
 
+    public void DiscoverAccountServerSettings()
+    {
+      var serverAccountSettings = _outlookAccountPasswordProvider.GetAccountServerSettings (null);
+      EmailAddress = serverAccountSettings.EmailAddress;
+      string path = !string.IsNullOrEmpty (CalenderUrl) ? new Uri (CalenderUrl).AbsolutePath : string.Empty; 
+  
+      bool success;
+      var dnsDiscoveredUrl = OptionTasks.DoSrvLookup (EmailAddress, OlItemType.olAppointmentItem, out success);
+      CalenderUrl = success ? dnsDiscoveredUrl : "https://" + serverAccountSettings.ServerString+path;
+      UserName = serverAccountSettings.UserName;
+      UseAccountPassword = true;
+    }
+
     private static async Task<ServerResources> GetUserResources (CalDavDataAccess calDavDataAccess, CardDavDataAccess cardDavDataAccess)
     {
       var calDavResources = await calDavDataAccess.GetUserResourcesNoThrow (true);
@@ -145,10 +170,11 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
     }
 
 
-    public static ServerSettingsTemplateViewModel DesignInstance = new ServerSettingsTemplateViewModel()
+    public static ServerSettingsTemplateViewModel DesignInstance = new ServerSettingsTemplateViewModel (NullOutlookAccountPasswordProvider.Instance)
                                                                    {
                                                                        CalenderUrl = "http://bulkurl",
                                                                        EmailAddress = "bulkemail",
+                                                                       UseAccountPassword = true,
                                                                        Password = SecureStringUtility.ToSecureString ("bulkpwd"),
                                                                        UserName = "username",
                                                                    };
@@ -157,7 +183,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
     {
       return SynchronizerFactory.CreateWebDavClient (
           UserName,
-          Password,
+          UseAccountPassword ? _outlookAccountPasswordProvider.GetPassword (null) : Password,
           davUrl,
           generalOptions.CalDavConnectTimeout,
           ServerAdapterType.WebDavHttpClientBased,

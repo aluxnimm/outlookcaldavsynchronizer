@@ -232,7 +232,9 @@
                 <TextBox Text="{Binding Name}" />
               </DockPanel>
               <ContentControl Content="{Binding ServerSettingsViewModel}" />
-            <Button HorizontalAlignment="Right" Command="{Binding DiscoverResourcesCommand}">Discover resources and assign to outlook folders</Button>
+              <Button HorizontalAlignment="Left" Command="{Binding GetAccountSettingsCommand}">Get IMAP/POP3 Account settings</Button>
+              <Button HorizontalAlignment="Left" Command="{Binding DiscoverResourcesCommand}">Discover resources and assign to Outlook folders</Button>
+
             </StackPanel>
         </DataTemplate>
 

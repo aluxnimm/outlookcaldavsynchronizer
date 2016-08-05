@@ -43,9 +43,11 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 
     private string _emailAddress;
     private string _calenderUrl;
+    private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
 
-    public GoogleServerSettingsTemplateViewModel ()
+    public GoogleServerSettingsTemplateViewModel (IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
     {
+      _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
     }
 
 
@@ -107,6 +109,12 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       options.UseAccountPassword = false;
     }
 
+    public void DiscoverAccountServerSettings()
+    {
+      var serverAccountSettings = _outlookAccountPasswordProvider.GetAccountServerSettings (null);
+      EmailAddress = serverAccountSettings.EmailAddress;
+    }
+
     public async Task<ServerResources> GetServerResources (NetworkSettingsViewModel networkSettings, GeneralOptions generalOptions)
     {
       var trimmedUrl = CalenderUrl.Trim();
@@ -141,7 +149,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
           generalOptions.AcceptInvalidCharsInServerResponse);
     }
 
-    public static GoogleServerSettingsTemplateViewModel DesignInstance => new GoogleServerSettingsTemplateViewModel()
+    public static GoogleServerSettingsTemplateViewModel DesignInstance => new GoogleServerSettingsTemplateViewModel (NullOutlookAccountPasswordProvider.Instance )
                                                                           {
                                                                               CalenderUrl = "http://BulkUrl.com",
                                                                               EmailAddress = "bla@bulk.com",

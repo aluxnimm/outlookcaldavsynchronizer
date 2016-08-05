@@ -14,28 +14,13 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using System.Security;
-using CalDavSynchronizer.Contracts;
 
-namespace CalDavSynchronizer
+namespace CalDavSynchronizer.Contracts
 {
-  public class NullOutlookAccountPasswordProvider : IOutlookAccountPasswordProvider
+  public class AccountServerSettings
   {
-    public static readonly IOutlookAccountPasswordProvider Instance = new NullOutlookAccountPasswordProvider();
-
-    private NullOutlookAccountPasswordProvider ()
-    {
-    }
-
-    public AccountServerSettings GetAccountServerSettings (string accountNameOrNull)
-    {
-      return new AccountServerSettings();
-    }
-
-    public SecureString GetPassword (string accountNameOrNull)
-    {
-      return new SecureString();
-    }
+    public string ServerString { get; set; }
+    public string EmailAddress { get; set; }
+    public string UserName { get; set; }
   }
 }

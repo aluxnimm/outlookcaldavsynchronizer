@@ -23,6 +23,8 @@ using System.Windows.Input;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Utilities;
 using log4net;
+using Microsoft.Office.Interop.Outlook;
+using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
@@ -37,9 +39,11 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private string _userName;
     private readonly ISettingsFaultFinder _settingsFaultFinder;
     private readonly ICurrentOptions _currentOptions;
+    private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
     private readonly DelegateCommandWithoutCanExecuteDelegation _testConnectionCommand;
+    private readonly DelegateCommandWithoutCanExecuteDelegation _getAccountSettingsCommand;
 
-    public ServerSettingsViewModel (ISettingsFaultFinder settingsFaultFinder, ICurrentOptions currentOptions)
+    public ServerSettingsViewModel (ISettingsFaultFinder settingsFaultFinder, ICurrentOptions currentOptions, IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
     {
       if (settingsFaultFinder == null)
         throw new ArgumentNullException (nameof (settingsFaultFinder));
@@ -48,14 +52,22 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
       _settingsFaultFinder = settingsFaultFinder;
       _currentOptions = currentOptions;
+      _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
+
       _testConnectionCommand = new DelegateCommandWithoutCanExecuteDelegation (_ =>
       {
         ComponentContainer.EnsureSynchronizationContext();
         TestConnectionAsync();
       });
+      _getAccountSettingsCommand = new DelegateCommandWithoutCanExecuteDelegation (_ =>
+      {
+        ComponentContainer.EnsureSynchronizationContext();
+        GetAccountSettings();
+      });
     }
 
     public ICommand TestConnectionCommand => _testConnectionCommand;
+    public ICommand GetAccountSettingsCommand => _getAccountSettingsCommand;
 
     public string CalenderUrl
     {
@@ -102,7 +114,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       }
     }
 
-    public static ServerSettingsViewModel DesignInstance => new ServerSettingsViewModel (NullSettingsFaultFinder.Instance, new DesignCurrentOptions())
+    public static ServerSettingsViewModel DesignInstance => new ServerSettingsViewModel (NullSettingsFaultFinder.Instance, new DesignCurrentOptions(), NullOutlookAccountPasswordProvider.Instance)
                                                             {
                                                                 CalenderUrl = "http://calendar.url",
                                                                 EmailAddress = "bla@dot.com",
@@ -139,6 +151,34 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       var result = OptionTasks.ValidateWebDavUrl (CalenderUrl, errorMessageBuilder, true);
       result &= OptionTasks.ValidateEmailAddress (errorMessageBuilder, EmailAddress);
       return result;
+    }
+
+    private void GetAccountSettings()
+    {
+      _getAccountSettingsCommand.SetCanExecute (false);
+      try
+      {
+        var serverAccountSettings = _outlookAccountPasswordProvider.GetAccountServerSettings (_currentOptions.FolderAccountName);
+        EmailAddress = serverAccountSettings.EmailAddress;
+        string path = !string.IsNullOrEmpty (CalenderUrl) ? new Uri (CalenderUrl).AbsolutePath : string.Empty;
+        bool success;
+        var dnsDiscoveredUrl = OptionTasks.DoSrvLookup (EmailAddress, OlItemType.olAppointmentItem, out success);
+        CalenderUrl = success ? dnsDiscoveredUrl : "https://" + serverAccountSettings.ServerString + path;
+        UserName = serverAccountSettings.UserName;
+        UseAccountPassword = true;
+      }
+      catch (Exception x)
+      {
+        s_logger.Error ("Exception while getting account settings.", x);
+        string message = null;
+        for (Exception ex = x; ex != null; ex = ex.InnerException)
+          message += ex.Message + Environment.NewLine;
+        MessageBox.Show (message, "Account settings");
+      }
+      finally
+      {
+        _getAccountSettingsCommand.SetCanExecute (true);
+      }
     }
 
     private async void TestConnectionAsync ()

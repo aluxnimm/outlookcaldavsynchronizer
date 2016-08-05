@@ -193,6 +193,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     public string EmailAddress => _serverSettingsViewModel.EmailAddress;
 
+    public string FolderAccountName => _outlookFolderViewModel.FolderAccountName;
+
     public static GenericOptionsViewModel DesignInstance => new GenericOptionsViewModel (
         new DesignOptionsViewModelParent(),
         NetworkSettingsViewModel.DesignInstance,

@@ -247,10 +247,11 @@ namespace CalDavSynchronizer.Ui.Options
         MessageBox.Show ("Connection test successful.", ConnectionTestCaption);
     }
 
-    public static string DoSrvLookup (string serverEmail, OlItemType selectedOutlookFolderType)
+    public static string DoSrvLookup (string serverEmail, OlItemType selectedOutlookFolderType, out bool success)
     {
       string emailDomain = serverEmail.Substring(serverEmail.IndexOf('@') + 1);
       string lookupUrl = "https://" + emailDomain;
+      success = false;
       string srvBase = selectedOutlookFolderType == OlItemType.olContactItem ? "_carddav" : "_caldav";
       string lookupString = srvBase + "s._tcp." + emailDomain;
 
@@ -258,6 +259,7 @@ namespace CalDavSynchronizer.Ui.Options
       if (srvRecordsCaldavs.Count > 0)
       {
         lookupUrl = "https://" + srvRecordsCaldavs[0];
+        success = true;
         var txtRecords = DnsQueryHelper.GetTxtRecord (lookupString);
         if (txtRecords != null && txtRecords.StartsWith ("path="))
           lookupUrl += txtRecords.Substring (txtRecords.IndexOf ('=')+1);
@@ -269,6 +271,7 @@ namespace CalDavSynchronizer.Ui.Options
         if (srvRecordsCaldav.Count > 0)
         {
           lookupUrl = "http://" + srvRecordsCaldav[0];
+          success = true;
           var txtRecords = DnsQueryHelper.GetTxtRecord (lookupString);
           if (txtRecords != null && txtRecords.StartsWith ("path="))
             lookupUrl += txtRecords.Substring (txtRecords.IndexOf ('=')+1);
@@ -377,7 +380,6 @@ namespace CalDavSynchronizer.Ui.Options
       return null;
     }
 
-
     public static bool DoesModeRequireWriteableServerResource (SynchronizationMode synchronizationMode)
     {
       return synchronizationMode == SynchronizationMode.MergeInBothDirections
@@ -406,7 +408,8 @@ namespace CalDavSynchronizer.Ui.Options
           MessageBox.Show (errorMessageBuilder.ToString(), "The Email Address is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
           return url;
         }
-        serverUrl = DoSrvLookup (serverEmail, outlookFolderType);
+        bool success;
+        serverUrl = DoSrvLookup (serverEmail, outlookFolderType, out success);
       }
 
  

@@ -20,6 +20,7 @@ using System.Reflection;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
+using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Utilities;
 using log4net;
 using Microsoft.Win32;
@@ -66,6 +67,44 @@ namespace CalDavSynchronizer
       return value as string;
     }
 
+    public AccountServerSettings GetAccountServerSettings (string accountNameOrNull)
+    {
+      try
+      {
+        using (RegistryKey profileKey = Registry.CurrentUser.OpenSubKey (_profileRegistryKeyName))
+        {
+          foreach (string subKeyName in profileKey.GetSubKeyNames())
+          {
+            using (RegistryKey subKey = profileKey.OpenSubKey (subKeyName))
+            {
+              if (accountNameOrNull != null)
+              {
+                var registryAccountName = ConvertRegistryValueToString (subKey.GetValue("Account Name"));
+                if (registryAccountName != accountNameOrNull)
+                  continue;
+              }
+              var email = ConvertRegistryValueToString (subKey.GetValue ("Email"));
+              if (email == null) continue;
+              var username = ConvertRegistryValueToString (subKey.GetValue ("IMAP User") ?? subKey.GetValue ("POP3 User"));
+              var serverstring = ConvertRegistryValueToString (subKey.GetValue ("IMAP Server") ?? subKey.GetValue ("POP3 Server") ?? subKey.GetValue ("SMTP Server"));
+              return new AccountServerSettings()
+              {
+                ServerString = serverstring,
+                EmailAddress = email,
+                UserName = username
+              };
+            }
+          }
+        }
+        return new AccountServerSettings();
+      }
+      catch (Exception ex)
+      {
+        s_logger.Error("Error while fetching account server settings from registry. Using empty settings", ex);
+        return new AccountServerSettings();
+      }
+    }
+ 
     public SecureString GetPassword (string accountNameOrNull)
     {
       try

@@ -69,8 +69,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
          _optionsViewModelParent,
          generalOptions,
          IsGoogleProfile (options)
-             ? (IServerSettingsTemplateViewModel) new GoogleServerSettingsTemplateViewModel ()
-             : new ServerSettingsTemplateViewModel(),
+             ? (IServerSettingsTemplateViewModel) new GoogleServerSettingsTemplateViewModel (_outlookAccountPasswordProvider)
+             : new ServerSettingsTemplateViewModel (_outlookAccountPasswordProvider),
          type);
 
       optionsViewModel.SetOptions (options);
@@ -108,7 +108,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     IServerSettingsViewModel CreateServerSettingsViewModel (ISettingsFaultFinder settingsFaultFinder, ICurrentOptions currentOptions)
     {
-      return new ServerSettingsViewModel (settingsFaultFinder, currentOptions);
+      return new ServerSettingsViewModel (settingsFaultFinder, currentOptions, _outlookAccountPasswordProvider);
     }
 
     IMappingConfigurationViewModelFactory CreateMappingConfigurationViewModelFactory (ICurrentOptions currentOptions)

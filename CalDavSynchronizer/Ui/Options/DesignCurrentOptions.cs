@@ -68,6 +68,11 @@ namespace CalDavSynchronizer.Ui.Options
       get { throw new NotImplementedException(); }
     }
 
+    public string FolderAccountName
+    {
+      get { throw new NotImplementedException(); }
+    }
+
     public ServerAdapterType ServerAdapterType
     {
       get { throw new NotImplementedException(); }

@@ -16,11 +16,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Security;
+using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer
 {
   public interface IOutlookAccountPasswordProvider
   {
+    AccountServerSettings GetAccountServerSettings (string accountNameOrNull);
     SecureString GetPassword (string accountNameOrNull);
   }
 }
