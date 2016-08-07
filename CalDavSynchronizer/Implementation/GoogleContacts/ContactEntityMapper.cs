@@ -488,7 +488,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         target.PostalAddresses.Add(new StructuredPostalAddress()
         {
           City = source.HomeAddressCity,
-          Country = source.HomeAddressCity,
+          Country = source.HomeAddressCountry,
           Postcode = source.HomeAddressPostalCode,
           Pobox = source.HomeAddressPostOfficeBox,
           Region = source.HomeAddressState,
@@ -502,7 +502,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         target.PostalAddresses.Add (new StructuredPostalAddress()
         {
           City = source.BusinessAddressCity,
-          Country = source.BusinessAddressCity,
+          Country = source.BusinessAddressCountry,
           Postcode = source.HomeAddressPostalCode,
           Pobox = source.BusinessAddressPostOfficeBox,
           Region = source.BusinessAddressState,
@@ -516,7 +516,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         target.PostalAddresses.Add (new StructuredPostalAddress()
         {
           City = source.OtherAddressCity,
-          Country = source.OtherAddressCity,
+          Country = source.OtherAddressCountry,
           Postcode = source.OtherAddressPostalCode,
           Pobox = source.OtherAddressPostOfficeBox,
           Region = source.OtherAddressState,
