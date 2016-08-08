@@ -42,7 +42,7 @@ END:VCALENDAR
 
       var roundTrippedData = OutlookTestContext.SyncCalDavToOutlookAndBackToCalDav (eventData);
 
-      Assert.That (roundTrippedData, Is.StringContaining ("X-CALDAVSYNCHRONIZER-TEST:This is a test property"));
+      Assert.That (roundTrippedData, Does.Contain ("X-CALDAVSYNCHRONIZER-TEST:This is a test property"));
     }
 
     [Test]
@@ -65,7 +65,7 @@ END:VCALENDAR
 
       var roundTrippedData = OutlookTestContext.SyncCalDavToOutlookAndBackToCalDav (eventData);
 
-      Assert.That (roundTrippedData, Is.StringContaining ("UID:59E2-55170300-17-5DFC2102"));
+      Assert.That (roundTrippedData, Does.Contain ("UID:59E2-55170300-17-5DFC2102"));
     }
   }
 }

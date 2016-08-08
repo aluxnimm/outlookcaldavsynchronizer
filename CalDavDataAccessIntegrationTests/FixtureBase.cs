@@ -48,7 +48,7 @@ namespace CalDavDataAccessIntegrationTests
       get { return null; }
     }
 
-    [TestFixtureSetUp]
+    [OneTimeSetUp]
     public void Initialize ()
     {
       var applicationDataDirectory = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData), "CalDavSynchronizer");
