@@ -503,7 +503,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         {
           City = source.BusinessAddressCity,
           Country = source.BusinessAddressCountry,
-          Postcode = source.HomeAddressPostalCode,
+          Postcode = source.BusinessAddressPostalCode,
           Pobox = source.BusinessAddressPostOfficeBox,
           Region = source.BusinessAddressState,
           Street = source.BusinessAddressStreet,
