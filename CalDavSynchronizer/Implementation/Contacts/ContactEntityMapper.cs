@@ -19,7 +19,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Contracts;
-using DDay.iCal;
+using CalDavSynchronizer.DataAccess;
 using GenSync.EntityMapping;
 using GenSync.Logging;
 using Microsoft.Office.Interop.Outlook;
@@ -561,28 +561,41 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
         vCardPhoto contactPhoto = source.Photos[0];
 
-        if (contactPhoto.IsLoaded)
+        string picturePath = Path.GetTempPath() + @"\Contact_" + target.EntryID + ".jpg";
+        try
         {
+          if (!contactPhoto.IsLoaded && contactPhoto.Url != null)
+          {
+            using (var client = HttpUtility.CreateWebClient())
+            {
+              client.DownloadFile (contactPhoto.Url, picturePath);
+            }
+          }
+          else if (contactPhoto.IsLoaded)
+          {
+            File.WriteAllBytes (picturePath, contactPhoto.GetBytes());
+          }
+          else
+          {
+            s_logger.Warn ("Could not load picture for contact.");
+            logger.LogMappingWarning ("Could not load picture for contact.");
+            return;
+          }
           try
           {
-            string picturePath = Path.GetTempPath() + @"\Contact_" + target.EntryID + ".jpg";
-            File.WriteAllBytes (picturePath, contactPhoto.GetBytes());
-            try
-            {
-              target.AddPicture (picturePath);
-            }
-            catch (COMException x)
-            {
-              s_logger.Warn ("Could not add picture for contact.", x);
-              logger.LogMappingWarning ("Could not add picture for contact.", x);
-            }
-            File.Delete (picturePath);
+            target.AddPicture (picturePath);
           }
-          catch (Exception ex)
+          catch (COMException x)
           {
-            s_logger.Warn ("Could not add picture for contact.", ex);
-            logger.LogMappingWarning ("Could not add picture for contact.", ex);
+            s_logger.Warn ("Could not add picture for contact.", x);
+            logger.LogMappingWarning ("Could not add picture for contact.", x);
           }
+          File.Delete (picturePath);
+        }
+        catch (Exception ex)
+        {
+          s_logger.Warn ("Could not add picture for contact.", ex);
+          logger.LogMappingWarning ("Could not add picture for contact.", ex);
         }
       }
       else
