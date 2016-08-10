@@ -421,6 +421,14 @@ namespace CalDavSynchronizer.Implementation.Tasks
         target.Inner.ReminderSet = true;
         target.Inner.ReminderTime = reminderTime;
       }
+      else if (alarm.Trigger.DateTime != null)
+      {
+        var reminderTime = TimeZoneInfo.ConvertTimeFromUtc (alarm.Trigger.DateTime.UTC, _localTimeZoneInfo);
+ 
+        if (_configuration.MapReminder == ReminderMapping.JustUpcoming && reminderTime < DateTime.Now) return;
+        target.Inner.ReminderSet = true;
+        target.Inner.ReminderTime = reminderTime;
+      }
       else
       {
         s_logger.WarnFormat ("Task '{0}' alarm is not supported. Ignoring.", source.UID);
