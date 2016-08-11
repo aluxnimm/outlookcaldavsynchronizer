@@ -286,6 +286,13 @@ namespace CalDavSynchronizer.DataAccess
           url = newUrl;
         return newUrl;
       }
+
+      public static Uri AlignServerUrl(Uri configuredServerUrl, WebResourceName referenceResourceNameOrNull)
+      {
+        // TODO: implement alignment
+        return configuredServerUrl;
+      }
+
     }
   }
 }

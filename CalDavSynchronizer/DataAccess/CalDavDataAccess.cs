@@ -419,6 +419,8 @@ namespace CalDavSynchronizer.DataAccess
 
     public async Task<IReadOnlyList<EntityWithId<WebResourceName, string>>> GetEntities (IEnumerable<WebResourceName> eventUrls)
     {
+      WebResourceName firstResourceNameOrNull = null;
+
       var requestBody = @"<?xml version=""1.0""?>
 			                    <C:calendar-multiget xmlns:C=""urn:ietf:params:xml:ns:caldav"" xmlns:D=""DAV:"">
 			                        <D:prop>
@@ -426,11 +428,20 @@ namespace CalDavSynchronizer.DataAccess
 			                            <D:displayname/>
 			                            <C:calendar-data/>
 			                        </D:prop>
-                                        " + String.Join ("\r\n", eventUrls.Select (u => string.Format ("<D:href>{0}</D:href>", SecurityElement.Escape(u.OriginalAbsolutePath)))) + @"
+                                        " + 
+                                        String.Join (
+                                          "\r\n", 
+                                          eventUrls.Select (
+                                             u => 
+                                             {
+                                               if (firstResourceNameOrNull == null)
+                                                 firstResourceNameOrNull = u;
+                                               return $"<D:href>{SecurityElement.Escape(u.OriginalAbsolutePath)}</D:href>";
+                                             })) + @"
                                     </C:calendar-multiget>";
 
       var responseXml = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
-          _serverUrl,
+          UriHelper.AlignServerUrl (_serverUrl, firstResourceNameOrNull),
           "REPORT",
           1,
           null,
@@ -463,16 +474,26 @@ namespace CalDavSynchronizer.DataAccess
 
     public async Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetVersions (IEnumerable<WebResourceName> eventUrls)
     {
+      WebResourceName firstResourceNameOrNull = null;
+
       var requestBody = @"<?xml version=""1.0""?>
 			                    <C:calendar-multiget xmlns:C=""urn:ietf:params:xml:ns:caldav"" xmlns:D=""DAV:"">
 			                        <D:prop>
 			                            <D:getetag/>
 			                        </D:prop>
-                                        " + String.Join ("\r\n", eventUrls.Select (u => string.Format ("<D:href>{0}</D:href>", SecurityElement.Escape(u.OriginalAbsolutePath)))) + @"
+                                        " +
+                        String.Join(
+                          "\r\n",
+                          eventUrls.Select(u =>
+                          {
+                            if (firstResourceNameOrNull == null)
+                              firstResourceNameOrNull = u;
+                            return $"<D:href>{SecurityElement.Escape(u.OriginalAbsolutePath)}</D:href>";
+                          })) + @"
                                     </C:calendar-multiget>";
 
       var responseXml = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
-          _serverUrl,
+          UriHelper.AlignServerUrl (_serverUrl, firstResourceNameOrNull),
           "REPORT",
           1,
           null,
