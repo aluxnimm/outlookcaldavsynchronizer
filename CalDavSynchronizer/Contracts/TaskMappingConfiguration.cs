@@ -14,6 +14,8 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using System.Xml.Serialization;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.Options.ViewModels.Mapping;
 
@@ -25,6 +27,14 @@ namespace CalDavSynchronizer.Contracts
     public bool MapPriority { get; set; }
     public bool MapBody { get; set; }
     public bool MapRecurringTasks { get; set; }
+    public string TaskCategory { get; set; }
+    public bool InvertTaskCategoryFilter { get; set; }
+
+    [XmlIgnore]
+    public bool UseTaskCategoryAsFilter
+    {
+      get { return !string.IsNullOrEmpty (TaskCategory); }
+    }
 
     public TaskMappingConfiguration ()
     {
@@ -32,6 +42,7 @@ namespace CalDavSynchronizer.Contracts
       MapPriority = true;
       MapBody = true;
       MapRecurringTasks = true;
+      InvertTaskCategoryFilter = false;
     }
 
     public override ISubOptionsViewModel CreateConfigurationViewModel (IMappingConfigurationViewModelFactory factory)

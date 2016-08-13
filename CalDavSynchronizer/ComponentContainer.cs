@@ -49,6 +49,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using CalDavSynchronizer.Implementation;
+using CalDavSynchronizer.Implementation.Tasks;
 using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.SystrayNotification;
@@ -416,15 +417,15 @@ namespace CalDavSynchronizer
     {
       foreach (var changedOption in changedOptions)
       {
-        var oldCategory = GetMappingRefPropertyOrNull<EventMappingConfiguration, string> (changedOption.Old.MappingConfiguration, o => o.EventCategory);
-        var newCategory = GetMappingRefPropertyOrNull<EventMappingConfiguration, string> (changedOption.New.MappingConfiguration, o => o.EventCategory);
-        var negateFilter = GetMappingPropertyOrNull<EventMappingConfiguration, bool> (changedOption.New.MappingConfiguration, o => o.InvertEventCategoryFilter);
+        var oldEventCategory = GetMappingRefPropertyOrNull<EventMappingConfiguration, string> (changedOption.Old.MappingConfiguration, o => o.EventCategory);
+        var newEventCategory = GetMappingRefPropertyOrNull<EventMappingConfiguration, string> (changedOption.New.MappingConfiguration, o => o.EventCategory);
+        var negateEventCategoryFilter = GetMappingPropertyOrNull<EventMappingConfiguration, bool> (changedOption.New.MappingConfiguration, o => o.InvertEventCategoryFilter);
 
-        if (oldCategory != newCategory && !String.IsNullOrEmpty (oldCategory) && !negateFilter.Value)
+        if (oldEventCategory != newEventCategory && !String.IsNullOrEmpty (oldEventCategory) && !negateEventCategoryFilter.Value)
         {
           try
           {
-            SwitchCategories (changedOption, oldCategory, newCategory);
+            SwitchEventCategories (changedOption, oldEventCategory, newEventCategory);
           }
           catch (Exception x)
           {
@@ -432,7 +433,7 @@ namespace CalDavSynchronizer
           }
         }
 
-        if (!String.IsNullOrEmpty (newCategory))
+        if (!String.IsNullOrEmpty (newEventCategory))
         {
           var mappingConfiguration = (EventMappingConfiguration) changedOption.New.MappingConfiguration;
 
@@ -450,11 +451,11 @@ namespace CalDavSynchronizer
                   }
                 }
                 
-                using (var categoryWrapper = GenericComObjectWrapper.Create (categoriesWrapper.Inner[newCategory]))
+                using (var categoryWrapper = GenericComObjectWrapper.Create (categoriesWrapper.Inner[newEventCategory]))
                 {
                   if (categoryWrapper.Inner == null)
                   {
-                    categoriesWrapper.Inner.Add (newCategory, mappingConfiguration.EventCategoryColor, mappingConfiguration.CategoryShortcutKey);
+                    categoriesWrapper.Inner.Add (newEventCategory, mappingConfiguration.EventCategoryColor, mappingConfiguration.CategoryShortcutKey);
                   }
                   else
                   {
@@ -470,10 +471,26 @@ namespace CalDavSynchronizer
             }
           }
         }
+
+        var oldTaskCategory = GetMappingRefPropertyOrNull<TaskMappingConfiguration, string> (changedOption.Old.MappingConfiguration, o => o.TaskCategory);
+        var newTaskCategory = GetMappingRefPropertyOrNull<TaskMappingConfiguration, string> (changedOption.New.MappingConfiguration, o => o.TaskCategory);
+        var negateTaskCategoryFilter = GetMappingPropertyOrNull<TaskMappingConfiguration, bool> (changedOption.New.MappingConfiguration, o => o.InvertTaskCategoryFilter);
+
+        if (oldTaskCategory != newTaskCategory && !String.IsNullOrEmpty (oldTaskCategory) && !negateTaskCategoryFilter.Value)
+        {
+          try
+          {
+            SwitchTaskCategories (changedOption, oldTaskCategory, newTaskCategory);
+          }
+          catch (Exception x)
+          {
+            s_logger.Error (null, x);
+          }
+        }
       }
     }
 
-    private void SwitchCategories (ChangedOptions changedOption, string oldCategory, string newCategory)
+    private void SwitchEventCategories (ChangedOptions changedOption, string oldCategory, string newCategory)
     {
       using (var calendarFolderWrapper = GenericComObjectWrapper.Create (
           (Folder) _session.GetFolderFromID (changedOption.New.OutlookFolderEntryId, changedOption.New.OutlookFolderStoreId)))
@@ -500,7 +517,7 @@ namespace CalDavSynchronizer
         {
           try
           {
-            SwitchCategories (changedOption, oldCategory, newCategory, eventId);
+            SwitchEventCategories (changedOption, oldCategory, newCategory, eventId);
           }
           catch (Exception x)
           {
@@ -510,7 +527,44 @@ namespace CalDavSynchronizer
       }
     }
 
-    private void SwitchCategories (ChangedOptions changedOption, string oldCategory, string newCategory, string eventId)
+    private void SwitchTaskCategories (ChangedOptions changedOption, string oldCategory, string newCategory)
+    {
+      using (var taskFolderWrapper = GenericComObjectWrapper.Create (
+          (Folder)_session.GetFolderFromID (changedOption.New.OutlookFolderEntryId, changedOption.New.OutlookFolderStoreId)))
+      {
+        bool isInstantSearchEnabled = false;
+
+        try
+        {
+          using (var store = GenericComObjectWrapper.Create (taskFolderWrapper.Inner.Store))
+          {
+            if (store.Inner != null) isInstantSearchEnabled = store.Inner.IsInstantSearchEnabled;
+          }
+        }
+        catch (COMException)
+        {
+          s_logger.Info ("Can't access IsInstantSearchEnabled property of store, defaulting to false.");
+        }
+        var filterBuilder = new StringBuilder (_daslFilterProvider.GetTaskFilter (isInstantSearchEnabled));
+        OutlookEventRepository.AddCategoryFilter (filterBuilder, oldCategory, false);
+        var taskIds = OutlookTaskRepository.QueryFolder (_session, taskFolderWrapper, filterBuilder).Select(e => e.Id);
+        // todo concat Ids from cache
+
+        foreach (var taskId in taskIds)
+        {
+          try
+          {
+            SwitchTaskCategories (changedOption, oldCategory, newCategory, taskId);
+          }
+          catch (Exception x)
+          {
+            s_logger.Error (null, x);
+          }
+        }
+      }
+    }
+
+    private void SwitchEventCategories (ChangedOptions changedOption, string oldCategory, string newCategory, string eventId)
     {
       using (var eventWrapper = new AppointmentItemWrapper (
           (AppointmentItem) _session.GetItemFromID (eventId, changedOption.New.OutlookFolderStoreId),
@@ -528,6 +582,27 @@ namespace CalDavSynchronizer
                 .Distinct());
 
         eventWrapper.Inner.Save();
+      }
+    }
+
+    private void SwitchTaskCategories (ChangedOptions changedOption, string oldCategory, string newCategory, string eventId)
+    {
+      using (var taskWrapper = new TaskItemWrapper (
+          (TaskItem)_session.GetItemFromID (eventId, changedOption.New.OutlookFolderStoreId),
+          entryId => (TaskItem)_session.GetItemFromID (entryId, changedOption.New.OutlookFolderStoreId)))
+      {
+        var categories = taskWrapper.Inner.Categories
+            .Split(new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries)
+            .Select(c => c.Trim());
+
+        taskWrapper.Inner.Categories = string.Join (
+            CultureInfo.CurrentCulture.TextInfo.ListSeparator,
+            categories
+                .Except (new[] { oldCategory })
+                .Concat (new[] { newCategory })
+                .Distinct());
+
+        taskWrapper.Inner.Save();
       }
     }
 

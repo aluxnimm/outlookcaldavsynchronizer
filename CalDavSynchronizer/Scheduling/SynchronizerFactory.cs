@@ -428,7 +428,7 @@ namespace CalDavSynchronizer.Scheduling
     {
       var mappingParameters = GetMappingParameters<TaskMappingConfiguration> (options);
 
-      var atypeRepository = new OutlookTaskRepository (_outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId, _daslFilterProvider);
+      var atypeRepository = new OutlookTaskRepository (_outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId, _daslFilterProvider, mappingParameters);
 
       var calDavDataAccess = new CalDavDataAccess (
           new Uri (options.CalenderUrl),
@@ -494,7 +494,9 @@ namespace CalDavSynchronizer.Scheduling
 
     private IOutlookSynchronizer CreateGoogleTaskSynchronizer (Options options)
     {
-      var atypeRepository = new OutlookTaskRepository (_outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId, _daslFilterProvider);
+      var mappingParameters = GetMappingParameters<TaskMappingConfiguration> (options);
+
+      var atypeRepository = new OutlookTaskRepository (_outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId, _daslFilterProvider, mappingParameters);
 
       IWebProxy proxy = options.ProxyOptions != null ? CreateProxy (options.ProxyOptions) : null;
 
