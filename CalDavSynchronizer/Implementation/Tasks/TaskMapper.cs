@@ -137,14 +137,19 @@ namespace CalDavSynchronizer.Implementation.Tasks
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
     }
 
-    private static void MapCategories1To2 (TaskItemWrapper source, ITodo target)
+    private void MapCategories1To2 (TaskItemWrapper source, ITodo target)
     {
       if (!string.IsNullOrEmpty (source.Inner.Categories))
       {
-        Array.ForEach (
-            source.Inner.Categories.Split (new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries),
-            c => target.Categories.Add (c.Trim())
-            );
+        var useTaskCategoryAsFilter = _configuration.UseTaskCategoryAsFilter;
+
+        var sourceCategories = CommonEntityMapper.SplitCategoryString (source.Inner.Categories)
+                .Where(c => !useTaskCategoryAsFilter || c != _configuration.TaskCategory);
+
+        foreach (var sourceCategory in sourceCategories)
+        {
+          target.Categories.Add (sourceCategory);
+        }
       }
     }
 
@@ -385,9 +390,19 @@ namespace CalDavSynchronizer.Implementation.Tasks
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
     }
 
-    private static void MapCategories2To1 (ITodo source, TaskItemWrapper target)
+    private void MapCategories2To1 (ITodo source, TaskItemWrapper target)
     {
-      target.Inner.Categories = string.Join (CultureInfo.CurrentCulture.TextInfo.ListSeparator, source.Categories);
+      var categories = string.Join (CultureInfo.CurrentCulture.TextInfo.ListSeparator, source.Categories);
+
+      if (_configuration.UseTaskCategoryAsFilter && !_configuration.InvertTaskCategoryFilter
+          && source.Categories.All(a => a != _configuration.TaskCategory))
+      {
+        target.Inner.Categories = categories + CultureInfo.CurrentCulture.TextInfo.ListSeparator + _configuration.TaskCategory;
+      }
+      else
+      {
+        target.Inner.Categories = categories;
+      }
     }
 
     private void MapReminder2To1 (ITodo source, TaskItemWrapper target, IEntityMappingLogger logger)

@@ -54,7 +54,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
     public TaskMappingConfigurationViewModel Create (TaskMappingConfiguration configurationElement)
     {
-      var taskMappingConfigurationViewModel = new TaskMappingConfigurationViewModel();
+      var taskMappingConfigurationViewModel = new TaskMappingConfigurationViewModel (_availableCategories);
       taskMappingConfigurationViewModel.SetOptions (configurationElement);
       return taskMappingConfigurationViewModel;
     }

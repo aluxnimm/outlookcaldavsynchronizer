@@ -25,7 +25,10 @@ using GenSync.EntityRepositories;
 using GenSync.Logging;
 using Microsoft.Office.Interop.Outlook;
 using System.Runtime.InteropServices;
+using System.Text;
+using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation.Common;
+using CalDavSynchronizer.Implementation.Events;
 using log4net;
 
 namespace CalDavSynchronizer.Implementation.Tasks
@@ -37,13 +40,16 @@ namespace CalDavSynchronizer.Implementation.Tasks
     private readonly string _folderId;
     private readonly string _folderStoreId;
     private readonly IDaslFilterProvider _daslFilterProvider;
+    private readonly TaskMappingConfiguration _configuration;
 
-    public OutlookTaskRepository (NameSpace mapiNameSpace, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider)
+    public OutlookTaskRepository (NameSpace mapiNameSpace, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider, TaskMappingConfiguration configuration)
     {
       if (mapiNameSpace == null)
         throw new ArgumentNullException (nameof (mapiNameSpace));
       if (daslFilterProvider == null)
         throw new ArgumentNullException (nameof (daslFilterProvider));
+      if (configuration == null)
+        throw new ArgumentNullException (nameof(configuration));
       if (String.IsNullOrEmpty (folderId))
         throw new ArgumentException ("Argument is null or empty", nameof (folderId));
       if (String.IsNullOrEmpty (folderStoreId))
@@ -53,19 +59,34 @@ namespace CalDavSynchronizer.Implementation.Tasks
       _folderId = folderId;
       _folderStoreId = folderStoreId;
       _daslFilterProvider = daslFilterProvider;
+      _configuration = configuration;
     }
 
     private const string c_entryIdColumnName = "EntryID";
 
     public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, int context)
     {
-      return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (
-          idsOfEntitiesToQuery
-              .Select (id => _mapiNameSpace.GetEntryOrNull<TaskItem> (id.Id, _folderId, _folderStoreId))
-              .Where (e => e != null)
-              .ToSafeEnumerable()
-              .Select (c => EntityVersion.Create (c.EntryID, c.LastModificationTime))
-              .ToList());
+      var result = new List<EntityVersion<string, DateTime>>();
+
+      foreach (var id in idsOfEntitiesToQuery)
+      {
+        var task = _mapiNameSpace.GetEntryOrNull<TaskItem> (id.Id, _folderId, _folderStoreId);
+        if (task != null)
+        {
+          try
+          {
+            if (id.IsKnown || DoesMatchCategoryCriterion (task))
+            {
+              result.Add (EntityVersion.Create (id.Id, task.LastModificationTime));
+            }
+          }
+          finally
+          {
+            Marshal.FinalReleaseComObject (task);
+          }
+        }
+      }
+      return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (result);
     }
 
     private GenericComObjectWrapper<Folder> CreateFolderWrapper ()
@@ -75,7 +96,8 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
     public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, int context)
     {
-      var entities = new List<EntityVersion<string, DateTime>>();
+      List<EntityVersion<string,DateTime>> tasks;
+      Func<TaskItem, EntityVersion<string, DateTime>> selector = a => new EntityVersion<string, DateTime>(a.EntryID, a.LastModificationTime);
 
       using (var taskFolderWrapper = CreateFolderWrapper())
       {
@@ -93,34 +115,80 @@ namespace CalDavSynchronizer.Implementation.Tasks
         {
           s_logger.Info ("Can't access IsInstantSearchEnabled property of store, defaulting to false.");
         }
-        using (var tableWrapper =
-            GenericComObjectWrapper.Create (
-                taskFolderWrapper.Inner.GetTable (
-                    _daslFilterProvider.GetTaskFilter (isInstantSearchEnabled))))
+
+        var filterBuilder = new StringBuilder(_daslFilterProvider.GetTaskFilter (isInstantSearchEnabled));
+        if (_configuration.UseTaskCategoryAsFilter)
         {
-          var table = tableWrapper.Inner;
-          table.Columns.RemoveAll();
-          table.Columns.Add (c_entryIdColumnName);
+          OutlookEventRepository.AddCategoryFilter (filterBuilder, _configuration.TaskCategory, _configuration.InvertTaskCategoryFilter);
+        }
 
-          while (!table.EndOfTable)
+        s_logger.InfoFormat ("Using Outlook DASL filter: {0}", filterBuilder.ToString());
+
+        tasks = QueryFolder(_mapiNameSpace, taskFolderWrapper, filterBuilder, selector);
+      }
+
+      if (_configuration.UseTaskCategoryAsFilter)
+      {
+        var knownEntitesThatWereFilteredOut = idsOfknownEntities.Except(tasks.Select(e => e.Id));
+        tasks.AddRange(
+            knownEntitesThatWereFilteredOut
+                .Select(id => _mapiNameSpace.GetEntryOrNull<TaskItem>(id, _folderId, _folderStoreId))
+                .Where(i => i != null)
+                .ToSafeEnumerable()
+                .Select(selector));
+      }
+
+      return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (tasks);
+    }
+
+    public static List<EntityVersion<string, DateTime>> QueryFolder(
+    NameSpace session,
+    GenericComObjectWrapper<Folder> taskFolderWrapper,
+    StringBuilder filterBuilder)
+    {
+      return QueryFolder(
+          session,
+          taskFolderWrapper,
+          filterBuilder,
+          a => new EntityVersion<string, DateTime>(a.EntryID, a.LastModificationTime));
+    }
+
+    static List<T> QueryFolder<T>(
+        NameSpace session,
+        GenericComObjectWrapper<Folder> taskFolderWrapper,
+        StringBuilder filterBuilder,
+        Func<TaskItem, T> selector)
+      where T : IEntity<string>
+    {
+      var tasks = new List<T>();
+
+      using (var tableWrapper = GenericComObjectWrapper.Create(
+          taskFolderWrapper.Inner.GetTable(filterBuilder.ToString())))
+      {
+        var table = tableWrapper.Inner;
+        table.Columns.RemoveAll();
+        table.Columns.Add(c_entryIdColumnName);
+
+        var storeId = taskFolderWrapper.Inner.StoreID;
+
+        while (!table.EndOfTable)
+        {
+          var row = table.GetNextRow();
+          var entryId = (string)row[c_entryIdColumnName];
+          try
           {
-            var row = table.GetNextRow();
-            var entryId = (string) row[c_entryIdColumnName];
-
-            var task = _mapiNameSpace.GetEntryOrNull<TaskItem> (entryId, _folderId, _folderStoreId);
-            if (task != null)
+            using (var taskWrapper = GenericComObjectWrapper.Create((TaskItem)session.GetItemFromID(entryId, storeId)))
             {
-              using (var taskItemWrapper = GenericComObjectWrapper.Create (task))
-              {
-                entities.Add (EntityVersion.Create (taskItemWrapper.Inner.EntryID,
-                    taskItemWrapper.Inner.LastModificationTime));
-              }
+              tasks.Add(selector (taskWrapper.Inner));
             }
+          }
+          catch (COMException ex)
+          {
+            s_logger.Error("Could not fetch TaskItem, skipping.", ex);
           }
         }
       }
-
-      return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (entities);
+      return tasks;
     }
 
     private static readonly CultureInfo _currentCultureInfo = CultureInfo.CurrentCulture;
@@ -147,6 +215,24 @@ namespace CalDavSynchronizer.Implementation.Tasks
     {
       return Task.FromResult (0);
     }
+
+    private bool DoesMatchCategoryCriterion (TaskItem item)
+    {
+      if (!_configuration.UseTaskCategoryAsFilter)
+        return true;
+
+      var categoryCsv = item.Categories;
+
+      if (string.IsNullOrEmpty (categoryCsv))
+        return _configuration.InvertTaskCategoryFilter;
+
+      var found = item.Categories
+          .Split(new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries)
+          .Select(c => c.Trim())
+          .Any(c => c == _configuration.TaskCategory);
+      return _configuration.InvertTaskCategoryFilter ? !found : found;
+    }
+
 
     public void Cleanup (IReadOnlyDictionary<string, TaskItemWrapper> entities)
     {

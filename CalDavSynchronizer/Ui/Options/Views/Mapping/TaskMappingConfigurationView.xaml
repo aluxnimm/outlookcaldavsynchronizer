@@ -6,6 +6,7 @@
              xmlns:mapping="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels.Mapping"
              mc:Ignorable="d"
              d:DataContext="{x:Static mapping:TaskMappingConfigurationViewModel.DesignInstance}">
+    <StackPanel>
     <GroupBox Header="General task mapping settings">
         <StackPanel>
             <Grid>
@@ -26,4 +27,33 @@
             <CheckBox IsChecked="{Binding MapRecurringTasks}">Map Recurring Tasks</CheckBox>
         </StackPanel>
     </GroupBox>
+    <GroupBox Header="Outlook settings">
+        <StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <TextBlock>Sync only Tasks with this category:</TextBlock>
+                    <ComboBox 
+                        IsEditable="True" 
+                        Text="{Binding TaskCategory,UpdateSourceTrigger=PropertyChanged}"  
+                        ItemsSource="{Binding AvailableCategories}"
+                        Grid.Row="0" 
+                        Grid.Column="1" 
+                        ToolTip="Enter the name of the Outlook category for filtering. &#x0a;If the category does not exist, it will be created in Outlook." />
+                    <CheckBox 
+                        IsEnabled="{Binding UseTaskCategoryAsFilter}"
+                        IsChecked="{Binding InvertTaskCategoryFilter}" 
+                        Grid.Column="0" 
+                        Grid.ColumnSpan="2" 
+                        Grid.Row="1">Negate filter and sync all Tasks except this category</CheckBox>
+                </Grid>
+        </StackPanel>
+    </GroupBox>
+    </StackPanel>
 </UserControl>

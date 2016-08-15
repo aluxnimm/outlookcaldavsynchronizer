@@ -31,6 +31,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     private bool _mapPriority;
     private bool _mapRecurringTasks;
     private ReminderMapping _mapReminder;
+    private string _taskCategory;
+    private bool _invertTaskCategoryFilter;
     private bool _isSelected;
 
     public IList<Item<ReminderMapping>> AvailableReminderMappings => new List<Item<ReminderMapping>>
@@ -39,6 +41,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                                                          new Item<ReminderMapping> (ReminderMapping.@false, "No"),
                                                                          new Item<ReminderMapping> (ReminderMapping.JustUpcoming, "Just upcoming reminders")
                                                                      };
+
+    public IReadOnlyList<string> AvailableCategories { get; }
 
     public bool MapBody
     {
@@ -75,6 +79,27 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       }
     }
 
+    public string TaskCategory
+    {
+      get { return _taskCategory; }
+      set
+      {
+        CheckedPropertyChange(ref _taskCategory, value);
+        // ReSharper disable once ExplicitCallerInfoArgument
+        OnPropertyChanged(nameof(UseTaskCategoryAsFilter));
+      }
+    }
+
+    public bool UseTaskCategoryAsFilter => !String.IsNullOrEmpty(_taskCategory);
+    public bool InvertTaskCategoryFilter
+    {
+      get { return _invertTaskCategoryFilter; }
+      set
+      {
+        CheckedPropertyChange(ref _invertTaskCategoryFilter, value);
+      }
+    }
+
     public bool IsSelected
     {
       get { return _isSelected; }
@@ -84,13 +109,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       }
     }
 
-    public static TaskMappingConfigurationViewModel DesignInstance => new TaskMappingConfigurationViewModel
+    public static TaskMappingConfigurationViewModel DesignInstance => new TaskMappingConfigurationViewModel (new[] { "Cat1", "Cat2" })
                                                                          {
                                                                               MapBody = true,
                                                                               MapPriority = true,
                                                                               MapRecurringTasks = true,
-                                                                              MapReminder = ReminderMapping.JustUpcoming
-                                                                         };
+                                                                              MapReminder = ReminderMapping.JustUpcoming,
+                                                                              TaskCategory = "TheCategory",
+                                                                              InvertTaskCategoryFilter = true,
+    };
 
 
     public void SetOptions (CalDavSynchronizer.Contracts.Options options)
@@ -104,6 +131,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       MapPriority = mappingConfiguration.MapPriority;
       MapRecurringTasks = mappingConfiguration.MapRecurringTasks;
       MapReminder = mappingConfiguration.MapReminder;
+      TaskCategory = mappingConfiguration.TaskCategory;
+      InvertTaskCategoryFilter = mappingConfiguration.InvertTaskCategoryFilter;
     }
 
     public void FillOptions (CalDavSynchronizer.Contracts.Options options)
@@ -113,7 +142,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                          MapBody = _mapBody,
                                          MapPriority = _mapPriority,
                                          MapRecurringTasks = _mapRecurringTasks,
-                                         MapReminder = _mapReminder
+                                         MapReminder = _mapReminder,
+                                         TaskCategory = _taskCategory,
+                                         InvertTaskCategoryFilter = _invertTaskCategoryFilter
                                      };
     }
 
@@ -125,5 +156,13 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     }
 
     public IEnumerable<ISubOptionsViewModel> SubOptions => _subOptions;
+
+    public TaskMappingConfigurationViewModel (IReadOnlyList<string> availableCategories)
+    {
+      if (availableCategories == null)
+        throw new ArgumentNullException (nameof (availableCategories));
+
+      AvailableCategories = availableCategories;
+    }
   }
 }
