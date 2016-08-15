@@ -303,9 +303,14 @@ namespace CalDavSynchronizer.DataAccess
 
               // Only if new aligned Uri has a different encoded AbsolutePath but is identical when decoded return newUri
               // else we assume filename truncation didn't work and return the original configuredServerUrl
-              if (newUri.AbsolutePath != configuredServerUrl.AbsolutePath &&
-                  DecodeUrlString (newUri.AbsolutePath) == DecodeUrlString (configuredServerUrl.AbsolutePath))
-                return newUri;
+              if (newUri.AbsolutePath != configuredServerUrl.AbsolutePath)
+              {
+                if (DecodeUrlString (newUri.AbsolutePath) == DecodeUrlString (configuredServerUrl.AbsolutePath))
+                {
+                  return newUri;
+                }
+                s_logger.DebugFormat ("Aligned decoded resource uri path '{0}' different from server uri '{1}'", newUri.AbsolutePath, configuredServerUrl.AbsolutePath);
+              }
             }
           }
         }
