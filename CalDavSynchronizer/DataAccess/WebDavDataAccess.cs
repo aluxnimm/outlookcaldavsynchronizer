@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -286,6 +287,31 @@ namespace CalDavSynchronizer.DataAccess
           url = newUrl;
         return newUrl;
       }
+
+      public static Uri AlignServerUrl (Uri configuredServerUrl, WebResourceName referenceResourceNameOrNull)
+      {
+        if (referenceResourceNameOrNull != null)
+        {
+          var filename = Path.GetFileName (referenceResourceNameOrNull.OriginalAbsolutePath);
+          if (!string.IsNullOrEmpty (filename))
+          {
+            var filenameIndex = referenceResourceNameOrNull.OriginalAbsolutePath.LastIndexOf (filename);
+            if (filenameIndex != -1)
+            {
+              var resourcePath = referenceResourceNameOrNull.OriginalAbsolutePath.Remove (filenameIndex);
+              var newUri = new Uri (configuredServerUrl, resourcePath);
+
+              // Only if new aligned Uri has a different encoded AbsolutePath but is identical when decoded return newUri
+              // else we assume filename truncation didn't work and return the original configuredServerUrl
+              if (newUri.AbsolutePath != configuredServerUrl.AbsolutePath &&
+                  DecodeUrlString (newUri.AbsolutePath) == DecodeUrlString (configuredServerUrl.AbsolutePath))
+                return newUri;
+            }
+          }
+        }
+        return configuredServerUrl;
+      }
+
     }
   }
 }

@@ -247,19 +247,29 @@ namespace CalDavSynchronizer.DataAccess
 
     public async Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetVersions (IEnumerable<WebResourceName> urls)
     {
+      WebResourceName firstResourceNameOrNull = null;
+
       var requestBody = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
                            <A:addressbook-multiget xmlns:D=""DAV:"" xmlns:A=""urn:ietf:params:xml:ns:carddav"">
                              <D:prop>
                                <D:getetag/>
                                <D:getcontenttype/>
                              </D:prop>
-                             " + String.Join ("\r\n", urls.Select (u => string.Format ("<D:href>{0}</D:href>", SecurityElement.Escape (u.OriginalAbsolutePath)))) + @"
+                             " +
+                        String.Join(
+                          "\r\n",
+                          urls.Select(u =>
+                          {
+                            if (firstResourceNameOrNull == null)
+                              firstResourceNameOrNull = u;
+                            return $"<D:href>{SecurityElement.Escape(u.OriginalAbsolutePath)}</D:href>";
+                          })) + @"
                            </A:addressbook-multiget>
                          ";
       try
       {
         var responseXml = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
-            _serverUrl,
+            UriHelper.AlignServerUrl (_serverUrl, firstResourceNameOrNull),
             "REPORT",
             0,
             null,
@@ -356,7 +366,8 @@ namespace CalDavSynchronizer.DataAccess
     public async Task<IReadOnlyList<EntityWithId<WebResourceName, string>>> GetEntities (IEnumerable<WebResourceName> urls)
     {
       s_logger.Debug ("Entered GetEntities.");
-    
+
+      WebResourceName firstResourceNameOrNull = null;
 
       var requestBody = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
    <A:addressbook-multiget xmlns:D=""DAV:"" xmlns:A=""urn:ietf:params:xml:ns:carddav"">
@@ -371,15 +382,17 @@ namespace CalDavSynchronizer.DataAccess
         if (s_logger.IsDebugEnabled)
           s_logger.Debug ($"Requesting: '{u}'");
 
-        return $"<D:href>{SecurityElement.Escape (u.OriginalAbsolutePath)}</D:href>";
+       if (firstResourceNameOrNull == null)
+         firstResourceNameOrNull = u;
+
+       return $"<D:href>{SecurityElement.Escape (u.OriginalAbsolutePath)}</D:href>";
      })) 
      + @"
    </A:addressbook-multiget>
  ";
 
-
       var responseXml = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
-          _serverUrl,
+          UriHelper.AlignServerUrl (_serverUrl, firstResourceNameOrNull) ,
           "REPORT",
           0,
           null,
