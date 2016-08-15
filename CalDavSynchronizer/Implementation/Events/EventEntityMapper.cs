@@ -805,7 +805,13 @@ namespace CalDavSynchronizer.Implementation.Events
                   s_logger.WarnFormat ("Event '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.UID);
                   logger.LogMappingWarning ("Event contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.");
                 }
-                targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
+                if (sourceRecurrencePattern.ByMonth[0] < 1 || sourceRecurrencePattern.ByMonth[0] > 12)
+                {
+                  s_logger.Warn ($"Recurring event '{source.UID}' contains invalid BYMONTH '{sourceRecurrencePattern.ByMonth[0]}', which will be ignored.");
+                  logger.LogMappingWarning ($"Recurring event '{source.UID}' contains invalid BYMONTH '{sourceRecurrencePattern.ByMonth[0]}', which will be ignored.");
+                }
+                else
+                  targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
 
                 if (sourceRecurrencePattern.ByWeekNo.Count > 1)
                 {
@@ -826,7 +832,13 @@ namespace CalDavSynchronizer.Implementation.Events
                 }
                 if (sourceRecurrencePattern.ByMonth[0] != targetRecurrencePattern.MonthOfYear)
                 {
-                  targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
+                  if (sourceRecurrencePattern.ByMonth[0] < 1 || sourceRecurrencePattern.ByMonth[0] > 12)
+                  {
+                    s_logger.Warn ($"Recurring event '{source.UID}' contains invalid BYMONTH '{sourceRecurrencePattern.ByMonth[0]}', which will be ignored.");
+                    logger.LogMappingWarning ($"Recurring event '{source.UID}' contains invalid BYMONTH '{sourceRecurrencePattern.ByMonth[0]}', which will be ignored.");
+                  }
+                  else
+                    targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
                 }
 
                 if (sourceRecurrencePattern.ByMonthDay.Count > 1)
@@ -855,7 +867,13 @@ namespace CalDavSynchronizer.Implementation.Events
                   s_logger.WarnFormat ("Event '{0}' contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.", source.UID);
                   logger.LogMappingWarning ("Event contains more than one months in a yearly recurrence rule. Since outlook supports only one month, all except the first one will be ignored.");
                 }
-                targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
+                if (sourceRecurrencePattern.ByMonth[0] < 1 || sourceRecurrencePattern.ByMonth[0] > 12)
+                {
+                  s_logger.Warn ($"Recurring event '{source.UID}' contains invalid BYMONTH '{sourceRecurrencePattern.ByMonth[0]}', which will be ignored.");
+                  logger.LogMappingWarning ($"Recurring event '{source.UID}' contains invalid BYMONTH '{sourceRecurrencePattern.ByMonth[0]}', which will be ignored.");
+                }
+                else
+                  targetRecurrencePattern.MonthOfYear = sourceRecurrencePattern.ByMonth[0];
 
                 targetRecurrencePattern.Instance = (sourceRecurrencePattern.ByDay[0].Offset >= 0) ? sourceRecurrencePattern.ByDay[0].Offset : 5;
                 if (sourceRecurrencePattern.BySetPosition.Count > 0)
