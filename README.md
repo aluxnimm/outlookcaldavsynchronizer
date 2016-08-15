@@ -83,6 +83,20 @@ YOu should also update manually to the latest Visual Studio 2010 Tools for Offic
 
 ### Changelog ###
 
+#### 2.4.0 ####
+- New features
+	- Add Use Account Password also to bulk profile creation and add posibility to get server settings (DAV url, Email, Username) from Outlook IMAP/Pop3 Account.
+	- Add mapping for task alarms with absolute date/time triggers.
+	- Add category filter also for tasks, feature 48.
+	- Download contact photo if provided by url, fixes contact photo mapping for GMX, ticket #358.
+- Bug fixes
+	- Change SOGo account profile url path to /SOGo/dav/.
+	- Fix mapping of PostalAddress Country in Google Contacts API.
+	- Fix mapping of PostalCode for Google Contacts, ticket #352.
+	- Update NuGet packages for used external libraries.
+	- Log warning and avoid COM Exception for recurring events and tasks when RRULE BYMONTH is invalid, ticket #334.
+	- Use correct request URI in reports when server uri has different encoding than resource URI, github issue 152.
+
 #### 2.3.1 ####
 - Bug fixes
 	- Fix OL2007 toolbar positioning and saving, ticket #351.
@@ -767,7 +781,8 @@ If you expand the tree view of the profile you can configure network and proxy o
 	- For contacts you can configure if birthdays should be mapped or not. If birthdays are mapped, Outlook also creates an recurring appointment for every contact with a defined birthday.
 	- You can also configure if contact photos should be mapped or not. Contact photo mapping from Outlook to the server doesn't work in Outlook 2007. You can also add an option to not overwrite the contact photo in Outlook when it changes on the server, which could happen due to other mobile clients reducing the resolution for example.
 	- Fix imported phone number format adds round brackets to the area code of phone numbers, so that Outlook can show correct phone number details with country and area code, e.g. +1 23 45678 is mapped to +1 (23) 45678.
-	- For tasks (not for Google task profiles) you can configure if you want to map reminders (just upcoming, all or none), the priority of the task, the description body and if recurring tasks should be synchronized.	
+	- For tasks (not for Google task profiles) you can configure if you want to map reminders (just upcoming, all or none), the priority of the task, the description body and if recurring tasks should be synchronized.
+	- Similar to calendars you can also define a filter category so that multiple CalDAV Tasklists can be synchronized into one Outlook task folder via the defined category.	
 
 ### Scheduling settings and resources ###
 
@@ -776,10 +791,10 @@ disable "set SCHEDULE-AGENT=CLIENT" in Mapping Configuration, so that the server
  
 ### Category Filter and Color ###
 
-If you want to sync multiple CalDAV calendars into one Outlook folder you can configure an Outlook category for filtering in the *Mapping Configuration*. You can choose a category from the dropdown list of all available Outlook categories or enter a new category name.
-For all events from the server the defined category is added in Outlook, when syncing back from Outlook to the server only appointments with that category are considered but the filter category is removed. The category name must not contain any commas or semicolons!
-With the checkbox below you can also negate the filter and sync all appointments except this category.
-It is possible to choose the color of the category or to fetch the calendar color from the server and map it to the nearest supported Outlook category color with the button *Fetch Color*. With *Set DAV Color* it is also possible to sync the choosen category color back to set the server calendar color accordingly. With *Category Shortcut Key* you can define the shortcut key of the selected category for easier access when creating appointments.
+If you want to sync multiple CalDAV calendars or tasklists into one Outlook folder you can configure an Outlook category for filtering in the *Mapping Configuration*. You can choose a category from the dropdown list of all available Outlook categories or enter a new category name.
+For all events/tasks from the server the defined category is added in Outlook, when syncing back from Outlook to the server only appointments/tasks with that category are considered but the filter category is removed. The category name must not contain any commas or semicolons!
+With the checkbox below you can also negate the filter and sync all appointments/tasks except this category.
+For calendars it is also possible to choose the color of the category or to fetch the calendar color from the server and map it to the nearest supported Outlook category color with the button *Fetch Color*. With *Set DAV Color* it is also possible to sync the choosen category color back to set the server calendar color accordingly. With *Category Shortcut Key* you can define the shortcut key of the selected category for easier access when creating appointments.
 
 ### Google Calender / Addressbooks / Tasks settings ###
 
@@ -852,8 +867,10 @@ use the url
 
 ### Autodiscovery ###
 
-You can use the exact calendar/addressbook URL or the principal url and use the 'Test  or discover settings' button in the option dialog to try to autodiscover available calendars and addressbooks on the server. You can  then choose one of the found calendars or addressbooks in the new window.
-If your server has redirections for well-known Urls (./well-known/caldav/ and ./well-known/carddav/ ) you need to enter the server name only (without path). If your domain configured DNS SRV and/or TXT lookups it is also possible leave the DAV url empty and discover it from the entered Email Address via DNS lookups, for example:
+When you are using an IMAP/POP3 Account with the same server settings (Username, Email address) you can press *Get IMAP/POP3 account settings* to discover those settings. The DAV url is discovered via DNS lookup from the account email address or the IMAP/POP3/SMTP server url if that fails. Together with the *Use IMAP/POP3 account password* checkbox activated you can fully autoconfigure the server settings from your existing account.
+
+Instead of using the exact calendar/addressbook URL you can use the server address or the principal url and use the 'Test  or discover settings' button in the option dialog to try to autodiscover available calendars and addressbooks on the server. You can  then choose one of the found calendars or addressbooks in the new window.
+If your server has redirections for well-known Urls (`./well-known/caldav/` and `./well-known/carddav/` ) you need to enter the server name only (without path). If your domain configured DNS SRV and/or TXT lookups it is also possible leave the DAV url empty and discover it from the entered Email Address via DNS lookups, for example:
 
     _carddavs._tcp 86400 IN SRV 10 20 443 dav.example.org.
     _caldavs._tcp 86400 IN SRV 10 20 443 dav.example.org.
