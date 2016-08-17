@@ -1086,6 +1086,8 @@ namespace CalDavSynchronizer.Implementation.Events
           if ((OlMeetingRecipientType) recipient.Type == OlMeetingRecipientType.olResource)
             attendee.Type = "RESOURCE";
           attendee.RSVP = true;
+          if (_configuration.ScheduleAgentClient)
+            attendee.Parameters.Add ("SCHEDULE-AGENT", "CLIENT");
           target.Attendees.Add (attendee);
         }
         else
@@ -1113,6 +1115,8 @@ namespace CalDavSynchronizer.Implementation.Events
             ownAttendee.CommonName = recipient.Name;
             ownAttendee.ParticipationStatus = (source.MeetingStatus == OlMeetingStatus.olMeetingReceivedAndCanceled) ? "DECLINED" : MapParticipation1To2 (source.ResponseStatus);
             ownAttendee.Role = MapAttendeeType1To2 ((OlMeetingRecipientType) recipient.Type);
+            if (_configuration.ScheduleAgentClient)
+              ownAttendee.Parameters.Add ("SCHEDULE-AGENT", "CLIENT");
             target.Attendees.Add (ownAttendee);
             ownAttendeeSet = true;
           }
