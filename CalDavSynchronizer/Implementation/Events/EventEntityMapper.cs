@@ -382,12 +382,11 @@ namespace CalDavSynchronizer.Implementation.Events
           return "ACCEPTED";
         case OlResponseStatus.olResponseDeclined:
           return "DECLINED";
-        case OlResponseStatus.olResponseNone:
-          return null;
         case OlResponseStatus.olResponseOrganized:
           return "ACCEPTED";
         case OlResponseStatus.olResponseTentative:
           return "TENTATIVE";
+        case OlResponseStatus.olResponseNone:
         case OlResponseStatus.olResponseNotResponded:
         default:
           return "NEEDS-ACTION";
