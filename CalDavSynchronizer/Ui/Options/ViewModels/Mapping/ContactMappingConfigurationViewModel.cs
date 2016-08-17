@@ -28,6 +28,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     private bool _mapBirthday;
     private bool _mapContactPhoto;
     private bool _keepOutlookPhoto;
+    private bool _keepOutlookFileAs;
     private bool _fixPhoneNumberFormat;
     private bool _isSelected;
 
@@ -58,6 +59,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       }
     }
 
+    public bool KeepOutlookFileAs
+    {
+      get { return _keepOutlookFileAs; }
+      set
+      {
+        CheckedPropertyChange(ref _keepOutlookFileAs, value);
+      }
+    }
+
     public bool FixPhoneNumberFormat
     {
       get { return _fixPhoneNumberFormat; }
@@ -81,6 +91,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                                                              MapBirthday = true,
                                                                              MapContactPhoto = true,
                                                                              KeepOutlookPhoto = false,
+                                                                             KeepOutlookFileAs = true,
                                                                              FixPhoneNumberFormat = false
                                                                          };
 
@@ -95,6 +106,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       MapBirthday = mappingConfiguration.MapBirthday;
       MapContactPhoto = mappingConfiguration.MapContactPhoto;
       KeepOutlookPhoto = mappingConfiguration.KeepOutlookPhoto;
+      KeepOutlookFileAs = mappingConfiguration.KeepOutlookFileAs;
       FixPhoneNumberFormat = mappingConfiguration.FixPhoneNumberFormat;
     }
 
@@ -105,6 +117,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                          MapBirthday = _mapBirthday,
                                          MapContactPhoto = _mapContactPhoto,
                                          KeepOutlookPhoto = _keepOutlookPhoto,
+                                         KeepOutlookFileAs = _keepOutlookFileAs,
                                          FixPhoneNumberFormat = _fixPhoneNumberFormat
                                      };
     }

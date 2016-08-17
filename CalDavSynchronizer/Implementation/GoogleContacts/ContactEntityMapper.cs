@@ -690,7 +690,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
           target.Inner.FullName = source.Name.FullName;
       }
 
-      if (string.IsNullOrEmpty(target.Inner.FileAs))
+      if (string.IsNullOrEmpty (target.Inner.FileAs) || !_configuration.KeepOutlookFileAs)
       {
         if (!string.IsNullOrEmpty (source.Title))
         {

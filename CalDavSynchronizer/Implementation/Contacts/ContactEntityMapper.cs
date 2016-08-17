@@ -190,7 +190,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
       target.Inner.Suffix = source.NameSuffix;
       target.Inner.MiddleName = source.AdditionalNames;
       target.Inner.Gender = MapGender1To2 (source.Gender);
-      target.Inner.FileAs = source.FormattedName;
+      if (!_configuration.KeepOutlookFileAs)
+        target.Inner.FileAs = source.FormattedName;
 
       if (source.Nicknames.Count > 0)
       {

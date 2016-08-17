@@ -28,6 +28,8 @@ namespace CalDavSynchronizer.Contracts
     public bool MapContactPhoto { get; set; }
     public bool KeepOutlookPhoto { get; set; }
 
+    public bool KeepOutlookFileAs { get; set; }
+
     public bool FixPhoneNumberFormat { get; set; }
 
     public ContactMappingConfiguration ()
@@ -35,6 +37,7 @@ namespace CalDavSynchronizer.Contracts
       MapBirthday = true;
       MapContactPhoto = true;
       KeepOutlookPhoto = false;
+      KeepOutlookFileAs = true;
       FixPhoneNumberFormat = false;
     }
 
