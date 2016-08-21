@@ -16,14 +16,96 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Scheduling;
+using DDay.iCal;
+using log4net;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public static class TimeZoneMapper
+  public class TimeZoneMapper
   {
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
+
+    private const string TZURL_FULL = "http://tzurl.org/zoneinfo/";
+    private const string TZURL_OUTLOOK = "http://tzurl.org/zoneinfo-outlook/";
+
+    private readonly bool _includeHistoricalData;
+    private readonly HttpClient _httpClient;
+    private readonly Dictionary<string, ITimeZone> _tzMap;
+
+    public TimeZoneMapper (ProxyOptions proxyOptions, bool includeHistoricalData)
+    {
+      var proxy = (proxyOptions != null) ? SynchronizerFactory.CreateProxy (proxyOptions) : null;
+      var httpClientHandler = new HttpClientHandler
+      {
+        Proxy = proxy,
+        UseProxy = (proxy != null)
+      };
+
+      _httpClient = new HttpClient (httpClientHandler);
+
+      _tzMap = new Dictionary<string, ITimeZone>();
+      _includeHistoricalData = includeHistoricalData;
+    }
+
+    public ITimeZone LoadFromTzIdOrNull (string tzId)
+    {
+      if (_tzMap.ContainsKey (tzId))
+        return _tzMap[tzId];
+      else
+      {
+        var baseurl = _includeHistoricalData ? TZURL_FULL : TZURL_OUTLOOK;
+        var uri = new Uri (baseurl + tzId + ".ics");
+        var col = LoadFromUriOrNull (uri);
+        if (col != null)
+        {
+          var tz = col[0].TimeZones[0];
+          _tzMap.Add (tzId, tz);
+          return tz;
+        }
+        return null;
+      }
+    }
+    private IICalendarCollection LoadFromUriOrNull (Uri uri)
+    {
+
+      using (var response = _httpClient.GetAsync (uri).Result)
+      {
+        try
+        {
+          response.EnsureSuccessStatusCode();
+        }
+        catch (Exception)
+        {
+          s_logger.ErrorFormat ("Can't access timezone data from '{0}'", uri);
+          return null;
+        }
+
+        try
+        {
+          var result = response.Content.ReadAsStringAsync().Result;
+          using (var reader = new StringReader (result))
+          {
+            var collection = iCalendar.LoadFromStream (reader);
+            return collection;
+          }
+        }
+        catch (Exception)
+        {
+          s_logger.ErrorFormat ("Can't parse timezone data from '{0}'", uri);
+          return null;
+        }
+      }
+    }
+
     public static string IanaToWindows (string ianaZoneId)
     {
       var utcZones = new[] { "Etc/UTC", "Etc/UCT", "Etc/GMT" };

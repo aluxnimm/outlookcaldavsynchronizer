@@ -25,11 +25,31 @@
                     SelectedValue="{Binding MapReminder}"
                     Grid.Column="1" />
           </Grid>
-          <CheckBox IsChecked="{Binding MapBody}">Map Body</CheckBox>
-          <CheckBox IsChecked="{Binding CreateEventsInUtc}" ToolTip="Use UTC instead of Outlook Appointment Timezone for creating events on CalDAV server. &#x0a;Needed for GMX for example. Not recommended for general use, &#x0a;because recurrence exceptions over DST changes can't be mapped and &#x0a;Appointments with different start and end timezones can't be represented.">Create events on server in UTC</CheckBox>
-          <CheckBox IsChecked="{Binding UseGlobalAppointmendID}" ToolTip="Use Outlook GlobalAppointmendID instead of random Guid for UID attribute in new CalDAV events. &#x0a; Can avoid duplicate events from invitations.">Use GlobalAppointmentID for UID attribute</CheckBox>
+                <CheckBox IsChecked="{Binding MapBody}">Map Body</CheckBox>
+                <CheckBox IsChecked="{Binding UseGlobalAppointmendID}" ToolTip="Use Outlook GlobalAppointmendID instead of random Guid for UID attribute in new CalDAV events. &#x0a; Can avoid duplicate events from invitations.">Use GlobalAppointmentID for UID attribute</CheckBox>
         </StackPanel>
       </GroupBox>
+    <GroupBox Header="Timezone settings">
+        <StackPanel>
+                <CheckBox IsChecked="{Binding CreateEventsInUtc}" ToolTip="Use UTC instead of Outlook Appointment Timezone for creating events on CalDAV server. &#x0a;Not recommended for general use, &#x0a;because recurrence exceptions over DST changes can't be mapped and &#x0a;Appointments with different start and end timezones can't be represented.">Create events on server in UTC</CheckBox>
+                <CheckBox IsChecked="{Binding UseIanaTz}" ToolTip="Use Iana instead of Windows Timezones for creating events on CalDAV server. &#x0a;Needed for servers which do not accept non standard Windows Timezones like GMX for example. &#x0a;Timezone definitions will be downloaded from http://tzurl.org.">Create events on server with downloaded IANA Timezones</CheckBox>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock>Use IANA Timezone:</TextBlock>
+                    <ComboBox 
+                    ItemsSource="{Binding AvailableTimezones}"
+                    IsEnabled="{Binding UseIanaTz}"
+                    SelectedValue="{Binding EventTz}"
+                    ToolTip="Use this IANA timezone for default Outlook/Windows timezone. &#x0a;Manually selected different timezones in Outlook appointments &#x0a;will be mapped to first corresponding IANA timezone."
+                    Grid.Column="1" />
+                </Grid>
+                <CheckBox IsEnabled="{Binding UseIanaTz}" IsChecked="{Binding IncludeHistoricalData}" ToolTip="Use full IANA timezone definition with historical data. &#x0a;Needs more bandwith and can be incompatible when manually importing in Outlook.">Include full IANA zone with historical data</CheckBox>
+
+            </StackPanel>
+    </GroupBox>
     <GroupBox Header="Privacy settings">
       <StackPanel>
         <CheckBox  IsChecked="{Binding MapSensitivityPrivateToClassConfidential}">Map Outlook Private flag to DAV CLASS:CONFIDENTIAL instead of PRIVATE</CheckBox>

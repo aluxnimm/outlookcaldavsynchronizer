@@ -68,6 +68,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           new Uri ("mailto:" + testerServerEmailAddress),
           mapiNameSpace.Application.TimeZones.CurrentTimeZone.ID,
           mapiNameSpace.Application.Version,
+          new TimeZoneMapper (null, false), 
           eventMappingConfiguration);
 
       s_outlookFolderEntryId = ConfigurationManager.AppSettings[string.Format ("{0}.OutlookFolderEntryId", Environment.MachineName)];

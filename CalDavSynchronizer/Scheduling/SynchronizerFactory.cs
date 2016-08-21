@@ -369,10 +369,13 @@ namespace CalDavSynchronizer.Scheduling
           dateTimeRangeProvider,
           options.ServerAdapterType == ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth);
 
+      var timeZoneMapper = new TimeZoneMapper (options.ProxyOptions, mappingParameters.IncludeHistoricalData);
+
       var entityMapper = new EventEntityMapper (
           _outlookEmailAddress, new Uri ("mailto:" + options.EmailAddress),
           _outlookSession.Application.TimeZones.CurrentTimeZone.ID,
           _outlookSession.Application.Version,
+          timeZoneMapper,
           mappingParameters);
 
       var outlookEventRelationDataFactory = new OutlookEventRelationDataFactory();

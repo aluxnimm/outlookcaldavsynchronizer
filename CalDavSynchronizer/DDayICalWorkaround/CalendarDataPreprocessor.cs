@@ -31,7 +31,7 @@ namespace CalDavSynchronizer.DDayICalWorkaround
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    public static void FixTimeZoneDSTRRules(TimeZoneInfo tz, DDay.iCal.iCalTimeZone iCalTz)
+    public static void FixTimeZoneDSTRRules (TimeZoneInfo tz, ITimeZone iCalTz)
     {
       var adjustments = tz.GetAdjustmentRules();
       foreach (var tziItems in iCalTz.TimeZoneInfos)
