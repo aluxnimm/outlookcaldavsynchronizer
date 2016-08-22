@@ -1603,7 +1603,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
             target.MeetingStatus = OlMeetingStatus.olMeetingReceived;
 
-            if (!string.IsNullOrEmpty (sourceOrganizerEmail) && !string.IsNullOrEmpty (source.Organizer.CommonName))
+            if (!string.IsNullOrEmpty (sourceOrganizerEmail) && !string.IsNullOrEmpty (source.Organizer.CommonName) && source.Organizer.CommonName != sourceOrganizerEmail) 
             {
               targetRecipient = target.Recipients.Add (source.Organizer.CommonName + "<" + sourceOrganizerEmail + ">");
             }
