@@ -15,10 +15,13 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Net;
 using System.Reflection;
+using System.Threading;
 using System.Windows.Forms;
 using log4net;
 using CalDavSynchronizer.DataAccess;
@@ -31,6 +34,7 @@ namespace CalDavSynchronizer.Ui
 
     private static Process _latestSetupProcess;
     private readonly Uri _newVersionDownloadUrl;
+    private readonly string _archivePath;
 
     public event EventHandler TurnOffCheckForNewerVersions;
     public event EventHandler IgnoreThisVersion;
@@ -73,6 +77,8 @@ namespace CalDavSynchronizer.Ui
       {
         installButton.Visible = false;
       }
+      _archivePath = Path.GetTempFileName();
+      _progressBar.Visible = false;
     }
 
     private void btnOK_Click (object sender, EventArgs e)
@@ -95,26 +101,28 @@ namespace CalDavSynchronizer.Ui
       OnIgnoreThisVersion();
     }
 
-    private void installButton_Click (object sender, EventArgs e)
+    private void client_DownloadProgressChanged (object sender, DownloadProgressChangedEventArgs e)
+    {
+      double bytesIn = double.Parse (e.BytesReceived.ToString());
+      double totalBytes = double.Parse (e.TotalBytesToReceive.ToString());
+      double percentage = bytesIn / totalBytes * 100;
+      _progressBar.Value = int.Parse (Math.Truncate (percentage).ToString());
+    }
+
+    private void client_DownloadFileCompleted (object sender, AsyncCompletedEventArgs e)
     {
       try
       {
-        var archivePath = Path.GetTempFileName();
-        using (var client = HttpUtility.CreateWebClient())
-        {
-          client.DownloadFile (_newVersionDownloadUrl, archivePath);
-        }
-
+        
         var extractDirectory = Path.Combine (Path.GetTempPath(), "CalDavSynchronizer", Guid.NewGuid().ToString());
         Directory.CreateDirectory (extractDirectory);
-        ZipFile.ExtractToDirectory (archivePath, extractDirectory);
-        File.Delete (archivePath);
-
+        ZipFile.ExtractToDirectory (_archivePath, extractDirectory);
+        File.Delete (_archivePath);
         MessageBox.Show (
-            "You need to restart Outlook after installing the new version!",
-            "Outlook Restart required",
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Information);
+               "You need to restart Outlook after installing the new version!",
+               "Outlook Restart required",
+               MessageBoxButtons.OK,
+               MessageBoxIcon.Information);
 
         // process hast to be a GC root to prevent it from being garbage collected.
         _latestSetupProcess = Process.Start (Path.Combine (extractDirectory, "setup.exe"));
@@ -139,8 +147,26 @@ namespace CalDavSynchronizer.Ui
       }
       catch (Exception ex)
       {
-        s_logger.Warn ("Can't download and extract new version", ex);
-        MessageBox.Show ("Can't download and extract new version!", "CalDav Synchronizer Download failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        s_logger.Warn ("Can't extract new version", ex);
+        MessageBox.Show ("Can't extract new version!", "CalDav Synchronizer Download failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
+    }
+    private void installButton_Click (object sender, EventArgs e)
+    {
+      try
+      {
+        using (var client = HttpUtility.CreateWebClient())
+        {
+          client.DownloadProgressChanged += client_DownloadProgressChanged;
+          client.DownloadFileCompleted += client_DownloadFileCompleted;
+          _progressBar.Visible = true;
+          client.DownloadFileAsync (_newVersionDownloadUrl, _archivePath);
+        }
+      }
+      catch (Exception ex)
+      {
+        s_logger.Warn ("Can't download new version", ex);
+        MessageBox.Show ("Can't download new version!", "CalDav Synchronizer Download failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
   }

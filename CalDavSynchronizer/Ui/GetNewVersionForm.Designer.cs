@@ -39,6 +39,7 @@
       this.WhatsNewLabel = new System.Windows.Forms.Label();
       this._ignoreThisVersionLinkLabel = new System.Windows.Forms.LinkLabel();
       this.installButton = new System.Windows.Forms.Button();
+      this._progressBar = new System.Windows.Forms.ProgressBar();
       ((System.ComponentModel.ISupportInitialize)(this._logoPictureBox)).BeginInit();
       this.SuspendLayout();
       // 
@@ -161,6 +162,14 @@
       this.installButton.UseVisualStyleBackColor = true;
       this.installButton.Click += new System.EventHandler(this.installButton_Click);
       // 
+      // _progressBar
+      // 
+      this._progressBar.Location = new System.Drawing.Point(16, 527);
+      this._progressBar.Margin = new System.Windows.Forms.Padding(4);
+      this._progressBar.Name = "_progressBar";
+      this._progressBar.Size = new System.Drawing.Size(425, 28);
+      this._progressBar.TabIndex = 11;
+      // 
       // GetNewVersionForm
       // 
       this.AcceptButton = this.btnOK;
@@ -168,6 +177,7 @@
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.SystemColors.Window;
       this.ClientSize = new System.Drawing.Size(865, 570);
+      this.Controls.Add(this._progressBar);
       this.Controls.Add(this.installButton);
       this.Controls.Add(this._ignoreThisVersionLinkLabel);
       this.Controls.Add(this.WhatsNewLabel);
@@ -200,5 +210,6 @@
     private System.Windows.Forms.Label WhatsNewLabel;
     private System.Windows.Forms.LinkLabel _ignoreThisVersionLinkLabel;
     private System.Windows.Forms.Button installButton;
+    private System.Windows.Forms.ProgressBar _progressBar;
   }
 }
