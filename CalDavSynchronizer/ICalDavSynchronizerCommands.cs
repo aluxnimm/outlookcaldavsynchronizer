@@ -21,8 +21,8 @@ namespace CalDavSynchronizer
 {
   public interface ICalDavSynchronizerCommands
   {
-    void ShowOptions (Guid? initialVisibleProfile = null);
-    void ShowGeneralOptions ();
+    Task ShowOptions (Guid? initialVisibleProfile = null);
+    Task ShowGeneralOptions ();
     void ShowAbout ();
     void ShowLatestSynchronizationReport (Guid profileId);
     void ShowProfileStatuses ();

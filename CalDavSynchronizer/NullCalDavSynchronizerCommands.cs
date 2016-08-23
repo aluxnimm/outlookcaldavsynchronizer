@@ -27,14 +27,14 @@ namespace CalDavSynchronizer
     {
     }
 
-    public void ShowOptions (Guid? initialVisibleProfile = null)
+    public Task ShowOptions (Guid? initialVisibleProfile = null)
     {
-      
+      return Task.FromResult(0);
     }
 
-    public void ShowGeneralOptions ()
+    public Task ShowGeneralOptions ()
     {
-      
+      return Task.FromResult (0);
     }
 
     public void ShowAbout ()

@@ -168,7 +168,6 @@ namespace CalDavSynchronizer
       _profileStatusesViewModel = new ProfileStatusesViewModel (this);
       _profileStatusesViewModel.EnsureProfilesDisplayed (options);
 
-      _scheduler.SetOptions (options, generalOptions);
 
       _availableVersionService = new AvailableVersionService();
       _updateChecker = new UpdateChecker (_availableVersionService, () => _generalOptionsDataAccess.IgnoreUpdatesTilVersion);
@@ -190,6 +189,15 @@ namespace CalDavSynchronizer
         }
       }
     }
+
+    public async Task Initialize()
+    {
+      var options = _optionsDataAccess.LoadOptions ();
+      var generalOptions = _generalOptionsDataAccess.LoadOptions ();
+
+      await _scheduler.SetOptions (options, generalOptions);
+    }
+
     private void _sync_SyncEnd()
     {
       s_logger.Info ("Snyc triggered after Outlook Send/Receive finished");
@@ -330,7 +338,7 @@ namespace CalDavSynchronizer
       }
     }
 
-    public void ShowOptions (Guid? initialVisibleProfile = null)
+    public async Task ShowOptions (Guid? initialVisibleProfile = null)
     {
       if (_currentVisibleOptionsFormOrNull == null)
       {
@@ -341,7 +349,7 @@ namespace CalDavSynchronizer
           var newOptions = ShowWpfOptions (initialVisibleProfile, generalOptions, options);
 
           if (newOptions != null)
-            ApplyNewOptions (options, newOptions, generalOptions);
+            await ApplyNewOptions (options, newOptions, generalOptions);
         }
         finally
         {
@@ -386,10 +394,10 @@ namespace CalDavSynchronizer
       }
     }
 
-    private void ApplyNewOptions (Options[] oldOptions, Options[] newOptions, GeneralOptions generalOptions)
+    private async Task ApplyNewOptions (Options[] oldOptions, Options[] newOptions, GeneralOptions generalOptions)
     {
       _optionsDataAccess.SaveOptions (newOptions);
-      _scheduler.SetOptions (newOptions, generalOptions);
+      await _scheduler.SetOptions (newOptions, generalOptions);
       _profileStatusesViewModel.EnsureProfilesDisplayed (newOptions);
       DeleteEntityChachesForChangedProfiles (oldOptions, newOptions);
       var changedOptions = CreateChangePairs (oldOptions, newOptions);
@@ -606,7 +614,7 @@ namespace CalDavSynchronizer
       }
     }
 
-    public void ShowGeneralOptions ()
+    public async Task ShowGeneralOptions ()
     {
       var generalOptions = _generalOptionsDataAccess.LoadOptions();
       using (var optionsForm = new GeneralOptionsForm())
@@ -624,7 +632,7 @@ namespace CalDavSynchronizer
 
           _generalOptionsDataAccess.SaveOptions (newOptions);
           UpdateGeneralOptionDependencies (newOptions);
-          _scheduler.SetOptions (_optionsDataAccess.LoadOptions(), newOptions);
+          await _scheduler.SetOptions (_optionsDataAccess.LoadOptions(), newOptions);
 
           if (newOptions.EnableTrayIcon != generalOptions.EnableTrayIcon)
           {
@@ -946,9 +954,8 @@ namespace CalDavSynchronizer
         if (options == null)
           return;
 
-        SynchronizerFactory.AvailableSynchronizerComponents availableSynchronizerComponents;
-
-        _synchronizerFactory.CreateSynchronizer (options,_generalOptionsDataAccess.LoadOptions(), out availableSynchronizerComponents);
+        var availableSynchronizerComponents =
+          (await _synchronizerFactory.CreateSynchronizerWithComponents (options, _generalOptionsDataAccess.LoadOptions ())).Item2;
 
         if (availableSynchronizerComponents.CalDavDataAccess != null)
         {

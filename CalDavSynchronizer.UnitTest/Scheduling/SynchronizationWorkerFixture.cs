@@ -41,7 +41,7 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
     private StubSynchronizer _stubSynchronizer;
 
     [SetUp]
-    public void SetUp ()
+    public async Task SetUp ()
     {
       _synchronizerFactory = MockRepository.GenerateStub<ISynchronizerFactory>();
       _synchronizationProfileRunner = new SynchronizationProfileRunner (
@@ -54,8 +54,8 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
       var options = new Options();
       var generalOptions = new GeneralOptions();
       _stubSynchronizer = new StubSynchronizer();
-      _synchronizerFactory.Expect (f => f.CreateSynchronizer (options, generalOptions)).Return (_stubSynchronizer);
-      _synchronizationProfileRunner.UpdateOptions (options, generalOptions);
+      _synchronizerFactory.Expect (f => f.CreateSynchronizer (options, generalOptions)).Return (Task.FromResult<IOutlookSynchronizer>(_stubSynchronizer));
+      await _synchronizationProfileRunner.UpdateOptions (options, generalOptions);
     }
 
     [Test]

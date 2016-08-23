@@ -122,9 +122,14 @@ namespace CalDavSynchronizer
 
     private void ToolBarBtn_Options_OnClick (CommandBarButton Ctrl, ref bool CancelDefault)
     {
+      ToolBarBtn_Options_OnClick();
+    }
+
+    private async void ToolBarBtn_Options_OnClick ()
+    {
       try
       {
-        _componentContainer.ShowOptions();
+        await _componentContainer.ShowOptions ();
       }
       catch (Exception x)
       {
@@ -134,15 +139,21 @@ namespace CalDavSynchronizer
 
     private void ToolBarBtn_GeneralOptions_OnClick (CommandBarButton Ctrl, ref bool CancelDefault)
     {
+      ToolBarBtn_GeneralOptions_OnClick();
+    }
+
+    private async void ToolBarBtn_GeneralOptions_OnClick ()
+    {
       try
       {
-        _componentContainer.ShowGeneralOptions();
+        await _componentContainer.ShowGeneralOptions ();
       }
       catch (Exception x)
       {
         ExceptionHandler.Instance.DisplayException (x, s_logger);
       }
     }
+
 
     private void ToolBarBtn_SyncNow_OnClick (CommandBarButton Ctrl, ref bool CancelDefault)
     {
