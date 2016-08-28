@@ -126,7 +126,7 @@ namespace CalDavSynchronizer.Contracts
       {
         options.MappingConfiguration = new EventMappingConfiguration
         {
-          CreateEventsInUTC = true
+          UseIanaTz = true
         };
       }
       else if (type == ProfileType.Sogo)
