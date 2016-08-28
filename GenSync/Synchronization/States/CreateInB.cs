@@ -86,9 +86,9 @@ namespace GenSync.Synchronization.States
       bJobs.AddCreateJob (new JobWrapper (this, logger));
     }
 
-    private TBtypeEntity InitializeEntity (TBtypeEntity entity, IEntityMappingLogger logger)
+    private async Task<TBtypeEntity> InitializeEntity (TBtypeEntity entity, IEntityMappingLogger logger)
     {
-      return _environment.Mapper.Map1To2 (_aEntity, entity, logger);
+      return await _environment.Mapper.Map1To2 (_aEntity, entity, logger);
     }
 
     private void NotifyOperationSuceeded (EntityVersion<TBtypeEntityId, TBtypeEntityVersion> newVersion, IEntitySynchronizationLogger logger)
@@ -143,9 +143,9 @@ namespace GenSync.Synchronization.States
         _logger = logger;
       }
 
-      public TBtypeEntity InitializeEntity (TBtypeEntity entity)
+      public async Task<TBtypeEntity> InitializeEntity (TBtypeEntity entity)
       {
-        return _state.InitializeEntity (entity, _logger);
+        return await _state.InitializeEntity (entity, _logger);
       }
 
       public void NotifyOperationSuceeded (EntityVersion<TBtypeEntityId, TBtypeEntityVersion> result)

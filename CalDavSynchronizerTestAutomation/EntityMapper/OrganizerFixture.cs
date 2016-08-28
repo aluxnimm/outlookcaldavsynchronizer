@@ -87,7 +87,9 @@ END:VCALENDAR
 
         inspector.Close (OlInspectorClose.olDiscard);
 
-        var newCalendar = OutlookTestContext.EntityMapper.Map1To2 (outlookEvent, new iCalendar(), NullEntitySynchronizationLogger.Instance);
+        var mapTask = OutlookTestContext.EntityMapper.Map1To2(outlookEvent, new iCalendar(), NullEntitySynchronizationLogger.Instance);
+        OutlookTestContext.WaitForTask(mapTask);
+        var newCalendar = mapTask.Result;
 
         Assert.That (newCalendar.Events[0].Organizer.CommonName, Is.EqualTo ("Test Account"));
         Assert.That (newCalendar.Events[0].Organizer.Value.ToString(), Is.EqualTo ("mailto:tw13test@technikum-wien.at"));

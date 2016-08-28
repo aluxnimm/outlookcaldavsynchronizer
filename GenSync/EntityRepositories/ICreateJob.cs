@@ -15,12 +15,13 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Threading.Tasks;
 
 namespace GenSync.EntityRepositories
 {
   public interface ICreateJob<TEntity, TEntityId, TEntityVersion>
   {
-    TEntity InitializeEntity (TEntity entity);
+    Task<TEntity> InitializeEntity (TEntity entity);
     void NotifyOperationSuceeded (EntityVersion<TEntityId, TEntityVersion> result);
     void NotifyOperationFailed (Exception exception);
     void NotifyOperationFailed (string errorMessage);

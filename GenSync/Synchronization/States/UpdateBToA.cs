@@ -51,9 +51,9 @@ namespace GenSync.Synchronization.States
       aJobs.AddUpdateJob (new JobWrapper (this, logger));
     }
 
-    TAtypeEntity UpdateEntity (TAtypeEntity entity, IEntitySynchronizationLogger logger)
+    async Task<TAtypeEntity> UpdateEntity (TAtypeEntity entity, IEntitySynchronizationLogger logger)
     {
-      return _environment.Mapper.Map2To1 (_bEntity, entity, logger);
+      return await _environment.Mapper.Map2To1 (_bEntity, entity, logger);
     }
 
     private void NotifyOperationSuceeded (
@@ -119,9 +119,9 @@ namespace GenSync.Synchronization.States
       public TAtypeEntityVersion Version => _state._currentAVersion;
       public TAtypeEntity EntityToUpdate => _state._aEntity;
 
-      public TAtypeEntity UpdateEntity (TAtypeEntity entity)
+      public async Task<TAtypeEntity> UpdateEntity (TAtypeEntity entity)
       {
-        return _state.UpdateEntity (entity, _logger);
+        return await _state.UpdateEntity (entity, _logger);
       }
 
       public void NotifyOperationSuceeded (EntityVersion<TAtypeEntityId, TAtypeEntityVersion> result)

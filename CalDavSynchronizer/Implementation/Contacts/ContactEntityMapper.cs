@@ -28,6 +28,7 @@ using log4net;
 using System.Reflection;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Exception = System.Exception;
 
 
@@ -50,7 +51,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       _configuration = configuration;
     }
 
-    public vCard Map1To2 (ContactItemWrapper source, vCard target, IEntityMappingLogger logger)
+    public Task<vCard> Map1To2 (ContactItemWrapper source, vCard target, IEntityMappingLogger logger)
     {
       target.GivenName = source.Inner.FirstName;
       target.FamilyName = source.Inner.LastName;
@@ -179,10 +180,10 @@ namespace CalDavSynchronizer.Implementation.Contacts
         target.Notes.Add (new vCardNote (source.Inner.Body));
       }
 
-      return target;
+      return Task.FromResult(target);
     }
 
-    public ContactItemWrapper Map2To1 (vCard source, ContactItemWrapper target, IEntityMappingLogger logger)
+    public Task<ContactItemWrapper> Map2To1 (vCard source, ContactItemWrapper target, IEntityMappingLogger logger)
     {
       target.Inner.FirstName = source.GivenName;
       target.Inner.LastName = source.FamilyName;
@@ -305,7 +306,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         target.Inner.Body = string.Empty;
       }
 
-      return target;
+      return Task.FromResult(target);
     }
 
     private static OlGender MapGender1To2 (vCardGender sourceGender)

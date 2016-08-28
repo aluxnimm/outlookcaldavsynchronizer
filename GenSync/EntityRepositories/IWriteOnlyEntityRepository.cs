@@ -35,7 +35,7 @@ namespace GenSync.EntityRepositories
     /// or
     /// Null if entity was not found
     /// </returns>
-    Task<EntityVersion<TEntityId, TEntityVersion>> TryUpdate (TEntityId entityId, TEntityVersion version, TEntity entityToUpdate, Func<TEntity, TEntity> entityModifier, TContext context);
-    Task<EntityVersion<TEntityId, TEntityVersion>> Create (Func<TEntity, TEntity> entityInitializer, TContext context);
+    Task<EntityVersion<TEntityId, TEntityVersion>> TryUpdate (TEntityId entityId, TEntityVersion version, TEntity entityToUpdate, Func<TEntity, Task<TEntity>> entityModifier, TContext context);
+    Task<EntityVersion<TEntityId, TEntityVersion>> Create (Func<TEntity, Task<TEntity>> entityInitializer, TContext context);
   }
 }

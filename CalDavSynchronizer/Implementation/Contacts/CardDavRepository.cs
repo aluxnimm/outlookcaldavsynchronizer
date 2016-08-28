@@ -121,26 +121,26 @@ namespace CalDavSynchronizer.Implementation.Contacts
         WebResourceName entityId,
         string entityVersion,
         vCard entityToUpdate,
-        Func<vCard, vCard> entityModifier, 
+        Func<vCard, Task<vCard>> entityModifier, 
         int context)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
         vCard newVcard = new vCard();
         newVcard.UniqueId = (!string.IsNullOrEmpty (entityToUpdate.UniqueId)) ? entityToUpdate.UniqueId : Guid.NewGuid().ToString();
-        newVcard = entityModifier (newVcard);
+        newVcard = await entityModifier (newVcard);
 
         return await _cardDavDataAccess.TryUpdateEntity (entityId, entityVersion, Serialize (newVcard));
       }
     }
 
-    public async Task<EntityVersion<WebResourceName, string>> Create (Func<vCard, vCard> entityInitializer, int context)
+    public async Task<EntityVersion<WebResourceName, string>> Create (Func<vCard, Task<vCard>> entityInitializer, int context)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
         vCard newVcard = new vCard();
         newVcard.UniqueId = Guid.NewGuid().ToString();
-        var initializedVcard = entityInitializer (newVcard);
+        var initializedVcard = await entityInitializer (newVcard);
         return await _cardDavDataAccess.CreateEntity (Serialize (initializedVcard), newVcard.UniqueId);
       }
     }

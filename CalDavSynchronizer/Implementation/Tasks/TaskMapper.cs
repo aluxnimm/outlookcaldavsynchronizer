@@ -20,6 +20,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Common;
@@ -47,7 +48,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       _configuration = configuration;
     }
 
-    public IICalendar Map1To2 (TaskItemWrapper source, IICalendar existingTargetCalender, IEntityMappingLogger logger)
+    public Task<IICalendar> Map1To2 (TaskItemWrapper source, IICalendar existingTargetCalender, IEntityMappingLogger logger)
     {
       var newTargetCalender = new iCalendar();
       var localIcalTimeZone = iCalTimeZone.FromSystemTimeZone (_localTimeZoneInfo, new DateTime (1970, 1, 1), true);
@@ -73,7 +74,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
         newTargetCalender.Todos[i].Sequence = newSequenceNumber;
       }
 
-      return newTargetCalender;
+      return Task.FromResult<IICalendar>(newTargetCalender);
     }
 
     public void Map1To2 (TaskItemWrapper source, ITodo target, iCalTimeZone localIcalTimeZone)
@@ -296,10 +297,10 @@ namespace CalDavSynchronizer.Implementation.Tasks
       }
     }
 
-    public TaskItemWrapper Map2To1 (IICalendar sourceCalendar, TaskItemWrapper target, IEntityMappingLogger logger)
+    public Task<TaskItemWrapper> Map2To1 (IICalendar sourceCalendar, TaskItemWrapper target, IEntityMappingLogger logger)
     {
       var source = sourceCalendar.Todos[0];
-      return Map2To1 (source, target, logger);
+      return Task.FromResult(Map2To1 (source, target, logger));
     }
 
     public TaskItemWrapper Map2To1 (ITodo source, TaskItemWrapper target, IEntityMappingLogger logger)

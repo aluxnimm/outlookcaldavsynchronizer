@@ -55,18 +55,18 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
       return true;
     }
 
-    public async Task<EntityVersion<string, string>> TryUpdate (string entityId, string version, Task entityToUpdate, Func<Task, Task> entityModifier, int context)
+    public async Task<EntityVersion<string, string>> TryUpdate (string entityId, string version, Task entityToUpdate, Func<Task, Task<Task>> entityModifier, int context)
     {
-      entityToUpdate = entityModifier (entityToUpdate);
+      entityToUpdate = await entityModifier (entityToUpdate);
       var updateRequest = _tasksService.Tasks.Update (entityToUpdate, _taskList.Id, entityId);
       updateRequest.ETagAction = Google.Apis.ETagAction.IfMatch;
       var result = await updateRequest.ExecuteAsync();
       return EntityVersion.Create (result.Id, result.ETag);
     }
 
-    public async Task<EntityVersion<string, string>> Create (Func<Task, Task> entityInitializer, int context)
+    public async Task<EntityVersion<string, string>> Create (Func<Task, Task<Task>> entityInitializer, int context)
     {
-      var task = entityInitializer (new Task());
+      var task = await entityInitializer (new Task());
       var result = await _tasksService.Tasks.Insert (task, _taskList.Id).ExecuteAsync();
       return EntityVersion.Create (result.Id, result.ETag);
     }

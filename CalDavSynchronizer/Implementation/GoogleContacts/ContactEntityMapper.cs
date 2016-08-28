@@ -23,6 +23,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xaml;
 using CalDavSynchronizer.Contracts;
@@ -69,7 +70,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       _configuration = configuration;
     }
 
-    public GoogleContactWrapper Map1To2 (ContactItemWrapper source, GoogleContactWrapper targetWrapper, IEntityMappingLogger logger)
+    public Task<GoogleContactWrapper> Map1To2 (ContactItemWrapper source, GoogleContactWrapper targetWrapper, IEntityMappingLogger logger)
     {
       var target = targetWrapper.Contact;
 
@@ -346,7 +347,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       if (_configuration.MapContactPhoto)
         MapPhoto1To2 (source.Inner, targetWrapper, logger);
 
-      return targetWrapper;
+      return Task.FromResult(targetWrapper);
     }
 
     private void MapPhoto1To2 (ContactItem source, GoogleContactWrapper target, IEntityMappingLogger logger)
@@ -675,7 +676,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
     }
 
-    public ContactItemWrapper Map2To1 (GoogleContactWrapper sourceWrapper, ContactItemWrapper target, IEntityMappingLogger logger)
+    public Task<ContactItemWrapper> Map2To1 (GoogleContactWrapper sourceWrapper, ContactItemWrapper target, IEntityMappingLogger logger)
     {
       var source = sourceWrapper.Contact;
 
@@ -883,7 +884,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       if (_configuration.MapContactPhoto)
         MapPhoto2To1 (sourceWrapper, target.Inner, logger);
 
-      return target;
+      return Task.FromResult(target);
     }
 
     private void MapPhoto2To1 (GoogleContactWrapper source, ContactItem target, IEntityMappingLogger logger)
