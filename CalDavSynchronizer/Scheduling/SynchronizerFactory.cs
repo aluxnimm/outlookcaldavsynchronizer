@@ -147,7 +147,7 @@ namespace CalDavSynchronizer.Scheduling
       switch (defaultItemType)
       {
         case OlItemType.olAppointmentItem:
-          synchronizer = CreateEventSynchronizer (options, generalOptions, synchronizerComponents);
+          synchronizer = await CreateEventSynchronizer (options, generalOptions, synchronizerComponents);
           break;
         case OlItemType.olTaskItem:
           if (options.ServerAdapterType == ServerAdapterType.GoogleTaskApi)
@@ -172,7 +172,7 @@ namespace CalDavSynchronizer.Scheduling
       return Tuple.Create(synchronizer, synchronizerComponents);
     }
 
-    private IOutlookSynchronizer CreateEventSynchronizer (Options options, GeneralOptions generalOptions ,AvailableSynchronizerComponents componentsToFill)
+    private async Task<IOutlookSynchronizer> CreateEventSynchronizer (Options options, GeneralOptions generalOptions ,AvailableSynchronizerComponents componentsToFill)
     {
       var calDavDataAccess = new CalDavDataAccess (
           new Uri (options.CalenderUrl),
@@ -184,7 +184,7 @@ namespace CalDavSynchronizer.Scheduling
 
       var entityRelationDataAccess = new EntityRelationDataAccess<string, DateTime, OutlookEventRelationData, WebResourceName, string> (storageDataDirectory);
 
-      return CreateEventSynchronizer (options, calDavDataAccess, entityRelationDataAccess);
+      return await CreateEventSynchronizer (options, calDavDataAccess, entityRelationDataAccess);
     }
 
     public static IWebDavClient CreateWebDavClient (
@@ -341,7 +341,7 @@ namespace CalDavSynchronizer.Scheduling
     /// <remarks>
     /// Public because it is being used by integration tests
     /// </remarks>
-    public IOutlookSynchronizer CreateEventSynchronizer (
+    public async Task<IOutlookSynchronizer> CreateEventSynchronizer (
         Options options,
         ICalDavDataAccess calDavDataAccess,
         IEntityRelationDataAccess<string, DateTime, WebResourceName, string> entityRelationDataAccess)
@@ -371,12 +371,20 @@ namespace CalDavSynchronizer.Scheduling
 
       var timeZoneMapper = new TimeZoneMapper (options.ProxyOptions, mappingParameters.IncludeHistoricalData);
 
+      ITimeZone configuredEventTimeZoneOrNull;
+
+      if (mappingParameters.UseIanaTz)
+        configuredEventTimeZoneOrNull = await timeZoneMapper.GetByTzIdOrNull(mappingParameters.EventTz);
+      else
+        configuredEventTimeZoneOrNull = null;
+
       var entityMapper = new EventEntityMapper (
           _outlookEmailAddress, new Uri ("mailto:" + options.EmailAddress),
           _outlookSession.Application.TimeZones.CurrentTimeZone.ID,
           _outlookSession.Application.Version,
           timeZoneMapper,
-          mappingParameters);
+          mappingParameters,
+          configuredEventTimeZoneOrNull);
 
       var outlookEventRelationDataFactory = new OutlookEventRelationDataFactory();
 

@@ -56,7 +56,7 @@ namespace CalDavSynchronizer.Implementation.Events
       _includeHistoricalData = includeHistoricalData;
     }
 
-    public ITimeZone LoadFromTzIdOrNull (string tzId)
+    public async Task <ITimeZone> GetByTzIdOrNull (string tzId)
     {
       if (_tzMap.ContainsKey (tzId))
         return _tzMap[tzId];
@@ -64,7 +64,7 @@ namespace CalDavSynchronizer.Implementation.Events
       {
         var baseurl = _includeHistoricalData ? TZURL_FULL : TZURL_OUTLOOK;
         var uri = new Uri (baseurl + tzId + ".ics");
-        var col = LoadFromUriOrNull (uri);
+        var col = await LoadFromUriOrNull (uri);
         if (col != null)
         {
           var tz = col[0].TimeZones[0];
@@ -74,10 +74,11 @@ namespace CalDavSynchronizer.Implementation.Events
         return null;
       }
     }
-    private IICalendarCollection LoadFromUriOrNull (Uri uri)
+
+    private async Task <IICalendarCollection> LoadFromUriOrNull (Uri uri)
     {
 
-      using (var response = _httpClient.GetAsync (uri).Result)
+      using (var response = await _httpClient.GetAsync (uri))
       {
         try
         {
@@ -91,7 +92,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
         try
         {
-          var result = response.Content.ReadAsStringAsync().Result;
+          var result = await response.Content.ReadAsStringAsync();
           using (var reader = new StringReader (result))
           {
             var collection = iCalendar.LoadFromStream (reader);

@@ -69,7 +69,8 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           mapiNameSpace.Application.TimeZones.CurrentTimeZone.ID,
           mapiNameSpace.Application.Version,
           new TimeZoneMapper (null, false), 
-          eventMappingConfiguration);
+          eventMappingConfiguration,
+          null);
 
       s_outlookFolderEntryId = ConfigurationManager.AppSettings[string.Format ("{0}.OutlookFolderEntryId", Environment.MachineName)];
       s_outlookFolderStoreId = ConfigurationManager.AppSettings[string.Format ("{0}.OutlookFolderStoreId", Environment.MachineName)];
@@ -116,7 +117,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       return s_synchronizerFactory.CreateEventSynchronizer (
           options,
           calDavDataAccess,
-          entityRelationDataAccess ?? MockRepository.GenerateStub<IEntityRelationDataAccess<string, DateTime, WebResourceName, string>>());
+          entityRelationDataAccess ?? MockRepository.GenerateStub<IEntityRelationDataAccess<string, DateTime, WebResourceName, string>>()).Result;
     }
 
 
