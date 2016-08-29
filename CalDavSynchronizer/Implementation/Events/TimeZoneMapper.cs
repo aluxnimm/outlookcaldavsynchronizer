@@ -39,9 +39,10 @@ namespace CalDavSynchronizer.Implementation.Events
 
     private readonly bool _includeHistoricalData;
     private readonly HttpClient _httpClient;
-    private readonly Dictionary<string, ITimeZone> _tzMap;
+    private readonly TimeZoneCacheProvider _timeZoneCacheProvider;
+ 
 
-    public TimeZoneMapper (ProxyOptions proxyOptions, bool includeHistoricalData)
+    public TimeZoneMapper (ProxyOptions proxyOptions, bool includeHistoricalData, TimeZoneCacheProvider timeZoneCacheProvider)
     {
       var proxy = (proxyOptions != null) ? SynchronizerFactory.CreateProxy (proxyOptions) : null;
       var httpClientHandler = new HttpClientHandler
@@ -52,27 +53,26 @@ namespace CalDavSynchronizer.Implementation.Events
 
       _httpClient = new HttpClient (httpClientHandler);
 
-      _tzMap = new Dictionary<string, ITimeZone>();
       _includeHistoricalData = includeHistoricalData;
+      _timeZoneCacheProvider = timeZoneCacheProvider;
     }
 
     public async Task <ITimeZone> GetByTzIdOrNull (string tzId)
     {
-      if (_tzMap.ContainsKey (tzId))
-        return _tzMap[tzId];
-      else
+      ITimeZone tz = _timeZoneCacheProvider.GetTzOrNull (tzId, _includeHistoricalData);
+      if (tz == null)
       {
         var baseurl = _includeHistoricalData ? TZURL_FULL : TZURL_OUTLOOK;
         var uri = new Uri (baseurl + tzId + ".ics");
         var col = await LoadFromUriOrNull (uri);
         if (col != null)
         {
-          var tz = col[0].TimeZones[0];
-          _tzMap.Add (tzId, tz);
-          return tz;
+          tz = col[0].TimeZones[0];
+          _timeZoneCacheProvider.AddTz (tzId, tz, _includeHistoricalData);
         }
-        return null;
       }
+     
+      return tz;
     }
 
     private async Task <IICalendarCollection> LoadFromUriOrNull (Uri uri)

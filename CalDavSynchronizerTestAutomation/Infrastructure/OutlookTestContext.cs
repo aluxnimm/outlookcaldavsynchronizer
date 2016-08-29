@@ -62,13 +62,15 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       if (mapiNameSpace == null)
         throw new ArgumentNullException ("mapiNameSpace");
 
+      var timeZoneCacheProvider = new TimeZoneCacheProvider();
+
       var eventMappingConfiguration = new EventMappingConfiguration();
       s_entityMapper = new EventEntityMapper (
           mapiNameSpace.CurrentUser.Address,
           new Uri ("mailto:" + testerServerEmailAddress),
           mapiNameSpace.Application.TimeZones.CurrentTimeZone.ID,
           mapiNameSpace.Application.Version,
-          new TimeZoneMapper (null, false), 
+          new TimeZoneMapper (null, false, timeZoneCacheProvider), 
           eventMappingConfiguration,
           null);
 
@@ -82,7 +84,8 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           NullTotalProgressFactory.Instance,
           s_mapiNameSpace,
           daslFilterProvider,
-          new OutlookAccountPasswordProvider (mapiNameSpace.CurrentProfileName, mapiNameSpace.Application.Version));
+          new OutlookAccountPasswordProvider (mapiNameSpace.CurrentProfileName, mapiNameSpace.Application.Version),
+          timeZoneCacheProvider);
 
       s_outlookEventRepository = new OutlookEventRepository (
           s_mapiNameSpace,

@@ -85,6 +85,7 @@ namespace CalDavSynchronizer
     private readonly ReportGarbageCollection _reportGarbageCollection;
     private readonly SynchronizerFactory _synchronizerFactory;
     private readonly DaslFilterProvider _daslFilterProvider;
+    private readonly TimeZoneCacheProvider _timeZoneCacheProvider;
     private readonly IAvailableVersionService _availableVersionService;
     private readonly ProfileStatusesViewModel _profileStatusesViewModel;
     private ITrayNotifier _trayNotifier;
@@ -125,6 +126,8 @@ namespace CalDavSynchronizer
               ? NullOutlookAccountPasswordProvider.Instance
               : new OutlookAccountPasswordProvider (_session.CurrentProfileName, application.Version);
 
+      _timeZoneCacheProvider = new TimeZoneCacheProvider();
+
       EnsureSynchronizationContext();
 
       _applicationDataDirectory = Path.Combine (
@@ -146,7 +149,8 @@ namespace CalDavSynchronizer
               ExceptionHandler.Instance),
           _session,
           _daslFilterProvider,
-          _outlookAccountPasswordProvider);
+          _outlookAccountPasswordProvider,
+          _timeZoneCacheProvider);
 
       _synchronizationReportRepository = CreateSynchronizationReportRepository();
 
