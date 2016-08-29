@@ -27,6 +27,7 @@ using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Events;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
+using CalDavSynchronizer.Implementation.TimeZones;
 using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Synchronization;
 using DDay.iCal;
@@ -62,13 +63,17 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       if (mapiNameSpace == null)
         throw new ArgumentNullException ("mapiNameSpace");
 
+      var globalTimeZoneCache = new GlobalTimeZoneCache();
+
       var eventMappingConfiguration = new EventMappingConfiguration();
       s_entityMapper = new EventEntityMapper (
           mapiNameSpace.CurrentUser.Address,
           new Uri ("mailto:" + testerServerEmailAddress),
           mapiNameSpace.Application.TimeZones.CurrentTimeZone.ID,
           mapiNameSpace.Application.Version,
-          eventMappingConfiguration);
+          new TimeZoneCache (null, false, globalTimeZoneCache), 
+          eventMappingConfiguration,
+          null);
 
       s_outlookFolderEntryId = ConfigurationManager.AppSettings[string.Format ("{0}.OutlookFolderEntryId", Environment.MachineName)];
       s_outlookFolderStoreId = ConfigurationManager.AppSettings[string.Format ("{0}.OutlookFolderStoreId", Environment.MachineName)];
@@ -80,7 +85,8 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           NullTotalProgressFactory.Instance,
           s_mapiNameSpace,
           daslFilterProvider,
-          new OutlookAccountPasswordProvider (mapiNameSpace.CurrentProfileName, mapiNameSpace.Application.Version));
+          new OutlookAccountPasswordProvider (mapiNameSpace.CurrentProfileName, mapiNameSpace.Application.Version),
+          globalTimeZoneCache);
 
       s_outlookEventRepository = new OutlookEventRepository (
           s_mapiNameSpace,
@@ -115,7 +121,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       return s_synchronizerFactory.CreateEventSynchronizer (
           options,
           calDavDataAccess,
-          entityRelationDataAccess ?? MockRepository.GenerateStub<IEntityRelationDataAccess<string, DateTime, WebResourceName, string>>());
+          entityRelationDataAccess ?? MockRepository.GenerateStub<IEntityRelationDataAccess<string, DateTime, WebResourceName, string>>()).Result;
     }
 
 

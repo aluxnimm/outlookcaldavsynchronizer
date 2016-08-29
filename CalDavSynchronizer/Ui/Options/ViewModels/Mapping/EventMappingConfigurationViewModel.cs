@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -25,6 +26,7 @@ using Microsoft.Office.Interop.Outlook;
 using System.Linq;
 using System.Windows.Input;
 using log4net;
+using NodaTime.TimeZones;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 {
@@ -34,6 +36,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
     private OlCategoryShortcutKey _categoryShortcutKey;
     private bool _createEventsInUtc;
+    private bool _useIanaTz;
+    private string _eventTz;
+    private bool _includeHistoricalData;
     private bool _useGlobalAppointmentID;
     private string _eventCategory;
     private OlCategoryColor _eventCategoryColor;
@@ -73,6 +78,16 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                                                                    new Item<OlCategoryShortcutKey> (OlCategoryShortcutKey.olCategoryShortcutKeyCtrlF12, "Ctrl+F12")
                                                                                };
 
+    public IReadOnlyList<string> AvailableTimezones
+    {
+      get
+      {
+        var zones = TzdbDateTimeZoneSource.Default.CanonicalIdMap.Values.Distinct().Where (v => v.Contains ("/")).ToList();
+        zones.Sort();
+        return zones;
+      }
+    }
+
     public IList<Item<OlCategoryColor>> AvailableEventCategoryColors { get; } = 
       ColorHelper.CategoryColors.Select (kv => new Item<OlCategoryColor> (kv.Key, kv.Key.ToString().Substring (15))).ToList();
 
@@ -93,10 +108,43 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _createEventsInUtc; }
       set
       {
+        if (value)
+        {
+          UseIanaTz = false;
+          IncludeHistoricalData = false;
+        }
         CheckedPropertyChange (ref _createEventsInUtc, value);
       }
     }
 
+    public bool UseIanaTz
+    {
+      get { return _useIanaTz; }
+      set
+      {
+        if (value)
+          CreateEventsInUtc = false;
+
+        CheckedPropertyChange (ref _useIanaTz, value);
+      }
+    }
+    public string EventTz
+    {
+      get { return _eventTz; }
+      set
+      {
+        CheckedPropertyChange (ref _eventTz, value);
+      }
+    }
+    public bool IncludeHistoricalData
+    {
+      get { return _includeHistoricalData; }
+      set
+      {
+  
+        CheckedPropertyChange (ref _includeHistoricalData, value);
+      }
+    }
     public bool UseGlobalAppointmendID
     {
       get { return _useGlobalAppointmentID; }
@@ -254,6 +302,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     {
       CategoryShortcutKey = mappingConfiguration.CategoryShortcutKey;
       CreateEventsInUtc = mappingConfiguration.CreateEventsInUTC;
+      UseIanaTz = mappingConfiguration.UseIanaTz;
+      EventTz = mappingConfiguration.EventTz;
+      IncludeHistoricalData = mappingConfiguration.IncludeHistoricalData;
       UseGlobalAppointmendID = mappingConfiguration.UseGlobalAppointmentID;
       EventCategory = mappingConfiguration.EventCategory;
       EventCategoryColor = mappingConfiguration.EventCategoryColor;
@@ -276,6 +327,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                      {
                                          CategoryShortcutKey = _categoryShortcutKey,
                                          CreateEventsInUTC = _createEventsInUtc,
+                                         UseIanaTz = _useIanaTz,
+                                         EventTz = _eventTz,
+                                         IncludeHistoricalData = _includeHistoricalData,
                                          UseGlobalAppointmentID = _useGlobalAppointmentID,
                                          EventCategory = _eventCategory,
                                          EventCategoryColor = _eventCategoryColor,
@@ -307,6 +361,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                                                       {
                                                                           CategoryShortcutKey = OlCategoryShortcutKey.olCategoryShortcutKeyCtrlF4,
                                                                           CreateEventsInUtc = true,
+                                                                          EventTz = "TheTimeZoneID",
+                                                                          IncludeHistoricalData = true,
                                                                           UseGlobalAppointmendID = true,
                                                                           EventCategory = "TheCategory",
                                                                           EventCategoryColor = OlCategoryColor.olCategoryColorDarkMaroon,

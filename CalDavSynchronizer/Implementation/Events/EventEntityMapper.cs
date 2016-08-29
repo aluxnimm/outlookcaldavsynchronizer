@@ -23,8 +23,10 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.DDayICalWorkaround;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Common;
+using CalDavSynchronizer.Implementation.TimeZones;
 using DDay.iCal;
 using GenSync.EntityMapping;
 using GenSync.Logging;
@@ -55,30 +57,40 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly string _outlookEmailAddress;
     private readonly string _serverEmailUri;
     private readonly TimeZoneInfo _localTimeZoneInfo;
+    private readonly string _localTimeZoneId;
+    private readonly ITimeZone _configuredEventTimeZoneOrNull;
     private readonly EventMappingConfiguration _configuration;
+    private readonly ITimeZoneCache _timeZoneCache;
 
     public EventEntityMapper (
         string outlookEmailAddress,
         Uri serverEmailAddress,
         string localTimeZoneId,
         string outlookApplicationVersion,
-        EventMappingConfiguration configuration)
+        ITimeZoneCache timeZoneCache,
+        EventMappingConfiguration configuration, 
+        ITimeZone configuredEventTimeZoneOrNull)
     {
       _outlookEmailAddress = outlookEmailAddress;
       _configuration = configuration;
+      _configuredEventTimeZoneOrNull = configuredEventTimeZoneOrNull;
       _serverEmailUri = serverEmailAddress.ToString();
-      _localTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (localTimeZoneId);
+      _localTimeZoneId = localTimeZoneId;
+      _localTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (_localTimeZoneId);
+      _timeZoneCache = timeZoneCache;
+
+      
 
       string outlookMajorVersionString = outlookApplicationVersion.Split (new char[] { '.' })[0];
       _outlookMajorVersion = Convert.ToInt32 (outlookMajorVersionString);
     }
 
-    public Task<IICalendar> Map1To2 (AppointmentItemWrapper sourceWrapper, IICalendar existingTargetCalender, IEntityMappingLogger logger)
+    public async Task<IICalendar> Map1To2 (AppointmentItemWrapper sourceWrapper, IICalendar existingTargetCalender, IEntityMappingLogger logger)
     {
       var newTargetCalender = new iCalendar();
 
-      iCalTimeZone startIcalTimeZone = null;
-      iCalTimeZone endIcalTimeZone = null;
+      ITimeZone startIcalTimeZone = null;
+      ITimeZone endIcalTimeZone = null;
 
       if (!_configuration.CreateEventsInUTC)
       {
@@ -96,18 +108,54 @@ namespace CalDavSynchronizer.Implementation.Events
             endTimeZoneID = endTimeZone.Inner.ID;
           }
 
-          var startTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (startTimeZoneID);
-          startIcalTimeZone = iCalTimeZone.FromSystemTimeZone (startTimeZoneInfo, new DateTime (1970, 1, 1), false);
-          DDayICalWorkaround.CalendarDataPreprocessor.FixTimeZoneDSTRRules (startTimeZoneInfo, startIcalTimeZone);
-          newTargetCalender.TimeZones.Add (startIcalTimeZone);
+          if (_configuration.UseIanaTz)
+          {
+            if (_localTimeZoneId == startTimeZoneID && _configuredEventTimeZoneOrNull != null)
+            {
+              newTargetCalender.TimeZones.Add (_configuredEventTimeZoneOrNull);
+              startIcalTimeZone = _configuredEventTimeZoneOrNull;
+            }
+            else
+            {
+              var startIanaTzId = TimeZoneMapper.WindowsToIana (startTimeZoneID);
+              startIcalTimeZone = await _timeZoneCache.GetByTzIdOrNull (startIanaTzId);
+              if (startIcalTimeZone != null)
+                newTargetCalender.TimeZones.Add (startIcalTimeZone);
+            }
+          }
+          else
+          {
+            var startTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (startTimeZoneID);
+            startIcalTimeZone = iCalTimeZone.FromSystemTimeZone (startTimeZoneInfo, new DateTime (1970, 1, 1), false);
+            CalendarDataPreprocessor.FixTimeZoneDSTRRules (startTimeZoneInfo, startIcalTimeZone);
+            newTargetCalender.TimeZones.Add (startIcalTimeZone);            
+          }
 
           if (endTimeZoneID != startTimeZoneID)
           {
-            var endTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (endTimeZoneID);
+            if (_configuration.UseIanaTz)
+            {
+              if (_localTimeZoneId == endTimeZoneID && _configuredEventTimeZoneOrNull != null)
+              {
+                newTargetCalender.TimeZones.Add (_configuredEventTimeZoneOrNull);
+                endIcalTimeZone = _configuredEventTimeZoneOrNull;
+              }
+              else
+              {
+                var endIanaTzId = TimeZoneMapper.WindowsToIana (endTimeZoneID);
+                endIcalTimeZone = await _timeZoneCache.GetByTzIdOrNull (endIanaTzId);
+                if (endIcalTimeZone != null)
+                  newTargetCalender.TimeZones.Add (endIcalTimeZone);
+              }
+            }
+            else
+            {
+              var endTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (endTimeZoneID);
 
-            endIcalTimeZone = iCalTimeZone.FromSystemTimeZone (endTimeZoneInfo, new DateTime (1970, 1, 1), false);
-            DDayICalWorkaround.CalendarDataPreprocessor.FixTimeZoneDSTRRules (endTimeZoneInfo, endIcalTimeZone);
-            newTargetCalender.TimeZones.Add (endIcalTimeZone);
+              endIcalTimeZone = iCalTimeZone.FromSystemTimeZone (endTimeZoneInfo, new DateTime (1970, 1, 1), false);
+              CalendarDataPreprocessor.FixTimeZoneDSTRRules (endTimeZoneInfo, endIcalTimeZone);
+              newTargetCalender.TimeZones.Add (endIcalTimeZone);
+            }
           }
           else
           {
@@ -141,10 +189,10 @@ namespace CalDavSynchronizer.Implementation.Events
         newTargetCalender.Events[i].Sequence = newSequenceNumber;
       }
 
-      return Task.FromResult<IICalendar> (newTargetCalender);
+      return newTargetCalender;
     }
 
-    private void Map1To2 (AppointmentItem source, IEvent target, bool isRecurrenceException, iCalTimeZone startIcalTimeZone, iCalTimeZone endIcalTimeZone, IEntityMappingLogger logger)
+    private void Map1To2 (AppointmentItem source, IEvent target, bool isRecurrenceException, ITimeZone startIcalTimeZone, ITimeZone endIcalTimeZone, IEntityMappingLogger logger)
     {
       if (source.AllDayEvent)
       {
@@ -161,6 +209,19 @@ namespace CalDavSynchronizer.Implementation.Events
         {
           target.Start = new iCalDateTime (source.StartUTC) { IsUniversalTime = true };
           target.DTEnd = new iCalDateTime (source.EndUTC) { IsUniversalTime = true };
+        }
+        else if (_configuration.UseIanaTz) 
+        {
+          var startInstant = Instant.FromDateTimeUtc (source.Start.ToUniversalTime());
+          var startTimeZone = DateTimeZoneProviders.Tzdb[startIcalTimeZone.TZID];
+          var zonedStart = startInstant.InZone (startTimeZone);
+          target.Start = new iCalDateTime (zonedStart.ToDateTimeUnspecified());
+          target.Start.SetTimeZone (startIcalTimeZone);
+          var endInstant = Instant.FromDateTimeUtc (source.End.ToUniversalTime());
+          var endTimeZone = DateTimeZoneProviders.Tzdb[endIcalTimeZone.TZID];
+          var zonedEnd = endInstant.InZone (endTimeZone);
+          target.End = new iCalDateTime (zonedEnd.ToDateTimeUnspecified());
+          target.End.SetTimeZone (endIcalTimeZone);
         }
         else
         {
@@ -526,7 +587,7 @@ namespace CalDavSynchronizer.Implementation.Events
       }
     }
 
-    private void MapRecurrance1To2 (AppointmentItem source, IEvent target, iCalTimeZone startIcalTimeZone, iCalTimeZone endIcalTimeZone, IEntityMappingLogger logger)
+    private void MapRecurrance1To2 (AppointmentItem source, IEvent target, ITimeZone startIcalTimeZone, ITimeZone endIcalTimeZone, IEntityMappingLogger logger)
     {
       if (source.IsRecurring)
       {
