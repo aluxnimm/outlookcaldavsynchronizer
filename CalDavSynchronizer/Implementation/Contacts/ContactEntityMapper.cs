@@ -183,7 +183,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       return Task.FromResult(target);
     }
 
-    public Task<ContactItemWrapper> Map2To1 (vCard source, ContactItemWrapper target, IEntityMappingLogger logger)
+    public async Task<ContactItemWrapper> Map2To1 (vCard source, ContactItemWrapper target, IEntityMappingLogger logger)
     {
       target.Inner.FirstName = source.GivenName;
       target.Inner.LastName = source.FamilyName;
@@ -295,7 +295,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       MapCertificate2To1 (source, target.Inner, logger);
 
-      if (_configuration.MapContactPhoto) MapPhoto2To1 (source, target.Inner, logger);
+      if (_configuration.MapContactPhoto)
+        await MapPhoto2To1 (source, target.Inner, logger);
 
       if (source.Notes.Count > 0)
       {
@@ -306,7 +307,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         target.Inner.Body = string.Empty;
       }
 
-      return Task.FromResult(target);
+      return target;
     }
 
     private static OlGender MapGender1To2 (vCardGender sourceGender)
@@ -557,7 +558,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    private void MapPhoto2To1 (vCard source, ContactItem target, IEntityMappingLogger logger)
+    private async Task MapPhoto2To1 (vCard source, ContactItem target, IEntityMappingLogger logger)
     {
       if (source.Photos.Count > 0)
       {
@@ -572,7 +573,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
           {
             using (var client = HttpUtility.CreateWebClient())
             {
-              client.DownloadFile (contactPhoto.Url, picturePath);
+              await client.DownloadFileTaskAsync (contactPhoto.Url, picturePath);
             }
           }
           else if (contactPhoto.IsLoaded)
