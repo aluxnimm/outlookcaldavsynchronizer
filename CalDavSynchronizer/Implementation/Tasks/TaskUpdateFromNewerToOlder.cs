@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.DDayICalWorkaround;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using DDay.iCal;
 using GenSync.EntityRelationManagement;
@@ -41,7 +42,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
         if (todo.LastModified == null)
           return false;
 
-        return _aEntity.Inner.LastModificationTime.ToUniversalTime() >= todo.LastModified.UTC;
+        return _aEntity.Inner.LastModificationTime.ToUniversalTime() >= todo.LastModified.AsUtc();
       }
     }
   }

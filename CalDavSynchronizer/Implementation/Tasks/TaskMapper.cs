@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.DDayICalWorkaround;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Common;
 using DDay.iCal;
@@ -29,6 +30,7 @@ using GenSync.EntityMapping;
 using GenSync.Logging;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
+using NodaTime;
 using Exception = Microsoft.Office.Interop.Outlook.Exception;
 using RecurrencePattern = DDay.iCal.RecurrencePattern;
 
@@ -309,13 +311,13 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       target.Inner.Body = _configuration.MapBody ? source.Description : string.Empty;
 
-      NodaTime.DateTimeZone localZone = NodaTime.DateTimeZoneProviders.Bcl.GetSystemDefault();
+      DateTimeZone localZone = DateTimeZoneProviders.Bcl.GetSystemDefault();
 
       if (source.Start != null)
       {
         if (source.Start.IsUniversalTime)
         {
-          target.Inner.StartDate = NodaTime.Instant.FromDateTimeUtc (source.Start.Value).InZone (localZone).ToDateTimeUnspecified().Date;
+          target.Inner.StartDate = Instant.FromDateTimeUtc (source.Start.Value).InZone (localZone).ToDateTimeUnspecified().Date;
         }
         else
         {
@@ -329,7 +331,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
         {
           if (source.Due.IsUniversalTime)
           {
-            target.Inner.DueDate = NodaTime.Instant.FromDateTimeUtc (source.Due.Value).InZone (localZone).ToDateTimeUnspecified().Date;
+            target.Inner.DueDate = Instant.FromDateTimeUtc (source.Due.Value).InZone (localZone).ToDateTimeUnspecified().Date;
           }
           else
           {
@@ -342,7 +344,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       {
         if (source.Completed.IsUniversalTime)
         {
-          target.Inner.DateCompleted = NodaTime.Instant.FromDateTimeUtc (source.Completed.Value).InZone (localZone).ToDateTimeUnspecified().Date;
+          target.Inner.DateCompleted = Instant.FromDateTimeUtc (source.Completed.Value).InZone (localZone).ToDateTimeUnspecified().Date;
         }
         else
         {
@@ -420,10 +422,12 @@ namespace CalDavSynchronizer.Implementation.Tasks
         logger.LogMappingWarning ("Task contains multiple alarms. Ignoring all except first.");
       }
       var alarm = source.Alarms[0];
+      var localZone = DateTimeZoneProviders.Bcl.GetSystemDefault();
 
       if (alarm.Trigger.IsRelative && alarm.Trigger.Related == TriggerRelation.Start && alarm.Trigger.Duration.HasValue && source.Start != null)
       {
-        var reminderTime = TimeZoneInfo.ConvertTimeFromUtc (source.Start.UTC, _localTimeZoneInfo).Add (alarm.Trigger.Duration.Value);
+        var reminderInstant = Instant.FromDateTimeUtc (source.Start.AsUtc().Add (alarm.Trigger.Duration.Value)).InZone (localZone);
+        var reminderTime = reminderInstant.ToDateTimeUnspecified();
 
         if (_configuration.MapReminder == ReminderMapping.JustUpcoming && reminderTime < DateTime.Now) return;
         target.Inner.ReminderSet = true;
@@ -431,7 +435,8 @@ namespace CalDavSynchronizer.Implementation.Tasks
       }
       else if (alarm.Trigger.IsRelative && alarm.Trigger.Related == TriggerRelation.End && alarm.Trigger.Duration.HasValue && source.Due != null)
       {
-        var reminderTime = TimeZoneInfo.ConvertTimeFromUtc (source.Due.UTC, _localTimeZoneInfo).Add (alarm.Trigger.Duration.Value);
+        var reminderInstant = Instant.FromDateTimeUtc (source.Due.AsUtc().Add (alarm.Trigger.Duration.Value)).InZone (localZone);
+        var reminderTime = reminderInstant.ToDateTimeUnspecified();
 
         if (_configuration.MapReminder == ReminderMapping.JustUpcoming && reminderTime < DateTime.Now) return;
         target.Inner.ReminderSet = true;
@@ -439,8 +444,9 @@ namespace CalDavSynchronizer.Implementation.Tasks
       }
       else if (alarm.Trigger.DateTime != null)
       {
-        var reminderTime = TimeZoneInfo.ConvertTimeFromUtc (alarm.Trigger.DateTime.UTC, _localTimeZoneInfo);
- 
+        var reminderInstant = Instant.FromDateTimeUtc (alarm.Trigger.DateTime.AsUtc()).InZone (localZone);
+        var reminderTime = reminderInstant.ToDateTimeUnspecified();
+     
         if (_configuration.MapReminder == ReminderMapping.JustUpcoming && reminderTime < DateTime.Now) return;
         target.Inner.ReminderSet = true;
         target.Inner.ReminderTime = reminderTime;

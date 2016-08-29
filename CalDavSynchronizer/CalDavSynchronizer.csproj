@@ -295,6 +295,7 @@
     <Compile Include="DataAccess\IGlobalOptionsDataAccess.cs" />
     <Compile Include="DataAccess\WebDavClientBase.cs" />
     <Compile Include="DataAccess\CalendarData.cs" />
+    <Compile Include="DDayICalWorkaround\IDateTimeExtension.cs" />
     <Compile Include="Implementation\Common\NameSpaceExtensions.cs" />
     <Compile Include="Implementation\Common\OutlookUtility.cs" />
     <Compile Include="Implementation\Events\NullEventSynchronizationContextFactory.cs" />

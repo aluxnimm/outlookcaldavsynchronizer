@@ -711,7 +711,7 @@ namespace CalDavSynchronizer.Implementation.Events
                       }
                       else
                       {
-                        targetExList.Add (new iCalDateTime (el.Period.StartTime.UTC) { IsUniversalTime = true });
+                        targetExList.Add (new iCalDateTime (el.Period.StartTime.AsUtc()) { IsUniversalTime = true });
                       }
                       if (!targetExceptionDatesByDate.ContainsKey (el.Period.StartTime.Date))
                         targetExceptionDatesByDate.Add (el.Period.StartTime.Date, targetExList);
@@ -1032,13 +1032,13 @@ namespace CalDavSynchronizer.Implementation.Events
           // to prevent skipping of occurences while moving (outlook throws exception when skipping occurences), moving has to be done in two steps
           // first move all exceptions which are preponed from earliest to latest
           MapRecurrenceExceptions2To1 (
-              exceptions.Where (e => e.Start.UTC < e.RecurrenceID.Date).OrderBy (e => e.Start.UTC),
+              exceptions.Where (e => e.Start.AsUtc() < e.RecurrenceID.Date).OrderBy (e => e.Start.AsUtc()),
               targetWrapper,
               targetRecurrencePattern,
               logger);
           // then move all exceptions which are postponed or are not moved from last to first
           MapRecurrenceExceptions2To1 (
-              exceptions.Where (e => e.Start.UTC >= e.RecurrenceID.Date).OrderByDescending (e => e.Start.UTC),
+              exceptions.Where (e => e.Start.AsUtc() >= e.RecurrenceID.Date).OrderByDescending (e => e.Start.AsUtc()),
               targetWrapper,
               targetRecurrencePattern,
               logger);
@@ -1483,7 +1483,7 @@ namespace CalDavSynchronizer.Implementation.Events
             }
             else
             {
-              targetWrapper.Inner.EndUTC = source.Start.AddDays (1).UTC;
+              targetWrapper.Inner.EndUTC = source.Start.AddDays (1).AsUtc();
             }
           }
         }
@@ -1494,7 +1494,7 @@ namespace CalDavSynchronizer.Implementation.Events
         }
         else
         {
-          targetWrapper.Inner.EndUTC = source.Start.AddDays (1).UTC;
+          targetWrapper.Inner.EndUTC = source.Start.AddDays (1).AsUtc();
         }
       }
 
