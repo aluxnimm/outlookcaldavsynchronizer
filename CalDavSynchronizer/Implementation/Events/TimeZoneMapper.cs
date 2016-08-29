@@ -15,139 +15,53 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.Scheduling;
-using DDay.iCal;
-using log4net;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class TimeZoneMapper
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
-
-    private const string TZURL_FULL = "http://tzurl.org/zoneinfo/";
-    private const string TZURL_OUTLOOK = "http://tzurl.org/zoneinfo-outlook/";
-
-    private readonly bool _includeHistoricalData;
-    private readonly HttpClient _httpClient;
-    private readonly TimeZoneCacheProvider _timeZoneCacheProvider;
- 
-
-    public TimeZoneMapper (ProxyOptions proxyOptions, bool includeHistoricalData, TimeZoneCacheProvider timeZoneCacheProvider)
+    public static class TimeZoneMapper
     {
-      var proxy = (proxyOptions != null) ? SynchronizerFactory.CreateProxy (proxyOptions) : null;
-      var httpClientHandler = new HttpClientHandler
-      {
-        Proxy = proxy,
-        UseProxy = (proxy != null)
-      };
-
-      _httpClient = new HttpClient (httpClientHandler);
-
-      _includeHistoricalData = includeHistoricalData;
-      _timeZoneCacheProvider = timeZoneCacheProvider;
-    }
-
-    public async Task <ITimeZone> GetByTzIdOrNull (string tzId)
-    {
-      ITimeZone tz = _timeZoneCacheProvider.GetTzOrNull (tzId, _includeHistoricalData);
-      if (tz == null)
-      {
-        var baseurl = _includeHistoricalData ? TZURL_FULL : TZURL_OUTLOOK;
-        var uri = new Uri (baseurl + tzId + ".ics");
-        var col = await LoadFromUriOrNull (uri);
-        if (col != null)
+        public static string IanaToWindows(string ianaZoneId)
         {
-          tz = col[0].TimeZones[0];
-          _timeZoneCacheProvider.AddTz (tzId, tz, _includeHistoricalData);
-        }
-      }
-     
-      return tz;
-    }
+            var utcZones = new[] { "Etc/UTC", "Etc/UCT", "Etc/GMT" };
+            if (utcZones.Contains(ianaZoneId, StringComparer.Ordinal))
+                return "UTC";
 
-    private async Task <IICalendarCollection> LoadFromUriOrNull (Uri uri)
-    {
+            var tzdbSource = NodaTime.TimeZones.TzdbDateTimeZoneSource.Default;
 
-      using (var response = await _httpClient.GetAsync (uri))
-      {
-        try
-        {
-          response.EnsureSuccessStatusCode();
-        }
-        catch (Exception)
-        {
-          s_logger.ErrorFormat ("Can't access timezone data from '{0}'", uri);
-          return null;
+            // resolve any link, since the CLDR doesn't necessarily use canonical IDs
+            var links = tzdbSource.CanonicalIdMap
+                .Where(x => x.Value.Equals(ianaZoneId, StringComparison.Ordinal))
+                .Select(x => x.Key);
+
+            // resolve canonical zones, and include original zone as well
+            var possibleZones = tzdbSource.CanonicalIdMap.ContainsKey(ianaZoneId)
+                ? links.Concat(new[] { tzdbSource.CanonicalIdMap[ianaZoneId], ianaZoneId })
+                : links;
+
+            // map the windows zone
+            var mappings = tzdbSource.WindowsMapping.MapZones;
+            var item = mappings.FirstOrDefault(x => x.TzdbIds.Any(possibleZones.Contains));
+            if (item == null)
+                return null;
+            return item.WindowsId;
         }
 
-        try
+        // This will return the "primary" IANA zone that matches the given windows zone.
+        // If the primary zone is a link, it then resolves it to the canonical ID.
+        public static string WindowsToIana(string windowsZoneId)
         {
-          var result = await response.Content.ReadAsStringAsync();
-          using (var reader = new StringReader (result))
-          {
-            var collection = iCalendar.LoadFromStream (reader);
-            return collection;
-          }
+            if (windowsZoneId.Equals("UTC", StringComparison.Ordinal))
+                return "Etc/UTC";
+
+            var tzdbSource = NodaTime.TimeZones.TzdbDateTimeZoneSource.Default;
+            var tzi = TimeZoneInfo.FindSystemTimeZoneById(windowsZoneId);
+            if (tzi == null)
+                return null;
+            var tzid = tzdbSource.MapTimeZoneId(tzi);
+            if (tzid == null)
+                return null;
+            return tzdbSource.CanonicalIdMap[tzid];
         }
-        catch (Exception)
-        {
-          s_logger.ErrorFormat ("Can't parse timezone data from '{0}'", uri);
-          return null;
-        }
-      }
     }
-
-    public static string IanaToWindows (string ianaZoneId)
-    {
-      var utcZones = new[] { "Etc/UTC", "Etc/UCT", "Etc/GMT" };
-      if (utcZones.Contains (ianaZoneId, StringComparer.Ordinal))
-        return "UTC";
-
-      var tzdbSource = NodaTime.TimeZones.TzdbDateTimeZoneSource.Default;
-
-      // resolve any link, since the CLDR doesn't necessarily use canonical IDs
-      var links = tzdbSource.CanonicalIdMap
-          .Where (x => x.Value.Equals (ianaZoneId, StringComparison.Ordinal))
-          .Select (x => x.Key);
-
-      // resolve canonical zones, and include original zone as well
-      var possibleZones = tzdbSource.CanonicalIdMap.ContainsKey (ianaZoneId)
-          ? links.Concat (new[] { tzdbSource.CanonicalIdMap[ianaZoneId], ianaZoneId })
-          : links;
-
-      // map the windows zone
-      var mappings = tzdbSource.WindowsMapping.MapZones;
-      var item = mappings.FirstOrDefault (x => x.TzdbIds.Any (possibleZones.Contains));
-      if (item == null)
-        return null;
-      return item.WindowsId;
-    }
-
-    // This will return the "primary" IANA zone that matches the given windows zone.
-    // If the primary zone is a link, it then resolves it to the canonical ID.
-    public static string WindowsToIana (string windowsZoneId)
-    {
-      if (windowsZoneId.Equals ("UTC", StringComparison.Ordinal))
-        return "Etc/UTC";
-
-      var tzdbSource = NodaTime.TimeZones.TzdbDateTimeZoneSource.Default;
-      var tzi = TimeZoneInfo.FindSystemTimeZoneById (windowsZoneId);
-      if (tzi == null)
-        return null;
-      var tzid = tzdbSource.MapTimeZoneId (tzi);
-      if (tzid == null)
-        return null;
-      return tzdbSource.CanonicalIdMap[tzid];
-    }
-  }
 }

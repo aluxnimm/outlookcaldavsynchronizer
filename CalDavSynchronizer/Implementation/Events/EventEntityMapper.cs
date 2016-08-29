@@ -26,6 +26,7 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DDayICalWorkaround;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Common;
+using CalDavSynchronizer.Implementation.TimeZones;
 using DDay.iCal;
 using GenSync.EntityMapping;
 using GenSync.Logging;
@@ -59,14 +60,14 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly string _localTimeZoneId;
     private readonly ITimeZone _configuredEventTimeZoneOrNull;
     private readonly EventMappingConfiguration _configuration;
-    private readonly TimeZoneMapper _timeZoneMapper;
+    private readonly ITimeZoneCache _timeZoneCache;
 
     public EventEntityMapper (
         string outlookEmailAddress,
         Uri serverEmailAddress,
         string localTimeZoneId,
         string outlookApplicationVersion,
-        TimeZoneMapper timeZoneMapper,
+        ITimeZoneCache timeZoneCache,
         EventMappingConfiguration configuration, 
         ITimeZone configuredEventTimeZoneOrNull)
     {
@@ -76,7 +77,7 @@ namespace CalDavSynchronizer.Implementation.Events
       _serverEmailUri = serverEmailAddress.ToString();
       _localTimeZoneId = localTimeZoneId;
       _localTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (_localTimeZoneId);
-      _timeZoneMapper = timeZoneMapper;
+      _timeZoneCache = timeZoneCache;
 
       
 
@@ -117,7 +118,7 @@ namespace CalDavSynchronizer.Implementation.Events
             else
             {
               var startIanaTzId = TimeZoneMapper.WindowsToIana (startTimeZoneID);
-              startIcalTimeZone = await _timeZoneMapper.GetByTzIdOrNull (startIanaTzId);
+              startIcalTimeZone = await _timeZoneCache.GetByTzIdOrNull (startIanaTzId);
               if (startIcalTimeZone != null)
                 newTargetCalender.TimeZones.Add (startIcalTimeZone);
             }
@@ -142,7 +143,7 @@ namespace CalDavSynchronizer.Implementation.Events
               else
               {
                 var endIanaTzId = TimeZoneMapper.WindowsToIana (endTimeZoneID);
-                endIcalTimeZone = await _timeZoneMapper.GetByTzIdOrNull (endIanaTzId);
+                endIcalTimeZone = await _timeZoneCache.GetByTzIdOrNull (endIanaTzId);
                 if (endIcalTimeZone != null)
                   newTargetCalender.TimeZones.Add (endIcalTimeZone);
               }

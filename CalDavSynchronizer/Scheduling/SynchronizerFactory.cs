@@ -34,6 +34,7 @@ using CalDavSynchronizer.Implementation.GoogleContacts;
 using CalDavSynchronizer.Implementation.GoogleTasks;
 using CalDavSynchronizer.Implementation.Tasks;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
+using CalDavSynchronizer.Implementation.TimeZones;
 using CalDavSynchronizer.Synchronization;
 using CalDavSynchronizer.Utilities;
 using DDay.iCal;
@@ -64,7 +65,7 @@ namespace CalDavSynchronizer.Scheduling
     private readonly Func<Guid, string> _profileDataDirectoryFactory;
     private readonly IDaslFilterProvider _daslFilterProvider;
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
-    private readonly TimeZoneCacheProvider _timeZoneCacheProvider;
+    private readonly GlobalTimeZoneCache _globalTimeZoneCache;
 
     public SynchronizerFactory (
         Func<Guid, string> profileDataDirectoryFactory,
@@ -72,7 +73,7 @@ namespace CalDavSynchronizer.Scheduling
         NameSpace outlookSession,
         IDaslFilterProvider daslFilterProvider, 
         IOutlookAccountPasswordProvider outlookAccountPasswordProvider,
-        TimeZoneCacheProvider timeZoneCacheProvider)
+        GlobalTimeZoneCache globalTimeZoneCache)
     {
       if (outlookAccountPasswordProvider == null)
         throw new ArgumentNullException (nameof (outlookAccountPasswordProvider));
@@ -104,7 +105,7 @@ namespace CalDavSynchronizer.Scheduling
       _daslFilterProvider = daslFilterProvider;
       _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
       _profileDataDirectoryFactory = profileDataDirectoryFactory;
-      _timeZoneCacheProvider = timeZoneCacheProvider;
+      _globalTimeZoneCache = globalTimeZoneCache;
     }
 
     /// <summary>
@@ -372,12 +373,12 @@ namespace CalDavSynchronizer.Scheduling
           dateTimeRangeProvider,
           options.ServerAdapterType == ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth);
 
-      var timeZoneMapper = new TimeZoneMapper (options.ProxyOptions, mappingParameters.IncludeHistoricalData, _timeZoneCacheProvider);
+      var timeZoneCache = new TimeZoneCache (CreateHttpClient(options.ProxyOptions), mappingParameters.IncludeHistoricalData, _globalTimeZoneCache);
 
       ITimeZone configuredEventTimeZoneOrNull;
 
       if (mappingParameters.UseIanaTz)
-        configuredEventTimeZoneOrNull = await timeZoneMapper.GetByTzIdOrNull(mappingParameters.EventTz);
+        configuredEventTimeZoneOrNull = await timeZoneCache.GetByTzIdOrNull(mappingParameters.EventTz);
       else
         configuredEventTimeZoneOrNull = null;
 
@@ -385,7 +386,7 @@ namespace CalDavSynchronizer.Scheduling
           _outlookEmailAddress, new Uri ("mailto:" + options.EmailAddress),
           _outlookSession.Application.TimeZones.CurrentTimeZone.ID,
           _outlookSession.Application.Version,
-          timeZoneMapper,
+          timeZoneCache,
           mappingParameters,
           configuredEventTimeZoneOrNull);
 
@@ -426,6 +427,18 @@ namespace CalDavSynchronizer.Scheduling
           EqualityComparer<string>.Default);
 
       return new OutlookSynchronizer<WebResourceName, string> (synchronizer);
+    }
+
+    private HttpClient CreateHttpClient(ProxyOptions proxyOptionsOrNull)
+    {
+      var proxy = proxyOptionsOrNull != null ? CreateProxy (proxyOptionsOrNull) : null;
+      var httpClientHandler = new HttpClientHandler
+      {
+        Proxy = proxy,
+        UseProxy = proxy != null
+      };
+
+      return new HttpClient (httpClientHandler);
     }
 
     private T GetMappingParameters<T> (Options options)

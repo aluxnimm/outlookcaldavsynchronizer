@@ -320,7 +320,9 @@
     <Compile Include="Implementation\InitialSyncStateCreationStrategyFactory.cs" />
     <Compile Include="Implementation\GoogleContacts\InitialGoogleContactEntityMatcher.cs" />
     <Compile Include="Implementation\GoogleContacts\GoogleContactUpdateFromNewerToOlder.cs" />
-    <Compile Include="Implementation\TimeZoneCacheProvider.cs" />
+    <Compile Include="Implementation\TimeZones\GlobalTimeZoneCache.cs" />
+    <Compile Include="Implementation\TimeZones\ITimeZoneCache.cs" />
+    <Compile Include="Implementation\TimeZones\TimeZoneCache.cs" />
     <Compile Include="Scheduling\ISynchronizationRunLogger.cs" />
     <Compile Include="Scheduling\SchedulerStatusEventArgs.cs" />
     <Compile Include="Scheduling\SynchronizationStatus.cs" />
