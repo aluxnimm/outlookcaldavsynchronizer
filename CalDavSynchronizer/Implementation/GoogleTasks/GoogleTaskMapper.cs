@@ -15,11 +15,12 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Threading.Tasks;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using GenSync.EntityMapping;
 using GenSync.Logging;
-using Google.Apis.Tasks.v1.Data;
 using Microsoft.Office.Interop.Outlook;
+using Task = Google.Apis.Tasks.v1.Data.Task;
 
 namespace CalDavSynchronizer.Implementation.GoogleTasks
 {
@@ -31,7 +32,7 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
     {
       _dateNull = new DateTime (4501, 1, 1, 0, 0, 0);
     }
-    public Task Map1To2 (TaskItemWrapper source, Task target, IEntityMappingLogger logger)
+    public Task<Task> Map1To2 (TaskItemWrapper source, Task target, IEntityMappingLogger logger)
     {
       target.Title = source.Inner.Subject;
       target.Notes = source.Inner.Body;
@@ -55,7 +56,7 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
 
       target.Status = MapStatus1To2 (source.Inner.Status);
 
-      return target; 
+      return System.Threading.Tasks.Task.FromResult(target); 
     }
 
     private string MapStatus1To2 (OlTaskStatus value)
@@ -73,7 +74,7 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
     }
 
-    public TaskItemWrapper Map2To1 (Task source, TaskItemWrapper target, IEntityMappingLogger logger)
+    public Task<TaskItemWrapper> Map2To1 (Task source, TaskItemWrapper target, IEntityMappingLogger logger)
     {
       target.Inner.Subject = source.Title;
       target.Inner.Body = source.Notes;
@@ -103,7 +104,7 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
 
       target.Inner.Status = MapStatus2To1 (source.Status);
 
-      return target;
+      return System.Threading.Tasks.Task.FromResult(target);
     }
 
     private OlTaskStatus MapStatus2To1 (string status)

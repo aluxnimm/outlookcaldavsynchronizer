@@ -50,8 +50,8 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       IProgressLogger progressLogger,
       GoogleContactContext context)
     {
-      var createRequestsAndJobs = CreateCreateRequests (createJobs);
-      var updateRequestsAndJobs = CreateUpdateRequests (updateJobs);
+      var createRequestsAndJobs = await CreateCreateRequests (createJobs);
+      var updateRequestsAndJobs = await CreateUpdateRequests (updateJobs);
 
       await Task.Run (() =>
       {
@@ -179,14 +179,14 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
           });
     }
 
-    private static Tuple<List<GoogleContactWrapper>, IReadOnlyList<ICreateJob<GoogleContactWrapper, string, GoogleContactVersion>>> CreateCreateRequests (IReadOnlyList<ICreateJob<GoogleContactWrapper, string, GoogleContactVersion>> jobs)
+    private static async Task<Tuple<List<GoogleContactWrapper>, IReadOnlyList<ICreateJob<GoogleContactWrapper, string, GoogleContactVersion>>>> CreateCreateRequests (IReadOnlyList<ICreateJob<GoogleContactWrapper, string, GoogleContactVersion>> jobs)
     {
       var requests = new List<GoogleContactWrapper> ();
       foreach (var job in jobs)
       {
         try
         {
-          var contact = job.InitializeEntity (new GoogleContactWrapper (new Contact ()));
+          var contact = await job.InitializeEntity (new GoogleContactWrapper (new Contact ()));
           contact.Contact.BatchData = new GDataBatchEntryData (GDataBatchOperationType.insert);
           requests.Add (contact);
         }
@@ -254,7 +254,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       }
     }
 
-    Tuple<Dictionary<string, GoogleContactWrapper>, Dictionary<string, IUpdateJob<GoogleContactWrapper, string, GoogleContactVersion>>> CreateUpdateRequests (IEnumerable<IUpdateJob<GoogleContactWrapper, string, GoogleContactVersion>> jobs)
+    async Task<Tuple<Dictionary<string, GoogleContactWrapper>, Dictionary<string, IUpdateJob<GoogleContactWrapper, string, GoogleContactVersion>>>> CreateUpdateRequests (IEnumerable<IUpdateJob<GoogleContactWrapper, string, GoogleContactVersion>> jobs)
     {
       var jobsById = new Dictionary<string, IUpdateJob<GoogleContactWrapper, string, GoogleContactVersion>>(_contactIdComparer);
       var requestsById = new Dictionary<string, GoogleContactWrapper> (_contactIdComparer);
@@ -263,7 +263,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       {
         try
         {
-          var updatedContact = job.UpdateEntity (job.EntityToUpdate);
+          var updatedContact = await job.UpdateEntity (job.EntityToUpdate);
           updatedContact.Contact.BatchData = new GDataBatchEntryData (GDataBatchOperationType.update);
           requestsById.Add (job.EntityId, updatedContact);
           jobsById.Add (job.EntityId, job);

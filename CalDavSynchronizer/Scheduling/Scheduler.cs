@@ -101,7 +101,7 @@ namespace CalDavSynchronizer.Scheduling
       }
     }
 
-    public void SetOptions (Options[] options, GeneralOptions generalOptions)
+    public async Task SetOptions (Options[] options, GeneralOptions generalOptions)
     {
       if (options == null)
         throw new ArgumentNullException (nameof (options));
@@ -123,7 +123,7 @@ namespace CalDavSynchronizer.Scheduling
                 _ensureSynchronizationContext,
                 _runLogger);
           }
-          profileRunner.UpdateOptions (option, generalOptions);
+          await profileRunner.UpdateOptions (option, generalOptions);
           workersById.Add (option.Id, profileRunner);
         }
         catch (Exception x)

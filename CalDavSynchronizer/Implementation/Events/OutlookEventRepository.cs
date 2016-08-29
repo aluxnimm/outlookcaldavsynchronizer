@@ -300,17 +300,17 @@ namespace CalDavSynchronizer.Implementation.Events
         appointmentItemWrapper.Dispose();
     }
 
-    public Task<EntityVersion<string, DateTime>> TryUpdate (
+    public async Task<EntityVersion<string, DateTime>> TryUpdate (
         string entityId,
         DateTime entityVersion,
         AppointmentItemWrapper entityToUpdate,
-        Func<AppointmentItemWrapper, AppointmentItemWrapper> entityModifier,
+        Func<AppointmentItemWrapper, Task<AppointmentItemWrapper>> entityModifier,
         IEventSynchronizationContext context)
     {
-      entityToUpdate = entityModifier (entityToUpdate);
+      entityToUpdate = await entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save();
       context.AnnounceAppointment (entityToUpdate.Inner);
-      return Task.FromResult (new EntityVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime));
+      return new EntityVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime);
     }
 
     public Task<bool> TryDelete (string entityId, DateTime version, IEventSynchronizationContext context)
@@ -327,7 +327,7 @@ namespace CalDavSynchronizer.Implementation.Events
       return Task.FromResult (true);
     }
 
-    public Task<EntityVersion<string, DateTime>> Create (Func<AppointmentItemWrapper, AppointmentItemWrapper> entityInitializer, IEventSynchronizationContext context)
+    public async Task<EntityVersion<string, DateTime>> Create (Func<AppointmentItemWrapper, Task<AppointmentItemWrapper>> entityInitializer, IEventSynchronizationContext context)
     {
       AppointmentItemWrapper newAppointmentItemWrapper;
 
@@ -340,12 +340,12 @@ namespace CalDavSynchronizer.Implementation.Events
 
       using (newAppointmentItemWrapper)
       {
-        using (var initializedWrapper = entityInitializer (newAppointmentItemWrapper))
+        using (var initializedWrapper = await entityInitializer (newAppointmentItemWrapper))
         {
           initializedWrapper.SaveAndReload();
           context.AnnounceAppointment (initializedWrapper.Inner);
           var result = new EntityVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime);
-          return Task.FromResult (result);
+          return result;
         }
       }
     }

@@ -155,16 +155,16 @@ namespace CalDavSynchronizer.Implementation.Contacts
         contactItemWrapper.Dispose ();
     }
 
-    public Task<EntityVersion<string, DateTime>> TryUpdate (
+    public async Task<EntityVersion<string, DateTime>> TryUpdate (
       string entityId,
       DateTime entityVersion,
       ContactItemWrapper entityToUpdate,
-      Func<ContactItemWrapper, ContactItemWrapper> entityModifier,
+      Func<ContactItemWrapper, Task<ContactItemWrapper>> entityModifier,
       Tcontext context)
     {
-      entityToUpdate = entityModifier (entityToUpdate);
+      entityToUpdate = await entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save ();
-      return Task.FromResult (new EntityVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime));
+      return new EntityVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime);
     }
 
     public Task<bool> TryDelete (
@@ -199,7 +199,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       return Task.FromResult (true);
     }
 
-    public Task<EntityVersion<string, DateTime>> Create (Func<ContactItemWrapper, ContactItemWrapper> entityInitializer, Tcontext context)
+    public async Task<EntityVersion<string, DateTime>> Create (Func<ContactItemWrapper, Task<ContactItemWrapper>> entityInitializer, Tcontext context)
     {
       ContactItemWrapper newWrapper;
 
@@ -212,11 +212,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       using (newWrapper)
       {
-        using (var initializedWrapper = entityInitializer (newWrapper))
+        using (var initializedWrapper = await entityInitializer (newWrapper))
         {
           initializedWrapper.SaveAndReload ();
           var result = new EntityVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime);
-          return Task.FromResult (result);
+          return result;
         }
       }
     }

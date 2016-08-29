@@ -240,16 +240,16 @@ namespace CalDavSynchronizer.Implementation.Tasks
         wrapper.Dispose();
     }
 
-    public Task<EntityVersion<string, DateTime>> TryUpdate (
+    public async Task<EntityVersion<string, DateTime>> TryUpdate (
         string entityId,
         DateTime entityVersion,
         TaskItemWrapper entityToUpdate,
-        Func<TaskItemWrapper, TaskItemWrapper> entityModifier,
+        Func<TaskItemWrapper, Task<TaskItemWrapper>> entityModifier,
         int context)
     {
-      entityToUpdate = entityModifier (entityToUpdate);
+      entityToUpdate = await entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save();
-      return Task.FromResult (new EntityVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime));
+      return new EntityVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime);
     }
 
     public Task<bool> TryDelete (
@@ -269,16 +269,16 @@ namespace CalDavSynchronizer.Implementation.Tasks
       return Task.FromResult (true);
     }
 
-    public Task<EntityVersion<string, DateTime>> Create (Func<TaskItemWrapper, TaskItemWrapper> entityInitializer, int context)
+    public async Task<EntityVersion<string, DateTime>> Create (Func<TaskItemWrapper, Task<TaskItemWrapper>> entityInitializer, int context)
     {
       using (var taskFolderWrapper = CreateFolderWrapper ())
       using (var wrapper = new TaskItemWrapper ((TaskItem) taskFolderWrapper.Inner.Items.Add (OlItemType.olTaskItem), entryId => (TaskItem) _mapiNameSpace.GetItemFromID (entryId, _folderStoreId)))
       {
-        using (var initializedWrapper = entityInitializer (wrapper))
+        using (var initializedWrapper = await entityInitializer (wrapper))
         {
           initializedWrapper.SaveAndReload ();
           var result = new EntityVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime);
-          return Task.FromResult (result);
+          return result;
         }
       }
     }

@@ -22,6 +22,7 @@ using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Security;
+using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
@@ -49,6 +50,7 @@ using log4net;
 using Microsoft.Office.Interop.Outlook;
 using Thought.vCards;
 using ContactEntityMapper = CalDavSynchronizer.Implementation.Contacts.ContactEntityMapper;
+using Task = Google.Apis.Tasks.v1.Data.Task;
 
 namespace CalDavSynchronizer.Scheduling
 {
@@ -112,25 +114,24 @@ namespace CalDavSynchronizer.Scheduling
       public ICardDavDataAccess CardDavDataAccess;
     }
 
-    public IOutlookSynchronizer CreateSynchronizer (Options options, GeneralOptions generalOptions)
+    public async Task<IOutlookSynchronizer> CreateSynchronizer (Options options, GeneralOptions generalOptions)
     {
       if (options == null)
         throw new ArgumentNullException (nameof (options));
       if (generalOptions == null)
         throw new ArgumentNullException (nameof (generalOptions));
 
-      AvailableSynchronizerComponents synchronizerComponents;
-      return CreateSynchronizer (options, generalOptions, out synchronizerComponents);
+      return (await CreateSynchronizerWithComponents(options, generalOptions)).Item1;
     }
 
-    public IOutlookSynchronizer CreateSynchronizer (Options options, GeneralOptions generalOptions, out AvailableSynchronizerComponents synchronizerComponents)
+    public async Task<Tuple<IOutlookSynchronizer, AvailableSynchronizerComponents>> CreateSynchronizerWithComponents (Options options, GeneralOptions generalOptions)
     {
       if (options == null)
         throw new ArgumentNullException (nameof (options));
       if (generalOptions == null)
         throw new ArgumentNullException (nameof (generalOptions));
 
-      synchronizerComponents = new AvailableSynchronizerComponents();
+      var synchronizerComponents = new AvailableSynchronizerComponents();
 
       OlItemType defaultItemType;
       string folderName;
@@ -141,20 +142,25 @@ namespace CalDavSynchronizer.Scheduling
         folderName = outlookFolderWrapper.Inner.Name;
       }
 
+      IOutlookSynchronizer synchronizer;
+
       switch (defaultItemType)
       {
         case OlItemType.olAppointmentItem:
-          return CreateEventSynchronizer (options, generalOptions, synchronizerComponents);
+          synchronizer = CreateEventSynchronizer (options, generalOptions, synchronizerComponents);
+          break;
         case OlItemType.olTaskItem:
           if (options.ServerAdapterType == ServerAdapterType.GoogleTaskApi)
-            return CreateGoogleTaskSynchronizer (options);
+            synchronizer = await CreateGoogleTaskSynchronizer (options);
           else
-            return CreateTaskSynchronizer (options, generalOptions, synchronizerComponents);
+            synchronizer = CreateTaskSynchronizer (options, generalOptions, synchronizerComponents);
+          break;
         case OlItemType.olContactItem:
           if (options.ServerAdapterType == ServerAdapterType.GoogleContactApi)
-            return CreateGoogleContactSynchronizer (options, synchronizerComponents);
+            synchronizer = await CreateGoogleContactSynchronizer (options, synchronizerComponents);
           else
-            return CreateContactSynchronizer (options, generalOptions, synchronizerComponents);
+            synchronizer = CreateContactSynchronizer (options, generalOptions, synchronizerComponents);
+          break;
         default:
           throw new NotSupportedException (
               string.Format (
@@ -162,6 +168,8 @@ namespace CalDavSynchronizer.Scheduling
                   folderName,
                   defaultItemType));
       }
+
+      return Tuple.Create(synchronizer, synchronizerComponents);
     }
 
     private IOutlookSynchronizer CreateEventSynchronizer (Options options, GeneralOptions generalOptions ,AvailableSynchronizerComponents componentsToFill)
@@ -492,7 +500,7 @@ namespace CalDavSynchronizer.Scheduling
       return new OutlookSynchronizer<WebResourceName, string> (synchronizer);
     }
 
-    private IOutlookSynchronizer CreateGoogleTaskSynchronizer (Options options)
+    private async Task<IOutlookSynchronizer> CreateGoogleTaskSynchronizer (Options options)
     {
       var mappingParameters = GetMappingParameters<TaskMappingConfiguration> (options);
 
@@ -500,7 +508,7 @@ namespace CalDavSynchronizer.Scheduling
 
       IWebProxy proxy = options.ProxyOptions != null ? CreateProxy (options.ProxyOptions) : null;
 
-      var tasksService = System.Threading.Tasks.Task.Run (() => OAuth.Google.GoogleHttpClientFactory.LoginToGoogleTasksService (options.UserName,proxy).Result).Result;
+      var tasksService = await OAuth.Google.GoogleHttpClientFactory.LoginToGoogleTasksService (options.UserName,proxy);
 
       TaskList taskList;
       try
@@ -628,7 +636,7 @@ namespace CalDavSynchronizer.Scheduling
       return new OutlookSynchronizer<WebResourceName, string> (synchronizer);
     }
 
-    private IOutlookSynchronizer CreateGoogleContactSynchronizer (Options options, AvailableSynchronizerComponents componentsToFill)
+    private async Task<IOutlookSynchronizer> CreateGoogleContactSynchronizer (Options options, AvailableSynchronizerComponents componentsToFill)
     {
       var atypeRepository = new OutlookContactRepository<GoogleContactContext> (
           _outlookSession,
@@ -638,8 +646,7 @@ namespace CalDavSynchronizer.Scheduling
 
       IWebProxy proxy = options.ProxyOptions != null ? CreateProxy (options.ProxyOptions) : null;
 
-      var googleApiExecutor = new GoogleApiOperationExecutor (
-          System.Threading.Tasks.Task.Run (() => OAuth.Google.GoogleHttpClientFactory.LoginToContactsService (options.UserName, proxy).Result).Result);
+      var googleApiExecutor = new GoogleApiOperationExecutor (await OAuth.Google.GoogleHttpClientFactory.LoginToContactsService (options.UserName, proxy));
 
       var mappingParameters = GetMappingParameters<ContactMappingConfiguration> (options);
 

@@ -98,7 +98,7 @@ namespace CalDavSynchronizer.Scheduling
       _lastRun = DateTime.MinValue;
     }
 
-    public void UpdateOptions (Options options, GeneralOptions generalOptions)
+    public async Task UpdateOptions (Options options, GeneralOptions generalOptions)
     {
       if (options == null)
         throw new ArgumentNullException (nameof (options));
@@ -111,7 +111,7 @@ namespace CalDavSynchronizer.Scheduling
       _profileName = options.Name;
       _profileId = options.Id;
       _proxyOptions = options.ProxyOptions;
-      _synchronizer = options.Inactive ? NullOutlookSynchronizer.Instance : _synchronizerFactory.CreateSynchronizer (options, generalOptions);
+      _synchronizer = options.Inactive ? NullOutlookSynchronizer.Instance : await _synchronizerFactory.CreateSynchronizer (options, generalOptions);
       _interval = TimeSpan.FromMinutes (options.SynchronizationIntervalInMinutes);
       _inactive = options.Inactive;
       _checkIfOnline = generalOptions.CheckIfOnline;

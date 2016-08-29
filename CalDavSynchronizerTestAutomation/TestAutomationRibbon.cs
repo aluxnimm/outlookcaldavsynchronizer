@@ -70,7 +70,7 @@ namespace CalDavSynchronizerTestAutomation
       StartTests (true);
     }
 
-    private void ImportIcsData_Click (object sender, RibbonControlEventArgs e)
+    private async void ImportIcsData_Click (object sender, RibbonControlEventArgs e)
     {
       try
       {
@@ -81,8 +81,8 @@ namespace CalDavSynchronizerTestAutomation
 
         var entitySynchronizationLogger = new EntitySynchronizationLogger ();
 
-        OutlookTestContext.EventRepository.Create (
-            appointmentWrapper => OutlookTestContext.EntityMapper.Map2To1 (
+        await OutlookTestContext.EventRepository.Create (
+            async appointmentWrapper => await OutlookTestContext.EntityMapper.Map2To1 (
                 OutlookTestContext.DeserializeICalendar (dataInputWindow.Item2.Text),
                 appointmentWrapper,
                 entitySynchronizationLogger),

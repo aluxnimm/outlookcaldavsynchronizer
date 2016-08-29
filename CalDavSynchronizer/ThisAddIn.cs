@@ -47,7 +47,7 @@ namespace CalDavSynchronizer
         handler (this, EventArgs.Empty);
     }
 
-    private void ThisAddIn_Startup (object sender, EventArgs e)
+    private async void ThisAddIn_Startup (object sender, EventArgs e)
     {
       try
       {
@@ -67,6 +67,11 @@ namespace CalDavSynchronizer
         _explorers.NewExplorer += Explorers_NewExplorer;
 
         AddToolBarIfRequired();
+
+        ComponentContainer.EnsureSynchronizationContext();
+
+        s_logger.Info ("Initializing component container.");
+        await ComponentContainer.Initialize();
 
         s_logger.Info ("Startup exiting.");
       }

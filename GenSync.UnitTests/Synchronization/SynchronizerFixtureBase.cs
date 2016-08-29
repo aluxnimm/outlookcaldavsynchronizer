@@ -198,11 +198,11 @@ namespace GenSync.UnitTests.Synchronization
 
     public async Task InitializeWithTwoEvents ()
     {
-      var v1 = await _localRepository.Create (v => "Item 1", NullSynchronizationContextFactory.Instance.Create ().Result);
-      var v2 = await _localRepository.Create (v => "Item 2", NullSynchronizationContextFactory.Instance.Create ().Result);
+      var v1 = await _localRepository.Create (v => Task.FromResult("Item 1"), NullSynchronizationContextFactory.Instance.Create ().Result);
+      var v2 = await _localRepository.Create (v => Task.FromResult("Item 2"), NullSynchronizationContextFactory.Instance.Create ().Result);
 
-      var v3 = await _serverRepository.Create (v => "Item 1", NullSynchronizationContextFactory.Instance.Create ().Result);
-      var v4 = await _serverRepository.Create (v => "Item 2", NullSynchronizationContextFactory.Instance.Create ().Result);
+      var v3 = await _serverRepository.Create (v => Task.FromResult("Item 1"), NullSynchronizationContextFactory.Instance.Create ().Result);
+      var v4 = await _serverRepository.Create (v => Task.FromResult("Item 2"), NullSynchronizationContextFactory.Instance.Create ().Result);
 
       _entityRelationData.Add (new EntityRelationData (
           v1.Id,

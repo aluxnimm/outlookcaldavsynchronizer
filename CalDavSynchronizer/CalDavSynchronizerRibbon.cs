@@ -55,11 +55,11 @@ namespace CalDavSynchronizer
       }
     }
 
-    private void OptionsButton_Click (object sender, RibbonControlEventArgs e)
+    private async void OptionsButton_Click (object sender, RibbonControlEventArgs e)
     {
       try
       {
-        ThisAddIn.ComponentContainer.ShowOptions();
+        await ThisAddIn.ComponentContainer.ShowOptions();
       }
       catch (Exception x)
       {
@@ -79,11 +79,11 @@ namespace CalDavSynchronizer
       }
     }
 
-    private void GeneralOptionsButton_Click (object sender, RibbonControlEventArgs e)
+    private async void GeneralOptionsButton_Click (object sender, RibbonControlEventArgs e)
     {
       try
       {
-        ThisAddIn.ComponentContainer.ShowGeneralOptions();
+        await ThisAddIn.ComponentContainer.ShowGeneralOptions();
       }
       catch (Exception x)
       {

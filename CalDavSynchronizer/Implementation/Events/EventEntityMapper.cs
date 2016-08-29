@@ -21,6 +21,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Common;
@@ -72,7 +73,7 @@ namespace CalDavSynchronizer.Implementation.Events
       _outlookMajorVersion = Convert.ToInt32 (outlookMajorVersionString);
     }
 
-    public IICalendar Map1To2 (AppointmentItemWrapper sourceWrapper, IICalendar existingTargetCalender, IEntityMappingLogger logger)
+    public Task<IICalendar> Map1To2 (AppointmentItemWrapper sourceWrapper, IICalendar existingTargetCalender, IEntityMappingLogger logger)
     {
       var newTargetCalender = new iCalendar();
 
@@ -140,7 +141,7 @@ namespace CalDavSynchronizer.Implementation.Events
         newTargetCalender.Events[i].Sequence = newSequenceNumber;
       }
 
-      return newTargetCalender;
+      return Task.FromResult<IICalendar> (newTargetCalender);
     }
 
     private void Map1To2 (AppointmentItem source, IEvent target, bool isRecurrenceException, iCalTimeZone startIcalTimeZone, iCalTimeZone endIcalTimeZone, IEntityMappingLogger logger)
@@ -1206,7 +1207,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
     private const int s_mailtoSchemaLength = 7; // length of "mailto:"
 
-    public AppointmentItemWrapper Map2To1 (IICalendar sourceCalendar, AppointmentItemWrapper target, IEntityMappingLogger logger)
+    public Task<AppointmentItemWrapper> Map2To1 (IICalendar sourceCalendar, AppointmentItemWrapper target, IEntityMappingLogger logger)
     {
       IEvent sourceMasterEvent = null;
       IReadOnlyCollection<IEvent> sourceExceptionEvents;
@@ -1243,7 +1244,7 @@ namespace CalDavSynchronizer.Implementation.Events
         return Map2To1 (sourceCalendar, target, logger);
       }
 
-      return Map2To1 (sourceMasterEvent, sourceExceptionEvents, target, false, logger);
+      return Task.FromResult(Map2To1 (sourceMasterEvent, sourceExceptionEvents, target, false, logger));
     }
 
     private void AddMasterEvent (IICalendar calendar)

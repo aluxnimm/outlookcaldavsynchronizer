@@ -28,6 +28,7 @@ using log4net;
 using System.Reflection;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Exception = System.Exception;
 
 
@@ -50,7 +51,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       _configuration = configuration;
     }
 
-    public vCard Map1To2 (ContactItemWrapper source, vCard target, IEntityMappingLogger logger)
+    public Task<vCard> Map1To2 (ContactItemWrapper source, vCard target, IEntityMappingLogger logger)
     {
       target.GivenName = source.Inner.FirstName;
       target.FamilyName = source.Inner.LastName;
@@ -179,10 +180,10 @@ namespace CalDavSynchronizer.Implementation.Contacts
         target.Notes.Add (new vCardNote (source.Inner.Body));
       }
 
-      return target;
+      return Task.FromResult(target);
     }
 
-    public ContactItemWrapper Map2To1 (vCard source, ContactItemWrapper target, IEntityMappingLogger logger)
+    public async Task<ContactItemWrapper> Map2To1 (vCard source, ContactItemWrapper target, IEntityMappingLogger logger)
     {
       target.Inner.FirstName = source.GivenName;
       target.Inner.LastName = source.FamilyName;
@@ -294,7 +295,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       MapCertificate2To1 (source, target.Inner, logger);
 
-      if (_configuration.MapContactPhoto) MapPhoto2To1 (source, target.Inner, logger);
+      if (_configuration.MapContactPhoto)
+        await MapPhoto2To1 (source, target.Inner, logger);
 
       if (source.Notes.Count > 0)
       {
@@ -556,7 +558,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    private void MapPhoto2To1 (vCard source, ContactItem target, IEntityMappingLogger logger)
+    private async Task MapPhoto2To1 (vCard source, ContactItem target, IEntityMappingLogger logger)
     {
       if (source.Photos.Count > 0)
       {
@@ -571,7 +573,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
           {
             using (var client = HttpUtility.CreateWebClient())
             {
-              client.DownloadFile (contactPhoto.Url, picturePath);
+              await client.DownloadFileTaskAsync (contactPhoto.Url, picturePath);
             }
           }
           else if (contactPhoto.IsLoaded)

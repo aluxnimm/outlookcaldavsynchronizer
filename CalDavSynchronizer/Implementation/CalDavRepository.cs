@@ -193,12 +193,12 @@ namespace CalDavSynchronizer.Implementation
         WebResourceName entityId,
         string entityVersion,
         IICalendar entityToUpdate,
-        Func<IICalendar, IICalendar> entityModifier,
+        Func<IICalendar, Task<IICalendar>> entityModifier,
         TContext context)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
-        var updatedEntity = entityModifier (entityToUpdate);
+        var updatedEntity = await entityModifier (entityToUpdate);
         try
         {
           return await _calDavDataAccess.TryUpdateEntity (entityId, entityVersion, SerializeCalendar (updatedEntity));
@@ -227,12 +227,12 @@ namespace CalDavSynchronizer.Implementation
       }
     }
 
-    public async Task<EntityVersion<WebResourceName, string>> Create (Func<IICalendar, IICalendar> entityInitializer, TContext context)
+    public async Task<EntityVersion<WebResourceName, string>> Create (Func<IICalendar, Task<IICalendar>> entityInitializer, TContext context)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
         IICalendar newCalendar = new iCalendar ();
-        newCalendar = entityInitializer (newCalendar);
+        newCalendar = await entityInitializer (newCalendar);
         var uid = (newCalendar.Events.Count > 0) ? newCalendar.Events[0].UID : newCalendar.Todos[0].UID;
         return await _calDavDataAccess.CreateEntity (SerializeCalendar (newCalendar), uid);
       }

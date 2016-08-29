@@ -93,11 +93,11 @@ namespace GenSync.UnitTests.Synchronization.Stubs
       return Task.FromResult (true);
     }
 
-    public Task<EntityVersion<Identifier, int>> TryUpdate (
+    public async Task<EntityVersion<Identifier, int>> TryUpdate (
         Identifier entityId,
         int entityVersion,
         string entityToUpdate,
-        Func<string, string> entityModifier, 
+        Func<string, Task<string>> entityModifier, 
         int context)
     {
       var kv = EntityVersionAndContentById[entityId];
@@ -107,13 +107,13 @@ namespace GenSync.UnitTests.Synchronization.Stubs
 
       EntityVersionAndContentById.Remove (entityId);
 
-      var newValue = entityModifier (kv.Item2);
+      var newValue = await entityModifier (kv.Item2);
       var newVersion = kv.Item1 + 1;
 
       var newEntityId = entityId.Value + "u";
 
       EntityVersionAndContentById[newEntityId] = Tuple.Create (newVersion, newValue);
-      return Task.FromResult (new EntityVersion<Identifier, int> (newEntityId, newVersion));
+      return new EntityVersion<Identifier, int> (newEntityId, newVersion);
     }
 
     public EntityVersion<Identifier, int> UpdateWithoutIdChange (Identifier entityId, Func<string, string> entityModifier)
@@ -128,12 +128,12 @@ namespace GenSync.UnitTests.Synchronization.Stubs
     }
 
 
-    public Task<EntityVersion<Identifier, int>> Create (Func<string, string> entityInitializer, int context)
+    public async Task<EntityVersion<Identifier, int>> Create (Func<string, Task<string>> entityInitializer, int context)
     {
-      var newValue = entityInitializer (string.Empty);
+      var newValue = await entityInitializer (string.Empty);
       var entityId = _idPrefix + _nextId++;
       EntityVersionAndContentById[entityId] = Tuple.Create (0, newValue);
-      return Task.FromResult (new EntityVersion<Identifier, int> (entityId, 0));
+      return new EntityVersion<Identifier, int> (entityId, 0);
     }
 
     public Tuple<int, string> this [string id]
