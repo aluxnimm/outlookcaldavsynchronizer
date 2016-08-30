@@ -62,10 +62,13 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 - time-triggered-sync
 - change-triggered-sync
 - manual-triggered-sync
-- Category Filtering (sync CalDAV calendar to Outlook categories)
+- Category Filtering (sync CalDAV calendar/tasks to Outlook categories)
 - map CalDAV server colors to Outlook category colors
 - show reports of last sync runs and status
 - System TrayIcon with notifications
+- bulk creation of multiple profiles
+- Use server settings from Outlook IMAP/POP3 account profile
+- Map Windows to standard IANA/Olson timezones
 
 ### Used Libraries ###
 
@@ -82,6 +85,20 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 YOu should also update manually to the latest Visual Studio 2010 Tools for Office Runtime (Version 10.0.60724) if you have an older version installed, since some COMExceptions have been fixed.
 
 ### Changelog ###
+
+#### 2.5.0 ####
+- New features
+	- Add mapping configuration to use IANA timezones instead of Windows timezones.
+	- Make addin startup and EntityMapper async.
+	- Add progressBar and download new version async, github issue 156.
+- Bug fixes
+	- Add SCHEDULE-AGENT=CLIENT also to attendees, ticket #354.
+	- Avoid empty PARTSTAT and default to NEEDS-ACTION.
+	- Add KeepOutlookFileAs option (defaults to true) for contacts to avoid overwriting existing FileAs with FN attribute.
+	- Set Outlook contact FullName to FN as fallback if N is missing in vcard.
+	- Set Outlook task status to Completed when complete date exists and percentComplete is 100 also when VTODO status is missing, gh issue 154.
+	- Fix mapping organizer if CN and email are identical, gh issue 157.
+	- Avoid DDay.ICal UTC calls and use NodaTime instead for conversion, gh issue 159.
 
 #### 2.4.0 ####
 - New features
@@ -771,7 +788,7 @@ If you expand the tree view of the profile you can configure network and proxy o
 	
 - **Mapping Configuration**: Here you can configure what properties should be synced.
 	- For appointments you can choose if you want to map reminders (just upcoming, all or none) and the description body.
-	- *Create events on server in UTC:* Use UTC instead of Outlook Appointment Timezone for creating events on CalDAV server. Needed for GMX for example. Not recommended for general use, because recurrence exceptions over DST changes can't be mapped and Appointments with different start and end timezones can't be represented.
+	- *Timezone settings* See section Timezone mapping below.
 	- *Use GlobalAppointmentID for UID attribute:* Use Outlook GlobalAppointmendID instead of random Guid for UID attribute in new CalDAV events. This can avoid duplicate events from invitations.
 	- In *Privacy settings* you can configure if you want to map Outlook private appointments to CLASS:CONFIDENTIAL and vice versa. This could be useful for Owncloud for example, if you share your calendar with others and they should see start/end dates of your private appointments. You can also map all CLASS:PUBLIC events to Outlook private appointments.
 	- In *Scheduling settings* you can configure if you want to map attendees and organizer and if notifications should be sent by the server. 
@@ -780,9 +797,18 @@ If you expand the tree view of the profile you can configure network and proxy o
 	- *Cleanup duplicate events after each sync run:* removes duplicate Outlook appointments based on start,end and subject of the events after each sync run, be aware of possible performance penalties with this option enabled.
 	- For contacts you can configure if birthdays should be mapped or not. If birthdays are mapped, Outlook also creates an recurring appointment for every contact with a defined birthday.
 	- You can also configure if contact photos should be mapped or not. Contact photo mapping from Outlook to the server doesn't work in Outlook 2007. You can also add an option to not overwrite the contact photo in Outlook when it changes on the server, which could happen due to other mobile clients reducing the resolution for example.
+	- Don't overwrite FileAs in Outlook uses the Outlook settings for FileAs and doesn't overwrite the contact FileAs with the FN from the server.
 	- Fix imported phone number format adds round brackets to the area code of phone numbers, so that Outlook can show correct phone number details with country and area code, e.g. +1 23 45678 is mapped to +1 (23) 45678.
 	- For tasks (not for Google task profiles) you can configure if you want to map reminders (just upcoming, all or none), the priority of the task, the description body and if recurring tasks should be synchronized.
 	- Similar to calendars you can also define a filter category so that multiple CalDAV Tasklists can be synchronized into one Outlook task folder via the defined category.	
+### Timezone settings ###
+
+Outlook and Windows use different Timezone definitions than most CalDAV servers and other clients. When adding new events on the server you have different options how the timezone of the newly created VEVENT is generated. The default setting uses the default Windows Timezone from Outlook (e.g. W. Europe Standard Time) or the selected timezones for the start and end of the appointment. Since some servers have problems with that timezone definitions you can change that behaviour in the event mapping configuration with the following options:
+
+- *Create events on server in UTC* Use UTC instead of Outlook Appointment Timezone for creating events on CalDAV server. Not recommended for general use, because recurrence exceptions over DST changes can't be mapped and Appointments with different start and end timezones can't be represented.
+- *Create events on server in downloaded IANA Timezones* Use Iana instead of Windows Timezones for creating events on CalDAV server. Needed for servers which do not accept non standard Windows Timezones like GMX for example. Timezone definitions will be downloaded from [http://tzurl.org.](http://tzurl.org)
+- *Use IANA Timezone* Use this IANA timezone for default Outlook/Windows timezone. Manually selected different timezones in Outlook appointments will be mapped to first corresponding IANA timezone.
+- *Include full IANA zone with historical data* Use full IANA timezone definition with historical data. Needs more bandwith and can be incompatible when manually importing in Outlook.
 
 ### Scheduling settings and resources ###
 
@@ -815,7 +841,7 @@ If you get an error with insufficient access you need to refresh the token by de
 ### GMX calendar settings ###
 
 For GMX calendar use the GMX Calendar account type, which sets the autodiscovery DAV Url `https://caldav.gmx.net`
-Since GMX doesn't allow to create events with the Windows Timezone IDs, for the GMX account type the `Create events on server in UTC` checkbox in Mapping Configuration is checked by default to avoid errors when creating events and syncing from Outlook to GMX.
+Since GMX doesn't allow to create events with the Windows Timezone IDs, for the GMX account type the `Create events on server with downloaded IANA Timezones` checkbox in Mapping Configuration is checked by default to avoid errors when creating events and syncing from Outlook to GMX.
 
 For GMX addressbook use the DAV Url `https://carddav.gmx.net`
 
