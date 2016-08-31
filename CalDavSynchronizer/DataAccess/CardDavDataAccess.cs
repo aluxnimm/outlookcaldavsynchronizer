@@ -82,7 +82,8 @@ namespace CalDavSynchronizer.DataAccess
                     XmlNode isCollection = responseElement.SelectSingleNode ("D:propstat/D:prop/D:resourcetype/A:addressbook", addressBookDocument.XmlNamespaceManager);
                     if (isCollection != null)
                     {
-                      addressbooks.Add (new AddressBookData (new Uri (addressBookDocument.DocumentUri, urlNode.InnerText), displayNameNode.InnerText));
+                      var path = urlNode.InnerText.EndsWith ("/") ? urlNode.InnerText : urlNode.InnerText + "/";
+                      addressbooks.Add (new AddressBookData (new Uri (addressBookDocument.DocumentUri, path), displayNameNode.InnerText));
                     }
                   }
                 }

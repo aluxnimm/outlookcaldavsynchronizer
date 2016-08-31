@@ -101,10 +101,12 @@ namespace CalDavSynchronizer.DataAccess
                       XmlNode supportedComponentsNode = responseElement.SelectSingleNode ("D:propstat/D:prop/C:supported-calendar-component-set", calendarDocument.XmlNamespaceManager);
                       if (supportedComponentsNode != null)
                       {
-                          if (supportedComponentsNode.InnerXml.Contains ("VEVENT"))
-                            calendars.Add (new CalendarData (new Uri (calendarDocument.DocumentUri, urlNode.InnerText), displayNameNode.InnerText, calendarColor));
-                          if (supportedComponentsNode.InnerXml.Contains ("VTODO"))
-                            taskLists.Add (new TaskListData (new Uri (calendarDocument.DocumentUri, urlNode.InnerText).ToString(), displayNameNode.InnerText));
+                        var path = urlNode.InnerText.EndsWith ("/") ? urlNode.InnerText : urlNode.InnerText + "/";
+
+                        if (supportedComponentsNode.InnerXml.Contains ("VEVENT"))
+                            calendars.Add (new CalendarData (new Uri (calendarDocument.DocumentUri, path), displayNameNode.InnerText, calendarColor));
+                        if (supportedComponentsNode.InnerXml.Contains ("VTODO"))
+                            taskLists.Add (new TaskListData (new Uri (calendarDocument.DocumentUri, path).ToString(), displayNameNode.InnerText));
                       }
                     }
                   }
