@@ -1553,6 +1553,11 @@ namespace CalDavSynchronizer.Implementation.Events
         else if (ownSourceAttendee != null && targetWrapper.Inner.ResponseStatus != OlResponseStatus.olResponseOrganized)
         {
           var response = MapParticipation2ToMeetingResponse (ownSourceAttendee.ParticipationStatus);
+
+          // show received meetings without response as tentative
+          if (response == null && !source.Properties.ContainsKey("X-MICROSOFT-CDO-BUSYSTATUS"))
+            targetWrapper.Inner.BusyStatus = OlBusyStatus.olTentative;
+
           if ((response != null) && (MapParticipation2To1 (ownSourceAttendee.ParticipationStatus) != targetWrapper.Inner.ResponseStatus))
           {
             if (response == OlMeetingResponse.olMeetingDeclined)
