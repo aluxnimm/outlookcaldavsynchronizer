@@ -67,5 +67,10 @@ namespace GenSync.Synchronization.States
       s_logger.Error ("This state should have been left via Resolve!");
       return this;
     }
+
+    public override void Accept (ISynchronizationStateVisitor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> visitor)
+    {
+      visitor.Visit(this);
+    }
   }
 }

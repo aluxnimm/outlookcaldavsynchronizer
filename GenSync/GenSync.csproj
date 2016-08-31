@@ -129,6 +129,7 @@
     <Compile Include="Synchronization\States\DoNothing.cs" />
     <Compile Include="Synchronization\States\IEntitySyncState.cs" />
     <Compile Include="Synchronization\IJobList.cs" />
+    <Compile Include="Synchronization\ISynchronizationStateVisitor.cs" />
     <Compile Include="Synchronization\States\RestoreInA.cs" />
     <Compile Include="Synchronization\States\RestoreInB.cs" />
     <Compile Include="Synchronization\States\StateBase.cs" />
