@@ -24,7 +24,7 @@ namespace GenSync.EntityRepositories
   /// <summary>
   /// All readoperations that a repository has to support
   /// </summary>
-  public interface IReadOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext>
+  public interface IReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>
   {
     Task<IReadOnlyList<EntityVersion<TEntityId, TEntityVersion>>> GetVersions (IEnumerable<IdWithAwarenessLevel<TEntityId>> idsOfEntitiesToQuery, TContext context);
     Task<IReadOnlyList<EntityVersion<TEntityId, TEntityVersion>>> GetAllVersions (IEnumerable<TEntityId> idsOfknownEntities, TContext context);

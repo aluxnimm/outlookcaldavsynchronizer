@@ -33,7 +33,7 @@ using log4net;
 
 namespace CalDavSynchronizer.Implementation.Tasks
 {
-  public class OutlookTaskRepository : IEntityRepository<TaskItemWrapper, string, DateTime, int>
+  public class OutlookTaskRepository : IEntityRepository<string, DateTime, TaskItemWrapper, int>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
     private readonly NameSpace _mapiNameSpace;

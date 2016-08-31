@@ -63,8 +63,8 @@ namespace GenSync.Synchronization.States
     }
 
     public override void AddSyncronizationJob (
-        IJobList<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> aJobs,
-        IJobList<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> bJobs,
+        IJobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity> aJobs,
+        IJobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> bJobs,
         IEntitySynchronizationLogger logger)
     {
       logger.SetBId (_knownData.BtypeId);

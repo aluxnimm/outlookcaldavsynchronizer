@@ -38,7 +38,10 @@ namespace GenSync.Synchronization.States
       return this;
     }
 
-    public void AddSyncronizationJob (IJobList<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> aJobs, IJobList<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> bJobs, IEntitySynchronizationLogger logger)
+    public void AddSyncronizationJob (
+        IJobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity> aJobs,
+        IJobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> bJobs,
+        IEntitySynchronizationLogger logger)
     {
     }
 

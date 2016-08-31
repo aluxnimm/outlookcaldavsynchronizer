@@ -126,7 +126,7 @@ namespace GenSync.UnitTests.Synchronization
       IInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string> strategy,
       List<IEntityRelationData<Identifier, int, Identifier, int>> matchingEntities = null)
     {
-      var initialEntityMatcherStub = MockRepository.GenerateStub<IInitialEntityMatcher<string, Identifier, int, string, Identifier, int>>();
+      var initialEntityMatcherStub = MockRepository.GenerateStub<IInitialEntityMatcher<Identifier, int, string, Identifier, int, string>>();
       initialEntityMatcherStub
           .Stub (_ => _.FindMatchingEntities (
               Arg<IEntityRelationDataFactory<Identifier, int, Identifier, int>>.Is.NotNull,

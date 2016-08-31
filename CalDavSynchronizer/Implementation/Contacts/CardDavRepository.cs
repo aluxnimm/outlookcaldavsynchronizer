@@ -31,7 +31,7 @@ using CalDavSynchronizer.ThoughtvCardWorkaround;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public class CardDavRepository : IEntityRepository<vCard, WebResourceName, string, int>
+  public class CardDavRepository : IEntityRepository<WebResourceName, string, vCard, int>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 

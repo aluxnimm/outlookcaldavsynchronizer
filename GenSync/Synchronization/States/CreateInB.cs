@@ -78,8 +78,8 @@ namespace GenSync.Synchronization.States
     }
 
     public override void AddSyncronizationJob (
-        IJobList<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> aJobs,
-        IJobList<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> bJobs,
+        IJobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity> aJobs,
+        IJobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> bJobs,
         IEntitySynchronizationLogger logger)
     {
       logger.SetAId (_aId);
@@ -125,7 +125,7 @@ namespace GenSync.Synchronization.States
       _nextStateAfterJobExecution = Discard();
     }
 
-    struct JobWrapper : ICreateJob<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion>
+    struct JobWrapper : ICreateJob<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
     {
       private readonly CreateInB<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _state;
       readonly IEntitySynchronizationLogger _logger;

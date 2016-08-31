@@ -54,7 +54,10 @@ namespace GenSync.Synchronization.States
       s_logger.Error ("This state should have been left via Resolve!");
     }
 
-    public override void AddSyncronizationJob (IJobList<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> aJobs, IJobList<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> bJobs, IEntitySynchronizationLogger logger)
+    public override void AddSyncronizationJob (
+       IJobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity> aJobs,
+       IJobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> bJobs,
+       IEntitySynchronizationLogger logger)
     {
       s_logger.Error ("This state should have been left via Resolve!");
     }

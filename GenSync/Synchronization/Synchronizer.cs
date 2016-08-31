@@ -45,27 +45,27 @@ namespace GenSync.Synchronization
     private readonly IEqualityComparer<TAtypeEntityId> _atypeIdComparer;
     private readonly IEqualityComparer<TBtypeEntityId> _btypeIdComparer;
 
-    private readonly IInitialEntityMatcher<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> _initialEntityMatcher;
+    private readonly IInitialEntityMatcher<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _initialEntityMatcher;
     private readonly IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> _entityRelationDataFactory;
     private readonly IEntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> _entityRelationDataAccess;
-    private readonly IReadOnlyEntityRepository<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TContext> _atypeRepository;
-    private readonly IReadOnlyEntityRepository<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TContext> _btypeRepository;
+    private readonly IReadOnlyEntityRepository<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TContext> _atypeRepository;
+    private readonly IReadOnlyEntityRepository<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> _btypeRepository;
     private readonly IInitialSyncStateCreationStrategy<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _initialSyncStateCreationStrategy;
     private readonly ITotalProgressFactory _totalProgressFactory;
     private readonly IExceptionLogger _exceptionLogger;
     private readonly ISynchronizationContextFactory<TContext> _contextFactory;
-    private readonly IBatchWriteOnlyEntityRepository<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TContext> _atypeWriteRepository;
-    private readonly IBatchWriteOnlyEntityRepository<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TContext> _btypeWriteRepository;
+    private readonly IBatchWriteOnlyEntityRepository<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TContext> _atypeWriteRepository;
+    private readonly IBatchWriteOnlyEntityRepository<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> _btypeWriteRepository;
 
     public Synchronizer (
-        IReadOnlyEntityRepository<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TContext> atypeRepository,
-        IReadOnlyEntityRepository<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TContext> btypeRepository,
-        IBatchWriteOnlyEntityRepository<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TContext> atypeWriteRepository,
-        IBatchWriteOnlyEntityRepository<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TContext> btypeWriteRepository,
+        IReadOnlyEntityRepository<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TContext> atypeRepository,
+        IReadOnlyEntityRepository<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> btypeRepository,
+        IBatchWriteOnlyEntityRepository<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TContext> atypeWriteRepository,
+        IBatchWriteOnlyEntityRepository<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> btypeWriteRepository,
         IInitialSyncStateCreationStrategy<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> initialSyncStateCreationStrategy,
         IEntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> entityRelationDataAccess,
         IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> entityRelationDataFactory,
-        IInitialEntityMatcher<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> initialEntityMatcher,
+        IInitialEntityMatcher<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> initialEntityMatcher,
         IEqualityComparer<TAtypeEntityId> atypeIdComparer, IEqualityComparer<TBtypeEntityId> btypeIdComparer,
         ITotalProgressFactory totalProgressFactory,
         IExceptionLogger exceptionLogger,
@@ -408,8 +408,8 @@ namespace GenSync.Synchronization
       // an state is allowed only to resolve to another state, if the following states requires equal or less entities!
       entitySyncStates.DoTransition (s => s.FetchRequiredEntities (entityContainer.AEntities, entityContainer.BEntities));
 
-      var aJobs = new JobList<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion>();
-      var bJobs = new JobList<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion>();
+      var aJobs = new JobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity> ();
+      var bJobs = new JobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> ();
 
       entitySyncStates.Execute (s => s.AddSyncronizationJob (aJobs, bJobs, logger.CreateEntitySynchronizationLogger()));
 

@@ -24,7 +24,7 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  internal class InitialContactEntityMatcher : InitialEntityMatcherByPropertyGrouping<ContactItemWrapper, string, DateTime, string, vCard, WebResourceName, string, string>
+  internal class InitialContactEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, ContactItemWrapper, string, WebResourceName, string, vCard, string>
   {
     public InitialContactEntityMatcher (IEqualityComparer<WebResourceName> btypeIdEqualityComparer)
         : base (btypeIdEqualityComparer)

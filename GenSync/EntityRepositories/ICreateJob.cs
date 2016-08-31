@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace GenSync.EntityRepositories
 {
-  public interface ICreateJob<TEntity, TEntityId, TEntityVersion>
+  public interface ICreateJob<TEntityId, TEntityVersion, TEntity>
   {
     Task<TEntity> InitializeEntity (TEntity entity);
     void NotifyOperationSuceeded (EntityVersion<TEntityId, TEntityVersion> result);

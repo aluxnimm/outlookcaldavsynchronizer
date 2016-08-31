@@ -23,7 +23,7 @@ namespace GenSync.EntityRepositories
   /// <summary>
   /// All writeoperations that a repository has to support
   /// </summary>
-  public interface IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext>
+  public interface IWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>
   {
     /// <returns>
     /// true: Entity was found an deleted.

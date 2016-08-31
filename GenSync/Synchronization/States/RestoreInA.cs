@@ -40,7 +40,10 @@ namespace GenSync.Synchronization.States
       _currentAVersion = currentAVersion;
     }
 
-    public override void AddSyncronizationJob (IJobList<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> aJobs, IJobList<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> bJobs, IEntitySynchronizationLogger logger)
+    public override void AddSyncronizationJob (
+        IJobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity> aJobs,
+        IJobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> bJobs,
+        IEntitySynchronizationLogger logger)
     {
       logger.SetAId (_knownData.AtypeId);
       logger.SetBId (_knownData.BtypeId);
@@ -93,7 +96,7 @@ namespace GenSync.Synchronization.States
       _nextStateAfterJobExecution = CreateDoNothing();
     }
 
-    struct JobWrapper : IUpdateJob<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion>
+    struct JobWrapper : IUpdateJob<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity>
     {
       private readonly RestoreInA<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _state;
       readonly IEntitySynchronizationLogger _logger;

@@ -31,7 +31,7 @@ using log4net;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public class OutlookContactRepository<Tcontext> : IEntityRepository<ContactItemWrapper, string, DateTime, Tcontext>
+  public class OutlookContactRepository<Tcontext> : IEntityRepository<string, DateTime, ContactItemWrapper, Tcontext>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod ().DeclaringType);
 

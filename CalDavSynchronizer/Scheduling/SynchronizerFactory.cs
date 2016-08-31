@@ -366,7 +366,7 @@ namespace CalDavSynchronizer.Scheduling
           _daslFilterProvider,
           new InvitationChecker (options.EmailAddress, _outlookSession.Application.Version));
 
-      IEntityRepository<IICalendar, WebResourceName, string, IEventSynchronizationContext> btypeRepository = new CalDavRepository<IEventSynchronizationContext> (
+      IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> btypeRepository = new CalDavRepository<IEventSynchronizationContext> (
           calDavDataAccess,
           new iCalendarSerializer(),
           CalDavRepository.EntityType.Event,
@@ -695,7 +695,7 @@ namespace CalDavSynchronizer.Scheduling
 
       var storageDataAccess = new EntityRelationDataAccess<string, DateTime, GoogleContactRelationData, string, GoogleContactVersion> (storageDataDirectory);
 
-      var atypeWriteRepository = BatchEntityRepositoryAdapter.Create<ContactItemWrapper, string, DateTime, GoogleContactContext> (atypeRepository);
+      var atypeWriteRepository = BatchEntityRepositoryAdapter.Create (atypeRepository);
 
       var synchronizer = new Synchronizer<string, DateTime, ContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, GoogleContactContext> (
           atypeRepository,

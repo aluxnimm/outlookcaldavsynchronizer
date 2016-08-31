@@ -20,7 +20,7 @@ using GenSync.InitialEntityMatching;
 
 namespace GenSync.UnitTests.InitialEntityMatching
 {
-  internal class TestInitialEntityMatcher : InitialEntityMatcherByPropertyGrouping<PersonA, Identifier<int>, int, int, PersonB, Identifier<string>, string, string>
+  internal class TestInitialEntityMatcher : InitialEntityMatcherByPropertyGrouping<Identifier<int>, int, PersonA, int, Identifier<string>, string, PersonB, string>
   {
     public TestInitialEntityMatcher (IEqualityComparer<Identifier<string>> btypeIdEqualityComparer)
         : base (btypeIdEqualityComparer)

@@ -34,7 +34,7 @@ using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class OutlookEventRepository : IEntityRepository<AppointmentItemWrapper, string, DateTime, IEventSynchronizationContext>
+  public class OutlookEventRepository : IEntityRepository<string, DateTime, AppointmentItemWrapper, IEventSynchronizationContext>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
 

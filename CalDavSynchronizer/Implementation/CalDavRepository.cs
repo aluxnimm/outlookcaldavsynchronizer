@@ -45,7 +45,7 @@ namespace CalDavSynchronizer.Implementation
     }
   }
 
-  public class CalDavRepository<TContext> : IEntityRepository<IICalendar, WebResourceName, string, TContext>
+  public class CalDavRepository<TContext> : IEntityRepository<WebResourceName, string, IICalendar, TContext>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod ().DeclaringType);
 

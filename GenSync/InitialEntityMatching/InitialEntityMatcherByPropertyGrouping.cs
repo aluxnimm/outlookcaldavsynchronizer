@@ -31,8 +31,8 @@ namespace GenSync.InitialEntityMatching
   /// This class  uses an single property of an entity to do the compare operation. Only if the property-compare-operation suceedes, the expensive compare operation is performed
   /// For maximum performance the used property has to have a "HashValue-Quality" and a cheap compare operation. e.g. the StartDate of an Appointment
   /// </remarks>
-  public abstract class InitialEntityMatcherByPropertyGrouping<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TAtypeProperty, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeProperty>
-      : IInitialEntityMatcher<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion, TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion>
+  public abstract class InitialEntityMatcherByPropertyGrouping<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TAtypeProperty, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TBtypeProperty>
+      : IInitialEntityMatcher<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
   {
     // ReSharper disable once StaticFieldInGenericType
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);

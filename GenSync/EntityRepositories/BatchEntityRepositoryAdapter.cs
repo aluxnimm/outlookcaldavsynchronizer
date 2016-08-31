@@ -23,12 +23,12 @@ using GenSync.ProgressReport;
 
 namespace GenSync.EntityRepositories
 {
-  public class BatchEntityRepositoryAdapter<TEntity, TEntityId, TEntityVersion, TContext> :
-      IBatchWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext>
+  public class BatchEntityRepositoryAdapter<TEntityId, TEntityVersion, TEntity, TContext> :
+      IBatchWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>
   {
-    private readonly IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext> _inner;
+    private readonly IWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> _inner;
 
-    public BatchEntityRepositoryAdapter (IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext> inner)
+    public BatchEntityRepositoryAdapter (IWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> inner)
     {
       if (inner == null)
         throw new ArgumentNullException (nameof (inner));
@@ -37,8 +37,8 @@ namespace GenSync.EntityRepositories
     }
 
     public async Task PerformOperations (
-        IReadOnlyList<ICreateJob<TEntity, TEntityId, TEntityVersion>> createJobs,
-        IReadOnlyList<IUpdateJob<TEntity, TEntityId, TEntityVersion>> updateJobs,
+        IReadOnlyList<ICreateJob<TEntityId, TEntityVersion, TEntity>> createJobs,
+        IReadOnlyList<IUpdateJob<TEntityId, TEntityVersion, TEntity>> updateJobs,
         IReadOnlyList<IDeleteJob<TEntityId, TEntityVersion>> deleteJobs,
         IProgressLogger progressLogger,
         TContext context)

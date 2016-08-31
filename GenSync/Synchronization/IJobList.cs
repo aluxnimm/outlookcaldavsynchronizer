@@ -19,10 +19,10 @@ using GenSync.EntityRepositories;
 
 namespace GenSync.Synchronization
 {
-  public interface IJobList<TEntity, TEntityId, TEntityVersion>
+  public interface IJobList<TEntityId, TEntityVersion, TEntity>
   {
-    void AddCreateJob (ICreateJob<TEntity, TEntityId, TEntityVersion> job);
-    void AddUpdateJob (IUpdateJob<TEntity, TEntityId, TEntityVersion> job);
+    void AddCreateJob (ICreateJob<TEntityId, TEntityVersion, TEntity> job);
+    void AddUpdateJob (IUpdateJob<TEntityId, TEntityVersion, TEntity> job);
     void AddDeleteJob (IDeleteJob<TEntityId, TEntityVersion> job);
   }
 }

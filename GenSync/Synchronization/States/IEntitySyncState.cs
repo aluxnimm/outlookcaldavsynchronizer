@@ -29,8 +29,8 @@ namespace GenSync.Synchronization.States
     IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> Resolve ();
 
     void AddSyncronizationJob (
-        IJobList<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> aJobs,
-        IJobList<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> bJobs,
+        IJobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity> aJobs,
+        IJobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> bJobs,
         IEntitySynchronizationLogger logger);
 
     IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> NotifyJobExecuted ();

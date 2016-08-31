@@ -23,7 +23,7 @@ using Google.Apis.Tasks.v1.Data;
 
 namespace CalDavSynchronizer.Implementation.GoogleTasks
 {
-  internal class InitialGoogleTastEntityMatcher : InitialEntityMatcherByPropertyGrouping<TaskItemWrapper, string, DateTime, string, Task, string, string, string>
+  internal class InitialGoogleTastEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, TaskItemWrapper, string, string, string, Task, string>
   {
     public InitialGoogleTastEntityMatcher (IEqualityComparer<string> btypeIdEqualityComparer)
         : base (btypeIdEqualityComparer)

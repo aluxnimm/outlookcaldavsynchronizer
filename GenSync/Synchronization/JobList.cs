@@ -20,22 +20,22 @@ using GenSync.EntityRepositories;
 
 namespace GenSync.Synchronization
 {
-  class JobList<TEntity, TEntityId, TEntityVersion> : IJobList<TEntity, TEntityId, TEntityVersion>
+  class JobList<TEntityId, TEntityVersion, TEntity> : IJobList<TEntityId, TEntityVersion, TEntity>
   {
-    private readonly List<ICreateJob<TEntity, TEntityId, TEntityVersion>> _createJobs = new List<ICreateJob<TEntity, TEntityId, TEntityVersion>>();
-    private readonly List<IUpdateJob<TEntity, TEntityId, TEntityVersion>> _updateJobs = new List<IUpdateJob<TEntity, TEntityId, TEntityVersion>>();
+    private readonly List<ICreateJob<TEntityId, TEntityVersion, TEntity>> _createJobs = new List<ICreateJob<TEntityId, TEntityVersion, TEntity>>();
+    private readonly List<IUpdateJob<TEntityId, TEntityVersion, TEntity>> _updateJobs = new List<IUpdateJob<TEntityId, TEntityVersion, TEntity>>();
     private readonly List<IDeleteJob<TEntityId, TEntityVersion>> _deleteJobs = new List<IDeleteJob<TEntityId, TEntityVersion>>();
 
-    public List<ICreateJob<TEntity, TEntityId, TEntityVersion>> CreateJobs => _createJobs;
-    public List<IUpdateJob<TEntity, TEntityId, TEntityVersion>> UpdateJobs => _updateJobs;
+    public List<ICreateJob<TEntityId, TEntityVersion, TEntity>> CreateJobs => _createJobs;
+    public List<IUpdateJob<TEntityId, TEntityVersion, TEntity>> UpdateJobs => _updateJobs;
     public List<IDeleteJob<TEntityId, TEntityVersion>> DeleteJobs => _deleteJobs;
 
-    public void AddCreateJob (ICreateJob<TEntity, TEntityId, TEntityVersion> job)
+    public void AddCreateJob (ICreateJob<TEntityId, TEntityVersion, TEntity> job)
     {
       _createJobs.Add (job);
     }
 
-    public void AddUpdateJob (IUpdateJob<TEntity, TEntityId, TEntityVersion> job)
+    public void AddUpdateJob (IUpdateJob<TEntityId, TEntityVersion, TEntity> job)
     {
       _updateJobs.Add (job);
     }

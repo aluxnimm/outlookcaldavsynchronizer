@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace GenSync.EntityRepositories
 {
-  public interface IUpdateJob<TEntity, TEntityId, TEntityVersion>
+  public interface IUpdateJob<TEntityId, TEntityVersion, TEntity>
   {
     TEntityId EntityId { get; }
     TEntityVersion Version { get; }

@@ -30,7 +30,7 @@ using Task = Google.Apis.Tasks.v1.Data.Task;
 
 namespace CalDavSynchronizer.Implementation.GoogleTasks
 {
-  class GoogleTaskRepository : IEntityRepository<Task, string, string, int>
+  class GoogleTaskRepository : IEntityRepository<string, string, Task, int>
   {
     private readonly TasksService _tasksService;
     private readonly TaskList _taskList;

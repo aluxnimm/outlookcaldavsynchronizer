@@ -36,12 +36,12 @@ namespace CalDavSynchronizer.Implementation.Events
 
     private readonly Dictionary<string, int> _hashesById = new Dictionary<string, int> ();
     private readonly OutlookEventRepository _outlookRepository;
-    private readonly IEntityRepository<IICalendar, WebResourceName, string, IEventSynchronizationContext> _btypeRepository;
+    private readonly IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> _btypeRepository;
     private readonly IEntityRelationDataAccess<string, DateTime, WebResourceName, string> _entityRelationDataAccess;
 
     public DuplicateEventCleaner (
       OutlookEventRepository outlookRepository, 
-      IEntityRepository<IICalendar, WebResourceName, string, IEventSynchronizationContext> btypeRepository, 
+      IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> btypeRepository, 
       IEntityRelationDataAccess<string, DateTime, WebResourceName, string> entityRelationDataAccess)
     {
       if (outlookRepository == null)

@@ -40,11 +40,14 @@ namespace GenSync.Synchronization.States
       _currentBVersion = currentBVersion;
     }
 
-    public override void AddSyncronizationJob (IJobList<TAtypeEntity, TAtypeEntityId, TAtypeEntityVersion> aJobs, IJobList<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion> bJobs, IEntitySynchronizationLogger logger)
+    public override void AddSyncronizationJob(
+      IJobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity> aJobs,
+      IJobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> bJobs,
+      IEntitySynchronizationLogger logger)
     {
-      logger.SetAId (_knownData.AtypeId);
-      logger.SetBId (_knownData.BtypeId);
-      bJobs.AddUpdateJob (new JobWrapper (this, logger));
+      logger.SetAId(_knownData.AtypeId);
+      logger.SetBId(_knownData.BtypeId);
+      bJobs.AddUpdateJob(new JobWrapper(this, logger));
     }
 
     async Task<TBtypeEntity> UpdateEntity (TBtypeEntity entity, IEntitySynchronizationLogger logger)
@@ -93,7 +96,7 @@ namespace GenSync.Synchronization.States
       _nextStateAfterJobExecution = CreateDoNothing();
     }
 
-    struct JobWrapper : IUpdateJob<TBtypeEntity, TBtypeEntityId, TBtypeEntityVersion>
+    struct JobWrapper : IUpdateJob<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
     {
       private readonly RestoreInB<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _state;
       readonly IEntitySynchronizationLogger _logger;

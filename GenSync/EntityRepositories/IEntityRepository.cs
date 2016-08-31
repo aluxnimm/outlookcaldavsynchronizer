@@ -21,9 +21,9 @@ namespace GenSync.EntityRepositories
   /// <summary>
   /// Represents an Repository, which contains entites that have to be synced
   /// </summary>
-  public interface IEntityRepository<TEntity, TEntityId, TEntityVersion, TContext> : 
-    IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext>, 
-    IReadOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext>
+  public interface IEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> : 
+    IWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>, 
+    IReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>
   {
   }
 }

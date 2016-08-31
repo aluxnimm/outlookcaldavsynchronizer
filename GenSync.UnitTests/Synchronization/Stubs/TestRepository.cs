@@ -23,7 +23,7 @@ using GenSync.Logging;
 
 namespace GenSync.UnitTests.Synchronization.Stubs
 {
-  internal class TestRepository : IEntityRepository<string, Identifier, int, int>
+  internal class TestRepository : IEntityRepository<Identifier, int, string, int>
   {
     private readonly string _idPrefix;
 
