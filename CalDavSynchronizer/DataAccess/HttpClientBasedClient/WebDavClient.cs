@@ -153,7 +153,7 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
 
       try
       {
-        if (response.StatusCode == HttpStatusCode.Moved || response.StatusCode == HttpStatusCode.Redirect)
+        if (response.StatusCode == HttpStatusCode.Moved || response.StatusCode == HttpStatusCode.Redirect || response.StatusCode == HttpStatusCode.TemporaryRedirect)
         {
           if (response.Headers.Location != null)
           {
