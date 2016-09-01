@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,7 +22,6 @@ using System.Reflection;
 using System.Threading.Tasks;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Diagnostics;
-using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using GenSync;
 using GenSync.EntityRepositories;
 using GenSync.Logging;
@@ -92,7 +90,10 @@ namespace CalDavSynchronizer.Implementation.Contacts
           {
             vCard vcard;
 
-            if (TryDeserialize (serialized.Entity, out vcard, serialized.Id, threadLocal.Item1, logger))
+            // fix some linebreak issues with Open-Xchange
+            string normalizedVcardData = serialized.Entity.Contains ("\r\r\n") ? ContactDataPreprocessor.NormalizeLineBreaks (serialized.Entity) : serialized.Entity;
+
+            if (TryDeserialize (normalizedVcardData, out vcard, serialized.Id, threadLocal.Item1, logger))
               threadLocal.Item2.Add (Tuple.Create (serialized.Id, vcard));
             return threadLocal;
           },

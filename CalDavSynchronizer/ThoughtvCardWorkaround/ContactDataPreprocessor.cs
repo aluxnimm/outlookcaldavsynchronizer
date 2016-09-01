@@ -14,13 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Thought.vCards;
 
 namespace CalDavSynchronizer.ThoughtvCardWorkaround
 {
@@ -66,31 +60,11 @@ namespace CalDavSynchronizer.ThoughtvCardWorkaround
       }
     }
 
-    public static string FixBday (string vcardData)
+    public static string NormalizeLineBreaks (string vcardData)
     {
-      // Reformat BDAY attribute to yyyy-MM-dd if included to work around a BUG in vCard Library
-      var bDayMatch = Regex.Match (vcardData, "BDAY:(.*?)\r\n");
-      if (bDayMatch.Success)
-      {
-        DateTime date;
-        if (DateTime.TryParse (bDayMatch.Groups[1].Value, out date))
-        {
-          return Regex.Replace (vcardData, "BDAY:(.*?)\r\n", "BDAY:" + date.ToString ("yyyy-MM-dd") + "\r\n");
-        }
-      }
-      return vcardData;
-    }
-
-    public static string FixNote (string vcardData, vCardStandardWriter writer)
-    {
-      // Reformat NOTE attribute since quoted-printable is deprecated
-      var noteMatch = Regex.Match(vcardData, "NOTE;ENCODING=QUOTED-PRINTABLE:(.*?)\r\n");
-      if (noteMatch.Success)
-      {
-        string decodedNote = vCardStandardReader.DecodeQuotedPrintable (noteMatch.Groups[1].Value).Replace("\r\n", "\n");
-        return Regex.Replace (vcardData, "NOTE;ENCODING=QUOTED-PRINTABLE:(.*?)\r\n", writer.EncodeEscaped ("NOTE:" + decodedNote) + "\r\n");
-      }
-      return vcardData;
+      // Certain iCal providers like Open-Xchange deliver their data with unexpected linebreaks
+      // which causes the parser to fail. This can be fixed by normalizing the unexpected \r\r\n to \r\n
+      return vcardData.Replace ("\r\r\n", "\r\n");
     }
   }
 }
