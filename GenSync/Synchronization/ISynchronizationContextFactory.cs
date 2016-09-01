@@ -22,10 +22,24 @@ using System.Threading.Tasks;
 
 namespace GenSync.Synchronization
 {
+  /// <summary>
+  /// Creates the synchronization context. 
+  /// The Synchronization context respresents user defined data and is passed through all components (e.g. repositories, entitymappers, etc...)
+  /// </summary>
+  /// <typeparam name="TContext"></typeparam>
   public interface ISynchronizationContextFactory<TContext>
   {
-    Task<TContext> Create ();
-    Task SynchronizationFinished (TContext context);
+    /// <summary>
+    /// Is called at the beginning of every sync run, to create an context for the ongoing sync run
+    /// </summary>
+    /// <returns></returns>
+    Task<TContext> Create();
+
+    /// <summary>
+    /// Is called at the end of every sync run with the previously created context
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
+    Task SynchronizationFinished(TContext context);
   }
-  
 }
