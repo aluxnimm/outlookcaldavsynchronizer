@@ -424,7 +424,8 @@ namespace CalDavSynchronizer.Scheduling
           ExceptionHandler.Instance,
           new EventSynchronizationContextFactory(atypeRepository, btypeRepository, entityRelationDataAccess, mappingParameters.CleanupDuplicateEvents),
           EqualityComparer<DateTime>.Default,
-          EqualityComparer<string>.Default);
+          EqualityComparer<string>.Default,
+          syncStateFactory);
 
       return new OutlookEventSynchronizer<WebResourceName, string> (synchronizer);
     }
@@ -522,7 +523,8 @@ namespace CalDavSynchronizer.Scheduling
           ExceptionHandler.Instance,
           NullSynchronizationContextFactory.Instance,
           EqualityComparer<DateTime>.Default,
-          EqualityComparer<string>.Default);
+          EqualityComparer<string>.Default,
+          syncStateFactory);
 
       return new OutlookSynchronizer<WebResourceName, string> (synchronizer);
     }
@@ -585,7 +587,8 @@ namespace CalDavSynchronizer.Scheduling
           ExceptionHandler.Instance,
           NullSynchronizationContextFactory.Instance,
           EqualityComparer<DateTime>.Default,
-          EqualityComparer<string>.Default);
+          EqualityComparer<string>.Default,
+          syncStateFactory);
 
       return new OutlookSynchronizer<string, string> (synchronizer);
     }
@@ -658,7 +661,8 @@ namespace CalDavSynchronizer.Scheduling
           ExceptionHandler.Instance,
           NullSynchronizationContextFactory.Instance,
           EqualityComparer<DateTime>.Default,
-          EqualityComparer<string>.Default);
+          EqualityComparer<string>.Default,
+          syncStateFactory);
 
       return new OutlookSynchronizer<WebResourceName, string> (synchronizer);
     }
@@ -717,7 +721,8 @@ namespace CalDavSynchronizer.Scheduling
           ExceptionHandler.Instance,
           new GoogleContactContextFactory(googleApiExecutor, btypeIdEqualityComparer, options.UserName),
           EqualityComparer<DateTime>.Default,
-          new GoogleContactVersionComparer());
+          new GoogleContactVersionComparer(),
+          syncStateFactory);
 
       return new OutlookSynchronizer<string, GoogleContactVersion> (synchronizer);
     }

@@ -23,6 +23,7 @@ using GenSync.InitialEntityMatching;
 using GenSync.ProgressReport;
 using GenSync.Synchronization;
 using GenSync.Synchronization.StateCreationStrategies;
+using GenSync.Synchronization.StateFactories;
 using Rhino.Mocks;
 
 namespace GenSync.UnitTests.Synchronization.Stubs
@@ -57,7 +58,8 @@ namespace GenSync.UnitTests.Synchronization.Stubs
           MockRepository.GenerateMock<IExceptionLogger>(),
           NullSynchronizationContextFactory.Instance,
           EqualityComparer<string>.Default,
-          EqualityComparer<string>.Default);
+          EqualityComparer<string>.Default,
+          MockRepository.GenerateMock<IEntitySyncStateFactory<string, string, string, string, string, string>> ());
     }
 
     public IEntityRelationDataAccess<string, string, string, string> EntityRelationDataAccess { get; set; }
