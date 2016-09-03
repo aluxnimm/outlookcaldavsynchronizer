@@ -49,6 +49,8 @@ namespace CalDavSynchronizer.Ui.Options
       this._landmarksTypeRadioButton = new System.Windows.Forms.RadioButton();
       this._logoSogoPictureBox = new System.Windows.Forms.PictureBox();
       this._sogoTypeRadioButton = new System.Windows.Forms.RadioButton();
+      this._logoCozyPictureBox = new System.Windows.Forms.PictureBox();
+      this._cozyTypeRadioButton = new System.Windows.Forms.RadioButton();
       ((System.ComponentModel.ISupportInitialize)(this._logoFruuxPictureBox)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this._logoGooglePictureBox)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this._logoPosteoPictureBox)).BeginInit();
@@ -57,6 +59,7 @@ namespace CalDavSynchronizer.Ui.Options
       ((System.ComponentModel.ISupportInitialize)(this._logoSarenetPictureBox)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this._logoLandmarksPictureBox)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this._logoSogoPictureBox)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this._logoCozyPictureBox)).BeginInit();
       this.SuspendLayout();
       // 
       // _genericTypeRadioButton
@@ -87,7 +90,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this._cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this._cancelButton.Location = new System.Drawing.Point(441, 317);
+      this._cancelButton.Location = new System.Drawing.Point(441, 355);
       this._cancelButton.Margin = new System.Windows.Forms.Padding(4);
       this._cancelButton.Name = "_cancelButton";
       this._cancelButton.Size = new System.Drawing.Size(100, 28);
@@ -98,7 +101,7 @@ namespace CalDavSynchronizer.Ui.Options
       // _okButton
       // 
       this._okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._okButton.Location = new System.Drawing.Point(333, 317);
+      this._okButton.Location = new System.Drawing.Point(333, 355);
       this._okButton.Margin = new System.Windows.Forms.Padding(4);
       this._okButton.Name = "_okButton";
       this._okButton.Size = new System.Drawing.Size(100, 28);
@@ -272,6 +275,28 @@ namespace CalDavSynchronizer.Ui.Options
       this._sogoTypeRadioButton.Text = "SOGo";
       this._sogoTypeRadioButton.UseVisualStyleBackColor = true;
       // 
+      // _logoCozyPictureBox
+      // 
+      this._logoCozyPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this._logoCozyPictureBox.Location = new System.Drawing.Point(12, 263);
+      this._logoCozyPictureBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+      this._logoCozyPictureBox.Name = "_logoCozyPictureBox";
+      this._logoCozyPictureBox.Size = new System.Drawing.Size(136, 40);
+      this._logoCozyPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+      this._logoCozyPictureBox.TabIndex = 22;
+      this._logoCozyPictureBox.TabStop = false;
+      // 
+      // _cozyTypeRadioButton
+      // 
+      this._cozyTypeRadioButton.AutoSize = true;
+      this._cozyTypeRadioButton.Location = new System.Drawing.Point(155, 273);
+      this._cozyTypeRadioButton.Margin = new System.Windows.Forms.Padding(4);
+      this._cozyTypeRadioButton.Name = "_cozyTypeRadioButton";
+      this._cozyTypeRadioButton.Size = new System.Drawing.Size(100, 21);
+      this._cozyTypeRadioButton.TabIndex = 21;
+      this._cozyTypeRadioButton.Text = "Cozy Cloud";
+      this._cozyTypeRadioButton.UseVisualStyleBackColor = true;
+      // 
       // SelectOptionsDisplayTypeForm
       // 
       this.AcceptButton = this._okButton;
@@ -279,7 +304,9 @@ namespace CalDavSynchronizer.Ui.Options
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.SystemColors.Window;
       this.CancelButton = this._cancelButton;
-      this.ClientSize = new System.Drawing.Size(557, 360);
+      this.ClientSize = new System.Drawing.Size(557, 398);
+      this.Controls.Add(this._logoCozyPictureBox);
+      this.Controls.Add(this._cozyTypeRadioButton);
       this.Controls.Add(this._logoSogoPictureBox);
       this.Controls.Add(this._sogoTypeRadioButton);
       this.Controls.Add(this._logoLandmarksPictureBox);
@@ -312,6 +339,7 @@ namespace CalDavSynchronizer.Ui.Options
       ((System.ComponentModel.ISupportInitialize)(this._logoSarenetPictureBox)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this._logoLandmarksPictureBox)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this._logoSogoPictureBox)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this._logoCozyPictureBox)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -338,5 +366,7 @@ namespace CalDavSynchronizer.Ui.Options
     private System.Windows.Forms.RadioButton _landmarksTypeRadioButton;
     private System.Windows.Forms.PictureBox _logoSogoPictureBox;
     private System.Windows.Forms.RadioButton _sogoTypeRadioButton;
+    private System.Windows.Forms.PictureBox _logoCozyPictureBox;
+    private System.Windows.Forms.RadioButton _cozyTypeRadioButton;
   }
 }

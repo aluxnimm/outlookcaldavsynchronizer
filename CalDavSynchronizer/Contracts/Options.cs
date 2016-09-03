@@ -122,7 +122,7 @@ namespace CalDavSynchronizer.Contracts
       options.ProxyOptions = new ProxyOptions() { ProxyUseDefault = true };
       options.CalenderUrl = PopulateDavUrl (type);
 
-      if (type == ProfileType.GmxCalendar)
+      if (type == ProfileType.GmxCalendar || type == ProfileType.Cozy)
       {
         options.MappingConfiguration = new EventMappingConfiguration
         {
@@ -159,7 +159,8 @@ namespace CalDavSynchronizer.Contracts
           return "https://dav.landmarks.skyrise.de/";
         case ProfileType.Sogo:
           return "https://sogo.example.com/SOGo/dav/";
-
+        case ProfileType.Cozy:
+          return "https://yourdomain.cozycloud.cc/public/sync/principals/me/";
         default:
           return null;
       }

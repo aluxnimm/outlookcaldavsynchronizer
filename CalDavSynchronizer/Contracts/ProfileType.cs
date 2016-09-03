@@ -27,6 +27,7 @@ namespace CalDavSynchronizer.Contracts
     GmxCalendar,
     Sarenet,
     Landmarks,
-    Sogo
+    Sogo,
+    Cozy
   }
 }
