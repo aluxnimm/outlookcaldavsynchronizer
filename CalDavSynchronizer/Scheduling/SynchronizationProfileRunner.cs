@@ -66,7 +66,7 @@ namespace CalDavSynchronizer.Scheduling
     // There is no threadsafe Datastructure required, since there will be no concurrent threads
     // The concurrency in this scenario lies in the fact that the MainThread will enter multiple times, because
     // all methods are async
-    private readonly ConcurrentDictionary<string, IIdWithHints<string, DateTime>> _pendingOutlookItems = new ConcurrentDictionary<string, IIdWithHints<string, DateTime>>();
+    private readonly ConcurrentDictionary<string, IOutlookId> _pendingOutlookItems = new ConcurrentDictionary<string, IOutlookId> ();
     // Since events for itemchange are raised by outlook multiple times, the partialsync is delayed.
     // This will prevent that subsequent change events for the same item trigger subsequent sync runs, provided they are within this time frame
     private readonly TimeSpan _partialSyncDelay = TimeSpan.FromSeconds (10);
@@ -148,10 +148,10 @@ namespace CalDavSynchronizer.Scheduling
     {
       try
       {
-        _pendingOutlookItems.AddOrUpdate (e.EntryId.Id, e.EntryId, (key, existingValue) => e.EntryId.VersionHint > existingValue.VersionHint ? e.EntryId : existingValue);
+        _pendingOutlookItems.AddOrUpdate (e.EntryId.EntryId, e.EntryId, (key, existingValue) => e.EntryId.Version > existingValue.Version ? e.EntryId : existingValue);
         if (s_logger.IsDebugEnabled)
         {
-          s_logger.Debug ($"Partial sync:  '{_pendingOutlookItems.Count}' items pending after registering item '{e.EntryId.Id}' as pending sync item.");
+          s_logger.Debug ($"Partial sync:  '{_pendingOutlookItems.Count}' items pending after registering item '{e.EntryId.EntryId}' as pending sync item.");
         }
         await Task.Delay (_partialSyncDelay);
         using (_runLogger.LogStartSynchronizationRun())
@@ -212,7 +212,7 @@ namespace CalDavSynchronizer.Scheduling
               _pendingOutlookItems.Clear();
               if (s_logger.IsDebugEnabled)
               {
-                s_logger.Debug ($"Partial sync: Going to sync '{itemsToSync.Length}' pending items ( {string.Join (", ", itemsToSync.Select (id => id.Id))} ).");
+                s_logger.Debug ($"Partial sync: Going to sync '{itemsToSync.Length}' pending items ( {string.Join (", ", itemsToSync.Select (id => id.EntryId))} ).");
               }
               Thread.MemoryBarrier(); // should not be required because there is just one thread entering multiple times
               await RunPartialNoThrow (itemsToSync);
@@ -252,7 +252,7 @@ namespace CalDavSynchronizer.Scheduling
       }
     }
 
-    private async Task RunPartialNoThrow (IIdWithHints<string, DateTime>[] itemsToSync)
+    private async Task RunPartialNoThrow (IOutlookId[] itemsToSync)
     {
       try
       {

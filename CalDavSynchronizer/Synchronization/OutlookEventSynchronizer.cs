@@ -13,25 +13,25 @@
 // GNU Affero General Public License for more details.
 // 
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.using System;
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CalDavSynchronizer.ChangeWatching;
-using CalDavSynchronizer.DataAccess;
-using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.Events;
 using GenSync;
 using GenSync.Logging;
 using GenSync.Synchronization;
+using AppointmentId = CalDavSynchronizer.Implementation.Events.AppointmentId;
 
 namespace CalDavSynchronizer.Synchronization
 {
-  public class OutlookSynchronizer<TBtypeEntityId, TBtypeEntityVersion> : IOutlookSynchronizer
+  public class OutlookEventSynchronizer<TBtypeEntityId, TBtypeEntityVersion> : IOutlookSynchronizer
   {
-    private readonly IPartialSynchronizer<string, DateTime, TBtypeEntityId, TBtypeEntityVersion> _synchronizer;
+    private readonly IPartialSynchronizer<AppointmentId, DateTime, TBtypeEntityId, TBtypeEntityVersion> _synchronizer;
 
-    public OutlookSynchronizer (IPartialSynchronizer<string, DateTime, TBtypeEntityId, TBtypeEntityVersion> synchronizer)
+    public OutlookEventSynchronizer (IPartialSynchronizer<AppointmentId, DateTime, TBtypeEntityId, TBtypeEntityVersion> synchronizer)
     {
       if (synchronizer == null)
         throw new ArgumentNullException (nameof (synchronizer));
@@ -44,27 +44,27 @@ namespace CalDavSynchronizer.Synchronization
       return _synchronizer.SynchronizeNoThrow (logger);
     }
 
-    public async Task SnychronizePartialNoThrow (IEnumerable<IOutlookId> outlookIds, ISynchronizationLogger logger)
+    public async Task SnychronizePartialNoThrow(IEnumerable<IOutlookId> outlookIds, ISynchronizationLogger logger)
     {
-      var idExtractor = new IdWithHintExtractor ();
+      var idExtractor = new IdWithHintExtractor();
       foreach (var outlookId in outlookIds)
-        outlookId.Accept (idExtractor);
+        outlookId.Accept(idExtractor);
 
-      await _synchronizer.SynchronizePartialNoThrow (idExtractor.Ids, new IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>[] { }, logger);
+      await _synchronizer.SynchronizePartialNoThrow(idExtractor.Ids, new IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>[] {}, logger);
     }
 
     class IdWithHintExtractor : IOutlookIdVisitor
     {
-      public List<IIdWithHints<string, DateTime>> Ids { get; } = new List<IIdWithHints<string, DateTime>> ();
+      public List<IIdWithHints<AppointmentId, DateTime>> Ids { get; } = new List<IIdWithHints<AppointmentId, DateTime>>();
 
       public void Visit(GenericId id)
       {
-        Ids.Add(id.Inner);
+        throw new NotSupportedException("Objects other than appointments are not supported!");
       }
 
-      public void Visit (ChangeWatching.AppointmentId id)
+      public void Visit(ChangeWatching.AppointmentId id)
       {
-        throw new NotSupportedException ("Appointments are not supported!");
+        Ids.Add(id.Inner);
       }
     }
   }

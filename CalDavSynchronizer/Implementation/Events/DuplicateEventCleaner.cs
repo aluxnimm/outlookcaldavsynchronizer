@@ -34,15 +34,15 @@ namespace CalDavSynchronizer.Implementation.Events
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod ().DeclaringType);
 
-    private readonly Dictionary<string, int> _hashesById = new Dictionary<string, int> ();
+    private readonly Dictionary<AppointmentId, int> _hashesById = new Dictionary<AppointmentId, int> ();
     private readonly OutlookEventRepository _outlookRepository;
     private readonly IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> _btypeRepository;
-    private readonly IEntityRelationDataAccess<string, DateTime, WebResourceName, string> _entityRelationDataAccess;
+    private readonly IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> _entityRelationDataAccess;
 
     public DuplicateEventCleaner (
       OutlookEventRepository outlookRepository, 
       IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> btypeRepository, 
-      IEntityRelationDataAccess<string, DateTime, WebResourceName, string> entityRelationDataAccess)
+      IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> entityRelationDataAccess)
     {
       if (outlookRepository == null)
         throw new ArgumentNullException (nameof (outlookRepository));
@@ -63,12 +63,12 @@ namespace CalDavSynchronizer.Implementation.Events
 
     public void AnnounceAppointment (AppointmentItem appointment)
     {
-      _hashesById[appointment.EntryID] = GetHashCode (appointment);
+      _hashesById[new AppointmentId(appointment.EntryID, appointment.GlobalAppointmentID)] = GetHashCode (appointment);
     }
 
     public void AnnounceAppointmentDeleted (AppointmentItem inner)
     {
-      _hashesById.Remove (inner.EntryID);
+      _hashesById.Remove (new AppointmentId (inner.EntryID, inner.GlobalAppointmentID));
     }
 
     private int GetHashCode (AppointmentItem item)
@@ -133,18 +133,19 @@ namespace CalDavSynchronizer.Implementation.Events
       }
     }
 
-    private async Task DeleteAppointment (AppointmentItemWrapper item, Dictionary<string, IEntityRelationData<string, DateTime, WebResourceName, string>> relations)
+    private async Task DeleteAppointment (AppointmentItemWrapper item, Dictionary<AppointmentId, IEntityRelationData<AppointmentId, DateTime, WebResourceName, string>> relations)
     {
-      IEntityRelationData<string, DateTime, WebResourceName, string> relation;
-      if (relations.TryGetValue (item.Inner.EntryID, out relation))
+      IEntityRelationData<AppointmentId, DateTime, WebResourceName, string> relation;
+      var appointmentId = new AppointmentId(item.Inner.EntryID, item.Inner.GlobalAppointmentID);
+      if (relations.TryGetValue (appointmentId, out relation))
       {
         await _btypeRepository.TryDelete (relation.BtypeId, relation.BtypeVersion, NullEventSynchronizationContext.Instance);
-        relations.Remove (item.Inner.EntryID);
+        relations.Remove (appointmentId);
       }
       item.Inner.Delete();
     }
 
-    private IEnumerable<AppointmentItemWrapper> GetAppointments (string[] ids, Dictionary<string, AppointmentItemWrapper> appointmentsById)
+    private IEnumerable<AppointmentItemWrapper> GetAppointments (AppointmentId[] ids, Dictionary<AppointmentId, AppointmentItemWrapper> appointmentsById)
     {
       foreach (var id in ids)
       {

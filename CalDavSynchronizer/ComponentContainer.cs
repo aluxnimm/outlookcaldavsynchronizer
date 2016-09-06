@@ -57,6 +57,7 @@ using CalDavSynchronizer.Ui.SystrayNotification;
 using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
 using GenSync.EntityRelationManagement;
 using GenSync.Logging;
+using AppointmentId = CalDavSynchronizer.Implementation.Events.AppointmentId;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace CalDavSynchronizer
@@ -66,7 +67,7 @@ namespace CalDavSynchronizer
     public const string MessageBoxTitle = "CalDav Synchronizer";
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
     // ReSharper disable once ConvertToConstant.Local
-    private readonly int c_requiredEntityCacheVersion = 1;
+    private readonly int c_requiredEntityCacheVersion = 2;
 
     private static readonly object _synchronizationContextLock = new object();
     private readonly Scheduler _scheduler;
@@ -577,10 +578,10 @@ namespace CalDavSynchronizer
       }
     }
 
-    private void SwitchEventCategories (ChangedOptions changedOption, string oldCategory, string newCategory, string eventId)
+    private void SwitchEventCategories (ChangedOptions changedOption, string oldCategory, string newCategory, AppointmentId eventId)
     {
       using (var eventWrapper = new AppointmentItemWrapper (
-          (AppointmentItem) _session.GetItemFromID (eventId, changedOption.New.OutlookFolderStoreId),
+          (AppointmentItem) _session.GetItemFromID (eventId.EntryId, changedOption.New.OutlookFolderStoreId),
           entryId => (AppointmentItem) _session.GetItemFromID (entryId, changedOption.New.OutlookFolderStoreId)))
       {
         var categories = eventWrapper.Inner.Categories

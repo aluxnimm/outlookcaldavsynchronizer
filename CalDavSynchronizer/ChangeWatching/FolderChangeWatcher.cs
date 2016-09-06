@@ -18,6 +18,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using CalDavSynchronizer.Implementation.Events;
 using GenSync;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
@@ -79,7 +80,7 @@ namespace CalDavSynchronizer.ChangeWatching
 
     private void OnItemSavedOrDeleted (object item, ItemAction action)
     {
-      IIdWithHints<string, DateTime> entryId = null;
+      IOutlookId entryId = null;
 
       bool wasDeleted = action == ItemAction.Delete;
 
@@ -90,7 +91,7 @@ namespace CalDavSynchronizer.ChangeWatching
         if (appointment.MeetingStatus != OlMeetingStatus.olMeetingReceived)
         {
           s_logger.Debug ($"'{nameof (ItemAction)}.{action}': Appointment '{appointment.Subject}' '{appointment.EntryID}' ");
-          entryId = IdWithHints.Create (appointment.EntryID, (DateTime?) appointment.LastModificationTime, wasDeleted);
+          entryId = new AppointmentId(new Implementation.Events.AppointmentId(appointment.EntryID, appointment.GlobalAppointmentID), appointment.LastModificationTime, wasDeleted);
         }
       }
       else
@@ -99,7 +100,7 @@ namespace CalDavSynchronizer.ChangeWatching
         if (task != null)
         {
           s_logger.Debug ($"'{nameof (ItemAction)}.{action}': Task '{task.Subject}' '{task.EntryID}' ");
-          entryId = IdWithHints.Create (task.EntryID, (DateTime?) task.LastModificationTime, wasDeleted);
+          entryId = new GenericId(task.EntryID, task.LastModificationTime, wasDeleted);
         }
         else
         {
@@ -107,7 +108,7 @@ namespace CalDavSynchronizer.ChangeWatching
           if (contact != null)
           {
             s_logger.Debug ($"'{nameof (ItemAction)}.{action}': Contact '{contact.LastNameAndFirstName}' '{contact.EntryID}' ");
-            entryId = IdWithHints.Create (contact.EntryID, (DateTime?) contact.LastModificationTime, wasDeleted);
+            entryId = new GenericId (contact.EntryID, contact.LastModificationTime, wasDeleted);
           }
         }
       }
@@ -116,7 +117,7 @@ namespace CalDavSynchronizer.ChangeWatching
         OnItemSavedOrDeleted (entryId);
     }
 
-    protected virtual void OnItemSavedOrDeleted (IIdWithHints<string, DateTime> entryId)
+    protected virtual void OnItemSavedOrDeleted (IOutlookId entryId)
     {
       ItemSavedOrDeleted?.Invoke (
           this,

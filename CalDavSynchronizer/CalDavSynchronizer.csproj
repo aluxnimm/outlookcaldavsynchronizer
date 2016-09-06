@@ -267,8 +267,12 @@
       <DependentUpon>CalDavSynchronizerRibbon.cs</DependentUpon>
     </Compile>
     <Compile Include="CalDavSynchronizerToolBar.cs" />
+    <Compile Include="ChangeWatching\AppointmentId.cs" />
     <Compile Include="ChangeWatching\FolderChangeWatcher.cs" />
     <Compile Include="ChangeWatching\FolderChangeWatcherFactory.cs" />
+    <Compile Include="ChangeWatching\GenericId.cs" />
+    <Compile Include="ChangeWatching\IOutlookId.cs" />
+    <Compile Include="ChangeWatching\IOutlookIdVisitor.cs" />
     <Compile Include="ChangeWatching\ItemAction.cs" />
     <Compile Include="ChangeWatching\NullItemCollectionChangeWatcher.cs" />
     <Compile Include="ChangeWatching\IItemCollectionChangeWatcher.cs" />
@@ -305,6 +309,7 @@
     <Compile Include="Implementation\Events\IInvitationChecker.cs" />
     <Compile Include="Implementation\Events\InvitationChecker.cs" />
     <Compile Include="Implementation\Events\NullEventSynchronizationContext.cs" />
+    <Compile Include="Implementation\Events\AppointmentId.cs" />
     <Compile Include="Implementation\GoogleContacts\GoogleApiOperationExecutor.cs" />
     <Compile Include="Implementation\GoogleContacts\GoogleContactContext.cs" />
     <Compile Include="Implementation\GoogleContacts\GoogleContactContextFactory.cs" />
@@ -327,6 +332,7 @@
     <Compile Include="Scheduling\ISynchronizationRunLogger.cs" />
     <Compile Include="Scheduling\SchedulerStatusEventArgs.cs" />
     <Compile Include="Scheduling\SynchronizationStatus.cs" />
+    <Compile Include="Synchronization\OutlookEventSynchronizer.cs" />
     <Compile Include="Ui\Options\AutoDiscoverResultStatus.cs" />
     <Compile Include="Ui\Options\BulkOptions\ViewModels\GoogleServerSettingsTemplateViewModel.cs" />
     <Compile Include="Ui\Options\BulkOptions\ViewModels\IServerSettingsTemplateViewModel.cs" />

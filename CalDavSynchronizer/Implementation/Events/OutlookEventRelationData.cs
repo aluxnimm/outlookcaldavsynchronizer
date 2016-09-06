@@ -21,9 +21,9 @@ using GenSync.EntityRelationManagement;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class OutlookEventRelationData : IEntityRelationData<string, DateTime, WebResourceName, string>
+  public class OutlookEventRelationData : IEntityRelationData<AppointmentId, DateTime, WebResourceName, string>
   {
-    public string AtypeId { get; set; }
+    public AppointmentId AtypeId { get; set; }
     public DateTime AtypeVersion { get; set; }
   
     public WebResourceName BtypeId { get; set; }

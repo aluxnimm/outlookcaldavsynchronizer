@@ -101,7 +101,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
     public static IOutlookSynchronizer CreateEventSynchronizer (
         SynchronizationMode mode,
         ICalDavDataAccess calDavDataAccess,
-        IEntityRelationDataAccess<string, DateTime, WebResourceName, string> entityRelationDataAccess = null,
+        IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> entityRelationDataAccess = null,
         Action<Options> optionsModifier = null)
     {
       var options = new Options()
@@ -121,7 +121,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       return s_synchronizerFactory.CreateEventSynchronizer (
           options,
           calDavDataAccess,
-          entityRelationDataAccess ?? MockRepository.GenerateStub<IEntityRelationDataAccess<string, DateTime, WebResourceName, string>>()).Result;
+          entityRelationDataAccess ?? MockRepository.GenerateStub<IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string>>()).Result;
     }
 
 
@@ -159,7 +159,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
 
     public static string SyncCalDavToOutlookAndBackToCalDav (string eventData)
     {
-      var entityRelationStorage = new InMemoryEntityRelationStorage<string, DateTime, IEntityRelationData<string, DateTime, WebResourceName, string>, WebResourceName, string>();
+      var entityRelationStorage = new InMemoryEntityRelationStorage<AppointmentId, DateTime, IEntityRelationData<AppointmentId, DateTime, WebResourceName, string>, WebResourceName, string>();
 
       SyncCalDavToOutlook (eventData, entityRelationStorage);
 
@@ -171,12 +171,12 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
                             BtypeId = relation.BtypeId,
                             BtypeVersion = relation.BtypeVersion
                         };
-      entityRelationStorage.SaveEntityRelationData (new List<IEntityRelationData<string, DateTime, WebResourceName, string>>() { newRelation });
+      entityRelationStorage.SaveEntityRelationData (new List<IEntityRelationData<AppointmentId, DateTime, WebResourceName, string>>() { newRelation });
 
       return SyncOutlookToCalDav_EventsExistsInCalDav (eventData, entityRelationStorage);
     }
 
-    public static void SyncCalDavToOutlook (string eventData, IEntityRelationDataAccess<string, DateTime, WebResourceName, string> entityRelationDataAccess)
+    public static void SyncCalDavToOutlook (string eventData, IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> entityRelationDataAccess)
     {
       var calDavDataAccess = MockRepository.GenerateMock<ICalDavDataAccess>();
 
@@ -218,7 +218,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
     }
 
     public static List<string> SyncOutlookToCalDav_CalDavIsEmpty (
-        IEntityRelationDataAccess<string, DateTime, WebResourceName, string> entityRelationDataAccess = null,
+        IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> entityRelationDataAccess = null,
         Action<Options> optionsModifier = null)
     {
       var calDavEvents = new List<string>();
@@ -246,10 +246,10 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       return calDavEvents;
     }
 
-    public static string SyncOutlookToCalDav_EventsExistsInCalDav (string existingEventData, string existingAppointmentId)
+    public static string SyncOutlookToCalDav_EventsExistsInCalDav (string existingEventData, AppointmentId existingAppointmentId)
     {
-      var entityRelationStorage = new InMemoryEntityRelationStorage<string, DateTime, IEntityRelationData<string, DateTime, WebResourceName, string>, WebResourceName, string>();
-      entityRelationStorage.SaveEntityRelationData (new List<IEntityRelationData<string, DateTime, WebResourceName, string>>()
+      var entityRelationStorage = new InMemoryEntityRelationStorage<AppointmentId, DateTime, IEntityRelationData<AppointmentId, DateTime, WebResourceName, string>, WebResourceName, string>();
+      entityRelationStorage.SaveEntityRelationData (new List<IEntityRelationData<AppointmentId, DateTime, WebResourceName, string>>()
                                                     {
                                                         new OutlookEventRelationData()
                                                         {
@@ -263,7 +263,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       return SyncOutlookToCalDav_EventsExistsInCalDav (existingEventData, entityRelationStorage);
     }
 
-    public static string SyncOutlookToCalDav_EventsExistsInCalDav (string existingEventData, IEntityRelationDataAccess<string, DateTime, WebResourceName, string> entityRelationDataAccess = null)
+    public static string SyncOutlookToCalDav_EventsExistsInCalDav (string existingEventData, IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> entityRelationDataAccess = null)
     {
       string roundTrippedData = null;
       ICalDavDataAccess calDavDataAccess = MockRepository.GenerateMock<ICalDavDataAccess>();
@@ -337,7 +337,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       }
     }
 
-    public static string CreateRecurringEventInOutlook ()
+    public static AppointmentId CreateRecurringEventInOutlook ()
     {
       using (var w = CreateNewAppointment())
       {
@@ -373,7 +373,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
 
         w.Inner.Save();
 
-        return w.Inner.EntryID;
+        return new AppointmentId(w.Inner.EntryID, w.Inner.GlobalAppointmentID);
       }
     }
 
@@ -391,9 +391,9 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       }
     }
 
-    public static AppointmentItemWrapper GetOutlookEvent (string id)
+    public static AppointmentItemWrapper GetOutlookEvent (AppointmentId id)
     {
-      return OutlookEventRepository.GetOutlookEventForTesting (id, s_mapiNameSpace, s_outlookFolderStoreId);
+      return OutlookEventRepository.GetOutlookEventForTesting (id.EntryId, s_mapiNameSpace, s_outlookFolderStoreId);
     }
   }
 }

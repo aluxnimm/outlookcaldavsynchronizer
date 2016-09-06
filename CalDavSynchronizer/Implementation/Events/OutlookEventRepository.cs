@@ -34,7 +34,7 @@ using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class OutlookEventRepository : IEntityRepository<string, DateTime, AppointmentItemWrapper, IEventSynchronizationContext>
+  public class OutlookEventRepository : IEntityRepository<AppointmentId, DateTime, AppointmentItemWrapper, IEventSynchronizationContext>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -83,13 +83,13 @@ namespace CalDavSynchronizer.Implementation.Events
       return GenericComObjectWrapper.Create ((Folder) _mapiNameSpace.GetFolderFromID (_folderId, _folderStoreId));
     }
 
-    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, IEventSynchronizationContext context)
+    public Task<IReadOnlyList<EntityVersion<AppointmentId, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<AppointmentId>> idsOfEntitiesToQuery, IEventSynchronizationContext context)
     {
-      var result = new List<EntityVersion<string, DateTime>>();
+      var result = new List<EntityVersion<AppointmentId, DateTime>>();
 
       foreach (var id in idsOfEntitiesToQuery)
       {
-        var appointment = _mapiNameSpace.GetEntryOrNull<AppointmentItem> (id.Id, _folderId, _folderStoreId);
+        var appointment = _mapiNameSpace.GetEntryOrNull<AppointmentItem> (id.Id.EntryId, _folderId, _folderStoreId);
         if (appointment != null)
         {
           try
@@ -107,7 +107,7 @@ namespace CalDavSynchronizer.Implementation.Events
         }
       }
 
-      return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> ( result);
+      return Task.FromResult<IReadOnlyList<EntityVersion<AppointmentId, DateTime>>> ( result);
     }
     
     private bool DoesMatchCategoryCriterion (AppointmentItem item)
@@ -127,7 +127,7 @@ namespace CalDavSynchronizer.Implementation.Events
       return _configuration.InvertEventCategoryFilter ? !found : found;
     }
 
-    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, IEventSynchronizationContext context)
+    public Task<IReadOnlyList<EntityVersion<AppointmentId, DateTime>>> GetAllVersions (IEnumerable<AppointmentId> idsOfknownEntities, IEventSynchronizationContext context)
     {
       return GetAll (
           idsOfknownEntities,
@@ -135,12 +135,12 @@ namespace CalDavSynchronizer.Implementation.Events
           a =>
           {
             context.AnnounceAppointment (a);
-            return new EntityVersion<string, DateTime> (a.EntryID, a.LastModificationTime);
+            return new EntityVersion<AppointmentId, DateTime> (new AppointmentId(a.EntryID, a.GlobalAppointmentID), a.LastModificationTime);
           });
     }
 
-    private Task<IReadOnlyList<T>> GetAll<T> (IEnumerable<string> idsOfknownEntities, IEventSynchronizationContext context, Func<AppointmentItem,T> selector)
-      where T : IEntity<string>
+    private Task<IReadOnlyList<T>> GetAll<T> (IEnumerable<AppointmentId> idsOfknownEntities, IEventSynchronizationContext context, Func<AppointmentItem,T> selector)
+      where T : IEntity<AppointmentId>
     {
       var range = _dateTimeRangeProvider.GetRange ();
 
@@ -182,7 +182,7 @@ namespace CalDavSynchronizer.Implementation.Events
         var knownEntitesThatWereFilteredOut = idsOfknownEntities.Except (events.Select (e => e.Id));
         events.AddRange (
             knownEntitesThatWereFilteredOut
-                .Select (id => _mapiNameSpace.GetEntryOrNull<AppointmentItem> (id, _folderId, _folderStoreId))
+                .Select (id => _mapiNameSpace.GetEntryOrNull<AppointmentItem> (id.EntryId, _folderId, _folderStoreId))
                 .Where (i => i != null)
                 .ToSafeEnumerable ()
                 .Select (selector));
@@ -198,7 +198,7 @@ namespace CalDavSynchronizer.Implementation.Events
       filterBuilder.AppendFormat (" And "+ negateFilter + "(\"urn:schemas-microsoft-com:office:office#Keywords\" = '{0}')", category.Replace ("'","''"));
     }
 
-    public static List<EntityVersion<string, DateTime>> QueryFolder (
+    public static List<EntityVersion<AppointmentId, DateTime>> QueryFolder (
         NameSpace session,
         GenericComObjectWrapper<Folder> calendarFolderWrapper,
         StringBuilder filterBuilder)
@@ -207,7 +207,7 @@ namespace CalDavSynchronizer.Implementation.Events
           session,
           calendarFolderWrapper,
           filterBuilder,
-          a => new EntityVersion<string, DateTime> (a.EntryID, a.LastModificationTime));
+          a => new EntityVersion<AppointmentId, DateTime> (new AppointmentId(a.EntryID, a.GlobalAppointmentID), a.LastModificationTime));
     }
 
     static List<T> QueryFolder<T> (
@@ -215,7 +215,7 @@ namespace CalDavSynchronizer.Implementation.Events
         GenericComObjectWrapper<Folder> calendarFolderWrapper,
         StringBuilder filterBuilder,
         Func<AppointmentItem, T> selector)
-      where T : IEntity<string>
+      where T : IEntity<AppointmentId>
     {
       var events = new List<T>();
 
@@ -256,19 +256,19 @@ namespace CalDavSynchronizer.Implementation.Events
     }
 
 #pragma warning disable 1998
-    public async Task<IReadOnlyList<EntityWithId<string, AppointmentItemWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger, IEventSynchronizationContext context)
+    public async Task<IReadOnlyList<EntityWithId<AppointmentId, AppointmentItemWrapper>>> Get (ICollection<AppointmentId> ids, ILoadEntityLogger logger, IEventSynchronizationContext context)
 #pragma warning restore 1998
     {
       return ids
           .Select (id => EntityWithId.Create (
               id,
               new AppointmentItemWrapper (
-                  (AppointmentItem) _mapiNameSpace.GetItemFromID (id, _folderStoreId),
+                  (AppointmentItem) _mapiNameSpace.GetItemFromID (id.EntryId, _folderStoreId),
                   entryId => (AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, _folderStoreId))))
           .ToArray();
     }
 
-    public async Task VerifyUnknownEntities (Dictionary<string, DateTime> unknownEntites, IEventSynchronizationContext context)
+    public async Task VerifyUnknownEntities (Dictionary<AppointmentId, DateTime> unknownEntites, IEventSynchronizationContext context)
     {
       foreach (var unknownEntity in await Get (unknownEntites.Keys, NullLoadEntityLogger.Instance, context))
       {
@@ -294,14 +294,14 @@ namespace CalDavSynchronizer.Implementation.Events
       }
     }
 
-    public void Cleanup (IReadOnlyDictionary<string, AppointmentItemWrapper> entities)
+    public void Cleanup (IReadOnlyDictionary<AppointmentId, AppointmentItemWrapper> entities)
     {
       foreach (var appointmentItemWrapper in entities.Values)
         appointmentItemWrapper.Dispose();
     }
 
-    public async Task<EntityVersion<string, DateTime>> TryUpdate (
-        string entityId,
+    public async Task<EntityVersion<AppointmentId, DateTime>> TryUpdate (
+        AppointmentId entityId,
         DateTime entityVersion,
         AppointmentItemWrapper entityToUpdate,
         Func<AppointmentItemWrapper, Task<AppointmentItemWrapper>> entityModifier,
@@ -310,10 +310,12 @@ namespace CalDavSynchronizer.Implementation.Events
       entityToUpdate = await entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save();
       context.AnnounceAppointment (entityToUpdate.Inner);
-      return new EntityVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime);
+      return new EntityVersion<AppointmentId, DateTime> (
+        new AppointmentId(entityToUpdate.Inner.EntryID, entityToUpdate.Inner.GlobalAppointmentID), 
+        entityToUpdate.Inner.LastModificationTime);
     }
 
-    public Task<bool> TryDelete (string entityId, DateTime version, IEventSynchronizationContext context)
+    public Task<bool> TryDelete (AppointmentId entityId, DateTime version, IEventSynchronizationContext context)
     {
       var entityWithId = Get (new[] { entityId }, NullLoadEntityLogger.Instance, context).Result.SingleOrDefault();
       if (entityWithId == null)
@@ -327,7 +329,7 @@ namespace CalDavSynchronizer.Implementation.Events
       return Task.FromResult (true);
     }
 
-    public async Task<EntityVersion<string, DateTime>> Create (Func<AppointmentItemWrapper, Task<AppointmentItemWrapper>> entityInitializer, IEventSynchronizationContext context)
+    public async Task<EntityVersion<AppointmentId, DateTime>> Create (Func<AppointmentItemWrapper, Task<AppointmentItemWrapper>> entityInitializer, IEventSynchronizationContext context)
     {
       AppointmentItemWrapper newAppointmentItemWrapper;
 
@@ -340,11 +342,13 @@ namespace CalDavSynchronizer.Implementation.Events
 
       using (newAppointmentItemWrapper)
       {
-        using (var initializedWrapper = await entityInitializer (newAppointmentItemWrapper))
+        using (var initializedWrapper = await entityInitializer(newAppointmentItemWrapper))
         {
           initializedWrapper.SaveAndReload();
-          context.AnnounceAppointment (initializedWrapper.Inner);
-          var result = new EntityVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime);
+          context.AnnounceAppointment(initializedWrapper.Inner);
+          var result = new EntityVersion<AppointmentId, DateTime>(
+            new AppointmentId(initializedWrapper.Inner.EntryID, initializedWrapper.Inner.GlobalAppointmentID),
+            initializedWrapper.Inner.LastModificationTime);
           return result;
         }
       }
