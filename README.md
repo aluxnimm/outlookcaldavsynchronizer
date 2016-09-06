@@ -822,6 +822,20 @@ For all events/tasks from the server the defined category is added in Outlook, w
 With the checkbox below you can also negate the filter and sync all appointments/tasks except this category.
 For calendars it is also possible to choose the color of the category or to fetch the calendar color from the server and map it to the nearest supported Outlook category color with the button *Fetch Color*. With *Set DAV Color* it is also possible to sync the choosen category color back to set the server calendar color accordingly. With *Category Shortcut Key* you can define the shortcut key of the selected category for easier access when creating appointments.
 
+### Reminders ###
+
+In event and task mapping configuration you can define if you want to map (all/non/just upcoming) reminders. If you get the following error message when trying to set reminders in Outlook 
+> The reminder will not appear because the item is in a folder that doesn’t support reminders.
+
+you can try to change the Outlook options as discussed in
+[http://answers.microsoft.com/en-us/office/forum/office_2016-outlook/outlook-2016-calendar-reminders/8f40bcdd-e3fc-4f29-acaf-544f48d63992](http://answers.microsoft.com/en-us/office/forum/office_2016-outlook/outlook-2016-calendar-reminders/8f40bcdd-e3fc-4f29-acaf-544f48d63992)
+or try the following reported by #Todo18
+
+
+1. Create a new storage folder in Outlook via the File menu, Info, Account Settings. In the Data Files tab, you can Add a new (.pst) data file. After the file has been added, Make it the default [data file], and close the dialog.
+2. Go to the Calendar window, right click on the calendar that's giving you problems, and select Move Calendar. In the dialog, pick the data file that you created in the first step, and confirm. Don't forget to update the storage folder in the CalDav Synchronizer settings!
+
+
 ### Google Calender / Addressbooks / Tasks settings ###
 
 For Google you can use the new Google type profile which simplifies the setup. You just need to enter the email address of your google account. When testing the settings, you will be redirected to your browser to enter your Google Account password and grant access rights to your Google Calender, Contacts and Tasks for OutlookCalDavSynchronizer via the safe OAuth protocol. After that Autodiscovery will try to find available calendar, addressbook and task resources. 
