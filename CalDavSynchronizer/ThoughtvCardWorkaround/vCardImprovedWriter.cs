@@ -551,6 +551,15 @@ namespace CalDavSynchronizer.ThoughtvCardWorkaround
               break;
 
           }
+          switch (emailAddress.ItemType)
+          {
+            case ItemType.HOME:
+              property.Subproperties.Add("TYPE", "HOME");
+              break;
+            case ItemType.WORK:
+              property.Subproperties.Add("TYPE", "WORK");
+              break;
+          }
 
           properties.Add(property);
 

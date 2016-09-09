@@ -393,7 +393,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
           email1Address = source.Email1Address;
         }
         if (!string.IsNullOrEmpty (email1Address))
-          target.EmailAddresses.Add (new vCardEmailAddress (email1Address));
+          target.EmailAddresses.Add (new vCardEmailAddress (email1Address, vCardEmailAddressType.Internet, ItemType.WORK));
       }
 
       if (!string.IsNullOrEmpty (source.Email2Address))
@@ -417,7 +417,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
           email2Address = source.Email2Address;
         }
         if (!string.IsNullOrEmpty (email2Address))
-          target.EmailAddresses.Add (new vCardEmailAddress (email2Address));
+          target.EmailAddresses.Add (new vCardEmailAddress (email2Address, vCardEmailAddressType.Internet, ItemType.HOME));
       }
 
       if (!string.IsNullOrEmpty (source.Email3Address))
