@@ -27,6 +27,7 @@ using Thought.vCards;
 using log4net;
 using System.Reflection;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Exception = System.Exception;
@@ -733,6 +734,22 @@ namespace CalDavSynchronizer.Implementation.Contacts
       target.BusinessFaxNumber = string.Empty;
       target.PrimaryTelephoneNumber = string.Empty;
       target.MobileTelephoneNumber = string.Empty;
+
+      // if no PhoneTypes are set (e.g. Yandex drops the types) 
+      // assume a default ordering of cell,work,home to avoid data loss of the first 3 numbers
+
+      if (source.Phones.Count >= 1 && source.Phones.All (p => p.PhoneType == vCardPhoneTypes.Default))
+      {
+        source.Phones[0].PhoneType = vCardPhoneTypes.Cellular;
+        if (source.Phones.Count >= 2)
+        {
+          source.Phones[1].PhoneType = vCardPhoneTypes.Work;
+          if (source.Phones.Count >= 3)
+          {
+            source.Phones[2].PhoneType = vCardPhoneTypes.Home;
+          }
+        }
+      }
 
       foreach (var phoneNumber in source.Phones)
       {
