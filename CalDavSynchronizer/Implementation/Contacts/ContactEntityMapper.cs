@@ -238,15 +238,21 @@ namespace CalDavSynchronizer.Implementation.Contacts
       target.Inner.Email3DisplayName = string.Empty;
       if (source.EmailAddresses.Count >= 1)
       {
-        target.Inner.Email1Address = source.EmailAddresses[0].Address;
+        var workOrFirst = source.EmailAddresses.FirstOrDefault (e => e.ItemType == ItemType.WORK) ??
+                          source.EmailAddresses.First();
+        target.Inner.Email1Address = workOrFirst.Address;
 
-        if (source.EmailAddresses.Count >= 2)
+        var homeOrSecond = source.EmailAddresses.FirstOrDefault (e => e.ItemType == ItemType.HOME) ??
+                           source.EmailAddresses.FirstOrDefault (e => e != workOrFirst);
+
+        if (homeOrSecond != null)
         {
-          target.Inner.Email2Address = source.EmailAddresses[1].Address;
+          target.Inner.Email2Address = homeOrSecond.Address;
 
-          if (source.EmailAddresses.Count >= 3)
+          var other = source.EmailAddresses.FirstOrDefault (e => e != workOrFirst && e != homeOrSecond);
+          if (other != null)
           {
-            target.Inner.Email3Address = source.EmailAddresses[2].Address;
+            target.Inner.Email3Address = other.Address;
           }
         }
       }

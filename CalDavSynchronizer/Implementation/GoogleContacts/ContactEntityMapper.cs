@@ -723,18 +723,26 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       target.Inner.Email3DisplayName = string.Empty;
       if (source.Emails.Count >= 1)
       {
-        target.Inner.Email1Address = source.Emails[0].Address;
-        if (!string.IsNullOrEmpty(source.Emails[0].Label)) target.Inner.Email1DisplayName = source.Emails[0].Label;
-      }
-      if (source.Emails.Count >= 2)
-      {
-        target.Inner.Email2Address = source.Emails[1].Address;
-        if (!string.IsNullOrEmpty(source.Emails[1].Label)) target.Inner.Email2DisplayName = source.Emails[1].Label;
-      }
-      if (source.Emails.Count >= 3)
-      {
-        target.Inner.Email3Address = source.Emails[2].Address;
-        if (!string.IsNullOrEmpty(source.Emails[2].Label)) target.Inner.Email3DisplayName = source.Emails[2].Label;
+        var workOrFirst = source.Emails.FirstOrDefault (e => e.Rel == ContactsRelationships.IsWork) ??
+                          source.Emails.First();
+        target.Inner.Email1Address = workOrFirst.Address;
+        if (!string.IsNullOrEmpty (workOrFirst.Label)) target.Inner.Email1DisplayName = workOrFirst.Label;
+
+        var homeOrSecond = source.Emails.FirstOrDefault (e => e.Rel == ContactsRelationships.IsHome) ??
+                           source.Emails.FirstOrDefault (e => e != workOrFirst);
+
+        if (homeOrSecond != null)
+        {
+          target.Inner.Email2Address = homeOrSecond.Address;
+          if (!string.IsNullOrEmpty (homeOrSecond.Label)) target.Inner.Email2DisplayName = homeOrSecond.Label;
+
+          var other = source.Emails.FirstOrDefault (e => e != workOrFirst && e != homeOrSecond);
+          if (other != null)
+          {
+            target.Inner.Email3Address = other.Address;
+            if (!string.IsNullOrEmpty (other.Label)) target.Inner.Email3DisplayName = other.Label;
+          }
+        }
       }
 
       target.Inner.NickName = source.ContactEntry.Nickname;
