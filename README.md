@@ -43,6 +43,7 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 - iCloud
 - mail.ru
 - Radicale
+- Cozy Cloud
 
 ### Features ###
 
@@ -85,6 +86,18 @@ If the installer is complaining about the missing Visual Studio 2010 Tools for O
 YOu should also update manually to the latest Visual Studio 2010 Tools for Office Runtime (Version 10.0.60724) if you have an older version installed, since some COMExceptions have been fixed.
 
 ### Changelog ###
+
+#### 2.5.1 ####
+- New features
+	- Add account type for Cozy Cloud and set UseIanaTz as default.
+- Bug fixes
+	- Set BusyStatus to tentative for meeting invites without response.
+	- Follow also 307 redirects in WebDavRequests, fixes autodiscovery for Telstra BigPond.
+	- Ensure that discovered resource uris end with slash.
+	- Fix linebreak issues for Open-Xchange vcards, ticket #290.
+	- Add TYPE=WORK to first Outlook Email Address and TYPE=HOME to second for CardDAV profiles and map work email to first Outlook Email Address and home email to second for CardDAV and google contact profiles.
+	- Add default mapping of cell,work and home phone number if PhoneTypes are missing when syncing from CardDAV server to avoid loss of telephone numbers.
+	- Exclude received meetings from immediate sync to avoid problems with doubled events.
 
 #### 2.5.0 ####
 - New features
