@@ -231,6 +231,25 @@ namespace CalDavSynchronizer
             _generalOptionsDataAccess.EntityCacheVersion = c_requiredEntityCacheVersion;
         }
       }
+      else if (currentEntityCacheVersion == 1 && c_requiredEntityCacheVersion == 2)
+      {
+        try
+        {
+          s_logger.InfoFormat("Converting caches from 1 to 2");
+          EntityCacheVersionConversion.Version1To2.Convert(
+            _session,
+            options,
+            o => EntityRelationDataAccess.GetRelationStoragePath (GetProfileDataDirectory (o.Id)),
+            o => DeleteCachesForProfiles(new[] {Tuple.Create(o.Id, o.Name)}));
+          _generalOptionsDataAccess.EntityCacheVersion = c_requiredEntityCacheVersion;
+        }
+        catch (Exception x)
+        {
+          s_logger.Error("Error during conversion. Deleting caches", x);
+          if (DeleteCachesForProfiles(options.Select(p => Tuple.Create(p.Id, p.Name))))
+            _generalOptionsDataAccess.EntityCacheVersion = c_requiredEntityCacheVersion;
+        }
+      }
       else if (currentEntityCacheVersion != c_requiredEntityCacheVersion)
       {
         s_logger.InfoFormat ("Image requires cache version '{0}',but caches have version '{1}'. Deleting caches.", c_requiredEntityCacheVersion, currentEntityCacheVersion);
