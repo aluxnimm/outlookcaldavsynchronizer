@@ -48,8 +48,8 @@ namespace GenSync.Synchronization.States
       IJobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> bJobs,
       IEntitySynchronizationLogger logger)
     {
-      logger.SetAId(_knownData.AtypeId);
-      logger.SetBId(_knownData.BtypeId);
+      logger.SetAId(KnownData.AtypeId);
+      logger.SetBId(KnownData.BtypeId);
       bJobs.AddUpdateJob(new JobWrapper(this, logger));
     }
 
@@ -63,7 +63,7 @@ namespace GenSync.Synchronization.States
         IEntitySynchronizationLogger logger)
     {
       logger.SetBId (result.Id);
-      _nextStateAfterJobExecution = CreateDoNothing (_knownData.AtypeId, _newAVersion, result.Id, result.Version);
+      _nextStateAfterJobExecution = CreateDoNothing (KnownData.AtypeId, _newAVersion, result.Id, result.Version);
     }
 
     private void NotifyEntityNotFound ()
@@ -122,7 +122,7 @@ namespace GenSync.Synchronization.States
         _logger = logger;
       }
 
-      public TBtypeEntityId EntityId => _state._knownData.BtypeId;
+      public TBtypeEntityId EntityId => _state.KnownData.BtypeId;
       public TBtypeEntityVersion Version => _state._currentBVersion;
       public TBtypeEntity EntityToUpdate => _state._bEntity;
 

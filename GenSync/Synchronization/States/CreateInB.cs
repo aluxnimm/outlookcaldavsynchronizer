@@ -32,8 +32,8 @@ namespace GenSync.Synchronization.States
     // ReSharper disable once StaticFieldInGenericType
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    private readonly TAtypeEntityId _aId;
-    private readonly TAtypeEntityVersion _aVersion;
+    public TAtypeEntityId AId { get; }
+    public TAtypeEntityVersion AVersion { get; }
     private TAtypeEntity _aEntity;
     private IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _nextStateAfterJobExecution;
 
@@ -41,21 +41,21 @@ namespace GenSync.Synchronization.States
     public CreateInB (EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> environment, TAtypeEntityId aId, TAtypeEntityVersion aVersion)
         : base (environment)
     {
-      _aId = aId;
-      _aVersion = aVersion;
+      AId = aId;
+      AVersion = aVersion;
     }
 
     public override void AddRequiredEntitiesToLoad (Func<TAtypeEntityId, bool> a, Func<TBtypeEntityId, bool> b)
     {
-      a (_aId);
+      a (AId);
     }
 
     public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> FetchRequiredEntities (IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> aEntities, IReadOnlyDictionary<TBtypeEntityId, TBtypeEntity> bEntites)
     {
-      if (!aEntities.TryGetValue (_aId, out _aEntity))
+      if (!aEntities.TryGetValue (AId, out _aEntity))
       {
         // Just an info, because an add will be retried on next synchronization
-        s_logger.InfoFormat ("Could not fetch entity '{0}'. Discarding operation.", _aId);
+        s_logger.InfoFormat ("Could not fetch entity '{0}'. Discarding operation.", AId);
         return Discard();
       }
 
@@ -87,7 +87,7 @@ namespace GenSync.Synchronization.States
         IJobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> bJobs,
         IEntitySynchronizationLogger logger)
     {
-      logger.SetAId (_aId);
+      logger.SetAId (AId);
       bJobs.AddCreateJob (new JobWrapper (this, logger));
     }
 
@@ -99,7 +99,7 @@ namespace GenSync.Synchronization.States
     private void NotifyOperationSuceeded (EntityVersion<TBtypeEntityId, TBtypeEntityVersion> newVersion, IEntitySynchronizationLogger logger)
     {
       logger.SetBId (newVersion.Id);
-      _nextStateAfterJobExecution = CreateDoNothing (_aId, _aVersion, newVersion.Id, newVersion.Version);
+      _nextStateAfterJobExecution = CreateDoNothing (AId, AVersion, newVersion.Id, newVersion.Version);
     }
 
     private void NotifyOperationFailed (Exception exception, IEntitySynchronizationLogger logger)

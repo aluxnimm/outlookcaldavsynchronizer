@@ -425,7 +425,8 @@ namespace CalDavSynchronizer.Scheduling
           new EventSynchronizationContextFactory(atypeRepository, btypeRepository, entityRelationDataAccess, mappingParameters.CleanupDuplicateEvents),
           EqualityComparer<DateTime>.Default,
           EqualityComparer<string>.Default,
-          syncStateFactory);
+          syncStateFactory,
+          new EventSynchronizationInterceptorFactory());
 
       return new OutlookEventSynchronizer<WebResourceName, string> (synchronizer);
     }
