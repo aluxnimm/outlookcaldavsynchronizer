@@ -82,6 +82,9 @@ namespace GenSync.UnitTests.Synchronization.Stubs
           .Expect (s => s.CreateFor_Unchanged_Unchanged (knownData))
           .Return (new DoNothing<string, string, string, string, string, string> (knownData));
 
+      builder.AtypeRepository.Stub(_ => _.VerifyUnknownEntities(null,0)).IgnoreArguments().Return(Task.FromResult(0));
+      builder.BtypeRepository.Stub(_ => _.VerifyUnknownEntities(null,0)).IgnoreArguments().Return(Task.FromResult(0));
+
       var synchronizer = builder.Build();
       await synchronizer.SynchronizeNoThrow (NullSynchronizationLogger.Instance);
 
