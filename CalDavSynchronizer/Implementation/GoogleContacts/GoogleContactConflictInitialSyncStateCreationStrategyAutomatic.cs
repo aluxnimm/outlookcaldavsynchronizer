@@ -29,14 +29,14 @@ using Thought.vCards;
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
   internal class GoogleContactConflictInitialSyncStateCreationStrategyAutomatic
-      : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, ContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper>
+      : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, ContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, GoogleContactContext>
   {
-    public GoogleContactConflictInitialSyncStateCreationStrategyAutomatic (EntitySyncStateEnvironment<string, DateTime, ContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper> environment)
+    public GoogleContactConflictInitialSyncStateCreationStrategyAutomatic (EntitySyncStateEnvironment<string, DateTime, ContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, GoogleContactContext> environment)
         : base (environment)
     {
     }
 
-    protected override IEntitySyncState<string, DateTime, ContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper> Create_FromNewerToOlder (IEntityRelationData<string, DateTime, string, GoogleContactVersion> knownData, DateTime newA, GoogleContactVersion newB)
+    protected override IEntitySyncState<string, DateTime, ContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, GoogleContactContext> Create_FromNewerToOlder (IEntityRelationData<string, DateTime, string, GoogleContactVersion> knownData, DateTime newA, GoogleContactVersion newB)
     {
       return new GoogleContactUpdateFromNewerToOlder (
           _environment,

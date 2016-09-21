@@ -24,7 +24,7 @@ using Task = Google.Apis.Tasks.v1.Data.Task;
 
 namespace CalDavSynchronizer.Implementation.GoogleTasks
 {
-  class GoogleTaskMapper : IEntityMapper<TaskItemWrapper, Task>
+  class GoogleTaskMapper : IEntityMapper<TaskItemWrapper, Task, int>
   {
     private readonly DateTime _dateNull;
 
@@ -32,7 +32,7 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
     {
       _dateNull = new DateTime (4501, 1, 1, 0, 0, 0);
     }
-    public Task<Task> Map1To2 (TaskItemWrapper source, Task target, IEntityMappingLogger logger)
+    public Task<Task> Map1To2 (TaskItemWrapper source, Task target, IEntityMappingLogger logger, int context)
     {
       target.Title = source.Inner.Subject;
       target.Notes = source.Inner.Body;
@@ -74,7 +74,7 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
     }
 
-    public Task<TaskItemWrapper> Map2To1 (Task source, TaskItemWrapper target, IEntityMappingLogger logger)
+    public Task<TaskItemWrapper> Map2To1 (Task source, TaskItemWrapper target, IEntityMappingLogger logger, int context)
     {
       target.Inner.Subject = source.Title;
       target.Inner.Body = source.Notes;

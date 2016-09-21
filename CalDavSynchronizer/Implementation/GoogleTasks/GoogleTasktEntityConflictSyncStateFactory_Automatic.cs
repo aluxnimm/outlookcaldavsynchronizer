@@ -28,14 +28,14 @@ using Google.Apis.Tasks.v1.Data;
 namespace CalDavSynchronizer.Implementation.GoogleTasks
 {
   internal class GoogleTaskConflictInitialSyncStateCreationStrategyAutomatic
-      : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, TaskItemWrapper, string, string, Task>
+      : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, TaskItemWrapper, string, string, Task, int>
   {
-    public GoogleTaskConflictInitialSyncStateCreationStrategyAutomatic (EntitySyncStateEnvironment<string, DateTime, TaskItemWrapper, string, string, Task> environment)
+    public GoogleTaskConflictInitialSyncStateCreationStrategyAutomatic (EntitySyncStateEnvironment<string, DateTime, TaskItemWrapper, string, string, Task, int> environment)
         : base (environment)
     {
     }
 
-    protected override IEntitySyncState<string, DateTime, TaskItemWrapper, string, string, Task> Create_FromNewerToOlder (IEntityRelationData<string, DateTime, string, string> knownData, DateTime newA, string newB)
+    protected override IEntitySyncState<string, DateTime, TaskItemWrapper, string, string, Task, int> Create_FromNewerToOlder (IEntityRelationData<string, DateTime, string, string> knownData, DateTime newA, string newB)
     {
       return new GoogleTaskUpdateFromNewerToOlder (
           _environment,
