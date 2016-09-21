@@ -24,7 +24,7 @@ using log4net;
 
 namespace GenSync.Synchronization.States
 {
-  internal class RestoreInB<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
+  public class RestoreInB<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
       : UpdateBase<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);
@@ -45,8 +45,8 @@ namespace GenSync.Synchronization.States
       IJobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> bJobs,
       IEntitySynchronizationLogger logger)
     {
-      logger.SetAId(_knownData.AtypeId);
-      logger.SetBId(_knownData.BtypeId);
+      logger.SetAId(KnownData.AtypeId);
+      logger.SetBId(KnownData.BtypeId);
       bJobs.AddUpdateJob(new JobWrapper(this, logger));
     }
 
@@ -60,7 +60,7 @@ namespace GenSync.Synchronization.States
         IEntitySynchronizationLogger logger)
     {
       logger.SetBId (result.Id);
-      _nextStateAfterJobExecution = CreateDoNothing (_knownData.AtypeId, _knownData.AtypeVersion, result.Id, result.Version);
+      _nextStateAfterJobExecution = CreateDoNothing (KnownData.AtypeId, KnownData.AtypeVersion, result.Id, result.Version);
     }
 
     private void NotifyEntityNotFound ()
@@ -91,6 +91,11 @@ namespace GenSync.Synchronization.States
       return _nextStateAfterJobExecution;
     }
 
+    public override void Accept(ISynchronizationStateVisitor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> visitor)
+    {
+      visitor.Visit (this);
+    }
+
     private void SetNextStateAsFailed ()
     {
       _nextStateAfterJobExecution = CreateDoNothing();
@@ -114,7 +119,7 @@ namespace GenSync.Synchronization.States
         _logger = logger;
       }
 
-      public TBtypeEntityId EntityId => _state._knownData.BtypeId;
+      public TBtypeEntityId EntityId => _state.KnownData.BtypeId;
       public TBtypeEntityVersion Version => _state._currentBVersion;
       public TBtypeEntity EntityToUpdate => _state._bEntity;
 

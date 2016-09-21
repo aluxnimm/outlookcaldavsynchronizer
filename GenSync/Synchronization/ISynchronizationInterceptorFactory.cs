@@ -23,23 +23,18 @@ using System.Threading.Tasks;
 namespace GenSync.Synchronization
 {
   /// <summary>
-  /// Creates the synchronization context. 
-  /// The Synchronization context respresents user defined data and is passed through all components (e.g. repositories, entitymappers, etc...)
+  /// Creates a synchronization interceptor
+  /// In contrast to the synchronization context, which represents just user defined data, which is opaque for the Synchronizer and just passed through the
+  /// whole callchain, the <see cref="ISynchronizationInterceptor"/> is an interface, which is called by the synchronizer at defined steps and
+  /// which can be used to customize the synchronization process.
   /// </summary>
-  /// <typeparam name="TContext"></typeparam>
-  public interface ISynchronizationContextFactory<TContext>
+  public interface ISynchronizationInterceptorFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
   {
     /// <summary>
-    /// Is called at the beginning of every sync run, to create an context for the ongoing sync run
+    /// Is called at the beginning of every sync run, to create an interceptor for the ongoing sync run
     /// </summary>
     /// <returns></returns>
-    Task<TContext> Create();
-
-    /// <summary>
-    /// Is called at the end of every sync run with the previously created context
-    /// </summary>
-    /// <param name="context"></param>
-    /// <returns></returns>
-    Task SynchronizationFinished(TContext context);
+    ISynchronizationInterceptor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> Create ();
   }
+  
 }

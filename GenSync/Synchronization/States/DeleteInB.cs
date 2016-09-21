@@ -26,7 +26,7 @@ using log4net;
 
 namespace GenSync.Synchronization.States
 {
-  internal class DeleteInB<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
+  public class DeleteInB<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
       : StateWithKnownData<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
   {
     // ReSharper disable once StaticFieldInGenericType
@@ -62,12 +62,17 @@ namespace GenSync.Synchronization.States
       s_logger.Error ("This state should have been left via PerformSyncActionNoThrow!");
     }
 
+    public override void Accept(ISynchronizationStateVisitor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> visitor)
+    {
+      visitor.Visit (this);
+    }
+
     public override void AddSyncronizationJob (
         IJobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity> aJobs,
         IJobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> bJobs,
         IEntitySynchronizationLogger logger)
     {
-      logger.SetBId (_knownData.BtypeId);
+      logger.SetBId (KnownData.BtypeId);
       bJobs.AddDeleteJob (new JobWrapper (this, logger));
     }
 
@@ -127,7 +132,7 @@ namespace GenSync.Synchronization.States
         _logger = logger;
       }
 
-      public TBtypeEntityId EntityId => _state._knownData.BtypeId;
+      public TBtypeEntityId EntityId => _state.KnownData.BtypeId;
       public TBtypeEntityVersion Version => _state._currentBVersion;
 
       public void NotifyOperationSuceeded ()

@@ -303,6 +303,8 @@
     <Compile Include="EntityCacheVersionConversion\Version1To2.cs" />
     <Compile Include="Implementation\Common\NameSpaceExtensions.cs" />
     <Compile Include="Implementation\Common\OutlookUtility.cs" />
+    <Compile Include="Implementation\Events\EventSynchronizationInterceptorFactory.cs" />
+    <Compile Include="Implementation\Events\EventSynchronizationInterceptor.cs" />
     <Compile Include="Implementation\Events\NullEventSynchronizationContextFactory.cs" />
     <Compile Include="Implementation\Events\EventSynchronizationContextFactory.cs" />
     <Compile Include="Implementation\Events\DuplicateEventCleaner.cs" />

@@ -24,7 +24,7 @@ using log4net;
 
 namespace GenSync.Synchronization.States
 {
-  internal class UpdateBToA<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
+  public class UpdateBToA<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
       : UpdateBase<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
   {
     // ReSharper disable once StaticFieldInGenericType
@@ -49,8 +49,8 @@ namespace GenSync.Synchronization.States
         IJobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> bJobs,
         IEntitySynchronizationLogger logger)
     {
-      logger.SetAId (_knownData.AtypeId);
-      logger.SetBId (_knownData.BtypeId);
+      logger.SetAId (KnownData.AtypeId);
+      logger.SetBId (KnownData.BtypeId);
       aJobs.AddUpdateJob (new JobWrapper (this, logger));
     }
 
@@ -64,7 +64,7 @@ namespace GenSync.Synchronization.States
         IEntitySynchronizationLogger logger)
     {
       logger.SetAId (result.Id);
-      _nextStateAfterJobExecution = CreateDoNothing (result.Id, result.Version, _knownData.BtypeId, _newBVersion);
+      _nextStateAfterJobExecution = CreateDoNothing (result.Id, result.Version, KnownData.BtypeId, _newBVersion);
     }
 
     private void NotifyEntityNotFound ()
@@ -95,6 +95,11 @@ namespace GenSync.Synchronization.States
       return _nextStateAfterJobExecution;
     }
 
+    public override void Accept(ISynchronizationStateVisitor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> visitor)
+    {
+      visitor.Visit(this);
+    }
+
     private void SetNextStateAsFailed ()
     {
       _nextStateAfterJobExecution = CreateDoNothing();
@@ -118,7 +123,7 @@ namespace GenSync.Synchronization.States
         _logger = logger;
       }
 
-      public TAtypeEntityId EntityId => _state._knownData.AtypeId;
+      public TAtypeEntityId EntityId => _state.KnownData.AtypeId;
       public TAtypeEntityVersion Version => _state._currentAVersion;
       public TAtypeEntity EntityToUpdate => _state._aEntity;
 

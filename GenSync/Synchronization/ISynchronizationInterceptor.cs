@@ -14,32 +14,18 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using GenSync.Synchronization.StateFactories;
+using GenSync.Synchronization.States;
 
 namespace GenSync.Synchronization
 {
-  /// <summary>
-  /// Creates the synchronization context. 
-  /// The Synchronization context respresents user defined data and is passed through all components (e.g. repositories, entitymappers, etc...)
-  /// </summary>
-  /// <typeparam name="TContext"></typeparam>
-  public interface ISynchronizationContextFactory<TContext>
+  public interface ISynchronizationInterceptor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> : IDisposable
   {
-    /// <summary>
-    /// Is called at the beginning of every sync run, to create an context for the ongoing sync run
-    /// </summary>
-    /// <returns></returns>
-    Task<TContext> Create();
-
-    /// <summary>
-    /// Is called at the end of every sync run with the previously created context
-    /// </summary>
-    /// <param name="context"></param>
-    /// <returns></returns>
-    Task SynchronizationFinished(TContext context);
+    List<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>> TransformInitialCreatedStates (
+      List<IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>> states,
+      IEntitySyncStateFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> stateFactory);
   }
 }

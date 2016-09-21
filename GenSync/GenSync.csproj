@@ -101,6 +101,10 @@
     <Compile Include="ProgressReport\TotalProgressFactory.cs" />
     <Compile Include="ProgressReport\TotalProgressLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Synchronization\NullSynchronizationInterceptor.cs" />
+    <Compile Include="Synchronization\NullSynchronizationInterceptorFactory.cs" />
+    <Compile Include="Synchronization\ISynchronizationInterceptorFactory.cs" />
+    <Compile Include="Synchronization\ISynchronizationInterceptor.cs" />
     <Compile Include="Synchronization\NullSynchronizationContextFactory.cs" />
     <Compile Include="Synchronization\EntitySyncStateContainer.cs" />
     <Compile Include="Synchronization\EntitySyncStateEnvironment.cs" />
@@ -129,6 +133,7 @@
     <Compile Include="Synchronization\States\DoNothing.cs" />
     <Compile Include="Synchronization\States\IEntitySyncState.cs" />
     <Compile Include="Synchronization\IJobList.cs" />
+    <Compile Include="Synchronization\ISynchronizationStateVisitor.cs" />
     <Compile Include="Synchronization\States\RestoreInA.cs" />
     <Compile Include="Synchronization\States\RestoreInB.cs" />
     <Compile Include="Synchronization\States\StateBase.cs" />

@@ -39,21 +39,21 @@ namespace GenSync.Synchronization.States
 
     public override void AddRequiredEntitiesToLoad (Func<TAtypeEntityId, bool> a, Func<TBtypeEntityId, bool> b)
     {
-      a (_knownData.AtypeId);
-      b (_knownData.BtypeId);
+      a (KnownData.AtypeId);
+      b (KnownData.BtypeId);
     }
 
     public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> FetchRequiredEntities (IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> aEntities, IReadOnlyDictionary<TBtypeEntityId, TBtypeEntity> bEntites)
     {
-      if (!aEntities.TryGetValue (_knownData.AtypeId, out _aEntity))
+      if (!aEntities.TryGetValue (KnownData.AtypeId, out _aEntity))
       {
-        s_logger.ErrorFormat ("Could not fetch entity '{0}'. Skipping operation.", _knownData.AtypeId);
+        s_logger.ErrorFormat ("Could not fetch entity '{0}'. Skipping operation.", KnownData.AtypeId);
         return CreateDoNothing();
       }
 
-      if (!bEntites.TryGetValue (_knownData.BtypeId, out _bEntity))
+      if (!bEntites.TryGetValue (KnownData.BtypeId, out _bEntity))
       {
-        s_logger.ErrorFormat ("Could not fetch entity '{0}'. Skipping operation.", _knownData.BtypeId);
+        s_logger.ErrorFormat ("Could not fetch entity '{0}'. Skipping operation.", KnownData.BtypeId);
         return CreateDoNothing();
       }
 

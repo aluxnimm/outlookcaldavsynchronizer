@@ -42,9 +42,9 @@ namespace GenSync.Synchronization.States
     public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> Resolve ()
     {
       if (AIsNewerThanB)
-        return _environment.StateFactory.Create_UpdateAtoB (_knownData, _newA, _newB);
+        return _environment.StateFactory.Create_UpdateAtoB (KnownData, _newA, _newB);
       else
-        return _environment.StateFactory.Create_UpdateBtoA (_knownData, _newB, _newA);
+        return _environment.StateFactory.Create_UpdateBtoA (KnownData, _newB, _newA);
     }
 
     protected abstract bool AIsNewerThanB { get; }
@@ -66,6 +66,11 @@ namespace GenSync.Synchronization.States
     {
       s_logger.Error ("This state should have been left via Resolve!");
       return this;
+    }
+
+    public override void Accept (ISynchronizationStateVisitor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> visitor)
+    {
+      visitor.Visit(this);
     }
   }
 }

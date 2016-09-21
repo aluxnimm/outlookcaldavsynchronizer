@@ -62,6 +62,11 @@ namespace GenSync.Synchronization.States
       addAction (_knownData);
     }
 
+    public void Accept(ISynchronizationStateVisitor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> visitor)
+    {
+      visitor.Visit(this);
+    }
+
     public void Dispose ()
     {
     }

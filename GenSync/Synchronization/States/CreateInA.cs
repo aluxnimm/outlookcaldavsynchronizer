@@ -25,7 +25,7 @@ using log4net;
 
 namespace GenSync.Synchronization.States
 {
-  internal class CreateInA<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> :
+  public class CreateInA<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> :
       StateBase<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
   {
     // ReSharper disable once StaticFieldInGenericType
@@ -73,6 +73,11 @@ namespace GenSync.Synchronization.States
     public override void Dispose ()
     {
       _bEntity = default(TBtypeEntity);
+    }
+
+    public override void Accept(ISynchronizationStateVisitor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> visitor)
+    {
+      visitor.Visit (this);
     }
 
     public override void AddSyncronizationJob (
