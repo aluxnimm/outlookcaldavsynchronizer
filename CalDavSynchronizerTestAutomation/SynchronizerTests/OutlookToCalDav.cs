@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.Implementation.Events;
 using CalDavSynchronizerTestAutomation.Infrastructure;
 using Microsoft.Office.Interop.Outlook;
 using NUnit.Framework;
@@ -86,7 +87,7 @@ namespace CalDavSynchronizerTestAutomation.SynchronizerTests
       CheckEvent (eventData, appointmentId, new[] { 2, 3, 4 });
     }
 
-    private void CheckEvent (string eventData, string appointmentId, int[] expectedSequenceNumbers)
+    private void CheckEvent (string eventData, AppointmentId appointmentId, int[] expectedSequenceNumbers)
     {
       var calendar = OutlookTestContext.DeserializeICalendar (eventData);
 

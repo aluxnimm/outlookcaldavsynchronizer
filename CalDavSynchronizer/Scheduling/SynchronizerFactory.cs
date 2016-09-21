@@ -186,7 +186,7 @@ namespace CalDavSynchronizer.Scheduling
 
       var storageDataDirectory = _profileDataDirectoryFactory (options.Id);
 
-      var entityRelationDataAccess = new EntityRelationDataAccess<string, DateTime, OutlookEventRelationData, WebResourceName, string> (storageDataDirectory);
+      var entityRelationDataAccess = new EntityRelationDataAccess<AppointmentId, DateTime, OutlookEventRelationData, WebResourceName, string> (storageDataDirectory);
 
       return await CreateEventSynchronizer (options, calDavDataAccess, entityRelationDataAccess);
     }
@@ -348,7 +348,7 @@ namespace CalDavSynchronizer.Scheduling
     public async Task<IOutlookSynchronizer> CreateEventSynchronizer (
         Options options,
         ICalDavDataAccess calDavDataAccess,
-        IEntityRelationDataAccess<string, DateTime, WebResourceName, string> entityRelationDataAccess)
+        IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> entityRelationDataAccess)
     {
       var dateTimeRangeProvider =
           options.IgnoreSynchronizationTimeRange ?
@@ -392,24 +392,24 @@ namespace CalDavSynchronizer.Scheduling
 
       var outlookEventRelationDataFactory = new OutlookEventRelationDataFactory();
 
-      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar> (
+      var syncStateFactory = new EntitySyncStateFactory<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar> (
           entityMapper,
           outlookEventRelationDataFactory,
           ExceptionHandler.Instance
           );
 
       var btypeIdEqualityComparer = WebResourceName.Comparer;
-      var atypeIdEqualityComparer = EqualityComparer<string>.Default;
+      var atypeIdEqualityComparer = AppointmentId.Comparer;
 
       var aTypeWriteRepository = BatchEntityRepositoryAdapter.Create (atypeRepository);
       var bTypeWriteRepository = BatchEntityRepositoryAdapter.Create (btypeRepository);
 
-      var synchronizer = new Synchronizer<string, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> (
+      var synchronizer = new Synchronizer<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> (
           atypeRepository,
           btypeRepository,
           aTypeWriteRepository,
           bTypeWriteRepository,
-          InitialSyncStateCreationStrategyFactory<string, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar>.Create (
+          InitialSyncStateCreationStrategyFactory<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar>.Create (
               syncStateFactory,
               syncStateFactory.Environment,
               options.SynchronizationMode,
@@ -426,7 +426,7 @@ namespace CalDavSynchronizer.Scheduling
           EqualityComparer<DateTime>.Default,
           EqualityComparer<string>.Default);
 
-      return new OutlookSynchronizer<WebResourceName, string> (synchronizer);
+      return new OutlookEventSynchronizer<WebResourceName, string> (synchronizer);
     }
 
     private HttpClient CreateHttpClient(ProxyOptions proxyOptionsOrNull)
@@ -488,10 +488,10 @@ namespace CalDavSynchronizer.Scheduling
           NullDateTimeRangeProvider.Instance,
           false);
 
-      var outlookEventRelationDataFactory = new OutlookEventRelationDataFactory();
+      var relationDataFactory = new TaskRelationDataFactory ();
       var syncStateFactory = new EntitySyncStateFactory<string, DateTime, TaskItemWrapper, WebResourceName, string, IICalendar> (
           new TaskMapper (_outlookSession.Application.TimeZones.CurrentTimeZone.ID, mappingParameters),
-          outlookEventRelationDataFactory,
+          relationDataFactory,
           ExceptionHandler.Instance);
 
       var storageDataDirectory = _profileDataDirectoryFactory (options.Id);
@@ -513,8 +513,8 @@ namespace CalDavSynchronizer.Scheduling
               options.SynchronizationMode,
               options.ConflictResolution,
               e => new TaskConflictInitialSyncStateCreationStrategyAutomatic (e)),
-          new EntityRelationDataAccess<string, DateTime, OutlookEventRelationData, WebResourceName, string> (storageDataDirectory),
-          outlookEventRelationDataFactory,
+          new EntityRelationDataAccess<string, DateTime, TaskRelationData, WebResourceName, string> (storageDataDirectory),
+          relationDataFactory,
           new InitialTaskEntityMatcher (btypeIdEqualityComparer),
           atypeIdEqualityComparer,
           btypeIdEqualityComparer,

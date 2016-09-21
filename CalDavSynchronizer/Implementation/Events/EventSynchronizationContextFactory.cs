@@ -32,13 +32,13 @@ namespace CalDavSynchronizer.Implementation.Events
   {
     private readonly OutlookEventRepository _outlookRepository;
     private readonly IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> _btypeRepository;
-    private readonly IEntityRelationDataAccess<string, DateTime, WebResourceName, string> _entityRelationDataAccess;
+    private readonly IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> _entityRelationDataAccess;
     private readonly bool _cleanupDuplicateEvents;
 
     public EventSynchronizationContextFactory(
       OutlookEventRepository outlookRepository,
       IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> btypeRepository,
-      IEntityRelationDataAccess<string, DateTime, WebResourceName, string> entityRelationDataAccess,
+      IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> entityRelationDataAccess,
       bool cleanupDuplicateEvents)
     {
       if (outlookRepository == null)

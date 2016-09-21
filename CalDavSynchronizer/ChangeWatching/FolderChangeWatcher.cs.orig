@@ -87,12 +87,17 @@ namespace CalDavSynchronizer.ChangeWatching
       var appointment = item as AppointmentItem;
       if (appointment != null)
       {
+<<<<<<< HEAD
         //Don't add appointment if it is a meeting invite, since this can cause doubled and/or cancelled meetings
         if (appointment.MeetingStatus != OlMeetingStatus.olMeetingReceived)
         {
           s_logger.Debug ($"'{nameof (ItemAction)}.{action}': Appointment '{appointment.Subject}' '{appointment.EntryID}' ");
-          entryId = new AppointmentId(new Implementation.Events.AppointmentId(appointment.EntryID, appointment.GlobalAppointmentID), appointment.LastModificationTime, wasDeleted);
+          entryId = IdWithHints.Create (appointment.EntryID, (DateTime?) appointment.LastModificationTime, wasDeleted);
         }
+=======
+        s_logger.Debug ($"'{nameof (ItemAction)}.{action}': Appointment '{appointment.Subject}' '{appointment.EntryID}' ");
+        entryId = new AppointmentId(new Implementation.Events.AppointmentId(appointment.EntryID, appointment.GlobalAppointmentID), appointment.LastModificationTime, wasDeleted);
+>>>>>>> Introduce AppointmentId
       }
       else
       {

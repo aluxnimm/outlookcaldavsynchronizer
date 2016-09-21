@@ -17,6 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CalDavSynchronizer.ChangeWatching;
+using CalDavSynchronizer.Implementation.Events;
 using GenSync;
 using GenSync.Logging;
 
@@ -25,6 +27,6 @@ namespace CalDavSynchronizer.Synchronization
   public interface IOutlookSynchronizer
   {
     Task SynchronizeNoThrow (ISynchronizationLogger logger);
-    Task SnychronizePartialNoThrow (IEnumerable<IIdWithHints<string, DateTime>> outlookIds, ISynchronizationLogger logger);
+    Task SnychronizePartialNoThrow (IEnumerable<IOutlookId> outlookIds, ISynchronizationLogger logger);
   }
 }

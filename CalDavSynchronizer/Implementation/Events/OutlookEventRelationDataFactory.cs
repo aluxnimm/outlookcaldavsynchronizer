@@ -20,9 +20,9 @@ using GenSync.EntityRelationManagement;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class OutlookEventRelationDataFactory : IEntityRelationDataFactory<string, DateTime, WebResourceName, string>
+  public class OutlookEventRelationDataFactory : IEntityRelationDataFactory<AppointmentId, DateTime, WebResourceName, string>
   {
-    public IEntityRelationData<string, DateTime, WebResourceName, string> Create (string atypeId, DateTime atypeVersion, WebResourceName btypeId, string btypeVersion)
+    public IEntityRelationData<AppointmentId, DateTime, WebResourceName, string> Create (AppointmentId atypeId, DateTime atypeVersion, WebResourceName btypeId, string btypeVersion)
     {
       return new OutlookEventRelationData()
              {

@@ -99,7 +99,7 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
         return Task.Run (() => FinishSynchronizationEvent.Wait());
       }
 
-      public Task SnychronizePartialNoThrow (IEnumerable<IIdWithHints<string, DateTime>> outlookIds, ISynchronizationLogger logger)
+      public Task SnychronizePartialNoThrow (IEnumerable<IOutlookId> outlookIds, ISynchronizationLogger logger)
       {
         throw new NotImplementedException();
       }

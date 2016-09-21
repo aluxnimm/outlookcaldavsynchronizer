@@ -16,16 +16,17 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Xml.Serialization;
+using CalDavSynchronizer.DataAccess;
 using GenSync.EntityRelationManagement;
 
 namespace CalDavSynchronizer.Implementation.Tasks
 {
-  public class TaskRelationData : IEntityRelationData<string, DateTime, Uri, string>
+  public class TaskRelationData : IEntityRelationData<string, DateTime, WebResourceName, string>
   {
     public string AtypeId { get; set; }
     public DateTime AtypeVersion { get; set; }
     
-    public Uri BtypeId { get; set; }
+    public WebResourceName BtypeId { get; set; }
     public string BtypeVersion { get; set; }
   }
 }

@@ -21,16 +21,14 @@ namespace CalDavSynchronizer.ChangeWatching
 {
   public class ItemSavedEventArgs : EventArgs
   {
-    private readonly IIdWithHints<string,DateTime> _entryId;
-
-    public ItemSavedEventArgs (IIdWithHints<string, DateTime> entryId)
+    public ItemSavedEventArgs (IOutlookId entryId)
     {
       if (entryId == null)
         throw new ArgumentNullException (nameof (entryId));
 
-      _entryId = entryId;
+      EntryId = entryId;
     }
 
-    public IIdWithHints<string, DateTime> EntryId => _entryId;
+    public IOutlookId EntryId { get; }
   }
 }
