@@ -781,7 +781,7 @@ namespace CalDavSynchronizer.Implementation.Events
       }
     }
 
-    private void MapRecurrance2To1 (IEvent source, IReadOnlyCollection<IEvent> exceptions, AppointmentItemWrapper targetWrapper, IEntityMappingLogger logger, IEventSynchronizationContext context)
+    private void MapRecurrance2To1 (IEvent source, IReadOnlyCollection<IEvent> exceptions, AppointmentItemWrapper targetWrapper, IEntityMappingLogger logger)
     {
       if (source.RecurrenceRules.Count > 0)
       {
@@ -1035,15 +1035,13 @@ namespace CalDavSynchronizer.Implementation.Events
               exceptions.Where (e => e.Start.AsUtc() < e.RecurrenceID.Date).OrderBy (e => e.Start.AsUtc()),
               targetWrapper,
               targetRecurrencePattern,
-              logger,
-              context);
+              logger);
           // then move all exceptions which are postponed or are not moved from last to first
           MapRecurrenceExceptions2To1 (
               exceptions.Where (e => e.Start.AsUtc() >= e.RecurrenceID.Date).OrderByDescending (e => e.Start.AsUtc()),
               targetWrapper,
               targetRecurrencePattern,
-              logger,
-              context);
+              logger);
           // HINT: this algorith will only prevent skipping while moving. If the final state contains skipped occurences, outlook will throw an exception anyway
         }
       }
@@ -1053,8 +1051,7 @@ namespace CalDavSynchronizer.Implementation.Events
         IEnumerable<IEvent> exceptions,
         AppointmentItemWrapper targetWrapper,
         Microsoft.Office.Interop.Outlook.RecurrencePattern targetRecurrencePattern,
-        IEntityMappingLogger logger,
-        IEventSynchronizationContext context)
+        IEntityMappingLogger logger)
     {
       foreach (var recurranceException in exceptions)
       {
@@ -1087,7 +1084,7 @@ namespace CalDavSynchronizer.Implementation.Events
           using (var exceptionWrapper = new AppointmentItemWrapper (targetException, _ => { throw new InvalidOperationException ("cannot reload exception item"); }))
 
           {
-            Map2To1 (recurranceException, new IEvent[] { }, exceptionWrapper, true, logger, context);
+            Map2To1 (recurranceException, new IEvent[] { }, exceptionWrapper, true, logger);
             exceptionWrapper.Inner.Save();
           }
         }
@@ -1308,7 +1305,7 @@ namespace CalDavSynchronizer.Implementation.Events
         return Map2To1 (sourceCalendar, target, logger, context);
       }
 
-      return Task.FromResult(Map2To1 (sourceMasterEvent, sourceExceptionEvents, target, false, logger, context));
+      return Task.FromResult(Map2To1 (sourceMasterEvent, sourceExceptionEvents, target, false, logger));
     }
 
     private void AddMasterEvent (IICalendar calendar)
@@ -1386,8 +1383,7 @@ namespace CalDavSynchronizer.Implementation.Events
         IReadOnlyCollection<IEvent> recurrenceExceptionsOrNull,
         AppointmentItemWrapper targetWrapper,
         bool isRecurrenceException,
-        IEntityMappingLogger logger,
-        IEventSynchronizationContext context)
+        IEntityMappingLogger logger)
     {
       if (!isRecurrenceException && targetWrapper.Inner.IsRecurring)
       {
@@ -1522,7 +1518,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
 
       if (!isRecurrenceException)
-        MapRecurrance2To1 (source, recurrenceExceptionsOrNull, targetWrapper, logger, context);
+        MapRecurrance2To1 (source, recurrenceExceptionsOrNull, targetWrapper, logger);
 
       if (!isRecurrenceException)
         targetWrapper.Inner.Sensitivity = CommonEntityMapper.MapPrivacy2To1 (source.Class, 
@@ -1570,11 +1566,9 @@ namespace CalDavSynchronizer.Implementation.Events
             }
             else
             {
-              context.AnnounceAppointmentDeleted(targetWrapper.Inner);
               using (var newMeetingItem = GenericComObjectWrapper.Create (targetWrapper.Inner.Respond (response.Value)))
               {
                 var newAppointment = newMeetingItem.Inner.GetAssociatedAppointment (false);
-                context.AnnounceAppointment(newAppointment);
                 targetWrapper.Replace (newAppointment);
               }
             }
