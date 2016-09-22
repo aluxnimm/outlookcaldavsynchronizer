@@ -24,15 +24,15 @@ using log4net;
 
 namespace GenSync.Synchronization.States
 {
-  public class RestoreInA<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>
-      : UpdateBase<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>
+  public class RestoreInA<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
+      : UpdateBase<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);
     private readonly TAtypeEntityVersion _currentAVersion;
-    private IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> _nextStateAfterJobExecution;
+    private IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _nextStateAfterJobExecution;
 
     public RestoreInA (
-        EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> environment,
+        EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> environment,
         IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> knownData,
         TAtypeEntityVersion currentAVersion)
         : base (environment, knownData)
@@ -43,17 +43,16 @@ namespace GenSync.Synchronization.States
     public override void AddSyncronizationJob (
         IJobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity> aJobs,
         IJobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> bJobs,
-        IEntitySynchronizationLogger logger,
-        TContext context)
+        IEntitySynchronizationLogger logger)
     {
       logger.SetAId (KnownData.AtypeId);
       logger.SetBId (KnownData.BtypeId);
-      aJobs.AddUpdateJob (new JobWrapper (this, logger, context));
+      aJobs.AddUpdateJob (new JobWrapper (this, logger));
     }
 
-    async Task<TAtypeEntity> UpdateEntity (TAtypeEntity entity, IEntitySynchronizationLogger logger, TContext context)
+    async Task<TAtypeEntity> UpdateEntity (TAtypeEntity entity, IEntitySynchronizationLogger logger)
     {
-      return await _environment.Mapper.Map2To1 (_bEntity, entity, logger, context);
+      return await _environment.Mapper.Map2To1 (_bEntity, entity, logger);
     }
 
     private void NotifyOperationSuceeded (
@@ -82,7 +81,7 @@ namespace GenSync.Synchronization.States
       SetNextStateAsFailed ();
     }
 
-    public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> NotifyJobExecuted ()
+    public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> NotifyJobExecuted ()
     {
       if (_nextStateAfterJobExecution == null)
       {
@@ -92,7 +91,7 @@ namespace GenSync.Synchronization.States
       return _nextStateAfterJobExecution;
     }
 
-    public override void Accept(ISynchronizationStateVisitor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> visitor)
+    public override void Accept(ISynchronizationStateVisitor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> visitor)
     {
       visitor.Visit(this);
     }
@@ -104,14 +103,12 @@ namespace GenSync.Synchronization.States
 
     struct JobWrapper : IUpdateJob<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity>
     {
-      private readonly RestoreInA<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> _state;
+      private readonly RestoreInA<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _state;
       readonly IEntitySynchronizationLogger _logger;
-      private readonly TContext _context;
 
       public JobWrapper (
-          RestoreInA<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> state,
-          IEntitySynchronizationLogger logger,
-          TContext context)
+          RestoreInA<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> state,
+          IEntitySynchronizationLogger logger)
       {
         if (state == null)
           throw new ArgumentNullException (nameof (state));
@@ -120,7 +117,6 @@ namespace GenSync.Synchronization.States
 
         _state = state;
         _logger = logger;
-        _context = context;
       }
 
       public TAtypeEntityId EntityId => _state.KnownData.AtypeId;
@@ -129,7 +125,7 @@ namespace GenSync.Synchronization.States
 
       public async Task<TAtypeEntity> UpdateEntity (TAtypeEntity entity)
       {
-        return await _state.UpdateEntity (entity, _logger, _context);
+        return await _state.UpdateEntity (entity, _logger);
       }
 
       public void NotifyEntityNotFound ()

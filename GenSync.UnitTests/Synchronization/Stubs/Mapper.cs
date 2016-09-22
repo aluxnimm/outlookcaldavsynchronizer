@@ -21,14 +21,14 @@ using GenSync.Logging;
 
 namespace GenSync.UnitTests.Synchronization.Stubs
 {
-  internal class Mapper : IEntityMapper<string, string, int>
+  internal class Mapper : IEntityMapper<string, string>
   {
-    public Task<string> Map1To2 (string source, string target, IEntityMappingLogger logger, int context)
+    public Task<string> Map1To2 (string source, string target, IEntityMappingLogger logger)
     {
       return Task.FromResult(source);
     }
 
-    public Task<string> Map2To1 (string source, string target, IEntityMappingLogger logger, int context)
+    public Task<string> Map2To1 (string source, string target, IEntityMappingLogger logger)
     {
       return Task.FromResult(source);
     }

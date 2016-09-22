@@ -26,17 +26,17 @@ using log4net;
 
 namespace GenSync.Synchronization.States
 {
-  public class DeleteInBWithNoRetry<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>
-      : StateBase<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>
+  public class DeleteInBWithNoRetry<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
+      : StateBase<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
   {
     // ReSharper disable once StaticFieldInGenericType
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
     private readonly TBtypeEntityId _bId;
     private readonly TBtypeEntityVersion _currentBVersion;
-    private IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> _nextStateAfterJobExecution;
+    private IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _nextStateAfterJobExecution;
 
     public DeleteInBWithNoRetry (
-        EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> environment,
+        EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> environment,
         TBtypeEntityId bId,
         TBtypeEntityVersion currentBVersion)
         : base (environment)
@@ -49,12 +49,12 @@ namespace GenSync.Synchronization.States
     {
     }
 
-    public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> FetchRequiredEntities (IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> aEntities, IReadOnlyDictionary<TBtypeEntityId, TBtypeEntity> bEntites)
+    public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> FetchRequiredEntities (IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> aEntities, IReadOnlyDictionary<TBtypeEntityId, TBtypeEntity> bEntites)
     {
       return this;
     }
 
-    public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> Resolve ()
+    public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> Resolve ()
     {
       return this;
     }
@@ -64,7 +64,7 @@ namespace GenSync.Synchronization.States
       s_logger.Error ("This state should have been left via PerformSyncActionNoThrow!");
     }
 
-    public override void Accept(ISynchronizationStateVisitor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> visitor)
+    public override void Accept(ISynchronizationStateVisitor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> visitor)
     {
       visitor.Visit (this);
     }
@@ -72,8 +72,7 @@ namespace GenSync.Synchronization.States
     public override void AddSyncronizationJob (
         IJobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity> aJobs,
         IJobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> bJobs,
-        IEntitySynchronizationLogger logger,
-        TContext context)
+        IEntitySynchronizationLogger logger)
     {
       logger.SetBId (_bId);
       bJobs.AddDeleteJob (new JobWrapper (this, logger));
@@ -102,7 +101,7 @@ namespace GenSync.Synchronization.States
       SetNextStateAsFailed ();
     }
 
-    public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> NotifyJobExecuted ()
+    public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> NotifyJobExecuted ()
     {
       if (_nextStateAfterJobExecution == null)
       {
@@ -119,11 +118,11 @@ namespace GenSync.Synchronization.States
 
     struct JobWrapper : IDeleteJob<TBtypeEntityId, TBtypeEntityVersion>
     {
-      private readonly DeleteInBWithNoRetry<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> _state;
+      private readonly DeleteInBWithNoRetry<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> _state;
       readonly IEntitySynchronizationLogger _logger;
 
       public JobWrapper (
-          DeleteInBWithNoRetry<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> state,
+          DeleteInBWithNoRetry<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> state,
           IEntitySynchronizationLogger logger)
       {
         if (state == null)

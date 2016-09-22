@@ -34,11 +34,11 @@ namespace GenSync.UnitTests.Synchronization.Stubs
     {
       AtypeRepository = MockRepository.GenerateMock<IEntityRepository<string, string, string, int>>();
       BtypeRepository = MockRepository.GenerateMock<IEntityRepository<string, string, string, int>>();
-      EntityMapper = MockRepository.GenerateMock<IEntityMapper<string, string, int>>();
+      EntityMapper = MockRepository.GenerateMock<IEntityMapper<string, string>>();
       EntityRelationDataAccess = MockRepository.GenerateMock<IEntityRelationDataAccess<string, string, string, string>>();
       EntityRelationDataFactory = MockRepository.GenerateMock<IEntityRelationDataFactory<string, string, string, string>>();
       InitialEntityMatcher = MockRepository.GenerateMock<IInitialEntityMatcher<string, string, string, string, string, string>>();
-      InitialSyncStateCreationStrategy = MockRepository.GenerateMock<IInitialSyncStateCreationStrategy<string, string, string, string, string, string, int>>();
+      InitialSyncStateCreationStrategy = MockRepository.GenerateMock<IInitialSyncStateCreationStrategy<string, string, string, string, string, string>>();
     }
 
     public Synchronizer<string, string, string, string, string, string,int> Build ()
@@ -59,7 +59,7 @@ namespace GenSync.UnitTests.Synchronization.Stubs
           NullSynchronizationContextFactory.Instance,
           EqualityComparer<string>.Default,
           EqualityComparer<string>.Default,
-          MockRepository.GenerateMock<IEntitySyncStateFactory<string, string, string, string, string, string, int>> ());
+          MockRepository.GenerateMock<IEntitySyncStateFactory<string, string, string, string, string, string>> ());
     }
 
     public IEntityRelationDataAccess<string, string, string, string> EntityRelationDataAccess { get; set; }
@@ -68,13 +68,13 @@ namespace GenSync.UnitTests.Synchronization.Stubs
 
     public IEqualityComparer<string> AtypeIdComparer { get; set; }
 
-    public IInitialSyncStateCreationStrategy<string, string, string, string, string, string, int> InitialSyncStateCreationStrategy { get; set; }
+    public IInitialSyncStateCreationStrategy<string, string, string, string, string, string> InitialSyncStateCreationStrategy { get; set; }
 
     public IInitialEntityMatcher<string, string, string, string, string, string> InitialEntityMatcher { get; set; }
 
     public IEntityRelationDataFactory<string, string, string, string> EntityRelationDataFactory { get; set; }
 
-    public IEntityMapper<string, string, int> EntityMapper { get; set; }
+    public IEntityMapper<string, string> EntityMapper { get; set; }
 
     public IEntityRepository<string, string, string, int> BtypeRepository { get; set; }
 

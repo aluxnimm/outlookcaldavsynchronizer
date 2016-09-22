@@ -392,7 +392,7 @@ namespace CalDavSynchronizer.Scheduling
 
       var outlookEventRelationDataFactory = new OutlookEventRelationDataFactory();
 
-      var syncStateFactory = new EntitySyncStateFactory<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> (
+      var syncStateFactory = new EntitySyncStateFactory<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar> (
           entityMapper,
           outlookEventRelationDataFactory,
           ExceptionHandler.Instance
@@ -409,7 +409,7 @@ namespace CalDavSynchronizer.Scheduling
           btypeRepository,
           aTypeWriteRepository,
           bTypeWriteRepository,
-          InitialSyncStateCreationStrategyFactory<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext>.Create (
+          InitialSyncStateCreationStrategyFactory<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar>.Create (
               syncStateFactory,
               syncStateFactory.Environment,
               options.SynchronizationMode,
@@ -491,7 +491,7 @@ namespace CalDavSynchronizer.Scheduling
           false);
 
       var relationDataFactory = new TaskRelationDataFactory ();
-      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, TaskItemWrapper, WebResourceName, string, IICalendar, int> (
+      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, TaskItemWrapper, WebResourceName, string, IICalendar> (
           new TaskMapper (_outlookSession.Application.TimeZones.CurrentTimeZone.ID, mappingParameters),
           relationDataFactory,
           ExceptionHandler.Instance);
@@ -509,7 +509,7 @@ namespace CalDavSynchronizer.Scheduling
           btypeRepository,
           atypeWriteRepository,
           btypeWriteRepository,
-          InitialSyncStateCreationStrategyFactory<string, DateTime, TaskItemWrapper, WebResourceName, string, IICalendar, int>.Create (
+          InitialSyncStateCreationStrategyFactory<string, DateTime, TaskItemWrapper, WebResourceName, string, IICalendar>.Create (
               syncStateFactory,
               syncStateFactory.Environment,
               options.SynchronizationMode,
@@ -555,7 +555,7 @@ namespace CalDavSynchronizer.Scheduling
 
       
       var relationDataFactory = new GoogleTaskRelationDataFactory ();
-      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, TaskItemWrapper, string, string, Task, int> (
+      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, TaskItemWrapper, string, string, Task> (
           new GoogleTaskMapper (),
           relationDataFactory,
           ExceptionHandler.Instance);
@@ -573,7 +573,7 @@ namespace CalDavSynchronizer.Scheduling
           btypeRepository,
           atypeWriteRepository,
           btypeWriteRepository,
-          InitialSyncStateCreationStrategyFactory<string, DateTime, TaskItemWrapper, string, string, Task, int>.Create (
+          InitialSyncStateCreationStrategyFactory<string, DateTime, TaskItemWrapper, string, string, Task>.Create (
               syncStateFactory,
               syncStateFactory.Environment,
               options.SynchronizationMode,
@@ -627,7 +627,7 @@ namespace CalDavSynchronizer.Scheduling
 
       var entityRelationDataFactory = new OutlookContactRelationDataFactory();
 
-      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard, int> (
+      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard> (
           entityMapper,
           entityRelationDataFactory,
           ExceptionHandler.Instance);
@@ -647,7 +647,7 @@ namespace CalDavSynchronizer.Scheduling
           btypeRepository,
           atypeWriteRepository,
           btypeWriteRepository,
-          InitialSyncStateCreationStrategyFactory<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard, int>.Create (
+          InitialSyncStateCreationStrategyFactory<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard>.Create (
               syncStateFactory,
               syncStateFactory.Environment,
               options.SynchronizationMode,
@@ -691,7 +691,7 @@ namespace CalDavSynchronizer.Scheduling
 
       var entityRelationDataFactory = new GoogleContactRelationDataFactory ();
 
-      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, ContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, GoogleContactContext> (
+      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, ContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper> (
           entityMapper,
           entityRelationDataFactory,
           ExceptionHandler.Instance);
@@ -707,7 +707,7 @@ namespace CalDavSynchronizer.Scheduling
           btypeRepository,
           atypeWriteRepository,
           btypeRepository,
-          InitialSyncStateCreationStrategyFactory<string, DateTime, ContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, GoogleContactContext>.Create (
+          InitialSyncStateCreationStrategyFactory<string, DateTime, ContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper>.Create (
               syncStateFactory,
               syncStateFactory.Environment,
               options.SynchronizationMode,

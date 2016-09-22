@@ -125,7 +125,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
     }
 
 
-    public static IEntityMapper<AppointmentItemWrapper, IICalendar, IEventSynchronizationContext> EntityMapper
+    public static IEntityMapper<AppointmentItemWrapper, IICalendar> EntityMapper
     {
       get { return s_entityMapper; }
     }
