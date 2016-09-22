@@ -294,10 +294,15 @@ namespace CalDavSynchronizer.Implementation.Events
       }
     }
 
-    public void Cleanup (IReadOnlyDictionary<AppointmentId, AppointmentItemWrapper> entities)
+    public void Cleanup(IReadOnlyDictionary<AppointmentId, AppointmentItemWrapper> entities)
     {
-      foreach (var appointmentItemWrapper in entities.Values)
-        appointmentItemWrapper.Dispose();
+      Cleanup(entities.Values);
+    }
+
+    public void Cleanup (IEnumerable<AppointmentItemWrapper> entities)
+    {
+      foreach (var appointmentItemWrapper in entities)
+        appointmentItemWrapper.Dispose ();
     }
 
     public async Task<EntityVersion<AppointmentId, DateTime>> TryUpdate (

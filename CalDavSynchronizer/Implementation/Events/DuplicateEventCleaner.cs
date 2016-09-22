@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
@@ -88,52 +89,45 @@ namespace CalDavSynchronizer.Implementation.Events
               item.Subject);
     }
 
-    private async Task DeleteDuplicates ()
+    private async Task DeleteDuplicates()
     {
       var appointmentIdsWithIdenticalHashCode = _hashesById
-          .GroupBy (p => p.Value)
-          .Where (g => g.Count () > 1)
-          .Select (g => g.Select (p => p.Key).ToArray ())
-          .ToArray ();
+        .GroupBy(p => p.Value)
+        .Where(g => g.Count() > 1)
+        .Select(g => g.Select(p => p.Key).ToArray())
+        .ToArray();
 
       if (appointmentIdsWithIdenticalHashCode.Length == 0)
         return;
 
-      var appointmentsById =
-          (await _outlookRepository.Get (
-              appointmentIdsWithIdenticalHashCode.SelectMany (l => l).ToArray (),
-              NullLoadEntityLogger.Instance,
-              NullEventSynchronizationContext.Instance))
-              .ToDictionary (e => e.Id, e => e.Entity);
 
-      try
+      var relationsById = _entityRelationDataAccess.LoadEntityRelationData().ToDictionary(r => r.AtypeId);
+
+      foreach (var ids in appointmentIdsWithIdenticalHashCode)
       {
-        var relationsById = _entityRelationDataAccess.LoadEntityRelationData().ToDictionary(r => r.AtypeId);
-
-        foreach (var ids in appointmentIdsWithIdenticalHashCode)
+        var appointments = await GetAppointments(ids);
+        if (appointments.Length > 1)
         {
-          var appointments = GetAppointments (ids, appointmentsById).ToArray ();
-          if (appointments.Length > 1)
+          try
           {
             var appointmentToKeep = appointments[0];
-            var appointmentToKeepData = GetDuplicationRelevantData (appointmentToKeep.Inner);
-            foreach (var appointmentToDelete in appointments.Skip (1))
+            var appointmentToKeepData = GetDuplicationRelevantData(appointmentToKeep.Inner);
+            foreach (var appointmentToDelete in appointments.Skip(1))
             {
-              if (GetDuplicationRelevantData (appointmentToDelete.Inner).Equals (appointmentToKeepData))
+              if (GetDuplicationRelevantData(appointmentToDelete.Inner).Equals(appointmentToKeepData))
               {
-                s_logger.Info ($"Deleting duplicate of '{appointmentToKeep.Inner.EntryID}'");
-                await DeleteAppointment (appointmentToDelete, relationsById);
+                s_logger.Info($"Deleting duplicate of '{appointmentToKeep.Inner.EntryID}'");
+                await DeleteAppointment(appointmentToDelete, relationsById);
               }
             }
           }
+          finally
+          {
+            _outlookRepository.Cleanup(appointments);
+          }
         }
-
-        _entityRelationDataAccess.SaveEntityRelationData (relationsById.Values.ToList());
       }
-      finally
-      {
-        _outlookRepository.Cleanup (appointmentsById);
-      }
+      _entityRelationDataAccess.SaveEntityRelationData(relationsById.Values.ToList());
     }
 
     private async Task DeleteAppointment (AppointmentItemWrapper item, Dictionary<AppointmentId, IEntityRelationData<AppointmentId, DateTime, WebResourceName, string>> relations)
@@ -148,13 +142,26 @@ namespace CalDavSynchronizer.Implementation.Events
       item.Inner.Delete();
     }
 
-    private IEnumerable<AppointmentItemWrapper> GetAppointments (AppointmentId[] ids, Dictionary<AppointmentId, AppointmentItemWrapper> appointmentsById)
+    private async Task<AppointmentItemWrapper[]> GetAppointments(AppointmentId[] ids)
     {
-      foreach (var id in ids)
+      return (await Task.WhenAll(ids.Select(GetOrNull).Where(a => a != null))).ToArray();
+    }
+
+    async Task<AppointmentItemWrapper> GetOrNull (AppointmentId id)
+    {
+      try
       {
-        AppointmentItemWrapper appointment;
-        if (appointmentsById.TryGetValue (id, out appointment))
-          yield return appointment;
+        var itemById =
+          await _outlookRepository.Get (
+            new[] { id },
+            NullLoadEntityLogger.Instance,
+            NullEventSynchronizationContext.Instance);
+
+        return itemById.FirstOrDefault ()?.Entity;
+      }
+      catch (COMException x) when (x.HResult == unchecked((int) 0x8004010F))
+      {
+        return null;
       }
     }
   }
