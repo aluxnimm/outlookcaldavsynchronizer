@@ -25,6 +25,6 @@ namespace CalDavSynchronizer.Implementation.Events
   {
     Task NotifySynchronizationFinished ();
     void AnnounceAppointment (AppointmentItem appointment);
-    void AnnounceAppointmentDeleted (AppointmentItem inner);
+    void AnnounceAppointmentDeleted (AppointmentId id);
   }
 }

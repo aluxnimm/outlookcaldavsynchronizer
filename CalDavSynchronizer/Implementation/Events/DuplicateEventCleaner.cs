@@ -70,9 +70,9 @@ namespace CalDavSynchronizer.Implementation.Events
       _hashesById[new AppointmentId(appointment.EntryID, appointment.GlobalAppointmentID)] = GetHashCode (appointment);
     }
 
-    public void AnnounceAppointmentDeleted (AppointmentItem inner)
+    public void AnnounceAppointmentDeleted (AppointmentId id)
     {
-      _hashesById.Remove (new AppointmentId (inner.EntryID, inner.GlobalAppointmentID));
+      _hashesById.Remove (id);
     }
 
     private int GetHashCode (AppointmentItem item)

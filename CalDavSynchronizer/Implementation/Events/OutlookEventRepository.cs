@@ -280,7 +280,7 @@ namespace CalDavSynchronizer.Implementation.Events
             s_logger.Info ($"Deleting meeting invitation {subjectForLogging}('{unknownEntity.Id}') from server identity.");
 
             unknownEntites.Remove (unknownEntity.Id);
-            context.AnnounceAppointmentDeleted (unknownEntity.Entity.Inner);
+            context.AnnounceAppointmentDeleted (new AppointmentId (unknownEntity.Entity.Inner.EntryID, unknownEntity.Entity.Inner.GlobalAppointmentID));
             try
             {
               unknownEntity.Entity.Inner.Delete();
@@ -315,8 +315,14 @@ namespace CalDavSynchronizer.Implementation.Events
       entityToUpdate = await entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save();
       context.AnnounceAppointment (entityToUpdate.Inner);
+
+      var newAppointmentId = new AppointmentId(entityToUpdate.Inner.EntryID, entityToUpdate.Inner.GlobalAppointmentID);
+
+      if (!entityId.Equals(newAppointmentId))
+        context.AnnounceAppointmentDeleted(entityId);
+
       return new EntityVersion<AppointmentId, DateTime> (
-        new AppointmentId(entityToUpdate.Inner.EntryID, entityToUpdate.Inner.GlobalAppointmentID), 
+        newAppointmentId, 
         entityToUpdate.Inner.LastModificationTime);
     }
 
@@ -328,7 +334,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
       using (var appointment = entityWithId.Entity)
       {
-        context.AnnounceAppointmentDeleted (appointment.Inner);
+        context.AnnounceAppointmentDeleted (new AppointmentId (appointment.Inner.EntryID, appointment.Inner.GlobalAppointmentID));
         appointment.Inner.Delete();
       }
       return Task.FromResult (true);

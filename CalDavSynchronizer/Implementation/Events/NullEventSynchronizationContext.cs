@@ -40,7 +40,7 @@ namespace CalDavSynchronizer.Implementation.Events
       
     }
 
-    public void AnnounceAppointmentDeleted (AppointmentItem inner)
+    public void AnnounceAppointmentDeleted (AppointmentId id)
     {
      
     }
