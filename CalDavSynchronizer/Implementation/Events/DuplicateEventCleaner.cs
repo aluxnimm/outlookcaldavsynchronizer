@@ -34,7 +34,7 @@ namespace CalDavSynchronizer.Implementation.Events
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod ().DeclaringType);
 
-    private readonly Dictionary<AppointmentId, int> _hashesById = new Dictionary<AppointmentId, int> ();
+    private readonly Dictionary<AppointmentId, int> _hashesById;
     private readonly OutlookEventRepository _outlookRepository;
     private readonly IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> _btypeRepository;
     private readonly IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> _entityRelationDataAccess;
@@ -42,7 +42,8 @@ namespace CalDavSynchronizer.Implementation.Events
     public DuplicateEventCleaner (
       OutlookEventRepository outlookRepository, 
       IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> btypeRepository, 
-      IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> entityRelationDataAccess)
+      IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> entityRelationDataAccess,
+      IEqualityComparer<AppointmentId> idComparer)
     {
       if (outlookRepository == null)
         throw new ArgumentNullException (nameof (outlookRepository));
@@ -50,10 +51,12 @@ namespace CalDavSynchronizer.Implementation.Events
         throw new ArgumentNullException (nameof (btypeRepository));
       if (entityRelationDataAccess == null)
         throw new ArgumentNullException (nameof (entityRelationDataAccess));
+      if (idComparer == null) throw new ArgumentNullException(nameof(idComparer));
 
       _outlookRepository = outlookRepository;
       _btypeRepository = btypeRepository;
       _entityRelationDataAccess = entityRelationDataAccess;
+      _hashesById = new Dictionary<AppointmentId, int>(idComparer);
     }
 
     public async Task NotifySynchronizationFinished ()

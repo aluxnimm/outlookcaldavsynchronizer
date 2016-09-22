@@ -422,7 +422,7 @@ namespace CalDavSynchronizer.Scheduling
           btypeIdEqualityComparer,
           _totalProgressFactory,
           ExceptionHandler.Instance,
-          new EventSynchronizationContextFactory(atypeRepository, btypeRepository, entityRelationDataAccess, mappingParameters.CleanupDuplicateEvents),
+          new EventSynchronizationContextFactory(atypeRepository, btypeRepository, entityRelationDataAccess, mappingParameters.CleanupDuplicateEvents, atypeIdEqualityComparer),
           EqualityComparer<DateTime>.Default,
           EqualityComparer<string>.Default,
           syncStateFactory,

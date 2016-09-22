@@ -34,12 +34,14 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> _btypeRepository;
     private readonly IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> _entityRelationDataAccess;
     private readonly bool _cleanupDuplicateEvents;
+    private readonly IEqualityComparer<AppointmentId> _idComparer;
 
     public EventSynchronizationContextFactory(
       OutlookEventRepository outlookRepository,
       IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> btypeRepository,
       IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> entityRelationDataAccess,
-      bool cleanupDuplicateEvents)
+      bool cleanupDuplicateEvents,
+      IEqualityComparer<AppointmentId> idComparer)
     {
       if (outlookRepository == null)
         throw new ArgumentNullException (nameof (outlookRepository));
@@ -47,11 +49,13 @@ namespace CalDavSynchronizer.Implementation.Events
         throw new ArgumentNullException (nameof (btypeRepository));
       if (entityRelationDataAccess == null)
         throw new ArgumentNullException (nameof (entityRelationDataAccess));
+      if (idComparer == null) throw new ArgumentNullException(nameof(idComparer));
 
       _outlookRepository = outlookRepository;
       _btypeRepository = btypeRepository;
       _entityRelationDataAccess = entityRelationDataAccess;
       _cleanupDuplicateEvents = cleanupDuplicateEvents;
+      _idComparer = idComparer;
     }
 
     public Task<IEventSynchronizationContext> Create ()
@@ -61,7 +65,8 @@ namespace CalDavSynchronizer.Implementation.Events
           ? new DuplicateEventCleaner(
             _outlookRepository,
             _btypeRepository,
-            _entityRelationDataAccess)
+            _entityRelationDataAccess,
+            _idComparer)
           : NullEventSynchronizationContext.Instance);
     }
 
