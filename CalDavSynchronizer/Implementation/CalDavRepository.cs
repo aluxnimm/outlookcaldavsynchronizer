@@ -151,7 +151,12 @@ namespace CalDavSynchronizer.Implementation
 
               if (TryDeserializeCalendar (fixedICalData, out calendar, serialized.Id, threadLocal.Item1, NullLoadEntityLogger.Instance))
               {
-                threadLocal.Item2.Add (Tuple.Create (serialized.Id, calendar));
+                // Add only if there is atleast one vevent or vtodo to avoid Nullreference Exceptions when processing
+                if ((_entityType == CalDavRepository.EntityType.Event && calendar.Events.Count > 0) ||
+                    (_entityType == CalDavRepository.EntityType.Todo && calendar.Todos.Count > 0))
+                {
+                  threadLocal.Item2.Add (Tuple.Create (serialized.Id, calendar));
+                }
               }
               else
               {
@@ -159,8 +164,13 @@ namespace CalDavSynchronizer.Implementation
                 var fixedICalData2 = CalendarDataPreprocessor.FixTimeZoneComponentOrderNoThrow (fixedICalData);
                 if (TryDeserializeCalendar (fixedICalData2, out calendar, serialized.Id, threadLocal.Item1, logger))
                 {
-                  threadLocal.Item2.Add (Tuple.Create (serialized.Id, calendar));
-                  s_logger.Info (string.Format ("Deserialized ICalData with reordering of TimeZone data '{0}'.", serialized.Id));
+                  // Add only if there is atleast one vevent or vtodo to avoid Nullreference Exceptions when processing
+                  if ((_entityType == CalDavRepository.EntityType.Event && calendar.Events.Count > 0) ||
+                      (_entityType == CalDavRepository.EntityType.Todo && calendar.Todos.Count > 0))
+                  {
+                    threadLocal.Item2.Add (Tuple.Create (serialized.Id, calendar));
+                    s_logger.Info (string.Format ("Deserialized ICalData with reordering of TimeZone data '{0}'.", serialized.Id));
+                  }
                 }
               }
 
