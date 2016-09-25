@@ -139,7 +139,8 @@
                     Grid.Row="3" Grid.Column="1" />
       </Grid>
       <CheckBox ToolTip="removes duplicate Outlook appointments based on start,end and subject of the events after each sync run, &#x0a;be aware of possible performance penalties with this option enabled." IsChecked="{Binding CleanupDuplicateEvents}">Cleanup duplicate events after each sync run</CheckBox>
-      </StackPanel>
+                <CheckBox ToolTip="map Outlook Custom Properties as X-CALDAVSYNCHRONIZER-PROPERTYNAME attributes in iCalendar data." IsChecked="{Binding MapCustomProperties}">Map Outlook Custom Properties to X-CALDAVSYNCHRONIZER-PROPERTYNAME</CheckBox>
+            </StackPanel>
     </GroupBox>
   </StackPanel>
 

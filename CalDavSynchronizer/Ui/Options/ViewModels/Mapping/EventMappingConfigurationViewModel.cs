@@ -54,6 +54,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     private bool _useEventCategoryColorAndMapFromCalendarColor;
     private readonly ICurrentOptions _currentOptions;
     private bool _cleanupDuplicateEvents;
+    private bool _mapCustomProperties;
 
     public IList<Item<ReminderMapping>> AvailableReminderMappings { get; } = new List<Item<ReminderMapping>>
                                                                              {
@@ -160,6 +161,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       set
       {
         CheckedPropertyChange (ref _cleanupDuplicateEvents, value);
+      }
+    }
+
+    public bool MapCustomProperties
+    {
+      get { return _mapCustomProperties; }
+      set
+      {
+        CheckedPropertyChange (ref _mapCustomProperties, value);
       }
     }
 
@@ -319,6 +329,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       SendNoAppointmentNotifications = mappingConfiguration.SendNoAppointmentNotifications;
       UseEventCategoryColorAndMapFromCalendarColor = mappingConfiguration.UseEventCategoryColorAndMapFromCalendarColor;
       CleanupDuplicateEvents = mappingConfiguration.CleanupDuplicateEvents;
+      MapCustomProperties = mappingConfiguration.MapCustomProperties;
     }
 
     public void FillOptions (CalDavSynchronizer.Contracts.Options options)
@@ -343,7 +354,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                          ScheduleAgentClient = _scheduleAgentClient,
                                          SendNoAppointmentNotifications = _sendNoAppointmentNotifications,
                                          UseEventCategoryColorAndMapFromCalendarColor = _useEventCategoryColorAndMapFromCalendarColor,
-                                         CleanupDuplicateEvents = _cleanupDuplicateEvents
+                                         CleanupDuplicateEvents = _cleanupDuplicateEvents,
+                                         MapCustomProperties = _mapCustomProperties
       };
     }
 
@@ -375,7 +387,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                                                           MapSensitivityPrivateToClassConfidential = true,
                                                                           ScheduleAgentClient = true,
                                                                           SendNoAppointmentNotifications = true,
-                                                                          UseEventCategoryColorAndMapFromCalendarColor = true
+                                                                          UseEventCategoryColorAndMapFromCalendarColor = true,
+                                                                          CleanupDuplicateEvents = true,
+                                                                          MapCustomProperties = true
                                                                       };
 
     private bool _isSelected;
