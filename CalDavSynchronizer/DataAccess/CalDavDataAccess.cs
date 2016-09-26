@@ -465,7 +465,7 @@ namespace CalDavSynchronizer.DataAccess
       {
         var urlNode = responseElement.SelectSingleNode ("D:href", responseXml.XmlNamespaceManager);
         var dataNode = responseElement.SelectSingleNode ("D:propstat/D:prop/C:calendar-data", responseXml.XmlNamespaceManager);
-        if (urlNode != null && dataNode != null)
+        if (urlNode != null && !string.IsNullOrEmpty (dataNode?.InnerText))
         {
           entities.Add (EntityWithId.Create (new WebResourceName(urlNode.InnerText), dataNode.InnerText));
         }
