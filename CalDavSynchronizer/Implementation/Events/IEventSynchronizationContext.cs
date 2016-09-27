@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Office.Interop.Outlook;
 
@@ -26,5 +27,6 @@ namespace CalDavSynchronizer.Implementation.Events
     Task NotifySynchronizationFinished ();
     void AnnounceAppointment (AppointmentItem appointment);
     void AnnounceAppointmentDeleted (AppointmentId id);
+    Task<IEnumerable<AppointmentId>> DeleteAnnouncedEventsIfDuplicates(Predicate<AppointmentId> isDeletionCandidate);
   }
 }

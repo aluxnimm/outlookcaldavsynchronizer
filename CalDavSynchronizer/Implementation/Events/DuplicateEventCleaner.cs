@@ -75,6 +75,50 @@ namespace CalDavSynchronizer.Implementation.Events
       _hashesById.Remove (id);
     }
 
+    public async Task<IEnumerable<AppointmentId>> DeleteAnnouncedEventsIfDuplicates(Predicate<AppointmentId> isDeletionCandidate)
+    {
+      var appointmentIdsWithIdenticalHashCode = GetAppointmentIdsWithIdenticalHashCode();
+
+      if (appointmentIdsWithIdenticalHashCode.Length == 0)
+        return new AppointmentId[0];
+
+      var deletedEntityIds = new List<AppointmentId>();
+
+      foreach (var ids in appointmentIdsWithIdenticalHashCode)
+      {
+        var appointments = await GetAppointmentsWithId(ids);
+        if (appointments.Length > 1)
+        {
+          var appointmentsToDelete = (
+            from appointmentWithId in appointments
+            let data = GetDuplicationRelevantData(appointmentWithId.Item2.Inner)
+            group new { Appointment = appointmentWithId, IsDeletionCandidate = isDeletionCandidate (appointmentWithId.Item1) } by data // group by duplication relevant data (hashes can collide)
+            into groupedByData
+            where groupedByData.Count() > 1  // take only the groups containing duplicates found by data comparison
+            from appointment in groupedByData.All (a => a.IsDeletionCandidate) ? groupedByData.Skip (1) : groupedByData // if all are deletion candidates, one has to be left untouched
+            where appointment.IsDeletionCandidate
+            select appointment.Appointment
+            ).ToArray();
+
+          try
+          {
+            foreach (var appointmentToDelete in appointmentsToDelete)
+            {
+              appointmentToDelete.Item2.Inner.Delete();
+              deletedEntityIds.Add(appointmentToDelete.Item1);
+              _hashesById.Remove (appointmentToDelete.Item1);
+            }
+          }
+          finally
+          {
+            _outlookRepository.Cleanup(appointmentsToDelete.Select(a => a.Item2));
+          }
+        }
+      }
+
+      return deletedEntityIds;
+    }
+
     private int GetHashCode (AppointmentItem item)
     {
       return GetDuplicationRelevantData (item).GetHashCode ();
@@ -91,11 +135,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
     private async Task DeleteDuplicates()
     {
-      var appointmentIdsWithIdenticalHashCode = _hashesById
-        .GroupBy(p => p.Value)
-        .Where(g => g.Count() > 1)
-        .Select(g => g.Select(p => p.Key).ToArray())
-        .ToArray();
+      var appointmentIdsWithIdenticalHashCode = GetAppointmentIdsWithIdenticalHashCode();
 
       if (appointmentIdsWithIdenticalHashCode.Length == 0)
         return;
@@ -130,6 +170,15 @@ namespace CalDavSynchronizer.Implementation.Events
       _entityRelationDataAccess.SaveEntityRelationData(relationsById.Values.ToList());
     }
 
+    private AppointmentId[][] GetAppointmentIdsWithIdenticalHashCode()
+    {
+      return _hashesById
+        .GroupBy(p => p.Value)
+        .Where(g => g.Count() > 1)
+        .Select(g => g.Select(p => p.Key).ToArray())
+        .ToArray();
+    }
+
     private async Task DeleteAppointment (AppointmentItemWrapper item, Dictionary<AppointmentId, IEntityRelationData<AppointmentId, DateTime, WebResourceName, string>> relations)
     {
       IEntityRelationData<AppointmentId, DateTime, WebResourceName, string> relation;
@@ -145,6 +194,11 @@ namespace CalDavSynchronizer.Implementation.Events
     private async Task<AppointmentItemWrapper[]> GetAppointments(AppointmentId[] ids)
     {
       return (await Task.WhenAll(ids.Select(GetOrNull).Where(a => a != null))).ToArray();
+    }
+
+    private async Task<Tuple<AppointmentId, AppointmentItemWrapper>[]> GetAppointmentsWithId (AppointmentId[] ids)
+    {
+      return (await Task.WhenAll (ids.Select (async i => Tuple.Create( i, await GetOrNull (i) )))).Where (a => a.Item2 != null).ToArray();
     }
 
     async Task<AppointmentItemWrapper> GetOrNull (AppointmentId id)

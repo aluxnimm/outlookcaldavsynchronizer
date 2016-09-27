@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GenSync.ProgressReport;
 using Microsoft.Office.Interop.Outlook;
@@ -43,6 +44,11 @@ namespace CalDavSynchronizer.Implementation.Events
     public void AnnounceAppointmentDeleted (AppointmentId id)
     {
      
+    }
+
+    public Task<IEnumerable<AppointmentId>> DeleteAnnouncedEventsIfDuplicates(Predicate<AppointmentId> isDeletionCandidate)
+    {
+      return Task.FromResult<IEnumerable<AppointmentId>>(new AppointmentId[0]);
     }
   }
 }

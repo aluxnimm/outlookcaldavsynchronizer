@@ -292,6 +292,9 @@ namespace CalDavSynchronizer.Implementation.Events
           }
         }
       }
+
+      foreach (var deletedId in await context.DeleteAnnouncedEventsIfDuplicates(unknownEntites.ContainsKey))
+        unknownEntites.Remove(deletedId);
     }
 
     public void Cleanup(IReadOnlyDictionary<AppointmentId, AppointmentItemWrapper> entities)
