@@ -87,35 +87,38 @@ namespace CalDavSynchronizer.Implementation.Events
       foreach (var ids in appointmentIdsWithIdenticalHashCode)
       {
         var appointments = await GetAppointmentsWithId(ids);
-        if (appointments.Length > 1)
+        try
         {
-          var appointmentsToDelete = (
-            from appointmentWithId in appointments
-            let data = GetDuplicationRelevantData(appointmentWithId.Item2.Inner)
-            group new { Appointment = appointmentWithId, IsDeletionCandidate = isDeletionCandidate (appointmentWithId.Item1) } by data // group by duplication relevant data (hashes can collide)
-            into groupedByData
-            where groupedByData.Count() > 1  // take only the groups containing duplicates found by data comparison
-            from appointment in groupedByData.All (a => a.IsDeletionCandidate) ? groupedByData.Skip (1) : groupedByData // if all are deletion candidates, one has to be left untouched
-            where appointment.IsDeletionCandidate
-            select appointment.Appointment
-            ).ToArray();
-
-          try
+          if (appointments.Length > 1)
           {
-            foreach (var appointmentToDelete in appointmentsToDelete)
+            var appointmentsToDelete = (
+              from appointmentWithId in appointments
+              let data = GetDuplicationRelevantData(appointmentWithId.Item2.Inner)
+              group new {Appointment = appointmentWithId, IsDeletionCandidate = isDeletionCandidate(appointmentWithId.Item1)} by data // group by duplication relevant data (hashes can collide)
+              into groupedByData
+              where groupedByData.Count() > 1 // take only the groups containing duplicates found by data comparison
+              let appointmentToKeep = groupedByData.FirstOrDefault(a => !a.IsDeletionCandidate) ?? groupedByData.First() // if all are deletion candidates, one has to be left untouched
+              from appointmentPair in groupedByData.Where(a => a.IsDeletionCandidate && a != appointmentToKeep).Select(a => new {Keep = appointmentToKeep, Delete = a})
+              select appointmentPair
+              ).ToArray();
+
+            foreach (var appointmentPair in appointmentsToDelete)
             {
+              s_logger.Info($"Deleting duplicate of '{appointmentPair.Keep.Appointment.Item2.Inner.EntryID}'");
+
+              var appointmentToDelete = appointmentPair.Delete.Appointment;
               appointmentToDelete.Item2.Inner.Delete();
               deletedEntityIds.Add(appointmentToDelete.Item1);
-              _hashesById.Remove (appointmentToDelete.Item1);
+              _hashesById.Remove(appointmentToDelete.Item1);
             }
           }
-          finally
-          {
-            _outlookRepository.Cleanup(appointmentsToDelete.Select(a => a.Item2));
-          }
+
+        }
+        finally
+        {
+          _outlookRepository.Cleanup(appointments.Select(a => a.Item2));
         }
       }
-
       return deletedEntityIds;
     }
 
