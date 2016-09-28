@@ -276,6 +276,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
               s_logger.Warn ("Could not update contact birthday.", ex);
               logger.LogMappingWarning ("Could not update contact birthday.", ex);
             }
+            catch (OverflowException ex)
+            {
+              s_logger.Warn ("Contact birthday has invalid value.", ex);
+              logger.LogMappingWarning ("Contact birthday has invalid value.", ex);
+            }
           }
         }
         else
