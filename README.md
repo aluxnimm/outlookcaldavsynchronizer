@@ -87,6 +87,20 @@ YOu should also update manually to the latest Visual Studio 2010 Tools for Offic
 
 ### Changelog ###
 
+#### 2.6.0 ####
+- **WARNING**: This version changes the internal cache structure, when downgrading to an older version, the cache gets cleared and a new inital sync is performed!
+- New features
+	- Better support for meeting invitations.
+	- Improve duplicate event cleaner.
+	- Update Google Apis nuget packages to 1.16.0.
+	- Include GlobalAppointmentId in RelationCache.
+- Bug fixes
+	- Update accepted meeting invitations instead of deleting and recreating them to avoid wrong cancellation mails from the CalDAV server.
+	- Catch OverflowException for invalid birthdays in contacts, ticket #386.
+	- DuplicateEventCleaner: catch exception if appointment doesn't exist anymore.
+	- Avoid Nullreference Exception and don't add server resource when it doesn't contain any valid VEVENT or VTODO, gh issue 167.
+	- Check if caldav resource is not empty to avoid ArgumentOutOfRangeException.
+
 #### 2.5.1 ####
 - New features
 	- Add account type for Cozy Cloud and set UseIanaTz as default.
@@ -822,6 +836,18 @@ Outlook and Windows use different Timezone definitions than most CalDAV servers 
 - *Create events on server in downloaded IANA Timezones* Use Iana instead of Windows Timezones for creating events on CalDAV server. Needed for servers which do not accept non standard Windows Timezones like GMX for example. Timezone definitions will be downloaded from [http://tzurl.org.](http://tzurl.org)
 - *Use IANA Timezone* Use this IANA timezone for default Outlook/Windows timezone. Manually selected different timezones in Outlook appointments will be mapped to first corresponding IANA timezone.
 - *Include full IANA zone with historical data* Use full IANA timezone definition with historical data. Needs more bandwith and can be incompatible when manually importing in Outlook.
+
+### Managing meetings and invites ###
+
+Outlook can only track meeting responses and invites in the main calender folder. If you schedule meetings from Outlook which are synced with the CalDAV server you have two possibilities to avoid double invitation mails for all attendees. First, you can enable the option *SCHEDULE-AGENT=CLIENT* (or *Don't send appointment notifications (from SOGo)*" for SOGo servers) and let only Outlook send the meeting invites, if the server supports this option. Or you can disable this option and let the server schedule the meetings after syncing the meeting. Then you need to disable the invitation mails sent from Outlook. This is possible by unchecking the checkbox left to the attendee name in the meeting planning dialog. The response status of all attendees can be synced from Outlook to the server but only the status of the own Outlook identity (if included in the attendees) can be synced from the server to Outlook due to limitations of the Outlook Object Model.
+
+When receiving invites from the CalDAV server and via Email in your INBOX, Outlook will automatically create a tentative meeting in the main calendar folder. But if the email arrives after a sync run, this can lead to duplicates. To avoid double meetings the option *Cleanup duplicate events after each sync run* in event mapping configuration is recommended and you should check email more frequently than syncing the calendar.
+
+### Free/busy lookups ###
+
+You can configure free/busy lookups globally in the outlook options.
+Select Options/Calendar and there free/busy information and use a free/busy url of your server with placeholder like %Name%, e.g. http://myserver/freebusy.php/%Name%
+Then ervery attendee in the outlook planning view gets resolved with that url for a free/busy lookup against your server. 
 
 ### Scheduling settings and resources ###
 
