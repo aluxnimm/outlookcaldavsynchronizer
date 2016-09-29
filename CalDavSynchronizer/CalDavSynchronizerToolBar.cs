@@ -129,6 +129,7 @@ namespace CalDavSynchronizer
     {
       try
       {
+        ComponentContainer.EnsureSynchronizationContext ();
         await _componentContainer.ShowOptions ();
       }
       catch (Exception x)
@@ -146,6 +147,7 @@ namespace CalDavSynchronizer
     {
       try
       {
+        ComponentContainer.EnsureSynchronizationContext ();
         await _componentContainer.ShowGeneralOptions ();
       }
       catch (Exception x)
@@ -164,6 +166,7 @@ namespace CalDavSynchronizer
     {
       try
       {
+        ComponentContainer.EnsureSynchronizationContext ();
         _componentContainer.ShowAbout();
       }
       catch (Exception x)
@@ -176,6 +179,7 @@ namespace CalDavSynchronizer
     {
       try
       {
+        ComponentContainer.EnsureSynchronizationContext ();
         _componentContainer.ShowReports();
       }
       catch (Exception x)
@@ -188,6 +192,7 @@ namespace CalDavSynchronizer
     {
       try
       {
+        ComponentContainer.EnsureSynchronizationContext ();
         _componentContainer.ShowProfileStatuses ();
       }
       catch (Exception x)

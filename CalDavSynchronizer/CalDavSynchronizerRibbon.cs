@@ -59,6 +59,7 @@ namespace CalDavSynchronizer
     {
       try
       {
+        ComponentContainer.EnsureSynchronizationContext ();
         await ThisAddIn.ComponentContainer.ShowOptions();
       }
       catch (Exception x)
@@ -71,6 +72,7 @@ namespace CalDavSynchronizer
     {
       try
       {
+        ComponentContainer.EnsureSynchronizationContext ();
         ThisAddIn.ComponentContainer.ShowAbout();
       }
       catch (Exception x)
@@ -83,6 +85,7 @@ namespace CalDavSynchronizer
     {
       try
       {
+        ComponentContainer.EnsureSynchronizationContext ();
         await ThisAddIn.ComponentContainer.ShowGeneralOptions();
       }
       catch (Exception x)
@@ -95,6 +98,7 @@ namespace CalDavSynchronizer
     {
       try
       {
+        ComponentContainer.EnsureSynchronizationContext ();
         ReportsButton.Image = Resources.report;
         ThisAddIn.ComponentContainer.ShowReports();
       }
@@ -108,6 +112,7 @@ namespace CalDavSynchronizer
     {
       try
       {
+        ComponentContainer.EnsureSynchronizationContext ();
         ThisAddIn.ComponentContainer.ShowProfileStatuses();
       }
       catch (Exception x)
