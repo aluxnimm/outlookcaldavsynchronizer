@@ -87,6 +87,12 @@ YOu should also update manually to the latest Visual Studio 2010 Tools for Offic
 
 ### Changelog ###
 
+#### 2.6.1 ####
+- **WARNING**: This version changes the internal cache structure, when downgrading to an older version, the cache gets cleared and a new inital sync is performed!
+- Bug fixes
+	- Fix cache conversion for tasks.
+	- Ensure synchronization context on every button click
+
 #### 2.6.0 ####
 - **WARNING**: This version changes the internal cache structure, when downgrading to an older version, the cache gets cleared and a new inital sync is performed!
 - New features
