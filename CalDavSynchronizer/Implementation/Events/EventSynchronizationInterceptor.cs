@@ -81,7 +81,8 @@ namespace CalDavSynchronizer.Implementation.Events
 
     public void Visit(CreateInB<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar> state)
     {
-      _createsInByGlobalAppointmentId[state.AId.GlobalAppointmentId] = state;
+      if(!string.IsNullOrEmpty(state.AId.GlobalAppointmentId))
+        _createsInByGlobalAppointmentId[state.AId.GlobalAppointmentId] = state;
     }
 
     public void Visit (DoNothing<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar> doNothing)
@@ -111,7 +112,8 @@ namespace CalDavSynchronizer.Implementation.Events
 
     public void Visit(DeleteInB<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar> state)
     {
-      _deletesInByGlobalAppointmentId[state.KnownData.AtypeId.GlobalAppointmentId] = state;
+      if (!string.IsNullOrEmpty (state.KnownData.AtypeId.GlobalAppointmentId))
+        _deletesInByGlobalAppointmentId[state.KnownData.AtypeId.GlobalAppointmentId] = state;
     }
 
     public void Visit (RestoreInB<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar> state)
