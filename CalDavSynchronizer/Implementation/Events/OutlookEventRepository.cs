@@ -129,11 +129,18 @@ namespace CalDavSynchronizer.Implementation.Events
 
     public Task<IReadOnlyList<EntityVersion<AppointmentId, DateTime>>> GetAllVersions (IEnumerable<AppointmentId> idsOfknownEntities, IEventSynchronizationContext context)
     {
+
+      var isDebugEnabled = s_logger.IsDebugEnabled;
+
       return GetAll (
           idsOfknownEntities,
           context,
           a =>
           {
+            if (isDebugEnabled && string.IsNullOrEmpty(a.GlobalAppointmentID))
+            {
+              s_logger.Debug($"Found appointment without GlobalAppointmentID. EntryId:'{a.EntryID}' MessageClass:'{a.MessageClass}' Subject'{a.Subject}'.");
+            }
             context.AnnounceAppointment (a);
             return new EntityVersion<AppointmentId, DateTime> (new AppointmentId(a.EntryID, a.GlobalAppointmentID), a.LastModificationTime);
           });
