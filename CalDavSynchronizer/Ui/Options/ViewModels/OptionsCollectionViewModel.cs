@@ -71,6 +71,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       CopySelectedCommand = new DelegateCommand (_ => CopySelected (), _ => CanCopySelected);
       MoveSelectedUpCommand = new DelegateCommand (_ => MoveSelectedUp (), _ => CanMoveSelectedUp);
       MoveSelectedDownCommand = new DelegateCommand (_ => MoveSelectedDown (), _ => CanMoveSelectedDown);
+      OpenProfileDataDirectoryCommand = new DelegateCommand (_ => OpenProfileDataDirectory ());
     }
 
     private bool CanMoveSelectedDown => SelectedOrNull != null;
@@ -116,6 +117,19 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       var selected = SelectedOrNull;
       if (selected != null)
         Delete (selected);
+    }
+
+    private void OpenProfileDataDirectory()
+    {
+      var selected = SelectedOrNull;
+      if (selected != null)
+      {
+        var profileDataDirectory = _profileDataDirectoryFactory (selected.Id);
+        if (Directory.Exists(profileDataDirectory))
+          System.Diagnostics.Process.Start(profileDataDirectory);
+        else
+          MessageBox.Show("The selected profile has no data directory.", "Operation aborted", MessageBoxButton.OK);
+      }
     }
 
     IOptionsViewModel SelectedOrNull => _options.FirstOrDefault (o => o.IsSelected);
@@ -198,6 +212,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     public ICommand CopySelectedCommand { get; }
     public ICommand MoveSelectedUpCommand { get; }
     public ICommand MoveSelectedDownCommand { get; }
+    public ICommand OpenProfileDataDirectoryCommand { get; }
+
     public ObservableCollection<IOptionsViewModel> Options => _options;
 
 

@@ -102,6 +102,10 @@
         <Button Command="{Binding MoveSelectedDownCommand}" ToolTip="Move selected profile down">
           <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/MoveDown.png"></Image>
         </Button>
+        <Separator></Separator>
+        <Button Command="{Binding OpenProfileDataDirectoryCommand}" ToolTip="Open data directory of selected profile">
+          <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Folder.png"></Image>
+        </Button>
       </ToolBar>
     <TreeView MinWidth="220" MaxWidth="300" Margin="3"  ItemsSource="{Binding Options}" x:Name="OptionsTree">
       <TreeView.Resources>

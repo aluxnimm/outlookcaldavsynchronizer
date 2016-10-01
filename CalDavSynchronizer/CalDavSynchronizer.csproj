@@ -712,6 +712,7 @@
     <Resource Include="Resources\logo_landmarks.png" />
     <Resource Include="Resources\logo_sogo.png" />
     <None Include="Resources\logo_cozy.png" />
+    <Resource Include="Resources\Folder.png" />
     <Content Include="Resources\outlookcaldavsynchronizerlogoarrow.png" />
   </ItemGroup>
   <ItemGroup>
