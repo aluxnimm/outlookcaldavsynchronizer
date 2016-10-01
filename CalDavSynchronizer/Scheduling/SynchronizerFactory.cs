@@ -178,9 +178,20 @@ namespace CalDavSynchronizer.Scheduling
 
     private async Task<IOutlookSynchronizer> CreateEventSynchronizer (Options options, GeneralOptions generalOptions ,AvailableSynchronizerComponents componentsToFill)
     {
-      var calDavDataAccess = new CalDavDataAccess (
-          new Uri (options.CalenderUrl),
-          CreateWebDavClient (options, _outlookAccountPasswordProvider, generalOptions));
+      ICalDavDataAccess calDavDataAccess;
+
+      var calendarUrl = new Uri (options.CalenderUrl);
+
+      if (calendarUrl.Scheme == Uri.UriSchemeFile)
+      {
+        calDavDataAccess = new FileSystemCalDavDataAccess(calendarUrl);
+      }
+      else
+      {
+        calDavDataAccess = new CalDavDataAccess(
+          calendarUrl,
+          CreateWebDavClient(options, _outlookAccountPasswordProvider, generalOptions));
+      }
 
       componentsToFill.CalDavDataAccess = calDavDataAccess;
 
