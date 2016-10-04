@@ -67,17 +67,18 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       AddCommand = new DelegateCommand (_ => Add());
       AddMultipleCommand = new DelegateCommand (_ => AddMultiple());
       CloseCommand = new DelegateCommand (shouldSaveNewOptions => Close((bool)shouldSaveNewOptions));
-      DeleteSelectedCommand = new DelegateCommand (_ => DeleteSelected (), _ => CanDeleteSelected);
-      CopySelectedCommand = new DelegateCommand (_ => CopySelected (), _ => CanCopySelected);
-      MoveSelectedUpCommand = new DelegateCommand (_ => MoveSelectedUp (), _ => CanMoveSelectedUp);
-      MoveSelectedDownCommand = new DelegateCommand (_ => MoveSelectedDown (), _ => CanMoveSelectedDown);
-      OpenProfileDataDirectoryCommand = new DelegateCommand (_ => OpenProfileDataDirectory ());
+      DeleteSelectedCommand = new DelegateCommandHandlingRequerySuggested (_ => DeleteSelected (), _ => CanDeleteSelected);
+      CopySelectedCommand = new DelegateCommandHandlingRequerySuggested (_ => CopySelected (), _ => CanCopySelected);
+      MoveSelectedUpCommand = new DelegateCommandHandlingRequerySuggested (_ => MoveSelectedUp (), _ => CanMoveSelectedUp);
+      MoveSelectedDownCommand = new DelegateCommandHandlingRequerySuggested (_ => MoveSelectedDown (), _ => CanMoveSelectedDown);
+      OpenProfileDataDirectoryCommand = new DelegateCommandHandlingRequerySuggested (_ => OpenProfileDataDirectory (), _ => CanOpenProfileDataDirectory);
     }
 
     private bool CanMoveSelectedDown => SelectedOrNull != null;
     private bool CanMoveSelectedUp => SelectedOrNull != null;
     private bool CanCopySelected => SelectedOrNull != null;
     private bool CanDeleteSelected => SelectedOrNull != null;
+    private bool CanOpenProfileDataDirectory => SelectedOrNull != null;
 
     private void MoveSelectedDown ()
     {
