@@ -51,6 +51,8 @@ namespace CalDavSynchronizer.Implementation.Events
     private const string PR_SENDER_ADDRTYPE = "http://schemas.microsoft.com/mapi/proptag/0x0C1E001E";
     private const string PR_SENT_REPRESENTING_ENTRYID = "http://schemas.microsoft.com/mapi/proptag/0x00410102";
     private const string PR_SENDER_ENTRYID = "http://schemas.microsoft.com/mapi/proptag/0x0C190102";
+    private const string PR_GLOBAL_OBJECT_ID = "http://schemas.microsoft.com/mapi/id/{6ED8DA90-450B-101B-98DA-00AA003F1305}/00030102";
+    private const string PR_CLEAN_GLOBAL_OBJECT_ID = "http://schemas.microsoft.com/mapi/id/{6ED8DA90-450B-101B-98DA-00AA003F1305}/00230102";
 
     private readonly int _outlookMajorVersion;
 
@@ -1305,7 +1307,30 @@ namespace CalDavSynchronizer.Implementation.Events
         return Map2To1 (sourceCalendar, target, logger);
       }
 
-      return Task.FromResult(Map2To1 (sourceMasterEvent, sourceExceptionEvents, target, false, logger));
+      // Map UID to GlobalAppointmentID for new meetings to avoid double events from Mail invites
+      // only for the master Appointment and only for Outlook >= 2013
+      if (target.Inner.EntryID == null && sourceMasterEvent.Organizer != null && 
+          sourceMasterEvent.Attendees.Count >0 && _outlookMajorVersion >= 15)
+      {
+        using (var pa = GenericComObjectWrapper.Create (target.Inner.PropertyAccessor))
+        {
+          target.Inner.Save();
+
+          byte[] globalId = OutlookUtility.MapUidToGlobalId (sourceMasterEvent.UID);
+          try
+          {
+            pa.Inner.SetProperty (PR_GLOBAL_OBJECT_ID, globalId);
+            pa.Inner.SetProperty (PR_CLEAN_GLOBAL_OBJECT_ID, globalId);
+            target.SaveAndReload();
+          }
+          catch (COMException ex)
+          {
+            s_logger.Warn ($"Can't set GlobalAppointmentID of meeting '{target.Inner.EntryID}'.", ex);
+          }
+        }
+      }
+
+      return Task.FromResult (Map2To1 (sourceMasterEvent, sourceExceptionEvents, target, false, logger));
     }
 
     private void AddMasterEvent (IICalendar calendar)
@@ -1323,6 +1348,8 @@ namespace CalDavSynchronizer.Implementation.Events
       masterEvent.Class = firstException.Class;
       masterEvent.Categories = firstException.Categories;
       masterEvent.Organizer = firstException.Organizer;
+      masterEvent.Attendees = firstException.Attendees;
+      masterEvent.UID = firstException.UID;
 
       var sortedExceptionsWithDistance =
           new[] { new { Event = firstException, DistanceFromMasterInDays = 0 } }

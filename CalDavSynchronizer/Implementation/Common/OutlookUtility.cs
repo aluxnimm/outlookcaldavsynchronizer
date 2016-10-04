@@ -187,5 +187,22 @@ namespace CalDavSynchronizer.Implementation.Common
       }
     }
 
+    public static byte[] MapUidToGlobalId (string uid)
+    {
+      byte[] prefix = { 0x04, 0x00, 0x00, 0x00, 0x82, 0x00, 0xE0, 0x00, 0x74, 0xC5, 0xB7, 0x10, 0x1A, 0x82, 0xE0, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+      byte[] uidPrefix = { 0x76, 0x43, 0x61, 0x6C, 0x2D, 0x55, 0x69, 0x64, 0x01, 0x00, 0x00, 0x00 };
+      byte[] uidBytes = Encoding.Default.GetBytes (uid + "\0");
+      int len = uid.Length + uidPrefix.Length + 1;
+      byte[] size = BitConverter.GetBytes (len);
+
+      byte[] globalId = new byte[prefix.Length + size.Length + uidPrefix.Length + uidBytes.Length];
+      Buffer.BlockCopy (prefix, 0, globalId, 0, prefix.Length);
+      Buffer.BlockCopy (size, 0, globalId, prefix.Length, size.Length);
+      Buffer.BlockCopy (uidPrefix, 0, globalId, prefix.Length + size.Length, uidPrefix.Length);
+      Buffer.BlockCopy (uidBytes, 0, globalId, prefix.Length + size.Length + uidPrefix.Length, uidBytes.Length);
+
+      return globalId;
+    }
+
   }
 }
