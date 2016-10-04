@@ -109,13 +109,20 @@
       </ToolBar>
     <TreeView MinWidth="220" MaxWidth="300" Margin="3"  ItemsSource="{Binding Options}" x:Name="OptionsTree">
       <TreeView.Resources>
-          <views:ViewModelToImageConverter x:Key="ViewModelToImageConverter" />
+          <views:ToProfileImageConverter x:Key="ToProfileImageConverter" />
       </TreeView.Resources>
      <TreeView.ItemTemplate>
         <HierarchicalDataTemplate ItemsSource="{Binding SubOptions}">
           <StackPanel Orientation="Horizontal" Margin="0,2,3,1">
-              <Image Height="16" Width="16" Source="{Binding Converter={StaticResource ViewModelToImageConverter}}" />
-            <CheckBox Margin="2,0" IsEnabled="{Binding SupportsIsActive}"  IsChecked="{Binding IsActive}" />
+              <Image Height="16" Width="16" >
+                <Image.Source>
+                  <MultiBinding Converter="{StaticResource ToProfileImageConverter}">
+                    <Binding Path="OutlookFolderType"></Binding>
+                    <Binding Path="IsMultipleOptionsTemplateViewModel"></Binding>
+                  </MultiBinding>
+                </Image.Source>
+              </Image>
+              <CheckBox Margin="2,0" IsEnabled="{Binding SupportsIsActive}"  IsChecked="{Binding IsActive}" />
             <TextBlock Text="{Binding Name}" />
           </StackPanel>
           <HierarchicalDataTemplate.ItemTemplate>

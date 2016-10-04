@@ -188,7 +188,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     public static OlItemType olAppointmentItem { get; } = OlItemType.olAppointmentItem;
     public static OlItemType olTaskItem { get; } = OlItemType.olTaskItem;
 
-    public OlItemType? OutlookFolderType => _outlookFolderViewModel.OutlookFolderType;
+    public override OlItemType? OutlookFolderType => _outlookFolderViewModel.OutlookFolderType;
     public event EventHandler OutlookFolderTypeChanged;
 
     public string EmailAddress => _serverSettingsViewModel.EmailAddress;

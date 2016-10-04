@@ -27,11 +27,18 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.Ui.Options.Views
 {
-  public class ViewModelToImageConverter : IValueConverter
+  public class ToProfileImageConverter : IMultiValueConverter
   {
-    public object Convert (object value, Type targetType, object parameter, CultureInfo culture)
+    
+    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
     {
-      switch ((value as GenericOptionsViewModel)?.OutlookFolderType)
+      var isMultipleOptionsTemplateViewModel = (bool?)values[1];
+
+      if (isMultipleOptionsTemplateViewModel.GetValueOrDefault(false))
+        return BitmapFrame.Create (new Uri ("pack://application:,,,/CalDavSynchronizer;component/Resources/AddMultiple.png"));
+
+      var itemType = (OlItemType?) values[0];
+      switch (itemType)
       {
         case OlItemType.olAppointmentItem:
           return BitmapFrame.Create (new Uri ("pack://application:,,,/CalDavSynchronizer;component/Resources/Appointment.png"));
@@ -41,15 +48,12 @@ namespace CalDavSynchronizer.Ui.Options.Views
           return BitmapFrame.Create (new Uri ("pack://application:,,,/CalDavSynchronizer;component/Resources/Contact.png"));
       }
 
-      if (value is MultipleOptionsTemplateViewModel)
-        return BitmapFrame.Create (new Uri ("pack://application:,,,/CalDavSynchronizer;component/Resources/AddMultiple.png"));
-
       return Binding.DoNothing;
     }
 
-    public object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture)
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
     {
-      return Binding.DoNothing;
+      return new [] { Binding.DoNothing };
     }
   }
 }

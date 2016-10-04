@@ -21,6 +21,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Input;
 using CalDavSynchronizer.Contracts;
+using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
@@ -42,6 +43,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       _parent = parent;
       ClearCacheCommand = new DelegateCommand (_ => _parent.RequestCacheDeletion (this));
     }
+
+    public bool? IsMultipleOptionsTemplateViewModel { get; } = false;
+    public abstract OlItemType? OutlookFolderType { get; } 
 
     public IEnumerable<IOptionsSection> Sections => _sections ?? (_sections = CreateSections());
 

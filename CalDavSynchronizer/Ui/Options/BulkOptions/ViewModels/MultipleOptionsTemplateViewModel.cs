@@ -190,6 +190,8 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
     public Guid Id { get; private set; }
     public IEnumerable<ISubOptionsViewModel> SubOptions { get; }
 
+    public bool? IsMultipleOptionsTemplateViewModel { get; } = true;
+    public OlItemType? OutlookFolderType { get; } = null;
 
     public bool IsSelected
     {
@@ -213,5 +215,6 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 
     public Contracts.Options GetOptionsOrNull () => null;
     public bool Validate (StringBuilder errorMessageBuilder) => true;
+    
   }
 }
