@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Utilities;
 using GenSync;
 using GenSync.EntityRepositories;
 using GenSync.Logging;
@@ -108,7 +109,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       if (requestsAndJobs.Item1.Count == 0)
         return;
 
-     var responses = ExecuteChunked (
+     var responses = ChunkedExecutor.Execute (
             new List<Contact>(),
             requestsAndJobs.Item1.Select (i => i.Contact),
             (contactList, r) =>
@@ -160,7 +161,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
     public IReadOnlyList<Contact> GetContactsFromGoogle (ICollection<string> ids)
     {
-      return ExecuteChunked (
+      return ChunkedExecutor.Execute (
           new List<Contact>(),
           ids.Select (id =>
           {
@@ -206,7 +207,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       if (requestsAndJobs.Item1.Count == 0)
         return;
 
-     var responses = ExecuteChunked (
+     var responses = ChunkedExecutor.Execute (
             new List<Contact>(),
             requestsAndJobs.Item1.Values.Select(i => i.Contact),
             (contactList, r) =>
@@ -300,7 +301,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         jobsById.Add (contact.Id, job);
       }
 
-      var responses = ExecuteChunked (
+      var responses = ChunkedExecutor.Execute (
             new List<Contact>(),
             requests,
             (contactList, r) =>
@@ -424,40 +425,6 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       }
 
       return false;
-    }
-
-    private TExecutionContext ExecuteChunked<TItem, TExecutionContext> (
-        TExecutionContext executionContext,
-        IEnumerable<TItem> items,
-        Action<List<TItem>, TExecutionContext> processChunk)
-    {
-      const int maxBatchSize = 100;
-
-      var enumerator = items.GetEnumerator();
-      var chunkItems = new List<TItem>();
-
-      for (var itemsAvaliable = true; itemsAvaliable;)
-      {
-        chunkItems.Clear();
-        itemsAvaliable = FillChunkList (enumerator, maxBatchSize, chunkItems);
-        if (chunkItems.Count > 0)
-          processChunk (chunkItems, executionContext);
-      }
-
-      return executionContext;
-    }
-
-    bool FillChunkList<T> (IEnumerator<T> enumerator, int batchSize, List<T> list)
-    {
-      for (int i = 0; i < batchSize; i++)
-      {
-        if (!enumerator.MoveNext())
-          return false;
-
-        list.Add (enumerator.Current);
-      }
-
-      return true;
     }
 
     public void Cleanup (IReadOnlyDictionary<string, GoogleContactWrapper> entities)

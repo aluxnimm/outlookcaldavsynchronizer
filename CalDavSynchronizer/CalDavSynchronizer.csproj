@@ -601,6 +601,7 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Utilities\ChunkedExecutor.cs" />
     <Compile Include="Utilities\DnsQueryHelper.cs" />
     <Compile Include="WebResourceUrls.cs" />
     <EmbeddedResource Include="CalDavSynchronizerRibbon.resx">
