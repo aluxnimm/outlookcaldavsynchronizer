@@ -29,6 +29,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private ConflictResolution _conflictResolution;
     private int _synchronizationIntervalInMinutes;
     private SynchronizationMode _synchronizationMode;
+    private int _chunkSize;
+    private bool _isChunkedSynchronizationEnabled;
 
     public SynchronizationMode SynchronizationMode
     {
@@ -61,6 +63,19 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       }
     }
 
+    public int ChunkSize
+    {
+      get { return _chunkSize; }
+      set { CheckedPropertyChange (ref _chunkSize, value); }
+    }
+
+    public bool IsChunkedSynchronizationEnabled
+    {
+      get { return _isChunkedSynchronizationEnabled; }
+      set { CheckedPropertyChange(ref _isChunkedSynchronizationEnabled, value); }
+    }
+
+
     public string SelectedSynchronizationModeDisplayName => AvailableSynchronizationModes.First (m => m.Value == SynchronizationMode).Name;
 
     public IList<Item<int>> AvailableSyncIntervals =>
@@ -90,7 +105,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
                                                                   {
                                                                       SynchronizationMode = SynchronizationMode.MergeInBothDirections,
                                                                       Resolution = ConflictResolution.Automatic,
-                                                                      SynchronizationIntervalInMinutes = 20
+                                                                      SynchronizationIntervalInMinutes = 20,
+                                                                      IsChunkedSynchronizationEnabled = true,
+                                                                      ChunkSize = 66
                                                                   };
 
     public void SetOptions (CalDavSynchronizer.Contracts.Options options)
@@ -98,18 +115,30 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       SynchronizationMode = options.SynchronizationMode;
       Resolution = options.ConflictResolution;
       SynchronizationIntervalInMinutes = options.SynchronizationIntervalInMinutes;
+      IsChunkedSynchronizationEnabled = options.IsChunkedSynchronizationEnabled;
+      ChunkSize = options.ChunkSize;
     }
-
+    
     public void FillOptions (CalDavSynchronizer.Contracts.Options options)
     {
       options.SynchronizationMode = _synchronizationMode;
       options.ConflictResolution = _conflictResolution;
       options.SynchronizationIntervalInMinutes = _synchronizationIntervalInMinutes;
+      options.IsChunkedSynchronizationEnabled = IsChunkedSynchronizationEnabled;
+      options.ChunkSize = ChunkSize;
     }
 
     public bool Validate (StringBuilder errorMessageBuilder)
     {
-      return true;
+      var isValid = true;
+
+      if (IsChunkedSynchronizationEnabled && ChunkSize < 1)
+      {
+        isValid = false;
+        errorMessageBuilder.AppendLine("- The chunk size hast to be 1 or greater.");
+      }
+
+      return isValid;
     }
   }
 }

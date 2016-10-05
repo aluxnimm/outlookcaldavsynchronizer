@@ -15,8 +15,10 @@
         <Grid.RowDefinitions>
           <RowDefinition />
           <RowDefinition />
-          <RowDefinition />
-        </Grid.RowDefinitions>
+        <RowDefinition />
+        <RowDefinition />
+        <RowDefinition />
+      </Grid.RowDefinitions>
 
         <TextBlock>Synchronization Mode:</TextBlock>
         <ComboBox
@@ -43,6 +45,11 @@
           SelectedValue="{Binding SynchronizationIntervalInMinutes}"
            MinWidth="100" Grid.Row="2" Grid.Column="1" />
 
-      </Grid>
+      <CheckBox Name="IsChunkedSynchronizationEnabledCheckBox" IsChecked="{Binding IsChunkedSynchronizationEnabled}" Grid.Row="3" Grid.ColumnSpan="2" ToolTip="Executes specific steps of synchronization in chunks, to save memory.">Perform synchronization in chunks</CheckBox>
+
+      <TextBlock Grid.Row="4" Grid.Column="0">Chunk size:</TextBlock>
+      <TextBox IsEnabled="{Binding IsChecked,ElementName=IsChunkedSynchronizationEnabledCheckBox}" Grid.Row="4" Grid.Column="1"  Text="{Binding ChunkSize}"></TextBox>
+        
+    </Grid>
   </GroupBox>
 </UserControl>

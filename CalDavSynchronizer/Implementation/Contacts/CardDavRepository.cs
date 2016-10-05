@@ -28,6 +28,7 @@ using GenSync.Logging;
 using log4net;
 using Thought.vCards;
 using CalDavSynchronizer.ThoughtvCardWorkaround;
+using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
@@ -37,10 +38,13 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
     private readonly ICardDavDataAccess _cardDavDataAccess;
     private readonly vCardImprovedWriter _vCardImprovedWriter;
-  
-    public CardDavRepository (ICardDavDataAccess cardDavDataAccess)
+    private readonly IChunkedExecutor _chunkedExecutor;
+
+
+    public CardDavRepository (ICardDavDataAccess cardDavDataAccess, IChunkedExecutor chunkedExecutor)
     {
       _cardDavDataAccess = cardDavDataAccess;
+      _chunkedExecutor = chunkedExecutor;
       _vCardImprovedWriter = new vCardImprovedWriter();
     }
 
@@ -58,6 +62,21 @@ namespace CalDavSynchronizer.Implementation.Contacts
     }
 
     public async Task<IReadOnlyList<EntityWithId<WebResourceName, vCard>>> Get (ICollection<WebResourceName> ids, ILoadEntityLogger logger, int context)
+    {
+      if (ids.Count == 0)
+        return new EntityWithId<WebResourceName, vCard>[] { };
+
+      return await _chunkedExecutor.ExecuteAsync(
+        new List<EntityWithId<WebResourceName, vCard>>(),
+        ids,
+        async (chunk, result) =>
+        {
+          var entities = await GetInternal(chunk, logger);
+          result.AddRange(entities);
+        });
+    }
+
+    private async Task<IReadOnlyList<EntityWithId<WebResourceName, vCard>>> GetInternal (ICollection<WebResourceName> ids, ILoadEntityLogger logger)
     {
       if (ids.Count == 0)
         return new EntityWithId<WebResourceName, vCard>[] { };

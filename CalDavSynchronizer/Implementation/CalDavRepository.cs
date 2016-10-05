@@ -26,6 +26,7 @@ using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.DDayICalWorkaround;
 using CalDavSynchronizer.Diagnostics;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
+using CalDavSynchronizer.Utilities;
 using DDay.iCal;
 using DDay.iCal.Serialization;
 using DDay.iCal.Serialization.iCalendar;
@@ -54,15 +55,18 @@ namespace CalDavSynchronizer.Implementation
     private readonly CalDavRepository.EntityType _entityType;
     private readonly IDateTimeRangeProvider _dateTimeRangeProvider;
     private readonly bool _deleteAndCreateOnUpdateError403;
+    private readonly IChunkedExecutor _chunkedExecutor;
 
     public CalDavRepository (
       ICalDavDataAccess calDavDataAccess,
       IStringSerializer calendarSerializer,
       CalDavRepository.EntityType entityType,
       IDateTimeRangeProvider dateTimeRangeProvider,
-      bool deleteAndCreateOnUpdateError403)
+      bool deleteAndCreateOnUpdateError403,
+      IChunkedExecutor chunkedExecutor)
     {
       _deleteAndCreateOnUpdateError403 = deleteAndCreateOnUpdateError403;
+      _chunkedExecutor = chunkedExecutor;
       _calDavDataAccess = calDavDataAccess;
       _calendarSerializer = calendarSerializer;
       _entityType = entityType;
@@ -92,6 +96,21 @@ namespace CalDavSynchronizer.Implementation
     }
 
     public async Task<IReadOnlyList<EntityWithId<WebResourceName, IICalendar>>> Get (ICollection<WebResourceName> ids, ILoadEntityLogger logger, TContext context)
+    {
+      if (ids.Count == 0)
+        return new EntityWithId<WebResourceName, IICalendar>[] { };
+
+      return await _chunkedExecutor.ExecuteAsync (
+        new List<EntityWithId<WebResourceName, IICalendar>> (),
+        ids,
+        async (chunk, result) =>
+        {
+          var entities = await GetInternal (chunk, logger);
+          result.AddRange (entities);
+        });
+    }
+
+    private async Task<IReadOnlyList<EntityWithId<WebResourceName, IICalendar>>> GetInternal (ICollection<WebResourceName> ids, ILoadEntityLogger logger)
     {
       if (ids.Count == 0)
         return new EntityWithId<WebResourceName, IICalendar>[] { };

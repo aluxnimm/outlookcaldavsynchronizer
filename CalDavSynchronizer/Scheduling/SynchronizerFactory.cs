@@ -382,7 +382,8 @@ namespace CalDavSynchronizer.Scheduling
           new iCalendarSerializer(),
           CalDavRepository.EntityType.Event,
           dateTimeRangeProvider,
-          options.ServerAdapterType == ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth);
+          options.ServerAdapterType == ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth,
+          options.IsChunkedSynchronizationEnabled ? new ChunkedExecutor(options.ChunkSize) : NullChunkedExecutor.Instance);
 
       var timeZoneCache = new TimeZoneCache (CreateHttpClient(options.ProxyOptions), mappingParameters.IncludeHistoricalData, _globalTimeZoneCache);
 
@@ -499,7 +500,8 @@ namespace CalDavSynchronizer.Scheduling
           new iCalendarSerializer(),
           CalDavRepository.EntityType.Todo,
           NullDateTimeRangeProvider.Instance,
-          false);
+          false,
+          options.IsChunkedSynchronizationEnabled ? new ChunkedExecutor (options.ChunkSize) : NullChunkedExecutor.Instance);
 
       var relationDataFactory = new TaskRelationDataFactory ();
       var syncStateFactory = new EntitySyncStateFactory<string, DateTime, TaskItemWrapper, WebResourceName, string, IICalendar> (
@@ -630,7 +632,8 @@ namespace CalDavSynchronizer.Scheduling
       componentsToFill.CardDavDataAccess = cardDavDataAccess;
 
       var btypeRepository = new CardDavRepository (
-          cardDavDataAccess);
+          cardDavDataAccess,
+          options.IsChunkedSynchronizationEnabled ? new ChunkedExecutor (options.ChunkSize) : NullChunkedExecutor.Instance);
 
       var mappingParameters = GetMappingParameters<ContactMappingConfiguration> (options);
 

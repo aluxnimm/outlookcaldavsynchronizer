@@ -60,6 +60,8 @@ namespace CalDavSynchronizer.Contracts
     public bool PreemptiveAuthentication { get; set; }
     public bool ForceBasicAuthentication { get; set; }
     public bool EnableChangeTriggeredSynchronization { get; set; }
+    public bool IsChunkedSynchronizationEnabled { get; set; }
+    public int ChunkSize { get; set; } = 100;
 
     public ProxyOptions ProxyOptions { get; set; }
     public MappingConfigurationBase MappingConfiguration { get; set; }
@@ -121,6 +123,8 @@ namespace CalDavSynchronizer.Contracts
       options.ForceBasicAuthentication = false;
       options.ProxyOptions = new ProxyOptions() { ProxyUseDefault = true };
       options.CalenderUrl = PopulateDavUrl (type);
+      options.IsChunkedSynchronizationEnabled = false;
+      options.ChunkSize = 100;
 
       if (type == ProfileType.GmxCalendar || type == ProfileType.Cozy)
       {

@@ -603,6 +603,8 @@
     </Compile>
     <Compile Include="Utilities\ChunkedExecutor.cs" />
     <Compile Include="Utilities\DnsQueryHelper.cs" />
+    <Compile Include="Utilities\NullChunkedExecutor.cs" />
+    <Compile Include="Utilities\IChunkedExecutor.cs" />
     <Compile Include="WebResourceUrls.cs" />
     <EmbeddedResource Include="CalDavSynchronizerRibbon.resx">
       <DependentUpon>CalDavSynchronizerRibbon.cs</DependentUpon>
