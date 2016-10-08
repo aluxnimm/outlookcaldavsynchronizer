@@ -204,5 +204,20 @@ namespace CalDavSynchronizer.Implementation.Common
       return globalId;
     }
 
+    public static byte[] MapUidToGlobalExceptionId (string uid, DateTime originalStart)
+    {
+      byte[] globalId = MapUidToGlobalId (uid);
+
+      // Update Bytes 17-20 (YH, YL, M, D) for recurrence exception according to
+      // https://msdn.microsoft.com/en-us/library/ee157690(v=exchg.80).aspx
+
+      byte[] yearsBytes = BitConverter.GetBytes (originalStart.Year);
+      globalId[16] = yearsBytes[1];
+      globalId[17] = yearsBytes[0];
+      globalId[18] = (byte) originalStart.Month;
+      globalId[19] = (byte) originalStart.Day;
+
+      return globalId;
+    }
   }
 }

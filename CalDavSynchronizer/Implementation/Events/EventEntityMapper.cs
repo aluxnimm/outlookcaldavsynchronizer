@@ -1087,7 +1087,24 @@ namespace CalDavSynchronizer.Implementation.Events
 
           {
             Map2To1 (recurranceException, new IEvent[] { }, exceptionWrapper, true, logger);
-            exceptionWrapper.Inner.Save();
+
+            if (_outlookMajorVersion >= 15 && recurranceException.Organizer != null &&
+                recurranceException.Attendees.Count > 0)
+            {
+              using (var pa = GenericComObjectWrapper.Create (targetException.PropertyAccessor))
+              {
+                byte[] globalId = OutlookUtility.MapUidToGlobalExceptionId (recurranceException.UID, originalStart);
+                try
+                {
+                  pa.Inner.SetProperty (PR_GLOBAL_OBJECT_ID, globalId);
+                }
+                catch (COMException ex)
+                {
+                  s_logger.Warn ($"Can't set GlobalAppointmentID of meeting exception'{targetException.EntryID}'.", ex);
+                }
+              }
+            }
+            exceptionWrapper.Inner.Save(); 
           }
         }
         catch (COMException ex)
