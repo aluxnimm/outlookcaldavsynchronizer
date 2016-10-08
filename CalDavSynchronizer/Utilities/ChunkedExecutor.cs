@@ -6,22 +6,27 @@ using System.Threading.Tasks;
 
 namespace CalDavSynchronizer.Utilities
 {
-  static class ChunkedExecutor
+  public class ChunkedExecutor
   {
-    private static async Task<TExecutionContext> ExecuteAsync<TItem, TExecutionContext>(
+    private readonly int _maxChunkSize;
+
+    public ChunkedExecutor(int maxChunkSize)
+    {
+      _maxChunkSize = maxChunkSize;
+    }
+
+    public async Task<TExecutionContext> ExecuteAsync<TItem, TExecutionContext>(
       TExecutionContext executionContext,
       IEnumerable<TItem> items,
       Func<List<TItem>, TExecutionContext, Task> processChunk)
     {
-      const int maxBatchSize = 100;
-
       var enumerator = items.GetEnumerator();
       var chunkItems = new List<TItem>();
 
       for (var itemsAvaliable = true; itemsAvaliable;)
       {
         chunkItems.Clear();
-        itemsAvaliable = FillChunkList(enumerator, maxBatchSize, chunkItems);
+        itemsAvaliable = FillChunkList(enumerator, chunkItems);
         if (chunkItems.Count > 0)
           await processChunk(chunkItems, executionContext);
       }
@@ -29,7 +34,7 @@ namespace CalDavSynchronizer.Utilities
       return executionContext;
     }
 
-    public static TExecutionContext Execute<TItem, TExecutionContext>(
+    public TExecutionContext Execute<TItem, TExecutionContext>(
       TExecutionContext executionContext,
       IEnumerable<TItem> items,
       Action<List<TItem>, TExecutionContext> processChunk)
@@ -41,9 +46,9 @@ namespace CalDavSynchronizer.Utilities
       }).Result;
     }
 
-    private static bool FillChunkList<T> (IEnumerator<T> enumerator, int batchSize, List<T> list)
+    private bool FillChunkList<T> (IEnumerator<T> enumerator, List<T> list)
     {
-      for (int i = 0; i < batchSize; i++)
+      for (int i = 0; i < _maxChunkSize; i++)
       {
         if (!enumerator.MoveNext ())
           return false;
