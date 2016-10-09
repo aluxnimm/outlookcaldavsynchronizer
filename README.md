@@ -87,6 +87,16 @@ YOu should also update manually to the latest Visual Studio 2010 Tools for Offic
 
 ### Changelog ###
 
+#### 2.7.0 ####
+- New features
+	- Map UID to GlobalAppointmentID for new meetings to avoid double events from Mail invites (only possible in Outlook 2013+).
+	- Add option to perform CalDAV/CardDAV sync in chunks with configurable chunk size to avoid OutOfMemoryEceptions, ticket #390.
+	- Add Button which opens profile data directory for debugging.
+- Bug fixes
+	- Avoid ArgumentNullException if appointments have no GlobalAppointmentID and log warning, ticket #389.
+	- Update icon of profile in options, when OutlookFolderType of profile changes.
+	- Fix for ToolBarButtons in Options.
+
 #### 2.6.1 ####
 - **WARNING**: This version changes the internal cache structure, when downgrading to an older version, the cache gets cleared and a new inital sync is performed!
 - Bug fixes
@@ -775,6 +785,7 @@ The toolbar on the left upper part provides the following options:
 - **Copy selected profile** copies the current profile to a new one
 - **Move selected profile up** change ordering in the tree view
 - **Move selected profile down** change ordering in the tree view
+- **Open data directory of selected profile** Show directory with cached relations file in explorer for debugging
 
 When adding a new profile you can choose between a generic CalDAV/CardDAV, a google profile to simplify the google profile creation and predefined CalDAV/CardDAV profiles for SOGo, Fruux, Posteo, Yandex, GMX, Sarenet and Landmarks where the DAV Url for autodiscovery is already entered. 
 
@@ -804,6 +815,9 @@ The following properties need to be set for a new generic profile:
 		- **Server Wins:** If an event is modified in Outlook and in the server since last snyc, use the server version. If an event is modified in Outlook and deleted in the server since last snyc, also delete it in Outlook. If an event is deleted in Outlook and modified in the server, recreate it in Outlook.
 		- **Automatic:** If event is modified in Outlook and in the server since last snyc, use the last recent modified version. If an event is modified in Outlook and deleted in the server since last snyc, delete it also in Outlook. If an event is deleted in Outlook and modified in the server, also delete it in the server
 	- **Synchronization interval (minutes):** Choose the interval for synchronization in minutes, if 'Manual only' is choosen, there is no automatic sync but you can use the 'Synchronize now' menu item.
+	- **Perform synchronization in chunks** and
+	- **Chunk size** perform CalDAV/CardDAV sync in chunks with configurable chunk size to avoid OutOfMemoryEceptions, disabled by default and should only be enabled for huge resources and low memory.
+	- **Use time range filter** and
 	- **Synchronization timespan past (days)** and
 	- **Synchronization timespan future (days)** For performance reasons it is useful to sync only a given timespan of a big calendar, especially past events are normally not necessary to sync after a given timespan.
 
@@ -845,9 +859,13 @@ Outlook and Windows use different Timezone definitions than most CalDAV servers 
 
 ### Managing meetings and invites ###
 
-Outlook can only track meeting responses and invites in the main calender folder. If you schedule meetings from Outlook which are synced with the CalDAV server you have two possibilities to avoid double invitation mails for all attendees. First, you can enable the option *SCHEDULE-AGENT=CLIENT* (or *Don't send appointment notifications (from SOGo)*" for SOGo servers) and let only Outlook send the meeting invites, if the server supports this option. Or you can disable this option and let the server schedule the meetings after syncing the meeting. Then you need to disable the invitation mails sent from Outlook. This is possible by unchecking the checkbox left to the attendee name in the meeting planning dialog. The response status of all attendees can be synced from Outlook to the server but only the status of the own Outlook identity (if included in the attendees) can be synced from the server to Outlook due to limitations of the Outlook Object Model.
+Outlook can only track meeting responses and invites in the main calender folder. If you schedule meetings from Outlook which are synced with the CalDAV server you have two possibilities to avoid double invitation mails for all attendees. First, you can enable the option *SCHEDULE-AGENT=CLIENT* (or *Don't send appointment notifications (from SOGo)*" for SOGo servers) and let only Outlook send the meeting invites, if the server supports this option. Or you can disable this option and let the server schedule the meetings after syncing the meeting. Then you need to disable the invitation mails sent from Outlook. This is possible by unchecking the checkbox left to the attendee name in the meeting planning dialog. When syncing meetings created in Outlook to the server, the option *Use GlobalAppointmentID for UID attribute* is recommended. This can avoid duplicate events from invitations.
 
-When receiving invites from the CalDAV server and via Email in your INBOX, Outlook will automatically create a tentative meeting in the main calendar folder. But if the email arrives after a sync run, this can lead to duplicates. To avoid double meetings the option *Cleanup duplicate events after each sync run* in event mapping configuration is recommended and you should check email more frequently than syncing the calendar.
+The response status of all attendees can be synced from Outlook to the server but only the status of the own Outlook identity (if included in the attendees) can be synced from the server to Outlook due to limitations of the Outlook Object Model.
+
+When receiving invites from the CalDAV server and via Email in your INBOX, Outlook will automatically create a tentative meeting in the main calendar folder. 
+
+To avoid double meetings the option *Cleanup duplicate events after each sync run* in event mapping configuration is recommended.
 
 ### Free/busy lookups ###
 
