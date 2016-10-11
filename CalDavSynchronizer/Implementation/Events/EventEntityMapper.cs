@@ -285,10 +285,10 @@ namespace CalDavSynchronizer.Implementation.Events
             try
             {
               if (  prop.Value != null && !string.IsNullOrEmpty (prop.Value.ToString()) &&
-                    (prop.Type != OlUserPropertyType.olDateTime || !prop.Value.Equals (new DateTime (4501, 1, 1, 0, 0, 0)))
+                    (prop.Type == OlUserPropertyType.olText )
                  )
               {
-                target.Properties.Add (new CalendarProperty ("X-CALDAVSYNCHRONIZER-" + prop.Name.ToUpperInvariant(), prop.Value.ToString()));
+                target.Properties.Add (new CalendarProperty ("X-CALDAVSYNCHRONIZER-" + prop.Name, prop.Value.ToString()));
               }
             }
             catch (COMException ex)
@@ -305,31 +305,31 @@ namespace CalDavSynchronizer.Implementation.Events
     {
       using (var userPropertiesWrapper = GenericComObjectWrapper.Create (target.UserProperties))
       {
-        if (userPropertiesWrapper.Inner != null && userPropertiesWrapper.Inner.Count > 0)
+
+        foreach (var prop in source.Properties.Where (p => p.Name.StartsWith("X-CALDAVSYNCHRONIZER-")))
         {
-          foreach (var prop in userPropertiesWrapper.Inner.ToSafeEnumerable<UserProperty>())
+          var propKey = prop.Name.Replace ("X-CALDAVSYNCHRONIZER-", "");
+          try
           {
-            try
+            using (var userProperty = GenericComObjectWrapper.Create (userPropertiesWrapper.Inner.Find (propKey)))
             {
-              var propName = "X-CALDAVSYNCHRONIZER-" + prop.Name.ToUpperInvariant();
-              if (source.Properties.ContainsKey (propName))
+              if (userProperty.Inner != null)
               {
-                prop.Value = source.Properties[propName].Value;
-              }
-              else if (prop.Type == OlUserPropertyType.olDateTime)
-              {
-                prop.Value = new DateTime (4501, 1, 1, 0, 0, 0);
+                userProperty.Inner.Value = prop.Value;
               }
               else
               {
-                prop.Value = null;
+                using (var newUserProperty = GenericComObjectWrapper.Create (userPropertiesWrapper.Inner.Add (propKey, OlUserPropertyType.olText, true)))
+                {
+                  newUserProperty.Inner.Value = prop.Value;
+                }
               }
             }
-            catch (COMException ex)
-            {
-              s_logger.Warn ("Can't set UserProperty of Appointment!", ex);
-              logger.LogMappingWarning ("Can't set UserProperty of Appointment!", ex);
-            }
+          }
+          catch (COMException ex)
+          {
+            s_logger.Warn ("Can't set UserProperty of Appointment!", ex);
+            logger.LogMappingWarning ("Can't set UserProperty of Appointment!", ex);
           }
         }
       }
