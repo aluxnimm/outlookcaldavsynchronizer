@@ -33,6 +33,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     private ReminderMapping _mapReminder;
     private string _taskCategory;
     private bool _invertTaskCategoryFilter;
+    private bool _mapCustomProperties;
     private bool _isSelected;
 
     public IList<Item<ReminderMapping>> AvailableReminderMappings => new List<Item<ReminderMapping>>
@@ -100,6 +101,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       }
     }
 
+    public bool MapCustomProperties
+    {
+      get { return _mapCustomProperties; }
+      set
+      {
+        CheckedPropertyChange(ref _mapCustomProperties, value);
+      }
+    }
+
     public bool IsSelected
     {
       get { return _isSelected; }
@@ -117,6 +127,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                                                               MapReminder = ReminderMapping.JustUpcoming,
                                                                               TaskCategory = "TheCategory",
                                                                               InvertTaskCategoryFilter = true,
+                                                                              MapCustomProperties = true
     };
 
 
@@ -133,6 +144,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       MapReminder = mappingConfiguration.MapReminder;
       TaskCategory = mappingConfiguration.TaskCategory;
       InvertTaskCategoryFilter = mappingConfiguration.InvertTaskCategoryFilter;
+      MapCustomProperties = mappingConfiguration.MapCustomProperties;
     }
 
     public void FillOptions (CalDavSynchronizer.Contracts.Options options)
@@ -144,7 +156,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                          MapRecurringTasks = _mapRecurringTasks,
                                          MapReminder = _mapReminder,
                                          TaskCategory = _taskCategory,
-                                         InvertTaskCategoryFilter = _invertTaskCategoryFilter
+                                         InvertTaskCategoryFilter = _invertTaskCategoryFilter,
+                                         MapCustomProperties = _mapCustomProperties
                                      };
     }
 

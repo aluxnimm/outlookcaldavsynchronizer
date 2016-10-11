@@ -18,7 +18,11 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices;
+using CalDavSynchronizer.Implementation.ComWrappers;
 using DDay.iCal;
+using GenSync.Logging;
+using log4net;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Common
@@ -158,6 +162,58 @@ namespace CalDavSynchronizer.Implementation.Common
       else
       {
         return new string[] { };
+      }
+    }
+
+    public static void MapCustomProperties1To2 (GenericComObjectWrapper<UserProperties> userPropertiesWrapper, ICalendarPropertyList targetProperties, IEntityMappingLogger logger, ILog s_logger)
+    {
+      if (userPropertiesWrapper.Inner != null && userPropertiesWrapper.Inner.Count > 0)
+      {
+        foreach (var prop in userPropertiesWrapper.Inner.ToSafeEnumerable<UserProperty>())
+        {
+          try
+          {
+            if (prop.Value != null && !string.IsNullOrEmpty (prop.Value.ToString()) && (prop.Type == OlUserPropertyType.olText))
+            {
+              targetProperties.Add (new CalendarProperty ("X-CALDAVSYNCHRONIZER-" + prop.Name, prop.Value.ToString()));
+            }
+          }
+          catch (COMException ex)
+          {
+            s_logger.Warn ("Can't access UserProperty of Item!", ex);
+            logger.LogMappingWarning ("Can't access UserProperty of Item!", ex);
+          }
+        }
+      }
+    }
+
+    public static void MapCustomProperties2To1 (ICalendarPropertyList sourceList, GenericComObjectWrapper<UserProperties> userPropertiesWrapper, IEntityMappingLogger logger, ILog s_logger)
+    {
+      foreach (var prop in sourceList.Where (p => p.Name.StartsWith ("X-CALDAVSYNCHRONIZER-")))
+      {
+        var propKey = prop.Name.Replace ("X-CALDAVSYNCHRONIZER-", "");
+        try
+        {
+          using (var userProperty = GenericComObjectWrapper.Create (userPropertiesWrapper.Inner.Find (propKey)))
+          {
+            if (userProperty.Inner != null)
+            {
+              userProperty.Inner.Value = prop.Value;
+            }
+            else
+            {
+              using (var newUserProperty = GenericComObjectWrapper.Create (userPropertiesWrapper.Inner.Add (propKey, OlUserPropertyType.olText, true)))
+              {
+                newUserProperty.Inner.Value = prop.Value;
+              }
+            }
+          }
+        }
+        catch (COMException ex)
+        {
+          s_logger.Warn ("Can't set UserProperty of Item!", ex);
+          logger.LogMappingWarning ("Can't set UserProperty of Item!", ex);
+        }
       }
     }
   }

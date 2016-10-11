@@ -270,69 +270,13 @@ namespace CalDavSynchronizer.Implementation.Events
       target.Properties.Add (MapBusyStatus1To2 (source.BusyStatus));
 
       if (_configuration.MapCustomProperties)
-        MapCustomProperties1To2 (source, target, logger);
-        
-    }
-
-    public void MapCustomProperties1To2 (AppointmentItem source, IEvent target, IEntityMappingLogger logger)
-    {
-      using (var userPropertiesWrapper = GenericComObjectWrapper.Create (source.UserProperties))
       {
-        if (userPropertiesWrapper.Inner != null && userPropertiesWrapper.Inner.Count > 0)
+        using (var userPropertiesWrapper = GenericComObjectWrapper.Create (source.UserProperties))
         {
-          foreach (var prop in userPropertiesWrapper.Inner.ToSafeEnumerable<UserProperty>())
-          {
-            try
-            {
-              if (  prop.Value != null && !string.IsNullOrEmpty (prop.Value.ToString()) &&
-                    (prop.Type == OlUserPropertyType.olText )
-                 )
-              {
-                target.Properties.Add (new CalendarProperty ("X-CALDAVSYNCHRONIZER-" + prop.Name, prop.Value.ToString()));
-              }
-            }
-            catch (COMException ex)
-            {
-              s_logger.Warn ("Can't access UserProperty of Appointment!", ex);
-              logger.LogMappingWarning ("Can't access UserProperty of Appointment!", ex);
-            }
-          }
+          CommonEntityMapper.MapCustomProperties1To2 (userPropertiesWrapper, target.Properties, logger, s_logger);
         }
       }
-    }
 
-    public void MapCustomProperties2To1 (IEvent source, AppointmentItem target, IEntityMappingLogger logger)
-    {
-      using (var userPropertiesWrapper = GenericComObjectWrapper.Create (target.UserProperties))
-      {
-
-        foreach (var prop in source.Properties.Where (p => p.Name.StartsWith("X-CALDAVSYNCHRONIZER-")))
-        {
-          var propKey = prop.Name.Replace ("X-CALDAVSYNCHRONIZER-", "");
-          try
-          {
-            using (var userProperty = GenericComObjectWrapper.Create (userPropertiesWrapper.Inner.Find (propKey)))
-            {
-              if (userProperty.Inner != null)
-              {
-                userProperty.Inner.Value = prop.Value;
-              }
-              else
-              {
-                using (var newUserProperty = GenericComObjectWrapper.Create (userPropertiesWrapper.Inner.Add (propKey, OlUserPropertyType.olText, true)))
-                {
-                  newUserProperty.Inner.Value = prop.Value;
-                }
-              }
-            }
-          }
-          catch (COMException ex)
-          {
-            s_logger.Warn ("Can't set UserProperty of Appointment!", ex);
-            logger.LogMappingWarning ("Can't set UserProperty of Appointment!", ex);
-          }
-        }
-      }
     }
 
     private static CalendarProperty MapBusyStatus1To2 (OlBusyStatus value)
@@ -1641,7 +1585,12 @@ namespace CalDavSynchronizer.Implementation.Events
       targetWrapper.Inner.BusyStatus = MapTransparency2To1 (source);
 
       if (_configuration.MapCustomProperties)
-        MapCustomProperties2To1 (source, targetWrapper.Inner, logger);
+      {
+        using (var userPropertiesWrapper = GenericComObjectWrapper.Create (targetWrapper.Inner.UserProperties))
+        {
+          CommonEntityMapper.MapCustomProperties2To1 (source.Properties, userPropertiesWrapper, logger, s_logger);
+        }
+      }
 
       if (_configuration.MapAttendees && source.Organizer != null)
       {
