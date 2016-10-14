@@ -184,7 +184,7 @@ namespace CalDavSynchronizer.Scheduling
 
       if (calendarUrl.Scheme == Uri.UriSchemeFile)
       {
-        calDavDataAccess = new FileSystemCalDavDataAccess(calendarUrl);
+        calDavDataAccess = new FileSystemDavDataAccess (calendarUrl);
       }
       else
       {
@@ -486,7 +486,7 @@ namespace CalDavSynchronizer.Scheduling
 
       if (calendarUrl.Scheme == Uri.UriSchemeFile)
       {
-        calDavDataAccess = new FileSystemCalDavDataAccess (calendarUrl);
+        calDavDataAccess = new FileSystemDavDataAccess (calendarUrl);
       }
       else
       {
@@ -627,20 +627,29 @@ namespace CalDavSynchronizer.Scheduling
           options.OutlookFolderStoreId,
           _daslFilterProvider);
 
-      var cardDavDataAccess = new CardDavDataAccess (
-          new Uri (options.CalenderUrl),
-          CreateWebDavClient (
-              options.UserName,
-              options.GetEffectivePassword(_outlookAccountPasswordProvider),
-              options.CalenderUrl,
-              generalOptions.CalDavConnectTimeout,
-              options.ServerAdapterType,
-              options.CloseAfterEachRequest,
-              options.PreemptiveAuthentication,
-              options.ForceBasicAuthentication,
-              options.ProxyOptions,
-              generalOptions.AcceptInvalidCharsInServerResponse));
+      ICardDavDataAccess cardDavDataAccess;
+      var serverUrl = new Uri (options.CalenderUrl);
 
+      if (serverUrl.Scheme == Uri.UriSchemeFile)
+      {
+        cardDavDataAccess = new FileSystemDavDataAccess(serverUrl);
+      }
+      else
+      {
+        cardDavDataAccess = new CardDavDataAccess(
+          serverUrl,
+          CreateWebDavClient(
+            options.UserName,
+            options.GetEffectivePassword(_outlookAccountPasswordProvider),
+            options.CalenderUrl,
+            generalOptions.CalDavConnectTimeout,
+            options.ServerAdapterType,
+            options.CloseAfterEachRequest,
+            options.PreemptiveAuthentication,
+            options.ForceBasicAuthentication,
+            options.ProxyOptions,
+            generalOptions.AcceptInvalidCharsInServerResponse));
+      }
       componentsToFill.CardDavDataAccess = cardDavDataAccess;
 
       var btypeRepository = new CardDavRepository (
