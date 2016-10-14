@@ -479,19 +479,31 @@ namespace CalDavSynchronizer.Scheduling
 
       var atypeRepository = new OutlookTaskRepository (_outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId, _daslFilterProvider, mappingParameters);
 
-      var calDavDataAccess = new CalDavDataAccess (
-          new Uri (options.CalenderUrl),
-          CreateWebDavClient (
-              options.UserName,
-              options.GetEffectivePassword(_outlookAccountPasswordProvider),
-              options.CalenderUrl,
-              generalOptions.CalDavConnectTimeout,
-              options.ServerAdapterType,
-              options.CloseAfterEachRequest,
-              options.PreemptiveAuthentication,
-              options.ForceBasicAuthentication,
-              options.ProxyOptions,
-              generalOptions.AcceptInvalidCharsInServerResponse));
+
+
+      ICalDavDataAccess calDavDataAccess;
+      var calendarUrl = new Uri (options.CalenderUrl);
+
+      if (calendarUrl.Scheme == Uri.UriSchemeFile)
+      {
+        calDavDataAccess = new FileSystemCalDavDataAccess (calendarUrl);
+      }
+      else
+      {
+        calDavDataAccess = new CalDavDataAccess (
+         calendarUrl,
+         CreateWebDavClient (
+           options.UserName,
+           options.GetEffectivePassword (_outlookAccountPasswordProvider),
+           options.CalenderUrl,
+           generalOptions.CalDavConnectTimeout,
+           options.ServerAdapterType,
+           options.CloseAfterEachRequest,
+           options.PreemptiveAuthentication,
+           options.ForceBasicAuthentication,
+           options.ProxyOptions,
+           generalOptions.AcceptInvalidCharsInServerResponse));
+      }
 
       componentsToFill.CalDavDataAccess = calDavDataAccess;
 
