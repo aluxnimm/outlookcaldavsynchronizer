@@ -54,7 +54,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     private bool _useEventCategoryColorAndMapFromCalendarColor;
     private readonly ICurrentOptions _currentOptions;
     private bool _cleanupDuplicateEvents;
-    private bool _mapCustomProperties;
     private readonly CustomPropertyMappingViewModel _customPropertyMappingViewModel;
 
     public IList<Item<ReminderMapping>> AvailableReminderMappings { get; } = new List<Item<ReminderMapping>>
@@ -164,16 +163,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
         CheckedPropertyChange (ref _cleanupDuplicateEvents, value);
       }
     }
-
-    public bool MapCustomProperties
-    {
-      get { return _mapCustomProperties; }
-      set
-      {
-        CheckedPropertyChange (ref _mapCustomProperties, value);
-      }
-    }
-
+  
     public string EventCategory
     {
       get { return _eventCategory; }
@@ -339,7 +329,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       SendNoAppointmentNotifications = mappingConfiguration.SendNoAppointmentNotifications;
       UseEventCategoryColorAndMapFromCalendarColor = mappingConfiguration.UseEventCategoryColorAndMapFromCalendarColor;
       CleanupDuplicateEvents = mappingConfiguration.CleanupDuplicateEvents;
-      MapCustomProperties = mappingConfiguration.MapCustomProperties;
     }
 
     public void FillOptions(EventMappingConfiguration mappingConfiguration)
@@ -364,7 +353,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       mappingConfiguration.SendNoAppointmentNotifications = _sendNoAppointmentNotifications;
       mappingConfiguration.UseEventCategoryColorAndMapFromCalendarColor = _useEventCategoryColorAndMapFromCalendarColor;
       mappingConfiguration.CleanupDuplicateEvents = _cleanupDuplicateEvents;
-      mappingConfiguration.MapCustomProperties = _mapCustomProperties;
     }
 
     public string Name => "Event mapping configuration";
@@ -397,7 +385,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                                                           SendNoAppointmentNotifications = true,
                                                                           UseEventCategoryColorAndMapFromCalendarColor = true,
                                                                           CleanupDuplicateEvents = true,
-                                                                          MapCustomProperties = true
                                                                       };
 
     private bool _isSelected;

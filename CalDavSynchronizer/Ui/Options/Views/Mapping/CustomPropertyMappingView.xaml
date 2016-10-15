@@ -5,12 +5,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mapping="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels.Mapping"
              xmlns:views="clr-namespace:CalDavSynchronizer.Ui.Options.Views"
-             mc:Ignorable="d">
-  <!--d:DataContext="{x:Static  mapping:CustomPropertyMappingViewModel.DesignInstance}"
-             >-->
+             mc:Ignorable="d"
+             d:DataContext="{x:Static  mapping:CustomPropertyMappingViewModel.DesignInstance}">
 
-  <DataGrid ItemsSource="{Binding Mappings}">
+  <DockPanel>
+
+    <CheckBox DockPanel.Dock="Top" ToolTip="Map Outlook Custom Properties as X-CALDAVSYNCHRONIZER attributes." IsChecked="{Binding MapCustomProperties}">Map Outlook Custom Properties to X-CALDAVSYNCHRONIZER properties.</CheckBox>
     
-  </DataGrid>
+    <GroupBox Header="User defined mappings of custom properties">
+      <DataGrid ItemsSource="{Binding Mappings}" />
+    </GroupBox>
 
+  </DockPanel>
 </UserControl>

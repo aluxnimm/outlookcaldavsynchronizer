@@ -53,7 +53,6 @@
                         Grid.ColumnSpan="2" 
                         Grid.Row="1">Negate filter and sync all Tasks except this category</CheckBox>
                 </Grid>
-                <CheckBox ToolTip="map Outlook Custom Properties as X-CALDAVSYNCHRONIZER-PROPERTYNAME attributes in iCalendar data." IsChecked="{Binding MapCustomProperties}">Map Outlook Custom Properties to X-CALDAVSYNCHRONIZER-PROPERTYNAME</CheckBox>
             </StackPanel>
     </GroupBox>
     </StackPanel>

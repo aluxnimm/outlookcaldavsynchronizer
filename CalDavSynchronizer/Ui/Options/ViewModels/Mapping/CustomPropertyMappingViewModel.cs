@@ -23,11 +23,24 @@ using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 {
-  class CustomPropertyMappingViewModel : ISubOptionsViewModel
+  class CustomPropertyMappingViewModel : ViewModelBase, ISubOptionsViewModel
   {
+    private bool _mapCustomProperties;
+
     public string Name { get; } = "Custom property mappings";
+
+
     public IEnumerable<ISubOptionsViewModel> SubOptions { get; } = new ISubOptionsViewModel[0];
     public List<PropertyMapping> Mappings { get; private set; }
+
+    public bool MapCustomProperties
+    {
+      get { return _mapCustomProperties; }
+      set
+      {
+        CheckedPropertyChange (ref _mapCustomProperties, value);
+      }
+    }
 
     public void SetOptions (Contracts.Options options)
     {
@@ -42,16 +55,29 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     public void SetOptions (IPropertyMappingConfiguration mappingConfiguration)
     {
       Mappings = new List<PropertyMapping>(mappingConfiguration.CustomPropertyMappings ?? new PropertyMapping[0]);
+      MapCustomProperties = mappingConfiguration.MapCustomProperties;
     }
 
     public void FillOptions(IPropertyMappingConfiguration mappingConfiguration)
     {
       mappingConfiguration.CustomPropertyMappings = Mappings.ToArray();
+      mappingConfiguration.MapCustomProperties = _mapCustomProperties;
     }
 
     public bool Validate(StringBuilder errorMessageBuilder)
     {
       return true;
     }
+
+    public static CustomPropertyMappingViewModel DesignInstance => new CustomPropertyMappingViewModel()
+    {
+      MapCustomProperties = true,
+      Mappings = new List<PropertyMapping>
+      {
+        new PropertyMapping {OutlookProperty = "OutlookName", DavProperty = "DavName"},
+        new PropertyMapping {OutlookProperty = "OutlookSubject", DavProperty = "DavSubject"}
+      }
+    };
+
   }
 }

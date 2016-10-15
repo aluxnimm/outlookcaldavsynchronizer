@@ -33,7 +33,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     private ReminderMapping _mapReminder;
     private string _taskCategory;
     private bool _invertTaskCategoryFilter;
-    private bool _mapCustomProperties;
     private bool _isSelected;
     private readonly CustomPropertyMappingViewModel _customPropertyMappingViewModel;
 
@@ -101,16 +100,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
         CheckedPropertyChange(ref _invertTaskCategoryFilter, value);
       }
     }
-
-    public bool MapCustomProperties
-    {
-      get { return _mapCustomProperties; }
-      set
-      {
-        CheckedPropertyChange(ref _mapCustomProperties, value);
-      }
-    }
-
+    
     public bool IsSelected
     {
       get { return _isSelected; }
@@ -128,7 +118,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                                                               MapReminder = ReminderMapping.JustUpcoming,
                                                                               TaskCategory = "TheCategory",
                                                                               InvertTaskCategoryFilter = true,
-                                                                              MapCustomProperties = true
     };
 
 
@@ -154,7 +143,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       MapReminder = mappingConfiguration.MapReminder;
       TaskCategory = mappingConfiguration.TaskCategory;
       InvertTaskCategoryFilter = mappingConfiguration.InvertTaskCategoryFilter;
-      MapCustomProperties = mappingConfiguration.MapCustomProperties;
     }
 
     public void FillOptions(TaskMappingConfiguration mappingConfiguration)
@@ -165,7 +153,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       mappingConfiguration.MapReminder = _mapReminder;
       mappingConfiguration.TaskCategory = _taskCategory;
       mappingConfiguration.InvertTaskCategoryFilter = _invertTaskCategoryFilter;
-      mappingConfiguration.MapCustomProperties = _mapCustomProperties;
     }
 
     public string Name => "Task mapping configuration";
