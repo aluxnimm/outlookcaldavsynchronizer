@@ -55,6 +55,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     private readonly ICurrentOptions _currentOptions;
     private bool _cleanupDuplicateEvents;
     private bool _mapCustomProperties;
+    private readonly CustomPropertyMappingViewModel _customPropertyMappingViewModel;
 
     public IList<Item<ReminderMapping>> AvailableReminderMappings { get; } = new List<Item<ReminderMapping>>
                                                                              {
@@ -305,7 +306,16 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
     public void SetOptions (CalDavSynchronizer.Contracts.Options options)
     {
-      SetOptions(options.MappingConfiguration as EventMappingConfiguration ?? new EventMappingConfiguration());
+      var eventMappingConfiguration = options.MappingConfiguration as EventMappingConfiguration ?? new EventMappingConfiguration();
+      SetOptions(eventMappingConfiguration);
+      _customPropertyMappingViewModel.SetOptions(eventMappingConfiguration);
+    }
+
+    public void FillOptions(CalDavSynchronizer.Contracts.Options options)
+    {
+      var eventMappingConfiguration = options.GetOrCreateMappingConfiguration<EventMappingConfiguration>();
+      FillOptions(eventMappingConfiguration);
+      _customPropertyMappingViewModel.FillOptions(eventMappingConfiguration);
     }
 
     public void SetOptions (EventMappingConfiguration mappingConfiguration)
@@ -332,31 +342,29 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       MapCustomProperties = mappingConfiguration.MapCustomProperties;
     }
 
-    public void FillOptions (CalDavSynchronizer.Contracts.Options options)
+    public void FillOptions(EventMappingConfiguration mappingConfiguration)
     {
-      options.MappingConfiguration = new EventMappingConfiguration
-                                     {
-                                         CategoryShortcutKey = _categoryShortcutKey,
-                                         CreateEventsInUTC = _createEventsInUtc,
-                                         UseIanaTz = _useIanaTz,
-                                         EventTz = _eventTz,
-                                         IncludeHistoricalData = _includeHistoricalData,
-                                         UseGlobalAppointmentID = _useGlobalAppointmentID,
-                                         EventCategory = _eventCategory,
-                                         EventCategoryColor = _eventCategoryColor,
-                                         InvertEventCategoryFilter = _invertEventCategoryFilter,
-                                         MapAttendees = _mapAttendees,
-                                         MapBody = _mapBody,
-                                         MapClassConfidentialToSensitivityPrivate = _mapClassConfidentialToSensitivityPrivate,
-                                         MapReminder = _mapReminder,
-                                         MapSensitivityPrivateToClassConfidential = _mapSensitivityPrivateToClassConfidential,
-                                         MapClassPublicToSensitivityPrivate = _mapClassPublicToSensitivityPrivate,
-                                         ScheduleAgentClient = _scheduleAgentClient,
-                                         SendNoAppointmentNotifications = _sendNoAppointmentNotifications,
-                                         UseEventCategoryColorAndMapFromCalendarColor = _useEventCategoryColorAndMapFromCalendarColor,
-                                         CleanupDuplicateEvents = _cleanupDuplicateEvents,
-                                         MapCustomProperties = _mapCustomProperties
-      };
+
+      mappingConfiguration.CategoryShortcutKey = _categoryShortcutKey;
+      mappingConfiguration.CreateEventsInUTC = _createEventsInUtc;
+      mappingConfiguration.UseIanaTz = _useIanaTz;
+      mappingConfiguration.EventTz = _eventTz;
+      mappingConfiguration.IncludeHistoricalData = _includeHistoricalData;
+      mappingConfiguration.UseGlobalAppointmentID = _useGlobalAppointmentID;
+      mappingConfiguration.EventCategory = _eventCategory;
+      mappingConfiguration.EventCategoryColor = _eventCategoryColor;
+      mappingConfiguration.InvertEventCategoryFilter = _invertEventCategoryFilter;
+      mappingConfiguration.MapAttendees = _mapAttendees;
+      mappingConfiguration.MapBody = _mapBody;
+      mappingConfiguration.MapClassConfidentialToSensitivityPrivate = _mapClassConfidentialToSensitivityPrivate;
+      mappingConfiguration.MapReminder = _mapReminder;
+      mappingConfiguration.MapSensitivityPrivateToClassConfidential = _mapSensitivityPrivateToClassConfidential;
+      mappingConfiguration.MapClassPublicToSensitivityPrivate = _mapClassPublicToSensitivityPrivate;
+      mappingConfiguration.ScheduleAgentClient = _scheduleAgentClient;
+      mappingConfiguration.SendNoAppointmentNotifications = _sendNoAppointmentNotifications;
+      mappingConfiguration.UseEventCategoryColorAndMapFromCalendarColor = _useEventCategoryColorAndMapFromCalendarColor;
+      mappingConfiguration.CleanupDuplicateEvents = _cleanupDuplicateEvents;
+      mappingConfiguration.MapCustomProperties = _mapCustomProperties;
     }
 
     public string Name => "Event mapping configuration";
@@ -367,7 +375,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     }
 
 
-    public IEnumerable<ISubOptionsViewModel> SubOptions => new ISubOptionsViewModel[] { };
+    public IEnumerable<ISubOptionsViewModel> SubOptions { get; }
 
     public static EventMappingConfigurationViewModel DesignInstance = new EventMappingConfigurationViewModel(new[] {"Cat1","Cat2"}, new DesignCurrentOptions())
                                                                       {
@@ -413,6 +421,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
         ComponentContainer.EnsureSynchronizationContext();
         GetServerCalendarColorAsync();
       });
+
+      _customPropertyMappingViewModel = new CustomPropertyMappingViewModel();
+      SubOptions = new[] {_customPropertyMappingViewModel};
     }
 
     private async void GetServerCalendarColorAsync ()

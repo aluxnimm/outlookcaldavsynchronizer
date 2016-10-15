@@ -23,7 +23,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Contracts
 {
-  public class EventMappingConfiguration : MappingConfigurationBase
+  public class EventMappingConfiguration : MappingConfigurationBase, IPropertyMappingConfiguration
   {
     public ReminderMapping MapReminder { get; set; }
     public bool MapSensitivityPrivateToClassConfidential { get; set; }
@@ -45,6 +45,7 @@ namespace CalDavSynchronizer.Contracts
     public OlCategoryShortcutKey CategoryShortcutKey { get; set; }
     public bool CleanupDuplicateEvents { get; set; }
     public bool MapCustomProperties { get; set; }
+    public PropertyMapping[] CustomPropertyMappings { get; set; }
 
     [XmlIgnore]
     public bool UseEventCategoryAsFilter

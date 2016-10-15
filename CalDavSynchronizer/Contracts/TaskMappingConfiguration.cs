@@ -21,7 +21,7 @@ using CalDavSynchronizer.Ui.Options.ViewModels.Mapping;
 
 namespace CalDavSynchronizer.Contracts
 {
-  public class TaskMappingConfiguration : MappingConfigurationBase
+  public class TaskMappingConfiguration : MappingConfigurationBase, IPropertyMappingConfiguration
   {
     public ReminderMapping MapReminder { get; set; }
     public bool MapPriority { get; set; }
@@ -30,6 +30,7 @@ namespace CalDavSynchronizer.Contracts
     public string TaskCategory { get; set; }
     public bool InvertTaskCategoryFilter { get; set; }
     public bool MapCustomProperties { get; set; }
+    public PropertyMapping[] CustomPropertyMappings { get; set; }
 
     [XmlIgnore]
     public bool UseTaskCategoryAsFilter
