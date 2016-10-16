@@ -17,7 +17,12 @@
       <StackPanel>
         <CheckBox DockPanel.Dock="Top" ToolTip="Map all Outlook custom properties to X-CALDAVSYNCHRONIZER attributes." IsChecked="{Binding MapCustomProperties}">Map all Outlook custom properties to X-CALDAVSYNCHRONIZER attributes.</CheckBox>
         <GroupBox Header="Manual mapping">
-          <DataGrid ItemsSource="{Binding Mappings}" />
+           <DataGrid ItemsSource="{Binding Mappings}" AutoGenerateColumns="False" ColumnWidth="*">
+               <DataGrid.Columns>
+                   <DataGridTextColumn Header="Outlook custom property" Binding="{Binding OutlookProperty}"></DataGridTextColumn>
+                   <DataGridTextColumn Header="DAV X-Attribute" Binding="{Binding DavProperty}"></DataGridTextColumn>
+               </DataGrid.Columns>
+           </DataGrid>
         </GroupBox>
       </StackPanel>
     </GroupBox>
