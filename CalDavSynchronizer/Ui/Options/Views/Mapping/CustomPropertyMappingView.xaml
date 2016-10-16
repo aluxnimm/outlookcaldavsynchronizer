@@ -10,10 +10,16 @@
 
   <DockPanel>
 
-    <CheckBox DockPanel.Dock="Top" ToolTip="Map Outlook Custom Properties as X-CALDAVSYNCHRONIZER attributes." IsChecked="{Binding MapCustomProperties}">Map Outlook Custom Properties to X-CALDAVSYNCHRONIZER properties.</CheckBox>
+      
     
-    <GroupBox Header="User defined mappings of custom properties">
-      <DataGrid ItemsSource="{Binding Mappings}" />
+    
+    <GroupBox Header="Custom properties mapping configuration">
+      <StackPanel>
+        <CheckBox DockPanel.Dock="Top" ToolTip="Map all Outlook custom properties to X-CALDAVSYNCHRONIZER attributes." IsChecked="{Binding MapCustomProperties}">Map all Outlook custom properties to X-CALDAVSYNCHRONIZER attributes.</CheckBox>
+        <GroupBox Header="Manual mapping">
+          <DataGrid ItemsSource="{Binding Mappings}" />
+        </GroupBox>
+      </StackPanel>
     </GroupBox>
 
   </DockPanel>

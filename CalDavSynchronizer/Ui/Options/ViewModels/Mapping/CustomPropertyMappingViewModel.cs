@@ -27,7 +27,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
   {
     private bool _mapCustomProperties;
 
-    public string Name { get; } = "Custom property mappings";
+    public string Name { get; } = "Custom properties mapping";
 
 
     public IEnumerable<ISubOptionsViewModel> SubOptions { get; } = new ISubOptionsViewModel[0];
