@@ -54,13 +54,13 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
     public void SetOptions (IPropertyMappingConfiguration mappingConfiguration)
     {
-      Mappings = new List<PropertyMapping>(mappingConfiguration.CustomPropertyMappings ?? new PropertyMapping[0]);
+      Mappings = new List<PropertyMapping>(mappingConfiguration.UserDefinedCustomPropertyMappings ?? new PropertyMapping[0]);
       MapCustomProperties = mappingConfiguration.MapCustomProperties;
     }
 
     public void FillOptions(IPropertyMappingConfiguration mappingConfiguration)
     {
-      mappingConfiguration.CustomPropertyMappings = Mappings.ToArray();
+      mappingConfiguration.UserDefinedCustomPropertyMappings = Mappings.ToArray();
       mappingConfiguration.MapCustomProperties = _mapCustomProperties;
     }
 

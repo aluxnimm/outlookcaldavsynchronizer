@@ -30,7 +30,7 @@ namespace CalDavSynchronizer.Contracts
     public string TaskCategory { get; set; }
     public bool InvertTaskCategoryFilter { get; set; }
     public bool MapCustomProperties { get; set; }
-    public PropertyMapping[] CustomPropertyMappings { get; set; }
+    public PropertyMapping[] UserDefinedCustomPropertyMappings { get; set; }
 
     [XmlIgnore]
     public bool UseTaskCategoryAsFilter

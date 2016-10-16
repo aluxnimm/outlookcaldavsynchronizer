@@ -121,11 +121,11 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       MapCategories1To2 (source, target);
 
-      if (_configuration.MapCustomProperties || _configuration.CustomPropertyMappings.Length > 0)
+      if (_configuration.MapCustomProperties || _configuration.UserDefinedCustomPropertyMappings.Length > 0)
       {
         using (var userPropertiesWrapper = GenericComObjectWrapper.Create (source.Inner.UserProperties))
         {
-          CommonEntityMapper.MapCustomProperties1To2 (userPropertiesWrapper, target.Properties, _configuration.MapCustomProperties,_configuration.CustomPropertyMappings ,logger, s_logger);
+          CommonEntityMapper.MapCustomProperties1To2 (userPropertiesWrapper, target.Properties, _configuration.MapCustomProperties,_configuration.UserDefinedCustomPropertyMappings ,logger, s_logger);
         }
       }
     }
@@ -378,11 +378,11 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       MapReminder2To1 (source, target, logger);
 
-      if (_configuration.MapCustomProperties || _configuration.CustomPropertyMappings.Length > 0)
+      if (_configuration.MapCustomProperties || _configuration.UserDefinedCustomPropertyMappings.Length > 0)
       {
         using (var userPropertiesWrapper = GenericComObjectWrapper.Create (target.Inner.UserProperties))
         {
-          CommonEntityMapper.MapCustomProperties2To1 (source.Properties, userPropertiesWrapper, _configuration.MapCustomProperties, _configuration.CustomPropertyMappings, logger, s_logger);
+          CommonEntityMapper.MapCustomProperties2To1 (source.Properties, userPropertiesWrapper, _configuration.MapCustomProperties, _configuration.UserDefinedCustomPropertyMappings, logger, s_logger);
         }
       }
 
