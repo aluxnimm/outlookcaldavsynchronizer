@@ -66,6 +66,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
     public bool Validate(StringBuilder errorMessageBuilder)
     {
+      if (Mappings.Any(m => !m.DavProperty.StartsWith("X-")))
+      {
+        errorMessageBuilder.AppendLine("DAV X-Attributes for manual mapped properties have to start with 'X-'");
+        return false;
+      }
+
       return true;
     }
 

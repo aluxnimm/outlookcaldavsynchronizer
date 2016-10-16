@@ -159,7 +159,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
     public bool Validate (StringBuilder errorMessageBuilder)
     {
-      return true;
+      return _customPropertyMappingViewModel.Validate (errorMessageBuilder);
     }
 
     public IEnumerable<ISubOptionsViewModel> SubOptions { get; }
