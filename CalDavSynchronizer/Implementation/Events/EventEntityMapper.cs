@@ -269,11 +269,11 @@ namespace CalDavSynchronizer.Implementation.Events
       target.Properties.Add (MapTransparency1To2 (source.BusyStatus));
       target.Properties.Add (MapBusyStatus1To2 (source.BusyStatus));
 
-      if (_configuration.MapCustomProperties)
+      if (_configuration.MapCustomProperties || _configuration.CustomPropertyMappings.Length > 0)
       {
         using (var userPropertiesWrapper = GenericComObjectWrapper.Create (source.UserProperties))
         {
-          CommonEntityMapper.MapCustomProperties1To2 (userPropertiesWrapper, target.Properties, logger, s_logger);
+          CommonEntityMapper.MapCustomProperties1To2 (userPropertiesWrapper, target.Properties, _configuration.MapCustomProperties, _configuration.CustomPropertyMappings, logger, s_logger);
         }
       }
 
@@ -1584,11 +1584,11 @@ namespace CalDavSynchronizer.Implementation.Events
 
       targetWrapper.Inner.BusyStatus = MapTransparency2To1 (source);
 
-      if (_configuration.MapCustomProperties)
+      if (_configuration.MapCustomProperties || _configuration.CustomPropertyMappings.Length > 0)
       {
         using (var userPropertiesWrapper = GenericComObjectWrapper.Create (targetWrapper.Inner.UserProperties))
         {
-          CommonEntityMapper.MapCustomProperties2To1 (source.Properties, userPropertiesWrapper, logger, s_logger);
+          CommonEntityMapper.MapCustomProperties2To1 (source.Properties, userPropertiesWrapper, _configuration.MapCustomProperties, _configuration.CustomPropertyMappings, logger, s_logger);
         }
       }
 

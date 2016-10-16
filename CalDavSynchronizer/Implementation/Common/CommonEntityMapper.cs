@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using DDay.iCal;
 using GenSync.Logging;
@@ -165,7 +166,7 @@ namespace CalDavSynchronizer.Implementation.Common
       }
     }
 
-    public static void MapCustomProperties1To2 (GenericComObjectWrapper<UserProperties> userPropertiesWrapper, ICalendarPropertyList targetProperties, IEntityMappingLogger logger, ILog s_logger)
+    public static void MapCustomProperties1To2 (GenericComObjectWrapper<UserProperties> userPropertiesWrapper, ICalendarPropertyList targetProperties, bool mapAllCustomProperties, PropertyMapping[] mappings, IEntityMappingLogger logger, ILog s_logger)
     {
       if (userPropertiesWrapper.Inner != null && userPropertiesWrapper.Inner.Count > 0)
       {
@@ -175,7 +176,15 @@ namespace CalDavSynchronizer.Implementation.Common
           {
             if (prop.Value != null && !string.IsNullOrEmpty (prop.Value.ToString()) && (prop.Type == OlUserPropertyType.olText))
             {
-              targetProperties.Add (new CalendarProperty ("X-CALDAVSYNCHRONIZER-" + prop.Name, prop.Value.ToString()));
+              var foundMapping = mappings.FirstOrDefault (m => m.OutlookProperty == prop.Name);
+              if (foundMapping != null)
+              {
+                targetProperties.Add (new CalendarProperty (foundMapping.DavProperty, prop.Value.ToString()));
+              }
+              else if (mapAllCustomProperties)
+              {
+                targetProperties.Add (new CalendarProperty ("X-CALDAVSYNCHRONIZER-" + prop.Name, prop.Value.ToString()));
+              }
             }
           }
           catch (COMException ex)
@@ -187,32 +196,65 @@ namespace CalDavSynchronizer.Implementation.Common
       }
     }
 
-    public static void MapCustomProperties2To1 (ICalendarPropertyList sourceList, GenericComObjectWrapper<UserProperties> userPropertiesWrapper, IEntityMappingLogger logger, ILog s_logger)
+    public static void MapCustomProperties2To1 (ICalendarPropertyList sourceList, GenericComObjectWrapper<UserProperties> userPropertiesWrapper, bool mapAllCustomProperties, PropertyMapping[] mappings, IEntityMappingLogger logger, ILog s_logger)
     {
-      foreach (var prop in sourceList.Where (p => p.Name.StartsWith ("X-CALDAVSYNCHRONIZER-")))
+
+      foreach (var mapping in mappings)
       {
-        var propKey = prop.Name.Replace ("X-CALDAVSYNCHRONIZER-", "");
-        try
+        var prop = sourceList.FirstOrDefault (p => p.Name == mapping.DavProperty);
+        if (prop != null)
         {
-          using (var userProperty = GenericComObjectWrapper.Create (userPropertiesWrapper.Inner.Find (propKey)))
+          try
           {
-            if (userProperty.Inner != null)
+            using (var userProperty = GenericComObjectWrapper.Create (userPropertiesWrapper.Inner.Find (mapping.OutlookProperty)))
             {
-              userProperty.Inner.Value = prop.Value;
-            }
-            else
-            {
-              using (var newUserProperty = GenericComObjectWrapper.Create (userPropertiesWrapper.Inner.Add (propKey, OlUserPropertyType.olText, true)))
+              if (userProperty.Inner != null)
               {
-                newUserProperty.Inner.Value = prop.Value;
+                userProperty.Inner.Value = prop.Value;
+              }
+              else
+              {
+                using (var newUserProperty = GenericComObjectWrapper.Create (userPropertiesWrapper.Inner.Add (mapping.OutlookProperty, OlUserPropertyType.olText, true)))
+                {
+                  newUserProperty.Inner.Value = prop.Value;
+                }
               }
             }
           }
+          catch (COMException ex)
+          {
+            s_logger.Warn ("Can't set UserProperty of Item!", ex);
+            logger.LogMappingWarning ("Can't set UserProperty of Item!", ex);
+          }
         }
-        catch (COMException ex)
+      }
+      if (mapAllCustomProperties)
+      {
+        foreach (var prop in sourceList.Where (p => p.Name.StartsWith ("X-CALDAVSYNCHRONIZER-")))
         {
-          s_logger.Warn ("Can't set UserProperty of Item!", ex);
-          logger.LogMappingWarning ("Can't set UserProperty of Item!", ex);
+          var propKey = prop.Name.Replace ("X-CALDAVSYNCHRONIZER-", "");
+          try
+          {
+            using (var userProperty = GenericComObjectWrapper.Create (userPropertiesWrapper.Inner.Find(propKey)))
+            {
+              if (userProperty.Inner != null)
+              {
+                userProperty.Inner.Value = prop.Value;
+              }
+              else
+              {
+                using (var newUserProperty = GenericComObjectWrapper.Create (userPropertiesWrapper.Inner.Add(propKey, OlUserPropertyType.olText, true)))
+                {
+                  newUserProperty.Inner.Value = prop.Value;
+                }
+              }
+            }
+          }
+          catch (COMException ex)
+          {
+            s_logger.Warn ("Can't set UserProperty of Item!", ex);
+            logger.LogMappingWarning ("Can't set UserProperty of Item!", ex);
+          }
         }
       }
     }
