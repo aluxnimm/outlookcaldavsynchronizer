@@ -198,6 +198,7 @@ namespace CalDavSynchronizer.Implementation.Common
 
     public static void MapCustomProperties2To1 (ICalendarPropertyList sourceList, GenericComObjectWrapper<UserProperties> userPropertiesWrapper, bool mapAllCustomProperties, PropertyMapping[] mappings, IEntityMappingLogger logger, ILog s_logger)
     {
+      var alreadyMappedOutlookProperties = new HashSet<string>();
 
       foreach (var mapping in mappings)
       {
@@ -206,6 +207,7 @@ namespace CalDavSynchronizer.Implementation.Common
         {
           try
           {
+            alreadyMappedOutlookProperties.Add(mapping.OutlookProperty);
             using (var userProperty = GenericComObjectWrapper.Create (userPropertiesWrapper.Inner.Find (mapping.OutlookProperty)))
             {
               if (userProperty.Inner != null)
@@ -230,30 +232,33 @@ namespace CalDavSynchronizer.Implementation.Common
       }
       if (mapAllCustomProperties)
       {
-        foreach (var prop in sourceList.Where (p => p.Name.StartsWith ("X-CALDAVSYNCHRONIZER-")))
+        foreach (var prop in sourceList.Where(p => p.Name.StartsWith("X-CALDAVSYNCHRONIZER-")))
         {
-          var propKey = prop.Name.Replace ("X-CALDAVSYNCHRONIZER-", "");
-          try
+          var outlookProperty = prop.Name.Replace("X-CALDAVSYNCHRONIZER-", "");
+          if (!alreadyMappedOutlookProperties.Contains(outlookProperty))
           {
-            using (var userProperty = GenericComObjectWrapper.Create (userPropertiesWrapper.Inner.Find(propKey)))
+            try
             {
-              if (userProperty.Inner != null)
+              using (var userProperty = GenericComObjectWrapper.Create(userPropertiesWrapper.Inner.Find(outlookProperty)))
               {
-                userProperty.Inner.Value = prop.Value;
-              }
-              else
-              {
-                using (var newUserProperty = GenericComObjectWrapper.Create (userPropertiesWrapper.Inner.Add(propKey, OlUserPropertyType.olText, true)))
+                if (userProperty.Inner != null)
                 {
-                  newUserProperty.Inner.Value = prop.Value;
+                  userProperty.Inner.Value = prop.Value;
+                }
+                else
+                {
+                  using (var newUserProperty = GenericComObjectWrapper.Create(userPropertiesWrapper.Inner.Add(outlookProperty, OlUserPropertyType.olText, true)))
+                  {
+                    newUserProperty.Inner.Value = prop.Value;
+                  }
                 }
               }
             }
-          }
-          catch (COMException ex)
-          {
-            s_logger.Warn ("Can't set UserProperty of Item!", ex);
-            logger.LogMappingWarning ("Can't set UserProperty of Item!", ex);
+            catch (COMException ex)
+            {
+              s_logger.Warn("Can't set UserProperty of Item!", ex);
+              logger.LogMappingWarning("Can't set UserProperty of Item!", ex);
+            }
           }
         }
       }
