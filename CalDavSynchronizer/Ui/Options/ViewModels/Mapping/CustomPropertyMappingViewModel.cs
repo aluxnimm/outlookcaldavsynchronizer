@@ -23,7 +23,7 @@ using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 {
-  class CustomPropertyMappingViewModel : ViewModelBase, ISubOptionsViewModel
+  class CustomPropertyMappingViewModel : ViewModelBase
   {
     private bool _mapCustomProperties;
 
@@ -40,16 +40,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       {
         CheckedPropertyChange (ref _mapCustomProperties, value);
       }
-    }
-
-    public void SetOptions (Contracts.Options options)
-    {
-      throw new NotSupportedException ();
-    }
-
-    public void FillOptions (Contracts.Options options)
-    {
-      throw new NotSupportedException ();
     }
 
     public void SetOptions (IPropertyMappingConfiguration mappingConfiguration)

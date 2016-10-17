@@ -362,7 +362,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     }
 
 
-    public IEnumerable<ISubOptionsViewModel> SubOptions { get; }
+    public IEnumerable<ViewModelBase> SubOptions { get; }
 
     public static EventMappingConfigurationViewModel DesignInstance = new EventMappingConfigurationViewModel(new[] {"Cat1","Cat2"}, new DesignCurrentOptions())
                                                                       {

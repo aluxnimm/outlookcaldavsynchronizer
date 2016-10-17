@@ -22,6 +22,5 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
   public interface ISubOptionsViewModel : IOptionsSection
   {
     string Name { get; }
-    IEnumerable<ISubOptionsViewModel> SubOptions { get; }
   }
 }

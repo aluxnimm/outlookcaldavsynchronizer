@@ -161,7 +161,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       return _customPropertyMappingViewModel.Validate (errorMessageBuilder);
     }
 
-    public IEnumerable<ISubOptionsViewModel> SubOptions { get; }
+    public IEnumerable<ViewModelBase> SubOptions { get; }
 
     public TaskMappingConfigurationViewModel (IReadOnlyList<string> availableCategories)
     {
