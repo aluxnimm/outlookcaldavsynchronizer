@@ -31,6 +31,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     private bool _keepOutlookFileAs;
     private bool _fixPhoneNumberFormat;
     private bool _isSelected;
+    private bool _isExpanded;
 
     public bool MapBirthday
     {
@@ -83,6 +84,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       set
       {
         CheckedPropertyChange (ref _isSelected, value);
+      }
+    }
+
+    public bool IsExpanded
+    {
+      get { return _isExpanded; }
+      set
+      {
+        CheckedPropertyChange (ref _isExpanded, value);
       }
     }
 

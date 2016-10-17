@@ -35,6 +35,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     private bool _invertTaskCategoryFilter;
     private bool _isSelected;
     private readonly CustomPropertyMappingViewModel _customPropertyMappingViewModel;
+    private bool _isExpanded;
 
     public IList<Item<ReminderMapping>> AvailableReminderMappings => new List<Item<ReminderMapping>>
                                                                      {
@@ -107,6 +108,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       set
       {
         CheckedPropertyChange (ref _isSelected, value);
+      }
+    }
+
+    public bool IsExpanded
+    {
+      get { return _isExpanded; }
+      set
+      {
+        CheckedPropertyChange (ref _isExpanded, value);
       }
     }
 

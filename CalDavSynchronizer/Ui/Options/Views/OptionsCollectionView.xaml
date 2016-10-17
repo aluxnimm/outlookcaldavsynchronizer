@@ -106,14 +106,22 @@
         <Button Command="{Binding OpenProfileDataDirectoryCommand}" ToolTip="Open data directory of selected profile">
           <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Folder.png"></Image>
         </Button>
+        <Separator></Separator>
+        <Button Command="{Binding ExpandAllCommand}" ToolTip="Expand all nodes">
+          <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ExpandAll.png"></Image>
+        </Button>
+        <Button Command="{Binding CollapseAllCommand}" ToolTip="Collapse all nodes">
+          <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/CollapseAll.png"></Image>
+        </Button>
+
       </ToolBar>
-    <TreeView MinWidth="220" MaxWidth="300" Margin="3"  ItemsSource="{Binding Options}" x:Name="OptionsTree">
-      <TreeView.Resources>
+      <TreeView MinWidth="220" MaxWidth="300" Margin="3"  ItemsSource="{Binding Options}" x:Name="OptionsTree">
+        <TreeView.Resources>
           <views:ToProfileImageConverter x:Key="ToProfileImageConverter" />
-      </TreeView.Resources>
-     <TreeView.ItemTemplate>
+        </TreeView.Resources>
+        <TreeView.ItemTemplate>
           <HierarchicalDataTemplate ItemsSource="{Binding Items}" DataType="{x:Type viewModels:IOptionsViewModel}">
-          <StackPanel Orientation="Horizontal" Margin="0,2,3,1">
+            <StackPanel Orientation="Horizontal" Margin="0,2,3,1">
               <Image Height="16" Width="16" >
                 <Image.Source>
                   <MultiBinding Converter="{StaticResource ToProfileImageConverter}">
@@ -123,21 +131,22 @@
                 </Image.Source>
               </Image>
               <CheckBox Margin="2,0" IsEnabled="{Binding SupportsIsActive}"  IsChecked="{Binding IsActive}" />
-            <TextBlock Text="{Binding Name}" />
-          </StackPanel>
-          <HierarchicalDataTemplate.ItemTemplate>
-            <HierarchicalDataTemplate ItemsSource="{Binding Items}">
               <TextBlock Text="{Binding Name}" />
-            </HierarchicalDataTemplate>
-          </HierarchicalDataTemplate.ItemTemplate>
-        </HierarchicalDataTemplate>
-      </TreeView.ItemTemplate>
-      <TreeView.ItemContainerStyle>
-        <Style TargetType="{x:Type TreeViewItem}">
-          <Setter Property="IsSelected" Value="{Binding IsSelected}" />
-        </Style>
-      </TreeView.ItemContainerStyle>
-    </TreeView>
+            </StackPanel>
+            <HierarchicalDataTemplate.ItemTemplate>
+              <HierarchicalDataTemplate ItemsSource="{Binding Items}">
+                <TextBlock Text="{Binding Name}" />
+              </HierarchicalDataTemplate>
+            </HierarchicalDataTemplate.ItemTemplate>
+          </HierarchicalDataTemplate>
+        </TreeView.ItemTemplate>
+        <TreeView.ItemContainerStyle>
+          <Style TargetType="{x:Type TreeViewItem}">
+            <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+            <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />
+          </Style>
+        </TreeView.ItemContainerStyle>
+      </TreeView>
     </DockPanel>
     <ContentControl Content="{Binding ElementName=OptionsTree,Path=SelectedItem}">
 

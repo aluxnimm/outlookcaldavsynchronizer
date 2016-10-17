@@ -291,6 +291,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       }
     }
 
+    public bool IsExpanded
+    {
+      get { return _isExpanded; }
+      set
+      {
+        CheckedPropertyChange (ref _isExpanded, value);
+      }
+    }
+
     public IReadOnlyList<string> AvailableCategories { get; }
 
 
@@ -387,6 +396,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                                                       };
 
     private bool _isSelected;
+    private bool _isExpanded;
 
     public EventMappingConfigurationViewModel (IReadOnlyList<string> availableCategories, ICurrentOptions currentOptions)
     {

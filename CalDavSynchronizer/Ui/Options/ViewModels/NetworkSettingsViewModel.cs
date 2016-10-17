@@ -37,6 +37,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private string _proxyUserName;
     private bool _forceBasicAuthentication;
     private bool _isSelected;
+    private bool _isExpanded;
 
     public bool CloseConnectionAfterEachRequest
     {
@@ -178,6 +179,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       set
       {
         CheckedPropertyChange (ref _isSelected, value);
+      }
+    }
+
+    public bool IsExpanded
+    {
+      get { return _isExpanded; }
+      set
+      {
+        CheckedPropertyChange (ref _isExpanded, value);
       }
     }
   }

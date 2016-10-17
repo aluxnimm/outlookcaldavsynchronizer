@@ -53,6 +53,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
     private bool _isSelected;
     private readonly IOptionsViewModelParent _parent;
     private readonly IOptionTasks _optionTasks;
+    private bool _isExpanded;
 
     public MultipleOptionsTemplateViewModel (
         IOptionsViewModelParent parent,
@@ -197,6 +198,15 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
     {
       get { return _isSelected; }
       set { CheckedPropertyChange (ref _isSelected, value); }
+    }
+
+    public bool IsExpanded
+    {
+      get { return _isExpanded; }
+      set
+      {
+        CheckedPropertyChange (ref _isExpanded, value);
+      }
     }
 
     public string Name

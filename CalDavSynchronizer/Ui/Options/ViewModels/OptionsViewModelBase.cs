@@ -34,6 +34,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private IEnumerable<IOptionsSection> _sections;
     private IEnumerable<ISubOptionsViewModel> _subOptions;
     private bool _isSelected;
+    private bool _isExpanded;
 
     protected OptionsViewModelBase (IOptionsViewModelParent parent)
     {
@@ -80,6 +81,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       set
       {
         CheckedPropertyChange (ref _isSelected, value);
+      }
+    }
+
+    public bool IsExpanded
+    {
+      get { return _isExpanded; }
+      set
+      {
+        CheckedPropertyChange (ref _isExpanded, value);
       }
     }
 

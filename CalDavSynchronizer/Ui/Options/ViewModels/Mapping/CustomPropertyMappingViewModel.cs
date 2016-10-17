@@ -27,6 +27,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
   {
     private bool _mapCustomProperties;
     private bool _isSelected;
+    private bool _isExpanded;
 
     public string Name { get; } = "Custom properties mapping";
 
@@ -40,6 +41,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       set
       {
         CheckedPropertyChange (ref _isSelected, value);
+      }
+    }
+
+    public bool IsExpanded
+    {
+      get { return _isExpanded; }
+      set
+      {
+        CheckedPropertyChange (ref _isExpanded, value);
       }
     }
 

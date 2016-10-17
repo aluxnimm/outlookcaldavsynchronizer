@@ -75,8 +75,11 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       MoveSelectedUpCommand = new DelegateCommandHandlingRequerySuggested (_ => MoveSelectedUp (), _ => CanMoveSelectedUp);
       MoveSelectedDownCommand = new DelegateCommandHandlingRequerySuggested (_ => MoveSelectedDown (), _ => CanMoveSelectedDown);
       OpenProfileDataDirectoryCommand = new DelegateCommandHandlingRequerySuggested (_ => OpenProfileDataDirectory (), _ => CanOpenProfileDataDirectory);
+      ExpandAllCommand = new DelegateCommandHandlingRequerySuggested (_ => ExpandAll (), _ => _options.Count > 0);
+      CollapseAllCommand = new DelegateCommandHandlingRequerySuggested (_ => CollapseAll (), _ => _options.Count > 0);
     }
 
+  
     private bool CanMoveSelectedDown => SelectedOrNull != null;
     private bool CanMoveSelectedUp => SelectedOrNull != null;
     private bool CanCopySelected => SelectedOrNull != null;
@@ -133,6 +136,25 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
           System.Diagnostics.Process.Start(profileDataDirectory);
         else
           MessageBox.Show("The selected profile has no data directory.", "Operation aborted", MessageBoxButton.OK);
+      }
+    }
+
+    private void CollapseAll()
+    {
+      ExpandCollapseAll(_options, false);
+    }
+
+    private void ExpandAll ()
+    {
+      ExpandCollapseAll (_options, true);
+    }
+
+    private void ExpandCollapseAll (IEnumerable<ITreeNodeViewModel> nodes, bool isExpanded)
+    {
+      foreach (var node in nodes)
+      {
+        ExpandCollapseAll(node.Items, isExpanded);
+        node.IsExpanded = isExpanded;
       }
     }
 
@@ -238,6 +260,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     public ICommand MoveSelectedUpCommand { get; }
     public ICommand MoveSelectedDownCommand { get; }
     public ICommand OpenProfileDataDirectoryCommand { get; }
+    public ICommand ExpandAllCommand { get; }
+    public ICommand CollapseAllCommand { get; }
 
     public ObservableCollection<IOptionsViewModel> Options => _options;
 
