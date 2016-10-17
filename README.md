@@ -87,6 +87,11 @@ YOu should also update manually to the latest Visual Studio 2010 Tools for Offic
 
 ### Changelog ###
 
+#### 2.8.0 ####
+- New features
+	- Configurable custom properties mapping for Appointments and Tasks.
+	- Update NuGet packages for Google API and NUnit.
+
 #### 2.7.0 ####
 - New features
 	- Map UID to GlobalAppointmentID for new meetings to avoid double events from Mail invites (only possible in Outlook 2013+).
@@ -898,6 +903,12 @@ or try the following reported by #Todo18
 1. Create a new storage folder in Outlook via the File menu, Info, Account Settings. In the Data Files tab, you can Add a new (.pst) data file. After the file has been added, Make it the default [data file], and close the dialog.
 2. Go to the Calendar window, right click on the calendar that's giving you problems, and select Move Calendar. In the dialog, pick the data file that you created in the first step, and confirm. Don't forget to update the storage folder in the CalDav Synchronizer settings!
 
+### Custom properties mapping ###
+
+When you expand the tree view of the profile for events and tasks, you can configure the mapping of custom properties.
+
+- *Map all Outlook custom properties to X-CALDAVSYNCHRONIZER attributes* If enabled, all Outlook custom text properties of the appointment/task are mapped to DAV attributes with the prefix X-CALDAVSYNCHRONIZER- and vice versa.
+- You can also define manual mapping pairs of Outlook custom attributes and DAV X-Attributes. This will overrule the general mapping of all Outlook custom properties if both is activated. Outlook properties that don't exist, will be created. DAV properties MUST start with X-. Only Outlook custom properties of type Text can be mapped.  
 
 ### Google Calender / Addressbooks / Tasks settings ###
 
