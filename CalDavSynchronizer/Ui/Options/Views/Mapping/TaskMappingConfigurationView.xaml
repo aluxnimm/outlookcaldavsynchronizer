@@ -53,7 +53,7 @@
                         Grid.ColumnSpan="2" 
                         Grid.Row="1">Negate filter and sync all Tasks except this category</CheckBox>
                 </Grid>
-        </StackPanel>
+            </StackPanel>
     </GroupBox>
     </StackPanel>
 </UserControl>

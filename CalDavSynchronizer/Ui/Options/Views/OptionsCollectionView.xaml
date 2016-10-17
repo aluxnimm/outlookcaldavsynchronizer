@@ -154,6 +154,10 @@
           <mapping:EventMappingConfigurationView />
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type mappingViewModels:CustomPropertyMappingViewModel}">
+          <mapping:CustomPropertyMappingView />
+        </DataTemplate>
+        
         <DataTemplate DataType="{x:Type viewModels:SyncSettingsViewModel}">
           <views:SyncSettingsView />
         </DataTemplate>

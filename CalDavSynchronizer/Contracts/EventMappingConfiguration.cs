@@ -23,7 +23,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Contracts
 {
-  public class EventMappingConfiguration : MappingConfigurationBase
+  public class EventMappingConfiguration : MappingConfigurationBase, IPropertyMappingConfiguration
   {
     public ReminderMapping MapReminder { get; set; }
     public bool MapSensitivityPrivateToClassConfidential { get; set; }
@@ -44,6 +44,8 @@ namespace CalDavSynchronizer.Contracts
     public OlCategoryColor EventCategoryColor { get; set; }
     public OlCategoryShortcutKey CategoryShortcutKey { get; set; }
     public bool CleanupDuplicateEvents { get; set; }
+    public bool MapCustomProperties { get; set; }
+    public PropertyMapping[] UserDefinedCustomPropertyMappings { get; set; }
 
     [XmlIgnore]
     public bool UseEventCategoryAsFilter
@@ -71,6 +73,7 @@ namespace CalDavSynchronizer.Contracts
       EventCategoryColor = OlCategoryColor.olCategoryColorNone;
       CategoryShortcutKey = OlCategoryShortcutKey.olCategoryShortcutKeyNone;
       CleanupDuplicateEvents = false;
+      MapCustomProperties = false;
     }
 
     public override ISubOptionsViewModel CreateConfigurationViewModel (IMappingConfigurationViewModelFactory factory)

@@ -67,7 +67,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       newTargetCalender.Todos.Add (newTargetTodo);
 
-      Map1To2 (source, newTargetTodo, localIcalTimeZone);
+      Map1To2 (source, newTargetTodo, localIcalTimeZone, logger);
 
       for (int i = 0, newSequenceNumber = existingTargetCalender.Todos.Count > 0 ? existingTargetCalender.Todos.Max (e => e.Sequence) + 1 : 0;
           i < newTargetCalender.Todos.Count;
@@ -79,7 +79,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       return Task.FromResult<IICalendar>(newTargetCalender);
     }
 
-    public void Map1To2 (TaskItemWrapper source, ITodo target, iCalTimeZone localIcalTimeZone)
+    public void Map1To2 (TaskItemWrapper source, ITodo target, iCalTimeZone localIcalTimeZone, IEntityMappingLogger logger)
     {
       target.Summary = source.Inner.Subject;
 
@@ -120,6 +120,14 @@ namespace CalDavSynchronizer.Implementation.Tasks
       MapReminder1To2 (source, target);
 
       MapCategories1To2 (source, target);
+
+      if (_configuration.MapCustomProperties || _configuration.UserDefinedCustomPropertyMappings.Length > 0)
+      {
+        using (var userPropertiesWrapper = GenericComObjectWrapper.Create (source.Inner.UserProperties))
+        {
+          CommonEntityMapper.MapCustomProperties1To2 (userPropertiesWrapper, target.Properties, _configuration.MapCustomProperties,_configuration.UserDefinedCustomPropertyMappings ,logger, s_logger);
+        }
+      }
     }
 
     private string MapStatus1To2 (OlTaskStatus value)
@@ -369,6 +377,14 @@ namespace CalDavSynchronizer.Implementation.Tasks
       MapCategories2To1 (source, target);
 
       MapReminder2To1 (source, target, logger);
+
+      if (_configuration.MapCustomProperties || _configuration.UserDefinedCustomPropertyMappings.Length > 0)
+      {
+        using (var userPropertiesWrapper = GenericComObjectWrapper.Create (target.Inner.UserProperties))
+        {
+          CommonEntityMapper.MapCustomProperties2To1 (source.Properties, userPropertiesWrapper, _configuration.MapCustomProperties, _configuration.UserDefinedCustomPropertyMappings, logger, s_logger);
+        }
+      }
 
       if (_configuration.MapRecurringTasks)
         MapRecurrance2To1 (source, target, logger);

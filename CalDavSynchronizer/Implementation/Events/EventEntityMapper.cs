@@ -268,6 +268,15 @@ namespace CalDavSynchronizer.Implementation.Events
 
       target.Properties.Add (MapTransparency1To2 (source.BusyStatus));
       target.Properties.Add (MapBusyStatus1To2 (source.BusyStatus));
+
+      if (_configuration.MapCustomProperties || _configuration.UserDefinedCustomPropertyMappings.Length > 0)
+      {
+        using (var userPropertiesWrapper = GenericComObjectWrapper.Create (source.UserProperties))
+        {
+          CommonEntityMapper.MapCustomProperties1To2 (userPropertiesWrapper, target.Properties, _configuration.MapCustomProperties, _configuration.UserDefinedCustomPropertyMappings, logger, s_logger);
+        }
+      }
+
     }
 
     private static CalendarProperty MapBusyStatus1To2 (OlBusyStatus value)
@@ -1574,7 +1583,15 @@ namespace CalDavSynchronizer.Implementation.Events
         MapCategories2To1 (source, targetWrapper.Inner);
 
       targetWrapper.Inner.BusyStatus = MapTransparency2To1 (source);
-      
+
+      if (_configuration.MapCustomProperties || _configuration.UserDefinedCustomPropertyMappings.Length > 0)
+      {
+        using (var userPropertiesWrapper = GenericComObjectWrapper.Create (targetWrapper.Inner.UserProperties))
+        {
+          CommonEntityMapper.MapCustomProperties2To1 (source.Properties, userPropertiesWrapper, _configuration.MapCustomProperties, _configuration.UserDefinedCustomPropertyMappings, logger, s_logger);
+        }
+      }
+
       if (_configuration.MapAttendees && source.Organizer != null)
       {
         var ownSourceAttendee = source.Attendees.FirstOrDefault ((a) =>

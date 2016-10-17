@@ -34,6 +34,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     private string _taskCategory;
     private bool _invertTaskCategoryFilter;
     private bool _isSelected;
+    private readonly CustomPropertyMappingViewModel _customPropertyMappingViewModel;
 
     public IList<Item<ReminderMapping>> AvailableReminderMappings => new List<Item<ReminderMapping>>
                                                                      {
@@ -99,7 +100,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
         CheckedPropertyChange(ref _invertTaskCategoryFilter, value);
       }
     }
-
+    
     public bool IsSelected
     {
       get { return _isSelected; }
@@ -122,7 +123,16 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
     public void SetOptions (CalDavSynchronizer.Contracts.Options options)
     {
-      SetOptions(options.MappingConfiguration as TaskMappingConfiguration ?? new TaskMappingConfiguration());
+      var taskMappingConfiguration = options.MappingConfiguration as TaskMappingConfiguration ?? new TaskMappingConfiguration();
+      SetOptions(taskMappingConfiguration);
+      _customPropertyMappingViewModel.SetOptions (taskMappingConfiguration);
+    }
+
+    public void FillOptions (CalDavSynchronizer.Contracts.Options options)
+    {
+      var taskMappingConfiguration = options.GetOrCreateMappingConfiguration<TaskMappingConfiguration>();
+      FillOptions(taskMappingConfiguration);
+      _customPropertyMappingViewModel.FillOptions (taskMappingConfiguration);
     }
 
     public void SetOptions (TaskMappingConfiguration mappingConfiguration)
@@ -135,27 +145,24 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       InvertTaskCategoryFilter = mappingConfiguration.InvertTaskCategoryFilter;
     }
 
-    public void FillOptions (CalDavSynchronizer.Contracts.Options options)
+    public void FillOptions(TaskMappingConfiguration mappingConfiguration)
     {
-      options.MappingConfiguration = new TaskMappingConfiguration
-                                     {
-                                         MapBody = _mapBody,
-                                         MapPriority = _mapPriority,
-                                         MapRecurringTasks = _mapRecurringTasks,
-                                         MapReminder = _mapReminder,
-                                         TaskCategory = _taskCategory,
-                                         InvertTaskCategoryFilter = _invertTaskCategoryFilter
-                                     };
+      mappingConfiguration.MapBody = _mapBody;
+      mappingConfiguration.MapPriority = _mapPriority;
+      mappingConfiguration.MapRecurringTasks = _mapRecurringTasks;
+      mappingConfiguration.MapReminder = _mapReminder;
+      mappingConfiguration.TaskCategory = _taskCategory;
+      mappingConfiguration.InvertTaskCategoryFilter = _invertTaskCategoryFilter;
     }
 
     public string Name => "Task mapping configuration";
 
     public bool Validate (StringBuilder errorMessageBuilder)
     {
-      return true;
+      return _customPropertyMappingViewModel.Validate (errorMessageBuilder);
     }
 
-    public IEnumerable<ISubOptionsViewModel> SubOptions => _subOptions;
+    public IEnumerable<ISubOptionsViewModel> SubOptions { get; }
 
     public TaskMappingConfigurationViewModel (IReadOnlyList<string> availableCategories)
     {
@@ -163,6 +170,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
         throw new ArgumentNullException (nameof (availableCategories));
 
       AvailableCategories = availableCategories;
+
+      _customPropertyMappingViewModel = new CustomPropertyMappingViewModel ();
+      SubOptions = new[] { _customPropertyMappingViewModel };
     }
   }
 }
