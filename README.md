@@ -87,6 +87,12 @@ YOu should also update manually to the latest Visual Studio 2010 Tools for Offic
 
 ### Changelog ###
 
+#### 2.8.2 ####
+- Bug fixes
+	- Fix new profile creation for calendar and task profiles and properly initialize customPropertyMapping configuration.
+	- Fix UserDefinedCustomPropertyMappings initialization to avoid Nullreference exceptions.
+	- Fix formatting of errorMessage in profile validation.
+
 #### 2.8.1 ####
 - Bug fixes
 	- Avoid Nullreference Exceptions when options are not saved after upgrade to 2.8.0, gh issue 174.
