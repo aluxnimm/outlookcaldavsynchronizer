@@ -121,7 +121,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       MapCategories1To2 (source, target);
 
-      if (_configuration.MapCustomProperties || _configuration.UserDefinedCustomPropertyMappings.Length > 0)
+      if (_configuration.MapCustomProperties || _configuration.UserDefinedCustomPropertyMappings?.Length > 0)
       {
         using (var userPropertiesWrapper = GenericComObjectWrapper.Create (source.Inner.UserProperties))
         {
@@ -378,7 +378,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       MapReminder2To1 (source, target, logger);
 
-      if (_configuration.MapCustomProperties || _configuration.UserDefinedCustomPropertyMappings.Length > 0)
+      if (_configuration.MapCustomProperties || _configuration.UserDefinedCustomPropertyMappings?.Length > 0)
       {
         using (var userPropertiesWrapper = GenericComObjectWrapper.Create (target.Inner.UserProperties))
         {
