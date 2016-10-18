@@ -269,7 +269,7 @@ namespace CalDavSynchronizer.Implementation.Events
       target.Properties.Add (MapTransparency1To2 (source.BusyStatus));
       target.Properties.Add (MapBusyStatus1To2 (source.BusyStatus));
 
-      if (_configuration.MapCustomProperties || _configuration.UserDefinedCustomPropertyMappings?.Length > 0)
+      if (_configuration.MapCustomProperties || _configuration.UserDefinedCustomPropertyMappings.Length > 0)
       {
         using (var userPropertiesWrapper = GenericComObjectWrapper.Create (source.UserProperties))
         {
@@ -1584,7 +1584,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
       targetWrapper.Inner.BusyStatus = MapTransparency2To1 (source);
 
-      if (_configuration.MapCustomProperties || _configuration.UserDefinedCustomPropertyMappings?.Length > 0)
+      if (_configuration.MapCustomProperties || _configuration.UserDefinedCustomPropertyMappings.Length > 0)
       {
         using (var userPropertiesWrapper = GenericComObjectWrapper.Create (targetWrapper.Inner.UserProperties))
         {
