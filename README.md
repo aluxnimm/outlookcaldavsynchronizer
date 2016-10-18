@@ -87,6 +87,11 @@ YOu should also update manually to the latest Visual Studio 2010 Tools for Offic
 
 ### Changelog ###
 
+#### 2.8.1 ####
+- Bug fixes
+	- Avoid Nullreference Exceptions when options are not saved after upgrade to 2.8.0, gh issue 174.
+	
+
 #### 2.8.0 ####
 - New features
 	- Configurable custom properties mapping for Appointments and Tasks.
