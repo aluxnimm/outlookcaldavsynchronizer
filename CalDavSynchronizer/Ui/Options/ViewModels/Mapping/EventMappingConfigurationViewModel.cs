@@ -296,9 +296,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
     public void SetOptions (CalDavSynchronizer.Contracts.Options options)
     {
-      var eventMappingConfiguration = options.MappingConfiguration as EventMappingConfiguration ?? new EventMappingConfiguration();
-      SetOptions(eventMappingConfiguration);
-      _customPropertyMappingViewModel.SetOptions(eventMappingConfiguration);
+      SetOptions (options.MappingConfiguration as EventMappingConfiguration ?? new EventMappingConfiguration());
     }
 
     public void FillOptions(CalDavSynchronizer.Contracts.Options options)
@@ -329,6 +327,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       SendNoAppointmentNotifications = mappingConfiguration.SendNoAppointmentNotifications;
       UseEventCategoryColorAndMapFromCalendarColor = mappingConfiguration.UseEventCategoryColorAndMapFromCalendarColor;
       CleanupDuplicateEvents = mappingConfiguration.CleanupDuplicateEvents;
+      _customPropertyMappingViewModel.SetOptions (mappingConfiguration);
     }
 
     public void FillOptions(EventMappingConfiguration mappingConfiguration)

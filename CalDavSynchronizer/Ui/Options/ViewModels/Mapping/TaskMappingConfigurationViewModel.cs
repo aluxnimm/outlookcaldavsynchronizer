@@ -123,9 +123,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
     public void SetOptions (CalDavSynchronizer.Contracts.Options options)
     {
-      var taskMappingConfiguration = options.MappingConfiguration as TaskMappingConfiguration ?? new TaskMappingConfiguration();
-      SetOptions(taskMappingConfiguration);
-      _customPropertyMappingViewModel.SetOptions (taskMappingConfiguration);
+      SetOptions (options.MappingConfiguration as TaskMappingConfiguration ?? new TaskMappingConfiguration());
     }
 
     public void FillOptions (CalDavSynchronizer.Contracts.Options options)
@@ -143,6 +141,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       MapReminder = mappingConfiguration.MapReminder;
       TaskCategory = mappingConfiguration.TaskCategory;
       InvertTaskCategoryFilter = mappingConfiguration.InvertTaskCategoryFilter;
+      _customPropertyMappingViewModel.SetOptions (mappingConfiguration);
     }
 
     public void FillOptions(TaskMappingConfiguration mappingConfiguration)
