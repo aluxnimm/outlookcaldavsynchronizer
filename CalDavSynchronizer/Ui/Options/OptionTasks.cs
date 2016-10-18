@@ -125,7 +125,7 @@ namespace CalDavSynchronizer.Ui.Options
     {
       if (string.IsNullOrWhiteSpace (emailAddress))
       {
-        errorMessageBuilder.Append ("- The Email Address is empty.");
+        errorMessageBuilder.AppendLine ("- The Email Address is empty.");
         return false;
       }
       return ValidateEmailAddress (errorMessageBuilder, emailAddress);
