@@ -24,7 +24,7 @@ using CalDavSynchronizer.Implementation;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  internal class TimeRangeViewModel : ViewModelBase, IOptionsSection
+  public class TimeRangeViewModel : ViewModelBase, IOptionsSection
   {
     private int _daysToSynchronizeInTheFuture;
     private int _daysToSynchronizeInThePast;

@@ -24,7 +24,7 @@ using CalDavSynchronizer.Implementation;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  internal class SyncSettingsViewModel : ViewModelBase, IOptionsSection
+  public class SyncSettingsViewModel : ViewModelBase, IOptionsSection
   {
     private ConflictResolution _conflictResolution;
     private int _synchronizationIntervalInMinutes;

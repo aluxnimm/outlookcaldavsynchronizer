@@ -341,6 +341,7 @@
     <Compile Include="Scheduling\SynchronizationStatus.cs" />
     <Compile Include="Synchronization\OutlookEventSynchronizer.cs" />
     <Compile Include="Ui\DelegateCommandHandlingRequerySuggested.cs" />
+    <Compile Include="Ui\NullUiService.cs" />
     <Compile Include="Ui\Options\AutoDiscoverResultStatus.cs" />
     <Compile Include="Ui\Options\BulkOptions\ViewModels\GoogleServerSettingsTemplateViewModel.cs" />
     <Compile Include="Ui\Options\BulkOptions\ViewModels\IServerSettingsTemplateViewModel.cs" />
@@ -352,6 +353,7 @@
     <Compile Include="Ui\Options\BulkOptions\Views\ServerSettingsTemplateView.xaml.cs">
       <DependentUpon>ServerSettingsTemplateView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Ui\Options\IOptionTasks.cs" />
     <Compile Include="Ui\Options\ISynchronizationProfilesViewModel.cs" />
     <Compile Include="Ui\Options\FolderDescriptor.cs" />
     <Compile Include="Ui\Options\ResourceSelection\ViewModels\ResourceDataViewModelBase.cs" />
@@ -368,6 +370,7 @@
     <Compile Include="Ui\Options\Views\TimeRangeView.xaml.cs">
       <DependentUpon>TimeRangeView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Ui\OutlookFolder.cs" />
     <Compile Include="Utilities\ArgbColor.cs" />
     <Compile Include="DataAccess\HttpClientBasedClient\HttpResponseHeadersAdapter.cs" />
     <Compile Include="DataAccess\HttpUtility.cs" />

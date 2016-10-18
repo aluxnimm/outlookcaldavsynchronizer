@@ -21,7 +21,7 @@ using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  internal interface IServerSettingsViewModel : IOptionsSection
+  public interface IServerSettingsViewModel : IOptionsSection
   {
     ServerAdapterType ServerAdapterType { get; }
     string EmailAddress { get; }

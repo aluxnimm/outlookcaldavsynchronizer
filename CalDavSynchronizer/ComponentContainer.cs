@@ -443,11 +443,12 @@ namespace CalDavSynchronizer
       }
 
       var viewModel = new OptionsCollectionViewModel (
-          _session,
           generalOptions,
           _outlookAccountPasswordProvider,
           categories,
-          GetProfileDataDirectory);
+          GetProfileDataDirectory,
+          _uiService, 
+          new OptionTasks(_session));
 
       _currentVisibleOptionsFormOrNull = viewModel;
 

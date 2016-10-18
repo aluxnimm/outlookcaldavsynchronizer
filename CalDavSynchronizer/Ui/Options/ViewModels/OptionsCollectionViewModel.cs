@@ -37,33 +37,36 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private readonly ObservableCollection<IOptionsViewModel> _options = new ObservableCollection<IOptionsViewModel> ();
     private readonly IOptionsViewModelFactory _optionsViewModelFactory;
     private readonly GeneralOptions _generalOptions;
+    private readonly IUiService _uiService;
     public event EventHandler<CloseEventArgs> CloseRequested;
     private readonly Func<Guid, string> _profileDataDirectoryFactory;
+    
     public event EventHandler RequestBringIntoView;
 
     public OptionsCollectionViewModel (
-      NameSpace session,
       GeneralOptions generalOptions,
-      IOutlookAccountPasswordProvider outlookAccountPasswordProvider,
+      IOutlookAccountPasswordProvider outlookAccountPasswordProvider, 
       IReadOnlyList<string> availableEventCategories, 
-      Func<Guid, string> profileDataDirectoryFactory)
+      Func<Guid, string> profileDataDirectoryFactory,
+      IUiService uiService,
+      IOptionTasks optionTasks)
     {
       _profileDataDirectoryFactory = profileDataDirectoryFactory;
-      if (session == null)
-        throw new ArgumentNullException (nameof (session));
+      _uiService = uiService;
       if (generalOptions == null)
         throw new ArgumentNullException (nameof (generalOptions));
       if (profileDataDirectoryFactory == null)
         throw new ArgumentNullException (nameof (profileDataDirectoryFactory));
+      if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
 
       _generalOptions = generalOptions;
 
 
       _optionsViewModelFactory = new OptionsViewModelFactory (
-        session,
         this,
         outlookAccountPasswordProvider,
-        availableEventCategories);
+        availableEventCategories,
+        optionTasks);
       AddCommand = new DelegateCommand (_ => Add());
       AddMultipleCommand = new DelegateCommand (_ => AddMultiple());
       CloseCommand = new DelegateCommand (shouldSaveNewOptions => Close((bool)shouldSaveNewOptions));
@@ -143,7 +146,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         string errorMessage;
         if (!Validate (out errorMessage, out firstViewModelWithError))
         {
-          MessageBox.Show (errorMessage, "Some Options contain invalid Values",MessageBoxButton.OK,MessageBoxImage.Error);
+          _uiService.ShowErrorDialog (errorMessage, "Some Options contain invalid Values");
           if (firstViewModelWithError != null)
             firstViewModelWithError.IsSelected = true;
           return;
@@ -184,7 +187,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     private void Add ()
     {
-      var options = OptionTasks.CreateNewSynchronizationProfileOrNull();
+      var options = CreateNewSynchronizationProfileOrNull();
       if (options != null)
       {
         foreach (var vm in _optionsViewModelFactory.Create(new[] {options}, _generalOptions))
@@ -196,7 +199,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private void AddMultiple ()
     {
       ProfileType? profileType;
-      var options = OptionTasks.CreateNewSynchronizationProfileOrNull (out profileType);
+      var options = CreateNewSynchronizationProfileOrNull (out profileType);
       if (options != null)
       {
         // ReSharper disable once PossibleInvalidOperationException
@@ -205,6 +208,27 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         ShowProfile (options.Id);
       }
     }
+
+
+    private Contracts.Options CreateNewSynchronizationProfileOrNull ()
+    {
+      ProfileType? type;
+      return CreateNewSynchronizationProfileOrNull (out type);
+    }
+
+    private Contracts.Options CreateNewSynchronizationProfileOrNull (out ProfileType? type)
+    {
+      type = _uiService.QueryProfileType ();
+      if (!type.HasValue)
+        return null;
+
+      var options = Contracts.Options.CreateDefault (type.Value);
+      options.ServerAdapterType = (type == ProfileType.Google)
+          ? ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth
+          : ServerAdapterType.WebDavHttpClientBased;
+      return options;
+    }
+
 
     public ICommand AddCommand { get; }
     public ICommand AddMultipleCommand { get; }
@@ -302,11 +326,11 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       {
         {
           var viewModel = new OptionsCollectionViewModel (
-              new DesignOutlookSession(),
               new GeneralOptions { AcceptInvalidCharsInServerResponse = true},
               NullOutlookAccountPasswordProvider.Instance,
               new[] {"Cat1","Cat2"},
-              _ => string.Empty);
+              _ => string.Empty,
+              NullUiService.Instance, new OptionTasks (new DesignOutlookSession()));
           var genericOptionsViewModel = GenericOptionsViewModel.DesignInstance;
           genericOptionsViewModel.IsSelected = true;
           viewModel.Options.Add (genericOptionsViewModel);

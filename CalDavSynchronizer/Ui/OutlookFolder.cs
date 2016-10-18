@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -14,26 +14,30 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.Implementation.ComWrappers;
-using CalDavSynchronizer.Ui.Options.ViewModels;
-using CalDavSynchronizer.Ui.Reports;
-using CalDavSynchronizer.Ui.Reports.ViewModels;
-using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
+
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui
 {
-  public interface IUiService
+  public class OutlookFolder
   {
-    void Show (ReportsViewModel reportsViewModel);
-    void ShowProfileStatusesWindow ();
-    bool ShowOptions (OptionsCollectionViewModel viewModel);
-    ProfileType? QueryProfileType();
-    void ShowErrorDialog(string errorMessage, string title);
+    public string EntryId { get; }
+    public string StoreId { get; }
+    public OlItemType DefaultItemType { get; }
+    public string Name { get; }
+
+    public OutlookFolder (string entryId, string storeId, OlItemType defaultItemType, string name)
+    {
+      EntryId = entryId;
+      StoreId = storeId;
+      DefaultItemType = defaultItemType;
+      Name = name;
+    }
+
+    public  OutlookFolder(MAPIFolder folder)
+      : this(folder.EntryID, folder.StoreID, folder.DefaultItemType, folder.Name)
+    {
+
+    }
   }
 }

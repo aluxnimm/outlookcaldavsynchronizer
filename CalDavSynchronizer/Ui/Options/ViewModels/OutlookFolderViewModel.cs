@@ -27,7 +27,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  internal class OutlookFolderViewModel : ViewModelBase, IOptionsSection
+  public class OutlookFolderViewModel : ViewModelBase, IOptionsSection
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -35,20 +35,17 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private string _selectedFolderName;
     private OlItemType? _selectedFolderType;
     private FolderDescriptor _selectedFolder;
-    private NameSpace _session;
-    private ISettingsFaultFinder _faultFinder;
+    private readonly ISettingsFaultFinder _faultFinder;
+    private readonly IOptionTasks _optionTasks;
 
-    
-
-    public OutlookFolderViewModel (NameSpace session, ISettingsFaultFinder faultFinder)
+    public OutlookFolderViewModel (ISettingsFaultFinder faultFinder, IOptionTasks optionTasks)
     {
-      if (session == null)
-        throw new ArgumentNullException (nameof (session));
       if (faultFinder == null)
         throw new ArgumentNullException (nameof (faultFinder));
+      if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
 
-      _session = session;
       _faultFinder = faultFinder;
+      _optionTasks = optionTasks;
       SelectFolderCommand = new DelegateCommand (_ => SelectFolder());
     }
 
@@ -74,7 +71,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     public ICommand SelectFolderCommand { get; }
 
-    public static OutlookFolderViewModel DesignInstance => new OutlookFolderViewModel (new DesignOutlookSession(), NullSettingsFaultFinder.Instance)
+    public static OutlookFolderViewModel DesignInstance => new OutlookFolderViewModel (NullSettingsFaultFinder.Instance, new OptionTasks(new DesignOutlookSession()))
                                                            {
                                                                EnableChangeTriggeredSynchronization = true,
                                                                SelectedFolderName = "The outlook folder",
@@ -112,7 +109,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       options.OutlookFolderAccountName = FolderAccountName;
     }
 
-    private void UpdateFolder (MAPIFolder folder)
+    private void UpdateFolder (OutlookFolder folder)
     {
       if (folder.DefaultItemType != OlItemType.olAppointmentItem && folder.DefaultItemType != OlItemType.olTaskItem && folder.DefaultItemType != OlItemType.olContactItem)
       {
@@ -121,7 +118,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         return;
       }
 
-      _selectedFolder = new FolderDescriptor (folder.EntryID, folder.StoreID);
+      _selectedFolder = new FolderDescriptor (folder.EntryId, folder.StoreId);
       SelectedFolderName = folder.Name;
       OutlookFolderType = folder.DefaultItemType;
     }
@@ -132,10 +129,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       {
         try
         {
-          using (var folderWrapper = GenericComObjectWrapper.Create (_session.GetFolderFromID (_selectedFolder.FolderId, _selectedFolder.StoreId)))
-          {
-            UpdateFolder (folderWrapper.Inner);
-          }
+            UpdateFolder (_optionTasks.GetFolderFromId (_selectedFolder.FolderId, _selectedFolder.StoreId));
         }
         catch (System.Exception x)
         {
@@ -166,14 +160,11 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     private void SelectFolder ()
     {
-      var folder = _session.PickFolder();
+      var folder = _optionTasks.PickFolderOrNull();
       if (folder != null)
       {
-        using (var folderWrapper = GenericComObjectWrapper.Create (folder))
-        {
-          UpdateFolder (folderWrapper.Inner);
+          UpdateFolder (folder);
           UpdateFolderAccountName();
-        }
       }
 
       _faultFinder.FixTimeRangeUsage (OutlookFolderType);
@@ -191,7 +182,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     public void UpdateFolderAccountName ()
     {
       FolderAccountName = _selectedFolder != null
-          ? OptionTasks.GetFolderAccountNameOrNull (_session, _selectedFolder.StoreId)
+          ? _optionTasks.GetFolderAccountNameOrNull (_selectedFolder.StoreId)
           : null;
     }
   }

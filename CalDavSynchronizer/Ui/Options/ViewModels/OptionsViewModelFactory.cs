@@ -27,29 +27,28 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
   internal class OptionsViewModelFactory : IOptionsViewModelFactory
   {
     private readonly IOptionsViewModelParent _optionsViewModelParent;
-    private readonly NameSpace _session;
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
     private readonly IReadOnlyList<string> _availableCategories;
+    private readonly IOptionTasks _optionTasks;
 
     public OptionsViewModelFactory (
-      NameSpace session, 
       IOptionsViewModelParent optionsViewModelParent, 
       IOutlookAccountPasswordProvider outlookAccountPasswordProvider,
-      IReadOnlyList<string> availableCategories)
+      IReadOnlyList<string> availableCategories, 
+      IOptionTasks optionTasks)
     {
-      if (session == null)
-        throw new ArgumentNullException (nameof (session));
       if (optionsViewModelParent == null)
         throw new ArgumentNullException (nameof (optionsViewModelParent));
       if (outlookAccountPasswordProvider == null)
         throw new ArgumentNullException (nameof (outlookAccountPasswordProvider));
       if (availableCategories == null)
         throw new ArgumentNullException (nameof (availableCategories));
+      if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
 
       _optionsViewModelParent = optionsViewModelParent;
       _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
       _availableCategories = availableCategories;
-      _session = session;
+      _optionTasks = optionTasks;
     }
 
     public List<IOptionsViewModel> Create (IReadOnlyCollection<Contracts.Options> options, GeneralOptions generalOptions)
@@ -65,7 +64,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     public IOptionsViewModel CreateTemplate (Contracts.Options options, GeneralOptions generalOptions, ProfileType type)
     {
       var optionsViewModel = new MultipleOptionsTemplateViewModel (
-         _session,
          _optionsViewModelParent,
          generalOptions,
          IsGoogleProfile (options)
@@ -81,14 +79,13 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     {
 
       var optionsViewModel = new GenericOptionsViewModel (
-          _session,
           _optionsViewModelParent,
           generalOptions,
           _outlookAccountPasswordProvider,
           IsGoogleProfile (options)
-              ? CreateGoogleServerSettingsViewModel
-              : new Func<ISettingsFaultFinder, ICurrentOptions, IServerSettingsViewModel> (CreateServerSettingsViewModel),
-          CreateMappingConfigurationViewModelFactory);
+            ? CreateGoogleServerSettingsViewModel
+            : new Func<ISettingsFaultFinder, ICurrentOptions, IServerSettingsViewModel> (CreateServerSettingsViewModel),
+          CreateMappingConfigurationViewModelFactory, _optionTasks);
 
       optionsViewModel.SetOptions (options);
       return optionsViewModel;

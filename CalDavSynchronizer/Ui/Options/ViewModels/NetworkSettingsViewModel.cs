@@ -26,7 +26,7 @@ using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  internal class NetworkSettingsViewModel : ViewModelBase, ISubOptionsViewModel
+  public class NetworkSettingsViewModel : ViewModelBase, ISubOptionsViewModel
   {
     private readonly ObservableCollection<ISubOptionsViewModel> _subOptions = new ObservableCollection<ISubOptionsViewModel>();
     private bool _closeConnectionAfterEachRequest;

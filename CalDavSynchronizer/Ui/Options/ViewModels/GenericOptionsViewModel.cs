@@ -28,7 +28,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  internal class GenericOptionsViewModel : OptionsViewModelBase, ICurrentOptions, ISyncSettingsControl
+  public class GenericOptionsViewModel : OptionsViewModelBase, ICurrentOptions, ISyncSettingsControl
   {
     private readonly ObservableCollection<ISubOptionsViewModel> _subOptions = new ObservableCollection<ISubOptionsViewModel>();
     private readonly NetworkSettingsViewModel _networkSettingsViewModel;
@@ -42,16 +42,14 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private readonly IMappingConfigurationViewModelFactory _mappingConfigurationViewModelFactory;
 
     public GenericOptionsViewModel (
-        NameSpace session,
-        IOptionsViewModelParent parent,
-        GeneralOptions generalOptions,
-        IOutlookAccountPasswordProvider outlookAccountPasswordProvider,
-        Func<ISettingsFaultFinder, ICurrentOptions, IServerSettingsViewModel> serverSettingsViewModelFactory,
-        Func<ICurrentOptions, IMappingConfigurationViewModelFactory> mappingConfigurationViewModelFactoryFactory)
+      IOptionsViewModelParent parent,
+      GeneralOptions generalOptions,
+      IOutlookAccountPasswordProvider outlookAccountPasswordProvider,
+      Func<ISettingsFaultFinder, ICurrentOptions, IServerSettingsViewModel> serverSettingsViewModelFactory,
+      Func<ICurrentOptions, IMappingConfigurationViewModelFactory> mappingConfigurationViewModelFactoryFactory,
+      IOptionTasks optionTasks)
         : base (parent)
     {
-      if (session == null)
-        throw new ArgumentNullException (nameof (session));
       if (generalOptions == null)
         throw new ArgumentNullException (nameof (generalOptions));
       if (outlookAccountPasswordProvider == null)
@@ -67,7 +65,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       _generalOptions = generalOptions;
       _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
       _mappingConfigurationViewModelFactory = mappingConfigurationViewModelFactoryFactory(this);
-      _outlookFolderViewModel = new OutlookFolderViewModel (session, faultFinder);
+      _outlookFolderViewModel = new OutlookFolderViewModel (faultFinder, optionTasks);
       _outlookFolderViewModel.PropertyChanged += OutlookFolderViewModel_PropertyChanged;
       _timeRangeViewModel = new TimeRangeViewModel();
     }

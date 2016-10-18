@@ -51,11 +51,9 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 
     private string _name;
     private bool _isSelected;
-    private readonly NameSpace _session;
     private IOptionsViewModelParent _parent;
 
     public MultipleOptionsTemplateViewModel (
-        NameSpace session,
         IOptionsViewModelParent parent,
         GeneralOptions generalOptions,
         IServerSettingsTemplateViewModel serverSettingsViewModel,
@@ -63,9 +61,6 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 
     {
       _parent = parent;
-      _session = session;
-      if (session == null)
-        throw new ArgumentNullException (nameof (session));
       if (parent == null)
         throw new ArgumentNullException (nameof (parent));
       if (generalOptions == null)
@@ -124,7 +119,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
         var addressBooks = serverResources.AddressBooks.Select (a => new AddressBookDataViewModel (a)).ToArray();
         var taskLists = serverResources.TaskLists.Select (d => new TaskListDataViewModel (d)).ToArray();
 
-        using (var selectResourcesForm = new SelectResourceForm (ConnectionTests.ResourceType.Calendar, _session, calendars, addressBooks, taskLists))
+        using (var selectResourcesForm = new SelectResourceForm (ConnectionTests.ResourceType.Calendar, calendars, addressBooks, taskLists))
         {
           if (selectResourcesForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
           {

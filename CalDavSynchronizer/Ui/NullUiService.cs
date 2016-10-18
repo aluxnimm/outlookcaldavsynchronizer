@@ -14,26 +14,46 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Ui.Options.ViewModels;
-using CalDavSynchronizer.Ui.Reports;
 using CalDavSynchronizer.Ui.Reports.ViewModels;
-using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui
 {
-  public interface IUiService
+  class NullUiService : IUiService
   {
-    void Show (ReportsViewModel reportsViewModel);
-    void ShowProfileStatusesWindow ();
-    bool ShowOptions (OptionsCollectionViewModel viewModel);
-    ProfileType? QueryProfileType();
-    void ShowErrorDialog(string errorMessage, string title);
+    public  static readonly IUiService Instance = new NullUiService();
+
+    private NullUiService()
+    {
+    }
+
+    public void Show(ReportsViewModel reportsViewModel)
+    {
+      
+    }
+
+    public void ShowProfileStatusesWindow()
+    {
+     
+    }
+
+    public bool ShowOptions(OptionsCollectionViewModel viewModel)
+    {
+      return false;
+    }
+
+    public ProfileType? QueryProfileType()
+    {
+      return null;
+    }
+
+    public void ShowErrorDialog(string errorMessage, string title)
+    {
+      
+    }
   }
 }

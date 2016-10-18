@@ -110,23 +110,23 @@ namespace CalDavSynchronizer.Ui.Options
 
     public SelectResourceForm (
         ResourceType initialResourceTabToDisplay,
-        NameSpace session,
+        IOptionTasks optionTasks,
         IReadOnlyList<CalendarDataViewModel> calendars = null,
         IReadOnlyList<AddressBookDataViewModel> addressBooks = null,
         IReadOnlyList<TaskListDataViewModel> taskLists = null)
         : this (initialResourceTabToDisplay, calendars, addressBooks, taskLists)
     {
       if (calendars != null)
-        SetupFolderSelectionColumns (_calendarDataGridView, session, OlItemType.olAppointmentItem);
+        SetupFolderSelectionColumns (_calendarDataGridView, optionTasks, OlItemType.olAppointmentItem);
 
       if (addressBooks != null)
-        SetupFolderSelectionColumns (_addressBookDataGridView, session, OlItemType.olContactItem);
+        SetupFolderSelectionColumns (_addressBookDataGridView, optionTasks, OlItemType.olContactItem);
 
       if (taskLists != null)
-        SetupFolderSelectionColumns (_tasksDataGridView, session, OlItemType.olTaskItem);
+        SetupFolderSelectionColumns (_tasksDataGridView, optionTasks, OlItemType.olTaskItem);
     }
 
-    private static void SetupFolderSelectionColumns (DataGridView dataGridView, NameSpace session, params OlItemType[] allowedFolderType)
+    private static void SetupFolderSelectionColumns (DataGridView dataGridView, IOptionTasks optionTasks, params OlItemType[] allowedFolderType)
     {
       var folderColumn = new DataGridViewTextBoxColumn();
       folderColumn.HeaderText = "Selected Outlook Folder";
@@ -154,7 +154,7 @@ namespace CalDavSynchronizer.Ui.Options
 
         if (column == selectFolderColumn)
         {
-          var folder = session.PickFolder();
+          var folder = optionTasks.PickFolderOrNull();
           if (folder != null)
           {
             if (Array.IndexOf (allowedFolderType, folder.DefaultItemType) == -1)
@@ -164,7 +164,7 @@ namespace CalDavSynchronizer.Ui.Options
             }
 
             folderCell.Value = folder.Name;
-            viewModel.SelectedFolder = new FolderDescriptor (folder.EntryID, folder.StoreID);
+            viewModel.SelectedFolder = new FolderDescriptor (folder.EntryId, folder.StoreId);
           }
         }
         else if (column == removeFolderColumn)

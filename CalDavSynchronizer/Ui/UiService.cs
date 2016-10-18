@@ -15,14 +15,16 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using System.Drawing;
 using System.Linq;
+using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using System.Windows.Media.Imaging;
+using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Properties;
+using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.Options.Views;
 using CalDavSynchronizer.Ui.Reports;
@@ -31,6 +33,8 @@ using CalDavSynchronizer.Ui.Reports.Views;
 using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
 using CalDavSynchronizer.Ui.SystrayNotification.Views;
 using Microsoft.Office.Interop.Outlook;
+using Size = System.Drawing.Size;
+using SystemColors = System.Drawing.SystemColors;
 
 namespace CalDavSynchronizer.Ui
 {
@@ -103,7 +107,16 @@ namespace CalDavSynchronizer.Ui
       return window.ShowDialog().GetValueOrDefault (false);
     }
 
-  
+    public ProfileType? QueryProfileType()
+    {
+      return SelectOptionsDisplayTypeForm.QueryProfileType();
+    }
+
+    public void ShowErrorDialog(string errorMessage, string title)
+    {
+      System.Windows.MessageBox.Show(errorMessage, title, MessageBoxButton.OK, MessageBoxImage.Error);
+    }
+
 
     private static void SetWindowSize (GenericElementHostWindow window, double ratioToCurrentScreensize)
     {

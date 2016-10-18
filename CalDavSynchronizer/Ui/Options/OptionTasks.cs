@@ -39,12 +39,19 @@ using Task = System.Threading.Tasks.Task;
 
 namespace CalDavSynchronizer.Ui.Options
 {
-  internal static class OptionTasks
+  internal class OptionTasks : IOptionTasks
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     public const string ConnectionTestCaption = "Test settings";
     public const string GoogleDavBaseUrl = "https://apidata.googleusercontent.com/caldav/v2";
+
+    private readonly NameSpace _session;
+
+    public OptionTasks(NameSpace session)
+    {
+      _session = session;
+    }
 
     public static ISubOptionsViewModel CoerceMappingConfiguration (
         ISubOptionsViewModel currentMappingConfiguration,
@@ -355,14 +362,14 @@ namespace CalDavSynchronizer.Ui.Options
     }
 
 
-    public static string GetFolderAccountNameOrNull (NameSpace session, string folderStoreId)
+    public string GetFolderAccountNameOrNull (string folderStoreId)
     {
       if (ThisAddIn.IsOutlookVersionSmallerThan2010)
         return null;
 
       try
       {
-        foreach (Account account in session.Accounts.ToSafeEnumerable<Account>())
+        foreach (Account account in _session.Accounts.ToSafeEnumerable<Account>())
         {
           using (var deliveryStore = GenericComObjectWrapper.Create (account.DeliveryStore))
           {
@@ -378,6 +385,25 @@ namespace CalDavSynchronizer.Ui.Options
         s_logger.Error ("Can't access Account Name of folder.", ex);
       }
       return null;
+    }
+
+    public OutlookFolder GetFolderFromId(string entryId, object storeId)
+    {
+      return new OutlookFolder(_session.GetFolderFromID(entryId, storeId));
+    }
+
+    public OutlookFolder PickFolderOrNull()
+    {
+      var folder = _session.PickFolder();
+      if (folder != null)
+      {
+        using (var wrapper = GenericComObjectWrapper.Create(folder))
+          return new OutlookFolder(wrapper.Inner);
+      }
+      else
+      {
+        return null;
+      }
     }
 
     public static bool DoesModeRequireWriteableServerResource (SynchronizationMode synchronizationMode)
@@ -676,23 +702,6 @@ namespace CalDavSynchronizer.Ui.Options
       return string.Empty;
     }
 
-    public static Contracts.Options CreateNewSynchronizationProfileOrNull ()
-    {
-      ProfileType? type;
-      return CreateNewSynchronizationProfileOrNull (out type);
-    }
-
-    public static Contracts.Options CreateNewSynchronizationProfileOrNull (out ProfileType? type)
-    {
-      type = SelectOptionsDisplayTypeForm.QueryProfileType ();
-      if (!type.HasValue)
-        return null;
-
-      var options = Contracts.Options.CreateDefault (type.Value);
-      options.ServerAdapterType = (type == ProfileType.Google)
-          ? ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth
-          : ServerAdapterType.WebDavHttpClientBased;
-      return options;
-    }
+    
   }
 }
