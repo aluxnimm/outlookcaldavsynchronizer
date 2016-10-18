@@ -45,7 +45,13 @@ namespace CalDavSynchronizer.Contracts
     public OlCategoryShortcutKey CategoryShortcutKey { get; set; }
     public bool CleanupDuplicateEvents { get; set; }
     public bool MapCustomProperties { get; set; }
-    public PropertyMapping[] UserDefinedCustomPropertyMappings { get; set; }
+    private PropertyMapping[] _userDefinedCustomPropertyMappings;
+    public PropertyMapping[] UserDefinedCustomPropertyMappings
+    {
+      get { return _userDefinedCustomPropertyMappings ?? new PropertyMapping[0]; }
+      set { _userDefinedCustomPropertyMappings = value ?? new PropertyMapping[0]; }
+    }
+
 
     [XmlIgnore]
     public bool UseEventCategoryAsFilter
