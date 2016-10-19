@@ -60,7 +60,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       }
     }
     
-    public IEnumerable<ISubOptionsViewModel> SubOptions => _subOptions ?? (_subOptions = CreateSubOptions());
+    public IEnumerable<ISubOptionsViewModel> Items => _subOptions ?? (_subOptions = CreateSubOptions());
+    IEnumerable<ITreeNodeViewModel> ITreeNodeViewModel.Items => Items;
 
     public bool SupportsIsActive { get; } = true;
 
@@ -89,7 +90,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       foreach (var section in Sections)
         section.SetOptions (options);
 
-      foreach (var subViewModel in SubOptions)
+      foreach (var subViewModel in Items)
         subViewModel.SetOptions (options);
       IsActive = !options.Inactive;
       Name = options.Name;
@@ -110,7 +111,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       foreach (var section in Sections)
         section.FillOptions (options);
 
-      foreach (var subViewModel in SubOptions)
+      foreach (var subViewModel in Items)
         subViewModel.FillOptions (options);
 
       options.Inactive = !IsActive;
@@ -127,7 +128,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       foreach (var section in Sections)
         isValid &=  section.Validate (errorMessageBuilder);
 
-      foreach (var subViewModel in SubOptions)
+      foreach (var subViewModel in Items)
         isValid &= subViewModel.Validate (errorMessageBuilder);
 
       return isValid;

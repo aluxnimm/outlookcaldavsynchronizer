@@ -161,7 +161,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       return _customPropertyMappingViewModel.Validate (errorMessageBuilder);
     }
 
-    public IEnumerable<ViewModelBase> SubOptions { get; }
+    public IEnumerable<ITreeNodeViewModel> Items { get; }
 
     public TaskMappingConfigurationViewModel (IReadOnlyList<string> availableCategories)
     {
@@ -171,7 +171,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       AvailableCategories = availableCategories;
 
       _customPropertyMappingViewModel = new CustomPropertyMappingViewModel ();
-      SubOptions = new[] { _customPropertyMappingViewModel };
+      Items = new[] { _customPropertyMappingViewModel };
     }
   }
 }

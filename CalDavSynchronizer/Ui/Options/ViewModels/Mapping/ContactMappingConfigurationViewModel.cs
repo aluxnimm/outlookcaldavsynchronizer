@@ -123,6 +123,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     }
 
     public string Name => "Contact mapping configuration";
+    public IEnumerable<ITreeNodeViewModel> Items { get; } = new ITreeNodeViewModel[0];
 
     public bool Validate (StringBuilder errorMessageBuilder)
     {

@@ -23,14 +23,14 @@ using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 {
-  class CustomPropertyMappingViewModel : ViewModelBase
+  class CustomPropertyMappingViewModel : ViewModelBase, ITreeNodeViewModel
   {
     private bool _mapCustomProperties;
 
     public string Name { get; } = "Custom properties mapping";
 
 
-    public IEnumerable<ISubOptionsViewModel> SubOptions { get; } = new ISubOptionsViewModel[0];
+    public IEnumerable<ITreeNodeViewModel> Items { get; } = new ITreeNodeViewModel[0];
     public List<PropertyMapping> Mappings { get; private set; }
 
     public bool MapCustomProperties

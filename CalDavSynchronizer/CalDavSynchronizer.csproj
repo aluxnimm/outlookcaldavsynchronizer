@@ -362,6 +362,7 @@
     <Compile Include="Ui\Options\ResourceSelection\ViewModels\TaskListDataViewModel.cs" />
     <Compile Include="Ui\Options\BulkOptions\ViewModels\MultipleOptionsTemplateViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\ISubOptionsViewModel.cs" />
+    <Compile Include="Ui\Options\ViewModels\ITreeNodeViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\Mapping\CustomPropertyMappingViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\TimeRangeViewModel.cs" />
     <Compile Include="Ui\Options\Views\Mapping\CustomPropertyMappingView.xaml.cs">

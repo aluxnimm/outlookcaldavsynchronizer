@@ -112,7 +112,7 @@
           <views:ToProfileImageConverter x:Key="ToProfileImageConverter" />
       </TreeView.Resources>
      <TreeView.ItemTemplate>
-        <HierarchicalDataTemplate ItemsSource="{Binding SubOptions}" DataType="{x:Type viewModels:IOptionsViewModel}">
+          <HierarchicalDataTemplate ItemsSource="{Binding Items}" DataType="{x:Type viewModels:IOptionsViewModel}">
           <StackPanel Orientation="Horizontal" Margin="0,2,3,1">
               <Image Height="16" Width="16" >
                 <Image.Source>
@@ -126,7 +126,7 @@
             <TextBlock Text="{Binding Name}" />
           </StackPanel>
           <HierarchicalDataTemplate.ItemTemplate>
-            <HierarchicalDataTemplate ItemsSource="{Binding SubOptions}">
+            <HierarchicalDataTemplate ItemsSource="{Binding Items}">
               <TextBlock Text="{Binding Name}" />
             </HierarchicalDataTemplate>
           </HierarchicalDataTemplate.ItemTemplate>
