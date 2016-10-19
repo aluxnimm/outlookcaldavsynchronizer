@@ -23,5 +23,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
   {
     IEnumerable<ITreeNodeViewModel> Items { get; }
     string Name { get; }
+    bool IsSelected { get; set; }
   }
 }

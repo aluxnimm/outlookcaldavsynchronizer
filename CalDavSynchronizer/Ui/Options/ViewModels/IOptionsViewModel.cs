@@ -29,7 +29,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     Guid Id { get; }
 
     new IEnumerable<ISubOptionsViewModel> Items { get; }
-    bool IsSelected { get; set; }
 
     void SetOptions (Contracts.Options options);
     Contracts.Options GetOptionsOrNull ();

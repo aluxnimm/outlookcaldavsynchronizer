@@ -26,12 +26,22 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
   class CustomPropertyMappingViewModel : ViewModelBase, ITreeNodeViewModel
   {
     private bool _mapCustomProperties;
+    private bool _isSelected;
 
     public string Name { get; } = "Custom properties mapping";
 
 
     public IEnumerable<ITreeNodeViewModel> Items { get; } = new ITreeNodeViewModel[0];
     public List<PropertyMapping> Mappings { get; private set; }
+
+    public bool IsSelected
+    {
+      get { return _isSelected; }
+      set
+      {
+        CheckedPropertyChange (ref _isSelected, value);
+      }
+    }
 
     public bool MapCustomProperties
     {
