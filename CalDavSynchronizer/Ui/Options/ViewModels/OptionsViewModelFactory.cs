@@ -69,7 +69,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
          IsGoogleProfile (options)
              ? (IServerSettingsTemplateViewModel) new GoogleServerSettingsTemplateViewModel (_outlookAccountPasswordProvider)
              : new ServerSettingsTemplateViewModel (_outlookAccountPasswordProvider),
-         type);
+         type,
+         _optionTasks);
 
       optionsViewModel.SetOptions (options);
       return optionsViewModel;

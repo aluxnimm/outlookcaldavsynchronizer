@@ -330,7 +330,7 @@ namespace CalDavSynchronizer.Ui.Options
 
     static CalendarData SelectCalendar (IReadOnlyList<CalendarData> items)
     {
-      using (SelectResourceForm selectResourceForm = new SelectResourceForm (ResourceType.Calendar, items.Select (d => new CalendarDataViewModel (d)).ToArray ()))
+      using (SelectResourceForm selectResourceForm = SelectResourceForm.CreateForResourceSelection (ResourceType.Calendar, items.Select (d => new CalendarDataViewModel (d)).ToArray ()))
       {
         if (selectResourceForm.ShowDialog () == DialogResult.OK)
           return ((CalendarDataViewModel) selectResourceForm.SelectedObject).Model;
@@ -341,7 +341,7 @@ namespace CalDavSynchronizer.Ui.Options
 
     static AddressBookData SelectAddressBook (IReadOnlyList<AddressBookData> items)
     {
-      using (SelectResourceForm selectResourceForm = new SelectResourceForm (ResourceType.AddressBook,null, items.Select (d => new AddressBookDataViewModel (d)).ToArray ()))
+      using (SelectResourceForm selectResourceForm = SelectResourceForm.CreateForResourceSelection (ResourceType.AddressBook,null, items.Select (d => new AddressBookDataViewModel (d)).ToArray ()))
       {
         if (selectResourceForm.ShowDialog () == DialogResult.OK)
           return ((AddressBookDataViewModel) selectResourceForm.SelectedObject).Model;
@@ -352,7 +352,7 @@ namespace CalDavSynchronizer.Ui.Options
 
     static TaskListData SelectTaskList (IReadOnlyList<TaskListData> items)
     {
-      using (SelectResourceForm selectResourceForm = new SelectResourceForm (ResourceType.TaskList, null, null, items.Select (d => new TaskListDataViewModel (d)).ToArray ()))
+      using (SelectResourceForm selectResourceForm = SelectResourceForm.CreateForResourceSelection (ResourceType.TaskList, null, null, items.Select (d => new TaskListDataViewModel (d)).ToArray ()))
       {
         if (selectResourceForm.ShowDialog () == DialogResult.OK)
           return ((TaskListDataViewModel) selectResourceForm.SelectedObject).Model;

@@ -51,13 +51,15 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 
     private string _name;
     private bool _isSelected;
-    private IOptionsViewModelParent _parent;
+    private readonly IOptionsViewModelParent _parent;
+    private readonly IOptionTasks _optionTasks;
 
     public MultipleOptionsTemplateViewModel (
         IOptionsViewModelParent parent,
         GeneralOptions generalOptions,
         IServerSettingsTemplateViewModel serverSettingsViewModel,
-        ProfileType profileType)
+        ProfileType profileType,
+        IOptionTasks optionTasks)
 
     {
       _parent = parent;
@@ -65,6 +67,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
         throw new ArgumentNullException (nameof (parent));
       if (generalOptions == null)
         throw new ArgumentNullException (nameof (generalOptions));
+      if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
 
       _discoverResourcesCommand = new DelegateCommandWithoutCanExecuteDelegation (_ =>
       {
@@ -84,6 +87,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 
       _serverSettingsViewModel = serverSettingsViewModel;
       _profileType = profileType;
+      _optionTasks = optionTasks;
       _generalOptions = generalOptions;
     }
 
@@ -119,7 +123,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
         var addressBooks = serverResources.AddressBooks.Select (a => new AddressBookDataViewModel (a)).ToArray();
         var taskLists = serverResources.TaskLists.Select (d => new TaskListDataViewModel (d)).ToArray();
 
-        using (var selectResourcesForm = new SelectResourceForm (ConnectionTests.ResourceType.Calendar, calendars, addressBooks, taskLists))
+        using (var selectResourcesForm =  SelectResourceForm.CreateForFolderAssignment(_optionTasks, ConnectionTests.ResourceType.Calendar, calendars, addressBooks, taskLists))
         {
           if (selectResourcesForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
           {

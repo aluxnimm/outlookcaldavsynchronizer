@@ -31,7 +31,26 @@ namespace CalDavSynchronizer.Ui.Options
     public object SelectedObject { get; private set; }
     public ResourceType ResourceType { get; private set; }
 
-    public SelectResourceForm (
+    public static SelectResourceForm CreateForResourceSelection (
+     ResourceType initialResourceTabToDisplay,
+     IReadOnlyList<CalendarDataViewModel> calendars = null,
+     IReadOnlyList<AddressBookDataViewModel> addressBooks = null,
+     IReadOnlyList<TaskListDataViewModel> taskLists = null)
+    {
+      return new SelectResourceForm (initialResourceTabToDisplay, calendars, addressBooks, taskLists);
+    }
+
+    public static SelectResourceForm CreateForFolderAssignment(
+      IOptionTasks optionTasks,
+      ResourceType initialResourceTabToDisplay,
+      IReadOnlyList<CalendarDataViewModel> calendars = null,
+      IReadOnlyList<AddressBookDataViewModel> addressBooks = null,
+      IReadOnlyList<TaskListDataViewModel> taskLists = null)
+    {
+      return new SelectResourceForm(initialResourceTabToDisplay, optionTasks, calendars, addressBooks, taskLists);
+    }
+
+    private SelectResourceForm (
       ResourceType initialResourceTabToDisplay,
       IReadOnlyList<CalendarDataViewModel> calendars = null, 
       IReadOnlyList<AddressBookDataViewModel> addressBooks = null, 
@@ -108,7 +127,7 @@ namespace CalDavSynchronizer.Ui.Options
       }
     }
 
-    public SelectResourceForm (
+    private SelectResourceForm (
         ResourceType initialResourceTabToDisplay,
         IOptionTasks optionTasks,
         IReadOnlyList<CalendarDataViewModel> calendars = null,
