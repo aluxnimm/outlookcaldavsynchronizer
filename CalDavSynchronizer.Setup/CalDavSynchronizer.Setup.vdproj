@@ -4217,7 +4217,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CalDavSynchronizer"
         "ProductCode" = "8:{93B52645-4218-42A8-98CE-0C3BD81A5076}"
-        "PackageCode" = "8:{1843BDA4-AE8C-481B-AD85-97981330D930}"
+        "PackageCode" = "8:{F905ABE9-DA25-497E-B582-98042E0849E4}"
         "UpgradeCode" = "8:{691063F4-DD9A-4264-948D-3FBD2565572C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -4291,7 +4291,25 @@
             {
                 "Keys"
                 {
-                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_99F1ED0501054EF587711B47E7E522A6"
+                }
+            }
+            "HKCR"
+            {
+                "Keys"
+                {
+                }
+            }
+            "HKU"
+            {
+                "Keys"
+                {
+                }
+            }
+            "HKPU"
+            {
+                "Keys"
+                {
+                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_F61B5F6665C34E859A639896FE524EFF"
                     {
                     "Name" = "8:Software"
                     "Condition" = "8:"
@@ -4300,7 +4318,7 @@
                     "Transitive" = "11:FALSE"
                         "Keys"
                         {
-                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_F2C499085A244A0BAAE9AC85B1CAF20B"
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_C0AF0AA7657746419B28335BC7BAACA7"
                             {
                             "Name" = "8:Microsoft"
                             "Condition" = "8:"
@@ -4309,7 +4327,7 @@
                             "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
-                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_0BA462855A8A427AA86DC383BFC16429"
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_C68A10CA052246D09D421F6BB9433B01"
                                     {
                                     "Name" = "8:Office"
                                     "Condition" = "8:"
@@ -4318,7 +4336,7 @@
                                     "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
-                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_4F08C1B56A5749B9A56612200E194D99"
+                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_B66DB2B30E7146A4BA019E1941D2BDCB"
                                             {
                                             "Name" = "8:Outlook"
                                             "Condition" = "8:"
@@ -4327,7 +4345,7 @@
                                             "Transitive" = "11:FALSE"
                                                 "Keys"
                                                 {
-                                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_A1C972D7C670426594F5D33ACBCC5791"
+                                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_87299DE42FE04E9C81C2A85506E2703A"
                                                     {
                                                     "Name" = "8:Addins"
                                                     "Condition" = "8:"
@@ -4336,7 +4354,7 @@
                                                     "Transitive" = "11:FALSE"
                                                         "Keys"
                                                         {
-                                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_3FC72E07264F4A66BD9386E13F9BF822"
+                                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_918F5F3CF9C14EA4AA1874DBD30BC6E2"
                                                             {
                                                             "Name" = "8:CalDavSynchronizer.1"
                                                             "Condition" = "8:"
@@ -4348,7 +4366,7 @@
                                                                 }
                                                                 "Values"
                                                                 {
-                                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_5069ECE5883E46EF9D91CFD19F0B7E0F"
+                                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_3E5C51AF85A44945A4629BED8B5B0C36"
                                                                     {
                                                                     "Name" = "8:FriendlyName"
                                                                     "Condition" = "8:"
@@ -4356,7 +4374,7 @@
                                                                     "ValueTypes" = "3:1"
                                                                     "Value" = "8:CalDavSynchronizer"
                                                                     }
-                                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_5E10A6A9ABD64CCD9FC2DD42BF274413"
+                                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_83C0D6C4DC244CC4B7C245AFA578FE34"
                                                                     {
                                                                     "Name" = "8:LoadBehavior"
                                                                     "Condition" = "8:"
@@ -4364,21 +4382,21 @@
                                                                     "ValueTypes" = "3:3"
                                                                     "Value" = "3:3"
                                                                     }
-                                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_BF5E445D688643A6A94D1B7E617BF0A3"
-                                                                    {
-                                                                    "Name" = "8:Manifest"
-                                                                    "Condition" = "8:"
-                                                                    "Transitive" = "11:FALSE"
-                                                                    "ValueTypes" = "3:1"
-                                                                    "Value" = "8:file:///[TARGETDIR]CalDavSynchronizer.vsto|vstolocal"
-                                                                    }
-                                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_C418EBF009F54BB1851D0DF7CAACD446"
+                                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_91C60239E5DC405D9AE54A23824F9A96"
                                                                     {
                                                                     "Name" = "8:Description"
                                                                     "Condition" = "8:"
                                                                     "Transitive" = "11:FALSE"
                                                                     "ValueTypes" = "3:1"
                                                                     "Value" = "8:CalDavSynchronizer"
+                                                                    }
+                                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_C8A1F650539143B9B12FFA34645297B0"
+                                                                    {
+                                                                    "Name" = "8:Manifest"
+                                                                    "Condition" = "8:"
+                                                                    "Transitive" = "11:FALSE"
+                                                                    "ValueTypes" = "3:1"
+                                                                    "Value" = "8:file:///[TARGETDIR]CalDavSynchronizer.vsto|vstolocal"
                                                                     }
                                                                 }
                                                             }
@@ -4407,24 +4425,6 @@
                         {
                         }
                     }
-                }
-            }
-            "HKCR"
-            {
-                "Keys"
-                {
-                }
-            }
-            "HKU"
-            {
-                "Keys"
-                {
-                }
-            }
-            "HKPU"
-            {
-                "Keys"
-                {
                 }
             }
         }
