@@ -262,7 +262,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
       target.Class = CommonEntityMapper.MapPrivacy1To2 (source.Sensitivity, _configuration.MapSensitivityPrivateToClassConfidential);
 
-      MapReminder1To2 (source, target);
+      MapReminder1To2 (source, target, isRecurrenceException);
 
       MapCategories1To2 (source, target);
 
@@ -357,7 +357,7 @@ namespace CalDavSynchronizer.Implementation.Events
       }
     }
 
-    private void MapReminder1To2 (AppointmentItem source, IEvent target)
+    private void MapReminder1To2 (AppointmentItem source, IEvent target, bool isRecurrenceException)
     {
       if (_configuration.MapReminder == ReminderMapping.@false)
         return;
@@ -366,10 +366,20 @@ namespace CalDavSynchronizer.Implementation.Events
       {
         var reminderRelativeToStart = TimeSpan.FromMinutes (-source.ReminderMinutesBeforeStart);
 
-        if (_configuration.MapReminder == ReminderMapping.JustUpcoming
-            && source.StartUTC.Add (reminderRelativeToStart) <= DateTime.UtcNow)
-          return;
-
+        if (_configuration.MapReminder == ReminderMapping.JustUpcoming)
+        {
+          if (!source.IsRecurring || isRecurrenceException && source.StartUTC.Add (reminderRelativeToStart) <= DateTime.UtcNow)
+            return;
+          if (source.IsRecurring && !isRecurrenceException)
+          {
+            using (var sourceRecurrencePatternWrapper = GenericComObjectWrapper.Create (source.GetRecurrencePattern()))
+            {
+              if (!sourceRecurrencePatternWrapper.Inner.NoEndDate &&
+                  sourceRecurrencePatternWrapper.Inner.PatternEndDate.Add (sourceRecurrencePatternWrapper.Inner.EndTime.TimeOfDay).ToUniversalTime() <= DateTime.UtcNow)
+                return;
+            }
+          }
+        }
         var trigger = new Trigger (reminderRelativeToStart);
 
         target.Alarms.Add (
@@ -395,7 +405,7 @@ namespace CalDavSynchronizer.Implementation.Events
     }
     
 
-    private void MapReminder2To1 (IEvent source, AppointmentItem target, IEntityMappingLogger logger)
+    private void MapReminder2To1 (IEvent source, AppointmentItem target, bool isRecurrenceException, IEntityMappingLogger logger)
     {
       if (_configuration.MapReminder == ReminderMapping.@false)
       {
@@ -436,11 +446,26 @@ namespace CalDavSynchronizer.Implementation.Events
         return;
       }
 
-      if (_configuration.MapReminder == ReminderMapping.JustUpcoming
-          && target.StartUTC.Add (alarm.Trigger.Duration.Value) <= DateTime.UtcNow)
+      if (_configuration.MapReminder == ReminderMapping.JustUpcoming)
       {
-        target.ReminderSet = false;
-        return;
+
+        if (!target.IsRecurring || isRecurrenceException && target.StartUTC.Add (alarm.Trigger.Duration.Value) <= DateTime.UtcNow)
+        {
+          target.ReminderSet = false;
+          return;
+        }
+        if (target.IsRecurring && !isRecurrenceException)
+        {
+          using (var sourceRecurrencePatternWrapper = GenericComObjectWrapper.Create (target.GetRecurrencePattern()))
+          {
+            if (!sourceRecurrencePatternWrapper.Inner.NoEndDate &&
+                sourceRecurrencePatternWrapper.Inner.PatternEndDate.Add (sourceRecurrencePatternWrapper.Inner.EndTime.TimeOfDay).ToUniversalTime() <= DateTime.UtcNow)
+            {
+              target.ReminderSet = false;
+              return;
+            }
+          }
+        }
       }
 
       target.ReminderSet = true;
@@ -1577,7 +1602,7 @@ namespace CalDavSynchronizer.Implementation.Events
         targetWrapper.Inner.Sensitivity = CommonEntityMapper.MapPrivacy2To1 (source.Class, 
           _configuration.MapClassConfidentialToSensitivityPrivate, _configuration.MapClassPublicToSensitivityPrivate);
 
-      MapReminder2To1 (source, targetWrapper.Inner, logger);
+      MapReminder2To1 (source, targetWrapper.Inner, isRecurrenceException,logger);
 
       if (!isRecurrenceException)
         MapCategories2To1 (source, targetWrapper.Inner);
