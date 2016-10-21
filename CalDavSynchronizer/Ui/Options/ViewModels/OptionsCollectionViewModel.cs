@@ -279,6 +279,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
       if (initialSelectedProfile != null)
         initialSelectedProfile.IsSelected = true;
+
+      if (_options.Count > 0 && _generalOptions.ExpandAllSyncProfiles)
+        ExpandAll();
     }
 
     public Contracts.Options[] GetOptionsCollection ()

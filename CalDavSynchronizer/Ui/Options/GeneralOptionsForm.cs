@@ -169,7 +169,8 @@ namespace CalDavSynchronizer.Ui.Options
                    EnableDebugLog = logLevel == LogLevel.Debug,
                    EnableTrayIcon = _enableTrayIconCheckBox.Checked,
                    AcceptInvalidCharsInServerResponse = _acceptInvalidCharsInServerResponseCheckBox.Checked,
-                   TriggerSyncAfterSendReceive = _triggerSyncAfterSendReceiveCheckBox.Checked
+                   TriggerSyncAfterSendReceive = _triggerSyncAfterSendReceiveCheckBox.Checked,
+                   ExpandAllSyncProfiles = _expandAllSyncProfilesCheckBox.Checked
         };
       }
       set
@@ -190,6 +191,7 @@ namespace CalDavSynchronizer.Ui.Options
         _enableTrayIconCheckBox.Checked = value.EnableTrayIcon;
         _acceptInvalidCharsInServerResponseCheckBox.Checked = value.AcceptInvalidCharsInServerResponse;
         _triggerSyncAfterSendReceiveCheckBox.Checked = value.TriggerSyncAfterSendReceive;
+        _expandAllSyncProfilesCheckBox.Checked = value.ExpandAllSyncProfiles;
       }
     }
 

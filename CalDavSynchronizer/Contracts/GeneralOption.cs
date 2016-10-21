@@ -38,5 +38,6 @@ namespace CalDavSynchronizer.Contracts
     public bool EnableDebugLog { get; set; }
     public bool EnableTrayIcon { get; set; }
     public bool TriggerSyncAfterSendReceive { get; set; }
+    public bool ExpandAllSyncProfiles { get; set; }
   }
 }
