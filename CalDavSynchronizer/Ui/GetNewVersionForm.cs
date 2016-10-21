@@ -125,7 +125,8 @@ namespace CalDavSynchronizer.Ui
                MessageBoxIcon.Information);
 
         // process hast to be a GC root to prevent it from being garbage collected.
-        _latestSetupProcess = Process.Start (Path.Combine (extractDirectory, "setup.exe"));
+        var msiFile = Path.Combine (extractDirectory, "CalDavSynchronizer.Setup.msi");
+        _latestSetupProcess = Process.Start ("msiexec.exe", "/i \"" + msiFile + "\" /passive");
         if (_latestSetupProcess != null)
         {
           _latestSetupProcess.EnableRaisingEvents = true;

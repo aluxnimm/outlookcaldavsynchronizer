@@ -5,3 +5,5 @@ debug/
 *.csproj.user
 packages/*/
 /CalDavSynchronizer.sln.DotSettings.user
+*.exe
+*.msi

@@ -728,6 +728,7 @@
     <None Include="Resources\logo_cozy.png" />
     <Resource Include="Resources\Folder.png" />
     <Resource Include="Resources\CollapseAll.png" />
+    <Content Include="Resources\LogoBanner.bmp" />
     <Resource Include="Resources\ExpandAll.png" />
     <Content Include="Resources\outlookcaldavsynchronizerlogoarrow.png" />
   </ItemGroup>
