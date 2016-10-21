@@ -80,7 +80,7 @@ namespace CalDavSynchronizer.DataAccess
                    EnableTrayIcon = (int) (key.GetValue (s_EnableTrayIcon) ?? 1) != 0,
                    AcceptInvalidCharsInServerResponse = (int) (key.GetValue (s_AcceptInvalidCharsInServerResponse) ?? 0) != 0,
                    TriggerSyncAfterSendReceive = (int) (key.GetValue (s_TriggerSyncAfterSendReceive) ?? 0) != 0,
-                   ExpandAllSyncProfiles = (int) (key.GetValue (s_ExpandAllSyncProfiles) ?? 0) != 0
+                   ExpandAllSyncProfiles = (int) (key.GetValue (s_ExpandAllSyncProfiles) ?? 1) != 0
         };
       }
     }
