@@ -185,15 +185,23 @@ namespace CalDavSynchronizer
       _trayNotifier = generalOptions.EnableTrayIcon ? new TrayNotifier (this) : NullTrayNotifer.Instance;
       _uiService = new UiService (_profileStatusesViewModel);
 
-      using (var syncObjects = GenericComObjectWrapper.Create (_session.SyncObjects))
+      try
       {
-        if (syncObjects.Inner != null && syncObjects.Inner.Count > 0)
+        using (var syncObjects = GenericComObjectWrapper.Create (_session.SyncObjects))
         {
-          _syncObject = syncObjects.Inner[1];
-          if (generalOptions.TriggerSyncAfterSendReceive)
-            _syncObject.SyncEnd += _sync_SyncEnd;
+          if (syncObjects.Inner != null && syncObjects.Inner.Count > 0)
+          {
+            _syncObject = syncObjects.Inner[1];
+            if (generalOptions.TriggerSyncAfterSendReceive)
+              _syncObject.SyncEnd += _sync_SyncEnd;
+          }
         }
       }
+      catch (COMException ex)
+      {
+        s_logger.Error ("Can't access SyncObjects", ex);
+      }
+
     }
 
     public async Task Initialize()
