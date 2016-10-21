@@ -47,12 +47,13 @@ namespace CalDavSynchronizer.Ui.Options
       this._enableTrayIconCheckBox = new System.Windows.Forms.CheckBox();
       this._acceptInvalidCharsInServerResponseCheckBox = new System.Windows.Forms.CheckBox();
       this._triggerSyncAfterSendReceiveCheckBox = new System.Windows.Forms.CheckBox();
+      this.label2 = new System.Windows.Forms.Label();
+      this._expandAllSyncProfilesCheckBox = new System.Windows.Forms.CheckBox();
       this.groupBox2 = new System.Windows.Forms.GroupBox();
       this._maxReportAgeInDays = new System.Windows.Forms.TextBox();
       this.label3 = new System.Windows.Forms.Label();
       this._reportPopupModeComboBox = new System.Windows.Forms.ComboBox();
       this._reportLogModeComboBox = new System.Windows.Forms.ComboBox();
-      this.label2 = new System.Windows.Forms.Label();
       this.label1 = new System.Windows.Forms.Label();
       this.groupBox3 = new System.Windows.Forms.GroupBox();
       this._showLogButton = new System.Windows.Forms.Button();
@@ -248,6 +249,31 @@ namespace CalDavSynchronizer.Ui.Options
         "hes.");
       this._triggerSyncAfterSendReceiveCheckBox.UseVisualStyleBackColor = true;
       // 
+      // label2
+      // 
+      this.label2.AutoSize = true;
+      this.label2.Location = new System.Drawing.Point(12, 65);
+      this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+      this.label2.Name = "label2";
+      this.label2.Size = new System.Drawing.Size(161, 17);
+      this.label2.TabIndex = 1;
+      this.label2.Text = "Show reports and notify:";
+      this._toolTip.SetToolTip(this.label2, "Show synchronization reports immediately and\r\nnotify in systray icon (if enabled)" +
+        "");
+      // 
+      // _expandAllSyncProfilesCheckBox
+      // 
+      this._expandAllSyncProfilesCheckBox.AutoSize = true;
+      this._expandAllSyncProfilesCheckBox.Location = new System.Drawing.Point(16, 253);
+      this._expandAllSyncProfilesCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+      this._expandAllSyncProfilesCheckBox.Name = "_expandAllSyncProfilesCheckBox";
+      this._expandAllSyncProfilesCheckBox.Size = new System.Drawing.Size(309, 21);
+      this._expandAllSyncProfilesCheckBox.TabIndex = 11;
+      this._expandAllSyncProfilesCheckBox.Text = "Expand all nodes in Synchronization Profiles";
+      this._toolTip.SetToolTip(this._expandAllSyncProfilesCheckBox, "Expand all nodes in the treeview of the Synchronization Profiles configuration by" +
+        " default if enabled.");
+      this._expandAllSyncProfilesCheckBox.UseVisualStyleBackColor = true;
+      // 
       // groupBox2
       // 
       this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -309,18 +335,6 @@ namespace CalDavSynchronizer.Ui.Options
       this._reportLogModeComboBox.Name = "_reportLogModeComboBox";
       this._reportLogModeComboBox.Size = new System.Drawing.Size(289, 24);
       this._reportLogModeComboBox.TabIndex = 2;
-      // 
-      // label2
-      // 
-      this.label2.AutoSize = true;
-      this.label2.Location = new System.Drawing.Point(12, 65);
-      this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-      this.label2.Name = "label2";
-      this.label2.Size = new System.Drawing.Size(161, 17);
-      this.label2.TabIndex = 1;
-      this.label2.Text = "Show reports and notify:";
-      this._toolTip.SetToolTip(this.label2, "Show synchronization reports immediately and\r\nnotify in systray icon (if enabled)" +
-        "");
       // 
       // label1
       // 
@@ -422,6 +436,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.BackColor = System.Drawing.SystemColors.Window;
       this.CancelButton = this._cancelButton;
       this.ClientSize = new System.Drawing.Size(503, 743);
+      this.Controls.Add(this._expandAllSyncProfilesCheckBox);
       this.Controls.Add(this._calDavConnectTimeoutTextBox);
       this.Controls.Add(this._triggerSyncAfterSendReceiveCheckBox);
       this.Controls.Add(this.label4);
@@ -484,5 +499,6 @@ namespace CalDavSynchronizer.Ui.Options
     private System.Windows.Forms.CheckBox _triggerSyncAfterSendReceiveCheckBox;
     private System.Windows.Forms.TextBox _calDavConnectTimeoutTextBox;
     private System.Windows.Forms.Label label4;
+    private System.Windows.Forms.CheckBox _expandAllSyncProfilesCheckBox;
   }
 }

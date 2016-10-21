@@ -35,6 +35,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     private bool _invertTaskCategoryFilter;
     private bool _isSelected;
     private readonly CustomPropertyMappingViewModel _customPropertyMappingViewModel;
+    private bool _isExpanded;
 
     public IList<Item<ReminderMapping>> AvailableReminderMappings => new List<Item<ReminderMapping>>
                                                                      {
@@ -110,6 +111,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       }
     }
 
+    public bool IsExpanded
+    {
+      get { return _isExpanded; }
+      set
+      {
+        CheckedPropertyChange (ref _isExpanded, value);
+      }
+    }
+
     public static TaskMappingConfigurationViewModel DesignInstance => new TaskMappingConfigurationViewModel (new[] { "Cat1", "Cat2" })
                                                                          {
                                                                               MapBody = true,
@@ -161,7 +171,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       return _customPropertyMappingViewModel.Validate (errorMessageBuilder);
     }
 
-    public IEnumerable<ViewModelBase> SubOptions { get; }
+    public IEnumerable<ITreeNodeViewModel> Items { get; }
 
     public TaskMappingConfigurationViewModel (IReadOnlyList<string> availableCategories)
     {
@@ -171,7 +181,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       AvailableCategories = availableCategories;
 
       _customPropertyMappingViewModel = new CustomPropertyMappingViewModel ();
-      SubOptions = new[] { _customPropertyMappingViewModel };
+      Items = new[] { _customPropertyMappingViewModel };
     }
   }
 }

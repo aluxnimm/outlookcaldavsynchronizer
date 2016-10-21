@@ -21,16 +21,14 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  public interface IOptionsViewModel 
+  public interface IOptionsViewModel : ITreeNodeViewModel
   {
     bool IsActive { get; set; }
     bool SupportsIsActive { get; }
 
-    string Name { get; set; }
     Guid Id { get; }
 
-    IEnumerable<ISubOptionsViewModel> SubOptions { get; }
-    bool IsSelected { get; set; }
+    new IEnumerable<ISubOptionsViewModel> Items { get; }
 
     void SetOptions (Contracts.Options options);
     Contracts.Options GetOptionsOrNull ();

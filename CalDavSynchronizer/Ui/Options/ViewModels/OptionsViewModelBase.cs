@@ -34,6 +34,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private IEnumerable<IOptionsSection> _sections;
     private IEnumerable<ISubOptionsViewModel> _subOptions;
     private bool _isSelected;
+    private bool _isExpanded;
 
     protected OptionsViewModelBase (IOptionsViewModelParent parent)
     {
@@ -60,7 +61,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       }
     }
     
-    public IEnumerable<ISubOptionsViewModel> SubOptions => _subOptions ?? (_subOptions = CreateSubOptions());
+    public IEnumerable<ISubOptionsViewModel> Items => _subOptions ?? (_subOptions = CreateSubOptions());
+    IEnumerable<ITreeNodeViewModel> ITreeNodeViewModel.Items => Items;
 
     public bool SupportsIsActive { get; } = true;
 
@@ -82,6 +84,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       }
     }
 
+    public bool IsExpanded
+    {
+      get { return _isExpanded; }
+      set
+      {
+        CheckedPropertyChange (ref _isExpanded, value);
+      }
+    }
+
     public Guid Id { get; private set; }
 
     public void SetOptions (CalDavSynchronizer.Contracts.Options options)
@@ -89,7 +100,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       foreach (var section in Sections)
         section.SetOptions (options);
 
-      foreach (var subViewModel in SubOptions)
+      foreach (var subViewModel in Items)
         subViewModel.SetOptions (options);
       IsActive = !options.Inactive;
       Name = options.Name;
@@ -110,7 +121,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       foreach (var section in Sections)
         section.FillOptions (options);
 
-      foreach (var subViewModel in SubOptions)
+      foreach (var subViewModel in Items)
         subViewModel.FillOptions (options);
 
       options.Inactive = !IsActive;
@@ -127,7 +138,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       foreach (var section in Sections)
         isValid &=  section.Validate (errorMessageBuilder);
 
-      foreach (var subViewModel in SubOptions)
+      foreach (var subViewModel in Items)
         isValid &= subViewModel.Validate (errorMessageBuilder);
 
       return isValid;

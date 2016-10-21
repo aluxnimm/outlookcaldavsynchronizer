@@ -31,6 +31,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     private bool _keepOutlookFileAs;
     private bool _fixPhoneNumberFormat;
     private bool _isSelected;
+    private bool _isExpanded;
 
     public bool MapBirthday
     {
@@ -86,6 +87,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       }
     }
 
+    public bool IsExpanded
+    {
+      get { return _isExpanded; }
+      set
+      {
+        CheckedPropertyChange (ref _isExpanded, value);
+      }
+    }
+
     public static ContactMappingConfigurationViewModel DesignInstance => new ContactMappingConfigurationViewModel
                                                                          {
                                                                              MapBirthday = true,
@@ -123,6 +133,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     }
 
     public string Name => "Contact mapping configuration";
+    public IEnumerable<ITreeNodeViewModel> Items { get; } = new ITreeNodeViewModel[0];
 
     public bool Validate (StringBuilder errorMessageBuilder)
     {

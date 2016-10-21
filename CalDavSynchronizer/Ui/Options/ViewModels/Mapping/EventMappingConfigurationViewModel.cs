@@ -291,6 +291,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       }
     }
 
+    public bool IsExpanded
+    {
+      get { return _isExpanded; }
+      set
+      {
+        CheckedPropertyChange (ref _isExpanded, value);
+      }
+    }
+
     public IReadOnlyList<string> AvailableCategories { get; }
 
 
@@ -362,7 +371,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     }
 
 
-    public IEnumerable<ViewModelBase> SubOptions { get; }
+    public IEnumerable<ITreeNodeViewModel> Items { get; }
 
     public static EventMappingConfigurationViewModel DesignInstance = new EventMappingConfigurationViewModel(new[] {"Cat1","Cat2"}, new DesignCurrentOptions())
                                                                       {
@@ -387,6 +396,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                                                       };
 
     private bool _isSelected;
+    private bool _isExpanded;
 
     public EventMappingConfigurationViewModel (IReadOnlyList<string> availableCategories, ICurrentOptions currentOptions)
     {
@@ -409,7 +419,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       });
 
       _customPropertyMappingViewModel = new CustomPropertyMappingViewModel();
-      SubOptions = new[] {_customPropertyMappingViewModel};
+      Items = new[] {_customPropertyMappingViewModel};
     }
 
     private async void GetServerCalendarColorAsync ()

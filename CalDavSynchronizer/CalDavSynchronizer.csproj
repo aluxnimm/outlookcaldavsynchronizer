@@ -362,6 +362,7 @@
     <Compile Include="Ui\Options\ResourceSelection\ViewModels\TaskListDataViewModel.cs" />
     <Compile Include="Ui\Options\BulkOptions\ViewModels\MultipleOptionsTemplateViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\ISubOptionsViewModel.cs" />
+    <Compile Include="Ui\Options\ViewModels\ITreeNodeViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\Mapping\CustomPropertyMappingViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\TimeRangeViewModel.cs" />
     <Compile Include="Ui\Options\Views\Mapping\CustomPropertyMappingView.xaml.cs">
@@ -726,6 +727,8 @@
     <Resource Include="Resources\logo_sogo.png" />
     <None Include="Resources\logo_cozy.png" />
     <Resource Include="Resources\Folder.png" />
+    <Resource Include="Resources\CollapseAll.png" />
+    <Resource Include="Resources\ExpandAll.png" />
     <Content Include="Resources\outlookcaldavsynchronizerlogoarrow.png" />
   </ItemGroup>
   <ItemGroup>

@@ -23,15 +23,35 @@ using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 {
-  class CustomPropertyMappingViewModel : ViewModelBase
+  class CustomPropertyMappingViewModel : ViewModelBase, ITreeNodeViewModel
   {
     private bool _mapCustomProperties;
+    private bool _isSelected;
+    private bool _isExpanded;
 
     public string Name { get; } = "Custom properties mapping";
 
 
-    public IEnumerable<ISubOptionsViewModel> SubOptions { get; } = new ISubOptionsViewModel[0];
+    public IEnumerable<ITreeNodeViewModel> Items { get; } = new ITreeNodeViewModel[0];
     public List<PropertyMapping> Mappings { get; private set; }
+
+    public bool IsSelected
+    {
+      get { return _isSelected; }
+      set
+      {
+        CheckedPropertyChange (ref _isSelected, value);
+      }
+    }
+
+    public bool IsExpanded
+    {
+      get { return _isExpanded; }
+      set
+      {
+        CheckedPropertyChange (ref _isExpanded, value);
+      }
+    }
 
     public bool MapCustomProperties
     {

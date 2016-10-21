@@ -53,6 +53,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
     private bool _isSelected;
     private readonly IOptionsViewModelParent _parent;
     private readonly IOptionTasks _optionTasks;
+    private bool _isExpanded;
 
     public MultipleOptionsTemplateViewModel (
         IOptionsViewModelParent parent,
@@ -83,7 +84,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 
       _networkSettingsViewModel = new NetworkSettingsViewModel();
 
-      SubOptions = new[] { _networkSettingsViewModel };
+      Items = new[] { _networkSettingsViewModel };
 
       _serverSettingsViewModel = serverSettingsViewModel;
       _profileType = profileType;
@@ -187,7 +188,8 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
     public bool IsActive { get; set; }
     public bool SupportsIsActive { get; } = false;
     public Guid Id { get; private set; }
-    public IEnumerable<ISubOptionsViewModel> SubOptions { get; }
+    public IEnumerable<ISubOptionsViewModel> Items { get; }
+    IEnumerable<ITreeNodeViewModel> ITreeNodeViewModel.Items => Items;
 
     public bool? IsMultipleOptionsTemplateViewModel { get; } = true;
     public OlItemType? OutlookFolderType { get; } = null;
@@ -196,6 +198,15 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
     {
       get { return _isSelected; }
       set { CheckedPropertyChange (ref _isSelected, value); }
+    }
+
+    public bool IsExpanded
+    {
+      get { return _isExpanded; }
+      set
+      {
+        CheckedPropertyChange (ref _isExpanded, value);
+      }
     }
 
     public string Name
