@@ -40,7 +40,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private readonly IUiService _uiService;
     public event EventHandler<CloseEventArgs> CloseRequested;
     private readonly Func<Guid, string> _profileDataDirectoryFactory;
-    
+    private readonly IOptionTasks _optionTasks;
+
     public event EventHandler RequestBringIntoView;
 
     public OptionsCollectionViewModel (
@@ -51,6 +52,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       IUiService uiService,
       IOptionTasks optionTasks)
     {
+      _optionTasks = optionTasks;
       _profileDataDirectoryFactory = profileDataDirectoryFactory;
       _uiService = uiService;
       if (generalOptions == null)
@@ -77,9 +79,48 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       OpenProfileDataDirectoryCommand = new DelegateCommandHandlingRequerySuggested (_ => OpenProfileDataDirectory (), _ => CanOpenProfileDataDirectory);
       ExpandAllCommand = new DelegateCommandHandlingRequerySuggested (_ => ExpandAll (), _ => _options.Count > 0);
       CollapseAllCommand = new DelegateCommandHandlingRequerySuggested (_ => CollapseAll (), _ => _options.Count > 0);
+      ExportAllCommand = new DelegateCommandHandlingRequerySuggested (_ => ExportAll (), _ => _options.Count > 0);
+      ImportCommand = new DelegateCommandHandlingRequerySuggested (_ => Import (), _ => true);
     }
 
-  
+    private void Import()
+    {
+      var fileName = _uiService.ShowOpenDialog ("Import Profiles");
+      if (fileName == null)
+        return;
+
+      var reportBuilder = new StringBuilder ();
+      var newOptions = _optionTasks.LoadOptions(fileName);
+      var mergedOptions = _optionTasks.ProfileExportProcessor.PrepareAndMergeForImport(GetOptionsCollection(), newOptions, s => reportBuilder.AppendLine (s));
+
+      SetOptionsCollection(mergedOptions);
+
+      reportBuilder.AppendLine ($"Sucessfully imported {newOptions.Length} profile(s) from '{fileName}'.");
+
+      _uiService.ShowReport ("Export profiles", reportBuilder.ToString ());
+    }
+
+    private void ExportAll()
+    {
+      var reportBuilder = new StringBuilder();
+
+      var profiles = GetOptionsCollection();
+      _optionTasks.ProfileExportProcessor.PrepareForExport(profiles, s => reportBuilder.AppendLine(s));
+
+      var fileName = _uiService.ShowSaveDialog("Export Profiles");
+      if (fileName != null)
+      {
+        _optionTasks.SaveOptions(profiles, fileName);
+        reportBuilder.AppendLine ($"Sucessfully exported {profiles.Length} profile(s) to '{fileName}'.");
+      }
+      else
+      {
+        reportBuilder.AppendLine("Export cancelled by user.");
+      }
+
+      _uiService.ShowReport("Export profiles", reportBuilder.ToString());
+    }
+
     private bool CanMoveSelectedDown => SelectedOrNull != null;
     private bool CanMoveSelectedUp => SelectedOrNull != null;
     private bool CanCopySelected => SelectedOrNull != null;
@@ -262,6 +303,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     public ICommand OpenProfileDataDirectoryCommand { get; }
     public ICommand ExpandAllCommand { get; }
     public ICommand CollapseAllCommand { get; }
+    public ICommand ExportAllCommand { get; }
+    public ICommand ImportCommand { get; }
 
     public ObservableCollection<IOptionsViewModel> Options => _options;
 

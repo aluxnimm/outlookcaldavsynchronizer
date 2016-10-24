@@ -406,6 +406,30 @@ namespace CalDavSynchronizer.Ui.Options
       }
     }
 
+    private IProfileExportProcessor _profileExportProcessor;
+    public IProfileExportProcessor ProfileExportProcessor
+    {
+      get
+      {
+        if (_profileExportProcessor == null)
+          _profileExportProcessor = new ProfileExportProcessor(_session, this);
+
+        return _profileExportProcessor;
+      }
+    }
+
+    public void SaveOptions(Contracts.Options[] options, string fileName)
+    {
+      var dataAccess = new OptionsDataAccess(fileName);
+      dataAccess.SaveOptions(options);
+    }
+
+    public Contracts.Options[] LoadOptions(string fileName)
+    {
+      var dataAccess = new OptionsDataAccess (fileName);
+      return dataAccess.LoadOptions ();
+    }
+
     public static bool DoesModeRequireWriteableServerResource (SynchronizationMode synchronizationMode)
     {
       return synchronizationMode == SynchronizationMode.MergeInBothDirections

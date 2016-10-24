@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -14,17 +14,15 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using Microsoft.Office.Interop.Outlook;
 
-namespace CalDavSynchronizer.Ui.Options
+using System;
+using CalDavSynchronizer.Contracts;
+
+namespace CalDavSynchronizer
 {
-  public interface IOptionTasks
+  public interface IProfileExportProcessor
   {
-    string GetFolderAccountNameOrNull (string folderStoreId);
-    OutlookFolder GetFolderFromId (string entryId, object storeId);
-    OutlookFolder PickFolderOrNull();
-    IProfileExportProcessor ProfileExportProcessor { get; }
-    void SaveOptions(Contracts.Options[] options, string fileName);
-    Contracts.Options[] LoadOptions (string fileName);
+    void PrepareForExport(Options[] profiles, Action<string> logger);
+    Options[] PrepareAndMergeForImport (Options[] existingProfiles,Options[] profilesToImport, Action<string> logger);
   }
 }

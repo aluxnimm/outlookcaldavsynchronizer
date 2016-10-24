@@ -14,17 +14,39 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Implementation.ComWrappers;
 using Microsoft.Office.Interop.Outlook;
 
-namespace CalDavSynchronizer.Ui.Options
+namespace CalDavSynchronizer.Utilities
 {
-  public interface IOptionTasks
+  public static class DictionaryExtensions
   {
-    string GetFolderAccountNameOrNull (string folderStoreId);
-    OutlookFolder GetFolderFromId (string entryId, object storeId);
-    OutlookFolder PickFolderOrNull();
-    IProfileExportProcessor ProfileExportProcessor { get; }
-    void SaveOptions(Contracts.Options[] options, string fileName);
-    Contracts.Options[] LoadOptions (string fileName);
+    public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<TValue> valueFactory)
+    {
+      TValue value;
+      if (!dictionary.TryGetValue(key, out value))
+      {
+        value = valueFactory();
+        dictionary.Add(key, value);
+      }
+      return value;
+    }
+
+    public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
+      where TValue : new()
+    {
+      TValue value;
+      if (!dictionary.TryGetValue(key, out value))
+      {
+        value = new TValue();
+        dictionary.Add(key, value);
+      }
+      return value;
+    }
   }
 }

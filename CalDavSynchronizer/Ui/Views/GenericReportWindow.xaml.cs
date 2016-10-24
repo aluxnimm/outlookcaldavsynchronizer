@@ -14,17 +14,37 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using Microsoft.Office.Interop.Outlook;
 
-namespace CalDavSynchronizer.Ui.Options
+using System;
+using System.Windows;
+using CalDavSynchronizer.Ui.Options.ViewModels;
+using CalDavSynchronizer.Ui.ViewModels;
+
+namespace CalDavSynchronizer.Ui.Views
 {
-  public interface IOptionTasks
+  /// <summary>
+  /// Interaction logic for MainWindow.xaml
+  /// </summary>
+  public partial class GenericReportWindow : Window
   {
-    string GetFolderAccountNameOrNull (string folderStoreId);
-    OutlookFolder GetFolderFromId (string entryId, object storeId);
-    OutlookFolder PickFolderOrNull();
-    IProfileExportProcessor ProfileExportProcessor { get; }
-    void SaveOptions(Contracts.Options[] options, string fileName);
-    Contracts.Options[] LoadOptions (string fileName);
+    public GenericReportWindow ()
+    {
+      InitializeComponent ();
+      this.DataContextChanged += OptionsWindow_DataContextChanged;
+    }
+
+    private void OptionsWindow_DataContextChanged (object sender, DependencyPropertyChangedEventArgs e)
+    {
+      var viewModel = e.NewValue as GenericReportViewModel;
+      if (viewModel != null)
+      {
+        viewModel.CloseRequested += ViewModel_CloseRequested;
+      }
+    }
+
+    private void ViewModel_CloseRequested (object sender, EventArgs e)
+    {
+      DialogResult = true;
+    }
   }
 }

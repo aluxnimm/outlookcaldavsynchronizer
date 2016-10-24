@@ -336,6 +336,8 @@
     <Compile Include="Implementation\TimeZones\GlobalTimeZoneCache.cs" />
     <Compile Include="Implementation\TimeZones\ITimeZoneCache.cs" />
     <Compile Include="Implementation\TimeZones\TimeZoneCache.cs" />
+    <Compile Include="IProfileExportProcessor.cs" />
+    <Compile Include="ProfileExportProcessor.cs" />
     <Compile Include="Scheduling\ISynchronizationRunLogger.cs" />
     <Compile Include="Scheduling\SchedulerStatusEventArgs.cs" />
     <Compile Include="Scheduling\SynchronizationStatus.cs" />
@@ -372,6 +374,10 @@
       <DependentUpon>TimeRangeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Ui\OutlookFolder.cs" />
+    <Compile Include="Ui\ViewModels\GenericReportViewModel.cs" />
+    <Compile Include="Ui\Views\GenericReportWindow.xaml.cs">
+      <DependentUpon>GenericReportWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\ArgbColor.cs" />
     <Compile Include="DataAccess\HttpClientBasedClient\HttpResponseHeadersAdapter.cs" />
     <Compile Include="DataAccess\HttpUtility.cs" />
@@ -615,6 +621,7 @@
     <Compile Include="Utilities\DnsQueryHelper.cs" />
     <Compile Include="Utilities\NullChunkedExecutor.cs" />
     <Compile Include="Utilities\IChunkedExecutor.cs" />
+    <Compile Include="Utilities\DictionaryExtensions.cs" />
     <Compile Include="WebResourceUrls.cs" />
     <EmbeddedResource Include="CalDavSynchronizerRibbon.resx">
       <DependentUpon>CalDavSynchronizerRibbon.cs</DependentUpon>
@@ -728,6 +735,8 @@
     <None Include="Resources\logo_cozy.png" />
     <Resource Include="Resources\Folder.png" />
     <Resource Include="Resources\CollapseAll.png" />
+    <Resource Include="Resources\Export.png" />
+    <Resource Include="Resources\Import.png" />
     <Content Include="Resources\LogoBanner.bmp" />
     <Resource Include="Resources\ExpandAll.png" />
     <Content Include="Resources\outlookcaldavsynchronizerlogoarrow.png" />
@@ -821,6 +830,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Ui\SystrayNotification\Views\ProfileStatusesViewModel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\Views\GenericReportWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

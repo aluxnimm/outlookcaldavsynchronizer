@@ -82,39 +82,45 @@
       <UIElement />
     </DockPanel>
   
-  <DockPanel>
-      <ToolBar DockPanel.Dock="Top">
-        <Button Command="{Binding AddCommand}" ToolTip="Add new profile" >
-          <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Add.png"></Image>
-        </Button>
-        <Button Command="{Binding AddMultipleCommand}" ToolTip="Add multiple profiles" >
-          <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/AddMultiple.png"></Image>
-        </Button>
-        <Button Command="{Binding DeleteSelectedCommand}" ToolTip="Delete selected profile">
-          <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Delete.png"></Image>
-        </Button>
-        <Button Command="{Binding CopySelectedCommand}" ToolTip="Copy selected profile">
-          <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Copy.png"></Image>
-        </Button>
-        <Button Command="{Binding MoveSelectedUpCommand}" ToolTip="Move selected profile up">
-          <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/MoveUp.png"></Image>
-        </Button>
-        <Button Command="{Binding MoveSelectedDownCommand}" ToolTip="Move selected profile down">
-          <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/MoveDown.png"></Image>
-        </Button>
-        <Separator></Separator>
-        <Button Command="{Binding OpenProfileDataDirectoryCommand}" ToolTip="Open data directory of selected profile">
-          <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Folder.png"></Image>
-        </Button>
-        <Separator></Separator>
-        <Button Command="{Binding ExpandAllCommand}" ToolTip="Expand all nodes">
-          <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ExpandAll.png"></Image>
-        </Button>
-        <Button Command="{Binding CollapseAllCommand}" ToolTip="Collapse all nodes">
-          <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/CollapseAll.png"></Image>
-        </Button>
-
-      </ToolBar>
+  
+      <ToolBar DockPanel.Dock="Top" >
+          <Button Command="{Binding AddCommand}" ToolTip="Add new profile" >
+            <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Add.png"></Image>
+          </Button>
+          <Button Command="{Binding AddMultipleCommand}" ToolTip="Add multiple profiles" >
+            <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/AddMultiple.png"></Image>
+          </Button>
+          <Button Command="{Binding DeleteSelectedCommand}" ToolTip="Delete selected profile">
+            <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Delete.png"></Image>
+          </Button>
+          <Button Command="{Binding CopySelectedCommand}" ToolTip="Copy selected profile">
+            <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Copy.png"></Image>
+          </Button>
+          <Button Command="{Binding MoveSelectedUpCommand}" ToolTip="Move selected profile up">
+            <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/MoveUp.png"></Image>
+          </Button>
+          <Button Command="{Binding MoveSelectedDownCommand}" ToolTip="Move selected profile down">
+            <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/MoveDown.png"></Image>
+          </Button>
+          <Separator></Separator>
+          <Button Command="{Binding OpenProfileDataDirectoryCommand}" ToolTip="Open data directory of selected profile">
+            <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Folder.png"></Image>
+          </Button>
+          <Button Command="{Binding ExpandAllCommand}" ToolTip="Expand all nodes">
+            <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ExpandAll.png"></Image>
+          </Button>
+          <Button Command="{Binding CollapseAllCommand}" ToolTip="Collapse all nodes">
+            <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/CollapseAll.png"></Image>
+          </Button>
+          <Separator></Separator>
+          <Button Command="{Binding ExportAllCommand}" ToolTip="Export Profiles to File">
+            <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Export.png"></Image>
+          </Button>
+          <Button Command="{Binding ImportCommand}" ToolTip="Import Profiles from File">
+            <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Import.png"></Image>
+          </Button>
+        </ToolBar>
+   
       <TreeView MinWidth="220" MaxWidth="300" Margin="3"  ItemsSource="{Binding Options}" x:Name="OptionsTree">
         <TreeView.Resources>
           <views:ToProfileImageConverter x:Key="ToProfileImageConverter" />
@@ -147,7 +153,7 @@
           </Style>
         </TreeView.ItemContainerStyle>
       </TreeView>
-    </DockPanel>
+   
     <ContentControl Content="{Binding ElementName=OptionsTree,Path=SelectedItem}">
 
       <ContentControl.Resources>

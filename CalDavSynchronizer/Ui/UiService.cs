@@ -32,6 +32,8 @@ using CalDavSynchronizer.Ui.Reports.ViewModels;
 using CalDavSynchronizer.Ui.Reports.Views;
 using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
 using CalDavSynchronizer.Ui.SystrayNotification.Views;
+using CalDavSynchronizer.Ui.ViewModels;
+using CalDavSynchronizer.Ui.Views;
 using Microsoft.Office.Interop.Outlook;
 using Size = System.Drawing.Size;
 using SystemColors = System.Drawing.SystemColors;
@@ -40,6 +42,7 @@ namespace CalDavSynchronizer.Ui
 {
   internal class UiService : IUiService
   {
+    private const string c_exportedProfilesFilesFilter = "CalDav Synchronizer profiles (*.cdsp)|*.cdsp";
     private readonly GenericElementHostWindow _profileStatusesWindow;
 
     public UiService (ProfileStatusesViewModel viewModel)
@@ -117,6 +120,31 @@ namespace CalDavSynchronizer.Ui
       System.Windows.MessageBox.Show(errorMessage, title, MessageBoxButton.OK, MessageBoxImage.Error);
     }
 
+
+    public string ShowSaveDialog(string title)
+    {
+      var dialog = new Microsoft.Win32.SaveFileDialog {Title = title, Filter = c_exportedProfilesFilesFilter };
+      return dialog.ShowDialog() == true ? dialog.FileName : null;
+    }
+
+    public string ShowOpenDialog(string title)
+    {
+      var dialog = new Microsoft.Win32.OpenFileDialog { Title = title, Filter = c_exportedProfilesFilesFilter };
+      return dialog.ShowDialog () == true ? dialog.FileName : null;
+    }
+
+    public void ShowReport(string title, string reportText)
+    {
+      var viewModel = new GenericReportViewModel();
+      viewModel.Title = title;
+      viewModel.ReportText = reportText;
+
+      var window = new GenericReportWindow ();
+      window.DataContext = viewModel;
+      window.Icon = BitmapFrame.Create (new Uri ("pack://application:,,,/CalDavSynchronizer;component/Resources/ApplicationIcon.ico"));
+      ElementHost.EnableModelessKeyboardInterop (window);
+      window.ShowDialog();
+    }
 
     private static void SetWindowSize (GenericElementHostWindow window, double ratioToCurrentScreensize)
     {

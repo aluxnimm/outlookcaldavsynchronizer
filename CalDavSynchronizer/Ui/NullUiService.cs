@@ -19,6 +19,7 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.Reports.ViewModels;
+using CalDavSynchronizer.Ui.ViewModels;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui
@@ -54,6 +55,21 @@ namespace CalDavSynchronizer.Ui
     public void ShowErrorDialog(string errorMessage, string title)
     {
       
+    }
+
+    public string ShowSaveDialog(string title)
+    {
+      return null;
+    }
+
+    public string ShowOpenDialog(string title)
+    {
+      return null;
+    }
+
+    public void ShowReport (string title, string reportText)
+    {
+     
     }
   }
 }
