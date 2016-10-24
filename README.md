@@ -85,7 +85,21 @@ Download and extract the `OutlookCalDavSynchronizer-<Version>.zip` into any dire
 If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=48217)
 YOu should also update manually to the latest Visual Studio 2010 Tools for Office Runtime (Version 10.0.60724) if you have an older version installed, since some COMExceptions have been fixed.
 
+Beginning with version 2.9.0 the default install location is `ProgramFilesDir\CalDavSynchronizer\` and the installer remembers the chosen directory for the next updates. Also the install option to install for Everyone instead of the current user is working now, if you want to install the addin for all users on the current machine.
+
 ### Changelog ###
+
+#### 2.9.0 ####
+- New features
+	- Add Profile Import/Export.
+	- Improve Installer, remove Manufacturer from DefaultLocation and remember InstallDir in registry for updates.
+	- Use passive install for updates.
+	- Add toolbar buttons to expand and collapse all nodes in synchronization profiles.
+	- Add general option to expand all nodes in synchronization profiles by default.	
+- Bug fixes
+	- Catch COMException when SyncObjects can't be accessed, github issue 175.
+	- Fix installer for All users deployment.
+	- Fix Map just upcoming reminders for recurring appointments, ticket #398.
 
 #### 2.8.2 ####
 - Bug fixes
@@ -802,6 +816,10 @@ The toolbar on the left upper part provides the following options:
 - **Move selected profile up** change ordering in the tree view
 - **Move selected profile down** change ordering in the tree view
 - **Open data directory of selected profile** Show directory with cached relations file in explorer for debugging
+- **Expand all nodes** expand all nodes in the tree view, enabled by default but can be changed in general options
+- **Collapse all nodes** collapse all nodes in the tree view
+- **Export Profiles to File** and 
+- **Import Profiles from File** See Profile Import/Export
 
 When adding a new profile you can choose between a generic CalDAV/CardDAV, a google profile to simplify the google profile creation and predefined CalDAV/CardDAV profiles for SOGo, Fruux, Posteo, Yandex, GMX, Sarenet and Landmarks where the DAV Url for autodiscovery is already entered. 
 
@@ -1014,10 +1032,10 @@ In the General Options Dialog you can change settings which are used for all syn
 - **Fix invalid settings** Fixes invalid settings automatically, when synchronization profiles are edited.
 - **Include custom message classes in Outlook filter** Disabled by default, enable only if you have custom forms with message_classes other than the default IPM.Appointment/Contact/Task. For better performance, Windows Search Service shouldn't be deactivated if this option is enabled.
 - **Enable Tray Icon** Enabled by default, you can disable the tray icon in the Windows Taskbar if you don't need it.
-- **Use modern UI for sync profiles** Enabled by default, complete redesign of the synchronization profiles dialog using WPF, switches to the old WinForms UI if disabled. 
 - **Accept invalid chars in server response** If checked invalid characters in XML server responses are allowed. A typical invalid char, sent by some servers is Form feed (0x0C).
 - **Trigger sync after Outlook Send/Receive** If checked a manual sync is triggered after the Outlook Send/Receive finishes.
 - **CalDav Connection Timeout (secs)** For slow server connections you can increaste the timeout value (default 90 secs).
+- **Expand all nodes in Synchronization profiles** Enabled by default, expands all nodes in the synchronization profiles to see the suboptions for network settings and mapping configuration.
 
 If you have problems with SSL/TLS and self-signed certificates, you can change the following settings at your own risk.
 The recommended way would be to add the self signed cert to the Local Computer Trusted Root Certification Authorities
@@ -1028,6 +1046,10 @@ You can import the cert by running the MMC as Administrator.
 - **Enable Ssl3** set to true to enable deprecated SSLv3, major security risk, use with caution! 
 
 In the **General Logging** section you can show or clear the log file and define the log level. Possible log levels are `INFO` and  `DEBUG`.
+
+### Profile Import/Export ###
+
+In the toolbar of the synchronization profiles you can export all profiles to a file and import profiles from an earlier exported file. When exporting, you can choose a filename, the extension is *.cdsp and all options are saved in an xml format into this file. When importing the file, existing profiles are merged with the imported ones. If the selected Outlook folder for the profile doesn't exist during import, you need to manually select a folder before you can save the options, they are not automatically created. You need also be aware of the fact, that saved profile passwords won't work on other accounts or machines, since the encryption is dependant on the current user. But you can use the account password from the IMAP/POP3 account if available. General options are not saved in that file, but in the registry in `HKEY_CURRENT_USER\Software\CalDavSynchronizer`.
 
 ### Reports of sync runs ###
 
