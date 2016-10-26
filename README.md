@@ -21,6 +21,7 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 
 - SOGo
 - Horde Kronolith
+- NextCloud
 - OwnCloud
 - SabreDAV
 - Google Calendar
