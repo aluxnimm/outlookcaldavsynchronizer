@@ -86,9 +86,18 @@ Download and extract the `OutlookCalDavSynchronizer-<Version>.zip` into any dire
 If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=48217)
 YOu should also update manually to the latest Visual Studio 2010 Tools for Office Runtime (Version 10.0.60724) if you have an older version installed, since some COMExceptions have been fixed.
 
-Beginning with version 2.9.0 the default install location is `ProgramFilesDir\CalDavSynchronizer\` and the installer remembers the chosen directory for the next updates. Also the install option to install for Everyone instead of the current user is working now, if you want to install the addin for all users on the current machine.
+Beginning with version 2.9.0 the default install location is `ProgramFilesDir\CalDavSynchronizer\` and the installer remembers the chosen directory for the next updates. Also the install option to install for Everyone instead of the current user is working now for Outlook 2010 and higher, if you want to install the addin for all users on the current machine. For Outlook 2007 you can only install the addin for the current user.
 
 ### Changelog ###
+
+#### 2.9.1 ####
+- Hotfix
+	- Fix reminder mapping for just upcoming reminders, regression intruduced in 2.9.0, ticket #406.
+- New features
+	- Add CheckForNewVersions, StoreAppDatainRoamingFolder and IncludeCustomMessageClasses as app.config keys as well, useful for All Users deployment to change defaults.
+- Bug fixes
+	- Improve CustomPropertyMapping Validation and check if properties are empty to avoid Nullreference Exceptions.
+	- Update Google Api Nuget packages.
 
 #### 2.9.0 ####
 - New features
@@ -1093,6 +1102,8 @@ After changing parameters you have to restart Outlook.
 - **loadOperationThresholdForProgressDisplay**: amount of sync operations to show the progress bar (default 50)
 - **calDavConnectTimeout**: timeout for caldav connects (default 90 sec)
 - **enableTaskSynchronization** Support for task sync true or false
+
+You can also change defaults for some of the general options like CheckForNewVersions, StoreAppDatainRoamingFolder, IncludeCustomMessageClasses and SSL/TLS options, useful for All Users deployment, because general options are stored per user in the HKCU registry hive.
 
 In the section `system.net` you can define proxy settings, e.g. use of NTLM credentials
 
