@@ -368,7 +368,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
         if (_configuration.MapReminder == ReminderMapping.JustUpcoming)
         {
-          if (!source.IsRecurring || isRecurrenceException && source.StartUTC.Add (reminderRelativeToStart) <= DateTime.UtcNow)
+          if ((!source.IsRecurring || isRecurrenceException) && source.StartUTC.Add (reminderRelativeToStart) <= DateTime.UtcNow)
             return;
           if (source.IsRecurring && !isRecurrenceException)
           {
@@ -449,7 +449,7 @@ namespace CalDavSynchronizer.Implementation.Events
       if (_configuration.MapReminder == ReminderMapping.JustUpcoming)
       {
 
-        if (!target.IsRecurring || isRecurrenceException && target.StartUTC.Add (alarm.Trigger.Duration.Value) <= DateTime.UtcNow)
+        if ((!target.IsRecurring || isRecurrenceException) && target.StartUTC.Add (alarm.Trigger.Duration.Value) <= DateTime.UtcNow)
         {
           target.ReminderSet = false;
           return;
