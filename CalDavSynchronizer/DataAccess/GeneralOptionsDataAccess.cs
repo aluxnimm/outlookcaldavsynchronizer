@@ -62,15 +62,15 @@ namespace CalDavSynchronizer.DataAccess
 
         return new GeneralOptions()
                {
-                   ShouldCheckForNewerVersions = (int) (key.GetValue (s_shouldCheckForNewerVersionsValueName) ?? 1) != 0,
+                   ShouldCheckForNewerVersions = (int) (key.GetValue (s_shouldCheckForNewerVersionsValueName) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["CheckForNewerVersions"] ?? bool.TrueString))) != 0,
                    CheckIfOnline = (int) (key.GetValue (s_checkIfOnline) ?? 1) != 0,
-                   StoreAppDataInRoamingFolder = (int) (key.GetValue (s_storeAppDataInRoamingFolder) ?? 0) != 0,
+                   StoreAppDataInRoamingFolder = (int) (key.GetValue (s_storeAppDataInRoamingFolder) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["storeAppDataInRoamingFolder"] ?? bool.FalseString))) != 0,
                    DisableCertificateValidation = (int) (key.GetValue (s_disableCertificateValidation) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"] ?? bool.FalseString))) != 0,
                    EnableTls12 = (int) (key.GetValue (s_enableTls12) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"] ?? bool.TrueString))) != 0,
                    EnableSsl3 = (int) (key.GetValue (s_enableSsl3) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"] ?? bool.FalseString))) != 0,
                    CalDavConnectTimeout = TimeSpan.Parse ((string)(key.GetValue (s_calDavConnectTimeout) ?? ConfigurationManager.AppSettings["caldavConnectTimeout"] ?? "01:30")),
                    FixInvalidSettings = (int) (key.GetValue (s_fixInvalidSettings) ?? 1) != 0,
-                   IncludeCustomMessageClasses = (int) (key.GetValue (s_IncludeCustomMessageClasses) ?? 0) != 0,
+                   IncludeCustomMessageClasses = (int) (key.GetValue (s_IncludeCustomMessageClasses) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["includeCustomMessageClasses"] ?? bool.FalseString))) != 0,
                    LogReportsWithoutWarningsOrErrors = (int) (key.GetValue (s_LogReportsWithoutWarningsOrErrors) ?? 0) != 0,
                    LogReportsWithWarnings = (int) (key.GetValue (s_LogReportsWithWarnings) ?? 1) != 0,
                    ShowReportsWithWarningsImmediately = (int) (key.GetValue (s_ShowReportsWithWarningsImmediately) ?? 0) != 0,
