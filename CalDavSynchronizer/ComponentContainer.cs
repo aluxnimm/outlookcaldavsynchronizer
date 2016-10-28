@@ -313,6 +313,8 @@ namespace CalDavSynchronizer
 
     private void UpdateGeneralOptionDependencies (GeneralOptions generalOptions)
     {
+      SystemNetSettings.UseUnsafeHeaderParsing = generalOptions.UseUnsafeHeaderParsing;
+
       _logReportsWithJustWarnings = generalOptions.LogReportsWithWarnings;
       _logReportsWithoutWarningsOrErrors = generalOptions.LogReportsWithoutWarningsOrErrors;
 

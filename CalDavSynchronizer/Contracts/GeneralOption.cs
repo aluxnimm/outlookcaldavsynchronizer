@@ -21,6 +21,7 @@ namespace CalDavSynchronizer.Contracts
   public class GeneralOptions
   {
     public bool AcceptInvalidCharsInServerResponse { get; set; }
+    public bool UseUnsafeHeaderParsing { get; set; }
     public bool StoreAppDataInRoamingFolder { get; set; }
     public bool ShouldCheckForNewerVersions { get; set; }
     public bool CheckIfOnline { get; set; }

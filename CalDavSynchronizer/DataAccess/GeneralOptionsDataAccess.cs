@@ -50,6 +50,7 @@ namespace CalDavSynchronizer.DataAccess
     private const string s_EnableTrayIcon = "EnableTrayIcon";
     private const string s_EntityCacheVersion = "EntityCacheVersion";
     private const string s_AcceptInvalidCharsInServerResponse = "AcceptInvalidCharsInServerResponse";
+    private const string s_UseUnsafeHeaderParsing = "UseUnsafeHeaderParsing";
     private const string s_TriggerSyncAfterSendReceive = "TriggerSyncAfterSendReceive";
     private const string s_ExpandAllSyncProfiles = "ExpandAllSyncProfiles";
     private const string s_ToolbarSettings = "ToolbarSettings";
@@ -79,6 +80,7 @@ namespace CalDavSynchronizer.DataAccess
                    EnableDebugLog = (int) (key.GetValue (s_EnableDebugLog) ?? debugEnabledInConfig) != 0,
                    EnableTrayIcon = (int) (key.GetValue (s_EnableTrayIcon) ?? 1) != 0,
                    AcceptInvalidCharsInServerResponse = (int) (key.GetValue (s_AcceptInvalidCharsInServerResponse) ?? 0) != 0,
+                   UseUnsafeHeaderParsing = (int) (key.GetValue (s_UseUnsafeHeaderParsing) ?? Convert.ToInt32 (SystemNetSettings.UseUnsafeHeaderParsing)) !=0,
                    TriggerSyncAfterSendReceive = (int) (key.GetValue (s_TriggerSyncAfterSendReceive) ?? 0) != 0,
                    ExpandAllSyncProfiles = (int) (key.GetValue (s_ExpandAllSyncProfiles) ?? 1) != 0
         };
@@ -106,6 +108,7 @@ namespace CalDavSynchronizer.DataAccess
         key.SetValue (s_EnableDebugLog, options.EnableDebugLog ? 1 : 0);
         key.SetValue (s_EnableTrayIcon, options.EnableTrayIcon ? 1 : 0);
         key.SetValue (s_AcceptInvalidCharsInServerResponse, options.AcceptInvalidCharsInServerResponse ? 1 : 0);
+        key.SetValue (s_UseUnsafeHeaderParsing, options.UseUnsafeHeaderParsing ? 1 : 0);
         key.SetValue (s_TriggerSyncAfterSendReceive, options.TriggerSyncAfterSendReceive ? 1 : 0);
         key.SetValue (s_ExpandAllSyncProfiles, options.ExpandAllSyncProfiles ? 1 : 0);
       }

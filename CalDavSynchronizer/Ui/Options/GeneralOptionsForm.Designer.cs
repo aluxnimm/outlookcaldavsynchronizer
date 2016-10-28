@@ -62,6 +62,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.label6 = new System.Windows.Forms.Label();
       this._calDavConnectTimeoutTextBox = new System.Windows.Forms.TextBox();
       this.label4 = new System.Windows.Forms.Label();
+      this._useUnsafeHeaderParsingCheckBox = new System.Windows.Forms.CheckBox();
       this.groupBox1.SuspendLayout();
       this.groupBox2.SuspendLayout();
       this.groupBox3.SuspendLayout();
@@ -127,7 +128,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._enableTls12Checkbox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._enableTls12Checkbox.Name = "_enableTls12Checkbox";
       this._enableTls12Checkbox.Size = new System.Drawing.Size(120, 21);
-      this._enableTls12Checkbox.TabIndex = 14;
+      this._enableTls12Checkbox.TabIndex = 15;
       this._enableTls12Checkbox.Text = "Enable TLS12";
       this._toolTip.SetToolTip(this._enableTls12Checkbox, "Disabling is a major security risk, not recommended!");
       this._enableTls12Checkbox.UseVisualStyleBackColor = true;
@@ -139,7 +140,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._disableCertificateValidationCheckbox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._disableCertificateValidationCheckbox.Name = "_disableCertificateValidationCheckbox";
       this._disableCertificateValidationCheckbox.Size = new System.Drawing.Size(210, 21);
-      this._disableCertificateValidationCheckbox.TabIndex = 13;
+      this._disableCertificateValidationCheckbox.TabIndex = 14;
       this._disableCertificateValidationCheckbox.Text = "Disable Certificate Validation";
       this._toolTip.SetToolTip(this._disableCertificateValidationCheckbox, "Major security risk, not recommended!");
       this._disableCertificateValidationCheckbox.UseVisualStyleBackColor = true;
@@ -151,7 +152,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._enableSsl3Checkbox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._enableSsl3Checkbox.Name = "_enableSsl3Checkbox";
       this._enableSsl3Checkbox.Size = new System.Drawing.Size(112, 21);
-      this._enableSsl3Checkbox.TabIndex = 15;
+      this._enableSsl3Checkbox.TabIndex = 16;
       this._enableSsl3Checkbox.Text = "Enable SSL3";
       this._toolTip.SetToolTip(this._enableSsl3Checkbox, "Major security risk, not recommended!");
       this._enableSsl3Checkbox.UseVisualStyleBackColor = true;
@@ -168,7 +169,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox1.Name = "groupBox1";
       this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this.groupBox1.Size = new System.Drawing.Size(500, 114);
-      this.groupBox1.TabIndex = 12;
+      this.groupBox1.TabIndex = 13;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "SSL/TLS settings";
       this._toolTip.SetToolTip(this.groupBox1, "Changing these options can be a major security risk, not recommended!");
@@ -239,11 +240,11 @@ namespace CalDavSynchronizer.Ui.Options
       // _triggerSyncAfterSendReceiveCheckBox
       // 
       this._triggerSyncAfterSendReceiveCheckBox.AutoSize = true;
-      this._triggerSyncAfterSendReceiveCheckBox.Location = new System.Drawing.Point(16, 190);
+      this._triggerSyncAfterSendReceiveCheckBox.Location = new System.Drawing.Point(16, 217);
       this._triggerSyncAfterSendReceiveCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._triggerSyncAfterSendReceiveCheckBox.Name = "_triggerSyncAfterSendReceiveCheckBox";
       this._triggerSyncAfterSendReceiveCheckBox.Size = new System.Drawing.Size(287, 21);
-      this._triggerSyncAfterSendReceiveCheckBox.TabIndex = 9;
+      this._triggerSyncAfterSendReceiveCheckBox.TabIndex = 10;
       this._triggerSyncAfterSendReceiveCheckBox.Text = "Trigger sync after Outlook Send/Receive";
       this._toolTip.SetToolTip(this._triggerSyncAfterSendReceiveCheckBox, "If checked a manual sync is always triggered after the Outlook Send/Receive finis" +
         "hes.");
@@ -264,11 +265,11 @@ namespace CalDavSynchronizer.Ui.Options
       // _expandAllSyncProfilesCheckBox
       // 
       this._expandAllSyncProfilesCheckBox.AutoSize = true;
-      this._expandAllSyncProfilesCheckBox.Location = new System.Drawing.Point(16, 253);
+      this._expandAllSyncProfilesCheckBox.Location = new System.Drawing.Point(16, 280);
       this._expandAllSyncProfilesCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._expandAllSyncProfilesCheckBox.Name = "_expandAllSyncProfilesCheckBox";
       this._expandAllSyncProfilesCheckBox.Size = new System.Drawing.Size(309, 21);
-      this._expandAllSyncProfilesCheckBox.TabIndex = 11;
+      this._expandAllSyncProfilesCheckBox.TabIndex = 12;
       this._expandAllSyncProfilesCheckBox.Text = "Expand all nodes in Synchronization Profiles";
       this._toolTip.SetToolTip(this._expandAllSyncProfilesCheckBox, "Expand all nodes in the treeview of the Synchronization Profiles configuration by" +
         " default if enabled.");
@@ -289,7 +290,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox2.Name = "groupBox2";
       this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
       this.groupBox2.Size = new System.Drawing.Size(500, 135);
-      this.groupBox2.TabIndex = 16;
+      this.groupBox2.TabIndex = 17;
       this.groupBox2.TabStop = false;
       this.groupBox2.Text = "Synchronization reports";
       // 
@@ -359,7 +360,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox3.Name = "groupBox3";
       this.groupBox3.Padding = new System.Windows.Forms.Padding(4);
       this.groupBox3.Size = new System.Drawing.Size(500, 108);
-      this.groupBox3.TabIndex = 17;
+      this.groupBox3.TabIndex = 18;
       this.groupBox3.TabStop = false;
       this.groupBox3.Text = "General Logging";
       // 
@@ -412,21 +413,34 @@ namespace CalDavSynchronizer.Ui.Options
       // _calDavConnectTimeoutTextBox
       // 
       this._calDavConnectTimeoutTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this._calDavConnectTimeoutTextBox.Location = new System.Drawing.Point(352, 220);
+      this._calDavConnectTimeoutTextBox.Location = new System.Drawing.Point(352, 247);
       this._calDavConnectTimeoutTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._calDavConnectTimeoutTextBox.Name = "_calDavConnectTimeoutTextBox";
       this._calDavConnectTimeoutTextBox.Size = new System.Drawing.Size(131, 22);
-      this._calDavConnectTimeoutTextBox.TabIndex = 10;
+      this._calDavConnectTimeoutTextBox.TabIndex = 11;
       // 
       // label4
       // 
       this.label4.AutoSize = true;
-      this.label4.Location = new System.Drawing.Point(13, 223);
+      this.label4.Location = new System.Drawing.Point(13, 250);
       this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label4.Name = "label4";
       this.label4.Size = new System.Drawing.Size(226, 17);
       this.label4.TabIndex = 11;
       this.label4.Text = "CalDav Connection Timeout (secs)";
+      // 
+      // _useUnsafeHeaderParsingCheckBox
+      // 
+      this._useUnsafeHeaderParsingCheckBox.AutoSize = true;
+      this._useUnsafeHeaderParsingCheckBox.Location = new System.Drawing.Point(16, 190);
+      this._useUnsafeHeaderParsingCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+      this._useUnsafeHeaderParsingCheckBox.Name = "_useUnsafeHeaderParsingCheckBox";
+      this._useUnsafeHeaderParsingCheckBox.Size = new System.Drawing.Size(241, 21);
+      this._useUnsafeHeaderParsingCheckBox.TabIndex = 9;
+      this._useUnsafeHeaderParsingCheckBox.Text = "Enable useUnsafeHeaderParsing";
+      this._toolTip.SetToolTip(this._useUnsafeHeaderParsingCheckBox, "Enable only if you get the following error: \r\nSystem.Net.WebException: The server c" +
+        "ommitted a protocol violation. Section=ResponseStatusLine");
+      this._useUnsafeHeaderParsingCheckBox.UseVisualStyleBackColor = true;
       // 
       // GeneralOptionsForm
       // 
@@ -436,6 +450,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.BackColor = System.Drawing.SystemColors.Window;
       this.CancelButton = this._cancelButton;
       this.ClientSize = new System.Drawing.Size(503, 743);
+      this.Controls.Add(this._useUnsafeHeaderParsingCheckBox);
       this.Controls.Add(this._expandAllSyncProfilesCheckBox);
       this.Controls.Add(this._calDavConnectTimeoutTextBox);
       this.Controls.Add(this._triggerSyncAfterSendReceiveCheckBox);
@@ -500,5 +515,6 @@ namespace CalDavSynchronizer.Ui.Options
     private System.Windows.Forms.TextBox _calDavConnectTimeoutTextBox;
     private System.Windows.Forms.Label label4;
     private System.Windows.Forms.CheckBox _expandAllSyncProfilesCheckBox;
+    private System.Windows.Forms.CheckBox _useUnsafeHeaderParsingCheckBox;
   }
 }

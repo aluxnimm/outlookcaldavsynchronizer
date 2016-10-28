@@ -169,6 +169,7 @@ namespace CalDavSynchronizer.Ui.Options
                    EnableDebugLog = logLevel == LogLevel.Debug,
                    EnableTrayIcon = _enableTrayIconCheckBox.Checked,
                    AcceptInvalidCharsInServerResponse = _acceptInvalidCharsInServerResponseCheckBox.Checked,
+                   UseUnsafeHeaderParsing = _useUnsafeHeaderParsingCheckBox.Checked,
                    TriggerSyncAfterSendReceive = _triggerSyncAfterSendReceiveCheckBox.Checked,
                    ExpandAllSyncProfiles = _expandAllSyncProfilesCheckBox.Checked
         };
@@ -190,6 +191,7 @@ namespace CalDavSynchronizer.Ui.Options
         _logLevelComboBox.SelectedValue = value.EnableDebugLog ? LogLevel.Debug : LogLevel.Info;
         _enableTrayIconCheckBox.Checked = value.EnableTrayIcon;
         _acceptInvalidCharsInServerResponseCheckBox.Checked = value.AcceptInvalidCharsInServerResponse;
+        _useUnsafeHeaderParsingCheckBox.Checked = value.UseUnsafeHeaderParsing;
         _triggerSyncAfterSendReceiveCheckBox.Checked = value.TriggerSyncAfterSendReceive;
         _expandAllSyncProfilesCheckBox.Checked = value.ExpandAllSyncProfiles;
       }

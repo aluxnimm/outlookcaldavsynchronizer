@@ -622,6 +622,7 @@
     <Compile Include="Utilities\NullChunkedExecutor.cs" />
     <Compile Include="Utilities\IChunkedExecutor.cs" />
     <Compile Include="Utilities\DictionaryExtensions.cs" />
+    <Compile Include="Utilities\SystemNetSettings.cs" />
     <Compile Include="WebResourceUrls.cs" />
     <EmbeddedResource Include="CalDavSynchronizerRibbon.resx">
       <DependentUpon>CalDavSynchronizerRibbon.cs</DependentUpon>
