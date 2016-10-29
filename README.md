@@ -14,7 +14,7 @@ Outlook Plugin, which synchronizes events, tasks and contacts between Outlook an
 - [Alexander Nimmervoll](https://sourceforge.net/u/nimm/profile/)
 
 This project was initially developed as a master thesis project at the [University of Applied Sciences Technikum Wien](http://www.technikum-wien.at), Software Engineering Degree program.
-Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you can support the project by donating on Sourceforge or directly at directly at PayPal
+Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you can support the project by donating on Sourceforge or directly at PayPal
 
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PWA2N6P5WRSJJ&lc=US).
 
@@ -87,7 +87,7 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 
 Download and extract the `OutlookCalDavSynchronizer-<Version>.zip` into any directory and start setup.exe. You can change the default install path, but you need to use a directory on the `C:\` drive.
 If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=48217)
-YOu should also update manually to the latest Visual Studio 2010 Tools for Office Runtime (Version 10.0.60724) if you have an older version installed, since some COMExceptions have been fixed.
+You should also update manually to the latest Visual Studio 2010 Tools for Office Runtime (Version 10.0.60724) if you have an older version installed, since some COMExceptions have been fixed.
 
 Beginning with version 2.9.0 the default install location is `ProgramFilesDir\CalDavSynchronizer\` and the installer remembers the chosen directory for the next updates. Also the install option to install for Everyone instead of the current user is working now for Outlook 2010 and higher, if you want to install the addin for all users on the current machine. For Outlook 2007 you can only install the addin for the current user.
 
