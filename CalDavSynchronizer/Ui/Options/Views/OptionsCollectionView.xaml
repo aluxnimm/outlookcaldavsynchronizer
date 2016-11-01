@@ -153,8 +153,8 @@
           </Style>
         </TreeView.ItemContainerStyle>
       </TreeView>
-   
-    <ContentControl Content="{Binding ElementName=OptionsTree,Path=SelectedItem}">
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+      <ContentControl Content="{Binding ElementName=OptionsTree,Path=SelectedItem}">
 
       <ContentControl.Resources>
         <DataTemplate DataType="{x:Type mappingViewModels:ContactMappingConfigurationViewModel}">
@@ -271,6 +271,7 @@
       </ContentControl.Resources>
 
     </ContentControl>
+   </ScrollViewer>
   </DockPanel>
 
 </UserControl>
