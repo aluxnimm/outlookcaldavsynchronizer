@@ -297,6 +297,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_593FC7C26DA342179AC2756B0BC5D8F9"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_5AE4DDD39B7DE5689AA6C67805CBB7EF"
         "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
         "MsmSig" = "8:_UNDEFINED"
@@ -329,6 +335,12 @@
         {
         "MsmKey" = "8:_5BCD7DBF04266E64B065FBFF479A3E99"
         "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5BCD7DBF04266E64B065FBFF479A3E99"
+        "OwnerKey" = "8:_593FC7C26DA342179AC2756B0BC5D8F9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -779,6 +791,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_593FC7C26DA342179AC2756B0BC5D8F9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1373,6 +1391,34 @@
     {
         "CustomAction"
         {
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_295ABE464CC34C9084E8A6705942FE9F"
+            {
+            "Name" = "8:Primäre Ausgabe from CalDavSynchronizer.CustomInstaller (Active)"
+            "Condition" = "8:"
+            "Object" = "8:_593FC7C26DA342179AC2756B0BC5D8F9"
+            "FileType" = "3:1"
+            "InstallAction" = "3:1"
+            "Arguments" = "8:"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_449B3409_C50D_4DC4_9FF8_26A4BD04BF7E"
+            "InstallerClass" = "11:TRUE"
+            "CustomActionData" = "8:/AllUsers=[ALLUSERS]"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_8647DDA4BF5C48EDB4D94D5046761825"
+            {
+            "Name" = "8:Primäre Ausgabe from CalDavSynchronizer.CustomInstaller (Active)"
+            "Condition" = "8:"
+            "Object" = "8:_593FC7C26DA342179AC2756B0BC5D8F9"
+            "FileType" = "3:1"
+            "InstallAction" = "3:4"
+            "Arguments" = "8:"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_9A5046D3_2DB9_4244_A801_4A2469B24732"
+            "InstallerClass" = "11:TRUE"
+            "CustomActionData" = "8:/AllUsers=[ALLUSERS]"
+            }
         }
         "DefaultFeature"
         {
@@ -3847,7 +3893,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:CalDavSynchronizer.OAuth.Google, Version=2.9.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:CalDavSynchronizer.OAuth.Google, Version=2.9.1.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_E8BFD262316C23666C9E3094B8635548"
@@ -4033,7 +4079,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:GenSync, Version=2.9.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:GenSync, Version=2.9.1.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_F5E7FDF04E965A59AC2244FBC6EF4BD0"
@@ -4217,7 +4263,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CalDavSynchronizer"
         "ProductCode" = "8:{5BCCD2B2-284B-4CCC-9D6C-75F54A51BC27}"
-        "PackageCode" = "8:{2C18D861-2DE7-4838-B238-8EDA69F387D2}"
+        "PackageCode" = "8:{6F2A5591-7501-4084-BCE3-C5F44B0071ED}"
         "UpgradeCode" = "8:{691063F4-DD9A-4264-948D-3FBD2565572C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -4632,7 +4678,7 @@
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
                             "Setting" = "3:2"
-                            "Value" = "8:The installer will guide you through the steps required to install [ProductName] on your computer. This addin works for Outlook 2007 - 2016, but Outlook 2013 or higher is recommended!"
+                            "Value" = "8:The installer will guide you through the steps required to install [ProductName] on your computer. This addin works for Outlook 2007 - 2016, but Outlook 2013 or higher is recommended! Outlook 2007 only supports installing addins for the current user, so don't choose Everyone and install with the default option \"Just me\"."
                             "DefaultValue" = "8:#1215"
                             "UsePlugInResources" = "11:TRUE"
                             }
@@ -5022,6 +5068,34 @@
         }
         "ProjectOutput"
         {
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_593FC7C26DA342179AC2756B0BC5D8F9"
+            {
+            "SourcePath" = "8:..\\CalDavSynchronizer.CustomInstaller\\obj\\Release\\CalDavSynchronizer.CustomInstaller.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{0C682D77-1CBB-4336-8F6E-CDDA9B6C0C97}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_71A5BA7C36384A6FA76D693EB014974D"
             {
             "SourcePath" = "8:..\\CalDavSynchronizer\\obj\\Release\\CalDavSynchronizer.dll"

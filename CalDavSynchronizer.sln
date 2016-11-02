@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalDavSynchronizer", "CalDavSynchronizer\CalDavSynchronizer.csproj", "{64937844-752B-49A4-9B3F-3526601E93E1}"
 EndProject
@@ -18,6 +18,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalDavDataAccessIntegrationTests", "CalDavDataAccessIntegrationTests\CalDavDataAccessIntegrationTests.csproj", "{BE747238-9388-43CE-AF64-536C64442EB9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalDavSynchronizer.OAuth.Google", "CalDavSynchronizer.OAuth.Google\CalDavSynchronizer.OAuth.Google.csproj", "{230914CF-6FF1-4B09-A831-C37C6B41D127}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalDavSynchronizer.CustomInstaller", "CalDavSynchronizer.CustomInstaller\CalDavSynchronizer.CustomInstaller.csproj", "{0C682D77-1CBB-4336-8F6E-CDDA9B6C0C97}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +57,10 @@ Global
 		{230914CF-6FF1-4B09-A831-C37C6B41D127}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{230914CF-6FF1-4B09-A831-C37C6B41D127}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{230914CF-6FF1-4B09-A831-C37C6B41D127}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C682D77-1CBB-4336-8F6E-CDDA9B6C0C97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C682D77-1CBB-4336-8F6E-CDDA9B6C0C97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C682D77-1CBB-4336-8F6E-CDDA9B6C0C97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C682D77-1CBB-4336-8F6E-CDDA9B6C0C97}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
