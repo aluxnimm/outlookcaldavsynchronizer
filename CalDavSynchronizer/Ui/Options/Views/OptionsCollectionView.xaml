@@ -153,7 +153,7 @@
           </Style>
         </TreeView.ItemContainerStyle>
       </TreeView>
-    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
       <ContentControl Content="{Binding ElementName=OptionsTree,Path=SelectedItem}">
 
       <ContentControl.Resources>
