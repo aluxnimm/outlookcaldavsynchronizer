@@ -1003,27 +1003,36 @@ namespace CalDavSynchronizer
       if (options == null)
         return;
 
-      var item = _session.GetItemFromID (entityId, options.OutlookFolderStoreId);
+      try
+      {
 
-      var appointment = item as AppointmentItem;
-      if (appointment != null)
-      {
-        appointment.GetInspector.Activate ();
-        return;
-      }
+        var item = _session.GetItemFromID (entityId, options.OutlookFolderStoreId);
 
-      var task = item as TaskItem;
-      if (task != null)
-      {
-        task.GetInspector.Activate ();
-        return;
+        var appointment = item as AppointmentItem;
+        if (appointment != null)
+        {
+          appointment.GetInspector.Activate();
+          return;
+        }
+
+        var task = item as TaskItem;
+        if (task != null)
+        {
+          task.GetInspector.Activate();
+          return;
+        }
+
+        var contact = item as ContactItem;
+        if (contact != null)
+        {
+          contact.GetInspector.Activate();
+          return;
+        }
       }
-      
-      var contact = item as ContactItem;
-      if (contact != null)
+      catch (COMException ex)
       {
-        contact.GetInspector.Activate ();
-        return;
+        MessageBox.Show ("Can't access Outlook item, maybe it was moved or deleted!", MessageBoxTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
+        s_logger.Warn ("Can't access Outlook item, maybe it was moved or deleted!", ex);
       }
     }
 
