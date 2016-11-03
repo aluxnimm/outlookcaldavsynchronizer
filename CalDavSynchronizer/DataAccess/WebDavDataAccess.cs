@@ -48,7 +48,11 @@ namespace CalDavSynchronizer.DataAccess
 
     protected async Task<bool> HasOption (string requiredOption)
     {
-      var headers = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (
+      IHttpHeaders headers;
+      try
+      {
+
+        headers = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders(
           _serverUrl,
           "OPTIONS",
           null,
@@ -56,7 +60,12 @@ namespace CalDavSynchronizer.DataAccess
           null,
           null,
           null);
-
+      }
+      catch (WebDavClientException x) when (x.StatusCode == HttpStatusCode.NotFound)
+      {
+        // iCloud and Google CardDav return with 404 and OPTIONS doesn't work for the resource uri
+        return true;
+      }
       IEnumerable<string> davValues;
       if (headers.TryGetValues ("DAV", out davValues))
       {
@@ -73,7 +82,7 @@ namespace CalDavSynchronizer.DataAccess
 
     protected async Task<bool> IsResourceType (string @namespace, string name)
     {
-      var properties = await GetAllProperties (_serverUrl, 0);
+      var properties = await GetResourceType (_serverUrl);
 
       XmlNode resourceTypeNode = properties.XmlDocument.SelectSingleNode (
           string.Format ("/D:multistatus/D:response/D:propstat/D:prop/D:resourcetype/{0}:{1}", @namespace, name),
@@ -130,18 +139,20 @@ namespace CalDavSynchronizer.DataAccess
       return HttpUtility.GetQuotedEtag(eTagNode.InnerText);
     }
 
-    private Task<XmlDocumentWithNamespaceManager> GetAllProperties (Uri url, int depth)
+    private Task<XmlDocumentWithNamespaceManager> GetResourceType (Uri url)
     {
       return _webDavClient.ExecuteWebDavRequestAndReadResponse (
           url,
           "PROPFIND",
-          depth,
+          0,
           null,
           null,
           "application/xml",
           @"<?xml version='1.0'?>
                         <D:propfind xmlns:D=""DAV:"">
-                            <D:allprop/>
+                           <D:prop>
+                              <D:resourcetype/>
+                           </D:prop>
                         </D:propfind>
                  "
           );
