@@ -78,7 +78,11 @@ namespace CalDavSynchronizer.DataAccess
             {  
               if (!string.IsNullOrEmpty (homeSetNodeHref.InnerText))
               {
-                var calendarDocument = await ListCalendars (new Uri (calendarHomeSetProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + homeSetNodeHref.InnerText));
+                var calendarHomeSetUri = Uri.IsWellFormedUriString (homeSetNodeHref.InnerText, UriKind.Absolute) ?
+                  new Uri (homeSetNodeHref.InnerText) :
+                  new Uri (calendarHomeSetProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + homeSetNodeHref.InnerText);
+
+                var calendarDocument = await ListCalendars (calendarHomeSetUri);
 
                 XmlNodeList responseNodes = calendarDocument.XmlDocument.SelectNodes ("/D:multistatus/D:response",calendarDocument.XmlNamespaceManager);
 
@@ -104,9 +108,15 @@ namespace CalDavSynchronizer.DataAccess
                         var path = urlNode.InnerText.EndsWith ("/") ? urlNode.InnerText : urlNode.InnerText + "/";
 
                         if (supportedComponentsNode.InnerXml.Contains ("VEVENT"))
-                            calendars.Add (new CalendarData (new Uri (calendarDocument.DocumentUri, path), displayNameNode.InnerText, calendarColor));
+                        {
+                          var displayName = string.IsNullOrEmpty (displayNameNode.InnerText) ? "Default Calendar" : displayNameNode.InnerText;
+                          calendars.Add (new CalendarData (new Uri (calendarDocument.DocumentUri, path), displayName, calendarColor));
+                        }
                         if (supportedComponentsNode.InnerXml.Contains ("VTODO"))
-                            taskLists.Add (new TaskListData (new Uri (calendarDocument.DocumentUri, path).ToString(), displayNameNode.InnerText));
+                        {
+                          var displayName = string.IsNullOrEmpty (displayNameNode.InnerText) ? "Default Tasks" : displayNameNode.InnerText;
+                          taskLists.Add (new TaskListData (new Uri (calendarDocument.DocumentUri, path).ToString(), displayName));
+                        }
                       }
                     }
                   }
