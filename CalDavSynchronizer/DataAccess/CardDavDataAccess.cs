@@ -69,7 +69,11 @@ namespace CalDavSynchronizer.DataAccess
             {
               if (!string.IsNullOrEmpty (homeSetNodeHref.InnerText))
               {
-                var addressBookDocument = await ListAddressBooks (new Uri (addressBookHomeSetProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + homeSetNodeHref.InnerText));
+                var addressBookHomeSetUri = Uri.IsWellFormedUriString (homeSetNodeHref.InnerText, UriKind.Absolute) ? 
+                  new Uri (homeSetNodeHref.InnerText) : 
+                  new Uri (addressBookHomeSetProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + homeSetNodeHref.InnerText);
+
+                var addressBookDocument = await ListAddressBooks (addressBookHomeSetUri);
 
                 XmlNodeList responseNodes = addressBookDocument.XmlDocument.SelectNodes ("/D:multistatus/D:response", addressBookDocument.XmlNamespaceManager);
 
@@ -83,7 +87,8 @@ namespace CalDavSynchronizer.DataAccess
                     if (isCollection != null)
                     {
                       var path = urlNode.InnerText.EndsWith ("/") ? urlNode.InnerText : urlNode.InnerText + "/";
-                      addressbooks.Add (new AddressBookData (new Uri (addressBookDocument.DocumentUri, path), displayNameNode.InnerText));
+                      var displayName = string.IsNullOrEmpty (displayNameNode.InnerText) ? "Default Addressbook" : displayNameNode.InnerText;
+                      addressbooks.Add (new AddressBookData (new Uri (addressBookDocument.DocumentUri, path), displayName));
                     }
                   }
                 }
