@@ -210,6 +210,8 @@ namespace CalDavSynchronizer
       var generalOptions = _generalOptionsDataAccess.LoadOptions ();
 
       await _scheduler.SetOptions (options, generalOptions);
+      if (generalOptions.TriggerSyncAfterSendReceive)
+        _sync_SyncEnd();
     }
 
     private void _sync_SyncEnd()

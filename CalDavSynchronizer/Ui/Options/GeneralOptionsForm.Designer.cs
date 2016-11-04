@@ -49,6 +49,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._triggerSyncAfterSendReceiveCheckBox = new System.Windows.Forms.CheckBox();
       this.label2 = new System.Windows.Forms.Label();
       this._expandAllSyncProfilesCheckBox = new System.Windows.Forms.CheckBox();
+      this._useUnsafeHeaderParsingCheckBox = new System.Windows.Forms.CheckBox();
       this.groupBox2 = new System.Windows.Forms.GroupBox();
       this._maxReportAgeInDays = new System.Windows.Forms.TextBox();
       this.label3 = new System.Windows.Forms.Label();
@@ -62,7 +63,6 @@ namespace CalDavSynchronizer.Ui.Options
       this.label6 = new System.Windows.Forms.Label();
       this._calDavConnectTimeoutTextBox = new System.Windows.Forms.TextBox();
       this.label4 = new System.Windows.Forms.Label();
-      this._useUnsafeHeaderParsingCheckBox = new System.Windows.Forms.CheckBox();
       this.groupBox1.SuspendLayout();
       this.groupBox2.SuspendLayout();
       this.groupBox3.SuspendLayout();
@@ -243,11 +243,11 @@ namespace CalDavSynchronizer.Ui.Options
       this._triggerSyncAfterSendReceiveCheckBox.Location = new System.Drawing.Point(16, 217);
       this._triggerSyncAfterSendReceiveCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._triggerSyncAfterSendReceiveCheckBox.Name = "_triggerSyncAfterSendReceiveCheckBox";
-      this._triggerSyncAfterSendReceiveCheckBox.Size = new System.Drawing.Size(287, 21);
+      this._triggerSyncAfterSendReceiveCheckBox.Size = new System.Drawing.Size(385, 21);
       this._triggerSyncAfterSendReceiveCheckBox.TabIndex = 10;
-      this._triggerSyncAfterSendReceiveCheckBox.Text = "Trigger sync after Outlook Send/Receive";
+      this._triggerSyncAfterSendReceiveCheckBox.Text = "Trigger sync after Outlook Send/Receive and on Startup";
       this._toolTip.SetToolTip(this._triggerSyncAfterSendReceiveCheckBox, "If checked a manual sync is always triggered after the Outlook Send/Receive finis" +
-        "hes.");
+        "hes \r\nand on startup of Outlook.");
       this._triggerSyncAfterSendReceiveCheckBox.UseVisualStyleBackColor = true;
       // 
       // label2
@@ -274,6 +274,19 @@ namespace CalDavSynchronizer.Ui.Options
       this._toolTip.SetToolTip(this._expandAllSyncProfilesCheckBox, "Expand all nodes in the treeview of the Synchronization Profiles configuration by" +
         " default if enabled.");
       this._expandAllSyncProfilesCheckBox.UseVisualStyleBackColor = true;
+      // 
+      // _useUnsafeHeaderParsingCheckBox
+      // 
+      this._useUnsafeHeaderParsingCheckBox.AutoSize = true;
+      this._useUnsafeHeaderParsingCheckBox.Location = new System.Drawing.Point(16, 190);
+      this._useUnsafeHeaderParsingCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+      this._useUnsafeHeaderParsingCheckBox.Name = "_useUnsafeHeaderParsingCheckBox";
+      this._useUnsafeHeaderParsingCheckBox.Size = new System.Drawing.Size(241, 21);
+      this._useUnsafeHeaderParsingCheckBox.TabIndex = 9;
+      this._useUnsafeHeaderParsingCheckBox.Text = "Enable useUnsafeHeaderParsing";
+      this._toolTip.SetToolTip(this._useUnsafeHeaderParsingCheckBox, "Enable only if you get the following error: \r\nSystem.Net.WebException: The server" +
+        " committed a protocol violation. Section=ResponseStatusLine");
+      this._useUnsafeHeaderParsingCheckBox.UseVisualStyleBackColor = true;
       // 
       // groupBox2
       // 
@@ -428,19 +441,6 @@ namespace CalDavSynchronizer.Ui.Options
       this.label4.Size = new System.Drawing.Size(226, 17);
       this.label4.TabIndex = 11;
       this.label4.Text = "CalDav Connection Timeout (secs)";
-      // 
-      // _useUnsafeHeaderParsingCheckBox
-      // 
-      this._useUnsafeHeaderParsingCheckBox.AutoSize = true;
-      this._useUnsafeHeaderParsingCheckBox.Location = new System.Drawing.Point(16, 190);
-      this._useUnsafeHeaderParsingCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-      this._useUnsafeHeaderParsingCheckBox.Name = "_useUnsafeHeaderParsingCheckBox";
-      this._useUnsafeHeaderParsingCheckBox.Size = new System.Drawing.Size(241, 21);
-      this._useUnsafeHeaderParsingCheckBox.TabIndex = 9;
-      this._useUnsafeHeaderParsingCheckBox.Text = "Enable useUnsafeHeaderParsing";
-      this._toolTip.SetToolTip(this._useUnsafeHeaderParsingCheckBox, "Enable only if you get the following error: \r\nSystem.Net.WebException: The server c" +
-        "ommitted a protocol violation. Section=ResponseStatusLine");
-      this._useUnsafeHeaderParsingCheckBox.UseVisualStyleBackColor = true;
       // 
       // GeneralOptionsForm
       // 
