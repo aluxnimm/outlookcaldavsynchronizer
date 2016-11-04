@@ -143,6 +143,16 @@ namespace CalDavSynchronizer.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap logo_nextcloud {
+            get {
+                object obj = ResourceManager.GetObject("logo_nextcloud", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap logo_posteo {
             get {
                 object obj = ResourceManager.GetObject("logo_posteo", resourceCulture);

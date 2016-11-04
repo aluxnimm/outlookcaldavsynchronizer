@@ -34,6 +34,7 @@ namespace CalDavSynchronizer.Ui.Options
       _logoLandmarksPictureBox.Image = Properties.Resources.logo_landmarks;
       _logoSogoPictureBox.Image = Properties.Resources.logo_sogo;
       _logoCozyPictureBox.Image = Properties.Resources.logo_cozy;
+      _logoNextCloudPictureBox.Image = Properties.Resources.logo_nextcloud;
     }
 
     private void _okButton_Click (object sender, EventArgs e)
@@ -66,6 +67,8 @@ namespace CalDavSynchronizer.Ui.Options
           return ProfileType.Sogo;
         if (form._cozyTypeRadioButton.Checked)
           return ProfileType.Cozy;
+        if (form._nextCloudTypeRadioButton.Checked)
+          return ProfileType.NextCloud;
       }
 
       return null;

@@ -51,6 +51,8 @@ namespace CalDavSynchronizer.Ui.Options
       this._sogoTypeRadioButton = new System.Windows.Forms.RadioButton();
       this._logoCozyPictureBox = new System.Windows.Forms.PictureBox();
       this._cozyTypeRadioButton = new System.Windows.Forms.RadioButton();
+      this._logoNextCloudPictureBox = new System.Windows.Forms.PictureBox();
+      this._nextCloudTypeRadioButton = new System.Windows.Forms.RadioButton();
       ((System.ComponentModel.ISupportInitialize)(this._logoFruuxPictureBox)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this._logoGooglePictureBox)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this._logoPosteoPictureBox)).BeginInit();
@@ -60,6 +62,7 @@ namespace CalDavSynchronizer.Ui.Options
       ((System.ComponentModel.ISupportInitialize)(this._logoLandmarksPictureBox)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this._logoSogoPictureBox)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this._logoCozyPictureBox)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this._logoNextCloudPictureBox)).BeginInit();
       this.SuspendLayout();
       // 
       // _genericTypeRadioButton
@@ -297,6 +300,28 @@ namespace CalDavSynchronizer.Ui.Options
       this._cozyTypeRadioButton.Text = "Cozy Cloud";
       this._cozyTypeRadioButton.UseVisualStyleBackColor = true;
       // 
+      // _logoNextCloudPictureBox
+      // 
+      this._logoNextCloudPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this._logoNextCloudPictureBox.Location = new System.Drawing.Point(297, 263);
+      this._logoNextCloudPictureBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+      this._logoNextCloudPictureBox.Name = "_logoNextCloudPictureBox";
+      this._logoNextCloudPictureBox.Size = new System.Drawing.Size(136, 40);
+      this._logoNextCloudPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+      this._logoNextCloudPictureBox.TabIndex = 24;
+      this._logoNextCloudPictureBox.TabStop = false;
+      // 
+      // _nextCloudTypeRadioButton
+      // 
+      this._nextCloudTypeRadioButton.AutoSize = true;
+      this._nextCloudTypeRadioButton.Location = new System.Drawing.Point(440, 273);
+      this._nextCloudTypeRadioButton.Margin = new System.Windows.Forms.Padding(4);
+      this._nextCloudTypeRadioButton.Name = "_nextCloudTypeRadioButton";
+      this._nextCloudTypeRadioButton.Size = new System.Drawing.Size(93, 21);
+      this._nextCloudTypeRadioButton.TabIndex = 23;
+      this._nextCloudTypeRadioButton.Text = "NextCloud";
+      this._nextCloudTypeRadioButton.UseVisualStyleBackColor = true;
+      // 
       // SelectOptionsDisplayTypeForm
       // 
       this.AcceptButton = this._okButton;
@@ -305,6 +330,8 @@ namespace CalDavSynchronizer.Ui.Options
       this.BackColor = System.Drawing.SystemColors.Window;
       this.CancelButton = this._cancelButton;
       this.ClientSize = new System.Drawing.Size(557, 398);
+      this.Controls.Add(this._logoNextCloudPictureBox);
+      this.Controls.Add(this._nextCloudTypeRadioButton);
       this.Controls.Add(this._logoCozyPictureBox);
       this.Controls.Add(this._cozyTypeRadioButton);
       this.Controls.Add(this._logoSogoPictureBox);
@@ -340,6 +367,7 @@ namespace CalDavSynchronizer.Ui.Options
       ((System.ComponentModel.ISupportInitialize)(this._logoLandmarksPictureBox)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this._logoSogoPictureBox)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this._logoCozyPictureBox)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this._logoNextCloudPictureBox)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -368,5 +396,7 @@ namespace CalDavSynchronizer.Ui.Options
     private System.Windows.Forms.RadioButton _sogoTypeRadioButton;
     private System.Windows.Forms.PictureBox _logoCozyPictureBox;
     private System.Windows.Forms.RadioButton _cozyTypeRadioButton;
+    private System.Windows.Forms.PictureBox _logoNextCloudPictureBox;
+    private System.Windows.Forms.RadioButton _nextCloudTypeRadioButton;
   }
 }

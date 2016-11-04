@@ -28,6 +28,7 @@ namespace CalDavSynchronizer.Contracts
     Sarenet,
     Landmarks,
     Sogo,
-    Cozy
+    Cozy,
+    NextCloud
   }
 }

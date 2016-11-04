@@ -740,6 +740,7 @@
     <Resource Include="Resources\Import.png" />
     <Content Include="Resources\LogoBanner.bmp" />
     <Resource Include="Resources\ExpandAll.png" />
+    <Resource Include="Resources\logo_nextcloud.png" />
     <Content Include="Resources\outlookcaldavsynchronizerlogoarrow.png" />
   </ItemGroup>
   <ItemGroup>

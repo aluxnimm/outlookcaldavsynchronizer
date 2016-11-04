@@ -165,6 +165,8 @@ namespace CalDavSynchronizer.Contracts
           return "https://sogo.example.com/SOGo/dav/";
         case ProfileType.Cozy:
           return "https://yourdomain.cozycloud.cc/public/sync/principals/me/";
+        case ProfileType.NextCloud:
+          return "https://server.example/nextcloud/remote.php/dav/";
         default:
           return null;
       }
