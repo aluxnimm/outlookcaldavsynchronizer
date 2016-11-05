@@ -66,6 +66,10 @@ namespace CalDavSynchronizer.Scheduling
       _runLogger = runLogger;
       _synchronizationTimer.Tick += SynchronizationTimer_Tick;
       _synchronizationTimer.Interval = (int) _timerInterval.TotalMilliseconds;
+    }
+
+    public void Start()
+    {
       _synchronizationTimer.Start();
     }
 

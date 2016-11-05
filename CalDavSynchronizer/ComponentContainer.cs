@@ -193,7 +193,7 @@ namespace CalDavSynchronizer
           {
             _syncObject = syncObjects.Inner[1];
             if (generalOptions.TriggerSyncAfterSendReceive)
-              _syncObject.SyncEnd += _sync_SyncEnd;
+              _syncObject.SyncEnd += SyncObject_SyncEnd;
           }
         }
       }
@@ -204,17 +204,23 @@ namespace CalDavSynchronizer
 
     }
 
-    public async Task Initialize()
+    public async Task InitializeSchedulerAndStart()
     {
+      _scheduler.Start();
+
       var options = _optionsDataAccess.LoadOptions ();
       var generalOptions = _generalOptionsDataAccess.LoadOptions ();
 
       await _scheduler.SetOptions (options, generalOptions);
       if (generalOptions.TriggerSyncAfterSendReceive)
-        _sync_SyncEnd();
+      {
+        s_logger.Info ("Triggering sync after startup");
+        EnsureSynchronizationContext ();
+        SynchronizeNowAsync ();
+      }
     }
 
-    private void _sync_SyncEnd()
+    private void SyncObject_SyncEnd()
     {
       s_logger.Info ("Snyc triggered after Outlook Send/Receive finished");
       EnsureSynchronizationContext();
@@ -726,9 +732,9 @@ namespace CalDavSynchronizer
           if (_syncObject != null && newOptions.TriggerSyncAfterSendReceive != generalOptions.TriggerSyncAfterSendReceive)
           {
             if (newOptions.TriggerSyncAfterSendReceive)
-              _syncObject.SyncEnd += _sync_SyncEnd;
+              _syncObject.SyncEnd += SyncObject_SyncEnd;
             else
-              _syncObject.SyncEnd -= _sync_SyncEnd;
+              _syncObject.SyncEnd -= SyncObject_SyncEnd;
           }
         }
       }

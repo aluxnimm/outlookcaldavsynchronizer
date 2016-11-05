@@ -71,7 +71,7 @@ namespace CalDavSynchronizer
         ComponentContainer.EnsureSynchronizationContext();
 
         s_logger.Info ("Initializing component container.");
-        await ComponentContainer.Initialize();
+        await ComponentContainer.InitializeSchedulerAndStart();
 
         s_logger.Info ("Startup exiting.");
       }
