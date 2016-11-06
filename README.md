@@ -74,6 +74,7 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 - bulk creation of multiple profiles
 - Use server settings from Outlook IMAP/POP3 account profile
 - Map Windows to standard IANA/Olson timezones
+- Configurable mapping of Outlook custom properties
 
 ### Used Libraries ###
 
@@ -92,6 +93,18 @@ You should also update manually to the latest Visual Studio 2010 Tools for Offic
 Beginning with version 2.9.0 the default install location is `ProgramFilesDir\CalDavSynchronizer\` and the installer remembers the chosen directory for the next updates. Also the install option to install for Everyone instead of the current user is working now for Outlook 2010 and higher, if you want to install the addin for all users on the current machine. For Outlook 2007 you can only install the addin for the current user.
 
 ### Changelog ###
+
+#### 2.10.0 ####
+- New features
+	- Add profile type for NextCloud.
+	- Add general option to enable useUnsafeHeaderParsing, needed for Yahoo and cPanel Horde.
+	- Improve Autodiscovery.
+- Bug fixes
+	- Fix installer for Office 64-bit installation for AllUsers deployment and copy registry keys to correct HKLM location, ticket #410.
+	- Add scrollbar to sync profiles content control, gh issue 176.
+	- Fix autodiscovery for iCloud CardDav, ticket #414.
+	- Trigger sync also on Outlook startup when TriggerSyncAfterSendReceive is enabled in general options, ticket #415.
+	- Catch COMException when Outlook item can't be found in sync reports.
 
 #### 2.9.1 ####
 - Hotfix
@@ -1003,7 +1016,9 @@ Then you get the DAV url of the calendar:
     `https://p**-caldav.icloud.com/*********/calendars/********-****-****-****-************/`
 
 For syncing iCloud contacts with CardDAV use the following URL
-
+    https://contacts.icloud.com
+and press '*Test or discover settings*' for autodiscovery, the final URL should look like
+    
     https://contacts.icloud.com:443/<YOUR UNIQUE Apple USER_ID>/carddavhome/card/
 
 There are PHP files available to determine your Apple USER_ID, see
@@ -1046,7 +1061,8 @@ In the General Options Dialog you can change settings which are used for all syn
 - **Include custom message classes in Outlook filter** Disabled by default, enable only if you have custom forms with message_classes other than the default IPM.Appointment/Contact/Task. For better performance, Windows Search Service shouldn't be deactivated if this option is enabled.
 - **Enable Tray Icon** Enabled by default, you can disable the tray icon in the Windows Taskbar if you don't need it.
 - **Accept invalid chars in server response** If checked invalid characters in XML server responses are allowed. A typical invalid char, sent by some servers is Form feed (0x0C).
-- **Trigger sync after Outlook Send/Receive** If checked a manual sync is triggered after the Outlook Send/Receive finishes.
+- ** Enable useUnsafeHeaderParsing** Enable, if the server sends invalid http headers, see common network errors. Needed for Yahoo and cPanel Horde servers for example. The general option overrides the setting in the app.config file.
+- **Trigger sync after Outlook Send/Receive and on Startup** If checked a manual sync is triggered after the Outlook Send/Receive finishes and on Outlook startup.
 - **CalDav Connection Timeout (secs)** For slow server connections you can increaste the timeout value (default 90 secs).
 - **Expand all nodes in Synchronization profiles** Enabled by default, expands all nodes in the synchronization profiles to see the suboptions for network settings and mapping configuration.
 
@@ -1103,7 +1119,7 @@ In that xml file you can config timeout parameters and config options in the sec
 After changing parameters you have to restart Outlook.
 
 - **loadOperationThresholdForProgressDisplay**: amount of sync operations to show the progress bar (default 50)
-- **calDavConnectTimeout**: timeout for caldav connects (default 90 sec)
+- **calDavConnectTimeout**: timeout for caldav connects (default 90 sec), also possible via general option.
 - **enableTaskSynchronization** Support for task sync true or false
 
 You can also change defaults for some of the general options like CheckForNewVersions, StoreAppDatainRoamingFolder, IncludeCustomMessageClasses and SSL/TLS options, useful for All Users deployment, because general options are stored per user in the HKCU registry hive.
@@ -1122,6 +1138,8 @@ In this section you can also allow UnsafeHeaderParsing if the server sends inval
     	</settings>
     </system.net>
 
+This setting can also be enabled in the general options, starting with version 2.10.0.
+
 In the section `log4net` you can define the log level for the main log (also possible in general options now) and for the caldav data access, 
     level value can be DEBUG or INFO, e.g. :
 
@@ -1137,4 +1155,4 @@ In the section `log4net` you can define the log level for the main log (also pos
 - System.Net.Http.HttpRequestException: An error occurred while sending the request. ---> System.Net.WebException: The underlying connection was closed: A connection that was expected to be kept alive was closed by the server.
 	- The server has KeepAlive disabled. Use *"Close connection after each request"* in **Network and proxy options**.
 - System.Net.Http.HttpRequestException: An error occurred while sending the request. ---> System.Net.WebException: The server committed a protocol violation. Section=ResponseStatusLine
-	- The server sends invalid headers. Enable the commented out option **useUnsafeHeaderparsing** in the app config file, see **Debugging and more config options** above.
+	- The server sends invalid headers. Enable the general option **Enable useUnsafeHeaderParsing** or the commented out option **useUnsafeHeaderparsing** in the app config file, see **Debugging and more config options** above.
