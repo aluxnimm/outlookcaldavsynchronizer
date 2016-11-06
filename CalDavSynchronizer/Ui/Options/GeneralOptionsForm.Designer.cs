@@ -285,7 +285,8 @@ namespace CalDavSynchronizer.Ui.Options
       this._useUnsafeHeaderParsingCheckBox.TabIndex = 9;
       this._useUnsafeHeaderParsingCheckBox.Text = "Enable useUnsafeHeaderParsing";
       this._toolTip.SetToolTip(this._useUnsafeHeaderParsingCheckBox, "Enable only if you get the following error: \r\nSystem.Net.WebException: The server" +
-        " committed a protocol violation. Section=ResponseStatusLine");
+        " committed a protocol violation. Section=ResponseStatusLine\r\nNeeded for Yahoo an" +
+        "d cPanel Horde servers for example.");
       this._useUnsafeHeaderParsingCheckBox.UseVisualStyleBackColor = true;
       // 
       // groupBox2
