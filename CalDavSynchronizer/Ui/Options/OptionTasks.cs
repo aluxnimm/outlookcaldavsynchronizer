@@ -191,30 +191,24 @@ namespace CalDavSynchronizer.Ui.Options
               hasWarning = true;
             }
 
-            if (!result.AccessPrivileges.HasFlag (AccessPrivileges.Modify))
+            if (DoesModeRequireWriteableServerResource(synchronizationMode))
             {
-              if (DoesModeRequireWriteableServerResource (synchronizationMode))
+              if (!result.AccessPrivileges.HasFlag(AccessPrivileges.Modify))
               {
-                errorMessageBuilder.AppendFormat (
-                    "- The specified calendar is not writeable. Therefore it is not possible to use the synchronization mode '{0}'.",
-                    selectedSynchronizationModeDisplayName);
+                errorMessageBuilder.AppendFormat(
+                  "- The specified calendar is not writeable. Therefore it is not possible to use the synchronization mode '{0}'.",
+                  selectedSynchronizationModeDisplayName);
                 errorMessageBuilder.AppendLine();
                 hasError = true;
               }
-            }
-            if (!result.AccessPrivileges.HasFlag (AccessPrivileges.Create))
-            {
-              if (DoesModeRequireWriteableServerResource (synchronizationMode))
+              if (!result.AccessPrivileges.HasFlag(AccessPrivileges.Create))
               {
-                errorMessageBuilder.AppendLine ("- The specified calendar doesn't allow creation of appointments!");
+                errorMessageBuilder.AppendLine("- The specified calendar doesn't allow creation of appointments!");
                 hasWarning = true;
               }
-            }
-            if (!result.AccessPrivileges.HasFlag (AccessPrivileges.Delete))
-            {
-              if (DoesModeRequireWriteableServerResource (synchronizationMode))
+              if (!result.AccessPrivileges.HasFlag(AccessPrivileges.Delete))
               {
-                errorMessageBuilder.AppendLine ("- The specified calendar doesn't allow deletion of appointments!");
+                errorMessageBuilder.AppendLine("- The specified calendar doesn't allow deletion of appointments!");
                 hasWarning = true;
               }
             }
@@ -235,30 +229,24 @@ namespace CalDavSynchronizer.Ui.Options
               hasError = true;
             }
 
-            if (!result.AccessPrivileges.HasFlag (AccessPrivileges.Modify))
+            if (DoesModeRequireWriteableServerResource(synchronizationMode))
             {
-              if (DoesModeRequireWriteableServerResource (synchronizationMode))
+              if (!result.AccessPrivileges.HasFlag(AccessPrivileges.Modify))
               {
-                errorMessageBuilder.AppendFormat (
-                    "- The specified address book is not writeable. Therefore it is not possible to use the synchronization mode '{0}'.",
-                    selectedSynchronizationModeDisplayName);
+                errorMessageBuilder.AppendFormat(
+                  "- The specified address book is not writeable. Therefore it is not possible to use the synchronization mode '{0}'.",
+                  selectedSynchronizationModeDisplayName);
                 errorMessageBuilder.AppendLine();
                 hasError = true;
               }
-            }
-            if (!result.AccessPrivileges.HasFlag (AccessPrivileges.Create))
-            {
-              if (DoesModeRequireWriteableServerResource (synchronizationMode))
+              if (!result.AccessPrivileges.HasFlag(AccessPrivileges.Create))
               {
-                errorMessageBuilder.AppendLine ("- The specified address book doesn't allow creation of contacts!");
+                errorMessageBuilder.AppendLine("- The specified address book doesn't allow creation of contacts!");
                 hasWarning = true;
               }
-            }
-            if (!result.AccessPrivileges.HasFlag (AccessPrivileges.Delete))
-            {
-              if (DoesModeRequireWriteableServerResource (synchronizationMode))
+              if (!result.AccessPrivileges.HasFlag(AccessPrivileges.Delete))
               {
-                errorMessageBuilder.AppendLine ("- The specified address book doesn't allow deletion of contacts!");
+                errorMessageBuilder.AppendLine("- The specified address book doesn't allow deletion of contacts!");
                 hasWarning = true;
               }
             }
