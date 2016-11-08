@@ -22,7 +22,6 @@ namespace CalDavSynchronizer.Ui.ConnectionTests
   public enum AddressBookProperties
   {
     None = 0,
-    AddressBookAccessSupported = 1,
-    IsWriteable = 4
+    AddressBookAccessSupported = 1
   }
 }

@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -19,10 +19,12 @@ using System;
 namespace CalDavSynchronizer.Ui.ConnectionTests
 {
   [Flags]
-  public enum CalendarProperties
+  public enum AccessPrivileges
   {
     None = 0,
-    CalendarAccessSupported = 1,
-    SupportsCalendarQuery = 2
+    Modify = 1,
+    Create = 2,
+    Delete = 4,
+    All = 7
   }
 }

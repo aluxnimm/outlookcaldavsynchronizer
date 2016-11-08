@@ -75,22 +75,20 @@ namespace CalDavSynchronizer.Ui.ConnectionTests
       return new TestResult (
           ressourceType,
           ressourceType.HasFlag (ResourceType.Calendar) ? await GetCalendarProperties (calDavDataAccess) : CalendarProperties.None,
-          ressourceType.HasFlag (ResourceType.AddressBook) ? await GetAddressBookProperties (cardDavDataAccess) : AddressBookProperties.None);
+          ressourceType.HasFlag (ResourceType.AddressBook) ? await GetAddressBookProperties (cardDavDataAccess) : AddressBookProperties.None,
+          await calDavDataAccess.GetPrivileges());
     }
 
     private static async Task<CalendarProperties> GetCalendarProperties (CalDavDataAccess calDavDataAccess)
     {
       return
           (await calDavDataAccess.IsCalendarAccessSupported() ? CalendarProperties.CalendarAccessSupported : CalendarProperties.None) |
-          (await calDavDataAccess.IsWriteable() ? CalendarProperties.IsWriteable : CalendarProperties.None) |
           (await calDavDataAccess.DoesSupportCalendarQuery() ? CalendarProperties.SupportsCalendarQuery : CalendarProperties.None);
     }
 
     private static async Task<AddressBookProperties> GetAddressBookProperties (CardDavDataAccess cardDavDataAccess)
     {
-      return
-          (await cardDavDataAccess.IsAddressBookAccessSupported() ? AddressBookProperties.AddressBookAccessSupported : AddressBookProperties.None) |
-          (await cardDavDataAccess.IsWriteable() ? AddressBookProperties.IsWriteable : AddressBookProperties.None);
+      return await cardDavDataAccess.IsAddressBookAccessSupported() ? AddressBookProperties.AddressBookAccessSupported : AddressBookProperties.None;
     }
 
 

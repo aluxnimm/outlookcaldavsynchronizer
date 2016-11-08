@@ -23,12 +23,14 @@ namespace CalDavSynchronizer.Ui.ConnectionTests
     private readonly ResourceType _resourceType;
     private readonly CalendarProperties _calendarProperties;
     private readonly AddressBookProperties _addressBookProperties;
+    private readonly AccessPrivileges _accessPrivileges;
 
-    public TestResult (ResourceType resourceType, CalendarProperties calendarProperties, AddressBookProperties addressBookProperties)
+    public TestResult (ResourceType resourceType, CalendarProperties calendarProperties, AddressBookProperties addressBookProperties, AccessPrivileges accessPrivileges)
     {
       _resourceType = resourceType;
       _calendarProperties = calendarProperties;
       _addressBookProperties = addressBookProperties;
+      _accessPrivileges = accessPrivileges;
     }
 
     public ResourceType ResourceType
@@ -44,6 +46,11 @@ namespace CalDavSynchronizer.Ui.ConnectionTests
     public AddressBookProperties AddressBookProperties
     {
       get { return _addressBookProperties; }
+    }
+
+    public AccessPrivileges AccessPrivileges
+    {
+      get { return _accessPrivileges; }
     }
   }
 }

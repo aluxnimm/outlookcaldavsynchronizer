@@ -26,6 +26,7 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using CalDavSynchronizer.Scheduling;
+using CalDavSynchronizer.Ui.ConnectionTests;
 using DDay.iCal;
 using DDay.iCal.Serialization.iCalendar;
 using GenSync;
@@ -93,7 +94,7 @@ namespace CalDavDataAccessIntegrationTests
     [Test]
     public async Task IsWriteable ()
     {
-      Assert.That (await _calDavDataAccess.IsWriteable(), Is.True);
+      Assert.That (await _calDavDataAccess.GetPrivileges(), Is.EqualTo (AccessPrivileges.All));
     }
 
     [Test]

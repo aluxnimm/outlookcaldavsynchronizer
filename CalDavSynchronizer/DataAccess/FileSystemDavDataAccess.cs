@@ -21,6 +21,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
+using CalDavSynchronizer.Ui.ConnectionTests;
 using CalDavSynchronizer.Utilities;
 using GenSync;
 
@@ -50,9 +51,9 @@ namespace CalDavSynchronizer.DataAccess
       return Task.FromResult(true);
     }
 
-    public Task<bool> IsWriteable()
+    public Task<AccessPrivileges> GetPrivileges()
     {
-      return Task.FromResult(true);
+      return Task.FromResult (AccessPrivileges.All);
     }
 
     public Task<ArgbColor?> GetCalendarColorNoThrow()

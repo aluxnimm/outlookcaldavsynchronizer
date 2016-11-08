@@ -42,7 +42,7 @@ namespace CalDavSynchronizer.Ui.Options
       const SynchronizationMode readOnlyDefaultMode = SynchronizationMode.ReplicateServerIntoOutlook;
       if (result.ResourceType.HasFlag (ResourceType.Calendar))
       {
-        if (!result.CalendarProperties.HasFlag (CalendarProperties.IsWriteable)
+        if (!result.AccessPrivileges.HasFlag (AccessPrivileges.Modify)
             && OptionTasks.DoesModeRequireWriteableServerResource(_syncSettingsControl.SynchronizationMode))
         {
           _syncSettingsControl.SynchronizationMode = readOnlyDefaultMode;
@@ -56,7 +56,7 @@ namespace CalDavSynchronizer.Ui.Options
 
       if (result.ResourceType.HasFlag (ResourceType.AddressBook))
       {
-        if (!result.AddressBookProperties.HasFlag (AddressBookProperties.IsWriteable)
+        if (!result.AccessPrivileges.HasFlag (AccessPrivileges.Modify)
             && OptionTasks.DoesModeRequireWriteableServerResource(_syncSettingsControl.SynchronizationMode))
         {
           _syncSettingsControl.SynchronizationMode = readOnlyDefaultMode;

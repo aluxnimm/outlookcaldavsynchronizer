@@ -24,6 +24,7 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Xml;
+using CalDavSynchronizer.Ui.ConnectionTests;
 using GenSync;
 using log4net;
 
@@ -91,7 +92,7 @@ namespace CalDavSynchronizer.DataAccess
       return resourceTypeNode != null;
     }
 
-    public async Task<bool> IsWriteable ()
+    public async Task<AccessPrivileges> GetPrivileges ()
     {
       var properties = await GetCurrentUserPrivileges (_serverUrl, 0);
 
@@ -100,7 +101,14 @@ namespace CalDavSynchronizer.DataAccess
       XmlNode privilegeUnbind = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-privilege-set/D:privilege/D:unbind", properties.XmlNamespaceManager);
       XmlNode privilegeWrite = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-privilege-set/D:privilege/D:write", properties.XmlNamespaceManager);
 
-      return ((privilegeWrite != null) || ((privilegeWriteContent != null) && (privilegeBind != null) && (privilegeUnbind != null)));
+      if (privilegeWrite != null)
+        return AccessPrivileges.All;
+
+      var privileges = AccessPrivileges.None;
+      if (privilegeWriteContent != null) privileges |= AccessPrivileges.Modify;
+      if (privilegeBind !=null) privileges |= AccessPrivileges.Create;
+      if (privilegeUnbind != null) privileges |= AccessPrivileges.Delete;
+      return privileges;
     }
 
     protected async Task<string> GetEtag (Uri absoluteEntityUrl)

@@ -191,7 +191,7 @@ namespace CalDavSynchronizer.Ui.Options
               hasWarning = true;
             }
 
-            if (!result.CalendarProperties.HasFlag (CalendarProperties.IsWriteable))
+            if (!result.AccessPrivileges.HasFlag (AccessPrivileges.Modify))
             {
               if (DoesModeRequireWriteableServerResource (synchronizationMode))
               {
@@ -200,6 +200,22 @@ namespace CalDavSynchronizer.Ui.Options
                     selectedSynchronizationModeDisplayName);
                 errorMessageBuilder.AppendLine();
                 hasError = true;
+              }
+            }
+            if (!result.AccessPrivileges.HasFlag (AccessPrivileges.Create))
+            {
+              if (DoesModeRequireWriteableServerResource (synchronizationMode))
+              {
+                errorMessageBuilder.AppendLine ("- The specified calendar doesn't allow creation of appointments!");
+                hasWarning = true;
+              }
+            }
+            if (!result.AccessPrivileges.HasFlag (AccessPrivileges.Delete))
+            {
+              if (DoesModeRequireWriteableServerResource (synchronizationMode))
+              {
+                errorMessageBuilder.AppendLine ("- The specified calendar doesn't allow deletion of appointments!");
+                hasWarning = true;
               }
             }
           }
@@ -219,7 +235,7 @@ namespace CalDavSynchronizer.Ui.Options
               hasError = true;
             }
 
-            if (!result.AddressBookProperties.HasFlag (AddressBookProperties.IsWriteable))
+            if (!result.AccessPrivileges.HasFlag (AccessPrivileges.Modify))
             {
               if (DoesModeRequireWriteableServerResource (synchronizationMode))
               {
@@ -228,6 +244,22 @@ namespace CalDavSynchronizer.Ui.Options
                     selectedSynchronizationModeDisplayName);
                 errorMessageBuilder.AppendLine();
                 hasError = true;
+              }
+            }
+            if (!result.AccessPrivileges.HasFlag (AccessPrivileges.Create))
+            {
+              if (DoesModeRequireWriteableServerResource (synchronizationMode))
+              {
+                errorMessageBuilder.AppendLine ("- The specified address book doesn't allow creation of contacts!");
+                hasWarning = true;
+              }
+            }
+            if (!result.AccessPrivileges.HasFlag (AccessPrivileges.Delete))
+            {
+              if (DoesModeRequireWriteableServerResource (synchronizationMode))
+              {
+                errorMessageBuilder.AppendLine ("- The specified address book doesn't allow deletion of contacts!");
+                hasWarning = true;
               }
             }
           }
@@ -689,7 +721,7 @@ namespace CalDavSynchronizer.Ui.Options
         MessageBox.Show (errorMessageBuilder.ToString(), "The tasklist is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
         return url;
       }
-      TestResult result = new TestResult (ResourceType.TaskList, CalendarProperties.None, AddressBookProperties.None);
+      TestResult result = new TestResult (ResourceType.TaskList, CalendarProperties.None, AddressBookProperties.None, AccessPrivileges.None);
 
       DisplayTestReport (
           result,
@@ -716,7 +748,8 @@ namespace CalDavSynchronizer.Ui.Options
       TestResult result = new TestResult (
           ResourceType.AddressBook,
           CalendarProperties.None,
-          AddressBookProperties.AddressBookAccessSupported | AddressBookProperties.IsWriteable);
+          AddressBookProperties.AddressBookAccessSupported,
+          AccessPrivileges.All);
 
       DisplayTestReport (
           result,

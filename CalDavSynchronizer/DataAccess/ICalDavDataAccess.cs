@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
+using CalDavSynchronizer.Ui.ConnectionTests;
 using CalDavSynchronizer.Utilities;
 using GenSync;
 
@@ -29,7 +30,7 @@ namespace CalDavSynchronizer.DataAccess
     Task<bool> IsResourceCalender ();
     Task<bool> DoesSupportCalendarQuery ();
     Task<bool> IsCalendarAccessSupported ();
-    Task<bool> IsWriteable ();
+    Task<AccessPrivileges> GetPrivileges ();
 
     Task<ArgbColor?> GetCalendarColorNoThrow ();
     Task<bool> SetCalendarColorNoThrow (ArgbColor color);
