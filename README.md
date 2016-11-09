@@ -48,6 +48,7 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 - mail.ru
 - Radicale
 - Cozy Cloud
+- Cyrus Imap 2.5
 
 ### Features ###
 
