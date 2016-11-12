@@ -53,6 +53,7 @@ namespace CalDavSynchronizer.Implementation.Events
     private const string PR_SENDER_ENTRYID = "http://schemas.microsoft.com/mapi/proptag/0x0C190102";
     private const string PR_GLOBAL_OBJECT_ID = "http://schemas.microsoft.com/mapi/id/{6ED8DA90-450B-101B-98DA-00AA003F1305}/00030102";
     private const string PR_CLEAN_GLOBAL_OBJECT_ID = "http://schemas.microsoft.com/mapi/id/{6ED8DA90-450B-101B-98DA-00AA003F1305}/00230102";
+    private const string PR_FINVITED = "http://schemas.microsoft.com/mapi/id/{00062002-0000-0000-C000-000000000046}/8229000B";
 
     private readonly int _outlookMajorVersion;
 
@@ -549,6 +550,7 @@ namespace CalDavSynchronizer.Implementation.Events
               string organizerEmail = OutlookUtility.GetSenderEmailAddressOrNull (source, logger, s_logger);
               SetOrganizer (target, source.Organizer, organizerEmail, logger);
             }
+            SetOrganizerSchedulingParameters (source, target, logger);
           }
         }
       }
@@ -561,10 +563,6 @@ namespace CalDavSynchronizer.Implementation.Events
       if (organizer != null)
         targetOrganizer.CommonName = organizer.Name;
       target.Organizer = targetOrganizer;
-      if (_configuration.ScheduleAgentClient)
-        target.Organizer.Parameters.Add ("SCHEDULE-AGENT", "CLIENT");
-      if (_configuration.SendNoAppointmentNotifications)
-        target.Properties.Add (new CalendarProperty ("X-SOGO-SEND-APPOINTMENT-NOTIFICATIONS", "NO"));
     }
 
     private void SetOrganizer (IEvent target, string organizerCN, string organizerEmail, IEntityMappingLogger logger)
@@ -592,10 +590,26 @@ namespace CalDavSynchronizer.Implementation.Events
 
       targetOrganizer.CommonName = organizerCN;
       target.Organizer = targetOrganizer;
+    }
+
+    private void SetOrganizerSchedulingParameters (AppointmentItem source, IEvent target, IEntityMappingLogger logger)
+    {
       if (_configuration.ScheduleAgentClient)
         target.Organizer.Parameters.Add ("SCHEDULE-AGENT", "CLIENT");
       if (_configuration.SendNoAppointmentNotifications)
         target.Properties.Add (new CalendarProperty ("X-SOGO-SEND-APPOINTMENT-NOTIFICATIONS", "NO"));
+
+      try
+      {
+        if (source.GetPropertySafe (PR_FINVITED))
+        {
+          target.Organizer.Parameters.Add ("SCHEDULE-STATUS", "1.1");
+        }
+      }
+      catch (COMException ex)
+      {
+        s_logger.Warn ("Can't access FINVITED property of appointment.", ex);
+      }
     }
 
     private string GetMailUrlOrNull (AddressEntry addressEntry, string defaultMailAddress, IEntityMappingLogger logger)
@@ -1248,7 +1262,7 @@ namespace CalDavSynchronizer.Implementation.Events
           {
             SetOrganizer (target, recipient.Name, null, logger);
           }
-
+          SetOrganizerSchedulingParameters (source, target, logger);
           organizerSet = true;
         }
       }
@@ -1683,6 +1697,8 @@ namespace CalDavSynchronizer.Implementation.Events
     private void MapAttendeesAndOrganizer2To1 (IEvent source, AppointmentItem target, IEntityMappingLogger logger)
     {
       var recipientsToDispose = new HashSet<Recipient>();
+      var invitationSent = false;
+
       try
       {
         var targetRecipientsWhichShouldRemain = new HashSet<Recipient>();
@@ -1705,7 +1721,7 @@ namespace CalDavSynchronizer.Implementation.Events
               logger.LogMappingWarning ("Ignoring invalid Uri in attendee email.", ex);
             }
           }
-          if (attendeeEmail.Length >= s_mailtoSchemaLength && !string.IsNullOrEmpty (attendeeEmail.Substring (s_mailtoSchemaLength)))
+          if (attendeeEmail.Length >= s_mailtoSchemaLength && !string.IsNullOrEmpty (attendeeEmail.Substring(s_mailtoSchemaLength)))
           {
             if (!indexByEmailAddresses.TryGetValue (attendeeEmail, out targetRecipient))
             {
@@ -1717,6 +1733,12 @@ namespace CalDavSynchronizer.Implementation.Events
               {
                 targetRecipient = target.Recipients.Add (attendeeEmail.Substring (s_mailtoSchemaLength));
               }
+            }
+            if (attendee.Parameters.ContainsKey ("SCHEDULE-STATUS"))
+            {
+              var scheduleStatus = attendee.Parameters.Get ("SCHEDULE-STATUS");
+              if (scheduleStatus == "1.1" || scheduleStatus == "1.2")
+                invitationSent = true;
             }
           }
           else
@@ -1816,6 +1838,36 @@ namespace CalDavSynchronizer.Implementation.Events
           else if (target.Recipients.Count > 0)
           {
             target.MeetingStatus = OlMeetingStatus.olMeeting;
+
+            if (source.Organizer.Parameters.ContainsKey ("SCHEDULE-STATUS"))
+            {
+              var scheduleStatus = source.Organizer.Parameters.Get ("SCHEDULE-STATUS");
+              if (scheduleStatus == "1.1" || scheduleStatus == "1.2")
+              {
+                invitationSent = true;
+              }
+              else
+              {
+                invitationSent = false;
+              }
+            }
+            if (invitationSent)
+            { 
+              using (var oPa = GenericComObjectWrapper.Create (target.PropertyAccessor))
+              {
+                if (oPa.Inner != null)
+                {
+                  try
+                  {
+                    oPa.Inner.SetProperty (PR_FINVITED, true);
+                  }
+                  catch (COMException ex)
+                  {
+                    s_logger.Warn ("Could not set property PR_FINVITED for appointment", ex);
+                  }
+                }
+              }
+            }
           }
           else
           {
