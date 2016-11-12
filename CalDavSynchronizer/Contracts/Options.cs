@@ -138,7 +138,8 @@ namespace CalDavSynchronizer.Contracts
         options.MappingConfiguration = new EventMappingConfiguration
         {
           ScheduleAgentClient = false,
-          SendNoAppointmentNotifications = true
+          SendNoAppointmentNotifications = true,
+          UseGlobalAppointmentID = true
         };
       }
 
