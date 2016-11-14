@@ -18,7 +18,11 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PWA2N6P5WRSJJ&lc=US).
 
+### Collaboration with NextCloud ###
 
+New collaboration with NextCloud, see [https://nextcloud.com/blog/nextcloud-offers-caldav-synchronizer-for-outlook-users/](https://nextcloud.com/blog/nextcloud-offers-caldav-synchronizer-for-outlook-users/) 
+
+For possible enterprise support, please contact us!
 
 ### Tested CalDAV Servers ###
 
