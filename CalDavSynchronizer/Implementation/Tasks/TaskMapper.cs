@@ -403,7 +403,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
         case TodoStatus.InProcess:
           return OlTaskStatus.olTaskInProgress;
         case TodoStatus.NeedsAction:
-          return OlTaskStatus.olTaskWaiting;
+          return OlTaskStatus.olTaskNotStarted;
       }
 
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
