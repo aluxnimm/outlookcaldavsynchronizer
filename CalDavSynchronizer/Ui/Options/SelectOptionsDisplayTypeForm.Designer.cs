@@ -317,9 +317,9 @@ namespace CalDavSynchronizer.Ui.Options
       this._nextCloudTypeRadioButton.Location = new System.Drawing.Point(440, 273);
       this._nextCloudTypeRadioButton.Margin = new System.Windows.Forms.Padding(4);
       this._nextCloudTypeRadioButton.Name = "_nextCloudTypeRadioButton";
-      this._nextCloudTypeRadioButton.Size = new System.Drawing.Size(93, 21);
+      this._nextCloudTypeRadioButton.Size = new System.Drawing.Size(91, 21);
       this._nextCloudTypeRadioButton.TabIndex = 23;
-      this._nextCloudTypeRadioButton.Text = "NextCloud";
+      this._nextCloudTypeRadioButton.Text = "Nextcloud";
       this._nextCloudTypeRadioButton.UseVisualStyleBackColor = true;
       // 
       // SelectOptionsDisplayTypeForm

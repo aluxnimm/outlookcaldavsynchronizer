@@ -68,7 +68,7 @@ namespace CalDavSynchronizer.Ui.Options
         if (form._cozyTypeRadioButton.Checked)
           return ProfileType.Cozy;
         if (form._nextCloudTypeRadioButton.Checked)
-          return ProfileType.NextCloud;
+          return ProfileType.Nextcloud;
       }
 
       return null;
