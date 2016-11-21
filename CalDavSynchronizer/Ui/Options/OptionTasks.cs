@@ -44,6 +44,7 @@ namespace CalDavSynchronizer.Ui.Options
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     public const string ConnectionTestCaption = "Test settings";
+    public const string CreateDavResourceCaption = "Create DAV server resource";
     public const string GoogleDavBaseUrl = "https://apidata.googleusercontent.com/caldav/v2";
 
     private readonly NameSpace _session;
@@ -307,6 +308,58 @@ namespace CalDavSynchronizer.Ui.Options
       return lookupUrl;
     }
 
+    public static async Task<Uri> AddResource (Uri davUri, IWebDavClient webDavClient, OlItemType selectedOutlookFolderType)
+    {
+      switch (selectedOutlookFolderType)
+      {
+        case OlItemType.olAppointmentItem:
+        case OlItemType.olTaskItem:
+          var calDavDataAccess = new CalDavDataAccess (davUri, webDavClient);
+          using (var addResourceForm = new AddResourceForm())
+          {
+            addResourceForm.Text = "Add calendar resource on server";
+            if (addResourceForm.ShowDialog() == DialogResult.OK)
+            {
+              try
+              {
+                var newUri = await calDavDataAccess.AddResource (addResourceForm.ResourceName, addResourceForm.UseRandomUri);
+                MessageBox.Show ($"Added calendar resource '{addResourceForm.ResourceName}' successfully!", CreateDavResourceCaption, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return newUri;
+              }
+              catch (Exception ex)
+              {
+                s_logger.Error ($"Can't add calendar resource '{addResourceForm.ResourceName}'", ex);
+                MessageBox.Show ($"Can't add calendar resource '{addResourceForm.ResourceName}'", CreateDavResourceCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+              }
+             
+            }
+          }
+          break;
+        case OlItemType.olContactItem:
+          var cardDavDataAccess = new CardDavDataAccess (davUri, webDavClient);
+          using (var addResourceForm = new AddResourceForm())
+          {
+            addResourceForm.Text = "Add addressbook resource on server";
+            if (addResourceForm.ShowDialog() == DialogResult.OK)
+            {
+              try
+              {
+                var newUri = await cardDavDataAccess.AddResource (addResourceForm.ResourceName, addResourceForm.UseRandomUri);
+                MessageBox.Show ($"Added addressbook resource '{addResourceForm.ResourceName}' successfully!", CreateDavResourceCaption, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return newUri;
+              }
+              catch (Exception ex)
+              {
+                s_logger.Error ($"Can't add addressbook resource '{addResourceForm.ResourceName}'", ex);
+                MessageBox.Show ($"Can't add addressbook resource '{addResourceForm.ResourceName}'", CreateDavResourceCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+              }
+            }
+          }
+          break;
+      }
+      return davUri;
+    }
+
     public static async Task<AutoDiscoveryResult> DoAutoDiscovery (Uri autoDiscoveryUri, IWebDavClient webDavClient, bool useWellKnownCalDav, bool useWellKnownCardDav, OlItemType selectedOutlookFolderType)
     {
 
@@ -458,6 +511,32 @@ namespace CalDavSynchronizer.Ui.Options
     }
 
 
+    public static async Task<string> CreateDavResource (ICurrentOptions environment, string url)
+    {
+      if (environment.OutlookFolderType == null)
+      {
+        MessageBox.Show ("Please select an Outlook folder to specify the item type for this profile", ConnectionTestCaption);
+        return url;
+      }
+
+      var outlookFolderType = environment.OutlookFolderType.Value;
+
+      string serverUrl=url;
+      StringBuilder errorMessageBuilder = new StringBuilder();
+ 
+      if (!ValidateWebDavUrl (serverUrl, errorMessageBuilder, false))
+      {
+        MessageBox.Show (errorMessageBuilder.ToString(), "The CalDav/CardDav Url is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return url;
+      }
+
+      var enteredUri = new Uri (serverUrl);
+      var webDavClient = environment.CreateWebDavClient (enteredUri);
+      var newResourceUri = await AddResource (enteredUri, webDavClient, outlookFolderType);
+
+      return newResourceUri.ToString ();
+    }
+
     public static async Task<string> TestWebDavConnection (ICurrentOptions environment, ISettingsFaultFinder settingsFaultFinder, string url, string serverEmail)
     {
       if (environment.OutlookFolderType == null)
@@ -482,7 +561,7 @@ namespace CalDavSynchronizer.Ui.Options
         serverUrl = DoSrvLookup (serverEmail, outlookFolderType, out success);
       }
 
- 
+
       if (!ValidateWebDavUrl (serverUrl, errorMessageBuilder, false))
       {
         MessageBox.Show (errorMessageBuilder.ToString(), "The CalDav/CardDav Url is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -567,7 +646,7 @@ namespace CalDavSynchronizer.Ui.Options
             default:
               throw new NotImplementedException (autodiscoveryResult.Status.ToString ());
           }
-         
+
         }
       }
 

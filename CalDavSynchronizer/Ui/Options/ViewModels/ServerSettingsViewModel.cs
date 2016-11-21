@@ -42,6 +42,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
     private readonly DelegateCommandWithoutCanExecuteDelegation _testConnectionCommand;
     private readonly DelegateCommandWithoutCanExecuteDelegation _getAccountSettingsCommand;
+    private readonly DelegateCommandWithoutCanExecuteDelegation _createDavResourceCommand;
 
     public ServerSettingsViewModel (ISettingsFaultFinder settingsFaultFinder, ICurrentOptions currentOptions, IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
     {
@@ -64,10 +65,16 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         ComponentContainer.EnsureSynchronizationContext();
         GetAccountSettings();
       });
+      _createDavResourceCommand = new DelegateCommandWithoutCanExecuteDelegation (_ =>
+      {
+        ComponentContainer.EnsureSynchronizationContext();
+        CreateDavResource();
+      });
     }
 
     public ICommand TestConnectionCommand => _testConnectionCommand;
     public ICommand GetAccountSettingsCommand => _getAccountSettingsCommand;
+    public ICommand CreateDavResourceCommand => _createDavResourceCommand;
 
     public string CalenderUrl
     {
@@ -199,6 +206,29 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       finally
       {
         _testConnectionCommand.SetCanExecute (true);
+      }
+    }
+
+    private async void CreateDavResource()
+    {
+      _testConnectionCommand.SetCanExecute (false);
+      _createDavResourceCommand.SetCanExecute (false);
+      try
+      {
+        CalenderUrl = await OptionTasks.CreateDavResource (_currentOptions, CalenderUrl);
+      }
+      catch (Exception x)
+      {
+        s_logger.Error ("Exception while adding a DAV resource.", x);
+        string message = null;
+        for (Exception ex = x; ex != null; ex = ex.InnerException)
+          message += ex.Message + Environment.NewLine;
+        MessageBox.Show (message, OptionTasks.CreateDavResourceCaption);
+      }
+      finally
+      {
+        _testConnectionCommand.SetCanExecute (true);
+        _createDavResourceCommand.SetCanExecute (true);
       }
     }
   }

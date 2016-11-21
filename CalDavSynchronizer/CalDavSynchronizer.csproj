@@ -340,6 +340,12 @@
     <Compile Include="Scheduling\SchedulerStatusEventArgs.cs" />
     <Compile Include="Scheduling\SynchronizationStatus.cs" />
     <Compile Include="Synchronization\OutlookEventSynchronizer.cs" />
+    <Compile Include="Ui\AddResourceForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ui\AddResourceForm.Designer.cs">
+      <DependentUpon>AddResourceForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Ui\ConnectionTests\AccessPrivileges.cs" />
     <Compile Include="Ui\DelegateCommandHandlingRequerySuggested.cs" />
     <Compile Include="Ui\NullUiService.cs" />
@@ -625,6 +631,9 @@
     <Compile Include="WebResourceUrls.cs" />
     <EmbeddedResource Include="CalDavSynchronizerRibbon.resx">
       <DependentUpon>CalDavSynchronizerRibbon.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ui\AddResourceForm.resx">
+      <DependentUpon>AddResourceForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\ColorPicker.resx">
       <DependentUpon>ColorPicker.cs</DependentUpon>
