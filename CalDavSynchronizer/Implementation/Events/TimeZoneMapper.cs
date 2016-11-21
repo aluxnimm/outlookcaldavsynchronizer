@@ -51,17 +51,26 @@ namespace CalDavSynchronizer.Implementation.Events
         // If the primary zone is a link, it then resolves it to the canonical ID.
         public static string WindowsToIana(string windowsZoneId)
         {
-            if (windowsZoneId.Equals("UTC", StringComparison.Ordinal))
-                return "Etc/UTC";
+          if (windowsZoneId.Equals("UTC", StringComparison.Ordinal))
+            return "Etc/UTC";
 
-            var tzdbSource = NodaTime.TimeZones.TzdbDateTimeZoneSource.Default;
-            var tzi = TimeZoneInfo.FindSystemTimeZoneById(windowsZoneId);
-            if (tzi == null)
-                return null;
-            var tzid = tzdbSource.MapTimeZoneId(tzi);
-            if (tzid == null)
-                return null;
-            return tzdbSource.CanonicalIdMap[tzid];
+          var tzdbSource = NodaTime.TimeZones.TzdbDateTimeZoneSource.Default;
+          TimeZoneInfo tzi;
+          try
+          {
+            tzi = TimeZoneInfo.FindSystemTimeZoneById (windowsZoneId);
+          }
+          catch (Exception)
+          {
+            tzi = TimeZoneInfo.Local;
+          }
+            
+          if (tzi == null)
+            return null;
+          var tzid = tzdbSource.MapTimeZoneId(tzi);
+          if (tzid == null)
+            return null;
+          return tzdbSource.CanonicalIdMap[tzid];
         }
     }
 }
