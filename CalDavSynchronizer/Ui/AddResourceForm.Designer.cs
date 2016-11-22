@@ -28,6 +28,7 @@
     /// </summary>
     private void InitializeComponent()
     {
+      this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddResourceForm));
       this._resourceNameTextBox = new System.Windows.Forms.TextBox();
       this.label1 = new System.Windows.Forms.Label();
@@ -36,6 +37,7 @@
       this._useRandomNameCheckBox = new System.Windows.Forms.CheckBox();
       this._resourceColorButton = new System.Windows.Forms.Button();
       this.label2 = new System.Windows.Forms.Label();
+      this._toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.SuspendLayout();
       // 
       // _resourceNameTextBox
@@ -89,6 +91,8 @@
       this._useRandomNameCheckBox.Size = new System.Drawing.Size(281, 21);
       this._useRandomNameCheckBox.TabIndex = 4;
       this._useRandomNameCheckBox.Text = "Use random string for DAV resource Uri";
+      this._toolTip.SetToolTip(this._useRandomNameCheckBox, "If unchecked the displayname is used for creating the dav resource uri instead of" +
+        " a random string.");
       this._useRandomNameCheckBox.UseVisualStyleBackColor = true;
       // 
       // _resourceColorButton
@@ -110,6 +114,12 @@
       this.label2.Size = new System.Drawing.Size(102, 17);
       this.label2.TabIndex = 6;
       this.label2.Text = "Calendar Color";
+      // 
+      // _toolTip
+      // 
+      this._toolTip.AutoPopDelay = 30000;
+      this._toolTip.InitialDelay = 500;
+      this._toolTip.ReshowDelay = 100;
       // 
       // AddResourceForm
       // 
@@ -143,5 +153,6 @@
     private System.Windows.Forms.CheckBox _useRandomNameCheckBox;
     private System.Windows.Forms.Button _resourceColorButton;
     private System.Windows.Forms.Label label2;
+    private System.Windows.Forms.ToolTip _toolTip;
   }
 }
