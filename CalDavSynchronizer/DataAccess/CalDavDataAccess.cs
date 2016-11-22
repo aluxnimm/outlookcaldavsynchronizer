@@ -297,12 +297,12 @@ namespace CalDavSynchronizer.DataAccess
     
     
 
-    public async Task<bool> SetCalendarColorNoThrow (ArgbColor color)
+    public async Task<bool> SetCalendarColorNoThrow (ArgbColor color, Uri resourceUri = null)
     {
       try
       {
         await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders(
-            _serverUrl,
+            resourceUri ?? _serverUrl,
             "PROPPATCH",
             0,
             null,

@@ -315,7 +315,7 @@ namespace CalDavSynchronizer.Ui.Options
         case OlItemType.olAppointmentItem:
         case OlItemType.olTaskItem:
           var calDavDataAccess = new CalDavDataAccess (davUri, webDavClient);
-          using (var addResourceForm = new AddResourceForm())
+          using (var addResourceForm = new AddResourceForm (true))
           {
             addResourceForm.Text = "Add calendar resource on server";
             if (addResourceForm.ShowDialog() == DialogResult.OK)
@@ -324,6 +324,8 @@ namespace CalDavSynchronizer.Ui.Options
               {
                 var newUri = await calDavDataAccess.AddResource (addResourceForm.ResourceName, addResourceForm.UseRandomUri);
                 MessageBox.Show ($"Added calendar resource '{addResourceForm.ResourceName}' successfully!", CreateDavResourceCaption, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (!await calDavDataAccess.SetCalendarColorNoThrow (new ArgbColor (addResourceForm.CalendarColor.ToArgb()), newUri))
+                  MessageBox.Show ($"Can't set the calendar color!'", CreateDavResourceCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return newUri;
               }
               catch (Exception ex)
@@ -337,7 +339,7 @@ namespace CalDavSynchronizer.Ui.Options
           break;
         case OlItemType.olContactItem:
           var cardDavDataAccess = new CardDavDataAccess (davUri, webDavClient);
-          using (var addResourceForm = new AddResourceForm())
+          using (var addResourceForm = new AddResourceForm (false))
           {
             addResourceForm.Text = "Add addressbook resource on server";
             if (addResourceForm.ShowDialog() == DialogResult.OK)

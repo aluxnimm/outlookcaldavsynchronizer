@@ -34,6 +34,8 @@
       this.btnOK = new System.Windows.Forms.Button();
       this.buttonCancel = new System.Windows.Forms.Button();
       this._useRandomNameCheckBox = new System.Windows.Forms.CheckBox();
+      this._resourceColorButton = new System.Windows.Forms.Button();
+      this.label2 = new System.Windows.Forms.Label();
       this.SuspendLayout();
       // 
       // _resourceNameTextBox
@@ -55,7 +57,7 @@
       // btnOK
       // 
       this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnOK.Location = new System.Drawing.Point(241, 85);
+      this.btnOK.Location = new System.Drawing.Point(241, 131);
       this.btnOK.Margin = new System.Windows.Forms.Padding(4);
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(100, 28);
@@ -68,7 +70,7 @@
       // 
       this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.buttonCancel.Location = new System.Drawing.Point(349, 85);
+      this.buttonCancel.Location = new System.Drawing.Point(349, 131);
       this.buttonCancel.Margin = new System.Windows.Forms.Padding(4);
       this.buttonCancel.Name = "buttonCancel";
       this.buttonCancel.Size = new System.Drawing.Size(100, 28);
@@ -89,6 +91,26 @@
       this._useRandomNameCheckBox.Text = "Use random string for DAV resource Uri";
       this._useRandomNameCheckBox.UseVisualStyleBackColor = true;
       // 
+      // _resourceColorButton
+      // 
+      this._resourceColorButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this._resourceColorButton.Location = new System.Drawing.Point(172, 73);
+      this._resourceColorButton.Margin = new System.Windows.Forms.Padding(4);
+      this._resourceColorButton.Name = "_resourceColorButton";
+      this._resourceColorButton.Size = new System.Drawing.Size(100, 28);
+      this._resourceColorButton.TabIndex = 5;
+      this._resourceColorButton.UseVisualStyleBackColor = true;
+      this._resourceColorButton.Click += new System.EventHandler(this._resourceColorButton_Click);
+      // 
+      // label2
+      // 
+      this.label2.AutoSize = true;
+      this.label2.Location = new System.Drawing.Point(11, 79);
+      this.label2.Name = "label2";
+      this.label2.Size = new System.Drawing.Size(102, 17);
+      this.label2.TabIndex = 6;
+      this.label2.Text = "Calendar Color";
+      // 
       // AddResourceForm
       // 
       this.AcceptButton = this.btnOK;
@@ -96,7 +118,9 @@
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.SystemColors.ControlLightLight;
       this.CancelButton = this.buttonCancel;
-      this.ClientSize = new System.Drawing.Size(462, 126);
+      this.ClientSize = new System.Drawing.Size(462, 172);
+      this.Controls.Add(this.label2);
+      this.Controls.Add(this._resourceColorButton);
       this.Controls.Add(this._useRandomNameCheckBox);
       this.Controls.Add(this.buttonCancel);
       this.Controls.Add(this.btnOK);
@@ -117,5 +141,7 @@
     private System.Windows.Forms.Button btnOK;
     private System.Windows.Forms.Button buttonCancel;
     private System.Windows.Forms.CheckBox _useRandomNameCheckBox;
+    private System.Windows.Forms.Button _resourceColorButton;
+    private System.Windows.Forms.Label label2;
   }
 }

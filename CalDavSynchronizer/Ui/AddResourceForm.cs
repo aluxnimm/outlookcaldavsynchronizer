@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.Ui
 {
@@ -14,10 +15,22 @@ namespace CalDavSynchronizer.Ui
   {
     public string ResourceName { get; private set; }
     public bool UseRandomUri { get; private set; }
+    public Color CalendarColor { get; private set; }
 
-    public AddResourceForm()
+
+    public AddResourceForm (bool enableColorSelect)
     {
       InitializeComponent();
+      if (!enableColorSelect)
+      {
+        _resourceColorButton.Visible = false;
+        label2.Visible = false;
+      }
+      else
+      {
+        CalendarColor = Color.LightBlue;
+        _resourceColorButton.BackColor = CalendarColor;
+      }
     }
 
     private void btnOK_Click(object sender, EventArgs e)
@@ -30,6 +43,19 @@ namespace CalDavSynchronizer.Ui
     private void buttonCancel_Click(object sender, EventArgs e)
     {
       DialogResult = DialogResult.Cancel;
+    }
+
+    private void _resourceColorButton_Click(object sender, EventArgs e)
+    {
+      using (var colorDialog = new ColorDialog())
+      {
+        colorDialog.Color = CalendarColor;
+        if (colorDialog.ShowDialog() == DialogResult.OK)
+        {
+          CalendarColor = colorDialog.Color;
+          _resourceColorButton.BackColor = colorDialog.Color;
+        }
+      }
     }
   }
 }

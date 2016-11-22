@@ -55,7 +55,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       return Task.FromResult ((ArgbColor?)null);
     }
 
-    public Task<bool> SetCalendarColorNoThrow (ArgbColor argbColor)
+    public Task<bool> SetCalendarColorNoThrow (ArgbColor argbColor, Uri resourceUri = null)
     {
       throw new NotImplementedException();
     }
