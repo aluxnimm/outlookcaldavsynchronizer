@@ -435,7 +435,6 @@ namespace CalDavSynchronizer.Implementation.Tasks
       if (source.Alarms.Count > 1)
       {
         s_logger.WarnFormat ("Task '{0}' contains multiple alarms. Ignoring all except first.", source.UID);
-        logger.LogMappingWarning ("Task contains multiple alarms. Ignoring all except first.");
       }
       var alarm = source.Alarms[0];
       var localZone = DateTimeZoneProviders.Bcl.GetSystemDefault();

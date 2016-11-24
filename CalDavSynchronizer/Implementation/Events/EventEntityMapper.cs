@@ -422,15 +422,14 @@ namespace CalDavSynchronizer.Implementation.Events
 
       if (source.Alarms.Count > 1)
       {
-        s_logger.WarnFormat ("Event '{0}' contains multiple alarms. Ignoring all except first.", source.Url);
-        logger.LogMappingWarning ("Event contains multiple alarms. Ignoring all except first.");
+        s_logger.WarnFormat ("Event '{0}' contains multiple alarms. Ignoring all except first.", source.UID);
       }
 
       var alarm = source.Alarms[0];
 
       if (alarm.Trigger == null)
       {
-        s_logger.WarnFormat ("Event '{0}' contains non RFC-conform alarm. Ignoring alarm.", source.Url);
+        s_logger.WarnFormat ("Event '{0}' contains non RFC-conform alarm. Ignoring alarm.", source.UID);
         logger.LogMappingWarning ("Event contains non RFC-conform alarm. Ignoring alarm.");
         target.ReminderSet = false;
         return;
@@ -441,7 +440,7 @@ namespace CalDavSynchronizer.Implementation.Events
             && alarm.Trigger.Duration.HasValue
             && alarm.Trigger.Duration <= TimeSpan.Zero))
       {
-        s_logger.WarnFormat ("Event '{0}' alarm is not relative before event start. Ignoring.", source.Url);
+        s_logger.WarnFormat ("Event '{0}' alarm is not relative before event start. Ignoring.", source.UID);
         logger.LogMappingWarning ("Alarm is not relative before event start. Ignoring.");
         target.ReminderSet = false;
         return;
