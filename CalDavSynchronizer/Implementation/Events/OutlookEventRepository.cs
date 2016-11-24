@@ -44,7 +44,6 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly IDateTimeRangeProvider _dateTimeRangeProvider;
     private readonly EventMappingConfiguration _configuration;
     private readonly IDaslFilterProvider _daslFilterProvider;
-    private readonly IInvitationChecker _invitationChecker;
 
     public OutlookEventRepository (
       NameSpace mapiNameSpace, 
@@ -52,8 +51,7 @@ namespace CalDavSynchronizer.Implementation.Events
       string folderStoreId, 
       IDateTimeRangeProvider dateTimeRangeProvider,
       EventMappingConfiguration configuration,
-      IDaslFilterProvider daslFilterProvider, 
-      IInvitationChecker invitationChecker)
+      IDaslFilterProvider daslFilterProvider)
     {
       if (mapiNameSpace == null)
         throw new ArgumentNullException (nameof (mapiNameSpace));
@@ -63,16 +61,13 @@ namespace CalDavSynchronizer.Implementation.Events
         throw new ArgumentNullException (nameof (configuration));
       if (daslFilterProvider == null)
         throw new ArgumentNullException (nameof (daslFilterProvider));
-      if (invitationChecker == null)
-        throw new ArgumentNullException (nameof (invitationChecker));
-
+   
       _mapiNameSpace = mapiNameSpace;
       _folderId = folderId;
       _folderStoreId = folderStoreId;
       _dateTimeRangeProvider = dateTimeRangeProvider;
       _configuration = configuration;
       _daslFilterProvider = daslFilterProvider;
-      _invitationChecker = invitationChecker;
     }
 
     private const string c_entryIdColumnName = "EntryID";
@@ -277,29 +272,6 @@ namespace CalDavSynchronizer.Implementation.Events
 
     public async Task VerifyUnknownEntities (Dictionary<AppointmentId, DateTime> unknownEntites, IEventSynchronizationContext context)
     {
-      foreach (var unknownEntity in await Get (unknownEntites.Keys, NullLoadEntityLogger.Instance, context))
-      {
-        using (unknownEntity.Entity)
-        {
-          if (_invitationChecker.IsMeetingInvitationFromServerIdentity (unknownEntity.Entity.Inner))
-          {
-            var subjectForLogging = s_logger.IsDebugEnabled ? "'" + unknownEntity.Entity.Inner.Subject + "' " : string.Empty;
-            s_logger.Info ($"Deleting meeting invitation {subjectForLogging}('{unknownEntity.Id}') from server identity.");
-
-            unknownEntites.Remove (unknownEntity.Id);
-            context.AnnounceAppointmentDeleted (new AppointmentId (unknownEntity.Entity.Inner.EntryID, unknownEntity.Entity.Inner.GlobalAppointmentID));
-            try
-            {
-              unknownEntity.Entity.Inner.Delete();
-            }
-            catch (COMException ex)
-            {
-              s_logger.Warn ("Could not delete AppointmentItem", ex);
-            }
-          }
-        }
-      }
-
       foreach (var deletedId in await context.DeleteAnnouncedEventsIfDuplicates(unknownEntites.ContainsKey))
         unknownEntites.Remove(deletedId);
     }

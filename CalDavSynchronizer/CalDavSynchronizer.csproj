@@ -313,8 +313,6 @@
     <Compile Include="Implementation\Events\EventSynchronizationContextFactory.cs" />
     <Compile Include="Implementation\Events\DuplicateEventCleaner.cs" />
     <Compile Include="Implementation\Events\IEventSynchronizationContext.cs" />
-    <Compile Include="Implementation\Events\IInvitationChecker.cs" />
-    <Compile Include="Implementation\Events\InvitationChecker.cs" />
     <Compile Include="Implementation\Events\NullEventSynchronizationContext.cs" />
     <Compile Include="Implementation\Events\AppointmentId.cs" />
     <Compile Include="Implementation\GoogleContacts\GoogleApiOperationExecutor.cs" />
