@@ -27,6 +27,6 @@ namespace CalDavSynchronizer.Implementation.Events
     Task NotifySynchronizationFinished ();
     void AnnounceAppointment (AppointmentItem appointment);
     void AnnounceAppointmentDeleted (AppointmentId id);
-    Task<IEnumerable<AppointmentId>> DeleteAnnouncedEventsIfDuplicates(Predicate<AppointmentId> isDeletionCandidate);
+    Task<IEnumerable<AppointmentId>> DeleteAnnouncedEventsIfDuplicates(Predicate<AppointmentId> canBeDeleted);
   }
 }

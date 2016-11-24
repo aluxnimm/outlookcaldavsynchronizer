@@ -46,7 +46,7 @@ namespace CalDavSynchronizer.Implementation.Events
      
     }
 
-    public Task<IEnumerable<AppointmentId>> DeleteAnnouncedEventsIfDuplicates(Predicate<AppointmentId> isDeletionCandidate)
+    public Task<IEnumerable<AppointmentId>> DeleteAnnouncedEventsIfDuplicates(Predicate<AppointmentId> canBeDeleted)
     {
       return Task.FromResult<IEnumerable<AppointmentId>>(new AppointmentId[0]);
     }

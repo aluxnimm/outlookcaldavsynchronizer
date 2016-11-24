@@ -75,7 +75,7 @@ namespace CalDavSynchronizer.Implementation.Events
       _hashesById.Remove (id);
     }
 
-    public async Task<IEnumerable<AppointmentId>> DeleteAnnouncedEventsIfDuplicates(Predicate<AppointmentId> isDeletionCandidate)
+    public async Task<IEnumerable<AppointmentId>> DeleteAnnouncedEventsIfDuplicates(Predicate<AppointmentId> canBeDeleted)
     {
       var appointmentIdsWithIdenticalHashCode = GetAppointmentIdsWithIdenticalHashCode();
 
@@ -94,11 +94,11 @@ namespace CalDavSynchronizer.Implementation.Events
             var appointmentsToDelete = (
               from appointmentWithId in appointments
               let data = GetDuplicationRelevantData(appointmentWithId.Item2.Inner)
-              group new {Appointment = appointmentWithId, IsDeletionCandidate = isDeletionCandidate(appointmentWithId.Item1)} by data // group by duplication relevant data (hashes can collide)
+              group new {Appointment = appointmentWithId, CanBeDeleted = canBeDeleted(appointmentWithId.Item1)} by data // group by duplication relevant data (hashes can collide)
               into groupedByData
               where groupedByData.Count() > 1 // take only the groups containing duplicates found by data comparison
-              let appointmentToKeep = groupedByData.FirstOrDefault(a => !a.IsDeletionCandidate) ?? groupedByData.First() // if all are deletion candidates, one has to be left untouched
-              from appointmentPair in groupedByData.Where(a => a.IsDeletionCandidate && a != appointmentToKeep).Select(a => new {Keep = appointmentToKeep, Delete = a})
+              let appointmentToKeep = groupedByData.FirstOrDefault(a => !a.CanBeDeleted) ?? groupedByData.First() // if all can be deleted, one has to be left untouched
+              from appointmentPair in groupedByData.Where(a => a.CanBeDeleted && a != appointmentToKeep).Select(a => new {Keep = appointmentToKeep, Delete = a})
               select appointmentPair
               ).ToArray();
 
