@@ -56,6 +56,82 @@ namespace CalDavSynchronizer.DataAccess
       return DoesSupportsReportSet (_serverUrl, 0, "C", "calendar-query");
     }
 
+    public async Task<Uri> GetCalendarHomeSetUriOrNull (bool useWellKnownUrl)
+    {
+      var autodiscoveryUrl = useWellKnownUrl ? AutoDiscoveryUrl : _serverUrl;
+
+      var currentUserPrincipalUrl = await GetCurrentUserPrincipalUrl (autodiscoveryUrl);
+      if (currentUserPrincipalUrl != null)
+      {
+        var calendarHomeSetProperties = await GetCalendarHomeSet (currentUserPrincipalUrl);
+
+        XmlNode homeSetNode = calendarHomeSetProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/C:calendar-home-set", calendarHomeSetProperties.XmlNamespaceManager);
+        if (homeSetNode != null && homeSetNode.HasChildNodes)
+        {
+          foreach (XmlNode homeSetNodeHref in homeSetNode.ChildNodes)
+          {
+            if (!string.IsNullOrEmpty (homeSetNodeHref.InnerText))
+            {
+              var calendarHomeSetUri = Uri.IsWellFormedUriString (homeSetNodeHref.InnerText, UriKind.Absolute)
+                ? new Uri(homeSetNodeHref.InnerText)
+                : new Uri(calendarHomeSetProperties.DocumentUri.GetLeftPart (UriPartial.Authority) +
+                          homeSetNodeHref.InnerText);
+              return calendarHomeSetUri;
+            }
+          }
+          
+        }
+      }
+      return null;
+    }
+
+    public async Task<Uri> AddResource (string name, bool useRandomUri)
+    {
+      var homeSetUri = await GetCalendarHomeSetUriOrNull (ConnectionTester.RequiresAutoDiscovery (_serverUrl)) ?? _serverUrl;
+      var resourceName = useRandomUri ? Guid.NewGuid() + "/" : name + "/";
+
+      var newResourceUri = new Uri (homeSetUri, resourceName);
+      await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (
+        newResourceUri,
+        "MKCOL",
+        null,
+        null,
+        null,
+        "application/xml",
+          @"<?xml version='1.0'?>
+                    <D:mkcol xmlns:D=""DAV:"" xmlns:C=""urn:ietf:params:xml:ns:caldav"">
+                      <D:set>
+                        <D:prop>
+                          <D:resourcetype>
+                            <D:collection/>
+                            <C:calendar/>
+                          </D:resourcetype>
+                        </D:prop>
+                      </D:set>
+                    </D:mkcol>"
+        );
+
+      await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (
+        newResourceUri,
+        "PROPPATCH",
+        0,
+        null,
+        null,
+        "application/xml",
+        string.Format (
+           @"<?xml version='1.0'?>
+                      <D:propertyupdate xmlns:D=""DAV:"">
+                        <D:set>
+                          <D:prop>
+                              <D:displayname>{0}</D:displayname>
+                          </D:prop>
+                        </D:set>
+                      </D:propertyupdate>
+                 ", name)
+        );
+      return newResourceUri;
+    }
+
     public async Task<CalDavResources> GetUserResourcesNoThrow (bool useWellKnownUrl)
     {
       try

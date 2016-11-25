@@ -22,7 +22,7 @@ using System.Reflection;
 using System.Security;
 using System.Threading.Tasks;
 using System.Xml;
-using CalDavSynchronizer.Implementation.TimeRangeFiltering;
+using CalDavSynchronizer.Ui.ConnectionTests;
 using GenSync;
 using log4net;
 
@@ -47,6 +47,81 @@ namespace CalDavSynchronizer.DataAccess
       return IsResourceType ("A", "addressbook");
     }
 
+    public async Task<Uri> GetCalendarHomeSetUriOrNull(bool useWellKnownUrl)
+    {
+      var autodiscoveryUrl = useWellKnownUrl ? AutoDiscoveryUrl : _serverUrl;
+
+      var currentUserPrincipalUrl = await GetCurrentUserPrincipalUrl (autodiscoveryUrl);
+      if (currentUserPrincipalUrl != null)
+      {
+        var addressBookHomeSetProperties = await GetAddressBookHomeSet (currentUserPrincipalUrl);
+
+        XmlNode homeSetNode = addressBookHomeSetProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/A:addressbook-home-set", addressBookHomeSetProperties.XmlNamespaceManager);
+
+        if (homeSetNode != null && homeSetNode.HasChildNodes)
+        {
+          foreach (XmlNode homeSetNodeHref in homeSetNode.ChildNodes)
+          {
+            if (!string.IsNullOrEmpty (homeSetNodeHref.InnerText))
+            {
+              var addressBookHomeSetUri = Uri.IsWellFormedUriString (homeSetNodeHref.InnerText, UriKind.Absolute)
+                ? new Uri(homeSetNodeHref.InnerText)
+                : new Uri(addressBookHomeSetProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + homeSetNodeHref.InnerText);
+              return addressBookHomeSetUri;
+            }
+          }
+
+        }
+      }
+      return null;
+    }
+
+    public async Task<Uri> AddResource (string name, bool useRandomUri)
+    {
+      var homeSetUri = await GetCalendarHomeSetUriOrNull (ConnectionTester.RequiresAutoDiscovery (_serverUrl)) ?? _serverUrl;
+      var resourceName = useRandomUri ? Guid.NewGuid() + "/" : name + "/";
+
+      var newResourceUri = new Uri (homeSetUri, resourceName);
+      await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (
+        newResourceUri,
+        "MKCOL",
+        null,
+        null,
+        null,
+        "application/xml",
+          @"<?xml version='1.0'?>
+                    <D:mkcol xmlns:D=""DAV:""  xmlns:A=""urn:ietf:params:xml:ns:carddav"">
+                      <D:set>
+                        <D:prop>
+                          <D:resourcetype>
+                            <D:collection/>
+                            <A:addressbook/>
+                          </D:resourcetype>
+                        </D:prop>
+                      </D:set>
+                    </D:mkcol>"
+        );
+
+      await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (
+        newResourceUri,
+        "PROPPATCH",
+        0,
+        null,
+        null,
+        "application/xml",
+        string.Format (
+           @"<?xml version='1.0'?>
+                      <D:propertyupdate xmlns:D=""DAV:"">
+                        <D:set>
+                          <D:prop>
+                              <D:displayname>{0}</D:displayname>
+                          </D:prop>
+                        </D:set>
+                      </D:propertyupdate>
+                 ", name)
+        );
+      return newResourceUri;
+    }
     public async Task<IReadOnlyList<AddressBookData>> GetUserAddressBooksNoThrow (bool useWellKnownUrl)
     {
       try

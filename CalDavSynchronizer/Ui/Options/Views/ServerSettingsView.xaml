@@ -47,6 +47,7 @@
 
       </Grid>
       <Button HorizontalAlignment="Left" Command="{Binding GetAccountSettingsCommand}">Get IMAP/POP3 account settings</Button>
+      <Button HorizontalAlignment="Right" Command="{Binding CreateDavResourceCommand}">Create DAV resource</Button>
       <Button HorizontalAlignment="Right" Command="{Binding TestConnectionCommand}">Test or discover settings</Button>
     </DockPanel>
   </GroupBox>
