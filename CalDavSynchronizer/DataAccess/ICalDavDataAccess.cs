@@ -33,7 +33,7 @@ namespace CalDavSynchronizer.DataAccess
     Task<AccessPrivileges> GetPrivileges ();
 
     Task<ArgbColor?> GetCalendarColorNoThrow ();
-    Task<bool> SetCalendarColorNoThrow (ArgbColor color, Uri resourceUri = null);
+    Task<bool> SetCalendarColorNoThrow (ArgbColor color);
 
     Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetEventVersions (DateTimeRange? range);
     Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetTodoVersions (DateTimeRange? range);

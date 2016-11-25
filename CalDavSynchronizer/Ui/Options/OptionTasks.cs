@@ -324,7 +324,7 @@ namespace CalDavSynchronizer.Ui.Options
               {
                 var newUri = await calDavDataAccess.AddResource (addResourceForm.ResourceName, addResourceForm.UseRandomUri);
                 MessageBox.Show ($"Added calendar resource '{addResourceForm.ResourceName}' successfully!", CreateDavResourceCaption, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                if (!await calDavDataAccess.SetCalendarColorNoThrow (new ArgbColor (addResourceForm.CalendarColor.ToArgb()), newUri))
+                if (!await new CalDavDataAccess(newUri, webDavClient).SetCalendarColorNoThrow (new ArgbColor (addResourceForm.CalendarColor.ToArgb())))
                   MessageBox.Show ($"Can't set the calendar color!'", CreateDavResourceCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return newUri;
               }

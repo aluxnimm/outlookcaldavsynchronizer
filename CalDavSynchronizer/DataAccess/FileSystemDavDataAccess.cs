@@ -61,7 +61,7 @@ namespace CalDavSynchronizer.DataAccess
       return null;
     }
 
-    public Task<bool> SetCalendarColorNoThrow(ArgbColor color, Uri resourceUri = null)
+    public Task<bool> SetCalendarColorNoThrow(ArgbColor color)
     {
       return Task.FromResult(true);
     }
