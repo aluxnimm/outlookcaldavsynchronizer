@@ -101,6 +101,20 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 2.11.0 ####
+- New features
+	- Add possibility to add DAV server calendars/addressbooks.
+	- Improve privileges check in connection test.
+	- Map SCHEDULE-STATUS to Outlook FINVITED flag,  which shows if invitation email has been sent, gh issue 162.
+	- Add PostBuildEvent to sign installer files to avoid warning because of untrusted manufacturer during install.
+	- Update Google API NuGet packages to version 1.19.0.
+- Bug fixes
+	- Set UseGlobalAppointmentID as default for SOGo profiles to avoid doubled appointments when Outlook sends invites.
+	- Fix mapping of vtodo status NEEDS-ACTION to Outlook olTaskNotStarted, ticket #418.
+	- Fallback to local timezone if FindSystemTimeZoneById throws an exception, ticket #421.
+	- Fix logging for alarms and remove warning for multiple alarms from sync report.
+	- Do not delete invitations from server identity.
+
 #### 2.10.0 ####
 - New features
 	- Add profile type for NextCloud.
@@ -869,6 +883,7 @@ The following properties need to be set for a new generic profile:
 	- **Password:** Password used for the connection. The password will be saved encrypted in the option config file.
 	- ** Use IMAP/POP3 Account Password** Instead of entering the password you can use the IMAP/Pop3 Password from the Outlook Account associated with the folder, the password is fetched from the Windows registry entry of the Outlook profile. 
 	- **Email address:** email address used as remote identity for the CalDAV server, necessary to synchronize the organizer. The email address can also be used for autodiscovery via DNS lookups, see section Autodiscovery.
+	- **Create DAV resource** You can add server DAV resources (calendars or addressbooks). You can configure the resource displayname and if the url should be created with a random string or the displayname. For calendars you can also change the server calendar color.
 
 - *Sync settings*:
 	- Synchronization settings
