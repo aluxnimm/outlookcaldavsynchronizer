@@ -169,6 +169,41 @@
             </StackPanel>
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type bulkOptionsViewModels:EasyProjectServerSettingsTemplateViewModel}">
+            <bulkOptionsViews:EasyProjectServerSettingsTemplateView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type bulkOptionsViewModels:EasyProjectMultipleOptionsTemplateViewModel}">
+            <StackPanel>
+                <Image Source="pack://application:,,,/CalDavSynchronizer;component/Resources/logo_easyproject.png" Width="200" Height="50" />
+                <DockPanel DockPanel.Dock="Top">
+                    <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="Name:" />
+                    <TextBox Text="{Binding Name}" />
+                </DockPanel>
+
+                <ContentControl Content="{Binding ServerSettingsViewModel}" />
+                <GroupBox Header="Outlook settings">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Button Grid.Row="0" HorizontalAlignment="Left" Command="{Binding DiscoverResourcesCommand}">Assign Easy Project resources to different Outlook folders</Button>
+                        <Separator Margin="0,10,0,10" Grid.Row="1" />
+                        <Button Grid.Row="2" HorizontalAlignment="Left" Command="{Binding MergeResourcesCommand}">Merge Easy Project resources to one single Outlook folder</Button>
+
+                        <DockPanel Grid.Row="3">
+                            <TextBlock Margin="10,0,10,0"  VerticalAlignment="Center" > Outlook folder:</TextBlock>
+                            <Button Command="{Binding SelectFolderCommand}" DockPanel.Dock="Right">...</Button>
+                            <TextBox VerticalAlignment="Center" IsReadOnly="True" Text="{Binding SelectedFolderName, Mode=OneWay}" />
+                        </DockPanel>
+                    </Grid>
+                </GroupBox>
+            </StackPanel>
+        </DataTemplate>
+
     </UserControl.Resources>
 
     <DockPanel>

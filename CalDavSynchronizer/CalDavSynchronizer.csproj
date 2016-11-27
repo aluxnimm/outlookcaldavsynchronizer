@@ -399,6 +399,7 @@
     <Compile Include="Ui\Options\ProfileTypes\IProfileType.cs" />
     <Compile Include="Ui\Options\ProfileTypes\IProfileTypeRegistry.cs" />
     <Compile Include="Ui\Options\ProfileTypes\LandmarksProfile.cs" />
+    <Compile Include="Ui\Options\ProfileTypes\EasyProjectProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\NextcloudProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\PosteoProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\ProfileBase.cs" />
@@ -415,10 +416,15 @@
     <Compile Include="Ui\Options\AutoDiscoverResultStatus.cs" />
     <Compile Include="Ui\Options\BulkOptions\ViewModels\GoogleServerSettingsTemplateViewModel.cs" />
     <Compile Include="Ui\Options\BulkOptions\ViewModels\IServerSettingsTemplateViewModel.cs" />
+    <Compile Include="Ui\Options\BulkOptions\ViewModels\EasyProjectMultipleOptionsTemplateViewModel.cs" />
     <Compile Include="Ui\Options\BulkOptions\ViewModels\ServerResources.cs" />
+    <Compile Include="Ui\Options\BulkOptions\ViewModels\EasyProjectServerSettingsTemplateViewModel.cs" />
     <Compile Include="Ui\Options\BulkOptions\ViewModels\ServerSettingsTemplateViewModel.cs" />
     <Compile Include="Ui\Options\BulkOptions\Views\GoogleServerSettingsTemplateView.xaml.cs">
       <DependentUpon>GoogleServerSettingsTemplateView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\Options\BulkOptions\Views\EasyProjectServerSettingsTemplateView.xaml.cs">
+      <DependentUpon>EasyProjectServerSettingsTemplateView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Ui\Options\BulkOptions\Views\ServerSettingsTemplateView.xaml.cs">
       <DependentUpon>ServerSettingsTemplateView.xaml</DependentUpon>
@@ -801,6 +807,7 @@
     <Content Include="Resources\LogoBanner.bmp" />
     <Resource Include="Resources\ExpandAll.png" />
     <Resource Include="Resources\logo_nextcloud.png" />
+    <Resource Include="Resources\logo_easyproject.png" />
     <Content Include="Resources\outlookcaldavsynchronizerlogoarrow.png" />
   </ItemGroup>
   <ItemGroup>
@@ -828,6 +835,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Ui\Options\BulkOptions\Views\GoogleServerSettingsTemplateView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\Options\BulkOptions\Views\EasyProjectServerSettingsTemplateView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

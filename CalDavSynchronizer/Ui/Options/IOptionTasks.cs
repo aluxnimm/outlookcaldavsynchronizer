@@ -31,5 +31,6 @@ namespace CalDavSynchronizer.Ui.Options
     Contracts.Options[] LoadOptions (string fileName);
     Task<string> TestGoogleConnection(OptionsModel options, string url);
     Task<string> TestWebDavConnection(OptionsModel options);
+    OutlookFolderDescriptor GetDefaultCalendarFolderOrNull();
   }
 }

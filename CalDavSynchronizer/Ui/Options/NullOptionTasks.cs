@@ -65,5 +65,10 @@ namespace CalDavSynchronizer.Ui.Options
     {
       throw new NotImplementedException();
     }
+
+    public OutlookFolderDescriptor GetDefaultCalendarFolderOrNull()
+    {
+      throw new NotImplementedException();
+    }
   }
 }

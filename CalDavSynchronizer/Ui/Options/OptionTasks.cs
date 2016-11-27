@@ -466,6 +466,20 @@ namespace CalDavSynchronizer.Ui.Options
       }
     }
 
+    public OutlookFolderDescriptor GetDefaultCalendarFolderOrNull()
+    {
+      var folder = _session.GetDefaultFolder (OlDefaultFolders.olFolderCalendar);
+      if (folder != null)
+      {
+        using (var wrapper = GenericComObjectWrapper.Create (folder))
+          return new OutlookFolderDescriptor(wrapper.Inner);
+      }
+      else
+      {
+        return null;
+      }
+    }
+
     private IProfileExportProcessor _profileExportProcessor;
     public IProfileExportProcessor ProfileExportProcessor
     {

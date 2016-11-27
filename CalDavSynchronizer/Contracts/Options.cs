@@ -106,7 +106,7 @@ namespace CalDavSynchronizer.Contracts
         ProtectedPassword = Convert.ToBase64String (transformedData);
       }
     }
-    
+     
     public TMappingConfiguration GetOrCreateMappingConfiguration<TMappingConfiguration>()
       where TMappingConfiguration : MappingConfigurationBase, new()
     {
