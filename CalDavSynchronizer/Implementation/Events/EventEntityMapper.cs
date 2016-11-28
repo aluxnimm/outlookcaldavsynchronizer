@@ -570,7 +570,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
       if (organizerEmail != null)
       {
-        var emailAddress = string.Format ("MAILTO:{0}", organizerEmail);
+        var emailAddress = string.Format ("mailto:{0}", organizerEmail);
         if (Uri.IsWellFormedUriString (emailAddress, UriKind.Absolute))
         {
           targetOrganizer = new Organizer (emailAddress);
@@ -621,7 +621,7 @@ namespace CalDavSynchronizer.Implementation.Events
     {
       if (!string.IsNullOrEmpty (emailAddressOrNull))
       {
-        var emailAddressUriString = string.Format ("MAILTO:{0}", emailAddressOrNull);
+        var emailAddressUriString = string.Format ("mailto:{0}", emailAddressOrNull);
         if (!Uri.IsWellFormedUriString (emailAddressUriString, UriKind.Absolute))
         {
           s_logger.WarnFormat ("Invalid email address URI {0} for attendee.", emailAddressUriString);
