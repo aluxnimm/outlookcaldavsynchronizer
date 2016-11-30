@@ -32,184 +32,70 @@ using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public class CardDavRepository : IEntityRepository<WebResourceName, string, vCard, int>
+  public class CardDavRepository : CardDavEntityRepository<vCard, vCardStandardReader>
   {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
-
-    private readonly ICardDavDataAccess _cardDavDataAccess;
+    private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
     private readonly vCardImprovedWriter _vCardImprovedWriter;
-    private readonly IChunkedExecutor _chunkedExecutor;
 
-
-    public CardDavRepository (ICardDavDataAccess cardDavDataAccess, IChunkedExecutor chunkedExecutor)
+    public CardDavRepository(ICardDavDataAccess cardDavDataAccess, IChunkedExecutor chunkedExecutor) : base(cardDavDataAccess, chunkedExecutor)
     {
-      _cardDavDataAccess = cardDavDataAccess;
-      _chunkedExecutor = chunkedExecutor;
       _vCardImprovedWriter = new vCardImprovedWriter();
     }
 
-    public Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetVersions (IEnumerable<IdWithAwarenessLevel<WebResourceName>> idsOfEntitiesToQuery, int context)
+    protected override void SetUid(vCard entity, string uid)
     {
-      return _cardDavDataAccess.GetVersions (idsOfEntitiesToQuery.Select (i => i.Id));
+      entity.UniqueId = uid;
     }
 
-    public async Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetAllVersions (IEnumerable<WebResourceName> idsOfknownEntities, int context)
+    protected override string GetUid(vCard entity)
     {
-      using (AutomaticStopwatch.StartInfo (s_logger, "CardDavRepository.GetVersions"))
-      {
-        return await _cardDavDataAccess.GetAllVersions();
-      }
+      return entity.UniqueId;
     }
 
-    public async Task<IReadOnlyList<EntityWithId<WebResourceName, vCard>>> Get (ICollection<WebResourceName> ids, ILoadEntityLogger logger, int context)
+    protected override string Serialize(vCard vcard)
     {
-      if (ids.Count == 0)
-        return new EntityWithId<WebResourceName, vCard>[] { };
-
-      return await _chunkedExecutor.ExecuteAsync(
-        new List<EntityWithId<WebResourceName, vCard>>(),
-        ids,
-        async (chunk, result) =>
-        {
-          var entities = await GetInternal(chunk, logger);
-          result.AddRange(entities);
-        });
-    }
-
-    private async Task<IReadOnlyList<EntityWithId<WebResourceName, vCard>>> GetInternal (ICollection<WebResourceName> ids, ILoadEntityLogger logger)
-    {
-      if (ids.Count == 0)
-        return new EntityWithId<WebResourceName, vCard>[] { };
-
-      using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("CardDavRepository.Get ({0} entitie(s))", ids.Count)))
-      {
-        var entities = await _cardDavDataAccess.GetEntities (ids);
-        return ParallelDeserialize (entities, logger);
-      }
-    }
-
-    public Task VerifyUnknownEntities (Dictionary<WebResourceName, string> unknownEntites, int context)
-    {
-      return Task.FromResult (0);
-    }
-
-    public void Cleanup (IReadOnlyDictionary<WebResourceName, vCard> entities)
-    {
-      // nothing to do
-    }
-
-    private IReadOnlyList<EntityWithId<WebResourceName, vCard>> ParallelDeserialize (IReadOnlyList<EntityWithId<WebResourceName, string>> serializedEntities, ILoadEntityLogger logger)
-    {
-      var result = new List<EntityWithId<WebResourceName, vCard>>();
-
-      Parallel.ForEach (
-          serializedEntities,
-          () => Tuple.Create (new vCardStandardReader(), new List<Tuple<WebResourceName, vCard>>()),
-          (serialized, loopState, threadLocal) =>
-          {
-            vCard vcard;
-
-            // fix some linebreak issues with Open-Xchange
-            string normalizedVcardData = serialized.Entity.Contains ("\r\r\n") ? ContactDataPreprocessor.NormalizeLineBreaks (serialized.Entity) : serialized.Entity;
-
-            if (TryDeserialize (normalizedVcardData, out vcard, serialized.Id, threadLocal.Item1, logger))
-              threadLocal.Item2.Add (Tuple.Create (serialized.Id, vcard));
-            return threadLocal;
-          },
-          threadLocal =>
-          {
-            lock (result)
-            {
-              foreach (var card in threadLocal.Item2)
-                result.Add (EntityWithId.Create (card.Item1, card.Item2));
-            }
-          });
-
-      return result;
-    }
-
-
-    public async Task<bool> TryDelete (WebResourceName entityId, string version, int context)
-    {
-      using (AutomaticStopwatch.StartDebug (s_logger))
-      {
-        return await _cardDavDataAccess.TryDeleteEntity (entityId, version);
-      }
-    }
-
-    public async Task<EntityVersion<WebResourceName, string>> TryUpdate (
-        WebResourceName entityId,
-        string entityVersion,
-        vCard entityToUpdate,
-        Func<vCard, Task<vCard>> entityModifier, 
-        int context)
-    {
-      using (AutomaticStopwatch.StartDebug (s_logger))
-      {
-        vCard newVcard = new vCard();
-        newVcard.UniqueId = (!string.IsNullOrEmpty (entityToUpdate.UniqueId)) ? entityToUpdate.UniqueId : Guid.NewGuid().ToString();
-        newVcard = await entityModifier (newVcard);
-
-        return await _cardDavDataAccess.TryUpdateEntity (entityId, entityVersion, Serialize (newVcard));
-      }
-    }
-
-    public async Task<EntityVersion<WebResourceName, string>> Create (Func<vCard, Task<vCard>> entityInitializer, int context)
-    {
-      using (AutomaticStopwatch.StartDebug (s_logger))
-      {
-        vCard newVcard = new vCard();
-        newVcard.UniqueId = Guid.NewGuid().ToString();
-        var initializedVcard = await entityInitializer (newVcard);
-        return await _cardDavDataAccess.CreateEntity (Serialize (initializedVcard), newVcard.UniqueId);
-      }
-    }
-
-
-    private string Serialize (vCard vcard)
-    {
-      string newvCardString;
-
       using (var writer = new StringWriter())
       {
-        _vCardImprovedWriter.Write (vcard, writer);
+        _vCardImprovedWriter.Write(vcard, writer);
         writer.Flush();
-        newvCardString = writer.GetStringBuilder().ToString();
-
+        var newvCardString = writer.GetStringBuilder().ToString();
         return newvCardString;
       }
     }
 
-    private static bool TryDeserialize (
-      string vcardData, 
-      out vCard vcard, 
-      WebResourceName uriOfAddressbookForLogging, 
+    protected override bool TryDeserialize(
+      string vcardData,
+      out vCard vcard,
+      WebResourceName uriOfAddressbookForLogging,
       vCardStandardReader deserializer,
       ILoadEntityLogger logger)
     {
       vcard = null;
-      string fixedVcardData = ContactDataPreprocessor.FixRevisionDate (vcardData);
-      string fixedVcardData2 = ContactDataPreprocessor.FixUrlType (fixedVcardData);
+
+      // fix some linebreak issues with Open-Xchange
+      string normalizedVcardData = vcardData.Contains("\r\r\n") ? ContactDataPreprocessor.NormalizeLineBreaks(vcardData) : vcardData;
+      string fixedVcardData = ContactDataPreprocessor.FixRevisionDate(normalizedVcardData);
+      string fixedVcardData2 = ContactDataPreprocessor.FixUrlType(fixedVcardData);
       string fixedVcardData3 = ContactDataPreprocessor.FixPhoto(fixedVcardData2);
 
       try
       {
-        vcard = Deserialize (fixedVcardData3, deserializer);
+        vcard = Deserialize(fixedVcardData3, deserializer);
         return true;
       }
       catch (Exception x)
       {
-        s_logger.Error (string.Format ("Could not deserialize vcardData of '{0}':\r\n{1}", uriOfAddressbookForLogging, fixedVcardData3), x);
-        logger.LogSkipLoadBecauseOfError (uriOfAddressbookForLogging, x);
+        s_logger.Error(string.Format("Could not deserialize vcardData of '{0}':\r\n{1}", uriOfAddressbookForLogging, fixedVcardData3), x);
+        logger.LogSkipLoadBecauseOfError(uriOfAddressbookForLogging, x);
         return false;
       }
     }
 
-    private static vCard Deserialize (string vcardData, vCardStandardReader serializer)
+    private static vCard Deserialize(string vcardData, vCardStandardReader serializer)
     {
-      using (var reader = new StringReader (vcardData))
+      using (var reader = new StringReader(vcardData))
       {
-        return serializer.Read (reader);
+        return serializer.Read(reader);
       }
     }
   }

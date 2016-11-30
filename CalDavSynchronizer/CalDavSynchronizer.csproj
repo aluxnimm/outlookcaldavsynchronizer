@@ -308,6 +308,7 @@
     <Compile Include="IComponentContainer.cs" />
     <Compile Include="Implementation\Common\NameSpaceExtensions.cs" />
     <Compile Include="Implementation\Common\OutlookUtility.cs" />
+    <Compile Include="Implementation\Contacts\CardDavRepository.cs" />
     <Compile Include="Implementation\Events\EventSynchronizationInterceptorFactory.cs" />
     <Compile Include="Implementation\Events\EventSynchronizationInterceptor.cs" />
     <Compile Include="Implementation\Events\NullEventSynchronizationContextFactory.cs" />
@@ -414,7 +415,7 @@
     <Compile Include="Implementation\ComWrappers\ComEnumerableExtensions.cs" />
     <Compile Include="Implementation\ComWrappers\GenericComObjectWrapper.cs" />
     <Compile Include="Implementation\ComWrappers\OutlookObjectExtensions.cs" />
-    <Compile Include="Implementation\Contacts\CardDavRepository.cs" />
+    <Compile Include="Implementation\Contacts\CardDavEntityRepository.cs" />
     <Compile Include="Implementation\Contacts\ContactConflictInitialSyncStateCreationStrategyAutomatic.cs" />
     <Compile Include="Implementation\Contacts\ContactEntityMapper.cs" />
     <Compile Include="Implementation\Contacts\InitialContactEntityMatcher.cs" />
@@ -767,7 +768,9 @@
       <Name>GenSync</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Implementation\DistributionLists\" />
+  </ItemGroup>
   <ItemGroup>
     <Page Include="Ui\Options\BulkOptions\Views\GoogleServerSettingsTemplateView.xaml">
       <Generator>MSBuild:Compile</Generator>
