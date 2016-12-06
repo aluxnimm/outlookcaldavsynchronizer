@@ -26,6 +26,7 @@ namespace CalDavSynchronizer.Contracts
     public bool ShouldCheckForNewerVersions { get; set; }
     public bool CheckIfOnline { get; set; }
     public bool DisableCertificateValidation { get; set; }
+    public bool EnableClientCertificate { get; set; }
     public bool EnableTls12 { get; set; }
     public bool EnableSsl3 { get; set; }
     public TimeSpan CalDavConnectTimeout { get; set; }

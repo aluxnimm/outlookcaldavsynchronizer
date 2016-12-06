@@ -33,6 +33,7 @@ namespace CalDavSynchronizer.DataAccess
     private const string s_checkIfOnline = "CheckIfOnline";
     private const string s_storeAppDataInRoamingFolder = "StoreAppDataInRoamingFolder";
     private const string s_disableCertificateValidation = "DisableCertificateValidation";
+    private const string s_enableClientCertificate = "EnableClientCertificate";
     private const string s_enableTls12 = "EnableTls12";
     private const string s_enableSsl3 = "EnableSsl3";
     private const string s_calDavConnectTimeout = "CalDavConnectTimeout";
@@ -67,6 +68,7 @@ namespace CalDavSynchronizer.DataAccess
                    CheckIfOnline = (int) (key.GetValue (s_checkIfOnline) ?? 1) != 0,
                    StoreAppDataInRoamingFolder = (int) (key.GetValue (s_storeAppDataInRoamingFolder) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["storeAppDataInRoamingFolder"] ?? bool.FalseString))) != 0,
                    DisableCertificateValidation = (int) (key.GetValue (s_disableCertificateValidation) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"] ?? bool.FalseString))) != 0,
+                   EnableClientCertificate = (int) (key.GetValue (s_enableClientCertificate) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableClientCertificate"] ?? bool.FalseString))) != 0,
                    EnableTls12 = (int) (key.GetValue (s_enableTls12) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"] ?? bool.TrueString))) != 0,
                    EnableSsl3 = (int) (key.GetValue (s_enableSsl3) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"] ?? bool.FalseString))) != 0,
                    CalDavConnectTimeout = TimeSpan.Parse ((string)(key.GetValue (s_calDavConnectTimeout) ?? ConfigurationManager.AppSettings["caldavConnectTimeout"] ?? "01:30")),
@@ -95,6 +97,7 @@ namespace CalDavSynchronizer.DataAccess
         key.SetValue (s_checkIfOnline, options.CheckIfOnline ? 1 : 0);
         key.SetValue (s_storeAppDataInRoamingFolder, options.StoreAppDataInRoamingFolder ? 1 : 0);
         key.SetValue (s_disableCertificateValidation, options.DisableCertificateValidation ? 1 : 0);
+        key.SetValue (s_enableClientCertificate, options.EnableClientCertificate ? 1 : 0);
         key.SetValue (s_enableTls12, options.EnableTls12 ? 1 : 0);
         key.SetValue (s_enableSsl3, options.EnableSsl3 ? 1 : 0);
         key.SetValue (s_calDavConnectTimeout, options.CalDavConnectTimeout.ToString());

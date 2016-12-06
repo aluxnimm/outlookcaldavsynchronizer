@@ -222,6 +222,7 @@ namespace CalDavSynchronizer.Scheduling
           options.PreemptiveAuthentication,
           options.ForceBasicAuthentication,
           options.ProxyOptions,
+          generalOptions.EnableClientCertificate,
           generalOptions.AcceptInvalidCharsInServerResponse);
     }
 
@@ -235,6 +236,7 @@ namespace CalDavSynchronizer.Scheduling
         bool preemptiveAuthentication,
         bool forceBasicAuthentication,
         ProxyOptions proxyOptions,
+        bool enableClientCertificate,
         bool acceptInvalidChars
         )
     {
@@ -244,7 +246,7 @@ namespace CalDavSynchronizer.Scheduling
         case ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth:
           var productAndVersion = GetProductAndVersion();
           return new DataAccess.HttpClientBasedClient.WebDavClient (
-              () => CreateHttpClient (username, password, serverUrl, timeout, serverAdapterType, proxyOptions, preemptiveAuthentication, forceBasicAuthentication),
+              () => CreateHttpClient (username, password, serverUrl, timeout, serverAdapterType, proxyOptions, preemptiveAuthentication, forceBasicAuthentication, enableClientCertificate),
               productAndVersion.Item1,
               productAndVersion.Item2,
               closeConnectionAfterEachRequest,
@@ -279,7 +281,8 @@ namespace CalDavSynchronizer.Scheduling
                                                                                     ServerAdapterType serverAdapterType, 
                                                                                     ProxyOptions proxyOptions, 
                                                                                     bool preemptiveAuthentication,
-                                                                                    bool forceBasicAuthentication )
+                                                                                    bool forceBasicAuthentication,
+                                                                                    bool enableClientCertificate )
     {
       IWebProxy proxy = (proxyOptions != null) ? CreateProxy (proxyOptions) : null;
 
@@ -306,6 +309,8 @@ namespace CalDavSynchronizer.Scheduling
           }
           httpClientHandler.Proxy = proxy;
           httpClientHandler.UseProxy = (proxy != null);
+          if (enableClientCertificate)
+            httpClientHandler.ClientCertificateOptions = ClientCertificateOption.Automatic;
 
           var httpClient = new HttpClient (httpClientHandler);
           httpClient.Timeout = calDavConnectTimeout;
@@ -501,6 +506,7 @@ namespace CalDavSynchronizer.Scheduling
            options.PreemptiveAuthentication,
            options.ForceBasicAuthentication,
            options.ProxyOptions,
+           generalOptions.EnableClientCertificate,
            generalOptions.AcceptInvalidCharsInServerResponse));
       }
 
@@ -647,6 +653,7 @@ namespace CalDavSynchronizer.Scheduling
             options.PreemptiveAuthentication,
             options.ForceBasicAuthentication,
             options.ProxyOptions,
+            generalOptions.EnableClientCertificate,
             generalOptions.AcceptInvalidCharsInServerResponse));
       }
       componentsToFill.CardDavDataAccess = cardDavDataAccess;

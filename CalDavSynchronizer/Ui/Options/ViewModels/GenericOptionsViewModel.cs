@@ -169,6 +169,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
           _networkSettingsViewModel.PreemptiveAuthentication,
           _networkSettingsViewModel.ForceBasicAuthentication,
           _networkSettingsViewModel.CreateProxyOptions(),
+          _generalOptions.EnableClientCertificate,
           _generalOptions.AcceptInvalidCharsInServerResponse);
     }
 

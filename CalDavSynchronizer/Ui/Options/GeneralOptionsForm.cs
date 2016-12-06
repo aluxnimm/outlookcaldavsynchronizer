@@ -156,6 +156,7 @@ namespace CalDavSynchronizer.Ui.Options
                    CheckIfOnline = _checkIfOnlineCheckBox.Checked,
                    StoreAppDataInRoamingFolder = _storeDataInRoamingFolderCheckBox.Checked,
                    DisableCertificateValidation = _disableCertificateValidationCheckbox.Checked,
+                   EnableClientCertificate = _enableClientCertificateCheckBox.Checked,
                    EnableTls12 = _enableTls12Checkbox.Checked,
                    EnableSsl3 = _enableSsl3Checkbox.Checked,
                    CalDavConnectTimeout = TimeSpan.FromSeconds (int.Parse (_calDavConnectTimeoutTextBox.Text)),
@@ -180,6 +181,7 @@ namespace CalDavSynchronizer.Ui.Options
         _checkIfOnlineCheckBox.Checked = value.CheckIfOnline;
         _storeDataInRoamingFolderCheckBox.Checked = value.StoreAppDataInRoamingFolder;
         _disableCertificateValidationCheckbox.Checked = value.DisableCertificateValidation;
+        _enableClientCertificateCheckBox.Checked = value.EnableClientCertificate;
         _enableTls12Checkbox.Checked = value.EnableTls12;
         _enableSsl3Checkbox.Checked = value.EnableSsl3;
         _calDavConnectTimeoutTextBox.Text = ((int) value.CalDavConnectTimeout.TotalSeconds).ToString();
