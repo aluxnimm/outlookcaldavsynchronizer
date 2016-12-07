@@ -2,6 +2,8 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Markup;
+using System.Xml;
 
 namespace CalDavSynchronizer.Conversions
 {
@@ -10,9 +12,10 @@ namespace CalDavSynchronizer.Conversions
 
     public static string ConvertRtfToXaml (string rtfText)
     {
-      var flowDocument = new FlowDocument ();
       if (string.IsNullOrEmpty (rtfText))
         return "";
+
+      var flowDocument = new FlowDocument ();
       var textRange = new TextRange (flowDocument.ContentStart, flowDocument.ContentEnd);
       using (var rtfMemoryStream = new MemoryStream ())
       {
@@ -24,42 +27,28 @@ namespace CalDavSynchronizer.Conversions
           textRange.Load (rtfMemoryStream, DataFormats.Rtf);
         }
       }
-      using (var rtfMemoryStream = new MemoryStream ())
-      {
-        textRange = new TextRange (flowDocument.ContentStart, flowDocument.ContentEnd);
-        textRange.Save (rtfMemoryStream, DataFormats.Xaml);
-        rtfMemoryStream.Seek (0, SeekOrigin.Begin);
-        using (var rtfStreamReader = new StreamReader (rtfMemoryStream))
-        {
-          return rtfStreamReader.ReadToEnd ();
-        }
-      }
+
+      return XamlWriter.Save(flowDocument);
     }
 
-    public static string ConvertXamlToRtf (string xamlText)
+    public static string ConvertXamlToRtf(string xamlText)
     {
-      var flowDocument = new FlowDocument ();
-      if (string.IsNullOrEmpty (xamlText))
-        return "";
-      var textRange = new TextRange (flowDocument.ContentStart, flowDocument.ContentEnd);
-      using (var xamlMemoryStream = new MemoryStream ())
+      FlowDocument flowDocument;
+
+      using (var xamlTextReader = new StringReader(xamlText))
+      using (var xamlXmlReader = new XmlTextReader(xamlTextReader))
       {
-        using (var xamlStreamWriter = new StreamWriter (xamlMemoryStream))
-        {
-          xamlStreamWriter.Write (xamlText);
-          xamlStreamWriter.Flush ();
-          xamlMemoryStream.Seek (0, SeekOrigin.Begin);
-          textRange.Load (xamlMemoryStream, DataFormats.Xaml);
-        }
+        flowDocument = (FlowDocument) XamlReader.Load(xamlXmlReader);
       }
-      using (var rtfMemoryStream = new MemoryStream ())
+
+      using (var rtfMemoryStream = new MemoryStream())
       {
-        textRange = new TextRange (flowDocument.ContentStart, flowDocument.ContentEnd);
-        textRange.Save (rtfMemoryStream, DataFormats.Rtf);
-        rtfMemoryStream.Seek (0, SeekOrigin.Begin);
-        using (var rtfStreamReader = new StreamReader (rtfMemoryStream))
+        var textRange = new TextRange(flowDocument.ContentStart, flowDocument.ContentEnd);
+        textRange.Save(rtfMemoryStream, DataFormats.Rtf);
+        rtfMemoryStream.Seek(0, SeekOrigin.Begin);
+        using (var rtfStreamReader = new StreamReader(rtfMemoryStream))
         {
-          return rtfStreamReader.ReadToEnd ();
+          return rtfStreamReader.ReadToEnd();
         }
       }
     }

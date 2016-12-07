@@ -22,6 +22,8 @@ namespace CalDavSynchronizer.Conversions.UnitTests
  \i0 Das \b0Ende.
  }");
 
+      var rtf = new DocumentConverter().ConvertHtmlToRtf(html);
+
     }
   }
 }
