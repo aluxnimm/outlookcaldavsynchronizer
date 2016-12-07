@@ -21,6 +21,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalDavSynchronizer.OAuth.Go
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalDavSynchronizer.CustomInstaller", "CalDavSynchronizer.CustomInstaller\CalDavSynchronizer.CustomInstaller.csproj", "{0C682D77-1CBB-4336-8F6E-CDDA9B6C0C97}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalDavSynchronizer.Conversions", "CalDavSynchronizer.Conversions\CalDavSynchronizer.Conversions.csproj", "{71021DE1-8DC8-4414-AF56-FE821DD92F47}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalDavSynchronizer.Conversions.UnitTests", "CalDavSynchronizer.Conversions.UnitTests\CalDavSynchronizer.Conversions.UnitTests.csproj", "{85C64408-3019-4097-9508-89E46F2E9738}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +65,14 @@ Global
 		{0C682D77-1CBB-4336-8F6E-CDDA9B6C0C97}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C682D77-1CBB-4336-8F6E-CDDA9B6C0C97}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C682D77-1CBB-4336-8F6E-CDDA9B6C0C97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71021DE1-8DC8-4414-AF56-FE821DD92F47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71021DE1-8DC8-4414-AF56-FE821DD92F47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71021DE1-8DC8-4414-AF56-FE821DD92F47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71021DE1-8DC8-4414-AF56-FE821DD92F47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85C64408-3019-4097-9508-89E46F2E9738}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85C64408-3019-4097-9508-89E46F2E9738}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85C64408-3019-4097-9508-89E46F2E9738}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85C64408-3019-4097-9508-89E46F2E9738}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
