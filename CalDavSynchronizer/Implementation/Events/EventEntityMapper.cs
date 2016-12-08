@@ -27,6 +27,7 @@ using CalDavSynchronizer.DDayICalWorkaround;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.TimeZones;
+using CalDavSynchronizer.Conversions;
 using DDay.iCal;
 using GenSync.EntityMapping;
 using GenSync.Logging;
@@ -64,6 +65,7 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly ITimeZone _configuredEventTimeZoneOrNull;
     private readonly EventMappingConfiguration _configuration;
     private readonly ITimeZoneCache _timeZoneCache;
+    private readonly DocumentConverter _documentConverter;
 
     public EventEntityMapper (
         string outlookEmailAddress,
@@ -81,6 +83,7 @@ namespace CalDavSynchronizer.Implementation.Events
       _localTimeZoneId = localTimeZoneId;
       _localTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (_localTimeZoneId);
       _timeZoneCache = timeZoneCache;
+      _documentConverter = new DocumentConverter();
 
       
 
@@ -244,7 +247,28 @@ namespace CalDavSynchronizer.Implementation.Events
       target.Location = source.Location;
 
       if (_configuration.MapBody)
+      {
         target.Description = source.Body;
+
+        var rtfBody = source.RTFBody as byte[];
+        if (rtfBody != null)
+        {
+          try
+          {
+            var rtfBodyString = System.Text.Encoding.UTF8.GetString (rtfBody);
+
+            var htmlBody = _documentConverter.ConvertRtfToHtml (rtfBodyString);
+            var xAltDesc = new CalendarProperty ("X-ALT-DESC", htmlBody);
+            xAltDesc.Parameters.Add ("FMTTYPE", "text/html");
+            target.Properties.Add (xAltDesc);
+          }
+          catch (System.Exception ex)
+          {
+            s_logger.Warn ("Can't convert RTFBody to html.", ex);
+            logger.LogMappingWarning ("Can't convert RTFBody to html.", ex);
+          }
+        }
+      }
 
       target.Priority = CommonEntityMapper.MapPriority1To2 (source.Importance);
 
@@ -1601,6 +1625,26 @@ namespace CalDavSynchronizer.Implementation.Events
       targetWrapper.Inner.Location = source.Location;
 
       targetWrapper.Inner.Body = _configuration.MapBody ? source.Description : string.Empty;
+
+      if (_configuration.MapBody && source.Properties.ContainsKey ("X-ALT-DESC"))
+      {
+        var xAltDesc = source.Properties["X-ALT-DESC"];
+        if (xAltDesc.Parameters.ContainsKey ("FMTTYPE") && xAltDesc.Parameters.Get ("FMTTYPE") == "text/html")
+        {
+          try
+          {
+            var rtfBodyString = _documentConverter.ConvertHtmlToRtf (xAltDesc.Value.ToString());
+            var rtfBody = System.Text.Encoding.UTF8.GetBytes (rtfBodyString);
+            targetWrapper.Inner.RTFBody = rtfBody;
+          }
+          catch (System.Exception ex)
+          {
+            s_logger.Warn ("Can't convert X-ALT-DESC from html to RTF.", ex);
+            logger.LogMappingWarning ("Can't convert X-ALT-DESC from html to RTF.", ex);
+          }
+        }
+      }
+
 
       targetWrapper.Inner.Importance = CommonEntityMapper.MapPriority2To1 (source.Priority);
 
