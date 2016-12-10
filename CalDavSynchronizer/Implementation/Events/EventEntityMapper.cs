@@ -258,7 +258,9 @@ namespace CalDavSynchronizer.Implementation.Events
             var rtfBodyString = System.Text.Encoding.UTF8.GetString (rtfBody);
 
             var htmlBody = _documentConverter.ConvertRtfToHtml (rtfBodyString);
-            var xAltDesc = new CalendarProperty ("X-ALT-DESC", htmlBody);
+            // Workaround to replace double with single quotes for attribute values since servers like SOGo remove them otherwise
+            var fixedHtmlBody = htmlBody.Replace("\"", "'");
+            var xAltDesc = new CalendarProperty ("X-ALT-DESC", fixedHtmlBody);
             xAltDesc.Parameters.Add ("FMTTYPE", "text/html");
             target.Properties.Add (xAltDesc);
           }
@@ -1633,9 +1635,14 @@ namespace CalDavSynchronizer.Implementation.Events
         {
           try
           {
-            var rtfBodyString = _documentConverter.ConvertHtmlToRtf (xAltDesc.Value.ToString());
-            var rtfBody = System.Text.Encoding.UTF8.GetBytes (rtfBodyString);
-            targetWrapper.Inner.RTFBody = rtfBody;
+            if (xAltDesc.Value != null)
+            {
+              var htmlString = xAltDesc.Value.ToString();
+              var rtfBodyString = _documentConverter.ConvertHtmlToRtf (htmlString);
+
+              var rtfBody = System.Text.Encoding.UTF8.GetBytes (rtfBodyString);
+              targetWrapper.Inner.RTFBody = rtfBody;
+            }
           }
           catch (System.Exception ex)
           {
