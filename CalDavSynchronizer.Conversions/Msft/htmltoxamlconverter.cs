@@ -2363,7 +2363,7 @@ namespace CalDavSynchronizer.Conversions.Msft
 
                 // Hyperlinks
                 case "a": // href, hreflang, urn, methods, rel, rev, title
-                    //  Set default hyperlink properties
+                          //  Set default hyperlink properties
                     break;
                 case "acronym":
                     break;
@@ -2371,6 +2371,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                 // Paragraph formatting:
                 case "p":
                     //  Set default paragraph properties
+                    localProperties["text-align"] = "Left";
                     break;
                 case "div":
                     //  Set default div properties
