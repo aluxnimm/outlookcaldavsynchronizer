@@ -39,6 +39,7 @@ namespace CalDavSynchronizer.Conversions
       using (var xamlXmlReader = new XmlTextReader(xamlTextReader))
       {
         flowDocument = (FlowDocument) XamlReader.Load(xamlXmlReader);
+        flowDocument.SetValue (FlowDocument.TextAlignmentProperty, TextAlignment.Left);
       }
 
       using (var rtfMemoryStream = new MemoryStream())
