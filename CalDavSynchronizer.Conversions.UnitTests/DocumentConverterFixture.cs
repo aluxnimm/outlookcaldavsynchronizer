@@ -11,7 +11,7 @@ namespace CalDavSynchronizer.Conversions.UnitTests
   public class DocumentConverterFixture
   {
     [Test]
-    public void ConvertRtfToHtml ()
+    public void ConvertRtfToHtml()
     {
       var html = new DocumentConverter().ConvertRtfToHtml(@"{\rtf1
  Guten Tag!
@@ -24,6 +24,16 @@ namespace CalDavSynchronizer.Conversions.UnitTests
 
       var rtf = new DocumentConverter().ConvertHtmlToRtf(html);
 
+    }
+
+
+    [Test]
+    public void TestHtmlLinkRoundTrip()
+    {
+      var html = "<A HREF=\"http://www.orf.at\">Orf</A>";
+      var rtf = new DocumentConverter().ConvertHtmlToRtf(html);
+      var htmlRoundTrip = new DocumentConverter().ConvertRtfToHtml(rtf);
+      Assert.That(htmlRoundTrip.Contains("<A HREF"));
     }
   }
 }

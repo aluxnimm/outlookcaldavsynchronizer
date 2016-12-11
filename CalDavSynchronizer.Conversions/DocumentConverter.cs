@@ -27,7 +27,7 @@ namespace CalDavSynchronizer.Conversions
     public string ConvertRtfToHtml(string rtf)
     {
       var xaml = RtfXamlConverter.ConvertRtfToXaml(rtf);
-      return Msft.HtmlFromXamlConverter.ConvertXamlToHtml(xaml);
+      return Msft.HtmlFromXamlConverter.ConvertXamlToHtml(xaml, true);
     }
   }
 }
