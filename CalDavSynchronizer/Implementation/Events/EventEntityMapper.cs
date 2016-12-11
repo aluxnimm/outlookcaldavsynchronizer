@@ -250,24 +250,30 @@ namespace CalDavSynchronizer.Implementation.Events
       {
         target.Description = source.Body;
 
-        var rtfBody = source.RTFBody as byte[];
-        if (rtfBody != null)
+        if (_configuration.MapRtfBodyToXAltDesc)
         {
-          try
+          var rtfBody = source.RTFBody as byte[];
+          if (rtfBody != null)
           {
-            var rtfBodyString = System.Text.Encoding.UTF8.GetString (rtfBody);
+            try
+            {
+              var rtfBodyString = System.Text.Encoding.UTF8.GetString (rtfBody);
 
-            var htmlBody = _documentConverter.ConvertRtfToHtml (rtfBodyString);
-            // Workaround to replace double with single quotes for attribute values since servers like SOGo remove them otherwise
-            var fixedHtmlBody = htmlBody.Replace("\"", "'");
-            var xAltDesc = new CalendarProperty ("X-ALT-DESC", fixedHtmlBody);
-            xAltDesc.Parameters.Add ("FMTTYPE", "text/html");
-            target.Properties.Add (xAltDesc);
-          }
-          catch (System.Exception ex)
-          {
-            s_logger.Warn ("Can't convert RTFBody to html.", ex);
-            logger.LogMappingWarning ("Can't convert RTFBody to html.", ex);
+              var htmlBody = _documentConverter.ConvertRtfToHtml (rtfBodyString);
+              if (!string.IsNullOrEmpty (htmlBody))
+              {
+                // Workaround to replace double with single quotes for attribute values since servers like SOGo remove them otherwise
+                var fixedHtmlBody = htmlBody.Replace ("\"", "'");
+                var xAltDesc = new CalendarProperty ("X-ALT-DESC", fixedHtmlBody);
+                xAltDesc.Parameters.Add ("FMTTYPE", "text/html");
+                target.Properties.Add (xAltDesc);
+              }
+            }
+            catch (System.Exception ex)
+            {
+              s_logger.Warn ("Can't convert RTFBody to html.", ex);
+              logger.LogMappingWarning ("Can't convert RTFBody to html.", ex);
+            }
           }
         }
       }
@@ -1628,7 +1634,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
       targetWrapper.Inner.Body = _configuration.MapBody ? source.Description : string.Empty;
 
-      if (_configuration.MapBody && source.Properties.ContainsKey ("X-ALT-DESC"))
+      if (_configuration.MapBody && _configuration.MapXAltDescToRtfBody && source.Properties.ContainsKey ("X-ALT-DESC"))
       {
         var xAltDesc = source.Properties["X-ALT-DESC"];
         if (xAltDesc.Parameters.ContainsKey ("FMTTYPE") && xAltDesc.Parameters.Get ("FMTTYPE") == "text/html")
