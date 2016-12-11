@@ -941,7 +941,7 @@ namespace CalDavSynchronizer.Conversions.Msft
             {
                 // Create xamlTableElement
                 XmlElement xamlTableElement = xamlParentElement.OwnerDocument.CreateElement(null, Xaml_Table, _xamlNamespace);
-
+                ApplyLocalProperties(xamlTableElement, localProperties, /*isBlock:*/true);
                 // Analyze table structure for column widths and rowspan attributes
                 ArrayList columnStarts = AnalyzeTableStructure(htmlTableElement, stylesheet);
 
@@ -1313,7 +1313,7 @@ namespace CalDavSynchronizer.Conversions.Msft
 
                     // TODO: determine if localProperties can be used instead of htmlChildNode in this call, and if they can,
                     // make necessary changes and use them instead.
-                    ApplyPropertiesToTableCellElement((XmlElement)htmlChildNode, xamlTableCellElement);
+                    ApplyPropertiesToTableCellElement((XmlElement)htmlChildNode, xamlTableCellElement, tdElementCurrentProperties);
 
                     if (columnStarts != null)
                     {
@@ -1972,7 +1972,7 @@ namespace CalDavSynchronizer.Conversions.Msft
         /// <param name="localProperties">
         /// Hashtable representing local properties of Html element that is converted into xamlElement
         /// </param>
-        private static void ApplyLocalProperties(XmlElement xamlElement, Hashtable localProperties, bool isBlock)
+        private static void ApplyLocalProperties(XmlElement xamlElement, Hashtable localProperties, bool isBlock, bool isTableCell = false)
         {
             bool marginSet = false;
             string marginTop = "0";
@@ -2193,16 +2193,18 @@ namespace CalDavSynchronizer.Conversions.Msft
 
             if (isBlock)
             {
-                if (marginSet)
-                {
-                    ComposeThicknessProperty(xamlElement, Xaml_Margin, marginLeft, marginRight, marginTop, marginBottom);
-                }
+              if (marginSet)
+              {
+                ComposeThicknessProperty(xamlElement, Xaml_Margin, marginLeft, marginRight, marginTop, marginBottom);
+              }
 
-                if (paddingSet)
-                {
-                    ComposeThicknessProperty(xamlElement, Xaml_Padding, paddingLeft, paddingRight, paddingTop, paddingBottom);
-                }
-
+              if (paddingSet)
+              {
+                ComposeThicknessProperty(xamlElement, Xaml_Padding, paddingLeft, paddingRight, paddingTop, paddingBottom);
+              }
+            }
+            if (isBlock || isTableCell)
+            { 
                 if (borderColor != null)
                 {
                     //  We currently ignore possible difference in brush colors on different border sides. Use the last colored side mentioned
@@ -2546,20 +2548,21 @@ namespace CalDavSynchronizer.Conversions.Msft
         /// <remarks>
         /// TODO: Use the processed properties for htmlChildNode instead of using the node itself 
         /// </remarks>
-        private static void ApplyPropertiesToTableCellElement(XmlElement htmlChildNode, XmlElement xamlTableCellElement)
+        private static void ApplyPropertiesToTableCellElement(XmlElement htmlChildNode, XmlElement xamlTableCellElement, Hashtable localProperties)
         {
             // Parameter validation
             Debug.Assert(htmlChildNode.LocalName.ToLower() == "td" || htmlChildNode.LocalName.ToLower() == "th");
             Debug.Assert(xamlTableCellElement.LocalName == Xaml_TableCell);
 
             // set default border thickness for xamlTableCellElement to enable gridlines
-            xamlTableCellElement.SetAttribute(Xaml_TableCell_BorderThickness, "1,1,1,1");
-            xamlTableCellElement.SetAttribute(Xaml_TableCell_BorderBrush, Xaml_Brushes_Black);
+            //xamlTableCellElement.SetAttribute(Xaml_TableCell_BorderThickness, "1,1,1,1");
+            //xamlTableCellElement.SetAttribute(Xaml_TableCell_BorderBrush, Xaml_Brushes_Black);
             string rowSpanString = GetAttribute((XmlElement)htmlChildNode, "rowspan");
             if (rowSpanString != null)
             {
                 xamlTableCellElement.SetAttribute(Xaml_TableCell_RowSpan, rowSpanString);
             }
+            ApplyLocalProperties(xamlTableCellElement, localProperties, false, true);
         }
 
         #endregion Private Methods
