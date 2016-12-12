@@ -45,6 +45,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     private bool _invertEventCategoryFilter;
     private bool _mapAttendees;
     private bool _mapBody;
+    private bool _mapRtfBodyToXAltDesc;
+    private bool _mapXAltDescToRtfBody;
     private bool _mapClassConfidentialToSensitivityPrivate;
     private bool _mapClassPublicToSensitivityPrivate;
     private ReminderMapping _mapReminder;
@@ -217,6 +219,23 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       }
     }
 
+    public bool MapRtfBodyToXAltDesc
+    {
+      get { return _mapRtfBodyToXAltDesc; }
+      set
+      {
+        CheckedPropertyChange (ref _mapRtfBodyToXAltDesc, value);
+      }
+    }
+
+    public bool MapXAltDescToRtfBody
+    {
+      get { return _mapXAltDescToRtfBody; }
+      set
+      {
+        CheckedPropertyChange (ref _mapXAltDescToRtfBody, value);
+      }
+    }
     public bool MapClassConfidentialToSensitivityPrivate
     {
       get { return _mapClassConfidentialToSensitivityPrivate; }
@@ -328,6 +347,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       InvertEventCategoryFilter = mappingConfiguration.InvertEventCategoryFilter;
       MapAttendees = mappingConfiguration.MapAttendees;
       MapBody = mappingConfiguration.MapBody;
+      MapRtfBodyToXAltDesc = mappingConfiguration.MapRtfBodyToXAltDesc;
+      MapXAltDescToRtfBody = mappingConfiguration.MapXAltDescToRtfBody;
       MapClassConfidentialToSensitivityPrivate = mappingConfiguration.MapClassConfidentialToSensitivityPrivate;
       MapClassPublicToSensitivityPrivate = mappingConfiguration.MapClassPublicToSensitivityPrivate;
       MapReminder = mappingConfiguration.MapReminder;
@@ -353,6 +374,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       mappingConfiguration.InvertEventCategoryFilter = _invertEventCategoryFilter;
       mappingConfiguration.MapAttendees = _mapAttendees;
       mappingConfiguration.MapBody = _mapBody;
+      mappingConfiguration.MapRtfBodyToXAltDesc = _mapRtfBodyToXAltDesc;
+      mappingConfiguration.MapXAltDescToRtfBody = _mapXAltDescToRtfBody;
       mappingConfiguration.MapClassConfidentialToSensitivityPrivate = _mapClassConfidentialToSensitivityPrivate;
       mappingConfiguration.MapReminder = _mapReminder;
       mappingConfiguration.MapSensitivityPrivateToClassConfidential = _mapSensitivityPrivateToClassConfidential;
@@ -385,6 +408,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                                                           InvertEventCategoryFilter = true,
                                                                           MapAttendees = true,
                                                                           MapBody = true,
+                                                                          MapRtfBodyToXAltDesc = true,
+                                                                          MapXAltDescToRtfBody = true,
                                                                           MapClassConfidentialToSensitivityPrivate = true,
                                                                           MapClassPublicToSensitivityPrivate = true,
                                                                           MapReminder = ReminderMapping.JustUpcoming,

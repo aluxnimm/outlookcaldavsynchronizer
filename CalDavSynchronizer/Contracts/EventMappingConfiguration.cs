@@ -33,6 +33,8 @@ namespace CalDavSynchronizer.Contracts
     public bool ScheduleAgentClient { get; set; }
     public bool SendNoAppointmentNotifications { get; set; }
     public bool MapBody { get; set; }
+    public bool MapRtfBodyToXAltDesc { get; set; }
+    public bool MapXAltDescToRtfBody { get; set; }
     public bool CreateEventsInUTC { get; set; }
     public bool UseIanaTz { get; set; }
     public string EventTz { get; set; }
@@ -69,6 +71,8 @@ namespace CalDavSynchronizer.Contracts
       ScheduleAgentClient = true;
       SendNoAppointmentNotifications = false;
       MapBody = true;
+      MapRtfBodyToXAltDesc = false;
+      MapXAltDescToRtfBody = false;
       CreateEventsInUTC = false;
       UseIanaTz = false;
       EventTz = NodaTime.DateTimeZoneProviders.Tzdb.GetSystemDefault()?.Id;

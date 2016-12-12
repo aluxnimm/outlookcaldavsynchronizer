@@ -752,6 +752,10 @@
     <Content Include="Resources\outlookcaldavsynchronizerlogoarrow.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CalDavSynchronizer.Conversions\CalDavSynchronizer.Conversions.csproj">
+      <Project>{71021de1-8dc8-4414-af56-fe821dd92f47}</Project>
+      <Name>CalDavSynchronizer.Conversions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CalDavSynchronizer.OAuth.Google\CalDavSynchronizer.OAuth.Google.csproj">
       <Project>{230914cf-6ff1-4b09-a831-c37c6b41d127}</Project>
       <Name>CalDavSynchronizer.OAuth.Google</Name>
