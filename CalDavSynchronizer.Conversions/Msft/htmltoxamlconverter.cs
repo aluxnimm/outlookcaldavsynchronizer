@@ -1148,14 +1148,16 @@ namespace CalDavSynchronizer.Conversions.Msft
 
             // TODO: process local properties for colgroup
 
+            XmlElement xamlTableColumnsElement = xamlTableElement.OwnerDocument.CreateElement(null, Xaml_TableColumns, _xamlNamespace);
             // Process children of colgroup. Colgroup may contain only col elements.
             for (XmlNode htmlNode = htmlColgroupElement.FirstChild; htmlNode != null; htmlNode = htmlNode.NextSibling)
             {
                 if (htmlNode is XmlElement && htmlNode.LocalName.ToLower() == "col")
                 {
-                    AddTableColumn(xamlTableElement, (XmlElement)htmlNode, currentProperties, stylesheet, sourceContext);
+                    AddTableColumn(xamlTableColumnsElement, (XmlElement)htmlNode, currentProperties, stylesheet, sourceContext);
                 }
             }
+            xamlTableElement.AppendChild(xamlTableColumnsElement);
         }
 
         /// <summary>
@@ -2611,6 +2613,7 @@ namespace CalDavSynchronizer.Conversions.Msft
 
         public const string Xaml_Table = "Table";
 
+      public const string Xaml_TableColumns = "Table.Columns";
         public const string Xaml_TableColumn = "TableColumn";
         public const string Xaml_TableRowGroup = "TableRowGroup";
         public const string Xaml_TableRow = "TableRow";
