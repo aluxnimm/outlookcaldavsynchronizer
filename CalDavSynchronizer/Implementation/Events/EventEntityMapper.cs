@@ -257,7 +257,7 @@ namespace CalDavSynchronizer.Implementation.Events
           {
             try
             {
-              var rtfBodyString = System.Text.Encoding.UTF8.GetString (rtfBody);
+              var rtfBodyString = System.Text.Encoding.Default.GetString (rtfBody);
 
               var htmlBody = _documentConverter.ConvertRtfToHtml (rtfBodyString);
               if (!string.IsNullOrEmpty (htmlBody))
@@ -1646,7 +1646,7 @@ namespace CalDavSynchronizer.Implementation.Events
               var htmlString = xAltDesc.Value.ToString();
               var rtfBodyString = _documentConverter.ConvertHtmlToRtf (htmlString);
 
-              var rtfBody = System.Text.Encoding.UTF8.GetBytes (rtfBodyString);
+              var rtfBody = System.Text.Encoding.Default.GetBytes (rtfBodyString);
               targetWrapper.Inner.RTFBody = rtfBody;
             }
           }
