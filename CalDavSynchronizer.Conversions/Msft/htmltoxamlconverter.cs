@@ -877,6 +877,7 @@ namespace CalDavSynchronizer.Conversions.Msft
             XmlElement xamlListItemElement = xamlListElement.OwnerDocument.CreateElement(null, Xaml_ListItem, _xamlNamespace);
 
             // TODO: process local properties for li element
+            ApplyLocalProperties (xamlListItemElement, localProperties, true);
 
             // Process children of the ListItem
             for (XmlNode htmlChildNode = htmlLIElement.FirstChild; htmlChildNode != null; htmlChildNode = htmlChildNode != null ? htmlChildNode.NextSibling : null)
