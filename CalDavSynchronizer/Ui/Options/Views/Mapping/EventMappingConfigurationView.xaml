@@ -25,9 +25,9 @@
                     SelectedValue="{Binding MapReminder}"
                     Grid.Column="1" />
           </Grid>
-                <CheckBox IsChecked="{Binding MapBody}">Map Body</CheckBox>
-                <CheckBox IsEnabled="{Binding MapBody}" IsChecked="{Binding MapRtfBodyToXAltDesc}" ToolTip="Convert formatted RTF Body of Outlook appointment to html and export it as X-ALT-DESC property.&#x0a;The RTF to html conversion is experimental, inline images and some formatting properties can't be converted!">Export html description X-ALT-DESC converted from RTF Body</CheckBox>
-                <CheckBox IsEnabled="{Binding MapBody}" IsChecked="{Binding MapXAltDescToRtfBody}" ToolTip="Convert X-ALT-DESC description html property to RTF and set Outlook appointment RTF Body.&#x0a;The html to RTF conversion is experimental, not all html formatting options can be converted!">Set RTF Body from X-ALT-DESC html description</CheckBox>
+                <CheckBox IsChecked="{Binding MapBody}" ToolTip="Map plaintext Body of Outlook Appointment to description attribute.">Map Body</CheckBox>
+                <CheckBox IsEnabled="{Binding MapBody}" IsChecked="{Binding MapRtfBodyToXAltDesc}" ToolTip="Convert formatted RTF Body of Outlook appointment to html and export it as X-ALT-DESC property.&#x0a;The RTF to html conversion is experimental, inline images and some formatting properties can't be converted!&#x0a;Be aware that some servers like Google Calendar drop this attribute!">Export html description X-ALT-DESC converted from RTF Body</CheckBox>
+                <CheckBox IsEnabled="{Binding MapBody}" IsChecked="{Binding MapXAltDescToRtfBody}" ToolTip="Convert X-ALT-DESC description html property to RTF and set Outlook appointment RTF Body.&#x0a;The html to RTF conversion is experimental, not all html formatting options can be converted!&#x0a;This overwrites also the plaintext Body!">Set RTF Body from X-ALT-DESC html description</CheckBox>
                 <CheckBox IsChecked="{Binding UseGlobalAppointmendID}" ToolTip="Use Outlook GlobalAppointmendID instead of random Guid for UID attribute in new CalDAV events. &#x0a; Can avoid duplicate events from invitations.">Use GlobalAppointmentID for UID attribute</CheckBox>
         </StackPanel>
       </GroupBox>
