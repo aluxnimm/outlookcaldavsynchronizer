@@ -58,7 +58,7 @@ For possible enterprise support, please contact us!
 
 - open source AGPL, the only free Outlook CalDav plugin
 - two-way-sync
-- SSL/TLS support, support for self-signed certificates
+- SSL/TLS support, support for self-signed certificates and client certificate authentication
 - Manual proxy configuration support for NTLM or basic auth proxies
 - Autodiscovery of calendars and addressbooks
 - configurable sync range
@@ -80,6 +80,8 @@ For possible enterprise support, please contact us!
 - Use server settings from Outlook IMAP/POP3 account profile
 - Map Windows to standard IANA/Olson timezones
 - Configurable mapping of Outlook custom properties
+- create DAV server calendars/addressbooks with MKCOL
+- Map Outlook formatted RTFBody to html description via X-ALT-DESC attribute
 
 ### Used Libraries ###
 
@@ -100,6 +102,13 @@ Beginning with version 2.9.0 the default install location is `ProgramFilesDir\Ca
 We recommend updating to the latest .Net Framework but the minimal required version is .Net 4.5, which is not supported on Windows XP. If you need Outlook CalDav Synchronizer for Windows XP you can download a backport to .Net 4.0 from a forked project [here](https://sourceforge.net/projects/outlookcaldavsynchronizerxp/), thanks to [Salvatore Isaja](https://sourceforge.net/u/salvois/profile/) for the awesome work!
 
 ### Changelog ###
+
+#### 2.12.0 ####
+- New features
+	- Add general option to enable client certificate TLS authentication, feature request 55.
+	- Map Outlook formatted RTFBody to html description via X-ALT-DESC attribute.
+- Bug fixes
+	- Use lowercase for mailto in organizer and attendee uris to avoid problems with some clients, ticket #426.
 
 #### 2.11.0 ####
 - New features
@@ -917,6 +926,8 @@ If you expand the tree view of the profile you can configure network and proxy o
 	
 - **Mapping Configuration**: Here you can configure what properties should be synced.
 	- For appointments you can choose if you want to map reminders (just upcoming, all or none) and the description body.
+	- *Export html description X-ALT-DESC converted from RTF Body* If enabled, convert formatted RTF Body of Outlook appointment to html and export it as X-ALT-DESC property. The RTF to html conversion is experimental, inline images and some formatting properties can't be converted! Be aware that some servers like Google Calendar drop this attribute!
+	- *Set RTF Body from X-ALT-DESC html description* If enabled, convert X-ALT-DESC description html property to RTF and set Outlook appointment RTF Body. The html to RTF conversion is experimental, not all html formatting options can be converted! This overwrites also the plaintext Body!
 	- *Timezone settings* See section Timezone mapping below.
 	- *Use GlobalAppointmentID for UID attribute:* Use Outlook GlobalAppointmendID instead of random Guid for UID attribute in new CalDAV events. This can avoid duplicate events from invitations.
 	- In *Privacy settings* you can configure if you want to map Outlook private appointments to CLASS:CONFIDENTIAL and vice versa. This could be useful for Owncloud for example, if you share your calendar with others and they should see start/end dates of your private appointments. You can also map all CLASS:PUBLIC events to Outlook private appointments.
@@ -1093,6 +1104,7 @@ The recommended way would be to add the self signed cert to the Local Computer T
 You can import the cert by running the MMC as Administrator.
 
 - **Disable Certificate Validation** set to true to disable SSL/TLS certificate validation, major security risk, use with caution!
+- **Enable Client Certificates** If enabled, the available client certificates from the Windows user certificate store will automatically be provided.
 - **Enable Tls12** set to false to disable TLS12, not recommended 
 - **Enable Ssl3** set to true to enable deprecated SSLv3, major security risk, use with caution! 
 
