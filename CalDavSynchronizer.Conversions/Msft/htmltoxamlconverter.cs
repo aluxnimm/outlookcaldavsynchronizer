@@ -12,6 +12,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Documents;
 using System.Xml;
@@ -1092,6 +1093,9 @@ namespace CalDavSynchronizer.Conversions.Msft
         /// <param name="sourceContext"></param>
         private static void AddColumnInformation(XmlElement htmlTableElement, XmlElement xamlTableElement, ArrayList columnStartsAllRows, Hashtable currentProperties, CssStylesheet stylesheet, List<XmlElement> sourceContext)
         {
+            var numberFormatInfo = new NumberFormatInfo();
+            numberFormatInfo.NumberDecimalSeparator = ".";
+      
             // Add column information
             if (columnStartsAllRows != null)
             {
@@ -1102,7 +1106,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                     XmlElement xamlColumnElement;
 
                     xamlColumnElement = xamlTableElement.OwnerDocument.CreateElement(null, Xaml_TableColumn, _xamlNamespace);
-                    xamlColumnElement.SetAttribute(Xaml_Width, ((double)columnStartsAllRows[columnIndex + 1] - (double)columnStartsAllRows[columnIndex]).ToString());
+                    xamlColumnElement.SetAttribute(Xaml_Width, ((double)columnStartsAllRows[columnIndex + 1] - (double)columnStartsAllRows[columnIndex]).ToString(numberFormatInfo));
                     xamlTableElement.AppendChild(xamlColumnElement);
                 }
             }
@@ -1176,13 +1180,22 @@ namespace CalDavSynchronizer.Conversions.Msft
         /// <param name="sourceContext"></param>
         private static void AddTableColumn(XmlElement xamlTableElement, XmlElement htmlColElement, Hashtable inheritedProperties, CssStylesheet stylesheet, List<XmlElement> sourceContext)
         {
-            Hashtable localProperties;
-            Hashtable currentProperties = GetElementProperties(htmlColElement, inheritedProperties, out localProperties, stylesheet, sourceContext);
+          Hashtable localProperties;
+          Hashtable currentProperties = GetElementProperties(htmlColElement, inheritedProperties, out localProperties, stylesheet, sourceContext);
 
-            XmlElement xamlTableColumnElement = xamlTableElement.OwnerDocument.CreateElement(null, Xaml_TableColumn, _xamlNamespace);
+          XmlElement xamlTableColumnElement = xamlTableElement.OwnerDocument.CreateElement(null, Xaml_TableColumn, _xamlNamespace);
 
-            // TODO: process local properties for TableColumn element
+          // TODO: process local properties for TableColumn element
 
+          // set column width if available
+          var columnWidth = GetColumnWidth (htmlColElement);
+
+          if (columnWidth != -1)
+          {
+            var numberFormatInfo = new NumberFormatInfo();
+            numberFormatInfo.NumberDecimalSeparator = ".";
+            xamlTableColumnElement.SetAttribute (Xaml_Width, columnWidth.ToString (numberFormatInfo));
+          }
             // Col is an empty element, with no subtree 
             xamlTableElement.AppendChild(xamlTableColumnElement);
         }
@@ -2309,7 +2322,10 @@ namespace CalDavSynchronizer.Conversions.Msft
             string elementName = htmlElement.LocalName.ToLower();
             string elementNamespace = htmlElement.NamespaceURI;
 
-            // update current formatting properties depending on element tag
+      // update current formatting properties depending on element tag
+
+            var numberFormatInfo = new NumberFormatInfo();
+            numberFormatInfo.NumberDecimalSeparator = ".";
 
             localProperties = new Hashtable();
             switch (elementName)
@@ -2348,7 +2364,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                         {
                             fontSize = 1000.0;
                         }
-                        localProperties["font-size"] = fontSize.ToString();
+                        localProperties["font-size"] = fontSize.ToString (numberFormatInfo);
                     }
                     attributeValue = GetAttribute(htmlElement, "color");
                     if (attributeValue != null)
@@ -2498,7 +2514,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                 if (lengthAsString.EndsWith("pt"))
                 {
                     lengthAsString = lengthAsString.Substring(0, lengthAsString.Length - 2);
-                    if (Double.TryParse(lengthAsString, out length))
+                    if (Double.TryParse(lengthAsString, NumberStyles.Any, CultureInfo.InvariantCulture, out length))
                     {
                         length = (length * 96.0) / 72.0; // convert from points to pixels
                     }
@@ -2510,14 +2526,14 @@ namespace CalDavSynchronizer.Conversions.Msft
                 else if (lengthAsString.EndsWith("px"))
                 {
                     lengthAsString = lengthAsString.Substring(0, lengthAsString.Length - 2);
-                    if (!Double.TryParse(lengthAsString, out length))
+                    if (!Double.TryParse(lengthAsString, NumberStyles.Any, CultureInfo.InvariantCulture, out length))
                     {
                         length = Double.NaN;
                     }
                 }
                 else
                 {
-                    if (!Double.TryParse(lengthAsString, out length)) // Assuming pixels
+                    if (!Double.TryParse(lengthAsString, NumberStyles.Any, CultureInfo.InvariantCulture, out length)) // Assuming pixels
                     {
                         length = Double.NaN;
                     }
@@ -2614,7 +2630,7 @@ namespace CalDavSynchronizer.Conversions.Msft
 
         public const string Xaml_Table = "Table";
 
-      public const string Xaml_TableColumns = "Table.Columns";
+        public const string Xaml_TableColumns = "Table.Columns";
         public const string Xaml_TableColumn = "TableColumn";
         public const string Xaml_TableRowGroup = "TableRowGroup";
         public const string Xaml_TableRow = "TableRow";

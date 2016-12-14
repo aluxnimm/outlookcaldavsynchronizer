@@ -348,7 +348,7 @@ namespace CalDavSynchronizer.Conversions.Msft
           switch (xamlReader.NodeType)
           {
             case XmlNodeType.Element:
-              if (xamlReader.Name.Contains("."))
+              if (xamlReader.Name.Contains(".") && !xamlReader.Name.Equals("Table.Columns"))
               {
                 AddComplexProperty(xamlReader, inlineStyle);
               }
@@ -472,6 +472,9 @@ namespace CalDavSynchronizer.Conversions.Msft
             break;
           case "Table":
             htmlElementName = "TABLE";
+            break;
+          case "Table.Columns":
+            htmlElementName = "COLGROUP";
             break;
           case "TableColumn":
             htmlElementName = "COL";
