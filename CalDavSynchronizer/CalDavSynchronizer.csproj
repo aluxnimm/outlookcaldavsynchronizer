@@ -305,6 +305,7 @@
     <Compile Include="DDayICalWorkaround\IDateTimeExtension.cs" />
     <Compile Include="EntityCacheVersionConversion\Version1To2.cs" />
     <Compile Include="EntityCacheVersionConversion\Version2To3.cs" />
+    <Compile Include="IComponentContainer.cs" />
     <Compile Include="Implementation\Common\NameSpaceExtensions.cs" />
     <Compile Include="Implementation\Common\OutlookUtility.cs" />
     <Compile Include="Implementation\Events\EventSynchronizationInterceptorFactory.cs" />

@@ -36,7 +36,7 @@ namespace CalDavSynchronizer
     private CalDavSynchronizerToolBar _calDavSynchronizerToolBar; // Pierre-Marie Baty -- only for Outlook < 2010
     private Explorers _explorers;
     private Explorer _activeExplorer;
-    public static ComponentContainer ComponentContainer { get; private set; }
+    public static IComponentContainer ComponentContainer { get; private set; }
 
     public static event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
     public static event EventHandler<SchedulerStatusEventArgs> StatusChanged;
@@ -68,10 +68,10 @@ namespace CalDavSynchronizer
 
         AddToolBarIfRequired();
 
-        ComponentContainer.EnsureSynchronizationContext();
+        CalDavSynchronizer.ComponentContainer.EnsureSynchronizationContext();
 
         s_logger.Info ("Initializing component container.");
-        await ComponentContainer.InitializeSchedulerAndStart();
+        await ComponentContainer.InitializeSchedulerAndStartAsync();
 
         s_logger.Info ("Startup exiting.");
       }

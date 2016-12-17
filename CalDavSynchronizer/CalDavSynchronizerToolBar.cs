@@ -38,10 +38,10 @@ namespace CalDavSynchronizer
     private readonly CommandBarButton _toolBarBtnStatus;
     // ReSharper restore PrivateFieldCanBeConvertedToLocalVariable
 
-    private readonly ComponentContainer _componentContainer;
+    private readonly IComponentContainer _componentContainer;
     private CommandBar _toolBar;
 
-    public CalDavSynchronizerToolBar (Explorer explorer, ComponentContainer componentContainer, object missing, bool wireClickEvents)
+    public CalDavSynchronizerToolBar (Explorer explorer, IComponentContainer componentContainer, object missing, bool wireClickEvents)
     {
       _componentContainer = componentContainer;
 
@@ -130,7 +130,7 @@ namespace CalDavSynchronizer
       try
       {
         ComponentContainer.EnsureSynchronizationContext ();
-        await _componentContainer.ShowOptions ();
+        await _componentContainer.ShowOptionsAsync ();
       }
       catch (Exception x)
       {
@@ -148,7 +148,7 @@ namespace CalDavSynchronizer
       try
       {
         ComponentContainer.EnsureSynchronizationContext ();
-        await _componentContainer.ShowGeneralOptions ();
+        await _componentContainer.ShowGeneralOptionsAsync ();
       }
       catch (Exception x)
       {

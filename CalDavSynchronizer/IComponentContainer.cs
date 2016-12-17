@@ -14,52 +14,22 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Threading.Tasks;
+using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Scheduling;
 
 namespace CalDavSynchronizer
 {
-  public class NullCalDavSynchronizerCommands : ICalDavSynchronizerCommands
+  public interface IComponentContainer : ICalDavSynchronizerCommands, IDisposable
   {
-    public static readonly ICalDavSynchronizerCommands Instance = new NullCalDavSynchronizerCommands();
+    event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
+    event EventHandler<SchedulerStatusEventArgs> StatusChanged;
 
-    private NullCalDavSynchronizerCommands ()
-    {
-    }
+    Task InitializeSchedulerAndStartAsync();
 
-    public Task ShowOptionsAsync (Guid? initialVisibleProfile = null)
-    {
-      return Task.FromResult(0);
-    }
-
-    public Task ShowGeneralOptionsAsync ()
-    {
-      return Task.FromResult (0);
-    }
-
-    public void ShowAbout ()
-    {
-     
-    }
-
-    public void ShowLatestSynchronizationReport (Guid profileId)
-    {
-      
-    }
-
-    public void ShowProfileStatuses ()
-    {
-      
-    }
-
-    public void SynchronizeNowAsync ()
-    {
-
-    }
-
-    public void ShowReports ()
-    {
-     
-    }
+    void SaveToolBarSettings(ToolbarSettings settings);
+    ToolbarSettings LoadToolBarSettings();
   }
 }

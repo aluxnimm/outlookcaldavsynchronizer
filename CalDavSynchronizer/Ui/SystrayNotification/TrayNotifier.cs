@@ -101,7 +101,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification
     {
       try
       {
-        _calDavSynchronizerCommands.ShowGeneralOptions();
+        _calDavSynchronizerCommands.ShowGeneralOptionsAsync();
       }
       catch (Exception x)
       {
@@ -113,7 +113,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification
     {
       try
       {
-        _calDavSynchronizerCommands.ShowOptions();
+        _calDavSynchronizerCommands.ShowOptionsAsync();
       }
       catch (Exception x)
       {

@@ -47,7 +47,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
 
       ShowOptionsCommand = new DelegateCommand (_ =>
       {
-        _calDavSynchronizerCommands.ShowOptions (ProfileId);
+        _calDavSynchronizerCommands.ShowOptionsAsync (ProfileId);
       });
       ShowLatestSynchronizationReportCommand = new DelegateCommand (_ =>
       {

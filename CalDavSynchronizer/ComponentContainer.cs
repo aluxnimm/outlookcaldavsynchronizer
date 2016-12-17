@@ -62,7 +62,7 @@ using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace CalDavSynchronizer
 {
-  public class ComponentContainer : IReportsViewModelParent, ISynchronizationReportSink, ICalDavSynchronizerCommands, IDisposable
+  public class ComponentContainer : IComponentContainer, IReportsViewModelParent, ISynchronizationReportSink
   {
     public const string MessageBoxTitle = "CalDav Synchronizer";
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -204,7 +204,7 @@ namespace CalDavSynchronizer
 
     }
 
-    public async Task InitializeSchedulerAndStart()
+    public async Task InitializeSchedulerAndStartAsync()
     {
       _scheduler.Start();
 
@@ -426,7 +426,7 @@ namespace CalDavSynchronizer
       }
     }
 
-    public async Task ShowOptions (Guid? initialVisibleProfile = null)
+    public async Task ShowOptionsAsync (Guid? initialVisibleProfile = null)
     {
       if (_currentVisibleOptionsFormOrNull == null)
       {
@@ -703,7 +703,7 @@ namespace CalDavSynchronizer
       }
     }
 
-    public async Task ShowGeneralOptions ()
+    public async Task ShowGeneralOptionsAsync ()
     {
       var generalOptions = _generalOptionsDataAccess.LoadOptions();
       using (var optionsForm = new GeneralOptionsForm())
@@ -999,7 +999,7 @@ namespace CalDavSynchronizer
 
     public void ShowAbout ()
     {
-      using (var aboutForm = new AboutForm (ThisAddIn.ComponentContainer.CheckForUpdatesNowAsync))
+      using (var aboutForm = new AboutForm (CheckForUpdatesNowAsync))
       {
         aboutForm.ShowDialog();
       }

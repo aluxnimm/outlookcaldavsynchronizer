@@ -60,7 +60,7 @@ namespace CalDavSynchronizer
       try
       {
         ComponentContainer.EnsureSynchronizationContext ();
-        await ThisAddIn.ComponentContainer.ShowOptions();
+        await ThisAddIn.ComponentContainer.ShowOptionsAsync();
       }
       catch (Exception x)
       {
@@ -86,7 +86,7 @@ namespace CalDavSynchronizer
       try
       {
         ComponentContainer.EnsureSynchronizationContext ();
-        await ThisAddIn.ComponentContainer.ShowGeneralOptions();
+        await ThisAddIn.ComponentContainer.ShowGeneralOptionsAsync();
       }
       catch (Exception x)
       {
