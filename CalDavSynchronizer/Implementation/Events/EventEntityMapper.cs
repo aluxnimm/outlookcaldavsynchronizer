@@ -1637,7 +1637,7 @@ namespace CalDavSynchronizer.Implementation.Events
       if (_configuration.MapBody && _configuration.MapXAltDescToRtfBody && source.Properties.ContainsKey ("X-ALT-DESC"))
       {
         var xAltDesc = source.Properties["X-ALT-DESC"];
-        if (xAltDesc.Parameters.ContainsKey ("FMTTYPE") && xAltDesc.Parameters.Get ("FMTTYPE") == "text/html")
+        if (xAltDesc.Parameters.ContainsKey ("FMTTYPE") && xAltDesc.Parameters.Get ("FMTTYPE").ToLowerInvariant() == "text/html")
         {
           try
           {
