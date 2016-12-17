@@ -179,11 +179,7 @@ namespace CalDavSynchronizer.DataAccess
         if (!string.IsNullOrEmpty(settings))
           return Serializer<ToolbarSettings>.Deserialize(settings);
         else
-          return new ToolbarSettings()
-          {
-            Position = MsoBarPosition.msoBarTop,
-            RowIndex = 2
-          };
+          return ToolbarSettings.CreateDefault();
       }
     }
 

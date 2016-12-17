@@ -77,6 +77,7 @@ namespace CalDavSynchronizer
       }
       catch (Exception x)
       {
+        ComponentContainer = new LoadErrorComponentContainer(x.ToString());
         ExceptionHandler.Instance.DisplayException (x, s_logger);
       }
     }

@@ -336,6 +336,7 @@
     <Compile Include="Implementation\TimeZones\ITimeZoneCache.cs" />
     <Compile Include="Implementation\TimeZones\TimeZoneCache.cs" />
     <Compile Include="IProfileExportProcessor.cs" />
+    <Compile Include="LoadErrorComponentContainer.cs" />
     <Compile Include="ProfileExportProcessor.cs" />
     <Compile Include="Scheduling\ISynchronizationRunLogger.cs" />
     <Compile Include="Scheduling\SchedulerStatusEventArgs.cs" />

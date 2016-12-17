@@ -237,19 +237,24 @@ namespace CalDavSynchronizer.Ui.Options
 
     private void _showLogButton_Click (object sender, EventArgs e)
     {
+      ShowLogFile();
+    }
+
+    public static void ShowLogFile()
+    {
       FileAppender fileAppender = s_logger.Logger.Repository
-                 .GetAppenders().FirstOrDefault (appender => appender is FileAppender) as FileAppender;
+        .GetAppenders().FirstOrDefault(appender => appender is FileAppender) as FileAppender;
 
       try
       {
-        if (fileAppender != null && File.Exists (((FileAppender)fileAppender).File))
+        if (fileAppender != null && File.Exists(((FileAppender) fileAppender).File))
         {
-          Process.Start (((FileAppender)fileAppender).File);
+          Process.Start(((FileAppender) fileAppender).File);
         }
       }
       catch (Exception x)
       {
-        s_logger.Error (null, x);
+        s_logger.Error(null, x);
       }
     }
 

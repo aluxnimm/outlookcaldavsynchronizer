@@ -28,5 +28,14 @@ namespace CalDavSynchronizer.Contracts
     public bool Visible { get; set; } = true;
     public MsoBarPosition Position { get; set; }
     public int RowIndex { get; set; }
+
+    public static ToolbarSettings CreateDefault()
+    {
+      return new ToolbarSettings 
+      {
+        Position = MsoBarPosition.msoBarTop,
+        RowIndex = 2
+      };
+    }
   }
 }
