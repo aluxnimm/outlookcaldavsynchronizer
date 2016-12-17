@@ -2433,7 +2433,16 @@ namespace CalDavSynchronizer.Conversions.Msft
                     break;
 
                 case "table":
-                case "body":
+                    attributeValue = GetAttribute(htmlElement, "border");
+                    if (attributeValue != null)
+                    {
+                        localProperties["border-width-top"] = attributeValue;
+                        localProperties["border-width-right"] = attributeValue;
+                        localProperties["border-width-bottom"] = attributeValue;
+                        localProperties["border-width-left"] = attributeValue;
+                    }
+                    break;
+        case "body":
                 case "html":
                     break;
             }
@@ -2574,8 +2583,8 @@ namespace CalDavSynchronizer.Conversions.Msft
             Debug.Assert(xamlTableCellElement.LocalName == Xaml_TableCell);
 
             // set default border thickness for xamlTableCellElement to enable gridlines
-            //xamlTableCellElement.SetAttribute(Xaml_TableCell_BorderThickness, "1,1,1,1");
-            //xamlTableCellElement.SetAttribute(Xaml_TableCell_BorderBrush, Xaml_Brushes_Black);
+            xamlTableCellElement.SetAttribute(Xaml_TableCell_BorderThickness, "1,1,1,1");
+            xamlTableCellElement.SetAttribute(Xaml_TableCell_BorderBrush, Xaml_Brushes_Gray);
             string rowSpanString = GetAttribute((XmlElement)htmlChildNode, "rowspan");
             if (rowSpanString != null)
             {
@@ -2643,7 +2652,7 @@ namespace CalDavSynchronizer.Conversions.Msft
         public const string Xaml_TableCell_RowSpan = "RowSpan";
 
         public const string Xaml_Width = "Width";
-        public const string Xaml_Brushes_Black = "Black";
+        public const string Xaml_Brushes_Gray = "Gray";
         public const string Xaml_FontFamily = "FontFamily";
 
         public const string Xaml_FontSize = "FontSize";
