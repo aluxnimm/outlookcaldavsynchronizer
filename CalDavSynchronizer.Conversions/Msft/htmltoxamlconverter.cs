@@ -2429,9 +2429,28 @@ namespace CalDavSynchronizer.Conversions.Msft
                     localProperties["list-style-type"] = "disc";
                     break;
                 case "ol":
-                    localProperties["list-style-type"] = "decimal";
+                    attributeValue = GetAttribute(htmlElement, "type");
+                    if (attributeValue == null || attributeValue == "1")
+                    {
+                        localProperties["list-style-type"] = "decimal";
+                    }
+                    else if (attributeValue == "a")
+                    {
+                        localProperties["list-style-type"] = "lower-latin";
+                    }
+                    else if (attributeValue == "A")
+                    {
+                        localProperties["list-style-type"] = "upper-latin";
+                    }
+                    else if (attributeValue == "i")
+                    {
+                        localProperties["list-style-type"] = "lower-roman";
+                    }
+                    else if (attributeValue == "I")
+                    {
+                        localProperties["list-style-type"] = "upper-roman";
+                    }
                     break;
-
                 case "table":
                     attributeValue = GetAttribute(htmlElement, "border");
                     if (attributeValue != null)

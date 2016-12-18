@@ -246,6 +246,18 @@ namespace CalDavSynchronizer.Conversions.Msft
           case "TargetName":
             htmlWriter.WriteAttributeString("TARGET", xamlReader.Value);
             break;
+
+          // NarkerStyle properties
+          case "MarkerStyle":
+            if (xamlReader.Value.ToLower() == "lowerlatin")
+              htmlWriter.WriteAttributeString("type", "a");
+            else if (xamlReader.Value.ToLower() == "upperlatin")
+              htmlWriter.WriteAttributeString("type", "A");
+            else if (xamlReader.Value.ToLower() == "lowerroman")
+              htmlWriter.WriteAttributeString("type", "i");
+            else if (xamlReader.Value.ToLower() == "upperroman")
+              htmlWriter.WriteAttributeString("type", "I");
+            break;
         }
 
         if (css != null)
