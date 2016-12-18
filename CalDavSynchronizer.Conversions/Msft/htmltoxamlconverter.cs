@@ -2047,9 +2047,17 @@ namespace CalDavSynchronizer.Conversions.Msft
                             }
                         }
                         break;
+                    case "text-decoration-line-through":
+                        if (!isBlock)
+                        {
+                            if ((string)propertyEnumerator.Value == "true")
+                            {
+                                xamlElement.SetAttribute(Xaml_TextDecorations, Xaml_TextDecorations_Strikethrough);
+                            }
+                        }
+                        break;
                     case "text-decoration-none":
                     case "text-decoration-overline":
-                    case "text-decoration-line-through":
                     case "text-decoration-blink":
                         //  Convert from all other text-decorations values
                         if (!isBlock)
@@ -2344,7 +2352,13 @@ namespace CalDavSynchronizer.Conversions.Msft
                     break;
                 case "u":
                 case "underline":
+                case "ins":
                     localProperties["text-decoration-underline"] = "true";
+                    break;
+                case "s":
+                case "strike":
+                case "del":
+                    localProperties["text-decoration-line-through"] = "true";
                     break;
                 case "font":
                     string attributeValue = GetAttribute(htmlElement, "face");
@@ -2692,6 +2706,7 @@ namespace CalDavSynchronizer.Conversions.Msft
         public const string Xaml_Background = "Background";
         public const string Xaml_TextDecorations = "TextDecorations";
         public const string Xaml_TextDecorations_Underline = "Underline";
+        public const string Xaml_TextDecorations_Strikethrough = "Strikethrough";
 
         public const string Xaml_TextIndent = "TextIndent";
         public const string Xaml_TextAlignment = "TextAlignment";
