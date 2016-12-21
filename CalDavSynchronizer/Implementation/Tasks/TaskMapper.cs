@@ -192,7 +192,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
           // Fix DDay.iCal TimeSpan 0 serialization
           if (trigger.Duration.Value == TimeSpan.Zero)
           {
-            target.Alarms[0].Properties.Add (new CalendarProperty("TRIGGER", "-P0D"));
+            target.Alarms[0].Properties.Add (new CalendarProperty ("TRIGGER", "-P0D"));
           }
           else
           {
@@ -208,11 +208,11 @@ namespace CalDavSynchronizer.Implementation.Tasks
           trigger.Parameters.Add ("VALUE", "DURATION");
 
           target.Alarms.Add (
-              new Alarm()
-              {
-                  Description = "This is a task reminder"
-              }
-              );
+            new Alarm()
+            {
+              Description = "This is a task reminder"
+            }
+            );
           // Fix DDay.iCal TimeSpan 0 serialization
           if (trigger.Duration.Value == TimeSpan.Zero)
           {
@@ -222,6 +222,20 @@ namespace CalDavSynchronizer.Implementation.Tasks
           {
             target.Alarms[0].Trigger = trigger;
           }
+          var actionProperty = new CalendarProperty ("ACTION", "DISPLAY");
+          target.Alarms[0].Properties.Add (actionProperty);
+        }
+        else
+        {
+          trigger.DateTime = new iCalDateTime (source.Inner.ReminderTime.ToUniversalTime()) { IsUniversalTime = true, HasTime = true };
+          trigger.Parameters.Add ("VALUE", "DATE-TIME");
+          target.Alarms.Add (
+            new Alarm()
+            {
+              Description = "This is a task reminder"
+            }
+            );
+          target.Alarms[0].Trigger = trigger;
           var actionProperty = new CalendarProperty ("ACTION", "DISPLAY");
           target.Alarms[0].Properties.Add (actionProperty);
         }
