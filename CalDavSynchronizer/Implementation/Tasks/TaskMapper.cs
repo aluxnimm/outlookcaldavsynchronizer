@@ -332,7 +332,11 @@ namespace CalDavSynchronizer.Implementation.Tasks
           target.Inner.StartDate = source.Start.Date;
         }
       }
-       
+      else
+      {
+        target.Inner.StartDate = _dateNull;
+      }
+
       if (source.Due != null)
       {
         if (source.Start == null || source.Start.Value <= source.Due.Value)
@@ -346,8 +350,12 @@ namespace CalDavSynchronizer.Implementation.Tasks
             target.Inner.DueDate = source.Due.Date;
           }
         }
-          
       }
+      else
+      {
+        target.Inner.DueDate = _dateNull;
+      }
+
       if (source.Completed != null)
       {
         if (source.Completed.IsUniversalTime)
