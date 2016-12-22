@@ -103,6 +103,15 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 2.12.1 ####
+- New features
+	- Update Google API NuGet packages to version 1.20.0.
+- Bug fixes
+	- prevent NullReferenceExceptions, caused by uninitialized ComponentContainer due to load errors.
+	- improve html<->rtf mapping for appointment bodies
+	- sync removal of task start and due date from server to Outlook, ticket #446.
+	- Add absolute task alarm if start and due dates are not set, ticket #445.
+
 #### 2.12.0 ####
 - New features
 	- Add general option to enable client certificate TLS authentication, feature request 55.
