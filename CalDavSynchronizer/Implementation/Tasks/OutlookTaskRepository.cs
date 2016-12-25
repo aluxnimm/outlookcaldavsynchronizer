@@ -122,7 +122,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
           OutlookEventRepository.AddCategoryFilter (filterBuilder, _configuration.TaskCategory, _configuration.InvertTaskCategoryFilter);
         }
 
-        s_logger.InfoFormat ("Using Outlook DASL filter: {0}", filterBuilder.ToString());
+        s_logger.DebugFormat ("Using Outlook DASL filter: {0}", filterBuilder.ToString());
 
         tasks = QueryFolder(_mapiNameSpace, taskFolderWrapper, filterBuilder, selector);
       }

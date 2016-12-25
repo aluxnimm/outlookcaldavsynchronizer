@@ -174,7 +174,7 @@ namespace CalDavSynchronizer.Implementation.Events
           AddCategoryFilter (filterBuilder, _configuration.EventCategory, _configuration.InvertEventCategoryFilter);
         }
 
-        s_logger.InfoFormat ("Using Outlook DASL filter: {0}", filterBuilder.ToString ());
+        s_logger.DebugFormat ("Using Outlook DASL filter: {0}", filterBuilder.ToString ());
 
         events = QueryFolder (_mapiNameSpace, calendarFolderWrapper, filterBuilder, selector);
       }
