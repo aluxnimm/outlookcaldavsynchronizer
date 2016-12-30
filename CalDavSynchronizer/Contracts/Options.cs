@@ -112,7 +112,7 @@ namespace CalDavSynchronizer.Contracts
       var options = new Options();
 
       options.ConflictResolution = ConflictResolution.Automatic;
-      options.DaysToSynchronizeInTheFuture = 180;
+      options.DaysToSynchronizeInTheFuture = 365;
       options.DaysToSynchronizeInThePast = 60;
       options.SynchronizationIntervalInMinutes = 30;
       options.SynchronizationMode = SynchronizationMode.MergeInBothDirections;

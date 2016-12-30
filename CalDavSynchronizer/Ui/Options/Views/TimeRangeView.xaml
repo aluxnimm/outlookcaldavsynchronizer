@@ -19,13 +19,14 @@
           <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition />
+            <RowDefinition />
           </Grid.RowDefinitions>
+          <TextBlock Grid.ColumnSpan="2" ToolTip="Outlook and most servers calculate the intersection with the time-range differently for recurring events&#x0a;which can cause doubled or deleted events, so it is recommended to select&#x0a;a time-range which is larger than the largest interval of your recurring events&#x0a;(e.g. 1 year for birthdays)"><Bold>WARNING:</Bold> Don't use a time range less than 1 year if your calendar includes recurring events.</TextBlock>
+          <TextBlock Grid.Row="1" Grid.Column="0">Synchronization timespan past (days):</TextBlock>
+          <TextBox HorizontalAlignment="Right" MinWidth="60" Grid.Row="1" Grid.Column="1" Text="{Binding DaysToSynchronizeInThePast}" />
 
-          <TextBlock>Synchronization timespan past (days):</TextBlock>
-          <TextBox HorizontalAlignment="Right" MinWidth="60" Grid.Row="0" Grid.Column="1" Text="{Binding DaysToSynchronizeInThePast}" />
-
-          <TextBlock Grid.Row="1" Grid.Column="0">Synchronization timespan future (days):</TextBlock>
-          <TextBox HorizontalAlignment="Right" MinWidth="60" Grid.Row="1" Grid.Column="1" Text="{Binding DaysToSynchronizeInTheFuture}" />
+          <TextBlock Grid.Row="2" Grid.Column="0">Synchronization timespan future (days):</TextBlock>
+          <TextBox HorizontalAlignment="Right" MinWidth="60" Grid.Row="2" Grid.Column="1" Text="{Binding DaysToSynchronizeInTheFuture}" />
 
         </Grid>
 
