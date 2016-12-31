@@ -119,7 +119,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
         var filterBuilder = new StringBuilder(_daslFilterProvider.GetTaskFilter (isInstantSearchEnabled));
         if (_configuration.UseTaskCategoryAsFilter)
         {
-          OutlookEventRepository.AddCategoryFilter (filterBuilder, _configuration.TaskCategory, _configuration.InvertTaskCategoryFilter);
+          OutlookEventRepository.AddCategoryFilter (filterBuilder, _configuration.TaskCategory, _configuration.InvertTaskCategoryFilter, false);
         }
 
         s_logger.DebugFormat ("Using Outlook DASL filter: {0}", filterBuilder.ToString());

@@ -113,7 +113,7 @@ namespace CalDavSynchronizer.Implementation.Events
       var categoryCsv = item.Categories;
 
       if (string.IsNullOrEmpty (categoryCsv))
-        return _configuration.InvertEventCategoryFilter;
+        return _configuration.InvertEventCategoryFilter || _configuration.IncludeEmptyEventCategoryFilter;
 
       var found = item.Categories
           .Split (new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries)
@@ -171,7 +171,7 @@ namespace CalDavSynchronizer.Implementation.Events
           filterBuilder.AppendFormat (" And \"urn:schemas:calendar:dtstart\" < '{0}' And \"urn:schemas:calendar:dtend\" > '{1}'", ToOutlookDateString (range.Value.To), ToOutlookDateString (range.Value.From));
         if (_configuration.UseEventCategoryAsFilter)
         {
-          AddCategoryFilter (filterBuilder, _configuration.EventCategory, _configuration.InvertEventCategoryFilter);
+          AddCategoryFilter (filterBuilder, _configuration.EventCategory, _configuration.InvertEventCategoryFilter, _configuration.IncludeEmptyEventCategoryFilter);
         }
 
         s_logger.DebugFormat ("Using Outlook DASL filter: {0}", filterBuilder.ToString ());
@@ -194,10 +194,11 @@ namespace CalDavSynchronizer.Implementation.Events
     }
 
 
-    public static void AddCategoryFilter (StringBuilder filterBuilder, string category, bool negate)
+    public static void AddCategoryFilter (StringBuilder filterBuilder, string category, bool negate, bool includeEmpty)
     {
       var negateFilter = negate ? "Not" : "";
-      filterBuilder.AppendFormat (" And "+ negateFilter + "(\"urn:schemas-microsoft-com:office:office#Keywords\" = '{0}')", category.Replace ("'","''"));
+      var emptyFilter = includeEmpty ? " Or \"urn:schemas-microsoft-com:office:office#Keywords\" is null" : "";
+      filterBuilder.AppendFormat (" And "+ negateFilter + "(\"urn:schemas-microsoft-com:office:office#Keywords\" = '{0}'" + emptyFilter + ")", category.Replace ("'","''"));
     }
 
     public static List<EntityVersion<AppointmentId, DateTime>> QueryFolder (

@@ -41,6 +41,7 @@ namespace CalDavSynchronizer.Contracts
     public bool IncludeHistoricalData { get; set; }
     public bool UseGlobalAppointmentID { get; set; }
     public string EventCategory { get; set; }
+    public bool IncludeEmptyEventCategoryFilter { get; set; }
     public bool InvertEventCategoryFilter { get; set; }
     public bool UseEventCategoryColorAndMapFromCalendarColor { get; set; }
     public OlCategoryColor EventCategoryColor { get; set; }
@@ -78,6 +79,7 @@ namespace CalDavSynchronizer.Contracts
       EventTz = NodaTime.DateTimeZoneProviders.Tzdb.GetSystemDefault()?.Id;
       IncludeHistoricalData = false;
       UseGlobalAppointmentID = false;
+      IncludeEmptyEventCategoryFilter = false;
       InvertEventCategoryFilter = false;
       UseEventCategoryColorAndMapFromCalendarColor = false;
       EventCategoryColor = OlCategoryColor.olCategoryColorNone;

@@ -606,7 +606,7 @@ namespace CalDavSynchronizer
           s_logger.Info ("Can't access IsInstantSearchEnabled property of store, defaulting to false.");
         }
         var filterBuilder = new StringBuilder (_daslFilterProvider.GetAppointmentFilter (isInstantSearchEnabled));
-        OutlookEventRepository.AddCategoryFilter (filterBuilder, oldCategory, false);
+        OutlookEventRepository.AddCategoryFilter (filterBuilder, oldCategory, false, false);
         var eventIds = OutlookEventRepository.QueryFolder (_session, calendarFolderWrapper, filterBuilder).Select(e => e.Id);
         // todo concat Ids from cache
 
@@ -643,7 +643,7 @@ namespace CalDavSynchronizer
           s_logger.Info ("Can't access IsInstantSearchEnabled property of store, defaulting to false.");
         }
         var filterBuilder = new StringBuilder (_daslFilterProvider.GetTaskFilter (isInstantSearchEnabled));
-        OutlookEventRepository.AddCategoryFilter (filterBuilder, oldCategory, false);
+        OutlookEventRepository.AddCategoryFilter (filterBuilder, oldCategory, false, false);
         var taskIds = OutlookTaskRepository.QueryFolder (_session, taskFolderWrapper, filterBuilder).Select(e => e.Id);
         // todo concat Ids from cache
 

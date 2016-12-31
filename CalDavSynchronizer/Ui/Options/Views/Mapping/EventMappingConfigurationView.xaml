@@ -80,34 +80,40 @@
           <RowDefinition />
           <RowDefinition />
           <RowDefinition />
+          <RowDefinition />
         </Grid.RowDefinitions>
-        <TextBlock>Sync only Appointments with this category:</TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">Sync only Appointments with this category:</TextBlock>
         <ComboBox 
           IsEditable="True" 
           Text="{Binding EventCategory,UpdateSourceTrigger=PropertyChanged}"  
           ItemsSource="{Binding AvailableCategories}"
           Grid.Row="0" 
-          Grid.Column="1" 
-          Grid.ColumnSpan="3" ToolTip="Enter the name of the Outlook category for filtering. &#x0a;If the category does not exist, it will be created in Outlook." />
-
-        <CheckBox 
+          Grid.Column="2" 
+          Grid.ColumnSpan="2" ToolTip="Enter the name of the Outlook category for filtering. &#x0a;If the category does not exist, it will be created in Outlook." />
+       <CheckBox 
+          IsEnabled="{Binding UseEventCategoryAsFilter}"
+          IsChecked="{Binding IncludeEmptyEventCategoryFilter}" 
+          Grid.Column="0" 
+          Grid.ColumnSpan="4" 
+          Grid.Row="1">Sync also Appointments without any category</CheckBox>
+       <CheckBox 
           IsEnabled="{Binding UseEventCategoryAsFilter}"
           IsChecked="{Binding InvertEventCategoryFilter}" 
           Grid.Column="0" 
           Grid.ColumnSpan="4" 
-          Grid.Row="1">Negate filter and sync all Appointments except this category</CheckBox>
+          Grid.Row="2">Negate filter and sync all Appointments except this category</CheckBox>
         
         <CheckBox   
           IsEnabled="{Binding UseEventCategoryAsFilter}"
           IsChecked="{Binding UseEventCategoryColorAndMapFromCalendarColor}" 
-          Grid.Row="2" 
+          Grid.Row="3" 
           Grid.Column="0">Map Calendar Color to category color</CheckBox>
         <ComboBox  
           IsEnabled="{Binding UseEventCategoryAsFilterAndMapColor}"
           ItemsSource="{Binding AvailableEventCategoryColors}"
           SelectedValuePath="Value"
           SelectedValue="{Binding EventCategoryColor}"
-          Grid.Row="2" Grid.Column="1" >
+          Grid.Row="3" Grid.Column="1" >
           <ComboBox.Resources>
             <views:OlCategoryColorConverter x:Key="OlCategoryColorConverter" />
           </ComboBox.Resources>
@@ -123,22 +129,22 @@
         <Button 
           Command="{Binding GetServerCalendarColorCommand}"
           IsEnabled="{Binding UseEventCategoryAsFilterAndMapColor}"
-          Grid.Row="2" 
+          Grid.Row="3" 
           Grid.Column="2">Fetch Color</Button>
         <Button
           Command="{Binding SetServerCalendarColorCommand}"
           IsEnabled="{Binding UseEventCategoryAsFilterAndMapColor}"
-          Grid.Row="2" 
+          Grid.Row="3" 
           Grid.Column="3">Set DAV Color</Button>
 
-        <TextBlock Grid.Row="3" Grid.Column="0">Category Shortcut Key:</TextBlock>
+        <TextBlock Grid.Row="4" Grid.Column="0">Category Shortcut Key:</TextBlock>
         <ComboBox   
           IsEnabled="{Binding UseEventCategoryAsFilter}"
           ItemsSource="{Binding AvailableShortcutKeys}"
           DisplayMemberPath="Name"
           SelectedValuePath="Value"
           SelectedValue="{Binding CategoryShortcutKey}"
-                    Grid.Row="3" Grid.Column="1" />
+                    Grid.Row="4" Grid.Column="1" />
       </Grid>
       <CheckBox ToolTip="removes duplicate Outlook appointments based on start,end and subject of the events after each sync run, &#x0a;be aware of possible performance penalties with this option enabled." IsChecked="{Binding CleanupDuplicateEvents}">Cleanup duplicate events after each sync run</CheckBox>
             </StackPanel>

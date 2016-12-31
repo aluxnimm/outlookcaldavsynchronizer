@@ -42,6 +42,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     private bool _useGlobalAppointmentID;
     private string _eventCategory;
     private OlCategoryColor _eventCategoryColor;
+    private bool _includeEmptyEventCategoryFilter;
     private bool _invertEventCategoryFilter;
     private bool _mapAttendees;
     private bool _mapBody;
@@ -192,11 +193,28 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       }
     }
 
+    public bool IncludeEmptyEventCategoryFilter
+    {
+      get { return _includeEmptyEventCategoryFilter; }
+      set
+      {
+        if (value)
+        {
+          InvertEventCategoryFilter = false;
+        }
+        CheckedPropertyChange (ref _includeEmptyEventCategoryFilter, value);
+      }
+    }
+
     public bool InvertEventCategoryFilter
     {
       get { return _invertEventCategoryFilter; }
       set
       {
+        if (value)
+        {
+          IncludeEmptyEventCategoryFilter = false;
+        }
         CheckedPropertyChange (ref _invertEventCategoryFilter, value);
       }
     }
@@ -344,6 +362,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       UseGlobalAppointmendID = mappingConfiguration.UseGlobalAppointmentID;
       EventCategory = mappingConfiguration.EventCategory;
       EventCategoryColor = mappingConfiguration.EventCategoryColor;
+      IncludeEmptyEventCategoryFilter = mappingConfiguration.IncludeEmptyEventCategoryFilter;
       InvertEventCategoryFilter = mappingConfiguration.InvertEventCategoryFilter;
       MapAttendees = mappingConfiguration.MapAttendees;
       MapBody = mappingConfiguration.MapBody;
@@ -371,6 +390,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       mappingConfiguration.UseGlobalAppointmentID = _useGlobalAppointmentID;
       mappingConfiguration.EventCategory = _eventCategory;
       mappingConfiguration.EventCategoryColor = _eventCategoryColor;
+      mappingConfiguration.IncludeEmptyEventCategoryFilter = _includeEmptyEventCategoryFilter;
       mappingConfiguration.InvertEventCategoryFilter = _invertEventCategoryFilter;
       mappingConfiguration.MapAttendees = _mapAttendees;
       mappingConfiguration.MapBody = _mapBody;
@@ -405,6 +425,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                                                           UseGlobalAppointmendID = true,
                                                                           EventCategory = "TheCategory",
                                                                           EventCategoryColor = OlCategoryColor.olCategoryColorDarkMaroon,
+                                                                          IncludeEmptyEventCategoryFilter = false,
                                                                           InvertEventCategoryFilter = true,
                                                                           MapAttendees = true,
                                                                           MapBody = true,
