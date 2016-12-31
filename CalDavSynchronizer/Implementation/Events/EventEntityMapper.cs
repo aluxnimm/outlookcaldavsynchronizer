@@ -250,7 +250,7 @@ namespace CalDavSynchronizer.Implementation.Events
       {
         target.Description = source.Body;
 
-        if (_configuration.MapRtfBodyToXAltDesc)
+        if (_configuration.MapRtfBodyToXAltDesc && !string.IsNullOrEmpty(source.Body))
         {
           var rtfBody = source.RTFBody as byte[];
           if (rtfBody != null)
