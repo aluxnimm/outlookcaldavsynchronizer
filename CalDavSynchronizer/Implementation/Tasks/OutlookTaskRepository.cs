@@ -119,7 +119,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
         var filterBuilder = new StringBuilder(_daslFilterProvider.GetTaskFilter (isInstantSearchEnabled));
         if (_configuration.UseTaskCategoryAsFilter)
         {
-          OutlookEventRepository.AddCategoryFilter (filterBuilder, _configuration.TaskCategory, _configuration.InvertTaskCategoryFilter, false);
+          OutlookEventRepository.AddCategoryFilter (filterBuilder, _configuration.TaskCategory, _configuration.InvertTaskCategoryFilter, _configuration.IncludeEmptyTaskCategoryFilter);
         }
 
         s_logger.DebugFormat ("Using Outlook DASL filter: {0}", filterBuilder.ToString());
@@ -224,7 +224,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       var categoryCsv = item.Categories;
 
       if (string.IsNullOrEmpty (categoryCsv))
-        return _configuration.InvertTaskCategoryFilter;
+        return _configuration.InvertTaskCategoryFilter || _configuration.IncludeEmptyTaskCategoryFilter;
 
       var found = item.Categories
           .Split(new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries)

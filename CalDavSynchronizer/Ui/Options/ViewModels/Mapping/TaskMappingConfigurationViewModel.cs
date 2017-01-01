@@ -32,6 +32,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     private bool _mapRecurringTasks;
     private ReminderMapping _mapReminder;
     private string _taskCategory;
+    private bool _includeEmptyTaskCategoryFilter;
     private bool _invertTaskCategoryFilter;
     private bool _isSelected;
     private readonly CustomPropertyMappingViewModel _customPropertyMappingViewModel;
@@ -93,12 +94,29 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     }
 
     public bool UseTaskCategoryAsFilter => !String.IsNullOrEmpty(_taskCategory);
+
+    public bool IncludeEmptyTaskCategoryFilter
+    {
+      get { return _includeEmptyTaskCategoryFilter; }
+      set
+      {
+        if (value)
+        {
+          InvertTaskCategoryFilter = false;
+        }
+        CheckedPropertyChange (ref _includeEmptyTaskCategoryFilter, value);
+      }
+    }
     public bool InvertTaskCategoryFilter
     {
       get { return _invertTaskCategoryFilter; }
       set
       {
-        CheckedPropertyChange(ref _invertTaskCategoryFilter, value);
+        if (value)
+        {
+          IncludeEmptyTaskCategoryFilter = false;
+        }
+        CheckedPropertyChange (ref _invertTaskCategoryFilter, value);
       }
     }
     
@@ -127,6 +145,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                                                               MapRecurringTasks = true,
                                                                               MapReminder = ReminderMapping.JustUpcoming,
                                                                               TaskCategory = "TheCategory",
+                                                                              IncludeEmptyTaskCategoryFilter = false,
                                                                               InvertTaskCategoryFilter = true,
     };
 
@@ -150,6 +169,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       MapRecurringTasks = mappingConfiguration.MapRecurringTasks;
       MapReminder = mappingConfiguration.MapReminder;
       TaskCategory = mappingConfiguration.TaskCategory;
+      IncludeEmptyTaskCategoryFilter = mappingConfiguration.IncludeEmptyTaskCategoryFilter;
       InvertTaskCategoryFilter = mappingConfiguration.InvertTaskCategoryFilter;
       _customPropertyMappingViewModel.SetOptions (mappingConfiguration);
     }
@@ -161,6 +181,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       mappingConfiguration.MapRecurringTasks = _mapRecurringTasks;
       mappingConfiguration.MapReminder = _mapReminder;
       mappingConfiguration.TaskCategory = _taskCategory;
+      mappingConfiguration.IncludeEmptyTaskCategoryFilter = _includeEmptyTaskCategoryFilter;
       mappingConfiguration.InvertTaskCategoryFilter = _invertTaskCategoryFilter;
     }
 
