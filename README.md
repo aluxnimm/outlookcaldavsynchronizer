@@ -103,6 +103,16 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 2.13.0 ####
+- Upgrade instructions
+	- Outlook and Google and some other CalDAV servers calculate the intersection with the time-range differently for recurring events which can cause doubled or deleted events, so it is recommended to select a time-range which is larger than the largest interval of your recurring events (e.g. 1 year for birthdays). The default timerange for new profiles is changed from 180 days to 365 days in the future, for existing sync profiles you need to change it manually if affected!
+- New features
+	- Add mapping configuration option to include also appointments/tasks without category to category filter.
+- Bug fixes
+	- Set time-range default timespan to 365 days in the future and add tooltip and warning for time-range filter, ticket #450.
+	- Fix timezone issues with google tasks, ticket #452.
+	- Don't add X-ALT-DESC if body is empty.
+
 #### 2.12.1 ####
 - New features
 	- Update Google API NuGet packages to version 1.20.0.
@@ -919,7 +929,7 @@ The following properties need to be set for a new generic profile:
 	- **Chunk size** perform CalDAV/CardDAV sync in chunks with configurable chunk size to avoid OutOfMemoryEceptions, disabled by default and should only be enabled for huge resources and low memory.
 	- **Use time range filter** and
 	- **Synchronization timespan past (days)** and
-	- **Synchronization timespan future (days)** For performance reasons it is useful to sync only a given timespan of a big calendar, especially past events are normally not necessary to sync after a given timespan.
+	- **Synchronization timespan future (days)** For performance reasons it is useful to sync only a given timespan of a big calendar, especially past events are normally not necessary to sync after a given timespan. But be aware that Outlook and Google and some other CalDAV servers calculate the intersection with the time-range differently for recurring events which can cause doubled or deleted events, so it is recommended to select a time-range which is larger than the largest interval of your recurring events (e.g. 1 year for birthdays).
 
 - **Clear cache** delete the sync cache and start a new initial sync with the next sync run.
 - **Is active checkbox in the tree view** If deactivated, current profile is not synced anymore without the need to delete the profile.
@@ -984,7 +994,8 @@ disable "set SCHEDULE-AGENT=CLIENT" in Mapping Configuration, so that the server
 
 If you want to sync multiple CalDAV calendars or tasklists into one Outlook folder you can configure an Outlook category for filtering in the *Mapping Configuration*. You can choose a category from the dropdown list of all available Outlook categories or enter a new category name.
 For all events/tasks from the server the defined category is added in Outlook, when syncing back from Outlook to the server only appointments/tasks with that category are considered but the filter category is removed. The category name must not contain any commas or semicolons!
-With the checkbox below you can also negate the filter and sync all appointments/tasks except this category.
+With the checkbox *Sync also Appointments without any category* also all appointments/tasks without a category are synced to the server.
+With the checkbox below you can alternatively negate the filter and sync all appointments/tasks except this category.
 For calendars it is also possible to choose the color of the category or to fetch the calendar color from the server and map it to the nearest supported Outlook category color with the button *Fetch Color*. With *Set DAV Color* it is also possible to sync the choosen category color back to set the server calendar color accordingly. With *Category Shortcut Key* you can define the shortcut key of the selected category for easier access when creating appointments.
 
 ### Reminders ###
