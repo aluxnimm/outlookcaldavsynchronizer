@@ -39,7 +39,7 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
 
       if (source.Inner.DueDate != _dateNull)
       {
-        target.Due = new DateTime (source.Inner.DueDate.Year, source.Inner.DueDate.Month, source.Inner.DueDate.Day, 23, 59, 59);
+        target.Due = new DateTime (source.Inner.DueDate.Year, source.Inner.DueDate.Month, source.Inner.DueDate.Day, 23, 59, 59, DateTimeKind.Utc);
       }
       else
       {
@@ -83,9 +83,9 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
       {
         if (source.Due < target.Inner.StartDate)
         {
-          target.Inner.StartDate = source.Due.Value;
+          target.Inner.StartDate = source.Due.Value.ToUniversalTime();
         }
-        target.Inner.DueDate = source.Due.Value;
+        target.Inner.DueDate = source.Due.Value.ToUniversalTime();
       }
       else
       {
@@ -94,7 +94,7 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
 
       if (source.Completed != null)
       {
-        target.Inner.DateCompleted = source.Completed.Value;
+        target.Inner.DateCompleted = source.Completed.Value.Date;
         target.Inner.Complete = true;
       }
       else
