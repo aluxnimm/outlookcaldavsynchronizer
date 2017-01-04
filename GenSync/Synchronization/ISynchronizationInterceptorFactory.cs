@@ -28,13 +28,13 @@ namespace GenSync.Synchronization
   /// whole callchain, the <see cref="ISynchronizationInterceptor"/> is an interface, which is called by the synchronizer at defined steps and
   /// which can be used to customize the synchronization process.
   /// </summary>
-  public interface ISynchronizationInterceptorFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
+  public interface ISynchronizationInterceptorFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>
   {
     /// <summary>
     /// Is called at the beginning of every sync run, to create an interceptor for the ongoing sync run
     /// </summary>
     /// <returns></returns>
-    ISynchronizationInterceptor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> Create ();
+    ISynchronizationInterceptor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> Create ();
   }
   
 }

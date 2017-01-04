@@ -80,7 +80,7 @@ namespace GenSync.UnitTests.Synchronization.Stubs
 
       builder.InitialSyncStateCreationStrategy
           .Expect (s => s.CreateFor_Unchanged_Unchanged (knownData))
-          .Return (new DoNothing<string, string, string, string, string, string> (knownData));
+          .Return (new DoNothing<string, string, string, string, string, string, int> (knownData));
 
       builder.AtypeRepository.Stub(_ => _.VerifyUnknownEntities(null,0)).IgnoreArguments().Return(Task.FromResult(0));
       builder.BtypeRepository.Stub(_ => _.VerifyUnknownEntities(null,0)).IgnoreArguments().Return(Task.FromResult(0));

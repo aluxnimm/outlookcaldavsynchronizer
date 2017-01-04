@@ -85,7 +85,8 @@ namespace CalDavSynchronizerTestAutomation
             async appointmentWrapper => await OutlookTestContext.EntityMapper.Map2To1 (
                 OutlookTestContext.DeserializeICalendar (dataInputWindow.Item2.Text),
                 appointmentWrapper,
-                entitySynchronizationLogger),
+                entitySynchronizationLogger,
+                NullEventSynchronizationContext.Instance),
             NullEventSynchronizationContext.Instance);
 
         var reportWindow = CreateWindowWithTextBox();
