@@ -15,15 +15,11 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Diagnostics;
-using GenSync;
-using GenSync.EntityRepositories;
 using GenSync.Logging;
 using log4net;
 using Thought.vCards;
@@ -32,7 +28,7 @@ using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public class CardDavRepository : CardDavEntityRepository<vCard, vCardStandardReader>
+  public class CardDavRepository : CardDavEntityRepository<vCard, vCardStandardReader, int>
   {
     private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
     private readonly vCardImprovedWriter _vCardImprovedWriter;

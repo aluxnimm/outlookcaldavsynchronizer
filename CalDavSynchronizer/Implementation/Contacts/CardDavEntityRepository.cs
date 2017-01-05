@@ -32,7 +32,7 @@ using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public abstract class CardDavEntityRepository<TEntity,TDeserializationThreadLocal> : IEntityRepository<WebResourceName, string, TEntity, int>
+  public abstract class CardDavEntityRepository<TEntity,TDeserializationThreadLocal, TContext> : IEntityRepository<WebResourceName, string, TEntity, TContext>
     where TEntity : new()
     where TDeserializationThreadLocal : new()
   {
@@ -48,12 +48,12 @@ namespace CalDavSynchronizer.Implementation.Contacts
       _chunkedExecutor = chunkedExecutor;
     }
 
-    public Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetVersions (IEnumerable<IdWithAwarenessLevel<WebResourceName>> idsOfEntitiesToQuery, int context)
+    public Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetVersions (IEnumerable<IdWithAwarenessLevel<WebResourceName>> idsOfEntitiesToQuery, TContext context)
     {
       return _cardDavDataAccess.GetVersions (idsOfEntitiesToQuery.Select (i => i.Id));
     }
 
-    public async Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetAllVersions (IEnumerable<WebResourceName> idsOfknownEntities, int context)
+    public async Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetAllVersions (IEnumerable<WebResourceName> idsOfknownEntities, TContext context)
     {
       using (AutomaticStopwatch.StartInfo (s_logger, "CardDavRepository.GetVersions"))
       {
@@ -61,7 +61,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    public async Task<IReadOnlyList<EntityWithId<WebResourceName, TEntity>>> Get (ICollection<WebResourceName> ids, ILoadEntityLogger logger, int context)
+    public async Task<IReadOnlyList<EntityWithId<WebResourceName, TEntity>>> Get (ICollection<WebResourceName> ids, ILoadEntityLogger logger, TContext context)
     {
       if (ids.Count == 0)
         return new EntityWithId<WebResourceName, TEntity>[] { };
@@ -88,7 +88,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    public Task VerifyUnknownEntities (Dictionary<WebResourceName, string> unknownEntites, int context)
+    public Task VerifyUnknownEntities (Dictionary<WebResourceName, string> unknownEntites, TContext context)
     {
       return Task.FromResult (0);
     }
@@ -125,7 +125,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       return result;
     }
     
-    public async Task<bool> TryDelete (WebResourceName entityId, string version, int context)
+    public async Task<bool> TryDelete (WebResourceName entityId, string version, TContext context)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
@@ -137,8 +137,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
         WebResourceName entityId,
         string entityVersion,
         TEntity entityToUpdate,
-        Func<TEntity, Task<TEntity>> entityModifier, 
-        int context)
+        Func<TEntity, Task<TEntity>> entityModifier,
+        TContext context)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
@@ -153,7 +153,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    public async Task<EntityVersion<WebResourceName, string>> Create(Func<TEntity, Task<TEntity>> entityInitializer, int context)
+    public async Task<EntityVersion<WebResourceName, string>> Create(Func<TEntity, Task<TEntity>> entityInitializer, TContext context)
     {
       using (AutomaticStopwatch.StartDebug(s_logger))
       {
