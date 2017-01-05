@@ -43,6 +43,10 @@ namespace CalDavSynchronizer.Implementation.Common
       return GetEntryOrNull<AppointmentItem>(mapiNameSpace, entryId, folderId, storeId, a => (Folder)a.Parent);
     }
 
+    public static DistListItem GetDistListItemOrNull(this NameSpace mapiNameSpace, string entryId, string folderId, string storeId)
+    {
+      return GetEntryOrNull<DistListItem>(mapiNameSpace, entryId, folderId, storeId, a => (Folder)a.Parent);
+    }
 
     private static TItemType GetEntryOrNull<TItemType>(
       this NameSpace mapiNameSpace,

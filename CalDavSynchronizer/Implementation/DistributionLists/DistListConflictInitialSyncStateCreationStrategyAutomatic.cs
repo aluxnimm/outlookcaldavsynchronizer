@@ -14,42 +14,34 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using GenSync.EntityRelationManagement;
 using GenSync.Synchronization;
+using GenSync.Synchronization.StateCreationStrategies.ConflictStrategies;
 using GenSync.Synchronization.States;
-using log4net;
 using Microsoft.Office.Interop.Outlook;
-using Thought.vCards;
 
-namespace CalDavSynchronizer.Implementation.Contacts
+namespace CalDavSynchronizer.Implementation.DistributionLists
 {
-  internal class OutlookCardDavUpdateFromNewerToOlder
-      : UpdateFromNewerToOlder<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger>
+  internal class DistListConflictInitialSyncStateCreationStrategyAutomatic
+      : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, string, DistributionList, DistributionListSychronizationContext>
   {
-    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
-
-    public OutlookCardDavUpdateFromNewerToOlder (
-        EntitySyncStateEnvironment<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger> environment,
-        IEntityRelationData<string, DateTime, WebResourceName, string> knownData,
-        DateTime newA,
-        string newB)
-        : base (environment, knownData, newA, newB)
+    public DistListConflictInitialSyncStateCreationStrategyAutomatic(EntitySyncStateEnvironment<string, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, string, DistributionList, DistributionListSychronizationContext> environment)
+        : base (environment)
     {
     }
 
-    protected override bool AIsNewerThanB
+    protected override IEntitySyncState<string, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, string, DistributionList, DistributionListSychronizationContext> Create_FromNewerToOlder (IEntityRelationData<string, DateTime, WebResourceName, string> knownData, DateTime newA, string newB)
     {
-      get
-      {
-        // Assume that no modification means, that the item is never modified. Therefore it must be new. 
-        if (_bEntity.RevisionDate == null)
-          return false;
-
-        return _aEntity.Inner.LastModificationTime.ToUniversalTime() >= _bEntity.RevisionDate.Value;
-      }
+      return new OutlookDistListUpdateFromNewerToOlder (
+          _environment,
+          knownData,
+          newA,
+          newB
+          );
     }
   }
 }

@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -14,15 +14,33 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
+using System.Collections.Generic;
+using CalDavSynchronizer.DataAccess;
+using Thought.vCards;
 
-namespace CalDavSynchronizer.Implementation
+namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public interface IDaslFilterProvider
+  class NullCardDavRepositoryLogger : ICardDavRepositoryLogger
   {
-    string GetAppointmentFilter (bool isInstantSearchEnabled);
-    string GetTaskFilter (bool isInstantSearchEnabled);
-    string GetContactFilter (bool isInstantSearchEnabled);
-    string GetDistListFilter (bool isInstantSearchEnabled);
+    public static readonly ICardDavRepositoryLogger Instance = new NullCardDavRepositoryLogger();
+
+    private NullCardDavRepositoryLogger()
+    {
+    }
+   
+    public void LogEntityDeleted(WebResourceName entityId)
+    {
+     
+    }
+
+    public void LogEntitiesExists(IEnumerable<WebResourceName> allEntities)
+    {
+     
+    }
+
+    public void LogEntityExists(WebResourceName entityId, vCard vCard)
+    {
+
+    }
   }
 }

@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -15,14 +15,18 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Xml.Serialization;
+using CalDavSynchronizer.DataAccess;
+using GenSync.EntityRelationManagement;
 
-namespace CalDavSynchronizer.Implementation
+namespace CalDavSynchronizer.Implementation.DistributionLists
 {
-  public interface IDaslFilterProvider
+  public class DistListRelationData : IEntityRelationData<string, DateTime, WebResourceName, string>
   {
-    string GetAppointmentFilter (bool isInstantSearchEnabled);
-    string GetTaskFilter (bool isInstantSearchEnabled);
-    string GetContactFilter (bool isInstantSearchEnabled);
-    string GetDistListFilter (bool isInstantSearchEnabled);
+    public string AtypeId { get; set; }
+    public DateTime AtypeVersion { get; set; }
+
+    public WebResourceName BtypeId { get; set; }
+    public string BtypeVersion { get; set; }
   }
 }

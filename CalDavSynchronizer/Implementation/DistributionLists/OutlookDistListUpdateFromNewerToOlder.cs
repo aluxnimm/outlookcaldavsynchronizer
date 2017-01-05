@@ -24,15 +24,15 @@ using log4net;
 using Microsoft.Office.Interop.Outlook;
 using Thought.vCards;
 
-namespace CalDavSynchronizer.Implementation.Contacts
+namespace CalDavSynchronizer.Implementation.DistributionLists
 {
-  internal class OutlookCardDavUpdateFromNewerToOlder
-      : UpdateFromNewerToOlder<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger>
+  internal class OutlookDistListUpdateFromNewerToOlder
+      : UpdateFromNewerToOlder<string, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, string, DistributionList, DistributionListSychronizationContext>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
 
-    public OutlookCardDavUpdateFromNewerToOlder (
-        EntitySyncStateEnvironment<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger> environment,
+    public OutlookDistListUpdateFromNewerToOlder (
+        EntitySyncStateEnvironment<string, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, string, DistributionList, DistributionListSychronizationContext> environment,
         IEntityRelationData<string, DateTime, WebResourceName, string> knownData,
         DateTime newA,
         string newB)
@@ -44,11 +44,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
     {
       get
       {
-        // Assume that no modification means, that the item is never modified. Therefore it must be new. 
-        if (_bEntity.RevisionDate == null)
-          return false;
-
-        return _aEntity.Inner.LastModificationTime.ToUniversalTime() >= _bEntity.RevisionDate.Value;
+        return _aEntity.Inner.LastModificationTime.ToUniversalTime() >= _bEntity.ChangeDateUtc;
       }
     }
   }

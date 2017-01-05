@@ -281,6 +281,7 @@
     <Compile Include="ComponentContainer.cs" />
     <Compile Include="Contracts\AccountServerSettings.cs" />
     <Compile Include="Contracts\IPropertyMappingConfiguration.cs" />
+    <Compile Include="Contracts\DistributionListType.cs" />
     <Compile Include="Contracts\PropertyMapping.cs" />
     <Compile Include="Contracts\GlobalOptions.cs" />
     <Compile Include="Contracts\ToolbarSettings.cs" />
@@ -310,6 +311,26 @@
     <Compile Include="Implementation\Common\NameSpaceExtensions.cs" />
     <Compile Include="Implementation\Common\OutlookUtility.cs" />
     <Compile Include="Implementation\Contacts\CardDavRepository.cs" />
+    <Compile Include="Implementation\Contacts\ICardDavRepositoryLogger.cs" />
+    <Compile Include="Implementation\Contacts\IUidCacheDataAccess.cs" />
+    <Compile Include="Implementation\Contacts\LoggingCardDavRepositoryDecorator.cs" />
+    <Compile Include="Implementation\Contacts\NullCardDavRepositoryLogger.cs" />
+    <Compile Include="Implementation\Contacts\EmailAddressCacheDataAccess.cs" />
+    <Compile Include="Implementation\Contacts\CacheItem.cs" />
+    <Compile Include="Implementation\DistributionLists\DistListConflictInitialSyncStateCreationStrategyAutomatic.cs" />
+    <Compile Include="Implementation\Contacts\EmailAddressCache.cs" />
+    <Compile Include="Implementation\DistributionLists\DistListEntityMapper.cs" />
+    <Compile Include="Implementation\DistributionLists\DistributionListSychronizationContext.cs" />
+    <Compile Include="Implementation\DistributionLists\InitialContactEntityMatcher.cs" />
+    <Compile Include="Implementation\DistributionLists\KnownDistributionListMember.cs" />
+    <Compile Include="Implementation\DistributionLists\OutlookDistListUpdateFromNewerToOlder.cs" />
+    <Compile Include="Implementation\DistributionLists\DistListRelationData.cs" />
+    <Compile Include="Implementation\DistributionLists\DistListRelationDataFactory.cs" />
+    <Compile Include="Implementation\DistributionLists\OutlookDistListRepository.cs" />
+    <Compile Include="Implementation\DistributionLists\OwnCloudDistributionListRepository.cs" />
+    <Compile Include="Implementation\DistributionLists\DistributionList.cs" />
+    <Compile Include="Implementation\DistributionLists\DistributionListMember.cs" />
+    <Compile Include="Implementation\DistributionLists\SogoDistributionListRepository.cs" />
     <Compile Include="Implementation\Events\EventSynchronizationInterceptorFactory.cs" />
     <Compile Include="Implementation\Events\EventSynchronizationInterceptor.cs" />
     <Compile Include="Implementation\Events\NullEventSynchronizationContextFactory.cs" />
@@ -344,6 +365,7 @@
     <Compile Include="Scheduling\SchedulerStatusEventArgs.cs" />
     <Compile Include="Scheduling\SynchronizationStatus.cs" />
     <Compile Include="Synchronization\OutlookEventSynchronizer.cs" />
+    <Compile Include="Implementation\ContactAndDistListSynchronizer.cs" />
     <Compile Include="Ui\AddResourceForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -768,9 +790,7 @@
       <Name>GenSync</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Implementation\DistributionLists\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Page Include="Ui\Options\BulkOptions\Views\GoogleServerSettingsTemplateView.xaml">
       <Generator>MSBuild:Compile</Generator>

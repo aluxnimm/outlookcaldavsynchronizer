@@ -1,0 +1,140 @@
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// Copyright (c) 2015 Gerhard Zehetbauer
+// Copyright (c) 2015 Alexander Nimmervoll
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+// 
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+using System;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Implementation.Contacts;
+using CalDavSynchronizer.Utilities;
+using GenSync.Logging;
+
+namespace CalDavSynchronizer.Implementation.DistributionLists
+{
+  class SogoDistributionListRepository : CardDavEntityRepository<DistributionList, int, DistributionListSychronizationContext>
+  {
+    private const string NonAddressBookMemberValueName = "X-CALDAVSYNCHRONIZER-NON-ADDRESS-BOOK-MEMBER";
+
+    public SogoDistributionListRepository(ICardDavDataAccess cardDavDataAccess, IChunkedExecutor chunkedExecutor) : base(cardDavDataAccess, chunkedExecutor)
+    {
+    }
+
+    protected override void SetUid(DistributionList entity, string uid)
+    {
+      entity.Uid = uid;
+    }
+
+    protected override string GetUid(DistributionList entity)
+    {
+      return entity.Uid;
+    }
+
+    protected override string Serialize(DistributionList vcard)
+    {
+      var builder = new StringBuilder();
+      builder.AppendLine("BEGIN:VLIST");
+      builder.AppendLine("VERSION:1.0");
+      builder.Append("UID:");
+      builder.AppendLine(vcard.Uid);
+      builder.Append("FN:");
+      builder.AppendLine(vcard.Name);
+
+      foreach (var member in vcard.Members)
+      {
+        builder.Append("CARD;EMAIL=");
+        builder.Append(member.EmailAddress);
+        builder.Append(";FN=\"");
+        builder.Append(member.DisplayName);
+        builder.Append("\":");
+        builder.AppendLine(member.ServerFileName);
+      }
+
+      foreach (var member in vcard.NonAddressBookMembers)
+      {
+        builder.Append(NonAddressBookMemberValueName + ";EMAIL=");
+        builder.Append(member.EmailAddress);
+        builder.Append(";FN=\"");
+        builder.Append(member.DisplayName);
+        builder.Append("\":");
+        builder.AppendLine("dummyValue");
+      }
+  
+
+      builder.AppendLine("END:VLIST");
+      return builder.ToString();
+    }
+
+    /*
+BEGIN:VLIST
+UID:4250-58658600-5-45D0678.vlf
+VERSION:1.0
+FN:Simpsons
+CARD;EMAIL=homer@simpson.com;FN="Simpson, Homer":5228bf7b-f3a6-4c16-ae3e-90102d86ab43.vcf
+CARD;EMAIL=homer@simpson.com;FN="Simpson, Marge":c520e3ad-3d19-4c2f-b093-3f17736bce8e.vcf
+END:VLIST 
+     */
+
+    protected override bool TryDeserialize(string vcardData, out DistributionList vcard, WebResourceName uriOfAddressbookForLogging, int deserializationThreadLocal, ILoadEntityLogger logger)
+    {
+      vcardData = vcardData.Replace("\r\n\t", string.Empty).Replace("\r\n ", string.Empty);
+
+      vcard = new DistributionList();
+
+      foreach (var contentLine in vcardData.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
+      {
+        var valueStartIndex = contentLine.LastIndexOf(':') + 1;
+        var value = contentLine.Substring(valueStartIndex);
+
+        if (contentLine.StartsWith("UID"))
+          vcard.Uid = value;
+        else if (contentLine.StartsWith("FN"))
+          vcard.Name = value;
+        else if (contentLine.StartsWith("CARD"))
+        {
+          string displayName = null;
+          string emailAddress = null;
+          ParseMemberContentLineParameters(contentLine.Substring(0, valueStartIndex-1), out emailAddress, out displayName);
+          vcard.Members.Add(new KnownDistributionListMember(emailAddress, displayName, value));
+        }
+        else if (contentLine.StartsWith(NonAddressBookMemberValueName))
+        {
+          string displayName = null;
+          string emailAddress = null;
+          ParseMemberContentLineParameters(contentLine.Substring(0, valueStartIndex-1), out emailAddress, out displayName);
+          vcard.NonAddressBookMembers.Add(new DistributionListMember(emailAddress, displayName));
+        }
+      }
+
+      return true;
+    }
+
+    private static void ParseMemberContentLineParameters(string contentLineWithoutValue,out string emailAddress, out string displayName)
+    {
+      emailAddress = null;
+      displayName = null;
+
+      var parameters = contentLineWithoutValue.Split(new[] {";"}, StringSplitOptions.RemoveEmptyEntries);
+      foreach (var parameter in parameters)
+      {
+        if (parameter.StartsWith("EMAIL="))
+          emailAddress = parameter.Substring(6);
+        if (parameter.StartsWith("FN="))
+          displayName = parameter.Substring(3);
+      }
+    }
+  }
+}

@@ -15,14 +15,19 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace CalDavSynchronizer.Implementation
+namespace CalDavSynchronizer.Implementation.DistributionLists
 {
-  public interface IDaslFilterProvider
+  public class DistributionList
   {
-    string GetAppointmentFilter (bool isInstantSearchEnabled);
-    string GetTaskFilter (bool isInstantSearchEnabled);
-    string GetContactFilter (bool isInstantSearchEnabled);
-    string GetDistListFilter (bool isInstantSearchEnabled);
+    public string Uid { get; set; }
+    public string Name { get; set; }
+    public DateTime ChangeDateUtc { get; set; }
+    public IList<KnownDistributionListMember> Members { get; set; } = new List<KnownDistributionListMember>();
+    public IList<DistributionListMember> NonAddressBookMembers { get; set; } = new List<DistributionListMember>();
   }
 }

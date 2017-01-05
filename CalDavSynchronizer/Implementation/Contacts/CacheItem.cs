@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -14,15 +14,24 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
 
-namespace CalDavSynchronizer.Implementation
+using CalDavSynchronizer.DataAccess;
+
+namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public interface IDaslFilterProvider
+  public class CacheItem
   {
-    string GetAppointmentFilter (bool isInstantSearchEnabled);
-    string GetTaskFilter (bool isInstantSearchEnabled);
-    string GetContactFilter (bool isInstantSearchEnabled);
-    string GetDistListFilter (bool isInstantSearchEnabled);
+    public CacheItem(WebResourceName id, string[] emailAddresses)
+    {
+      Id = id;
+      EmailAddresses = emailAddresses;
+    }
+
+    public CacheItem()
+    {
+    }
+
+    public WebResourceName Id { get; set; }
+    public string[] EmailAddresses { get; set; }
   }
 }

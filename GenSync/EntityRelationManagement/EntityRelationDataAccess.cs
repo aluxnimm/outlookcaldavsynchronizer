@@ -32,6 +32,11 @@ namespace GenSync.EntityRelationManagement
     {
       return Path.Combine (profileDataDirectory, s_relationStorageName);
     }
+
+    public static string GetRelationStoragePath(string profileDataDirectory, string customPrefix)
+    {
+      return Path.Combine(profileDataDirectory, $"{customPrefix}_{s_relationStorageName}");
+    }
   }
 
   /// <summary>
@@ -51,12 +56,9 @@ namespace GenSync.EntityRelationManagement
       _relationStorageFile = EntityRelationDataAccess.GetRelationStoragePath (dataDirectory);
     }
 
-    public void DeleteCaches ()
+    public EntityRelationDataAccess(string dataDirectory, string customPrefix)
     {
-      if (!File.Exists (_relationStorageFile))
-        return;
-
-      File.Delete (_relationStorageFile);
+      _relationStorageFile = EntityRelationDataAccess.GetRelationStoragePath(dataDirectory, customPrefix);
     }
 
     public IReadOnlyCollection<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> LoadEntityRelationData ()

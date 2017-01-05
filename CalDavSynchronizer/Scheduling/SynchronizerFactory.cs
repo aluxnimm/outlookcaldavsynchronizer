@@ -29,6 +29,7 @@ using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Contacts;
+using CalDavSynchronizer.Implementation.DistributionLists;
 using CalDavSynchronizer.Implementation.Events;
 using CalDavSynchronizer.Implementation.GoogleContacts;
 using CalDavSynchronizer.Implementation.GoogleTasks;
@@ -625,7 +626,7 @@ namespace CalDavSynchronizer.Scheduling
 
     private IOutlookSynchronizer CreateContactSynchronizer (Options options, GeneralOptions generalOptions, AvailableSynchronizerComponents componentsToFill)
     {
-      var atypeRepository = new OutlookContactRepository<int> (
+      var atypeRepository = new OutlookContactRepository<ICardDavRepositoryLogger> (
           _outlookSession,
           options.OutlookFolderEntryId,
           options.OutlookFolderStoreId,
@@ -634,33 +635,41 @@ namespace CalDavSynchronizer.Scheduling
       ICardDavDataAccess cardDavDataAccess;
       var serverUrl = new Uri (options.CalenderUrl);
 
+      IWebDavClient webDavClientOrNullIfFileAccess = null;
+
       if (serverUrl.Scheme == Uri.UriSchemeFile)
       {
         cardDavDataAccess = new FileSystemDavDataAccess(serverUrl);
       }
       else
       {
+        webDavClientOrNullIfFileAccess = CreateWebDavClient(
+          options.UserName,
+          options.GetEffectivePassword(_outlookAccountPasswordProvider),
+          options.CalenderUrl,
+          generalOptions.CalDavConnectTimeout,
+          options.ServerAdapterType,
+          options.CloseAfterEachRequest,
+          options.PreemptiveAuthentication,
+          options.ForceBasicAuthentication,
+          options.ProxyOptions,
+          generalOptions.EnableClientCertificate,
+          generalOptions.AcceptInvalidCharsInServerResponse);
+
         cardDavDataAccess = new CardDavDataAccess(
           serverUrl,
-          CreateWebDavClient(
-            options.UserName,
-            options.GetEffectivePassword(_outlookAccountPasswordProvider),
-            options.CalenderUrl,
-            generalOptions.CalDavConnectTimeout,
-            options.ServerAdapterType,
-            options.CloseAfterEachRequest,
-            options.PreemptiveAuthentication,
-            options.ForceBasicAuthentication,
-            options.ProxyOptions,
-            generalOptions.EnableClientCertificate,
-            generalOptions.AcceptInvalidCharsInServerResponse),
-            contentType => contentType != "text/x-vlist");
+          webDavClientOrNullIfFileAccess,
+            contentType  => contentType != "text/x-vlist");
       }
       componentsToFill.CardDavDataAccess = cardDavDataAccess;
 
-      var btypeRepository = new CardDavRepository (
-          cardDavDataAccess,
-          options.IsChunkedSynchronizationEnabled ? new ChunkedExecutor (options.ChunkSize) : NullChunkedExecutor.Instance);
+      var chunkedExecutor = options.IsChunkedSynchronizationEnabled ? new ChunkedExecutor (options.ChunkSize) : NullChunkedExecutor.Instance;
+
+      var btypeRepository =
+        new LoggingCardDavRepositoryDecorator(
+          new CardDavRepository(
+            cardDavDataAccess,
+            chunkedExecutor));
 
       var mappingParameters = GetMappingParameters<ContactMappingConfiguration> (options);
 
@@ -668,7 +677,7 @@ namespace CalDavSynchronizer.Scheduling
 
       var entityRelationDataFactory = new OutlookContactRelationDataFactory();
 
-      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard, int> (
+      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger> (
           entityMapper,
           entityRelationDataFactory,
           ExceptionHandler.Instance);
@@ -683,12 +692,12 @@ namespace CalDavSynchronizer.Scheduling
       var atypeWriteRepository = BatchEntityRepositoryAdapter.Create (atypeRepository);
       var btypeWriteRepository = BatchEntityRepositoryAdapter.Create (btypeRepository);
 
-      var synchronizer = new Synchronizer<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard, int> (
+      var synchronizer = new Synchronizer<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger> (
           atypeRepository,
           btypeRepository,
           atypeWriteRepository,
           btypeWriteRepository,
-          InitialSyncStateCreationStrategyFactory<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard, int>.Create (
+          InitialSyncStateCreationStrategyFactory<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger>.Create (
               syncStateFactory,
               syncStateFactory.Environment,
               options.SynchronizationMode,
@@ -704,8 +713,101 @@ namespace CalDavSynchronizer.Scheduling
           EqualityComparer<string>.Default,
           syncStateFactory);
 
-      return new OutlookSynchronizer<WebResourceName, string>(
-        new NullContextSynchronizerDecorator<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard > (synchronizer));
+      if (mappingParameters.MapDistributionLists)
+      {
+        CardDavEntityRepository<DistributionList, int, DistributionListSychronizationContext> bDistListRepository;
+
+        // TODO: muss auch für das file funktionieren
+        ICardDavDataAccess distListDataAccess = new CardDavDataAccess(
+          serverUrl,
+          webDavClientOrNullIfFileAccess,
+          contentType => contentType == "text/x-vlist");
+
+        switch (mappingParameters.DistributionListType)
+        {
+          case DistributionListType.OwnCloud:
+            bDistListRepository = new OwnCloudDistributionListRepository(distListDataAccess, chunkedExecutor);
+            break;
+          case DistributionListType.Sogo:
+            bDistListRepository = new SogoDistributionListRepository(distListDataAccess, chunkedExecutor);
+            break;
+          default:
+            throw new NotImplementedException($"{nameof(DistributionListType)} '{mappingParameters.DistributionListType}' not implemented.");
+        }
+
+        var distributionListSynchronizer = CreateDistListSynchronizer(options, generalOptions, bDistListRepository);
+
+        return new OutlookSynchronizer<WebResourceName, string>(
+          new ContactAndDistListSynchronizer(
+            synchronizer,
+            distributionListSynchronizer,
+            new EmailAddressCacheDataAccess(Path.Combine(storageDataDirectory,"emailAddressCache.xml")),
+            btypeRepository,
+            storageDataAccess,
+            atypeRepository,
+            _outlookSession));
+      }
+      else
+      {
+        return new OutlookSynchronizer<WebResourceName, string>(
+          new ContextCreatingSynchronizerDecorator<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger>(
+            synchronizer,
+            new SynchronizationContextFactory<ICardDavRepositoryLogger>(() => NullCardDavRepositoryLogger.Instance)));
+      }
+    }
+
+    private ISynchronizer<DistributionListSychronizationContext> CreateDistListSynchronizer (
+      Options options, 
+      GeneralOptions generalOptions,
+      CardDavEntityRepository<DistributionList, int, DistributionListSychronizationContext> btypeRepository)
+    {
+      var atypeRepository = new OutlookDistListRepository<DistributionListSychronizationContext> (
+          _outlookSession,
+          options.OutlookFolderEntryId,
+          options.OutlookFolderStoreId,
+          _daslFilterProvider);
+
+      var entityMapper = new DistListEntityMapper ();
+
+      var entityRelationDataFactory = new DistListRelationDataFactory ();
+
+      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, string, DistributionList, DistributionListSychronizationContext> (
+          entityMapper,
+          entityRelationDataFactory,
+          ExceptionHandler.Instance);
+
+      var btypeIdEqualityComparer = WebResourceName.Comparer;
+      var atypeIdEqulityComparer = EqualityComparer<string>.Default;
+
+      var storageDataDirectory = _profileDataDirectoryFactory (options.Id);
+
+      var storageDataAccess = new EntityRelationDataAccess<string, DateTime, DistListRelationData, WebResourceName, string> (storageDataDirectory, "distList");
+
+      var atypeWriteRepository = BatchEntityRepositoryAdapter.Create (atypeRepository);
+      var btypeWriteRepository = BatchEntityRepositoryAdapter.Create (btypeRepository);
+
+      var synchronizer = new Synchronizer<string, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, string, DistributionList, DistributionListSychronizationContext> (
+          atypeRepository,
+          btypeRepository,
+          atypeWriteRepository,
+          btypeWriteRepository,
+          InitialSyncStateCreationStrategyFactory<string, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, string, DistributionList, DistributionListSychronizationContext>.Create (
+              syncStateFactory,
+              syncStateFactory.Environment,
+              options.SynchronizationMode,
+              options.ConflictResolution,
+              e => new DistListConflictInitialSyncStateCreationStrategyAutomatic(e)),
+          storageDataAccess,
+          entityRelationDataFactory,
+          new InitialDistListEntityMatcher (btypeIdEqualityComparer),
+          atypeIdEqulityComparer,
+          btypeIdEqualityComparer,
+          _totalProgressFactory,
+          EqualityComparer<DateTime>.Default,
+          EqualityComparer<string>.Default,
+          syncStateFactory);
+
+      return synchronizer;
     }
 
     private async Task<IOutlookSynchronizer> CreateGoogleContactSynchronizer (Options options, AvailableSynchronizerComponents componentsToFill)

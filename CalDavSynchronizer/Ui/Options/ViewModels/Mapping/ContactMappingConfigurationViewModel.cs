@@ -30,8 +30,10 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     private bool _keepOutlookPhoto;
     private bool _keepOutlookFileAs;
     private bool _fixPhoneNumberFormat;
+    private bool _mapDistributionLists;
     private bool _isSelected;
     private bool _isExpanded;
+    private DistributionListType _distributionListType;
 
     public bool MapBirthday
     {
@@ -78,6 +80,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       }
     }
 
+    public bool MapDistributionLists
+    {
+      get { return _mapDistributionLists; }
+      set
+      {
+        CheckedPropertyChange(ref _mapDistributionLists, value);
+      }
+    }
+
     public bool IsSelected
     {
       get { return _isSelected; }
@@ -96,13 +107,27 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       }
     }
 
+    public DistributionListType DistributionListType
+    {
+      get { return _distributionListType; }
+      set { CheckedPropertyChange(ref _distributionListType, value); }
+    }
+
+    public IList<Item<DistributionListType>> AvailableDistributionListTypes { get; } = new List<Item<DistributionListType>>
+                                                                                     {
+                                                                                         new Item<DistributionListType> (DistributionListType.OwnCloud, "OwnCloud"),
+                                                                                         new Item<DistributionListType> (DistributionListType.Sogo, "Sogo"),
+                                                                                          };
+
     public static ContactMappingConfigurationViewModel DesignInstance => new ContactMappingConfigurationViewModel
                                                                          {
                                                                              MapBirthday = true,
                                                                              MapContactPhoto = true,
                                                                              KeepOutlookPhoto = false,
                                                                              KeepOutlookFileAs = true,
-                                                                             FixPhoneNumberFormat = false
+                                                                             FixPhoneNumberFormat = false,
+                                                                             DistributionListType = DistributionListType.Sogo,
+                                                                             MapDistributionLists = true
                                                                          };
 
     
@@ -118,6 +143,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       KeepOutlookPhoto = mappingConfiguration.KeepOutlookPhoto;
       KeepOutlookFileAs = mappingConfiguration.KeepOutlookFileAs;
       FixPhoneNumberFormat = mappingConfiguration.FixPhoneNumberFormat;
+      MapDistributionLists = mappingConfiguration.MapDistributionLists;
+      DistributionListType = mappingConfiguration.DistributionListType;
     }
 
     public void FillOptions (CalDavSynchronizer.Contracts.Options options)
@@ -128,7 +155,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                          MapContactPhoto = _mapContactPhoto,
                                          KeepOutlookPhoto = _keepOutlookPhoto,
                                          KeepOutlookFileAs = _keepOutlookFileAs,
-                                         FixPhoneNumberFormat = _fixPhoneNumberFormat
+                                         FixPhoneNumberFormat = _fixPhoneNumberFormat,
+                                         MapDistributionLists = _mapDistributionLists,
+                                         DistributionListType = _distributionListType
                                      };
     }
 

@@ -46,6 +46,11 @@ namespace CalDavSynchronizer.DataAccess
       return newValue;
     }
 
+    public string GetServerFileName()
+    {
+      return Path.GetFileName(OriginalAbsolutePath);
+    }
+
     public WebResourceName ()
     {
       
