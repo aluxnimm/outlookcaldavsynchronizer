@@ -338,7 +338,7 @@ namespace CalDavSynchronizer.Ui.Options
           }
           break;
         case OlItemType.olContactItem:
-          var cardDavDataAccess = new CardDavDataAccess (davUri, webDavClient);
+          var cardDavDataAccess = new CardDavDataAccess (davUri, webDavClient, contentType => true);
           using (var addResourceForm = new AddResourceForm (false))
           {
             addResourceForm.Text = "Add addressbook resource on server";
@@ -388,7 +388,7 @@ namespace CalDavSynchronizer.Ui.Options
           else
             return new AutoDiscoveryResult (null, AutoDiscoverResultStatus.UserCancelled);
         case OlItemType.olContactItem:
-          var cardDavDataAccess = new CardDavDataAccess (autoDiscoveryUri, webDavClient);
+          var cardDavDataAccess = new CardDavDataAccess (autoDiscoveryUri, webDavClient, contentType => true);
           var foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow (useWellKnownCardDav);
           if (foundAddressBooks.Count == 0)
             return new AutoDiscoveryResult (null, AutoDiscoverResultStatus.NoResourcesFound);

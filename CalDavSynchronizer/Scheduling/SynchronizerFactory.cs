@@ -653,7 +653,8 @@ namespace CalDavSynchronizer.Scheduling
             options.ForceBasicAuthentication,
             options.ProxyOptions,
             generalOptions.EnableClientCertificate,
-            generalOptions.AcceptInvalidCharsInServerResponse));
+            generalOptions.AcceptInvalidCharsInServerResponse),
+            contentType => contentType != "text/x-vlist");
       }
       componentsToFill.CardDavDataAccess = cardDavDataAccess;
 

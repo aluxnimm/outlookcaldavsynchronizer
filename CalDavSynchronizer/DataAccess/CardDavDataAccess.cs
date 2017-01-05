@@ -32,9 +32,12 @@ namespace CalDavSynchronizer.DataAccess
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    public CardDavDataAccess (Uri serverUrl, IWebDavClient webDavClient)
+    private Predicate<string> _contentTypePredicate;
+
+    public CardDavDataAccess (Uri serverUrl, IWebDavClient webDavClient, Predicate<string> contentTypePredicate)
         : base (serverUrl, webDavClient)
     {
+      _contentTypePredicate = contentTypePredicate;
     }
 
     public Task<bool> IsAddressBookAccessSupported ()
@@ -430,7 +433,7 @@ namespace CalDavSynchronizer.DataAccess
           if (!string.IsNullOrEmpty (eTag) &&
               String.Compare (eTag, @"""None""", StringComparison.OrdinalIgnoreCase) != 0 &&
               _serverUrl.AbsolutePath != UriHelper.DecodeUrlString (urlNode.InnerText) &&
-              contentType != "text/x-vlist"
+              _contentTypePredicate(contentType)
               )
           {
             if (s_logger.IsDebugEnabled)
@@ -498,8 +501,7 @@ namespace CalDavSynchronizer.DataAccess
         var contentTypeNode = responseElement.SelectSingleNode("D:propstat/D:prop/D:getcontenttype", responseXml.XmlNamespaceManager);
         string contentType = contentTypeNode?.InnerText ?? string.Empty;
 
-        // TODO: add vlist support but for now filter out sogo vlists since we can't parse them atm
-        if (urlNode != null && dataNode != null && !string.IsNullOrEmpty (dataNode.InnerText) && contentType != "text/x-vlist")
+        if (urlNode != null && dataNode != null && !string.IsNullOrEmpty (dataNode.InnerText) && _contentTypePredicate(contentType))
         {
           if (s_logger.IsDebugEnabled)
             s_logger.DebugFormat ($"Got: '{urlNode.InnerText}'");
