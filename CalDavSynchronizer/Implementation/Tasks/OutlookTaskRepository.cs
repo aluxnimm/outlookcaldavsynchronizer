@@ -70,7 +70,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       foreach (var id in idsOfEntitiesToQuery)
       {
-        var task = _mapiNameSpace.GetEntryOrNull<TaskItem> (id.Id, _folderId, _folderStoreId);
+        var task = _mapiNameSpace.GetTaskItemOrNull (id.Id, _folderId, _folderStoreId);
         if (task != null)
         {
           try
@@ -132,7 +132,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
         var knownEntitesThatWereFilteredOut = idsOfknownEntities.Except(tasks.Select(e => e.Id));
         tasks.AddRange(
             knownEntitesThatWereFilteredOut
-                .Select(id => _mapiNameSpace.GetEntryOrNull<TaskItem>(id, _folderId, _folderStoreId))
+                .Select(id => _mapiNameSpace.GetTaskItemOrNull(id, _folderId, _folderStoreId))
                 .Where(i => i != null)
                 .ToSafeEnumerable()
                 .Select(selector));
