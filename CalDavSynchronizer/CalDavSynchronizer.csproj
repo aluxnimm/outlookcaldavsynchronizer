@@ -295,6 +295,7 @@
     <Compile Include="Contracts\ProxyOptions.cs" />
     <Compile Include="Contracts\ServerAdapterType.cs" />
     <Compile Include="DataAccess\CalDavResources.cs" />
+    <Compile Include="DataAccess\FileDataAccess.cs" />
     <Compile Include="DataAccess\FileSystemDavDataAccess.cs" />
     <Compile Include="DataAccess\TaskListData.cs" />
     <Compile Include="DataAccess\AddressBookData.cs" />

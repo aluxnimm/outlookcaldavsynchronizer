@@ -496,13 +496,13 @@ namespace CalDavSynchronizer.Ui.Options
     public void SaveOptions(Contracts.Options[] options, string fileName)
     {
       var dataAccess = new OptionsDataAccess(fileName);
-      dataAccess.SaveOptions(options);
+      dataAccess.Save(options);
     }
 
     public Contracts.Options[] LoadOptions(string fileName)
     {
       var dataAccess = new OptionsDataAccess (fileName);
-      return dataAccess.LoadOptions ();
+      return dataAccess.Load ();
     }
 
     public static bool DoesModeRequireWriteableServerResource (SynchronizationMode synchronizationMode)
