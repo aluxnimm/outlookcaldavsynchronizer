@@ -101,6 +101,8 @@
     <Compile Include="ProgressReport\TotalProgressFactory.cs" />
     <Compile Include="ProgressReport\TotalProgressLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Synchronization\ContextCreatingSynchronizerDecorator.cs" />
+    <Compile Include="Synchronization\NullContextSynchronizerDecorator.cs" />
     <Compile Include="Synchronization\NullSynchronizationInterceptor.cs" />
     <Compile Include="Synchronization\NullSynchronizationInterceptorFactory.cs" />
     <Compile Include="Synchronization\ISynchronizationInterceptorFactory.cs" />

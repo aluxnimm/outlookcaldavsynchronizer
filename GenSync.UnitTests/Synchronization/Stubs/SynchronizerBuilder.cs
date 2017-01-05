@@ -55,8 +55,6 @@ namespace GenSync.UnitTests.Synchronization.Stubs
           AtypeIdComparer,
           BtypeIdComparer,
           new NullTotalProgressFactory(),
-          MockRepository.GenerateMock<IExceptionLogger>(),
-          NullSynchronizationContextFactory.Instance,
           EqualityComparer<string>.Default,
           EqualityComparer<string>.Default,
           MockRepository.GenerateMock<IEntitySyncStateFactory<string, string, string, string, string, string, int>> ());

@@ -106,20 +106,22 @@ namespace GenSync.UnitTests.Synchronization
     {
       var synchronizer = CreateSynchronizer (strategy,matchingEntities);
 
-      synchronizer.SynchronizeNoThrow (NullSynchronizationLogger.Instance).Wait();
+      synchronizer.Synchronize (NullSynchronizationLogger.Instance, 0).Wait();
     }
 
-    private void PartialSynchronizeInternal (
+    private void PartialSynchronizeInternal(
       IInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string, int> strategy,
-        IIdWithHints<Identifier,int>[] aEntitesToSynchronize = null,
-        IIdWithHints<Identifier, int>[] bEntitesToSynchronize = null)
+      IIdWithHints<Identifier, int>[] aEntitesToSynchronize = null,
+      IIdWithHints<Identifier, int>[] bEntitesToSynchronize = null)
     {
-      var synchronizer = CreateSynchronizer (strategy);
+      var synchronizer = CreateSynchronizer(strategy);
 
-      synchronizer.SynchronizePartialNoThrow (
-          aEntitesToSynchronize ?? new IIdWithHints<Identifier, int>[] { },
-          bEntitesToSynchronize ?? new IIdWithHints<Identifier, int>[] { },
-          NullSynchronizationLogger.Instance).Wait();
+      synchronizer.SynchronizePartial(
+        aEntitesToSynchronize ?? new IIdWithHints<Identifier, int>[] {},
+        bEntitesToSynchronize ?? new IIdWithHints<Identifier, int>[] {},
+        NullSynchronizationLogger.Instance,
+        () => Task.FromResult(0),
+        c => Task.FromResult(0)).Wait();
     }
 
     private Synchronizer<Identifier, int, string, Identifier, int, string, int> CreateSynchronizer (
@@ -151,8 +153,6 @@ namespace GenSync.UnitTests.Synchronization
           IdentifierEqualityComparer.Instance,
           IdentifierEqualityComparer.Instance,
           NullTotalProgressFactory.Instance,
-          MockRepository.GenerateMock<IExceptionLogger>(),
-          NullSynchronizationContextFactory.Instance,
           EqualityComparer<int>.Default,
           EqualityComparer<int>.Default,
           MockRepository.GenerateMock<IEntitySyncStateFactory<Identifier, int, string, Identifier, int, string, int>> ());

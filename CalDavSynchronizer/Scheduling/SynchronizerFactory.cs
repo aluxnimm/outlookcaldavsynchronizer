@@ -437,14 +437,15 @@ namespace CalDavSynchronizer.Scheduling
           atypeIdEqualityComparer,
           btypeIdEqualityComparer,
           _totalProgressFactory,
-          ExceptionHandler.Instance,
-          new EventSynchronizationContextFactory(atypeRepository, btypeRepository, entityRelationDataAccess, mappingParameters.CleanupDuplicateEvents, atypeIdEqualityComparer),
           EqualityComparer<DateTime>.Default,
           EqualityComparer<string>.Default,
           syncStateFactory,
           new EventSynchronizationInterceptorFactory());
 
-      return new OutlookEventSynchronizer<WebResourceName, string> (synchronizer);
+      return new OutlookEventSynchronizer<WebResourceName, string> (
+        new ContextCreatingSynchronizerDecorator<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext>(
+          synchronizer,
+          new EventSynchronizationContextFactory(atypeRepository, btypeRepository, entityRelationDataAccess, mappingParameters.CleanupDuplicateEvents, atypeIdEqualityComparer)));
     }
 
     private HttpClient CreateHttpClient(ProxyOptions proxyOptionsOrNull)
@@ -551,13 +552,12 @@ namespace CalDavSynchronizer.Scheduling
           atypeIdEqualityComparer,
           btypeIdEqualityComparer,
           _totalProgressFactory,
-          ExceptionHandler.Instance,
-          NullSynchronizationContextFactory.Instance,
           EqualityComparer<DateTime>.Default,
           EqualityComparer<string>.Default,
           syncStateFactory);
 
-      return new OutlookSynchronizer<WebResourceName, string> (synchronizer);
+      return new OutlookSynchronizer<WebResourceName, string> (
+        new NullContextSynchronizerDecorator<string, DateTime, TaskItemWrapper, WebResourceName, string, IICalendar> (synchronizer));
     }
 
     private async Task<IOutlookSynchronizer> CreateGoogleTaskSynchronizer (Options options)
@@ -615,13 +615,12 @@ namespace CalDavSynchronizer.Scheduling
           atypeIdEqualityComparer,
           btypeIdEqualityComparer,
           _totalProgressFactory,
-          ExceptionHandler.Instance,
-          NullSynchronizationContextFactory.Instance,
           EqualityComparer<DateTime>.Default,
           EqualityComparer<string>.Default,
           syncStateFactory);
 
-      return new OutlookSynchronizer<string, string> (synchronizer);
+      return new OutlookSynchronizer<string, string> (
+        new NullContextSynchronizerDecorator<string, DateTime, TaskItemWrapper, string, string, Task>( synchronizer));
     }
 
     private IOutlookSynchronizer CreateContactSynchronizer (Options options, GeneralOptions generalOptions, AvailableSynchronizerComponents componentsToFill)
@@ -700,13 +699,12 @@ namespace CalDavSynchronizer.Scheduling
           atypeIdEqulityComparer,
           btypeIdEqualityComparer,
           _totalProgressFactory,
-          ExceptionHandler.Instance,
-          NullSynchronizationContextFactory.Instance,
           EqualityComparer<DateTime>.Default,
           EqualityComparer<string>.Default,
           syncStateFactory);
 
-      return new OutlookSynchronizer<WebResourceName, string> (synchronizer);
+      return new OutlookSynchronizer<WebResourceName, string>(
+        new NullContextSynchronizerDecorator<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard > (synchronizer));
     }
 
     private async Task<IOutlookSynchronizer> CreateGoogleContactSynchronizer (Options options, AvailableSynchronizerComponents componentsToFill)
@@ -760,13 +758,14 @@ namespace CalDavSynchronizer.Scheduling
           atypeIdEqulityComparer,
           btypeIdEqualityComparer,
           _totalProgressFactory,
-          ExceptionHandler.Instance,
-          new GoogleContactContextFactory(googleApiExecutor, btypeIdEqualityComparer, options.UserName),
           EqualityComparer<DateTime>.Default,
           new GoogleContactVersionComparer(),
           syncStateFactory);
 
-      return new OutlookSynchronizer<string, GoogleContactVersion> (synchronizer);
+      return new OutlookSynchronizer<string, GoogleContactVersion> (
+        new ContextCreatingSynchronizerDecorator<string, DateTime, ContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, GoogleContactContext>(
+          synchronizer,
+          new GoogleContactContextFactory(googleApiExecutor, btypeIdEqualityComparer, options.UserName)));
     }
   }
 }

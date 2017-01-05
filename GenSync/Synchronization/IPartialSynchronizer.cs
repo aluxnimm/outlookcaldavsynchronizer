@@ -26,9 +26,20 @@ namespace GenSync.Synchronization
   /// </summary>
   public interface IPartialSynchronizer<in TAtypeEntityId, in TAtypeEntityVersion, in TBtypeEntityId, in TBtypeEntityVersion> : ISynchronizer
   {
-    Task SynchronizePartialNoThrow (
+    Task SynchronizePartial(
         IEnumerable<IIdWithHints<TAtypeEntityId, TAtypeEntityVersion>> aIds,
         IEnumerable<IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>> bIds,
         ISynchronizationLogger logger);
+  }
+
+  public interface IPartialSynchronizer<in TAtypeEntityId, in TAtypeEntityVersion, in TBtypeEntityId, in TBtypeEntityVersion, TContext> 
+    : ISynchronizer<TContext>
+  {
+    Task<bool> SynchronizePartial(
+        IEnumerable<IIdWithHints<TAtypeEntityId, TAtypeEntityVersion>> aIds,
+        IEnumerable<IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>> bIds,
+        ISynchronizationLogger logger,
+        Func<Task<TContext>> contextFactoryAsync,
+        Func<TContext,Task> syncronizationFinishedAsync);
   }
 }

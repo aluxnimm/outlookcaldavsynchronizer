@@ -26,7 +26,7 @@ namespace CalDavSynchronizer.Synchronization
 {
   public interface IOutlookSynchronizer
   {
-    Task SynchronizeNoThrow (ISynchronizationLogger logger);
-    Task SnychronizePartialNoThrow (IEnumerable<IOutlookId> outlookIds, ISynchronizationLogger logger);
+    Task Synchronize (ISynchronizationLogger logger);
+    Task SynchronizePartial(IEnumerable<IOutlookId> outlookIds, ISynchronizationLogger logger);
   }
 }

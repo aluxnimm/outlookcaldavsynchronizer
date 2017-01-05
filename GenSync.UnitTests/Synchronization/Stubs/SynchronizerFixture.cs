@@ -86,7 +86,7 @@ namespace GenSync.UnitTests.Synchronization.Stubs
       builder.BtypeRepository.Stub(_ => _.VerifyUnknownEntities(null,0)).IgnoreArguments().Return(Task.FromResult(0));
 
       var synchronizer = builder.Build();
-      await synchronizer.SynchronizeNoThrow (NullSynchronizationLogger.Instance);
+      await synchronizer.Synchronize (NullSynchronizationLogger.Instance, 0);
 
       builder.EntityRelationDataAccess.AssertWasCalled (
           c => c.SaveEntityRelationData (Arg<List<IEntityRelationData<string, string, string, string>>>.Matches (l => l.Count == 1 && l[0] == knownData)));

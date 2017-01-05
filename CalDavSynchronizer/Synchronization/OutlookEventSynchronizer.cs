@@ -39,18 +39,18 @@ namespace CalDavSynchronizer.Synchronization
       _synchronizer = synchronizer;
     }
 
-    public Task SynchronizeNoThrow (ISynchronizationLogger logger)
+    public Task Synchronize (ISynchronizationLogger logger)
     {
-      return _synchronizer.SynchronizeNoThrow (logger);
+      return _synchronizer.Synchronize (logger);
     }
 
-    public async Task SnychronizePartialNoThrow(IEnumerable<IOutlookId> outlookIds, ISynchronizationLogger logger)
+    public async Task SynchronizePartial(IEnumerable<IOutlookId> outlookIds, ISynchronizationLogger logger)
     {
       var idExtractor = new IdWithHintExtractor();
       foreach (var outlookId in outlookIds)
         outlookId.Accept(idExtractor);
 
-      await _synchronizer.SynchronizePartialNoThrow(idExtractor.Ids, new IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>[] {}, logger);
+      await _synchronizer.SynchronizePartial(idExtractor.Ids, new IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>[] {}, logger);
     }
 
     class IdWithHintExtractor : IOutlookIdVisitor

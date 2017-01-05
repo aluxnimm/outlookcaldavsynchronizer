@@ -35,7 +35,7 @@ namespace GenSync.Synchronization
   /// Synchronizes tow repositories
   /// </summary>
   public class Synchronizer<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>
-      : IPartialSynchronizer<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
+     :  IPartialSynchronizer<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion, TContext>
   {
     // ReSharper disable once StaticFieldInGenericType
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
@@ -54,8 +54,6 @@ namespace GenSync.Synchronization
     private readonly IReadOnlyEntityRepository<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> _btypeRepository;
     private readonly IInitialSyncStateCreationStrategy<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> _initialSyncStateCreationStrategy;
     private readonly ITotalProgressFactory _totalProgressFactory;
-    private readonly IExceptionLogger _exceptionLogger;
-    private readonly ISynchronizationContextFactory<TContext> _contextFactory;
     private readonly IBatchWriteOnlyEntityRepository<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TContext> _atypeWriteRepository;
     private readonly IBatchWriteOnlyEntityRepository<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> _btypeWriteRepository;
     private readonly IEntitySyncStateFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> _syncStateFactory;
@@ -71,8 +69,6 @@ namespace GenSync.Synchronization
         IInitialEntityMatcher<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> initialEntityMatcher,
         IEqualityComparer<TAtypeEntityId> atypeIdComparer, IEqualityComparer<TBtypeEntityId> btypeIdComparer,
         ITotalProgressFactory totalProgressFactory,
-        IExceptionLogger exceptionLogger,
-        ISynchronizationContextFactory<TContext> contextFactory, 
         IEqualityComparer<TAtypeEntityVersion> atypeVersionComparer, 
         IEqualityComparer<TBtypeEntityVersion> btypeVersionComparer, IEntitySyncStateFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> syncStateFactory,
         ISynchronizationInterceptorFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> synchronizationInterceptorFactory = null)
@@ -81,8 +77,6 @@ namespace GenSync.Synchronization
       _totalProgressFactory = totalProgressFactory;
       _atypeIdComparer = atypeIdComparer;
       _btypeIdComparer = btypeIdComparer;
-      _exceptionLogger = exceptionLogger;
-      _contextFactory = contextFactory;
       _atypeVersionComparer = atypeVersionComparer;
       _btypeVersionComparer = btypeVersionComparer;
       _syncStateFactory = syncStateFactory;
@@ -95,173 +89,156 @@ namespace GenSync.Synchronization
       _entityRelationDataFactory = entityRelationDataFactory;
       _initialEntityMatcher = initialEntityMatcher;
     }
+    
 
-
-    public async Task SynchronizeNoThrow (ISynchronizationLogger logger)
+    public async Task Synchronize(ISynchronizationLogger logger, TContext synchronizationContext)
     {
-      s_logger.InfoFormat ("Entered. Syncstrategy '{0}' with Atype='{1}' and Btype='{2}'", _initialSyncStateCreationStrategy.GetType().Name, typeof (TAtypeEntity).Name, typeof (TBtypeEntity).Name);
+      s_logger.InfoFormat("Entered. Syncstrategy '{0}' with Atype='{1}' and Btype='{2}'", _initialSyncStateCreationStrategy.GetType().Name, typeof(TAtypeEntity).Name, typeof(TBtypeEntity).Name);
 
-      try
+      using (var totalProgress = _totalProgressFactory.Create())
       {
-        using (var totalProgress = _totalProgressFactory.Create())
+        var knownEntityRelations = _entityRelationDataAccess.LoadEntityRelationData()
+                                   ?? new IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>[] {};
+
+        using (var interceptor = _synchronizationInterceptorFactory.Create())
         {
-          var knownEntityRelations = _entityRelationDataAccess.LoadEntityRelationData()
-                                     ?? new IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>[] { };
 
-          using (var interceptor = _synchronizationInterceptorFactory.Create())
+          var newAVersionsTask = _atypeRepository.GetAllVersions(knownEntityRelations.Select(r => r.AtypeId), synchronizationContext);
+          var newBVersionsTask = _btypeRepository.GetAllVersions(knownEntityRelations.Select(r => r.BtypeId), synchronizationContext);
+
+          var newAVersions = CreateDictionary(
+            await newAVersionsTask,
+            _atypeIdComparer);
+
+          var newBVersions = CreateDictionary(
+            await newBVersionsTask,
+            _btypeIdComparer);
+
+          using (var entityContainer = new EntityContainer(this, totalProgress, logger.ALoadEntityLogger, logger.BLoadEntityLogger))
           {
-            var synchronizationContext = await _contextFactory.Create();
+            var newEntityRelations = await Synchronize(
+              totalProgress,
+              knownEntityRelations,
+              newAVersions,
+              newBVersions,
+              entityContainer,
+              logger,
+              synchronizationContext,
+              interceptor);
 
-            var newAVersionsTask = _atypeRepository.GetAllVersions(knownEntityRelations.Select(r => r.AtypeId), synchronizationContext);
-            var newBVersionsTask = _btypeRepository.GetAllVersions(knownEntityRelations.Select(r => r.BtypeId), synchronizationContext);
-
-            var newAVersions = CreateDictionary(
-              await newAVersionsTask,
-              _atypeIdComparer);
-
-            var newBVersions = CreateDictionary(
-              await newBVersionsTask,
-              _btypeIdComparer);
-
-            using (var entityContainer = new EntityContainer(this, totalProgress, logger.ALoadEntityLogger, logger.BLoadEntityLogger))
-            {
-              var newEntityRelations = await Synchronize(
-                totalProgress,
-                knownEntityRelations,
-                newAVersions,
-                newBVersions,
-                entityContainer,
-                logger,
-                synchronizationContext,
-                interceptor);
-
-              _entityRelationDataAccess.SaveEntityRelationData(newEntityRelations);
-            }
-
-            await _contextFactory.SynchronizationFinished(synchronizationContext);
+            _entityRelationDataAccess.SaveEntityRelationData(newEntityRelations);
           }
         }
       }
-      catch (Exception x)
-      {
-        logger.LogAbortedDueToError (x);
-        _exceptionLogger.LogException (x, s_logger);
-      }
-
-      s_logger.DebugFormat ("Exiting.");
+      s_logger.DebugFormat("Exiting.");
     }
-
-    public async Task SynchronizePartialNoThrow (
-        IEnumerable<IIdWithHints<TAtypeEntityId, TAtypeEntityVersion>> aIds,
-        IEnumerable<IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>> bIds,
-        ISynchronizationLogger logger)
+    
+    public async Task<bool> SynchronizePartial(
+      IEnumerable<IIdWithHints<TAtypeEntityId, TAtypeEntityVersion>> aIds,
+      IEnumerable<IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>> bIds,
+      ISynchronizationLogger logger,
+      Func<Task<TContext>> contextFactoryAsync,
+      Func<TContext, Task> syncronizationFinishedAsync)
     {
-      s_logger.InfoFormat (
-          "Entered partial. Syncstrategy '{0}' with Atype='{1}' and Btype='{2}'",
-          _initialSyncStateCreationStrategy.GetType().Name,
-          typeof (TAtypeEntity).Name,
-          typeof (TBtypeEntity).Name);
+      s_logger.InfoFormat(
+        "Entered partial. Syncstrategy '{0}' with Atype='{1}' and Btype='{2}'",
+        _initialSyncStateCreationStrategy.GetType().Name,
+        typeof(TAtypeEntity).Name,
+        typeof(TBtypeEntity).Name);
 
-      try
+      var knownEntityRelations = _entityRelationDataAccess.LoadEntityRelationData();
+
+      if (knownEntityRelations == null)
       {
-        var knownEntityRelations = _entityRelationDataAccess.LoadEntityRelationData();
+        var synchronizationContext = await contextFactoryAsync();
+        await Synchronize(logger, synchronizationContext);
+        await syncronizationFinishedAsync(synchronizationContext);
+        return true;
+      }
 
-        if (knownEntityRelations == null)
+      var requestedAIdsById = aIds.ToDictionary(e => e.Id, _atypeIdComparer);
+      var requestedBIdsById = bIds.ToDictionary(e => e.Id, _btypeIdComparer);
+
+      var aIdsWithAwarenessLevel = new List<IdWithAwarenessLevel<TAtypeEntityId>>();
+      var bIdsWithAwarenessLevel = new List<IdWithAwarenessLevel<TBtypeEntityId>>();
+
+      using (var totalProgress = _totalProgressFactory.Create())
+      {
+        var entityRelationsToUse = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
+        var entityRelationsNotToUse = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
+
+        foreach (var entityRelation in knownEntityRelations)
         {
-          await SynchronizeNoThrow (logger);
-          return;
+          var isACausingSync = RemoveAFromRequestedAndCheckIfCausesSync(requestedAIdsById, entityRelation);
+          var isBCausingSync = RemoveBFromRequestedAndCheckIfCausesSync(requestedBIdsById, entityRelation);
+
+          if (isACausingSync || isBCausingSync)
+          {
+            aIdsWithAwarenessLevel.Add(new IdWithAwarenessLevel<TAtypeEntityId>(entityRelation.AtypeId, true));
+            bIdsWithAwarenessLevel.Add(new IdWithAwarenessLevel<TBtypeEntityId>(entityRelation.BtypeId, true));
+
+            entityRelationsToUse.Add(entityRelation);
+          }
+          else
+          {
+            entityRelationsNotToUse.Add(entityRelation);
+          }
         }
 
-        var requestedAIdsById = aIds.ToDictionary (e => e.Id, _atypeIdComparer);
-        var requestedBIdsById = bIds.ToDictionary (e => e.Id, _btypeIdComparer);
+        aIdsWithAwarenessLevel.AddRange(requestedAIdsById.Where(kv => !(kv.Value.WasDeletedHint ?? false)).Select(kv => new IdWithAwarenessLevel<TAtypeEntityId>(kv.Key, false)));
+        bIdsWithAwarenessLevel.AddRange(requestedBIdsById.Where(kv => !(kv.Value.WasDeletedHint ?? false)).Select(kv => new IdWithAwarenessLevel<TBtypeEntityId>(kv.Key, false)));
 
-        var aIdsWithAwarenessLevel = new List<IdWithAwarenessLevel<TAtypeEntityId>>();
-        var bIdsWithAwarenessLevel = new List<IdWithAwarenessLevel<TBtypeEntityId>>();
-
-        using (var totalProgress = _totalProgressFactory.Create())
+        if (aIdsWithAwarenessLevel.Count == 0 && bIdsWithAwarenessLevel.Count == 0)
         {
-          var entityRelationsToUse = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
-          var entityRelationsNotToUse = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
+          s_logger.InfoFormat("Exiting partial since there is nothing to synchronize.");
+          return false;
+        }
 
-          foreach (var entityRelation in knownEntityRelations)
+        using (var interceptor = _synchronizationInterceptorFactory.Create())
+        {
+          var synchronizationContext = await contextFactoryAsync();
+
+          Task<IReadOnlyList<EntityVersion<TAtypeEntityId, TAtypeEntityVersion>>> newAVersionsTask;
+          if (aIdsWithAwarenessLevel.Count > 0)
+            newAVersionsTask = _atypeRepository.GetVersions(aIdsWithAwarenessLevel, synchronizationContext);
+          else
+            newAVersionsTask = Task.FromResult<IReadOnlyList<EntityVersion<TAtypeEntityId, TAtypeEntityVersion>>>(new EntityVersion<TAtypeEntityId, TAtypeEntityVersion>[] {});
+
+          Task<IReadOnlyList<EntityVersion<TBtypeEntityId, TBtypeEntityVersion>>> newBVersionsTask;
+          if (bIdsWithAwarenessLevel.Count > 0)
+            newBVersionsTask = _btypeRepository.GetVersions(bIdsWithAwarenessLevel, synchronizationContext);
+          else
+            newBVersionsTask = Task.FromResult<IReadOnlyList<EntityVersion<TBtypeEntityId, TBtypeEntityVersion>>>(new EntityVersion<TBtypeEntityId, TBtypeEntityVersion>[] {});
+
+          var newAVersions = CreateDictionary(
+            await newAVersionsTask,
+            _atypeIdComparer);
+
+          var newBVersions = CreateDictionary(
+            await newBVersionsTask,
+            _btypeIdComparer);
+
+          using (var entityContainer = new EntityContainer(this, totalProgress, logger.ALoadEntityLogger, logger.BLoadEntityLogger))
           {
-            var isACausingSync = RemoveAFromRequestedAndCheckIfCausesSync (requestedAIdsById, entityRelation);
-            var isBCausingSync = RemoveBFromRequestedAndCheckIfCausesSync (requestedBIdsById, entityRelation);
+            var newEntityRelations = await Synchronize(
+              totalProgress,
+              entityRelationsToUse,
+              newAVersions,
+              newBVersions,
+              entityContainer,
+              logger,
+              synchronizationContext,
+              interceptor);
 
-            if (isACausingSync || isBCausingSync)
-            {
-              aIdsWithAwarenessLevel.Add (new IdWithAwarenessLevel<TAtypeEntityId> (entityRelation.AtypeId, true));
-              bIdsWithAwarenessLevel.Add (new IdWithAwarenessLevel<TBtypeEntityId> (entityRelation.BtypeId, true));
+            entityRelationsNotToUse.AddRange(newEntityRelations);
 
-              entityRelationsToUse.Add (entityRelation);
-            }
-            else
-            {
-              entityRelationsNotToUse.Add (entityRelation);
-            }
-          }
-
-          aIdsWithAwarenessLevel.AddRange (requestedAIdsById.Where (kv => !(kv.Value.WasDeletedHint ?? false)).Select (kv => new IdWithAwarenessLevel<TAtypeEntityId> (kv.Key, false)));
-          bIdsWithAwarenessLevel.AddRange (requestedBIdsById.Where (kv => !(kv.Value.WasDeletedHint ?? false)).Select (kv => new IdWithAwarenessLevel<TBtypeEntityId> (kv.Key, false)));
-
-          if (aIdsWithAwarenessLevel.Count == 0 && bIdsWithAwarenessLevel.Count == 0)
-          {
-            s_logger.InfoFormat ("Exiting partial since there is nothing to synchronize.");
-            return;
-          }
-
-          using (var interceptor = _synchronizationInterceptorFactory.Create())
-          {
-            var synchronizationContext = await _contextFactory.Create();
-
-            Task<IReadOnlyList<EntityVersion<TAtypeEntityId, TAtypeEntityVersion>>> newAVersionsTask;
-            if (aIdsWithAwarenessLevel.Count > 0)
-              newAVersionsTask = _atypeRepository.GetVersions(aIdsWithAwarenessLevel, synchronizationContext);
-            else
-              newAVersionsTask = Task.FromResult<IReadOnlyList<EntityVersion<TAtypeEntityId, TAtypeEntityVersion>>>(new EntityVersion<TAtypeEntityId, TAtypeEntityVersion>[] {});
-
-            Task<IReadOnlyList<EntityVersion<TBtypeEntityId, TBtypeEntityVersion>>> newBVersionsTask;
-            if (bIdsWithAwarenessLevel.Count > 0)
-              newBVersionsTask = _btypeRepository.GetVersions(bIdsWithAwarenessLevel, synchronizationContext);
-            else
-              newBVersionsTask = Task.FromResult<IReadOnlyList<EntityVersion<TBtypeEntityId, TBtypeEntityVersion>>>(new EntityVersion<TBtypeEntityId, TBtypeEntityVersion>[] {});
-
-            var newAVersions = CreateDictionary(
-              await newAVersionsTask,
-              _atypeIdComparer);
-
-            var newBVersions = CreateDictionary(
-              await newBVersionsTask,
-              _btypeIdComparer);
-
-            using (var entityContainer = new EntityContainer(this, totalProgress, logger.ALoadEntityLogger, logger.BLoadEntityLogger))
-            {
-              var newEntityRelations = await Synchronize(
-                totalProgress,
-                entityRelationsToUse,
-                newAVersions,
-                newBVersions,
-                entityContainer,
-                logger,
-                synchronizationContext,
-                interceptor);
-
-              entityRelationsNotToUse.AddRange(newEntityRelations);
-
-              _entityRelationDataAccess.SaveEntityRelationData(entityRelationsNotToUse);
-            }
-
-            await _contextFactory.SynchronizationFinished(synchronizationContext);
+            _entityRelationDataAccess.SaveEntityRelationData(entityRelationsNotToUse);
           }
         }
       }
-      catch (Exception x)
-      {
-        logger.LogAbortedDueToError (x);
-        _exceptionLogger.LogException (x, s_logger);
-      }
 
-      s_logger.DebugFormat ("Exiting.");
+      s_logger.DebugFormat("Exiting.");
+      return true;
     }
 
     private bool RemoveAFromRequestedAndCheckIfCausesSync (

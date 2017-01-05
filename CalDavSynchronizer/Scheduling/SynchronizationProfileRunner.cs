@@ -232,9 +232,17 @@ namespace CalDavSynchronizer.Scheduling
       {
         var logger = new SynchronizationLogger (_profileId, _profileName);
 
-        using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("Running synchronization profile '{0}'", _profileName)))
+        using (AutomaticStopwatch.StartInfo(s_logger, string.Format("Running synchronization profile '{0}'", _profileName)))
         {
-          await _synchronizer.SynchronizeNoThrow (logger);
+          try
+          {
+            await _synchronizer.Synchronize(logger);
+          }
+          catch (Exception x)
+          {
+            logger.LogAbortedDueToError(x);
+            ExceptionHandler.Instance.LogException(x, s_logger);
+          }
         }
 
         GC.Collect();
@@ -258,9 +266,17 @@ namespace CalDavSynchronizer.Scheduling
       {
         var logger = new SynchronizationLogger (_profileId, _profileName);
 
-        using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("Partial sync: Running synchronization profile '{0}'", _profileName)))
+        using (AutomaticStopwatch.StartInfo(s_logger, string.Format("Partial sync: Running synchronization profile '{0}'", _profileName)))
         {
-          await _synchronizer.SnychronizePartialNoThrow (itemsToSync, logger);
+          try
+          {
+            await _synchronizer.SynchronizePartial(itemsToSync, logger);
+          }
+          catch (Exception x)
+          {
+            logger.LogAbortedDueToError(x);
+            ExceptionHandler.Instance.LogException(x, s_logger);
+          }
         }
 
         GC.Collect();
