@@ -21,7 +21,7 @@ using GenSync.Synchronization;
 
 namespace GenSync.Logging
 {
-  public class SynchronizationLogger : ISynchronizationLogger
+  public class SynchronizationLogger : ISynchronizationLogger, ISynchronizationReportSink
   {
     private readonly DateTime _startTime;
     private readonly Guid _profileId;
@@ -31,15 +31,18 @@ namespace GenSync.Logging
     private string _exceptionThatLeadToAbortion;
     private string _aDelta;
     private string _bDelta;
+    private ISynchronizationReportSink _reportSink;
+    private List<SynchronizationReport> _subReports;
 
     private readonly List<EntitySynchronizationLogger> _entitySynchronizationLoggers = new List<EntitySynchronizationLogger> ();
     private readonly ILoadEntityLogger _aLoadEntityLogger;
     private readonly ILoadEntityLogger _bLoadEntityLogger;
 
-    public SynchronizationLogger (Guid profileId, string profileName)
+    public SynchronizationLogger (Guid profileId, string profileName, ISynchronizationReportSink reportSink)
     {
       _startTime = DateTime.UtcNow;
       _profileName = profileName;
+      _reportSink = reportSink;
       _profileId = profileId;
       _aLoadEntityLogger = new LoadEntityLogger (_loadErrors, _loadErrorsLock, true);
       _bLoadEntityLogger = new LoadEntityLogger (_loadErrors, _loadErrorsLock, false);
@@ -67,9 +70,9 @@ namespace GenSync.Logging
       return logger;
     }
 
-    public SynchronizationReport GetReport ()
+    private SynchronizationReport GetReport ()
     {
-      return new SynchronizationReport
+      var report = new SynchronizationReport
              {
                  ADelta = _aDelta,
                  BDelta = _bDelta,
@@ -84,6 +87,29 @@ namespace GenSync.Logging
                      .ToArray(),
                  Duration = DateTime.UtcNow - _startTime
              };
+
+      if(_subReports != null)
+        report.MergeSubReport(_subReports);
+
+      return report;
+    }
+
+    public void Dispose()
+    {
+      _reportSink?.PostReport(GetReport());
+      _reportSink = null;
+    }
+
+    public void PostReport(SynchronizationReport report)
+    {
+      if (_subReports == null)
+        _subReports = new List<SynchronizationReport>();
+      _subReports.Add(report);
+    }
+
+    public ISynchronizationLogger CreateSubLogger(string subProfileName)
+    {
+      return new SynchronizationLogger(_profileId, subProfileName, this);
     }
   }
 }

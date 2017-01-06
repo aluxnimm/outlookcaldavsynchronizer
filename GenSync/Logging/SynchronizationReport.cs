@@ -15,7 +15,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Xml.Serialization;
 
 namespace GenSync.Logging
@@ -66,5 +68,50 @@ namespace GenSync.Logging
     }
 
     public bool HasWarnings => EntitySynchronizationReports.Any (r => r.MappingWarnings.Length > 0);
+
+    public void MergeSubReport(IReadOnlyCollection<SynchronizationReport> subReports)
+    {
+      if (subReports.Count == 0)
+        return;
+
+      if (!string.IsNullOrWhiteSpace(ExceptionThatLeadToAbortion) || subReports.Any(r => !string.IsNullOrWhiteSpace(r.ExceptionThatLeadToAbortion)))
+      {
+        var exceptionBuilder = new StringBuilder();
+        exceptionBuilder.Append("'");
+        exceptionBuilder.Append(ProfileName);
+        exceptionBuilder.Append("'\r\n");
+
+        if (!string.IsNullOrWhiteSpace(ExceptionThatLeadToAbortion))
+          exceptionBuilder.AppendLine(ExceptionThatLeadToAbortion);
+
+        foreach (var subReport in subReports)
+        {
+          exceptionBuilder.Append("'");
+          exceptionBuilder.Append(subReport.ProfileName);
+          exceptionBuilder.Append("'\r\n");
+
+          if (!string.IsNullOrWhiteSpace(subReport.ExceptionThatLeadToAbortion))
+            exceptionBuilder.AppendLine(subReport.ExceptionThatLeadToAbortion);
+        }
+
+        ExceptionThatLeadToAbortion = exceptionBuilder.ToString();
+      }
+
+      ProfileName = $"{ProfileName} ( {string.Join(" | ", subReports.Select(r => r.ProfileName))} )";
+      ADelta = $"{ADelta} ( {string.Join(" | ", subReports.Select(r => r.ADelta))} )";
+      BDelta = $"{BDelta} ( {string.Join(" | ", subReports.Select(r => r.BDelta))} )";
+
+      var entitySynchronizationReports = new List<EntitySynchronizationReport>(EntitySynchronizationReports);
+      var loadErrors = new List<LoadError>(LoadErrors);
+
+      foreach (var subReport in subReports)
+      {
+       entitySynchronizationReports.AddRange(subReport.EntitySynchronizationReports);
+        loadErrors.AddRange(subReport.LoadErrors);
+      }
+
+      EntitySynchronizationReports = entitySynchronizationReports.ToArray();
+      LoadErrors = loadErrors.ToArray();
+    }
   }
 }

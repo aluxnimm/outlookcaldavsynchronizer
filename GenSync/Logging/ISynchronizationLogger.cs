@@ -19,7 +19,7 @@ using GenSync.Synchronization;
 
 namespace GenSync.Logging
 {
-  public interface ISynchronizationLogger 
+  public interface ISynchronizationLogger : IDisposable
   {
     ILoadEntityLogger ALoadEntityLogger { get; }
     ILoadEntityLogger BLoadEntityLogger { get; }
@@ -27,5 +27,7 @@ namespace GenSync.Logging
     void LogAbortedDueToError (Exception exception);
     void LogDeltas (VersionDeltaLoginInformation aDeltaLogInfo, VersionDeltaLoginInformation bDeltaLogInfo);
     IEntitySynchronizationLogger CreateEntitySynchronizationLogger ();
+
+    ISynchronizationLogger CreateSubLogger(string subProfileName);
   }
 }

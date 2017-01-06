@@ -14,13 +14,11 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using GenSync.Logging;
 
-namespace CalDavSynchronizer.Reports
+namespace GenSync.Logging
 {
   public interface ISynchronizationReportSink
   {
-    void PostReport (SynchronizationReport report);
+    void PostReport(SynchronizationReport report);
   }
 }

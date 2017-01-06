@@ -74,6 +74,7 @@
     <Compile Include="IExceptionLogger.cs" />
     <Compile Include="InitialEntityMatching\IInitialEntityMatcher.cs" />
     <Compile Include="InitialEntityMatching\InitialEntityMatcherByPropertyGrouping.cs" />
+    <Compile Include="Logging\ISynchronizationReportSink.cs" />
     <Compile Include="Logging\EntitySynchronizationLogger.cs" />
     <Compile Include="Logging\LoadEntityLogger.cs" />
     <Compile Include="Logging\NullLoadEntityLogger.cs" />
