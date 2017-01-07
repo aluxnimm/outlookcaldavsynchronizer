@@ -93,17 +93,15 @@ namespace CalDavSynchronizer.Implementation
 
     public async Task SynchronizePartial(IEnumerable<IIdWithHints<string, DateTime>> aIds, IEnumerable<IIdWithHints<WebResourceName, string>> bIds, ISynchronizationLogger logger)
     {
-      var uidCache = new EmailAddressCache();
+      var emailAddressCache = new EmailAddressCache();
+      emailAddressCache.Items = _emailAddressCacheDataAccess.Load();
 
       using (var subLogger = logger.CreateSubLogger("Contacts"))
       {
-        await _contactSynchronizer.SynchronizePartial(aIds, bIds, subLogger, () => Task.FromResult<ICardDavRepositoryLogger>(uidCache), c => Task.FromResult(0));
+        await _contactSynchronizer.Synchronize(subLogger, emailAddressCache);
       }
 
-      using (var subLogger = logger.CreateSubLogger("DistLists"))
-      {
-        await _distributionListSynchronizer.Synchronize(subLogger, null);
-      }
+      _emailAddressCacheDataAccess.Save(emailAddressCache.Items);
     }
   }
 }
