@@ -3,10 +3,10 @@
 Outlook Plugin, which synchronizes events, tasks and contacts between Outlook and Google, SOGo, Horde or any other CalDAV or CardDAV server. Supported Outlook versions are 2016, 2013, 2010 and 2007.
 
 ### Project Homepage ###
-[https://sourceforge.net/projects/outlookcaldavsynchronizer/](https://sourceforge.net/projects/outlookcaldavsynchronizer/)
+[http://caldavsynchronizer.org](http://caldavsynchronizer.org)
 
 ### License ###
-[Affero GNU Public License](http://sourceforge.net/directory/license:osi-approved-open-source/affero-gnu-public-license/)
+[Affero GNU Public License](https://www.gnu.org/licenses/agpl-3.0.html)
 
 ### Authors ###
 
@@ -22,7 +22,7 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 
 New collaboration with Nextcloud, see [https://nextcloud.com/blog/nextcloud-offers-caldav-synchronizer-for-outlook-users/](https://nextcloud.com/blog/nextcloud-offers-caldav-synchronizer-for-outlook-users/) 
 
-For possible enterprise support, please contact us!
+For possible enterprise support, please contact us [here](http://caldavsynchronizer.org/enterprise/)!
 
 ### Tested CalDAV Servers ###
 

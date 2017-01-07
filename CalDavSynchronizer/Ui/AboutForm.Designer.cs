@@ -46,9 +46,10 @@
       // btnOK
       // 
       this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnOK.Location = new System.Drawing.Point(371, 430);
+      this.btnOK.Location = new System.Drawing.Point(495, 529);
+      this.btnOK.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this.btnOK.Name = "btnOK";
-      this.btnOK.Size = new System.Drawing.Size(75, 23);
+      this.btnOK.Size = new System.Drawing.Size(100, 28);
       this.btnOK.TabIndex = 0;
       this.btnOK.Text = "OK";
       this.btnOK.UseVisualStyleBackColor = true;
@@ -60,12 +61,13 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this._licenseTextBox.BackColor = System.Drawing.SystemColors.Window;
-      this._licenseTextBox.Location = new System.Drawing.Point(11, 161);
+      this._licenseTextBox.Location = new System.Drawing.Point(15, 198);
+      this._licenseTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this._licenseTextBox.Multiline = true;
       this._licenseTextBox.Name = "_licenseTextBox";
       this._licenseTextBox.ReadOnly = true;
       this._licenseTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      this._licenseTextBox.Size = new System.Drawing.Size(435, 263);
+      this._licenseTextBox.Size = new System.Drawing.Size(579, 323);
       this._licenseTextBox.TabIndex = 1;
       this._licenseTextBox.Text = resources.GetString("_licenseTextBox.Text");
       this._licenseTextBox.WordWrap = false;
@@ -74,27 +76,30 @@
       // 
       this._captionLabel.AutoSize = true;
       this._captionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this._captionLabel.Location = new System.Drawing.Point(7, 9);
+      this._captionLabel.Location = new System.Drawing.Point(9, 11);
+      this._captionLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this._captionLabel.Name = "_captionLabel";
-      this._captionLabel.Size = new System.Drawing.Size(236, 26);
+      this._captionLabel.Size = new System.Drawing.Size(289, 31);
       this._captionLabel.TabIndex = 2;
       this._captionLabel.Text = "CalDav Synchronizer";
       // 
       // _versionLabel
       // 
       this._versionLabel.AutoSize = true;
-      this._versionLabel.Location = new System.Drawing.Point(9, 40);
+      this._versionLabel.Location = new System.Drawing.Point(12, 49);
+      this._versionLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this._versionLabel.Name = "_versionLabel";
-      this._versionLabel.Size = new System.Drawing.Size(62, 13);
+      this._versionLabel.Size = new System.Drawing.Size(82, 17);
       this._versionLabel.TabIndex = 3;
       this._versionLabel.Text = "Version: {0}";
       // 
       // _linkLabelProject
       // 
       this._linkLabelProject.AutoSize = true;
-      this._linkLabelProject.Location = new System.Drawing.Point(9, 61);
+      this._linkLabelProject.Location = new System.Drawing.Point(12, 75);
+      this._linkLabelProject.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this._linkLabelProject.Name = "_linkLabelProject";
-      this._linkLabelProject.Size = new System.Drawing.Size(290, 13);
+      this._linkLabelProject.Size = new System.Drawing.Size(0, 17);
       this._linkLabelProject.TabIndex = 4;
       this._linkLabelProject.TabStop = true;
       this._linkLabelProject.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this._linkLabelProject_LinkClicked);
@@ -102,28 +107,30 @@
       // label1
       // 
       this.label1.AutoSize = true;
-      this.label1.Location = new System.Drawing.Point(9, 87);
+      this.label1.Location = new System.Drawing.Point(12, 107);
+      this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label1.Name = "label1";
-      this.label1.Size = new System.Drawing.Size(37, 13);
+      this.label1.Size = new System.Drawing.Size(48, 17);
       this.label1.TabIndex = 5;
       this.label1.Text = "Team:";
       // 
       // _linkLabelTeamMembers
       // 
       this._linkLabelTeamMembers.AutoSize = true;
-      this._linkLabelTeamMembers.Location = new System.Drawing.Point(42, 87);
+      this._linkLabelTeamMembers.Location = new System.Drawing.Point(56, 107);
+      this._linkLabelTeamMembers.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this._linkLabelTeamMembers.Name = "_linkLabelTeamMembers";
-      this._linkLabelTeamMembers.Size = new System.Drawing.Size(85, 13);
+      this._linkLabelTeamMembers.Size = new System.Drawing.Size(113, 17);
       this._linkLabelTeamMembers.TabIndex = 6;
       this._linkLabelTeamMembers.TabStop = true;
       this._linkLabelTeamMembers.Text = "<teamMembers>";
       // 
       // _logoPictureBox
       // 
-      this._logoPictureBox.Location = new System.Drawing.Point(336, 9);
-      this._logoPictureBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this._logoPictureBox.Location = new System.Drawing.Point(448, 11);
+      this._logoPictureBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._logoPictureBox.Name = "_logoPictureBox";
-      this._logoPictureBox.Size = new System.Drawing.Size(110, 83);
+      this._logoPictureBox.Size = new System.Drawing.Size(147, 102);
       this._logoPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
       this._logoPictureBox.TabIndex = 7;
       this._logoPictureBox.TabStop = false;
@@ -131,9 +138,10 @@
       // _linkLabelPayPal
       // 
       this._linkLabelPayPal.AutoSize = true;
-      this._linkLabelPayPal.Location = new System.Drawing.Point(10, 112);
+      this._linkLabelPayPal.Location = new System.Drawing.Point(13, 138);
+      this._linkLabelPayPal.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this._linkLabelPayPal.Name = "_linkLabelPayPal";
-      this._linkLabelPayPal.Size = new System.Drawing.Size(100, 13);
+      this._linkLabelPayPal.Size = new System.Drawing.Size(130, 17);
       this._linkLabelPayPal.TabIndex = 8;
       this._linkLabelPayPal.TabStop = true;
       this._linkLabelPayPal.Text = "Donate with PayPal";
@@ -142,20 +150,22 @@
       // _linkLabelHelp
       // 
       this._linkLabelHelp.AutoSize = true;
-      this._linkLabelHelp.Location = new System.Drawing.Point(10, 136);
+      this._linkLabelHelp.Location = new System.Drawing.Point(13, 167);
+      this._linkLabelHelp.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this._linkLabelHelp.Name = "_linkLabelHelp";
-      this._linkLabelHelp.Size = new System.Drawing.Size(102, 13);
+      this._linkLabelHelp.Size = new System.Drawing.Size(190, 17);
       this._linkLabelHelp.TabIndex = 9;
       this._linkLabelHelp.TabStop = true;
-      this._linkLabelHelp.Text = "Help Page and Wiki";
+      this._linkLabelHelp.Text = "Documentation and Tutorials";
       this._linkLabelHelp.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelHelp_LinkClicked);
       // 
       // _checkForUpdatesButton
       // 
       this._checkForUpdatesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._checkForUpdatesButton.Location = new System.Drawing.Point(253, 430);
+      this._checkForUpdatesButton.Location = new System.Drawing.Point(337, 529);
+      this._checkForUpdatesButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this._checkForUpdatesButton.Name = "_checkForUpdatesButton";
-      this._checkForUpdatesButton.Size = new System.Drawing.Size(112, 23);
+      this._checkForUpdatesButton.Size = new System.Drawing.Size(149, 28);
       this._checkForUpdatesButton.TabIndex = 10;
       this._checkForUpdatesButton.Text = "Check for Updates";
       this._checkForUpdatesButton.UseVisualStyleBackColor = true;
@@ -164,10 +174,10 @@
       // AboutForm
       // 
       this.AcceptButton = this.btnOK;
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.SystemColors.Window;
-      this.ClientSize = new System.Drawing.Size(459, 457);
+      this.ClientSize = new System.Drawing.Size(612, 562);
       this.Controls.Add(this._checkForUpdatesButton);
       this.Controls.Add(this._linkLabelHelp);
       this.Controls.Add(this._linkLabelPayPal);
@@ -181,6 +191,7 @@
       this.Controls.Add(this.btnOK);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+      this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Name = "AboutForm";
