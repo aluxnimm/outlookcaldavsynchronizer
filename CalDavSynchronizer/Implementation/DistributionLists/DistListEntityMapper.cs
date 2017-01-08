@@ -40,35 +40,53 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
 {
   public class DistListEntityMapper : IEntityMapper<GenericComObjectWrapper<DistListItem>, DistributionList, DistributionListSychronizationContext>
   {
+    private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
+
     public Task<DistributionList> Map1To2(GenericComObjectWrapper<DistListItem> source, DistributionList target, IEntityMappingLogger logger, DistributionListSychronizationContext context)
     {
       target.Members.Clear();
       target.Name = source.Inner.DLName;
       target.Description = source.Inner.Body;
 
-      using (var userPropertiesWrapper = GenericComObjectWrapper.Create (source.Inner.UserProperties))
+      try
       {
-        using (var userProperty = GenericComObjectWrapper.Create (userPropertiesWrapper.Inner.Find ("NICKNAME")))
+        using (var userPropertiesWrapper = GenericComObjectWrapper.Create(source.Inner.UserProperties))
         {
-          target.Nickname = userProperty.Inner?.Value.ToString();
+          using (var userProperty = GenericComObjectWrapper.Create(userPropertiesWrapper.Inner.Find("NICKNAME")))
+          {
+            target.Nickname = userProperty.Inner?.Value.ToString();
+          }
         }
+      }
+      catch (COMException ex)
+      {
+        s_logger.Warn ("Can't access UserProperty of Distribution List!", ex);
+        logger.LogMappingWarning ("Can't access UserProperty of Distribution List!", ex);
       }
 
       for (int i = 1; i <= source.Inner.MemberCount; i++)
       {
-        using (var recipientWrapper = GenericComObjectWrapper.Create(source.Inner.GetMember(i)))
+        try
         {
-          var serverFileName = context.GetServerFileNameByEmailAddress(recipientWrapper.Inner.Address);
-          if (serverFileName != null)
+          using (var recipientWrapper = GenericComObjectWrapper.Create(source.Inner.GetMember(i)))
           {
-            var distributionListMember = new KnownDistributionListMember(recipientWrapper.Inner.Address, recipientWrapper.Inner.Name, serverFileName);
-            target.Members.Add(distributionListMember);
+            var serverFileName = context.GetServerFileNameByEmailAddress(recipientWrapper.Inner.Address);
+            if (serverFileName != null)
+            {
+              var distributionListMember = new KnownDistributionListMember(recipientWrapper.Inner.Address, recipientWrapper.Inner.Name, serverFileName);
+              target.Members.Add(distributionListMember);
+            }
+            else
+            {
+              var distributionListMember = new DistributionListMember(recipientWrapper.Inner.Address, recipientWrapper.Inner.Name);
+              target.NonAddressBookMembers.Add(distributionListMember);
+            }
           }
-          else
-          {
-            var distributionListMember = new DistributionListMember(recipientWrapper.Inner.Address, recipientWrapper.Inner.Name);
-            target.NonAddressBookMembers.Add(distributionListMember);
-          }
+        }
+        catch (COMException ex)
+        {
+          s_logger.Warn("Can't access member of Distribution List!", ex);
+          logger.LogMappingWarning("Can't access member of Distribution List!", ex);
         }
       }
 
@@ -79,15 +97,46 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
     {
 
       var outlookMembersByAddress = new Dictionary<string, GenericComObjectWrapper<Recipient>>(StringComparer.InvariantCultureIgnoreCase);
-      
+
+      target.Inner.DLName = source.Name;
+      if (!string.IsNullOrEmpty(source.Description))
+        target.Inner.Body = source.Description;
+
+      try
+      {
+        using (var userPropertiesWrapper = GenericComObjectWrapper.Create(target.Inner.UserProperties))
+        {
+          using (var userProperty = GenericComObjectWrapper.Create(userPropertiesWrapper.Inner.Find("NICKNAME")))
+          {
+            if (userProperty.Inner != null)
+            {
+              userProperty.Inner.Value = source.Nickname;
+            }
+            else if (!string.IsNullOrEmpty(source.Nickname))
+            {
+              using (var newUserProperty = GenericComObjectWrapper.Create(userPropertiesWrapper.Inner.Add("NICKNAME", OlUserPropertyType.olText, true)))
+              {
+                newUserProperty.Inner.Value = source.Nickname;
+              }
+            }
+          }
+        }
+      }
+      catch (COMException ex)
+      {
+        s_logger.Warn("Can't access UserProperty of Distribution List!", ex);
+        logger.LogMappingWarning("Can't access UserProperty of Distribution List!", ex);
+      }
+
       try
       {
         for (int i = 1; i <= target.Inner.MemberCount; i++)
         {
-          var recipientWrapper = GenericComObjectWrapper.Create (target.Inner.GetMember(i));
-          if (!string.IsNullOrEmpty (recipientWrapper.Inner?.Address) && !outlookMembersByAddress.ContainsKey (recipientWrapper.Inner.Address))
+          var recipientWrapper = GenericComObjectWrapper.Create(target.Inner.GetMember(i));
+          if (!string.IsNullOrEmpty(recipientWrapper.Inner?.Address) &&
+              !outlookMembersByAddress.ContainsKey(recipientWrapper.Inner.Address))
           {
-            outlookMembersByAddress.Add (recipientWrapper.Inner.Address, recipientWrapper);
+            outlookMembersByAddress.Add(recipientWrapper.Inner.Address, recipientWrapper);
           }
           else
           {
@@ -95,35 +144,13 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
           }
         }
 
-        target.Inner.DLName = source.Name;
-        if (!string.IsNullOrEmpty(source.Description)) 
-          target.Inner.Body = source.Description;
-
-       
-        using (var userPropertiesWrapper = GenericComObjectWrapper.Create (target.Inner.UserProperties))
-        {
-          using (var userProperty = GenericComObjectWrapper.Create (userPropertiesWrapper.Inner.Find ("NICKNAME")))
-          {
-            if (userProperty.Inner != null)
-            {
-              userProperty.Inner.Value = source.Nickname;
-            }
-            else if (!string.IsNullOrEmpty (source.Nickname))
-            {
-              using (var newUserProperty = GenericComObjectWrapper.Create (userPropertiesWrapper.Inner.Add ("NICKNAME", OlUserPropertyType.olText, true)))
-              {
-                newUserProperty.Inner.Value = source.Nickname;
-              }
-            }
-          }
-        }
-        
-        foreach (var sourceMember in source.Members.Concat (source.NonAddressBookMembers))
+        foreach (var sourceMember in source.Members.Concat(source.NonAddressBookMembers))
         {
           GenericComObjectWrapper<Recipient> existingRecipient;
-          if (!string.IsNullOrEmpty (sourceMember.EmailAddress) && outlookMembersByAddress.TryGetValue (sourceMember.EmailAddress, out existingRecipient))
+          if (!string.IsNullOrEmpty(sourceMember.EmailAddress) &&
+              outlookMembersByAddress.TryGetValue(sourceMember.EmailAddress, out existingRecipient))
           {
-            outlookMembersByAddress.Remove (sourceMember.EmailAddress);
+            outlookMembersByAddress.Remove(sourceMember.EmailAddress);
             existingRecipient.Dispose();
           }
           else
@@ -132,22 +159,22 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
 
             if (sourceMember.DisplayName == sourceMember.EmailAddress)
             {
-              recipientStringBuilder.Append (sourceMember.EmailAddress);
+              recipientStringBuilder.Append(sourceMember.EmailAddress);
             }
             else
             {
-              recipientStringBuilder.Append (sourceMember.DisplayName);
-              if (!string.IsNullOrEmpty (sourceMember.EmailAddress) && !sourceMember.DisplayName.EndsWith(")"))
+              recipientStringBuilder.Append(sourceMember.DisplayName);
+              if (!string.IsNullOrEmpty(sourceMember.EmailAddress) && !sourceMember.DisplayName.EndsWith(")"))
               {
-                recipientStringBuilder.Append (" (");
-                recipientStringBuilder.Append (sourceMember.EmailAddress);
-                recipientStringBuilder.Append (")");
+                recipientStringBuilder.Append(" (");
+                recipientStringBuilder.Append(sourceMember.EmailAddress);
+                recipientStringBuilder.Append(")");
               }
             }
 
-            var recipient = context.OutlookSession.CreateRecipient (recipientStringBuilder.ToString());
+            var recipient = context.OutlookSession.CreateRecipient(recipientStringBuilder.ToString());
             recipient.Resolve();
-            target.Inner.AddMember (recipient);
+            target.Inner.AddMember(recipient);
           }
         }
 
@@ -156,8 +183,11 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
           target.Inner.RemoveMember(existingRecipient.Value.Inner);
           outlookMembersByAddress.Remove(existingRecipient.Key);
         }
-
-        return Task.FromResult(target);
+      }
+      catch (COMException ex)
+      {
+        s_logger.Warn("Can't access member of Distribution List!", ex);
+        logger.LogMappingWarning("Can't access member of Distribution List!", ex);
       }
       finally
       {
@@ -166,6 +196,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
           existingRecipient.Dispose();
         }
       }
+      return Task.FromResult(target);
     }
   }
 }
