@@ -22,6 +22,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
@@ -69,31 +70,54 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
     {
 
       var outlookMembersByAddress = new Dictionary<string, GenericComObjectWrapper<Recipient>>(StringComparer.InvariantCultureIgnoreCase);
-
+      
       try
       {
         for (int i = 1; i <= target.Inner.MemberCount; i++)
         {
-          var recipientWrapper = GenericComObjectWrapper.Create(target.Inner.GetMember(i));
-          outlookMembersByAddress.Add(recipientWrapper.Inner.Address, recipientWrapper);
+          var recipientWrapper = GenericComObjectWrapper.Create (target.Inner.GetMember(i));
+          if (!string.IsNullOrEmpty (recipientWrapper.Inner?.Address) && !outlookMembersByAddress.ContainsKey (recipientWrapper.Inner.Address))
+          {
+            outlookMembersByAddress.Add (recipientWrapper.Inner.Address, recipientWrapper);
+          }
+          else
+          {
+            recipientWrapper.Dispose();
+          }
         }
 
         target.Inner.DLName = source.Name;
 
-        foreach (var sourceMember in source.Members.Concat(source.NonAddressBookMembers))
+        foreach (var sourceMember in source.Members.Concat (source.NonAddressBookMembers))
         {
           GenericComObjectWrapper<Recipient> existingRecipient;
-          if (outlookMembersByAddress.TryGetValue(sourceMember.EmailAddress, out existingRecipient))
+          if (!string.IsNullOrEmpty (sourceMember.EmailAddress) && outlookMembersByAddress.TryGetValue (sourceMember.EmailAddress, out existingRecipient))
           {
-            outlookMembersByAddress.Remove(sourceMember.EmailAddress);
+            outlookMembersByAddress.Remove (sourceMember.EmailAddress);
             existingRecipient.Dispose();
           }
           else
           {
-            // Idendify recipient just with Emailaddress. 'DisplayName <EmailAddress>' didn't work for Members with EmailAddress as Displayname
-            var recipient = context.OutlookSession.CreateRecipient(sourceMember.EmailAddress);
+            var recipientStringBuilder = new StringBuilder();
+
+            if (sourceMember.DisplayName == sourceMember.EmailAddress)
+            {
+              recipientStringBuilder.Append (sourceMember.EmailAddress);
+            }
+            else
+            {
+              recipientStringBuilder.Append (sourceMember.DisplayName);
+              if (!string.IsNullOrEmpty (sourceMember.EmailAddress) && !sourceMember.DisplayName.EndsWith(")"))
+              {
+                recipientStringBuilder.Append (" (");
+                recipientStringBuilder.Append (sourceMember.EmailAddress);
+                recipientStringBuilder.Append (")");
+              }
+            }
+
+            var recipient = context.OutlookSession.CreateRecipient (recipientStringBuilder.ToString());
             recipient.Resolve();
-            target.Inner.AddMember(recipient);
+            target.Inner.AddMember (recipient);
           }
         }
 
