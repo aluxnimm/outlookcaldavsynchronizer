@@ -26,6 +26,8 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
   {
     public string Uid { get; set; }
     public string Name { get; set; }
+    public string Description { get; set; }
+    public string Nickname { get; set; }
     public DateTime ChangeDateUtc { get; set; }
     public IList<KnownDistributionListMember> Members { get; set; } = new List<KnownDistributionListMember>();
     public IList<DistributionListMember> NonAddressBookMembers { get; set; } = new List<DistributionListMember>();

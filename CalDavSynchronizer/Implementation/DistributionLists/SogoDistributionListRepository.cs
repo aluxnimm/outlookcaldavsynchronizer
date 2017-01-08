@@ -20,8 +20,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.Contacts;
+using CalDavSynchronizer.ThoughtvCardWorkaround;
 using CalDavSynchronizer.Utilities;
 using GenSync.Logging;
+using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.DistributionLists
 {
@@ -45,20 +47,31 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
 
     protected override string Serialize(DistributionList vcard)
     {
+      char [] escapechars = { '\\', ';', '\r', '\n' };
+
       var builder = new StringBuilder();
       builder.AppendLine("BEGIN:VLIST");
       builder.AppendLine("VERSION:1.0");
       builder.Append("UID:");
       builder.AppendLine(vcard.Uid);
       builder.Append("FN:");
-      builder.AppendLine(vcard.Name);
-
+      builder.AppendLine(vCardImprovedWriter.EncodeEscaped(vcard.Name,escapechars));
+      if (!string.IsNullOrEmpty(vcard.Description))
+      {
+        builder.Append("DESCRIPTION:");
+        builder.AppendLine(vCardImprovedWriter.EncodeEscaped(vcard.Description.Replace("\r\n", "\n"),escapechars));
+      }
+      if (!string.IsNullOrEmpty(vcard.Nickname))
+      {
+        builder.Append("NICKNAME:");
+        builder.AppendLine(vCardImprovedWriter.EncodeEscaped(vcard.Nickname, escapechars));
+      }
       foreach (var member in vcard.Members)
       {
         builder.Append("CARD;EMAIL=");
         builder.Append(member.EmailAddress);
         builder.Append(";FN=\"");
-        builder.Append(member.DisplayName);
+        builder.Append(vCardImprovedWriter.EncodeEscaped(member.DisplayName, escapechars));
         builder.Append("\":");
         builder.AppendLine(member.ServerFileName);
       }
@@ -68,7 +81,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
         builder.Append(NonAddressBookMemberValueName + ";EMAIL=");
         builder.Append(member.EmailAddress);
         builder.Append(";FN=\"");
-        builder.Append(member.DisplayName);
+        builder.Append(vCardImprovedWriter.EncodeEscaped(member.DisplayName, escapechars));
         builder.Append("\":");
         builder.AppendLine("dummyValue");
       }
@@ -102,7 +115,11 @@ END:VLIST
         if (contentLine.StartsWith("UID"))
           vcard.Uid = value;
         else if (contentLine.StartsWith("FN"))
-          vcard.Name = value;
+          vcard.Name = vCardStandardReader.DecodeEscaped(value);
+        else if (contentLine.StartsWith("DESCRIPTION"))
+          vcard.Description = vCardStandardReader.DecodeEscaped(value);
+        else if (contentLine.StartsWith("NICKNAME"))
+          vcard.Nickname = vCardStandardReader.DecodeEscaped(value);
         else if (contentLine.StartsWith("CARD"))
         {
           string displayName = null;
@@ -133,7 +150,7 @@ END:VLIST
         if (parameter.StartsWith("EMAIL="))
           emailAddress = parameter.Substring(6);
         if (parameter.StartsWith("FN="))
-          displayName = parameter.Substring(3);
+          displayName = vCardStandardReader.DecodeEscaped(parameter.Substring(3));
       }
     }
   }

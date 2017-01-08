@@ -44,6 +44,15 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
     {
       target.Members.Clear();
       target.Name = source.Inner.DLName;
+      target.Description = source.Inner.Body;
+
+      using (var userPropertiesWrapper = GenericComObjectWrapper.Create (source.Inner.UserProperties))
+      {
+        using (var userProperty = GenericComObjectWrapper.Create (userPropertiesWrapper.Inner.Find ("NICKNAME")))
+        {
+          target.Nickname = userProperty.Inner?.Value.ToString();
+        }
+      }
 
       for (int i = 1; i <= source.Inner.MemberCount; i++)
       {
@@ -87,7 +96,28 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
         }
 
         target.Inner.DLName = source.Name;
+        if (!string.IsNullOrEmpty(source.Description)) 
+          target.Inner.Body = source.Description;
 
+       
+        using (var userPropertiesWrapper = GenericComObjectWrapper.Create (target.Inner.UserProperties))
+        {
+          using (var userProperty = GenericComObjectWrapper.Create (userPropertiesWrapper.Inner.Find ("NICKNAME")))
+          {
+            if (userProperty.Inner != null)
+            {
+              userProperty.Inner.Value = source.Nickname;
+            }
+            else if (!string.IsNullOrEmpty (source.Nickname))
+            {
+              using (var newUserProperty = GenericComObjectWrapper.Create (userPropertiesWrapper.Inner.Add ("NICKNAME", OlUserPropertyType.olText, true)))
+              {
+                newUserProperty.Inner.Value = source.Nickname;
+              }
+            }
+          }
+        }
+        
         foreach (var sourceMember in source.Members.Concat (source.NonAddressBookMembers))
         {
           GenericComObjectWrapper<Recipient> existingRecipient;
