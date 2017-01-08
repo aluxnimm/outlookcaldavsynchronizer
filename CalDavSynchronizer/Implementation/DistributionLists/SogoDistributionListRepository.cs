@@ -29,7 +29,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
 {
   class SogoDistributionListRepository : CardDavEntityRepository<DistributionList, int, DistributionListSychronizationContext>
   {
-    private const string NonAddressBookMemberValueName = "X-CALDAVSYNCHRONIZER-NON-ADDRESS-BOOK-MEMBER";
+    private const string NonAddressBookMemberValueName = "X-ADDRESSBOOKSERVER-MEMBER";
 
     public SogoDistributionListRepository(ICardDavDataAccess cardDavDataAccess, IChunkedExecutor chunkedExecutor) : base(cardDavDataAccess, chunkedExecutor)
     {
@@ -78,15 +78,12 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
 
       foreach (var member in vcard.NonAddressBookMembers)
       {
-        builder.Append(NonAddressBookMemberValueName + ";EMAIL=");
-        builder.Append(member.EmailAddress);
-        builder.Append(";FN=\"");
+        builder.Append(NonAddressBookMemberValueName + ";CN=");
         builder.Append(vCardImprovedWriter.EncodeEscaped(member.DisplayName, escapechars));
-        builder.Append("\":");
-        builder.AppendLine("dummyValue");
+        builder.Append(":mailto:");
+        builder.AppendLine(member.EmailAddress);
       }
   
-
       builder.AppendLine("END:VLIST");
       return builder.ToString();
     }
@@ -130,8 +127,10 @@ END:VLIST
         else if (contentLine.StartsWith(NonAddressBookMemberValueName))
         {
           string displayName = null;
-          string emailAddress = null;
-          ParseMemberContentLineParameters(contentLine.Substring(0, valueStartIndex-1), out emailAddress, out displayName);
+          string emailAddress = value;
+          var contentWithoutMailto = contentLine.Substring(0, valueStartIndex - 8); // substract :mailto:
+          
+          ParseXAddressBookServerMemberContentLineParameters(contentWithoutMailto, out displayName);
           vcard.NonAddressBookMembers.Add(new DistributionListMember(emailAddress, displayName));
         }
       }
@@ -153,5 +152,17 @@ END:VLIST
           displayName = vCardStandardReader.DecodeEscaped(parameter.Substring(3));
       }
     }
+    private static void ParseXAddressBookServerMemberContentLineParameters (string contentLineWithoutValue, out string displayName)
+    {
+      displayName = null;
+
+      var parameters = contentLineWithoutValue.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
+      foreach (var parameter in parameters)
+      {
+        if (parameter.StartsWith("CN="))
+          displayName = vCardStandardReader.DecodeEscaped(parameter.Substring(3));
+      }
+    }
+
   }
 }
