@@ -15,9 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.Contacts;
 using CalDavSynchronizer.ThoughtvCardWorkaround;
@@ -143,7 +141,7 @@ END:VLIST
       emailAddress = null;
       displayName = null;
 
-      var parameters = contentLineWithoutValue.Split(new[] {";"}, StringSplitOptions.RemoveEmptyEntries);
+      var parameters = contentLineWithoutValue.Split(";", '\\');
       foreach (var parameter in parameters)
       {
         if (parameter.StartsWith("EMAIL="))
@@ -156,7 +154,7 @@ END:VLIST
     {
       displayName = null;
 
-      var parameters = contentLineWithoutValue.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
+      var parameters = contentLineWithoutValue.Split(";", '\\');
       foreach (var parameter in parameters)
       {
         if (parameter.StartsWith("CN="))
