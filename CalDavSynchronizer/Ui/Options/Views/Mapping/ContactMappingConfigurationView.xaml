@@ -15,9 +15,16 @@
             <CheckBox IsChecked="{Binding FixPhoneNumberFormat}" ToolTip="Convert numbers like +1 23 45678 9 &#x0a;to +1 (23) 45678 - 9 &#x0a;so that Outlook can show country and area code.">Fix imported phone number format</CheckBox>
             <GroupBox>
                 <GroupBox.Header>
-                    <CheckBox IsChecked="{Binding MapDistributionLists}" ToolTip="Map distribution Lists">Map distribution lists</CheckBox>
+                    <CheckBox IsChecked="{Binding MapDistributionLists}" ToolTip="Map Distribution Lists / Contact Groups">Map Distribution Lists</CheckBox>
                 </GroupBox.Header>
-                <ComboBox IsEnabled="{Binding MapDistributionLists, Mode=OneWay}" ItemsSource="{Binding AvailableDistributionListTypes}" SelectedValue="{Binding DistributionListType}" DisplayMemberPath="Name" SelectedValuePath="Value" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock ToolTip="Choose the used format for DAV contact groups.&#x0a;SOGO uses its own VLIST format to store contact groups.">DAV contact group format:</TextBlock>
+                    <ComboBox Grid.Column="1"  IsEnabled="{Binding MapDistributionLists, Mode=OneWay}" ItemsSource="{Binding AvailableDistributionListTypes}" SelectedValue="{Binding DistributionListType}" DisplayMemberPath="Name" SelectedValuePath="Value" />
+                </Grid>
             </GroupBox>
 
         </StackPanel>

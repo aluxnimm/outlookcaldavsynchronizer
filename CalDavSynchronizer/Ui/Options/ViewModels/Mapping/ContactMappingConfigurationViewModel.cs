@@ -116,7 +116,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     public IList<Item<DistributionListType>> AvailableDistributionListTypes { get; } = new List<Item<DistributionListType>>
                                                                                      {
                                                                                          new Item<DistributionListType> (DistributionListType.OwnCloud, "OwnCloud"),
-                                                                                         new Item<DistributionListType> (DistributionListType.Sogo, "Sogo"),
+                                                                                         new Item<DistributionListType> (DistributionListType.Sogo, "SOGo VLIST"),
                                                                                           };
 
     public static ContactMappingConfigurationViewModel DesignInstance => new ContactMappingConfigurationViewModel
