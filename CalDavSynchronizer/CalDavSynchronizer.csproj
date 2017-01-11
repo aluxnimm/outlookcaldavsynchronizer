@@ -327,7 +327,6 @@
     <Compile Include="Implementation\DistributionLists\DistListRelationData.cs" />
     <Compile Include="Implementation\DistributionLists\DistListRelationDataFactory.cs" />
     <Compile Include="Implementation\DistributionLists\OutlookDistListRepository.cs" />
-    <Compile Include="Implementation\DistributionLists\OwnCloudDistributionListRepository.cs" />
     <Compile Include="Implementation\DistributionLists\DistributionList.cs" />
     <Compile Include="Implementation\DistributionLists\DistributionListMember.cs" />
     <Compile Include="Implementation\DistributionLists\SogoDistributionListRepository.cs" />

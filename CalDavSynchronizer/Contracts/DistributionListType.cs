@@ -19,7 +19,6 @@ namespace CalDavSynchronizer.Contracts
 {
   public enum DistributionListType
   {
-    OwnCloud = 0,
-    Sogo = 1
+    Sogo = 0
   }
 }

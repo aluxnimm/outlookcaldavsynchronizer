@@ -725,9 +725,6 @@ namespace CalDavSynchronizer.Scheduling
 
         switch (mappingParameters.DistributionListType)
         {
-          case DistributionListType.OwnCloud:
-            bDistListRepository = new OwnCloudDistributionListRepository(distListDataAccess, chunkedExecutor);
-            break;
           case DistributionListType.Sogo:
             bDistListRepository = new SogoDistributionListRepository(distListDataAccess, chunkedExecutor);
             break;
