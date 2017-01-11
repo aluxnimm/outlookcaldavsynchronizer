@@ -40,7 +40,7 @@ using RecurrencePattern = DDay.iCal.RecurrencePattern;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class EventEntityMapper : IEntityMapper<AppointmentItemWrapper, IICalendar>
+  public class EventEntityMapper : IEntityMapper<AppointmentItemWrapper, IICalendar, IEventSynchronizationContext>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -91,7 +91,7 @@ namespace CalDavSynchronizer.Implementation.Events
       _outlookMajorVersion = Convert.ToInt32 (outlookMajorVersionString);
     }
 
-    public async Task<IICalendar> Map1To2 (AppointmentItemWrapper sourceWrapper, IICalendar existingTargetCalender, IEntityMappingLogger logger)
+    public async Task<IICalendar> Map1To2 (AppointmentItemWrapper sourceWrapper, IICalendar existingTargetCalender, IEntityMappingLogger logger, IEventSynchronizationContext context)
     {
       var newTargetCalender = new iCalendar();
 
@@ -1366,7 +1366,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
     private const int s_mailtoSchemaLength = 7; // length of "mailto:"
 
-    public Task<AppointmentItemWrapper> Map2To1 (IICalendar sourceCalendar, AppointmentItemWrapper target, IEntityMappingLogger logger)
+    public Task<AppointmentItemWrapper> Map2To1 (IICalendar sourceCalendar, AppointmentItemWrapper target, IEntityMappingLogger logger, IEventSynchronizationContext context)
     {
       IEvent sourceMasterEvent = null;
       IReadOnlyCollection<IEvent> sourceExceptionEvents;
@@ -1400,7 +1400,7 @@ namespace CalDavSynchronizer.Implementation.Events
         s_logger.Warn ("Detected CalDav Event with contains only exceptions. Reconstructing master event.");
         logger.LogMappingWarning ("CalDav Ressources contains only exceptions. Reconstructing master event.");
         AddMasterEvent (sourceCalendar);
-        return Map2To1 (sourceCalendar, target, logger);
+        return Map2To1 (sourceCalendar, target, logger, context);
       }
 
       // Map UID to GlobalAppointmentID for new meetings to avoid double events from Mail invites

@@ -46,5 +46,15 @@ namespace GenSync.Logging
     {
       return NullEntitySynchronizationLogger.Instance;
     }
+
+    public void Dispose()
+    {
+      
+    }
+
+    public ISynchronizationLogger CreateSubLogger(string subProfileName)
+    {
+      return this;
+    }
   }
 }

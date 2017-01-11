@@ -31,6 +31,8 @@ namespace CalDavSynchronizer.Contracts
     public bool KeepOutlookFileAs { get; set; }
 
     public bool FixPhoneNumberFormat { get; set; }
+    public bool MapDistributionLists { get; set; }
+    public DistributionListType DistributionListType { get; set; }
 
     public ContactMappingConfiguration ()
     {
@@ -39,6 +41,7 @@ namespace CalDavSynchronizer.Contracts
       KeepOutlookPhoto = false;
       KeepOutlookFileAs = true;
       FixPhoneNumberFormat = false;
+      MapDistributionLists = false;
     }
 
     public override ISubOptionsViewModel CreateConfigurationViewModel (IMappingConfigurationViewModelFactory factory)

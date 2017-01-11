@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Runtime.InteropServices;
 using CalDavSynchronizer.Implementation.ComWrappers;
@@ -24,55 +25,56 @@ namespace CalDavSynchronizer.Implementation.Common
 {
   public static class NameSpaceExtensions
   {
-    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod ().DeclaringType);
+    private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-    public static TItemType GetEntryOrNull<TItemType> (this NameSpace mapiNameSpace, string entryId, string folderId, string storeId)
-    where TItemType : class
+
+    public static ContactItem GetContactItemOrNull (this NameSpace mapiNameSpace, string entryId, string folderId, string storeId)
+    {
+      return GetEntryOrNull<ContactItem> (mapiNameSpace, entryId, folderId, storeId, a => (Folder) a.Parent);
+    }
+
+    public static TaskItem GetTaskItemOrNull(this NameSpace mapiNameSpace, string entryId, string folderId, string storeId)
+    {
+      return GetEntryOrNull<TaskItem>(mapiNameSpace, entryId, folderId, storeId, a => (Folder)a.Parent);
+    }
+
+    public static AppointmentItem GetAppointmentItemOrNull(this NameSpace mapiNameSpace, string entryId, string folderId, string storeId)
+    {
+      return GetEntryOrNull<AppointmentItem>(mapiNameSpace, entryId, folderId, storeId, a => (Folder)a.Parent);
+    }
+
+    public static DistListItem GetDistListItemOrNull(this NameSpace mapiNameSpace, string entryId, string folderId, string storeId)
+    {
+      return GetEntryOrNull<DistListItem>(mapiNameSpace, entryId, folderId, storeId, a => (Folder)a.Parent);
+    }
+
+    private static TItemType GetEntryOrNull<TItemType>(
+      this NameSpace mapiNameSpace,
+      string entryId,
+      string folderId,
+      string storeId,
+      Func<TItemType, Folder> parentFolderGetter)
+      where TItemType : class
     {
       try
       {
-        var item = (TItemType) mapiNameSpace.GetItemFromID (entryId, storeId);
-        var appointmentItem = item as AppointmentItem;
-        if (appointmentItem != null)
-        {
-          using (var folderWrapper = GenericComObjectWrapper.Create (appointmentItem.Parent as Folder))
-          {
-            if (folderWrapper.Inner?.EntryID == folderId) return item;
-          }
-        }
-        else
-        {
-          var contactItem = item as ContactItem;
-          if (contactItem != null)
-          {
-            using (var folderWrapper = GenericComObjectWrapper.Create (contactItem.Parent as Folder))
-            {
-              if (folderWrapper.Inner?.EntryID == folderId) return item;
-            }
-          }
-          else
-          {
-            var taskItem = item as TaskItem;
-            if (taskItem != null)
-            {
-              using (var folderWrapper = GenericComObjectWrapper.Create (taskItem.Parent as Folder))
-              {
-                if (folderWrapper.Inner?.EntryID == folderId) return item;
-              }
-            }
-          }
-        }
-        return null;
+        var item = (TItemType) mapiNameSpace.GetItemFromID(entryId, storeId);
 
+        using (var folderWrapper = GenericComObjectWrapper.Create(parentFolderGetter(item)))
+        {
+          if (folderWrapper.Inner?.EntryID == folderId)
+            return item;
+        }
+
+        return null;
       }
       catch (COMException x)
       {
         const int messageNotFoundResult = -2147221233;
         if (x.HResult != messageNotFoundResult)
-          s_logger.Error ("Error while fetching entity.", x);
+          s_logger.Error("Error while fetching entity.", x);
         return null;
       }
     }
-
   }
 }

@@ -21,20 +21,41 @@ namespace GenSync.Synchronization
 {
   public class NullSynchronizationContextFactory : ISynchronizationContextFactory<int>
   {
-    public static readonly ISynchronizationContextFactory<int> Instance = new NullSynchronizationContextFactory ();
+    public static readonly ISynchronizationContextFactory<int> Instance = new NullSynchronizationContextFactory();
 
-    private NullSynchronizationContextFactory ()
+    private NullSynchronizationContextFactory()
     {
     }
 
-    public Task<int> Create ()
+    public Task<int> Create()
     {
-      return Task.FromResult (0);
+      return Task.FromResult(0);
     }
 
-    public Task SynchronizationFinished (int context)
+    public Task SynchronizationFinished(int context)
     {
-      return Task.FromResult (0);
+      return Task.FromResult(0);
     }
   }
+
+  public class SynchronizationContextFactory<T> : ISynchronizationContextFactory<T>
+  {
+    private readonly Func<T> _contextFactory;
+
+    public SynchronizationContextFactory(Func<T> contextFactory)
+    {
+      _contextFactory = contextFactory;
+    }
+
+    public Task<T> Create()
+    {
+      return Task.FromResult<T>(_contextFactory());
+    }
+
+    public Task SynchronizationFinished(T context)
+    {
+      return Task.FromResult(0);
+    }
+  }
+
 }

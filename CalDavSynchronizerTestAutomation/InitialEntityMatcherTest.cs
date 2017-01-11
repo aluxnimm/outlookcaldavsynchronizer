@@ -45,7 +45,7 @@ namespace CalDavSynchronizerTestAutomation
           entityRelationStorage);
 
 
-      OutlookTestContext.WaitForTask (synchronizer.SynchronizeNoThrow(NullSynchronizationLogger.Instance));
+      OutlookTestContext.WaitForTask (synchronizer.Synchronize(NullSynchronizationLogger.Instance));
 
       var entityRelationDatas = entityRelationStorage.LoadEntityRelationData().ToArray();
       Assert.That (entityRelationDatas.Length, Is.EqualTo (3));
@@ -57,7 +57,7 @@ namespace CalDavSynchronizerTestAutomation
           calDavServer,
           newEntityRelationStorage);
 
-      OutlookTestContext.WaitForTask (synchronizer.SynchronizeNoThrow (NullSynchronizationLogger.Instance));
+      OutlookTestContext.WaitForTask (synchronizer.Synchronize (NullSynchronizationLogger.Instance));
 
       var newRelations = newEntityRelationStorage.LoadEntityRelationData().ToArray();
       // If the InitialEntityMatcher would not work, it would not recognize matching events 

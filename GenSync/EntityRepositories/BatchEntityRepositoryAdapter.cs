@@ -61,7 +61,7 @@ namespace GenSync.EntityRepositories
       {
         try
         {
-          var result = await _inner.TryUpdate (job.EntityId, job.Version, job.EntityToUpdate, job.UpdateEntity, context);
+          var result = await _inner.TryUpdate (job.EntityId, job.Version, job.EntityToUpdate, job.UpdateEntity , context);
           if (result != null)
             job.NotifyOperationSuceeded (result);
           else

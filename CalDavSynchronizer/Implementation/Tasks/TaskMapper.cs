@@ -36,7 +36,7 @@ using RecurrencePattern = DDay.iCal.RecurrencePattern;
 
 namespace CalDavSynchronizer.Implementation.Tasks
 {
-  internal class TaskMapper : IEntityMapper<TaskItemWrapper, IICalendar>
+  internal class TaskMapper : IEntityMapper<TaskItemWrapper, IICalendar, int>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
     private readonly DateTime _dateNull;
@@ -50,7 +50,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       _configuration = configuration;
     }
 
-    public Task<IICalendar> Map1To2 (TaskItemWrapper source, IICalendar existingTargetCalender, IEntityMappingLogger logger)
+    public Task<IICalendar> Map1To2 (TaskItemWrapper source, IICalendar existingTargetCalender, IEntityMappingLogger logger, int context)
     {
       var newTargetCalender = new iCalendar();
       var localIcalTimeZone = iCalTimeZone.FromSystemTimeZone (_localTimeZoneInfo, new DateTime (1970, 1, 1), true);
@@ -321,7 +321,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       }
     }
 
-    public Task<TaskItemWrapper> Map2To1 (IICalendar sourceCalendar, TaskItemWrapper target, IEntityMappingLogger logger)
+    public Task<TaskItemWrapper> Map2To1 (IICalendar sourceCalendar, TaskItemWrapper target, IEntityMappingLogger logger, int context)
     {
       var source = sourceCalendar.Todos[0];
       return Task.FromResult(Map2To1 (source, target, logger));

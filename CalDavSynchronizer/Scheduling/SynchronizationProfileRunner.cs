@@ -230,17 +230,24 @@ namespace CalDavSynchronizer.Scheduling
     {
       try
       {
-        var logger = new SynchronizationLogger (_profileId, _profileName);
-
-        using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("Running synchronization profile '{0}'", _profileName)))
+        using (var logger = new SynchronizationLogger(_profileId, _profileName, _reportSink))
         {
-          await _synchronizer.SynchronizeNoThrow (logger);
-        }
+          using (AutomaticStopwatch.StartInfo(s_logger, string.Format("Running synchronization profile '{0}'", _profileName)))
+          {
+            try
+            {
+              await _synchronizer.Synchronize(logger);
+            }
+            catch (Exception x)
+            {
+              logger.LogAbortedDueToError(x);
+              ExceptionHandler.Instance.LogException(x, s_logger);
+            }
+          }
 
-        GC.Collect();
-        GC.WaitForPendingFinalizers();
-        var synchronizationReport = logger.GetReport();
-        _reportSink.PostReport (synchronizationReport);
+          GC.Collect();
+          GC.WaitForPendingFinalizers();
+        }
       }
       catch (Exception x)
       {
@@ -256,17 +263,24 @@ namespace CalDavSynchronizer.Scheduling
     {
       try
       {
-        var logger = new SynchronizationLogger (_profileId, _profileName);
-
-        using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("Partial sync: Running synchronization profile '{0}'", _profileName)))
+        using (var logger = new SynchronizationLogger(_profileId, _profileName, _reportSink))
         {
-          await _synchronizer.SnychronizePartialNoThrow (itemsToSync, logger);
-        }
+          using (AutomaticStopwatch.StartInfo(s_logger, string.Format("Partial sync: Running synchronization profile '{0}'", _profileName)))
+          {
+            try
+            {
+              await _synchronizer.SynchronizePartial(itemsToSync, logger);
+            }
+            catch (Exception x)
+            {
+              logger.LogAbortedDueToError(x);
+              ExceptionHandler.Instance.LogException(x, s_logger);
+            }
+          }
 
-        GC.Collect();
-        GC.WaitForPendingFinalizers();
-        var synchronizationReport = logger.GetReport();
-        _reportSink.PostReport (synchronizationReport);
+          GC.Collect();
+          GC.WaitForPendingFinalizers();
+        }
       }
       catch (Exception x)
       {

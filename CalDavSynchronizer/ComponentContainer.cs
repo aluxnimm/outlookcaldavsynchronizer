@@ -166,7 +166,7 @@ namespace CalDavSynchronizer
               _session),
           _synchronizationStatus);
 
-      var options = _optionsDataAccess.LoadOptions();
+      var options = _optionsDataAccess.Load();
 
       EnsureCacheCompatibility (options);
 
@@ -208,7 +208,7 @@ namespace CalDavSynchronizer
     {
       _scheduler.Start();
 
-      var options = _optionsDataAccess.LoadOptions ();
+      var options = _optionsDataAccess.Load ();
       var generalOptions = _generalOptionsDataAccess.LoadOptions ();
 
       await _scheduler.SetOptions (options, generalOptions);
@@ -430,7 +430,7 @@ namespace CalDavSynchronizer
     {
       if (_currentVisibleOptionsFormOrNull == null)
       {
-        var options = _optionsDataAccess.LoadOptions();
+        var options = _optionsDataAccess.Load();
         GeneralOptions generalOptions = _generalOptionsDataAccess.LoadOptions();
         try
         {
@@ -485,7 +485,7 @@ namespace CalDavSynchronizer
 
     private async Task ApplyNewOptions (Options[] oldOptions, Options[] newOptions, GeneralOptions generalOptions)
     {
-      _optionsDataAccess.SaveOptions (newOptions);
+      _optionsDataAccess.Save (newOptions);
       await _scheduler.SetOptions (newOptions, generalOptions);
       _profileStatusesViewModel.EnsureProfilesDisplayed (newOptions);
       DeleteEntityChachesForChangedProfiles (oldOptions, newOptions);
@@ -721,7 +721,7 @@ namespace CalDavSynchronizer
 
           _generalOptionsDataAccess.SaveOptions (newOptions);
           UpdateGeneralOptionDependencies (newOptions);
-          await _scheduler.SetOptions (_optionsDataAccess.LoadOptions(), newOptions);
+          await _scheduler.SetOptions (_optionsDataAccess.Load(), newOptions);
 
           if (newOptions.EnableTrayIcon != generalOptions.EnableTrayIcon)
           {
@@ -972,7 +972,7 @@ namespace CalDavSynchronizer
         {
           _currentReportsViewModel = new ReportsViewModel (
               _synchronizationReportRepository,
-              _optionsDataAccess.LoadOptions().ToDictionary (o => o.Id, o => o.Name),
+              _optionsDataAccess.Load().ToDictionary (o => o.Id, o => o.Name),
               this);
 
           _currentReportsViewModel.ReportsClosed += delegate { _currentReportsViewModel = null; };
@@ -1096,7 +1096,7 @@ namespace CalDavSynchronizer
 
     private Options GetOptionsOrNull (Guid synchronizationProfileId)
     {
-      var allOptions = _optionsDataAccess.LoadOptions ();
+      var allOptions = _optionsDataAccess.Load ();
       var options = allOptions.FirstOrDefault (o => o.Id == synchronizationProfileId);
       if (options == null)
         MessageBox.Show ("The profile for the selected report doesn't exist anymore!");

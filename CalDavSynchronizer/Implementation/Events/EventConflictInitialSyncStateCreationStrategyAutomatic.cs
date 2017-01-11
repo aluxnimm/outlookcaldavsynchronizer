@@ -26,14 +26,14 @@ using GenSync.Synchronization.States;
 namespace CalDavSynchronizer.Implementation.Events
 {
   internal class EventConflictInitialSyncStateCreationStrategyAutomatic
-      : ConflictInitialSyncStateCreationStrategyAutomatic<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar>
+      : ConflictInitialSyncStateCreationStrategyAutomatic<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext>
   {
-    public EventConflictInitialSyncStateCreationStrategyAutomatic (EntitySyncStateEnvironment<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar> environment)
+    public EventConflictInitialSyncStateCreationStrategyAutomatic (EntitySyncStateEnvironment<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> environment)
         : base (environment)
     {
     }
 
-    protected override IEntitySyncState<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar> Create_FromNewerToOlder (IEntityRelationData<AppointmentId, DateTime, WebResourceName, string> knownData, DateTime newA, string newB)
+    protected override IEntitySyncState<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> Create_FromNewerToOlder (IEntityRelationData<AppointmentId, DateTime, WebResourceName, string> knownData, DateTime newA, string newB)
     {
       return new OutlookCaldavEventUpdateFromNewerToOlder (
           _environment,

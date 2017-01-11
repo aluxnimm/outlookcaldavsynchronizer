@@ -26,14 +26,14 @@ namespace GenSync.Synchronization
   /// Environment for a SyncState
   /// NOTE: this is not the Context from the State-Pattern !!!
   /// </summary>
-  public class EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
+  public class EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>
   {
-    public IEntityMapper<TAtypeEntity, TBtypeEntity> Mapper { get; private set; }
+    public IEntityMapper<TAtypeEntity, TBtypeEntity, TContext> Mapper { get; private set; }
     public IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> DataFactory { get; private set; }
-    public IEntitySyncStateFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> StateFactory { get; private set; }
+    public IEntitySyncStateFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> StateFactory { get; private set; }
     public IExceptionLogger ExceptionLogger { get; private set; }
 
-    public EntitySyncStateEnvironment (IEntityMapper<TAtypeEntity, TBtypeEntity> mapper, IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> dataFactory, IEntitySyncStateFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> stateFactory, IExceptionLogger exceptionLogger)
+    public EntitySyncStateEnvironment (IEntityMapper<TAtypeEntity, TBtypeEntity, TContext> mapper, IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> dataFactory, IEntitySyncStateFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> stateFactory, IExceptionLogger exceptionLogger)
     {
       ExceptionLogger = exceptionLogger;
       Mapper = mapper;

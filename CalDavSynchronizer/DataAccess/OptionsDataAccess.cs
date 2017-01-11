@@ -22,41 +22,11 @@ using Microsoft.Win32;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public class OptionsDataAccess : IOptionsDataAccess
+  public class OptionsDataAccess : FileDataAccess<Options[]>, IOptionsDataAccess
   {
-    private readonly string _optionsFilePath;
-
-    public OptionsDataAccess (string optionsFilePath)
+    public OptionsDataAccess(string filePath) 
+      : base(filePath, () => new Options[0])
     {
-      _optionsFilePath = optionsFilePath;
-    }
-
-    public Options[] LoadOptions ()
-    {
-      if (!File.Exists (_optionsFilePath))
-        return new Options[] { };
-      else
-        return Serializer<Options[]>.Deserialize (File.ReadAllText (_optionsFilePath));
-    }
-
-    public void SaveOptions (Options[] options)
-    {
-      if (!Directory.Exists (Path.GetDirectoryName (_optionsFilePath)))
-        Directory.CreateDirectory (Path.GetDirectoryName (_optionsFilePath));
-
-      File.WriteAllText (_optionsFilePath, Serializer<Options[]>.Serialize (options));
-    }
-
-    public void EnsureBackupExists (string backupName)
-    {
-      if (File.Exists (_optionsFilePath))
-      {
-        var backupFileName = $"{_optionsFilePath}.{backupName}.bak";
-        if (!File.Exists (backupFileName))
-        {
-          File.Copy (_optionsFilePath, backupFileName, true);
-        }
-      }
     }
   }
 }

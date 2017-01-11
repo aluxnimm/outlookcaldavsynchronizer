@@ -93,13 +93,13 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
         get { return _runCount; }
       }
 
-      public Task SynchronizeNoThrow (ISynchronizationLogger logger)
+      public Task Synchronize (ISynchronizationLogger logger)
       {
         _runCount++;
         return Task.Run (() => FinishSynchronizationEvent.Wait());
       }
 
-      public Task SnychronizePartialNoThrow (IEnumerable<IOutlookId> outlookIds, ISynchronizationLogger logger)
+      public Task SynchronizePartial (IEnumerable<IOutlookId> outlookIds, ISynchronizationLogger logger)
       {
         throw new NotImplementedException();
       }

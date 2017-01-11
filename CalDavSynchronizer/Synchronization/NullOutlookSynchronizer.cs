@@ -32,12 +32,12 @@ namespace CalDavSynchronizer.Synchronization
     {
     }
 
-    public Task SynchronizeNoThrow (ISynchronizationLogger logger)
+    public Task Synchronize (ISynchronizationLogger logger)
     {
       return Task.FromResult (0);
     }
 
-    public Task SnychronizePartialNoThrow (IEnumerable<IOutlookId> outlookIds, ISynchronizationLogger logger)
+    public Task SynchronizePartial (IEnumerable<IOutlookId> outlookIds, ISynchronizationLogger logger)
     {
       return Task.FromResult (0);
     }

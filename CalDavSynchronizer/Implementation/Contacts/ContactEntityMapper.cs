@@ -35,7 +35,7 @@ using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public class ContactEntityMapper : IEntityMapper<ContactItemWrapper, vCard>
+  public class ContactEntityMapper : IEntityMapper<ContactItemWrapper, vCard, ICardDavRepositoryLogger>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -52,7 +52,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       _configuration = configuration;
     }
 
-    public Task<vCard> Map1To2 (ContactItemWrapper source, vCard target, IEntityMappingLogger logger)
+    public Task<vCard> Map1To2 (ContactItemWrapper source, vCard target, IEntityMappingLogger logger, ICardDavRepositoryLogger context)
     {
       target.GivenName = source.Inner.FirstName;
       target.FamilyName = source.Inner.LastName;
@@ -184,7 +184,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       return Task.FromResult(target);
     }
 
-    public async Task<ContactItemWrapper> Map2To1 (vCard source, ContactItemWrapper target, IEntityMappingLogger logger)
+    public async Task<ContactItemWrapper> Map2To1 (vCard source, ContactItemWrapper target, IEntityMappingLogger logger, ICardDavRepositoryLogger context)
     {
       target.Inner.FirstName = source.GivenName;
       target.Inner.LastName = source.FamilyName;

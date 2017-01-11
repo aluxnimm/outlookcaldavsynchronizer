@@ -140,7 +140,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       var webDavClientCaldav = CreateWebDavClient (networkSettings, generalOptions, trimmedCaldavUrl);
       var webDavClientCarddav = CreateWebDavClient (networkSettings, generalOptions, trimmedCarddavUrl);
       var calDavDataAccess = new CalDavDataAccess (caldavUrl, webDavClientCaldav);
-      var cardDavDataAccess = new CardDavDataAccess (carddavUrl, webDavClientCarddav);
+      var cardDavDataAccess = new CardDavDataAccess (carddavUrl, webDavClientCarddav, contentType => true);
 
       return await GetUserResources (calDavDataAccess, cardDavDataAccess);
     }

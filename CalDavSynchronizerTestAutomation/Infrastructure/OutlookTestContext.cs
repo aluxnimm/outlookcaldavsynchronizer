@@ -124,7 +124,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
     }
 
 
-    public static IEntityMapper<AppointmentItemWrapper, IICalendar> EntityMapper
+    public static IEntityMapper<AppointmentItemWrapper, IICalendar, IEventSynchronizationContext> EntityMapper
     {
       get { return s_entityMapper; }
     }
@@ -197,7 +197,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           calDavDataAccess,
           entityRelationDataAccess);
 
-      WaitForTask (synchronizer.SynchronizeNoThrow (NullSynchronizationLogger.Instance));
+      WaitForTask (synchronizer.Synchronize (NullSynchronizationLogger.Instance));
     }
 
     /// <remarks>
@@ -241,7 +241,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           calDavDataAccess,
           entityRelationDataAccess,
           optionsModifier);
-      WaitForTask (synchronizer.SynchronizeNoThrow (NullSynchronizationLogger.Instance));
+      WaitForTask (synchronizer.Synchronize (NullSynchronizationLogger.Instance));
       return calDavEvents;
     }
 
@@ -293,7 +293,7 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           calDavDataAccess,
           entityRelationDataAccess);
 
-      WaitForTask (synchronizer.SynchronizeNoThrow (NullSynchronizationLogger.Instance));
+      WaitForTask (synchronizer.Synchronize (NullSynchronizationLogger.Instance));
 
       return roundTrippedData;
     }

@@ -21,8 +21,8 @@ namespace CalDavSynchronizer.DataAccess
 {
   public interface IOptionsDataAccess
   {
-    Options[] LoadOptions ();
-    void SaveOptions (Options[] options);
+    Options[] Load ();
+    void Save (Options[] options);
     void EnsureBackupExists (string backupName);
   }
 }

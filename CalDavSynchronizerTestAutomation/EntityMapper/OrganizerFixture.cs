@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using CalDavSynchronizer.Implementation.Events;
 using CalDavSynchronizerTestAutomation.Infrastructure;
 using DDay.iCal;
 using GenSync.Logging;
@@ -77,7 +78,7 @@ END:VCALENDAR
       var evt = OutlookTestContext.DeserializeICalendar (eventData);
       using (var outlookEvent = OutlookTestContext.CreateNewAppointment())
       {
-        OutlookTestContext.EntityMapper.Map2To1 (evt, outlookEvent, NullEntitySynchronizationLogger.Instance);
+        OutlookTestContext.EntityMapper.Map2To1 (evt, outlookEvent, NullEntitySynchronizationLogger.Instance, NullEventSynchronizationContext.Instance);
 
         _Inspector inspector = outlookEvent.Inner.GetInspector;
 
@@ -87,7 +88,7 @@ END:VCALENDAR
 
         inspector.Close (OlInspectorClose.olDiscard);
 
-        var mapTask = OutlookTestContext.EntityMapper.Map1To2(outlookEvent, new iCalendar(), NullEntitySynchronizationLogger.Instance);
+        var mapTask = OutlookTestContext.EntityMapper.Map1To2(outlookEvent, new iCalendar(), NullEntitySynchronizationLogger.Instance, NullEventSynchronizationContext.Instance);
         OutlookTestContext.WaitForTask(mapTask);
         var newCalendar = mapTask.Result;
 

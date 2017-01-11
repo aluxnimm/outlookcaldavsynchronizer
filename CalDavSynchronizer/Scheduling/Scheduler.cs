@@ -23,6 +23,7 @@ using CalDavSynchronizer.ChangeWatching;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Reports;
 using CalDavSynchronizer.Utilities;
+using GenSync.Logging;
 using log4net;
 
 namespace CalDavSynchronizer.Scheduling

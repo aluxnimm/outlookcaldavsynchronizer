@@ -21,29 +21,12 @@ using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  internal class ProfileListDataAccess : IProfileListDataAccess
+  public class ProfileListDataAccess : FileDataAccess<ProfileEntry[]>, IProfileListDataAccess
   {
-    private readonly string _filePath;
-
-    public ProfileListDataAccess (string filePath)
+    public ProfileListDataAccess(string filePath)
+      : base(filePath, () => new ProfileEntry[0])
     {
-      _filePath = filePath;
-    }
-
-    public ProfileEntry[] Load ()
-    {
-      if (!File.Exists (_filePath))
-        return new ProfileEntry[] { };
-      else
-        return Serializer<ProfileEntry[]>.Deserialize (File.ReadAllText (_filePath));
-    }
-
-    public void Save (ProfileEntry[] options)
-    {
-      if (!Directory.Exists (Path.GetDirectoryName (_filePath)))
-        Directory.CreateDirectory (Path.GetDirectoryName (_filePath));
-
-      File.WriteAllText (_filePath, Serializer<ProfileEntry[]>.Serialize (options));
     }
   }
+ 
 }

@@ -30,17 +30,25 @@ namespace CalDavSynchronizer.Implementation
     private const string c_appointmentFilterCistartswith= "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" ci_startswith 'IPM.Appointment'";
     private const string c_appointmentFilterLike = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" like 'IPM.Appointment%'";
     private const string c_appointmentFilterExact = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Appointment'";
+
     private const string c_taskFilterCistartswith = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" ci_startswith 'IPM.Task'";
     private const string c_taskFilterLike = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" like 'IPM.Task%'";
     private const string c_taskFilterExact = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Task'";
+
     private const string c_contactFilterCistartswith = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" ci_startswith 'IPM.Contact'";
     private const string c_contactFilterLike = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" like 'IPM.Contact%'";
     private const string c_contactFilterExact = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.Contact'";
 
+    private const string c_distListFilterCistartswith = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" ci_startswith 'IPM.DistList'";
+    private const string c_distListFilterLike = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" like 'IPM.DistList%'";
+    private const string c_distListFilterExact = "@SQL=\"http://schemas.microsoft.com/mapi/proptag/0x001A001E\" = 'IPM.DistList'";
+
+
     private string _appointmentFilter;
     private string _taskFilter;
     private string _contactFilter;
-
+    private string _distListFilter;
+    
     private bool _doIncludeCustomMessageClasses;
 
     public DaslFilterProvider (bool doIncludeCustomMessageClasses)
@@ -60,14 +68,23 @@ namespace CalDavSynchronizer.Implementation
       _contactFilter = value
           ? c_contactFilterCistartswith
           : c_contactFilterExact;
+      _distListFilter = value
+         ? c_distListFilterCistartswith
+         : c_distListFilterExact;
     }
     
     /// <param name="isInstantSearchEnabled">specifies, if the filter should be created for a folder on which instant search is enabled</param>
     public string GetAppointmentFilter (bool isInstantSearchEnabled) => 
       isInstantSearchEnabled ? _appointmentFilter : _doIncludeCustomMessageClasses ? c_appointmentFilterLike : c_appointmentFilterExact;
+
     public string GetTaskFilter (bool isInstantSearchEnabled) => 
       isInstantSearchEnabled ? _taskFilter : _doIncludeCustomMessageClasses ? c_taskFilterLike : c_taskFilterExact;
+
     public string GetContactFilter (bool isInstantSearchEnabled) => 
       isInstantSearchEnabled ? _contactFilter : _doIncludeCustomMessageClasses ? c_contactFilterLike : c_contactFilterExact;
+
+    public string GetDistListFilter(bool isInstantSearchEnabled) =>
+      isInstantSearchEnabled ? _distListFilter : _doIncludeCustomMessageClasses ? c_distListFilterLike : c_distListFilterExact;
+    
   }
 }

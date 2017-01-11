@@ -25,6 +25,11 @@ namespace GenSync.Synchronization
   /// </summary>
   public interface ISynchronizer
   {
-    Task SynchronizeNoThrow (ISynchronizationLogger logger);
+    Task Synchronize (ISynchronizationLogger logger);
+  }
+
+  public interface ISynchronizer<in TContext> 
+  {
+    Task Synchronize(ISynchronizationLogger logger, TContext synchronizationContext);
   }
 }

@@ -281,6 +281,7 @@
     <Compile Include="ComponentContainer.cs" />
     <Compile Include="Contracts\AccountServerSettings.cs" />
     <Compile Include="Contracts\IPropertyMappingConfiguration.cs" />
+    <Compile Include="Contracts\DistributionListType.cs" />
     <Compile Include="Contracts\PropertyMapping.cs" />
     <Compile Include="Contracts\GlobalOptions.cs" />
     <Compile Include="Contracts\ToolbarSettings.cs" />
@@ -295,6 +296,7 @@
     <Compile Include="Contracts\ProxyOptions.cs" />
     <Compile Include="Contracts\ServerAdapterType.cs" />
     <Compile Include="DataAccess\CalDavResources.cs" />
+    <Compile Include="DataAccess\FileDataAccess.cs" />
     <Compile Include="DataAccess\FileSystemDavDataAccess.cs" />
     <Compile Include="DataAccess\TaskListData.cs" />
     <Compile Include="DataAccess\AddressBookData.cs" />
@@ -308,6 +310,26 @@
     <Compile Include="IComponentContainer.cs" />
     <Compile Include="Implementation\Common\NameSpaceExtensions.cs" />
     <Compile Include="Implementation\Common\OutlookUtility.cs" />
+    <Compile Include="Implementation\Contacts\CardDavRepository.cs" />
+    <Compile Include="Implementation\Contacts\ICardDavRepositoryLogger.cs" />
+    <Compile Include="Implementation\Contacts\IUidCacheDataAccess.cs" />
+    <Compile Include="Implementation\Contacts\LoggingCardDavRepositoryDecorator.cs" />
+    <Compile Include="Implementation\Contacts\NullCardDavRepositoryLogger.cs" />
+    <Compile Include="Implementation\Contacts\EmailAddressCacheDataAccess.cs" />
+    <Compile Include="Implementation\Contacts\CacheItem.cs" />
+    <Compile Include="Implementation\DistributionLists\DistListConflictInitialSyncStateCreationStrategyAutomatic.cs" />
+    <Compile Include="Implementation\Contacts\EmailAddressCache.cs" />
+    <Compile Include="Implementation\DistributionLists\DistListEntityMapper.cs" />
+    <Compile Include="Implementation\DistributionLists\DistributionListSychronizationContext.cs" />
+    <Compile Include="Implementation\DistributionLists\InitialContactEntityMatcher.cs" />
+    <Compile Include="Implementation\DistributionLists\KnownDistributionListMember.cs" />
+    <Compile Include="Implementation\DistributionLists\OutlookDistListUpdateFromNewerToOlder.cs" />
+    <Compile Include="Implementation\DistributionLists\DistListRelationData.cs" />
+    <Compile Include="Implementation\DistributionLists\DistListRelationDataFactory.cs" />
+    <Compile Include="Implementation\DistributionLists\OutlookDistListRepository.cs" />
+    <Compile Include="Implementation\DistributionLists\DistributionList.cs" />
+    <Compile Include="Implementation\DistributionLists\DistributionListMember.cs" />
+    <Compile Include="Implementation\DistributionLists\SogoDistributionListRepository.cs" />
     <Compile Include="Implementation\Events\EventSynchronizationInterceptorFactory.cs" />
     <Compile Include="Implementation\Events\EventSynchronizationInterceptor.cs" />
     <Compile Include="Implementation\Events\NullEventSynchronizationContextFactory.cs" />
@@ -342,6 +364,7 @@
     <Compile Include="Scheduling\SchedulerStatusEventArgs.cs" />
     <Compile Include="Scheduling\SynchronizationStatus.cs" />
     <Compile Include="Synchronization\OutlookEventSynchronizer.cs" />
+    <Compile Include="Implementation\ContactAndDistListSynchronizer.cs" />
     <Compile Include="Ui\AddResourceForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -414,7 +437,7 @@
     <Compile Include="Implementation\ComWrappers\ComEnumerableExtensions.cs" />
     <Compile Include="Implementation\ComWrappers\GenericComObjectWrapper.cs" />
     <Compile Include="Implementation\ComWrappers\OutlookObjectExtensions.cs" />
-    <Compile Include="Implementation\Contacts\CardDavRepository.cs" />
+    <Compile Include="Implementation\Contacts\CardDavEntityRepository.cs" />
     <Compile Include="Implementation\Contacts\ContactConflictInitialSyncStateCreationStrategyAutomatic.cs" />
     <Compile Include="Implementation\Contacts\ContactEntityMapper.cs" />
     <Compile Include="Implementation\Contacts\InitialContactEntityMatcher.cs" />
@@ -461,7 +484,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Reports\ISynchronizationReportSink.cs" />
     <Compile Include="Reports\ReportGarbageCollection.cs" />
     <Compile Include="Scheduling\ISynchronizerFactory.cs" />
     <Compile Include="Synchronization\NullOutlookSynchronizer.cs" />
@@ -625,6 +647,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\ChunkedExecutor.cs" />
+    <Compile Include="Utilities\StringExtensions.cs" />
     <Compile Include="Utilities\DnsQueryHelper.cs" />
     <Compile Include="Utilities\NullChunkedExecutor.cs" />
     <Compile Include="Utilities\IChunkedExecutor.cs" />

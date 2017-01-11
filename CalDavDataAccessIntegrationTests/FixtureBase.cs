@@ -60,7 +60,7 @@ namespace CalDavDataAccessIntegrationTests
               ComponentContainer.GetOrCreateConfigFileName (applicationDataDirectory, "Outlook")
               ));
 
-      var options = optionsDataAccess.LoadOptions().Single (o => o.Name == ProfileName);
+      var options = optionsDataAccess.Load().Single (o => o.Name == ProfileName);
 
       if (ServerAdapterTypeOverride.HasValue)
         options.ServerAdapterType = ServerAdapterTypeOverride.Value;

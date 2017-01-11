@@ -23,5 +23,6 @@ namespace CalDavSynchronizer.Implementation
     string GetAppointmentFilter (bool isInstantSearchEnabled);
     string GetTaskFilter (bool isInstantSearchEnabled);
     string GetContactFilter (bool isInstantSearchEnabled);
+    string GetDistListFilter (bool isInstantSearchEnabled);
   }
 }
