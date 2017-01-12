@@ -98,9 +98,36 @@ namespace CalDavSynchronizer.Implementation.Contacts
             );
       }
 
+      target.IMs.Clear();
+
       if (!string.IsNullOrEmpty (source.Inner.IMAddress))
       {
-        target.IMs.Add (new vCardIMPP (source.Inner.IMAddress, IMServiceType.AIM, ItemType.HOME));
+        //IMAddress are expected to be in form of ([Protocol]: [Address]; [Protocol]: [Address])
+        var imsRaw = source.Inner.IMAddress.Split (new [] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+        foreach (var imRaw in imsRaw)
+        {
+          var imDetails = imRaw.Trim().Split (new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+          var im = new vCardIMPP();
+          if (imDetails.Length == 1)
+          {
+            im.Handle = imDetails[0].Trim();
+            // Set default ServiceType to AIM
+            im.ServiceType = IMServiceType.AIM;
+          }
+          else
+          {
+            im.ServiceType = IMTypeUtils.GetIMServiceType (imDetails[0].Trim()) ?? IMServiceType.AIM;
+            im.Handle = imDetails[1].Trim();
+          }
+
+          //Only add the im Address if not empty
+          if (!string.IsNullOrEmpty (im.Handle))
+          {
+            im.IsPreferred = target.IMs.Count == 0;
+            im.ItemType = ItemType.HOME;
+            target.IMs.Add (im);
+          }
+        }
       }
 
       if (!string.IsNullOrEmpty (source.Inner.HomeAddress))
@@ -221,13 +248,15 @@ namespace CalDavSynchronizer.Implementation.Contacts
         target.Inner.Categories = string.Empty;
       }
 
-      if (source.IMs.Count > 0)
+      target.Inner.IMAddress = string.Empty;
+      foreach (var im in source.IMs)
       {
-        target.Inner.IMAddress = source.IMs[0].Handle;
-      }
-      else
-      {
-        target.Inner.IMAddress = string.Empty;
+        if (!string.IsNullOrEmpty(target.Inner.IMAddress))
+          target.Inner.IMAddress += "; ";
+        if (im.ServiceType != IMServiceType.Unspecified)
+          target.Inner.IMAddress += im.ServiceType + ": " + im.Handle;
+        else
+          target.Inner.IMAddress += im.Handle;
       }
 
       target.Inner.Email1Address = string.Empty;

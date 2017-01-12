@@ -41,13 +41,14 @@ namespace CalDavSynchronizer.ThoughtvCardWorkaround
       private bool embedLocalImages;
       private vCardStandardWriterOptions options;
       private string productId;
+      private const string TYPE = "TYPE";
 
 
-      /// <summary>
-      ///     The characters that are escaped per the original
-      ///     vCard specification.
-      /// </summary>
-      private readonly char[] standardEscapedCharacters =
+    /// <summary>
+    ///     The characters that are escaped per the original
+    ///     vCard specification.
+    /// </summary>
+    private readonly char[] standardEscapedCharacters =
           new char[] { ',', '\\', ';', '\r', '\n' };
 
 
@@ -277,7 +278,9 @@ namespace CalDavSynchronizer.ThoughtvCardWorkaround
             properties,
             card);
 
-        BuildProperties_X_WAB_GENDER(
+      BuildProperties_XSOCIALPROFILE(properties, card);
+
+      BuildProperties_X_WAB_GENDER(
             properties,
             card);
 
@@ -359,6 +362,12 @@ namespace CalDavSynchronizer.ThoughtvCardWorkaround
 
             if (address.IsWork)
               property.Subproperties.Add("TYPE", "WORK");
+
+
+            if (address.IsPreferred)
+            {
+              property.Subproperties.Add("TYPE", "PREF");
+            }
 
             properties.Add(property);
 
@@ -1019,7 +1028,7 @@ namespace CalDavSynchronizer.ThoughtvCardWorkaround
         {
 
           vCardProperty property =
-              new vCardProperty("REV", card.RevisionDate.Value.ToString());
+             new vCardProperty("REV", card.RevisionDate.Value.ToString("s") + "Z");
 
           properties.Add(property);
 
@@ -1268,11 +1277,36 @@ namespace CalDavSynchronizer.ThoughtvCardWorkaround
 
       }
 
-      #endregion
+    #endregion
 
-      #region [ BuildProperties_X_WAB_GENDER ]
+    private void BuildProperties_XSOCIALPROFILE(vCardPropertyCollection properties, vCard card)
+    {
 
-      private void BuildProperties_X_WAB_GENDER(
+      // adding support for X-SOCIALPROFILE) in the vCard
+
+
+      foreach (var sp in card.SocialProfiles)
+      {
+
+        vCardProperty property = new vCardProperty();
+        property.Name = "X-SOCIALPROFILE";
+
+        string propertyType = SocialProfileTypeUtils.GetSocialProfileServicePropertyType(sp.ServiceType);
+
+        property.Subproperties.Add("TYPE", propertyType);
+        property.Subproperties.Add("X-USER", sp.Username);
+        property.Value = sp.ProfileUrl;
+
+        properties.Add(property);
+
+      }
+
+    }
+
+
+    #region [ BuildProperties_X_WAB_GENDER ]
+
+    private void BuildProperties_X_WAB_GENDER(
           vCardPropertyCollection properties,
           vCard card)
       {
@@ -1294,60 +1328,84 @@ namespace CalDavSynchronizer.ThoughtvCardWorkaround
 
       }
 
-      #endregion
+    #endregion
 
-      #region [ BuildProperties_IMPP ]
+    #region [ BuildProperties_IMPP ]
 
-      private void BuildProperties_IMPP (
-          vCardPropertyCollection properties,
-          vCard card)
+    private void BuildProperties_IMPP(vCardPropertyCollection properties, vCard card)
+    {
+
+      // adding support for IMPP (IM handles) in the vCard
+      //iOS outputs this => IMPP;X-SERVICE-TYPE=Skype;type=HOME;type=pref:skype:skypeusernameee
+
+
+
+      foreach (var im in card.IMs)
       {
-        // Build IMPP and X-AIM properties
 
-        foreach (vCardIMPP impp in card.IMs)
+        vCardProperty property = new vCardProperty();
+        property.Name = "IMPP";
+
+        string prefix = IMTypeUtils.GetIMTypePropertyPrefix(im.ServiceType);
+        string suffix = IMTypeUtils.GetIMTypePropertySuffix(im.ServiceType);
+
+        if (!string.IsNullOrEmpty(prefix) && !string.IsNullOrEmpty(suffix))
         {
-
-          if (!string.IsNullOrEmpty(impp.Handle))
-          {
-            vCardProperty propertyIMPP;
-            vCardProperty propertyXAIM;
-            
-            if (impp.ServiceType == IMServiceType.AIM)
-            {
-              propertyIMPP = new vCardProperty("IMPP", "aim:"+impp.Handle);
-              propertyIMPP.Subproperties.Add("X-SERVICE-TYPE", "AIM");
-
-              if (impp.ItemType == ItemType.HOME)
-                propertyIMPP.Subproperties.Add("TYPE", "HOME");
-              if (impp.ItemType == ItemType.WORK)
-                propertyIMPP.Subproperties.Add("TYPE", "WORK");
-              if (impp.IsPreferred)
-                propertyIMPP.Subproperties.Add("TYPE", "PREF");
-
-              properties.Add(propertyIMPP);
-
-              propertyXAIM = new vCardProperty("X-AIM", impp.Handle);
-              properties.Add(propertyXAIM);
-            }
-          }
-
+          property.Subproperties.Add("X-SERVICE-TYPE", prefix);
+          property.Value = string.Concat(suffix, ":", im.Handle);
+        }
+        else
+        {
+          property.Value = im.Handle;
         }
 
+
+        if (im.IsPreferred)
+        {
+          property.Subproperties.Add(TYPE, "PREF");
+        }
+
+        switch (im.ItemType)
+        {
+
+          case ItemType.HOME:
+            property.Subproperties.Add(TYPE, ItemType.HOME.ToString());
+            break;
+          case ItemType.WORK:
+            property.Subproperties.Add(TYPE, ItemType.WORK.ToString());
+            break;
+
+          case ItemType.UNSPECIFIED:
+          default:
+            property.Subproperties.Add(TYPE, "OTHER");
+            break;
+        }
+
+        properties.Add(property);
+
+        if (im.ServiceType == IMServiceType.AIM)
+        {
+          var propertyXAim = new vCardProperty("X-AIM", im.Handle);
+          properties.Add(propertyXAim);
+        }
       }
 
-      #endregion
-      // The next set of functions translate raw values into
-      // various string encodings.  A vCard file is a text file
-      // with a defined format; values that break the format (such
-      // as binary values or strings with ASCII control characters)
-      // must be encoded.
+    }
 
-      #region [ EncodeBase64(byte) ]
 
-      /// <summary>
-      ///     Converts a byte to a BASE64 string.
-      /// </summary>
-      public static string EncodeBase64(byte value)
+    #endregion
+    // The next set of functions translate raw values into
+    // various string encodings.  A vCard file is a text file
+    // with a defined format; values that break the format (such
+    // as binary values or strings with ASCII control characters)
+    // must be encoded.
+
+    #region [ EncodeBase64(byte) ]
+
+    /// <summary>
+    ///     Converts a byte to a BASE64 string.
+    /// </summary>
+    public static string EncodeBase64(byte value)
       {
         return Convert.ToBase64String(new byte[] { value });
       }
