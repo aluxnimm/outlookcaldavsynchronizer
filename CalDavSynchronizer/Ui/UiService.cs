@@ -162,6 +162,7 @@ namespace CalDavSynchronizer.Ui
       window.DataContext = viewModel;
       window.Icon = BitmapFrame.Create(new Uri("pack://application:,,,/CalDavSynchronizer;component/Resources/ApplicationIcon.ico"));
       viewModel.SetMaximun(maxValue);
+      window.ShowActivated = false;
       window.Show();
       return viewModel;
     }
