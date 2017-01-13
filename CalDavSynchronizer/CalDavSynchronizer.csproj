@@ -374,6 +374,10 @@
     <Compile Include="Ui\ConnectionTests\AccessPrivileges.cs" />
     <Compile Include="Ui\DelegateCommandHandlingRequerySuggested.cs" />
     <Compile Include="Ui\NullUiService.cs" />
+    <Compile Include="Ui\ViewModels\ProgressViewModel.cs" />
+    <Compile Include="Ui\Views\ProgressWindow.xaml.cs">
+      <DependentUpon>ProgressWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Ui\Options\AutoDiscoverResultStatus.cs" />
     <Compile Include="Ui\Options\BulkOptions\ViewModels\GoogleServerSettingsTemplateViewModel.cs" />
     <Compile Include="Ui\Options\BulkOptions\ViewModels\IServerSettingsTemplateViewModel.cs" />
@@ -686,21 +690,11 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Ui\ProgressForm.resx">
-      <DependentUpon>ProgressForm.cs</DependentUpon>
-    </EmbeddedResource>
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
     <None Include="CalDavSynchronizer_TemporaryKey.pfx" />
     <None Include="packages.config" />
-    <Compile Include="Ui\ProgressForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Ui\ProgressForm.Designer.cs">
-      <DependentUpon>ProgressForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Ui\ProgressFormFactory.cs" />
     <Compile Include="Ui\Options\SettingsFaultFinder.cs" />
     <Compile Include="Ui\SystrayNotification\ITrayNotifier.cs" />
     <Compile Include="Ui\SystrayNotification\NullTrayNotifier.cs" />
@@ -792,6 +786,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Page Include="Ui\Views\ProgressWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Ui\Options\BulkOptions\Views\GoogleServerSettingsTemplateView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

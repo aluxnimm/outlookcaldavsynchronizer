@@ -20,6 +20,7 @@ using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.Reports.ViewModels;
 using CalDavSynchronizer.Ui.ViewModels;
+using GenSync.ProgressReport;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui
@@ -70,6 +71,11 @@ namespace CalDavSynchronizer.Ui
     public void ShowReport (string title, string reportText)
     {
      
+    }
+
+    public IProgressUi Create(int maxValue)
+    {
+      return null;
     }
   }
 }

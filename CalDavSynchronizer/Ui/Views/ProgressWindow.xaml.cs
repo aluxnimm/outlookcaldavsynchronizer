@@ -14,39 +14,35 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
-using System.Windows.Forms;
-using GenSync.ProgressReport;
+using System.Windows;
+using System.Runtime.InteropServices;
+using System.Windows.Interop;
 
-namespace CalDavSynchronizer.Ui
+namespace CalDavSynchronizer.Ui.Views
 {
-  public partial class ProgressForm : Form, IProgressUi
+  /// <summary>
+  /// Interaction logic for MainWindow.xaml
+  /// </summary>
+  public partial class ProgressWindow : Window
   {
-    public ProgressForm ()
+    public ProgressWindow()
     {
-      InitializeComponent();
+      InitializeComponent ();
+      this.DataContextChanged += ProgressWindow_DataContextChanged;
     }
 
-    public void SetValue (int value)
+    private void ProgressWindow_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
-      _progressBar.Value = value;
+      var viewModel = e.NewValue as ViewModels.ProgressViewModel;
+      if (viewModel != null)
+      {
+        viewModel.CloseRequested += ViewModel_CloseRequested;
+      }
     }
 
-    public void SetMessage (string message)
-    {
-      _messageLabel.Text = message;
-      Refresh();
-    }
-
-    public void SetMaximun (int value)
-    {
-      _progressBar.Maximum = 0;
-      _progressBar.Maximum = value;
-    }
-
-    protected override bool ShowWithoutActivation => true;
-
-    void IDisposable.Dispose ()
+    private void ViewModel_CloseRequested (object sender, System.EventArgs e)
     {
       Close();
     }

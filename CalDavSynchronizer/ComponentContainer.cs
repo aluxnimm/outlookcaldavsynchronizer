@@ -143,10 +143,13 @@ namespace CalDavSynchronizer
               GetOrCreateConfigFileName (_applicationDataDirectory, _session.CurrentProfileName)
               ));
 
+      _profileStatusesViewModel = new ProfileStatusesViewModel(this);
+      _uiService = new UiService(_profileStatusesViewModel);
+
       _synchronizerFactory = new SynchronizerFactory (
           GetProfileDataDirectory,
           new TotalProgressFactory (
-              new ProgressFormFactory(),
+              _uiService,
               int.Parse (ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"]),
               ExceptionHandler.Instance),
           _session,
@@ -171,7 +174,6 @@ namespace CalDavSynchronizer
       EnsureCacheCompatibility (options);
 
 
-      _profileStatusesViewModel = new ProfileStatusesViewModel (this);
       _profileStatusesViewModel.EnsureProfilesDisplayed (options);
 
 
@@ -183,7 +185,6 @@ namespace CalDavSynchronizer
       _reportGarbageCollection = new ReportGarbageCollection (_synchronizationReportRepository, TimeSpan.FromDays (generalOptions.MaxReportAgeInDays));
 
       _trayNotifier = generalOptions.EnableTrayIcon ? new TrayNotifier (this) : NullTrayNotifer.Instance;
-      _uiService = new UiService (_profileStatusesViewModel);
 
       try
       {

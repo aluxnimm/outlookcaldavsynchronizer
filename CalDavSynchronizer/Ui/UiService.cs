@@ -34,6 +34,7 @@ using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
 using CalDavSynchronizer.Ui.SystrayNotification.Views;
 using CalDavSynchronizer.Ui.ViewModels;
 using CalDavSynchronizer.Ui.Views;
+using GenSync.ProgressReport;
 using Microsoft.Office.Interop.Outlook;
 using Size = System.Drawing.Size;
 using SystemColors = System.Drawing.SystemColors;
@@ -152,6 +153,17 @@ namespace CalDavSynchronizer.Ui
       window.Size = new Size (
           (int) (screenSize.Size.Width * ratioToCurrentScreensize),
           (int) (screenSize.Size.Height * ratioToCurrentScreensize));
+    }
+
+    public IProgressUi Create(int maxValue)
+    {
+      var window = new ProgressWindow();
+      var viewModel = new ProgressViewModel();
+      window.DataContext = viewModel;
+      window.Icon = BitmapFrame.Create(new Uri("pack://application:,,,/CalDavSynchronizer;component/Resources/ApplicationIcon.ico"));
+      viewModel.SetMaximun(maxValue);
+      window.Show();
+      return viewModel;
     }
   }
 }

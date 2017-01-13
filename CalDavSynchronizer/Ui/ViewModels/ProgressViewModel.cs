@@ -20,47 +20,56 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Input;
+using GenSync.ProgressReport;
 
 namespace CalDavSynchronizer.Ui.ViewModels
 {
-  public class GenericReportViewModel : ViewModelBase
+  public class ProgressViewModel : ViewModelBase, IProgressUi
   {
-    private string _reportText;
-    private string _title;
+    private int _value;
+    private int _maximum;
+    private string _message;
+
+    public static ProgressViewModel DesingInstance => new ProgressViewModel() { Maximum = 300, Value = 100, Message = "One third" };
 
     public event EventHandler CloseRequested;
 
-    public GenericReportViewModel()
+    public int Value
     {
-      OkCommand = new DelegateCommand(_ => OnCloseRequested());
-    }
-    
-    public ICommand OkCommand { get; }
-
-    public string ReportText
-    {
-      get { return _reportText; }
-      set { CheckedPropertyChange(ref _reportText, value); }
+      get { return _value; }
+      set { CheckedPropertyChange(ref _value, value); }
     }
 
-    private void OnCloseRequested()
+    public int Maximum
+    {
+      get { return _maximum; }
+      set { CheckedPropertyChange(ref _maximum, value); }
+    }
+
+    public string Message
+    {
+      get { return _message; }
+      set { CheckedPropertyChange(ref _message, value); }
+    }
+
+    public void SetValue(int value)
+    {
+      Value = value;
+    }
+
+    public void SetMessage(string message)
+    {
+      Message = message;
+    }
+
+    public void SetMaximun(int value)
+    {
+      Maximum = value;
+    }
+
+    void IDisposable.Dispose()
     {
       CloseRequested?.Invoke(this, EventArgs.Empty);
     }
-
-    public static GenericReportViewModel DesingInstance => new GenericReportViewModel() { Title = "The title",  ReportText = "This is an important report" };
-
-    public string Title
-    {
-      get { return _title; }
-      set { CheckedPropertyChange (ref _title, value); }
-    }
-
-    public void AppendLine(string text)
-    {
-      ReportText = ReportText + Environment.NewLine + text;
-    }
-
   }
 }
