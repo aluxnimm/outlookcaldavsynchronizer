@@ -1037,6 +1037,13 @@ namespace CalDavSynchronizer
           contact.GetInspector.Activate();
           return;
         }
+
+        var distList = item as DistListItem;
+        if (distList != null)
+        {
+          distList.GetInspector.Activate();
+          return;
+        }
       }
       catch (COMException ex)
       {
@@ -1060,13 +1067,21 @@ namespace CalDavSynchronizer
         {
           var entityName = new WebResourceName { Id = entityId, OriginalAbsolutePath = entityId };
           var entities = await availableSynchronizerComponents.CalDavDataAccess.GetEntities (new[] { entityName });
-          DisplayFirstEntityIfAvailable (entities);
+          DisplayFirstEntityIfAvailable (entities.FirstOrDefault());
         }
-        else if (availableSynchronizerComponents.CardDavDataAccess != null)
+        else if (availableSynchronizerComponents.CardDavDataAccess != null || availableSynchronizerComponents.DistListDataAccess != null)
         {
           var entityName = new WebResourceName { Id = entityId, OriginalAbsolutePath = entityId };
-          var entities = await availableSynchronizerComponents.CardDavDataAccess.GetEntities (new[] { entityName });
-          DisplayFirstEntityIfAvailable (entities);
+
+          EntityWithId<WebResourceName, string> entity = null;
+
+          if (availableSynchronizerComponents.CardDavDataAccess != null)
+            entity = (await availableSynchronizerComponents.CardDavDataAccess.GetEntities(new[] { entityName })).FirstOrDefault();
+
+          if (entity == null && availableSynchronizerComponents.DistListDataAccess != null)
+            entity = (await availableSynchronizerComponents.DistListDataAccess.GetEntities(new[] { entityName })).FirstOrDefault();
+
+          DisplayFirstEntityIfAvailable(entity);
         }
         else
         {
@@ -1078,10 +1093,10 @@ namespace CalDavSynchronizer
         ExceptionHandler.Instance.DisplayException (x, s_logger);
       }
     }
-
-    private static void DisplayFirstEntityIfAvailable (IReadOnlyList<EntityWithId<WebResourceName, string>> entities)
+    
+    private static void DisplayFirstEntityIfAvailable (EntityWithId<WebResourceName, string> entityOrNull)
     {
-      if (entities.Count == 0)
+      if (entityOrNull == null)
       {
         MessageBox.Show ("The selected entity does not exist anymore.");
         return;
@@ -1091,7 +1106,7 @@ namespace CalDavSynchronizer
       var tempTextFileName = tempFileName + ".txt";
       File.Move (tempFileName, tempTextFileName);
 
-      File.WriteAllText (tempTextFileName, entities[0].Entity);
+      File.WriteAllText (tempTextFileName, entityOrNull.Entity);
       System.Diagnostics.Process.Start (tempTextFileName);
     }
 

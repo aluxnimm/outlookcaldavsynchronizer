@@ -117,6 +117,7 @@ namespace CalDavSynchronizer.Scheduling
     {
       public ICalDavDataAccess CalDavDataAccess;
       public ICardDavDataAccess CardDavDataAccess;
+      public ICardDavDataAccess DistListDataAccess;
     }
 
     public async Task<IOutlookSynchronizer> CreateSynchronizer (Options options, GeneralOptions generalOptions)
@@ -722,6 +723,8 @@ namespace CalDavSynchronizer.Scheduling
           serverUrl,
           webDavClientOrNullIfFileAccess,
           contentType => contentType == "text/x-vlist");
+
+        componentsToFill.DistListDataAccess = distListDataAccess;
 
         switch (mappingParameters.DistributionListType)
         {
