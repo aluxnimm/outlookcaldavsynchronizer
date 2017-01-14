@@ -92,14 +92,6 @@ namespace CalDavSynchronizer.Implementation.Tasks
         target.Start.SetTimeZone (localIcalTimeZone);
       }
 
-      if (source.Inner.DueDate != _dateNull)
-      {
-        target.Due = new iCalDateTime (source.Inner.DueDate.Year, source.Inner.DueDate.Month, source.Inner.DueDate.Day, 23, 59, 59);
-        target.Due.SetTimeZone (localIcalTimeZone);
-        // Workaround for a bug in DDay.iCal, according to RFC5545 DUE must not occur together with DURATION
-        target.Properties.Remove (new CalendarProperty ("DURATION"));
-      }
-
       if (source.Inner.Complete && source.Inner.DateCompleted != _dateNull)
       {
         target.Completed = new iCalDateTime (source.Inner.DateCompleted.ToUniversalTime()) { IsUniversalTime = true, HasTime = true};
@@ -109,6 +101,14 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       if (_configuration.MapRecurringTasks)
         MapRecurrance1To2 (source.Inner, target, localIcalTimeZone);
+
+      if (source.Inner.DueDate != _dateNull)
+      {
+        target.Due = new iCalDateTime (source.Inner.DueDate.Year, source.Inner.DueDate.Month, source.Inner.DueDate.Day, 23, 59, 59);
+        target.Due.SetTimeZone (localIcalTimeZone);
+        // Workaround for a bug in DDay.iCal, according to RFC5545 DUE must not occur together with DURATION
+        target.Properties.Remove (new CalendarProperty ("DURATION"));
+      }
 
       target.Properties.Set ("STATUS", MapStatus1To2 (source.Inner.Status));
 
@@ -249,6 +249,14 @@ namespace CalDavSynchronizer.Implementation.Tasks
         using (var sourceRecurrencePatternWrapper = GenericComObjectWrapper.Create (source.GetRecurrencePattern()))
         {
           var sourceRecurrencePattern = sourceRecurrencePatternWrapper.Inner;
+
+          // Recurring task must have a DTSTART according to the RFC but Outlook may have no task start date set, use PatternStartDate in this case
+          if (source.StartDate == _dateNull)
+          {
+            target.Start = new iCalDateTime ( sourceRecurrencePattern.PatternStartDate.Year,
+                                              sourceRecurrencePattern.PatternStartDate.Month, sourceRecurrencePattern.PatternStartDate.Day, true);
+            target.Start.SetTimeZone (localIcalTimeZone);
+          }
           IRecurrencePattern targetRecurrencePattern = new RecurrencePattern();
           if (!sourceRecurrencePattern.NoEndDate)
           {
