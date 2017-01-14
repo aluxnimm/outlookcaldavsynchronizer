@@ -172,7 +172,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       if (OutlookFolderType == OlItemType.olContactItem)
       {
         MessageBox.Show (
-            "The contact synchronization is still in development and doesn't support contact groups/distribution lists at the moment!",
+            "Synchronization of Outlook distribution lists is only supported for SOGo at the moment!",
             ComponentContainer.MessageBoxTitle,
             MessageBoxButton.OK,
             MessageBoxImage.Warning);
