@@ -70,16 +70,15 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       // fix some linebreak issues with Open-Xchange
       string normalizedVcardData = vcardData.Contains("\r\r\n") ? ContactDataPreprocessor.NormalizeLineBreaks(vcardData) : vcardData;
-      string fixedVcardData = ContactDataPreprocessor.FixPhoto(normalizedVcardData);
 
       try
       {
-        vcard = Deserialize(fixedVcardData, deserializer);
+        vcard = Deserialize(normalizedVcardData, deserializer);
         return true;
       }
       catch (Exception x)
       {
-        s_logger.Error(string.Format("Could not deserialize vcardData of '{0}':\r\n{1}", uriOfAddressbookForLogging, fixedVcardData), x);
+        s_logger.Error(string.Format("Could not deserialize vcardData of '{0}':\r\n{1}", uriOfAddressbookForLogging, normalizedVcardData), x);
         logger.LogSkipLoadBecauseOfError(uriOfAddressbookForLogging, x);
         return false;
       }

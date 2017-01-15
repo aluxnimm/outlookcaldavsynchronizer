@@ -2326,11 +2326,35 @@ namespace Thought.vCards
 					continue;
 				}
 
-				// Get the index of the colon (:) in this
-				// property line.  All vCard properties are
-				// written in NAME:VALUE format.
+        // The vCard specification allows long values
+        // to be folded across multiple lines.  An example
+        // is a security key encoded in MIME format.
+        // When folded, each subsequent line begins with
+        // a space or tab character instead of the next property.
+        //
+        // See: RFC 2425, Section 5.8.1
+        
+        do
+        {
+          int peekChar = reader.Peek();
 
-				int colonIndex = firstLine.IndexOf(':');
+          if ((peekChar == 32) || (peekChar == 9))
+          {
+            string foldedLine = reader.ReadLine();
+            firstLine += foldedLine.Substring(1);
+          }
+          else
+          {
+            break;
+          }
+
+        } while (true);
+        
+        // Get the index of the colon (:) in this
+        // property line.  All vCard properties are
+        // written in NAME:VALUE format.
+
+        int colonIndex = firstLine.IndexOf(':');
 				if (colonIndex == -1)
 				{
 					Warnings.Add(Thought.vCards.WarningMessages.ColonMissing);
@@ -2441,30 +2465,6 @@ namespace Thought.vCards
 				// determined.  Get the raw value as encoded in the file.
 
 				string rawValue = firstLine.Substring(colonIndex + 1);
-
-				// The vCard specification allows long values
-				// to be folded across multiple lines.  An example
-				// is a security key encoded in MIME format.
-				// When folded, each subsequent line begins with
-				// a space or tab character instead of the next property.
-				//
-				// See: RFC 2425, Section 5.8.1
-
-				do
-				{
-					int peekChar = reader.Peek();
-
-					if ((peekChar == 32) || (peekChar == 9))
-					{
-						string foldedLine = reader.ReadLine();
-						rawValue += foldedLine.Substring(1);
-					}
-					else
-					{
-						break;
-					}
-
-				} while (true);
 
 				if (encoding == vCardEncoding.QuotedPrintable && rawValue.Length > 0)
 				{
