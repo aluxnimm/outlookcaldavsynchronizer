@@ -15,73 +15,51 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
-using CalDavSynchronizer.Implementation;
+using CalDavSynchronizer.Ui.Options.Models;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  public class TimeRangeViewModel : ViewModelBase, IOptionsSection
+  public class TimeRangeViewModel : ModelBase, IOptionsSection
   {
-    private int _daysToSynchronizeInTheFuture;
-    private int _daysToSynchronizeInThePast;
-    private bool _useSynchronizationTimeRange;
-    
+    private readonly OptionsModel _model;
+
+    public TimeRangeViewModel(OptionsModel model)
+    {
+      if (model == null) throw new ArgumentNullException(nameof(model));
+      _model = model;
+
+      RegisterPropertyChangePropagation(_model, nameof(_model.UseSynchronizationTimeRange), nameof(UseSynchronizationTimeRange));
+      RegisterPropertyChangePropagation(_model, nameof(_model.DaysToSynchronizeInThePast), nameof(DaysToSynchronizeInThePast));
+      RegisterPropertyChangePropagation(_model, nameof(_model.DaysToSynchronizeInTheFuture), nameof(DaysToSynchronizeInTheFuture));
+    }
+
     public bool UseSynchronizationTimeRange
     {
-      get { return _useSynchronizationTimeRange; }
-      set
-      {
-        CheckedPropertyChange (ref _useSynchronizationTimeRange, value);
-      }
+      get { return _model.UseSynchronizationTimeRange; }
+      set { _model.UseSynchronizationTimeRange = value; }
     }
 
     public int DaysToSynchronizeInThePast
     {
-      get { return _daysToSynchronizeInThePast; }
-      set
-      {
-        CheckedPropertyChange (ref _daysToSynchronizeInThePast, value);
-      }
+      get { return _model.DaysToSynchronizeInThePast; }
+      set { _model.DaysToSynchronizeInThePast = value; }
     }
 
     public int DaysToSynchronizeInTheFuture
     {
-      get { return _daysToSynchronizeInTheFuture; }
-      set
-      {
-        CheckedPropertyChange (ref _daysToSynchronizeInTheFuture, value);
-      }
+      get { return _model.DaysToSynchronizeInTheFuture; }
+      set { _model.DaysToSynchronizeInTheFuture = value; }
     }
 
-    
-    public static TimeRangeViewModel DesignInstance { get; } = new TimeRangeViewModel
-                                                                  {
-                                                                       UseSynchronizationTimeRange = true,
-                                                                        DaysToSynchronizeInTheFuture = 11,
-                                                                         DaysToSynchronizeInThePast = 22
-                                                                  };
 
-    public void SetOptions (CalDavSynchronizer.Contracts.Options options)
-    {
-      UseSynchronizationTimeRange = !options.IgnoreSynchronizationTimeRange;
-      DaysToSynchronizeInThePast = options.DaysToSynchronizeInThePast;
-      DaysToSynchronizeInTheFuture = options.DaysToSynchronizeInTheFuture;
-    }
+    //public static TimeRangeViewModel DesignInstance { get; } = new TimeRangeViewModel
+    //                                                              {
+    //                                                                   UseSynchronizationTimeRange = true,
+    //                                                                    DaysToSynchronizeInTheFuture = 11,
+    //                                                                     DaysToSynchronizeInThePast = 22
+    //                                                              };
 
-    public void FillOptions (CalDavSynchronizer.Contracts.Options options)
-    {
-      options.IgnoreSynchronizationTimeRange = !_useSynchronizationTimeRange;
-      options.DaysToSynchronizeInThePast = _daysToSynchronizeInThePast;
-      options.DaysToSynchronizeInTheFuture = _daysToSynchronizeInTheFuture;
-    }
-
-    public bool Validate (StringBuilder errorMessageBuilder)
-    {
-      return true;
-    }
+   
   }
 }

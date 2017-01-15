@@ -19,23 +19,29 @@ using System.Collections.Generic;
 using System.Linq;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
+using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels.Mapping;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  internal class OptionsViewModelFactory : IOptionsViewModelFactory
+  public class OptionsViewModelFactory : IOptionsViewModelFactory
   {
     private readonly IOptionsViewModelParent _optionsViewModelParent;
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
     private readonly IReadOnlyList<string> _availableCategories;
     private readonly IOptionTasks _optionTasks;
+    private readonly ISettingsFaultFinder _settingsFaultFinder;
+    private readonly GeneralOptions _generalOptions;
+
 
     public OptionsViewModelFactory (
       IOptionsViewModelParent optionsViewModelParent, 
       IOutlookAccountPasswordProvider outlookAccountPasswordProvider,
       IReadOnlyList<string> availableCategories, 
-      IOptionTasks optionTasks)
+      IOptionTasks optionTasks,
+      ISettingsFaultFinder settingsFaultFinder, 
+      GeneralOptions generalOptions)
     {
       if (optionsViewModelParent == null)
         throw new ArgumentNullException (nameof (optionsViewModelParent));
@@ -44,74 +50,62 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       if (availableCategories == null)
         throw new ArgumentNullException (nameof (availableCategories));
       if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
+      if (settingsFaultFinder == null) throw new ArgumentNullException(nameof(settingsFaultFinder));
+      if (generalOptions == null) throw new ArgumentNullException(nameof(generalOptions));
 
       _optionsViewModelParent = optionsViewModelParent;
       _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
       _availableCategories = availableCategories;
       _optionTasks = optionTasks;
+      _settingsFaultFinder = settingsFaultFinder;
+      _generalOptions = generalOptions;
     }
 
-    public List<IOptionsViewModel> Create (IReadOnlyCollection<Contracts.Options> options, GeneralOptions generalOptions)
+    public List<IOptionsViewModel> Create(IReadOnlyCollection<Contracts.Options> options)
+    {
+      if (options == null)
+        throw new ArgumentNullException(nameof(options));
+    
+      return options
+        .Select(o => Create(new OptionsModel(_settingsFaultFinder, _optionTasks, _outlookAccountPasswordProvider, o, _generalOptions)))
+        .ToList();
+    }
+
+    public List<IOptionsViewModel> Create (IReadOnlyCollection<OptionsModel> options)
     {
       if (options == null)
         throw new ArgumentNullException (nameof (options));
-      if (generalOptions == null)
-        throw new ArgumentNullException (nameof (generalOptions));
-
-      return options.Select (o => Create (o, generalOptions)).ToList();
+  
+      return options.Select (o => Create (o)).ToList();
     }
 
-    public IOptionsViewModel CreateTemplate (Contracts.Options options, GeneralOptions generalOptions, ProfileType type)
+    public IOptionsViewModel CreateTemplate (Contracts.Options prototype)
     {
-      var optionsViewModel = new MultipleOptionsTemplateViewModel (
-         _optionsViewModelParent,
-         generalOptions,
-         IsGoogleProfile (options)
-             ? (IServerSettingsTemplateViewModel) new GoogleServerSettingsTemplateViewModel (_outlookAccountPasswordProvider)
-             : new ServerSettingsTemplateViewModel (_outlookAccountPasswordProvider),
-         type,
-         _optionTasks);
+      var prototypeModel = new OptionsModel(_settingsFaultFinder, _optionTasks, _outlookAccountPasswordProvider, prototype, _generalOptions);
+      var optionsViewModel = new MultipleOptionsTemplateViewModel(
+        _optionsViewModelParent,
+        prototypeModel.IsGoogle
+          ? (IServerSettingsTemplateViewModel)new GoogleServerSettingsTemplateViewModel(_outlookAccountPasswordProvider, prototypeModel)
+          : new ServerSettingsTemplateViewModel(_outlookAccountPasswordProvider, prototypeModel),
+        _optionTasks,
+        prototypeModel);
 
-      optionsViewModel.SetOptions (options);
       return optionsViewModel;
     }
 
-    private IOptionsViewModel Create (CalDavSynchronizer.Contracts.Options options, GeneralOptions generalOptions)
+    private IOptionsViewModel Create (OptionsModel model)
     {
-
       var optionsViewModel = new GenericOptionsViewModel (
           _optionsViewModelParent,
-          generalOptions,
-          _outlookAccountPasswordProvider,
-          IsGoogleProfile (options)
-            ? CreateGoogleServerSettingsViewModel
-            : new Func<ISettingsFaultFinder, ICurrentOptions, IServerSettingsViewModel> (CreateServerSettingsViewModel),
-          CreateMappingConfigurationViewModelFactory, _optionTasks);
+          model.IsGoogle 
+            ? new GoogleServerSettingsViewModel(model, _optionTasks)
+            : (IOptionsSection) new ServerSettingsViewModel(model, _optionTasks),
+          _optionTasks,
+          model,
+          _availableCategories);
 
-      optionsViewModel.SetOptions (options);
       return optionsViewModel;
     }
 
-    private static bool IsGoogleProfile (Contracts.Options options)
-    {
-      return options.ServerAdapterType == ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth ||
-             options.ServerAdapterType == ServerAdapterType.GoogleTaskApi ||
-             options.ServerAdapterType == ServerAdapterType.GoogleContactApi;
-    }
-
-    IServerSettingsViewModel CreateGoogleServerSettingsViewModel (ISettingsFaultFinder settingsFaultFinder, ICurrentOptions currentOptions)
-    {
-      return new GoogleServerSettingsViewModel (settingsFaultFinder, currentOptions);
-    }
-
-    IServerSettingsViewModel CreateServerSettingsViewModel (ISettingsFaultFinder settingsFaultFinder, ICurrentOptions currentOptions)
-    {
-      return new ServerSettingsViewModel (settingsFaultFinder, currentOptions, _outlookAccountPasswordProvider);
-    }
-
-    IMappingConfigurationViewModelFactory CreateMappingConfigurationViewModelFactory (ICurrentOptions currentOptions)
-    {
-      return new MappingConfigurationViewModelFactory(_availableCategories,currentOptions);
-    }
   }
 }

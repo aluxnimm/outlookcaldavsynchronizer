@@ -22,165 +22,78 @@ using System.Text;
 using System.Windows.Forms;
 using System.Windows.Input;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options.Models;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
 using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  internal class GoogleServerSettingsViewModel : ViewModelBase, IServerSettingsViewModel
+  internal class GoogleServerSettingsViewModel : ModelBase, IOptionsSection
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodBase.GetCurrentMethod().DeclaringType);
-    private readonly ICurrentOptions _currentOptions;
     private readonly DelegateCommandWithoutCanExecuteDelegation _doAutoDiscoveryCommand;
-    private readonly ISettingsFaultFinder _settingsFaultFinder;
     private readonly DelegateCommandWithoutCanExecuteDelegation _testConnectionCommand;
 
-    private string _calenderUrl;
-    private bool _useGoogleNativeApi;
-    private bool _useGoogleNativeApiAvailable;
+    private readonly OptionsModel _model;
+    private readonly IOptionTasks _optionTasks;
 
-    public GoogleServerSettingsViewModel (ISettingsFaultFinder settingsFaultFinder, ICurrentOptions currentOptions)
+    public GoogleServerSettingsViewModel (OptionsModel model, IOptionTasks optionTasks)
     {
-      if (settingsFaultFinder == null)
-        throw new ArgumentNullException (nameof (settingsFaultFinder));
-      if (currentOptions == null)
-        throw new ArgumentNullException (nameof (currentOptions));
+      if (model == null) throw new ArgumentNullException(nameof(model));
+      if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
 
-      _settingsFaultFinder = settingsFaultFinder;
-      _currentOptions = currentOptions;
-      _currentOptions.OutlookFolderTypeChanged += CurrentOptions_OutlookFolderTypeChanged;
+      _model = model;
+      _optionTasks = optionTasks;
       _doAutoDiscoveryCommand = new DelegateCommandWithoutCanExecuteDelegation (_ => DoAutoDiscovery());
       _testConnectionCommand = new DelegateCommandWithoutCanExecuteDelegation (_ =>
       {
         ComponentContainer.EnsureSynchronizationContext();
         TestConnectionAsync (CalenderUrl);
       });
+
+
+      RegisterPropertyChangePropagation(_model, nameof(_model.CalenderUrl), nameof(CalenderUrl));
+      RegisterPropertyChangePropagation(_model, nameof(_model.EmailAddress), nameof(EmailAddress));
+      RegisterPropertyChangePropagation(_model, nameof(_model.UseGoogleNativeApi), nameof(UseGoogleNativeApi));
+      RegisterPropertyChangePropagation(_model, nameof(_model.UseGoogleNativeApiAvailable), nameof(UseGoogleNativeApiAvailable));
+
     }
 
     public ICommand DoAutoDiscoveryCommand => _doAutoDiscoveryCommand;
     public ICommand TestConnectionCommand => _testConnectionCommand;
 
-    public string UserName { get; private set; }
-
     public string CalenderUrl
     {
-      get { return _calenderUrl; }
-      set
-      {
-        CheckedPropertyChange (ref _calenderUrl, value);
-      }
-    }
-
-    public bool UseAccountPassword
-    {
-      get { return false; }
-    }
-
-    public SecureString Password
-    {
-      get { return new SecureString(); }
+      get { return _model.CalenderUrl; }
+      set { _model.CalenderUrl = value; }
     }
 
     public string EmailAddress
     {
-      get { return UserName; }
+      get { return _model.EmailAddress; }
       set
       {
-        if (!Equals (UserName, value))
-        {
-          UserName = value;
-          // ReSharper disable once ExplicitCallerInfoArgument
-          OnPropertyChanged (nameof (UserName));
-        }
+        _model.EmailAddress = value;
+        _model.UserName = value;
       }
     }
 
     public bool UseGoogleNativeApi
     {
-      get { return _useGoogleNativeApi; }
-      set
-      {
-        CheckedPropertyChange (ref _useGoogleNativeApi, value);
-      }
+      get { return _model.UseGoogleNativeApi; }
+      set { _model.UseGoogleNativeApi = value; }
     }
 
-    public bool UseGoogleNativeApiAvailable
-    {
-      get { return _useGoogleNativeApiAvailable; }
-      set { CheckedPropertyChange (ref _useGoogleNativeApiAvailable, value); }
-    }
-
-    public ServerAdapterType ServerAdapterType
-    {
-      get
-      {
-        switch (_currentOptions.OutlookFolderType)
-        {
-          case OlItemType.olTaskItem:
-            return ServerAdapterType.GoogleTaskApi;
-          case OlItemType.olContactItem:
-            return UseGoogleNativeApi ? ServerAdapterType.GoogleContactApi : ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth;
-          default:
-            return ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth;
-        }
-      }
-    }
-
-    public bool IsGoogle { get; } = true;
-
-    public void SetOptions (Contracts.Options options)
-    {
-      EmailAddress = options.EmailAddress;
-      if (!string.IsNullOrEmpty (options.CalenderUrl))
-        CalenderUrl = options.CalenderUrl;
-      else
-        CalenderUrl = OptionTasks.GoogleDavBaseUrl;
-
-      UseGoogleNativeApi = options.ServerAdapterType == ServerAdapterType.GoogleContactApi || options.ServerAdapterType == ServerAdapterType.GoogleTaskApi;
-      UpdateUseGoogleNativeApiAvailable();
-    }
-
-    public void FillOptions (Contracts.Options options)
-    {
-      options.CalenderUrl = _calenderUrl;
-      options.UserName = UserName;
-      options.Password = new SecureString();
-      options.EmailAddress = UserName;
-      options.UseAccountPassword = false;
-      options.ServerAdapterType = ServerAdapterType;
-    }
-
-    public bool Validate (StringBuilder errorMessageBuilder)
-    {
-      var result = true;
-
-      var serverAdapterType = ServerAdapterType;
-      if (serverAdapterType != ServerAdapterType.GoogleTaskApi && serverAdapterType != ServerAdapterType.GoogleContactApi)
-        result &= OptionTasks.ValidateWebDavUrl (CalenderUrl, errorMessageBuilder, true);
-
-      result &= OptionTasks.ValidateGoogleEmailAddress (errorMessageBuilder, EmailAddress);
-
-      return result;
-    }
-
-    private void CurrentOptions_OutlookFolderTypeChanged (object sender, EventArgs e)
-    {
-      UpdateUseGoogleNativeApiAvailable();
-    }
-
-    private void UpdateUseGoogleNativeApiAvailable ()
-    {
-      UseGoogleNativeApiAvailable = _currentOptions.OutlookFolderType == OlItemType.olContactItem;
-    }
-
+    public bool UseGoogleNativeApiAvailable => _model.UseGoogleNativeApiAvailable;
+    
     private async void TestConnectionAsync (string testUrl)
     {
       _testConnectionCommand.SetCanExecute (false);
       _doAutoDiscoveryCommand.SetCanExecute (false);
       try
       {
-        var newUrl = await OptionTasks.TestGoogleConnection (_currentOptions, _settingsFaultFinder, testUrl);
+        var newUrl = await _optionTasks.TestGoogleConnection (_model, testUrl);
         if (newUrl != testUrl)
           CalenderUrl = newUrl;
       }
@@ -202,7 +115,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private void DoAutoDiscovery ()
     {
       string testUrl;
-      if (ServerAdapterType == ServerAdapterType.GoogleTaskApi)
+      if (_model.SelectedFolderOrNull?.DefaultItemType == OlItemType.olTaskItem)
         testUrl = string.Empty;
       else
         testUrl = OptionTasks.GoogleDavBaseUrl;
@@ -211,14 +124,13 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       TestConnectionAsync (testUrl);
     }
 
-    public static GoogleServerSettingsViewModel DesignInstance => new GoogleServerSettingsViewModel (NullSettingsFaultFinder.Instance, new DesignCurrentOptions ())
+    public static GoogleServerSettingsViewModel DesignInstance => new GoogleServerSettingsViewModel(OptionsModel.DesignInstance, NullOptionTasks.Instance)
     {
       CalenderUrl = "http://calendar.url",
       EmailAddress = "bla@dot.com",
-      UseGoogleNativeApiAvailable = true,
-      _useGoogleNativeApi = true
+      UseGoogleNativeApi = true
     };
 
-   
+
   }
 }

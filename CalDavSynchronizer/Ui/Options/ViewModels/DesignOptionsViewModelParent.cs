@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using CalDavSynchronizer.Ui.Options.Models;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
@@ -32,9 +33,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     
     }
 
-    public void RequestAdd (IReadOnlyCollection<Contracts.Options> options)
+    public void RequestAdd(IReadOnlyCollection<OptionsModel> options)
     {
-    
+      
     }
   }
 }

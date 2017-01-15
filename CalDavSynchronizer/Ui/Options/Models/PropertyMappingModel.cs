@@ -15,23 +15,40 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Security;
-using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.DataAccess;
-using CalDavSynchronizer.Ui.Options.Models;
-using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
+namespace CalDavSynchronizer.Ui.Options.Models
 {
-  internal interface IServerSettingsTemplateViewModel 
+  public class PropertyMappingModel : ModelBase
   {
-    Task<ServerResources> GetServerResources ();
-    void DiscoverAccountServerSettings();
+    private string _outlookProperty;
+    private string _davProperty;
 
-    void SetResourceUrl (OptionsModel options, CalendarData resource);
-    void SetResourceUrl (OptionsModel options, AddressBookData resource);
-    void SetResourceUrl (OptionsModel options, TaskListData resource);
+    public PropertyMappingModel()
+    {
+    }
+
+    public PropertyMappingModel(PropertyMapping data)
+    {
+      _outlookProperty = data.OutlookProperty;
+      _davProperty = data.DavProperty;
+    }
+
+    public string OutlookProperty
+    {
+      get { return _outlookProperty; }
+      set { CheckedPropertyChange(ref _outlookProperty, value); }
+    }
+
+    public string DavProperty
+    {
+      get { return _davProperty; }
+      set { CheckedPropertyChange(ref _davProperty, value); }
+    }
+
+    public PropertyMapping GetData()
+    {
+      return new PropertyMapping {DavProperty = DavProperty, OutlookProperty = OutlookProperty};
+    }
   }
 }

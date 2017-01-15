@@ -56,9 +56,9 @@ namespace CalDavSynchronizer.Contracts
       MapCustomProperties = false;
     }
 
-    public override ISubOptionsViewModel CreateConfigurationViewModel (IMappingConfigurationViewModelFactory factory)
+    public override TResult Accept<TResult>(IMappingConfigurationBaseVisitor<TResult> visitor)
     {
-      return factory.Create (this);
+      return visitor.Visit(this);
     }
   }
 }

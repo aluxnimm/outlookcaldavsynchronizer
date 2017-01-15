@@ -26,7 +26,7 @@ using Microsoft.Win32;
 
 namespace CalDavSynchronizer.Ui.Reports.ViewModels
 {
-  public class ReportsViewModel : ViewModelBase, IReportViewModelParent
+  public class ReportsViewModel : ModelBase, IReportViewModelParent
   {
     private readonly ObservableCollection<ReportViewModel> _reports = new ObservableCollection<ReportViewModel>();
     private readonly DelegateCommand _deleteSelectedCommand;

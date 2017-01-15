@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -13,19 +13,16 @@
 // GNU Affero General Public License for more details.
 // 
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.using System;
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace CalDavSynchronizer.Ui.Options
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+
+namespace CalDavSynchronizer.Ui.Options.Models
 {
-  public class FolderDescriptor
+  public interface ICustomPropertiesMappingConfigurationModel : INotifyPropertyChanged
   {
-    public string FolderId { get; }
-    public string StoreId { get; }
-
-    public FolderDescriptor (string folderId, string storeId)
-    {
-      FolderId = folderId;
-      StoreId = storeId;
-    }
+    ObservableCollection<PropertyMappingModel> Mappings { get; }
+    bool MapCustomProperties { get; set; }
   }
 }

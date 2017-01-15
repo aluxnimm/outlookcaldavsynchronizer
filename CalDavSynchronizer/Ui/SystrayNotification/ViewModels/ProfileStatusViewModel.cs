@@ -26,7 +26,7 @@ using GenSync.Logging;
 
 namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
 {
-  public class ProfileStatusViewModel : ViewModelBase
+  public class ProfileStatusViewModel : ModelBase
   {
     private string _profileName;
     private bool _isActive;

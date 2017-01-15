@@ -22,7 +22,7 @@ namespace CalDavSynchronizer.Ui.Options.ResourceSelection.ViewModels
 {
   public abstract class ResourceDataViewModelBase
   {
-    public FolderDescriptor SelectedFolder { get; set; }
+    public OutlookFolderDescriptor SelectedFolder { get; set; }
     public abstract string Name { get; }
   }
 }

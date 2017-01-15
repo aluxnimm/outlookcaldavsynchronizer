@@ -21,8 +21,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
   public interface IOptionsSection
   {
-    void SetOptions (CalDavSynchronizer.Contracts.Options options);
-    void FillOptions (CalDavSynchronizer.Contracts.Options options);
-    bool Validate (StringBuilder errorMessageBuilder);
+ 
   }
 }

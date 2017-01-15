@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Scheduling;
+using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Utilities;
 using log4net;
@@ -29,92 +30,68 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 {
-  internal class ServerSettingsTemplateViewModel : ViewModelBase, IServerSettingsTemplateViewModel
+  internal class ServerSettingsTemplateViewModel : ModelBase, IServerSettingsTemplateViewModel
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodBase.GetCurrentMethod().DeclaringType);
 
-    private string _calenderUrl;
-    private string _emailAddress;
-    private bool _useAccountPassword;
-    private SecureString _password;
-    private string _userName;
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
+    private readonly OptionsModel _prototypeModel;
 
-    public ServerSettingsTemplateViewModel (IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
+
+    public ServerSettingsTemplateViewModel (IOutlookAccountPasswordProvider outlookAccountPasswordProvider, OptionsModel prototypeModel)
     {
+      if (prototypeModel == null) throw new ArgumentNullException(nameof(prototypeModel));
+
       _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
+      _prototypeModel = prototypeModel;
     }
 
     public string CalenderUrl
     {
-      get { return _calenderUrl; }
-      set { CheckedPropertyChange (ref _calenderUrl, value); }
+      get { return _prototypeModel.CalenderUrl; }
+      set { _prototypeModel.CalenderUrl = value; }
     }
 
     public string UserName
     {
-      get { return _userName; }
-      set { CheckedPropertyChange (ref _userName, value); }
+      get { return _prototypeModel.UserName; }
+      set { _prototypeModel.UserName = value; }
     }
+
     public bool UseAccountPassword
     {
-      get { return _useAccountPassword; }
-      set
-      {
-        CheckedPropertyChange (ref _useAccountPassword, value);
-      }
+      get { return _prototypeModel.UseAccountPassword; }
+      set { _prototypeModel.UseAccountPassword = value; }
     }
 
     public SecureString Password
     {
-      get { return _password; }
-      set { CheckedPropertyChange (ref _password, value); }
+      get { return _prototypeModel.Password; }
+      set { _prototypeModel.Password = value; }
     }
 
     public string EmailAddress
     {
-      get { return _emailAddress; }
-      set { CheckedPropertyChange (ref _emailAddress, value); }
+      get { return _prototypeModel.EmailAddress; }
+      set { _prototypeModel.EmailAddress = value; }
     }
 
-    public void SetOptions (Contracts.Options options)
-    {
-      CalenderUrl = options.CalenderUrl;
-      UserName = options.UserName;
-      UseAccountPassword = options.UseAccountPassword;
-      Password = options.Password;
-      EmailAddress = options.EmailAddress;
-    }
-
-
-    public void FillOptions (Contracts.Options options, CalendarData resource)
+    public void SetResourceUrl (OptionsModel options, CalendarData resource)
     {
       options.CalenderUrl = resource.Uri.ToString ();
-      FillOptions (options);
     }
 
-    public void FillOptions (Contracts.Options options, AddressBookData resource)
+    public void SetResourceUrl (OptionsModel options, AddressBookData resource)
     {
       options.CalenderUrl = resource.Uri.ToString ();
-      FillOptions (options);
     }
 
-    public void FillOptions (Contracts.Options options, TaskListData resource)
+    public void SetResourceUrl (OptionsModel options, TaskListData resource)
     {
       options.CalenderUrl = resource.Id;
-      FillOptions (options);
     }
 
-    public void FillOptions (Contracts.Options options)
-    {
-      options.UserName = _userName;
-      options.Password = _password;
-      options.EmailAddress = _emailAddress;
-      options.UseAccountPassword = _useAccountPassword;
-      options.ServerAdapterType = ServerAdapterType.WebDavHttpClientBased;
-    }
-
-    public async Task<ServerResources> GetServerResources (NetworkSettingsViewModel networkSettings, GeneralOptions generalOptions)
+    public async Task<ServerResources> GetServerResources ()
     {
       string caldavUrlString ;
       string carddavUrlString;
@@ -137,8 +114,8 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       var trimmedCarddavUrl = carddavUrlString.Trim();
       var carddavUrl = new Uri (trimmedCarddavUrl.EndsWith("/") ? trimmedCarddavUrl : trimmedCarddavUrl + "/");
 
-      var webDavClientCaldav = CreateWebDavClient (networkSettings, generalOptions, trimmedCaldavUrl);
-      var webDavClientCarddav = CreateWebDavClient (networkSettings, generalOptions, trimmedCarddavUrl);
+      var webDavClientCaldav = _prototypeModel.CreateWebDavClient(new Uri(trimmedCaldavUrl));
+      var webDavClientCarddav = _prototypeModel.CreateWebDavClient(new Uri(trimmedCarddavUrl));
       var calDavDataAccess = new CalDavDataAccess (caldavUrl, webDavClientCaldav);
       var cardDavDataAccess = new CardDavDataAccess (carddavUrl, webDavClientCarddav, contentType => true);
 
@@ -170,29 +147,13 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
     }
 
 
-    public static ServerSettingsTemplateViewModel DesignInstance = new ServerSettingsTemplateViewModel (NullOutlookAccountPasswordProvider.Instance)
-                                                                   {
-                                                                       CalenderUrl = "http://bulkurl",
-                                                                       EmailAddress = "bulkemail",
-                                                                       UseAccountPassword = true,
-                                                                       Password = SecureStringUtility.ToSecureString ("bulkpwd"),
-                                                                       UserName = "username",
-                                                                   };
-
-    private IWebDavClient CreateWebDavClient (NetworkSettingsViewModel networkSettings, GeneralOptions generalOptions, string davUrl)
+    public static ServerSettingsTemplateViewModel DesignInstance = new ServerSettingsTemplateViewModel(NullOutlookAccountPasswordProvider.Instance, OptionsModel.DesignInstance)
     {
-      return SynchronizerFactory.CreateWebDavClient (
-          UserName,
-          UseAccountPassword ? _outlookAccountPasswordProvider.GetPassword (null) : Password,
-          davUrl,
-          generalOptions.CalDavConnectTimeout,
-          ServerAdapterType.WebDavHttpClientBased,
-          networkSettings.CloseConnectionAfterEachRequest,
-          networkSettings.PreemptiveAuthentication,
-          networkSettings.ForceBasicAuthentication,
-          networkSettings.CreateProxyOptions (),
-          generalOptions.EnableClientCertificate,
-          generalOptions.AcceptInvalidCharsInServerResponse);
-    }
+      CalenderUrl = "http://bulkurl",
+      EmailAddress = "bulkemail",
+      UseAccountPassword = true,
+      Password = SecureStringUtility.ToSecureString("bulkpwd"),
+      UserName = "username",
+    };
   }
 }

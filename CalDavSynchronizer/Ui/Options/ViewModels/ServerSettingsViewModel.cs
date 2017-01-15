@@ -20,56 +20,52 @@ using System.Security;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
-using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Utilities;
 using log4net;
-using Microsoft.Office.Interop.Outlook;
 using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  internal class ServerSettingsViewModel : ViewModelBase, IServerSettingsViewModel
+  internal class ServerSettingsViewModel : ModelBase, IOptionsSection
   {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodBase.GetCurrentMethod().DeclaringType);
+    private readonly OptionsModel _model;
+    private static readonly ILog s_logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+    private readonly IOptionTasks _optionTasks;
 
-    private string _calenderUrl;
-    private string _emailAddress;
-    private SecureString _password;
-    private bool _useAccountPassword;
-    private string _userName;
-    private readonly ISettingsFaultFinder _settingsFaultFinder;
-    private readonly ICurrentOptions _currentOptions;
-    private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
+
     private readonly DelegateCommandWithoutCanExecuteDelegation _testConnectionCommand;
     private readonly DelegateCommandWithoutCanExecuteDelegation _getAccountSettingsCommand;
     private readonly DelegateCommandWithoutCanExecuteDelegation _createDavResourceCommand;
 
-    public ServerSettingsViewModel (ISettingsFaultFinder settingsFaultFinder, ICurrentOptions currentOptions, IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
+    public ServerSettingsViewModel(OptionsModel model, IOptionTasks optionTasks)
     {
-      if (settingsFaultFinder == null)
-        throw new ArgumentNullException (nameof (settingsFaultFinder));
-      if (currentOptions == null)
-        throw new ArgumentNullException (nameof (currentOptions));
+      if (model == null) throw new ArgumentNullException(nameof(model));
+      if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
+      _model = model;
+      _optionTasks = optionTasks;
 
-      _settingsFaultFinder = settingsFaultFinder;
-      _currentOptions = currentOptions;
-      _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
-
-      _testConnectionCommand = new DelegateCommandWithoutCanExecuteDelegation (_ =>
+      _testConnectionCommand = new DelegateCommandWithoutCanExecuteDelegation(_ =>
       {
         ComponentContainer.EnsureSynchronizationContext();
         TestConnectionAsync();
       });
-      _getAccountSettingsCommand = new DelegateCommandWithoutCanExecuteDelegation (_ =>
+      _getAccountSettingsCommand = new DelegateCommandWithoutCanExecuteDelegation(_ =>
       {
         ComponentContainer.EnsureSynchronizationContext();
-        GetAccountSettings();
+        _model.AutoFillAccountSettings();
       });
-      _createDavResourceCommand = new DelegateCommandWithoutCanExecuteDelegation (_ =>
+      _createDavResourceCommand = new DelegateCommandWithoutCanExecuteDelegation(_ =>
       {
         ComponentContainer.EnsureSynchronizationContext();
         CreateDavResource();
       });
+
+      RegisterPropertyChangePropagation(_model, nameof(_model.CalenderUrl), nameof(CalenderUrl));
+      RegisterPropertyChangePropagation(_model, nameof(_model.UserName), nameof(UserName));
+      RegisterPropertyChangePropagation(_model, nameof(_model.Password), nameof(Password));
+      RegisterPropertyChangePropagation(_model, nameof(_model.EmailAddress), nameof(EmailAddress));
+      RegisterPropertyChangePropagation(_model, nameof(_model.UseAccountPassword), nameof(UseAccountPassword));
     }
 
     public ICommand TestConnectionCommand => _testConnectionCommand;
@@ -78,157 +74,84 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     public string CalenderUrl
     {
-      get { return _calenderUrl; }
-      set
-      {
-        CheckedPropertyChange (ref _calenderUrl, value);
-      }
+      get { return _model.CalenderUrl; }
+      set { _model.CalenderUrl = value; }
     }
 
     public string UserName
     {
-      get { return _userName; }
-      set
-      {
-        CheckedPropertyChange (ref _userName, value);
-      }
+      get { return _model.UserName; }
+      set { _model.UserName = value; }
     }
 
     public SecureString Password
     {
-      get { return _password; }
-      set
-      {
-        CheckedPropertyChange (ref _password, value);
-      }
+      get { return _model.Password; }
+      set { _model.Password = value; }
     }
 
     public string EmailAddress
     {
-      get { return _emailAddress; }
-      set
-      {
-        CheckedPropertyChange (ref _emailAddress, value);
-      }
+      get { return _model.EmailAddress; }
+      set { _model.EmailAddress = value; }
     }
 
     public bool UseAccountPassword
     {
-      get { return _useAccountPassword; }
-      set
-      {
-        CheckedPropertyChange (ref _useAccountPassword, value);
-      }
+      get { return _model.UseAccountPassword; }
+      set { _model.UseAccountPassword = value; }
     }
 
-    public static ServerSettingsViewModel DesignInstance => new ServerSettingsViewModel (NullSettingsFaultFinder.Instance, new DesignCurrentOptions(), NullOutlookAccountPasswordProvider.Instance)
-                                                            {
-                                                                CalenderUrl = "http://calendar.url",
-                                                                EmailAddress = "bla@dot.com",
-                                                                Password = SecureStringUtility.ToSecureString("password"),
-                                                                UseAccountPassword = true,
-                                                                UserName = "username"
-                                                            };
-
-    public void SetOptions (Contracts.Options options)
+    public static ServerSettingsViewModel DesignInstance => new ServerSettingsViewModel(OptionsModel.DesignInstance, NullOptionTasks.Instance)
     {
-      CalenderUrl = options.CalenderUrl;
-      UserName = options.UserName;
-      Password = options.Password;
-      EmailAddress = options.EmailAddress;
-      UseAccountPassword = options.UseAccountPassword;
-    }
+      CalenderUrl = "http://calendar.url",
+      EmailAddress = "bla@dot.com",
+      Password = SecureStringUtility.ToSecureString("password"),
+      UseAccountPassword = true,
+      UserName = "username"
+    };
 
-    public void FillOptions (Contracts.Options options)
+    private async void TestConnectionAsync()
     {
-      options.CalenderUrl = _calenderUrl;
-      options.UserName = _userName;
-      options.Password = _password;
-      options.EmailAddress = _emailAddress;
-      options.UseAccountPassword = _useAccountPassword;
-      options.ServerAdapterType = ServerAdapterType.WebDavHttpClientBased;
-    }
-
-    public ServerAdapterType ServerAdapterType { get; } = ServerAdapterType.WebDavHttpClientBased;
-
-    public bool IsGoogle { get; } = false;
-
-    public bool Validate (StringBuilder errorMessageBuilder)
-    {
-      var result = OptionTasks.ValidateWebDavUrl (CalenderUrl, errorMessageBuilder, true);
-      result &= OptionTasks.ValidateEmailAddress (errorMessageBuilder, EmailAddress);
-      return result;
-    }
-
-    private void GetAccountSettings()
-    {
-      _getAccountSettingsCommand.SetCanExecute (false);
+      _testConnectionCommand.SetCanExecute(false);
       try
       {
-        var serverAccountSettings = _outlookAccountPasswordProvider.GetAccountServerSettings (_currentOptions.FolderAccountName);
-        EmailAddress = serverAccountSettings.EmailAddress;
-        string path = !string.IsNullOrEmpty (CalenderUrl) ? new Uri (CalenderUrl).AbsolutePath : string.Empty;
-        bool success;
-        var dnsDiscoveredUrl = OptionTasks.DoSrvLookup (EmailAddress, OlItemType.olAppointmentItem, out success);
-        CalenderUrl = success ? dnsDiscoveredUrl : "https://" + serverAccountSettings.ServerString + path;
-        UserName = serverAccountSettings.UserName;
-        UseAccountPassword = true;
+        CalenderUrl = await _optionTasks.TestWebDavConnection(_model);
       }
       catch (Exception x)
       {
-        s_logger.Error ("Exception while getting account settings.", x);
+        s_logger.Error("Exception while testing the connection.", x);
         string message = null;
         for (Exception ex = x; ex != null; ex = ex.InnerException)
           message += ex.Message + Environment.NewLine;
-        MessageBox.Show (message, "Account settings");
+        MessageBox.Show(message, OptionTasks.ConnectionTestCaption);
       }
       finally
       {
-        _getAccountSettingsCommand.SetCanExecute (true);
-      }
-    }
-
-    private async void TestConnectionAsync ()
-    {
-      _testConnectionCommand.SetCanExecute (false);
-      try
-      {
-        CalenderUrl = await OptionTasks.TestWebDavConnection (_currentOptions, _settingsFaultFinder, CalenderUrl, EmailAddress);
-      }
-      catch (Exception x)
-      {
-        s_logger.Error ("Exception while testing the connection.", x);
-        string message = null;
-        for (Exception ex = x; ex != null; ex = ex.InnerException)
-          message += ex.Message + Environment.NewLine;
-        MessageBox.Show (message, OptionTasks.ConnectionTestCaption);
-      }
-      finally
-      {
-        _testConnectionCommand.SetCanExecute (true);
+        _testConnectionCommand.SetCanExecute(true);
       }
     }
 
     private async void CreateDavResource()
     {
-      _testConnectionCommand.SetCanExecute (false);
-      _createDavResourceCommand.SetCanExecute (false);
+      _testConnectionCommand.SetCanExecute(false);
+      _createDavResourceCommand.SetCanExecute(false);
       try
       {
-        CalenderUrl = await OptionTasks.CreateDavResource (_currentOptions, CalenderUrl);
+        CalenderUrl = await OptionTasks.CreateDavResource(_model, CalenderUrl);
       }
       catch (Exception x)
       {
-        s_logger.Error ("Exception while adding a DAV resource.", x);
+        s_logger.Error("Exception while adding a DAV resource.", x);
         string message = null;
         for (Exception ex = x; ex != null; ex = ex.InnerException)
           message += ex.Message + Environment.NewLine;
-        MessageBox.Show (message, OptionTasks.CreateDavResourceCaption);
+        MessageBox.Show(message, OptionTasks.CreateDavResourceCaption);
       }
       finally
       {
-        _testConnectionCommand.SetCanExecute (true);
-        _createDavResourceCommand.SetCanExecute (true);
+        _testConnectionCommand.SetCanExecute(true);
+        _createDavResourceCommand.SetCanExecute(true);
       }
     }
   }

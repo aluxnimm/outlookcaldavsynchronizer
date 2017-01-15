@@ -16,13 +16,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using CalDavSynchronizer.Ui.ConnectionTests;
+using CalDavSynchronizer.Ui.Options.Models;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options
 {
   public interface ISettingsFaultFinder
   {
-    void FixSynchronizationMode (TestResult result);
-    void FixTimeRangeUsage (OlItemType? folderType);
+    void FixSynchronizationMode(OptionsModel options, TestResult result);
+    void FixTimeRangeUsage(OptionsModel options, OlItemType? folderType);
   }
 }

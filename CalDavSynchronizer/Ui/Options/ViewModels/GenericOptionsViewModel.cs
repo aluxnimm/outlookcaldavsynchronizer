@@ -19,69 +19,60 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Net;
+using System.Text;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Scheduling;
+using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels.Mapping;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  public class GenericOptionsViewModel : OptionsViewModelBase, ICurrentOptions, ISyncSettingsControl
+  public class GenericOptionsViewModel : OptionsViewModelBase, IOptionsSection
   {
     private readonly ObservableCollection<ISubOptionsViewModel> _subOptions = new ObservableCollection<ISubOptionsViewModel>();
     private readonly NetworkSettingsViewModel _networkSettingsViewModel;
     private readonly OutlookFolderViewModel _outlookFolderViewModel;
-    private readonly IServerSettingsViewModel _serverSettingsViewModel;
+    private readonly IOptionsSection _serverSettingsViewModel;
     private readonly SyncSettingsViewModel _syncSettingsViewModel;
     private readonly TimeRangeViewModel _timeRangeViewModel;
     private ISubOptionsViewModel _mappingConfigurationViewModel;
-    private readonly GeneralOptions _generalOptions;
-    private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
-    private readonly IMappingConfigurationViewModelFactory _mappingConfigurationViewModelFactory;
+    private readonly OptionsModel _model;
+    private readonly IReadOnlyList<string> _availableCategories;
 
     public GenericOptionsViewModel (
       IOptionsViewModelParent parent,
-      GeneralOptions generalOptions,
-      IOutlookAccountPasswordProvider outlookAccountPasswordProvider,
-      Func<ISettingsFaultFinder, ICurrentOptions, IServerSettingsViewModel> serverSettingsViewModelFactory,
-      Func<ICurrentOptions, IMappingConfigurationViewModelFactory> mappingConfigurationViewModelFactoryFactory,
-      IOptionTasks optionTasks)
-        : base (parent)
+      IOptionsSection serverSettingsViewModel,
+      IOptionTasks optionTasks,
+      OptionsModel model,
+      IReadOnlyList<string> availableCategories)
+        : base (parent, model)
     {
-      if (generalOptions == null)
-        throw new ArgumentNullException (nameof (generalOptions));
-      if (outlookAccountPasswordProvider == null)
-        throw new ArgumentNullException (nameof (outlookAccountPasswordProvider));
-      if (mappingConfigurationViewModelFactoryFactory == null)
-        throw new ArgumentNullException (nameof (mappingConfigurationViewModelFactoryFactory));
+      if (parent == null) throw new ArgumentNullException(nameof(parent));
+      if (serverSettingsViewModel == null) throw new ArgumentNullException(nameof(serverSettingsViewModel));
+      if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
+      if (model == null) throw new ArgumentNullException(nameof(model));
+      if (availableCategories == null) throw new ArgumentNullException(nameof(availableCategories));
 
-      _syncSettingsViewModel = new SyncSettingsViewModel();
-      _networkSettingsViewModel = new NetworkSettingsViewModel();
 
-      var faultFinder = generalOptions.FixInvalidSettings ? new SettingsFaultFinder (this) : NullSettingsFaultFinder.Instance;
-      _serverSettingsViewModel = serverSettingsViewModelFactory (faultFinder, this);
-      _generalOptions = generalOptions;
-      _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
-      _mappingConfigurationViewModelFactory = mappingConfigurationViewModelFactoryFactory(this);
-      _outlookFolderViewModel = new OutlookFolderViewModel (faultFinder, optionTasks);
-      _outlookFolderViewModel.PropertyChanged += OutlookFolderViewModel_PropertyChanged;
-      _timeRangeViewModel = new TimeRangeViewModel();
-    }
+      _model = model;
+      _availableCategories = availableCategories;
 
-    /// <remarks>
-    /// Just for creating the DesingInstance
-    /// </remarks>
-    public GenericOptionsViewModel (IOptionsViewModelParent parent, NetworkSettingsViewModel networkSettingsViewModel, OutlookFolderViewModel outlookFolderViewModel, IServerSettingsViewModel serverSettingsViewModel, SyncSettingsViewModel syncSettingsViewModel, ISubOptionsViewModel mappingConfigurationViewModel)
-        : base (parent)
-    {
-      _networkSettingsViewModel = networkSettingsViewModel;
-      _outlookFolderViewModel = outlookFolderViewModel;
+      _syncSettingsViewModel = new SyncSettingsViewModel(_model);
+      _networkSettingsViewModel = new NetworkSettingsViewModel(_model);
+
       _serverSettingsViewModel = serverSettingsViewModel;
-      _syncSettingsViewModel = syncSettingsViewModel;
-      MappingConfigurationViewModel = mappingConfigurationViewModel;
+      _outlookFolderViewModel = new OutlookFolderViewModel (_model, optionTasks);
+      _timeRangeViewModel = new TimeRangeViewModel(_model);
+
+      RegisterPropertyChangeHandler(model, nameof(model.MappingConfigurationModelOrNull), UpdateMappingConfigurationViewModel);
+
+      RegisterPropertyChangePropagation(model, nameof(model.SelectedFolderOrNull), nameof(OutlookFolderType));
+
     }
+    
 
     private ISubOptionsViewModel MappingConfigurationViewModel
     {
@@ -97,30 +88,11 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         }
       }
     }
-
-    protected override void SetOptionsOverride (CalDavSynchronizer.Contracts.Options options)
-    {
-      MappingConfigurationViewModel = options.MappingConfiguration?.CreateConfigurationViewModel (_mappingConfigurationViewModelFactory);
-
-      CoerceMappingConfiguration();
-
-      MappingConfigurationViewModel?.SetOptions (options);
-    }
-
-    private void OutlookFolderViewModel_PropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
-    {
-      if (e.PropertyName == nameof (OutlookFolderViewModel.OutlookFolderType))
-      {
-        CoerceMappingConfiguration();
-        // ReSharper disable once ExplicitCallerInfoArgument
-        OnPropertyChanged (nameof (OutlookFolderType));
-        OnOutlookFolderTypeChanged();
-      }
-    }
-
+  
     protected override IEnumerable<ISubOptionsViewModel> CreateSubOptions ()
     {
       _subOptions.Add (_networkSettingsViewModel);
+      UpdateMappingConfigurationViewModel();
       return _subOptions;
     }
 
@@ -129,89 +101,50 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       return new IOptionsSection[] { _outlookFolderViewModel, _serverSettingsViewModel, _syncSettingsViewModel, _timeRangeViewModel };
     }
 
-    private void CoerceMappingConfiguration ()
+    private void UpdateMappingConfigurationViewModel()
     {
-      MappingConfigurationViewModel = OptionTasks.CoerceMappingConfiguration (
-          MappingConfigurationViewModel,
-          _outlookFolderViewModel.OutlookFolderType,
-          _serverSettingsViewModel.IsGoogle,
-          _mappingConfigurationViewModelFactory);
+      if (_model.MappingConfigurationModelOrNull == null)
+        MappingConfigurationViewModel = null;
+      else if (_model.MappingConfigurationModelOrNull is EventMappingConfigurationModel && !(MappingConfigurationViewModel is EventMappingConfigurationViewModel))
+        MappingConfigurationViewModel = new EventMappingConfigurationViewModel(_availableCategories, (EventMappingConfigurationModel)_model.MappingConfigurationModelOrNull, _model);
+      else if (_model.MappingConfigurationModelOrNull is ContactMappingConfigurationModel && !(MappingConfigurationViewModel is ContactMappingConfigurationViewModel))
+        MappingConfigurationViewModel = new ContactMappingConfigurationViewModel((ContactMappingConfigurationModel)_model.MappingConfigurationModelOrNull);
+      else if (_model.MappingConfigurationModelOrNull is TaskMappingConfigurationModel && !(MappingConfigurationViewModel is TaskMappingConfigurationViewModel))
+        MappingConfigurationViewModel = new TaskMappingConfigurationViewModel(_availableCategories, (TaskMappingConfigurationModel) _model.MappingConfigurationModelOrNull);
+    }
+    
+    public override Contracts.Options GetOptionsOrNull()
+    {
+      return _model.GetData();
     }
 
-
-    public SynchronizationMode SynchronizationMode
+    public override bool Validate(StringBuilder errorMessageBuilder)
     {
-      get { return _syncSettingsViewModel.SynchronizationMode; }
-      set { _syncSettingsViewModel.SynchronizationMode = value; }
+      return _model.Validate(errorMessageBuilder);
     }
-
-    public IList<Item<SynchronizationMode>> AvailableSynchronizationModes => _syncSettingsViewModel.AvailableSynchronizationModes;
-
-    public bool UseSynchronizationTimeRange
-    {
-      get { return _timeRangeViewModel.UseSynchronizationTimeRange; }
-      set { _timeRangeViewModel.UseSynchronizationTimeRange = value; }
-    }
-
-    public string SynchronizationModeDisplayName => _syncSettingsViewModel.SelectedSynchronizationModeDisplayName;
-
-    public ServerAdapterType ServerAdapterType => _serverSettingsViewModel.ServerAdapterType;
-
-    public IWebDavClient CreateWebDavClient (Uri url)
-    {
-      return SynchronizerFactory.CreateWebDavClient (
-          _serverSettingsViewModel.UserName,
-          _serverSettingsViewModel.UseAccountPassword ? _outlookAccountPasswordProvider.GetPassword (_outlookFolderViewModel.FolderAccountName) : _serverSettingsViewModel.Password,
-          url.ToString(),
-          _generalOptions.CalDavConnectTimeout,
-          _serverSettingsViewModel.ServerAdapterType,
-          _networkSettingsViewModel.CloseConnectionAfterEachRequest,
-          _networkSettingsViewModel.PreemptiveAuthentication,
-          _networkSettingsViewModel.ForceBasicAuthentication,
-          _networkSettingsViewModel.CreateProxyOptions(),
-          _generalOptions.EnableClientCertificate,
-          _generalOptions.AcceptInvalidCharsInServerResponse);
-    }
-
-    public IWebProxy GetProxyIfConfigured ()
-    {
-      return SynchronizerFactory.CreateProxy (_networkSettingsViewModel.CreateProxyOptions());
-    }
-
-    public ICalDavDataAccess CreateCalDavDataAccess ()
-    {
-      var calendarUrl = new Uri (_serverSettingsViewModel.CalenderUrl);
-      return new CalDavDataAccess (calendarUrl, CreateWebDavClient (calendarUrl));
-    }
-
+   
     public static OlItemType olAppointmentItem { get; } = OlItemType.olAppointmentItem;
     public static OlItemType olTaskItem { get; } = OlItemType.olTaskItem;
 
-    public override OlItemType? OutlookFolderType => _outlookFolderViewModel.OutlookFolderType;
-    public event EventHandler OutlookFolderTypeChanged;
+    public override OlItemType? OutlookFolderType => _model.SelectedFolderOrNull?.DefaultItemType;
 
-    public string EmailAddress => _serverSettingsViewModel.EmailAddress;
-
-    public string FolderAccountName => _outlookFolderViewModel.FolderAccountName;
-
-    public static GenericOptionsViewModel DesignInstance => new GenericOptionsViewModel (
-        new DesignOptionsViewModelParent(),
-        NetworkSettingsViewModel.DesignInstance,
-        OutlookFolderViewModel.DesignInstance,
-        ViewModels.ServerSettingsViewModel.DesignInstance,
-        SyncSettingsViewModel.DesignInstance,
-        EventMappingConfigurationViewModel.DesignInstance)
-                                                            {
-                                                                IsActive = true,
-                                                                Name = "Test Profile",
-                                                            };
+    public static GenericOptionsViewModel DesignInstance => new GenericOptionsViewModel(
+      new DesignOptionsViewModelParent(),
+      ViewModels.ServerSettingsViewModel.DesignInstance,
+      NullOptionTasks.Instance,
+      OptionsModel.DesignInstance,
+      new[] {"Cat1", "Cat2"})
+    {
+      IsActive = true,
+      Name = "Test Profile",
+    };
 
     public OutlookFolderViewModel OutlookFolderViewModel
     {
       get { return _outlookFolderViewModel; }
     }
 
-    public IServerSettingsViewModel ServerSettingsViewModel
+    public IOptionsSection ServerSettingsViewModel
     {
       get { return _serverSettingsViewModel; }
     }
@@ -226,9 +159,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _timeRangeViewModel; }
     }
 
-    protected virtual void OnOutlookFolderTypeChanged ()
-    {
-      OutlookFolderTypeChanged?.Invoke (this, EventArgs.Empty);
-    }
+    /// <summary>
+    /// Just for Unit Tests
+    /// </summary>
+    public OptionsModel Model => _model;
   }
 }

@@ -14,15 +14,13 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using CalDavSynchronizer.Contracts;
 
-namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
+namespace CalDavSynchronizer.Contracts
 {
-  public interface IMappingConfigurationViewModelFactory
+  public interface IMappingConfigurationBaseVisitor<out TResult>
   {
-    EventMappingConfigurationViewModel Create (EventMappingConfiguration configurationElement);
-    ContactMappingConfigurationViewModel Create (ContactMappingConfiguration configurationElement);
-    TaskMappingConfigurationViewModel Create (TaskMappingConfiguration configurationElement);
+    TResult Visit(ContactMappingConfiguration configuration);
+    TResult Visit(EventMappingConfiguration configuration);
+    TResult Visit(TaskMappingConfiguration configuration);
   }
 }

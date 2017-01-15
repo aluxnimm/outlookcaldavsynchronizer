@@ -183,7 +183,7 @@ namespace CalDavSynchronizer.Ui.Options
             }
 
             folderCell.Value = folder.Name;
-            viewModel.SelectedFolder = new FolderDescriptor (folder.EntryId, folder.StoreId);
+            viewModel.SelectedFolder = folder;
           }
         }
         else if (column == removeFolderColumn)

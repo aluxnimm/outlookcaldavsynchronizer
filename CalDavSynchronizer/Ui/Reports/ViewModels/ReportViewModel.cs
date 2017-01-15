@@ -24,7 +24,7 @@ using GenSync.Logging;
 
 namespace CalDavSynchronizer.Ui.Reports.ViewModels
 {
-  public partial class ReportViewModel : ViewModelBase
+  public partial class ReportViewModel : ModelBase
   {
     private readonly ISynchronizationReportRepository _reportRepository;
     private readonly ReportProxy _reportProxy;

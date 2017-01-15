@@ -24,7 +24,7 @@ using GenSync.ProgressReport;
 
 namespace CalDavSynchronizer.Ui.ViewModels
 {
-  public class ProgressViewModel : ViewModelBase, IProgressUi
+  public class ProgressViewModel : ModelBase, IProgressUi
   {
     private int _value;
     private int _maximum;

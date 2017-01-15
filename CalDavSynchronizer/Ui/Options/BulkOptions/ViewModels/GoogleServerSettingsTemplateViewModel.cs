@@ -28,6 +28,7 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.OAuth.Google;
 using CalDavSynchronizer.Scheduling;
+using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Utilities;
 using Google.Apis.Tasks.v1.Data;
@@ -37,76 +38,55 @@ using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 {
-  internal class GoogleServerSettingsTemplateViewModel : ViewModelBase, IServerSettingsTemplateViewModel
+  internal class GoogleServerSettingsTemplateViewModel : ModelBase, IServerSettingsTemplateViewModel
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodBase.GetCurrentMethod().DeclaringType);
 
-    private string _emailAddress;
-    private string _calenderUrl;
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
+    private readonly OptionsModel _prototypeModel;
 
-    public GoogleServerSettingsTemplateViewModel (IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
+    public GoogleServerSettingsTemplateViewModel(IOutlookAccountPasswordProvider outlookAccountPasswordProvider, OptionsModel prototypeModel)
     {
-      _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
-    }
+      if (outlookAccountPasswordProvider == null) throw new ArgumentNullException(nameof(outlookAccountPasswordProvider));
+      if (prototypeModel == null) throw new ArgumentNullException(nameof(prototypeModel));
 
+      _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
+      _prototypeModel = prototypeModel;
+
+      RegisterPropertyChangePropagation(_prototypeModel, nameof(_prototypeModel.CalenderUrl), nameof(CalenderUrl));
+      RegisterPropertyChangePropagation(_prototypeModel, nameof(_prototypeModel.EmailAddress), nameof(EmailAddress));
+    }
 
     public string CalenderUrl
     {
-      get { return _calenderUrl; }
-      set { CheckedPropertyChange (ref _calenderUrl, value); }
+      get { return _prototypeModel.CalenderUrl; }
+      set { _prototypeModel.CalenderUrl = value; }
     }
 
     public string EmailAddress
     {
-      get { return _emailAddress; }
+      get { return _prototypeModel.EmailAddress; }
       set
       {
-        if (!Equals (_emailAddress, value))
-        {
-          _emailAddress = value;
-          // ReSharper disable once ExplicitCallerInfoArgument
-          OnPropertyChanged (nameof (EmailAddress));
-        }
+        _prototypeModel.EmailAddress = value;
+        _prototypeModel.UserName = value;
       }
     }
-   
-    public void SetOptions (Contracts.Options options)
-    {
-      EmailAddress = options.EmailAddress;
-      if (!string.IsNullOrEmpty (options.CalenderUrl))
-        CalenderUrl = options.CalenderUrl;
-      else
-        CalenderUrl = OptionTasks.GoogleDavBaseUrl;
-    }
-
-    public void FillOptions (Contracts.Options options, CalendarData resource)
+    
+    public void SetResourceUrl (OptionsModel options, CalendarData resource)
     {
       options.CalenderUrl = resource.Uri.ToString();
-      options.ServerAdapterType = ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth;
-      FillOptions (options);
     }
 
-    public void FillOptions (Contracts.Options options, AddressBookData resource)
+    public void SetResourceUrl (OptionsModel options, AddressBookData resource)
     {
       options.CalenderUrl = string.Empty;
-      options.ServerAdapterType = ServerAdapterType.GoogleContactApi;
-      FillOptions (options);
+      options.UseGoogleNativeApi = true;
     }
 
-    public void FillOptions (Contracts.Options options, TaskListData resource)
+    public void SetResourceUrl (OptionsModel options, TaskListData resource)
     {
       options.CalenderUrl = resource.Id;
-      options.ServerAdapterType = ServerAdapterType.GoogleTaskApi;
-      FillOptions (options);
-    }
-
-    private void FillOptions (Contracts.Options options)
-    {
-      options.UserName = EmailAddress;
-      options.Password = new SecureString ();
-      options.EmailAddress = EmailAddress;
-      options.UseAccountPassword = false;
     }
 
     public void DiscoverAccountServerSettings()
@@ -115,46 +95,29 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       EmailAddress = serverAccountSettings.EmailAddress;
     }
 
-    public async Task<ServerResources> GetServerResources (NetworkSettingsViewModel networkSettings, GeneralOptions generalOptions)
+    public async Task<ServerResources> GetServerResources ()
     {
       var trimmedUrl = CalenderUrl.Trim();
       var url = new Uri (trimmedUrl.EndsWith ("/") ? trimmedUrl : trimmedUrl + "/");
 
-      var webDavClient = CreateWebDavClient (networkSettings, generalOptions);
+      var webDavClient = _prototypeModel.CreateWebDavClient();
       var calDavDataAccess = new CalDavDataAccess (url, webDavClient);
       var foundResources = await calDavDataAccess.GetUserResourcesNoThrow (false);
 
       var foundAddressBooks = new[] { new AddressBookData (new Uri ("googleApi://defaultAddressBook"), "Default AddressBook") };
 
-      var service = await GoogleHttpClientFactory.LoginToGoogleTasksService (EmailAddress, SynchronizerFactory.CreateProxy (networkSettings.CreateProxyOptions()));
+      var service = await GoogleHttpClientFactory.LoginToGoogleTasksService (EmailAddress, SynchronizerFactory.CreateProxy (_prototypeModel.CreateProxyOptions()));
       var taskLists = await service.Tasklists.List().ExecuteAsync();
       var taskListsData = taskLists?.Items.Select (i => new TaskListData (i.Id, i.Title)).ToArray() ?? new TaskListData[] { };
 
       return new ServerResources (foundResources.CalendarResources, foundAddressBooks, taskListsData);
     }
 
-
-    private IWebDavClient CreateWebDavClient (NetworkSettingsViewModel networkSettings, GeneralOptions generalOptions)
+    public static GoogleServerSettingsTemplateViewModel DesignInstance => new GoogleServerSettingsTemplateViewModel(NullOutlookAccountPasswordProvider.Instance, OptionsModel.DesignInstance)
     {
-      return SynchronizerFactory.CreateWebDavClient (
-          EmailAddress,
-          SecureStringUtility.ToSecureString (string.Empty),
-          CalenderUrl,
-          generalOptions.CalDavConnectTimeout,
-          ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth,
-          networkSettings.CloseConnectionAfterEachRequest,
-          networkSettings.PreemptiveAuthentication,
-          networkSettings.ForceBasicAuthentication,
-          networkSettings.CreateProxyOptions(),
-          false,
-          generalOptions.AcceptInvalidCharsInServerResponse);
-    }
-
-    public static GoogleServerSettingsTemplateViewModel DesignInstance => new GoogleServerSettingsTemplateViewModel (NullOutlookAccountPasswordProvider.Instance )
-                                                                          {
-                                                                              CalenderUrl = "http://BulkUrl.com",
-                                                                              EmailAddress = "bla@bulk.com",
-                                                                          };
+      CalenderUrl = "http://BulkUrl.com",
+      EmailAddress = "bla@bulk.com",
+    };
 
 
   }

@@ -371,6 +371,11 @@
     <Compile Include="Ui\ConnectionTests\AccessPrivileges.cs" />
     <Compile Include="Ui\DelegateCommandHandlingRequerySuggested.cs" />
     <Compile Include="Ui\NullUiService.cs" />
+    <Compile Include="Ui\Options\EnumDisplayNameProvider.cs" />
+    <Compile Include="Ui\Options\IEnumDisplayNameProvider.cs" />
+    <Compile Include="Ui\Options\Models\ICustomPropertiesMappingConfigurationModel.cs" />
+    <Compile Include="Ui\Options\Models\MappingConfigurationModel.cs" />
+    <Compile Include="Ui\Options\ViewModels\DesignOptionsViewModelFactory.cs" />
     <Compile Include="Ui\ViewModels\ProgressViewModel.cs" />
     <Compile Include="Ui\Views\ProgressWindow.xaml.cs">
       <DependentUpon>ProgressWindow.xaml</DependentUpon>
@@ -388,7 +393,12 @@
     </Compile>
     <Compile Include="Ui\Options\IOptionTasks.cs" />
     <Compile Include="Ui\Options\ISynchronizationProfilesViewModel.cs" />
-    <Compile Include="Ui\Options\FolderDescriptor.cs" />
+    <Compile Include="Ui\Options\Models\ContactMappingConfigurationModel.cs" />
+    <Compile Include="Ui\Options\Models\EventMappingConfigurationModel.cs" />
+    <Compile Include="Ui\Options\Models\OptionsModel.cs" />
+    <Compile Include="Ui\Options\Models\PropertyMappingModel.cs" />
+    <Compile Include="Ui\Options\Models\TaskMappingConfigurationModel.cs" />
+    <Compile Include="Ui\Options\NullOptionTasks.cs" />
     <Compile Include="Ui\Options\ResourceSelection\ViewModels\ResourceDataViewModelBase.cs" />
     <Compile Include="Ui\Options\ResourceSelection\ViewModels\AddressBookDataViewModel.cs" />
     <Compile Include="Ui\Options\ResourceSelection\ViewModels\CalendarDataViewModel.cs" />
@@ -404,7 +414,7 @@
     <Compile Include="Ui\Options\Views\TimeRangeView.xaml.cs">
       <DependentUpon>TimeRangeView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Ui\OutlookFolder.cs" />
+    <Compile Include="Ui\OutlookFolderDescriptor.cs" />
     <Compile Include="Ui\ViewModels\GenericReportViewModel.cs" />
     <Compile Include="Ui\Views\GenericReportWindow.xaml.cs">
       <DependentUpon>GenericReportWindow.xaml</DependentUpon>
@@ -503,9 +513,6 @@
     <Compile Include="Scheduling\SynchronizerFactory.cs" />
     <Compile Include="ThoughtvCardWorkaround\ContactDataPreprocessor.cs" />
     <Compile Include="Ui\DelegateCommandWithoutCanExecuteDelegation.cs" />
-    <Compile Include="Ui\Options\DesignCurrentOptions.cs" />
-    <Compile Include="Ui\Options\ICurrentOptions.cs" />
-    <Compile Include="Ui\Options\ISyncSettingsControl.cs" />
     <Compile Include="Ui\Options\AutoDiscoveryResult.cs" />
     <Compile Include="Ui\DelegateCommand.cs" />
     <Compile Include="Ui\ColorInfo.cs" />
@@ -559,14 +566,11 @@
     <Compile Include="Ui\Options\ViewModels\IOptionsViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\IOptionsViewModelFactory.cs" />
     <Compile Include="Ui\Options\ViewModels\IOptionsViewModelParent.cs" />
-    <Compile Include="Ui\Options\ViewModels\IServerSettingsViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\Mapping\ContactMappingConfigurationViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\Mapping\EventMappingConfigurationViewModel.cs" />
-    <Compile Include="Ui\Options\ViewModels\Mapping\IMappingConfigurationViewModelFactory.cs" />
-    <Compile Include="Ui\Options\ViewModels\Mapping\MappingConfigurationViewModelFactory.cs" />
+    <Compile Include="Contracts\IMappingConfigurationViewModelFactory.cs" />
     <Compile Include="Ui\Options\ViewModels\Mapping\TaskMappingConfigurationViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\NetworkSettingsViewModel.cs" />
-    <Compile Include="Ui\Options\ViewModels\NullOptionsViewModelFactory.cs" />
     <Compile Include="Ui\Options\ViewModels\OptionsCollectionViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\OptionsViewModelBase.cs" />
     <Compile Include="Ui\Options\ViewModels\OptionsViewModelFactory.cs" />
@@ -702,7 +706,7 @@
     </Compile>
     <Compile Include="Ui\SystrayNotification\TrayNotifier.cs" />
     <Compile Include="Ui\UiService.cs" />
-    <Compile Include="Ui\ViewModelBasecs.cs" />
+    <Compile Include="Ui\ModelBase.cs" />
     <Compile Include="Utilities\ColorHelper.cs" />
     <Compile Include="Utilities\ExceptionHandler.cs" />
     <Compile Include="Utilities\IExceptionHandler.cs" />

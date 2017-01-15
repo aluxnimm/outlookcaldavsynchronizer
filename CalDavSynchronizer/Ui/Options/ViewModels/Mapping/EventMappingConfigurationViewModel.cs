@@ -25,39 +25,73 @@ using CalDavSynchronizer.Utilities;
 using Microsoft.Office.Interop.Outlook;
 using System.Linq;
 using System.Windows.Input;
+using CalDavSynchronizer.Ui.Options.Models;
 using log4net;
 using NodaTime.TimeZones;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 {
-  public class EventMappingConfigurationViewModel : ViewModelBase, ISubOptionsViewModel
+  public class EventMappingConfigurationViewModel : ModelBase, ISubOptionsViewModel
   {
-    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);
+    private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-    private OlCategoryShortcutKey _categoryShortcutKey;
-    private bool _createEventsInUtc;
-    private bool _useIanaTz;
-    private string _eventTz;
-    private bool _includeHistoricalData;
-    private bool _useGlobalAppointmentID;
-    private string _eventCategory;
-    private OlCategoryColor _eventCategoryColor;
-    private bool _includeEmptyEventCategoryFilter;
-    private bool _invertEventCategoryFilter;
-    private bool _mapAttendees;
-    private bool _mapBody;
-    private bool _mapRtfBodyToXAltDesc;
-    private bool _mapXAltDescToRtfBody;
-    private bool _mapClassConfidentialToSensitivityPrivate;
-    private bool _mapClassPublicToSensitivityPrivate;
-    private ReminderMapping _mapReminder;
-    private bool _mapSensitivityPrivateToClassConfidential;
-    private bool _scheduleAgentClient;
-    private bool _sendNoAppointmentNotifications;
-    private bool _useEventCategoryColorAndMapFromCalendarColor;
-    private readonly ICurrentOptions _currentOptions;
-    private bool _cleanupDuplicateEvents;
-    private readonly CustomPropertyMappingViewModel _customPropertyMappingViewModel;
+    private readonly EventMappingConfigurationModel _model;
+    private readonly OptionsModel _optionsModel;
+
+    private bool _isSelected;
+    private bool _isExpanded;
+
+    public EventMappingConfigurationViewModel(IReadOnlyList<string> availableCategories, EventMappingConfigurationModel model, OptionsModel optionsModel)
+    {
+      if (availableCategories == null)
+        throw new ArgumentNullException(nameof(availableCategories));
+      if (model == null) throw new ArgumentNullException(nameof(model));
+      if (optionsModel == null) throw new ArgumentNullException(nameof(optionsModel));
+
+      AvailableCategories = availableCategories;
+      _model = model;
+      _optionsModel = optionsModel;
+      SetServerCalendarColorCommand = new DelegateCommand(_ =>
+      {
+        ComponentContainer.EnsureSynchronizationContext();
+        SetServerCalendarColorAsync();
+      });
+      GetServerCalendarColorCommand = new DelegateCommand(_ =>
+      {
+        ComponentContainer.EnsureSynchronizationContext();
+        GetServerCalendarColorAsync();
+      });
+
+      Items = new[] { new CustomPropertyMappingViewModel(model) };
+
+      RegisterPropertyChangePropagation(_model, nameof(_model.CategoryShortcutKey), nameof(CategoryShortcutKey));
+      RegisterPropertyChangePropagation(_model, nameof(_model.CreateEventsInUtc), nameof(CreateEventsInUtc));
+      RegisterPropertyChangePropagation(_model, nameof(_model.UseIanaTz), nameof(UseIanaTz));
+      RegisterPropertyChangePropagation(_model, nameof(_model.EventTz), nameof(EventTz));
+      RegisterPropertyChangePropagation(_model, nameof(_model.IncludeHistoricalData), nameof(IncludeHistoricalData));
+      RegisterPropertyChangePropagation(_model, nameof(_model.UseGlobalAppointmentId), nameof(UseGlobalAppointmentId));
+      RegisterPropertyChangePropagation(_model, nameof(_model.EventCategory), nameof(EventCategory));
+      RegisterPropertyChangePropagation(_model, nameof(_model.EventCategoryColor), nameof(EventCategoryColor));
+      RegisterPropertyChangePropagation(_model, nameof(_model.IncludeEmptyEventCategoryFilter), nameof(IncludeEmptyEventCategoryFilter));
+      RegisterPropertyChangePropagation(_model, nameof(_model.InvertEventCategoryFilter), nameof(InvertEventCategoryFilter));
+      RegisterPropertyChangePropagation(_model, nameof(_model.MapAttendees), nameof(MapAttendees));
+      RegisterPropertyChangePropagation(_model, nameof(_model.MapAttendees), nameof(MapAttendees));
+      RegisterPropertyChangePropagation(_model, nameof(_model.MapBody), nameof(MapBody));
+      RegisterPropertyChangePropagation(_model, nameof(_model.MapRtfBodyToXAltDesc), nameof(MapRtfBodyToXAltDesc));
+      RegisterPropertyChangePropagation(_model, nameof(_model.MapXAltDescToRtfBody), nameof(MapXAltDescToRtfBody));
+      RegisterPropertyChangePropagation(_model, nameof(_model.MapClassConfidentialToSensitivityPrivate), nameof(MapClassConfidentialToSensitivityPrivate));
+      RegisterPropertyChangePropagation(_model, nameof(_model.MapClassConfidentialToSensitivityPrivate), nameof(MapClassConfidentialToSensitivityPrivate));
+      RegisterPropertyChangePropagation(_model, nameof(_model.MapReminder), nameof(MapReminder));
+      RegisterPropertyChangePropagation(_model, nameof(_model.MapSensitivityPrivateToClassConfidential), nameof(MapSensitivityPrivateToClassConfidential));
+      RegisterPropertyChangePropagation(_model, nameof(_model.MapClassPublicToSensitivityPrivate), nameof(MapClassPublicToSensitivityPrivate));
+      RegisterPropertyChangePropagation(_model, nameof(_model.ScheduleAgentClient), nameof(ScheduleAgentClient));
+      RegisterPropertyChangePropagation(_model, nameof(_model.SendNoAppointmentNotifications), nameof(SendNoAppointmentNotifications));
+      RegisterPropertyChangePropagation(_model, nameof(_model.UseEventCategoryColorAndMapFromCalendarColor), nameof(UseEventCategoryColorAndMapFromCalendarColor));
+      RegisterPropertyChangePropagation(_model, nameof(_model.CleanupDuplicateEvents), nameof(CleanupDuplicateEvents));
+      RegisterPropertyChangePropagation(_model, nameof(_model.UseEventCategoryAsFilter), nameof(UseEventCategoryAsFilter));
+      RegisterPropertyChangePropagation(_model, nameof(_model.UseEventCategoryAsFilterAndMapColor), nameof(UseEventCategoryAsFilterAndMapColor));
+
+  }
 
     public IList<Item<ReminderMapping>> AvailableReminderMappings { get; } = new List<Item<ReminderMapping>>
                                                                              {
@@ -86,237 +120,153 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     {
       get
       {
-        var zones = TzdbDateTimeZoneSource.Default.CanonicalIdMap.Values.Distinct().Where (v => v.Contains ("/")).ToList();
+        var zones = TzdbDateTimeZoneSource.Default.CanonicalIdMap.Values.Distinct().Where(v => v.Contains("/")).ToList();
         zones.Sort();
         return zones;
       }
     }
 
-    public IList<Item<OlCategoryColor>> AvailableEventCategoryColors { get; } = 
-      ColorHelper.CategoryColors.Select (kv => new Item<OlCategoryColor> (kv.Key, kv.Key.ToString().Substring (15))).ToList();
+    public IList<Item<OlCategoryColor>> AvailableEventCategoryColors { get; } =
+      ColorHelper.CategoryColors.Select(kv => new Item<OlCategoryColor>(kv.Key, kv.Key.ToString().Substring(15))).ToList();
 
     public ICommand GetServerCalendarColorCommand { get; }
     public ICommand SetServerCalendarColorCommand { get; }
 
     public OlCategoryShortcutKey CategoryShortcutKey
     {
-      get { return _categoryShortcutKey; }
-      set
-      {
-        CheckedPropertyChange (ref _categoryShortcutKey, value);
-      }
+      get { return _model.CategoryShortcutKey; }
+      set { _model.CategoryShortcutKey = value; }
     }
 
     public bool CreateEventsInUtc
     {
-      get { return _createEventsInUtc; }
-      set
-      {
-        if (value)
-        {
-          UseIanaTz = false;
-          IncludeHistoricalData = false;
-        }
-        CheckedPropertyChange (ref _createEventsInUtc, value);
-      }
+      get { return _model.CreateEventsInUtc; }
+      set { _model.CreateEventsInUtc = value; }
     }
 
     public bool UseIanaTz
     {
-      get { return _useIanaTz; }
-      set
-      {
-        if (value)
-          CreateEventsInUtc = false;
-
-        CheckedPropertyChange (ref _useIanaTz, value);
-      }
+      get { return _model.UseIanaTz; }
+      set { _model.UseIanaTz = value; }
     }
+
     public string EventTz
     {
-      get { return _eventTz; }
-      set
-      {
-        CheckedPropertyChange (ref _eventTz, value);
-      }
+      get { return _model.EventTz; }
+      set { _model.EventTz = value; }
     }
+
     public bool IncludeHistoricalData
     {
-      get { return _includeHistoricalData; }
-      set
-      {
-  
-        CheckedPropertyChange (ref _includeHistoricalData, value);
-      }
+      get { return _model.IncludeHistoricalData; }
+      set { _model.IncludeHistoricalData = value; }
     }
-    public bool UseGlobalAppointmendID
+
+    public bool UseGlobalAppointmentId
     {
-      get { return _useGlobalAppointmentID; }
-      set
-      {
-        CheckedPropertyChange (ref _useGlobalAppointmentID, value);
-      }
+      get { return _model.UseGlobalAppointmentId; }
+      set { _model.UseGlobalAppointmentId = value; }
     }
+
 
     public bool CleanupDuplicateEvents
     {
-      get { return _cleanupDuplicateEvents; }
-      set
-      {
-        CheckedPropertyChange (ref _cleanupDuplicateEvents, value);
-      }
-    }
-  
-    public string EventCategory
-    {
-      get { return _eventCategory; }
-      set
-      {
-        CheckedPropertyChange (ref _eventCategory, value);
-        // ReSharper disable once ExplicitCallerInfoArgument
-        OnPropertyChanged (nameof(UseEventCategoryAsFilter));
-        // ReSharper disable once ExplicitCallerInfoArgument
-        OnPropertyChanged (nameof(UseEventCategoryAsFilterAndMapColor));
-      }
+      get { return _model.CleanupDuplicateEvents; }
+      set { _model.CleanupDuplicateEvents = value; }
     }
 
-    public bool UseEventCategoryAsFilter => !String.IsNullOrEmpty (_eventCategory);
-    public bool UseEventCategoryAsFilterAndMapColor => !String.IsNullOrEmpty (_eventCategory) && _useEventCategoryColorAndMapFromCalendarColor;
+    public string EventCategory
+    {
+      get { return _model.EventCategory; }
+      set { _model.EventCategory = value; }
+    }
+
+    public bool UseEventCategoryAsFilter => _model.UseEventCategoryAsFilter;
+    public bool UseEventCategoryAsFilterAndMapColor => _model.UseEventCategoryAsFilterAndMapColor;
 
 
     public OlCategoryColor EventCategoryColor
     {
-      get { return _eventCategoryColor; }
-      set
-      {
-        CheckedPropertyChange (ref _eventCategoryColor, value);
-      }
+      get { return _model.EventCategoryColor; }
+      set { _model.EventCategoryColor = value; }
     }
 
     public bool IncludeEmptyEventCategoryFilter
     {
-      get { return _includeEmptyEventCategoryFilter; }
-      set
-      {
-        if (value)
-        {
-          InvertEventCategoryFilter = false;
-        }
-        CheckedPropertyChange (ref _includeEmptyEventCategoryFilter, value);
-      }
+      get { return _model.IncludeEmptyEventCategoryFilter; }
+      set { _model.IncludeEmptyEventCategoryFilter = value; }
     }
 
     public bool InvertEventCategoryFilter
     {
-      get { return _invertEventCategoryFilter; }
-      set
-      {
-        if (value)
-        {
-          IncludeEmptyEventCategoryFilter = false;
-        }
-        CheckedPropertyChange (ref _invertEventCategoryFilter, value);
-      }
+      get { return _model.InvertEventCategoryFilter; }
+      set { _model.InvertEventCategoryFilter = value; }
     }
 
     public bool MapAttendees
     {
-      get { return _mapAttendees; }
-      set
-      {
-        CheckedPropertyChange (ref _mapAttendees, value);
-      }
+      get { return _model.MapAttendees; }
+      set { _model.MapAttendees = value; }
     }
 
     public bool MapBody
     {
-      get { return _mapBody; }
-      set
-      {
-        CheckedPropertyChange (ref _mapBody, value);
-      }
+      get { return _model.MapBody; }
+      set { _model.MapBody = value; }
     }
 
     public bool MapRtfBodyToXAltDesc
     {
-      get { return _mapRtfBodyToXAltDesc; }
-      set
-      {
-        CheckedPropertyChange (ref _mapRtfBodyToXAltDesc, value);
-      }
+      get { return _model.MapRtfBodyToXAltDesc; }
+      set { _model.MapRtfBodyToXAltDesc = value; }
     }
 
     public bool MapXAltDescToRtfBody
     {
-      get { return _mapXAltDescToRtfBody; }
-      set
-      {
-        CheckedPropertyChange (ref _mapXAltDescToRtfBody, value);
-      }
+      get { return _model.MapXAltDescToRtfBody; }
+      set { _model.MapXAltDescToRtfBody = value; }
     }
+
     public bool MapClassConfidentialToSensitivityPrivate
     {
-      get { return _mapClassConfidentialToSensitivityPrivate; }
-      set
-      {
-        CheckedPropertyChange (ref _mapClassConfidentialToSensitivityPrivate, value);
-      }
+      get { return _model.MapClassConfidentialToSensitivityPrivate; }
+      set { _model.MapClassConfidentialToSensitivityPrivate = value; }
     }
 
     public bool MapClassPublicToSensitivityPrivate
     {
-      get { return _mapClassPublicToSensitivityPrivate; }
-      set
-      {
-        CheckedPropertyChange (ref _mapClassPublicToSensitivityPrivate, value);
-      }
+      get { return _model.MapClassPublicToSensitivityPrivate; }
+      set { _model.MapClassPublicToSensitivityPrivate = value; }
     }
 
     public ReminderMapping MapReminder
     {
-      get { return _mapReminder; }
-      set
-      {
-        CheckedPropertyChange (ref _mapReminder, value);
-      }
+      get { return _model.MapReminder; }
+      set { _model.MapReminder = value; }
     }
 
     public bool MapSensitivityPrivateToClassConfidential
     {
-      get { return _mapSensitivityPrivateToClassConfidential; }
-      set
-      {
-        CheckedPropertyChange (ref _mapSensitivityPrivateToClassConfidential, value);
-      }
+      get { return _model.MapSensitivityPrivateToClassConfidential; }
+      set { _model.MapSensitivityPrivateToClassConfidential = value; }
     }
 
     public bool ScheduleAgentClient
     {
-      get { return _scheduleAgentClient; }
-      set
-      {
-        CheckedPropertyChange (ref _scheduleAgentClient, value);
-      }
+      get { return _model.ScheduleAgentClient; }
+      set { _model.ScheduleAgentClient = value; }
     }
 
     public bool SendNoAppointmentNotifications
     {
-      get { return _sendNoAppointmentNotifications; }
-      set
-      {
-        CheckedPropertyChange (ref _sendNoAppointmentNotifications, value);
-      }
+      get { return _model.SendNoAppointmentNotifications; }
+      set { _model.SendNoAppointmentNotifications = value; }
     }
 
     public bool UseEventCategoryColorAndMapFromCalendarColor
     {
-      get { return _useEventCategoryColorAndMapFromCalendarColor; }
-      set
-      {
-        CheckedPropertyChange (ref _useEventCategoryColorAndMapFromCalendarColor, value);
-        // ReSharper disable once ExplicitCallerInfoArgument
-        OnPropertyChanged (nameof (UseEventCategoryAsFilterAndMapColor));
-      }
+      get { return _model.UseEventCategoryColorAndMapFromCalendarColor; }
+      set { _model.UseEventCategoryColorAndMapFromCalendarColor = value; }
     }
 
     public bool IsSelected
@@ -324,7 +274,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _isSelected; }
       set
       {
-        CheckedPropertyChange (ref _isSelected, value);
+        CheckedPropertyChange(ref _isSelected, value);
       }
     }
 
@@ -333,181 +283,84 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _isExpanded; }
       set
       {
-        CheckedPropertyChange (ref _isExpanded, value);
+        CheckedPropertyChange(ref _isExpanded, value);
       }
     }
 
     public IReadOnlyList<string> AvailableCategories { get; }
 
 
-    public void SetOptions (CalDavSynchronizer.Contracts.Options options)
-    {
-      SetOptions (options.MappingConfiguration as EventMappingConfiguration ?? new EventMappingConfiguration());
-    }
-
-    public void FillOptions(CalDavSynchronizer.Contracts.Options options)
-    {
-      var eventMappingConfiguration = options.GetOrCreateMappingConfiguration<EventMappingConfiguration>();
-      FillOptions(eventMappingConfiguration);
-      _customPropertyMappingViewModel.FillOptions(eventMappingConfiguration);
-    }
-
-    public void SetOptions (EventMappingConfiguration mappingConfiguration)
-    {
-      CategoryShortcutKey = mappingConfiguration.CategoryShortcutKey;
-      CreateEventsInUtc = mappingConfiguration.CreateEventsInUTC;
-      UseIanaTz = mappingConfiguration.UseIanaTz;
-      EventTz = mappingConfiguration.EventTz;
-      IncludeHistoricalData = mappingConfiguration.IncludeHistoricalData;
-      UseGlobalAppointmendID = mappingConfiguration.UseGlobalAppointmentID;
-      EventCategory = mappingConfiguration.EventCategory;
-      EventCategoryColor = mappingConfiguration.EventCategoryColor;
-      IncludeEmptyEventCategoryFilter = mappingConfiguration.IncludeEmptyEventCategoryFilter;
-      InvertEventCategoryFilter = mappingConfiguration.InvertEventCategoryFilter;
-      MapAttendees = mappingConfiguration.MapAttendees;
-      MapBody = mappingConfiguration.MapBody;
-      MapRtfBodyToXAltDesc = mappingConfiguration.MapRtfBodyToXAltDesc;
-      MapXAltDescToRtfBody = mappingConfiguration.MapXAltDescToRtfBody;
-      MapClassConfidentialToSensitivityPrivate = mappingConfiguration.MapClassConfidentialToSensitivityPrivate;
-      MapClassPublicToSensitivityPrivate = mappingConfiguration.MapClassPublicToSensitivityPrivate;
-      MapReminder = mappingConfiguration.MapReminder;
-      MapSensitivityPrivateToClassConfidential = mappingConfiguration.MapSensitivityPrivateToClassConfidential;
-      ScheduleAgentClient = mappingConfiguration.ScheduleAgentClient;
-      SendNoAppointmentNotifications = mappingConfiguration.SendNoAppointmentNotifications;
-      UseEventCategoryColorAndMapFromCalendarColor = mappingConfiguration.UseEventCategoryColorAndMapFromCalendarColor;
-      CleanupDuplicateEvents = mappingConfiguration.CleanupDuplicateEvents;
-      _customPropertyMappingViewModel.SetOptions (mappingConfiguration);
-    }
-
-    public void FillOptions(EventMappingConfiguration mappingConfiguration)
-    {
-
-      mappingConfiguration.CategoryShortcutKey = _categoryShortcutKey;
-      mappingConfiguration.CreateEventsInUTC = _createEventsInUtc;
-      mappingConfiguration.UseIanaTz = _useIanaTz;
-      mappingConfiguration.EventTz = _eventTz;
-      mappingConfiguration.IncludeHistoricalData = _includeHistoricalData;
-      mappingConfiguration.UseGlobalAppointmentID = _useGlobalAppointmentID;
-      mappingConfiguration.EventCategory = _eventCategory;
-      mappingConfiguration.EventCategoryColor = _eventCategoryColor;
-      mappingConfiguration.IncludeEmptyEventCategoryFilter = _includeEmptyEventCategoryFilter;
-      mappingConfiguration.InvertEventCategoryFilter = _invertEventCategoryFilter;
-      mappingConfiguration.MapAttendees = _mapAttendees;
-      mappingConfiguration.MapBody = _mapBody;
-      mappingConfiguration.MapRtfBodyToXAltDesc = _mapRtfBodyToXAltDesc;
-      mappingConfiguration.MapXAltDescToRtfBody = _mapXAltDescToRtfBody;
-      mappingConfiguration.MapClassConfidentialToSensitivityPrivate = _mapClassConfidentialToSensitivityPrivate;
-      mappingConfiguration.MapReminder = _mapReminder;
-      mappingConfiguration.MapSensitivityPrivateToClassConfidential = _mapSensitivityPrivateToClassConfidential;
-      mappingConfiguration.MapClassPublicToSensitivityPrivate = _mapClassPublicToSensitivityPrivate;
-      mappingConfiguration.ScheduleAgentClient = _scheduleAgentClient;
-      mappingConfiguration.SendNoAppointmentNotifications = _sendNoAppointmentNotifications;
-      mappingConfiguration.UseEventCategoryColorAndMapFromCalendarColor = _useEventCategoryColorAndMapFromCalendarColor;
-      mappingConfiguration.CleanupDuplicateEvents = _cleanupDuplicateEvents;
-    }
 
     public string Name => "Event mapping configuration";
 
-    public bool Validate (StringBuilder errorMessageBuilder)
-    {
-      return _customPropertyMappingViewModel.Validate(errorMessageBuilder);
-    }
-
-
     public IEnumerable<ITreeNodeViewModel> Items { get; }
 
-    public static EventMappingConfigurationViewModel DesignInstance = new EventMappingConfigurationViewModel(new[] {"Cat1","Cat2"}, new DesignCurrentOptions())
-                                                                      {
-                                                                          CategoryShortcutKey = OlCategoryShortcutKey.olCategoryShortcutKeyCtrlF4,
-                                                                          CreateEventsInUtc = true,
-                                                                          EventTz = "TheTimeZoneID",
-                                                                          IncludeHistoricalData = true,
-                                                                          UseGlobalAppointmendID = true,
-                                                                          EventCategory = "TheCategory",
-                                                                          EventCategoryColor = OlCategoryColor.olCategoryColorDarkMaroon,
-                                                                          IncludeEmptyEventCategoryFilter = false,
-                                                                          InvertEventCategoryFilter = true,
-                                                                          MapAttendees = true,
-                                                                          MapBody = true,
-                                                                          MapRtfBodyToXAltDesc = true,
-                                                                          MapXAltDescToRtfBody = true,
-                                                                          MapClassConfidentialToSensitivityPrivate = true,
-                                                                          MapClassPublicToSensitivityPrivate = true,
-                                                                          MapReminder = ReminderMapping.JustUpcoming,
-                                                                          MapSensitivityPrivateToClassConfidential = true,
-                                                                          ScheduleAgentClient = true,
-                                                                          SendNoAppointmentNotifications = true,
-                                                                          UseEventCategoryColorAndMapFromCalendarColor = true,
-                                                                          CleanupDuplicateEvents = true,
-                                                                      };
-
-    private bool _isSelected;
-    private bool _isExpanded;
-
-    public EventMappingConfigurationViewModel (IReadOnlyList<string> availableCategories, ICurrentOptions currentOptions)
+    public static EventMappingConfigurationViewModel DesignInstance = new EventMappingConfigurationViewModel(new[] { "Cat1", "Cat2" }, new EventMappingConfigurationModel(new EventMappingConfiguration()), OptionsModel.DesignInstance)
     {
-      if (availableCategories == null)
-        throw new ArgumentNullException (nameof (availableCategories));
-      if (currentOptions == null)
-        throw new ArgumentNullException (nameof (currentOptions));
+      CategoryShortcutKey = OlCategoryShortcutKey.olCategoryShortcutKeyCtrlF4,
+      CreateEventsInUtc = true,
+      EventTz = "TheTimeZoneID",
+      IncludeHistoricalData = true,
+      UseGlobalAppointmentId = true,
+      EventCategory = "TheCategory",
+      EventCategoryColor = OlCategoryColor.olCategoryColorDarkMaroon,
+      IncludeEmptyEventCategoryFilter = false,
+      InvertEventCategoryFilter = true,
+      MapAttendees = true,
+      MapBody = true,
+      MapRtfBodyToXAltDesc = true,
+      MapXAltDescToRtfBody = true,
+      MapClassConfidentialToSensitivityPrivate = true,
+      MapClassPublicToSensitivityPrivate = true,
+      MapReminder = ReminderMapping.JustUpcoming,
+      MapSensitivityPrivateToClassConfidential = true,
+      ScheduleAgentClient = true,
+      SendNoAppointmentNotifications = true,
+      UseEventCategoryColorAndMapFromCalendarColor = true,
+      CleanupDuplicateEvents = true,
+    };
 
-      AvailableCategories = availableCategories;
-      _currentOptions = currentOptions;
-      SetServerCalendarColorCommand = new DelegateCommand (_ =>
-      {
-        ComponentContainer.EnsureSynchronizationContext();
-        SetServerCalendarColorAsync();
-      });
-      GetServerCalendarColorCommand = new DelegateCommand (_ =>
-      {
-        ComponentContainer.EnsureSynchronizationContext();
-        GetServerCalendarColorAsync();
-      });
-
-      _customPropertyMappingViewModel = new CustomPropertyMappingViewModel();
-      Items = new[] {_customPropertyMappingViewModel};
-    }
-
-    private async void GetServerCalendarColorAsync ()
+   
+    private async void GetServerCalendarColorAsync()
     {
       try
       {
-        var serverColor = await _currentOptions.CreateCalDavDataAccess().GetCalendarColorNoThrow();
+        var serverColor = await _optionsModel.CreateCalDavDataAccess().GetCalendarColorNoThrow();
 
         if (serverColor != null)
         {
-          EventCategoryColor = ColorHelper.FindMatchingCategoryColor (serverColor.Value);
+          EventCategoryColor = ColorHelper.FindMatchingCategoryColor(serverColor.Value);
         }
       }
       catch (System.Exception x)
       {
-        ExceptionHandler.Instance.DisplayException (x, s_logger);
+        ExceptionHandler.Instance.DisplayException(x, s_logger);
       }
     }
 
-    private async void SetServerCalendarColorAsync ()
+    private async void SetServerCalendarColorAsync()
     {
       try
       {
         if (EventCategoryColor != OlCategoryColor.olCategoryColorNone)
         {
-          if (await _currentOptions.CreateCalDavDataAccess ().SetCalendarColorNoThrow (ColorHelper.CategoryColors[EventCategoryColor]))
+          if (await _optionsModel.CreateCalDavDataAccess().SetCalendarColorNoThrow(ColorHelper.CategoryColors[EventCategoryColor]))
           {
-            System.Windows.MessageBox.Show ("Successfully updated the server calendar color!");
+            System.Windows.MessageBox.Show("Successfully updated the server calendar color!");
           }
           else
           {
-            System.Windows.MessageBox.Show ("Error updating the server calendar color!");
+            System.Windows.MessageBox.Show("Error updating the server calendar color!");
           }
         }
         else
         {
-          System.Windows.MessageBox.Show ("No color set for updating the server calendar color!");
+          System.Windows.MessageBox.Show("No color set for updating the server calendar color!");
         }
       }
       catch (System.Exception x)
       {
-        ExceptionHandler.Instance.DisplayException (x, s_logger);
+        ExceptionHandler.Instance.DisplayException(x, s_logger);
       }
     }
   }

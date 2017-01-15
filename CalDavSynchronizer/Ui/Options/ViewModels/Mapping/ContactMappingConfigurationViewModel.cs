@@ -20,73 +20,71 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options.Models;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 {
-  public class ContactMappingConfigurationViewModel : ViewModelBase, ISubOptionsViewModel
+  public class ContactMappingConfigurationViewModel : ModelBase, ISubOptionsViewModel
   {
-    private bool _mapBirthday;
-    private bool _mapContactPhoto;
-    private bool _keepOutlookPhoto;
-    private bool _keepOutlookFileAs;
-    private bool _fixPhoneNumberFormat;
-    private bool _mapDistributionLists;
     private bool _isSelected;
     private bool _isExpanded;
-    private DistributionListType _distributionListType;
+    private readonly ContactMappingConfigurationModel _model;
+
+    public ContactMappingConfigurationViewModel(ContactMappingConfigurationModel model)
+    {
+      if (model == null) throw new ArgumentNullException(nameof(model));
+
+      _model = model;
+
+      RegisterPropertyChangePropagation(_model, nameof(_model.MapBirthday), nameof(MapBirthday));
+      RegisterPropertyChangePropagation(_model, nameof(_model.MapContactPhoto), nameof(MapContactPhoto));
+      RegisterPropertyChangePropagation(_model, nameof(_model.KeepOutlookPhoto), nameof(KeepOutlookPhoto));
+      RegisterPropertyChangePropagation(_model, nameof(_model.KeepOutlookFileAs), nameof(KeepOutlookFileAs));
+      RegisterPropertyChangePropagation(_model, nameof(_model.FixPhoneNumberFormat), nameof(FixPhoneNumberFormat));
+      RegisterPropertyChangePropagation(_model, nameof(_model.MapDistributionLists), nameof(MapDistributionLists));
+      RegisterPropertyChangePropagation(_model, nameof(_model.DistributionListType), nameof(DistributionListType));
+    }
 
     public bool MapBirthday
     {
-      get { return _mapBirthday; }
-      set
-      {
-        CheckedPropertyChange (ref _mapBirthday, value);
-      }
+      get { return _model.MapBirthday; }
+      set { _model.MapBirthday = value; }
     }
 
     public bool MapContactPhoto
     {
-      get { return _mapContactPhoto; }
-      set
-      {
-        CheckedPropertyChange (ref _mapContactPhoto, value);
-      }
+      get { return _model.MapContactPhoto; }
+      set { _model.MapContactPhoto = value; }
     }
 
     public bool KeepOutlookPhoto
     {
-      get { return _keepOutlookPhoto; }
-      set
-      {
-        CheckedPropertyChange(ref _keepOutlookPhoto, value);
-      }
+      get { return _model.KeepOutlookPhoto; }
+      set { _model.KeepOutlookPhoto = value; }
     }
 
     public bool KeepOutlookFileAs
     {
-      get { return _keepOutlookFileAs; }
-      set
-      {
-        CheckedPropertyChange(ref _keepOutlookFileAs, value);
-      }
+      get { return _model.KeepOutlookFileAs; }
+      set { _model.KeepOutlookFileAs = value; }
     }
 
     public bool FixPhoneNumberFormat
     {
-      get { return _fixPhoneNumberFormat; }
-      set
-      {
-        CheckedPropertyChange (ref _fixPhoneNumberFormat, value);
-      }
+      get { return _model.FixPhoneNumberFormat; }
+      set { _model.FixPhoneNumberFormat = value; }
     }
 
     public bool MapDistributionLists
     {
-      get { return _mapDistributionLists; }
-      set
-      {
-        CheckedPropertyChange(ref _mapDistributionLists, value);
-      }
+      get { return _model.MapDistributionLists; }
+      set { _model.MapDistributionLists = value; }
+    }
+
+    public DistributionListType DistributionListType
+    {
+      get { return _model.DistributionListType; }
+      set { _model.DistributionListType = value; }
     }
 
     public bool IsSelected
@@ -94,7 +92,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _isSelected; }
       set
       {
-        CheckedPropertyChange (ref _isSelected, value);
+        CheckedPropertyChange(ref _isSelected, value);
       }
     }
 
@@ -103,71 +101,34 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _isExpanded; }
       set
       {
-        CheckedPropertyChange (ref _isExpanded, value);
+        CheckedPropertyChange(ref _isExpanded, value);
       }
     }
 
-    public DistributionListType DistributionListType
-    {
-      get { return _distributionListType; }
-      set { CheckedPropertyChange(ref _distributionListType, value); }
-    }
+
 
     public IList<Item<DistributionListType>> AvailableDistributionListTypes { get; } = new List<Item<DistributionListType>>
                                                                                      {
                                                                                          new Item<DistributionListType> (DistributionListType.Sogo, "SOGo VLIST"),
                                                                                      };
 
-    public static ContactMappingConfigurationViewModel DesignInstance => new ContactMappingConfigurationViewModel
-                                                                         {
-                                                                             MapBirthday = true,
-                                                                             MapContactPhoto = true,
-                                                                             KeepOutlookPhoto = false,
-                                                                             KeepOutlookFileAs = true,
-                                                                             FixPhoneNumberFormat = false,
-                                                                             DistributionListType = DistributionListType.Sogo,
-                                                                             MapDistributionLists = true
-                                                                         };
-
-    
-    public void SetOptions (CalDavSynchronizer.Contracts.Options options)
+    public static ContactMappingConfigurationViewModel DesignInstance => new ContactMappingConfigurationViewModel(new ContactMappingConfigurationModel(new ContactMappingConfiguration()))
     {
-      SetOptions(options.MappingConfiguration as ContactMappingConfiguration ?? new ContactMappingConfiguration());
-    }
+      MapBirthday = true,
+      MapContactPhoto = true,
+      KeepOutlookPhoto = true,
+      KeepOutlookFileAs = true,
+      FixPhoneNumberFormat = true,
+      DistributionListType = DistributionListType.Sogo,
+      MapDistributionLists = true,
+    };
 
-    public void SetOptions (ContactMappingConfiguration mappingConfiguration)
-    {
-      MapBirthday = mappingConfiguration.MapBirthday;
-      MapContactPhoto = mappingConfiguration.MapContactPhoto;
-      KeepOutlookPhoto = mappingConfiguration.KeepOutlookPhoto;
-      KeepOutlookFileAs = mappingConfiguration.KeepOutlookFileAs;
-      FixPhoneNumberFormat = mappingConfiguration.FixPhoneNumberFormat;
-      MapDistributionLists = mappingConfiguration.MapDistributionLists;
-      DistributionListType = mappingConfiguration.DistributionListType;
-    }
 
-    public void FillOptions (CalDavSynchronizer.Contracts.Options options)
-    {
-      options.MappingConfiguration = new ContactMappingConfiguration
-                                     {
-                                         MapBirthday = _mapBirthday,
-                                         MapContactPhoto = _mapContactPhoto,
-                                         KeepOutlookPhoto = _keepOutlookPhoto,
-                                         KeepOutlookFileAs = _keepOutlookFileAs,
-                                         FixPhoneNumberFormat = _fixPhoneNumberFormat,
-                                         MapDistributionLists = _mapDistributionLists,
-                                         DistributionListType = _distributionListType
-                                     };
-    }
+
+
 
     public string Name => "Contact mapping configuration";
     public IEnumerable<ITreeNodeViewModel> Items { get; } = new ITreeNodeViewModel[0];
-
-    public bool Validate (StringBuilder errorMessageBuilder)
-    {
-      return true;
-    }
-
     public IEnumerable<ISubOptionsViewModel> SubOptions => new ISubOptionsViewModel[] { };
   }
 }

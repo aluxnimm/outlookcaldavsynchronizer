@@ -30,7 +30,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     new IEnumerable<ISubOptionsViewModel> Items { get; }
 
-    void SetOptions (Contracts.Options options);
     Contracts.Options GetOptionsOrNull ();
     bool Validate (StringBuilder errorMessageBuilder);
 

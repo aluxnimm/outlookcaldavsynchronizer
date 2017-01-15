@@ -17,12 +17,14 @@
 using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options.Models;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  internal interface IOptionsViewModelFactory
+  public interface IOptionsViewModelFactory
   {
-    List<IOptionsViewModel> Create (IReadOnlyCollection<CalDavSynchronizer.Contracts.Options> options, GeneralOptions generalOptions);
-    IOptionsViewModel CreateTemplate (CalDavSynchronizer.Contracts.Options options, GeneralOptions generalOptions, ProfileType type);
+    List<IOptionsViewModel> Create (IReadOnlyCollection<OptionsModel> options);
+    List<IOptionsViewModel> Create (IReadOnlyCollection<Contracts.Options> options);
+    IOptionsViewModel CreateTemplate (Contracts.Options prototype);
   }
 }

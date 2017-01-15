@@ -18,21 +18,33 @@
 using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options.Models;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  internal class NullOptionsViewModelFactory : IOptionsViewModelFactory
+  internal class DesignOptionsViewModelFactory : IOptionsViewModelFactory
   {
-    public static readonly IOptionsViewModelFactory Instance = new NullOptionsViewModelFactory();
+    public static readonly IOptionsViewModelFactory Instance = new DesignOptionsViewModelFactory();
 
-    public List<IOptionsViewModel> Create (IReadOnlyCollection<Contracts.Options> options, GeneralOptions generalOptions)
+    public List<IOptionsViewModel> Create(IReadOnlyCollection<Contracts.Options> options)
     {
       return new List<IOptionsViewModel>();
     }
 
-    public IOptionsViewModel CreateTemplate (Contracts.Options options, GeneralOptions generalOptions, ProfileType type)
+    public IOptionsViewModel CreateTemplate(Contracts.Options options, ProfileType type)
+    {
+      throw new NotSupportedException();
+    }
+
+    public List<IOptionsViewModel> Create(IReadOnlyCollection<OptionsModel> options)
+    {
+      return new List<IOptionsViewModel>();
+    }
+
+    public IOptionsViewModel CreateTemplate(Contracts.Options prototype)
     {
       throw new NotSupportedException();
     }
   }
 }
+

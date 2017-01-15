@@ -21,28 +21,30 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Input;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options.Models;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  public abstract class OptionsViewModelBase : ViewModelBase, IOptionsViewModel
+  public abstract class OptionsViewModelBase : ModelBase, IOptionsViewModel
   {
-    private readonly IOptionsViewModelParent _parent;
-    private bool _isActive;
-
-    private string _name;
+    private readonly OptionsModel _model;
     private IEnumerable<IOptionsSection> _sections;
     private IEnumerable<ISubOptionsViewModel> _subOptions;
     private bool _isSelected;
     private bool _isExpanded;
 
-    protected OptionsViewModelBase (IOptionsViewModelParent parent)
+    protected OptionsViewModelBase (IOptionsViewModelParent parent, OptionsModel model)
     {
-      if (parent == null)
-        throw new ArgumentNullException (nameof (parent));
+      if (parent == null) throw new ArgumentNullException (nameof (parent));
+      if (model == null) throw new ArgumentNullException(nameof(model));
 
-      _parent = parent;
-      ClearCacheCommand = new DelegateCommand (_ => _parent.RequestCacheDeletion (this));
+      _model = model;
+
+      RegisterPropertyChangePropagation(_model, nameof(_model.Name), nameof(Name));
+      RegisterPropertyChangePropagation(_model, nameof(_model.IsActive), nameof(IsActive));
+
+      ClearCacheCommand = new DelegateCommand (_ => parent.RequestCacheDeletion (this));
     }
 
     public bool? IsMultipleOptionsTemplateViewModel { get; } = false;
@@ -54,11 +56,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     public bool IsActive
     {
-      get { return _isActive; }
-      set
-      {
-        CheckedPropertyChange (ref _isActive, value);
-      }
+      get { return _model.IsActive; }
+      set { _model.IsActive = value; }
     }
     
     public IEnumerable<ISubOptionsViewModel> Items => _subOptions ?? (_subOptions = CreateSubOptions());
@@ -68,11 +67,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     public string Name
     {
-      get { return _name; }
-      set
-      {
-        CheckedPropertyChange (ref _name, value);
-      }
+      get { return _model.Name; }
+      set { _model.Name = value; }
     }
 
     public bool IsSelected
@@ -95,54 +91,10 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     public Guid Id { get; private set; }
 
-    public void SetOptions (CalDavSynchronizer.Contracts.Options options)
-    {
-      foreach (var section in Sections)
-        section.SetOptions (options);
+    public abstract Contracts.Options GetOptionsOrNull();
 
-      foreach (var subViewModel in Items)
-        subViewModel.SetOptions (options);
-      IsActive = !options.Inactive;
-      Name = options.Name;
-      Id = options.Id;
-
-      SetOptionsOverride (options);
-    }
-
-    protected virtual void SetOptionsOverride (CalDavSynchronizer.Contracts.Options options)
-    {
-
-    }
-
-    public Contracts.Options GetOptionsOrNull ()
-    {
-      var options = new Contracts.Options();
-
-      foreach (var section in Sections)
-        section.FillOptions (options);
-
-      foreach (var subViewModel in Items)
-        subViewModel.FillOptions (options);
-
-      options.Inactive = !IsActive;
-      options.Name = Name;
-      options.Id = Id;
-
-      return options;
-    }
-
-    public bool Validate (StringBuilder errorMessageBuilder)
-    {
-      bool isValid = true;
-
-      foreach (var section in Sections)
-        isValid &=  section.Validate (errorMessageBuilder);
-
-      foreach (var subViewModel in Items)
-        isValid &= subViewModel.Validate (errorMessageBuilder);
-
-      return isValid;
-    }
+    public abstract bool Validate(StringBuilder errorMessageBuilder);
+  
 
     protected abstract IEnumerable<ISubOptionsViewModel> CreateSubOptions ();
     protected abstract IEnumerable<IOptionsSection> CreateSections ();

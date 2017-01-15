@@ -22,156 +22,103 @@ using System.Runtime.CompilerServices;
 using System.Security;
 using System.Text;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  public class NetworkSettingsViewModel : ViewModelBase, ISubOptionsViewModel
+  public class NetworkSettingsViewModel : ModelBase, ISubOptionsViewModel
   {
-    private bool _closeConnectionAfterEachRequest;
-    private bool _preemptiveAuthentication;
-    private SecureString _proxyPassword;
-    private string _proxyUrl;
-    private bool _proxyUseDefault;
-    private bool _proxyUseManual;
-    private string _proxyUserName;
-    private bool _forceBasicAuthentication;
+    private readonly OptionsModel _model;
+ 
     private bool _isSelected;
     private bool _isExpanded;
 
+    public NetworkSettingsViewModel(OptionsModel model)
+    {
+      if (model == null) throw new ArgumentNullException(nameof(model));
+      _model = model;
+
+      RegisterPropertyChangePropagation(_model, nameof(_model.CloseConnectionAfterEachRequest), nameof(CloseConnectionAfterEachRequest));
+      RegisterPropertyChangePropagation(_model, nameof(_model.PreemptiveAuthentication), nameof(PreemptiveAuthentication));
+      RegisterPropertyChangePropagation(_model, nameof(_model.ProxyUseDefault), nameof(ProxyUseDefault));
+      RegisterPropertyChangePropagation(_model, nameof(_model.ProxyUseManual), nameof(ProxyUseManual));
+      RegisterPropertyChangePropagation(_model, nameof(_model.ProxyUrl), nameof(ProxyUrl));
+      RegisterPropertyChangePropagation(_model, nameof(_model.ProxyUserName), nameof(ProxyUserName));
+      RegisterPropertyChangePropagation(_model, nameof(_model.ProxyPassword), nameof(ProxyPassword));
+      RegisterPropertyChangePropagation(_model, nameof(_model.ForceBasicAuthentication), nameof(ForceBasicAuthentication));
+
+    }
+
     public bool CloseConnectionAfterEachRequest
     {
-      get { return _closeConnectionAfterEachRequest; }
-      set
-      {
-        CheckedPropertyChange (ref _closeConnectionAfterEachRequest, value);
-      }
+      get { return _model.CloseConnectionAfterEachRequest; }
+      set { _model.CloseConnectionAfterEachRequest = value; }
     }
 
     public bool PreemptiveAuthentication
     {
-      get { return _preemptiveAuthentication; }
-      set
-      {
-        CheckedPropertyChange (ref _preemptiveAuthentication, value);
-      }
+      get { return _model.PreemptiveAuthentication; }
+      set { _model.PreemptiveAuthentication = value; }
     }
 
     public bool ProxyUseDefault
     {
-      get { return _proxyUseDefault; }
-      set
-      {
-        if (value)
-          ProxyUseManual = false;
-
-        CheckedPropertyChange (ref _proxyUseDefault, value);
-      }
+      get { return _model.ProxyUseDefault; }
+      set { _model.ProxyUseDefault = value; }
     }
 
     public bool ProxyUseManual
     {
-      get { return _proxyUseManual; }
-      set
-      {
-        if (value)
-          ProxyUseDefault = false;
-
-        CheckedPropertyChange(ref _proxyUseManual, value);
-      }
+      get { return _model.ProxyUseManual; }
+      set { _model.ProxyUseManual = value; }
     }
 
     public string ProxyUrl
     {
-      get { return _proxyUrl; }
-      set
-      {
-        CheckedPropertyChange (ref _proxyUrl, value);
-      }
+      get { return _model.ProxyUrl; }
+      set { _model.ProxyUrl = value; }
     }
 
     public string ProxyUserName
     {
-      get { return _proxyUserName; }
-      set
-      {
-        CheckedPropertyChange (ref _proxyUserName, value);
-      }
+      get { return _model.ProxyUserName; }
+      set { _model.ProxyUserName = value; }
     }
 
     public SecureString ProxyPassword
     {
-      get { return _proxyPassword; }
-      set
-      {
-        CheckedPropertyChange (ref _proxyPassword, value);
-      }
+      get { return _model.ProxyPassword; }
+      set { _model.ProxyPassword = value; }
     }
-
-    public static NetworkSettingsViewModel DesignInstance => new NetworkSettingsViewModel
-                                                             {
-                                                                 CloseConnectionAfterEachRequest = true,
-                                                                 PreemptiveAuthentication = true,
-                                                                 ForceBasicAuthentication = true,
-                                                                 ProxyPassword = SecureStringUtility.ToSecureString ("proxypassword"),
-                                                                 ProxyUrl = "proxyurl",
-                                                                 ProxyUseDefault = true,
-                                                                 ProxyUseManual = true,
-                                                                 ProxyUserName = "proxyusername"
-                                                             };
-
-
-    public void SetOptions (CalDavSynchronizer.Contracts.Options options)
-    {
-      var proxyOptions = options.ProxyOptions ?? new ProxyOptions();
-
-      CloseConnectionAfterEachRequest = options.CloseAfterEachRequest;
-      PreemptiveAuthentication = options.PreemptiveAuthentication;
-      ForceBasicAuthentication = options.ForceBasicAuthentication;
-      ProxyUseDefault = proxyOptions.ProxyUseDefault;
-      ProxyUseManual = proxyOptions.ProxyUseManual;
-      ProxyUrl = proxyOptions.ProxyUrl;
-      ProxyUserName = proxyOptions.ProxyUserName;
-      ProxyPassword = proxyOptions.ProxyPassword;
-    }
-
-    public void FillOptions (CalDavSynchronizer.Contracts.Options options)
-    {
-      options.CloseAfterEachRequest = _closeConnectionAfterEachRequest;
-      options.PreemptiveAuthentication = _preemptiveAuthentication;
-      options.ForceBasicAuthentication = _forceBasicAuthentication;
-      options.ProxyOptions = CreateProxyOptions();
-    }
-
-    public ProxyOptions CreateProxyOptions ()
-    {
-      return new ProxyOptions
-             {
-                 ProxyUseDefault = _proxyUseDefault,
-                 ProxyUseManual = _proxyUseManual,
-                 ProxyUrl = _proxyUrl,
-                 ProxyUserName = _proxyUserName,
-                 ProxyPassword = _proxyPassword
-             };
-    }
-
-    public string Name => "Network settings";
-
-    public bool Validate (StringBuilder errorMessageBuilder)
-    {
-      return true;
-    }
-
-    public IEnumerable<ITreeNodeViewModel> Items { get; } = new ITreeNodeViewModel[0];
 
     public bool ForceBasicAuthentication
     {
-      get { return _forceBasicAuthentication; }
-      set
-      {
-        CheckedPropertyChange (ref _forceBasicAuthentication, value);
-      }
+      get { return _model.ForceBasicAuthentication; }
+      set { _model.ForceBasicAuthentication = value; }
     }
+
+    public static NetworkSettingsViewModel DesignInstance => new NetworkSettingsViewModel(OptionsModel.DesignInstance)
+    {
+      CloseConnectionAfterEachRequest = true,
+      PreemptiveAuthentication = true,
+      ForceBasicAuthentication = true,
+      ProxyPassword = SecureStringUtility.ToSecureString("proxypassword"),
+      ProxyUrl = "proxyurl",
+      ProxyUseDefault = true,
+      ProxyUseManual = true,
+      ProxyUserName = "proxyusername"
+    };
+
+
+
+
+    public string Name => "Network settings";
+
+
+    public IEnumerable<ITreeNodeViewModel> Items { get; } = new ITreeNodeViewModel[0];
+
+  
 
     public bool IsSelected
     {

@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -14,21 +14,15 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using System.ComponentModel;
-using System.Security;
+
+using System.Text;
 using CalDavSynchronizer.Contracts;
 
-namespace CalDavSynchronizer.Ui.Options.ViewModels
+namespace CalDavSynchronizer.Ui.Options.Models
 {
-  public interface IServerSettingsViewModel : IOptionsSection
+  public abstract class MappingConfigurationModel : ModelBase
   {
-    ServerAdapterType ServerAdapterType { get; }
-    string EmailAddress { get; }
-    string UserName { get; }
-    string CalenderUrl { get; set; }
-    bool UseAccountPassword { get; }
-    SecureString Password { get; }
-    bool IsGoogle { get; }
+    public abstract MappingConfigurationBase GetData();
+    public abstract bool Validate(StringBuilder errorMessageBuilder);
   }
 }

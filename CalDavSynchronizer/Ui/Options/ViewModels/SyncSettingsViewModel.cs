@@ -21,124 +21,90 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using CalDavSynchronizer.Implementation;
+using CalDavSynchronizer.Ui.Options.Models;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  public class SyncSettingsViewModel : ViewModelBase, IOptionsSection
+  public class SyncSettingsViewModel : ModelBase, IOptionsSection
   {
-    private ConflictResolution _conflictResolution;
-    private int _synchronizationIntervalInMinutes;
-    private SynchronizationMode _synchronizationMode;
-    private int _chunkSize;
-    private bool _isChunkedSynchronizationEnabled;
+    private readonly OptionsModel _model;
+    
+    public SyncSettingsViewModel(OptionsModel model)
+    {
+      if (model == null) throw new ArgumentNullException(nameof(model));
+      _model = model;
+
+      RegisterPropertyChangePropagation(_model, nameof(_model.Resolution), nameof(Resolution));
+      RegisterPropertyChangePropagation(_model, nameof(_model.SynchronizationIntervalInMinutes), nameof(SynchronizationIntervalInMinutes));
+      RegisterPropertyChangePropagation(_model, nameof(_model.ChunkSize), nameof(ChunkSize));
+      RegisterPropertyChangePropagation(_model, nameof(_model.IsChunkedSynchronizationEnabled), nameof(IsChunkedSynchronizationEnabled));
+
+      RegisterPropertyChangePropagation(_model, nameof(_model.SynchronizationMode), nameof(SynchronizationMode));
+      RegisterPropertyChangePropagation(_model, nameof(_model.SynchronizationMode), nameof(ConflictResolutionAvailable));
+    }
 
     public SynchronizationMode SynchronizationMode
     {
-      get { return _synchronizationMode; }
-      set
-      {
-        CheckedPropertyChange (ref _synchronizationMode, value);
-        // ReSharper disable once ExplicitCallerInfoArgument
-        OnPropertyChanged(nameof(ConflictResolutionAvailable));
-      }
+      get { return _model.SynchronizationMode; }
+      set { _model.SynchronizationMode = value; }
     }
 
-    public bool ConflictResolutionAvailable => _synchronizationMode == SynchronizationMode.MergeInBothDirections;
+    public bool ConflictResolutionAvailable => SynchronizationMode == SynchronizationMode.MergeInBothDirections;
 
     public ConflictResolution Resolution
     {
-      get { return _conflictResolution; }
-      set
-      {
-        CheckedPropertyChange (ref _conflictResolution, value);
-      }
+      get { return _model.Resolution; }
+      set { _model.Resolution = value; }
     }
 
     public int SynchronizationIntervalInMinutes
     {
-      get { return _synchronizationIntervalInMinutes; }
-      set
-      {
-        CheckedPropertyChange (ref _synchronizationIntervalInMinutes, value);
-      }
+      get { return _model.SynchronizationIntervalInMinutes; }
+      set { _model.SynchronizationIntervalInMinutes = value; }
     }
 
     public int ChunkSize
     {
-      get { return _chunkSize; }
-      set { CheckedPropertyChange (ref _chunkSize, value); }
+      get { return _model.ChunkSize; }
+      set { _model.ChunkSize = value; }
     }
 
     public bool IsChunkedSynchronizationEnabled
     {
-      get { return _isChunkedSynchronizationEnabled; }
-      set { CheckedPropertyChange(ref _isChunkedSynchronizationEnabled, value); }
+      get { return _model.IsChunkedSynchronizationEnabled; }
+      set { _model.IsChunkedSynchronizationEnabled = value; }
     }
 
-
-    public string SelectedSynchronizationModeDisplayName => AvailableSynchronizationModes.First (m => m.Value == SynchronizationMode).Name;
-
     public IList<Item<int>> AvailableSyncIntervals =>
-        new[] { new Item<int> (0, "Manual only") }
-            .Union (Enumerable.Range (1, 2).Select (i => new Item<int> (i, i.ToString())))
-            .Union (Enumerable.Range (1, 12).Select (i => i * 5).Select (i => new Item<int> (i, i.ToString()))).ToList();
+        new[] { new Item<int>(0, "Manual only") }
+            .Union(Enumerable.Range(1, 2).Select(i => new Item<int>(i, i.ToString())))
+            .Union(Enumerable.Range(1, 12).Select(i => i * 5).Select(i => new Item<int>(i, i.ToString()))).ToList();
 
     public IList<Item<ConflictResolution>> AvailableConflictResolutions { get; } = new List<Item<ConflictResolution>>
                                                                                    {
-                                                                                       new Item<ConflictResolution> (ConflictResolution.OutlookWins, "OutlookWins"),
-                                                                                       new Item<ConflictResolution> (ConflictResolution.ServerWins, "ServerWins"),
+                                                                                       new Item<ConflictResolution> (ConflictResolution.OutlookWins, EnumDisplayNameProvider.Instance.Get(ConflictResolution.OutlookWins) ),
+                                                                                       new Item<ConflictResolution> (ConflictResolution.ServerWins,  EnumDisplayNameProvider.Instance.Get(ConflictResolution.ServerWins)),
                                                                                        //new Item<ConflictResolution> (ConflictResolution.Manual, "Manual"),
-                                                                                       new Item<ConflictResolution> (ConflictResolution.Automatic, "Automatic")
+                                                                                       new Item<ConflictResolution> (ConflictResolution.Automatic,  EnumDisplayNameProvider.Instance.Get(ConflictResolution.Automatic))
                                                                                    };
 
 
     public IList<Item<SynchronizationMode>> AvailableSynchronizationModes { get; } = new List<Item<SynchronizationMode>>
                                                                                      {
-                                                                                         new Item<SynchronizationMode> (SynchronizationMode.ReplicateOutlookIntoServer, "Outlook \u2192 Server (Replicate)"),
-                                                                                         new Item<SynchronizationMode> (SynchronizationMode.ReplicateServerIntoOutlook, "Outlook \u2190 Server (Replicate)"),
-                                                                                         new Item<SynchronizationMode> (SynchronizationMode.MergeOutlookIntoServer, "Outlook \u2192 Server (Merge)"),
-                                                                                         new Item<SynchronizationMode> (SynchronizationMode.MergeServerIntoOutlook, "Outlook \u2190 Server (Merge)"),
-                                                                                         new Item<SynchronizationMode> (SynchronizationMode.MergeInBothDirections, "Outlook \u2190\u2192 Server (Two-Way)")
+                                                                                         new Item<SynchronizationMode> (SynchronizationMode.ReplicateOutlookIntoServer,  EnumDisplayNameProvider.Instance.Get(SynchronizationMode.ReplicateOutlookIntoServer)),
+                                                                                         new Item<SynchronizationMode> (SynchronizationMode.ReplicateServerIntoOutlook,  EnumDisplayNameProvider.Instance.Get(SynchronizationMode.ReplicateServerIntoOutlook)),
+                                                                                         new Item<SynchronizationMode> (SynchronizationMode.MergeOutlookIntoServer,  EnumDisplayNameProvider.Instance.Get(SynchronizationMode.MergeOutlookIntoServer)),
+                                                                                         new Item<SynchronizationMode> (SynchronizationMode.MergeServerIntoOutlook,  EnumDisplayNameProvider.Instance.Get(SynchronizationMode.MergeServerIntoOutlook)),
+                                                                                         new Item<SynchronizationMode> (SynchronizationMode.MergeInBothDirections,  EnumDisplayNameProvider.Instance.Get(SynchronizationMode.MergeInBothDirections))
                                                                                      };
 
-    public static SyncSettingsViewModel DesignInstance { get; } = new SyncSettingsViewModel
-                                                                  {
-                                                                      SynchronizationMode = SynchronizationMode.MergeInBothDirections,
-                                                                      Resolution = ConflictResolution.Automatic,
-                                                                      SynchronizationIntervalInMinutes = 20,
-                                                                      IsChunkedSynchronizationEnabled = true,
-                                                                      ChunkSize = 66
-                                                                  };
-
-    public void SetOptions (CalDavSynchronizer.Contracts.Options options)
+    public static SyncSettingsViewModel DesignInstance { get; } = new SyncSettingsViewModel(OptionsModel.DesignInstance)
     {
-      SynchronizationMode = options.SynchronizationMode;
-      Resolution = options.ConflictResolution;
-      SynchronizationIntervalInMinutes = options.SynchronizationIntervalInMinutes;
-      IsChunkedSynchronizationEnabled = options.IsChunkedSynchronizationEnabled;
-      ChunkSize = options.ChunkSize;
-    }
-    
-    public void FillOptions (CalDavSynchronizer.Contracts.Options options)
-    {
-      options.SynchronizationMode = _synchronizationMode;
-      options.ConflictResolution = _conflictResolution;
-      options.SynchronizationIntervalInMinutes = _synchronizationIntervalInMinutes;
-      options.IsChunkedSynchronizationEnabled = IsChunkedSynchronizationEnabled;
-      options.ChunkSize = ChunkSize;
-    }
-
-    public bool Validate (StringBuilder errorMessageBuilder)
-    {
-      var isValid = true;
-
-      if (IsChunkedSynchronizationEnabled && ChunkSize < 1)
-      {
-        isValid = false;
-        errorMessageBuilder.AppendLine("- The chunk size hast to be 1 or greater.");
-      }
-
-      return isValid;
-    }
+      SynchronizationMode = SynchronizationMode.MergeInBothDirections,
+      Resolution = ConflictResolution.Automatic,
+      SynchronizationIntervalInMinutes = 20,
+      IsChunkedSynchronizationEnabled = true,
+      ChunkSize = 66
+    };
   }
 }

@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -14,19 +14,30 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CalDavSynchronizer.Implementation;
 
-namespace CalDavSynchronizer.Ui.Options
+using Microsoft.Office.Interop.Outlook;
+
+namespace CalDavSynchronizer.Ui
 {
-  public interface ISyncSettingsControl
+  public class OutlookFolderDescriptor
   {
-    SynchronizationMode SynchronizationMode { get; set; }
-    IList<Item<SynchronizationMode>> AvailableSynchronizationModes { get; }
-    bool UseSynchronizationTimeRange { get; set; }
+    public string EntryId { get; }
+    public string StoreId { get; }
+    public OlItemType DefaultItemType { get; }
+    public string Name { get; }
+
+    public OutlookFolderDescriptor (string entryId, string storeId, OlItemType defaultItemType, string name)
+    {
+      EntryId = entryId;
+      StoreId = storeId;
+      DefaultItemType = defaultItemType;
+      Name = name;
+    }
+
+    public  OutlookFolderDescriptor(MAPIFolder folder)
+      : this(folder.EntryID, folder.StoreID, folder.DefaultItemType, folder.Name)
+    {
+
+    }
   }
 }

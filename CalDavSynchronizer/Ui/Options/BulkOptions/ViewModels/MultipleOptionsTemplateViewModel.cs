@@ -29,6 +29,7 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Scheduling;
+using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ResourceSelection.ViewModels;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.Options.ViewModels.Mapping;
@@ -38,37 +39,36 @@ using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 {
-  internal class MultipleOptionsTemplateViewModel : ViewModelBase, IOptionsViewModel
+  internal class MultipleOptionsTemplateViewModel : ModelBase, IOptionsViewModel
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodBase.GetCurrentMethod().DeclaringType);
 
     private readonly NetworkSettingsViewModel _networkSettingsViewModel;
     private readonly IServerSettingsTemplateViewModel _serverSettingsViewModel;
-    private readonly ProfileType _profileType;
-    private readonly GeneralOptions _generalOptions;
     private readonly DelegateCommandWithoutCanExecuteDelegation _discoverResourcesCommand;
     private readonly DelegateCommandWithoutCanExecuteDelegation _getAccountSettingsCommand;
 
-    private string _name;
     private bool _isSelected;
     private readonly IOptionsViewModelParent _parent;
     private readonly IOptionTasks _optionTasks;
     private bool _isExpanded;
+    private readonly OptionsModel _prototypeModel;
 
     public MultipleOptionsTemplateViewModel (
         IOptionsViewModelParent parent,
-        GeneralOptions generalOptions,
         IServerSettingsTemplateViewModel serverSettingsViewModel,
-        ProfileType profileType,
-        IOptionTasks optionTasks)
+        IOptionTasks optionTasks, 
+        OptionsModel prototypeModel)
 
     {
       _parent = parent;
       if (parent == null)
         throw new ArgumentNullException (nameof (parent));
-      if (generalOptions == null)
-        throw new ArgumentNullException (nameof (generalOptions));
+    
       if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
+      if (prototypeModel == null) throw new ArgumentNullException(nameof(prototypeModel));
+
+      _prototypeModel = prototypeModel;
 
       _discoverResourcesCommand = new DelegateCommandWithoutCanExecuteDelegation (_ =>
       {
@@ -82,14 +82,14 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
         GetAccountSettings();
       });
 
-      _networkSettingsViewModel = new NetworkSettingsViewModel();
+      _networkSettingsViewModel = new NetworkSettingsViewModel(_prototypeModel);
 
       Items = new[] { _networkSettingsViewModel };
 
       _serverSettingsViewModel = serverSettingsViewModel;
-      _profileType = profileType;
       _optionTasks = optionTasks;
-      _generalOptions = generalOptions;
+    
+      RegisterPropertyChangePropagation(_prototypeModel, nameof(_prototypeModel.Name), nameof(Name));
     }
 
     private void GetAccountSettings()
@@ -118,7 +118,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       _discoverResourcesCommand.SetCanExecute (false);
       try
       {
-        var serverResources = await _serverSettingsViewModel.GetServerResources (_networkSettingsViewModel, _generalOptions);
+        var serverResources = await _serverSettingsViewModel.GetServerResources ();
 
         var calendars = serverResources.Calendars.Select (c => new CalendarDataViewModel (c)).ToArray();
         var addressBooks = serverResources.AddressBooks.Select (a => new AddressBookDataViewModel (a)).ToArray();
@@ -128,26 +128,26 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
         {
           if (selectResourcesForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
           {
-            List<Contracts.Options> optionList = new List<Contracts.Options>();
+            var optionList = new List<OptionsModel>();
 
             foreach (var resource in calendars.Where (c => c.SelectedFolder != null))
             {
               var options = CreateOptions(resource);
-              _serverSettingsViewModel.FillOptions (options, resource.Model);
+              _serverSettingsViewModel.SetResourceUrl (options, resource.Model);
               optionList.Add (options);
             }
 
             foreach (var resource in addressBooks.Where (c => c.SelectedFolder != null))
             {
               var options = CreateOptions (resource);
-              _serverSettingsViewModel.FillOptions (options, resource.Model);
+              _serverSettingsViewModel.SetResourceUrl (options, resource.Model);
               optionList.Add (options);
             }
 
             foreach (var resource in taskLists.Where (c => c.SelectedFolder != null))
             {
               var options = CreateOptions (resource);
-              _serverSettingsViewModel.FillOptions (options, resource.Model);
+              _serverSettingsViewModel.SetResourceUrl (options, resource.Model);
               optionList.Add (options);
             }
 
@@ -170,13 +170,11 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       }
     }
 
-    private Contracts.Options CreateOptions (ResourceDataViewModelBase resource)
+    private OptionsModel CreateOptions (ResourceDataViewModelBase resource)
     {
-      var options = Contracts.Options.CreateDefault (_profileType);
-      options.Name = $"{Name} ({resource.Name})";
-      options.OutlookFolderEntryId = resource.SelectedFolder.FolderId;
-      options.OutlookFolderStoreId = resource.SelectedFolder.StoreId;
-      _networkSettingsViewModel.FillOptions (options);
+      var options = _prototypeModel.Clone();
+      options.Name = $"{_prototypeModel.Name} ({resource.Name})";
+      options.SetFolder(resource.SelectedFolder);
       return options;
     }
 
@@ -211,18 +209,11 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 
     public string Name
     {
-      get { return _name; }
-      set { CheckedPropertyChange (ref _name, value); }
+      get { return _prototypeModel.Name; }
+      set { _prototypeModel.Name = value; }
     }
 
-    public void SetOptions (Contracts.Options options)
-    {
-      _networkSettingsViewModel.SetOptions (options);
-      _serverSettingsViewModel.SetOptions (options);
-      Name = _profileType.ToString();
-      Id = options.Id;
-    }
-
+   
     public Contracts.Options GetOptionsOrNull () => null;
     public bool Validate (StringBuilder errorMessageBuilder) => true;
     

@@ -52,6 +52,7 @@ using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.Tasks;
 using CalDavSynchronizer.Implementation.TimeZones;
 using CalDavSynchronizer.Ui.Options;
+using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.SystrayNotification;
 using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
@@ -142,7 +143,6 @@ namespace CalDavSynchronizer
               _applicationDataDirectory,
               GetOrCreateConfigFileName (_applicationDataDirectory, _session.CurrentProfileName)
               ));
-
       _profileStatusesViewModel = new ProfileStatusesViewModel(this);
       _uiService = new UiService(_profileStatusesViewModel);
 
@@ -461,13 +461,16 @@ namespace CalDavSynchronizer
         categories = categoriesWrapper.Inner.ToSafeEnumerable<Category>().Select (c => c.Name).ToArray();
       }
 
+      var faultFinder = generalOptions.FixInvalidSettings ? new SettingsFaultFinder(EnumDisplayNameProvider.Instance) : NullSettingsFaultFinder.Instance;
+
+      var optionTasks = new OptionTasks(_session, EnumDisplayNameProvider.Instance, faultFinder );
+
       var viewModel = new OptionsCollectionViewModel (
-          generalOptions,
-          _outlookAccountPasswordProvider,
-          categories,
+          generalOptions.ExpandAllSyncProfiles,
           GetProfileDataDirectory,
           _uiService, 
-          new OptionTasks(_session));
+          optionTasks,
+          p => new OptionsViewModelFactory(p, _outlookAccountPasswordProvider, categories, optionTasks, faultFinder, generalOptions));
 
       _currentVisibleOptionsFormOrNull = viewModel;
 
@@ -475,7 +478,7 @@ namespace CalDavSynchronizer
 
       if (_uiService.ShowOptions (viewModel))
       {
-        _optionsDataAccess.EnsureBackupExists ("Wpf");
+        _optionsDataAccess.EnsureBackupExists ("SimplifiedUi");
         return viewModel.GetOptionsCollection();
       }
       else

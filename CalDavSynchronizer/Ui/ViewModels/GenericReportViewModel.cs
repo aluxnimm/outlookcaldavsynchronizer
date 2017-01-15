@@ -24,7 +24,7 @@ using System.Windows.Input;
 
 namespace CalDavSynchronizer.Ui.ViewModels
 {
-  public class GenericReportViewModel : ViewModelBase
+  public class GenericReportViewModel : ModelBase
   {
     private string _reportText;
     private string _title;

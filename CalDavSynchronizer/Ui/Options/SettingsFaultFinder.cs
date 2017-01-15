@@ -19,60 +19,54 @@ using System.Linq;
 using System.Windows.Forms;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Ui.ConnectionTests;
-using CalDavSynchronizer.Ui.Options.ViewModels;
+using CalDavSynchronizer.Ui.Options.Models;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options
 {
   public class SettingsFaultFinder : ISettingsFaultFinder
   {
-    private readonly ISyncSettingsControl _syncSettingsControl;
+    private readonly IEnumDisplayNameProvider _enumDisplayNameProvider;
 
-    public SettingsFaultFinder (ISyncSettingsControl syncSettingsControl)
+    public SettingsFaultFinder(IEnumDisplayNameProvider enumDisplayNameProvider)
     {
-      if (syncSettingsControl == null)
-        throw new ArgumentNullException (nameof (syncSettingsControl));
+      if (enumDisplayNameProvider == null) throw new ArgumentNullException(nameof(enumDisplayNameProvider));
 
-      _syncSettingsControl = syncSettingsControl;
+      _enumDisplayNameProvider = enumDisplayNameProvider;
     }
 
-
-    public void FixSynchronizationMode (TestResult result)
+    public void FixSynchronizationMode(OptionsModel options, TestResult result)
     {
       const SynchronizationMode readOnlyDefaultMode = SynchronizationMode.ReplicateServerIntoOutlook;
-      if (result.ResourceType.HasFlag (ResourceType.Calendar))
+      if (result.ResourceType.HasFlag(ResourceType.Calendar))
       {
-        if (!result.AccessPrivileges.HasFlag (AccessPrivileges.Modify)
-            && OptionTasks.DoesModeRequireWriteableServerResource(_syncSettingsControl.SynchronizationMode))
+        if (!result.AccessPrivileges.HasFlag(AccessPrivileges.Modify)
+            && OptionTasks.DoesModeRequireWriteableServerResource(options.SynchronizationMode))
         {
-          _syncSettingsControl.SynchronizationMode = readOnlyDefaultMode;
-          MessageBox.Show (
-              string.Format (
-                  "The specified Url is a read-only calendar. Synchronization mode set to '{0}'.",
-                  _syncSettingsControl.AvailableSynchronizationModes.Single (m => m.Value == readOnlyDefaultMode).Name),
+          options.SynchronizationMode = readOnlyDefaultMode;
+          MessageBox.Show(
+              $"The specified Url is a read-only calendar. Synchronization mode set to '{_enumDisplayNameProvider.Get(readOnlyDefaultMode)}'.",
               OptionTasks.ConnectionTestCaption);
         }
       }
 
-      if (result.ResourceType.HasFlag (ResourceType.AddressBook))
+      if (result.ResourceType.HasFlag(ResourceType.AddressBook))
       {
-        if (!result.AccessPrivileges.HasFlag (AccessPrivileges.Modify)
-            && OptionTasks.DoesModeRequireWriteableServerResource(_syncSettingsControl.SynchronizationMode))
+        if (!result.AccessPrivileges.HasFlag(AccessPrivileges.Modify)
+            && OptionTasks.DoesModeRequireWriteableServerResource(options.SynchronizationMode))
         {
-          _syncSettingsControl.SynchronizationMode = readOnlyDefaultMode;
-          MessageBox.Show (
-              string.Format (
-                  "The specified Url is a read-only addressbook. Synchronization mode set to '{0}'.",
-                  _syncSettingsControl.AvailableSynchronizationModes.Single (m => m.Value == readOnlyDefaultMode).Name),
+          options.SynchronizationMode = readOnlyDefaultMode;
+          MessageBox.Show(
+              $"The specified Url is a read-only addressbook. Synchronization mode set to '{_enumDisplayNameProvider.Get(readOnlyDefaultMode)}'.",
               OptionTasks.ConnectionTestCaption);
         }
       }
     }
 
-   
-    public void FixTimeRangeUsage (OlItemType? folderType)
+
+    public void FixTimeRangeUsage(OptionsModel options, OlItemType? folderType)
     {
-      _syncSettingsControl.UseSynchronizationTimeRange = folderType != OlItemType.olContactItem;
+      options.UseSynchronizationTimeRange = folderType != OlItemType.olContactItem;
     }
   }
 

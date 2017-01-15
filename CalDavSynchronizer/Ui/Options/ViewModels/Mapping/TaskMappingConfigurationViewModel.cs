@@ -21,22 +21,40 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options.Models;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 {
-  public class TaskMappingConfigurationViewModel : ViewModelBase, ISubOptionsViewModel
+  public class TaskMappingConfigurationViewModel : ModelBase, ISubOptionsViewModel
   {
-    private readonly ObservableCollection<ISubOptionsViewModel> _subOptions = new ObservableCollection<ISubOptionsViewModel>();
-    private bool _mapBody;
-    private bool _mapPriority;
-    private bool _mapRecurringTasks;
-    private ReminderMapping _mapReminder;
-    private string _taskCategory;
-    private bool _includeEmptyTaskCategoryFilter;
-    private bool _invertTaskCategoryFilter;
-    private bool _isSelected;
+    private readonly TaskMappingConfigurationModel _model;
     private readonly CustomPropertyMappingViewModel _customPropertyMappingViewModel;
+
+    private bool _isSelected;
     private bool _isExpanded;
+
+
+    public TaskMappingConfigurationViewModel(IReadOnlyList<string> availableCategories, TaskMappingConfigurationModel model)
+    {
+      if (availableCategories == null)
+        throw new ArgumentNullException(nameof(availableCategories));
+
+      AvailableCategories = availableCategories;
+      _model = model;
+
+      _customPropertyMappingViewModel = new CustomPropertyMappingViewModel(model);
+      Items = new[] { _customPropertyMappingViewModel };
+
+
+      RegisterPropertyChangePropagation(_model, nameof(_model.MapBody), nameof(MapBody));
+      RegisterPropertyChangePropagation(_model, nameof(_model.MapPriority), nameof(MapPriority));
+      RegisterPropertyChangePropagation(_model, nameof(_model.MapRecurringTasks), nameof(MapRecurringTasks));
+      RegisterPropertyChangePropagation(_model, nameof(_model.MapReminder), nameof(MapReminder));
+      RegisterPropertyChangePropagation(_model, nameof(_model.TaskCategory), nameof(TaskCategory));
+      RegisterPropertyChangePropagation(_model, nameof(_model.UseTaskCategoryAsFilter), nameof(UseTaskCategoryAsFilter));
+      RegisterPropertyChangePropagation(_model, nameof(_model.IncludeEmptyTaskCategoryFilter), nameof(IncludeEmptyTaskCategoryFilter));
+      RegisterPropertyChangePropagation(_model, nameof(_model.InvertTaskCategoryFilter), nameof(InvertTaskCategoryFilter));
+    }
 
     public IList<Item<ReminderMapping>> AvailableReminderMappings => new List<Item<ReminderMapping>>
                                                                      {
@@ -49,83 +67,54 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
     public bool MapBody
     {
-      get { return _mapBody; }
-      set
-      {
-        CheckedPropertyChange (ref _mapBody, value);
-      }
+      get { return _model.MapBody; }
+      set { _model.MapBody = value; }
     }
 
     public bool MapPriority
     {
-      get { return _mapPriority; }
-      set
-      {
-        CheckedPropertyChange (ref _mapPriority, value);
-      }
+      get { return _model.MapPriority; }
+      set { _model.MapPriority = value; }
     }
 
     public bool MapRecurringTasks
     {
-      get { return _mapRecurringTasks; }
-      set
-      {
-        CheckedPropertyChange (ref _mapRecurringTasks, value);
-      }
+      get { return _model.MapRecurringTasks; }
+      set { _model.MapRecurringTasks = value; }
     }
+
     public ReminderMapping MapReminder
     {
-      get { return _mapReminder; }
-      set
-      {
-        CheckedPropertyChange (ref _mapReminder, value);
-      }
+      get { return _model.MapReminder; }
+      set { _model.MapReminder = value; }
     }
 
     public string TaskCategory
     {
-      get { return _taskCategory; }
-      set
-      {
-        CheckedPropertyChange(ref _taskCategory, value);
-        // ReSharper disable once ExplicitCallerInfoArgument
-        OnPropertyChanged(nameof(UseTaskCategoryAsFilter));
-      }
+      get { return _model.TaskCategory; }
+      set { _model.TaskCategory = value; }
     }
 
-    public bool UseTaskCategoryAsFilter => !String.IsNullOrEmpty(_taskCategory);
+    public bool UseTaskCategoryAsFilter => !String.IsNullOrEmpty(_model.TaskCategory);
 
     public bool IncludeEmptyTaskCategoryFilter
     {
-      get { return _includeEmptyTaskCategoryFilter; }
-      set
-      {
-        if (value)
-        {
-          InvertTaskCategoryFilter = false;
-        }
-        CheckedPropertyChange (ref _includeEmptyTaskCategoryFilter, value);
-      }
+      get { return _model.IncludeEmptyTaskCategoryFilter; }
+      set { _model.IncludeEmptyTaskCategoryFilter = value; }
     }
+
     public bool InvertTaskCategoryFilter
     {
-      get { return _invertTaskCategoryFilter; }
-      set
-      {
-        if (value)
-        {
-          IncludeEmptyTaskCategoryFilter = false;
-        }
-        CheckedPropertyChange (ref _invertTaskCategoryFilter, value);
-      }
+      get { return _model.InvertTaskCategoryFilter; }
+      set { _model.InvertTaskCategoryFilter = value; }
     }
-    
+
     public bool IsSelected
     {
       get { return _isSelected; }
       set
       {
-        CheckedPropertyChange (ref _isSelected, value);
+        CheckedPropertyChange(ref _isSelected, value);
       }
     }
 
@@ -134,75 +123,26 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       get { return _isExpanded; }
       set
       {
-        CheckedPropertyChange (ref _isExpanded, value);
+        CheckedPropertyChange(ref _isExpanded, value);
       }
     }
 
-    public static TaskMappingConfigurationViewModel DesignInstance => new TaskMappingConfigurationViewModel (new[] { "Cat1", "Cat2" })
-                                                                         {
-                                                                              MapBody = true,
-                                                                              MapPriority = true,
-                                                                              MapRecurringTasks = true,
-                                                                              MapReminder = ReminderMapping.JustUpcoming,
-                                                                              TaskCategory = "TheCategory",
-                                                                              IncludeEmptyTaskCategoryFilter = false,
-                                                                              InvertTaskCategoryFilter = true,
+    public static TaskMappingConfigurationViewModel DesignInstance => new TaskMappingConfigurationViewModel(new[] { "Cat1", "Cat2" }, new TaskMappingConfigurationModel(new TaskMappingConfiguration()))
+    {
+      MapBody = true,
+      MapPriority = true,
+      MapRecurringTasks = true,
+      MapReminder = ReminderMapping.JustUpcoming,
+      TaskCategory = "TheCategory",
+      IncludeEmptyTaskCategoryFilter = false,
+      InvertTaskCategoryFilter = true,
     };
 
 
-    public void SetOptions (CalDavSynchronizer.Contracts.Options options)
-    {
-      SetOptions (options.MappingConfiguration as TaskMappingConfiguration ?? new TaskMappingConfiguration());
-    }
-
-    public void FillOptions (CalDavSynchronizer.Contracts.Options options)
-    {
-      var taskMappingConfiguration = options.GetOrCreateMappingConfiguration<TaskMappingConfiguration>();
-      FillOptions(taskMappingConfiguration);
-      _customPropertyMappingViewModel.FillOptions (taskMappingConfiguration);
-    }
-
-    public void SetOptions (TaskMappingConfiguration mappingConfiguration)
-    {
-      MapBody = mappingConfiguration.MapBody;
-      MapPriority = mappingConfiguration.MapPriority;
-      MapRecurringTasks = mappingConfiguration.MapRecurringTasks;
-      MapReminder = mappingConfiguration.MapReminder;
-      TaskCategory = mappingConfiguration.TaskCategory;
-      IncludeEmptyTaskCategoryFilter = mappingConfiguration.IncludeEmptyTaskCategoryFilter;
-      InvertTaskCategoryFilter = mappingConfiguration.InvertTaskCategoryFilter;
-      _customPropertyMappingViewModel.SetOptions (mappingConfiguration);
-    }
-
-    public void FillOptions(TaskMappingConfiguration mappingConfiguration)
-    {
-      mappingConfiguration.MapBody = _mapBody;
-      mappingConfiguration.MapPriority = _mapPriority;
-      mappingConfiguration.MapRecurringTasks = _mapRecurringTasks;
-      mappingConfiguration.MapReminder = _mapReminder;
-      mappingConfiguration.TaskCategory = _taskCategory;
-      mappingConfiguration.IncludeEmptyTaskCategoryFilter = _includeEmptyTaskCategoryFilter;
-      mappingConfiguration.InvertTaskCategoryFilter = _invertTaskCategoryFilter;
-    }
-
     public string Name => "Task mapping configuration";
 
-    public bool Validate (StringBuilder errorMessageBuilder)
-    {
-      return _customPropertyMappingViewModel.Validate (errorMessageBuilder);
-    }
 
     public IEnumerable<ITreeNodeViewModel> Items { get; }
 
-    public TaskMappingConfigurationViewModel (IReadOnlyList<string> availableCategories)
-    {
-      if (availableCategories == null)
-        throw new ArgumentNullException (nameof (availableCategories));
-
-      AvailableCategories = availableCategories;
-
-      _customPropertyMappingViewModel = new CustomPropertyMappingViewModel ();
-      Items = new[] { _customPropertyMappingViewModel };
-    }
   }
 }

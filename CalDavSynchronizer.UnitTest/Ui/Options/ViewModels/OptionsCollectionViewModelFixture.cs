@@ -42,18 +42,23 @@ namespace CalDavSynchronizer.UnitTest.Ui.Options.ViewModels
     {
       _uiServiceStub = MockRepository.GenerateStub<IUiService>();
 
-
       // see http://stackoverflow.com/questions/3444581/mocking-com-interfaces-using-rhino-mocks
       // Castle.DynamicProxy.Generators.AttributesToAvoidReplicating.Add (typeof (TypeIdentifierAttribute));
 
       _optionTasksStub = MockRepository.GenerateStub<IOptionTasks>();
       _viewModel = new OptionsCollectionViewModel(
-        new Contracts.GeneralOptions(),
-        MockRepository.GenerateStub<IOutlookAccountPasswordProvider>(),
-        new string[0],
+        false,
         id => @"A:\bla",
-        _uiServiceStub, 
-        _optionTasksStub);
+        _uiServiceStub,
+        _optionTasksStub,
+        p => new OptionsViewModelFactory(
+          p,
+          MockRepository.GenerateStub<IOutlookAccountPasswordProvider>(),
+          new string[0],
+          _optionTasksStub,
+          NullSettingsFaultFinder.Instance,
+          new GeneralOptions())
+      );
     }
 
     [Test]
@@ -66,10 +71,9 @@ namespace CalDavSynchronizer.UnitTest.Ui.Options.ViewModels
 
       var profile = (GenericOptionsViewModel) _viewModel.Options[0];
       profile.Name = "p1";
-      profile.ServerSettingsViewModel.CalenderUrl = "http://caldav.com/";
-
-
-      _optionTasksStub.Stub(_ => _.PickFolderOrNull()).Return(new OutlookFolder("folderId", "storeId", OlItemType.olAppointmentItem, "cal"));
+      profile.Model.CalenderUrl = "http://caldav.com/";
+      
+      _optionTasksStub.Stub(_ => _.PickFolderOrNull()).Return(new OutlookFolderDescriptor("folderId", "storeId", OlItemType.olAppointmentItem, "cal"));
       _optionTasksStub.Stub(_ => _.GetFolderAccountNameOrNull("storeId")).Return("accountName");
       profile.OutlookFolderViewModel.SelectFolderCommand.Execute(null);
 

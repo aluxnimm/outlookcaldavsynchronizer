@@ -26,6 +26,6 @@ namespace CalDavSynchronizer.Contracts
   [XmlInclude (typeof (TaskMappingConfiguration))]
   public abstract class MappingConfigurationBase 
   {
-    public abstract ISubOptionsViewModel CreateConfigurationViewModel (IMappingConfigurationViewModelFactory factory);
+    public abstract TResult Accept<TResult>(IMappingConfigurationBaseVisitor<TResult> visitor);
   }
 }
