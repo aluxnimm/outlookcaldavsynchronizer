@@ -682,8 +682,14 @@ namespace Thought.vCards
 				return parsed;
 			}
 
+      // Try to parse with offset e.g. +00:00 if Z is not set, fixes REV for Owncloud
+      DateTimeOffset offsetDate;
+      if (DateTimeOffset.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out offsetDate))
+      {
+        return offsetDate.UtcDateTime;
+      }
 
-			if (DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out parsed))
+      if (DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out parsed))
 			{
 				parsed = DateTime.SpecifyKind(parsed, DateTimeKind.Utc);
 				return parsed;
@@ -718,7 +724,7 @@ namespace Thought.vCards
 				return parsed;
 			}
 
-			return null;
+      return null;
 
 		}
 

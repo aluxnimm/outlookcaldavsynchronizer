@@ -20,20 +20,6 @@ namespace CalDavSynchronizer.ThoughtvCardWorkaround
 {
   public static class ContactDataPreprocessor
   {
-
-    public static string FixRevisionDate (string vcardData)
-    {
-      // Reformat REV attribute to use Z for UTC if not set (fixes Owncloud)
-      var revMatch = Regex.Match (vcardData, "REV:(.*?)\\+00:00\r?\n");
-      if (revMatch.Success)
-      {
-        return Regex.Replace (vcardData, "REV:(.*?)\\+00:00\r?\n", "REV:" + revMatch.Groups[1].Value + "Z\r\n");
-      }
-      else
-      {
-        return vcardData;
-      }
-    }
  
     public static string FixPhoto (string vcardData)
     {
