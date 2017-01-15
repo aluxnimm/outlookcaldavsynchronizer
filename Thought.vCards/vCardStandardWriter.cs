@@ -295,7 +295,10 @@ namespace Thought.vCards
                     (!string.IsNullOrEmpty(address.Country)) ||
                     (!string.IsNullOrEmpty(address.PostalCode)) ||
                     (!string.IsNullOrEmpty(address.Region)) ||
-                    (!string.IsNullOrEmpty(address.Street)))
+                    (!string.IsNullOrEmpty(address.Street)) ||
+                    (!string.IsNullOrEmpty(address.PoBox)) ||
+                    (!string.IsNullOrEmpty(address.ExtendedAddress))
+                    )
                 {
 
                     // The ADR property contains the following
@@ -311,8 +314,8 @@ namespace Thought.vCards
 
                     vCardValueCollection values = new vCardValueCollection(';');
 
-                    values.Add(string.Empty);
-                    values.Add(string.Empty);
+                    values.Add(address.PoBox);
+                    values.Add(address.ExtendedAddress);
                     values.Add(!string.IsNullOrEmpty(address.Street) ? address.Street.Replace("\r\n", "\n") : string.Empty);
                     values.Add(address.City);
                     values.Add(address.Region);

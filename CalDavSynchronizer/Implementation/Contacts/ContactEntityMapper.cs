@@ -139,6 +139,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         homeAddress.PostalCode = source.Inner.HomeAddressPostalCode;
         homeAddress.Region = source.Inner.HomeAddressState;
         homeAddress.Street = source.Inner.HomeAddressStreet;
+        homeAddress.PoBox = source.Inner.HomeAddressPostOfficeBox;
         if (source.Inner.SelectedMailingAddress == OlMailingAddress.olHome)
         {
           homeAddress.AddressType.Add (vCardDeliveryAddressTypes.Preferred);
@@ -155,6 +156,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         businessAddress.PostalCode = source.Inner.BusinessAddressPostalCode;
         businessAddress.Region = source.Inner.BusinessAddressState;
         businessAddress.Street = source.Inner.BusinessAddressStreet;
+        businessAddress.PoBox = source.Inner.BusinessAddressPostOfficeBox;
         if (source.Inner.SelectedMailingAddress == OlMailingAddress.olBusiness)
         {
           businessAddress.AddressType.Add (vCardDeliveryAddressTypes.Preferred);
@@ -170,6 +172,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         otherAddress.PostalCode = source.Inner.OtherAddressPostalCode;
         otherAddress.Region = source.Inner.OtherAddressState;
         otherAddress.Street = source.Inner.OtherAddressStreet;
+        otherAddress.PoBox = source.Inner.OtherAddressPostOfficeBox;
         if (source.Inner.SelectedMailingAddress == OlMailingAddress.olOther)
         {
           otherAddress.AddressType.Add (vCardDeliveryAddressTypes.Preferred);
@@ -930,6 +933,9 @@ namespace CalDavSynchronizer.Implementation.Contacts
           target.HomeAddressPostalCode = sourceAddress.PostalCode;
           target.HomeAddressState = sourceAddress.Region;
           target.HomeAddressStreet = sourceAddress.Street;
+          if (!string.IsNullOrEmpty (sourceAddress.ExtendedAddress))
+            target.HomeAddressStreet += "\r\n" + sourceAddress.ExtendedAddress;
+          target.HomeAddressPostOfficeBox = sourceAddress.PoBox;
           if (sourceAddress.IsPreferred)
           {
             target.SelectedMailingAddress = OlMailingAddress.olHome;
@@ -942,6 +948,9 @@ namespace CalDavSynchronizer.Implementation.Contacts
           target.BusinessAddressPostalCode = sourceAddress.PostalCode;
           target.BusinessAddressState = sourceAddress.Region;
           target.BusinessAddressStreet = sourceAddress.Street;
+          if (!string.IsNullOrEmpty (sourceAddress.ExtendedAddress))
+            target.BusinessAddressStreet += "\r\n" + sourceAddress.ExtendedAddress;
+          target.BusinessAddressPostOfficeBox = sourceAddress.PoBox;
           if (sourceAddress.IsPreferred)
           {
             target.SelectedMailingAddress = OlMailingAddress.olBusiness;
@@ -954,6 +963,9 @@ namespace CalDavSynchronizer.Implementation.Contacts
           target.OtherAddressPostalCode = sourceAddress.PostalCode;
           target.OtherAddressState = sourceAddress.Region;
           target.OtherAddressStreet = sourceAddress.Street;
+          if (!string.IsNullOrEmpty (sourceAddress.ExtendedAddress))
+            target.OtherAddressStreet += "\r\n" + sourceAddress.ExtendedAddress;
+          target.OtherAddressPostOfficeBox = sourceAddress.PoBox;
           if (sourceAddress.IsPreferred)
           {
             target.SelectedMailingAddress = OlMailingAddress.olOther;

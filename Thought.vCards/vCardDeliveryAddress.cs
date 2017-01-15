@@ -25,6 +25,8 @@ namespace Thought.vCards
         private string postalCode;
         private string region;
         private string street;
+        private string poBox;
+        private string extendedAddress;
 
 
         /// <summary>
@@ -37,7 +39,9 @@ namespace Thought.vCards
             this.postalCode = string.Empty;
             this.region = string.Empty;
             this.street = string.Empty;
-			this.addressType = new List<vCardDeliveryAddressTypes>();
+            this.poBox = string.Empty;
+            this.extendedAddress = string.Empty;
+			      this.addressType = new List<vCardDeliveryAddressTypes>();
         }
 
 
@@ -219,6 +223,35 @@ namespace Thought.vCards
             }
         }
 
-    }
+        /// <summary>
+        ///     The Post Office Box of the delivery address.
+        /// </summary>
+        public string PoBox
+        {
+            get
+            {
+                return this.poBox ?? string.Empty;
+            }
+            set
+            {
+                this.poBox = value;
+            }
+        }
+
+        /// <summary>
+        ///     The extended address of the delivery address.
+        /// </summary>
+        public string ExtendedAddress
+        {
+            get
+            {
+                return this.extendedAddress ?? string.Empty;
+            }
+            set
+            {
+                this.extendedAddress = value;
+            }
+        }
+  }
 
 }

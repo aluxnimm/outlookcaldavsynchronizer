@@ -1225,12 +1225,20 @@ namespace Thought.vCards
 			if (addressParts.Length >= 3)
 				deliveryAddress.Street = addressParts[2].Trim();
 
-			if (
+      if (addressParts.Length >= 2)
+        deliveryAddress.ExtendedAddress = addressParts[1].Trim();
+
+      if (addressParts.Length >= 1)
+        deliveryAddress.PoBox = addressParts[0].Trim();
+
+      if (
 				(string.IsNullOrEmpty(deliveryAddress.City)) &&
 				(string.IsNullOrEmpty(deliveryAddress.Country)) &&
 				(string.IsNullOrEmpty(deliveryAddress.PostalCode)) &&
 				(string.IsNullOrEmpty(deliveryAddress.Region)) &&
-				(string.IsNullOrEmpty(deliveryAddress.Street)))
+				(string.IsNullOrEmpty(deliveryAddress.Street)) &&
+        (string.IsNullOrEmpty(deliveryAddress.PoBox)) &&
+        (string.IsNullOrEmpty(deliveryAddress.ExtendedAddress)))
 			{
 
 				// No address appears to be defined.
