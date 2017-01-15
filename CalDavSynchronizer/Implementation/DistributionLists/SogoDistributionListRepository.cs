@@ -44,7 +44,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
 
     protected override string Serialize(DistributionList vcard)
     {
-      char [] escapechars = { '\\', ';', '\r', '\n' };
+      char [] escapechars = { ',', '\\', ';', '\r', '\n' };
 
       var builder = new StringBuilder();
       builder.AppendLine("BEGIN:VLIST");
@@ -67,9 +67,9 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
       {
         builder.Append("CARD;EMAIL=");
         builder.Append(member.EmailAddress);
-        builder.Append(";FN=\"");
+        builder.Append(";FN=");
         builder.Append(vCardStandardWriter.EncodeEscaped(member.DisplayName, escapechars));
-        builder.Append("\":");
+        builder.Append(":");
         builder.AppendLine(member.ServerFileName);
       }
 
