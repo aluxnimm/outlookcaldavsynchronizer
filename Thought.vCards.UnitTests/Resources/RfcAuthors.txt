@@ -1,0 +1,22 @@
+BEGIN:vCard
+VERSION:3.0
+FN:Frank Dawson
+ORG:Lotus Development Corporation
+ADR;TYPE=WORK,POSTAL,PARCEL:;;6544 Battleford Drive
+ ;Raleigh;NC;27613-3502;U.S.A.
+TEL;TYPE=VOICE,MSG,WORK:+1-919-676-9515
+TEL;TYPE=FAX,WORK:+1-919-676-9564
+EMAIL;TYPE=INTERNET,PREF:Frank_Dawson@Lotus.com
+EMAIL;TYPE=INTERNET:fdawson@earthlink.net
+URL:http://home.earthlink.net/~fdawson
+END:vCard
+BEGIN:vCard
+VERSION:3.0
+FN:Tim Howes
+ORG:Netscape Communications Corp.
+ADR;TYPE=WORK:;;501 E. Middlefield Rd.;Mountain View;
+ CA; 94043;U.S.A.
+TEL;TYPE=VOICE,MSG,WORK:+1-415-937-3419
+TEL;TYPE=FAX,WORK:+1-415-528-4164
+EMAIL;TYPE=INTERNET:howes@netscape.com
+END:vCard

@@ -31,11 +31,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
   public class CardDavRepository : CardDavEntityRepository<vCard, vCardStandardReader, int>
   {
     private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
-    private readonly vCardImprovedWriter _vCardImprovedWriter;
+    private readonly vCardStandardWriter _vCardStandardWriter;
 
     public CardDavRepository(ICardDavDataAccess cardDavDataAccess, IChunkedExecutor chunkedExecutor) : base(cardDavDataAccess, chunkedExecutor)
     {
-      _vCardImprovedWriter = new vCardImprovedWriter();
+      _vCardStandardWriter = new vCardStandardWriter();
     }
 
     protected override void SetUid(vCard entity, string uid)
@@ -52,7 +52,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
     {
       using (var writer = new StringWriter())
       {
-        _vCardImprovedWriter.Write(vcard, writer);
+        _vCardStandardWriter.Write(vcard, writer);
         writer.Flush();
         var newvCardString = writer.GetStringBuilder().ToString();
         return newvCardString;
@@ -70,18 +70,15 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       // fix some linebreak issues with Open-Xchange
       string normalizedVcardData = vcardData.Contains("\r\r\n") ? ContactDataPreprocessor.NormalizeLineBreaks(vcardData) : vcardData;
-      string fixedVcardData = ContactDataPreprocessor.FixRevisionDate(normalizedVcardData);
-      string fixedVcardData2 = ContactDataPreprocessor.FixUrlType(fixedVcardData);
-      string fixedVcardData3 = ContactDataPreprocessor.FixPhoto(fixedVcardData2);
 
       try
       {
-        vcard = Deserialize(fixedVcardData3, deserializer);
+        vcard = Deserialize(normalizedVcardData, deserializer);
         return true;
       }
       catch (Exception x)
       {
-        s_logger.Error(string.Format("Could not deserialize vcardData of '{0}':\r\n{1}", uriOfAddressbookForLogging, fixedVcardData3), x);
+        s_logger.Error(string.Format("Could not deserialize vcardData of '{0}':\r\n{1}", uriOfAddressbookForLogging, normalizedVcardData), x);
         logger.LogSkipLoadBecauseOfError(uriOfAddressbookForLogging, x);
         return false;
       }

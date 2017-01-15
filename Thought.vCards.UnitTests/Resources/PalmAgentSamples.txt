@@ -1,0 +1,215 @@
+BEGIN:VCARD
+PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
+SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
+NAME: hCard test data
+VERSION:3.0
+FN:John Doe
+N:Doe;John;;;;
+NOTE:normal card
+END:VCARD
+BEGIN:VCARD
+PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
+SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
+NAME: hCard test data
+VERSION:3.0
+FN:John Doe
+N:Doe;John;;;;
+EMAIL:doe@example
+EMAIL;TYPE=pref:john.doe@example
+NOTE:card with 2 email addresses
+END:VCARD
+BEGIN:VCARD
+PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
+SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
+NAME: hCard test data
+VERSION:3.0
+FN:John Doe
+N:Doe;John;;;;
+NOTE:normal card\, with implied N
+END:VCARD
+BEGIN:VCARD
+PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
+SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
+NAME: hCard test data
+VERSION:3.0
+FN:John Doe
+N:Doe;John;;;;
+NOTE:card with an ID
+END:VCARD
+BEGIN:VCARD
+PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
+SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
+NAME: hCard test data
+VERSION:3.0
+FN:John Doe
+N:Doe;John;;;;
+NOTE:card with relative link
+URL:http://dev.w3.org/cvsweb/2001/palmagent/doe-pg
+END:VCARD
+BEGIN:VCARD
+PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
+SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
+NAME: hCard test data
+VERSION:3.0
+FN:John Doe
+N:Doe;John;;;;
+NICKNAME:Johnny
+NOTE:card with nickname.
+END:VCARD
+BEGIN:VCARD
+PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
+SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
+NAME: hCard test data
+VERSION:3.0
+FN:John Doe2
+N:Doe2;John;;;;
+NOTE:tabs in class fields
+END:VCARD
+BEGIN:VCARD
+PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
+SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
+NAME: hCard test data
+VERSION:3.0
+FN:John Doe3
+N:Doe3;John;;;;
+NOTE:LFs in class fields
+END:VCARD
+BEGIN:VCARD
+PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
+SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
+NAME: hCard test data
+VERSION:3.0
+FN:John Doe3
+N:Doe3;John;;;;
+NOTE:CRs in class fields
+END:VCARD
+BEGIN:VCARD
+PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
+SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
+NAME: hCard test data
+VERSION:3.0
+FN:Joe Name2
+N:Name2;Joe;;;;
+NOTE:which name counts?
+URL:http://example/pg
+END:VCARD
+BEGIN:VCARD
+PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
+SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
+NAME: hCard test data
+VERSION:3.0
+FN;LANGUAGE=es:John Doe4
+N;LANGUAGE=es:Doe4;John;;;;
+NOTE;LANGUAGE=es:lang dominating vcard
+END:VCARD
+BEGIN:VCARD
+PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
+SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
+NAME: hCard test data
+VERSION:3.0
+FN;LANGUAGE=es:John Doe4
+N;LANGUAGE=es:Doe4;John;;;;
+NOTE;LANGUAGE=es:2langs dominating vcard
+END:VCARD
+BEGIN:VCARD
+PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
+SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
+NAME: hCard test data
+VERSION:3.0
+FN;LANGUAGE=de:John Doe5
+N;LANGUAGE=de:Doe5;John;;;;
+NOTE:xml:lang on name elt
+END:VCARD
+BEGIN:VCARD
+PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
+SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
+NAME: hCard test data
+VERSION:3.0
+FN:Comma Photo
+N:Photo;Comma;;;;
+PHOTO;VALUE=uri:http://example/uri\,with\,commas
+NOTE:comma in photo URI
+END:VCARD
+BEGIN:VCARD
+PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
+SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
+NAME: hCard test data
+VERSION:3.0
+FN:Dan Connolly
+N:Connolly;Dan;;;;
+PHOTO;VALUE=uri:http://www.w3.org/People/Connolly/9704/dan_c_thumb.jpg
+ADR:;;200 Tech Square;Cambridge;MA;02139;;
+TEL:555-1212
+ORG:W3C/MIT
+URL:http://www.w3.org/
+END:VCARD
+BEGIN:VCARD
+PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
+SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
+NAME: hCard test data
+VERSION:3.0
+FN:brian suda
+N:suda;brian;;;;
+URL:http://suda.co.uk
+END:VCARD
+BEGIN:VCARD
+PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
+SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
+NAME: hCard test data
+VERSION:3.0
+FN:Julian F. Reschke
+N:;;;;;
+ADR:;;;;;;;
+TEL;TYPE=voice:+49 251 2807760
+TEL;TYPE=fax:+49 251 2807761
+EMAIL:julian.reschke@greenbytes.de
+ORG:greenbytes GmbH
+URL:http://greenbytes.de/tech/webdav/
+END:VCARD
+BEGIN:VCARD
+PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
+SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
+NAME: hCard test data
+VERSION:3.0
+FN:Julian F. Reschke
+N:Reschke;Julian F.;;;;
+ADR:;;Salzmannstrasse 152;Muenster;NW;;Germany;
+TEL;TYPE=voice:+49 251 2807760
+TEL;TYPE=fax:+49 251 2807761
+EMAIL:julian.reschke@greenbytes.de
+ORG:greenbytes GmbH
+URL:http://greenbytes.de/tech/webdav/
+END:VCARD
+BEGIN:VCARD
+PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
+SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
+NAME: hCard test data
+VERSION:3.0
+N:;;;Mr.;;
+NICKNAME:Jim,Jimmy
+PHOTO;VALUE=uri:http://www.abc.com/pub/photos/jqpublic.gif
+BDAY:1987-09-27T08:30:00-06:00
+TEL;TYPE=work,pref,voice,msg:+1-213-555-1234
+EMAIL:jqpublic@xyz.dom1.com
+LOGO;VALUE=uri:http://www.abc.com/pub/logos/abccorp.jpg
+CATEGORIES:INTERNET,IETF,INDUSTRY,INFORMATION TECHNOLOGY
+NOTE:This fax number is operational 0800 to 1715 EST\\, Mon-Fri.
+URL:http://www.swbyps.restaurant.french/~chezchic.html
+END:VCARD
+BEGIN:VCARD
+PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
+SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
+NAME: hCard test data
+VERSION:3.0
+N:Public;;Quinlan;Mr.;Esq.;
+NICKNAME:Jim,Jimmy
+PHOTO;VALUE=uri:http://www.abc.com/pub/photos/jqpublic.gif
+BDAY:1987-09-27T08:30:00-06:00
+TEL;TYPE=work,pref,voice,msg:+1-213-555-1234
+EMAIL:jqpublic@xyz.dom1.com
+TZ:-05:00
+LOGO;VALUE=uri:http://www.abc.com/pub/logos/abccorp.jpg
+CATEGORIES:INTERNET,IETF,INDUSTRY,INFORMATION TECHNOLOGY
+NOTE:This fax number is operational 0800 to 1715 EST\\, Mon-Fri.
+URL:http://www.swbyps.restaurant.french/~chezchic.html
+END:VCARD

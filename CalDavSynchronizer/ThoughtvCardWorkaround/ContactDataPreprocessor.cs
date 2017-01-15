@@ -20,46 +20,6 @@ namespace CalDavSynchronizer.ThoughtvCardWorkaround
 {
   public static class ContactDataPreprocessor
   {
-
-    public static string FixRevisionDate (string vcardData)
-    {
-      // Reformat REV attribute to use Z for UTC if not set (fixes Owncloud)
-      var revMatch = Regex.Match (vcardData, "REV:(.*?)\\+00:00\r?\n");
-      if (revMatch.Success)
-      {
-        return Regex.Replace (vcardData, "REV:(.*?)\\+00:00\r?\n", "REV:" + revMatch.Groups[1].Value + "Z\r\n");
-      }
-      else
-      {
-        return vcardData;
-      }
-    }
-    public static string FixUrlType (string vcardData)
-    {
-      // Reformat URL type since the Deserializer only parses URL;HOME and URL;WORK
-      return Regex.Replace (vcardData, "URL;((TYPE=)?(HOME|WORK)):(.*?)\r?\n", m => "URL;" + m.Groups[3].Value.ToUpper() + ":" + m.Groups[4].Value + "\r\n", RegexOptions.IgnoreCase);
-    }
-
-    public static string FixPhoto (string vcardData)
-    {
-      // Remove X-ABCROP-RECTANGLE since the Deserializer can't parse it
-      return Regex.Replace (vcardData, "PHOTO(;.*?)?;X-ABCROP-RECTANGLE(.*?)(;.*?)?:", m => "PHOTO" + (m.Groups[1].Success ? m.Groups[1].Value : string.Empty) + (m.Groups[3].Success ? m.Groups[3].Value : string.Empty)+":" , RegexOptions.IgnoreCase | RegexOptions.Singleline);
-    }
-
-    public static string FixOrg (string vcardData)
-    {
-      // Reformat ORG attribute to split CompanyName and Department
-      var orgMatch = Regex.Match (vcardData, @"ORG:(.*?)\\;\\;(.*?)\r?\n");
-      if (orgMatch.Success)
-      {
-        return Regex.Replace (vcardData, @"ORG:(.*?)\\;\\;(.*?)\r?\n", "ORG:" + orgMatch.Groups[1].Value + ";" + orgMatch.Groups[2].Value+ "\r\n");
-      }
-      else
-      {
-        return vcardData;
-      }
-    }
-
     public static string NormalizeLineBreaks (string vcardData)
     {
       // Certain iCal providers like Open-Xchange deliver their data with unexpected linebreaks

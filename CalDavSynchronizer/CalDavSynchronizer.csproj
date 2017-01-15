@@ -206,9 +206,6 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Thought.vCards">
-      <HintPath>..\packages\Thought.vCards.1.0.7\lib\net40\Thought.vCards.dll</HintPath>
-    </Reference>
     <Reference Include="UIAutomationProvider" />
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
@@ -505,7 +502,6 @@
     <Compile Include="Implementation\SynchronizationMode.cs" />
     <Compile Include="Scheduling\SynchronizerFactory.cs" />
     <Compile Include="ThoughtvCardWorkaround\ContactDataPreprocessor.cs" />
-    <Compile Include="ThoughtvCardWorkaround\vCardImprovedWriter.cs" />
     <Compile Include="Ui\DelegateCommandWithoutCanExecuteDelegation.cs" />
     <Compile Include="Ui\Options\DesignCurrentOptions.cs" />
     <Compile Include="Ui\Options\ICurrentOptions.cs" />
@@ -782,6 +778,10 @@
     <ProjectReference Include="..\GenSync\GenSync.csproj">
       <Project>{76c932e7-eca5-4010-b602-2104327ee5ee}</Project>
       <Name>GenSync</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Thought.vCards\Thought.vCards.csproj">
+      <Project>{a53d3ceb-f7af-41ab-aa04-4d3cf684bbaf}</Project>
+      <Name>Thought.vCards</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

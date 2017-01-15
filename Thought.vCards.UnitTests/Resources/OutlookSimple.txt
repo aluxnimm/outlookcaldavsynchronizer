@@ -1,0 +1,15 @@
+BEGIN:VCARD
+VERSION:2.1
+N:Pinch;David;John
+FN:David John Pinch
+NICKNAME:Dave
+ORG:Thought Project
+TITLE:Dictator
+TEL;WORK;VOICE:800-929-5805
+TEL;HOME;VOICE:612-269-6017
+ADR;HOME:;;129 15th Street #3;Minneapolis;MN;55403;United States of America
+LABEL;HOME;ENCODING=QUOTED-PRINTABLE:129 15th Street #3=0D=0AMinneapolis, MN 55403=0D=0AUnited States of America
+URL;WORK:http://www.thoughtproject.com
+EMAIL;PREF;INTERNET:dave@thoughtproject.com
+REV:20061130T234000Z
+END:VCARD

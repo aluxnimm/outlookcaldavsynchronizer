@@ -1,0 +1,7 @@
+<NUnitProject>
+  <Settings activeconfig="Debug" />
+  <Config name="Debug" configfile="App.config" binpathtype="Auto">
+    <assembly path="bin\Debug\Thought.vCards.UnitTests.dll" />
+  </Config>
+  <Config name="Release" binpathtype="Auto" />
+</NUnitProject>
