@@ -31,11 +31,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
   public class CardDavRepository : CardDavEntityRepository<vCard, vCardStandardReader, int>
   {
     private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
-    private readonly vCardImprovedWriter _vCardImprovedWriter;
+    private readonly vCardStandardWriter _vCardStandardWriter;
 
     public CardDavRepository(ICardDavDataAccess cardDavDataAccess, IChunkedExecutor chunkedExecutor) : base(cardDavDataAccess, chunkedExecutor)
     {
-      _vCardImprovedWriter = new vCardImprovedWriter();
+      _vCardStandardWriter = new vCardStandardWriter();
     }
 
     protected override void SetUid(vCard entity, string uid)
@@ -52,7 +52,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
     {
       using (var writer = new StringWriter())
       {
-        _vCardImprovedWriter.Write(vcard, writer);
+        _vCardStandardWriter.Write(vcard, writer);
         writer.Flush();
         var newvCardString = writer.GetStringBuilder().ToString();
         return newvCardString;

@@ -1,0 +1,265 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--This file represents the results of running a test suite-->
+<test-results name="C:\Pinchy\Projects\Thought\Libraries\vCards\Unit Tests\Thought.Net.vCards.UnitTests\vCards.nunit" total="183" failures="0" not-run="0" date="2007-08-26" time="23:23:03">
+  <environment nunit-version="2.4.0.2" clr-version="2.0.50727.832" os-version="Microsoft Windows NT 5.1.2600 Service Pack 2" platform="Win32NT" cwd="C:\Pinchy\Projects\Thought\Libraries\vCards\Unit Tests\Thought.Net.vCards.UnitTests\bin\Debug" machine-name="DAVIDPI-LPTD" user="DavidPi" user-domain="MAGENIC" />
+  <culture-info current-culture="en-US" current-uiculture="en-US" />
+  <test-suite name="C:\Pinchy\Projects\Thought\Libraries\vCards\Unit Tests\Thought.Net.vCards.UnitTests\vCards.nunit" success="True" time="2.453" asserts="0">
+    <results>
+      <test-suite name="C:\Pinchy\Projects\Thought\Libraries\vCards\Unit Tests\Thought.Net.vCards.UnitTests\bin\Debug\Thought.Net.vCards.UnitTests.dll" success="True" time="2.453" asserts="0">
+        <results>
+          <test-suite name="RfcAuthorTests" success="True" time="0.406" asserts="0">
+            <results>
+              <test-case name="Tests.RfcAuthorTests.CycleRfcAuthors" executed="True" success="True" time="0.359" asserts="163" />
+              <test-case name="Tests.RfcAuthorTests.ParseRfcAuthors" executed="True" success="True" time="0.016" asserts="46" />
+            </results>
+          </test-suite>
+          <test-suite name="OutlookTests" success="True" time="0.156" asserts="0">
+            <results>
+              <test-case name="Tests.Samples.OutlookTests.CycleOutlookCertificate" executed="True" success="True" time="0.125" asserts="65" />
+              <test-case name="Tests.Samples.OutlookTests.CycleOutlookSimple" executed="True" success="True" time="0.000" asserts="92" />
+              <test-case name="Tests.Samples.OutlookTests.ParseOutlookCertificate" executed="True" success="True" time="0.016" asserts="20" />
+              <test-case name="Tests.Samples.OutlookTests.ParseOutlookSimple" executed="True" success="True" time="0.000" asserts="31" />
+            </results>
+          </test-suite>
+          <test-suite name="PalmAgentSampleTests" success="True" time="0.109" asserts="0">
+            <results>
+              <test-case name="Tests.Samples.PalmAgentSampleTests.CycleCards" executed="True" success="True" time="0.078" asserts="895" />
+              <test-case name="Tests.Samples.PalmAgentSampleTests.ParseCards" executed="True" success="True" time="0.031" asserts="230" />
+            </results>
+          </test-suite>
+          <test-suite name="XPalmWithPhotoTests" success="True" time="0.063" asserts="0">
+            <results>
+              <test-case name="Tests.Samples.XPalmWithPhotoTests.CycleXPlanWithPhoto" executed="True" success="True" time="0.000" asserts="137" />
+              <test-case name="Tests.Samples.XPalmWithPhotoTests.ParseXPalmWithPhoto" executed="True" success="True" time="0.063" asserts="31" />
+            </results>
+          </test-suite>
+          <test-suite name="vCardCertificateTests" success="True" time="0.000" asserts="0">
+            <results>
+              <test-case name="Tests.vCardCertificateTests.EmptyString_KeyType" executed="True" success="True" time="0.000" asserts="2" />
+            </results>
+          </test-suite>
+          <test-suite name="vCardDeliveryAddressTests" success="True" time="0.016" asserts="0">
+            <results>
+              <test-case name="Tests.vCardDeliveryAddressTests.Constructor" executed="True" success="True" time="0.000" asserts="5" />
+              <test-case name="Tests.vCardDeliveryAddressTests.EmptyString_City" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardDeliveryAddressTests.EmptyString_Country" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardDeliveryAddressTests.EmptyString_PostalCode" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardDeliveryAddressTests.EmptyString_Region" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardDeliveryAddressTests.EmptyString_Street" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardDeliveryAddressTests.ReadWriteProperty_AddressType" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardDeliveryAddressTests.ReadWriteProperty_City" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardDeliveryAddressTests.ReadWriteProperty_Country" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardDeliveryAddressTests.ReadWriteProperty_IsDomestic" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardDeliveryAddressTests.ReadWriteProperty_IsHome" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardDeliveryAddressTests.ReadWriteProperty_IsInternational" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardDeliveryAddressTests.ReadWriteProperty_IsParcel" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardDeliveryAddressTests.ReadWriteProperty_IsPostal" executed="True" success="True" time="0.016" asserts="2" />
+              <test-case name="Tests.vCardDeliveryAddressTests.ReadWriteProperty_IsWork" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardDeliveryAddressTests.ReadWriteProperty_PostalCode" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardDeliveryAddressTests.ReadWriteProperty_Region" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardDeliveryAddressTests.ReadWriteProperty_Street" executed="True" success="True" time="0.000" asserts="1" />
+            </results>
+          </test-suite>
+          <test-suite name="vCardEmailAddressTests" success="True" time="0.000" asserts="0">
+            <results>
+              <test-case name="Tests.vCardEmailAddressTests.Constructor" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardEmailAddressTests.Constructor_String" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardEmailAddressTests.Constructor_String_EmailType" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardEmailAddressTests.ReadWriteProperty_Address" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardEmailAddressTests.ReadWriteProperty_EmailType" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardEmailAddressTests.ReadWriteProperty_IsPreferred" executed="True" success="True" time="0.000" asserts="2" />
+            </results>
+          </test-suite>
+          <test-suite name="vCardPhoneTests" success="True" time="0.000" asserts="0">
+            <results>
+              <test-case name="Tests.vCardPhoneTests.EmptyString_FullNumber" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardPhoneTests.ReadWriteProperty_FullNumber" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardPhoneTests.ReadWriteProperty_IsBBS" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardPhoneTests.ReadWriteProperty_IsCar" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardPhoneTests.ReadWriteProperty_IsCellular" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardPhoneTests.ReadWriteProperty_IsFax" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardPhoneTests.ReadWriteProperty_IsHome" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardPhoneTests.ReadWriteProperty_IsISDN" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardPhoneTests.ReadWriteProperty_IsMessagingService" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardPhoneTests.ReadWriteProperty_IsModem" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardPhoneTests.ReadWriteProperty_IsPager" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardPhoneTests.ReadWriteProperty_IsPreferred" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardPhoneTests.ReadWriteProperty_IsVideo" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardPhoneTests.ReadWriteProperty_IsVoice" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardPhoneTests.ReadWriteProperty_IsWork" executed="True" success="True" time="0.000" asserts="2" />
+            </results>
+          </test-suite>
+          <test-suite name="vCardPhotoTests" success="True" time="1.047" asserts="0">
+            <results>
+              <test-case name="Tests.vCardPhotoTests.Constructor_String" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardPhotoTests.Constructor_String_Empty" executed="True" success="True" time="0.203" asserts="0" />
+              <test-case name="Tests.vCardPhotoTests.Constructor_String_Null" executed="True" success="True" time="0.016" asserts="0" />
+              <test-case name="Tests.vCardPhotoTests.Constructor_Uri_Null" executed="True" success="True" time="0.016" asserts="0" />
+              <test-case name="Tests.vCardPhotoTests.Fetch_Good" executed="True" success="True" time="0.797" asserts="5" />
+            </results>
+          </test-suite>
+          <test-suite name="vCardPropertyTests" success="True" time="0.000" asserts="0">
+            <results>
+              <test-case name="Tests.vCardPropertyTests.Constructor" executed="True" success="True" time="0.000" asserts="3" />
+              <test-case name="Tests.vCardPropertyTests.Constructor_Name" executed="True" success="True" time="0.000" asserts="4" />
+              <test-case name="Tests.vCardPropertyTests.Constructor_Name_Value" executed="True" success="True" time="0.000" asserts="4" />
+            </results>
+          </test-suite>
+          <test-suite name="vCardSourceTests" success="True" time="0.000" asserts="0">
+            <results>
+              <test-case name="Tests.vCardSourceTests.Constructor" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardSourceTests.ReadWriteProperty_Context" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardSourceTests.ReadWriteProperty_Uri" executed="True" success="True" time="0.000" asserts="1" />
+            </results>
+          </test-suite>
+          <test-suite name="vCardStandardReaderTests" success="True" time="0.234" asserts="0">
+            <results>
+              <test-case name="Tests.vCardStandardReaderTests.DecodeEscaped_Comma" executed="True" success="True" time="0.016" asserts="1" />
+              <test-case name="Tests.vCardStandardReaderTests.DecodeEscaped_Comma_SlashComma" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardReaderTests.DecodeEscaped_Comma_SlashComma_Comma" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardReaderTests.DecodeEscaped_Empty" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardReaderTests.DecodeEscaped_Null" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardReaderTests.DecodeEscaped_Sample" executed="True" success="True" time="0.000" asserts="0" />
+              <test-case name="Tests.vCardStandardReaderTests.DecodeEscaped_SlashComma" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardReaderTests.DecodeHexadecimal" executed="True" success="True" time="0.000" asserts="22" />
+              <test-case name="Tests.vCardStandardReaderTests.DecodeHexadecimal_BadCharacter" executed="True" success="True" time="0.078" asserts="0" />
+              <test-case name="Tests.vCardStandardReaderTests.DecodeQuotedPrintable_Empty" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardReaderTests.DecodeQuotedPrintable_EqualSign_EqualSign" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardReaderTests.DecodeQuotedPrintable_EqualSign_MoreLines" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardReaderTests.DecodeQuotedPrintable_EqualSign_NoMoreLines" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardReaderTests.DecodeQuotedPrintable_EqualSign_ValidEscapeCode" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardReaderTests.DecodeQuotedPrintable_IncompleteEscapeCode" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardReaderTests.DecodeQuotedPrintable_InvalidEscapeCode" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardReaderTests.DecodeQuotedPrintable_Null" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardReaderTests.ReadProperty_String_EmptyParameter" executed="True" success="True" time="0.016" asserts="0" />
+              <test-case name="Tests.vCardStandardReaderTests.ReadProperty_String_MissingColon" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardReaderTests.ReadProperty_String_MissingName" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardReaderTests.ReadProperty_String_Name_Subproperties_Value" executed="True" success="True" time="0.000" asserts="5" />
+              <test-case name="Tests.vCardStandardReaderTests.ReadProperty_String_Name_Subproperty_Value" executed="True" success="True" time="0.000" asserts="4" />
+              <test-case name="Tests.vCardStandardReaderTests.ReadProperty_String_Name_Value" executed="True" success="True" time="0.000" asserts="3" />
+              <test-case name="Tests.vCardStandardReaderTests.ReadProperty_String_NullParameter" executed="True" success="True" time="0.063" asserts="0" />
+              <test-case name="Tests.vCardStandardReaderTests.ReadProperty_String_QuotedPrintable" executed="True" success="True" time="0.000" asserts="3" />
+              <test-case name="Tests.vCardStandardReaderTests.ReadProperty_String_SingleColon" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardReaderTests.ReadProperty_String_Whitespace" executed="True" success="True" time="0.000" asserts="1" />
+            </results>
+          </test-suite>
+          <test-suite name="vCardStandardWriterTests" success="True" time="0.172" asserts="0">
+            <results>
+              <test-case name="Tests.vCardStandardWriterTests.EncodeEscaped_Comma" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeEscaped_Comma_Comma" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeEscaped_Comma_Text" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeEscaped_Comma_Text_Comma" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeEscaped_CRLF" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeEscaped_CRLF_Text" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeEscaped_Empty" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeEscaped_Null" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeEscaped_Semicolon" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeEscaped_Semicolon_CRLF" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeEscaped_Semicolon_Space_Semicolon" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeEscaped_Text_Comma" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeEscaped_Text_Comma_Text" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeProperty_Name" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeProperty_Name_Subproperties" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeProperty_Name_Subproperties_Value" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeProperty_Name_Subproperty" executed="True" success="True" time="0.016" asserts="1" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeProperty_Name_Subproperty_Subvalue" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeProperty_Name_Subproperty_Subvalue_Subproperty" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeProperty_Name_Subproperty_Subvalue_Subproperty_Value" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeProperty_Name_Subproperty_Subvalue_Value" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeProperty_Name_Subproperty_Value" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeProperty_Name_Value" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeProperty_Null" executed="True" success="True" time="0.125" asserts="0" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeQuotedPrintable_CRLF" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeQuotedPrintable_Empty" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardStandardWriterTests.EncodeQuotedPrintable_Null" executed="True" success="True" time="0.000" asserts="1" />
+            </results>
+          </test-suite>
+          <test-suite name="vCardSubpropertyCollectionTests" success="True" time="0.141" asserts="0">
+            <results>
+              <test-case name="Tests.vCardSubpropertyCollectionTests.Add_Name_Empty" executed="True" success="True" time="0.000" asserts="0" />
+              <test-case name="Tests.vCardSubpropertyCollectionTests.Add_Name_Null" executed="True" success="True" time="0.016" asserts="0" />
+              <test-case name="Tests.vCardSubpropertyCollectionTests.AddOrUpdate_NewNameValue" executed="True" success="True" time="0.000" asserts="3" />
+              <test-case name="Tests.vCardSubpropertyCollectionTests.AddOrUpdate_UpdatedValue" executed="True" success="True" time="0.000" asserts="6" />
+              <test-case name="Tests.vCardSubpropertyCollectionTests.AddOrUpdate_UpdatedValueToNull" executed="True" success="True" time="0.000" asserts="6" />
+              <test-case name="Tests.vCardSubpropertyCollectionTests.Contains" executed="True" success="True" time="0.000" asserts="5" />
+              <test-case name="Tests.vCardSubpropertyCollectionTests.Contains_Empty" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardSubpropertyCollectionTests.Contains_Null" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardSubpropertyCollectionTests.GetValue__Name_Null" executed="True" success="True" time="0.047" asserts="0" />
+              <test-case name="Tests.vCardSubpropertyCollectionTests.GetValue_Name_Empty" executed="True" success="True" time="0.016" asserts="0" />
+              <test-case name="Tests.vCardSubpropertyCollectionTests.GetValue_Name_ValueDoesNotExist" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardSubpropertyCollectionTests.GetValue_Name_ValueExists" executed="True" success="True" time="0.016" asserts="1" />
+              <test-case name="Tests.vCardSubpropertyCollectionTests.GetValue_ValueList_NameDoesNotExist_ListValueExists" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardSubpropertyCollectionTests.GetValue_ValueList_NameDoesNotExist_NullList" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardSubpropertyCollectionTests.GetValue_ValueList_NameExists_NullList" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardSubpropertyCollectionTests.IndexOf" executed="True" success="True" time="0.000" asserts="3" />
+              <test-case name="Tests.vCardSubpropertyCollectionTests.IndexOf_EmptyName" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardSubpropertyCollectionTests.IndexOf_MissingValueInEmptyCollection" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardSubpropertyCollectionTests.IndexOf_MissingValueInPopulatedCollection" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardSubpropertyCollectionTests.IndexOf_Null" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardSubpropertyCollectionTests.IndexOfAny_NoMatches_EmptyCollection" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardSubpropertyCollectionTests.IndexOfAny_NoMatches_PopulatedCollection" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardSubpropertyCollectionTests.IndexOfAny_OneMatch" executed="True" success="True" time="0.000" asserts="1" />
+            </results>
+          </test-suite>
+          <test-suite name="vCardSubpropertyTests" success="True" time="0.000" asserts="0">
+            <results>
+              <test-case name="Tests.vCardSubpropertyTests.Constructor_Name" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardSubpropertyTests.Constructor_Name_Value" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardSubpropertyTests.ReadWriteProperty_Name" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardSubpropertyTests.ReadWriteProperty_Value" executed="True" success="True" time="0.000" asserts="1" />
+            </results>
+          </test-suite>
+          <test-suite name="vCardTests" success="True" time="0.016" asserts="0">
+            <results>
+              <test-case name="Tests.vCardTests.ReadWriteProperty_AdditionalNames" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardTests.ReadWriteProperty_BirthDate" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardTests.ReadWriteProperty_Department" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardTests.ReadWriteProperty_FamilyName" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardTests.ReadWriteProperty_FormattedName" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardTests.ReadWriteProperty_Gender" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardTests.ReadWriteProperty_GivenName" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardTests.ReadWriteProperty_Mailer" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardTests.ReadWriteProperty_NamePrefix" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardTests.ReadWriteProperty_Office" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardTests.ReadWriteProperty_Organzation" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardTests.ReadWriteProperty_ProductId" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardTests.ReadWriteProperty_RevisionDate" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardTests.ReadWriteProperty_Role" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardTests.ReadWriteProperty_TimeZone" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardTests.ReadWriteProperty_Title" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardTests.ReadWriteProperty_UniqueId" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardTests.StringEmpty_AdditionalNames" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardTests.StringEmpty_Department" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardTests.StringEmpty_DisplayName" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardTests.StringEmpty_FamilyName" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardTests.StringEmpty_FormattedName" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardTests.StringEmpty_GivenName" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardTests.StringEmpty_Mailer" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardTests.StringEmpty_NamePrefix" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardTests.StringEmpty_NameSuffix" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardTests.StringEmpty_Office" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardTests.StringEmpty_Organization" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardTests.StringEmpty_ProductId" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardTests.StringEmpty_Role" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardTests.StringEmpty_TimeZone" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardTests.StringEmpty_Title" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardTests.StringEmpty_UniqueId" executed="True" success="True" time="0.000" asserts="2" />
+            </results>
+          </test-suite>
+          <test-suite name="vCardWebSiteTests" success="True" time="0.016" asserts="0">
+            <results>
+              <test-case name="Tests.vCardWebSiteTests.Constructor" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardWebSiteTests.Constructor_NullUrl" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardWebSiteTests.Constructor_Url" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardWebSiteTests.Constructor_Url_WebSiteType" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardWebSiteTests.ReadWriteProperty_IsPersonalSite" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardWebSiteTests.ReadWriteProperty_IsWorkSite" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="Tests.vCardWebSiteTests.ReadWriteProperty_Url" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="Tests.vCardWebSiteTests.ReadWriteProperty_WebSiteType" executed="True" success="True" time="0.016" asserts="9" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>

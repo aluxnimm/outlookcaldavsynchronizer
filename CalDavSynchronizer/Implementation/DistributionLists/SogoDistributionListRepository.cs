@@ -18,7 +18,6 @@ using System;
 using System.Text;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.Contacts;
-using CalDavSynchronizer.ThoughtvCardWorkaround;
 using CalDavSynchronizer.Utilities;
 using GenSync.Logging;
 using Thought.vCards;
@@ -53,23 +52,23 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
       builder.Append("UID:");
       builder.AppendLine(vcard.Uid);
       builder.Append("FN:");
-      builder.AppendLine(vCardImprovedWriter.EncodeEscaped(vcard.Name,escapechars));
+      builder.AppendLine(vCardStandardWriter.EncodeEscaped(vcard.Name,escapechars));
       if (!string.IsNullOrEmpty(vcard.Description))
       {
         builder.Append("DESCRIPTION:");
-        builder.AppendLine(vCardImprovedWriter.EncodeEscaped(vcard.Description.Replace("\r\n", "\n"),escapechars));
+        builder.AppendLine(vCardStandardWriter.EncodeEscaped(vcard.Description.Replace("\r\n", "\n"),escapechars));
       }
       if (!string.IsNullOrEmpty(vcard.Nickname))
       {
         builder.Append("NICKNAME:");
-        builder.AppendLine(vCardImprovedWriter.EncodeEscaped(vcard.Nickname, escapechars));
+        builder.AppendLine(vCardStandardWriter.EncodeEscaped(vcard.Nickname, escapechars));
       }
       foreach (var member in vcard.Members)
       {
         builder.Append("CARD;EMAIL=");
         builder.Append(member.EmailAddress);
         builder.Append(";FN=\"");
-        builder.Append(vCardImprovedWriter.EncodeEscaped(member.DisplayName, escapechars));
+        builder.Append(vCardStandardWriter.EncodeEscaped(member.DisplayName, escapechars));
         builder.Append("\":");
         builder.AppendLine(member.ServerFileName);
       }
@@ -77,7 +76,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
       foreach (var member in vcard.NonAddressBookMembers)
       {
         builder.Append(NonAddressBookMemberValueName + ";CN=");
-        builder.Append(vCardImprovedWriter.EncodeEscaped(member.DisplayName, escapechars));
+        builder.Append(vCardStandardWriter.EncodeEscaped(member.DisplayName, escapechars));
         builder.Append(":mailto:");
         builder.AppendLine(member.EmailAddress);
       }

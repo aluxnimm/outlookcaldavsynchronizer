@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A53D3CEB-F7AF-41AB-AA04-4D3CF684BBAF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Thought.vCards</RootNamespace>
+    <AssemblyName>Thought.vCards</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <PublishUrl>http://localhost/Thought.Net.vCards/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Thought.vCards.xml</DocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="vCardSocialProfile.cs" />
+    <Compile Include="vCardSocialProfileCollection.cs" />
+    <Compile Include="vCardIMPP.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="vCard.cs" />
+    <Compile Include="vCardAccessClassification.cs" />
+    <Compile Include="vCardCertificate.cs" />
+    <Compile Include="vCardCertificateCollection.cs" />
+    <Compile Include="vCardCollection.cs" />
+    <Compile Include="vCardDeliveryLabel.cs" />
+    <Compile Include="vCardDeliveryLabelCollection.cs" />
+    <Compile Include="vCardEmailAddress.cs" />
+    <Compile Include="vCardEmailAddressCollection.cs" />
+    <Compile Include="vCardEmailAddressType.cs" />
+    <Compile Include="vCardEncoding.cs" />
+    <Compile Include="vCardException.cs" />
+    <Compile Include="vCardFormat.cs" />
+    <Compile Include="vCardIMPPCollection.cs" />
+    <Compile Include="vCardNote.cs" />
+    <Compile Include="vCardNoteCollection.cs" />
+    <Compile Include="vCardDeliveryAddressTypes.cs" />
+    <Compile Include="vCardGender.cs" />
+    <Compile Include="vCardPhone.cs" />
+    <Compile Include="vCardPhoneCollection.cs" />
+    <Compile Include="vCardPhoto.cs" />
+    <Compile Include="vCardPhotoCollection.cs" />
+    <Compile Include="vCardDeliveryAddress.cs" />
+    <Compile Include="vCardDeliveryAddressCollection.cs" />
+    <Compile Include="vCardProperty.cs" />
+    <Compile Include="vCardPropertyCollection.cs" />
+    <Compile Include="vCardPhoneTypes.cs" />
+    <Compile Include="vCardReader.cs" />
+    <Compile Include="vCardSource.cs" />
+    <Compile Include="vCardSourceCollection.cs" />
+    <Compile Include="vCardStandardWriter.cs" />
+    <Compile Include="vCardStandardWriterOptions.cs" />
+    <Compile Include="vCardSubproperty.cs" />
+    <Compile Include="vCardSubpropertyCollection.cs" />
+    <Compile Include="vCardStandardReader.cs" />
+    <Compile Include="vCardValueCollection.cs" />
+    <Compile Include="vCardWebsite.cs" />
+    <Compile Include="vCardWebsiteCollection.cs" />
+    <Compile Include="vCardWebsiteTypes.cs" />
+    <Compile Include="vCardWriter.cs" />
+    <Compile Include="WarningMessages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WarningMessages.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="History.txt" />
+    <Content Include="KnownIssues.txt" />
+    <Content Include="License.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="WarningMessages.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>WarningMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

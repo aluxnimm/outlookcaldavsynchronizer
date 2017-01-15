@@ -1,0 +1,72 @@
+BEGIN:VCARD
+VERSION:2.1
+N;LANGUAGE=en-us:Pinch;David;John;Mr.
+FN:Mr. David John Pinch
+NICKNAME:Dave
+ORG:Thought Project
+TITLE:Dictator
+NOTE:Generated with Outlook 2007.
+TEL;WORK;VOICE:800-929-5805
+TEL;HOME;VOICE:612-269-6017
+TEL;CELL;VOICE:612-269-6017
+ADR;WORK:;;;;;;United States of America
+ADR;HOME;PREF:;;3247 Upton Avenue N,;Minneapolis;MN;55412;United States of America
+LABEL;HOME;PREF;ENCODING=QUOTED-PRINTABLE:3247 Upton Avenue N,=0D=0A=
+Minneapolis, MN 55412
+X-MS-OL-DEFAULT-POSTAL-ADDRESS:1
+X-WAB-GENDER:2
+URL;WORK:http://www.thoughtproject.com
+ROLE:Programmer
+BDAY:20090414
+KEY;X509;ENCODING=BASE64:
+ MIICZDCCAc2gAwIBAgIQRMnJkySZCu8S15WhdyuljjANBgkqhkiG9w0BAQUFADBiMQswCQYD
+ VQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UE
+ AxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElzc3VpbmcgQ0EwHhcNMDcwNTExMTU0NTI2
+ WhcNMDgwNTEwMTU0NTI2WjBJMR8wHQYDVQQDExZUaGF3dGUgRnJlZW1haWwgTWVtYmVyMSYw
+ JAYJKoZIhvcNAQkBFhdkYXZlQHRob3VnaHRwcm9qZWN0LmNvbTCBnzANBgkqhkiG9w0BAQEF
+ AAOBjQAwgYkCgYEAmLhq0UDsgB8paOBzXCtv9SbwccPYJhJr6f7bK3JO1xkCbKmzoLhCZUVB
+ 4zP5bWTBnQYpolA9t1Pbrd29flX90xizEljCuL2uOz4cFc+NoF7h0h5nFvnFVAmzsJmLnCop
+ vp0GD4jy3cpQhBNAoSqQbwjSuqyFtHeVMIbNlU3Y/Y8CAwEAAaM0MDIwIgYDVR0RBBswGYEX
+ ZGF2ZUB0aG91Z2h0cHJvamVjdC5jb20wDAYDVR0TAQH/BAIwADANBgkqhkiG9w0BAQUFAAOB
+ gQCuMF4mUI5NWv0DqblQH/pqJN0eCjj2j4iQhJNTHtfhrS0ETbakgldJCzg5Rv+8V2Dil7gs
+ 4zMmwOuDrHVBqWDvF0/hXzMn5KKWEmzCZshVyFJ24IWkIj4t3wOMG21NdSA+zX7TEc3s7oWh
+ zi6q4lcDj3pOzUyDmaEEBYcyWLKXpA==
+
+EMAIL;PREF;INTERNET:dave@thoughtproject.com
+X-MS-IMADDRESS:davepinch@gmail.com
+PHOTO;TYPE=JPEG;ENCODING=BASE64:
+ /9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQY
+ GBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYa
+ KCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAAR
+ CAA3AEgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAA
+ AgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkK
+ FhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWG
+ h4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl
+ 5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREA
+ AgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYk
+ NOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOE
+ hYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk
+ 5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwC3KUf7wwaiFvuPDDHrVh0yaiMeWrarK2pw
+ wi2KLeFfvuD9KiuY4SmI1JPris3xHq0ek2jGMq1zjcseCeB3OK4+HxZdy3DPcXKwRkbVVEHX
+ 8a5f3k1dLQ6Y0ktzt4oBGc7efellkYDl1UflXAf23Pf+dbC/lSR8iOTdgA9gccVys012929t
+ ctdyXCttZM96hU5vRs29nHqes3FzbqhaW6jwOD84pkSxzwiWE70PQiuJsYksIrYXcjiSWQKk
+ PmEjJOOnSu58ORMbFgfugjH1wM05R5epnKNitNbjHIorUnh5orRSdjFm6RzUNyTHDI64DAEj
+ NWShzXK/EKa4h0lI4Nw81yGYdgAa6KkeZ2FRTbsjm3uhe6m6wjzmZtssj8nnPT2r0bwl8PbX
+ WkQTJkOcMw4K1434SWeS5crkhWz9TXtWjeNL62RUsbEKYQPnKnBx159awrNqVketQgoxba1J
+ L/4GPFqUklpKGhjG4Ajlq8o8Z6i+m6rLDYpCXVArMUyQfTNfTcPxBYaJb382nSyGWQxbIsn5
+ sZ544FfKPjW6sLjxNqrQvIiPcu+NucZOcfhVRSlruYT9ptJWK/hQf2lrol1OR55kUvCB8qof
+ p3r1bw8mLGQej4/QV5n4Njt/7Zi8mV3cI2QVx2+tepaAP9Fn/wCup/kKjEJKyRzu9ncS5XBo
+ pNUYxwyMvUDiiiEbo53ubgIrN8QQefp8oVBIVG7Yeje1Le38VlA007YRRn3P0rzjVviBfS3c
+ kNrEkEe7ardWx/Ku2VCc37oUW07ot6FaLaSQ3ESnyZTnawwV7YNev6Jqun2nhq6eWKBJVjOD
+ gDJxXik+tui20wybdkCvj+Fh1qGXUDrV59ne5ZbZV+VVPDH3FctWk+bU9mnW5Vdnufwq8S6X
+ cm6tbqeNwxDqG6bhnp74r5d8R3sVzr+oz2/+rluJHQexY4r0AJpunaN9os3PmF9nQjBxya8+
+ uNEfzA0dxEQ3IzxWtKHIr9DKtUU5PubnwzzLr7Z52wk/yFev6EmLSf8A66n+Qryz4c2Mmn6p
+ cTXDJtaMKCpz1I/wr1bQmBs5COhkJrLEatHFOVmylrp227+/FFQeIXOFUHqaK0pR905Wzh9Z
+ 1P8AtdWmZiVUYxyB9MVw2ptJDqLM2MqR09+9FFe7XSVNWN6as7HU+CZI7u9u7C5BZJcSLnse
+ 9dLF8OWursHS7sQSMeFcZX/61FFeRXk4zdjqi/dOWuGkhlnspHDCCZ4zjoSDg4/nV/wJNC+t
+ xW91Ek0UoZGV1yMjoR+VFFdc4r2TXkYSep2euafZ6ftlsrdY95+YLxnFa+iOY9MUHqSTRRXl
+ PWKMZtsyNal3Tge1FFFdtKK5UZM//9k=
+
+X-MS-OL-DESIGN;CHARSET=utf-8:<card xmlns="http://schemas.microsoft.com/office/outlook/12/electronicbusinesscards" ver="1.0" layout="left" bgcolor="ffffff"><img xmlns="" align="tleft" area="32" use="photo"/><fld xmlns="" prop="name" align="left" dir="ltr" style="b" color="000000" size="10"/><fld xmlns="" prop="org" align="left" dir="ltr" color="000000" size="8"/><fld xmlns="" prop="title" align="left" dir="ltr" color="000000" size="8"/><fld xmlns="" prop="telwork" align="left" dir="ltr" color="000000" size="8"><label align="right" color="626262">Work</label></fld><fld xmlns="" prop="telcell" align="left" dir="ltr" color="000000" size="8"><label align="right" color="626262">Mobile</label></fld><fld xmlns="" prop="telhome" align="left" dir="ltr" color="000000" size="8"><label align="right" color="626262">Home</label></fld><fld xmlns="" prop="email" align="left" dir="ltr" color="000000" size="8"/><fld xmlns="" prop="addrhome" align="left" dir="ltr" color="000000" size="8"/><fld xmlns="" prop="webwork" align="left" dir="ltr" color="000000" size="8"/><fld xmlns="" prop="blank" size="8"/><fld xmlns="" prop="blank" size="8"/><fld xmlns="" prop="blank" size="8"/><fld xmlns="" prop="blank" size="8"/><fld xmlns="" prop="blank" size="8"/><fld xmlns="" prop="blank" size="8"/><fld xmlns="" prop="blank" size="8"/></card>
+REV:20090825T194011Z
+END:VCARD
