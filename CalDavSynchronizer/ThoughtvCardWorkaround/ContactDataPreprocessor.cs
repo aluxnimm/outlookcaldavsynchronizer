@@ -34,12 +34,7 @@ namespace CalDavSynchronizer.ThoughtvCardWorkaround
         return vcardData;
       }
     }
-    public static string FixUrlType (string vcardData)
-    {
-      // Reformat URL type since the Deserializer only parses URL;HOME and URL;WORK
-      return Regex.Replace (vcardData, "URL;((TYPE=)?(HOME|WORK)):(.*?)\r?\n", m => "URL;" + m.Groups[3].Value.ToUpper() + ":" + m.Groups[4].Value + "\r\n", RegexOptions.IgnoreCase);
-    }
-
+ 
     public static string FixPhoto (string vcardData)
     {
       // Remove X-ABCROP-RECTANGLE since the Deserializer can't parse it

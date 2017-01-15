@@ -2137,11 +2137,39 @@ namespace Thought.vCards
 
 			webSite.Url = property.ToString();
 
-			if (property.Subproperties.Contains("HOME"))
-				webSite.IsPersonalSite = true;
+		  foreach (vCardSubproperty subproperty in property.Subproperties)
+		  {
 
-			if (property.Subproperties.Contains("WORK"))
-				webSite.IsWorkSite = true;
+		    switch (subproperty.Name.ToUpperInvariant())
+		    {
+		      case "HOME":
+		        webSite.IsPersonalSite = true;
+		        break;
+		      case "WORK":
+		        webSite.IsWorkSite = true;
+		        break;
+		      case "TYPE":
+		        if (!string.IsNullOrEmpty(subproperty.Value))
+		        {
+		          var value = subproperty.Value.ToUpperInvariant();
+              string[] typeValues = value.Split(new char[] { ',' });
+
+		          foreach (string typeValue in typeValues)
+		          {
+		            switch (typeValue)
+		            {
+		              case "HOME":
+		                webSite.IsPersonalSite = true;
+		                break;
+		              case "WORK":
+		                webSite.IsWorkSite = true;
+		                break;
+		            }
+		          }
+		        }
+		        break;
+		    }
+		  }
 
 			card.Websites.Add(webSite);
 
