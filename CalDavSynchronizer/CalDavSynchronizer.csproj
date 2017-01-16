@@ -765,6 +765,7 @@
     <Resource Include="Resources\CollapseAll.png" />
     <Resource Include="Resources\Export.png" />
     <Resource Include="Resources\Import.png" />
+    <Resource Include="Resources\ClearCache.png" />
     <Content Include="Resources\LogoBanner.bmp" />
     <Resource Include="Resources\ExpandAll.png" />
     <Resource Include="Resources\logo_nextcloud.png" />

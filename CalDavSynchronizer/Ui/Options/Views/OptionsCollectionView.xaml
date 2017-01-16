@@ -11,7 +11,7 @@
              xmlns:bulkOptionsViewModels="clr-namespace:CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels"
              xmlns:bulkOptionsViews="clr-namespace:CalDavSynchronizer.Ui.Options.BulkOptions.Views"
              mc:Ignorable="d"
-             d:DesignHeight="500" d:DesignWidth="600"
+             d:DesignHeight="600" d:DesignWidth="600"
              d:DataContext="{x:Static  viewModels:OptionsCollectionViewModel.DesignInstance}">
 
   <UserControl.Resources>
@@ -106,7 +106,10 @@
           <Button Command="{Binding OpenProfileDataDirectoryCommand}" ToolTip="Open data directory of selected profile">
             <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Folder.png"></Image>
           </Button>
-          <Button Command="{Binding ExpandAllCommand}" ToolTip="Expand all nodes">
+            <Button Command="{Binding ClearCacheOfSelectedCommand}" ToolTip="Clear cache of selected profile">
+                <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ClearCache.png"></Image>
+            </Button>
+            <Button Command="{Binding ExpandAllCommand}" ToolTip="Expand all nodes">
             <Image  Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ExpandAll.png"></Image>
           </Button>
           <Button Command="{Binding CollapseAllCommand}" ToolTip="Collapse all nodes">
@@ -212,11 +215,6 @@
               <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="Name:" />
               <TextBox Text="{Binding Name}" />
             </DockPanel>
-            <DockPanel DockPanel.Dock="Bottom" >
-              <Button  Command="{Binding ClearCacheCommand}" DockPanel.Dock="Left">Clear cache</Button>
-              <UIElement />
-            </DockPanel>
-
             <ContentPresenter></ContentPresenter>
           </DockPanel>
         </ControlTemplate>

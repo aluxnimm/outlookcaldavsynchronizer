@@ -22,7 +22,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
   public interface IOptionsViewModelParent
   {
-    void RequestCacheDeletion (IOptionsViewModel viewModel);
     void RequestRemoval (IOptionsViewModel viewModel);
     void RequestAdd (IReadOnlyCollection<OptionsModel> options);
   }

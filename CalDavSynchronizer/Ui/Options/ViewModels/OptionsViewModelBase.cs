@@ -44,7 +44,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       RegisterPropertyChangePropagation(_model, nameof(_model.Name), nameof(Name));
       RegisterPropertyChangePropagation(_model, nameof(_model.IsActive), nameof(IsActive));
 
-      ClearCacheCommand = new DelegateCommand (_ => parent.RequestCacheDeletion (this));
     }
 
     public bool? IsMultipleOptionsTemplateViewModel { get; } = false;
@@ -52,7 +51,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     public IEnumerable<IOptionsSection> Sections => _sections ?? (_sections = CreateSections());
 
-    public ICommand ClearCacheCommand { get; }
 
     public bool IsActive
     {

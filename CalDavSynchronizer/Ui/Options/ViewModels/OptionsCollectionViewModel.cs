@@ -67,6 +67,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       AddMultipleCommand = new DelegateCommand (_ => AddMultiple());
       CloseCommand = new DelegateCommand (shouldSaveNewOptions => Close((bool)shouldSaveNewOptions));
       DeleteSelectedCommand = new DelegateCommandHandlingRequerySuggested (_ => DeleteSelected (), _ => CanDeleteSelected);
+      ClearCacheOfSelectedCommand = new DelegateCommandHandlingRequerySuggested (_ => ClearCacheOfSelected (), _ => CanClearCacheOfSelected);
       CopySelectedCommand = new DelegateCommandHandlingRequerySuggested (_ => CopySelected (), _ => CanCopySelected);
       MoveSelectedUpCommand = new DelegateCommandHandlingRequerySuggested (_ => MoveSelectedUp (), _ => CanMoveSelectedUp);
       MoveSelectedDownCommand = new DelegateCommandHandlingRequerySuggested (_ => MoveSelectedDown (), _ => CanMoveSelectedDown);
@@ -119,6 +120,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private bool CanMoveSelectedUp => SelectedOrNull != null;
     private bool CanCopySelected => SelectedOrNull != null;
     private bool CanDeleteSelected => SelectedOrNull != null;
+    private bool CanClearCacheOfSelected => SelectedOrNull != null;
     private bool CanOpenProfileDataDirectory => SelectedOrNull != null;
 
     private void MoveSelectedDown ()
@@ -159,6 +161,13 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       var selected = SelectedOrNull;
       if (selected != null)
         Delete (selected);
+    }
+
+    private void ClearCacheOfSelected()
+    {
+      var selected = SelectedOrNull;
+      if (selected != null)
+        ClearCache(selected);
     }
 
     private void OpenProfileDataDirectory()
@@ -300,6 +309,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     public ICommand AddMultipleCommand { get; }
     public ICommand CloseCommand { get; }
     public ICommand DeleteSelectedCommand { get; }
+    public ICommand ClearCacheOfSelectedCommand { get; }
     public ICommand CopySelectedCommand { get; }
     public ICommand MoveSelectedUpCommand { get; }
     public ICommand MoveSelectedDownCommand { get; }
@@ -367,7 +377,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       }
     }
 
-    public void RequestCacheDeletion (IOptionsViewModel viewModel)
+    private void ClearCache(IOptionsViewModel viewModel)
     {
      
         s_logger.InfoFormat ("Deleting cache for profile '{0}'", viewModel.Name);
