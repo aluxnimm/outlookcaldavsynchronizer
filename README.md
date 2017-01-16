@@ -103,6 +103,18 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 2.14.0 ####
+- New features
+	- Initial support for syncing contact groups/Distribution Lists (only supports SOGos own VLIST format right now).
+	- Include own version of Thought.vCards from [https://github.com/aluxnimm/Thought.vCards](https://github.com/aluxnimm/Thought.vCards) instead of NuGet package and remove vCardImprovedWriter.
+	- Improve vCardWriter and add support for different IM servicetypes, ticket #463.
+	- Add support for ADR Post Office Box and extended address, feature request 17.
+- Bug fixes
+	- Unfold lines before further processing in vCardStandardReader, fixes issues with long subproperties like X-ABCROP-RECTANGLE
+	- Set recurring task DTSTART to PatternStartDate to avoid missing DTSTART, ticket #465.
+	- Switch ProgressWindow to Wpf to avoid DPI problems.
+	- Update project urls in about dialog.
+
 #### 2.13.0 ####
 - Upgrade instructions
 	- Outlook and Google and some other CalDAV servers calculate the intersection with the time-range differently for recurring events which can cause doubled or deleted events, so it is recommended to select a time-range which is larger than the largest interval of your recurring events (e.g. 1 year for birthdays). The default timerange for new profiles is changed from 180 days to 365 days in the future, for existing sync profiles you need to change it manually if affected!
@@ -958,6 +970,7 @@ If you expand the tree view of the profile you can configure network and proxy o
 	- You can also configure if contact photos should be mapped or not. Contact photo mapping from Outlook to the server doesn't work in Outlook 2007. You can also add an option to not overwrite the contact photo in Outlook when it changes on the server, which could happen due to other mobile clients reducing the resolution for example.
 	- Don't overwrite FileAs in Outlook uses the Outlook settings for FileAs and doesn't overwrite the contact FileAs with the FN from the server.
 	- Fix imported phone number format adds round brackets to the area code of phone numbers, so that Outlook can show correct phone number details with country and area code, e.g. +1 23 45678 is mapped to +1 (23) 45678.
+	- Map Distribution Lists enables the sync of contact groups / Distribution Lists, right now only the DAV contact group format SOGo VLIST is available, see **Distribution Lists** below.
 	- For tasks (not for Google task profiles) you can configure if you want to map reminders (just upcoming, all or none), the priority of the task, the description body and if recurring tasks should be synchronized.
 	- Similar to calendars you can also define a filter category so that multiple CalDAV Tasklists can be synchronized into one Outlook task folder via the defined category.	
 ### Timezone settings ###
@@ -1017,6 +1030,12 @@ When you expand the tree view of the profile for events and tasks, you can confi
 
 - *Map all Outlook custom properties to X-CALDAVSYNCHRONIZER attributes* If enabled, all Outlook custom text properties of the appointment/task are mapped to DAV attributes with the prefix X-CALDAVSYNCHRONIZER- and vice versa.
 - You can also define manual mapping pairs of Outlook custom attributes and DAV X-Attributes. This will overrule the general mapping of all Outlook custom properties if both is activated. Outlook properties that don't exist, will be created. DAV properties MUST start with X-. Only Outlook custom properties of type Text can be mapped.  
+
+### Distribution Lists ###
+
+When enabled in Contact Mapping configuration you can now also sync Outlook Distribution Lists with your server contact groups. Since different servers use different formats to store contact groups, you will be able to choose the used DAV contact group format. Right now, only the VLIST format for SOGo servers is supported, but other formats will follow. Don't enable this option when your server doesn't support it!
+
+Since Outlook Distribution Lists also support list members which aren't in the addressbook but SOGo VLISTs don't, we add them as custom X-Attributes. With this workaround those members aren't displayed in SOGo but won't get lost when syncing back to Outlook.
 
 ### Google Calender / Addressbooks / Tasks settings ###
 
