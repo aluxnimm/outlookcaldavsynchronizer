@@ -103,6 +103,10 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 2.14.1 ####
+- Bug fixes
+	- Update installer to fix dependency for Thought.vCards.
+
 #### 2.14.0 ####
 - New features
 	- Initial support for syncing contact groups/Distribution Lists (only supports SOGos own VLIST format right now).
