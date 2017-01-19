@@ -29,10 +29,13 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
   {
     private readonly OptionsModel _model;
     
-    public SyncSettingsViewModel(OptionsModel model)
+    public SyncSettingsViewModel(OptionsModel model, IViewOptions viewOptions)
     {
       if (model == null) throw new ArgumentNullException(nameof(model));
+      if (viewOptions == null) throw new ArgumentNullException(nameof(viewOptions));
+
       _model = model;
+      ViewOptions = viewOptions;
 
       RegisterPropertyChangePropagation(_model, nameof(_model.Resolution), nameof(Resolution));
       RegisterPropertyChangePropagation(_model, nameof(_model.SynchronizationIntervalInMinutes), nameof(SynchronizationIntervalInMinutes));
@@ -98,7 +101,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
                                                                                          new Item<SynchronizationMode> (SynchronizationMode.MergeInBothDirections,  EnumDisplayNameProvider.Instance.Get(SynchronizationMode.MergeInBothDirections))
                                                                                      };
 
-    public static SyncSettingsViewModel DesignInstance { get; } = new SyncSettingsViewModel(OptionsModel.DesignInstance)
+    public static SyncSettingsViewModel DesignInstance { get; } = new SyncSettingsViewModel(OptionsModel.DesignInstance, OptionsCollectionViewModel.DesignViewOptions)
     {
       SynchronizationMode = SynchronizationMode.MergeInBothDirections,
       Resolution = ConflictResolution.Automatic,
@@ -106,5 +109,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       IsChunkedSynchronizationEnabled = true,
       ChunkSize = 66
     };
+
+    public IViewOptions ViewOptions { get; }
   }
 }

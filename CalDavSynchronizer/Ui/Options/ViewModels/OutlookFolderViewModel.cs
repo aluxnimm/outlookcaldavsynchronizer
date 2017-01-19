@@ -31,13 +31,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private readonly OptionsModel _model;
     private readonly IOptionTasks _optionTasks;
 
-    public OutlookFolderViewModel(OptionsModel model, IOptionTasks optionTasks)
+    public OutlookFolderViewModel(OptionsModel model, IOptionTasks optionTasks, IViewOptions viewOptions)
     {
       if (model == null) throw new ArgumentNullException(nameof(model));
       if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
+      if (viewOptions == null) throw new ArgumentNullException(nameof(viewOptions));
 
       _model = model;
       _optionTasks = optionTasks;
+      ViewOptions = viewOptions;
 
 
       RegisterPropertyChangePropagation(_model, nameof(_model.EnableChangeTriggeredSynchronization), nameof(EnableChangeTriggeredSynchronization));
@@ -56,7 +58,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     public ICommand SelectFolderCommand { get; }
 
-    public static OutlookFolderViewModel DesignInstance => new OutlookFolderViewModel(OptionsModel.DesignInstance, NullOptionTasks.Instance)
+    public static OutlookFolderViewModel DesignInstance => new OutlookFolderViewModel(OptionsModel.DesignInstance, NullOptionTasks.Instance, OptionsCollectionViewModel.DesignViewOptions)
     {
       EnableChangeTriggeredSynchronization = true,
     };
@@ -84,5 +86,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         }
       }
     }
+
+    public IViewOptions ViewOptions { get; }
   }
 }

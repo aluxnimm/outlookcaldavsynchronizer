@@ -38,12 +38,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private readonly DelegateCommandWithoutCanExecuteDelegation _getAccountSettingsCommand;
     private readonly DelegateCommandWithoutCanExecuteDelegation _createDavResourceCommand;
 
-    public ServerSettingsViewModel(OptionsModel model, IOptionTasks optionTasks)
+    public ServerSettingsViewModel(OptionsModel model, IOptionTasks optionTasks, IViewOptions viewOptions)
     {
       if (model == null) throw new ArgumentNullException(nameof(model));
       if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
+      if (viewOptions == null) throw new ArgumentNullException(nameof(viewOptions));
+
       _model = model;
       _optionTasks = optionTasks;
+      ViewOptions = viewOptions;
 
       _testConnectionCommand = new DelegateCommandWithoutCanExecuteDelegation(_ =>
       {
@@ -102,7 +105,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       set { _model.UseAccountPassword = value; }
     }
 
-    public static ServerSettingsViewModel DesignInstance => new ServerSettingsViewModel(OptionsModel.DesignInstance, NullOptionTasks.Instance)
+    public static ServerSettingsViewModel DesignInstance => new ServerSettingsViewModel(OptionsModel.DesignInstance, NullOptionTasks.Instance, OptionsCollectionViewModel.DesignViewOptions)
     {
       CalenderUrl = "http://calendar.url",
       EmailAddress = "bla@dot.com",
@@ -154,5 +157,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         _createDavResourceCommand.SetCanExecute(true);
       }
     }
+
+    public IViewOptions ViewOptions { get; }
   }
 }

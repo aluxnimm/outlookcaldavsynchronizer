@@ -26,6 +26,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     bool IsActive { get; set; }
     bool SupportsIsActive { get; }
 
+    IViewOptions ViewOptions { get; }
+
     Guid Id { get; }
 
     new IEnumerable<ISubOptionsViewModel> Items { get; }

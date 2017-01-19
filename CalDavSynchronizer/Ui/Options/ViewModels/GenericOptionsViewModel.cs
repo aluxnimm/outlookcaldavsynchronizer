@@ -47,8 +47,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       IOptionsSection serverSettingsViewModel,
       IOptionTasks optionTasks,
       OptionsModel model,
-      IReadOnlyList<string> availableCategories)
-        : base (parent, model)
+      IReadOnlyList<string> availableCategories,
+      IViewOptions viewOptions)
+        : base (viewOptions, model)
     {
       if (parent == null) throw new ArgumentNullException(nameof(parent));
       if (serverSettingsViewModel == null) throw new ArgumentNullException(nameof(serverSettingsViewModel));
@@ -60,12 +61,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       _model = model;
       _availableCategories = availableCategories;
 
-      _syncSettingsViewModel = new SyncSettingsViewModel(_model);
+      _syncSettingsViewModel = new SyncSettingsViewModel(_model, viewOptions);
       _networkSettingsViewModel = new NetworkSettingsViewModel(_model);
 
       _serverSettingsViewModel = serverSettingsViewModel;
-      _outlookFolderViewModel = new OutlookFolderViewModel (_model, optionTasks);
-      _timeRangeViewModel = new TimeRangeViewModel(_model);
+      _outlookFolderViewModel = new OutlookFolderViewModel (_model, optionTasks, viewOptions);
+      _timeRangeViewModel = new TimeRangeViewModel(_model, viewOptions);
 
       RegisterPropertyChangeHandler(model, nameof(model.MappingConfigurationModelOrNull), UpdateMappingConfigurationViewModel);
 
@@ -110,7 +111,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       else if (_model.MappingConfigurationModelOrNull is ContactMappingConfigurationModel && !(MappingConfigurationViewModel is ContactMappingConfigurationViewModel))
         MappingConfigurationViewModel = new ContactMappingConfigurationViewModel((ContactMappingConfigurationModel)_model.MappingConfigurationModelOrNull);
       else if (_model.MappingConfigurationModelOrNull is TaskMappingConfigurationModel && !(MappingConfigurationViewModel is TaskMappingConfigurationViewModel))
-        MappingConfigurationViewModel = new TaskMappingConfigurationViewModel(_availableCategories, (TaskMappingConfigurationModel) _model.MappingConfigurationModelOrNull);
+        MappingConfigurationViewModel = new TaskMappingConfigurationViewModel(_availableCategories, (TaskMappingConfigurationModel) _model.MappingConfigurationModelOrNull, ViewOptions);
     }
     
     public override Contracts.Options GetOptionsOrNull()
@@ -133,7 +134,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       ViewModels.ServerSettingsViewModel.DesignInstance,
       NullOptionTasks.Instance,
       OptionsModel.DesignInstance,
-      new[] {"Cat1", "Cat2"})
+      new[] {"Cat1", "Cat2"},
+      OptionsCollectionViewModel.DesignViewOptions)
     {
       IsActive = true,
       Name = "Test Profile",

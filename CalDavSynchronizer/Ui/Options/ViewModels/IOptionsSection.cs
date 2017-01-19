@@ -21,6 +21,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
   public interface IOptionsSection
   {
- 
+    IViewOptions ViewOptions { get; }
   }
 }

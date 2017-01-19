@@ -24,10 +24,13 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
   {
     private readonly OptionsModel _model;
 
-    public TimeRangeViewModel(OptionsModel model)
+    public TimeRangeViewModel(OptionsModel model, IViewOptions viewOptions)
     {
       if (model == null) throw new ArgumentNullException(nameof(model));
+      if (viewOptions == null) throw new ArgumentNullException(nameof(viewOptions));
+
       _model = model;
+      ViewOptions = viewOptions;
 
       RegisterPropertyChangePropagation(_model, nameof(_model.UseSynchronizationTimeRange), nameof(UseSynchronizationTimeRange));
       RegisterPropertyChangePropagation(_model, nameof(_model.DaysToSynchronizeInThePast), nameof(DaysToSynchronizeInThePast));
@@ -51,6 +54,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       get { return _model.DaysToSynchronizeInTheFuture; }
       set { _model.DaysToSynchronizeInTheFuture = value; }
     }
+
+    public IViewOptions ViewOptions { get; }
 
 
     //public static TimeRangeViewModel DesignInstance { get; } = new TimeRangeViewModel

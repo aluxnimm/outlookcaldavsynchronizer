@@ -33,6 +33,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private readonly IOptionTasks _optionTasks;
     private readonly ISettingsFaultFinder _settingsFaultFinder;
     private readonly GeneralOptions _generalOptions;
+    private readonly IViewOptions _viewOptions;
 
 
     public OptionsViewModelFactory (
@@ -41,7 +42,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       IReadOnlyList<string> availableCategories, 
       IOptionTasks optionTasks,
       ISettingsFaultFinder settingsFaultFinder, 
-      GeneralOptions generalOptions)
+      GeneralOptions generalOptions, 
+      IViewOptions viewOptions)
     {
       if (optionsViewModelParent == null)
         throw new ArgumentNullException (nameof (optionsViewModelParent));
@@ -52,6 +54,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
       if (settingsFaultFinder == null) throw new ArgumentNullException(nameof(settingsFaultFinder));
       if (generalOptions == null) throw new ArgumentNullException(nameof(generalOptions));
+      if (viewOptions == null) throw new ArgumentNullException(nameof(viewOptions));
 
       _optionsViewModelParent = optionsViewModelParent;
       _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
@@ -59,6 +62,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       _optionTasks = optionTasks;
       _settingsFaultFinder = settingsFaultFinder;
       _generalOptions = generalOptions;
+      _viewOptions = viewOptions;
     }
 
     public List<IOptionsViewModel> Create(IReadOnlyCollection<Contracts.Options> options)
@@ -88,7 +92,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
           ? (IServerSettingsTemplateViewModel)new GoogleServerSettingsTemplateViewModel(_outlookAccountPasswordProvider, prototypeModel)
           : new ServerSettingsTemplateViewModel(_outlookAccountPasswordProvider, prototypeModel),
         _optionTasks,
-        prototypeModel);
+        prototypeModel,
+        _viewOptions);
 
       return optionsViewModel;
     }
@@ -98,11 +103,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       var optionsViewModel = new GenericOptionsViewModel (
           _optionsViewModelParent,
           model.IsGoogle 
-            ? new GoogleServerSettingsViewModel(model, _optionTasks)
-            : (IOptionsSection) new ServerSettingsViewModel(model, _optionTasks),
+            ? new GoogleServerSettingsViewModel(model, _optionTasks, _viewOptions)
+            : (IOptionsSection) new ServerSettingsViewModel(model, _optionTasks, _viewOptions),
           _optionTasks,
           model,
-          _availableCategories);
+          _availableCategories,
+          _viewOptions);
 
       return optionsViewModel;
     }

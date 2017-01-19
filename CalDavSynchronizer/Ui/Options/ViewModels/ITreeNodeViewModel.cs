@@ -16,10 +16,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  public interface ITreeNodeViewModel
+  public interface ITreeNodeViewModel : INotifyPropertyChanged
   {
     IEnumerable<ITreeNodeViewModel> Items { get; }
     string Name { get; }
