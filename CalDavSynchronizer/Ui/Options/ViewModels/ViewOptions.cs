@@ -22,8 +22,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
   {
     private bool _isAdvancedViewEnabled;
 
-    public ViewOptions()
+    public ViewOptions (bool enableAdvancedView)
     {
+      _isAdvancedViewEnabled = enableAdvancedView;
       ShowAdvancedSettingsCommand = new DelegateCommand (_ => { IsAdvancedViewEnabled = true; });
       HideAdvancedSettingsCommand = new DelegateCommand (_ => { IsAdvancedViewEnabled = false; });
     }

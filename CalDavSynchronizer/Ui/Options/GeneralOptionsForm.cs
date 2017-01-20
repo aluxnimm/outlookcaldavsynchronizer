@@ -172,7 +172,8 @@ namespace CalDavSynchronizer.Ui.Options
                    AcceptInvalidCharsInServerResponse = _acceptInvalidCharsInServerResponseCheckBox.Checked,
                    UseUnsafeHeaderParsing = _useUnsafeHeaderParsingCheckBox.Checked,
                    TriggerSyncAfterSendReceive = _triggerSyncAfterSendReceiveCheckBox.Checked,
-                   ExpandAllSyncProfiles = _expandAllSyncProfilesCheckBox.Checked
+                   ExpandAllSyncProfiles = _expandAllSyncProfilesCheckBox.Checked,
+                   EnableAdvancedView = _enableAdvancedViewCheckBox.Checked
         };
       }
       set
@@ -196,6 +197,7 @@ namespace CalDavSynchronizer.Ui.Options
         _useUnsafeHeaderParsingCheckBox.Checked = value.UseUnsafeHeaderParsing;
         _triggerSyncAfterSendReceiveCheckBox.Checked = value.TriggerSyncAfterSendReceive;
         _expandAllSyncProfilesCheckBox.Checked = value.ExpandAllSyncProfiles;
+        _enableAdvancedViewCheckBox.Checked = value.EnableAdvancedView;
       }
     }
 

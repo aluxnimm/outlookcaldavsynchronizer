@@ -58,8 +58,8 @@ namespace CalDavSynchronizer.UnitTest.Ui.Options.ViewModels
           _optionTasksStub,
           NullSettingsFaultFinder.Instance,
           new GeneralOptions(),
-          new ViewOptions()),
-        new ViewOptions());
+          new ViewOptions (false)),
+        new ViewOptions (false));
     }
 
     [Test]

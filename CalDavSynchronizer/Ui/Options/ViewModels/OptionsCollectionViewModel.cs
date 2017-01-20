@@ -425,7 +425,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         ShowProfile (options.First().Id);
     }
 
-    public static IViewOptions DesignViewOptions => new ViewOptions();
+    public static IViewOptions DesignViewOptions => new ViewOptions (false);
 
     public static OptionsCollectionViewModel DesignInstance
     {

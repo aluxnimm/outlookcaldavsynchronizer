@@ -465,7 +465,7 @@ namespace CalDavSynchronizer
 
       var optionTasks = new OptionTasks(_session, EnumDisplayNameProvider.Instance, faultFinder );
 
-      var viewOptions = new ViewOptions();
+      var viewOptions = new ViewOptions (generalOptions.EnableAdvancedView);
       var viewModel = new OptionsCollectionViewModel (
           generalOptions.ExpandAllSyncProfiles,
           GetProfileDataDirectory,
