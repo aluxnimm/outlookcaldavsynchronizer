@@ -783,15 +783,26 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       if (source.Phones.Count >= 1 && source.Phones.All (p => p.PhoneType == vCardPhoneTypes.Default))
       {
-        source.Phones[0].PhoneType = vCardPhoneTypes.Cellular;
+        var phoneNumber1 = source.Phones[0].FullNumber;
+        target.MobileTelephoneNumber = _configuration.FixPhoneNumberFormat
+          ? FixPhoneNumberFormat (phoneNumber1)
+          : phoneNumber1;
+
         if (source.Phones.Count >= 2)
         {
-          source.Phones[1].PhoneType = vCardPhoneTypes.Work;
+          var phoneNumber2 = source.Phones[1].FullNumber;
+          target.BusinessTelephoneNumber = _configuration.FixPhoneNumberFormat
+             ? FixPhoneNumberFormat (phoneNumber2)
+             : phoneNumber2;
           if (source.Phones.Count >= 3)
           {
-            source.Phones[2].PhoneType = vCardPhoneTypes.Home;
+            var phoneNumber3= source.Phones[2].FullNumber;
+            target.HomeTelephoneNumber = _configuration.FixPhoneNumberFormat
+               ? FixPhoneNumberFormat (phoneNumber3)
+               : phoneNumber3;
           }
         }
+        return;
       }
 
       foreach (var phoneNumber in source.Phones)
