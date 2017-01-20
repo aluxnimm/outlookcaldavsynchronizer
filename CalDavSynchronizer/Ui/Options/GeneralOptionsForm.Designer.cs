@@ -51,6 +51,8 @@ namespace CalDavSynchronizer.Ui.Options
       this.label2 = new System.Windows.Forms.Label();
       this._expandAllSyncProfilesCheckBox = new System.Windows.Forms.CheckBox();
       this._useUnsafeHeaderParsingCheckBox = new System.Windows.Forms.CheckBox();
+      this.groupBox4 = new System.Windows.Forms.GroupBox();
+      this._enableAdvancedViewCheckBox = new System.Windows.Forms.CheckBox();
       this.groupBox2 = new System.Windows.Forms.GroupBox();
       this._maxReportAgeInDays = new System.Windows.Forms.TextBox();
       this.label3 = new System.Windows.Forms.Label();
@@ -64,12 +66,10 @@ namespace CalDavSynchronizer.Ui.Options
       this.label6 = new System.Windows.Forms.Label();
       this._calDavConnectTimeoutTextBox = new System.Windows.Forms.TextBox();
       this.label4 = new System.Windows.Forms.Label();
-      this.groupBox4 = new System.Windows.Forms.GroupBox();
-      this._enableAdvancedViewCheckBox = new System.Windows.Forms.CheckBox();
       this.groupBox1.SuspendLayout();
+      this.groupBox4.SuspendLayout();
       this.groupBox2.SuspendLayout();
       this.groupBox3.SuspendLayout();
-      this.groupBox4.SuspendLayout();
       this.SuspendLayout();
       // 
       // _cancelButton
@@ -169,7 +169,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox1.Controls.Add(this._disableCertificateValidationCheckbox);
       this.groupBox1.Controls.Add(this._enableSsl3Checkbox);
       this.groupBox1.Controls.Add(this._enableTls12Checkbox);
-      this.groupBox1.Location = new System.Drawing.Point(4, 339);
+      this.groupBox1.Location = new System.Drawing.Point(4, 347);
       this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this.groupBox1.Name = "groupBox1";
       this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -289,8 +289,8 @@ namespace CalDavSynchronizer.Ui.Options
       this._expandAllSyncProfilesCheckBox.Size = new System.Drawing.Size(309, 21);
       this._expandAllSyncProfilesCheckBox.TabIndex = 14;
       this._expandAllSyncProfilesCheckBox.Text = "Expand all nodes in Synchronization Profiles";
-      this._toolTip.SetToolTip(this._expandAllSyncProfilesCheckBox, "Expand all nodes in the treeview of the Synchronization Profiles configuration by" +
-        " default if enabled.");
+      this._toolTip.SetToolTip(this._expandAllSyncProfilesCheckBox, "Expand all nodes in the treeview of the Synchronization Profiles configuration as" +
+        " default if enabled.\r\nOnly applicable if advanced settings are turned on.");
       this._expandAllSyncProfilesCheckBox.UseVisualStyleBackColor = true;
       // 
       // _useUnsafeHeaderParsingCheckBox
@@ -307,6 +307,36 @@ namespace CalDavSynchronizer.Ui.Options
         "d cPanel Horde servers for example.");
       this._useUnsafeHeaderParsingCheckBox.UseVisualStyleBackColor = true;
       // 
+      // groupBox4
+      // 
+      this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupBox4.Controls.Add(this._enableAdvancedViewCheckBox);
+      this.groupBox4.Controls.Add(this._fixInvalidSettingsCheckBox);
+      this.groupBox4.Controls.Add(this._enableTrayIconCheckBox);
+      this.groupBox4.Controls.Add(this._expandAllSyncProfilesCheckBox);
+      this.groupBox4.Location = new System.Drawing.Point(4, 221);
+      this.groupBox4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+      this.groupBox4.Name = "groupBox4";
+      this.groupBox4.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+      this.groupBox4.Size = new System.Drawing.Size(500, 122);
+      this.groupBox4.TabIndex = 12;
+      this.groupBox4.TabStop = false;
+      this.groupBox4.Text = "UI settings";
+      this._toolTip.SetToolTip(this.groupBox4, "Changing these options can be a major security risk, not recommended!");
+      // 
+      // _enableAdvancedViewCheckBox
+      // 
+      this._enableAdvancedViewCheckBox.AutoSize = true;
+      this._enableAdvancedViewCheckBox.Location = new System.Drawing.Point(12, 19);
+      this._enableAdvancedViewCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+      this._enableAdvancedViewCheckBox.Name = "_enableAdvancedViewCheckBox";
+      this._enableAdvancedViewCheckBox.Size = new System.Drawing.Size(249, 21);
+      this._enableAdvancedViewCheckBox.TabIndex = 13;
+      this._enableAdvancedViewCheckBox.Text = "Show advanced settings as default";
+      this._toolTip.SetToolTip(this._enableAdvancedViewCheckBox, "Show the advanced settings in synchronization profiles as default if enabled. ");
+      this._enableAdvancedViewCheckBox.UseVisualStyleBackColor = true;
+      // 
       // groupBox2
       // 
       this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -317,7 +347,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox2.Controls.Add(this._reportLogModeComboBox);
       this.groupBox2.Controls.Add(this.label2);
       this.groupBox2.Controls.Add(this.label1);
-      this.groupBox2.Location = new System.Drawing.Point(4, 477);
+      this.groupBox2.Location = new System.Drawing.Point(4, 485);
       this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
       this.groupBox2.Name = "groupBox2";
       this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
@@ -387,7 +417,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox3.Controls.Add(this._clearLogButton);
       this.groupBox3.Controls.Add(this._logLevelComboBox);
       this.groupBox3.Controls.Add(this.label6);
-      this.groupBox3.Location = new System.Drawing.Point(4, 620);
+      this.groupBox3.Location = new System.Drawing.Point(4, 628);
       this.groupBox3.Margin = new System.Windows.Forms.Padding(4);
       this.groupBox3.Name = "groupBox3";
       this.groupBox3.Padding = new System.Windows.Forms.Padding(4);
@@ -461,36 +491,6 @@ namespace CalDavSynchronizer.Ui.Options
       this.label4.TabIndex = 11;
       this.label4.Text = "CalDav Connection Timeout (secs)";
       // 
-      // groupBox4
-      // 
-      this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.groupBox4.Controls.Add(this._enableAdvancedViewCheckBox);
-      this.groupBox4.Controls.Add(this._fixInvalidSettingsCheckBox);
-      this.groupBox4.Controls.Add(this._enableTrayIconCheckBox);
-      this.groupBox4.Controls.Add(this._expandAllSyncProfilesCheckBox);
-      this.groupBox4.Location = new System.Drawing.Point(4, 213);
-      this.groupBox4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-      this.groupBox4.Name = "groupBox4";
-      this.groupBox4.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-      this.groupBox4.Size = new System.Drawing.Size(500, 122);
-      this.groupBox4.TabIndex = 12;
-      this.groupBox4.TabStop = false;
-      this.groupBox4.Text = "UI settings";
-      this._toolTip.SetToolTip(this.groupBox4, "Changing these options can be a major security risk, not recommended!");
-      // 
-      // _enableAdvancedViewCheckBox
-      // 
-      this._enableAdvancedViewCheckBox.AutoSize = true;
-      this._enableAdvancedViewCheckBox.Location = new System.Drawing.Point(12, 19);
-      this._enableAdvancedViewCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-      this._enableAdvancedViewCheckBox.Name = "_enableAdvancedViewCheckBox";
-      this._enableAdvancedViewCheckBox.Size = new System.Drawing.Size(225, 21);
-      this._enableAdvancedViewCheckBox.TabIndex = 13;
-      this._enableAdvancedViewCheckBox.Text = "Enable advanced settings in UI";
-      this._toolTip.SetToolTip(this._enableAdvancedViewCheckBox, "Show the advanced settings in synchronization profiles by default if enabled. ");
-      this._enableAdvancedViewCheckBox.UseVisualStyleBackColor = true;
-      // 
       // GeneralOptionsForm
       // 
       this.AcceptButton = this._okButton;
@@ -521,12 +521,12 @@ namespace CalDavSynchronizer.Ui.Options
       this.Text = "General Options";
       this.groupBox1.ResumeLayout(false);
       this.groupBox1.PerformLayout();
+      this.groupBox4.ResumeLayout(false);
+      this.groupBox4.PerformLayout();
       this.groupBox2.ResumeLayout(false);
       this.groupBox2.PerformLayout();
       this.groupBox3.ResumeLayout(false);
       this.groupBox3.PerformLayout();
-      this.groupBox4.ResumeLayout(false);
-      this.groupBox4.PerformLayout();
       this.ResumeLayout(false);
       this.PerformLayout();
 
