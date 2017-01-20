@@ -215,10 +215,10 @@
             <Button Command="{Binding ClearCacheOfSelectedCommand}" ToolTip="Clear cache of selected profile">
                 <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ClearCache.png" />
             </Button>
-            <Button Command="{Binding ExpandAllCommand}" ToolTip="Expand all nodes">
+            <Button Command="{Binding ExpandAllCommand}" ToolTip="Expand all nodes" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ExpandAll.png" />
             </Button>
-            <Button Command="{Binding CollapseAllCommand}" ToolTip="Collapse all nodes">
+            <Button Command="{Binding CollapseAllCommand}" ToolTip="Collapse all nodes" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/CollapseAll.png" />
             </Button>
             <Separator />
