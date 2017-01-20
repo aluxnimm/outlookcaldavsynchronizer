@@ -31,7 +31,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  public class OptionsCollectionViewModel : IOptionsViewModelParent, ISynchronizationProfilesViewModel
+  public class OptionsCollectionViewModel : ModelBase, IOptionsViewModelParent, ISynchronizationProfilesViewModel
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -65,7 +65,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       _expandAllSyncProfiles = expandAllSyncProfiles;
 
       _optionsViewModelFactory = optionsViewModelFactoryFactory(this);
-      
+
+      RegisterPropertyChangeHandler(viewOptions, nameof(viewOptions.IsAdvancedViewEnabled), () =>
+      {
+        if (!viewOptions.IsAdvancedViewEnabled) OnAdvancedViewDisabled();
+      });
+
       AddCommand = new DelegateCommand (_ => Add());
       AddMultipleCommand = new DelegateCommand (_ => AddMultiple());
       CloseCommand = new DelegateCommand (shouldSaveNewOptions => Close((bool)shouldSaveNewOptions));
@@ -82,6 +87,18 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     }
 
     public IViewOptions ViewOptions { get; }
+
+    private void OnAdvancedViewDisabled()
+    {
+      var optionWithSelectedChild = _options.FirstOrDefault(o => o.Items.Any(IsSelfOrAncestorSelected));
+      if (optionWithSelectedChild != null)
+        optionWithSelectedChild.IsSelected = true;
+    }
+
+    private static bool IsSelfOrAncestorSelected(ITreeNodeViewModel viewModel)
+    {
+      return viewModel.IsSelected || viewModel.Items.Any(IsSelfOrAncestorSelected);
+    }
 
     private void Import()
     {
