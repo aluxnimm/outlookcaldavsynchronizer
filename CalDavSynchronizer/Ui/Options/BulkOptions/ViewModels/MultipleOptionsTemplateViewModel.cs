@@ -58,7 +58,8 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
         IOptionsViewModelParent parent,
         IServerSettingsTemplateViewModel serverSettingsViewModel,
         IOptionTasks optionTasks, 
-        OptionsModel prototypeModel)
+        OptionsModel prototypeModel,
+        IViewOptions viewOptions)
 
     {
       _parent = parent;
@@ -67,6 +68,9 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
     
       if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
       if (prototypeModel == null) throw new ArgumentNullException(nameof(prototypeModel));
+      if (viewOptions == null) throw new ArgumentNullException(nameof(viewOptions));
+
+      ViewOptions = viewOptions;
 
       _prototypeModel = prototypeModel;
 
@@ -216,6 +220,6 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
    
     public Contracts.Options GetOptionsOrNull () => null;
     public bool Validate (StringBuilder errorMessageBuilder) => true;
-    
+    public IViewOptions ViewOptions { get; }
   }
 }

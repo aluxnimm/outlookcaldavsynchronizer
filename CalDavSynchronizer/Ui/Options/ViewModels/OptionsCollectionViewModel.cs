@@ -31,7 +31,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  public class OptionsCollectionViewModel : IOptionsViewModelParent, ISynchronizationProfilesViewModel
+  public class OptionsCollectionViewModel : ModelBase, IOptionsViewModelParent, ISynchronizationProfilesViewModel
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -50,19 +50,27 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       Func<Guid, string> profileDataDirectoryFactory,
       IUiService uiService,
       IOptionTasks optionTasks,
-      Func<IOptionsViewModelParent, IOptionsViewModelFactory> optionsViewModelFactoryFactory)
+      Func<IOptionsViewModelParent, IOptionsViewModelFactory> optionsViewModelFactoryFactory,
+      IViewOptions viewOptions)
     {
       _optionTasks = optionTasks;
+      ViewOptions = viewOptions;
       _profileDataDirectoryFactory = profileDataDirectoryFactory;
       _uiService = uiService;
       if (profileDataDirectoryFactory == null)
         throw new ArgumentNullException (nameof (profileDataDirectoryFactory));
       if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
+      if (viewOptions == null) throw new ArgumentNullException(nameof(viewOptions));
 
       _expandAllSyncProfiles = expandAllSyncProfiles;
 
       _optionsViewModelFactory = optionsViewModelFactoryFactory(this);
-      
+
+      RegisterPropertyChangeHandler(viewOptions, nameof(viewOptions.IsAdvancedViewEnabled), () =>
+      {
+        if (!viewOptions.IsAdvancedViewEnabled) OnAdvancedViewDisabled();
+      });
+
       AddCommand = new DelegateCommand (_ => Add());
       AddMultipleCommand = new DelegateCommand (_ => AddMultiple());
       CloseCommand = new DelegateCommand (shouldSaveNewOptions => Close((bool)shouldSaveNewOptions));
@@ -76,6 +84,20 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       CollapseAllCommand = new DelegateCommandHandlingRequerySuggested (_ => CollapseAll (), _ => _options.Count > 0);
       ExportAllCommand = new DelegateCommandHandlingRequerySuggested (_ => ExportAll (), _ => _options.Count > 0);
       ImportCommand = new DelegateCommandHandlingRequerySuggested (_ => Import (), _ => true);
+    }
+
+    public IViewOptions ViewOptions { get; }
+
+    private void OnAdvancedViewDisabled()
+    {
+      var optionWithSelectedChild = _options.FirstOrDefault(o => o.Items.Any(IsSelfOrAncestorSelected));
+      if (optionWithSelectedChild != null)
+        optionWithSelectedChild.IsSelected = true;
+    }
+
+    private static bool IsSelfOrAncestorSelected(ITreeNodeViewModel viewModel)
+    {
+      return viewModel.IsSelected || viewModel.Items.Any(IsSelfOrAncestorSelected);
     }
 
     private void Import()
@@ -403,6 +425,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         ShowProfile (options.First().Id);
     }
 
+    public static IViewOptions DesignViewOptions => new ViewOptions (false);
+
     public static OptionsCollectionViewModel DesignInstance
     {
       get
@@ -413,7 +437,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
             _ => string.Empty,
             NullUiService.Instance,
             NullOptionTasks.Instance,
-            p => DesignOptionsViewModelFactory.Instance);
+            p => DesignOptionsViewModelFactory.Instance,
+            DesignViewOptions);
               
           var genericOptionsViewModel = GenericOptionsViewModel.DesignInstance;
           genericOptionsViewModel.IsSelected = true;

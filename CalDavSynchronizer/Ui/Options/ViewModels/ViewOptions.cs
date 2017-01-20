@@ -14,13 +14,28 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using System.Collections.Generic;
+using System.Windows.Input;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  public interface ISubOptionsViewModel : ITreeNodeViewModel
+  public class ViewOptions : ModelBase, IViewOptions
   {
-    
+    private bool _isAdvancedViewEnabled;
+
+    public ViewOptions (bool enableAdvancedView)
+    {
+      _isAdvancedViewEnabled = enableAdvancedView;
+      ShowAdvancedSettingsCommand = new DelegateCommand (_ => { IsAdvancedViewEnabled = true; });
+      HideAdvancedSettingsCommand = new DelegateCommand (_ => { IsAdvancedViewEnabled = false; });
+    }
+
+    public ICommand ShowAdvancedSettingsCommand { get; }
+    public ICommand HideAdvancedSettingsCommand { get; }
+
+    public bool IsAdvancedViewEnabled
+    {
+      get { return _isAdvancedViewEnabled; }
+      set { CheckedPropertyChange(ref _isAdvancedViewEnabled, value); }
+    }
   }
 }

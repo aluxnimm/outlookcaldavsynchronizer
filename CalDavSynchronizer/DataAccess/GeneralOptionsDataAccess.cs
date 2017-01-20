@@ -54,6 +54,7 @@ namespace CalDavSynchronizer.DataAccess
     private const string s_UseUnsafeHeaderParsing = "UseUnsafeHeaderParsing";
     private const string s_TriggerSyncAfterSendReceive = "TriggerSyncAfterSendReceive";
     private const string s_ExpandAllSyncProfiles = "ExpandAllSyncProfiles";
+    private const string s_EnableAdvancedView = "EnableAdvancedView";
     private const string s_ToolbarSettings = "ToolbarSettings";
 
     public GeneralOptions LoadOptions ()
@@ -64,7 +65,7 @@ namespace CalDavSynchronizer.DataAccess
 
         return new GeneralOptions()
                {
-                   ShouldCheckForNewerVersions = (int) (key.GetValue (s_shouldCheckForNewerVersionsValueName) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["CheckForNewerVersions"] ?? bool.TrueString))) != 0,
+                   ShouldCheckForNewerVersions = (int) (key.GetValue (s_shouldCheckForNewerVersionsValueName) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["checkForNewerVersions"] ?? bool.TrueString))) != 0,
                    CheckIfOnline = (int) (key.GetValue (s_checkIfOnline) ?? 1) != 0,
                    StoreAppDataInRoamingFolder = (int) (key.GetValue (s_storeAppDataInRoamingFolder) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["storeAppDataInRoamingFolder"] ?? bool.FalseString))) != 0,
                    DisableCertificateValidation = (int) (key.GetValue (s_disableCertificateValidation) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"] ?? bool.FalseString))) != 0,
@@ -84,7 +85,8 @@ namespace CalDavSynchronizer.DataAccess
                    AcceptInvalidCharsInServerResponse = (int) (key.GetValue (s_AcceptInvalidCharsInServerResponse) ?? 0) != 0,
                    UseUnsafeHeaderParsing = (int) (key.GetValue (s_UseUnsafeHeaderParsing) ?? Convert.ToInt32 (SystemNetSettings.UseUnsafeHeaderParsing)) !=0,
                    TriggerSyncAfterSendReceive = (int) (key.GetValue (s_TriggerSyncAfterSendReceive) ?? 0) != 0,
-                   ExpandAllSyncProfiles = (int) (key.GetValue (s_ExpandAllSyncProfiles) ?? 1) != 0
+                   ExpandAllSyncProfiles = (int) (key.GetValue (s_ExpandAllSyncProfiles) ?? 1) != 0,
+                   EnableAdvancedView = (int)(key.GetValue(s_EnableAdvancedView) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableAdvancedView"] ?? bool.FalseString))) != 0
         };
       }
     }
@@ -114,6 +116,7 @@ namespace CalDavSynchronizer.DataAccess
         key.SetValue (s_UseUnsafeHeaderParsing, options.UseUnsafeHeaderParsing ? 1 : 0);
         key.SetValue (s_TriggerSyncAfterSendReceive, options.TriggerSyncAfterSendReceive ? 1 : 0);
         key.SetValue (s_ExpandAllSyncProfiles, options.ExpandAllSyncProfiles ? 1 : 0);
+        key.SetValue (s_EnableAdvancedView, options.EnableAdvancedView ? 1 : 0);
       }
     }
 

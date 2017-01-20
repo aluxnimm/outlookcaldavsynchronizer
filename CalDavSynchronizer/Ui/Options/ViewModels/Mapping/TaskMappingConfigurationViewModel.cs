@@ -34,13 +34,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     private bool _isExpanded;
 
 
-    public TaskMappingConfigurationViewModel(IReadOnlyList<string> availableCategories, TaskMappingConfigurationModel model)
+    public TaskMappingConfigurationViewModel(IReadOnlyList<string> availableCategories, TaskMappingConfigurationModel model, IViewOptions viewOptions)
     {
       if (availableCategories == null)
         throw new ArgumentNullException(nameof(availableCategories));
+      if (viewOptions == null) throw new ArgumentNullException(nameof(viewOptions));
 
       AvailableCategories = availableCategories;
       _model = model;
+      ViewOptions = viewOptions;
 
       _customPropertyMappingViewModel = new CustomPropertyMappingViewModel(model);
       Items = new[] { _customPropertyMappingViewModel };
@@ -127,7 +129,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       }
     }
 
-    public static TaskMappingConfigurationViewModel DesignInstance => new TaskMappingConfigurationViewModel(new[] { "Cat1", "Cat2" }, new TaskMappingConfigurationModel(new TaskMappingConfiguration()))
+    public static TaskMappingConfigurationViewModel DesignInstance => new TaskMappingConfigurationViewModel(new[] { "Cat1", "Cat2" }, new TaskMappingConfigurationModel(new TaskMappingConfiguration()), OptionsCollectionViewModel.DesignViewOptions)
     {
       MapBody = true,
       MapPriority = true,
@@ -143,6 +145,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
 
     public IEnumerable<ITreeNodeViewModel> Items { get; }
-
+    public IViewOptions ViewOptions { get; }
   }
 }

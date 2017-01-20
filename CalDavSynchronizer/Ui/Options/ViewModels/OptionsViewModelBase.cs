@@ -34,11 +34,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private bool _isSelected;
     private bool _isExpanded;
 
-    protected OptionsViewModelBase (IOptionsViewModelParent parent, OptionsModel model)
+    protected OptionsViewModelBase (IViewOptions options, OptionsModel model)
     {
-      if (parent == null) throw new ArgumentNullException (nameof (parent));
+      if (options == null) throw new ArgumentNullException (nameof (options));
       if (model == null) throw new ArgumentNullException(nameof(model));
 
+      ViewOptions = options;
       _model = model;
 
       RegisterPropertyChangePropagation(_model, nameof(_model.Name), nameof(Name));
@@ -96,5 +97,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     protected abstract IEnumerable<ISubOptionsViewModel> CreateSubOptions ();
     protected abstract IEnumerable<IOptionsSection> CreateSections ();
+    public IViewOptions ViewOptions { get; }
   }
 }

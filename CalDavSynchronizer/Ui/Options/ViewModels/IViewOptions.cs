@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -14,13 +14,15 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows.Input;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  public interface ISubOptionsViewModel : ITreeNodeViewModel
+  public interface IViewOptions : INotifyPropertyChanged
   {
-    
+    bool IsAdvancedViewEnabled { get;  }
+    ICommand ShowAdvancedSettingsCommand { get; }
+    ICommand HideAdvancedSettingsCommand { get; }
   }
 }

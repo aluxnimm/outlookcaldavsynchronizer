@@ -376,6 +376,9 @@
     <Compile Include="Ui\Options\Models\ICustomPropertiesMappingConfigurationModel.cs" />
     <Compile Include="Ui\Options\Models\MappingConfigurationModel.cs" />
     <Compile Include="Ui\Options\ViewModels\DesignOptionsViewModelFactory.cs" />
+    <Compile Include="Ui\Options\ViewModels\ViewOptions.cs" />
+    <Compile Include="Ui\Options\ViewModels\IViewOptions.cs" />
+    <Compile Include="Ui\Options\Views\BooleanToVisibilityConverterInverted.cs" />
     <Compile Include="Ui\ViewModels\ProgressViewModel.cs" />
     <Compile Include="Ui\Views\ProgressWindow.xaml.cs">
       <DependentUpon>ProgressWindow.xaml</DependentUpon>

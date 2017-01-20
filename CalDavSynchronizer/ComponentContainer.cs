@@ -465,12 +465,14 @@ namespace CalDavSynchronizer
 
       var optionTasks = new OptionTasks(_session, EnumDisplayNameProvider.Instance, faultFinder );
 
+      var viewOptions = new ViewOptions (generalOptions.EnableAdvancedView);
       var viewModel = new OptionsCollectionViewModel (
           generalOptions.ExpandAllSyncProfiles,
           GetProfileDataDirectory,
           _uiService, 
           optionTasks,
-          p => new OptionsViewModelFactory(p, _outlookAccountPasswordProvider, categories, optionTasks, faultFinder, generalOptions));
+          p => new OptionsViewModelFactory(p, _outlookAccountPasswordProvider, categories, optionTasks, faultFinder, generalOptions, viewOptions),
+          viewOptions);
 
       _currentVisibleOptionsFormOrNull = viewModel;
 
