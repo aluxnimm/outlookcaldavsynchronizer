@@ -15,8 +15,11 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options.ProfileTypes;
 
 namespace CalDavSynchronizer.Ui.Options
 {
@@ -42,33 +45,33 @@ namespace CalDavSynchronizer.Ui.Options
       DialogResult = DialogResult.OK;
     }
 
-    public static ProfileType? QueryProfileType ()
+    public static IProfileType QueryProfileType (IReadOnlyCollection<IProfileType> profileTypes)
     {
       var form = new SelectOptionsDisplayTypeForm();
       if (form.ShowDialog() == DialogResult.OK)
       {
         if (form._genericTypeRadioButton.Checked)
-          return ProfileType.Generic;
+          return profileTypes.Single(p => p is GenericProfile);
         if (form._googleTypeRadionButton.Checked)
-          return ProfileType.Google;
+          return profileTypes.Single(p => p is GoogleProfile);
         if (form._fruuxTypeRadioButton.Checked)
-          return ProfileType.Fruux;
+          return profileTypes.Single(p => p is FruuxProfile);
         if (form._posteoTypeRadioButton.Checked)
-          return ProfileType.Posteo;
+          return profileTypes.Single(p => p is PosteoProfile);
         if (form._yandexTypeRadioButton.Checked)
-          return ProfileType.Yandex;
+          return profileTypes.Single(p => p is YandexProfile);
         if (form._gmxCalendarTypeRadioButton.Checked)
-          return ProfileType.GmxCalendar;
+          return profileTypes.Single(p => p is GmxCalendarProfile);
         if (form._sarenetTypeRadioButton.Checked)
-          return ProfileType.Sarenet;
+          return profileTypes.Single(p => p is SarenetProfile);
         if (form._landmarksTypeRadioButton.Checked)
-          return ProfileType.Landmarks;
+          return profileTypes.Single(p => p is LandmarksProfile);
         if (form._sogoTypeRadioButton.Checked)
-          return ProfileType.Sogo;
+          return profileTypes.Single(p => p is SogoProfile);
         if (form._cozyTypeRadioButton.Checked)
-          return ProfileType.Cozy;
+          return profileTypes.Single(p => p is CozyProfile);
         if (form._nextCloudTypeRadioButton.Checked)
-          return ProfileType.Nextcloud;
+          return profileTypes.Single(p => p is NextcloudProfile);
       }
 
       return null;

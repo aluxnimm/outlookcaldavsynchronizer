@@ -106,73 +106,7 @@ namespace CalDavSynchronizer.Contracts
         ProtectedPassword = Convert.ToBase64String (transformedData);
       }
     }
-
-    public static Options CreateDefault (ProfileType type)
-    {
-      var options = new Options();
-
-      options.ConflictResolution = ConflictResolution.Automatic;
-      options.DaysToSynchronizeInTheFuture = 365;
-      options.DaysToSynchronizeInThePast = 60;
-      options.SynchronizationIntervalInMinutes = 30;
-      options.SynchronizationMode = SynchronizationMode.MergeInBothDirections;
-      options.Name = "<New Profile>";
-      options.Id = Guid.NewGuid();
-      options.Inactive = false;
-      options.PreemptiveAuthentication = true;
-      options.ForceBasicAuthentication = false;
-      options.ProxyOptions = new ProxyOptions() { ProxyUseDefault = true };
-      options.CalenderUrl = PopulateDavUrl (type);
-      options.IsChunkedSynchronizationEnabled = false;
-      options.ChunkSize = 100;
-
-      if (type == ProfileType.GmxCalendar || type == ProfileType.Cozy)
-      {
-        options.MappingConfiguration = new EventMappingConfiguration
-        {
-          UseIanaTz = true
-        };
-      }
-      else if (type == ProfileType.Sogo)
-      {
-        options.MappingConfiguration = new EventMappingConfiguration
-        {
-          ScheduleAgentClient = false,
-          SendNoAppointmentNotifications = true,
-          UseGlobalAppointmentID = true
-        };
-      }
-
-      return options;
-    }
-
-    private static string PopulateDavUrl (ProfileType type)
-    {
-      switch (type)
-      {
-        case ProfileType.Fruux:
-          return "https://dav.fruux.com";
-        case ProfileType.Posteo:
-          return "https://posteo.de:8443";
-        case ProfileType.Yandex:
-          return "https://caldav.yandex.ru";
-        case ProfileType.GmxCalendar:
-          return "https://caldav.gmx.net";
-        case ProfileType.Sarenet:
-          return "https://configurator.organizer.sarenet.es/androidconfigurator.php";
-        case ProfileType.Landmarks:
-          return "https://dav.landmarks.skyrise.de/";
-        case ProfileType.Sogo:
-          return "https://sogo.example.com/SOGo/dav/";
-        case ProfileType.Cozy:
-          return "https://yourdomain.cozycloud.cc/public/sync/principals/me/";
-        case ProfileType.Nextcloud:
-          return "https://server.example/nextcloud/remote.php/dav/";
-        default:
-          return null;
-      }
-    }
-
+    
     public TMappingConfiguration GetOrCreateMappingConfiguration<TMappingConfiguration>()
       where TMappingConfiguration : MappingConfigurationBase, new()
     {

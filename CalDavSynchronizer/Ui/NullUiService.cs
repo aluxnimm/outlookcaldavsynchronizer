@@ -15,8 +15,10 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.Ui.Options.ProfileTypes;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.Reports.ViewModels;
 using CalDavSynchronizer.Ui.ViewModels;
@@ -47,12 +49,7 @@ namespace CalDavSynchronizer.Ui
     {
       return false;
     }
-
-    public ProfileType? QueryProfileType()
-    {
-      return null;
-    }
-
+    
     public void ShowErrorDialog(string errorMessage, string title)
     {
       
@@ -74,6 +71,11 @@ namespace CalDavSynchronizer.Ui
     }
 
     public IProgressUi Create(int maxValue)
+    {
+      return null;
+    }
+
+    public IProfileType QueryProfileType(IReadOnlyCollection<IProfileType> profileTypes)
     {
       return null;
     }

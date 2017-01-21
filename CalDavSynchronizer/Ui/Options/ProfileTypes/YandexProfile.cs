@@ -15,36 +15,28 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.Ui.Options.Models;
+using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ViewModels
+namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 {
-  internal class DesignOptionsViewModelFactory : IOptionsViewModelFactory
+  class YandexProfile : ProfileBase
   {
-    public static readonly IOptionsViewModelFactory Instance = new DesignOptionsViewModelFactory();
-
-    public List<IOptionsViewModel> Create(IReadOnlyCollection<Contracts.Options> options)
+    public YandexProfile(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions) : base(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions)
     {
-      return new List<IOptionsViewModel>();
     }
 
-    public IOptionsViewModel CreateTemplate(Contracts.Options options, ProfileType type)
+    public override string Name => "Yandex";
+    
+    protected override void InitializeData(Contracts.Options data)
     {
-      throw new NotSupportedException();
+      data.CalenderUrl = "https://caldav.yandex.ru";
     }
 
-    public List<IOptionsViewModel> Create(IReadOnlyCollection<OptionsModel> options)
+    protected override void InitializePrototypeData(Contracts.Options data)
     {
-      return new List<IOptionsViewModel>();
-    }
-
-    public IOptionsViewModel CreateTemplate(Contracts.Options prototype)
-    {
-      throw new NotSupportedException();
+      InitializeData(data);
     }
   }
 }
-

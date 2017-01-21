@@ -53,6 +53,7 @@ using CalDavSynchronizer.Implementation.Tasks;
 using CalDavSynchronizer.Implementation.TimeZones;
 using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
+using CalDavSynchronizer.Ui.Options.ProfileTypes;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.SystrayNotification;
 using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
@@ -471,7 +472,7 @@ namespace CalDavSynchronizer
           GetProfileDataDirectory,
           _uiService, 
           optionTasks,
-          p => new OptionsViewModelFactory(p, _outlookAccountPasswordProvider, categories, optionTasks, faultFinder, generalOptions, viewOptions),
+          p => ProfileTypeRegistry.Create(p, _outlookAccountPasswordProvider, categories, optionTasks, faultFinder, generalOptions, viewOptions),
           viewOptions);
 
       _currentVisibleOptionsFormOrNull = viewModel;

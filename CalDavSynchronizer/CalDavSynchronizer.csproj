@@ -285,7 +285,6 @@
     <Compile Include="Contracts\TaskMappingConfiguration.cs" />
     <Compile Include="Contracts\ReminderMapping.cs" />
     <Compile Include="Contracts\ContactMappingConfiguration.cs" />
-    <Compile Include="Contracts\ProfileType.cs" />
     <Compile Include="Contracts\EventMappingConfiguration.cs" />
     <Compile Include="Contracts\MappingConfigurationBase.cs" />
     <Compile Include="Contracts\GeneralOption.cs" />
@@ -375,7 +374,21 @@
     <Compile Include="Ui\Options\IEnumDisplayNameProvider.cs" />
     <Compile Include="Ui\Options\Models\ICustomPropertiesMappingConfigurationModel.cs" />
     <Compile Include="Ui\Options\Models\MappingConfigurationModel.cs" />
-    <Compile Include="Ui\Options\ViewModels\DesignOptionsViewModelFactory.cs" />
+    <Compile Include="Ui\Options\ProfileTypes\CozyProfile.cs" />
+    <Compile Include="Ui\Options\ProfileTypes\DesignProfileType.cs" />
+    <Compile Include="Ui\Options\ProfileTypes\FruuxProfile.cs" />
+    <Compile Include="Ui\Options\ProfileTypes\GenericProfile.cs" />
+    <Compile Include="Ui\Options\ProfileTypes\GmxCalendarProfile.cs" />
+    <Compile Include="Ui\Options\ProfileTypes\GoogleProfile.cs" />
+    <Compile Include="Ui\Options\ProfileTypes\IProfileType.cs" />
+    <Compile Include="Ui\Options\ProfileTypes\IProfileTypeRegistry.cs" />
+    <Compile Include="Ui\Options\ProfileTypes\LandmarksProfile.cs" />
+    <Compile Include="Ui\Options\ProfileTypes\NextcloudProfile.cs" />
+    <Compile Include="Ui\Options\ProfileTypes\PosteoProfile.cs" />
+    <Compile Include="Ui\Options\ProfileTypes\ProfileBase.cs" />
+    <Compile Include="Ui\Options\ProfileTypes\SarenetProfile.cs" />
+    <Compile Include="Ui\Options\ProfileTypes\SogoProfile.cs" />
+    <Compile Include="Ui\Options\ProfileTypes\YandexProfile.cs" />
     <Compile Include="Ui\Options\ViewModels\ViewOptions.cs" />
     <Compile Include="Ui\Options\ViewModels\IViewOptions.cs" />
     <Compile Include="Ui\Options\Views\BooleanToVisibilityConverterInverted.cs" />
@@ -567,7 +580,6 @@
     <Compile Include="Ui\Options\ViewModels\GoogleServerSettingsViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\IOptionsSection.cs" />
     <Compile Include="Ui\Options\ViewModels\IOptionsViewModel.cs" />
-    <Compile Include="Ui\Options\ViewModels\IOptionsViewModelFactory.cs" />
     <Compile Include="Ui\Options\ViewModels\IOptionsViewModelParent.cs" />
     <Compile Include="Ui\Options\ViewModels\Mapping\ContactMappingConfigurationViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\Mapping\EventMappingConfigurationViewModel.cs" />
@@ -576,7 +588,7 @@
     <Compile Include="Ui\Options\ViewModels\NetworkSettingsViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\OptionsCollectionViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\OptionsViewModelBase.cs" />
-    <Compile Include="Ui\Options\ViewModels\OptionsViewModelFactory.cs" />
+    <Compile Include="Ui\Options\ProfileTypes\ProfileTypeRegistry.cs" />
     <Compile Include="Ui\Options\ViewModels\OutlookFolderViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\ServerSettingsViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\SyncSettingsViewModel.cs" />

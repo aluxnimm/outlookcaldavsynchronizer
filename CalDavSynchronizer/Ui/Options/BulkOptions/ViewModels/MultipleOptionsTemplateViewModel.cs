@@ -39,7 +39,7 @@ using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 {
-  internal class MultipleOptionsTemplateViewModel : ModelBase, IOptionsViewModel
+  class MultipleOptionsTemplateViewModel : ModelBase, IOptionsViewModel
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -189,11 +189,10 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 
     public bool IsActive { get; set; }
     public bool SupportsIsActive { get; } = false;
-    public Guid Id { get; private set; }
     public IEnumerable<ISubOptionsViewModel> Items { get; }
     IEnumerable<ITreeNodeViewModel> ITreeNodeViewModel.Items => Items;
 
-    public bool? IsMultipleOptionsTemplateViewModel { get; } = true;
+    public bool IsMultipleOptionsTemplateViewModel { get; } = true;
     public OlItemType? OutlookFolderType { get; } = null;
 
     public bool IsSelected
@@ -218,7 +217,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
     }
 
    
-    public Contracts.Options GetOptionsOrNull () => null;
+    public OptionsModel Model => _prototypeModel;
     public bool Validate (StringBuilder errorMessageBuilder) => true;
     public IViewOptions ViewOptions { get; }
   }

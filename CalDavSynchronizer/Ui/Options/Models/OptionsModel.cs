@@ -26,6 +26,7 @@ using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Scheduling;
+using CalDavSynchronizer.Ui.Options.ProfileTypes;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
 
@@ -35,6 +36,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
+    private readonly bool _isGoogle;
     private bool _isActive;
     private string _name;
 
@@ -74,41 +76,39 @@ namespace CalDavSynchronizer.Ui.Options.Models
     private readonly IOptionTasks _optionTasks;
     private readonly GeneralOptions _generalOptions;
 
-    public static OptionsModel DesignInstance => new OptionsModel(NullSettingsFaultFinder.Instance, NullOptionTasks.Instance, NullOutlookAccountPasswordProvider.Instance, new Contracts.Options(), new GeneralOptions());
+    public static OptionsModel DesignInstance => new OptionsModel(NullSettingsFaultFinder.Instance, NullOptionTasks.Instance, NullOutlookAccountPasswordProvider.Instance, new Contracts.Options(), new GeneralOptions(), DesignProfileType.Instance, false);
    
     public OptionsModel(
       ISettingsFaultFinder faultFinder, 
       IOptionTasks optionTasks, 
       IOutlookAccountPasswordProvider outlookAccountPasswordProvider,
       Contracts.Options data,
-      GeneralOptions generalOptions)
+      GeneralOptions generalOptions, 
+      IProfileType profileType,
+      bool isGoogle)
     {
       if (data == null) throw new ArgumentNullException(nameof(data));
       if (faultFinder == null) throw new ArgumentNullException(nameof(faultFinder));
       if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
       if (outlookAccountPasswordProvider == null) throw new ArgumentNullException(nameof(outlookAccountPasswordProvider));
       if (generalOptions == null) throw new ArgumentNullException(nameof(generalOptions));
+      if (profileType == null) throw new ArgumentNullException(nameof(profileType));
 
       _faultFinder = faultFinder;
       _optionTasks = optionTasks;
       _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
       _generalOptions = generalOptions;
+      ProfileType = profileType;
 
       Id = data.Id;
 
-      IsGoogle = IsGoogleProfile(data);
+      _isGoogle = isGoogle;
 
       InitializeData(data);
     }
-    
-    public static bool IsGoogleProfile(Contracts.Options options)
-    {
-      return options.ServerAdapterType == ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth ||
-             options.ServerAdapterType == ServerAdapterType.GoogleTaskApi ||
-             options.ServerAdapterType == ServerAdapterType.GoogleContactApi;
-    }
+ 
 
-
+    public IProfileType ProfileType { get; }
 
     public Guid Id { get; }
     public MappingConfigurationModel MappingConfigurationModelOrNull
@@ -358,15 +358,14 @@ namespace CalDavSynchronizer.Ui.Options.Models
       }
     }
 
-    public bool UseGoogleNativeApiAvailable => IsGoogle && SelectedFolderOrNull?.DefaultItemType == OlItemType.olContactItem;
+    public bool UseGoogleNativeApiAvailable => _isGoogle && SelectedFolderOrNull?.DefaultItemType == OlItemType.olContactItem;
 
-    public bool IsGoogle { get; }
     
     private ServerAdapterType ServerAdapterType
     {
       get
       {
-        if (IsGoogle)
+        if (_isGoogle)
         {
           switch (SelectedFolderOrNull?.DefaultItemType)
           {
@@ -452,7 +451,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
       }
     }
 
-    public Contracts.Options GetData()
+    public Contracts.Options CreateData()
     {
       return new Contracts.Options
       {
@@ -487,9 +486,9 @@ namespace CalDavSynchronizer.Ui.Options.Models
 
     public OptionsModel Clone()
     {
-      var data = GetData();
+      var data = CreateData();
       data.Id = Guid.NewGuid();
-      return new OptionsModel(_faultFinder, _optionTasks, _outlookAccountPasswordProvider, data , _generalOptions);
+      return new OptionsModel(_faultFinder, _optionTasks, _outlookAccountPasswordProvider, data , _generalOptions, ProfileType, _isGoogle);
     }
 
     public ProxyOptions CreateProxyOptions()
@@ -514,7 +513,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
         result = false;
       }
 
-      if (IsGoogle)
+      if (_isGoogle)
       {
         var serverAdapterType = ServerAdapterType;
         if (serverAdapterType != ServerAdapterType.GoogleTaskApi && serverAdapterType != ServerAdapterType.GoogleContactApi)
@@ -560,7 +559,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
     
     private void CoerceMappingConfiguration()
     {
-      MappingConfigurationModelOrNull = CoerceMappingConfiguration(MappingConfigurationModelOrNull, SelectedFolderOrNull?.DefaultItemType, IsGoogle);
+      MappingConfigurationModelOrNull = CoerceMappingConfiguration(MappingConfigurationModelOrNull, SelectedFolderOrNull?.DefaultItemType, _isGoogle);
     }
 
     private static MappingConfigurationModel CoerceMappingConfiguration(

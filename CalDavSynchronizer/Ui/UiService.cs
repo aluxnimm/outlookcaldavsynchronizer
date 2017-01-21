@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
@@ -25,6 +26,7 @@ using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Properties;
 using CalDavSynchronizer.Ui.Options;
+using CalDavSynchronizer.Ui.Options.ProfileTypes;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.Options.Views;
 using CalDavSynchronizer.Ui.Reports;
@@ -111,9 +113,9 @@ namespace CalDavSynchronizer.Ui
       return window.ShowDialog().GetValueOrDefault (false);
     }
 
-    public ProfileType? QueryProfileType()
+    public IProfileType QueryProfileType(IReadOnlyCollection<IProfileType> profileTypes)
     {
-      return SelectOptionsDisplayTypeForm.QueryProfileType();
+      return SelectOptionsDisplayTypeForm.QueryProfileType(profileTypes);
     }
 
     public void ShowErrorDialog(string errorMessage, string title)

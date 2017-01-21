@@ -15,20 +15,21 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace CalDavSynchronizer.Contracts
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CalDavSynchronizer.Ui.Options.Models;
+using CalDavSynchronizer.Ui.Options.ViewModels;
+
+namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 {
-  public enum ProfileType
+  public interface IProfileType
   {
-    Generic = 0,
-    Google,
-    Fruux,
-    Posteo,
-    Yandex,
-    GmxCalendar,
-    Sarenet,
-    Landmarks,
-    Sogo,
-    Cozy,
-    Nextcloud
+    string Name { get; }
+
+    OptionsModel CreateNewModel();
+    OptionsModel CreateModelFromData(Contracts.Options data);
+    IOptionsViewModel CreateViewModel(OptionsModel model);
+    IOptionsViewModel CreateTemplateViewModel();
   }
 }

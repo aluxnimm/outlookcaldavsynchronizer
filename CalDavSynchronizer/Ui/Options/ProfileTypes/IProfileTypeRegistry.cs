@@ -14,17 +14,13 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
 using System.Collections.Generic;
-using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.Ui.Options.Models;
 
-namespace CalDavSynchronizer.Ui.Options.ViewModels
+namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 {
-  public interface IOptionsViewModelFactory
+  public interface IProfileTypeRegistry
   {
-    List<IOptionsViewModel> Create (IReadOnlyCollection<OptionsModel> options);
-    List<IOptionsViewModel> Create (IReadOnlyCollection<Contracts.Options> options);
-    IOptionsViewModel CreateTemplate (Contracts.Options prototype);
+    IReadOnlyList<IProfileType> AllTypes { get; }
+    IProfileType DetermineType(Contracts.Options data);
   }
 }

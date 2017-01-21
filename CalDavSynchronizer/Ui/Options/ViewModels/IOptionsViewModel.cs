@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using CalDavSynchronizer.Ui.Options.Models;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
@@ -28,14 +29,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     IViewOptions ViewOptions { get; }
 
-    Guid Id { get; }
-
     new IEnumerable<ISubOptionsViewModel> Items { get; }
 
-    Contracts.Options GetOptionsOrNull ();
+    OptionsModel Model { get; }
     bool Validate (StringBuilder errorMessageBuilder);
 
     OlItemType? OutlookFolderType {get;}
-    bool? IsMultipleOptionsTemplateViewModel { get; }
+    bool IsMultipleOptionsTemplateViewModel { get; }
   }
 }

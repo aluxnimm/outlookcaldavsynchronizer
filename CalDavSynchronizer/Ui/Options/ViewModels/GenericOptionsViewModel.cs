@@ -39,7 +39,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private readonly SyncSettingsViewModel _syncSettingsViewModel;
     private readonly TimeRangeViewModel _timeRangeViewModel;
     private ISubOptionsViewModel _mappingConfigurationViewModel;
-    private readonly OptionsModel _model;
     private readonly IReadOnlyList<string> _availableCategories;
 
     public GenericOptionsViewModel (
@@ -58,15 +57,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       if (availableCategories == null) throw new ArgumentNullException(nameof(availableCategories));
 
 
-      _model = model;
+      Model = model;
       _availableCategories = availableCategories;
 
-      _syncSettingsViewModel = new SyncSettingsViewModel(_model, viewOptions);
-      _networkSettingsViewModel = new NetworkSettingsViewModel(_model);
+      _syncSettingsViewModel = new SyncSettingsViewModel(model, viewOptions);
+      _networkSettingsViewModel = new NetworkSettingsViewModel(model);
 
       _serverSettingsViewModel = serverSettingsViewModel;
-      _outlookFolderViewModel = new OutlookFolderViewModel (_model, optionTasks, viewOptions);
-      _timeRangeViewModel = new TimeRangeViewModel(_model, viewOptions);
+      _outlookFolderViewModel = new OutlookFolderViewModel (model, optionTasks, viewOptions);
+      _timeRangeViewModel = new TimeRangeViewModel(model, viewOptions);
 
       RegisterPropertyChangeHandler(model, nameof(model.MappingConfigurationModelOrNull), UpdateMappingConfigurationViewModel);
 
@@ -104,30 +103,27 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     private void UpdateMappingConfigurationViewModel()
     {
-      if (_model.MappingConfigurationModelOrNull == null)
+      if (Model.MappingConfigurationModelOrNull == null)
         MappingConfigurationViewModel = null;
-      else if (_model.MappingConfigurationModelOrNull is EventMappingConfigurationModel && !(MappingConfigurationViewModel is EventMappingConfigurationViewModel))
-        MappingConfigurationViewModel = new EventMappingConfigurationViewModel(_availableCategories, (EventMappingConfigurationModel)_model.MappingConfigurationModelOrNull, _model);
-      else if (_model.MappingConfigurationModelOrNull is ContactMappingConfigurationModel && !(MappingConfigurationViewModel is ContactMappingConfigurationViewModel))
-        MappingConfigurationViewModel = new ContactMappingConfigurationViewModel((ContactMappingConfigurationModel)_model.MappingConfigurationModelOrNull);
-      else if (_model.MappingConfigurationModelOrNull is TaskMappingConfigurationModel && !(MappingConfigurationViewModel is TaskMappingConfigurationViewModel))
-        MappingConfigurationViewModel = new TaskMappingConfigurationViewModel(_availableCategories, (TaskMappingConfigurationModel) _model.MappingConfigurationModelOrNull, ViewOptions);
+      else if (Model.MappingConfigurationModelOrNull is EventMappingConfigurationModel && !(MappingConfigurationViewModel is EventMappingConfigurationViewModel))
+        MappingConfigurationViewModel = new EventMappingConfigurationViewModel(_availableCategories, (EventMappingConfigurationModel)Model.MappingConfigurationModelOrNull, Model);
+      else if (Model.MappingConfigurationModelOrNull is ContactMappingConfigurationModel && !(MappingConfigurationViewModel is ContactMappingConfigurationViewModel))
+        MappingConfigurationViewModel = new ContactMappingConfigurationViewModel((ContactMappingConfigurationModel)Model.MappingConfigurationModelOrNull);
+      else if (Model.MappingConfigurationModelOrNull is TaskMappingConfigurationModel && !(MappingConfigurationViewModel is TaskMappingConfigurationViewModel))
+        MappingConfigurationViewModel = new TaskMappingConfigurationViewModel(_availableCategories, (TaskMappingConfigurationModel)Model.MappingConfigurationModelOrNull, ViewOptions);
     }
-    
-    public override Contracts.Options GetOptionsOrNull()
-    {
-      return _model.GetData();
-    }
+
+    public override OptionsModel Model { get; }
 
     public override bool Validate(StringBuilder errorMessageBuilder)
     {
-      return _model.Validate(errorMessageBuilder);
+      return Model.Validate(errorMessageBuilder);
     }
    
     public static OlItemType olAppointmentItem { get; } = OlItemType.olAppointmentItem;
     public static OlItemType olTaskItem { get; } = OlItemType.olTaskItem;
 
-    public override OlItemType? OutlookFolderType => _model.SelectedFolderOrNull?.DefaultItemType;
+    public override OlItemType? OutlookFolderType => Model.SelectedFolderOrNull?.DefaultItemType;
 
     public static GenericOptionsViewModel DesignInstance => new GenericOptionsViewModel(
       new DesignOptionsViewModelParent(),
@@ -160,10 +156,5 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     {
       get { return _timeRangeViewModel; }
     }
-
-    /// <summary>
-    /// Just for Unit Tests
-    /// </summary>
-    public OptionsModel Model => _model;
   }
 }

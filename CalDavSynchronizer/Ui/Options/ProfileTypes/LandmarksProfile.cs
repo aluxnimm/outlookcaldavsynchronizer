@@ -17,22 +17,26 @@
 
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.Ui.Options.ProfileTypes;
 using CalDavSynchronizer.Ui.Options.ViewModels;
-using CalDavSynchronizer.Ui.Reports.ViewModels;
-using GenSync.ProgressReport;
 
-namespace CalDavSynchronizer.Ui
+namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 {
-  public interface IUiService : IProgressUiFactory
+  class LandmarksProfile : ProfileBase
   {
-    void Show (ReportsViewModel reportsViewModel);
-    void ShowProfileStatusesWindow ();
-    bool ShowOptions (OptionsCollectionViewModel viewModel);
-    IProfileType QueryProfileType(IReadOnlyCollection<IProfileType> profileTypes);
-    void ShowErrorDialog(string errorMessage, string title);
-    string ShowSaveDialog(string title);
-    string ShowOpenDialog(string title);
-    void ShowReport(string title, string reportText);
+    public LandmarksProfile(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions) : base(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions)
+    {
+    }
+
+    public override string Name => "Landmarks";
+
+    protected override void InitializeData(Contracts.Options data)
+    {
+      data.CalenderUrl = "https://dav.landmarks.skyrise.de/";
+    }
+
+    protected override void InitializePrototypeData(Contracts.Options data)
+    {
+      InitializeData(data);
+    }
   }
 }

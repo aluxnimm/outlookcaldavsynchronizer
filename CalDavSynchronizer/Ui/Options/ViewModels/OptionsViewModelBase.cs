@@ -47,7 +47,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     }
 
-    public bool? IsMultipleOptionsTemplateViewModel { get; } = false;
+    public bool IsMultipleOptionsTemplateViewModel { get; } = false;
     public abstract OlItemType? OutlookFolderType { get; } 
 
     public IEnumerable<IOptionsSection> Sections => _sections ?? (_sections = CreateSections());
@@ -88,9 +88,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       }
     }
 
-    public Guid Id { get; private set; }
-
-    public abstract Contracts.Options GetOptionsOrNull();
+    public abstract OptionsModel Model { get; }
 
     public abstract bool Validate(StringBuilder errorMessageBuilder);
   

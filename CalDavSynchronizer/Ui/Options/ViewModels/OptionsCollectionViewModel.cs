@@ -25,6 +25,7 @@ using System.Windows;
 using System.Windows.Input;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Ui.Options.Models;
+using CalDavSynchronizer.Ui.Options.ProfileTypes;
 using CalDavSynchronizer.Ui.Options.ViewModels.Mapping;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
@@ -36,7 +37,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private readonly ObservableCollection<IOptionsViewModel> _options = new ObservableCollection<IOptionsViewModel> ();
-    private readonly IOptionsViewModelFactory _optionsViewModelFactory;
+    private readonly IProfileTypeRegistry _profileTypeRegistry;
     private readonly bool _expandAllSyncProfiles;
     private readonly IUiService _uiService;
     public event EventHandler<CloseEventArgs> CloseRequested;
@@ -50,7 +51,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       Func<Guid, string> profileDataDirectoryFactory,
       IUiService uiService,
       IOptionTasks optionTasks,
-      Func<IOptionsViewModelParent, IOptionsViewModelFactory> optionsViewModelFactoryFactory,
+      Func<IOptionsViewModelParent, IProfileTypeRegistry> profileTypeRegistryFactory,
       IViewOptions viewOptions)
     {
       _optionTasks = optionTasks;
@@ -64,7 +65,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
       _expandAllSyncProfiles = expandAllSyncProfiles;
 
-      _optionsViewModelFactory = optionsViewModelFactoryFactory(this);
+      _profileTypeRegistry = profileTypeRegistryFactory(this);
 
       RegisterPropertyChangeHandler(viewOptions, nameof(viewOptions.IsAdvancedViewEnabled), () =>
       {
@@ -197,7 +198,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       var selected = SelectedOrNull;
       if (selected != null)
       {
-        var profileDataDirectory = _profileDataDirectoryFactory (selected.Id);
+        var profileDataDirectory = _profileDataDirectoryFactory (selected.Model.Id);
         if (Directory.Exists(profileDataDirectory))
           System.Diagnostics.Process.Start(profileDataDirectory);
         else
@@ -275,58 +276,31 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     private void Add ()
     {
-      var options = CreateNewSynchronizationProfileOrNull();
-      if (options != null)
+      var type = QueryProfileType();
+      if (type != null)
       {
-        foreach (var vm in _optionsViewModelFactory.Create(new[] {options}))
-          _options.Add (vm);
-        ShowProfile (options.Id);
+        var viewModel = type.CreateViewModel(type.CreateNewModel());
+        _options.Add(viewModel);
+        ShowProfile(viewModel.Model.Id);
       }
     }
 
     private void AddMultiple ()
     {
-      ProfileType? profileType;
-      var options = CreateNewSynchronizationProfileOrNull (out profileType);
-      if (options != null)
+      var type = QueryProfileType();
+      if (type != null)
       {
-        // ReSharper disable once PossibleInvalidOperationException
-        var optionsViewModel = _optionsViewModelFactory.CreateTemplate (options );
-        _options.Add (optionsViewModel);
-        ShowProfile (options.Id);
+        var viewModel = type.CreateTemplateViewModel();
+        _options.Add(viewModel);
+        ShowProfile(viewModel.Model.Id);
       }
     }
-
-    private Contracts.Options CreateNewSynchronizationProfileOrNull ()
+    
+    private IProfileType QueryProfileType()
     {
-      ProfileType? type;
-      return CreateNewSynchronizationProfileOrNull (out type);
+      return _uiService.QueryProfileType(_profileTypeRegistry.AllTypes);
     }
-
-    private Contracts.Options CreateNewSynchronizationProfileOrNull (out ProfileType? type)
-    {
-      type = _uiService.QueryProfileType ();
-      if (!type.HasValue)
-        return null;
-
-      var options = Contracts.Options.CreateDefault (type.Value);
-
-      options.Name = type.Value.ToString();
-
-      if (type == ProfileType.Google)
-      {
-        options.CalenderUrl = OptionTasks.GoogleDavBaseUrl;
-        options.ServerAdapterType = ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth;
-      }
-      else
-      {
-        options.ServerAdapterType = ServerAdapterType.WebDavHttpClientBased;
-      }
-
-      return options;
-    }
-
-
+    
     public ICommand AddCommand { get; }
     public ICommand AddMultipleCommand { get; }
     public ICommand CloseCommand { get; }
@@ -347,11 +321,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     public void SetOptionsCollection (Contracts.Options[] value, Guid? initialSelectedProfileId = null)
     {
       _options.Clear();
-      foreach (var vm in _optionsViewModelFactory.Create (value))
-        _options.Add (vm);
+
+      foreach (var data in value)
+      {
+        var profileType = _profileTypeRegistry.DetermineType(data);
+        _options.Add(profileType.CreateViewModel(profileType.CreateModelFromData(data)));
+      }
 
       var initialSelectedProfile =
-          (initialSelectedProfileId != null ? _options.FirstOrDefault (o => o.Id == initialSelectedProfileId.Value) : null)
+          (initialSelectedProfileId != null ? _options.FirstOrDefault (o => o.Model.Id == initialSelectedProfileId.Value) : null)
           ?? _options.FirstOrDefault (o => o.IsActive)
           ?? _options.FirstOrDefault();
 
@@ -364,14 +342,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     public Contracts.Options[] GetOptionsCollection ()
     {
-      var optionsCollection = new List<CalDavSynchronizer.Contracts.Options>();
-      foreach (var viewModel in _options)
-      {
-        var options = viewModel.GetOptionsOrNull();
-        if (options != null)
-          optionsCollection.Add (options);
-      }
-      return optionsCollection.ToArray();
+      return _options.Where(o => !o.IsMultipleOptionsTemplateViewModel).Select(o => o.Model.CreateData()).ToArray();
     }
 
     private void Delete (IOptionsViewModel viewModel)
@@ -382,34 +353,28 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         _options[Math.Max (0, Math.Min (_options.Count - 1, index))].IsSelected = true;
     }
 
-    private void Copy (IOptionsViewModel viewModel)
+    private void Copy(IOptionsViewModel viewModel)
     {
-      var options = viewModel.GetOptionsOrNull ();
-      if (options != null)
-      {
-        options.Id = Guid.NewGuid();
-        options.Name += " (Copy)";
+      var modelCopy = viewModel.Model.Clone();
+      modelCopy.Name += " (Copy)";
 
-        var index = _options.IndexOf (viewModel) + 1;
+      var index = _options.IndexOf(viewModel) + 1;
 
-        foreach (var vm in _optionsViewModelFactory.Create (new[] { options }))
-          _options.Insert (index, vm);
+      var newViewModel = modelCopy.ProfileType.CreateViewModel(modelCopy);
+      _options.Insert(index, newViewModel);
 
-        ShowProfile (options.Id);
-      }
+      ShowProfile(newViewModel.Model.Id);
     }
 
     private void ClearCache(IOptionsViewModel viewModel)
     {
-     
         s_logger.InfoFormat ("Deleting cache for profile '{0}'", viewModel.Name);
 
-        var profileDataDirectory = _profileDataDirectoryFactory (viewModel.Id);
+        var profileDataDirectory = _profileDataDirectoryFactory (viewModel.Model.Id);
         if (Directory.Exists (profileDataDirectory))
           Directory.Delete (profileDataDirectory, true);
 
         MessageBox.Show ("A new intial sync will be performed with the next sync run!", "Profile cache deleted",MessageBoxButton.OK, MessageBoxImage.Information);
-    
     }
 
     public void RequestRemoval (IOptionsViewModel viewModel)
@@ -419,8 +384,11 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     public void RequestAdd (IReadOnlyCollection<OptionsModel> options)
     {
-      foreach (var vm in _optionsViewModelFactory.Create (options))
-        _options.Add (vm);
+      foreach (var data in options)
+      {
+        _options.Add(data.ProfileType.CreateViewModel(data));
+      }
+
       if (options.Any())
         ShowProfile (options.First().Id);
     }
@@ -437,7 +405,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
             _ => string.Empty,
             NullUiService.Instance,
             NullOptionTasks.Instance,
-            p => DesignOptionsViewModelFactory.Instance,
+            p => null,
             DesignViewOptions);
               
           var genericOptionsViewModel = GenericOptionsViewModel.DesignInstance;
@@ -451,7 +419,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     public void ShowProfile (Guid value)
     {
-      var selectedProfile = _options.FirstOrDefault (o => o.Id == value);
+      var selectedProfile = _options.FirstOrDefault (o => o.Model.Id == value);
 
       if (selectedProfile != null)
         selectedProfile.IsSelected = true;
