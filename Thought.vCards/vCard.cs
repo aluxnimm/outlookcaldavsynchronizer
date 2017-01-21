@@ -74,6 +74,7 @@ namespace Thought.vCards
         private vCardWebsiteCollection websites;
         private vCardIMPPCollection ims;
         private vCardSocialProfileCollection sps;
+        private vCardPropertyCollection otherProperties;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="vCard"/> class.
@@ -115,6 +116,7 @@ namespace Thought.vCards
             this.websites = new vCardWebsiteCollection();
             this.ims = new vCardIMPPCollection();
             this.sps = new vCardSocialProfileCollection();
+            this.otherProperties = new vCardPropertyCollection();
         }
 
 
@@ -761,5 +763,12 @@ namespace Thought.vCards
             get { return this.sps; }
         }
 
-    }
+        /// <summary>
+        /// OtherProperties collection for all other unknown properties for the vCard
+        /// </summary>
+        public vCardPropertyCollection OtherProperties
+        {
+            get { return this.otherProperties; }
+        }
+  }
 }

@@ -987,8 +987,8 @@ namespace Thought.vCards
 				{
 
 					if (
-						(string.Compare("END", property.Name, StringComparison.OrdinalIgnoreCase) == 0) &&
-						(string.Compare("VCARD", property.ToString(), StringComparison.OrdinalIgnoreCase) == 0))
+            (string.Compare("END", property.Name, StringComparison.OrdinalIgnoreCase) == 0) && 
+            (string.Compare("VCARD", property.ToString(), StringComparison.OrdinalIgnoreCase) == 0))
 					{
 
 						// This is a special type of property that marks
@@ -996,7 +996,7 @@ namespace Thought.vCards
 
 						break;
 					}
-					else
+					else 
 					{
 						ReadInto(card, property);
 					}
@@ -1052,6 +1052,9 @@ namespace Thought.vCards
 
 			switch (propNameToProcess)
 			{
+        case "BEGIN":
+        case "VERSION":
+			    break;
 
 				case "ADR":
 					ReadInto_ADR(card, property);
@@ -1167,8 +1170,8 @@ namespace Thought.vCards
 				default:
 
 					// The property name is not recognized and
-					// will be ignored.
-
+					// will read into otherProperties
+			    ReadInto_OtherProperties(card, property);
 					break;
 
 			}
@@ -2268,9 +2271,20 @@ namespace Thought.vCards
 				}
 			}
 
-		}
+    }
 
 		#endregion
+
+    #region [ ReadInto_OtherProperties ]
+ 
+    /// <summary>
+    ///     Reads unrecognized other property.
+    /// </summary>
+    private static void ReadInto_OtherProperties(vCard card, vCardProperty property)
+    {
+        card.OtherProperties.Add(property);
+    }
+    #endregion
 
 		#region [ ReadProperty(string) ]
 
