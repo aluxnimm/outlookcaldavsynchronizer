@@ -1054,6 +1054,7 @@ namespace Thought.vCards
 			{
         case "BEGIN":
         case "VERSION":
+        case "X-ABLABEL":
 			    break;
 
 				case "ADR":
