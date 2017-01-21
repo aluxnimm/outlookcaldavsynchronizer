@@ -44,6 +44,12 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 
       _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
       _prototypeModel = prototypeModel;
+
+      RegisterPropertyChangePropagation(prototypeModel, nameof(prototypeModel.CalenderUrl), nameof(CalenderUrl));
+      RegisterPropertyChangePropagation(prototypeModel, nameof(prototypeModel.UserName), nameof(UserName));
+      RegisterPropertyChangePropagation(prototypeModel, nameof(prototypeModel.UseAccountPassword), nameof(UseAccountPassword));
+      RegisterPropertyChangePropagation(prototypeModel, nameof(prototypeModel.Password), nameof(Password));
+      RegisterPropertyChangePropagation(prototypeModel, nameof(prototypeModel.EmailAddress), nameof(EmailAddress));
     }
 
     public string CalenderUrl
