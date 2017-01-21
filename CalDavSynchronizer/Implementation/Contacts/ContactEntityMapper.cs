@@ -277,7 +277,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
                           source.EmailAddresses.First();
         target.Inner.Email1Address = workOrFirst.Address;
 
-        var homeOrSecond = source.EmailAddresses.FirstOrDefault (e => e.ItemType == ItemType.HOME) ??
+        var homeOrSecond = source.EmailAddresses.FirstOrDefault (e => e.ItemType == ItemType.HOME && e != workOrFirst) ??
                            source.EmailAddresses.FirstOrDefault (e => e != workOrFirst);
 
         if (homeOrSecond != null)
