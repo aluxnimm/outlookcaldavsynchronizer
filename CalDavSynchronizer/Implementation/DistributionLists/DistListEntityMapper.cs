@@ -45,6 +45,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
     public Task<DistributionList> Map1To2(GenericComObjectWrapper<DistListItem> source, DistributionList target, IEntityMappingLogger logger, DistributionListSychronizationContext context)
     {
       target.Members.Clear();
+      target.NonAddressBookMembers.Clear();
       target.Name = source.Inner.DLName;
       target.Description = source.Inner.Body;
 
