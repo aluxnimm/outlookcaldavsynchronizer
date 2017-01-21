@@ -1166,8 +1166,35 @@ namespace Thought.vCards
 				case "X-WAB-GENDER":
 					ReadInto_X_WAB_GENDER(card, property);
 					break;
-
-				default:
+        case "X-AIM":
+			    ReadInto_X_AIM(card, property);
+			    break;
+        case "X-ICQ":
+          ReadInto_X_ICQ(card, property);
+          break;
+        case "X-GOOGLE-TALK":
+          ReadInto_X_GOOGLE_TALK(card, property);
+          break;
+        case "X-JABBER":
+          ReadInto_X_JABBER(card, property);
+          break;
+        case "X-MSN":
+          ReadInto_X_MSN(card, property);
+          break;
+        case "X-YAHOO":
+          ReadInto_X_YAHOO(card, property);
+          break;
+        case "X-SKYPE":
+        case "X-SKYPE-USERNAME":
+          ReadInto_X_SKYPE(card, property);
+          break;
+        case "X-GADUGADU":
+          ReadInto_X_GADUGADU(card, property);
+          break;
+        case "X-QQ":
+          ReadInto_X_QQ(card, property);
+          break;
+        default:
 
 					// The property name is not recognized and
 					// will read into otherProperties
@@ -2273,10 +2300,137 @@ namespace Thought.vCards
 
     }
 
-		#endregion
+    #endregion
+
+    #region [ ReadInto_X_AIM ]
+
+    /// <summary>
+    ///     Reads the X-AIM property.
+    /// </summary>
+    private static void ReadInto_X_AIM(vCard card, vCardProperty property)
+    {
+      vCardIMPP im = new vCardIMPP();
+      im.Handle = property.ToString();
+      if (string.IsNullOrEmpty(im.Handle)) return;
+      im.ServiceType = IMServiceType.AIM;
+      card.IMs.Add(im);
+    }
+    #endregion
+
+    #region [ ReadInto_X_ICQ ]
+    /// <summary>
+    ///     Reads the X-ICQ property.
+    /// </summary>
+    private static void ReadInto_X_ICQ(vCard card, vCardProperty property)
+    {
+      vCardIMPP im = new vCardIMPP();
+      im.Handle = property.ToString();
+      if (string.IsNullOrEmpty(im.Handle)) return;
+      im.ServiceType = IMServiceType.ICQ;
+      card.IMs.Add(im);
+    }
+    #endregion
+
+    #region [ ReadInto_X_GOOGLE_TALK ]
+    /// <summary>
+    ///     Reads the X-GOOGLE-TALK property.
+    /// </summary>
+    private static void ReadInto_X_GOOGLE_TALK(vCard card, vCardProperty property)
+    {
+      vCardIMPP im = new vCardIMPP();
+      im.Handle = property.ToString();
+      if (string.IsNullOrEmpty(im.Handle)) return;
+      im.ServiceType = IMServiceType.GoogleTalk;
+      card.IMs.Add(im);
+    }
+    #endregion
+
+    #region [ ReadInto_X_JABBER ]
+    /// <summary>
+    ///     Reads the X-JABBER property.
+    /// </summary>
+    private static void ReadInto_X_JABBER(vCard card, vCardProperty property)
+    {
+      vCardIMPP im = new vCardIMPP();
+      im.Handle = property.ToString();
+      if (string.IsNullOrEmpty(im.Handle)) return;
+      im.ServiceType = IMServiceType.Jabber;
+      card.IMs.Add(im);
+    }
+    #endregion
+
+    #region [ ReadInto_X_MSN ]
+    /// <summary>
+    ///     Reads the X-MSN property.
+    /// </summary>
+    private static void ReadInto_X_MSN(vCard card, vCardProperty property)
+    {
+      vCardIMPP im = new vCardIMPP();
+      im.Handle = property.ToString();
+      if (string.IsNullOrEmpty(im.Handle)) return;
+      im.ServiceType = IMServiceType.MSN;
+      card.IMs.Add(im);
+    }
+    #endregion
+
+    #region [ ReadInto_X_YAHOO ]
+    /// <summary>
+    ///     Reads the X-YAHOO property.
+    /// </summary>
+    private static void ReadInto_X_YAHOO(vCard card, vCardProperty property)
+    {
+      vCardIMPP im = new vCardIMPP();
+      im.Handle = property.ToString();
+      if (string.IsNullOrEmpty(im.Handle)) return;
+      im.ServiceType = IMServiceType.Yahoo;
+      card.IMs.Add(im);
+    }
+    #endregion
+
+    #region [ ReadInto_X_SKYPE ]
+    /// <summary>
+    ///     Reads the X-SKYPE property.
+    /// </summary>
+    private static void ReadInto_X_SKYPE(vCard card, vCardProperty property)
+    {
+      vCardIMPP im = new vCardIMPP();
+      im.Handle = property.ToString();
+      if (string.IsNullOrEmpty(im.Handle)) return;
+      im.ServiceType = IMServiceType.Skype;
+      card.IMs.Add(im);
+    }
+    #endregion
+
+    #region [ ReadInto_X_GADUGADU ]
+    /// <summary>
+    ///     Reads the X-GADUGADU property.
+    /// </summary>
+    private static void ReadInto_X_GADUGADU(vCard card, vCardProperty property)
+    {
+      vCardIMPP im = new vCardIMPP();
+      im.Handle = property.ToString();
+      if (string.IsNullOrEmpty(im.Handle)) return;
+      im.ServiceType = IMServiceType.GaduGadu;
+      card.IMs.Add(im);
+    }
+    #endregion
+
+    #region [ ReadInto_X_QQ ]
+    /// <summary>
+    ///     Reads the X-QQ property.
+    /// </summary>
+    private static void ReadInto_X_QQ(vCard card, vCardProperty property)
+    {
+      vCardIMPP im = new vCardIMPP();
+      im.Handle = property.ToString();
+      if (string.IsNullOrEmpty(im.Handle)) return;
+      im.ServiceType = IMServiceType.QQ;
+      card.IMs.Add(im);
+    }
+    #endregion
 
     #region [ ReadInto_OtherProperties ]
- 
+
     /// <summary>
     ///     Reads unrecognized other property.
     /// </summary>
