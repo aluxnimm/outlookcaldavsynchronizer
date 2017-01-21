@@ -80,6 +80,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         target.FormattedName = "<Empty>";
       }
 
+      target.Nicknames.Clear();
       if (!string.IsNullOrEmpty (source.Inner.NickName))
       {
         Array.ForEach (
@@ -90,6 +91,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       target.AccessClassification = MapPrivacy1To2 (source.Inner.Sensitivity);
 
+      target.Categories.Clear();
       if (!string.IsNullOrEmpty (source.Inner.Categories))
       {
         Array.ForEach (
@@ -99,7 +101,6 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
 
       target.IMs.Clear();
-
       if (!string.IsNullOrEmpty (source.Inner.IMAddress))
       {
         //IMAddress are expected to be in form of ([Protocol]: [Address]; [Protocol]: [Address])
@@ -130,6 +131,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         }
       }
 
+      target.DeliveryAddresses.Clear();
       if (!string.IsNullOrEmpty (source.Inner.HomeAddress))
       {
         vCardDeliveryAddress homeAddress = new vCardDeliveryAddress();
@@ -182,17 +184,17 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       MapPhoneNumbers1To2 (source.Inner, target);
 
-      if (_configuration.MapBirthday && !source.Inner.Birthday.Equals (new DateTime (4501, 1, 1, 0, 0, 0)))
+      if (_configuration.MapBirthday)
       {
-        target.BirthDate = source.Inner.Birthday.Date;
+        target.BirthDate = source.Inner.Birthday.Equals (new DateTime(4501, 1, 1, 0, 0, 0)) ? default(DateTime?) : source.Inner.Birthday.Date;
       }
-      
       target.Organization = source.Inner.CompanyName;
       target.Department = source.Inner.Department;
 
       target.Title = source.Inner.JobTitle;
       target.Office = source.Inner.OfficeLocation;
 
+      target.Websites.Clear();
       if (!string.IsNullOrEmpty (source.Inner.PersonalHomePage))
       {
         target.Websites.Add (new vCardWebsite (source.Inner.PersonalHomePage, vCardWebsiteTypes.Personal));
@@ -206,6 +208,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       if (_configuration.MapContactPhoto) MapPhoto1To2 (source.Inner, target, logger);
 
+      target.Notes.Clear();
       if (!string.IsNullOrEmpty (source.Inner.Body))
       {
         target.Notes.Add (new vCardNote (source.Inner.Body));
@@ -416,6 +419,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
     private static void MapEmailAddresses1To2 (ContactItem source, vCard target, IEntityMappingLogger logger)
     {
+      target.EmailAddresses.Clear();
       if (!string.IsNullOrEmpty (source.Email1Address))
       {
         string email1Address = string.Empty;
@@ -533,6 +537,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       {
         object[] certWrapper = source.GetPropertySafe (PR_USER_X509_CERTIFICATE);
 
+        target.Certificates.Clear();
         if (certWrapper.Length > 0)
         {
           byte[] rawCert = GetRawCert ((byte[]) certWrapper[0]);
@@ -573,6 +578,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
     private static void MapPhoto1To2 (ContactItem source, vCard target, IEntityMappingLogger logger)
     {
+      target.Photos.Clear();
       if (source.HasPicture)
       {
         foreach (var att in source.Attachments.ToSafeEnumerable<Microsoft.Office.Interop.Outlook.Attachment>())
@@ -692,6 +698,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
     private static void MapPhoneNumbers1To2 (ContactItem source, vCard target)
     {
+      target.Phones.Clear();
       if (!string.IsNullOrEmpty (source.PrimaryTelephoneNumber))
       {
         vCardPhone phoneNumber = new vCardPhone (source.PrimaryTelephoneNumber, vCardPhoneTypes.Main);
