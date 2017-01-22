@@ -23,6 +23,8 @@ using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Ui;
 using CalDavSynchronizer.Ui.Options;
+using CalDavSynchronizer.Ui.Options.Models;
+using CalDavSynchronizer.Ui.Options.ProfileTypes;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using Microsoft.Office.Interop.Outlook;
 using NUnit.Framework;
@@ -36,6 +38,7 @@ namespace CalDavSynchronizer.UnitTest.Ui.Options.ViewModels
     private IUiService _uiServiceStub;
     private OptionsCollectionViewModel _viewModel;
     private IOptionTasks _optionTasksStub;
+    private TestProfileRegistry _testProfileRegistry;
 
     [SetUp]
     public void SetUp()
@@ -46,26 +49,22 @@ namespace CalDavSynchronizer.UnitTest.Ui.Options.ViewModels
       // Castle.DynamicProxy.Generators.AttributesToAvoidReplicating.Add (typeof (TypeIdentifierAttribute));
 
       _optionTasksStub = MockRepository.GenerateStub<IOptionTasks>();
+
+      _testProfileRegistry = new TestProfileRegistry(_optionTasksStub);
+
       _viewModel = new OptionsCollectionViewModel(
         false,
         id => @"A:\bla",
         _uiServiceStub,
         _optionTasksStub,
-        p => new OptionsViewModelFactory(
-          p,
-          MockRepository.GenerateStub<IOutlookAccountPasswordProvider>(),
-          new string[0],
-          _optionTasksStub,
-          NullSettingsFaultFinder.Instance,
-          new GeneralOptions(),
-          new ViewOptions (false)),
+        p => _testProfileRegistry,
         new ViewOptions (false));
     }
 
     [Test]
     public void AddNewGenericProfile()
     {
-      _uiServiceStub.Stub(_ => _.QueryProfileType()).Return(Contracts.ProfileType.Generic);
+      _uiServiceStub.Stub(_ => _.QueryProfileType(null)).IgnoreArguments().Return(_testProfileRegistry.AllTypes.First());
 
       _viewModel.SetOptionsCollection(new Contracts.Options[0]);
       _viewModel.AddCommand.Execute(null);
@@ -94,5 +93,64 @@ namespace CalDavSynchronizer.UnitTest.Ui.Options.ViewModels
       Assert.That(options.OutlookFolderAccountName, Is.EqualTo("accountName"));
       Assert.That(options.ServerAdapterType, Is.EqualTo(ServerAdapterType.WebDavHttpClientBased));
     }
+
+    private class TestProfileRegistry : IProfileTypeRegistry
+    {
+      public TestProfileRegistry(IOptionTasks optionTasksStub)
+      {
+        AllTypes = new[] {new TestProfile(optionTasksStub) };
+      }
+
+      public IReadOnlyList<IProfileType> AllTypes { get; }
+      public IProfileType DetermineType(Contracts.Options data)
+      {
+        return AllTypes.First();
+      }
+    }
+
+    private class TestProfile : IProfileType
+    {
+      private readonly IOptionTasks _optionTasksStub;
+
+      public TestProfile(IOptionTasks optionTasksStub)
+      {
+        _optionTasksStub = optionTasksStub;
+      }
+
+      public string Name => "TestProfile";
+      public OptionsModel CreateNewModel()
+      {
+        return CreateModelFromData(new Contracts.Options());
+      }
+
+      public OptionsModel CreateModelFromData(Contracts.Options data)
+      {
+        return new OptionsModel(
+            MockRepository.GenerateStub<ISettingsFaultFinder>(),
+            _optionTasksStub,
+            MockRepository.GenerateStub<IOutlookAccountPasswordProvider>(),
+            data,
+            new GeneralOptions(),
+            this,
+            false);
+      }
+
+      public IOptionsViewModel CreateViewModel(OptionsModel model)
+      {
+        return new GenericOptionsViewModel(
+          MockRepository.GenerateStub<IOptionsViewModelParent>(),
+          MockRepository.GenerateStub<IOptionsSection>(),
+          _optionTasksStub,
+          model,
+          new string[0],
+          MockRepository.GenerateStub<IViewOptions>());
+      }
+
+      public IOptionsViewModel CreateTemplateViewModel()
+      {
+        throw new NotImplementedException();
+      }
+    }
+
   }
 }
