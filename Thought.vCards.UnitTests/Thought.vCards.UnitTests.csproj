@@ -71,6 +71,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\CalDavSynchronizer\Properties\AssemblyInfoVersion.cs">
+      <Link>Properties\AssemblyInfoVersion.cs</Link>
+    </Compile>
     <Compile Include="Helper.cs" />
     <Compile Include="Samples\IntegrationTest.cs" />
     <Compile Include="Samples\Outlook2007.cs" />

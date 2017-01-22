@@ -45,6 +45,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\CalDavSynchronizer\Properties\AssemblyInfoVersion.cs">
+      <Link>Properties\AssemblyInfoVersion.cs</Link>
+    </Compile>
     <Compile Include="DocumentConverter.cs" />
     <Compile Include="IDocumentConverter.cs" />
     <Compile Include="Msft\htmlcssparser.cs" />

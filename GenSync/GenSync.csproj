@@ -52,6 +52,9 @@
     <Compile Include="..\CalDavSynchronizer\Properties\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
+    <Compile Include="..\CalDavSynchronizer\Properties\AssemblyInfoVersion.cs">
+      <Link>Properties\AssemblyInfoVersion.cs</Link>
+    </Compile>
     <Compile Include="EntityRepositories\BatchEntityRepositoryAdapter.cs" />
     <Compile Include="EntityRepositories\ICreateJob.cs" />
     <Compile Include="EntityRepositories\IDeleteJob.cs" />

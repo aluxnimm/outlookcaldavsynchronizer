@@ -59,6 +59,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\CalDavSynchronizer\Properties\AssemblyInfoVersion.cs">
+      <Link>Properties\AssemblyInfoVersion.cs</Link>
+    </Compile>
     <Compile Include="vCardSocialProfile.cs" />
     <Compile Include="vCardSocialProfileCollection.cs" />
     <Compile Include="vCardIMPP.cs" />
