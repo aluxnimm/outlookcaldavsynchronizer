@@ -35,6 +35,7 @@ namespace CalDavSynchronizer
     private void ThisAddIn_StatusChanged (object sender, Scheduling.SchedulerStatusEventArgs e)
     {
       SynchronizeNowButton.Enabled = !e.IsRunning;
+      OptionsButton.Enabled = !e.IsRunning;
     }
 
     private void SynchronizationFailedWhileReportsFormWasNotVisible (object sender, EventArgs e)

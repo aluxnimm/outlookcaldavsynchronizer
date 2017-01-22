@@ -74,6 +74,10 @@ namespace CalDavSynchronizer.Scheduling
       _synchronizationTimer.Start();
     }
 
+    public void Stop()
+    {
+      _synchronizationTimer.Stop();
+    }
 
     private void SynchronizationTimer_Tick (object sender, EventArgs e)
     {
