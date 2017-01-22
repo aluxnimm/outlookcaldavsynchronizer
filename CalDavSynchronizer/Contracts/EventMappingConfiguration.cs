@@ -17,9 +17,8 @@
 
 using System;
 using System.Xml.Serialization;
-using CalDavSynchronizer.Ui.Options.ViewModels;
-using CalDavSynchronizer.Ui.Options.ViewModels.Mapping;
 using Microsoft.Office.Interop.Outlook;
+using NodaTime.TimeZones;
 
 namespace CalDavSynchronizer.Contracts
 {
@@ -76,7 +75,15 @@ namespace CalDavSynchronizer.Contracts
       MapXAltDescToRtfBody = false;
       CreateEventsInUTC = false;
       UseIanaTz = false;
-      EventTz = NodaTime.DateTimeZoneProviders.Tzdb.GetSystemDefault()?.Id;
+      try
+      {
+        EventTz = NodaTime.DateTimeZoneProviders.Tzdb.GetSystemDefault()?.Id;
+      }
+      catch (DateTimeZoneNotFoundException)
+      {
+        // Default to GMT if Windows Zone can't be mapped to IANA zone.
+        EventTz = "Etc/GMT";
+      }
       IncludeHistoricalData = false;
       UseGlobalAppointmentID = false;
       IncludeEmptyEventCategoryFilter = false;
