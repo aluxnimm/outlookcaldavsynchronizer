@@ -205,6 +205,9 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="..\CalDavSynchronizer\Properties\AssemblyInfoVersion.cs">
+      <Link>Properties\AssemblyInfoVersion.cs</Link>
+    </Compile>
     <Compile Include="EntityMapper\OrganizerFixture.cs">
       <SubType>Code</SubType>
     </Compile>

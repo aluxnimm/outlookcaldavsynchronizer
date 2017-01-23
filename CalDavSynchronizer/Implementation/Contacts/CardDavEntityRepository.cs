@@ -142,14 +142,10 @@ namespace CalDavSynchronizer.Implementation.Contacts
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
-        TEntity newEntity = new TEntity ();
-
-        var existingUid = GetUid(entityToUpdate);
-        SetUid(newEntity, !string.IsNullOrEmpty (existingUid) ? existingUid : Guid.NewGuid().ToString());
-
-        newEntity = await entityModifier (newEntity);
-
-        return await _cardDavDataAccess.TryUpdateEntity (entityId, entityVersion, Serialize (newEntity));
+        var updatedEntity = await entityModifier (entityToUpdate);
+        if (string.IsNullOrEmpty (GetUid (updatedEntity)))
+          SetUid (updatedEntity, Guid.NewGuid().ToString());
+        return await _cardDavDataAccess.TryUpdateEntity (entityId, entityVersion, Serialize (updatedEntity));
       }
     }
 

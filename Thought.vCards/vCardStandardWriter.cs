@@ -265,6 +265,12 @@ namespace Thought.vCards
                 properties,
                 card);
 
+            // Add all other unrecognized properties
+            foreach (var other in card.OtherProperties)
+            {
+                properties.Add(other);
+            }
+
             // The end of the vCard is marked with an END:VCARD.
 
             properties.Add(new vCardProperty("END", "VCARD"));
