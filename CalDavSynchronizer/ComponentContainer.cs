@@ -434,7 +434,6 @@ namespace CalDavSynchronizer
       {
         var options = _optionsDataAccess.Load();
         GeneralOptions generalOptions = _generalOptionsDataAccess.LoadOptions();
-        _scheduler.Stop();
         try
         {
           var newOptions = ShowWpfOptions (initialVisibleProfile, generalOptions, options);
@@ -445,7 +444,6 @@ namespace CalDavSynchronizer
         finally
         {
           _currentVisibleOptionsFormOrNull = null;
-          _scheduler.Start();
         }
       }
       else
