@@ -202,14 +202,14 @@
             <Button Command="{Binding CopySelectedCommand}" ToolTip="Copy selected profile">
                 <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Copy.png" />
             </Button>
-            <Button Command="{Binding MoveSelectedUpCommand}" ToolTip="Move selected profile up">
+            <Button Command="{Binding MoveSelectedUpCommand}" ToolTip="Move selected profile up" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/MoveUp.png" />
             </Button>
-            <Button Command="{Binding MoveSelectedDownCommand}" ToolTip="Move selected profile down">
+            <Button Command="{Binding MoveSelectedDownCommand}" ToolTip="Move selected profile down" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/MoveDown.png" />
             </Button>
             <Separator />
-            <Button Command="{Binding OpenProfileDataDirectoryCommand}" ToolTip="Open data directory of selected profile">
+            <Button Command="{Binding OpenProfileDataDirectoryCommand}" ToolTip="Open data directory of selected profile" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Folder.png" />
             </Button>
             <Button Command="{Binding ClearCacheOfSelectedCommand}" ToolTip="Clear cache of selected profile">
