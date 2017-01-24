@@ -18,6 +18,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Diagnostics;
 using GenSync.Logging;
@@ -88,7 +89,17 @@ namespace CalDavSynchronizer.Implementation.Contacts
     {
       using (var reader = new StringReader(vcardData))
       {
-        return serializer.Read(reader);
+        var card = serializer.Read(reader);
+        if (serializer.Warnings.Count > 0)
+        {
+          var warningsBuilder = new StringBuilder();
+          foreach (var warning in serializer.Warnings)
+          {
+            warningsBuilder.AppendLine(warning);
+          }
+          s_logger.WarnFormat ("Encountered warnings while reading vCardData:\r\n{0}\r\n{1}", warningsBuilder, vcardData);
+        }
+        return card;
       }
     }
   }

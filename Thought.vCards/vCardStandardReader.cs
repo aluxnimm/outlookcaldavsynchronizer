@@ -97,7 +97,7 @@ namespace Thought.vCards
 		/// <returns>
 		///     The decoded data as a byte array.
 		/// </returns>
-		public static byte[] DecodeBase64(string value)
+		public byte[] DecodeBase64(string value)
 		{
 
 			// Currently the .NET implementation is acceptable.  However,
@@ -106,8 +106,16 @@ namespace Thought.vCards
 			// instead of the FromBase64String function in .NET.
 			// Performance is not an issue because the runtime engine
 			// will inline the code or eliminate the extra call.
-
-			return Convert.FromBase64String(value);
+		  try
+		  {
+        return Convert.FromBase64String(value);
+      }
+		  catch (FormatException)
+		  {
+		    Warnings.Add (WarningMessages.InvalidEncoding);
+		    return new byte[] {};
+		  }
+			
 		}
 
 		#endregion
@@ -1700,20 +1708,22 @@ namespace Thought.vCards
 		private void ReadInto_KEY(vCard card, vCardProperty property)
 		{
 
-			// The KEY property defines a security certificate
-			// that has been attached to the vCard.  Key values
-			// are usually encoded in BASE64 because they
-			// often consist of binary data.
+      if (((byte[])property.Value).Length == 0) return;
 
-			vCardCertificate certificate = new vCardCertificate();
-			certificate.Data = (byte[])property.Value;
+      // The KEY property defines a security certificate
+      // that has been attached to the vCard.  Key values
+      // are usually encoded in BASE64 because they
+      // often consist of binary data.
 
-			// TODO: Support other key types.
+      vCardCertificate certificate = new vCardCertificate();
+		  certificate.Data = (byte[]) property.Value;
 
-			if (property.Subproperties.Contains("X509"))
-				certificate.KeyType = "X509";
+		  // TODO: Support other key types.
 
-			card.Certificates.Add(certificate);
+		  if (property.Subproperties.Contains("X509"))
+		    certificate.KeyType = "X509";
+
+		  card.Certificates.Add(certificate);
 
 		}
 
@@ -1969,7 +1979,7 @@ namespace Thought.vCards
 				{
 					card.Photos.Add(new vCardPhoto((string)property.Value, true));
 				}
-				else
+				else if (((byte[])property.Value).Length >0)
 				{
 					card.Photos.Add(new vCardPhoto((byte[])property.Value));
 				}
