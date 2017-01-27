@@ -28,30 +28,30 @@ namespace CalDavSynchronizer.Implementation.Common
     private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 
-    public static ContactItem GetContactItemOrNull (this NameSpace mapiNameSpace, string entryId, string folderId, string storeId)
+    public static ContactItem GetContactItemOrNull (this NameSpace mapiNameSpace, string entryId, string expectedFolderId, string storeId)
     {
-      return GetEntryOrNull<ContactItem> (mapiNameSpace, entryId, folderId, storeId, a => (Folder) a.Parent);
+      return GetEntryOrNull<ContactItem> (mapiNameSpace, entryId, expectedFolderId, storeId, a => (Folder) a.Parent);
     }
 
-    public static TaskItem GetTaskItemOrNull(this NameSpace mapiNameSpace, string entryId, string folderId, string storeId)
+    public static TaskItem GetTaskItemOrNull(this NameSpace mapiNameSpace, string entryId, string expectedFolderId, string storeId)
     {
-      return GetEntryOrNull<TaskItem>(mapiNameSpace, entryId, folderId, storeId, a => (Folder)a.Parent);
+      return GetEntryOrNull<TaskItem>(mapiNameSpace, entryId, expectedFolderId, storeId, a => (Folder)a.Parent);
     }
 
-    public static AppointmentItem GetAppointmentItemOrNull(this NameSpace mapiNameSpace, string entryId, string folderId, string storeId)
+    public static AppointmentItem GetAppointmentItemOrNull(this NameSpace mapiNameSpace, string entryId, string expectedFolderId, string storeId)
     {
-      return GetEntryOrNull<AppointmentItem>(mapiNameSpace, entryId, folderId, storeId, a => (Folder)a.Parent);
+      return GetEntryOrNull<AppointmentItem>(mapiNameSpace, entryId, expectedFolderId, storeId, a => (Folder)a.Parent);
     }
 
-    public static DistListItem GetDistListItemOrNull(this NameSpace mapiNameSpace, string entryId, string folderId, string storeId)
+    public static DistListItem GetDistListItemOrNull(this NameSpace mapiNameSpace, string entryId, string expectedFolderId, string storeId)
     {
-      return GetEntryOrNull<DistListItem>(mapiNameSpace, entryId, folderId, storeId, a => (Folder)a.Parent);
+      return GetEntryOrNull<DistListItem>(mapiNameSpace, entryId, expectedFolderId, storeId, a => (Folder)a.Parent);
     }
 
     private static TItemType GetEntryOrNull<TItemType>(
       this NameSpace mapiNameSpace,
       string entryId,
-      string folderId,
+      string expectedFolderId,
       string storeId,
       Func<TItemType, Folder> parentFolderGetter)
       where TItemType : class
@@ -62,7 +62,7 @@ namespace CalDavSynchronizer.Implementation.Common
 
         using (var folderWrapper = GenericComObjectWrapper.Create(parentFolderGetter(item)))
         {
-          if (folderWrapper.Inner?.EntryID == folderId)
+          if (folderWrapper.Inner?.EntryID == expectedFolderId)
             return item;
         }
 

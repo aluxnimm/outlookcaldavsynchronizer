@@ -44,6 +44,8 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly IDateTimeRangeProvider _dateTimeRangeProvider;
     private readonly EventMappingConfiguration _configuration;
     private readonly IDaslFilterProvider _daslFilterProvider;
+    private readonly IQueryOutlookAppointmentItemFolderStrategy _queryFolderStrategy;
+    
 
     public OutlookEventRepository (
       NameSpace mapiNameSpace, 
@@ -51,7 +53,8 @@ namespace CalDavSynchronizer.Implementation.Events
       string folderStoreId, 
       IDateTimeRangeProvider dateTimeRangeProvider,
       EventMappingConfiguration configuration,
-      IDaslFilterProvider daslFilterProvider)
+      IDaslFilterProvider daslFilterProvider,
+      IQueryOutlookAppointmentItemFolderStrategy queryFolderStrategy)
     {
       if (mapiNameSpace == null)
         throw new ArgumentNullException (nameof (mapiNameSpace));
@@ -61,17 +64,16 @@ namespace CalDavSynchronizer.Implementation.Events
         throw new ArgumentNullException (nameof (configuration));
       if (daslFilterProvider == null)
         throw new ArgumentNullException (nameof (daslFilterProvider));
-   
+      if (queryFolderStrategy == null) throw new ArgumentNullException(nameof(queryFolderStrategy));
+
       _mapiNameSpace = mapiNameSpace;
       _folderId = folderId;
       _folderStoreId = folderStoreId;
       _dateTimeRangeProvider = dateTimeRangeProvider;
       _configuration = configuration;
       _daslFilterProvider = daslFilterProvider;
+      _queryFolderStrategy = queryFolderStrategy;
     }
-
-    private const string c_entryIdColumnName = "EntryID";
-
 
     private GenericComObjectWrapper<Folder> CreateFolderWrapper ()
     {
@@ -92,7 +94,7 @@ namespace CalDavSynchronizer.Implementation.Events
             if (id.IsKnown || DoesMatchCategoryCriterion (appointment))
             {
               result.Add (EntityVersion.Create (id.Id, appointment.LastModificationTime));
-              context.AnnounceAppointment (appointment);
+              context.AnnounceAppointment (AppointmentSlim.FromAppointmentItem(appointment));
             }
           }
           finally
@@ -122,31 +124,21 @@ namespace CalDavSynchronizer.Implementation.Events
       return _configuration.InvertEventCategoryFilter ? !found : found;
     }
 
-    public Task<IReadOnlyList<EntityVersion<AppointmentId, DateTime>>> GetAllVersions (IEnumerable<AppointmentId> idsOfknownEntities, IEventSynchronizationContext context)
+    public async Task<IReadOnlyList<EntityVersion<AppointmentId, DateTime>>> GetAllVersions (IEnumerable<AppointmentId> idsOfknownEntities, IEventSynchronizationContext context)
     {
+      var all =  await GetAll (idsOfknownEntities,context);
+      
+      foreach (var appointment in all)
+        context.AnnounceAppointment(appointment);
 
-      var isDebugEnabled = s_logger.IsDebugEnabled;
-
-      return GetAll (
-          idsOfknownEntities,
-          context,
-          a =>
-          {
-            if (isDebugEnabled && string.IsNullOrEmpty(a.GlobalAppointmentID))
-            {
-              s_logger.Debug($"Found appointment without GlobalAppointmentID. EntryId:'{a.EntryID}' MessageClass:'{a.MessageClass}' Subject'{a.Subject}'.");
-            }
-            context.AnnounceAppointment (a);
-            return new EntityVersion<AppointmentId, DateTime> (new AppointmentId(a.EntryID, a.GlobalAppointmentID), a.LastModificationTime);
-          });
+      return all.Select(a => a.Version).ToList();
     }
 
-    private Task<IReadOnlyList<T>> GetAll<T> (IEnumerable<AppointmentId> idsOfknownEntities, IEventSynchronizationContext context, Func<AppointmentItem,T> selector)
-      where T : IEntity<AppointmentId>
+    private Task<IReadOnlyList<AppointmentSlim>> GetAll (IEnumerable<AppointmentId> idsOfknownEntities, IEventSynchronizationContext context)
     {
       var range = _dateTimeRangeProvider.GetRange ();
 
-      List<T> events;
+      List<AppointmentSlim> events;
       using (var calendarFolderWrapper = CreateFolderWrapper ())
       {
         bool isInstantSearchEnabled = false;
@@ -176,21 +168,21 @@ namespace CalDavSynchronizer.Implementation.Events
 
         s_logger.DebugFormat ("Using Outlook DASL filter: {0}", filterBuilder.ToString ());
 
-        events = QueryFolder (_mapiNameSpace, calendarFolderWrapper, filterBuilder, selector);
+        events = _queryFolderStrategy.QueryAppointmentFolder (_mapiNameSpace, calendarFolderWrapper.Inner, filterBuilder.ToString());
       }
 
       if (_configuration.UseEventCategoryAsFilter)
       {
-        var knownEntitesThatWereFilteredOut = idsOfknownEntities.Except (events.Select (e => e.Id));
+        var knownEntitesThatWereFilteredOut = idsOfknownEntities.Except (events.Select (e => e.Version.Id));
         events.AddRange (
             knownEntitesThatWereFilteredOut
                 .Select (id => _mapiNameSpace.GetAppointmentItemOrNull(id.EntryId, _folderId, _folderStoreId))
                 .Where (i => i != null)
                 .ToSafeEnumerable ()
-                .Select (selector));
+                .Select (AppointmentSlim.FromAppointmentItem));
       }
 
-      return Task.FromResult<IReadOnlyList<T>> (events);
+      return Task.FromResult<IReadOnlyList<AppointmentSlim>> (events);
     }
 
 
@@ -201,55 +193,8 @@ namespace CalDavSynchronizer.Implementation.Events
       filterBuilder.AppendFormat (" And "+ negateFilter + "(\"urn:schemas-microsoft-com:office:office#Keywords\" = '{0}'" + emptyFilter + ")", category.Replace ("'","''"));
     }
 
-    public static List<EntityVersion<AppointmentId, DateTime>> QueryFolder (
-        NameSpace session,
-        GenericComObjectWrapper<Folder> calendarFolderWrapper,
-        StringBuilder filterBuilder)
-    {
-      return QueryFolder (
-          session,
-          calendarFolderWrapper,
-          filterBuilder,
-          a => new EntityVersion<AppointmentId, DateTime> (new AppointmentId(a.EntryID, a.GlobalAppointmentID), a.LastModificationTime));
-    }
+   
 
-    static List<T> QueryFolder<T> (
-        NameSpace session,
-        GenericComObjectWrapper<Folder> calendarFolderWrapper,
-        StringBuilder filterBuilder,
-        Func<AppointmentItem, T> selector)
-      where T : IEntity<AppointmentId>
-    {
-      var events = new List<T>();
-
-      using (var tableWrapper = GenericComObjectWrapper.Create (
-          calendarFolderWrapper.Inner.GetTable (filterBuilder.ToString())))
-      {
-        var table = tableWrapper.Inner;
-        table.Columns.RemoveAll();
-        table.Columns.Add (c_entryIdColumnName);
-
-        var storeId = calendarFolderWrapper.Inner.StoreID;
-
-        while (!table.EndOfTable)
-        {
-          var row = table.GetNextRow();
-          var entryId = (string) row[c_entryIdColumnName];
-          try
-          {
-            using (var appointmentWrapper = GenericComObjectWrapper.Create ((AppointmentItem) session.GetItemFromID (entryId, storeId)))
-            {
-              events.Add (selector (appointmentWrapper.Inner));
-            }
-          }
-          catch (COMException ex)
-          {
-            s_logger.Error ("Could not fetch AppointmentItem, skipping.", ex);
-          }
-        }
-      }
-      return events;
-    }
 
     private static readonly CultureInfo _currentCultureInfo = CultureInfo.CurrentCulture;
 
@@ -297,7 +242,7 @@ namespace CalDavSynchronizer.Implementation.Events
     {
       entityToUpdate = await entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save();
-      context.AnnounceAppointment (entityToUpdate.Inner);
+      context.AnnounceAppointment (AppointmentSlim.FromAppointmentItem(entityToUpdate.Inner));
 
       var newAppointmentId = new AppointmentId(entityToUpdate.Inner.EntryID, entityToUpdate.Inner.GlobalAppointmentID);
 
@@ -339,7 +284,7 @@ namespace CalDavSynchronizer.Implementation.Events
         using (var initializedWrapper = await entityInitializer(newAppointmentItemWrapper))
         {
           initializedWrapper.SaveAndReload();
-          context.AnnounceAppointment(initializedWrapper.Inner);
+          context.AnnounceAppointment(AppointmentSlim.FromAppointmentItem(initializedWrapper.Inner));
           var result = new EntityVersion<AppointmentId, DateTime>(
             new AppointmentId(initializedWrapper.Inner.EntryID, initializedWrapper.Inner.GlobalAppointmentID),
             initializedWrapper.Inner.LastModificationTime);

@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -17,16 +17,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using GenSync;
 using Microsoft.Office.Interop.Outlook;
 
-namespace CalDavSynchronizer.Implementation.Events
+namespace CalDavSynchronizer.Implementation.Common
 {
-  public interface IEventSynchronizationContext
+  public interface IQueryOutlookDistListItemFolderStrategy
   {
-    Task NotifySynchronizationFinished ();
-    void AnnounceAppointment (AppointmentSlim appointment);
-    void AnnounceAppointmentDeleted (AppointmentId id);
-    Task<IEnumerable<AppointmentId>> DeleteAnnouncedEventsIfDuplicates(Predicate<AppointmentId> canBeDeleted);
+    List<EntityVersion<string, DateTime>> QueryDistListFolder(NameSpace session, Folder folder, string expectedFolderId, string filter);
   }
 }

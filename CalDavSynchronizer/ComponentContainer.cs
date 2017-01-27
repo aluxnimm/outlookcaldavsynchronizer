@@ -49,6 +49,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using CalDavSynchronizer.Implementation;
+using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.Tasks;
 using CalDavSynchronizer.Implementation.TimeZones;
 using CalDavSynchronizer.Ui.Options;
@@ -96,6 +97,7 @@ namespace CalDavSynchronizer
     private ISynchronizationProfilesViewModel _currentVisibleOptionsFormOrNull;
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
     private readonly SynchronizationStatus _synchronizationStatus;
+    private readonly IQueryOutlookFolderStrategy _queryFolderStrategy;
 
     public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
     public event EventHandler<SchedulerStatusEventArgs> StatusChanged
@@ -107,6 +109,8 @@ namespace CalDavSynchronizer
     public ComponentContainer (Application application)
     {
       s_logger.Info ("Startup...");
+
+      _queryFolderStrategy = new QueryOutlookFolderByRequestingItemStrategy();
 
       _generalOptionsDataAccess = new GeneralOptionsDataAccess();
 
@@ -156,7 +160,8 @@ namespace CalDavSynchronizer
           _session,
           _daslFilterProvider,
           _outlookAccountPasswordProvider,
-          _globalTimeZoneCache);
+          _globalTimeZoneCache,
+          _queryFolderStrategy);
 
       _synchronizationReportRepository = CreateSynchronizationReportRepository();
 
@@ -614,7 +619,7 @@ namespace CalDavSynchronizer
         }
         var filterBuilder = new StringBuilder (_daslFilterProvider.GetAppointmentFilter (isInstantSearchEnabled));
         OutlookEventRepository.AddCategoryFilter (filterBuilder, oldCategory, false, false);
-        var eventIds = OutlookEventRepository.QueryFolder (_session, calendarFolderWrapper, filterBuilder).Select(e => e.Id);
+        var eventIds = _queryFolderStrategy.QueryAppointmentFolder (_session, calendarFolderWrapper.Inner, filterBuilder.ToString()).Select(e => e.Version.Id);
         // todo concat Ids from cache
 
         foreach (var eventId in eventIds)
@@ -651,7 +656,7 @@ namespace CalDavSynchronizer
         }
         var filterBuilder = new StringBuilder (_daslFilterProvider.GetTaskFilter (isInstantSearchEnabled));
         OutlookEventRepository.AddCategoryFilter (filterBuilder, oldCategory, false, false);
-        var taskIds = OutlookTaskRepository.QueryFolder (_session, taskFolderWrapper, filterBuilder).Select(e => e.Id);
+        var taskIds = _queryFolderStrategy.QueryTaskFolder (_session, taskFolderWrapper.Inner, filterBuilder.ToString()).Select(e => e.Id);
         // todo concat Ids from cache
 
         foreach (var taskId in taskIds)

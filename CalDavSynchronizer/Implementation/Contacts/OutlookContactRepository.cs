@@ -39,24 +39,25 @@ namespace CalDavSynchronizer.Implementation.Contacts
     private readonly string _folderId;
     private readonly string _folderStoreId;
     private readonly IDaslFilterProvider _daslFilterProvider;
+    private readonly IQueryOutlookContactItemFolderStrategy _queryFolderStrategy;
+    
 
     private const string PR_ASSOCIATED_BIRTHDAY_APPOINTMENT_ID = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/804D0102";
 
-    public OutlookContactRepository (NameSpace mapiNameSpace, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider)
+    public OutlookContactRepository (NameSpace mapiNameSpace, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider, IQueryOutlookContactItemFolderStrategy queryFolderStrategy)
     {
       if (mapiNameSpace == null)
         throw new ArgumentNullException (nameof (mapiNameSpace));
       if (daslFilterProvider == null)
         throw new ArgumentNullException (nameof (daslFilterProvider));
+      if (queryFolderStrategy == null) throw new ArgumentNullException(nameof(queryFolderStrategy));
 
       _mapiNameSpace = mapiNameSpace;
       _folderId = folderId;
       _folderStoreId = folderStoreId;
       _daslFilterProvider = daslFilterProvider;
+      _queryFolderStrategy = queryFolderStrategy;
     }
-
-    private const string c_entryIdColumnName = "EntryID";
-
 
     private GenericComObjectWrapper<Folder> CreateFolderWrapper ()
     {
@@ -76,16 +77,13 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
     public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, Tcontext context)
     {
-      var contacts = new List<EntityVersion<string, DateTime>> ();
-
-
-      using (var addressbookFolderWrapper = CreateFolderWrapper ())
+      using (var addressbookFolderWrapper = CreateFolderWrapper())
       {
         bool isInstantSearchEnabled = false;
 
         try
         {
-          using (var store = GenericComObjectWrapper.Create (addressbookFolderWrapper.Inner.Store))
+          using (var store = GenericComObjectWrapper.Create(addressbookFolderWrapper.Inner.Store))
           {
             if (store.Inner != null)
               isInstantSearchEnabled = store.Inner.IsInstantSearchEnabled;
@@ -93,35 +91,13 @@ namespace CalDavSynchronizer.Implementation.Contacts
         }
         catch (COMException)
         {
-          s_logger.Info ("Can't access IsInstantSearchEnabled property of store, defaulting to false.");
+          s_logger.Info("Can't access IsInstantSearchEnabled property of store, defaulting to false.");
         }
-        using (var tableWrapper =
-            GenericComObjectWrapper.Create (addressbookFolderWrapper.Inner.GetTable (_daslFilterProvider.GetContactFilter (isInstantSearchEnabled))))
-        {
-          var table = tableWrapper.Inner;
-          table.Columns.RemoveAll ();
-          table.Columns.Add (c_entryIdColumnName);
 
-          var storeId = addressbookFolderWrapper.Inner.StoreID;
+        var filter = _daslFilterProvider.GetContactFilter(isInstantSearchEnabled);
 
-          while (!table.EndOfTable)
-          {
-            var row = table.GetNextRow ();
-            var entryId = (string) row[c_entryIdColumnName];
-
-            var contact = _mapiNameSpace.GetContactItemOrNull (entryId, _folderId, storeId);
-            if (contact != null)
-            {
-              using (var contactWrapper = GenericComObjectWrapper.Create (contact))
-              {
-                contacts.Add (new EntityVersion<string, DateTime> (contactWrapper.Inner.EntryID, contactWrapper.Inner.LastModificationTime));
-              }
-            }
-          }
-        }
+        return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>>(_queryFolderStrategy.QueryContactItemFolder(_mapiNameSpace, addressbookFolderWrapper.Inner, _folderId, filter));
       }
-
-      return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (contacts);
     }
 
     private static readonly CultureInfo _currentCultureInfo = CultureInfo.CurrentCulture;

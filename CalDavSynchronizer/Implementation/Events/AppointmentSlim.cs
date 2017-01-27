@@ -16,17 +16,36 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using GenSync;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public interface IEventSynchronizationContext
+  public class AppointmentSlim
   {
-    Task NotifySynchronizationFinished ();
-    void AnnounceAppointment (AppointmentSlim appointment);
-    void AnnounceAppointmentDeleted (AppointmentId id);
-    Task<IEnumerable<AppointmentId>> DeleteAnnouncedEventsIfDuplicates(Predicate<AppointmentId> canBeDeleted);
+
+    public static AppointmentSlim FromAppointmentItem(AppointmentItem item)
+    {
+      return new AppointmentSlim(
+        new EntityVersion<AppointmentId, DateTime>(new AppointmentId(item.EntryID, item.GlobalAppointmentID), item.LastModificationTime),
+        item.Start,
+        item.End,
+        item.Subject);
+    }
+
+    public AppointmentSlim(EntityVersion<AppointmentId, DateTime> version, DateTime start, DateTime end, string subject)
+    {
+      if (version == null) throw new ArgumentNullException(nameof(version));
+      
+      Version = version;
+      Start = start;
+      End = end;
+      Subject = subject;
+    }
+
+    public EntityVersion<AppointmentId, DateTime> Version { get; }
+    public DateTime Start { get; }
+    public DateTime End { get; }
+    public string Subject { get; }
   }
 }

@@ -39,18 +39,21 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
     private readonly string _folderId;
     private readonly string _folderStoreId;
     private readonly IDaslFilterProvider _daslFilterProvider;
+    private readonly IQueryOutlookDistListItemFolderStrategy _queryFolderStrategy;
 
-    public OutlookDistListRepository (NameSpace mapiNameSpace, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider)
+    public OutlookDistListRepository (NameSpace mapiNameSpace, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider, IQueryOutlookDistListItemFolderStrategy queryFolderStrategy)
     {
       if (mapiNameSpace == null)
         throw new ArgumentNullException (nameof (mapiNameSpace));
       if (daslFilterProvider == null)
         throw new ArgumentNullException (nameof (daslFilterProvider));
+      if (queryFolderStrategy == null) throw new ArgumentNullException(nameof(queryFolderStrategy));
 
       _mapiNameSpace = mapiNameSpace;
       _folderId = folderId;
       _folderStoreId = folderStoreId;
       _daslFilterProvider = daslFilterProvider;
+      _queryFolderStrategy = queryFolderStrategy;
     }
 
     private const string c_entryIdColumnName = "EntryID";
@@ -74,9 +77,6 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
 
     public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, Tcontext context)
     {
-      var contacts = new List<EntityVersion<string, DateTime>> ();
-
-
       using (var addressbookFolderWrapper = CreateFolderWrapper ())
       {
         bool isInstantSearchEnabled = false;
@@ -93,35 +93,12 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
         {
           s_logger.Info ("Can't access IsInstantSearchEnabled property of store, defaulting to false.");
         }
-        using (var tableWrapper =
-            GenericComObjectWrapper.Create (addressbookFolderWrapper.Inner.GetTable (_daslFilterProvider.GetDistListFilter (isInstantSearchEnabled))))
-        {
-          var table = tableWrapper.Inner;
-          table.Columns.RemoveAll ();
-          table.Columns.Add (c_entryIdColumnName);
+        var filter = _daslFilterProvider.GetDistListFilter (isInstantSearchEnabled);
 
-          var storeId = addressbookFolderWrapper.Inner.StoreID;
-
-          while (!table.EndOfTable)
-          {
-            var row = table.GetNextRow ();
-            var entryId = (string) row[c_entryIdColumnName];
-
-            var contact = _mapiNameSpace.GetDistListItemOrNull (entryId, _folderId, storeId);
-            if (contact != null)
-            {
-              using (var contactWrapper = GenericComObjectWrapper.Create (contact))
-              {
-                contacts.Add (new EntityVersion<string, DateTime> (contactWrapper.Inner.EntryID, contactWrapper.Inner.LastModificationTime));
-              }
-            }
-          }
-        }
+        return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (_queryFolderStrategy.QueryDistListFolder (_mapiNameSpace, addressbookFolderWrapper.Inner, _folderId, filter));
       }
-
-      return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (contacts);
     }
-    
+
 #pragma warning disable 1998
     public async Task<IReadOnlyList<EntityWithId<string, GenericComObjectWrapper<DistListItem>>>> Get (ICollection<string> ids, ILoadEntityLogger logger, Tcontext context)
 #pragma warning restore 1998

@@ -304,6 +304,12 @@
     <Compile Include="EntityCacheVersionConversion\Version1To2.cs" />
     <Compile Include="EntityCacheVersionConversion\Version2To3.cs" />
     <Compile Include="IComponentContainer.cs" />
+    <Compile Include="Implementation\Common\IQueryOutlookContactItemFolderStrategy.cs" />
+    <Compile Include="Implementation\Common\IQueryOutlookDistListItemFolderStrategy.cs" />
+    <Compile Include="Implementation\Common\IQueryOutlookFolderStrategy.cs" />
+    <Compile Include="Implementation\Common\IQueryOutlookTaskItemFolderStrategy.cs" />
+    <Compile Include="Implementation\Common\QueryOutlookFolderByRequestingItemStrategy.cs" />
+    <Compile Include="Implementation\Common\IQueryOutlookAppointmentItemFolderStrategy.cs" />
     <Compile Include="Implementation\Common\NameSpaceExtensions.cs" />
     <Compile Include="Implementation\Common\OutlookUtility.cs" />
     <Compile Include="Implementation\Contacts\CardDavRepository.cs" />
@@ -326,6 +332,7 @@
     <Compile Include="Implementation\DistributionLists\DistributionList.cs" />
     <Compile Include="Implementation\DistributionLists\DistributionListMember.cs" />
     <Compile Include="Implementation\DistributionLists\SogoDistributionListRepository.cs" />
+    <Compile Include="Implementation\Events\AppointmentSlim.cs" />
     <Compile Include="Implementation\Events\EventSynchronizationInterceptorFactory.cs" />
     <Compile Include="Implementation\Events\EventSynchronizationInterceptor.cs" />
     <Compile Include="Implementation\Events\NullEventSynchronizationContextFactory.cs" />

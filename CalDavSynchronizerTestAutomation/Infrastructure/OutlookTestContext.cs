@@ -24,6 +24,7 @@ using CalDavSynchronizer;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
+using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Events;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
@@ -86,7 +87,8 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           s_mapiNameSpace,
           daslFilterProvider,
           new OutlookAccountPasswordProvider (mapiNameSpace.CurrentProfileName, mapiNameSpace.Application.Version),
-          globalTimeZoneCache);
+          globalTimeZoneCache,
+          new QueryOutlookFolderByRequestingItemStrategy());
 
       s_outlookEventRepository = new OutlookEventRepository (
           s_mapiNameSpace,
@@ -94,7 +96,8 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           s_outlookFolderStoreId,
           NullDateTimeRangeProvider.Instance,
           eventMappingConfiguration,
-          daslFilterProvider);
+          daslFilterProvider,
+          new QueryOutlookFolderByRequestingItemStrategy());
     }
 
     public static IOutlookSynchronizer CreateEventSynchronizer (

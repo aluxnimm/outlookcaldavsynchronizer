@@ -67,17 +67,13 @@ namespace CalDavSynchronizer.Scheduling
     private readonly IDaslFilterProvider _daslFilterProvider;
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
     private readonly GlobalTimeZoneCache _globalTimeZoneCache;
+    private readonly IQueryOutlookFolderStrategy _queryFolderStrategy;
 
-    public SynchronizerFactory (
-        Func<Guid, string> profileDataDirectoryFactory,
-        ITotalProgressFactory totalProgressFactory,
-        NameSpace outlookSession,
-        IDaslFilterProvider daslFilterProvider, 
-        IOutlookAccountPasswordProvider outlookAccountPasswordProvider,
-        GlobalTimeZoneCache globalTimeZoneCache)
+    public SynchronizerFactory (Func<Guid, string> profileDataDirectoryFactory, ITotalProgressFactory totalProgressFactory, NameSpace outlookSession, IDaslFilterProvider daslFilterProvider, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, GlobalTimeZoneCache globalTimeZoneCache, IQueryOutlookFolderStrategy queryFolderStrategy)
     {
       if (outlookAccountPasswordProvider == null)
         throw new ArgumentNullException (nameof (outlookAccountPasswordProvider));
+      if (queryFolderStrategy == null) throw new ArgumentNullException(nameof(queryFolderStrategy));
 
       _outlookEmailAddress = string.Empty;
       try
@@ -107,6 +103,7 @@ namespace CalDavSynchronizer.Scheduling
       _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
       _profileDataDirectoryFactory = profileDataDirectoryFactory;
       _globalTimeZoneCache = globalTimeZoneCache;
+      _queryFolderStrategy = queryFolderStrategy;
     }
 
     /// <summary>
@@ -381,7 +378,8 @@ namespace CalDavSynchronizer.Scheduling
           options.OutlookFolderStoreId,
           dateTimeRangeProvider,
           mappingParameters,
-          _daslFilterProvider);
+          _daslFilterProvider,
+          _queryFolderStrategy);
 
       IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> btypeRepository = new CalDavRepository<IEventSynchronizationContext> (
           calDavDataAccess,
@@ -484,7 +482,7 @@ namespace CalDavSynchronizer.Scheduling
     {
       var mappingParameters = GetMappingParameters<TaskMappingConfiguration> (options);
 
-      var atypeRepository = new OutlookTaskRepository (_outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId, _daslFilterProvider, mappingParameters);
+      var atypeRepository = new OutlookTaskRepository (_outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId, _daslFilterProvider, mappingParameters, _queryFolderStrategy);
 
 
 
@@ -566,7 +564,7 @@ namespace CalDavSynchronizer.Scheduling
     {
       var mappingParameters = GetMappingParameters<TaskMappingConfiguration> (options);
 
-      var atypeRepository = new OutlookTaskRepository (_outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId, _daslFilterProvider, mappingParameters);
+      var atypeRepository = new OutlookTaskRepository (_outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId, _daslFilterProvider, mappingParameters, _queryFolderStrategy);
 
       IWebProxy proxy = options.ProxyOptions != null ? CreateProxy (options.ProxyOptions) : null;
 
@@ -631,7 +629,8 @@ namespace CalDavSynchronizer.Scheduling
           _outlookSession,
           options.OutlookFolderEntryId,
           options.OutlookFolderStoreId,
-          _daslFilterProvider);
+          _daslFilterProvider,
+          _queryFolderStrategy);
 
       ICardDavDataAccess cardDavDataAccess;
       var serverUrl = new Uri (options.CalenderUrl);
@@ -765,7 +764,8 @@ namespace CalDavSynchronizer.Scheduling
           _outlookSession,
           options.OutlookFolderEntryId,
           options.OutlookFolderStoreId,
-          _daslFilterProvider);
+          _daslFilterProvider,
+          _queryFolderStrategy);
 
       var entityMapper = new DistListEntityMapper ();
 
@@ -816,7 +816,8 @@ namespace CalDavSynchronizer.Scheduling
           _outlookSession,
           options.OutlookFolderEntryId,
           options.OutlookFolderStoreId,
-          _daslFilterProvider);
+          _daslFilterProvider,
+          _queryFolderStrategy);
 
       IWebProxy proxy = options.ProxyOptions != null ? CreateProxy (options.ProxyOptions) : null;
 

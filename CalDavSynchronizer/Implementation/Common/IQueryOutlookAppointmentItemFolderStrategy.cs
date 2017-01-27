@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -15,18 +15,14 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using CalDavSynchronizer.Implementation.Events;
 using Microsoft.Office.Interop.Outlook;
 
-namespace CalDavSynchronizer.Implementation.Events
+namespace CalDavSynchronizer.Implementation.Common
 {
-  public interface IEventSynchronizationContext
+  public interface IQueryOutlookAppointmentItemFolderStrategy
   {
-    Task NotifySynchronizationFinished ();
-    void AnnounceAppointment (AppointmentSlim appointment);
-    void AnnounceAppointmentDeleted (AppointmentId id);
-    Task<IEnumerable<AppointmentId>> DeleteAnnouncedEventsIfDuplicates(Predicate<AppointmentId> canBeDeleted);
+    List<AppointmentSlim> QueryAppointmentFolder(NameSpace session, Folder calendarFolder, string filter);
   }
 }

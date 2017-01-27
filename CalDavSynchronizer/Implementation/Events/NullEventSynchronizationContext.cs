@@ -36,7 +36,7 @@ namespace CalDavSynchronizer.Implementation.Events
       return Task.FromResult (0);
     }
 
-    public void AnnounceAppointment (AppointmentItem appointment)
+    public void AnnounceAppointment (AppointmentSlim appointment)
     {
       
     }
