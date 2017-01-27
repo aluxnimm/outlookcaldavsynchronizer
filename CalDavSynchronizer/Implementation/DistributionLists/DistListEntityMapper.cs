@@ -158,14 +158,18 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
           {
             var recipientStringBuilder = new StringBuilder();
 
-            if (sourceMember.DisplayName == sourceMember.EmailAddress)
+            if (string.IsNullOrEmpty(sourceMember.DisplayName))
             {
-              recipientStringBuilder.Append(sourceMember.EmailAddress);
+              if (!string.IsNullOrEmpty(sourceMember.EmailAddress))
+                recipientStringBuilder.Append(sourceMember.EmailAddress);
             }
             else
             {
               recipientStringBuilder.Append(sourceMember.DisplayName);
-              if (!string.IsNullOrEmpty(sourceMember.EmailAddress) && !sourceMember.DisplayName.EndsWith(")"))
+              if (  sourceMember.EmailAddress != sourceMember.DisplayName &&
+                    !string.IsNullOrEmpty(sourceMember.EmailAddress) && 
+                    !sourceMember.DisplayName.EndsWith(")")
+                 )
               {
                 recipientStringBuilder.Append(" (");
                 recipientStringBuilder.Append(sourceMember.EmailAddress);
@@ -173,9 +177,12 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
               }
             }
 
-            var recipient = context.OutlookSession.CreateRecipient(recipientStringBuilder.ToString());
-            recipient.Resolve();
-            target.Inner.AddMember(recipient);
+            if (recipientStringBuilder.Length > 0)
+            {
+              var recipient = context.OutlookSession.CreateRecipient(recipientStringBuilder.ToString());
+              recipient.Resolve();
+              target.Inner.AddMember(recipient);
+            }
           }
         }
 
