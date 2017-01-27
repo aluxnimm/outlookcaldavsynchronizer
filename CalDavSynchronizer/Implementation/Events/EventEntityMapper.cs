@@ -1047,15 +1047,29 @@ namespace CalDavSynchronizer.Implementation.Events
             logger.LogMappingWarning ($"Recurring event contains the Interval '{sourceRecurrencePattern.Interval}', which is not supported by outlook. Ignoring interval.", ex);
           }
 
-          if (sourceRecurrencePattern.Count >= 0)
-            targetRecurrencePattern.Occurrences = sourceRecurrencePattern.Count;
-
-          if (sourceRecurrencePattern.Until != default(DateTime))
+          try
           {
-            if (sourceRecurrencePattern.Until.Date >= targetRecurrencePattern.PatternStartDate)
-              targetRecurrencePattern.PatternEndDate = sourceRecurrencePattern.Until.Date;
-            else
-              targetRecurrencePattern.PatternEndDate = targetRecurrencePattern.PatternStartDate;
+            if (sourceRecurrencePattern.Count > 0)
+            {
+              targetRecurrencePattern.Occurrences = sourceRecurrencePattern.Count;
+            }
+            else if (sourceRecurrencePattern.Count == 0)
+            {
+              s_logger.Warn ($"Recurring event '{source.UID}' contains COUNT=0, which is invalid. Ignoring the occurence count.");
+              logger.LogMappingWarning ($"Recurring event '{source.UID}' contains COUNT=0, which is invalid. Ignoring the occurence count.");
+            }
+
+            if (sourceRecurrencePattern.Until != default(DateTime))
+            {
+              targetRecurrencePattern.PatternEndDate = sourceRecurrencePattern.Until.Date >= targetRecurrencePattern.PatternStartDate 
+                ? sourceRecurrencePattern.Until.Date 
+                : targetRecurrencePattern.PatternStartDate;
+            }
+          }
+          catch (COMException ex)
+          {
+            s_logger.Warn ($"Recurring event '{source.UID}' contains occurence count or end date, which is not supported by outlook. Ignoring.", ex);
+            logger.LogMappingWarning ($"Recurring event contains occurence count or end date, which is not supported by outlook. Ignoring.", ex);
           }
         }
         // Due to limitations out outlook, the Appointment has to be saved here. Otherwise 'targetRecurrencePattern.GetOccurrence ()'
