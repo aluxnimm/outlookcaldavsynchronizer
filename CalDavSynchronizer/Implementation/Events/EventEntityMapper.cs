@@ -1727,7 +1727,7 @@ namespace CalDavSynchronizer.Implementation.Events
           var response = MapParticipation2ToMeetingResponse (ownSourceAttendee.ParticipationStatus);
 
           // show received meetings without response as tentative
-          if (response == null && !source.Properties.ContainsKey("X-MICROSOFT-CDO-BUSYSTATUS"))
+          if (response == null && !source.Properties.ContainsKey ("X-MICROSOFT-CDO-BUSYSTATUS"))
             targetWrapper.Inner.BusyStatus = OlBusyStatus.olTentative;
 
           if ((response != null) && (MapParticipation2To1 (ownSourceAttendee.ParticipationStatus) != targetWrapper.Inner.ResponseStatus))
@@ -1738,10 +1738,18 @@ namespace CalDavSynchronizer.Implementation.Events
             }
             else
             {
-              using (var newMeetingItem = GenericComObjectWrapper.Create (targetWrapper.Inner.Respond (response.Value)))
+              try
               {
-                var newAppointment = newMeetingItem.Inner.GetAssociatedAppointment (false);
-                targetWrapper.Replace (newAppointment);
+                using (var newMeetingItem = GenericComObjectWrapper.Create (targetWrapper.Inner.Respond (response.Value)))
+                {
+                  var newAppointment = newMeetingItem.Inner.GetAssociatedAppointment (false);
+                  targetWrapper.Replace (newAppointment);
+                }
+              }
+              catch (COMException ex)
+              {
+                s_logger.Warn ("Can't respond to meeting invite.", ex);
+                logger.LogMappingWarning ("Can't respond to meeting invite.", ex);
               }
             }
           }
