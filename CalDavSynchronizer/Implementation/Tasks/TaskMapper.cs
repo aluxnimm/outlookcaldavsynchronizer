@@ -258,8 +258,10 @@ namespace CalDavSynchronizer.Implementation.Tasks
             target.Start.SetTimeZone (localIcalTimeZone);
           }
           IRecurrencePattern targetRecurrencePattern = new RecurrencePattern();
-          if (!sourceRecurrencePattern.NoEndDate)
-          {
+
+          // Don't set Count if pattern has NoEndDate or invalid Occurences for some reason.
+          if (!sourceRecurrencePattern.NoEndDate && sourceRecurrencePattern.Occurrences > 0)
+          { 
             targetRecurrencePattern.Count = sourceRecurrencePattern.Occurrences;
             //Until must not be set if count is set, since outlook always sets Occurrences
             //but sogo wants it as utc end time of the last event not only the enddate at 0000
@@ -688,15 +690,29 @@ namespace CalDavSynchronizer.Implementation.Tasks
             logger.LogMappingWarning ($"Recurring task contains the Interval '{sourceRecurrencePattern.Interval}', which is not supported by outlook. Ignoring interval.", ex);
           }
 
-          if (sourceRecurrencePattern.Count >= 0)
-            targetRecurrencePattern.Occurrences = sourceRecurrencePattern.Count;
-
-          if (sourceRecurrencePattern.Until != default(DateTime))
+          try
           {
-            if (sourceRecurrencePattern.Until.Date >= targetRecurrencePattern.PatternStartDate)
-              targetRecurrencePattern.PatternEndDate = sourceRecurrencePattern.Until.Date;
-            else
-              targetRecurrencePattern.PatternEndDate = targetRecurrencePattern.PatternStartDate;
+            if (sourceRecurrencePattern.Count > 0)
+            {
+              targetRecurrencePattern.Occurrences = sourceRecurrencePattern.Count;
+            }
+            else if (sourceRecurrencePattern.Count == 0)
+            {
+              s_logger.Warn ($"Recurring task '{source.UID}' contains COUNT=0, which is invalid. Ignoring the occurence count.");
+              logger.LogMappingWarning ($"Recurring task '{source.UID}' contains COUNT=0, which is invalid. Ignoring the occurence count.");
+            }
+
+            if (sourceRecurrencePattern.Until != default (DateTime))
+            {
+              targetRecurrencePattern.PatternEndDate = sourceRecurrencePattern.Until.Date >= targetRecurrencePattern.PatternStartDate
+                ? sourceRecurrencePattern.Until.Date
+                : targetRecurrencePattern.PatternStartDate;
+            }
+          }
+          catch (COMException ex)
+          {
+            s_logger.Warn ($"Recurring task '{source.UID}' contains occurence count or end date, which is not supported by outlook. Ignoring.", ex);
+            logger.LogMappingWarning ($"Recurring task contains occurence count or end date, which is not supported by outlook. Ignoring.", ex);
           }
         }
 
