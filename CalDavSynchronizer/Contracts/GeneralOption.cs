@@ -42,5 +42,6 @@ namespace CalDavSynchronizer.Contracts
     public bool TriggerSyncAfterSendReceive { get; set; }
     public bool ExpandAllSyncProfiles { get; set; }
     public bool EnableAdvancedView { get; set; }
+    public bool QueryFoldersByRequestingItems { get; set; }
   }
 }

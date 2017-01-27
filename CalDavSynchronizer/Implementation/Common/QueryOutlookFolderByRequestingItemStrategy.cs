@@ -34,6 +34,11 @@ namespace CalDavSynchronizer.Implementation.Common
     private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
     private const string c_entryIdColumnName = "EntryID";
 
+    public static readonly IQueryOutlookFolderStrategy Instance = new QueryOutlookFolderByRequestingItemStrategy ();
+    private QueryOutlookFolderByRequestingItemStrategy ()
+    {
+    }
+
     List<AppointmentSlim> IQueryOutlookAppointmentItemFolderStrategy.QueryAppointmentFolder(NameSpace session, Folder calendarFolder, string filter)
     {
       var events = new List<AppointmentSlim>();

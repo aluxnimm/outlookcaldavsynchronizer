@@ -97,7 +97,7 @@ namespace CalDavSynchronizer
     private ISynchronizationProfilesViewModel _currentVisibleOptionsFormOrNull;
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
     private readonly SynchronizationStatus _synchronizationStatus;
-    private readonly IQueryOutlookFolderStrategy _queryFolderStrategy;
+    private readonly OutlookFolderStrategyWrapper _queryFolderStrategyWrapper;
 
     public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
     public event EventHandler<SchedulerStatusEventArgs> StatusChanged
@@ -110,7 +110,6 @@ namespace CalDavSynchronizer
     {
       s_logger.Info ("Startup...");
 
-      _queryFolderStrategy = new QueryOutlookFolderByGetTableStrategy();
 
       _generalOptionsDataAccess = new GeneralOptionsDataAccess();
 
@@ -151,6 +150,8 @@ namespace CalDavSynchronizer
       _profileStatusesViewModel = new ProfileStatusesViewModel(this);
       _uiService = new UiService(_profileStatusesViewModel);
 
+      _queryFolderStrategyWrapper = new OutlookFolderStrategyWrapper(QueryOutlookFolderByRequestingItemStrategy.Instance);
+
       _synchronizerFactory = new SynchronizerFactory (
           GetProfileDataDirectory,
           new TotalProgressFactory (
@@ -161,7 +162,7 @@ namespace CalDavSynchronizer
           _daslFilterProvider,
           _outlookAccountPasswordProvider,
           _globalTimeZoneCache,
-          _queryFolderStrategy);
+          _queryFolderStrategyWrapper);
 
       _synchronizationReportRepository = CreateSynchronizationReportRepository();
 
@@ -337,6 +338,8 @@ namespace CalDavSynchronizer
       _showReportsWithWarningsImmediately = generalOptions.ShowReportsWithWarningsImmediately;
 
       _daslFilterProvider.SetDoIncludeCustomMessageClasses (generalOptions.IncludeCustomMessageClasses);
+
+      _queryFolderStrategyWrapper.SetStrategy(generalOptions.QueryFoldersByRequestingItems ? QueryOutlookFolderByRequestingItemStrategy.Instance : QueryOutlookFolderByGetTableStrategy.Instance);
     }
 
     public void PostReport (SynchronizationReport report)

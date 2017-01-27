@@ -40,6 +40,11 @@ namespace CalDavSynchronizer.Implementation.Common
     private const string StartColumnId = "Start";
     private const string EndColumnId = "End";
 
+    public static readonly IQueryOutlookFolderStrategy Instance = new QueryOutlookFolderByGetTableStrategy();
+    private QueryOutlookFolderByGetTableStrategy()
+    {
+    }
+
     List<AppointmentSlim> IQueryOutlookAppointmentItemFolderStrategy.QueryAppointmentFolder(NameSpace session, Folder calendarFolder, string filter)
     {
       var events = new List<AppointmentSlim>();

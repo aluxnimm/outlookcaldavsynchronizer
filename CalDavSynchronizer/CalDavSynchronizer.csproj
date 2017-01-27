@@ -308,6 +308,7 @@
     <Compile Include="Implementation\Common\IQueryOutlookDistListItemFolderStrategy.cs" />
     <Compile Include="Implementation\Common\IQueryOutlookFolderStrategy.cs" />
     <Compile Include="Implementation\Common\IQueryOutlookTaskItemFolderStrategy.cs" />
+    <Compile Include="Implementation\Common\OutlookFolderStrategyWrapper.cs" />
     <Compile Include="Implementation\Common\QueryOutlookFolderByGetTableStrategy.cs" />
     <Compile Include="Implementation\Common\QueryOutlookFolderByRequestingItemStrategy.cs" />
     <Compile Include="Implementation\Common\IQueryOutlookAppointmentItemFolderStrategy.cs" />
