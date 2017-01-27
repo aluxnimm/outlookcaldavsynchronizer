@@ -676,7 +676,9 @@ namespace CalDavSynchronizer.Implementation.Events
         {
           var sourceRecurrencePattern = sourceRecurrencePatternWrapper.Inner;
           IRecurrencePattern targetRecurrencePattern = new RecurrencePattern();
-          if (!sourceRecurrencePattern.NoEndDate)
+
+          // Don't set Count if pattern has NoEndDate or invalid Occurences for some reason.
+          if (!sourceRecurrencePattern.NoEndDate && sourceRecurrencePattern.Occurrences > 0)
           {
             targetRecurrencePattern.Count = sourceRecurrencePattern.Occurrences;
             //Until must not be set if count is set, since outlook always sets Occurrences
