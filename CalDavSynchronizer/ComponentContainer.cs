@@ -110,7 +110,7 @@ namespace CalDavSynchronizer
     {
       s_logger.Info ("Startup...");
 
-      _queryFolderStrategy = new QueryOutlookFolderByRequestingItemStrategy();
+      _queryFolderStrategy = new QueryOutlookFolderByGetTableStrategy();
 
       _generalOptionsDataAccess = new GeneralOptionsDataAccess();
 
