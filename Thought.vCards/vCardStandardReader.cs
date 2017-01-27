@@ -108,7 +108,11 @@ namespace Thought.vCards
 			// will inline the code or eliminate the extra call.
 		  try
 		  {
-        return Convert.FromBase64String(value);
+        // WORKAROUND for https://sourceforge.net/p/outlookcaldavsynchronizer/discussion/general/thread/d6640b37/ 
+        // SOGo wrongly adds '\n' inside the base64 data in some cases for global adress book attributes converted from LDAP/AD
+		    var fixedValue = value.Replace("\\n", "");
+
+        return Convert.FromBase64String(fixedValue);
       }
 		  catch (FormatException)
 		  {
