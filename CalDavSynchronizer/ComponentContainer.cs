@@ -339,7 +339,7 @@ namespace CalDavSynchronizer
 
       _daslFilterProvider.SetDoIncludeCustomMessageClasses (generalOptions.IncludeCustomMessageClasses);
 
-      _queryFolderStrategyWrapper.SetStrategy(generalOptions.QueryFoldersByRequestingItems ? QueryOutlookFolderByRequestingItemStrategy.Instance : QueryOutlookFolderByGetTableStrategy.Instance);
+      _queryFolderStrategyWrapper.SetStrategy(generalOptions.QueryFoldersJustByGetTable ? QueryOutlookFolderByGetTableStrategy.Instance : QueryOutlookFolderByRequestingItemStrategy.Instance);
     }
 
     public void PostReport (SynchronizationReport report)
@@ -622,7 +622,7 @@ namespace CalDavSynchronizer
         }
         var filterBuilder = new StringBuilder (_daslFilterProvider.GetAppointmentFilter (isInstantSearchEnabled));
         OutlookEventRepository.AddCategoryFilter (filterBuilder, oldCategory, false, false);
-        var eventIds = _queryFolderStrategy.QueryAppointmentFolder (_session, calendarFolderWrapper.Inner, filterBuilder.ToString()).Select(e => e.Version.Id);
+        var eventIds = _queryFolderStrategyWrapper.QueryAppointmentFolder (_session, calendarFolderWrapper.Inner, filterBuilder.ToString()).Select(e => e.Version.Id);
         // todo concat Ids from cache
 
         foreach (var eventId in eventIds)
@@ -659,7 +659,7 @@ namespace CalDavSynchronizer
         }
         var filterBuilder = new StringBuilder (_daslFilterProvider.GetTaskFilter (isInstantSearchEnabled));
         OutlookEventRepository.AddCategoryFilter (filterBuilder, oldCategory, false, false);
-        var taskIds = _queryFolderStrategy.QueryTaskFolder (_session, taskFolderWrapper.Inner, filterBuilder.ToString()).Select(e => e.Id);
+        var taskIds = _queryFolderStrategyWrapper.QueryTaskFolder (_session, taskFolderWrapper.Inner, filterBuilder.ToString()).Select(e => e.Id);
         // todo concat Ids from cache
 
         foreach (var taskId in taskIds)

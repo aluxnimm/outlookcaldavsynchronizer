@@ -41,6 +41,7 @@ namespace CalDavSynchronizer.DataAccess
     private const string s_OptionsRegistryKey = @"Software\CalDavSynchronizer";
     private const string s_IncludeCustomMessageClasses = "IncludeCustomMessageClasses";
 
+    private const string s_QueryFoldersJustByGetTable = "QueryFoldersJustByGetTable";
     private const string s_LogReportsWithoutWarningsOrErrors = "LogReportsWithoutWarningsOrErrors";
     private const string s_LogReportsWithWarnings = "LogReportsWithWarnings";
     private const string s_ShowReportsWithWarningsImmediately = "ShowReportsWithWarningsImmediately";
@@ -86,7 +87,8 @@ namespace CalDavSynchronizer.DataAccess
                    UseUnsafeHeaderParsing = (int) (key.GetValue (s_UseUnsafeHeaderParsing) ?? Convert.ToInt32 (SystemNetSettings.UseUnsafeHeaderParsing)) !=0,
                    TriggerSyncAfterSendReceive = (int) (key.GetValue (s_TriggerSyncAfterSendReceive) ?? 0) != 0,
                    ExpandAllSyncProfiles = (int) (key.GetValue (s_ExpandAllSyncProfiles) ?? 1) != 0,
-                   EnableAdvancedView = (int)(key.GetValue(s_EnableAdvancedView) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableAdvancedView"] ?? bool.FalseString))) != 0
+                   EnableAdvancedView = (int)(key.GetValue(s_EnableAdvancedView) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableAdvancedView"] ?? bool.FalseString))) != 0,
+                   QueryFoldersJustByGetTable = (int) (key.GetValue (s_QueryFoldersJustByGetTable) ?? 1) != 0,
         };
       }
     }
@@ -117,6 +119,7 @@ namespace CalDavSynchronizer.DataAccess
         key.SetValue (s_TriggerSyncAfterSendReceive, options.TriggerSyncAfterSendReceive ? 1 : 0);
         key.SetValue (s_ExpandAllSyncProfiles, options.ExpandAllSyncProfiles ? 1 : 0);
         key.SetValue (s_EnableAdvancedView, options.EnableAdvancedView ? 1 : 0);
+        key.SetValue (s_QueryFoldersJustByGetTable, options.QueryFoldersJustByGetTable ? 1 : 0);
       }
     }
 

@@ -173,7 +173,8 @@ namespace CalDavSynchronizer.Ui.Options
                    UseUnsafeHeaderParsing = _useUnsafeHeaderParsingCheckBox.Checked,
                    TriggerSyncAfterSendReceive = _triggerSyncAfterSendReceiveCheckBox.Checked,
                    ExpandAllSyncProfiles = _expandAllSyncProfilesCheckBox.Checked,
-                   EnableAdvancedView = _enableAdvancedViewCheckBox.Checked
+                   EnableAdvancedView = _enableAdvancedViewCheckBox.Checked,
+                   QueryFoldersJustByGetTable = _useFastTableQueriesCheckBox.Checked
         };
       }
       set
@@ -198,6 +199,7 @@ namespace CalDavSynchronizer.Ui.Options
         _triggerSyncAfterSendReceiveCheckBox.Checked = value.TriggerSyncAfterSendReceive;
         _expandAllSyncProfilesCheckBox.Checked = value.ExpandAllSyncProfiles;
         _enableAdvancedViewCheckBox.Checked = value.EnableAdvancedView;
+        _useFastTableQueriesCheckBox.Checked = value.QueryFoldersJustByGetTable;
       }
     }
 
