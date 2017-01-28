@@ -58,13 +58,11 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     public IViewOptions ViewOptions { get; }
 
 
-    //public static TimeRangeViewModel DesignInstance { get; } = new TimeRangeViewModel
-    //                                                              {
-    //                                                                   UseSynchronizationTimeRange = true,
-    //                                                                    DaysToSynchronizeInTheFuture = 11,
-    //                                                                     DaysToSynchronizeInThePast = 22
-    //                                                              };
-
-   
+    public static TimeRangeViewModel DesignInstance { get; } = new TimeRangeViewModel(OptionsModel.DesignInstance, OptionsCollectionViewModel.DesignViewOptions)
+    {
+      UseSynchronizationTimeRange = true,
+      DaysToSynchronizeInTheFuture = 11,
+      DaysToSynchronizeInThePast = 22
+    };
   }
 }
