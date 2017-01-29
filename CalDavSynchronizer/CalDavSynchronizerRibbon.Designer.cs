@@ -105,7 +105,7 @@
       // 
       // ReportsButton
       // 
-      this.ReportsButton.Image = global::CalDavSynchronizer.Properties.Resources.report;
+      this.ReportsButton.Image = global::CalDavSynchronizer.Properties.Resources.SyncReport;
       this.ReportsButton.Label = "Reports";
       this.ReportsButton.Name = "ReportsButton";
       this.ReportsButton.ScreenTip = "Reports";
