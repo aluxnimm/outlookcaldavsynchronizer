@@ -103,6 +103,23 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 2.15.0 ####
+- New features
+	- Huge performance improvements accessing Outlook folder data when nothing changed and avoid fetching all items, add general option to configure the folder query option.
+	- Many UI improvements, add link to show/hide advanced settings and general option to set default
+	- reorder/regroup general options.
+	- Many improvements of vCard reader, add support for various X-properties for IMs, ticket #463.
+	- Save unrecognized properties in vCard OtherProperties.
+- Bug fixes
+	- Catch DateTimeZoneNotFoundException, ticket #484.
+	- Avoid adding email address twice.
+	- Catch FormatException in vCardStandardReader and log warnings from vcard deserialization.
+	- Warn if RRULE COUNT=0 and avoid COM exceptions when setting invalid RecurrencePattern Occurences or PatternEndDate values.
+	- Don't set RRULE COUNT if Occurrences is an invalid number.
+	- Avoid NullReferenceException when a SOGo VLIST has a member card without FN and avoid empty members.
+	- Catch possible COMException when responding to a meeting invite.
+	- Workaround for reading wrong encoded vcard PHOTO attributes from SOGo global adressbooks mapped from LDAP/AD avatar pictures.
+	
 #### 2.14.1 ####
 - Bug fixes
 	- Update installer to fix dependency for Thought.vCards.
@@ -898,21 +915,25 @@ After installing the plugin, a new ribbon called 'Caldav Synchronizer' is added 
 - Status
 
 Use the Synchronization Profiles dialog to configure different synchronization profiles. Each profile is responsible for synchronizing one Outlook calendar/task or contact folder with a remote folder of a CalDAV/CardDAV server.
+
+Beginning with version 2.15.0 advanced configuration settings are hidden by default and you can enable them by clicking on *Show advanced settings* and disable them again by clicking on *Hide advanced settings*. The default behaviour can also be configured as a general option, see below.
+
 The toolbar on the left upper part provides the following options: 
 
 - **Add new profile** adds a new empty profile
 - **Add multiple profiles** bulk profile creation to add multiple profiles at once and choose the folder for each discovered server resource (calendar, addressbook and task)
 - **Delete selected profile** deletes the current profile
 - **Copy selected profile** copies the current profile to a new one
-- **Move selected profile up** change ordering in the tree view
-- **Move selected profile down** change ordering in the tree view
-- **Open data directory of selected profile** Show directory with cached relations file in explorer for debugging
-- **Expand all nodes** expand all nodes in the tree view, enabled by default but can be changed in general options
-- **Collapse all nodes** collapse all nodes in the tree view
+- **Move selected profile up** change ordering in the tree view *(only in advanced settings)*
+- **Move selected profile down** change ordering in the tree view *(only in advanced settings)*
+- **Open data directory of selected profile** Show directory with cached relations file in explorer for debugging *(only in advanced settings)*
+- **Clear cache** delete the sync cache and start a new initial sync with the next sync run.
+- **Expand all nodes** expand all nodes in the tree view, enabled by default but can be changed in general options *(only in advanced settings)*
+- **Collapse all nodes** collapse all nodes in the tree view *(only in advanced settings)*
 - **Export Profiles to File** and 
 - **Import Profiles from File** See Profile Import/Export
 
-When adding a new profile you can choose between a generic CalDAV/CardDAV, a google profile to simplify the google profile creation and predefined CalDAV/CardDAV profiles for SOGo, Fruux, Posteo, Yandex, GMX, Sarenet and Landmarks where the DAV Url for autodiscovery is already entered. 
+When adding a new profile you can choose between a generic CalDAV/CardDAV, a google profile to simplify the google profile creation and predefined CalDAV/CardDAV profiles for SOGo, Fruux, Posteo, Yandex, GMX, Sarenet and Landmarks, Cozy Cloud and Nextcloud where the DAV Url for autodiscovery is already entered. 
 
 The following properties need to be set for a new generic profile:
 
@@ -925,9 +946,9 @@ The following properties need to be set for a new generic profile:
 	- If you only have a self signed certificate, add the self signed cert to the Local Computer Trusted Root Certification Authorities. You can import the cert by running the MMC as Administrator. If that fails, see section *'Advanced options'*
 	- **Username:** Username to connect to the CalDAV server
 	- **Password:** Password used for the connection. The password will be saved encrypted in the option config file.
-	- ** Use IMAP/POP3 Account Password** Instead of entering the password you can use the IMAP/Pop3 Password from the Outlook Account associated with the folder, the password is fetched from the Windows registry entry of the Outlook profile. 
+	- ** Use IMAP/POP3 Account Password** Instead of entering the password you can use the IMAP/Pop3 Password from the Outlook Account associated with the folder, the password is fetched from the Windows registry entry of the Outlook profile. *(only in advanced settings)*
 	- **Email address:** email address used as remote identity for the CalDAV server, necessary to synchronize the organizer. The email address can also be used for autodiscovery via DNS lookups, see section Autodiscovery.
-	- **Create DAV resource** You can add server DAV resources (calendars or addressbooks). You can configure the resource displayname and if the url should be created with a random string or the displayname. For calendars you can also change the server calendar color.
+	- **Create DAV resource** You can add server DAV resources (calendars or addressbooks). You can configure the resource displayname and if the url should be created with a random string or the displayname. For calendars you can also change the server calendar color. *(only in advanced settings)*
 
 - *Sync settings*:
 	- Synchronization settings
@@ -936,21 +957,20 @@ The following properties need to be set for a new generic profile:
 		- **Outlook -> Server (Merge):** synchronizes everything from Outlook to the server but don't change events created in on the server
 		- **Outlook <- Server (Merge):** synchronizes everything from the server to Outlook but don't change events created in Outlook
 		- **Outlook <-> Server (Two-Way):** Two-Way synchronization between Outlook and the server with one of the following conflict resolution
-	- Conflict resolution (only used in Two-Way synchronization mode)
+	- Conflict resolution (only used in Two-Way synchronization mode and only available in *advanced settings*)
 		- **Outlook Wins:** If an event is modified in Outlook and in the server since last snyc, use the Outlook version. If an event is modified in Outlook and deleted in the server since last snyc, also use the Outlook version. If an event is deleted in Outlook and modified in the server, also delete it in the server.
 		- **Server Wins:** If an event is modified in Outlook and in the server since last snyc, use the server version. If an event is modified in Outlook and deleted in the server since last snyc, also delete it in Outlook. If an event is deleted in Outlook and modified in the server, recreate it in Outlook.
 		- **Automatic:** If event is modified in Outlook and in the server since last snyc, use the last recent modified version. If an event is modified in Outlook and deleted in the server since last snyc, delete it also in Outlook. If an event is deleted in Outlook and modified in the server, also delete it in the server
 	- **Synchronization interval (minutes):** Choose the interval for synchronization in minutes, if 'Manual only' is choosen, there is no automatic sync but you can use the 'Synchronize now' menu item.
 	- **Perform synchronization in chunks** and
-	- **Chunk size** perform CalDAV/CardDAV sync in chunks with configurable chunk size to avoid OutOfMemoryEceptions, disabled by default and should only be enabled for huge resources and low memory.
+	- **Chunk size** perform CalDAV/CardDAV sync in chunks with configurable chunk size to avoid OutOfMemoryEceptions, disabled by default and should only be enabled for huge resources and low memory. *(only in advanced settings)*
 	- **Use time range filter** and
 	- **Synchronization timespan past (days)** and
-	- **Synchronization timespan future (days)** For performance reasons it is useful to sync only a given timespan of a big calendar, especially past events are normally not necessary to sync after a given timespan. But be aware that Outlook and Google and some other CalDAV servers calculate the intersection with the time-range differently for recurring events which can cause doubled or deleted events, so it is recommended to select a time-range which is larger than the largest interval of your recurring events (e.g. 1 year for birthdays).
+	- **Synchronization timespan future (days)** *(only in advanced settings)* For performance reasons it is useful to sync only a given timespan of a big calendar, especially past events are normally not necessary to sync after a given timespan. But be aware that Outlook and Google and some other CalDAV servers calculate the intersection with the time-range differently for recurring events which can cause doubled or deleted events, so it is recommended to select a time-range which is larger than the largest interval of your recurring events (e.g. 1 year for birthdays).
 
-- **Clear cache** delete the sync cache and start a new initial sync with the next sync run.
 - **Is active checkbox in the tree view** If deactivated, current profile is not synced anymore without the need to delete the profile.
 
-If you expand the tree view of the profile you can configure network and proxy options and mapping configuration options.
+If you expand the tree view of the profile you can configure network and proxy options and mapping configuration options. *(only in advanced settings)*
 
 - **Network and proxy options**: Here you can configure advanced network options and proxy settings. 
 	- **Close connection after each request** Don't use KeepAlive for servers which don't support it. 
@@ -1133,14 +1153,16 @@ In the General Options Dialog you can change settings which are used for all syn
 - **Automatically check for newer versions** set to false to disable checking for updates.
 - **Check Internet connection before sync run** checks if an interface is up and try DNS query to dns.msftncsi.com first and if that fails try to download http://www.msftncsi.com/ncsi.txt with the configured proxy before each sync run to avoid error reports if network is unavailable after hibernate for example. Disable this option if you are in a local network where DNS and that URL is blocked.
 - **Store data in roaming folder** set to true if you need to store state and profile data in the AppData\Roaming\ directory for roaming profiles in a AD domain for example. When changing this option, a restart of Outlook is required.
-- **Fix invalid settings** Fixes invalid settings automatically, when synchronization profiles are edited.
 - **Include custom message classes in Outlook filter** Disabled by default, enable only if you have custom forms with message_classes other than the default IPM.Appointment/Contact/Task. For better performance, Windows Search Service shouldn't be deactivated if this option is enabled.
+- **Use fast queries for Outlook folders** Enabled by default, uses fast GetTable queries when accessing Outlook folders. Disable only if you get errors in GetVersions, when disabled every item needs to be requested which causes a performance penalty!
+- **Trigger sync after Outlook Send/Receive and on Startup** If checked a manual sync is triggered after the Outlook Send/Receive finishes and on Outlook startup.
+- **Show advanced settings as default** Show the advanced settings in synchronization profiles as default if enabled.
+- **Expand all nodes in Synchronization profiles** Enabled by default, expands all nodes in the synchronization profiles to see the suboptions for network settings and mapping configuration.
 - **Enable Tray Icon** Enabled by default, you can disable the tray icon in the Windows Taskbar if you don't need it.
+- **Fix invalid settings** Fixes invalid settings automatically, when synchronization profiles are edited.
 - **Accept invalid chars in server response** If checked invalid characters in XML server responses are allowed. A typical invalid char, sent by some servers is Form feed (0x0C).
 - ** Enable useUnsafeHeaderParsing** Enable, if the server sends invalid http headers, see common network errors. Needed for Yahoo and cPanel Horde servers for example. The general option overrides the setting in the app.config file.
-- **Trigger sync after Outlook Send/Receive and on Startup** If checked a manual sync is triggered after the Outlook Send/Receive finishes and on Outlook startup.
 - **CalDav Connection Timeout (secs)** For slow server connections you can increaste the timeout value (default 90 secs).
-- **Expand all nodes in Synchronization profiles** Enabled by default, expands all nodes in the synchronization profiles to see the suboptions for network settings and mapping configuration.
 
 If you have problems with SSL/TLS and self-signed certificates, you can change the following settings at your own risk.
 The recommended way would be to add the self signed cert to the Local Computer Trusted Root Certification Authorities
