@@ -99,7 +99,7 @@ namespace CalDavSynchronizer
       try
       {
         ComponentContainer.EnsureSynchronizationContext ();
-        ReportsButton.Image = Resources.report;
+        ReportsButton.Image = Resources.SyncReport;
         ThisAddIn.ComponentContainer.ShowReports();
       }
       catch (Exception x)

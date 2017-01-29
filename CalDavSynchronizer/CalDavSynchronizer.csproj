@@ -762,8 +762,6 @@
   <ItemGroup>
     <Content Include="LICENSE.txt" />
     <None Include="Resources\SyncReport.png" />
-    <None Include="Resources\SyncReport.ico" />
-    <None Include="Resources\PerformanceLog_32x.png" />
     <Resource Include="Resources\warning.ico" />
     <None Include="Resources\SyncError.png" />
     <None Include="Resources\report.ico" />
