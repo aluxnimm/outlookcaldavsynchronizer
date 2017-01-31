@@ -103,6 +103,11 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 2.15.1 ####
+- Bug fixes
+	- Avoid Exception in QueryAppointmentFolder when GlobalAppointmentID can't be accessed or is null, ticket #491.
+	- Make GeneralOptions window resizable and add scrollbar, avoids issues on low resolution devices.
+
 #### 2.15.0 ####
 - New features
 	- Huge performance improvements accessing Outlook folder data when nothing changed and avoid fetching all items, add general option to configure the folder query option.
