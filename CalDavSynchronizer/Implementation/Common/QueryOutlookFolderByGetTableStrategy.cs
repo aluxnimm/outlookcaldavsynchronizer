@@ -26,6 +26,7 @@ using CalDavSynchronizer.Implementation.Events;
 using GenSync;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
+using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Implementation.Common
 {
@@ -65,7 +66,20 @@ namespace CalDavSynchronizer.Implementation.Common
         {
           var row = table.GetNextRow();
           var entryId =  row.BinaryToString(PR_LONG_TERM_ENTRYID_FROM_TABLE);
-          var globalAppointmentId = row.BinaryToString(PR_GLOBAL_OBJECT_ID);
+          string globalAppointmentId = null;
+          try
+          {
+            byte[] globalIdArray = row[PR_GLOBAL_OBJECT_ID] as byte[];
+            if (globalIdArray != null && globalIdArray.Length >0)
+            {
+              globalAppointmentId = row.BinaryToString(PR_GLOBAL_OBJECT_ID);
+            }
+          }
+          catch (Exception ex)
+          {
+            s_logger.Warn("Could not access GlobalAppointmentID of appointment", ex);
+          }
+
           var lastModificationTime = (DateTime) row[LastModificationTimeColumnId];
           var subject = (string) row[SubjectColumnId];
           var start = (DateTime) row[StartColumnId];
