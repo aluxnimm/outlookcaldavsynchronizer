@@ -68,6 +68,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._calDavConnectTimeoutTextBox = new System.Windows.Forms.TextBox();
       this.label4 = new System.Windows.Forms.Label();
       this.groupBox5 = new System.Windows.Forms.GroupBox();
+      this.panel1 = new System.Windows.Forms.Panel();
       this.groupBox1.SuspendLayout();
       this.groupBox4.SuspendLayout();
       this.groupBox2.SuspendLayout();
@@ -79,7 +80,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this._cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this._cancelButton.Location = new System.Drawing.Point(393, 792);
+      this._cancelButton.Location = new System.Drawing.Point(391, 787);
       this._cancelButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._cancelButton.Name = "_cancelButton";
       this._cancelButton.Size = new System.Drawing.Size(100, 28);
@@ -90,7 +91,7 @@ namespace CalDavSynchronizer.Ui.Options
       // _okButton
       // 
       this._okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._okButton.Location = new System.Drawing.Point(285, 792);
+      this._okButton.Location = new System.Drawing.Point(283, 787);
       this._okButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._okButton.Name = "_okButton";
       this._okButton.Size = new System.Drawing.Size(100, 28);
@@ -102,7 +103,7 @@ namespace CalDavSynchronizer.Ui.Options
       // _checkForNewerVersionsCheckBox
       // 
       this._checkForNewerVersionsCheckBox.AutoSize = true;
-      this._checkForNewerVersionsCheckBox.Location = new System.Drawing.Point(16, 15);
+      this._checkForNewerVersionsCheckBox.Location = new System.Drawing.Point(14, 10);
       this._checkForNewerVersionsCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._checkForNewerVersionsCheckBox.Name = "_checkForNewerVersionsCheckBox";
       this._checkForNewerVersionsCheckBox.Size = new System.Drawing.Size(274, 21);
@@ -113,7 +114,7 @@ namespace CalDavSynchronizer.Ui.Options
       // _storeDataInRoamingFolderCheckBox
       // 
       this._storeDataInRoamingFolderCheckBox.AutoSize = true;
-      this._storeDataInRoamingFolderCheckBox.Location = new System.Drawing.Point(16, 64);
+      this._storeDataInRoamingFolderCheckBox.Location = new System.Drawing.Point(14, 59);
       this._storeDataInRoamingFolderCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._storeDataInRoamingFolderCheckBox.Name = "_storeDataInRoamingFolderCheckBox";
       this._storeDataInRoamingFolderCheckBox.Size = new System.Drawing.Size(206, 21);
@@ -172,7 +173,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox1.Controls.Add(this._disableCertificateValidationCheckbox);
       this.groupBox1.Controls.Add(this._enableSsl3Checkbox);
       this.groupBox1.Controls.Add(this._enableTls12Checkbox);
-      this.groupBox1.Location = new System.Drawing.Point(4, 397);
+      this.groupBox1.Location = new System.Drawing.Point(2, 392);
       this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this.groupBox1.Name = "groupBox1";
       this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -210,7 +211,7 @@ namespace CalDavSynchronizer.Ui.Options
       // _checkIfOnlineCheckBox
       // 
       this._checkIfOnlineCheckBox.AutoSize = true;
-      this._checkIfOnlineCheckBox.Location = new System.Drawing.Point(16, 39);
+      this._checkIfOnlineCheckBox.Location = new System.Drawing.Point(14, 34);
       this._checkIfOnlineCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._checkIfOnlineCheckBox.Name = "_checkIfOnlineCheckBox";
       this._checkIfOnlineCheckBox.Size = new System.Drawing.Size(297, 21);
@@ -222,7 +223,7 @@ namespace CalDavSynchronizer.Ui.Options
       // _includeCustomMessageClassesCheckBox
       // 
       this._includeCustomMessageClassesCheckBox.AutoSize = true;
-      this._includeCustomMessageClassesCheckBox.Location = new System.Drawing.Point(16, 90);
+      this._includeCustomMessageClassesCheckBox.Location = new System.Drawing.Point(14, 85);
       this._includeCustomMessageClassesCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._includeCustomMessageClassesCheckBox.Name = "_includeCustomMessageClassesCheckBox";
       this._includeCustomMessageClassesCheckBox.Size = new System.Drawing.Size(335, 21);
@@ -261,7 +262,7 @@ namespace CalDavSynchronizer.Ui.Options
       // _triggerSyncAfterSendReceiveCheckBox
       // 
       this._triggerSyncAfterSendReceiveCheckBox.AutoSize = true;
-      this._triggerSyncAfterSendReceiveCheckBox.Location = new System.Drawing.Point(16, 140);
+      this._triggerSyncAfterSendReceiveCheckBox.Location = new System.Drawing.Point(14, 135);
       this._triggerSyncAfterSendReceiveCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._triggerSyncAfterSendReceiveCheckBox.Name = "_triggerSyncAfterSendReceiveCheckBox";
       this._triggerSyncAfterSendReceiveCheckBox.Size = new System.Drawing.Size(385, 21);
@@ -318,7 +319,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox4.Controls.Add(this._fixInvalidSettingsCheckBox);
       this.groupBox4.Controls.Add(this._enableTrayIconCheckBox);
       this.groupBox4.Controls.Add(this._expandAllSyncProfilesCheckBox);
-      this.groupBox4.Location = new System.Drawing.Point(4, 165);
+      this.groupBox4.Location = new System.Drawing.Point(2, 160);
       this.groupBox4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this.groupBox4.Name = "groupBox4";
       this.groupBox4.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -343,7 +344,7 @@ namespace CalDavSynchronizer.Ui.Options
       // _useFastTableQueriesCheckBox
       // 
       this._useFastTableQueriesCheckBox.AutoSize = true;
-      this._useFastTableQueriesCheckBox.Location = new System.Drawing.Point(16, 115);
+      this._useFastTableQueriesCheckBox.Location = new System.Drawing.Point(14, 110);
       this._useFastTableQueriesCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._useFastTableQueriesCheckBox.Name = "_useFastTableQueriesCheckBox";
       this._useFastTableQueriesCheckBox.Size = new System.Drawing.Size(254, 21);
@@ -364,7 +365,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox2.Controls.Add(this._reportLogModeComboBox);
       this.groupBox2.Controls.Add(this.label2);
       this.groupBox2.Controls.Add(this.label1);
-      this.groupBox2.Location = new System.Drawing.Point(4, 535);
+      this.groupBox2.Location = new System.Drawing.Point(2, 530);
       this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
       this.groupBox2.Name = "groupBox2";
       this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
@@ -434,7 +435,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox3.Controls.Add(this._clearLogButton);
       this.groupBox3.Controls.Add(this._logLevelComboBox);
       this.groupBox3.Controls.Add(this.label6);
-      this.groupBox3.Location = new System.Drawing.Point(4, 678);
+      this.groupBox3.Location = new System.Drawing.Point(2, 673);
       this.groupBox3.Margin = new System.Windows.Forms.Padding(4);
       this.groupBox3.Name = "groupBox3";
       this.groupBox3.Padding = new System.Windows.Forms.Padding(4);
@@ -516,18 +517,26 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox5.Controls.Add(this._useUnsafeHeaderParsingCheckBox);
       this.groupBox5.Controls.Add(this._calDavConnectTimeoutTextBox);
       this.groupBox5.Controls.Add(this.label4);
-      this.groupBox5.Location = new System.Drawing.Point(4, 292);
+      this.groupBox5.Location = new System.Drawing.Point(2, 287);
       this.groupBox5.Name = "groupBox5";
       this.groupBox5.Size = new System.Drawing.Size(500, 100);
       this.groupBox5.TabIndex = 13;
       this.groupBox5.TabStop = false;
       this.groupBox5.Text = "Server settings";
       // 
+      // panel1
+      // 
+      this.panel1.Location = new System.Drawing.Point(2, 3);
+      this.panel1.Name = "panel1";
+      this.panel1.Size = new System.Drawing.Size(500, 822);
+      this.panel1.TabIndex = 24;
+      // 
       // GeneralOptionsForm
       // 
       this.AcceptButton = this._okButton;
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScroll = true;
       this.BackColor = System.Drawing.SystemColors.Window;
       this.CancelButton = this._cancelButton;
       this.ClientSize = new System.Drawing.Size(503, 826);
@@ -544,7 +553,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.Controls.Add(this._checkForNewerVersionsCheckBox);
       this.Controls.Add(this._okButton);
       this.Controls.Add(this._cancelButton);
-      this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+      this.Controls.Add(this.panel1);
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this.Name = "GeneralOptionsForm";
@@ -602,5 +611,6 @@ namespace CalDavSynchronizer.Ui.Options
     private System.Windows.Forms.CheckBox _enableAdvancedViewCheckBox;
     private System.Windows.Forms.CheckBox _useFastTableQueriesCheckBox;
     private System.Windows.Forms.GroupBox groupBox5;
+    private System.Windows.Forms.Panel panel1;
   }
 }
