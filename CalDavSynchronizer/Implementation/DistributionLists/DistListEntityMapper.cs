@@ -74,7 +74,8 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
             var serverFileName = context.GetServerFileNameByEmailAddress(recipientWrapper.Inner.Address);
             if (serverFileName != null)
             {
-              var distributionListMember = new KnownDistributionListMember(recipientWrapper.Inner.Address, recipientWrapper.Inner.Name, serverFileName);
+              var nameWithoutEmail = Regex.Replace(recipientWrapper.Inner.Name, " \\([^()]*\\)$", string.Empty);
+              var distributionListMember = new KnownDistributionListMember(recipientWrapper.Inner.Address, nameWithoutEmail, serverFileName);
               target.Members.Add(distributionListMember);
             }
             else
@@ -156,30 +157,11 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
           }
           else
           {
-            var recipientStringBuilder = new StringBuilder();
+            string recipientString = sourceMember.DisplayName ?? sourceMember.EmailAddress;
 
-            if (string.IsNullOrEmpty(sourceMember.DisplayName))
+            if (!string.IsNullOrEmpty(recipientString))
             {
-              if (!string.IsNullOrEmpty(sourceMember.EmailAddress))
-                recipientStringBuilder.Append(sourceMember.EmailAddress);
-            }
-            else
-            {
-              recipientStringBuilder.Append(sourceMember.DisplayName);
-              if (  sourceMember.EmailAddress != sourceMember.DisplayName &&
-                    !string.IsNullOrEmpty(sourceMember.EmailAddress) && 
-                    !sourceMember.DisplayName.EndsWith(")")
-                 )
-              {
-                recipientStringBuilder.Append(" (");
-                recipientStringBuilder.Append(sourceMember.EmailAddress);
-                recipientStringBuilder.Append(")");
-              }
-            }
-
-            if (recipientStringBuilder.Length > 0)
-            {
-              var recipient = context.OutlookSession.CreateRecipient(recipientStringBuilder.ToString());
+              var recipient = context.OutlookSession.CreateRecipient(recipientString);
               recipient.Resolve();
               target.Inner.AddMember(recipient);
             }
