@@ -161,9 +161,11 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
 
             if (!string.IsNullOrEmpty(recipientString))
             {
-              var recipient = context.OutlookSession.CreateRecipient(recipientString);
-              recipient.Resolve();
-              target.Inner.AddMember(recipient);
+              using (var recipientWrapper = GenericComObjectWrapper.Create(context.OutlookSession.CreateRecipient(recipientString)))
+              {
+                recipientWrapper.Inner.Resolve();
+                target.Inner.AddMember(recipientWrapper.Inner);
+              }
             }
           }
         }
