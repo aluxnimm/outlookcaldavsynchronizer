@@ -26,33 +26,36 @@ For possible enterprise support, please contact us [here](http://caldavsynchroni
 
 ### Tested CalDAV Servers ###
 
-- SOGo
-- Horde Kronolith
-- Nextcloud
-- Owncloud
-- SabreDAV
-- Google Calendar
-- Zimbra 8.5
-- GroupOffice
-- Synology NAS
-- One.com
-- DAViCal
-- Baïkal
-- Yandex
-- OpenX-change
-- Posteo
-- Landmarks
-- Kolab
-- Zoho Calendar
-- GMX
-- Tine 2.0
-- Fruux
-- Mac OS X Server
-- iCloud
-- mail.ru
-- Radicale
-- Cozy Cloud
-- Cyrus Imap 2.5
+- Baïkal
+- Cozy Cloud
+- cPanel
+- Cyrus Imap 2.5
+- DAViCal
+- Fruux
+- GMX
+- Google Calendar
+- Group-Office
+- Horde Kronolith
+- iCloud
+- Kolab
+- Landmarks
+- Mac OS X Server
+- mail.ru
+- mailbox.org
+- Nextcloud
+- One.com
+- OpenX-change
+- Owncloud
+- Posteo
+- Radicale
+- SabreDAV
+- SOGo
+- Synology DSM
+- Tine 2.0
+- Yahoo
+- Yandex
+- Zimbra 8.5
+- Zoho Calendar
 
 ### Features ###
 
