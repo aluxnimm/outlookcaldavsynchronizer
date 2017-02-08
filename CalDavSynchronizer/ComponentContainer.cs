@@ -607,6 +607,8 @@ namespace CalDavSynchronizer
       using (var calendarFolderWrapper = GenericComObjectWrapper.Create (
           (Folder) _session.GetFolderFromID (changedOption.New.OutlookFolderEntryId, changedOption.New.OutlookFolderStoreId)))
       {
+        s_logger.Info ($"Switching category of items in folder '{calendarFolderWrapper.Inner.Name}' from '{oldCategory}' to '{newCategory}', due to changes in profile '{changedOption.New.Name}' (OptionId:'{changedOption.New.Id}' FolderId:'{changedOption.New.OutlookFolderEntryId}' StoreId:'{changedOption.New.OutlookFolderStoreId}')");
+
         bool isInstantSearchEnabled = false;
 
         try
@@ -644,6 +646,8 @@ namespace CalDavSynchronizer
       using (var taskFolderWrapper = GenericComObjectWrapper.Create (
           (Folder)_session.GetFolderFromID (changedOption.New.OutlookFolderEntryId, changedOption.New.OutlookFolderStoreId)))
       {
+        s_logger.Info ($"Switching category of items in folder '{taskFolderWrapper.Inner.Name}' from '{oldCategory}' to '{newCategory}', due to changes in profile '{changedOption.New.Name}' (OptionId:'{changedOption.New.Id}' FolderId:'{changedOption.New.OutlookFolderEntryId}' StoreId:'{changedOption.New.OutlookFolderStoreId}')");
+
         bool isInstantSearchEnabled = false;
 
         try
