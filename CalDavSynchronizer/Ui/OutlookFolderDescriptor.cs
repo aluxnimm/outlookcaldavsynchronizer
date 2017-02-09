@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using CalDavSynchronizer.Implementation.ComWrappers;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui
@@ -25,6 +26,7 @@ namespace CalDavSynchronizer.Ui
     public string StoreId { get; }
     public OlItemType DefaultItemType { get; }
     public string Name { get; }
+    public int ItemCount { get; }
 
     public OutlookFolderDescriptor (string entryId, string storeId, OlItemType defaultItemType, string name)
     {
@@ -37,7 +39,10 @@ namespace CalDavSynchronizer.Ui
     public  OutlookFolderDescriptor(MAPIFolder folder)
       : this(folder.EntryID, folder.StoreID, folder.DefaultItemType, folder.Name)
     {
-
+      using (var itemsWrapper = GenericComObjectWrapper.Create (folder.Items))
+      {
+        ItemCount = itemsWrapper.Inner.Count;
+      }
     }
   }
 }
