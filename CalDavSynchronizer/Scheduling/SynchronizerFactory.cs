@@ -876,7 +876,7 @@ namespace CalDavSynchronizer.Scheduling
       return new OutlookSynchronizer<string, GoogleContactVersion> (
         new ContextCreatingSynchronizerDecorator<string, DateTime, ContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, GoogleContactContext>(
           synchronizer,
-          new GoogleContactContextFactory(googleApiExecutor, btypeIdEqualityComparer, options.UserName)));
+          new GoogleContactContextFactory(googleApiExecutor, btypeIdEqualityComparer, options.UserName, chunkSize)));
     }
   }
 }

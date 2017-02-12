@@ -156,7 +156,7 @@ namespace CalDavSynchronizer.OAuth.Google
 
     private static RequestSettings CreateRequestSettings(OAuth2Parameters parameters)
     {
-      return new RequestSettings ("Outlook CalDav Synchronizer", parameters) { AutoPaging = true };
+      return new RequestSettings ("Outlook CalDav Synchronizer", parameters);
     }
   }
 }

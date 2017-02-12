@@ -19,8 +19,9 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
     private readonly Dictionary<string, Contact> _contactsById;
     private readonly IGoogleApiOperationExecutor _apiOperationExecutor;
     private readonly string _userName;
+    private readonly int _chunkSize;
 
-    public GoogleContactContext (GoogleGroupCache groupCache, IGoogleApiOperationExecutor apiOperationExecutor, IEqualityComparer<string> contactIdComparer, string userName)
+    public GoogleContactContext (GoogleGroupCache groupCache, IGoogleApiOperationExecutor apiOperationExecutor, IEqualityComparer<string> contactIdComparer, string userName, int chunkSize)
     {
       if (groupCache == null)
         throw new ArgumentNullException (nameof (groupCache));
@@ -34,29 +35,32 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       GroupCache = groupCache;
       _apiOperationExecutor = apiOperationExecutor;
       _userName = userName;
+      _chunkSize = chunkSize;
       _contactsById = new Dictionary<string, Contact> (contactIdComparer);
     }
 
-    public void FillCaches ()
+    public void FillCaches()
     {
       GroupCache.Fill();
 
-      var query = new ContactsQuery (ContactsQuery.CreateContactsUri (_userName, ContactsQuery.fullProjection));
-      query.NumberToRetrieve = int.MaxValue;
+      var query = new ContactsQuery(ContactsQuery.CreateContactsUri(_userName, ContactsQuery.fullProjection));
+      query.StartIndex = 0;
+      query.NumberToRetrieve = _chunkSize;
 
       if (GroupCache.DefaultGroupIdOrNull != null)
         query.Group = GroupCache.DefaultGroupIdOrNull;
 
-      var contacts = _apiOperationExecutor.Execute (f =>
+      for (
+        var contactsFeed = _apiOperationExecutor.Execute(f => f.Get<Contact>(query));
+        contactsFeed != null;
+        contactsFeed = _apiOperationExecutor.Execute(f => f.Get(contactsFeed, FeedRequestType.Next)))
       {
-        var contactsFeed = f.Get<Contact> (query);
-        return contactsFeed?.Entries.ToArray() ?? new Contact[] { };
-      });
-
-      foreach (var contact in contacts)
-      {
-        _contactsById[contact.Id] = contact;
+        foreach (Contact contact in contactsFeed.Entries)
+        {
+          _contactsById[contact.Id] = contact;
+        }
       }
+
     }
   }
 }
