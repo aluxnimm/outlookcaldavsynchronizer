@@ -828,7 +828,14 @@ namespace CalDavSynchronizer.Scheduling
       var atypeIdEqulityComparer = EqualityComparer<string>.Default;
       var btypeIdEqualityComparer = EqualityComparer<string>.Default;
 
-      var btypeRepository = new GoogleContactRepository (googleApiExecutor, options.UserName, mappingParameters, btypeIdEqualityComparer);
+      const int chunkSize = 100;
+
+      var btypeRepository = new GoogleContactRepository (
+        googleApiExecutor, 
+        options.UserName,
+        mappingParameters,
+        btypeIdEqualityComparer,
+        new ChunkedExecutor (chunkSize));
 
       var entityMapper = new GoogleContactEntityMapper (mappingParameters);
 

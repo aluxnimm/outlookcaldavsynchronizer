@@ -28,9 +28,9 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
     private readonly string _userName;
     private readonly ContactMappingConfiguration _contactMappingConfiguration;
     private readonly IEqualityComparer<string> _contactIdComparer;
-    private readonly ChunkedExecutor _chunkedExecutor = new ChunkedExecutor(100);
+    private readonly ChunkedExecutor _chunkedExecutor;
 
-    public GoogleContactRepository (IGoogleApiOperationExecutor apiOperationExecutor, string userName, ContactMappingConfiguration contactMappingConfiguration, IEqualityComparer<string> contactIdComparer)
+    public GoogleContactRepository (IGoogleApiOperationExecutor apiOperationExecutor, string userName, ContactMappingConfiguration contactMappingConfiguration, IEqualityComparer<string> contactIdComparer, ChunkedExecutor chunkedExecutor)
     {
       if (apiOperationExecutor == null)
         throw new ArgumentNullException (nameof (apiOperationExecutor));
@@ -38,12 +38,14 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         throw new ArgumentNullException (nameof (contactMappingConfiguration));
       if (contactIdComparer == null)
         throw new ArgumentNullException (nameof (contactIdComparer));
+      if (chunkedExecutor == null) throw new ArgumentNullException(nameof(chunkedExecutor));
       if (String.IsNullOrEmpty (userName))
         throw new ArgumentException ("Argument is null or empty", nameof (userName));
 
       _userName = userName;
       _contactMappingConfiguration = contactMappingConfiguration;
       _contactIdComparer = contactIdComparer;
+      _chunkedExecutor = chunkedExecutor;
       _apiOperationExecutor = apiOperationExecutor;
     }
 
