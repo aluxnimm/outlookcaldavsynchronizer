@@ -130,8 +130,7 @@ namespace CalDavSynchronizer.OAuth.Google
       var credential = await LoginToGoogle (user, proxyOrNull);
 
       var parameters = CreateOAuth2Parameters (clientSecrets, credential);
-
-      var contactsRequest = new ContactsRequest (new RequestSettings ("Outlook CalDav Synchronizer", parameters) {AutoPaging = true});
+      var contactsRequest = new ContactsRequest (CreateRequestSettings(parameters));
 
       ContactsQuery query = new ContactsQuery (ContactsQuery.CreateContactsUri ("default"));
       query.NumberToRetrieve = 1;
@@ -146,13 +145,18 @@ namespace CalDavSynchronizer.OAuth.Google
         await credential.RevokeTokenAsync (CancellationToken.None);
         await GoogleWebAuthorizationBroker.ReauthorizeAsync (credential, CancellationToken.None);
         parameters = CreateOAuth2Parameters (clientSecrets, credential);
-        contactsRequest = new ContactsRequest (new RequestSettings ("Outlook CalDav Synchronizer", parameters) { AutoPaging = true });
+        contactsRequest = new ContactsRequest (CreateRequestSettings(parameters) );
       }
 
       if (proxyOrNull != null)
         contactsRequest.Proxy = proxyOrNull;
 
       return contactsRequest;
+    }
+
+    private static RequestSettings CreateRequestSettings(OAuth2Parameters parameters)
+    {
+      return new RequestSettings ("Outlook CalDav Synchronizer", parameters) { AutoPaging = true };
     }
   }
 }
