@@ -91,7 +91,7 @@ namespace CalDavSynchronizer.Implementation.Events
         {
           try
           {
-            if (id.IsKnown || DoesMatchCategoryCriterion (appointment))
+            if (_configuration.IsCategoryFilterSticky && id.IsKnown || DoesMatchCategoryCriterion (appointment))
             {
               result.Add (EntityVersion.Create (id.Id, appointment.LastModificationTime));
               context.AnnounceAppointment (AppointmentSlim.FromAppointmentItem(appointment));
@@ -171,7 +171,7 @@ namespace CalDavSynchronizer.Implementation.Events
         events = _queryFolderStrategy.QueryAppointmentFolder (_mapiNameSpace, calendarFolderWrapper.Inner, filterBuilder.ToString());
       }
 
-      if (_configuration.UseEventCategoryAsFilter)
+      if (_configuration.IsCategoryFilterSticky && _configuration.UseEventCategoryAsFilter)
       {
         var knownEntitesThatWereFilteredOut = idsOfknownEntities.Except (events.Select (e => e.Version.Id));
         events.AddRange (

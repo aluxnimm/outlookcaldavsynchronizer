@@ -56,6 +56,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       RegisterPropertyChangePropagation(_model, nameof(_model.UseTaskCategoryAsFilter), nameof(UseTaskCategoryAsFilter));
       RegisterPropertyChangePropagation(_model, nameof(_model.IncludeEmptyTaskCategoryFilter), nameof(IncludeEmptyTaskCategoryFilter));
       RegisterPropertyChangePropagation(_model, nameof(_model.InvertTaskCategoryFilter), nameof(InvertTaskCategoryFilter));
+      RegisterPropertyChangePropagation(_model, nameof(_model.IsCategoryFilterSticky), nameof(IsCategoryFilterSticky));
     }
 
     public IList<Item<ReminderMapping>> AvailableReminderMappings => new List<Item<ReminderMapping>>
@@ -66,6 +67,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
                                                                      };
 
     public IReadOnlyList<string> AvailableCategories { get; }
+
+    public bool IsCategoryFilterSticky
+    {
+      get { return _model.IsCategoryFilterSticky; }
+      set { _model.IsCategoryFilterSticky = value; }
+    }
 
     public bool MapBody
     {

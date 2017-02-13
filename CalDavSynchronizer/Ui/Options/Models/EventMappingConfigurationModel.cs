@@ -53,6 +53,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
     private bool _useEventCategoryColorAndMapFromCalendarColor;
     private bool _cleanupDuplicateEvents;
     private bool _mapCustomProperties;
+    private bool _isCategoryFilterSticky;
 
     public EventMappingConfigurationModel(EventMappingConfiguration data)
     {
@@ -142,6 +143,15 @@ namespace CalDavSynchronizer.Ui.Options.Models
         OnPropertyChanged (nameof(UseEventCategoryAsFilter));
         // ReSharper disable once ExplicitCallerInfoArgument
         OnPropertyChanged (nameof(UseEventCategoryAsFilterAndMapColor));
+      }
+    }
+
+    public bool IsCategoryFilterSticky
+    {
+      get { return _isCategoryFilterSticky; }
+      set
+      {
+        CheckedPropertyChange (ref _isCategoryFilterSticky, value);
       }
     }
 
@@ -321,6 +331,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
       _useEventCategoryColorAndMapFromCalendarColor = mappingConfiguration.UseEventCategoryColorAndMapFromCalendarColor;
       _cleanupDuplicateEvents = mappingConfiguration.CleanupDuplicateEvents;
       _mapCustomProperties = mappingConfiguration.MapCustomProperties;
+      _isCategoryFilterSticky = mappingConfiguration.IsCategoryFilterSticky;
 
       if (mappingConfiguration.UserDefinedCustomPropertyMappings != null)
         Array.ForEach(mappingConfiguration.UserDefinedCustomPropertyMappings, m => Mappings.Add(new PropertyMappingModel(m)));
@@ -353,7 +364,8 @@ namespace CalDavSynchronizer.Ui.Options.Models
         UseEventCategoryColorAndMapFromCalendarColor = _useEventCategoryColorAndMapFromCalendarColor,
         CleanupDuplicateEvents = _cleanupDuplicateEvents,
         MapCustomProperties = _mapCustomProperties,
-        UserDefinedCustomPropertyMappings = Mappings.Select(m => m.GetData()).ToArray()
+        UserDefinedCustomPropertyMappings = Mappings.Select(m => m.GetData()).ToArray(),
+        IsCategoryFilterSticky = _isCategoryFilterSticky
       };
     }
 

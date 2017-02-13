@@ -35,8 +35,9 @@ namespace CalDavSynchronizer.Ui.Options.Models
     private bool _includeEmptyTaskCategoryFilter;
     private bool _invertTaskCategoryFilter;
     private bool _mapCustomProperties;
+    private bool _isCategoryFilterSticky;
 
-    public TaskMappingConfigurationModel(TaskMappingConfiguration data)
+    public TaskMappingConfigurationModel (TaskMappingConfiguration data)
     {
       if (data == null) throw new ArgumentNullException(nameof(data));
 
@@ -91,6 +92,15 @@ namespace CalDavSynchronizer.Ui.Options.Models
       }
     }
 
+    public bool IsCategoryFilterSticky
+    {
+      get { return _isCategoryFilterSticky; }
+      set
+      {
+        CheckedPropertyChange (ref _isCategoryFilterSticky, value);
+      }
+    }
+
     public bool UseTaskCategoryAsFilter => !String.IsNullOrEmpty(_taskCategory);
 
     public bool IncludeEmptyTaskCategoryFilter
@@ -138,6 +148,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
       IncludeEmptyTaskCategoryFilter = mappingConfiguration.IncludeEmptyTaskCategoryFilter;
       InvertTaskCategoryFilter = mappingConfiguration.InvertTaskCategoryFilter;
       _mapCustomProperties = mappingConfiguration.MapCustomProperties;
+      _isCategoryFilterSticky = mappingConfiguration.IsCategoryFilterSticky;
 
       if (mappingConfiguration.UserDefinedCustomPropertyMappings != null)
         Array.ForEach(mappingConfiguration.UserDefinedCustomPropertyMappings, m => Mappings.Add(new PropertyMappingModel(m)));
@@ -155,7 +166,8 @@ namespace CalDavSynchronizer.Ui.Options.Models
         IncludeEmptyTaskCategoryFilter = _includeEmptyTaskCategoryFilter,
         InvertTaskCategoryFilter = _invertTaskCategoryFilter,
         MapCustomProperties = _mapCustomProperties,
-        UserDefinedCustomPropertyMappings = Mappings.Select(m => m.GetData()).ToArray()
+        UserDefinedCustomPropertyMappings = Mappings.Select(m => m.GetData()).ToArray(),
+        IsCategoryFilterSticky = _isCategoryFilterSticky
       };
     }
     

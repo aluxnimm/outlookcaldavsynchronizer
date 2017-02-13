@@ -77,7 +77,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
         {
           try
           {
-            if (id.IsKnown || DoesMatchCategoryCriterion (task))
+            if (_configuration.IsCategoryFilterSticky && id.IsKnown || DoesMatchCategoryCriterion (task))
             {
               result.Add (EntityVersion.Create (id.Id, task.LastModificationTime));
             }
@@ -128,7 +128,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
         tasks = _queryFolderStrategy.QueryTaskFolder(_mapiNameSpace, taskFolderWrapper.Inner, filterBuilder.ToString());
       }
 
-      if (_configuration.UseTaskCategoryAsFilter)
+      if (_configuration.IsCategoryFilterSticky && _configuration.UseTaskCategoryAsFilter)
       {
         var knownEntitesThatWereFilteredOut = idsOfknownEntities.Except(tasks.Select(e => e.Id));
         tasks.AddRange(

@@ -38,6 +38,7 @@
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
                 <TextBlock>Sync only Tasks with this category:</TextBlock>
                     <ComboBox 
@@ -59,7 +60,14 @@
                         Grid.Column="0" 
                         Grid.ColumnSpan="2" 
                         Grid.Row="2">Negate filter and sync all Tasks except this category</CheckBox>
-                </Grid>
+                    <CheckBox 
+                      Content="Keep items in sync, even if category changes and filter does not match anymore" 
+                      IsEnabled="{Binding UseTaskCategoryAsFilter}"
+                      Grid.ColumnSpan="2" 
+                      Grid.Column="0" 
+                      Grid.Row="3" 
+                      IsChecked="{Binding IsCategoryFilterSticky}" ></CheckBox>
+        </Grid>
             </StackPanel>
     </GroupBox>
     </StackPanel>

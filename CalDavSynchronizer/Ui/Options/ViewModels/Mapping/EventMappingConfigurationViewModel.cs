@@ -90,8 +90,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       RegisterPropertyChangePropagation(_model, nameof(_model.CleanupDuplicateEvents), nameof(CleanupDuplicateEvents));
       RegisterPropertyChangePropagation(_model, nameof(_model.UseEventCategoryAsFilter), nameof(UseEventCategoryAsFilter));
       RegisterPropertyChangePropagation(_model, nameof(_model.UseEventCategoryAsFilterAndMapColor), nameof(UseEventCategoryAsFilterAndMapColor));
+      RegisterPropertyChangePropagation(_model, nameof(_model.IsCategoryFilterSticky), nameof(IsCategoryFilterSticky));
 
-  }
+    }
 
     public IList<Item<ReminderMapping>> AvailableReminderMappings { get; } = new List<Item<ReminderMapping>>
                                                                              {
@@ -136,6 +137,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     {
       get { return _model.CategoryShortcutKey; }
       set { _model.CategoryShortcutKey = value; }
+    }
+
+    public bool IsCategoryFilterSticky
+    {
+      get { return _model.IsCategoryFilterSticky; }
+      set { _model.IsCategoryFilterSticky = value; }
     }
 
     public bool CreateEventsInUtc

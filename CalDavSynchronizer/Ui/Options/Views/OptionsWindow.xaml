@@ -5,6 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:CalDavSynchronizer.Ui.Options.Views"
         mc:Ignorable="d"
-        Title="Options" Height="780" Width="860" WindowStartupLocation="CenterScreen">
+        Title="Options" Height="810" Width="860" WindowStartupLocation="CenterScreen">
   <views:OptionsCollectionView Margin="3" />
 </Window>

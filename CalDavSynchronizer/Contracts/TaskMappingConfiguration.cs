@@ -28,9 +28,11 @@ namespace CalDavSynchronizer.Contracts
     public bool MapBody { get; set; }
     public bool MapRecurringTasks { get; set; }
     public string TaskCategory { get; set; }
+    public bool IsCategoryFilterSticky { get; set; }
     public bool IncludeEmptyTaskCategoryFilter { get; set; }
     public bool InvertTaskCategoryFilter { get; set; }
     public bool MapCustomProperties { get; set; }
+
     private PropertyMapping[] _userDefinedCustomPropertyMappings;
     public PropertyMapping[] UserDefinedCustomPropertyMappings
     {
@@ -54,6 +56,7 @@ namespace CalDavSynchronizer.Contracts
       IncludeEmptyTaskCategoryFilter = false;
       InvertTaskCategoryFilter = false;
       MapCustomProperties = false;
+      IsCategoryFilterSticky = true;
     }
 
     public override TResult Accept<TResult>(IMappingConfigurationBaseVisitor<TResult> visitor)
