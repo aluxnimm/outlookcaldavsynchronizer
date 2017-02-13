@@ -20,19 +20,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GenSync.Synchronization;
+using GenSync;
 using Google.Contacts;
+using Google.GData.Client;
+using Google.GData.Contacts;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  class GoogleContactContextFactory : ISynchronizationContextFactory<GoogleContactContext>
+  public class GoogleContactCache : IGoogleContactCache
   {
+
+    private readonly Dictionary<string, Contact> _contactsById;
     private readonly IGoogleApiOperationExecutor _apiOperationExecutor;
-    private readonly IEqualityComparer<string> _contactIdComparer;
     private readonly string _userName;
     private readonly int _chunkSize;
 
-    public GoogleContactContextFactory (IGoogleApiOperationExecutor apiOperationExecutor, IEqualityComparer<string> contactIdComparer, string userName, int chunkSize)
+    public GoogleContactCache ( IGoogleApiOperationExecutor apiOperationExecutor, IEqualityComparer<string> contactIdComparer, string userName, int chunkSize)
     {
       if (apiOperationExecutor == null)
         throw new ArgumentNullException (nameof (apiOperationExecutor));
@@ -42,32 +45,43 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         throw new ArgumentException ("Argument is null or empty", nameof (userName));
 
       _apiOperationExecutor = apiOperationExecutor;
-      _contactIdComparer = contactIdComparer;
       _userName = userName;
       _chunkSize = chunkSize;
+      _contactsById = new Dictionary<string, Contact> (contactIdComparer);
     }
 
-    public async Task<GoogleContactContext> Create ()
+    public void Fill(string defaultGroupIdOrNull)
     {
-      return await Task.Run (() =>
+      var query = new ContactsQuery(ContactsQuery.CreateContactsUri(_userName, ContactsQuery.fullProjection));
+      query.StartIndex = 0;
+      query.NumberToRetrieve = _chunkSize;
+
+      if (defaultGroupIdOrNull != null)
+        query.Group = defaultGroupIdOrNull;
+
+      for (
+        var contactsFeed = _apiOperationExecutor.Execute(f => f.Get<Contact>(query));
+        contactsFeed != null;
+        contactsFeed = _apiOperationExecutor.Execute(f => f.Get(contactsFeed, FeedRequestType.Next)))
       {
-        var googleGroupCache = new GoogleGroupCache (_apiOperationExecutor);
-        googleGroupCache.Fill();
-        
-        var googleContactCache = new GoogleContactCache(_apiOperationExecutor, _contactIdComparer, _userName, _chunkSize);
-        googleContactCache.Fill(googleGroupCache.DefaultGroupIdOrNull);
-
-        var context = new GoogleContactContext (
-          googleGroupCache,
-          googleContactCache);
-       
-        return context;
-      });
+        foreach (Contact contact in contactsFeed.Entries)
+        {
+          _contactsById[contact.Id] = contact;
+        }
+      }
     }
 
-    public Task SynchronizationFinished (GoogleContactContext context)
+    public bool TryGetValue(string key, out Contact value)
     {
-      return Task.FromResult(0);
+      return _contactsById.TryGetValue(key, out value);
+    }
+
+    public Task<IReadOnlyList<EntityVersion<string, GoogleContactVersion>>> GetAllVersions ()
+    {
+      var contacts = _contactsById.Values
+          .Select (c => EntityVersion.Create (c.Id, new GoogleContactVersion { ContactEtag = c.ETag }))
+          .ToArray ();
+      return Task.FromResult<IReadOnlyList<EntityVersion<string, GoogleContactVersion>>> (contacts);
     }
   }
 }

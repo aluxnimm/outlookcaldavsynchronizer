@@ -15,31 +15,16 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using GenSync;
 using Google.Contacts;
-using Google.GData.Client;
-using Google.GData.Contacts;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  public class GoogleContactContext
+  public interface IGoogleContactCache
   {
-    public GoogleGroupCache GroupCache { get; }
-    public IGoogleContactCache ContactCache { get; }
-
-
-    public GoogleContactContext(GoogleGroupCache groupCache, IGoogleContactCache contactCache)
-    {
-      if (groupCache == null) throw new ArgumentNullException(nameof(groupCache));
-      if (contactCache == null) throw new ArgumentNullException(nameof(contactCache));
-
-      GroupCache = groupCache;
-      ContactCache = contactCache;
-    }
+    bool TryGetValue(string key, out Contact value);
+    Task<IReadOnlyList<EntityVersion<string, GoogleContactVersion>>> GetAllVersions();
   }
 }
