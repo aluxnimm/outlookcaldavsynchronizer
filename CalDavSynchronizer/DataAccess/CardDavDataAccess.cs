@@ -366,7 +366,7 @@ namespace CalDavSynchronizer.DataAccess
       }
       catch (WebDavClientException x)
       {
-        if (x.StatusCode == HttpStatusCode.NotFound)
+        if (x.StatusCode == HttpStatusCode.NotFound && await IsResourceAddressBook ())
           return new EntityVersion<WebResourceName, string>[] { };
 
         throw;
@@ -398,7 +398,7 @@ namespace CalDavSynchronizer.DataAccess
       }
       catch (WebDavClientException x)
       {
-        if (x.StatusCode == HttpStatusCode.NotFound)
+        if (x.StatusCode == HttpStatusCode.NotFound && await IsResourceAddressBook ())
           return new EntityVersion<WebResourceName, string>[] {};
 
         throw;
