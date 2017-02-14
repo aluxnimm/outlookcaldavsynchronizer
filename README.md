@@ -106,6 +106,16 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 2.16.0 ####
+- New features
+	- Add warning if one-way synchronization mode would lead to deletion of the existing non empty outlook folder or replication of an empty folder to the server.
+	- Add possibility to use chunked execution also for Google contacts.
+	- Add Option to disable sticky category filter.
+	- Add mapping of ROLE to Outlook Profession for contacts, ticket #505.
+- Bug fixes
+	- Better handling of SOGo VLIST members as recipients so that the underlying contact is used.
+	- Assume that a HTTP-404 denotes an empty addressbook only, if the addressbook resource exists.
+
 #### 2.15.1 ####
 - Bug fixes
 	- Avoid Exception in QueryAppointmentFolder when GlobalAppointmentID can't be accessed or is null, ticket #491.
