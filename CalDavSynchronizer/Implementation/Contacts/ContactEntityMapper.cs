@@ -193,6 +193,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       target.Title = source.Inner.JobTitle;
       target.Office = source.Inner.OfficeLocation;
+      target.Role = source.Inner.Profession;
 
       target.Websites.Clear();
       if (!string.IsNullOrEmpty (source.Inner.PersonalHomePage))
@@ -337,6 +338,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       
       target.Inner.JobTitle = source.Title;
       target.Inner.OfficeLocation = source.Office;
+      target.Inner.Profession = source.Role;
 
       MapHomePage2To1 (source, target.Inner);
 
