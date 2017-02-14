@@ -98,6 +98,7 @@ namespace CalDavSynchronizer
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
     private readonly SynchronizationStatus _synchronizationStatus;
     private readonly OutlookFolderStrategyWrapper _queryFolderStrategyWrapper;
+    private readonly CategorySwitcher _categorySwitcher;
 
     public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
     public event EventHandler<SchedulerStatusEventArgs> StatusChanged
@@ -210,6 +211,7 @@ namespace CalDavSynchronizer
         s_logger.Error ("Can't access SyncObjects", ex);
       }
 
+      _categorySwitcher = new CategorySwitcher(_session, _daslFilterProvider, _queryFolderStrategyWrapper);
     }
 
     public async Task InitializeSchedulerAndStartAsync()
@@ -505,7 +507,7 @@ namespace CalDavSynchronizer
       _profileStatusesViewModel.EnsureProfilesDisplayed (newOptions);
       DeleteEntityChachesForChangedProfiles (oldOptions, newOptions);
       var changedOptions = CreateChangePairs (oldOptions, newOptions);
-      SwitchCategories (changedOptions);
+      _categorySwitcher.SwitchCategories (changedOptions);
     }
 
     public void ShowLatestSynchronizationReport (Guid profileId)
@@ -524,204 +526,7 @@ namespace CalDavSynchronizer
           where no != null
           select new ChangedOptions (o, no)).ToArray ();
     }
-
-    private void SwitchCategories (ChangedOptions[] changedOptions)
-    {
-      foreach (var changedOption in changedOptions)
-      {
-        var oldEventCategory = GetMappingRefPropertyOrNull<EventMappingConfiguration, string> (changedOption.Old.MappingConfiguration, o => o.EventCategory);
-        var newEventCategory = GetMappingRefPropertyOrNull<EventMappingConfiguration, string> (changedOption.New.MappingConfiguration, o => o.EventCategory);
-        var negateEventCategoryFilter = GetMappingPropertyOrNull<EventMappingConfiguration, bool> (changedOption.New.MappingConfiguration, o => o.InvertEventCategoryFilter);
-
-        if (oldEventCategory != newEventCategory && !String.IsNullOrEmpty (oldEventCategory) && !negateEventCategoryFilter.Value)
-        {
-          try
-          {
-            SwitchEventCategories (changedOption, oldEventCategory, newEventCategory);
-          }
-          catch (Exception x)
-          {
-            s_logger.Error (null, x);
-          }
-        }
-
-        if (!String.IsNullOrEmpty (newEventCategory))
-        {
-          var mappingConfiguration = (EventMappingConfiguration) changedOption.New.MappingConfiguration;
-
-          if (mappingConfiguration.UseEventCategoryColorAndMapFromCalendarColor || mappingConfiguration.CategoryShortcutKey != OlCategoryShortcutKey.olCategoryShortcutKeyNone)
-          {
-            try
-            {
-              using (var categoriesWrapper = GenericComObjectWrapper.Create (_session.Categories))
-              {
-                foreach (var existingCategory in categoriesWrapper.Inner.ToSafeEnumerable<Category>())
-                {
-                  if (existingCategory.ShortcutKey == mappingConfiguration.CategoryShortcutKey)
-                  {
-                    existingCategory.ShortcutKey = OlCategoryShortcutKey.olCategoryShortcutKeyNone;
-                  }
-                }
-                
-                using (var categoryWrapper = GenericComObjectWrapper.Create (categoriesWrapper.Inner[newEventCategory]))
-                {
-                  if (categoryWrapper.Inner == null)
-                  {
-                    categoriesWrapper.Inner.Add (newEventCategory, mappingConfiguration.EventCategoryColor, mappingConfiguration.CategoryShortcutKey);
-                  }
-                  else
-                  {
-                    categoryWrapper.Inner.Color = mappingConfiguration.EventCategoryColor;
-                    categoryWrapper.Inner.ShortcutKey = mappingConfiguration.CategoryShortcutKey;
-                  }
-                }
-              }
-            }
-            catch (Exception x)
-            {
-              s_logger.Error (null, x);
-            }
-          }
-        }
-
-        var oldTaskCategory = GetMappingRefPropertyOrNull<TaskMappingConfiguration, string> (changedOption.Old.MappingConfiguration, o => o.TaskCategory);
-        var newTaskCategory = GetMappingRefPropertyOrNull<TaskMappingConfiguration, string> (changedOption.New.MappingConfiguration, o => o.TaskCategory);
-        var negateTaskCategoryFilter = GetMappingPropertyOrNull<TaskMappingConfiguration, bool> (changedOption.New.MappingConfiguration, o => o.InvertTaskCategoryFilter);
-
-        if (oldTaskCategory != newTaskCategory && !String.IsNullOrEmpty (oldTaskCategory) && !negateTaskCategoryFilter.Value)
-        {
-          try
-          {
-            SwitchTaskCategories (changedOption, oldTaskCategory, newTaskCategory);
-          }
-          catch (Exception x)
-          {
-            s_logger.Error (null, x);
-          }
-        }
-      }
-    }
-
-    private void SwitchEventCategories (ChangedOptions changedOption, string oldCategory, string newCategory)
-    {
-      using (var calendarFolderWrapper = GenericComObjectWrapper.Create (
-          (Folder) _session.GetFolderFromID (changedOption.New.OutlookFolderEntryId, changedOption.New.OutlookFolderStoreId)))
-      {
-        s_logger.Info ($"Switching category of items in folder '{calendarFolderWrapper.Inner.Name}' from '{oldCategory}' to '{newCategory}', due to changes in profile '{changedOption.New.Name}' (OptionId:'{changedOption.New.Id}' FolderId:'{changedOption.New.OutlookFolderEntryId}' StoreId:'{changedOption.New.OutlookFolderStoreId}')");
-
-        bool isInstantSearchEnabled = false;
-
-        try
-        {
-          using (var store = GenericComObjectWrapper.Create (calendarFolderWrapper.Inner.Store))
-          {
-            if (store.Inner != null) isInstantSearchEnabled = store.Inner.IsInstantSearchEnabled;
-          }
-        }
-        catch (COMException)
-        {
-          s_logger.Info ("Can't access IsInstantSearchEnabled property of store, defaulting to false.");
-        }
-        var filterBuilder = new StringBuilder (_daslFilterProvider.GetAppointmentFilter (isInstantSearchEnabled));
-        OutlookEventRepository.AddCategoryFilter (filterBuilder, oldCategory, false, false);
-        var eventIds = _queryFolderStrategyWrapper.QueryAppointmentFolder (_session, calendarFolderWrapper.Inner, filterBuilder.ToString()).Select(e => e.Version.Id);
-        // todo concat Ids from cache
-
-        foreach (var eventId in eventIds)
-        {
-          try
-          {
-            SwitchEventCategories (changedOption, oldCategory, newCategory, eventId);
-          }
-          catch (Exception x)
-          {
-            s_logger.Error (null, x);
-          }
-        }
-      }
-    }
-
-    private void SwitchTaskCategories (ChangedOptions changedOption, string oldCategory, string newCategory)
-    {
-      using (var taskFolderWrapper = GenericComObjectWrapper.Create (
-          (Folder)_session.GetFolderFromID (changedOption.New.OutlookFolderEntryId, changedOption.New.OutlookFolderStoreId)))
-      {
-        s_logger.Info ($"Switching category of items in folder '{taskFolderWrapper.Inner.Name}' from '{oldCategory}' to '{newCategory}', due to changes in profile '{changedOption.New.Name}' (OptionId:'{changedOption.New.Id}' FolderId:'{changedOption.New.OutlookFolderEntryId}' StoreId:'{changedOption.New.OutlookFolderStoreId}')");
-
-        bool isInstantSearchEnabled = false;
-
-        try
-        {
-          using (var store = GenericComObjectWrapper.Create (taskFolderWrapper.Inner.Store))
-          {
-            if (store.Inner != null) isInstantSearchEnabled = store.Inner.IsInstantSearchEnabled;
-          }
-        }
-        catch (COMException)
-        {
-          s_logger.Info ("Can't access IsInstantSearchEnabled property of store, defaulting to false.");
-        }
-        var filterBuilder = new StringBuilder (_daslFilterProvider.GetTaskFilter (isInstantSearchEnabled));
-        OutlookEventRepository.AddCategoryFilter (filterBuilder, oldCategory, false, false);
-        var taskIds = _queryFolderStrategyWrapper.QueryTaskFolder (_session, taskFolderWrapper.Inner, filterBuilder.ToString()).Select(e => e.Id);
-        // todo concat Ids from cache
-
-        foreach (var taskId in taskIds)
-        {
-          try
-          {
-            SwitchTaskCategories (changedOption, oldCategory, newCategory, taskId);
-          }
-          catch (Exception x)
-          {
-            s_logger.Error (null, x);
-          }
-        }
-      }
-    }
-
-    private void SwitchEventCategories (ChangedOptions changedOption, string oldCategory, string newCategory, AppointmentId eventId)
-    {
-      using (var eventWrapper = new AppointmentItemWrapper (
-          (AppointmentItem) _session.GetItemFromID (eventId.EntryId, changedOption.New.OutlookFolderStoreId),
-          entryId => (AppointmentItem) _session.GetItemFromID (entryId, changedOption.New.OutlookFolderStoreId)))
-      {
-        var categories = eventWrapper.Inner.Categories
-            .Split (new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries)
-            .Select (c => c.Trim());
-
-        eventWrapper.Inner.Categories = string.Join (
-            CultureInfo.CurrentCulture.TextInfo.ListSeparator,
-            categories
-                .Except (new[] { oldCategory })
-                .Concat (new[] { newCategory })
-                .Distinct());
-
-        eventWrapper.Inner.Save();
-      }
-    }
-
-    private void SwitchTaskCategories (ChangedOptions changedOption, string oldCategory, string newCategory, string eventId)
-    {
-      using (var taskWrapper = new TaskItemWrapper (
-          (TaskItem)_session.GetItemFromID (eventId, changedOption.New.OutlookFolderStoreId),
-          entryId => (TaskItem)_session.GetItemFromID (entryId, changedOption.New.OutlookFolderStoreId)))
-      {
-        var categories = taskWrapper.Inner.Categories
-            .Split(new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries)
-            .Select(c => c.Trim());
-
-        taskWrapper.Inner.Categories = string.Join (
-            CultureInfo.CurrentCulture.TextInfo.ListSeparator,
-            categories
-                .Except (new[] { oldCategory })
-                .Concat (new[] { newCategory })
-                .Distinct());
-
-        taskWrapper.Inner.Save();
-      }
-    }
-
+    
     public async Task ShowGeneralOptionsAsync ()
     {
       var generalOptions = _generalOptionsDataAccess.LoadOptions();
@@ -756,29 +561,6 @@ namespace CalDavSynchronizer
               _syncObject.SyncEnd -= SyncObject_SyncEnd;
           }
         }
-      }
-    }
-
-    private struct ChangedOptions
-    {
-      private readonly Options _old;
-      private readonly Options _new;
-
-      public ChangedOptions (Options old, Options @new)
-          : this()
-      {
-        _old = old;
-        _new = @new;
-      }
-
-      public Options Old
-      {
-        get { return _old; }
-      }
-
-      public Options New
-      {
-        get { return _new; }
       }
     }
 
@@ -835,31 +617,6 @@ namespace CalDavSynchronizer
 
       return allCachesDeleted;
     }
-
-    private TProperty? GetMappingPropertyOrNull<TMappingConfiguration, TProperty> (MappingConfigurationBase mappingConfiguration, Func<TMappingConfiguration, TProperty> selector)
-      where TMappingConfiguration : MappingConfigurationBase
-      where TProperty : struct
-    {
-      var typedMappingConfiguration = mappingConfiguration as TMappingConfiguration;
-      
-      if (typedMappingConfiguration != null)
-        return selector (typedMappingConfiguration);
-      else
-        return null;
-    }
-
-    private TProperty GetMappingRefPropertyOrNull<TMappingConfiguration, TProperty> (MappingConfigurationBase mappingConfiguration, Func<TMappingConfiguration, TProperty> selector)
-      where TMappingConfiguration : MappingConfigurationBase
-      where TProperty : class
-    {
-      var typedMappingConfiguration = mappingConfiguration as TMappingConfiguration;
-
-      if (typedMappingConfiguration != null)
-        return selector (typedMappingConfiguration);
-      else
-        return null;
-    }
-
 
     private string GetProfileDataDirectory (Guid profileId)
     {
