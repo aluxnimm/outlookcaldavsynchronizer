@@ -356,39 +356,45 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       return context.ContactCache.GetAllVersions();
     }
 
-    public async Task<IReadOnlyList<EntityWithId<string, GoogleContactWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger, GoogleContactContext context)
+    public async Task<IReadOnlyList<EntityWithId<string, GoogleContactWrapper>>> Get(ICollection<string> ids, ILoadEntityLogger logger, GoogleContactContext context)
     {
-        var result = new List<EntityWithId<string, GoogleContactWrapper>>();
-        foreach (var id in ids)
-        {
-          Contact contact;
-          if (context.ContactCache.TryGetValue (id, out contact))
-            result.Add (EntityWithId.Create (contact.Id, new GoogleContactWrapper (contact)));
-        }
+      var result = new List<EntityWithId<string, GoogleContactWrapper>>();
+      foreach (var id in ids)
+      {
+        Contact contact;
+        if (context.ContactCache.TryGetValue(id, out contact))
+          result.Add(EntityWithId.Create(contact.Id, new GoogleContactWrapper(contact)));
+      }
 
-        var groups = context.GroupCache.Groups.ToDictionary (g => g.Id);
+      var groups = context.GroupCache.Groups.ToDictionary(g => g.Id);
 
-        foreach (var contactWrapper in result)
+      foreach (var contactWrapper in result)
+      {
+        foreach (var groupMembership in contactWrapper.Entity.Contact.GroupMembership)
         {
-          foreach (var group in contactWrapper.Entity.Contact.GroupMembership)
+          if (!context.GroupCache.IsDefaultGroupId(groupMembership.HRef))
           {
-            if (!context.GroupCache.IsDefaultGroupId (group.HRef))
-              contactWrapper.Entity.Groups.Add (groups[group.HRef].Title);
+            Group group;
+            if (groups.TryGetValue(groupMembership.HRef, out group))
+              contactWrapper.Entity.Groups.Add(group.Title);
+            else
+              s_logger.Warn($"Could not find Group '{groupMembership.HRef}' in the cached groups");
           }
         }
+      }
 
       if (_contactMappingConfiguration.MapContactPhoto)
       {
-        await Task.Run (() =>
+        await Task.Run(() =>
         {
           foreach (var contactWrapper in result)
           {
             if (contactWrapper.Entity.Contact.PhotoEtag != null)
             {
-              using (var photoStream = _apiOperationExecutor.Execute (f => f.Service.Query (contactWrapper.Entity.Contact.PhotoUri)))
+              using (var photoStream = _apiOperationExecutor.Execute(f => f.Service.Query(contactWrapper.Entity.Contact.PhotoUri)))
               {
                 var memoryStream = new MemoryStream();
-                photoStream.CopyTo (memoryStream);
+                photoStream.CopyTo(memoryStream);
                 // ReSharper disable once PossibleAssignmentToReadonlyField
                 contactWrapper.Entity.PhotoOrNull = memoryStream.ToArray();
               }
