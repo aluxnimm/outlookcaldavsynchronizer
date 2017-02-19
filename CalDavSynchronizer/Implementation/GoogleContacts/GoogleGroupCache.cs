@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Google.Contacts;
+using Google.GData.Client;
 using Google.GData.Contacts;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
@@ -32,7 +33,17 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
     public void Fill ()
     {
-      SetGroups (_apiOperationExecutor.Execute (f => f.GetGroups().Entries));
+      var groups = new List<Group>();
+
+      for (
+       Feed<Group> feed = _apiOperationExecutor.Execute (f => f.GetGroups());
+       feed != null;
+       feed = _apiOperationExecutor.Execute (f => f.Get (feed, FeedRequestType.Next)))
+      {
+        groups.AddRange(feed.Entries);
+      }
+
+      SetGroups (groups);
     }
 
     void SetGroups (IEnumerable<Group> existingGroups)
