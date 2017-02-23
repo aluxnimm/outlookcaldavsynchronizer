@@ -41,7 +41,7 @@ using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  public class GoogleContactEntityMapper : IEntityMapper<ContactItemWrapper, GoogleContactWrapper, GoogleContactContext>
+  public class GoogleContactEntityMapper : IEntityMapper<ContactItemWrapper, GoogleContactWrapper, IGoogleContactContext>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -70,7 +70,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       _configuration = configuration;
     }
 
-    public Task<GoogleContactWrapper> Map1To2 (ContactItemWrapper source, GoogleContactWrapper targetWrapper, IEntityMappingLogger logger, GoogleContactContext context)
+    public Task<GoogleContactWrapper> Map1To2 (ContactItemWrapper source, GoogleContactWrapper targetWrapper, IEntityMappingLogger logger, IGoogleContactContext context)
     {
       var target = targetWrapper.Contact;
 
@@ -676,7 +676,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
     }
 
-    public Task<ContactItemWrapper> Map2To1 (GoogleContactWrapper sourceWrapper, ContactItemWrapper target, IEntityMappingLogger logger, GoogleContactContext context)
+    public Task<ContactItemWrapper> Map2To1 (GoogleContactWrapper sourceWrapper, ContactItemWrapper target, IEntityMappingLogger logger, IGoogleContactContext context)
     {
       var source = sourceWrapper.Contact;
 

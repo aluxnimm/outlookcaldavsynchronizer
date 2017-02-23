@@ -18,9 +18,9 @@ using log4net;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  class GoogleContactRepository 
-    : IReadOnlyEntityRepository<string, GoogleContactVersion, GoogleContactWrapper, GoogleContactContext>,
-    IBatchWriteOnlyEntityRepository<string, GoogleContactVersion, GoogleContactWrapper, GoogleContactContext>
+  public class GoogleContactRepository 
+    : IReadOnlyEntityRepository<string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext>,
+    IBatchWriteOnlyEntityRepository<string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);
 
@@ -54,7 +54,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       IReadOnlyList<IUpdateJob<string, GoogleContactVersion, GoogleContactWrapper>> updateJobs,
       IReadOnlyList<IDeleteJob<string, GoogleContactVersion>> deleteJobs, 
       IProgressLogger progressLogger,
-      GoogleContactContext context)
+      IGoogleContactContext context)
     {
       var createRequestsAndJobs = await CreateCreateRequests (createJobs);
       var updateRequestsAndJobs = await CreateUpdateRequests (updateJobs);
@@ -91,7 +91,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       });
     }
 
-    private static void AssignGroupsToContacts (IEnumerable<GoogleContactWrapper> contacts, GoogleGroupCache groupCache)
+    private static void AssignGroupsToContacts (IEnumerable<GoogleContactWrapper> contacts, IGoogleGroupCache groupCache)
     {
       foreach (var contactWrapper in contacts)
       {
@@ -337,7 +337,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       }
     }
 
-    public Task<IReadOnlyList<EntityVersion<string, GoogleContactVersion>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, GoogleContactContext context)
+    public Task<IReadOnlyList<EntityVersion<string, GoogleContactVersion>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, IGoogleContactContext context)
     {
       var contacts = new List<EntityVersion<string, GoogleContactVersion>>();
 
@@ -351,12 +351,12 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       return Task.FromResult<IReadOnlyList<EntityVersion<string, GoogleContactVersion>>> (contacts);
     }
 
-    public Task<IReadOnlyList<EntityVersion<string, GoogleContactVersion>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, GoogleContactContext context)
+    public Task<IReadOnlyList<EntityVersion<string, GoogleContactVersion>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, IGoogleContactContext context)
     {
       return context.ContactCache.GetAllVersions();
     }
 
-    public async Task<IReadOnlyList<EntityWithId<string, GoogleContactWrapper>>> Get(ICollection<string> ids, ILoadEntityLogger logger, GoogleContactContext context)
+    public async Task<IReadOnlyList<EntityWithId<string, GoogleContactWrapper>>> Get(ICollection<string> ids, ILoadEntityLogger logger, IGoogleContactContext context)
     {
       var result = new List<EntityWithId<string, GoogleContactWrapper>>();
       foreach (var id in ids)
@@ -406,7 +406,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       return result;
     }
 
-    public Task VerifyUnknownEntities (Dictionary<string, GoogleContactVersion> unknownEntites, GoogleContactContext context)
+    public Task VerifyUnknownEntities (Dictionary<string, GoogleContactVersion> unknownEntites, IGoogleContactContext context)
     {
       return Task.FromResult (0);
     }

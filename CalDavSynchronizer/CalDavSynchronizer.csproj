@@ -360,6 +360,8 @@
     <Compile Include="Implementation\GoogleContacts\GoogleGroupCache.cs" />
     <Compile Include="Implementation\GoogleContacts\IGoogleApiOperationExecutor.cs" />
     <Compile Include="Implementation\GoogleContacts\IGoogleContactCache.cs" />
+    <Compile Include="Implementation\GoogleContacts\IGoogleContactContext.cs" />
+    <Compile Include="Implementation\GoogleContacts\IGoogleGroupCache.cs" />
     <Compile Include="Implementation\InitialSyncStateCreationStrategyFactory.cs" />
     <Compile Include="Implementation\GoogleContacts\InitialGoogleContactEntityMatcher.cs" />
     <Compile Include="Implementation\GoogleContacts\GoogleContactUpdateFromNewerToOlder.cs" />

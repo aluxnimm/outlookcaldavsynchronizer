@@ -9,7 +9,7 @@ using Google.GData.Contacts;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  public class GoogleGroupCache
+  public class GoogleGroupCache : IGoogleGroupCache
   {
     readonly Dictionary<string, Group> _groupsByName = new Dictionary<string, Group>();
     private readonly IGoogleApiOperationExecutor _apiOperationExecutor;

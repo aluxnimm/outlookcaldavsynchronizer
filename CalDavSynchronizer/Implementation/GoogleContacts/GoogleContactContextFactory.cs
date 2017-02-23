@@ -25,7 +25,7 @@ using Google.Contacts;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  class GoogleContactContextFactory : ISynchronizationContextFactory<GoogleContactContext>
+  class GoogleContactContextFactory : ISynchronizationContextFactory<IGoogleContactContext>
   {
     private readonly IGoogleApiOperationExecutor _apiOperationExecutor;
     private readonly IEqualityComparer<string> _contactIdComparer;
@@ -47,7 +47,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       _chunkSize = chunkSize;
     }
 
-    public async Task<GoogleContactContext> Create ()
+    public async Task<IGoogleContactContext> Create ()
     {
       return await Task.Run (() =>
       {
@@ -65,7 +65,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       });
     }
 
-    public Task SynchronizationFinished (GoogleContactContext context)
+    public Task SynchronizationFinished (IGoogleContactContext context)
     {
       return Task.FromResult(0);
     }

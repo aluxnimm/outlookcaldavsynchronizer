@@ -28,12 +28,12 @@ using Thought.vCards;
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
   internal class GoogleContactUpdateFromNewerToOlder
-      : UpdateFromNewerToOlder<string, DateTime, ContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, GoogleContactContext>
+      : UpdateFromNewerToOlder<string, DateTime, ContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
 
     public GoogleContactUpdateFromNewerToOlder (
-        EntitySyncStateEnvironment<string, DateTime, ContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, GoogleContactContext> environment,
+        EntitySyncStateEnvironment<string, DateTime, ContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext> environment,
         IEntityRelationData<string, DateTime, string, GoogleContactVersion> knownData,
         DateTime newA,
         GoogleContactVersion newB)

@@ -27,9 +27,9 @@ using Google.GData.Contacts;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  public class GoogleContactContext
+  public class GoogleContactContext : IGoogleContactContext
   {
-    public GoogleGroupCache GroupCache { get; }
+    public IGoogleGroupCache GroupCache { get; }
     public IGoogleContactCache ContactCache { get; }
 
 
