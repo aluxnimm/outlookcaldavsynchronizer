@@ -31,6 +31,8 @@ namespace GenSync.Logging
     private string _exceptionThatLeadToAbortion;
     private string _aDelta;
     private string _bDelta;
+    private string _aJobsInfo;
+    private string _bJobsInfo;
     private ISynchronizationReportSink _reportSink;
     private List<SynchronizationReport> _subReports;
 
@@ -62,6 +64,12 @@ namespace GenSync.Logging
       _bDelta = bDeltaLogInfo.ToString();
     }
 
+    public void LogJobs (string aJobsInfo, string bJobsInfo)
+    {
+      _aJobsInfo = aJobsInfo;
+      _bJobsInfo = bJobsInfo;
+    }
+
     public IEntitySynchronizationLogger CreateEntitySynchronizationLogger ()
     {
       EntitySynchronizationLogger logger = new EntitySynchronizationLogger();
@@ -76,7 +84,9 @@ namespace GenSync.Logging
              {
                  ADelta = _aDelta,
                  BDelta = _bDelta,
-                 ExceptionThatLeadToAbortion = _exceptionThatLeadToAbortion,
+                 AJobsInfo = _aJobsInfo,
+                 BJobsInfo = _bJobsInfo,
+                  ExceptionThatLeadToAbortion = _exceptionThatLeadToAbortion,
                  LoadErrors = _loadErrors.ToArray(),
                  ProfileId = _profileId,
                  ProfileName = _profileName,

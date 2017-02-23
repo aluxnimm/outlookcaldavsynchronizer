@@ -119,6 +119,8 @@ namespace CalDavSynchronizer.Scheduling
       public GoogleContactRepository GoogleContactRepository { get; set; }
       public IGoogleApiOperationExecutor GoogleApiOperationExecutor { get; set; }
       public OutlookContactRepository<IGoogleContactContext> OutlookContactRepositoryForGoogle { get; set; }
+      public IEntityRelationDataAccess<string, DateTime, string, GoogleContactVersion> GoogleContactsEntityRelationDataAccess { get; set; }
+      public ISynchronizationContextFactory<IGoogleContactContext> GoogleContactContextFactory { get; set; }
     }
 
     public async Task<IOutlookSynchronizer> CreateSynchronizer (Options options, GeneralOptions generalOptions)
@@ -862,6 +864,8 @@ namespace CalDavSynchronizer.Scheduling
 
       var storageDataAccess = new EntityRelationDataAccess<string, DateTime, GoogleContactRelationData, string, GoogleContactVersion> (storageDataDirectory);
 
+      componentsToFill.GoogleContactsEntityRelationDataAccess = storageDataAccess;
+
       var atypeWriteRepository = BatchEntityRepositoryAdapter.Create (atypeRepository);
 
       var synchronizer = new Synchronizer<string, DateTime, ContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext> (
@@ -885,10 +889,12 @@ namespace CalDavSynchronizer.Scheduling
           new GoogleContactVersionComparer(),
           syncStateFactory);
 
+      var googleContactContextFactory = new GoogleContactContextFactory(googleApiExecutor, btypeIdEqualityComparer, options.UserName, chunkSize);
+      componentsToFill.GoogleContactContextFactory = googleContactContextFactory;
       return new OutlookSynchronizer<string, GoogleContactVersion> (
         new ContextCreatingSynchronizerDecorator<string, DateTime, ContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext> (
           synchronizer,
-          new GoogleContactContextFactory(googleApiExecutor, btypeIdEqualityComparer, options.UserName, chunkSize)));
+          googleContactContextFactory));
     }
   }
 }

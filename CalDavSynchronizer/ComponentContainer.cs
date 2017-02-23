@@ -120,9 +120,7 @@ namespace CalDavSynchronizer
 
       _daslFilterProvider = new DaslFilterProvider (generalOptions.IncludeCustomMessageClasses);
 
-      FrameworkElement.LanguageProperty.OverrideMetadata (
-          typeof (FrameworkElement),
-          new FrameworkPropertyMetadata (XmlLanguage.GetLanguage (CultureInfo.CurrentCulture.IetfLanguageTag)));
+      SetWpfLocale();
 
       ConfigureServicePointManager (generalOptions);
       ConfigureLogLevel (generalOptions.EnableDebugLog);
@@ -212,6 +210,18 @@ namespace CalDavSynchronizer
       }
 
       _categorySwitcher = new CategorySwitcher(_session, _daslFilterProvider, _queryFolderStrategyWrapper);
+    }
+
+    private static bool _wpfLocaleSet;
+    private static void SetWpfLocale()
+    {
+      if (!_wpfLocaleSet)
+      {
+        FrameworkElement.LanguageProperty.OverrideMetadata(
+          typeof(FrameworkElement),
+          new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
+        _wpfLocaleSet = true;
+      }
     }
 
     public async Task InitializeSchedulerAndStartAsync()

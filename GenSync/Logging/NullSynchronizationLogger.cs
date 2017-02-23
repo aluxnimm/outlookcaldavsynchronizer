@@ -56,5 +56,10 @@ namespace GenSync.Logging
     {
       return this;
     }
+
+    public void LogJobs(string aJobsInfo, string bJobsInfo)
+    {
+      
+    }
   }
 }

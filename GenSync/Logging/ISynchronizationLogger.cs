@@ -26,6 +26,7 @@ namespace GenSync.Logging
 
     void LogAbortedDueToError (Exception exception);
     void LogDeltas (VersionDeltaLoginInformation aDeltaLogInfo, VersionDeltaLoginInformation bDeltaLogInfo);
+    void LogJobs (string aJobsInfo, string bJobsInfo);
     IEntitySynchronizationLogger CreateEntitySynchronizationLogger ();
 
     ISynchronizationLogger CreateSubLogger(string subProfileName);

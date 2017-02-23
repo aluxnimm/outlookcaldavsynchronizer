@@ -35,6 +35,8 @@ namespace GenSync.Logging
 
     public string ADelta { get; set; }
     public string BDelta { get; set; }
+    public string AJobsInfo { get; set; }
+    public string BJobsInfo { get; set; }
 
     public LoadError[] LoadErrors
     {

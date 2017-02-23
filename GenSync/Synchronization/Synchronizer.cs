@@ -392,8 +392,9 @@ namespace GenSync.Synchronization
 
       entitySyncStates.Execute (s => s.AddSyncronizationJob (aJobs, bJobs, logger.CreateEntitySynchronizationLogger(), synchronizationContext));
 
-      s_logger.InfoFormat($"A repository jobs: Create {aJobs.CreateJobs.Count} , Update {aJobs.UpdateJobs.Count} , Delete {aJobs.DeleteJobs.Count}");
-      s_logger.InfoFormat($"B repository jobs: Create {bJobs.CreateJobs.Count} , Update {bJobs.UpdateJobs.Count} , Delete {bJobs.DeleteJobs.Count}");
+      s_logger.InfoFormat($"A repository jobs: {aJobs}");
+      s_logger.InfoFormat($"B repository jobs: {bJobs}");
+      logger.LogJobs(aJobs.ToString(), bJobs.ToString());
 
       using (var progress = totalProgress.StartProcessing (aJobs.TotalJobCount + bJobs.TotalJobCount))
       {
