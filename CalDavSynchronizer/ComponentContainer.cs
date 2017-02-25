@@ -152,10 +152,12 @@ namespace CalDavSynchronizer
 
       _queryFolderStrategyWrapper = new OutlookFolderStrategyWrapper(QueryOutlookFolderByRequestingItemStrategy.Instance);
 
-      _totalProgressFactory = new TotalProgressFactory (
-          _uiService,
-          generalOptions.ShowProgressBar ? generalOptions.ThresholdForProgressDisplay : 0,
-          ExceptionHandler.Instance);
+      _totalProgressFactory = new TotalProgressFactory(
+        _uiService,
+        generalOptions.ShowProgressBar,
+        generalOptions.ThresholdForProgressDisplay,
+        ExceptionHandler.Instance);
+      
 
       _synchronizerFactory = new SynchronizerFactory (
           GetProfileDataDirectory,
@@ -353,7 +355,8 @@ namespace CalDavSynchronizer
       _showReportsWithWarningsImmediately = generalOptions.ShowReportsWithWarningsImmediately;
 
       _daslFilterProvider.SetDoIncludeCustomMessageClasses (generalOptions.IncludeCustomMessageClasses);
-      _totalProgressFactory.SetThreshold (generalOptions.ShowProgressBar ? generalOptions.ThresholdForProgressDisplay : 0);
+      _totalProgressFactory.ShowProgress = generalOptions.ShowProgressBar;
+      _totalProgressFactory.LoadOperationThresholdForProgressDisplay = generalOptions.ThresholdForProgressDisplay;
       _queryFolderStrategyWrapper.SetStrategy (generalOptions.QueryFoldersJustByGetTable ? QueryOutlookFolderByGetTableStrategy.Instance : QueryOutlookFolderByRequestingItemStrategy.Instance);
     }
 

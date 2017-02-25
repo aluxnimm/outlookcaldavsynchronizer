@@ -63,7 +63,7 @@ namespace GenSync.ProgressReport
 
       try
       {
-        if (aLoadCount + bLoadCount >= _loadOperationThresholdForProgressDisplay && _loadOperationThresholdForProgressDisplay > 0)
+        if (aLoadCount + bLoadCount >= _loadOperationThresholdForProgressDisplay)
           _logger = new TotalProgressLogger (_progressUiFactory, _exceptionLogger);
         else
           _logger = NullTotalProgressLogger.Instance;
