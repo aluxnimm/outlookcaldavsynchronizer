@@ -43,5 +43,7 @@ namespace CalDavSynchronizer.Contracts
     public bool ExpandAllSyncProfiles { get; set; }
     public bool EnableAdvancedView { get; set; }
     public bool QueryFoldersJustByGetTable { get; set; }
+    public bool ShowProgressBar { get; set; }
+    public int ThresholdForProgressDisplay { get; set; }
   }
 }

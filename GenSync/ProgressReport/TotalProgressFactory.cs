@@ -24,7 +24,7 @@ namespace GenSync.ProgressReport
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
     private readonly IProgressUiFactory _progressUiFactory;
-    private readonly int _loadOperationThresholdForProgressDisplay;
+    private int _loadOperationThresholdForProgressDisplay;
     private readonly IExceptionLogger _exceptionLogger;
 
 
@@ -33,6 +33,11 @@ namespace GenSync.ProgressReport
       _progressUiFactory = progressUiFactory;
       _loadOperationThresholdForProgressDisplay = loadOperationThresholdForProgressDisplay;
       _exceptionLogger = exceptionLogger;
+    }
+
+    public void SetThreshold (int loadOperationThresholdForProgressDisplay)
+    {
+      _loadOperationThresholdForProgressDisplay = loadOperationThresholdForProgressDisplay;
     }
 
     public ITotalProgressLogger Create ()

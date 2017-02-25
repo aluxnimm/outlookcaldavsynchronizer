@@ -58,6 +58,9 @@ namespace CalDavSynchronizer.DataAccess
     private const string s_EnableAdvancedView = "EnableAdvancedView";
     private const string s_ToolbarSettings = "ToolbarSettings";
 
+    private const string s_ShowProgressBar = "ShowProgressBar";
+    private const string s_ThresholdForProgressDisplay = "ThresholdForProgressDisplay";
+
     public GeneralOptions LoadOptions ()
     {
       using (var key = OpenOptionsKey())
@@ -89,6 +92,8 @@ namespace CalDavSynchronizer.DataAccess
                    ExpandAllSyncProfiles = (int) (key.GetValue (s_ExpandAllSyncProfiles) ?? 1) != 0,
                    EnableAdvancedView = (int)(key.GetValue(s_EnableAdvancedView) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableAdvancedView"] ?? bool.FalseString))) != 0,
                    QueryFoldersJustByGetTable = (int) (key.GetValue (s_QueryFoldersJustByGetTable) ?? 1) != 0,
+                   ShowProgressBar = (int) (key.GetValue (s_ShowProgressBar) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["showProgressBar"] ?? bool.TrueString))) != 0,
+                   ThresholdForProgressDisplay = (int) (key.GetValue (s_ThresholdForProgressDisplay) ?? int.Parse(ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"] ?? "50"))
         };
       }
     }
@@ -120,6 +125,8 @@ namespace CalDavSynchronizer.DataAccess
         key.SetValue (s_ExpandAllSyncProfiles, options.ExpandAllSyncProfiles ? 1 : 0);
         key.SetValue (s_EnableAdvancedView, options.EnableAdvancedView ? 1 : 0);
         key.SetValue (s_QueryFoldersJustByGetTable, options.QueryFoldersJustByGetTable ? 1 : 0);
+        key.SetValue (s_ShowProgressBar, options.ShowProgressBar ? 1: 0);
+        key.SetValue (s_ThresholdForProgressDisplay, options.ThresholdForProgressDisplay);
       }
     }
 
