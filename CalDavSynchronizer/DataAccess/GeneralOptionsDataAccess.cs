@@ -98,6 +98,8 @@ namespace CalDavSynchronizer.DataAccess
       }
     }
 
+    public static bool WpfRenderModeSoftwareOnly => bool.Parse(ConfigurationManager.AppSettings["wpfRenderModeSoftwareOnly"] ?? bool.FalseString);
+
     public void SaveOptions (GeneralOptions options)
     {
       using (var key = OpenOptionsKey())

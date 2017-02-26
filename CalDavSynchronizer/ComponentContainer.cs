@@ -48,6 +48,7 @@ using Exception = System.Exception;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Windows.Media;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.Tasks;
@@ -112,6 +113,8 @@ namespace CalDavSynchronizer
     {
       s_logger.Info ("Startup...");
 
+      if(GeneralOptionsDataAccess.WpfRenderModeSoftwareOnly)
+        RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
 
       _generalOptionsDataAccess = new GeneralOptionsDataAccess();
 
