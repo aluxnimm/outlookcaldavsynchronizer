@@ -174,7 +174,9 @@ namespace CalDavSynchronizer.Ui.Options
                    TriggerSyncAfterSendReceive = _triggerSyncAfterSendReceiveCheckBox.Checked,
                    ExpandAllSyncProfiles = _expandAllSyncProfilesCheckBox.Checked,
                    EnableAdvancedView = _enableAdvancedViewCheckBox.Checked,
-                   QueryFoldersJustByGetTable = _useFastTableQueriesCheckBox.Checked
+                   QueryFoldersJustByGetTable = _useFastTableQueriesCheckBox.Checked,
+                   ShowProgressBar = _showProgressBarCheckBox.Checked,
+                   ThresholdForProgressDisplay = int.Parse(_thresholdForProgressDisplayTextBox.Text)
         };
       }
       set
@@ -200,6 +202,9 @@ namespace CalDavSynchronizer.Ui.Options
         _expandAllSyncProfilesCheckBox.Checked = value.ExpandAllSyncProfiles;
         _enableAdvancedViewCheckBox.Checked = value.EnableAdvancedView;
         _useFastTableQueriesCheckBox.Checked = value.QueryFoldersJustByGetTable;
+        _showProgressBarCheckBox.Checked = value.ShowProgressBar;
+        _thresholdForProgressDisplayTextBox.Text = value.ThresholdForProgressDisplay.ToString();
+        UpdateThresholdForProgressBarControlEnabled();
       }
     }
 
@@ -290,6 +295,17 @@ namespace CalDavSynchronizer.Ui.Options
 
         }
       }
+    }
+
+    private void _showProgressBar_CheckedChanged (object sender, EventArgs e)
+    {
+      UpdateThresholdForProgressBarControlEnabled();
+    }
+
+    private void UpdateThresholdForProgressBarControlEnabled()
+    {
+      _thresholdForProgressDisplayTextBox.Enabled = _showProgressBarCheckBox.Checked;
+      _thresholdForProgressDisplayLabel.Enabled = _showProgressBarCheckBox.Checked;
     }
   }
 }

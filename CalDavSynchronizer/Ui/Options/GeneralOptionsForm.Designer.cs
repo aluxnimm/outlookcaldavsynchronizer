@@ -52,7 +52,10 @@ namespace CalDavSynchronizer.Ui.Options
       this._expandAllSyncProfilesCheckBox = new System.Windows.Forms.CheckBox();
       this._useUnsafeHeaderParsingCheckBox = new System.Windows.Forms.CheckBox();
       this.groupBox4 = new System.Windows.Forms.GroupBox();
+      this._showProgressBarCheckBox = new System.Windows.Forms.CheckBox();
+      this._thresholdForProgressDisplayTextBox = new System.Windows.Forms.TextBox();
       this._enableAdvancedViewCheckBox = new System.Windows.Forms.CheckBox();
+      this._thresholdForProgressDisplayLabel = new System.Windows.Forms.Label();
       this._useFastTableQueriesCheckBox = new System.Windows.Forms.CheckBox();
       this.groupBox2 = new System.Windows.Forms.GroupBox();
       this._maxReportAgeInDays = new System.Windows.Forms.TextBox();
@@ -80,7 +83,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this._cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this._cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this._cancelButton.Location = new System.Drawing.Point(391, 787);
+      this._cancelButton.Location = new System.Drawing.Point(391, 829);
       this._cancelButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._cancelButton.Name = "_cancelButton";
       this._cancelButton.Size = new System.Drawing.Size(100, 28);
@@ -91,7 +94,7 @@ namespace CalDavSynchronizer.Ui.Options
       // _okButton
       // 
       this._okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._okButton.Location = new System.Drawing.Point(283, 787);
+      this._okButton.Location = new System.Drawing.Point(283, 829);
       this._okButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._okButton.Name = "_okButton";
       this._okButton.Size = new System.Drawing.Size(100, 28);
@@ -173,11 +176,11 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox1.Controls.Add(this._disableCertificateValidationCheckbox);
       this.groupBox1.Controls.Add(this._enableSsl3Checkbox);
       this.groupBox1.Controls.Add(this._enableTls12Checkbox);
-      this.groupBox1.Location = new System.Drawing.Point(2, 392);
+      this.groupBox1.Location = new System.Drawing.Point(2, 442);
       this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this.groupBox1.Name = "groupBox1";
       this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-      this.groupBox1.Size = new System.Drawing.Size(500, 132);
+      this.groupBox1.Size = new System.Drawing.Size(500, 124);
       this.groupBox1.TabIndex = 18;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "SSL/TLS settings";
@@ -315,7 +318,10 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupBox4.Controls.Add(this._showProgressBarCheckBox);
+      this.groupBox4.Controls.Add(this._thresholdForProgressDisplayTextBox);
       this.groupBox4.Controls.Add(this._enableAdvancedViewCheckBox);
+      this.groupBox4.Controls.Add(this._thresholdForProgressDisplayLabel);
       this.groupBox4.Controls.Add(this._fixInvalidSettingsCheckBox);
       this.groupBox4.Controls.Add(this._enableTrayIconCheckBox);
       this.groupBox4.Controls.Add(this._expandAllSyncProfilesCheckBox);
@@ -323,11 +329,32 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this.groupBox4.Name = "groupBox4";
       this.groupBox4.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-      this.groupBox4.Size = new System.Drawing.Size(500, 122);
+      this.groupBox4.Size = new System.Drawing.Size(500, 173);
       this.groupBox4.TabIndex = 8;
       this.groupBox4.TabStop = false;
       this.groupBox4.Text = "UI settings";
       this._toolTip.SetToolTip(this.groupBox4, "Changing these options can be a major security risk, not recommended!");
+      // 
+      // _showProgressBarCheckBox
+      // 
+      this._showProgressBarCheckBox.AutoSize = true;
+      this._showProgressBarCheckBox.Location = new System.Drawing.Point(12, 119);
+      this._showProgressBarCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+      this._showProgressBarCheckBox.Name = "_showProgressBarCheckBox";
+      this._showProgressBarCheckBox.Size = new System.Drawing.Size(186, 21);
+      this._showProgressBarCheckBox.TabIndex = 16;
+      this._showProgressBarCheckBox.Text = "Show Sync Progress Bar";
+      this._showProgressBarCheckBox.UseVisualStyleBackColor = true;
+      this._showProgressBarCheckBox.CheckedChanged += new System.EventHandler(this._showProgressBar_CheckedChanged);
+      // 
+      // _thresholdForProgressDisplayTextBox
+      // 
+      this._thresholdForProgressDisplayTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this._thresholdForProgressDisplayTextBox.Location = new System.Drawing.Point(350, 143);
+      this._thresholdForProgressDisplayTextBox.Margin = new System.Windows.Forms.Padding(4);
+      this._thresholdForProgressDisplayTextBox.Name = "_thresholdForProgressDisplayTextBox";
+      this._thresholdForProgressDisplayTextBox.Size = new System.Drawing.Size(131, 22);
+      this._thresholdForProgressDisplayTextBox.TabIndex = 17;
       // 
       // _enableAdvancedViewCheckBox
       // 
@@ -340,6 +367,17 @@ namespace CalDavSynchronizer.Ui.Options
       this._enableAdvancedViewCheckBox.Text = "Show advanced settings as default";
       this._toolTip.SetToolTip(this._enableAdvancedViewCheckBox, "Show the advanced settings in synchronization profiles as default if enabled. ");
       this._enableAdvancedViewCheckBox.UseVisualStyleBackColor = true;
+      // 
+      // _thresholdForProgressDisplayLabel
+      // 
+      this._thresholdForProgressDisplayLabel.AutoSize = true;
+      this._thresholdForProgressDisplayLabel.Location = new System.Drawing.Point(9, 148);
+      this._thresholdForProgressDisplayLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+      this._thresholdForProgressDisplayLabel.Name = "_thresholdForProgressDisplayLabel";
+      this._thresholdForProgressDisplayLabel.Size = new System.Drawing.Size(241, 17);
+      this._thresholdForProgressDisplayLabel.TabIndex = 18;
+      this._thresholdForProgressDisplayLabel.Text = "Sync Progress Bar Threshold (Items)";
+      this._toolTip.SetToolTip(this._thresholdForProgressDisplayLabel, "Show the sync progress bar when more items than the treshold need to be loaded.");
       // 
       // _useFastTableQueriesCheckBox
       // 
@@ -365,7 +403,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox2.Controls.Add(this._reportLogModeComboBox);
       this.groupBox2.Controls.Add(this.label2);
       this.groupBox2.Controls.Add(this.label1);
-      this.groupBox2.Location = new System.Drawing.Point(2, 530);
+      this.groupBox2.Location = new System.Drawing.Point(2, 567);
       this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
       this.groupBox2.Name = "groupBox2";
       this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
@@ -435,11 +473,11 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox3.Controls.Add(this._clearLogButton);
       this.groupBox3.Controls.Add(this._logLevelComboBox);
       this.groupBox3.Controls.Add(this.label6);
-      this.groupBox3.Location = new System.Drawing.Point(2, 673);
+      this.groupBox3.Location = new System.Drawing.Point(2, 702);
       this.groupBox3.Margin = new System.Windows.Forms.Padding(4);
       this.groupBox3.Name = "groupBox3";
       this.groupBox3.Padding = new System.Windows.Forms.Padding(4);
-      this.groupBox3.Size = new System.Drawing.Size(500, 108);
+      this.groupBox3.Size = new System.Drawing.Size(500, 119);
       this.groupBox3.TabIndex = 23;
       this.groupBox3.TabStop = false;
       this.groupBox3.Text = "General Logging";
@@ -447,7 +485,7 @@ namespace CalDavSynchronizer.Ui.Options
       // _showLogButton
       // 
       this._showLogButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._showLogButton.Location = new System.Drawing.Point(12, 62);
+      this._showLogButton.Location = new System.Drawing.Point(12, 73);
       this._showLogButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._showLogButton.Name = "_showLogButton";
       this._showLogButton.Size = new System.Drawing.Size(100, 28);
@@ -459,7 +497,7 @@ namespace CalDavSynchronizer.Ui.Options
       // _clearLogButton
       // 
       this._clearLogButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._clearLogButton.Location = new System.Drawing.Point(192, 62);
+      this._clearLogButton.Location = new System.Drawing.Point(192, 73);
       this._clearLogButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._clearLogButton.Name = "_clearLogButton";
       this._clearLogButton.Size = new System.Drawing.Size(100, 28);
@@ -517,9 +555,9 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox5.Controls.Add(this._useUnsafeHeaderParsingCheckBox);
       this.groupBox5.Controls.Add(this._calDavConnectTimeoutTextBox);
       this.groupBox5.Controls.Add(this.label4);
-      this.groupBox5.Location = new System.Drawing.Point(2, 287);
+      this.groupBox5.Location = new System.Drawing.Point(2, 333);
       this.groupBox5.Name = "groupBox5";
-      this.groupBox5.Size = new System.Drawing.Size(500, 100);
+      this.groupBox5.Size = new System.Drawing.Size(500, 104);
       this.groupBox5.TabIndex = 13;
       this.groupBox5.TabStop = false;
       this.groupBox5.Text = "Server settings";
@@ -528,7 +566,7 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       this.panel1.Location = new System.Drawing.Point(2, 3);
       this.panel1.Name = "panel1";
-      this.panel1.Size = new System.Drawing.Size(500, 822);
+      this.panel1.Size = new System.Drawing.Size(500, 856);
       this.panel1.TabIndex = 24;
       // 
       // GeneralOptionsForm
@@ -539,7 +577,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.AutoScroll = true;
       this.BackColor = System.Drawing.SystemColors.Window;
       this.CancelButton = this._cancelButton;
-      this.ClientSize = new System.Drawing.Size(503, 826);
+      this.ClientSize = new System.Drawing.Size(503, 868);
       this.Controls.Add(this.groupBox5);
       this.Controls.Add(this._useFastTableQueriesCheckBox);
       this.Controls.Add(this.groupBox4);
@@ -612,5 +650,8 @@ namespace CalDavSynchronizer.Ui.Options
     private System.Windows.Forms.CheckBox _useFastTableQueriesCheckBox;
     private System.Windows.Forms.GroupBox groupBox5;
     private System.Windows.Forms.Panel panel1;
+    private System.Windows.Forms.CheckBox _showProgressBarCheckBox;
+    private System.Windows.Forms.TextBox _thresholdForProgressDisplayTextBox;
+    private System.Windows.Forms.Label _thresholdForProgressDisplayLabel;
   }
 }

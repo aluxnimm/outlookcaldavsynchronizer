@@ -99,6 +99,7 @@ namespace CalDavSynchronizer
     private readonly SynchronizationStatus _synchronizationStatus;
     private readonly OutlookFolderStrategyWrapper _queryFolderStrategyWrapper;
     private readonly CategorySwitcher _categorySwitcher;
+    private readonly TotalProgressFactory _totalProgressFactory;
 
     public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
     public event EventHandler<SchedulerStatusEventArgs> StatusChanged
@@ -151,12 +152,16 @@ namespace CalDavSynchronizer
 
       _queryFolderStrategyWrapper = new OutlookFolderStrategyWrapper(QueryOutlookFolderByRequestingItemStrategy.Instance);
 
+      _totalProgressFactory = new TotalProgressFactory(
+        _uiService,
+        generalOptions.ShowProgressBar,
+        generalOptions.ThresholdForProgressDisplay,
+        ExceptionHandler.Instance);
+      
+
       _synchronizerFactory = new SynchronizerFactory (
           GetProfileDataDirectory,
-          new TotalProgressFactory (
-              _uiService,
-              int.Parse (ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"]),
-              ExceptionHandler.Instance),
+          _totalProgressFactory,
           _session,
           _daslFilterProvider,
           _outlookAccountPasswordProvider,
@@ -350,8 +355,9 @@ namespace CalDavSynchronizer
       _showReportsWithWarningsImmediately = generalOptions.ShowReportsWithWarningsImmediately;
 
       _daslFilterProvider.SetDoIncludeCustomMessageClasses (generalOptions.IncludeCustomMessageClasses);
-
-      _queryFolderStrategyWrapper.SetStrategy(generalOptions.QueryFoldersJustByGetTable ? QueryOutlookFolderByGetTableStrategy.Instance : QueryOutlookFolderByRequestingItemStrategy.Instance);
+      _totalProgressFactory.ShowProgress = generalOptions.ShowProgressBar;
+      _totalProgressFactory.LoadOperationThresholdForProgressDisplay = generalOptions.ThresholdForProgressDisplay;
+      _queryFolderStrategyWrapper.SetStrategy (generalOptions.QueryFoldersJustByGetTable ? QueryOutlookFolderByGetTableStrategy.Instance : QueryOutlookFolderByRequestingItemStrategy.Instance);
     }
 
     public void PostReport (SynchronizationReport report)

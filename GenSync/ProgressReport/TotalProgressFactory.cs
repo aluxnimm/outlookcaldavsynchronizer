@@ -24,20 +24,28 @@ namespace GenSync.ProgressReport
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
     private readonly IProgressUiFactory _progressUiFactory;
-    private readonly int _loadOperationThresholdForProgressDisplay;
     private readonly IExceptionLogger _exceptionLogger;
 
 
-    public TotalProgressFactory (IProgressUiFactory progressUiFactory, int loadOperationThresholdForProgressDisplay, IExceptionLogger exceptionLogger)
+    public TotalProgressFactory (IProgressUiFactory progressUiFactory, bool showProgress, int loadOperationThresholdForProgressDisplay, IExceptionLogger exceptionLogger)
     {
       _progressUiFactory = progressUiFactory;
-      _loadOperationThresholdForProgressDisplay = loadOperationThresholdForProgressDisplay;
       _exceptionLogger = exceptionLogger;
+
+      LoadOperationThresholdForProgressDisplay = loadOperationThresholdForProgressDisplay;
+      ShowProgress = showProgress;
     }
+
+    public bool ShowProgress { get; set; }
+    public int LoadOperationThresholdForProgressDisplay { get; set; }
+
 
     public ITotalProgressLogger Create ()
     {
-      return new TotalProgressContext (_progressUiFactory, _loadOperationThresholdForProgressDisplay, _exceptionLogger);
+      if (ShowProgress)
+        return new TotalProgressContext(_progressUiFactory, LoadOperationThresholdForProgressDisplay, _exceptionLogger);
+      else
+        return NullTotalProgressLogger.Instance;
     }
   }
 }
