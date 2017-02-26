@@ -106,6 +106,14 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 2.17.0 ####
+- New features
+	- Add general option to show/hide sync progress bar and make threshold for its display configurable.
+	- Add App.config setting for SoftwareOnly WPF Rendering to avoid issues with graphics card drivers and hardware acceleration, ticket #480.
+- Bug fixes
+	- Avoid System.Collections.Generic.KeyNotFoundException for google contact API and consider paging when fetching Google groups, ticket #511.
+	- Follow redirect also for 303 in WebDabClient, ticket #516.
+
 #### 2.16.0 ####
 - New features
 	- Add warning if one-way synchronization mode would lead to deletion of the existing non empty outlook folder or replication of an empty folder to the server.
@@ -1178,6 +1186,7 @@ In the General Options Dialog you can change settings which are used for all syn
 - **Expand all nodes in Synchronization profiles** Enabled by default, expands all nodes in the synchronization profiles to see the suboptions for network settings and mapping configuration.
 - **Enable Tray Icon** Enabled by default, you can disable the tray icon in the Windows Taskbar if you don't need it.
 - **Fix invalid settings** Fixes invalid settings automatically, when synchronization profiles are edited.
+- **Show Sync Progress Bar** and **Sync Progress Bar Threshold (Items)** Enabled by default, show a progress bar if more than the treshold of items need to be loaded during a synchronization run. If disabled, no progress bar is shown but be aware that for larger changes Outlook can freeze, since some operations need to be performed in the Outlook main thread.
 - **Accept invalid chars in server response** If checked invalid characters in XML server responses are allowed. A typical invalid char, sent by some servers is Form feed (0x0C).
 - ** Enable useUnsafeHeaderParsing** Enable, if the server sends invalid http headers, see common network errors. Needed for Yahoo and cPanel Horde servers for example. The general option overrides the setting in the app.config file.
 - **CalDav Connection Timeout (secs)** For slow server connections you can increaste the timeout value (default 90 secs).
@@ -1228,16 +1237,14 @@ Each synchronization attempt is logged in the `log.txt` file. There you can find
  
 ### Debugging and more config options ###
 
-In the install dir (The default is `'C:\Program Files (x86)\Gerhard Zehetbauer\CalDavSynchronizer'`) you will find the app config file
+In the install dir (The default is `'C:\Program Files (x86)\CalDavSynchronizer'`) you will find the app config file
 
     CalDavSynchronizer.dll.config
 
 In that xml file you can config timeout parameters and config options in the section `appSettings`
 After changing parameters you have to restart Outlook.
 
-- **loadOperationThresholdForProgressDisplay**: amount of sync operations to show the progress bar (default 50)
-- **calDavConnectTimeout**: timeout for caldav connects (default 90 sec), also possible via general option.
-- **enableTaskSynchronization** Support for task sync true or false
+- **wpfRenderModeSoftwareOnly**: When set to true, turn off hardware acceleration and use Software Rendering only. Useful if you have issues with WPF and your graphics card driver.
 
 You can also change defaults for some of the general options like CheckForNewVersions, StoreAppDatainRoamingFolder, IncludeCustomMessageClasses and SSL/TLS options, useful for All Users deployment, because general options are stored per user in the HKCU registry hive.
 
