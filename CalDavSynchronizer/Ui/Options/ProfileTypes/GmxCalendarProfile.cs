@@ -28,6 +28,7 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
     }
 
     public override string Name => "GmxCalendar";
+    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_gmx.png";
 
     protected override void InitializeData(Contracts.Options data)
     {

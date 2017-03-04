@@ -28,6 +28,7 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
     }
 
     public override string Name => "Landmarks";
+    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_landmarks.png";
 
     protected override void InitializeData(Contracts.Options data)
     {

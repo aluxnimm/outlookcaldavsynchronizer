@@ -27,7 +27,8 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
     {
     }
 
-    public override string Name => "Sogo";
+    public override string Name { get; } = "Sogo";
+    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_sogo.png";
 
     protected override void InitializeData(Contracts.Options data)
     {
@@ -44,5 +45,7 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
     {
       InitializeData(data);
     }
+
+    
   }
 }

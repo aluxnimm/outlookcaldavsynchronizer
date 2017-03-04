@@ -14,35 +14,26 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
-using System.Windows;
-using CalDavSynchronizer.Ui.Options.ViewModels;
+using CalDavSynchronizer.Ui.Options.ProfileTypes;
 
-namespace CalDavSynchronizer.Ui.Options.Views
+namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  /// <summary>
-  /// Interaction logic for MainWindow.xaml
-  /// </summary>
-  public partial class OptionsWindow : Window
+  class ProfileViewModel
   {
-    public OptionsWindow ()
+
+    public ProfileViewModel(IProfileType profileType)
     {
-      InitializeComponent ();
-      this.DataContextChanged += OptionsWindow_DataContextChanged;
+      if (profileType == null) throw new ArgumentNullException(nameof(profileType));
+      ProfileType = profileType;
+      Name = profileType.Name;
+      ImageUrl = profileType.ImageUrl;
     }
 
-    private void OptionsWindow_DataContextChanged (object sender, DependencyPropertyChangedEventArgs e)
-    {
-      var viewModel = e.NewValue as OptionsCollectionViewModel;
-      if (viewModel != null)
-      {
-        viewModel.CloseRequested += ViewModel_CloseRequested;
-      }
-    }
-
-    private void ViewModel_CloseRequested (object sender, CloseEventArgs e)
-    {
-      DialogResult = e.IsAcceptedByUser;
-    }
+    public IProfileType ProfileType { get; }
+    public string Name { get; }
+    public string ImageUrl { get; }
+    public bool IsSelected { get; set; }
   }
 }

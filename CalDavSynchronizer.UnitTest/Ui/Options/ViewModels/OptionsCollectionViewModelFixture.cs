@@ -79,7 +79,7 @@ namespace CalDavSynchronizer.UnitTest.Ui.Options.ViewModels
 
 
       var closeRequestedHandlerMock = MockRepository.GenerateStrictMock<EventHandler<CloseEventArgs>>();
-      closeRequestedHandlerMock.Expect(_ => _(Arg.Is(_viewModel), Arg<CloseEventArgs>.Matches(e => e.ShouldSaveNewOptions)));
+      closeRequestedHandlerMock.Expect(_ => _(Arg.Is(_viewModel), Arg<CloseEventArgs>.Matches(e => e.IsAcceptedByUser)));
       _viewModel.CloseRequested += closeRequestedHandlerMock;
       _viewModel.CloseCommand.Execute(true);
       closeRequestedHandlerMock.VerifyAllExpectations();
@@ -150,6 +150,8 @@ namespace CalDavSynchronizer.UnitTest.Ui.Options.ViewModels
       {
         throw new NotImplementedException();
       }
+
+      public string ImageUrl { get; } = string.Empty;
     }
 
   }

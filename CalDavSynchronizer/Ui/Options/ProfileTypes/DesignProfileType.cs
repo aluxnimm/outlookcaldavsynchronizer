@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
@@ -24,6 +25,19 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
   {
     public static IProfileType Instance => new DesignProfileType();
 
+
+    public DesignProfileType ()
+    {
+    }
+
+    public DesignProfileType(string name, string imageUrl)
+    {
+      if (name == null) throw new ArgumentNullException(nameof(name));
+      if (imageUrl == null) throw new ArgumentNullException(nameof(imageUrl));
+      Name = name;
+      ImageUrl = imageUrl;
+    }
+    
     public string Name { get; } = "Design Profile";
     public OptionsModel CreateNewModel()
     {
@@ -44,5 +58,8 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
     {
       return GenericOptionsViewModel.DesignInstance;
     }
+
+    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_sogo.png";
+
   }
 }

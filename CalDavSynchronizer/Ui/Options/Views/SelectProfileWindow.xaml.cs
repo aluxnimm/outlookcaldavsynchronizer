@@ -14,24 +14,35 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 using System;
-using System.Collections.Generic;
-using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.Implementation;
-using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
-using CalDavSynchronizer.Ui.Options.Models;
+using System.Windows;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes
+namespace CalDavSynchronizer.Ui.Options.Views
 {
-  public sealed class GenericProfile : ProfileBase
+  /// <summary>
+  /// Interaction logic for MainWindow.xaml
+  /// </summary>
+  public partial class SelectProfileWindow : Window
   {
-    public GenericProfile(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions) : base(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions)
+    public SelectProfileWindow ()
     {
+      InitializeComponent ();
+      DataContextChanged += OptionsWindow_DataContextChanged;
     }
 
-    public override string ImageUrl { get; } = "";
-    public override string Name { get; } = "Generic CalDAV/CardDAV";
+    private void OptionsWindow_DataContextChanged (object sender, DependencyPropertyChangedEventArgs e)
+    {
+      var viewModel = e.NewValue as SelectProfileViewModel;
+      if (viewModel != null)
+      {
+        viewModel.CloseRequested += ViewModel_CloseRequested;
+      }
+    }
+
+    private void ViewModel_CloseRequested (object sender, CloseEventArgs e)
+    {
+      DialogResult = e.IsAcceptedByUser;
+    }
   }
 }

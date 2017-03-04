@@ -372,6 +372,11 @@
     <Compile Include="LoadErrorComponentContainer.cs" />
     <Compile Include="ProfileExportProcessor.cs" />
     <Compile Include="Properties\AssemblyInfoVersion.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Scheduling\ISynchronizationRunLogger.cs" />
     <Compile Include="Scheduling\SchedulerStatusEventArgs.cs" />
     <Compile Include="Scheduling\SynchronizationStatus.cs" />
@@ -406,9 +411,14 @@
     <Compile Include="Ui\Options\ProfileTypes\SarenetProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\SogoProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\YandexProfile.cs" />
+    <Compile Include="Ui\Options\ViewModels\ProfileViewModel.cs" />
+    <Compile Include="Ui\Options\ViewModels\SelectProfileViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\ViewOptions.cs" />
     <Compile Include="Ui\Options\ViewModels\IViewOptions.cs" />
     <Compile Include="Ui\Options\Views\BooleanToVisibilityConverterInverted.cs" />
+    <Compile Include="Ui\Options\Views\SelectProfileWindow.xaml.cs">
+      <DependentUpon>SelectProfileWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Ui\ViewModels\ProgressViewModel.cs" />
     <Compile Include="Ui\Views\ProgressWindow.xaml.cs">
       <DependentUpon>ProgressWindow.xaml</DependentUpon>
@@ -528,11 +538,6 @@
     <Compile Include="NullOutlookAccountPasswordProvider.cs" />
     <Compile Include="OutlookAccountPasswordProvider.cs" />
     <Compile Include="Properties\AssemblyInfoCommon.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Reports\ReportGarbageCollection.cs" />
     <Compile Include="Scheduling\ISynchronizerFactory.cs" />
     <Compile Include="Synchronization\NullOutlookSynchronizer.cs" />
@@ -670,12 +675,6 @@
     <Compile Include="Ui\Reports\Views\SynchronizationReportView.xaml.cs">
       <DependentUpon>SynchronizationReportView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Ui\Options\SelectOptionsDisplayTypeForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Ui\Options\SelectOptionsDisplayTypeForm.Designer.cs">
-      <DependentUpon>SelectOptionsDisplayTypeForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Ui\Options\SelectResourceForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -715,9 +714,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Ui\Options\SelectOptionsDisplayTypeForm.resx">
-      <DependentUpon>SelectOptionsDisplayTypeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\Options\SelectResourceForm.resx">
       <DependentUpon>SelectResourceForm.cs</DependentUpon>
@@ -781,11 +777,11 @@
     <Resource Include="Resources\ok.ico" />
     <Resource Include="Resources\ApplicationIcon.ico" />
     <Resource Include="Resources\error.ico" />
-    <None Include="Resources\logo_fruux.png" />
-    <None Include="Resources\logo_posteo.png" />
-    <None Include="Resources\logo_google.png" />
-    <None Include="Resources\logo_yandex.png" />
-    <None Include="Resources\logo_gmx.png" />
+    <Resource Include="Resources\ProfileLogos\logo_fruux.png" />
+    <Resource Include="Resources\ProfileLogos\logo_posteo.png" />
+    <Resource Include="Resources\ProfileLogos\logo_google.png" />
+    <Resource Include="Resources\ProfileLogos\logo_yandex.png" />
+    <Resource Include="Resources\ProfileLogos\logo_gmx.png" />
     <Resource Include="Resources\Appointment.png" />
     <Resource Include="Resources\Contact.png" />
     <Resource Include="Resources\Task.png" />
@@ -794,11 +790,11 @@
     <Resource Include="Resources\Add.png" />
     <Resource Include="Resources\Copy.png" />
     <Resource Include="Resources\Delete.png" />
-    <Resource Include="Resources\logo_sarenet.png" />
+    <Resource Include="Resources\ProfileLogos\logo_sarenet.png" />
     <Resource Include="Resources\AddMultiple.png" />
-    <Resource Include="Resources\logo_landmarks.png" />
-    <Resource Include="Resources\logo_sogo.png" />
-    <None Include="Resources\logo_cozy.png" />
+    <Resource Include="Resources\ProfileLogos\logo_landmarks.png" />
+    <Resource Include="Resources\ProfileLogos\logo_sogo.png" />
+    <Resource Include="Resources\ProfileLogos\logo_cozy.png" />
     <Resource Include="Resources\Folder.png" />
     <Resource Include="Resources\CollapseAll.png" />
     <Resource Include="Resources\Export.png" />
@@ -806,8 +802,8 @@
     <Resource Include="Resources\ClearCache.png" />
     <Content Include="Resources\LogoBanner.bmp" />
     <Resource Include="Resources\ExpandAll.png" />
-    <Resource Include="Resources\logo_nextcloud.png" />
-    <Resource Include="Resources\logo_easyproject.png" />
+    <Resource Include="Resources\ProfileLogos\logo_nextcloud.png" />
+    <Resource Include="Resources\ProfileLogos\logo_easyproject.png" />
     <Content Include="Resources\outlookcaldavsynchronizerlogoarrow.png" />
   </ItemGroup>
   <ItemGroup>
@@ -830,6 +826,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Page Include="Ui\Options\Views\SelectProfileWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Ui\Views\ProgressWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

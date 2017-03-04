@@ -30,6 +30,7 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
     }
 
     public override string Name { get; } = "Google";
+    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_google.png";
 
 
     protected override OptionsModel CreateModel(Contracts.Options data)

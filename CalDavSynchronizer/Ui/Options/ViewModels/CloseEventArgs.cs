@@ -20,11 +20,11 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
   public class CloseEventArgs : EventArgs
   {
-    public CloseEventArgs (bool shouldSaveNewOptions)
+    public CloseEventArgs (bool isAcceptedByUser)
     {
-      ShouldSaveNewOptions = shouldSaveNewOptions;
+      IsAcceptedByUser = isAcceptedByUser;
     }
 
-    public bool ShouldSaveNewOptions { get; }
+    public bool IsAcceptedByUser { get; }
   }
 }

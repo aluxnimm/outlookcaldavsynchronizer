@@ -26,7 +26,7 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
   public interface IProfileType
   {
     string Name { get; }
-
+    string ImageUrl { get; }
     OptionsModel CreateNewModel();
     OptionsModel CreateModelFromData(Contracts.Options data);
     IOptionsViewModel CreateViewModel(OptionsModel model);

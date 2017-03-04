@@ -55,6 +55,7 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
     }
 
     public abstract string Name { get; }
+    public abstract string ImageUrl { get; }
 
     public OptionsModel CreateNewModel()
     {

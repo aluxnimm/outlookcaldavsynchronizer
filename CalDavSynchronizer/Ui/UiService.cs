@@ -115,7 +115,17 @@ namespace CalDavSynchronizer.Ui
 
     public IProfileType QueryProfileType(IReadOnlyCollection<IProfileType> profileTypes)
     {
-      return SelectOptionsDisplayTypeForm.QueryProfileType(profileTypes);
+      var viewModel = new SelectProfileViewModel(profileTypes, this);
+
+      var window = new SelectProfileWindow();
+      window.DataContext = viewModel;
+      window.Icon = BitmapFrame.Create(new Uri("pack://application:,,,/CalDavSynchronizer;component/Resources/ApplicationIcon.ico"));
+      ElementHost.EnableModelessKeyboardInterop(window);
+
+      if (window.ShowDialog() ?? false)
+        return viewModel.SelectedProfile;
+      else
+        return null;
     }
 
     public void ShowErrorDialog(string errorMessage, string title)

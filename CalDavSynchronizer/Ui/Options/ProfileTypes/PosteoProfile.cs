@@ -28,6 +28,7 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
     }
 
     public override string Name => "Posteo";
+    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_posteo.png";
 
     protected override void InitializeData(Contracts.Options data)
     {

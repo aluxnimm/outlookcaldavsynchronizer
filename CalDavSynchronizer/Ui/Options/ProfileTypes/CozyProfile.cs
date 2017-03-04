@@ -28,6 +28,7 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
     }
 
     public override string Name => "Cozy";
+    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_cozy.png";
 
     protected override void InitializeData(Contracts.Options data)
     {

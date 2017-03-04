@@ -28,7 +28,8 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
     }
 
     public override string Name => "Yandex";
-    
+    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_yandex.png";
+
     protected override void InitializeData(Contracts.Options data)
     {
       data.CalenderUrl = "https://caldav.yandex.ru";
