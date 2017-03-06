@@ -397,6 +397,7 @@
     <Compile Include="Ui\Options\Models\MappingConfigurationModel.cs" />
     <Compile Include="Ui\Options\ProfileTypes\CozyProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\DesignProfileType.cs" />
+    <Compile Include="Ui\Options\ProfileTypes\MailboxOrgProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\FruuxProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\GenericProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\GmxCalendarProfile.cs" />
@@ -769,6 +770,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
+    <Resource Include="Resources\ProfileLogos\logo_mailbox.org.png" />
     <None Include="Resources\SyncReport.png" />
     <Resource Include="Resources\warning.ico" />
     <None Include="Resources\SyncError.png" />

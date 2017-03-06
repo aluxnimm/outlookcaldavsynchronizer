@@ -77,6 +77,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
           "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_sarenet.png",
           "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_sogo.png",
           "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_yandex.png",
+          "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_mailbox.org.png"
         }
         .Select(u => new DesignProfileType(Path.GetFileName(u), u))
         .ToArray(),
