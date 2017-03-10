@@ -1069,6 +1069,11 @@ namespace Thought.vCards
         case "X-ABLABEL":
 			    break;
 
+        case "KIND":
+        case "X-ADDRESSBOOKSERVER-KIND":
+          ReadInto_KIND(card, property);
+			    break;
+
 				case "ADR":
 					ReadInto_ADR(card, property);
 					break;
@@ -1731,14 +1736,47 @@ namespace Thought.vCards
 
 		}
 
-		#endregion
+    #endregion
 
-		#region [ ReadInto_LABEL ]
+    #region [ ReadInto_KIND ]
 
-		/// <summary>
-		///     Reads the LABEL property.
-		/// </summary>
-		private void ReadInto_LABEL(vCard card, vCardProperty property)
+    /// <summary>
+    ///     Reads the KIND property.
+    /// </summary>
+    private void ReadInto_KIND(vCard card, vCardProperty property)
+    {
+
+      if (property.Value == null)
+        return;
+
+      switch (property.ToString().ToUpperInvariant())
+      {
+        case "INDIVIDUAL":
+          card.Kind = vCardKindType.Individual;
+          break;
+
+        case "GROUP":
+          card.Kind = vCardKindType.Group;
+          break;
+
+        case "ORG":
+          card.Kind = vCardKindType.Org;
+          break;
+
+        case "LOCATION":
+          card.Kind = vCardKindType.Location;
+          break;
+      }
+
+    }
+
+    #endregion
+    #region [ ReadInto_LABEL ]
+
+    /// <summary>
+    ///     Reads the LABEL property.
+    /// </summary>
+    private void ReadInto_LABEL(vCard card, vCardProperty property)
 		{
 
 			vCardDeliveryLabel label = new vCardDeliveryLabel();

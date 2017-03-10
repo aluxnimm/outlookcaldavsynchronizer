@@ -62,6 +62,7 @@ namespace Thought.vCards
         private string timeZone;
         private string title;
         private string uniqueId;
+        private vCardKindType kind;
 
         private vCardCertificateCollection certificates;
         private vCardDeliveryAddressCollection deliveryAddresses;
@@ -381,6 +382,26 @@ namespace Thought.vCards
             }
         }
 
+        /// <summary>
+        ///     The kind of the contact.
+        /// </summary>
+        /// <remarks>
+        ///     <para>
+        ///         Kind is not directly supported in the vCard 3.0 specification but expressed as X-ADDRESSBOOK-SERVER-KIND.
+        ///     </para>
+        /// </remarks>
+        /// <seealso cref="vCardKindType"/>
+        public vCardKindType Kind
+        {
+          get
+          {
+            return this.kind;
+          }
+          set
+          {
+            this.kind = value;
+          }
+        }
 
         /// <summary>
         ///     The given (first) name of the person.
