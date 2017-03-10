@@ -75,6 +75,7 @@ namespace Thought.vCards
         private vCardWebsiteCollection websites;
         private vCardIMPPCollection ims;
         private vCardSocialProfileCollection sps;
+        private vCardMemberCollection members;
         private vCardPropertyCollection otherProperties;
 
         /// <summary>
@@ -117,6 +118,7 @@ namespace Thought.vCards
             this.websites = new vCardWebsiteCollection();
             this.ims = new vCardIMPPCollection();
             this.sps = new vCardSocialProfileCollection();
+            this.members = new vCardMemberCollection();
             this.otherProperties = new vCardPropertyCollection();
         }
 
@@ -472,6 +474,16 @@ namespace Thought.vCards
             }
         }
 
+        /// <summary>
+        ///     A collection of members.
+        /// </summary>
+        public vCardMemberCollection Members
+        {
+          get
+          {
+            return this.members;
+          }
+        }
 
         /// <summary>
         ///     The prefix (e.g. "Mr.") of the person.

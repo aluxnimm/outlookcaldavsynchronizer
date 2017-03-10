@@ -1073,6 +1073,10 @@ namespace Thought.vCards
         case "X-ADDRESSBOOKSERVER-KIND":
           ReadInto_KIND(card, property);
 			    break;
+        case "MEMBER":
+        case "X-ADDRESSBOOKSERVER-MEMBER":
+          ReadInto_MEMBER(card, property);
+			    break;
 
 				case "ADR":
 					ReadInto_ADR(card, property);
@@ -1839,14 +1843,45 @@ namespace Thought.vCards
 
 		}
 
-		#endregion
+    #endregion
 
-		#region [ ReadInto_N ]
+    #region [ ReadInto_MEMBER ]
 
-		/// <summary>
-		///     Reads the N property.
-		/// </summary>
-		private void ReadInto_N(vCard card, vCardProperty property)
+    /// <summary>
+    ///     Reads the MEMBER property.
+    /// </summary>
+    private void ReadInto_MEMBER(vCard card, vCardProperty property)
+    {
+
+      if (property.Value != null)
+      {
+
+        vCardMember member = new vCardMember();
+
+        member.DisplayName = property.Subproperties.GetValue("CN");
+        if (string.IsNullOrEmpty(member.DisplayName))
+          member.DisplayName = property.Subproperties.GetValue("X-CN");
+
+        string email = property.Value.ToString();
+
+        if (!string.IsNullOrEmpty(email) && email.Length>7)
+        {
+          member.EmailAddress = email.Substring(7); //skip mailto:
+          card.Members.Add(member);
+        }
+
+      }
+
+    }
+
+    #endregion
+
+    #region [ ReadInto_N ]
+
+    /// <summary>
+    ///     Reads the N property.
+    /// </summary>
+    private void ReadInto_N(vCard card, vCardProperty property)
 		{
 
 			// The N property defines the name of the person. The

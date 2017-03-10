@@ -207,6 +207,10 @@ namespace Thought.vCards
                 properties,
                 card);
 
+            BuildProperties_MEMBER(
+                properties,
+                card);
+
             BuildProperties_LABEL(
                 properties,
                 card);
@@ -826,11 +830,47 @@ namespace Thought.vCards
 
         }
 
-        #endregion
+    #endregion
 
-        #region [ BuildProperties_N ]
+    #region [ BuildProperties_MEMBER ]
 
-        private void BuildProperties_N(
+    /// <summary>
+    ///     Builds the MEMBER property.
+    /// </summary>
+    private void BuildProperties_MEMBER(
+        vCardPropertyCollection properties,
+        vCard card)
+    {
+
+      foreach (vCardMember member in card.Members)
+      {
+
+        if (!string.IsNullOrEmpty(member.EmailAddress))
+        {
+
+          vCardProperty property = new vCardProperty();
+
+          property.Name = "X-ADDRESSBOOKSERVER-MEMBER";
+          property.Value = "mailto:" + member.EmailAddress;
+
+          if (!string.IsNullOrEmpty(member.DisplayName))
+          {
+            property.Subproperties.Add("CN", member.DisplayName);
+          }
+
+          properties.Add(property);
+
+        }
+
+      }
+
+    }
+
+    #endregion
+
+    #region [ BuildProperties_N ]
+
+    private void BuildProperties_N(
             vCardPropertyCollection properties,
             vCard card)
         {

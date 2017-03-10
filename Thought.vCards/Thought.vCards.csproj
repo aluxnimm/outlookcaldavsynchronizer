@@ -63,6 +63,8 @@
       <Link>Properties\AssemblyInfoVersion.cs</Link>
     </Compile>
     <Compile Include="vCardKindType.cs" />
+    <Compile Include="vCardMemberCollection.cs" />
+    <Compile Include="vCardMember.cs" />
     <Compile Include="vCardSocialProfile.cs" />
     <Compile Include="vCardSocialProfileCollection.cs" />
     <Compile Include="vCardIMPP.cs" />
