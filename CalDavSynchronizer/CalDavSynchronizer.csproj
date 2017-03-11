@@ -322,6 +322,16 @@
     <Compile Include="Implementation\Contacts\NullCardDavRepositoryLogger.cs" />
     <Compile Include="Implementation\Contacts\EmailAddressCacheDataAccess.cs" />
     <Compile Include="Implementation\Contacts\CacheItem.cs" />
+    <Compile Include="Implementation\Contacts\VCardTypeSwitch\IdWithType.cs" />
+    <Compile Include="Implementation\Contacts\VCardTypeSwitch\IVCardTypeCache.cs" />
+    <Compile Include="Implementation\Contacts\VCardTypeSwitch\IVCardTypeCacheDataAccess.cs" />
+    <Compile Include="Implementation\Contacts\VCardTypeSwitch\IVCardTypeDetector.cs" />
+    <Compile Include="Implementation\Contacts\VCardTypeSwitch\TypeFilteringVCardRepositoryDecorator.cs" />
+    <Compile Include="Implementation\Contacts\VCardTypeSwitch\VCardEntry.cs" />
+    <Compile Include="Implementation\Contacts\VCardTypeSwitch\VCardType.cs" />
+    <Compile Include="Implementation\Contacts\VCardTypeSwitch\VCardTypeCache.cs" />
+    <Compile Include="Implementation\Contacts\VCardTypeSwitch\VCardTypeCacheDataAccess.cs" />
+    <Compile Include="Implementation\Contacts\VCardTypeSwitch\VCardTypeDetector.cs" />
     <Compile Include="Implementation\DistributionLists\DistListConflictInitialSyncStateCreationStrategyAutomatic.cs" />
     <Compile Include="Implementation\Contacts\EmailAddressCache.cs" />
     <Compile Include="Implementation\DistributionLists\DistListEntityMapper.cs" />
