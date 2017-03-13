@@ -28,6 +28,7 @@ using GenSync.EntityRepositories;
 using GenSync.Logging;
 using GenSync.Synchronization;
 using Microsoft.Office.Interop.Outlook;
+using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation
 {
@@ -37,33 +38,25 @@ namespace CalDavSynchronizer.Implementation
     private readonly IPartialSynchronizer<string, DateTime, WebResourceName, string, ICardDavRepositoryLogger> _contactSynchronizer;
     private readonly ISynchronizer<DistributionListSychronizationContext> _distributionListSynchronizer;
     private readonly EmailAddressCacheDataAccess _emailAddressCacheDataAccess;
-    private readonly LoggingCardDavRepositoryDecorator _cardDavDataAccess;
-    private readonly IEntityRelationDataAccess<string, DateTime, WebResourceName, string> _contactEntityRelationDataAccess;
-    private readonly IReadOnlyEntityRepository<string, DateTime, ContactItemWrapper, ICardDavRepositoryLogger> _outlookContactRepository;
+    private readonly IEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> _loggingCardDavRepositoryDecorator;
     private readonly IOutlookSession _outlookSession;
 
     public ContactAndDistListSynchronizer(
       IPartialSynchronizer<string, DateTime, WebResourceName, string, ICardDavRepositoryLogger> contactSynchronizer, 
       ISynchronizer<DistributionListSychronizationContext> distributionListSynchronizer,
       EmailAddressCacheDataAccess emailAddressCacheDataAccess,
-      LoggingCardDavRepositoryDecorator cardDavDataAccess, 
-      IEntityRelationDataAccess<string, DateTime, WebResourceName, string> contactEntityRelationDataAccess,
-      IReadOnlyEntityRepository<string, DateTime, ContactItemWrapper, ICardDavRepositoryLogger> outlookContactRepository, 
+      IEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> loggingCardDavRepositoryDecorator, 
       IOutlookSession outlookSession)
     {
       if (contactSynchronizer == null) throw new ArgumentNullException(nameof(contactSynchronizer));
       if (distributionListSynchronizer == null) throw new ArgumentNullException(nameof(distributionListSynchronizer));
-      if (cardDavDataAccess == null) throw new ArgumentNullException(nameof(cardDavDataAccess));
-      if (contactEntityRelationDataAccess == null) throw new ArgumentNullException(nameof(contactEntityRelationDataAccess));
-      if (outlookContactRepository == null) throw new ArgumentNullException(nameof(outlookContactRepository));
+      if (loggingCardDavRepositoryDecorator == null) throw new ArgumentNullException(nameof(loggingCardDavRepositoryDecorator));
       if (outlookSession == null) throw new ArgumentNullException(nameof(outlookSession));
 
       _contactSynchronizer = contactSynchronizer;
       _distributionListSynchronizer = distributionListSynchronizer;
       _emailAddressCacheDataAccess = emailAddressCacheDataAccess;
-      _cardDavDataAccess = cardDavDataAccess;
-      _contactEntityRelationDataAccess = contactEntityRelationDataAccess;
-      _outlookContactRepository = outlookContactRepository;
+      _loggingCardDavRepositoryDecorator = loggingCardDavRepositoryDecorator;
       _outlookSession = outlookSession;
     }
 
@@ -79,7 +72,7 @@ namespace CalDavSynchronizer.Implementation
 
       var idsToQuery = emailAddressCache.GetIdsOfEntriesWithEmptyEmailAddress();
       if (idsToQuery.Length > 0)
-        await _cardDavDataAccess.Get(idsToQuery, NullLoadEntityLogger.Instance, emailAddressCache);
+        await _loggingCardDavRepositoryDecorator.Get(idsToQuery, NullLoadEntityLogger.Instance, emailAddressCache);
       var cacheItems = emailAddressCache.Items;
       _emailAddressCacheDataAccess.Save(cacheItems);
 

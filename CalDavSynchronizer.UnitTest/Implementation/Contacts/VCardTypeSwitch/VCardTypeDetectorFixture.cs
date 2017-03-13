@@ -21,6 +21,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Implementation.Contacts;
 using CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch;
 using GenSync;
 using GenSync.EntityRepositories;
@@ -35,13 +36,13 @@ namespace CalDavSynchronizer.UnitTest.Implementation.Contacts.VCardTypeSwitch
   public class VCardTypeDetectorFixture
   {
     private VCardTypeDetector _detector;
-    private IReadOnlyEntityRepository<WebResourceName, string, vCard, int> _readOnlyEntityRepository;
+    private IReadOnlyEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> _readOnlyEntityRepository;
     private DummyDataAccess _dummyDataAccess;
 
     [SetUp]
     public void SetUp()
     {
-      _readOnlyEntityRepository = MockRepository.GenerateStrictMock<IReadOnlyEntityRepository<WebResourceName, string, vCard, int>>();
+      _readOnlyEntityRepository = MockRepository.GenerateStrictMock<IReadOnlyEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger>>();
       _dummyDataAccess = new DummyDataAccess();
       _detector = new VCardTypeDetector(_readOnlyEntityRepository, new VCardTypeCache(_dummyDataAccess));
     }
@@ -111,7 +112,7 @@ namespace CalDavSynchronizer.UnitTest.Implementation.Contacts.VCardTypeSwitch
             new WebResourceName("id4")
           },
           NullLoadEntityLogger.Instance,
-          0))
+          NullCardDavRepositoryLogger.Instance))
         .Return(Task.FromResult<IReadOnlyList<EntityWithId<WebResourceName, vCard>>>(new[]
         {
           EntityWithId.Create(new WebResourceName("id5"), new vCard {Kind = vCardKindType.Group}),

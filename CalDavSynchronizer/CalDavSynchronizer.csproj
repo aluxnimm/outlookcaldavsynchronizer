@@ -333,12 +333,15 @@
     <Compile Include="Implementation\Contacts\VCardTypeSwitch\VCardTypeCacheDataAccess.cs" />
     <Compile Include="Implementation\Contacts\VCardTypeSwitch\VCardTypeDetector.cs" />
     <Compile Include="Implementation\DistributionLists\DistListConflictInitialSyncStateCreationStrategyAutomatic.cs" />
+    <Compile Include="Implementation\DistributionLists\OutlookDistListUpdateFromNewerToOlder.cs" />
+    <Compile Include="Implementation\DistributionLists\SogoDistListConflictInitialSyncStateCreationStrategyAutomatic.cs" />
     <Compile Include="Implementation\Contacts\EmailAddressCache.cs" />
     <Compile Include="Implementation\DistributionLists\DistListEntityMapper.cs" />
+    <Compile Include="Implementation\DistributionLists\SogoDistListEntityMapper.cs" />
     <Compile Include="Implementation\DistributionLists\DistributionListSychronizationContext.cs" />
     <Compile Include="Implementation\DistributionLists\InitialContactEntityMatcher.cs" />
     <Compile Include="Implementation\DistributionLists\KnownDistributionListMember.cs" />
-    <Compile Include="Implementation\DistributionLists\OutlookDistListUpdateFromNewerToOlder.cs" />
+    <Compile Include="Implementation\DistributionLists\OutlookSogoDistListUpdateFromNewerToOlder.cs" />
     <Compile Include="Implementation\DistributionLists\DistListRelationData.cs" />
     <Compile Include="Implementation\DistributionLists\DistListRelationDataFactory.cs" />
     <Compile Include="Implementation\DistributionLists\OutlookDistListRepository.cs" />
@@ -388,6 +391,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Scheduling\ContactSynchronizerComponents.cs" />
     <Compile Include="Scheduling\ISynchronizationRunLogger.cs" />
     <Compile Include="Scheduling\SchedulerStatusEventArgs.cs" />
     <Compile Include="Scheduling\SynchronizationStatus.cs" />

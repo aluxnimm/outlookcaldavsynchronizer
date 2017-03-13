@@ -9,7 +9,7 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   |   |   OutlookSessionStub
 |   |   |   BatchEntityRepositoryAdapter<WebResourceName, String, vCard, ICardDavRepositoryLogger>
 |   |   |   |   LoggingCardDavRepositoryDecorator
-|   |   |   |   |   CardDavRepository
+|   |   |   |   |   CardDavRepository<Int32>
 |   |   |   |   |   |   vCardStandardWriter
 |   |   |   EntityRelationDataAccess<String, DateTime, OutlookContactRelationData, WebResourceName, String>
 |   |   |   EntitySyncStateFactory<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
@@ -19,7 +19,7 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   GenericEqualityComparer<String>
 |   |   |   InitialContactEntityMatcher
 |   |   |   LoggingCardDavRepositoryDecorator
-|   |   |   |   CardDavRepository
+|   |   |   |   CardDavRepository<Int32>
 |   |   |   |   |   vCardStandardWriter
 |   |   |   NullSynchronizationInterceptorFactory<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
 |   |   |   NullTotalProgressFactory

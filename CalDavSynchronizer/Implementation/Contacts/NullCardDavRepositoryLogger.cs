@@ -20,7 +20,7 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  class NullCardDavRepositoryLogger : ICardDavRepositoryLogger
+  public class NullCardDavRepositoryLogger : ICardDavRepositoryLogger
   {
     public static readonly ICardDavRepositoryLogger Instance = new NullCardDavRepositoryLogger();
 

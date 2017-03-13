@@ -29,7 +29,7 @@ using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public class CardDavRepository : CardDavEntityRepository<vCard, vCardStandardReader, int>
+  public class CardDavRepository<TContext> : CardDavEntityRepository<vCard, vCardStandardReader, TContext>
   {
     private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
     private readonly vCardStandardWriter _vCardStandardWriter;

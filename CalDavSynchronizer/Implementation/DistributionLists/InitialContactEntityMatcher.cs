@@ -24,9 +24,9 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.DistributionLists
 {
-  internal class InitialDistListEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, GenericComObjectWrapper<DistListItem>, string, WebResourceName, string, DistributionList, string>
+  internal class InitialSogoDistListEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, GenericComObjectWrapper<DistListItem>, string, WebResourceName, string, DistributionList, string>
   {
-    public InitialDistListEntityMatcher (IEqualityComparer<WebResourceName> btypeIdEqualityComparer)
+    public InitialSogoDistListEntityMatcher (IEqualityComparer<WebResourceName> btypeIdEqualityComparer)
         : base (btypeIdEqualityComparer)
     {
     }
@@ -47,6 +47,34 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
     }
 
     protected override string MapAtypePropertyValue(string value)
+    {
+      return value;
+    }
+  }
+
+  internal class InitialDistListEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, GenericComObjectWrapper<DistListItem>, string, WebResourceName, string, vCard, string>
+  {
+    public InitialDistListEntityMatcher (IEqualityComparer<WebResourceName> btypeIdEqualityComparer)
+        : base (btypeIdEqualityComparer)
+    {
+    }
+
+    protected override bool AreEqual (GenericComObjectWrapper<DistListItem> atypeEntity, vCard btypeEntity)
+    {
+      return atypeEntity.Inner.DLName == btypeEntity.DisplayName;
+    }
+
+    protected override string GetAtypePropertyValue (GenericComObjectWrapper<DistListItem> atypeEntity)
+    {
+      return atypeEntity.Inner.DLName;
+    }
+
+    protected override string GetBtypePropertyValue (vCard btypeEntity)
+    {
+      return btypeEntity.DisplayName;
+    }
+
+    protected override string MapAtypePropertyValue (string value)
     {
       return value;
     }

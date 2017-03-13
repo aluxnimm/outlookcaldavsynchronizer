@@ -19,6 +19,7 @@ namespace CalDavSynchronizer.Contracts
 {
   public enum DistributionListType
   {
-    Sogo = 0
+    Sogo = 0,
+    VCardGroup = 1
   }
 }

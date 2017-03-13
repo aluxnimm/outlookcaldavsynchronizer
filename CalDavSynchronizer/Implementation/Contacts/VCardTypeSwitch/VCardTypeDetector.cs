@@ -29,11 +29,11 @@ namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
 {
   public class VCardTypeDetector : IVCardTypeDetector
   {
-    private readonly IReadOnlyEntityRepository<WebResourceName, string, vCard, int> _cardDavRepository;
+    private readonly IReadOnlyEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> _cardDavRepository;
     private readonly IVCardTypeCache _vcardTypeCache;
 
 
-    public VCardTypeDetector (IReadOnlyEntityRepository<WebResourceName, string, vCard, int> cardDavRepository, IVCardTypeCache vcardTypeCache)
+    public VCardTypeDetector (IReadOnlyEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> cardDavRepository, IVCardTypeCache vcardTypeCache)
     {
       if (cardDavRepository == null)
         throw new ArgumentNullException (nameof (cardDavRepository));
@@ -60,7 +60,7 @@ namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
         return result;
       }
 
-      foreach (var entity in await _cardDavRepository.Get (unknownIds.Select(i => i.Id).ToArray(), NullLoadEntityLogger.Instance, 0))
+      foreach (var entity in await _cardDavRepository.Get (unknownIds.Select(i => i.Id).ToArray(), NullLoadEntityLogger.Instance, NullCardDavRepositoryLogger.Instance))
       {
         var newEntry = new VCardEntry { Id = entity.Id, Type = entity.Entity.Kind == vCardKindType.Group ? VCardType.Group : VCardType.Contact };
         cachedTypesById.Add (entity.Id, newEntry);

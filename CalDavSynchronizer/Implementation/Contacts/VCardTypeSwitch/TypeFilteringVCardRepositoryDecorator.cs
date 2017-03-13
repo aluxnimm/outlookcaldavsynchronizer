@@ -27,13 +27,13 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
 {
-  class TypeFilteringVCardRepositoryDecorator : IEntityRepository<WebResourceName, string, vCard, int>
+  class TypeFilteringVCardRepositoryDecorator<TContext> : IEntityRepository<WebResourceName, string, vCard, TContext>
   {
-    private readonly IEntityRepository<WebResourceName, string, vCard, int> _decorated;
+    private readonly IEntityRepository<WebResourceName, string, vCard, TContext> _decorated;
     private readonly VCardType _typeToFilter;
     private readonly IVCardTypeDetector _typeDetector;
 
-    public TypeFilteringVCardRepositoryDecorator (IEntityRepository<WebResourceName, string, vCard, int> decorated, VCardType typeToFilter, IVCardTypeDetector typeDetector)
+    public TypeFilteringVCardRepositoryDecorator (IEntityRepository<WebResourceName, string, vCard, TContext> decorated, VCardType typeToFilter, IVCardTypeDetector typeDetector)
     {
       if (decorated == null)
         throw new ArgumentNullException (nameof (decorated));
@@ -45,7 +45,7 @@ namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
       _typeDetector = typeDetector;
     }
 
-    public async Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetAllVersions (IEnumerable<WebResourceName> idsOfknownEntities, int context)
+    public async Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetAllVersions (IEnumerable<WebResourceName> idsOfknownEntities, TContext context)
     {
       var versions = await _decorated.GetAllVersions (idsOfknownEntities, context).ConfigureAwait (false);
       return (await _typeDetector.GetVCardTypesAndCleanupCache (versions))
@@ -54,32 +54,40 @@ namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
         .ToArray ();
     }
 
-    public Task<bool> TryDelete (WebResourceName entityId, string version, int context)
+    public Task<bool> TryDelete (WebResourceName entityId, string version, TContext context)
     {
       return _decorated.TryDelete (entityId, version, context);
     }
 
-    public Task<EntityVersion<WebResourceName, string>> TryUpdate (WebResourceName entityId, string version, vCard entityToUpdate, Func<vCard, Task<vCard>> entityModifier, int context)
+    public Task<EntityVersion<WebResourceName, string>> TryUpdate (WebResourceName entityId, string version, vCard entityToUpdate, Func<vCard, Task<vCard>> entityModifier, TContext context)
     {
       return _decorated.TryUpdate (entityId, version, entityToUpdate, entityModifier, context);
     }
 
-    public Task<EntityVersion<WebResourceName, string>> Create (Func<vCard, Task<vCard>> entityInitializer, int context)
+    public async Task<EntityVersion<WebResourceName, string>> Create (Func<vCard, Task<vCard>> entityInitializer, TContext context)
     {
-      return _decorated.Create (entityInitializer, context);
+      return await _decorated.Create (
+        async vCard =>
+        {
+          var initialized = await entityInitializer(vCard);
+          if (_typeToFilter == VCardType.Group)
+            initialized.Kind = vCardKindType.Group;
+          return initialized;
+        },
+        context);
     }
 
-    public Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetVersions (IEnumerable<IdWithAwarenessLevel<WebResourceName>> idsOfEntitiesToQuery, int context)
+    public Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetVersions (IEnumerable<IdWithAwarenessLevel<WebResourceName>> idsOfEntitiesToQuery, TContext context)
     {
       return _decorated.GetVersions (idsOfEntitiesToQuery, context);
     }
 
-    public Task<IReadOnlyList<EntityWithId<WebResourceName, vCard>>> Get (ICollection<WebResourceName> ids, ILoadEntityLogger logger, int context)
+    public Task<IReadOnlyList<EntityWithId<WebResourceName, vCard>>> Get (ICollection<WebResourceName> ids, ILoadEntityLogger logger, TContext context)
     {
       return _decorated.Get (ids, logger, context);
     }
 
-    public Task VerifyUnknownEntities (Dictionary<WebResourceName, string> unknownEntites, int context)
+    public Task VerifyUnknownEntities (Dictionary<WebResourceName, string> unknownEntites, TContext context)
     {
       return _decorated.VerifyUnknownEntities (unknownEntites, context);
     }
