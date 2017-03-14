@@ -39,7 +39,7 @@ namespace CalDavSynchronizer.Implementation.Common
     {
     }
 
-    List<AppointmentSlim> IQueryOutlookAppointmentItemFolderStrategy.QueryAppointmentFolder(NameSpace session, Folder calendarFolder, string filter)
+    List<AppointmentSlim> IQueryOutlookAppointmentItemFolderStrategy.QueryAppointmentFolder(IOutlookSession session, Folder calendarFolder, string filter)
     {
       var events = new List<AppointmentSlim>();
 
@@ -58,7 +58,7 @@ namespace CalDavSynchronizer.Implementation.Common
           var entryId = (string) row[c_entryIdColumnName];
           try
           {
-            using (var appointmentWrapper = GenericComObjectWrapper.Create((AppointmentItem) session.GetItemFromID(entryId, storeId)))
+            using (var appointmentWrapper = GenericComObjectWrapper.Create(session.GetAppointmentItem(entryId, storeId)))
             {
               events.Add(AppointmentSlim.FromAppointmentItem(appointmentWrapper.Inner));
             }
@@ -72,7 +72,7 @@ namespace CalDavSynchronizer.Implementation.Common
       return events;
     }
 
-    List<EntityVersion<string, DateTime>> IQueryOutlookContactItemFolderStrategy.QueryContactItemFolder (NameSpace session, Folder folder, string expectedFolderId, string filter)
+    List<EntityVersion<string, DateTime>> IQueryOutlookContactItemFolderStrategy.QueryContactItemFolder (IOutlookSession session, Folder folder, string expectedFolderId, string filter)
     {
       var contacts = new List<EntityVersion<string, DateTime>> ();
 
@@ -103,7 +103,7 @@ namespace CalDavSynchronizer.Implementation.Common
       return contacts;
     }
 
-    List<EntityVersion<string, DateTime>> IQueryOutlookTaskItemFolderStrategy.QueryTaskFolder (NameSpace session,Folder folder,string filter)
+    List<EntityVersion<string, DateTime>> IQueryOutlookTaskItemFolderStrategy.QueryTaskFolder (IOutlookSession session,Folder folder,string filter)
     {
       var tasks = new List<EntityVersion<string, DateTime>> ();
 
@@ -122,7 +122,7 @@ namespace CalDavSynchronizer.Implementation.Common
           var entryId = (string) row[c_entryIdColumnName];
           try
           {
-            using (var taskWrapper = GenericComObjectWrapper.Create ((TaskItem) session.GetItemFromID (entryId, storeId)))
+            using (var taskWrapper = GenericComObjectWrapper.Create (session.GetTaskItem (entryId, storeId)))
             {
               tasks.Add (new EntityVersion<string, DateTime> (taskWrapper.Inner.EntryID, taskWrapper.Inner.LastModificationTime));
             }
@@ -136,7 +136,7 @@ namespace CalDavSynchronizer.Implementation.Common
       return tasks;
     }
 
-    List<EntityVersion<string, DateTime>> IQueryOutlookDistListItemFolderStrategy.QueryDistListFolder (NameSpace session, Folder folder, string expectedFolderId, string filter)
+    List<EntityVersion<string, DateTime>> IQueryOutlookDistListItemFolderStrategy.QueryDistListFolder (IOutlookSession session, Folder folder, string expectedFolderId, string filter)
     {
       var contacts = new List<EntityVersion<string, DateTime>> ();
 

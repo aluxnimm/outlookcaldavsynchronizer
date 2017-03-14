@@ -165,7 +165,7 @@ namespace CalDavSynchronizer
       _synchronizerFactory = new SynchronizerFactory (
           GetProfileDataDirectory,
           _totalProgressFactory,
-          _session,
+          new OutlookSession(_session),
           _daslFilterProvider,
           _outlookAccountPasswordProvider,
           _globalTimeZoneCache,
@@ -217,7 +217,7 @@ namespace CalDavSynchronizer
         s_logger.Error ("Can't access SyncObjects", ex);
       }
 
-      _categorySwitcher = new CategorySwitcher(_session, _daslFilterProvider, _queryFolderStrategyWrapper);
+      _categorySwitcher = new CategorySwitcher(new OutlookSession(_session), _daslFilterProvider, _queryFolderStrategyWrapper);
     }
 
     private static bool _wpfLocaleSet;

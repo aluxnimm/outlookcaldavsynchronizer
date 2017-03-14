@@ -72,8 +72,8 @@ namespace CalDavSynchronizer.UnitTest.Ui.Options.ViewModels
       var profile = (GenericOptionsViewModel) _viewModel.Options[0];
       profile.Name = "p1";
       profile.Model.CalenderUrl = "http://caldav.com/";
-      
-      _optionTasksStub.Stub(_ => _.PickFolderOrNull()).Return(new OutlookFolderDescriptor("folderId", "storeId", OlItemType.olAppointmentItem, "cal"));
+
+      _optionTasksStub.Stub(_ => _.PickFolderOrNull()).Return(new OutlookFolderDescriptor("folderId", "storeId", OlItemType.olAppointmentItem, "cal", 0));
       _optionTasksStub.Stub(_ => _.GetFolderAccountNameOrNull("storeId")).Return("accountName");
       profile.OutlookFolderViewModel.SelectFolderCommand.Execute(null);
 

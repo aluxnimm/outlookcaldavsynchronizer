@@ -24,6 +24,6 @@ namespace CalDavSynchronizer.Implementation.Common
 {
   public interface IQueryOutlookDistListItemFolderStrategy
   {
-    List<EntityVersion<string, DateTime>> QueryDistListFolder(NameSpace session, Folder folder, string expectedFolderId, string filter);
+    List<EntityVersion<string, DateTime>> QueryDistListFolder(IOutlookSession session, Folder folder, string expectedFolderId, string filter);
   }
 }

@@ -28,16 +28,17 @@ namespace CalDavSynchronizer.Ui
     public string Name { get; }
     public int ItemCount { get; }
 
-    public OutlookFolderDescriptor (string entryId, string storeId, OlItemType defaultItemType, string name)
+    public OutlookFolderDescriptor (string entryId, string storeId, OlItemType defaultItemType, string name, int itemCount)
     {
       EntryId = entryId;
       StoreId = storeId;
       DefaultItemType = defaultItemType;
       Name = name;
+      ItemCount = itemCount;
     }
 
     public  OutlookFolderDescriptor(MAPIFolder folder)
-      : this(folder.EntryID, folder.StoreID, folder.DefaultItemType, folder.Name)
+      : this(folder.EntryID, folder.StoreID, folder.DefaultItemType, folder.Name, 0)
     {
       using (var itemsWrapper = GenericComObjectWrapper.Create (folder.Items))
       {

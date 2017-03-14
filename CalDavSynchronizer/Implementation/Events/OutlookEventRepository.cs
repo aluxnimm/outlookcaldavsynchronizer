@@ -38,7 +38,7 @@ namespace CalDavSynchronizer.Implementation.Events
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
 
-    private readonly NameSpace _mapiNameSpace;
+    private readonly IOutlookSession _session;
     private readonly string _folderId;
     private readonly string _folderStoreId;
     private readonly IDateTimeRangeProvider _dateTimeRangeProvider;
@@ -48,7 +48,7 @@ namespace CalDavSynchronizer.Implementation.Events
     
 
     public OutlookEventRepository (
-      NameSpace mapiNameSpace, 
+      IOutlookSession session, 
       string folderId, 
       string folderStoreId, 
       IDateTimeRangeProvider dateTimeRangeProvider,
@@ -56,8 +56,8 @@ namespace CalDavSynchronizer.Implementation.Events
       IDaslFilterProvider daslFilterProvider,
       IQueryOutlookAppointmentItemFolderStrategy queryFolderStrategy)
     {
-      if (mapiNameSpace == null)
-        throw new ArgumentNullException (nameof (mapiNameSpace));
+      if (session == null)
+        throw new ArgumentNullException (nameof (session));
       if (dateTimeRangeProvider == null)
         throw new ArgumentNullException (nameof (dateTimeRangeProvider));
       if (configuration == null)
@@ -66,7 +66,7 @@ namespace CalDavSynchronizer.Implementation.Events
         throw new ArgumentNullException (nameof (daslFilterProvider));
       if (queryFolderStrategy == null) throw new ArgumentNullException(nameof(queryFolderStrategy));
 
-      _mapiNameSpace = mapiNameSpace;
+      _session = session;
       _folderId = folderId;
       _folderStoreId = folderStoreId;
       _dateTimeRangeProvider = dateTimeRangeProvider;
@@ -77,7 +77,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
     private GenericComObjectWrapper<Folder> CreateFolderWrapper ()
     {
-      return GenericComObjectWrapper.Create ((Folder) _mapiNameSpace.GetFolderFromID (_folderId, _folderStoreId));
+      return GenericComObjectWrapper.Create ((Folder) _session.GetFolderFromId (_folderId, _folderStoreId));
     }
 
     public Task<IReadOnlyList<EntityVersion<AppointmentId, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<AppointmentId>> idsOfEntitiesToQuery, IEventSynchronizationContext context)
@@ -86,7 +86,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
       foreach (var id in idsOfEntitiesToQuery)
       {
-        var appointment = _mapiNameSpace.GetAppointmentItemOrNull (id.Id.EntryId, _folderId, _folderStoreId);
+        var appointment = _session.GetAppointmentItemOrNull (id.Id.EntryId, _folderId, _folderStoreId);
         if (appointment != null)
         {
           try
@@ -168,7 +168,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
         s_logger.DebugFormat ("Using Outlook DASL filter: {0}", filterBuilder.ToString ());
 
-        events = _queryFolderStrategy.QueryAppointmentFolder (_mapiNameSpace, calendarFolderWrapper.Inner, filterBuilder.ToString());
+        events = _queryFolderStrategy.QueryAppointmentFolder (_session, calendarFolderWrapper.Inner, filterBuilder.ToString());
       }
 
       if (_configuration.IsCategoryFilterSticky && _configuration.UseEventCategoryAsFilter)
@@ -176,7 +176,7 @@ namespace CalDavSynchronizer.Implementation.Events
         var knownEntitesThatWereFilteredOut = idsOfknownEntities.Except (events.Select (e => e.Version.Id));
         events.AddRange (
             knownEntitesThatWereFilteredOut
-                .Select (id => _mapiNameSpace.GetAppointmentItemOrNull(id.EntryId, _folderId, _folderStoreId))
+                .Select (id => _session.GetAppointmentItemOrNull(id.EntryId, _folderId, _folderStoreId))
                 .Where (i => i != null)
                 .ToSafeEnumerable ()
                 .Select (AppointmentSlim.FromAppointmentItem));
@@ -211,8 +211,8 @@ namespace CalDavSynchronizer.Implementation.Events
           .Select (id => EntityWithId.Create (
               id,
               new AppointmentItemWrapper (
-                  (AppointmentItem) _mapiNameSpace.GetItemFromID (id.EntryId, _folderStoreId),
-                  entryId => (AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, _folderStoreId))))
+                  _session.GetAppointmentItem (id.EntryId, _folderStoreId),
+                  entryId => _session.GetAppointmentItem (entryId, _folderStoreId))))
           .ToArray();
     }
 
@@ -276,7 +276,7 @@ namespace CalDavSynchronizer.Implementation.Events
       {
         newAppointmentItemWrapper = new AppointmentItemWrapper (
             (AppointmentItem) folderWrapper.Inner.Items.Add (OlItemType.olAppointmentItem),
-            entryId => (AppointmentItem) _mapiNameSpace.GetItemFromID (entryId, _folderStoreId));
+            entryId => _session.GetAppointmentItem (entryId, _folderStoreId));
       }
 
       using (newAppointmentItemWrapper)

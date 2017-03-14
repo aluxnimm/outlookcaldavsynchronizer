@@ -40,7 +40,7 @@ namespace CalDavSynchronizer.Implementation
     private readonly LoggingCardDavRepositoryDecorator _cardDavDataAccess;
     private readonly IEntityRelationDataAccess<string, DateTime, WebResourceName, string> _contactEntityRelationDataAccess;
     private readonly IReadOnlyEntityRepository<string, DateTime, ContactItemWrapper, ICardDavRepositoryLogger> _outlookContactRepository;
-    private readonly NameSpace _outlookSession;
+    private readonly IOutlookSession _outlookSession;
 
     public ContactAndDistListSynchronizer(
       IPartialSynchronizer<string, DateTime, WebResourceName, string, ICardDavRepositoryLogger> contactSynchronizer, 
@@ -49,7 +49,7 @@ namespace CalDavSynchronizer.Implementation
       LoggingCardDavRepositoryDecorator cardDavDataAccess, 
       IEntityRelationDataAccess<string, DateTime, WebResourceName, string> contactEntityRelationDataAccess,
       IReadOnlyEntityRepository<string, DateTime, ContactItemWrapper, ICardDavRepositoryLogger> outlookContactRepository, 
-      NameSpace outlookSession)
+      IOutlookSession outlookSession)
     {
       if (contactSynchronizer == null) throw new ArgumentNullException(nameof(contactSynchronizer));
       if (distributionListSynchronizer == null) throw new ArgumentNullException(nameof(distributionListSynchronizer));

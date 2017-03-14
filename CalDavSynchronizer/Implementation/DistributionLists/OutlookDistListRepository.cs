@@ -35,21 +35,21 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod ().DeclaringType);
 
-    private readonly NameSpace _mapiNameSpace;
+    private readonly IOutlookSession _session;
     private readonly string _folderId;
     private readonly string _folderStoreId;
     private readonly IDaslFilterProvider _daslFilterProvider;
     private readonly IQueryOutlookDistListItemFolderStrategy _queryFolderStrategy;
 
-    public OutlookDistListRepository (NameSpace mapiNameSpace, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider, IQueryOutlookDistListItemFolderStrategy queryFolderStrategy)
+    public OutlookDistListRepository (IOutlookSession session, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider, IQueryOutlookDistListItemFolderStrategy queryFolderStrategy)
     {
-      if (mapiNameSpace == null)
-        throw new ArgumentNullException (nameof (mapiNameSpace));
+      if (session == null)
+        throw new ArgumentNullException (nameof (session));
       if (daslFilterProvider == null)
         throw new ArgumentNullException (nameof (daslFilterProvider));
       if (queryFolderStrategy == null) throw new ArgumentNullException(nameof(queryFolderStrategy));
 
-      _mapiNameSpace = mapiNameSpace;
+      _session = session;
       _folderId = folderId;
       _folderStoreId = folderStoreId;
       _daslFilterProvider = daslFilterProvider;
@@ -61,14 +61,14 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
 
     private GenericComObjectWrapper<Folder> CreateFolderWrapper ()
     {
-      return GenericComObjectWrapper.Create ((Folder) _mapiNameSpace.GetFolderFromID (_folderId, _folderStoreId));
+      return GenericComObjectWrapper.Create ((Folder) _session.GetFolderFromId (_folderId, _folderStoreId));
     }
 
     public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, Tcontext context)
     {
       return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (
           idsOfEntitiesToQuery
-              .Select (id => _mapiNameSpace.GetDistListItemOrNull (id.Id, _folderId, _folderStoreId))
+              .Select (id => _session.GetDistListItemOrNull (id.Id, _folderId, _folderStoreId))
               .Where (e => e != null)
               .ToSafeEnumerable ()
               .Select (c => EntityVersion.Create (c.EntryID, c.LastModificationTime))
@@ -95,7 +95,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
         }
         var filter = _daslFilterProvider.GetDistListFilter (isInstantSearchEnabled);
 
-        return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (_queryFolderStrategy.QueryDistListFolder (_mapiNameSpace, addressbookFolderWrapper.Inner, _folderId, filter));
+        return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (_queryFolderStrategy.QueryDistListFolder (_session, addressbookFolderWrapper.Inner, _folderId, filter));
       }
     }
 
@@ -107,7 +107,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
           .Select (id => EntityWithId.Create (
               id,
               GenericComObjectWrapper.Create (
-                  (DistListItem) _mapiNameSpace.GetItemFromID (id, _folderStoreId))))
+                  _session.GetDistListItem (id, _folderStoreId))))
           .ToArray ();
     }
 

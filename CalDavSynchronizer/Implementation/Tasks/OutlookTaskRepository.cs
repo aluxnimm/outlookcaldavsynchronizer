@@ -36,7 +36,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
   public class OutlookTaskRepository : IEntityRepository<string, DateTime, TaskItemWrapper, int>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
-    private readonly NameSpace _mapiNameSpace;
+    private readonly IOutlookSession _session;
     private readonly string _folderId;
     private readonly string _folderStoreId;
     private readonly IDaslFilterProvider _daslFilterProvider;
@@ -44,10 +44,10 @@ namespace CalDavSynchronizer.Implementation.Tasks
     private readonly IQueryOutlookTaskItemFolderStrategy _queryFolderStrategy;
     
 
-    public OutlookTaskRepository (NameSpace mapiNameSpace, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider, TaskMappingConfiguration configuration, IQueryOutlookTaskItemFolderStrategy queryFolderStrategy)
+    public OutlookTaskRepository (IOutlookSession session, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider, TaskMappingConfiguration configuration, IQueryOutlookTaskItemFolderStrategy queryFolderStrategy)
     {
-      if (mapiNameSpace == null)
-        throw new ArgumentNullException (nameof (mapiNameSpace));
+      if (session == null)
+        throw new ArgumentNullException (nameof (session));
       if (daslFilterProvider == null)
         throw new ArgumentNullException (nameof (daslFilterProvider));
       if (configuration == null)
@@ -58,7 +58,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       if (String.IsNullOrEmpty (folderStoreId))
         throw new ArgumentException ("Argument is null or empty", nameof (folderStoreId));
 
-      _mapiNameSpace = mapiNameSpace;
+      _session = session;
       _folderId = folderId;
       _folderStoreId = folderStoreId;
       _daslFilterProvider = daslFilterProvider;
@@ -72,7 +72,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       foreach (var id in idsOfEntitiesToQuery)
       {
-        var task = _mapiNameSpace.GetTaskItemOrNull (id.Id, _folderId, _folderStoreId);
+        var task = _session.GetTaskItemOrNull (id.Id, _folderId, _folderStoreId);
         if (task != null)
         {
           try
@@ -93,7 +93,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
     private GenericComObjectWrapper<Folder> CreateFolderWrapper ()
     {
-      return GenericComObjectWrapper.Create ((Folder) _mapiNameSpace.GetFolderFromID (_folderId, _folderStoreId));
+      return GenericComObjectWrapper.Create ((Folder) _session.GetFolderFromId (_folderId, _folderStoreId));
     }
 
     public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, int context)
@@ -125,7 +125,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
         s_logger.DebugFormat ("Using Outlook DASL filter: {0}", filterBuilder.ToString());
 
-        tasks = _queryFolderStrategy.QueryTaskFolder(_mapiNameSpace, taskFolderWrapper.Inner, filterBuilder.ToString());
+        tasks = _queryFolderStrategy.QueryTaskFolder(_session, taskFolderWrapper.Inner, filterBuilder.ToString());
       }
 
       if (_configuration.IsCategoryFilterSticky && _configuration.UseTaskCategoryAsFilter)
@@ -133,7 +133,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
         var knownEntitesThatWereFilteredOut = idsOfknownEntities.Except(tasks.Select(e => e.Id));
         tasks.AddRange(
             knownEntitesThatWereFilteredOut
-                .Select(id => _mapiNameSpace.GetTaskItemOrNull(id, _folderId, _folderStoreId))
+                .Select(id => _session.GetTaskItemOrNull(id, _folderId, _folderStoreId))
                 .Where(i => i != null)
                 .ToSafeEnumerable()
                 .Select(t => new EntityVersion<string, DateTime> (t.EntryID, t.LastModificationTime)));
@@ -159,8 +159,8 @@ namespace CalDavSynchronizer.Implementation.Tasks
           .Select (id => EntityWithId.Create (
               id,
               new TaskItemWrapper (
-                  (TaskItem) _mapiNameSpace.GetItemFromID (id, _folderStoreId),
-                  entryId => (TaskItem) _mapiNameSpace.GetItemFromID (entryId, _folderStoreId))))
+                  _session.GetTaskItem (id, _folderStoreId),
+                  entryId => _session.GetTaskItem (entryId, _folderStoreId))))
           .ToArray();
     }
 
@@ -225,7 +225,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
     public async Task<EntityVersion<string, DateTime>> Create (Func<TaskItemWrapper, Task<TaskItemWrapper>> entityInitializer, int context)
     {
       using (var taskFolderWrapper = CreateFolderWrapper ())
-      using (var wrapper = new TaskItemWrapper ((TaskItem) taskFolderWrapper.Inner.Items.Add (OlItemType.olTaskItem), entryId => (TaskItem) _mapiNameSpace.GetItemFromID (entryId, _folderStoreId)))
+      using (var wrapper = new TaskItemWrapper ((TaskItem) taskFolderWrapper.Inner.Items.Add (OlItemType.olTaskItem), entryId =>  _session.GetTaskItem (entryId, _folderStoreId)))
       {
         using (var initializedWrapper = await entityInitializer (wrapper))
         {

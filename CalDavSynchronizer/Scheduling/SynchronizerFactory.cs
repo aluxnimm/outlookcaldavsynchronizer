@@ -62,40 +62,21 @@ namespace CalDavSynchronizer.Scheduling
 
     private readonly string _outlookEmailAddress;
     private readonly ITotalProgressFactory _totalProgressFactory;
-    private readonly NameSpace _outlookSession;
+    private readonly IOutlookSession _outlookSession;
     private readonly Func<Guid, string> _profileDataDirectoryFactory;
     private readonly IDaslFilterProvider _daslFilterProvider;
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
     private readonly GlobalTimeZoneCache _globalTimeZoneCache;
     private readonly IQueryOutlookFolderStrategy _queryFolderStrategy;
 
-    public SynchronizerFactory (Func<Guid, string> profileDataDirectoryFactory, ITotalProgressFactory totalProgressFactory, NameSpace outlookSession, IDaslFilterProvider daslFilterProvider, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, GlobalTimeZoneCache globalTimeZoneCache, IQueryOutlookFolderStrategy queryFolderStrategy)
+    public SynchronizerFactory (Func<Guid, string> profileDataDirectoryFactory, ITotalProgressFactory totalProgressFactory, IOutlookSession outlookSession, IDaslFilterProvider daslFilterProvider, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, GlobalTimeZoneCache globalTimeZoneCache, IQueryOutlookFolderStrategy queryFolderStrategy)
     {
       if (outlookAccountPasswordProvider == null)
         throw new ArgumentNullException (nameof (outlookAccountPasswordProvider));
       if (queryFolderStrategy == null) throw new ArgumentNullException(nameof(queryFolderStrategy));
 
-      _outlookEmailAddress = string.Empty;
-      try
-      {
-        using (var currentUser = GenericComObjectWrapper.Create (outlookSession.CurrentUser))
-        {
-          if (currentUser.Inner != null)
-          {
-            using (var addressEntry = GenericComObjectWrapper.Create (currentUser.Inner.AddressEntry))
-            {
-              if (addressEntry.Inner != null)
-              {
-                _outlookEmailAddress = OutlookUtility.GetEmailAdressOrNull (addressEntry.Inner, NullEntitySynchronizationLogger.Instance, s_logger) ?? string.Empty;
-              }
-            }
-          }
-        }
-      }
-      catch (COMException ex)
-      {
-        s_logger.Error ("Can't access currentuser email adress.", ex);
-      }
+      _outlookEmailAddress = outlookSession.GetCurrentUserEmailAddressOrNull() ?? string.Empty;
+     
 
       _totalProgressFactory = totalProgressFactory;
       _outlookSession = outlookSession;
@@ -141,19 +122,12 @@ namespace CalDavSynchronizer.Scheduling
         throw new ArgumentNullException (nameof (generalOptions));
 
       var synchronizerComponents = new AvailableSynchronizerComponents();
-
-      OlItemType defaultItemType;
-      string folderName;
-
-      using (var outlookFolderWrapper = GenericComObjectWrapper.Create ((Folder) _outlookSession.GetFolderFromID (options.OutlookFolderEntryId, options.OutlookFolderStoreId)))
-      {
-        defaultItemType = outlookFolderWrapper.Inner.DefaultItemType;
-        folderName = outlookFolderWrapper.Inner.Name;
-      }
-
+      
+      var folder = _outlookSession.GetFolderDescriptorFromId(options.OutlookFolderEntryId, options.OutlookFolderStoreId);
+      
       IOutlookSynchronizer synchronizer;
 
-      switch (defaultItemType)
+      switch (folder.DefaultItemType)
       {
         case OlItemType.olAppointmentItem:
           synchronizer = await CreateEventSynchronizer (options, generalOptions, synchronizerComponents);
@@ -174,8 +148,8 @@ namespace CalDavSynchronizer.Scheduling
           throw new NotSupportedException (
               string.Format (
                   "The folder '{0}' contains an item type ('{1}'), whis is not supported for synchronization",
-                  folderName,
-                  defaultItemType));
+                  folder.Name,
+                  folder.DefaultItemType));
       }
 
       return Tuple.Create(synchronizer, synchronizerComponents);
@@ -406,8 +380,8 @@ namespace CalDavSynchronizer.Scheduling
 
       var entityMapper = new EventEntityMapper (
           _outlookEmailAddress, new Uri ("mailto:" + options.EmailAddress),
-          _outlookSession.Application.TimeZones.CurrentTimeZone.ID,
-          _outlookSession.Application.Version,
+          _outlookSession.TimeZones.CurrentTimeZone.ID,
+          _outlookSession.ApplicationVersion,
           timeZoneCache,
           mappingParameters,
           configuredEventTimeZoneOrNull);
@@ -529,7 +503,7 @@ namespace CalDavSynchronizer.Scheduling
 
       var relationDataFactory = new TaskRelationDataFactory ();
       var syncStateFactory = new EntitySyncStateFactory<string, DateTime, TaskItemWrapper, WebResourceName, string, IICalendar, int> (
-          new TaskMapper (_outlookSession.Application.TimeZones.CurrentTimeZone.ID, mappingParameters),
+          new TaskMapper (_outlookSession.TimeZones.CurrentTimeZone.ID, mappingParameters),
           relationDataFactory,
           ExceptionHandler.Instance);
 

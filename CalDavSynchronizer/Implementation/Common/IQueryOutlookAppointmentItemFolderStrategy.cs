@@ -23,6 +23,6 @@ namespace CalDavSynchronizer.Implementation.Common
 {
   public interface IQueryOutlookAppointmentItemFolderStrategy
   {
-    List<AppointmentSlim> QueryAppointmentFolder(NameSpace session, Folder calendarFolder, string filter);
+    List<AppointmentSlim> QueryAppointmentFolder(IOutlookSession session, Folder calendarFolder, string filter);
   }
 }

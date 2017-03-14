@@ -34,7 +34,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
   {
     private readonly Dictionary<string, string> _serverFileNamesByEmailAddress = new Dictionary<string, string>();
 
-    public DistributionListSychronizationContext(CacheItem[] emailAddressCacheItems, NameSpace outlookSession)
+    public DistributionListSychronizationContext(CacheItem[] emailAddressCacheItems, IOutlookSession outlookSession)
     {
       if (emailAddressCacheItems == null) throw new ArgumentNullException(nameof(emailAddressCacheItems));
       if (outlookSession == null) throw new ArgumentNullException(nameof(outlookSession));
@@ -50,7 +50,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
       }
     }
 
-    public NameSpace OutlookSession { get; }
+    public IOutlookSession OutlookSession { get; }
     
     public string GetServerFileNameByEmailAddress(string emailAddress)
     {

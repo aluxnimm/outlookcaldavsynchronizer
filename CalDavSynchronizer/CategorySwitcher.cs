@@ -40,9 +40,9 @@ namespace CalDavSynchronizer
     // ReSharper disable once ConvertToConstant.Local
 
 
-    private readonly NameSpace _session;
+    private readonly IOutlookSession _session;
 
-    public CategorySwitcher(NameSpace session, DaslFilterProvider daslFilterProvider, OutlookFolderStrategyWrapper queryFolderStrategyWrapper)
+    public CategorySwitcher(IOutlookSession session, DaslFilterProvider daslFilterProvider, OutlookFolderStrategyWrapper queryFolderStrategyWrapper)
     {
       if (session == null) throw new ArgumentNullException(nameof(session));
       if (daslFilterProvider == null) throw new ArgumentNullException(nameof(daslFilterProvider));
@@ -123,7 +123,7 @@ namespace CalDavSynchronizer
     private void SwitchEventCategories(ChangedOptions changedOption, string oldCategory, string newCategory)
     {
       using (var calendarFolderWrapper = GenericComObjectWrapper.Create(
-        (Folder) _session.GetFolderFromID(changedOption.New.OutlookFolderEntryId, changedOption.New.OutlookFolderStoreId)))
+        _session.GetFolderFromId(changedOption.New.OutlookFolderEntryId, changedOption.New.OutlookFolderStoreId)))
       {
         s_logger.Info($"Switching category of items in folder '{calendarFolderWrapper.Inner.Name}' from '{oldCategory}' to '{newCategory}', due to changes in profile '{changedOption.New.Name}' (OptionId:'{changedOption.New.Id}' FolderId:'{changedOption.New.OutlookFolderEntryId}' StoreId:'{changedOption.New.OutlookFolderStoreId}')");
 
@@ -160,7 +160,7 @@ namespace CalDavSynchronizer
     private void SwitchTaskCategories(ChangedOptions changedOption, string oldCategory, string newCategory)
     {
       using (var taskFolderWrapper = GenericComObjectWrapper.Create(
-        (Folder) _session.GetFolderFromID(changedOption.New.OutlookFolderEntryId, changedOption.New.OutlookFolderStoreId)))
+        _session.GetFolderFromId(changedOption.New.OutlookFolderEntryId, changedOption.New.OutlookFolderStoreId)))
       {
         s_logger.Info($"Switching category of items in folder '{taskFolderWrapper.Inner.Name}' from '{oldCategory}' to '{newCategory}', due to changes in profile '{changedOption.New.Name}' (OptionId:'{changedOption.New.Id}' FolderId:'{changedOption.New.OutlookFolderEntryId}' StoreId:'{changedOption.New.OutlookFolderStoreId}')");
 
@@ -197,8 +197,8 @@ namespace CalDavSynchronizer
     private void SwitchEventCategories(ChangedOptions changedOption, string oldCategory, string newCategory, AppointmentId eventId)
     {
       using (var eventWrapper = new AppointmentItemWrapper(
-        (AppointmentItem) _session.GetItemFromID(eventId.EntryId, changedOption.New.OutlookFolderStoreId),
-        entryId => (AppointmentItem) _session.GetItemFromID(entryId, changedOption.New.OutlookFolderStoreId)))
+        _session.GetAppointmentItem(eventId.EntryId, changedOption.New.OutlookFolderStoreId),
+        entryId => _session.GetAppointmentItem(entryId, changedOption.New.OutlookFolderStoreId)))
       {
         var categories = eventWrapper.Inner.Categories
           .Split(new[] {CultureInfo.CurrentCulture.TextInfo.ListSeparator}, StringSplitOptions.RemoveEmptyEntries)
@@ -218,8 +218,8 @@ namespace CalDavSynchronizer
     private void SwitchTaskCategories(ChangedOptions changedOption, string oldCategory, string newCategory, string eventId)
     {
       using (var taskWrapper = new TaskItemWrapper(
-        (TaskItem) _session.GetItemFromID(eventId, changedOption.New.OutlookFolderStoreId),
-        entryId => (TaskItem) _session.GetItemFromID(entryId, changedOption.New.OutlookFolderStoreId)))
+        _session.GetTaskItem(eventId, changedOption.New.OutlookFolderStoreId),
+        entryId => _session.GetTaskItem(entryId, changedOption.New.OutlookFolderStoreId)))
       {
         var categories = taskWrapper.Inner.Categories
           .Split(new[] {CultureInfo.CurrentCulture.TextInfo.ListSeparator}, StringSplitOptions.RemoveEmptyEntries)

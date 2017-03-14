@@ -35,7 +35,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod ().DeclaringType);
 
-    private readonly NameSpace _mapiNameSpace;
+    private readonly IOutlookSession _session;
     private readonly string _folderId;
     private readonly string _folderStoreId;
     private readonly IDaslFilterProvider _daslFilterProvider;
@@ -44,15 +44,15 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
     private const string PR_ASSOCIATED_BIRTHDAY_APPOINTMENT_ID = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/804D0102";
 
-    public OutlookContactRepository (NameSpace mapiNameSpace, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider, IQueryOutlookContactItemFolderStrategy queryFolderStrategy)
+    public OutlookContactRepository (IOutlookSession session, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider, IQueryOutlookContactItemFolderStrategy queryFolderStrategy)
     {
-      if (mapiNameSpace == null)
-        throw new ArgumentNullException (nameof (mapiNameSpace));
+      if (session == null)
+        throw new ArgumentNullException (nameof (session));
       if (daslFilterProvider == null)
         throw new ArgumentNullException (nameof (daslFilterProvider));
       if (queryFolderStrategy == null) throw new ArgumentNullException(nameof(queryFolderStrategy));
 
-      _mapiNameSpace = mapiNameSpace;
+      _session = session;
       _folderId = folderId;
       _folderStoreId = folderStoreId;
       _daslFilterProvider = daslFilterProvider;
@@ -61,14 +61,14 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
     private GenericComObjectWrapper<Folder> CreateFolderWrapper ()
     {
-      return GenericComObjectWrapper.Create ((Folder) _mapiNameSpace.GetFolderFromID (_folderId, _folderStoreId));
+      return GenericComObjectWrapper.Create (_session.GetFolderFromId (_folderId, _folderStoreId));
     }
 
     public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, Tcontext context)
     {
       return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (
           idsOfEntitiesToQuery
-              .Select (id => _mapiNameSpace.GetContactItemOrNull (id.Id, _folderId, _folderStoreId))
+              .Select (id => _session.GetContactItemOrNull (id.Id, _folderId, _folderStoreId))
               .Where (e => e != null)
               .ToSafeEnumerable ()
               .Select (c => EntityVersion.Create (c.EntryID, c.LastModificationTime))
@@ -96,7 +96,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
         var filter = _daslFilterProvider.GetContactFilter(isInstantSearchEnabled);
 
-        return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>>(_queryFolderStrategy.QueryContactItemFolder(_mapiNameSpace, addressbookFolderWrapper.Inner, _folderId, filter));
+        return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>>(_queryFolderStrategy.QueryContactItemFolder(_session, addressbookFolderWrapper.Inner, _folderId, filter));
       }
     }
 
@@ -115,8 +115,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
           .Select (id => EntityWithId.Create (
               id,
               new ContactItemWrapper (
-                  (ContactItem) _mapiNameSpace.GetItemFromID (id, _folderStoreId),
-                  entryId => (ContactItem) _mapiNameSpace.GetItemFromID (entryId, _folderStoreId))))
+                  _session.GetContactItem (id, _folderStoreId),
+                  entryId => _session.GetContactItem (entryId, _folderStoreId))))
           .ToArray ();
     }
 
@@ -160,8 +160,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
           {
             Byte[] ba = contact.Inner.GetPropertySafe (PR_ASSOCIATED_BIRTHDAY_APPOINTMENT_ID);
             string birthdayAppointmentItemID = BitConverter.ToString (ba).Replace ("-", string.Empty);
-            AppointmentItemWrapper birthdayWrapper = new AppointmentItemWrapper ((AppointmentItem) _mapiNameSpace.GetItemFromID (birthdayAppointmentItemID),
-                                                                                  entryId => (AppointmentItem) _mapiNameSpace.GetItemFromID (birthdayAppointmentItemID));
+            AppointmentItemWrapper birthdayWrapper = new AppointmentItemWrapper ( _session.GetAppointmentItem (birthdayAppointmentItemID),
+                                                                                  entryId =>  _session.GetAppointmentItem (birthdayAppointmentItemID));
             birthdayWrapper.Inner.Delete ();
           }
           catch (COMException ex)
@@ -183,7 +183,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       {
         newWrapper = new ContactItemWrapper (
           (ContactItem) folderWrapper.Inner.Items.Add (OlItemType.olContactItem),
-          entryId => (ContactItem) _mapiNameSpace.GetItemFromID (entryId, _folderStoreId));
+          entryId => (ContactItem) _session.GetContactItem (entryId, _folderStoreId));
       }
 
       using (newWrapper)

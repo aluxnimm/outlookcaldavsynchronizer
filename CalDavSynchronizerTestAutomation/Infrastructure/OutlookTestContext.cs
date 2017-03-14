@@ -84,14 +84,14 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
       s_synchronizerFactory = new SynchronizerFactory (
           _ => @"a:\invalid path",
           NullTotalProgressFactory.Instance,
-          s_mapiNameSpace,
+          new OutlookSession(s_mapiNameSpace),
           daslFilterProvider,
           new OutlookAccountPasswordProvider (mapiNameSpace.CurrentProfileName, mapiNameSpace.Application.Version),
           globalTimeZoneCache,
           QueryOutlookFolderByRequestingItemStrategy.Instance);
 
       s_outlookEventRepository = new OutlookEventRepository (
-          s_mapiNameSpace,
+          new OutlookSession(s_mapiNameSpace),
           s_outlookFolderEntryId,
           s_outlookFolderStoreId,
           NullDateTimeRangeProvider.Instance,

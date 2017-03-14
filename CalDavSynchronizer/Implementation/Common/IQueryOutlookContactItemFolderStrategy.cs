@@ -24,6 +24,6 @@ namespace CalDavSynchronizer.Implementation.Common
 {
   public interface IQueryOutlookContactItemFolderStrategy
   {
-    List<EntityVersion<string, DateTime>> QueryContactItemFolder(NameSpace session, Folder folder, string expectedFolderId, string filter);
+    List<EntityVersion<string, DateTime>> QueryContactItemFolder(IOutlookSession session, Folder folder, string expectedFolderId, string filter);
   }
 }

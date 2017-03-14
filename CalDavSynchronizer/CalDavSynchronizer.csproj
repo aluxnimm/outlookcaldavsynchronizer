@@ -314,7 +314,6 @@
     <Compile Include="Implementation\Common\QueryOutlookFolderByGetTableStrategy.cs" />
     <Compile Include="Implementation\Common\QueryOutlookFolderByRequestingItemStrategy.cs" />
     <Compile Include="Implementation\Common\IQueryOutlookAppointmentItemFolderStrategy.cs" />
-    <Compile Include="Implementation\Common\NameSpaceExtensions.cs" />
     <Compile Include="Implementation\Common\OutlookUtility.cs" />
     <Compile Include="Implementation\Contacts\CardDavRepository.cs" />
     <Compile Include="Implementation\Contacts\ICardDavRepositoryLogger.cs" />
@@ -368,8 +367,10 @@
     <Compile Include="Implementation\TimeZones\GlobalTimeZoneCache.cs" />
     <Compile Include="Implementation\TimeZones\ITimeZoneCache.cs" />
     <Compile Include="Implementation\TimeZones\TimeZoneCache.cs" />
+    <Compile Include="IOutlookSession.cs" />
     <Compile Include="IProfileExportProcessor.cs" />
     <Compile Include="LoadErrorComponentContainer.cs" />
+    <Compile Include="OutlookSession.cs" />
     <Compile Include="ProfileExportProcessor.cs" />
     <Compile Include="Properties\AssemblyInfoVersion.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
