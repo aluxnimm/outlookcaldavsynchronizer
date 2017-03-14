@@ -1,0 +1,74 @@
+OutlookSynchronizer<WebResourceName, String>
+|   ContactAndDistListSynchronizer
+|   |   EmailAddressCacheDataAccess
+|   |   EntityRelationDataAccess<String, DateTime, OutlookContactRelationData, WebResourceName, String>
+|   |   LoggingCardDavRepositoryDecorator
+|   |   |   CardDavRepository
+|   |   |   |   vCardStandardWriter
+|   |   OutlookContactRepository<ICardDavRepositoryLogger>
+|   |   |   NullDaslFilterProvider
+|   |   |   NullQueryOutlookFolderStrategy
+|   |   |   OutlookSessionStub
+|   |   OutlookSessionStub
+|   |   Synchronizer<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   BatchEntityRepositoryAdapter<String, DateTime, ContactItemWrapper, ICardDavRepositoryLogger>
+|   |   |   |   OutlookContactRepository<ICardDavRepositoryLogger>
+|   |   |   |   |   NullDaslFilterProvider
+|   |   |   |   |   NullQueryOutlookFolderStrategy
+|   |   |   |   |   OutlookSessionStub
+|   |   |   BatchEntityRepositoryAdapter<WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   LoggingCardDavRepositoryDecorator
+|   |   |   |   |   CardDavRepository
+|   |   |   |   |   |   vCardStandardWriter
+|   |   |   EntityRelationDataAccess<String, DateTime, OutlookContactRelationData, WebResourceName, String>
+|   |   |   EntitySyncStateFactory<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   EntitySyncStateEnvironment<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   GenericEqualityComparer<DateTime>
+|   |   |   GenericEqualityComparer<String>
+|   |   |   GenericEqualityComparer<String>
+|   |   |   InitialContactEntityMatcher
+|   |   |   LoggingCardDavRepositoryDecorator
+|   |   |   |   CardDavRepository
+|   |   |   |   |   vCardStandardWriter
+|   |   |   NullSynchronizationInterceptorFactory<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   NullTotalProgressFactory
+|   |   |   OutlookContactRelationDataFactory
+|   |   |   OutlookContactRepository<ICardDavRepositoryLogger>
+|   |   |   |   NullDaslFilterProvider
+|   |   |   |   NullQueryOutlookFolderStrategy
+|   |   |   |   OutlookSessionStub
+|   |   |   TwoWayInitialSyncStateCreationStrategy<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   ContactConflictInitialSyncStateCreationStrategyAutomatic
+|   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   EntitySyncStateFactory<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   WebResourceNameEqualityComparer
+|   |   Synchronizer<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   BatchEntityRepositoryAdapter<String, DateTime, GenericComObjectWrapper<DistListItem>, DistributionListSychronizationContext>
+|   |   |   |   OutlookDistListRepository<DistributionListSychronizationContext>
+|   |   |   |   |   NullDaslFilterProvider
+|   |   |   |   |   NullQueryOutlookFolderStrategy
+|   |   |   |   |   OutlookSessionStub
+|   |   |   BatchEntityRepositoryAdapter<WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   |   SogoDistributionListRepository
+|   |   |   DistListRelationDataFactory
+|   |   |   EntityRelationDataAccess<String, DateTime, DistListRelationData, WebResourceName, String>
+|   |   |   EntitySyncStateFactory<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   |   EntitySyncStateEnvironment<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   GenericEqualityComparer<DateTime>
+|   |   |   GenericEqualityComparer<String>
+|   |   |   GenericEqualityComparer<String>
+|   |   |   InitialDistListEntityMatcher
+|   |   |   NullSynchronizationInterceptorFactory<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   NullTotalProgressFactory
+|   |   |   OutlookDistListRepository<DistributionListSychronizationContext>
+|   |   |   |   NullDaslFilterProvider
+|   |   |   |   NullQueryOutlookFolderStrategy
+|   |   |   |   OutlookSessionStub
+|   |   |   SogoDistributionListRepository
+|   |   |   TwoWayInitialSyncStateCreationStrategy<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   |   DistListConflictInitialSyncStateCreationStrategyAutomatic
+|   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   |   EntitySyncStateFactory<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   WebResourceNameEqualityComparer

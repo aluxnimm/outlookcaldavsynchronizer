@@ -84,6 +84,12 @@
     <Compile Include="DDayICalWorkaround\CalendarDataPreprocessorFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scheduling\SynchronizationWorkerFixture.cs" />
+    <Compile Include="Scheduling\SynchronizerFactoryFixture\TypeExtensions.cs" />
+    <Compile Include="Scheduling\SynchronizerFactoryFixture\NullDaslFilterProvider.cs" />
+    <Compile Include="Scheduling\SynchronizerFactoryFixture\NullQueryOutlookFolderStrategy.cs" />
+    <Compile Include="Scheduling\SynchronizerFactoryFixture\OutlookSessionStub.cs" />
+    <Compile Include="Scheduling\SynchronizerFactoryFixture\DependencyGraphFixture.cs" />
+    <Compile Include="Scheduling\SynchronizerFactoryFixture\TypeWithDependecies.cs" />
     <Compile Include="Ui\Options\ViewModels\OptionsCollectionViewModelFixture.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -99,8 +105,17 @@
       <Project>{76c932e7-eca5-4010-b602-2104327ee5ee}</Project>
       <Name>GenSync</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Thought.vCards\Thought.vCards.csproj">
+      <Project>{a53d3ceb-f7af-41ab-aa04-4d3cf684bbaf}</Project>
+      <Name>Thought.vCards</Name>
+    </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Scheduling\SynchronizerFactoryFixture\DependencyGraphs\ContactSynchronizerWithoutDistLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scheduling\SynchronizerFactoryFixture\DependencyGraphs\ContactSynchronizerWithSogoDistLists.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

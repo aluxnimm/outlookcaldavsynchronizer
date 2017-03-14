@@ -1,0 +1,36 @@
+OutlookSynchronizer<WebResourceName, String>
+|   ContextCreatingSynchronizerDecorator<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   SynchronizationContextFactory<ICardDavRepositoryLogger>
+|   |   Synchronizer<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   BatchEntityRepositoryAdapter<String, DateTime, ContactItemWrapper, ICardDavRepositoryLogger>
+|   |   |   |   OutlookContactRepository<ICardDavRepositoryLogger>
+|   |   |   |   |   NullDaslFilterProvider
+|   |   |   |   |   NullQueryOutlookFolderStrategy
+|   |   |   |   |   OutlookSessionStub
+|   |   |   BatchEntityRepositoryAdapter<WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   LoggingCardDavRepositoryDecorator
+|   |   |   |   |   CardDavRepository
+|   |   |   |   |   |   vCardStandardWriter
+|   |   |   EntityRelationDataAccess<String, DateTime, OutlookContactRelationData, WebResourceName, String>
+|   |   |   EntitySyncStateFactory<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   EntitySyncStateEnvironment<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   GenericEqualityComparer<DateTime>
+|   |   |   GenericEqualityComparer<String>
+|   |   |   GenericEqualityComparer<String>
+|   |   |   InitialContactEntityMatcher
+|   |   |   LoggingCardDavRepositoryDecorator
+|   |   |   |   CardDavRepository
+|   |   |   |   |   vCardStandardWriter
+|   |   |   NullSynchronizationInterceptorFactory<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   NullTotalProgressFactory
+|   |   |   OutlookContactRelationDataFactory
+|   |   |   OutlookContactRepository<ICardDavRepositoryLogger>
+|   |   |   |   NullDaslFilterProvider
+|   |   |   |   NullQueryOutlookFolderStrategy
+|   |   |   |   OutlookSessionStub
+|   |   |   TwoWayInitialSyncStateCreationStrategy<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   ContactConflictInitialSyncStateCreationStrategyAutomatic
+|   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   EntitySyncStateFactory<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   WebResourceNameEqualityComparer
