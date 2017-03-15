@@ -1864,7 +1864,7 @@ namespace Thought.vCards
 
         string email = property.Value.ToString();
 
-        if (!string.IsNullOrEmpty(email) && email.Length>7)
+        if (!string.IsNullOrEmpty(email) && email.StartsWith("mailto:", StringComparison.InvariantCultureIgnoreCase))
         {
           member.EmailAddress = email.Substring(7); //skip mailto:
           card.Members.Add(member);
