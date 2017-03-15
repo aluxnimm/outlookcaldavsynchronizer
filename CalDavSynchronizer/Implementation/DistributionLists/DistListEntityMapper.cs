@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -26,6 +27,15 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
       target.FamilyName = source.Inner.DLName;
 
       target.AccessClassification = CommonEntityMapper.MapPrivacy1To2(source.Inner.Sensitivity);
+
+      target.Categories.Clear();
+      if (!string.IsNullOrEmpty(source.Inner.Categories))
+      {
+        Array.ForEach(
+            source.Inner.Categories.Split(new[] { CultureInfo.CurrentCulture.TextInfo.ListSeparator }, StringSplitOptions.RemoveEmptyEntries),
+            c => target.Categories.Add(c.Trim())
+            );
+      }
 
       target.Notes.Clear();
       if (!string.IsNullOrEmpty(source.Inner.Body))
@@ -63,6 +73,17 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
       target.Inner.DLName = source.FormattedName;
 
       target.Inner.Sensitivity = CommonEntityMapper.MapPrivacy2To1(source.AccessClassification);
+
+      if (source.Categories.Count > 0)
+      {
+        string[] categories = new string[source.Categories.Count];
+        source.Categories.CopyTo(categories, 0);
+        target.Inner.Categories = string.Join(CultureInfo.CurrentCulture.TextInfo.ListSeparator, categories);
+      }
+      else
+      {
+        target.Inner.Categories = string.Empty;
+      }
 
       if (source.Notes.Count > 0)
       {
