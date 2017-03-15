@@ -75,15 +75,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
           MessageBox.Show(wrongFolderMessage, "Configuration Error");
           return;
         }
-
-        if (folder.DefaultItemType == OlItemType.olContactItem)
-        {
-          MessageBox.Show(
-              "Synchronization of Outlook distribution lists is only supported for SOGo at the moment!",
-              ComponentContainer.MessageBoxTitle,
-              MessageBoxButton.OK,
-              MessageBoxImage.Warning);
-        }
       }
     }
 
