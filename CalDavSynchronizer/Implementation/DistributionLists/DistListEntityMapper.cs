@@ -21,7 +21,8 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
     public Task<vCard> Map1To2(GenericComObjectWrapper<DistListItem> source, vCard target, IEntityMappingLogger logger, DistributionListSychronizationContext context)
     {
       target.Members.Clear ();
-      target.DisplayName = source.Inner.DLName;
+      target.FormattedName = source.Inner.DLName;
+      target.FamilyName = source.Inner.DLName;
       
       for (int i = 1; i <= source.Inner.MemberCount; i++)
       {
@@ -50,7 +51,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
     {
 
       var outlookMembersByAddress = new Dictionary<string, GenericComObjectWrapper<Recipient>> (StringComparer.InvariantCultureIgnoreCase);
-      target.Inner.DLName = source.DisplayName;
+      target.Inner.DLName = source.FormattedName;
   
       try
       {

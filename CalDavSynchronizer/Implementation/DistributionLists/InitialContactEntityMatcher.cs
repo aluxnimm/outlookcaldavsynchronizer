@@ -61,7 +61,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
 
     protected override bool AreEqual (GenericComObjectWrapper<DistListItem> atypeEntity, vCard btypeEntity)
     {
-      return atypeEntity.Inner.DLName == btypeEntity.DisplayName;
+      return atypeEntity.Inner.DLName == btypeEntity.FormattedName;
     }
 
     protected override string GetAtypePropertyValue (GenericComObjectWrapper<DistListItem> atypeEntity)
@@ -71,7 +71,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
 
     protected override string GetBtypePropertyValue (vCard btypeEntity)
     {
-      return btypeEntity.DisplayName;
+      return btypeEntity.FormattedName;
     }
 
     protected override string MapAtypePropertyValue (string value)
