@@ -25,6 +25,7 @@ using DDay.iCal;
 using GenSync.Logging;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
+using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.Common
 {
@@ -111,6 +112,36 @@ namespace CalDavSynchronizer.Implementation.Common
         default:
           return mapPublicToPrivate ? OlSensitivity.olPrivate : OlSensitivity.olNormal;
       }
+    }
+
+    public static vCardAccessClassification MapPrivacy1To2 (OlSensitivity value)
+    {
+      switch (value)
+      {
+        case OlSensitivity.olNormal:
+          return vCardAccessClassification.Public;
+        case OlSensitivity.olPersonal:
+          return vCardAccessClassification.Private;
+        case OlSensitivity.olPrivate:
+          return vCardAccessClassification.Private;
+        case OlSensitivity.olConfidential:
+          return vCardAccessClassification.Confidential;
+      }
+      throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
+    }
+
+    public static OlSensitivity MapPrivacy2To1 (vCardAccessClassification value)
+    {
+      switch (value)
+      {
+        case vCardAccessClassification.Public:
+          return OlSensitivity.olNormal;
+        case vCardAccessClassification.Private:
+          return OlSensitivity.olPrivate;
+        case vCardAccessClassification.Confidential:
+          return OlSensitivity.olConfidential;
+      }
+      return OlSensitivity.olNormal;
     }
 
     public static int MapPriority1To2 (OlImportance value)

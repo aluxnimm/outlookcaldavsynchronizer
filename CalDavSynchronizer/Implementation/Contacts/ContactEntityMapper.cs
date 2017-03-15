@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using CalDavSynchronizer.Implementation.Common;
 using Exception = System.Exception;
 
 
@@ -89,7 +90,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
             );
       }
 
-      target.AccessClassification = MapPrivacy1To2 (source.Inner.Sensitivity);
+      target.AccessClassification = CommonEntityMapper.MapPrivacy1To2 (source.Inner.Sensitivity);
 
       target.Categories.Clear();
       if (!string.IsNullOrEmpty (source.Inner.Categories))
@@ -242,7 +243,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         target.Inner.NickName = string.Empty;
       }
 
-      target.Inner.Sensitivity = MapPrivacy2To1 (source.AccessClassification);
+      target.Inner.Sensitivity = CommonEntityMapper.MapPrivacy2To1 (source.AccessClassification);
 
       if (source.Categories.Count > 0)
       {
@@ -387,36 +388,6 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
 
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", sourceGender));
-    }
-
-    private vCardAccessClassification MapPrivacy1To2 (OlSensitivity value)
-    {
-      switch (value)
-      {
-        case OlSensitivity.olNormal:
-          return vCardAccessClassification.Public;
-        case OlSensitivity.olPersonal:
-          return vCardAccessClassification.Private;
-        case OlSensitivity.olPrivate:
-          return vCardAccessClassification.Private;
-        case OlSensitivity.olConfidential:
-          return vCardAccessClassification.Confidential;
-      }
-      throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
-    }
-
-    private OlSensitivity MapPrivacy2To1 (vCardAccessClassification value)
-    {
-      switch (value)
-      {
-        case vCardAccessClassification.Public:
-          return OlSensitivity.olNormal;
-        case vCardAccessClassification.Private:
-          return OlSensitivity.olPrivate;
-        case vCardAccessClassification.Confidential:
-          return OlSensitivity.olConfidential;
-      }
-      return OlSensitivity.olNormal;
     }
 
     private static void MapEmailAddresses1To2 (ContactItem source, vCard target, IEntityMappingLogger logger)

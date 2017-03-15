@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using GenSync.EntityMapping;
 using GenSync.Logging;
@@ -23,7 +24,15 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
       target.Members.Clear ();
       target.FormattedName = source.Inner.DLName;
       target.FamilyName = source.Inner.DLName;
-      
+
+      target.AccessClassification = CommonEntityMapper.MapPrivacy1To2(source.Inner.Sensitivity);
+
+      target.Notes.Clear();
+      if (!string.IsNullOrEmpty(source.Inner.Body))
+      {
+        target.Notes.Add(new vCardNote(source.Inner.Body));
+      }
+
       for (int i = 1; i <= source.Inner.MemberCount; i++)
       {
         try
@@ -52,7 +61,18 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
 
       var outlookMembersByAddress = new Dictionary<string, GenericComObjectWrapper<Recipient>> (StringComparer.InvariantCultureIgnoreCase);
       target.Inner.DLName = source.FormattedName;
-  
+
+      target.Inner.Sensitivity = CommonEntityMapper.MapPrivacy2To1(source.AccessClassification);
+
+      if (source.Notes.Count > 0)
+      {
+        target.Inner.Body = source.Notes[0].Text;
+      }
+      else
+      {
+        target.Inner.Body = string.Empty;
+      }
+
       try
       {
         for (int i = 1; i <= target.Inner.MemberCount; i++)
