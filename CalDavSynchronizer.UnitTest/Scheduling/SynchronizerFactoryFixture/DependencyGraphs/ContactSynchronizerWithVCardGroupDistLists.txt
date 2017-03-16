@@ -60,7 +60,7 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   BatchEntityRepositoryAdapter<WebResourceName, String, vCard, DistributionListSychronizationContext>
 |   |   |   |   TypeFilteringVCardRepositoryDecorator<DistributionListSychronizationContext>
 |   |   |   |   |   CardDavRepository<DistributionListSychronizationContext>
-|   |   |   |   |   |   vCardStandardWriter
+|   |   |   |   |   |   vCardStandardWriter (2)
 |   |   |   |   |   VCardType
 |   |   |   |   |   VCardTypeDetector
 |   |   |   |   |   |   LoggingCardDavRepositoryDecorator
@@ -89,7 +89,7 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, vCard, DistributionListSychronizationContext>
 |   |   |   TypeFilteringVCardRepositoryDecorator<DistributionListSychronizationContext>
 |   |   |   |   CardDavRepository<DistributionListSychronizationContext>
-|   |   |   |   |   vCardStandardWriter
+|   |   |   |   |   vCardStandardWriter (2)
 |   |   |   |   VCardType
 |   |   |   |   VCardTypeDetector
 |   |   |   |   |   LoggingCardDavRepositoryDecorator

@@ -33,8 +33,9 @@ namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
   {
     public Type Type { get; }
     public IReadOnlyList<TypeWithDependecies> Dependencies { get; }
+    public int InstanceId { get; }
 
-    public TypeWithDependecies (Type type, IReadOnlyList<TypeWithDependecies> dependencies)
+    public TypeWithDependecies (Type type, IReadOnlyList<TypeWithDependecies> dependencies, int instanceId)
     {
       if (type == null)
         throw new ArgumentNullException (nameof (type));
@@ -43,19 +44,33 @@ namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
 
       Type = type;
       Dependencies = dependencies;
+      InstanceId = instanceId;
     }
 
     public void ToString (StringBuilder stringBuilder, int level = 0)
     {
       stringBuilder.Append(string.Join(string.Empty, Enumerable.Range(1, level).Select(_ => "|   ")));
-      stringBuilder.AppendLine (Type.GetPrettyName ());
+      stringBuilder.Append (Type.GetPrettyName ());
+      if (InstanceId > 1)
+      {
+        stringBuilder.Append(" (");
+        stringBuilder.Append(InstanceId);
+        stringBuilder.Append(")");
+      }
+      stringBuilder.AppendLine();
+
       foreach (var dependency in Dependencies.OrderBy (d => d.Type.Name))
       {
         dependency.ToString (stringBuilder, level + 1);
       }
     }
 
-    public static TypeWithDependecies GetTypeWithDependecies (object o)
+    public static TypeWithDependecies GetTypeWithDependecies(object o)
+    {
+      return GetTypeWithDependecies(o, new ObjectIdProvider());
+    }
+
+    public static TypeWithDependecies GetTypeWithDependecies (object o, ObjectIdProvider objectIdProvider)
     {
       var type = o.GetType ();
       var dependecies = new List<TypeWithDependecies> ();
@@ -69,14 +84,14 @@ namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
           if (!IsIgnoredType (valueType))
           {
             if (IsStopType (valueType))
-              dependecies.Add (new TypeWithDependecies (valueType, new TypeWithDependecies[0]));
+              dependecies.Add (new TypeWithDependecies (valueType, new TypeWithDependecies[0], objectIdProvider.GetId(value)));
             else
-              dependecies.Add (GetTypeWithDependecies (value));
+              dependecies.Add (GetTypeWithDependecies (value, objectIdProvider));
           }
         }
       }
 
-      return new TypeWithDependecies (type, dependecies);
+      return new TypeWithDependecies (type, dependecies, objectIdProvider.GetId(o));
     }
 
     private static bool IsStopType (Type type)
