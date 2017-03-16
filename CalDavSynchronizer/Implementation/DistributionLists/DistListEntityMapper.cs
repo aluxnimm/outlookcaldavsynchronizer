@@ -121,7 +121,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
           }
           else
           {
-            string recipientString = sourceMember.DisplayName ?? sourceMember.EmailAddress;
+            string recipientString = !string.IsNullOrEmpty (sourceMember.DisplayName) ? sourceMember.DisplayName : sourceMember.EmailAddress;
 
             if (!string.IsNullOrEmpty (recipientString))
             {
