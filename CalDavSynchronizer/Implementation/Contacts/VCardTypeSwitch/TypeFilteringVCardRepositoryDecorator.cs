@@ -66,6 +66,7 @@ namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
 
     public async Task<EntityVersion<WebResourceName, string>> Create (Func<vCard, Task<vCard>> entityInitializer, TContext context)
     {
+      // TODO: to prevent the entity from being loaded in the next sync run, since it is unknown to the cache, it should be added here to the cache of the _typeDetector
       return await _decorated.Create (
         async vCard =>
         {

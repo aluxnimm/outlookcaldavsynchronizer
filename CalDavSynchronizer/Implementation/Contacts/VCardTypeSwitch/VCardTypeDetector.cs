@@ -23,12 +23,15 @@ using System.Threading.Tasks;
 using GenSync;
 using GenSync.EntityRepositories;
 using GenSync.Logging;
+using log4net;
 using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
 {
   public class VCardTypeDetector : IVCardTypeDetector
   {
+    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);
+
     private readonly IReadOnlyEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> _cardDavRepository;
     private readonly IVCardTypeCache _vcardTypeCache;
 
@@ -59,6 +62,8 @@ namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
         _vcardTypeCache.SetEntries(touchedTypesById);
         return result;
       }
+
+      s_logger.Info($"Loading {unknownIds.Count} unknown ids, to determine VCard type");
 
       foreach (var entity in await _cardDavRepository.Get (unknownIds.Select(i => i.Id).ToArray(), NullLoadEntityLogger.Instance, NullCardDavRepositoryLogger.Instance))
       {
