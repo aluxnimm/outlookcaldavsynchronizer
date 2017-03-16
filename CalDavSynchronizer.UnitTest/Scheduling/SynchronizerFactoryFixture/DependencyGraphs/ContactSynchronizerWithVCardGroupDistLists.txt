@@ -1,0 +1,111 @@
+OutlookSynchronizer<WebResourceName, String>
+|   ContactAndDistListSynchronizer
+|   |   EmailAddressCacheDataAccess
+|   |   OutlookSessionStub
+|   |   Synchronizer<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   BatchEntityRepositoryAdapter<String, DateTime, ContactItemWrapper, ICardDavRepositoryLogger>
+|   |   |   |   OutlookContactRepository<ICardDavRepositoryLogger>
+|   |   |   |   |   NullDaslFilterProvider
+|   |   |   |   |   NullQueryOutlookFolderStrategy
+|   |   |   |   |   OutlookSessionStub
+|   |   |   BatchEntityRepositoryAdapter<WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   TypeFilteringVCardRepositoryDecorator<ICardDavRepositoryLogger>
+|   |   |   |   |   LoggingCardDavRepositoryDecorator
+|   |   |   |   |   |   CardDavRepository<Int32>
+|   |   |   |   |   |   |   vCardStandardWriter
+|   |   |   |   |   VCardType
+|   |   |   |   |   VCardTypeDetector
+|   |   |   |   |   |   LoggingCardDavRepositoryDecorator
+|   |   |   |   |   |   |   CardDavRepository<Int32>
+|   |   |   |   |   |   |   |   vCardStandardWriter
+|   |   |   |   |   |   VCardTypeCache
+|   |   |   |   |   |   |   VCardTypeCacheDataAccess
+|   |   |   EntityRelationDataAccess<String, DateTime, OutlookContactRelationData, WebResourceName, String>
+|   |   |   EntitySyncStateFactory<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   EntitySyncStateEnvironment<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   GenericEqualityComparer<DateTime>
+|   |   |   GenericEqualityComparer<String>
+|   |   |   GenericEqualityComparer<String>
+|   |   |   InitialContactEntityMatcher
+|   |   |   NullSynchronizationInterceptorFactory<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   NullTotalProgressFactory
+|   |   |   OutlookContactRelationDataFactory
+|   |   |   OutlookContactRepository<ICardDavRepositoryLogger>
+|   |   |   |   NullDaslFilterProvider
+|   |   |   |   NullQueryOutlookFolderStrategy
+|   |   |   |   OutlookSessionStub
+|   |   |   TwoWayInitialSyncStateCreationStrategy<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   ContactConflictInitialSyncStateCreationStrategyAutomatic
+|   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   EntitySyncStateFactory<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   TypeFilteringVCardRepositoryDecorator<ICardDavRepositoryLogger>
+|   |   |   |   LoggingCardDavRepositoryDecorator
+|   |   |   |   |   CardDavRepository<Int32>
+|   |   |   |   |   |   vCardStandardWriter
+|   |   |   |   VCardType
+|   |   |   |   VCardTypeDetector
+|   |   |   |   |   LoggingCardDavRepositoryDecorator
+|   |   |   |   |   |   CardDavRepository<Int32>
+|   |   |   |   |   |   |   vCardStandardWriter
+|   |   |   |   |   VCardTypeCache
+|   |   |   |   |   |   VCardTypeCacheDataAccess
+|   |   |   WebResourceNameEqualityComparer
+|   |   Synchronizer<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, vCard, DistributionListSychronizationContext>
+|   |   |   BatchEntityRepositoryAdapter<String, DateTime, GenericComObjectWrapper<DistListItem>, DistributionListSychronizationContext>
+|   |   |   |   OutlookDistListRepository<DistributionListSychronizationContext>
+|   |   |   |   |   NullDaslFilterProvider
+|   |   |   |   |   NullQueryOutlookFolderStrategy
+|   |   |   |   |   OutlookSessionStub
+|   |   |   BatchEntityRepositoryAdapter<WebResourceName, String, vCard, DistributionListSychronizationContext>
+|   |   |   |   TypeFilteringVCardRepositoryDecorator<DistributionListSychronizationContext>
+|   |   |   |   |   CardDavRepository<DistributionListSychronizationContext>
+|   |   |   |   |   |   vCardStandardWriter
+|   |   |   |   |   VCardType
+|   |   |   |   |   VCardTypeDetector
+|   |   |   |   |   |   LoggingCardDavRepositoryDecorator
+|   |   |   |   |   |   |   CardDavRepository<Int32>
+|   |   |   |   |   |   |   |   vCardStandardWriter
+|   |   |   |   |   |   VCardTypeCache
+|   |   |   |   |   |   |   VCardTypeCacheDataAccess
+|   |   |   DistListRelationDataFactory
+|   |   |   EntityRelationDataAccess<String, DateTime, DistListRelationData, WebResourceName, String>
+|   |   |   EntitySyncStateFactory<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, vCard, DistributionListSychronizationContext>
+|   |   |   |   EntitySyncStateEnvironment<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, vCard, DistributionListSychronizationContext>
+|   |   |   GenericEqualityComparer<DateTime>
+|   |   |   GenericEqualityComparer<String>
+|   |   |   GenericEqualityComparer<String>
+|   |   |   InitialDistListEntityMatcher
+|   |   |   NullSynchronizationInterceptorFactory<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, vCard, DistributionListSychronizationContext>
+|   |   |   NullTotalProgressFactory
+|   |   |   OutlookDistListRepository<DistributionListSychronizationContext>
+|   |   |   |   NullDaslFilterProvider
+|   |   |   |   NullQueryOutlookFolderStrategy
+|   |   |   |   OutlookSessionStub
+|   |   |   TwoWayInitialSyncStateCreationStrategy<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, vCard, DistributionListSychronizationContext>
+|   |   |   |   DistListConflictInitialSyncStateCreationStrategyAutomatic
+|   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, vCard, DistributionListSychronizationContext>
+|   |   |   |   EntitySyncStateFactory<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, vCard, DistributionListSychronizationContext>
+|   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, vCard, DistributionListSychronizationContext>
+|   |   |   TypeFilteringVCardRepositoryDecorator<DistributionListSychronizationContext>
+|   |   |   |   CardDavRepository<DistributionListSychronizationContext>
+|   |   |   |   |   vCardStandardWriter
+|   |   |   |   VCardType
+|   |   |   |   VCardTypeDetector
+|   |   |   |   |   LoggingCardDavRepositoryDecorator
+|   |   |   |   |   |   CardDavRepository<Int32>
+|   |   |   |   |   |   |   vCardStandardWriter
+|   |   |   |   |   VCardTypeCache
+|   |   |   |   |   |   VCardTypeCacheDataAccess
+|   |   |   WebResourceNameEqualityComparer
+|   |   TypeFilteringVCardRepositoryDecorator<ICardDavRepositoryLogger>
+|   |   |   LoggingCardDavRepositoryDecorator
+|   |   |   |   CardDavRepository<Int32>
+|   |   |   |   |   vCardStandardWriter
+|   |   |   VCardType
+|   |   |   VCardTypeDetector
+|   |   |   |   LoggingCardDavRepositoryDecorator
+|   |   |   |   |   CardDavRepository<Int32>
+|   |   |   |   |   |   vCardStandardWriter
+|   |   |   |   VCardTypeCache
+|   |   |   |   |   VCardTypeCacheDataAccess
