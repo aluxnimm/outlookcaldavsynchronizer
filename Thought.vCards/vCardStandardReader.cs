@@ -1862,14 +1862,21 @@ namespace Thought.vCards
         if (string.IsNullOrEmpty(member.DisplayName))
           member.DisplayName = property.Subproperties.GetValue("X-CN");
 
-        string email = property.Value.ToString();
+        string value = property.Value.ToString();
 
-        if (!string.IsNullOrEmpty(email) && email.StartsWith("mailto:", StringComparison.InvariantCultureIgnoreCase))
+        if (!string.IsNullOrEmpty(value))
         {
-          member.EmailAddress = email.Substring(7); //skip mailto:
-          card.Members.Add(member);
+          if (value.StartsWith("mailto:", StringComparison.InvariantCultureIgnoreCase))
+          {
+            member.EmailAddress = value.Substring(7); //skip mailto:
+            card.Members.Add(member);
+          }
+          else if (value.StartsWith("urn:uuid:", StringComparison.InvariantCultureIgnoreCase))
+          {
+            member.Uid = value.Substring(9); //skip urn:uuid:
+            card.Members.Add(member);
+          }
         }
-
       }
 
     }

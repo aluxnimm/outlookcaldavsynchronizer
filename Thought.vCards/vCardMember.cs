@@ -16,6 +16,7 @@ namespace Thought.vCards
 
         private string emailAddress;
         private string displayName;
+        private string uid;
 
 
         /// <summary>
@@ -72,6 +73,20 @@ namespace Thought.vCards
             }
         }
 
+        /// <summary>
+        ///     The linked uid to the vCard of the member if available.
+        /// </summary>
+        public string Uid
+        {
+            get
+            {
+                return this.uid;
+            }
+            set
+            {
+                this.uid = value;
+            }
+        }
 
         /// <summary>
         ///     Returns the email of the member.
