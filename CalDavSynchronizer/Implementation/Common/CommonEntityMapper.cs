@@ -18,9 +18,11 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.Implementation.DistributionLists;
 using DDay.iCal;
 using GenSync.Logging;
 using log4net;
@@ -31,6 +33,7 @@ namespace CalDavSynchronizer.Implementation.Common
 {
   public static class CommonEntityMapper
   {
+    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod ().DeclaringType);
 
     public static void MapDayOfWeek1To2 (OlDaysOfWeek source, IList<IWeekDay> target)
     {
@@ -291,6 +294,73 @@ namespace CalDavSynchronizer.Implementation.Common
               logger.LogMappingWarning("Can't set UserProperty of Item!", ex);
             }
           }
+        }
+      }
+    }
+
+    public static void MapDistListMembers2To1(
+      IEnumerable<DistributionListMember> sourceMembers,
+      GenericComObjectWrapper<DistListItem> target,
+      IEntityMappingLogger logger,
+      DistributionListSychronizationContext context)
+    {
+      var outlookMembersByAddress = new Dictionary<string, GenericComObjectWrapper<Recipient>>(StringComparer.InvariantCultureIgnoreCase);
+      try
+      {
+        for (int i = 1; i <= target.Inner.MemberCount; i++)
+        {
+          var recipientWrapper = GenericComObjectWrapper.Create(target.Inner.GetMember(i));
+          if (!string.IsNullOrEmpty(recipientWrapper.Inner?.Address) &&
+              !outlookMembersByAddress.ContainsKey(recipientWrapper.Inner.Address))
+          {
+            outlookMembersByAddress.Add(recipientWrapper.Inner.Address, recipientWrapper);
+          }
+          else
+          {
+            recipientWrapper.Dispose();
+          }
+        }
+
+        foreach (var sourceMember in sourceMembers)
+        {
+          GenericComObjectWrapper<Recipient> existingRecipient;
+          if (!string.IsNullOrEmpty(sourceMember.EmailAddress) &&
+              outlookMembersByAddress.TryGetValue(sourceMember.EmailAddress, out existingRecipient))
+          {
+            outlookMembersByAddress.Remove(sourceMember.EmailAddress);
+            existingRecipient.Dispose();
+          }
+          else
+          {
+            var recipientString = !string.IsNullOrEmpty (sourceMember.DisplayName) ? sourceMember.DisplayName : sourceMember.EmailAddress;
+
+            if (!string.IsNullOrEmpty(recipientString))
+            {
+              using (var recipientWrapper = GenericComObjectWrapper.Create(context.OutlookSession.CreateRecipient(recipientString)))
+              {
+                recipientWrapper.Inner.Resolve();
+                target.Inner.AddMember(recipientWrapper.Inner);
+              }
+            }
+          }
+        }
+
+        foreach (var existingRecipient in outlookMembersByAddress.ToArray())
+        {
+          target.Inner.RemoveMember(existingRecipient.Value.Inner);
+          outlookMembersByAddress.Remove(existingRecipient.Key);
+        }
+      }
+      catch (COMException ex)
+      {
+        s_logger.Warn("Can't access member of Distribution List!", ex);
+        logger.LogMappingWarning("Can't access member of Distribution List!", ex);
+      }
+      finally
+      {
+        foreach (var existingRecipient in outlookMembersByAddress.Values)
+        {
+          existingRecipient.Dispose();
         }
       }
     }

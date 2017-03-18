@@ -68,8 +68,6 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
 
     public Task<GenericComObjectWrapper<DistListItem>> Map2To1(vCard source, GenericComObjectWrapper<DistListItem> target, IEntityMappingLogger logger, DistributionListSychronizationContext context)
     {
-
-      var outlookMembersByAddress = new Dictionary<string, GenericComObjectWrapper<Recipient>> (StringComparer.InvariantCultureIgnoreCase);
       target.Inner.DLName = source.FormattedName;
 
       target.Inner.Sensitivity = CommonEntityMapper.MapPrivacy2To1(source.AccessClassification);
@@ -94,65 +92,11 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
         target.Inner.Body = string.Empty;
       }
 
-      try
-      {
-        for (int i = 1; i <= target.Inner.MemberCount; i++)
-        {
-          var recipientWrapper = GenericComObjectWrapper.Create (target.Inner.GetMember (i));
-          if (!string.IsNullOrEmpty (recipientWrapper.Inner?.Address) &&
-              !outlookMembersByAddress.ContainsKey (recipientWrapper.Inner.Address))
-          {
-            outlookMembersByAddress.Add (recipientWrapper.Inner.Address, recipientWrapper);
-          }
-          else
-          {
-            recipientWrapper.Dispose ();
-          }
-        }
+      CommonEntityMapper.MapDistListMembers2To1(source.Members.Select(v => new DistributionListMember(v.EmailAddress, v.DisplayName)), target, logger, context);
 
-        foreach (var sourceMember in source.Members)
-        {
-          GenericComObjectWrapper<Recipient> existingRecipient;
-          if (!string.IsNullOrEmpty (sourceMember.EmailAddress) &&
-              outlookMembersByAddress.TryGetValue (sourceMember.EmailAddress, out existingRecipient))
-          {
-            outlookMembersByAddress.Remove (sourceMember.EmailAddress);
-            existingRecipient.Dispose ();
-          }
-          else
-          {
-            string recipientString = !string.IsNullOrEmpty (sourceMember.DisplayName) ? sourceMember.DisplayName : sourceMember.EmailAddress;
-
-            if (!string.IsNullOrEmpty (recipientString))
-            {
-              using (var recipientWrapper = GenericComObjectWrapper.Create (context.OutlookSession.CreateRecipient (recipientString)))
-              {
-                recipientWrapper.Inner.Resolve ();
-                target.Inner.AddMember (recipientWrapper.Inner);
-              }
-            }
-          }
-        }
-
-        foreach (var existingRecipient in outlookMembersByAddress.ToArray ())
-        {
-          target.Inner.RemoveMember (existingRecipient.Value.Inner);
-          outlookMembersByAddress.Remove (existingRecipient.Key);
-        }
-      }
-      catch (COMException ex)
-      {
-        s_logger.Warn ("Can't access member of Distribution List!", ex);
-        logger.LogMappingWarning ("Can't access member of Distribution List!", ex);
-      }
-      finally
-      {
-        foreach (var existingRecipient in outlookMembersByAddress.Values)
-        {
-          existingRecipient.Dispose ();
-        }
-      }
       return Task.FromResult (target);
     }
+
+
   }
 }
