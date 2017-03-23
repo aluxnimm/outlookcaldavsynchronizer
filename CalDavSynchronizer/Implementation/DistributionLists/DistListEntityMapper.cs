@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Implementation.Common;
@@ -68,7 +69,31 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
 
     public Task<GenericComObjectWrapper<DistListItem>> Map2To1(vCard source, GenericComObjectWrapper<DistListItem> target, IEntityMappingLogger logger, DistributionListSychronizationContext context)
     {
-      target.Inner.DLName = source.FormattedName;
+      if (string.IsNullOrEmpty(source.FormattedName))
+      {
+        var name = new StringBuilder();
+        name.Append(source.FamilyName);
+        if (!string.IsNullOrEmpty(source.GivenName))
+        {
+          if (name.Length > 0)
+            name.Append(",");
+          name.Append(source.GivenName);
+        }
+        if (!string.IsNullOrEmpty(source.AdditionalNames))
+        {
+          if (name.Length > 0)
+            name.Append(",");
+          name.Append(source.AdditionalNames);
+        }
+        if (name.Length > 0)
+        {
+          target.Inner.DLName = name.ToString();
+        }
+      }
+      else
+      {
+        target.Inner.DLName = source.FormattedName;
+      }
 
       target.Inner.Sensitivity = CommonEntityMapper.MapPrivacy2To1(source.AccessClassification);
 
