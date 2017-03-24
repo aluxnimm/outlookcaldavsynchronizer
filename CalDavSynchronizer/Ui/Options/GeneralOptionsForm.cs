@@ -246,7 +246,11 @@ namespace CalDavSynchronizer.Ui.Options
 
     private void _showLogButton_Click (object sender, EventArgs e)
     {
-      ShowLogFile();
+      MessageBox.Show (
+          "Please be aware that the log file (especially with Log Level Debug) can contain 'Personally identifiable information' (PII) like resource URIs and raw calendar and/or addressbook data but no passwords.\nNever post or attach the log or a sync report in a public forum and mask sensitive data when sending as an e-mail!",
+          ComponentContainer.MessageBoxTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning
+        );
+        ShowLogFile();
     }
 
     public static void ShowLogFile()
