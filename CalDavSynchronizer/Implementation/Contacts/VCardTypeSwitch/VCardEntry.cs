@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -15,11 +15,13 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace CalDavSynchronizer.Contracts
+using CalDavSynchronizer.DataAccess;
+
+namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
 {
-  public enum DistributionListType
+  public class VCardEntry
   {
-    Sogo = 0,
-    VCardGroup = 1
+    public WebResourceName Id { get; set; }
+    public VCardType Type { get; set; }
   }
 }

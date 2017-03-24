@@ -71,8 +71,23 @@ namespace GenSync.Synchronization
         ITotalProgressFactory totalProgressFactory,
         IEqualityComparer<TAtypeEntityVersion> atypeVersionComparer, 
         IEqualityComparer<TBtypeEntityVersion> btypeVersionComparer, IEntitySyncStateFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> syncStateFactory,
-        ISynchronizationInterceptorFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> synchronizationInterceptorFactory = null)
+        ISynchronizationInterceptorFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> synchronizationInterceptorFactoryOrNull = null)
     {
+      if (atypeRepository == null) throw new ArgumentNullException(nameof(atypeRepository));
+      if (btypeRepository == null) throw new ArgumentNullException(nameof(btypeRepository));
+      if (atypeWriteRepository == null) throw new ArgumentNullException(nameof(atypeWriteRepository));
+      if (btypeWriteRepository == null) throw new ArgumentNullException(nameof(btypeWriteRepository));
+      if (initialSyncStateCreationStrategy == null) throw new ArgumentNullException(nameof(initialSyncStateCreationStrategy));
+      if (entityRelationDataAccess == null) throw new ArgumentNullException(nameof(entityRelationDataAccess));
+      if (entityRelationDataFactory == null) throw new ArgumentNullException(nameof(entityRelationDataFactory));
+      if (initialEntityMatcher == null) throw new ArgumentNullException(nameof(initialEntityMatcher));
+      if (atypeIdComparer == null) throw new ArgumentNullException(nameof(atypeIdComparer));
+      if (btypeIdComparer == null) throw new ArgumentNullException(nameof(btypeIdComparer));
+      if (totalProgressFactory == null) throw new ArgumentNullException(nameof(totalProgressFactory));
+      if (atypeVersionComparer == null) throw new ArgumentNullException(nameof(atypeVersionComparer));
+      if (btypeVersionComparer == null) throw new ArgumentNullException(nameof(btypeVersionComparer));
+      if (syncStateFactory == null) throw new ArgumentNullException(nameof(syncStateFactory));
+     
       _initialSyncStateCreationStrategy = initialSyncStateCreationStrategy;
       _totalProgressFactory = totalProgressFactory;
       _atypeIdComparer = atypeIdComparer;
@@ -80,7 +95,7 @@ namespace GenSync.Synchronization
       _atypeVersionComparer = atypeVersionComparer;
       _btypeVersionComparer = btypeVersionComparer;
       _syncStateFactory = syncStateFactory;
-      _synchronizationInterceptorFactory = synchronizationInterceptorFactory ?? NullSynchronizationInterceptorFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>.Instance;
+      _synchronizationInterceptorFactory = synchronizationInterceptorFactoryOrNull ?? NullSynchronizationInterceptorFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>.Instance;
       _atypeWriteRepository = atypeWriteRepository;
       _btypeWriteRepository = btypeWriteRepository;
       _atypeRepository = atypeRepository;

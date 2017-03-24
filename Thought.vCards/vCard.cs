@@ -62,6 +62,7 @@ namespace Thought.vCards
         private string timeZone;
         private string title;
         private string uniqueId;
+        private vCardKindType kind;
 
         private vCardCertificateCollection certificates;
         private vCardDeliveryAddressCollection deliveryAddresses;
@@ -74,6 +75,7 @@ namespace Thought.vCards
         private vCardWebsiteCollection websites;
         private vCardIMPPCollection ims;
         private vCardSocialProfileCollection sps;
+        private vCardMemberCollection members;
         private vCardPropertyCollection otherProperties;
 
         /// <summary>
@@ -116,6 +118,7 @@ namespace Thought.vCards
             this.websites = new vCardWebsiteCollection();
             this.ims = new vCardIMPPCollection();
             this.sps = new vCardSocialProfileCollection();
+            this.members = new vCardMemberCollection();
             this.otherProperties = new vCardPropertyCollection();
         }
 
@@ -381,6 +384,26 @@ namespace Thought.vCards
             }
         }
 
+        /// <summary>
+        ///     The kind of the contact.
+        /// </summary>
+        /// <remarks>
+        ///     <para>
+        ///         Kind is not directly supported in the vCard 3.0 specification but expressed as X-ADDRESSBOOK-SERVER-KIND.
+        ///     </para>
+        /// </remarks>
+        /// <seealso cref="vCardKindType"/>
+        public vCardKindType Kind
+        {
+          get
+          {
+            return this.kind;
+          }
+          set
+          {
+            this.kind = value;
+          }
+        }
 
         /// <summary>
         ///     The given (first) name of the person.
@@ -451,6 +474,16 @@ namespace Thought.vCards
             }
         }
 
+        /// <summary>
+        ///     A collection of members.
+        /// </summary>
+        public vCardMemberCollection Members
+        {
+          get
+          {
+            return this.members;
+          }
+        }
 
         /// <summary>
         ///     The prefix (e.g. "Mr.") of the person.

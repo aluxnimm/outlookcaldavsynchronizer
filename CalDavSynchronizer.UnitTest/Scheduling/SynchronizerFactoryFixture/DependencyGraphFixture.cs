@@ -72,6 +72,33 @@ namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
     }
 
     [Test]
+    public async Task Test_ContactSynchronizerWithVCardGroupDistLists ()
+    {
+      var synchronizer = await _synchronizerFactory.CreateSynchronizer (
+        new Options
+        {
+          CalenderUrl = "http://server",
+          ConflictResolution = ConflictResolution.Automatic,
+          IgnoreSynchronizationTimeRange = true,
+          IsChunkedSynchronizationEnabled = false,
+          MappingConfiguration = new ContactMappingConfiguration
+          {
+            MapDistributionLists = true,
+            DistributionListType = DistributionListType.VCardGroup
+          },
+          SynchronizationMode = SynchronizationMode.MergeInBothDirections,
+          OutlookFolderEntryId = "eid",
+          OutlookFolderStoreId = "sid",
+          ServerAdapterType = ServerAdapterType.WebDavHttpClientBased
+        },
+        new GeneralOptions ());
+
+      CheckGraph (synchronizer, "ContactSynchronizerWithVCardGroupDistLists.txt");
+
+    }
+
+
+    [Test]
     public async Task Test_ContactSynchronizerWithoutDistLists ()
     {
       var synchronizer = await _synchronizerFactory.CreateSynchronizer (

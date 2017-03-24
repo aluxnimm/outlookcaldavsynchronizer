@@ -15,11 +15,14 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace CalDavSynchronizer.Contracts
+using System.Collections.Generic;
+using CalDavSynchronizer.DataAccess;
+
+namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
 {
-  public enum DistributionListType
+  public interface IVCardTypeCache
   {
-    Sogo = 0,
-    VCardGroup = 1
+    Dictionary<WebResourceName, VCardEntry> GetEntries ();
+    void SetEntries (Dictionary<WebResourceName, VCardEntry> entries);
   }
 }
