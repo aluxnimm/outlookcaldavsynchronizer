@@ -405,6 +405,7 @@
     </Compile>
     <Compile Include="Ui\ConnectionTests\AccessPrivileges.cs" />
     <Compile Include="Ui\DelegateCommandHandlingRequerySuggested.cs" />
+    <Compile Include="Ui\IUiServiceFactory.cs" />
     <Compile Include="Ui\NullUiService.cs" />
     <Compile Include="Ui\Options\EnumDisplayNameProvider.cs" />
     <Compile Include="Ui\Options\IEnumDisplayNameProvider.cs" />
@@ -435,6 +436,7 @@
     <Compile Include="Ui\Options\Views\SelectProfileWindow.xaml.cs">
       <DependentUpon>SelectProfileWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Ui\UiServiceFactory.cs" />
     <Compile Include="Ui\ViewModels\ProgressViewModel.cs" />
     <Compile Include="Ui\Views\ProgressWindow.xaml.cs">
       <DependentUpon>ProgressWindow.xaml</DependentUpon>

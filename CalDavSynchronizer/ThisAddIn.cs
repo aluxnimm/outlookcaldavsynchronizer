@@ -58,7 +58,7 @@ namespace CalDavSynchronizer
         XmlConfigurator.Configure();
         s_logger.Info ("Startup entered.");
 
-        ComponentContainer = new ComponentContainer (Application);
+        ComponentContainer = new ComponentContainer (Application, new UiServiceFactory ());
         ComponentContainer.SynchronizationFailedWhileReportsFormWasNotVisible += ComponentContainer_SynchronizationFailedWhileReportsFormWasNotVisible;
         ComponentContainer.StatusChanged += ComponentContainer_StatusChanged;
         ((ApplicationEvents_Event) Application).Quit += ThisAddIn_Quit;

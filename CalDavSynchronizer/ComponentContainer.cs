@@ -109,8 +109,11 @@ namespace CalDavSynchronizer
       remove { _synchronizationStatus.StatusChanged -= value; }
     }
 
-    public ComponentContainer (Application application)
+    public ComponentContainer (Application application, IUiServiceFactory uiServiceFactory)
     {
+      if (application == null) throw new ArgumentNullException(nameof(application));
+      if (uiServiceFactory == null) throw new ArgumentNullException(nameof(uiServiceFactory));
+
       s_logger.Info ("Startup...");
 
       if(GeneralOptionsDataAccess.WpfRenderModeSoftwareOnly)
@@ -149,7 +152,7 @@ namespace CalDavSynchronizer
               GetOrCreateConfigFileName (_applicationDataDirectory, _session.CurrentProfileName)
               ));
       _profileStatusesViewModel = new ProfileStatusesViewModel(this);
-      _uiService = new UiService(_profileStatusesViewModel);
+      _uiService = uiServiceFactory.Create(_profileStatusesViewModel);
 
       _queryFolderStrategyWrapper = new OutlookFolderStrategyWrapper(QueryOutlookFolderByRequestingItemStrategy.Instance);
 
