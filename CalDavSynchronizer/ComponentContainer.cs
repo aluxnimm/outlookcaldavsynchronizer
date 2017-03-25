@@ -138,8 +138,6 @@ namespace CalDavSynchronizer
 
       _globalTimeZoneCache = new GlobalTimeZoneCache();
 
-      EnsureSynchronizationContext();
-
       _applicationDataDirectory = Path.Combine (
           Environment.GetFolderPath (
               generalOptions.StoreAppDataInRoamingFolder ? Environment.SpecialFolder.ApplicationData : Environment.SpecialFolder.LocalApplicationData),
