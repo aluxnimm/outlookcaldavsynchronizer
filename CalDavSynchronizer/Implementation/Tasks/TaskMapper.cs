@@ -56,7 +56,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       var localIcalTimeZone = iCalTimeZone.FromSystemTimeZone (_localTimeZoneInfo, new DateTime (1970, 1, 1), true);
      
       DDayICalWorkaround.CalendarDataPreprocessor.FixTimeZoneDSTRRules (_localTimeZoneInfo, localIcalTimeZone);
-      newTargetCalender.TimeZones.Add (localIcalTimeZone);
+      if (!_configuration.MapStartAndDueAsFloating) newTargetCalender.TimeZones.Add (localIcalTimeZone);
 
       var existingTargetTodo = existingTargetCalender.Todos.FirstOrDefault (e => e.RecurrenceID == null);
 
@@ -89,7 +89,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       if (source.Inner.StartDate != _dateNull)
       {
         target.Start = new iCalDateTime (source.Inner.StartDate.Year, source.Inner.StartDate.Month, source.Inner.StartDate.Day, true);
-        target.Start.SetTimeZone (localIcalTimeZone);
+        if (!_configuration.MapStartAndDueAsFloating) target.Start.SetTimeZone (localIcalTimeZone);
       }
 
       if (source.Inner.Complete && source.Inner.DateCompleted != _dateNull)
@@ -105,7 +105,8 @@ namespace CalDavSynchronizer.Implementation.Tasks
       if (source.Inner.DueDate != _dateNull)
       {
         target.Due = new iCalDateTime (source.Inner.DueDate.Year, source.Inner.DueDate.Month, source.Inner.DueDate.Day, 23, 59, 59);
-        target.Due.SetTimeZone (localIcalTimeZone);
+        if (!_configuration.MapStartAndDueAsFloating) target.Due.SetTimeZone (localIcalTimeZone);
+        
         // Workaround for a bug in DDay.iCal, according to RFC5545 DUE must not occur together with DURATION
         target.Properties.Remove (new CalendarProperty ("DURATION"));
       }
@@ -255,7 +256,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
           {
             target.Start = new iCalDateTime ( sourceRecurrencePattern.PatternStartDate.Year,
                                               sourceRecurrencePattern.PatternStartDate.Month, sourceRecurrencePattern.PatternStartDate.Day, true);
-            target.Start.SetTimeZone (localIcalTimeZone);
+            if (!_configuration.MapStartAndDueAsFloating) target.Start.SetTimeZone (localIcalTimeZone);
           }
           IRecurrencePattern targetRecurrencePattern = new RecurrencePattern();
 

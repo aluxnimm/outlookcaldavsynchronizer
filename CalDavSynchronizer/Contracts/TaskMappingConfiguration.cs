@@ -27,6 +27,7 @@ namespace CalDavSynchronizer.Contracts
     public bool MapPriority { get; set; }
     public bool MapBody { get; set; }
     public bool MapRecurringTasks { get; set; }
+    public bool MapStartAndDueAsFloating { get; set; }
     public string TaskCategory { get; set; }
     public bool IsCategoryFilterSticky { get; set; }
     public bool IncludeEmptyTaskCategoryFilter { get; set; }
@@ -53,6 +54,7 @@ namespace CalDavSynchronizer.Contracts
       MapPriority = true;
       MapBody = true;
       MapRecurringTasks = true;
+      MapStartAndDueAsFloating = false;
       IncludeEmptyTaskCategoryFilter = false;
       InvertTaskCategoryFilter = false;
       MapCustomProperties = false;

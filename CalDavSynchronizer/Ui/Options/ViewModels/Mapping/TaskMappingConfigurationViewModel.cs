@@ -51,6 +51,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       RegisterPropertyChangePropagation(_model, nameof(_model.MapBody), nameof(MapBody));
       RegisterPropertyChangePropagation(_model, nameof(_model.MapPriority), nameof(MapPriority));
       RegisterPropertyChangePropagation(_model, nameof(_model.MapRecurringTasks), nameof(MapRecurringTasks));
+      RegisterPropertyChangePropagation(_model, nameof(_model.MapStartAndDueAsFloating), nameof(MapStartAndDueAsFloating));
       RegisterPropertyChangePropagation(_model, nameof(_model.MapReminder), nameof(MapReminder));
       RegisterPropertyChangePropagation(_model, nameof(_model.TaskCategory), nameof(TaskCategory));
       RegisterPropertyChangePropagation(_model, nameof(_model.UseTaskCategoryAsFilter), nameof(UseTaskCategoryAsFilter));
@@ -90,6 +91,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     {
       get { return _model.MapRecurringTasks; }
       set { _model.MapRecurringTasks = value; }
+    }
+
+    public bool MapStartAndDueAsFloating
+    {
+      get { return _model.MapStartAndDueAsFloating; }
+      set { _model.MapStartAndDueAsFloating = value; }
     }
 
     public ReminderMapping MapReminder
@@ -141,6 +148,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       MapBody = true,
       MapPriority = true,
       MapRecurringTasks = true,
+      MapStartAndDueAsFloating = false,
       MapReminder = ReminderMapping.JustUpcoming,
       TaskCategory = "TheCategory",
       IncludeEmptyTaskCategoryFilter = false,

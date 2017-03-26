@@ -30,6 +30,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
     private bool _mapBody;
     private bool _mapPriority;
     private bool _mapRecurringTasks;
+    private bool _mapStartAndDueAsFloating;
     private ReminderMapping _mapReminder;
     private string _taskCategory;
     private bool _includeEmptyTaskCategoryFilter;
@@ -70,6 +71,14 @@ namespace CalDavSynchronizer.Ui.Options.Models
       set
       {
         CheckedPropertyChange (ref _mapRecurringTasks, value);
+      }
+    }
+    public bool MapStartAndDueAsFloating
+    {
+      get { return _mapStartAndDueAsFloating; }
+      set
+      {
+        CheckedPropertyChange (ref _mapStartAndDueAsFloating, value);
       }
     }
     public ReminderMapping MapReminder
@@ -143,6 +152,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
       MapBody = mappingConfiguration.MapBody;
       MapPriority = mappingConfiguration.MapPriority;
       MapRecurringTasks = mappingConfiguration.MapRecurringTasks;
+      MapStartAndDueAsFloating = mappingConfiguration.MapStartAndDueAsFloating;
       MapReminder = mappingConfiguration.MapReminder;
       TaskCategory = mappingConfiguration.TaskCategory;
       IncludeEmptyTaskCategoryFilter = mappingConfiguration.IncludeEmptyTaskCategoryFilter;
@@ -161,6 +171,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
         MapBody = _mapBody,
         MapPriority = _mapPriority,
         MapRecurringTasks = _mapRecurringTasks,
+        MapStartAndDueAsFloating = _mapStartAndDueAsFloating,
         MapReminder = _mapReminder,
         TaskCategory = _taskCategory,
         IncludeEmptyTaskCategoryFilter = _includeEmptyTaskCategoryFilter,
