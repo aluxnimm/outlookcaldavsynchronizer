@@ -47,7 +47,7 @@
       // 
       this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnOK.Location = new System.Drawing.Point(495, 529);
-      this.btnOK.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.btnOK.Margin = new System.Windows.Forms.Padding(4);
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(100, 28);
       this.btnOK.TabIndex = 0;
@@ -62,7 +62,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this._licenseTextBox.BackColor = System.Drawing.SystemColors.Window;
       this._licenseTextBox.Location = new System.Drawing.Point(15, 198);
-      this._licenseTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._licenseTextBox.Margin = new System.Windows.Forms.Padding(4);
       this._licenseTextBox.Multiline = true;
       this._licenseTextBox.Name = "_licenseTextBox";
       this._licenseTextBox.ReadOnly = true;
@@ -163,7 +163,7 @@
       // 
       this._checkForUpdatesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this._checkForUpdatesButton.Location = new System.Drawing.Point(337, 529);
-      this._checkForUpdatesButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this._checkForUpdatesButton.Margin = new System.Windows.Forms.Padding(4);
       this._checkForUpdatesButton.Name = "_checkForUpdatesButton";
       this._checkForUpdatesButton.Size = new System.Drawing.Size(149, 28);
       this._checkForUpdatesButton.TabIndex = 10;
@@ -191,7 +191,7 @@
       this.Controls.Add(this.btnOK);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-      this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+      this.Margin = new System.Windows.Forms.Padding(4);
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Name = "AboutForm";
