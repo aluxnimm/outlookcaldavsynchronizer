@@ -13,7 +13,8 @@ Outlook Plugin, which synchronizes events, tasks and contacts between Outlook an
 - [Gerhard Zehetbauer](https://sourceforge.net/u/nertsch/profile/)
 - [Alexander Nimmervoll](https://sourceforge.net/u/nimm/profile/)
 
-This project was initially developed as a master thesis project at the [University of Applied Sciences Technikum Wien](http://www.technikum-wien.at), Software Engineering Degree program.
+This project was initially started in 2015 as a master thesis project at the [University of Applied Sciences Technikum Wien](http://www.technikum-wien.at), Software Engineering Degree program and is now powered by Generalize-IT Solutions OG, FN 466962i, 1210 Vienna, Austria.
+
 Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you can support the project by donating on Sourceforge or directly at PayPal
 
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PWA2N6P5WRSJJ&lc=US).
@@ -105,6 +106,17 @@ Beginning with version 2.9.0 the default install location is `ProgramFilesDir\Ca
 We recommend updating to the latest .Net Framework but the minimal required version is .Net 4.5, which is not supported on Windows XP. If you need Outlook CalDav Synchronizer for Windows XP you can download a backport to .Net 4.0 from a forked project [here](https://sourceforge.net/projects/outlookcaldavsynchronizerxp/), thanks to [Salvatore Isaja](https://sourceforge.net/u/salvois/profile/) for the awesome work!
 
 ### Changelog ###
+
+#### 2.18.0 ####
+- New features
+	- Add mapping of distribution lists to contact groups with KIND:group
+	- Add profile type for Easy Project / Easy Redmine with special setup wizard
+	- Add profile type for mailbox.org
+	- Switch profile selection to WPF
+- Bug fixes
+	- Add MessageBox with warning about sensitive data in log file before showing the log.
+	- Add task mapping configuration option to map Outlook start and due date of tasks as floating without timezone information to avoid issues with tasks across timezones, ticket #530.
+	- Update NuGet packages.
 
 #### 2.17.0 ####
 - New features
@@ -1020,8 +1032,9 @@ If you expand the tree view of the profile you can configure network and proxy o
 	- You can also configure if contact photos should be mapped or not. Contact photo mapping from Outlook to the server doesn't work in Outlook 2007. You can also add an option to not overwrite the contact photo in Outlook when it changes on the server, which could happen due to other mobile clients reducing the resolution for example.
 	- Don't overwrite FileAs in Outlook uses the Outlook settings for FileAs and doesn't overwrite the contact FileAs with the FN from the server.
 	- Fix imported phone number format adds round brackets to the area code of phone numbers, so that Outlook can show correct phone number details with country and area code, e.g. +1 23 45678 is mapped to +1 (23) 45678.
-	- Map Distribution Lists enables the sync of contact groups / Distribution Lists, right now only the DAV contact group format SOGo VLIST is available, see **Distribution Lists** below.
+	- Map Distribution Lists enables the sync of contact groups / Distribution Lists, right now the DAV contact group format SOGo VLIST or vCards with KIND:group are available, see **Distribution Lists** below.
 	- For tasks (not for Google task profiles) you can configure if you want to map reminders (just upcoming, all or none), the priority of the task, the description body and if recurring tasks should be synchronized.
+	- You can also define if task start and due dates should be mapped as floating without timezone to avoid issues with tasks across different timezones.
 	- Similar to calendars you can also define a filter category so that multiple CalDAV Tasklists can be synchronized into one Outlook task folder via the defined category.	
 ### Timezone settings ###
 
@@ -1083,9 +1096,11 @@ When you expand the tree view of the profile for events and tasks, you can confi
 
 ### Distribution Lists ###
 
-When enabled in Contact Mapping configuration you can now also sync Outlook Distribution Lists with your server contact groups. Since different servers use different formats to store contact groups, you will be able to choose the used DAV contact group format. Right now, only the VLIST format for SOGo servers is supported, but other formats will follow. Don't enable this option when your server doesn't support it!
+When enabled in Contact Mapping configuration you can now also sync Outlook Distribution Lists with your server contact groups. Since different servers use different formats to store contact groups, you will be able to choose the used DAV contact group format. Right now, the VLIST format for SOGo servers and vCards with KIND:group are supported. Don't enable any of these options when your server doesn't support it!
 
 Since Outlook Distribution Lists also support list members which aren't in the addressbook but SOGo VLISTs don't, we add them as custom X-Attributes. With this workaround those members aren't displayed in SOGo but won't get lost when syncing back to Outlook.
+
+Since vCard in version 3.0 doesn't support contact groups we use X-ADDRESSBOOK-SERVER attributes for KIND and MEMBER for contact groups.
 
 ### Google Calender / Addressbooks / Tasks settings ###
 
