@@ -307,11 +307,20 @@ namespace CalDavDataAccessIntegrationTests
     }
 
     [Test]
-    public void CreateInvalidEntity ()
+    public async Task CreateInvalidEntity ()
     {
-      Assert.That (
-          async () => await _calDavDataAccess.CreateEntity ("Invalix CalDav Entity", Guid.NewGuid().ToString()),
-          Throws.Exception);
+      Exception exception = null;
+      try
+      {
+        await _calDavDataAccess.CreateEntity("Invalix CalDav Entity", Guid.NewGuid().ToString());
+      }
+      catch (Exception x)
+      {
+        exception = x;
+      }
+
+      Assert.That (exception, Is.Not.Null);
+      Assert.That(exception, Is.InstanceOf<WebDavClientException>());
     }
 
     [Test]
@@ -321,11 +330,19 @@ namespace CalDavDataAccessIntegrationTests
           SerializeCalendar (
               CreateEntity (1)), Guid.NewGuid().ToString());
 
-      Assert.That (
-          async () => await _calDavDataAccess.TryUpdateEntity (v.Id, v.Version, "Invalid ICal"),
-          Throws.Exception);
-    }
+      Exception exception = null;
+      try
+      {
+        await  _calDavDataAccess.TryUpdateEntity (v.Id, v.Version, "Invalid ICal");
+      }
+      catch (Exception x)
+      {
+        exception = x;
+      }
 
+      Assert.That (exception, Is.Not.Null);
+      Assert.That (exception, Is.InstanceOf<WebDavClientException> ());
+    }
 
     private iCalendar CreateEntity (int startInHundretDays)
     {

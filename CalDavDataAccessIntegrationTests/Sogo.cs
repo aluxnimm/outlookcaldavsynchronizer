@@ -25,7 +25,7 @@ namespace CalDavDataAccessIntegrationTests
   {
     protected override string ProfileName
     {
-      get { return "Sogo-TestCal"; }
+      get { return "IntegrationTest/DataAccess/Sogo"; }
     }
 
     protected override ServerAdapterType? ServerAdapterTypeOverride

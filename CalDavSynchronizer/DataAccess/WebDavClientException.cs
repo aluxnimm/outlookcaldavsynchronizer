@@ -21,7 +21,7 @@ using System.Text.RegularExpressions;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  class WebDavClientException : Exception
+  public class WebDavClientException : Exception
   {
     public HttpStatusCode? StatusCode { get; }
     public string StatusDescription { get; }
