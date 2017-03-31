@@ -245,9 +245,23 @@ namespace CalDavSynchronizer
       {
         s_logger.Info ("Triggering sync after startup");
         EnsureSynchronizationContext ();
-        SynchronizeNowAsync ();
+        SynchronizeInitial ();
       }
     }
+
+    async void SynchronizeInitial()
+    {
+      try
+      {
+        await Task.Delay(TimeSpan.FromSeconds(10));
+        SynchronizeNowAsync();
+      }
+      catch (Exception x)
+      {
+        s_logger.Error("Error during initial sync", x);
+      }
+    }
+
 
     private void SyncObject_SyncEnd()
     {
