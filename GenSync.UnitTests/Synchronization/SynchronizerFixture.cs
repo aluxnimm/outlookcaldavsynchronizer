@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,10 +22,11 @@ using System.Threading.Tasks;
 using GenSync.EntityRelationManagement;
 using GenSync.Logging;
 using GenSync.Synchronization.States;
+using GenSync.UnitTests.Synchronization.Stubs;
 using NUnit.Framework;
 using Rhino.Mocks;
 
-namespace GenSync.UnitTests.Synchronization.Stubs
+namespace GenSync.UnitTests.Synchronization
 {
   [TestFixture]
   public class SynchronizerFixture
@@ -35,6 +37,7 @@ namespace GenSync.UnitTests.Synchronization.Stubs
       var builder = new SynchronizerBuilder();
 
       builder.AtypeIdComparer = StringComparer.InvariantCultureIgnoreCase;
+      builder.BtypeIdComparer = StringComparer.InvariantCultureIgnoreCase;
 
       builder.AtypeRepository
           .Expect (r => r.GetAllVersions (new string[] { },0))

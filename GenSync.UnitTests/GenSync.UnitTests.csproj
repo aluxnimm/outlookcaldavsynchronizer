@@ -73,7 +73,7 @@
     <Compile Include="Synchronization\Stubs\Mapper.cs" />
     <Compile Include="Synchronization\OneWayReplicatorFixture.cs" />
     <Compile Include="Synchronization\Stubs\SynchronizerBuilder.cs" />
-    <Compile Include="Synchronization\Stubs\SynchronizerFixture.cs" />
+    <Compile Include="Synchronization\SynchronizerFixture.cs" />
     <Compile Include="Synchronization\SynchronizerFixtureBase.cs" />
     <Compile Include="Synchronization\Stubs\TestRepository.cs" />
     <Compile Include="Synchronization\TwoWaySynchronizerFixture.cs" />
