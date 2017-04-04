@@ -29,6 +29,12 @@ namespace GenSync.UnitTests.Synchronization.Stubs
 
     public bool Equals (Identifier x, Identifier y)
     {
+      if (x == null && y == null)
+        return true;
+
+      if (x == null || y == null)
+        return false;
+
       return StringComparer.InvariantCultureIgnoreCase.Compare (x.Value, y.Value) == 0;
     }
 

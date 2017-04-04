@@ -47,6 +47,7 @@ namespace GenSync.Synchronization.States
     }
 
     public void AddSyncronizationJob (
+          IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> stateContext,
           IJobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity> aJobs,
           IJobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> bJobs,
           IEntitySynchronizationLogger logger,
@@ -64,9 +65,9 @@ namespace GenSync.Synchronization.States
       addAction (_knownData);
     }
 
-    public void Accept(ISynchronizationStateVisitor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> visitor)
+    public void Accept(IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> syncStateContext, ISynchronizationStateVisitor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> visitor)
     {
-      visitor.Visit(this);
+      visitor.Visit (syncStateContext, this);
     }
 
     public void Dispose ()

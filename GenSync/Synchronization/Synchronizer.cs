@@ -308,7 +308,7 @@ namespace GenSync.Synchronization
         TContext synchronizationContext,
         ISynchronizationInterceptor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> interceptor)
     {
-      var entitySyncStates = new EntitySyncStateContainer<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>();
+      var entitySynchronizationContexts = new List<IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>>();
 
       var aDeltaLogInfo = new VersionDeltaLoginInformation();
       var bDeltaLogInfo = new VersionDeltaLoginInformation();
@@ -327,14 +327,13 @@ namespace GenSync.Synchronization
         if (newBVersionAvailable)
           newBVersions.Remove (knownEntityRelationData.BtypeId);
 
-        var entitySyncState = CreateInitialSyncState (knownEntityRelationData, newAVersionAvailable, newAVersion, newBVersionAvailable, newBVersion, aDeltaLogInfo, bDeltaLogInfo);
-
-        entitySyncStates.Add (entitySyncState);
+        entitySynchronizationContexts.Add(new EntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>(
+          CreateInitialSyncState(knownEntityRelationData, newAVersionAvailable, newAVersion, newBVersionAvailable, newBVersion, aDeltaLogInfo, bDeltaLogInfo)));
       }
 
       HashSet<TAtypeEntityId> aEntitesToLoad = new HashSet<TAtypeEntityId>();
       HashSet<TBtypeEntityId> bEntitesToLoad = new HashSet<TBtypeEntityId>();
-      entitySyncStates.Execute (s => s.AddRequiredEntitiesToLoad (aEntitesToLoad.Add, bEntitesToLoad.Add));
+      entitySynchronizationContexts.ForEach (s => s.AddRequiredEntitiesToLoad (aEntitesToLoad.Add, bEntitesToLoad.Add));
 
       await _atypeRepository.VerifyUnknownEntities (newAVersions, synchronizationContext);
       await _btypeRepository.VerifyUnknownEntities (newBVersions, synchronizationContext);
@@ -364,7 +363,7 @@ namespace GenSync.Synchronization
           newAVersions.Remove(knownEntityRelationData.AtypeId);
           newBVersions.Remove(knownEntityRelationData.BtypeId);
           var entitySyncState = _initialSyncStateCreationStrategy.CreateFor_Unchanged_Unchanged(knownEntityRelationData);
-          entitySyncStates.Add(entitySyncState);
+          entitySynchronizationContexts.Add(new EntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>(entitySyncState));
           aDeltaLogInfo.IncUnchanged();
           bDeltaLogInfo.IncUnchanged();
         }
@@ -373,17 +372,18 @@ namespace GenSync.Synchronization
       foreach (var newA in newAVersions)
       {
         var syncState = _initialSyncStateCreationStrategy.CreateFor_Added_NotExisting(newA.Key, newA.Value);
-        entitySyncStates.Add(syncState);
+        entitySynchronizationContexts.Add (new EntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> (syncState));
       }
 
       foreach (var newB in newBVersions)
       {
         var syncState = _initialSyncStateCreationStrategy.CreateFor_NotExisting_Added(newB.Key, newB.Value);
-        entitySyncStates.Add(syncState);
+        entitySynchronizationContexts.Add (new EntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> (syncState));
       }
 
-      entitySyncStates.TransformStates (s => interceptor.TransformInitialCreatedStates (s, _syncStateFactory));
-      entitySyncStates.Execute(s => s.AddRequiredEntitiesToLoad(aEntitesToLoad.Add, bEntitesToLoad.Add));
+      interceptor.TransformInitialCreatedStates(entitySynchronizationContexts, _syncStateFactory);
+
+      entitySynchronizationContexts.ForEach (s => s.AddRequiredEntitiesToLoad (aEntitesToLoad.Add, bEntitesToLoad.Add));
 
       await entityContainer.EnsureEntitiesLoaded (aEntitesToLoad, bEntitesToLoad, synchronizationContext);
 
@@ -395,17 +395,17 @@ namespace GenSync.Synchronization
       s_logger.InfoFormat("Btype delta: {0}", bDeltaLogInfo);
       logger.LogDeltas(aDeltaLogInfo, bDeltaLogInfo);
 
-      entitySyncStates.DoTransition(s => s.FetchRequiredEntities(entityContainer.AEntities, entityContainer.BEntities));
-      entitySyncStates.DoTransition(s => s.Resolve());
+      entitySynchronizationContexts.ForEach (s => s.FetchRequiredEntities(entityContainer.AEntities, entityContainer.BEntities));
+      entitySynchronizationContexts.ForEach (s => s.Resolve());
 
       // since resolve may change to an new state, required entities have to be fetched again.
       // an state is allowed only to resolve to another state, if the following states requires equal or less entities!
-      entitySyncStates.DoTransition (s => s.FetchRequiredEntities (entityContainer.AEntities, entityContainer.BEntities));
+      entitySynchronizationContexts.ForEach (s => s.FetchRequiredEntities (entityContainer.AEntities, entityContainer.BEntities));
 
       var aJobs = new JobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity> ();
       var bJobs = new JobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> ();
 
-      entitySyncStates.Execute (s => s.AddSyncronizationJob (aJobs, bJobs, logger.CreateEntitySynchronizationLogger(), synchronizationContext));
+      entitySynchronizationContexts.ForEach (s => s.AddSyncronizationJob (aJobs, bJobs, logger.CreateEntitySynchronizationLogger(), synchronizationContext));
 
       s_logger.InfoFormat($"A repository jobs: {aJobs}");
       s_logger.InfoFormat($"B repository jobs: {bJobs}");
@@ -417,14 +417,13 @@ namespace GenSync.Synchronization
         await _btypeWriteRepository.PerformOperations (bJobs.CreateJobs, bJobs.UpdateJobs, bJobs.DeleteJobs, progress, synchronizationContext);
       }
 
-      entitySyncStates.DoTransition (s => s.NotifyJobExecuted());
+      entitySynchronizationContexts.ForEach (s => s.NotifyJobExecuted());
 
       var newEntityRelations = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
 
-      entitySyncStates.Execute (s => s.AddNewRelationNoThrow (newEntityRelations.Add));
+      entitySynchronizationContexts.ForEach (s => s.AddNewRelationNoThrow (newEntityRelations.Add));
 
-      entitySyncStates.Dispose();
-
+      entitySynchronizationContexts.ForEach (s => s.Dispose ());
 
       return newEntityRelations;
     }

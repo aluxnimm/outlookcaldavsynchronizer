@@ -195,29 +195,47 @@ namespace GenSync.UnitTests.Synchronization
     {
       CollectionAssert.Contains (_serverRepository.EntityVersionAndContentById.Values, Tuple.Create (version, content));
     }
-
-
+    
     public async Task InitializeWithTwoEvents ()
     {
-      var v1 = await _localRepository.Create (v => Task.FromResult("Item 1"), NullSynchronizationContextFactory.Instance.Create ().Result);
-      var v2 = await _localRepository.Create (v => Task.FromResult("Item 2"), NullSynchronizationContextFactory.Instance.Create ().Result);
+      await InitializeWithEvents (2);
+    }
 
-      var v3 = await _serverRepository.Create (v => Task.FromResult("Item 1"), NullSynchronizationContextFactory.Instance.Create ().Result);
-      var v4 = await _serverRepository.Create (v => Task.FromResult("Item 2"), NullSynchronizationContextFactory.Instance.Create ().Result);
+    public async Task InitializeWithEvents (int count)
+    {
 
-      _entityRelationData.Add (new EntityRelationData (
-          v1.Id,
-          v1.Version,
-          v3.Id,
-          v3.Version
-          ));
+      for (var i = 1; i <= count; i++)
+      {
+        var local = await _localRepository.Create (v => Task.FromResult ($"Item {i}"), NullSynchronizationContextFactory.Instance.Create ().Result);
+        var server = await _serverRepository.Create (v => Task.FromResult ($"Item {i}"), NullSynchronizationContextFactory.Instance.Create ().Result);
 
-      _entityRelationData.Add (new EntityRelationData (
-          v2.Id,
-          v2.Version,
-          v4.Id,
-          v4.Version
-          ));
+        _entityRelationData.Add (new EntityRelationData (
+          local.Id,
+          local.Version,
+          server.Id,
+          server.Version
+        ));
+      }
+
+      AssertRelations (
+        Enumerable.Range (1, count).Select (i => new EntityRelationData ($"l{i}", 0, $"s{i}", 0)).ToArray ());
+    }
+
+    public void AssertRelations (params EntityRelationData[] relations)
+    {
+      Assert.That (_entityRelationData.Count, Is.EqualTo (relations.Length));
+
+      foreach (var relation in relations)
+      {
+        if (_entityRelationData.SingleOrDefault (r =>
+           IdentifierEqualityComparer.Instance.Equals (r.AtypeId, relation.AtypeId) &&
+           IdentifierEqualityComparer.Instance.Equals (r.BtypeId, relation.BtypeId) &&
+           r.AtypeVersion == relation.AtypeVersion &&
+           r.BtypeVersion == relation.BtypeVersion) == null)
+        {
+          Assert.Fail ("Relations mismatch");
+        }
+      }
     }
   }
 }

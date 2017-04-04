@@ -15,9 +15,11 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Diagnostics;
 
 namespace GenSync.UnitTests.Synchronization.Stubs
 {
+  [DebuggerDisplay("{Value}")]
   public class Identifier
   {
     private readonly string _value;
@@ -35,6 +37,11 @@ namespace GenSync.UnitTests.Synchronization.Stubs
     public string Value
     {
       get { return _value; }
+    }
+
+    public override string ToString ()
+    {
+      return _value;
     }
   }
 }
