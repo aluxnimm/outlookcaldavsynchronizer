@@ -29,8 +29,9 @@ namespace GenSync.UnitTests.Synchronization.Stubs
 
     public readonly Dictionary<Identifier, Tuple<int, string>> EntityVersionAndContentById = new Dictionary<Identifier, Tuple<int, string>> (IdentifierEqualityComparer.Instance);
     private int _nextId = 1;
-
-
+    private int _numberOfCreateCalls = 0;
+    private int? _numberOfCreatesAfterWhichExceptionsOccur;
+    
     public int Count
     {
       get { return EntityVersionAndContentById.Count; }
@@ -39,6 +40,14 @@ namespace GenSync.UnitTests.Synchronization.Stubs
     public TestRepository (string idPrefix)
     {
       _idPrefix = idPrefix;
+    }
+
+    public Identifier EntityWhichCausesExceptionOnUpdate { get; set; }
+    public Identifier EntityWhichCausesExceptionOnDelete { get; set; }
+
+    public void SetNumberOfEntitesWhichCanBeCreatedBeforeExceptionsOccur(int? count)
+    {
+      _numberOfCreatesAfterWhichExceptionsOccur = _numberOfCreateCalls + count;
     }
 
     public Task<IReadOnlyList<EntityVersion<Identifier, int>>> GetVersions (IEnumerable<IdWithAwarenessLevel<Identifier>> idsOfEntitiesToQuery, int context)
@@ -83,6 +92,9 @@ namespace GenSync.UnitTests.Synchronization.Stubs
 
     public Task<bool> TryDelete (Identifier entityId, int version, int context)
     {
+      if (IdentifierEqualityComparer.Instance.Equals (entityId, EntityWhichCausesExceptionOnDelete))
+        throw new Exception ("Failed!");
+
       if (!EntityVersionAndContentById.ContainsKey (entityId))
         throw new Exception ("tried to delete non existing entity!");
 
@@ -100,6 +112,9 @@ namespace GenSync.UnitTests.Synchronization.Stubs
         Func<string, Task<string>> entityModifier, 
         int context)
     {
+      if (IdentifierEqualityComparer.Instance.Equals (entityId, EntityWhichCausesExceptionOnUpdate))
+        throw new Exception ("Failed!");
+
       var kv = EntityVersionAndContentById[entityId];
 
       if (kv.Item1 != entityVersion)
@@ -130,8 +145,14 @@ namespace GenSync.UnitTests.Synchronization.Stubs
 
     public async Task<EntityVersion<Identifier, int>> Create (Func<string, Task<string>> entityInitializer, int context)
     {
+      _numberOfCreateCalls++;
+
+      if (_numberOfCreateCalls > _numberOfCreatesAfterWhichExceptionsOccur)
+        throw new Exception ("Failed!");
+
       var newValue = await entityInitializer (string.Empty);
       var entityId = _idPrefix + _nextId++;
+
       EntityVersionAndContentById[entityId] = Tuple.Create (0, newValue);
       return new EntityVersion<Identifier, int> (entityId, 0);
     }

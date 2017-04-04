@@ -405,5 +405,90 @@ namespace GenSync.UnitTests.Synchronization
         AssertServer ("s2", 0, "Item 2");
       });
     }
+
+    [Test]
+    public async Task TwoWaySynchronize_AllOperationsWithErrorsInFirstRuns ()
+    {
+      await InitializeWithEvents (8);
+
+      var addedLocal1 = await _localRepository.Create (v => Task.FromResult ("Item add l1"), NullSynchronizationContextFactory.Instance.Create ().Result);
+      var addedLocal2 = await _localRepository.Create (v => Task.FromResult ("Item add l2"), NullSynchronizationContextFactory.Instance.Create ().Result);
+      _localRepository.UpdateWithoutIdChange ("l1", v => "upd Item 1");
+      _localRepository.UpdateWithoutIdChange ("l2", v => "upd Item 2");
+      _localRepository.Delete("l3");
+      _localRepository.Delete("l4");
+
+      _localRepository.SetNumberOfEntitesWhichCanBeCreatedBeforeExceptionsOccur(1);
+      _localRepository.EntityWhichCausesExceptionOnUpdate = "l5";
+      _localRepository.EntityWhichCausesExceptionOnDelete = "l7";
+
+      var addedServer1 = await _serverRepository.Create (v => Task.FromResult ("Item add s1"), NullSynchronizationContextFactory.Instance.Create ().Result);
+      var addedServer2 = await _serverRepository.Create (v => Task.FromResult ("Item add s2"), NullSynchronizationContextFactory.Instance.Create ().Result);
+      _serverRepository.UpdateWithoutIdChange ("s5", v => "upd Item 5");
+      _serverRepository.UpdateWithoutIdChange ("s6", v => "upd Item 6");
+      _serverRepository.Delete ("s7");
+      _serverRepository.Delete ("s8");
+
+      _serverRepository.SetNumberOfEntitesWhichCanBeCreatedBeforeExceptionsOccur(1);
+      _serverRepository.EntityWhichCausesExceptionOnUpdate = "s1";
+      _serverRepository.EntityWhichCausesExceptionOnDelete = "s3";
+
+      ExecuteMultipleTimes (() =>
+      {
+        SynchronizeTwoWay (GenericConflictResolution.AWins);
+
+        AssertLocalCount (8);
+        AssertLocal ("l1", 1, "upd Item 1");
+        AssertLocal ("l2", 1, "upd Item 2");
+        AssertLocal ("l5", 0, "Item 5");
+        AssertLocal ("l6u", 1, "upd Item 6");
+        AssertLocal ("l7", 0, "Item 7");
+        AssertLocal ("l9", 0, "Item add l1");
+        AssertLocal ("l10", 0, "Item add l2");
+        AssertLocal ("l11", 0, "Item add s1");
+
+        AssertServerCount (8);
+        AssertServer ("s1", 0, "Item 1");
+        AssertServer ("s2u", 1, "upd Item 2");
+        AssertServer ("s3", 0, "Item 3");
+        AssertServer ("s5", 1, "upd Item 5");
+        AssertServer ("s6", 1, "upd Item 6");
+        AssertServer ("s9", 0, "Item add s1");
+        AssertServer ("s10", 0, "Item add s2");
+        AssertServer ("s11", 0, "Item add l1");
+      });
+
+      _localRepository.SetNumberOfEntitesWhichCanBeCreatedBeforeExceptionsOccur (null);
+      _localRepository.EntityWhichCausesExceptionOnUpdate = null;
+      _localRepository.EntityWhichCausesExceptionOnDelete = null;
+      _serverRepository.SetNumberOfEntitesWhichCanBeCreatedBeforeExceptionsOccur (null);
+      _serverRepository.EntityWhichCausesExceptionOnUpdate = null;
+      _serverRepository.EntityWhichCausesExceptionOnDelete = null;
+
+      ExecuteMultipleTimes (() =>
+      {
+        SynchronizeTwoWay (GenericConflictResolution.AWins);
+
+        AssertLocalCount (8);
+        AssertLocal ("l1", 1, "upd Item 1");
+        AssertLocal ("l2", 1, "upd Item 2");
+        AssertLocal ("l5u", 1, "upd Item 5");
+        AssertLocal ("l6u", 1, "upd Item 6");
+        AssertLocal ("l9", 0, "Item add l1");
+        AssertLocal ("l10", 0, "Item add l2");
+        AssertLocal ("l11", 0, "Item add s1");
+        AssertLocal ("l12", 0, "Item add s2");
+
+        AssertServerCount (8);
+        AssertServer ("s1u", 1, "upd Item 1");
+        AssertServer ("s2u", 1, "upd Item 2");
+        AssertServer ("s5", 1, "upd Item 5");
+        AssertServer ("s6", 1, "upd Item 6");
+        AssertServer ("s9", 0, "Item add s1");
+        AssertServer ("s10", 0, "Item add s2");
+        AssertServer ("s11", 0, "Item add l1");
+        AssertServer ("s12", 0, "Item add l2");
+      });
+    }
   }
 }
