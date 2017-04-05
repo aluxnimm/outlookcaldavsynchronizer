@@ -114,6 +114,11 @@ namespace GenSync.Synchronization.States
       return Discard ();
     }
 
+    public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> Abort()
+    {
+      return Discard();
+    }
+
     struct JobWrapper : IDeleteJob<TAtypeEntityId, TAtypeEntityVersion>
     {
       private readonly IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> _stateContext;

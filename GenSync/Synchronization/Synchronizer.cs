@@ -131,7 +131,7 @@ namespace GenSync.Synchronization
 
           using (var entityContainer = new EntityContainer(this, totalProgress, logger.ALoadEntityLogger, logger.BLoadEntityLogger))
           {
-            var newEntityRelations = await Synchronize(
+            await Synchronize(
               totalProgress,
               knownEntityRelations,
               newAVersions,
@@ -139,9 +139,8 @@ namespace GenSync.Synchronization
               entityContainer,
               logger,
               synchronizationContext,
-              interceptor);
-
-            _entityRelationDataAccess.SaveEntityRelationData(newEntityRelations);
+              interceptor,
+              newEntityRelations => _entityRelationDataAccess.SaveEntityRelationData(newEntityRelations));
           }
         }
       }
@@ -235,7 +234,7 @@ namespace GenSync.Synchronization
 
           using (var entityContainer = new EntityContainer(this, totalProgress, logger.ALoadEntityLogger, logger.BLoadEntityLogger))
           {
-            var newEntityRelations = await Synchronize(
+            await Synchronize(
               totalProgress,
               entityRelationsToUse,
               newAVersions,
@@ -243,11 +242,12 @@ namespace GenSync.Synchronization
               entityContainer,
               logger,
               synchronizationContext,
-              interceptor);
-
-            entityRelationsNotToUse.AddRange(newEntityRelations);
-
-            _entityRelationDataAccess.SaveEntityRelationData(entityRelationsNotToUse);
+              interceptor,
+              newEntityRelations =>
+              {
+                entityRelationsNotToUse.AddRange(newEntityRelations);
+                _entityRelationDataAccess.SaveEntityRelationData(entityRelationsNotToUse);
+              });
           }
         }
       }
@@ -298,7 +298,7 @@ namespace GenSync.Synchronization
       return isBCausingSync;
     }
 
-    private async Task<List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>> Synchronize (
+    private async Task Synchronize (
         ITotalProgressLogger totalProgress,
         IEnumerable<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> knownEntityRelations,
         Dictionary<TAtypeEntityId, TAtypeEntityVersion> newAVersions,
@@ -306,7 +306,8 @@ namespace GenSync.Synchronization
         EntityContainer entityContainer,
         ISynchronizationLogger logger,
         TContext synchronizationContext,
-        ISynchronizationInterceptor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> interceptor)
+        ISynchronizationInterceptor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> interceptor,
+        Action<List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>> saveNewRelations)
     {
       var entitySynchronizationContexts = new List<IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>>();
 
@@ -411,21 +412,34 @@ namespace GenSync.Synchronization
       s_logger.InfoFormat($"B repository jobs: {bJobs}");
       logger.LogJobs(aJobs.ToString(), bJobs.ToString());
 
-      using (var progress = totalProgress.StartProcessing (aJobs.TotalJobCount + bJobs.TotalJobCount))
+      try
       {
-        await _atypeWriteRepository.PerformOperations (aJobs.CreateJobs, aJobs.UpdateJobs, aJobs.DeleteJobs, progress, synchronizationContext);
-        await _btypeWriteRepository.PerformOperations (bJobs.CreateJobs, bJobs.UpdateJobs, bJobs.DeleteJobs, progress, synchronizationContext);
+        using (var progress = totalProgress.StartProcessing(aJobs.TotalJobCount + bJobs.TotalJobCount))
+        {
+          await _atypeWriteRepository.PerformOperations(aJobs.CreateJobs, aJobs.UpdateJobs, aJobs.DeleteJobs, progress, synchronizationContext);
+          await _btypeWriteRepository.PerformOperations(bJobs.CreateJobs, bJobs.UpdateJobs, bJobs.DeleteJobs, progress, synchronizationContext);
+        }
+
+        entitySynchronizationContexts.ForEach (s => s.NotifyJobExecuted());
+      }
+      catch (RepositoryOverloadException)
+      {
+        entitySynchronizationContexts.ForEach (s => s.Abort ());
+        SaveNewRelations (entitySynchronizationContexts, saveNewRelations);
+        throw;
       }
 
-      entitySynchronizationContexts.ForEach (s => s.NotifyJobExecuted());
+      SaveNewRelations(entitySynchronizationContexts, saveNewRelations);
+    }
 
-      var newEntityRelations = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
-
-      entitySynchronizationContexts.ForEach (s => s.AddNewRelationNoThrow (newEntityRelations.Add));
-
-      entitySynchronizationContexts.ForEach (s => s.Dispose ());
-
-      return newEntityRelations;
+    private void SaveNewRelations(
+      List<IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>> syncStateContexts,
+      Action<List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>> saveNewRelations)
+    {
+      var newEntityRelations = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> ();
+      syncStateContexts.ForEach (s => s.AddNewRelationNoThrow (newEntityRelations.Add));
+      syncStateContexts.ForEach (s => s.Dispose ());
+      saveNewRelations(newEntityRelations);
     }
 
     private static Dictionary<TId, TEntity> GetSubSet<TId, TEntity> (IReadOnlyDictionary<TId, TEntity> set, IEnumerable<TId> subSetIds, IEqualityComparer<TId> idComparer)

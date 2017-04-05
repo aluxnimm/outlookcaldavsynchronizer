@@ -78,5 +78,7 @@ namespace GenSync.Synchronization.States
     public virtual void Dispose ()
     {
     }
+
+    public abstract IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> Abort();
   }
 }

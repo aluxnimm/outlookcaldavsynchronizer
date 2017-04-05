@@ -20,6 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GenSync.ProgressReport;
+using GenSync.Synchronization;
 
 namespace GenSync.EntityRepositories
 {
@@ -50,6 +51,10 @@ namespace GenSync.EntityRepositories
           var result = await _inner.Create (job.InitializeEntity, context);
           job.NotifyOperationSuceeded (result);
         }
+        catch (RepositoryOverloadException)
+        {
+          throw;
+        }
         catch (Exception x)
         {
           job.NotifyOperationFailed (x);
@@ -67,6 +72,10 @@ namespace GenSync.EntityRepositories
           else
             job.NotifyEntityNotFound();
         }
+        catch (RepositoryOverloadException)
+        {
+          throw;
+        }
         catch (Exception x)
         {
           job.NotifyOperationFailed (x);
@@ -82,6 +91,10 @@ namespace GenSync.EntityRepositories
             job.NotifyOperationSuceeded();
           else
             job.NotifyEntityNotFound();
+        }
+        catch (RepositoryOverloadException)
+        {
+          throw;
         }
         catch (Exception x)
         {

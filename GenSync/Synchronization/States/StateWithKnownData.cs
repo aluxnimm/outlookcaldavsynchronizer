@@ -35,5 +35,10 @@ namespace GenSync.Synchronization.States
     {
       return new DoNothing<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> (KnownData);
     }
+
+    public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> Abort ()
+    {
+      return CreateDoNothing ();
+    }
   }
 }
