@@ -126,7 +126,8 @@ namespace CalDavSynchronizer.Scheduling
                 _reportSink,
                 _folderChangeWatcherFactory,
                 _ensureSynchronizationContext,
-                _runLogger);
+                _runLogger,
+                DateTimeProvider.Instance);
           }
           await profileRunner.UpdateOptions (option, generalOptions);
           workersById.Add (option.Id, profileRunner);
