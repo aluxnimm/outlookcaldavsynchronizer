@@ -23,6 +23,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using CalDavSynchronizer.Implementation;
 using log4net;
 
 namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
@@ -77,7 +78,7 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
       }
       catch (HttpRequestException x)
       {
-        throw WebDavClientException.Create (x);
+        throw WebExceptionMapper.Map(x);
       }
     }
 
@@ -100,7 +101,7 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
       }
       catch (HttpRequestException x)
       {
-        throw WebDavClientException.Create (x);
+        throw WebExceptionMapper.Map (x);
       }
     }
 
@@ -201,7 +202,14 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
           s_logger.Error ("Exception while trying to read the error message.", x);
         }
 
-        throw new WebDavClientException (response.StatusCode, response.StatusCode.ToString(), responseMessage);
+        throw WebExceptionMapper.Map(
+          new WebDavClientException(
+            response.StatusCode,
+            response.ReasonPhrase ?? response.StatusCode.ToString(),
+            responseMessage,
+            response.Headers != null ?
+              (IHttpHeaders) new HttpResponseHeadersAdapter(response.Headers, response.Headers) :
+              new NullHeaders()));
       }
     }
 

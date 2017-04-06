@@ -296,12 +296,14 @@
     <Compile Include="DataAccess\CalDavResources.cs" />
     <Compile Include="DataAccess\FileDataAccess.cs" />
     <Compile Include="DataAccess\FileSystemDavDataAccess.cs" />
+    <Compile Include="DataAccess\HttpClientBasedClient\NullHeaders.cs" />
     <Compile Include="DataAccess\TaskListData.cs" />
     <Compile Include="DataAccess\AddressBookData.cs" />
     <Compile Include="DataAccess\GlobalOptionsDataAccess.cs" />
     <Compile Include="DataAccess\IGlobalOptionsDataAccess.cs" />
     <Compile Include="DataAccess\WebDavClientBase.cs" />
     <Compile Include="DataAccess\CalendarData.cs" />
+    <Compile Include="DataAccess\WebExceptionMapper.cs" />
     <Compile Include="DateTimeProvider.cs" />
     <Compile Include="DDayICalWorkaround\IDateTimeExtension.cs" />
     <Compile Include="EntityCacheVersionConversion\Version1To2.cs" />

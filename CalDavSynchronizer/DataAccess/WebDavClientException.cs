@@ -18,6 +18,7 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
+using CalDavSynchronizer.DataAccess.HttpClientBasedClient;
 
 namespace CalDavSynchronizer.DataAccess
 {
@@ -25,41 +26,22 @@ namespace CalDavSynchronizer.DataAccess
   {
     public HttpStatusCode? StatusCode { get; }
     public string StatusDescription { get; }
+    public IHttpHeaders Headers { get; }
 
-    private WebDavClientException (Exception innerException, HttpStatusCode? statusCode, string statusDescription)
+    public WebDavClientException (Exception innerException, HttpStatusCode? statusCode, string statusDescription, IHttpHeaders headers)
         : base (innerException.Message, innerException)
     {
       StatusCode = statusCode;
       StatusDescription = statusDescription;
+      Headers = headers;
     }
 
-    public WebDavClientException (HttpStatusCode statusCode, string statusDescription,string responseMessage)
+    public WebDavClientException (HttpStatusCode statusCode, string statusDescription,string responseMessage, IHttpHeaders headers)
       :base ($"Response status code does not indicate success: '{(int)statusCode}' ('{statusDescription}'). Message:\r\n{responseMessage}")
     {
       StatusCode = statusCode;
       StatusDescription = statusDescription;
-    }
-
-    public static WebDavClientException Create (WebException x)
-    {
-      var httpWebResponse = x.Response as HttpWebResponse;
-      return new WebDavClientException (x, httpWebResponse?.StatusCode, httpWebResponse?.StatusDescription);
-    }
-
-    public static WebDavClientException Create (HttpRequestException x)
-    {
-      var match = Regex.Match (x.Message, @"'(?<code>\d{3})'\s+\('(?<description>.*?)'\)");
-      if (match.Success)
-      {
-        return new WebDavClientException (
-            x,
-            (HttpStatusCode) int.Parse (match.Groups["code"].Value),
-            match.Groups["description"].Value);
-      }
-      else
-      {
-        return new WebDavClientException (x, null, null);
-      }
+      Headers = headers;
     }
   }
 }
