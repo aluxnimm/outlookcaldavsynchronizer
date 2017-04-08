@@ -143,7 +143,7 @@ namespace CalDavSynchronizer.Scheduling
     {
       if (_postponeUntil >= _dateTimeProvider.Now)
       {
-        s_logger.Info($"This profile will not run, since it is postponed until '{_postponeUntil}'");
+        s_logger.Info($"Profile '{_profileName}' will not run, since it is postponed until '{_postponeUntil}'");
         return true;
       }
       else
@@ -266,11 +266,7 @@ namespace CalDavSynchronizer.Scheduling
             }
             catch (WebRepositoryOverloadException x)
             {
-              ExceptionHandler.Instance.LogException (x, s_logger);
-              if (x.RetryAfter.HasValue)
-              {
-                _postponeUntil = x.RetryAfter.Value;
-              }
+              HandleWebRepositoryOverloadException(x);
             }
             catch (Exception x)
             {
@@ -293,6 +289,15 @@ namespace CalDavSynchronizer.Scheduling
       }
     }
 
+    private void HandleWebRepositoryOverloadException(WebRepositoryOverloadException x)
+    {
+      _postponeUntil = x.RetryAfter;
+      ExceptionHandler.Instance.LogException(
+        "Sync run aborted." + (_postponeUntil.HasValue ? $" Postponing following runs until '{_postponeUntil}'." : string.Empty),
+        x, 
+        s_logger);
+    }
+
     private async Task RunPartialNoThrow (IOutlookId[] itemsToSync)
     {
       try
@@ -307,11 +312,7 @@ namespace CalDavSynchronizer.Scheduling
             }
             catch (WebRepositoryOverloadException x)
             {
-              ExceptionHandler.Instance.LogException (x, s_logger);
-              if (x.RetryAfter.HasValue)
-              {
-                _postponeUntil = x.RetryAfter.Value;
-              }
+              HandleWebRepositoryOverloadException (x);
             }
             catch (Exception x)
             {
