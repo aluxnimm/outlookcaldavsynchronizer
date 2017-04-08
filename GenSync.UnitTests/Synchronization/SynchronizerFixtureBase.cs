@@ -156,8 +156,8 @@ namespace GenSync.UnitTests.Synchronization
               Arg<IReadOnlyDictionary<Identifier, int>>.Is.NotNull))
           .Return (matchingEntities ?? new List<IEntityRelationData<Identifier, int, Identifier, int>>());
 
-      var atypeWriteRepository = BatchEntityRepositoryAdapter.Create (_localRepository);
-      var btypeWriteRepository = BatchEntityRepositoryAdapter.Create (_serverRepository);
+      var atypeWriteRepository = BatchEntityRepositoryAdapter.Create (_localRepository, TestExceptionHandlingStrategy.Instance);
+      var btypeWriteRepository = BatchEntityRepositoryAdapter.Create (_serverRepository, TestExceptionHandlingStrategy.Instance);
 
       return new Synchronizer<Identifier, int, string, Identifier, int, string, int> (
           _localRepository,
@@ -173,7 +173,8 @@ namespace GenSync.UnitTests.Synchronization
           NullTotalProgressFactory.Instance,
           EqualityComparer<int>.Default,
           EqualityComparer<int>.Default,
-          MockRepository.GenerateMock<IEntitySyncStateFactory<Identifier, int, string, Identifier, int, string, int>> ());
+          MockRepository.GenerateMock<IEntitySyncStateFactory<Identifier, int, string, Identifier, int, string, int>> (),
+          TestExceptionHandlingStrategy.Instance);
     }
 
     protected void ExecuteMultipleTimes (Action a)

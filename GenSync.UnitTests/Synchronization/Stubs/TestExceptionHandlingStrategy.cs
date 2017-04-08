@@ -14,28 +14,22 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 using System;
-using System.Runtime.Serialization;
+using GenSync.Synchronization;
 
-namespace GenSync.EntityRepositories
+namespace GenSync.UnitTests.Synchronization.Stubs
 {
-  public class RepositoryOverloadException : Exception
+  class TestExceptionHandlingStrategy : IExceptionHandlingStrategy
   {
-    public RepositoryOverloadException()
+    public static readonly IExceptionHandlingStrategy Instance = new TestExceptionHandlingStrategy ();
+
+    private TestExceptionHandlingStrategy ()
     {
     }
 
-    public RepositoryOverloadException(string message) : base(message)
+    public bool DoesAbortSynchronization (Exception x)
     {
-    }
-
-    public RepositoryOverloadException(string message, Exception innerException) : base(message, innerException)
-    {
-    }
-
-    protected RepositoryOverloadException(SerializationInfo info, StreamingContext context) : base(info, context)
-    {
+      return x is TestAbortException;
     }
   }
 }

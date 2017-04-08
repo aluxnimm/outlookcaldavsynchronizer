@@ -38,9 +38,9 @@ namespace GenSync.UnitTests.Synchronization.Stubs
       get { return EntityVersionAndContentById.Count; }
     }
 
-    public Identifier EntityWhichCausesOverloadExceptionOnUpdate { get; set; }
-    public Identifier EntityWhichCausesOverloadExceptionOnDelete { get; set; }
-    public void SetNumberOfEntitesWhichCanBeCreatedBeforeOverloadExceptionOccur (int? count)
+    public Identifier EntityWhichCausesAbortExceptionOnUpdate { get; set; }
+    public Identifier EntityWhichCausesAbortExceptionOnDelete { get; set; }
+    public void SetNumberOfEntitesWhichCanBeCreatedBeforeAbortExceptionOccur (int? count)
     {
       _numberOfCreatesAfterWhichOverloadExceptionOccur = _numberOfCreateCalls + count;
     }
@@ -103,8 +103,8 @@ namespace GenSync.UnitTests.Synchronization.Stubs
       if (IdentifierEqualityComparer.Instance.Equals (entityId, EntityWhichCausesExceptionOnDelete))
         throw new Exception ("Failed!");
      
-       if (IdentifierEqualityComparer.Instance.Equals(entityId, EntityWhichCausesOverloadExceptionOnDelete))
-        throw new RepositoryOverloadException();
+       if (IdentifierEqualityComparer.Instance.Equals(entityId, EntityWhichCausesAbortExceptionOnDelete))
+        throw new TestAbortException();
 
       if (!EntityVersionAndContentById.ContainsKey (entityId))
         throw new Exception ("tried to delete non existing entity!");
@@ -126,8 +126,8 @@ namespace GenSync.UnitTests.Synchronization.Stubs
       if (IdentifierEqualityComparer.Instance.Equals (entityId, EntityWhichCausesExceptionOnUpdate))
         throw new Exception ("Failed!");
       
-      if (IdentifierEqualityComparer.Instance.Equals (entityId, EntityWhichCausesOverloadExceptionOnUpdate))
-        throw new RepositoryOverloadException ();
+      if (IdentifierEqualityComparer.Instance.Equals (entityId, EntityWhichCausesAbortExceptionOnUpdate))
+        throw new TestAbortException ();
 
       var kv = EntityVersionAndContentById[entityId];
 
@@ -166,7 +166,7 @@ namespace GenSync.UnitTests.Synchronization.Stubs
 
 
       if (_numberOfCreateCalls == _numberOfCreatesAfterWhichOverloadExceptionOccur+1)
-        throw new RepositoryOverloadException ();
+        throw new TestAbortException ();
         
 
       var newValue = await entityInitializer (string.Empty);

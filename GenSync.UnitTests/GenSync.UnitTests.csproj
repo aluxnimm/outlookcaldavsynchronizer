@@ -65,8 +65,10 @@
     <Compile Include="InitialEntityMatching\TestInitialEntityMatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Synchronization\PartialSynchronizerFixture.cs" />
+    <Compile Include="Synchronization\Stubs\AbortException.cs" />
     <Compile Include="Synchronization\Stubs\EntityRelationData.cs" />
     <Compile Include="Synchronization\Stubs\EntityRelationDataFactory.cs" />
+    <Compile Include="Synchronization\Stubs\TestExceptionHandlingStrategy.cs" />
     <Compile Include="Synchronization\Stubs\GenericConflictResolution.cs" />
     <Compile Include="Synchronization\Stubs\Identifier.cs" />
     <Compile Include="Synchronization\Stubs\IdentifierEqualityComparer.cs" />

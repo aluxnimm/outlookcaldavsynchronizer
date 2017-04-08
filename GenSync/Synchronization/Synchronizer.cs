@@ -58,6 +58,9 @@ namespace GenSync.Synchronization
     private readonly IBatchWriteOnlyEntityRepository<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> _btypeWriteRepository;
     private readonly IEntitySyncStateFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> _syncStateFactory;
 
+    private readonly IExceptionHandlingStrategy _exceptionHandlingStrategy;
+
+
     public Synchronizer (
         IReadOnlyEntityRepository<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TContext> atypeRepository,
         IReadOnlyEntityRepository<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> btypeRepository,
@@ -71,6 +74,7 @@ namespace GenSync.Synchronization
         ITotalProgressFactory totalProgressFactory,
         IEqualityComparer<TAtypeEntityVersion> atypeVersionComparer, 
         IEqualityComparer<TBtypeEntityVersion> btypeVersionComparer, IEntitySyncStateFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> syncStateFactory,
+        IExceptionHandlingStrategy exceptionHandlingStrategy,
         ISynchronizationInterceptorFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> synchronizationInterceptorFactoryOrNull = null)
     {
       if (atypeRepository == null) throw new ArgumentNullException(nameof(atypeRepository));
@@ -87,7 +91,8 @@ namespace GenSync.Synchronization
       if (atypeVersionComparer == null) throw new ArgumentNullException(nameof(atypeVersionComparer));
       if (btypeVersionComparer == null) throw new ArgumentNullException(nameof(btypeVersionComparer));
       if (syncStateFactory == null) throw new ArgumentNullException(nameof(syncStateFactory));
-     
+      if (exceptionHandlingStrategy == null) throw new ArgumentNullException(nameof(exceptionHandlingStrategy));
+
       _initialSyncStateCreationStrategy = initialSyncStateCreationStrategy;
       _totalProgressFactory = totalProgressFactory;
       _atypeIdComparer = atypeIdComparer;
@@ -95,6 +100,7 @@ namespace GenSync.Synchronization
       _atypeVersionComparer = atypeVersionComparer;
       _btypeVersionComparer = btypeVersionComparer;
       _syncStateFactory = syncStateFactory;
+      _exceptionHandlingStrategy = exceptionHandlingStrategy;
       _synchronizationInterceptorFactory = synchronizationInterceptorFactoryOrNull ?? NullSynchronizationInterceptorFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>.Instance;
       _atypeWriteRepository = atypeWriteRepository;
       _btypeWriteRepository = btypeWriteRepository;
@@ -422,10 +428,13 @@ namespace GenSync.Synchronization
 
         entitySynchronizationContexts.ForEach (s => s.NotifyJobExecuted());
       }
-      catch (RepositoryOverloadException)
+      catch (Exception x)
       {
-        entitySynchronizationContexts.ForEach (s => s.Abort ());
-        SaveNewRelations (entitySynchronizationContexts, saveNewRelations);
+        if (_exceptionHandlingStrategy.DoesAbortSynchronization(x))
+        {
+          entitySynchronizationContexts.ForEach(s => s.Abort());
+          SaveNewRelations(entitySynchronizationContexts, saveNewRelations);
+        }
         throw;
       }
 

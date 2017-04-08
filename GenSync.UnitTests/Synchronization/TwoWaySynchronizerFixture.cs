@@ -416,13 +416,13 @@ namespace GenSync.UnitTests.Synchronization
       _localRepository.UpdateWithoutIdChange ("l1", v => "upd Item 1");
       _localRepository.UpdateWithoutIdChange ("l2", v => "upd Item 2");
       _localRepository.UpdateWithoutIdChange ("l3", v => "upd Item 3");
-      _serverRepository.EntityWhichCausesOverloadExceptionOnUpdate = "s2";
+      _serverRepository.EntityWhichCausesAbortExceptionOnUpdate = "s2";
 
       ExecuteMultipleTimes (() =>
       {
         Assert.That(
           SynchronizeTwoWay(GenericConflictResolution.AWins),
-          Is.InstanceOf<RepositoryOverloadException>());
+          Is.InstanceOf<TestAbortException>());
 
         AssertLocalCount (4);
         AssertLocal ("l1", 1, "upd Item 1");
@@ -443,7 +443,7 @@ namespace GenSync.UnitTests.Synchronization
           new EntityRelationData("l4", 0, "s4", 0));
       });
 
-      _serverRepository.EntityWhichCausesOverloadExceptionOnUpdate = null;
+      _serverRepository.EntityWhichCausesAbortExceptionOnUpdate = null;
 
       ExecuteMultipleTimes (() =>
       {

@@ -28,13 +28,18 @@ namespace GenSync.EntityRepositories
       IBatchWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>
   {
     private readonly IWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> _inner;
+    private readonly IExceptionHandlingStrategy _exceptionHandlingStrategy;
 
-    public BatchEntityRepositoryAdapter (IWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> inner)
+    public BatchEntityRepositoryAdapter (
+      IWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> inner, 
+      IExceptionHandlingStrategy exceptionHandlingStrategy)
     {
       if (inner == null)
         throw new ArgumentNullException (nameof (inner));
+      if (exceptionHandlingStrategy == null) throw new ArgumentNullException(nameof(exceptionHandlingStrategy));
 
       _inner = inner;
+      _exceptionHandlingStrategy = exceptionHandlingStrategy;
     }
 
     public async Task PerformOperations (
@@ -51,13 +56,12 @@ namespace GenSync.EntityRepositories
           var result = await _inner.Create (job.InitializeEntity, context);
           job.NotifyOperationSuceeded (result);
         }
-        catch (RepositoryOverloadException)
-        {
-          throw;
-        }
         catch (Exception x)
         {
-          job.NotifyOperationFailed (x);
+          if (_exceptionHandlingStrategy.DoesAbortSynchronization(x))
+            throw;
+          else
+            job.NotifyOperationFailed (x);
         }
         progressLogger.Increase();
       }
@@ -72,13 +76,12 @@ namespace GenSync.EntityRepositories
           else
             job.NotifyEntityNotFound();
         }
-        catch (RepositoryOverloadException)
-        {
-          throw;
-        }
         catch (Exception x)
         {
-          job.NotifyOperationFailed (x);
+          if (_exceptionHandlingStrategy.DoesAbortSynchronization (x))
+            throw;
+          else
+            job.NotifyOperationFailed (x);
         }
         progressLogger.Increase();
       }
@@ -92,13 +95,12 @@ namespace GenSync.EntityRepositories
           else
             job.NotifyEntityNotFound();
         }
-        catch (RepositoryOverloadException)
-        {
-          throw;
-        }
         catch (Exception x)
         {
-          job.NotifyOperationFailed (x);
+          if (_exceptionHandlingStrategy.DoesAbortSynchronization (x))
+            throw;
+          else
+            job.NotifyOperationFailed (x);
         }
         progressLogger.Increase();
       }
@@ -108,15 +110,19 @@ namespace GenSync.EntityRepositories
   public static class BatchEntityRepositoryAdapter
   {
     public static IBatchWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, int>
-        Create<TEntity, TEntityId, TEntityVersion> (IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, int> inner)
+      Create<TEntity, TEntityId, TEntityVersion>(
+        IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, int> inner,
+        IExceptionHandlingStrategy exceptionHandlingStrategy)
     {
-      return new BatchEntityRepositoryAdapter<TEntity, TEntityId, TEntityVersion, int> (inner);
+      return new BatchEntityRepositoryAdapter<TEntity, TEntityId, TEntityVersion, int>(inner, exceptionHandlingStrategy);
     }
 
-     public static IBatchWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext>
-        Create<TEntity, TEntityId, TEntityVersion, TContext> (IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext> inner)
+    public static IBatchWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext>
+      Create<TEntity, TEntityId, TEntityVersion, TContext>(
+        IWriteOnlyEntityRepository<TEntity, TEntityId, TEntityVersion, TContext> inner,
+        IExceptionHandlingStrategy exceptionHandlingStrategy)
     {
-      return new BatchEntityRepositoryAdapter<TEntity, TEntityId, TEntityVersion, TContext> (inner);
+      return new BatchEntityRepositoryAdapter<TEntity, TEntityId, TEntityVersion, TContext>(inner, exceptionHandlingStrategy);
     }
   }
 }

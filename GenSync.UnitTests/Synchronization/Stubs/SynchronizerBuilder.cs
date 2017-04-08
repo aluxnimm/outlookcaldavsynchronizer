@@ -39,6 +39,7 @@ namespace GenSync.UnitTests.Synchronization.Stubs
       EntityRelationDataFactory = MockRepository.GenerateMock<IEntityRelationDataFactory<string, string, string, string>>();
       InitialEntityMatcher = MockRepository.GenerateMock<IInitialEntityMatcher<string, string, string, string, string, string>>();
       InitialSyncStateCreationStrategy = MockRepository.GenerateMock<IInitialSyncStateCreationStrategy<string, string, string, string, string, string, int>>();
+      ExceptionHandlingStrategy = MockRepository.GenerateMock<IExceptionHandlingStrategy>();
     }
 
     public Synchronizer<string, string, string, string, string, string,int> Build ()
@@ -46,8 +47,8 @@ namespace GenSync.UnitTests.Synchronization.Stubs
       return new Synchronizer<string, string, string, string, string, string, int> (
           AtypeRepository,
           BtypeRepository,
-          BatchEntityRepositoryAdapter.Create(AtypeRepository),
-          BatchEntityRepositoryAdapter.Create(BtypeRepository),
+          BatchEntityRepositoryAdapter.Create(AtypeRepository, ExceptionHandlingStrategy),
+          BatchEntityRepositoryAdapter.Create(BtypeRepository, ExceptionHandlingStrategy),
           InitialSyncStateCreationStrategy,
           EntityRelationDataAccess,
           EntityRelationDataFactory,
@@ -57,7 +58,9 @@ namespace GenSync.UnitTests.Synchronization.Stubs
           new NullTotalProgressFactory(),
           EqualityComparer<string>.Default,
           EqualityComparer<string>.Default,
-          MockRepository.GenerateMock<IEntitySyncStateFactory<string, string, string, string, string, string, int>> ());
+          MockRepository.GenerateMock<IEntitySyncStateFactory<string, string, string, string, string, string, int>> (),
+          ExceptionHandlingStrategy
+          );
     }
 
     public IEntityRelationDataAccess<string, string, string, string> EntityRelationDataAccess { get; set; }
@@ -65,6 +68,8 @@ namespace GenSync.UnitTests.Synchronization.Stubs
     public IEqualityComparer<string> BtypeIdComparer { get; set; }
 
     public IEqualityComparer<string> AtypeIdComparer { get; set; }
+
+    public IExceptionHandlingStrategy ExceptionHandlingStrategy { get; set; }
 
     public IInitialSyncStateCreationStrategy<string, string, string, string, string, string, int> InitialSyncStateCreationStrategy { get; set; }
 
