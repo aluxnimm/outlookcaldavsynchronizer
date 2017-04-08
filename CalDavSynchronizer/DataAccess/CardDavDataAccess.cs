@@ -250,10 +250,10 @@ namespace CalDavSynchronizer.DataAccess
         content);
 
       Uri effectiveContactUrl;
-      if (responseHeaders.Location != null)
+      if (responseHeaders.LocationOrNull != null)
       {
-        s_logger.DebugFormat ("Server sent new location: '{0}'", responseHeaders.Location);
-        effectiveContactUrl = responseHeaders.Location.IsAbsoluteUri ? responseHeaders.Location : new Uri (_serverUrl, responseHeaders.Location);
+        s_logger.DebugFormat ("Server sent new location: '{0}'", responseHeaders.LocationOrNull);
+        effectiveContactUrl = responseHeaders.LocationOrNull.IsAbsoluteUri ? responseHeaders.LocationOrNull : new Uri (_serverUrl, responseHeaders.LocationOrNull);
         s_logger.DebugFormat ("New entity location: '{0}'", effectiveContactUrl);
       }
       else
@@ -261,7 +261,7 @@ namespace CalDavSynchronizer.DataAccess
         effectiveContactUrl = contactUrl;
       }
 
-      var etag = responseHeaders.ETag;
+      var etag = responseHeaders.ETagOrNull;
       string version;
       if (etag != null)
       {
@@ -304,10 +304,10 @@ namespace CalDavSynchronizer.DataAccess
         s_logger.DebugFormat ("Updated entity. Server response header: '{0}'", responseHeaders.ToString().Replace ("\r\n", " <CR> "));
 
       Uri effectiveContactUrl;
-      if (responseHeaders.Location != null)
+      if (responseHeaders.LocationOrNull != null)
       {
-        s_logger.DebugFormat ("Server sent new location: '{0}'", responseHeaders.Location);
-        effectiveContactUrl = responseHeaders.Location.IsAbsoluteUri ? responseHeaders.Location : new Uri (_serverUrl, responseHeaders.Location);
+        s_logger.DebugFormat ("Server sent new location: '{0}'", responseHeaders.LocationOrNull);
+        effectiveContactUrl = responseHeaders.LocationOrNull.IsAbsoluteUri ? responseHeaders.LocationOrNull : new Uri (_serverUrl, responseHeaders.LocationOrNull);
         s_logger.DebugFormat ("New entity location: '{0}'", effectiveContactUrl);
       }
       else
@@ -315,7 +315,7 @@ namespace CalDavSynchronizer.DataAccess
         effectiveContactUrl = absoluteContactUrl;
       }
 
-      var newEtag = responseHeaders.ETag;
+      var newEtag = responseHeaders.ETagOrNull;
       string version;
       if (newEtag != null)
       {

@@ -23,7 +23,7 @@ namespace CalDavSynchronizer.DataAccess
   public interface IHttpHeaders
   {
     bool TryGetValues (string name, out IEnumerable<string> values);
-    Uri Location { get; }
-    string ETag { get; }
+    Uri LocationOrNull { get; }
+    string ETagOrNull { get; }
   }
 }

@@ -361,10 +361,10 @@ namespace CalDavSynchronizer.DataAccess
         content);
 
       Uri effectiveEventUrl;
-      if (responseHeaders.Location != null)
+      if (responseHeaders.LocationOrNull != null)
       {
-        s_logger.DebugFormat ("Server sent new location: '{0}'", responseHeaders.Location);
-        effectiveEventUrl = responseHeaders.Location.IsAbsoluteUri ? responseHeaders.Location : new Uri (_serverUrl, responseHeaders.Location);
+        s_logger.DebugFormat ("Server sent new location: '{0}'", responseHeaders.LocationOrNull);
+        effectiveEventUrl = responseHeaders.LocationOrNull.IsAbsoluteUri ? responseHeaders.LocationOrNull : new Uri (_serverUrl, responseHeaders.LocationOrNull);
         s_logger.DebugFormat ("New entity location: '{0}'", effectiveEventUrl);
       }
       else
@@ -372,7 +372,7 @@ namespace CalDavSynchronizer.DataAccess
         effectiveEventUrl = eventUrl;
       }
 
-      var etag = responseHeaders.ETag;
+      var etag = responseHeaders.ETagOrNull;
       string version;
       if (etag != null)
       {
@@ -416,10 +416,10 @@ namespace CalDavSynchronizer.DataAccess
         s_logger.DebugFormat ("Updated entity. Server response header: '{0}'", responseHeaders.ToString().Replace ("\r\n", " <CR> "));
 
       Uri effectiveEventUrl;
-      if (responseHeaders.Location != null)
+      if (responseHeaders.LocationOrNull != null)
       {
-        s_logger.DebugFormat ("Server sent new location: '{0}'", responseHeaders.Location);
-        effectiveEventUrl = responseHeaders.Location.IsAbsoluteUri ? responseHeaders.Location : new Uri(_serverUrl, responseHeaders.Location);
+        s_logger.DebugFormat ("Server sent new location: '{0}'", responseHeaders.LocationOrNull);
+        effectiveEventUrl = responseHeaders.LocationOrNull.IsAbsoluteUri ? responseHeaders.LocationOrNull : new Uri(_serverUrl, responseHeaders.LocationOrNull);
         s_logger.DebugFormat ("New entity location: '{0}'", effectiveEventUrl);
       }
       else
@@ -427,7 +427,7 @@ namespace CalDavSynchronizer.DataAccess
         effectiveEventUrl = absoluteEventUrl;
       }
 
-      var newEtag = responseHeaders.ETag;
+      var newEtag = responseHeaders.ETagOrNull;
       string version;
       if (newEtag != null)
       {
