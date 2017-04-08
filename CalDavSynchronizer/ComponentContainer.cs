@@ -932,15 +932,5 @@ namespace CalDavSynchronizer
     {
       _trayNotifier.Dispose();
     }
-
-    public void SaveToolBarSettings(ToolbarSettings settings)
-    {
-      _generalOptionsDataAccess.SaveToolBarSettings(settings);
-    }
-
-    public ToolbarSettings LoadToolBarSettings()
-    {
-      return _generalOptionsDataAccess.LoadToolBarSettings();
-    }
   }
 }

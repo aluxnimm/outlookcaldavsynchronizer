@@ -25,7 +25,5 @@ namespace CalDavSynchronizer.DataAccess
     void SaveOptions (GeneralOptions options);
     Version IgnoreUpdatesTilVersion { get; set; }
     int EntityCacheVersion { get; set; }
-    void SaveToolBarSettings(ToolbarSettings settings);
-    ToolbarSettings LoadToolBarSettings();
   }
 }

@@ -28,8 +28,5 @@ namespace CalDavSynchronizer
     event EventHandler<SchedulerStatusEventArgs> StatusChanged;
 
     Task InitializeSchedulerAndStartAsync();
-
-    void SaveToolBarSettings(ToolbarSettings settings);
-    ToolbarSettings LoadToolBarSettings();
   }
 }

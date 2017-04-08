@@ -17,6 +17,7 @@
 using System;
 using System.Reflection;
 using System.Windows.Forms;
+using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Utilities;
 using log4net;
@@ -37,6 +38,7 @@ namespace CalDavSynchronizer
     private Explorers _explorers;
     private Explorer _activeExplorer;
     public static IComponentContainer ComponentContainer { get; private set; }
+    private Timer _startupTimer;
 
     public static event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
     public static event EventHandler<SchedulerStatusEventArgs> StatusChanged;
@@ -47,7 +49,7 @@ namespace CalDavSynchronizer
         handler (this, EventArgs.Empty);
     }
 
-    private async void ThisAddIn_Startup (object sender, EventArgs e)
+    private void ThisAddIn_Startup (object sender, EventArgs e)
     {
       try
       {
@@ -58,26 +60,57 @@ namespace CalDavSynchronizer
         XmlConfigurator.Configure();
         s_logger.Info ("Startup entered.");
 
-        ComponentContainer = new ComponentContainer (Application, new UiServiceFactory ());
-        ComponentContainer.SynchronizationFailedWhileReportsFormWasNotVisible += ComponentContainer_SynchronizationFailedWhileReportsFormWasNotVisible;
-        ComponentContainer.StatusChanged += ComponentContainer_StatusChanged;
-        ((ApplicationEvents_Event) Application).Quit += ThisAddIn_Quit;
+        ComponentContainer = new StartupComponentContainer();
 
+        ((ApplicationEvents_Event) Application).Quit += ThisAddIn_Quit;
         _explorers = Application.Explorers;
         _explorers.NewExplorer += Explorers_NewExplorer;
-
         AddToolBarIfRequired();
 
-        CalDavSynchronizer.ComponentContainer.EnsureSynchronizationContext();
-
-        s_logger.Info ("Initializing component container.");
-        await ComponentContainer.InitializeSchedulerAndStartAsync();
+        _startupTimer = new Timer ();
+        _startupTimer.Tick += StartupTimer_Tick;
+        _startupTimer.Interval = 5000;
+        _startupTimer.Enabled = true;
 
         s_logger.Info ("Startup exiting.");
       }
       catch (Exception x)
       {
         ComponentContainer = new LoadErrorComponentContainer(x.ToString());
+        ExceptionHandler.Instance.DisplayException (x, s_logger);
+      }
+    }
+
+    private async void StartupTimer_Tick (object sender, EventArgs e)
+    {
+      try
+      {
+        s_logger.Info ("StartupTimer_Tick entered.");
+
+        _startupTimer.Enabled = false;
+        _startupTimer.Dispose();
+        _startupTimer = null;
+
+        if (ComponentContainer is ComponentContainer)
+        {
+          s_logger.Info ("ComponentContainer already created. StartupTimer_Tick exiting.");
+          return;
+        }
+
+        ComponentContainer = new ComponentContainer (Application, new UiServiceFactory ());
+        ComponentContainer.SynchronizationFailedWhileReportsFormWasNotVisible += ComponentContainer_SynchronizationFailedWhileReportsFormWasNotVisible;
+        ComponentContainer.StatusChanged += ComponentContainer_StatusChanged;
+
+        CalDavSynchronizer.ComponentContainer.EnsureSynchronizationContext ();
+
+        s_logger.Info ("Initializing component container.");
+        await ComponentContainer.InitializeSchedulerAndStartAsync ();
+
+        s_logger.Info ("StartupTimer_Tick exiting.");
+      }
+      catch (Exception x)
+      {
+        ComponentContainer = new LoadErrorComponentContainer (x.ToString ());
         ExceptionHandler.Instance.DisplayException (x, s_logger);
       }
     }
@@ -93,7 +126,7 @@ namespace CalDavSynchronizer
       {
         // For every explorer there has to be a toolbar created, but only the first toolbar is allowed to have wired events and only a reference to the first toolbar is stored
         var calDavSynchronizerToolBar = new CalDavSynchronizerToolBar(_activeExplorer, ComponentContainer, missing, _calDavSynchronizerToolBar == null);
-        calDavSynchronizerToolBar.Settings = ComponentContainer.LoadToolBarSettings();
+        calDavSynchronizerToolBar.Settings = GeneralOptionsDataAccess.LoadToolBarSettings();
         if (_calDavSynchronizerToolBar == null)
         {
           _calDavSynchronizerToolBar = calDavSynchronizerToolBar;
@@ -104,7 +137,7 @@ namespace CalDavSynchronizer
 
     private void FirstExplorer_Close ()
     {
-      ComponentContainer.SaveToolBarSettings(_calDavSynchronizerToolBar.Settings);
+      GeneralOptionsDataAccess.SaveToolBarSettings(_calDavSynchronizerToolBar.Settings);
     }
 
     private void Explorers_NewExplorer(Explorer newExplorer)

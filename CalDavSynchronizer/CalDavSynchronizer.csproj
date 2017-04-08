@@ -382,6 +382,7 @@
     <Compile Include="Implementation\TimeZones\TimeZoneCache.cs" />
     <Compile Include="IOutlookSession.cs" />
     <Compile Include="IProfileExportProcessor.cs" />
+    <Compile Include="StartupComponentContainer.cs" />
     <Compile Include="LoadErrorComponentContainer.cs" />
     <Compile Include="OutlookSession.cs" />
     <Compile Include="ProfileExportProcessor.cs" />

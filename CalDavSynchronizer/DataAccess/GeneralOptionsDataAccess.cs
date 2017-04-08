@@ -175,7 +175,7 @@ namespace CalDavSynchronizer.DataAccess
       }
     }
 
-    public void SaveToolBarSettings(ToolbarSettings settings)
+    public static void SaveToolBarSettings(ToolbarSettings settings)
     {
       using (var key = OpenOptionsKey())
       {
@@ -186,7 +186,7 @@ namespace CalDavSynchronizer.DataAccess
       }
     }
 
-    public ToolbarSettings LoadToolBarSettings()
+    public static ToolbarSettings LoadToolBarSettings()
     {
       using (var key = OpenOptionsKey())
       {
