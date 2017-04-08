@@ -15,15 +15,18 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using System.Collections.Generic;
-using System.Net.Http.Headers;
 
-namespace CalDavSynchronizer.DataAccess
+namespace CalDavSynchronizer
 {
-  public interface IHttpHeaders
+  class DateTimeProvider : IDateTimeProvider
   {
-    bool TryGetValues (string name, out IEnumerable<string> values);
-    Uri LocationOrNull { get; }
-    string ETagOrNull { get; }
+    public static readonly IDateTimeProvider Instance = new DateTimeProvider();
+
+    private DateTimeProvider()
+    {
+      
+    }
+
+    public DateTime Now => DateTime.UtcNow;
   }
 }

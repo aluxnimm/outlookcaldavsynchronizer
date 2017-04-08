@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -16,14 +16,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
-using System.Net.Http.Headers;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace CalDavSynchronizer.DataAccess
+namespace CalDavSynchronizer
 {
-  public interface IHttpHeaders
+  public interface IDateTimeProvider
   {
-    bool TryGetValues (string name, out IEnumerable<string> values);
-    Uri LocationOrNull { get; }
-    string ETagOrNull { get; }
+    DateTime Now { get; }
   }
 }

@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -14,16 +14,28 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using System.Collections.Generic;
-using System.Net.Http.Headers;
 
-namespace CalDavSynchronizer.DataAccess
+using System;
+using System.Runtime.Serialization;
+
+namespace GenSync.EntityRepositories
 {
-  public interface IHttpHeaders
+  public class RepositoryOverloadException : Exception
   {
-    bool TryGetValues (string name, out IEnumerable<string> values);
-    Uri LocationOrNull { get; }
-    string ETagOrNull { get; }
+    public RepositoryOverloadException()
+    {
+    }
+
+    public RepositoryOverloadException(string message) : base(message)
+    {
+    }
+
+    public RepositoryOverloadException(string message, Exception innerException) : base(message, innerException)
+    {
+    }
+
+    protected RepositoryOverloadException(SerializationInfo info, StreamingContext context) : base(info, context)
+    {
+    }
   }
 }

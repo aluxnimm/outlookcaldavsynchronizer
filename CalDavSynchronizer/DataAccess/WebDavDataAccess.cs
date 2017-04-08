@@ -114,9 +114,9 @@ namespace CalDavSynchronizer.DataAccess
     protected async Task<string> GetEtag (Uri absoluteEntityUrl)
     {
       var headers = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (absoluteEntityUrl, "GET", null, null, null, null, null);
-      if (headers.ETag != null)
+      if (headers.ETagOrNull != null)
       {
-        return headers.ETag;
+        return headers.ETagOrNull;
       }
       else
       {

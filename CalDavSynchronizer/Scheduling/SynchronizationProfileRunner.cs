@@ -24,11 +24,13 @@ using System.Threading.Tasks;
 using CalDavSynchronizer.ChangeWatching;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Diagnostics;
+using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Reports;
 using CalDavSynchronizer.Synchronization;
 using CalDavSynchronizer.Utilities;
 using CalDavSynchronizer.Ui.ConnectionTests;
 using GenSync;
+using GenSync.EntityRepositories;
 using GenSync.Logging;
 using GenSync.Synchronization;
 using log4net;
@@ -61,6 +63,9 @@ namespace CalDavSynchronizer.Scheduling
     private IItemCollectionChangeWatcher _folderChangeWatcher;
     private readonly Action _ensureSynchronizationContext;
     private readonly ISynchronizationRunLogger _runLogger;
+    private readonly IDateTimeProvider _dateTimeProvider;
+
+    private DateTime? _postponeUntil;
 
     private volatile bool _fullSyncPending = false;
     // There is no threadsafe Datastructure required, since there will be no concurrent threads
@@ -76,7 +81,8 @@ namespace CalDavSynchronizer.Scheduling
         ISynchronizationReportSink reportSink,
         IFolderChangeWatcherFactory folderChangeWatcherFactory,
         Action ensureSynchronizationContext, 
-        ISynchronizationRunLogger runLogger)
+        ISynchronizationRunLogger runLogger,
+        IDateTimeProvider dateTimeProvider)
     {
       if (synchronizerFactory == null)
         throw new ArgumentNullException (nameof (synchronizerFactory));
@@ -88,12 +94,14 @@ namespace CalDavSynchronizer.Scheduling
         throw new ArgumentNullException (nameof (ensureSynchronizationContext));
       if (runLogger == null)
         throw new ArgumentNullException (nameof (runLogger));
+      if (dateTimeProvider == null) throw new ArgumentNullException(nameof(dateTimeProvider));
 
       _synchronizerFactory = synchronizerFactory;
       _reportSink = reportSink;
       _folderChangeWatcherFactory = folderChangeWatcherFactory;
       _ensureSynchronizationContext = ensureSynchronizationContext;
       _runLogger = runLogger;
+      _dateTimeProvider = dateTimeProvider;
       // Set to min, to ensure that it runs on the first run after startup
       _lastRun = DateTime.MinValue;
     }
@@ -131,6 +139,19 @@ namespace CalDavSynchronizer.Scheduling
       }
     }
 
+    bool ShouldPostponeSyncRun()
+    {
+      if (_postponeUntil >= _dateTimeProvider.Now)
+      {
+        s_logger.Info($"Profile '{_profileName}' will not run, since it is postponed until '{_postponeUntil}'");
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+
     private void FolderChangeWatcher_ItemSavedOrDeleted (object sender, ItemSavedEventArgs e)
     {
       try
@@ -148,6 +169,9 @@ namespace CalDavSynchronizer.Scheduling
     {
       try
       {
+        if(ShouldPostponeSyncRun())
+          return;
+
         _pendingOutlookItems.AddOrUpdate (e.EntryId.EntryId, e.EntryId, (key, existingValue) => e.EntryId.Version > existingValue.Version ? e.EntryId : existingValue);
         if (s_logger.IsDebugEnabled)
         {
@@ -172,8 +196,10 @@ namespace CalDavSynchronizer.Scheduling
         if (_inactive)
           return;
 
-        if (runNow || _interval > TimeSpan.Zero && DateTime.UtcNow > _lastRun + _interval)
+        if (runNow ||
+          _interval > TimeSpan.Zero && _dateTimeProvider.Now > _lastRun + _interval && !ShouldPostponeSyncRun ())
         {
+          _postponeUntil = null;
           _fullSyncPending = true;
           await RunAllPendingJobs();
         }
@@ -238,6 +264,10 @@ namespace CalDavSynchronizer.Scheduling
             {
               await _synchronizer.Synchronize(logger);
             }
+            catch (WebRepositoryOverloadException x)
+            {
+              HandleWebRepositoryOverloadException(x);
+            }
             catch (Exception x)
             {
               logger.LogAbortedDueToError(x);
@@ -255,8 +285,17 @@ namespace CalDavSynchronizer.Scheduling
       }
       finally
       {
-        _lastRun = DateTime.UtcNow;
+        _lastRun = _dateTimeProvider.Now;
       }
+    }
+
+    private void HandleWebRepositoryOverloadException(WebRepositoryOverloadException x)
+    {
+      _postponeUntil = x.RetryAfter;
+      ExceptionHandler.Instance.LogException(
+        "Sync run aborted." + (_postponeUntil.HasValue ? $" Postponing following runs until '{_postponeUntil}'." : string.Empty),
+        x, 
+        s_logger);
     }
 
     private async Task RunPartialNoThrow (IOutlookId[] itemsToSync)
@@ -270,6 +309,10 @@ namespace CalDavSynchronizer.Scheduling
             try
             {
               await _synchronizer.SynchronizePartial(itemsToSync, logger);
+            }
+            catch (WebRepositoryOverloadException x)
+            {
+              HandleWebRepositoryOverloadException (x);
             }
             catch (Exception x)
             {

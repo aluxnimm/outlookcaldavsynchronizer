@@ -64,12 +64,12 @@ namespace GenSync.UnitTests.Synchronization
           .WhenCalled (a => { _entityRelationData = ((List<IEntityRelationData<Identifier, int, Identifier, int>>) a.Arguments[0]).Cast<EntityRelationData>().ToList(); });
     }
 
-    protected void SynchronizeTwoWay (
+    protected Exception SynchronizeTwoWay (
       GenericConflictResolution winner,
       List<IEntityRelationData<Identifier, int, Identifier, int>> matchingEntities = null)
     {
       var strategy = CreateTwoWaySyncStrategy (winner);
-      SynchronizeInternal (strategy, matchingEntities);
+      return SynchronizeInternal (strategy, matchingEntities);
     }
 
     protected void SynchronizePartialTwoWay (
@@ -100,14 +100,32 @@ namespace GenSync.UnitTests.Synchronization
           );
     }
 
-    private void SynchronizeInternal (
+    private Exception SynchronizeInternal (
       IInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string, int> strategy,
       List<IEntityRelationData<Identifier, int, Identifier, int>> matchingEntities = null)
     {
       var synchronizer = CreateSynchronizer (strategy,matchingEntities);
 
-      synchronizer.Synchronize (NullSynchronizationLogger.Instance, 0).Wait();
+      try
+      {
+        synchronizer.Synchronize(NullSynchronizationLogger.Instance, 0).Wait();
+        return null;
+      }
+      catch (AggregateException x)
+      {
+        return x.InnerException;
+      }
+
     }
+
+    private async Task SynchronizeInternalAsync (
+      IInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string, int> strategy,
+      List<IEntityRelationData<Identifier, int, Identifier, int>> matchingEntities = null)
+    {
+      var synchronizer = CreateSynchronizer (strategy, matchingEntities);
+      await synchronizer.Synchronize (NullSynchronizationLogger.Instance, 0);
+    }
+
 
     private void PartialSynchronizeInternal(
       IInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string, int> strategy,

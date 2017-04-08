@@ -44,12 +44,12 @@ namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
       return _headersFromFirstCall.TryGetValues (name, out values);
     }
 
-    public Uri Location
+    public Uri LocationOrNull
     {
       get { return _headersFromFirstCall.Location; }
     }
 
-    public string ETag
+    public string ETagOrNull
     {
       get
       {

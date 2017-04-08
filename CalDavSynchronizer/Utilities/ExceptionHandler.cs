@@ -37,84 +37,18 @@ namespace CalDavSynchronizer.Utilities
 
     public void DisplayException (Exception exception, ILog logger)
     {
-      var additionMessage = GetAdditionMessageNoThrow (exception);
-      logger.Logger.Log (typeof (ExceptionHandler), Level.Error, additionMessage, exception);
+      logger.Logger.Log (typeof (ExceptionHandler), Level.Error, string.Empty, exception);
       MessageBox.Show (exception.ToString(), ComponentContainer.MessageBoxTitle);
     }
 
     public void LogException (Exception exception, ILog logger)
     {
-      var additionMessage = GetAdditionMessageNoThrow (exception);
-      logger.Logger.Log (typeof (ExceptionHandler), Level.Error, additionMessage, exception);
+      LogException(string.Empty, exception, logger);
     }
 
-    private string GetAdditionMessageNoThrow (Exception exception)
+    public void LogException (string message, Exception exception, ILog logger)
     {
-      try
-      {
-        return GetAdditionalExceptionMessage (exception);
-      }
-      catch (Exception x)
-      {
-        s_logger.Error ("Exception while creating additional exception message", x);
-        return string.Empty;
-      }
-    }
-
-    private string GetAdditionalExceptionMessage (Exception x)
-    {
-      var webException = x as WebException;
-      if (webException != null)
-      {
-        return GetAdditionalExceptionMessage (webException);
-      }
-
-      return string.Empty;
-    }
-
-    private string GetAdditionalExceptionMessage (WebException x)
-    {
-      StringBuilder stringBuilder = new StringBuilder();
-
-      stringBuilder.AppendFormat ("Status: {0}", x.Status);
-      stringBuilder.AppendLine();
-
-      AppendHttpResponseDetails (stringBuilder, x);
-
-      return stringBuilder.ToString();
-    }
-
-    private void AppendHttpResponseDetails (StringBuilder stringBuilder, WebException exception)
-    {
-      var httpWebResponse = exception.Response as HttpWebResponse;
-      if (httpWebResponse == null)
-        return;
-
-      try
-      {
-        stringBuilder.AppendFormat ("StatusCode: {0}", httpWebResponse.StatusCode);
-        stringBuilder.AppendLine();
-
-        stringBuilder.AppendFormat ("StatusDescription: {0}", httpWebResponse.StatusDescription);
-        stringBuilder.AppendLine();
-
-        try
-        {
-          using (var reader = new StreamReader (httpWebResponse.GetResponseStream()))
-          {
-            stringBuilder.AppendFormat ("Body: {0}", reader.ReadToEnd());
-            stringBuilder.AppendLine();
-          }
-        }
-        catch (ProtocolViolationException)
-        {
-          // Occurs if there is no response stream and can be ignored
-        }
-      }
-      catch (Exception x)
-      {
-        s_logger.Error ("Exception while getting exception details.", x);
-      }
+      logger.Logger.Log (typeof (ExceptionHandler), Level.Error, message, exception);
     }
   }
 }

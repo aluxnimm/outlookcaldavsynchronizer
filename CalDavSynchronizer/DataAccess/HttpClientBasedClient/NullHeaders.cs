@@ -16,14 +16,18 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
-using System.Net.Http.Headers;
 
-namespace CalDavSynchronizer.DataAccess
+namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
 {
-  public interface IHttpHeaders
+  internal class NullHeaders : IHttpHeaders
   {
-    bool TryGetValues (string name, out IEnumerable<string> values);
-    Uri LocationOrNull { get; }
-    string ETagOrNull { get; }
+    public bool TryGetValues(string name, out IEnumerable<string> values)
+    {
+      values = null;
+      return false;
+    }
+
+    public Uri LocationOrNull => null;
+    public string ETagOrNull => null;
   }
 }

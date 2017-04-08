@@ -84,6 +84,11 @@ namespace GenSync.Synchronization
     {
       _state.Accept(this, visitor);
     }
+
+    public void Abort()
+    {
+      SetState (_state.Abort ());
+    }
   }
   
 }

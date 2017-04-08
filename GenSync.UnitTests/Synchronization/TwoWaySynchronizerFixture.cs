@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GenSync.EntityRelationManagement;
+using GenSync.EntityRepositories;
 using GenSync.Synchronization;
 using GenSync.UnitTests.Synchronization.Stubs;
 using NUnit.Framework;
@@ -403,6 +404,68 @@ namespace GenSync.UnitTests.Synchronization
         AssertServerCount (2);
         AssertServer ("s1", 1, "upd srv Item 1");
         AssertServer ("s2", 0, "Item 2");
+      });
+    }
+
+    [Test]
+    public async Task TwoWaySynchronize_RepositoryOverloadOnUpdate_KeepsAlreadyUpdatedRelations ()
+    {
+      await InitializeWithEvents (4);
+    
+
+      _localRepository.UpdateWithoutIdChange ("l1", v => "upd Item 1");
+      _localRepository.UpdateWithoutIdChange ("l2", v => "upd Item 2");
+      _localRepository.UpdateWithoutIdChange ("l3", v => "upd Item 3");
+      _serverRepository.EntityWhichCausesOverloadExceptionOnUpdate = "s2";
+
+      ExecuteMultipleTimes (() =>
+      {
+        Assert.That(
+          SynchronizeTwoWay(GenericConflictResolution.AWins),
+          Is.InstanceOf<RepositoryOverloadException>());
+
+        AssertLocalCount (4);
+        AssertLocal ("l1", 1, "upd Item 1");
+        AssertLocal ("l2", 1, "upd Item 2");
+        AssertLocal ("l3", 1, "upd Item 3");
+        AssertLocal ("l4", 0, "Item 4");
+
+        AssertServerCount (4);
+        AssertServer ("s1u", 1, "upd Item 1");
+        AssertServer ("s2", 0, "Item 2");
+        AssertServer ("s3", 0, "Item 3");
+        AssertServer ("s4", 0, "Item 4");
+
+        AssertRelations(
+          new EntityRelationData("l1", 1, "s1u", 1),
+          new EntityRelationData("l2", 0, "s2", 0), // => still local version 0, since there was an overload on updating
+          new EntityRelationData("l3", 0, "s3", 0),
+          new EntityRelationData("l4", 0, "s4", 0));
+      });
+
+      _serverRepository.EntityWhichCausesOverloadExceptionOnUpdate = null;
+
+      ExecuteMultipleTimes (() =>
+      {
+        SynchronizeTwoWay(GenericConflictResolution.AWins);
+
+        AssertLocalCount (4);
+        AssertLocal ("l1", 1, "upd Item 1");
+        AssertLocal ("l2", 1, "upd Item 2");
+        AssertLocal ("l3", 1, "upd Item 3");
+        AssertLocal ("l4", 0, "Item 4");
+
+        AssertServerCount (4);
+        AssertServer ("s1u", 1, "upd Item 1");
+        AssertServer ("s2u", 1, "upd Item 2");
+        AssertServer ("s3u", 1, "upd Item 3");
+        AssertServer ("s4", 0, "Item 4");
+
+        AssertRelations (
+          new EntityRelationData ("l1", 1, "s1u", 1),
+          new EntityRelationData ("l2", 1, "s2u", 1), 
+          new EntityRelationData ("l3", 1, "s3u", 1),
+          new EntityRelationData ("l4", 0, "s4", 0));
       });
     }
 

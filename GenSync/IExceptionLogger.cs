@@ -22,5 +22,6 @@ namespace GenSync
   public interface IExceptionLogger
   {
     void LogException (Exception exception, ILog logger);
+    void LogException (string message, Exception exception, ILog logger);
   }
 }

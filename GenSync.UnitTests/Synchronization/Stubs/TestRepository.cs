@@ -31,10 +31,18 @@ namespace GenSync.UnitTests.Synchronization.Stubs
     private int _nextId = 1;
     private int _numberOfCreateCalls = 0;
     private int? _numberOfCreatesAfterWhichExceptionsOccur;
-    
+    private int? _numberOfCreatesAfterWhichOverloadExceptionOccur;
+
     public int Count
     {
       get { return EntityVersionAndContentById.Count; }
+    }
+
+    public Identifier EntityWhichCausesOverloadExceptionOnUpdate { get; set; }
+    public Identifier EntityWhichCausesOverloadExceptionOnDelete { get; set; }
+    public void SetNumberOfEntitesWhichCanBeCreatedBeforeOverloadExceptionOccur (int? count)
+    {
+      _numberOfCreatesAfterWhichOverloadExceptionOccur = _numberOfCreateCalls + count;
     }
 
     public TestRepository (string idPrefix)
@@ -94,6 +102,9 @@ namespace GenSync.UnitTests.Synchronization.Stubs
     {
       if (IdentifierEqualityComparer.Instance.Equals (entityId, EntityWhichCausesExceptionOnDelete))
         throw new Exception ("Failed!");
+     
+       if (IdentifierEqualityComparer.Instance.Equals(entityId, EntityWhichCausesOverloadExceptionOnDelete))
+        throw new RepositoryOverloadException();
 
       if (!EntityVersionAndContentById.ContainsKey (entityId))
         throw new Exception ("tried to delete non existing entity!");
@@ -114,6 +125,9 @@ namespace GenSync.UnitTests.Synchronization.Stubs
     {
       if (IdentifierEqualityComparer.Instance.Equals (entityId, EntityWhichCausesExceptionOnUpdate))
         throw new Exception ("Failed!");
+      
+      if (IdentifierEqualityComparer.Instance.Equals (entityId, EntityWhichCausesOverloadExceptionOnUpdate))
+        throw new RepositoryOverloadException ();
 
       var kv = EntityVersionAndContentById[entityId];
 
@@ -149,6 +163,11 @@ namespace GenSync.UnitTests.Synchronization.Stubs
 
       if (_numberOfCreateCalls > _numberOfCreatesAfterWhichExceptionsOccur)
         throw new Exception ("Failed!");
+
+
+      if (_numberOfCreateCalls == _numberOfCreatesAfterWhichOverloadExceptionOccur+1)
+        throw new RepositoryOverloadException ();
+        
 
       var newValue = await entityInitializer (string.Empty);
       var entityId = _idPrefix + _nextId++;
