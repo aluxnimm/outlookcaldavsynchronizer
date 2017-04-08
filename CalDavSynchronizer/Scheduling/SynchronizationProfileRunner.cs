@@ -48,35 +48,40 @@ namespace CalDavSynchronizer.Scheduling
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    private DateTime _lastRun;
-    private TimeSpan _interval;
-    private IOutlookSynchronizer _synchronizer;
+    /// <summary>
+    /// Since events for itemchange are raised by outlook multiple times, the partialsync is delayed.
+    /// This will prevent that subsequent change events for the same item trigger subsequent sync runs, provided they are within this time frame
+    /// </summary>
+    private readonly TimeSpan _partialSyncDelay = TimeSpan.FromSeconds (10);
+
+    private readonly Guid _profileId;
     private readonly ISynchronizationReportSink _reportSink;
-    private string _profileName;
-    private Guid _profileId;
-    private ProxyOptions _proxyOptions;
-    private bool _inactive;
     private readonly ISynchronizerFactory _synchronizerFactory;
-    private int _isRunning = 0;
-    private bool _checkIfOnline;
     private readonly IFolderChangeWatcherFactory _folderChangeWatcherFactory;
-    private IItemCollectionChangeWatcher _folderChangeWatcher;
     private readonly Action _ensureSynchronizationContext;
     private readonly ISynchronizationRunLogger _runLogger;
     private readonly IDateTimeProvider _dateTimeProvider;
     private readonly IExceptionHandlingStrategy _exceptionHandlingStrategy;
-
-    private DateTime? _postponeUntil;
-
-    private volatile bool _fullSyncPending = false;
-    // There is no threadsafe Datastructure required, since there will be no concurrent threads
-    // The concurrency in this scenario lies in the fact that the MainThread will enter multiple times, because
-    // all methods are async
+   
+    private string _profileName;
+    private bool _inactive;
+    private bool _checkIfOnline;
+    private TimeSpan _interval;
+    private ProxyOptions _proxyOptions;
+    private IOutlookSynchronizer _synchronizer;
+    private IItemCollectionChangeWatcher _folderChangeWatcher;
+    
+    private volatile bool _fullSyncPending;
+    /// <summary>
+    /// There is no threadsafe Datastructure required, since there will be no concurrent threads
+    /// The concurrency in this scenario lies in the fact that the MainThread will enter multiple times, because
+    /// all methods are async
+    /// </summary>
     private readonly ConcurrentDictionary<string, IOutlookId> _pendingOutlookItems = new ConcurrentDictionary<string, IOutlookId> ();
-    // Since events for itemchange are raised by outlook multiple times, the partialsync is delayed.
-    // This will prevent that subsequent change events for the same item trigger subsequent sync runs, provided they are within this time frame
-    private readonly TimeSpan _partialSyncDelay = TimeSpan.FromSeconds (10);
-
+    private DateTime _lastRun;
+    private int _isRunning;
+    private DateTime? _postponeUntil;
+    
     public SynchronizationProfileRunner (
         ISynchronizerFactory synchronizerFactory,
         ISynchronizationReportSink reportSink,
@@ -84,7 +89,8 @@ namespace CalDavSynchronizer.Scheduling
         Action ensureSynchronizationContext, 
         ISynchronizationRunLogger runLogger,
         IDateTimeProvider dateTimeProvider, 
-        IExceptionHandlingStrategy exceptionHandlingStrategy)
+        IExceptionHandlingStrategy exceptionHandlingStrategy,
+        Guid profileId)
     {
       if (synchronizerFactory == null)
         throw new ArgumentNullException (nameof (synchronizerFactory));
@@ -99,6 +105,7 @@ namespace CalDavSynchronizer.Scheduling
       if (dateTimeProvider == null) throw new ArgumentNullException(nameof(dateTimeProvider));
       if (exceptionHandlingStrategy == null) throw new ArgumentNullException(nameof(exceptionHandlingStrategy));
 
+      _profileId = profileId;
       _synchronizerFactory = synchronizerFactory;
       _reportSink = reportSink;
       _folderChangeWatcherFactory = folderChangeWatcherFactory;
@@ -116,12 +123,13 @@ namespace CalDavSynchronizer.Scheduling
         throw new ArgumentNullException (nameof (options));
       if (generalOptions == null)
         throw new ArgumentNullException (nameof (generalOptions));
+      if (_profileId != options.Id)
+        throw new ArgumentException($"Cannot update runner for profile '{_profileId}' with options of profile '{options.Id}'");
 
       _pendingOutlookItems.Clear();
       _fullSyncPending = false;
 
       _profileName = options.Name;
-      _profileId = options.Id;
       _proxyOptions = options.ProxyOptions;
       _synchronizer = options.Inactive ? NullOutlookSynchronizer.Instance : await _synchronizerFactory.CreateSynchronizer (options, generalOptions);
       _interval = TimeSpan.FromMinutes (options.SynchronizationIntervalInMinutes);

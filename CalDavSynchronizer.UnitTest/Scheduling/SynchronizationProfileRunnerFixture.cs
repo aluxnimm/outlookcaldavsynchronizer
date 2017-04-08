@@ -59,7 +59,8 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
           delegate { },
           MockRepository.GenerateStub<ISynchronizationRunLogger> (),
           _dateTimeProvider,
-          new ExceptionHandlingStrategy());
+          new ExceptionHandlingStrategy(),
+          new Guid());
 
       var logger = MockRepository.GenerateStub<ILog>();
       logger

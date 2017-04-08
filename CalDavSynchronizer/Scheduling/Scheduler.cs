@@ -133,7 +133,8 @@ namespace CalDavSynchronizer.Scheduling
                 _ensureSynchronizationContext,
                 _runLogger,
                 DateTimeProvider.Instance,
-                _exceptionHandlingStrategy);
+                _exceptionHandlingStrategy,
+                option.Id);
           }
           await profileRunner.UpdateOptions (option, generalOptions);
           workersById.Add (option.Id, profileRunner);
