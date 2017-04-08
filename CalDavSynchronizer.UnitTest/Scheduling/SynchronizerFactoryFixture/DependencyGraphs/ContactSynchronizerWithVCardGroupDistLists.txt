@@ -4,11 +4,13 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   OutlookSessionStub
 |   |   Synchronizer<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
 |   |   |   BatchEntityRepositoryAdapter<String, DateTime, ContactItemWrapper, ICardDavRepositoryLogger>
+|   |   |   |   ExceptionHandlingStrategy
 |   |   |   |   OutlookContactRepository<ICardDavRepositoryLogger>
 |   |   |   |   |   NullDaslFilterProvider
 |   |   |   |   |   NullQueryOutlookFolderStrategy
 |   |   |   |   |   OutlookSessionStub
 |   |   |   BatchEntityRepositoryAdapter<WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   ExceptionHandlingStrategy
 |   |   |   |   TypeFilteringVCardRepositoryDecorator<ICardDavRepositoryLogger>
 |   |   |   |   |   LoggingCardDavRepositoryDecorator
 |   |   |   |   |   |   CardDavRepository<Int32>
@@ -23,6 +25,7 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   EntityRelationDataAccess<String, DateTime, OutlookContactRelationData, WebResourceName, String>
 |   |   |   EntitySyncStateFactory<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
 |   |   |   |   EntitySyncStateEnvironment<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   ExceptionHandlingStrategy
 |   |   |   GenericEqualityComparer<DateTime>
 |   |   |   GenericEqualityComparer<String>
 |   |   |   GenericEqualityComparer<String>
@@ -53,11 +56,13 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   WebResourceNameEqualityComparer
 |   |   Synchronizer<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, vCard, DistributionListSychronizationContext>
 |   |   |   BatchEntityRepositoryAdapter<String, DateTime, GenericComObjectWrapper<DistListItem>, DistributionListSychronizationContext>
+|   |   |   |   ExceptionHandlingStrategy
 |   |   |   |   OutlookDistListRepository<DistributionListSychronizationContext>
 |   |   |   |   |   NullDaslFilterProvider
 |   |   |   |   |   NullQueryOutlookFolderStrategy
 |   |   |   |   |   OutlookSessionStub
 |   |   |   BatchEntityRepositoryAdapter<WebResourceName, String, vCard, DistributionListSychronizationContext>
+|   |   |   |   ExceptionHandlingStrategy
 |   |   |   |   TypeFilteringVCardRepositoryDecorator<DistributionListSychronizationContext>
 |   |   |   |   |   CardDavRepository<DistributionListSychronizationContext>
 |   |   |   |   |   |   vCardStandardWriter (2)
@@ -72,6 +77,7 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   EntityRelationDataAccess<String, DateTime, DistListRelationData, WebResourceName, String>
 |   |   |   EntitySyncStateFactory<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, vCard, DistributionListSychronizationContext>
 |   |   |   |   EntitySyncStateEnvironment<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, vCard, DistributionListSychronizationContext>
+|   |   |   ExceptionHandlingStrategy
 |   |   |   GenericEqualityComparer<DateTime>
 |   |   |   GenericEqualityComparer<String>
 |   |   |   GenericEqualityComparer<String>

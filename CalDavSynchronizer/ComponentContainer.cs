@@ -161,7 +161,8 @@ namespace CalDavSynchronizer
         generalOptions.ShowProgressBar,
         generalOptions.ThresholdForProgressDisplay,
         ExceptionHandler.Instance);
-      
+
+      var exceptionHandlingStrategy = new ExceptionHandlingStrategy ();
 
       _synchronizerFactory = new SynchronizerFactory (
           GetProfileDataDirectory,
@@ -170,7 +171,8 @@ namespace CalDavSynchronizer
           _daslFilterProvider,
           _outlookAccountPasswordProvider,
           _globalTimeZoneCache,
-          _queryFolderStrategyWrapper);
+          _queryFolderStrategyWrapper,
+          exceptionHandlingStrategy);
 
       _synchronizationReportRepository = CreateSynchronizationReportRepository();
 
@@ -182,7 +184,8 @@ namespace CalDavSynchronizer
           EnsureSynchronizationContext,
           new FolderChangeWatcherFactory (
               _session),
-          _synchronizationStatus);
+          _synchronizationStatus,
+          exceptionHandlingStrategy);
 
       var options = _optionsDataAccess.Load();
 

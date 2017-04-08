@@ -7,17 +7,20 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   OutlookSessionStub
 |   |   Synchronizer<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
 |   |   |   BatchEntityRepositoryAdapter<String, DateTime, ContactItemWrapper, ICardDavRepositoryLogger>
+|   |   |   |   ExceptionHandlingStrategy
 |   |   |   |   OutlookContactRepository<ICardDavRepositoryLogger>
 |   |   |   |   |   NullDaslFilterProvider
 |   |   |   |   |   NullQueryOutlookFolderStrategy
 |   |   |   |   |   OutlookSessionStub
 |   |   |   BatchEntityRepositoryAdapter<WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   ExceptionHandlingStrategy
 |   |   |   |   LoggingCardDavRepositoryDecorator
 |   |   |   |   |   CardDavRepository<Int32>
 |   |   |   |   |   |   vCardStandardWriter
 |   |   |   EntityRelationDataAccess<String, DateTime, OutlookContactRelationData, WebResourceName, String>
 |   |   |   EntitySyncStateFactory<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
 |   |   |   |   EntitySyncStateEnvironment<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   ExceptionHandlingStrategy
 |   |   |   GenericEqualityComparer<DateTime>
 |   |   |   GenericEqualityComparer<String>
 |   |   |   GenericEqualityComparer<String>
@@ -40,16 +43,19 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   WebResourceNameEqualityComparer
 |   |   Synchronizer<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
 |   |   |   BatchEntityRepositoryAdapter<String, DateTime, GenericComObjectWrapper<DistListItem>, DistributionListSychronizationContext>
+|   |   |   |   ExceptionHandlingStrategy
 |   |   |   |   OutlookDistListRepository<DistributionListSychronizationContext>
 |   |   |   |   |   NullDaslFilterProvider
 |   |   |   |   |   NullQueryOutlookFolderStrategy
 |   |   |   |   |   OutlookSessionStub
 |   |   |   BatchEntityRepositoryAdapter<WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   |   ExceptionHandlingStrategy
 |   |   |   |   SogoDistributionListRepository
 |   |   |   DistListRelationDataFactory
 |   |   |   EntityRelationDataAccess<String, DateTime, DistListRelationData, WebResourceName, String>
 |   |   |   EntitySyncStateFactory<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
 |   |   |   |   EntitySyncStateEnvironment<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   ExceptionHandlingStrategy
 |   |   |   GenericEqualityComparer<DateTime>
 |   |   |   GenericEqualityComparer<String>
 |   |   |   GenericEqualityComparer<String>

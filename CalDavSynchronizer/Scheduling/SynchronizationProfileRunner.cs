@@ -64,6 +64,7 @@ namespace CalDavSynchronizer.Scheduling
     private readonly Action _ensureSynchronizationContext;
     private readonly ISynchronizationRunLogger _runLogger;
     private readonly IDateTimeProvider _dateTimeProvider;
+    private readonly IExceptionHandlingStrategy _exceptionHandlingStrategy;
 
     private DateTime? _postponeUntil;
 
@@ -82,7 +83,8 @@ namespace CalDavSynchronizer.Scheduling
         IFolderChangeWatcherFactory folderChangeWatcherFactory,
         Action ensureSynchronizationContext, 
         ISynchronizationRunLogger runLogger,
-        IDateTimeProvider dateTimeProvider)
+        IDateTimeProvider dateTimeProvider, 
+        IExceptionHandlingStrategy exceptionHandlingStrategy)
     {
       if (synchronizerFactory == null)
         throw new ArgumentNullException (nameof (synchronizerFactory));
@@ -95,6 +97,7 @@ namespace CalDavSynchronizer.Scheduling
       if (runLogger == null)
         throw new ArgumentNullException (nameof (runLogger));
       if (dateTimeProvider == null) throw new ArgumentNullException(nameof(dateTimeProvider));
+      if (exceptionHandlingStrategy == null) throw new ArgumentNullException(nameof(exceptionHandlingStrategy));
 
       _synchronizerFactory = synchronizerFactory;
       _reportSink = reportSink;
@@ -102,6 +105,7 @@ namespace CalDavSynchronizer.Scheduling
       _ensureSynchronizationContext = ensureSynchronizationContext;
       _runLogger = runLogger;
       _dateTimeProvider = dateTimeProvider;
+      _exceptionHandlingStrategy = exceptionHandlingStrategy;
       // Set to min, to ensure that it runs on the first run after startup
       _lastRun = DateTime.MinValue;
     }
@@ -264,14 +268,17 @@ namespace CalDavSynchronizer.Scheduling
             {
               await _synchronizer.Synchronize(logger);
             }
-            catch (WebRepositoryOverloadException x)
-            {
-              HandleWebRepositoryOverloadException(x);
-            }
             catch (Exception x)
             {
-              logger.LogAbortedDueToError(x);
-              ExceptionHandler.Instance.LogException(x, s_logger);
+              if (_exceptionHandlingStrategy.DoesAbortSynchronization(x))
+              {
+                HandleSyncronizationAbortion(x);
+              }
+              else
+              {
+                logger.LogAbortedDueToError(x);
+                ExceptionHandler.Instance.LogException(x, s_logger);
+              }
             }
           }
 
@@ -289,13 +296,17 @@ namespace CalDavSynchronizer.Scheduling
       }
     }
 
-    private void HandleWebRepositoryOverloadException(WebRepositoryOverloadException x)
+    private void HandleSyncronizationAbortion(Exception x)
     {
-      _postponeUntil = x.RetryAfter;
-      ExceptionHandler.Instance.LogException(
-        "Sync run aborted." + (_postponeUntil.HasValue ? $" Postponing following runs until '{_postponeUntil}'." : string.Empty),
-        x, 
-        s_logger);
+      s_logger.Warn(x);
+
+      var overloadException = x as WebRepositoryOverloadException;
+      if (overloadException != null)
+      {
+        _postponeUntil = overloadException.RetryAfter;
+        if (_postponeUntil.HasValue)
+          s_logger.Warn($"Postponing following runs until '{_postponeUntil}'.");
+      }
     }
 
     private async Task RunPartialNoThrow (IOutlookId[] itemsToSync)
@@ -310,14 +321,17 @@ namespace CalDavSynchronizer.Scheduling
             {
               await _synchronizer.SynchronizePartial(itemsToSync, logger);
             }
-            catch (WebRepositoryOverloadException x)
-            {
-              HandleWebRepositoryOverloadException (x);
-            }
             catch (Exception x)
             {
-              logger.LogAbortedDueToError(x);
-              ExceptionHandler.Instance.LogException(x, s_logger);
+              if (_exceptionHandlingStrategy.DoesAbortSynchronization(x))
+              {
+                HandleSyncronizationAbortion(x);
+              }
+              else
+              {
+                logger.LogAbortedDueToError(x);
+                ExceptionHandler.Instance.LogException(x, s_logger);
+              }
             }
           }
 

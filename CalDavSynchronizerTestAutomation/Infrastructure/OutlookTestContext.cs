@@ -88,7 +88,8 @@ namespace CalDavSynchronizerTestAutomation.Infrastructure
           daslFilterProvider,
           new OutlookAccountPasswordProvider (mapiNameSpace.CurrentProfileName, mapiNameSpace.Application.Version),
           globalTimeZoneCache,
-          QueryOutlookFolderByRequestingItemStrategy.Instance);
+          QueryOutlookFolderByRequestingItemStrategy.Instance,
+          new ExceptionHandlingStrategy());
 
       s_outlookEventRepository = new OutlookEventRepository (
           new OutlookSession(s_mapiNameSpace),

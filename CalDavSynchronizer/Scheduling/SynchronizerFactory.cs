@@ -72,13 +72,14 @@ namespace CalDavSynchronizer.Scheduling
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
     private readonly GlobalTimeZoneCache _globalTimeZoneCache;
     private readonly IQueryOutlookFolderStrategy _queryFolderStrategy;
-    private readonly IExceptionHandlingStrategy _exceptionHandlingStrategy = ExceptionHandlingStrategy.Instance;
+    private readonly IExceptionHandlingStrategy _exceptionHandlingStrategy;
 
-    public SynchronizerFactory (Func<Guid, string> profileDataDirectoryFactory, ITotalProgressFactory totalProgressFactory, IOutlookSession outlookSession, IDaslFilterProvider daslFilterProvider, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, GlobalTimeZoneCache globalTimeZoneCache, IQueryOutlookFolderStrategy queryFolderStrategy)
+    public SynchronizerFactory (Func<Guid, string> profileDataDirectoryFactory, ITotalProgressFactory totalProgressFactory, IOutlookSession outlookSession, IDaslFilterProvider daslFilterProvider, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, GlobalTimeZoneCache globalTimeZoneCache, IQueryOutlookFolderStrategy queryFolderStrategy, IExceptionHandlingStrategy exceptionHandlingStrategy)
     {
       if (outlookAccountPasswordProvider == null)
         throw new ArgumentNullException (nameof (outlookAccountPasswordProvider));
       if (queryFolderStrategy == null) throw new ArgumentNullException(nameof(queryFolderStrategy));
+      if (exceptionHandlingStrategy == null) throw new ArgumentNullException(nameof(exceptionHandlingStrategy));
 
       _outlookEmailAddress = outlookSession.GetCurrentUserEmailAddressOrNull() ?? string.Empty;
      
@@ -90,6 +91,7 @@ namespace CalDavSynchronizer.Scheduling
       _profileDataDirectoryFactory = profileDataDirectoryFactory;
       _globalTimeZoneCache = globalTimeZoneCache;
       _queryFolderStrategy = queryFolderStrategy;
+      _exceptionHandlingStrategy = exceptionHandlingStrategy;
     }
 
     /// <summary>

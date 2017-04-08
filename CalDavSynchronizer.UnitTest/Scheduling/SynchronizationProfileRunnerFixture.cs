@@ -58,7 +58,8 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
           MockRepository.GenerateStub<IFolderChangeWatcherFactory> (),
           delegate { },
           MockRepository.GenerateStub<ISynchronizationRunLogger> (),
-          _dateTimeProvider);
+          _dateTimeProvider,
+          new ExceptionHandlingStrategy());
 
       var logger = MockRepository.GenerateStub<ILog>();
       logger
@@ -74,7 +75,7 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
 
     async Task SetupSynchronizerFactory(IOutlookSynchronizer synchronizer)
     {
-      var options = new Options {SynchronizationIntervalInMinutes = 1};
+      var options = new Options {SynchronizationIntervalInMinutes = 1, Name = "TestProfile"};
       var generalOptions = new GeneralOptions ();
       _synchronizerFactory.Expect (f => f.CreateSynchronizer (options, generalOptions)).Return (Task.FromResult<IOutlookSynchronizer> (synchronizer));
       await _synchronizationProfileRunner.UpdateOptions (options, generalOptions);
@@ -163,7 +164,7 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
         Is.EqualTo(3));
 
       Assert.That(
-        _loggedInfoMessages.All(m => m == "This profile will not run, since it is postponed until '05.01.2000 00:00:00'"),
+        _loggedInfoMessages.All(m => m == "Profile 'TestProfile' will not run, since it is postponed until '05.01.2000 00:00:00'"),
         Is.True);
 
       Assert.That (

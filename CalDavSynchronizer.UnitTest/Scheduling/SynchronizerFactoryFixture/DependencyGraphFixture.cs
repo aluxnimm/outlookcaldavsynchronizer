@@ -42,7 +42,8 @@ namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
         new NullDaslFilterProvider(),
         NullOutlookAccountPasswordProvider.Instance,
         new GlobalTimeZoneCache(),
-        new NullQueryOutlookFolderStrategy());
+        new NullQueryOutlookFolderStrategy(),
+        new ExceptionHandlingStrategy());
     }
 
     [Test]
