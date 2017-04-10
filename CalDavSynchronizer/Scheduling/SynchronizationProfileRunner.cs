@@ -63,14 +63,8 @@ namespace CalDavSynchronizer.Scheduling
     private readonly IDateTimeProvider _dateTimeProvider;
     private readonly IExceptionHandlingStrategy _exceptionHandlingStrategy;
    
-    private string _profileName;
-    private bool _inactive;
-    private bool _checkIfOnline;
-    private TimeSpan _interval;
-    private ProxyOptions _proxyOptions;
-    private IOutlookSynchronizer _synchronizer;
-    private IItemCollectionChangeWatcher _folderChangeWatcher;
-    
+    private ProfileData _profile;
+
     private volatile bool _fullSyncPending;
     /// <summary>
     /// There is no threadsafe Datastructure required, since there will be no concurrent threads
@@ -117,45 +111,45 @@ namespace CalDavSynchronizer.Scheduling
       _lastRun = DateTime.MinValue;
     }
 
-    public async Task UpdateOptions (Options options, GeneralOptions generalOptions)
+    public async Task UpdateOptions(Options options, GeneralOptions generalOptions)
     {
       if (options == null)
-        throw new ArgumentNullException (nameof (options));
+        throw new ArgumentNullException(nameof(options));
       if (generalOptions == null)
-        throw new ArgumentNullException (nameof (generalOptions));
+        throw new ArgumentNullException(nameof(generalOptions));
       if (_profileId != options.Id)
         throw new ArgumentException($"Cannot update runner for profile '{_profileId}' with options of profile '{options.Id}'");
 
       _pendingOutlookItems.Clear();
       _fullSyncPending = false;
 
-      _profileName = options.Name;
-      _proxyOptions = options.ProxyOptions;
-      _synchronizer = options.Inactive ? NullOutlookSynchronizer.Instance : await _synchronizerFactory.CreateSynchronizer (options, generalOptions);
-      _interval = TimeSpan.FromMinutes (options.SynchronizationIntervalInMinutes);
-      _inactive = options.Inactive;
-      _checkIfOnline = generalOptions.CheckIfOnline;
-
-      if (_folderChangeWatcher != null)
+      if (!_profile.IsEmpty)
       {
-        _folderChangeWatcher.ItemSavedOrDeleted -= FolderChangeWatcher_ItemSavedOrDeleted;
-        _folderChangeWatcher.Dispose();
-        _folderChangeWatcher = null;
+        _profile.FolderChangeWatcher.ItemSavedOrDeleted -= FolderChangeWatcher_ItemSavedOrDeleted;
+        _profile.FolderChangeWatcher.Dispose();
       }
 
-      if (!_inactive && options.EnableChangeTriggeredSynchronization)
-      {
-        _folderChangeWatcher =
-            _folderChangeWatcherFactory.Create (options.OutlookFolderEntryId, options.OutlookFolderStoreId);
-        _folderChangeWatcher.ItemSavedOrDeleted += FolderChangeWatcher_ItemSavedOrDeleted;
-      }
+      _profile = new ProfileData(
+        options.Inactive,
+        options.Name,
+        generalOptions.CheckIfOnline,
+        TimeSpan.FromMinutes(options.SynchronizationIntervalInMinutes),
+        options.ProxyOptions,
+        options.Inactive
+          ? NullOutlookSynchronizer.Instance
+          : await _synchronizerFactory.CreateSynchronizer(options, generalOptions),
+        !options.Inactive && options.EnableChangeTriggeredSynchronization
+          ? _folderChangeWatcherFactory.Create(options.OutlookFolderEntryId, options.OutlookFolderStoreId)
+          : NullItemCollectionChangeWatcher.Instance);
+
+      _profile.FolderChangeWatcher.ItemSavedOrDeleted += FolderChangeWatcher_ItemSavedOrDeleted;
     }
 
     bool ShouldPostponeSyncRun()
     {
       if (_postponeUntil >= _dateTimeProvider.Now)
       {
-        s_logger.Info($"Profile '{_profileName}' will not run, since it is postponed until '{_postponeUntil}'");
+        s_logger.Info($"Profile '{_profile.ProfileName}' will not run, since it is postponed until '{_postponeUntil}'");
         return true;
       }
       else
@@ -205,11 +199,11 @@ namespace CalDavSynchronizer.Scheduling
     {
       try
       {
-        if (_inactive)
+        if (_profile.Inactive)
           return;
 
         if (runNow ||
-          _interval > TimeSpan.Zero && _dateTimeProvider.Now > _lastRun + _interval && !ShouldPostponeSyncRun ())
+          _profile.Interval > TimeSpan.Zero && _dateTimeProvider.Now > _lastRun + _profile.Interval && !ShouldPostponeSyncRun ())
         {
           _postponeUntil = null;
           _fullSyncPending = true;
@@ -224,9 +218,9 @@ namespace CalDavSynchronizer.Scheduling
 
     private async Task RunAllPendingJobs ()
     {
-      if (_checkIfOnline && !ConnectionTester.IsOnline (_proxyOptions))
+      if (_profile.CheckIfOnline && !ConnectionTester.IsOnline (_profile.ProxyOptionsOrNull))
       {
-        s_logger.WarnFormat ("Skipping synchronization profile '{0}' (Id: '{1}') because network is not available", _profileName, _profileId);
+        s_logger.WarnFormat ("Skipping synchronization profile '{0}' (Id: '{1}') because network is not available", _profile.ProfileName, _profileId);
         return;
       }
 
@@ -268,13 +262,13 @@ namespace CalDavSynchronizer.Scheduling
     {
       try
       {
-        using (var logger = new SynchronizationLogger(_profileId, _profileName, _reportSink))
+        using (var logger = new SynchronizationLogger(_profileId, _profile.ProfileName, _reportSink))
         {
-          using (AutomaticStopwatch.StartInfo(s_logger, string.Format("Running synchronization profile '{0}'", _profileName)))
+          using (AutomaticStopwatch.StartInfo(s_logger, string.Format("Running synchronization profile '{0}'", _profile.ProfileName)))
           {
             try
             {
-              await _synchronizer.Synchronize(logger);
+              await _profile.Synchronizer.Synchronize(logger);
             }
             catch (Exception x)
             {
@@ -321,13 +315,13 @@ namespace CalDavSynchronizer.Scheduling
     {
       try
       {
-        using (var logger = new SynchronizationLogger(_profileId, _profileName, _reportSink))
+        using (var logger = new SynchronizationLogger(_profileId, _profile.ProfileName, _reportSink))
         {
-          using (AutomaticStopwatch.StartInfo(s_logger, string.Format("Partial sync: Running synchronization profile '{0}'", _profileName)))
+          using (AutomaticStopwatch.StartInfo(s_logger, string.Format("Partial sync: Running synchronization profile '{0}'", _profile.ProfileName)))
           {
             try
             {
-              await _synchronizer.SynchronizePartial(itemsToSync, logger);
+              await _profile.Synchronizer.SynchronizePartial(itemsToSync, logger);
             }
             catch (Exception x)
             {
@@ -351,6 +345,37 @@ namespace CalDavSynchronizer.Scheduling
       {
         s_logger.Error (null, x);
       }
+    }
+    
+    struct ProfileData
+    {
+      public readonly bool Inactive;
+      public readonly string ProfileName;
+      public readonly bool CheckIfOnline;
+      public readonly TimeSpan Interval;
+      public readonly ProxyOptions ProxyOptionsOrNull;
+      public readonly IOutlookSynchronizer Synchronizer;
+      public readonly IItemCollectionChangeWatcher FolderChangeWatcher;
+
+      public ProfileData (bool inactive, string profileName, bool checkIfOnline, TimeSpan interval, ProxyOptions proxyOptionsOrNull, IOutlookSynchronizer synchronizer, IItemCollectionChangeWatcher folderChangeWatcher)
+      {
+        if (profileName == null)
+          throw new ArgumentNullException (nameof (profileName));
+        if (synchronizer == null)
+          throw new ArgumentNullException (nameof (synchronizer));
+        if (folderChangeWatcher == null)
+          throw new ArgumentNullException (nameof (folderChangeWatcher));
+
+        Inactive = inactive;
+        ProfileName = profileName;
+        CheckIfOnline = checkIfOnline;
+        Interval = interval;
+        ProxyOptionsOrNull = proxyOptionsOrNull;
+        Synchronizer = synchronizer;
+        FolderChangeWatcher = folderChangeWatcher;
+      }
+
+      public bool IsEmpty => FolderChangeWatcher == null;
     }
   }
 }

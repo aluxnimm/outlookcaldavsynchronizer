@@ -27,7 +27,7 @@ namespace CalDavSynchronizer.Ui.ConnectionTests
 {
   public static class ConnectionTester
   {
-    public static bool IsOnline (ProxyOptions proxyOptions)
+    public static bool IsOnline (ProxyOptions proxyOptionsOrNull)
     {
       if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
       {
@@ -46,7 +46,7 @@ namespace CalDavSynchronizer.Ui.ConnectionTests
           string txt;
           using (var client = new WebClient())
           {
-            IWebProxy proxy = (proxyOptions != null) ? SynchronizerFactory.CreateProxy (proxyOptions) : null;
+            IWebProxy proxy = (proxyOptionsOrNull != null) ? SynchronizerFactory.CreateProxy (proxyOptionsOrNull) : null;
             client.Proxy = proxy;
             txt = client.DownloadString (new Uri ("http://www.msftncsi.com/ncsi.txt"));
           }
