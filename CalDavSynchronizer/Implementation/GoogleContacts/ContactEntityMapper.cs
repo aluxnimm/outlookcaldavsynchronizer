@@ -728,7 +728,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         target.Inner.Email1Address = workOrFirst.Address;
         if (!string.IsNullOrEmpty (workOrFirst.Label)) target.Inner.Email1DisplayName = workOrFirst.Label;
 
-        var homeOrSecond = source.Emails.FirstOrDefault (e => e.Rel == ContactsRelationships.IsHome) ??
+        var homeOrSecond = source.Emails.FirstOrDefault (e => e.Rel == ContactsRelationships.IsHome && e != workOrFirst) ??
                            source.Emails.FirstOrDefault (e => e != workOrFirst);
 
         if (homeOrSecond != null)
