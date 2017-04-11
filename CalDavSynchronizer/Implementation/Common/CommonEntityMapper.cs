@@ -20,6 +20,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.DistributionLists;
@@ -338,8 +339,31 @@ namespace CalDavSynchronizer.Implementation.Common
             {
               using (var recipientWrapper = GenericComObjectWrapper.Create(context.OutlookSession.CreateRecipient(recipientString)))
               {
-                recipientWrapper.Inner.Resolve();
-                target.Inner.AddMember(recipientWrapper.Inner);
+                if (recipientWrapper.Inner.Resolve())
+                {
+                  target.Inner.AddMember(recipientWrapper.Inner);
+                }
+                else
+                {
+                  // Add a member which is not in the Addressbook
+                  var builder = new StringBuilder();
+                  if (!string.IsNullOrEmpty(sourceMember.DisplayName))
+                  {
+                    builder.Append(sourceMember.DisplayName);
+                    builder.Append(" <");
+                    builder.Append(sourceMember.EmailAddress);
+                    builder.Append(">");
+                  }
+                  else
+                  {
+                    builder.Append(sourceMember.EmailAddress);
+                  }
+                  using (var tempRecipientMember = GenericComObjectWrapper.Create(context.OutlookSession.CreateRecipient(builder.ToString())))
+                  {
+                    tempRecipientMember.Inner.Resolve();
+                    target.Inner.AddMember(tempRecipientMember.Inner);
+                  }
+                }
               }
             }
           }
