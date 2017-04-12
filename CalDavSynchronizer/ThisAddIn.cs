@@ -69,7 +69,7 @@ namespace CalDavSynchronizer
 
         _startupTimer = new Timer ();
         _startupTimer.Tick += StartupTimer_Tick;
-        _startupTimer.Interval = 5000;
+        _startupTimer.Interval = 2000;
         _startupTimer.Enabled = true;
 
         s_logger.Info ("Startup exiting.");
