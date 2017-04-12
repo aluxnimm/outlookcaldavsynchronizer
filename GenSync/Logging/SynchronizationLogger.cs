@@ -29,6 +29,7 @@ namespace GenSync.Logging
     private readonly List<LoadError> _loadErrors = new List<LoadError>();
     private readonly object _loadErrorsLock = new Object();
     private string _exceptionThatLeadToAbortion;
+    private bool _considerExceptionThatLeadToAbortionAsWarning;
     private string _aDelta;
     private string _bDelta;
     private string _aJobsInfo;
@@ -56,6 +57,13 @@ namespace GenSync.Logging
     public void LogAbortedDueToError (Exception exception)
     {
       _exceptionThatLeadToAbortion = exception.ToString();
+      _considerExceptionThatLeadToAbortionAsWarning = false;
+    }
+
+    public void LogAbortedDueToWarning (Exception exception)
+    {
+      _exceptionThatLeadToAbortion = exception.ToString ();
+      _considerExceptionThatLeadToAbortionAsWarning = true;
     }
 
     public void LogDeltas (VersionDeltaLoginInformation aDeltaLogInfo, VersionDeltaLoginInformation bDeltaLogInfo)
@@ -86,7 +94,8 @@ namespace GenSync.Logging
                  BDelta = _bDelta,
                  AJobsInfo = _aJobsInfo,
                  BJobsInfo = _bJobsInfo,
-                  ExceptionThatLeadToAbortion = _exceptionThatLeadToAbortion,
+                 ExceptionThatLeadToAbortion = _exceptionThatLeadToAbortion,
+                 ConsiderExceptionThatLeadToAbortionAsWarning = _considerExceptionThatLeadToAbortionAsWarning,
                  LoadErrors = _loadErrors.ToArray(),
                  ProfileId = _profileId,
                  ProfileName = _profileName,

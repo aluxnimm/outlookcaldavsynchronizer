@@ -51,6 +51,7 @@ namespace GenSync.Logging
     }
 
     public string ExceptionThatLeadToAbortion { get; set; }
+    public bool ConsiderExceptionThatLeadToAbortionAsWarning { get; set; }
 
     [XmlElement (ElementName = "Duration")]
     public string Duration_ForSerializationOnly
@@ -63,13 +64,14 @@ namespace GenSync.Logging
     {
       get
       {
-        return !string.IsNullOrEmpty (ExceptionThatLeadToAbortion)
-               || EntitySynchronizationReports.Any (r => !string.IsNullOrEmpty (r.ExceptionThatLeadToAbortion) || r.MappingErrors.Length > 0)
+        return !string.IsNullOrEmpty(ExceptionThatLeadToAbortion) && !ConsiderExceptionThatLeadToAbortionAsWarning
+               || EntitySynchronizationReports.Any(r => !string.IsNullOrEmpty(r.ExceptionThatLeadToAbortion) || r.MappingErrors.Length > 0)
                || LoadErrors.Length > 0;
       }
     }
 
-    public bool HasWarnings => EntitySynchronizationReports.Any (r => r.MappingWarnings.Length > 0);
+    public bool HasWarnings => !string.IsNullOrEmpty(ExceptionThatLeadToAbortion) && ConsiderExceptionThatLeadToAbortionAsWarning ||
+                               EntitySynchronizationReports.Any(r => r.MappingWarnings.Length > 0);
 
     public void MergeSubReport(IReadOnlyCollection<SynchronizationReport> subReports)
     {

@@ -107,6 +107,7 @@ namespace CalDavSynchronizer.Scheduling
           else
           {
             _currentSyncRunCausedWarning = true;
+            logger.LogAbortedDueToWarning (exception);
             s_logger.Warn(exception);
           }
         }

@@ -61,5 +61,10 @@ namespace GenSync.Logging
     {
       
     }
+
+    public void LogAbortedDueToWarning(Exception exception)
+    {
+      
+    }
   }
 }

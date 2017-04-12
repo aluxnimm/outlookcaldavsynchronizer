@@ -127,8 +127,13 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
 
       await Synchronize();
       await Synchronize();
-      Assert.That(_synchronizationReportSink.Reports.Count, Is.EqualTo(2));
-      Assert.That(_synchronizationReportSink.Reports.Any(r => r.HasErrors), Is.False);
+      CollectionAssert.AreEqual(
+        new[]
+        {
+          new {HasWarnings = true, HasErrors = false},
+          new {HasWarnings = true, HasErrors = false}
+        },
+        _synchronizationReportSink.Reports.Select(r => new {r.HasWarnings, r.HasErrors}));
 
       _synchronizationReportSink.Reports.Clear();
       throwOverloadException = false;
@@ -137,8 +142,15 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
       await Synchronize ();
       await Synchronize ();
       await Synchronize ();
-      Assert.That (_synchronizationReportSink.Reports.Count, Is.EqualTo (4));
-      Assert.That (_synchronizationReportSink.Reports.Any (r => r.HasErrors), Is.False);
+      CollectionAssert.AreEqual (
+        new[]
+        {
+          new {HasWarnings = false, HasErrors = false},
+          new {HasWarnings = false, HasErrors = false},
+          new {HasWarnings = false, HasErrors = false},
+          new {HasWarnings = false, HasErrors = false}
+        },
+        _synchronizationReportSink.Reports.Select (r => new { r.HasWarnings, r.HasErrors }));
 
       _synchronizationReportSink.Reports.Clear ();
       throwOverloadException = true;
@@ -146,16 +158,29 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
       await Synchronize ();
       await Synchronize ();
       await Synchronize ();
-      Assert.That (_synchronizationReportSink.Reports.Count, Is.EqualTo (3));
-      Assert.That (_synchronizationReportSink.Reports.Count (r => r.HasErrors), Is.EqualTo(1));
+      CollectionAssert.AreEqual (
+        new[]
+        {
+          new {HasWarnings = true, HasErrors = false},
+          new {HasWarnings = true, HasErrors = false},
+          new {HasWarnings = false, HasErrors = true}
+        },
+        _synchronizationReportSink.Reports.Select (r => new { r.HasWarnings, r.HasErrors }));
 
       _synchronizationReportSink.Reports.Clear ();
       await Synchronize ();
       await Synchronize ();
       await Synchronize ();
       await Synchronize ();
-      Assert.That (_synchronizationReportSink.Reports.Count, Is.EqualTo (4));
-      Assert.That (_synchronizationReportSink.Reports.Count (r => r.HasErrors), Is.EqualTo (1));
+      CollectionAssert.AreEqual (
+        new[]
+        {
+          new {HasWarnings = true, HasErrors = false},
+          new {HasWarnings = true, HasErrors = false},
+          new {HasWarnings = false, HasErrors = true},
+          new {HasWarnings = true, HasErrors = false},
+        },
+        _synchronizationReportSink.Reports.Select (r => new { r.HasWarnings, r.HasErrors }));
 
       _synchronizationReportSink.Reports.Clear ();
       await Synchronize ();
@@ -164,8 +189,24 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
       await Synchronize ();
       await Synchronize ();
       await Synchronize ();
-      Assert.That (_synchronizationReportSink.Reports.Count, Is.EqualTo (6));
-      Assert.That (_synchronizationReportSink.Reports.Count (r => r.HasErrors), Is.EqualTo (2));
+      throwOverloadException = false;
+      await Synchronize ();
+      await Synchronize ();
+      await Synchronize ();
+      CollectionAssert.AreEqual (
+        new[]
+        {
+          new {HasWarnings = true, HasErrors = false},
+          new {HasWarnings = false, HasErrors = true},
+          new {HasWarnings = true, HasErrors = false},
+          new {HasWarnings = true, HasErrors = false},
+          new {HasWarnings = false, HasErrors = true},
+          new {HasWarnings = true, HasErrors = false},
+          new {HasWarnings = false, HasErrors = false},
+          new {HasWarnings = false, HasErrors = false},
+          new {HasWarnings = false, HasErrors = false},
+        },
+        _synchronizationReportSink.Reports.Select (r => new { r.HasWarnings, r.HasErrors }));
     }
 
     private async Task Synchronize()
