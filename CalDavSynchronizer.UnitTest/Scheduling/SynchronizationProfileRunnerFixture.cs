@@ -59,7 +59,6 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
           delegate { },
           MockRepository.GenerateStub<ISynchronizationRunLogger> (),
           _dateTimeProvider,
-          new ExceptionHandlingStrategy(),
           new Guid());
 
       var logger = MockRepository.GenerateStub<ILog>();
@@ -106,34 +105,73 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
 
 
     [Test]
-    public async Task RunAndRescheduleNoThrow_SynchronizerThrowsOverloadException_DoesntReportAnError()
+    public async Task RunAndRescheduleNoThrow_SynchronizerThrowsOverloadException_ReportsErrorAfterThresholdIsExceeded()
     {
       var synchronizer = MockRepository.GenerateStrictMock<IOutlookSynchronizer>();
-      await SetupSynchronizerFactory (synchronizer);
+      await SetupSynchronizerFactory(synchronizer);
 
-      _dateTimeProvider.Now = new DateTime (2000, 1, 1);
+      _dateTimeProvider.Now = new DateTime(2000, 1, 1);
+
+      bool throwOverloadException = false;
 
       synchronizer
         .Expect(_ => synchronizer.Synchronize(Arg<ISynchronizationLogger>.Is.NotNull))
-        .Throw(new WebRepositoryOverloadException(null, new Exception()))
-        .Repeat.Times(4);
-      
-      await _synchronizationProfileRunner.RunAndRescheduleNoThrow (false);
-      _dateTimeProvider.Now += TimeSpan.FromMinutes (5);
-      await _synchronizationProfileRunner.RunAndRescheduleNoThrow (false);
-      _dateTimeProvider.Now += TimeSpan.FromMinutes (5);
-      await _synchronizationProfileRunner.RunAndRescheduleNoThrow (false);
-      _dateTimeProvider.Now += TimeSpan.FromMinutes (5);
-      await _synchronizationProfileRunner.RunAndRescheduleNoThrow (false);
+        .Return(Task.FromResult(0))
+        .WhenCalled(_ =>
+        {
+          if (throwOverloadException)
+            throw new WebRepositoryOverloadException(null, new Exception());
+        });
 
-      Assert.That (
-       _synchronizationReportSink.Reports.Count,
-       Is.EqualTo(4));
+      throwOverloadException = true;
 
-      Assert.That(
-        _synchronizationReportSink.Reports.Any(r => r.HasErrors),
-        Is.False);
+      await Synchronize();
+      await Synchronize();
+      Assert.That(_synchronizationReportSink.Reports.Count, Is.EqualTo(2));
+      Assert.That(_synchronizationReportSink.Reports.Any(r => r.HasErrors), Is.False);
 
+      _synchronizationReportSink.Reports.Clear();
+      throwOverloadException = false;
+
+      await Synchronize ();
+      await Synchronize ();
+      await Synchronize ();
+      await Synchronize ();
+      Assert.That (_synchronizationReportSink.Reports.Count, Is.EqualTo (4));
+      Assert.That (_synchronizationReportSink.Reports.Any (r => r.HasErrors), Is.False);
+
+      _synchronizationReportSink.Reports.Clear ();
+      throwOverloadException = true;
+
+      await Synchronize ();
+      await Synchronize ();
+      await Synchronize ();
+      Assert.That (_synchronizationReportSink.Reports.Count, Is.EqualTo (3));
+      Assert.That (_synchronizationReportSink.Reports.Count (r => r.HasErrors), Is.EqualTo(1));
+
+      _synchronizationReportSink.Reports.Clear ();
+      await Synchronize ();
+      await Synchronize ();
+      await Synchronize ();
+      await Synchronize ();
+      Assert.That (_synchronizationReportSink.Reports.Count, Is.EqualTo (4));
+      Assert.That (_synchronizationReportSink.Reports.Count (r => r.HasErrors), Is.EqualTo (1));
+
+      _synchronizationReportSink.Reports.Clear ();
+      await Synchronize ();
+      await Synchronize ();
+      await Synchronize ();
+      await Synchronize ();
+      await Synchronize ();
+      await Synchronize ();
+      Assert.That (_synchronizationReportSink.Reports.Count, Is.EqualTo (6));
+      Assert.That (_synchronizationReportSink.Reports.Count (r => r.HasErrors), Is.EqualTo (2));
+    }
+
+    private async Task Synchronize()
+    {
+      _dateTimeProvider.Now += TimeSpan.FromMinutes(5);
+      await _synchronizationProfileRunner.RunAndRescheduleNoThrow(false);
     }
 
 

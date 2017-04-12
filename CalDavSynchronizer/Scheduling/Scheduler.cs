@@ -42,15 +42,13 @@ namespace CalDavSynchronizer.Scheduling
     private readonly IFolderChangeWatcherFactory _folderChangeWatcherFactory;
     private readonly Action _ensureSynchronizationContext;
     private readonly ISynchronizationRunLogger _runLogger;
-    private readonly IExceptionHandlingStrategy _exceptionHandlingStrategy;
 
     public Scheduler (
       ISynchronizerFactory synchronizerFactory,
       ISynchronizationReportSink reportSink,
       Action ensureSynchronizationContext, 
       IFolderChangeWatcherFactory folderChangeWatcherFactory,
-      ISynchronizationRunLogger runLogger, 
-      IExceptionHandlingStrategy exceptionHandlingStrategy)
+      ISynchronizationRunLogger runLogger)
     {
       if (synchronizerFactory == null)
         throw new ArgumentNullException (nameof (synchronizerFactory));
@@ -60,7 +58,6 @@ namespace CalDavSynchronizer.Scheduling
         throw new ArgumentNullException (nameof (folderChangeWatcherFactory));
       if (runLogger == null)
         throw new ArgumentNullException (nameof (runLogger));
-      if (exceptionHandlingStrategy == null) throw new ArgumentNullException(nameof(exceptionHandlingStrategy));
       if (reportSink == null)
         throw new ArgumentNullException (nameof (reportSink));
 
@@ -69,7 +66,6 @@ namespace CalDavSynchronizer.Scheduling
       _ensureSynchronizationContext = ensureSynchronizationContext;
       _folderChangeWatcherFactory = folderChangeWatcherFactory;
       _runLogger = runLogger;
-      _exceptionHandlingStrategy = exceptionHandlingStrategy;
       _synchronizationTimer.Tick += SynchronizationTimer_Tick;
       _synchronizationTimer.Interval = (int) _timerInterval.TotalMilliseconds;
     }
@@ -133,7 +129,6 @@ namespace CalDavSynchronizer.Scheduling
                 _ensureSynchronizationContext,
                 _runLogger,
                 DateTimeProvider.Instance,
-                _exceptionHandlingStrategy,
                 option.Id);
           }
           await profileRunner.UpdateOptions (option, generalOptions);

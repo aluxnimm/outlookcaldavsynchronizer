@@ -44,7 +44,7 @@ namespace CalDavSynchronizer.Scheduling
   /// This class is NOT threadsafe, but is safe regarding multiple entries of the same thread ( main thread)
   /// which will is a common case when using async methods
   /// </remarks>
-  public class SynchronizationProfileRunner
+  public partial class SynchronizationProfileRunner
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -61,7 +61,6 @@ namespace CalDavSynchronizer.Scheduling
     private readonly Action _ensureSynchronizationContext;
     private readonly ISynchronizationRunLogger _runLogger;
     private readonly IDateTimeProvider _dateTimeProvider;
-    private readonly IExceptionHandlingStrategy _exceptionHandlingStrategy;
    
     private ProfileData _profile;
 
@@ -74,7 +73,8 @@ namespace CalDavSynchronizer.Scheduling
     private readonly ConcurrentDictionary<string, IOutlookId> _pendingOutlookItems = new ConcurrentDictionary<string, IOutlookId> ();
     private DateTime _lastRun;
     private int _isRunning;
-    private DateTime? _postponeUntil;
+
+    private ErrorHandlingStrategy _errorHandlingStrategy;
     
     public SynchronizationProfileRunner (
         ISynchronizerFactory synchronizerFactory,
@@ -83,7 +83,6 @@ namespace CalDavSynchronizer.Scheduling
         Action ensureSynchronizationContext, 
         ISynchronizationRunLogger runLogger,
         IDateTimeProvider dateTimeProvider, 
-        IExceptionHandlingStrategy exceptionHandlingStrategy,
         Guid profileId)
     {
       if (synchronizerFactory == null)
@@ -97,7 +96,6 @@ namespace CalDavSynchronizer.Scheduling
       if (runLogger == null)
         throw new ArgumentNullException (nameof (runLogger));
       if (dateTimeProvider == null) throw new ArgumentNullException(nameof(dateTimeProvider));
-      if (exceptionHandlingStrategy == null) throw new ArgumentNullException(nameof(exceptionHandlingStrategy));
 
       _profileId = profileId;
       _synchronizerFactory = synchronizerFactory;
@@ -106,9 +104,9 @@ namespace CalDavSynchronizer.Scheduling
       _ensureSynchronizationContext = ensureSynchronizationContext;
       _runLogger = runLogger;
       _dateTimeProvider = dateTimeProvider;
-      _exceptionHandlingStrategy = exceptionHandlingStrategy;
       // Set to min, to ensure that it runs on the first run after startup
       _lastRun = DateTime.MinValue;
+      _errorHandlingStrategy = new ErrorHandlingStrategy(_profile, _dateTimeProvider);
     }
 
     public async Task UpdateOptions(Options options, GeneralOptions generalOptions)
@@ -143,19 +141,8 @@ namespace CalDavSynchronizer.Scheduling
           : NullItemCollectionChangeWatcher.Instance);
 
       _profile.FolderChangeWatcher.ItemSavedOrDeleted += FolderChangeWatcher_ItemSavedOrDeleted;
-    }
 
-    bool ShouldPostponeSyncRun()
-    {
-      if (_postponeUntil >= _dateTimeProvider.Now)
-      {
-        s_logger.Info($"Profile '{_profile.ProfileName}' will not run, since it is postponed until '{_postponeUntil}'");
-        return true;
-      }
-      else
-      {
-        return false;
-      }
+      _errorHandlingStrategy = new ErrorHandlingStrategy (_profile, _dateTimeProvider);
     }
 
     private void FolderChangeWatcher_ItemSavedOrDeleted (object sender, ItemSavedEventArgs e)
@@ -175,7 +162,7 @@ namespace CalDavSynchronizer.Scheduling
     {
       try
       {
-        if(ShouldPostponeSyncRun())
+        if(_errorHandlingStrategy.ShouldPostponeSyncRun())
           return;
 
         _pendingOutlookItems.AddOrUpdate (e.EntryId.EntryId, e.EntryId, (key, existingValue) => e.EntryId.Version > existingValue.Version ? e.EntryId : existingValue);
@@ -203,11 +190,14 @@ namespace CalDavSynchronizer.Scheduling
           return;
 
         if (runNow ||
-          _profile.Interval > TimeSpan.Zero && _dateTimeProvider.Now > _lastRun + _profile.Interval && !ShouldPostponeSyncRun ())
+          _profile.Interval > TimeSpan.Zero && _dateTimeProvider.Now > _lastRun + _profile.Interval && !_errorHandlingStrategy.ShouldPostponeSyncRun ())
         {
-          _postponeUntil = null;
+          _errorHandlingStrategy.NotifySyncRunStarting();
           _fullSyncPending = true;
+
           await RunAllPendingJobs();
+
+          _errorHandlingStrategy.NotifySyncRunFinished();
         }
       }
       catch (Exception x)
@@ -272,15 +262,7 @@ namespace CalDavSynchronizer.Scheduling
             }
             catch (Exception x)
             {
-              if (_exceptionHandlingStrategy.DoesAbortSynchronization(x))
-              {
-                HandleSyncronizationAbortion(x);
-              }
-              else
-              {
-                logger.LogAbortedDueToError(x);
-                ExceptionHandler.Instance.LogException(x, s_logger);
-              }
+              _errorHandlingStrategy.HandleException (x, logger);
             }
           }
 
@@ -297,20 +279,7 @@ namespace CalDavSynchronizer.Scheduling
         _lastRun = _dateTimeProvider.Now;
       }
     }
-
-    private void HandleSyncronizationAbortion(Exception x)
-    {
-      s_logger.Warn(x);
-
-      var overloadException = x as WebRepositoryOverloadException;
-      if (overloadException != null)
-      {
-        _postponeUntil = overloadException.RetryAfter;
-        if (_postponeUntil.HasValue)
-          s_logger.Warn($"Postponing following runs until '{_postponeUntil}'.");
-      }
-    }
-
+    
     private async Task RunPartialNoThrow (IOutlookId[] itemsToSync)
     {
       try
@@ -325,15 +294,7 @@ namespace CalDavSynchronizer.Scheduling
             }
             catch (Exception x)
             {
-              if (_exceptionHandlingStrategy.DoesAbortSynchronization(x))
-              {
-                HandleSyncronizationAbortion(x);
-              }
-              else
-              {
-                logger.LogAbortedDueToError(x);
-                ExceptionHandler.Instance.LogException(x, s_logger);
-              }
+              _errorHandlingStrategy.HandleException(x, logger);
             }
           }
 

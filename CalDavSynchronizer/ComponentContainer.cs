@@ -184,8 +184,7 @@ namespace CalDavSynchronizer
           EnsureSynchronizationContext,
           new FolderChangeWatcherFactory (
               _session),
-          _synchronizationStatus,
-          exceptionHandlingStrategy);
+          _synchronizationStatus);
 
       var options = _optionsDataAccess.Load();
 

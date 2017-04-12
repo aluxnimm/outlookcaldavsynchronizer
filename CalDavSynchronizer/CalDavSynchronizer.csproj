@@ -388,6 +388,7 @@
     <Compile Include="Implementation\WebRepositoryOverloadException.cs" />
     <Compile Include="IOutlookSession.cs" />
     <Compile Include="IProfileExportProcessor.cs" />
+    <Compile Include="Scheduling\SynchronizationProfileRunner.ErrorHandlingStrategy.cs" />
     <Compile Include="StartupComponentContainer.cs" />
     <Compile Include="LoadErrorComponentContainer.cs" />
     <Compile Include="OutlookSession.cs" />
