@@ -40,6 +40,8 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
   [TestFixture]
   public class SynchronizationProfileRunnerFixture
   {
+    private const int MaxSucessiveWarnings = 2;
+
     private ISynchronizerFactory _synchronizerFactory;
     private SynchronizationProfileRunner _synchronizationProfileRunner;
     private TestSynchronizationReportSink _synchronizationReportSink;
@@ -76,11 +78,11 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
     async Task SetupSynchronizerFactory(IOutlookSynchronizer synchronizer)
     {
       var options = new Options {SynchronizationIntervalInMinutes = 1, Name = "TestProfile"};
-      var generalOptions = new GeneralOptions ();
+      var generalOptions = new GeneralOptions { MaxSucessiveWarnings = MaxSucessiveWarnings};
       _synchronizerFactory.Expect (f => f.CreateSynchronizer (options, generalOptions)).Return (Task.FromResult<IOutlookSynchronizer> (synchronizer));
       await _synchronizationProfileRunner.UpdateOptions (options, generalOptions);
     }
-
+    
     [Test]
     public async Task RunNoThrowAndRescheduleIfNotRunning ()
     {
@@ -103,30 +105,56 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
       Assert.That (synchronizer.RunCount, Is.EqualTo (2));
     }
 
+    [Test]
+    public async Task RunAndRescheduleNoThrow_SynchronizerThrowsOverloadException_ReportsErrorWhenTriggeredManually()
+    {
+      var synchronizerBehavior = new SynchronizerMockBehavior();
+      await SetupWithMock(synchronizerBehavior);
+
+      synchronizerBehavior.ThrowOverloadException = true;
+      await Synchronize(false);
+      await Synchronize(true);
+      CollectionAssert.AreEqual(
+        new[]
+        {
+          new {HasWarnings = true, HasErrors = false},
+          new {HasWarnings = false, HasErrors = true}
+        },
+        _synchronizationReportSink.Reports.Select(r => new {r.HasWarnings, r.HasErrors}));
+
+
+      _synchronizationReportSink.Reports.Clear();
+      await Synchronize(false);
+      await Synchronize(true);
+      await Synchronize(false);
+      await Synchronize(false);
+      await Synchronize(false);
+      await Synchronize(true);
+      await Synchronize(false);
+      CollectionAssert.AreEqual(
+        new[]
+        {
+          new {HasWarnings = true, HasErrors = false},
+          new {HasWarnings = false, HasErrors = true},
+          new {HasWarnings = true, HasErrors = false},
+          new {HasWarnings = true, HasErrors = false},
+          new {HasWarnings = false, HasErrors = true},
+          new {HasWarnings = false, HasErrors = true},
+          new {HasWarnings = true, HasErrors = false},
+        },
+        _synchronizationReportSink.Reports.Select(r => new {r.HasWarnings, r.HasErrors}));
+
+    }
 
     [Test]
     public async Task RunAndRescheduleNoThrow_SynchronizerThrowsOverloadException_ReportsErrorAfterThresholdIsExceeded()
     {
-      var synchronizer = MockRepository.GenerateStrictMock<IOutlookSynchronizer>();
-      await SetupSynchronizerFactory(synchronizer);
+      var synchronizerBehavior = new SynchronizerMockBehavior();
+      await SetupWithMock(synchronizerBehavior);
 
-      _dateTimeProvider.Now = new DateTime(2000, 1, 1);
-
-      bool throwOverloadException = false;
-
-      synchronizer
-        .Expect(_ => synchronizer.Synchronize(Arg<ISynchronizationLogger>.Is.NotNull))
-        .Return(Task.FromResult(0))
-        .WhenCalled(_ =>
-        {
-          if (throwOverloadException)
-            throw new WebRepositoryOverloadException(null, new Exception());
-        });
-
-      throwOverloadException = true;
-
-      await Synchronize();
-      await Synchronize();
+      synchronizerBehavior.ThrowOverloadException = true;
+      await Synchronize(false);
+      await Synchronize(false);
       CollectionAssert.AreEqual(
         new[]
         {
@@ -135,13 +163,13 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
         },
         _synchronizationReportSink.Reports.Select(r => new {r.HasWarnings, r.HasErrors}));
 
-      _synchronizationReportSink.Reports.Clear();
-      throwOverloadException = false;
 
-      await Synchronize ();
-      await Synchronize ();
-      await Synchronize ();
-      await Synchronize ();
+      _synchronizationReportSink.Reports.Clear();
+      synchronizerBehavior.ThrowOverloadException = false;
+      await Synchronize (false);
+      await Synchronize (false);
+      await Synchronize (false);
+      await Synchronize (false);
       CollectionAssert.AreEqual (
         new[]
         {
@@ -152,12 +180,12 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
         },
         _synchronizationReportSink.Reports.Select (r => new { r.HasWarnings, r.HasErrors }));
 
-      _synchronizationReportSink.Reports.Clear ();
-      throwOverloadException = true;
 
-      await Synchronize ();
-      await Synchronize ();
-      await Synchronize ();
+      _synchronizationReportSink.Reports.Clear ();
+      synchronizerBehavior.ThrowOverloadException = true;
+      await Synchronize (false);
+      await Synchronize (false);
+      await Synchronize (false);
       CollectionAssert.AreEqual (
         new[]
         {
@@ -167,11 +195,12 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
         },
         _synchronizationReportSink.Reports.Select (r => new { r.HasWarnings, r.HasErrors }));
 
+
       _synchronizationReportSink.Reports.Clear ();
-      await Synchronize ();
-      await Synchronize ();
-      await Synchronize ();
-      await Synchronize ();
+      await Synchronize (false);
+      await Synchronize (false);
+      await Synchronize (false);
+      await Synchronize (false);
       CollectionAssert.AreEqual (
         new[]
         {
@@ -182,17 +211,18 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
         },
         _synchronizationReportSink.Reports.Select (r => new { r.HasWarnings, r.HasErrors }));
 
+
       _synchronizationReportSink.Reports.Clear ();
-      await Synchronize ();
-      await Synchronize ();
-      await Synchronize ();
-      await Synchronize ();
-      await Synchronize ();
-      await Synchronize ();
-      throwOverloadException = false;
-      await Synchronize ();
-      await Synchronize ();
-      await Synchronize ();
+      await Synchronize (false);
+      await Synchronize (false);
+      await Synchronize (false);
+      await Synchronize (false);
+      await Synchronize (false);
+      await Synchronize (false);
+      synchronizerBehavior.ThrowOverloadException = false;
+      await Synchronize (false);
+      await Synchronize (false);
+      await Synchronize (false);
       CollectionAssert.AreEqual (
         new[]
         {
@@ -209,10 +239,27 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
         _synchronizationReportSink.Reports.Select (r => new { r.HasWarnings, r.HasErrors }));
     }
 
-    private async Task Synchronize()
+    private async Task SetupWithMock(SynchronizerMockBehavior mockBehavior)
+    {
+      var synchronizer = MockRepository.GenerateStrictMock<IOutlookSynchronizer>();
+      await SetupSynchronizerFactory(synchronizer);
+
+      _dateTimeProvider.Now = new DateTime(2000, 1, 1);
+      
+      synchronizer
+        .Expect(_ => synchronizer.Synchronize(Arg<ISynchronizationLogger>.Is.NotNull))
+        .Return(Task.FromResult(0))
+        .WhenCalled(_ =>
+        {
+          if (mockBehavior.ThrowOverloadException)
+            throw new WebRepositoryOverloadException(null, new Exception());
+        });
+    }
+
+    private async Task Synchronize(bool wasManuallyTriggered)
     {
       _dateTimeProvider.Now += TimeSpan.FromMinutes(5);
-      await _synchronizationProfileRunner.RunAndRescheduleNoThrow(false);
+      await _synchronizationProfileRunner.RunAndRescheduleNoThrow(wasManuallyTriggered);
     }
 
 
@@ -265,7 +312,7 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
        .Return(Task.FromResult(0))
        .Repeat.Times (4);
       synchronizer.Replay();
-
+      
       await _synchronizationProfileRunner.RunAndRescheduleNoThrow (false);
       _dateTimeProvider.Now += TimeSpan.FromMinutes (5);
       await _synchronizationProfileRunner.RunAndRescheduleNoThrow (false);
@@ -334,5 +381,12 @@ namespace CalDavSynchronizer.UnitTest.Scheduling
     {
       public DateTime Now { get; set; }
     }
+
+
+    class SynchronizerMockBehavior
+    {
+      public bool ThrowOverloadException { get; set; }
+    }
+
   }
 }

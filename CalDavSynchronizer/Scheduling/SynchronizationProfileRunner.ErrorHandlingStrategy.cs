@@ -58,6 +58,7 @@ namespace CalDavSynchronizer.Scheduling
       private DateTime? _postponeUntil;
       private int _successiveWarningsCount;
       private bool _currentSyncRunCausedWarning;
+      private bool _currentRunWasManuallyTriggered;
 
       public ErrorHandlingStrategy (ProfileData profile, IDateTimeProvider dateTimeProvider, int maxSucessiveWarnings)
       {
@@ -68,6 +69,7 @@ namespace CalDavSynchronizer.Scheduling
         _postponeUntil = null;
         _successiveWarningsCount = 0;
         _currentSyncRunCausedWarning = false;
+        _currentRunWasManuallyTriggered = false;
       }
 
       public bool ShouldPostponeSyncRun ()
@@ -83,8 +85,9 @@ namespace CalDavSynchronizer.Scheduling
         }
       }
 
-      public void NotifySyncRunStarting ()
+      public void NotifySyncRunStarting (bool wasManuallyTriggered)
       {
+        _currentRunWasManuallyTriggered = wasManuallyTriggered;
         _currentSyncRunCausedWarning = false;
         _postponeUntil = null;
       }
@@ -99,7 +102,7 @@ namespace CalDavSynchronizer.Scheduling
       {
         PostponeIfRequired(exception);
 
-        if (IsWarning (exception))
+        if (!_currentRunWasManuallyTriggered && IsWarning (exception))
         {
           _successiveWarningsCount++;
           if (_successiveWarningsCount > _maxSucessiveWarnings)

@@ -182,17 +182,17 @@ namespace CalDavSynchronizer.Scheduling
       }
     }
 
-    public async Task RunAndRescheduleNoThrow (bool runNow)
+    public async Task RunAndRescheduleNoThrow (bool wasManuallyTriggered)
     {
       try
       {
         if (_profile.Inactive)
           return;
 
-        if (runNow ||
+        if (wasManuallyTriggered ||
           _profile.Interval > TimeSpan.Zero && _dateTimeProvider.Now > _lastRun + _profile.Interval && !_errorHandlingStrategy.ShouldPostponeSyncRun ())
         {
-          _errorHandlingStrategy.NotifySyncRunStarting();
+          _errorHandlingStrategy.NotifySyncRunStarting(wasManuallyTriggered);
           _fullSyncPending = true;
 
           await RunAllPendingJobs();
