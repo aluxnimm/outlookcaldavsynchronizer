@@ -18,11 +18,13 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using CalDavSynchronizer.ChangeWatching;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Diagnostics;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Reports;
@@ -134,10 +136,14 @@ namespace CalDavSynchronizer.Scheduling
             s_logger.Warn ($"Postponing following runs until '{_postponeUntil}'.");
         }
       }
-      
+
       bool IsWarning(Exception x)
       {
-        return x is WebRepositoryOverloadException;
+        return
+          x is WebRepositoryOverloadException ||
+          x is HttpRequestException ||
+          x is WebDavClientException ||
+          x is TaskCanceledException;
       }
     }
   }
