@@ -48,7 +48,7 @@ namespace CalDavSynchronizer.Scheduling
   {
     struct ErrorHandlingStrategy
     {
-      private const int MaxSucessiveWarnings = 2;
+      private readonly int _maxSucessiveWarnings;
 
       private readonly IDateTimeProvider _dateTimeProvider;
       private readonly ProfileData _profile;
@@ -57,10 +57,11 @@ namespace CalDavSynchronizer.Scheduling
       private int _successiveWarningsCount;
       private bool _currentSyncRunCausedWarning;
 
-      public ErrorHandlingStrategy (ProfileData profile, IDateTimeProvider dateTimeProvider)
+      public ErrorHandlingStrategy (ProfileData profile, IDateTimeProvider dateTimeProvider, int maxSucessiveWarnings)
       {
         _profile = profile;
         _dateTimeProvider = dateTimeProvider;
+        _maxSucessiveWarnings = maxSucessiveWarnings;
 
         _postponeUntil = null;
         _successiveWarningsCount = 0;
@@ -99,7 +100,7 @@ namespace CalDavSynchronizer.Scheduling
         if (IsWarning (exception))
         {
           _successiveWarningsCount++;
-          if (_successiveWarningsCount > MaxSucessiveWarnings)
+          if (_successiveWarningsCount > _maxSucessiveWarnings)
           {
             _successiveWarningsCount = 0;
             LogError (exception, logger);

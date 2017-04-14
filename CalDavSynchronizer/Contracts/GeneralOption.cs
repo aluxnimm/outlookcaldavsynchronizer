@@ -45,5 +45,6 @@ namespace CalDavSynchronizer.Contracts
     public bool QueryFoldersJustByGetTable { get; set; }
     public bool ShowProgressBar { get; set; }
     public int ThresholdForProgressDisplay { get; set; }
+    public int MaxSucessiveWarnings { get; set; }
   }
 }

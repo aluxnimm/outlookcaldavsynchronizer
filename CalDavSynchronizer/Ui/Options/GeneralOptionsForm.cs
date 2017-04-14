@@ -52,6 +52,8 @@ namespace CalDavSynchronizer.Ui.Options
                                                                                    new Item<LogLevel> (LogLevel.Debug, "Debug")
                                                                                };
 
+    private int _maxSucessiveWarnings;
+
     private enum ReportLogMode
     {
       OnlyWithErrors,
@@ -176,7 +178,8 @@ namespace CalDavSynchronizer.Ui.Options
                    EnableAdvancedView = _enableAdvancedViewCheckBox.Checked,
                    QueryFoldersJustByGetTable = _useFastTableQueriesCheckBox.Checked,
                    ShowProgressBar = _showProgressBarCheckBox.Checked,
-                   ThresholdForProgressDisplay = int.Parse(_thresholdForProgressDisplayTextBox.Text)
+                   ThresholdForProgressDisplay = int.Parse(_thresholdForProgressDisplayTextBox.Text),
+                   MaxSucessiveWarnings = _maxSucessiveWarnings
         };
       }
       set
@@ -204,6 +207,7 @@ namespace CalDavSynchronizer.Ui.Options
         _useFastTableQueriesCheckBox.Checked = value.QueryFoldersJustByGetTable;
         _showProgressBarCheckBox.Checked = value.ShowProgressBar;
         _thresholdForProgressDisplayTextBox.Text = value.ThresholdForProgressDisplay.ToString();
+        _maxSucessiveWarnings = value.MaxSucessiveWarnings;
         UpdateThresholdForProgressBarControlEnabled();
       }
     }

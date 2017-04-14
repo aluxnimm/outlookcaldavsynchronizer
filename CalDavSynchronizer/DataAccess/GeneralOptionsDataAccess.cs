@@ -60,6 +60,7 @@ namespace CalDavSynchronizer.DataAccess
 
     private const string s_ShowProgressBar = "ShowProgressBar";
     private const string s_ThresholdForProgressDisplay = "ThresholdForProgressDisplay";
+    private const string s_MaxSucessiveWarnings = "MaxSucessiveWarnings";
 
     public GeneralOptions LoadOptions ()
     {
@@ -93,7 +94,8 @@ namespace CalDavSynchronizer.DataAccess
                    EnableAdvancedView = (int)(key.GetValue(s_EnableAdvancedView) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableAdvancedView"] ?? bool.FalseString))) != 0,
                    QueryFoldersJustByGetTable = (int) (key.GetValue (s_QueryFoldersJustByGetTable) ?? 1) != 0,
                    ShowProgressBar = (int) (key.GetValue (s_ShowProgressBar) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["showProgressBar"] ?? bool.TrueString))) != 0,
-                   ThresholdForProgressDisplay = (int) (key.GetValue (s_ThresholdForProgressDisplay) ?? int.Parse(ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"] ?? "50"))
+                   ThresholdForProgressDisplay = (int) (key.GetValue (s_ThresholdForProgressDisplay) ?? int.Parse(ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"] ?? "50")),
+                   MaxSucessiveWarnings = (int) (key.GetValue (s_MaxSucessiveWarnings) ?? 2)
         };
       }
     }
@@ -129,6 +131,7 @@ namespace CalDavSynchronizer.DataAccess
         key.SetValue (s_QueryFoldersJustByGetTable, options.QueryFoldersJustByGetTable ? 1 : 0);
         key.SetValue (s_ShowProgressBar, options.ShowProgressBar ? 1: 0);
         key.SetValue (s_ThresholdForProgressDisplay, options.ThresholdForProgressDisplay);
+        key.SetValue (s_MaxSucessiveWarnings, options.MaxSucessiveWarnings);
       }
     }
 

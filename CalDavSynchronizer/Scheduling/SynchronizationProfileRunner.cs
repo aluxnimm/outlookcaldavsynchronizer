@@ -106,7 +106,7 @@ namespace CalDavSynchronizer.Scheduling
       _dateTimeProvider = dateTimeProvider;
       // Set to min, to ensure that it runs on the first run after startup
       _lastRun = DateTime.MinValue;
-      _errorHandlingStrategy = new ErrorHandlingStrategy(_profile, _dateTimeProvider);
+      _errorHandlingStrategy = new ErrorHandlingStrategy(_profile, _dateTimeProvider, 0);
     }
 
     public async Task UpdateOptions(Options options, GeneralOptions generalOptions)
@@ -142,7 +142,7 @@ namespace CalDavSynchronizer.Scheduling
 
       _profile.FolderChangeWatcher.ItemSavedOrDeleted += FolderChangeWatcher_ItemSavedOrDeleted;
 
-      _errorHandlingStrategy = new ErrorHandlingStrategy (_profile, _dateTimeProvider);
+      _errorHandlingStrategy = new ErrorHandlingStrategy (_profile, _dateTimeProvider, generalOptions.MaxSucessiveWarnings);
     }
 
     private void FolderChangeWatcher_ItemSavedOrDeleted (object sender, ItemSavedEventArgs e)
