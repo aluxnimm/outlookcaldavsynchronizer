@@ -98,12 +98,16 @@
     <Compile Include="Infrastructure\OptionsExtensions.cs" />
     <Compile Include="Infrastructure\TestDeleteJob.cs" />
     <Compile Include="Infrastructure\ContactData.cs" />
+    <Compile Include="TestBase\GoogleContactsSynchronizerFixtureBase.cs" />
     <Compile Include="TestBase\IntegrationFixtureBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Infrastructure\NullGoogleContactContext.cs" />
     <Compile Include="Infrastructure\NullUiServiceFactory.cs" />
     <Compile Include="Infrastructure\TestReportSink.cs" />
     <Compile Include="GoogleFixture.cs" />
+    <Compile Include="Infrastructure\EasyAccessRepositoryAdapter.cs" />
+    <Compile Include="TestBase\EventSynchronizerFixtureBase.cs" />
+    <Compile Include="TestBase\ContactsSynchronizerFixtureBase.cs" />
     <Compile Include="TestBase\SynchronizerFixtureBase.cs" />
   </ItemGroup>
   <ItemGroup />

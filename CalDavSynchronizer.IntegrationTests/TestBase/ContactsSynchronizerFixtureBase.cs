@@ -15,38 +15,33 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using System.Runtime.InteropServices;
-using Microsoft.Office.Interop.Outlook;
-using NUnit.Framework;
+using System.Linq;
+using System.Threading.Tasks;
+using CalDavSynchronizer.Implementation.Contacts;
+using Thought.vCards;
 
 namespace CalDavSynchronizer.IntegrationTests.TestBase
 {
-  [TestFixture]
-  public class IntegrationFixtureBase
+  public class ContactsSynchronizerFixtureBase
   {
-    protected Application Application { get; private set; }
-
-    [OneTimeSetUp]
-    public void Init()
+   private static async Task CreateContacts(CardDavEntityRepository<vCard, vCardStandardReader, int> repository)
     {
-      Application = new Application();
-      Application.Session.Logon();
-    }
+      var numberOfDays = Enum.GetValues(typeof(DayOfWeek)).Cast<int>().Max() + 1;
 
-    [OneTimeTearDown]
-    public void Dispose()
-    {
-      try
+      for (var i = 1; i <= 500; i++)
       {
-        Application.Session.Logoff();
-      }
-      finally
-      {
-        Marshal.FinalReleaseComObject(Application);
-        Application = null;
+        await repository.Create(
+          vcard =>
+          {
+            vcard.GivenName = "Homer" + i;
+            vcard.FamilyName = ((DayOfWeek) (i % numberOfDays)).ToString();
+            vcard.EmailAddresses.Add(new vCardEmailAddress($"homer{i}@blubb.com"));
+            return Task.FromResult(vcard);
+          },
+          0);
 
-        GC.Collect();
-        GC.WaitForPendingFinalizers();
+        if (i % 100 == 0)
+          Console.WriteLine(i);
       }
     }
   }
