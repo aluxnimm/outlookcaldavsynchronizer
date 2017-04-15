@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thought.vCards", "Thought.v
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thought.vCards.UnitTests", "Thought.vCards.UnitTests\Thought.vCards.UnitTests.csproj", "{D7A4725B-CB7B-4F10-8DD1-DE2E4AECA498}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalDavSynchronizer.IntegrationTests", "CalDavSynchronizer.IntegrationTests\CalDavSynchronizer.IntegrationTests.csproj", "{13B5D6BF-EB84-4570-A3E4-1F272C0F2BC0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -82,6 +84,10 @@ Global
 		{D7A4725B-CB7B-4F10-8DD1-DE2E4AECA498}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7A4725B-CB7B-4F10-8DD1-DE2E4AECA498}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7A4725B-CB7B-4F10-8DD1-DE2E4AECA498}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13B5D6BF-EB84-4570-A3E4-1F272C0F2BC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13B5D6BF-EB84-4570-A3E4-1F272C0F2BC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13B5D6BF-EB84-4570-A3E4-1F272C0F2BC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13B5D6BF-EB84-4570-A3E4-1F272C0F2BC0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
