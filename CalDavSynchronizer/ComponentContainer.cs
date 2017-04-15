@@ -53,6 +53,7 @@ using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.Tasks;
 using CalDavSynchronizer.Implementation.TimeZones;
+using CalDavSynchronizer.Scheduling.ComponentCollectors;
 using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
 using CalDavSynchronizer.Ui.Options.ProfileTypes;
@@ -71,7 +72,7 @@ namespace CalDavSynchronizer
     public const string MessageBoxTitle = "CalDav Synchronizer";
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
     // ReSharper disable once ConvertToConstant.Local
-    private readonly int c_requiredEntityCacheVersion = 3;
+    private static readonly int c_requiredEntityCacheVersion = 3;
 
     private static readonly object _synchronizationContextLock = new object();
     private readonly Scheduler _scheduler;
@@ -109,17 +110,18 @@ namespace CalDavSynchronizer
       remove { _synchronizationStatus.StatusChanged -= value; }
     }
 
-    public ComponentContainer (Application application, IUiServiceFactory uiServiceFactory)
+    public ComponentContainer (Application application, IUiServiceFactory uiServiceFactory, IGeneralOptionsDataAccess generalOptionsDataAccess)
     {
       if (application == null) throw new ArgumentNullException(nameof(application));
       if (uiServiceFactory == null) throw new ArgumentNullException(nameof(uiServiceFactory));
+      if (generalOptionsDataAccess == null) throw new ArgumentNullException(nameof(generalOptionsDataAccess));
 
       s_logger.Info ("Startup...");
 
       if(GeneralOptionsDataAccess.WpfRenderModeSoftwareOnly)
         RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
 
-      _generalOptionsDataAccess = new GeneralOptionsDataAccess();
+      _generalOptionsDataAccess = generalOptionsDataAccess;
 
       _synchronizationStatus = new SynchronizationStatus();
 
@@ -562,42 +564,60 @@ namespace CalDavSynchronizer
           where no != null
           select new ChangedOptions (o, no)).ToArray ();
     }
-    
-    public async Task ShowGeneralOptionsAsync ()
+
+    public async Task EditGeneralOptionsAsync(Func<GeneralOptions, Tuple<bool, GeneralOptions>> editOptions)
     {
       var generalOptions = _generalOptionsDataAccess.LoadOptions();
-      using (var optionsForm = new GeneralOptionsForm())
+      var editResult = editOptions(generalOptions);
+
+      if (editResult.Item1)
       {
-        optionsForm.Options = generalOptions;
-        if (optionsForm.Display())
+        var newOptions = editResult.Item2;
+
+        ConfigureServicePointManager(newOptions);
+        ConfigureLogLevel(newOptions.EnableDebugLog);
+
+        _updateChecker.IsEnabled = newOptions.ShouldCheckForNewerVersions;
+        _reportGarbageCollection.MaxAge = TimeSpan.FromDays(newOptions.MaxReportAgeInDays);
+
+        _generalOptionsDataAccess.SaveOptions(newOptions);
+        UpdateGeneralOptionDependencies(newOptions);
+        await _scheduler.SetOptions(_optionsDataAccess.Load(), newOptions);
+
+        if (newOptions.EnableTrayIcon != generalOptions.EnableTrayIcon)
         {
-          var newOptions = optionsForm.Options;
+          _trayNotifier.Dispose();
+          _trayNotifier = newOptions.EnableTrayIcon ? new TrayNotifier(this) : NullTrayNotifer.Instance;
+        }
 
-          ConfigureServicePointManager (newOptions);
-          ConfigureLogLevel (newOptions.EnableDebugLog);
-
-          _updateChecker.IsEnabled = newOptions.ShouldCheckForNewerVersions;
-          _reportGarbageCollection.MaxAge = TimeSpan.FromDays (newOptions.MaxReportAgeInDays);
-
-          _generalOptionsDataAccess.SaveOptions (newOptions);
-          UpdateGeneralOptionDependencies (newOptions);
-          await _scheduler.SetOptions (_optionsDataAccess.Load(), newOptions);
-
-          if (newOptions.EnableTrayIcon != generalOptions.EnableTrayIcon)
-          {
-            _trayNotifier.Dispose();
-            _trayNotifier = newOptions.EnableTrayIcon ? new TrayNotifier (this) : NullTrayNotifer.Instance;
-          }
-
-          if (_syncObject != null && newOptions.TriggerSyncAfterSendReceive != generalOptions.TriggerSyncAfterSendReceive)
-          {
-            if (newOptions.TriggerSyncAfterSendReceive)
-              _syncObject.SyncEnd += SyncObject_SyncEnd;
-            else
-              _syncObject.SyncEnd -= SyncObject_SyncEnd;
-          }
+        if (_syncObject != null && newOptions.TriggerSyncAfterSendReceive != generalOptions.TriggerSyncAfterSendReceive)
+        {
+          if (newOptions.TriggerSyncAfterSendReceive)
+            _syncObject.SyncEnd += SyncObject_SyncEnd;
+          else
+            _syncObject.SyncEnd -= SyncObject_SyncEnd;
         }
       }
+    }
+
+    public async Task ShowGeneralOptionsAsync()
+    {
+      await EditGeneralOptionsAsync (
+        o =>
+        {
+          using (var optionsForm = new GeneralOptionsForm())
+          {
+            optionsForm.Options = o;
+            if (optionsForm.Display())
+            {
+              return Tuple.Create(true, optionsForm.Options);
+            }
+            else
+            {
+              return Tuple.Create(false, (GeneralOptions) null);
+            }
+          }
+        });
     }
 
     private Options GetNewOptionsOrNull (Options oldOptions, Dictionary<Guid, Options> newOptionsById)
@@ -871,26 +891,26 @@ namespace CalDavSynchronizer
         if (options == null)
           return;
 
-        var availableSynchronizerComponents =
-          (await _synchronizerFactory.CreateSynchronizerWithComponents (options, _generalOptionsDataAccess.LoadOptions ())).Item2;
+        var availableComponents =
+          (await _synchronizerFactory.CreateSynchronizerWithComponents (options, _generalOptionsDataAccess.LoadOptions ())).Item2.GetDataAccessComponents();
 
-        if (availableSynchronizerComponents.CalDavDataAccess != null)
+        if (availableComponents.CalDavDataAccess != null)
         {
           var entityName = new WebResourceName { Id = entityId, OriginalAbsolutePath = entityId };
-          var entities = await availableSynchronizerComponents.CalDavDataAccess.GetEntities (new[] { entityName });
+          var entities = await availableComponents.CalDavDataAccess.GetEntities (new[] { entityName });
           DisplayFirstEntityIfAvailable (entities.FirstOrDefault());
         }
-        else if (availableSynchronizerComponents.CardDavDataAccess != null || availableSynchronizerComponents.DistListDataAccess != null)
+        else if (availableComponents.CardDavDataAccess != null || availableComponents.DistListDataAccess != null)
         {
           var entityName = new WebResourceName { Id = entityId, OriginalAbsolutePath = entityId };
 
           EntityWithId<WebResourceName, string> entity = null;
 
-          if (availableSynchronizerComponents.CardDavDataAccess != null)
-            entity = (await availableSynchronizerComponents.CardDavDataAccess.GetEntities(new[] { entityName })).FirstOrDefault();
+          if (availableComponents.CardDavDataAccess != null)
+            entity = (await availableComponents.CardDavDataAccess.GetEntities(new[] { entityName })).FirstOrDefault();
 
-          if (entity == null && availableSynchronizerComponents.DistListDataAccess != null)
-            entity = (await availableSynchronizerComponents.DistListDataAccess.GetEntities(new[] { entityName })).FirstOrDefault();
+          if (entity == null && availableComponents.DistListDataAccess != null)
+            entity = (await availableComponents.DistListDataAccess.GetEntities(new[] { entityName })).FirstOrDefault();
 
           DisplayFirstEntityIfAvailable(entity);
         }
@@ -904,7 +924,8 @@ namespace CalDavSynchronizer
         ExceptionHandler.Instance.DisplayException (x, s_logger);
       }
     }
-    
+
+
     private static void DisplayFirstEntityIfAvailable (EntityWithId<WebResourceName, string> entityOrNull)
     {
       if (entityOrNull == null)
