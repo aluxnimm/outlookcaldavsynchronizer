@@ -37,6 +37,7 @@ using CalDavSynchronizer.Implementation.GoogleTasks;
 using CalDavSynchronizer.Implementation.Tasks;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using CalDavSynchronizer.Implementation.TimeZones;
+using CalDavSynchronizer.Scheduling.ComponentCollectors;
 using CalDavSynchronizer.Synchronization;
 using CalDavSynchronizer.Utilities;
 using DDay.iCal;
@@ -93,24 +94,7 @@ namespace CalDavSynchronizer.Scheduling
       _queryFolderStrategy = queryFolderStrategy;
       _exceptionHandlingStrategy = exceptionHandlingStrategy;
     }
-
-    /// <summary>
-    /// Components of the created synchronizer 
-    /// Fields may be null, if the synchronizer doesn't use the component specified by the field 
-    /// </summary>
-    public class AvailableSynchronizerComponents
-    {
-      public ICalDavDataAccess CalDavDataAccess { get; set; }
-      public ICardDavDataAccess CardDavDataAccess { get; set; }
-      public ICardDavDataAccess DistListDataAccess { get; set; }
-      public CardDavEntityRepository<vCard, vCardStandardReader, int> CardDavEntityRepository { get; set; }
-      public GoogleContactRepository GoogleContactRepository { get; set; }
-      public IGoogleApiOperationExecutor GoogleApiOperationExecutor { get; set; }
-      public OutlookContactRepository<IGoogleContactContext> OutlookContactRepositoryForGoogle { get; set; }
-      public IEntityRelationDataAccess<string, DateTime, string, GoogleContactVersion> GoogleContactsEntityRelationDataAccess { get; set; }
-      public ISynchronizationContextFactory<IGoogleContactContext> GoogleContactContextFactory { get; set; }
-    }
-
+    
     public async Task<IOutlookSynchronizer> CreateSynchronizer (Options options, GeneralOptions generalOptions)
     {
       if (options == null)
@@ -128,7 +112,7 @@ namespace CalDavSynchronizer.Scheduling
       if (generalOptions == null)
         throw new ArgumentNullException (nameof (generalOptions));
 
-      var synchronizerComponents = new AvailableSynchronizerComponents();
+      AvailableSynchronizerComponents synchronizerComponents;
       
       var folder = _outlookSession.GetFolderDescriptorFromId(options.OutlookFolderEntryId, options.OutlookFolderStoreId);
       
@@ -137,19 +121,36 @@ namespace CalDavSynchronizer.Scheduling
       switch (folder.DefaultItemType)
       {
         case OlItemType.olAppointmentItem:
-          synchronizer = await CreateEventSynchronizer (options, generalOptions, synchronizerComponents);
+          var availableEventSynchronizerComponents = new AvailableEventSynchronizerComponents();
+          synchronizerComponents = availableEventSynchronizerComponents;
+          synchronizer = await CreateEventSynchronizer (options, generalOptions, availableEventSynchronizerComponents);
           break;
         case OlItemType.olTaskItem:
           if (options.ServerAdapterType == ServerAdapterType.GoogleTaskApi)
-            synchronizer = await CreateGoogleTaskSynchronizer (options);
+          {
+            synchronizerComponents = new AvailableGoogleTaskApiSynchronizerComponents ();
+            synchronizer = await CreateGoogleTaskSynchronizer(options);
+          }
           else
-            synchronizer = CreateTaskSynchronizer (options, generalOptions, synchronizerComponents);
+          {
+            var availableTaskSynchronizerComponents = new AvailableTaskSynchronizerComponents ();
+            synchronizerComponents = availableTaskSynchronizerComponents;
+            synchronizer = CreateTaskSynchronizer(options, generalOptions, availableTaskSynchronizerComponents);
+          }
           break;
         case OlItemType.olContactItem:
           if (options.ServerAdapterType == ServerAdapterType.GoogleContactApi)
-            synchronizer = await CreateGoogleContactSynchronizer (options, synchronizerComponents);
+          {
+            var availableGoogleContactSynchronizerSynchronizerComponents = new AvailableGoogleContactSynchronizerSynchronizerComponents ();
+            synchronizerComponents = availableGoogleContactSynchronizerSynchronizerComponents;
+            synchronizer = await CreateGoogleContactSynchronizer(options, availableGoogleContactSynchronizerSynchronizerComponents);
+          }
           else
-            synchronizer = CreateContactSynchronizer (options, generalOptions, synchronizerComponents);
+          {
+            var availableContactSynchronizerComponents = new AvailableContactSynchronizerComponents ();
+            synchronizerComponents = availableContactSynchronizerComponents;
+            synchronizer = CreateContactSynchronizer(options, generalOptions, availableContactSynchronizerComponents);
+          }
           break;
         default:
           throw new NotSupportedException (
@@ -162,7 +163,7 @@ namespace CalDavSynchronizer.Scheduling
       return Tuple.Create(synchronizer, synchronizerComponents);
     }
 
-    private async Task<IOutlookSynchronizer> CreateEventSynchronizer (Options options, GeneralOptions generalOptions ,AvailableSynchronizerComponents componentsToFill)
+    private async Task<IOutlookSynchronizer> CreateEventSynchronizer (Options options, GeneralOptions generalOptions ,AvailableEventSynchronizerComponents componentsToFill)
     {
       ICalDavDataAccess calDavDataAccess;
 
@@ -185,7 +186,9 @@ namespace CalDavSynchronizer.Scheduling
 
       var entityRelationDataAccess = new EntityRelationDataAccess<AppointmentId, DateTime, OutlookEventRelationData, WebResourceName, string> (storageDataDirectory);
 
-      return await CreateEventSynchronizer (options, calDavDataAccess, entityRelationDataAccess);
+      componentsToFill.EntityRelationDataAccess = entityRelationDataAccess;
+
+      return await CreateEventSynchronizer (options, calDavDataAccess, entityRelationDataAccess, componentsToFill);
     }
 
     public static IWebDavClient CreateWebDavClient (
@@ -350,7 +353,8 @@ namespace CalDavSynchronizer.Scheduling
     public async Task<IOutlookSynchronizer> CreateEventSynchronizer (
         Options options,
         ICalDavDataAccess calDavDataAccess,
-        IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> entityRelationDataAccess)
+        IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> entityRelationDataAccess,
+        AvailableEventSynchronizerComponents componentsToFill)
     {
       var dateTimeRangeProvider =
           options.IgnoreSynchronizationTimeRange ?
@@ -368,6 +372,8 @@ namespace CalDavSynchronizer.Scheduling
           _daslFilterProvider,
           _queryFolderStrategy);
 
+      componentsToFill.OutlookEventRepository = atypeRepository;
+
       IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> btypeRepository = new CalDavRepository<IEventSynchronizationContext> (
           calDavDataAccess,
           new iCalendarSerializer(),
@@ -375,6 +381,8 @@ namespace CalDavSynchronizer.Scheduling
           dateTimeRangeProvider,
           options.ServerAdapterType == ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth,
           options.IsChunkedSynchronizationEnabled ? new ChunkedExecutor(options.ChunkSize) : NullChunkedExecutor.Instance);
+
+      componentsToFill.CalDavRepository = btypeRepository;
 
       var timeZoneCache = new TimeZoneCache (CreateHttpClient(options.ProxyOptions), mappingParameters.IncludeHistoricalData, _globalTimeZoneCache);
 
@@ -466,7 +474,7 @@ namespace CalDavSynchronizer.Scheduling
       return new T();
     }
 
-    private IOutlookSynchronizer CreateTaskSynchronizer (Options options, GeneralOptions generalOptions, AvailableSynchronizerComponents componentsToFill)
+    private IOutlookSynchronizer CreateTaskSynchronizer (Options options, GeneralOptions generalOptions, AvailableTaskSynchronizerComponents componentsToFill)
     {
       var mappingParameters = GetMappingParameters<TaskMappingConfiguration> (options);
 
@@ -613,7 +621,7 @@ namespace CalDavSynchronizer.Scheduling
         new NullContextSynchronizerDecorator<string, DateTime, TaskItemWrapper, string, string, Task>( synchronizer));
     }
 
-    private IOutlookSynchronizer CreateContactSynchronizer (Options options, GeneralOptions generalOptions, AvailableSynchronizerComponents componentsToFill)
+    private IOutlookSynchronizer CreateContactSynchronizer (Options options, GeneralOptions generalOptions, AvailableContactSynchronizerComponents componentsToFill)
     {
       var synchronizerComponents = CreateContactSynchronizerComponents(options, generalOptions, componentsToFill);
 
@@ -699,7 +707,7 @@ namespace CalDavSynchronizer.Scheduling
     }
 
     private ContactSynchronizerComponents CreateContactSynchronizerComponents (
-      Options options, GeneralOptions generalOptions, AvailableSynchronizerComponents componentsToFill)
+      Options options, GeneralOptions generalOptions, AvailableContactSynchronizerComponents componentsToFill)
     {
       var atypeRepository = new OutlookContactRepository<ICardDavRepositoryLogger>(
         _outlookSession,
@@ -857,7 +865,7 @@ namespace CalDavSynchronizer.Scheduling
       return synchronizer;
     }
 
-    private async Task<IOutlookSynchronizer> CreateGoogleContactSynchronizer (Options options, AvailableSynchronizerComponents componentsToFill)
+    private async Task<IOutlookSynchronizer> CreateGoogleContactSynchronizer (Options options, AvailableGoogleContactSynchronizerSynchronizerComponents componentsToFill)
     {
       var atypeRepository = new OutlookContactRepository<IGoogleContactContext> (
           _outlookSession,
@@ -866,7 +874,7 @@ namespace CalDavSynchronizer.Scheduling
           _daslFilterProvider,
           _queryFolderStrategy);
 
-      componentsToFill.OutlookContactRepositoryForGoogle = atypeRepository;
+      componentsToFill.OutlookContactRepository = atypeRepository;
 
       IWebProxy proxy = options.ProxyOptions != null ? CreateProxy (options.ProxyOptions) : null;
 

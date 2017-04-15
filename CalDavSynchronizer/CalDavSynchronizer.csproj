@@ -388,6 +388,13 @@
     <Compile Include="Implementation\WebRepositoryOverloadException.cs" />
     <Compile Include="IOutlookSession.cs" />
     <Compile Include="IProfileExportProcessor.cs" />
+    <Compile Include="Scheduling\ComponentCollectors\AvailableEventSynchronizerComponents.cs" />
+    <Compile Include="Scheduling\ComponentCollectors\AvailableGoogleContactSynchronizerSynchronizerComponents.cs" />
+    <Compile Include="Scheduling\ComponentCollectors\AvailableGoogleTaskApiSynchronizerComponents.cs" />
+    <Compile Include="Scheduling\ComponentCollectors\AvailableSynchronizerComponents.cs" />
+    <Compile Include="Scheduling\ComponentCollectors\AvailableTaskSynchronizerComponents.cs" />
+    <Compile Include="Scheduling\ComponentCollectors\AvailableContactSynchronizerComponents.cs" />
+    <Compile Include="Scheduling\ComponentCollectors\DataAccessComponents.cs" />
     <Compile Include="Scheduling\SynchronizationProfileRunner.ErrorHandlingStrategy.cs" />
     <Compile Include="StartupComponentContainer.cs" />
     <Compile Include="LoadErrorComponentContainer.cs" />
@@ -414,6 +421,7 @@
     <Compile Include="Ui\ConnectionTests\AccessPrivileges.cs" />
     <Compile Include="Ui\DelegateCommandHandlingRequerySuggested.cs" />
     <Compile Include="Ui\IUiServiceFactory.cs" />
+    <Compile Include="Ui\NullProgressUi.cs" />
     <Compile Include="Ui\NullUiService.cs" />
     <Compile Include="Ui\Options\EnumDisplayNameProvider.cs" />
     <Compile Include="Ui\Options\IEnumDisplayNameProvider.cs" />

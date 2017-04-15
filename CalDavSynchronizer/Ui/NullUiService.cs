@@ -27,7 +27,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui
 {
-  class NullUiService : IUiService
+  public class NullUiService : IUiService
   {
     public  static readonly IUiService Instance = new NullUiService();
 
@@ -72,7 +72,7 @@ namespace CalDavSynchronizer.Ui
 
     public IProgressUi Create(int maxValue)
     {
-      return null;
+      return NullProgressUi.Instance;
     }
 
     public IProfileType QueryProfileType(IReadOnlyCollection<IProfileType> profileTypes)
