@@ -34,7 +34,8 @@ namespace CalDavSynchronizer.Scheduling.ComponentCollectors
     {
       return new DataAccessComponents
       {
-        CardDavDataAccess = CardDavDataAccess
+        CardDavDataAccess = CardDavDataAccess,
+        DistListDataAccess = DistListDataAccess
       };
     }
   }
