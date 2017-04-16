@@ -107,6 +107,16 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 2.19.0 ####
+- New features
+	- Abort and postpone synchronization when server reports HTTP 429.
+	- Abort synchronization on network related exceptions and consider them as warnings the first two times they occur. This should help avoid errors on laptop startup after hibernation or if VPN is not ready yet, GH issues #104,#181.
+	- Do not block Outlook Startup with component initialization, should avoid issues with Outlook deactivating the addin after slow startup.
+	- Refactoring of IntegrationTests.
+- Bug fixes
+	- Fix MapDistListMembers2To1 for members not resolved from the addressbook.
+	- Fix mapping of google home-only email address to Outlook Email1Address, ticket #561.
+	
 #### 2.18.0 ####
 - New features
 	- Add mapping of distribution lists to contact groups with KIND:group
