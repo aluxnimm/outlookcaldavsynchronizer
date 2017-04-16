@@ -633,7 +633,7 @@ namespace CalDavSynchronizer.Scheduling
         {
           case DistributionListType.Sogo:
 
-            var synchronizer = CreateContactSynchronizer (synchronizerComponents);
+            var synchronizer = CreateContactSynchronizer (synchronizerComponents, componentsToFill);
 
             // TODO: implement DistLists for File-Repository debugging mode
             ICardDavDataAccess distListDataAccess = new CardDavDataAccess (
@@ -641,10 +641,11 @@ namespace CalDavSynchronizer.Scheduling
               synchronizerComponents.WebDavClientOrNullIfFileAccess,
               contentType => contentType == "text/x-vlist");
 
-            componentsToFill.DistListDataAccess = distListDataAccess;
+            componentsToFill.SogoDistListDataAccessOrNull = distListDataAccess;
 
             var bDistListRepository = new SogoDistributionListRepository(distListDataAccess, synchronizerComponents.ChunkedExecutor);
 
+            componentsToFill.SogoDistListRepositoryOrNull = bDistListRepository;
 
             var distributionListSynchronizer = CreateDistListSynchronizer (
               options, 
@@ -653,7 +654,8 @@ namespace CalDavSynchronizer.Scheduling
               new SogoDistListEntityMapper (), 
               new InitialSogoDistListEntityMatcher (btypeIdEqualityComparer), 
               e => new SogoDistListConflictInitialSyncStateCreationStrategyAutomatic(e), 
-              btypeIdEqualityComparer);
+              btypeIdEqualityComparer,
+              componentsToFill);
 
             return new OutlookSynchronizer<WebResourceName, string> (
               new ContactAndDistListSynchronizer (
@@ -668,11 +670,13 @@ namespace CalDavSynchronizer.Scheduling
 
             var contactRepository = new TypeFilteringVCardRepositoryDecorator<ICardDavRepositoryLogger> (synchronizerComponents.BtypeRepository, VCardType.Contact, vCardTypeDetector);
             synchronizerComponents.BtypeRepository = contactRepository;
-            var contactSynchronizer = CreateContactSynchronizer(synchronizerComponents);
+            var contactSynchronizer = CreateContactSynchronizer(synchronizerComponents, componentsToFill);
 
-            var contactGroupResository = new CardDavRepository<DistributionListSychronizationContext> (synchronizerComponents.CardDavDataAccess, synchronizerComponents.ChunkedExecutor);
+            var contactGroupCardDavRepository = new CardDavRepository<DistributionListSychronizationContext> (synchronizerComponents.CardDavDataAccess, synchronizerComponents.ChunkedExecutor);
 
-            var contactGroupRepository = new TypeFilteringVCardRepositoryDecorator<DistributionListSychronizationContext> (contactGroupResository, VCardType.Group, vCardTypeDetector);
+            var contactGroupRepository = new TypeFilteringVCardRepositoryDecorator<DistributionListSychronizationContext> (contactGroupCardDavRepository, VCardType.Group, vCardTypeDetector);
+
+            componentsToFill.VCardGroupRepositoryOrNull = contactGroupRepository;
 
             var distListSynchronizer = CreateDistListSynchronizer<vCard>(
               options,
@@ -681,7 +685,8 @@ namespace CalDavSynchronizer.Scheduling
               new DistListEntityMapper(),
               new InitialDistListEntityMatcher(btypeIdEqualityComparer),
               e => new DistListConflictInitialSyncStateCreationStrategyAutomatic(e),
-              btypeIdEqualityComparer);
+              btypeIdEqualityComparer,
+              componentsToFill);
 
             return new OutlookSynchronizer<WebResourceName, string> (
               new ContactAndDistListSynchronizer (
@@ -701,7 +706,7 @@ namespace CalDavSynchronizer.Scheduling
       {
         return new OutlookSynchronizer<WebResourceName, string>(
           new ContextCreatingSynchronizerDecorator<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger>(
-            CreateContactSynchronizer(synchronizerComponents),
+            CreateContactSynchronizer(synchronizerComponents, componentsToFill),
             new SynchronizationContextFactory<ICardDavRepositoryLogger>(() => NullCardDavRepositoryLogger.Instance)));
       }
     }
@@ -754,9 +759,7 @@ namespace CalDavSynchronizer.Scheduling
         chunkedExecutor);
       var btypeRepository = new LoggingCardDavRepositoryDecorator(
         cardDavRepository);
-
-      componentsToFill.CardDavEntityRepository = cardDavRepository;
-
+      
       var mappingParameters = GetMappingParameters<ContactMappingConfiguration>(options);
 
       var entityMapper = new ContactEntityMapper(mappingParameters);
@@ -780,8 +783,13 @@ namespace CalDavSynchronizer.Scheduling
       return new ContactSynchronizerComponents(options, atypeRepository, btypeRepository, syncStateFactory, storageDataAccess, entityRelationDataFactory, btypeIdEqualityComparer, atypeIdEqulityComparer, webDavClientOrNullIfFileAccess, chunkedExecutor, btypeRepository, mappingParameters, storageDataDirectory, serverUrl, cardDavDataAccess);
     }
 
-    private Synchronizer<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger> CreateContactSynchronizer(ContactSynchronizerComponents contactSynchronizerComponents)
+    private Synchronizer<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger> CreateContactSynchronizer(
+      ContactSynchronizerComponents contactSynchronizerComponents,
+      AvailableContactSynchronizerComponents componentsToFill)
     {
+      componentsToFill.CardDavEntityRepository = contactSynchronizerComponents.BtypeRepository;
+      componentsToFill.OutlookContactRepository = contactSynchronizerComponents.AtypeRepository;
+
       return new Synchronizer<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger> (
         contactSynchronizerComponents.AtypeRepository,
         contactSynchronizerComponents.BtypeRepository,
@@ -814,7 +822,8 @@ namespace CalDavSynchronizer.Scheduling
       Func<
        EntitySyncStateEnvironment<string, DateTime, GenericComObjectWrapper<DistListItem>,  WebResourceName, string, TBtypeEntity, DistributionListSychronizationContext>,
        ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, string, TBtypeEntity, DistributionListSychronizationContext>> automaticConflictResolutionStrategyFactory,
-      IEqualityComparer<WebResourceName> btypeIdEqualityComparer) 
+      IEqualityComparer<WebResourceName> btypeIdEqualityComparer,
+      AvailableContactSynchronizerComponents componentsToFill) 
       where TBtypeEntity : new()
     {
       var atypeRepository = new OutlookDistListRepository<DistributionListSychronizationContext> (
@@ -823,6 +832,8 @@ namespace CalDavSynchronizer.Scheduling
           options.OutlookFolderStoreId,
           _daslFilterProvider,
           _queryFolderStrategy);
+
+      componentsToFill.OutlookDistListRepositoryOrNull = atypeRepository;
 
       var entityRelationDataFactory = new DistListRelationDataFactory ();
 

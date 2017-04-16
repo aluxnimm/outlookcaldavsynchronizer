@@ -14,12 +14,19 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Contacts;
+using CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch;
+using CalDavSynchronizer.Implementation.DistributionLists;
+using GenSync.EntityRepositories;
+using Microsoft.Office.Interop.Outlook;
 using Thought.vCards;
 
 namespace CalDavSynchronizer.Scheduling.ComponentCollectors
@@ -27,15 +34,22 @@ namespace CalDavSynchronizer.Scheduling.ComponentCollectors
   public class AvailableContactSynchronizerComponents : AvailableSynchronizerComponents
   {
     public ICardDavDataAccess CardDavDataAccess { get; set; }
-    public CardDavRepository<int> CardDavEntityRepository { get; set; }
-    public ICardDavDataAccess DistListDataAccess { get; set; }
+    public ICardDavDataAccess SogoDistListDataAccessOrNull { get; set; }
+
+    public IEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> CardDavEntityRepository { get; set; }
+    public IEntityRepository<string, DateTime, ContactItemWrapper, ICardDavRepositoryLogger> OutlookContactRepository { get; set; }
+
+    public IEntityRepository<WebResourceName, string, DistributionList, DistributionListSychronizationContext>  SogoDistListRepositoryOrNull { get; set; }
+    public IEntityRepository<WebResourceName, string, vCard, DistributionListSychronizationContext> VCardGroupRepositoryOrNull { get; set; }
+    public IEntityRepository<string, DateTime, GenericComObjectWrapper<DistListItem>, DistributionListSychronizationContext> OutlookDistListRepositoryOrNull { get; set; }
+
 
     public override DataAccessComponents GetDataAccessComponents ()
     {
       return new DataAccessComponents
       {
         CardDavDataAccess = CardDavDataAccess,
-        DistListDataAccess = DistListDataAccess
+        DistListDataAccess = SogoDistListDataAccessOrNull
       };
     }
   }
