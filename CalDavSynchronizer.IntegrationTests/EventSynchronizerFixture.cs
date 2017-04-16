@@ -61,6 +61,8 @@ namespace CalDavSynchronizer.IntegrationTests
       Assert.That(reportSink.SynchronizationReport.AJobsInfo, Is.EqualTo("Create 0 , Update 0 , Delete 0"));
       Assert.That(reportSink.SynchronizationReport.BJobsInfo, Is.EqualTo("Create 4 , Update 0 , Delete 0"));
 
+      options.IgnoreSynchronizationTimeRange = true;
+      await InitializeFor (options);
       var events = await Server.GetAllEntities();
       
       CollectionAssert.AreEquivalent(
