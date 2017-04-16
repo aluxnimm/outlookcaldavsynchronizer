@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Implementation;
+using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.DistributionLists;
 using CalDavSynchronizer.IntegrationTests.Infrastructure;
 using CalDavSynchronizer.IntegrationTests.TestBase;
@@ -82,18 +83,44 @@ namespace CalDavSynchronizer.IntegrationTests
         new[] {"Baxter", "Mason", "Steinberg"},
         outlookNames);
 
-      var outlookDistList = (await OutlookDistListsOrNull.GetAllEntities()).SingleOrDefault()?.Entity.Inner;
+      using (var outlookDistList = (await OutlookDistListsOrNull.GetAllEntities()).SingleOrDefault()?.Entity)
+      {
+        Assert.That(outlookDistList, Is.Not.Null);
 
-      Assert.That(outlookDistList.DLName, Is.EqualTo("Agents"));
-      
-      var outlookMembers = Enumerable.Range(1, outlookDistList.MemberCount).Select(i => outlookDistList.GetMember(i).Address).ToArray();
-      
+        Assert.That(outlookDistList.Inner.DLName, Is.EqualTo("Agents"));
+
+        var outlookMembers = Enumerable
+          .Range(1, outlookDistList.Inner.MemberCount)
+          .Select(i => outlookDistList.Inner.GetMember(i))
+          .ToSafeEnumerable()
+          .Select(d => d.Address)
+          .ToArray();
+
+        CollectionAssert.AreEquivalent(
+          new[] {"mason@bla.com", "steinberg@bla.com"},
+          outlookMembers);
+
+        outlookDistList.Inner.DLName = "All";
+        var recipient = Application.Session.CreateRecipient("Baxter");
+        Assert.That(recipient.Resolve(), Is.True);
+        outlookDistList.Inner.AddMember(recipient);
+        outlookDistList.Inner.Save();
+      }
+
+      await Synchronizer.Synchronize (NullSynchronizationLogger.Instance);
+
+      var serverDistList = (await ServerSogoDistListsOrNull.GetAllEntities ()).SingleOrDefault ()?.Entity;
+      Assert.That (serverDistList, Is.Not.Null);
+
+      Assert.That (serverDistList.Name, Is.EqualTo ("All"));
+
       CollectionAssert.AreEquivalent (
-        new[] { "mason@bla.com", "steinberg@bla.com" },
-        outlookMembers);
+       new[] { "mason@bla.com", "steinberg@bla.com", "nihil@bla.com" },
+       serverDistList.Members.Select(m => m.EmailAddress));
+
     }
-    
-   
+
+
   }
 
 
