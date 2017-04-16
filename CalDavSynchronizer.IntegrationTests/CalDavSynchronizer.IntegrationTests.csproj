@@ -91,6 +91,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContactSynchronizerFixture.cs" />
     <Compile Include="EventSynchronizerFixture.cs" />
     <Compile Include="Infrastructure\ComponentContainerTestExtensioncs.cs" />
     <Compile Include="Infrastructure\InMemoryGeneralOptionsDataAccess.cs" />
@@ -107,7 +108,7 @@
     <Compile Include="GoogleFixture.cs" />
     <Compile Include="Infrastructure\EasyAccessRepositoryAdapter.cs" />
     <Compile Include="TestBase\EventSynchronizerFixtureBase.cs" />
-    <Compile Include="TestBase\ContactsSynchronizerFixtureBase.cs" />
+    <Compile Include="TestBase\ContactSynchronizerFixtureBase.cs" />
     <Compile Include="TestBase\SynchronizerFixtureBase.cs" />
   </ItemGroup>
   <ItemGroup />
