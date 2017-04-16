@@ -33,15 +33,18 @@ namespace CalDavSynchronizer.IntegrationTests
     [Apartment(System.Threading.ApartmentState.STA)]
     public async Task SynchronizeToServer_SomeEventsAreOutsideTimeRangeFilter_SyncsJustEventsWhichMatchTimeRangeFilter()
     {
-      var options = GetOptions("IntegrationTest/General/Sogo");
-      options.DaysToSynchronizeInTheFuture = 10;
-      options.DaysToSynchronizeInThePast = 10;
-      options.IgnoreSynchronizationTimeRange = false;
+      var options = GetOptions("IntegrationTest/Events/Sogo");
+ 
       options.SynchronizationMode = SynchronizationMode.ReplicateOutlookIntoServer;
 
       await InitializeFor (options);
       await ClearEventRepositoriesAndCache ();
-      
+
+      options.DaysToSynchronizeInTheFuture = 10;
+      options.DaysToSynchronizeInThePast = 10;
+      options.IgnoreSynchronizationTimeRange = false;
+      await InitializeFor (options);
+
       await CreateEventInOutlook("before", DateTime.Now.AddDays(-20), DateTime.Now.AddDays(-11));
       await CreateEventInOutlook("after", DateTime.Now.AddDays(11), DateTime.Now.AddDays(20));
       await CreateEventInOutlook("overlapBeginning", DateTime.Now.AddDays(-11), DateTime.Now.AddDays(-9));
@@ -77,7 +80,7 @@ namespace CalDavSynchronizer.IntegrationTests
     [Apartment(System.Threading.ApartmentState.STA)]
     public async Task SynchronizeTwoWay_LocalEventChanges_IsSyncedToServerAndPreservesExtendedPropertiesAndUid()
     {
-      var options = GetOptions ("IntegrationTest/General/Sogo");
+      var options = GetOptions ("IntegrationTest/Events/Sogo");
       await InitializeFor(options);
       await ClearEventRepositoriesAndCache ();
 
@@ -118,7 +121,7 @@ namespace CalDavSynchronizer.IntegrationTests
     [Apartment(System.Threading.ApartmentState.STA)]
     public async Task SynchronizeTwoWay_CacheIsClearedAfterFirstRun_FindsMatchingEntitiesInSecondRun()
     {
-      var options = GetOptions("IntegrationTest/General/Sogo");
+      var options = GetOptions("IntegrationTest/Events/Sogo");
 
       options.SynchronizationMode = SynchronizationMode.MergeInBothDirections;
 
@@ -149,7 +152,7 @@ namespace CalDavSynchronizer.IntegrationTests
     [Apartment(System.Threading.ApartmentState.STA)]
     public async Task Synchronize_ServerEventContainsOrganizer_IsSyncedToOutlookAndBackToServer()
     {
-      var options = GetOptions("IntegrationTest/General/Sogo");
+      var options = GetOptions("IntegrationTest/Events/Sogo");
       options.SynchronizationMode = SynchronizationMode.MergeInBothDirections;
 
       await InitializeFor(options);
