@@ -114,7 +114,6 @@
     <Compile Include="Synchronization\ISynchronizationInterceptorFactory.cs" />
     <Compile Include="Synchronization\ISynchronizationInterceptor.cs" />
     <Compile Include="Synchronization\NullSynchronizationContextFactory.cs" />
-    <Compile Include="Synchronization\EntitySyncStateContainer.cs" />
     <Compile Include="Synchronization\EntitySyncStateEnvironment.cs" />
     <Compile Include="Synchronization\ISynchronizationContextFactory.cs" />
     <Compile Include="Synchronization\IPartialSynchronizer.cs" />
