@@ -721,6 +721,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\ChunkedExecutor.cs" />
+    <Compile Include="Utilities\ExceptionExtensions.cs" />
     <Compile Include="Utilities\StringExtensions.cs" />
     <Compile Include="Utilities\DnsQueryHelper.cs" />
     <Compile Include="Utilities\NullChunkedExecutor.cs" />

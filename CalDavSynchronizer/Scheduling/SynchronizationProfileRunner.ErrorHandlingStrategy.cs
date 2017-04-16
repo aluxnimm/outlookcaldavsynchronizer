@@ -144,9 +144,8 @@ namespace CalDavSynchronizer.Scheduling
       {
         return
           x is WebRepositoryOverloadException ||
-          x is HttpRequestException ||
-          x is WebDavClientException ||
-          x is TaskCanceledException;
+          x is TaskCanceledException ||
+          x.IsTimeoutException();
       }
     }
   }

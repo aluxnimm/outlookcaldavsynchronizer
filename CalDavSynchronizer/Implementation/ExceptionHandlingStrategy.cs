@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Utilities;
 using GenSync.Synchronization;
 
 namespace CalDavSynchronizer.Implementation
@@ -15,9 +16,8 @@ namespace CalDavSynchronizer.Implementation
     {
       return 
         x is WebRepositoryOverloadException ||
-        x is HttpRequestException ||
-        x is WebDavClientException ||
-        x is TaskCanceledException;
+        x is TaskCanceledException ||
+        x.IsTimeoutException();
     }
   }
 }
