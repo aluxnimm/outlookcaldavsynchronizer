@@ -41,7 +41,7 @@ namespace CalDavSynchronizer.Scheduling.ComponentCollectors
 
     public IEntityRepository<WebResourceName, string, DistributionList, DistributionListSychronizationContext>  SogoDistListRepositoryOrNull { get; set; }
     public IEntityRepository<WebResourceName, string, vCard, DistributionListSychronizationContext> VCardGroupRepositoryOrNull { get; set; }
-    public IEntityRepository<string, DateTime, GenericComObjectWrapper<DistListItem>, DistributionListSychronizationContext> OutlookDistListRepositoryOrNull { get; set; }
+    public IEntityRepository<string, DateTime, DistListItemWrapper, DistributionListSychronizationContext> OutlookDistListRepositoryOrNull { get; set; }
 
 
     public override DataAccessComponents GetDataAccessComponents ()

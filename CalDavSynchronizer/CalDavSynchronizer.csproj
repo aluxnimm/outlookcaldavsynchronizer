@@ -310,6 +310,7 @@
     <Compile Include="EntityCacheVersionConversion\Version2To3.cs" />
     <Compile Include="IComponentContainer.cs" />
     <Compile Include="IDateTimeProvider.cs" />
+    <Compile Include="Implementation\ComWrappers\DistListItemWrapper.cs" />
     <Compile Include="Implementation\ExceptionHandlingStrategy.cs" />
     <Compile Include="Implementation\Common\IQueryOutlookContactItemFolderStrategy.cs" />
     <Compile Include="Implementation\Common\IQueryOutlookDistListItemFolderStrategy.cs" />

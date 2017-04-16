@@ -54,8 +54,8 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   |   |   VCardTypeCache
 |   |   |   |   |   |   VCardTypeCacheDataAccess
 |   |   |   WebResourceNameEqualityComparer
-|   |   Synchronizer<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, vCard, DistributionListSychronizationContext>
-|   |   |   BatchEntityRepositoryAdapter<String, DateTime, GenericComObjectWrapper<DistListItem>, DistributionListSychronizationContext>
+|   |   Synchronizer<String, DateTime, DistListItemWrapper, WebResourceName, String, vCard, DistributionListSychronizationContext>
+|   |   |   BatchEntityRepositoryAdapter<String, DateTime, DistListItemWrapper, DistributionListSychronizationContext>
 |   |   |   |   ExceptionHandlingStrategy
 |   |   |   |   OutlookDistListRepository<DistributionListSychronizationContext>
 |   |   |   |   |   NullDaslFilterProvider
@@ -75,24 +75,24 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   |   |   |   |   VCardTypeCacheDataAccess
 |   |   |   DistListRelationDataFactory
 |   |   |   EntityRelationDataAccess<String, DateTime, DistListRelationData, WebResourceName, String>
-|   |   |   EntitySyncStateFactory<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, vCard, DistributionListSychronizationContext>
-|   |   |   |   EntitySyncStateEnvironment<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, vCard, DistributionListSychronizationContext>
+|   |   |   EntitySyncStateFactory<String, DateTime, DistListItemWrapper, WebResourceName, String, vCard, DistributionListSychronizationContext>
+|   |   |   |   EntitySyncStateEnvironment<String, DateTime, DistListItemWrapper, WebResourceName, String, vCard, DistributionListSychronizationContext>
 |   |   |   ExceptionHandlingStrategy
 |   |   |   GenericEqualityComparer<DateTime>
 |   |   |   GenericEqualityComparer<String>
 |   |   |   GenericEqualityComparer<String>
 |   |   |   InitialDistListEntityMatcher
-|   |   |   NullSynchronizationInterceptorFactory<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, vCard, DistributionListSychronizationContext>
+|   |   |   NullSynchronizationInterceptorFactory<String, DateTime, DistListItemWrapper, WebResourceName, String, vCard, DistributionListSychronizationContext>
 |   |   |   NullTotalProgressFactory
 |   |   |   OutlookDistListRepository<DistributionListSychronizationContext>
 |   |   |   |   NullDaslFilterProvider
 |   |   |   |   NullQueryOutlookFolderStrategy
 |   |   |   |   OutlookSessionStub
-|   |   |   TwoWayInitialSyncStateCreationStrategy<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, vCard, DistributionListSychronizationContext>
+|   |   |   TwoWayInitialSyncStateCreationStrategy<String, DateTime, DistListItemWrapper, WebResourceName, String, vCard, DistributionListSychronizationContext>
 |   |   |   |   DistListConflictInitialSyncStateCreationStrategyAutomatic
-|   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, vCard, DistributionListSychronizationContext>
-|   |   |   |   EntitySyncStateFactory<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, vCard, DistributionListSychronizationContext>
-|   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, vCard, DistributionListSychronizationContext>
+|   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, DistListItemWrapper, WebResourceName, String, vCard, DistributionListSychronizationContext>
+|   |   |   |   EntitySyncStateFactory<String, DateTime, DistListItemWrapper, WebResourceName, String, vCard, DistributionListSychronizationContext>
+|   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, DistListItemWrapper, WebResourceName, String, vCard, DistributionListSychronizationContext>
 |   |   |   TypeFilteringVCardRepositoryDecorator<DistributionListSychronizationContext>
 |   |   |   |   CardDavRepository<DistributionListSychronizationContext>
 |   |   |   |   |   vCardStandardWriter (2)

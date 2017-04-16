@@ -24,19 +24,19 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.DistributionLists
 {
-  internal class InitialSogoDistListEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, GenericComObjectWrapper<DistListItem>, string, WebResourceName, string, DistributionList, string>
+  internal class InitialSogoDistListEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, DistListItemWrapper, string, WebResourceName, string, DistributionList, string>
   {
     public InitialSogoDistListEntityMatcher (IEqualityComparer<WebResourceName> btypeIdEqualityComparer)
         : base (btypeIdEqualityComparer)
     {
     }
 
-    protected override bool AreEqual(GenericComObjectWrapper<DistListItem> atypeEntity, DistributionList btypeEntity)
+    protected override bool AreEqual(DistListItemWrapper atypeEntity, DistributionList btypeEntity)
     {
       return atypeEntity.Inner.DLName == btypeEntity.Name;
     }
 
-    protected override string GetAtypePropertyValue(GenericComObjectWrapper<DistListItem> atypeEntity)
+    protected override string GetAtypePropertyValue(DistListItemWrapper atypeEntity)
     {
       return atypeEntity.Inner.DLName;
     }
@@ -52,19 +52,19 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
     }
   }
 
-  internal class InitialDistListEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, GenericComObjectWrapper<DistListItem>, string, WebResourceName, string, vCard, string>
+  internal class InitialDistListEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, DistListItemWrapper, string, WebResourceName, string, vCard, string>
   {
     public InitialDistListEntityMatcher (IEqualityComparer<WebResourceName> btypeIdEqualityComparer)
         : base (btypeIdEqualityComparer)
     {
     }
 
-    protected override bool AreEqual (GenericComObjectWrapper<DistListItem> atypeEntity, vCard btypeEntity)
+    protected override bool AreEqual (DistListItemWrapper atypeEntity, vCard btypeEntity)
     {
       return atypeEntity.Inner.DLName == btypeEntity.FormattedName;
     }
 
-    protected override string GetAtypePropertyValue (GenericComObjectWrapper<DistListItem> atypeEntity)
+    protected override string GetAtypePropertyValue (DistListItemWrapper atypeEntity)
     {
       return atypeEntity.Inner.DLName;
     }

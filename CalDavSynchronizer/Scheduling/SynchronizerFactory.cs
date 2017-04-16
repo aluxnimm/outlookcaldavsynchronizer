@@ -817,11 +817,11 @@ namespace CalDavSynchronizer.Scheduling
       Options options, 
       GeneralOptions generalOptions,
       IEntityRepository<WebResourceName, string, TBtypeEntity, DistributionListSychronizationContext>  btypeRepository,
-      IEntityMapper<GenericComObjectWrapper<DistListItem>, TBtypeEntity, DistributionListSychronizationContext> entityMapper,
-      InitialEntityMatcherByPropertyGrouping<string, DateTime, GenericComObjectWrapper<DistListItem>, string, WebResourceName, string, TBtypeEntity, string> initialDistListEntityMatcher,
+      IEntityMapper<DistListItemWrapper, TBtypeEntity, DistributionListSychronizationContext> entityMapper,
+      InitialEntityMatcherByPropertyGrouping<string, DateTime, DistListItemWrapper, string, WebResourceName, string, TBtypeEntity, string> initialDistListEntityMatcher,
       Func<
-       EntitySyncStateEnvironment<string, DateTime, GenericComObjectWrapper<DistListItem>,  WebResourceName, string, TBtypeEntity, DistributionListSychronizationContext>,
-       ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, string, TBtypeEntity, DistributionListSychronizationContext>> automaticConflictResolutionStrategyFactory,
+       EntitySyncStateEnvironment<string, DateTime, DistListItemWrapper,  WebResourceName, string, TBtypeEntity, DistributionListSychronizationContext>,
+       ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, DistListItemWrapper, WebResourceName, string, TBtypeEntity, DistributionListSychronizationContext>> automaticConflictResolutionStrategyFactory,
       IEqualityComparer<WebResourceName> btypeIdEqualityComparer,
       AvailableContactSynchronizerComponents componentsToFill) 
       where TBtypeEntity : new()
@@ -837,7 +837,7 @@ namespace CalDavSynchronizer.Scheduling
 
       var entityRelationDataFactory = new DistListRelationDataFactory ();
 
-      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, string, TBtypeEntity, DistributionListSychronizationContext> (
+      var syncStateFactory = new EntitySyncStateFactory<string, DateTime, DistListItemWrapper, WebResourceName, string, TBtypeEntity, DistributionListSychronizationContext> (
           entityMapper,
           entityRelationDataFactory,
           ExceptionHandler.Instance);
@@ -851,12 +851,12 @@ namespace CalDavSynchronizer.Scheduling
       var atypeWriteRepository = BatchEntityRepositoryAdapter.Create (atypeRepository, _exceptionHandlingStrategy);
       var btypeWriteRepository = BatchEntityRepositoryAdapter.Create (btypeRepository, _exceptionHandlingStrategy);
 
-      var synchronizer = new Synchronizer<string, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, string, TBtypeEntity, DistributionListSychronizationContext> (
+      var synchronizer = new Synchronizer<string, DateTime, DistListItemWrapper, WebResourceName, string, TBtypeEntity, DistributionListSychronizationContext> (
           atypeRepository,
           btypeRepository,
           atypeWriteRepository,
           btypeWriteRepository,
-          InitialSyncStateCreationStrategyFactory<string, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, string, TBtypeEntity, DistributionListSychronizationContext>.Create (
+          InitialSyncStateCreationStrategyFactory<string, DateTime, DistListItemWrapper, WebResourceName, string, TBtypeEntity, DistributionListSychronizationContext>.Create (
               syncStateFactory,
               syncStateFactory.Environment,
               options.SynchronizationMode,

@@ -41,8 +41,8 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   |   EntitySyncStateFactory<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
 |   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, ContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
 |   |   |   WebResourceNameEqualityComparer
-|   |   Synchronizer<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
-|   |   |   BatchEntityRepositoryAdapter<String, DateTime, GenericComObjectWrapper<DistListItem>, DistributionListSychronizationContext>
+|   |   Synchronizer<String, DateTime, DistListItemWrapper, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   BatchEntityRepositoryAdapter<String, DateTime, DistListItemWrapper, DistributionListSychronizationContext>
 |   |   |   |   ExceptionHandlingStrategy
 |   |   |   |   OutlookDistListRepository<DistributionListSychronizationContext>
 |   |   |   |   |   NullDaslFilterProvider
@@ -53,23 +53,23 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   |   SogoDistributionListRepository
 |   |   |   DistListRelationDataFactory
 |   |   |   EntityRelationDataAccess<String, DateTime, DistListRelationData, WebResourceName, String>
-|   |   |   EntitySyncStateFactory<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
-|   |   |   |   EntitySyncStateEnvironment<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   EntitySyncStateFactory<String, DateTime, DistListItemWrapper, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   |   EntitySyncStateEnvironment<String, DateTime, DistListItemWrapper, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
 |   |   |   ExceptionHandlingStrategy
 |   |   |   GenericEqualityComparer<DateTime>
 |   |   |   GenericEqualityComparer<String>
 |   |   |   GenericEqualityComparer<String>
 |   |   |   InitialSogoDistListEntityMatcher
-|   |   |   NullSynchronizationInterceptorFactory<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   NullSynchronizationInterceptorFactory<String, DateTime, DistListItemWrapper, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
 |   |   |   NullTotalProgressFactory
 |   |   |   OutlookDistListRepository<DistributionListSychronizationContext>
 |   |   |   |   NullDaslFilterProvider
 |   |   |   |   NullQueryOutlookFolderStrategy
 |   |   |   |   OutlookSessionStub
 |   |   |   SogoDistributionListRepository
-|   |   |   TwoWayInitialSyncStateCreationStrategy<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
-|   |   |   |   EntitySyncStateFactory<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
-|   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   TwoWayInitialSyncStateCreationStrategy<String, DateTime, DistListItemWrapper, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   |   EntitySyncStateFactory<String, DateTime, DistListItemWrapper, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, DistListItemWrapper, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
 |   |   |   |   SogoDistListConflictInitialSyncStateCreationStrategyAutomatic
-|   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, GenericComObjectWrapper<DistListItem>, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, DistListItemWrapper, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
 |   |   |   WebResourceNameEqualityComparer

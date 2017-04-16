@@ -31,7 +31,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.DistributionLists
 {
-  public class OutlookDistListRepository<Tcontext> : IEntityRepository<string, DateTime, GenericComObjectWrapper<DistListItem>, Tcontext>
+  public class OutlookDistListRepository<Tcontext> : IEntityRepository<string, DateTime, DistListItemWrapper, Tcontext>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod ().DeclaringType);
 
@@ -100,13 +100,13 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
     }
 
 #pragma warning disable 1998
-    public async Task<IReadOnlyList<EntityWithId<string, GenericComObjectWrapper<DistListItem>>>> Get (ICollection<string> ids, ILoadEntityLogger logger, Tcontext context)
+    public async Task<IReadOnlyList<EntityWithId<string, DistListItemWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger, Tcontext context)
 #pragma warning restore 1998
     {
       return ids
           .Select (id => EntityWithId.Create (
               id,
-              GenericComObjectWrapper.Create (
+              new DistListItemWrapper (
                   _session.GetDistListItem (id, _folderStoreId))))
           .ToArray ();
     }
@@ -116,7 +116,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
       return Task.FromResult (0);
     }
 
-    public void Cleanup (IReadOnlyDictionary<string, GenericComObjectWrapper<DistListItem>> entities)
+    public void Cleanup (IReadOnlyDictionary<string, DistListItemWrapper> entities)
     {
       foreach (var contactItemWrapper in entities.Values)
         contactItemWrapper.Dispose ();
@@ -125,8 +125,8 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
     public async Task<EntityVersion<string, DateTime>> TryUpdate (
       string entityId,
       DateTime entityVersion,
-      GenericComObjectWrapper<DistListItem> entityToUpdate,
-      Func<GenericComObjectWrapper<DistListItem>, Task<GenericComObjectWrapper<DistListItem>>> entityModifier,
+      DistListItemWrapper entityToUpdate,
+      Func<DistListItemWrapper, Task<DistListItemWrapper>> entityModifier,
       Tcontext context)
     {
       entityToUpdate = await entityModifier (entityToUpdate);
@@ -148,13 +148,13 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
       return Task.FromResult (true);
     }
 
-    public async Task<EntityVersion<string, DateTime>> Create (Func<GenericComObjectWrapper<DistListItem>, Task<GenericComObjectWrapper<DistListItem>>> entityInitializer, Tcontext context)
+    public async Task<EntityVersion<string, DateTime>> Create (Func<DistListItemWrapper, Task<DistListItemWrapper>> entityInitializer, Tcontext context)
     {
-      GenericComObjectWrapper<DistListItem> newWrapper;
+      DistListItemWrapper newWrapper;
 
       using (var folderWrapper = CreateFolderWrapper ())
       {
-        newWrapper = new GenericComObjectWrapper<DistListItem> (
+        newWrapper = new DistListItemWrapper (
           (DistListItem) folderWrapper.Inner.Items.Add (OlItemType.olDistributionListItem));
       }
 
