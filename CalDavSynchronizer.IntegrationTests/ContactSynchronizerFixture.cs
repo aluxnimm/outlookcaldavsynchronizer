@@ -30,7 +30,7 @@ using Thought.vCards;
 namespace CalDavSynchronizer.IntegrationTests
 {
 
-  class ContactSynchronizerFixture : ContactSynchronizerFixtureBase
+  public class ContactSynchronizerFixture : ContactSynchronizerFixtureBase
   {
     [Test]
     [Apartment(System.Threading.ApartmentState.STA)]
@@ -120,7 +120,45 @@ namespace CalDavSynchronizer.IntegrationTests
 
     }
 
+    [Test]
+    [Apartment (System.Threading.ApartmentState.STA)]
+    public async Task SynchronizeTwoWay_LocalContactChanges_IsSyncedToServerAndPreservesExtendedPropertiesAndUid ()
+    {
+      var options = GetOptions ("IntegrationTests/Contacts/Sogo");
+      await InitializeFor (options);
+      await ClearEventRepositoriesAndCache ();
 
+      string initialUid = null;
+
+      await Server.CreateEntity (
+      c =>
+      {
+        c.EmailAddresses.Add (new vCardEmailAddress ("nihil@bla.com"));
+        c.GivenName = "Nihil";
+        c.FamilyName = "Baxter";
+        c.OtherProperties.Add (new vCardProperty ("X-CALDAVSYNCHRONIZER-INTEGRATIONTEST", "TheValueBlaBLubb"));
+        initialUid = c.UniqueId;
+      });
+
+      await Synchronizer.Synchronize (NullSynchronizationLogger.Instance);
+
+      using (var outlookEvent = (await Outlook.GetAllEntities ()).Single ().Entity)
+      {
+        outlookEvent.Inner.FirstName = "TheNewNihil";
+        outlookEvent.Inner.Save ();
+      }
+
+      await Synchronizer.Synchronize (NullSynchronizationLogger.Instance);
+
+      var serverContact = (await Server.GetAllEntities ()).Single ().Entity;
+
+      Assert.That (serverContact.GivenName, Is.EqualTo ("TheNewNihil"));
+      Assert.That (serverContact.UniqueId, Is.EqualTo (initialUid));
+
+      Assert.That (
+        serverContact.OtherProperties.SingleOrDefault (p => p.Name == "X-CALDAVSYNCHRONIZER-INTEGRATIONTEST")?.Value,
+        Is.EqualTo ("TheValueBlaBLubb"));
+    }
   }
 
 
