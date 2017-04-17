@@ -38,13 +38,10 @@ namespace CalDavSynchronizer
     private readonly CommandBarButton _toolBarBtnStatus;
     // ReSharper restore PrivateFieldCanBeConvertedToLocalVariable
 
-    private readonly IComponentContainer _componentContainer;
     private CommandBar _toolBar;
 
-    public CalDavSynchronizerToolBar (Explorer explorer, IComponentContainer componentContainer, object missing, bool wireClickEvents)
+    public CalDavSynchronizerToolBar (Explorer explorer, object missing, bool wireClickEvents)
     {
-      _componentContainer = componentContainer;
-
       _toolBar = explorer.CommandBars.Add("CalDav Synchronizer", MsoBarPosition.msoBarTop, false, true);
 
       _toolBarBtnOptions = (CommandBarButton) _toolBar.Controls.Add (1, missing, missing, missing, missing);
@@ -107,7 +104,7 @@ namespace CalDavSynchronizer
         try
         {
           ComponentContainer.EnsureSynchronizationContext ();
-          _componentContainer.SynchronizeNowAsync();
+          ThisAddIn.ComponentContainer.SynchronizeNowAsync();
         }
         finally
         {
@@ -130,7 +127,7 @@ namespace CalDavSynchronizer
       try
       {
         ComponentContainer.EnsureSynchronizationContext ();
-        await _componentContainer.ShowOptionsAsync ();
+        await ThisAddIn.ComponentContainer.ShowOptionsAsync ();
       }
       catch (Exception x)
       {
@@ -148,7 +145,7 @@ namespace CalDavSynchronizer
       try
       {
         ComponentContainer.EnsureSynchronizationContext ();
-        await _componentContainer.ShowGeneralOptionsAsync ();
+        await ThisAddIn.ComponentContainer.ShowGeneralOptionsAsync ();
       }
       catch (Exception x)
       {
@@ -167,7 +164,7 @@ namespace CalDavSynchronizer
       try
       {
         ComponentContainer.EnsureSynchronizationContext ();
-        _componentContainer.ShowAbout();
+        ThisAddIn.ComponentContainer.ShowAbout();
       }
       catch (Exception x)
       {
@@ -180,7 +177,7 @@ namespace CalDavSynchronizer
       try
       {
         ComponentContainer.EnsureSynchronizationContext ();
-        _componentContainer.ShowReports();
+        ThisAddIn.ComponentContainer.ShowReports();
       }
       catch (Exception x)
       {
@@ -193,7 +190,7 @@ namespace CalDavSynchronizer
       try
       {
         ComponentContainer.EnsureSynchronizationContext ();
-        _componentContainer.ShowProfileStatuses ();
+        ThisAddIn.ComponentContainer.ShowProfileStatuses ();
       }
       catch (Exception x)
       {
