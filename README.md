@@ -107,6 +107,11 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 2.19.1 ####
+- Bug fixes
+	- Fix toolbar not accessable within Outlook2007, ticket #570.
+	- Improve IntegrationTests.
+
 #### 2.19.0 ####
 - New features
 	- Abort and postpone synchronization when server reports HTTP 429.
