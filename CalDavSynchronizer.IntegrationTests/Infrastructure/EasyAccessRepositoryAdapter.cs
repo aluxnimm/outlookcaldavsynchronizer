@@ -77,7 +77,6 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
     {
       var context = await _contextFactory.Create();
 
-      IReadOnlyList<EntityWithId<TEntityId, TEntity>> result;
       try
       {
         return await _readRepository.Get(
