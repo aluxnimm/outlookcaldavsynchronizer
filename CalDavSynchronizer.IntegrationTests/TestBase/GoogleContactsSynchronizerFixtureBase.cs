@@ -27,6 +27,7 @@ using CalDavSynchronizer.IntegrationTests.Infrastructure;
 using CalDavSynchronizer.Scheduling.ComponentCollectors;
 using CalDavSynchronizer.Synchronization;
 using GenSync.Synchronization;
+using Google.GData.Extensions;
 using NUnit.Framework;
 
 namespace CalDavSynchronizer.IntegrationTests.TestBase
@@ -94,7 +95,25 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
       return existingGroupNames.Take (amount).ToArray ();
     }
 
-
+    protected async Task<IReadOnlyList<string>> CreateContactsInGoogle(IEnumerable<ContactData> contactDatas)
+    {
+      return await Server.CreateEntities(
+        contactDatas.Select(
+          contactData =>
+            new Action<GoogleContactWrapper>(
+              contact =>
+              {
+                contact.Contact.Name.GivenName = contactData.FirstName;
+                contact.Contact.Name.FamilyName = contactData.LastName;
+                contact.Contact.Emails.Add(new EMail
+                {
+                  Primary = true,
+                  Address = contactData.EmailAddress,
+                  Rel = ContactsRelationships.IsWork,
+                });
+                contact.Groups.AddRange(contactData.Groups);
+              })));
+    }
 
     protected async Task<Dictionary<string, ContactData>> CreateContactsInOutlook (IEnumerable<ContactData> contactDatas)
     {

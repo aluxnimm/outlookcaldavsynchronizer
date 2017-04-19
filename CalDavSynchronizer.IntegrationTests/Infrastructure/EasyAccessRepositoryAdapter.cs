@@ -92,24 +92,29 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
 
     public async Task<TEntityId> CreateEntity(Action<TEntity> initializeAction)
     {
-      var createJob = new CreateJob(initializeAction);
+      return (await CreateEntities(new[] {initializeAction})).Single();
+    }
 
-      var context = await _contextFactory.Create ();
+    public async Task<IReadOnlyList<TEntityId>> CreateEntities(IEnumerable<Action<TEntity>> initializeActions)
+    {
+      var createJobs = initializeActions.Select(a =>  new CreateJob(a)).ToArray();
+
+      var context = await _contextFactory.Create();
       try
       {
         await _writeRepository.PerformOperations(
-        new[] {createJob},
-        new IUpdateJob<TEntityId, TEntityVersion, TEntity>[0],
-        new IDeleteJob<TEntityId, TEntityVersion>[0],
-        NullProgressLogger.Instance,
-        context);
+          createJobs,
+          new IUpdateJob<TEntityId, TEntityVersion, TEntity>[0],
+          new IDeleteJob<TEntityId, TEntityVersion>[0],
+          NullProgressLogger.Instance,
+          context);
       }
       finally
       {
-        await _contextFactory.SynchronizationFinished (context);
+        await _contextFactory.SynchronizationFinished(context);
       }
 
-      return createJob.Id;
+      return createJobs.Select(j => j.Id).ToArray();
     }
 
     public async Task UpdateEntity(TEntityId id, Action<TEntity> modifyAction)
