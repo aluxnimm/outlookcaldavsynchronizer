@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -29,6 +28,7 @@ using Google.Apis.Http;
 using Google.Apis.Services;
 using Google.Apis.Tasks.v1;
 using Google.Apis.Tasks.v1.Data;
+using Google.Apis.Util.Store;
 using Google.Contacts;
 using Google.GData.Client;
 using Google.GData.Contacts;
@@ -56,28 +56,28 @@ namespace CalDavSynchronizer.OAuth.Google
       return client;
     }
 
-    private static async Task<UserCredential> LoginToGoogle (string user, IWebProxy proxyOrNull)
+    private static async Task<UserCredential> LoginToGoogle(string user, IWebProxy proxyOrNull)
     {
-      GoogleAuthorizationCodeFlow.Initializer initializer = new GoogleAuthorizationCodeFlow.Initializer();
+      GoogleAuthorizationCodeFlow.Initializer initializer = new GoogleAuthorizationCodeFlow.Initializer
+      {
+        ClientSecrets = CreateClientSecrets(),
+        HttpClientFactory = new ProxySupportedHttpClientFactory(proxyOrNull),
+        Scopes = new[]
+        {
+          "https://www.googleapis.com/auth/calendar",
+          "https://www.googleapis.com/auth/carddav",
+          "https://www.googleapis.com/auth/tasks",
+          "https://www.google.com/m8/feeds/" // => contacts
+        },
+        DataStore = new FileDataStore(GoogleWebAuthorizationBroker.Folder)
+      };
 
-      initializer.ClientSecrets = CreateClientSecrets();
-      initializer.HttpClientFactory = new ProxySupportedHttpClientFactory (proxyOrNull);
+      var authorizer = new AuthorizationCodeInstalledApp(
+        new AuthorizationCodeFlowWithLoginHint(initializer, user),
+        new LocalServerCodeReceiver());
 
-      UserCredential credential = await GoogleWebAuthorizationBroker.AuthorizeAsync (
-          initializer,
-          new[]
-          {
-              "https://www.googleapis.com/auth/calendar",
-              "https://www.googleapis.com/auth/carddav",
-              "https://www.googleapis.com/auth/tasks",
-              "https://www.google.com/m8/feeds/" // => contacts
-          },
-          user,
-          CancellationToken.None);
-
-      return credential;
+      return await authorizer.AuthorizeAsync(user, CancellationToken.None);
     }
-
 
     /// <remarks>
     /// This has to be done here, since UserCredential cannot be used in CalDavSynchronizer,
