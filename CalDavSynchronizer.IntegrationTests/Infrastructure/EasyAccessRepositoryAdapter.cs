@@ -73,7 +73,7 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
       _contextFactory = contextFactory;
     }
 
-    public async Task<IReadOnlyList<EntityWithId<TEntityId, TEntity>>> GetAllEntities()
+    public async Task<IEnumerable<EntityWithId<TEntityId, TEntity>>> GetAllEntities()
     {
       var context = await _contextFactory.Create();
 

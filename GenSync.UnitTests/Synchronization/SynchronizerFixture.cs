@@ -43,18 +43,18 @@ namespace GenSync.UnitTests.Synchronization
           .Expect (r => r.GetAllVersions (new string[] { },0))
           .IgnoreArguments()
           .Return (
-              Task.FromResult<IReadOnlyList<EntityVersion<string, string>>> (
+              Task.FromResult<IEnumerable<EntityVersion<string, string>>> (
                   new[] { EntityVersion.Create ("A1", "v1"), EntityVersion.Create ("a1", "v3") }));
 
       builder.BtypeRepository
           .Expect (r => r.GetAllVersions (new string[] { }, 0))
           .IgnoreArguments()
           .Return (
-              Task.FromResult<IReadOnlyList<EntityVersion<string, string>>> (
+              Task.FromResult<IEnumerable<EntityVersion<string, string>>> (
                   new[] { EntityVersion.Create ("b1", "v2") }));
 
 
-      Task<IReadOnlyList<EntityWithId<string, string>>> aTypeLoadTask = new Task<IReadOnlyList<EntityWithId<string, string>>> (
+      Task<IEnumerable<EntityWithId<string, string>>> aTypeLoadTask = new Task<IEnumerable<EntityWithId<string, string>>> (
           () => new List<EntityWithId<string, string>> { EntityWithId.Create ("A1", "AAAA"), EntityWithId.Create ("a1", "____") });
       aTypeLoadTask.RunSynchronously();
       builder.AtypeRepository
@@ -64,7 +64,7 @@ namespace GenSync.UnitTests.Synchronization
               Arg<int>.Is.Anything))
           .Return (aTypeLoadTask);
 
-      Task<IReadOnlyList<EntityWithId<string, string>>> bTypeLoadTask = new Task<IReadOnlyList<EntityWithId<string, string>>> (
+      Task<IEnumerable<EntityWithId<string, string>>> bTypeLoadTask = new Task<IEnumerable<EntityWithId<string, string>>> (
           () => new List<EntityWithId<string, string>> { EntityWithId.Create ("b1", "BBBB"), });
       bTypeLoadTask.RunSynchronously();
       builder.BtypeRepository

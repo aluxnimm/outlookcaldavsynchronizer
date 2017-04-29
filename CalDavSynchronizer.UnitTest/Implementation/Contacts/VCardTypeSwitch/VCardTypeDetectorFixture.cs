@@ -113,7 +113,7 @@ namespace CalDavSynchronizer.UnitTest.Implementation.Contacts.VCardTypeSwitch
           },
           NullLoadEntityLogger.Instance,
           NullCardDavRepositoryLogger.Instance))
-        .Return(Task.FromResult<IReadOnlyList<EntityWithId<WebResourceName, vCard>>>(new[]
+        .Return(Task.FromResult<IEnumerable<EntityWithId<WebResourceName, vCard>>>(new[]
         {
           EntityWithId.Create(new WebResourceName("id5"), new vCard {Kind = vCardKindType.Group}),
           EntityWithId.Create(new WebResourceName("id4"), new vCard {Kind = vCardKindType.Location})

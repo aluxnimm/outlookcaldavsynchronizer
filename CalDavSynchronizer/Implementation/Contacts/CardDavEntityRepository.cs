@@ -48,12 +48,12 @@ namespace CalDavSynchronizer.Implementation.Contacts
       _chunkedExecutor = chunkedExecutor;
     }
 
-    public Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetVersions (IEnumerable<IdWithAwarenessLevel<WebResourceName>> idsOfEntitiesToQuery, TContext context)
+    public async Task<IEnumerable<EntityVersion<WebResourceName, string>>> GetVersions (IEnumerable<IdWithAwarenessLevel<WebResourceName>> idsOfEntitiesToQuery, TContext context)
     {
-      return _cardDavDataAccess.GetVersions (idsOfEntitiesToQuery.Select (i => i.Id));
+      return await _cardDavDataAccess.GetVersions (idsOfEntitiesToQuery.Select (i => i.Id));
     }
 
-    public async Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetAllVersions (IEnumerable<WebResourceName> idsOfknownEntities, TContext context)
+    public async Task<IEnumerable<EntityVersion<WebResourceName, string>>> GetAllVersions (IEnumerable<WebResourceName> idsOfknownEntities, TContext context)
     {
       using (AutomaticStopwatch.StartInfo (s_logger, "CardDavRepository.GetVersions"))
       {
@@ -61,7 +61,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    public async Task<IReadOnlyList<EntityWithId<WebResourceName, TEntity>>> Get (ICollection<WebResourceName> ids, ILoadEntityLogger logger, TContext context)
+    public async Task<IEnumerable<EntityWithId<WebResourceName, TEntity>>> Get (ICollection<WebResourceName> ids, ILoadEntityLogger logger, TContext context)
     {
       if (ids.Count == 0)
         return new EntityWithId<WebResourceName, TEntity>[] { };

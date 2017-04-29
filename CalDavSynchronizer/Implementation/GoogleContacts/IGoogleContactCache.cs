@@ -25,6 +25,6 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
   public interface IGoogleContactCache
   {
     bool TryGetValue(string key, out Contact value);
-    Task<IReadOnlyList<EntityVersion<string, GoogleContactVersion>>> GetAllVersions();
+    Task<IEnumerable<EntityVersion<string, GoogleContactVersion>>> GetAllVersions();
   }
 }

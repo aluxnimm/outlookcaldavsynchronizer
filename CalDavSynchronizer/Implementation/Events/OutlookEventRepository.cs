@@ -80,7 +80,7 @@ namespace CalDavSynchronizer.Implementation.Events
       return GenericComObjectWrapper.Create ((Folder) _session.GetFolderFromId (_folderId, _folderStoreId));
     }
 
-    public Task<IReadOnlyList<EntityVersion<AppointmentId, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<AppointmentId>> idsOfEntitiesToQuery, IEventSynchronizationContext context)
+    public Task<IEnumerable<EntityVersion<AppointmentId, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<AppointmentId>> idsOfEntitiesToQuery, IEventSynchronizationContext context)
     {
       var result = new List<EntityVersion<AppointmentId, DateTime>>();
 
@@ -104,7 +104,7 @@ namespace CalDavSynchronizer.Implementation.Events
         }
       }
 
-      return Task.FromResult<IReadOnlyList<EntityVersion<AppointmentId, DateTime>>> ( result);
+      return Task.FromResult<IEnumerable<EntityVersion<AppointmentId, DateTime>>> ( result);
     }
     
     private bool DoesMatchCategoryCriterion (AppointmentItem item)
@@ -124,7 +124,7 @@ namespace CalDavSynchronizer.Implementation.Events
       return _configuration.InvertEventCategoryFilter ? !found : found;
     }
 
-    public async Task<IReadOnlyList<EntityVersion<AppointmentId, DateTime>>> GetAllVersions (IEnumerable<AppointmentId> idsOfknownEntities, IEventSynchronizationContext context)
+    public async Task<IEnumerable<EntityVersion<AppointmentId, DateTime>>> GetAllVersions (IEnumerable<AppointmentId> idsOfknownEntities, IEventSynchronizationContext context)
     {
       var all =  await GetAll (idsOfknownEntities,context);
       
@@ -204,7 +204,7 @@ namespace CalDavSynchronizer.Implementation.Events
     }
 
 #pragma warning disable 1998
-    public async Task<IReadOnlyList<EntityWithId<AppointmentId, AppointmentItemWrapper>>> Get (ICollection<AppointmentId> ids, ILoadEntityLogger logger, IEventSynchronizationContext context)
+    public async Task<IEnumerable<EntityWithId<AppointmentId, AppointmentItemWrapper>>> Get (ICollection<AppointmentId> ids, ILoadEntityLogger logger, IEventSynchronizationContext context)
 #pragma warning restore 1998
     {
       return ids

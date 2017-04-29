@@ -70,7 +70,7 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
         throw new NotImplementedException();
       }
 
-      public Task<IReadOnlyList<EntityVersion<string, GoogleContactVersion>>> GetAllVersions()
+      public Task<IEnumerable<EntityVersion<string, GoogleContactVersion>>> GetAllVersions()
       {
         throw new NotImplementedException();
       }

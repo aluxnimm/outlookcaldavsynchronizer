@@ -66,7 +66,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       _queryFolderStrategy = queryFolderStrategy;
     }
 
-    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, int context)
+    public Task<IEnumerable<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, int context)
     {
       var result = new List<EntityVersion<string, DateTime>>();
 
@@ -88,7 +88,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
           }
         }
       }
-      return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (result);
+      return Task.FromResult<IEnumerable<EntityVersion<string, DateTime>>> (result);
     }
 
     private GenericComObjectWrapper<Folder> CreateFolderWrapper ()
@@ -96,7 +96,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       return GenericComObjectWrapper.Create ((Folder) _session.GetFolderFromId (_folderId, _folderStoreId));
     }
 
-    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, int context)
+    public Task<IEnumerable<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, int context)
     {
       List<EntityVersion<string,DateTime>> tasks;
    
@@ -139,7 +139,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
                 .Select(t => new EntityVersion<string, DateTime> (t.EntryID, t.LastModificationTime)));
       }
 
-      return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (tasks);
+      return Task.FromResult<IEnumerable<EntityVersion<string, DateTime>>> (tasks);
     }
 
    
@@ -152,7 +152,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
     }
 
 #pragma warning disable 1998
-    public async Task<IReadOnlyList<EntityWithId<string, TaskItemWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger, int context)
+    public async Task<IEnumerable<EntityWithId<string, TaskItemWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger, int context)
 #pragma warning restore 1998
     {
       return ids

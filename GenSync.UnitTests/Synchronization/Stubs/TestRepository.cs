@@ -58,7 +58,7 @@ namespace GenSync.UnitTests.Synchronization.Stubs
       _numberOfCreatesAfterWhichExceptionsOccur = _numberOfCreateCalls + count;
     }
 
-    public Task<IReadOnlyList<EntityVersion<Identifier, int>>> GetVersions (IEnumerable<IdWithAwarenessLevel<Identifier>> idsOfEntitiesToQuery, int context)
+    public Task<IEnumerable<EntityVersion<Identifier, int>>> GetVersions (IEnumerable<IdWithAwarenessLevel<Identifier>> idsOfEntitiesToQuery, int context)
     {
       List<EntityVersion<Identifier, int>> result = new List<EntityVersion<Identifier, int>>();
 
@@ -69,18 +69,18 @@ namespace GenSync.UnitTests.Synchronization.Stubs
           result.Add (EntityVersion.Create (id.Id, versionAndContent.Item1));
       }
 
-      return Task.FromResult<IReadOnlyList<EntityVersion<Identifier, int>>> (result);
+      return Task.FromResult<IEnumerable<EntityVersion<Identifier, int>>> (result);
     }
 
-    public Task<IReadOnlyList<EntityVersion<Identifier, int>>> GetAllVersions (IEnumerable<Identifier> idsOfknownEntities, int context)
+    public Task<IEnumerable<EntityVersion<Identifier, int>>> GetAllVersions (IEnumerable<Identifier> idsOfknownEntities, int context)
     {
-      return Task.FromResult<IReadOnlyList<EntityVersion<Identifier, int>>> (
+      return Task.FromResult<IEnumerable<EntityVersion<Identifier, int>>> (
           EntityVersionAndContentById.Select (kv => EntityVersion.Create (kv.Key, kv.Value.Item1)).ToList());
     }
 
-    public Task<IReadOnlyList<EntityWithId<Identifier, string>>> Get (ICollection<Identifier> ids, ILoadEntityLogger logger, int context)
+    public Task<IEnumerable<EntityWithId<Identifier, string>>> Get (ICollection<Identifier> ids, ILoadEntityLogger logger, int context)
     {
-      return Task.FromResult<IReadOnlyList<EntityWithId<Identifier, string>>> (
+      return Task.FromResult<IEnumerable<EntityWithId<Identifier, string>>> (
           ids.Select (id => EntityWithId.Create (id, EntityVersionAndContentById[id].Item2)).ToArray());
     }
 

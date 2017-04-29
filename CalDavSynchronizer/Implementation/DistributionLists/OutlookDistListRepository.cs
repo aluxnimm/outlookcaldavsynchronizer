@@ -64,9 +64,9 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
       return GenericComObjectWrapper.Create ((Folder) _session.GetFolderFromId (_folderId, _folderStoreId));
     }
 
-    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, Tcontext context)
+    public Task<IEnumerable<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, Tcontext context)
     {
-      return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (
+      return Task.FromResult<IEnumerable<EntityVersion<string, DateTime>>> (
           idsOfEntitiesToQuery
               .Select (id => _session.GetDistListItemOrNull (id.Id, _folderId, _folderStoreId))
               .Where (e => e != null)
@@ -75,7 +75,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
               .ToList ());
     }
 
-    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, Tcontext context)
+    public Task<IEnumerable<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, Tcontext context)
     {
       using (var addressbookFolderWrapper = CreateFolderWrapper ())
       {
@@ -95,12 +95,12 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
         }
         var filter = _daslFilterProvider.GetDistListFilter (isInstantSearchEnabled);
 
-        return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (_queryFolderStrategy.QueryDistListFolder (_session, addressbookFolderWrapper.Inner, _folderId, filter));
+        return Task.FromResult<IEnumerable<EntityVersion<string, DateTime>>> (_queryFolderStrategy.QueryDistListFolder (_session, addressbookFolderWrapper.Inner, _folderId, filter));
       }
     }
 
 #pragma warning disable 1998
-    public async Task<IReadOnlyList<EntityWithId<string, DistListItemWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger, Tcontext context)
+    public async Task<IEnumerable<EntityWithId<string, DistListItemWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger, Tcontext context)
 #pragma warning restore 1998
     {
       return ids

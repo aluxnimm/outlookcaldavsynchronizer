@@ -76,12 +76,12 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       return _contactsById.TryGetValue(key, out value);
     }
 
-    public Task<IReadOnlyList<EntityVersion<string, GoogleContactVersion>>> GetAllVersions ()
+    public Task<IEnumerable<EntityVersion<string, GoogleContactVersion>>> GetAllVersions ()
     {
       var contacts = _contactsById.Values
           .Select (c => EntityVersion.Create (c.Id, new GoogleContactVersion { ContactEtag = c.ETag }))
           .ToArray ();
-      return Task.FromResult<IReadOnlyList<EntityVersion<string, GoogleContactVersion>>> (contacts);
+      return Task.FromResult<IEnumerable<EntityVersion<string, GoogleContactVersion>>> (contacts);
     }
   }
 }

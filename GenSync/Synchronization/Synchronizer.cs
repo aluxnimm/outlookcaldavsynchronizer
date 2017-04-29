@@ -218,17 +218,17 @@ namespace GenSync.Synchronization
         {
           var synchronizationContext = await contextFactoryAsync();
 
-          Task<IReadOnlyList<EntityVersion<TAtypeEntityId, TAtypeEntityVersion>>> newAVersionsTask;
+          Task<IEnumerable<EntityVersion<TAtypeEntityId, TAtypeEntityVersion>>> newAVersionsTask;
           if (aIdsWithAwarenessLevel.Count > 0)
             newAVersionsTask = _atypeRepository.GetVersions(aIdsWithAwarenessLevel, synchronizationContext);
           else
-            newAVersionsTask = Task.FromResult<IReadOnlyList<EntityVersion<TAtypeEntityId, TAtypeEntityVersion>>>(new EntityVersion<TAtypeEntityId, TAtypeEntityVersion>[] {});
+            newAVersionsTask = Task.FromResult<IEnumerable<EntityVersion<TAtypeEntityId, TAtypeEntityVersion>>>(new EntityVersion<TAtypeEntityId, TAtypeEntityVersion>[] {});
 
-          Task<IReadOnlyList<EntityVersion<TBtypeEntityId, TBtypeEntityVersion>>> newBVersionsTask;
+          Task<IEnumerable<EntityVersion<TBtypeEntityId, TBtypeEntityVersion>>> newBVersionsTask;
           if (bIdsWithAwarenessLevel.Count > 0)
             newBVersionsTask = _btypeRepository.GetVersions(bIdsWithAwarenessLevel, synchronizationContext);
           else
-            newBVersionsTask = Task.FromResult<IReadOnlyList<EntityVersion<TBtypeEntityId, TBtypeEntityVersion>>>(new EntityVersion<TBtypeEntityId, TBtypeEntityVersion>[] {});
+            newBVersionsTask = Task.FromResult<IEnumerable<EntityVersion<TBtypeEntityId, TBtypeEntityVersion>>>(new EntityVersion<TBtypeEntityId, TBtypeEntityVersion>[] {});
 
           var newAVersions = CreateDictionary(
             await newAVersionsTask,
@@ -463,7 +463,7 @@ namespace GenSync.Synchronization
       return subSet;
     }
 
-    private static Dictionary<TKey, TValue> CreateDictionary<TKey, TValue> (IReadOnlyList<EntityVersion<TKey, TValue>> tuples, IEqualityComparer<TKey> equalityComparer)
+    private static Dictionary<TKey, TValue> CreateDictionary<TKey, TValue> (IEnumerable<EntityVersion<TKey, TValue>> tuples, IEqualityComparer<TKey> equalityComparer)
     {
       var dictionary = new Dictionary<TKey, TValue> (equalityComparer);
 
@@ -478,7 +478,7 @@ namespace GenSync.Synchronization
       return dictionary;
     }
 
-    private static void AddToDictionary<TKey, TValue> (Dictionary<TKey, TValue> dictionary, IReadOnlyList<EntityWithId<TKey, TValue>> tuples)
+    private static void AddToDictionary<TKey, TValue> (Dictionary<TKey, TValue> dictionary, IEnumerable<EntityWithId<TKey, TValue>> tuples)
     {
       foreach (var tuple in tuples)
       {

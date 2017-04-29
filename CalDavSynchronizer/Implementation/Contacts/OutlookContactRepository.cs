@@ -64,9 +64,9 @@ namespace CalDavSynchronizer.Implementation.Contacts
       return GenericComObjectWrapper.Create (_session.GetFolderFromId (_folderId, _folderStoreId));
     }
 
-    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, Tcontext context)
+    public Task<IEnumerable<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, Tcontext context)
     {
-      return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>> (
+      return Task.FromResult<IEnumerable<EntityVersion<string, DateTime>>> (
           idsOfEntitiesToQuery
               .Select (id => _session.GetContactItemOrNull (id.Id, _folderId, _folderStoreId))
               .Where (e => e != null)
@@ -75,7 +75,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
               .ToList ());
     }
 
-    public Task<IReadOnlyList<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, Tcontext context)
+    public Task<IEnumerable<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, Tcontext context)
     {
       using (var addressbookFolderWrapper = CreateFolderWrapper())
       {
@@ -96,7 +96,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
         var filter = _daslFilterProvider.GetContactFilter(isInstantSearchEnabled);
 
-        return Task.FromResult<IReadOnlyList<EntityVersion<string, DateTime>>>(_queryFolderStrategy.QueryContactItemFolder(_session, addressbookFolderWrapper.Inner, _folderId, filter));
+        return Task.FromResult<IEnumerable<EntityVersion<string, DateTime>>>(_queryFolderStrategy.QueryContactItemFolder(_session, addressbookFolderWrapper.Inner, _folderId, filter));
       }
     }
 
@@ -108,7 +108,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
     }
 
 #pragma warning disable 1998
-    public async Task<IReadOnlyList<EntityWithId<string, ContactItemWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger, Tcontext context)
+    public async Task<IEnumerable<EntityWithId<string, ContactItemWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger, Tcontext context)
 #pragma warning restore 1998
     {
       return ids

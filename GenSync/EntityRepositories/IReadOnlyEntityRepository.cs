@@ -26,9 +26,9 @@ namespace GenSync.EntityRepositories
   /// </summary>
   public interface IReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>
   {
-    Task<IReadOnlyList<EntityVersion<TEntityId, TEntityVersion>>> GetVersions (IEnumerable<IdWithAwarenessLevel<TEntityId>> idsOfEntitiesToQuery, TContext context);
-    Task<IReadOnlyList<EntityVersion<TEntityId, TEntityVersion>>> GetAllVersions (IEnumerable<TEntityId> idsOfknownEntities, TContext context);
-    Task<IReadOnlyList<EntityWithId<TEntityId, TEntity>>> Get (ICollection<TEntityId> ids, ILoadEntityLogger logger, TContext context);
+    Task<IEnumerable<EntityVersion<TEntityId, TEntityVersion>>> GetVersions (IEnumerable<IdWithAwarenessLevel<TEntityId>> idsOfEntitiesToQuery, TContext context);
+    Task<IEnumerable<EntityVersion<TEntityId, TEntityVersion>>> GetAllVersions (IEnumerable<TEntityId> idsOfknownEntities, TContext context);
+    Task<IEnumerable<EntityWithId<TEntityId, TEntity>>> Get (ICollection<TEntityId> ids, ILoadEntityLogger logger, TContext context);
 
     Task VerifyUnknownEntities (Dictionary<TEntityId, TEntityVersion> unknownEntites, TContext context);
 
