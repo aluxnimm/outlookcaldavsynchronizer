@@ -21,7 +21,6 @@ using NUnit.Framework;
 
 namespace CalDavSynchronizer.IntegrationTests.TestBase
 {
-  [TestFixture]
   public class IntegrationFixtureBase
   {
     protected Application Application { get; private set; }

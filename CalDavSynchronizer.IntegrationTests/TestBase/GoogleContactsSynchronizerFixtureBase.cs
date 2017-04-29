@@ -33,7 +33,6 @@ using NUnit.Framework;
 namespace CalDavSynchronizer.IntegrationTests.TestBase
 {
  
-  [TestFixture]
   public class GoogleContactsSynchronizerFixtureBase : SynchronizerFixtureBase
   {
     private Guid _profileId;

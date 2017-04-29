@@ -30,7 +30,6 @@ using NUnit.Framework;
 
 namespace CalDavSynchronizer.IntegrationTests.TestBase
 {
-  [TestFixture]
   public class EventSynchronizerFixtureBase : SynchronizerFixtureBase
   {
     private Guid _profileId;

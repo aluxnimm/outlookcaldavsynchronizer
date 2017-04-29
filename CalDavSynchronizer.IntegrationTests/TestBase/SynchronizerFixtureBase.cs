@@ -25,7 +25,6 @@ using NUnit.Framework;
 
 namespace CalDavSynchronizer.IntegrationTests.TestBase
 {
-  [TestFixture]
   public class SynchronizerFixtureBase : IntegrationFixtureBase
   {
     protected ComponentContainer ComponentContainer;
