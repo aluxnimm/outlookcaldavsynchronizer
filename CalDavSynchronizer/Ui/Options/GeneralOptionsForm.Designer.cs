@@ -77,13 +77,14 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox2.SuspendLayout();
       this.groupBox3.SuspendLayout();
       this.groupBox5.SuspendLayout();
+      this.panel1.SuspendLayout();
       this.SuspendLayout();
       // 
       // _cancelButton
       // 
       this._cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this._cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this._cancelButton.Location = new System.Drawing.Point(391, 829);
+      this._cancelButton.Location = new System.Drawing.Point(397, 826);
       this._cancelButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._cancelButton.Name = "_cancelButton";
       this._cancelButton.Size = new System.Drawing.Size(100, 28);
@@ -94,7 +95,7 @@ namespace CalDavSynchronizer.Ui.Options
       // _okButton
       // 
       this._okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._okButton.Location = new System.Drawing.Point(283, 829);
+      this._okButton.Location = new System.Drawing.Point(291, 826);
       this._okButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
       this._okButton.Name = "_okButton";
       this._okButton.Size = new System.Drawing.Size(100, 28);
@@ -564,6 +565,10 @@ namespace CalDavSynchronizer.Ui.Options
       // 
       // panel1
       // 
+      this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+       | System.Windows.Forms.AnchorStyles.Right)));
+      this.panel1.Controls.Add(this._okButton);
+      this.panel1.Controls.Add(this._cancelButton);
       this.panel1.Location = new System.Drawing.Point(2, 3);
       this.panel1.Name = "panel1";
       this.panel1.Size = new System.Drawing.Size(500, 856);
@@ -589,8 +594,6 @@ namespace CalDavSynchronizer.Ui.Options
       this.Controls.Add(this._includeCustomMessageClassesCheckBox);
       this.Controls.Add(this._storeDataInRoamingFolderCheckBox);
       this.Controls.Add(this._checkForNewerVersionsCheckBox);
-      this.Controls.Add(this._okButton);
-      this.Controls.Add(this._cancelButton);
       this.Controls.Add(this.panel1);
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -606,6 +609,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.groupBox3.PerformLayout();
       this.groupBox5.ResumeLayout(false);
       this.groupBox5.PerformLayout();
+      this.panel1.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
