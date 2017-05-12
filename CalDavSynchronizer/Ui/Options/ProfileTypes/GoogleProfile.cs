@@ -25,6 +25,8 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 {
   public class GoogleProfile : ProfileBase
   {
+    public const int MaximumWriteBatchSize = 100;
+
     public GoogleProfile(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions) : base(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions)
     {
     }
@@ -42,6 +44,8 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
     {
       data.CalenderUrl = Options.OptionTasks.GoogleDavBaseUrl;
       data.ServerAdapterType = ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth;
+      data.IsChunkedSynchronizationEnabled = true;
+      data.ChunkSize = 100;
     }
 
     protected override void InitializePrototypeData(Contracts.Options data)

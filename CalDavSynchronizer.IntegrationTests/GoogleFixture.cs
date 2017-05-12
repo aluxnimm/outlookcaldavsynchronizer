@@ -28,18 +28,22 @@ namespace CalDavSynchronizer.IntegrationTests
   [TestFixture]
   public class GoogleFixture : GoogleContactsSynchronizerFixtureBase
   {
-    [Test]
+    [TestCase(40, 501 , 50)]
+    [TestCase(40, 501 , 100)]
+    [TestCase(40, 501 , 700)]
     [Apartment(System.Threading.ApartmentState.STA)]
-    public async Task Run()
+    public async Task GenericTest(int numberOfGroups, int numberOfContacts, int chunkSize)
     {
       var options = GetOptions("Automated Test - Google Contacts");
       options.SynchronizationMode = SynchronizationMode.ReplicateOutlookIntoServer;
+      options.IsChunkedSynchronizationEnabled = true;
+      options.ChunkSize = chunkSize;
 
       await InitializeFor(options);
       await ClearEventRepositoriesAndCache();
 
-      var groupNames = GetOrCreateGoogleGroups(40);
-      await CreateContactsInOutlook(CreateTestContactData(groupNames, 500));
+      var groupNames = GetOrCreateGoogleGroups(numberOfGroups);
+      await CreateContactsInOutlook(CreateTestContactData(groupNames, numberOfContacts));
 
       var reportSink = new TestReportSink();
 
@@ -48,13 +52,13 @@ namespace CalDavSynchronizer.IntegrationTests
         await Synchronizer.Synchronize(logger);
       }
 
-      Assert.That(reportSink.SynchronizationReport.ADelta, Is.EqualTo("Unchanged: 0 , Added: 500 , Deleted 0 ,  Changed 0"));
+      Assert.That(reportSink.SynchronizationReport.ADelta, Is.EqualTo($"Unchanged: 0 , Added: {numberOfContacts} , Deleted 0 ,  Changed 0"));
       Assert.That(reportSink.SynchronizationReport.BDelta, Is.EqualTo("Unchanged: 0 , Added: 0 , Deleted 0 ,  Changed 0"));
       Assert.That(reportSink.SynchronizationReport.AJobsInfo, Is.EqualTo("Create 0 , Update 0 , Delete 0"));
-      Assert.That(reportSink.SynchronizationReport.BJobsInfo, Is.EqualTo("Create 500 , Update 0 , Delete 0"));
+      Assert.That(reportSink.SynchronizationReport.BJobsInfo, Is.EqualTo($"Create {numberOfContacts} , Update 0 , Delete 0"));
 
       var outlook1IdsByGoogleId = Components.GoogleContactsEntityRelationDataAccess.LoadEntityRelationData().ToDictionary(r => r.BtypeId, r => r.AtypeId);
-      Assert.That(outlook1IdsByGoogleId.Count, Is.EqualTo(500));
+      Assert.That(outlook1IdsByGoogleId.Count, Is.EqualTo(numberOfContacts));
 
       await Outlook.DeleteAllEntities();
 
@@ -68,9 +72,9 @@ namespace CalDavSynchronizer.IntegrationTests
         await Synchronizer.Synchronize(logger);
       }
 
-      Assert.That(reportSink.SynchronizationReport.ADelta, Is.EqualTo("Unchanged: 0 , Added: 0 , Deleted 500 ,  Changed 0"));
-      Assert.That(reportSink.SynchronizationReport.BDelta, Is.EqualTo("Unchanged: 500 , Added: 0 , Deleted 0 ,  Changed 0"));
-      Assert.That(reportSink.SynchronizationReport.AJobsInfo, Is.EqualTo("Create 500 , Update 0 , Delete 0"));
+      Assert.That(reportSink.SynchronizationReport.ADelta, Is.EqualTo($"Unchanged: 0 , Added: 0 , Deleted {numberOfContacts} ,  Changed 0"));
+      Assert.That(reportSink.SynchronizationReport.BDelta, Is.EqualTo($"Unchanged: {numberOfContacts} , Added: 0 , Deleted 0 ,  Changed 0"));
+      Assert.That(reportSink.SynchronizationReport.AJobsInfo, Is.EqualTo($"Create {numberOfContacts} , Update 0 , Delete 0"));
       Assert.That(reportSink.SynchronizationReport.BJobsInfo, Is.EqualTo("Create 0 , Update 0 , Delete 0"));
     }
 

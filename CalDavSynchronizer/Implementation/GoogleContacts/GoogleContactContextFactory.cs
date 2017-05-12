@@ -30,9 +30,9 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
     private readonly IGoogleApiOperationExecutor _apiOperationExecutor;
     private readonly IEqualityComparer<string> _contactIdComparer;
     private readonly string _userName;
-    private readonly int _chunkSize;
+    private readonly int _readChunkSize;
 
-    public GoogleContactContextFactory (IGoogleApiOperationExecutor apiOperationExecutor, IEqualityComparer<string> contactIdComparer, string userName, int chunkSize)
+    public GoogleContactContextFactory (IGoogleApiOperationExecutor apiOperationExecutor, IEqualityComparer<string> contactIdComparer, string userName, int readChunkSize)
     {
       if (apiOperationExecutor == null)
         throw new ArgumentNullException (nameof (apiOperationExecutor));
@@ -44,7 +44,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       _apiOperationExecutor = apiOperationExecutor;
       _contactIdComparer = contactIdComparer;
       _userName = userName;
-      _chunkSize = chunkSize;
+      _readChunkSize = readChunkSize;
     }
 
     public async Task<IGoogleContactContext> Create ()
@@ -54,7 +54,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         var googleGroupCache = new GoogleGroupCache (_apiOperationExecutor);
         googleGroupCache.Fill();
         
-        var googleContactCache = new GoogleContactCache(_apiOperationExecutor, _contactIdComparer, _userName, _chunkSize);
+        var googleContactCache = new GoogleContactCache(_apiOperationExecutor, _contactIdComparer, _userName, _readChunkSize);
         googleContactCache.Fill(googleGroupCache.DefaultGroupIdOrNull);
 
         var context = new GoogleContactContext (
