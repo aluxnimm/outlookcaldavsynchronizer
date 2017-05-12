@@ -412,7 +412,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
           {
             Primary = true,
             Address = email1Address,
-            Rel = ContactsRelationships.IsWork,
+            Rel = ContactsRelationships.IsHome,
           });
         }
       }
@@ -443,7 +443,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
           {
             Primary = (target.Emails.Count == 0),
             Address = email2Address,
-            Rel = ContactsRelationships.IsHome,
+            Rel = ContactsRelationships.IsWork,
           });
         }
       }
@@ -723,20 +723,20 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       target.Inner.Email3DisplayName = string.Empty;
       if (source.Emails.Count >= 1)
       {
-        var workOrFirst = source.Emails.FirstOrDefault (e => e.Rel == ContactsRelationships.IsWork) ??
+        var homeOrFirst = source.Emails.FirstOrDefault (e => e.Rel == ContactsRelationships.IsHome) ??
                           source.Emails.First();
-        target.Inner.Email1Address = workOrFirst.Address;
-        if (!string.IsNullOrEmpty (workOrFirst.Label)) target.Inner.Email1DisplayName = workOrFirst.Label;
+        target.Inner.Email1Address = homeOrFirst.Address;
+        if (!string.IsNullOrEmpty (homeOrFirst.Label)) target.Inner.Email1DisplayName = homeOrFirst.Label;
 
-        var homeOrSecond = source.Emails.FirstOrDefault (e => e.Rel == ContactsRelationships.IsHome && e != workOrFirst) ??
-                           source.Emails.FirstOrDefault (e => e != workOrFirst);
+        var workOrSecond = source.Emails.FirstOrDefault (e => e.Rel == ContactsRelationships.IsHome && e != homeOrFirst) ??
+                           source.Emails.FirstOrDefault (e => e != homeOrFirst);
 
-        if (homeOrSecond != null)
+        if (workOrSecond != null)
         {
-          target.Inner.Email2Address = homeOrSecond.Address;
-          if (!string.IsNullOrEmpty (homeOrSecond.Label)) target.Inner.Email2DisplayName = homeOrSecond.Label;
+          target.Inner.Email2Address = workOrSecond.Address;
+          if (!string.IsNullOrEmpty (workOrSecond.Label)) target.Inner.Email2DisplayName = workOrSecond.Label;
 
-          var other = source.Emails.FirstOrDefault (e => e != workOrFirst && e != homeOrSecond);
+          var other = source.Emails.FirstOrDefault (e => e != homeOrFirst && e != workOrSecond);
           if (other != null)
           {
             target.Inner.Email3Address = other.Address;

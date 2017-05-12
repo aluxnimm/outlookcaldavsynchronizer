@@ -275,18 +275,18 @@ namespace CalDavSynchronizer.Implementation.Contacts
       target.Inner.Email3DisplayName = string.Empty;
       if (source.EmailAddresses.Count >= 1)
       {
-        var workOrFirst = source.EmailAddresses.FirstOrDefault (e => e.ItemType == ItemType.WORK) ??
+        var homeOrFirst = source.EmailAddresses.FirstOrDefault (e => e.ItemType == ItemType.HOME) ??
                           source.EmailAddresses.First();
-        target.Inner.Email1Address = workOrFirst.Address;
+        target.Inner.Email1Address = homeOrFirst.Address;
 
-        var homeOrSecond = source.EmailAddresses.FirstOrDefault (e => e.ItemType == ItemType.HOME && e != workOrFirst) ??
-                           source.EmailAddresses.FirstOrDefault (e => e != workOrFirst);
+        var workOrSecond = source.EmailAddresses.FirstOrDefault (e => e.ItemType == ItemType.HOME && e != homeOrFirst) ??
+                           source.EmailAddresses.FirstOrDefault (e => e != homeOrFirst);
 
-        if (homeOrSecond != null)
+        if (workOrSecond != null)
         {
-          target.Inner.Email2Address = homeOrSecond.Address;
+          target.Inner.Email2Address = workOrSecond.Address;
 
-          var other = source.EmailAddresses.FirstOrDefault (e => e != workOrFirst && e != homeOrSecond);
+          var other = source.EmailAddresses.FirstOrDefault (e => e != homeOrFirst && e != workOrSecond);
           if (other != null)
           {
             target.Inner.Email3Address = other.Address;
@@ -414,7 +414,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
           email1Address = source.Email1Address;
         }
         if (!string.IsNullOrEmpty (email1Address))
-          target.EmailAddresses.Add (new vCardEmailAddress (email1Address, vCardEmailAddressType.Internet, ItemType.WORK));
+          target.EmailAddresses.Add (new vCardEmailAddress (email1Address, vCardEmailAddressType.Internet, ItemType.HOME));
       }
 
       if (!string.IsNullOrEmpty (source.Email2Address))
@@ -438,7 +438,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
           email2Address = source.Email2Address;
         }
         if (!string.IsNullOrEmpty (email2Address))
-          target.EmailAddresses.Add (new vCardEmailAddress (email2Address, vCardEmailAddressType.Internet, ItemType.HOME));
+          target.EmailAddresses.Add (new vCardEmailAddress (email2Address, vCardEmailAddressType.Internet, ItemType.WORK));
       }
 
       if (!string.IsNullOrEmpty (source.Email3Address))
