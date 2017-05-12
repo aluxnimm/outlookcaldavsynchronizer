@@ -74,7 +74,7 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 
     public IProfileType DetermineType(Contracts.Options data)
     {
-      if (_googleProfile.IsGoogleProfile(data))
+      if (GoogleProfile.IsGoogleProfile(data))
         return _googleProfile;
       else
         return _genericProfile;

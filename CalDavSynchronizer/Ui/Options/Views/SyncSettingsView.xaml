@@ -49,7 +49,7 @@
           SelectedValue="{Binding SynchronizationIntervalInMinutes}"
            MinWidth="100" Grid.Row="2" Grid.Column="1" />
 
-            <CheckBox Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" Name="IsChunkedSynchronizationEnabledCheckBox" IsChecked="{Binding IsChunkedSynchronizationEnabled}" Grid.Row="3" Grid.ColumnSpan="2" ToolTip="Executes specific steps of synchronization in chunks, to save memory.">Perform synchronization in chunks</CheckBox>
+      <CheckBox Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" Name="IsChunkedSynchronizationEnabledCheckBox" IsEnabled="{Binding IsEditOfIsChunkedSynchronizationEnabledAllowed}" IsChecked="{Binding IsChunkedSynchronizationEnabled}" Grid.Row="3" Grid.ColumnSpan="2" ToolTip="Executes specific steps of synchronization in chunks, to save memory.">Perform synchronization in chunks</CheckBox>
 
             <TextBlock Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="4" Grid.Column="0">Chunk size:</TextBlock>
             <TextBox Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding IsChecked,ElementName=IsChunkedSynchronizationEnabledCheckBox}" Grid.Row="4" Grid.Column="1"  Text="{Binding ChunkSize}"></TextBox>

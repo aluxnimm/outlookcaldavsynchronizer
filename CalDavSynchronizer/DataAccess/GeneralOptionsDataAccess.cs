@@ -51,6 +51,7 @@ namespace CalDavSynchronizer.DataAccess
     private const string s_EnableDebugLog = "EnableDebugLog";
     private const string s_EnableTrayIcon = "EnableTrayIcon";
     private const string s_EntityCacheVersion = "EntityCacheVersion";
+    private const string s_GoogleProfilesConvertedToConfigurableChunkSize = "GoogleConvertedToChunkSize";
     private const string s_AcceptInvalidCharsInServerResponse = "AcceptInvalidCharsInServerResponse";
     private const string s_UseUnsafeHeaderParsing = "UseUnsafeHeaderParsing";
     private const string s_TriggerSyncAfterSendReceive = "TriggerSyncAfterSendReceive";
@@ -174,6 +175,24 @@ namespace CalDavSynchronizer.DataAccess
         using (var key = OpenOptionsKey())
         {
           key.SetValue (s_EntityCacheVersion, value);
+        }
+      }
+    }
+
+    public bool GoogleProfilesConvertedToConfigurableChunkSize
+    {
+      get
+      {
+        using (var key = OpenOptionsKey())
+        {
+          return (int)(key.GetValue(s_GoogleProfilesConvertedToConfigurableChunkSize) ?? 0) == 1;
+        }
+      }
+      set
+      {
+        using (var key = OpenOptionsKey())
+        {
+          key.SetValue(s_GoogleProfilesConvertedToConfigurableChunkSize, value ? 1 : 0);
         }
       }
     }

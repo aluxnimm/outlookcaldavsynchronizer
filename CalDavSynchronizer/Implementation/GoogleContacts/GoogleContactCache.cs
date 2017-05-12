@@ -33,9 +33,9 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
     private readonly Dictionary<string, Contact> _contactsById;
     private readonly IGoogleApiOperationExecutor _apiOperationExecutor;
     private readonly string _userName;
-    private readonly int _chunkSize;
+    private readonly int _readChunkSize;
 
-    public GoogleContactCache ( IGoogleApiOperationExecutor apiOperationExecutor, IEqualityComparer<string> contactIdComparer, string userName, int chunkSize)
+    public GoogleContactCache ( IGoogleApiOperationExecutor apiOperationExecutor, IEqualityComparer<string> contactIdComparer, string userName, int readChunkSize)
     {
       if (apiOperationExecutor == null)
         throw new ArgumentNullException (nameof (apiOperationExecutor));
@@ -46,7 +46,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
       _apiOperationExecutor = apiOperationExecutor;
       _userName = userName;
-      _chunkSize = chunkSize;
+      _readChunkSize = readChunkSize;
       _contactsById = new Dictionary<string, Contact> (contactIdComparer);
     }
 
@@ -54,7 +54,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
     {
       var query = new ContactsQuery(ContactsQuery.CreateContactsUri(_userName, ContactsQuery.fullProjection));
       query.StartIndex = 0;
-      query.NumberToRetrieve = _chunkSize;
+      query.NumberToRetrieve = _readChunkSize;
 
       if (defaultGroupIdOrNull != null)
         query.Group = defaultGroupIdOrNull;

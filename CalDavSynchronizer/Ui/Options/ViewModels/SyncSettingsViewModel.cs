@@ -78,6 +78,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       set { _model.IsChunkedSynchronizationEnabled = value; }
     }
 
+    public bool IsEditOfIsChunkedSynchronizationEnabledAllowed
+    {
+      get { return _model.IsEditOfIsChunkedSynchronizationEnabledAllowed; }
+    
+    }
+
     public IList<Item<int>> AvailableSyncIntervals =>
         new[] { new Item<int>(0, "Manual only") }
             .Union(Enumerable.Range(1, 2).Select(i => new Item<int>(i, i.ToString())))

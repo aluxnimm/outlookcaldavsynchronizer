@@ -36,5 +36,11 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
       get { return ComponentContainerTestExtensioncs.GetRequiredEntityCacheVersion(); }
       set { }
     }
+
+    public bool GoogleProfilesConvertedToConfigurableChunkSize
+    {
+      get { return true; }
+      set { }
+    }
   }
 }
