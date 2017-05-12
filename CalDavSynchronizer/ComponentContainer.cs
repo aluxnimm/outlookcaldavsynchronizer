@@ -223,8 +223,6 @@ namespace CalDavSynchronizer
       }
 
       _categorySwitcher = new CategorySwitcher(new OutlookSession(_session), _daslFilterProvider, _queryFolderStrategyWrapper);
-
-      EnsureGoogleProfilesConvertedToConfigurableChunkSize();
     }
 
     private static bool _wpfLocaleSet;
@@ -274,31 +272,6 @@ namespace CalDavSynchronizer
       s_logger.Info ("Snyc triggered after Outlook Send/Receive finished");
       EnsureSynchronizationContext();
       SynchronizeNowAsync();
-    }
-
-    private void EnsureGoogleProfilesConvertedToConfigurableChunkSize()
-    {
-      try
-      {
-        if (!_generalOptionsDataAccess.GoogleProfilesConvertedToConfigurableChunkSize)
-        {
-          var options = _optionsDataAccess.Load();
-          foreach (var option in options)
-          {
-            if (GoogleProfile.IsGoogleProfile(option))
-            {
-              option.IsChunkedSynchronizationEnabled = true;
-              option.ChunkSize = 100;
-            }
-          }
-          _optionsDataAccess.Save(options);
-          _generalOptionsDataAccess.GoogleProfilesConvertedToConfigurableChunkSize = true;
-        }
-      }
-      catch (Exception x)
-      {
-        s_logger.Error("Error during google profile conversion", x);
-      }
     }
 
     private void EnsureCacheCompatibility (Options[] options)

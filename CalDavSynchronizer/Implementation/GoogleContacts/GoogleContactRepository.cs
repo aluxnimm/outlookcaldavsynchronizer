@@ -28,10 +28,9 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
     private readonly string _userName;
     private readonly ContactMappingConfiguration _contactMappingConfiguration;
     private readonly IEqualityComparer<string> _contactIdComparer;
-    private readonly IChunkedExecutor _writeOperationExecutor;
-    private readonly IChunkedExecutor _readOperationExecutor;
+    private readonly ChunkedExecutor _chunkedExecutor;
 
-    public GoogleContactRepository (IGoogleApiOperationExecutor apiOperationExecutor, string userName, ContactMappingConfiguration contactMappingConfiguration, IEqualityComparer<string> contactIdComparer, IChunkedExecutor writeOperationExecutor, IChunkedExecutor readOperationExecutor)
+    public GoogleContactRepository (IGoogleApiOperationExecutor apiOperationExecutor, string userName, ContactMappingConfiguration contactMappingConfiguration, IEqualityComparer<string> contactIdComparer, ChunkedExecutor chunkedExecutor)
     {
       if (apiOperationExecutor == null)
         throw new ArgumentNullException (nameof (apiOperationExecutor));
@@ -39,16 +38,14 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         throw new ArgumentNullException (nameof (contactMappingConfiguration));
       if (contactIdComparer == null)
         throw new ArgumentNullException (nameof (contactIdComparer));
-      if (writeOperationExecutor == null) throw new ArgumentNullException(nameof(writeOperationExecutor));
-      if (readOperationExecutor == null) throw new ArgumentNullException(nameof(readOperationExecutor));
+      if (chunkedExecutor == null) throw new ArgumentNullException(nameof(chunkedExecutor));
       if (String.IsNullOrEmpty (userName))
         throw new ArgumentException ("Argument is null or empty", nameof (userName));
 
       _userName = userName;
       _contactMappingConfiguration = contactMappingConfiguration;
       _contactIdComparer = contactIdComparer;
-      _writeOperationExecutor = writeOperationExecutor;
-      _readOperationExecutor = readOperationExecutor;
+      _chunkedExecutor = chunkedExecutor;
       _apiOperationExecutor = apiOperationExecutor;
     }
 
@@ -115,7 +112,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       if (requestsAndJobs.Item1.Count == 0)
         return;
 
-     var responses = _writeOperationExecutor.Execute (
+     var responses = _chunkedExecutor.Execute (
             new List<Contact>(),
             requestsAndJobs.Item1.Select (i => i.Contact),
             (contactList, r) =>
@@ -167,7 +164,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
     public IReadOnlyList<Contact> GetContactsFromGoogle (ICollection<string> ids)
     {
-      return _readOperationExecutor.Execute (
+      return _chunkedExecutor.Execute (
           new List<Contact>(),
           ids.Select (id =>
           {
@@ -213,7 +210,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       if (requestsAndJobs.Item1.Count == 0)
         return;
 
-     var responses = _writeOperationExecutor.Execute (
+     var responses = _chunkedExecutor.Execute (
             new List<Contact>(),
             requestsAndJobs.Item1.Values.Select(i => i.Contact),
             (contactList, r) =>
@@ -307,7 +304,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         jobsById.Add (contact.Id, job);
       }
 
-      var responses = _writeOperationExecutor.Execute (
+      var responses = _chunkedExecutor.Execute (
             new List<Contact>(),
             requests,
             (contactList, r) =>

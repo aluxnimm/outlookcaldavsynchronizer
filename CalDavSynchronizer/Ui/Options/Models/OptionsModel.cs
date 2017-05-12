@@ -109,7 +109,6 @@ namespace CalDavSynchronizer.Ui.Options.Models
  
 
     public IProfileType ProfileType { get; }
-    public bool IsEditOfIsChunkedSynchronizationEnabledAllowed => !_isGoogle;
 
     public Guid Id { get; }
     public MappingConfigurationModel MappingConfigurationModelOrNull

@@ -39,7 +39,6 @@ using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using CalDavSynchronizer.Implementation.TimeZones;
 using CalDavSynchronizer.Scheduling.ComponentCollectors;
 using CalDavSynchronizer.Synchronization;
-using CalDavSynchronizer.Ui.Options.ProfileTypes;
 using CalDavSynchronizer.Utilities;
 using DDay.iCal;
 using DDay.iCal.Serialization.iCalendar;
@@ -897,13 +896,14 @@ namespace CalDavSynchronizer.Scheduling
       var atypeIdEqulityComparer = EqualityComparer<string>.Default;
       var btypeIdEqualityComparer = EqualityComparer<string>.Default;
 
+      const int chunkSize = 100;
+
       var btypeRepository = new GoogleContactRepository (
         googleApiExecutor, 
         options.UserName,
         mappingParameters,
         btypeIdEqualityComparer,
-        new ChunkedExecutor (Math.Min(options.ChunkSize, GoogleProfile.MaximumWriteBatchSize)),
-        new ChunkedExecutor(options.ChunkSize));
+        new ChunkedExecutor (chunkSize));
 
       componentsToFill.GoogleContactRepository = btypeRepository;
       componentsToFill.GoogleApiOperationExecutor = googleApiExecutor;
@@ -947,7 +947,7 @@ namespace CalDavSynchronizer.Scheduling
           syncStateFactory, 
           _exceptionHandlingStrategy);
 
-      var googleContactContextFactory = new GoogleContactContextFactory(googleApiExecutor, btypeIdEqualityComparer, options.UserName, options.ChunkSize);
+      var googleContactContextFactory = new GoogleContactContextFactory(googleApiExecutor, btypeIdEqualityComparer, options.UserName, chunkSize);
       componentsToFill.GoogleContactContextFactory = googleContactContextFactory;
       return new OutlookSynchronizer<string, GoogleContactVersion> (
         new ContextCreatingSynchronizerDecorator<string, DateTime, ContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext> (
