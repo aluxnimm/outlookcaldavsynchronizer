@@ -280,13 +280,19 @@
         "Entry"
         {
         "MsmKey" = "8:_459401404CCEFFF98BEDC59D41E9E633"
-        "OwnerKey" = "8:_0495A130DF7C7C679F12D74F371265F8"
+        "OwnerKey" = "8:_41412D928E4AEE70F2B1062D1E9FEEBD"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_459401404CCEFFF98BEDC59D41E9E633"
         "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_459401404CCEFFF98BEDC59D41E9E633"
+        "OwnerKey" = "8:_0495A130DF7C7C679F12D74F371265F8"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -322,13 +328,13 @@
         "Entry"
         {
         "MsmKey" = "8:_4A201BD54D21C991F17E0D8CBE002B55"
-        "OwnerKey" = "8:_459401404CCEFFF98BEDC59D41E9E633"
+        "OwnerKey" = "8:_363DC2B5F646C9840EAA1B2D701775E5"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_4A201BD54D21C991F17E0D8CBE002B55"
-        "OwnerKey" = "8:_363DC2B5F646C9840EAA1B2D701775E5"
+        "OwnerKey" = "8:_459401404CCEFFF98BEDC59D41E9E633"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -916,13 +922,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_459401404CCEFFF98BEDC59D41E9E633"
+        "OwnerKey" = "8:_363DC2B5F646C9840EAA1B2D701775E5"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_363DC2B5F646C9840EAA1B2D701775E5"
+        "OwnerKey" = "8:_459401404CCEFFF98BEDC59D41E9E633"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1675,7 +1681,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:CalDavSynchronizer.Conversions, Version=2.19.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:CalDavSynchronizer.Conversions, Version=2.19.1.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_0FE8C9E621B806B0674150DEB1B02156"
@@ -2366,7 +2372,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:CalDavSynchronizer.OAuth.Google, Version=2.19.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:CalDavSynchronizer.OAuth.Google, Version=2.19.1.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_41412D928E4AEE70F2B1062D1E9FEEBD"
@@ -3750,7 +3756,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Thought.vCards, Version=2.19.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Thought.vCards, Version=2.19.1.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_D1A20D109EADD2544F4BB040D9C6B3FC"
@@ -3843,7 +3849,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:GenSync, Version=2.19.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:GenSync, Version=2.19.1.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_DCED7BE694CB336E4D8AF867DF56C66A"
@@ -4305,15 +4311,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CalDavSynchronizer"
-        "ProductCode" = "8:{B613EE57-638E-43FB-A21E-5CC3D7EB227A}"
-        "PackageCode" = "8:{94E84EF8-0570-43D5-885C-6024B382B473}"
+        "ProductCode" = "8:{0C6D6848-2339-4EE7-A62B-ED3F67B249E7}"
+        "PackageCode" = "8:{11A045BF-4F1C-42A1-9AD2-11EF12054668}"
         "UpgradeCode" = "8:{691063F4-DD9A-4264-948D-3FBD2565572C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.19.1"
+        "ProductVersion" = "8:2.19.2"
         "Manufacturer" = "8:Gerhard Zehetbauer"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"

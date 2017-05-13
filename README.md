@@ -107,6 +107,15 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 2.19.2 ####
+- Bug fixes
+	- Honor chunk size also for Google Contact API read calls, ticket #586.
+	- Switch mapping of email addresses and map HOME to email1 and WORK to email2 to be more consistent, gh ticket 193.
+	- Provide Login-Hint for Google-Authorization.
+	- Add larger sync intervals, feature request #70.
+	- Fix layout for ok and cancel button in GeneralOptionsForm.
+	- Improve IntegrationTests.
+
 #### 2.19.1 ####
 - Bug fixes
 	- Fix toolbar not accessable within Outlook2007, ticket #570.
