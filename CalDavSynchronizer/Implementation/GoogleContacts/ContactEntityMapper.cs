@@ -382,7 +382,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       }
     }
 
-    private static void MapEmailAddresses1To2 (ContactItem source, Contact target, IEntityMappingLogger logger)
+    private void MapEmailAddresses1To2 (ContactItem source, Contact target, IEntityMappingLogger logger)
     {
       target.Emails.Clear();
 
@@ -412,7 +412,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
           {
             Primary = true,
             Address = email1Address,
-            Rel = ContactsRelationships.IsHome,
+            Rel = _configuration.MapOutlookEmail1ToWork ? ContactsRelationships.IsWork : ContactsRelationships.IsHome,
           });
         }
       }
@@ -443,7 +443,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
           {
             Primary = (target.Emails.Count == 0),
             Address = email2Address,
-            Rel = ContactsRelationships.IsWork,
+            Rel = _configuration.MapOutlookEmail1ToWork ? ContactsRelationships.IsHome : ContactsRelationships.IsWork,
           });
         }
       }
@@ -723,20 +723,23 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       target.Inner.Email3DisplayName = string.Empty;
       if (source.Emails.Count >= 1)
       {
-        var homeOrFirst = source.Emails.FirstOrDefault (e => e.Rel == ContactsRelationships.IsHome) ??
-                          source.Emails.First();
-        target.Inner.Email1Address = homeOrFirst.Address;
-        if (!string.IsNullOrEmpty (homeOrFirst.Label)) target.Inner.Email1DisplayName = homeOrFirst.Label;
+        Func<EMail, bool> firstPredicate = e => _configuration.MapOutlookEmail1ToWork
+              ? e.Rel == ContactsRelationships.IsWork
+              : e.Rel == ContactsRelationships.IsHome;
 
-        var workOrSecond = source.Emails.FirstOrDefault (e => e.Rel == ContactsRelationships.IsHome && e != homeOrFirst) ??
-                           source.Emails.FirstOrDefault (e => e != homeOrFirst);
+        var first = source.Emails.FirstOrDefault (firstPredicate) ?? source.Emails.First();
+        target.Inner.Email1Address = first.Address;
+        if (!string.IsNullOrEmpty (first.Label)) target.Inner.Email1DisplayName = first.Label;
 
-        if (workOrSecond != null)
+        var second = source.Emails.FirstOrDefault (e => _configuration.MapOutlookEmail1ToWork ? e.Rel == ContactsRelationships.IsHome : e.Rel == ContactsRelationships.IsWork && e != first) ??
+                           source.Emails.FirstOrDefault (e => e != first);
+
+        if (second != null)
         {
-          target.Inner.Email2Address = workOrSecond.Address;
-          if (!string.IsNullOrEmpty (workOrSecond.Label)) target.Inner.Email2DisplayName = workOrSecond.Label;
+          target.Inner.Email2Address = second.Address;
+          if (!string.IsNullOrEmpty (second.Label)) target.Inner.Email2DisplayName = second.Label;
 
-          var other = source.Emails.FirstOrDefault (e => e != homeOrFirst && e != workOrSecond);
+          var other = source.Emails.FirstOrDefault (e => e != first && e != second);
           if (other != null)
           {
             target.Inner.Email3Address = other.Address;

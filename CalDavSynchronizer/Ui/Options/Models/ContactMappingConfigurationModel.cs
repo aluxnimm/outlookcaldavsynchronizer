@@ -28,6 +28,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
     private bool _keepOutlookPhoto;
     private bool _keepOutlookFileAs;
     private bool _fixPhoneNumberFormat;
+    private bool _mapOutlookEmail1ToWork;
     private bool _mapDistributionLists;
     private bool _isSelected;
     private bool _isExpanded;
@@ -85,6 +86,15 @@ namespace CalDavSynchronizer.Ui.Options.Models
       }
     }
 
+    public bool MapOutlookEmail1ToWork
+    {
+      get { return _mapOutlookEmail1ToWork; }
+      set
+      {
+        CheckedPropertyChange (ref _mapOutlookEmail1ToWork, value);
+      }
+    }
+
     public bool MapDistributionLists
     {
       get { return _mapDistributionLists; }
@@ -130,6 +140,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
       KeepOutlookPhoto = mappingConfiguration.KeepOutlookPhoto;
       KeepOutlookFileAs = mappingConfiguration.KeepOutlookFileAs;
       FixPhoneNumberFormat = mappingConfiguration.FixPhoneNumberFormat;
+      MapOutlookEmail1ToWork = mappingConfiguration.MapOutlookEmail1ToWork;
       MapDistributionLists = mappingConfiguration.MapDistributionLists;
       DistributionListType = mappingConfiguration.DistributionListType;
     }
@@ -143,6 +154,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
         KeepOutlookPhoto = _keepOutlookPhoto,
         KeepOutlookFileAs = _keepOutlookFileAs,
         FixPhoneNumberFormat = _fixPhoneNumberFormat,
+        MapOutlookEmail1ToWork = _mapOutlookEmail1ToWork,
         MapDistributionLists = _mapDistributionLists,
         DistributionListType = _distributionListType
       };

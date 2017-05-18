@@ -275,18 +275,19 @@ namespace CalDavSynchronizer.Implementation.Contacts
       target.Inner.Email3DisplayName = string.Empty;
       if (source.EmailAddresses.Count >= 1)
       {
-        var homeOrFirst = source.EmailAddresses.FirstOrDefault (e => e.ItemType == ItemType.HOME) ??
-                          source.EmailAddresses.First();
-        target.Inner.Email1Address = homeOrFirst.Address;
+        Func<vCardEmailAddress, bool> firstPredicate = e => _configuration.MapOutlookEmail1ToWork ? e.ItemType == ItemType.WORK :  e.ItemType == ItemType.HOME;
 
-        var workOrSecond = source.EmailAddresses.FirstOrDefault (e => e.ItemType == ItemType.HOME && e != homeOrFirst) ??
-                           source.EmailAddresses.FirstOrDefault (e => e != homeOrFirst);
+        var first = source.EmailAddresses.FirstOrDefault (firstPredicate) ?? source.EmailAddresses.First();
+        target.Inner.Email1Address = first.Address;
 
-        if (workOrSecond != null)
+        var second = source.EmailAddresses.FirstOrDefault (e => _configuration.MapOutlookEmail1ToWork ? e.ItemType == ItemType.HOME : e.ItemType == ItemType.WORK && e!= first) ??
+                           source.EmailAddresses.FirstOrDefault (e => e != first);
+
+        if (second != null)
         {
-          target.Inner.Email2Address = workOrSecond.Address;
+          target.Inner.Email2Address = second.Address;
 
-          var other = source.EmailAddresses.FirstOrDefault (e => e != homeOrFirst && e != workOrSecond);
+          var other = source.EmailAddresses.FirstOrDefault (e => e != first && e != second);
           if (other != null)
           {
             target.Inner.Email3Address = other.Address;
@@ -390,7 +391,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", sourceGender));
     }
 
-    private static void MapEmailAddresses1To2 (ContactItem source, vCard target, IEntityMappingLogger logger)
+    private void MapEmailAddresses1To2 (ContactItem source, vCard target, IEntityMappingLogger logger)
     {
       target.EmailAddresses.Clear();
       if (!string.IsNullOrEmpty (source.Email1Address))
@@ -414,7 +415,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
           email1Address = source.Email1Address;
         }
         if (!string.IsNullOrEmpty (email1Address))
-          target.EmailAddresses.Add (new vCardEmailAddress (email1Address, vCardEmailAddressType.Internet, ItemType.HOME));
+          target.EmailAddresses.Add (new vCardEmailAddress (email1Address, vCardEmailAddressType.Internet, _configuration.MapOutlookEmail1ToWork ? ItemType.WORK : ItemType.HOME));
       }
 
       if (!string.IsNullOrEmpty (source.Email2Address))
@@ -438,7 +439,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
           email2Address = source.Email2Address;
         }
         if (!string.IsNullOrEmpty (email2Address))
-          target.EmailAddresses.Add (new vCardEmailAddress (email2Address, vCardEmailAddressType.Internet, ItemType.WORK));
+          target.EmailAddresses.Add (new vCardEmailAddress (email2Address, vCardEmailAddressType.Internet, _configuration.MapOutlookEmail1ToWork ? ItemType.HOME : ItemType.WORK));
       }
 
       if (!string.IsNullOrEmpty (source.Email3Address))

@@ -40,6 +40,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       RegisterPropertyChangePropagation(_model, nameof(_model.MapContactPhoto), nameof(MapContactPhoto));
       RegisterPropertyChangePropagation(_model, nameof(_model.KeepOutlookPhoto), nameof(KeepOutlookPhoto));
       RegisterPropertyChangePropagation(_model, nameof(_model.KeepOutlookFileAs), nameof(KeepOutlookFileAs));
+      RegisterPropertyChangePropagation(_model, nameof(_model.MapOutlookEmail1ToWork), nameof(MapOutlookEmail1ToWork));
       RegisterPropertyChangePropagation(_model, nameof(_model.FixPhoneNumberFormat), nameof(FixPhoneNumberFormat));
       RegisterPropertyChangePropagation(_model, nameof(_model.MapDistributionLists), nameof(MapDistributionLists));
       RegisterPropertyChangePropagation(_model, nameof(_model.DistributionListType), nameof(DistributionListType));
@@ -73,6 +74,11 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     {
       get { return _model.FixPhoneNumberFormat; }
       set { _model.FixPhoneNumberFormat = value; }
+    }
+    public bool MapOutlookEmail1ToWork
+    {
+      get { return _model.MapOutlookEmail1ToWork; }
+      set { _model.MapOutlookEmail1ToWork = value; }
     }
 
     public bool MapDistributionLists
@@ -120,6 +126,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       KeepOutlookPhoto = true,
       KeepOutlookFileAs = true,
       FixPhoneNumberFormat = true,
+      MapOutlookEmail1ToWork = true,
       DistributionListType = DistributionListType.Sogo,
       MapDistributionLists = true,
     };
