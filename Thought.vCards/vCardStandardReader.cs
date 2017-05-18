@@ -1720,16 +1720,24 @@ namespace Thought.vCards
 		/// </summary>
 		private void ReadInto_KEY(vCard card, vCardProperty property)
 		{
-
-      if (((byte[])property.Value).Length == 0) return;
-
+		  byte[] keyArray;
+		  if (property.Value is string)
+		  {
+		    keyArray = DecodeBase64(property.Value.ToString());
+		  }
+		  else
+		  {
+		    keyArray = (byte[])property.Value;
+      }
+      if (keyArray.Length == 0) return;
+		 
       // The KEY property defines a security certificate
       // that has been attached to the vCard.  Key values
       // are usually encoded in BASE64 because they
       // often consist of binary data.
 
       vCardCertificate certificate = new vCardCertificate();
-		  certificate.Data = (byte[]) property.Value;
+		  certificate.Data = keyArray;
 
 		  // TODO: Support other key types.
 
