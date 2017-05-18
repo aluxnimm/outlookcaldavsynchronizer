@@ -105,7 +105,7 @@
     <Compile Include="Infrastructure\NullGoogleContactContext.cs" />
     <Compile Include="Infrastructure\NullUiServiceFactory.cs" />
     <Compile Include="Infrastructure\TestReportSink.cs" />
-    <Compile Include="GoogleFixture.cs" />
+    <Compile Include="GoogleContactFixture.cs" />
     <Compile Include="Infrastructure\EasyAccessRepositoryAdapter.cs" />
     <Compile Include="TestBase\EventSynchronizerFixtureBase.cs" />
     <Compile Include="TestBase\ContactSynchronizerFixtureBase.cs" />

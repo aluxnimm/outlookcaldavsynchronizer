@@ -26,7 +26,7 @@ using NUnit.Framework;
 namespace CalDavSynchronizer.IntegrationTests
 {
   [TestFixture]
-  public class GoogleFixture : GoogleContactsSynchronizerFixtureBase
+  public class GoogleContactFixture : GoogleContactsSynchronizerFixtureBase
   {
     [TestCase(40, 501 , 50)]
     [TestCase(40, 501 , 100)]
