@@ -25,18 +25,7 @@ namespace CalDavDataAccessIntegrationTests
   {
     protected override string ProfileName
     {
-      get { return "Google-TestCal"; }
-    }
-
-    protected override ServerAdapterType? ServerAdapterTypeOverride
-    {
-      get { return ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth; }
-    }
-
-    [Test]
-    public override async Task Test_CRUD ()
-    {
-      await base.Test_CRUD ();
+      get { return "IntegrationTest/DataAccess/Google"; }
     }
 
     [Ignore ("Google performs deletion even with wrong etag.")]
