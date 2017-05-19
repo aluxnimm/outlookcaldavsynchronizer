@@ -118,6 +118,9 @@ namespace CalDavSynchronizer.Scheduling
       if (_profileId != options.Id)
         throw new ArgumentException($"Cannot update runner for profile '{_profileId}' with options of profile '{options.Id}'");
 
+      if (_isRunning == 1)
+        s_logger.Info($"Applying options to profile '{options.Name}' ({_profileId}) which is currently running.");
+
       _pendingOutlookItems.Clear();
       _fullSyncPending = false;
 

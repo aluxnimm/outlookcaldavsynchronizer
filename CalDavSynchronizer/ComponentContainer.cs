@@ -487,7 +487,11 @@ namespace CalDavSynchronizer
           var newOptions = ShowWpfOptions (initialVisibleProfile, generalOptions, options);
 
           if (newOptions != null)
-            await ApplyNewOptions (options, newOptions, generalOptions);
+          {
+            s_logger.Info("Applying new options");
+            await ApplyNewOptions(options, newOptions, generalOptions);
+            s_logger.Info("Applied new options");
+          }
         }
         finally
         {
