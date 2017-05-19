@@ -2319,57 +2319,40 @@ namespace Thought.vCards
 
 		private void ReadInto_XSocialProfile(vCard card, vCardProperty property)
 		{
-
 			vCardSocialProfile sp = new vCardSocialProfile();
-
 
 			sp.ProfileUrl = property.ToString();
 			if (string.IsNullOrEmpty(sp.ProfileUrl))
 				return;
 
-			foreach (vCardSubproperty subproperty in property.Subproperties)
+			foreach (var subproperty in property.Subproperties)
 			{
 
 				switch (subproperty.Name.ToUpperInvariant())
 				{
-
 					case "X-USER":
-
 						sp.Username = subproperty.Value;
-
 						break;
 
 					case "TYPE":
+            if (!string.IsNullOrEmpty(subproperty.Value))
+            { 
+						  var typeValues = subproperty.Value.Split(',');
 
+              foreach (var typeValue in typeValues)
+              {
+                var profileType = SocialProfileTypeUtils.GetSocialProfileServiceType(typeValue);
 
-						string[] typeValues =
-							subproperty.Value.Split(new char[] { ',' });
-
-						foreach (string typeValue in typeValues)
-						{
-
-							SocialProfileServiceType? profileType = SocialProfileTypeUtils.GetSocialProfileServiceType(typeValue);
-
-
-							if (profileType.HasValue)
-							{
-								sp.ServiceType = profileType.Value;
-
-
-							}
-
-
-
-
-						}
+                if (profileType.HasValue)
+                {
+                  sp.ServiceType = profileType.Value;
+                }
+              }
+            }
 						break;
-
 				}
-
 			}
-
 			card.SocialProfiles.Add(sp);
-
 		}
 
 		#region [ ReadInto_X_WAB_GENDER ]
