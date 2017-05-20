@@ -23,18 +23,18 @@ using GenSync.InitialEntityMatching;
 
 namespace CalDavSynchronizer.Implementation.Tasks
 {
-  internal class InitialTaskEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, TaskItemWrapper, string, WebResourceName, string, IICalendar, string>
+  internal class InitialTaskEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, TaskEntityMatchData, string, WebResourceName, string, IICalendar, string>
   {
     public InitialTaskEntityMatcher (IEqualityComparer<WebResourceName> btypeIdEqualityComparer)
         : base (btypeIdEqualityComparer)
     {
     }
 
-    protected override bool AreEqual (TaskItemWrapper atypeEntity, IICalendar btypeEntity)
+    protected override bool AreEqual (TaskEntityMatchData atypeEntity, IICalendar btypeEntity)
     {
       var task = btypeEntity.Todos[0];
 
-      if (atypeEntity.Inner.Subject == task.Summary)
+      if (atypeEntity.Subject == task.Summary)
       {
         NodaTime.DateTimeZone localZone = NodaTime.DateTimeZoneProviders.Bcl.GetSystemDefault();
         DateTime dateNull = new DateTime (4501, 1, 1, 0, 0, 0);
@@ -43,40 +43,40 @@ namespace CalDavSynchronizer.Implementation.Tasks
         {
           if (task.Start.IsUniversalTime)
           {
-            if (atypeEntity.Inner.StartDate == NodaTime.Instant.FromDateTimeUtc (task.Start.Value).InZone (localZone).ToDateTimeUnspecified().Date)
+            if (atypeEntity.StartDate == NodaTime.Instant.FromDateTimeUtc (task.Start.Value).InZone (localZone).ToDateTimeUnspecified().Date)
             {
               if (task.Due != null)
               {
                 if (task.Due.IsUniversalTime)
                 {
-                  return atypeEntity.Inner.DueDate == NodaTime.Instant.FromDateTimeUtc (task.Due.Value).InZone (localZone).ToDateTimeUnspecified().Date;
+                  return atypeEntity.DueDate == NodaTime.Instant.FromDateTimeUtc (task.Due.Value).InZone (localZone).ToDateTimeUnspecified().Date;
                 }
                 else
                 {
-                  return atypeEntity.Inner.DueDate == task.Due.Date;
+                  return atypeEntity.DueDate == task.Due.Date;
                 }
               }
-              return atypeEntity.Inner.DueDate == dateNull;
+              return atypeEntity.DueDate == dateNull;
             }
             else
               return false;
           }
           else
           {
-            if (atypeEntity.Inner.StartDate == task.Start.Date)
+            if (atypeEntity.StartDate == task.Start.Date)
             {
               if (task.Due != null)
               {
                 if (task.Due.IsUniversalTime)
                 {
-                  return atypeEntity.Inner.DueDate == NodaTime.Instant.FromDateTimeUtc (task.Due.Value).InZone (localZone).ToDateTimeUnspecified().Date;
+                  return atypeEntity.DueDate == NodaTime.Instant.FromDateTimeUtc (task.Due.Value).InZone (localZone).ToDateTimeUnspecified().Date;
                 }
                 else
                 {
-                  return atypeEntity.Inner.DueDate == task.Due.Date;
+                  return atypeEntity.DueDate == task.Due.Date;
                 }
               }
-              return atypeEntity.Inner.DueDate == dateNull;
+              return atypeEntity.DueDate == dateNull;
             }
             else
               return false;
@@ -86,22 +86,22 @@ namespace CalDavSynchronizer.Implementation.Tasks
         {
           if (task.Due.IsUniversalTime)
           {
-            return atypeEntity.Inner.StartDate == dateNull && atypeEntity.Inner.DueDate == NodaTime.Instant.FromDateTimeUtc (task.Due.Value).InZone (localZone).ToDateTimeUnspecified().Date;
+            return atypeEntity.StartDate == dateNull && atypeEntity.DueDate == NodaTime.Instant.FromDateTimeUtc (task.Due.Value).InZone (localZone).ToDateTimeUnspecified().Date;
           }
           else
           {
-            return atypeEntity.Inner.StartDate == dateNull && atypeEntity.Inner.DueDate == task.Due.Date;
+            return atypeEntity.StartDate == dateNull && atypeEntity.DueDate == task.Due.Date;
           }
         }
         else
-          return atypeEntity.Inner.StartDate == dateNull && atypeEntity.Inner.DueDate == dateNull;
+          return atypeEntity.StartDate == dateNull && atypeEntity.DueDate == dateNull;
       }
       return false;
     }
 
-    protected override string GetAtypePropertyValue (TaskItemWrapper atypeEntity)
+    protected override string GetAtypePropertyValue (TaskEntityMatchData atypeEntity)
     {
-      return (atypeEntity.Inner.Subject ?? string.Empty).ToLower();
+      return (atypeEntity.Subject ?? string.Empty).ToLower();
     }
 
     protected override string GetBtypePropertyValue (IICalendar btypeEntity)

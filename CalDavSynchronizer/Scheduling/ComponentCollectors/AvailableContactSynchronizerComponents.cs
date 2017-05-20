@@ -25,6 +25,7 @@ using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Contacts;
 using CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch;
 using CalDavSynchronizer.Implementation.DistributionLists;
+using GenSync.EntityRelationManagement;
 using GenSync.EntityRepositories;
 using Microsoft.Office.Interop.Outlook;
 using Thought.vCards;
@@ -37,11 +38,13 @@ namespace CalDavSynchronizer.Scheduling.ComponentCollectors
     public ICardDavDataAccess SogoDistListDataAccessOrNull { get; set; }
 
     public IEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> CardDavEntityRepository { get; set; }
-    public IEntityRepository<string, DateTime, ContactItemWrapper, ICardDavRepositoryLogger> OutlookContactRepository { get; set; }
+    public IEntityRepository<string, DateTime, IContactItemWrapper, ICardDavRepositoryLogger> OutlookContactRepository { get; set; }
 
     public IEntityRepository<WebResourceName, string, DistributionList, DistributionListSychronizationContext>  SogoDistListRepositoryOrNull { get; set; }
     public IEntityRepository<WebResourceName, string, vCard, DistributionListSychronizationContext> VCardGroupRepositoryOrNull { get; set; }
-    public IEntityRepository<string, DateTime, DistListItemWrapper, DistributionListSychronizationContext> OutlookDistListRepositoryOrNull { get; set; }
+    public IEntityRepository<string, DateTime, IDistListItemWrapper, DistributionListSychronizationContext> OutlookDistListRepositoryOrNull { get; set; }
+    public IEntityRelationDataAccess<string, DateTime, WebResourceName, string> EntityRelationDataAccess { get; set; }
+    public IEntityRelationDataAccess<string, DateTime, WebResourceName, string> DistListEntityRelationDataAccess { get; set; }
 
 
     public override DataAccessComponents GetDataAccessComponents ()

@@ -14,13 +14,24 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Implementation;
+using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.Implementation.Tasks;
+using DDay.iCal;
+using GenSync.EntityRelationManagement;
+using GenSync.EntityRepositories;
 
 namespace CalDavSynchronizer.Scheduling.ComponentCollectors
 {
   public class AvailableTaskSynchronizerComponents : AvailableSynchronizerComponents
   {
     public ICalDavDataAccess CalDavDataAccess { get; set; }
+    public IEntityRepository<WebResourceName, string, IICalendar, int> CalDavRepository { get; set; }
+    public IEntityRepository<string, DateTime, ITaskItemWrapper, int> OutlookRepository { get; set; }
+    public IEntityRelationDataAccess<string, DateTime, WebResourceName, string> EntityRelationDataAccess { get; set; }
 
     public override DataAccessComponents GetDataAccessComponents()
     {

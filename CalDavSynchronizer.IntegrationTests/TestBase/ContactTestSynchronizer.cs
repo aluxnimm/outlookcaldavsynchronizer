@@ -16,7 +16,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
@@ -35,19 +34,16 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.IntegrationTests.TestBase
 {
-  public class ContactSynchronizerFixtureBase : SynchronizerFixtureBase
+  public class ContactTestSynchronizer : TestSynchronizerBase
   {
-    private Guid _profileId;
+    public AvailableContactSynchronizerComponents Components { get; private set; }
+    public EasyAccessRepositoryAdapter<string, DateTime, IContactItemWrapper, ICardDavRepositoryLogger> Outlook { get; private set; }
+    public EasyAccessRepositoryAdapter<WebResourceName, string, vCard, ICardDavRepositoryLogger> Server { get; private set; }
+    public EasyAccessRepositoryAdapter<string, DateTime, IDistListItemWrapper, DistributionListSychronizationContext> OutlookDistListsOrNull { get; private set; }
+    public EasyAccessRepositoryAdapter<WebResourceName, string, vCard, DistributionListSychronizationContext> ServerVCardGroupsOrNull { get; private set; }
+    public EasyAccessRepositoryAdapter<WebResourceName, string, DistributionList, DistributionListSychronizationContext> ServerSogoDistListsOrNull { get; private set; }
 
-    protected IOutlookSynchronizer Synchronizer { get; private set; }
-    protected AvailableContactSynchronizerComponents Components { get; private set; }
-    protected EasyAccessRepositoryAdapter<string, DateTime, ContactItemWrapper, ICardDavRepositoryLogger> Outlook { get; private set; }
-    protected EasyAccessRepositoryAdapter<WebResourceName, string, vCard, ICardDavRepositoryLogger> Server { get; private set; }
-    protected EasyAccessRepositoryAdapter<string, DateTime, DistListItemWrapper, DistributionListSychronizationContext> OutlookDistListsOrNull { get; private set; }
-    protected EasyAccessRepositoryAdapter<WebResourceName, string, vCard, DistributionListSychronizationContext> ServerVCardGroupsOrNull { get; private set; }
-    protected EasyAccessRepositoryAdapter<WebResourceName, string, DistributionList, DistributionListSychronizationContext> ServerSogoDistListsOrNull { get; private set; }
-
-    public async Task DeleteAllEntites ()
+    public override async Task DeleteAllEntites ()
     {
       await Outlook.DeleteAllEntities ();
       await Server.DeleteAllEntities ();
@@ -59,32 +55,22 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
         await ServerSogoDistListsOrNull.DeleteAllEntities ();
     }
 
-    protected void ClearCache ()
+    public ContactTestSynchronizer(Options options, TestComponentContainer testComponentContainer) : base(options, testComponentContainer)
     {
-      var profileDataDirectory = ComponentContainer.GetProfileDataDirectory (_profileId);
-      if (Directory.Exists (profileDataDirectory))
-        Directory.Delete (profileDataDirectory, true);
     }
 
-    protected async Task ClearEventRepositoriesAndCache ()
+    protected override async Task<IOutlookSynchronizer> InitializeOverride ()
     {
-      await DeleteAllEntites ();
-      ClearCache ();
-    }
-
-    protected async Task InitializeFor (Options options)
-    {
-      _profileId = options.Id;
-      var synchronizerWithComponents = await SynchronizerFactory.CreateSynchronizerWithComponents (options, GeneralOptions);
+      var synchronizerWithComponents = await TestComponentContainer.SynchronizerFactory.CreateSynchronizerWithComponents (Options, TestComponentContainer.GeneralOptions);
 
       var components = (AvailableContactSynchronizerComponents) synchronizerWithComponents.Item2;
 
-      Synchronizer = synchronizerWithComponents.Item1;
+      var synchronizer = synchronizerWithComponents.Item1;
       Components = components;
       Outlook = EasyAccessRepositoryAdapter.Create (components.OutlookContactRepository, new SynchronizationContextFactory<ICardDavRepositoryLogger>(() =>  NullCardDavRepositoryLogger.Instance));
       Server = EasyAccessRepositoryAdapter.Create (components.CardDavEntityRepository, new SynchronizationContextFactory<ICardDavRepositoryLogger> (() => NullCardDavRepositoryLogger.Instance));
 
-      var distributionListSychronizationContextDummy = new DistributionListSychronizationContext(new CacheItem[0], new OutlookSession(Application.Session));
+      var distributionListSychronizationContextDummy = new DistributionListSychronizationContext(new CacheItem[0], new OutlookSession(TestComponentContainer.Application.Session));
 
       if(components.OutlookDistListRepositoryOrNull != null)
         OutlookDistListsOrNull = EasyAccessRepositoryAdapter.Create (components.OutlookDistListRepositoryOrNull, new SynchronizationContextFactory<DistributionListSychronizationContext> (() => distributionListSychronizationContextDummy));
@@ -92,6 +78,8 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
         ServerSogoDistListsOrNull = EasyAccessRepositoryAdapter.Create (components.SogoDistListRepositoryOrNull, new SynchronizationContextFactory<DistributionListSychronizationContext> (() => distributionListSychronizationContextDummy));
       if(components.VCardGroupRepositoryOrNull != null)
         ServerVCardGroupsOrNull = EasyAccessRepositoryAdapter.Create (components.VCardGroupRepositoryOrNull, new SynchronizationContextFactory<DistributionListSychronizationContext> (() => distributionListSychronizationContextDummy));
+
+      return synchronizer;
     }
   }
 }

@@ -38,11 +38,11 @@ using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Implementation.DistributionLists
 {
-  public class SogoDistListEntityMapper : IEntityMapper<DistListItemWrapper, DistributionList, DistributionListSychronizationContext>
+  public class SogoDistListEntityMapper : IEntityMapper<IDistListItemWrapper, DistributionList, DistributionListSychronizationContext>
   {
     private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
 
-    public Task<DistributionList> Map1To2(DistListItemWrapper source, DistributionList target, IEntityMappingLogger logger, DistributionListSychronizationContext context)
+    public Task<DistributionList> Map1To2(IDistListItemWrapper source, DistributionList target, IEntityMappingLogger logger, DistributionListSychronizationContext context)
     {
       target.Members.Clear();
       target.NonAddressBookMembers.Clear();
@@ -95,7 +95,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
       return Task.FromResult(target);
     }
 
-    public Task<DistListItemWrapper> Map2To1(DistributionList source, DistListItemWrapper target, IEntityMappingLogger logger, DistributionListSychronizationContext context)
+    public Task<IDistListItemWrapper> Map2To1(DistributionList source, IDistListItemWrapper target, IEntityMappingLogger logger, DistributionListSychronizationContext context)
     {
       target.Inner.DLName = source.Name;
       if (!string.IsNullOrEmpty(source.Description))

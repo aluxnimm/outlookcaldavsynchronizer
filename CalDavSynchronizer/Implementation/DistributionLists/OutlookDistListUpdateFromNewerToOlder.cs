@@ -11,12 +11,12 @@ using Thought.vCards;
 namespace CalDavSynchronizer.Implementation.DistributionLists
 {
   internal class OutlookDistListUpdateFromNewerToOlder
-    : UpdateFromNewerToOlder<string, DateTime, DistListItemWrapper, WebResourceName, string, vCard, DistributionListSychronizationContext>
+    : UpdateFromNewerToOlder<string, DateTime, IDistListItemWrapper, WebResourceName, string, vCard, DistributionListSychronizationContext>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod ().DeclaringType);
 
     public OutlookDistListUpdateFromNewerToOlder (
-      EntitySyncStateEnvironment<string, DateTime, DistListItemWrapper, WebResourceName, string, vCard, DistributionListSychronizationContext> environment,
+      EntitySyncStateEnvironment<string, DateTime, IDistListItemWrapper, WebResourceName, string, vCard, DistributionListSychronizationContext> environment,
       IEntityRelationData<string, DateTime, WebResourceName, string> knownData,
       DateTime newA,
       string newB)

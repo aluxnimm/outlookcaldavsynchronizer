@@ -18,14 +18,10 @@ using System;
 
 namespace GenSync.ProgressReport
 {
-  /// <summary>
-  /// Represents the progress of an operation, which consists of multiple steps 
-  /// </summary>
+ 
   public interface ITotalProgressLogger : IDisposable
   {
-    IDisposable StartARepositoryLoad ();
-    IDisposable StartBRepositoryLoad ();
-    IProgressLogger StartProcessing (int entityCount);
-    void NotifyLoadCount (int aLoadCount, int bLoadCount);
+    void NotifyWork (int totalEntitiesBeingLoaded, int chunkCount);
+    IChunkProgressLogger StartChunk();
   }
 }

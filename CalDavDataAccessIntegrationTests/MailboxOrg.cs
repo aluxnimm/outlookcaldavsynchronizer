@@ -21,6 +21,7 @@ using NUnit.Framework;
 
 namespace CalDavDataAccessIntegrationTests
 {
+  [Ignore("Currently no account availabe for testing")]
   public class MailboxOrg : FixtureBase
   {
     protected override string ProfileName

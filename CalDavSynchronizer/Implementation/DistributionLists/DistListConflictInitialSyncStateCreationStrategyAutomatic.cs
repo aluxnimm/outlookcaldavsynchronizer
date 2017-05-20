@@ -11,14 +11,14 @@ using Thought.vCards;
 namespace CalDavSynchronizer.Implementation.DistributionLists
 {
   internal class DistListConflictInitialSyncStateCreationStrategyAutomatic
-    : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, DistListItemWrapper, WebResourceName, string, vCard, DistributionListSychronizationContext>
+    : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, IDistListItemWrapper, WebResourceName, string, vCard, DistributionListSychronizationContext>
   {
-    public DistListConflictInitialSyncStateCreationStrategyAutomatic (EntitySyncStateEnvironment<string, DateTime, DistListItemWrapper, WebResourceName, string, vCard, DistributionListSychronizationContext> environment)
+    public DistListConflictInitialSyncStateCreationStrategyAutomatic (EntitySyncStateEnvironment<string, DateTime, IDistListItemWrapper, WebResourceName, string, vCard, DistributionListSychronizationContext> environment)
       : base (environment)
     {
     }
 
-    protected override IEntitySyncState<string, DateTime, DistListItemWrapper, WebResourceName, string, vCard, DistributionListSychronizationContext> Create_FromNewerToOlder (IEntityRelationData<string, DateTime, WebResourceName, string> knownData, DateTime newA, string newB)
+    protected override IEntitySyncState<string, DateTime, IDistListItemWrapper, WebResourceName, string, vCard, DistributionListSychronizationContext> Create_FromNewerToOlder (IEntityRelationData<string, DateTime, WebResourceName, string> knownData, DateTime newA, string newB)
     {
       return new OutlookDistListUpdateFromNewerToOlder (
         _environment,

@@ -14,7 +14,6 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
 
 namespace GenSync.ProgressReport
 {
@@ -25,28 +24,20 @@ namespace GenSync.ProgressReport
     private NullTotalProgressLogger ()
     {
     }
-
-    public void Dispose ()
+    
+    public void NotifyWork(int totalEntitiesBeingLoaded, int chunkCount)
     {
+      
     }
 
-    public IDisposable StartARepositoryLoad ()
+    public IChunkProgressLogger StartChunk()
     {
-      return NullProgressLogger.Instance;
+      return NullChunkProgressLogger.Instance;
     }
 
-    public IDisposable StartBRepositoryLoad ()
-    {
-      return NullProgressLogger.Instance;
-    }
-
-    public IProgressLogger StartProcessing (int entityCount)
-    {
-      return NullProgressLogger.Instance;
-    }
-
-    public void NotifyLoadCount (int aLoadCount, int bLoadCount)
+    public void Dispose()
     {
     }
+    
   }
 }

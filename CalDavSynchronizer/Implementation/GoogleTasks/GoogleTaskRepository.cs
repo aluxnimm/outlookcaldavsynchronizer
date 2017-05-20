@@ -114,8 +114,14 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
       return System.Threading.Tasks.Task.FromResult (0);
     }
 
-    public void Cleanup (IReadOnlyDictionary<string, Task> entities)
+    public void Cleanup(Task entity)
     {
+      
+    }
+
+    public void Cleanup(IEnumerable<Task> entities)
+    {
+
     }
   }
 }

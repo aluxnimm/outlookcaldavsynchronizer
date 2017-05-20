@@ -27,12 +27,12 @@ using Thought.vCards;
 namespace CalDavSynchronizer.Implementation.DistributionLists
 {
   internal class OutlookSogoDistListUpdateFromNewerToOlder
-      : UpdateFromNewerToOlder<string, DateTime, DistListItemWrapper, WebResourceName, string, DistributionList, DistributionListSychronizationContext>
+      : UpdateFromNewerToOlder<string, DateTime, IDistListItemWrapper, WebResourceName, string, DistributionList, DistributionListSychronizationContext>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
 
     public OutlookSogoDistListUpdateFromNewerToOlder (
-        EntitySyncStateEnvironment<string, DateTime, DistListItemWrapper, WebResourceName, string, DistributionList, DistributionListSychronizationContext> environment,
+        EntitySyncStateEnvironment<string, DateTime, IDistListItemWrapper, WebResourceName, string, DistributionList, DistributionListSychronizationContext> environment,
         IEntityRelationData<string, DateTime, WebResourceName, string> knownData,
         DateTime newA,
         string newB)

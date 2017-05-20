@@ -25,7 +25,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.IntegrationTests.Infrastructure
 {
-  public static class ComponentContainerTestExtensioncs
+  public static class ComponentContainerTestExtension
   {
     public static SynchronizerFactory GetSynchronizerFactory(this ComponentContainer componentContainer)
     {

@@ -33,7 +33,7 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
 
     public int EntityCacheVersion
     {
-      get { return ComponentContainerTestExtensioncs.GetRequiredEntityCacheVersion(); }
+      get { return ComponentContainerTestExtension.GetRequiredEntityCacheVersion(); }
       set { }
     }
   }

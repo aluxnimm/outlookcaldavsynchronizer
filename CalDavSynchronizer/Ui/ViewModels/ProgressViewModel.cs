@@ -29,37 +29,52 @@ namespace CalDavSynchronizer.Ui.ViewModels
     private int _value;
     private int _maximum;
     private string _message;
+    private string _subMessage;
 
-    public static ProgressViewModel DesingInstance => new ProgressViewModel() { Maximum = 300, Value = 100, Message = "One third" };
+    public static ProgressViewModel DesingInstance => new ProgressViewModel() { Maximum = 300, Value = 100, Message = "One third", SubMessage ="Submessage" };
 
     public event EventHandler CloseRequested;
 
     public int Value
     {
-      get { return _value; }
-      set { CheckedPropertyChange(ref _value, value); }
+      get => _value;
+      set => CheckedPropertyChange(ref _value, value);
     }
 
     public int Maximum
     {
-      get { return _maximum; }
-      set { CheckedPropertyChange(ref _maximum, value); }
+      get => _maximum;
+      set => CheckedPropertyChange(ref _maximum, value);
     }
 
     public string Message
     {
-      get { return _message; }
-      set { CheckedPropertyChange(ref _message, value); }
+      get => _message;
+      set => CheckedPropertyChange(ref _message, value);
     }
 
-    public void SetValue(int value)
+    public void IncrementValue()
     {
-      Value = value;
+      Value += 1;
+      System.Windows.Forms.Application.DoEvents();
+    }
+
+    public string SubMessage
+    {
+      get => _subMessage;
+      set => CheckedPropertyChange(ref _subMessage, value);
     }
 
     public void SetMessage(string message)
     {
       Message = message;
+      System.Windows.Forms.Application.DoEvents();
+    }
+
+    public void SetSubMessage(string message)
+    {
+      SubMessage = message;
+      System.Windows.Forms.Application.DoEvents();
     }
 
     public void SetMaximun(int value)

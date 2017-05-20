@@ -17,6 +17,7 @@
 
 using System.Linq;
 using System.Threading.Tasks;
+using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.IntegrationTests.Infrastructure;
 using CalDavSynchronizer.IntegrationTests.TestBase;
@@ -26,58 +27,60 @@ using NUnit.Framework;
 namespace CalDavSynchronizer.IntegrationTests
 {
   [TestFixture]
-  public class GoogleContactFixture : GoogleContactsSynchronizerFixtureBase
+  public class GoogleContactFixture 
   {
-    [TestCase(40, 501 , 50)]
-    [TestCase(40, 501 , 100)]
-    [TestCase(40, 501 , 700)]
+    private TestComponentContainer _testComponentContainer;
+
+    [OneTimeSetUp]
+    public void OneTimeSetup()
+    {
+      _testComponentContainer = new TestComponentContainer();
+    }
+
+    [TestCase(40, 201 , 50)]
+    [TestCase(40, 201 , 100)]
+    [TestCase(40, 201 , 700)]
     [Apartment(System.Threading.ApartmentState.STA)]
     public async Task GenericTest(int numberOfGroups, int numberOfContacts, int chunkSize)
     {
-      var options = GetOptions("Automated Test - Google Contacts");
+      var options = TestComponentContainer.GetOptions("Automated Test - Google Contacts");
       options.SynchronizationMode = SynchronizationMode.ReplicateOutlookIntoServer;
       options.IsChunkedSynchronizationEnabled = true;
       options.ChunkSize = chunkSize;
 
-      await InitializeFor(options);
-      await ClearEventRepositoriesAndCache();
+      var synchronizer = await CreateSynchronizer(options);
 
-      var groupNames = GetOrCreateGoogleGroups(numberOfGroups);
-      await CreateContactsInOutlook(CreateTestContactData(groupNames, numberOfContacts));
+      await synchronizer.ClearEventRepositoriesAndCache();
 
-      var reportSink = new TestReportSink();
+      var groupNames = synchronizer.GetOrCreateGoogleGroups(numberOfGroups);
+      await synchronizer.CreateContactsInOutlook(synchronizer.CreateTestContactData(groupNames, numberOfContacts));
 
-      using (var logger = new SynchronizationLogger(options.Id, options.Name, reportSink))
-      {
-        await Synchronizer.Synchronize(logger);
-      }
+      await synchronizer.SynchronizeAndCheck(
+        unchangedA: 0, addedA: numberOfContacts, changedA: 0, deletedA: 0,
+        unchangedB: 0, addedB: 0, changedB: 0, deletedB: 0,
+        createA: 0, updateA: 0, deleteA: 0,
+        createB: numberOfContacts, updateB: 0, deleteB: 0);
 
-      Assert.That(reportSink.SynchronizationReport.ADelta, Is.EqualTo($"Unchanged: 0 , Added: {numberOfContacts} , Deleted 0 ,  Changed 0"));
-      Assert.That(reportSink.SynchronizationReport.BDelta, Is.EqualTo("Unchanged: 0 , Added: 0 , Deleted 0 ,  Changed 0"));
-      Assert.That(reportSink.SynchronizationReport.AJobsInfo, Is.EqualTo("Create 0 , Update 0 , Delete 0"));
-      Assert.That(reportSink.SynchronizationReport.BJobsInfo, Is.EqualTo($"Create {numberOfContacts} , Update 0 , Delete 0"));
-
-      var outlook1IdsByGoogleId = Components.GoogleContactsEntityRelationDataAccess.LoadEntityRelationData().ToDictionary(r => r.BtypeId, r => r.AtypeId);
+      var outlook1IdsByGoogleId = synchronizer.Components.GoogleContactsEntityRelationDataAccess.LoadEntityRelationData().ToDictionary(r => r.BtypeId, r => r.AtypeId);
       Assert.That(outlook1IdsByGoogleId.Count, Is.EqualTo(numberOfContacts));
 
-      await Outlook.DeleteAllEntities();
+      await synchronizer.Outlook.DeleteAllEntities();
 
       options.SynchronizationMode = SynchronizationMode.ReplicateServerIntoOutlook;
-      await InitializeFor(options);
+      synchronizer = await CreateSynchronizer(options);
 
-      reportSink.SynchronizationReport = null;
-
-      using (var logger = new SynchronizationLogger(options.Id, options.Name, reportSink))
-      {
-        await Synchronizer.Synchronize(logger);
-      }
-
-      Assert.That(reportSink.SynchronizationReport.ADelta, Is.EqualTo($"Unchanged: 0 , Added: 0 , Deleted {numberOfContacts} ,  Changed 0"));
-      Assert.That(reportSink.SynchronizationReport.BDelta, Is.EqualTo($"Unchanged: {numberOfContacts} , Added: 0 , Deleted 0 ,  Changed 0"));
-      Assert.That(reportSink.SynchronizationReport.AJobsInfo, Is.EqualTo($"Create {numberOfContacts} , Update 0 , Delete 0"));
-      Assert.That(reportSink.SynchronizationReport.BJobsInfo, Is.EqualTo("Create 0 , Update 0 , Delete 0"));
+      await synchronizer.SynchronizeAndCheck(
+        unchangedA: 0, addedA: 0, changedA: 0, deletedA: numberOfContacts,
+        unchangedB: numberOfContacts, addedB: 0, changedB: 0, deletedB: 0,
+        createA: numberOfContacts, updateA: 0, deleteA: 0,
+        createB: 0, updateB: 0, deleteB: 0);
     }
 
-    
+    private async Task<GoogleContactTestSynchronizer> CreateSynchronizer(Options options)
+    {
+      var synchronizer = new GoogleContactTestSynchronizer(options, _testComponentContainer);
+      await synchronizer.Initialize();
+      return synchronizer;
+    }
   }
 }

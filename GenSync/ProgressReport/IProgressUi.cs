@@ -23,7 +23,8 @@ namespace GenSync.ProgressReport
   /// </summary>
   public interface IProgressUi : IDisposable
   {
-    void SetValue (int value);
+    void IncrementValue ();
     void SetMessage (string message);
+    void SetSubMessage(string message);
   }
 }

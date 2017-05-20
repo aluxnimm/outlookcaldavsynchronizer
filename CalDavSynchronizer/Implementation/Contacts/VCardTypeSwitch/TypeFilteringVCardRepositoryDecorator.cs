@@ -93,9 +93,14 @@ namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
       return _decorated.VerifyUnknownEntities (unknownEntites, context);
     }
 
-    public void Cleanup (IReadOnlyDictionary<WebResourceName, vCard> entities)
+    public void Cleanup(vCard entity)
     {
-      _decorated.Cleanup (entities);
+      _decorated.Cleanup(entity);
+    }
+
+    public void Cleanup(IEnumerable<vCard> entities)
+    {
+      _decorated.Cleanup(entities);
     }
   }
 }

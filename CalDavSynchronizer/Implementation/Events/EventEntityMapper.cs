@@ -40,7 +40,7 @@ using RecurrencePattern = DDay.iCal.RecurrencePattern;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class EventEntityMapper : IEntityMapper<AppointmentItemWrapper, IICalendar, IEventSynchronizationContext>
+  public class EventEntityMapper : IEntityMapper<IAppointmentItemWrapper, IICalendar, IEventSynchronizationContext>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -91,7 +91,7 @@ namespace CalDavSynchronizer.Implementation.Events
       _outlookMajorVersion = Convert.ToInt32 (outlookMajorVersionString);
     }
 
-    public async Task<IICalendar> Map1To2 (AppointmentItemWrapper sourceWrapper, IICalendar existingTargetCalender, IEntityMappingLogger logger, IEventSynchronizationContext context)
+    public async Task<IICalendar> Map1To2 (IAppointmentItemWrapper sourceWrapper, IICalendar existingTargetCalender, IEntityMappingLogger logger, IEventSynchronizationContext context)
     {
       var newTargetCalender = new iCalendar();
 
@@ -864,7 +864,7 @@ namespace CalDavSynchronizer.Implementation.Events
       }
     }
 
-    private void MapRecurrance2To1 (IEvent source, IReadOnlyCollection<IEvent> exceptions, AppointmentItemWrapper targetWrapper, IEntityMappingLogger logger)
+    private void MapRecurrance2To1 (IEvent source, IReadOnlyCollection<IEvent> exceptions, IAppointmentItemWrapper targetWrapper, IEntityMappingLogger logger)
     {
       if (source.RecurrenceRules.Count > 0)
       {
@@ -1146,7 +1146,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
     private void MapRecurrenceExceptions2To1 (
         IEnumerable<IEvent> exceptions,
-        AppointmentItemWrapper targetWrapper,
+        IAppointmentItemWrapper targetWrapper,
         Microsoft.Office.Interop.Outlook.RecurrencePattern targetRecurrencePattern,
         IEntityMappingLogger logger)
     {
@@ -1382,7 +1382,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
     private const int s_mailtoSchemaLength = 7; // length of "mailto:"
 
-    public Task<AppointmentItemWrapper> Map2To1 (IICalendar sourceCalendar, AppointmentItemWrapper target, IEntityMappingLogger logger, IEventSynchronizationContext context)
+    public Task<IAppointmentItemWrapper> Map2To1 (IICalendar sourceCalendar, IAppointmentItemWrapper target, IEntityMappingLogger logger, IEventSynchronizationContext context)
     {
       IEvent sourceMasterEvent = null;
       IReadOnlyCollection<IEvent> sourceExceptionEvents;
@@ -1517,10 +1517,10 @@ namespace CalDavSynchronizer.Implementation.Events
       return values.Aggregate (GreatestCommonDivisor);
     }
 
-    private AppointmentItemWrapper Map2To1 (
+    private IAppointmentItemWrapper Map2To1 (
         IEvent source,
         IReadOnlyCollection<IEvent> recurrenceExceptionsOrNull,
-        AppointmentItemWrapper targetWrapper,
+        IAppointmentItemWrapper targetWrapper,
         bool isRecurrenceException,
         IEntityMappingLogger logger)
     {

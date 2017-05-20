@@ -42,6 +42,9 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.3.1\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -75,6 +78,8 @@
     <Compile Include="EntityRepositories\IBatchWriteOnlyEntityRepository.cs" />
     <Compile Include="EntityWithId.cs" />
     <Compile Include="IExceptionLogger.cs" />
+    <Compile Include="InitialEntityMatching\IdentityMatchDataFactory.cs" />
+    <Compile Include="InitialEntityMatching\IMatchDataFactory.cs" />
     <Compile Include="InitialEntityMatching\IInitialEntityMatcher.cs" />
     <Compile Include="InitialEntityMatching\InitialEntityMatcherByPropertyGrouping.cs" />
     <Compile Include="Logging\ISynchronizationReportSink.cs" />
@@ -92,11 +97,14 @@
     <Compile Include="Logging\NullSynchronizationLogger.cs" />
     <Compile Include="Logging\SynchronizationReport.cs" />
     <Compile Include="Logging\SynchronizationLogger.cs" />
+    <Compile Include="ProgressReport\ChunkProgressLogger.cs" />
+    <Compile Include="ProgressReport\IChunkProgressLogger.cs" />
     <Compile Include="ProgressReport\IProgressLogger.cs" />
     <Compile Include="ProgressReport\IProgressUi.cs" />
     <Compile Include="ProgressReport\IProgressUiFactory.cs" />
     <Compile Include="ProgressReport\ITotalProgressFactory.cs" />
     <Compile Include="ProgressReport\ITotalProgressLogger.cs" />
+    <Compile Include="ProgressReport\NullChunkProgressLogger.cs" />
     <Compile Include="ProgressReport\NullProgressLogger.cs" />
     <Compile Include="ProgressReport\NullTotalProgressFactory.cs" />
     <Compile Include="ProgressReport\NullTotalProgressLogger.cs" />
@@ -106,8 +114,13 @@
     <Compile Include="ProgressReport\TotalProgressLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Synchronization\ContextCreatingSynchronizerDecorator.cs" />
+    <Compile Include="Synchronization\EntityContainer.cs" />
+    <Compile Include="Synchronization\EntitySyncStateChunkCreator.cs" />
     <Compile Include="Synchronization\EntitySyncStateContext.cs" />
+    <Compile Include="Synchronization\EnumerableAdditions.cs" />
+    <Compile Include="Synchronization\IEntityContainer.cs" />
     <Compile Include="Synchronization\IExceptionHandlingStrategy.cs" />
+    <Compile Include="Synchronization\JobCount.cs" />
     <Compile Include="Synchronization\NullContextSynchronizerDecorator.cs" />
     <Compile Include="Synchronization\NullSynchronizationInterceptor.cs" />
     <Compile Include="Synchronization\NullSynchronizationInterceptorFactory.cs" />

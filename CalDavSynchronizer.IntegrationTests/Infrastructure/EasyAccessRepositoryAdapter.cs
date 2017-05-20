@@ -69,7 +69,7 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
         throw new ArgumentNullException (nameof (contextFactory));
 
       _readRepository = repository;
-      _writeRepository = BatchEntityRepositoryAdapter.Create(repository, new ExceptionHandlingStrategy());
+      _writeRepository = BatchEntityRepositoryAdapter.Create(repository, new TestExceptionHandlingStrategy());
       _contextFactory = contextFactory;
     }
 
@@ -83,6 +83,23 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
           (await _readRepository.GetAllVersions(new TEntityId[0], context)).Select(v => v.Id).ToArray(),
           NullLoadEntityLogger.Instance,
           context);
+      }
+      finally
+      {
+        await _contextFactory.SynchronizationFinished(context);
+      }
+    }
+
+    public async Task<TEntity> GetEntity(TEntityId id)
+    {
+      var context = await _contextFactory.Create();
+
+      try
+      {
+        return (await _readRepository.Get(
+          new[] { id },
+          NullLoadEntityLogger.Instance,
+          context)).Single().Entity;
       }
       finally
       {
@@ -131,6 +148,8 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
           new IDeleteJob<TEntityId, TEntityVersion>[0],
           NullProgressLogger.Instance,
           context);
+
+        _readRepository.Cleanup(entity.Entity);
       }
       finally
       {
@@ -292,14 +311,5 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
        
       }
     }
-
-    class ExceptionHandlingStrategy : IExceptionHandlingStrategy
-    {
-      public bool DoesAbortSynchronization(Exception x)
-      {
-        return true;
-      }
-    }
-
   }
 }

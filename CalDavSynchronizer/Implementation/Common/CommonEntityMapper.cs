@@ -301,7 +301,7 @@ namespace CalDavSynchronizer.Implementation.Common
 
     public static void MapDistListMembers2To1(
       IEnumerable<DistributionListMember> sourceMembers,
-      DistListItemWrapper target,
+      IDistListItemWrapper target,
       IEntityMappingLogger logger,
       DistributionListSychronizationContext context)
     {

@@ -42,9 +42,9 @@ namespace GenSync.UnitTests.Synchronization.Stubs
       ExceptionHandlingStrategy = MockRepository.GenerateMock<IExceptionHandlingStrategy>();
     }
 
-    public Synchronizer<string, string, string, string, string, string,int> Build ()
+    public Synchronizer<string, string, string, string, string, string,int,string,string> Build ()
     {
-      return new Synchronizer<string, string, string, string, string, string, int> (
+      return new Synchronizer<string, string, string, string, string, string, int, string, string> (
           AtypeRepository,
           BtypeRepository,
           BatchEntityRepositoryAdapter.Create(AtypeRepository, ExceptionHandlingStrategy),
@@ -59,8 +59,10 @@ namespace GenSync.UnitTests.Synchronization.Stubs
           EqualityComparer<string>.Default,
           EqualityComparer<string>.Default,
           MockRepository.GenerateMock<IEntitySyncStateFactory<string, string, string, string, string, string, int>> (),
-          ExceptionHandlingStrategy
-          );
+          ExceptionHandlingStrategy,
+          IdentityMatchDataFactory<string>.Instance,
+          IdentityMatchDataFactory<string>.Instance,
+          null);
     }
 
     public IEntityRelationDataAccess<string, string, string, string> EntityRelationDataAccess { get; set; }

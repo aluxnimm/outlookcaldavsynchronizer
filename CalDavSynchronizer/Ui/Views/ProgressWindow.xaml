@@ -10,11 +10,14 @@
         WindowStyle="ThreeDBorderWindow"
         Icon= "pack://application:,,,/CalDavSynchronizer;component/Resources/ApplicationIcon.ico"
         ResizeMode="NoResize"
-        Title="CalDavSynchronizer - Synchronizing..." Height="130" Width="360" WindowStartupLocation="CenterScreen">
+        Title="CalDavSynchronizer - Synchronizing..." Height="160" Width="360" WindowStartupLocation="CenterScreen">
     <Window.Resources>
     </Window.Resources>
     <DockPanel Margin="12">
         <ProgressBar Height="23" Minimum="0" Maximum="{Binding Maximum}" Value="{Binding Value}" DockPanel.Dock="Top"></ProgressBar>
-        <TextBlock Text="{Binding Message}" Margin="0,9,0,0"></TextBlock>
-    </DockPanel>
+    <StackPanel>
+      <TextBlock Text="{Binding Message}" Margin="0,9,0,0"></TextBlock>
+      <TextBlock Text="{Binding SubMessage}" Margin="0,9,0,0"></TextBlock>
+    </StackPanel>
+  </DockPanel>
 </Window>

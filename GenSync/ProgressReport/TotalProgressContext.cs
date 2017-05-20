@@ -40,37 +40,26 @@ namespace GenSync.ProgressReport
       (_logger ?? NullTotalProgressLogger.Instance).Dispose();
     }
 
-    public IDisposable StartARepositoryLoad ()
+    public IChunkProgressLogger StartChunk()
     {
-      return (_logger ?? NullTotalProgressLogger.Instance).StartARepositoryLoad();
+      return (_logger ?? NullTotalProgressLogger.Instance).StartChunk();
     }
 
-    public IDisposable StartBRepositoryLoad ()
-    {
-      return (_logger ?? NullTotalProgressLogger.Instance).StartBRepositoryLoad();
-    }
-
-    public IProgressLogger StartProcessing (int entityCount)
-    {
-      return (_logger ?? NullTotalProgressLogger.Instance).StartProcessing (entityCount);
-    }
-
-
-    public void NotifyLoadCount (int aLoadCount, int bLoadCount)
+    public void NotifyWork(int totalEntitiesBeingLoaded,int chunkCount)
     {
       if (_logger != null)
         return;
 
       try
       {
-        if (aLoadCount + bLoadCount >= _loadOperationThresholdForProgressDisplay)
-          _logger = new TotalProgressLogger (_progressUiFactory, _exceptionLogger);
+        if (totalEntitiesBeingLoaded >= _loadOperationThresholdForProgressDisplay)
+          _logger = new TotalProgressLogger(_progressUiFactory, _exceptionLogger, chunkCount);
         else
           _logger = NullTotalProgressLogger.Instance;
       }
       catch (Exception x)
       {
-        _exceptionLogger.LogException (x, s_logger);
+        _exceptionLogger.LogException(x, s_logger);
         _logger = NullTotalProgressLogger.Instance;
       }
     }

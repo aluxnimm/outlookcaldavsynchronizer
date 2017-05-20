@@ -30,48 +30,36 @@ using NUnit.Framework;
 
 namespace CalDavSynchronizer.IntegrationTests.TestBase
 {
-  public class EventSynchronizerFixtureBase : SynchronizerFixtureBase
+  public class EventTestSynchronizer : TestSynchronizerBase
   {
-    private Guid _profileId;
+    public AvailableEventSynchronizerComponents Components { get; private set; }
+    public EasyAccessRepositoryAdapter<AppointmentId, DateTime, IAppointmentItemWrapper, IEventSynchronizationContext> Outlook { get; private set; }
+    public EasyAccessRepositoryAdapter<WebResourceName, string, IICalendar, IEventSynchronizationContext> Server { get; private set; }
 
-    protected IOutlookSynchronizer Synchronizer { get; private set; }
-    protected AvailableEventSynchronizerComponents Components { get; private set; }
-    protected EasyAccessRepositoryAdapter<AppointmentId, DateTime, AppointmentItemWrapper, IEventSynchronizationContext> Outlook { get; private set; }
-    protected EasyAccessRepositoryAdapter<WebResourceName, string, IICalendar, IEventSynchronizationContext> Server { get; private set; }
-
-    public async Task DeleteAllEntites ()
+    public override async Task DeleteAllEntites ()
     {
       await Outlook.DeleteAllEntities ();
       await Server.DeleteAllEntities ();
     }
 
-    protected void ClearCache ()
+    public EventTestSynchronizer(Options options, TestComponentContainer testComponentContainer) : base(options, testComponentContainer)
     {
-      var profileDataDirectory = ComponentContainer.GetProfileDataDirectory (_profileId);
-      if (Directory.Exists (profileDataDirectory))
-        Directory.Delete (profileDataDirectory, true);
     }
 
-    protected async Task ClearEventRepositoriesAndCache ()
+    protected override async Task<IOutlookSynchronizer> InitializeOverride()
     {
-      await DeleteAllEntites();
-      ClearCache ();
-    }
-
-    protected async Task InitializeFor(Options options)
-    {
-      _profileId = options.Id;
-      var synchronizerWithComponents = await SynchronizerFactory.CreateSynchronizerWithComponents(options, GeneralOptions);
+      var synchronizerWithComponents = await TestComponentContainer.SynchronizerFactory.CreateSynchronizerWithComponents(Options, TestComponentContainer.GeneralOptions);
 
       var components = (AvailableEventSynchronizerComponents) synchronizerWithComponents.Item2;
 
-      Synchronizer = synchronizerWithComponents.Item1;
+      var synchronizer = synchronizerWithComponents.Item1;
       Components = components;
       Outlook = EasyAccessRepositoryAdapter.Create(components.OutlookEventRepository, new SynchronizationContextFactory<IEventSynchronizationContext>(() => NullEventSynchronizationContext.Instance));
       Server = EasyAccessRepositoryAdapter.Create(components.CalDavRepository, new SynchronizationContextFactory<IEventSynchronizationContext>(() => NullEventSynchronizationContext.Instance));
+      return synchronizer;
     }
 
-    protected async Task<AppointmentId> CreateEventInOutlook (
+    public async Task<AppointmentId> CreateEventInOutlook (
     string subject,
     DateTime start,
     DateTime end)
@@ -86,7 +74,7 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
         });
     }
 
-    protected async Task<WebResourceName> CreateEventOnServer(
+    public async Task<WebResourceName> CreateEventOnServer(
       string subject,
       DateTime start,
       DateTime end,

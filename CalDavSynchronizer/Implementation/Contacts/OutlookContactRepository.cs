@@ -31,7 +31,7 @@ using log4net;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public class OutlookContactRepository<Tcontext> : IEntityRepository<string, DateTime, ContactItemWrapper, Tcontext>
+  public class OutlookContactRepository<Tcontext> : IEntityRepository<string, DateTime, IContactItemWrapper, Tcontext>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod ().DeclaringType);
 
@@ -40,23 +40,25 @@ namespace CalDavSynchronizer.Implementation.Contacts
     private readonly string _folderStoreId;
     private readonly IDaslFilterProvider _daslFilterProvider;
     private readonly IQueryOutlookContactItemFolderStrategy _queryFolderStrategy;
+    private readonly IComWrapperFactory _comWrapperFactory;
     
-
     private const string PR_ASSOCIATED_BIRTHDAY_APPOINTMENT_ID = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/804D0102";
 
-    public OutlookContactRepository (IOutlookSession session, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider, IQueryOutlookContactItemFolderStrategy queryFolderStrategy)
+    public OutlookContactRepository (IOutlookSession session, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider, IQueryOutlookContactItemFolderStrategy queryFolderStrategy, IComWrapperFactory comWrapperFactory)
     {
       if (session == null)
         throw new ArgumentNullException (nameof (session));
       if (daslFilterProvider == null)
         throw new ArgumentNullException (nameof (daslFilterProvider));
       if (queryFolderStrategy == null) throw new ArgumentNullException(nameof(queryFolderStrategy));
+      if (comWrapperFactory == null) throw new ArgumentNullException(nameof(comWrapperFactory));
 
       _session = session;
       _folderId = folderId;
       _folderStoreId = folderStoreId;
       _daslFilterProvider = daslFilterProvider;
       _queryFolderStrategy = queryFolderStrategy;
+      _comWrapperFactory = comWrapperFactory;
     }
 
     private GenericComObjectWrapper<Folder> CreateFolderWrapper ()
@@ -108,16 +110,15 @@ namespace CalDavSynchronizer.Implementation.Contacts
     }
 
 #pragma warning disable 1998
-    public async Task<IEnumerable<EntityWithId<string, ContactItemWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger, Tcontext context)
+    public async Task<IEnumerable<EntityWithId<string, IContactItemWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger, Tcontext context)
 #pragma warning restore 1998
     {
       return ids
-          .Select (id => EntityWithId.Create (
-              id,
-              new ContactItemWrapper (
-                  _session.GetContactItem (id, _folderStoreId),
-                  entryId => _session.GetContactItem (entryId, _folderStoreId))))
-          .ToArray ();
+        .Select(id => EntityWithId.Create(
+          id,
+          _comWrapperFactory.Create(
+            _session.GetContactItem(id, _folderStoreId),
+            entryId => _session.GetContactItem(entryId, _folderStoreId))));
     }
 
     public Task VerifyUnknownEntities (Dictionary<string, DateTime> unknownEntites, Tcontext context)
@@ -125,17 +126,22 @@ namespace CalDavSynchronizer.Implementation.Contacts
       return Task.FromResult (0);
     }
 
-    public void Cleanup (IReadOnlyDictionary<string, ContactItemWrapper> entities)
+    public void Cleanup(IContactItemWrapper entity)
     {
-      foreach (var contactItemWrapper in entities.Values)
-        contactItemWrapper.Dispose ();
+      entity.Dispose();
+    }
+
+    public void Cleanup(IEnumerable<IContactItemWrapper> entities)
+    {
+      foreach (var contactItemWrapper in entities)
+        contactItemWrapper.Dispose();
     }
 
     public async Task<EntityVersion<string, DateTime>> TryUpdate (
       string entityId,
       DateTime entityVersion,
-      ContactItemWrapper entityToUpdate,
-      Func<ContactItemWrapper, Task<ContactItemWrapper>> entityModifier,
+      IContactItemWrapper entityToUpdate,
+      Func<IContactItemWrapper, Task<IContactItemWrapper>> entityModifier,
       Tcontext context)
     {
       entityToUpdate = await entityModifier (entityToUpdate);
@@ -160,7 +166,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
           {
             Byte[] ba = contact.Inner.GetPropertySafe (PR_ASSOCIATED_BIRTHDAY_APPOINTMENT_ID);
             string birthdayAppointmentItemID = BitConverter.ToString (ba).Replace ("-", string.Empty);
-            AppointmentItemWrapper birthdayWrapper = new AppointmentItemWrapper ( _session.GetAppointmentItem (birthdayAppointmentItemID),
+            IAppointmentItemWrapper birthdayWrapper = _comWrapperFactory.Create ( _session.GetAppointmentItem (birthdayAppointmentItemID),
                                                                                   entryId =>  _session.GetAppointmentItem (birthdayAppointmentItemID));
             birthdayWrapper.Inner.Delete ();
           }
@@ -175,13 +181,13 @@ namespace CalDavSynchronizer.Implementation.Contacts
       return Task.FromResult (true);
     }
 
-    public async Task<EntityVersion<string, DateTime>> Create (Func<ContactItemWrapper, Task<ContactItemWrapper>> entityInitializer, Tcontext context)
+    public async Task<EntityVersion<string, DateTime>> Create (Func<IContactItemWrapper, Task<IContactItemWrapper>> entityInitializer, Tcontext context)
     {
-      ContactItemWrapper newWrapper;
+      IContactItemWrapper newWrapper;
 
       using (var folderWrapper = CreateFolderWrapper ())
       {
-        newWrapper = new ContactItemWrapper (
+        newWrapper = _comWrapperFactory.Create (
           (ContactItem) folderWrapper.Inner.Items.Add (OlItemType.olContactItem),
           entryId => (ContactItem) _session.GetContactItem (entryId, _folderStoreId));
       }

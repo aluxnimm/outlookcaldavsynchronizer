@@ -54,26 +54,23 @@ namespace GenSync.UnitTests.Synchronization
                   new[] { EntityVersion.Create ("b1", "v2") }));
 
 
-      Task<IEnumerable<EntityWithId<string, string>>> aTypeLoadTask = new Task<IEnumerable<EntityWithId<string, string>>> (
-          () => new List<EntityWithId<string, string>> { EntityWithId.Create ("A1", "AAAA"), EntityWithId.Create ("a1", "____") });
-      aTypeLoadTask.RunSynchronously();
+      var aTypeLoadTask =  Task.FromResult<IEnumerable<EntityWithId<string, string>>> (
+          new List<EntityWithId<string, string>> { EntityWithId.Create ("A1", "AAAA"), EntityWithId.Create ("a1", "____") });
       builder.AtypeRepository
-          .Expect (r => r.Get (
-              Arg<ICollection<string>>.Matches (c => c.Count == 1 && c.First() == "A1"),
-              Arg<ILoadEntityLogger>.Is.NotNull,
-              Arg<int>.Is.Anything))
-          .Return (aTypeLoadTask);
+        .Expect(r => r.Get(
+          Arg<ICollection<string>>.Matches(c => c.Count == 1 && c.First() == "A1"),
+          Arg<ILoadEntityLogger>.Is.NotNull,
+          Arg<int>.Is.Anything))
+        .Return(aTypeLoadTask);
 
-      Task<IEnumerable<EntityWithId<string, string>>> bTypeLoadTask = new Task<IEnumerable<EntityWithId<string, string>>> (
-          () => new List<EntityWithId<string, string>> { EntityWithId.Create ("b1", "BBBB"), });
-      bTypeLoadTask.RunSynchronously();
+      var bTypeLoadTask = Task.FromResult<IEnumerable<EntityWithId<string, string>>> (
+           new List<EntityWithId<string, string>> { EntityWithId.Create ("b1", "BBBB"), });
       builder.BtypeRepository
-          .Expect (r => r.Get (
-              Arg<ICollection<string>>.Matches (c => c.Count == 1 && c.First() == "b1"),
-              Arg<ILoadEntityLogger>.Is.NotNull,
-              Arg<int>.Is.Anything))
-          .Return (bTypeLoadTask);
-
+        .Expect(r => r.Get(
+          Arg<ICollection<string>>.Matches(c => c.Count == 1 && c.First() == "b1"),
+          Arg<ILoadEntityLogger>.Is.NotNull,
+          Arg<int>.Is.Anything))
+        .Return(bTypeLoadTask);
 
       var knownData = new EntityRelationData<string, string, string, string> ("A1", "v1", "b1", "v2");
       builder.InitialEntityMatcher

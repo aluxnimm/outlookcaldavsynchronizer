@@ -26,9 +26,9 @@ using GenSync.Synchronization.States;
 namespace CalDavSynchronizer.Implementation.Events
 {
   internal class OutlookCaldavEventUpdateFromNewerToOlder
-      : UpdateFromNewerToOlder<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext>
+      : UpdateFromNewerToOlder<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext>
   {
-    public OutlookCaldavEventUpdateFromNewerToOlder (EntitySyncStateEnvironment<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> environment, IEntityRelationData<AppointmentId, DateTime, WebResourceName, string> knownData, DateTime newA, string newB)
+    public OutlookCaldavEventUpdateFromNewerToOlder (EntitySyncStateEnvironment<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> environment, IEntityRelationData<AppointmentId, DateTime, WebResourceName, string> knownData, DateTime newA, string newB)
         : base (environment, knownData, newA, newB)
     {
     }

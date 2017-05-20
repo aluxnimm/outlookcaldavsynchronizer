@@ -23,27 +23,27 @@ using GenSync.InitialEntityMatching;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  internal class InitialEventEntityMatcher : InitialEntityMatcherByPropertyGrouping<AppointmentId, DateTime, AppointmentItemWrapper, string, WebResourceName, string, IICalendar, string>
+  internal class InitialEventEntityMatcher : InitialEntityMatcherByPropertyGrouping<AppointmentId, DateTime, EventEntityMatchData, string, WebResourceName, string, IICalendar, string>
   {
     public InitialEventEntityMatcher (IEqualityComparer<WebResourceName> btypeIdEqualityComparer)
         : base (btypeIdEqualityComparer)
     {
     }
 
-    protected override bool AreEqual (AppointmentItemWrapper atypeEntity, IICalendar btypeEntity)
+    protected override bool AreEqual (EventEntityMatchData atypeEntity, IICalendar btypeEntity)
     {
       var evt = btypeEntity.Events[0];
 
-      if (evt.Summary == atypeEntity.Inner.Subject)
+      if (evt.Summary == atypeEntity.Subject)
       {
-        if (evt.IsAllDay && atypeEntity.Inner.AllDayEvent)
+        if (evt.IsAllDay && atypeEntity.AllDayEvent)
         {
-          if (evt.Start.Value == atypeEntity.Inner.Start)
+          if (evt.Start.Value == atypeEntity.Start)
           {
             if (evt.End == null)
-              return evt.Start.Value.AddDays(1) == atypeEntity.Inner.End;
+              return evt.Start.Value.AddDays(1) == atypeEntity.End;
             else
-              return evt.End.Value == atypeEntity.Inner.End;
+              return evt.End.Value == atypeEntity.End;
           }
           else return false;
         }
@@ -51,30 +51,30 @@ namespace CalDavSynchronizer.Implementation.Events
         {
           if (evt.Start.IsUniversalTime)
           {
-            if (evt.Start.Value == atypeEntity.Inner.StartUTC)
+            if (evt.Start.Value == atypeEntity.StartUtc)
             {
               if (evt.DTEnd == null)
-                return evt.Start.Value == atypeEntity.Inner.EndUTC;
+                return evt.Start.Value == atypeEntity.EndUtc;
               else
               {
                 if (evt.DTEnd.IsUniversalTime)
-                  return evt.DTEnd.Value == atypeEntity.Inner.EndUTC;
+                  return evt.DTEnd.Value == atypeEntity.EndUtc;
                 else
-                  return evt.DTEnd.Value == atypeEntity.Inner.EndInEndTimeZone;
+                  return evt.DTEnd.Value == atypeEntity.EndInEndTimeZone;
               }
             }
             else return false;
           }
-          else if (evt.Start.Value == atypeEntity.Inner.StartInStartTimeZone)
+          else if (evt.Start.Value == atypeEntity.StartInStartTimeZone)
           {
             if (evt.DTEnd == null)
-              return evt.Start.Value == atypeEntity.Inner.EndInEndTimeZone;
+              return evt.Start.Value == atypeEntity.EndInEndTimeZone;
             else
             {
               if (evt.DTEnd.IsUniversalTime)
-                return evt.DTEnd.Value == atypeEntity.Inner.EndUTC;
+                return evt.DTEnd.Value == atypeEntity.EndUtc;
               else
-                return evt.DTEnd.Value == atypeEntity.Inner.EndInEndTimeZone;
+                return evt.DTEnd.Value == atypeEntity.EndInEndTimeZone;
             }
           }
           else
@@ -84,14 +84,14 @@ namespace CalDavSynchronizer.Implementation.Events
       return false;
     }
 
-    protected override string GetAtypePropertyValue (AppointmentItemWrapper atypeEntity)
+    protected override string GetAtypePropertyValue (EventEntityMatchData atypeEntity)
     {
-      return (atypeEntity.Inner.Subject != null ? atypeEntity.Inner.Subject.ToLower() : string.Empty);
+      return atypeEntity.Subject?.ToLower() ?? string.Empty;
     }
 
     protected override string GetBtypePropertyValue (IICalendar btypeEntity)
     {
-      return (btypeEntity.Events[0].Summary != null ? btypeEntity.Events[0].Summary.ToLower() : string.Empty);
+      return btypeEntity.Events[0].Summary?.ToLower() ?? string.Empty;
     }
 
     protected override string MapAtypePropertyValue (string value)

@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -14,39 +14,33 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
-using System.Runtime.InteropServices;
+using CalDavSynchronizer.Implementation.ComWrappers;
 using Microsoft.Office.Interop.Outlook;
-using NUnit.Framework;
+using Action = System.Action;
 
-namespace CalDavSynchronizer.IntegrationTests.TestBase
+namespace CalDavSynchronizer.IntegrationTests.TestBase.ComWrappers
 {
-  public class IntegrationFixtureBase
+  class TestDistListItemWrapper : TestComWrapperBase<TestDistListItemWrapper>, IDistListItemWrapper
   {
-    protected Application Application { get; private set; }
+    private readonly IDistListItemWrapper _inner;
 
-    [OneTimeSetUp]
-    public void Init()
+    public TestDistListItemWrapper(Action<TestDistListItemWrapper> onDisposed, IDistListItemWrapper inner) : base(onDisposed)
     {
-      Application = new Application();
-      Application.Session.Logon();
+      _inner = inner ?? throw new ArgumentNullException(nameof(inner));
     }
 
-    [OneTimeTearDown]
-    public void Dispose()
+    protected override void DisposeOverride()
     {
-      try
-      {
-        Application.Session.Logoff();
-      }
-      finally
-      {
-        Marshal.FinalReleaseComObject(Application);
-        Application = null;
-
-        GC.Collect();
-        GC.WaitForPendingFinalizers();
-      }
+      _inner.Dispose();
     }
+
+    protected override TestDistListItemWrapper This()
+    {
+      return this;
+    }
+
+    public DistListItem Inner => _inner.Inner;
   }
 }

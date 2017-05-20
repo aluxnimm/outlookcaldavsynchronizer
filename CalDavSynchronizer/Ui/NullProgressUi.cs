@@ -27,12 +27,17 @@ namespace CalDavSynchronizer.Ui
 
     }
 
-    public void SetValue (int value)
+    public void IncrementValue()
     {
 
     }
 
     public void SetMessage (string message)
+    {
+
+    }
+
+    public void SetSubMessage(string message)
     {
 
     }

@@ -436,10 +436,16 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       return false;
     }
 
-    public void Cleanup (IReadOnlyDictionary<string, GoogleContactWrapper> entities)
+    public void Cleanup(GoogleContactWrapper entity)
     {
+      // nothing to do
     }
 
+    public void Cleanup(IEnumerable<GoogleContactWrapper> entities)
+    {
+      // nothing to do
+    }
+    
     private Uri GetContactUrl (string entityId, string projection)
     {
       return new Uri (ContactsQuery.CreateContactsUri (_userName, projection) + "/" + new Uri (entityId).Segments.Last());

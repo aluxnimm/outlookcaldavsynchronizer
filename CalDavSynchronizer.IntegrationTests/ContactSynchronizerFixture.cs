@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.DistributionLists;
@@ -30,19 +31,27 @@ using Thought.vCards;
 namespace CalDavSynchronizer.IntegrationTests
 {
 
-  public class ContactSynchronizerFixture : ContactSynchronizerFixtureBase
+  public class ContactSynchronizerFixture
   {
+    private TestComponentContainer _testComponentContainer;
+
+    [OneTimeSetUp]
+    public void OneTimeSetup()
+    {
+      _testComponentContainer = new TestComponentContainer();
+    }
+
+
     [Test]
     [Apartment(System.Threading.ApartmentState.STA)]
     public async Task Synchronize_AnyCase_SyncsSogoDistLists()
     {
-      var options = GetOptions("IntegrationTests/Contacts/Sogo");
- 
+      var options = TestComponentContainer.GetOptions("IntegrationTests/Contacts/Sogo");
 
-      await InitializeFor (options);
-      await ClearEventRepositoriesAndCache ();
+      var synchronizer = await CreateSynchronizer(options); 
+      await synchronizer.ClearEventRepositoriesAndCache();
 
-      await Server.CreateEntity(
+      await synchronizer.Server.CreateEntity(
         c =>
         {
           c.EmailAddresses.Add(new vCardEmailAddress("nihil@bla.com"));
@@ -50,7 +59,7 @@ namespace CalDavSynchronizer.IntegrationTests
           c.FamilyName = "Baxter";
         });
 
-      var masonId = await Server.CreateEntity (
+      var masonId = await synchronizer.Server.CreateEntity (
        c =>
        {
          c.EmailAddresses.Add (new vCardEmailAddress ("mason@bla.com"));
@@ -58,7 +67,7 @@ namespace CalDavSynchronizer.IntegrationTests
          c.FamilyName = "Mason";
        });
 
-      var steinbergId = await Server.CreateEntity (
+      var steinbergId = await synchronizer.Server.CreateEntity (
        c =>
        {
          c.EmailAddresses.Add (new vCardEmailAddress ("steinberg@bla.com"));
@@ -67,7 +76,7 @@ namespace CalDavSynchronizer.IntegrationTests
        });
 
 
-      await ServerSogoDistListsOrNull.CreateEntity(
+      await synchronizer.ServerSogoDistListsOrNull.CreateEntity(
         l =>
         {
           l.Name = "Agents";
@@ -75,15 +84,15 @@ namespace CalDavSynchronizer.IntegrationTests
           l.Members.Add(new KnownDistributionListMember ("steinberg@bla.com", "Steinberg", steinbergId.GetServerFileName()));
         });
       
-      await Synchronizer.Synchronize(NullSynchronizationLogger.Instance);
+      await synchronizer.SynchronizeAndAssertNoErrors();
 
-      var outlookNames = (await Outlook.GetAllEntities()).Select(c => c.Entity.Inner.LastName).ToArray();
+      var outlookNames = (await synchronizer.Outlook.GetAllEntities()).Select(c => c.Entity.Inner.LastName).ToArray();
 
       CollectionAssert.AreEquivalent(
         new[] {"Baxter", "Mason", "Steinberg"},
         outlookNames);
 
-      using (var outlookDistList = (await OutlookDistListsOrNull.GetAllEntities()).SingleOrDefault()?.Entity)
+      using (var outlookDistList = (await synchronizer.OutlookDistListsOrNull.GetAllEntities()).SingleOrDefault()?.Entity)
       {
         Assert.That(outlookDistList, Is.Not.Null);
 
@@ -101,15 +110,15 @@ namespace CalDavSynchronizer.IntegrationTests
           outlookMembers);
 
         outlookDistList.Inner.DLName = "All";
-        var recipient = Application.Session.CreateRecipient("Baxter");
+        var recipient = _testComponentContainer.Application.Session.CreateRecipient("Baxter");
         Assert.That(recipient.Resolve(), Is.True);
         outlookDistList.Inner.AddMember(recipient);
         outlookDistList.Inner.Save();
       }
 
-      await Synchronizer.Synchronize (NullSynchronizationLogger.Instance);
+      await synchronizer.SynchronizeAndAssertNoErrors();
 
-      var serverDistList = (await ServerSogoDistListsOrNull.GetAllEntities ()).SingleOrDefault ()?.Entity;
+      var serverDistList = (await synchronizer.ServerSogoDistListsOrNull.GetAllEntities ()).SingleOrDefault ()?.Entity;
       Assert.That (serverDistList, Is.Not.Null);
 
       Assert.That (serverDistList.Name, Is.EqualTo ("All"));
@@ -124,13 +133,13 @@ namespace CalDavSynchronizer.IntegrationTests
     [Apartment (System.Threading.ApartmentState.STA)]
     public async Task SynchronizeTwoWay_LocalContactChanges_IsSyncedToServerAndPreservesExtendedPropertiesAndUid ()
     {
-      var options = GetOptions ("IntegrationTests/Contacts/Sogo");
-      await InitializeFor (options);
-      await ClearEventRepositoriesAndCache ();
+      var options = TestComponentContainer.GetOptions ("IntegrationTests/Contacts/Sogo");
+      var synchronizer = await CreateSynchronizer(options);
+      await synchronizer.ClearEventRepositoriesAndCache();
 
       string initialUid = null;
 
-      await Server.CreateEntity (
+      await synchronizer.Server.CreateEntity (
       c =>
       {
         c.EmailAddresses.Add (new vCardEmailAddress ("nihil@bla.com"));
@@ -140,17 +149,17 @@ namespace CalDavSynchronizer.IntegrationTests
         initialUid = c.UniqueId;
       });
 
-      await Synchronizer.Synchronize (NullSynchronizationLogger.Instance);
+      await synchronizer.SynchronizeAndAssertNoErrors();
 
-      using (var outlookEvent = (await Outlook.GetAllEntities ()).Single ().Entity)
+      using (var outlookEvent = (await synchronizer.Outlook.GetAllEntities ()).Single ().Entity)
       {
         outlookEvent.Inner.FirstName = "TheNewNihil";
         outlookEvent.Inner.Save ();
       }
 
-      await Synchronizer.Synchronize (NullSynchronizationLogger.Instance);
+      await synchronizer.SynchronizeAndAssertNoErrors();
 
-      var serverContact = (await Server.GetAllEntities ()).Single ().Entity;
+      var serverContact = (await synchronizer.Server.GetAllEntities ()).Single ().Entity;
 
       Assert.That (serverContact.GivenName, Is.EqualTo ("TheNewNihil"));
       Assert.That (serverContact.UniqueId, Is.EqualTo (initialUid));
@@ -165,13 +174,13 @@ namespace CalDavSynchronizer.IntegrationTests
     [Apartment(System.Threading.ApartmentState.STA)]
     public async Task Synchronize_AnyCase_SyncsVCardGroupDistLists()
     {
-      var options = GetOptions("IntegrationTests/Contacts/Sogo");
+      var options = TestComponentContainer.GetOptions("IntegrationTests/Contacts/Sogo");
       ((Contracts.ContactMappingConfiguration)options.MappingConfiguration).DistributionListType = Contracts.DistributionListType.VCardGroup;
 
-      await InitializeFor(options);
-      await ClearEventRepositoriesAndCache();
+      var synchronizer = await CreateSynchronizer(options);
+      await synchronizer.ClearEventRepositoriesAndCache();
 
-      await Server.CreateEntity(
+      await synchronizer.Server.CreateEntity(
         c =>
         {
           c.EmailAddresses.Add(new vCardEmailAddress("nihil@bla.com"));
@@ -179,7 +188,7 @@ namespace CalDavSynchronizer.IntegrationTests
           c.FamilyName = "Baxter";
         });
 
-      var masonId = await Server.CreateEntity(
+      var masonId = await synchronizer.Server.CreateEntity(
         c =>
         {
           c.EmailAddresses.Add(new vCardEmailAddress("mason@bla.com"));
@@ -187,7 +196,7 @@ namespace CalDavSynchronizer.IntegrationTests
           c.FamilyName = "Mason";
         });
 
-      var steinbergId = await Server.CreateEntity(
+      var steinbergId = await synchronizer.Server.CreateEntity(
         c =>
         {
           c.EmailAddresses.Add(new vCardEmailAddress("steinberg@bla.com"));
@@ -196,7 +205,7 @@ namespace CalDavSynchronizer.IntegrationTests
         });
 
 
-      await ServerVCardGroupsOrNull.CreateEntity(
+      await synchronizer.ServerVCardGroupsOrNull.CreateEntity(
         l =>
         {
           l.FormattedName = "Agents";
@@ -213,15 +222,15 @@ namespace CalDavSynchronizer.IntegrationTests
           l.Members.Add(member);
         });
 
-      await Synchronizer.Synchronize(NullSynchronizationLogger.Instance);
+      await synchronizer.SynchronizeAndAssertNoErrors();
 
-      var outlookNames = (await Outlook.GetAllEntities()).Select(c => c.Entity.Inner.LastName).ToArray();
+      var outlookNames = (await synchronizer.Outlook.GetAllEntities()).Select(c => c.Entity.Inner.LastName).ToArray();
 
       CollectionAssert.AreEquivalent(
         new[] { "Baxter", "Mason", "Steinberg" },
         outlookNames);
 
-      using (var outlookDistList = (await OutlookDistListsOrNull.GetAllEntities()).SingleOrDefault()?.Entity)
+      using (var outlookDistList = (await synchronizer.OutlookDistListsOrNull.GetAllEntities()).SingleOrDefault()?.Entity)
       {
         Assert.That(outlookDistList, Is.Not.Null);
 
@@ -239,15 +248,15 @@ namespace CalDavSynchronizer.IntegrationTests
           outlookMembers);
 
         outlookDistList.Inner.DLName = "All";
-        var recipient = Application.Session.CreateRecipient("Baxter");
+        var recipient = _testComponentContainer.Application.Session.CreateRecipient("Baxter");
         Assert.That(recipient.Resolve(), Is.True);
         outlookDistList.Inner.AddMember(recipient);
         outlookDistList.Inner.Save();
       }
 
-      await Synchronizer.Synchronize(NullSynchronizationLogger.Instance);
+      await synchronizer.SynchronizeAndAssertNoErrors();
 
-      var serverDistList = (await ServerVCardGroupsOrNull.GetAllEntities()).SingleOrDefault()?.Entity;
+      var serverDistList = (await synchronizer.ServerVCardGroupsOrNull.GetAllEntities()).SingleOrDefault()?.Entity;
       Assert.That(serverDistList, Is.Not.Null);
 
       Assert.That(serverDistList.FormattedName, Is.EqualTo("All"));
@@ -257,8 +266,13 @@ namespace CalDavSynchronizer.IntegrationTests
         serverDistList.Members.Select(m => m.EmailAddress));
 
     }
-
-
+    
+    private async Task<ContactTestSynchronizer> CreateSynchronizer(Options options)
+    {
+      var synchronizer = new ContactTestSynchronizer(options, _testComponentContainer);
+      await synchronizer.Initialize();
+      return synchronizer;
+    }
 
   }
 

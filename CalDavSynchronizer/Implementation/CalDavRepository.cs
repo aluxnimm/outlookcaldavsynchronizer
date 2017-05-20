@@ -127,7 +127,12 @@ namespace CalDavSynchronizer.Implementation
       return Task.FromResult (0);
     }
 
-    public void Cleanup (IReadOnlyDictionary<WebResourceName, IICalendar> entities)
+    public void Cleanup(IICalendar entity)
+    {
+      // nothing to do
+    }
+
+    public void Cleanup(IEnumerable<IICalendar> entities)
     {
       // nothing to do
     }

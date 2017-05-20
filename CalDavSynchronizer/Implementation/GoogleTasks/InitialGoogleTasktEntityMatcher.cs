@@ -23,14 +23,14 @@ using Google.Apis.Tasks.v1.Data;
 
 namespace CalDavSynchronizer.Implementation.GoogleTasks
 {
-  internal class InitialGoogleTastEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, TaskItemWrapper, string, string, string, Task, string>
+  internal class InitialGoogleTastEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, ITaskItemWrapper, string, string, string, Task, string>
   {
     public InitialGoogleTastEntityMatcher (IEqualityComparer<string> btypeIdEqualityComparer)
         : base (btypeIdEqualityComparer)
     {
     }
 
-    protected override bool AreEqual (TaskItemWrapper atypeEntity, Task btypeEntity)
+    protected override bool AreEqual (ITaskItemWrapper atypeEntity, Task btypeEntity)
     {
       if (atypeEntity.Inner.Subject == btypeEntity.Title)
       {
@@ -48,7 +48,7 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
       return false;
     }
 
-    protected override string GetAtypePropertyValue (TaskItemWrapper atypeEntity)
+    protected override string GetAtypePropertyValue (ITaskItemWrapper atypeEntity)
     {
       return (atypeEntity.Inner.Subject ?? string.Empty).ToLower();
     }

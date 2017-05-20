@@ -21,15 +21,17 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.ComWrappers
 {
-  public class TaskItemWrapper : IDisposable
+  public class TaskItemWrapper : ITaskItemWrapper
   {
-    public TaskItem Inner { get; private set; }
-    private Func<string, TaskItem> _load;
+    public TaskItem Inner => _inner ?? throw new InvalidOperationException("Cannot access a disposed object!");
 
-    public TaskItemWrapper (TaskItem inner, Func<string, TaskItem> load)
+    private TaskItem _inner;
+    private LoadTaskItemDelegate _load;
+
+    public TaskItemWrapper (TaskItem inner, LoadTaskItemDelegate load)
     {
       _load = load;
-      Inner = inner;
+      _inner = inner;
     }
 
     public void SaveAndReload ()
@@ -38,18 +40,18 @@ namespace CalDavSynchronizer.Implementation.ComWrappers
       var entryId = Inner.EntryID;
       DisposeInner();
       Thread.MemoryBarrier();
-      Inner = _load (entryId);
+      _inner = _load (entryId);
     }
 
     private void DisposeInner ()
     {
       Marshal.FinalReleaseComObject (Inner);
-      Inner = null;
+      _inner = null;
     }
 
     public void Dispose ()
     {
-      if (Inner != null)
+      if (_inner != null)
       {
         DisposeInner();
         _load = null;
@@ -61,7 +63,7 @@ namespace CalDavSynchronizer.Implementation.ComWrappers
       if (inner != Inner)
       {
         DisposeInner();
-        Inner = inner;
+        _inner = inner;
       }
     }
   }

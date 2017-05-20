@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Linq;
 using System.Reflection;
 using log4net;
 
@@ -24,15 +25,14 @@ namespace GenSync.ProgressReport
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
     private readonly IExceptionLogger _exceptionLogger;
-    private const int c_SingleStepTotal = 10000;
-
+    private int _currentChunk = -1;
 
     private readonly IProgressUi _progressUi;
 
-    public TotalProgressLogger (IProgressUiFactory uiFactory, IExceptionLogger exceptionLogger)
+    public TotalProgressLogger (IProgressUiFactory uiFactory, IExceptionLogger exceptionLogger,int chunkCount)
     {
       _exceptionLogger = exceptionLogger;
-      _progressUi = uiFactory.Create (3 * c_SingleStepTotal);
+      _progressUi = uiFactory.Create (chunkCount*3);
     }
 
     public void Dispose ()
@@ -46,27 +46,16 @@ namespace GenSync.ProgressReport
         _exceptionLogger.LogException (x, s_logger);
       }
     }
-
-    public IDisposable StartARepositoryLoad ()
+    
+    public void NotifyWork(int totalEntitiesBeingLoaded, int chunkCount)
     {
-      _progressUi.SetMessage ("Loading entities from Outlook...");
-      return new ProgressLogger (_progressUi, 0, c_SingleStepTotal, 1, _exceptionLogger);
+      
     }
 
-    public IDisposable StartBRepositoryLoad ()
+    public IChunkProgressLogger StartChunk()
     {
-      _progressUi.SetMessage ("Loading entities from CalDav-Server...");
-      return new ProgressLogger (_progressUi, c_SingleStepTotal, 2 * c_SingleStepTotal, 1, _exceptionLogger);
-    }
-
-    public IProgressLogger StartProcessing (int entityCount)
-    {
-      _progressUi.SetMessage (string.Format ("Processing {0} entities...", entityCount));
-      return new ProgressLogger (_progressUi, 2 * c_SingleStepTotal, 3 * c_SingleStepTotal, entityCount, _exceptionLogger);
-    }
-
-    public void NotifyLoadCount (int aLoadCount, int bLoadCount)
-    {
+      _progressUi.SetMessage($"Processing chunk #{++_currentChunk + 1}");
+      return new ChunkProgressLogger(_progressUi, _exceptionLogger);
     }
   }
 }

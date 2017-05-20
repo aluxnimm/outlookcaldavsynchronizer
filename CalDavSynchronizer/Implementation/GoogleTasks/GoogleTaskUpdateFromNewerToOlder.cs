@@ -26,9 +26,9 @@ using Google.Apis.Tasks.v1.Data;
 namespace CalDavSynchronizer.Implementation.GoogleTasks
 {
   internal class GoogleTaskUpdateFromNewerToOlder
-      : UpdateFromNewerToOlder<string, DateTime, TaskItemWrapper, string, string, Task, int>
+      : UpdateFromNewerToOlder<string, DateTime, ITaskItemWrapper, string, string, Task, int>
   {
-    public GoogleTaskUpdateFromNewerToOlder (EntitySyncStateEnvironment<string, DateTime, TaskItemWrapper, string, string, Task, int> environment, IEntityRelationData<string, DateTime, string, string> knownData, DateTime newA, string newB)
+    public GoogleTaskUpdateFromNewerToOlder (EntitySyncStateEnvironment<string, DateTime, ITaskItemWrapper, string, string, Task, int> environment, IEntityRelationData<string, DateTime, string, string> knownData, DateTime newA, string newB)
         : base (environment, knownData, newA, newB)
     {
     }

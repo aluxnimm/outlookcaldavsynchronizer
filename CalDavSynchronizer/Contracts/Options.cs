@@ -62,6 +62,7 @@ namespace CalDavSynchronizer.Contracts
     public bool EnableChangeTriggeredSynchronization { get; set; }
     public bool IsChunkedSynchronizationEnabled { get; set; }
     public int ChunkSize { get; set; } = 100;
+    public int? EffectiveChunkSize => IsChunkedSynchronizationEnabled ? ChunkSize : (int?) null;
 
     public ProxyOptions ProxyOptions { get; set; }
     public MappingConfigurationBase MappingConfiguration { get; set; }

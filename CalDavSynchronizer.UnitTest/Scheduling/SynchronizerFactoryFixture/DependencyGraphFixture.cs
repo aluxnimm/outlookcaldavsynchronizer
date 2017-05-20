@@ -21,6 +21,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation;
+using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.TimeZones;
 using CalDavSynchronizer.Scheduling;
 using GenSync.ProgressReport;
@@ -43,7 +44,8 @@ namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
         NullOutlookAccountPasswordProvider.Instance,
         new GlobalTimeZoneCache(),
         new NullQueryOutlookFolderStrategy(),
-        new ExceptionHandlingStrategy());
+        new ExceptionHandlingStrategy(),
+        new ComWrapperFactory());
     }
 
     [Test]

@@ -62,6 +62,7 @@ using CalDavSynchronizer.Ui.SystrayNotification;
 using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
 using GenSync.EntityRelationManagement;
 using GenSync.Logging;
+using GenSync.Synchronization;
 using AppointmentId = CalDavSynchronizer.Implementation.Events.AppointmentId;
 using MessageBox = System.Windows.Forms.MessageBox;
 
@@ -110,11 +111,12 @@ namespace CalDavSynchronizer
       remove { _synchronizationStatus.StatusChanged -= value; }
     }
 
-    public ComponentContainer (Application application, IUiServiceFactory uiServiceFactory, IGeneralOptionsDataAccess generalOptionsDataAccess)
+    public ComponentContainer (Application application, IUiServiceFactory uiServiceFactory, IGeneralOptionsDataAccess generalOptionsDataAccess, IComWrapperFactory comWrapperFactory, IExceptionHandlingStrategy exceptionHandlingStrategy)
     {
       if (application == null) throw new ArgumentNullException(nameof(application));
       if (uiServiceFactory == null) throw new ArgumentNullException(nameof(uiServiceFactory));
       if (generalOptionsDataAccess == null) throw new ArgumentNullException(nameof(generalOptionsDataAccess));
+      if (comWrapperFactory == null) throw new ArgumentNullException(nameof(comWrapperFactory));
 
       s_logger.Info ("Startup...");
 
@@ -164,8 +166,7 @@ namespace CalDavSynchronizer
         generalOptions.ThresholdForProgressDisplay,
         ExceptionHandler.Instance);
 
-      var exceptionHandlingStrategy = new ExceptionHandlingStrategy ();
-
+   
       _synchronizerFactory = new SynchronizerFactory (
           GetProfileDataDirectory,
           _totalProgressFactory,
@@ -174,7 +175,8 @@ namespace CalDavSynchronizer
           _outlookAccountPasswordProvider,
           _globalTimeZoneCache,
           _queryFolderStrategyWrapper,
-          exceptionHandlingStrategy);
+          exceptionHandlingStrategy,
+          comWrapperFactory);
 
       _synchronizationReportRepository = CreateSynchronizationReportRepository();
 

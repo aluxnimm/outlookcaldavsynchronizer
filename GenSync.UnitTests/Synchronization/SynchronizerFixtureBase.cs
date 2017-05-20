@@ -64,12 +64,20 @@ namespace GenSync.UnitTests.Synchronization
           .WhenCalled (a => { _entityRelationData = ((List<IEntityRelationData<Identifier, int, Identifier, int>>) a.Arguments[0]).Cast<EntityRelationData>().ToList(); });
     }
 
-    protected Exception SynchronizeTwoWay (
+    protected void SynchronizeTwoWay (
       GenericConflictResolution winner,
       List<IEntityRelationData<Identifier, int, Identifier, int>> matchingEntities = null)
     {
       var strategy = CreateTwoWaySyncStrategy (winner);
-      return SynchronizeInternal (strategy, matchingEntities);
+      SynchronizeInternal(strategy, false, matchingEntities);
+    }
+
+    protected Exception SynchronizeTwoWayNoThrow(
+      GenericConflictResolution winner,
+      List<IEntityRelationData<Identifier, int, Identifier, int>> matchingEntities = null)
+    {
+      var strategy = CreateTwoWaySyncStrategy(winner);
+      return SynchronizeInternal(strategy, true, matchingEntities);
     }
 
     protected void SynchronizePartialTwoWay (
@@ -96,12 +104,13 @@ namespace GenSync.UnitTests.Synchronization
     protected void SynchronizeOneWay ()
     {
       SynchronizeInternal (
-          new OneWayInitialSyncStateCreationStrategy_AToB<Identifier, int, string, Identifier, int, string, int> (_factory, OneWaySyncMode.Replicate)
-          );
+          new OneWayInitialSyncStateCreationStrategy_AToB<Identifier, int, string, Identifier, int, string, int> (_factory, OneWaySyncMode.Replicate),
+          false);
     }
 
     private Exception SynchronizeInternal (
       IInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string, int> strategy,
+      bool noThrow,
       List<IEntityRelationData<Identifier, int, Identifier, int>> matchingEntities = null)
     {
       var synchronizer = CreateSynchronizer (strategy,matchingEntities);
@@ -113,9 +122,11 @@ namespace GenSync.UnitTests.Synchronization
       }
       catch (AggregateException x)
       {
-        return x.InnerException;
+        if (noThrow)
+          return x.InnerException;
+        else
+          throw;
       }
-
     }
 
     private async Task SynchronizeInternalAsync (
@@ -142,7 +153,7 @@ namespace GenSync.UnitTests.Synchronization
         c => Task.FromResult(0)).Wait();
     }
 
-    private Synchronizer<Identifier, int, string, Identifier, int, string, int> CreateSynchronizer (
+    private Synchronizer<Identifier, int, string, Identifier, int, string, int, string, string> CreateSynchronizer (
       IInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string, int> strategy,
       List<IEntityRelationData<Identifier, int, Identifier, int>> matchingEntities = null)
     {
@@ -159,7 +170,7 @@ namespace GenSync.UnitTests.Synchronization
       var atypeWriteRepository = BatchEntityRepositoryAdapter.Create (_localRepository, TestExceptionHandlingStrategy.Instance);
       var btypeWriteRepository = BatchEntityRepositoryAdapter.Create (_serverRepository, TestExceptionHandlingStrategy.Instance);
 
-      return new Synchronizer<Identifier, int, string, Identifier, int, string, int> (
+      return new Synchronizer<Identifier, int, string, Identifier, int, string, int, string, string> (
           _localRepository,
           _serverRepository,
           atypeWriteRepository,
@@ -174,7 +185,10 @@ namespace GenSync.UnitTests.Synchronization
           EqualityComparer<int>.Default,
           EqualityComparer<int>.Default,
           MockRepository.GenerateMock<IEntitySyncStateFactory<Identifier, int, string, Identifier, int, string, int>> (),
-          TestExceptionHandlingStrategy.Instance);
+          TestExceptionHandlingStrategy.Instance,
+          IdentityMatchDataFactory<string>.Instance,
+          IdentityMatchDataFactory<string>.Instance,
+          null);
     }
 
     protected void ExecuteMultipleTimes (Action a)

@@ -104,6 +104,8 @@ namespace GenSync.Logging
       ProfileName = $"{ProfileName} ( {string.Join(" | ", subReports.Select(r => r.ProfileName))} )";
       ADelta = $"{ADelta} ( {string.Join(" | ", subReports.Select(r => r.ADelta))} )";
       BDelta = $"{BDelta} ( {string.Join(" | ", subReports.Select(r => r.BDelta))} )";
+      AJobsInfo = $"{AJobsInfo} ( {string.Join(" | ", subReports.Select(r => r.AJobsInfo))} )";
+      BJobsInfo = $"{BJobsInfo} ( {string.Join(" | ", subReports.Select(r => r.BJobsInfo))} )";
 
       var entitySynchronizationReports = new List<EntitySynchronizationReport>(EntitySynchronizationReports);
       var loadErrors = new List<LoadError>(LoadErrors);

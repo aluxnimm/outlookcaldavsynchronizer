@@ -17,28 +17,27 @@
 using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.DataAccess;
-using CalDavSynchronizer.Implementation.ComWrappers;
 using GenSync.InitialEntityMatching;
 using Microsoft.Office.Interop.Outlook;
 using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  internal class InitialContactEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, ContactItemWrapper, string, WebResourceName, string, vCard, string>
+  internal class InitialContactEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, ContactMatchData, string, WebResourceName, string, vCard, string>
   {
     public InitialContactEntityMatcher (IEqualityComparer<WebResourceName> btypeIdEqualityComparer)
         : base (btypeIdEqualityComparer)
     {
     }
 
-    protected override bool AreEqual (ContactItemWrapper atypeEntity, vCard btypeEntity)
+    protected override bool AreEqual (ContactMatchData atypeEntity, vCard btypeEntity)
     {
       return true;
     }
 
-    protected override string GetAtypePropertyValue (ContactItemWrapper atypeEntity)
+    protected override string GetAtypePropertyValue (ContactMatchData atypeEntity)
     {
-      return atypeEntity.Inner.FirstName + "|" + atypeEntity.Inner.LastName;
+      return atypeEntity.FirstName + "|" + atypeEntity.LastName;
     }
 
     protected override string GetBtypePropertyValue (vCard btypeEntity)

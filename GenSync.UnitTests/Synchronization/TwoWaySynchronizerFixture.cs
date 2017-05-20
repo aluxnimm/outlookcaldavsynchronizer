@@ -421,7 +421,7 @@ namespace GenSync.UnitTests.Synchronization
       ExecuteMultipleTimes (() =>
       {
         Assert.That(
-          SynchronizeTwoWay(GenericConflictResolution.AWins),
+          SynchronizeTwoWayNoThrow(GenericConflictResolution.AWins),
           Is.InstanceOf<TestAbortException>());
 
         AssertLocalCount (4);

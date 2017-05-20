@@ -17,29 +17,42 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.IntegrationTests.Infrastructure;
+using CalDavSynchronizer.IntegrationTests.TestBase.ComWrappers;
 using CalDavSynchronizer.Scheduling;
+using Microsoft.Office.Interop.Outlook;
 using NUnit.Framework;
 
 namespace CalDavSynchronizer.IntegrationTests.TestBase
 {
-  public class SynchronizerFixtureBase : IntegrationFixtureBase
+  public class TestComponentContainer : IDisposable
   {
-    protected ComponentContainer ComponentContainer;
-    protected SynchronizerFactory SynchronizerFactory;
-    protected GeneralOptions GeneralOptions => new GeneralOptionsDataAccess ().LoadOptions ();
+    public ComponentContainer ComponentContainer;
+    public SynchronizerFactory SynchronizerFactory;
+    public GeneralOptions GeneralOptions => new GeneralOptionsDataAccess ().LoadOptions ();
+    private readonly TestComWrapperFactoryWrapper _testComWrapperFactoryWrapper;
+    public Application Application { get; private set; }
     
-    [SetUp]
-    public void SetUp()
+    public TestComponentContainer()
     {
-      ComponentContainer = new ComponentContainer(Application, new NullUiServiceFactory(), new InMemoryGeneralOptionsDataAccess());
+      Application = new Application();
+      Application.Session.Logon();
+
+      _testComWrapperFactoryWrapper = new TestComWrapperFactoryWrapper(new TestComWrapperFactory(null));
+      ComponentContainer = new ComponentContainer(Application, new NullUiServiceFactory(), new InMemoryGeneralOptionsDataAccess(), _testComWrapperFactoryWrapper, new TestExceptionHandlingStrategy());
       SynchronizerFactory = ComponentContainer.GetSynchronizerFactory();
     }
 
+    public void SetMaximumOpenItemsPerType(int? value)
+    {
+      _testComWrapperFactoryWrapper.SetInner(new TestComWrapperFactory(value));
+    }
 
-    protected static Options GetOptions (string profileName)
+    public static Options GetOptions (string profileName)
     {
       var applicationDataDirectory = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData), "CalDavSynchronizer");
 
@@ -52,7 +65,21 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
       var options = optionsDataAccess.Load ().Single (o => o.Name == profileName);
       return options;
     }
+    
+    public void Dispose()
+    {
+      try
+      {
+        Application.Session.Logoff();
+      }
+      finally
+      {
+        Marshal.FinalReleaseComObject(Application);
+        Application = null;
 
-
-  }
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+      }
+    }
+    }
 }

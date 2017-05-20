@@ -15,8 +15,8 @@ using log4net;
 namespace CalDavSynchronizer.Implementation.Events
 {
   class EventSynchronizationInterceptor 
-    : ISynchronizationInterceptor<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext>,
-     ISynchronizationStateVisitor<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext>
+    : ISynchronizationInterceptor<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext>,
+     ISynchronizationStateVisitor<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod ().DeclaringType);
 
@@ -24,8 +24,8 @@ namespace CalDavSynchronizer.Implementation.Events
     private Dictionary<string, ContextWithCreate> _createsInByGlobalAppointmentId;
 
     public void TransformInitialCreatedStates(
-      IReadOnlyList<IEntitySyncStateContext<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext>> syncStateContexts,
-      IEntitySyncStateFactory<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> stateFactory)
+      IReadOnlyList<IEntitySyncStateContext<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext>> syncStateContexts,
+      IEntitySyncStateFactory<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> stateFactory)
     {
       _deletesInByGlobalAppointmentId = new Dictionary<string, ContextWithDelete>();
       _createsInByGlobalAppointmentId = new Dictionary<string, ContextWithCreate>();
@@ -67,79 +67,79 @@ namespace CalDavSynchronizer.Implementation.Events
     }
 
   
-    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, RestoreInA<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> state)
+    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, RestoreInA<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> state)
     {
       
     }
 
-    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, UpdateBToA<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> state)
+    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, UpdateBToA<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> state)
     {
       
     }
 
-    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, UpdateAToB<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> state)
+    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, UpdateAToB<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> state)
     {
       
     }
 
-    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, RestoreInB<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> state)
+    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, RestoreInB<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> state)
     {
       
     }
 
-    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, DeleteInBWithNoRetry<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> state)
+    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, DeleteInBWithNoRetry<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> state)
     {
       
     }
 
-    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, DeleteInB<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> state)
+    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, DeleteInB<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> state)
     {
       if (!string.IsNullOrEmpty (state.KnownData.AtypeId.GlobalAppointmentId))
         _deletesInByGlobalAppointmentId[state.KnownData.AtypeId.GlobalAppointmentId] = new ContextWithDelete(syncStateContext, state);
     }
 
-    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, DeleteInAWithNoRetry<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> state)
+    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, DeleteInAWithNoRetry<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> state)
     {
       
     }
 
-    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, DeleteInA<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> state)
+    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, DeleteInA<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> state)
     {
       
     }
 
-    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, CreateInB<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> state)
+    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, CreateInB<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> state)
     {
       if (!string.IsNullOrEmpty (state.AId.GlobalAppointmentId))
         _createsInByGlobalAppointmentId[state.AId.GlobalAppointmentId] = new ContextWithCreate(syncStateContext,state);
     }
 
-    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, CreateInA<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> state)
+    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, CreateInA<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> state)
     {
       
     }
 
-    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, DoNothing<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> doNothing)
+    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, DoNothing<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> doNothing)
     {
       
     }
 
-    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, Discard<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> discard)
+    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, Discard<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> discard)
     {
       
     }
 
-    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, UpdateFromNewerToOlder<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> updateFromNewerToOlder)
+    public void Visit(IEntitySyncStateContext<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> syncStateContext, UpdateFromNewerToOlder<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> updateFromNewerToOlder)
     {
       
     }
     
     struct ContextWithDelete
     {
-      public readonly IEntitySyncStateContext<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> Context;
-      public readonly DeleteInB<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> State;
+      public readonly IEntitySyncStateContext<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> Context;
+      public readonly DeleteInB<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> State;
 
-      public ContextWithDelete (IEntitySyncStateContext<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> context, DeleteInB<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> state)
+      public ContextWithDelete (IEntitySyncStateContext<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> context, DeleteInB<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> state)
       {
         if (context == null)
           throw new ArgumentNullException (nameof (context));
@@ -152,10 +152,10 @@ namespace CalDavSynchronizer.Implementation.Events
 
     struct ContextWithCreate
     {
-      public readonly IEntitySyncStateContext<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> Context;
-      public readonly CreateInB<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> State;
+      public readonly IEntitySyncStateContext<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> Context;
+      public readonly CreateInB<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> State;
 
-      public ContextWithCreate (IEntitySyncStateContext<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> context, CreateInB<AppointmentId, DateTime, AppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> state)
+      public ContextWithCreate (IEntitySyncStateContext<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> context, CreateInB<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> state)
       {
         if (context == null)
           throw new ArgumentNullException (nameof (context));

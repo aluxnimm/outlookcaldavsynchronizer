@@ -31,7 +31,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.DistributionLists
 {
-  public class OutlookDistListRepository<Tcontext> : IEntityRepository<string, DateTime, DistListItemWrapper, Tcontext>
+  public class OutlookDistListRepository<Tcontext> : IEntityRepository<string, DateTime, IDistListItemWrapper, Tcontext>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod ().DeclaringType);
 
@@ -40,20 +40,23 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
     private readonly string _folderStoreId;
     private readonly IDaslFilterProvider _daslFilterProvider;
     private readonly IQueryOutlookDistListItemFolderStrategy _queryFolderStrategy;
+    private readonly IComWrapperFactory _comWrapperFactory;
 
-    public OutlookDistListRepository (IOutlookSession session, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider, IQueryOutlookDistListItemFolderStrategy queryFolderStrategy)
+    public OutlookDistListRepository (IOutlookSession session, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider, IQueryOutlookDistListItemFolderStrategy queryFolderStrategy, IComWrapperFactory comWrapperFactory)
     {
       if (session == null)
         throw new ArgumentNullException (nameof (session));
       if (daslFilterProvider == null)
         throw new ArgumentNullException (nameof (daslFilterProvider));
       if (queryFolderStrategy == null) throw new ArgumentNullException(nameof(queryFolderStrategy));
+      if (comWrapperFactory == null) throw new ArgumentNullException(nameof(comWrapperFactory));
 
       _session = session;
       _folderId = folderId;
       _folderStoreId = folderStoreId;
       _daslFilterProvider = daslFilterProvider;
       _queryFolderStrategy = queryFolderStrategy;
+      _comWrapperFactory = comWrapperFactory;
     }
 
     private const string c_entryIdColumnName = "EntryID";
@@ -100,33 +103,37 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
     }
 
 #pragma warning disable 1998
-    public async Task<IEnumerable<EntityWithId<string, DistListItemWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger, Tcontext context)
+    public async Task<IEnumerable<EntityWithId<string, IDistListItemWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger, Tcontext context)
 #pragma warning restore 1998
     {
       return ids
-          .Select (id => EntityWithId.Create (
-              id,
-              new DistListItemWrapper (
-                  _session.GetDistListItem (id, _folderStoreId))))
-          .ToArray ();
+        .Select(id => EntityWithId.Create(
+          id,
+          _comWrapperFactory.Create(
+            _session.GetDistListItem(id, _folderStoreId))));
     }
 
     public Task VerifyUnknownEntities (Dictionary<string, DateTime> unknownEntites, Tcontext context)
     {
       return Task.FromResult (0);
     }
-
-    public void Cleanup (IReadOnlyDictionary<string, DistListItemWrapper> entities)
+    
+    public void Cleanup(IDistListItemWrapper entity)
     {
-      foreach (var contactItemWrapper in entities.Values)
-        contactItemWrapper.Dispose ();
+      entity.Dispose();
+    }
+
+    public void Cleanup(IEnumerable<IDistListItemWrapper> entities)
+    {
+      foreach (var contactItemWrapper in entities)
+        contactItemWrapper.Dispose();
     }
 
     public async Task<EntityVersion<string, DateTime>> TryUpdate (
       string entityId,
       DateTime entityVersion,
-      DistListItemWrapper entityToUpdate,
-      Func<DistListItemWrapper, Task<DistListItemWrapper>> entityModifier,
+      IDistListItemWrapper entityToUpdate,
+      Func<IDistListItemWrapper, Task<IDistListItemWrapper>> entityModifier,
       Tcontext context)
     {
       entityToUpdate = await entityModifier (entityToUpdate);
@@ -143,18 +150,21 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
       if (entityWithId == null)
         return Task.FromResult (true);
 
-      entityWithId.Entity.Inner.Delete();
+      using (var entity = entityWithId.Entity)
+      {
+        entity.Inner.Delete();
+      }
 
       return Task.FromResult (true);
     }
 
-    public async Task<EntityVersion<string, DateTime>> Create (Func<DistListItemWrapper, Task<DistListItemWrapper>> entityInitializer, Tcontext context)
+    public async Task<EntityVersion<string, DateTime>> Create (Func<IDistListItemWrapper, Task<IDistListItemWrapper>> entityInitializer, Tcontext context)
     {
-      DistListItemWrapper newWrapper;
+      IDistListItemWrapper newWrapper;
 
       using (var folderWrapper = CreateFolderWrapper ())
       {
-        newWrapper = new DistListItemWrapper (
+        newWrapper = _comWrapperFactory.Create (
           (DistListItem) folderWrapper.Inner.Items.Add (OlItemType.olDistributionListItem));
       }
 

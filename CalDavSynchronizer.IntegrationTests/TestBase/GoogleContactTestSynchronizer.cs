@@ -33,49 +33,36 @@ using NUnit.Framework;
 namespace CalDavSynchronizer.IntegrationTests.TestBase
 {
  
-  public class GoogleContactsSynchronizerFixtureBase : SynchronizerFixtureBase
+  public class GoogleContactTestSynchronizer : TestSynchronizerBase
   {
-    private Guid _profileId;
+    public AvailableGoogleContactSynchronizerSynchronizerComponents Components { get; private set; }
+    public EasyAccessRepositoryAdapter<string, DateTime, IContactItemWrapper, IGoogleContactContext> Outlook { get; private set; }
+    public EasyAccessRepositoryAdapter<string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext> Server { get; private set; }
 
-    protected IOutlookSynchronizer Synchronizer { get; private set; }
-    protected AvailableGoogleContactSynchronizerSynchronizerComponents Components { get; private set; }
-    protected EasyAccessRepositoryAdapter<string, DateTime, ContactItemWrapper, IGoogleContactContext> Outlook { get; private set; }
-    protected EasyAccessRepositoryAdapter<string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext> Server { get; private set; }
-
-    public async Task DeleteAllEntites ()
+    public override async Task DeleteAllEntites ()
     {
       await Outlook.DeleteAllEntities ();
       await Server.DeleteAllEntities ();
     }
 
-    protected void ClearCache ()
+    public GoogleContactTestSynchronizer(Options options, TestComponentContainer testComponentContainer) : base(options, testComponentContainer)
     {
-      var profileDataDirectory = ComponentContainer.GetProfileDataDirectory (_profileId);
-      if (Directory.Exists (profileDataDirectory))
-        Directory.Delete (profileDataDirectory, true);
     }
 
-    protected async Task ClearEventRepositoriesAndCache ()
+    protected override async Task<IOutlookSynchronizer> InitializeOverride()
     {
-      await DeleteAllEntites();
-      ClearCache ();
-    }
-
-
-    protected async Task InitializeFor(Options options)
-    {
-      _profileId = options.Id;
-      var synchronizerWithComponents = await SynchronizerFactory.CreateSynchronizerWithComponents(options, GeneralOptions);
+      var synchronizerWithComponents = await TestComponentContainer.SynchronizerFactory.CreateSynchronizerWithComponents(Options, TestComponentContainer.GeneralOptions);
 
       var components = (AvailableGoogleContactSynchronizerSynchronizerComponents) synchronizerWithComponents.Item2;
 
-      Synchronizer = synchronizerWithComponents.Item1;
+      var synchronizer = synchronizerWithComponents.Item1;
       Components = components;
       Outlook = EasyAccessRepositoryAdapter.Create(components.OutlookContactRepository, new SynchronizationContextFactory<IGoogleContactContext>(() => NullGoogleContactContext.Instance));
       Server = EasyAccessRepositoryAdapter.Create(components.GoogleContactRepository, components.GoogleContactRepository, components.GoogleContactContextFactory);
+      return synchronizer;
     }
 
-    protected string[] GetOrCreateGoogleGroups (int amount)
+    public string[] GetOrCreateGoogleGroups (int amount)
     {
       var groupCache = new GoogleGroupCache (Components.GoogleApiOperationExecutor);
       groupCache.Fill ();
@@ -94,7 +81,7 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
       return existingGroupNames.Take (amount).ToArray ();
     }
 
-    protected async Task<IReadOnlyList<string>> CreateContactsInGoogle(IEnumerable<ContactData> contactDatas)
+    public async Task<IReadOnlyList<string>> CreateContactsInGoogle(IEnumerable<ContactData> contactDatas)
     {
       return await Server.CreateEntities(
         contactDatas.Select(
@@ -114,7 +101,7 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
               })));
     }
 
-    protected async Task<Dictionary<string, ContactData>> CreateContactsInOutlook (IEnumerable<ContactData> contactDatas)
+    public async Task<Dictionary<string, ContactData>> CreateContactsInOutlook (IEnumerable<ContactData> contactDatas)
     {
       var result = new Dictionary<string, ContactData> ();
 
@@ -135,7 +122,7 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
       return result;
     }
 
-    protected IEnumerable<ContactData> CreateTestContactData (IReadOnlyList<string> groupNames, int amount)
+    public IEnumerable<ContactData> CreateTestContactData (IReadOnlyList<string> groupNames, int amount)
     {
       var numberOfDays = Enum.GetValues (typeof (DayOfWeek)).Cast<int> ().Max () + 1;
 

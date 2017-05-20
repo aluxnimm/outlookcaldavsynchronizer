@@ -32,6 +32,7 @@ namespace GenSync.EntityRepositories
 
     Task VerifyUnknownEntities (Dictionary<TEntityId, TEntityVersion> unknownEntites, TContext context);
 
-    void Cleanup (IReadOnlyDictionary<TEntityId, TEntity> entities);
+    void Cleanup (TEntity entity);
+    void Cleanup (IEnumerable<TEntity> entities);
   }
 }

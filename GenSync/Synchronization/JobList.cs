@@ -47,9 +47,6 @@ namespace GenSync.Synchronization
 
     public int TotalJobCount => _createJobs.Count + _updateJobs.Count + _deleteJobs.Count;
 
-    public override string ToString ()
-    {
-      return $"Create {_createJobs.Count} , Update {_updateJobs.Count} , Delete {_deleteJobs.Count}";
-    }
+    public JobCount Count => new JobCount(_createJobs.Count, _updateJobs.Count, _deleteJobs.Count);
   }
 }

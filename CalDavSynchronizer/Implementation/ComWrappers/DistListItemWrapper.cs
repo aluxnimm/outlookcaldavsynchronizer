@@ -14,24 +14,22 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.ComWrappers
 {
-  public class DistListItemWrapper : IDisposable
+  public class DistListItemWrapper : IDistListItemWrapper
   {
+    public DistListItem Inner => _inner ?? throw new InvalidOperationException("Cannot access a disposed object!");
+
     private DistListItem _inner;
 
     public DistListItemWrapper (DistListItem inner)
     {
       _inner = inner;
-    }
-
-    public DistListItem Inner
-    {
-      get { return _inner; }
     }
 
     public void Dispose ()

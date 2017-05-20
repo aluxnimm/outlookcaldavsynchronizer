@@ -34,7 +34,7 @@ using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class OutlookEventRepository : IEntityRepository<AppointmentId, DateTime, AppointmentItemWrapper, IEventSynchronizationContext>
+  public class OutlookEventRepository : IEntityRepository<AppointmentId, DateTime, IAppointmentItemWrapper, IEventSynchronizationContext>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
 
@@ -45,7 +45,7 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly EventMappingConfiguration _configuration;
     private readonly IDaslFilterProvider _daslFilterProvider;
     private readonly IQueryOutlookAppointmentItemFolderStrategy _queryFolderStrategy;
-    
+    private readonly IComWrapperFactory _comWrapperFactory;
 
     public OutlookEventRepository (
       IOutlookSession session, 
@@ -54,7 +54,8 @@ namespace CalDavSynchronizer.Implementation.Events
       IDateTimeRangeProvider dateTimeRangeProvider,
       EventMappingConfiguration configuration,
       IDaslFilterProvider daslFilterProvider,
-      IQueryOutlookAppointmentItemFolderStrategy queryFolderStrategy)
+      IQueryOutlookAppointmentItemFolderStrategy queryFolderStrategy, 
+      IComWrapperFactory comWrapperFactory)
     {
       if (session == null)
         throw new ArgumentNullException (nameof (session));
@@ -65,6 +66,7 @@ namespace CalDavSynchronizer.Implementation.Events
       if (daslFilterProvider == null)
         throw new ArgumentNullException (nameof (daslFilterProvider));
       if (queryFolderStrategy == null) throw new ArgumentNullException(nameof(queryFolderStrategy));
+      if (comWrapperFactory == null) throw new ArgumentNullException(nameof(comWrapperFactory));
 
       _session = session;
       _folderId = folderId;
@@ -73,6 +75,7 @@ namespace CalDavSynchronizer.Implementation.Events
       _configuration = configuration;
       _daslFilterProvider = daslFilterProvider;
       _queryFolderStrategy = queryFolderStrategy;
+      _comWrapperFactory = comWrapperFactory;
     }
 
     private GenericComObjectWrapper<Folder> CreateFolderWrapper ()
@@ -204,16 +207,15 @@ namespace CalDavSynchronizer.Implementation.Events
     }
 
 #pragma warning disable 1998
-    public async Task<IEnumerable<EntityWithId<AppointmentId, AppointmentItemWrapper>>> Get (ICollection<AppointmentId> ids, ILoadEntityLogger logger, IEventSynchronizationContext context)
+    public async Task<IEnumerable<EntityWithId<AppointmentId, IAppointmentItemWrapper>>> Get (ICollection<AppointmentId> ids, ILoadEntityLogger logger, IEventSynchronizationContext context)
 #pragma warning restore 1998
     {
       return ids
-          .Select (id => EntityWithId.Create (
-              id,
-              new AppointmentItemWrapper (
-                  _session.GetAppointmentItem (id.EntryId, _folderStoreId),
-                  entryId => _session.GetAppointmentItem (entryId, _folderStoreId))))
-          .ToArray();
+        .Select(id => EntityWithId.Create(
+          id,
+          _comWrapperFactory.Create(
+            _session.GetAppointmentItem(id.EntryId, _folderStoreId),
+            entryId => _session.GetAppointmentItem(entryId, _folderStoreId))));
     }
 
     public async Task VerifyUnknownEntities (Dictionary<AppointmentId, DateTime> unknownEntites, IEventSynchronizationContext context)
@@ -222,12 +224,12 @@ namespace CalDavSynchronizer.Implementation.Events
         unknownEntites.Remove(deletedId);
     }
 
-    public void Cleanup(IReadOnlyDictionary<AppointmentId, AppointmentItemWrapper> entities)
+    public void Cleanup(IAppointmentItemWrapper entity)
     {
-      Cleanup(entities.Values);
+      entity.Dispose();
     }
-
-    public void Cleanup (IEnumerable<AppointmentItemWrapper> entities)
+    
+    public void Cleanup (IEnumerable<IAppointmentItemWrapper> entities)
     {
       foreach (var appointmentItemWrapper in entities)
         appointmentItemWrapper.Dispose ();
@@ -236,8 +238,8 @@ namespace CalDavSynchronizer.Implementation.Events
     public async Task<EntityVersion<AppointmentId, DateTime>> TryUpdate (
         AppointmentId entityId,
         DateTime entityVersion,
-        AppointmentItemWrapper entityToUpdate,
-        Func<AppointmentItemWrapper, Task<AppointmentItemWrapper>> entityModifier,
+        IAppointmentItemWrapper entityToUpdate,
+        Func<IAppointmentItemWrapper, Task<IAppointmentItemWrapper>> entityModifier,
         IEventSynchronizationContext context)
     {
       entityToUpdate = await entityModifier (entityToUpdate);
@@ -268,13 +270,13 @@ namespace CalDavSynchronizer.Implementation.Events
       return Task.FromResult (true);
     }
 
-    public async Task<EntityVersion<AppointmentId, DateTime>> Create (Func<AppointmentItemWrapper, Task<AppointmentItemWrapper>> entityInitializer, IEventSynchronizationContext context)
+    public async Task<EntityVersion<AppointmentId, DateTime>> Create (Func<IAppointmentItemWrapper, Task<IAppointmentItemWrapper>> entityInitializer, IEventSynchronizationContext context)
     {
-      AppointmentItemWrapper newAppointmentItemWrapper;
+      IAppointmentItemWrapper newAppointmentItemWrapper;
 
       using (var folderWrapper = CreateFolderWrapper())
       {
-        newAppointmentItemWrapper = new AppointmentItemWrapper (
+        newAppointmentItemWrapper = _comWrapperFactory.Create (
             (AppointmentItem) folderWrapper.Inner.Items.Add (OlItemType.olAppointmentItem),
             entryId => _session.GetAppointmentItem (entryId, _folderStoreId));
       }
@@ -293,13 +295,12 @@ namespace CalDavSynchronizer.Implementation.Events
       }
     }
 
-    public static AppointmentItemWrapper CreateNewAppointmentForTesting (MAPIFolder calendarFolder, NameSpace mapiNamespace, string folderStoreId)
+    public static IAppointmentItemWrapper CreateNewAppointmentForTesting (MAPIFolder calendarFolder, NameSpace mapiNamespace, string folderStoreId)
     {
       return new AppointmentItemWrapper ((AppointmentItem) calendarFolder.Items.Add (OlItemType.olAppointmentItem), entryId => (AppointmentItem) mapiNamespace.GetItemFromID (entryId, folderStoreId));
     }
 
-
-    public static AppointmentItemWrapper GetOutlookEventForTesting (string id, NameSpace mapiNamespace, string folderStoreId)
+    public static IAppointmentItemWrapper GetOutlookEventForTesting (string id, NameSpace mapiNamespace, string folderStoreId)
     {
       return new AppointmentItemWrapper (
           (AppointmentItem) mapiNamespace.GetItemFromID (id, folderStoreId),

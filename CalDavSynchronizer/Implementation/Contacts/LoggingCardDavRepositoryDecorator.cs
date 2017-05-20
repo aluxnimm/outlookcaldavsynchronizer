@@ -90,7 +90,12 @@ namespace CalDavSynchronizer.Implementation.Contacts
       return _inner.VerifyUnknownEntities(unknownEntites, 0);
     }
 
-    public void Cleanup(IReadOnlyDictionary<WebResourceName, vCard> entities)
+    public void Cleanup(vCard entity)
+    {
+      _inner.Cleanup(entity);
+    }
+
+    public void Cleanup(IEnumerable<vCard> entities)
     {
       _inner.Cleanup(entities);
     }

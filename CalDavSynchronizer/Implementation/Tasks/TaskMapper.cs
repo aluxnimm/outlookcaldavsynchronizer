@@ -36,7 +36,7 @@ using RecurrencePattern = DDay.iCal.RecurrencePattern;
 
 namespace CalDavSynchronizer.Implementation.Tasks
 {
-  internal class TaskMapper : IEntityMapper<TaskItemWrapper, IICalendar, int>
+  internal class TaskMapper : IEntityMapper<ITaskItemWrapper, IICalendar, int>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
     private readonly DateTime _dateNull;
@@ -50,7 +50,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       _configuration = configuration;
     }
 
-    public Task<IICalendar> Map1To2 (TaskItemWrapper source, IICalendar existingTargetCalender, IEntityMappingLogger logger, int context)
+    public Task<IICalendar> Map1To2 (ITaskItemWrapper source, IICalendar existingTargetCalender, IEntityMappingLogger logger, int context)
     {
       var newTargetCalender = new iCalendar();
       var localIcalTimeZone = iCalTimeZone.FromSystemTimeZone (_localTimeZoneInfo, new DateTime (1970, 1, 1), true);
@@ -79,7 +79,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       return Task.FromResult<IICalendar>(newTargetCalender);
     }
 
-    public void Map1To2 (TaskItemWrapper source, ITodo target, iCalTimeZone localIcalTimeZone, IEntityMappingLogger logger)
+    public void Map1To2 (ITaskItemWrapper source, ITodo target, iCalTimeZone localIcalTimeZone, IEntityMappingLogger logger)
     {
       target.Summary = source.Inner.Subject;
 
@@ -149,7 +149,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
     }
 
-    private void MapCategories1To2 (TaskItemWrapper source, ITodo target)
+    private void MapCategories1To2 (ITaskItemWrapper source, ITodo target)
     {
       if (!string.IsNullOrEmpty (source.Inner.Categories))
       {
@@ -165,7 +165,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       }
     }
 
-    private void MapReminder1To2 (TaskItemWrapper source, ITodo target)
+    private void MapReminder1To2 (ITaskItemWrapper source, ITodo target)
     {
       if (_configuration.MapReminder == ReminderMapping.@false)
         return;
@@ -332,13 +332,13 @@ namespace CalDavSynchronizer.Implementation.Tasks
       }
     }
 
-    public Task<TaskItemWrapper> Map2To1 (IICalendar sourceCalendar, TaskItemWrapper target, IEntityMappingLogger logger, int context)
+    public Task<ITaskItemWrapper> Map2To1 (IICalendar sourceCalendar, ITaskItemWrapper target, IEntityMappingLogger logger, int context)
     {
       var source = sourceCalendar.Todos[0];
       return Task.FromResult(Map2To1 (source, target, logger));
     }
 
-    public TaskItemWrapper Map2To1 (ITodo source, TaskItemWrapper target, IEntityMappingLogger logger)
+    public ITaskItemWrapper Map2To1 (ITodo source, ITaskItemWrapper target, IEntityMappingLogger logger)
     {
       target.Inner.Subject = source.Summary;
 
@@ -442,7 +442,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
     }
 
-    private void MapCategories2To1 (ITodo source, TaskItemWrapper target)
+    private void MapCategories2To1 (ITodo source, ITaskItemWrapper target)
     {
       var categories = string.Join (CultureInfo.CurrentCulture.TextInfo.ListSeparator, source.Categories);
 
@@ -457,7 +457,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       }
     }
 
-    private void MapReminder2To1 (ITodo source, TaskItemWrapper target, IEntityMappingLogger logger)
+    private void MapReminder2To1 (ITodo source, ITaskItemWrapper target, IEntityMappingLogger logger)
     {
       target.Inner.ReminderSet = false;
 
@@ -506,7 +506,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       }
     }
 
-    private void MapRecurrance2To1 (ITodo source, TaskItemWrapper targetWrapper, IEntityMappingLogger logger)
+    private void MapRecurrance2To1 (ITodo source, ITaskItemWrapper targetWrapper, IEntityMappingLogger logger)
     {
       if (source.RecurrenceRules.Count > 0)
       {

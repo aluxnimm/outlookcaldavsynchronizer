@@ -26,19 +26,12 @@ namespace GenSync.ProgressReport
   public class ProgressLogger : IProgressLogger
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
-
-    private readonly double _uiTicksPerStepTick;
     private readonly IProgressUi _progressUi;
-    private readonly int _uiMax;
-    private double _currentValue;
     private readonly IExceptionLogger _exceptionLogger;
 
-    public ProgressLogger (IProgressUi progressUi, int uiMin, int uiMax, int steps, IExceptionLogger exceptionLogger)
+    public ProgressLogger (IProgressUi progressUi, IExceptionLogger exceptionLogger)
     {
       _progressUi = progressUi;
-      _uiTicksPerStepTick = (uiMax - uiMin) / (double) steps;
-      _currentValue = uiMin;
-      _uiMax = uiMax;
       _exceptionLogger = exceptionLogger;
     }
 
@@ -46,7 +39,7 @@ namespace GenSync.ProgressReport
     {
       try
       {
-        _progressUi.SetValue (_uiMax);
+        _progressUi.IncrementValue ();
       }
       catch (Exception x)
       {
@@ -61,15 +54,7 @@ namespace GenSync.ProgressReport
 
     public void IncreaseBy (int value)
     {
-      try
-      {
-        _currentValue = Math.Min (_currentValue + (value * _uiTicksPerStepTick), _uiMax);
-        _progressUi.SetValue ((int) _currentValue);
-      }
-      catch (Exception x)
-      {
-        _exceptionLogger.LogException (x, s_logger);
-      }
+     
     }
   }
 }

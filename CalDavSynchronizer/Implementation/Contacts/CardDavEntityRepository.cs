@@ -93,11 +93,16 @@ namespace CalDavSynchronizer.Implementation.Contacts
       return Task.FromResult (0);
     }
 
-    public void Cleanup (IReadOnlyDictionary<WebResourceName, TEntity> entities)
+    public void Cleanup(TEntity entity)
     {
       // nothing to do
     }
 
+    public void Cleanup(IEnumerable<TEntity> entities)
+    {
+      // nothing to do
+    }
+    
     private IReadOnlyList<EntityWithId<WebResourceName, TEntity>> ParallelDeserialize (IReadOnlyList<EntityWithId<WebResourceName, string>> serializedEntities, ILoadEntityLogger logger)
     {
       var result = new List<EntityWithId<WebResourceName, TEntity>>();

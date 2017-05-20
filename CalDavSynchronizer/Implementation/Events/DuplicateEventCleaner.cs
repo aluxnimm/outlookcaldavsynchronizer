@@ -191,7 +191,7 @@ namespace CalDavSynchronizer.Implementation.Events
         .ToArray();
     }
 
-    private async Task DeleteAppointment (AppointmentItemWrapper item, Dictionary<AppointmentId, IEntityRelationData<AppointmentId, DateTime, WebResourceName, string>> relations)
+    private async Task DeleteAppointment (IAppointmentItemWrapper item, Dictionary<AppointmentId, IEntityRelationData<AppointmentId, DateTime, WebResourceName, string>> relations)
     {
       IEntityRelationData<AppointmentId, DateTime, WebResourceName, string> relation;
       var appointmentId = new AppointmentId(item.Inner.EntryID, item.Inner.GlobalAppointmentID);
@@ -203,17 +203,17 @@ namespace CalDavSynchronizer.Implementation.Events
       item.Inner.Delete();
     }
 
-    private async Task<AppointmentItemWrapper[]> GetAppointments(AppointmentId[] ids)
+    private async Task<IAppointmentItemWrapper[]> GetAppointments(AppointmentId[] ids)
     {
       return (await Task.WhenAll(ids.Select(GetOrNull).Where(a => a != null))).ToArray();
     }
 
-    private async Task<Tuple<AppointmentId, AppointmentItemWrapper>[]> GetAppointmentsWithId (AppointmentId[] ids)
+    private async Task<Tuple<AppointmentId, IAppointmentItemWrapper>[]> GetAppointmentsWithId (AppointmentId[] ids)
     {
       return (await Task.WhenAll (ids.Select (async i => Tuple.Create( i, await GetOrNull (i) )))).Where (a => a.Item2 != null).ToArray();
     }
 
-    async Task<AppointmentItemWrapper> GetOrNull (AppointmentId id)
+    async Task<IAppointmentItemWrapper> GetOrNull (AppointmentId id)
     {
       try
       {

@@ -24,21 +24,21 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.DistributionLists
 {
-  internal class InitialSogoDistListEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, DistListItemWrapper, string, WebResourceName, string, DistributionList, string>
+  internal class InitialSogoDistListEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, DistListMatchData, string, WebResourceName, string, DistributionList, string>
   {
     public InitialSogoDistListEntityMatcher (IEqualityComparer<WebResourceName> btypeIdEqualityComparer)
         : base (btypeIdEqualityComparer)
     {
     }
 
-    protected override bool AreEqual(DistListItemWrapper atypeEntity, DistributionList btypeEntity)
+    protected override bool AreEqual(DistListMatchData atypeEntity, DistributionList btypeEntity)
     {
-      return atypeEntity.Inner.DLName == btypeEntity.Name;
+      return atypeEntity.DlName == btypeEntity.Name;
     }
 
-    protected override string GetAtypePropertyValue(DistListItemWrapper atypeEntity)
+    protected override string GetAtypePropertyValue(DistListMatchData atypeEntity)
     {
-      return atypeEntity.Inner.DLName;
+      return atypeEntity.DlName;
     }
 
     protected override string GetBtypePropertyValue(DistributionList btypeEntity)
@@ -52,21 +52,21 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
     }
   }
 
-  internal class InitialDistListEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, DistListItemWrapper, string, WebResourceName, string, vCard, string>
+  internal class InitialDistListEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, DistListMatchData, string, WebResourceName, string, vCard, string>
   {
     public InitialDistListEntityMatcher (IEqualityComparer<WebResourceName> btypeIdEqualityComparer)
         : base (btypeIdEqualityComparer)
     {
     }
 
-    protected override bool AreEqual (DistListItemWrapper atypeEntity, vCard btypeEntity)
+    protected override bool AreEqual (DistListMatchData atypeEntity, vCard btypeEntity)
     {
-      return atypeEntity.Inner.DLName == btypeEntity.FormattedName;
+      return atypeEntity.DlName == btypeEntity.FormattedName;
     }
 
-    protected override string GetAtypePropertyValue (DistListItemWrapper atypeEntity)
+    protected override string GetAtypePropertyValue (DistListMatchData atypeEntity)
     {
-      return atypeEntity.Inner.DLName;
+      return atypeEntity.DlName;
     }
 
     protected override string GetBtypePropertyValue (vCard btypeEntity)

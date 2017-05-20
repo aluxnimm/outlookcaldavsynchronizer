@@ -33,7 +33,7 @@ using log4net;
 
 namespace CalDavSynchronizer.Implementation.Tasks
 {
-  public class OutlookTaskRepository : IEntityRepository<string, DateTime, TaskItemWrapper, int>
+  public class OutlookTaskRepository : IEntityRepository<string, DateTime, ITaskItemWrapper, int>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
     private readonly IOutlookSession _session;
@@ -42,9 +42,9 @@ namespace CalDavSynchronizer.Implementation.Tasks
     private readonly IDaslFilterProvider _daslFilterProvider;
     private readonly TaskMappingConfiguration _configuration;
     private readonly IQueryOutlookTaskItemFolderStrategy _queryFolderStrategy;
-    
+    private readonly IComWrapperFactory _comWrapperFactory;
 
-    public OutlookTaskRepository (IOutlookSession session, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider, TaskMappingConfiguration configuration, IQueryOutlookTaskItemFolderStrategy queryFolderStrategy)
+    public OutlookTaskRepository (IOutlookSession session, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider, TaskMappingConfiguration configuration, IQueryOutlookTaskItemFolderStrategy queryFolderStrategy, IComWrapperFactory comWrapperFactory)
     {
       if (session == null)
         throw new ArgumentNullException (nameof (session));
@@ -53,6 +53,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       if (configuration == null)
         throw new ArgumentNullException (nameof(configuration));
       if (queryFolderStrategy == null) throw new ArgumentNullException(nameof(queryFolderStrategy));
+      if (comWrapperFactory == null) throw new ArgumentNullException(nameof(comWrapperFactory));
       if (String.IsNullOrEmpty (folderId))
         throw new ArgumentException ("Argument is null or empty", nameof (folderId));
       if (String.IsNullOrEmpty (folderStoreId))
@@ -64,6 +65,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       _daslFilterProvider = daslFilterProvider;
       _configuration = configuration;
       _queryFolderStrategy = queryFolderStrategy;
+      _comWrapperFactory = comWrapperFactory;
     }
 
     public Task<IEnumerable<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, int context)
@@ -152,16 +154,15 @@ namespace CalDavSynchronizer.Implementation.Tasks
     }
 
 #pragma warning disable 1998
-    public async Task<IEnumerable<EntityWithId<string, TaskItemWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger, int context)
+    public async Task<IEnumerable<EntityWithId<string, ITaskItemWrapper>>> Get (ICollection<string> ids, ILoadEntityLogger logger, int context)
 #pragma warning restore 1998
     {
       return ids
-          .Select (id => EntityWithId.Create (
-              id,
-              new TaskItemWrapper (
-                  _session.GetTaskItem (id, _folderStoreId),
-                  entryId => _session.GetTaskItem (entryId, _folderStoreId))))
-          .ToArray();
+        .Select(id => EntityWithId.Create(
+          id,
+          _comWrapperFactory.Create(
+            _session.GetTaskItem(id, _folderStoreId),
+            entryId => _session.GetTaskItem(entryId, _folderStoreId))));
     }
 
     public Task VerifyUnknownEntities (Dictionary<string, DateTime> unknownEntites, int context)
@@ -186,18 +187,22 @@ namespace CalDavSynchronizer.Implementation.Tasks
       return _configuration.InvertTaskCategoryFilter ? !found : found;
     }
 
-
-    public void Cleanup (IReadOnlyDictionary<string, TaskItemWrapper> entities)
+    public void Cleanup(ITaskItemWrapper entity)
     {
-      foreach (var wrapper in entities.Values)
-        wrapper.Dispose();
+      entity.Dispose();
+    }
+
+    public void Cleanup(IEnumerable<ITaskItemWrapper> entities)
+    {
+      foreach (var contactItemWrapper in entities)
+        contactItemWrapper.Dispose();
     }
 
     public async Task<EntityVersion<string, DateTime>> TryUpdate (
         string entityId,
         DateTime entityVersion,
-        TaskItemWrapper entityToUpdate,
-        Func<TaskItemWrapper, Task<TaskItemWrapper>> entityModifier,
+        ITaskItemWrapper entityToUpdate,
+        Func<ITaskItemWrapper, Task<ITaskItemWrapper>> entityModifier,
         int context)
     {
       entityToUpdate = await entityModifier (entityToUpdate);
@@ -222,10 +227,10 @@ namespace CalDavSynchronizer.Implementation.Tasks
       return Task.FromResult (true);
     }
 
-    public async Task<EntityVersion<string, DateTime>> Create (Func<TaskItemWrapper, Task<TaskItemWrapper>> entityInitializer, int context)
+    public async Task<EntityVersion<string, DateTime>> Create (Func<ITaskItemWrapper, Task<ITaskItemWrapper>> entityInitializer, int context)
     {
       using (var taskFolderWrapper = CreateFolderWrapper ())
-      using (var wrapper = new TaskItemWrapper ((TaskItem) taskFolderWrapper.Inner.Items.Add (OlItemType.olTaskItem), entryId =>  _session.GetTaskItem (entryId, _folderStoreId)))
+      using (var wrapper = _comWrapperFactory.Create ((TaskItem) taskFolderWrapper.Inner.Items.Add (OlItemType.olTaskItem), entryId =>  _session.GetTaskItem (entryId, _folderStoreId)))
       {
         using (var initializedWrapper = await entityInitializer (wrapper))
         {

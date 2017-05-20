@@ -89,8 +89,14 @@ namespace GenSync.UnitTests.Synchronization.Stubs
       return Task.FromResult (0);
     }
 
-    public void Cleanup (IReadOnlyDictionary<Identifier, string> entities)
+    public void Cleanup(string entity)
     {
+      
+    }
+
+    public void Cleanup(IEnumerable<string> entities)
+    {
+    
     }
 
     public void Delete (Identifier entityId)

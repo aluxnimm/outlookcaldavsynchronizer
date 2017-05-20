@@ -17,11 +17,11 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.DistributionLists
 {
-  public class DistListEntityMapper : IEntityMapper<DistListItemWrapper, vCard, DistributionListSychronizationContext>
+  public class DistListEntityMapper : IEntityMapper<IDistListItemWrapper, vCard, DistributionListSychronizationContext>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod ().DeclaringType);
 
-    public Task<vCard> Map1To2(DistListItemWrapper source, vCard target, IEntityMappingLogger logger, DistributionListSychronizationContext context)
+    public Task<vCard> Map1To2(IDistListItemWrapper source, vCard target, IEntityMappingLogger logger, DistributionListSychronizationContext context)
     {
       target.Members.Clear ();
       target.FormattedName = source.Inner.DLName;
@@ -67,7 +67,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
       return Task.FromResult (target);
     }
 
-    public Task<DistListItemWrapper> Map2To1(vCard source, DistListItemWrapper target, IEntityMappingLogger logger, DistributionListSychronizationContext context)
+    public Task<IDistListItemWrapper> Map2To1(vCard source, IDistListItemWrapper target, IEntityMappingLogger logger, DistributionListSychronizationContext context)
     {
       if (string.IsNullOrEmpty(source.FormattedName))
       {

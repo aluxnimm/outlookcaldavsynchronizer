@@ -27,14 +27,14 @@ using Microsoft.Office.Interop.Outlook;
 namespace CalDavSynchronizer.Implementation.DistributionLists
 {
   internal class SogoDistListConflictInitialSyncStateCreationStrategyAutomatic
-      : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, DistListItemWrapper, WebResourceName, string, DistributionList, DistributionListSychronizationContext>
+      : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, IDistListItemWrapper, WebResourceName, string, DistributionList, DistributionListSychronizationContext>
   {
-    public SogoDistListConflictInitialSyncStateCreationStrategyAutomatic(EntitySyncStateEnvironment<string, DateTime, DistListItemWrapper, WebResourceName, string, DistributionList, DistributionListSychronizationContext> environment)
+    public SogoDistListConflictInitialSyncStateCreationStrategyAutomatic(EntitySyncStateEnvironment<string, DateTime, IDistListItemWrapper, WebResourceName, string, DistributionList, DistributionListSychronizationContext> environment)
         : base (environment)
     {
     }
 
-    protected override IEntitySyncState<string, DateTime, DistListItemWrapper, WebResourceName, string, DistributionList, DistributionListSychronizationContext> Create_FromNewerToOlder (IEntityRelationData<string, DateTime, WebResourceName, string> knownData, DateTime newA, string newB)
+    protected override IEntitySyncState<string, DateTime, IDistListItemWrapper, WebResourceName, string, DistributionList, DistributionListSychronizationContext> Create_FromNewerToOlder (IEntityRelationData<string, DateTime, WebResourceName, string> knownData, DateTime newA, string newB)
     {
       return new OutlookSogoDistListUpdateFromNewerToOlder (
           _environment,

@@ -30,7 +30,7 @@ namespace CalDavSynchronizer.Scheduling
 {
   public class ContactSynchronizerComponents
   {
-    public ContactSynchronizerComponents(Options options, OutlookContactRepository<ICardDavRepositoryLogger> atypeRepository, IEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> btypeRepository, EntitySyncStateFactory<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger> syncStateFactory, EntityRelationDataAccess<string, DateTime, OutlookContactRelationData, WebResourceName, string> storageDataAccess, OutlookContactRelationDataFactory entityRelationDataFactory, IEqualityComparer<WebResourceName> btypeIdEqualityComparer, EqualityComparer<string> atypeIdEqulityComparer, IWebDavClient webDavClientOrNullIfFileAccess, IChunkedExecutor chunkedExecutor, LoggingCardDavRepositoryDecorator repository, ContactMappingConfiguration mappingParameters, string storageDataDirectory, Uri serverUrl, ICardDavDataAccess cardDavDataAccess)
+    public ContactSynchronizerComponents(Options options, OutlookContactRepository<ICardDavRepositoryLogger> atypeRepository, IEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> btypeRepository, EntitySyncStateFactory<string, DateTime, IContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger> syncStateFactory, EntityRelationDataAccess<string, DateTime, OutlookContactRelationData, WebResourceName, string> storageDataAccess, OutlookContactRelationDataFactory entityRelationDataFactory, IEqualityComparer<WebResourceName> btypeIdEqualityComparer, EqualityComparer<string> atypeIdEqulityComparer, IWebDavClient webDavClientOrNullIfFileAccess, IChunkedExecutor chunkedExecutor, LoggingCardDavRepositoryDecorator repository, ContactMappingConfiguration mappingParameters, string storageDataDirectory, Uri serverUrl, ICardDavDataAccess cardDavDataAccess)
     {
       Options = options;
       AtypeRepository = atypeRepository;
@@ -52,7 +52,7 @@ namespace CalDavSynchronizer.Scheduling
     public Options Options { get; private set; }
     public OutlookContactRepository<ICardDavRepositoryLogger> AtypeRepository { get; private set; }
     public IEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> BtypeRepository { get; set; }
-    public EntitySyncStateFactory<string, DateTime, ContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger> SyncStateFactory { get; private set; }
+    public EntitySyncStateFactory<string, DateTime, IContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger> SyncStateFactory { get; private set; }
     public EntityRelationDataAccess<string, DateTime, OutlookContactRelationData, WebResourceName, string> StorageDataAccess { get; private set; }
     public OutlookContactRelationDataFactory EntityRelationDataFactory { get; private set; }
     public IEqualityComparer<WebResourceName> BtypeIdEqualityComparer { get; private set; }
