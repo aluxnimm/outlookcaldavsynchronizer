@@ -30,9 +30,11 @@ namespace CalDavSynchronizer.DataAccess
   public class FileSystemDavDataAccess : ICalDavDataAccess, ICardDavDataAccess
   {
     private readonly DirectoryInfo _directory;
+    private readonly string _fileExtension;
 
-    public FileSystemDavDataAccess (Uri uri)
+    public FileSystemDavDataAccess (Uri uri, string fileExtension)
     {
+      _fileExtension = fileExtension;
       _directory = new DirectoryInfo(uri.LocalPath);
     }
 
@@ -79,7 +81,7 @@ namespace CalDavSynchronizer.DataAccess
     public Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetAllVersions()
     {
       return Task.FromResult<IReadOnlyList<EntityVersion<WebResourceName, string>>> (
-         _directory.EnumerateFiles ().Select (f => EntityVersion.Create (new WebResourceName (f.Name), f.LastWriteTimeUtc.ToString ("o"))).ToArray ());
+         _directory.EnumerateFiles ($"*{_fileExtension}").Select (f => EntityVersion.Create (new WebResourceName (f.Name), f.LastWriteTimeUtc.ToString ("o"))).ToArray ());
     }
 
     public Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetVersions(IEnumerable<WebResourceName> eventUrls)
@@ -106,7 +108,7 @@ namespace CalDavSynchronizer.DataAccess
 
     public Task<EntityVersion<WebResourceName, string>> CreateEntity(string iCalData, string uid)
     {
-      var fileName = uid + ".ics";
+      var fileName = uid + _fileExtension;
       var path = Path.Combine(_directory.FullName, fileName);
       File.WriteAllText(path, iCalData);
       return Task.FromResult(EntityVersion.Create(new WebResourceName(fileName), File.GetLastWriteTimeUtc(path).ToString("o")));

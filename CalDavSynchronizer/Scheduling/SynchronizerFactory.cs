@@ -172,7 +172,7 @@ namespace CalDavSynchronizer.Scheduling
 
       if (calendarUrl.Scheme == Uri.UriSchemeFile)
       {
-        calDavDataAccess = new FileSystemDavDataAccess (calendarUrl);
+        calDavDataAccess = new FileSystemDavDataAccess (calendarUrl, ".ics");
       }
       else
       {
@@ -488,7 +488,7 @@ namespace CalDavSynchronizer.Scheduling
 
       if (calendarUrl.Scheme == Uri.UriSchemeFile)
       {
-        calDavDataAccess = new FileSystemDavDataAccess (calendarUrl);
+        calDavDataAccess = new FileSystemDavDataAccess (calendarUrl, ".ics");
       }
       else
       {
@@ -634,13 +634,20 @@ namespace CalDavSynchronizer.Scheduling
         {
           case DistributionListType.Sogo:
 
-            var synchronizer = CreateContactSynchronizer (synchronizerComponents, componentsToFill);
+            var synchronizer = CreateContactSynchronizer(synchronizerComponents, componentsToFill);
 
-            // TODO: implement DistLists for File-Repository debugging mode
-            ICardDavDataAccess distListDataAccess = new CardDavDataAccess (
-              synchronizerComponents.ServerUrl,
-              synchronizerComponents.WebDavClientOrNullIfFileAccess,
-              contentType => contentType == "text/x-vlist");
+            ICardDavDataAccess distListDataAccess;
+            if (synchronizerComponents.WebDavClientOrNullIfFileAccess == null)
+            {
+              distListDataAccess = new FileSystemDavDataAccess(synchronizerComponents.ServerUrl, ".vlist");
+            }
+            else
+            {
+              distListDataAccess = new CardDavDataAccess(
+                synchronizerComponents.ServerUrl,
+                synchronizerComponents.WebDavClientOrNullIfFileAccess,
+                contentType => contentType == "text/x-vlist");
+            }
 
             componentsToFill.SogoDistListDataAccessOrNull = distListDataAccess;
 
@@ -648,21 +655,21 @@ namespace CalDavSynchronizer.Scheduling
 
             componentsToFill.SogoDistListRepositoryOrNull = bDistListRepository;
 
-            var distributionListSynchronizer = CreateDistListSynchronizer (
-              options, 
-              generalOptions, 
-              bDistListRepository, 
-              new SogoDistListEntityMapper (), 
-              new InitialSogoDistListEntityMatcher (btypeIdEqualityComparer), 
-              e => new SogoDistListConflictInitialSyncStateCreationStrategyAutomatic(e), 
+            var distributionListSynchronizer = CreateDistListSynchronizer(
+              options,
+              generalOptions,
+              bDistListRepository,
+              new SogoDistListEntityMapper(),
+              new InitialSogoDistListEntityMatcher(btypeIdEqualityComparer),
+              e => new SogoDistListConflictInitialSyncStateCreationStrategyAutomatic(e),
               btypeIdEqualityComparer,
               componentsToFill);
 
-            return new OutlookSynchronizer<WebResourceName, string> (
-              new ContactAndDistListSynchronizer (
+            return new OutlookSynchronizer<WebResourceName, string>(
+              new ContactAndDistListSynchronizer(
                 synchronizer,
                 distributionListSynchronizer,
-                new EmailAddressCacheDataAccess (Path.Combine (synchronizerComponents.StorageDataDirectory, "emailAddressCache.xml")),
+                new EmailAddressCacheDataAccess(Path.Combine(synchronizerComponents.StorageDataDirectory, "emailAddressCache.xml")),
                 synchronizerComponents.BtypeRepository,
                 _outlookSession));
 
@@ -729,7 +736,7 @@ namespace CalDavSynchronizer.Scheduling
 
       if (serverUrl.Scheme == Uri.UriSchemeFile)
       {
-        cardDavDataAccess = new FileSystemDavDataAccess(serverUrl);
+        cardDavDataAccess = new FileSystemDavDataAccess(serverUrl, ".vcard");
       }
       else
       {
