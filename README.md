@@ -107,6 +107,14 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 2.20.0 ####
+- New features
+	- Full support for chunked synchronization
+- Bug fixes
+	- Avoid Nullreference exception when TYPE is empty in X-SOCIALPROFILE property in vCardStandardReader, ticket #599.
+	- Make mapping of Outlook EmailAddress1 configurable (if it should be mapped to HOME or WORK), gh ticket 193.
+	- Fix reading vcard KEY attribute if encoding is not set explicitely to base64, gh issue 195.
+
 #### 2.19.2 ####
 - Bug fixes
 	- Honor chunk size also for Google Contact API read calls, ticket #586.
