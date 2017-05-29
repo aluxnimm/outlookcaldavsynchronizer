@@ -94,7 +94,7 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
         PreemptiveAuthentication = true,
         ForceBasicAuthentication = false,
         ProxyOptions = new ProxyOptions() { ProxyUseDefault = true },
-        IsChunkedSynchronizationEnabled = false,
+        IsChunkedSynchronizationEnabled = true,
         ChunkSize = 100,
         ServerAdapterType = ServerAdapterType.WebDavHttpClientBased
       };
