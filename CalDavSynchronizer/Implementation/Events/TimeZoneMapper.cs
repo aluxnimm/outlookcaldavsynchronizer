@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Linq;
+using NodaTime.TimeZones;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
@@ -51,26 +52,23 @@ namespace CalDavSynchronizer.Implementation.Events
         // If the primary zone is a link, it then resolves it to the canonical ID.
         public static string WindowsToIana(string windowsZoneId)
         {
-          if (windowsZoneId.Equals("UTC", StringComparison.Ordinal))
+          // Avoid UTC being mapped to Etc/GMT, which is the mapping in CLDR
+          if (windowsZoneId == "UTC")
+          {
             return "Etc/UTC";
+          }
 
-          var tzdbSource = NodaTime.TimeZones.TzdbDateTimeZoneSource.Default;
-          TimeZoneInfo tzi;
-          try
+          var source = TzdbDateTimeZoneSource.Default;
+          string result;
+
+          // If there's no such mapping, result will be null.
+          source.WindowsMapping.PrimaryMapping.TryGetValue(windowsZoneId, out result);
+          // Canonicalize
+          if (result != null)
           {
-            tzi = TimeZoneInfo.FindSystemTimeZoneById (windowsZoneId);
+            result = source.CanonicalIdMap[result];
           }
-          catch (Exception)
-          {
-            tzi = TimeZoneInfo.Local;
-          }
-            
-          if (tzi == null)
-            return null;
-          var tzid = tzdbSource.MapTimeZoneId(tzi);
-          if (tzid == null)
-            return null;
-          return tzdbSource.CanonicalIdMap[tzid];
+          return result;
         }
-    }
+  }
 }
