@@ -107,6 +107,13 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 2.21.0 ####
+- New features
+	- Update NodaTime to version 2 to improve timezone calculations.
+	- Update Google APIs NuGet packages.
+- Bug fixes
+	- Don't enable chunked synchronization by default.
+
 #### 2.20.0 ####
 - New features
 	- Full support for chunked synchronization
@@ -1064,6 +1071,7 @@ If you expand the tree view of the profile you can configure network and proxy o
 	- You can also configure if contact photos should be mapped or not. Contact photo mapping from Outlook to the server doesn't work in Outlook 2007. You can also add an option to not overwrite the contact photo in Outlook when it changes on the server, which could happen due to other mobile clients reducing the resolution for example.
 	- Don't overwrite FileAs in Outlook uses the Outlook settings for FileAs and doesn't overwrite the contact FileAs with the FN from the server.
 	- Fix imported phone number format adds round brackets to the area code of phone numbers, so that Outlook can show correct phone number details with country and area code, e.g. +1 23 45678 is mapped to +1 (23) 45678.
+	- Map OutlookEmailAddress1 to WORK instead of HOME, enable when you need to change the order of email address mapping.
 	- Map Distribution Lists enables the sync of contact groups / Distribution Lists, right now the DAV contact group format SOGo VLIST or vCards with KIND:group are available, see **Distribution Lists** below.
 	- For tasks (not for Google task profiles) you can configure if you want to map reminders (just upcoming, all or none), the priority of the task, the description body and if recurring tasks should be synchronized.
 	- You can also define if task start and due dates should be mapped as floating without timezone to avoid issues with tasks across different timezones.
