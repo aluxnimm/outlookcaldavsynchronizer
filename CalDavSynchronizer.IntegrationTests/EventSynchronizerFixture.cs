@@ -79,6 +79,55 @@ namespace CalDavSynchronizer.IntegrationTests
         },
         events.Select(e => e.Entity.Events[0].Summary));
     }
+
+    [TestCase("IntegrationTest/Events/Sogo")]
+    // [TestCase("IntegrationTest/Events/Google")] => This does currently not work
+    [Apartment(System.Threading.ApartmentState.STA)]
+    public async Task SynchronizeToServer_AllDayEventsWithTimeRangeFilter_DoesntDuplicateOrDeleteBoundaryEvents(string profileName)
+    {
+      var options = TestComponentContainer.GetOptions(profileName);
+
+      options.SynchronizationMode = SynchronizationMode.ReplicateOutlookIntoServer;
+
+      var synchronizer = await CreateSynchronizer(options);
+      await synchronizer.ClearEventRepositoriesAndCache();
+
+      await synchronizer.CreateEventInOutlook("Event -5", DateTime.Today.AddDays(-5), DateTime.Now.AddDays(-5), true);
+      await synchronizer.CreateEventInOutlook("Event -4", DateTime.Today.AddDays(-4), DateTime.Now.AddDays(-4), true);
+      await synchronizer.CreateEventInOutlook("Event -3", DateTime.Today.AddDays(-3), DateTime.Now.AddDays(-3), true);
+      await synchronizer.CreateEventInOutlook("Event -2", DateTime.Today.AddDays(-2), DateTime.Now.AddDays(-2), true);
+      await synchronizer.CreateEventInOutlook("Event -1", DateTime.Today.AddDays(-1), DateTime.Now.AddDays(-1), true);
+      await synchronizer.CreateEventInOutlook("Event 0", DateTime.Today.AddDays(0), DateTime.Now.AddDays(0), true);
+      await synchronizer.CreateEventInOutlook("Event 1", DateTime.Today.AddDays(1), DateTime.Now.AddDays(1), true);
+      await synchronizer.CreateEventInOutlook("Event 2", DateTime.Today.AddDays(2), DateTime.Now.AddDays(2), true);
+      await synchronizer.CreateEventInOutlook("Event 3", DateTime.Today.AddDays(3), DateTime.Now.AddDays(3), true);
+      await synchronizer.CreateEventInOutlook("Event 4", DateTime.Today.AddDays(4), DateTime.Now.AddDays(4), true);
+      await synchronizer.CreateEventInOutlook("Event 5", DateTime.Today.AddDays(5), DateTime.Now.AddDays(5), true);
+
+      await synchronizer.SynchronizeAndCheck(
+        unchangedA: 0, addedA: 11, changedA: 0, deletedA: 0,
+        unchangedB: 0, addedB: 0, changedB: 0, deletedB: 0,
+        createA: 0, updateA: 0, deleteA: 0,
+        createB: 11, updateB: 0, deleteB: 0);
+
+      synchronizer.ClearCache();
+
+      for (int rangeInDays = 1; rangeInDays <= 5; rangeInDays++)
+      {
+        options.DaysToSynchronizeInTheFuture = rangeInDays;
+        options.DaysToSynchronizeInThePast = rangeInDays;
+        options.IgnoreSynchronizationTimeRange = false;
+        synchronizer = await CreateSynchronizer(options);
+
+        var expectedNumberOfEvents = rangeInDays * 2 + 2 - (rangeInDays == 5 ? 1 : 0);
+
+        await synchronizer.SynchronizeAndCheck(
+          unchangedA: expectedNumberOfEvents, addedA: 0, changedA: 0, deletedA: 0,
+          unchangedB: expectedNumberOfEvents, addedB: 0, changedB: 0, deletedB: 0,
+          createA: 0, updateA: 0, deleteA: 0,
+          createB: 0, updateB: 0, deleteB: 0);
+      }
+    }
     
     [Test]
     [Apartment(System.Threading.ApartmentState.STA)]

@@ -62,7 +62,8 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
     public async Task<AppointmentId> CreateEventInOutlook (
     string subject,
     DateTime start,
-    DateTime end)
+    DateTime end,
+    bool isAllDayEvent = false)
     {
       return await Outlook.CreateEntity (
         e =>
@@ -71,6 +72,7 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
           e.Inner.End = end;
           e.Inner.Subject = subject;
           e.Inner.ReminderSet = false;
+          e.Inner.AllDayEvent = isAllDayEvent;
         });
     }
 
