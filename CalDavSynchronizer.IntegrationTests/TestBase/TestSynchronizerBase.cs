@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.IntegrationTests.Infrastructure;
@@ -47,10 +48,10 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
     
 
     public async Task SynchronizeAndCheck(
-      int unchangedA, int addedA, int changedA, int deletedA,
-      int unchangedB, int addedB, int changedB, int deletedB,
-      int createA, int updateA, int deleteA,
-      int createB, int updateB, int deleteB,
+      int? unchangedA, int? addedA, int? changedA, int? deletedA,
+      int? unchangedB, int? addedB, int? changedB, int? deletedB,
+      int? createA, int? updateA, int? deleteA,
+      int? createB, int? updateB, int? deleteB,
       int? ordinalOfReportToCheck = null,
       int? maximumOpenItemsPerType = null)
     {
@@ -58,15 +59,41 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
       try
       {
         var report = await SynchronizeAndAssertNoErrors();
-        Assert.That(ExtractLoggerInfo(report.ADelta, ordinalOfReportToCheck), Is.EqualTo($"Unchanged: {unchangedA} , Added: {addedA} , Deleted {deletedA} ,  Changed {changedA}"));
-        Assert.That(ExtractLoggerInfo(report.BDelta, ordinalOfReportToCheck), Is.EqualTo($"Unchanged: {unchangedB} , Added: {addedB} , Deleted {deletedB} ,  Changed {changedB}"));
-        Assert.That(ExtractLoggerInfo(report.AJobsInfo, ordinalOfReportToCheck), Is.EqualTo($"Create {createA} , Update {updateA} , Delete {deleteA}"));
-        Assert.That(ExtractLoggerInfo(report.BJobsInfo, ordinalOfReportToCheck), Is.EqualTo($"Create {createB} , Update {updateB} , Delete {deleteB}"));
+
+        var aDelta = ParseDelta(ExtractLoggerInfo(report.ADelta, ordinalOfReportToCheck));
+        AssertEqual(aDelta.Unchanged, unchangedA);
+        AssertEqual(aDelta.Added, addedA);
+        AssertEqual(aDelta.Deleted, deletedA);
+        AssertEqual(aDelta.Changed, changedA);
+
+        var bDelta = ParseDelta(ExtractLoggerInfo(report.BDelta, ordinalOfReportToCheck));
+        AssertEqual(bDelta.Unchanged, unchangedB);
+        AssertEqual(bDelta.Added, addedB);
+        AssertEqual(bDelta.Deleted, deletedB);
+        AssertEqual(bDelta.Changed, changedB);
+
+        var aJobs = ParseJobInfo(ExtractLoggerInfo(report.AJobsInfo, ordinalOfReportToCheck));
+        AssertEqual(aJobs.Create, createA);
+        AssertEqual(aJobs.Update, updateA);
+        AssertEqual(aJobs.Delete, deleteA);
+
+        var bJobs = ParseJobInfo(ExtractLoggerInfo(report.BJobsInfo, ordinalOfReportToCheck));
+        AssertEqual(bJobs.Create, createB);
+        AssertEqual(bJobs.Update, updateB);
+        AssertEqual(bJobs.Delete, deleteB);
       }
       finally
       {
         TestComponentContainer.SetMaximumOpenItemsPerType(null);
       }
+    }
+
+    void AssertEqual(int current, int? expected)
+    {
+      if (expected == null)
+        return;
+
+      Assert.That(current, Is.EqualTo(expected));
     }
 
     protected virtual string ExtractLoggerInfo(string lineWithAllInfos,int? reportNumber)
@@ -83,6 +110,22 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
         .Select(s => s.Trim())
         .ElementAt(reportNumber.Value);
     }
+
+
+    (int Create, int Update, int Delete) ParseJobInfo(string jobInfo)
+    {
+      var match = Regex.Match(jobInfo, @"Create (?<create>\d+) , Update (?<update>\d+) , Delete (?<delete>\d+)");
+      Assert.That(match.Success, Is.True);
+      return (int.Parse(match.Groups["create"].Value), int.Parse(match.Groups["update"].Value), int.Parse(match.Groups["delete"].Value));
+    }
+
+    (int Unchanged, int Added, int Deleted, int Changed) ParseDelta(string delta)
+    {
+      var match = Regex.Match(delta, @"Unchanged: (?<unchanged>\d+) , Added: (?<added>\d+) , Deleted (?<deleted>\d+) ,  Changed (?<changed>\d+)");
+      Assert.That(match.Success, Is.True);
+      return (int.Parse(match.Groups["unchanged"].Value), int.Parse(match.Groups["added"].Value), int.Parse(match.Groups["deleted"].Value), int.Parse(match.Groups["changed"].Value));
+    }
+
 
     public async Task<SynchronizationReport> SynchronizeAndAssertNoErrors()
     {
