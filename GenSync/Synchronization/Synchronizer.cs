@@ -436,6 +436,8 @@ namespace GenSync.Synchronization
 
       if (newAVersions.Count > 0 && newBVersions.Count > 0)
       {
+        s_logger.Info($"Performing entity matching with {newAVersions.Count} Atype and {newBVersions.Count} Btype entities.");
+
         var matchingEntites = _initialEntityMatcher.FindMatchingEntities(
           _entityRelationDataFactory,
           (await aEntities.GetTransientEntities(newAVersions.Keys, logger.ALoadEntityLogger, synchronizationContext)).Select(e => EntityWithId.Create(e.Id, _aMatchDataFactory.CreateMatchData(e.Entity))).ToDictionary(e => e.Id, e => e.Entity),
@@ -452,6 +454,8 @@ namespace GenSync.Synchronization
           aDeltaLogInfo.IncUnchanged();
           bDeltaLogInfo.IncUnchanged();
         }
+
+        s_logger.Info("Entity matching finished.");
       }
 
       foreach (var newA in newAVersions)
