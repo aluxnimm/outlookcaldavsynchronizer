@@ -66,6 +66,7 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
       all.Add(new NextcloudProfile(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions));
       all.Add(new MailboxOrgProfile(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions));
       all.Add(new EasyProjectProfile(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions));
+      all.Add(new WebDeProfile(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions));
     
       return new ProfileTypeRegistry(all, generic, google);
     }
