@@ -144,11 +144,12 @@ namespace Thought.vCards
         /// <summary>
         /// gadu gadu
         /// </summary>
-        GaduGadu
-         
-
-
-    }
+        GaduGadu,
+        /// <summary>
+        /// sip
+        /// </summary>
+        SIP
+  }
 
     /// <summary>
     /// simple class to generate the strings for given IMServiceType
@@ -171,8 +172,9 @@ namespace Thought.vCards
             lookup.Add(IMServiceType.Skype, "Skype:skype");
             lookup.Add(IMServiceType.Yahoo, "Yahoo:ymsgr");
             lookup.Add(IMServiceType.GaduGadu, "GaduGadu:x-apple");
+            lookup.Add(IMServiceType.SIP, "SIP:sip");
 
-        }
+    }
 
         /// <summary>
         /// will return the property meta info to be written for a given IM serviceType
@@ -305,6 +307,9 @@ namespace Thought.vCards
                 case "gadugadu":
                 case "gadu":
                     serviceType = IMServiceType.GaduGadu;
+                    break;
+                case "sip":
+                    serviceType = IMServiceType.SIP;
                     break;
             }
 

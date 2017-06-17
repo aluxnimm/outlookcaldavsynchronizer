@@ -1194,6 +1194,9 @@ namespace Thought.vCards
         case "X-ICQ":
           ReadInto_X_ICQ(card, property);
           break;
+        case "X-SIP":
+          ReadInto_X_SIP(card, property);
+          break;
         case "X-GOOGLE-TALK":
           ReadInto_X_GOOGLE_TALK(card, property);
           break;
@@ -2416,6 +2419,20 @@ namespace Thought.vCards
       card.IMs.Add(im);
     }
     #endregion
+
+	  #region [ ReadInto_X_SIP ]
+	  /// <summary>
+	  ///     Reads the X-SIP property.
+	  /// </summary>
+	  private static void ReadInto_X_SIP(vCard card, vCardProperty property)
+	  {
+	    vCardIMPP im = new vCardIMPP();
+	    im.Handle = property.ToString();
+	    if (string.IsNullOrEmpty(im.Handle)) return;
+	    im.ServiceType = IMServiceType.SIP;
+	    card.IMs.Add(im);
+	  }
+	  #endregion
 
     #region [ ReadInto_X_GOOGLE_TALK ]
     /// <summary>
