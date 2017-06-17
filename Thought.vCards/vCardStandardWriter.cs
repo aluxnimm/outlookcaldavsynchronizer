@@ -20,9 +20,11 @@ namespace Thought.vCards
 
         private bool embedInternetImages;
         private bool embedLocalImages;
+        private bool writeImAsImpp;
         private vCardStandardWriterOptions options;
         private string productId;
         private const string TYPE = "TYPE";
+
 
         /// <summary>
         ///     The characters that are escaped per the original
@@ -54,6 +56,7 @@ namespace Thought.vCards
         public vCardStandardWriter()
         {
             this.embedLocalImages = true;
+            this.writeImAsImpp = false;
         }
 
 
@@ -92,11 +95,27 @@ namespace Thought.vCards
             }
         }
 
+      /// <summary>
+      ///     Indicates whether or not IM addresses
+      ///     should be written as IMPP attributes
+      ///     instead of X-PROTOCOL e.g. X-AIM
+      /// </summary>
+      public bool WriteImAsImpp
+      {
+        get
+        {
+          return this.writeImAsImpp;
+        }
+        set
+        {
+          this.writeImAsImpp = value;
+        }
+      }
 
-        /// <summary>
-        ///     Extended options for the vCard writer.
-        /// </summary>
-        public vCardStandardWriterOptions Options
+    /// <summary>
+    ///     Extended options for the vCard writer.
+    /// </summary>
+    public vCardStandardWriterOptions Options
         {
             get
             {
@@ -646,43 +665,61 @@ namespace Thought.vCards
       {
 
         vCardProperty property = new vCardProperty();
-        property.Name = "IMPP";
 
-        string prefix = IMTypeUtils.GetIMTypePropertyPrefix(im.ServiceType);
-        string suffix = IMTypeUtils.GetIMTypePropertySuffix(im.ServiceType);
-
-        if (!string.IsNullOrEmpty(prefix) && !string.IsNullOrEmpty(suffix))
+        if (writeImAsImpp)
         {
-          property.Subproperties.Add("X-SERVICE-TYPE", prefix);
-          property.Value = string.Concat(suffix, ":", im.Handle);
+          property.Name = "IMPP";
+
+          string prefix = IMTypeUtils.GetIMTypePropertyPrefix(im.ServiceType);
+          string suffix = IMTypeUtils.GetIMTypePropertySuffix(im.ServiceType);
+
+          if (!string.IsNullOrEmpty(prefix) && !string.IsNullOrEmpty(suffix))
+          {
+            property.Subproperties.Add("X-SERVICE-TYPE", prefix);
+            property.Value = string.Concat(suffix, ":", im.Handle);
+          }
+          else
+          {
+            property.Value = im.Handle;
+          }
+
+
+          if (im.IsPreferred)
+          {
+            property.Subproperties.Add(TYPE, "PREF");
+          }
+
+          switch (im.ItemType)
+          {
+
+            case ItemType.HOME:
+              property.Subproperties.Add(TYPE, ItemType.HOME.ToString());
+              break;
+            case ItemType.WORK:
+              property.Subproperties.Add(TYPE, ItemType.WORK.ToString());
+              break;
+
+            case ItemType.UNSPECIFIED:
+            default:
+              property.Subproperties.Add(TYPE, "OTHER");
+              break;
+          }
         }
         else
         {
+          string prefix = IMTypeUtils.GetIMTypePropertyPrefix(im.ServiceType);
+          if (!string.IsNullOrEmpty(prefix))
+          {
+            property.Name = "X-" + prefix.ToUpperInvariant();
+          }
+          else
+          {
+            // default to X-AIM
+            property.Name = "X-AIM";
+          }
           property.Value = im.Handle;
+
         }
-
-
-        if (im.IsPreferred)
-        {
-          property.Subproperties.Add(TYPE, "PREF");
-        }
-
-        switch (im.ItemType)
-        {
-
-          case ItemType.HOME:
-            property.Subproperties.Add(TYPE, ItemType.HOME.ToString());
-            break;
-          case ItemType.WORK:
-            property.Subproperties.Add(TYPE, ItemType.WORK.ToString());
-            break;
-
-          case ItemType.UNSPECIFIED:
-          default:
-            property.Subproperties.Add(TYPE, "OTHER");
-            break;
-        }
-
         properties.Add(property);
       }
 

@@ -35,9 +35,12 @@ namespace CalDavSynchronizer.Implementation.Contacts
     private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
     private readonly vCardStandardWriter _vCardStandardWriter;
 
-    public CardDavRepository(ICardDavDataAccess cardDavDataAccess) : base(cardDavDataAccess)
+    public CardDavRepository(ICardDavDataAccess cardDavDataAccess, bool writeImAsImpp) : base(cardDavDataAccess)
     {
-      _vCardStandardWriter = new vCardStandardWriter();
+      _vCardStandardWriter = new vCardStandardWriter()
+      {
+        WriteImAsImpp = writeImAsImpp
+      };
     }
 
     protected override void SetUid(vCard entity, string uid)

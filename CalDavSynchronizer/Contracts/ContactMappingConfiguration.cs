@@ -34,6 +34,8 @@ namespace CalDavSynchronizer.Contracts
 
     public bool MapOutlookEmail1ToWork { get; set; }
 
+    public bool WriteImAsImpp { get; set; }
+
     public bool MapDistributionLists { get; set; }
     public DistributionListType DistributionListType { get; set; }
 
@@ -45,6 +47,7 @@ namespace CalDavSynchronizer.Contracts
       KeepOutlookFileAs = true;
       FixPhoneNumberFormat = false;
       MapOutlookEmail1ToWork = false;
+      WriteImAsImpp = false;
       MapDistributionLists = false;
     }
 

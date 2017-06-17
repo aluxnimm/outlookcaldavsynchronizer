@@ -701,7 +701,7 @@ namespace CalDavSynchronizer.Scheduling
             synchronizerComponents.BtypeRepository = contactRepository;
             var contactSynchronizer = CreateContactSynchronizer(synchronizerComponents, componentsToFill,options);
 
-            var contactGroupCardDavRepository = new CardDavRepository<DistributionListSychronizationContext> (synchronizerComponents.CardDavDataAccess);
+            var contactGroupCardDavRepository = new CardDavRepository<DistributionListSychronizationContext> (synchronizerComponents.CardDavDataAccess, false);
 
             var contactGroupRepository = new TypeFilteringVCardRepositoryDecorator<DistributionListSychronizationContext> (contactGroupCardDavRepository, VCardType.Group, vCardTypeDetector);
 
@@ -782,11 +782,11 @@ namespace CalDavSynchronizer.Scheduling
       }
       componentsToFill.CardDavDataAccess = cardDavDataAccess;
 
-      var cardDavRepository = new CardDavRepository<int>(cardDavDataAccess);
+      var mappingParameters = GetMappingParameters<ContactMappingConfiguration>(options);
+
+      var cardDavRepository = new CardDavRepository<int>(cardDavDataAccess, mappingParameters.WriteImAsImpp);
       var btypeRepository = new LoggingCardDavRepositoryDecorator(
         cardDavRepository);
-      
-      var mappingParameters = GetMappingParameters<ContactMappingConfiguration>(options);
 
       var entityMapper = new ContactEntityMapper(mappingParameters);
 
