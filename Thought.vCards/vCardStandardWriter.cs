@@ -684,12 +684,6 @@ namespace Thought.vCards
         }
 
         properties.Add(property);
-
-        if (im.ServiceType == IMServiceType.AIM)
-        {
-          var propertyXAim = new vCardProperty("X-AIM", im.Handle);
-          properties.Add(propertyXAim);
-        }
       }
 
     }
