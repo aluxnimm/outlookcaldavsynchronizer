@@ -14,22 +14,33 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
-namespace CalDavSynchronizer.Utilities
+namespace GenSync.Utilities
 {
-  public interface IChunkedExecutor
+  public class NullChunkedExecutor : IChunkedExecutor
   {
-    Task<TExecutionContext> ExecuteAsync<TItem, TExecutionContext>(
-      TExecutionContext executionContext,
-      IEnumerable<TItem> items,
-      Func<List<TItem>, TExecutionContext, Task> processChunk);
+    public static readonly IChunkedExecutor Instance = new NullChunkedExecutor();
 
-    TExecutionContext Execute<TItem, TExecutionContext>(
-      TExecutionContext executionContext,
-      IEnumerable<TItem> items,
-      Action<List<TItem>, TExecutionContext> processChunk);
+    private NullChunkedExecutor()
+    {
+
+    }
+
+    public async Task<TExecutionContext> ExecuteAsync<TItem, TExecutionContext>(TExecutionContext executionContext, IEnumerable<TItem> items, Func<List<TItem>, TExecutionContext, Task> processChunk)
+    {
+      await processChunk(items.ToList(), executionContext);
+      return executionContext;
+    }
+
+    public TExecutionContext Execute<TItem, TExecutionContext>(TExecutionContext executionContext, IEnumerable<TItem> items, Action<List<TItem>, TExecutionContext> processChunk)
+    {
+      processChunk (items.ToList (), executionContext);
+      return executionContext;
+    }
   }
 }

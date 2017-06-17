@@ -11,6 +11,7 @@ using GenSync;
 using GenSync.EntityRepositories;
 using GenSync.Logging;
 using GenSync.ProgressReport;
+using GenSync.Utilities;
 using Google.Contacts;
 using Google.GData.Client;
 using Google.GData.Contacts;

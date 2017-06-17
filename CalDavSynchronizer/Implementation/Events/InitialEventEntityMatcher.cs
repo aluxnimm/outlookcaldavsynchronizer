@@ -23,58 +23,58 @@ using GenSync.InitialEntityMatching;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  internal class InitialEventEntityMatcher : InitialEntityMatcherByPropertyGrouping<AppointmentId, DateTime, EventEntityMatchData, string, WebResourceName, string, IICalendar, string>
+  internal class InitialEventEntityMatcher : InitialEntityMatcherByPropertyGrouping<AppointmentId, DateTime, EventEntityMatchData, string, WebResourceName, string, EventServerEntityMatchData, string>
   {
     public InitialEventEntityMatcher (IEqualityComparer<WebResourceName> btypeIdEqualityComparer)
         : base (btypeIdEqualityComparer)
     {
     }
 
-    protected override bool AreEqual (EventEntityMatchData atypeEntity, IICalendar btypeEntity)
+    protected override bool AreEqual (EventEntityMatchData atypeEntity, EventServerEntityMatchData evt)
     {
-      var evt = btypeEntity.Events[0];
+    
 
       if (evt.Summary == atypeEntity.Subject)
       {
         if (evt.IsAllDay && atypeEntity.AllDayEvent)
         {
-          if (evt.Start.Value == atypeEntity.Start)
+          if (evt.Start == atypeEntity.Start)
           {
             if (evt.End == null)
-              return evt.Start.Value.AddDays(1) == atypeEntity.End;
+              return evt.Start.AddDays(1) == atypeEntity.End;
             else
-              return evt.End.Value == atypeEntity.End;
+              return evt.End.Value.Value == atypeEntity.End;
           }
           else return false;
         }
         else if (!evt.IsAllDay)
         {
-          if (evt.Start.IsUniversalTime)
+          if (evt.IsStartUniversalTime)
           {
-            if (evt.Start.Value == atypeEntity.StartUtc)
+            if (evt.Start == atypeEntity.StartUtc)
             {
               if (evt.DTEnd == null)
-                return evt.Start.Value == atypeEntity.EndUtc;
+                return evt.Start == atypeEntity.EndUtc;
               else
               {
-                if (evt.DTEnd.IsUniversalTime)
-                  return evt.DTEnd.Value == atypeEntity.EndUtc;
+                if (evt.DTEnd.Value.IsUniversalTime)
+                  return evt.DTEnd.Value.Value == atypeEntity.EndUtc;
                 else
-                  return evt.DTEnd.Value == atypeEntity.EndInEndTimeZone;
+                  return evt.DTEnd.Value.Value == atypeEntity.EndInEndTimeZone;
               }
             }
             else return false;
           }
-          else if (evt.Start.Value == atypeEntity.StartInStartTimeZone)
+          else if (evt.Start == atypeEntity.StartInStartTimeZone)
           {
             if (evt.DTEnd == null)
-              return evt.Start.Value == atypeEntity.EndInEndTimeZone;
+              return evt.Start == atypeEntity.EndInEndTimeZone;
             else
             {
-              if (evt.DTEnd.IsUniversalTime)
-                return evt.DTEnd.Value == atypeEntity.EndUtc;
+              if (evt.DTEnd.Value.IsUniversalTime)
+                return evt.DTEnd.Value.Value == atypeEntity.EndUtc;
               else
-                return evt.DTEnd.Value == atypeEntity.EndInEndTimeZone;
+                return evt.DTEnd.Value.Value == atypeEntity.EndInEndTimeZone;
             }
           }
           else
@@ -89,9 +89,9 @@ namespace CalDavSynchronizer.Implementation.Events
       return atypeEntity.Subject?.ToLower() ?? string.Empty;
     }
 
-    protected override string GetBtypePropertyValue (IICalendar btypeEntity)
+    protected override string GetBtypePropertyValue (EventServerEntityMatchData btypeEntity)
     {
-      return btypeEntity.Events[0].Summary?.ToLower() ?? string.Empty;
+      return btypeEntity.Summary?.ToLower() ?? string.Empty;
     }
 
     protected override string MapAtypePropertyValue (string value)

@@ -24,6 +24,7 @@ using GenSync.ProgressReport;
 using GenSync.Synchronization;
 using GenSync.Synchronization.StateCreationStrategies;
 using GenSync.Synchronization.StateFactories;
+using GenSync.Utilities;
 using Rhino.Mocks;
 
 namespace GenSync.UnitTests.Synchronization.Stubs
@@ -62,7 +63,8 @@ namespace GenSync.UnitTests.Synchronization.Stubs
           ExceptionHandlingStrategy,
           IdentityMatchDataFactory<string>.Instance,
           IdentityMatchDataFactory<string>.Instance,
-          null);
+          null,
+          NullChunkedExecutor.Instance);
     }
 
     public IEntityRelationDataAccess<string, string, string, string> EntityRelationDataAccess { get; set; }

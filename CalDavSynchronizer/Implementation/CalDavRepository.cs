@@ -33,6 +33,7 @@ using DDay.iCal.Serialization.iCalendar;
 using GenSync;
 using GenSync.EntityRepositories;
 using GenSync.Logging;
+using GenSync.Utilities;
 using log4net;
 
 namespace CalDavSynchronizer.Implementation
@@ -196,7 +197,7 @@ namespace CalDavSynchronizer.Implementation
           }
         }
 
-        IReadOnlyList<EntityWithId<WebResourceName, IICalendar>> readOnlyResult = result;
+       IReadOnlyList<EntityWithId<WebResourceName, IICalendar>> readOnlyResult = result;
         return readOnlyResult;
       });
     }

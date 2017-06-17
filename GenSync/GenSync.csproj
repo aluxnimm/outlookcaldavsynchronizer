@@ -57,6 +57,7 @@
     <Compile Include="..\CalDavSynchronizer\Properties\AssemblyInfoVersion.cs">
       <Link>Properties\AssemblyInfoVersion.cs</Link>
     </Compile>
+    <Compile Include="Utilities\ChunkedExecutor.cs" />
     <Compile Include="EntityRepositories\BatchEntityRepositoryAdapter.cs" />
     <Compile Include="EntityRepositories\ICreateJob.cs" />
     <Compile Include="EntityRepositories\IDeleteJob.cs" />
@@ -164,6 +165,8 @@
     <Compile Include="Synchronization\States\UpdateFromNewerToOlder.cs" />
     <Compile Include="Synchronization\Synchronizer.cs" />
     <Compile Include="Synchronization\VersionDeltaLoginInformation.cs" />
+    <Compile Include="Utilities\IChunkedExecutor.cs" />
+    <Compile Include="Utilities\NullChunkedExecutor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

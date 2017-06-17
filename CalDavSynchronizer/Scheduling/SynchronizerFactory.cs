@@ -52,6 +52,7 @@ using GenSync.ProgressReport;
 using GenSync.Synchronization;
 using GenSync.Synchronization.StateCreationStrategies.ConflictStrategies;
 using GenSync.Synchronization.StateFactories;
+using GenSync.Utilities;
 using Google.Apis.Tasks.v1.Data;
 using Google.Contacts;
 using log4net;
@@ -385,7 +386,7 @@ namespace CalDavSynchronizer.Scheduling
           CalDavRepository.EntityType.Event,
           dateTimeRangeProvider,
           options.ServerAdapterType == ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth,
-          options.IsChunkedSynchronizationEnabled ? new ChunkedExecutor(options.ChunkSize) : NullChunkedExecutor.Instance);
+          CreateChunkedExecutor(options));
 
       componentsToFill.CalDavRepository = btypeRepository;
 
@@ -420,7 +421,7 @@ namespace CalDavSynchronizer.Scheduling
       var aTypeWriteRepository = BatchEntityRepositoryAdapter.Create (atypeRepository, _exceptionHandlingStrategy);
       var bTypeWriteRepository = BatchEntityRepositoryAdapter.Create (btypeRepository, _exceptionHandlingStrategy);
 
-      var synchronizer = new Synchronizer<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext, EventEntityMatchData, IICalendar> (
+      var synchronizer = new Synchronizer<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext, EventEntityMatchData, EventServerEntityMatchData> (
           atypeRepository,
           btypeRepository,
           aTypeWriteRepository,
@@ -442,8 +443,9 @@ namespace CalDavSynchronizer.Scheduling
           syncStateFactory,
           _exceptionHandlingStrategy,
           new EventEntityMatchDataFactory(),
-          IdentityMatchDataFactory<IICalendar>.Instance,
+          new EventServerEntityMatchDataFactory(),
           options.EffectiveChunkSize,
+          CreateChunkedExecutor(options),
           new EventSynchronizationInterceptorFactory());
 
       return new OutlookEventSynchronizer<WebResourceName, string> (
@@ -523,7 +525,7 @@ namespace CalDavSynchronizer.Scheduling
           CalDavRepository.EntityType.Todo,
           NullDateTimeRangeProvider.Instance,
           false,
-          options.IsChunkedSynchronizationEnabled ? new ChunkedExecutor (options.ChunkSize) : NullChunkedExecutor.Instance);
+          CreateChunkedExecutor(options));
 
       componentsToFill.CalDavRepository = btypeRepository;
       componentsToFill.OutlookRepository = atypeRepository;
@@ -568,7 +570,8 @@ namespace CalDavSynchronizer.Scheduling
           _exceptionHandlingStrategy,
           new TaskEntityMatchDataFactory(),
           IdentityMatchDataFactory<IICalendar>.Instance,
-          options.EffectiveChunkSize);
+          options.EffectiveChunkSize,
+        CreateChunkedExecutor(options));
 
       return new OutlookSynchronizer<WebResourceName, string> (
         new NullContextSynchronizerDecorator<string, DateTime, ITaskItemWrapper, WebResourceName, string, IICalendar> (synchronizer));
@@ -635,7 +638,8 @@ namespace CalDavSynchronizer.Scheduling
           _exceptionHandlingStrategy,
         IdentityMatchDataFactory<ITaskItemWrapper>.Instance,
         IdentityMatchDataFactory<Task>.Instance,
-        options.EffectiveChunkSize);
+        options.EffectiveChunkSize,
+        CreateChunkedExecutor(options));
 
       return new OutlookSynchronizer<string, string> (
         new NullContextSynchronizerDecorator<string, DateTime, ITaskItemWrapper, string, string, Task>( synchronizer));
@@ -780,7 +784,7 @@ namespace CalDavSynchronizer.Scheduling
       }
       componentsToFill.CardDavDataAccess = cardDavDataAccess;
 
-      var chunkedExecutor = options.IsChunkedSynchronizationEnabled ? new ChunkedExecutor(options.ChunkSize) : NullChunkedExecutor.Instance;
+      var chunkedExecutor = CreateChunkedExecutor(options);
 
       var cardDavRepository = new CardDavRepository<int>(
         cardDavDataAccess,
@@ -843,7 +847,8 @@ namespace CalDavSynchronizer.Scheduling
         _exceptionHandlingStrategy,
         new ContactMatchDataFactory(),
         IdentityMatchDataFactory<vCard>.Instance,
-        options.EffectiveChunkSize);
+        options.EffectiveChunkSize,
+        CreateChunkedExecutor(options));
     }
     
     private ISynchronizer<DistributionListSychronizationContext> CreateDistListSynchronizer<TBtypeEntity> (
@@ -910,7 +915,8 @@ namespace CalDavSynchronizer.Scheduling
           _exceptionHandlingStrategy,
         new DistListEntityMatchDataFactory(),
         IdentityMatchDataFactory<TBtypeEntity>.Instance,
-        options.EffectiveChunkSize);
+        options.EffectiveChunkSize,
+        CreateChunkedExecutor(options));
 
       return synchronizer;
     }
@@ -987,7 +993,8 @@ namespace CalDavSynchronizer.Scheduling
           _exceptionHandlingStrategy,
         IdentityMatchDataFactory<IContactItemWrapper>.Instance,
         IdentityMatchDataFactory<GoogleContactWrapper>.Instance,
-        options.EffectiveChunkSize);
+        options.EffectiveChunkSize,
+        CreateChunkedExecutor(options));
 
       var googleContactContextFactory = new GoogleContactContextFactory(googleApiExecutor, btypeIdEqualityComparer, options.UserName, options.ChunkSize);
       componentsToFill.GoogleContactContextFactory = googleContactContextFactory;
@@ -995,6 +1002,11 @@ namespace CalDavSynchronizer.Scheduling
         new ContextCreatingSynchronizerDecorator<string, DateTime, IContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext> (
           synchronizer,
           googleContactContextFactory));
+    }
+
+    private static IChunkedExecutor CreateChunkedExecutor(Options options)
+    {
+      return options.IsChunkedSynchronizationEnabled ? new ChunkedExecutor(options.ChunkSize) : NullChunkedExecutor.Instance;
     }
   }
 }

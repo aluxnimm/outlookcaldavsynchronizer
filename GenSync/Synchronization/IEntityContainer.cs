@@ -8,10 +8,10 @@ namespace GenSync.Synchronization
   public interface IEntityContainer<TEntityId, TEntity, TContext> : IDisposable
   {
     /// <summary>
-    /// Returns the entities as a stream of "transient" entities. 
-    /// It is not allowed to hold a reference to an entity after the enumerable advanced to the next position.
+    /// Selects entites.
+    /// It is not allowed to hold a reference to an entity, which is passed to the selector.
     /// </summary>
-    Task<IEnumerable<EntityWithId<TEntityId, TEntity>>> GetTransientEntities(ICollection<TEntityId> ids, ILoadEntityLogger logger, TContext context);
+    Task<IReadOnlyList<T>> SelectEntities<T>(ICollection<TEntityId> ids, ILoadEntityLogger logger, TContext context, Func<EntityWithId<TEntityId, TEntity>,T> selector);
 
     /// <summary>
     /// It is not allowed to hold a reference to an entity after another call to this interface

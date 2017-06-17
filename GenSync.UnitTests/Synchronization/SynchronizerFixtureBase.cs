@@ -28,6 +28,7 @@ using GenSync.Synchronization.StateCreationStrategies;
 using GenSync.Synchronization.StateCreationStrategies.ConflictStrategies;
 using GenSync.Synchronization.StateFactories;
 using GenSync.UnitTests.Synchronization.Stubs;
+using GenSync.Utilities;
 using NUnit.Framework;
 using Rhino.Mocks;
 
@@ -188,7 +189,8 @@ namespace GenSync.UnitTests.Synchronization
           TestExceptionHandlingStrategy.Instance,
           IdentityMatchDataFactory<string>.Instance,
           IdentityMatchDataFactory<string>.Instance,
-          null);
+          null,
+          NullChunkedExecutor.Instance);
     }
 
     protected void ExecuteMultipleTimes (Action a)

@@ -20,6 +20,7 @@ using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.Contacts;
 using CalDavSynchronizer.Utilities;
 using GenSync.Logging;
+using GenSync.Utilities;
 using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.DistributionLists

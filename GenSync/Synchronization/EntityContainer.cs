@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using GenSync.EntityRepositories;
 using GenSync.Logging;
+using GenSync.Utilities;
 using log4net;
 
 namespace GenSync.Synchronization
@@ -16,21 +18,29 @@ namespace GenSync.Synchronization
     private readonly Dictionary<TEntityId, TEntity> _cachedEntities;
     private readonly int? _maximumCacheSize;
     private readonly IEqualityComparer<TEntityId> _idComparer;
+    private readonly IChunkedExecutor _chunkedExecutor;
 
-    public EntityContainer(IReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> repository, IEqualityComparer<TEntityId> idComparer, int? maximumCacheSize)
+    public EntityContainer(IReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> repository, IEqualityComparer<TEntityId> idComparer, int? maximumCacheSize, IChunkedExecutor chunkedExecutor)
     {
       _idComparer = idComparer;
       _repository = repository;
       _maximumCacheSize = maximumCacheSize;
+      _chunkedExecutor = chunkedExecutor;
       _cachedEntities = new Dictionary<TEntityId, TEntity>(idComparer);
 
     }
-    
-    public async Task<IEnumerable<EntityWithId<TEntityId, TEntity>>> GetTransientEntities(ICollection<TEntityId> ids, ILoadEntityLogger logger, TContext context)
-    {
-      return CacheOrClenaup( await _repository.Get(ids, logger, context));
-    }
 
+    public async Task<IReadOnlyList<T>> SelectEntities<T>(ICollection<TEntityId> ids, ILoadEntityLogger logger, TContext context, Func<EntityWithId<TEntityId, TEntity>, T> selector)
+    {
+      return await _chunkedExecutor.ExecuteAsync(
+        new List<T>(),
+        ids,
+        async (chunk, transformedEntities) =>
+        {
+          var entites = CacheOrClenaup(await _repository.Get(chunk, logger, context));
+          transformedEntities.AddRange(entites.Select(selector));
+        });
+    }
 
     IEnumerable<EntityWithId<TEntityId, TEntity>> CacheOrClenaup(IEnumerable<EntityWithId<TEntityId, TEntity>> entities)
     {

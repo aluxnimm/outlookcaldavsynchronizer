@@ -27,6 +27,7 @@ using GenSync.ProgressReport;
 using GenSync.Synchronization.StateCreationStrategies;
 using GenSync.Synchronization.StateFactories;
 using GenSync.Synchronization.States;
+using GenSync.Utilities;
 using log4net;
 
 namespace GenSync.Synchronization
@@ -63,6 +64,7 @@ namespace GenSync.Synchronization
     private readonly IMatchDataFactory<TBtypeEntity, TBMatchData> _bMatchDataFactory;
     private readonly EntitySyncStateChunkCreator<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> _entitySyncStateChunkCreator;
     private readonly int? _chunkSize;
+    private readonly IChunkedExecutor _chunkedExecutor;
 
     public Synchronizer(
       IReadOnlyEntityRepository<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TContext> atypeRepository,
@@ -80,10 +82,10 @@ namespace GenSync.Synchronization
       IExceptionHandlingStrategy exceptionHandlingStrategy,
       IMatchDataFactory<TAtypeEntity, TAMatchData> aMatchDataFactory,
       IMatchDataFactory<TBtypeEntity, TBMatchData> bMatchDataFactory,
-      int? chunkSize,
-      ISynchronizationInterceptorFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> synchronizationInterceptorFactoryOrNull = null)
+      int? chunkSize, IChunkedExecutor chunkedExecutor, ISynchronizationInterceptorFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> synchronizationInterceptorFactoryOrNull = null)
     {
       _chunkSize = chunkSize;
+      _chunkedExecutor = chunkedExecutor;
       if (atypeRepository == null) throw new ArgumentNullException(nameof(atypeRepository));
       if (btypeRepository == null) throw new ArgumentNullException(nameof(btypeRepository));
       if (atypeWriteRepository == null) throw new ArgumentNullException(nameof(atypeWriteRepository));
@@ -320,8 +322,8 @@ namespace GenSync.Synchronization
       Action<List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>> saveNewRelations)
     {
 
-      using (IEntityContainer<TAtypeEntityId, TAtypeEntity, TContext> aEntities = new EntityContainer<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TContext>(_atypeRepository, _atypeIdComparer, _chunkSize))
-      using (IEntityContainer<TBtypeEntityId, TBtypeEntity, TContext> bEntities = new EntityContainer<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>(_btypeRepository, _btypeIdComparer, _chunkSize))
+      using (IEntityContainer<TAtypeEntityId, TAtypeEntity, TContext> aEntities = new EntityContainer<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TContext>(_atypeRepository, _atypeIdComparer, _chunkSize, _chunkedExecutor))
+      using (IEntityContainer<TBtypeEntityId, TBtypeEntity, TContext> bEntities = new EntityContainer<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>(_btypeRepository, _btypeIdComparer, _chunkSize, _chunkedExecutor))
       {
         var entitySynchronizationContexts = await CreateEntitySyncStateContexts(aEntities, bEntities, knownEntityRelations, newAVersions, newBVersions, logger, synchronizationContext, interceptor);
 
@@ -440,8 +442,8 @@ namespace GenSync.Synchronization
 
         var matchingEntites = _initialEntityMatcher.FindMatchingEntities(
           _entityRelationDataFactory,
-          (await aEntities.GetTransientEntities(newAVersions.Keys, logger.ALoadEntityLogger, synchronizationContext)).Select(e => EntityWithId.Create(e.Id, _aMatchDataFactory.CreateMatchData(e.Entity))).ToDictionary(e => e.Id, e => e.Entity),
-          (await bEntities.GetTransientEntities(newBVersions.Keys, logger.BLoadEntityLogger, synchronizationContext)).Select(e => EntityWithId.Create(e.Id, _bMatchDataFactory.CreateMatchData(e.Entity))).ToDictionary(e => e.Id, e => e.Entity),
+          (await aEntities.SelectEntities(newAVersions.Keys, logger.ALoadEntityLogger, synchronizationContext, e => EntityWithId.Create(e.Id, _aMatchDataFactory.CreateMatchData(e.Entity)))).ToDictionary(e => e.Id, e => e.Entity),
+          (await bEntities.SelectEntities(newBVersions.Keys, logger.BLoadEntityLogger, synchronizationContext, e => EntityWithId.Create(e.Id, _bMatchDataFactory.CreateMatchData(e.Entity)))).ToDictionary(e => e.Id, e => e.Entity),
           newAVersions,
           newBVersions);
 

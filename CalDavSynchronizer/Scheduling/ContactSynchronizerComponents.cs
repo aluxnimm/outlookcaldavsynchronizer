@@ -24,6 +24,7 @@ using CalDavSynchronizer.Utilities;
 using GenSync.EntityRelationManagement;
 using GenSync.EntityRepositories;
 using GenSync.Synchronization.StateFactories;
+using GenSync.Utilities;
 using Thought.vCards;
 
 namespace CalDavSynchronizer.Scheduling

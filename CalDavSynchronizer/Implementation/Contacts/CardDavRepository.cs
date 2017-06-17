@@ -26,6 +26,7 @@ using log4net;
 using Thought.vCards;
 using CalDavSynchronizer.ThoughtvCardWorkaround;
 using CalDavSynchronizer.Utilities;
+using GenSync.Utilities;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
