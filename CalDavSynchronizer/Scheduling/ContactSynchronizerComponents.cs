@@ -31,7 +31,7 @@ namespace CalDavSynchronizer.Scheduling
 {
   public class ContactSynchronizerComponents
   {
-    public ContactSynchronizerComponents(Options options, OutlookContactRepository<ICardDavRepositoryLogger> atypeRepository, IEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> btypeRepository, EntitySyncStateFactory<string, DateTime, IContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger> syncStateFactory, EntityRelationDataAccess<string, DateTime, OutlookContactRelationData, WebResourceName, string> storageDataAccess, OutlookContactRelationDataFactory entityRelationDataFactory, IEqualityComparer<WebResourceName> btypeIdEqualityComparer, EqualityComparer<string> atypeIdEqulityComparer, IWebDavClient webDavClientOrNullIfFileAccess, IChunkedExecutor chunkedExecutor, LoggingCardDavRepositoryDecorator repository, ContactMappingConfiguration mappingParameters, string storageDataDirectory, Uri serverUrl, ICardDavDataAccess cardDavDataAccess)
+    public ContactSynchronizerComponents(Options options, OutlookContactRepository<ICardDavRepositoryLogger> atypeRepository, IEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> btypeRepository, EntitySyncStateFactory<string, DateTime, IContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger> syncStateFactory, EntityRelationDataAccess<string, DateTime, OutlookContactRelationData, WebResourceName, string> storageDataAccess, OutlookContactRelationDataFactory entityRelationDataFactory, IEqualityComparer<WebResourceName> btypeIdEqualityComparer, EqualityComparer<string> atypeIdEqulityComparer, IWebDavClient webDavClientOrNullIfFileAccess, LoggingCardDavRepositoryDecorator repository, ContactMappingConfiguration mappingParameters, string storageDataDirectory, Uri serverUrl, ICardDavDataAccess cardDavDataAccess)
     {
       Options = options;
       AtypeRepository = atypeRepository;
@@ -42,7 +42,6 @@ namespace CalDavSynchronizer.Scheduling
       BtypeIdEqualityComparer = btypeIdEqualityComparer;
       AtypeIdEqulityComparer = atypeIdEqulityComparer;
       WebDavClientOrNullIfFileAccess = webDavClientOrNullIfFileAccess;
-      ChunkedExecutor = chunkedExecutor;
       Repository = repository;
       MappingParameters = mappingParameters;
       StorageDataDirectory = storageDataDirectory;
@@ -59,7 +58,6 @@ namespace CalDavSynchronizer.Scheduling
     public IEqualityComparer<WebResourceName> BtypeIdEqualityComparer { get; private set; }
     public EqualityComparer<string> AtypeIdEqulityComparer { get; private set; }
     public IWebDavClient WebDavClientOrNullIfFileAccess { get; }
-    public IChunkedExecutor ChunkedExecutor { get; }
     public LoggingCardDavRepositoryDecorator Repository { get; }
     public ContactMappingConfiguration MappingParameters { get; }
     public string StorageDataDirectory { get; }

@@ -29,7 +29,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
   {
     private const string NonAddressBookMemberValueName = "X-ADDRESSBOOKSERVER-MEMBER";
 
-    public SogoDistributionListRepository(ICardDavDataAccess cardDavDataAccess, IChunkedExecutor chunkedExecutor) : base(cardDavDataAccess, chunkedExecutor)
+    public SogoDistributionListRepository(ICardDavDataAccess cardDavDataAccess) : base(cardDavDataAccess)
     {
     }
 

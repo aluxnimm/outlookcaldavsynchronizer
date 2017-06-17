@@ -40,13 +40,10 @@ namespace CalDavSynchronizer.Implementation.Contacts
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private readonly ICardDavDataAccess _cardDavDataAccess;
-    private readonly IChunkedExecutor _chunkedExecutor;
 
-
-    public CardDavEntityRepository (ICardDavDataAccess cardDavDataAccess, IChunkedExecutor chunkedExecutor)
+    public CardDavEntityRepository (ICardDavDataAccess cardDavDataAccess)
     {
       _cardDavDataAccess = cardDavDataAccess;
-      _chunkedExecutor = chunkedExecutor;
     }
 
     public async Task<IEnumerable<EntityVersion<WebResourceName, string>>> GetVersions (IEnumerable<IdWithAwarenessLevel<WebResourceName>> idsOfEntitiesToQuery, TContext context)
@@ -67,28 +64,13 @@ namespace CalDavSynchronizer.Implementation.Contacts
       if (ids.Count == 0)
         return new EntityWithId<WebResourceName, TEntity>[] { };
 
-      return await _chunkedExecutor.ExecuteAsync(
-        new List<EntityWithId<WebResourceName, TEntity>>(),
-        ids,
-        async (chunk, result) =>
-        {
-          var entities = await GetInternal(chunk, logger);
-          result.AddRange(entities);
-        });
-    }
-
-    private async Task<IReadOnlyList<EntityWithId<WebResourceName, TEntity>>> GetInternal (ICollection<WebResourceName> ids, ILoadEntityLogger logger)
-    {
-      if (ids.Count == 0)
-        return new EntityWithId<WebResourceName, TEntity>[] { };
-
-      using (AutomaticStopwatch.StartInfo (s_logger, string.Format ("CardDavRepository.Get ({0} entitie(s))", ids.Count)))
+      using (AutomaticStopwatch.StartInfo(s_logger, string.Format("CardDavRepository.Get ({0} entitie(s))", ids.Count)))
       {
-        var entities = await _cardDavDataAccess.GetEntities (ids);
-        return ParallelDeserialize (entities, logger);
+        var entities = await _cardDavDataAccess.GetEntities(ids);
+        return ParallelDeserialize(entities, logger);
       }
     }
-
+    
     public Task VerifyUnknownEntities (Dictionary<WebResourceName, string> unknownEntites, TContext context)
     {
       return Task.FromResult (0);

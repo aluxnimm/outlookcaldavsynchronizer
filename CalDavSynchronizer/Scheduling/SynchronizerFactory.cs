@@ -385,8 +385,7 @@ namespace CalDavSynchronizer.Scheduling
           new iCalendarSerializer(),
           CalDavRepository.EntityType.Event,
           dateTimeRangeProvider,
-          options.ServerAdapterType == ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth,
-          CreateChunkedExecutor(options));
+          options.ServerAdapterType == ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth);
 
       componentsToFill.CalDavRepository = btypeRepository;
 
@@ -524,8 +523,7 @@ namespace CalDavSynchronizer.Scheduling
           new iCalendarSerializer(),
           CalDavRepository.EntityType.Todo,
           NullDateTimeRangeProvider.Instance,
-          false,
-          CreateChunkedExecutor(options));
+          false);
 
       componentsToFill.CalDavRepository = btypeRepository;
       componentsToFill.OutlookRepository = atypeRepository;
@@ -674,7 +672,7 @@ namespace CalDavSynchronizer.Scheduling
 
             componentsToFill.SogoDistListDataAccessOrNull = distListDataAccess;
 
-            var bDistListRepository = new SogoDistributionListRepository(distListDataAccess, synchronizerComponents.ChunkedExecutor);
+            var bDistListRepository = new SogoDistributionListRepository(distListDataAccess);
 
             componentsToFill.SogoDistListRepositoryOrNull = bDistListRepository;
 
@@ -703,7 +701,7 @@ namespace CalDavSynchronizer.Scheduling
             synchronizerComponents.BtypeRepository = contactRepository;
             var contactSynchronizer = CreateContactSynchronizer(synchronizerComponents, componentsToFill,options);
 
-            var contactGroupCardDavRepository = new CardDavRepository<DistributionListSychronizationContext> (synchronizerComponents.CardDavDataAccess, synchronizerComponents.ChunkedExecutor);
+            var contactGroupCardDavRepository = new CardDavRepository<DistributionListSychronizationContext> (synchronizerComponents.CardDavDataAccess);
 
             var contactGroupRepository = new TypeFilteringVCardRepositoryDecorator<DistributionListSychronizationContext> (contactGroupCardDavRepository, VCardType.Group, vCardTypeDetector);
 
@@ -784,11 +782,7 @@ namespace CalDavSynchronizer.Scheduling
       }
       componentsToFill.CardDavDataAccess = cardDavDataAccess;
 
-      var chunkedExecutor = CreateChunkedExecutor(options);
-
-      var cardDavRepository = new CardDavRepository<int>(
-        cardDavDataAccess,
-        chunkedExecutor);
+      var cardDavRepository = new CardDavRepository<int>(cardDavDataAccess);
       var btypeRepository = new LoggingCardDavRepositoryDecorator(
         cardDavRepository);
       
@@ -813,7 +807,7 @@ namespace CalDavSynchronizer.Scheduling
       componentsToFill.EntityRelationDataAccess = storageDataAccess;
 
 
-      return new ContactSynchronizerComponents(options, atypeRepository, btypeRepository, syncStateFactory, storageDataAccess, entityRelationDataFactory, btypeIdEqualityComparer, atypeIdEqulityComparer, webDavClientOrNullIfFileAccess, chunkedExecutor, btypeRepository, mappingParameters, storageDataDirectory, serverUrl, cardDavDataAccess);
+      return new ContactSynchronizerComponents(options, atypeRepository, btypeRepository, syncStateFactory, storageDataAccess, entityRelationDataFactory, btypeIdEqualityComparer, atypeIdEqulityComparer, webDavClientOrNullIfFileAccess, btypeRepository, mappingParameters, storageDataDirectory, serverUrl, cardDavDataAccess);
     }
 
     private Synchronizer<string, DateTime, IContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger, ContactMatchData, vCard> CreateContactSynchronizer(
