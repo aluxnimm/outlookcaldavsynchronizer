@@ -17,10 +17,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Ui.Options.Models;
+using Thought.vCards;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 {
@@ -87,6 +89,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       set { _model.WriteImAsImpp = value; }
     }
 
+    public IMServiceType DefaultImServiceType
+    {
+      get { return _model.DefaultImServiceType; }
+      set { _model.DefaultImServiceType = value; }
+    }
+
     public bool MapDistributionLists
     {
       get { return _model.MapDistributionLists; }
@@ -117,7 +125,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       }
     }
 
-
+    public IList<Item<IMServiceType>> AvailableImServiceTypes => 
+      Enum.GetValues (typeof (IMServiceType)).Cast<IMServiceType>().
+      Where (i => i!=IMServiceType.Unspecified).Select (i => new Item<IMServiceType> (i, i.ToString())).OrderBy (i => i.Name).ToList();
 
     public IList<Item<DistributionListType>> AvailableDistributionListTypes { get; } = new List<Item<DistributionListType>>
                                                                                      {
@@ -134,6 +144,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       FixPhoneNumberFormat = true,
       MapOutlookEmail1ToWork = true,
       WriteImAsImpp = true,
+      DefaultImServiceType = IMServiceType.AIM,
       DistributionListType = DistributionListType.Sogo,
       MapDistributionLists = true,
     };

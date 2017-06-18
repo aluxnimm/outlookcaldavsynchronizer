@@ -14,7 +14,15 @@
             <CheckBox IsChecked="{Binding KeepOutlookFileAs}" ToolTip="Don't overwrite FileAs in Outlook with FN &#x0a;Uses default FileAs as set in global Outlook options for new entries.">Don't overwrite FileAs in Outlook</CheckBox>
             <CheckBox IsChecked="{Binding FixPhoneNumberFormat}" ToolTip="Convert numbers like +1 23 45678 9 &#x0a;to +1 (23) 45678 - 9 &#x0a;so that Outlook can show country and area code.">Fix imported phone number format</CheckBox>
             <CheckBox IsChecked="{Binding MapOutlookEmail1ToWork}" ToolTip="Map Outlook EmailAddress1 to vCard email with TYPE=WORK&#x0a;and Outlook EmailAddress2 to vCard email with TYPE=HOME instead of vice-versa.">Map Outlook EmailAddress1 to WORK instead of HOME</CheckBox>
-            <CheckBox IsChecked="{Binding WriteImAsImpp}" ToolTip="Write Instant Messanger addresses in vCard as IMPP attributes&#x0a;(not supported by some servers e.g. SOGo) instead of X-PROTOCOL e.g. X-AIM">Write IM addresses as IMPP attributes</CheckBox>
+            <CheckBox IsChecked="{Binding WriteImAsImpp}" ToolTip="Write Instant Messenger addresses in vCard as IMPP attributes&#x0a;(not supported by some servers e.g. SOGo) instead of X-PROTOCOL e.g. X-AIM">Write IM addresses as IMPP attributes</CheckBox>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock ToolTip="Choose the default Instant Messenger protocol.&#x0a;You can add other protocols with protocol: address">Default IM protocol:</TextBlock>
+                <ComboBox Grid.Column="1" ItemsSource="{Binding AvailableImServiceTypes}" SelectedValue="{Binding DefaultImServiceType}" DisplayMemberPath="Name" SelectedValuePath="Value" />
+            </Grid>
             <GroupBox>
                 <GroupBox.Header>
                     <CheckBox IsChecked="{Binding MapDistributionLists}" ToolTip="Map Distribution Lists / Contact Groups">Map Distribution Lists</CheckBox>

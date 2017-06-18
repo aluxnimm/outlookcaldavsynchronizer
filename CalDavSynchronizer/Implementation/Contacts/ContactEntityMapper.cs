@@ -113,12 +113,12 @@ namespace CalDavSynchronizer.Implementation.Contacts
           if (imDetails.Length == 1)
           {
             im.Handle = imDetails[0].Trim();
-            // Set default ServiceType to AIM
-            im.ServiceType = IMServiceType.AIM;
+            // Set default ServiceType to the configured DefaultImServiceType (defaults to AIM)
+            im.ServiceType = _configuration.DefaultImServicType;
           }
           else
           {
-            im.ServiceType = IMTypeUtils.GetIMServiceType (imDetails[0].Trim()) ?? IMServiceType.AIM;
+            im.ServiceType = IMTypeUtils.GetIMServiceType (imDetails[0].Trim()) ?? _configuration.DefaultImServicType;
             im.Handle = imDetails[1].Trim();
           }
 
@@ -261,7 +261,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       {
         if (!string.IsNullOrEmpty(target.Inner.IMAddress))
           target.Inner.IMAddress += "; ";
-        if (im.ServiceType != IMServiceType.Unspecified)
+        if (im.ServiceType != IMServiceType.Unspecified && im.ServiceType != _configuration.DefaultImServicType)
           target.Inner.IMAddress += im.ServiceType + ": " + im.Handle;
         else
           target.Inner.IMAddress += im.Handle;

@@ -18,6 +18,7 @@
 using System;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.Options.ViewModels.Mapping;
+using Thought.vCards;
 
 namespace CalDavSynchronizer.Contracts
 {
@@ -35,6 +36,7 @@ namespace CalDavSynchronizer.Contracts
     public bool MapOutlookEmail1ToWork { get; set; }
 
     public bool WriteImAsImpp { get; set; }
+    public IMServiceType DefaultImServicType { get; set; }
 
     public bool MapDistributionLists { get; set; }
     public DistributionListType DistributionListType { get; set; }
@@ -48,6 +50,7 @@ namespace CalDavSynchronizer.Contracts
       FixPhoneNumberFormat = false;
       MapOutlookEmail1ToWork = false;
       WriteImAsImpp = false;
+      DefaultImServicType = IMServiceType.AIM;
       MapDistributionLists = false;
     }
 

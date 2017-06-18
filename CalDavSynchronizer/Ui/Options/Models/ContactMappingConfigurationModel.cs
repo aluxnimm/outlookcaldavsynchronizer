@@ -18,6 +18,7 @@
 using System;
 using System.Text;
 using CalDavSynchronizer.Contracts;
+using Thought.vCards;
 
 namespace CalDavSynchronizer.Ui.Options.Models
 {
@@ -30,6 +31,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
     private bool _fixPhoneNumberFormat;
     private bool _mapOutlookEmail1ToWork;
     private bool _writeImAsImpp;
+    private IMServiceType _defaultImServiceType;
     private bool _mapDistributionLists;
     private bool _isSelected;
     private bool _isExpanded;
@@ -105,6 +107,15 @@ namespace CalDavSynchronizer.Ui.Options.Models
       }
     }
 
+    public IMServiceType DefaultImServiceType
+    {
+      get { return _defaultImServiceType; }
+      set
+      {
+        CheckedPropertyChange (ref _defaultImServiceType, value);
+      }
+    }
+
     public bool MapDistributionLists
     {
       get { return _mapDistributionLists; }
@@ -152,6 +163,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
       FixPhoneNumberFormat = mappingConfiguration.FixPhoneNumberFormat;
       MapOutlookEmail1ToWork = mappingConfiguration.MapOutlookEmail1ToWork;
       WriteImAsImpp = mappingConfiguration.WriteImAsImpp;
+      DefaultImServiceType = mappingConfiguration.DefaultImServicType;
       MapDistributionLists = mappingConfiguration.MapDistributionLists;
       DistributionListType = mappingConfiguration.DistributionListType;
     }
@@ -167,6 +179,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
         FixPhoneNumberFormat = _fixPhoneNumberFormat,
         MapOutlookEmail1ToWork = _mapOutlookEmail1ToWork,
         WriteImAsImpp = _writeImAsImpp,
+        DefaultImServicType = _defaultImServiceType,
         MapDistributionLists = _mapDistributionLists,
         DistributionListType = _distributionListType
       };
