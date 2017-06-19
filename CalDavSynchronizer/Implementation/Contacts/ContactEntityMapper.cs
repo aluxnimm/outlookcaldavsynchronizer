@@ -129,7 +129,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
             {
               im.ServiceType = serviceType.Value;
             }
-            im.Handle = imDetails[1].Trim();
+            im.Handle = imRaw.Substring (imRaw.IndexOf (":")+1).Trim();
           }
 
           //Only add the im Address if not empty
