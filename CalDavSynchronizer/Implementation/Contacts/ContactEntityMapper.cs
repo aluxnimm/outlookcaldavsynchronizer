@@ -118,7 +118,17 @@ namespace CalDavSynchronizer.Implementation.Contacts
           }
           else
           {
-            im.ServiceType = IMTypeUtils.GetIMServiceType (imDetails[0].Trim()) ?? _configuration.DefaultImServicType;
+            var serviceType = IMTypeUtils.GetIMServiceType(imDetails[0].Trim());
+            if (serviceType == null)
+            {
+              im.ServiceType = _configuration.DefaultImServicType;
+              s_logger.Warn ($"Unknown IM ServiceType '{imDetails[0]}' not implemented, defaulting to '{_configuration.DefaultImServicType}'");
+              logger.LogMappingWarning ($"Unknown IM ServiceType '{imDetails[0]}' not implemented, defaulting to '{_configuration.DefaultImServicType}'");
+            }
+            else
+            {
+              im.ServiceType = serviceType.Value;
+            }
             im.Handle = imDetails[1].Trim();
           }
 
