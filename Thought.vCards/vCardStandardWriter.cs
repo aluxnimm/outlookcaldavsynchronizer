@@ -707,8 +707,13 @@ namespace Thought.vCards
         }
         else
         {
-          string prefix = IMTypeUtils.GetIMTypePropertyPrefix(im.ServiceType);
-          if (!string.IsNullOrEmpty(prefix))
+          var prefix = IMTypeUtils.GetIMTypePropertyPrefix(im.ServiceType);
+
+          if (im.ServiceType == IMServiceType.GoogleTalk)
+          {
+            property.Name = "X-GOOGLE-TALK";
+          }
+          else if (!string.IsNullOrEmpty(prefix))
           {
             property.Name = "X-" + prefix.ToUpperInvariant();
           }

@@ -281,7 +281,9 @@ namespace Thought.vCards
                     serviceType = IMServiceType.Facebook;
                     break;
                 case "googletalk":
+                case "google-talk":
                 case "google":
+                case "gtalk":
                     serviceType = IMServiceType.GoogleTalk;
                     break;
                 case "icq":
