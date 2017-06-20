@@ -1178,6 +1178,9 @@ Now it will work on port 5006 with https.
 
 ### iCloud settings ###
 
+Apple changed their security policy recently (June 2017). You need to enable Two-Factor-Authentication and an app-specific password for CalDavSynchronizer, see
+[https://support.apple.com/en-us/HT204397](https://support.apple.com/en-us/HT204397)
+
 To find the correct DAV url for iCloud you need some Informations from the MacOS, where you are connected with your calendar.
 
 Open with Textedit: `~/Library/Calendars/*.caldav/Info.plist` 
