@@ -17,40 +17,41 @@
 using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.Implementation.Tasks;
 using DDay.iCal;
 using GenSync.InitialEntityMatching;
 using Google.Apis.Tasks.v1.Data;
 
 namespace CalDavSynchronizer.Implementation.GoogleTasks
 {
-  internal class InitialGoogleTastEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, ITaskItemWrapper, string, string, string, Task, string>
+  internal class InitialGoogleTastEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, TaskEntityMatchData, string, string, string, Task, string>
   {
     public InitialGoogleTastEntityMatcher (IEqualityComparer<string> btypeIdEqualityComparer)
         : base (btypeIdEqualityComparer)
     {
     }
 
-    protected override bool AreEqual (ITaskItemWrapper atypeEntity, Task btypeEntity)
+    protected override bool AreEqual (TaskEntityMatchData atypeEntity, Task btypeEntity)
     {
-      if (atypeEntity.Inner.Subject == btypeEntity.Title)
+      if (atypeEntity.Subject == btypeEntity.Title)
       {
         DateTime dateNull = new DateTime (4501, 1, 1, 0, 0, 0);
 
         if (btypeEntity.Due == null)
         {
-          return atypeEntity.Inner.DueDate == dateNull;
+          return atypeEntity.DueDate == dateNull;
         }
         else
         {
-          return atypeEntity.Inner.DueDate == btypeEntity.Due.Value.Date;
+          return atypeEntity.DueDate == btypeEntity.Due.Value.Date;
         }
       }
       return false;
     }
 
-    protected override string GetAtypePropertyValue (ITaskItemWrapper atypeEntity)
+    protected override string GetAtypePropertyValue (TaskEntityMatchData atypeEntity)
     {
-      return (atypeEntity.Inner.Subject ?? string.Empty).ToLower();
+      return (atypeEntity.Subject ?? string.Empty).ToLower();
     }
 
     protected override string GetBtypePropertyValue (Task btypeEntity)

@@ -18,26 +18,27 @@
 using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.Implementation.Contacts;
 using GenSync.InitialEntityMatching;
 using Google.Contacts;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  internal class InitialGoogleContactEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, IContactItemWrapper, string, string, GoogleContactVersion, GoogleContactWrapper , string>
+  internal class InitialGoogleContactEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, ContactMatchData, string, string, GoogleContactVersion, GoogleContactWrapper , string>
   {
     public InitialGoogleContactEntityMatcher (IEqualityComparer<string> btypeIdEqualityComparer)
         : base (btypeIdEqualityComparer)
     {
     }
 
-    protected override bool AreEqual (IContactItemWrapper atypeEntity, GoogleContactWrapper btypeEntity)
+    protected override bool AreEqual (ContactMatchData atypeEntity, GoogleContactWrapper btypeEntity)
     {
       return true;
     }
 
-    protected override string GetAtypePropertyValue (IContactItemWrapper atypeEntity)
+    protected override string GetAtypePropertyValue (ContactMatchData atypeEntity)
     {
-      return atypeEntity.Inner.FirstName + "|" + atypeEntity.Inner.LastName;
+      return atypeEntity.FirstName + "|" + atypeEntity.LastName;
     }
 
     protected override string GetBtypePropertyValue (GoogleContactWrapper btypeEntity)

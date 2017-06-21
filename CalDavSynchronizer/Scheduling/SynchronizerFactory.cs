@@ -619,7 +619,7 @@ namespace CalDavSynchronizer.Scheduling
 
       var entityRelationDataAccess = new EntityRelationDataAccess<string, DateTime, GoogleTaskRelationData, string, string> (storageDataDirectory);
       componentsToFill.EntityRelationDataAccess = entityRelationDataAccess;
-      var synchronizer = new Synchronizer<string, DateTime, ITaskItemWrapper, string, string, Task, int, ITaskItemWrapper, Task> (
+      var synchronizer = new Synchronizer<string, DateTime, ITaskItemWrapper, string, string, Task, int, TaskEntityMatchData, Task> (
           atypeRepository,
           btypeRepository,
           atypeWriteRepository,
@@ -640,7 +640,7 @@ namespace CalDavSynchronizer.Scheduling
           EqualityComparer<string>.Default,
           syncStateFactory,
           _exceptionHandlingStrategy,
-        IdentityMatchDataFactory<ITaskItemWrapper>.Instance,
+        new TaskEntityMatchDataFactory(),
         IdentityMatchDataFactory<Task>.Instance,
         options.EffectiveChunkSize,
         CreateChunkedExecutor(options));
@@ -970,7 +970,7 @@ namespace CalDavSynchronizer.Scheduling
 
       var atypeWriteRepository = BatchEntityRepositoryAdapter.Create (atypeRepository, _exceptionHandlingStrategy);
 
-      var synchronizer = new Synchronizer<string, DateTime, IContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext, IContactItemWrapper, GoogleContactWrapper> (
+      var synchronizer = new Synchronizer<string, DateTime, IContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext, ContactMatchData, GoogleContactWrapper> (
           atypeRepository,
           btypeRepository,
           atypeWriteRepository,
@@ -991,7 +991,7 @@ namespace CalDavSynchronizer.Scheduling
           new GoogleContactVersionComparer(),
           syncStateFactory, 
           _exceptionHandlingStrategy,
-        IdentityMatchDataFactory<IContactItemWrapper>.Instance,
+        new ContactMatchDataFactory(),
         IdentityMatchDataFactory<GoogleContactWrapper>.Instance,
         options.EffectiveChunkSize,
         CreateChunkedExecutor(options));
