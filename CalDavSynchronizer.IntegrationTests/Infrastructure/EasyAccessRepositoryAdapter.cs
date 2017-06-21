@@ -23,6 +23,7 @@ using GenSync.EntityRepositories;
 using GenSync.Logging;
 using GenSync.ProgressReport;
 using GenSync.Synchronization;
+using NUnit.Framework;
 
 namespace CalDavSynchronizer.IntegrationTests.Infrastructure
 {
@@ -222,12 +223,12 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
 
       public void NotifyOperationFailed(Exception exception)
       {
-        
+        Assert.Fail($"Creation of Entity failed: {exception}");
       }
 
       public void NotifyOperationFailed(string errorMessage)
       {
-       
+        Assert.Fail($"Creation of Entity failed: {errorMessage}");
       }
     }
 
@@ -269,12 +270,12 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
 
       public void NotifyOperationFailed(Exception exception)
       {
-      
+        Assert.Fail($"Update of Entity '{EntityId}' failed: {exception}");
       }
 
       public void NotifyOperationFailed(string errorMessage)
       {
-       
+        Assert.Fail($"Update of Entity '{EntityId}' failed: {errorMessage}");
       }
     }
 
@@ -303,12 +304,13 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
 
       public void NotifyOperationFailed(Exception exception)
       {
-        
+        Assert.Fail($"Deletion of Entity '{EntityId}' failed: {exception}");
       }
 
       public void NotifyOperationFailed(string errorMessage)
       {
-       
+        Assert.Fail($"Deletion of Entity '{EntityId}' failed: {errorMessage}");
+
       }
     }
   }
