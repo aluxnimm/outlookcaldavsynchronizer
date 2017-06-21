@@ -107,6 +107,17 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 2.22.0 ####
+- New features
+	- Add contact mapping configuration to choose default IM protocol when writing IM addresses, ticket #543.
+	- Add contact mapping configuration to write IM addresses as IMPP attribute instead of X-PROTOCOL e.g. X-AIM, ticket #543.
+	- Add SIP IMServiceType and support X-SIP in vCardStandardReader.
+	- Add sync profile for web.de.
+	- Improve EntityMatching for very large Calendars (>5000 Entries), by using EventServerEntityMatchData instead of iCalendar for matching.
+- Bug fixes
+	- Fix google Oauth2 authentication "Access denied" error on Windows7/8.1 without admin privileges.
+	- Improve Logging. 
+
 #### 2.21.0 ####
 - New features
 	- Update NodaTime to version 2 to improve timezone calculations.
@@ -1072,6 +1083,8 @@ If you expand the tree view of the profile you can configure network and proxy o
 	- Don't overwrite FileAs in Outlook uses the Outlook settings for FileAs and doesn't overwrite the contact FileAs with the FN from the server.
 	- Fix imported phone number format adds round brackets to the area code of phone numbers, so that Outlook can show correct phone number details with country and area code, e.g. +1 23 45678 is mapped to +1 (23) 45678.
 	- Map OutlookEmailAddress1 to WORK instead of HOME, enable when you need to change the order of email address mapping.
+	- Write IM addresses as IMPP attributes. If enabled IMPP is used instead of X-AIM,X-ICQ,X-JABBER etc. for writing Instant messenger addresses in vCards.
+	- Default IM protocol. Choose the default IM service type protocol which will be added to the chat address field from Outlook when writing vCards, defaults to AIM. 
 	- Map Distribution Lists enables the sync of contact groups / Distribution Lists, right now the DAV contact group format SOGo VLIST or vCards with KIND:group are available, see **Distribution Lists** below.
 	- For tasks (not for Google task profiles) you can configure if you want to map reminders (just upcoming, all or none), the priority of the task, the description body and if recurring tasks should be synchronized.
 	- You can also define if task start and due dates should be mapped as floating without timezone to avoid issues with tasks across different timezones.
