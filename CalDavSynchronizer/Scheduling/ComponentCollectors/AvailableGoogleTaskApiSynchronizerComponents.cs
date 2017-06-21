@@ -14,6 +14,12 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using System;
+using CalDavSynchronizer.Implementation.GoogleTasks;
+using CalDavSynchronizer.Implementation.Tasks;
+using GenSync.EntityRelationManagement;
+
 namespace CalDavSynchronizer.Scheduling.ComponentCollectors
 {
   public class AvailableGoogleTaskApiSynchronizerComponents : AvailableSynchronizerComponents
@@ -25,5 +31,9 @@ namespace CalDavSynchronizer.Scheduling.ComponentCollectors
         
       };
     }
+
+    public OutlookTaskRepository OutlookRepository { get; set; }
+    public GoogleTaskRepository ServerRepository { get; set; }
+    public EntityRelationDataAccess<string, DateTime, GoogleTaskRelationData, string, string> EntityRelationDataAccess { get; set; }
   }
 }

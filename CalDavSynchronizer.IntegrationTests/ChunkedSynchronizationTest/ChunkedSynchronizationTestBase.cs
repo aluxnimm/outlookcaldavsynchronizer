@@ -33,8 +33,8 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
     
     protected abstract IReadOnlyList<(TAId AId, TBId BId)> GetRelations();
 
-    protected abstract Task<TAId> CreateInA(string content);
-    protected abstract Task<TBId> CreateInB(string content);
+    protected abstract Task<IReadOnlyList<TAId>> CreateInA(IEnumerable<string> contents);
+    protected abstract Task<IReadOnlyList<TBId>> CreateInB(IEnumerable<string> contents);
 
     protected abstract Task UpdateInA(TAId id, string content);
     protected abstract Task UpdateInB(TBId id, string content);
@@ -64,7 +64,7 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
     [TestCase(25, 25)]
     [TestCase(101, 25)]
     [TestCase(1,5)]
-    public async Task Test(int? chunkSize, int itemsPerOperation)
+    public virtual async Task Test(int? chunkSize, int itemsPerOperation)
     {
       await InitializeSynchronizer(chunkSize);
 
@@ -76,20 +76,22 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
       Synchronizer.ClearCache();
       await Synchronizer.ClearEventRepositoriesAndCache();
 
-      await Task.WhenAll(Enumerable.Range(0, itemsPerOperation*3).Select(i => CreateInA($"Item {i}")));
-      await Task.WhenAll(Enumerable.Range(0, itemsPerOperation*3).Select(i => CreateInB($"Item {i}")));
+      Assert.That(
+        (await CreateInA(Enumerable.Range(0, itemsPerOperation * 3).Select(i => $"Item {i}"))).Count,
+        Is.EqualTo(itemsPerOperation * 3));
+
+      Assert.That(
+        (await CreateInB(Enumerable.Range(0, itemsPerOperation * 3).Select(i => $"Item {i}"))).Count,
+        Is.EqualTo(itemsPerOperation * 3));
 
       int nextName = itemsPerOperation*3;
 
-      var newAids = new List<TAId>();
-      var newBids = new List<TBId>();
+      var newAids = await CreateInA(Enumerable.Range(0, itemsPerOperation).Select(i => $"Item {nextName++}"));
+      var newBids = await CreateInB(Enumerable.Range(0, itemsPerOperation).Select(i => $"Item {nextName++}"));
 
-      for (var i = 0; i < itemsPerOperation; i++)
-      {
-        newAids.Add(await CreateInA($"Item {nextName++}"));
-        newBids.Add(await CreateInB($"Item {nextName++}"));
-      }
-
+      Assert.That(newAids.Count, Is.EqualTo(itemsPerOperation));
+      Assert.That(newBids.Count, Is.EqualTo(itemsPerOperation));
+      
       await Synchronizer.SynchronizeAndCheck(
         unchangedA: itemsPerOperation * 3, addedA: itemsPerOperation, changedA: 0, deletedA: 0,
         unchangedB: itemsPerOperation * 3, addedB: itemsPerOperation, changedB: 0, deletedB: 0,

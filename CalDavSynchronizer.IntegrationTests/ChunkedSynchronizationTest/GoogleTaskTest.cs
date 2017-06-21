@@ -31,7 +31,7 @@ using NUnit.Framework;
 
 namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
 {
-  public class TaskTest : ChunkedSynchronizationTestBase<string,WebResourceName, TaskTestSynchronizer>
+  public class GoogleTaskTest : ChunkedSynchronizationTestBase<string,string, GoogleTaskTestSynchronizer>
   {
     private TestComponentContainer _testComponentContainer;
   
@@ -41,17 +41,17 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
       _testComponentContainer = new TestComponentContainer();
     }
 
-    protected override string ProfileName { get; } = "IntegrationTest/Tasks/Sogo";
+    protected override string ProfileName { get; } = "IntegrationTest/Tasks/Google";
 
-    protected override TaskTestSynchronizer CreateSynchronizer(Options options)
+    protected override GoogleTaskTestSynchronizer CreateSynchronizer(Options options)
     {
-      return new TaskTestSynchronizer(options, _testComponentContainer);
+      return new GoogleTaskTestSynchronizer(options, _testComponentContainer);
     }
     
     protected override IEqualityComparer<string> AIdComparer { get; } =StringComparer.InvariantCulture;
-    protected override IEqualityComparer<WebResourceName> BIdComparer { get; } = WebResourceName.Comparer;
-   
-    protected override IReadOnlyList<(string AId, WebResourceName BId)> GetRelations()
+    protected override IEqualityComparer<string> BIdComparer { get; } = StringComparer.InvariantCulture;
+
+    protected override IReadOnlyList<(string AId, string BId)> GetRelations()
     {
       return Synchronizer.Components.EntityRelationDataAccess.LoadEntityRelationData()
         .Select(r => (r.AtypeId, r.BtypeId))
@@ -69,27 +69,25 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
             }));
     }
 
-    protected override async Task<IReadOnlyList<WebResourceName>> CreateInB(IEnumerable<string> contents)
+    protected override async Task<IReadOnlyList<string>> CreateInB(IEnumerable<string> contents)
     {
       return await Synchronizer.Server.CreateEntities(
-        contents.Select<string, Action<IICalendar>>(
+        contents.Select<string, Action<Google.Apis.Tasks.v1.Data.Task>>(
           c =>
             a =>
             {
-              var todo = new Todo();
-              todo.Summary = c;
-              a.Todos.Add(todo);
+              a.Title = c;
             }));
     }
-
+    
     protected override async Task UpdateInA(string id, string content)
     {
       await Synchronizer.Outlook.UpdateEntity(id, w => w.Inner.Subject = content);
     }
 
-    protected override async Task UpdateInB(WebResourceName id, string content)
+    protected override async Task UpdateInB(string id, string content)
     {
-      await Synchronizer.Server.UpdateEntity(id, w => w.Todos[0].Summary = content);
+      await Synchronizer.Server.UpdateEntity(id, w => w.Title = content);
     }
 
     protected override async Task<string> GetFromA(string id)
@@ -100,9 +98,9 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
       }
     }
 
-    protected override async Task<string> GetFromB(WebResourceName id)
+    protected override async Task<string> GetFromB(string id)
     {
-      return (await Synchronizer.Server.GetEntity(id)).Todos[0].Summary;
+      return (await Synchronizer.Server.GetEntity(id)).Title;
     }
 
     protected override async Task DeleteInA(string id)
@@ -110,10 +108,15 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
       await Synchronizer.Outlook.DeleteEntity(id);
     }
 
-    protected override async Task DeleteInB(WebResourceName id)
+    protected override async Task DeleteInB(string id)
     {
       await Synchronizer.Server.DeleteEntity(id);
     }
 
+    [TestCase(2, 7)]
+    public override Task Test(int? chunkSize, int itemsPerOperation)
+    {
+      return base.Test(chunkSize, itemsPerOperation);
+    }
   }
 }

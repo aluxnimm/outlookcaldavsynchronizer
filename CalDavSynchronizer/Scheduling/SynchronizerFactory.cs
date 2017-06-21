@@ -133,8 +133,9 @@ namespace CalDavSynchronizer.Scheduling
         case OlItemType.olTaskItem:
           if (options.ServerAdapterType == ServerAdapterType.GoogleTaskApi)
           {
-            synchronizerComponents = new AvailableGoogleTaskApiSynchronizerComponents ();
-            synchronizer = await CreateGoogleTaskSynchronizer(options);
+            var availableGoogleTaskApiSynchronizerComponents = new AvailableGoogleTaskApiSynchronizerComponents ();
+            synchronizerComponents = availableGoogleTaskApiSynchronizerComponents;
+            synchronizer = await CreateGoogleTaskSynchronizer(options, availableGoogleTaskApiSynchronizerComponents);
           }
           else
           {
@@ -575,11 +576,13 @@ namespace CalDavSynchronizer.Scheduling
         new NullContextSynchronizerDecorator<string, DateTime, ITaskItemWrapper, WebResourceName, string, IICalendar> (synchronizer));
     }
 
-    private async Task<IOutlookSynchronizer> CreateGoogleTaskSynchronizer (Options options)
+    private async Task<IOutlookSynchronizer> CreateGoogleTaskSynchronizer (Options options, AvailableGoogleTaskApiSynchronizerComponents componentsToFill)
     {
       var mappingParameters = GetMappingParameters<TaskMappingConfiguration> (options);
 
       var atypeRepository = new OutlookTaskRepository (_outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId, _daslFilterProvider, mappingParameters, _queryFolderStrategy, _comWrapperFactory);
+
+      componentsToFill.OutlookRepository = atypeRepository;
 
       IWebProxy proxy = options.ProxyOptions != null ? CreateProxy (options.ProxyOptions) : null;
 
@@ -598,7 +601,8 @@ namespace CalDavSynchronizer.Scheduling
 
       var btypeRepository = new GoogleTaskRepository (tasksService, taskList);
 
-      
+      componentsToFill.ServerRepository = btypeRepository;
+
       var relationDataFactory = new GoogleTaskRelationDataFactory ();
       var syncStateFactory = new EntitySyncStateFactory<string, DateTime, ITaskItemWrapper, string, string, Task, int> (
           new GoogleTaskMapper (),
@@ -613,6 +617,8 @@ namespace CalDavSynchronizer.Scheduling
       var atypeWriteRepository = BatchEntityRepositoryAdapter.Create (atypeRepository, _exceptionHandlingStrategy);
       var btypeWriteRepository = BatchEntityRepositoryAdapter.Create (btypeRepository, _exceptionHandlingStrategy);
 
+      var entityRelationDataAccess = new EntityRelationDataAccess<string, DateTime, GoogleTaskRelationData, string, string> (storageDataDirectory);
+      componentsToFill.EntityRelationDataAccess = entityRelationDataAccess;
       var synchronizer = new Synchronizer<string, DateTime, ITaskItemWrapper, string, string, Task, int, ITaskItemWrapper, Task> (
           atypeRepository,
           btypeRepository,
@@ -624,7 +630,7 @@ namespace CalDavSynchronizer.Scheduling
               options.SynchronizationMode,
               options.ConflictResolution,
               e => new GoogleTaskConflictInitialSyncStateCreationStrategyAutomatic (e)),
-          new EntityRelationDataAccess<string, DateTime, GoogleTaskRelationData, string, string> (storageDataDirectory),
+          entityRelationDataAccess,
           relationDataFactory,
           new InitialGoogleTastEntityMatcher (btypeIdEqualityComparer),
           atypeIdEqualityComparer,

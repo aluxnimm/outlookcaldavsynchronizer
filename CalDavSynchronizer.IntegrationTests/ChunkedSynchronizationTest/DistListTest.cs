@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
+using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.Implementation.DistributionLists;
 using CalDavSynchronizer.Implementation.Events;
 using CalDavSynchronizer.IntegrationTests.TestBase;
 using GenSync.EntityRelationManagement;
@@ -43,17 +45,26 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
         .ToArray();
     }
 
-    protected override async Task<string> CreateInA(string content)
+    protected override async Task<IReadOnlyList<string>> CreateInA(IEnumerable<string> contents)
     {
-      return await Synchronizer.OutlookDistListsOrNull.CreateEntity(a => 
-      {
-        a.Inner.DLName = content;
-      });
+      return await Synchronizer.OutlookDistListsOrNull.CreateEntities(
+        contents.Select<string, Action<IDistListItemWrapper>>(
+          c =>
+            a =>
+            {
+              a.Inner.DLName = c;
+            }));
     }
 
-    protected override async Task<WebResourceName> CreateInB(string content)
+    protected override async Task<IReadOnlyList<WebResourceName>> CreateInB(IEnumerable<string> contents)
     {
-      return await Synchronizer.ServerSogoDistListsOrNull.CreateEntity(c => c.Name = content);
+      return await Synchronizer.ServerSogoDistListsOrNull.CreateEntities(
+        contents.Select<string, Action<DistributionList>>(
+          c =>
+            a =>
+            {
+              a.Name = c;
+            }));
     }
 
     protected override async Task UpdateInA(string id, string content)

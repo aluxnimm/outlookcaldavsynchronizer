@@ -22,8 +22,10 @@ using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
+using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Events;
 using CalDavSynchronizer.IntegrationTests.TestBase;
+using DDay.iCal;
 using GenSync.EntityRelationManagement;
 using NUnit.Framework;
 
@@ -60,20 +62,32 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
         .ToArray();
     }
 
-    protected override async Task<AppointmentId> CreateInA(string content)
+    protected override async Task<IReadOnlyList<AppointmentId>> CreateInA(IEnumerable<string> contents)
     {
-      return await Synchronizer.Outlook.CreateEntity(a => 
-      {
-        a.Inner.Subject = content;
-        a.Inner.Start = _startDateTime;
-        a.Inner.End = _endDateTime;
-      });
+      return await Synchronizer.Outlook.CreateEntities(
+        contents.Select<string, Action<IAppointmentItemWrapper>>(
+          c =>
+            a =>
+            {
+              a.Inner.Subject = c;
+              a.Inner.Start = _startDateTime;
+              a.Inner.End = _endDateTime;
+            }));
     }
 
-    protected override async Task<WebResourceName> CreateInB(string content)
+    protected override async Task<IReadOnlyList<WebResourceName>> CreateInB(IEnumerable<string> contents)
     {
-   
-      return await Synchronizer.CreateEventOnServer(content, _startDateTime, _endDateTime);
+      return await Synchronizer.Server.CreateEntities(
+        contents.Select<string, Action<IICalendar>>(
+          c =>
+            a =>
+            {
+              var evt = new Event();
+              evt.Start = new iCalDateTime(_startDateTime);
+              evt.End = new iCalDateTime(_endDateTime);
+              evt.Summary = c;
+              a.Events.Add(evt);
+            }));
     }
 
     protected override async Task UpdateInA(AppointmentId id, string content)
