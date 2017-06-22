@@ -93,7 +93,7 @@ namespace CalDavSynchronizer.DataAccess
                    ExpandAllSyncProfiles = (int) (key.GetValue (s_ExpandAllSyncProfiles) ?? 1) != 0,
                    EnableAdvancedView = (int)(key.GetValue(s_EnableAdvancedView) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableAdvancedView"] ?? bool.FalseString))) != 0,
                    QueryFoldersJustByGetTable = (int) (key.GetValue (s_QueryFoldersJustByGetTable) ?? 1) != 0,
-                   ShowProgressBar = (int) (key.GetValue (s_ShowProgressBar) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["showProgressBar"] ?? bool.TrueString))) != 0,
+                   ShowProgressBar = (int) (key.GetValue (s_ShowProgressBar) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["showProgressBar"] ?? bool.FalseString))) != 0,
                    ThresholdForProgressDisplay = (int) (key.GetValue (s_ThresholdForProgressDisplay) ?? int.Parse(ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"] ?? "50")),
                    MaxSucessiveWarnings = (int) (key.GetValue (s_MaxSucessiveWarnings) ?? 2)
         };
