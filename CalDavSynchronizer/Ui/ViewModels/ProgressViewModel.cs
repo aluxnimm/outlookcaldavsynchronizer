@@ -56,7 +56,6 @@ namespace CalDavSynchronizer.Ui.ViewModels
     public void IncrementValue()
     {
       Value += 1;
-      System.Windows.Forms.Application.DoEvents();
     }
 
     public string SubMessage
@@ -68,13 +67,11 @@ namespace CalDavSynchronizer.Ui.ViewModels
     public void SetMessage(string message)
     {
       Message = message;
-      System.Windows.Forms.Application.DoEvents();
     }
 
     public void SetSubMessage(string message)
     {
       SubMessage = message;
-      System.Windows.Forms.Application.DoEvents();
     }
 
     public void SetMaximun(int value)
