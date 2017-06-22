@@ -107,6 +107,11 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 2.22.1 ####
+- Bug fixes
+	- Fix InitialMatching for GoogleContacts and GoogleTasks if there are more new OutlookItems than ChunkSize and avoid InvalidOperationException (Cannot access a disposed object!), ticket #632.
+	- Fix #611 CALDAV hangs Outlook , #613 CalDav locking up Outlook, remove DoEvents call in sync progress bar.
+
 #### 2.22.0 ####
 - New features
 	- Add contact mapping configuration to choose default IM protocol when writing IM addresses, ticket #543.
