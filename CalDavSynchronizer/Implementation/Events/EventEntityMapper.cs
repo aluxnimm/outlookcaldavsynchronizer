@@ -65,6 +65,7 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly ITimeZone _configuredEventTimeZoneOrNull;
     private readonly EventMappingConfiguration _configuration;
     private readonly ITimeZoneCache _timeZoneCache;
+    private readonly IOutlookTimeZones _outlookTimeZones;
     private readonly DocumentConverter _documentConverter;
 
     public EventEntityMapper (
@@ -74,11 +75,13 @@ namespace CalDavSynchronizer.Implementation.Events
         string outlookApplicationVersion,
         ITimeZoneCache timeZoneCache,
         EventMappingConfiguration configuration, 
-        ITimeZone configuredEventTimeZoneOrNull)
+        ITimeZone configuredEventTimeZoneOrNull,
+        IOutlookTimeZones outlookTimeZones)
     {
       _outlookEmailAddress = outlookEmailAddress;
       _configuration = configuration;
       _configuredEventTimeZoneOrNull = configuredEventTimeZoneOrNull;
+      _outlookTimeZones = outlookTimeZones;
       _serverEmailUri = serverEmailAddress.ToString();
       _localTimeZoneId = localTimeZoneId;
       _localTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (_localTimeZoneId);
@@ -1558,7 +1561,7 @@ namespace CalDavSynchronizer.Implementation.Events
           try
           {
             var tzi = TimeZoneInfo.FindSystemTimeZoneById (source.Start.TZID);
-            targetWrapper.Inner.StartTimeZone = targetWrapper.Inner.Application.TimeZones[source.Start.TZID];
+            targetWrapper.Inner.StartTimeZone = _outlookTimeZones[source.Start.TZID];
           }
           catch (COMException ex)
           {
@@ -1567,7 +1570,7 @@ namespace CalDavSynchronizer.Implementation.Events
           }
           catch (TimeZoneNotFoundException)
           {
-            targetWrapper.Inner.StartTimeZone = targetWrapper.Inner.Application.TimeZones[TimeZoneMapper.IanaToWindows (source.Start.TZID) ?? _localTimeZoneInfo.Id];
+            targetWrapper.Inner.StartTimeZone = _outlookTimeZones[TimeZoneMapper.IanaToWindows (source.Start.TZID) ?? _localTimeZoneInfo.Id];
           }
         }
 
@@ -1587,7 +1590,7 @@ namespace CalDavSynchronizer.Implementation.Events
             try
             {
               var tzi = TimeZoneInfo.FindSystemTimeZoneById (source.DTEnd.TZID);
-              targetWrapper.Inner.EndTimeZone = targetWrapper.Inner.Application.TimeZones[source.DTEnd.TZID];
+              targetWrapper.Inner.EndTimeZone = _outlookTimeZones[source.DTEnd.TZID];
             }
             catch (COMException ex)
             {
@@ -1596,7 +1599,7 @@ namespace CalDavSynchronizer.Implementation.Events
             }
             catch (TimeZoneNotFoundException)
             {
-              targetWrapper.Inner.EndTimeZone = targetWrapper.Inner.Application.TimeZones[TimeZoneMapper.IanaToWindows (source.DTEnd.TZID) ?? _localTimeZoneInfo.Id];
+              targetWrapper.Inner.EndTimeZone = _outlookTimeZones[TimeZoneMapper.IanaToWindows (source.DTEnd.TZID) ?? _localTimeZoneInfo.Id];
             }
           }
 
