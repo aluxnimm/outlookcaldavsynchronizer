@@ -60,7 +60,6 @@ namespace CalDavSynchronizer.Implementation.Events
 
     private readonly string _outlookEmailAddress;
     private readonly string _serverEmailUri;
-    private readonly TimeZoneInfo _localTimeZoneInfo;
     private readonly string _localTimeZoneId;
     private readonly ITimeZone _configuredEventTimeZoneOrNull;
     private readonly EventMappingConfiguration _configuration;
@@ -84,11 +83,8 @@ namespace CalDavSynchronizer.Implementation.Events
       _outlookTimeZones = outlookTimeZones;
       _serverEmailUri = serverEmailAddress.ToString();
       _localTimeZoneId = localTimeZoneId;
-      _localTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (_localTimeZoneId);
       _timeZoneCache = timeZoneCache;
       _documentConverter = new DocumentConverter();
-
-      
 
       string outlookMajorVersionString = outlookApplicationVersion.Split (new char[] { '.' })[0];
       _outlookMajorVersion = Convert.ToInt32 (outlookMajorVersionString);
@@ -1560,17 +1556,12 @@ namespace CalDavSynchronizer.Implementation.Events
         {
           try
           {
-            var tzi = TimeZoneInfo.FindSystemTimeZoneById (source.Start.TZID);
             targetWrapper.Inner.StartTimeZone = _outlookTimeZones[source.Start.TZID];
           }
-          catch (COMException ex)
+          catch (System.Exception ex) when (ex is COMException || ex is ArgumentException)
           {
             s_logger.Warn ("Can't set StartTimeZone of appointment.", ex);
             logger.LogMappingWarning ("Can't set StartTimeZone of appointment.", ex);
-          }
-          catch (TimeZoneNotFoundException)
-          {
-            targetWrapper.Inner.StartTimeZone = _outlookTimeZones[TimeZoneMapper.IanaToWindows (source.Start.TZID) ?? _localTimeZoneInfo.Id];
           }
         }
 
@@ -1589,17 +1580,12 @@ namespace CalDavSynchronizer.Implementation.Events
           {
             try
             {
-              var tzi = TimeZoneInfo.FindSystemTimeZoneById (source.DTEnd.TZID);
               targetWrapper.Inner.EndTimeZone = _outlookTimeZones[source.DTEnd.TZID];
             }
-            catch (COMException ex)
+            catch (System.Exception ex) when (ex is COMException || ex is ArgumentException)
             {
               s_logger.Warn ("Can't set EndTimeZone of appointment.", ex);
               logger.LogMappingWarning ("Can't set EndTimeZone of appointment.", ex);
-            }
-            catch (TimeZoneNotFoundException)
-            {
-              targetWrapper.Inner.EndTimeZone = _outlookTimeZones[TimeZoneMapper.IanaToWindows (source.DTEnd.TZID) ?? _localTimeZoneInfo.Id];
             }
           }
 

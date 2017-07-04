@@ -20,6 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.Implementation.Events;
 using Microsoft.Office.Interop.Outlook;
 using TimeZone = Microsoft.Office.Interop.Outlook.TimeZone;
 
@@ -49,7 +50,7 @@ namespace CalDavSynchronizer.Implementation.Common
         if (_outlookTimeZoneIdByCaseInsensitiveId.TryGetValue(id, out string outlookId))
           return _application.TimeZones[outlookId];
         else
-          return null;
+          return _application.TimeZones[TimeZoneMapper.IanaToWindows(id) ?? CurrentTimeZone.ID];
       }
     }
   }
