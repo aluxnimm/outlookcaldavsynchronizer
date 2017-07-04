@@ -194,7 +194,26 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       using (newWrapper)
       {
-        using (var initializedWrapper = await entityInitializer (newWrapper))
+        IContactItemWrapper initializedWrapper;
+
+        try
+        {
+          initializedWrapper = await entityInitializer(newWrapper);
+        }
+        catch
+        {
+          try
+          {
+            newWrapper.Inner.Delete();
+          }
+          catch (System.Exception x)
+          {
+            s_logger.Error("Error while deleting leftover entity", x);
+          }
+          throw;
+        }
+
+        using (initializedWrapper)
         {
           initializedWrapper.SaveAndReload ();
           var result = new EntityVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime);

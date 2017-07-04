@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.Implementation.Contacts;
 using CalDavSynchronizer.Implementation.DistributionLists;
 using CalDavSynchronizer.IntegrationTests.Infrastructure;
 using CalDavSynchronizer.IntegrationTests.TestBase;
@@ -127,6 +128,41 @@ namespace CalDavSynchronizer.IntegrationTests
        new[] { "mason@bla.com", "steinberg@bla.com", "nihil@bla.com" },
        serverDistList.Members.Select(m => m.EmailAddress));
 
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    [Apartment(System.Threading.ApartmentState.STA)]
+    public async Task CreateOutlookEntity_ExceptionOccurs_DoesNotLeaveEmptyEntityInRepository(bool saveAndReload)
+    {
+      var options = TestComponentContainer.GetOptions("IntegrationTests/Contacts/Sogo");
+      var synchronizer = await CreateSynchronizer(options);
+      await synchronizer.ClearEventRepositoriesAndCache();
+
+      bool exceptionCatched = false;
+      var exception = new Exception("bla");
+      try
+      {
+        await synchronizer.Components.OutlookContactRepository.Create(
+          w =>
+          {
+            if (saveAndReload)
+              w.SaveAndReload();
+            throw exception;
+          },
+          NullCardDavRepositoryLogger.Instance);
+      }
+      catch (Exception x)
+      {
+        if (ReferenceEquals(x, exception))
+          exceptionCatched = true;
+      }
+
+      Assert.That(exceptionCatched, Is.EqualTo(true));
+
+      Assert.That(
+        (await synchronizer.Outlook.GetAllEntities()).Count(),
+        Is.EqualTo(0));
     }
 
     [Test]

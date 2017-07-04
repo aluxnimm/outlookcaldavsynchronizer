@@ -232,7 +232,26 @@ namespace CalDavSynchronizer.Implementation.Tasks
       using (var taskFolderWrapper = CreateFolderWrapper ())
       using (var wrapper = _comWrapperFactory.Create ((TaskItem) taskFolderWrapper.Inner.Items.Add (OlItemType.olTaskItem), entryId =>  _session.GetTaskItem (entryId, _folderStoreId)))
       {
-        using (var initializedWrapper = await entityInitializer (wrapper))
+        ITaskItemWrapper initializedWrapper;
+
+        try
+        {
+          initializedWrapper = await entityInitializer(wrapper);
+        }
+        catch
+        {
+          try
+          {
+            wrapper.Inner.Delete();
+          }
+          catch (System.Exception x)
+          {
+            s_logger.Error("Error while deleting leftover entity", x);
+          }
+          throw;
+        }
+
+        using (initializedWrapper)
         {
           initializedWrapper.SaveAndReload ();
           var result = new EntityVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime);

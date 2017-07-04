@@ -19,6 +19,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation;
+using CalDavSynchronizer.Implementation.Events;
 using CalDavSynchronizer.IntegrationTests.Infrastructure;
 using CalDavSynchronizer.IntegrationTests.TestBase;
 using DDay.iCal;
@@ -168,6 +169,41 @@ namespace CalDavSynchronizer.IntegrationTests
       //  serverEvent.Events[0].Properties.SingleOrDefault(p => p.Name == "X-CALDAVSYNCHRONIZER-INTEGRATIONTEST")?.Value,
       //  Is.EqualTo("TheValueBlaBLubb"));
 
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    [Apartment(System.Threading.ApartmentState.STA)]
+    public async Task CreateOutlookEntity_ExceptionOccurs_DoesNotLeaveEmptyEntityInRepository(bool saveAndReload)
+    {
+      var options = TestComponentContainer.GetOptions("IntegrationTest/Events/Sogo");
+      var synchronizer = await CreateSynchronizer(options);
+      await synchronizer.ClearEventRepositoriesAndCache();
+
+      bool exceptionCatched = false;
+      var exception = new Exception("bla");
+      try
+      {
+        await synchronizer.Components.OutlookEventRepository.Create(
+          w =>
+          {
+            if (saveAndReload)
+              w.SaveAndReload();
+            throw exception;
+          },
+          NullEventSynchronizationContext.Instance);
+      }
+      catch (Exception x)
+      {
+        if (ReferenceEquals(x, exception))
+          exceptionCatched = true;
+      }
+
+      Assert.That(exceptionCatched, Is.EqualTo(true));
+
+      Assert.That(
+        (await synchronizer.Outlook.GetAllEntities()).Count(),
+        Is.EqualTo(0));
     }
 
     [Test]

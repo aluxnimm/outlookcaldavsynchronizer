@@ -132,6 +132,7 @@
     <Compile Include="ChunkedSynchronizationTest\TaskTest.cs" />
     <Compile Include="ChunkedSynchronizationTest\EventTest.cs" />
     <Compile Include="ContactSynchronizerFixture.cs" />
+    <Compile Include="TaskSynchronizerFixture.cs" />
     <Compile Include="EventSynchronizerFixture.cs" />
     <Compile Include="Infrastructure\ComponentContainerTestExtension.cs" />
     <Compile Include="Infrastructure\InMemoryGeneralOptionsDataAccess.cs" />

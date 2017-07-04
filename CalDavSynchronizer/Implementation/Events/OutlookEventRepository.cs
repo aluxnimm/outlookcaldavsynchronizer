@@ -283,7 +283,26 @@ namespace CalDavSynchronizer.Implementation.Events
 
       using (newAppointmentItemWrapper)
       {
-        using (var initializedWrapper = await entityInitializer(newAppointmentItemWrapper))
+        IAppointmentItemWrapper initializedWrapper;
+
+        try
+        {
+          initializedWrapper = await entityInitializer(newAppointmentItemWrapper);
+        }
+        catch
+        {
+          try
+          {
+            newAppointmentItemWrapper.Inner.Delete();
+          }
+          catch (System.Exception x)
+          {
+            s_logger.Error("Error while deleting leftover entity", x);
+          }
+          throw;
+        }
+
+        using (initializedWrapper)
         {
           initializedWrapper.SaveAndReload();
           context.AnnounceAppointment(AppointmentSlim.FromAppointmentItem(initializedWrapper.Inner));
