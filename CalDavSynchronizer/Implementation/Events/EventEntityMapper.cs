@@ -60,11 +60,11 @@ namespace CalDavSynchronizer.Implementation.Events
 
     private readonly string _outlookEmailAddress;
     private readonly string _serverEmailUri;
-    private readonly TimeZoneInfo _localTimeZoneInfo;
     private readonly string _localTimeZoneId;
     private readonly ITimeZone _configuredEventTimeZoneOrNull;
     private readonly EventMappingConfiguration _configuration;
     private readonly ITimeZoneCache _timeZoneCache;
+    private readonly IOutlookTimeZones _outlookTimeZones;
     private readonly DocumentConverter _documentConverter;
 
     public EventEntityMapper (
@@ -74,18 +74,17 @@ namespace CalDavSynchronizer.Implementation.Events
         string outlookApplicationVersion,
         ITimeZoneCache timeZoneCache,
         EventMappingConfiguration configuration, 
-        ITimeZone configuredEventTimeZoneOrNull)
+        ITimeZone configuredEventTimeZoneOrNull,
+        IOutlookTimeZones outlookTimeZones)
     {
       _outlookEmailAddress = outlookEmailAddress;
       _configuration = configuration;
       _configuredEventTimeZoneOrNull = configuredEventTimeZoneOrNull;
+      _outlookTimeZones = outlookTimeZones;
       _serverEmailUri = serverEmailAddress.ToString();
       _localTimeZoneId = localTimeZoneId;
-      _localTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (_localTimeZoneId);
       _timeZoneCache = timeZoneCache;
       _documentConverter = new DocumentConverter();
-
-      
 
       string outlookMajorVersionString = outlookApplicationVersion.Split (new char[] { '.' })[0];
       _outlookMajorVersion = Convert.ToInt32 (outlookMajorVersionString);
@@ -1554,22 +1553,7 @@ namespace CalDavSynchronizer.Implementation.Events
         targetWrapper.Inner.AllDayEvent = false;
 
         if (!string.IsNullOrEmpty (source.Start.TZID))
-        {
-          try
-          {
-            var tzi = TimeZoneInfo.FindSystemTimeZoneById (source.Start.TZID);
-            targetWrapper.Inner.StartTimeZone = targetWrapper.Inner.Application.TimeZones[source.Start.TZID];
-          }
-          catch (COMException ex)
-          {
-            s_logger.Warn ("Can't set StartTimeZone of appointment.", ex);
-            logger.LogMappingWarning ("Can't set StartTimeZone of appointment.", ex);
-          }
-          catch (TimeZoneNotFoundException)
-          {
-            targetWrapper.Inner.StartTimeZone = targetWrapper.Inner.Application.TimeZones[TimeZoneMapper.IanaToWindows (source.Start.TZID) ?? _localTimeZoneInfo.Id];
-          }
-        }
+          MapTimeZone2To1(source.Start.TZID, tz => targetWrapper.Inner.StartTimeZone = tz, "set StartTimeZone of appointment", logger);
 
         if (source.Start.IsUniversalTime)
         {
@@ -1583,23 +1567,8 @@ namespace CalDavSynchronizer.Implementation.Events
         if (source.DTEnd != null)
         {
           if (!string.IsNullOrEmpty (source.DTEnd.TZID))
-          {
-            try
-            {
-              var tzi = TimeZoneInfo.FindSystemTimeZoneById (source.DTEnd.TZID);
-              targetWrapper.Inner.EndTimeZone = targetWrapper.Inner.Application.TimeZones[source.DTEnd.TZID];
-            }
-            catch (COMException ex)
-            {
-              s_logger.Warn ("Can't set EndTimeZone of appointment.", ex);
-              logger.LogMappingWarning ("Can't set EndTimeZone of appointment.", ex);
-            }
-            catch (TimeZoneNotFoundException)
-            {
-              targetWrapper.Inner.EndTimeZone = targetWrapper.Inner.Application.TimeZones[TimeZoneMapper.IanaToWindows (source.DTEnd.TZID) ?? _localTimeZoneInfo.Id];
-            }
-          }
-
+            MapTimeZone2To1(source.DTEnd.TZID, tz => targetWrapper.Inner.EndTimeZone = tz, "set EndTimeZone of appointment", logger);
+          
           try
           {
             if (source.DTEnd.IsUniversalTime)
@@ -1757,6 +1726,30 @@ namespace CalDavSynchronizer.Implementation.Events
       }
 
       return targetWrapper;
+    }
+
+    void MapTimeZone2To1(string timeZoneId, Action<Microsoft.Office.Interop.Outlook.TimeZone> actionWithMappedValue, string actionNameForLogging, IEntityMappingLogger logger)
+    {
+      try
+      {
+        var timeZone = _outlookTimeZones[timeZoneId];
+        if (timeZone != null)
+        {
+          actionWithMappedValue(timeZone);
+        }
+        else
+        {
+          var logMessage = $"Could not {actionNameForLogging}, because a local timezone '{timeZoneId}' did not exist";
+          s_logger.Warn(logMessage);
+          logger.LogMappingWarning(logMessage);
+        }
+      }
+      catch (COMException ex) 
+      {
+        var logMessage = $"Can't {actionNameForLogging}.";
+        s_logger.Warn(logMessage, ex);
+        logger.LogMappingWarning(logMessage, ex);
+      }
     }
 
     private void MapCategories2To1 (IEvent source, AppointmentItem target)

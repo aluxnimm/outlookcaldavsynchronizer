@@ -34,7 +34,9 @@ namespace CalDavSynchronizer
     public OutlookSession(NameSpace nameSpace)
     {
       if (nameSpace == null) throw new ArgumentNullException(nameof(nameSpace));
+
       _nameSpace = nameSpace;
+      TimeZones = new OutlookTimeZones(_nameSpace.Application);
     }
 
     public string GetCurrentUserEmailAddressOrNull()
@@ -150,7 +152,7 @@ namespace CalDavSynchronizer
     
 
     public string ApplicationVersion => _nameSpace.Application.Version;
-    public TimeZones TimeZones => _nameSpace.Application.TimeZones;
+    public IOutlookTimeZones TimeZones { get; }
     public Categories Categories => _nameSpace.Categories;
     public Recipient CreateRecipient(string recipientName)
     {

@@ -14,6 +14,8 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Ui;
 using Microsoft.Office.Interop.Outlook;
 
@@ -22,7 +24,7 @@ namespace CalDavSynchronizer
   public interface IOutlookSession
   {
     string ApplicationVersion { get; }
-    TimeZones TimeZones { get; }
+    IOutlookTimeZones TimeZones { get; }
     Categories Categories { get; }
 
     string GetCurrentUserEmailAddressOrNull();

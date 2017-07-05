@@ -305,6 +305,8 @@
     <Compile Include="EntityCacheVersionConversion\Version2To3.cs" />
     <Compile Include="IComponentContainer.cs" />
     <Compile Include="IDateTimeProvider.cs" />
+    <Compile Include="Implementation\Common\IOutlookTimeZones.cs" />
+    <Compile Include="Implementation\Common\OutlookTimeZones.cs" />
     <Compile Include="Implementation\ComWrappers\ComWrapperFactory.cs" />
     <Compile Include="Implementation\ComWrappers\DistListItemWrapper.cs" />
     <Compile Include="Implementation\ComWrappers\GenericComObjectWrapper.cs" />
