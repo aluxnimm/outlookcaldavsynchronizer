@@ -1593,7 +1593,7 @@ namespace Thought.vCards
         private vCardIMPP ParseFullIMHandleString(string fullIMHandle)
         {
             var im = new vCardIMPP();
-            string[] parsedTypeValues = fullIMHandle.Split(new char[] { ':' });
+            var parsedTypeValues = fullIMHandle.Split(new char[] { ':' });
             if (parsedTypeValues.Length > 1)
             {
                 var typeValueToCheck = parsedTypeValues[0];
@@ -1607,10 +1607,12 @@ namespace Thought.vCards
                 {
                     fullIMHandle = fullIMHandle.Substring(1);
                 }
-                string directHandle = parsedTypeValues[parsedTypeValues.Length - 1];
+                var directHandle = parsedTypeValues[parsedTypeValues.Length - 1];
 
                 //need to switch to this => GoogleTalk:xmpp:gtalkname
-                im.ServiceType = IMTypeUtils.GetIMServiceType(typeValueToCheck).Value;
+                var serviceTypeOrNull = IMTypeUtils.GetIMServiceType(typeValueToCheck);
+                if (serviceTypeOrNull.HasValue)
+                  im.ServiceType = serviceTypeOrNull.Value;
                 im.Handle = directHandle;
                 
             }
