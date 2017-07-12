@@ -50,6 +50,7 @@ For possible enterprise support, please contact us [here](http://caldavsynchroni
 - Posteo
 - Radicale
 - SabreDAV
+- SmarterMail
 - SOGo
 - Synology DSM
 - Tine 2.0
@@ -107,12 +108,22 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 2.22.2 ####
+- Released 2017/07/12
+- Bug fixes
+	- Make Outlook-TimeZone-Ids case insensitive and prevent ArgumentException, tickets #640,#649.
+	- Delete leftover entities, if creation in outlook fails.
+	- Avoid InvalidOperationException in vCardStandardReader for unknown IM ServiceTypes, ticket #645.
+	- Enable chunked synchronization be default.
+	
 #### 2.22.1 ####
+- Released 2017/06/22
 - Bug fixes
 	- Fix InitialMatching for GoogleContacts and GoogleTasks if there are more new OutlookItems than ChunkSize and avoid InvalidOperationException (Cannot access a disposed object!), ticket #632.
 	- Fix #611 CALDAV hangs Outlook , #613 CalDav locking up Outlook, remove DoEvents call in sync progress bar.
 
 #### 2.22.0 ####
+- Released 2017/06/21
 - New features
 	- Add contact mapping configuration to choose default IM protocol when writing IM addresses, ticket #543.
 	- Add contact mapping configuration to write IM addresses as IMPP attribute instead of X-PROTOCOL e.g. X-AIM, ticket #543.
@@ -124,6 +135,7 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 	- Improve Logging. 
 
 #### 2.21.0 ####
+- Released 2017/05/30
 - New features
 	- Update NodaTime to version 2 to improve timezone calculations.
 	- Update Google APIs NuGet packages.
@@ -131,6 +143,7 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 	- Don't enable chunked synchronization by default.
 
 #### 2.20.0 ####
+- Released 2017/05/29
 - New features
 	- Full support for chunked synchronization
 - Bug fixes
@@ -139,6 +152,7 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 	- Fix reading vcard KEY attribute if encoding is not set explicitely to base64, gh issue 195.
 
 #### 2.19.2 ####
+- Released 2017/05/13
 - Bug fixes
 	- Honor chunk size also for Google Contact API read calls, ticket #586.
 	- Switch mapping of email addresses and map HOME to email1 and WORK to email2 to be more consistent, gh ticket 193.
@@ -148,11 +162,13 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 	- Improve IntegrationTests.
 
 #### 2.19.1 ####
+- Released 2017/04/18
 - Bug fixes
 	- Fix toolbar not accessable within Outlook2007, ticket #570.
 	- Improve IntegrationTests.
 
 #### 2.19.0 ####
+- Released 2017/04/16
 - New features
 	- Abort and postpone synchronization when server reports HTTP 429.
 	- Abort synchronization on network related exceptions and consider them as warnings the first two times they occur. This should help avoid errors on laptop startup after hibernation or if VPN is not ready yet, GH issues #104,#181.
@@ -163,6 +179,7 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 	- Fix mapping of google home-only email address to Outlook Email1Address, ticket #561.
 	
 #### 2.18.0 ####
+- Released 2017/03/26
 - New features
 	- Add mapping of distribution lists to contact groups with KIND:group
 	- Add profile type for Easy Project / Easy Redmine with special setup wizard
@@ -174,6 +191,7 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 	- Update NuGet packages.
 
 #### 2.17.0 ####
+- Released 2017/02/26
 - New features
 	- Add general option to show/hide sync progress bar and make threshold for its display configurable.
 	- Add App.config setting for SoftwareOnly WPF Rendering to avoid issues with graphics card drivers and hardware acceleration, ticket #480.
@@ -182,6 +200,7 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 	- Follow redirect also for 303 in WebDabClient, ticket #516.
 
 #### 2.16.0 ####
+- Released 2017/02/14
 - New features
 	- Add warning if one-way synchronization mode would lead to deletion of the existing non empty outlook folder or replication of an empty folder to the server.
 	- Add possibility to use chunked execution also for Google contacts.
@@ -192,11 +211,13 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 	- Assume that a HTTP-404 denotes an empty addressbook only, if the addressbook resource exists.
 
 #### 2.15.1 ####
+- Released 2017/01/31
 - Bug fixes
 	- Avoid Exception in QueryAppointmentFolder when GlobalAppointmentID can't be accessed or is null, ticket #491.
 	- Make GeneralOptions window resizable and add scrollbar, avoids issues on low resolution devices.
 
 #### 2.15.0 ####
+- Released 2017/01/29
 - New features
 	- Huge performance improvements accessing Outlook folder data when nothing changed and avoid fetching all items, add general option to configure the folder query option.
 	- Many UI improvements, add link to show/hide advanced settings and general option to set default
@@ -214,10 +235,12 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 	- Workaround for reading wrong encoded vcard PHOTO attributes from SOGo global adressbooks mapped from LDAP/AD avatar pictures.
 	
 #### 2.14.1 ####
+- Released 2017/01/17
 - Bug fixes
 	- Update installer to fix dependency for Thought.vCards.
 
 #### 2.14.0 ####
+- Released 2017/01/16
 - New features
 	- Initial support for syncing contact groups/Distribution Lists (only supports SOGos own VLIST format right now).
 	- Include own version of Thought.vCards from [https://github.com/aluxnimm/Thought.vCards](https://github.com/aluxnimm/Thought.vCards) instead of NuGet package and remove vCardImprovedWriter.
@@ -230,6 +253,7 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 	- Update project urls in about dialog.
 
 #### 2.13.0 ####
+- Released 2017/01/03
 - Upgrade instructions
 	- Outlook and Google and some other CalDAV servers calculate the intersection with the time-range differently for recurring events which can cause doubled or deleted events, so it is recommended to select a time-range which is larger than the largest interval of your recurring events (e.g. 1 year for birthdays). The default timerange for new profiles is changed from 180 days to 365 days in the future, for existing sync profiles you need to change it manually if affected!
 - New features
@@ -1056,7 +1080,7 @@ The following properties need to be set for a new generic profile:
 		- **Automatic:** If event is modified in Outlook and in the server since last snyc, use the last recent modified version. If an event is modified in Outlook and deleted in the server since last snyc, delete it also in Outlook. If an event is deleted in Outlook and modified in the server, also delete it in the server
 	- **Synchronization interval (minutes):** Choose the interval for synchronization in minutes, if 'Manual only' is choosen, there is no automatic sync but you can use the 'Synchronize now' menu item.
 	- **Perform synchronization in chunks** and
-	- **Chunk size** perform CalDAV/CardDAV sync in chunks with configurable chunk size to avoid OutOfMemoryEceptions, disabled by default and should only be enabled for huge resources and low memory. *(only in advanced settings)*
+	- **Chunk size** perform CalDAV/CardDAV sync in chunks with configurable chunk size to avoid OutOfMemoryEceptions, enabled by default because of lower memory consumption for huge resources. *(only in advanced settings)*
 	- **Use time range filter** and
 	- **Synchronization timespan past (days)** and
 	- **Synchronization timespan future (days)** *(only in advanced settings)* For performance reasons it is useful to sync only a given timespan of a big calendar, especially past events are normally not necessary to sync after a given timespan. But be aware that Outlook and Google and some other CalDAV servers calculate the intersection with the time-range differently for recurring events which can cause doubled or deleted events, so it is recommended to select a time-range which is larger than the largest interval of your recurring events (e.g. 1 year for birthdays).
