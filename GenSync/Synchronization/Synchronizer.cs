@@ -380,7 +380,7 @@ namespace GenSync.Synchronization
               }
               catch (Exception x)
               {
-                if (_exceptionHandlingStrategy.DoesAbortSynchronization(x))
+                if (_exceptionHandlingStrategy.DoesGracefullyAbortSynchronization(x))
                 {
                   entitySynchronizationContexts.ForEach(s => s.Abort());
                   SaveNewRelations(entitySynchronizationContexts, saveNewRelations);

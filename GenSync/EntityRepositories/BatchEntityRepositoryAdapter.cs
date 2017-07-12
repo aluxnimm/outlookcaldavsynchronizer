@@ -58,7 +58,7 @@ namespace GenSync.EntityRepositories
         }
         catch (Exception x)
         {
-          if (_exceptionHandlingStrategy.DoesAbortSynchronization(x))
+          if (_exceptionHandlingStrategy.DoesGracefullyAbortSynchronization(x))
             throw;
           else
             job.NotifyOperationFailed (x);
@@ -78,7 +78,7 @@ namespace GenSync.EntityRepositories
         }
         catch (Exception x)
         {
-          if (_exceptionHandlingStrategy.DoesAbortSynchronization (x))
+          if (_exceptionHandlingStrategy.DoesGracefullyAbortSynchronization(x))
             throw;
           else
             job.NotifyOperationFailed (x);
@@ -97,7 +97,7 @@ namespace GenSync.EntityRepositories
         }
         catch (Exception x)
         {
-          if (_exceptionHandlingStrategy.DoesAbortSynchronization (x))
+          if (_exceptionHandlingStrategy.DoesGracefullyAbortSynchronization(x))
             throw;
           else
             job.NotifyOperationFailed (x);

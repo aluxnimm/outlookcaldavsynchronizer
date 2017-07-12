@@ -12,7 +12,7 @@ namespace CalDavSynchronizer.Implementation
 {
   public class ExceptionHandlingStrategy : IExceptionHandlingStrategy
   {
-    public bool DoesAbortSynchronization(Exception x)
+    public bool DoesGracefullyAbortSynchronization(Exception x)
     {
       return 
         x is WebRepositoryOverloadException ||

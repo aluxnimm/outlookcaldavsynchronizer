@@ -21,7 +21,7 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
 {
   class TestExceptionHandlingStrategy : IExceptionHandlingStrategy
   {
-    public bool DoesAbortSynchronization(Exception x)
+    public bool DoesGracefullyAbortSynchronization(Exception x)
     {
       return true;
     }

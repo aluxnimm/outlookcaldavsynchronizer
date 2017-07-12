@@ -24,6 +24,6 @@ namespace GenSync.Synchronization
 {
   public interface IExceptionHandlingStrategy
   {
-    bool DoesAbortSynchronization(Exception x);
+    bool DoesGracefullyAbortSynchronization(Exception x);
   }
 }

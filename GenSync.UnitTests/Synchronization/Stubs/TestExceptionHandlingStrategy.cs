@@ -27,7 +27,7 @@ namespace GenSync.UnitTests.Synchronization.Stubs
     {
     }
 
-    public bool DoesAbortSynchronization (Exception x)
+    public bool DoesGracefullyAbortSynchronization(Exception x)
     {
       return x is TestAbortException;
     }
