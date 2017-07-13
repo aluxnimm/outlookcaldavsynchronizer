@@ -116,7 +116,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
             // Set default ServiceType to the configured DefaultImServiceType (defaults to AIM)
             im.ServiceType = _configuration.DefaultImServicType;
           }
-          else
+          else if (imDetails.Length > 1)
           {
             var serviceType = IMTypeUtils.GetIMServiceType(imDetails[0].Trim());
             if (serviceType == null)

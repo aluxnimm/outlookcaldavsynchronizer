@@ -294,14 +294,16 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       if (!string.IsNullOrEmpty(source.Inner.IMAddress))
       {
         //IMAddress are expected to be in form of ([Protocol]: [Address]; [Protocol]: [Address])
-        string[] imsRaw = source.Inner.IMAddress.Split(';');
-        foreach (string imRaw in imsRaw)
+        var imsRaw = source.Inner.IMAddress.Split (new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+        foreach (var imRaw in imsRaw)
         {
-          string[] imDetails = imRaw.Trim().Split(':');
-          IMAddress im = new IMAddress();
+          var imDetails = imRaw.Trim().Split (new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+          var im = new IMAddress();
           if (imDetails.Length == 1)
+          {
             im.Address = imDetails[0].Trim();
-          else
+          }
+          else if (imDetails.Length > 1)
           {
             im.Protocol = imDetails[0].Trim();
             im.Address = imDetails[1].Trim();
