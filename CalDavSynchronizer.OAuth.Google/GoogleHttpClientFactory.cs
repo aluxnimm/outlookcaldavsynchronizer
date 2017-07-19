@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -158,20 +157,6 @@ namespace CalDavSynchronizer.OAuth.Google
     private static RequestSettings CreateRequestSettings(OAuth2Parameters parameters)
     {
       return new RequestSettings ("Outlook CalDav Synchronizer", parameters);
-    }
-
-
-    static GoogleHttpClientFactory()
-    {
-      try
-      {
-        var field = typeof(LocalServerCodeReceiver).GetField("LoopbackCallback", BindingFlags.GetField | BindingFlags.NonPublic | BindingFlags.Static);
-        field.SetValue(null, "http://localhost:{0}/authorize/");
-      }
-      catch (Exception x)
-      {
-        s_logger.Error("Error while trying to set LoopbackCallback.", x);
-      }
     }
   }
 }
