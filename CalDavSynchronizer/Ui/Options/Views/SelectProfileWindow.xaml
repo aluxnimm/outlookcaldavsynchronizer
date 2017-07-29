@@ -6,7 +6,7 @@
         xmlns:views="clr-namespace:CalDavSynchronizer.Ui.Options.Views"
         xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels"
         mc:Ignorable="d"
-        Title="Select Profile Type" Height="520" Width="640" WindowStartupLocation="CenterScreen"
+        Title="Select Profile Type" Height="440" Width="960" WindowStartupLocation="CenterScreen"
          d:DataContext="{x:Static viewModels:SelectProfileViewModel.DesignInstance}">
   <DockPanel>
     <UniformGrid Columns="2" DockPanel.Dock="Bottom" HorizontalAlignment="Right">
