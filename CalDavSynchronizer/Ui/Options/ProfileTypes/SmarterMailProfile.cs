@@ -33,10 +33,6 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
     protected override void InitializeData(Contracts.Options data)
     {
       data.CalenderUrl = "https://mail_hostname.example.com/WebDAV/";
-      data.MappingConfiguration = new EventMappingConfiguration
-      {
-        UseIanaTz = true
-      };
     }
 
     protected override void InitializePrototypeData(Contracts.Options data)
