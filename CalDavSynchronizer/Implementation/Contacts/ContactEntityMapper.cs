@@ -55,6 +55,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
     public Task<vCard> Map1To2 (IContactItemWrapper source, vCard target, IEntityMappingLogger logger, ICardDavRepositoryLogger context)
     {
+      target.RevisionDate = source.Inner.LastModificationTime.ToUniversalTime();
+      
       target.GivenName = source.Inner.FirstName;
       target.FamilyName = source.Inner.LastName;
       target.NamePrefix = source.Inner.Title;
