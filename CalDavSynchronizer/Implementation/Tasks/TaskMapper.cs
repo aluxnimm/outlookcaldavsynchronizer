@@ -39,13 +39,11 @@ namespace CalDavSynchronizer.Implementation.Tasks
   internal class TaskMapper : IEntityMapper<ITaskItemWrapper, IICalendar, int>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
-    private readonly DateTime _dateNull;
     private readonly TimeZoneInfo _localTimeZoneInfo;
     private readonly TaskMappingConfiguration _configuration;
 
     public TaskMapper (string localTimeZoneId, TaskMappingConfiguration configuration)
     {
-      _dateNull = new DateTime (4501, 1, 1, 0, 0, 0);
       _localTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById (localTimeZoneId);
       _configuration = configuration;
     }
@@ -86,13 +84,13 @@ namespace CalDavSynchronizer.Implementation.Tasks
       if (_configuration.MapBody)
         target.Description = source.Inner.Body;
 
-      if (source.Inner.StartDate != _dateNull)
+      if (source.Inner.StartDate != OutlookUtility.OUTLOOK_DATE_NONE)
       {
         target.Start = new iCalDateTime (source.Inner.StartDate.Year, source.Inner.StartDate.Month, source.Inner.StartDate.Day, true);
         if (!_configuration.MapStartAndDueAsFloating) target.Start.SetTimeZone (localIcalTimeZone);
       }
 
-      if (source.Inner.Complete && source.Inner.DateCompleted != _dateNull)
+      if (source.Inner.Complete && source.Inner.DateCompleted != OutlookUtility.OUTLOOK_DATE_NONE)
       {
         target.Completed = new iCalDateTime (source.Inner.DateCompleted.ToUniversalTime()) { IsUniversalTime = true, HasTime = true};
       }
@@ -102,7 +100,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       if (_configuration.MapRecurringTasks)
         MapRecurrance1To2 (source.Inner, target, localIcalTimeZone);
 
-      if (source.Inner.DueDate != _dateNull)
+      if (source.Inner.DueDate != OutlookUtility.OUTLOOK_DATE_NONE)
       {
         target.Due = new iCalDateTime (source.Inner.DueDate.Year, source.Inner.DueDate.Month, source.Inner.DueDate.Day, 23, 59, 59);
         if (!_configuration.MapStartAndDueAsFloating) target.Due.SetTimeZone (localIcalTimeZone);
@@ -178,7 +176,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
         var trigger = new Trigger();
 
-        if (source.Inner.StartDate != _dateNull)
+        if (source.Inner.StartDate != OutlookUtility.OUTLOOK_DATE_NONE)
         {
           trigger.Duration = source.Inner.ReminderTime - source.Inner.StartDate;
           trigger.Parameters.Add ("RELATED", "START");
@@ -202,7 +200,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
           var actionProperty = new CalendarProperty ("ACTION", "DISPLAY");
           target.Alarms[0].Properties.Add (actionProperty);
         }
-        else if (source.Inner.DueDate != _dateNull)
+        else if (source.Inner.DueDate != OutlookUtility.OUTLOOK_DATE_NONE)
         {
           trigger.Duration = source.Inner.ReminderTime - source.Inner.DueDate;
           trigger.Parameters.Add ("RELATED", "END");
@@ -252,7 +250,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
           var sourceRecurrencePattern = sourceRecurrencePatternWrapper.Inner;
 
           // Recurring task must have a DTSTART according to the RFC but Outlook may have no task start date set, use PatternStartDate in this case
-          if (source.StartDate == _dateNull)
+          if (source.StartDate == OutlookUtility.OUTLOOK_DATE_NONE)
           {
             target.Start = new iCalDateTime ( sourceRecurrencePattern.PatternStartDate.Year,
                                               sourceRecurrencePattern.PatternStartDate.Month, sourceRecurrencePattern.PatternStartDate.Day, true);
@@ -359,7 +357,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       }
       else
       {
-        target.Inner.StartDate = _dateNull;
+        target.Inner.StartDate = OutlookUtility.OUTLOOK_DATE_NONE;
       }
 
       if (source.Due != null)
@@ -378,7 +376,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       }
       else
       {
-        target.Inner.DueDate = _dateNull;
+        target.Inner.DueDate = OutlookUtility.OUTLOOK_DATE_NONE;
       }
 
       if (source.Completed != null)

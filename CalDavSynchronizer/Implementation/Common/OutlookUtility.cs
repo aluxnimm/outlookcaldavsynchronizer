@@ -35,6 +35,8 @@ namespace CalDavSynchronizer.Implementation.Common
     private const string PR_SENDER_EMAIL_ADDRESS = "http://schemas.microsoft.com/mapi/proptag/0x0C1F001E";
     private const string PR_SENT_REPRESENTING_ENTRYID = "http://schemas.microsoft.com/mapi/proptag/0x00410102";
 
+    public static readonly DateTime OUTLOOK_DATE_NONE = new DateTime (4501, 1, 1, 0 ,0, 0);
+    
     public static string GetEmailAdressOrNull (AddressEntry addressEntry, IEntityMappingLogger logger, ILog generalLogger)
     {
       OlAddressEntryUserType type;

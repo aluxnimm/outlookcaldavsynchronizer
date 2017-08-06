@@ -17,7 +17,7 @@
 using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.DataAccess;
-using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.Implementation.Common;
 using DDay.iCal;
 using GenSync.InitialEntityMatching;
 
@@ -37,7 +37,6 @@ namespace CalDavSynchronizer.Implementation.Tasks
       if (atypeEntity.Subject == task.Summary)
       {
         NodaTime.DateTimeZone localZone = NodaTime.DateTimeZoneProviders.Bcl.GetSystemDefault();
-        DateTime dateNull = new DateTime (4501, 1, 1, 0, 0, 0);
 
         if (task.Start != null)
         {
@@ -56,7 +55,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
                   return atypeEntity.DueDate == task.Due.Date;
                 }
               }
-              return atypeEntity.DueDate == dateNull;
+              return atypeEntity.DueDate == OutlookUtility.OUTLOOK_DATE_NONE;
             }
             else
               return false;
@@ -76,7 +75,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
                   return atypeEntity.DueDate == task.Due.Date;
                 }
               }
-              return atypeEntity.DueDate == dateNull;
+              return atypeEntity.DueDate == OutlookUtility.OUTLOOK_DATE_NONE;
             }
             else
               return false;
@@ -86,15 +85,15 @@ namespace CalDavSynchronizer.Implementation.Tasks
         {
           if (task.Due.IsUniversalTime)
           {
-            return atypeEntity.StartDate == dateNull && atypeEntity.DueDate == NodaTime.Instant.FromDateTimeUtc (task.Due.Value).InZone (localZone).ToDateTimeUnspecified().Date;
+            return atypeEntity.StartDate == OutlookUtility.OUTLOOK_DATE_NONE && atypeEntity.DueDate == NodaTime.Instant.FromDateTimeUtc (task.Due.Value).InZone (localZone).ToDateTimeUnspecified().Date;
           }
           else
           {
-            return atypeEntity.StartDate == dateNull && atypeEntity.DueDate == task.Due.Date;
+            return atypeEntity.StartDate == OutlookUtility.OUTLOOK_DATE_NONE && atypeEntity.DueDate == task.Due.Date;
           }
         }
         else
-          return atypeEntity.StartDate == dateNull && atypeEntity.DueDate == dateNull;
+          return atypeEntity.StartDate == OutlookUtility.OUTLOOK_DATE_NONE && atypeEntity.DueDate == OutlookUtility.OUTLOOK_DATE_NONE;
       }
       return false;
     }

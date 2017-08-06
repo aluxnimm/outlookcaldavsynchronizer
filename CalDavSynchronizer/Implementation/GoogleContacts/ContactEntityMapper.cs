@@ -51,7 +51,6 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
     private const string PR_USER_X509_CERTIFICATE = "http://schemas.microsoft.com/mapi/proptag/0x3A701102";
     private const string PR_ATTACH_DATA_BIN = "http://schemas.microsoft.com/mapi/proptag/0x37010102";
 
-    internal static DateTime OU_OUTLOOK_DATE_NONE = new DateTime(4501, 1, 1);
     private const string REL_SPOUSE = "spouse";
     private const string REL_CHILD = "child";
     private const string REL_MANAGER = "manager";
@@ -201,7 +200,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       }
 
       #region birthday
-      if (_configuration.MapBirthday && !source.Inner.Birthday.Equals(OU_OUTLOOK_DATE_NONE))
+      if (_configuration.MapBirthday && !source.Inner.Birthday.Equals(OutlookUtility.OUTLOOK_DATE_NONE))
       {
           target.ContactEntry.Birthday = source.Inner.Birthday.ToString("yyyy-MM-dd");
       }
@@ -212,10 +211,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       #endregion birthday
 
       #region anniversary
-      //Todo: Check, if (_configuration.MapAnniversary)
-      //{
-
-      //First remove anniversary
+      
       foreach (Event ev in target.ContactEntry.Events)
       {
           if (ev.Relation != null && ev.Relation.Equals(REL_ANNIVERSARY))
@@ -226,8 +222,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       }
       try
       {
-          //Then add it again if existing
-          if (!source.Inner.Anniversary.Equals(OU_OUTLOOK_DATE_NONE)) //earlier also || source.Inner.Birthday.Year < 1900
+          if (!source.Inner.Anniversary.Equals(OutlookUtility.OUTLOOK_DATE_NONE)) 
           {
               Event ev = new Event();
               ev.Relation = REL_ANNIVERSARY;
@@ -237,12 +232,11 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
               target.ContactEntry.Events.Add(ev);
           }
       }
-      catch (System.Exception ex)
+      catch (Exception ex)
       {
         s_logger.Warn ("Anniversary couldn't be updated from Outlook to Google for '" + source.Inner.FileAs + "': " + ex.Message, ex);
         logger.LogMappingWarning ("Anniversary couldn't be updated from Outlook to Google for '" + source.Inner.FileAs + "': " + ex.Message, ex);
       }
-      //}
 
       #endregion anniversary
 
@@ -825,12 +819,13 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
           }
           else
           {
-            target.Inner.Birthday = OU_OUTLOOK_DATE_NONE;
+            target.Inner.Birthday = OutlookUtility.OUTLOOK_DATE_NONE;
           }
       }
       #endregion birthday
 
       #region anniversary
+
       bool found = false;
       try
       {
@@ -838,14 +833,14 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
           {
               if (ev.Relation != null && ev.Relation.Equals(REL_ANNIVERSARY))
               {
-                  if (!ev.When.StartTime.Date.Equals(target.Inner.Anniversary.Date)) //Only update if not already equal to avoid recreating the calendar item again and again
-                      target.Inner.Anniversary = ev.When.StartTime.Date;
+                  if (!ev.When.StartTime.Date.Equals(target.Inner.Anniversary.Date))
+                     target.Inner.Anniversary = ev.When.StartTime.Date;
                   found = true;
                   break;
               }
           }
           if (!found)
-              target.Inner.Anniversary = OU_OUTLOOK_DATE_NONE; //set to empty in the end
+              target.Inner.Anniversary = OutlookUtility.OUTLOOK_DATE_NONE; 
       }
       catch (System.Exception ex)
       {

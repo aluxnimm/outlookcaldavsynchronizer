@@ -199,7 +199,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       if (_configuration.MapBirthday)
       {
-        target.BirthDate = source.Inner.Birthday.Equals (new DateTime(4501, 1, 1, 0, 0, 0)) ? default(DateTime?) : source.Inner.Birthday.Date;
+        target.BirthDate = source.Inner.Birthday.Equals (OutlookUtility.OUTLOOK_DATE_NONE) ? default(DateTime?) : source.Inner.Birthday.Date;
       }
       target.Organization = source.Inner.CompanyName;
       target.Department = source.Inner.Department;
@@ -335,7 +335,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         }
         else
         {
-          target.Inner.Birthday = new DateTime (4501, 1, 1);
+          target.Inner.Birthday = OutlookUtility.OUTLOOK_DATE_NONE;
         }       
       }
 
