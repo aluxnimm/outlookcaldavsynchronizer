@@ -211,25 +211,26 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       #endregion birthday
 
       #region anniversary
-      
-      foreach (Event ev in target.ContactEntry.Events)
-      {
-          if (ev.Relation != null && ev.Relation.Equals(REL_ANNIVERSARY))
-          {
-              target.ContactEntry.Events.Remove(ev);
-              break;
-          }
-      }
+
+      var googleAnniversary = target.ContactEntry.Events.FirstOrDefault (e => e.Relation != null && e.Relation.Equals (REL_ANNIVERSARY));
+
+      if (googleAnniversary != null)
+        target.ContactEntry.Events.Remove(googleAnniversary);
+
       try
       {
-          if (!source.Inner.Anniversary.Equals(OutlookUtility.OUTLOOK_DATE_NONE)) 
+          if (!source.Inner.Anniversary.Equals (OutlookUtility.OUTLOOK_DATE_NONE)) 
           {
-              Event ev = new Event();
-              ev.Relation = REL_ANNIVERSARY;
-              ev.When = new When();
-              ev.When.AllDay = true;
-              ev.When.StartTime = source.Inner.Anniversary.Date;
-              target.ContactEntry.Events.Add(ev);
+            Event ev = new Event()
+            {
+                Relation = REL_ANNIVERSARY,
+                When = new When()
+                {
+                    AllDay = true,
+                    StartTime = source.Inner.Anniversary.Date
+                }
+            };
+            target.ContactEntry.Events.Add(ev);
           }
       }
       catch (Exception ex)
@@ -826,21 +827,19 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
       #region anniversary
 
-      bool found = false;
       try
-      {
-          foreach (Event ev in source.ContactEntry.Events)
-          {
-              if (ev.Relation != null && ev.Relation.Equals(REL_ANNIVERSARY))
-              {
-                  if (!ev.When.StartTime.Date.Equals(target.Inner.Anniversary.Date))
-                     target.Inner.Anniversary = ev.When.StartTime.Date;
-                  found = true;
-                  break;
-              }
-          }
-          if (!found)
-              target.Inner.Anniversary = OutlookUtility.OUTLOOK_DATE_NONE; 
+      { 
+        var googleAnniversary = source.ContactEntry.Events.FirstOrDefault(e => e.Relation != null && e.Relation.Equals (REL_ANNIVERSARY));
+
+        if (googleAnniversary != null)
+        {
+            if (googleAnniversary.When.StartTime.Date != target.Inner.Anniversary.Date)
+                target.Inner.Anniversary = googleAnniversary.When.StartTime.Date;
+        }
+        else
+        {
+            target.Inner.Anniversary = OutlookUtility.OUTLOOK_DATE_NONE;
+        }
       }
       catch (System.Exception ex)
       {
