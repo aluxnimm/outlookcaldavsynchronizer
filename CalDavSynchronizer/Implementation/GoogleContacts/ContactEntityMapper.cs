@@ -242,44 +242,51 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       #endregion anniversary
 
       #region relations (spouse, child, manager and assistant)
-      //First remove spouse, child, manager and assistant
-      for (int i = target.ContactEntry.Relations.Count - 1; i >= 0; i--)
+     
+      foreach (var googleRel in target.ContactEntry.Relations.ToList())
       {
-          Relation rel = target.ContactEntry.Relations[i];
-          if (rel.Rel != null && (rel.Rel.Equals(REL_SPOUSE) || rel.Rel.Equals(REL_CHILD) || rel.Rel.Equals(REL_MANAGER) || rel.Rel.Equals(REL_ASSISTANT)))
-              target.ContactEntry.Relations.RemoveAt(i);
+        if (googleRel.Rel == REL_SPOUSE || googleRel.Rel == REL_CHILD || googleRel.Rel == REL_MANAGER || googleRel.Rel == REL_ASSISTANT)
+            target.ContactEntry.Relations.Remove (googleRel);
       }
-      //Then add spouse again if existing
+      
       if (!string.IsNullOrEmpty(source.Inner.Spouse))
       {
-          Relation rel = new Relation();
-          rel.Rel = REL_SPOUSE;
-          rel.Value = source.Inner.Spouse;
-          target.ContactEntry.Relations.Add(rel);
+         var rel = new Relation()
+         {
+            Rel = REL_SPOUSE,
+            Value = source.Inner.Spouse
+         };
+         target.ContactEntry.Relations.Add(rel);
       }
-      //Then add children again if existing
+      
       if (!string.IsNullOrEmpty(source.Inner.Children))
       {
-          Relation rel = new Relation();
-          rel.Rel = REL_CHILD;
-          rel.Value = source.Inner.Children;
-          target.ContactEntry.Relations.Add(rel);
+         var rel = new Relation()
+         {
+            Rel = REL_CHILD,
+            Value = source.Inner.Children
+         };
+         target.ContactEntry.Relations.Add(rel);
       }
-      //Then add manager again if existing
+      
       if (!string.IsNullOrEmpty(source.Inner.ManagerName))
       {
-          Relation rel = new Relation();
-          rel.Rel = REL_MANAGER;
-          rel.Value = source.Inner.ManagerName;
-          target.ContactEntry.Relations.Add(rel);
+        var rel = new Relation()
+        {
+            Rel = REL_MANAGER,
+            Value = source.Inner.ManagerName
+        };
+        target.ContactEntry.Relations.Add(rel);
       }
-      //Then add assistant again if existing
+      
       if (!string.IsNullOrEmpty(source.Inner.AssistantName))
       {
-          Relation rel = new Relation();
-          rel.Rel = REL_ASSISTANT;
-          rel.Value = source.Inner.AssistantName;
-          target.ContactEntry.Relations.Add(rel);
+        var rel = new Relation()
+        {
+            Rel = REL_ASSISTANT,
+            Value = source.Inner.AssistantName
+        };
+        target.ContactEntry.Relations.Add(rel);
       }
       #endregion relations (spouse, child, manager and assistant)
 
@@ -853,16 +860,16 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       target.Inner.Spouse = string.Empty;
       target.Inner.ManagerName = string.Empty;
       target.Inner.AssistantName = string.Empty;
-      foreach (Relation rel in source.ContactEntry.Relations)
+      foreach (var googleRel in source.ContactEntry.Relations)
       {
-          if (rel.Rel != null && rel.Rel.Equals(REL_CHILD))
-              target.Inner.Children = rel.Value;
-          else if (rel.Rel != null && rel.Rel.Equals(REL_SPOUSE))
-              target.Inner.Spouse = rel.Value;
-          else if (rel.Rel != null && rel.Rel.Equals(REL_MANAGER))
-              target.Inner.ManagerName = rel.Value;
-          else if (rel.Rel != null && rel.Rel.Equals(REL_ASSISTANT))
-              target.Inner.AssistantName = rel.Value;
+          if (googleRel.Rel == REL_CHILD)
+              target.Inner.Children = googleRel.Value;
+          else if (googleRel.Rel == REL_SPOUSE)
+              target.Inner.Spouse = googleRel.Value;
+          else if (googleRel.Rel == REL_MANAGER)
+              target.Inner.ManagerName = googleRel.Value;
+          else if (googleRel.Rel == REL_ASSISTANT)
+              target.Inner.AssistantName = googleRel.Value;
       }
       #endregion relations (spouse, child, manager, assistant)
 
