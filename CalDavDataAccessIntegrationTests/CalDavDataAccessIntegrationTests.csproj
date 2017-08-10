@@ -79,6 +79,7 @@
     <Compile Include="Google.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MailboxOrg.cs" />
+    <Compile Include="MailDe.cs" />
     <Compile Include="Sogo.cs" />
     <Compile Include="Zimbra.cs" />
   </ItemGroup>

@@ -15,33 +15,23 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using NUnit.Framework;
 
 namespace CalDavDataAccessIntegrationTests
 {
   [Ignore("Currently no account available for testing")]
-  public class Zimbra : FixtureBase
+  public class MailDe : FixtureBase
   {
     protected override string ProfileName
     {
-      get { return "TestCal-Zimbra"; }
+      get { return "IntegrationTest/DataAccess/mail.de"; }
     }
 
     protected override ServerAdapterType? ServerAdapterTypeOverride
     {
       get { return ServerAdapterType.WebDavHttpClientBased; }
-    }
-
-    [Ignore("Zimbra always returns false")]
-    public override System.Threading.Tasks.Task DoesSupportCalendarQuery()
-    {
-      return base.DoesSupportCalendarQuery();
-    }
-
-    protected override bool DeletedEntitesAreJustMarkedAsDeletedAndStillAvailableViaCalendarMultigetReport
-    {
-      get { return true; }
     }
   }
 }

@@ -20,7 +20,7 @@ using NUnit.Framework;
 
 namespace CalDavDataAccessIntegrationTests
 {
-  [Ignore("Currently no account availabe for testing")]
+  [Ignore("Currently no account available for testing")]
   public class Landmarks : FixtureBase
   {
     protected override string ProfileName
