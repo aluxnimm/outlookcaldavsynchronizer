@@ -78,6 +78,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
           "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_sogo.png",
           "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_yandex.png",
           "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_mailbox.org.png",
+          "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_mail.de.png",
           "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_webde.png",
           "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_smartermail.png"
         }

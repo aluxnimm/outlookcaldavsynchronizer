@@ -447,6 +447,7 @@
     <Compile Include="Ui\Options\ProfileTypes\CozyProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\DesignProfileType.cs" />
     <Compile Include="Ui\Options\ProfileTypes\MailboxOrgProfile.cs" />
+    <Compile Include="Ui\Options\ProfileTypes\MailDeProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\FruuxProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\GenericProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\GmxCalendarProfile.cs" />
@@ -822,6 +823,7 @@
     <Resource Include="Resources\ProfileLogos\logo_smartermail.png" />
     <Resource Include="Resources\ProfileLogos\logo_webde.png" />
     <Resource Include="Resources\ProfileLogos\logo_mailbox.org.png" />
+    <Resource Include="Resources\ProfileLogos\logo_mail.de.png" />
     <None Include="Resources\SyncReport.png" />
     <Resource Include="Resources\warning.ico" />
     <None Include="Resources\SyncError.png" />
