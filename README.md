@@ -108,6 +108,15 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 2.23.0 ####
+- Released 2017/08/13
+- New features
+	- Add ProfileType for SmarterMail.
+	- Update REV property for vcards, gh issue 204.
+	- Update NuGet packages for Google API to 1.28.0 and NodaTime to 2.2.0.
+- Bug fixes
+	- Avoid IndexOutOfRangeException when parsing IMAddress, ticket #652.
+
 #### 2.22.2 ####
 - Released 2017/07/12
 - Bug fixes
@@ -1050,7 +1059,7 @@ The toolbar on the left upper part provides the following options:
 - **Export Profiles to File** and 
 - **Import Profiles from File** See Profile Import/Export
 
-When adding a new profile you can choose between a generic CalDAV/CardDAV, a google profile to simplify the google profile creation and predefined CalDAV/CardDAV profiles for SOGo, Fruux, Posteo, Yandex, GMX, Sarenet and Landmarks, Cozy Cloud and Nextcloud where the DAV Url for autodiscovery is already entered. 
+When adding a new profile you can choose between a generic CalDAV/CardDAV, a google profile to simplify the google profile creation and predefined CalDAV/CardDAV profiles for SOGo, Fruux, Posteo, Yandex, GMX, Sarenet and Landmarks, Cozy Cloud, Nextcloud, mailbox.org, EasyProject, Web.de and SmarterMail where the DAV Url for autodiscovery is already entered. 
 
 The following properties need to be set for a new generic profile:
 
@@ -1069,10 +1078,10 @@ The following properties need to be set for a new generic profile:
 
 - *Sync settings*:
 	- Synchronization settings
-		- **Outlook -> Server (Replicate):** syncronizes everything from Outlook to the server (one way)
-		- **Outlook <- Server (Replicate):** synchronizes everything from the server to Outlook (one way)
-		- **Outlook -> Server (Merge):** synchronizes everything from Outlook to the server but don't change events created in on the server
-		- **Outlook <- Server (Merge):** synchronizes everything from the server to Outlook but don't change events created in Outlook
+		- **Outlook -> Server (Replicate):** syncronize everything from Outlook to the server (one way)
+		- **Outlook <- Server (Replicate):** synchronize everything from the server to Outlook (one way)
+		- **Outlook -> Server (Merge):** synchronize everything from Outlook to the server but don't change events created on the server
+		- **Outlook <- Server (Merge):** synchronize everything from the server to Outlook but don't change events created in Outlook
 		- **Outlook <-> Server (Two-Way):** Two-Way synchronization between Outlook and the server with one of the following conflict resolution
 	- Conflict resolution (only used in Two-Way synchronization mode and only available in *advanced settings*)
 		- **Outlook Wins:** If an event is modified in Outlook and in the server since last snyc, use the Outlook version. If an event is modified in Outlook and deleted in the server since last snyc, also use the Outlook version. If an event is deleted in Outlook and modified in the server, also delete it in the server.
