@@ -73,28 +73,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
     {
       var target = targetWrapper.Contact;
 
-      #region Title/FileAs
-      if (!string.IsNullOrEmpty(source.Inner.FileAs))
-      {
-        target.Title = source.Inner.FileAs;
-      }
-      else if (!string.IsNullOrEmpty(source.Inner.CompanyAndFullName))
-      {
-        target.Title = source.Inner.CompanyAndFullName;
-      }
-      else if (!string.IsNullOrEmpty(source.Inner.FullName))
-      {
-        target.Title = source.Inner.FullName;
-      }
-      else if (!string.IsNullOrEmpty(source.Inner.CompanyName))
-      {
-        target.Title = source.Inner.CompanyName;
-      }
-      else if (!string.IsNullOrEmpty(source.Inner.Email1Address))
-      {
-        target.Title = source.Inner.Email1Address;
-      }
-      #endregion Title/FileAs
+      MapFileAs1To2(source, target);
 
       #region Name
       Name name = new Name()
@@ -267,6 +246,20 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         MapPhoto1To2 (source.Inner, targetWrapper, logger);
 
       return Task.FromResult(targetWrapper);
+    }
+
+    private static void MapFileAs1To2(IContactItemWrapper source, Contact target)
+    {
+      if (!string.IsNullOrEmpty(source.Inner.FileAs))
+        target.Title = source.Inner.FileAs;
+      else if (!string.IsNullOrEmpty(source.Inner.CompanyAndFullName))
+        target.Title = source.Inner.CompanyAndFullName;
+      else if (!string.IsNullOrEmpty(source.Inner.FullName))
+        target.Title = source.Inner.FullName;
+      else if (!string.IsNullOrEmpty(source.Inner.CompanyName))
+        target.Title = source.Inner.CompanyName;
+      else if (!string.IsNullOrEmpty(source.Inner.Email1Address))
+        target.Title = source.Inner.Email1Address;
     }
 
     private static void MapRelations1To2(IContactItemWrapper source, Contact target)
