@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
+using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Tasks;
 using DDay.iCal;
@@ -35,11 +36,9 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
     {
       if (atypeEntity.Subject == btypeEntity.Title)
       {
-        DateTime dateNull = new DateTime (4501, 1, 1, 0, 0, 0);
-
         if (btypeEntity.Due == null)
         {
-          return atypeEntity.DueDate == dateNull;
+          return atypeEntity.DueDate == OutlookUtility.OUTLOOK_DATE_NONE;
         }
         else
         {

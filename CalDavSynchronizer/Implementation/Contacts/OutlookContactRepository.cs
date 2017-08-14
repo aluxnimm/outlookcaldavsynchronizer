@@ -160,7 +160,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       using (var contact = entityWithId.Entity)
       {
-        if (!contact.Inner.Birthday.Equals (new DateTime (4501, 1, 1, 0, 0, 0)))
+        if (!contact.Inner.Birthday.Equals (OutlookUtility.OUTLOOK_DATE_NONE))
         {
           try
           {

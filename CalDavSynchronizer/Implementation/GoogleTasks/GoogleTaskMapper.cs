@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Threading.Tasks;
+using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using GenSync.EntityMapping;
 using GenSync.Logging;
@@ -26,18 +27,17 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
 {
   class GoogleTaskMapper : IEntityMapper<ITaskItemWrapper, Task, int>
   {
-    private readonly DateTime _dateNull;
-
     public GoogleTaskMapper()
     {
-      _dateNull = new DateTime (4501, 1, 1, 0, 0, 0);
+
     }
+
     public Task<Task> Map1To2 (ITaskItemWrapper source, Task target, IEntityMappingLogger logger, int context)
     {
       target.Title = source.Inner.Subject;
       target.Notes = source.Inner.Body;
 
-      if (source.Inner.DueDate != _dateNull)
+      if (source.Inner.DueDate != OutlookUtility.OUTLOOK_DATE_NONE)
       {
         target.Due = new DateTime (source.Inner.DueDate.Year, source.Inner.DueDate.Month, source.Inner.DueDate.Day, 23, 59, 59, DateTimeKind.Utc);
       }
@@ -45,7 +45,7 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
       {
         target.Due = null;
       }
-      if (source.Inner.Complete && source.Inner.DateCompleted != _dateNull)
+      if (source.Inner.Complete && source.Inner.DateCompleted != OutlookUtility.OUTLOOK_DATE_NONE)
       {
         target.Completed = source.Inner.DateCompleted.ToUniversalTime();
       }
@@ -89,7 +89,7 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
       }
       else
       {
-        target.Inner.DueDate = _dateNull;
+        target.Inner.DueDate = OutlookUtility.OUTLOOK_DATE_NONE;
       }
 
       if (source.Completed != null)
