@@ -202,55 +202,8 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       MapBirthday1To2(source, target);
       
       MapAnniversary1To2(source, target, logger);
-
-      #region relations (spouse, child, manager and assistant)
      
-      foreach (var googleRel in target.ContactEntry.Relations.ToList())
-      {
-        if (googleRel.Rel == REL_SPOUSE || googleRel.Rel == REL_CHILD || googleRel.Rel == REL_MANAGER || googleRel.Rel == REL_ASSISTANT)
-            target.ContactEntry.Relations.Remove (googleRel);
-      }
-      
-      if (!string.IsNullOrEmpty(source.Inner.Spouse))
-      {
-         var rel = new Relation()
-         {
-            Rel = REL_SPOUSE,
-            Value = source.Inner.Spouse
-         };
-         target.ContactEntry.Relations.Add(rel);
-      }
-      
-      if (!string.IsNullOrEmpty(source.Inner.Children))
-      {
-         var rel = new Relation()
-         {
-            Rel = REL_CHILD,
-            Value = source.Inner.Children
-         };
-         target.ContactEntry.Relations.Add(rel);
-      }
-      
-      if (!string.IsNullOrEmpty(source.Inner.ManagerName))
-      {
-        var rel = new Relation()
-        {
-            Rel = REL_MANAGER,
-            Value = source.Inner.ManagerName
-        };
-        target.ContactEntry.Relations.Add(rel);
-      }
-      
-      if (!string.IsNullOrEmpty(source.Inner.AssistantName))
-      {
-        var rel = new Relation()
-        {
-            Rel = REL_ASSISTANT,
-            Value = source.Inner.AssistantName
-        };
-        target.ContactEntry.Relations.Add(rel);
-      }
-      #endregion relations (spouse, child, manager and assistant)
+      MapRelations1To2(source, target);
 
       #region IMs
       target.IMs.Clear();
@@ -314,6 +267,55 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         MapPhoto1To2 (source.Inner, targetWrapper, logger);
 
       return Task.FromResult(targetWrapper);
+    }
+
+    private static void MapRelations1To2(IContactItemWrapper source, Contact target)
+    {
+      foreach (var googleRel in target.ContactEntry.Relations.ToList())
+      {
+        if (googleRel.Rel == REL_SPOUSE || googleRel.Rel == REL_CHILD || googleRel.Rel == REL_MANAGER || googleRel.Rel == REL_ASSISTANT)
+          target.ContactEntry.Relations.Remove(googleRel);
+      }
+
+      if (!string.IsNullOrEmpty(source.Inner.Spouse))
+      {
+        var rel = new Relation()
+        {
+          Rel = REL_SPOUSE,
+          Value = source.Inner.Spouse
+        };
+        target.ContactEntry.Relations.Add(rel);
+      }
+
+      if (!string.IsNullOrEmpty(source.Inner.Children))
+      {
+        var rel = new Relation()
+        {
+          Rel = REL_CHILD,
+          Value = source.Inner.Children
+        };
+        target.ContactEntry.Relations.Add(rel);
+      }
+
+      if (!string.IsNullOrEmpty(source.Inner.ManagerName))
+      {
+        var rel = new Relation()
+        {
+          Rel = REL_MANAGER,
+          Value = source.Inner.ManagerName
+        };
+        target.ContactEntry.Relations.Add(rel);
+      }
+
+      if (!string.IsNullOrEmpty(source.Inner.AssistantName))
+      {
+        var rel = new Relation()
+        {
+          Rel = REL_ASSISTANT,
+          Value = source.Inner.AssistantName
+        };
+        target.ContactEntry.Relations.Add(rel);
+      }
     }
 
     private static void MapAnniversary1To2(IContactItemWrapper source, Contact target, IEntityMappingLogger logger)
