@@ -75,25 +75,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
       MapFileAs1To2(source, target);
 
-      #region Name
-      Name name = new Name()
-      {
-        GivenName = source.Inner.FirstName,
-        FamilyName = source.Inner.LastName,        
-        AdditionalName = source.Inner.MiddleName,
-        NamePrefix = source.Inner.Title,
-        NameSuffix = source.Inner.Suffix,
-      };
-
-      //Use the Google's full name to save a unique identifier. When saving the FullName, it always overwrites the Google Title
-      if (!string.IsNullOrEmpty(source.Inner.FullName)) //Only if source.FullName has a value, i.e. not only a company or email contact
-      {
-        name.FullName = source.Inner.FileAs;        
-      }
-
-      target.Name = name;
-
-      #endregion Name
+      MapName1To2(source, target);
 
       MapEmailAddresses1To2(source.Inner, target, logger);         
 
@@ -246,6 +228,26 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         MapPhoto1To2 (source.Inner, targetWrapper, logger);
 
       return Task.FromResult(targetWrapper);
+    }
+
+    private static void MapName1To2(IContactItemWrapper source, Contact target)
+    {
+      Name name = new Name()
+      {
+        GivenName = source.Inner.FirstName,
+        FamilyName = source.Inner.LastName,
+        AdditionalName = source.Inner.MiddleName,
+        NamePrefix = source.Inner.Title,
+        NameSuffix = source.Inner.Suffix,
+      };
+
+      //Use the Google's full name to save a unique identifier. When saving the FullName, it always overwrites the Google Title
+      if (!string.IsNullOrEmpty(source.Inner.FullName)) //Only if source.FullName has a value, i.e. not only a company or email contact
+      {
+        name.FullName = source.Inner.FileAs;
+      }
+
+      target.Name = name;
     }
 
     private static void MapFileAs1To2(IContactItemWrapper source, Contact target)
