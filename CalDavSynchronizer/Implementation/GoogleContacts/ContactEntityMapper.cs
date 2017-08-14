@@ -199,17 +199,8 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         });
       }
 
-      #region birthday
-      if (_configuration.MapBirthday && !source.Inner.Birthday.Equals(OutlookUtility.OUTLOOK_DATE_NONE))
-      {
-          target.ContactEntry.Birthday = source.Inner.Birthday.ToString("yyyy-MM-dd");
-      }
-      else
-      {
-          target.ContactEntry.Birthday = null;
-      }
-      #endregion birthday
-
+      MapBirthday1To2(source, target);
+  
       #region anniversary
 
       var googleAnniversary = target.ContactEntry.Events.FirstOrDefault (e => e.Relation != null && e.Relation.Equals (REL_ANNIVERSARY));
@@ -352,6 +343,14 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         MapPhoto1To2 (source.Inner, targetWrapper, logger);
 
       return Task.FromResult(targetWrapper);
+    }
+
+    private void MapBirthday1To2(IContactItemWrapper source, Contact target)
+    {
+      if (_configuration.MapBirthday && !source.Inner.Birthday.Equals(OutlookUtility.OUTLOOK_DATE_NONE))
+        target.ContactEntry.Birthday = source.Inner.Birthday.ToString("yyyy-MM-dd");
+      else
+        target.ContactEntry.Birthday = null;
     }
 
     private void MapPhoto1To2 (ContactItem source, GoogleContactWrapper target, IEntityMappingLogger logger)
