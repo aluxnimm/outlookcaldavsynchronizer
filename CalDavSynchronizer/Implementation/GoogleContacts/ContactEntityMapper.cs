@@ -166,37 +166,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
      
       MapRelations1To2(source, target);
 
-      #region IMs
-      target.IMs.Clear();
-
-      if (!string.IsNullOrEmpty(source.Inner.IMAddress))
-      {
-        //IMAddress are expected to be in form of ([Protocol]: [Address]; [Protocol]: [Address])
-        var imsRaw = source.Inner.IMAddress.Split (new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-        foreach (var imRaw in imsRaw)
-        {
-          var imDetails = imRaw.Trim().Split (new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-          var im = new IMAddress();
-          if (imDetails.Length == 1)
-          {
-            im.Address = imDetails[0].Trim();
-          }
-          else if (imDetails.Length > 1)
-          {
-            im.Protocol = imDetails[0].Trim();
-            im.Address = imDetails[1].Trim();
-          }
-
-          //Only add the im Address if not empty (to avoid Google exception "address" empty)
-          if (!string.IsNullOrEmpty(im.Address))
-          {
-            im.Primary = target.IMs.Count == 0;
-            im.Rel = ContactsRelationships.IsHome;
-            target.IMs.Add(im);
-          }
-        }
-      }
-      #endregion IMs
+      MapImAddresses1To2(source, target);
 
       target.Content = !string.IsNullOrEmpty(source.Inner.Body) ? 
                         System.Security.SecurityElement.Escape (source.Inner.Body) : null;
@@ -228,6 +198,38 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         MapPhoto1To2 (source.Inner, targetWrapper, logger);
 
       return Task.FromResult(targetWrapper);
+    }
+
+    private static void MapImAddresses1To2(IContactItemWrapper source, Contact target)
+    {
+      target.IMs.Clear();
+      if (!string.IsNullOrEmpty(source.Inner.IMAddress))
+      {
+        //IMAddress are expected to be in form of ([Protocol]: [Address]; [Protocol]: [Address])
+        var imAddresses = source.Inner.IMAddress.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries);
+        foreach (var imAddress in imAddresses)
+        {
+          var imAddressParts = imAddress.Trim().Split(new[] {':'}, StringSplitOptions.RemoveEmptyEntries);
+          var im = new IMAddress();
+          if (imAddressParts.Length == 1)
+          {
+            im.Address = imAddressParts[0].Trim();
+          }
+          else if (imAddressParts.Length > 1)
+          {
+            im.Protocol = imAddressParts[0].Trim();
+            im.Address = imAddressParts[1].Trim();
+          }
+
+          //Only add the im Address if not empty (to avoid Google exception "address" empty)
+          if (!string.IsNullOrEmpty(im.Address))
+          {
+            im.Primary = target.IMs.Count == 0;
+            im.Rel = ContactsRelationships.IsHome;
+            target.IMs.Add(im);
+          }
+        }
+      }
     }
 
     private static void MapName1To2(IContactItemWrapper source, Contact target)
@@ -805,18 +807,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       
       MapRelations2To1(target, source);
       
-      #region IM
-      target.Inner.IMAddress = string.Empty;
-      foreach (IMAddress im in source.IMs)
-      {
-        if (!string.IsNullOrEmpty(target.Inner.IMAddress))
-          target.Inner.IMAddress += "; ";
-        if (!string.IsNullOrEmpty(im.Protocol) && !im.Protocol.Equals("None", StringComparison.InvariantCultureIgnoreCase))
-          target.Inner.IMAddress += im.Protocol + ": " + im.Address;
-        else
-          target.Inner.IMAddress += im.Address;
-      }
-      #endregion IM
+      MapImAddresses2To1(target, source);
 
       target.Inner.Body = source.Content;
 
@@ -836,6 +827,20 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         MapPhoto2To1 (sourceWrapper, target.Inner, logger);
 
       return Task.FromResult(target);
+    }
+
+    private static void MapImAddresses2To1(IContactItemWrapper target, Contact source)
+    {
+      target.Inner.IMAddress = string.Empty;
+      foreach (var im in source.IMs)
+      {
+        if (!string.IsNullOrEmpty(target.Inner.IMAddress))
+          target.Inner.IMAddress += "; ";
+        if (!string.IsNullOrEmpty(im.Protocol) && !im.Protocol.Equals("None", StringComparison.InvariantCultureIgnoreCase))
+          target.Inner.IMAddress += im.Protocol + ": " + im.Address;
+        else
+          target.Inner.IMAddress += im.Address;
+      }
     }
 
     private static void MapRelations2To1(IContactItemWrapper target, Contact source)
