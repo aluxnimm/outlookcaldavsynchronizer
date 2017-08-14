@@ -237,11 +237,11 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 	- Catch DateTimeZoneNotFoundException, ticket #484.
 	- Avoid adding email address twice.
 	- Catch FormatException in vCardStandardReader and log warnings from vcard deserialization.
-	- Warn if RRULE COUNT=0 and avoid COM exceptions when setting invalid RecurrencePattern Occurences or PatternEndDate values.
+	- Warn if RRULE COUNT=0 and avoid COM exceptions when setting invalid RecurrencePattern Occurrences or PatternEndDate values.
 	- Don't set RRULE COUNT if Occurrences is an invalid number.
 	- Avoid NullReferenceException when a SOGo VLIST has a member card without FN and avoid empty members.
 	- Catch possible COMException when responding to a meeting invite.
-	- Workaround for reading wrong encoded vcard PHOTO attributes from SOGo global adressbooks mapped from LDAP/AD avatar pictures.
+	- Workaround for reading wrong encoded vcard PHOTO attributes from SOGo global addressbooks mapped from LDAP/AD avatar pictures.
 	
 #### 2.14.1 ####
 - Released 2017/01/17
@@ -583,7 +583,7 @@ X-MICROSOFT-CDO-BUSYSTATUS.
 #### 1.19.0 ####
 - New features
 	- Add System TrayIcon with notifications of sync runs with errors and warnings and context menu.
-	- Add Synchronitation Status with info about last sync run time and status, accessible from the TrayIcon or the ribbon.
+	- Add Synchronization Status with info about last sync run time and status, accessible from the TrayIcon or the ribbon.
 	- Add TaskMappingConfiguration with possibility to toggle reminder, priority and body mapping.
 - Bug fixes
 	- Catch COMException when accessing IsInstantSearchEnabled of Outlook store, ticket #223.
@@ -612,7 +612,7 @@ X-MICROSOFT-CDO-BUSYSTATUS.
 
 #### 1.16.0 ####
 - New features
-	- Google task support added. You can sync google tasklists to Outlook task folders via the Google Task Api. Just use a google profile and choose a task folder and do autodisocery to select the google tasklist.
+	- Google task support added. You can sync google tasklists to Outlook task folders via the Google Task Api. Just use a google profile and choose a task folder and do autodiscovery to select the google tasklist.
 	- Improved UpdateChecker, add button to automatically download and extract the new version and start the installer.
 	- Improved Synchronisation reports with formatted view.
 	- Small UI improvements and layout changes.
@@ -769,7 +769,7 @@ X-MICROSOFT-CDO-BUSYSTATUS.
 	- Add TYPE=HOME for personal homepages
 - bug fixes:
 	- Fix mapping of HomeFaxNumber for vcards, ticket #134
-	- Log Exceptions during ConnectionTests and don't try to list calendars or adressbooks for empty homesets, fixes github issue #82
+	- Log Exceptions during ConnectionTests and don't try to list calendars or addressbooks for empty homesets, fixes github issue #82
 	- Fix GetContacts for Yandex, since Yandex returns directory itself even with an etag
 	- Improve error handling
 	- Fixes TYPE subproperties needed for Yandex vcards
@@ -1134,7 +1134,7 @@ Outlook and Windows use different Timezone definitions than most CalDAV servers 
 - *Create events on server in UTC* Use UTC instead of Outlook Appointment Timezone for creating events on CalDAV server. Not recommended for general use, because recurrence exceptions over DST changes can't be mapped and Appointments with different start and end timezones can't be represented.
 - *Create events on server in downloaded IANA Timezones* Use Iana instead of Windows Timezones for creating events on CalDAV server. Needed for servers which do not accept non standard Windows Timezones like GMX for example. Timezone definitions will be downloaded from [http://tzurl.org.](http://tzurl.org)
 - *Use IANA Timezone* Use this IANA timezone for default Outlook/Windows timezone. Manually selected different timezones in Outlook appointments will be mapped to first corresponding IANA timezone.
-- *Include full IANA zone with historical data* Use full IANA timezone definition with historical data. Needs more bandwith and can be incompatible when manually importing in Outlook.
+- *Include full IANA zone with historical data* Use full IANA timezone definition with historical data. Needs more bandwidth and can be incompatible when manually importing in Outlook.
 
 ### Managing meetings and invites ###
 
@@ -1150,7 +1150,7 @@ To avoid double meetings the option *Cleanup duplicate events after each sync ru
 
 You can configure free/busy lookups globally in the outlook options.
 Select Options/Calendar and there free/busy information and use a free/busy url of your server with placeholder like %Name%, e.g. http://myserver/freebusy.php/%Name%
-Then ervery attendee in the outlook planning view gets resolved with that url for a free/busy lookup against your server. 
+Then every attendee in the outlook planning view gets resolved with that url for a free/busy lookup against your server. 
 
 ### Scheduling settings and resources ###
 
@@ -1202,7 +1202,7 @@ For contacts you can activate the checkbox **Use Google native API**. This shoul
 - Support for google contact groups, which are synced to Outlook categories.
 - Added mapping for anniversary, relations (spouse, child, etc.) and IMs for google contacts (Contribution from Florian Saller, thank you!).
 
-When switching betwwen native API and CardDAV the sync cache is cleared and a complete initial sync is performed during next sync run.
+When switching between native API and CardDAV the sync cache is cleared and a complete initial sync is performed during next sync run.
 
 For tasks you can choose the tasklist you want to sync with an Outlook task folder and the id of the task list is shown in the Discovered Url. With the button 'Edit Url' you still can manually change the Url e.g. when you want to sync a shared google calendar from another account.
 
@@ -1232,7 +1232,7 @@ Now it will work on port 5006 with https.
 Apple changed their security policy recently (June 2017). You need to enable Two-Factor-Authentication and an app-specific password for CalDavSynchronizer, see
 [https://support.apple.com/en-us/HT204397](https://support.apple.com/en-us/HT204397)
 
-To find the correct DAV url for iCloud you need some Informations from the MacOS, where you are connected with your calendar.
+To find the correct DAV url for iCloud you need some information from the MacOS, where you are connected with your calendar.
 
 Open with Textedit: `~/Library/Calendars/*.caldav/Info.plist` 
 (Its in the hidden User-Library)
