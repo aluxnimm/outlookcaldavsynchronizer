@@ -266,6 +266,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
     private static void MapRelations1To2(IContactItemWrapper source, Contact target)
     {
+
       foreach (var googleRel in target.ContactEntry.Relations.ToList())
       {
         if (googleRel.Rel == REL_SPOUSE || googleRel.Rel == REL_CHILD || googleRel.Rel == REL_MANAGER || googleRel.Rel == REL_ASSISTANT)
@@ -324,16 +325,16 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       {
         if (!source.Inner.Anniversary.Equals(OutlookUtility.OUTLOOK_DATE_NONE))
         {
-          Event ev = new Event()
-          {
-            Relation = REL_ANNIVERSARY,
-            When = new When()
+          target.ContactEntry.Events.Add(
+            new Event
             {
-              AllDay = true,
-              StartTime = source.Inner.Anniversary.Date
-            }
-          };
-          target.ContactEntry.Events.Add(ev);
+              Relation = REL_ANNIVERSARY,
+              When = new When
+              {
+                AllDay = true,
+                StartTime = source.Inner.Anniversary.Date
+              }
+            });
         }
       }
       catch (Exception ex)
@@ -798,78 +799,12 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         }
       }
 
-      #region birthday
-      if (_configuration.MapBirthday)
-      {
-          DateTime birthday;
-          if (DateTime.TryParse(source.ContactEntry.Birthday, out birthday))
-          {
-            if (!birthday.Date.Equals (target.Inner.Birthday))
-            {
-              try
-              {
-                target.Inner.Birthday = birthday;
-              }
-              catch (COMException ex)
-              {
-                s_logger.Warn ("Could not update contact birthday.", ex);
-                logger.LogMappingWarning ("Could not update contact birthday.", ex);
-              }
-              catch (OverflowException ex)
-              {
-                s_logger.Warn ("Contact birthday has invalid value.", ex);
-                logger.LogMappingWarning ("Contact birthday has invalid value.", ex);
-              }
-          }
-          }
-          else
-          {
-            target.Inner.Birthday = OutlookUtility.OUTLOOK_DATE_NONE;
-          }
-      }
-      #endregion birthday
+      MapBirthday2To1(target, source, logger);
 
-      #region anniversary
-
-      try
-      { 
-        var googleAnniversary = source.ContactEntry.Events.FirstOrDefault(e => e.Relation != null && e.Relation.Equals (REL_ANNIVERSARY));
-
-        if (googleAnniversary != null)
-        {
-            if (googleAnniversary.When.StartTime.Date != target.Inner.Anniversary.Date)
-                target.Inner.Anniversary = googleAnniversary.When.StartTime.Date;
-        }
-        else
-        {
-            target.Inner.Anniversary = OutlookUtility.OUTLOOK_DATE_NONE;
-        }
-      }
-      catch (System.Exception ex)
-      {
-        s_logger.Warn ("Anniversary couldn't be updated from Google to Outlook for '" + target.Inner.FileAs + "': " + ex.Message, ex);
-        logger.LogMappingWarning ("Anniversary couldn't be updated from Google to Outlook for '" + target.Inner.FileAs + "': " + ex.Message, ex);
-      }
-      #endregion anniversary
-
-      #region relations (spouse, child, manager, assistant)
-      target.Inner.Children = string.Empty;
-      target.Inner.Spouse = string.Empty;
-      target.Inner.ManagerName = string.Empty;
-      target.Inner.AssistantName = string.Empty;
-      foreach (var googleRel in source.ContactEntry.Relations)
-      {
-          if (googleRel.Rel == REL_CHILD)
-              target.Inner.Children = googleRel.Value;
-          else if (googleRel.Rel == REL_SPOUSE)
-              target.Inner.Spouse = googleRel.Value;
-          else if (googleRel.Rel == REL_MANAGER)
-              target.Inner.ManagerName = googleRel.Value;
-          else if (googleRel.Rel == REL_ASSISTANT)
-              target.Inner.AssistantName = googleRel.Value;
-      }
-      #endregion relations (spouse, child, manager, assistant)
-
+      MapAnniversary2To1(target, source, logger);
+      
+      MapRelations2To1(target, source);
+      
       #region IM
       target.Inner.IMAddress = string.Empty;
       foreach (IMAddress im in source.IMs)
@@ -901,6 +836,87 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         MapPhoto2To1 (sourceWrapper, target.Inner, logger);
 
       return Task.FromResult(target);
+    }
+
+    private static void MapRelations2To1(IContactItemWrapper target, Contact source)
+    {
+      target.Inner.Children = string.Empty;
+      target.Inner.Spouse = string.Empty;
+      target.Inner.ManagerName = string.Empty;
+      target.Inner.AssistantName = string.Empty;
+
+      foreach (var googleRel in source.ContactEntry.Relations)
+      {
+        switch (googleRel.Rel)
+        {
+          case REL_CHILD:
+            target.Inner.Children = googleRel.Value;
+            break;
+          case REL_SPOUSE:
+            target.Inner.Spouse = googleRel.Value;
+            break;
+          case REL_MANAGER:
+            target.Inner.ManagerName = googleRel.Value;
+            break;
+          case REL_ASSISTANT:
+            target.Inner.AssistantName = googleRel.Value;
+            break;
+        }
+      }
+    }
+
+    private static void MapAnniversary2To1(IContactItemWrapper target, Contact source, IEntityMappingLogger logger)
+    {
+      try
+      {
+        var googleAnniversary = source.ContactEntry.Events.FirstOrDefault(e => e.Relation != null && e.Relation.Equals(REL_ANNIVERSARY));
+
+        if (googleAnniversary != null)
+        {
+          if (googleAnniversary.When.StartTime.Date != target.Inner.Anniversary.Date)
+            target.Inner.Anniversary = googleAnniversary.When.StartTime.Date;
+        }
+        else
+        {
+          target.Inner.Anniversary = OutlookUtility.OUTLOOK_DATE_NONE;
+        }
+      }
+      catch (System.Exception ex)
+      {
+        s_logger.Warn("Anniversary couldn't be updated from Google to Outlook for '" + target.Inner.FileAs + "': " + ex.Message, ex);
+        logger.LogMappingWarning("Anniversary couldn't be updated from Google to Outlook for '" + target.Inner.FileAs + "': " + ex.Message, ex);
+      }
+    }
+
+    private void MapBirthday2To1(IContactItemWrapper target, Contact source, IEntityMappingLogger logger)
+    {
+      if (!_configuration.MapBirthday)
+        return;
+
+      if (DateTime.TryParse(source.ContactEntry.Birthday, out DateTime sourceBirthday))
+      {
+        if (!sourceBirthday.Date.Equals(target.Inner.Birthday))
+        {
+          try
+          {
+            target.Inner.Birthday = sourceBirthday;
+          }
+          catch (COMException ex)
+          {
+            s_logger.Warn("Could not update contact birthday.", ex);
+            logger.LogMappingWarning("Could not update contact birthday.", ex);
+          }
+          catch (OverflowException ex)
+          {
+            s_logger.Warn("Contact birthday has invalid value.", ex);
+            logger.LogMappingWarning("Contact birthday has invalid value.", ex);
+          }
+        }
+      }
+      else
+      {
+        target.Inner.Birthday = OutlookUtility.OUTLOOK_DATE_NONE;
+      }
     }
 
     private void MapPhoto2To1 (GoogleContactWrapper source, ContactItem target, IEntityMappingLogger logger)
