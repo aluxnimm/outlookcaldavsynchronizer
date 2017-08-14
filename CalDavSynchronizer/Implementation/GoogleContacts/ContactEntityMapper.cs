@@ -200,37 +200,8 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       }
 
       MapBirthday1To2(source, target);
-  
-      #region anniversary
-
-      var googleAnniversary = target.ContactEntry.Events.FirstOrDefault (e => e.Relation != null && e.Relation.Equals (REL_ANNIVERSARY));
-
-      if (googleAnniversary != null)
-        target.ContactEntry.Events.Remove(googleAnniversary);
-
-      try
-      {
-          if (!source.Inner.Anniversary.Equals (OutlookUtility.OUTLOOK_DATE_NONE)) 
-          {
-            Event ev = new Event()
-            {
-                Relation = REL_ANNIVERSARY,
-                When = new When()
-                {
-                    AllDay = true,
-                    StartTime = source.Inner.Anniversary.Date
-                }
-            };
-            target.ContactEntry.Events.Add(ev);
-          }
-      }
-      catch (Exception ex)
-      {
-        s_logger.Warn ("Anniversary couldn't be updated from Outlook to Google for '" + source.Inner.FileAs + "': " + ex.Message, ex);
-        logger.LogMappingWarning ("Anniversary couldn't be updated from Outlook to Google for '" + source.Inner.FileAs + "': " + ex.Message, ex);
-      }
-
-      #endregion anniversary
+      
+      MapAnniversary1To2(source, target, logger);
 
       #region relations (spouse, child, manager and assistant)
      
@@ -343,6 +314,36 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         MapPhoto1To2 (source.Inner, targetWrapper, logger);
 
       return Task.FromResult(targetWrapper);
+    }
+
+    private static void MapAnniversary1To2(IContactItemWrapper source, Contact target, IEntityMappingLogger logger)
+    {
+      var googleAnniversary = target.ContactEntry.Events.FirstOrDefault(e => e.Relation != null && e.Relation.Equals(REL_ANNIVERSARY));
+
+      if (googleAnniversary != null)
+        target.ContactEntry.Events.Remove(googleAnniversary);
+
+      try
+      {
+        if (!source.Inner.Anniversary.Equals(OutlookUtility.OUTLOOK_DATE_NONE))
+        {
+          Event ev = new Event()
+          {
+            Relation = REL_ANNIVERSARY,
+            When = new When()
+            {
+              AllDay = true,
+              StartTime = source.Inner.Anniversary.Date
+            }
+          };
+          target.ContactEntry.Events.Add(ev);
+        }
+      }
+      catch (Exception ex)
+      {
+        s_logger.Warn("Anniversary couldn't be updated from Outlook to Google for '" + source.Inner.FileAs + "': " + ex.Message, ex);
+        logger.LogMappingWarning("Anniversary couldn't be updated from Outlook to Google for '" + source.Inner.FileAs + "': " + ex.Message, ex);
+      }
     }
 
     private void MapBirthday1To2(IContactItemWrapper source, Contact target)
