@@ -122,8 +122,9 @@ namespace CalDavSynchronizer.Implementation.Events
             }
             else
             {
-              var startIanaTzId = TimeZoneMapper.WindowsToIana (startTimeZoneID);
-              startIcalTimeZone = await _timeZoneCache.GetByTzIdOrNull (startIanaTzId);
+              var startIanaTzId = TimeZoneMapper.WindowsToIanaOrNull (startTimeZoneID);
+              if (startIanaTzId != null)
+                startIcalTimeZone = await _timeZoneCache.GetByTzIdOrNull (startIanaTzId);
               if (startIcalTimeZone != null)
                 newTargetCalender.TimeZones.Add (startIcalTimeZone);
             }
@@ -147,8 +148,9 @@ namespace CalDavSynchronizer.Implementation.Events
               }
               else
               {
-                var endIanaTzId = TimeZoneMapper.WindowsToIana (endTimeZoneID);
-                endIcalTimeZone = await _timeZoneCache.GetByTzIdOrNull (endIanaTzId);
+                var endIanaTzId = TimeZoneMapper.WindowsToIanaOrNull (endTimeZoneID);
+                if (endIanaTzId != null)
+                  endIcalTimeZone = await _timeZoneCache.GetByTzIdOrNull (endIanaTzId);
                 if (endIcalTimeZone != null)
                   newTargetCalender.TimeZones.Add (endIcalTimeZone);
               }

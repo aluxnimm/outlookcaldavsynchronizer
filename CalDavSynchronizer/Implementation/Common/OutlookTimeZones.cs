@@ -50,7 +50,7 @@ namespace CalDavSynchronizer.Implementation.Common
         if (_outlookTimeZoneIdByCaseInsensitiveId.TryGetValue(id, out string outlookId))
           return _application.TimeZones[outlookId];
         else
-          return _application.TimeZones[TimeZoneMapper.IanaToWindows(id) ?? CurrentTimeZone.ID];
+          return _application.TimeZones[TimeZoneMapper.IanaToWindowsOrNull(id) ?? CurrentTimeZone.ID];
       }
     }
   }

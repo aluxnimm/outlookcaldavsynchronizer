@@ -22,7 +22,7 @@ namespace CalDavSynchronizer.Implementation.Events
 {
     public static class TimeZoneMapper
     {
-        public static string IanaToWindows(string ianaZoneId)
+        public static string IanaToWindowsOrNull (string ianaZoneId)
         {
             var utcZones = new[] { "Etc/UTC", "Etc/UCT", "Etc/GMT" };
             if (utcZones.Contains(ianaZoneId, StringComparer.Ordinal))
@@ -50,7 +50,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
         // This will return the "primary" IANA zone that matches the given windows zone.
         // If the primary zone is a link, it then resolves it to the canonical ID.
-        public static string WindowsToIana(string windowsZoneId)
+        public static string WindowsToIanaOrNull (string windowsZoneId)
         {
           // Avoid UTC being mapped to Etc/GMT, which is the mapping in CLDR
           if (windowsZoneId == "UTC")

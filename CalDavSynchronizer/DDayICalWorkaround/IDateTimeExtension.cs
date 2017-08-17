@@ -18,6 +18,7 @@ using System;
 using CalDavSynchronizer.Implementation.Events;
 using DDay.iCal;
 using NodaTime;
+using NodaTime.TimeZones;
 
 namespace CalDavSynchronizer.DDayICalWorkaround
 {
@@ -29,7 +30,15 @@ namespace CalDavSynchronizer.DDayICalWorkaround
         return DateTime.SpecifyKind (dateTime.Value, DateTimeKind.Utc);
       if (!string.IsNullOrEmpty (dateTime.TZID))
       {
-        var zone = DateTimeZoneProviders.Tzdb.GetZoneOrNull (dateTime.TZID) ?? DateTimeZoneProviders.Tzdb.GetZoneOrNull (TimeZoneMapper.WindowsToIana (dateTime.TZID));
+        var zone = DateTimeZoneProviders.Tzdb.GetZoneOrNull (dateTime.TZID);
+        if (zone == null)
+        {
+          var mappedTzid = TimeZoneMapper.WindowsToIanaOrNull (dateTime.TZID);
+          zone = mappedTzid != null
+            ? DateTimeZoneProviders.Tzdb.GetZoneOrNull (mappedTzid)
+            : BclDateTimeZone.ForSystemDefault();
+        }
+          
         if (zone != null)
         {
           var localDateTime = LocalDateTime.FromDateTime (dateTime.Value);

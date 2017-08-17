@@ -7,3 +7,4 @@ packages/*/
 /CalDavSynchronizer.sln.DotSettings.user
 *.exe
 *.msi
+*.ide
