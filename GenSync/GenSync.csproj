@@ -57,6 +57,7 @@
     <Compile Include="..\CalDavSynchronizer\Properties\AssemblyInfoVersion.cs">
       <Link>Properties\AssemblyInfoVersion.cs</Link>
     </Compile>
+    <Compile Include="Logging\IEntitySynchronizationLoggerFactory.cs" />
     <Compile Include="Utilities\ChunkedExecutor.cs" />
     <Compile Include="EntityRepositories\BatchEntityRepositoryAdapter.cs" />
     <Compile Include="EntityRepositories\ICreateJob.cs" />

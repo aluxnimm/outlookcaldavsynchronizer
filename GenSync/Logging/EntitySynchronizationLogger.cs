@@ -36,10 +36,6 @@ namespace GenSync.Logging
         handler (this, EventArgs.Empty);
     }
 
-    public EntitySynchronizationLogger ()
-    {
-    }
-
     public void LogMappingError (string message)
     {
       _mappingErrors.Add (message);

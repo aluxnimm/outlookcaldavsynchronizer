@@ -363,7 +363,7 @@ namespace GenSync.Synchronization
               var aJobs = new JobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity>();
               var bJobs = new JobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>();
 
-              currentBatch.ForEach(s => s.AddSyncronizationJob(aJobs, bJobs, logger.CreateEntitySynchronizationLogger(), synchronizationContext));
+              currentBatch.ForEach(s => s.AddSyncronizationJob(aJobs, bJobs, logger, synchronizationContext));
 
               totalAJobs = totalAJobs.Add(aJobs.Count);
               totalBJobs = totalBJobs.Add(bJobs.Count);

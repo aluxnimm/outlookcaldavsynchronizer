@@ -60,9 +60,9 @@ namespace GenSync.Synchronization
       SetState(_state.Resolve());
     }
 
-    public void AddSyncronizationJob(IJobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity> aJobs, IJobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> bJobs, IEntitySynchronizationLogger logger, TContext context)
+    public void AddSyncronizationJob(IJobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity> aJobs, IJobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> bJobs, IEntitySynchronizationLoggerFactory loggerFactory, TContext context)
     {
-      _state.AddSyncronizationJob (this, aJobs, bJobs, logger, context);
+      _state.AddSyncronizationJob (this, aJobs, bJobs, loggerFactory, context);
     }
 
     public void NotifyJobExecuted()
