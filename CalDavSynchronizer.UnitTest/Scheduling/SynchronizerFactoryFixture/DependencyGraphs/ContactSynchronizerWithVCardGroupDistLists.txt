@@ -34,6 +34,7 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   GenericEqualityComparer<String>
 |   |   |   IdentityMatchDataFactory<vCard>
 |   |   |   InitialContactEntityMatcher
+|   |   |   NullChunkedExecutor
 |   |   |   NullSynchronizationInterceptorFactory<String, DateTime, IContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
 |   |   |   NullTotalProgressFactory
 |   |   |   OutlookContactRelationDataFactory
@@ -91,6 +92,7 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   GenericEqualityComparer<String>
 |   |   |   IdentityMatchDataFactory<vCard>
 |   |   |   InitialDistListEntityMatcher
+|   |   |   NullChunkedExecutor
 |   |   |   NullSynchronizationInterceptorFactory<String, DateTime, IDistListItemWrapper, WebResourceName, String, vCard, DistributionListSychronizationContext>
 |   |   |   NullTotalProgressFactory
 |   |   |   OutlookDistListRepository<DistributionListSychronizationContext>

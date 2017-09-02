@@ -32,6 +32,7 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   LoggingCardDavRepositoryDecorator
 |   |   |   |   CardDavRepository<Int32>
 |   |   |   |   |   vCardStandardWriter
+|   |   |   NullChunkedExecutor
 |   |   |   NullSynchronizationInterceptorFactory<String, DateTime, IContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
 |   |   |   NullTotalProgressFactory
 |   |   |   OutlookContactRelationDataFactory
@@ -69,6 +70,7 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   GenericEqualityComparer<String>
 |   |   |   IdentityMatchDataFactory<DistributionList>
 |   |   |   InitialSogoDistListEntityMatcher
+|   |   |   NullChunkedExecutor
 |   |   |   NullSynchronizationInterceptorFactory<String, DateTime, IDistListItemWrapper, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
 |   |   |   NullTotalProgressFactory
 |   |   |   OutlookDistListRepository<DistributionListSychronizationContext>

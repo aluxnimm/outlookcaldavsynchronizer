@@ -28,6 +28,7 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   LoggingCardDavRepositoryDecorator
 |   |   |   |   CardDavRepository<Int32>
 |   |   |   |   |   vCardStandardWriter
+|   |   |   NullChunkedExecutor
 |   |   |   NullSynchronizationInterceptorFactory<String, DateTime, IContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
 |   |   |   NullTotalProgressFactory
 |   |   |   OutlookContactRelationDataFactory
