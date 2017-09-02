@@ -33,5 +33,6 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
     public WebResourceName Id { get; set; }
     public string[] EmailAddresses { get; set; }
+    public string Uid { get; set; }
   }
 }

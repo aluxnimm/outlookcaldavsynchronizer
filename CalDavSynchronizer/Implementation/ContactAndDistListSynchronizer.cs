@@ -70,7 +70,7 @@ namespace CalDavSynchronizer.Implementation
         await _contactSynchronizer.Synchronize(subLogger, emailAddressCache);
       }
 
-      var idsToQuery = emailAddressCache.GetIdsOfEntriesWithEmptyEmailAddress();
+      var idsToQuery = emailAddressCache.GetEmptyCacheItems();
       if (idsToQuery.Length > 0)
         await _loggingCardDavRepositoryDecorator.Get(idsToQuery, NullLoadEntityLogger.Instance, emailAddressCache);
       var cacheItems = emailAddressCache.Items;

@@ -25,36 +25,40 @@ namespace CalDavSynchronizer.Implementation.Contacts
 {
   public class EmailAddressCache : ICardDavRepositoryLogger
   {
-    private Dictionary<WebResourceName, string[]> _addressesByEntityId = new Dictionary<WebResourceName, string[]>(WebResourceName.Comparer);
+    private Dictionary<WebResourceName, CacheItem> _cacheItems = new Dictionary<WebResourceName, CacheItem>(WebResourceName.Comparer);
 
     public void LogEntitiesExists(IEnumerable<WebResourceName> allEntities)
     {
       foreach (var id in allEntities)
       {
-        if (!_addressesByEntityId.ContainsKey(id))
-          _addressesByEntityId.Add(id, null);
+        if (!_cacheItems.ContainsKey(id))
+          _cacheItems.Add(id, new CacheItem { Id = id} );
       }
     }
 
     public void LogEntityExists(WebResourceName entityId, vCard vCard)
     {
-      _addressesByEntityId[entityId] = vCard.EmailAddresses.Select(a => a.Address).ToArray();
+      if (!_cacheItems.TryGetValue(entityId, out var cacheItem))
+        _cacheItems.Add(entityId, cacheItem = new CacheItem {Id = entityId});
+
+      cacheItem.EmailAddresses = vCard.EmailAddresses.Select(a => a.Address).ToArray();
+      cacheItem.Uid = vCard.UniqueId;
     }
 
     public void LogEntityDeleted(WebResourceName entityId)
     {
-      _addressesByEntityId.Remove(entityId);
+      _cacheItems.Remove(entityId);
     }
 
     public CacheItem[] Items
     {
-      get { return _addressesByEntityId.Select(kv => new CacheItem(kv.Key, kv.Value)).ToArray(); }
-      set { _addressesByEntityId = value.ToDictionary(e => e.Id, e => e.EmailAddresses, WebResourceName.Comparer); }
+      get { return _cacheItems.Values.ToArray(); }
+      set { _cacheItems = value.ToDictionary(e => e.Id); }
     }
 
-    public WebResourceName[] GetIdsOfEntriesWithEmptyEmailAddress()
+    public WebResourceName[] GetEmptyCacheItems()
     {
-      return _addressesByEntityId.Where(e => e.Value == null).Select(e => e.Key).ToArray();
+      return _cacheItems.Where(e => e.Value.EmailAddresses == null).Select(e => e.Key).ToArray();
     }
   }
 }
