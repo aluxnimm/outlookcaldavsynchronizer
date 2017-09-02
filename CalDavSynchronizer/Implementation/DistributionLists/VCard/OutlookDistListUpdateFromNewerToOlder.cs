@@ -5,10 +5,9 @@ using GenSync.EntityRelationManagement;
 using GenSync.Synchronization;
 using GenSync.Synchronization.States;
 using log4net;
-using Microsoft.Office.Interop.Outlook;
 using Thought.vCards;
 
-namespace CalDavSynchronizer.Implementation.DistributionLists
+namespace CalDavSynchronizer.Implementation.DistributionLists.VCard
 {
   internal class OutlookDistListUpdateFromNewerToOlder
     : UpdateFromNewerToOlder<string, DateTime, IDistListItemWrapper, WebResourceName, string, vCard, DistributionListSychronizationContext>

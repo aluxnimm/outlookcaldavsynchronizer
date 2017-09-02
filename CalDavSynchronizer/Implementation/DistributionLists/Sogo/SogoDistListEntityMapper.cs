@@ -15,28 +15,20 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using GenSync.EntityMapping;
 using GenSync.Logging;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
-using Exception = System.Exception;
 
 
-namespace CalDavSynchronizer.Implementation.DistributionLists
+namespace CalDavSynchronizer.Implementation.DistributionLists.Sogo
 {
   public class SogoDistListEntityMapper : IEntityMapper<IDistListItemWrapper, DistributionList, DistributionListSychronizationContext>
   {

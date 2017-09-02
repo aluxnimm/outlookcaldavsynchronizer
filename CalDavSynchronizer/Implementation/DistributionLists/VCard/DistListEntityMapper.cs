@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -9,13 +8,13 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.Implementation.DistributionLists.Sogo;
 using GenSync.EntityMapping;
 using GenSync.Logging;
 using log4net;
-using Microsoft.Office.Interop.Outlook;
 using Thought.vCards;
 
-namespace CalDavSynchronizer.Implementation.DistributionLists
+namespace CalDavSynchronizer.Implementation.DistributionLists.VCard
 {
   public class DistListEntityMapper : IEntityMapper<IDistListItemWrapper, vCard, DistributionListSychronizationContext>
   {

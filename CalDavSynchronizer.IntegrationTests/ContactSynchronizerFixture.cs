@@ -22,6 +22,7 @@ using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Contacts;
 using CalDavSynchronizer.Implementation.DistributionLists;
+using CalDavSynchronizer.Implementation.DistributionLists.Sogo;
 using CalDavSynchronizer.IntegrationTests.Infrastructure;
 using CalDavSynchronizer.IntegrationTests.TestBase;
 using DDay.iCal;

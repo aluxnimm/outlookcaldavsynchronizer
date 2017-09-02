@@ -23,6 +23,7 @@ using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Contacts;
 using CalDavSynchronizer.Implementation.DistributionLists;
+using CalDavSynchronizer.Implementation.DistributionLists.Sogo;
 using CalDavSynchronizer.Implementation.Events;
 using CalDavSynchronizer.IntegrationTests.Infrastructure;
 using CalDavSynchronizer.Scheduling;

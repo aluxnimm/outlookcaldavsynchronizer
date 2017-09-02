@@ -8,6 +8,7 @@ using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.DistributionLists;
+using CalDavSynchronizer.Implementation.DistributionLists.Sogo;
 using CalDavSynchronizer.Implementation.Events;
 using CalDavSynchronizer.IntegrationTests.TestBase;
 using GenSync.EntityRelationManagement;

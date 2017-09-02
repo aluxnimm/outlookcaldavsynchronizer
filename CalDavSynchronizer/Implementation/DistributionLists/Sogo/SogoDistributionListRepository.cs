@@ -14,16 +14,16 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Text;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.Contacts;
 using CalDavSynchronizer.Utilities;
 using GenSync.Logging;
-using GenSync.Utilities;
 using Thought.vCards;
 
-namespace CalDavSynchronizer.Implementation.DistributionLists
+namespace CalDavSynchronizer.Implementation.DistributionLists.Sogo
 {
   class SogoDistributionListRepository : CardDavEntityRepository<DistributionList, int, DistributionListSychronizationContext>
   {

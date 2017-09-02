@@ -24,6 +24,7 @@ using System.Text;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.DistributionLists;
+using CalDavSynchronizer.Implementation.DistributionLists.Sogo;
 using DDay.iCal;
 using GenSync.Logging;
 using log4net;

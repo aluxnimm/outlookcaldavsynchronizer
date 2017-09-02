@@ -25,6 +25,7 @@ using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Contacts;
 using CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch;
 using CalDavSynchronizer.Implementation.DistributionLists;
+using CalDavSynchronizer.Implementation.DistributionLists.Sogo;
 using GenSync.EntityRelationManagement;
 using GenSync.EntityRepositories;
 using Microsoft.Office.Interop.Outlook;

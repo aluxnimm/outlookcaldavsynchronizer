@@ -22,9 +22,8 @@ using GenSync.EntityRelationManagement;
 using GenSync.Synchronization;
 using GenSync.Synchronization.StateCreationStrategies.ConflictStrategies;
 using GenSync.Synchronization.States;
-using Microsoft.Office.Interop.Outlook;
 
-namespace CalDavSynchronizer.Implementation.DistributionLists
+namespace CalDavSynchronizer.Implementation.DistributionLists.Sogo
 {
   internal class SogoDistListConflictInitialSyncStateCreationStrategyAutomatic
       : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, IDistListItemWrapper, WebResourceName, string, DistributionList, DistributionListSychronizationContext>

@@ -14,22 +14,15 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CalDavSynchronizer.Implementation.DistributionLists
+namespace CalDavSynchronizer.Implementation.DistributionLists.Sogo
 {
-  public class DistributionList
+  public class KnownDistributionListMember : DistributionListMember
   {
-    public string Uid { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
-    public string Nickname { get; set; }
-    public DateTime ChangeDateUtc { get; set; }
-    public IList<KnownDistributionListMember> Members { get; set; } = new List<KnownDistributionListMember>();
-    public IList<DistributionListMember> NonAddressBookMembers { get; set; } = new List<DistributionListMember>();
+    public KnownDistributionListMember(string emailAddress, string displayName, string serverFileName) : base(emailAddress, displayName)
+    {
+      ServerFileName = serverFileName;
+    }
+
+    public string ServerFileName { get; }
   }
 }

@@ -5,10 +5,9 @@ using GenSync.EntityRelationManagement;
 using GenSync.Synchronization;
 using GenSync.Synchronization.StateCreationStrategies.ConflictStrategies;
 using GenSync.Synchronization.States;
-using Microsoft.Office.Interop.Outlook;
 using Thought.vCards;
 
-namespace CalDavSynchronizer.Implementation.DistributionLists
+namespace CalDavSynchronizer.Implementation.DistributionLists.VCard
 {
   internal class DistListConflictInitialSyncStateCreationStrategyAutomatic
     : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, IDistListItemWrapper, WebResourceName, string, vCard, DistributionListSychronizationContext>

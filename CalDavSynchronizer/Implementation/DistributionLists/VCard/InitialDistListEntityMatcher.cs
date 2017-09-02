@@ -14,44 +14,15 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.DataAccess;
-using CalDavSynchronizer.Implementation.ComWrappers;
 using GenSync.InitialEntityMatching;
-using Microsoft.Office.Interop.Outlook;
 using Thought.vCards;
 
-namespace CalDavSynchronizer.Implementation.DistributionLists
+namespace CalDavSynchronizer.Implementation.DistributionLists.VCard
 {
-  internal class InitialSogoDistListEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, DistListMatchData, string, WebResourceName, string, DistributionList, string>
-  {
-    public InitialSogoDistListEntityMatcher (IEqualityComparer<WebResourceName> btypeIdEqualityComparer)
-        : base (btypeIdEqualityComparer)
-    {
-    }
-
-    protected override bool AreEqual(DistListMatchData atypeEntity, DistributionList btypeEntity)
-    {
-      return atypeEntity.DlName == btypeEntity.Name;
-    }
-
-    protected override string GetAtypePropertyValue(DistListMatchData atypeEntity)
-    {
-      return atypeEntity.DlName;
-    }
-
-    protected override string GetBtypePropertyValue(DistributionList btypeEntity)
-    {
-      return btypeEntity.Name;
-    }
-
-    protected override string MapAtypePropertyValue(string value)
-    {
-      return value;
-    }
-  }
-
   internal class InitialDistListEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, DistListMatchData, string, WebResourceName, string, vCard, string>
   {
     public InitialDistListEntityMatcher (IEqualityComparer<WebResourceName> btypeIdEqualityComparer)

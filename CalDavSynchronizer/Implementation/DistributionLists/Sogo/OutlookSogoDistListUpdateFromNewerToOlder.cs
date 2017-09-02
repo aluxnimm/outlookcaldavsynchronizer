@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
@@ -21,10 +22,8 @@ using GenSync.EntityRelationManagement;
 using GenSync.Synchronization;
 using GenSync.Synchronization.States;
 using log4net;
-using Microsoft.Office.Interop.Outlook;
-using Thought.vCards;
 
-namespace CalDavSynchronizer.Implementation.DistributionLists
+namespace CalDavSynchronizer.Implementation.DistributionLists.Sogo
 {
   internal class OutlookSogoDistListUpdateFromNewerToOlder
       : UpdateFromNewerToOlder<string, DateTime, IDistListItemWrapper, WebResourceName, string, DistributionList, DistributionListSychronizationContext>

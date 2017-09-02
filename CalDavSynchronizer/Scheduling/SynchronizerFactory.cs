@@ -31,6 +31,8 @@ using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Contacts;
 using CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch;
 using CalDavSynchronizer.Implementation.DistributionLists;
+using CalDavSynchronizer.Implementation.DistributionLists.Sogo;
+using CalDavSynchronizer.Implementation.DistributionLists.VCard;
 using CalDavSynchronizer.Implementation.Events;
 using CalDavSynchronizer.Implementation.GoogleContacts;
 using CalDavSynchronizer.Implementation.GoogleTasks;
