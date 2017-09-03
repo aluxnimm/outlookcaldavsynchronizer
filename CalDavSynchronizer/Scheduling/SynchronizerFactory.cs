@@ -797,7 +797,8 @@ namespace CalDavSynchronizer.Scheduling
       var btypeRepository = new LoggingCardDavRepositoryDecorator(
         cardDavRepository);
 
-      var entityMapper = new ContactEntityMapper(mappingParameters);
+      var credentials = new NetworkCredential(options.UserName, options.GetEffectivePassword(_outlookAccountPasswordProvider));
+      var entityMapper = new ContactEntityMapper(mappingParameters, () => HttpUtility.CreateWebClientWithCredentialsAndProxy( credentials, options.ProxyOptions));
 
       var entityRelationDataFactory = new OutlookContactRelationDataFactory();
 

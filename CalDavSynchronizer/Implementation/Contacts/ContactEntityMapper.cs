@@ -28,6 +28,7 @@ using log4net;
 using System.Reflection;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Implementation.Common;
@@ -47,10 +48,15 @@ namespace CalDavSynchronizer.Implementation.Contacts
     private const string PR_ATTACH_DATA_BIN = "http://schemas.microsoft.com/mapi/proptag/0x37010102";
 
     private readonly ContactMappingConfiguration _configuration;
+    private readonly Func<WebClient> _webClientFactory;
 
-    public ContactEntityMapper (ContactMappingConfiguration configuration)
+    public ContactEntityMapper (ContactMappingConfiguration configuration, Func<WebClient> webClientFactory)
     {
+      if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+      if (webClientFactory == null) throw new ArgumentNullException(nameof(webClientFactory));
+
       _configuration = configuration;
+      _webClientFactory = webClientFactory;
     }
 
     public Task<vCard> Map1To2 (IContactItemWrapper source, vCard target, IEntityMappingLogger logger, ICardDavRepositoryLogger context)
@@ -607,7 +613,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         {
           if (!contactPhoto.IsLoaded && contactPhoto.Url != null)
           {
-            using (var client = HttpUtility.CreateWebClient())
+            using (var client = _webClientFactory())
             {
               await client.DownloadFileTaskAsync (contactPhoto.Url, picturePath);
             }
