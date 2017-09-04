@@ -320,6 +320,8 @@
     <Compile Include="Implementation\DistributionLists\DistListMatchData.cs" />
     <Compile Include="Implementation\DistributionLists\DistListEntityMatchDataFactory.cs" />
     <Compile Include="Implementation\DistributionLists\Sogo\InitialSogoDistListEntityMatcher.cs" />
+    <Compile Include="Implementation\DistributionLists\VCard\UidDistListEntityMapper.cs" />
+    <Compile Include="Implementation\DistributionLists\VCard\DistListEntityMapperBase.cs" />
     <Compile Include="Implementation\Events\EventEntityMatchData.cs" />
     <Compile Include="Implementation\Events\EventEntityMatchDataFactory.cs" />
     <Compile Include="Implementation\Events\EventServerEntityMatchData.cs" />

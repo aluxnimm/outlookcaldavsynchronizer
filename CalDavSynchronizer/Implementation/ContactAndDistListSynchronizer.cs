@@ -40,24 +40,31 @@ namespace CalDavSynchronizer.Implementation
     private readonly EmailAddressCacheDataAccess _emailAddressCacheDataAccess;
     private readonly IEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> _loggingCardDavRepositoryDecorator;
     private readonly IOutlookSession _outlookSession;
+    private readonly IEntityRelationDataAccess<string, DateTime, WebResourceName, string> _contactEntityRelationDataAccess;
+    private readonly (string FolderId, string FolderStoreId) _contactFolder;
 
     public ContactAndDistListSynchronizer(
       IPartialSynchronizer<string, DateTime, WebResourceName, string, ICardDavRepositoryLogger> contactSynchronizer, 
       ISynchronizer<DistributionListSychronizationContext> distributionListSynchronizer,
       EmailAddressCacheDataAccess emailAddressCacheDataAccess,
       IEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> loggingCardDavRepositoryDecorator, 
-      IOutlookSession outlookSession)
+      IOutlookSession outlookSession,
+      IEntityRelationDataAccess<string, DateTime, WebResourceName, string> contactEntityRelationDataAccess,
+      (string FolderId,string FolderStoreId) contactFolder)
     {
       if (contactSynchronizer == null) throw new ArgumentNullException(nameof(contactSynchronizer));
       if (distributionListSynchronizer == null) throw new ArgumentNullException(nameof(distributionListSynchronizer));
       if (loggingCardDavRepositoryDecorator == null) throw new ArgumentNullException(nameof(loggingCardDavRepositoryDecorator));
       if (outlookSession == null) throw new ArgumentNullException(nameof(outlookSession));
+      if (contactEntityRelationDataAccess == null) throw new ArgumentNullException(nameof(contactEntityRelationDataAccess));
 
       _contactSynchronizer = contactSynchronizer;
       _distributionListSynchronizer = distributionListSynchronizer;
       _emailAddressCacheDataAccess = emailAddressCacheDataAccess;
       _loggingCardDavRepositoryDecorator = loggingCardDavRepositoryDecorator;
       _outlookSession = outlookSession;
+      _contactEntityRelationDataAccess = contactEntityRelationDataAccess;
+      _contactFolder = contactFolder;
     }
 
     public async Task Synchronize (ISynchronizationLogger logger)
@@ -76,7 +83,7 @@ namespace CalDavSynchronizer.Implementation
       var cacheItems = emailAddressCache.Items;
       _emailAddressCacheDataAccess.Save(cacheItems);
 
-      var distListContext = new DistributionListSychronizationContext(cacheItems, _outlookSession);
+      var distListContext = new DistributionListSychronizationContext(cacheItems, _outlookSession, _contactEntityRelationDataAccess, _contactFolder);
 
       using (var subLogger = logger.CreateSubLogger("DistLists"))
       {

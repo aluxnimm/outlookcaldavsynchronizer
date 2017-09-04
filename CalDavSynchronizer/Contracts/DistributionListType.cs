@@ -20,6 +20,7 @@ namespace CalDavSynchronizer.Contracts
   public enum DistributionListType
   {
     Sogo = 0,
-    VCardGroup = 1
+    VCardGroup = 1,
+    VCardGroupWithUid = 2,
   }
 }

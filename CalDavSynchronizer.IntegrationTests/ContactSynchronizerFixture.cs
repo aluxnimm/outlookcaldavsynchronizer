@@ -303,7 +303,108 @@ namespace CalDavSynchronizer.IntegrationTests
         serverDistList.Members.Select(m => m.EmailAddress));
 
     }
-    
+
+    [Test]
+    [Apartment(System.Threading.ApartmentState.STA)]
+    public async Task Synchronize_AnyCase_SyncsVCardGroupWithUidDistLists()
+    {
+      var options = TestComponentContainer.GetOptions("IntegrationTests/Contacts/Sogo");
+      ((Contracts.ContactMappingConfiguration)options.MappingConfiguration).DistributionListType = Contracts.DistributionListType.VCardGroupWithUid;
+
+      var synchronizer = await CreateSynchronizer(options);
+      await synchronizer.ClearEventRepositoriesAndCache();
+
+      string nihilUid = null;
+      await synchronizer.Server.CreateEntity(
+        c =>
+        {
+          c.EmailAddresses.Add(new vCardEmailAddress("nihil@bla.com"));
+          c.GivenName = "Nihil";
+          c.FamilyName = "Baxter";
+          nihilUid = c.UniqueId;
+        });
+
+      string masonUid = null;
+      var masonId = await synchronizer.Server.CreateEntity(
+        c =>
+        {
+          c.EmailAddresses.Add(new vCardEmailAddress("mason@bla.com"));
+          c.GivenName = "Agent";
+          c.FamilyName = "Mason";
+          masonUid = c.UniqueId;
+        });
+
+      string steinbergUid = null;
+      var steinbergId = await synchronizer.Server.CreateEntity(
+        c =>
+        {
+          c.EmailAddresses.Add(new vCardEmailAddress("steinberg@bla.com"));
+          c.GivenName = "Agent";
+          c.FamilyName = "Steinberg";
+          steinbergUid = c.UniqueId;
+        });
+
+
+      await synchronizer.ServerVCardGroupsOrNull.CreateEntity(
+        l =>
+        {
+          l.FormattedName = "Agents";
+          l.FamilyName = "Agents";
+
+          var member = new vCardMember();
+          member.Uid = masonUid;
+          l.Members.Add(member);
+
+          member = new vCardMember();
+          member.Uid = steinbergUid;
+          l.Members.Add(member);
+        });
+
+      await synchronizer.SynchronizeAndAssertNoErrors();
+
+      var outlookNames = (await synchronizer.Outlook.GetAllEntities()).Select(c => c.Entity.Inner.LastName).ToArray();
+
+      CollectionAssert.AreEquivalent(
+        new[] { "Baxter", "Mason", "Steinberg" },
+        outlookNames);
+
+      using (var outlookDistList = (await synchronizer.OutlookDistListsOrNull.GetAllEntities()).SingleOrDefault()?.Entity)
+      {
+        Assert.That(outlookDistList, Is.Not.Null);
+
+        Assert.That(outlookDistList.Inner.DLName, Is.EqualTo("Agents"));
+
+        var outlookMembers = Enumerable
+          .Range(1, outlookDistList.Inner.MemberCount)
+          .Select(i => outlookDistList.Inner.GetMember(i))
+          .ToSafeEnumerable()
+          .Select(d => d.Address)
+          .ToArray();
+
+        CollectionAssert.AreEquivalent(
+          new[] { "mason@bla.com", "steinberg@bla.com" },
+          outlookMembers);
+
+        outlookDistList.Inner.DLName = "All";
+        var recipient = _testComponentContainer.Application.Session.CreateRecipient("Baxter");
+        Assert.That(recipient.Resolve(), Is.True);
+        outlookDistList.Inner.AddMember(recipient);
+        outlookDistList.Inner.Save();
+      }
+
+      await synchronizer.SynchronizeAndAssertNoErrors();
+
+      var serverDistList = (await synchronizer.ServerVCardGroupsOrNull.GetAllEntities()).SingleOrDefault()?.Entity;
+      Assert.That(serverDistList, Is.Not.Null);
+
+      Assert.That(serverDistList.FormattedName, Is.EqualTo("All"));
+
+      CollectionAssert.AreEquivalent(
+        new[] { masonUid, nihilUid, steinbergUid },
+        serverDistList.Members.Select(m => m.Uid));
+
+    }
+
     private async Task<ContactTestSynchronizer> CreateSynchronizer(Options options)
     {
       var synchronizer = new ContactTestSynchronizer(options, _testComponentContainer);

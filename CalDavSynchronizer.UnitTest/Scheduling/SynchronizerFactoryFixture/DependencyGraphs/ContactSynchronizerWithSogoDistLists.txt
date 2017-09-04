@@ -1,6 +1,7 @@
 OutlookSynchronizer<WebResourceName, String>
 |   ContactAndDistListSynchronizer
 |   |   EmailAddressCacheDataAccess
+|   |   EntityRelationDataAccess<String, DateTime, OutlookContactRelationData, WebResourceName, String>
 |   |   LoggingCardDavRepositoryDecorator
 |   |   |   CardDavRepository<Int32>
 |   |   |   |   vCardStandardWriter
@@ -85,3 +86,4 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   |   SogoDistListConflictInitialSyncStateCreationStrategyAutomatic
 |   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, IDistListItemWrapper, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
 |   |   |   WebResourceNameEqualityComparer
+|   |   ValueTuple<String, String>

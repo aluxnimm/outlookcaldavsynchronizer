@@ -1,6 +1,7 @@
 OutlookSynchronizer<WebResourceName, String>
 |   ContactAndDistListSynchronizer
 |   |   EmailAddressCacheDataAccess
+|   |   EntityRelationDataAccess<String, DateTime, OutlookContactRelationData, WebResourceName, String>
 |   |   OutlookSessionStub
 |   |   Synchronizer<String, DateTime, IContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger, ContactMatchData, vCard>
 |   |   |   BatchEntityRepositoryAdapter<String, DateTime, IContactItemWrapper, ICardDavRepositoryLogger>
@@ -127,3 +128,4 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   |   |   |   vCardStandardWriter
 |   |   |   |   VCardTypeCache
 |   |   |   |   |   VCardTypeCacheDataAccess
+|   |   ValueTuple<String, String>

@@ -26,21 +26,38 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.DistributionLists.VCard
 {
-  public class DistListEntityMapper : DistListEntityMapperBase
+  public class UidDistListEntityMapper : DistListEntityMapperBase
   {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod ().DeclaringType);
-
     protected override vCardMember CreateVCardMemberOrNull(GenericComObjectWrapper<Recipient> recipientWrapper, string nameWithoutEmail, DistributionListSychronizationContext context, IEntityMappingLogger mappingLogger, ILog logger)
     {
+      var uid = context.GetUidByEmailAddress(recipientWrapper.Inner.Address);
+      if (uid == null)
+      {
+        var logMessage = $"Did not find Uid of EmailAddress '{recipientWrapper.Inner.Address}'";
+        logger.WarnFormat(logMessage);
+        mappingLogger.LogMappingWarning(logMessage);
+      }
+
       var targetMember = new vCardMember();
-      targetMember.EmailAddress = recipientWrapper.Inner.Address;
-      targetMember.DisplayName = nameWithoutEmail;
+      targetMember.Uid = uid;
       return targetMember;
     }
 
     protected override IEnumerable<DistributionListMember> GetMembers(vCard source, DistributionListSychronizationContext context, IEntityMappingLogger mappingLogger, ILog logger)
     {
-      return source.Members.Select(v => new DistributionListMember(v.EmailAddress, v.DisplayName));
+      foreach(var member in source.Members)
+      {
+        (var contactWrapper, var emailAddress) = context.GetContactByUidOrNull(member.Uid, mappingLogger, logger);
+        if (contactWrapper != null)
+        {
+          DistributionListMember distributionListMember;
+          using (contactWrapper)
+          {
+            distributionListMember = new DistributionListMember(emailAddress, contactWrapper.Inner.FullName);
+          }
+          yield return distributionListMember;
+        }
+      }
     }
   }
 }

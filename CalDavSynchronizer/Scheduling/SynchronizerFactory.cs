@@ -701,9 +701,12 @@ namespace CalDavSynchronizer.Scheduling
                 distributionListSynchronizer,
                 new EmailAddressCacheDataAccess(Path.Combine(synchronizerComponents.StorageDataDirectory, "emailAddressCache.xml")),
                 synchronizerComponents.BtypeRepository,
-                _outlookSession));
+                _outlookSession,
+                synchronizerComponents.StorageDataAccess,
+                (options.OutlookFolderEntryId, options.OutlookFolderStoreId)));
 
           case DistributionListType.VCardGroup:
+          case DistributionListType.VCardGroupWithUid:
             var vCardTypeDetector = new VCardTypeDetector (synchronizerComponents.BtypeRepository, new VCardTypeCache (new VCardTypeCacheDataAccess (Path.Combine (synchronizerComponents.StorageDataDirectory, "vcardTypeCache.xml"))));
 
             var contactRepository = new TypeFilteringVCardRepositoryDecorator<ICardDavRepositoryLogger> (synchronizerComponents.BtypeRepository, VCardType.Contact, vCardTypeDetector);
@@ -720,11 +723,14 @@ namespace CalDavSynchronizer.Scheduling
               options,
               generalOptions,
               contactGroupRepository,
-              new DistListEntityMapper(),
+              synchronizerComponents.MappingParameters.DistributionListType ==  DistributionListType.VCardGroup ? (DistListEntityMapperBase) new DistListEntityMapper() : new UidDistListEntityMapper(),
               new InitialDistListEntityMatcher(btypeIdEqualityComparer),
               e => new DistListConflictInitialSyncStateCreationStrategyAutomatic(e),
               btypeIdEqualityComparer,
               componentsToFill);
+
+          
+        
 
             return new OutlookSynchronizer<WebResourceName, string> (
               new ContactAndDistListSynchronizer (
@@ -732,7 +738,9 @@ namespace CalDavSynchronizer.Scheduling
                 distListSynchronizer,
                 new EmailAddressCacheDataAccess (Path.Combine (synchronizerComponents.StorageDataDirectory, "emailAddressCache.xml")),
                 synchronizerComponents.BtypeRepository,
-                _outlookSession));
+                _outlookSession,
+                synchronizerComponents.StorageDataAccess,
+                (options.OutlookFolderEntryId, options.OutlookFolderStoreId)));
 
           default:
             throw new NotImplementedException($"{nameof(DistributionListType)} '{synchronizerComponents.MappingParameters.DistributionListType}' not implemented.");
