@@ -56,7 +56,8 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
         {
           _cacheItemsByEmailAddress[emailAddress] = cacheItem;
         }
-        _cacheItemsByUid[cacheItem.Uid] = cacheItem;
+        if(!string.IsNullOrEmpty(cacheItem.Uid)) // can be null, if the cache is from a previous version
+          _cacheItemsByUid[cacheItem.Uid] = cacheItem;
       }
 
       _outlookIdsByServerId = new Lazy<Dictionary<WebResourceName, string>>(

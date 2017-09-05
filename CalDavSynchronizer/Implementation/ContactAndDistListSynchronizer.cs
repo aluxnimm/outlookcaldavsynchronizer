@@ -17,6 +17,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
@@ -27,6 +29,7 @@ using GenSync.EntityRelationManagement;
 using GenSync.EntityRepositories;
 using GenSync.Logging;
 using GenSync.Synchronization;
+using log4net;
 using Microsoft.Office.Interop.Outlook;
 using Thought.vCards;
 
@@ -35,6 +38,8 @@ namespace CalDavSynchronizer.Implementation
   public class ContactAndDistListSynchronizer
     : IPartialSynchronizer<string, DateTime, WebResourceName, string>
   {
+    private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
+
     private readonly IPartialSynchronizer<string, DateTime, WebResourceName, string, ICardDavRepositoryLogger> _contactSynchronizer;
     private readonly ISynchronizer<DistributionListSychronizationContext> _distributionListSynchronizer;
     private readonly EmailAddressCacheDataAccess _emailAddressCacheDataAccess;
@@ -79,7 +84,15 @@ namespace CalDavSynchronizer.Implementation
 
       var idsToQuery = emailAddressCache.GetEmptyCacheItems();
       if (idsToQuery.Length > 0)
+      {
         await _loggingCardDavRepositoryDecorator.Get(idsToQuery, NullLoadEntityLogger.Instance, emailAddressCache);
+
+        var stillEmptyCacheItems =  emailAddressCache.GetEmptyCacheItems();
+        if (stillEmptyCacheItems.Any())
+        {
+          s_logger.Warn($"Could not update the following empty cache items: {String.Join(", ", stillEmptyCacheItems.Select(id => $"'{id}'"))}");
+        }
+      }
       var cacheItems = emailAddressCache.Items;
       _emailAddressCacheDataAccess.Save(cacheItems);
 

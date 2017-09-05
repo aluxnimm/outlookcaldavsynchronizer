@@ -58,7 +58,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
     public WebResourceName[] GetEmptyCacheItems()
     {
-      return _cacheItems.Where(e => e.Value.EmailAddresses == null).Select(e => e.Key).ToArray();
+      return _cacheItems.Where(e => e.Value.EmailAddresses == null || e.Value.Uid == null).Select(e => e.Key).ToArray();
     }
   }
 }
