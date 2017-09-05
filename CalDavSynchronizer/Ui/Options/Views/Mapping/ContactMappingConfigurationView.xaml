@@ -32,7 +32,7 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock ToolTip="Choose the used format for DAV contact groups.&#x0a;SOGO uses its own VLIST format to store contact groups.&#x0a;For other CardDAV servers choose the vCard with KIND:group format">DAV contact group format:</TextBlock>
+                    <TextBlock ToolTip="Choose the used format for DAV contact groups.&#x0a;SOGO uses its own VLIST format to store contact groups.&#x0a;For other CardDAV servers choose the vCard with KIND:group format&#x0a;and for iCloud the iCloud group format.">DAV contact group format:</TextBlock>
                     <ComboBox Grid.Column="1"  IsEnabled="{Binding MapDistributionLists, Mode=OneWay}" ItemsSource="{Binding AvailableDistributionListTypes}" SelectedValue="{Binding DistributionListType}" DisplayMemberPath="Name" SelectedValuePath="Value" />
                 </Grid>
             </GroupBox>
