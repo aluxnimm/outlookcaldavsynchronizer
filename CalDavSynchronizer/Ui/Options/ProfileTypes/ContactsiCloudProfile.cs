@@ -36,7 +36,8 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
       data.MappingConfiguration = new ContactMappingConfiguration()
       {
         MapDistributionLists = true,
-        DistributionListType = DistributionListType.VCardGroupWithUid
+        DistributionListType = DistributionListType.VCardGroupWithUid,
+        WriteImAsImpp = true
       };
     }
 
