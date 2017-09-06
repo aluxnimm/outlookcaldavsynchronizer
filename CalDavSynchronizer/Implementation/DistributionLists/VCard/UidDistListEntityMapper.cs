@@ -33,7 +33,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists.VCard
       var uid = context.GetUidByEmailAddress(recipientWrapper.Inner.Address);
       if (uid == null)
       {
-        var logMessage = $"Did not find Uid of EmailAddress '{recipientWrapper.Inner.Address}'";
+        var logMessage = $"Did not find Uid of EmailAddress '{recipientWrapper.Inner.Address}'. Member won't be added to contact group";
         logger.WarnFormat(logMessage);
         mappingLogger.LogMappingWarning(logMessage);
       }
