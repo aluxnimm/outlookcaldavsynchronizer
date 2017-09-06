@@ -274,16 +274,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         target.Inner.Categories = string.Empty;
       }
 
-      target.Inner.IMAddress = string.Empty;
-      foreach (var im in source.IMs)
-      {
-        if (!string.IsNullOrEmpty(target.Inner.IMAddress))
-          target.Inner.IMAddress += "; ";
-        if (im.ServiceType != IMServiceType.Unspecified && im.ServiceType != _configuration.DefaultImServicType)
-          target.Inner.IMAddress += im.ServiceType + ": " + im.Handle;
-        else
-          target.Inner.IMAddress += im.Handle;
-      }
+      MapIMs2To1 (source, target.Inner);
 
       target.Inner.Email1Address = string.Empty;
       target.Inner.Email1DisplayName = string.Empty;
@@ -980,6 +971,34 @@ namespace CalDavSynchronizer.Implementation.Contacts
           {
             target.SelectedMailingAddress = OlMailingAddress.olOther;
           }
+        }
+      }
+    }
+
+    private void MapIMs2To1 (vCard source, ContactItem target)
+    {
+      target.IMAddress = string.Empty;
+      foreach (var im in source.IMs)
+      {
+        string imString;
+
+        if (im.ServiceType != IMServiceType.Unspecified && im.ServiceType != _configuration.DefaultImServicType)
+          imString = im.ServiceType + ": " + im.Handle;
+        else
+          imString = im.Handle;
+
+        if (!string.IsNullOrEmpty (target.IMAddress))
+        {
+          // some servers like iCloud use IMPP and X-PROTOCOL together
+          // don't add IM address twice in such case
+          if (!target.IMAddress.Contains (imString))
+          {
+            target.IMAddress += "; " + imString;
+          }
+        }
+        else
+        {
+          target.IMAddress = imString;
         }
       }
     }
