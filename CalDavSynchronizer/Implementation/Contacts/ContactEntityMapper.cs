@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using CalDavSynchronizer.Implementation.ComWrappers;
@@ -977,6 +978,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
     private void MapIMs2To1 (vCard source, ContactItem target)
     {
+      var alreadyContainedImAddresses = new HashSet<string>();
+
       target.IMAddress = string.Empty;
       foreach (var im in source.IMs)
       {
@@ -991,7 +994,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         {
           // some servers like iCloud use IMPP and X-PROTOCOL together
           // don't add IM address twice in such case
-          if (!target.IMAddress.Contains (imString))
+          if (alreadyContainedImAddresses.Add (imString))
           {
             target.IMAddress += "; " + imString;
           }
