@@ -445,6 +445,7 @@
     <Compile Include="Ui\Options\IEnumDisplayNameProvider.cs" />
     <Compile Include="Ui\Options\Models\ICustomPropertiesMappingConfigurationModel.cs" />
     <Compile Include="Ui\Options\Models\MappingConfigurationModel.cs" />
+    <Compile Include="Ui\Options\ProfileTypes\ContactsiCloudProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\MailDeProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\SmarterMailProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\WebDeProfile.cs" />
@@ -823,6 +824,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
+    <Resource Include="Resources\ProfileLogos\logo_iCloud.png" />
     <Resource Include="Resources\ProfileLogos\logo_mail.de.png" />
     <Resource Include="Resources\ProfileLogos\logo_smartermail.png" />
     <Resource Include="Resources\ProfileLogos\logo_webde.png" />

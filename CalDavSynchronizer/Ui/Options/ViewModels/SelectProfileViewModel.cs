@@ -66,6 +66,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       new[]
         {
           "Generic CalDAV_CardDAV",
+          "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_iCloud.png",
           "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_cozy.png",
           "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_easyproject.png",
           "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_fruux.png",
