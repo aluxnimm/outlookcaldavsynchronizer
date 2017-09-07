@@ -64,7 +64,36 @@ namespace CalDavSynchronizer.Utilities
       {OlCategoryColor.olCategoryColorDarkPurple, ArgbColor.FromRgb(0x5c3fa3)},
       {OlCategoryColor.olCategoryColorDarkMaroon, ArgbColor.FromRgb(0x93446b)}
     };
-    
+
+    public static readonly Dictionary<OlCategoryColor, string> HtmlColorByCategoryColor = new Dictionary<OlCategoryColor, string>
+    {
+      {OlCategoryColor.olCategoryColorRed, "red"},
+      {OlCategoryColor.olCategoryColorOrange, "orange"},
+      {OlCategoryColor.olCategoryColorPeach, "peachpuff"},
+      {OlCategoryColor.olCategoryColorYellow, "yellow"},
+      {OlCategoryColor.olCategoryColorGreen, "green"},
+      {OlCategoryColor.olCategoryColorTeal, "lightseagreen"},
+      {OlCategoryColor.olCategoryColorOlive, "olive"},
+      {OlCategoryColor.olCategoryColorBlue, "blue"},
+      {OlCategoryColor.olCategoryColorPurple, "purple"},
+      {OlCategoryColor.olCategoryColorMaroon, "maroon"},
+      {OlCategoryColor.olCategoryColorSteel, "lightsteelblue"},
+      {OlCategoryColor.olCategoryColorDarkSteel, "steelblue"},
+      {OlCategoryColor.olCategoryColorGray, "gray"},
+      {OlCategoryColor.olCategoryColorDarkGray, "darkgray"},
+      {OlCategoryColor.olCategoryColorBlack, "black"},
+      {OlCategoryColor.olCategoryColorDarkRed, "darkred"},
+      {OlCategoryColor.olCategoryColorDarkOrange, "darkorange"},
+      {OlCategoryColor.olCategoryColorDarkPeach, "peru"},
+      {OlCategoryColor.olCategoryColorDarkYellow, "yellowgreen"},
+      {OlCategoryColor.olCategoryColorDarkGreen, "darkgreen"},
+      {OlCategoryColor.olCategoryColorDarkTeal, "teal"},
+      {OlCategoryColor.olCategoryColorDarkOlive, "darkolivegreen"},
+      {OlCategoryColor.olCategoryColorDarkBlue, "darkblue"},
+      {OlCategoryColor.olCategoryColorDarkPurple, "darkviolet"},
+      {OlCategoryColor.olCategoryColorDarkMaroon, "palevioletred"}
+    };
+
     public static OlCategoryColor FindMatchingCategoryColor(ArgbColor argbColor)
     {
       var color = Color.FromArgb (argbColor.ArgbValue);
