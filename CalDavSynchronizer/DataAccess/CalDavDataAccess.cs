@@ -443,8 +443,6 @@ namespace CalDavSynchronizer.DataAccess
 
     private async Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetVersions (DateTimeRange? range, string entityType)
     {
-      var entities = new List<EntityVersion<WebResourceName, string>>();
-
       try
       {
         var responseXml = await _webDavClient.ExecuteWebDavRequestAndReadResponse (
@@ -476,37 +474,22 @@ namespace CalDavSynchronizer.DataAccess
                 ));
 
 
-        XmlNodeList responseNodes = responseXml.XmlDocument.SelectNodes ("/D:multistatus/D:response", responseXml.XmlNamespaceManager);
-
-        // ReSharper disable once LoopCanBeConvertedToQuery
-        // ReSharper disable once PossibleNullReferenceException
-        foreach (XmlElement responseElement in responseNodes)
-        {
-          var urlNode = responseElement.SelectSingleNode ("D:href", responseXml.XmlNamespaceManager);
-          var etagNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:getetag", responseXml.XmlNamespaceManager);
-          if (urlNode != null &&
-              etagNode != null &&
-              _serverUrl.AbsolutePath != UriHelper.DecodeUrlString (urlNode.InnerText))
-          {
-            var uri = new WebResourceName (urlNode.InnerText);
-            entities.Add (EntityVersion.Create (uri, HttpUtility.GetQuotedEtag (etagNode.InnerText)));
-          }
-        }
+        return ExtractVersions(responseXml);
       }
       catch (WebDavClientException x)
       {
         // Workaround for Synology NAS, which returns 404 insteaod of an empty response if no events are present
         if (x.StatusCode == HttpStatusCode.NotFound && await IsResourceCalender())
-          return entities;
+          return new EntityVersion<WebResourceName, string>[0]; ;
 
         throw;
       }
-
-      return entities;
     }
 
     public async Task<IReadOnlyList<EntityWithId<WebResourceName, string>>> GetEntities (IEnumerable<WebResourceName> eventUrls)
     {
+      s_logger.Debug("Entered GetEntities.");
+
       WebResourceName firstResourceNameOrNull = null;
 
       var requestBody = @"<?xml version=""1.0""?>
@@ -522,6 +505,8 @@ namespace CalDavSynchronizer.DataAccess
                                           eventUrls.Select (
                                              u => 
                                              {
+                                               if (s_logger.IsDebugEnabled)
+                                                 s_logger.Debug($"Requesting: '{u}'");
                                                if (firstResourceNameOrNull == null)
                                                  firstResourceNameOrNull = u;
                                                return $"<D:href>{SecurityElement.Escape(u.OriginalAbsolutePath)}</D:href>";
@@ -553,10 +538,13 @@ namespace CalDavSynchronizer.DataAccess
         var dataNode = responseElement.SelectSingleNode ("D:propstat/D:prop/C:calendar-data", responseXml.XmlNamespaceManager);
         if (urlNode != null && !string.IsNullOrEmpty (dataNode?.InnerText))
         {
+          if (s_logger.IsDebugEnabled)
+            s_logger.DebugFormat($"Got: '{urlNode.InnerText}'");
           entities.Add (EntityWithId.Create (new WebResourceName(urlNode.InnerText), dataNode.InnerText));
         }
       }
 
+      s_logger.Debug("Exiting GetEntities.");
       return entities;
     }
 
@@ -590,23 +578,34 @@ namespace CalDavSynchronizer.DataAccess
           requestBody
           );
 
-      XmlNodeList responseNodes = responseXml.XmlDocument.SelectNodes ("/D:multistatus/D:response", responseXml.XmlNamespaceManager);
+      return ExtractVersions(responseXml);
+    }
 
-      var entities = new List<EntityVersion<WebResourceName, string>>();
+
+    private IReadOnlyList<EntityVersion<WebResourceName, string>> ExtractVersions(XmlDocumentWithNamespaceManager responseXml)
+    {
+      var responseNodes = responseXml.XmlDocument.SelectNodes("/D:multistatus/D:response", responseXml.XmlNamespaceManager);
 
       if (responseNodes == null)
-        return entities;
+        return new EntityVersion<WebResourceName, string>[0];
+
+      var entities = new List<EntityVersion<WebResourceName, string>>();
 
       // ReSharper disable once LoopCanBeConvertedToQuery
       // ReSharper disable once PossibleNullReferenceException
       foreach (XmlElement responseElement in responseNodes)
       {
-        var urlNode = responseElement.SelectSingleNode ("D:href", responseXml.XmlNamespaceManager);
-        var etagNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:getetag", responseXml.XmlNamespaceManager);
-        if (urlNode != null && etagNode != null)
+        var urlNode = responseElement.SelectSingleNode("D:href", responseXml.XmlNamespaceManager);
+        var etagNode = responseElement.SelectSingleNode("D:propstat/D:prop/D:getetag", responseXml.XmlNamespaceManager);
+        if (urlNode != null &&
+            etagNode != null &&
+            _serverUrl.AbsolutePath != UriHelper.DecodeUrlString(urlNode.InnerText))
         {
-          entities.Add (EntityVersion.Create (new WebResourceName (urlNode.InnerText),
-                                              HttpUtility.GetQuotedEtag (etagNode.InnerText)));
+          var uri = new WebResourceName(urlNode.InnerText);
+          var etag = HttpUtility.GetQuotedEtag(etagNode.InnerText);
+          if (s_logger.IsDebugEnabled)
+            s_logger.DebugFormat($"Got version '{uri}': '{etag}'");
+          entities.Add(EntityVersion.Create(uri, etag));
         }
       }
 
