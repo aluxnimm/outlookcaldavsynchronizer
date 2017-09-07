@@ -71,7 +71,7 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
       Outlook = EasyAccessRepositoryAdapter.Create (components.OutlookContactRepository, new SynchronizationContextFactory<ICardDavRepositoryLogger>(() =>  NullCardDavRepositoryLogger.Instance));
       Server = EasyAccessRepositoryAdapter.Create (components.CardDavEntityRepository, new SynchronizationContextFactory<ICardDavRepositoryLogger> (() => NullCardDavRepositoryLogger.Instance));
 
-      var distributionListSychronizationContextDummy = new DistributionListSychronizationContext(new CacheItem[0], new OutlookSession(TestComponentContainer.Application.Session));
+      var distributionListSychronizationContextDummy = new DistributionListSychronizationContext(new CacheItem[0], new OutlookSession(TestComponentContainer.Application.Session), components.EntityRelationDataAccess, (Options.OutlookFolderEntryId, Options.OutlookFolderStoreId));
 
       if(components.OutlookDistListRepositoryOrNull != null)
         OutlookDistListsOrNull = EasyAccessRepositoryAdapter.Create (components.OutlookDistListRepositoryOrNull, new SynchronizationContextFactory<DistributionListSychronizationContext> (() => distributionListSychronizationContextDummy));

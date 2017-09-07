@@ -880,14 +880,15 @@ namespace Thought.vCards
 
       foreach (vCardMember member in card.Members)
       {
-
-        if (!string.IsNullOrEmpty(member.EmailAddress))
+        var isEmailAddressSpecified = !string.IsNullOrEmpty(member.EmailAddress);
+        if (isEmailAddressSpecified || !string.IsNullOrEmpty(member.Uid))
         {
 
           vCardProperty property = new vCardProperty();
 
           property.Name = "X-ADDRESSBOOKSERVER-MEMBER";
-          property.Value = "mailto:" + member.EmailAddress;
+
+          property.Value = isEmailAddressSpecified ? "mailto:" + member.EmailAddress : "urn:uuid:" + member.Uid;
 
           if (!string.IsNullOrEmpty(member.DisplayName))
           {
