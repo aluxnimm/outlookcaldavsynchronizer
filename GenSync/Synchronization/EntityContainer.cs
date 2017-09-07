@@ -30,19 +30,25 @@ namespace GenSync.Synchronization
 
     }
 
-    public async Task<IReadOnlyList<T>> SelectEntities<T>(ICollection<TEntityId> ids, ILoadEntityLogger logger, TContext context, Func<EntityWithId<TEntityId, TEntity>, T> selector)
+    public async Task<IReadOnlyDictionary<TEntityId, T>> GetTransformedEntities<T>(ICollection<TEntityId> ids, ILoadEntityLogger logger, TContext context, Func<EntityWithId<TEntityId, TEntity>, T> transform)
     {
       return await _chunkedExecutor.ExecuteAsync(
-        new List<T>(),
+        new Dictionary<TEntityId, T>(_idComparer),
         ids,
         async (chunk, transformedEntities) =>
         {
-          var entites = CacheOrClenaup(await _repository.Get(chunk, logger, context));
-          transformedEntities.AddRange(entites.Select(selector));
+          var entites = CreateEnumerableWhichCachesOrCleansUp(await _repository.Get(chunk, logger, context));
+          foreach (var entity in entites)
+          {
+            if (!transformedEntities.ContainsKey(entity.Id))
+              transformedEntities.Add(entity.Id, transform(entity));
+            else
+              s_logger.WarnFormat("Entitiy '{0}' was contained multiple times in repository response. Ignoring redundant entity", entity.Id);
+          }
         });
     }
 
-    IEnumerable<EntityWithId<TEntityId, TEntity>> CacheOrClenaup(IEnumerable<EntityWithId<TEntityId, TEntity>> entities)
+    IEnumerable<EntityWithId<TEntityId, TEntity>> CreateEnumerableWhichCachesOrCleansUp(IEnumerable<EntityWithId<TEntityId, TEntity>> entities)
     {
       foreach (var entity in entities)
       {
@@ -94,7 +100,7 @@ namespace GenSync.Synchronization
       if (!dictionary.ContainsKey(tuple.Id))
         dictionary.Add(tuple.Id, tuple.Entity);
       else
-        s_logger.WarnFormat("Entitiy '{0}' was contained multiple times in server response. Ignoring redundant entity", tuple.Id);
+        s_logger.WarnFormat("Entitiy '{0}' was contained multiple times in repository response. Ignoring redundant entity", tuple.Id);
     }
 
     public void Dispose()

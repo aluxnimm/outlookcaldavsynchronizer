@@ -9,9 +9,9 @@ namespace GenSync.Synchronization
   {
     /// <summary>
     /// Selects entites.
-    /// It is not allowed to hold a reference to an entity, which is passed to the selector.
+    /// It is not allowed to hold a reference to an entity, which is passed to the transform delegate.
     /// </summary>
-    Task<IReadOnlyList<T>> SelectEntities<T>(ICollection<TEntityId> ids, ILoadEntityLogger logger, TContext context, Func<EntityWithId<TEntityId, TEntity>,T> selector);
+    Task<IReadOnlyDictionary<TEntityId, T>> GetTransformedEntities<T>(ICollection<TEntityId> ids, ILoadEntityLogger logger, TContext context, Func<EntityWithId<TEntityId, TEntity>,T> transform);
 
     /// <summary>
     /// It is not allowed to hold a reference to an entity after another call to this interface

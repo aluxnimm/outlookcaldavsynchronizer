@@ -442,8 +442,8 @@ namespace GenSync.Synchronization
 
         var matchingEntites = _initialEntityMatcher.FindMatchingEntities(
           _entityRelationDataFactory,
-          (await aEntities.SelectEntities(newAVersions.Keys, logger.ALoadEntityLogger, synchronizationContext, e => EntityWithId.Create(e.Id, _aMatchDataFactory.CreateMatchData(e.Entity)))).ToDictionary(e => e.Id, e => e.Entity),
-          (await bEntities.SelectEntities(newBVersions.Keys, logger.BLoadEntityLogger, synchronizationContext, e => EntityWithId.Create(e.Id, _bMatchDataFactory.CreateMatchData(e.Entity)))).ToDictionary(e => e.Id, e => e.Entity),
+          await aEntities.GetTransformedEntities(newAVersions.Keys, logger.ALoadEntityLogger, synchronizationContext, e => _aMatchDataFactory.CreateMatchData(e.Entity)),
+          await bEntities.GetTransformedEntities(newBVersions.Keys, logger.BLoadEntityLogger, synchronizationContext, e => _bMatchDataFactory.CreateMatchData(e.Entity)),
           newAVersions,
           newBVersions);
 
@@ -515,7 +515,7 @@ namespace GenSync.Synchronization
         if (!dictionary.ContainsKey(tuple.Id))
           dictionary.Add(tuple.Id, tuple.Version);
         else
-          s_logger.WarnFormat("EntitiyVersion '{0}' was contained multiple times in server response. Ignoring redundant entity", tuple.Id);
+          s_logger.WarnFormat("EntitiyVersion '{0}' was contained multiple times in repository response. Ignoring redundant entity", tuple.Id);
       }
 
       return dictionary;
