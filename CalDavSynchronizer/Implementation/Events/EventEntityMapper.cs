@@ -1769,17 +1769,21 @@ namespace CalDavSynchronizer.Implementation.Events
 
     private void MapCategories2To1 (IEvent source, AppointmentItem target)
     {
-      var categories = string.Join (CultureInfo.CurrentCulture.TextInfo.ListSeparator, source.Categories);
+      var targetCategories = new List<string>(source.Categories);
 
       if (_configuration.UseEventCategoryAsFilter && !_configuration.InvertEventCategoryFilter
           && source.Categories.All (a => a != _configuration.EventCategory))
       {
-        target.Categories = categories + CultureInfo.CurrentCulture.TextInfo.ListSeparator + _configuration.EventCategory;
+        targetCategories.Add(_configuration.EventCategory);
       }
-      else
+
+      if (_configuration.MapEventColorToCategory && source.Properties.ContainsKey("COLOR"))
       {
-        target.Categories = categories;
+        var eventColor = source.Properties["COLOR"].Value.ToString();
+        targetCategories.Add(ColorHelper.FindMatchingHtmlCategoryColor(eventColor));
       }
+
+      target.Categories = string.Join(CultureInfo.CurrentCulture.TextInfo.ListSeparator, targetCategories);
     }
 
     private void MapAttendeesAndOrganizer2To1 (IEvent source, AppointmentItem target, IEntityMappingLogger logger)

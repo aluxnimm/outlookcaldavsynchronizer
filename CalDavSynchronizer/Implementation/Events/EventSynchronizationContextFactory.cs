@@ -21,10 +21,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.Utilities;
 using DDay.iCal;
 using GenSync.EntityRelationManagement;
 using GenSync.EntityRepositories;
 using GenSync.Synchronization;
+using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
@@ -36,14 +39,9 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly bool _cleanupDuplicateEvents;
     private readonly IEqualityComparer<AppointmentId> _idComparer;
     private readonly IOutlookSession _outlookSession;
+    private readonly bool _mapEventColorToCategory;
 
-    public EventSynchronizationContextFactory(
-      OutlookEventRepository outlookRepository,
-      IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> btypeRepository,
-      IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> entityRelationDataAccess,
-      bool cleanupDuplicateEvents,
-      IEqualityComparer<AppointmentId> idComparer, 
-      IOutlookSession outlookSession)
+    public EventSynchronizationContextFactory(OutlookEventRepository outlookRepository, IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> btypeRepository, IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> entityRelationDataAccess, bool cleanupDuplicateEvents, IEqualityComparer<AppointmentId> idComparer, IOutlookSession outlookSession, bool mapEventColorToCategory)
     {
       if (outlookRepository == null)
         throw new ArgumentNullException (nameof (outlookRepository));
@@ -60,10 +58,14 @@ namespace CalDavSynchronizer.Implementation.Events
       _cleanupDuplicateEvents = cleanupDuplicateEvents;
       _idComparer = idComparer;
       _outlookSession = outlookSession;
+      _mapEventColorToCategory = mapEventColorToCategory;
     }
 
     public Task<IEventSynchronizationContext> Create()
     {
+      if (_mapEventColorToCategory)
+        EnsureColorCategoriesExist();
+
       return Task.FromResult<IEventSynchronizationContext>(
         new EventSynchronizationContext(
           _cleanupDuplicateEvents
@@ -75,6 +77,28 @@ namespace CalDavSynchronizer.Implementation.Events
             : NullDuplicateEventCleaner.Instance,
           _outlookSession));
     }
+
+    private void EnsureColorCategoriesExist()
+    {
+      using (var categoriesWrapper = GenericComObjectWrapper.Create(_outlookSession.Categories))
+      {
+        foreach (var item in ColorHelper.HtmlColorByCategoryColor)
+        {
+          using (var categoryWrapper = GenericComObjectWrapper.Create(categoriesWrapper.Inner[item.Value]))
+          {
+            if (categoryWrapper.Inner == null)
+            {
+              categoriesWrapper.Inner.Add(item.Value, item.Key);
+            }
+            else
+            {
+              categoryWrapper.Inner.Color = item.Key;
+            }
+          }
+        }
+      }
+    }
+
 
     public async Task SynchronizationFinished (IEventSynchronizationContext context)
     {

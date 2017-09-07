@@ -453,10 +453,11 @@ namespace CalDavSynchronizer.Scheduling
         FullEntitySynchronizationLoggerFactory.Create(generalOptions.LogEntityNames ? EntityLogMessageFactory.Instance : NullEntityLogMessageFactory<IAppointmentItemWrapper, IICalendar>.Instance),
         new EventSynchronizationInterceptorFactory());
 
-      return new OutlookEventSynchronizer<WebResourceName, string> (
+      return new OutlookEventSynchronizer<WebResourceName, string>(
         new ContextCreatingSynchronizerDecorator<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext>(
           synchronizer,
-          new EventSynchronizationContextFactory(atypeRepository, btypeRepository, entityRelationDataAccess, mappingParameters.CleanupDuplicateEvents, atypeIdEqualityComparer, _outlookSession)));
+          new EventSynchronizationContextFactory(atypeRepository, btypeRepository, entityRelationDataAccess, mappingParameters.CleanupDuplicateEvents, atypeIdEqualityComparer, _outlookSession, mappingParameters.MapEventColorToCategory)));
+
     }
 
     private HttpClient CreateHttpClient(ProxyOptions proxyOptionsOrNull)

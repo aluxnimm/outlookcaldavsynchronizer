@@ -94,21 +94,19 @@ namespace CalDavSynchronizer.Utilities
       {OlCategoryColor.olCategoryColorDarkMaroon, "palevioletred"}
     };
 
-    public static OlCategoryColor FindMatchingCategoryColor(ArgbColor argbColor)
+    private static OlCategoryColor FindMatchingCategoryColor (Color color)
     {
-      var color = Color.FromArgb (argbColor.ArgbValue);
-
-      double minDistance = double.MaxValue;
-      OlCategoryColor matchingCategoryColor = OlCategoryColor.olCategoryColorNone;
+      var minDistance = double.MaxValue;
+      var matchingCategoryColor = OlCategoryColor.olCategoryColorNone;
 
       foreach (var cat in ArgbColorByCategoryColor)
       {
-        Color catColor = Color.FromArgb(cat.Value.ArgbValue);
+        var catColor = Color.FromArgb(cat.Value.ArgbValue);
 
         var a = new Rgb { R = color.R, G = color.G, B = color.B };
         var b = new Rgb { R = catColor.R, G = catColor.G, B = catColor.B };
 
-        double curDistance = a.Compare(b, new ColorMine.ColorSpaces.Comparisons.CieDe2000Comparison());
+        var curDistance = a.Compare(b, new ColorMine.ColorSpaces.Comparisons.CieDe2000Comparison());
 
         if (curDistance < minDistance)
         {
@@ -116,9 +114,22 @@ namespace CalDavSynchronizer.Utilities
           matchingCategoryColor = cat.Key;
         }
       }
-
       return matchingCategoryColor;
     }
 
+    public static OlCategoryColor FindMatchingCategoryColor (ArgbColor argbColor)
+    {
+      var color = Color.FromArgb (argbColor.ArgbValue);
+
+      return FindMatchingCategoryColor (color);
+    }
+
+    public static string FindMatchingHtmlCategoryColor (string htmlColor)
+    {
+      var color = ColorTranslator.FromHtml (htmlColor);
+      var matchingCategoryColor = FindMatchingCategoryColor (color);
+
+      return HtmlColorByCategoryColor[matchingCategoryColor];
+    }
   }
 }
