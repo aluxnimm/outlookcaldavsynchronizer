@@ -582,7 +582,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._logEntityReportsWithoutErrorsAndWarnings.Name = "_logEntityReportsWithoutErrorsAndWarnings";
       this._logEntityReportsWithoutErrorsAndWarnings.Size = new System.Drawing.Size(244, 17);
       this._logEntityReportsWithoutErrorsAndWarnings.TabIndex = 8;
-      this._logEntityReportsWithoutErrorsAndWarnings.Text = "Log all entites, even without errors or warnings";
+      this._logEntityReportsWithoutErrorsAndWarnings.Text = "Log all entities, even without errors or warnings";
       this._logEntityReportsWithoutErrorsAndWarnings.UseVisualStyleBackColor = true;
       // 
       // GeneralOptionsForm
