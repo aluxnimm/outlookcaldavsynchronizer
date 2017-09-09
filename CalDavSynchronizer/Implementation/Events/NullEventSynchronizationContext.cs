@@ -15,40 +15,22 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using GenSync.ProgressReport;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
   public class NullEventSynchronizationContext : IEventSynchronizationContext
   {
-    public static readonly IEventSynchronizationContext Instance = new NullEventSynchronizationContext ();
+    public static readonly IEventSynchronizationContext Instance = new NullEventSynchronizationContext();
 
-    private NullEventSynchronizationContext ()
+    private NullEventSynchronizationContext()
     {
     }
 
-    public Task NotifySynchronizationFinished ()
+    public IDuplicateEventCleaner DuplicateEventCleaner => NullDuplicateEventCleaner.Instance;
+    public OlCategoryColor GetCategoryColor(string categoryName)
     {
-      return Task.FromResult (0);
-    }
-
-    public void AnnounceAppointment (AppointmentSlim appointment)
-    {
-      
-    }
-
-    public void AnnounceAppointmentDeleted (AppointmentId id)
-    {
-     
-    }
-
-    public Task<IEnumerable<AppointmentId>> DeleteAnnouncedEventsIfDuplicates(Predicate<AppointmentId> canBeDeleted)
-    {
-      return Task.FromResult<IEnumerable<AppointmentId>>(new AppointmentId[0]);
+      return OlCategoryColor.olCategoryColorNone;
     }
   }
 }

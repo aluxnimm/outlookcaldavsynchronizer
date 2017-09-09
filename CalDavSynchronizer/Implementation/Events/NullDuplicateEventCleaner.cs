@@ -13,37 +13,42 @@
 // GNU Affero General Public License for more details.
 // 
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.using System;
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using CalDavSynchronizer.DataAccess;
-using DDay.iCal;
-using GenSync.EntityRelationManagement;
-using GenSync.EntityRepositories;
-using GenSync.Synchronization;
+using GenSync.ProgressReport;
+using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class NullEventSynchronizationContextFactory : ISynchronizationContextFactory<IEventSynchronizationContext>
+  public class NullDuplicateEventCleaner : IDuplicateEventCleaner
   {
-    public static readonly ISynchronizationContextFactory<IEventSynchronizationContext> Instance = new NullEventSynchronizationContextFactory();
+    public static readonly IDuplicateEventCleaner Instance = new NullDuplicateEventCleaner();
 
-    private NullEventSynchronizationContextFactory ()
+    private NullDuplicateEventCleaner()
     {
     }
 
-    public Task<IEventSynchronizationContext> Create ()
-    {
-      return Task.FromResult (NullEventSynchronizationContext.Instance);
-    }
-
-    public Task SynchronizationFinished (IEventSynchronizationContext context)
+    public Task NotifySynchronizationFinished ()
     {
       return Task.FromResult (0);
+    }
+
+    public void AnnounceAppointment (AppointmentSlim appointment)
+    {
+      
+    }
+
+    public void AnnounceAppointmentDeleted (AppointmentId id)
+    {
+     
+    }
+
+    public Task<IEnumerable<AppointmentId>> DeleteAnnouncedEventsIfDuplicates(Predicate<AppointmentId> canBeDeleted)
+    {
+      return Task.FromResult<IEnumerable<AppointmentId>>(new AppointmentId[0]);
     }
   }
 }

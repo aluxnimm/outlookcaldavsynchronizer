@@ -35,13 +35,15 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> _entityRelationDataAccess;
     private readonly bool _cleanupDuplicateEvents;
     private readonly IEqualityComparer<AppointmentId> _idComparer;
+    private readonly IOutlookSession _outlookSession;
 
     public EventSynchronizationContextFactory(
       OutlookEventRepository outlookRepository,
       IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> btypeRepository,
       IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> entityRelationDataAccess,
       bool cleanupDuplicateEvents,
-      IEqualityComparer<AppointmentId> idComparer)
+      IEqualityComparer<AppointmentId> idComparer, 
+      IOutlookSession outlookSession)
     {
       if (outlookRepository == null)
         throw new ArgumentNullException (nameof (outlookRepository));
@@ -50,29 +52,33 @@ namespace CalDavSynchronizer.Implementation.Events
       if (entityRelationDataAccess == null)
         throw new ArgumentNullException (nameof (entityRelationDataAccess));
       if (idComparer == null) throw new ArgumentNullException(nameof(idComparer));
+      if (outlookSession == null) throw new ArgumentNullException(nameof(outlookSession));
 
       _outlookRepository = outlookRepository;
       _btypeRepository = btypeRepository;
       _entityRelationDataAccess = entityRelationDataAccess;
       _cleanupDuplicateEvents = cleanupDuplicateEvents;
       _idComparer = idComparer;
+      _outlookSession = outlookSession;
     }
 
-    public Task<IEventSynchronizationContext> Create ()
+    public Task<IEventSynchronizationContext> Create()
     {
-      return Task.FromResult(
-        _cleanupDuplicateEvents
-          ? new DuplicateEventCleaner(
-            _outlookRepository,
-            _btypeRepository,
-            _entityRelationDataAccess,
-            _idComparer)
-          : NullEventSynchronizationContext.Instance);
+      return Task.FromResult<IEventSynchronizationContext>(
+        new EventSynchronizationContext(
+          _cleanupDuplicateEvents
+            ? new DuplicateEventCleaner(
+              _outlookRepository,
+              _btypeRepository,
+              _entityRelationDataAccess,
+              _idComparer)
+            : NullDuplicateEventCleaner.Instance,
+          _outlookSession));
     }
 
     public async Task SynchronizationFinished (IEventSynchronizationContext context)
     {
-      await context.NotifySynchronizationFinished();
+      await context.DuplicateEventCleaner.NotifySynchronizationFinished();
     }
   }
 }

@@ -456,7 +456,7 @@ namespace CalDavSynchronizer.Scheduling
       return new OutlookEventSynchronizer<WebResourceName, string> (
         new ContextCreatingSynchronizerDecorator<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext>(
           synchronizer,
-          new EventSynchronizationContextFactory(atypeRepository, btypeRepository, entityRelationDataAccess, mappingParameters.CleanupDuplicateEvents, atypeIdEqualityComparer)));
+          new EventSynchronizationContextFactory(atypeRepository, btypeRepository, entityRelationDataAccess, mappingParameters.CleanupDuplicateEvents, atypeIdEqualityComparer, _outlookSession)));
     }
 
     private HttpClient CreateHttpClient(ProxyOptions proxyOptionsOrNull)

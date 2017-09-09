@@ -24,9 +24,7 @@ namespace CalDavSynchronizer.Implementation.Events
 {
   public interface IEventSynchronizationContext
   {
-    Task NotifySynchronizationFinished ();
-    void AnnounceAppointment (AppointmentSlim appointment);
-    void AnnounceAppointmentDeleted (AppointmentId id);
-    Task<IEnumerable<AppointmentId>> DeleteAnnouncedEventsIfDuplicates(Predicate<AppointmentId> canBeDeleted);
+    IDuplicateEventCleaner DuplicateEventCleaner { get; }
+    OlCategoryColor GetCategoryColor(string categoryName);
   }
 }

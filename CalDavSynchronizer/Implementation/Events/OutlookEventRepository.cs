@@ -97,7 +97,7 @@ namespace CalDavSynchronizer.Implementation.Events
             if (_configuration.IsCategoryFilterSticky && id.IsKnown || DoesMatchCategoryCriterion (appointment))
             {
               result.Add (EntityVersion.Create (id.Id, appointment.LastModificationTime));
-              context.AnnounceAppointment (AppointmentSlim.FromAppointmentItem(appointment));
+              context.DuplicateEventCleaner.AnnounceAppointment (AppointmentSlim.FromAppointmentItem(appointment));
             }
           }
           finally
@@ -132,7 +132,7 @@ namespace CalDavSynchronizer.Implementation.Events
       var all =  await GetAll (idsOfknownEntities,context);
       
       foreach (var appointment in all)
-        context.AnnounceAppointment(appointment);
+        context.DuplicateEventCleaner.AnnounceAppointment(appointment);
 
       return all.Select(a => a.Version).ToList();
     }
@@ -220,7 +220,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
     public async Task VerifyUnknownEntities (Dictionary<AppointmentId, DateTime> unknownEntites, IEventSynchronizationContext context)
     {
-      foreach (var deletedId in await context.DeleteAnnouncedEventsIfDuplicates(unknownEntites.ContainsKey))
+      foreach (var deletedId in await context.DuplicateEventCleaner.DeleteAnnouncedEventsIfDuplicates(unknownEntites.ContainsKey))
         unknownEntites.Remove(deletedId);
     }
 
@@ -244,12 +244,12 @@ namespace CalDavSynchronizer.Implementation.Events
     {
       entityToUpdate = await entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save();
-      context.AnnounceAppointment (AppointmentSlim.FromAppointmentItem(entityToUpdate.Inner));
+      context.DuplicateEventCleaner.AnnounceAppointment (AppointmentSlim.FromAppointmentItem(entityToUpdate.Inner));
 
       var newAppointmentId = new AppointmentId(entityToUpdate.Inner.EntryID, entityToUpdate.Inner.GlobalAppointmentID);
 
       if (!entityId.Equals(newAppointmentId))
-        context.AnnounceAppointmentDeleted(entityId);
+        context.DuplicateEventCleaner.AnnounceAppointmentDeleted(entityId);
 
       return new EntityVersion<AppointmentId, DateTime> (
         newAppointmentId, 
@@ -264,7 +264,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
       using (var appointment = entityWithId.Entity)
       {
-        context.AnnounceAppointmentDeleted (new AppointmentId (appointment.Inner.EntryID, appointment.Inner.GlobalAppointmentID));
+        context.DuplicateEventCleaner.AnnounceAppointmentDeleted (new AppointmentId (appointment.Inner.EntryID, appointment.Inner.GlobalAppointmentID));
         appointment.Inner.Delete();
       }
       return Task.FromResult (true);
@@ -305,7 +305,7 @@ namespace CalDavSynchronizer.Implementation.Events
         using (initializedWrapper)
         {
           initializedWrapper.SaveAndReload();
-          context.AnnounceAppointment(AppointmentSlim.FromAppointmentItem(initializedWrapper.Inner));
+          context.DuplicateEventCleaner.AnnounceAppointment(AppointmentSlim.FromAppointmentItem(initializedWrapper.Inner));
           var result = new EntityVersion<AppointmentId, DateTime>(
             new AppointmentId(initializedWrapper.Inner.EntryID, initializedWrapper.Inner.GlobalAppointmentID),
             initializedWrapper.Inner.LastModificationTime);
