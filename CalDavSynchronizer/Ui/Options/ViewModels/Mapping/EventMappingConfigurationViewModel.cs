@@ -128,7 +128,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     }
 
     public IList<Item<OlCategoryColor>> AvailableEventCategoryColors { get; } =
-      ColorHelper.CategoryColors.Select(kv => new Item<OlCategoryColor>(kv.Key, kv.Key.ToString().Substring(15))).ToList();
+      ColorHelper.ArgbColorByCategoryColor.Select(kv => new Item<OlCategoryColor>(kv.Key, kv.Key.ToString().Substring(15))).ToList();
 
     public ICommand GetServerCalendarColorCommand { get; }
     public ICommand SetServerCalendarColorCommand { get; }
@@ -351,7 +351,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       {
         if (EventCategoryColor != OlCategoryColor.olCategoryColorNone)
         {
-          if (await _optionsModel.CreateCalDavDataAccess().SetCalendarColorNoThrow(ColorHelper.CategoryColors[EventCategoryColor]))
+          if (await _optionsModel.CreateCalDavDataAccess().SetCalendarColorNoThrow(ColorHelper.ArgbColorByCategoryColor[EventCategoryColor]))
           {
             System.Windows.MessageBox.Show("Successfully updated the server calendar color!");
           }

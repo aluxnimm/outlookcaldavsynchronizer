@@ -35,7 +35,7 @@ namespace CalDavSynchronizer.Utilities
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    public static readonly Dictionary<OlCategoryColor, ArgbColor> CategoryColors = new Dictionary<OlCategoryColor, ArgbColor>
+    public static readonly Dictionary<OlCategoryColor, ArgbColor> ArgbColorByCategoryColor = new Dictionary<OlCategoryColor, ArgbColor>
     {
       {OlCategoryColor.olCategoryColorNone, ArgbColor.FromRgb(0xFFFFFF)},
       {OlCategoryColor.olCategoryColorRed, ArgbColor.FromRgb(0xE7A1A2)},
@@ -72,7 +72,7 @@ namespace CalDavSynchronizer.Utilities
       double minDistance = double.MaxValue;
       OlCategoryColor matchingCategoryColor = OlCategoryColor.olCategoryColorNone;
 
-      foreach (var cat in CategoryColors)
+      foreach (var cat in ArgbColorByCategoryColor)
       {
         Color catColor = Color.FromArgb(cat.Value.ArgbValue);
 

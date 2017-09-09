@@ -54,7 +54,7 @@ namespace CalDavSynchronizer.Ui
     public void AddCategoryColors()
     {
       Items.Clear();
-      foreach (var col in ColorHelper.CategoryColors)
+      foreach (var col in ColorHelper.ArgbColorByCategoryColor)
       {
         Items.Add(new ColorInfo(col.Key.ToString().Substring(15), Color.FromArgb(col.Value.ArgbValue), col.Key));
       }
