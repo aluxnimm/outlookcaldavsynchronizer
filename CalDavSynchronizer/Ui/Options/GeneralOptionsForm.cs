@@ -179,7 +179,10 @@ namespace CalDavSynchronizer.Ui.Options
                    QueryFoldersJustByGetTable = _useFastTableQueriesCheckBox.Checked,
                    ShowProgressBar = _showProgressBarCheckBox.Checked,
                    ThresholdForProgressDisplay = int.Parse(_thresholdForProgressDisplayTextBox.Text),
-                   MaxSucessiveWarnings = _maxSucessiveWarnings
+                   MaxSucessiveWarnings = _maxSucessiveWarnings,
+                   LogEntityNames = _logEntityNames.Checked,
+                   IncludeEntityReportsWithoutErrorsOrWarnings = _logEntityReportsWithoutErrorsAndWarnings.Checked
+
         };
       }
       set
@@ -209,6 +212,8 @@ namespace CalDavSynchronizer.Ui.Options
         _thresholdForProgressDisplayTextBox.Text = value.ThresholdForProgressDisplay.ToString();
         _maxSucessiveWarnings = value.MaxSucessiveWarnings;
         UpdateThresholdForProgressBarControlEnabled();
+        _logEntityNames.Checked = value.LogEntityNames;
+        _logEntityReportsWithoutErrorsAndWarnings.Checked = value.IncludeEntityReportsWithoutErrorsOrWarnings;
       }
     }
 

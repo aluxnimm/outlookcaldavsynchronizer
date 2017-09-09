@@ -121,6 +121,12 @@
                     </DataTemplate>
                   </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Outlook Entity" Binding="{Binding ADisplayName}" Width="100">
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Server Entity" Binding="{Binding BDisplayName}" Width="100">
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Operation" Binding="{Binding Operation}" Width="70">
+                </DataGridTextColumn>
               </DataGrid.Columns>
             </DataGrid>
 

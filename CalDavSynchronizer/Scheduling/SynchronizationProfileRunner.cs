@@ -141,7 +141,8 @@ namespace CalDavSynchronizer.Scheduling
           : await _synchronizerFactory.CreateSynchronizer(options, generalOptions),
         !options.Inactive && options.EnableChangeTriggeredSynchronization
           ? _folderChangeWatcherFactory.Create(options.OutlookFolderEntryId, options.OutlookFolderStoreId)
-          : NullItemCollectionChangeWatcher.Instance);
+          : NullItemCollectionChangeWatcher.Instance,
+        generalOptions.IncludeEntityReportsWithoutErrorsOrWarnings);
 
       _profile.FolderChangeWatcher.ItemSavedOrDeleted += FolderChangeWatcher_ItemSavedOrDeleted;
 
@@ -255,7 +256,7 @@ namespace CalDavSynchronizer.Scheduling
     {
       try
       {
-        using (var logger = new SynchronizationLogger(_profileId, _profile.ProfileName, _reportSink))
+        using (var logger = new SynchronizationLogger(_profileId, _profile.ProfileName, _reportSink, _profile.IncludeEntityReportsWithoutErrorsOrWarnings))
         {
           using (AutomaticStopwatch.StartInfo(s_logger, string.Format("Running synchronization profile '{0}'", _profile.ProfileName)))
           {
@@ -287,7 +288,7 @@ namespace CalDavSynchronizer.Scheduling
     {
       try
       {
-        using (var logger = new SynchronizationLogger(_profileId, _profile.ProfileName, _reportSink))
+        using (var logger = new SynchronizationLogger(_profileId, _profile.ProfileName, _reportSink, _profile.IncludeEntityReportsWithoutErrorsOrWarnings))
         {
           using (AutomaticStopwatch.StartInfo(s_logger, string.Format("Partial sync: Running synchronization profile '{0}'", _profile.ProfileName)))
           {
@@ -320,8 +321,9 @@ namespace CalDavSynchronizer.Scheduling
       public readonly ProxyOptions ProxyOptionsOrNull;
       public readonly IOutlookSynchronizer Synchronizer;
       public readonly IItemCollectionChangeWatcher FolderChangeWatcher;
+      public readonly bool IncludeEntityReportsWithoutErrorsOrWarnings;
 
-      public ProfileData (bool inactive, string profileName, bool checkIfOnline, TimeSpan interval, ProxyOptions proxyOptionsOrNull, IOutlookSynchronizer synchronizer, IItemCollectionChangeWatcher folderChangeWatcher)
+      public ProfileData (bool inactive, string profileName, bool checkIfOnline, TimeSpan interval, ProxyOptions proxyOptionsOrNull, IOutlookSynchronizer synchronizer, IItemCollectionChangeWatcher folderChangeWatcher, bool includeEntityReportsWithoutErrorsOrWarnings)
       {
         if (profileName == null)
           throw new ArgumentNullException (nameof (profileName));
@@ -337,6 +339,7 @@ namespace CalDavSynchronizer.Scheduling
         ProxyOptionsOrNull = proxyOptionsOrNull;
         Synchronizer = synchronizer;
         FolderChangeWatcher = folderChangeWatcher;
+        IncludeEntityReportsWithoutErrorsOrWarnings = includeEntityReportsWithoutErrorsOrWarnings;
       }
 
       public bool IsEmpty => FolderChangeWatcher == null;

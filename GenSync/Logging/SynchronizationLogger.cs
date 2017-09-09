@@ -36,16 +36,18 @@ namespace GenSync.Logging
     private string _bJobsInfo;
     private ISynchronizationReportSink _reportSink;
     private List<SynchronizationReport> _subReports;
+    private readonly bool _includeEntityReportsWithoutErrorsOrWarnings;
 
-    private readonly List<EntitySynchronizationLogger> _entitySynchronizationLoggers = new List<EntitySynchronizationLogger> ();
+    private readonly List<IEntitySynchronizationLog> _entitySynchronizationLogs = new List<IEntitySynchronizationLog> ();
     private readonly ILoadEntityLogger _aLoadEntityLogger;
     private readonly ILoadEntityLogger _bLoadEntityLogger;
 
-    public SynchronizationLogger (Guid profileId, string profileName, ISynchronizationReportSink reportSink)
+    public SynchronizationLogger (Guid profileId, string profileName, ISynchronizationReportSink reportSink, bool includeEntityReportsWithoutErrorsOrWarnings)
     {
       _startTime = DateTime.UtcNow;
       _profileName = profileName;
       _reportSink = reportSink;
+      _includeEntityReportsWithoutErrorsOrWarnings = includeEntityReportsWithoutErrorsOrWarnings;
       _profileId = profileId;
       _aLoadEntityLogger = new LoadEntityLogger (_loadErrors, _loadErrorsLock, true);
       _bLoadEntityLogger = new LoadEntityLogger (_loadErrors, _loadErrorsLock, false);
@@ -78,34 +80,31 @@ namespace GenSync.Logging
       _bJobsInfo = bJobsInfo;
     }
 
-    public IEntitySynchronizationLogger CreateEntitySynchronizationLogger ()
+    public void AddEntitySynchronizationLog (IEntitySynchronizationLog log)
     {
-      EntitySynchronizationLogger logger = new EntitySynchronizationLogger();
-      _entitySynchronizationLoggers.Add (logger);
-
-      return logger;
+      _entitySynchronizationLogs.Add (log);
     }
 
     private SynchronizationReport GetReport ()
     {
       var report = new SynchronizationReport
-             {
-                 ADelta = _aDelta,
-                 BDelta = _bDelta,
-                 AJobsInfo = _aJobsInfo,
-                 BJobsInfo = _bJobsInfo,
-                 ExceptionThatLeadToAbortion = _exceptionThatLeadToAbortion,
-                 ConsiderExceptionThatLeadToAbortionAsWarning = _considerExceptionThatLeadToAbortionAsWarning,
-                 LoadErrors = _loadErrors.ToArray(),
-                 ProfileId = _profileId,
-                 ProfileName = _profileName,
-                 StartTime = _startTime,
-                 EntitySynchronizationReports = _entitySynchronizationLoggers
-                     .Where (l => l.HasErrorsOrWarnings)
-                     .Select (l => l.GetReport())
-                     .ToArray(),
-                 Duration = DateTime.UtcNow - _startTime
-             };
+      {
+        ADelta = _aDelta,
+        BDelta = _bDelta,
+        AJobsInfo = _aJobsInfo,
+        BJobsInfo = _bJobsInfo,
+        ExceptionThatLeadToAbortion = _exceptionThatLeadToAbortion,
+        ConsiderExceptionThatLeadToAbortionAsWarning = _considerExceptionThatLeadToAbortionAsWarning,
+        LoadErrors = _loadErrors.ToArray(),
+        ProfileId = _profileId,
+        ProfileName = _profileName,
+        StartTime = _startTime,
+        EntitySynchronizationReports = _entitySynchronizationLogs
+          .Where(l => _includeEntityReportsWithoutErrorsOrWarnings || l.HasErrorsOrWarnings)
+          .Select(l => l.GetReport())
+          .ToArray(),
+        Duration = DateTime.UtcNow - _startTime
+      };
 
       if(_subReports != null)
         report.MergeSubReport(_subReports);
@@ -128,7 +127,7 @@ namespace GenSync.Logging
 
     public ISynchronizationLogger CreateSubLogger(string subProfileName)
     {
-      return new SynchronizationLogger(_profileId, subProfileName, this);
+      return new SynchronizationLogger(_profileId, subProfileName, this, _includeEntityReportsWithoutErrorsOrWarnings);
     }
   }
 }

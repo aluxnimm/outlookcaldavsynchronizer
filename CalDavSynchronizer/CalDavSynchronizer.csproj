@@ -319,6 +319,7 @@
     <Compile Include="Implementation\Contacts\ContactMatchDataFactory.cs" />
     <Compile Include="Implementation\DistributionLists\DistListMatchData.cs" />
     <Compile Include="Implementation\DistributionLists\DistListEntityMatchDataFactory.cs" />
+    <Compile Include="Implementation\Common\EntityLogMessageFactory.cs" />
     <Compile Include="Implementation\DistributionLists\Sogo\InitialSogoDistListEntityMatcher.cs" />
     <Compile Include="Implementation\DistributionLists\VCard\UidDistListEntityMapper.cs" />
     <Compile Include="Implementation\DistributionLists\VCard\DistListEntityMapperBase.cs" />

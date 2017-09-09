@@ -1324,7 +1324,7 @@ namespace CalDavSynchronizer.Implementation.Events
         {
           string mailAddress;
           using (var wrapper = GenericComObjectWrapper.Create (recipient.AddressEntry))
-            mailAddress = OutlookUtility.GetEmailAdressOrNull (wrapper.Inner, NullEntitySynchronizationLogger.Instance,
+            mailAddress = OutlookUtility.GetEmailAdressOrNull (wrapper.Inner, NullEntityMappingLogger.Instance,
               s_logger);
           return IsOwnIdentity (mailAddress);
         }

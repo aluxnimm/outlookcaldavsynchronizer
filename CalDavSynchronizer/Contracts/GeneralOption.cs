@@ -32,6 +32,8 @@ namespace CalDavSynchronizer.Contracts
     public TimeSpan CalDavConnectTimeout { get; set; }
     public bool FixInvalidSettings { get; set; }
     public bool IncludeCustomMessageClasses { get; set; }
+    public bool IncludeEntityReportsWithoutErrorsOrWarnings { get; set; }
+    public bool LogEntityNames { get; set; }
     public bool LogReportsWithWarnings { get; set; }
     public bool LogReportsWithoutWarningsOrErrors { get; set; }
     public bool ShowReportsWithWarningsImmediately { get; set; }

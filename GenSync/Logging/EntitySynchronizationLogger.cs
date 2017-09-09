@@ -16,16 +16,33 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using log4net;
 
 namespace GenSync.Logging
 {
-  public class EntitySynchronizationLogger : IEntitySynchronizationLogger
+  public class EntitySynchronizationLogger<TAtypeEntity, TBtypeEntity> : IFullEntitySynchronizationLogger<TAtypeEntity, TBtypeEntity>
   {
-    private readonly List<string> _mappingErrors = new List<string>();
-    private readonly List<string> _mappingWarnings = new List<string>();
+    private static readonly ILog s_logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+    private readonly SynchronizationOperation _operation;
+    private List<string> _mappingErrors ;
+    private List<string> _mappingWarnings;
     private string _aId;
     private string _bId;
+    private string _aLogDisplayName;
+    private string _bLogDisplayName;
     private string _exceptionThatLeadToAbortion;
+    private readonly IEntityLogMessageFactory<TAtypeEntity, TBtypeEntity> _entityLogMessageFactory;
+
+    public EntitySynchronizationLogger(SynchronizationOperation operation, IEntityLogMessageFactory<TAtypeEntity, TBtypeEntity> entityLogMessageFactory)
+    {
+      _operation = operation;
+      _entityLogMessageFactory = entityLogMessageFactory ?? throw new ArgumentNullException(nameof(entityLogMessageFactory));
+    }
+
+    private List<string> MappingErrors => _mappingErrors ?? (_mappingErrors = new List<string>());
+    private List<string> MappingWarnings => _mappingWarnings ?? (_mappingWarnings = new List<string>());
 
     public event EventHandler Disposed;
 
@@ -38,22 +55,22 @@ namespace GenSync.Logging
 
     public void LogMappingError (string message)
     {
-      _mappingErrors.Add (message);
+      MappingErrors.Add (message);
     }
 
     public void LogMappingError (string message, Exception exception)
     {
-      _mappingErrors.Add (message + " : " + exception.ToString());
+      MappingErrors.Add (message + " : " + exception.ToString());
     }
 
     public void LogMappingWarning (string warning)
     {
-      _mappingWarnings.Add (warning);
+      MappingWarnings.Add (warning);
     }
 
     public void LogMappingWarning (string warning, Exception exception)
     {
-      _mappingWarnings.Add (warning + " : " + exception.ToString ());
+      MappingWarnings.Add (warning + " : " + exception.ToString ());
     }
 
     public void SetAId (object id)
@@ -66,6 +83,32 @@ namespace GenSync.Logging
       _bId = id.ToString();
     }
 
+    public void LogA(TAtypeEntity entity)
+    {
+      try
+      {
+        _aLogDisplayName = _entityLogMessageFactory.ACreateOrNull(entity);
+      }
+      catch (Exception x)
+      {
+        s_logger.Error(null, x);
+        _aLogDisplayName = "<Error>";
+      }
+    }
+
+    public void LogB(TBtypeEntity entity)
+    {
+      try
+      {
+        _bLogDisplayName = _entityLogMessageFactory.BCreateOrNull(entity);
+      }
+      catch (Exception x)
+      {
+        s_logger.Error(null, x);
+        _bLogDisplayName = "<Error>";
+      }
+    }
+    
     public void LogAbortedDueToError (Exception exception)
     {
       _exceptionThatLeadToAbortion = exception.ToString();
@@ -79,27 +122,21 @@ namespace GenSync.Logging
     public EntitySynchronizationReport GetReport ()
     {
       return new EntitySynchronizationReport()
-             {
-                 AId = _aId,
-                 BId = _bId,
-                 ExceptionThatLeadToAbortion = _exceptionThatLeadToAbortion,
-                 MappingErrors = _mappingErrors.ToArray(),
-                 MappingWarnings = _mappingWarnings.ToArray()
-             };
-    }
-
-    public void Clear ()
-    {
-      _aId = string.Empty;
-      _bId = string.Empty;
-      _exceptionThatLeadToAbortion = String.Empty;
-      _mappingErrors.Clear();
-      _mappingWarnings.Clear();
+      {
+        AId = _aId,
+        BId = _bId,
+        ADisplayName = _aLogDisplayName,
+        BDisplayName = _bLogDisplayName,
+        ExceptionThatLeadToAbortion = _exceptionThatLeadToAbortion,
+        MappingErrors =  _mappingErrors?.ToArray() ?? new string[0],
+        MappingWarnings = _mappingWarnings?.ToArray() ?? new string[0],
+        Operation = _operation
+      };
     }
 
     public bool HasErrorsOrWarnings =>
-        _mappingErrors.Count > 0
-        || _mappingWarnings.Count > 0
+        _mappingErrors?.Count > 0
+        || _mappingWarnings?.Count > 0
         || !string.IsNullOrEmpty (_exceptionThatLeadToAbortion);
 
     public void Dispose ()

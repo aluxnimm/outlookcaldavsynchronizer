@@ -96,7 +96,7 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
     {
       var reportSink = new TestReportSink();
 
-      using (var logger = new SynchronizationLogger(Options.Id, Options.Name, reportSink))
+      using (var logger = new SynchronizationLogger(Options.Id, Options.Name, reportSink, TestComponentContainer.GeneralOptions.IncludeEntityReportsWithoutErrorsOrWarnings))
       {
         await Synchronizer.Synchronize(logger);
       }

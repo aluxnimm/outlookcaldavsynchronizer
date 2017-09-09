@@ -57,7 +57,17 @@
     <Compile Include="..\CalDavSynchronizer\Properties\AssemblyInfoVersion.cs">
       <Link>Properties\AssemblyInfoVersion.cs</Link>
     </Compile>
+    <Compile Include="Logging\FullEntitySynchronizationLoggerFactory.cs" />
+    <Compile Include="Logging\IEntityLogMessageFactory.cs" />
+    <Compile Include="Logging\IEntitySynchronizationLog.cs" />
     <Compile Include="Logging\IEntitySynchronizationLoggerFactory.cs" />
+    <Compile Include="Logging\IFullEntitySynchronizationLogger.cs" />
+    <Compile Include="Logging\IFullEntitySynchronizationLoggerFactory.cs" />
+    <Compile Include="Logging\NullEntityLogMessageFactory.cs" />
+    <Compile Include="Logging\SynchronizationLoggerBoundEntitySynchronizationLoggerFactory.cs" />
+    <Compile Include="Logging\NullEntityMappingLogger.cs" />
+    <Compile Include="Logging\NullFullEntitySynchronizationLoggerFactory.cs" />
+    <Compile Include="Logging\SynchronizationOperation.cs" />
     <Compile Include="Utilities\ChunkedExecutor.cs" />
     <Compile Include="EntityRepositories\BatchEntityRepositoryAdapter.cs" />
     <Compile Include="EntityRepositories\ICreateJob.cs" />
@@ -94,7 +104,7 @@
     <Compile Include="Logging\EntitySynchronizationReport.cs" />
     <Compile Include="Logging\ISynchronizationLogger.cs" />
     <Compile Include="Logging\LoadError.cs" />
-    <Compile Include="Logging\NullEntitySynchronizationLogger.cs" />
+    <Compile Include="Logging\NullFullEntitySynchronizationLogger.cs" />
     <Compile Include="Logging\NullSynchronizationLogger.cs" />
     <Compile Include="Logging\SynchronizationReport.cs" />
     <Compile Include="Logging\SynchronizationLogger.cs" />

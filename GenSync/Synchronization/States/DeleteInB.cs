@@ -70,10 +70,10 @@ namespace GenSync.Synchronization.States
         IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> stateContext,
         IJobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity> aJobs,
         IJobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> bJobs,
-        IEntitySynchronizationLoggerFactory loggerFactory,
+        IEntitySynchronizationLoggerFactory<TAtypeEntity, TBtypeEntity> loggerFactory,
         TContext context)
     {
-      var logger = loggerFactory.CreateEntitySynchronizationLogger();
+      var logger = loggerFactory.CreateEntitySynchronizationLogger(SynchronizationOperation.DeleteInB);
       logger.SetBId (KnownData.BtypeId);
       bJobs.AddDeleteJob (new JobWrapper (stateContext, this, logger));
     }

@@ -15,22 +15,25 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using GenSync.Synchronization;
 
 namespace GenSync.Logging
 {
-  public interface ISynchronizationLogger :  IDisposable
+  public class NullEntityLogMessageFactory<TAtypeEntity, TBtypeEntity> : IEntityLogMessageFactory<TAtypeEntity, TBtypeEntity>
   {
-    ILoadEntityLogger ALoadEntityLogger { get; }
-    ILoadEntityLogger BLoadEntityLogger { get; }
+    public static readonly IEntityLogMessageFactory<TAtypeEntity, TBtypeEntity> Instance = new NullEntityLogMessageFactory<TAtypeEntity, TBtypeEntity>();
 
-    void LogAbortedDueToError (Exception exception);
-    void LogAbortedDueToWarning(Exception exception);
+    private NullEntityLogMessageFactory()
+    {
+    }
 
-    void LogDeltas (VersionDeltaLoginInformation aDeltaLogInfo, VersionDeltaLoginInformation bDeltaLogInfo);
-    void LogJobs (string aJobsInfo, string bJobsInfo);
+    public string ACreateOrNull(TAtypeEntity entity)
+    {
+      return null;
+    }
 
-    ISynchronizationLogger CreateSubLogger(string subProfileName);
-    void AddEntitySynchronizationLog(IEntitySynchronizationLog log);
+    public string BCreateOrNull(TBtypeEntity entity)
+    {
+      return null;
+    }
   }
 }

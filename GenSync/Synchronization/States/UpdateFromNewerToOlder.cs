@@ -58,7 +58,7 @@ namespace GenSync.Synchronization.States
        IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> stateContext,
        IJobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity> aJobs,
        IJobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> bJobs,
-       IEntitySynchronizationLoggerFactory loggerFactory,
+       IEntitySynchronizationLoggerFactory<TAtypeEntity, TBtypeEntity> loggerFactory,
        TContext context)
     {
       s_logger.Error ("This state should have been left via Resolve!");

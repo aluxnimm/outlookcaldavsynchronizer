@@ -65,6 +65,7 @@ namespace GenSync.Synchronization
     private readonly EntitySyncStateChunkCreator<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> _entitySyncStateChunkCreator;
     private readonly int? _chunkSize;
     private readonly IChunkedExecutor _chunkedExecutor;
+    private readonly IFullEntitySynchronizationLoggerFactory<TAtypeEntity, TBtypeEntity> _fullEntitySynchronizationLoggerFactory;
 
     public Synchronizer(
       IReadOnlyEntityRepository<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TContext> atypeRepository,
@@ -82,10 +83,11 @@ namespace GenSync.Synchronization
       IExceptionHandlingStrategy exceptionHandlingStrategy,
       IMatchDataFactory<TAtypeEntity, TAMatchData> aMatchDataFactory,
       IMatchDataFactory<TBtypeEntity, TBMatchData> bMatchDataFactory,
-      int? chunkSize, IChunkedExecutor chunkedExecutor, ISynchronizationInterceptorFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> synchronizationInterceptorFactoryOrNull = null)
+      int? chunkSize, 
+      IChunkedExecutor chunkedExecutor,
+      IFullEntitySynchronizationLoggerFactory<TAtypeEntity,TBtypeEntity> fullEntitySynchronizationLoggerFactory,
+      ISynchronizationInterceptorFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> synchronizationInterceptorFactoryOrNull = null)
     {
-      _chunkSize = chunkSize;
-      _chunkedExecutor = chunkedExecutor;
       if (atypeRepository == null) throw new ArgumentNullException(nameof(atypeRepository));
       if (btypeRepository == null) throw new ArgumentNullException(nameof(btypeRepository));
       if (atypeWriteRepository == null) throw new ArgumentNullException(nameof(atypeWriteRepository));
@@ -103,6 +105,11 @@ namespace GenSync.Synchronization
       if (exceptionHandlingStrategy == null) throw new ArgumentNullException(nameof(exceptionHandlingStrategy));
       if (aMatchDataFactory == null) throw new ArgumentNullException(nameof(aMatchDataFactory));
       if (bMatchDataFactory == null) throw new ArgumentNullException(nameof(bMatchDataFactory));
+      if (fullEntitySynchronizationLoggerFactory == null) throw new ArgumentNullException(nameof(fullEntitySynchronizationLoggerFactory));
+
+      _chunkSize = chunkSize;
+      _chunkedExecutor = chunkedExecutor;
+      _fullEntitySynchronizationLoggerFactory = fullEntitySynchronizationLoggerFactory;
 
       _initialSyncStateCreationStrategy = initialSyncStateCreationStrategy;
       _totalProgressFactory = totalProgressFactory;
@@ -322,6 +329,8 @@ namespace GenSync.Synchronization
       Action<List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>> saveNewRelations)
     {
 
+      var entitySynchronizationLoggerFactory = new SynchronizationLoggerBoundEntitySynchronizationLoggerFactory<TAtypeEntity, TBtypeEntity>(logger, _fullEntitySynchronizationLoggerFactory);
+
       using (IEntityContainer<TAtypeEntityId, TAtypeEntity, TContext> aEntities = new EntityContainer<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TContext>(_atypeRepository, _atypeIdComparer, _chunkSize, _chunkedExecutor))
       using (IEntityContainer<TBtypeEntityId, TBtypeEntity, TContext> bEntities = new EntityContainer<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>(_btypeRepository, _btypeIdComparer, _chunkSize, _chunkedExecutor))
       {
@@ -363,7 +372,7 @@ namespace GenSync.Synchronization
               var aJobs = new JobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity>();
               var bJobs = new JobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>();
 
-              currentBatch.ForEach(s => s.AddSyncronizationJob(aJobs, bJobs, logger, synchronizationContext));
+              currentBatch.ForEach(s => s.AddSyncronizationJob(aJobs, bJobs, entitySynchronizationLoggerFactory, synchronizationContext));
 
               totalAJobs = totalAJobs.Add(aJobs.Count);
               totalBJobs = totalBJobs.Add(bJobs.Count);

@@ -15,22 +15,22 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using GenSync.Synchronization;
 
 namespace GenSync.Logging
 {
-  public class NullSynchronizationLogger : ISynchronizationLogger
+  public class NullFullEntitySynchronizationLogger<TAtypeEntity, TBtypeEntity> : IFullEntitySynchronizationLogger<TAtypeEntity, TBtypeEntity>
   {
-    public static readonly ISynchronizationLogger Instance = new NullSynchronizationLogger();
-  
-    private NullSynchronizationLogger ()
+    public static readonly IFullEntitySynchronizationLogger<TAtypeEntity, TBtypeEntity> Instance = new NullFullEntitySynchronizationLogger<TAtypeEntity, TBtypeEntity>();
+
+    private NullFullEntitySynchronizationLogger()
     {
     }
 
-    public ILoadEntityLogger ALoadEntityLogger => NullLoadEntityLogger.Instance;
-    public ILoadEntityLogger BLoadEntityLogger => NullLoadEntityLogger.Instance;
+    public void SetAId (object aid)
+    {
+    }
 
-    public void LogInitialEntityMatching ()
+    public void SetBId (object bid)
     {
     }
 
@@ -38,33 +38,50 @@ namespace GenSync.Logging
     {
     }
 
-    public void LogDeltas (VersionDeltaLoginInformation aDeltaLogInfo, VersionDeltaLoginInformation bDeltaLogInfo)
-    {
-    }
-    
-    public void Dispose()
+    public void LogAbortedDueToError (string errorMessage)
     {
       
     }
 
-    public ISynchronizationLogger CreateSubLogger(string subProfileName)
-    {
-      return this;
-    }
-
-    public void AddEntitySynchronizationLog(IEntitySynchronizationLog log)
+    public void LogMappingError (string message)
     {
       
     }
 
-    public void LogJobs(string aJobsInfo, string bJobsInfo)
+    public void LogMappingError (string message, Exception exception)
+    {
+    }
+
+    public void LogMappingWarning (string warning)
     {
       
     }
 
-    public void LogAbortedDueToWarning(Exception exception)
+    public void LogMappingWarning (string warning, Exception exception)
     {
       
+    }
+
+    public void Dispose ()
+    {
+      
+    }
+
+    public void LogA(TAtypeEntity entity)
+    {
+      
+    }
+
+    public void LogB(TBtypeEntity entity)
+    {
+     
+    }
+
+    public bool HasErrorsOrWarnings => false;
+
+    public EntitySynchronizationReport GetReport()
+    {
+      return new EntitySynchronizationReport();
     }
   }
 }

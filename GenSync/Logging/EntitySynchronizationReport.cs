@@ -37,6 +37,11 @@ namespace GenSync.Logging
 
     public string AId { get; set; }
     public string BId { get; set; }
+
+    public string ADisplayName { get; set; }
+    public string BDisplayName { get; set; }
+
     public string ExceptionThatLeadToAbortion { get; set; }
+    public SynchronizationOperation Operation { get; set; }
   }
 }

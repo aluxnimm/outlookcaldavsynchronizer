@@ -18,6 +18,13 @@ using System;
 
 namespace GenSync.Logging
 {
+
+  public interface IEntitySynchronizationLogger<in TAtypeEntity, in TBtypeEntity> : IEntitySynchronizationLogger
+  {
+    void LogA(TAtypeEntity entity);
+    void LogB(TBtypeEntity entity);
+  }
+
   public interface IEntitySynchronizationLogger : IEntityMappingLogger
   {
     void SetAId (object id);

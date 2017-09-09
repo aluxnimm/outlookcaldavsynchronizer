@@ -40,7 +40,9 @@ namespace CalDavSynchronizer.DataAccess
     private const string ValueNameFixInvalidSettings = "FixInvalidSettings";
     private const string ValueNameOptionsRegistryKey = @"Software\CalDavSynchronizer";
     private const string ValueNameIncludeCustomMessageClasses = "IncludeCustomMessageClasses";
-
+    private const string ValueNameIncludeEntityReportsWithoutErrorsOrWarnings = "LogAllEntitySyncReports";
+    private const string ValueNameLogEntityNames = "LogEntityNames";
+    
     private const string ValueNameQueryFoldersJustByGetTable = "QueryFoldersJustByGetTable";
     private const string ValueNameLogReportsWithoutWarningsOrErrors = "LogReportsWithoutWarningsOrErrors";
     private const string ValueNameLogReportsWithWarnings = "LogReportsWithWarnings";
@@ -81,6 +83,8 @@ namespace CalDavSynchronizer.DataAccess
                    FixInvalidSettings = (int) (key.GetValue (ValueNameFixInvalidSettings) ?? 1) != 0,
                    IncludeCustomMessageClasses = (int) (key.GetValue (ValueNameIncludeCustomMessageClasses) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["includeCustomMessageClasses"] ?? bool.FalseString))) != 0,
                    LogReportsWithoutWarningsOrErrors = (int) (key.GetValue (ValueNameLogReportsWithoutWarningsOrErrors) ?? 0) != 0,
+                   IncludeEntityReportsWithoutErrorsOrWarnings = (int)(key.GetValue (ValueNameIncludeEntityReportsWithoutErrorsOrWarnings) ?? 0) != 0 ,
+                   LogEntityNames = (int)(key.GetValue (ValueNameLogEntityNames) ?? 0) != 0,
                    LogReportsWithWarnings = (int) (key.GetValue (ValueNameLogReportsWithWarnings) ?? 1) != 0,
                    ShowReportsWithWarningsImmediately = (int) (key.GetValue (ValueNameShowReportsWithWarningsImmediately) ?? 0) != 0,
                    ShowReportsWithErrorsImmediately = (int) (key.GetValue (ValueNameShowReportsWithErrorsImmediately) ?? 1) != 0,
@@ -117,6 +121,8 @@ namespace CalDavSynchronizer.DataAccess
         key.SetValue (ValueNameFixInvalidSettings, options.FixInvalidSettings ? 1 : 0);
         key.SetValue (ValueNameIncludeCustomMessageClasses, options.IncludeCustomMessageClasses ? 1 : 0);
         key.SetValue (ValueNameLogReportsWithoutWarningsOrErrors, options.LogReportsWithoutWarningsOrErrors ? 1 : 0);
+        key.SetValue (ValueNameIncludeEntityReportsWithoutErrorsOrWarnings, options.IncludeEntityReportsWithoutErrorsOrWarnings ? 1 : 0);
+        key.SetValue (ValueNameLogEntityNames, options.LogEntityNames ? 1 : 0);
         key.SetValue (ValueNameLogReportsWithWarnings, options.LogReportsWithWarnings ? 1 : 0);
         key.SetValue (ValueNameShowReportsWithWarningsImmediately, options.ShowReportsWithWarningsImmediately ? 1 : 0);
         key.SetValue (ValueNameShowReportsWithErrorsImmediately, options.ShowReportsWithErrorsImmediately ? 1 : 0);

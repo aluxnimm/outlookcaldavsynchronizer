@@ -20,6 +20,7 @@ using GenSync.EntityMapping;
 using GenSync.EntityRelationManagement;
 using GenSync.EntityRepositories;
 using GenSync.InitialEntityMatching;
+using GenSync.Logging;
 using GenSync.ProgressReport;
 using GenSync.Synchronization;
 using GenSync.Synchronization.StateCreationStrategies;
@@ -64,7 +65,8 @@ namespace GenSync.UnitTests.Synchronization.Stubs
           IdentityMatchDataFactory<string>.Instance,
           IdentityMatchDataFactory<string>.Instance,
           null,
-          NullChunkedExecutor.Instance);
+          NullChunkedExecutor.Instance,
+          NullFullEntitySynchronizationLoggerFactory<string, string>.Instance);
     }
 
     public IEntityRelationDataAccess<string, string, string, string> EntityRelationDataAccess { get; set; }

@@ -37,7 +37,7 @@ namespace GenSync.Synchronization
     void AddSyncronizationJob (
         IJobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity> aJobs,
         IJobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> bJobs,
-        IEntitySynchronizationLoggerFactory loggerFactory,
+        IEntitySynchronizationLoggerFactory<TAtypeEntity, TBtypeEntity> loggerFactory,
         TContext context);
 
     void NotifyJobExecuted ();

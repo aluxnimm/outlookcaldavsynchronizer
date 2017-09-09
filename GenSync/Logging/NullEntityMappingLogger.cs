@@ -14,57 +14,43 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace GenSync.Logging
 {
-  public class NullEntitySynchronizationLogger : IEntitySynchronizationLogger
+  public class NullEntityMappingLogger : IEntityMappingLogger
   {
-    public static readonly IEntitySynchronizationLogger Instance = new NullEntitySynchronizationLogger();
+    public static readonly IEntityMappingLogger Instance = new NullEntityMappingLogger();
 
-    private NullEntitySynchronizationLogger ()
+    private NullEntityMappingLogger()
     {
+
     }
 
-    public void SetAId (object aid)
-    {
-    }
-
-    public void SetBId (object bid)
-    {
-    }
-
-    public void LogAbortedDueToError (Exception exception)
-    {
-    }
-
-    public void LogAbortedDueToError (string errorMessage)
+    public void Dispose()
     {
       
     }
 
-    public void LogMappingError (string message)
+    public void LogMappingError(string message)
     {
-      
+     
     }
 
-    public void LogMappingError (string message, Exception exception)
+    public void LogMappingError(string message, Exception exception)
     {
+    
     }
 
-    public void LogMappingWarning (string warning)
+    public void LogMappingWarning(string warning)
     {
-      
+     
     }
 
-    public void LogMappingWarning (string warning, Exception exception)
+    public void LogMappingWarning(string warning, Exception exception)
     {
-      
-    }
-
-    public void Dispose ()
-    {
-      
+     
     }
   }
 }

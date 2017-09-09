@@ -190,7 +190,8 @@ namespace GenSync.UnitTests.Synchronization
           IdentityMatchDataFactory<string>.Instance,
           IdentityMatchDataFactory<string>.Instance,
           null,
-          NullChunkedExecutor.Instance);
+          NullChunkedExecutor.Instance,
+          NullFullEntitySynchronizationLoggerFactory<string,string>.Instance);
     }
 
     protected void ExecuteMultipleTimes (Action a)

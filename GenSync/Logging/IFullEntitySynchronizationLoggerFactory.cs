@@ -14,23 +14,10 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using GenSync.Synchronization;
-
 namespace GenSync.Logging
 {
-  public interface ISynchronizationLogger :  IDisposable
+  public interface IFullEntitySynchronizationLoggerFactory<in TAtypeEntity, in TBtypeEntity>
   {
-    ILoadEntityLogger ALoadEntityLogger { get; }
-    ILoadEntityLogger BLoadEntityLogger { get; }
-
-    void LogAbortedDueToError (Exception exception);
-    void LogAbortedDueToWarning(Exception exception);
-
-    void LogDeltas (VersionDeltaLoginInformation aDeltaLogInfo, VersionDeltaLoginInformation bDeltaLogInfo);
-    void LogJobs (string aJobsInfo, string bJobsInfo);
-
-    ISynchronizationLogger CreateSubLogger(string subProfileName);
-    void AddEntitySynchronizationLog(IEntitySynchronizationLog log);
+    IFullEntitySynchronizationLogger<TAtypeEntity, TBtypeEntity> CreateEntitySynchronizationLogger(SynchronizationOperation operation);
   }
 }

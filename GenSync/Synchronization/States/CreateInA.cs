@@ -83,11 +83,12 @@ namespace GenSync.Synchronization.States
         IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> stateContext,
         IJobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity> aJobs,
         IJobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> bJobs,
-        IEntitySynchronizationLoggerFactory loggerFactory,
+        IEntitySynchronizationLoggerFactory<TAtypeEntity,TBtypeEntity> loggerFactory,
         TContext context)
     {
-      var logger = loggerFactory.CreateEntitySynchronizationLogger();
+      var logger = loggerFactory.CreateEntitySynchronizationLogger(SynchronizationOperation.CreateInA);
       logger.SetBId (_bId);
+      logger.LogB(_bEntity);
       aJobs.AddCreateJob (new JobWrapper (stateContext, this, logger, context));
     }
 
