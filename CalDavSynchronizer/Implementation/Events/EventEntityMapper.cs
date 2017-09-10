@@ -389,7 +389,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
         foreach (var sourceCategory in sourceCategories)
         {
-          if (!wasColorAdded)
+          if (_configuration.MapEventColorToCategory && !wasColorAdded)
           {
             var categoryColor = context.GetCategoryColor(sourceCategory);
             if (categoryColor !=  OlCategoryColor.olCategoryColorNone)

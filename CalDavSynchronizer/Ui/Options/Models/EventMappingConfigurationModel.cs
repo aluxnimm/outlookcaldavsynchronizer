@@ -52,6 +52,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
     private bool _sendNoAppointmentNotifications;
     private bool _useEventCategoryColorAndMapFromCalendarColor;
     private bool _cleanupDuplicateEvents;
+    private bool _mapEventColorToCategory;
     private bool _mapCustomProperties;
     private bool _isCategoryFilterSticky;
 
@@ -132,7 +133,16 @@ namespace CalDavSynchronizer.Ui.Options.Models
         CheckedPropertyChange (ref _cleanupDuplicateEvents, value);
       }
     }
-  
+
+    public bool MapEventColorToCategory
+    {
+      get { return _mapEventColorToCategory; }
+      set
+      {
+        CheckedPropertyChange(ref _mapEventColorToCategory, value);
+      }
+    }
+
     public string EventCategory
     {
       get { return _eventCategory; }
@@ -330,6 +340,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
       _sendNoAppointmentNotifications = mappingConfiguration.SendNoAppointmentNotifications;
       _useEventCategoryColorAndMapFromCalendarColor = mappingConfiguration.UseEventCategoryColorAndMapFromCalendarColor;
       _cleanupDuplicateEvents = mappingConfiguration.CleanupDuplicateEvents;
+      _mapEventColorToCategory = mappingConfiguration.MapEventColorToCategory;
       _mapCustomProperties = mappingConfiguration.MapCustomProperties;
       _isCategoryFilterSticky = mappingConfiguration.IsCategoryFilterSticky;
 
@@ -363,6 +374,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
         SendNoAppointmentNotifications = _sendNoAppointmentNotifications,
         UseEventCategoryColorAndMapFromCalendarColor = _useEventCategoryColorAndMapFromCalendarColor,
         CleanupDuplicateEvents = _cleanupDuplicateEvents,
+        MapEventColorToCategory = _mapEventColorToCategory,
         MapCustomProperties = _mapCustomProperties,
         UserDefinedCustomPropertyMappings = Mappings.Select(m => m.GetData()).ToArray(),
         IsCategoryFilterSticky = _isCategoryFilterSticky
