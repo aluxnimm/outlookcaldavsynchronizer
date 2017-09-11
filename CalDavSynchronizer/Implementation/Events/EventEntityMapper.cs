@@ -1769,7 +1769,15 @@ namespace CalDavSynchronizer.Implementation.Events
 
     private void MapCategories2To1 (IEvent source, AppointmentItem target)
     {
-      var targetCategories = new List<string>(source.Categories);
+      var targetCategories = new List<string>();
+      if (_configuration.MapEventColorToCategory && source.Properties.ContainsKey("COLOR"))
+      {
+        var eventColor = source.Properties["COLOR"].Value.ToString();
+        var matchingCategory = ColorHelper.FindMatchingHtmlCategoryColor(eventColor);
+        if (!source.Categories.Contains(matchingCategory))
+          targetCategories.Add(matchingCategory);
+      }
+      targetCategories.AddRange(source.Categories);
 
       if (_configuration.UseEventCategoryAsFilter && !_configuration.InvertEventCategoryFilter
           && source.Categories.All (a => a != _configuration.EventCategory))
@@ -1777,11 +1785,7 @@ namespace CalDavSynchronizer.Implementation.Events
         targetCategories.Add(_configuration.EventCategory);
       }
 
-      if (_configuration.MapEventColorToCategory && source.Properties.ContainsKey("COLOR"))
-      {
-        var eventColor = source.Properties["COLOR"].Value.ToString();
-        targetCategories.Add(ColorHelper.FindMatchingHtmlCategoryColor(eventColor));
-      }
+     
 
       target.Categories = string.Join(CultureInfo.CurrentCulture.TextInfo.ListSeparator, targetCategories);
     }

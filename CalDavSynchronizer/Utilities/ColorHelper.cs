@@ -126,6 +126,9 @@ namespace CalDavSynchronizer.Utilities
 
     public static string FindMatchingHtmlCategoryColor (string htmlColor)
     {
+      if (HtmlColorByCategoryColor.ContainsValue (htmlColor))
+        return htmlColor;
+
       var color = ColorTranslator.FromHtml (htmlColor);
       var matchingCategoryColor = FindMatchingCategoryColor (color);
 
