@@ -400,7 +400,7 @@ namespace CalDavSynchronizer.Implementation.Events
             }
           }
 
-          if (!(_configuration.MapEventColorToCategory && ColorHelper.ColorCategoryNames.Contains(sourceCategory)))
+          if (!(_configuration.MapEventColorToCategory && ColorHelper.HtmlColorNames.Contains(sourceCategory)))
             target.Categories.Add(sourceCategory);
         }
       }
@@ -1775,7 +1775,7 @@ namespace CalDavSynchronizer.Implementation.Events
       if (_configuration.MapEventColorToCategory && source.Properties.ContainsKey("COLOR"))
       {
         var eventColor = source.Properties["COLOR"].Value.ToString();
-        var matchingCategory = ColorHelper.FindMatchingHtmlCategoryColor(eventColor);
+        var matchingCategory = ColorHelper.FindMatchingCategoryByHtmlColor(eventColor);
         if (!source.Categories.Contains(matchingCategory))
           targetCategories.Add(matchingCategory);
       }
