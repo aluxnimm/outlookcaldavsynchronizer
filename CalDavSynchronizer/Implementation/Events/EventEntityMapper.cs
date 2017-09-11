@@ -399,7 +399,9 @@ namespace CalDavSynchronizer.Implementation.Events
               wasColorAdded = true;
             }
           }
-          target.Categories.Add (sourceCategory);
+
+          if (!(_configuration.MapEventColorToCategory && ColorHelper.ColorCategoryNames.Contains(sourceCategory)))
+            target.Categories.Add(sourceCategory);
         }
       }
     }

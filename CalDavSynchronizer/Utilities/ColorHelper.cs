@@ -94,6 +94,9 @@ namespace CalDavSynchronizer.Utilities
       {OlCategoryColor.olCategoryColorDarkMaroon, "palevioletred"}
     };
 
+    public static readonly HashSet<string> ColorCategoryNames = new HashSet<string>(HtmlColorByCategoryColor.Values, StringComparer.InvariantCultureIgnoreCase);
+
+
     private static OlCategoryColor FindMatchingCategoryColor (Color color)
     {
       var minDistance = double.MaxValue;
