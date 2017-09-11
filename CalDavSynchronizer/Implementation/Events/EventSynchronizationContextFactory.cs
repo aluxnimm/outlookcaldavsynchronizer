@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Reflection;
 using System.Threading.Tasks;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
@@ -27,12 +27,15 @@ using DDay.iCal;
 using GenSync.EntityRelationManagement;
 using GenSync.EntityRepositories;
 using GenSync.Synchronization;
+using log4net;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
   public class EventSynchronizationContextFactory : ISynchronizationContextFactory<IEventSynchronizationContext>
   {
+    private static readonly ILog s_logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
     private readonly OutlookEventRepository _outlookRepository;
     private readonly IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> _btypeRepository;
     private readonly IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> _entityRelationDataAccess;
@@ -80,22 +83,26 @@ namespace CalDavSynchronizer.Implementation.Events
 
     private void EnsureColorCategoriesExist()
     {
-      using (var categoriesWrapper = GenericComObjectWrapper.Create(_outlookSession.Categories))
+      try
       {
-        foreach (var item in ColorHelper.HtmlColorByCategoryColor)
+        using (var categoriesWrapper = GenericComObjectWrapper.Create(_outlookSession.Categories))
         {
-          using (var categoryWrapper = GenericComObjectWrapper.Create(categoriesWrapper.Inner[item.Value]))
+          var categoryNames = new HashSet<string>(
+            categoriesWrapper.Inner.ToSafeEnumerable<Category>().Select(c => c.Name),
+            StringComparer.InvariantCultureIgnoreCase);
+
+          foreach (var item in ColorHelper.HtmlColorByCategoryColor)
           {
-            if (categoryWrapper.Inner == null)
+            if (!categoryNames.Contains(item.Value))
             {
               categoriesWrapper.Inner.Add(item.Value, item.Key);
             }
-            else
-            {
-              categoryWrapper.Inner.Color = item.Key;
-            }
           }
         }
+      }
+      catch (System.Exception e)
+      {
+        s_logger.Error("Can't add color categories.", e);
       }
     }
 
