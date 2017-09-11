@@ -1771,25 +1771,23 @@ namespace CalDavSynchronizer.Implementation.Events
 
     private void MapCategories2To1 (IEvent source, AppointmentItem target)
     {
-      var targetCategories = new List<string>();
+      var targetCategorySortOrderByCategory = new Dictionary<string, int>(StringComparer.InvariantCultureIgnoreCase);
+      for(var i= 0;i< source.Categories.Count;i++)
+        targetCategorySortOrderByCategory[source.Categories[i]] = i;
+
+      if (_configuration.UseEventCategoryAsFilter && !_configuration.InvertEventCategoryFilter && !targetCategorySortOrderByCategory.ContainsKey(_configuration.EventCategory))
+      {
+        targetCategorySortOrderByCategory.Add(_configuration.EventCategory, targetCategorySortOrderByCategory.Count);
+      }
+
       if (_configuration.MapEventColorToCategory && source.Properties.ContainsKey("COLOR"))
       {
         var eventColor = source.Properties["COLOR"].Value.ToString();
         var matchingCategory = ColorHelper.FindMatchingCategoryByHtmlColor(eventColor);
-        if (!source.Categories.Contains(matchingCategory))
-          targetCategories.Add(matchingCategory);
-      }
-      targetCategories.AddRange(source.Categories);
-
-      if (_configuration.UseEventCategoryAsFilter && !_configuration.InvertEventCategoryFilter
-          && source.Categories.All (a => a != _configuration.EventCategory))
-      {
-        targetCategories.Add(_configuration.EventCategory);
+        targetCategorySortOrderByCategory[matchingCategory] = -1;
       }
 
-     
-
-      target.Categories = string.Join(CultureInfo.CurrentCulture.TextInfo.ListSeparator, targetCategories);
+      target.Categories = string.Join(CultureInfo.CurrentCulture.TextInfo.ListSeparator, targetCategorySortOrderByCategory.OrderBy(e => e.Value).Select(e => e.Key));
     }
 
     private void MapAttendeesAndOrganizer2To1 (IEvent source, AppointmentItem target, IEntityMappingLogger logger)
