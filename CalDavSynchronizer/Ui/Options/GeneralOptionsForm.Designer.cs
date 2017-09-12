@@ -573,6 +573,8 @@ namespace CalDavSynchronizer.Ui.Options
       this._logEntityNames.Size = new System.Drawing.Size(109, 17);
       this._logEntityNames.TabIndex = 7;
       this._logEntityNames.Text = "Log Entity Names";
+      this._toolTip.SetToolTip(this._logEntityNames, "Enable to display the summary of the event or task or the name of the contact\r\nto" +
+                                                     " identify the entity in the sync report.");
       this._logEntityNames.UseVisualStyleBackColor = true;
       // 
       // _logEntityReportsWithoutErrorsAndWarnings
@@ -583,6 +585,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._logEntityReportsWithoutErrorsAndWarnings.Size = new System.Drawing.Size(244, 17);
       this._logEntityReportsWithoutErrorsAndWarnings.TabIndex = 8;
       this._logEntityReportsWithoutErrorsAndWarnings.Text = "Log all entities, even without errors or warnings";
+      this._toolTip.SetToolTip(this._logEntityReportsWithoutErrorsAndWarnings, "Enable if a full report of all modified entities is needed.");
       this._logEntityReportsWithoutErrorsAndWarnings.UseVisualStyleBackColor = true;
       // 
       // GeneralOptionsForm
