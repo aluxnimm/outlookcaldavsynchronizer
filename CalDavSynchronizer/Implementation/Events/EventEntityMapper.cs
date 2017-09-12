@@ -28,6 +28,7 @@ using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.TimeZones;
 using CalDavSynchronizer.Conversions;
+using CalDavSynchronizer.Utilities;
 using DDay.iCal;
 using GenSync.EntityMapping;
 using GenSync.Logging;
@@ -187,7 +188,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
       newTargetCalender.Events.Add (newTargetEvent);
 
-      Map1To2 (sourceWrapper.Inner, newTargetEvent, false, startIcalTimeZone, endIcalTimeZone, logger);
+      Map1To2 (sourceWrapper.Inner, newTargetEvent, false, startIcalTimeZone, endIcalTimeZone, logger, context);
 
       for (int i = 0, newSequenceNumber = existingTargetCalender.Events.Count > 0 ? existingTargetCalender.Events.Max (e => e.Sequence) + 1 : 0;
           i < newTargetCalender.Events.Count;
@@ -199,7 +200,7 @@ namespace CalDavSynchronizer.Implementation.Events
       return newTargetCalender;
     }
 
-    private void Map1To2 (AppointmentItem source, IEvent target, bool isRecurrenceException, ITimeZone startIcalTimeZone, ITimeZone endIcalTimeZone, IEntityMappingLogger logger)
+    private void Map1To2 (AppointmentItem source, IEvent target, bool isRecurrenceException, ITimeZone startIcalTimeZone, ITimeZone endIcalTimeZone, IEntityMappingLogger logger, IEventSynchronizationContext context)
     {
       if (source.AllDayEvent)
       {
@@ -291,14 +292,14 @@ namespace CalDavSynchronizer.Implementation.Events
       }
 
       if (!isRecurrenceException)
-        MapRecurrance1To2 (source, target, startIcalTimeZone, endIcalTimeZone, logger);
+        MapRecurrance1To2 (source, target, startIcalTimeZone, endIcalTimeZone, logger, context);
 
 
       target.Class = CommonEntityMapper.MapPrivacy1To2 (source.Sensitivity, _configuration.MapSensitivityPrivateToClassConfidential);
 
       MapReminder1To2 (source, target, isRecurrenceException);
 
-      MapCategories1To2 (source, target);
+      MapCategories1To2 (source, target, context);
 
       target.Properties.Add (MapTransparency1To2 (source.BusyStatus));
       target.Properties.Add (MapBusyStatus1To2 (source.BusyStatus));
@@ -375,18 +376,32 @@ namespace CalDavSynchronizer.Implementation.Events
       }
     }
 
-    private void MapCategories1To2 (AppointmentItem source, IEvent target)
+    private void MapCategories1To2 (AppointmentItem source, IEvent target, IEventSynchronizationContext context)
     {
       if (!string.IsNullOrEmpty (source.Categories))
       {
         var useEventCategoryAsFilter = _configuration.UseEventCategoryAsFilter;
 
-        var sourceCategories = CommonEntityMapper.SplitCategoryString (source.Categories)
-                .Where (c => !useEventCategoryAsFilter || c != _configuration.EventCategory);
+        var sourceCategories = CommonEntityMapper.SplitCategoryString(source.Categories)
+          .Where(c => !useEventCategoryAsFilter || string.Compare(c, _configuration.EventCategory, StringComparison.OrdinalIgnoreCase) != 0);
+
+        var wasColorAdded = false;
 
         foreach (var sourceCategory in sourceCategories)
         {
-          target.Categories.Add (sourceCategory);
+          if (_configuration.MapEventColorToCategory && !wasColorAdded)
+          {
+            var categoryColor = context.GetCategoryColor(sourceCategory);
+            if (categoryColor !=  OlCategoryColor.olCategoryColorNone)
+            {
+              var color = new CalendarProperty("COLOR", ColorHelper.HtmlColorByCategoryColor[categoryColor]);
+              target.Properties.Add(color);
+              wasColorAdded = true;
+            }
+          }
+
+          if (!(_configuration.MapEventColorToCategory && ColorHelper.HtmlColorNames.Contains(sourceCategory)))
+            target.Categories.Add(sourceCategory);
         }
       }
     }
@@ -669,7 +684,7 @@ namespace CalDavSynchronizer.Implementation.Events
       }
     }
 
-    private void MapRecurrance1To2 (AppointmentItem source, IEvent target, ITimeZone startIcalTimeZone, ITimeZone endIcalTimeZone, IEntityMappingLogger logger)
+    private void MapRecurrance1To2 (AppointmentItem source, IEvent target, ITimeZone startIcalTimeZone, ITimeZone endIcalTimeZone, IEntityMappingLogger logger, IEventSynchronizationContext context)
     {
       if (source.IsRecurring)
       {
@@ -772,7 +787,7 @@ namespace CalDavSynchronizer.Implementation.Events
                   var targetException = new Event();
                   target.Calendar.Events.Add (targetException);
                   targetException.UID = target.UID;
-                  Map1To2 (wrapper.Inner, targetException, true, startIcalTimeZone, endIcalTimeZone, logger);
+                  Map1To2 (wrapper.Inner, targetException, true, startIcalTimeZone, endIcalTimeZone, logger, context);
 
                   // check if new exception is already present in target
                   // if it is found and not already present as exdate then add a new exdate to avoid 2 events
@@ -1756,17 +1771,23 @@ namespace CalDavSynchronizer.Implementation.Events
 
     private void MapCategories2To1 (IEvent source, AppointmentItem target)
     {
-      var categories = string.Join (CultureInfo.CurrentCulture.TextInfo.ListSeparator, source.Categories);
+      var targetCategorySortOrderByCategory = new Dictionary<string, int>(StringComparer.InvariantCultureIgnoreCase);
+      for(var i= 0;i< source.Categories.Count;i++)
+        targetCategorySortOrderByCategory[source.Categories[i]] = i;
 
-      if (_configuration.UseEventCategoryAsFilter && !_configuration.InvertEventCategoryFilter
-          && source.Categories.All (a => a != _configuration.EventCategory))
+      if (_configuration.UseEventCategoryAsFilter && !_configuration.InvertEventCategoryFilter && !targetCategorySortOrderByCategory.ContainsKey(_configuration.EventCategory))
       {
-        target.Categories = categories + CultureInfo.CurrentCulture.TextInfo.ListSeparator + _configuration.EventCategory;
+        targetCategorySortOrderByCategory.Add(_configuration.EventCategory, targetCategorySortOrderByCategory.Count);
       }
-      else
+
+      if (_configuration.MapEventColorToCategory && source.Properties.ContainsKey("COLOR"))
       {
-        target.Categories = categories;
+        var eventColor = source.Properties["COLOR"].Value.ToString();
+        var matchingCategory = ColorHelper.FindMatchingCategoryByHtmlColor(eventColor);
+        targetCategorySortOrderByCategory[matchingCategory] = -1;
       }
+
+      target.Categories = string.Join(CultureInfo.CurrentCulture.TextInfo.ListSeparator, targetCategorySortOrderByCategory.OrderBy(e => e.Value).Select(e => e.Key));
     }
 
     private void MapAttendeesAndOrganizer2To1 (IEvent source, AppointmentItem target, IEntityMappingLogger logger)

@@ -327,6 +327,9 @@
     <Compile Include="Implementation\Events\EventEntityMatchDataFactory.cs" />
     <Compile Include="Implementation\Events\EventServerEntityMatchData.cs" />
     <Compile Include="Implementation\Events\EventServerEntityMatchDataFactory.cs" />
+    <Compile Include="Implementation\Events\IDuplicateEventCleaner.cs" />
+    <Compile Include="Implementation\Events\EventSynchronizationContext.cs" />
+    <Compile Include="Implementation\Events\NullEventSynchronizationContext.cs" />
     <Compile Include="Implementation\ExceptionHandlingStrategy.cs" />
     <Compile Include="Implementation\Common\IQueryOutlookContactItemFolderStrategy.cs" />
     <Compile Include="Implementation\Common\IQueryOutlookDistListItemFolderStrategy.cs" />
@@ -373,11 +376,10 @@
     <Compile Include="Implementation\Events\AppointmentSlim.cs" />
     <Compile Include="Implementation\Events\EventSynchronizationInterceptorFactory.cs" />
     <Compile Include="Implementation\Events\EventSynchronizationInterceptor.cs" />
-    <Compile Include="Implementation\Events\NullEventSynchronizationContextFactory.cs" />
     <Compile Include="Implementation\Events\EventSynchronizationContextFactory.cs" />
     <Compile Include="Implementation\Events\DuplicateEventCleaner.cs" />
     <Compile Include="Implementation\Events\IEventSynchronizationContext.cs" />
-    <Compile Include="Implementation\Events\NullEventSynchronizationContext.cs" />
+    <Compile Include="Implementation\Events\NullDuplicateEventCleaner.cs" />
     <Compile Include="Implementation\Events\AppointmentId.cs" />
     <Compile Include="Implementation\GoogleContacts\GoogleApiOperationExecutor.cs" />
     <Compile Include="Implementation\GoogleContacts\GoogleContactCache.cs" />

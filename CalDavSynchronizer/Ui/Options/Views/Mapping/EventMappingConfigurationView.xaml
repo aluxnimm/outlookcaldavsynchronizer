@@ -154,7 +154,8 @@
             Grid.Row="5" 
             IsChecked="{Binding IsCategoryFilterSticky}" ></CheckBox>
       </Grid>
-      <CheckBox ToolTip="removes duplicate Outlook appointments based on start,end and subject of the events after each sync run, &#x0a;be aware of possible performance penalties with this option enabled." IsChecked="{Binding CleanupDuplicateEvents}">Cleanup duplicate events after each sync run</CheckBox>
+                <CheckBox ToolTip="Experimental mapping of the first category color of the appointment to the matching COLOR attribute of the event&#x0a;Together with DAVdroid for Android you can map individual event colors from Android to Outlook,&#x0a;but not all calendar apps support it or can even crash, see &#x0a;https://davdroid.bitfire.at/faq/entry/setting-event-colors-crash/" IsChecked="{Binding MapEventColorToCategory}">Map Event Color to Category</CheckBox>
+        <CheckBox ToolTip="removes duplicate Outlook appointments based on start,end and subject of the events after each sync run, &#x0a;be aware of possible performance penalties with this option enabled." IsChecked="{Binding CleanupDuplicateEvents}">Cleanup duplicate events after each sync run</CheckBox>
             </StackPanel>
     </GroupBox>
   </StackPanel>

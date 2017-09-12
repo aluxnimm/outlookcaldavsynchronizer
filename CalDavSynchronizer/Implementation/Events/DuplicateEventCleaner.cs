@@ -31,7 +31,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class DuplicateEventCleaner : IEventSynchronizationContext
+  public class DuplicateEventCleaner : IDuplicateEventCleaner
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod ().DeclaringType);
 

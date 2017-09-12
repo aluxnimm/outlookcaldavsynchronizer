@@ -88,6 +88,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       RegisterPropertyChangePropagation(_model, nameof(_model.SendNoAppointmentNotifications), nameof(SendNoAppointmentNotifications));
       RegisterPropertyChangePropagation(_model, nameof(_model.UseEventCategoryColorAndMapFromCalendarColor), nameof(UseEventCategoryColorAndMapFromCalendarColor));
       RegisterPropertyChangePropagation(_model, nameof(_model.CleanupDuplicateEvents), nameof(CleanupDuplicateEvents));
+      RegisterPropertyChangePropagation(_model, nameof(_model.MapEventColorToCategory), nameof(MapEventColorToCategory));
       RegisterPropertyChangePropagation(_model, nameof(_model.UseEventCategoryAsFilter), nameof(UseEventCategoryAsFilter));
       RegisterPropertyChangePropagation(_model, nameof(_model.UseEventCategoryAsFilterAndMapColor), nameof(UseEventCategoryAsFilterAndMapColor));
       RegisterPropertyChangePropagation(_model, nameof(_model.IsCategoryFilterSticky), nameof(IsCategoryFilterSticky));
@@ -180,6 +181,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     {
       get { return _model.CleanupDuplicateEvents; }
       set { _model.CleanupDuplicateEvents = value; }
+    }
+
+    public bool MapEventColorToCategory
+    {
+      get { return _model.MapEventColorToCategory; }
+      set { _model.MapEventColorToCategory = value; }
     }
 
     public string EventCategory
@@ -325,6 +332,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       SendNoAppointmentNotifications = true,
       UseEventCategoryColorAndMapFromCalendarColor = true,
       CleanupDuplicateEvents = true,
+      MapEventColorToCategory = true
     };
 
    

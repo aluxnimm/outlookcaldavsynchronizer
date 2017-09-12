@@ -64,22 +64,52 @@ namespace CalDavSynchronizer.Utilities
       {OlCategoryColor.olCategoryColorDarkPurple, ArgbColor.FromRgb(0x5c3fa3)},
       {OlCategoryColor.olCategoryColorDarkMaroon, ArgbColor.FromRgb(0x93446b)}
     };
-    
-    public static OlCategoryColor FindMatchingCategoryColor(ArgbColor argbColor)
-    {
-      var color = Color.FromArgb (argbColor.ArgbValue);
 
-      double minDistance = double.MaxValue;
-      OlCategoryColor matchingCategoryColor = OlCategoryColor.olCategoryColorNone;
+    public static readonly Dictionary<OlCategoryColor, string> HtmlColorByCategoryColor = new Dictionary<OlCategoryColor, string>
+    {
+      {OlCategoryColor.olCategoryColorRed, "red"},
+      {OlCategoryColor.olCategoryColorOrange, "orange"},
+      {OlCategoryColor.olCategoryColorPeach, "peachpuff"},
+      {OlCategoryColor.olCategoryColorYellow, "yellow"},
+      {OlCategoryColor.olCategoryColorGreen, "green"},
+      {OlCategoryColor.olCategoryColorTeal, "lightseagreen"},
+      {OlCategoryColor.olCategoryColorOlive, "olive"},
+      {OlCategoryColor.olCategoryColorBlue, "blue"},
+      {OlCategoryColor.olCategoryColorPurple, "purple"},
+      {OlCategoryColor.olCategoryColorMaroon, "maroon"},
+      {OlCategoryColor.olCategoryColorSteel, "lightsteelblue"},
+      {OlCategoryColor.olCategoryColorDarkSteel, "steelblue"},
+      {OlCategoryColor.olCategoryColorGray, "gray"},
+      {OlCategoryColor.olCategoryColorDarkGray, "darkgray"},
+      {OlCategoryColor.olCategoryColorBlack, "black"},
+      {OlCategoryColor.olCategoryColorDarkRed, "darkred"},
+      {OlCategoryColor.olCategoryColorDarkOrange, "darkorange"},
+      {OlCategoryColor.olCategoryColorDarkPeach, "peru"},
+      {OlCategoryColor.olCategoryColorDarkYellow, "yellowgreen"},
+      {OlCategoryColor.olCategoryColorDarkGreen, "darkgreen"},
+      {OlCategoryColor.olCategoryColorDarkTeal, "teal"},
+      {OlCategoryColor.olCategoryColorDarkOlive, "darkolivegreen"},
+      {OlCategoryColor.olCategoryColorDarkBlue, "darkblue"},
+      {OlCategoryColor.olCategoryColorDarkPurple, "darkviolet"},
+      {OlCategoryColor.olCategoryColorDarkMaroon, "palevioletred"}
+    };
+
+    public static readonly HashSet<string> HtmlColorNames = new HashSet<string>(HtmlColorByCategoryColor.Values, StringComparer.InvariantCultureIgnoreCase);
+
+
+    private static OlCategoryColor FindMatchingCategoryColor (Color color)
+    {
+      var minDistance = double.MaxValue;
+      var matchingCategoryColor = OlCategoryColor.olCategoryColorNone;
 
       foreach (var cat in ArgbColorByCategoryColor)
       {
-        Color catColor = Color.FromArgb(cat.Value.ArgbValue);
+        var catColor = Color.FromArgb(cat.Value.ArgbValue);
 
         var a = new Rgb { R = color.R, G = color.G, B = color.B };
         var b = new Rgb { R = catColor.R, G = catColor.G, B = catColor.B };
 
-        double curDistance = a.Compare(b, new ColorMine.ColorSpaces.Comparisons.CieDe2000Comparison());
+        var curDistance = a.Compare(b, new ColorMine.ColorSpaces.Comparisons.CieDe2000Comparison());
 
         if (curDistance < minDistance)
         {
@@ -87,9 +117,25 @@ namespace CalDavSynchronizer.Utilities
           matchingCategoryColor = cat.Key;
         }
       }
-
       return matchingCategoryColor;
     }
 
+    public static OlCategoryColor FindMatchingCategoryColor (ArgbColor argbColor)
+    {
+      var color = Color.FromArgb (argbColor.ArgbValue);
+
+      return FindMatchingCategoryColor (color);
+    }
+
+    public static string FindMatchingCategoryByHtmlColor(string htmlColor)
+    {
+      if (HtmlColorNames.Contains (htmlColor))
+        return htmlColor;
+
+      var color = ColorTranslator.FromHtml (htmlColor);
+      var matchingCategoryColor = FindMatchingCategoryColor (color);
+
+      return HtmlColorByCategoryColor[matchingCategoryColor];
+    }
   }
 }

@@ -18,30 +18,33 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Reflection;
 using System.Threading.Tasks;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.Utilities;
 using DDay.iCal;
 using GenSync.EntityRelationManagement;
 using GenSync.EntityRepositories;
 using GenSync.Synchronization;
+using log4net;
+using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
   public class EventSynchronizationContextFactory : ISynchronizationContextFactory<IEventSynchronizationContext>
   {
+    private static readonly ILog s_logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
     private readonly OutlookEventRepository _outlookRepository;
     private readonly IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> _btypeRepository;
     private readonly IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> _entityRelationDataAccess;
     private readonly bool _cleanupDuplicateEvents;
     private readonly IEqualityComparer<AppointmentId> _idComparer;
+    private readonly IOutlookSession _outlookSession;
+    private readonly bool _mapEventColorToCategory;
 
-    public EventSynchronizationContextFactory(
-      OutlookEventRepository outlookRepository,
-      IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> btypeRepository,
-      IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> entityRelationDataAccess,
-      bool cleanupDuplicateEvents,
-      IEqualityComparer<AppointmentId> idComparer)
+    public EventSynchronizationContextFactory(OutlookEventRepository outlookRepository, IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> btypeRepository, IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> entityRelationDataAccess, bool cleanupDuplicateEvents, IEqualityComparer<AppointmentId> idComparer, IOutlookSession outlookSession, bool mapEventColorToCategory)
     {
       if (outlookRepository == null)
         throw new ArgumentNullException (nameof (outlookRepository));
@@ -50,29 +53,63 @@ namespace CalDavSynchronizer.Implementation.Events
       if (entityRelationDataAccess == null)
         throw new ArgumentNullException (nameof (entityRelationDataAccess));
       if (idComparer == null) throw new ArgumentNullException(nameof(idComparer));
+      if (outlookSession == null) throw new ArgumentNullException(nameof(outlookSession));
 
       _outlookRepository = outlookRepository;
       _btypeRepository = btypeRepository;
       _entityRelationDataAccess = entityRelationDataAccess;
       _cleanupDuplicateEvents = cleanupDuplicateEvents;
       _idComparer = idComparer;
+      _outlookSession = outlookSession;
+      _mapEventColorToCategory = mapEventColorToCategory;
     }
 
-    public Task<IEventSynchronizationContext> Create ()
+    public Task<IEventSynchronizationContext> Create()
     {
-      return Task.FromResult(
-        _cleanupDuplicateEvents
-          ? new DuplicateEventCleaner(
-            _outlookRepository,
-            _btypeRepository,
-            _entityRelationDataAccess,
-            _idComparer)
-          : NullEventSynchronizationContext.Instance);
+      if (_mapEventColorToCategory)
+        EnsureColorCategoriesExist();
+
+      return Task.FromResult<IEventSynchronizationContext>(
+        new EventSynchronizationContext(
+          _cleanupDuplicateEvents
+            ? new DuplicateEventCleaner(
+              _outlookRepository,
+              _btypeRepository,
+              _entityRelationDataAccess,
+              _idComparer)
+            : NullDuplicateEventCleaner.Instance,
+          _outlookSession));
     }
+
+    private void EnsureColorCategoriesExist()
+    {
+      try
+      {
+        using (var categoriesWrapper = GenericComObjectWrapper.Create(_outlookSession.Categories))
+        {
+          var categoryNames = new HashSet<string>(
+            categoriesWrapper.Inner.ToSafeEnumerable<Category>().Select(c => c.Name),
+            StringComparer.InvariantCultureIgnoreCase);
+
+          foreach (var item in ColorHelper.HtmlColorByCategoryColor)
+          {
+            if (!categoryNames.Contains(item.Value))
+            {
+              categoriesWrapper.Inner.Add(item.Value, item.Key);
+            }
+          }
+        }
+      }
+      catch (System.Exception e)
+      {
+        s_logger.Error("Can't add color categories.", e);
+      }
+    }
+
 
     public async Task SynchronizationFinished (IEventSynchronizationContext context)
     {
-      await context.NotifySynchronizationFinished();
+      await context.DuplicateEventCleaner.NotifySynchronizationFinished();
     }
   }
 }
