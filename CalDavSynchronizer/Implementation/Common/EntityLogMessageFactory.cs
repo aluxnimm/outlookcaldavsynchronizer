@@ -43,7 +43,7 @@ namespace CalDavSynchronizer.Implementation.Common
 
     public string ACreateOrNull(IAppointmentItemWrapper entity)
     {
-      return entity.Inner?.Subject;
+      return entity.Inner.Subject;
     }
 
     public string ACreateOrNull(ITaskItemWrapper entity)
@@ -58,12 +58,12 @@ namespace CalDavSynchronizer.Implementation.Common
 
     public string BCreateOrNull(IICalendar entity)
     {
-      return entity.Calendar?.Events.FirstOrDefault()?.Summary;
+      return entity.Calendar.Events.FirstOrDefault()?.Summary ?? entity.Calendar.Todos.FirstOrDefault()?.Summary;
     }
 
     public string ACreateOrNull(IContactItemWrapper entity)
     {
-      return entity.Inner?.FullName;
+      return entity.Inner.FullName;
     }
 
     public string BCreateOrNull(GoogleContactWrapper entity)
