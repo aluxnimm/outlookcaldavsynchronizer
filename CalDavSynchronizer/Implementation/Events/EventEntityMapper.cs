@@ -382,8 +382,8 @@ namespace CalDavSynchronizer.Implementation.Events
       {
         var useEventCategoryAsFilter = _configuration.UseEventCategoryAsFilter;
 
-        var sourceCategories = CommonEntityMapper.SplitCategoryString (source.Categories)
-                .Where (c => !useEventCategoryAsFilter || c != _configuration.EventCategory);
+        var sourceCategories = CommonEntityMapper.SplitCategoryString(source.Categories)
+          .Where(c => !useEventCategoryAsFilter || string.Compare(c, _configuration.EventCategory, StringComparison.OrdinalIgnoreCase) != 0);
 
         var wasColorAdded = false;
 
