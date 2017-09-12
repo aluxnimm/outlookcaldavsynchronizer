@@ -61,6 +61,9 @@ namespace CalDavSynchronizer.DDayICalWorkaround
             }
           }
         }
+        // RFC 5545 states that "DTSTART" in this usage MUST be specified as a date with a local
+        // time value. VALUE=DATE is not allowed.
+        tziItems.Start.HasTime = true;
       }
     }
 
