@@ -25,6 +25,10 @@ New collaboration with Nextcloud, see [https://nextcloud.com/blog/nextcloud-offe
 
 For possible enterprise support, please contact us [here](http://caldavsynchronizer.org/enterprise/)!
 
+### Recommended Android DAV client ###
+
+We work closely together and test interopability with DAVdroid for Android, see [https://davdroid.bitfire.at](https://davdroid.bitfire.at), so we can really recommend it! Together with DAVdroid we now have experimental support for per-event coloring by mapping the Outlook category color to the COLOR attribute of the event.
+
 ### Tested CalDAV Servers ###
 
 - Baïkal
@@ -73,7 +77,8 @@ For possible enterprise support, please contact us [here](http://caldavsynchroni
 - task support
 - Google native Contacts API support with mapping of Google contact groups to Outlook categories.
 - Google Tasklists support (sync via Google Task Api with Outlook task folders)
-- CardDAV support to sync contacts (distribution lists planned)
+- CardDAV support to sync contacts
+- Map Outlook Distribution Lists to contacts groups in SOGo VLIST, KIND:GROUP or iCloud group format
 - time-triggered-sync
 - change-triggered-sync
 - manual-triggered-sync
@@ -87,6 +92,7 @@ For possible enterprise support, please contact us [here](http://caldavsynchroni
 - Configurable mapping of Outlook custom properties
 - create DAV server calendars/addressbooks with MKCOL
 - Map Outlook formatted RTFBody to html description via X-ALT-DESC attribute
+- Support for RFC7986 per-event color handling, mapping of Outlook category color to COLOR attribute
 
 ### Used Libraries ###
 
@@ -107,6 +113,21 @@ Beginning with version 2.9.0 the default install location is `ProgramFilesDir\Ca
 We recommend updating to the latest .Net Framework but the minimal required version is .Net 4.5, which is not supported on Windows XP. If you need Outlook CalDav Synchronizer for Windows XP you can download a backport to .Net 4.0 from a forked project [here](https://sourceforge.net/projects/outlookcaldavsynchronizerxp/), thanks to [Salvatore Isaja](https://sourceforge.net/u/salvois/profile/) for the awesome work!
 
 ### Changelog ###
+
+#### 2.24.0 ####
+- Released 2017/09/12
+- New features
+	- Add support for RFC7986 per-event color handling, mapping of Outlook category color to COLOR attribute, feature request #76.
+	- Add ProfileType for mail.de.
+	- Add ProfileType for iCloud contacts.
+	- Add support for mapping Distribution Lists to iCloud contact groups.
+	- Use Credentials and Proxy from profile for Weblclient to download photo URL, fixes syncing of contact photos for iCloud and others, feature request #71.
+	- Add general option to a) Log all entity synchroniaztion reports and b) to include entity names in entity synchronization reports.
+-  Bug fixes
+	-  Avoid ArgumentNullException in Nodatime timezone conversions, ticket #674,#677
+	-  Ignore redundant entities in GetTransformedEntities.
+	-  Fix invalid DTSTART in VTIMEZONE, gh issue #210.
+	-  Some code cleanup and refactoring.
 
 #### 2.23.0 ####
 - Released 2017/08/13
@@ -1123,7 +1144,7 @@ If you expand the tree view of the profile you can configure network and proxy o
 	- Map OutlookEmailAddress1 to WORK instead of HOME, enable when you need to change the order of email address mapping.
 	- Write IM addresses as IMPP attributes. If enabled IMPP is used instead of X-AIM,X-ICQ,X-JABBER etc. for writing Instant messenger addresses in vCards.
 	- Default IM protocol. Choose the default IM service type protocol which will be added to the chat address field from Outlook when writing vCards, defaults to AIM. 
-	- Map Distribution Lists enables the sync of contact groups / Distribution Lists, right now the DAV contact group format SOGo VLIST or vCards with KIND:group are available, see **Distribution Lists** below.
+	- Map Distribution Lists enables the sync of contact groups / Distribution Lists, right now the DAV contact group format SOGo VLIST, vCards with KIND:group or iCloud groups are available, see **Distribution Lists** below.
 	- For tasks (not for Google task profiles) you can configure if you want to map reminders (just upcoming, all or none), the priority of the task, the description body and if recurring tasks should be synchronized.
 	- You can also define if task start and due dates should be mapped as floating without timezone to avoid issues with tasks across different timezones.
 	- Similar to calendars you can also define a filter category so that multiple CalDAV Tasklists can be synchronized into one Outlook task folder via the defined category.	
@@ -1165,6 +1186,8 @@ With the checkbox *Sync also Appointments without any category* also all appoint
 With the checkbox below you can alternatively negate the filter and sync all appointments/tasks except this category.
 For calendars it is also possible to choose the color of the category or to fetch the calendar color from the server and map it to the nearest supported Outlook category color with the button *Fetch Color*. With *Set DAV Color* it is also possible to sync the choosen category color back to set the server calendar color accordingly. With *Category Shortcut Key* you can define the shortcut key of the selected category for easier access when creating appointments.
 
+Experimental mapping of the first category color of the appointment to the matching COLOR attribute of the event is also available with the option *Map Event Color to Category*. Together with DAVdroid for Android [https://davdroid.bitfire.at](https://davdroid.bitfire.at) you can map individual event colors from Android to Outlook,but not all calendar apps support it or can even crash, see [https://davdroid.bitfire.at/faq/entry/setting-event-colors-crash/](https://davdroid.bitfire.at/faq/entry/setting-event-colors-crash/)
+
 ### Reminders ###
 
 In event and task mapping configuration you can define if you want to map (all/non/just upcoming) reminders. If you get the following error message when trying to set reminders in Outlook 
@@ -1187,11 +1210,11 @@ When you expand the tree view of the profile for events and tasks, you can confi
 
 ### Distribution Lists ###
 
-When enabled in Contact Mapping configuration you can now also sync Outlook Distribution Lists with your server contact groups. Since different servers use different formats to store contact groups, you will be able to choose the used DAV contact group format. Right now, the VLIST format for SOGo servers and vCards with KIND:group are supported. Don't enable any of these options when your server doesn't support it!
+When enabled in Contact Mapping configuration you can now also sync Outlook Distribution Lists with your server contact groups. Since different servers use different formats to store contact groups, you will be able to choose the used DAV contact group format. Right now, the VLIST format for SOGo servers, vCards with KIND:group and iCloud groups are supported. Don't enable any of these options when your server doesn't support it!
 
 Since Outlook Distribution Lists also support list members which aren't in the addressbook but SOGo VLISTs don't, we add them as custom X-Attributes. With this workaround those members aren't displayed in SOGo but won't get lost when syncing back to Outlook.
 
-Since vCard in version 3.0 doesn't support contact groups we use X-ADDRESSBOOK-SERVER attributes for KIND and MEMBER for contact groups.
+Since vCard in version 3.0 doesn't support contact groups we use X-ADDRESSBOOK-SERVER attributes for KIND and MEMBER for contact groups and map the member CN and EMAIL for vCards with KIND:group or the member UID for the icloud groups.
 
 ### Google Calender / Addressbooks / Tasks settings ###
 
@@ -1246,7 +1269,7 @@ Check: DefaultCalendarPath
 Then you get the DAV url of the calendar:
     `https://p**-caldav.icloud.com/*********/calendars/********-****-****-****-************/`
 
-For syncing iCloud contacts with CardDAV use the following URL
+For syncing iCloud contacts select the preconfigured iCloud contacts profile type, which uses the following CardDAV URL
     https://contacts.icloud.com
 and press '*Test or discover settings*' for autodiscovery, the final URL should look like
     
@@ -1322,6 +1345,9 @@ You can also configure Synchronization reports for all profiles, this can be con
 - **Log** You can choose if you want to generate reports for *"Only sync runs with errors"* or *"Sync runs with errors or warnings"* or *"All sync runs"*.
 - **Show immediately** configures if the Sync reports should be shown immediately after a sync run with errors, with warnings or errors, or not at all.
 - **Delete reports older than (days)** Automatically delete reports which are older than the days configured.
+- **Log Entity Names** Enable to display the summary of the event or task or the name of the contact to identify the entity in the sync report.
+- 
+- **Log all entities, even without warnings or errors** Enable if a full report of all modified entities is needed.
 
 You can show reports manually with the **Reports** button in the CalDav Synchronizer Ribbon. There you can choose from available reports (shown as profile name with timestamp of the sync run) and see informations about items synced and if there were any warnings or errors. You can also delete reports or add them to a zip file via the context menu. If the last sync run lead to any errors, a warning symbol is shown in the Ribbon or the Report window opens if configured in the general options.
 
