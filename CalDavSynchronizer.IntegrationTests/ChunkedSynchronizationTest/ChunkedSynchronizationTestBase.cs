@@ -59,11 +59,11 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
     }
 
 
-    [TestCase(null, 25)]
-    [TestCase(3, 25)]
-    [TestCase(25, 25)]
-    [TestCase(101, 25)]
-    [TestCase(1,5)]
+    [TestCase(null, 7)]
+    [TestCase(2, 7)]
+    [TestCase(7, 7)]
+    [TestCase(29, 7)]
+    [TestCase(1,7)]
     public virtual async Task Test(int? chunkSize, int itemsPerOperation)
     {
       await InitializeSynchronizer(chunkSize);

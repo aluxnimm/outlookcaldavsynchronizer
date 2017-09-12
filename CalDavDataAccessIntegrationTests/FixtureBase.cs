@@ -278,6 +278,19 @@ namespace CalDavDataAccessIntegrationTests
           v.Version,
           SerializeCalendar (calendar));
 
+      if (ShouldWaitForNewEtag)
+      {
+        const int maxRetries = 5;
+        for (var i = 0; i < maxRetries && v2.Version == v.Version; i++)
+        {
+          await Task.Delay(300);
+          v2 = (await _calDavDataAccess.GetVersions(new[] {v.Id}))[0];
+        }
+
+        if (v2.Version == v.Version)
+          Assert.Fail("Server didn't change etag after update"); // Some servers (e.g. Google) don't change etag sometimes
+      }
+
       calendar.Events[0].Summary += "xxx";
 
       Assert.That (
@@ -287,6 +300,13 @@ namespace CalDavDataAccessIntegrationTests
               SerializeCalendar (calendar)),
           Is.Null);
     }
+
+    /// <summary>
+    /// Some servers do change the entity on a PUT Request before storing it
+    /// and therefore must not return an etag (see: https://tools.ietf.org/html/rfc7231#section-4.3.4)
+    /// 
+    /// </summary>
+    protected virtual bool ShouldWaitForNewEtag => false;
 
     [Test]
     public virtual async Task UpdateNonExistingEntity ()

@@ -33,5 +33,7 @@ namespace CalDavDataAccessIntegrationTests
     {
       await base.TryDeleteEntityWithWrongVersion ();
     }
+
+    protected override bool ShouldWaitForNewEtag => true;
   }
 }
