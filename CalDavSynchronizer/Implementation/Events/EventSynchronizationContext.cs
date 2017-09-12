@@ -38,7 +38,7 @@ namespace CalDavSynchronizer.Implementation.Events
         {
           using (var categoriesWrapper = GenericComObjectWrapper.Create(outlookSession.Categories))
           {
-            return categoriesWrapper.Inner.ToSafeEnumerable<Category>().ToDictionary(c => c.Name, c => c.Color);
+            return categoriesWrapper.Inner.ToSafeEnumerable<Category>().ToDictionary(c => c.Name, c => c.Color, StringComparer.InvariantCultureIgnoreCase);
           }
         },
         false);
