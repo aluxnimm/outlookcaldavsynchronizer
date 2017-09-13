@@ -43,7 +43,7 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
       Application.Session.Logon();
 
       _testComWrapperFactoryWrapper = new TestComWrapperFactoryWrapper(new TestComWrapperFactory(null));
-      ComponentContainer = new ComponentContainer(Application, new NullUiServiceFactory(), new InMemoryGeneralOptionsDataAccess(), _testComWrapperFactoryWrapper, new TestExceptionHandlingStrategy());
+      ComponentContainer = new ComponentContainer(Application, new InMemoryGeneralOptionsDataAccess(), _testComWrapperFactoryWrapper, new TestExceptionHandlingStrategy());
       SynchronizerFactory = ComponentContainer.GetSynchronizerFactory();
     }
 

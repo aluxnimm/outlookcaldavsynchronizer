@@ -153,7 +153,6 @@
     <Compile Include="TestBase\GoogleContactTestSynchronizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Infrastructure\NullGoogleContactContext.cs" />
-    <Compile Include="Infrastructure\NullUiServiceFactory.cs" />
     <Compile Include="Infrastructure\TestReportSink.cs" />
     <Compile Include="GoogleContactFixture.cs" />
     <Compile Include="Infrastructure\EasyAccessRepositoryAdapter.cs" />

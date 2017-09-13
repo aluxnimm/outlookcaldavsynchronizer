@@ -95,7 +95,7 @@ namespace CalDavSynchronizer
     private readonly DaslFilterProvider _daslFilterProvider;
     private readonly GlobalTimeZoneCache _globalTimeZoneCache;
     private readonly IAvailableVersionService _availableVersionService;
-    private readonly ProfileStatusesViewModel _profileStatusesViewModel;
+    private readonly IPermanentStatusesViewModel _permanentStatusesViewModel;
     private ITrayNotifier _trayNotifier;
     private ISynchronizationProfilesViewModel _currentVisibleOptionsFormOrNull;
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
@@ -111,10 +111,9 @@ namespace CalDavSynchronizer
       remove { _synchronizationStatus.StatusChanged -= value; }
     }
 
-    public ComponentContainer (Application application, IUiServiceFactory uiServiceFactory, IGeneralOptionsDataAccess generalOptionsDataAccess, IComWrapperFactory comWrapperFactory, IExceptionHandlingStrategy exceptionHandlingStrategy)
+    public ComponentContainer (Application application, IGeneralOptionsDataAccess generalOptionsDataAccess, IComWrapperFactory comWrapperFactory, IExceptionHandlingStrategy exceptionHandlingStrategy)
     {
       if (application == null) throw new ArgumentNullException(nameof(application));
-      if (uiServiceFactory == null) throw new ArgumentNullException(nameof(uiServiceFactory));
       if (generalOptionsDataAccess == null) throw new ArgumentNullException(nameof(generalOptionsDataAccess));
       if (comWrapperFactory == null) throw new ArgumentNullException(nameof(comWrapperFactory));
 
@@ -155,8 +154,10 @@ namespace CalDavSynchronizer
               _applicationDataDirectory,
               GetOrCreateConfigFileName (_applicationDataDirectory, _session.CurrentProfileName)
               ));
-      _profileStatusesViewModel = new ProfileStatusesViewModel(this);
-      _uiService = uiServiceFactory.Create(_profileStatusesViewModel);
+
+      _uiService = new UiService();
+      _permanentStatusesViewModel = new PermanentStatusesViewModel(_uiService, this);
+      _permanentStatusesViewModel.OptionsRequesting += PermanentStatusesViewModel_OptionsRequesting;
 
       _queryFolderStrategyWrapper = new OutlookFolderStrategyWrapper(QueryOutlookFolderByRequestingItemStrategy.Instance);
 
@@ -194,10 +195,6 @@ namespace CalDavSynchronizer
 
       EnsureCacheCompatibility (options);
 
-
-      _profileStatusesViewModel.EnsureProfilesDisplayed (options);
-
-
       _availableVersionService = new AvailableVersionService();
       _updateChecker = new UpdateChecker (_availableVersionService, () => _generalOptionsDataAccess.IgnoreUpdatesTilVersion);
       _updateChecker.NewerVersionFound += UpdateChecker_NewerVersionFound;
@@ -227,6 +224,11 @@ namespace CalDavSynchronizer
       _categorySwitcher = new CategorySwitcher(new OutlookSession(_session), _daslFilterProvider, _queryFolderStrategyWrapper);
     }
 
+    private void PermanentStatusesViewModel_OptionsRequesting(object sender, OptionsEventArgs e)
+    {
+      e.Options = _optionsDataAccess.Load();
+    }
+
     private static bool _wpfLocaleSet;
     private static void SetWpfLocale()
     {
@@ -238,7 +240,7 @@ namespace CalDavSynchronizer
         _wpfLocaleSet = true;
       }
     }
-
+    
     public async Task InitializeSchedulerAndStartAsync()
     {
       _scheduler.Start();
@@ -387,7 +389,7 @@ namespace CalDavSynchronizer
     public void PostReport (SynchronizationReport report)
     {
       SaveAndShowReport (report);
-      _profileStatusesViewModel.Update (report);
+      _permanentStatusesViewModel.Update (report);
       _trayNotifier.NotifyUser (report, _showReportsWithWarningsImmediately, _showReportsWithErrorsImmediately);
     }
 
@@ -548,7 +550,7 @@ namespace CalDavSynchronizer
     {
       _optionsDataAccess.Save (newOptions);
       await _scheduler.SetOptions (newOptions, generalOptions);
-      _profileStatusesViewModel.EnsureProfilesDisplayed (newOptions);
+      _permanentStatusesViewModel.NotifyProfilesChanged (newOptions);
       DeleteEntityChachesForChangedProfiles (oldOptions, newOptions);
       var changedOptions = CreateChangePairs (oldOptions, newOptions);
       _categorySwitcher.SwitchCategories (changedOptions);
@@ -832,7 +834,7 @@ namespace CalDavSynchronizer
     public void ShowProfileStatuses ()
     {
       EnsureSynchronizationContext();
-      _uiService.ShowProfileStatusesWindow();
+      _permanentStatusesViewModel.SetVisible();
     }
 
     public void ShowAbout ()

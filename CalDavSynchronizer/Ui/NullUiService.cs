@@ -21,6 +21,7 @@ using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Ui.Options.ProfileTypes;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.Reports.ViewModels;
+using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
 using CalDavSynchronizer.Ui.ViewModels;
 using GenSync.ProgressReport;
 using Microsoft.Office.Interop.Outlook;
@@ -40,9 +41,9 @@ namespace CalDavSynchronizer.Ui
       
     }
 
-    public void ShowProfileStatusesWindow()
+    public void Show(TransientProfileStatusesViewModel viewModel)
     {
-     
+      
     }
 
     public bool ShowOptions(OptionsCollectionViewModel viewModel)

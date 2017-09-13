@@ -20,6 +20,7 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Ui.Options.ProfileTypes;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.Reports.ViewModels;
+using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
 using GenSync.ProgressReport;
 
 namespace CalDavSynchronizer.Ui
@@ -27,7 +28,7 @@ namespace CalDavSynchronizer.Ui
   public interface IUiService : IProgressUiFactory
   {
     void Show (ReportsViewModel reportsViewModel);
-    void ShowProfileStatusesWindow ();
+    void Show(TransientProfileStatusesViewModel viewModel);
     bool ShowOptions (OptionsCollectionViewModel viewModel);
     IProfileType QueryProfileType(IReadOnlyCollection<IProfileType> profileTypes);
     void ShowErrorDialog(string errorMessage, string title);

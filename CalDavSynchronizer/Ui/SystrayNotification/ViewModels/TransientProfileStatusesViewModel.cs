@@ -27,7 +27,7 @@ using GenSync.Logging;
 
 namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
 {
-  public class ProfileStatusesViewModel
+  public class TransientProfileStatusesViewModel : ITransientProfileStatusesViewModel
   {
     // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
     private readonly Timer _timer;
@@ -36,7 +36,10 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
     private readonly Dictionary<Guid, ProfileStatusViewModel> _profileStatusViewModelsById = new Dictionary<Guid, ProfileStatusViewModel>();
     private readonly ICalDavSynchronizerCommands _calDavSynchronizerCommands;
 
-    public ProfileStatusesViewModel (ICalDavSynchronizerCommands calDavSynchronizerCommands)
+    public event EventHandler Closing;
+    public event EventHandler RequestingBringToFront;
+
+    public TransientProfileStatusesViewModel(ICalDavSynchronizerCommands calDavSynchronizerCommands, Contracts.Options[] profiles)
     {
       if (calDavSynchronizerCommands == null)
         throw new ArgumentNullException (nameof (calDavSynchronizerCommands));
@@ -50,6 +53,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
       };
       _timer.Interval = 50 * 1000;
       _timer.Enabled = true;
+      NotifyProfilesChanged(profiles);
     }
 
     ProfileStatusViewModel GetOrCreateProfileStatusViewModel (Guid profileId)
@@ -75,7 +79,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
     }
 
 
-    public void EnsureProfilesDisplayed (Contracts.Options[] profiles)
+    public void NotifyProfilesChanged (Contracts.Options[] profiles)
     {
       HashSet<Guid> existingProfiles = new HashSet<Guid>();
 
@@ -102,11 +106,11 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
       }
     }
     
-    public static ProfileStatusesViewModel DesignInstance
+    public static TransientProfileStatusesViewModel DesignInstance
     {
       get
       {
-        var viewModel = new ProfileStatusesViewModel(NullCalDavSynchronizerCommands.Instance);
+        var viewModel = new TransientProfileStatusesViewModel(NullCalDavSynchronizerCommands.Instance, new Contracts.Options[0]);
 
         viewModel.Profiles.Add (ProfileStatusViewModel.CreateDesignInstance ("Profile 1", null, null));
         viewModel.Profiles.Add (ProfileStatusViewModel.CreateDesignInstance ("Profile 2", SyncronizationRunResult.Ok, 7));
@@ -115,6 +119,23 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
 
         return viewModel;
       }
+    }
+
+    public void Dispose()
+    {
+      _timer.Dispose();
+      Closing = null;
+      RequestingBringToFront = null;
+    }
+
+    public void OnViewClosing()
+    {
+      Closing?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void BringToFront()
+    {
+      RequestingBringToFront?.Invoke(this, EventArgs.Empty);
     }
   }
 }

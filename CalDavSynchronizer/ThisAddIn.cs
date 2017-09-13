@@ -99,7 +99,7 @@ namespace CalDavSynchronizer
           return;
         }
 
-        ComponentContainer = new ComponentContainer (Application, new UiServiceFactory (), new GeneralOptionsDataAccess (), new ComWrapperFactory(), new ExceptionHandlingStrategy());
+        ComponentContainer = new ComponentContainer (Application, new GeneralOptionsDataAccess (), new ComWrapperFactory(), new ExceptionHandlingStrategy());
         ComponentContainer.SynchronizationFailedWhileReportsFormWasNotVisible += ComponentContainer_SynchronizationFailedWhileReportsFormWasNotVisible;
         ComponentContainer.StatusChanged += ComponentContainer_StatusChanged;
 

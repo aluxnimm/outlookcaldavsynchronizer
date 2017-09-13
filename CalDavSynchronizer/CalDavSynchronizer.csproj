@@ -441,7 +441,6 @@
     </Compile>
     <Compile Include="Ui\ConnectionTests\AccessPrivileges.cs" />
     <Compile Include="Ui\DelegateCommandHandlingRequerySuggested.cs" />
-    <Compile Include="Ui\IUiServiceFactory.cs" />
     <Compile Include="Ui\NullProgressUi.cs" />
     <Compile Include="Ui\NullUiService.cs" />
     <Compile Include="Ui\Options\EnumDisplayNameProvider.cs" />
@@ -477,7 +476,11 @@
     <Compile Include="Ui\Options\Views\SelectProfileWindow.xaml.cs">
       <DependentUpon>SelectProfileWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Ui\UiServiceFactory.cs" />
+    <Compile Include="Ui\SystrayNotification\ViewModels\IProfileStatusesViewModel.cs" />
+    <Compile Include="Ui\SystrayNotification\ViewModels\IPermanentStatusesViewModel.cs" />
+    <Compile Include="Ui\SystrayNotification\ViewModels\ITransientProfileStatusesViewModel.cs" />
+    <Compile Include="Ui\SystrayNotification\ViewModels\OptionsEventArgs.cs" />
+    <Compile Include="Ui\SystrayNotification\ViewModels\PermanentStatusesViewModel.cs" />
     <Compile Include="Ui\ViewModels\ProgressViewModel.cs" />
     <Compile Include="Ui\Views\ProgressWindow.xaml.cs">
       <DependentUpon>ProgressWindow.xaml</DependentUpon>
@@ -789,7 +792,7 @@
     <Compile Include="Ui\Options\SettingsFaultFinder.cs" />
     <Compile Include="Ui\SystrayNotification\ITrayNotifier.cs" />
     <Compile Include="Ui\SystrayNotification\NullTrayNotifier.cs" />
-    <Compile Include="Ui\SystrayNotification\ViewModels\ProfileStatusesViewModel.cs" />
+    <Compile Include="Ui\SystrayNotification\ViewModels\TransientProfileStatusesViewModel.cs" />
     <Compile Include="Ui\SystrayNotification\ViewModels\ProfileStatusViewModel.cs" />
     <Compile Include="Ui\SystrayNotification\SyncronizationRunResult.cs" />
     <Compile Include="Ui\SystrayNotification\Views\ProfileStatusesViewModel.xaml.cs">

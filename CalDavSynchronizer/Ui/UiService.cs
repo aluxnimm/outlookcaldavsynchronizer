@@ -46,30 +46,31 @@ namespace CalDavSynchronizer.Ui
   internal class UiService : IUiService
   {
     private const string c_exportedProfilesFilesFilter = "CalDav Synchronizer profiles (*.cdsp)|*.cdsp";
-    private readonly GenericElementHostWindow _profileStatusesWindow;
 
-    public UiService (ProfileStatusesViewModel viewModel)
+    public void Show (TransientProfileStatusesViewModel viewModel)
     {
-      if (viewModel == null)
-        throw new ArgumentNullException (nameof (viewModel));
+      if (viewModel == null) throw new ArgumentNullException (nameof (viewModel));
   
       var view = new ProfileStatusesView();
       view.DataContext = viewModel;
-      _profileStatusesWindow = new GenericElementHostWindow();
-      _profileStatusesWindow.Text = "Synchronization Status";
-      _profileStatusesWindow.Icon = Resources.ApplicationIcon;
-      _profileStatusesWindow.ShowIcon = true;
-      _profileStatusesWindow.BackColor = SystemColors.Window;
-      _profileStatusesWindow.Child = view;
-      _profileStatusesWindow.Size = new Size (400, 300);
-      _profileStatusesWindow.FormClosing += (sender, e) =>
+      var profileStatusesWindow = new GenericElementHostWindow();
+      profileStatusesWindow.Text = "Synchronization Status";
+      profileStatusesWindow.Icon = Resources.ApplicationIcon;
+      profileStatusesWindow.ShowIcon = true;
+      profileStatusesWindow.BackColor = SystemColors.Window;
+      profileStatusesWindow.Child = view;
+      profileStatusesWindow.Size = new Size (400, 300);
+      profileStatusesWindow.FormClosing += (sender, e) =>
       {
-        e.Cancel = true;
-        _profileStatusesWindow.Visible = false;
+        viewModel.OnViewClosing();
       };
+      viewModel.RequestingBringToFront += (sender, e) =>
+      {
+        profileStatusesWindow.BringToFront();
+      };
+      profileStatusesWindow.Show();
     }
-
-
+    
     public void Show (ReportsViewModel reportsViewModel)
     {
       var view = new ReportsView();
@@ -88,14 +89,6 @@ namespace CalDavSynchronizer.Ui
       reportsViewModel.RequiresBringToFront += delegate { window.BringToFront(); };
 
       SetWindowSize (window, 0.75);
-    }
-
-    public void ShowProfileStatusesWindow ()
-    {
-      if (_profileStatusesWindow.Visible)
-        _profileStatusesWindow.BringToFront();
-      else
-        _profileStatusesWindow.Visible = true;
     }
 
     public bool ShowOptions (OptionsCollectionViewModel viewModel)
