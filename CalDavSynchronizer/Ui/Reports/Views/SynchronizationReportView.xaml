@@ -94,6 +94,18 @@
             DockPanel.Dock="Left" 
             AutoGenerateColumns="False" 
             ItemsSource="{Binding Report.EntitySynchronizationReports, Mode=OneTime}" RowHeaderWidth="20">
+              <DataGrid.ItemContainerStyle>
+                <Style TargetType="DataGridRow">
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding HasWarnings}" Value="true">
+                      <Setter Property="Background" Value="#ffff99" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding HasErrors}" Value="true">
+                      <Setter Property="Background" Value="#ff9999" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </DataGrid.ItemContainerStyle>
               <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Outlook Id" IsReadOnly="True" Width="100">
                   <DataGridTemplateColumn.CellTemplate>

@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Xml.Serialization;
 
 namespace GenSync.Logging
 {
@@ -43,5 +44,11 @@ namespace GenSync.Logging
 
     public string ExceptionThatLeadToAbortion { get; set; }
     public SynchronizationOperation Operation { get; set; }
+
+    [XmlIgnore]
+    public bool HasErrors => ExceptionThatLeadToAbortion != null || _mappingErrors?.Length > 0;
+
+    [XmlIgnore]
+    public bool HasWarnings => _mappingWarnings?.Length > 0;
   }
 }
