@@ -80,10 +80,10 @@ namespace CalDavSynchronizer.Implementation.Common
             s_logger.Warn("Could not access GlobalAppointmentID of appointment", ex);
           }
 
-          var lastModificationTime = (DateTime) row[LastModificationTimeColumnId];
+          var lastModificationTime = (DateTime) (row[LastModificationTimeColumnId] ?? throw new Exception($"Column '{nameof(LastModificationTimeColumnId)}' of event '{entryId}' is NULL."));
           var subject = (string) row[SubjectColumnId];
-          var start = (DateTime) row[StartColumnId];
-          var end = (DateTime) row[EndColumnId];
+          var start = (DateTime) (row[StartColumnId] ?? throw new Exception($"Column '{nameof(StartColumnId)}' of event '{entryId}' is NULL."));
+          var end = (DateTime) (row[EndColumnId] ?? throw new Exception($"Column '{nameof(EndColumnId)}' of event '{entryId}' is NULL."));
 
           events.Add(new AppointmentSlim(EntityVersion.Create(new AppointmentId(entryId, globalAppointmentId), lastModificationTime), start, end, subject));
         }
@@ -121,7 +121,7 @@ namespace CalDavSynchronizer.Implementation.Common
         {
           var row = table.GetNextRow ();
           var entryId = row.BinaryToString (PR_LONG_TERM_ENTRYID_FROM_TABLE);
-          var lastModificationTime = (DateTime) row[LastModificationTimeColumnId];
+          var lastModificationTime = (DateTime) (row[LastModificationTimeColumnId] ?? throw new Exception($"Column '{nameof(LastModificationTimeColumnId)}' of entity '{entryId}' is NULL."));
           versions.Add (new EntityVersion<string, DateTime> (entryId, lastModificationTime));
         }
       }
