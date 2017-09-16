@@ -19,9 +19,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation;
+using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Events;
 using CalDavSynchronizer.IntegrationTests.Infrastructure;
 using CalDavSynchronizer.IntegrationTests.TestBase;
+using CalDavSynchronizer.Scheduling;
 using DDay.iCal;
 using GenSync.Logging;
 using NUnit.Framework;
@@ -79,6 +81,70 @@ namespace CalDavSynchronizer.IntegrationTests
           "overlapBeginning", "overlapEnd", "inside", "surrounding"
         },
         events.Select(e => e.Entity.Events[0].Summary));
+    }
+
+    [Test]
+    [Apartment(System.Threading.ApartmentState.STA)]
+    public async Task Synchronize_ContainsDuplicates_DuplicatesAreDeletedIfEnabled()
+    {
+      var options = TestComponentContainer.GetOptions("IntegrationTest/Events/Sogo");
+
+      options.SynchronizationMode = SynchronizationMode.MergeInBothDirections;
+
+      var synchronizer = await CreateSynchronizer(options);
+      await synchronizer.ClearEventRepositoriesAndCache();
+
+  
+      synchronizer = await CreateSynchronizer(options);
+
+      var now = DateTime.Now;
+      var date1 = new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0).AddDays(3);
+      var date2 = date1.AddHours(1);
+      var date3 = date1.AddHours(2);
+
+      var event1 = ("e1", date1, date3);
+      var event2 = ("e1", date1, date3);
+      var event3 = ("e1", date1, date3);
+
+      var event4 = ("e2", date1, date3);
+      var event5 = ("e2", date1, date3);
+      var event6 = ("e2", date2, date3);
+
+      var event7 = ("e3", date1, date3);
+      var event8 = ("e3", date1, date2);
+      var event9 = ("e3x", date1, date3);
+      var allEvents = new[] {event1, event2, event3, event4, event5, event6, event7, event8, event9};
+
+      foreach (var evt in allEvents)
+        await synchronizer.CreateEventInOutlook(evt.Item1, evt.Item2, evt.Item3);
+
+      await synchronizer.SynchronizeAndCheck(
+        unchangedA: 0, addedA: 9, changedA: 0, deletedA: 0,
+        unchangedB: 0, addedB: 0, changedB: 0, deletedB: 0,
+        createA: 0, updateA: 0, deleteA: 0,
+        createB: 9, updateB: 0, deleteB: 0);
+
+      var entities = (await synchronizer.Outlook.GetAllEntities()).Select(e => e.Entity).ToList();
+      Assert.That(
+        entities.Select(e => (e.Inner.Subject, e.Inner.Start, e.Inner.End)),
+        Is.EquivalentTo(allEvents));
+      entities.ForEach(e => e.Dispose());
+
+      ((EventMappingConfiguration)options.MappingConfiguration).CleanupDuplicateEvents = true;
+
+      synchronizer = await CreateSynchronizer(options);
+
+      await synchronizer.SynchronizeAndCheck(
+        unchangedA: 9, addedA: 0, changedA: 0, deletedA: 0,
+        unchangedB: 9, addedB: 0, changedB: 0, deletedB: 0,
+        createA: 0, updateA: 0, deleteA: 0,
+        createB: 0, updateB: 0, deleteB: 0);
+      
+      var entitiesAfterClenaup = (await synchronizer.Outlook.GetAllEntities()).Select(e => e.Entity).ToList();
+      Assert.That(
+        entitiesAfterClenaup.Select(e => (e.Inner.Subject, e.Inner.Start, e.Inner.End)),
+        Is.EquivalentTo(new[] {event1, event4, event6, event7, event8, event9}));
+      entities.ForEach(e => e.Dispose());
     }
 
     [TestCase("IntegrationTest/Events/Sogo")]

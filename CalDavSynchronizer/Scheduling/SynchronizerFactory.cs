@@ -472,7 +472,7 @@ namespace CalDavSynchronizer.Scheduling
       return new HttpClient (httpClientHandler);
     }
 
-    private T GetMappingParameters<T> (Options options)
+    public static T GetMappingParameters<T> (Options options)
         where T : class, new()
     {
       if (options.MappingConfiguration == null)
