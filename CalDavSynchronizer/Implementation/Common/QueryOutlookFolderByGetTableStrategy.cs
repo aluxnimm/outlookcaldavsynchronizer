@@ -81,12 +81,49 @@ namespace CalDavSynchronizer.Implementation.Common
             s_logger.Warn("Could not access GlobalAppointmentID of appointment", ex);
           }
 
-          var lastModificationTime = (DateTime) row[LastModificationTimeColumnId];
           var subject = (string) row[SubjectColumnId];
-          var start = (DateTime) row[StartColumnId];
-          var end = (DateTime) row[EndColumnId];
+          var appointmentId = new AppointmentId(entryId, globalAppointmentId);
 
-          events.Add(new AppointmentSlim(EntityVersion.Create(new AppointmentId(entryId, globalAppointmentId), lastModificationTime), start, end, subject));
+          var lastModificationTimeObject = row[LastModificationTimeColumnId];
+          DateTime lastModificationTime;
+          if (lastModificationTimeObject != null)
+          {
+            lastModificationTime = (DateTime) lastModificationTimeObject;
+          }
+          else
+          {
+            s_logger.Warn($"Column '{nameof(LastModificationTimeColumnId)}' of event '{entryId}' is NULL.");
+            logger.LogWarning(entryId, $"Column '{nameof(LastModificationTimeColumnId)}' is NULL.");
+            lastModificationTime = OutlookUtility.OUTLOOK_DATE_NONE;
+          }
+
+          var startObject = row[StartColumnId];
+          DateTime? start;
+          if (startObject != null)
+          {
+            start = (DateTime)startObject;
+          }
+          else
+          {
+            s_logger.Warn($"Column '{nameof(StartColumnId)}' of event '{entryId}' is NULL.");
+            logger.LogWarning(entryId, $"Column '{nameof(StartColumnId)}' is NULL.");
+            start = null;
+          }
+
+          var endObject = row[EndColumnId];
+          DateTime? end;
+          if (endObject != null)
+          {
+            end = (DateTime)endObject;
+          }
+          else
+          {
+            s_logger.Warn($"Column '{nameof(EndColumnId)}' of event '{entryId}' is NULL.");
+            logger.LogWarning(entryId, $"Column '{nameof(EndColumnId)}' is NULL.");
+            end = null;
+          }
+          
+          events.Add(new AppointmentSlim(EntityVersion.Create(appointmentId, lastModificationTime), start, end, subject));
         }
       }
       return events;
@@ -122,7 +159,20 @@ namespace CalDavSynchronizer.Implementation.Common
         {
           var row = table.GetNextRow ();
           var entryId = row.BinaryToString (PR_LONG_TERM_ENTRYID_FROM_TABLE);
-          var lastModificationTime = (DateTime) row[LastModificationTimeColumnId];
+
+          var lastModificationTimeObject = row[LastModificationTimeColumnId];
+          DateTime lastModificationTime;
+          if (lastModificationTimeObject != null)
+          {
+            lastModificationTime = (DateTime)lastModificationTimeObject;
+          }
+          else
+          {
+            s_logger.Warn($"Column '{nameof(LastModificationTimeColumnId)}' of entity '{entryId}' is NULL.");
+            logger.LogWarning(entryId, $"Column '{nameof(LastModificationTimeColumnId)}' is NULL.");
+            lastModificationTime = OutlookUtility.OUTLOOK_DATE_NONE;
+          }
+
           versions.Add (new EntityVersion<string, DateTime> (entryId, lastModificationTime));
         }
       }

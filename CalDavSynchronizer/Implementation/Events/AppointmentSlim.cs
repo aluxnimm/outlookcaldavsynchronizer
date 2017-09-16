@@ -33,7 +33,7 @@ namespace CalDavSynchronizer.Implementation.Events
         item.Subject);
     }
 
-    public AppointmentSlim(EntityVersion<AppointmentId, DateTime> version, DateTime start, DateTime end, string subject)
+    public AppointmentSlim(EntityVersion<AppointmentId, DateTime> version, DateTime? start, DateTime? end, string subject)
     {
       if (version == null) throw new ArgumentNullException(nameof(version));
       
@@ -44,8 +44,8 @@ namespace CalDavSynchronizer.Implementation.Events
     }
 
     public EntityVersion<AppointmentId, DateTime> Version { get; }
-    public DateTime Start { get; }
-    public DateTime End { get; }
+    public DateTime? Start { get; }
+    public DateTime? End { get; }
     public string Subject { get; }
   }
 }

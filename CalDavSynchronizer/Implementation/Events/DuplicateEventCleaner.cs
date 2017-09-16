@@ -67,7 +67,9 @@ namespace CalDavSynchronizer.Implementation.Events
 
     public void AnnounceAppointment (AppointmentSlim appointment)
     {
-      _hashesById[appointment.Version.Id] = GetHashCode (appointment);
+      var hashCode = GetHashCode (appointment);
+      if(hashCode.HasValue)
+        _hashesById[appointment.Version.Id] = hashCode.Value;
     }
 
     public void AnnounceAppointmentDeleted (AppointmentId id)
@@ -122,17 +124,20 @@ namespace CalDavSynchronizer.Implementation.Events
       return deletedEntityIds;
     }
 
-    private int GetHashCode (AppointmentSlim item)
+    private int? GetHashCode (AppointmentSlim item)
     {
-      return GetDuplicationRelevantData (item).GetHashCode ();
+      return GetDuplicationRelevantDataOrNull (item)?.GetHashCode ();
     }
 
-    private static Tuple<DateTime, DateTime, string> GetDuplicationRelevantData (AppointmentSlim item)
+    private static Tuple<DateTime, DateTime, string> GetDuplicationRelevantDataOrNull (AppointmentSlim item)
     {
+      if (item.Start == null || item.End == null)
+        return null;
+
       return Tuple
           .Create (
-              item.Start,
-              item.End,
+              item.Start.Value,
+              item.End.Value,
               item.Subject);
     }
 
