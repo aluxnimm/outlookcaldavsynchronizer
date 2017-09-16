@@ -156,7 +156,7 @@ namespace CalDavSynchronizer.Implementation
                 fixedICalData = normalizedICalData;
               }
 
-              if (TryDeserializeCalendar (fixedICalData, out calendar, serialized.Id, threadLocal.Item1, NullLoadEntityLogger.Instance))
+              if (TryDeserializeCalendar (fixedICalData, out calendar, serialized.Id, threadLocal.Item1, NullLoadEntityLogger.Instance /* use null logger to ignore errors on first deserialization try */))
               {
                 // Add only if there is atleast one vevent or vtodo to avoid Nullreference Exceptions when processing
                 if ((_entityType == CalDavRepository.EntityType.Event && calendar.Events.Count > 0) ||
