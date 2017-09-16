@@ -145,8 +145,8 @@ namespace GenSync.Synchronization
         using (var interceptor = _synchronizationInterceptorFactory.Create())
         {
 
-          var newAVersionsTask = _atypeRepository.GetAllVersions(knownEntityRelations.Select(r => r.AtypeId), synchronizationContext);
-          var newBVersionsTask = _btypeRepository.GetAllVersions(knownEntityRelations.Select(r => r.BtypeId), synchronizationContext);
+          var newAVersionsTask = _atypeRepository.GetAllVersions(knownEntityRelations.Select(r => r.AtypeId), synchronizationContext, logger.AGetVersionsEntityLogger);
+          var newBVersionsTask = _btypeRepository.GetAllVersions(knownEntityRelations.Select(r => r.BtypeId), synchronizationContext, logger.BGetVersionsEntityLogger);
 
           var newAVersions = CreateDictionary(
             await newAVersionsTask,
@@ -238,13 +238,13 @@ namespace GenSync.Synchronization
 
           Task<IEnumerable<EntityVersion<TAtypeEntityId, TAtypeEntityVersion>>> newAVersionsTask;
           if (aIdsWithAwarenessLevel.Count > 0)
-            newAVersionsTask = _atypeRepository.GetVersions(aIdsWithAwarenessLevel, synchronizationContext);
+            newAVersionsTask = _atypeRepository.GetVersions(aIdsWithAwarenessLevel, synchronizationContext, logger.AGetVersionsEntityLogger);
           else
             newAVersionsTask = Task.FromResult<IEnumerable<EntityVersion<TAtypeEntityId, TAtypeEntityVersion>>>(new EntityVersion<TAtypeEntityId, TAtypeEntityVersion>[] { });
 
           Task<IEnumerable<EntityVersion<TBtypeEntityId, TBtypeEntityVersion>>> newBVersionsTask;
           if (bIdsWithAwarenessLevel.Count > 0)
-            newBVersionsTask = _btypeRepository.GetVersions(bIdsWithAwarenessLevel, synchronizationContext);
+            newBVersionsTask = _btypeRepository.GetVersions(bIdsWithAwarenessLevel, synchronizationContext, logger.BGetVersionsEntityLogger);
           else
             newBVersionsTask = Task.FromResult<IEnumerable<EntityVersion<TBtypeEntityId, TBtypeEntityVersion>>>(new EntityVersion<TBtypeEntityId, TBtypeEntityVersion>[] { });
 

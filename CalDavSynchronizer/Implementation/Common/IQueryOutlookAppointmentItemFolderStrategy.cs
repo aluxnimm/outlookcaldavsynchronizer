@@ -17,12 +17,13 @@
 
 using System.Collections.Generic;
 using CalDavSynchronizer.Implementation.Events;
+using GenSync.Logging;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Common
 {
   public interface IQueryOutlookAppointmentItemFolderStrategy
   {
-    List<AppointmentSlim> QueryAppointmentFolder(IOutlookSession session, Folder calendarFolder, string filter);
+    List<AppointmentSlim> QueryAppointmentFolder(IOutlookSession session, Folder calendarFolder, string filter, IGetVersionsLogger logger);
   }
 }

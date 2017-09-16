@@ -81,7 +81,7 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
       try
       {
         return await _readRepository.Get(
-          (await _readRepository.GetAllVersions(new TEntityId[0], context)).Select(v => v.Id).ToArray(),
+          (await _readRepository.GetAllVersions(new TEntityId[0], context, NullGetVersionsLogger.Instance)).Select(v => v.Id).ToArray(),
           NullLoadEntityLogger.Instance,
           context);
       }
@@ -140,7 +140,7 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
       var context = await _contextFactory.Create();
       try
       {
-        var version = (await _readRepository.GetVersions(new[] {new IdWithAwarenessLevel<TEntityId>(id, false)}, context)).Single();
+        var version = (await _readRepository.GetVersions(new[] {new IdWithAwarenessLevel<TEntityId>(id, false)}, context, NullGetVersionsLogger.Instance)).Single();
         var entity = (await _readRepository.Get(new[] {id}, NullLoadEntityLogger.Instance, context)).Single();
 
         await _writeRepository.PerformOperations(
@@ -163,7 +163,7 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
       var context = await _contextFactory.Create();
       try
       {
-        var versions = await _readRepository.GetAllVersions(new TEntityId[0], context);
+        var versions = await _readRepository.GetAllVersions(new TEntityId[0], context, NullGetVersionsLogger.Instance);
 
         await _writeRepository.PerformOperations(
           new ICreateJob<TEntityId, TEntityVersion, TEntity>[0],
@@ -183,7 +183,7 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
       var context = await _contextFactory.Create();
       try
       {
-        var version = (await _readRepository.GetVersions(new[] {new IdWithAwarenessLevel<TEntityId>(id, false)}, context)).Single();
+        var version = (await _readRepository.GetVersions(new[] {new IdWithAwarenessLevel<TEntityId>(id, false)}, context, NullGetVersionsLogger.Instance)).Single();
 
         await _writeRepository.PerformOperations(
           new ICreateJob<TEntityId, TEntityVersion, TEntity>[0],

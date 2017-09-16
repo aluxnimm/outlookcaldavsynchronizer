@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.Implementation.Events;
 using GenSync;
+using GenSync.Logging;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Common
@@ -39,24 +40,24 @@ namespace CalDavSynchronizer.Implementation.Common
       _strategy = strategy;
     }
 
-    public List<AppointmentSlim> QueryAppointmentFolder(IOutlookSession session, Folder folder, string filter)
+    public List<AppointmentSlim> QueryAppointmentFolder(IOutlookSession session, Folder folder, string filter, IGetVersionsLogger logger)
     {
-      return _strategy.QueryAppointmentFolder(session, folder, filter);
+      return _strategy.QueryAppointmentFolder(session, folder, filter, logger);
     }
 
-    public List<EntityVersion<string, DateTime>> QueryContactItemFolder(IOutlookSession session, Folder folder, string expectedFolderId, string filter)
+    public List<EntityVersion<string, DateTime>> QueryContactItemFolder(IOutlookSession session, Folder folder, string expectedFolderId, string filter, IGetVersionsLogger logger)
     {
-      return _strategy.QueryContactItemFolder (session, folder, expectedFolderId, filter);
+      return _strategy.QueryContactItemFolder (session, folder, expectedFolderId, filter, logger);
     }
 
-    public List<EntityVersion<string, DateTime>> QueryDistListFolder(IOutlookSession session, Folder folder, string expectedFolderId, string filter)
+    public List<EntityVersion<string, DateTime>> QueryDistListFolder(IOutlookSession session, Folder folder, string expectedFolderId, string filter, IGetVersionsLogger logger)
     {
-      return _strategy.QueryDistListFolder (session, folder, expectedFolderId, filter);
+      return _strategy.QueryDistListFolder (session, folder, expectedFolderId, filter, logger);
     }
 
-    public List<EntityVersion<string, DateTime>> QueryTaskFolder(IOutlookSession session, Folder folder, string filter)
+    public List<EntityVersion<string, DateTime>> QueryTaskFolder(IOutlookSession session, Folder folder, string filter, IGetVersionsLogger logger)
     {
-      return _strategy.QueryTaskFolder (session, folder, filter);
+      return _strategy.QueryTaskFolder (session, folder, filter, logger);
     }
   }
 }

@@ -45,9 +45,9 @@ namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
       _typeDetector = typeDetector;
     }
 
-    public async Task<IEnumerable<EntityVersion<WebResourceName, string>>> GetAllVersions (IEnumerable<WebResourceName> idsOfknownEntities, TContext context)
+    public async Task<IEnumerable<EntityVersion<WebResourceName, string>>> GetAllVersions (IEnumerable<WebResourceName> idsOfknownEntities, TContext context, IGetVersionsLogger logger)
     {
-      var versions = await _decorated.GetAllVersions (idsOfknownEntities, context).ConfigureAwait (false);
+      var versions = await _decorated.GetAllVersions (idsOfknownEntities, context, logger).ConfigureAwait (false);
       return (await _typeDetector.GetVCardTypesAndCleanupCache (versions))
         .Where (t => t.Type == _typeToFilter)
         .Select (t => t.Id)
@@ -78,9 +78,9 @@ namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
         context);
     }
 
-    public Task<IEnumerable<EntityVersion<WebResourceName, string>>> GetVersions (IEnumerable<IdWithAwarenessLevel<WebResourceName>> idsOfEntitiesToQuery, TContext context)
+    public Task<IEnumerable<EntityVersion<WebResourceName, string>>> GetVersions (IEnumerable<IdWithAwarenessLevel<WebResourceName>> idsOfEntitiesToQuery, TContext context, IGetVersionsLogger logger)
     {
-      return _decorated.GetVersions (idsOfEntitiesToQuery, context);
+      return _decorated.GetVersions (idsOfEntitiesToQuery, context, logger);
     }
 
     public Task<IEnumerable<EntityWithId<WebResourceName, vCard>>> Get (ICollection<WebResourceName> ids, ILoadEntityLogger logger, TContext context)

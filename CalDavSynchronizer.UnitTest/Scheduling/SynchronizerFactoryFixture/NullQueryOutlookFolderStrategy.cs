@@ -20,28 +20,29 @@ using System.Collections.Generic;
 using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.Events;
 using GenSync;
+using GenSync.Logging;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
 {
   class NullQueryOutlookFolderStrategy : IQueryOutlookFolderStrategy
   {
-    public List<AppointmentSlim> QueryAppointmentFolder(IOutlookSession session, Folder calendarFolder, string filter)
+    public List<AppointmentSlim> QueryAppointmentFolder(IOutlookSession session, Folder calendarFolder, string filter, IGetVersionsLogger logger)
     {
       throw new NotImplementedException();
     }
 
-    public List<EntityVersion<string, DateTime>> QueryContactItemFolder(IOutlookSession session, Folder folder, string expectedFolderId, string filter)
+    public List<EntityVersion<string, DateTime>> QueryContactItemFolder(IOutlookSession session, Folder folder, string expectedFolderId, string filter, IGetVersionsLogger logger)
     {
       throw new NotImplementedException();
     }
 
-    public List<EntityVersion<string, DateTime>> QueryDistListFolder(IOutlookSession session, Folder folder, string expectedFolderId, string filter)
+    public List<EntityVersion<string, DateTime>> QueryDistListFolder(IOutlookSession session, Folder folder, string expectedFolderId, string filter, IGetVersionsLogger logger)
     {
       throw new NotImplementedException();
     }
 
-    public List<EntityVersion<string, DateTime>> QueryTaskFolder(IOutlookSession session, Folder folder, string filter)
+    public List<EntityVersion<string, DateTime>> QueryTaskFolder(IOutlookSession session, Folder folder, string filter, IGetVersionsLogger logger)
     {
       throw new NotImplementedException();
     }

@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace GenSync.Logging
 {
-  class LoadEntityLogger : ILoadEntityLogger
+  class LoadEntityLogger : ILoadEntityLogger, IGetVersionsLogger
   {
     private readonly List<LoadError> _loadErrors;
     private readonly object _loadErrorsLock;
@@ -45,6 +45,20 @@ namespace GenSync.Logging
                              Error = exception.ToString(),
                              IsAEntity = _isARepository
                          });
+      }
+    }
+
+    public void LogWarning(object entityId, string message)
+    {
+      lock (_loadErrorsLock)
+      {
+        _loadErrors.Add(new LoadError
+        {
+          EntityId = entityId.ToString(),
+          Error = message,
+          IsAEntity = _isARepository,
+          IsWarning = true
+        });
       }
     }
   }

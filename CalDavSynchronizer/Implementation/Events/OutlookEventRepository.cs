@@ -83,7 +83,7 @@ namespace CalDavSynchronizer.Implementation.Events
       return GenericComObjectWrapper.Create ((Folder) _session.GetFolderFromId (_folderId, _folderStoreId));
     }
 
-    public Task<IEnumerable<EntityVersion<AppointmentId, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<AppointmentId>> idsOfEntitiesToQuery, IEventSynchronizationContext context)
+    public Task<IEnumerable<EntityVersion<AppointmentId, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<AppointmentId>> idsOfEntitiesToQuery, IEventSynchronizationContext context, IGetVersionsLogger logger)
     {
       var result = new List<EntityVersion<AppointmentId, DateTime>>();
 
@@ -127,9 +127,9 @@ namespace CalDavSynchronizer.Implementation.Events
       return _configuration.InvertEventCategoryFilter ? !found : found;
     }
 
-    public async Task<IEnumerable<EntityVersion<AppointmentId, DateTime>>> GetAllVersions (IEnumerable<AppointmentId> idsOfknownEntities, IEventSynchronizationContext context)
+    public async Task<IEnumerable<EntityVersion<AppointmentId, DateTime>>> GetAllVersions (IEnumerable<AppointmentId> idsOfknownEntities, IEventSynchronizationContext context, IGetVersionsLogger logger)
     {
-      var all =  await GetAll (idsOfknownEntities,context);
+      var all =  await GetAll (idsOfknownEntities,context, logger);
       
       foreach (var appointment in all)
         context.DuplicateEventCleaner.AnnounceAppointment(appointment);
@@ -137,7 +137,7 @@ namespace CalDavSynchronizer.Implementation.Events
       return all.Select(a => a.Version).ToList();
     }
 
-    private Task<IReadOnlyList<AppointmentSlim>> GetAll (IEnumerable<AppointmentId> idsOfknownEntities, IEventSynchronizationContext context)
+    private Task<IReadOnlyList<AppointmentSlim>> GetAll (IEnumerable<AppointmentId> idsOfknownEntities, IEventSynchronizationContext context, IGetVersionsLogger logger)
     {
       var range = _dateTimeRangeProvider.GetRange ();
 
@@ -171,7 +171,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
         s_logger.DebugFormat ("Using Outlook DASL filter: {0}", filterBuilder.ToString ());
 
-        events = _queryFolderStrategy.QueryAppointmentFolder (_session, calendarFolderWrapper.Inner, filterBuilder.ToString());
+        events = _queryFolderStrategy.QueryAppointmentFolder (_session, calendarFolderWrapper.Inner, filterBuilder.ToString(), logger);
       }
 
       if (_configuration.IsCategoryFilterSticky && _configuration.UseEventCategoryAsFilter)

@@ -341,7 +341,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       }
     }
 
-    public Task<IEnumerable<EntityVersion<string, GoogleContactVersion>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, IGoogleContactContext context)
+    public Task<IEnumerable<EntityVersion<string, GoogleContactVersion>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, IGoogleContactContext context, IGetVersionsLogger logger)
     {
       var contacts = new List<EntityVersion<string, GoogleContactVersion>>();
 
@@ -355,7 +355,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       return Task.FromResult<IEnumerable<EntityVersion<string, GoogleContactVersion>>> (contacts);
     }
 
-    public Task<IEnumerable<EntityVersion<string, GoogleContactVersion>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, IGoogleContactContext context)
+    public Task<IEnumerable<EntityVersion<string, GoogleContactVersion>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, IGoogleContactContext context, IGetVersionsLogger logger)
     {
       return context.ContactCache.GetAllVersions();
     }

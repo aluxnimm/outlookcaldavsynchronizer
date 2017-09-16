@@ -63,7 +63,9 @@
     <Compile Include="Logging\IEntitySynchronizationLoggerFactory.cs" />
     <Compile Include="Logging\IFullEntitySynchronizationLogger.cs" />
     <Compile Include="Logging\IFullEntitySynchronizationLoggerFactory.cs" />
+    <Compile Include="Logging\IGetVersionsLogger.cs" />
     <Compile Include="Logging\NullEntityLogMessageFactory.cs" />
+    <Compile Include="Logging\NullLodadEntityLogger.cs" />
     <Compile Include="Logging\SynchronizationLoggerBoundEntitySynchronizationLoggerFactory.cs" />
     <Compile Include="Logging\NullEntityMappingLogger.cs" />
     <Compile Include="Logging\NullFullEntitySynchronizationLoggerFactory.cs" />

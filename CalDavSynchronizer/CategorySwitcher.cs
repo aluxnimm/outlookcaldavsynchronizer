@@ -26,6 +26,7 @@ using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Events;
+using GenSync.Logging;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
 using Exception = System.Exception;
@@ -142,7 +143,7 @@ namespace CalDavSynchronizer
         }
         var filterBuilder = new StringBuilder(_daslFilterProvider.GetAppointmentFilter(isInstantSearchEnabled));
         OutlookEventRepository.AddCategoryFilter(filterBuilder, oldCategory, false, false);
-        var eventIds = _queryFolderStrategyWrapper.QueryAppointmentFolder(_session, calendarFolderWrapper.Inner, filterBuilder.ToString()).Select(e => e.Version.Id);
+        var eventIds = _queryFolderStrategyWrapper.QueryAppointmentFolder(_session, calendarFolderWrapper.Inner, filterBuilder.ToString(), NullGetVersionsLogger.Instance).Select(e => e.Version.Id);
         // todo concat Ids from cache
 
         foreach (var eventId in eventIds)
@@ -179,7 +180,7 @@ namespace CalDavSynchronizer
         }
         var filterBuilder = new StringBuilder(_daslFilterProvider.GetTaskFilter(isInstantSearchEnabled));
         OutlookEventRepository.AddCategoryFilter(filterBuilder, oldCategory, false, false);
-        var taskIds = _queryFolderStrategyWrapper.QueryTaskFolder(_session, taskFolderWrapper.Inner, filterBuilder.ToString()).Select(e => e.Id);
+        var taskIds = _queryFolderStrategyWrapper.QueryTaskFolder(_session, taskFolderWrapper.Inner, filterBuilder.ToString(), NullGetVersionsLogger.Instance).Select(e => e.Id);
         // todo concat Ids from cache
 
         foreach (var taskId in taskIds)

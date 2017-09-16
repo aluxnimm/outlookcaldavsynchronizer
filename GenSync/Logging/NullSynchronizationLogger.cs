@@ -29,6 +29,8 @@ namespace GenSync.Logging
 
     public ILoadEntityLogger ALoadEntityLogger => NullLoadEntityLogger.Instance;
     public ILoadEntityLogger BLoadEntityLogger => NullLoadEntityLogger.Instance;
+    public IGetVersionsLogger AGetVersionsEntityLogger => NullGetVersionsLogger.Instance;
+    public IGetVersionsLogger BGetVersionsEntityLogger => NullGetVersionsLogger.Instance;
 
     public void LogInitialEntityMatching ()
     {

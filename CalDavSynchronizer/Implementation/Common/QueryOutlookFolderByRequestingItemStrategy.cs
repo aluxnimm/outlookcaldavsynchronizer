@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Events;
 using GenSync;
+using GenSync.Logging;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
 
@@ -39,7 +40,7 @@ namespace CalDavSynchronizer.Implementation.Common
     {
     }
 
-    List<AppointmentSlim> IQueryOutlookAppointmentItemFolderStrategy.QueryAppointmentFolder(IOutlookSession session, Folder calendarFolder, string filter)
+    List<AppointmentSlim> IQueryOutlookAppointmentItemFolderStrategy.QueryAppointmentFolder(IOutlookSession session, Folder calendarFolder, string filter, IGetVersionsLogger logger)
     {
       var events = new List<AppointmentSlim>();
 
@@ -72,7 +73,7 @@ namespace CalDavSynchronizer.Implementation.Common
       return events;
     }
 
-    List<EntityVersion<string, DateTime>> IQueryOutlookContactItemFolderStrategy.QueryContactItemFolder (IOutlookSession session, Folder folder, string expectedFolderId, string filter)
+    List<EntityVersion<string, DateTime>> IQueryOutlookContactItemFolderStrategy.QueryContactItemFolder (IOutlookSession session, Folder folder, string expectedFolderId, string filter, IGetVersionsLogger logger)
     {
       var contacts = new List<EntityVersion<string, DateTime>> ();
 
@@ -103,7 +104,7 @@ namespace CalDavSynchronizer.Implementation.Common
       return contacts;
     }
 
-    List<EntityVersion<string, DateTime>> IQueryOutlookTaskItemFolderStrategy.QueryTaskFolder (IOutlookSession session,Folder folder,string filter)
+    List<EntityVersion<string, DateTime>> IQueryOutlookTaskItemFolderStrategy.QueryTaskFolder (IOutlookSession session,Folder folder,string filter, IGetVersionsLogger logger)
     {
       var tasks = new List<EntityVersion<string, DateTime>> ();
 
@@ -136,7 +137,7 @@ namespace CalDavSynchronizer.Implementation.Common
       return tasks;
     }
 
-    List<EntityVersion<string, DateTime>> IQueryOutlookDistListItemFolderStrategy.QueryDistListFolder (IOutlookSession session, Folder folder, string expectedFolderId, string filter)
+    List<EntityVersion<string, DateTime>> IQueryOutlookDistListItemFolderStrategy.QueryDistListFolder (IOutlookSession session, Folder folder, string expectedFolderId, string filter, IGetVersionsLogger logger)
     {
       var contacts = new List<EntityVersion<string, DateTime>> ();
 

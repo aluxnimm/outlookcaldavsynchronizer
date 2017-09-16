@@ -66,12 +66,13 @@ namespace GenSync.Logging
       {
         return !string.IsNullOrEmpty(ExceptionThatLeadToAbortion) && !ConsiderExceptionThatLeadToAbortionAsWarning
                || EntitySynchronizationReports.Any(r => !string.IsNullOrEmpty(r.ExceptionThatLeadToAbortion) || r.MappingErrors.Length > 0)
-               || LoadErrors.Length > 0;
+               || LoadErrors.Any(m => !m.IsWarning);
       }
     }
 
     public bool HasWarnings => !string.IsNullOrEmpty(ExceptionThatLeadToAbortion) && ConsiderExceptionThatLeadToAbortionAsWarning ||
-                               EntitySynchronizationReports.Any(r => r.MappingWarnings.Length > 0);
+                               EntitySynchronizationReports.Any(r => r.MappingWarnings.Length > 0) ||
+                               LoadErrors.Any(m => m.IsWarning);
 
     public void MergeSubReport(IReadOnlyCollection<SynchronizationReport> subReports)
     {

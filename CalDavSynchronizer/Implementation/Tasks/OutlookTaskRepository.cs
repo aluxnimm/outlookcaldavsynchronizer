@@ -68,7 +68,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       _comWrapperFactory = comWrapperFactory;
     }
 
-    public Task<IEnumerable<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, int context)
+    public Task<IEnumerable<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, int context, IGetVersionsLogger logger)
     {
       var result = new List<EntityVersion<string, DateTime>>();
 
@@ -98,7 +98,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       return GenericComObjectWrapper.Create ((Folder) _session.GetFolderFromId (_folderId, _folderStoreId));
     }
 
-    public Task<IEnumerable<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, int context)
+    public Task<IEnumerable<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, int context, IGetVersionsLogger logger)
     {
       List<EntityVersion<string,DateTime>> tasks;
    
@@ -127,7 +127,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
         s_logger.DebugFormat ("Using Outlook DASL filter: {0}", filterBuilder.ToString());
 
-        tasks = _queryFolderStrategy.QueryTaskFolder(_session, taskFolderWrapper.Inner, filterBuilder.ToString());
+        tasks = _queryFolderStrategy.QueryTaskFolder(_session, taskFolderWrapper.Inner, filterBuilder.ToString(), logger);
       }
 
       if (_configuration.IsCategoryFilterSticky && _configuration.UseTaskCategoryAsFilter)

@@ -39,8 +39,8 @@ namespace GenSync.Logging
     private readonly bool _includeEntityReportsWithoutErrorsOrWarnings;
 
     private readonly List<IEntitySynchronizationLog> _entitySynchronizationLogs = new List<IEntitySynchronizationLog> ();
-    private readonly ILoadEntityLogger _aLoadEntityLogger;
-    private readonly ILoadEntityLogger _bLoadEntityLogger;
+    private readonly LoadEntityLogger _aLoadEntityLogger;
+    private readonly LoadEntityLogger _bLoadEntityLogger;
 
     public SynchronizationLogger (Guid profileId, string profileName, ISynchronizationReportSink reportSink, bool includeEntityReportsWithoutErrorsOrWarnings)
     {
@@ -55,6 +55,9 @@ namespace GenSync.Logging
     
     public ILoadEntityLogger ALoadEntityLogger => _aLoadEntityLogger;
     public ILoadEntityLogger BLoadEntityLogger => _bLoadEntityLogger;
+
+    public IGetVersionsLogger AGetVersionsEntityLogger => _aLoadEntityLogger;
+    public IGetVersionsLogger BGetVersionsEntityLogger => _bLoadEntityLogger;
 
     public void LogAbortedDueToError (Exception exception)
     {

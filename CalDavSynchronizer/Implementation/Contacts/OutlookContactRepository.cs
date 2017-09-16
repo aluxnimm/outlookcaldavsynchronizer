@@ -66,7 +66,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       return GenericComObjectWrapper.Create (_session.GetFolderFromId (_folderId, _folderStoreId));
     }
 
-    public Task<IEnumerable<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, Tcontext context)
+    public Task<IEnumerable<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, Tcontext context, IGetVersionsLogger logger)
     {
       return Task.FromResult<IEnumerable<EntityVersion<string, DateTime>>> (
           idsOfEntitiesToQuery
@@ -77,7 +77,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
               .ToList ());
     }
 
-    public Task<IEnumerable<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, Tcontext context)
+    public Task<IEnumerable<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, Tcontext context, IGetVersionsLogger logger)
     {
       using (var addressbookFolderWrapper = CreateFolderWrapper())
       {
@@ -98,7 +98,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
         var filter = _daslFilterProvider.GetContactFilter(isInstantSearchEnabled);
 
-        return Task.FromResult<IEnumerable<EntityVersion<string, DateTime>>>(_queryFolderStrategy.QueryContactItemFolder(_session, addressbookFolderWrapper.Inner, _folderId, filter));
+        return Task.FromResult<IEnumerable<EntityVersion<string, DateTime>>>(_queryFolderStrategy.QueryContactItemFolder(_session, addressbookFolderWrapper.Inner, _folderId, filter, logger));
       }
     }
 

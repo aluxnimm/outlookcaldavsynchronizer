@@ -58,7 +58,7 @@ namespace GenSync.UnitTests.Synchronization.Stubs
       _numberOfCreatesAfterWhichExceptionsOccur = _numberOfCreateCalls + count;
     }
 
-    public Task<IEnumerable<EntityVersion<Identifier, int>>> GetVersions (IEnumerable<IdWithAwarenessLevel<Identifier>> idsOfEntitiesToQuery, int context)
+    public Task<IEnumerable<EntityVersion<Identifier, int>>> GetVersions (IEnumerable<IdWithAwarenessLevel<Identifier>> idsOfEntitiesToQuery, int context, IGetVersionsLogger logger)
     {
       List<EntityVersion<Identifier, int>> result = new List<EntityVersion<Identifier, int>>();
 
@@ -72,7 +72,7 @@ namespace GenSync.UnitTests.Synchronization.Stubs
       return Task.FromResult<IEnumerable<EntityVersion<Identifier, int>>> (result);
     }
 
-    public Task<IEnumerable<EntityVersion<Identifier, int>>> GetAllVersions (IEnumerable<Identifier> idsOfknownEntities, int context)
+    public Task<IEnumerable<EntityVersion<Identifier, int>>> GetAllVersions (IEnumerable<Identifier> idsOfknownEntities, int context, IGetVersionsLogger logger)
     {
       return Task.FromResult<IEnumerable<EntityVersion<Identifier, int>>> (
           EntityVersionAndContentById.Select (kv => EntityVersion.Create (kv.Key, kv.Value.Item1)).ToList());

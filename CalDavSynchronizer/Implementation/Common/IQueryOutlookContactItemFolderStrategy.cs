@@ -18,12 +18,13 @@
 using System;
 using System.Collections.Generic;
 using GenSync;
+using GenSync.Logging;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Common
 {
   public interface IQueryOutlookContactItemFolderStrategy
   {
-    List<EntityVersion<string, DateTime>> QueryContactItemFolder(IOutlookSession session, Folder folder, string expectedFolderId, string filter);
+    List<EntityVersion<string, DateTime>> QueryContactItemFolder(IOutlookSession session, Folder folder, string expectedFolderId, string filter, IGetVersionsLogger logger);
   }
 }

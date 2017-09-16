@@ -67,7 +67,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
       return GenericComObjectWrapper.Create ((Folder) _session.GetFolderFromId (_folderId, _folderStoreId));
     }
 
-    public Task<IEnumerable<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, Tcontext context)
+    public Task<IEnumerable<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, Tcontext context, IGetVersionsLogger logger)
     {
       return Task.FromResult<IEnumerable<EntityVersion<string, DateTime>>> (
           idsOfEntitiesToQuery
@@ -78,7 +78,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
               .ToList ());
     }
 
-    public Task<IEnumerable<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, Tcontext context)
+    public Task<IEnumerable<EntityVersion<string, DateTime>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, Tcontext context, IGetVersionsLogger logger)
     {
       using (var addressbookFolderWrapper = CreateFolderWrapper ())
       {
@@ -98,7 +98,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
         }
         var filter = _daslFilterProvider.GetDistListFilter (isInstantSearchEnabled);
 
-        return Task.FromResult<IEnumerable<EntityVersion<string, DateTime>>> (_queryFolderStrategy.QueryDistListFolder (_session, addressbookFolderWrapper.Inner, _folderId, filter));
+        return Task.FromResult<IEnumerable<EntityVersion<string, DateTime>>> (_queryFolderStrategy.QueryDistListFolder (_session, addressbookFolderWrapper.Inner, _folderId, filter, logger));
       }
     }
 

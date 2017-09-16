@@ -71,15 +71,15 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
       return EntityVersion.Create (result.Id, result.ETag);
     }
 
-    public async Task<IEnumerable<EntityVersion<string, string>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, int context)
+    public async Task<IEnumerable<EntityVersion<string, string>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, int context, IGetVersionsLogger logger)
     {
       var idsOfEntitiesToQueryDictionary = idsOfEntitiesToQuery.ToDictionary (i => i.Id);
-      return (await GetAllVersions (new string[] { }, context))
+      return (await GetAllVersions (new string[] { }, context, logger))
         .Where (v => idsOfEntitiesToQueryDictionary.ContainsKey (v.Id))
         .ToArray();
     }
 
-    public async Task<IEnumerable<EntityVersion<string, string>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, int context)
+    public async Task<IEnumerable<EntityVersion<string, string>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, int context, IGetVersionsLogger logger)
     {
       var request = _tasksService.Tasks.List (_taskList.Id);
       request.Fields = "items(etag,id)";

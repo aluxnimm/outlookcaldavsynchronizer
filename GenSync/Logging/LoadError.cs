@@ -23,5 +23,6 @@ namespace GenSync.Logging
     public string EntityId { get; set; }
     public string Error { get; set; }
     public bool IsAEntity { get; set; }
+    public bool IsWarning { get; set; }
   }
 }

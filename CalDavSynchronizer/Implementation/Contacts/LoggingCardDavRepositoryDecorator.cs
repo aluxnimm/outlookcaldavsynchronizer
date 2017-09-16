@@ -63,16 +63,16 @@ namespace CalDavSynchronizer.Implementation.Contacts
       return result;
     }
 
-    public async Task<IEnumerable<EntityVersion<WebResourceName, string>>> GetVersions(IEnumerable<IdWithAwarenessLevel<WebResourceName>> idsOfEntitiesToQuery, ICardDavRepositoryLogger context)
+    public async Task<IEnumerable<EntityVersion<WebResourceName, string>>> GetVersions(IEnumerable<IdWithAwarenessLevel<WebResourceName>> idsOfEntitiesToQuery, ICardDavRepositoryLogger context, IGetVersionsLogger logger)
     {
-      var result = await _inner.GetVersions(idsOfEntitiesToQuery, 0);
+      var result = await _inner.GetVersions(idsOfEntitiesToQuery, 0, logger);
       context.LogEntitiesExists(result.Select(e => e.Id));
       return result;
     }
 
-    public async Task<IEnumerable<EntityVersion<WebResourceName, string>>> GetAllVersions(IEnumerable<WebResourceName> idsOfknownEntities, ICardDavRepositoryLogger context)
+    public async Task<IEnumerable<EntityVersion<WebResourceName, string>>> GetAllVersions(IEnumerable<WebResourceName> idsOfknownEntities, ICardDavRepositoryLogger context, IGetVersionsLogger logger)
     {
-      var result = await _inner.GetAllVersions(idsOfknownEntities, 0);
+      var result = await _inner.GetAllVersions(idsOfknownEntities, 0, logger);
       context.LogEntitiesExists(result.Select(e => e.Id));
       return result;
     }
