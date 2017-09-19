@@ -47,7 +47,7 @@ namespace CalDavSynchronizer.Implementation
     }
   }
 
-  public class CalDavRepository<TContext> : IEntityRepository<WebResourceName, string, IICalendar, TContext>
+  public class CalDavRepository<TContext> : IEntityRepository<WebResourceName, string, IICalendar, TContext>, IStateAwareEntityRepository<WebResourceName, string, TContext, string>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod ().DeclaringType);
 
@@ -56,15 +56,20 @@ namespace CalDavSynchronizer.Implementation
     private readonly CalDavRepository.EntityType _entityType;
     private readonly IDateTimeRangeProvider _dateTimeRangeProvider;
     private readonly bool _deleteAndCreateOnUpdateError403;
+    private readonly IEqualityComparer<string> _versionComparer;
+
 
     public CalDavRepository (
       ICalDavDataAccess calDavDataAccess,
       IStringSerializer calendarSerializer,
       CalDavRepository.EntityType entityType,
       IDateTimeRangeProvider dateTimeRangeProvider,
-      bool deleteAndCreateOnUpdateError403)
+      bool deleteAndCreateOnUpdateError403, 
+      IEqualityComparer<string> versionComparer)
     {
+      if (versionComparer == null) throw new ArgumentNullException(nameof(versionComparer));
       _deleteAndCreateOnUpdateError403 = deleteAndCreateOnUpdateError403;
+      _versionComparer = versionComparer;
       _calDavDataAccess = calDavDataAccess;
       _calendarSerializer = calendarSerializer;
       _entityType = entityType;
@@ -290,6 +295,12 @@ namespace CalDavSynchronizer.Implementation
         var calendarCollection = (iCalendarCollection) calendarSerializer.Deserialize (reader);
         return calendarCollection[0];
       }
+    }
+
+    public async Task<(IEntityStateCollection<WebResourceName, string> States, string NewToken)> GetFullRepositoryState(IEnumerable<WebResourceName> idsOfknownEntities, string stateToken, TContext context, IGetVersionsLogger logger)
+    {
+      var collectionSyncResult = await _calDavDataAccess.CollectionSync(stateToken, logger);
+      return (new WebDavCollectionSyncEntityStates(collectionSyncResult.ChangedOrAddedItems, collectionSyncResult.DeletedItems, _versionComparer), collectionSyncResult.SyncToken);
     }
   }
 }

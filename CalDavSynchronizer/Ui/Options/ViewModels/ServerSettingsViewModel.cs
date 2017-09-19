@@ -69,6 +69,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       RegisterPropertyChangePropagation(_model, nameof(_model.Password), nameof(Password));
       RegisterPropertyChangePropagation(_model, nameof(_model.EmailAddress), nameof(EmailAddress));
       RegisterPropertyChangePropagation(_model, nameof(_model.UseAccountPassword), nameof(UseAccountPassword));
+      RegisterPropertyChangePropagation(_model, nameof(_model.UseWebDavCollectionSync), nameof(UseWebDavCollectionSync));
     }
 
     public ICommand TestConnectionCommand => _testConnectionCommand;
@@ -103,6 +104,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     {
       get { return _model.UseAccountPassword; }
       set { _model.UseAccountPassword = value; }
+    }
+
+    public bool UseWebDavCollectionSync
+    {
+      get { return _model.UseWebDavCollectionSync; }
+      set { _model.UseWebDavCollectionSync = value; }
     }
 
     public static ServerSettingsViewModel DesignInstance => new ServerSettingsViewModel(OptionsModel.DesignInstance, NullOptionTasks.Instance, OptionsCollectionViewModel.DesignViewOptions)

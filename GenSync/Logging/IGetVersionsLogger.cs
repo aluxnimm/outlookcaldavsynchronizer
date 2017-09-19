@@ -19,5 +19,6 @@ namespace GenSync.Logging
   public interface IGetVersionsLogger
   {
     void LogWarning(object entityId, string message);
+    void LogError(object entityId, string message);
   }
 }

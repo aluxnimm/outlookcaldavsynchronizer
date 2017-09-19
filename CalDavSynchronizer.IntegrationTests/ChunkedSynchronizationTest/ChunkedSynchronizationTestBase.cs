@@ -49,24 +49,25 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
     protected abstract string ProfileName { get; }
     protected abstract TSynchronizer CreateSynchronizer(Options options);
 
-    protected async Task InitializeSynchronizer(int? chunkSize)
+    protected async Task InitializeSynchronizer(int? chunkSize, bool useWebDavCollectionSync)
     {
       var options = TestComponentContainer.GetOptions(ProfileName);
       options.ChunkSize = chunkSize ?? 0;
       options.IsChunkedSynchronizationEnabled = chunkSize.HasValue;
+      options.UseWebDavCollectionSync = useWebDavCollectionSync;
       Synchronizer = CreateSynchronizer(options);
       await Synchronizer.Initialize();
     }
 
 
-    [TestCase(null, 7)]
-    [TestCase(2, 7)]
-    [TestCase(7, 7)]
-    [TestCase(29, 7)]
-    [TestCase(1,7)]
-    public virtual async Task Test(int? chunkSize, int itemsPerOperation)
+    [TestCase(null, 7, false)]
+    [TestCase(2, 7, false)]
+    [TestCase(7, 7, false)]
+    [TestCase(29, 7, false)]
+    [TestCase(1,7, false)]
+    public virtual async Task Test(int? chunkSize, int itemsPerOperation, bool useWebDavCollectionSync)
     {
-      await InitializeSynchronizer(chunkSize);
+      await InitializeSynchronizer(chunkSize, useWebDavCollectionSync);
 
       // Set maximum alloed open items to chunksize+1, since the synchronizer builds chunks with operations that load an entity and keep it open
       // A delete operation in a Outlook repository will open an entity and release it immediately

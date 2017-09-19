@@ -42,86 +42,34 @@ namespace GenSync.EntityRelationManagement
   /// <summary>
   /// Defaultimplementation for IEntityRelationDataAccess, which uses  an XML-file as underlying storage
   /// </summary>
-  public class EntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TEntityRelationData, TBtypeEntityId, TBtypeEntityVersion> : IEntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
+  public class EntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TEntityRelationData, TBtypeEntityId, TBtypeEntityVersion> :
+    XmlFileDataAccess<List<TEntityRelationData>>,
+    IEntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
       where TEntityRelationData : IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);
 
-    private readonly XmlSerializer _serializer = new XmlSerializer (typeof (List<TEntityRelationData>));
-    private readonly string _relationStorageFile;
-    private bool _ignoreInvalidXml = true;
-
-    public EntityRelationDataAccess (string dataDirectory)
+    public EntityRelationDataAccess (string dataDirectory) : 
+      base(EntityRelationDataAccess.GetRelationStoragePath(dataDirectory))
     {
-      _relationStorageFile = EntityRelationDataAccess.GetRelationStoragePath (dataDirectory);
     }
 
-    public EntityRelationDataAccess(string dataDirectory, string customPrefix)
+    public EntityRelationDataAccess(string dataDirectory, string customPrefix) :
+      base(EntityRelationDataAccess.GetRelationStoragePath(dataDirectory, customPrefix))
+
     {
-      _relationStorageFile = EntityRelationDataAccess.GetRelationStoragePath(dataDirectory, customPrefix);
     }
 
     public IReadOnlyCollection<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> LoadEntityRelationData ()
     {
-      if (!File.Exists (_relationStorageFile))
-        return null;
-
-      using (var stream = CreateInputStream())
-      {
-        List<TEntityRelationData> entityRelationDatas;
-
-        try
-        {
-          entityRelationDatas = (List<TEntityRelationData>) _serializer.Deserialize (stream);
-        }
-        catch (Exception x) when (_ignoreInvalidXml && IsXmlException(x))
-        {
-          s_logger.Warn ("Error when deserializing EntityRelationData. Ignoring error.", x);
-          return null;
-        }
-
-        return entityRelationDatas
-          .Select (d => (IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>) d)
-          .ToList();
-      }
-    }
-
-    private static bool IsXmlException (Exception x)
-    {
-      for (var ex = x; ex != null; ex = ex.InnerException)
-      {
-        if (ex is XmlException)
-        {
-          return true;
-        }
-      }
-
-      return false;
+      return  LoadDataOrNull()
+        ?.Select (d => (IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>) d)
+        .ToList();
     }
 
     public void SaveEntityRelationData (List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> data)
     {
-      if (!Directory.Exists (Path.GetDirectoryName (_relationStorageFile)))
-        Directory.CreateDirectory (Path.GetDirectoryName (_relationStorageFile));
-
-      var typedData = data.Cast<TEntityRelationData>().ToList();
-
-      using (var stream = CreateOutputStream())
-      {
-        _serializer.Serialize (stream, typedData);
-      }
-
-      _ignoreInvalidXml = false;
-    }
-
-    private Stream CreateOutputStream ()
-    {
-      return new FileStream (_relationStorageFile, FileMode.Create, FileAccess.Write);
-    }
-
-    private Stream CreateInputStream ()
-    {
-      return new FileStream (_relationStorageFile, FileMode.Open, FileAccess.Read);
+      SaveData(data.Cast<TEntityRelationData>().ToList());
     }
   }
 }

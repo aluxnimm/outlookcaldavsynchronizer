@@ -22,10 +22,12 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 using CalDavSynchronizer.Ui.ConnectionTests;
 using GenSync;
+using GenSync.Logging;
 using log4net;
 
 namespace CalDavSynchronizer.DataAccess
@@ -194,6 +196,101 @@ namespace CalDavSynchronizer.DataAccess
       return reportSetNode != null;
     }
 
+    public Task<bool> DoesSupportWebDavCollectionSync()
+    {
+      return DoesSupportsReportSet(_serverUrl, 0, "D", "sync-collection");
+    }
+
+    public async Task<(string SyncToken, IReadOnlyList<(WebResourceName Id, string Version)> ChangedOrAddedItems, IReadOnlyList<WebResourceName> DeletedItems)>
+      CollectionSync(string syncTokenOrNull, IGetVersionsLogger logger)
+    {
+      var document = await _webDavClient.ExecuteWebDavRequestAndReadResponse(
+        _serverUrl,
+        "REPORT",
+        0,
+        null,
+        null,
+        "application/xml",
+        $@"<?xml version=""1.0"" encoding=""utf-8"" ?>
+           <D:sync-collection xmlns:D=""DAV:"">
+             {(syncTokenOrNull != null ? $"<D:sync-token>{syncTokenOrNull}</D:sync-token>" : "<D:sync-token/>")}
+             <D:sync-level>1</D:sync-level>
+             <D:prop>
+               <D:getetag/>
+             </D:prop>
+           </D:sync-collection>
+                 ");
+
+      var syncTokenNode = document.XmlDocument.SelectSingleNode("/D:multistatus/D:sync-token", document.XmlNamespaceManager) ?? throw new Exception("Sync token missing");
+
+      var extractedItems = ExtractCollectionItems(document, logger);
+      return (syncTokenNode.InnerText, extractedItems.ChangedOrAddedItems, extractedItems.DeletedItems);
+    }
+
+    private (IReadOnlyList<(WebResourceName, string)> ChangedOrAddedItems, IReadOnlyList<WebResourceName> DeletedItems) 
+      ExtractCollectionItems(XmlDocumentWithNamespaceManager responseXml, IGetVersionsLogger logger)
+    {
+      var responseNodes = responseXml.XmlDocument.SelectNodes("/D:multistatus/D:response", responseXml.XmlNamespaceManager);
+
+      if (responseNodes == null)
+        return (new (WebResourceName, string)[0], new WebResourceName[0]);
+
+      var deletedEntites = new List<WebResourceName>();
+      var changedOrAdded = new List<(WebResourceName, string)>();
+
+      // ReSharper disable once LoopCanBeConvertedToQuery
+      // ReSharper disable once PossibleNullReferenceException
+      foreach (XmlElement responseElement in responseNodes)
+      {
+        var urlNode = responseElement.SelectSingleNode("D:href", responseXml.XmlNamespaceManager);
+        var etagNode = responseElement.SelectSingleNode("D:propstat/D:prop/D:getetag", responseXml.XmlNamespaceManager);
+        var statusNode = responseElement.SelectSingleNode("D:status", responseXml.XmlNamespaceManager);
+        if (urlNode != null &&
+            _serverUrl.AbsolutePath != UriHelper.DecodeUrlString(urlNode.InnerText))
+        {
+          var uri = new WebResourceName(urlNode.InnerText);
+
+          if (etagNode != null)
+          {
+            // NOTE: according to RFC statusNote MUST be null, but sogo returns it
+            var etag = HttpUtility.GetQuotedEtag(etagNode.InnerText);
+            changedOrAdded.Add((uri, etag));
+            if (s_logger.IsDebugEnabled)
+              s_logger.DebugFormat($"Got version (HTTP 200): '{uri}': '{etag}'");
+          }
+          else if (statusNode != null)
+          {
+            // rfc2616.txt
+            // Status-Line = HTTP-Version SP Status-Code SP Reason-Phrase CRLF
+            // HTTP-Version= "HTTP" "/" 1*DIGIT "." 1*DIGIT
+            const string statusLineRegex = @"HTTP/\d.\d (?<statusCode>\d{3}) ";
+            var statusMatch = Regex.Match(statusNode.InnerText, statusLineRegex);
+            if (statusMatch.Success)
+            {
+              var httpStatusCode = (HttpStatusCode)int.Parse(statusMatch.Groups["statusCode"].Value);
+              if (httpStatusCode == HttpStatusCode.NotFound)
+              {
+                deletedEntites.Add(uri);
+                if (s_logger.IsDebugEnabled)
+                  s_logger.DebugFormat($"Got version (HTTP 404): '{uri}'");
+              }
+              else
+              {
+                throw new Exception($"Invalid status '{statusNode.InnerText}' in server response.");
+              }
+            }
+            else
+            {
+              s_logger.Error($"Received invalid status line '{statusNode.InnerText}' for entity '{urlNode.InnerText}'");
+              logger.LogError(uri, $"Received invalid status line '{statusNode.InnerText}'");
+            }
+          }
+        }
+      }
+      
+      return (changedOrAdded,deletedEntites);
+    }
+    
     private Task<XmlDocumentWithNamespaceManager> GetCurrentUserPrivileges (Uri url, int depth)
     {
       return _webDavClient.ExecuteWebDavRequestAndReadResponse (

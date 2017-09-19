@@ -44,29 +44,32 @@ namespace GenSync.UnitTests.Synchronization.Stubs
       ExceptionHandlingStrategy = MockRepository.GenerateMock<IExceptionHandlingStrategy>();
     }
 
-    public Synchronizer<string, string, string, string, string, string,int,string,string> Build ()
+    public Synchronizer<string, string, string, string, string, string,int,string,string, int, int> Build ()
     {
-      return new Synchronizer<string, string, string, string, string, string, int, string, string> (
-          AtypeRepository,
-          BtypeRepository,
-          BatchEntityRepositoryAdapter.Create(AtypeRepository, ExceptionHandlingStrategy),
-          BatchEntityRepositoryAdapter.Create(BtypeRepository, ExceptionHandlingStrategy),
-          InitialSyncStateCreationStrategy,
-          EntityRelationDataAccess,
-          EntityRelationDataFactory,
-          InitialEntityMatcher,
-          AtypeIdComparer,
-          BtypeIdComparer,
-          new NullTotalProgressFactory(),
-          EqualityComparer<string>.Default,
-          EqualityComparer<string>.Default,
-          MockRepository.GenerateMock<IEntitySyncStateFactory<string, string, string, string, string, string, int>> (),
-          ExceptionHandlingStrategy,
-          IdentityMatchDataFactory<string>.Instance,
-          IdentityMatchDataFactory<string>.Instance,
-          null,
-          NullChunkedExecutor.Instance,
-          NullFullEntitySynchronizationLoggerFactory<string, string>.Instance);
+      return new Synchronizer<string, string, string, string, string, string, int, string, string, int, int>(
+        AtypeRepository,
+        BtypeRepository,
+        BatchEntityRepositoryAdapter.Create(AtypeRepository, ExceptionHandlingStrategy),
+        BatchEntityRepositoryAdapter.Create(BtypeRepository, ExceptionHandlingStrategy),
+        InitialSyncStateCreationStrategy,
+        EntityRelationDataAccess,
+        EntityRelationDataFactory,
+        InitialEntityMatcher,
+        AtypeIdComparer,
+        BtypeIdComparer,
+        new NullTotalProgressFactory(),
+        EqualityComparer<string>.Default,
+        EqualityComparer<string>.Default,
+        MockRepository.GenerateMock<IEntitySyncStateFactory<string, string, string, string, string, string, int>>(),
+        ExceptionHandlingStrategy,
+        IdentityMatchDataFactory<string>.Instance,
+        IdentityMatchDataFactory<string>.Instance,
+        null,
+        NullChunkedExecutor.Instance,
+        NullFullEntitySynchronizationLoggerFactory<string, string>.Instance,
+        new VersionAwareToStateAwareEntityRepositoryAdapter<string, string, int, int>(AtypeRepository, AtypeIdComparer, EqualityComparer<string>.Default),
+        new VersionAwareToStateAwareEntityRepositoryAdapter<string, string, int, int>(BtypeRepository, BtypeIdComparer, EqualityComparer<string>.Default),
+        NullStateTokensDataAccess<int, int>.Instance);
     }
 
     public IEntityRelationDataAccess<string, string, string, string> EntityRelationDataAccess { get; set; }

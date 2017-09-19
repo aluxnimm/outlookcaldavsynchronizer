@@ -57,6 +57,18 @@
     <Compile Include="..\CalDavSynchronizer\Properties\AssemblyInfoVersion.cs">
       <Link>Properties\AssemblyInfoVersion.cs</Link>
     </Compile>
+    <Compile Include="EntityRelationManagement\IStateTokenDataAccess.cs" />
+    <Compile Include="EntityRelationManagement\NullStateTokensDataAccess.cs" />
+    <Compile Include="EntityRelationManagement\XmlFileDataAccess.cs" />
+    <Compile Include="EntityRelationManagement\StateTokensDataAccess.cs" />
+    <Compile Include="EntityRelationManagement\StateTokens.cs" />
+    <Compile Include="EntityRepositories\VersionAwareEntityStateCollection.cs" />
+    <Compile Include="EntityRepositories\IStateAwareEntityRepository.cs" />
+    <Compile Include="EntityRepositories\IVersionAwareEntityRepository.cs" />
+    <Compile Include="EntityRepositories\IEntityStateCollection.cs" />
+    <Compile Include="EntityRepositories\IVersionAwareReadOnlyEntityRepository.cs" />
+    <Compile Include="EntityRepositories\VersionAwareToStateAwareEntityRepositoryAdapter.cs" />
+    <Compile Include="EntityState.cs" />
     <Compile Include="Logging\FullEntitySynchronizationLoggerFactory.cs" />
     <Compile Include="Logging\IEntityLogMessageFactory.cs" />
     <Compile Include="Logging\IEntitySynchronizationLog.cs" />

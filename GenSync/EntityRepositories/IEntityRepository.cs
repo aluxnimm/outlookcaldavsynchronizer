@@ -23,7 +23,7 @@ namespace GenSync.EntityRepositories
   /// </summary>
   public interface IEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> : 
     IWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>, 
-    IReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>
+    IVersionAwareReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>
   {
   }
 }

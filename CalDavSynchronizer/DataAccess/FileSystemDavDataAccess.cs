@@ -24,6 +24,7 @@ using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using CalDavSynchronizer.Ui.ConnectionTests;
 using CalDavSynchronizer.Utilities;
 using GenSync;
+using GenSync.Logging;
 
 namespace CalDavSynchronizer.DataAccess
 {
@@ -129,6 +130,16 @@ namespace CalDavSynchronizer.DataAccess
       var path = Path.Combine(_directory.FullName, url.OriginalAbsolutePath);
       File.WriteAllText(path, iCalData);
       return Task.FromResult(EntityVersion.Create(url, File.GetLastWriteTimeUtc(path).ToString("o")));
+    }
+
+    public Task<bool> DoesSupportWebDavCollectionSync()
+    {
+      return Task.FromResult(false);
+    }
+
+    public Task<(string SyncToken, IReadOnlyList<(WebResourceName Id, string Version)> ChangedOrAddedItems, IReadOnlyList<WebResourceName> DeletedItems)> CollectionSync(string syncTokenOrNull, IGetVersionsLogger logger)
+    {
+      throw new NotSupportedException();
     }
   }
 }

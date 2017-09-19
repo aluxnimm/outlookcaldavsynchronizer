@@ -49,6 +49,7 @@ namespace CalDavSynchronizer.Contracts
     public string EmailAddress { get; set; }
     public string UserName { get; set; }
     public int SynchronizationIntervalInMinutes { get; set; }
+    public bool UseWebDavCollectionSync { get; set; }
 
     // ReSharper disable MemberCanBePrivate.Global
     public string Salt { get; set; }

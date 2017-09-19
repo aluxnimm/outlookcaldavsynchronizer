@@ -14,26 +14,13 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
+using System.Collections.Generic;
 
-namespace GenSync.Logging
+namespace GenSync.EntityRepositories
 {
-  public class NullGetVersionsLogger : IGetVersionsLogger
+  public interface IEntityStateCollection<TEntityId, TEntityVersion>
   {
-    public static readonly IGetVersionsLogger Instance = new NullGetVersionsLogger();
-
-    private NullGetVersionsLogger()
-    {
-    }
-
-    public void LogWarning(object entityId, string message)
-    {
-      
-    }
-
-    public void LogError(object entityId, string message)
-    {
-      
-    }
+    (EntityState State, TEntityVersion RepositoryVersion) RemoveState(TEntityId id, TEntityVersion knownVersion);
+    Dictionary<TEntityId, TEntityVersion> DisposeAndGetLeftovers();
   }
 }

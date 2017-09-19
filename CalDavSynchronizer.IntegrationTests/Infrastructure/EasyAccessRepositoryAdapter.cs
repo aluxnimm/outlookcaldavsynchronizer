@@ -30,7 +30,7 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
   public static class EasyAccessRepositoryAdapter
   {
     public static EasyAccessRepositoryAdapter<TEntityId, TEntityVersion, TEntity, TContext> Create<TEntityId, TEntityVersion, TEntity, TContext>(
-      IReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> readRepository,
+      IVersionAwareReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> readRepository,
       IBatchWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> writeRepository,
       ISynchronizationContextFactory<TContext> contextFactory)
     {
@@ -47,11 +47,11 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
 
   public class EasyAccessRepositoryAdapter<TEntityId, TEntityVersion, TEntity, TContext>
   {
-    private readonly IReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> _readRepository;
+    private readonly IVersionAwareReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> _readRepository;
     private readonly IBatchWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> _writeRepository;
     private readonly ISynchronizationContextFactory<TContext> _contextFactory;
     
-    public EasyAccessRepositoryAdapter(IReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> readRepository, IBatchWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> writeRepository, ISynchronizationContextFactory<TContext> contextFactory)
+    public EasyAccessRepositoryAdapter(IVersionAwareReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> readRepository, IBatchWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> writeRepository, ISynchronizationContextFactory<TContext> contextFactory)
     {
       if (readRepository == null) throw new ArgumentNullException(nameof(readRepository));
       if (writeRepository == null) throw new ArgumentNullException(nameof(writeRepository));

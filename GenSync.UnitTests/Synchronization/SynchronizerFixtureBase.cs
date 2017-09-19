@@ -154,7 +154,7 @@ namespace GenSync.UnitTests.Synchronization
         c => Task.FromResult(0)).Wait();
     }
 
-    private Synchronizer<Identifier, int, string, Identifier, int, string, int, string, string> CreateSynchronizer (
+    private Synchronizer<Identifier, int, string, Identifier, int, string, int, string, string, int, int> CreateSynchronizer (
       IInitialSyncStateCreationStrategy<Identifier, int, string, Identifier, int, string, int> strategy,
       List<IEntityRelationData<Identifier, int, Identifier, int>> matchingEntities = null)
     {
@@ -171,27 +171,30 @@ namespace GenSync.UnitTests.Synchronization
       var atypeWriteRepository = BatchEntityRepositoryAdapter.Create (_localRepository, TestExceptionHandlingStrategy.Instance);
       var btypeWriteRepository = BatchEntityRepositoryAdapter.Create (_serverRepository, TestExceptionHandlingStrategy.Instance);
 
-      return new Synchronizer<Identifier, int, string, Identifier, int, string, int, string, string> (
-          _localRepository,
-          _serverRepository,
-          atypeWriteRepository,
-          btypeWriteRepository,
-          strategy,
-          _entityRelationDataAccess,
-          _entityRelationDataFactory,
-          initialEntityMatcherStub,
-          IdentifierEqualityComparer.Instance,
-          IdentifierEqualityComparer.Instance,
-          NullTotalProgressFactory.Instance,
-          EqualityComparer<int>.Default,
-          EqualityComparer<int>.Default,
-          MockRepository.GenerateMock<IEntitySyncStateFactory<Identifier, int, string, Identifier, int, string, int>> (),
-          TestExceptionHandlingStrategy.Instance,
-          IdentityMatchDataFactory<string>.Instance,
-          IdentityMatchDataFactory<string>.Instance,
-          null,
-          NullChunkedExecutor.Instance,
-          NullFullEntitySynchronizationLoggerFactory<string,string>.Instance);
+      return new Synchronizer<Identifier, int, string, Identifier, int, string, int, string, string, int, int>(
+        _localRepository,
+        _serverRepository,
+        atypeWriteRepository,
+        btypeWriteRepository,
+        strategy,
+        _entityRelationDataAccess,
+        _entityRelationDataFactory,
+        initialEntityMatcherStub,
+        IdentifierEqualityComparer.Instance,
+        IdentifierEqualityComparer.Instance,
+        NullTotalProgressFactory.Instance,
+        EqualityComparer<int>.Default,
+        EqualityComparer<int>.Default,
+        MockRepository.GenerateMock<IEntitySyncStateFactory<Identifier, int, string, Identifier, int, string, int>>(),
+        TestExceptionHandlingStrategy.Instance,
+        IdentityMatchDataFactory<string>.Instance,
+        IdentityMatchDataFactory<string>.Instance,
+        null,
+        NullChunkedExecutor.Instance,
+        NullFullEntitySynchronizationLoggerFactory<string, string>.Instance,
+        new VersionAwareToStateAwareEntityRepositoryAdapter<Identifier, int, int, int>(_localRepository, IdentifierEqualityComparer.Instance, EqualityComparer<int>.Default),
+        new VersionAwareToStateAwareEntityRepositoryAdapter<Identifier, int, int, int>(_serverRepository, IdentifierEqualityComparer.Instance, EqualityComparer<int>.Default),
+        NullStateTokensDataAccess<int, int>.Instance);
     }
 
     protected void ExecuteMultipleTimes (Action a)

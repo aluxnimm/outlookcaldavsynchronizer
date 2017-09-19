@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -14,26 +14,24 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-
-namespace GenSync.Logging
+namespace GenSync.EntityRelationManagement
 {
-  public class NullGetVersionsLogger : IGetVersionsLogger
+  public class NullStateTokensDataAccess<TAtypeStateToken, TBtypeStateToken> : IStateTokenDataAccess<TAtypeStateToken, TBtypeStateToken>
   {
-    public static readonly IGetVersionsLogger Instance = new NullGetVersionsLogger();
+    public static readonly IStateTokenDataAccess<TAtypeStateToken, TBtypeStateToken> Instance = new NullStateTokensDataAccess<TAtypeStateToken, TBtypeStateToken>();
 
-    private NullGetVersionsLogger()
+    private NullStateTokensDataAccess()
     {
     }
 
-    public void LogWarning(object entityId, string message)
+    public (TAtypeStateToken AToken, TBtypeStateToken BToken) LoadKnownStateTokens()
     {
-      
+      return (default(TAtypeStateToken), default(TBtypeStateToken));
     }
 
-    public void LogError(object entityId, string message)
+    public void SaveKnownStateTokens(TAtypeStateToken aToken, TBtypeStateToken bToken)
     {
-      
+     
     }
   }
 }

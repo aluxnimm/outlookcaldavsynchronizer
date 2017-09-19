@@ -418,6 +418,7 @@
     <Compile Include="Implementation\TimeZones\GlobalTimeZoneCache.cs" />
     <Compile Include="Implementation\TimeZones\ITimeZoneCache.cs" />
     <Compile Include="Implementation\TimeZones\TimeZoneCache.cs" />
+    <Compile Include="Implementation\WebDavCollectionSyncEntityStates.cs" />
     <Compile Include="Implementation\WebRepositoryOverloadException.cs" />
     <Compile Include="IOutlookSession.cs" />
     <Compile Include="IProfileExportProcessor.cs" />

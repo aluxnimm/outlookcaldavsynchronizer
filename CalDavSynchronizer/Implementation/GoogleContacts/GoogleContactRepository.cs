@@ -20,7 +20,7 @@ using log4net;
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
   public class GoogleContactRepository 
-    : IReadOnlyEntityRepository<string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext>,
+    : IVersionAwareReadOnlyEntityRepository<string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext>,
     IBatchWriteOnlyEntityRepository<string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext>
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);

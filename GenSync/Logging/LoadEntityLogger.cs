@@ -61,5 +61,19 @@ namespace GenSync.Logging
         });
       }
     }
+
+    public void LogError(object entityId, string message)
+    {
+      lock (_loadErrorsLock)
+      {
+        _loadErrors.Add(new LoadError
+        {
+          EntityId = entityId.ToString(),
+          Error = message,
+          IsAEntity = _isARepository,
+          IsWarning = false
+        });
+      }
+    }
   }
 }

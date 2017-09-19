@@ -60,6 +60,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
     private int _daysToSynchronizeInTheFuture;
     private int _daysToSynchronizeInThePast;
     private bool _useSynchronizationTimeRange;
+    private bool _useWebDavCollectionSync;
 
     private bool _closeConnectionAfterEachRequest;
     private bool _preemptiveAuthentication;
@@ -249,7 +250,24 @@ namespace CalDavSynchronizer.Ui.Options.Models
       get { return _useSynchronizationTimeRange; }
       set
       {
-        CheckedPropertyChange(ref _useSynchronizationTimeRange, value);
+        if (CheckedPropertyChange(ref _useSynchronizationTimeRange, value))
+        {
+          if (value)
+            UseWebDavCollectionSync = false;
+        }
+      }
+    }
+
+    public bool UseWebDavCollectionSync
+    {
+      get { return _useWebDavCollectionSync; }
+      set
+      {
+        if (CheckedPropertyChange(ref _useWebDavCollectionSync, value))
+        {
+          if (value)
+            UseSynchronizationTimeRange = false;
+        }
       }
     }
 
@@ -385,7 +403,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
     }
 
     /// <remarks>
-    /// InitializeData has to set fields instead of properties, since properties can interfer with each other!
+    /// InitializeData has to set fields instead of properties, since properties can encapsulate business logic and can interfer with each other!
     /// </remarks>
     private void InitializeData(Contracts.Options data)
     {
@@ -415,6 +433,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
       _useSynchronizationTimeRange = !data.IgnoreSynchronizationTimeRange;
       _daysToSynchronizeInThePast = data.DaysToSynchronizeInThePast;
       _daysToSynchronizeInTheFuture = data.DaysToSynchronizeInTheFuture;
+      _useWebDavCollectionSync = data.UseWebDavCollectionSync;
 
       var proxyOptions = data.ProxyOptions ?? new ProxyOptions();
 
@@ -474,6 +493,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
         IsChunkedSynchronizationEnabled = IsChunkedSynchronizationEnabled,
         ChunkSize = ChunkSize,
         IgnoreSynchronizationTimeRange = !_useSynchronizationTimeRange,
+        UseWebDavCollectionSync = _useWebDavCollectionSync,
         DaysToSynchronizeInThePast = _daysToSynchronizeInThePast,
         DaysToSynchronizeInTheFuture = _daysToSynchronizeInTheFuture,
         CloseAfterEachRequest = _closeConnectionAfterEachRequest,
@@ -510,6 +530,12 @@ namespace CalDavSynchronizer.Ui.Options.Models
       if (_selectedFolderOrNull == null)
       {
         errorMessageBuilder.AppendLine ("- There is no Outlook Folder selected.");
+        result = false;
+      }
+
+      if (_useWebDavCollectionSync && _selectedFolderOrNull?.DefaultItemType != OlItemType.olAppointmentItem)
+      {
+        errorMessageBuilder.AppendLine("- WebDav collection sync ist currently just supported for appointments.");
         result = false;
       }
 

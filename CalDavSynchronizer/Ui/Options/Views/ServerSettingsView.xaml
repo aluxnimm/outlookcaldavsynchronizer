@@ -24,6 +24,7 @@
           <RowDefinition />
           <RowDefinition />
           <RowDefinition />
+          <RowDefinition />
         </Grid.RowDefinitions>
 
         <Grid.Resources>
@@ -45,7 +46,8 @@
                 <CheckBox IsChecked="{Binding UseAccountPassword}" x:Name="UseAccountPasswordCheckBox" Grid.Row="3" Grid.ColumnSpan="2"  Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Column="2">Use IMAP/POP3 account password</CheckBox>
 
                 <TextBlock Grid.Row="4" Grid.Column="0">Email address:</TextBlock>
-                <TextBox Text="{Binding EmailAddress}" Grid.Row="4" Grid.Column="2" ToolTip="Enter the email address of the server identity. &#x0a;It can also be used to discover the DAV Url if you leave the url textbox empty."/>
+        <TextBox Text="{Binding EmailAddress}" Grid.Row="4" Grid.Column="2" ToolTip="Enter the email address of the server identity. &#x0a;It can also be used to discover the DAV Url if you leave the url textbox empty."/>
+        <CheckBox Content="Use WebDAV collection sync" IsChecked="{Binding UseWebDavCollectionSync}" Grid.Row="5" Grid.Column="2" ToolTip="This option excludes the time range filter."/>
 
       </Grid>
             <Button HorizontalAlignment="Left" Command="{Binding GetAccountSettingsCommand}" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">Get IMAP/POP3 account settings</Button>

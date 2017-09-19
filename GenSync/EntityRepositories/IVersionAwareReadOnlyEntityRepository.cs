@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -14,26 +14,12 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-
-namespace GenSync.Logging
+namespace GenSync.EntityRepositories
 {
-  public class NullGetVersionsLogger : IGetVersionsLogger
+  public interface IVersionAwareReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>
+    : IReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>, IVersionAwareEntityRepository<TEntityId, TEntityVersion, TContext>
   {
-    public static readonly IGetVersionsLogger Instance = new NullGetVersionsLogger();
 
-    private NullGetVersionsLogger()
-    {
-    }
 
-    public void LogWarning(object entityId, string message)
-    {
-      
-    }
-
-    public void LogError(object entityId, string message)
-    {
-      
-    }
   }
 }
