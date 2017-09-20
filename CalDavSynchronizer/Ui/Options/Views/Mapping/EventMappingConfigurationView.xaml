@@ -160,7 +160,9 @@
                 Grid.ColumnSpan="4" 
                 Grid.Column="0" 
                 Grid.Row="5" 
-                IsChecked="{Binding IsCategoryFilterSticky}" ></CheckBox>
+                IsChecked="{Binding IsCategoryFilterSticky}"
+                ToolTip="WARNING: Do not use, since it just keeps the items in sync, as long as the cache is not cleared.&#x0a;After clearing the cache (which happens automatically in some cases), items which were affected by this option do not pass the filter anymore!"
+                ToolTipService.ShowDuration="60000"></CheckBox>
             </Grid>
           </DockPanel>
         </GroupBox>
