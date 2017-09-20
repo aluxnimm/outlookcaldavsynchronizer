@@ -58,7 +58,6 @@ namespace CalDavSynchronizer.Contracts
       IncludeEmptyTaskCategoryFilter = false;
       InvertTaskCategoryFilter = false;
       MapCustomProperties = false;
-      IsCategoryFilterSticky = true;
     }
 
     public override TResult Accept<TResult>(IMappingConfigurationBaseVisitor<TResult> visitor)
