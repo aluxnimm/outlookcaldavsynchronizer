@@ -30,7 +30,11 @@
     </GroupBox>
     <GroupBox Header="Outlook settings">
         <StackPanel>
-            <Grid>
+        <TextBlock  
+          DockPanel.Dock="Top"
+          ToolTipService.ShowDuration="60000"
+          ToolTip="These settings affect the filter, which selects the items for synchronization.&#x0a;If an item does not pass the filter, it is treated as if it would not exist!&#x0a;Changing these settings for non-empty folders can lead to deletions on the Server or duplicates in Outlook."><Bold>WARNING:</Bold> Take care, when changing settings for non-empty folders (see tooltip)</TextBlock>
+        <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
