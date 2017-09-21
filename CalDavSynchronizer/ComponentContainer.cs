@@ -101,7 +101,6 @@ namespace CalDavSynchronizer
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
     private readonly SynchronizationStatus _synchronizationStatus;
     private readonly OutlookFolderStrategyWrapper _queryFolderStrategyWrapper;
-    private readonly CategorySwitcher _categorySwitcher;
     private readonly TotalProgressFactory _totalProgressFactory;
 
     public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
@@ -220,8 +219,6 @@ namespace CalDavSynchronizer
       {
         s_logger.Error ("Can't access SyncObjects", ex);
       }
-
-      _categorySwitcher = new CategorySwitcher(new OutlookSession(_session), _daslFilterProvider, _queryFolderStrategyWrapper);
     }
 
     private void PermanentStatusesViewModel_OptionsRequesting(object sender, OptionsEventArgs e)
@@ -552,8 +549,6 @@ namespace CalDavSynchronizer
       await _scheduler.SetOptions (newOptions, generalOptions);
       _permanentStatusesViewModel.NotifyProfilesChanged (newOptions);
       DeleteEntityChachesForChangedProfiles (oldOptions, newOptions);
-      var changedOptions = CreateChangePairs (oldOptions, newOptions);
-      _categorySwitcher.SwitchCategories (changedOptions);
     }
 
     public void ShowLatestSynchronizationReport (Guid profileId)
@@ -561,18 +556,7 @@ namespace CalDavSynchronizer
       ShowReportsImplementation();
       _currentReportsViewModel.ShowLatestSynchronizationReportCommand (profileId);
     }
-
-    private ChangedOptions[] CreateChangePairs (Options[] oldOptions, Options[] newOptions)
-    {
-      var newOptionsById = newOptions.ToDictionary (o => o.Id);
-
-      return (
-          from o in oldOptions
-          let no = GetNewOptionsOrNull (o, newOptionsById)
-          where no != null
-          select new ChangedOptions (o, no)).ToArray ();
-    }
-
+    
     public async Task EditGeneralOptionsAsync(Func<GeneralOptions, Tuple<bool, GeneralOptions>> editOptions)
     {
       var generalOptions = _generalOptionsDataAccess.LoadOptions();
@@ -627,14 +611,7 @@ namespace CalDavSynchronizer
           }
         });
     }
-
-    private Options GetNewOptionsOrNull (Options oldOptions, Dictionary<Guid, Options> newOptionsById)
-    {
-      Options newOptions;
-      newOptionsById.TryGetValue (oldOptions.Id, out newOptions);
-      return newOptions;
-    }
-
+    
     private void DeleteEntityChachesForChangedProfiles (Options[] oldOptions, Options[] newOptions)
     {
       var profilesForCacheDeletion =
