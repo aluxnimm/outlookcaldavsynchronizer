@@ -79,14 +79,16 @@ namespace CalDavSynchronizer.Scheduling
     private readonly IQueryOutlookFolderStrategy _queryFolderStrategy;
     private readonly IExceptionHandlingStrategy _exceptionHandlingStrategy;
     private readonly IComWrapperFactory _comWrapperFactory;
+    private readonly IOptionsDataAccess _optionsDataAccess;
 
-    public SynchronizerFactory (Func<Guid, string> profileDataDirectoryFactory, ITotalProgressFactory totalProgressFactory, IOutlookSession outlookSession, IDaslFilterProvider daslFilterProvider, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, GlobalTimeZoneCache globalTimeZoneCache, IQueryOutlookFolderStrategy queryFolderStrategy, IExceptionHandlingStrategy exceptionHandlingStrategy, IComWrapperFactory comWrapperFactory)
+    public SynchronizerFactory (Func<Guid, string> profileDataDirectoryFactory, ITotalProgressFactory totalProgressFactory, IOutlookSession outlookSession, IDaslFilterProvider daslFilterProvider, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, GlobalTimeZoneCache globalTimeZoneCache, IQueryOutlookFolderStrategy queryFolderStrategy, IExceptionHandlingStrategy exceptionHandlingStrategy, IComWrapperFactory comWrapperFactory, IOptionsDataAccess optionsDataAccess)
     {
       if (outlookAccountPasswordProvider == null)
         throw new ArgumentNullException (nameof (outlookAccountPasswordProvider));
       if (queryFolderStrategy == null) throw new ArgumentNullException(nameof(queryFolderStrategy));
       if (exceptionHandlingStrategy == null) throw new ArgumentNullException(nameof(exceptionHandlingStrategy));
       if (comWrapperFactory == null) throw new ArgumentNullException(nameof(comWrapperFactory));
+      if (optionsDataAccess == null) throw new ArgumentNullException(nameof(optionsDataAccess));
 
       _outlookEmailAddress = outlookSession.GetCurrentUserEmailAddressOrNull() ?? string.Empty;
      
@@ -100,6 +102,7 @@ namespace CalDavSynchronizer.Scheduling
       _queryFolderStrategy = queryFolderStrategy;
       _exceptionHandlingStrategy = exceptionHandlingStrategy;
       _comWrapperFactory = comWrapperFactory;
+      _optionsDataAccess = optionsDataAccess;
     }
     
     public async Task<IOutlookSynchronizer> CreateSynchronizer (Options options, GeneralOptions generalOptions)
@@ -456,8 +459,16 @@ namespace CalDavSynchronizer.Scheduling
       return new OutlookEventSynchronizer<WebResourceName, string>(
         new ContextCreatingSynchronizerDecorator<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext>(
           synchronizer,
-          new EventSynchronizationContextFactory(atypeRepository, btypeRepository, entityRelationDataAccess, mappingParameters.CleanupDuplicateEvents, atypeIdEqualityComparer, _outlookSession, mappingParameters.MapEventColorToCategory)));
-
+          new EventSynchronizationContextFactory(
+            atypeRepository,
+            btypeRepository,
+            entityRelationDataAccess,
+            mappingParameters.CleanupDuplicateEvents,
+            atypeIdEqualityComparer,
+            _outlookSession,
+            mappingParameters.MapEventColorToCategory
+              ? new ColorCategoryMapperFactory(_outlookSession, new ColorMappingDataAccess(new OptionDataAccess(options.Id, _optionsDataAccess)))
+              : NullColorCategoryMapperFactory.Instance)));
     }
 
     private HttpClient CreateHttpClient(ProxyOptions proxyOptionsOrNull)

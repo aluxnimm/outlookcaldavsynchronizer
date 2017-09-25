@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.using System;
 
+using System.Collections.Generic;
 using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Ui;
 using Microsoft.Office.Interop.Outlook;
@@ -25,7 +26,12 @@ namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
   {
     public string ApplicationVersion { get; }
     public IOutlookTimeZones TimeZones { get; }
-    public Categories Categories { get; }
+    
+    public IReadOnlyCollection<OutlookCategory> GetCategories()
+    {
+      throw new System.NotImplementedException();
+    }
+
     public string GetCurrentUserEmailAddressOrNull()
     {
       return "testuser@bla.com";
@@ -87,6 +93,11 @@ namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
     }
 
     public Recipient CreateRecipient(string recipientName)
+    {
+      throw new System.NotImplementedException();
+    }
+
+    public CreateCategoryResult CreateCategoryNoThrow(string name, OlCategoryColor color)
     {
       throw new System.NotImplementedException();
     }

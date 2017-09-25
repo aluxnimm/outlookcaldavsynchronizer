@@ -18,39 +18,37 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Utilities;
+using GenSync.Logging;
+using log4net;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
   public class EventSynchronizationContext : IEventSynchronizationContext
   {
-    private readonly Lazy<Dictionary<string, OlCategoryColor>> _colorByCategoryName;
+    private readonly IColorCategoryMapper _colorCategoryMapper;
+    private static readonly ILog s_logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-    public EventSynchronizationContext(IDuplicateEventCleaner duplicateEventCleaner, IOutlookSession session)
+    public EventSynchronizationContext(IDuplicateEventCleaner duplicateEventCleaner, IColorCategoryMapper colorCategoryMapper)
     {
-      var outlookSession = session ?? throw new ArgumentNullException(nameof(session));
+      _colorCategoryMapper = colorCategoryMapper ?? throw new ArgumentNullException(nameof(colorCategoryMapper));
       DuplicateEventCleaner = duplicateEventCleaner ?? throw new ArgumentNullException(nameof(duplicateEventCleaner));
-
-      _colorByCategoryName = new Lazy<Dictionary<string, OlCategoryColor>>(
-        () =>
-        {
-          using (var categoriesWrapper = GenericComObjectWrapper.Create(outlookSession.Categories))
-          {
-            return categoriesWrapper.Inner.ToSafeEnumerable<Category>().ToDictionary(c => c.Name, c => c.Color, StringComparer.InvariantCultureIgnoreCase);
-          }
-        },
-        false);
     }
 
     public IDuplicateEventCleaner DuplicateEventCleaner { get; }
-    public OlCategoryColor GetCategoryColor(string categoryName)
+
+    public string MapHtmlColorToCategoryOrNull(string htmlColor, IEntityMappingLogger logger)
     {
-      if (_colorByCategoryName.Value.TryGetValue(categoryName, out var color))
-        return color;
-      else
-        return OlCategoryColor.olCategoryColorNone;
+      return _colorCategoryMapper.MapHtmlColorToCategoryOrNull(htmlColor, logger);
+    }
+
+    public string MapCategoryToHtmlColorOrNull(string categoryName)
+    {
+      return _colorCategoryMapper.MapCategoryToHtmlColorOrNull(categoryName);
     }
   }
 }

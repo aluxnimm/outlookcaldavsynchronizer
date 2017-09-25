@@ -16,28 +16,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using GenSync.Logging;
-using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class NullEventSynchronizationContext : IEventSynchronizationContext
+  public interface IColorCategoryMapperFactory
   {
-    public static readonly IEventSynchronizationContext Instance = new NullEventSynchronizationContext();
-
-    private NullEventSynchronizationContext()
-    {
-    }
-
-    public IDuplicateEventCleaner DuplicateEventCleaner => NullDuplicateEventCleaner.Instance;
-
-    public string MapHtmlColorToCategoryOrNull(string htmlColor, IEntityMappingLogger logger)
-    {
-      return NullColorCategoryMapper.Instance.MapHtmlColorToCategoryOrNull(htmlColor, logger);
-    }
-
-    public string MapCategoryToHtmlColorOrNull(string categoryName)
-    {
-      return NullColorCategoryMapper.Instance.MapCategoryToHtmlColorOrNull(categoryName);
-    }
+    IColorCategoryMapper Create();
   }
 }

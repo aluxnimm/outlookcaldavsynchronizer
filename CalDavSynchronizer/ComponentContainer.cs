@@ -176,7 +176,8 @@ namespace CalDavSynchronizer
           _globalTimeZoneCache,
           _queryFolderStrategyWrapper,
           exceptionHandlingStrategy,
-          comWrapperFactory);
+          comWrapperFactory,
+          _optionsDataAccess);
 
       _synchronizationReportRepository = CreateSynchronizationReportRepository();
 

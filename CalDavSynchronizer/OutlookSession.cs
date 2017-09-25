@@ -15,6 +15,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.ComWrappers;
@@ -153,10 +155,51 @@ namespace CalDavSynchronizer
 
     public string ApplicationVersion => _nameSpace.Application.Version;
     public IOutlookTimeZones TimeZones { get; }
-    public Categories Categories => _nameSpace.Categories;
+
+    public IReadOnlyCollection<OutlookCategory> GetCategories()
+    {
+      using (var categoriesWrapper = GenericComObjectWrapper.Create(_nameSpace.Categories))
+      {
+        return categoriesWrapper.Inner
+          .ToSafeEnumerable<Category>()
+          .Select(c => new OutlookCategory(c.Name, c.Color))
+          .ToArray();
+      }
+    }
+
     public Recipient CreateRecipient(string recipientName)
     {
       return _nameSpace.CreateRecipient(recipientName);
+    }
+
+    public CreateCategoryResult CreateCategoryNoThrow(string name, OlCategoryColor color)
+    {
+      try
+      {
+        using (var categoriesWrapper = GenericComObjectWrapper.Create(_nameSpace.Categories))
+        {
+          // Here a hashset has to be used with an case-insensitive comparer, because the indexer cannot be used to check if the
+          // category already exists, since it is case sensitive (but outlook requires case insensitive uniqueness)
+          var categoryNames = new HashSet<string>(
+            categoriesWrapper.Inner.ToSafeEnumerable<Category>().Select(c => c.Name),
+            StringComparer.InvariantCultureIgnoreCase);
+
+          if (!categoryNames.Contains(name))
+          {
+            categoriesWrapper.Inner.Add(name, color);
+            return CreateCategoryResult.Ok;
+          }
+          else
+          {
+            return CreateCategoryResult.DidAlreadyExist;
+          }
+        }
+      }
+      catch (System.Exception e)
+      {
+        s_logger.Error($"Can't create category '{name}' with color '{color}'", e);
+        return CreateCategoryResult.Error;
+      }
     }
   }
 }

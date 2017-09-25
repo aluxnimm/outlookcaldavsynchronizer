@@ -15,6 +15,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
+using System.Collections.Generic;
 using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Ui;
 using Microsoft.Office.Interop.Outlook;
@@ -25,8 +27,8 @@ namespace CalDavSynchronizer
   {
     string ApplicationVersion { get; }
     IOutlookTimeZones TimeZones { get; }
-    Categories Categories { get; }
 
+    IReadOnlyCollection<OutlookCategory> GetCategories();
     string GetCurrentUserEmailAddressOrNull();
 
     OutlookFolderDescriptor GetFolderDescriptorFromId(string entryId, object storeId);
@@ -45,5 +47,7 @@ namespace CalDavSynchronizer
 
     
     Recipient CreateRecipient (string recipientName);
+
+    CreateCategoryResult CreateCategoryNoThrow(string name, OlCategoryColor color);
   }
 }

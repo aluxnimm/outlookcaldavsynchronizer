@@ -15,29 +15,27 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using GenSync.Logging;
-using Microsoft.Office.Interop.Outlook;
+using System;
+using CalDavSynchronizer.DataAccess;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class NullEventSynchronizationContext : IEventSynchronizationContext
+  public class ColorCategoryMapperFactory : IColorCategoryMapperFactory
   {
-    public static readonly IEventSynchronizationContext Instance = new NullEventSynchronizationContext();
+    private readonly IOutlookSession _outlookSession;
+    private readonly IColorMappingsDataAccess _colorMappingsDataAccess;
 
-    private NullEventSynchronizationContext()
+    public ColorCategoryMapperFactory(IOutlookSession outlookSession, IColorMappingsDataAccess colorMappingsDataAccess)
     {
+      if (outlookSession == null) throw new ArgumentNullException(nameof(outlookSession));
+      if (colorMappingsDataAccess == null) throw new ArgumentNullException(nameof(colorMappingsDataAccess));
+      _outlookSession = outlookSession;
+      _colorMappingsDataAccess = colorMappingsDataAccess;
     }
 
-    public IDuplicateEventCleaner DuplicateEventCleaner => NullDuplicateEventCleaner.Instance;
-
-    public string MapHtmlColorToCategoryOrNull(string htmlColor, IEntityMappingLogger logger)
+    public IColorCategoryMapper Create()
     {
-      return NullColorCategoryMapper.Instance.MapHtmlColorToCategoryOrNull(htmlColor, logger);
-    }
-
-    public string MapCategoryToHtmlColorOrNull(string categoryName)
-    {
-      return NullColorCategoryMapper.Instance.MapCategoryToHtmlColorOrNull(categoryName);
+      return new ColorCategoryMapper(_outlookSession, _colorMappingsDataAccess);
     }
   }
 }

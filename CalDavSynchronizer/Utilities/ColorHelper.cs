@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +36,7 @@ namespace CalDavSynchronizer.Utilities
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
+ 
     public static readonly Dictionary<OlCategoryColor, ArgbColor> ArgbColorByCategoryColor = new Dictionary<OlCategoryColor, ArgbColor>
     {
       {OlCategoryColor.olCategoryColorNone, ArgbColor.FromRgb(0xFFFFFF)},
@@ -64,40 +66,9 @@ namespace CalDavSynchronizer.Utilities
       {OlCategoryColor.olCategoryColorDarkPurple, ArgbColor.FromRgb(0x5c3fa3)},
       {OlCategoryColor.olCategoryColorDarkMaroon, ArgbColor.FromRgb(0x93446b)}
     };
+    
 
-    public static readonly Dictionary<OlCategoryColor, string> HtmlColorByCategoryColor = new Dictionary<OlCategoryColor, string>
-    {
-      {OlCategoryColor.olCategoryColorRed, "red"},
-      {OlCategoryColor.olCategoryColorOrange, "orange"},
-      {OlCategoryColor.olCategoryColorPeach, "peachpuff"},
-      {OlCategoryColor.olCategoryColorYellow, "yellow"},
-      {OlCategoryColor.olCategoryColorGreen, "green"},
-      {OlCategoryColor.olCategoryColorTeal, "lightseagreen"},
-      {OlCategoryColor.olCategoryColorOlive, "olive"},
-      {OlCategoryColor.olCategoryColorBlue, "blue"},
-      {OlCategoryColor.olCategoryColorPurple, "purple"},
-      {OlCategoryColor.olCategoryColorMaroon, "maroon"},
-      {OlCategoryColor.olCategoryColorSteel, "lightsteelblue"},
-      {OlCategoryColor.olCategoryColorDarkSteel, "steelblue"},
-      {OlCategoryColor.olCategoryColorGray, "gray"},
-      {OlCategoryColor.olCategoryColorDarkGray, "darkgray"},
-      {OlCategoryColor.olCategoryColorBlack, "black"},
-      {OlCategoryColor.olCategoryColorDarkRed, "darkred"},
-      {OlCategoryColor.olCategoryColorDarkOrange, "darkorange"},
-      {OlCategoryColor.olCategoryColorDarkPeach, "peru"},
-      {OlCategoryColor.olCategoryColorDarkYellow, "yellowgreen"},
-      {OlCategoryColor.olCategoryColorDarkGreen, "darkgreen"},
-      {OlCategoryColor.olCategoryColorDarkTeal, "teal"},
-      {OlCategoryColor.olCategoryColorDarkOlive, "darkolivegreen"},
-      {OlCategoryColor.olCategoryColorDarkBlue, "darkblue"},
-      {OlCategoryColor.olCategoryColorDarkPurple, "darkviolet"},
-      {OlCategoryColor.olCategoryColorDarkMaroon, "palevioletred"}
-    };
-
-    public static readonly HashSet<string> HtmlColorNames = new HashSet<string>(HtmlColorByCategoryColor.Values, StringComparer.InvariantCultureIgnoreCase);
-
-
-    private static OlCategoryColor FindMatchingCategoryColor (Color color)
+    public static OlCategoryColor FindMatchingCategoryColor (Color color)
     {
       var minDistance = double.MaxValue;
       var matchingCategoryColor = OlCategoryColor.olCategoryColorNone;
@@ -120,22 +91,22 @@ namespace CalDavSynchronizer.Utilities
       return matchingCategoryColor;
     }
 
-    public static OlCategoryColor FindMatchingCategoryColor (ArgbColor argbColor)
+    public static OlCategoryColor FindMatchingCategoryColor(ArgbColor argbColor)
     {
-      var color = Color.FromArgb (argbColor.ArgbValue);
+      var color = Color.FromArgb(argbColor.ArgbValue);
 
+      return FindMatchingCategoryColor(color);
+    }
+
+    public static OlCategoryColor FindMatchingOutlookColorByHtmlColor(string htmlColor)
+    {
+      var color = ColorTranslator.FromHtml (htmlColor);
       return FindMatchingCategoryColor (color);
     }
 
-    public static string FindMatchingCategoryByHtmlColor(string htmlColor)
+    public static int GetRgbValue(string htmlColor)
     {
-      if (HtmlColorNames.Contains (htmlColor))
-        return htmlColor;
-
-      var color = ColorTranslator.FromHtml (htmlColor);
-      var matchingCategoryColor = FindMatchingCategoryColor (color);
-
-      return HtmlColorByCategoryColor[matchingCategoryColor];
+      return 0x00_FF_FF_FF &  ColorTranslator.FromHtml(htmlColor).ToArgb();
     }
   }
 }

@@ -49,6 +49,7 @@ namespace CalDavSynchronizer.Contracts
     public bool CleanupDuplicateEvents { get; set; }
     public bool MapCustomProperties { get; set; }
     public bool MapEventColorToCategory { get; set; }
+    public ColorCategoryMapping[] EventColorToCategoryMappings { get; set; }
     private PropertyMapping[] _userDefinedCustomPropertyMappings;
     public PropertyMapping[] UserDefinedCustomPropertyMappings
     {

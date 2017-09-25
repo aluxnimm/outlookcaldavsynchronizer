@@ -14,30 +14,15 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+using System;
+using System.Collections.Generic;
+using CalDavSynchronizer.Contracts;
 
-using GenSync.Logging;
-using Microsoft.Office.Interop.Outlook;
-
-namespace CalDavSynchronizer.Implementation.Events
+namespace CalDavSynchronizer.DataAccess
 {
-  public class NullEventSynchronizationContext : IEventSynchronizationContext
+  public interface IColorMappingsDataAccess
   {
-    public static readonly IEventSynchronizationContext Instance = new NullEventSynchronizationContext();
-
-    private NullEventSynchronizationContext()
-    {
-    }
-
-    public IDuplicateEventCleaner DuplicateEventCleaner => NullDuplicateEventCleaner.Instance;
-
-    public string MapHtmlColorToCategoryOrNull(string htmlColor, IEntityMappingLogger logger)
-    {
-      return NullColorCategoryMapper.Instance.MapHtmlColorToCategoryOrNull(htmlColor, logger);
-    }
-
-    public string MapCategoryToHtmlColorOrNull(string categoryName)
-    {
-      return NullColorCategoryMapper.Instance.MapCategoryToHtmlColorOrNull(categoryName);
-    }
+    IReadOnlyList<ColorCategoryMapping> Load();
+    void Save(IEnumerable<ColorCategoryMapping> mappings);
   }
 }

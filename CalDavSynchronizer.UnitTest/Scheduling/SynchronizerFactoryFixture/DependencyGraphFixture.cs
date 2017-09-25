@@ -20,12 +20,14 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.TimeZones;
 using CalDavSynchronizer.Scheduling;
 using GenSync.ProgressReport;
 using NUnit.Framework;
+using Rhino.Mocks;
 
 namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
 {
@@ -45,7 +47,8 @@ namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
         new GlobalTimeZoneCache(),
         new NullQueryOutlookFolderStrategy(),
         new ExceptionHandlingStrategy(),
-        new ComWrapperFactory());
+        new ComWrapperFactory(),
+        MockRepository.GenerateStub<IOptionsDataAccess>());
     }
 
     [Test]
