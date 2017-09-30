@@ -55,6 +55,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
     private bool _mapEventColorToCategory;
     private bool _mapCustomProperties;
     private bool _isCategoryFilterSticky;
+    private ColorCategoryMapping[] _eventColorToCategoryMappings;
 
     public EventMappingConfigurationModel(EventMappingConfiguration data)
     {
@@ -343,6 +344,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
       _mapEventColorToCategory = mappingConfiguration.MapEventColorToCategory;
       _mapCustomProperties = mappingConfiguration.MapCustomProperties;
       _isCategoryFilterSticky = mappingConfiguration.IsCategoryFilterSticky;
+      _eventColorToCategoryMappings = mappingConfiguration.EventColorToCategoryMappings;
 
       if (mappingConfiguration.UserDefinedCustomPropertyMappings != null)
         Array.ForEach(mappingConfiguration.UserDefinedCustomPropertyMappings, m => Mappings.Add(new PropertyMappingModel(m)));
@@ -377,7 +379,8 @@ namespace CalDavSynchronizer.Ui.Options.Models
         MapEventColorToCategory = _mapEventColorToCategory,
         MapCustomProperties = _mapCustomProperties,
         UserDefinedCustomPropertyMappings = Mappings.Select(m => m.GetData()).ToArray(),
-        IsCategoryFilterSticky = _isCategoryFilterSticky
+        IsCategoryFilterSticky = _isCategoryFilterSticky,
+        EventColorToCategoryMappings = _eventColorToCategoryMappings
       };
     }
 
