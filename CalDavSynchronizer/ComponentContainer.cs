@@ -535,7 +535,6 @@ namespace CalDavSynchronizer
 
       if (_uiService.ShowOptions (viewModel))
       {
-        _optionsDataAccess.EnsureBackupExists ("SimplifiedUi");
         return viewModel.GetOptionsCollection();
       }
       else
