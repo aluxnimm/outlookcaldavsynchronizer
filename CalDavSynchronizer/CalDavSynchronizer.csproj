@@ -800,7 +800,6 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="CalDavSynchronizer_TemporaryKey.pfx" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -1009,13 +1008,13 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestKeyFile>CalDavSynchronizer_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>B9516F3A61A39E0DC15A0E07F1E804686F8520D8</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>F12ABA4647DC71D1B441A3693695EC57B9A34537</ManifestCertificateThumbprint>
   </PropertyGroup>
   <!-- Include the build rules for a C# project. -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
