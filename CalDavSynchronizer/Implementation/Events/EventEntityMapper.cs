@@ -1736,7 +1736,7 @@ namespace CalDavSynchronizer.Implementation.Events
                   targetWrapper.Replace (newAppointment);
                 }
               }
-              catch (COMException ex)
+              catch (System.Exception ex)
               {
                 s_logger.Warn ("Can't respond to meeting invite.", ex);
                 logger.LogMappingWarning ("Can't respond to meeting invite.", ex);
