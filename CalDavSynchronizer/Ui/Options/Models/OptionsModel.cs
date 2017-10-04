@@ -266,7 +266,10 @@ namespace CalDavSynchronizer.Ui.Options.Models
         if (CheckedPropertyChange(ref _useWebDavCollectionSync, value))
         {
           if (value)
+          {
             UseSynchronizationTimeRange = false;
+            UseGoogleNativeApi = false;
+          }
         }
       }
     }
@@ -372,6 +375,9 @@ namespace CalDavSynchronizer.Ui.Options.Models
       get { return _useGoogleNativeApi; }
       set
       {
+        if (value)
+          UseWebDavCollectionSync = false;
+
         CheckedPropertyChange(ref _useGoogleNativeApi, value);
       }
     }

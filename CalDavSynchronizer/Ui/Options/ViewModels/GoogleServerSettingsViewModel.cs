@@ -59,6 +59,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       RegisterPropertyChangePropagation(_model, nameof(_model.EmailAddress), nameof(EmailAddress));
       RegisterPropertyChangePropagation(_model, nameof(_model.UseGoogleNativeApi), nameof(UseGoogleNativeApi));
       RegisterPropertyChangePropagation(_model, nameof(_model.UseGoogleNativeApiAvailable), nameof(UseGoogleNativeApiAvailable));
+      RegisterPropertyChangePropagation(_model, nameof(_model.UseWebDavCollectionSync), nameof(UseWebDavCollectionSync));
 
     }
 
@@ -85,6 +86,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     {
       get { return _model.UseGoogleNativeApi; }
       set { _model.UseGoogleNativeApi = value; }
+    }
+
+    public bool UseWebDavCollectionSync
+    {
+      get { return _model.UseWebDavCollectionSync; }
+      set { _model.UseWebDavCollectionSync = value; }
     }
 
     public bool UseGoogleNativeApiAvailable => _model.UseGoogleNativeApiAvailable;
@@ -130,7 +137,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     {
       CalenderUrl = "http://calendar.url",
       EmailAddress = "bla@dot.com",
-      UseGoogleNativeApi = true
+      UseGoogleNativeApi = true,
+      UseWebDavCollectionSync = false
     };
 
     public IViewOptions ViewOptions { get; }

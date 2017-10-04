@@ -118,7 +118,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       EmailAddress = "bla@dot.com",
       Password = SecureStringUtility.ToSecureString("password"),
       UseAccountPassword = true,
-      UserName = "username"
+      UserName = "username",
+      UseWebDavCollectionSync = false
     };
 
     private async void TestConnectionAsync()

@@ -20,6 +20,7 @@
           <RowDefinition />
           <RowDefinition />
           <RowDefinition />
+          <RowDefinition />
         </Grid.RowDefinitions>
 
         <TextBlock>Detected Url:</TextBlock>
@@ -29,7 +30,7 @@
 
         <TextBlock Grid.Row="2" Grid.Column="0">Email address:</TextBlock>
         <TextBox Text="{Binding EmailAddress}"  Grid.Row="2" Grid.Column="2" />
-
+        <CheckBox Content="Use WebDAV collection sync" IsChecked="{Binding UseWebDavCollectionSync}" Grid.Row="4" Grid.Column="2" ToolTip="This option excludes the time range filter."/>
       </Grid>
       <DockPanel >
         <DockPanel.Resources>
