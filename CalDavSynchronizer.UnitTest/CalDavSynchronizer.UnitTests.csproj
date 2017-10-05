@@ -126,16 +126,21 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Scheduling\SynchronizerFactoryFixture\DependencyGraphs\ContactSynchronizerWithoutDistLists.txt" />
+    <EmbeddedResource Include="Scheduling\SynchronizerFactoryFixture\DependencyGraphs\ContactSynchronizerWithoutDistLists_ColSync_False.txt" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Scheduling\SynchronizerFactoryFixture\DependencyGraphs\ContactSynchronizerWithSogoDistLists.txt" />
+    <EmbeddedResource Include="Scheduling\SynchronizerFactoryFixture\DependencyGraphs\ContactSynchronizerWithSogoDistLists_ColSync_False.txt" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Scheduling\SynchronizerFactoryFixture\DependencyGraphs\ContactSynchronizerWithVCardGroupDistLists.txt" />
+    <EmbeddedResource Include="Scheduling\SynchronizerFactoryFixture\DependencyGraphs\ContactSynchronizerWithVCardGroupDistLists_ColSync_False.txt" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scheduling\SynchronizerFactoryFixture\DependencyGraphs\ContactSynchronizerWithoutDistLists_ColSync_True.txt" />
+    <EmbeddedResource Include="Scheduling\SynchronizerFactoryFixture\DependencyGraphs\ContactSynchronizerWithSogoDistLists_ColSync_True.txt" />
+    <EmbeddedResource Include="Scheduling\SynchronizerFactoryFixture\DependencyGraphs\ContactSynchronizerWithVCardGroupDistLists_ColSync_True.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

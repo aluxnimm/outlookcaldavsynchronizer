@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -35,7 +36,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
     private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
     private readonly vCardStandardWriter _vCardStandardWriter;
 
-    public CardDavRepository(ICardDavDataAccess cardDavDataAccess, bool writeImAsImpp) : base(cardDavDataAccess)
+    public CardDavRepository(ICardDavDataAccess cardDavDataAccess, bool writeImAsImpp, IEqualityComparer<string> versionComparer) : base(cardDavDataAccess, versionComparer)
     {
       _vCardStandardWriter = new vCardStandardWriter()
       {

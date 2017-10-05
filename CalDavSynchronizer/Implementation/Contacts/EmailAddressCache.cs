@@ -36,6 +36,12 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
+    public void LogEntityExists(WebResourceName id)
+    {
+      if (!_cacheItems.ContainsKey(id))
+        _cacheItems.Add(id, new CacheItem { Id = id });
+    }
+
     public void LogEntityExists(WebResourceName entityId, vCard vCard)
     {
       if (!_cacheItems.TryGetValue(entityId, out var cacheItem))

@@ -1,0 +1,118 @@
+OutlookSynchronizer<WebResourceName, String>
+|   ContactAndDistListSynchronizer
+|   |   EmailAddressCacheDataAccess
+|   |   EntityRelationDataAccess<String, DateTime, OutlookContactRelationData, WebResourceName, String>
+|   |   LoggingCardDavRepositoryDecorator
+|   |   |   CardDavRepository<Int32>
+|   |   |   |   vCardStandardWriter
+|   |   OutlookSessionStub
+|   |   Synchronizer<String, DateTime, IContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger, ContactMatchData, vCard, Int32, String>
+|   |   |   BatchEntityRepositoryAdapter<String, DateTime, IContactItemWrapper, ICardDavRepositoryLogger>
+|   |   |   |   ExceptionHandlingStrategy
+|   |   |   |   OutlookContactRepository<ICardDavRepositoryLogger>
+|   |   |   |   |   ComWrapperFactory
+|   |   |   |   |   NullDaslFilterProvider
+|   |   |   |   |   NullQueryOutlookFolderStrategy
+|   |   |   |   |   OutlookSessionStub
+|   |   |   BatchEntityRepositoryAdapter<WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   ExceptionHandlingStrategy
+|   |   |   |   LoggingCardDavRepositoryDecorator
+|   |   |   |   |   CardDavRepository<Int32>
+|   |   |   |   |   |   vCardStandardWriter
+|   |   |   ContactMatchDataFactory
+|   |   |   EntityRelationDataAccess<String, DateTime, OutlookContactRelationData, WebResourceName, String>
+|   |   |   EntitySyncStateChunkCreator<String, DateTime, IContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   EntitySyncStateFactory<String, DateTime, IContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   EntitySyncStateEnvironment<String, DateTime, IContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   ExceptionHandlingStrategy
+|   |   |   FullEntitySynchronizationLoggerFactory<IContactItemWrapper, vCard>
+|   |   |   |   NullEntityLogMessageFactory<IContactItemWrapper, vCard>
+|   |   |   GenericEqualityComparer<DateTime>
+|   |   |   GenericEqualityComparer<String>
+|   |   |   GenericEqualityComparer<String>
+|   |   |   IdentityMatchDataFactory<vCard>
+|   |   |   InitialContactEntityMatcher
+|   |   |   LoggingCardDavRepositoryDecorator
+|   |   |   |   CardDavRepository<Int32>
+|   |   |   |   |   vCardStandardWriter
+|   |   |   LoggingStateAwareCardDavRepositoryDecorator
+|   |   |   |   CardDavRepository<Int32>
+|   |   |   |   |   vCardStandardWriter
+|   |   |   NullChunkedExecutor
+|   |   |   NullSynchronizationInterceptorFactory<String, DateTime, IContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   NullTotalProgressFactory
+|   |   |   OutlookContactRelationDataFactory
+|   |   |   OutlookContactRepository<ICardDavRepositoryLogger>
+|   |   |   |   ComWrapperFactory
+|   |   |   |   NullDaslFilterProvider
+|   |   |   |   NullQueryOutlookFolderStrategy
+|   |   |   |   OutlookSessionStub
+|   |   |   StateTokensDataAccess<Int32, String>
+|   |   |   TwoWayInitialSyncStateCreationStrategy<String, DateTime, IContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   ContactConflictInitialSyncStateCreationStrategyAutomatic
+|   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, IContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   EntitySyncStateFactory<String, DateTime, IContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, IContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   VersionAwareToStateAwareEntityRepositoryAdapter<String, DateTime, ICardDavRepositoryLogger, Int32>
+|   |   |   |   GenericEqualityComparer<String>
+|   |   |   |   GenericEqualityComparer<DateTime>
+|   |   |   |   OutlookContactRepository<ICardDavRepositoryLogger>
+|   |   |   |   |   ComWrapperFactory
+|   |   |   |   |   NullDaslFilterProvider
+|   |   |   |   |   NullQueryOutlookFolderStrategy
+|   |   |   |   |   OutlookSessionStub
+|   |   |   WebResourceNameEqualityComparer
+|   |   Synchronizer<String, DateTime, IDistListItemWrapper, WebResourceName, String, DistributionList, DistributionListSychronizationContext, DistListMatchData, DistributionList, Int32, Int32>
+|   |   |   BatchEntityRepositoryAdapter<String, DateTime, IDistListItemWrapper, DistributionListSychronizationContext>
+|   |   |   |   ExceptionHandlingStrategy
+|   |   |   |   OutlookDistListRepository<DistributionListSychronizationContext>
+|   |   |   |   |   ComWrapperFactory
+|   |   |   |   |   NullDaslFilterProvider
+|   |   |   |   |   NullQueryOutlookFolderStrategy
+|   |   |   |   |   OutlookSessionStub
+|   |   |   BatchEntityRepositoryAdapter<WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   |   ExceptionHandlingStrategy
+|   |   |   |   SogoDistributionListRepository
+|   |   |   DistListEntityMatchDataFactory
+|   |   |   DistListRelationDataFactory
+|   |   |   EntityRelationDataAccess<String, DateTime, DistListRelationData, WebResourceName, String>
+|   |   |   EntitySyncStateChunkCreator<String, DateTime, IDistListItemWrapper, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   EntitySyncStateFactory<String, DateTime, IDistListItemWrapper, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   |   EntitySyncStateEnvironment<String, DateTime, IDistListItemWrapper, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   ExceptionHandlingStrategy
+|   |   |   FullEntitySynchronizationLoggerFactory<IDistListItemWrapper, DistributionList>
+|   |   |   |   NullEntityLogMessageFactory<IDistListItemWrapper, DistributionList>
+|   |   |   GenericEqualityComparer<DateTime>
+|   |   |   GenericEqualityComparer<String>
+|   |   |   GenericEqualityComparer<String>
+|   |   |   IdentityMatchDataFactory<DistributionList>
+|   |   |   InitialSogoDistListEntityMatcher
+|   |   |   NullChunkedExecutor
+|   |   |   NullStateTokensDataAccess<Int32, Int32>
+|   |   |   NullSynchronizationInterceptorFactory<String, DateTime, IDistListItemWrapper, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   NullTotalProgressFactory
+|   |   |   OutlookDistListRepository<DistributionListSychronizationContext>
+|   |   |   |   ComWrapperFactory
+|   |   |   |   NullDaslFilterProvider
+|   |   |   |   NullQueryOutlookFolderStrategy
+|   |   |   |   OutlookSessionStub
+|   |   |   SogoDistributionListRepository
+|   |   |   TwoWayInitialSyncStateCreationStrategy<String, DateTime, IDistListItemWrapper, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   |   EntitySyncStateFactory<String, DateTime, IDistListItemWrapper, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, IDistListItemWrapper, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   |   SogoDistListConflictInitialSyncStateCreationStrategyAutomatic
+|   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, IDistListItemWrapper, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
+|   |   |   VersionAwareToStateAwareEntityRepositoryAdapter<String, DateTime, DistributionListSychronizationContext, Int32>
+|   |   |   |   GenericEqualityComparer<String>
+|   |   |   |   GenericEqualityComparer<DateTime>
+|   |   |   |   OutlookDistListRepository<DistributionListSychronizationContext>
+|   |   |   |   |   ComWrapperFactory
+|   |   |   |   |   NullDaslFilterProvider
+|   |   |   |   |   NullQueryOutlookFolderStrategy
+|   |   |   |   |   OutlookSessionStub
+|   |   |   VersionAwareToStateAwareEntityRepositoryAdapter<WebResourceName, String, DistributionListSychronizationContext, Int32>
+|   |   |   |   GenericEqualityComparer<String>
+|   |   |   |   SogoDistributionListRepository
+|   |   |   |   WebResourceNameEqualityComparer
+|   |   |   WebResourceNameEqualityComparer
+|   |   ValueTuple<String, String>

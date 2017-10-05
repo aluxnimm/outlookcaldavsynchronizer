@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using GenSync;
+using GenSync.Logging;
 
 namespace CalDavSynchronizer.DataAccess
 {
@@ -31,5 +32,7 @@ namespace CalDavSynchronizer.DataAccess
     Task<EntityVersion<WebResourceName, string>> CreateEntity (string iCalData, string uid);
     Task<bool> TryDeleteEntity (WebResourceName uri, string etag);
     Task<EntityVersion<WebResourceName, string>> TryUpdateEntity (WebResourceName url, string etag, string iCalData);
+    Task<(string SyncToken, IReadOnlyList<(WebResourceName Id, string Version)> ChangedOrAddedItems, IReadOnlyList<WebResourceName> DeletedItems)> CollectionSync(string syncTokenOrNull, IGetVersionsLogger logger);
+
   }
 }

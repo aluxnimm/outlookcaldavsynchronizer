@@ -31,7 +31,7 @@ namespace CalDavSynchronizer.Scheduling
 {
   public class ContactSynchronizerComponents
   {
-    public ContactSynchronizerComponents(Options options, OutlookContactRepository<ICardDavRepositoryLogger> atypeRepository, IEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> btypeRepository, EntitySyncStateFactory<string, DateTime, IContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger> syncStateFactory, EntityRelationDataAccess<string, DateTime, OutlookContactRelationData, WebResourceName, string> storageDataAccess, OutlookContactRelationDataFactory entityRelationDataFactory, IEqualityComparer<WebResourceName> btypeIdEqualityComparer, EqualityComparer<string> atypeIdEqulityComparer, IWebDavClient webDavClientOrNullIfFileAccess, LoggingCardDavRepositoryDecorator repository, ContactMappingConfiguration mappingParameters, string storageDataDirectory, Uri serverUrl, ICardDavDataAccess cardDavDataAccess)
+    public ContactSynchronizerComponents(Options options, OutlookContactRepository<ICardDavRepositoryLogger> atypeRepository, IEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> btypeRepository, EntitySyncStateFactory<string, DateTime, IContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger> syncStateFactory, EntityRelationDataAccess<string, DateTime, OutlookContactRelationData, WebResourceName, string> storageDataAccess, OutlookContactRelationDataFactory entityRelationDataFactory, IEqualityComparer<WebResourceName> btypeIdEqualityComparer, EqualityComparer<string> atypeIdEqulityComparer, IWebDavClient webDavClientOrNullIfFileAccess, LoggingCardDavRepositoryDecorator repository, ContactMappingConfiguration mappingParameters, string storageDataDirectory, Uri serverUrl, ICardDavDataAccess cardDavDataAccess, IStateAwareEntityRepository<WebResourceName, string, ICardDavRepositoryLogger, string> btypeStateAwareEntityRepository, IStateTokenDataAccess<int, string> stateTokenDataAccess, EqualityComparer<string> btypeVersionComparer)
     {
       Options = options;
       AtypeRepository = atypeRepository;
@@ -47,6 +47,9 @@ namespace CalDavSynchronizer.Scheduling
       StorageDataDirectory = storageDataDirectory;
       ServerUrl = serverUrl;
       CardDavDataAccess = cardDavDataAccess;
+      BtypeStateAwareEntityRepository = btypeStateAwareEntityRepository;
+      StateTokenDataAccess = stateTokenDataAccess;
+      BtypeVersionComparer = btypeVersionComparer;
     }
 
     public Options Options { get; private set; }
@@ -63,5 +66,8 @@ namespace CalDavSynchronizer.Scheduling
     public string StorageDataDirectory { get; }
     public Uri ServerUrl { get; }
     public ICardDavDataAccess CardDavDataAccess { get; }
+    public IStateAwareEntityRepository<WebResourceName, string, ICardDavRepositoryLogger, string> BtypeStateAwareEntityRepository { get; }
+    public IStateTokenDataAccess<int, string> StateTokenDataAccess { get; }
+    public EqualityComparer<string> BtypeVersionComparer { get; }
   }
 }

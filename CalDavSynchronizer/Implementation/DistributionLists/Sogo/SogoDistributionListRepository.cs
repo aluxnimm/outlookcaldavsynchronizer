@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.Contacts;
@@ -29,7 +30,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists.Sogo
   {
     private const string NonAddressBookMemberValueName = "X-ADDRESSBOOKSERVER-MEMBER";
 
-    public SogoDistributionListRepository(ICardDavDataAccess cardDavDataAccess) : base(cardDavDataAccess)
+    public SogoDistributionListRepository(ICardDavDataAccess cardDavDataAccess, IEqualityComparer<string> versionComparer) : base(cardDavDataAccess, versionComparer)
     {
     }
 

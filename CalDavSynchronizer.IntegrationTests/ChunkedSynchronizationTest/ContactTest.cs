@@ -100,5 +100,19 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
       await Synchronizer.Server.DeleteEntity(id);
     }
 
+    [TestCase(null, 7, false)]
+    [TestCase(2, 7, false)]
+    [TestCase(7, 7, false)]
+    [TestCase(29, 7, false)]
+    [TestCase(1, 7, false)]
+    [TestCase(null, 7, true)]
+    [TestCase(2, 7, true)]
+    [TestCase(7, 7, true)]
+    [TestCase(29, 7, true)]
+    [TestCase(1, 7, true)]
+    public override Task Test(int? chunkSize, int itemsPerOperation, bool useWebDavCollectionSync)
+    {
+      return base.Test(chunkSize, itemsPerOperation, useWebDavCollectionSync);
+    }
   }
 }

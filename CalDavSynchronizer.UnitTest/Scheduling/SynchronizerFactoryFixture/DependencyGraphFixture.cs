@@ -51,8 +51,9 @@ namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
         MockRepository.GenerateStub<IOptionsDataAccess>());
     }
 
-    [Test]
-    public async Task Test_ContactSynchronizerWithSogoDistLists ()
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task Test_ContactSynchronizerWithSogoDistLists (bool useWebDavCollectionSync)
     {
       var synchronizer = await _synchronizerFactory.CreateSynchronizer(
         new Options
@@ -69,16 +70,17 @@ namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
           SynchronizationMode = SynchronizationMode.MergeInBothDirections,
           OutlookFolderEntryId = "eid",
           OutlookFolderStoreId = "sid",
-          ServerAdapterType = ServerAdapterType.WebDavHttpClientBased
+          ServerAdapterType = ServerAdapterType.WebDavHttpClientBased,
+          UseWebDavCollectionSync = useWebDavCollectionSync
         },
         new GeneralOptions());
 
-      CheckGraph(synchronizer, "ContactSynchronizerWithSogoDistLists.txt");
-      
+      CheckGraph(synchronizer, $"ContactSynchronizerWithSogoDistLists_ColSync_{useWebDavCollectionSync}.txt");
     }
 
-    [Test]
-    public async Task Test_ContactSynchronizerWithVCardGroupDistLists ()
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task Test_ContactSynchronizerWithVCardGroupDistLists (bool useWebDavCollectionSync)
     {
       var synchronizer = await _synchronizerFactory.CreateSynchronizer (
         new Options
@@ -95,17 +97,17 @@ namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
           SynchronizationMode = SynchronizationMode.MergeInBothDirections,
           OutlookFolderEntryId = "eid",
           OutlookFolderStoreId = "sid",
-          ServerAdapterType = ServerAdapterType.WebDavHttpClientBased
+          ServerAdapterType = ServerAdapterType.WebDavHttpClientBased,
+          UseWebDavCollectionSync = useWebDavCollectionSync
         },
         new GeneralOptions ());
 
-      CheckGraph (synchronizer, "ContactSynchronizerWithVCardGroupDistLists.txt");
-
+      CheckGraph (synchronizer, $"ContactSynchronizerWithVCardGroupDistLists_ColSync_{useWebDavCollectionSync}.txt");
     }
 
-
-    [Test]
-    public async Task Test_ContactSynchronizerWithoutDistLists ()
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task Test_ContactSynchronizerWithoutDistLists (bool useWebDavCollectionSync)
     {
       var synchronizer = await _synchronizerFactory.CreateSynchronizer (
         new Options
@@ -121,11 +123,12 @@ namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
           SynchronizationMode = SynchronizationMode.MergeInBothDirections,
           OutlookFolderEntryId = "eid",
           OutlookFolderStoreId = "sid",
-          ServerAdapterType = ServerAdapterType.WebDavHttpClientBased
+          ServerAdapterType = ServerAdapterType.WebDavHttpClientBased,
+          UseWebDavCollectionSync = useWebDavCollectionSync
         },
         new GeneralOptions ());
 
-      CheckGraph (synchronizer, "ContactSynchronizerWithoutDistLists.txt");
+      CheckGraph (synchronizer, $"ContactSynchronizerWithoutDistLists_ColSync_{useWebDavCollectionSync}.txt");
     }
 
     private void CheckGraph(object o, string graphDefinition)
