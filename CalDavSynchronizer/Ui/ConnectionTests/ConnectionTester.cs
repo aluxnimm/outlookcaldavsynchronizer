@@ -76,7 +76,8 @@ namespace CalDavSynchronizer.Ui.ConnectionTests
           ressourceType,
           ressourceType.HasFlag (ResourceType.Calendar) ? await GetCalendarProperties (calDavDataAccess) : CalendarProperties.None,
           ressourceType.HasFlag (ResourceType.AddressBook) ? await GetAddressBookProperties (cardDavDataAccess) : AddressBookProperties.None,
-          await calDavDataAccess.GetPrivileges());
+          await calDavDataAccess.GetPrivileges(),
+          await calDavDataAccess.DoesSupportWebDavCollectionSync());
     }
 
     private static async Task<CalendarProperties> GetCalendarProperties (CalDavDataAccess calDavDataAccess)

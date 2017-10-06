@@ -613,6 +613,7 @@ namespace CalDavSynchronizer.Ui.Options
         if (result.ResourceType != ResourceType.None)
         {
           _settingsFaultFinder.FixSynchronizationMode(options, result);
+          _settingsFaultFinder.FixWebDavCollectionSync(options,result);
 
           DisplayTestReport(
               result,
@@ -658,6 +659,7 @@ namespace CalDavSynchronizer.Ui.Options
       var finalResult = await ConnectionTester.TestConnection(autoDiscoveredUrl, webDavClient);
 
       _settingsFaultFinder.FixSynchronizationMode(options, finalResult);
+      _settingsFaultFinder.FixWebDavCollectionSync(options, finalResult);
 
       DisplayTestReport(
           finalResult,
@@ -735,6 +737,7 @@ namespace CalDavSynchronizer.Ui.Options
       if (result.ResourceType != ResourceType.None)
       {
         _settingsFaultFinder.FixSynchronizationMode(options, result);
+        _settingsFaultFinder.FixWebDavCollectionSync(options, result);
       }
 
       if (outlookFolderType == OlItemType.olContactItem)
@@ -792,7 +795,7 @@ namespace CalDavSynchronizer.Ui.Options
         MessageBox.Show(errorMessageBuilder.ToString(), "The tasklist is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
         return url;
       }
-      TestResult result = new TestResult(ResourceType.TaskList, CalendarProperties.None, AddressBookProperties.None, AccessPrivileges.None);
+      TestResult result = new TestResult(ResourceType.TaskList, CalendarProperties.None, AddressBookProperties.None, AccessPrivileges.None, false);
 
       DisplayTestReport(
           result,
@@ -820,7 +823,8 @@ namespace CalDavSynchronizer.Ui.Options
           ResourceType.AddressBook,
           CalendarProperties.None,
           AddressBookProperties.AddressBookAccessSupported,
-          AccessPrivileges.All);
+          AccessPrivileges.All,
+          false);
 
       DisplayTestReport(
           result,

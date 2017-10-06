@@ -35,7 +35,10 @@ namespace CalDavSynchronizer.Ui.Options
 
     public void FixTimeRangeUsage(OptionsModel options, OlItemType? folderType)
     {
+    }
 
+    public void FixWebDavCollectionSync(OptionsModel options, TestResult result)
+    {
     }
   }
 }

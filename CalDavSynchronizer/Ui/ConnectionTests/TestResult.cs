@@ -24,13 +24,15 @@ namespace CalDavSynchronizer.Ui.ConnectionTests
     private readonly CalendarProperties _calendarProperties;
     private readonly AddressBookProperties _addressBookProperties;
     private readonly AccessPrivileges _accessPrivileges;
+    private readonly bool _doesSupportWebDavCollectionSync;
 
-    public TestResult (ResourceType resourceType, CalendarProperties calendarProperties, AddressBookProperties addressBookProperties, AccessPrivileges accessPrivileges)
+    public TestResult (ResourceType resourceType, CalendarProperties calendarProperties, AddressBookProperties addressBookProperties, AccessPrivileges accessPrivileges, bool doesSupportWebDavCollectionSync)
     {
       _resourceType = resourceType;
       _calendarProperties = calendarProperties;
       _addressBookProperties = addressBookProperties;
       _accessPrivileges = accessPrivileges;
+      _doesSupportWebDavCollectionSync = doesSupportWebDavCollectionSync;
     }
 
     public ResourceType ResourceType
@@ -51,6 +53,11 @@ namespace CalDavSynchronizer.Ui.ConnectionTests
     public AccessPrivileges AccessPrivileges
     {
       get { return _accessPrivileges; }
+    }
+
+    public bool DoesSupportWebDavCollectionSync
+    {
+      get { return _doesSupportWebDavCollectionSync; }
     }
   }
 }

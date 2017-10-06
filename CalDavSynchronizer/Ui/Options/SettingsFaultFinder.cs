@@ -81,6 +81,17 @@ namespace CalDavSynchronizer.Ui.Options
     {
       options.UseSynchronizationTimeRange = folderType != OlItemType.olContactItem;
     }
+
+    public void FixWebDavCollectionSync(OptionsModel options, TestResult result)
+    {
+      if (options.UseWebDavCollectionSync && !result.DoesSupportWebDavCollectionSync)
+      {
+        options.UseWebDavCollectionSync = false;
+        MessageBox.Show(
+          $"The specified Url doesn't support WebDav Collection Sync, the option will be disabled!'.",
+          OptionTasks.ConnectionTestCaption);
+      }
+    }
   }
 
 
