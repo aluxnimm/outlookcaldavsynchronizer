@@ -47,9 +47,9 @@
 
                 <TextBlock Grid.Row="4" Grid.Column="0">Email address:</TextBlock>
         <TextBox Text="{Binding EmailAddress}" Grid.Row="4" Grid.Column="2" ToolTip="Enter the email address of the server identity. &#x0a;It can also be used to discover the DAV Url if you leave the url textbox empty."/>
-        <CheckBox Content="Use WebDAV collection sync" IsChecked="{Binding UseWebDavCollectionSync}" Grid.Row="5" Grid.Column="2" ToolTip="This option excludes the time range filter."/>
+                <CheckBox Content="Use WebDAV collection sync" IsChecked="{Binding UseWebDavCollectionSync}" Grid.Row="5" Grid.Column="2" ToolTip="WebDAV-Sync is a protocol extension that is defined in RFC 6578 and not supported by all servers.&#xA;Test or discover settings will check if this is supported.&#xA;This option can speed up the detection of server changes dramatically but excludes the time range filter."/>
 
-      </Grid>
+            </Grid>
             <Button HorizontalAlignment="Left" Command="{Binding GetAccountSettingsCommand}" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">Get IMAP/POP3 account settings</Button>
             <Button HorizontalAlignment="Right" Command="{Binding CreateDavResourceCommand}" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">Create DAV resource</Button>
       <Button HorizontalAlignment="Right" Command="{Binding TestConnectionCommand}">Test or discover settings</Button>
