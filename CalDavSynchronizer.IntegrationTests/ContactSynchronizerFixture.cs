@@ -44,11 +44,13 @@ namespace CalDavSynchronizer.IntegrationTests
     }
 
 
-    [Test]
+    [TestCase(false)]
+    [TestCase(true)]
     [Apartment(System.Threading.ApartmentState.STA)]
-    public async Task Synchronize_AnyCase_SyncsSogoDistLists()
+    public async Task Synchronize_AnyCase_SyncsSogoDistLists(bool useWebDavCollectionSync)
     {
       var options = TestComponentContainer.GetOptions("IntegrationTests/Contacts/Sogo");
+      options.UseWebDavCollectionSync = useWebDavCollectionSync;
 
       var synchronizer = await CreateSynchronizer(options); 
       await synchronizer.ClearEventRepositoriesAndCache();
@@ -137,6 +139,7 @@ namespace CalDavSynchronizer.IntegrationTests
     public async Task CreateOutlookEntity_ExceptionOccurs_DoesNotLeaveEmptyEntityInRepository(bool saveAndReload)
     {
       var options = TestComponentContainer.GetOptions("IntegrationTests/Contacts/Sogo");
+
       var synchronizer = await CreateSynchronizer(options);
       await synchronizer.ClearEventRepositoriesAndCache();
 
@@ -166,11 +169,14 @@ namespace CalDavSynchronizer.IntegrationTests
         Is.EqualTo(0));
     }
 
-    [Test]
+    [TestCase(false)]
+    [TestCase(true)]
     [Apartment (System.Threading.ApartmentState.STA)]
-    public async Task SynchronizeTwoWay_LocalContactChanges_IsSyncedToServerAndPreservesExtendedPropertiesAndUid ()
+    public async Task SynchronizeTwoWay_LocalContactChanges_IsSyncedToServerAndPreservesExtendedPropertiesAndUid (bool useWebDavCollectionSync)
     {
       var options = TestComponentContainer.GetOptions ("IntegrationTests/Contacts/Sogo");
+      options.UseWebDavCollectionSync = useWebDavCollectionSync;
+
       var synchronizer = await CreateSynchronizer(options);
       await synchronizer.ClearEventRepositoriesAndCache();
 
@@ -206,13 +212,15 @@ namespace CalDavSynchronizer.IntegrationTests
         Is.EqualTo ("TheValueBlaBLubb"));
     }
 
-
-    [Test]
+    [TestCase(false)]
+    [TestCase(true)]
     [Apartment(System.Threading.ApartmentState.STA)]
-    public async Task Synchronize_AnyCase_SyncsVCardGroupDistLists()
+    public async Task Synchronize_AnyCase_SyncsVCardGroupDistLists(bool useWebDavCollectionSync)
     {
       var options = TestComponentContainer.GetOptions("IntegrationTests/Contacts/Sogo");
-      ((Contracts.ContactMappingConfiguration)options.MappingConfiguration).DistributionListType = Contracts.DistributionListType.VCardGroup;
+      options.UseWebDavCollectionSync = useWebDavCollectionSync;
+
+      ((ContactMappingConfiguration)options.MappingConfiguration).DistributionListType = DistributionListType.VCardGroup;
 
       var synchronizer = await CreateSynchronizer(options);
       await synchronizer.ClearEventRepositoriesAndCache();
@@ -248,14 +256,18 @@ namespace CalDavSynchronizer.IntegrationTests
           l.FormattedName = "Agents";
           l.FamilyName = "Agents";
 
-          var member = new vCardMember();
-          member.EmailAddress = "mason@bla.com";
-          member.DisplayName = "Mason";
+          var member = new vCardMember
+          {
+            EmailAddress = "mason@bla.com",
+            DisplayName = "Mason"
+          };
           l.Members.Add(member);
 
-          member = new vCardMember();
-          member.EmailAddress = "steinberg@bla.com";
-          member.DisplayName = "Steinberg";
+          member = new vCardMember
+          {
+            EmailAddress = "steinberg@bla.com",
+            DisplayName = "Steinberg"
+          };
           l.Members.Add(member);
         });
 
@@ -304,11 +316,14 @@ namespace CalDavSynchronizer.IntegrationTests
 
     }
 
-    [Test]
+    [TestCase(false)]
+    [TestCase(true)]
     [Apartment(System.Threading.ApartmentState.STA)]
-    public async Task Synchronize_AnyCase_SyncsVCardGroupWithUidDistLists()
+    public async Task Synchronize_AnyCase_SyncsVCardGroupWithUidDistLists(bool useWebDavCollectionSync)
     {
       var options = TestComponentContainer.GetOptions("IntegrationTests/Contacts/Sogo");
+      options.UseWebDavCollectionSync = useWebDavCollectionSync;
+
       ((Contracts.ContactMappingConfiguration)options.MappingConfiguration).DistributionListType = Contracts.DistributionListType.VCardGroupWithUid;
 
       var synchronizer = await CreateSynchronizer(options);
