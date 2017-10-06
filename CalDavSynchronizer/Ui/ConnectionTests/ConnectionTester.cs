@@ -65,7 +65,7 @@ namespace CalDavSynchronizer.Ui.ConnectionTests
     public static async Task<TestResult> TestConnection (Uri url, IWebDavClient webDavClient)
     {
       var calDavDataAccess = new CalDavDataAccess (url, webDavClient);
-      var cardDavDataAccess = new CardDavDataAccess (url, webDavClient, contentType => true);
+      var cardDavDataAccess = new CardDavDataAccess (url, webDavClient, string.Empty, contentType => true);
 
       // Note: CalDav Calendars can contain Events and Todos. Therefore an calender resource is always a calendar and a task list.
       var ressourceType =

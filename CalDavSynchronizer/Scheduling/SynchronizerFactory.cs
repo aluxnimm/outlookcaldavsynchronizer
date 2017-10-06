@@ -709,6 +709,7 @@ namespace CalDavSynchronizer.Scheduling
               distListDataAccess = new CardDavDataAccess(
                 synchronizerComponents.ServerUrl,
                 synchronizerComponents.WebDavClientOrNullIfFileAccess,
+                "text/x-vlist",
                 contentType => contentType == "text/x-vlist");
             }
 
@@ -830,6 +831,7 @@ namespace CalDavSynchronizer.Scheduling
         cardDavDataAccess = new CardDavDataAccess(
           serverUrl,
           webDavClientOrNullIfFileAccess,
+          "text/vcard", /* write vcards, but read anything except x-vlists, in case of any servers return wrong contenttype  */
           contentType => contentType != "text/x-vlist");
       }
       componentsToFill.CardDavDataAccess = cardDavDataAccess;
