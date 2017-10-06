@@ -322,6 +322,8 @@
     <Compile Include="Implementation\ComWrappers\TaskItemWrapper.cs" />
     <Compile Include="Implementation\Contacts\ContactMatchData.cs" />
     <Compile Include="Implementation\Contacts\ContactMatchDataFactory.cs" />
+    <Compile Include="Implementation\Contacts\LoggingEntityStateCollectionDecorator.cs" />
+    <Compile Include="Implementation\Contacts\LoggingStateAwareCardDavRepositoryDecorator.cs" />
     <Compile Include="Implementation\DistributionLists\DistListMatchData.cs" />
     <Compile Include="Implementation\DistributionLists\DistListEntityMatchDataFactory.cs" />
     <Compile Include="Implementation\Common\EntityLogMessageFactory.cs" />

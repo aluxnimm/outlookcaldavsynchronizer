@@ -124,7 +124,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       var webDavClientCaldav = _prototypeModel.CreateWebDavClient(new Uri(trimmedCaldavUrl));
       var webDavClientCarddav = _prototypeModel.CreateWebDavClient (new Uri(trimmedCarddavUrl));
       var calDavDataAccess = new CalDavDataAccess (caldavUrl, webDavClientCaldav);
-      var cardDavDataAccess = new CardDavDataAccess (carddavUrl, webDavClientCarddav, contentType => true);
+      var cardDavDataAccess = new CardDavDataAccess (carddavUrl, webDavClientCarddav, string.Empty, contentType => true);
 
       return await GetUserResources (calDavDataAccess, cardDavDataAccess);
     }

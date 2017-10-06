@@ -67,7 +67,7 @@ namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
 
       foreach (var entity in await _cardDavRepository.Get (unknownIds.Select(i => i.Id).ToArray(), NullLoadEntityLogger.Instance, NullCardDavRepositoryLogger.Instance))
       {
-        var newEntry = new VCardEntry { Id = entity.Id, Type = entity.Entity.Kind == vCardKindType.Group ? VCardType.Group : VCardType.Contact };
+        var newEntry = new VCardEntry {Id = entity.Id, Type = GetVCardType(entity.Entity)};
         cachedTypesById.Add (entity.Id, newEntry);
       }
       var stillUnknownIds = Resolve (unknownIds, result, cachedTypesById, touchedTypesById);
@@ -78,6 +78,12 @@ namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
         throw new Exception ("VCard does not exist on server anymore."); // TODO: throw specialized type that causes just a warning
 
       return result;
+    }
+
+    public VCardType GetVCardType(vCard vcard)
+    {
+      // TODO: probably a good idea to add it to the cache
+      return vcard.Kind == vCardKindType.Group ? VCardType.Group : VCardType.Contact;
     }
 
 

@@ -32,8 +32,14 @@ namespace CalDavSynchronizer.Implementation.Contacts
       foreach (var id in allEntities)
       {
         if (!_cacheItems.ContainsKey(id))
-          _cacheItems.Add(id, new CacheItem { Id = id} );
+          _cacheItems.Add(id, CreateEmptyCacheItem(id) );
       }
+    }
+    
+    public void LogEntityExists(WebResourceName id)
+    {
+      if (!_cacheItems.ContainsKey(id))
+        _cacheItems.Add(id, CreateEmptyCacheItem(id));
     }
 
     public void LogEntityExists(WebResourceName entityId, vCard vCard)
@@ -50,15 +56,22 @@ namespace CalDavSynchronizer.Implementation.Contacts
       _cacheItems.Remove(entityId);
     }
 
-    public CacheItem[] Items
-    {
-      get { return _cacheItems.Values.ToArray(); }
-      set { _cacheItems = value.ToDictionary(e => e.Id); }
-    }
+    public void SetCacheItems(CacheItem[] items) => _cacheItems = items.ToDictionary(e => e.Id);
+    public CacheItem[] GetNonEmptyCacheItems() => _cacheItems.Values.Where(i => !IsEmpty(i)).ToArray();
 
     public WebResourceName[] GetEmptyCacheItems()
     {
-      return _cacheItems.Where(e => e.Value.EmailAddresses == null || e.Value.Uid == null).Select(e => e.Key).ToArray();
+      return _cacheItems.Where(e => IsEmpty(e.Value)).Select(e => e.Key).ToArray();
+    }
+
+    private static CacheItem CreateEmptyCacheItem(WebResourceName id)
+    {
+      return new CacheItem { Id = id };
+    }
+
+    private static bool IsEmpty(CacheItem cacheItem)
+    {
+      return cacheItem.EmailAddresses == null || cacheItem.Uid == null;
     }
   }
 }

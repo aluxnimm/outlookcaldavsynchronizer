@@ -75,7 +75,7 @@ namespace CalDavSynchronizer.Implementation
     public async Task Synchronize (ISynchronizationLogger logger)
     {
       var emailAddressCache = new EmailAddressCache();
-      emailAddressCache.Items = _emailAddressCacheDataAccess.Load();
+      emailAddressCache.SetCacheItems(_emailAddressCacheDataAccess.Load());
 
       using (var subLogger = logger.CreateSubLogger("Contacts"))
       {
@@ -93,7 +93,7 @@ namespace CalDavSynchronizer.Implementation
           s_logger.Warn($"Could not update the following empty cache items: {String.Join(", ", stillEmptyCacheItems.Select(id => $"'{id}'"))}");
         }
       }
-      var cacheItems = emailAddressCache.Items;
+      var cacheItems = emailAddressCache.GetNonEmptyCacheItems();
       _emailAddressCacheDataAccess.Save(cacheItems);
 
       var distListContext = new DistributionListSychronizationContext(cacheItems, _outlookSession, _contactEntityRelationDataAccess, _contactFolder);
@@ -107,14 +107,14 @@ namespace CalDavSynchronizer.Implementation
     public async Task SynchronizePartial(IEnumerable<IIdWithHints<string, DateTime>> aIds, IEnumerable<IIdWithHints<WebResourceName, string>> bIds, ISynchronizationLogger logger)
     {
       var emailAddressCache = new EmailAddressCache();
-      emailAddressCache.Items = _emailAddressCacheDataAccess.Load();
+      emailAddressCache.SetCacheItems(_emailAddressCacheDataAccess.Load());
 
       using (var subLogger = logger.CreateSubLogger("Contacts"))
       {
         await _contactSynchronizer.Synchronize(subLogger, emailAddressCache);
       }
 
-      _emailAddressCacheDataAccess.Save(emailAddressCache.Items);
+      _emailAddressCacheDataAccess.Save(emailAddressCache.GetNonEmptyCacheItems());
     }
   }
 }

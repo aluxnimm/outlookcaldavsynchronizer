@@ -32,12 +32,16 @@ namespace CalDavSynchronizer.DataAccess
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
-    private Predicate<string> _contentTypePredicate;
+    private readonly Predicate<string> _contentTypeReadPredicate;
+    private readonly string _writeContentType;
 
-    public CardDavDataAccess (Uri serverUrl, IWebDavClient webDavClient, Predicate<string> contentTypePredicate)
+    public CardDavDataAccess (Uri serverUrl, IWebDavClient webDavClient, string writeContentType, Predicate<string> contentTypeReadPredicate)
         : base (serverUrl, webDavClient)
     {
-      _contentTypePredicate = contentTypePredicate;
+      if (writeContentType == null) throw new ArgumentNullException(nameof(writeContentType));
+      if (contentTypeReadPredicate == null) throw new ArgumentNullException(nameof(contentTypeReadPredicate));
+      _contentTypeReadPredicate = contentTypeReadPredicate;
+      _writeContentType = writeContentType;
     }
 
     public Task<bool> IsAddressBookAccessSupported ()
@@ -246,7 +250,7 @@ namespace CalDavSynchronizer.DataAccess
         null,
         null,
         "*",
-        "text/vcard",
+        _writeContentType,
         content);
 
       Uri effectiveContactUrl;
@@ -292,7 +296,7 @@ namespace CalDavSynchronizer.DataAccess
             null,
             etag,
             null,
-            "text/vcard",
+            _writeContentType,
             contents);
       }
       catch (WebDavClientException x) when (x.StatusCode == HttpStatusCode.NotFound || x.StatusCode == HttpStatusCode.PreconditionFailed)
@@ -433,7 +437,7 @@ namespace CalDavSynchronizer.DataAccess
           if (!string.IsNullOrEmpty (eTag) &&
               String.Compare (eTag, @"""None""", StringComparison.OrdinalIgnoreCase) != 0 &&
               _serverUrl.AbsolutePath != UriHelper.DecodeUrlString (urlNode.InnerText) &&
-              _contentTypePredicate(contentType)
+              _contentTypeReadPredicate(contentType)
               )
           {
             if (s_logger.IsDebugEnabled)
@@ -501,7 +505,7 @@ namespace CalDavSynchronizer.DataAccess
         var contentTypeNode = responseElement.SelectSingleNode("D:propstat/D:prop/D:getcontenttype", responseXml.XmlNamespaceManager);
         string contentType = contentTypeNode?.InnerText ?? string.Empty;
 
-        if (urlNode != null && dataNode != null && !string.IsNullOrEmpty (dataNode.InnerText) && _contentTypePredicate(contentType))
+        if (urlNode != null && dataNode != null && !string.IsNullOrEmpty (dataNode.InnerText) && _contentTypeReadPredicate(contentType))
         {
           if (s_logger.IsDebugEnabled)
             s_logger.DebugFormat ($"Got: '{urlNode.InnerText}'");

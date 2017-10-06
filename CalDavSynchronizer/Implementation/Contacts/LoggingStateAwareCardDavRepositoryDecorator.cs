@@ -15,16 +15,26 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using CalDavSynchronizer.DataAccess;
-using Thought.vCards;
+using GenSync.EntityRepositories;
+using GenSync.Logging;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public interface ICardDavRepositoryLogger
+  public class LoggingStateAwareCardDavRepositoryDecorator : IStateAwareEntityRepository<WebResourceName, string, ICardDavRepositoryLogger, string>
   {
-    void LogEntitiesExists(IEnumerable<WebResourceName> allEntities);
-    void LogEntityExists(WebResourceName entity);
-    void LogEntityExists(WebResourceName entityId, vCard vCard);
-    void LogEntityDeleted(WebResourceName entityId);
+    private readonly IStateAwareEntityRepository<WebResourceName, string, int, string> _inner;
+
+    public LoggingStateAwareCardDavRepositoryDecorator(IStateAwareEntityRepository<WebResourceName, string, int, string> inner)
+    {
+      _inner = inner;
+    }
+
+    public async Task<(IEntityStateCollection<WebResourceName, string> States, string NewToken)> GetFullRepositoryState(IEnumerable<WebResourceName> idsOfknownEntities, string stateToken, ICardDavRepositoryLogger context, IGetVersionsLogger logger)
+    {
+      var result = await _inner.GetFullRepositoryState(idsOfknownEntities, stateToken, 0, logger);
+      return (new LoggingEntityStateCollectionDecorator(result.States, context), result.NewToken);
+    }
   }
 }

@@ -19,11 +19,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using CalDavSynchronizer.DataAccess;
 using GenSync;
+using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
 {
   internal interface IVCardTypeDetector
   {
     Task<IEnumerable<IdWithType<TId>>> GetVCardTypesAndCleanupCache<TId> (IEnumerable<TId> allIdsInRepository) where TId : IEntity<WebResourceName>;
+    VCardType GetVCardType(vCard vcard);
   }
 }

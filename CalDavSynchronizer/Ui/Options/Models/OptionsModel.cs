@@ -539,9 +539,9 @@ namespace CalDavSynchronizer.Ui.Options.Models
         result = false;
       }
 
-      if (_useWebDavCollectionSync && _selectedFolderOrNull?.DefaultItemType != OlItemType.olAppointmentItem)
+      if (_useWebDavCollectionSync && _selectedFolderOrNull?.DefaultItemType != OlItemType.olAppointmentItem && _selectedFolderOrNull?.DefaultItemType != OlItemType.olContactItem)
       {
-        errorMessageBuilder.AppendLine("- WebDav collection sync ist currently just supported for appointments.");
+        errorMessageBuilder.AppendLine("- WebDav collection sync ist currently just supported for appointments and contacts.");
         result = false;
       }
 

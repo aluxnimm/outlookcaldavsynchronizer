@@ -83,9 +83,9 @@ namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
       return _decorated.GetVersions (idsOfEntitiesToQuery, context, logger);
     }
 
-    public Task<IEnumerable<EntityWithId<WebResourceName, vCard>>> Get (ICollection<WebResourceName> ids, ILoadEntityLogger logger, TContext context)
+    public async Task<IEnumerable<EntityWithId<WebResourceName, vCard>>> Get (ICollection<WebResourceName> ids, ILoadEntityLogger logger, TContext context)
     {
-      return _decorated.Get (ids, logger, context);
+      return (await _decorated.Get (ids, logger, context)).Where(c => _typeDetector.GetVCardType(c.Entity) == _typeToFilter);
     }
 
     public Task VerifyUnknownEntities (Dictionary<WebResourceName, string> unknownEntites, TContext context)

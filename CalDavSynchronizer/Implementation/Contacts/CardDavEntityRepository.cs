@@ -33,17 +33,19 @@ using GenSync.Utilities;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public abstract class CardDavEntityRepository<TEntity,TDeserializationThreadLocal, TContext> : IEntityRepository<WebResourceName, string, TEntity, TContext>
+  public abstract class CardDavEntityRepository<TEntity,TDeserializationThreadLocal, TContext> : IEntityRepository<WebResourceName, string, TEntity, TContext>, IStateAwareEntityRepository<WebResourceName, string, TContext, string>
     where TEntity : new()
     where TDeserializationThreadLocal : new()
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private readonly ICardDavDataAccess _cardDavDataAccess;
+    private readonly IEqualityComparer<string> _versionComparer;
 
-    public CardDavEntityRepository (ICardDavDataAccess cardDavDataAccess)
+    public CardDavEntityRepository (ICardDavDataAccess cardDavDataAccess, IEqualityComparer<string> versionComparer)
     {
       _cardDavDataAccess = cardDavDataAccess;
+      _versionComparer = versionComparer ?? throw new ArgumentNullException(nameof(versionComparer));
     }
 
     public async Task<IEnumerable<EntityVersion<WebResourceName, string>>> GetVersions (IEnumerable<IdWithAwarenessLevel<WebResourceName>> idsOfEntitiesToQuery, TContext context, IGetVersionsLogger logger)
@@ -147,6 +149,12 @@ namespace CalDavSynchronizer.Implementation.Contacts
         var initializedVcard = await entityInitializer(newEntity);
         return await _cardDavDataAccess.CreateEntity(Serialize(initializedVcard), uid);
       }
+    }
+    
+    public async Task<(IEntityStateCollection<WebResourceName, string> States, string NewToken)> GetFullRepositoryState(IEnumerable<WebResourceName> idsOfknownEntities, string stateToken, TContext context, IGetVersionsLogger logger)
+    {
+      var collectionSyncResult = await _cardDavDataAccess.CollectionSync(stateToken, logger);
+      return (new WebDavCollectionSyncEntityStates(collectionSyncResult.ChangedOrAddedItems, collectionSyncResult.DeletedItems, _versionComparer), collectionSyncResult.SyncToken);
     }
 
     protected abstract void SetUid(TEntity entity, string uid);

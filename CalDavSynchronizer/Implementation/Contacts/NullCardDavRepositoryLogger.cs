@@ -38,6 +38,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
      
     }
 
+    public void LogEntityExists(WebResourceName entity)
+    {
+      
+    }
+
     public void LogEntityExists(WebResourceName entityId, vCard vCard)
     {
 

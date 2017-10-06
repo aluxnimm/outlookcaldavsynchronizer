@@ -709,12 +709,13 @@ namespace CalDavSynchronizer.Scheduling
               distListDataAccess = new CardDavDataAccess(
                 synchronizerComponents.ServerUrl,
                 synchronizerComponents.WebDavClientOrNullIfFileAccess,
+                "text/x-vlist",
                 contentType => contentType == "text/x-vlist");
             }
 
             componentsToFill.SogoDistListDataAccessOrNull = distListDataAccess;
 
-            var bDistListRepository = new SogoDistributionListRepository(distListDataAccess);
+            var bDistListRepository = new SogoDistributionListRepository(distListDataAccess, synchronizerComponents.BtypeVersionComparer);
 
             componentsToFill.SogoDistListRepositoryOrNull = bDistListRepository;
 
@@ -747,7 +748,7 @@ namespace CalDavSynchronizer.Scheduling
             synchronizerComponents.BtypeRepository = contactRepository;
             var contactSynchronizer = CreateContactSynchronizer(synchronizerComponents, componentsToFill,options, generalOptions);
 
-            var contactGroupCardDavRepository = new CardDavRepository<DistributionListSychronizationContext> (synchronizerComponents.CardDavDataAccess, false);
+            var contactGroupCardDavRepository = new CardDavRepository<DistributionListSychronizationContext> (synchronizerComponents.CardDavDataAccess, false, synchronizerComponents.BtypeVersionComparer);
 
             var contactGroupRepository = new TypeFilteringVCardRepositoryDecorator<DistributionListSychronizationContext> (contactGroupCardDavRepository, VCardType.Group, vCardTypeDetector);
 
@@ -830,13 +831,16 @@ namespace CalDavSynchronizer.Scheduling
         cardDavDataAccess = new CardDavDataAccess(
           serverUrl,
           webDavClientOrNullIfFileAccess,
+          "text/vcard", /* write vcards, but read anything except x-vlists, in case of any servers return wrong contenttype  */
           contentType => contentType != "text/x-vlist");
       }
       componentsToFill.CardDavDataAccess = cardDavDataAccess;
 
       var mappingParameters = GetMappingParameters<ContactMappingConfiguration>(options);
 
-      var cardDavRepository = new CardDavRepository<int>(cardDavDataAccess, mappingParameters.WriteImAsImpp);
+      var btypeVersionComparer = EqualityComparer<string>.Default;
+
+      var cardDavRepository = new CardDavRepository<int>(cardDavDataAccess, mappingParameters.WriteImAsImpp, btypeVersionComparer);
       var btypeRepository = new LoggingCardDavRepositoryDecorator(
         cardDavRepository);
 
@@ -860,7 +864,15 @@ namespace CalDavSynchronizer.Scheduling
       componentsToFill.EntityRelationDataAccess = storageDataAccess;
 
 
-      return new ContactSynchronizerComponents(options, atypeRepository, btypeRepository, syncStateFactory, storageDataAccess, entityRelationDataFactory, btypeIdEqualityComparer, atypeIdEqulityComparer, webDavClientOrNullIfFileAccess, btypeRepository, mappingParameters, storageDataDirectory, serverUrl, cardDavDataAccess);
+      var btypeStateAwareEntityRepository = options.UseWebDavCollectionSync 
+        ? (IStateAwareEntityRepository<WebResourceName, string, ICardDavRepositoryLogger, string>)new LoggingStateAwareCardDavRepositoryDecorator(cardDavRepository)
+        : new VersionAwareToStateAwareEntityRepositoryAdapter<WebResourceName, string, ICardDavRepositoryLogger, string>(btypeRepository, btypeIdEqualityComparer, btypeVersionComparer);
+
+      var stateTokenDataAccess = options.UseWebDavCollectionSync
+        ? new StateTokensDataAccess<int, string>(storageDataDirectory)
+        : NullStateTokensDataAccess<int, string>.Instance;
+
+      return new ContactSynchronizerComponents(options, atypeRepository, btypeRepository, syncStateFactory, storageDataAccess, entityRelationDataFactory, btypeIdEqualityComparer, atypeIdEqulityComparer, webDavClientOrNullIfFileAccess, btypeRepository, mappingParameters, storageDataDirectory, serverUrl, cardDavDataAccess, btypeStateAwareEntityRepository, stateTokenDataAccess, btypeVersionComparer);
     }
 
     private Synchronizer<string, DateTime, IContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger, ContactMatchData, vCard, int, string> CreateContactSynchronizer(
@@ -873,7 +885,6 @@ namespace CalDavSynchronizer.Scheduling
       componentsToFill.OutlookContactRepository = contactSynchronizerComponents.AtypeRepository;
 
       var atypeVersionComparer = EqualityComparer<DateTime>.Default;
-      var btypeVersionComparer = EqualityComparer<string>.Default;
 
       return new Synchronizer<string, DateTime, IContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger, ContactMatchData, vCard, int, string> (
         contactSynchronizerComponents.AtypeRepository,
@@ -893,7 +904,7 @@ namespace CalDavSynchronizer.Scheduling
         contactSynchronizerComponents.BtypeIdEqualityComparer,
         _totalProgressFactory,
         atypeVersionComparer,
-        btypeVersionComparer,
+        contactSynchronizerComponents.BtypeVersionComparer,
         contactSynchronizerComponents.SyncStateFactory, 
         _exceptionHandlingStrategy,
         new ContactMatchDataFactory(),
@@ -902,8 +913,8 @@ namespace CalDavSynchronizer.Scheduling
         CreateChunkedExecutor(options),
         FullEntitySynchronizationLoggerFactory.Create(generalOptions.LogEntityNames ? EntityLogMessageFactory.Instance : NullEntityLogMessageFactory<IContactItemWrapper, vCard>.Instance),
         new VersionAwareToStateAwareEntityRepositoryAdapter<string, DateTime, ICardDavRepositoryLogger, int>(contactSynchronizerComponents.AtypeRepository, contactSynchronizerComponents.AtypeIdEqulityComparer, atypeVersionComparer),
-        new VersionAwareToStateAwareEntityRepositoryAdapter<WebResourceName, string, ICardDavRepositoryLogger, string>(contactSynchronizerComponents.BtypeRepository, contactSynchronizerComponents.BtypeIdEqualityComparer, btypeVersionComparer),
-        NullStateTokensDataAccess<int, string>.Instance);
+        contactSynchronizerComponents.BtypeStateAwareEntityRepository,
+        contactSynchronizerComponents.StateTokenDataAccess);
     }
     
     private ISynchronizer<DistributionListSychronizationContext> CreateDistListSynchronizer<TBtypeEntity> (
