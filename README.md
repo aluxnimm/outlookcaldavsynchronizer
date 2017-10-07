@@ -82,6 +82,7 @@ We work closely together and test interopability with DAVdroid for Android, see 
 - time-triggered-sync
 - change-triggered-sync
 - manual-triggered-sync
+- Support for WebDAV Collection Sync (RFC 6578)
 - Category Filtering (sync CalDAV calendar/tasks to Outlook categories)
 - map CalDAV server colors to Outlook category colors
 - show reports of last sync runs and status
@@ -113,6 +114,19 @@ Beginning with version 2.9.0 the default install location is `ProgramFilesDir\Ca
 We recommend updating to the latest .Net Framework but the minimal required version is .Net 4.5, which is not supported on Windows XP. If you need Outlook CalDav Synchronizer for Windows XP you can download a backport to .Net 4.0 from a forked project [here](https://sourceforge.net/projects/outlookcaldavsynchronizerxp/), thanks to [Salvatore Isaja](https://sourceforge.net/u/salvois/profile/) for the awesome work!
 
 ### Changelog ###
+
+#### 2.25.0 ####
+- Released 2017/10/07
+- New features
+	- Add optional WebDAV Collection Sync (RFC 6578) for calendar and addressbook collections, which speeds up the detection of server changes dramatically but excludes the possibility to use the time range filter.
+	- Improve EventColor-Category mapping and use existing categories if color matches.
+- Bug fixes
+	- Use official certificate for click once code signing.
+	- Prevent InvalidCastExceptions in QueryOutlookFolderByGetTableStrategy.
+	- Do not keep the Status window alive if it is invisible.
+	- Disable IsCategoryFilterSticky by default and add warnings for wrong category filter uses.
+	- Do not switch categories automatically, when changing Category filter.
+	- Catch not only COMExceptions when responding to meeting invites, ticket #721.
 
 #### 2.24.0 ####
 - Released 2017/09/12
@@ -1094,6 +1108,7 @@ The following properties need to be set for a new generic profile:
 	- **Username:** Username to connect to the CalDAV server
 	- **Password:** Password used for the connection. The password will be saved encrypted in the option config file.
 	- ** Use IMAP/POP3 Account Password** Instead of entering the password you can use the IMAP/Pop3 Password from the Outlook Account associated with the folder, the password is fetched from the Windows registry entry of the Outlook profile. *(only in advanced settings)*
+	- ** Use WebDAV collection sync** WebDAV-Sync is a protocol extension that is defined in RFC 6578 and not supported by all servers. Test or discover settings will check if this is supported. This option can speed up the detection of server changes dramatically but excludes the possibility to use the time range filter. *(only in advanced settings)*
 	- **Email address:** email address used as remote identity for the CalDAV server, necessary to synchronize the organizer. The email address can also be used for autodiscovery via DNS lookups, see section Autodiscovery.
 	- **Create DAV resource** You can add server DAV resources (calendars or addressbooks). You can configure the resource displayname and if the url should be created with a random string or the displayname. For calendars you can also change the server calendar color. *(only in advanced settings)*
 
@@ -1113,7 +1128,7 @@ The following properties need to be set for a new generic profile:
 	- **Chunk size** perform CalDAV/CardDAV sync in chunks with configurable chunk size to avoid OutOfMemoryEceptions, enabled by default because of lower memory consumption for huge resources. *(only in advanced settings)*
 	- **Use time range filter** and
 	- **Synchronization timespan past (days)** and
-	- **Synchronization timespan future (days)** *(only in advanced settings)* For performance reasons it is useful to sync only a given timespan of a big calendar, especially past events are normally not necessary to sync after a given timespan. But be aware that Outlook and Google and some other CalDAV servers calculate the intersection with the time-range differently for recurring events which can cause doubled or deleted events, so it is recommended to select a time-range which is larger than the largest interval of your recurring events (e.g. 1 year for birthdays).
+	- **Synchronization timespan future (days)** *(only in advanced settings)* For performance reasons it is useful to sync only a given timespan of a big calendar, especially past events are normally not necessary to sync after a given timespan. But be aware that Outlook and Google and some other CalDAV servers calculate the intersection with the time-range differently for recurring events which can cause doubled or deleted events, so it is recommended to select a time-range which is larger than the largest interval of your recurring events (e.g. 1 year for birthdays). You can't use the time range filter together with WebDAV collection sync.
 
 - **Is active checkbox in the tree view** If deactivated, current profile is not synced anymore without the need to delete the profile.
 
@@ -1147,7 +1162,8 @@ If you expand the tree view of the profile you can configure network and proxy o
 	- Map Distribution Lists enables the sync of contact groups / Distribution Lists, right now the DAV contact group format SOGo VLIST, vCards with KIND:group or iCloud groups are available, see **Distribution Lists** below.
 	- For tasks (not for Google task profiles) you can configure if you want to map reminders (just upcoming, all or none), the priority of the task, the description body and if recurring tasks should be synchronized.
 	- You can also define if task start and due dates should be mapped as floating without timezone to avoid issues with tasks across different timezones.
-	- Similar to calendars you can also define a filter category so that multiple CalDAV Tasklists can be synchronized into one Outlook task folder via the defined category.	
+	- Similar to calendars you can also define a filter category so that multiple CalDAV Tasklists can be synchronized into one Outlook task folder via the defined category.
+	
 ### Timezone settings ###
 
 Outlook and Windows use different Timezone definitions than most CalDAV servers and other clients. When adding new events on the server you have different options how the timezone of the newly created VEVENT is generated. The default setting uses the default Windows Timezone from Outlook (e.g. W. Europe Standard Time) or the selected timezones for the start and end of the appointment. Since some servers have problems with that timezone definitions you can change that behaviour in the event mapping configuration with the following options:
@@ -1186,7 +1202,7 @@ With the checkbox *Sync also Appointments without any category* also all appoint
 With the checkbox below you can alternatively negate the filter and sync all appointments/tasks except this category.
 For calendars it is also possible to choose the color of the category or to fetch the calendar color from the server and map it to the nearest supported Outlook category color with the button *Fetch Color*. With *Set DAV Color* it is also possible to sync the choosen category color back to set the server calendar color accordingly. With *Category Shortcut Key* you can define the shortcut key of the selected category for easier access when creating appointments.
 
-Experimental mapping of the first category color of the appointment to the matching COLOR attribute of the event is also available with the option *Map Event Color to Category*. Together with DAVdroid for Android [https://davdroid.bitfire.at](https://davdroid.bitfire.at) you can map individual event colors from Android to Outlook,but not all calendar apps support it or can even crash, see [https://davdroid.bitfire.at/faq/entry/setting-event-colors-crash/](https://davdroid.bitfire.at/faq/entry/setting-event-colors-crash/)
+Experimental mapping of the first category color of the appointment to the matching COLOR attribute of the event is also available with the option *Map Event Color to Category*. When mapping a COLOR from the server to Outlook the first matching Outlook category with that color is used, but mapping can be manually changed in the options.xml config file. Together with DAVdroid for Android [https://davdroid.bitfire.at](https://davdroid.bitfire.at) you can map individual event colors from Android to Outlook,but not all calendar apps support it or can even crash, see [https://davdroid.bitfire.at/faq/entry/setting-event-colors-crash/](https://davdroid.bitfire.at/faq/entry/setting-event-colors-crash/)
 
 ### Reminders ###
 
