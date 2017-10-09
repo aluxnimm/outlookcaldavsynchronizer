@@ -38,9 +38,6 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly Dictionary<string, OlCategoryColor> _outlookColorByCategory;
     private readonly Dictionary<string, ColorCategoryMapping> _categoryByHtmlColor;
 
-
-    // Der EventSyncContext implementiert auch IColorCategoryMapper. Somit kann diese Klasse leicht lazy erzeugt werden, dann fällt auch das ganze lazy zeug weg
-    // und es muss im EventSyncContext nicht geprüft werden ob eh gemappt werden soll. Wenn Der Mapper auf daraug zugreift wird es einfach erzeugt
     public ColorCategoryMapper(IOutlookSession outlookSession, IColorMappingsDataAccess colorMappingsDataAccess)
     {
       _colorMappingsDataAccess = colorMappingsDataAccess;
