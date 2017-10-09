@@ -78,7 +78,6 @@ namespace CalDavSynchronizer.Contracts
       MapXAltDescToRtfBody = false;
       CreateEventsInUTC = false;
       UseIanaTz = false;
-      IsCategoryFilterSticky = true;
 
       try
       {
