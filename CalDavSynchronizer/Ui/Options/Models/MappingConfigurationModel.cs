@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using System.Text;
 using CalDavSynchronizer.Contracts;
 
@@ -23,6 +24,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
   public abstract class MappingConfigurationModel : ModelBase
   {
     public abstract MappingConfigurationBase GetData();
+    public abstract void AddOneTimeTasks(Action<OneTimeChangeCategoryTask> add);
     public abstract bool Validate(StringBuilder errorMessageBuilder);
   }
 }

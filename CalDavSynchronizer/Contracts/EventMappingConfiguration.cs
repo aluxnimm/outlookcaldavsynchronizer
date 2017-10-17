@@ -42,10 +42,7 @@ namespace CalDavSynchronizer.Contracts
     public string EventCategory { get; set; }
     public bool IncludeEmptyEventCategoryFilter { get; set; }
     public bool InvertEventCategoryFilter { get; set; }
-    public bool UseEventCategoryColorAndMapFromCalendarColor { get; set; }
     public bool IsCategoryFilterSticky { get; set; }
-    public OlCategoryColor EventCategoryColor { get; set; }
-    public OlCategoryShortcutKey CategoryShortcutKey { get; set; }
     public bool CleanupDuplicateEvents { get; set; }
     public bool MapCustomProperties { get; set; }
     public bool MapEventColorToCategory { get; set; }
@@ -92,9 +89,6 @@ namespace CalDavSynchronizer.Contracts
       UseGlobalAppointmentID = false;
       IncludeEmptyEventCategoryFilter = false;
       InvertEventCategoryFilter = false;
-      UseEventCategoryColorAndMapFromCalendarColor = false;
-      EventCategoryColor = OlCategoryColor.olCategoryColorNone;
-      CategoryShortcutKey = OlCategoryShortcutKey.olCategoryShortcutKeyNone;
       CleanupDuplicateEvents = false;
       MapCustomProperties = false;
     }

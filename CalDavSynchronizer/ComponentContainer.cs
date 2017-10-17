@@ -56,6 +56,7 @@ using CalDavSynchronizer.Implementation.TimeZones;
 using CalDavSynchronizer.Scheduling.ComponentCollectors;
 using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
+using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ProfileTypes;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.SystrayNotification;
@@ -101,7 +102,9 @@ namespace CalDavSynchronizer
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
     private readonly SynchronizationStatus _synchronizationStatus;
     private readonly OutlookFolderStrategyWrapper _queryFolderStrategyWrapper;
+    private readonly IOneTimeTaskRunner _oneTimeTaskRunner;
     private readonly TotalProgressFactory _totalProgressFactory;
+    private readonly IOutlookSession _outlookSession;
 
     public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
     public event EventHandler<SchedulerStatusEventArgs> StatusChanged
@@ -166,11 +169,12 @@ namespace CalDavSynchronizer
         generalOptions.ThresholdForProgressDisplay,
         ExceptionHandler.Instance);
 
-   
+
+      _outlookSession = new OutlookSession(_session);
       _synchronizerFactory = new SynchronizerFactory (
           GetProfileDataDirectory,
           _totalProgressFactory,
-          new OutlookSession(_session),
+          _outlookSession,
           _daslFilterProvider,
           _outlookAccountPasswordProvider,
           _globalTimeZoneCache,
@@ -220,6 +224,8 @@ namespace CalDavSynchronizer
       {
         s_logger.Error ("Can't access SyncObjects", ex);
       }
+
+      _oneTimeTaskRunner = new OneTimeTaskRunner(_outlookSession);
     }
 
     private void PermanentStatusesViewModel_OptionsRequesting(object sender, OptionsEventArgs e)
@@ -486,12 +492,12 @@ namespace CalDavSynchronizer
         GeneralOptions generalOptions = _generalOptionsDataAccess.LoadOptions();
         try
         {
-          var newOptions = ShowWpfOptions (initialVisibleProfile, generalOptions, options);
+          var newOptions = ShowWpfOptions (initialVisibleProfile, generalOptions, options, out var oneTimeTasks);
 
           if (newOptions != null)
           {
             s_logger.Info("Applying new options");
-            await ApplyNewOptions(options, newOptions, generalOptions);
+            await ApplyNewOptions(options, newOptions, generalOptions, oneTimeTasks);
             s_logger.Info("Applied new options");
           }
         }
@@ -508,7 +514,7 @@ namespace CalDavSynchronizer
       }
     }
     
-    public Options[] ShowWpfOptions (Guid? initialSelectedProfileId, GeneralOptions generalOptions, Options[] options)
+    public Options[] ShowWpfOptions (Guid? initialSelectedProfileId, GeneralOptions generalOptions, Options[] options, out OneTimeChangeCategoryTask[] oneTimeTasks)
     {
       string[] categories;
       using (var categoriesWrapper = GenericComObjectWrapper.Create (_session.Categories))
@@ -521,12 +527,13 @@ namespace CalDavSynchronizer
       var optionTasks = new OptionTasks(_session, EnumDisplayNameProvider.Instance, faultFinder );
 
       var viewOptions = new ViewOptions (generalOptions.EnableAdvancedView);
+      OptionModelSessionData sessionData = new OptionModelSessionData(_outlookSession.GetCategories().ToDictionary(c => c.Name , _outlookSession.CategoryNameComparer));
       var viewModel = new OptionsCollectionViewModel (
           generalOptions.ExpandAllSyncProfiles,
           GetProfileDataDirectory,
           _uiService, 
           optionTasks,
-          p => ProfileTypeRegistry.Create(p, _outlookAccountPasswordProvider, categories, optionTasks, faultFinder, generalOptions, viewOptions),
+          p => ProfileTypeRegistry.Create(p, _outlookAccountPasswordProvider, categories, optionTasks, faultFinder, generalOptions, viewOptions, sessionData),
           viewOptions);
 
       _currentVisibleOptionsFormOrNull = viewModel;
@@ -535,20 +542,23 @@ namespace CalDavSynchronizer
 
       if (_uiService.ShowOptions (viewModel))
       {
+        oneTimeTasks = viewModel.GetOneTimeTasks();
         return viewModel.GetOptionsCollection();
       }
       else
       {
+        oneTimeTasks = null;
         return null;
       }
     }
 
-    private async Task ApplyNewOptions (Options[] oldOptions, Options[] newOptions, GeneralOptions generalOptions)
+    private async Task ApplyNewOptions (Options[] oldOptions, Options[] newOptions, GeneralOptions generalOptions, IEnumerable<OneTimeChangeCategoryTask> oneTimeTasks)
     {
       _optionsDataAccess.Save (newOptions);
       await _scheduler.SetOptions (newOptions, generalOptions);
       _permanentStatusesViewModel.NotifyProfilesChanged (newOptions);
       DeleteEntityChachesForChangedProfiles (oldOptions, newOptions);
+      _oneTimeTaskRunner.RunOneTimeTasks (oneTimeTasks);
     }
 
     public void ShowLatestSynchronizationReport (Guid profileId)

@@ -181,7 +181,12 @@ namespace CalDavSynchronizer.Ui.Options.Models
         IsCategoryFilterSticky = _isCategoryFilterSticky
       };
     }
+
+    public override void AddOneTimeTasks(Action<OneTimeChangeCategoryTask> add)
+    {
     
+    }
+
     public override bool Validate (StringBuilder errorMessageBuilder)
     {
       return EventMappingConfigurationModel.ValidatePropertyMappings(errorMessageBuilder, Mappings);

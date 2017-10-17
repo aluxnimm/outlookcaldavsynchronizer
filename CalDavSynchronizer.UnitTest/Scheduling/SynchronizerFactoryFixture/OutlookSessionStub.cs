@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.using System;
 
+using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Ui;
@@ -26,7 +27,8 @@ namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
   {
     public string ApplicationVersion { get; }
     public IOutlookTimeZones TimeZones { get; }
-    
+    public StringComparer CategoryNameComparer { get; }
+
     public IReadOnlyCollection<OutlookCategory> GetCategories()
     {
       throw new System.NotImplementedException();
@@ -97,7 +99,12 @@ namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
       throw new System.NotImplementedException();
     }
 
-    public CreateCategoryResult CreateCategoryNoThrow(string name, OlCategoryColor color)
+    public CreateCategoryResult AddCategoryNoThrow(string name, OlCategoryColor color)
+    {
+      throw new System.NotImplementedException();
+    }
+
+    public void AddOrUpdateCategoryNoThrow(string name, OlCategoryColor color, bool useColor, OlCategoryShortcutKey shortcutKey, bool useShortcutKey)
     {
       throw new System.NotImplementedException();
     }

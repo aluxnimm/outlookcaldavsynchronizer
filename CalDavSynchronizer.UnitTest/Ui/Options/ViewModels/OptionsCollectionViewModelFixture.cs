@@ -132,7 +132,8 @@ namespace CalDavSynchronizer.UnitTest.Ui.Options.ViewModels
             data,
             new GeneralOptions(),
             this,
-            false);
+            false,
+            new OptionModelSessionData(new Dictionary<string, OutlookCategory>()));
       }
 
       public IOptionsViewModel CreateViewModel(OptionsModel model)

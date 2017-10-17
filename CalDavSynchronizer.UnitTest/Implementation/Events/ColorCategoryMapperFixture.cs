@@ -46,7 +46,7 @@ namespace CalDavSynchronizer.UnitTest.Implementation.Events
     public void TestRoundtrip1To2(OlCategoryColor outlookColor)
     {
       var originalCategory = "cat1";
-      _outlookCategories[originalCategory] = new OutlookCategory(originalCategory, outlookColor);
+      _outlookCategories[originalCategory] = new OutlookCategory(originalCategory, outlookColor, OlCategoryShortcutKey.olCategoryShortcutKeyNone);
       CreateMapper();
 
       var htmlColor = _mapper.MapCategoryToHtmlColorOrNull(originalCategory);
@@ -111,6 +111,7 @@ namespace CalDavSynchronizer.UnitTest.Implementation.Events
 
       public string ApplicationVersion { get; }
       public IOutlookTimeZones TimeZones { get; }
+      public StringComparer CategoryNameComparer { get; }
 
       public IReadOnlyCollection<OutlookCategory> GetCategories()
       {
@@ -182,14 +183,16 @@ namespace CalDavSynchronizer.UnitTest.Implementation.Events
         throw new NotImplementedException();
       }
 
-      public CreateCategoryResult CreateCategoryNoThrow(string name, OlCategoryColor color)
+      public CreateCategoryResult AddCategoryNoThrow(string name, OlCategoryColor color)
       {
-        _parent._outlookCategories.Add(name, new OutlookCategory (name, color));
+        _parent._outlookCategories.Add(name, new OutlookCategory (name, color, OlCategoryShortcutKey.olCategoryShortcutKeyNone));
         return CreateCategoryResult.Ok;
       }
-      
 
-    
+      public void AddOrUpdateCategoryNoThrow(string name, OlCategoryColor color, bool useColor, OlCategoryShortcutKey shortcutKey, bool useShortcutKey)
+      {
+        throw new NotImplementedException();
+      }
     }
   }
 }

@@ -114,14 +114,16 @@
 
               <CheckBox   
                 IsEnabled="{Binding UseEventCategoryAsFilter}"
-                IsChecked="{Binding UseEventCategoryColorAndMapFromCalendarColor}" 
+                IsChecked="{Binding DoOneTimeSetCategoryColor}" 
                 Grid.Row="3" 
-                Grid.Column="0">Map Calendar Color to category color</CheckBox>
+                Grid.Column="0"
+                ToolTip="Assign category color, when OK is clicked.">Assign category color:</CheckBox>
+              
               <ComboBox  
-                IsEnabled="{Binding UseEventCategoryAsFilterAndMapColor}"
+                IsEnabled="{Binding UseEventCategoryAsFilterAndDoOneTimeSetCategoryColor}"
                 ItemsSource="{Binding AvailableEventCategoryColors}"
                 SelectedValuePath="Value"
-                SelectedValue="{Binding EventCategoryColor}"
+                SelectedValue="{Binding OneTimeSetEventCategoryColor}"
                 Grid.Row="3" Grid.Column="1" >
                 <ComboBox.Resources>
                   <views:OlCategoryColorConverter x:Key="OlCategoryColorConverter" />
@@ -137,22 +139,25 @@
               </ComboBox>
               <Button 
                 Command="{Binding GetServerCalendarColorCommand}"
-                IsEnabled="{Binding UseEventCategoryAsFilterAndMapColor}"
+                IsEnabled="{Binding UseEventCategoryAsFilterAndDoOneTimeSetCategoryColor}"
                 Grid.Row="3" 
                 Grid.Column="2">Fetch Color</Button>
               <Button
                 Command="{Binding SetServerCalendarColorCommand}"
-                IsEnabled="{Binding UseEventCategoryAsFilterAndMapColor}"
+                IsEnabled="{Binding UseEventCategoryAsFilterAndDoOneTimeSetCategoryColor}"
                 Grid.Row="3" 
                 Grid.Column="3">Set DAV Color</Button>
 
-              <TextBlock Grid.Row="4" Grid.Column="0">Category Shortcut Key:</TextBlock>
+              <TextBlock 
+                Grid.Row="4" 
+                Grid.Column="0"
+                ToolTip="Assign shortcut key, when OK is clicked.">Assign Shortcut Key:</TextBlock>
               <ComboBox   
                 IsEnabled="{Binding UseEventCategoryAsFilter}"
                 ItemsSource="{Binding AvailableShortcutKeys}"
                 DisplayMemberPath="Name"
                 SelectedValuePath="Value"
-                SelectedValue="{Binding CategoryShortcutKey}"
+                SelectedValue="{Binding OneTimeSetCategoryShortcutKey}"
                 Grid.Row="4" Grid.Column="1" />
               <CheckBox 
                 Content="Keep items in sync, even if category changes and filter does not match anymore" 
