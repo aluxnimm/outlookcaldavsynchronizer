@@ -41,10 +41,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
     private readonly IDaslFilterProvider _daslFilterProvider;
     private readonly IQueryOutlookContactItemFolderStrategy _queryFolderStrategy;
     private readonly IComWrapperFactory _comWrapperFactory;
+    private readonly bool _useDefaultFolderItemType;
     
     private const string PR_ASSOCIATED_BIRTHDAY_APPOINTMENT_ID = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/804D0102";
 
-    public OutlookContactRepository (IOutlookSession session, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider, IQueryOutlookContactItemFolderStrategy queryFolderStrategy, IComWrapperFactory comWrapperFactory)
+    public OutlookContactRepository (IOutlookSession session, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider, IQueryOutlookContactItemFolderStrategy queryFolderStrategy, IComWrapperFactory comWrapperFactory, bool useDefaultFolderItemType)
     {
       if (session == null)
         throw new ArgumentNullException (nameof (session));
@@ -59,6 +60,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       _daslFilterProvider = daslFilterProvider;
       _queryFolderStrategy = queryFolderStrategy;
       _comWrapperFactory = comWrapperFactory;
+      _useDefaultFolderItemType = useDefaultFolderItemType;
     }
 
     private GenericComObjectWrapper<Folder> CreateFolderWrapper ()
@@ -188,7 +190,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
       using (var folderWrapper = CreateFolderWrapper ())
       {
         newWrapper = _comWrapperFactory.Create (
-          (ContactItem) folderWrapper.Inner.Items.Add (OlItemType.olContactItem),
+          _useDefaultFolderItemType ? (ContactItem) folderWrapper.Inner.Items.Add()
+                                    : (ContactItem) folderWrapper.Inner.Items.Add (OlItemType.olContactItem),
           entryId => (ContactItem) _session.GetContactItem (entryId, _folderStoreId));
       }
 

@@ -46,6 +46,7 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly IDaslFilterProvider _daslFilterProvider;
     private readonly IQueryOutlookAppointmentItemFolderStrategy _queryFolderStrategy;
     private readonly IComWrapperFactory _comWrapperFactory;
+    private readonly bool _useDefaultFolderItemType;
 
     public OutlookEventRepository (
       IOutlookSession session, 
@@ -55,7 +56,8 @@ namespace CalDavSynchronizer.Implementation.Events
       EventMappingConfiguration configuration,
       IDaslFilterProvider daslFilterProvider,
       IQueryOutlookAppointmentItemFolderStrategy queryFolderStrategy, 
-      IComWrapperFactory comWrapperFactory)
+      IComWrapperFactory comWrapperFactory,
+      bool useDefaultFolderItemType)
     {
       if (session == null)
         throw new ArgumentNullException (nameof (session));
@@ -76,6 +78,7 @@ namespace CalDavSynchronizer.Implementation.Events
       _daslFilterProvider = daslFilterProvider;
       _queryFolderStrategy = queryFolderStrategy;
       _comWrapperFactory = comWrapperFactory;
+      _useDefaultFolderItemType = useDefaultFolderItemType;
     }
 
     private GenericComObjectWrapper<Folder> CreateFolderWrapper ()
@@ -277,7 +280,8 @@ namespace CalDavSynchronizer.Implementation.Events
       using (var folderWrapper = CreateFolderWrapper())
       {
         newAppointmentItemWrapper = _comWrapperFactory.Create (
-            (AppointmentItem) folderWrapper.Inner.Items.Add (OlItemType.olAppointmentItem),
+            _useDefaultFolderItemType ? (AppointmentItem) folderWrapper.Inner.Items.Add()
+                                      : (AppointmentItem) folderWrapper.Inner.Items.Add (OlItemType.olAppointmentItem),
             entryId => _session.GetAppointmentItem (entryId, _folderStoreId));
       }
 

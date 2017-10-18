@@ -43,8 +43,9 @@ namespace CalDavSynchronizer.Implementation.Tasks
     private readonly TaskMappingConfiguration _configuration;
     private readonly IQueryOutlookTaskItemFolderStrategy _queryFolderStrategy;
     private readonly IComWrapperFactory _comWrapperFactory;
+    private readonly bool _useDefaultFolderItemType;
 
-    public OutlookTaskRepository (IOutlookSession session, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider, TaskMappingConfiguration configuration, IQueryOutlookTaskItemFolderStrategy queryFolderStrategy, IComWrapperFactory comWrapperFactory)
+    public OutlookTaskRepository (IOutlookSession session, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider, TaskMappingConfiguration configuration, IQueryOutlookTaskItemFolderStrategy queryFolderStrategy, IComWrapperFactory comWrapperFactory, bool useDefaultFolderItemType)
     {
       if (session == null)
         throw new ArgumentNullException (nameof (session));
@@ -66,6 +67,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       _configuration = configuration;
       _queryFolderStrategy = queryFolderStrategy;
       _comWrapperFactory = comWrapperFactory;
+      _useDefaultFolderItemType = useDefaultFolderItemType;
     }
 
     public Task<IEnumerable<EntityVersion<string, DateTime>>> GetVersions (IEnumerable<IdWithAwarenessLevel<string>> idsOfEntitiesToQuery, int context, IGetVersionsLogger logger)
@@ -230,7 +232,10 @@ namespace CalDavSynchronizer.Implementation.Tasks
     public async Task<EntityVersion<string, DateTime>> Create (Func<ITaskItemWrapper, Task<ITaskItemWrapper>> entityInitializer, int context)
     {
       using (var taskFolderWrapper = CreateFolderWrapper ())
-      using (var wrapper = _comWrapperFactory.Create ((TaskItem) taskFolderWrapper.Inner.Items.Add (OlItemType.olTaskItem), entryId =>  _session.GetTaskItem (entryId, _folderStoreId)))
+      using (var wrapper = _comWrapperFactory.Create (
+        _useDefaultFolderItemType ? (TaskItem) taskFolderWrapper.Inner.Items.Add()
+                                  : (TaskItem) taskFolderWrapper.Inner.Items.Add (OlItemType.olTaskItem),
+        entryId => _session.GetTaskItem(entryId, _folderStoreId)))
       {
         ITaskItemWrapper initializedWrapper;
 
@@ -253,7 +258,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
         using (initializedWrapper)
         {
-          initializedWrapper.SaveAndReload ();
+          initializedWrapper.SaveAndReload();
           var result = new EntityVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime);
           return result;
         }
