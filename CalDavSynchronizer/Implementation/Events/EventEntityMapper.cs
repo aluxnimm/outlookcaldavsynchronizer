@@ -483,41 +483,89 @@ namespace CalDavSynchronizer.Implementation.Events
         return;
       }
 
-      if (!(alarm.Trigger.IsRelative
-            && alarm.Trigger.Related == TriggerRelation.Start
-            && alarm.Trigger.Duration.HasValue
-            && alarm.Trigger.Duration <= TimeSpan.Zero))
+      if (alarm.Trigger.IsRelative && (!alarm.Trigger.Duration.HasValue || 
+                                       (alarm.Trigger.Related == TriggerRelation.Start && alarm.Trigger.Duration > TimeSpan.Zero) ||
+                                       (alarm.Trigger.Related == TriggerRelation.End && target.EndUTC.Add (alarm.Trigger.Duration.Value) > target.StartUTC)))
       {
-        s_logger.WarnFormat ("Event '{0}' alarm is not relative before event start. Ignoring.", source.UID);
-        logger.LogMappingWarning ("Alarm is not relative before event start. Ignoring.");
+        s_logger.WarnFormat ("Event '{0}' alarm has an invalid duration or is not before event start. Ignoring.", source.UID);
+        logger.LogMappingWarning ("Alarm has an invalid duration or is not before event start. Ignoring.");
         target.ReminderSet = false;
         return;
       }
 
-      if (_configuration.MapReminder == ReminderMapping.JustUpcoming)
+      if (target.IsRecurring && !isRecurrenceException && _configuration.MapReminder == ReminderMapping.JustUpcoming)
       {
-
-        if ((!target.IsRecurring || isRecurrenceException) && target.StartUTC.Add (alarm.Trigger.Duration.Value) <= DateTime.UtcNow)
+        using (var sourceRecurrencePatternWrapper = GenericComObjectWrapper.Create(target.GetRecurrencePattern()))
         {
-          target.ReminderSet = false;
-          return;
-        }
-        if (target.IsRecurring && !isRecurrenceException)
-        {
-          using (var sourceRecurrencePatternWrapper = GenericComObjectWrapper.Create (target.GetRecurrencePattern()))
+          if (!sourceRecurrencePatternWrapper.Inner.NoEndDate &&
+              sourceRecurrencePatternWrapper.Inner.PatternEndDate.Add(sourceRecurrencePatternWrapper.Inner.EndTime.TimeOfDay).ToUniversalTime() <= DateTime.UtcNow)
           {
-            if (!sourceRecurrencePatternWrapper.Inner.NoEndDate &&
-                sourceRecurrencePatternWrapper.Inner.PatternEndDate.Add (sourceRecurrencePatternWrapper.Inner.EndTime.TimeOfDay).ToUniversalTime() <= DateTime.UtcNow)
-            {
-              target.ReminderSet = false;
-              return;
-            }
+            target.ReminderSet = false;
+            return;
           }
         }
       }
 
-      target.ReminderSet = true;
-      target.ReminderMinutesBeforeStart = -(int) alarm.Trigger.Duration.Value.TotalMinutes;
+      if (alarm.Trigger.IsRelative && alarm.Trigger.Duration.HasValue)
+      {
+        if (_configuration.MapReminder == ReminderMapping.JustUpcoming &&
+            (!target.IsRecurring || isRecurrenceException) && 
+            (alarm.Trigger.Related == TriggerRelation.Start && target.StartUTC.Add (alarm.Trigger.Duration.Value) <= DateTime.UtcNow) ||
+            (alarm.Trigger.Related == TriggerRelation.End && target.EndUTC.Add (alarm.Trigger.Duration.Value) <= DateTime.UtcNow) )
+        {
+          target.ReminderSet = false;
+          return;
+        }
+
+        try
+        {
+          target.ReminderSet = true;
+          if (alarm.Trigger.Related == TriggerRelation.Start)
+          {
+            target.ReminderMinutesBeforeStart = -(int) alarm.Trigger.Duration.Value.TotalMinutes;
+          }
+          else
+          {
+            target.ReminderMinutesBeforeStart = -(int) (alarm.Trigger.Duration.Value.TotalMinutes + target.Duration);
+          }
+        }
+        catch (System.Exception ex)
+        {
+          s_logger.WarnFormat ("Event '{0}' alarm has an invalid duration which can't be set in Outlook. {1}", source.UID, ex);
+          logger.LogMappingWarning ("Alarm has an invalid duration. Ignoring.");
+          target.ReminderSet = false;
+        }
+      }
+      else if (alarm.Trigger.DateTime != null)
+      {
+        var alarmTimeUtc = alarm.Trigger.DateTime.AsUtc();
+        if (_configuration.MapReminder == ReminderMapping.JustUpcoming && alarmTimeUtc < DateTime.UtcNow)
+        {
+          target.ReminderSet = false;
+          return;
+        }
+        var alarmDuration = source.Start.UTC - alarmTimeUtc;
+        if (alarmDuration >= TimeSpan.Zero)
+        {
+          try
+          {
+            target.ReminderSet = true;
+            target.ReminderMinutesBeforeStart = (int) alarmDuration.TotalMinutes;
+          }
+          catch (System.Exception ex)
+          {
+            s_logger.WarnFormat ("Event '{0}' alarm has an invalid duration which can't be set in Outlook. {1}", source.UID, ex);
+            logger.LogMappingWarning ("Alarm has an invalid duration. Ignoring.");
+            target.ReminderSet = false;
+          }
+        }
+        else
+        {
+          s_logger.WarnFormat ("Event '{0}' alarm is not before event start. Ignoring.", source.UID);
+          logger.LogMappingWarning ("Alarm is not before event start. Ignoring.");
+          target.ReminderSet = false;
+        }
+      }
     }
 
     private string MapParticipation1To2 (OlResponseStatus value)
