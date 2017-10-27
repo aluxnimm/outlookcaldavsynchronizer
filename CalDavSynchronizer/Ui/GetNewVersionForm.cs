@@ -71,7 +71,7 @@ namespace CalDavSynchronizer.Ui
       _captionLabel.Text = string.Format (_captionLabel.Text, newVersion);
       _newFeaturesTextBox.Text = whatsNew;
 
-      _logoPictureBox.Image = Properties.Resources.outlookcaldavsynchronizerlogoarrow;
+      _logoPictureBox.Image = Properties.Resources.ApplicationLogoLarge;
 
       if (!isInstallNewVersionEnabled)
       {

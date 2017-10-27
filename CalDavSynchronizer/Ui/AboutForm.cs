@@ -42,7 +42,7 @@ namespace CalDavSynchronizer.Ui
       _linkLabelTeamMembers.Text = string.Empty;
       AddTeamMember ("Alexander Nimmervoll", "http://sourceforge.net/u/nimm/profile/");
       AddTeamMember ("Gerhard Zehetbauer", "http://sourceforge.net/u/nertsch/profile/");
-      _logoPictureBox.Image = Properties.Resources.outlookcaldavsynchronizerlogoarrow;
+      _logoPictureBox.Image = Properties.Resources.ApplicationLogoLarge;
     }
 
     private void _linkLabelTeamMembers_LinkClicked (object sender, LinkLabelLinkClickedEventArgs e)
