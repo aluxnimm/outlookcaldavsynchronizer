@@ -146,16 +146,17 @@ namespace CalDavSynchronizer
 
       _globalTimeZoneCache = new GlobalTimeZoneCache();
 
-      _applicationDataDirectory = Path.Combine (
+
+      var applicationDataDirectoryBase = Path.Combine (
           Environment.GetFolderPath (
               generalOptions.StoreAppDataInRoamingFolder ? Environment.SpecialFolder.ApplicationData : Environment.SpecialFolder.LocalApplicationData),
           "CalDavSynchronizer");
+      
+      string optionsFilePath;
 
-      _optionsDataAccess = new OptionsDataAccess (
-          Path.Combine (
-              _applicationDataDirectory,
-              GetOrCreateConfigFileName (_applicationDataDirectory, _session.CurrentProfileName)
-              ));
+      (_applicationDataDirectory, optionsFilePath) = GetOrCreateDataDirectory(applicationDataDirectoryBase, _session.CurrentProfileName);
+      
+      _optionsDataAccess = new OptionsDataAccess (optionsFilePath);
 
       _uiService = new UiService();
       _permanentStatusesViewModel = new PermanentStatusesViewModel(_uiService, this);
@@ -748,22 +749,32 @@ namespace CalDavSynchronizer
       }
     }
 
-    public static string GetOrCreateConfigFileName (string applicationDataDirectory, string profileName)
+    public static (string dataDirectoryPath, string configFilePath) GetOrCreateDataDirectory(string applicationDataDirectoryBase, string profileName)
     {
-      var profileDataAccess = new ProfileListDataAccess (Path.Combine (applicationDataDirectory, "profiles.xml"));
+      var profileDataAccess = new ProfileListDataAccess (Path.Combine (applicationDataDirectoryBase, "profiles.xml"));
       var profiles = profileDataAccess.Load();
       var profile = profiles.FirstOrDefault (p => String.Compare (p.ProfileName, profileName, StringComparison.OrdinalIgnoreCase) == 0);
       if (profile == null)
       {
+        var profileGuid = Guid.NewGuid();
         profile = new ProfileEntry()
                   {
                       ProfileName = profileName,
-                      ConfigFileName = string.Format ("options_{0}.xml", Guid.NewGuid())
+                      ConfigFileName = "options.xml",
+                      DataDirectoryName = profileGuid.ToString()
+
                   };
         profiles = profiles.Union (new[] { profile }).ToArray();
         profileDataAccess.Save (profiles);
       }
-      return profile.ConfigFileName;
+
+      var dataDirectory = string.IsNullOrEmpty(profile.DataDirectoryName) ? applicationDataDirectoryBase : Path.Combine(applicationDataDirectoryBase, profile.DataDirectoryName);
+      if (!Directory.Exists(dataDirectory))
+        Directory.CreateDirectory(dataDirectory);
+
+      return (
+        dataDirectory,
+        Path.Combine(dataDirectory, profile.ConfigFileName));
     }
 
     /// <summary>
