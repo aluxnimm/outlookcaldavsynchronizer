@@ -174,6 +174,7 @@
       // AboutForm
       // 
       this.AcceptButton = this.btnOK;
+      this.CancelButton = this.btnOK;
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.SystemColors.Window;

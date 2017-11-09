@@ -10,8 +10,8 @@
          d:DataContext="{x:Static viewModels:SelectProfileViewModel.DesignInstance}">
   <DockPanel>
     <UniformGrid Columns="2" DockPanel.Dock="Bottom" HorizontalAlignment="Right">
-      <Button Command="{Binding OkCommand}" Margin="6" Width="60" HorizontalAlignment="Stretch">Ok</Button>
-      <Button Command="{Binding CancelCommand}" Margin="6">Cancel</Button>
+      <Button Command="{Binding OkCommand}" Margin="6" Width="60" HorizontalAlignment="Stretch" IsDefault="True">Ok</Button>
+      <Button Command="{Binding CancelCommand}" Margin="6" IsCancel="True">Cancel</Button>
     </UniformGrid>
     <ItemsControl ItemsSource="{Binding ProfileTypes}">
     <ItemsControl.ItemsPanel>
