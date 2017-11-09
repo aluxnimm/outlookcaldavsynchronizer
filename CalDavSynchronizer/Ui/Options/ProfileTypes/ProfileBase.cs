@@ -34,8 +34,9 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
     protected readonly ISettingsFaultFinder SettingsFaultFinder;
     protected readonly GeneralOptions GeneralOptions;
     protected readonly IViewOptions ViewOptions;
+    protected readonly OptionModelSessionData SessionData;
 
-    protected ProfileBase(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions)
+    protected ProfileBase(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
       if (optionsViewModelParent == null) throw new ArgumentNullException(nameof(optionsViewModelParent));
       if (outlookAccountPasswordProvider == null) throw new ArgumentNullException(nameof(outlookAccountPasswordProvider));
@@ -44,6 +45,7 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
       if (settingsFaultFinder == null) throw new ArgumentNullException(nameof(settingsFaultFinder));
       if (generalOptions == null) throw new ArgumentNullException(nameof(generalOptions));
       if (viewOptions == null) throw new ArgumentNullException(nameof(viewOptions));
+      if (sessionData == null) throw new ArgumentNullException(nameof(sessionData));
 
       OptionsViewModelParent = optionsViewModelParent;
       OutlookAccountPasswordProvider = outlookAccountPasswordProvider;
@@ -52,6 +54,7 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
       SettingsFaultFinder = settingsFaultFinder;
       GeneralOptions = generalOptions;
       ViewOptions = viewOptions;
+      SessionData = sessionData;
     }
 
     public abstract string Name { get; }
@@ -71,7 +74,7 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 
     protected virtual OptionsModel CreateModel(Contracts.Options data)
     {
-      return new OptionsModel(SettingsFaultFinder, OptionTasks, OutlookAccountPasswordProvider, data, GeneralOptions, this, false);
+      return new OptionsModel(SettingsFaultFinder, OptionTasks, OutlookAccountPasswordProvider, data, GeneralOptions, this, false, SessionData);
     }
 
     protected virtual void InitializeData(Contracts.Options data)
@@ -102,7 +105,7 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
   
     protected virtual OptionsModel CreatePrototypeModel(Contracts.Options data)
     {
-      return new OptionsModel(SettingsFaultFinder, OptionTasks, OutlookAccountPasswordProvider, data, GeneralOptions, this, false);
+      return new OptionsModel(SettingsFaultFinder, OptionTasks, OutlookAccountPasswordProvider, data, GeneralOptions, this, false, SessionData);
     }
 
     protected virtual void InitializePrototypeData(Contracts.Options data)

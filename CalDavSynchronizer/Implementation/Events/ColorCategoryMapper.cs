@@ -80,7 +80,7 @@ namespace CalDavSynchronizer.Implementation.Events
       {
         // No category with the required color exists. Create one with the corresponding html color name.
         category = ColorMapper.MapCategoryColorToHtmlColor(categoryColor);
-        switch (_outlookSession.CreateCategoryNoThrow(category, categoryColor))
+        switch (_outlookSession.AddCategoryNoThrow(category, categoryColor))
         {
           case CreateCategoryResult.DidAlreadyExist:
             logger.LogMappingWarning($"Did not map html color '{htmlColor}' to category '{category}', since category already exists with the wrong color ('{_outlookColorByCategory[category]}').");

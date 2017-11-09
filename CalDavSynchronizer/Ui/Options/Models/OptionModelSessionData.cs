@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -14,21 +14,18 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using Microsoft.Office.Interop.Outlook;
 
-namespace CalDavSynchronizer
+using System.Collections.Generic;
+
+namespace CalDavSynchronizer.Ui.Options.Models
 {
-  public struct OutlookCategory
+  public class OptionModelSessionData
   {
-    public OutlookCategory(string name, OlCategoryColor color, OlCategoryShortcutKey shortcutKey)
+    public OptionModelSessionData(IReadOnlyDictionary<string, OutlookCategory> categoriesById)
     {
-      Name = name;
-      Color = color;
-      ShortcutKey = shortcutKey;
+      CategoriesById = categoriesById;
     }
 
-    public string Name { get; }
-    public OlCategoryColor Color { get; }
-    public OlCategoryShortcutKey ShortcutKey { get; }
+    public IReadOnlyDictionary<string, OutlookCategory> CategoriesById { get; }
   }
 }

@@ -41,6 +41,8 @@ namespace CalDavSynchronizer
       TimeZones = new OutlookTimeZones(_nameSpace.Application);
     }
 
+    public StringComparer CategoryNameComparer { get; } = StringComparer.InvariantCultureIgnoreCase;
+
     public string GetCurrentUserEmailAddressOrNull()
     {
       try
@@ -162,7 +164,7 @@ namespace CalDavSynchronizer
       {
         return categoriesWrapper.Inner
           .ToSafeEnumerable<Category>()
-          .Select(c => new OutlookCategory(c.Name, c.Color))
+          .Select(c => new OutlookCategory(c.Name, c.Color, c.ShortcutKey))
           .ToArray();
       }
     }
@@ -172,7 +174,7 @@ namespace CalDavSynchronizer
       return _nameSpace.CreateRecipient(recipientName);
     }
 
-    public CreateCategoryResult CreateCategoryNoThrow(string name, OlCategoryColor color)
+    public CreateCategoryResult AddCategoryNoThrow(string name, OlCategoryColor color)
     {
       try
       {
@@ -182,7 +184,7 @@ namespace CalDavSynchronizer
           // category already exists, since it is case sensitive (but outlook requires case insensitive uniqueness)
           var categoryNames = new HashSet<string>(
             categoriesWrapper.Inner.ToSafeEnumerable<Category>().Select(c => c.Name),
-            StringComparer.InvariantCultureIgnoreCase);
+            CategoryNameComparer);
 
           if (!categoryNames.Contains(name))
           {
@@ -201,5 +203,50 @@ namespace CalDavSynchronizer
         return CreateCategoryResult.Error;
       }
     }
+
+    public void AddOrUpdateCategoryNoThrow(string name, OlCategoryColor color, bool useColor, OlCategoryShortcutKey shortcutKey, bool useShortcutKey)
+    {
+      try
+      {
+        using (var categoriesWrapper = GenericComObjectWrapper.Create(_nameSpace.Categories))
+        {
+          // Here a dictionary has to be used with an case-insensitive comparer, because the indexer cannot be used to fetch
+          // the category, since it is case sensitive (but outlook requires case insensitive uniqueness)
+          var caseSensitiveNameByCaseInsensitiveName = new Dictionary<string, string>();
+
+          foreach (var existingCategory in categoriesWrapper.Inner.ToSafeEnumerable<Category>())
+          {
+            // unassign shortcutKey from existing categories to make shortcut unique
+            if (useShortcutKey && existingCategory.ShortcutKey == shortcutKey)
+              existingCategory.ShortcutKey = OlCategoryShortcutKey.olCategoryShortcutKeyNone;
+
+            caseSensitiveNameByCaseInsensitiveName.Add(existingCategory.Name, existingCategory.Name);
+          }
+
+          if (caseSensitiveNameByCaseInsensitiveName.TryGetValue(name, out var caseSensitiveName))
+          {
+            using (var categoryWrapper = GenericComObjectWrapper.Create(categoriesWrapper.Inner[caseSensitiveName]))
+            {
+              if(useColor)
+                categoryWrapper.Inner.Color = color;
+              if(useShortcutKey)
+                categoryWrapper.Inner.ShortcutKey = shortcutKey;
+            }
+          }
+          else
+          {
+            categoriesWrapper.Inner.Add(
+              name, 
+              useColor ? color : OlCategoryColor.olCategoryColorNone,
+              useShortcutKey ? shortcutKey : OlCategoryShortcutKey.olCategoryShortcutKeyNone);
+          }
+        }
+      }
+      catch (System.Exception e)
+      {
+        s_logger.Error($"Can't update category '{name}' with color '{color}' and shortcut '{shortcutKey}'", e);
+      }
+    }
+
   }
 }

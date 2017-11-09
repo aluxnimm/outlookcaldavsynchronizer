@@ -27,6 +27,7 @@ namespace CalDavSynchronizer
   {
     string ApplicationVersion { get; }
     IOutlookTimeZones TimeZones { get; }
+    StringComparer CategoryNameComparer { get; }
 
     IReadOnlyCollection<OutlookCategory> GetCategories();
     string GetCurrentUserEmailAddressOrNull();
@@ -44,10 +45,10 @@ namespace CalDavSynchronizer
     TaskItem GetTaskItem(string entryId, string storeId);
     ContactItem GetContactItem(string entryId, string storeId);
     DistListItem GetDistListItem(string entryId, string storeId);
-
     
     Recipient CreateRecipient (string recipientName);
 
-    CreateCategoryResult CreateCategoryNoThrow(string name, OlCategoryColor color);
+    CreateCategoryResult AddCategoryNoThrow(string name, OlCategoryColor color);
+    void AddOrUpdateCategoryNoThrow(string name, OlCategoryColor color, bool useColor, OlCategoryShortcutKey shortcutKey, bool useShortcutKey);
   }
 }

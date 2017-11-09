@@ -290,6 +290,8 @@
     <Compile Include="ChangeWatching\IItemCollectionChangeWatcher.cs" />
     <Compile Include="ChangeWatching\IFolderChangeWatcherFactory.cs" />
     <Compile Include="ChangeWatching\ItemSavedEventArgs.cs" />
+    <Compile Include="IOneTimeTaskRunner.cs" />
+    <Compile Include="OneTimeTaskRunner.cs" />
     <Compile Include="ComponentContainer.cs" />
     <Compile Include="Contracts\AccountServerSettings.cs" />
     <Compile Include="Contracts\ColorCategoryMapping.cs" />
@@ -487,9 +489,11 @@
     <Compile Include="Ui\Options\IEnumDisplayNameProvider.cs" />
     <Compile Include="Ui\Options\Models\ICustomPropertiesMappingConfigurationModel.cs" />
     <Compile Include="Ui\Options\Models\MappingConfigurationModel.cs" />
+    <Compile Include="Ui\Options\Models\OneTimeChangeCategoryTask.cs" />
     <Compile Include="Ui\Options\ProfileTypes\ContactsiCloudProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\KolabProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\MailDeProfile.cs" />
+    <Compile Include="Ui\Options\Models\OptionModelSessionData.cs" />
     <Compile Include="Ui\Options\ProfileTypes\SmarterMailProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\WebDeProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\CozyProfile.cs" />
@@ -917,11 +921,11 @@
     <Resource Include="Resources\Export.png" />
     <Resource Include="Resources\Import.png" />
     <Resource Include="Resources\ClearCache.png" />
+    <None Include="Resources\ApplicationLogoLarge.png" />
     <Content Include="Resources\LogoBanner.bmp" />
     <Resource Include="Resources\ExpandAll.png" />
     <Resource Include="Resources\ProfileLogos\logo_nextcloud.png" />
     <Resource Include="Resources\ProfileLogos\logo_easyproject.png" />
-    <Content Include="Resources\outlookcaldavsynchronizerlogoarrow.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CalDavSynchronizer.Conversions\CalDavSynchronizer.Conversions.csproj">

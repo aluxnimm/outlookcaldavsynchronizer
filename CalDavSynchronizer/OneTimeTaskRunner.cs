@@ -14,25 +14,35 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 using System;
 using System.Collections.Generic;
-using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.Implementation;
-using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
 using CalDavSynchronizer.Ui.Options.Models;
-using CalDavSynchronizer.Ui.Options.ViewModels;
+using Microsoft.Office.Interop.Outlook;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes
+namespace CalDavSynchronizer
 {
-  public sealed class GenericProfile : ProfileBase
+  public class OneTimeTaskRunner : IOneTimeTaskRunner
   {
-    public GenericProfile(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
-      : base(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData)
+  
+    private readonly IOutlookSession _session;
+
+    public OneTimeTaskRunner(IOutlookSession session)
     {
+      _session = session ?? throw new ArgumentNullException(nameof(session));
     }
 
-    public override string ImageUrl { get; } = "";
-    public override string Name { get; } = "Generic CalDAV/CardDAV";
+    public void RunOneTimeTasks(IEnumerable<OneTimeChangeCategoryTask> oneTimeTasks)
+    {
+      foreach (var task in oneTimeTasks)
+      {
+        if (task.EventCategoryColor != null || task.CategoryShortcutKey != null)
+          _session.AddOrUpdateCategoryNoThrow(
+            task.CategoryName, 
+            task.EventCategoryColor ?? OlCategoryColor.olCategoryColorNone,
+            task.EventCategoryColor.HasValue,
+            task.CategoryShortcutKey ?? OlCategoryShortcutKey.olCategoryShortcutKeyNone,
+            task.CategoryShortcutKey.HasValue);
+      }
+    }
   }
 }

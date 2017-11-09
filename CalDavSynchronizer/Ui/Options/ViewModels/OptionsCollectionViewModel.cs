@@ -345,6 +345,14 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       return _options.Where(o => !o.IsMultipleOptionsTemplateViewModel).Select(o => o.Model.CreateData()).ToArray();
     }
 
+    public OneTimeChangeCategoryTask[] GetOneTimeTasks()
+    {
+      var oneTimeTasks = new List<OneTimeChangeCategoryTask>();
+      foreach (var options in _options.Where(o => !o.IsMultipleOptionsTemplateViewModel))
+        options.Model.AddOneTimeTasks(oneTimeTasks.Add);
+      return oneTimeTasks.ToArray();
+    }
+
     private void Delete (IOptionsViewModel viewModel)
     {
       var index = _options.IndexOf (viewModel);

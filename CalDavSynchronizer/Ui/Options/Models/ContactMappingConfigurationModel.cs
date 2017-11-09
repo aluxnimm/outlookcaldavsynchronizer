@@ -184,6 +184,11 @@ namespace CalDavSynchronizer.Ui.Options.Models
         DistributionListType = _distributionListType
       };
     }
+    
+    public override void AddOneTimeTasks(Action<OneTimeChangeCategoryTask> add)
+    {
+    
+    }
 
     public override bool Validate (StringBuilder errorMessageBuilder)
     {

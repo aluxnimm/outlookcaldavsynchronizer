@@ -380,7 +380,8 @@ namespace CalDavSynchronizer.Scheduling
           mappingParameters,
           _daslFilterProvider,
           _queryFolderStrategy,
-          _comWrapperFactory);
+          _comWrapperFactory,
+          generalOptions.IncludeCustomMessageClasses);
 
       componentsToFill.OutlookEventRepository = atypeRepository;
 
@@ -509,7 +510,7 @@ namespace CalDavSynchronizer.Scheduling
     {
       var mappingParameters = GetMappingParameters<TaskMappingConfiguration> (options);
 
-      var atypeRepository = new OutlookTaskRepository (_outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId, _daslFilterProvider, mappingParameters, _queryFolderStrategy, _comWrapperFactory);
+      var atypeRepository = new OutlookTaskRepository (_outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId, _daslFilterProvider, mappingParameters, _queryFolderStrategy, _comWrapperFactory, generalOptions.IncludeCustomMessageClasses);
 
 
 
@@ -609,7 +610,7 @@ namespace CalDavSynchronizer.Scheduling
     {
       var mappingParameters = GetMappingParameters<TaskMappingConfiguration> (options);
 
-      var atypeRepository = new OutlookTaskRepository (_outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId, _daslFilterProvider, mappingParameters, _queryFolderStrategy, _comWrapperFactory);
+      var atypeRepository = new OutlookTaskRepository (_outlookSession, options.OutlookFolderEntryId, options.OutlookFolderStoreId, _daslFilterProvider, mappingParameters, _queryFolderStrategy, _comWrapperFactory, generalOptions.IncludeCustomMessageClasses);
 
       componentsToFill.OutlookRepository = atypeRepository;
 
@@ -802,7 +803,8 @@ namespace CalDavSynchronizer.Scheduling
         options.OutlookFolderStoreId,
         _daslFilterProvider,
         _queryFolderStrategy,
-        _comWrapperFactory);
+        _comWrapperFactory,
+        generalOptions.IncludeCustomMessageClasses);
 
       ICardDavDataAccess cardDavDataAccess;
       var serverUrl = new Uri(options.CalenderUrl);
@@ -1002,7 +1004,8 @@ namespace CalDavSynchronizer.Scheduling
           options.OutlookFolderStoreId,
           _daslFilterProvider,
           _queryFolderStrategy,
-          _comWrapperFactory);
+          _comWrapperFactory,
+          generalOptions.IncludeCustomMessageClasses);
 
       componentsToFill.OutlookContactRepository = atypeRepository;
 

@@ -83,6 +83,16 @@ namespace CalDavSynchronizer.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ApplicationLogoLarge {
+            get {
+                object obj = ResourceManager.GetObject("ApplicationLogoLarge", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap GeneralOptions {
             get {
                 object obj = ResourceManager.GetObject("GeneralOptions", resourceCulture);
@@ -96,16 +106,6 @@ namespace CalDavSynchronizer.Properties {
         internal static System.Drawing.Bitmap Options {
             get {
                 object obj = ResourceManager.GetObject("Options", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap outlookcaldavsynchronizerlogoarrow {
-            get {
-                object obj = ResourceManager.GetObject("outlookcaldavsynchronizerlogoarrow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

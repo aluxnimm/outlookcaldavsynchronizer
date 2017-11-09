@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Reflection;
 using System.Security;
@@ -76,8 +77,10 @@ namespace CalDavSynchronizer.Ui.Options.Models
     private readonly ISettingsFaultFinder _faultFinder;
     private readonly IOptionTasks _optionTasks;
     private readonly GeneralOptions _generalOptions;
+    private readonly OptionModelSessionData _sessionData;
+    private readonly MappingConfigurationModelFactory _mappingConfigurationModelFactory;
 
-    public static OptionsModel DesignInstance => new OptionsModel(NullSettingsFaultFinder.Instance, NullOptionTasks.Instance, NullOutlookAccountPasswordProvider.Instance, new Contracts.Options(), new GeneralOptions(), DesignProfileType.Instance, false);
+    public static OptionsModel DesignInstance => new OptionsModel(NullSettingsFaultFinder.Instance, NullOptionTasks.Instance, NullOutlookAccountPasswordProvider.Instance, new Contracts.Options(), new GeneralOptions(), DesignProfileType.Instance, false, new OptionModelSessionData(new  Dictionary<string, OutlookCategory>()));
    
     public OptionsModel(
       ISettingsFaultFinder faultFinder, 
@@ -86,20 +89,18 @@ namespace CalDavSynchronizer.Ui.Options.Models
       Contracts.Options data,
       GeneralOptions generalOptions, 
       IProfileType profileType,
-      bool isGoogle)
+      bool isGoogle,
+      OptionModelSessionData sessionData)
     {
       if (data == null) throw new ArgumentNullException(nameof(data));
-      if (faultFinder == null) throw new ArgumentNullException(nameof(faultFinder));
-      if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
-      if (outlookAccountPasswordProvider == null) throw new ArgumentNullException(nameof(outlookAccountPasswordProvider));
-      if (generalOptions == null) throw new ArgumentNullException(nameof(generalOptions));
-      if (profileType == null) throw new ArgumentNullException(nameof(profileType));
 
-      _faultFinder = faultFinder;
-      _optionTasks = optionTasks;
-      _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
-      _generalOptions = generalOptions;
-      ProfileType = profileType;
+      _mappingConfigurationModelFactory = new MappingConfigurationModelFactory(sessionData);
+      _faultFinder = faultFinder ?? throw new ArgumentNullException(nameof(faultFinder));
+      _optionTasks = optionTasks ?? throw new ArgumentNullException(nameof(optionTasks));
+      _outlookAccountPasswordProvider = outlookAccountPasswordProvider ?? throw new ArgumentNullException(nameof(outlookAccountPasswordProvider));
+      _generalOptions = generalOptions ?? throw new ArgumentNullException(nameof(generalOptions));
+      ProfileType = profileType ?? throw new ArgumentNullException(nameof(profileType));
+      _sessionData = sessionData ?? throw new ArgumentNullException(nameof(sessionData));
 
       Id = data.Id;
 
@@ -452,7 +453,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
       _proxyUserName = proxyOptions.ProxyUserName;
       _proxyPassword = proxyOptions.ProxyPassword;
 
-      MappingConfigurationModelOrNull = data.MappingConfiguration?.Accept(MappingConfigurationModelFactory.Instance);
+      MappingConfigurationModelOrNull = data.MappingConfiguration?.Accept(_mappingConfigurationModelFactory);
       CoerceMappingConfiguration();
     }
 
@@ -510,11 +511,16 @@ namespace CalDavSynchronizer.Ui.Options.Models
       };
     }
 
+    public void AddOneTimeTasks(Action<OneTimeChangeCategoryTask> add)
+    {
+      MappingConfigurationModelOrNull?.AddOneTimeTasks(add);
+    }
+
     public OptionsModel Clone()
     {
       var data = CreateData();
       data.Id = Guid.NewGuid();
-      return new OptionsModel(_faultFinder, _optionTasks, _outlookAccountPasswordProvider, data , _generalOptions, ProfileType, _isGoogle);
+      return new OptionsModel(_faultFinder, _optionTasks, _outlookAccountPasswordProvider, data , _generalOptions, ProfileType, _isGoogle, _sessionData);
     }
 
     public ProxyOptions CreateProxyOptions()
@@ -594,7 +600,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
       MappingConfigurationModelOrNull = CoerceMappingConfiguration(MappingConfigurationModelOrNull, SelectedFolderOrNull?.DefaultItemType, _isGoogle);
     }
 
-    private static MappingConfigurationModel CoerceMappingConfiguration(
+    private MappingConfigurationModel CoerceMappingConfiguration(
       MappingConfigurationModel currentMappingConfiguration,
       OlItemType? outlookFolderType,
       bool isGoogleProfile)
@@ -602,7 +608,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
       switch (outlookFolderType)
       {
         case OlItemType.olAppointmentItem:
-          return currentMappingConfiguration as EventMappingConfigurationModel ?? new EventMappingConfigurationModel(new EventMappingConfiguration());
+          return currentMappingConfiguration as EventMappingConfigurationModel ?? new EventMappingConfigurationModel(new EventMappingConfiguration(), _sessionData);
         case OlItemType.olContactItem:
           return currentMappingConfiguration as ContactMappingConfigurationModel ?? new ContactMappingConfigurationModel(new ContactMappingConfiguration());
         case OlItemType.olTaskItem:
@@ -665,14 +671,13 @@ namespace CalDavSynchronizer.Ui.Options.Models
       return new CalDavDataAccess(calendarUrl, CreateWebDavClient(calendarUrl));
     }
 
-
     private class MappingConfigurationModelFactory : IMappingConfigurationBaseVisitor<MappingConfigurationModel>
     {
-      public static readonly IMappingConfigurationBaseVisitor<MappingConfigurationModel> Instance = new MappingConfigurationModelFactory();
+      private readonly OptionModelSessionData _sessionData;
 
-      private MappingConfigurationModelFactory()
+      public MappingConfigurationModelFactory(OptionModelSessionData sessionData)
       {
-
+        _sessionData = sessionData ?? throw new ArgumentNullException(nameof(sessionData));
       }
 
       public MappingConfigurationModel Visit(ContactMappingConfiguration configuration)
@@ -682,7 +687,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
 
       public MappingConfigurationModel Visit(EventMappingConfiguration configuration)
       {
-        return new EventMappingConfigurationModel(configuration);
+        return new EventMappingConfigurationModel(configuration, _sessionData);
       }
 
       public MappingConfigurationModel Visit(TaskMappingConfiguration configuration)

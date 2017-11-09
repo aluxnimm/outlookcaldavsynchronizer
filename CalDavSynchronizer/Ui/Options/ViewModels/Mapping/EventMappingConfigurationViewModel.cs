@@ -64,14 +64,14 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
       Items = new[] { new CustomPropertyMappingViewModel(model) };
 
-      RegisterPropertyChangePropagation(_model, nameof(_model.CategoryShortcutKey), nameof(CategoryShortcutKey));
+      RegisterPropertyChangePropagation(_model, nameof(_model.OneTimeSetCategoryShortcutKey), nameof(OneTimeSetCategoryShortcutKey));
       RegisterPropertyChangePropagation(_model, nameof(_model.CreateEventsInUtc), nameof(CreateEventsInUtc));
       RegisterPropertyChangePropagation(_model, nameof(_model.UseIanaTz), nameof(UseIanaTz));
       RegisterPropertyChangePropagation(_model, nameof(_model.EventTz), nameof(EventTz));
       RegisterPropertyChangePropagation(_model, nameof(_model.IncludeHistoricalData), nameof(IncludeHistoricalData));
       RegisterPropertyChangePropagation(_model, nameof(_model.UseGlobalAppointmentId), nameof(UseGlobalAppointmentId));
       RegisterPropertyChangePropagation(_model, nameof(_model.EventCategory), nameof(EventCategory));
-      RegisterPropertyChangePropagation(_model, nameof(_model.EventCategoryColor), nameof(EventCategoryColor));
+      RegisterPropertyChangePropagation(_model, nameof(_model.OneTimeSetEventCategoryColor), nameof(OneTimeSetEventCategoryColor));
       RegisterPropertyChangePropagation(_model, nameof(_model.IncludeEmptyEventCategoryFilter), nameof(IncludeEmptyEventCategoryFilter));
       RegisterPropertyChangePropagation(_model, nameof(_model.InvertEventCategoryFilter), nameof(InvertEventCategoryFilter));
       RegisterPropertyChangePropagation(_model, nameof(_model.MapAttendees), nameof(MapAttendees));
@@ -86,11 +86,11 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       RegisterPropertyChangePropagation(_model, nameof(_model.MapClassPublicToSensitivityPrivate), nameof(MapClassPublicToSensitivityPrivate));
       RegisterPropertyChangePropagation(_model, nameof(_model.ScheduleAgentClient), nameof(ScheduleAgentClient));
       RegisterPropertyChangePropagation(_model, nameof(_model.SendNoAppointmentNotifications), nameof(SendNoAppointmentNotifications));
-      RegisterPropertyChangePropagation(_model, nameof(_model.UseEventCategoryColorAndMapFromCalendarColor), nameof(UseEventCategoryColorAndMapFromCalendarColor));
+      RegisterPropertyChangePropagation(_model, nameof(_model.DoOneTimeSetCategoryColor), nameof(DoOneTimeSetCategoryColor));
       RegisterPropertyChangePropagation(_model, nameof(_model.CleanupDuplicateEvents), nameof(CleanupDuplicateEvents));
       RegisterPropertyChangePropagation(_model, nameof(_model.MapEventColorToCategory), nameof(MapEventColorToCategory));
       RegisterPropertyChangePropagation(_model, nameof(_model.UseEventCategoryAsFilter), nameof(UseEventCategoryAsFilter));
-      RegisterPropertyChangePropagation(_model, nameof(_model.UseEventCategoryAsFilterAndMapColor), nameof(UseEventCategoryAsFilterAndMapColor));
+      RegisterPropertyChangePropagation(_model, nameof(_model.UseEventCategoryAsFilterAndDoOneTimeSetCategoryColor), nameof(UseEventCategoryAsFilterAndDoOneTimeSetCategoryColor));
       RegisterPropertyChangePropagation(_model, nameof(_model.IsCategoryFilterSticky), nameof(IsCategoryFilterSticky));
 
     }
@@ -134,10 +134,10 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     public ICommand GetServerCalendarColorCommand { get; }
     public ICommand SetServerCalendarColorCommand { get; }
 
-    public OlCategoryShortcutKey CategoryShortcutKey
+    public OlCategoryShortcutKey OneTimeSetCategoryShortcutKey
     {
-      get { return _model.CategoryShortcutKey; }
-      set { _model.CategoryShortcutKey = value; }
+      get { return _model.OneTimeSetCategoryShortcutKey; }
+      set { _model.OneTimeSetCategoryShortcutKey = value; }
     }
 
     public bool IsCategoryFilterSticky
@@ -196,13 +196,13 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     }
 
     public bool UseEventCategoryAsFilter => _model.UseEventCategoryAsFilter;
-    public bool UseEventCategoryAsFilterAndMapColor => _model.UseEventCategoryAsFilterAndMapColor;
+    public bool UseEventCategoryAsFilterAndDoOneTimeSetCategoryColor => _model.UseEventCategoryAsFilterAndDoOneTimeSetCategoryColor;
 
 
-    public OlCategoryColor EventCategoryColor
+    public OlCategoryColor OneTimeSetEventCategoryColor
     {
-      get { return _model.EventCategoryColor; }
-      set { _model.EventCategoryColor = value; }
+      get { return _model.OneTimeSetEventCategoryColor; }
+      set { _model.OneTimeSetEventCategoryColor = value; }
     }
 
     public bool IncludeEmptyEventCategoryFilter
@@ -277,10 +277,10 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       set { _model.SendNoAppointmentNotifications = value; }
     }
 
-    public bool UseEventCategoryColorAndMapFromCalendarColor
+    public bool DoOneTimeSetCategoryColor
     {
-      get { return _model.UseEventCategoryColorAndMapFromCalendarColor; }
-      set { _model.UseEventCategoryColorAndMapFromCalendarColor = value; }
+      get { return _model.DoOneTimeSetCategoryColor; }
+      set { _model.DoOneTimeSetCategoryColor = value; }
     }
 
     public bool IsSelected
@@ -309,15 +309,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
     public IEnumerable<ITreeNodeViewModel> Items { get; }
 
-    public static EventMappingConfigurationViewModel DesignInstance = new EventMappingConfigurationViewModel(new[] { "Cat1", "Cat2" }, new EventMappingConfigurationModel(new EventMappingConfiguration()), OptionsModel.DesignInstance)
+    public static EventMappingConfigurationViewModel DesignInstance = new EventMappingConfigurationViewModel(new[] { "Cat1", "Cat2" }, new EventMappingConfigurationModel(new EventMappingConfiguration(), new OptionModelSessionData(new Dictionary<string,OutlookCategory>())), OptionsModel.DesignInstance)
     {
-      CategoryShortcutKey = OlCategoryShortcutKey.olCategoryShortcutKeyCtrlF4,
+      OneTimeSetCategoryShortcutKey = OlCategoryShortcutKey.olCategoryShortcutKeyCtrlF4,
       CreateEventsInUtc = true,
       EventTz = "TheTimeZoneID",
       IncludeHistoricalData = true,
       UseGlobalAppointmentId = true,
       EventCategory = "TheCategory",
-      EventCategoryColor = OlCategoryColor.olCategoryColorDarkMaroon,
+      OneTimeSetEventCategoryColor = OlCategoryColor.olCategoryColorDarkMaroon,
       IncludeEmptyEventCategoryFilter = false,
       InvertEventCategoryFilter = true,
       MapAttendees = true,
@@ -330,7 +330,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       MapSensitivityPrivateToClassConfidential = true,
       ScheduleAgentClient = true,
       SendNoAppointmentNotifications = true,
-      UseEventCategoryColorAndMapFromCalendarColor = true,
+      DoOneTimeSetCategoryColor = true,
       CleanupDuplicateEvents = true,
       MapEventColorToCategory = true
     };
@@ -344,7 +344,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
         if (serverColor != null)
         {
-          EventCategoryColor = ColorHelper.FindMatchingCategoryColor(serverColor.Value);
+          OneTimeSetEventCategoryColor = ColorHelper.FindMatchingCategoryColor(serverColor.Value);
         }
       }
       catch (System.Exception x)
@@ -357,9 +357,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     {
       try
       {
-        if (EventCategoryColor != OlCategoryColor.olCategoryColorNone)
+        if (OneTimeSetEventCategoryColor != OlCategoryColor.olCategoryColorNone)
         {
-          if (await _optionsModel.CreateCalDavDataAccess().SetCalendarColorNoThrow(ColorHelper.ArgbColorByCategoryColor[EventCategoryColor]))
+          if (await _optionsModel.CreateCalDavDataAccess().SetCalendarColorNoThrow(ColorHelper.ArgbColorByCategoryColor[OneTimeSetEventCategoryColor]))
           {
             System.Windows.MessageBox.Show("Successfully updated the server calendar color!");
           }

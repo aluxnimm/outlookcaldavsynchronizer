@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -14,21 +14,14 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using Microsoft.Office.Interop.Outlook;
+
+using System.Collections.Generic;
+using CalDavSynchronizer.Ui.Options.Models;
 
 namespace CalDavSynchronizer
 {
-  public struct OutlookCategory
+  public interface IOneTimeTaskRunner
   {
-    public OutlookCategory(string name, OlCategoryColor color, OlCategoryShortcutKey shortcutKey)
-    {
-      Name = name;
-      Color = color;
-      ShortcutKey = shortcutKey;
-    }
-
-    public string Name { get; }
-    public OlCategoryColor Color { get; }
-    public OlCategoryShortcutKey ShortcutKey { get; }
+    void RunOneTimeTasks(IEnumerable<OneTimeChangeCategoryTask> oneTimeTasks);
   }
 }

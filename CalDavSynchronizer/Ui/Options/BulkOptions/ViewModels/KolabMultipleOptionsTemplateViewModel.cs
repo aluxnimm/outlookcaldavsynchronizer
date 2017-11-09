@@ -319,8 +319,8 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
         options.DaysToSynchronizeInTheFuture = 365;
         options.DaysToSynchronizeInThePast = 60;
       }
-      eventMappingOptions.EventCategoryColor = ColorHelper.FindMatchingCategoryColor (resource.Color.GetValueOrDefault());
-      eventMappingOptions.UseEventCategoryColorAndMapFromCalendarColor = true;
+      eventMappingOptions.OneTimeSetEventCategoryColor = ColorHelper.FindMatchingCategoryColor(resource.Color.GetValueOrDefault());
+      eventMappingOptions.DoOneTimeSetCategoryColor = true;
       return options;
     }
 
