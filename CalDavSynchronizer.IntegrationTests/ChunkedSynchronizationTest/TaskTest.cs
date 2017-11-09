@@ -41,7 +41,7 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
       _testComponentContainer = new TestComponentContainer();
     }
 
-    protected override string ProfileName { get; } = "IntegrationTest/Tasks/Sogo";
+    protected override Options GetOptions() => TestOptionsFactory.CreateSogoTasks();
 
     protected override TaskTestSynchronizer CreateSynchronizer(Options options)
     {

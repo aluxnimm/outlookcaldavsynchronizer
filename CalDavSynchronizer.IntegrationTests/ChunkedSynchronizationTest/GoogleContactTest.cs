@@ -28,8 +28,8 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
 
     protected override int? OrdinalOfReportToCheck => 0;
 
-    protected override string ProfileName { get; } = "IntegrationTests/Contacts/Google";
-
+    protected override Options GetOptions() => TestOptionsFactory.CreateGoogleContacts();
+    
     protected override GoogleContactTestSynchronizer CreateSynchronizer(Options options)
     {
       return new GoogleContactTestSynchronizer(options, _testComponentContainer);

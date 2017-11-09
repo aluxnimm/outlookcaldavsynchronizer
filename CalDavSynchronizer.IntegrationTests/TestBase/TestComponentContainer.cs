@@ -52,16 +52,6 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
       _testComWrapperFactoryWrapper.SetInner(new TestComWrapperFactory(value));
     }
 
-    public static Options GetOptions (string profileName)
-    {
-      var applicationDataDirectory = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData), "CalDavSynchronizer");
-
-      var optionsDataAccess = new OptionsDataAccess (ComponentContainer.GetOrCreateDataDirectory (applicationDataDirectory, "Outlook").ConfigFilePath);
-
-      var options = optionsDataAccess.Load ().Single (o => o.Name == profileName);
-      return options;
-    }
-    
     public void Dispose()
     {
       try

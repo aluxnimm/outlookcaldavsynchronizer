@@ -161,6 +161,7 @@
     <Compile Include="TestBase\TestComponentContainer.cs" />
     <Compile Include="TestBase\ComWrappers\TestComWrapperFactory.cs" />
     <Compile Include="TestBase\TestSynchronizerBase.cs" />
+    <Compile Include="TestOptionsFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />

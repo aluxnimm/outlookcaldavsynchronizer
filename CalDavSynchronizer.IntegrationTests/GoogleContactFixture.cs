@@ -43,7 +43,7 @@ namespace CalDavSynchronizer.IntegrationTests
     [Apartment(System.Threading.ApartmentState.STA)]
     public async Task GenericTest(int numberOfGroups, int numberOfContacts, int chunkSize)
     {
-      var options = TestComponentContainer.GetOptions("Automated Test - Google Contacts");
+      var options = TestOptionsFactory.CreateGoogleContacts();
       options.SynchronizationMode = SynchronizationMode.ReplicateOutlookIntoServer;
       options.IsChunkedSynchronizationEnabled = true;
       options.ChunkSize = chunkSize;

@@ -28,7 +28,14 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
 
     protected override int? OrdinalOfReportToCheck => 0;
 
-    protected override string ProfileName { get; } = "IntegrationTests/Contacts/Sogo";
+    protected override Options GetOptions()
+    {
+      var options = TestOptionsFactory.CreateSogoContacts();
+      // Set MapDistributionLists to ensure distributionlists are deleted
+      ((ContactMappingConfiguration)options.MappingConfiguration).MapDistributionLists = true;
+      ((ContactMappingConfiguration)options.MappingConfiguration).DistributionListType = DistributionListType.Sogo;
+      return options;
+    }
 
     protected override ContactTestSynchronizer CreateSynchronizer(Options options)
     {

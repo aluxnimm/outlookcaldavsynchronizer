@@ -45,7 +45,7 @@ namespace CalDavSynchronizer.IntegrationTests
     [Apartment(System.Threading.ApartmentState.STA)]
     public async Task CreateOutlookEntity_ExceptionOccurs_DoesNotLeaveEmptyEntityInRepository(bool saveAndReload)
     {
-      var options = TestComponentContainer.GetOptions("IntegrationTest/Tasks/Sogo");
+      var options = TestOptionsFactory.CreateSogoTasks();
       var synchronizer = await CreateSynchronizer(options);
       await synchronizer.ClearEventRepositoriesAndCache();
 
