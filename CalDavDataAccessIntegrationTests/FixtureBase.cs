@@ -54,11 +54,7 @@ namespace CalDavDataAccessIntegrationTests
     {
       var applicationDataDirectory = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData), "CalDavSynchronizer");
 
-      var optionsDataAccess = new OptionsDataAccess (
-          Path.Combine (
-              applicationDataDirectory,
-              ComponentContainer.GetOrCreateConfigFileName (applicationDataDirectory, "Outlook")
-              ));
+      var optionsDataAccess = new OptionsDataAccess (ComponentContainer.GetOrCreateDataDirectory (applicationDataDirectory, "Outlook").ConfigFilePath);
 
       var options = optionsDataAccess.Load().Single (o => o.Name == ProfileName);
 
