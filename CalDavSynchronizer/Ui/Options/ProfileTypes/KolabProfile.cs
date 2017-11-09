@@ -20,6 +20,7 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
+using CalDavSynchronizer.DataAccess;
 
 namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 {
@@ -34,17 +35,24 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 
     protected override void InitializeData(Contracts.Options data)
     {
-      data.CalenderUrl = "https://coreboso-kolab-coreboso.de/iRony/";
-      data.EnableChangeTriggeredSynchronization = true;
-      data.DaysToSynchronizeInThePast = 30;
-      data.DaysToSynchronizeInTheFuture = 180;
+      GeneralOptions.TriggerSyncAfterSendReceive = true;  // Synchronize items when syncing IMAP or sending mail
+      new GeneralOptionsDataAccess().SaveOptions(GeneralOptions);
+
+      data.CalenderUrl = "https://kolab.coreboso.de/iRony/";
+      data.EnableChangeTriggeredSynchronization = true;   // Synchronize items immediately after change
+      data.DaysToSynchronizeInThePast = 31;               // Start syncing one month ago
+      data.DaysToSynchronizeInTheFuture = 365;            // Sync up to one year.
+      /*
       data.MappingConfiguration = new EventMappingConfiguration
       {
+        ScheduleAgentClient = false,
+        SendNoAppointmentNotifications = true,
         UseGlobalAppointmentID = true,
         UseIanaTz = true,
         MapXAltDescToRtfBody = true,
         MapRtfBodyToXAltDesc = true
       };
+      */
     }
 
     protected override void InitializePrototypeData(Contracts.Options data)
@@ -54,9 +62,9 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 
     protected override IOptionsViewModel CreateTemplateViewModel(OptionsModel prototypeModel)
     {
-      return new EasyProjectMultipleOptionsTemplateViewModel(
+      return new KolabMultipleOptionsTemplateViewModel(
        OptionsViewModelParent,
-       new EasyProjectServerSettingsTemplateViewModel(OutlookAccountPasswordProvider, prototypeModel),
+       new KolabServerSettingsTemplateViewModel(OutlookAccountPasswordProvider, prototypeModel),
        OptionTasks,
        prototypeModel,
        ViewOptions);

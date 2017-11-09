@@ -69,9 +69,9 @@ namespace CalDavSynchronizer.Ui.Options
         _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Color)].HeaderText = "Col";
         _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Color)].AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
         _calendarDataGridView.Columns[nameof (CalendarDataViewModel.SelectedFolder)].Visible = false;
+        _calendarDataGridView.Columns[nameof (CalendarDataViewModel.SelectedFolderName)].HeaderText = "Selected Outlook Folder";
+        _calendarDataGridView.Columns[nameof (CalendarDataViewModel.SelectedFolderName)].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
         _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Model)].Visible = false;
-
-
         // ReSharper restore PossibleNullReferenceException
       }
       else
@@ -147,11 +147,6 @@ namespace CalDavSynchronizer.Ui.Options
 
     private static void SetupFolderSelectionColumns (DataGridView dataGridView, IOptionTasks optionTasks, params OlItemType[] allowedFolderType)
     {
-      var folderColumn = new DataGridViewTextBoxColumn();
-      folderColumn.HeaderText = "Selected Outlook Folder";
-      folderColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-      dataGridView.Columns.Add (folderColumn);
-
       var selectFolderColumn = new DataGridViewButtonColumn();
       selectFolderColumn.UseColumnTextForButtonValue = true;
       selectFolderColumn.Text = "...";
@@ -166,10 +161,10 @@ namespace CalDavSynchronizer.Ui.Options
 
       dataGridView.CellContentClick += (sender, e) =>
       {
+        if (e.RowIndex < 0) return;
         var column = dataGridView.Columns[e.ColumnIndex];
         var row = dataGridView.Rows[e.RowIndex];
         var viewModel = (ResourceDataViewModelBase) row.DataBoundItem;
-        var folderCell = row.Cells[folderColumn.Index];
 
         if (column == selectFolderColumn)
         {
@@ -182,14 +177,16 @@ namespace CalDavSynchronizer.Ui.Options
               return;
             }
 
-            folderCell.Value = folder.Name;
             viewModel.SelectedFolder = folder;
+            viewModel.SelectedFolderName = folder.Name;
+            dataGridView.UpdateCellValue(dataGridView.Columns[nameof(CalendarDataViewModel.SelectedFolderName)].Index, row.Index);
           }
         }
         else if (column == removeFolderColumn)
         {
           viewModel.SelectedFolder = null;
-          folderCell.Value = null;
+          viewModel.SelectedFolderName = null;
+          dataGridView.UpdateCellValue(dataGridView.Columns[nameof(CalendarDataViewModel.SelectedFolderName)].Index, row.Index);
         }
       };
     }
