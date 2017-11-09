@@ -42,17 +42,6 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
       data.EnableChangeTriggeredSynchronization = true;   // Synchronize items immediately after change
       data.DaysToSynchronizeInThePast = 31;               // Start syncing one month ago
       data.DaysToSynchronizeInTheFuture = 365;            // Sync up to one year.
-      /*
-      data.MappingConfiguration = new EventMappingConfiguration
-      {
-        ScheduleAgentClient = false,
-        SendNoAppointmentNotifications = true,
-        UseGlobalAppointmentID = true,
-        UseIanaTz = true,
-        MapXAltDescToRtfBody = true,
-        MapRtfBodyToXAltDesc = true
-      };
-      */
     }
 
     protected override void InitializePrototypeData(Contracts.Options data)

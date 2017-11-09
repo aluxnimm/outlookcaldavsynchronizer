@@ -186,68 +186,70 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
         var addressBooks = serverResources.AddressBooks.Select (a => new AddressBookDataViewModel (a)).ToArray();
         var taskLists = serverResources.TaskLists.Select (d => new TaskListDataViewModel (d)).ToArray();
 
-        // --- Create Folders if requested and required
+        // --- Create folders if requested and required
         if (AutoCreateOutlookFolders)
         {
-          // Get Outlook's default calendar folder (this is where we create the Kolab folders)
-          Folder defaultCalendarFolder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(OlDefaultFolders.olFolderCalendar) as Folder;
+          // https://docs.microsoft.com/en-us/visualstudio/vsto/how-to-programmatically-create-a-custom-calendar
+          // https://msdn.microsoft.com/en-us/library/office/ff184655.aspx
           // Find all Kolab calendars that are not yet synced to an outlook folder
           foreach (var resource in calendars.Where(c => c.SelectedFolder == null))
           {
             string newCalendarName = resource.Name + " (" + Name + ")";
-            Folder newCalendarFolder = null;
+            MAPIFolder newCalendarFolder = null;
+            // Get Outlook's default calendar folder (this is where we create the Kolab folders)
+            MAPIFolder defaultCalendarFolder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(OlDefaultFolders.olFolderCalendar) as MAPIFolder;
             try
             {
               // Use existing folder if it does exist
-              newCalendarFolder = defaultCalendarFolder.Folders[newCalendarName] as Folder;
+              newCalendarFolder = defaultCalendarFolder.Folders[newCalendarName] as MAPIFolder;
             }
             catch
             {
               // Create missing folder
-              newCalendarFolder = defaultCalendarFolder.Folders.Add(newCalendarName, OlDefaultFolders.olFolderCalendar) as Folder;
+              newCalendarFolder = defaultCalendarFolder.Folders.Add(newCalendarName, OlDefaultFolders.olFolderCalendar) as MAPIFolder;
               // Make sure it has not been renamed to "name (this computer only)"
               newCalendarFolder.Name = newCalendarName;
             }
             // use the selected folder for syncing with kolab
-            resource.SelectedFolder = new OutlookFolderDescriptor(newCalendarFolder);
+            resource.SelectedFolder = new OutlookFolderDescriptor(newCalendarFolder.EntryID, newCalendarFolder.StoreID, newCalendarFolder.DefaultItemType, newCalendarFolder.Name, 0);
             resource.SelectedFolderName = newCalendarFolder.Name;
           }
 
           // Create and assign all Kolab address books that are not yet synced to an outlook folder
-          Folder defaultAddressBookFolder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(OlDefaultFolders.olFolderContacts) as Folder;
+          MAPIFolder defaultAddressBookFolder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(OlDefaultFolders.olFolderContacts) as MAPIFolder;
           foreach (var resource in addressBooks.Where(c => c.SelectedFolder == null))
           {
             string newAddressBookName = resource.Name + " (" + Name + ")";
-            Folder newAddressBookFolder = null;
+            MAPIFolder newAddressBookFolder = null;
             try
             {
-              newAddressBookFolder = defaultAddressBookFolder.Folders[newAddressBookName] as Folder;
+              newAddressBookFolder = defaultAddressBookFolder.Folders[newAddressBookName] as MAPIFolder;
             }
             catch
             {
-              newAddressBookFolder = defaultAddressBookFolder.Folders.Add(newAddressBookName, OlDefaultFolders.olFolderContacts) as Folder;
+              newAddressBookFolder = defaultAddressBookFolder.Folders.Add(newAddressBookName, OlDefaultFolders.olFolderContacts) as MAPIFolder;
               newAddressBookFolder.Name = newAddressBookName;
             }
-            resource.SelectedFolder = new OutlookFolderDescriptor(newAddressBookFolder);
+            resource.SelectedFolder = new OutlookFolderDescriptor(newAddressBookFolder.EntryID, newAddressBookFolder.StoreID, newAddressBookFolder.DefaultItemType, newAddressBookFolder.Name, 0);
             resource.SelectedFolderName = newAddressBookFolder.Name;
           }
 
           // Create and assign all Kolab address books that are not yet synced to an outlook folder
-          Folder defaultTaskListsFolder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(OlDefaultFolders.olFolderTasks) as Folder;
+          MAPIFolder defaultTaskListsFolder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(OlDefaultFolders.olFolderTasks) as MAPIFolder;
           foreach (var resource in taskLists.Where(c => c.SelectedFolder == null))
           {
             string newTaskListName = resource.Name + " (" + Name + ")";
-            Folder newTaskListFolder = null;
+            MAPIFolder newTaskListFolder = null;
             try
             {
-              newTaskListFolder = defaultTaskListsFolder.Folders[newTaskListName] as Folder;
+              newTaskListFolder = defaultTaskListsFolder.Folders[newTaskListName] as MAPIFolder;
             }
             catch
             {
-              newTaskListFolder = defaultTaskListsFolder.Folders.Add(newTaskListName, OlDefaultFolders.olFolderTasks) as Folder;
+              newTaskListFolder = defaultTaskListsFolder.Folders.Add(newTaskListName, OlDefaultFolders.olFolderTasks) as MAPIFolder;
               newTaskListFolder.Name = newTaskListName;
             }
-            resource.SelectedFolder = new OutlookFolderDescriptor(newTaskListFolder);
+            resource.SelectedFolder = new OutlookFolderDescriptor(newTaskListFolder.EntryID, newTaskListFolder.StoreID, newTaskListFolder.DefaultItemType, newTaskListFolder.Name, 0);
             resource.SelectedFolderName = newTaskListFolder.Name;
           }
         }
@@ -259,7 +261,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 
             foreach (var resource in calendars.Where (c => c.SelectedFolder != null))
             {
-              var options = CreateOptionsWithCategory (resource);
+              var options = CreateOptions (resource);
               _serverSettingsViewModel.SetResourceUrl (options, resource.Model);
               optionList.Add (options);
             }
