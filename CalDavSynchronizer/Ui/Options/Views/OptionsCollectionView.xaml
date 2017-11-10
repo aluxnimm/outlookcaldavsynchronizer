@@ -221,6 +221,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -229,6 +230,7 @@
                         </Grid.ColumnDefinitions>
                         <Button    Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Command="{Binding DiscoverResourcesCommand}">Assign Kolab folders to distinct Outlook folders</Button>
                         <CheckBox  Grid.Row="1" Grid.Column="0" IsChecked="{Binding AutoCreateOutlookFolders}">Automatically create Outlook folders</CheckBox>
+                        <CheckBox  Grid.Row="2" Grid.Column="0" IsChecked="{Binding OnlyAddNewUrls}">Only add new Kolab resources</CheckBox>
                         <Rectangle Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Stretch" Width="1" Margin="2" Stroke="Black" />
                         <Button    Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" Command="{Binding MergeResourcesCommand}">Merge Kolab folders to a common Outlook folder</Button>
                         <DockPanel Grid.Row="1" Grid.Column="2">

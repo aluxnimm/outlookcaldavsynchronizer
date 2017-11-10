@@ -73,7 +73,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       _parent = parent;
       if (parent == null)
         throw new ArgumentNullException (nameof (parent));
-     if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
+      if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
       if (prototypeModel == null) throw new ArgumentNullException(nameof(prototypeModel));
       if (viewOptions == null) throw new ArgumentNullException(nameof(viewOptions));
 
@@ -185,7 +185,15 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
         var calendars = serverResources.Calendars.Select (c => new CalendarDataViewModel (c)).ToArray();
         var addressBooks = serverResources.AddressBooks.Select (a => new AddressBookDataViewModel (a)).ToArray();
         var taskLists = serverResources.TaskLists.Select (d => new TaskListDataViewModel (d)).ToArray();
-
+        if (OnlyAddNewUrls)
+        {
+          // Exclude all resourcres that have already been configured
+          var options = (_parent as OptionsCollectionViewModel).Options;
+          var configuredUrls = new HashSet<String>(options.Select(o => o.Model.CalenderUrl));
+          calendars = calendars.Where(c => !configuredUrls.Contains(c.Uri.AbsoluteUri)).ToArray();
+          addressBooks = addressBooks.Where(c => !configuredUrls.Contains(c.Uri.AbsoluteUri)).ToArray();
+          taskLists = taskLists.Where(c => !configuredUrls.Contains(c.Model.Id)).ToArray();
+        }
         // --- Create folders if requested and required
         if (AutoCreateOutlookFolders)
         {
@@ -363,6 +371,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
     public bool IsActive { get; set; }
     public bool SupportsIsActive { get; } = false;
     public bool AutoCreateOutlookFolders { get; set; } = false;
+    public bool OnlyAddNewUrls { get; set; } = false;
     public IEnumerable<ISubOptionsViewModel> Items { get; }
     IEnumerable<ITreeNodeViewModel> ITreeNodeViewModel.Items => Items;
 
