@@ -27,7 +27,7 @@ For possible enterprise support, please contact us [here](http://caldavsynchroni
 
 ### Recommended Android DAV client ###
 
-We work closely together and test interopability with DAVdroid for Android, see [https://davdroid.bitfire.at](https://davdroid.bitfire.at), so we can really recommend it! Together with DAVdroid we now have experimental support for per-event coloring by mapping the Outlook category color to the COLOR attribute of the event.
+We work closely together and test interopability with DAVdroid for Android, see [https:// www.davdroid.com](https://www.davdroid.com), so we can really recommend it! Together with DAVdroid we now have experimental support for per-event coloring by mapping the Outlook category color to the COLOR attribute of the event.
 
 ### Tested CalDAV Servers ###
 
@@ -115,6 +115,19 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 2.26.0 ####
+- Released 2017/11/15
+- New features
+	- New Logo and Application Icon, thanks to Michael C. Krieter!
+	- Add support for absolute alarms and alarms relative to the end and map them to Outlook reminders if the alarm is before the appointment start (otherwhise not supported in Outlook), feature request  82.
+- Bug fixes
+	- Improve Color and ShortcutKey mapping.
+	- Disable IsCategoryFilterSticky also for Events by default.
+	- Improve profile separation.
+	- Create Outlook items with default ItemType of the folder if includeCustomMessageClasses is enabled, feature request 80.
+	- Improve IntegrationTests.
+	- Set PercentCompleted after setting the task status in TaskMapper to avoid that the value gets lost if status in not in progress.
+	
 #### 2.25.0 ####
 - Released 2017/10/07
 - New features
