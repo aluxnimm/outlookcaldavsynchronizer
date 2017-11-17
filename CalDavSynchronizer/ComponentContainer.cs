@@ -105,6 +105,7 @@ namespace CalDavSynchronizer
     private readonly IOneTimeTaskRunner _oneTimeTaskRunner;
     private readonly TotalProgressFactory _totalProgressFactory;
     private readonly IOutlookSession _outlookSession;
+    private readonly IProfileTypeRegistry _profileTypeRegistry;
 
     public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
     public event EventHandler<SchedulerStatusEventArgs> StatusChanged
@@ -121,7 +122,9 @@ namespace CalDavSynchronizer
 
       s_logger.Info ("Startup...");
 
-      if(GeneralOptionsDataAccess.WpfRenderModeSoftwareOnly)
+      _profileTypeRegistry = ProfileTypeRegistry.Instance;
+
+      if (GeneralOptionsDataAccess.WpfRenderModeSoftwareOnly)
         RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
 
       _generalOptionsDataAccess = generalOptionsDataAccess;
@@ -529,13 +532,14 @@ namespace CalDavSynchronizer
 
       var viewOptions = new ViewOptions (generalOptions.EnableAdvancedView);
       OptionModelSessionData sessionData = new OptionModelSessionData(_outlookSession.GetCategories().ToDictionary(c => c.Name , _outlookSession.CategoryNameComparer));
-      var viewModel = new OptionsCollectionViewModel (
-          generalOptions.ExpandAllSyncProfiles,
-          GetProfileDataDirectory,
-          _uiService, 
-          optionTasks,
-          p => ProfileTypeRegistry.Create(p, _outlookAccountPasswordProvider, categories, optionTasks, faultFinder, generalOptions, viewOptions, sessionData),
-          viewOptions);
+      var viewModel = new OptionsCollectionViewModel(
+        generalOptions.ExpandAllSyncProfiles,
+        GetProfileDataDirectory,
+        _uiService,
+        optionTasks,
+        _profileTypeRegistry,
+        (parent, type) => type.CreateModelFactory(parent, _outlookAccountPasswordProvider, categories, optionTasks, faultFinder, generalOptions, viewOptions, sessionData),
+        viewOptions);
 
       _currentVisibleOptionsFormOrNull = viewModel;
 

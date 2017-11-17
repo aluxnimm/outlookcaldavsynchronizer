@@ -467,6 +467,8 @@
     <Compile Include="Ui\Options\Models\MappingConfigurationModel.cs" />
     <Compile Include="Ui\Options\Models\OneTimeChangeCategoryTask.cs" />
     <Compile Include="Ui\Options\ProfileTypes\ContactsiCloudProfile.cs" />
+    <Compile Include="Ui\Options\ProfileTypes\DesignProfileModelFactory.cs" />
+    <Compile Include="Ui\Options\ProfileTypes\IProfileModelFactory.cs" />
     <Compile Include="Ui\Options\ProfileTypes\MailDeProfile.cs" />
     <Compile Include="Ui\Options\Models\OptionModelSessionData.cs" />
     <Compile Include="Ui\Options\ProfileTypes\SmarterMailProfile.cs" />
@@ -484,7 +486,7 @@
     <Compile Include="Ui\Options\ProfileTypes\EasyProjectProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\NextcloudProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\PosteoProfile.cs" />
-    <Compile Include="Ui\Options\ProfileTypes\ProfileBase.cs" />
+    <Compile Include="Ui\Options\ProfileTypes\ProfileModelFactoryBase.cs" />
     <Compile Include="Ui\Options\ProfileTypes\SarenetProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\SogoProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\YandexProfile.cs" />

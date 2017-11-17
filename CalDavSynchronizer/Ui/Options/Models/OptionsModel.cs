@@ -80,7 +80,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
     private readonly OptionModelSessionData _sessionData;
     private readonly MappingConfigurationModelFactory _mappingConfigurationModelFactory;
 
-    public static OptionsModel DesignInstance => new OptionsModel(NullSettingsFaultFinder.Instance, NullOptionTasks.Instance, NullOutlookAccountPasswordProvider.Instance, new Contracts.Options(), new GeneralOptions(), DesignProfileType.Instance, false, new OptionModelSessionData(new  Dictionary<string, OutlookCategory>()));
+    public static OptionsModel DesignInstance => new OptionsModel(NullSettingsFaultFinder.Instance, NullOptionTasks.Instance, NullOutlookAccountPasswordProvider.Instance, new Contracts.Options(), new GeneralOptions(), DesignProfileModelFactory.Instance, false, new OptionModelSessionData(new  Dictionary<string, OutlookCategory>()));
    
     public OptionsModel(
       ISettingsFaultFinder faultFinder, 
@@ -88,7 +88,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
       IOutlookAccountPasswordProvider outlookAccountPasswordProvider,
       Contracts.Options data,
       GeneralOptions generalOptions, 
-      IProfileType profileType,
+      IProfileModelFactory profileModelFactory,
       bool isGoogle,
       OptionModelSessionData sessionData)
     {
@@ -99,7 +99,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
       _optionTasks = optionTasks ?? throw new ArgumentNullException(nameof(optionTasks));
       _outlookAccountPasswordProvider = outlookAccountPasswordProvider ?? throw new ArgumentNullException(nameof(outlookAccountPasswordProvider));
       _generalOptions = generalOptions ?? throw new ArgumentNullException(nameof(generalOptions));
-      ProfileType = profileType ?? throw new ArgumentNullException(nameof(profileType));
+      ModelFactory = profileModelFactory ?? throw new ArgumentNullException(nameof(profileModelFactory));
       _sessionData = sessionData ?? throw new ArgumentNullException(nameof(sessionData));
 
       Id = data.Id;
@@ -110,7 +110,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
     }
  
 
-    public IProfileType ProfileType { get; }
+    public IProfileModelFactory ModelFactory { get; }
 
     public Guid Id { get; }
     public MappingConfigurationModel MappingConfigurationModelOrNull
@@ -520,7 +520,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
     {
       var data = CreateData();
       data.Id = Guid.NewGuid();
-      return new OptionsModel(_faultFinder, _optionTasks, _outlookAccountPasswordProvider, data , _generalOptions, ProfileType, _isGoogle, _sessionData);
+      return new OptionsModel(_faultFinder, _optionTasks, _outlookAccountPasswordProvider, data , _generalOptions, ModelFactory, _isGoogle, _sessionData);
     }
 
     public ProxyOptions CreateProxyOptions()

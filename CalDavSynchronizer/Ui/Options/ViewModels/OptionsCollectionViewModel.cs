@@ -38,6 +38,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     private readonly ObservableCollection<IOptionsViewModel> _options = new ObservableCollection<IOptionsViewModel> ();
     private readonly IProfileTypeRegistry _profileTypeRegistry;
+    private readonly IReadOnlyDictionary<IProfileType, IProfileModelFactory> _profileModelFactoriesByType;
     private readonly bool _expandAllSyncProfiles;
     private readonly IUiService _uiService;
     public event EventHandler<CloseEventArgs> CloseRequested;
@@ -51,7 +52,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       Func<Guid, string> profileDataDirectoryFactory,
       IUiService uiService,
       IOptionTasks optionTasks,
-      Func<IOptionsViewModelParent, IProfileTypeRegistry> profileTypeRegistryFactory,
+      IProfileTypeRegistry profileTypeRegistry,
+      Func<IOptionsViewModelParent, IProfileType, IProfileModelFactory> profileModelFactoryFactory,
       IViewOptions viewOptions)
     {
       _optionTasks = optionTasks;
@@ -65,7 +67,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
       _expandAllSyncProfiles = expandAllSyncProfiles;
 
-      _profileTypeRegistry = profileTypeRegistryFactory(this);
+      _profileTypeRegistry = profileTypeRegistry;
+      _profileModelFactoriesByType = profileTypeRegistry.AllTypes.ToDictionary(t => t, t => profileModelFactoryFactory(this, t));
 
       RegisterPropertyChangeHandler(viewOptions, nameof(viewOptions.IsAdvancedViewEnabled), () =>
       {
@@ -279,7 +282,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       var type = QueryProfileType();
       if (type != null)
       {
-        var viewModel = type.CreateViewModel(type.CreateNewModel());
+        var profileModelFactoryFactory = _profileModelFactoriesByType[type];
+        var viewModel = profileModelFactoryFactory.CreateViewModel(profileModelFactoryFactory.CreateNewModel());
         _options.Add(viewModel);
         ShowProfile(viewModel.Model.Id);
       }
@@ -290,7 +294,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       var type = QueryProfileType();
       if (type != null)
       {
-        var viewModel = type.CreateTemplateViewModel();
+        var profileModelFactoryFactory = _profileModelFactoriesByType[type];
+        var viewModel = profileModelFactoryFactory.CreateTemplateViewModel();
         _options.Add(viewModel);
         ShowProfile(viewModel.Model.Id);
       }
@@ -325,7 +330,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       foreach (var data in value)
       {
         var profileType = _profileTypeRegistry.DetermineType(data);
-        _options.Add(profileType.CreateViewModel(profileType.CreateModelFromData(data)));
+        var profileModelFactory = _profileModelFactoriesByType[profileType];
+        _options.Add(profileModelFactory.CreateViewModel(profileModelFactory.CreateModelFromData(data)));
       }
 
       var initialSelectedProfile =
@@ -368,7 +374,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
       var index = _options.IndexOf(viewModel) + 1;
 
-      var newViewModel = modelCopy.ProfileType.CreateViewModel(modelCopy);
+      var newViewModel = modelCopy.ModelFactory.CreateViewModel(modelCopy);
       _options.Insert(index, newViewModel);
 
       ShowProfile(newViewModel.Model.Id);
@@ -394,7 +400,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     {
       foreach (var data in options)
       {
-        _options.Add(data.ProfileType.CreateViewModel(data));
+        _options.Add(data.ModelFactory.CreateViewModel(data));
       }
 
       if (options.Any())
@@ -413,7 +419,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
             _ => string.Empty,
             NullUiService.Instance,
             NullOptionTasks.Instance,
-            p => null,
+            ProfileTypeRegistry.Instance,
+            (parent,type) => DesignProfileModelFactory.Instance,
             DesignViewOptions);
               
           var genericOptionsViewModel = GenericOptionsViewModel.DesignInstance;

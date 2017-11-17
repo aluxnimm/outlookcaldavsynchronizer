@@ -23,44 +23,52 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 {
-  class EasyProjectProfile : ProfileBase
+  class EasyProjectProfile : IProfileType
   {
-    public EasyProjectProfile(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
-      : base(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData)
+    public string Name => "EasyProject";
+    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_easyproject.png";
+
+    public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
+      return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData);
     }
 
-    public override string Name => "EasyProject";
-    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_easyproject.png";
-
-    protected override void InitializeData(Contracts.Options data)
+    class ProfileModelFactory : ProfileModelFactoryBase
     {
-      data.CalenderUrl = "https://demo.easyredmine.com/caldav/";
-      data.EnableChangeTriggeredSynchronization = true;
-      data.DaysToSynchronizeInThePast = 7;
-      data.DaysToSynchronizeInTheFuture = 180;
-      data.MappingConfiguration = new EventMappingConfiguration
+      public ProfileModelFactory(IProfileType profileType, IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+        : base(profileType, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData)
       {
-        UseGlobalAppointmentID = true,
-        UseIanaTz = true,
-        MapXAltDescToRtfBody = true,
-        MapRtfBodyToXAltDesc = true
-      };
-    }
+      }
 
-    protected override void InitializePrototypeData(Contracts.Options data)
-    {
-      InitializeData(data);
-    }
+      protected override void InitializeData(Contracts.Options data)
+      {
+        data.CalenderUrl = "https://demo.easyredmine.com/caldav/";
+        data.EnableChangeTriggeredSynchronization = true;
+        data.DaysToSynchronizeInThePast = 7;
+        data.DaysToSynchronizeInTheFuture = 180;
+        data.MappingConfiguration = new EventMappingConfiguration
+        {
+          UseGlobalAppointmentID = true,
+          UseIanaTz = true,
+          MapXAltDescToRtfBody = true,
+          MapRtfBodyToXAltDesc = true
+        };
+      }
 
-    protected override IOptionsViewModel CreateTemplateViewModel(OptionsModel prototypeModel)
-    {
-      return new EasyProjectMultipleOptionsTemplateViewModel(
-       OptionsViewModelParent,
-       new EasyProjectServerSettingsTemplateViewModel(OutlookAccountPasswordProvider, prototypeModel),
-       OptionTasks,
-       prototypeModel,
-       ViewOptions);
+      protected override void InitializePrototypeData(Contracts.Options data)
+      {
+        InitializeData(data);
+      }
+
+      protected override IOptionsViewModel CreateTemplateViewModel(OptionsModel prototypeModel)
+      {
+        return new EasyProjectMultipleOptionsTemplateViewModel(
+          OptionsViewModelParent,
+          new EasyProjectServerSettingsTemplateViewModel(OutlookAccountPasswordProvider, prototypeModel),
+          OptionTasks,
+          prototypeModel,
+          ViewOptions);
+      }
     }
   }
 }
