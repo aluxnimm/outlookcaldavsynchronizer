@@ -71,6 +71,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
     private bool _proxyUseManual;
     private string _proxyUserName;
     private bool _forceBasicAuthentication;
+    private string _profileTypeOrNull;
 
     private MappingConfigurationModel _mappingConfigurationModelOrNull;
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
@@ -441,6 +442,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
       _daysToSynchronizeInThePast = data.DaysToSynchronizeInThePast;
       _daysToSynchronizeInTheFuture = data.DaysToSynchronizeInTheFuture;
       _useWebDavCollectionSync = data.UseWebDavCollectionSync;
+      _profileTypeOrNull = data.ProfileTypeOrNull;
 
       var proxyOptions = data.ProxyOptions ?? new ProxyOptions();
 
@@ -508,6 +510,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
         ForceBasicAuthentication = _forceBasicAuthentication,
         ProxyOptions = CreateProxyOptions(),
         MappingConfiguration = MappingConfigurationModelOrNull?.GetData(),
+        ProfileTypeOrNull = _profileTypeOrNull
       };
     }
 

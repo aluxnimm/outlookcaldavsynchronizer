@@ -100,7 +100,8 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
         ProxyOptions = new ProxyOptions() { ProxyUseDefault = true },
         IsChunkedSynchronizationEnabled = true,
         ChunkSize = 100,
-        ServerAdapterType = ServerAdapterType.WebDavHttpClientBased
+        ServerAdapterType = ServerAdapterType.WebDavHttpClientBased,
+        ProfileTypeOrNull = ProfileTypeRegistry.GetProfileTypeName(ProfileType)
       };
     }
   

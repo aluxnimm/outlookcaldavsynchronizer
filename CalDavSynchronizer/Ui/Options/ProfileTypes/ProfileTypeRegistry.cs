@@ -21,21 +21,26 @@ using System.Linq;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
+using log4net;
 
 namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 {
   public class ProfileTypeRegistry : IProfileTypeRegistry
   {
+    private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
     public static readonly IProfileTypeRegistry Instance = Create();
 
     private readonly GenericProfile _genericProfile;
     private readonly GoogleProfile _googleProfile;
+    private readonly IReadOnlyDictionary<string,IProfileType> _profileTypeByName = new Dictionary<string, IProfileType>();
 
     private ProfileTypeRegistry(IReadOnlyList<IProfileType> allTypes, GenericProfile genericProfile, GoogleProfile googleProfile)
     {
       _genericProfile = genericProfile;
       _googleProfile = googleProfile;
       AllTypes = allTypes;
+      _profileTypeByName = allTypes.ToDictionary(GetProfileTypeName);
     }
 
     private static IProfileTypeRegistry Create()
@@ -66,10 +71,33 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 
     public IProfileType DetermineType(Contracts.Options data)
     {
+      if (data.ProfileTypeOrNull != null)
+      {
+        if (_profileTypeByName.TryGetValue(data.ProfileTypeOrNull, out var profileType))
+        {
+          return profileType;
+        }
+        else
+        {
+          s_logger.Warn($"Profile '{data.Name}' ('{data.Id}'): Unknown profile type name '{data.ProfileTypeOrNull}'");
+        }
+      }
+
       if (_googleProfile.IsGoogleProfile(data))
         return _googleProfile;
       else
         return _genericProfile;
+    }
+
+
+    public static string GetProfileTypeName(IProfileType type)
+    {
+      var typeNameWithSuffix = type.GetType().Name;
+      const string profileSuffix = "Profile";
+      if (!typeNameWithSuffix.EndsWith(profileSuffix) || typeNameWithSuffix.Length == profileSuffix.Length)
+        throw new ArgumentException($"Type name has to have at least one character with the suffix '{profileSuffix}'", nameof(type));
+      var typeName = typeNameWithSuffix.Substring(0, typeNameWithSuffix.Length - profileSuffix.Length);
+      return typeName;
     }
   }
 }
