@@ -472,6 +472,7 @@
     <Compile Include="Ui\Options\Models\ServerSettingsDetector.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\ContactsiCloudProfile.cs" />
     <Compile Include="ProfileTypes\DesignProfileModelFactory.cs" />
+    <Compile Include="ProfileTypes\ConcreteTypes\Swisscom\SwisscomProfile.cs" />
     <Compile Include="ProfileTypes\IProfileModelFactory.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\MailDeProfile.cs" />
     <Compile Include="Ui\Options\Models\OptionModelSessionData.cs" />
@@ -480,6 +481,7 @@
     <Compile Include="ProfileTypes\ConcreteTypes\SmarterMailProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\WebDeProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\CozyProfile.cs" />
+    <Compile Include="ProfileTypes\ConcreteTypes\Swisscom\SwisscomServerSettingsDetector.cs" />
     <Compile Include="ProfileTypes\DesignProfileType.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\MailboxOrgProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\FruuxProfile.cs" />
@@ -864,6 +866,7 @@
   <ItemGroup>
     <Content Include="LICENSE.txt" />
     <Resource Include="Resources\ProfileLogos\logo_kolab.png" />
+    <Resource Include="Resources\ProfileLogos\logo_swisscom.png" />
     <Resource Include="Resources\ProfileLogos\logo_iCloud.png" />
     <Resource Include="Resources\ProfileLogos\logo_mail.de.png" />
     <Resource Include="Resources\ProfileLogos\logo_smartermail.png" />
@@ -914,6 +917,10 @@
     <ProjectReference Include="..\CalDavSynchronizer.OAuth.Google\CalDavSynchronizer.OAuth.Google.csproj">
       <Project>{230914cf-6ff1-4b09-a831-c37c6b41d127}</Project>
       <Name>CalDavSynchronizer.OAuth.Google</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CalDavSynchronizer.OAuth.Swisscom\CalDavSynchronizer.OAuth.Swisscom.csproj">
+      <Project>{424f803e-b641-4473-b9c3-b8df40e0b3b3}</Project>
+      <Name>CalDavSynchronizer.OAuth.Swisscom</Name>
     </ProjectReference>
     <ProjectReference Include="..\GenSync\GenSync.csproj">
       <Project>{76c932e7-eca5-4010-b602-2104327ee5ee}</Project>

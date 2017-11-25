@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CalDavSynchronizer.ProfileTypes.ConcreteTypes;
+using CalDavSynchronizer.ProfileTypes.ConcreteTypes.Swisscom;
 using log4net;
 
 namespace CalDavSynchronizer.ProfileTypes
@@ -62,6 +63,7 @@ namespace CalDavSynchronizer.ProfileTypes
       all.Add(new SmarterMailProfile());
       all.Add(new MailDeProfile());
       all.Add(new KolabProfile());
+      all.Add(new SwisscomProfile());
 
       return new ProfileTypeRegistry(all, generic, google);
     }
