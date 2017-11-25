@@ -33,5 +33,6 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
       return GenericOptionsViewModel.DesignInstance;
     }
 
+    public ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(false);
   }
 }

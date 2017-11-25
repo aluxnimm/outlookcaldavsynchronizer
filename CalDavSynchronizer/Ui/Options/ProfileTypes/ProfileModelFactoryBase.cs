@@ -145,6 +145,8 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
       return optionsViewModel;
     }
 
+    public virtual ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true);
+
     protected virtual IOptionsViewModel CreateTemplateViewModel(OptionsModel prototypeModel)
     {
       var optionsViewModel = new MultipleOptionsTemplateViewModel(

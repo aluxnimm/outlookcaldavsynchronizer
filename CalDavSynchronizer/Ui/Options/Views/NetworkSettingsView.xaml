@@ -8,7 +8,7 @@
              d:DataContext="{x:Static viewModels:NetworkSettingsViewModel.DesignInstance}">
 
   <DockPanel>
-    <GroupBox DockPanel.Dock="Top" Header="Advanced network settings">
+    <GroupBox DockPanel.Dock="Top" Header="Advanced network settings" IsEnabled="{Binding ModelOptions.AreAdvancedNetWorkSettingsEnabled, Mode=OneTime}">
       <StackPanel>
         <CheckBox IsChecked="{Binding CloseConnectionAfterEachRequest}">Close connection after each request</CheckBox>
         <CheckBox IsChecked="{Binding PreemptiveAuthentication}">Use preemptive authentication</CheckBox>

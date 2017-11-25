@@ -23,6 +23,7 @@ using System.Security;
 using System.Text;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Ui.Options.Models;
+using CalDavSynchronizer.Ui.Options.ProfileTypes;
 using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
@@ -38,6 +39,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     {
       if (model == null) throw new ArgumentNullException(nameof(model));
       _model = model;
+      ModelOptions = model.ModelFactory.ModelOptions;
 
       RegisterPropertyChangePropagation(_model, nameof(_model.CloseConnectionAfterEachRequest), nameof(CloseConnectionAfterEachRequest));
       RegisterPropertyChangePropagation(_model, nameof(_model.PreemptiveAuthentication), nameof(PreemptiveAuthentication));
@@ -49,6 +51,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       RegisterPropertyChangePropagation(_model, nameof(_model.ForceBasicAuthentication), nameof(ForceBasicAuthentication));
 
     }
+
+    public ProfileModelOptions ModelOptions { get; }
 
     public bool CloseConnectionAfterEachRequest
     {

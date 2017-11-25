@@ -157,6 +157,8 @@ namespace CalDavSynchronizer.UnitTest.Ui.Options.ViewModels
         throw new NotImplementedException();
       }
 
+      public ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true);
+
       public string ImageUrl { get; } = string.Empty;
 
       public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)

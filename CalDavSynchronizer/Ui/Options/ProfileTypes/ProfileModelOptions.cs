@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -14,18 +14,15 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using CalDavSynchronizer.Ui.Options.Models;
-using CalDavSynchronizer.Ui.Options.ViewModels;
-
 namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 {
-  public interface IProfileModelFactory
+  public class ProfileModelOptions
   {
-    IProfileType ProfileType { get; }
-    OptionsModel CreateNewModel();
-    OptionsModel CreateModelFromData(Contracts.Options data);
-    IOptionsViewModel CreateViewModel(OptionsModel model);
-    IOptionsViewModel CreateTemplateViewModel();
-    ProfileModelOptions ModelOptions { get; }
+    public ProfileModelOptions(bool areAdvancedNetWorkSettingsEnabled)
+    {
+      AreAdvancedNetWorkSettingsEnabled = areAdvancedNetWorkSettingsEnabled;
+    }
+
+    public bool AreAdvancedNetWorkSettingsEnabled { get; }
   }
 }

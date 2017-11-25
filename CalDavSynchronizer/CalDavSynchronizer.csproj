@@ -474,6 +474,7 @@
     <Compile Include="Ui\Options\ProfileTypes\IProfileModelFactory.cs" />
     <Compile Include="Ui\Options\ProfileTypes\MailDeProfile.cs" />
     <Compile Include="Ui\Options\Models\OptionModelSessionData.cs" />
+    <Compile Include="Ui\Options\ProfileTypes\ProfileModelOptions.cs" />
     <Compile Include="Ui\Options\ProfileTypes\SmarterMailProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\WebDeProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\CozyProfile.cs" />
