@@ -50,7 +50,7 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
       
       protected override OptionsModel CreateModel(Contracts.Options data)
       {
-        return new OptionsModel(SettingsFaultFinder, OptionTasks, OutlookAccountPasswordProvider, data, GeneralOptions, this, true, SessionData);
+        return new OptionsModel(SettingsFaultFinder, OptionTasks, OutlookAccountPasswordProvider, data, GeneralOptions, this, true, SessionData, ServerSettingsDetector.Value);
       }
 
       protected override void InitializeData(Contracts.Options data)

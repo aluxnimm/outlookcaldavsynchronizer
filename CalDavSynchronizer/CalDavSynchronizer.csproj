@@ -464,8 +464,11 @@
     <Compile Include="Ui\Options\EnumDisplayNameProvider.cs" />
     <Compile Include="Ui\Options\IEnumDisplayNameProvider.cs" />
     <Compile Include="Ui\Options\Models\ICustomPropertiesMappingConfigurationModel.cs" />
+    <Compile Include="Ui\Options\Models\IServerSettingsDetector.cs" />
     <Compile Include="Ui\Options\Models\MappingConfigurationModel.cs" />
+    <Compile Include="Ui\Options\Models\NullServerSettingsDetector.cs" />
     <Compile Include="Ui\Options\Models\OneTimeChangeCategoryTask.cs" />
+    <Compile Include="Ui\Options\Models\ServerSettingsDetector.cs" />
     <Compile Include="Ui\Options\ProfileTypes\ContactsiCloudProfile.cs" />
     <Compile Include="Ui\Options\ProfileTypes\DesignProfileModelFactory.cs" />
     <Compile Include="Ui\Options\ProfileTypes\IProfileModelFactory.cs" />

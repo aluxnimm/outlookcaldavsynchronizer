@@ -57,9 +57,13 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
       GeneralOptions = generalOptions;
       ViewOptions = viewOptions;
       SessionData = sessionData;
+      ServerSettingsDetector = new Lazy<IServerSettingsDetector>(CreateServerSettingsDetector);
     }
 
     public IProfileType ProfileType { get; }
+
+    protected Lazy<IServerSettingsDetector> ServerSettingsDetector { get; }
+    protected virtual IServerSettingsDetector CreateServerSettingsDetector() => new ServerSettingsDetector(OutlookAccountPasswordProvider);
 
     public OptionsModel CreateNewModel()
     {
@@ -75,8 +79,10 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 
     protected virtual OptionsModel CreateModel(Contracts.Options data)
     {
-      return new OptionsModel(SettingsFaultFinder, OptionTasks, OutlookAccountPasswordProvider, data, GeneralOptions, this, false, SessionData);
+      return new OptionsModel(SettingsFaultFinder, OptionTasks, OutlookAccountPasswordProvider, data, GeneralOptions, this, false, SessionData, ServerSettingsDetector.Value);
     }
+
+
 
     protected virtual void InitializeData(Contracts.Options data)
     {
@@ -107,7 +113,7 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
   
     protected virtual OptionsModel CreatePrototypeModel(Contracts.Options data)
     {
-      return new OptionsModel(SettingsFaultFinder, OptionTasks, OutlookAccountPasswordProvider, data, GeneralOptions, this, false, SessionData);
+      return new OptionsModel(SettingsFaultFinder, OptionTasks, OutlookAccountPasswordProvider, data, GeneralOptions, this, false, SessionData, ServerSettingsDetector.Value);
     }
 
     protected virtual void InitializePrototypeData(Contracts.Options data)

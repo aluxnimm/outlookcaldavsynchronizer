@@ -128,15 +128,17 @@ namespace CalDavSynchronizer.UnitTest.Ui.Options.ViewModels
 
       public OptionsModel CreateModelFromData(Contracts.Options data)
       {
+        var outlookAccountPasswordProvider = MockRepository.GenerateStub<IOutlookAccountPasswordProvider>();
         return new OptionsModel(
             MockRepository.GenerateStub<ISettingsFaultFinder>(),
             _optionTasksStub,
-            MockRepository.GenerateStub<IOutlookAccountPasswordProvider>(),
+            outlookAccountPasswordProvider,
             data,
             new GeneralOptions(),
             this,
             false,
-            new OptionModelSessionData(new Dictionary<string, OutlookCategory>()));
+            new OptionModelSessionData(new Dictionary<string, OutlookCategory>()),
+            new ServerSettingsDetector(outlookAccountPasswordProvider));
       }
 
       public IOptionsViewModel CreateViewModel(OptionsModel model)
