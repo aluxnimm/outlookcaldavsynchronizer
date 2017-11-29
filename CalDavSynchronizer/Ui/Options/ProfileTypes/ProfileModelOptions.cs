@@ -18,11 +18,13 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 {
   public class ProfileModelOptions
   {
-    public ProfileModelOptions(bool areAdvancedNetWorkSettingsEnabled)
+    public ProfileModelOptions(bool areAdvancedNetWorkSettingsEnabled, bool isEnableChangeTriggeredSynchronizationEnabled)
     {
       AreAdvancedNetWorkSettingsEnabled = areAdvancedNetWorkSettingsEnabled;
+      IsEnableChangeTriggeredSynchronizationEnabled = isEnableChangeTriggeredSynchronizationEnabled;
     }
 
     public bool AreAdvancedNetWorkSettingsEnabled { get; }
+    public bool IsEnableChangeTriggeredSynchronizationEnabled { get; }
   }
 }

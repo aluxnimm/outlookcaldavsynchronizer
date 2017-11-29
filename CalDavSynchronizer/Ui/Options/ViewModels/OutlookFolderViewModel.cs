@@ -19,6 +19,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using CalDavSynchronizer.Ui.Options.Models;
+using CalDavSynchronizer.Ui.Options.ProfileTypes;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
 
@@ -40,12 +41,14 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       _model = model;
       _optionTasks = optionTasks;
       ViewOptions = viewOptions;
-
+      ModelOptions = model.ModelFactory.ModelOptions;
 
       RegisterPropertyChangePropagation(_model, nameof(_model.EnableChangeTriggeredSynchronization), nameof(EnableChangeTriggeredSynchronization));
       RegisterPropertyChangePropagation(_model, nameof(_model.SelectedFolderOrNull), nameof(SelectedFolderName));
       SelectFolderCommand = new DelegateCommand(_ => SelectFolder());
     }
+
+    public ProfileModelOptions ModelOptions { get; }
 
     public bool EnableChangeTriggeredSynchronization
     {

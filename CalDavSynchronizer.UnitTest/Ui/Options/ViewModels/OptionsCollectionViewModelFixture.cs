@@ -157,7 +157,7 @@ namespace CalDavSynchronizer.UnitTest.Ui.Options.ViewModels
         throw new NotImplementedException();
       }
 
-      public ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true);
+      public ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true);
 
       public string ImageUrl { get; } = string.Empty;
 
