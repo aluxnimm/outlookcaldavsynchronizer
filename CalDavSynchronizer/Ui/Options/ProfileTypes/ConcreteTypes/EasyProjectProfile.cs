@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -17,15 +17,16 @@
 
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes
+namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
 {
-  class LandmarksProfile : IProfileType
+  class EasyProjectProfile : IProfileType
   {
-    public string Name => "Landmarks";
-    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_landmarks.png";
+    public string Name => "EasyProject";
+    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_easyproject.png";
 
     public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
@@ -39,15 +40,34 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
       {
       }
 
-
       protected override void InitializeData(Contracts.Options data)
       {
-        data.CalenderUrl = "https://dav.landmarks.skyrise.de/";
+        data.CalenderUrl = "https://demo.easyredmine.com/caldav/";
+        data.EnableChangeTriggeredSynchronization = true;
+        data.DaysToSynchronizeInThePast = 7;
+        data.DaysToSynchronizeInTheFuture = 180;
+        data.MappingConfiguration = new EventMappingConfiguration
+        {
+          UseGlobalAppointmentID = true,
+          UseIanaTz = true,
+          MapXAltDescToRtfBody = true,
+          MapRtfBodyToXAltDesc = true
+        };
       }
 
       protected override void InitializePrototypeData(Contracts.Options data)
       {
         InitializeData(data);
+      }
+
+      protected override IOptionsViewModel CreateTemplateViewModel(OptionsModel prototypeModel)
+      {
+        return new EasyProjectMultipleOptionsTemplateViewModel(
+          OptionsViewModelParent,
+          new EasyProjectServerSettingsTemplateViewModel(OutlookAccountPasswordProvider, prototypeModel),
+          OptionTasks,
+          prototypeModel,
+          ViewOptions);
       }
     }
   }

@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -20,12 +20,12 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes
+namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
 {
-  class PosteoProfile : IProfileType
+  class CozyProfile : IProfileType
   {
-    public string Name => "Posteo";
-    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_posteo.png";
+    public string Name => "Cozy";
+    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_cozy.png";
 
     public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
@@ -39,10 +39,13 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
       {
       }
 
-
       protected override void InitializeData(Contracts.Options data)
       {
-        data.CalenderUrl = "https://posteo.de:8443";
+        data.CalenderUrl = "https://yourdomain.cozycloud.cc/public/sync/principals/me/";
+        data.MappingConfiguration = new EventMappingConfiguration
+        {
+          UseIanaTz = true
+        };
       }
 
       protected override void InitializePrototypeData(Contracts.Options data)

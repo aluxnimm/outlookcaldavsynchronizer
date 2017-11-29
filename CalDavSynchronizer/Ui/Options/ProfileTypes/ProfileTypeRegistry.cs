@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Ui.Options.Models;
+using CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using log4net;
 

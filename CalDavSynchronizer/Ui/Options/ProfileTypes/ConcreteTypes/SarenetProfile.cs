@@ -20,12 +20,12 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes
+namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
 {
-  class SogoProfile : IProfileType
+  class SarenetProfile : IProfileType
   {
-    public string Name { get; } = "Sogo";
-    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_sogo.png";
+    public string Name => "Sarenet";
+    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_sarenet.png";
 
     public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
@@ -41,21 +41,13 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 
       protected override void InitializeData(Contracts.Options data)
       {
-        data.MappingConfiguration = new EventMappingConfiguration
-        {
-          ScheduleAgentClient = false,
-          SendNoAppointmentNotifications = true,
-          UseGlobalAppointmentID = true
-        };
-        data.CalenderUrl = "https://sogo.example.com/SOGo/dav/";
+        data.CalenderUrl = "https://configurator.organizer.sarenet.es/androidconfigurator.php";
       }
 
       protected override void InitializePrototypeData(Contracts.Options data)
       {
         InitializeData(data);
       }
-
-
     }
   }
 }

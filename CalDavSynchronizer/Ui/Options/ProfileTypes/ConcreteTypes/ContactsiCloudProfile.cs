@@ -20,12 +20,12 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes
+namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
 {
-  class MailboxOrgProfile : IProfileType
+  class ContactsiCloudProfile : IProfileType
   {
-    public string Name => "mailbox.org";
-    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_mailbox.org.png";
+    public string Name => "iCloud Contacts";
+    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_iCloud.png";
 
     public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
@@ -39,10 +39,15 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
       {
       }
 
-
       protected override void InitializeData(Contracts.Options data)
       {
-        data.CalenderUrl = "https://dav.mailbox.org";
+        data.CalenderUrl = "https://contacts.icloud.com/";
+        data.MappingConfiguration = new ContactMappingConfiguration()
+        {
+          MapDistributionLists = true,
+          DistributionListType = DistributionListType.VCardGroupWithUid,
+          WriteImAsImpp = true
+        };
       }
 
       protected override void InitializePrototypeData(Contracts.Options data)

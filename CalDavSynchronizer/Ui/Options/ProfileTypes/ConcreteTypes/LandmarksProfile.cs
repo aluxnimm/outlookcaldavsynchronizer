@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -20,12 +20,12 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes
+namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
 {
-  class CozyProfile : IProfileType
+  class LandmarksProfile : IProfileType
   {
-    public string Name => "Cozy";
-    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_cozy.png";
+    public string Name => "Landmarks";
+    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_landmarks.png";
 
     public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
@@ -39,13 +39,10 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
       {
       }
 
+
       protected override void InitializeData(Contracts.Options data)
       {
-        data.CalenderUrl = "https://yourdomain.cozycloud.cc/public/sync/principals/me/";
-        data.MappingConfiguration = new EventMappingConfiguration
-        {
-          UseIanaTz = true
-        };
+        data.CalenderUrl = "https://dav.landmarks.skyrise.de/";
       }
 
       protected override void InitializePrototypeData(Contracts.Options data)

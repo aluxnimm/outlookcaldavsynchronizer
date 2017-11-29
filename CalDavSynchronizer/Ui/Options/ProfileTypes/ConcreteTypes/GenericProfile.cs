@@ -20,12 +20,12 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes
+namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
 {
-  class SarenetProfile : IProfileType
+  public sealed class GenericProfile : IProfileType
   {
-    public string Name => "Sarenet";
-    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_sarenet.png";
+    public string ImageUrl { get; } = "";
+    public string Name { get; } = "Generic CalDAV/CardDAV";
 
     public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
@@ -39,15 +39,6 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
       {
       }
 
-      protected override void InitializeData(Contracts.Options data)
-      {
-        data.CalenderUrl = "https://configurator.organizer.sarenet.es/androidconfigurator.php";
-      }
-
-      protected override void InitializePrototypeData(Contracts.Options data)
-      {
-        InitializeData(data);
-      }
     }
   }
 }

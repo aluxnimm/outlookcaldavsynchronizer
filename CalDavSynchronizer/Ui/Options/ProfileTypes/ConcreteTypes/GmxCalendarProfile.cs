@@ -15,20 +15,17 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.Implementation;
-using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes
+namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
 {
-  public sealed class GenericProfile : IProfileType
+  class GmxCalendarProfile : IProfileType
   {
-    public string ImageUrl { get; } = "";
-    public string Name { get; } = "Generic CalDAV/CardDAV";
+    public string Name => "GmxCalendar";
+    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_gmx.png";
 
     public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
@@ -42,6 +39,20 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
       {
       }
 
+
+      protected override void InitializeData(Contracts.Options data)
+      {
+        data.CalenderUrl = "https://caldav.gmx.net";
+        data.MappingConfiguration = new EventMappingConfiguration
+        {
+          UseIanaTz = true
+        };
+      }
+
+      protected override void InitializePrototypeData(Contracts.Options data)
+      {
+        InitializeData(data);
+      }
     }
   }
 }

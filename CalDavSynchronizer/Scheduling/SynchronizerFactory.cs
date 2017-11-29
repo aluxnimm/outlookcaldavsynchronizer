@@ -42,6 +42,7 @@ using CalDavSynchronizer.Implementation.TimeZones;
 using CalDavSynchronizer.Scheduling.ComponentCollectors;
 using CalDavSynchronizer.Synchronization;
 using CalDavSynchronizer.Ui.Options.ProfileTypes;
+using CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes;
 using CalDavSynchronizer.Utilities;
 using DDay.iCal;
 using DDay.iCal.Serialization.iCalendar;

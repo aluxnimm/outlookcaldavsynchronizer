@@ -20,12 +20,12 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes
+namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
 {
-  class YandexProfile : IProfileType
+  class SogoProfile : IProfileType
   {
-    public string Name => "Yandex";
-    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_yandex.png";
+    public string Name { get; } = "Sogo";
+    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_sogo.png";
 
     public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
@@ -41,13 +41,21 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 
       protected override void InitializeData(Contracts.Options data)
       {
-        data.CalenderUrl = "https://caldav.yandex.ru";
+        data.MappingConfiguration = new EventMappingConfiguration
+        {
+          ScheduleAgentClient = false,
+          SendNoAppointmentNotifications = true,
+          UseGlobalAppointmentID = true
+        };
+        data.CalenderUrl = "https://sogo.example.com/SOGo/dav/";
       }
 
       protected override void InitializePrototypeData(Contracts.Options data)
       {
         InitializeData(data);
       }
+
+
     }
   }
 }

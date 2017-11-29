@@ -20,12 +20,12 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes
+namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
 {
-  class MailDeProfile : IProfileType
+  class WebDeProfile : IProfileType
   {
-    public string Name => "mail.de";
-    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_mail.de.png";
+    public string Name { get; } = "Web.de";
+    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_webde.png";
 
     public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
@@ -39,10 +39,13 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
       {
       }
 
-
       protected override void InitializeData(Contracts.Options data)
       {
-        data.CalenderUrl = "https://kalender.mail.de";
+        data.CalenderUrl = "https://caldav.web.de";
+        data.MappingConfiguration = new EventMappingConfiguration
+        {
+          UseIanaTz = true
+        };
       }
 
       protected override void InitializePrototypeData(Contracts.Options data)
