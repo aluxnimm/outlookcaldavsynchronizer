@@ -22,12 +22,23 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
 {
-  class GmxCalendarProfile : IProfileType
+  class GmxCalendarProfile : ProfileTypeBase
   {
-    public string Name => "GmxCalendar";
-    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_gmx.png";
+    public override string Name => "GmxCalendar";
+    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_gmx.png";
 
-    public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+    public override Contracts.Options CreateOptions()
+    {
+      var data = base.CreateOptions();
+      data.CalenderUrl = "https://caldav.gmx.net";
+      data.MappingConfiguration = new EventMappingConfiguration
+      {
+        UseIanaTz = true
+      };
+      return data;
+    }
+
+    public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
       return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData);
     }
@@ -40,19 +51,6 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
       }
 
 
-      protected override void InitializeData(Contracts.Options data)
-      {
-        data.CalenderUrl = "https://caldav.gmx.net";
-        data.MappingConfiguration = new EventMappingConfiguration
-        {
-          UseIanaTz = true
-        };
-      }
-
-      protected override void InitializePrototypeData(Contracts.Options data)
-      {
-        InitializeData(data);
-      }
     }
   }
 }

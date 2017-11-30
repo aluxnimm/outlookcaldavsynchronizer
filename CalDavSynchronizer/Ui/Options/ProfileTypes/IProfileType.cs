@@ -29,6 +29,8 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
   {
     string Name { get; }
     string ImageUrl { get; }
+
+    Contracts.Options CreateOptions();
     IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData);
   }
 }

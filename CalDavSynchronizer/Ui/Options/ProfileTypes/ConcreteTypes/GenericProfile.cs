@@ -22,12 +22,12 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
 {
-  public sealed class GenericProfile : IProfileType
+  public sealed class GenericProfile : ProfileTypeBase
   {
-    public string ImageUrl { get; } = "";
-    public string Name { get; } = "Generic CalDAV/CardDAV";
+    public override string ImageUrl { get; } = "";
+    public override string Name { get; } = "Generic CalDAV/CardDAV";
 
-    public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+    public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
       return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData);
     }

@@ -13,11 +13,6 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 
     public IProfileType ProfileType => DesignProfileType.Instance;
 
-    public OptionsModel CreateNewModel()
-    {
-      return OptionsModel.DesignInstance;
-    }
-
     public OptionsModel CreateModelFromData(Contracts.Options data)
     {
       return OptionsModel.DesignInstance;

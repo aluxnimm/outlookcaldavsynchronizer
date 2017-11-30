@@ -283,7 +283,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       if (type != null)
       {
         var profileModelFactoryFactory = _profileModelFactoriesByType[type];
-        var viewModel = profileModelFactoryFactory.CreateViewModel(profileModelFactoryFactory.CreateNewModel());
+        var viewModel = profileModelFactoryFactory.CreateViewModel(profileModelFactoryFactory.CreateModelFromData(type.CreateOptions()));
         _options.Add(viewModel);
         ShowProfile(viewModel.Model.Id);
       }

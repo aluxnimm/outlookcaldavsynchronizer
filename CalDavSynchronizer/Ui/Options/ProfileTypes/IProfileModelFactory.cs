@@ -22,7 +22,6 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
   public interface IProfileModelFactory
   {
     IProfileType ProfileType { get; }
-    OptionsModel CreateNewModel();
     OptionsModel CreateModelFromData(Contracts.Options data);
     IOptionsViewModel CreateViewModel(OptionsModel model);
     IOptionsViewModel CreateTemplateViewModel();

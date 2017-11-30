@@ -22,14 +22,21 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
 {
-  class PosteoProfile : IProfileType
+  class PosteoProfile : ProfileTypeBase
   {
-    public string Name => "Posteo";
-    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_posteo.png";
+    public override string Name => "Posteo";
+    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_posteo.png";
 
-    public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+    public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
       return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData);
+    }
+
+    public override Contracts.Options CreateOptions()
+    {
+      var data = base.CreateOptions();
+      data.CalenderUrl = "https://posteo.de:8443";
+      return data;
     }
 
     class ProfileModelFactory : ProfileModelFactoryBase
@@ -40,15 +47,6 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
       }
 
 
-      protected override void InitializeData(Contracts.Options data)
-      {
-        data.CalenderUrl = "https://posteo.de:8443";
-      }
-
-      protected override void InitializePrototypeData(Contracts.Options data)
-      {
-        InitializeData(data);
-      }
     }
   }
 }

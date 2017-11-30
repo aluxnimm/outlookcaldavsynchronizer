@@ -65,13 +65,6 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
     protected Lazy<IServerSettingsDetector> ServerSettingsDetector { get; }
     protected virtual IServerSettingsDetector CreateServerSettingsDetector() => new ServerSettingsDetector(OutlookAccountPasswordProvider);
 
-    public OptionsModel CreateNewModel()
-    {
-      var options = CreateData();
-      InitializeData(options);
-      return CreateModel(options);
-    }
-
     public OptionsModel CreateModelFromData(Contracts.Options data)
     {
       return CreateModel(data);
@@ -81,44 +74,10 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
     {
       return new OptionsModel(SettingsFaultFinder, OptionTasks, OutlookAccountPasswordProvider, data, GeneralOptions, this, false, SessionData, ServerSettingsDetector.Value);
     }
-
-
-
-    protected virtual void InitializeData(Contracts.Options data)
-    {
-
-    }
-
-    private Contracts.Options CreateData()
-    {
-      return new Contracts.Options
-      {
-        ConflictResolution = ConflictResolution.Automatic,
-        DaysToSynchronizeInTheFuture = 365,
-        DaysToSynchronizeInThePast = 60,
-        SynchronizationIntervalInMinutes = 30,
-        SynchronizationMode = SynchronizationMode.MergeInBothDirections,
-        Name = "<New Profile>",
-        Id = Guid.NewGuid(),
-        Inactive = false,
-        PreemptiveAuthentication = true,
-        ForceBasicAuthentication = false,
-        ProxyOptions = new ProxyOptions() { ProxyUseDefault = true },
-        IsChunkedSynchronizationEnabled = true,
-        ChunkSize = 100,
-        ServerAdapterType = ServerAdapterType.WebDavHttpClientBased,
-        ProfileTypeOrNull = ProfileTypeRegistry.GetProfileTypeName(ProfileType)
-      };
-    }
-  
+    
     protected virtual OptionsModel CreatePrototypeModel(Contracts.Options data)
     {
       return new OptionsModel(SettingsFaultFinder, OptionTasks, OutlookAccountPasswordProvider, data, GeneralOptions, this, false, SessionData, ServerSettingsDetector.Value);
-    }
-
-    protected virtual void InitializePrototypeData(Contracts.Options data)
-    {
-
     }
 
     public virtual IOptionsViewModel CreateViewModel(OptionsModel model)
@@ -136,9 +95,8 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 
     public IOptionsViewModel CreateTemplateViewModel()
     {
-      var data = CreateData();
+      var data = ProfileType.CreateOptions();
       data.Name = ProfileType.Name;
-      InitializePrototypeData(data);
       var prototypeModel = CreateModel(data);
       var optionsViewModel = CreateTemplateViewModel(prototypeModel);
 
@@ -157,12 +115,5 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
         ViewOptions);
       return optionsViewModel;
     }
-  }
-
-  public abstract class ProfileBase : IProfileType
-  {
-    public abstract string Name { get; }
-    public abstract string ImageUrl { get; }
-    public abstract IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData);
   }
 }

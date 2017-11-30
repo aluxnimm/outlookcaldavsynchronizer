@@ -23,14 +23,31 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
 {
-  class EasyProjectProfile : IProfileType
+  class EasyProjectProfile : ProfileTypeBase
   {
-    public string Name => "EasyProject";
-    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_easyproject.png";
+    public override string Name => "EasyProject";
+    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_easyproject.png";
 
-    public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+    public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
       return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData);
+    }
+
+    public override Contracts.Options CreateOptions()
+    {
+      var data = base.CreateOptions();
+      data.CalenderUrl = "https://demo.easyredmine.com/caldav/";
+      data.EnableChangeTriggeredSynchronization = true;
+      data.DaysToSynchronizeInThePast = 7;
+      data.DaysToSynchronizeInTheFuture = 180;
+      data.MappingConfiguration = new EventMappingConfiguration
+      {
+        UseGlobalAppointmentID = true,
+        UseIanaTz = true,
+        MapXAltDescToRtfBody = true,
+        MapRtfBodyToXAltDesc = true
+      };
+      return data;
     }
 
     class ProfileModelFactory : ProfileModelFactoryBase
@@ -40,25 +57,6 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
       {
       }
 
-      protected override void InitializeData(Contracts.Options data)
-      {
-        data.CalenderUrl = "https://demo.easyredmine.com/caldav/";
-        data.EnableChangeTriggeredSynchronization = true;
-        data.DaysToSynchronizeInThePast = 7;
-        data.DaysToSynchronizeInTheFuture = 180;
-        data.MappingConfiguration = new EventMappingConfiguration
-        {
-          UseGlobalAppointmentID = true,
-          UseIanaTz = true,
-          MapXAltDescToRtfBody = true,
-          MapRtfBodyToXAltDesc = true
-        };
-      }
-
-      protected override void InitializePrototypeData(Contracts.Options data)
-      {
-        InitializeData(data);
-      }
 
       protected override IOptionsViewModel CreateTemplateViewModel(OptionsModel prototypeModel)
       {
