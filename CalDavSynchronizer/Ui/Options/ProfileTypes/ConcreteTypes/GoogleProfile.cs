@@ -52,6 +52,13 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
       return data;
     }
 
+    public override EventMappingConfiguration CreateEventMappingConfiguration()
+    {
+      var data = base.CreateEventMappingConfiguration();
+      data.MapAttendees = false;
+      return data;
+    }
+
     class ProfileModelFactory : ProfileModelFactoryBase
     {
       public ProfileModelFactory(IProfileType profileType, IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
