@@ -63,34 +63,7 @@ namespace CalDavSynchronizer.Contracts
 
     public EventMappingConfiguration ()
     {
-      MapReminder = ReminderMapping.JustUpcoming;
-      MapSensitivityPrivateToClassConfidential = false;
-      MapClassConfidentialToSensitivityPrivate = false;
-      MapClassPublicToSensitivityPrivate = false;
-      MapAttendees = true;
-      ScheduleAgentClient = true;
-      SendNoAppointmentNotifications = false;
-      MapBody = true;
-      MapRtfBodyToXAltDesc = false;
-      MapXAltDescToRtfBody = false;
-      CreateEventsInUTC = false;
-      UseIanaTz = false;
-
-      try
-      {
-        EventTz = NodaTime.DateTimeZoneProviders.Tzdb.GetSystemDefault()?.Id;
-      }
-      catch (DateTimeZoneNotFoundException)
-      {
-        // Default to GMT if Windows Zone can't be mapped to IANA zone.
-        EventTz = "Etc/GMT";
-      }
-      IncludeHistoricalData = false;
-      UseGlobalAppointmentID = false;
-      IncludeEmptyEventCategoryFilter = false;
-      InvertEventCategoryFilter = false;
-      CleanupDuplicateEvents = false;
-      MapCustomProperties = false;
+     
     }
 
     public override TResult Accept<TResult>(IMappingConfigurationBaseVisitor<TResult> visitor)

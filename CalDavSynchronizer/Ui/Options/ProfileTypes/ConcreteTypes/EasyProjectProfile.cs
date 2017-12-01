@@ -40,13 +40,17 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
       data.EnableChangeTriggeredSynchronization = true;
       data.DaysToSynchronizeInThePast = 7;
       data.DaysToSynchronizeInTheFuture = 180;
-      data.MappingConfiguration = new EventMappingConfiguration
-      {
-        UseGlobalAppointmentID = true,
-        UseIanaTz = true,
-        MapXAltDescToRtfBody = true,
-        MapRtfBodyToXAltDesc = true
-      };
+      data.MappingConfiguration = CreateEventMappingConfiguration();
+      return data;
+    }
+
+    public override EventMappingConfiguration CreateEventMappingConfiguration()
+    {
+      var data = base.CreateEventMappingConfiguration();
+      data.UseGlobalAppointmentID = true;
+      data.UseIanaTz = true;
+      data.MapXAltDescToRtfBody = true;
+      data.MapRtfBodyToXAltDesc = true;
       return data;
     }
 

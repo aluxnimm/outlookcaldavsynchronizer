@@ -185,7 +185,8 @@ namespace CalDavSynchronizer
           _queryFolderStrategyWrapper,
           exceptionHandlingStrategy,
           comWrapperFactory,
-          _optionsDataAccess);
+          _optionsDataAccess,
+          _profileTypeRegistry);
 
       _synchronizationReportRepository = CreateSynchronizationReportRepository();
 

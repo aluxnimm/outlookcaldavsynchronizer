@@ -19,17 +19,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options.ProfileTypes;
 
 namespace CalDavSynchronizer.DataAccess
 {
   class ColorMappingDataAccess : IColorMappingsDataAccess
   {
     private readonly IOptionDataAccess _optionDataAccess;
+    private readonly IProfileType _profileType;
 
-    public ColorMappingDataAccess(IOptionDataAccess optionDataAccess)
+    public ColorMappingDataAccess(IOptionDataAccess optionDataAccess, IProfileType profileType)
     {
       if (optionDataAccess == null) throw new ArgumentNullException(nameof(optionDataAccess));
+      if (profileType == null) throw new ArgumentNullException(nameof(profileType));
+
       _optionDataAccess = optionDataAccess;
+      _profileType = profileType;
     }
 
     public IReadOnlyList<ColorCategoryMapping> Load()
@@ -44,9 +49,15 @@ namespace CalDavSynchronizer.DataAccess
       _optionDataAccess.Modify(o =>
       {
         if (o.MappingConfiguration is EventMappingConfiguration eventMappingConfiguration)
+        {
           eventMappingConfiguration.EventColorToCategoryMappings = mappings.ToArray();
+        }
         else
-          o.MappingConfiguration = new EventMappingConfiguration {EventColorToCategoryMappings = mappings.ToArray()};
+        {
+          var mappingConfiguration = _profileType.CreateEventMappingConfiguration();
+          mappingConfiguration.EventColorToCategoryMappings = mappings.ToArray();
+          o.MappingConfiguration = mappingConfiguration;
+        }
       });
     }
   }

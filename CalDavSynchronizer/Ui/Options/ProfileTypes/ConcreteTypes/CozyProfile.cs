@@ -32,19 +32,23 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
       return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData);
     }
 
-  
-   
 
-  public override Contracts.Options CreateOptions()
-  {
-  var data = base.CreateOptions();
-    data.CalenderUrl = "https://yourdomain.cozycloud.cc/public/sync/principals/me/";
-      data.MappingConfiguration = new EventMappingConfiguration
-      {
-        UseIanaTz = true
-      };
-    return data;
-  }
+
+
+    public override Contracts.Options CreateOptions()
+    {
+      var data = base.CreateOptions();
+      data.CalenderUrl = "https://yourdomain.cozycloud.cc/public/sync/principals/me/";
+      data.MappingConfiguration = CreateEventMappingConfiguration();
+      return data;
+    }
+
+    public override EventMappingConfiguration CreateEventMappingConfiguration()
+    {
+      var data = base.CreateEventMappingConfiguration();
+      data.UseIanaTz = true;
+      return data;
+    }
 
     class ProfileModelFactory : ProfileModelFactoryBase
     {

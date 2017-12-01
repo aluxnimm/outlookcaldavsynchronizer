@@ -119,7 +119,7 @@ namespace CalDavSynchronizer.UnitTest.Ui.Options.ViewModels
       }
 
       public string Name => "TestProfile";
-      public IProfileType ProfileType { get; }
+      public IProfileType ProfileType => this;
 
       public OptionsModel CreateNewModel()
       {
@@ -157,12 +157,27 @@ namespace CalDavSynchronizer.UnitTest.Ui.Options.ViewModels
         throw new NotImplementedException();
       }
 
-      public ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true);
+      public ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true, true);
 
       public string ImageUrl { get; } = string.Empty;
       public Contracts.Options CreateOptions()
       {
         return new Contracts.Options();
+      }
+
+      public EventMappingConfiguration CreateEventMappingConfiguration()
+      {
+        return new EventMappingConfiguration();
+      }
+
+      public ContactMappingConfiguration CreateContactMappingConfiguration()
+      {
+        return new ContactMappingConfiguration();
+      }
+
+      public TaskMappingConfiguration CreateTaskMappingConfiguration()
+      {
+        return new TaskMappingConfiguration();
       }
 
       public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)

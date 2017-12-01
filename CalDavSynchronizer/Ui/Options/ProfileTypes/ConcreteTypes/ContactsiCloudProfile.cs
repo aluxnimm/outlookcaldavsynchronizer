@@ -36,12 +36,16 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
     {
       var data = base.CreateOptions();
       data.CalenderUrl = "https://contacts.icloud.com/";
-      data.MappingConfiguration = new ContactMappingConfiguration()
-      {
-        MapDistributionLists = true,
-        DistributionListType = DistributionListType.VCardGroupWithUid,
-        WriteImAsImpp = true
-      };
+      data.MappingConfiguration = CreateContactMappingConfiguration();
+      return data;
+    }
+
+    public override ContactMappingConfiguration CreateContactMappingConfiguration()
+    {
+      var data = base.CreateContactMappingConfiguration();
+      data.MapDistributionLists = true;
+      data.DistributionListType = DistributionListType.VCardGroupWithUid;
+      data.WriteImAsImpp = true;
       return data;
     }
 

@@ -31,10 +31,14 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
     {
       var data = base.CreateOptions();
       data.CalenderUrl = "https://caldav.gmx.net";
-      data.MappingConfiguration = new EventMappingConfiguration
-      {
-        UseIanaTz = true
-      };
+      data.MappingConfiguration = CreateEventMappingConfiguration();
+      return data;
+    }
+
+    public override EventMappingConfiguration CreateEventMappingConfiguration()
+    {
+      var data = base.CreateEventMappingConfiguration();
+      data.UseIanaTz = true;
       return data;
     }
 

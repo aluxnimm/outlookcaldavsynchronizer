@@ -22,6 +22,8 @@ using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
+using NodaTime.TimeZones;
+using Thought.vCards;
 
 namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 {
@@ -48,7 +50,70 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
         ProfileTypeOrNull = ProfileTypeRegistry.GetProfileTypeName(this)
       };
     }
-    
+
+    public virtual EventMappingConfiguration CreateEventMappingConfiguration()
+    {
+      var data = new EventMappingConfiguration();
+      data.MapReminder = ReminderMapping.JustUpcoming;
+      data.MapSensitivityPrivateToClassConfidential = false;
+      data.MapClassConfidentialToSensitivityPrivate = false;
+      data.MapClassPublicToSensitivityPrivate = false;
+      data.MapAttendees = true;
+      data.ScheduleAgentClient = true;
+      data.SendNoAppointmentNotifications = false;
+      data.MapBody = true;
+      data.MapRtfBodyToXAltDesc = false;
+      data.MapXAltDescToRtfBody = false;
+      data.CreateEventsInUTC = false;
+      data.UseIanaTz = false;
+
+      try
+      {
+        data.EventTz = NodaTime.DateTimeZoneProviders.Tzdb.GetSystemDefault()?.Id;
+      }
+      catch (DateTimeZoneNotFoundException)
+      {
+        // Default to GMT if Windows Zone can't be mapped to IANA zone.
+        data.EventTz = "Etc/GMT";
+      }
+      data.IncludeHistoricalData = false;
+      data.UseGlobalAppointmentID = false;
+      data.IncludeEmptyEventCategoryFilter = false;
+      data.InvertEventCategoryFilter = false;
+      data.CleanupDuplicateEvents = false;
+      data.MapCustomProperties = false;
+      return data;
+    }
+
+    public virtual ContactMappingConfiguration CreateContactMappingConfiguration()
+    {
+      var data = new ContactMappingConfiguration();
+      data.MapBirthday = true;
+      data.MapContactPhoto = true;
+      data.KeepOutlookPhoto = false;
+      data.KeepOutlookFileAs = true;
+      data.FixPhoneNumberFormat = false;
+      data.MapOutlookEmail1ToWork = false;
+      data.WriteImAsImpp = false;
+      data.DefaultImServicType = IMServiceType.AIM;
+      data.MapDistributionLists = false;
+      return data;
+    }
+
+    public virtual TaskMappingConfiguration CreateTaskMappingConfiguration()
+    {
+      var data = new TaskMappingConfiguration();
+      data.MapReminder = ReminderMapping.JustUpcoming;
+      data.MapPriority = true;
+      data.MapBody = true;
+      data.MapRecurringTasks = true;
+      data.MapStartAndDueAsFloating = false;
+      data.IncludeEmptyTaskCategoryFilter = false;
+      data.InvertTaskCategoryFilter = false;
+      data.MapCustomProperties = false;
+      return data;
+    }
+
 
     public abstract string Name { get; }
     public abstract string ImageUrl { get; }

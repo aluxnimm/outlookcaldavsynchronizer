@@ -35,13 +35,17 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
     public override Contracts.Options CreateOptions()
     {
       var data = base.CreateOptions();
-      data.MappingConfiguration = new EventMappingConfiguration
-      {
-        ScheduleAgentClient = false,
-        SendNoAppointmentNotifications = true,
-        UseGlobalAppointmentID = true
-      };
+      data.MappingConfiguration = CreateEventMappingConfiguration();
       data.CalenderUrl = "https://sogo.example.com/SOGo/dav/";
+      return data;
+    }
+
+    public override EventMappingConfiguration CreateEventMappingConfiguration()
+    {
+      var data = base.CreateEventMappingConfiguration();
+      data.ScheduleAgentClient = false;
+      data.SendNoAppointmentNotifications = true;
+      data.UseGlobalAppointmentID = true;
       return data;
     }
 

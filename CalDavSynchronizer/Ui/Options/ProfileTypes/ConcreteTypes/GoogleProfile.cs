@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
@@ -72,6 +73,8 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
           prototypeModel,
           ViewOptions);
       }
+
+      public override ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true, false);
 
       public override IOptionsViewModel CreateViewModel(OptionsModel model)
       {
