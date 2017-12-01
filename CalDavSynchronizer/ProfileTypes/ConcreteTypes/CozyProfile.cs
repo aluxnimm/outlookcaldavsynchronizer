@@ -17,25 +17,29 @@
 
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
+namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
 {
-  class WebDeProfile : ProfileTypeBase
+  class CozyProfile : ProfileTypeBase
   {
-    public override string Name { get; } = "Web.de";
-    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_webde.png";
+    public override string Name => "Cozy";
+    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_cozy.png";
 
     public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
       return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData);
     }
 
+
+
+
     public override Contracts.Options CreateOptions()
     {
       var data = base.CreateOptions();
-      data.CalenderUrl = "https://caldav.web.de";
+      data.CalenderUrl = "https://yourdomain.cozycloud.cc/public/sync/principals/me/";
       data.MappingConfiguration = CreateEventMappingConfiguration();
       return data;
     }

@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -17,15 +17,17 @@
 
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options;
+using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
+namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
 {
-  class LandmarksProfile : ProfileTypeBase
+  class EasyProjectProfile : ProfileTypeBase
   {
-    public override string Name => "Landmarks";
-    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_landmarks.png";
+    public override string Name => "EasyProject";
+    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_easyproject.png";
 
     public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
@@ -35,7 +37,21 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
     public override Contracts.Options CreateOptions()
     {
       var data = base.CreateOptions();
-      data.CalenderUrl = "https://dav.landmarks.skyrise.de/";
+      data.CalenderUrl = "https://demo.easyredmine.com/caldav/";
+      data.EnableChangeTriggeredSynchronization = true;
+      data.DaysToSynchronizeInThePast = 7;
+      data.DaysToSynchronizeInTheFuture = 180;
+      data.MappingConfiguration = CreateEventMappingConfiguration();
+      return data;
+    }
+
+    public override EventMappingConfiguration CreateEventMappingConfiguration()
+    {
+      var data = base.CreateEventMappingConfiguration();
+      data.UseGlobalAppointmentID = true;
+      data.UseIanaTz = true;
+      data.MapXAltDescToRtfBody = true;
+      data.MapRtfBodyToXAltDesc = true;
       return data;
     }
 
@@ -47,6 +63,15 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
       }
 
 
+      protected override IOptionsViewModel CreateTemplateViewModel(OptionsModel prototypeModel)
+      {
+        return new EasyProjectMultipleOptionsTemplateViewModel(
+          OptionsViewModelParent,
+          new EasyProjectServerSettingsTemplateViewModel(OutlookAccountPasswordProvider, prototypeModel),
+          OptionTasks,
+          prototypeModel,
+          ViewOptions);
+      }
     }
   }
 }

@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -17,19 +17,27 @@
 
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
+namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
 {
-  public sealed class GenericProfile : ProfileTypeBase
+  class SmarterMailProfile : ProfileTypeBase
   {
-    public override string ImageUrl { get; } = "";
-    public override string Name { get; } = "Generic CalDAV/CardDAV";
+    public override string Name { get; } = "SmarterMail";
+    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_smartermail.png";
 
     public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
       return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData);
+    }
+
+    public override Contracts.Options CreateOptions()
+    {
+      var data = base.CreateOptions();
+      data.CalenderUrl = "https://mail_hostname.example.com/WebDAV/";
+      return data;
     }
 
     class ProfileModelFactory : ProfileModelFactoryBase
@@ -38,6 +46,7 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
         : base(profileType, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData)
       {
       }
+
 
     }
   }

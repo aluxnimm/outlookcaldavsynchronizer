@@ -18,8 +18,8 @@ using System;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
+using CalDavSynchronizer.ProfileTypes;
 using CalDavSynchronizer.Ui.Options.Models;
-using CalDavSynchronizer.Ui.Options.ProfileTypes;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
 

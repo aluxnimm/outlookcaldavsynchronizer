@@ -18,12 +18,12 @@
 using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.Implementation;
+using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes
+namespace CalDavSynchronizer.ProfileTypes
 {
   public abstract class ProfileModelFactoryBase : IProfileModelFactory
   {

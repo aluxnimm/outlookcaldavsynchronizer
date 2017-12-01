@@ -17,15 +17,16 @@
 
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
+namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
 {
-  class MailboxOrgProfile : ProfileTypeBase
+  class FruuxProfile : ProfileTypeBase
   {
-    public override string Name => "mailbox.org";
-    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_mailbox.org.png";
+    public override string Name => "Fruux";
+    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_fruux.png";
 
     public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
@@ -35,7 +36,7 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
     public override Contracts.Options CreateOptions()
     {
       var data = base.CreateOptions();
-      data.CalenderUrl = "https://dav.mailbox.org";
+      data.CalenderUrl = "https://dav.fruux.com";
       return data;
     }
 
@@ -45,7 +46,6 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
         : base(profileType, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData)
       {
       }
-
 
     }
   }

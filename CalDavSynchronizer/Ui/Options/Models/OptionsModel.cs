@@ -26,8 +26,8 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.ProfileTypes;
 using CalDavSynchronizer.Scheduling;
-using CalDavSynchronizer.Ui.Options.ProfileTypes;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
 

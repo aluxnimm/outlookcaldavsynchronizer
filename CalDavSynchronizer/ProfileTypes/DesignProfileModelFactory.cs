@@ -1,7 +1,7 @@
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes
+namespace CalDavSynchronizer.ProfileTypes
 {
   public class DesignProfileModelFactory : IProfileModelFactory
   {

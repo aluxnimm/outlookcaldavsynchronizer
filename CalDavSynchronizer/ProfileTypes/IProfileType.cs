@@ -16,14 +16,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes
+namespace CalDavSynchronizer.ProfileTypes
 {
   public interface IProfileType
   {

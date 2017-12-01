@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -17,15 +17,16 @@
 
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
+namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
 {
-  class ContactsiCloudProfile : ProfileTypeBase
+  class SogoProfile : ProfileTypeBase
   {
-    public override string Name => "iCloud Contacts";
-    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_iCloud.png";
+    public override string Name { get; } = "Sogo";
+    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_sogo.png";
 
     public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
@@ -35,17 +36,17 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
     public override Contracts.Options CreateOptions()
     {
       var data = base.CreateOptions();
-      data.CalenderUrl = "https://contacts.icloud.com/";
-      data.MappingConfiguration = CreateContactMappingConfiguration();
+      data.MappingConfiguration = CreateEventMappingConfiguration();
+      data.CalenderUrl = "https://sogo.example.com/SOGo/dav/";
       return data;
     }
 
-    public override ContactMappingConfiguration CreateContactMappingConfiguration()
+    public override EventMappingConfiguration CreateEventMappingConfiguration()
     {
-      var data = base.CreateContactMappingConfiguration();
-      data.MapDistributionLists = true;
-      data.DistributionListType = DistributionListType.VCardGroupWithUid;
-      data.WriteImAsImpp = true;
+      var data = base.CreateEventMappingConfiguration();
+      data.ScheduleAgentClient = false;
+      data.SendNoAppointmentNotifications = true;
+      data.UseGlobalAppointmentID = true;
       return data;
     }
 
@@ -55,6 +56,8 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
         : base(profileType, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData)
       {
       }
+
+
 
     }
   }

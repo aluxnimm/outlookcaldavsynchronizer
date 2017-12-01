@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -17,16 +17,25 @@
 
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
+namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
 {
-  class EasyProjectProfile : ProfileTypeBase
+  public class GoogleProfile : ProfileTypeBase
   {
-    public override string Name => "EasyProject";
-    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_easyproject.png";
+    public const int MaximumWriteBatchSize = 100;
+    public override string Name { get; } = "Google";
+    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_google.png";
+
+    public bool IsGoogleProfile(Contracts.Options options)
+    {
+      return options.ServerAdapterType == ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth ||
+             options.ServerAdapterType == ServerAdapterType.GoogleTaskApi ||
+             options.ServerAdapterType == ServerAdapterType.GoogleContactApi;
+    }
 
     public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
@@ -36,21 +45,17 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
     public override Contracts.Options CreateOptions()
     {
       var data = base.CreateOptions();
-      data.CalenderUrl = "https://demo.easyredmine.com/caldav/";
-      data.EnableChangeTriggeredSynchronization = true;
-      data.DaysToSynchronizeInThePast = 7;
-      data.DaysToSynchronizeInTheFuture = 180;
-      data.MappingConfiguration = CreateEventMappingConfiguration();
+      data.CalenderUrl = Ui.Options.OptionTasks.GoogleDavBaseUrl;
+      data.ServerAdapterType = ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth;
+      data.IsChunkedSynchronizationEnabled = true;
+      data.ChunkSize = 100;
       return data;
     }
 
     public override EventMappingConfiguration CreateEventMappingConfiguration()
     {
       var data = base.CreateEventMappingConfiguration();
-      data.UseGlobalAppointmentID = true;
-      data.UseIanaTz = true;
-      data.MapXAltDescToRtfBody = true;
-      data.MapRtfBodyToXAltDesc = true;
+      data.MapAttendees = false;
       return data;
     }
 
@@ -60,15 +65,32 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
         : base(profileType, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData)
       {
       }
-
+      
+      protected override OptionsModel CreateModel(Contracts.Options data)
+      {
+        return new OptionsModel(SettingsFaultFinder, OptionTasks, OutlookAccountPasswordProvider, data, GeneralOptions, this, true, SessionData, ServerSettingsDetector.Value);
+      }
 
       protected override IOptionsViewModel CreateTemplateViewModel(OptionsModel prototypeModel)
       {
-        return new EasyProjectMultipleOptionsTemplateViewModel(
+        return new MultipleOptionsTemplateViewModel(
           OptionsViewModelParent,
-          new EasyProjectServerSettingsTemplateViewModel(OutlookAccountPasswordProvider, prototypeModel),
+          new GoogleServerSettingsTemplateViewModel(OutlookAccountPasswordProvider, prototypeModel),
           OptionTasks,
           prototypeModel,
+          ViewOptions);
+      }
+
+      public override ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true, false);
+
+      public override IOptionsViewModel CreateViewModel(OptionsModel model)
+      {
+        return new GenericOptionsViewModel(
+          OptionsViewModelParent,
+          new GoogleServerSettingsViewModel(model, OptionTasks, ViewOptions),
+          OptionTasks,
+          model,
+          AvailableCategories,
           ViewOptions);
       }
     }

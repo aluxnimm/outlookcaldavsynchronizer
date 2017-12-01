@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using CalDavSynchronizer.Ui.Options.ProfileTypes;
+using CalDavSynchronizer.ProfileTypes;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {

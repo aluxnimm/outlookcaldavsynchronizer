@@ -18,13 +18,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.Ui.Options.Models;
-using CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes;
-using CalDavSynchronizer.Ui.Options.ViewModels;
+using CalDavSynchronizer.ProfileTypes.ConcreteTypes;
 using log4net;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes
+namespace CalDavSynchronizer.ProfileTypes
 {
   public class ProfileTypeRegistry : IProfileTypeRegistry
   {

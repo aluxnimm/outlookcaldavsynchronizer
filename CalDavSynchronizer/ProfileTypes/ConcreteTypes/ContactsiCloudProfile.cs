@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -17,15 +17,16 @@
 
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
+namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
 {
-  class SarenetProfile : ProfileTypeBase
+  class ContactsiCloudProfile : ProfileTypeBase
   {
-    public override string Name => "Sarenet";
-    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_sarenet.png";
+    public override string Name => "iCloud Contacts";
+    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_iCloud.png";
 
     public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
@@ -35,7 +36,17 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
     public override Contracts.Options CreateOptions()
     {
       var data = base.CreateOptions();
-      data.CalenderUrl = "https://configurator.organizer.sarenet.es/androidconfigurator.php";
+      data.CalenderUrl = "https://contacts.icloud.com/";
+      data.MappingConfiguration = CreateContactMappingConfiguration();
+      return data;
+    }
+
+    public override ContactMappingConfiguration CreateContactMappingConfiguration()
+    {
+      var data = base.CreateContactMappingConfiguration();
+      data.MapDistributionLists = true;
+      data.DistributionListType = DistributionListType.VCardGroupWithUid;
+      data.WriteImAsImpp = true;
       return data;
     }
 

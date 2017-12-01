@@ -18,10 +18,11 @@
 using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes
+namespace CalDavSynchronizer.ProfileTypes
 {
   class DesignProfileType : ProfileTypeBase
   {

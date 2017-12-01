@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.Ui.Options.ProfileTypes;
+using CalDavSynchronizer.ProfileTypes;
 
 namespace CalDavSynchronizer.DataAccess
 {

@@ -19,13 +19,13 @@ using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation;
-using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
+using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using NodaTime.TimeZones;
 using Thought.vCards;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes
+namespace CalDavSynchronizer.ProfileTypes
 {
   public abstract class ProfileTypeBase : IProfileType
   {

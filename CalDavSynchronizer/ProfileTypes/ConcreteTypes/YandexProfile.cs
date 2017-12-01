@@ -17,15 +17,16 @@
 
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
+namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
 {
-  class SogoProfile : ProfileTypeBase
+  class YandexProfile : ProfileTypeBase
   {
-    public override string Name { get; } = "Sogo";
-    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_sogo.png";
+    public override string Name => "Yandex";
+    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_yandex.png";
 
     public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
@@ -35,17 +36,7 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
     public override Contracts.Options CreateOptions()
     {
       var data = base.CreateOptions();
-      data.MappingConfiguration = CreateEventMappingConfiguration();
-      data.CalenderUrl = "https://sogo.example.com/SOGo/dav/";
-      return data;
-    }
-
-    public override EventMappingConfiguration CreateEventMappingConfiguration()
-    {
-      var data = base.CreateEventMappingConfiguration();
-      data.ScheduleAgentClient = false;
-      data.SendNoAppointmentNotifications = true;
-      data.UseGlobalAppointmentID = true;
+      data.CalenderUrl = "https://caldav.yandex.ru";
       return data;
     }
 
@@ -55,8 +46,6 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes.ConcreteTypes
         : base(profileType, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData)
       {
       }
-
-
 
     }
   }

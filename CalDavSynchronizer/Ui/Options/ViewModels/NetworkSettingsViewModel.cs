@@ -22,8 +22,8 @@ using System.Runtime.CompilerServices;
 using System.Security;
 using System.Text;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.ProfileTypes;
 using CalDavSynchronizer.Ui.Options.Models;
-using CalDavSynchronizer.Ui.Options.ProfileTypes;
 using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
