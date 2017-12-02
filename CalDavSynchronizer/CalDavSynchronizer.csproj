@@ -286,6 +286,7 @@
     <Compile Include="ChangeWatching\IItemCollectionChangeWatcher.cs" />
     <Compile Include="ChangeWatching\IFolderChangeWatcherFactory.cs" />
     <Compile Include="ChangeWatching\ItemSavedEventArgs.cs" />
+    <Compile Include="Globalization\LocalizationMarkupExtension.cs" />
     <Compile Include="IOneTimeTaskRunner.cs" />
     <Compile Include="OneTimeTaskRunner.cs" />
     <Compile Include="ComponentContainer.cs" />
@@ -325,6 +326,7 @@
     <Compile Include="DDayICalWorkaround\IDateTimeExtension.cs" />
     <Compile Include="EntityCacheVersionConversion\Version1To2.cs" />
     <Compile Include="EntityCacheVersionConversion\Version2To3.cs" />
+    <Compile Include="Globalization\Strings.cs" />
     <Compile Include="IComponentContainer.cs" />
     <Compile Include="IDateTimeProvider.cs" />
     <Compile Include="Implementation\Common\IOutlookTimeZones.cs" />
