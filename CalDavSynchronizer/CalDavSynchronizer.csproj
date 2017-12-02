@@ -287,6 +287,11 @@
     <Compile Include="ChangeWatching\IFolderChangeWatcherFactory.cs" />
     <Compile Include="ChangeWatching\ItemSavedEventArgs.cs" />
     <Compile Include="Globalization\LocalizationMarkupExtension.cs" />
+    <Compile Include="Globalization\StringResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StringResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="IOneTimeTaskRunner.cs" />
     <Compile Include="OneTimeTaskRunner.cs" />
     <Compile Include="ComponentContainer.cs" />
@@ -801,6 +806,11 @@
     <Compile Include="WebResourceUrls.cs" />
     <EmbeddedResource Include="CalDavSynchronizerRibbon.resx">
       <DependentUpon>CalDavSynchronizerRibbon.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\StringResources.de-DE.resx" />
+    <EmbeddedResource Include="Globalization\StringResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>StringResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\AddResourceForm.resx">
       <DependentUpon>AddResourceForm.cs</DependentUpon>
