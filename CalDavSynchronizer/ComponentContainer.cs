@@ -49,6 +49,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Media;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.Tasks;
@@ -927,7 +928,7 @@ namespace CalDavSynchronizer
         }
         else
         {
-          MessageBox.Show ($"The type of profile '{options.Name}' doesn't provide a way to display server entities.");
+          MessageBox.Show (Strings.Get($"The type of profile '{options.Name}' doesn't provide a way to display server entities."));
         }
       }
       catch (Exception x)
