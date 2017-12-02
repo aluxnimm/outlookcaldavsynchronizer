@@ -22,6 +22,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Ui.Options;
 
@@ -97,7 +98,7 @@ namespace CalDavSynchronizer
 
     void ShowErrorMessage()
     {
-      if (MessageBox.Show($"CalDav Synchronizer failed to load due to the following exception: {Environment.NewLine}{_loadExceptionAsString}{Environment.NewLine}{Environment.NewLine}Do you want to open the log file ?", ComponentContainer.MessageBoxTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
+      if (MessageBox.Show(Strings.Get($"CalDav Synchronizer failed to load due to the following exception: {Environment.NewLine}{_loadExceptionAsString}{Environment.NewLine}{Environment.NewLine}Do you want to open the log file ?"), ComponentContainer.MessageBoxTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
       {
         GeneralOptionsForm.ShowLogFile();
       }

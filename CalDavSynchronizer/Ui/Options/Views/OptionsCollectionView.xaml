@@ -10,6 +10,7 @@
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:bulkOptionsViewModels="clr-namespace:CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels"
              xmlns:bulkOptionsViews="clr-namespace:CalDavSynchronizer.Ui.Options.BulkOptions.Views"
+             xmlns:g="clr-namespace:CalDavSynchronizer.Globalization"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="600"
              d:DataContext="{x:Static  viewModels:OptionsCollectionViewModel.DesignInstance}">
@@ -147,7 +148,7 @@
         <ControlTemplate TargetType="ContentControl" x:Key="OptionsControlTemplate">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top">
-                    <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="Name:" />
+                    <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="{g:Localize Name:}" />
                     <TextBox Text="{Binding Name}" />
                 </DockPanel>
                 <ContentPresenter />
