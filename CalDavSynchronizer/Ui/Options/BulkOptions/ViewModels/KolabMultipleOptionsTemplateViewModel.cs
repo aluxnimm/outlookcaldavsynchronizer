@@ -190,9 +190,9 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
           // Exclude all resourcres that have already been configured
           var options = (_parent as OptionsCollectionViewModel).Options;
           var configuredUrls = new HashSet<String>(options.Select(o => o.Model.CalenderUrl));
-          calendars = calendars.Where(c => !configuredUrls.Contains(c.Uri.AbsoluteUri)).ToArray();
-          addressBooks = addressBooks.Where(c => !configuredUrls.Contains(c.Uri.AbsoluteUri)).ToArray();
-          taskLists = taskLists.Where(c => !configuredUrls.Contains(c.Model.Id)).ToArray();
+          calendars = calendars.Where(c => !configuredUrls.Contains(c.Uri.ToString())).ToArray();
+          addressBooks = addressBooks.Where(c => !configuredUrls.Contains(c.Uri.ToString())).ToArray();
+          taskLists = taskLists.Where(c => !configuredUrls.Contains(c.Id)).ToArray();
         }
         // --- Create folders if requested and required
         if (AutoCreateOutlookFolders)
