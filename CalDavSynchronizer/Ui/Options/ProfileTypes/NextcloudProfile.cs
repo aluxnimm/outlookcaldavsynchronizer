@@ -22,24 +22,33 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 {
-  class NextcloudProfile : ProfileBase
+  class NextcloudProfile : IProfileType
   {
-    public NextcloudProfile(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData) 
-      : base(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData)
+    public string Name => "Nextcloud";
+    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_nextcloud.png";
+
+    public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
+      return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData);
     }
 
-    public override string Name => "Nextcloud";
-    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_nextcloud.png";
-
-    protected override void InitializeData(Contracts.Options data)
+    class ProfileModelFactory : ProfileModelFactoryBase
     {
-      data.CalenderUrl = "https://server.example/nextcloud/remote.php/dav/";
-    }
+      public ProfileModelFactory(IProfileType profileType, IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+        : base(profileType, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData)
+      {
+      }
 
-    protected override void InitializePrototypeData(Contracts.Options data)
-    {
-      InitializeData(data);
+
+      protected override void InitializeData(Contracts.Options data)
+      {
+        data.CalenderUrl = "https://server.example/nextcloud/remote.php/dav/";
+      }
+
+      protected override void InitializePrototypeData(Contracts.Options data)
+      {
+        InitializeData(data);
+      }
     }
   }
 }

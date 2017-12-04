@@ -23,57 +23,11 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 {
-  public class GoogleProfile : ProfileBase
+  public class GoogleProfile : IProfileType
   {
     public const int MaximumWriteBatchSize = 100;
-
-    public GoogleProfile(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData) 
-      : base(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData)
-    {
-    }
-
-    public override string Name { get; } = "Google";
-    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_google.png";
-
-
-    protected override OptionsModel CreateModel(Contracts.Options data)
-    {
-      return new OptionsModel(SettingsFaultFinder, OptionTasks, OutlookAccountPasswordProvider, data, GeneralOptions, this, true, SessionData);
-    }
-
-    protected override void InitializeData(Contracts.Options data)
-    {
-      data.CalenderUrl = Options.OptionTasks.GoogleDavBaseUrl;
-      data.ServerAdapterType = ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth;
-      data.IsChunkedSynchronizationEnabled = true;
-      data.ChunkSize = 100;
-    }
-
-    protected override void InitializePrototypeData(Contracts.Options data)
-    {
-      InitializeData(data);
-    }
-
-    protected override IOptionsViewModel CreateTemplateViewModel(OptionsModel prototypeModel)
-    {
-      return new MultipleOptionsTemplateViewModel(
-        OptionsViewModelParent,
-        new GoogleServerSettingsTemplateViewModel(OutlookAccountPasswordProvider, prototypeModel),
-        OptionTasks,
-        prototypeModel,
-        ViewOptions);
-    }
-
-    public override IOptionsViewModel CreateViewModel(OptionsModel model)
-    {
-      return new GenericOptionsViewModel(
-        OptionsViewModelParent,
-        new GoogleServerSettingsViewModel(model, OptionTasks, ViewOptions),
-        OptionTasks,
-        model,
-        AvailableCategories,
-        ViewOptions);
-    }
+    public string Name { get; } = "Google";
+    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_google.png";
 
     public bool IsGoogleProfile(Contracts.Options options)
     {
@@ -82,5 +36,56 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
              options.ServerAdapterType == ServerAdapterType.GoogleContactApi;
     }
 
+    public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+    {
+      return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData);
+    }
+
+    class ProfileModelFactory : ProfileModelFactoryBase
+    {
+      public ProfileModelFactory(IProfileType profileType, IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+        : base(profileType, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData)
+      {
+      }
+      
+      protected override OptionsModel CreateModel(Contracts.Options data)
+      {
+        return new OptionsModel(SettingsFaultFinder, OptionTasks, OutlookAccountPasswordProvider, data, GeneralOptions, this, true, SessionData, ServerSettingsDetector.Value);
+      }
+
+      protected override void InitializeData(Contracts.Options data)
+      {
+        data.CalenderUrl = Options.OptionTasks.GoogleDavBaseUrl;
+        data.ServerAdapterType = ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth;
+        data.IsChunkedSynchronizationEnabled = true;
+        data.ChunkSize = 100;
+      }
+
+      protected override void InitializePrototypeData(Contracts.Options data)
+      {
+        InitializeData(data);
+      }
+
+      protected override IOptionsViewModel CreateTemplateViewModel(OptionsModel prototypeModel)
+      {
+        return new MultipleOptionsTemplateViewModel(
+          OptionsViewModelParent,
+          new GoogleServerSettingsTemplateViewModel(OutlookAccountPasswordProvider, prototypeModel),
+          OptionTasks,
+          prototypeModel,
+          ViewOptions);
+      }
+
+      public override IOptionsViewModel CreateViewModel(OptionsModel model)
+      {
+        return new GenericOptionsViewModel(
+          OptionsViewModelParent,
+          new GoogleServerSettingsViewModel(model, OptionTasks, ViewOptions),
+          OptionTasks,
+          model,
+          AvailableCategories,
+          ViewOptions);
+      }
+    }
   }
 }

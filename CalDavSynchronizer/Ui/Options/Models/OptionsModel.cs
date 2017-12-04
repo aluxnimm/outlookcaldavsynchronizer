@@ -43,7 +43,6 @@ namespace CalDavSynchronizer.Ui.Options.Models
 
     private bool _enableChangeTriggeredSynchronization;
     private OutlookFolderDescriptor _selectedFolderOrNull;
-    private string _folderAccountName;
 
     private string _calenderUrl;
     private string _emailAddress;
@@ -71,6 +70,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
     private bool _proxyUseManual;
     private string _proxyUserName;
     private bool _forceBasicAuthentication;
+    private string _profileTypeOrNull;
 
     private MappingConfigurationModel _mappingConfigurationModelOrNull;
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
@@ -79,8 +79,9 @@ namespace CalDavSynchronizer.Ui.Options.Models
     private readonly GeneralOptions _generalOptions;
     private readonly OptionModelSessionData _sessionData;
     private readonly MappingConfigurationModelFactory _mappingConfigurationModelFactory;
+    private readonly IServerSettingsDetector _serverSettingsDetector;
 
-    public static OptionsModel DesignInstance => new OptionsModel(NullSettingsFaultFinder.Instance, NullOptionTasks.Instance, NullOutlookAccountPasswordProvider.Instance, new Contracts.Options(), new GeneralOptions(), DesignProfileType.Instance, false, new OptionModelSessionData(new  Dictionary<string, OutlookCategory>()));
+    public static OptionsModel DesignInstance => new OptionsModel(NullSettingsFaultFinder.Instance, NullOptionTasks.Instance, NullOutlookAccountPasswordProvider.Instance, new Contracts.Options(), new GeneralOptions(), DesignProfileModelFactory.Instance, false, new OptionModelSessionData(new  Dictionary<string, OutlookCategory>()), new NullServerSettingsDetector());
    
     public OptionsModel(
       ISettingsFaultFinder faultFinder, 
@@ -88,29 +89,32 @@ namespace CalDavSynchronizer.Ui.Options.Models
       IOutlookAccountPasswordProvider outlookAccountPasswordProvider,
       Contracts.Options data,
       GeneralOptions generalOptions, 
-      IProfileType profileType,
+      IProfileModelFactory profileModelFactory,
       bool isGoogle,
-      OptionModelSessionData sessionData)
+      OptionModelSessionData sessionData, 
+      IServerSettingsDetector serverSettingsDetector)
     {
       if (data == null) throw new ArgumentNullException(nameof(data));
+      if (serverSettingsDetector == null) throw new ArgumentNullException(nameof(serverSettingsDetector));
 
       _mappingConfigurationModelFactory = new MappingConfigurationModelFactory(sessionData);
       _faultFinder = faultFinder ?? throw new ArgumentNullException(nameof(faultFinder));
       _optionTasks = optionTasks ?? throw new ArgumentNullException(nameof(optionTasks));
       _outlookAccountPasswordProvider = outlookAccountPasswordProvider ?? throw new ArgumentNullException(nameof(outlookAccountPasswordProvider));
       _generalOptions = generalOptions ?? throw new ArgumentNullException(nameof(generalOptions));
-      ProfileType = profileType ?? throw new ArgumentNullException(nameof(profileType));
+      ModelFactory = profileModelFactory ?? throw new ArgumentNullException(nameof(profileModelFactory));
       _sessionData = sessionData ?? throw new ArgumentNullException(nameof(sessionData));
 
       Id = data.Id;
 
       _isGoogle = isGoogle;
+      _serverSettingsDetector = serverSettingsDetector;
 
       InitializeData(data);
     }
  
 
-    public IProfileType ProfileType { get; }
+    public IProfileModelFactory ModelFactory { get; }
 
     public Guid Id { get; }
     public MappingConfigurationModel MappingConfigurationModelOrNull
@@ -409,6 +413,8 @@ namespace CalDavSynchronizer.Ui.Options.Models
       }
     }
 
+    public string FolderAccountName { get; private set; }
+
     /// <remarks>
     /// InitializeData has to set fields instead of properties, since properties can encapsulate business logic and can interfer with each other!
     /// </remarks>
@@ -421,7 +427,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
     
       InitializeFolder(data);
 
-      _folderAccountName = data.OutlookFolderAccountName;
+      FolderAccountName = data.OutlookFolderAccountName;
 
       _calenderUrl = data.CalenderUrl;
       _userName = data.UserName;
@@ -441,6 +447,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
       _daysToSynchronizeInThePast = data.DaysToSynchronizeInThePast;
       _daysToSynchronizeInTheFuture = data.DaysToSynchronizeInTheFuture;
       _useWebDavCollectionSync = data.UseWebDavCollectionSync;
+      _profileTypeOrNull = data.ProfileTypeOrNull;
 
       var proxyOptions = data.ProxyOptions ?? new ProxyOptions();
 
@@ -487,7 +494,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
         EnableChangeTriggeredSynchronization = _enableChangeTriggeredSynchronization,
         OutlookFolderEntryId = _selectedFolderOrNull?.EntryId,
         OutlookFolderStoreId = _selectedFolderOrNull?.StoreId,
-        OutlookFolderAccountName = _folderAccountName,
+        OutlookFolderAccountName = FolderAccountName,
         CalenderUrl = _calenderUrl,
         UserName = _userName,
         Password = _password,
@@ -508,6 +515,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
         ForceBasicAuthentication = _forceBasicAuthentication,
         ProxyOptions = CreateProxyOptions(),
         MappingConfiguration = MappingConfigurationModelOrNull?.GetData(),
+        ProfileTypeOrNull = _profileTypeOrNull
       };
     }
 
@@ -520,7 +528,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
     {
       var data = CreateData();
       data.Id = Guid.NewGuid();
-      return new OptionsModel(_faultFinder, _optionTasks, _outlookAccountPasswordProvider, data , _generalOptions, ProfileType, _isGoogle, _sessionData);
+      return new OptionsModel(_faultFinder, _optionTasks, _outlookAccountPasswordProvider, data , _generalOptions, ModelFactory, _isGoogle, _sessionData, _serverSettingsDetector);
     }
 
     public ProxyOptions CreateProxyOptions()
@@ -584,7 +592,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
 
       SelectedFolderOrNull = folderDescriptor;
 
-      _folderAccountName = _selectedFolderOrNull != null
+      FolderAccountName = _selectedFolderOrNull != null
          ? _optionTasks.GetFolderAccountNameOrNull(_selectedFolderOrNull.StoreId)
          : null;
 
@@ -625,14 +633,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
     {
       try
       {
-        var serverAccountSettings = _outlookAccountPasswordProvider.GetAccountServerSettings(_folderAccountName);
-        EmailAddress = serverAccountSettings.EmailAddress;
-        string path = !string.IsNullOrEmpty(CalenderUrl) ? new Uri(CalenderUrl).AbsolutePath : string.Empty;
-        bool success;
-        var dnsDiscoveredUrl = OptionTasks.DoSrvLookup(EmailAddress, OlItemType.olAppointmentItem, out success);
-        CalenderUrl = success ? dnsDiscoveredUrl : "https://" + serverAccountSettings.ServerString + path;
-        UserName = serverAccountSettings.UserName;
-        UseAccountPassword = true;
+        _serverSettingsDetector.AutoFillServerSettings(this);
       }
       catch (System.Exception x)
       {
@@ -648,7 +649,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
     {
       return SynchronizerFactory.CreateWebDavClient(
           UserName,
-          UseAccountPassword ? _outlookAccountPasswordProvider.GetPassword(_folderAccountName) : Password,
+          UseAccountPassword ? _outlookAccountPasswordProvider.GetPassword(FolderAccountName) : Password,
           url != null ? url.ToString() : CalenderUrl,
           _generalOptions.CalDavConnectTimeout,
           ServerAdapterType,

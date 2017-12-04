@@ -45,7 +45,7 @@ namespace CalDavSynchronizer.IntegrationTests
     [Apartment(System.Threading.ApartmentState.STA)]
     public async Task SynchronizeToServer_SomeEventsAreOutsideTimeRangeFilter_SyncsJustEventsWhichMatchTimeRangeFilter()
     {
-      var options = TestComponentContainer.GetOptions("IntegrationTest/Events/Sogo");
+      var options = TestOptionsFactory.CreateSogoEvents();
  
       options.SynchronizationMode = SynchronizationMode.ReplicateOutlookIntoServer;
 
@@ -88,7 +88,7 @@ namespace CalDavSynchronizer.IntegrationTests
     [Apartment(System.Threading.ApartmentState.STA)]
     public async Task Synchronize_ContainsDuplicates_DuplicatesAreDeletedIfEnabled(bool useWebDavCollectionSync)
     {
-      var options = TestComponentContainer.GetOptions("IntegrationTest/Events/Sogo");
+      var options = TestOptionsFactory.CreateSogoEvents();
 
       options.SynchronizationMode = SynchronizationMode.MergeInBothDirections;
       options.UseWebDavCollectionSync = useWebDavCollectionSync;
@@ -149,13 +149,19 @@ namespace CalDavSynchronizer.IntegrationTests
       entities.ForEach(e => e.Dispose());
     }
 
-    [TestCase("IntegrationTest/Events/Sogo")]
-    // [TestCase("IntegrationTest/Events/Google")] => This does currently not work
-    [Apartment(System.Threading.ApartmentState.STA)]
-    public async Task SynchronizeToServer_AllDayEventsWithTimeRangeFilter_DoesntDuplicateOrDeleteBoundaryEvents(string profileName)
+    public static object[] SynchronizeToServer_AllDayEventsWithTimeRangeFilter_DoesntDuplicateOrDeleteBoundaryEventsSource()
     {
-      var options = TestComponentContainer.GetOptions(profileName);
+      return new[]
+      {
+        new object[] {TestOptionsFactory.CreateSogoEvents()},
+        //   new object[] { TestOptionsFactory.CreateGoogleEvents()} => This does currently not work
+      };
+    }
 
+    [TestCaseSource(nameof(SynchronizeToServer_AllDayEventsWithTimeRangeFilter_DoesntDuplicateOrDeleteBoundaryEventsSource))]
+    [Apartment(System.Threading.ApartmentState.STA)]
+    public async Task SynchronizeToServer_AllDayEventsWithTimeRangeFilter_DoesntDuplicateOrDeleteBoundaryEvents(Options options)
+    {
       options.SynchronizationMode = SynchronizationMode.ReplicateOutlookIntoServer;
 
       var synchronizer = await CreateSynchronizer(options);
@@ -204,7 +210,7 @@ namespace CalDavSynchronizer.IntegrationTests
     [Apartment(System.Threading.ApartmentState.STA)]
     public async Task SynchronizeTwoWay_LocalEventChanges_IsSyncedToServerAndPreservesExtendedPropertiesAndUid(bool useWebDavCollectionSync)
     {
-      var options = TestComponentContainer.GetOptions ("IntegrationTest/Events/Sogo");
+      var options = TestOptionsFactory.CreateSogoEvents();
       options.UseWebDavCollectionSync = useWebDavCollectionSync;
       var synchronizer = await CreateSynchronizer(options);
       await synchronizer.ClearEventRepositoriesAndCache ();
@@ -249,7 +255,7 @@ namespace CalDavSynchronizer.IntegrationTests
     [Apartment(System.Threading.ApartmentState.STA)]
     public async Task CreateOutlookEntity_ExceptionOccurs_DoesNotLeaveEmptyEntityInRepository(bool saveAndReload, bool useWebDavCollectionSync)
     {
-      var options = TestComponentContainer.GetOptions("IntegrationTest/Events/Sogo");
+      var options = TestOptionsFactory.CreateSogoEvents();
       options.UseWebDavCollectionSync = useWebDavCollectionSync;
       var synchronizer = await CreateSynchronizer(options);
       await synchronizer.ClearEventRepositoriesAndCache();
@@ -285,7 +291,7 @@ namespace CalDavSynchronizer.IntegrationTests
     [Apartment(System.Threading.ApartmentState.STA)]
     public async Task SynchronizeTwoWay_CacheIsClearedAfterFirstRun_FindsMatchingEntitiesInSecondRun(bool useWebDavCollectionSync)
     {
-      var options = TestComponentContainer.GetOptions("IntegrationTest/Events/Sogo");
+      var options = TestOptionsFactory.CreateSogoEvents();
       options.UseWebDavCollectionSync = useWebDavCollectionSync;
       options.SynchronizationMode = SynchronizationMode.MergeInBothDirections;
 
@@ -317,7 +323,7 @@ namespace CalDavSynchronizer.IntegrationTests
     [Apartment(System.Threading.ApartmentState.STA)]
     public async Task Synchronize_ServerEventContainsOrganizer_IsSyncedToOutlookAndBackToServer(bool useWebDavCollectionSync)
     {
-      var options = TestComponentContainer.GetOptions("IntegrationTest/Events/Sogo");
+      var options = TestOptionsFactory.CreateSogoEvents();
       options.UseWebDavCollectionSync = useWebDavCollectionSync;
       options.SynchronizationMode = SynchronizationMode.MergeInBothDirections;
 

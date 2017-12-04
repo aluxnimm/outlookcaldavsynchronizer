@@ -105,6 +105,7 @@ namespace CalDavSynchronizer
     private readonly IOneTimeTaskRunner _oneTimeTaskRunner;
     private readonly TotalProgressFactory _totalProgressFactory;
     private readonly IOutlookSession _outlookSession;
+    private readonly IProfileTypeRegistry _profileTypeRegistry;
 
     public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
     public event EventHandler<SchedulerStatusEventArgs> StatusChanged
@@ -121,7 +122,9 @@ namespace CalDavSynchronizer
 
       s_logger.Info ("Startup...");
 
-      if(GeneralOptionsDataAccess.WpfRenderModeSoftwareOnly)
+      _profileTypeRegistry = ProfileTypeRegistry.Instance;
+
+      if (GeneralOptionsDataAccess.WpfRenderModeSoftwareOnly)
         RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
 
       _generalOptionsDataAccess = generalOptionsDataAccess;
@@ -146,16 +149,17 @@ namespace CalDavSynchronizer
 
       _globalTimeZoneCache = new GlobalTimeZoneCache();
 
-      _applicationDataDirectory = Path.Combine (
+
+      var applicationDataDirectoryBase = Path.Combine (
           Environment.GetFolderPath (
               generalOptions.StoreAppDataInRoamingFolder ? Environment.SpecialFolder.ApplicationData : Environment.SpecialFolder.LocalApplicationData),
           "CalDavSynchronizer");
+      
+      string optionsFilePath;
 
-      _optionsDataAccess = new OptionsDataAccess (
-          Path.Combine (
-              _applicationDataDirectory,
-              GetOrCreateConfigFileName (_applicationDataDirectory, _session.CurrentProfileName)
-              ));
+      (_applicationDataDirectory, optionsFilePath) = GetOrCreateDataDirectory(applicationDataDirectoryBase, _session.CurrentProfileName);
+      
+      _optionsDataAccess = new OptionsDataAccess (optionsFilePath);
 
       _uiService = new UiService();
       _permanentStatusesViewModel = new PermanentStatusesViewModel(_uiService, this);
@@ -528,13 +532,14 @@ namespace CalDavSynchronizer
 
       var viewOptions = new ViewOptions (generalOptions.EnableAdvancedView);
       OptionModelSessionData sessionData = new OptionModelSessionData(_outlookSession.GetCategories().ToDictionary(c => c.Name , _outlookSession.CategoryNameComparer));
-      var viewModel = new OptionsCollectionViewModel (
-          generalOptions.ExpandAllSyncProfiles,
-          GetProfileDataDirectory,
-          _uiService, 
-          optionTasks,
-          p => ProfileTypeRegistry.Create(p, _outlookAccountPasswordProvider, categories, optionTasks, faultFinder, generalOptions, viewOptions, sessionData),
-          viewOptions);
+      var viewModel = new OptionsCollectionViewModel(
+        generalOptions.ExpandAllSyncProfiles,
+        GetProfileDataDirectory,
+        _uiService,
+        optionTasks,
+        _profileTypeRegistry,
+        (parent, type) => type.CreateModelFactory(parent, _outlookAccountPasswordProvider, categories, optionTasks, faultFinder, generalOptions, viewOptions, sessionData),
+        viewOptions);
 
       _currentVisibleOptionsFormOrNull = viewModel;
 
@@ -748,22 +753,32 @@ namespace CalDavSynchronizer
       }
     }
 
-    public static string GetOrCreateConfigFileName (string applicationDataDirectory, string profileName)
+    public static (string DataDirectoryPath, string ConfigFilePath) GetOrCreateDataDirectory(string applicationDataDirectoryBase, string profileName)
     {
-      var profileDataAccess = new ProfileListDataAccess (Path.Combine (applicationDataDirectory, "profiles.xml"));
+      var profileDataAccess = new ProfileListDataAccess (Path.Combine (applicationDataDirectoryBase, "profiles.xml"));
       var profiles = profileDataAccess.Load();
       var profile = profiles.FirstOrDefault (p => String.Compare (p.ProfileName, profileName, StringComparison.OrdinalIgnoreCase) == 0);
       if (profile == null)
       {
+        var profileGuid = Guid.NewGuid();
         profile = new ProfileEntry()
                   {
                       ProfileName = profileName,
-                      ConfigFileName = string.Format ("options_{0}.xml", Guid.NewGuid())
+                      ConfigFileName = "options.xml",
+                      DataDirectoryName = profileGuid.ToString()
+
                   };
         profiles = profiles.Union (new[] { profile }).ToArray();
         profileDataAccess.Save (profiles);
       }
-      return profile.ConfigFileName;
+
+      var dataDirectory = string.IsNullOrEmpty(profile.DataDirectoryName) ? applicationDataDirectoryBase : Path.Combine(applicationDataDirectoryBase, profile.DataDirectoryName);
+      if (!Directory.Exists(dataDirectory))
+        Directory.CreateDirectory(dataDirectory);
+
+      return (
+        dataDirectory,
+        Path.Combine(dataDirectory, profile.ConfigFileName));
     }
 
     /// <summary>

@@ -46,12 +46,12 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
     protected abstract Task DeleteInB(TBId id);
 
     protected TSynchronizer Synchronizer { get; private set; }
-    protected abstract string ProfileName { get; }
+    protected abstract Options GetOptions();
     protected abstract TSynchronizer CreateSynchronizer(Options options);
 
     protected async Task InitializeSynchronizer(int? chunkSize, bool useWebDavCollectionSync)
     {
-      var options = TestComponentContainer.GetOptions(ProfileName);
+      var options = GetOptions();
       options.ChunkSize = chunkSize ?? 0;
       options.IsChunkedSynchronizationEnabled = chunkSize.HasValue;
       options.UseWebDavCollectionSync = useWebDavCollectionSync;

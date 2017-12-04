@@ -14,20 +14,18 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using System.Xml.Serialization;
+using CalDavSynchronizer.Ui.Options.Models;
+using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Contracts
+namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 {
-  public class ProfileEntry
+  public interface IProfileModelFactory
   {
-    [XmlAttribute]
-    public string ProfileName { get; set; }
-
-    [XmlAttribute]
-    public string ConfigFileName { get; set; }
-
-    [XmlAttribute]
-    public string DataDirectoryName { get; set; }
+    IProfileType ProfileType { get; }
+    OptionsModel CreateNewModel();
+    OptionsModel CreateModelFromData(Contracts.Options data);
+    IOptionsViewModel CreateViewModel(OptionsModel model);
+    IOptionsViewModel CreateTemplateViewModel();
+    ProfileModelOptions ModelOptions { get; }
   }
 }

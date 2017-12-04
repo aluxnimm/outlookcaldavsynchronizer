@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -14,20 +14,10 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using System.Xml.Serialization;
-
-namespace CalDavSynchronizer.Contracts
+namespace CalDavSynchronizer.Ui.Options.Models
 {
-  public class ProfileEntry
+  public interface IServerSettingsDetector
   {
-    [XmlAttribute]
-    public string ProfileName { get; set; }
-
-    [XmlAttribute]
-    public string ConfigFileName { get; set; }
-
-    [XmlAttribute]
-    public string DataDirectoryName { get; set; }
+    void AutoFillServerSettings(OptionsModel optionsModel);
   }
 }

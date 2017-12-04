@@ -17,63 +17,53 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
+using log4net;
 
 namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 {
   public class ProfileTypeRegistry : IProfileTypeRegistry
   {
+    private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+    public static readonly IProfileTypeRegistry Instance = Create();
+
     private readonly GenericProfile _genericProfile;
     private readonly GoogleProfile _googleProfile;
+    private readonly IReadOnlyDictionary<string,IProfileType> _profileTypeByName = new Dictionary<string, IProfileType>();
 
     private ProfileTypeRegistry(IReadOnlyList<IProfileType> allTypes, GenericProfile genericProfile, GoogleProfile googleProfile)
     {
       _genericProfile = genericProfile;
       _googleProfile = googleProfile;
       AllTypes = allTypes;
+      _profileTypeByName = allTypes.ToDictionary(GetProfileTypeName);
     }
 
-    public static IProfileTypeRegistry Create(
-      IOptionsViewModelParent optionsViewModelParent,
-      IOutlookAccountPasswordProvider outlookAccountPasswordProvider,
-      IReadOnlyList<string> availableCategories,
-      IOptionTasks optionTasks,
-      ISettingsFaultFinder settingsFaultFinder,
-      GeneralOptions generalOptions,
-      IViewOptions viewOptions,
-      OptionModelSessionData sessionData)
+    private static IProfileTypeRegistry Create()
     {
-      if (optionsViewModelParent == null) throw new ArgumentNullException(nameof(optionsViewModelParent));
-      if (outlookAccountPasswordProvider == null) throw new ArgumentNullException(nameof(outlookAccountPasswordProvider));
-      if (availableCategories == null) throw new ArgumentNullException(nameof(availableCategories));
-      if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
-      if (settingsFaultFinder == null) throw new ArgumentNullException(nameof(settingsFaultFinder));
-      if (generalOptions == null) throw new ArgumentNullException(nameof(generalOptions));
-      if (viewOptions == null) throw new ArgumentNullException(nameof(viewOptions));
-      if (sessionData == null) throw new ArgumentNullException(nameof(sessionData));
-
-
-      var generic = new GenericProfile(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData);
-      var google = new GoogleProfile(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData);
-      var all = new List<IProfileType> {generic, google};
-      all.Add(new ContactsiCloudProfile(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData));
-      all.Add(new FruuxProfile(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData));
-      all.Add(new PosteoProfile(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData));
-      all.Add(new YandexProfile(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData));
-      all.Add(new GmxCalendarProfile(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData));
-      all.Add(new SarenetProfile(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData));
-      all.Add(new LandmarksProfile(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData));
-      all.Add(new SogoProfile(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData));
-      all.Add(new CozyProfile(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData));
-      all.Add(new NextcloudProfile(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData));
-      all.Add(new MailboxOrgProfile(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData));
-      all.Add(new EasyProjectProfile(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData));
-      all.Add(new WebDeProfile(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData));
-      all.Add(new SmarterMailProfile(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData));
-      all.Add(new MailDeProfile(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData));
-      all.Add(new KolabProfile(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData));
+      var generic = new GenericProfile();
+      var google = new GoogleProfile();
+      var all = new List<IProfileType> { generic, google };
+      all.Add(new ContactsiCloudProfile());
+      all.Add(new FruuxProfile());
+      all.Add(new PosteoProfile());
+      all.Add(new YandexProfile());
+      all.Add(new GmxCalendarProfile());
+      all.Add(new SarenetProfile());
+      all.Add(new LandmarksProfile());
+      all.Add(new SogoProfile());
+      all.Add(new CozyProfile());
+      all.Add(new NextcloudProfile());
+      all.Add(new MailboxOrgProfile());
+      all.Add(new EasyProjectProfile());
+      all.Add(new WebDeProfile());
+      all.Add(new SmarterMailProfile());
+      all.Add(new MailDeProfile());
+      all.Add(new KolabProfile());
 
       return new ProfileTypeRegistry(all, generic, google);
     }
@@ -82,10 +72,33 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 
     public IProfileType DetermineType(Contracts.Options data)
     {
+      if (data.ProfileTypeOrNull != null)
+      {
+        if (_profileTypeByName.TryGetValue(data.ProfileTypeOrNull, out var profileType))
+        {
+          return profileType;
+        }
+        else
+        {
+          s_logger.Warn($"Profile '{data.Name}' ('{data.Id}'): Unknown profile type name '{data.ProfileTypeOrNull}'");
+        }
+      }
+
       if (_googleProfile.IsGoogleProfile(data))
         return _googleProfile;
       else
         return _genericProfile;
+    }
+
+
+    public static string GetProfileTypeName(IProfileType type)
+    {
+      var typeNameWithSuffix = type.GetType().Name;
+      const string profileSuffix = "Profile";
+      if (!typeNameWithSuffix.EndsWith(profileSuffix) || typeNameWithSuffix.Length == profileSuffix.Length)
+        throw new ArgumentException($"Type name has to have at least one character with the suffix '{profileSuffix}'", nameof(type));
+      var typeName = typeNameWithSuffix.Substring(0, typeNameWithSuffix.Length - profileSuffix.Length);
+      return typeName;
     }
   }
 }

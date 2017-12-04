@@ -67,6 +67,7 @@ namespace CalDavSynchronizer.Contracts
 
     public ProxyOptions ProxyOptions { get; set; }
     public MappingConfigurationBase MappingConfiguration { get; set; }
+    public string ProfileTypeOrNull { get; set; }
 
     public SecureString GetEffectivePassword (IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
     {

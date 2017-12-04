@@ -22,28 +22,37 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.Ui.Options.ProfileTypes
 {
-  class GmxCalendarProfile : ProfileBase
+  class GmxCalendarProfile : IProfileType
   {
-    public GmxCalendarProfile(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData) 
-      : base(optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData)
+    public string Name => "GmxCalendar";
+    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_gmx.png";
+
+    public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
+      return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData);
     }
 
-    public override string Name => "GmxCalendar";
-    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_gmx.png";
-
-    protected override void InitializeData(Contracts.Options data)
+    class ProfileModelFactory : ProfileModelFactoryBase
     {
-      data.CalenderUrl = "https://caldav.gmx.net";
-      data.MappingConfiguration = new EventMappingConfiguration
+      public ProfileModelFactory(IProfileType profileType, IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+        : base(profileType, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData)
       {
-        UseIanaTz = true
-      };
-    }
+      }
 
-    protected override void InitializePrototypeData(Contracts.Options data)
-    {
-      InitializeData(data);
+
+      protected override void InitializeData(Contracts.Options data)
+      {
+        data.CalenderUrl = "https://caldav.gmx.net";
+        data.MappingConfiguration = new EventMappingConfiguration
+        {
+          UseIanaTz = true
+        };
+      }
+
+      protected override void InitializePrototypeData(Contracts.Options data)
+      {
+        InitializeData(data);
+      }
     }
   }
 }

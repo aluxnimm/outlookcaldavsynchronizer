@@ -57,7 +57,8 @@ namespace CalDavSynchronizer.UnitTest.Ui.Options.ViewModels
         id => @"A:\bla",
         _uiServiceStub,
         _optionTasksStub,
-        p => _testProfileRegistry,
+        _testProfileRegistry,
+        (_,t) => t.CreateModelFactory(null, null, null, null, null, null, null, null),
         new ViewOptions (false));
     }
 
@@ -108,7 +109,7 @@ namespace CalDavSynchronizer.UnitTest.Ui.Options.ViewModels
       }
     }
 
-    private class TestProfile : IProfileType
+    private class TestProfile : IProfileType, IProfileModelFactory
     {
       private readonly IOptionTasks _optionTasksStub;
 
@@ -118,6 +119,8 @@ namespace CalDavSynchronizer.UnitTest.Ui.Options.ViewModels
       }
 
       public string Name => "TestProfile";
+      public IProfileType ProfileType { get; }
+
       public OptionsModel CreateNewModel()
       {
         return CreateModelFromData(new Contracts.Options());
@@ -125,15 +128,17 @@ namespace CalDavSynchronizer.UnitTest.Ui.Options.ViewModels
 
       public OptionsModel CreateModelFromData(Contracts.Options data)
       {
+        var outlookAccountPasswordProvider = MockRepository.GenerateStub<IOutlookAccountPasswordProvider>();
         return new OptionsModel(
             MockRepository.GenerateStub<ISettingsFaultFinder>(),
             _optionTasksStub,
-            MockRepository.GenerateStub<IOutlookAccountPasswordProvider>(),
+            outlookAccountPasswordProvider,
             data,
             new GeneralOptions(),
             this,
             false,
-            new OptionModelSessionData(new Dictionary<string, OutlookCategory>()));
+            new OptionModelSessionData(new Dictionary<string, OutlookCategory>()),
+            new ServerSettingsDetector(outlookAccountPasswordProvider));
       }
 
       public IOptionsViewModel CreateViewModel(OptionsModel model)
@@ -152,7 +157,14 @@ namespace CalDavSynchronizer.UnitTest.Ui.Options.ViewModels
         throw new NotImplementedException();
       }
 
+      public ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true);
+
       public string ImageUrl { get; } = string.Empty;
+
+      public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+      {
+        return this;
+      }
     }
 
   }

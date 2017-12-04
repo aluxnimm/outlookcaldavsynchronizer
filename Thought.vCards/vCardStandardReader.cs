@@ -314,6 +314,7 @@ namespace Thought.vCards
 						case '\\':
 						case ',':
 						case ';':
+            case ':':
 
 							builder.Append(code);
 							nextIndex += 2;

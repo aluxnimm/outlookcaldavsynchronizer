@@ -14,20 +14,14 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using System.Xml.Serialization;
-
-namespace CalDavSynchronizer.Contracts
+namespace CalDavSynchronizer.Ui.Options.Models
 {
-  public class ProfileEntry
-  {
-    [XmlAttribute]
-    public string ProfileName { get; set; }
-
-    [XmlAttribute]
-    public string ConfigFileName { get; set; }
-
-    [XmlAttribute]
-    public string DataDirectoryName { get; set; }
-  }
+ 
+    class NullServerSettingsDetector : IServerSettingsDetector
+    {
+      public void AutoFillServerSettings(OptionsModel optionsModel)
+      {
+      }
+    }
+  
 }
