@@ -144,6 +144,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._tasksPage.Controls.Add(this._tasksDataGridView);
       this._tasksPage.Location = new System.Drawing.Point(4, 22);
       this._tasksPage.Name = "_tasksPage";
+      this._tasksPage.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
       this._tasksPage.Size = new System.Drawing.Size(727, 312);
       this._tasksPage.TabIndex = 2;
       this._tasksPage.Text = "Tasks";
@@ -157,7 +158,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._tasksDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
       this._tasksDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
       this._tasksDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this._tasksDataGridView.Location = new System.Drawing.Point(0, 0);
+      this._tasksDataGridView.Location = new System.Drawing.Point(3, 3);
       this._tasksDataGridView.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
       this._tasksDataGridView.MultiSelect = false;
       this._tasksDataGridView.Name = "_tasksDataGridView";

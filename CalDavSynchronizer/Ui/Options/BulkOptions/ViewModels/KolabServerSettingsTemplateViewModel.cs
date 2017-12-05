@@ -30,7 +30,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 {
-  internal class EasyProjectServerSettingsTemplateViewModel : ModelBase, IServerSettingsTemplateViewModel
+  internal class KolabServerSettingsTemplateViewModel : ModelBase, IServerSettingsTemplateViewModel
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -38,7 +38,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
     private readonly OptionsModel _prototypeModel;
 
 
-    public EasyProjectServerSettingsTemplateViewModel (IOutlookAccountPasswordProvider outlookAccountPasswordProvider, OptionsModel prototypeModel)
+    public KolabServerSettingsTemplateViewModel (IOutlookAccountPasswordProvider outlookAccountPasswordProvider, OptionsModel prototypeModel)
     {
       _prototypeModel = prototypeModel ?? throw new ArgumentNullException(nameof(prototypeModel));
       _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
@@ -80,22 +80,21 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       set { _prototypeModel.EmailAddress = value; }
     }
 
-    public void SetResourceUrl(OptionsModel options, CalendarData resource)
+    public void SetResourceUrl (OptionsModel options, CalendarData resource)
     {
-      options.CalenderUrl = resource.Uri.ToString();
+      options.CalenderUrl = resource.Uri.ToString ();
     }
 
-    public void SetResourceUrl(OptionsModel options, AddressBookData resource)
+    public void SetResourceUrl (OptionsModel options, AddressBookData resource)
     {
-      options.CalenderUrl = resource.Uri.ToString();
+      options.CalenderUrl = resource.Uri.ToString ();
     }
 
-    public void SetResourceUrl(OptionsModel options, TaskListData resource)
+    public void SetResourceUrl (OptionsModel options, TaskListData resource)
     {
       options.CalenderUrl = resource.Id;
     }
 
-    
     public async Task<ServerResources> GetServerResources ()
     {
       string caldavUrlString ;
@@ -119,7 +118,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       var carddavUrl = new Uri (trimmedCarddavUrl.EndsWith("/") ? trimmedCarddavUrl : trimmedCarddavUrl + "/");
 
       var webDavClientCaldav = _prototypeModel.CreateWebDavClient(new Uri(trimmedCaldavUrl));
-      var webDavClientCarddav = _prototypeModel.CreateWebDavClient (new Uri(trimmedCarddavUrl));
+      var webDavClientCarddav = _prototypeModel.CreateWebDavClient(new Uri(trimmedCarddavUrl));
       var calDavDataAccess = new CalDavDataAccess (caldavUrl, webDavClientCaldav);
       var cardDavDataAccess = new CardDavDataAccess (carddavUrl, webDavClientCarddav, string.Empty, contentType => true);
 
@@ -150,13 +149,13 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
     }
 
 
-    public static EasyProjectServerSettingsTemplateViewModel DesignInstance = new EasyProjectServerSettingsTemplateViewModel (NullOutlookAccountPasswordProvider.Instance, OptionsModel.DesignInstance)
-                                                                   {
-                                                                       CalenderUrl = "http://bulkurl",
-                                                                       EmailAddress = "bulkemail",
-                                                                       UseAccountPassword = true,
-                                                                       Password = SecureStringUtility.ToSecureString ("bulkpwd"),
-                                                                       UserName = "username",
-                                                                   };
+    public static KolabServerSettingsTemplateViewModel DesignInstance = new KolabServerSettingsTemplateViewModel (NullOutlookAccountPasswordProvider.Instance, OptionsModel.DesignInstance)
+    {
+        CalenderUrl = "http://bulkurl",
+        EmailAddress = "bulkemail",
+        UseAccountPassword = true,
+        Password = SecureStringUtility.ToSecureString("bulkpwd"),
+        UserName = "username",
+    };
   }
 }
