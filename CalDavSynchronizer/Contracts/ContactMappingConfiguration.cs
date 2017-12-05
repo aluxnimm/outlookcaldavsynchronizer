@@ -43,15 +43,7 @@ namespace CalDavSynchronizer.Contracts
 
     public ContactMappingConfiguration ()
     {
-      MapBirthday = true;
-      MapContactPhoto = true;
-      KeepOutlookPhoto = false;
-      KeepOutlookFileAs = true;
-      FixPhoneNumberFormat = false;
-      MapOutlookEmail1ToWork = false;
-      WriteImAsImpp = false;
-      DefaultImServicType = IMServiceType.AIM;
-      MapDistributionLists = false;
+    
     }
 
     public override TResult Accept<TResult>(IMappingConfigurationBaseVisitor<TResult> visitor)

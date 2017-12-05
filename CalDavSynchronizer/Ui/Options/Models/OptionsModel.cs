@@ -26,8 +26,8 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.ProfileTypes;
 using CalDavSynchronizer.Scheduling;
-using CalDavSynchronizer.Ui.Options.ProfileTypes;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
 
@@ -605,24 +605,23 @@ namespace CalDavSynchronizer.Ui.Options.Models
     
     private void CoerceMappingConfiguration()
     {
-      MappingConfigurationModelOrNull = CoerceMappingConfiguration(MappingConfigurationModelOrNull, SelectedFolderOrNull?.DefaultItemType, _isGoogle);
+      MappingConfigurationModelOrNull = CoerceMappingConfiguration(MappingConfigurationModelOrNull, SelectedFolderOrNull?.DefaultItemType);
     }
 
     private MappingConfigurationModel CoerceMappingConfiguration(
       MappingConfigurationModel currentMappingConfiguration,
-      OlItemType? outlookFolderType,
-      bool isGoogleProfile)
+      OlItemType? outlookFolderType)
     {
       switch (outlookFolderType)
       {
         case OlItemType.olAppointmentItem:
-          return currentMappingConfiguration as EventMappingConfigurationModel ?? new EventMappingConfigurationModel(new EventMappingConfiguration(), _sessionData);
+          return currentMappingConfiguration as EventMappingConfigurationModel ?? new EventMappingConfigurationModel(ModelFactory.ProfileType.CreateEventMappingConfiguration(), _sessionData);
         case OlItemType.olContactItem:
-          return currentMappingConfiguration as ContactMappingConfigurationModel ?? new ContactMappingConfigurationModel(new ContactMappingConfiguration());
+          return currentMappingConfiguration as ContactMappingConfigurationModel ?? new ContactMappingConfigurationModel(ModelFactory.ProfileType.CreateContactMappingConfiguration());
         case OlItemType.olTaskItem:
-          return isGoogleProfile
-              ? null
-              : currentMappingConfiguration as TaskMappingConfigurationModel ?? new TaskMappingConfigurationModel(new TaskMappingConfiguration());
+          return ModelFactory.ModelOptions.IsTaskMappingConfigurationEnabled
+            ? currentMappingConfiguration as TaskMappingConfigurationModel ?? new TaskMappingConfigurationModel(ModelFactory.ProfileType.CreateTaskMappingConfiguration())
+            : null;
         default:
           return currentMappingConfiguration;
       }

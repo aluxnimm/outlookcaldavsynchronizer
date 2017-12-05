@@ -24,8 +24,8 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.ProfileTypes;
 using CalDavSynchronizer.Ui.Options.Models;
-using CalDavSynchronizer.Ui.Options.ProfileTypes;
 using CalDavSynchronizer.Ui.Options.ViewModels.Mapping;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
@@ -283,7 +283,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       if (type != null)
       {
         var profileModelFactoryFactory = _profileModelFactoriesByType[type];
-        var viewModel = profileModelFactoryFactory.CreateViewModel(profileModelFactoryFactory.CreateNewModel());
+        var viewModel = profileModelFactoryFactory.CreateViewModel(profileModelFactoryFactory.CreateModelFromData(type.CreateOptions()));
         _options.Add(viewModel);
         ShowProfile(viewModel.Model.Id);
       }

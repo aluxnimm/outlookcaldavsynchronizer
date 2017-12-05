@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -17,19 +17,37 @@
 
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes
+namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
 {
-  class PosteoProfile : IProfileType
+  class ContactsiCloudProfile : ProfileTypeBase
   {
-    public string Name => "Posteo";
-    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_posteo.png";
+    public override string Name => "iCloud Contacts";
+    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_iCloud.png";
 
-    public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+    public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
       return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData);
+    }
+
+    public override Contracts.Options CreateOptions()
+    {
+      var data = base.CreateOptions();
+      data.CalenderUrl = "https://contacts.icloud.com/";
+      data.MappingConfiguration = CreateContactMappingConfiguration();
+      return data;
+    }
+
+    public override ContactMappingConfiguration CreateContactMappingConfiguration()
+    {
+      var data = base.CreateContactMappingConfiguration();
+      data.MapDistributionLists = true;
+      data.DistributionListType = DistributionListType.VCardGroupWithUid;
+      data.WriteImAsImpp = true;
+      return data;
     }
 
     class ProfileModelFactory : ProfileModelFactoryBase
@@ -39,16 +57,6 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
       {
       }
 
-
-      protected override void InitializeData(Contracts.Options data)
-      {
-        data.CalenderUrl = "https://posteo.de:8443";
-      }
-
-      protected override void InitializePrototypeData(Contracts.Options data)
-      {
-        InitializeData(data);
-      }
     }
   }
 }

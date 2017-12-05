@@ -17,17 +17,18 @@
 
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes
+namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
 {
-  public class GoogleProfile : IProfileType
+  public class GoogleProfile : ProfileTypeBase
   {
     public const int MaximumWriteBatchSize = 100;
-    public string Name { get; } = "Google";
-    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_google.png";
+    public override string Name { get; } = "Google";
+    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_google.png";
 
     public bool IsGoogleProfile(Contracts.Options options)
     {
@@ -36,9 +37,26 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
              options.ServerAdapterType == ServerAdapterType.GoogleContactApi;
     }
 
-    public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+    public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
       return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData);
+    }
+
+    public override Contracts.Options CreateOptions()
+    {
+      var data = base.CreateOptions();
+      data.CalenderUrl = Ui.Options.OptionTasks.GoogleDavBaseUrl;
+      data.ServerAdapterType = ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth;
+      data.IsChunkedSynchronizationEnabled = true;
+      data.ChunkSize = 100;
+      return data;
+    }
+
+    public override EventMappingConfiguration CreateEventMappingConfiguration()
+    {
+      var data = base.CreateEventMappingConfiguration();
+      data.MapAttendees = false;
+      return data;
     }
 
     class ProfileModelFactory : ProfileModelFactoryBase
@@ -53,19 +71,6 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
         return new OptionsModel(SettingsFaultFinder, OptionTasks, OutlookAccountPasswordProvider, data, GeneralOptions, this, true, SessionData, ServerSettingsDetector.Value);
       }
 
-      protected override void InitializeData(Contracts.Options data)
-      {
-        data.CalenderUrl = Options.OptionTasks.GoogleDavBaseUrl;
-        data.ServerAdapterType = ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth;
-        data.IsChunkedSynchronizationEnabled = true;
-        data.ChunkSize = 100;
-      }
-
-      protected override void InitializePrototypeData(Contracts.Options data)
-      {
-        InitializeData(data);
-      }
-
       protected override IOptionsViewModel CreateTemplateViewModel(OptionsModel prototypeModel)
       {
         return new MultipleOptionsTemplateViewModel(
@@ -75,6 +80,8 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
           prototypeModel,
           ViewOptions);
       }
+
+      public override ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true, false);
 
       public override IOptionsViewModel CreateViewModel(OptionsModel model)
       {

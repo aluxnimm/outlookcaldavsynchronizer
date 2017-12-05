@@ -17,19 +17,42 @@
 
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options;
+using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes
+namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
 {
-  class CozyProfile : IProfileType
+  class EasyProjectProfile : ProfileTypeBase
   {
-    public string Name => "Cozy";
-    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_cozy.png";
+    public override string Name => "EasyProject";
+    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_easyproject.png";
 
-    public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+    public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
       return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData);
+    }
+
+    public override Contracts.Options CreateOptions()
+    {
+      var data = base.CreateOptions();
+      data.CalenderUrl = "https://demo.easyredmine.com/caldav/";
+      data.EnableChangeTriggeredSynchronization = true;
+      data.DaysToSynchronizeInThePast = 7;
+      data.DaysToSynchronizeInTheFuture = 180;
+      data.MappingConfiguration = CreateEventMappingConfiguration();
+      return data;
+    }
+
+    public override EventMappingConfiguration CreateEventMappingConfiguration()
+    {
+      var data = base.CreateEventMappingConfiguration();
+      data.UseGlobalAppointmentID = true;
+      data.UseIanaTz = true;
+      data.MapXAltDescToRtfBody = true;
+      data.MapRtfBodyToXAltDesc = true;
+      return data;
     }
 
     class ProfileModelFactory : ProfileModelFactoryBase
@@ -39,18 +62,15 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
       {
       }
 
-      protected override void InitializeData(Contracts.Options data)
-      {
-        data.CalenderUrl = "https://yourdomain.cozycloud.cc/public/sync/principals/me/";
-        data.MappingConfiguration = new EventMappingConfiguration
-        {
-          UseIanaTz = true
-        };
-      }
 
-      protected override void InitializePrototypeData(Contracts.Options data)
+      protected override IOptionsViewModel CreateTemplateViewModel(OptionsModel prototypeModel)
       {
-        InitializeData(data);
+        return new EasyProjectMultipleOptionsTemplateViewModel(
+          OptionsViewModelParent,
+          new EasyProjectServerSettingsTemplateViewModel(OutlookAccountPasswordProvider, prototypeModel),
+          OptionTasks,
+          prototypeModel,
+          ViewOptions);
       }
     }
   }

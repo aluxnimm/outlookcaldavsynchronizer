@@ -19,7 +19,7 @@ using System;using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
-using CalDavSynchronizer.Ui.Options.ProfileTypes;
+using CalDavSynchronizer.ProfileTypes;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {

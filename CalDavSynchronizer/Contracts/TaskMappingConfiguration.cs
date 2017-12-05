@@ -50,14 +50,7 @@ namespace CalDavSynchronizer.Contracts
 
     public TaskMappingConfiguration ()
     {
-      MapReminder = ReminderMapping.JustUpcoming;
-      MapPriority = true;
-      MapBody = true;
-      MapRecurringTasks = true;
-      MapStartAndDueAsFloating = false;
-      IncludeEmptyTaskCategoryFilter = false;
-      InvertTaskCategoryFilter = false;
-      MapCustomProperties = false;
+   
     }
 
     public override TResult Accept<TResult>(IMappingConfigurationBaseVisitor<TResult> visitor)

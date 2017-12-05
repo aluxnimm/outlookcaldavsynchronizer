@@ -64,7 +64,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
     private OutlookFolderDescriptor _selectedFolder;
 
     public KolabMultipleOptionsTemplateViewModel (
-         IOptionsViewModelParent parent,
+        IOptionsViewModelParent parent,
         IServerSettingsTemplateViewModel serverSettingsViewModel,
         IOptionTasks optionTasks,
         OptionsModel prototypeModel, 

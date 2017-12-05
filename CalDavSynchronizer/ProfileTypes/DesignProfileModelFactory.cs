@@ -1,7 +1,7 @@
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes
+namespace CalDavSynchronizer.ProfileTypes
 {
   public class DesignProfileModelFactory : IProfileModelFactory
   {
@@ -12,11 +12,6 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
     }
 
     public IProfileType ProfileType => DesignProfileType.Instance;
-
-    public OptionsModel CreateNewModel()
-    {
-      return OptionsModel.DesignInstance;
-    }
 
     public OptionsModel CreateModelFromData(Contracts.Options data)
     {
@@ -33,6 +28,6 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
       return GenericOptionsViewModel.DesignInstance;
     }
 
-    public ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(false, false);
+    public ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(false, false, false);
   }
 }

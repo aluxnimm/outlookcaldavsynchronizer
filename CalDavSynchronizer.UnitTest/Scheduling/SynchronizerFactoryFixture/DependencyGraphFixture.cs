@@ -24,6 +24,8 @@ using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.TimeZones;
+using CalDavSynchronizer.ProfileTypes;
+using CalDavSynchronizer.ProfileTypes.ConcreteTypes;
 using CalDavSynchronizer.Scheduling;
 using GenSync.ProgressReport;
 using NUnit.Framework;
@@ -38,6 +40,8 @@ namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
     [SetUp]
     public void SetUp()
     {
+      var profileTypeRegistry = MockRepository.GenerateStub<IProfileTypeRegistry>();
+      profileTypeRegistry.Stub(_ => _.DetermineType(null)).IgnoreArguments().Return(new GenericProfile());
       _synchronizerFactory = new SynchronizerFactory(
         g => @"A:\data",
         NullTotalProgressFactory.Instance,
@@ -48,7 +52,8 @@ namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
         new NullQueryOutlookFolderStrategy(),
         new ExceptionHandlingStrategy(),
         new ComWrapperFactory(),
-        MockRepository.GenerateStub<IOptionsDataAccess>());
+        MockRepository.GenerateStub<IOptionsDataAccess>(),
+        profileTypeRegistry);
     }
 
     [TestCase(false)]
@@ -62,7 +67,7 @@ namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
           ConflictResolution = ConflictResolution.Automatic,
           IgnoreSynchronizationTimeRange = true,
           IsChunkedSynchronizationEnabled = false,
-          MappingConfiguration = new ContactMappingConfiguration
+          MappingConfiguration = new ContactMappingConfiguration()
           {
             MapDistributionLists = true,
             DistributionListType = DistributionListType.Sogo
@@ -89,7 +94,7 @@ namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
           ConflictResolution = ConflictResolution.Automatic,
           IgnoreSynchronizationTimeRange = true,
           IsChunkedSynchronizationEnabled = false,
-          MappingConfiguration = new ContactMappingConfiguration
+          MappingConfiguration = new ContactMappingConfiguration()
           {
             MapDistributionLists = true,
             DistributionListType = DistributionListType.VCardGroup
@@ -116,7 +121,7 @@ namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
           ConflictResolution = ConflictResolution.Automatic,
           IgnoreSynchronizationTimeRange = true,
           IsChunkedSynchronizationEnabled = false,
-          MappingConfiguration = new ContactMappingConfiguration
+          MappingConfiguration = new ContactMappingConfiguration()
           {
             MapDistributionLists = false,
           },

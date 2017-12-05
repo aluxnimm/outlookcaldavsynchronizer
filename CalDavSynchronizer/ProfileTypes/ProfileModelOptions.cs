@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -14,26 +14,19 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-using System;
-using CalDavSynchronizer.ProfileTypes;
-
-namespace CalDavSynchronizer.Ui.Options.ViewModels
+namespace CalDavSynchronizer.ProfileTypes
 {
-  class ProfileViewModel
+  public class ProfileModelOptions
   {
-
-    public ProfileViewModel(IProfileType profileType)
+    public ProfileModelOptions(bool areAdvancedNetWorkSettingsEnabled, bool isEnableChangeTriggeredSynchronizationEnabled, bool isTaskMappingConfigurationEnabled)
     {
-      if (profileType == null) throw new ArgumentNullException(nameof(profileType));
-      ProfileType = profileType;
-      Name = profileType.Name;
-      ImageUrl = profileType.ImageUrl;
+      AreAdvancedNetWorkSettingsEnabled = areAdvancedNetWorkSettingsEnabled;
+      IsEnableChangeTriggeredSynchronizationEnabled = isEnableChangeTriggeredSynchronizationEnabled;
+      IsTaskMappingConfigurationEnabled = isTaskMappingConfigurationEnabled;
     }
 
-    public IProfileType ProfileType { get; }
-    public string Name { get; }
-    public string ImageUrl { get; }
-    public bool IsSelected { get; set; }
+    public bool AreAdvancedNetWorkSettingsEnabled { get; }
+    public bool IsEnableChangeTriggeredSynchronizationEnabled { get; }
+    public bool IsTaskMappingConfigurationEnabled { get; }
   }
 }

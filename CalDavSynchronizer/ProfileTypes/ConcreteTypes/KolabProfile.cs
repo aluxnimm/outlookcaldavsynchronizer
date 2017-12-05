@@ -17,20 +17,47 @@
 
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
+using CalDavSynchronizer.DataAccess;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes
+namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
 {
-  class EasyProjectProfile : IProfileType
+  class KolabProfile : ProfileTypeBase
   {
-    public string Name => "EasyProject";
-    public string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_easyproject.png";
+    public override string Name => "Kolab";
+    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_kolab.png";
+    private GeneralOptions _generalOptions;
 
-    public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+    public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
+      _generalOptions = generalOptions;
       return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, settingsFaultFinder, generalOptions, viewOptions, sessionData);
+    }
+
+    public override Contracts.Options CreateOptions()
+    {
+      _generalOptions.TriggerSyncAfterSendReceive = true;  // Synchronize items when syncing IMAP or sending mail
+      new GeneralOptionsDataAccess().SaveOptions(_generalOptions);
+
+      var data = base.CreateOptions();
+      data.CalenderUrl = "https://kolab.coreboso.de/iRony/";
+      data.EnableChangeTriggeredSynchronization = true;   // Synchronize items immediately after change
+      data.DaysToSynchronizeInThePast = 31;               // Start syncing one month ago
+      data.DaysToSynchronizeInTheFuture = 365;            // Sync up to one year.
+      return data;
+    }
+
+    public override EventMappingConfiguration CreateEventMappingConfiguration()
+    {
+      var data = base.CreateEventMappingConfiguration();
+      // data.UseGlobalAppointmentID = true;
+      // data.UseIanaTz = true;
+      data.MapXAltDescToRtfBody = true;
+      data.MapRtfBodyToXAltDesc = true;
+      return data;
     }
 
     class ProfileModelFactory : ProfileModelFactoryBase
@@ -40,31 +67,11 @@ namespace CalDavSynchronizer.Ui.Options.ProfileTypes
       {
       }
 
-      protected override void InitializeData(Contracts.Options data)
-      {
-        data.CalenderUrl = "https://demo.easyredmine.com/caldav/";
-        data.EnableChangeTriggeredSynchronization = true;
-        data.DaysToSynchronizeInThePast = 7;
-        data.DaysToSynchronizeInTheFuture = 180;
-        data.MappingConfiguration = new EventMappingConfiguration
-        {
-          UseGlobalAppointmentID = true,
-          UseIanaTz = true,
-          MapXAltDescToRtfBody = true,
-          MapRtfBodyToXAltDesc = true
-        };
-      }
-
-      protected override void InitializePrototypeData(Contracts.Options data)
-      {
-        InitializeData(data);
-      }
-
       protected override IOptionsViewModel CreateTemplateViewModel(OptionsModel prototypeModel)
       {
-        return new EasyProjectMultipleOptionsTemplateViewModel(
+        return new KolabMultipleOptionsTemplateViewModel(
           OptionsViewModelParent,
-          new EasyProjectServerSettingsTemplateViewModel(OutlookAccountPasswordProvider, prototypeModel),
+          new KolabServerSettingsTemplateViewModel(OutlookAccountPasswordProvider, prototypeModel),
           OptionTasks,
           prototypeModel,
           ViewOptions);

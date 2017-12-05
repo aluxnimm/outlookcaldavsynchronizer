@@ -18,7 +18,7 @@
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Implementation.ComWrappers;
-using CalDavSynchronizer.Ui.Options.ProfileTypes;
+using CalDavSynchronizer.ProfileTypes;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.Reports.ViewModels;
 using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;

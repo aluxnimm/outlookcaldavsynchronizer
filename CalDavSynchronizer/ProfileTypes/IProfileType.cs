@@ -14,18 +14,25 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using System.Collections.Generic;
+using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.Ui.Options.ProfileTypes
+namespace CalDavSynchronizer.ProfileTypes
 {
-  public interface IProfileModelFactory
+  public interface IProfileType
   {
-    IProfileType ProfileType { get; }
-    OptionsModel CreateNewModel();
-    OptionsModel CreateModelFromData(Contracts.Options data);
-    IOptionsViewModel CreateViewModel(OptionsModel model);
-    IOptionsViewModel CreateTemplateViewModel();
-    ProfileModelOptions ModelOptions { get; }
+    string Name { get; }
+    string ImageUrl { get; }
+
+    Contracts.Options CreateOptions();
+    EventMappingConfiguration CreateEventMappingConfiguration();
+    ContactMappingConfiguration CreateContactMappingConfiguration();
+    TaskMappingConfiguration CreateTaskMappingConfiguration();
+
+    IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData);
   }
 }
