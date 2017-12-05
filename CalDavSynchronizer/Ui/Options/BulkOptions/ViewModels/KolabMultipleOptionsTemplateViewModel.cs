@@ -71,15 +71,10 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
         IViewOptions viewOptions)
     {
 
-      _parent = parent;
-      if (parent == null)
-        throw new ArgumentNullException (nameof (parent));
-      if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
-      if (prototypeModel == null) throw new ArgumentNullException(nameof(prototypeModel));
-      if (viewOptions == null) throw new ArgumentNullException(nameof(viewOptions));
-
-      _prototypeModel = prototypeModel;
-      ViewOptions = viewOptions;
+      _parent = parent ?? throw new ArgumentNullException (nameof (parent));
+      _optionTasks = optionTasks ?? throw new ArgumentNullException(nameof(optionTasks));
+      _prototypeModel = prototypeModel ?? throw new ArgumentNullException(nameof(prototypeModel));
+      ViewOptions = viewOptions ?? throw new ArgumentNullException(nameof(viewOptions));
 
       _getAccountSettingsCommand = new DelegateCommandWithoutCanExecuteDelegation(_ =>
       {
@@ -105,7 +100,6 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       Items = new[] { _networkSettingsViewModel };
 
       _serverSettingsViewModel = serverSettingsViewModel;
-      _optionTasks = optionTasks;
 
       var folder = _optionTasks.GetDefaultCalendarFolderOrNull();
       if (folder != null)
