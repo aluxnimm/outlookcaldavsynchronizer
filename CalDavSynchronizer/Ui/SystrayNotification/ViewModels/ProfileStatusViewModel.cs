@@ -101,15 +101,10 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
       IsActive = !profile.Inactive;
     }
 
-    public void Update (SynchronizationReport report)
+    public void Update (SynchronizationRunSummary summary)
     {
-      _lastSyncronizationRun = report.StartTime;
-      LastResult =
-          report.HasErrors
-              ? SyncronizationRunResult.Error
-              : report.HasWarnings
-                  ? SyncronizationRunResult.Warning
-                  : SyncronizationRunResult.Ok;
+      _lastSyncronizationRun = summary.StartTimeUtc;
+      LastResult = summary.Result;
       RecalculateLastRunAgoInMinutes();
     }
 

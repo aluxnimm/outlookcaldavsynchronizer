@@ -162,7 +162,9 @@ namespace CalDavSynchronizer
       _optionsDataAccess = new OptionsDataAccess (optionsFilePath);
 
       _uiService = new UiService();
-      _permanentStatusesViewModel = new PermanentStatusesViewModel(_uiService, this);
+      var options = _optionsDataAccess.Load();
+
+      _permanentStatusesViewModel = new PermanentStatusesViewModel(_uiService, this, options);
       _permanentStatusesViewModel.OptionsRequesting += PermanentStatusesViewModel_OptionsRequesting;
 
       _queryFolderStrategyWrapper = new OutlookFolderStrategyWrapper(QueryOutlookFolderByRequestingItemStrategy.Instance);
@@ -199,8 +201,6 @@ namespace CalDavSynchronizer
           new FolderChangeWatcherFactory (
               _session),
           _synchronizationStatus);
-
-      var options = _optionsDataAccess.Load();
 
       EnsureCacheCompatibility (options);
 
@@ -397,8 +397,8 @@ namespace CalDavSynchronizer
 
     public void PostReport (SynchronizationReport report)
     {
-      SaveAndShowReport (report);
-      _permanentStatusesViewModel.Update (report);
+      SaveAndShowReport(report);
+      _permanentStatusesViewModel.Update (report.ProfileId, new SynchronizationRunSummary(report));
       _trayNotifier.NotifyUser (report, _showReportsWithWarningsImmediately, _showReportsWithErrorsImmediately);
     }
 

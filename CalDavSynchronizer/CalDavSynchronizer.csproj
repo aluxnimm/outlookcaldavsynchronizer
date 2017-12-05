@@ -508,6 +508,8 @@
     <Compile Include="Ui\SystrayNotification\ViewModels\ITransientProfileStatusesViewModel.cs" />
     <Compile Include="Ui\SystrayNotification\ViewModels\OptionsEventArgs.cs" />
     <Compile Include="Ui\SystrayNotification\ViewModels\PermanentStatusesViewModel.cs" />
+    <Compile Include="Ui\SystrayNotification\ViewModels\SynchronizationRunSummary.cs" />
+    <Compile Include="Ui\SystrayNotification\ViewModels\SynchronizationRunSummaryCache.cs" />
     <Compile Include="Ui\ViewModels\ProgressViewModel.cs" />
     <Compile Include="Ui\Views\ProgressWindow.xaml.cs">
       <DependentUpon>ProgressWindow.xaml</DependentUpon>

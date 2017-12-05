@@ -14,20 +14,24 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GenSync.Logging;
 
 namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
 {
-  public interface IProfileStatusesViewModel
+  public struct SynchronizationRunSummary
   {
-    void Update(Guid profileId, SynchronizationRunSummary summary);
-    void NotifyProfilesChanged(Contracts.Options[] profiles);
+    public readonly DateTime StartTimeUtc;
+    public readonly SyncronizationRunResult Result;
 
+    public SynchronizationRunSummary(SynchronizationReport report)
+    {
+      StartTimeUtc = report.StartTime;
+      Result = report.HasErrors
+        ? SyncronizationRunResult.Error
+        : report.HasWarnings
+          ? SyncronizationRunResult.Warning
+          : SyncronizationRunResult.Ok;
+    }
   }
 }

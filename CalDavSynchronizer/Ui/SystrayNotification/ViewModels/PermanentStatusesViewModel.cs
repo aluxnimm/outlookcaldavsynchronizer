@@ -27,12 +27,14 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
   {
     private readonly IUiService _uiService;
     private readonly ICalDavSynchronizerCommands _commands;
+    private readonly SynchronizationRunSummaryCache _summaryChache = new SynchronizationRunSummaryCache();
     private ITransientProfileStatusesViewModel _viewModelOrNull;
 
-    public PermanentStatusesViewModel(IUiService uiService, ICalDavSynchronizerCommands commands)
+    public PermanentStatusesViewModel(IUiService uiService, ICalDavSynchronizerCommands commands, Contracts.Options[] options)
     {
       _commands = commands ?? throw new ArgumentNullException(nameof(commands));
       _uiService = uiService ?? throw new ArgumentNullException(nameof(uiService));
+      _summaryChache.NotifyProfilesChanged(options);
     }
 
     public event EventHandler<OptionsEventArgs> OptionsRequesting;
@@ -50,6 +52,11 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
       {
 
         var viewModel = new TransientProfileStatusesViewModel(_commands, OnOptionsRequesting());
+        foreach (var kv in _summaryChache.SummaryByProfileId)
+        {
+          if(kv.Value.HasValue)
+            viewModel.Update(kv.Key, kv.Value.Value);
+        }
         _viewModelOrNull = viewModel;
         _viewModelOrNull.Closing += _viewModelOrNull_Closing;
         _uiService.Show(viewModel);
@@ -67,13 +74,15 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
       _viewModelOrNull = null;
     }
     
-    public void Update(SynchronizationReport report)
+    public void Update(Guid profileId, SynchronizationRunSummary summary)
     {
-      _viewModelOrNull?.Update(report);
+      _summaryChache.Update(profileId, summary);
+      _viewModelOrNull?.Update(profileId, summary);
     }
 
     public void NotifyProfilesChanged(Contracts.Options[] profiles)
     {
+      _summaryChache.NotifyProfilesChanged(profiles);
       _viewModelOrNull?.NotifyProfilesChanged(profiles);
     }
   }

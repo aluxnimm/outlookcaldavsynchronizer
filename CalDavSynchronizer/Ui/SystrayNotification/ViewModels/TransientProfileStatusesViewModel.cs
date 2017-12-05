@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -67,18 +66,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
       }
       return profileStatusViewModel;
     }
-
-    void RemoveIfAvailable (Guid profileId)
-    {
-      ProfileStatusViewModel profileStatusViewModel;
-      if (_profileStatusViewModelsById.TryGetValue (profileId, out profileStatusViewModel))
-      {
-        Profiles.Remove (profileStatusViewModel);
-        _profileStatusViewModelsById.Remove (profileId);
-      }
-    }
-
-
+    
     public void NotifyProfilesChanged (Contracts.Options[] profiles)
     {
       HashSet<Guid> existingProfiles = new HashSet<Guid>();
@@ -97,12 +85,12 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
       }
     }
 
-    public void Update (SynchronizationReport report)
+    public void Update (Guid profileId, SynchronizationRunSummary summary)
     {
       ProfileStatusViewModel profileStatusViewModel;
-      if (_profileStatusViewModelsById.TryGetValue (report.ProfileId, out profileStatusViewModel))
+      if (_profileStatusViewModelsById.TryGetValue (profileId, out profileStatusViewModel))
       {
-        profileStatusViewModel.Update (report);
+        profileStatusViewModel.Update (summary);
       }
     }
     
@@ -139,3 +127,4 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
     }
   }
 }
+
