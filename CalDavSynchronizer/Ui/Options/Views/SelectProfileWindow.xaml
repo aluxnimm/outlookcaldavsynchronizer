@@ -6,12 +6,12 @@
         xmlns:views="clr-namespace:CalDavSynchronizer.Ui.Options.Views"
         xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels"
         mc:Ignorable="d"
-        Title="Select Profile Type" Height="440" Width="960" WindowStartupLocation="CenterScreen"
+        Title="Select Profile Type" Height="450" Width="960" WindowStartupLocation="CenterScreen"
          d:DataContext="{x:Static viewModels:SelectProfileViewModel.DesignInstance}">
   <DockPanel>
     <UniformGrid Columns="2" DockPanel.Dock="Bottom" HorizontalAlignment="Right">
-      <Button Command="{Binding OkCommand}" Margin="6" Width="60" HorizontalAlignment="Stretch">Ok</Button>
-      <Button Command="{Binding CancelCommand}" Margin="6">Cancel</Button>
+      <Button Command="{Binding OkCommand}" Margin="6" Width="60" HorizontalAlignment="Stretch" IsDefault="True">Ok</Button>
+      <Button Command="{Binding CancelCommand}" Margin="6" IsCancel="True">Cancel</Button>
     </UniformGrid>
     <ItemsControl ItemsSource="{Binding ProfileTypes}">
     <ItemsControl.ItemsPanel>

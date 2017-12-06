@@ -1,6 +1,7 @@
 bin/
 obj/
 debug/
+.vs/
 *.suo
 *.csproj.user
 packages/*/

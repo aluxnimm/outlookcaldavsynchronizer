@@ -88,8 +88,6 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <views:BooleanToVisibilityConverterInverted x:Key="BooleanToVisibilityConverterInverted" />
 
-
-
         <!-- Content view ressources -->
         <DataTemplate DataType="{x:Type mappingViewModels:ContactMappingConfigurationViewModel}">
             <mapping:ContactMappingConfigurationView />
@@ -139,7 +137,6 @@
             <bulkOptionsViews:GoogleServerSettingsTemplateView />
         </DataTemplate>
 
-
         <ControlTemplate TargetType="ContentControl" x:Key="OptionsControlTemplate">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top">
@@ -175,7 +172,7 @@
 
         <DataTemplate DataType="{x:Type bulkOptionsViewModels:EasyProjectMultipleOptionsTemplateViewModel}">
             <StackPanel>
-                <Image Source="pack://application:,,,/CalDavSynchronizer;component/Resources/logo_easyproject.png" Width="200" Height="50" />
+                <Image Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_easyproject.png" Width="200" Height="50" />
                 <DockPanel DockPanel.Dock="Top">
                     <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="Name:" />
                     <TextBox Text="{Binding Name}" />
@@ -204,17 +201,59 @@
             </StackPanel>
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type bulkOptionsViewModels:KolabServerSettingsTemplateViewModel}">
+            <bulkOptionsViews:KolabServerSettingsTemplateView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type bulkOptionsViewModels:KolabMultipleOptionsTemplateViewModel}">
+            <StackPanel>
+                <Image Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_kolab.png" Width="98" Height="41" />
+                <DockPanel DockPanel.Dock="Top">
+                    <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="Name:" />
+                    <TextBox Text="{Binding Name}" />
+                </DockPanel>
+                <ContentControl Content="{Binding ServerSettingsViewModel}" />
+                <GroupBox>
+                    <Button HorizontalAlignment="Left" Command="{Binding GetAccountSettingsCommand}">Get IMAP/POP3 account settings</Button>
+                </GroupBox>
+                <GroupBox Header="Outlook settings">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button    Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Command="{Binding DiscoverResourcesCommand}">Assign Kolab folders to distinct Outlook folders</Button>
+                        <CheckBox  Grid.Row="1" Grid.Column="0" IsChecked="{Binding AutoCreateOutlookFolders}">Automatically create Outlook folders</CheckBox>
+                        <CheckBox  Grid.Row="2" Grid.Column="0" IsChecked="{Binding OnlyAddNewUrls}">Only add new Kolab resources</CheckBox>
+                        <Rectangle Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Stretch" Width="1" Margin="2" Stroke="Black" />
+                        <Button    Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" Command="{Binding MergeResourcesCommand}">Merge Kolab folders to a common Outlook folder</Button>
+                        <DockPanel Grid.Row="1" Grid.Column="2">
+                            <TextBlock Margin="10,0,10,0"  VerticalAlignment="Center" > Outlook folder:</TextBlock>
+                            <Button Command="{Binding SelectFolderCommand}" DockPanel.Dock="Right">...</Button>
+                            <TextBox VerticalAlignment="Center" IsReadOnly="True" Text="{Binding SelectedFolderName, Mode=OneWay}" />
+                        </DockPanel>
+                    </Grid>
+                </GroupBox>
+            </StackPanel>
+        </DataTemplate>
+
     </UserControl.Resources>
 
     <DockPanel>
         <DockPanel DockPanel.Dock="Bottom">
             <UniformGrid DockPanel.Dock="Right" Columns="2" Rows="1">
-                <Button Command="{Binding CloseCommand}" Content="Ok">
+                <Button Command="{Binding CloseCommand}" Content="Ok" IsDefault="True">
                     <Button.CommandParameter>
                         <system:Boolean>true</system:Boolean>
                     </Button.CommandParameter>
                 </Button>
-                <Button Command="{Binding CloseCommand}" Content="Cancel">
+                <Button Command="{Binding CloseCommand}" Content="Cancel" IsCancel="True">
                     <Button.CommandParameter>
                         <system:Boolean>false</system:Boolean>
                     </Button.CommandParameter>

@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="CalDavSynchronizer.Ui.Options.BulkOptions.Views.KolabServerSettingsTemplateView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels"
+             xmlns:views="clr-namespace:CalDavSynchronizer.Ui.Options.Views"
+             mc:Ignorable="d"
+             d:DataContext="{x:Static viewModels:KolabServerSettingsTemplateViewModel.DesignInstance}">
+
+  <GroupBox Header="Kolab server settings">
+    <DockPanel>
+      <Grid DockPanel.Dock="Top">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="200
+                            " />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition />
+          <RowDefinition />
+          <RowDefinition />
+          <RowDefinition />
+          <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Grid.Resources>
+           <views:BooleanNotConverter x:Key="BooleanNotConverter" />
+        </Grid.Resources>
+
+        <TextBlock>Kolab URL:</TextBlock>
+        <TextBox Text="{Binding CalenderUrl}"  Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" ToolTip="Enter the DAV resource url or the server address and discover the available resources. &#x0a;If you leave the DAV Url empty, it can also be discovered from the Email address via DNS lookups." />
+
+        <TextBlock Grid.Row="1" Grid.Column="0">Username:</TextBlock>
+        <TextBox Text="{Binding UserName}"  Grid.Row="1" Grid.Column="2" />
+
+        <TextBlock Grid.Row="2" Grid.Column="0">Password:</TextBlock>
+        <PasswordBox x:Name="_passwordBox"
+                     PasswordChar="*" 
+                     IsEnabled="{Binding IsChecked, ElementName=UseAccountPasswordCheckBox, Converter={StaticResource BooleanNotConverter}}"            
+                     Grid.Row="2" Grid.Column="2" />
+        <CheckBox IsChecked="{Binding UseAccountPassword}" x:Name="UseAccountPasswordCheckBox" Grid.Row="3" Grid.ColumnSpan="3" Grid.Column="0">Use IMAP/POP3 account password</CheckBox>
+
+        <TextBlock Grid.Row="4" Grid.Column="0">Email address:</TextBlock>
+        <TextBox Text="{Binding EmailAddress}" Grid.Row="4" Grid.Column="2" ToolTip="Enter the email address of the server identity. &#x0a;It can also be used to discover the DAV Url if you leave the url textbox empty." />
+
+      </Grid>
+    </DockPanel>
+  </GroupBox>
+</UserControl>
