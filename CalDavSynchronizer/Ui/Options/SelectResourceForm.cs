@@ -105,6 +105,8 @@ namespace CalDavSynchronizer.Ui.Options
         _tasksDataGridView.Columns[nameof (TaskListDataViewModel.Name)].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
         _tasksDataGridView.Columns[nameof (TaskListDataViewModel.SelectedFolder)].Visible = false;
         _tasksDataGridView.Columns[nameof (TaskListDataViewModel.Model)].Visible = false;
+        _tasksDataGridView.CellFormatting += _tasksDataGridView_CellFormatting;
+
         // ReSharper restore PossibleNullReferenceException
       }
       else
@@ -147,10 +149,10 @@ namespace CalDavSynchronizer.Ui.Options
 
     private static void SetupFolderSelectionColumns (DataGridView dataGridView, IOptionTasks optionTasks, params OlItemType[] allowedFolderType)
     {
-      var folderColumn = new DataGridViewTextBoxColumn();
+      var folderColumn = dataGridView.Columns[nameof(ResourceDataViewModelBase.SelectedFolder)];
+      folderColumn.Visible = true;
       folderColumn.HeaderText = "Selected Outlook Folder";
       folderColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-      dataGridView.Columns.Add (folderColumn);
 
       var selectFolderColumn = new DataGridViewButtonColumn();
       selectFolderColumn.UseColumnTextForButtonValue = true;
@@ -169,7 +171,6 @@ namespace CalDavSynchronizer.Ui.Options
         var column = dataGridView.Columns[e.ColumnIndex];
         var row = dataGridView.Rows[e.RowIndex];
         var viewModel = (ResourceDataViewModelBase) row.DataBoundItem;
-        var folderCell = row.Cells[folderColumn.Index];
 
         if (column == selectFolderColumn)
         {
@@ -182,14 +183,14 @@ namespace CalDavSynchronizer.Ui.Options
               return;
             }
 
-            folderCell.Value = folder.Name;
             viewModel.SelectedFolder = folder;
+            dataGridView.UpdateCellValue(dataGridView.Columns[nameof(ResourceDataViewModelBase.SelectedFolder)].Index, row.Index);
           }
         }
         else if (column == removeFolderColumn)
         {
           viewModel.SelectedFolder = null;
-          folderCell.Value = null;
+          dataGridView.UpdateCellValue(dataGridView.Columns[nameof(ResourceDataViewModelBase.SelectedFolder)].Index, row.Index);
         }
       };
     }
@@ -239,6 +240,10 @@ namespace CalDavSynchronizer.Ui.Options
         {
           e.Value = (e.Value as Uri)?.AbsolutePath;
         }
+        else if (columnName == nameof(ResourceDataViewModelBase.SelectedFolder))
+        {
+          e.Value = (e.Value as OutlookFolderDescriptor)?.Name;
+        }
       }
     }
 
@@ -249,7 +254,21 @@ namespace CalDavSynchronizer.Ui.Options
       {
         e.Value = (e.Value as Uri)?.AbsolutePath;
       }
+      else if (columnName == nameof(ResourceDataViewModelBase.SelectedFolder))
+      {
+        e.Value = (e.Value as OutlookFolderDescriptor)?.Name;
+      }
     }
+
+    private void _tasksDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+    {
+      var columnName = _tasksDataGridView.Columns[e.ColumnIndex].Name;
+      if (columnName == nameof(ResourceDataViewModelBase.SelectedFolder))
+      {
+        e.Value = (e.Value as OutlookFolderDescriptor)?.Name;
+      }
+    }
+
 
     private void OkButton_Click (object sender, EventArgs e)
     {

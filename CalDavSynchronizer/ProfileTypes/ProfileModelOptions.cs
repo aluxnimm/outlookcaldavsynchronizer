@@ -14,19 +14,24 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using System;
+
 namespace CalDavSynchronizer.ProfileTypes
 {
   public class ProfileModelOptions
   {
-    public ProfileModelOptions(bool areAdvancedNetWorkSettingsEnabled, bool isEnableChangeTriggeredSynchronizationEnabled, bool isTaskMappingConfigurationEnabled)
+    public ProfileModelOptions(bool areAdvancedNetWorkSettingsEnabled, bool isEnableChangeTriggeredSynchronizationEnabled, bool isTaskMappingConfigurationEnabled, string davUrlLabelText)
     {
       AreAdvancedNetWorkSettingsEnabled = areAdvancedNetWorkSettingsEnabled;
       IsEnableChangeTriggeredSynchronizationEnabled = isEnableChangeTriggeredSynchronizationEnabled;
       IsTaskMappingConfigurationEnabled = isTaskMappingConfigurationEnabled;
+      DavUrlLabelText = davUrlLabelText;
     }
 
     public bool AreAdvancedNetWorkSettingsEnabled { get; }
     public bool IsEnableChangeTriggeredSynchronizationEnabled { get; }
     public bool IsTaskMappingConfigurationEnabled { get; }
+    public String DavUrlLabelText { get; }
   }
 }

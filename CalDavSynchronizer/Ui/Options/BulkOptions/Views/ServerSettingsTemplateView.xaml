@@ -29,7 +29,7 @@
            <views:BooleanNotConverter x:Key="BooleanNotConverter" />
         </Grid.Resources>
 
-        <TextBlock>DAV Url:</TextBlock>
+        <TextBlock Text="{Binding ModelOptions.DavUrlLabelText,Mode=OneTime, StringFormat={}{0}:}"></TextBlock>
         <TextBox Text="{Binding CalenderUrl}"  Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" ToolTip="Enter the DAV resource url or the server address and discover the available resources. &#x0a;If you leave the DAV Url empty, it can also be discovered from the Email address via DNS lookups." />
 
         <TextBlock Grid.Row="1" Grid.Column="0">Username:</TextBlock>

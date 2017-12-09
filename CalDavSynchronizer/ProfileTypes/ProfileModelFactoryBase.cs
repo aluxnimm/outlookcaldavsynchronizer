@@ -103,13 +103,13 @@ namespace CalDavSynchronizer.ProfileTypes
       return optionsViewModel;
     }
 
-    public virtual ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true, true);
+    public virtual ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true, true, "DAV Url");
 
     protected virtual IOptionsViewModel CreateTemplateViewModel(OptionsModel prototypeModel)
     {
       var optionsViewModel = new MultipleOptionsTemplateViewModel(
         OptionsViewModelParent,
-        new ServerSettingsTemplateViewModel(OutlookAccountPasswordProvider, prototypeModel),
+        new ServerSettingsTemplateViewModel(OutlookAccountPasswordProvider, prototypeModel, ModelOptions),
         OptionTasks,
         prototypeModel,
         ViewOptions);

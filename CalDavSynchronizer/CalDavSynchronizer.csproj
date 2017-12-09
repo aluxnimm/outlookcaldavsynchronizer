@@ -461,6 +461,7 @@
     <Compile Include="Ui\DelegateCommandHandlingRequerySuggested.cs" />
     <Compile Include="Ui\NullProgressUi.cs" />
     <Compile Include="Ui\NullUiService.cs" />
+    <Compile Include="Ui\Options\BulkOptions\ViewModels\KolabMultipleOptionsTemplateViewModel.cs" />
     <Compile Include="Ui\Options\EnumDisplayNameProvider.cs" />
     <Compile Include="Ui\Options\IEnumDisplayNameProvider.cs" />
     <Compile Include="Ui\Options\Models\ICustomPropertiesMappingConfigurationModel.cs" />
@@ -489,6 +490,7 @@
     <Compile Include="ProfileTypes\IProfileTypeRegistry.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\LandmarksProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\EasyProjectProfile.cs" />
+    <Compile Include="ProfileTypes\ConcreteTypes\KolabProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\NextcloudProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\PosteoProfile.cs" />
     <Compile Include="ProfileTypes\ProfileModelFactoryBase.cs" />
@@ -861,6 +863,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
+    <Resource Include="Resources\ProfileLogos\logo_kolab.png" />
     <Resource Include="Resources\ProfileLogos\logo_iCloud.png" />
     <Resource Include="Resources\ProfileLogos\logo_mail.de.png" />
     <Resource Include="Resources\ProfileLogos\logo_smartermail.png" />

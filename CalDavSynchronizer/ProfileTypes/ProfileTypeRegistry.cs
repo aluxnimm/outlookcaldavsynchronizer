@@ -61,6 +61,7 @@ namespace CalDavSynchronizer.ProfileTypes
       all.Add(new WebDeProfile());
       all.Add(new SmarterMailProfile());
       all.Add(new MailDeProfile());
+      all.Add(new KolabProfile());
 
       return new ProfileTypeRegistry(all, generic, google);
     }

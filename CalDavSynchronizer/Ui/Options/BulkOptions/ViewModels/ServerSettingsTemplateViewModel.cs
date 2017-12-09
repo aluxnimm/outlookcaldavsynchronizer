@@ -21,6 +21,7 @@ using System.Security;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.ProfileTypes;
 using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
@@ -38,12 +39,11 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
     private readonly OptionsModel _prototypeModel;
 
 
-    public ServerSettingsTemplateViewModel (IOutlookAccountPasswordProvider outlookAccountPasswordProvider, OptionsModel prototypeModel)
+    public ServerSettingsTemplateViewModel (IOutlookAccountPasswordProvider outlookAccountPasswordProvider, OptionsModel prototypeModel, ProfileModelOptions modelOptions)
     {
-      if (prototypeModel == null) throw new ArgumentNullException(nameof(prototypeModel));
-
-      _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
-      _prototypeModel = prototypeModel;
+      _outlookAccountPasswordProvider = outlookAccountPasswordProvider ?? throw new ArgumentNullException(nameof(outlookAccountPasswordProvider));
+      _prototypeModel = prototypeModel ?? throw new ArgumentNullException(nameof(prototypeModel));
+      ModelOptions = modelOptions ?? throw new ArgumentNullException(nameof(modelOptions));
 
       RegisterPropertyChangePropagation(prototypeModel, nameof(prototypeModel.CalenderUrl), nameof(CalenderUrl));
       RegisterPropertyChangePropagation(prototypeModel, nameof(prototypeModel.UserName), nameof(UserName));
@@ -51,6 +51,8 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       RegisterPropertyChangePropagation(prototypeModel, nameof(prototypeModel.Password), nameof(Password));
       RegisterPropertyChangePropagation(prototypeModel, nameof(prototypeModel.EmailAddress), nameof(EmailAddress));
     }
+
+    public ProfileModelOptions ModelOptions { get; }
 
     public string CalenderUrl
     {
@@ -153,7 +155,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
     }
 
 
-    public static ServerSettingsTemplateViewModel DesignInstance = new ServerSettingsTemplateViewModel(NullOutlookAccountPasswordProvider.Instance, OptionsModel.DesignInstance)
+    public static ServerSettingsTemplateViewModel DesignInstance = new ServerSettingsTemplateViewModel(NullOutlookAccountPasswordProvider.Instance, OptionsModel.DesignInstance, new ProfileModelOptions(false, false, false, "DAV Url"))
     {
       CalenderUrl = "http://bulkurl",
       EmailAddress = "bulkemail",
