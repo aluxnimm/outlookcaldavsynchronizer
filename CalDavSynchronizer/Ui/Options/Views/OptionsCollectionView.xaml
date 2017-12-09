@@ -175,7 +175,7 @@
 
         <DataTemplate DataType="{x:Type bulkOptionsViewModels:EasyProjectMultipleOptionsTemplateViewModel}">
             <StackPanel>
-                <Image Source="pack://application:,,,/CalDavSynchronizer;component/Resources/logo_easyproject.png" Width="200" Height="50" />
+                <Image Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_easyproject.png" Width="200" Height="50" />
                 <DockPanel DockPanel.Dock="Top">
                     <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="Name:" />
                     <TextBox Text="{Binding Name}" />
