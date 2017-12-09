@@ -40,8 +40,10 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 
     public EasyProjectServerSettingsTemplateViewModel (IOutlookAccountPasswordProvider outlookAccountPasswordProvider, OptionsModel prototypeModel)
     {
-      _prototypeModel = prototypeModel ?? throw new ArgumentNullException(nameof(prototypeModel));
+      if (prototypeModel == null) throw new ArgumentNullException(nameof(prototypeModel));
+
       _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
+      _prototypeModel = prototypeModel;
 
       RegisterPropertyChangePropagation(prototypeModel, nameof(prototypeModel.CalenderUrl), nameof(CalenderUrl));
       RegisterPropertyChangePropagation(prototypeModel, nameof(prototypeModel.UserName), nameof(UserName));
@@ -103,7 +105,8 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 
       if (string.IsNullOrEmpty (CalenderUrl) && !string.IsNullOrEmpty (EmailAddress))
       {
-        caldavUrlString = OptionTasks.DoSrvLookup (EmailAddress, OlItemType.olAppointmentItem, out bool success);
+        bool success;
+        caldavUrlString = OptionTasks.DoSrvLookup (EmailAddress, OlItemType.olAppointmentItem, out success);
         carddavUrlString = OptionTasks.DoSrvLookup (EmailAddress, OlItemType.olContactItem, out success);
       }
       else
@@ -132,7 +135,8 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       EmailAddress = serverAccountSettings.EmailAddress;
       string path = !string.IsNullOrEmpty (CalenderUrl) ? new Uri (CalenderUrl).AbsolutePath : string.Empty; 
   
-      var dnsDiscoveredUrl = OptionTasks.DoSrvLookup (EmailAddress, OlItemType.olAppointmentItem, out bool success);
+      bool success;
+      var dnsDiscoveredUrl = OptionTasks.DoSrvLookup (EmailAddress, OlItemType.olAppointmentItem, out success);
       CalenderUrl = success ? dnsDiscoveredUrl : "https://" + serverAccountSettings.ServerString+path;
       UserName = serverAccountSettings.UserName;
       UseAccountPassword = true;

@@ -215,7 +215,6 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
             }
             // use the selected folder for syncing with kolab
             resource.SelectedFolder = new OutlookFolderDescriptor (newCalendarFolder.Inner.EntryID, newCalendarFolder.Inner.StoreID, newCalendarFolder.Inner.DefaultItemType, newCalendarFolder.Inner.Name, 0);
-            resource.SelectedFolderName = newCalendarFolder.Inner.Name;
           }
 
           // Create and assign all Kolab address books that are not yet synced to an outlook folder
@@ -234,7 +233,6 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
               newAddressBookFolder.Inner.Name = newAddressBookName;
             }
             resource.SelectedFolder = new OutlookFolderDescriptor (newAddressBookFolder.Inner.EntryID, newAddressBookFolder.Inner.StoreID, newAddressBookFolder.Inner.DefaultItemType, newAddressBookFolder.Inner.Name, 0);
-            resource.SelectedFolderName = newAddressBookFolder.Inner.Name;
           }
 
           // Create and assign all Kolab address books that are not yet synced to an outlook folder
@@ -253,7 +251,6 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
               newTaskListFolder.Inner.Name = newTaskListName;
             }
             resource.SelectedFolder = new OutlookFolderDescriptor(newTaskListFolder.Inner.EntryID, newTaskListFolder.Inner.StoreID, newTaskListFolder.Inner.DefaultItemType, newTaskListFolder.Inner.Name, 0);
-            resource.SelectedFolderName = newTaskListFolder.Inner.Name;
           }
         }
         using (var selectResourcesForm = SelectResourceForm.CreateForFolderAssignment(_optionTasks, ConnectionTests.ResourceType.Calendar, calendars, addressBooks, taskLists))

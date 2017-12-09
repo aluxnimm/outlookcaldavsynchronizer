@@ -88,6 +88,8 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <views:BooleanToVisibilityConverterInverted x:Key="BooleanToVisibilityConverterInverted" />
 
+
+
         <!-- Content view ressources -->
         <DataTemplate DataType="{x:Type mappingViewModels:ContactMappingConfigurationViewModel}">
             <mapping:ContactMappingConfigurationView />
@@ -136,6 +138,7 @@
         <DataTemplate DataType="{x:Type bulkOptionsViewModels:GoogleServerSettingsTemplateViewModel}">
             <bulkOptionsViews:GoogleServerSettingsTemplateView />
         </DataTemplate>
+
 
         <ControlTemplate TargetType="ContentControl" x:Key="OptionsControlTemplate">
             <DockPanel>
