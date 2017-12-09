@@ -71,11 +71,13 @@ namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
       {
         return new KolabMultipleOptionsTemplateViewModel(
           OptionsViewModelParent,
-          new KolabServerSettingsTemplateViewModel(OutlookAccountPasswordProvider, prototypeModel),
+          new ServerSettingsTemplateViewModel(OutlookAccountPasswordProvider, prototypeModel, ModelOptions),
           OptionTasks,
           prototypeModel,
           ViewOptions);
       }
+
+      public override ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true, true, "Kolab URL");
     }
   }
 }

@@ -462,10 +462,6 @@
     <Compile Include="Ui\NullProgressUi.cs" />
     <Compile Include="Ui\NullUiService.cs" />
     <Compile Include="Ui\Options\BulkOptions\ViewModels\KolabMultipleOptionsTemplateViewModel.cs" />
-    <Compile Include="Ui\Options\BulkOptions\ViewModels\KolabServerSettingsTemplateViewModel.cs" />
-    <Compile Include="Ui\Options\BulkOptions\Views\KolabServerSettingsTemplateView.xaml.cs">
-      <DependentUpon>KolabServerSettingsTemplateView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Ui\Options\EnumDisplayNameProvider.cs" />
     <Compile Include="Ui\Options\IEnumDisplayNameProvider.cs" />
     <Compile Include="Ui\Options\Models\ICustomPropertiesMappingConfigurationModel.cs" />
@@ -930,10 +926,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Page Include="Ui\Options\BulkOptions\Views\KolabServerSettingsTemplateView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Ui\Options\Views\SelectProfileWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

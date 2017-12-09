@@ -203,11 +203,7 @@
                 </GroupBox>
             </StackPanel>
         </DataTemplate>
-
-        <DataTemplate DataType="{x:Type bulkOptionsViewModels:KolabServerSettingsTemplateViewModel}">
-            <bulkOptionsViews:KolabServerSettingsTemplateView />
-        </DataTemplate>
-
+  
         <DataTemplate DataType="{x:Type bulkOptionsViewModels:KolabMultipleOptionsTemplateViewModel}">
             <StackPanel>
                 <Image Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_kolab.png" Width="98" Height="41" />

@@ -81,7 +81,7 @@ namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
           ViewOptions);
       }
 
-      public override ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true, false);
+      public override ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true, false, "DAV Url");
 
       public override IOptionsViewModel CreateViewModel(OptionsModel model)
       {
