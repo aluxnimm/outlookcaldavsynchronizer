@@ -337,16 +337,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
         }       
       }
 
-      if (!string.IsNullOrEmpty (source.Organization))
-      {
-        string[] organizationAndDepartments = source.Organization.Split (new[] { ';' }, 2);
-        target.Inner.CompanyName = organizationAndDepartments[0];
-        target.Inner.Department = (organizationAndDepartments.Length > 1) ? organizationAndDepartments[1]: null;
-      }
-      else
-      {
-        target.Inner.CompanyName = target.Inner.Department = null;
-      }
+      target.Inner.CompanyName = source.Organization;
+      target.Inner.Department = source.Department;
       
       target.Inner.JobTitle = source.Title;
       target.Inner.OfficeLocation = source.Office;

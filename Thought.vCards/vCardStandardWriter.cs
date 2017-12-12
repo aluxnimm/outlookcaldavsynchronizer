@@ -1046,28 +1046,26 @@ namespace Thought.vCards
             //
             // ORG:FairMetric LLC
 
-            if (!string.IsNullOrEmpty(card.Organization))
+            if (!string.IsNullOrEmpty(card.Organization) || !string.IsNullOrEmpty(card.Department))
             {
 
-                vCardProperty property;
-           
+              vCardProperty property;
+
+              if (string.IsNullOrEmpty(card.Department))
+              {
+                property = new vCardProperty("ORG", card.Organization);
+              }
+              else
+              {
                 // Add department also
-                if (!string.IsNullOrEmpty(card.Department))
-                {
-                    vCardValueCollection values = new vCardValueCollection(';');
-                    values.Add(card.Organization);
-                    values.Add(card.Department);
-                    property = new vCardProperty("ORG", values);
-                }
-                else
-                {
-                    property = new vCardProperty("ORG", card.Organization);
-                }
 
-                properties.Add(property);
-
+                vCardValueCollection values = new vCardValueCollection(';');
+                values.Add(card.Organization);
+                values.Add(card.Department);
+                property = new vCardProperty("ORG", values);
+              }
+              properties.Add(property);
             }
-
         }
 
         #endregion

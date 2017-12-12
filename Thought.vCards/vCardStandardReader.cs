@@ -2034,13 +2034,17 @@ namespace Thought.vCards
 			// The ORG property contains the name of the company
 			// or organization of the person.
 
-			card.Organization = property.Value.ToString();
-
-			if (card.Organization != null && card.Organization.EndsWith(";"))
-			{
-				card.Organization = card.Organization.TrimEnd(Convert.ToChar(";"));
-			}
-
+			var organizationProperty = property.Value.ToString();
+		  if (!string.IsNullOrEmpty(organizationProperty))
+		  {
+		    string[] organizationAndDepartments = organizationProperty.Split(new[] { ';' }, 2);
+		    card.Organization = organizationAndDepartments[0];
+		    card.Department = (organizationAndDepartments.Length > 1) ? organizationAndDepartments[1] : null;
+      }
+		  else
+		  {
+		    card.Organization = card.Department = null;
+		  }
 		}
 
 		#endregion
