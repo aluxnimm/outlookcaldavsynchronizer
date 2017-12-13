@@ -169,7 +169,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         target.DeliveryAddresses.Add (homeAddress);
       }
 
-      if (!string.IsNullOrEmpty (source.Inner.BusinessAddress))
+      if (!string.IsNullOrEmpty (source.Inner.BusinessAddress) || !string.IsNullOrEmpty(source.Inner.OfficeLocation))
       {
         vCardDeliveryAddress businessAddress = new vCardDeliveryAddress();
         businessAddress.AddressType.Add (vCardDeliveryAddressTypes.Work);
@@ -179,6 +179,10 @@ namespace CalDavSynchronizer.Implementation.Contacts
         businessAddress.Region = source.Inner.BusinessAddressState;
         businessAddress.Street = source.Inner.BusinessAddressStreet;
         businessAddress.PoBox = source.Inner.BusinessAddressPostOfficeBox;
+        if (!string.IsNullOrEmpty(source.Inner.OfficeLocation))
+        {
+          businessAddress.ExtendedAddress = source.Inner.OfficeLocation;
+        }
         if (source.Inner.SelectedMailingAddress == OlMailingAddress.olBusiness)
         {
           businessAddress.AddressType.Add (vCardDeliveryAddressTypes.Preferred);
@@ -212,7 +216,6 @@ namespace CalDavSynchronizer.Implementation.Contacts
       target.Department = source.Inner.Department;
 
       target.Title = source.Inner.JobTitle;
-      target.Office = source.Inner.OfficeLocation;
       target.Role = source.Inner.Profession;
 
       target.Websites.Clear();
@@ -341,7 +344,6 @@ namespace CalDavSynchronizer.Implementation.Contacts
       target.Inner.Department = source.Department;
       
       target.Inner.JobTitle = source.Title;
-      target.Inner.OfficeLocation = source.Office;
       target.Inner.Profession = source.Role;
 
       MapHomePage2To1 (source, target.Inner);
@@ -907,6 +909,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       target.BusinessAddressCountry = string.Empty;
       target.BusinessAddressState = string.Empty;
       target.BusinessAddressPostOfficeBox = string.Empty;
+      target.OfficeLocation = string.Empty;
 
       target.OtherAddress = string.Empty;
       target.OtherAddressStreet = string.Empty;
@@ -942,8 +945,17 @@ namespace CalDavSynchronizer.Implementation.Contacts
           target.BusinessAddressPostalCode = sourceAddress.PostalCode;
           target.BusinessAddressState = sourceAddress.Region;
           target.BusinessAddressStreet = sourceAddress.Street;
-          if (!string.IsNullOrEmpty (sourceAddress.ExtendedAddress))
-            target.BusinessAddressStreet += "\r\n" + sourceAddress.ExtendedAddress;
+          if (!string.IsNullOrEmpty(sourceAddress.ExtendedAddress))
+          {
+            if (string.IsNullOrEmpty(target.OfficeLocation))
+            {
+              target.OfficeLocation = sourceAddress.ExtendedAddress;
+            }
+            else
+            {
+              target.BusinessAddressStreet += "\r\n" + sourceAddress.ExtendedAddress;
+            }
+          }
           target.BusinessAddressPostOfficeBox = sourceAddress.PoBox;
           if (sourceAddress.IsPreferred)
           {
