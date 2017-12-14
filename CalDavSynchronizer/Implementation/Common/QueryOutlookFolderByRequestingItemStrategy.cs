@@ -66,7 +66,7 @@ namespace CalDavSynchronizer.Implementation.Common
           }
           catch (COMException ex)
           {
-            s_logger.Error("Could not fetch AppointmentItem, skipping.", ex);
+            s_logger.Error($"Could not fetch AppointmentItem '{entryId}', skipping.", ex);
           }
         }
       }
@@ -130,7 +130,7 @@ namespace CalDavSynchronizer.Implementation.Common
           }
           catch (COMException ex)
           {
-            s_logger.Error ("Could not fetch TaskItem, skipping.", ex);
+            s_logger.Error ($"Could not fetch TaskItem '{entryId}', skipping.", ex);
           }
         }
       }

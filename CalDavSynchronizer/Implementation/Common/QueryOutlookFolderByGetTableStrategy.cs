@@ -78,7 +78,7 @@ namespace CalDavSynchronizer.Implementation.Common
           }
           catch (Exception ex)
           {
-            s_logger.Warn("Could not access GlobalAppointmentID of appointment", ex);
+            s_logger.Warn($"Could not access GlobalAppointmentID of appointment '{entryId}'.", ex);
           }
 
           var subject = (string) row[SubjectColumnId];
