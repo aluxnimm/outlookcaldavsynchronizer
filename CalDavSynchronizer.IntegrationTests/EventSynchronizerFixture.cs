@@ -326,6 +326,7 @@ namespace CalDavSynchronizer.IntegrationTests
       var options = TestOptionsFactory.CreateSogoEvents();
       options.UseWebDavCollectionSync = useWebDavCollectionSync;
       options.SynchronizationMode = SynchronizationMode.MergeInBothDirections;
+      ((EventMappingConfiguration) options.MappingConfiguration).MapAttendees = true;
 
       var synchronizer = await CreateSynchronizer(options);
       await synchronizer.ClearEventRepositoriesAndCache();
