@@ -30,7 +30,7 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
 
     protected override Options GetOptions()
     {
-      var options = TestOptionsFactory.CreateSogoContacts();
+      var options = _testComponentContainer.TestOptionsFactory.CreateSogoContacts();
       // Set MapDistributionLists to ensure distributionlists are deleted
       ((ContactMappingConfiguration)options.MappingConfiguration).MapDistributionLists = true;
       ((ContactMappingConfiguration)options.MappingConfiguration).DistributionListType = DistributionListType.Sogo;

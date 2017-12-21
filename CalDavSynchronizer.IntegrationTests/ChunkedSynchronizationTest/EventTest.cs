@@ -45,7 +45,7 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
       _testComponentContainer = new TestComponentContainer();
     }
 
-    protected override Options GetOptions() => TestOptionsFactory.CreateSogoEvents();
+    protected override Options GetOptions() => _testComponentContainer.TestOptionsFactory.CreateSogoEvents();
 
     protected override EventTestSynchronizer CreateSynchronizer(Options options)
     {

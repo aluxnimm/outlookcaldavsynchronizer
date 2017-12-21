@@ -6,49 +6,62 @@ using System.Text;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Utilities;
+using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.IntegrationTests
 {
-  public static class TestOptionsFactory
+  public class TestOptionsFactory
   {
-    public static Options CreateSogoEvents()
+    private const string AppointmantFolderName = "IntegrationTestCalendar";
+    private const string TaskFolderName = "IntegrationTestTasks";
+    private const string ContactFolderName = "IntegrationTestContacts";
+
+    private readonly IOutlookSession _session;
+
+    public TestOptionsFactory(IOutlookSession session)
     {
-      var options = CreateDefaultOptions("IntegrationTest/Events/Sogo");
+      _session = session ?? throw new ArgumentNullException(nameof(session));
+    }
+
+    public Options CreateSogoEvents()
+    {
+      var options = CreateDefaultOptions("IntegrationTest/Events/Sogo", AppointmantFolderName);
       options.MappingConfiguration = CreateDefaultEventMappingConfiguration();
       return options;
     }
 
-    public static Options CreateGoogleEvents()
+    public Options CreateGoogleEvents()
     {
-      var options = CreateDefaultOptions("IntegrationTest/Events/Google");
+      var options = CreateDefaultOptions("IntegrationTest/Events/Google", AppointmantFolderName);
       options.MappingConfiguration = CreateDefaultEventMappingConfiguration();
       return options;
     }
 
-    public static Options CreateSogoContacts()
+    public Options CreateSogoContacts()
     {
-      var options = CreateDefaultOptions("IntegrationTests/Contacts/Sogo");
+      var options = CreateDefaultOptions("IntegrationTests/Contacts/Sogo", ContactFolderName);
       options.MappingConfiguration = CreateDefaultContactMappingConfiguration();
       return options;
     }
 
-    public static Options CreateGoogleContacts()
+    public Options CreateGoogleContacts()
     {
-      var options = CreateDefaultOptions("IntegrationTests/Contacts/Google");
+      var options = CreateDefaultOptions("IntegrationTests/Contacts/Google", ContactFolderName);
       options.MappingConfiguration = CreateDefaultContactMappingConfiguration();
       return options;
     }
 
-    public static Options CreateSogoTasks()
+    public Options CreateSogoTasks()
     {
-      var options = CreateDefaultOptions("IntegrationTest/Tasks/Sogo");
+      var options = CreateDefaultOptions("IntegrationTest/Tasks/Sogo", TaskFolderName);
       options.MappingConfiguration = CreateDefaultTaskMappingConfiguration();
       return options;
     }
 
-    public static Options CreateGoogleTasks()
+    public Options CreateGoogleTasks()
     {
-      var options = CreateDefaultOptions("IntegrationTest/Tasks/Google");
+      var options = CreateDefaultOptions("IntegrationTest/Tasks/Google", TaskFolderName);
       options.MappingConfiguration = CreateDefaultTaskMappingConfiguration();
       return options;
     }
@@ -68,24 +81,32 @@ namespace CalDavSynchronizer.IntegrationTests
       return new TaskMappingConfiguration();
     }
 
-    public static Options CreateDefaultOptions(string profileName)
+    private Options CreateDefaultOptions(string profileName, string outlookFolderName)
     {
       var applicationDataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CalDavSynchronizer");
 
       var optionsDataAccess = new OptionsDataAccess(ComponentContainer.GetOrCreateDataDirectory(applicationDataDirectory, "Outlook").ConfigFilePath);
 
       var options = optionsDataAccess.Load().Single(o => o.Name == profileName);
-      
+
+      return CreateDefaultOptions(options, outlookFolderName);
+    }
+
+    private Options CreateDefaultOptions(Options optionsWithConnectionData, string outlookFolderName)
+    {
+      var outlookFolder = _session.GetFoldersByName().GetOrDefault(outlookFolderName)?.SingleOrDefault() ?? throw new System.Exception($"Didn't find single folder {outlookFolderName}");
+
       return new Options
       {
-        ProtectedPassword = options.ProtectedPassword,
-        Salt = options.Salt,
-        UserName = options.UserName,
-        CalenderUrl = options.CalenderUrl,
-        OutlookFolderEntryId = options.OutlookFolderEntryId,
-        OutlookFolderStoreId = options.OutlookFolderStoreId,
-        EmailAddress = options.EmailAddress,
-        ServerAdapterType = options.ServerAdapterType,
+        ProtectedPassword = optionsWithConnectionData.ProtectedPassword,
+        Salt = optionsWithConnectionData.Salt,
+        UserName = optionsWithConnectionData.UserName,
+        CalenderUrl = optionsWithConnectionData.CalenderUrl,
+        EmailAddress = optionsWithConnectionData.EmailAddress,
+        ServerAdapterType = optionsWithConnectionData.ServerAdapterType,
+     
+        OutlookFolderEntryId = outlookFolder.EntryId,
+        OutlookFolderStoreId = outlookFolder.StoreId,
 
         IsChunkedSynchronizationEnabled = false,
         ChunkSize = 100,

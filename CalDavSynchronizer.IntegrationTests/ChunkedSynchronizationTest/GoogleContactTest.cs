@@ -28,7 +28,7 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
 
     protected override int? OrdinalOfReportToCheck => 0;
 
-    protected override Options GetOptions() => TestOptionsFactory.CreateGoogleContacts();
+    protected override Options GetOptions() => _testComponentContainer.TestOptionsFactory.CreateGoogleContacts();
     
     protected override GoogleContactTestSynchronizer CreateSynchronizer(Options options)
     {

@@ -49,7 +49,7 @@ namespace CalDavSynchronizer.IntegrationTests
     [Apartment(System.Threading.ApartmentState.STA)]
     public async Task Synchronize_AnyCase_SyncsSogoDistLists(bool useWebDavCollectionSync)
     {
-      var options = TestOptionsFactory.CreateSogoContacts();
+      var options = _testComponentContainer.TestOptionsFactory.CreateSogoContacts();
       ((ContactMappingConfiguration)options.MappingConfiguration).MapDistributionLists = true;
       options.UseWebDavCollectionSync = useWebDavCollectionSync;
 
@@ -139,7 +139,7 @@ namespace CalDavSynchronizer.IntegrationTests
     [Apartment(System.Threading.ApartmentState.STA)]
     public async Task CreateOutlookEntity_ExceptionOccurs_DoesNotLeaveEmptyEntityInRepository(bool saveAndReload)
     {
-      var options = TestOptionsFactory.CreateSogoContacts();
+      var options = _testComponentContainer.TestOptionsFactory.CreateSogoContacts();
 
       var synchronizer = await CreateSynchronizer(options);
       await synchronizer.ClearEventRepositoriesAndCache();
@@ -175,7 +175,7 @@ namespace CalDavSynchronizer.IntegrationTests
     [Apartment (System.Threading.ApartmentState.STA)]
     public async Task SynchronizeTwoWay_LocalContactChanges_IsSyncedToServerAndPreservesExtendedPropertiesAndUid (bool useWebDavCollectionSync)
     {
-      var options = TestOptionsFactory.CreateSogoContacts();
+      var options = _testComponentContainer.TestOptionsFactory.CreateSogoContacts();
       options.UseWebDavCollectionSync = useWebDavCollectionSync;
 
       var synchronizer = await CreateSynchronizer(options);
@@ -218,7 +218,7 @@ namespace CalDavSynchronizer.IntegrationTests
     [Apartment(System.Threading.ApartmentState.STA)]
     public async Task Synchronize_AnyCase_SyncsVCardGroupDistLists(bool useWebDavCollectionSync)
     {
-      var options = TestOptionsFactory.CreateSogoContacts();
+      var options = _testComponentContainer.TestOptionsFactory.CreateSogoContacts();
       options.UseWebDavCollectionSync = useWebDavCollectionSync;
       ((ContactMappingConfiguration) options.MappingConfiguration).MapDistributionLists = true;
       ((ContactMappingConfiguration)options.MappingConfiguration).DistributionListType = DistributionListType.VCardGroup;
@@ -322,7 +322,7 @@ namespace CalDavSynchronizer.IntegrationTests
     [Apartment(System.Threading.ApartmentState.STA)]
     public async Task Synchronize_AnyCase_SyncsVCardGroupWithUidDistLists(bool useWebDavCollectionSync)
     {
-      var options = TestOptionsFactory.CreateSogoContacts();
+      var options = _testComponentContainer.TestOptionsFactory.CreateSogoContacts();
       options.UseWebDavCollectionSync = useWebDavCollectionSync;
 
       ((ContactMappingConfiguration)options.MappingConfiguration).MapDistributionLists = true;

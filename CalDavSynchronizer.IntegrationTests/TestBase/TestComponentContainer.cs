@@ -36,12 +36,13 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
     public GeneralOptions GeneralOptions => new GeneralOptionsDataAccess ().LoadOptions ();
     private readonly TestComWrapperFactoryWrapper _testComWrapperFactoryWrapper;
     public Application Application { get; private set; }
-    
+    public TestOptionsFactory TestOptionsFactory { get; }
+
     public TestComponentContainer()
     {
       Application = new Application();
       Application.Session.Logon();
-
+      TestOptionsFactory = new TestOptionsFactory(new OutlookSession(Application.Session));
       _testComWrapperFactoryWrapper = new TestComWrapperFactoryWrapper(new TestComWrapperFactory(null));
       ComponentContainer = new ComponentContainer(Application, new InMemoryGeneralOptionsDataAccess(), _testComWrapperFactoryWrapper, new TestExceptionHandlingStrategy());
       SynchronizerFactory = ComponentContainer.GetSynchronizerFactory();
