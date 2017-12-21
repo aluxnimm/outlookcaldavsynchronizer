@@ -529,7 +529,7 @@ namespace CalDavSynchronizer
 
       var faultFinder = generalOptions.FixInvalidSettings ? new SettingsFaultFinder(EnumDisplayNameProvider.Instance) : NullSettingsFaultFinder.Instance;
 
-      var optionTasks = new OptionTasks(_session, EnumDisplayNameProvider.Instance, faultFinder );
+      var optionTasks = new OptionTasks(_session, EnumDisplayNameProvider.Instance, faultFinder, _outlookSession);
 
       var viewOptions = new ViewOptions (generalOptions.EnableAdvancedView);
       OptionModelSessionData sessionData = new OptionModelSessionData(_outlookSession.GetCategories().ToDictionary(c => c.Name , _outlookSession.CategoryNameComparer));

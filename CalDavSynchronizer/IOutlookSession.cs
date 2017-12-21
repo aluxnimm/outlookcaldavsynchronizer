@@ -50,5 +50,6 @@ namespace CalDavSynchronizer
 
     CreateCategoryResult AddCategoryNoThrow(string name, OlCategoryColor color);
     void AddOrUpdateCategoryNoThrow(string name, OlCategoryColor color, bool useColor, OlCategoryShortcutKey shortcutKey, bool useShortcutKey);
+    IReadOnlyDictionary<string, IReadOnlyList<OutlookFolderDescriptor>> GetFoldersByName();
   }
 }

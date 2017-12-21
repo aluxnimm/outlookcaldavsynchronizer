@@ -47,17 +47,20 @@ namespace CalDavSynchronizer.Ui.Options
 
     private readonly IEnumDisplayNameProvider _enumDisplayNameProvider;
     private readonly NameSpace _session;
+    private readonly IOutlookSession _outlookSession;
     private readonly ISettingsFaultFinder _settingsFaultFinder;
 
-    public OptionTasks(NameSpace session, IEnumDisplayNameProvider enumDisplayNameProvider, ISettingsFaultFinder settingsFaultFinder)
+    public OptionTasks(NameSpace session, IEnumDisplayNameProvider enumDisplayNameProvider, ISettingsFaultFinder settingsFaultFinder, IOutlookSession outlookSession)
     {
       if (session == null) throw new ArgumentNullException(nameof(session));
       if (enumDisplayNameProvider == null) throw new ArgumentNullException(nameof(enumDisplayNameProvider));
       if (settingsFaultFinder == null) throw new ArgumentNullException(nameof(settingsFaultFinder));
+      if (outlookSession == null) throw new ArgumentNullException(nameof(outlookSession));
 
       _session = session;
       _enumDisplayNameProvider = enumDisplayNameProvider;
       _settingsFaultFinder = settingsFaultFinder;
+      _outlookSession = outlookSession;
     }
 
     public static bool ValidateCategoryName(string category, StringBuilder errorMessageBuilder)
@@ -486,7 +489,7 @@ namespace CalDavSynchronizer.Ui.Options
       get
       {
         if (_profileExportProcessor == null)
-          _profileExportProcessor = new ProfileExportProcessor(_session, this);
+          _profileExportProcessor = new ProfileExportProcessor(_outlookSession, this);
 
         return _profileExportProcessor;
       }

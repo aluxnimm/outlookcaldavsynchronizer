@@ -48,5 +48,13 @@ namespace CalDavSynchronizer.Utilities
       }
       return value;
     }
+
+    public static TValue GetOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key)
+    {
+      if (dictionary.TryGetValue(key, out var value))
+        return value;
+      else
+        return default(TValue);
+    }
   }
 }

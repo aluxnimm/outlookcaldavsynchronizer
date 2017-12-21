@@ -193,6 +193,11 @@ namespace CalDavSynchronizer.UnitTest.Implementation.Events
       {
         throw new NotImplementedException();
       }
+
+      public IReadOnlyDictionary<string, IReadOnlyList<OutlookFolderDescriptor>> GetFoldersByName()
+      {
+        throw new NotImplementedException();
+      }
     }
   }
 }

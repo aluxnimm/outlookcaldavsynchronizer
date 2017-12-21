@@ -21,6 +21,7 @@ using System.Runtime.InteropServices;
 using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Ui;
+using CalDavSynchronizer.Utilities;
 using GenSync.Logging;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
@@ -245,6 +246,23 @@ namespace CalDavSynchronizer
       catch (System.Exception e)
       {
         s_logger.Error($"Can't update category '{name}' with color '{color}' and shortcut '{shortcutKey}'", e);
+      }
+    }
+    
+    public IReadOnlyDictionary<string, IReadOnlyList<OutlookFolderDescriptor>> GetFoldersByName()
+    {
+      var folderIdsByName = new Dictionary<string, List<OutlookFolderDescriptor>>();
+      AddFoldersRecusive(_nameSpace.Folders, folderIdsByName);
+      return folderIdsByName.ToDictionary<KeyValuePair<string, List<OutlookFolderDescriptor>>, string, IReadOnlyList<OutlookFolderDescriptor>>(d => d.Key, d => d.Value);
+    }
+
+    private void AddFoldersRecusive(Folders folders, Dictionary<string, List<OutlookFolderDescriptor>> collector)
+    {
+      // TODO: do not add "Deleted Items"-Folder
+      foreach (var folder in folders.Cast<Folder>().ToSafeEnumerable())
+      {
+        AddFoldersRecusive(folder.Folders, collector);
+        collector.GetOrAdd(folder.Name).Add(new OutlookFolderDescriptor(folder));
       }
     }
 

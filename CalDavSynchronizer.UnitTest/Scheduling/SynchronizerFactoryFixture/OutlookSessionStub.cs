@@ -108,5 +108,10 @@ namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
     {
       throw new System.NotImplementedException();
     }
+
+    public IReadOnlyDictionary<string, IReadOnlyList<OutlookFolderDescriptor>> GetFoldersByName()
+    {
+      throw new NotImplementedException();
+    }
   }
 }

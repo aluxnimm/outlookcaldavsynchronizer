@@ -30,10 +30,10 @@ namespace CalDavSynchronizer
 {
   class ProfileExportProcessor : IProfileExportProcessor
   {
-    private readonly NameSpace _session;
+    private readonly IOutlookSession _session;
     private readonly IOptionTasks _optionTasks;
 
-    public ProfileExportProcessor (NameSpace session, IOptionTasks optionTasks)
+    public ProfileExportProcessor(IOutlookSession session, IOptionTasks optionTasks)
     {
       if (session == null) throw new ArgumentNullException(nameof(session));
       if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
@@ -51,7 +51,7 @@ namespace CalDavSynchronizer
         logger($"'{profile.Name}'");
         try
         {
-          using (var outlookFolderWrapper = GenericComObjectWrapper.Create((Folder) _session.GetFolderFromID(profile.OutlookFolderEntryId, profile.OutlookFolderStoreId)))
+          using (var outlookFolderWrapper = GenericComObjectWrapper.Create((Folder) _session.GetFolderFromId(profile.OutlookFolderEntryId, profile.OutlookFolderStoreId)))
           {
             profile.OutlookFolderEntryId = outlookFolderWrapper.Inner.Name;
           }
@@ -75,16 +75,15 @@ namespace CalDavSynchronizer
 
     private void PrepareForImport(Options[] options, Action<string> logger)
     {
-      var folderIdsByName = new Dictionary<string, List<Tuple<string, string>>>();
-      AddFoldersRecusive(_session.Folders, folderIdsByName);
+      var folderIdsByName = _session.GetFoldersByName();
 
       foreach (var profile in options)
       {
-        var ids = folderIdsByName.GetOrAdd(profile.OutlookFolderEntryId).FirstOrDefault();
-        if (ids != null)
+        var folder = folderIdsByName.GetOrDefault(profile.OutlookFolderEntryId)?.FirstOrDefault();
+        if (folder != null)
         {
-          profile.OutlookFolderEntryId = ids.Item1;
-          profile.OutlookFolderStoreId = ids.Item2;
+          profile.OutlookFolderEntryId = folder.EntryId;
+          profile.OutlookFolderStoreId = folder.StoreId;
 
           profile.OutlookFolderAccountName = _optionTasks.GetFolderAccountNameOrNull(profile.OutlookFolderStoreId);
         }
@@ -97,17 +96,6 @@ namespace CalDavSynchronizer
         }
       }
     }
-
-    private void AddFoldersRecusive(Folders folders, Dictionary<string, List<Tuple<string, string>>> collector)
-    {
-      // TODO: do not add "Deleted Items"-Folder
-      foreach (var folder in folders.Cast<Folder> ().ToSafeEnumerable ())
-      {
-        AddFoldersRecusive(folder.Folders, collector);
-        collector.GetOrAdd(folder.Name).Add(Tuple.Create(folder.EntryID, folder.StoreID));
-      }
-    }
-
     private Options[] MergePreservingSortOrder (Options[] existingProfiles, Options[] profilesToImport, Action<string> logger)
     {
       var mergedProfiles = existingProfiles.ToList ();
