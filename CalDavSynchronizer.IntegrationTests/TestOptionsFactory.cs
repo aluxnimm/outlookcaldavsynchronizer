@@ -66,6 +66,27 @@ namespace CalDavSynchronizer.IntegrationTests
       return options;
     }
 
+    public Options CreateLocalFolderEvents() => CreateLocalFolder(AppointmantFolderName);
+
+    private Options CreateLocalFolder(string outlookFolderName)
+    {
+      const string folderPath = @"D:\temp\IntegrationTests\Entities\";
+      if (!Directory.Exists(folderPath))
+      {
+        Directory.CreateDirectory(folderPath);
+      }
+      else
+      {
+        foreach (var file in Directory.GetFiles(folderPath))
+          File.Delete(file);
+      }
+      var options = CreateDefaultOptions(
+        new Options() { CalenderUrl = $"file://{folderPath}" },
+        outlookFolderName);
+      options.MappingConfiguration = CreateDefaultEventMappingConfiguration();
+      return options;
+    }
+
     private static EventMappingConfiguration CreateDefaultEventMappingConfiguration()
     {
       return new EventMappingConfiguration();
