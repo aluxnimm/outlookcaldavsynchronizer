@@ -1525,7 +1525,7 @@ namespace CalDavSynchronizer.Implementation.Events
       masterEvent.Summary = firstException.Summary;
       masterEvent.Location = firstException.Location;
       masterEvent.Class = firstException.Class;
-      masterEvent.Categories = firstException.Categories;
+      masterEvent.Categories.AddRange(firstException.Categories.ToArray());
       masterEvent.Organizer = firstException.Organizer;
       masterEvent.Attendees = firstException.Attendees;
       masterEvent.UID = firstException.UID;

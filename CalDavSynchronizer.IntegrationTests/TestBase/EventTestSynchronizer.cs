@@ -26,6 +26,7 @@ using CalDavSynchronizer.Scheduling.ComponentCollectors;
 using CalDavSynchronizer.Synchronization;
 using DDay.iCal;
 using GenSync.Synchronization;
+using Microsoft.Office.Interop.Outlook;
 using NUnit.Framework;
 
 namespace CalDavSynchronizer.IntegrationTests.TestBase
@@ -63,7 +64,8 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
     string subject,
     DateTime start,
     DateTime end,
-    bool isAllDayEvent = false)
+    bool isAllDayEvent = false,
+    Action<IAppointmentItemWrapper> initializer = null)
     {
       return await Outlook.CreateEntity (
         e =>
@@ -73,6 +75,7 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
           e.Inner.Subject = subject;
           e.Inner.ReminderSet = false;
           e.Inner.AllDayEvent = isAllDayEvent;
+          initializer?.Invoke(e);
         });
     }
 

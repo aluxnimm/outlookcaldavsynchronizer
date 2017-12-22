@@ -351,6 +351,86 @@ namespace CalDavSynchronizer.IntegrationTests
 
     }
 
+    [Test]
+    [TestCase(null)]
+    [TestCase("cat1")]
+    [Apartment(System.Threading.ApartmentState.STA)]
+    public async Task Synchronizer_ServerMasterEventIsMissing_IsReconstructed(string category)
+    {
+      var options = _testComponentContainer.TestOptionsFactory.CreateLocalFolderEvents();
+      var synchronizer = await CreateSynchronizer(options);
+      
+      await synchronizer.ClearEventRepositoriesAndCache();
+
+      await synchronizer.CreateEventInOutlook(
+        "Meeting",
+        DateTime.Now.AddDays(10),
+        DateTime.Now.AddDays(10).AddHours(1),
+        false,
+        e =>
+        {
+          if(category != null)
+            e.Inner.Categories = "cat1";
+          using (var recurrencePatternWrapper = GenericComObjectWrapper.Create(e.Inner.GetRecurrencePattern()))
+          {
+            var recurrencePattern = recurrencePatternWrapper.Inner;
+            recurrencePattern.RecurrenceType = Microsoft.Office.Interop.Outlook.OlRecurrenceType.olRecursDaily;
+            recurrencePattern.Occurrences = 10;
+          }
+
+          e.SaveAndReload();
+
+          using (var recurrencePatternWrapper = GenericComObjectWrapper.Create(e.Inner.GetRecurrencePattern()))
+          {
+            var recurrencePattern = recurrencePatternWrapper.Inner;
+
+            foreach (var exDay in new[] {2, 4, 6})
+            {
+              using (var wrapper = GenericComObjectWrapper.Create(recurrencePattern.GetOccurrence(e.Inner.Start.AddDays(exDay))))
+              {
+                wrapper.Inner.Subject = $"Long Meeting on day {exDay}";
+                wrapper.Inner.End = wrapper.Inner.End.AddHours(1);
+                wrapper.Inner.Save();
+              }
+            }
+          }
+        });
+
+      await synchronizer.SynchronizeAndAssertNoErrors();
+      synchronizer.ClearCache();
+      await synchronizer.Outlook.DeleteAllEntities();
+
+
+      var entityVersion = (await synchronizer.Components.CalDavDataAccess.GetEventVersions(null)).Single();
+      var entity = (await synchronizer.Components.CalDavRepository.Get(new[] { entityVersion.Id }, NullLoadEntityLogger.Instance, NullEventSynchronizationContext.Instance)).Single();
+      await synchronizer.Components.CalDavRepository.TryUpdate(
+        entityVersion.Id,
+        entityVersion.Version,
+        entity.Entity,
+        c =>
+        {
+          var master = c.Events.Single(e => e.Summary == "Meeting");
+          c.Events.Remove(master);
+          return Task.FromResult(c);
+        },
+        NullEventSynchronizationContext.Instance);
+
+      // Now a server event was set up without an master event
+      var report = await synchronizer.Synchronize();
+
+      Assert.That(report.HasErrors, Is.False);
+      Assert.That(
+        report.EntitySynchronizationReports.SingleOrDefault()?.MappingWarnings.FirstOrDefault(w => w == "CalDav Ressources contains only exceptions. Reconstructing master event."),
+        Is.Not.Null);
+
+      using (var outlookEvent = (await synchronizer.Outlook.GetAllEntities()).Single().Entity)
+      {
+        // the name of the recostructed master event has been taken from the first exception
+        Assert.That(outlookEvent.Inner.Subject, Is.EqualTo("Long Meeting on day 2"));
+        Assert.That(outlookEvent.Inner.Categories, Is.EqualTo(category));
+      }
+    }
+
 
     private async Task<EventTestSynchronizer> CreateSynchronizer(Options options)
     {
