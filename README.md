@@ -115,6 +115,22 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 2.27.0 ####
+- Released 2017/12/23
+- New features
+	- Add Kolab profile, credits to Achim Leitner.
+	- Improve default Button behavior.
+	- Add mapping of Outlook OfficeLocation to work ExtendedAddress attribute.
+	- Refactoring and Restructuring of ProfileTypes.
+- Bug fixes
+	- Unescape also COLON in vCardStandardReader do avoid problems with some servers wrongly encoding vCard NOTES, ticket #741.
+	- Disable "Map Organizer and Attendees" for Google by default.
+	- Cache sync run results, so that TransientProfileStatusesViewModel is not empty when opened, gh issue 217.
+	- Fix handling of vCard ORG property for mapping of organization and department to Outlook CompanyName and Department properties.
+	- Fix exception when reconstructing master event, ticket #777.
+	- Improve Logging.
+	- Fix Integration tests.
+
 #### 2.26.0 ####
 - Released 2017/11/15
 - New features

@@ -33,6 +33,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_04BB107B710AA4CBA634C0FA3600BF12"
+        "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_06F3421034136B44DE0CE90273B243B9"
         "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
         "MsmSig" = "8:_UNDEFINED"
@@ -87,12 +93,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_17E5A762422512F323656C942A0499EA"
-        "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_192A9E8C35E64627A221D252893E5027"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -118,6 +118,18 @@
         "Entry"
         {
         "MsmKey" = "8:_20091B53F983878C36DBC850B64FCB87"
+        "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_202481E275552735EEDF32A7F42C2597"
+        "OwnerKey" = "8:_F5E7FDF04E965A59AC2244FBC6EF4BD0"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_202481E275552735EEDF32A7F42C2597"
         "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -160,7 +172,7 @@
         "Entry"
         {
         "MsmKey" = "8:_266EC84D73CA462B6016FE718EC622F9"
-        "OwnerKey" = "8:_A58A7202FC91BCFBD3FEB6785CE643A1"
+        "OwnerKey" = "8:_202481E275552735EEDF32A7F42C2597"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -226,7 +238,7 @@
         "Entry"
         {
         "MsmKey" = "8:_3F9AA1BC878ECEF42D4B391186B43E3A"
-        "OwnerKey" = "8:_7DDB8E9E4000C0303892B20148E26A56"
+        "OwnerKey" = "8:_E8BFD262316C23666C9E3094B8635548"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -268,7 +280,7 @@
         "Entry"
         {
         "MsmKey" = "8:_49A80E1A9A8F15C9AF7589B8A2C50521"
-        "OwnerKey" = "8:_7DDB8E9E4000C0303892B20148E26A56"
+        "OwnerKey" = "8:_E8BFD262316C23666C9E3094B8635548"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -322,7 +334,7 @@
         "Entry"
         {
         "MsmKey" = "8:_5815B2637D411100135BC2D1091D0FC1"
-        "OwnerKey" = "8:_A58A7202FC91BCFBD3FEB6785CE643A1"
+        "OwnerKey" = "8:_202481E275552735EEDF32A7F42C2597"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -334,7 +346,7 @@
         "Entry"
         {
         "MsmKey" = "8:_5BBF4B56AD0B082B0C7B849A223513DB"
-        "OwnerKey" = "8:_7DDB8E9E4000C0303892B20148E26A56"
+        "OwnerKey" = "8:_E8BFD262316C23666C9E3094B8635548"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -448,7 +460,7 @@
         "Entry"
         {
         "MsmKey" = "8:_76899D2A7E501E8A3E02A40EF5AD7F68"
-        "OwnerKey" = "8:_7DDB8E9E4000C0303892B20148E26A56"
+        "OwnerKey" = "8:_E8BFD262316C23666C9E3094B8635548"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -490,18 +502,12 @@
         "Entry"
         {
         "MsmKey" = "8:_7CA6EABF009E212789EF8F36C4A70E9D"
-        "OwnerKey" = "8:_7DDB8E9E4000C0303892B20148E26A56"
+        "OwnerKey" = "8:_E8BFD262316C23666C9E3094B8635548"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_7CC3F3BC54A3AFBE8D350AE08F532E7A"
-        "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_7DDB8E9E4000C0303892B20148E26A56"
         "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -520,12 +526,6 @@
         "Entry"
         {
         "MsmKey" = "8:_848B636D7E6674A94817EE15708AC4B6"
-        "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_851CCAEDAA099D0B3CAA6E96CBB615DE"
         "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -574,7 +574,7 @@
         "Entry"
         {
         "MsmKey" = "8:_A173A106E75B6DDD57D5401BA9B8070B"
-        "OwnerKey" = "8:_7DDB8E9E4000C0303892B20148E26A56"
+        "OwnerKey" = "8:_E8BFD262316C23666C9E3094B8635548"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -603,18 +603,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_A58A7202FC91BCFBD3FEB6785CE643A1"
-        "OwnerKey" = "8:_851CCAEDAA099D0B3CAA6E96CBB615DE"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_A58A7202FC91BCFBD3FEB6785CE643A1"
-        "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_A7104EA4085B83DB8876DE88C2DF0E05"
         "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
         "MsmSig" = "8:_UNDEFINED"
@@ -633,6 +621,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_B1C251441D6092D5AEEE36F6909587C8"
+        "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_B430A8D96DD7D00A0850808852B5E7D3"
         "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
         "MsmSig" = "8:_UNDEFINED"
@@ -640,7 +634,7 @@
         "Entry"
         {
         "MsmKey" = "8:_B430A8D96DD7D00A0850808852B5E7D3"
-        "OwnerKey" = "8:_A58A7202FC91BCFBD3FEB6785CE643A1"
+        "OwnerKey" = "8:_202481E275552735EEDF32A7F42C2597"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -675,12 +669,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_D3EFB2BA90FF0F793248CD731968E57F"
-        "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_DAF68AF619A659BC3462C367F7DA4885"
         "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
         "MsmSig" = "8:_UNDEFINED"
@@ -699,8 +687,14 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_E8BFD262316C23666C9E3094B8635548"
+        "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_F05FCBC72D256CB5B53260DE3C3741BE"
-        "OwnerKey" = "8:_7DDB8E9E4000C0303892B20148E26A56"
+        "OwnerKey" = "8:_E8BFD262316C23666C9E3094B8635548"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -748,7 +742,7 @@
         "Entry"
         {
         "MsmKey" = "8:_F492E18FF2D4AA09EFB2D725608922AC"
-        "OwnerKey" = "8:_7DDB8E9E4000C0303892B20148E26A56"
+        "OwnerKey" = "8:_E8BFD262316C23666C9E3094B8635548"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -760,6 +754,12 @@
         "Entry"
         {
         "MsmKey" = "8:_F564F7C154847070AE99676CA5116DE0"
+        "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F5E7FDF04E965A59AC2244FBC6EF4BD0"
         "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -778,7 +778,7 @@
         "Entry"
         {
         "MsmKey" = "8:_FD12446584E7B783C9BA0880CF061377"
-        "OwnerKey" = "8:_7DDB8E9E4000C0303892B20148E26A56"
+        "OwnerKey" = "8:_E8BFD262316C23666C9E3094B8635548"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -790,7 +790,7 @@
         "Entry"
         {
         "MsmKey" = "8:_FD12446584E7B783C9BA0880CF061377"
-        "OwnerKey" = "8:_851CCAEDAA099D0B3CAA6E96CBB615DE"
+        "OwnerKey" = "8:_F5E7FDF04E965A59AC2244FBC6EF4BD0"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -844,7 +844,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_D3EFB2BA90FF0F793248CD731968E57F"
+        "OwnerKey" = "8:_04BB107B710AA4CBA634C0FA3600BF12"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -916,13 +916,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_851CCAEDAA099D0B3CAA6E96CBB615DE"
+        "OwnerKey" = "8:_F5E7FDF04E965A59AC2244FBC6EF4BD0"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_7DDB8E9E4000C0303892B20148E26A56"
+        "OwnerKey" = "8:_E8BFD262316C23666C9E3094B8635548"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -982,7 +982,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_17E5A762422512F323656C942A0499EA"
+        "OwnerKey" = "8:_B1C251441D6092D5AEEE36F6909587C8"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1497,6 +1497,11 @@
             "AssemblyAsmDisplayName" = "8:System.Reflection.Emit, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_007CE7411D87109AB833E9589BB06832"
+                    {
+                    "Name" = "8:System.Reflection.Emit.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Reflection.Emit.dll"
             "TargetName" = "8:"
@@ -1523,6 +1528,11 @@
             "AssemblyAsmDisplayName" = "8:System.ServiceModel.Security, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_0179B67958FF30E38E9951F1C6DF290B"
+                    {
+                    "Name" = "8:System.ServiceModel.Security.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.ServiceModel.Security.dll"
             "TargetName" = "8:"
@@ -1549,8 +1559,44 @@
             "AssemblyAsmDisplayName" = "8:Google.Apis.Auth.PlatformServices, Version=1.28.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_039019FA5421E47ED172A831E9301B59"
+                    {
+                    "Name" = "8:Google.Apis.Auth.PlatformServices.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Google.Apis.Auth.PlatformServices.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_04BB107B710AA4CBA634C0FA3600BF12"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Thought.vCards, Version=2.26.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_04BB107B710AA4CBA634C0FA3600BF12"
+                    {
+                    "Name" = "8:Thought.vCards.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Thought.vCards.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
@@ -1575,6 +1621,11 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.Threading.Tasks.Extensions.Desktop, Version=1.0.168.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_06F3421034136B44DE0CE90273B243B9"
+                    {
+                    "Name" = "8:Microsoft.Threading.Tasks.Extensions.Desktop.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Microsoft.Threading.Tasks.Extensions.Desktop.dll"
             "TargetName" = "8:"
@@ -1601,6 +1652,11 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.Threading.Tasks, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_09F56161E67C716E810FFE478943C946"
+                    {
+                    "Name" = "8:Microsoft.Threading.Tasks.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Microsoft.Threading.Tasks.dll"
             "TargetName" = "8:"
@@ -1627,6 +1683,11 @@
             "AssemblyAsmDisplayName" = "8:System.Linq.Parallel, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_0BD01DF2A6D9611682C7AAE1DE538275"
+                    {
+                    "Name" = "8:System.Linq.Parallel.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Linq.Parallel.dll"
             "TargetName" = "8:"
@@ -1673,6 +1734,11 @@
             "AssemblyAsmDisplayName" = "8:System.Text.Encoding, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_10CBB4A7066FA67140C3CF5E18F4DB78"
+                    {
+                    "Name" = "8:System.Text.Encoding.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Text.Encoding.dll"
             "TargetName" = "8:"
@@ -1699,6 +1765,11 @@
             "AssemblyAsmDisplayName" = "8:System.Diagnostics.Tools, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_13EEC07D9C26B1C3A16136D6D8D559BD"
+                    {
+                    "Name" = "8:System.Diagnostics.Tools.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Diagnostics.Tools.dll"
             "TargetName" = "8:"
@@ -1725,6 +1796,11 @@
             "AssemblyAsmDisplayName" = "8:System.Runtime.Serialization.Json, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_1445B1030CC3FBA0E2D288D5B3AF6884"
+                    {
+                    "Name" = "8:System.Runtime.Serialization.Json.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Runtime.Serialization.Json.dll"
             "TargetName" = "8:"
@@ -1751,34 +1827,13 @@
             "AssemblyAsmDisplayName" = "8:System.Reflection.Primitives, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_147B96912A088EF170031A3C13F2A209"
+                    {
+                    "Name" = "8:System.Reflection.Primitives.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Reflection.Primitives.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_17E5A762422512F323656C942A0499EA"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:CalDavSynchronizer.Conversions, Version=2.23.1.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                }
-            "SourcePath" = "8:CalDavSynchronizer.Conversions.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
@@ -1823,6 +1878,11 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.Office.Tools, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_1FB16CC00DDA91B785FBB77C53FC0157"
+                    {
+                    "Name" = "8:Microsoft.Office.Tools.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Microsoft.Office.Tools.dll"
             "TargetName" = "8:"
@@ -1849,8 +1909,44 @@
             "AssemblyAsmDisplayName" = "8:System.ComponentModel, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_20091B53F983878C36DBC850B64FCB87"
+                    {
+                    "Name" = "8:System.ComponentModel.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.ComponentModel.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_202481E275552735EEDF32A7F42C2597"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_202481E275552735EEDF32A7F42C2597"
+                    {
+                    "Name" = "8:System.ValueTuple.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:System.ValueTuple.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
@@ -1875,6 +1971,11 @@
             "AssemblyAsmDisplayName" = "8:System.Linq, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_22315C44A64A94402A5EFE51F9D465C0"
+                    {
+                    "Name" = "8:System.Linq.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Linq.dll"
             "TargetName" = "8:"
@@ -1901,6 +2002,11 @@
             "AssemblyAsmDisplayName" = "8:System.Security.Principal, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_224CB60C89AC2E8AFC6E8C67B52C00AD"
+                    {
+                    "Name" = "8:System.Security.Principal.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Security.Principal.dll"
             "TargetName" = "8:"
@@ -1927,6 +2033,11 @@
             "AssemblyAsmDisplayName" = "8:System.Diagnostics.Contracts, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_242FEA6365AE8E12DB1FE0B664939BF0"
+                    {
+                    "Name" = "8:System.Diagnostics.Contracts.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Diagnostics.Contracts.dll"
             "TargetName" = "8:"
@@ -1953,6 +2064,11 @@
             "AssemblyAsmDisplayName" = "8:System.Xml.XDocument, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_24BE9AA02E561B2DAF83A3706D65EC07"
+                    {
+                    "Name" = "8:System.Xml.XDocument.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Xml.XDocument.dll"
             "TargetName" = "8:"
@@ -1979,6 +2095,11 @@
             "AssemblyAsmDisplayName" = "8:System.Text.RegularExpressions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_262EE4C682E7C6E259C0FF4FAF19F3F9"
+                    {
+                    "Name" = "8:System.Text.RegularExpressions.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Text.RegularExpressions.dll"
             "TargetName" = "8:"
@@ -2005,6 +2126,11 @@
             "AssemblyAsmDisplayName" = "8:System.Resources.ResourceManager, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_266EC84D73CA462B6016FE718EC622F9"
+                    {
+                    "Name" = "8:System.Resources.ResourceManager.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Resources.ResourceManager.dll"
             "TargetName" = "8:"
@@ -2031,6 +2157,11 @@
             "AssemblyAsmDisplayName" = "8:System.Dynamic.Runtime, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_3345D1DB710E75006B03FE66B20E3DA5"
+                    {
+                    "Name" = "8:System.Dynamic.Runtime.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Dynamic.Runtime.dll"
             "TargetName" = "8:"
@@ -2057,6 +2188,11 @@
             "AssemblyAsmDisplayName" = "8:System.Runtime.Serialization.Primitives, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_3413C33D5FB15A0A6094FD387173A8EE"
+                    {
+                    "Name" = "8:System.Runtime.Serialization.Primitives.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Runtime.Serialization.Primitives.dll"
             "TargetName" = "8:"
@@ -2083,6 +2219,11 @@
             "AssemblyAsmDisplayName" = "8:System.ServiceModel.Duplex, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_3665494CA79953332494A77300E3EA63"
+                    {
+                    "Name" = "8:System.ServiceModel.Duplex.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.ServiceModel.Duplex.dll"
             "TargetName" = "8:"
@@ -2109,6 +2250,11 @@
             "AssemblyAsmDisplayName" = "8:System.IO.Compression, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
                 "ScatterAssemblies"
                 {
+                    "_381F65F82F331DBC29F01B7F76761C98"
+                    {
+                    "Name" = "8:System.IO.Compression.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.IO.Compression.dll"
             "TargetName" = "8:"
@@ -2135,6 +2281,11 @@
             "AssemblyAsmDisplayName" = "8:BouncyCastle.Crypto, Version=1.8.1.0, Culture=neutral, PublicKeyToken=0e99375e54769942"
                 "ScatterAssemblies"
                 {
+                    "_3EBF957CA83D915EC14BF2F83462113D"
+                    {
+                    "Name" = "8:BouncyCastle.Crypto.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:BouncyCastle.Crypto.dll"
             "TargetName" = "8:"
@@ -2161,6 +2312,11 @@
             "AssemblyAsmDisplayName" = "8:System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_3F9AA1BC878ECEF42D4B391186B43E3A"
+                    {
+                    "Name" = "8:System.Net.Http.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Net.Http.dll"
             "TargetName" = "8:"
@@ -2187,6 +2343,11 @@
             "AssemblyAsmDisplayName" = "8:Zlib.Portable, Version=1.11.0.0, Culture=neutral, PublicKeyToken=431cba815f6a8b5b, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_4115ED76AD2C03BCBD1604B61651831E"
+                    {
+                    "Name" = "8:Zlib.Portable.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Zlib.Portable.dll"
             "TargetName" = "8:"
@@ -2213,6 +2374,11 @@
             "AssemblyAsmDisplayName" = "8:System.ComponentModel.EventBasedAsync, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_438E5C5B03AFDEDD66EF88A9866946E2"
+                    {
+                    "Name" = "8:System.ComponentModel.EventBasedAsync.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.ComponentModel.EventBasedAsync.dll"
             "TargetName" = "8:"
@@ -2239,6 +2405,11 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.Office.Tools.Common.v4.0.Utilities, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_46CA60DCDB17FA53D406B69FE28F2E52"
+                    {
+                    "Name" = "8:Microsoft.Office.Tools.Common.v4.0.Utilities.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Microsoft.Office.Tools.Common.v4.0.Utilities.dll"
             "TargetName" = "8:"
@@ -2265,6 +2436,11 @@
             "AssemblyAsmDisplayName" = "8:Google.GData.Contacts, Version=2.2.0.0, Culture=neutral, PublicKeyToken=7e065189dd4b982f, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_49A80E1A9A8F15C9AF7589B8A2C50521"
+                    {
+                    "Name" = "8:Google.GData.Contacts.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Google.GData.Contacts.dll"
             "TargetName" = "8:"
@@ -2291,6 +2467,11 @@
             "AssemblyAsmDisplayName" = "8:System.Net.Http.Primitives, Version=4.2.29.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_4F68483D1CD546432B1861EB7AFD68C2"
+                    {
+                    "Name" = "8:System.Net.Http.Primitives.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Net.Http.Primitives.dll"
             "TargetName" = "8:"
@@ -2317,6 +2498,11 @@
             "AssemblyAsmDisplayName" = "8:System.Threading.Tasks, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_50F75F5374B15E3BF3B32124CF9334A9"
+                    {
+                    "Name" = "8:System.Threading.Tasks.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Threading.Tasks.dll"
             "TargetName" = "8:"
@@ -2343,6 +2529,11 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.Threading.Tasks.Extensions, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_52BC0E08BFC79694DAD119F1E7065265"
+                    {
+                    "Name" = "8:Microsoft.Threading.Tasks.Extensions.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Microsoft.Threading.Tasks.Extensions.dll"
             "TargetName" = "8:"
@@ -2369,6 +2560,11 @@
             "AssemblyAsmDisplayName" = "8:Google.GData.Extensions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=0b4c5df2ebf20876, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_53E63B23CF5AC89A013F312C5AF48095"
+                    {
+                    "Name" = "8:Google.GData.Extensions.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Google.GData.Extensions.dll"
             "TargetName" = "8:"
@@ -2395,6 +2591,11 @@
             "AssemblyAsmDisplayName" = "8:System.Runtime, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_5815B2637D411100135BC2D1091D0FC1"
+                    {
+                    "Name" = "8:System.Runtime.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Runtime.dll"
             "TargetName" = "8:"
@@ -2421,6 +2622,11 @@
             "AssemblyAsmDisplayName" = "8:Google.GData.Client, Version=2.2.0.0, Culture=neutral, PublicKeyToken=04a59ca9b0273830, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_5BBF4B56AD0B082B0C7B849A223513DB"
+                    {
+                    "Name" = "8:Google.GData.Client.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Google.GData.Client.dll"
             "TargetName" = "8:"
@@ -2447,6 +2653,11 @@
             "AssemblyAsmDisplayName" = "8:System.ServiceModel.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_5DC005295DC9C88F9E0E10E78116E218"
+                    {
+                    "Name" = "8:System.ServiceModel.Http.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.ServiceModel.Http.dll"
             "TargetName" = "8:"
@@ -2473,6 +2684,11 @@
             "AssemblyAsmDisplayName" = "8:System.Threading.Tasks.Parallel, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_5E7FE633416DE1E8F8F4E4B02D53F556"
+                    {
+                    "Name" = "8:System.Threading.Tasks.Parallel.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Threading.Tasks.Parallel.dll"
             "TargetName" = "8:"
@@ -2499,6 +2715,11 @@
             "AssemblyAsmDisplayName" = "8:Google.Apis.PlatformServices, Version=1.28.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_5FD03B4734E041D4D22C2A85C7E8FA8E"
+                    {
+                    "Name" = "8:Google.Apis.PlatformServices.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Google.Apis.PlatformServices.dll"
             "TargetName" = "8:"
@@ -2525,6 +2746,11 @@
             "AssemblyAsmDisplayName" = "8:System.ComponentModel.Annotations, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_607034C6ACAE4250C8292D9ADBB58A44"
+                    {
+                    "Name" = "8:System.ComponentModel.Annotations.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.ComponentModel.Annotations.dll"
             "TargetName" = "8:"
@@ -2551,6 +2777,11 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.VisualStudio.Tools.Applications.Runtime, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_60A001F06BCA3C3F2F28C8C962C92CD7"
+                    {
+                    "Name" = "8:Microsoft.VisualStudio.Tools.Applications.Runtime.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Microsoft.VisualStudio.Tools.Applications.Runtime.dll"
             "TargetName" = "8:"
@@ -2577,6 +2808,11 @@
             "AssemblyAsmDisplayName" = "8:System.Net.Primitives, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_69560DD438C5BF52B2C8836D50BD48D2"
+                    {
+                    "Name" = "8:System.Net.Primitives.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Net.Primitives.dll"
             "TargetName" = "8:"
@@ -2603,6 +2839,11 @@
             "AssemblyAsmDisplayName" = "8:System.IO, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_6BC2C2BF6C4EA13663AEA1D542437835"
+                    {
+                    "Name" = "8:System.IO.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.IO.dll"
             "TargetName" = "8:"
@@ -2629,6 +2870,11 @@
             "AssemblyAsmDisplayName" = "8:System.Xml.ReaderWriter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_6DD3907285912ACE372478E4A11973D5"
+                    {
+                    "Name" = "8:System.Xml.ReaderWriter.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Xml.ReaderWriter.dll"
             "TargetName" = "8:"
@@ -2655,6 +2901,11 @@
             "AssemblyAsmDisplayName" = "8:System.Linq.Queryable, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_6E68872035F64F011A4DC240EE7BFF20"
+                    {
+                    "Name" = "8:System.Linq.Queryable.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Linq.Queryable.dll"
             "TargetName" = "8:"
@@ -2681,6 +2932,11 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.Office.Tools.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_70F069F1EB774EEE0F1BF00080D96D5C"
+                    {
+                    "Name" = "8:Microsoft.Office.Tools.Common.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Microsoft.Office.Tools.Common.dll"
             "TargetName" = "8:"
@@ -2707,6 +2963,11 @@
             "AssemblyAsmDisplayName" = "8:System.Globalization, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_765541C20A238E42AADD8F611AD1D901"
+                    {
+                    "Name" = "8:System.Globalization.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Globalization.dll"
             "TargetName" = "8:"
@@ -2733,6 +2994,11 @@
             "AssemblyAsmDisplayName" = "8:Google.Apis, Version=1.28.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_76899D2A7E501E8A3E02A40EF5AD7F68"
+                    {
+                    "Name" = "8:Google.Apis.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Google.Apis.dll"
             "TargetName" = "8:"
@@ -2759,6 +3025,11 @@
             "AssemblyAsmDisplayName" = "8:System.Reflection.Emit.Lightweight, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_7A3880A58606DF1A4163F5AA5384B53B"
+                    {
+                    "Name" = "8:System.Reflection.Emit.Lightweight.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Reflection.Emit.Lightweight.dll"
             "TargetName" = "8:"
@@ -2785,6 +3056,11 @@
             "AssemblyAsmDisplayName" = "8:System.Net.Http.WebRequest, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_7CA6EABF009E212789EF8F36C4A70E9D"
+                    {
+                    "Name" = "8:System.Net.Http.WebRequest.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Net.Http.WebRequest.dll"
             "TargetName" = "8:"
@@ -2811,34 +3087,13 @@
             "AssemblyAsmDisplayName" = "8:System.ServiceModel.NetTcp, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_7CC3F3BC54A3AFBE8D350AE08F532E7A"
+                    {
+                    "Name" = "8:System.ServiceModel.NetTcp.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.ServiceModel.NetTcp.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_7DDB8E9E4000C0303892B20148E26A56"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:CalDavSynchronizer.OAuth.Google, Version=2.23.1.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                }
-            "SourcePath" = "8:CalDavSynchronizer.OAuth.Google.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
@@ -2863,6 +3118,11 @@
             "AssemblyAsmDisplayName" = "8:System.Text.Encoding.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_7F40BA3E0F8A019541828EA34C180A15"
+                    {
+                    "Name" = "8:System.Text.Encoding.Extensions.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Text.Encoding.Extensions.dll"
             "TargetName" = "8:"
@@ -2889,6 +3149,11 @@
             "AssemblyAsmDisplayName" = "8:System.Diagnostics.Debug, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_7FA547443FBE75E242A84678E86C9015"
+                    {
+                    "Name" = "8:System.Diagnostics.Debug.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Diagnostics.Debug.dll"
             "TargetName" = "8:"
@@ -2915,34 +3180,13 @@
             "AssemblyAsmDisplayName" = "8:System.Collections.Concurrent, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_848B636D7E6674A94817EE15708AC4B6"
+                    {
+                    "Name" = "8:System.Collections.Concurrent.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Collections.Concurrent.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_851CCAEDAA099D0B3CAA6E96CBB615DE"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:GenSync, Version=2.23.1.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                }
-            "SourcePath" = "8:GenSync.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
@@ -2967,6 +3211,11 @@
             "AssemblyAsmDisplayName" = "8:System.Runtime.Serialization.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_88881BFD1E7F20E73DDD4D5F48FEDA63"
+                    {
+                    "Name" = "8:System.Runtime.Serialization.Xml.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Runtime.Serialization.Xml.dll"
             "TargetName" = "8:"
@@ -2993,6 +3242,11 @@
             "AssemblyAsmDisplayName" = "8:System.Xml.XmlSerializer, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_8B9B9DDB51802C66A067B11A7723C781"
+                    {
+                    "Name" = "8:System.Xml.XmlSerializer.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Xml.XmlSerializer.dll"
             "TargetName" = "8:"
@@ -3019,6 +3273,11 @@
             "AssemblyAsmDisplayName" = "8:System.ObjectModel, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_8EF26481B2D41BCE1118C6AB9C876E1B"
+                    {
+                    "Name" = "8:System.ObjectModel.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.ObjectModel.dll"
             "TargetName" = "8:"
@@ -3045,6 +3304,11 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.Office.Tools.v4.0.Framework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_9AF6942CD0A9BDD4859473C916B874BD"
+                    {
+                    "Name" = "8:Microsoft.Office.Tools.v4.0.Framework.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Microsoft.Office.Tools.v4.0.Framework.dll"
             "TargetName" = "8:"
@@ -3091,6 +3355,11 @@
             "AssemblyAsmDisplayName" = "8:ColorMine, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_9DF892823D140150B8247D584D690184"
+                    {
+                    "Name" = "8:ColorMine.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:ColorMine.dll"
             "TargetName" = "8:"
@@ -3117,6 +3386,11 @@
             "AssemblyAsmDisplayName" = "8:System.Reflection.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_9F6B5569F90F3AF2C81B9636C1B8A2E5"
+                    {
+                    "Name" = "8:System.Reflection.Extensions.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Reflection.Extensions.dll"
             "TargetName" = "8:"
@@ -3143,6 +3417,11 @@
             "AssemblyAsmDisplayName" = "8:Google.Apis.Auth, Version=1.28.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_A173A106E75B6DDD57D5401BA9B8070B"
+                    {
+                    "Name" = "8:Google.Apis.Auth.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Google.Apis.Auth.dll"
             "TargetName" = "8:"
@@ -3169,6 +3448,11 @@
             "AssemblyAsmDisplayName" = "8:System.Reflection.Emit.ILGeneration, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_A19060C1CAB6E738A04740DFAF8FDC94"
+                    {
+                    "Name" = "8:System.Reflection.Emit.ILGeneration.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Reflection.Emit.ILGeneration.dll"
             "TargetName" = "8:"
@@ -3195,34 +3479,13 @@
             "AssemblyAsmDisplayName" = "8:System.Net.NetworkInformation, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_A2F383675890159B1346AA900A124A6E"
+                    {
+                    "Name" = "8:System.Net.NetworkInformation.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Net.NetworkInformation.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A58A7202FC91BCFBD3FEB6785CE643A1"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                }
-            "SourcePath" = "8:System.ValueTuple.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
@@ -3247,6 +3510,11 @@
             "AssemblyAsmDisplayName" = "8:NodaTime, Version=2.2.0.0, Culture=neutral, PublicKeyToken=4226afe0d9b296d1, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_A7104EA4085B83DB8876DE88C2DF0E05"
+                    {
+                    "Name" = "8:NodaTime.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:NodaTime.dll"
             "TargetName" = "8:"
@@ -3273,6 +3541,11 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.Office.Tools.Outlook.v4.0.Utilities, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_AF6056666AAFA494AEADCA969F52270C"
+                    {
+                    "Name" = "8:Microsoft.Office.Tools.Outlook.v4.0.Utilities.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Microsoft.Office.Tools.Outlook.v4.0.Utilities.dll"
             "TargetName" = "8:"
@@ -3299,8 +3572,44 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.Office.Tools.Outlook, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_B1A9397A15D9E2CEC7FF9757DE2D7C30"
+                    {
+                    "Name" = "8:Microsoft.Office.Tools.Outlook.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Microsoft.Office.Tools.Outlook.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B1C251441D6092D5AEEE36F6909587C8"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:CalDavSynchronizer.Conversions, Version=2.26.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_B1C251441D6092D5AEEE36F6909587C8"
+                    {
+                    "Name" = "8:CalDavSynchronizer.Conversions.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:CalDavSynchronizer.Conversions.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
@@ -3325,6 +3634,11 @@
             "AssemblyAsmDisplayName" = "8:System.Collections, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_B430A8D96DD7D00A0850808852B5E7D3"
+                    {
+                    "Name" = "8:System.Collections.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Collections.dll"
             "TargetName" = "8:"
@@ -3351,6 +3665,11 @@
             "AssemblyAsmDisplayName" = "8:System.Threading, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_BD9D1F0FFA59D591B7F0D33FDB0F248D"
+                    {
+                    "Name" = "8:System.Threading.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Threading.dll"
             "TargetName" = "8:"
@@ -3377,6 +3696,11 @@
             "AssemblyAsmDisplayName" = "8:System.Runtime.Numerics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_BF0818D1AADB6E2F0925A271FB1C806F"
+                    {
+                    "Name" = "8:System.Runtime.Numerics.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Runtime.Numerics.dll"
             "TargetName" = "8:"
@@ -3403,6 +3727,11 @@
             "AssemblyAsmDisplayName" = "8:System.Runtime.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_C7A2BE67BFDFD2D938F6179166CCD36A"
+                    {
+                    "Name" = "8:System.Runtime.Extensions.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Runtime.Extensions.dll"
             "TargetName" = "8:"
@@ -3429,6 +3758,11 @@
             "AssemblyAsmDisplayName" = "8:System.Diagnostics.Tracing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_CAD532F901BFCBFC78EA99EF032CCF9E"
+                    {
+                    "Name" = "8:System.Diagnostics.Tracing.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Diagnostics.Tracing.dll"
             "TargetName" = "8:"
@@ -3455,34 +3789,13 @@
             "AssemblyAsmDisplayName" = "8:System.Net.Http.Extensions, Version=2.2.29.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_CF1C480FE1C94FD3B153855BF02D6F44"
+                    {
+                    "Name" = "8:System.Net.Http.Extensions.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Net.Http.Extensions.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_D3EFB2BA90FF0F793248CD731968E57F"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Thought.vCards, Version=2.23.1.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                }
-            "SourcePath" = "8:Thought.vCards.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
@@ -3507,6 +3820,11 @@
             "AssemblyAsmDisplayName" = "8:System.Reflection, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_DAF68AF619A659BC3462C367F7DA4885"
+                    {
+                    "Name" = "8:System.Reflection.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Reflection.dll"
             "TargetName" = "8:"
@@ -3533,6 +3851,11 @@
             "AssemblyAsmDisplayName" = "8:System.Net.Requests, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_DDBE399A997C37D2EC6273D5A259A22B"
+                    {
+                    "Name" = "8:System.Net.Requests.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Net.Requests.dll"
             "TargetName" = "8:"
@@ -3559,8 +3882,44 @@
             "AssemblyAsmDisplayName" = "8:System.ServiceModel.Primitives, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_E29175CFC739E1F1F845085C249D23C9"
+                    {
+                    "Name" = "8:System.ServiceModel.Primitives.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.ServiceModel.Primitives.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_E8BFD262316C23666C9E3094B8635548"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:CalDavSynchronizer.OAuth.Google, Version=2.26.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_E8BFD262316C23666C9E3094B8635548"
+                    {
+                    "Name" = "8:CalDavSynchronizer.OAuth.Google.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:CalDavSynchronizer.OAuth.Google.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
@@ -3585,6 +3944,11 @@
             "AssemblyAsmDisplayName" = "8:Google.Apis.Tasks.v1, Version=1.28.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_F05FCBC72D256CB5B53260DE3C3741BE"
+                    {
+                    "Name" = "8:Google.Apis.Tasks.v1.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Google.Apis.Tasks.v1.dll"
             "TargetName" = "8:"
@@ -3611,6 +3975,11 @@
             "AssemblyAsmDisplayName" = "8:System.Runtime.InteropServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_F1F0B91E77204B0BD88F19CEE22878E9"
+                    {
+                    "Name" = "8:System.Runtime.InteropServices.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Runtime.InteropServices.dll"
             "TargetName" = "8:"
@@ -3637,6 +4006,11 @@
             "AssemblyAsmDisplayName" = "8:DDay.iCal, Version=1.0.2.575, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_F3753511DB56003848E2BA94D769B63D"
+                    {
+                    "Name" = "8:DDay.iCal.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:DDay.iCal.dll"
             "TargetName" = "8:"
@@ -3663,6 +4037,11 @@
             "AssemblyAsmDisplayName" = "8:Google.Apis.Core, Version=1.28.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_F492E18FF2D4AA09EFB2D725608922AC"
+                    {
+                    "Name" = "8:Google.Apis.Core.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Google.Apis.Core.dll"
             "TargetName" = "8:"
@@ -3689,8 +4068,44 @@
             "AssemblyAsmDisplayName" = "8:System.Linq.Expressions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_F564F7C154847070AE99676CA5116DE0"
+                    {
+                    "Name" = "8:System.Linq.Expressions.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Linq.Expressions.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_F5E7FDF04E965A59AC2244FBC6EF4BD0"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:GenSync, Version=2.26.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_F5E7FDF04E965A59AC2244FBC6EF4BD0"
+                    {
+                    "Name" = "8:GenSync.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:GenSync.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
@@ -3715,6 +4130,11 @@
             "AssemblyAsmDisplayName" = "8:System.IO.Compression.FileSystem, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
                 "ScatterAssemblies"
                 {
+                    "_F928F5C052ABD0358602F7D5C232C865"
+                    {
+                    "Name" = "8:System.IO.Compression.FileSystem.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.IO.Compression.FileSystem.dll"
             "TargetName" = "8:"
@@ -3741,6 +4161,11 @@
             "AssemblyAsmDisplayName" = "8:stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_FC2C8CBD9EC17EEF79A4476CF8B04E58"
+                    {
+                    "Name" = "8:stdole.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:stdole.dll"
             "TargetName" = "8:"
@@ -3767,6 +4192,11 @@
             "AssemblyAsmDisplayName" = "8:log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_FD12446584E7B783C9BA0880CF061377"
+                    {
+                    "Name" = "8:log4net.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:log4net.dll"
             "TargetName" = "8:"
@@ -3793,6 +4223,11 @@
             "AssemblyAsmDisplayName" = "8:System.Runtime.InteropServices.WindowsRuntime, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_FD31F59F60A7F161FDED6B1C27D1D76E"
+                    {
+                    "Name" = "8:System.Runtime.InteropServices.WindowsRuntime.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Runtime.InteropServices.WindowsRuntime.dll"
             "TargetName" = "8:"
@@ -3819,6 +4254,11 @@
             "AssemblyAsmDisplayName" = "8:Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_FDA2A0C00211430137CA83E8C45A65A0"
+                    {
+                    "Name" = "8:Newtonsoft.Json.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Newtonsoft.Json.dll"
             "TargetName" = "8:"
@@ -3932,15 +4372,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CalDavSynchronizer"
-        "ProductCode" = "8:{2A959DB0-A422-4B8C-9E20-D4AF9118DEF8}"
-        "PackageCode" = "8:{74822971-F19F-485D-A441-8BEA818C3BDC}"
+        "ProductCode" = "8:{10290692-F750-4B3E-826C-FDF5D7FE1C8B}"
+        "PackageCode" = "8:{37A47D6D-9F8A-4EEC-AB5C-9ED5C96AED7A}"
         "UpgradeCode" = "8:{691063F4-DD9A-4264-948D-3FBD2565572C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.26.0"
+        "ProductVersion" = "8:2.27.0"
         "Manufacturer" = "8:Gerhard Zehetbauer"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
