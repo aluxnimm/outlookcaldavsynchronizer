@@ -21,14 +21,16 @@ namespace CalDavSynchronizer.ProfileTypes
 {
   public class ProfileModelOptions
   {
-    public ProfileModelOptions(bool areAdvancedNetWorkSettingsEnabled, bool isEnableChangeTriggeredSynchronizationEnabled, bool isTaskMappingConfigurationEnabled, string davUrlLabelText)
+    public ProfileModelOptions(bool areAdvancedNetWorkSettingsEnabled, bool isEnableChangeTriggeredSynchronizationEnabled, bool isTaskMappingConfigurationEnabled, string davUrlLabelText, bool areSyncSettingsEnabled)
     {
       AreAdvancedNetWorkSettingsEnabled = areAdvancedNetWorkSettingsEnabled;
       IsEnableChangeTriggeredSynchronizationEnabled = isEnableChangeTriggeredSynchronizationEnabled;
       IsTaskMappingConfigurationEnabled = isTaskMappingConfigurationEnabled;
       DavUrlLabelText = davUrlLabelText;
+      AreSyncSettingsEnabled = areSyncSettingsEnabled;
     }
 
+    public bool AreSyncSettingsEnabled { get; }
     public bool AreAdvancedNetWorkSettingsEnabled { get; }
     public bool IsEnableChangeTriggeredSynchronizationEnabled { get; }
     public bool IsTaskMappingConfigurationEnabled { get; }

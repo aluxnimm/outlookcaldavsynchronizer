@@ -28,6 +28,6 @@ namespace CalDavSynchronizer.ProfileTypes
       return GenericOptionsViewModel.DesignInstance;
     }
 
-    public ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(false, false, false, "DAV Url");
+    public ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(false, false, false, "DAV Url", false);
   }
 }

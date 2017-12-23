@@ -6,33 +6,33 @@
              xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels"
              mc:Ignorable="d"
              d:DataContext="{x:Static viewModels:SyncSettingsViewModel.DesignInstance}">
-    <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-    </UserControl.Resources>
-    <GroupBox Header="Sync settings">
-      <Grid DockPanel.Dock="Top">
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="*" />
-          <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-          <RowDefinition />
-          <RowDefinition />
+  <UserControl.Resources>
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+  </UserControl.Resources>
+  <GroupBox Header="Sync settings" IsEnabled="{Binding ModelOptions.AreSyncSettingsEnabled}">
+    <Grid DockPanel.Dock="Top">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition />
+        <RowDefinition />
         <RowDefinition />
         <RowDefinition />
         <RowDefinition />
       </Grid.RowDefinitions>
 
-        <TextBlock>Synchronization Mode:</TextBlock>
-        <ComboBox
+      <TextBlock>Synchronization Mode:</TextBlock>
+      <ComboBox
           ItemsSource="{Binding AvailableSynchronizationModes}"
           DisplayMemberPath="Name"
           SelectedValuePath="Value"
           SelectedValue="{Binding SynchronizationMode}"
           MinWidth="150" Grid.Row="0" Grid.Column="1" />
 
-            <TextBlock Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="1" Grid.Column="0">Conflict Resolution:</TextBlock>
-        <ComboBox
+      <TextBlock Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="1" Grid.Column="0">Conflict Resolution:</TextBlock>
+      <ComboBox
           Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"
           IsEnabled="{Binding ConflictResolutionAvailable}"
           ItemsSource="{Binding AvailableConflictResolutions}"
@@ -41,19 +41,19 @@
           SelectedValue="{Binding Resolution}"
            MinWidth="150" Grid.Row="1" Grid.Column="1" />
 
-        <TextBlock Grid.Row="2" Grid.Column="0">Synchronization interval (minutes):</TextBlock>
-        <ComboBox
+      <TextBlock Grid.Row="2" Grid.Column="0">Synchronization interval (minutes):</TextBlock>
+      <ComboBox
           ItemsSource="{Binding AvailableSyncIntervals}"
           DisplayMemberPath="Name"
           SelectedValuePath="Value"
           SelectedValue="{Binding SynchronizationIntervalInMinutes}"
            MinWidth="100" Grid.Row="2" Grid.Column="1" />
 
-            <CheckBox Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" Name="IsChunkedSynchronizationEnabledCheckBox" IsChecked="{Binding IsChunkedSynchronizationEnabled}" Grid.Row="3" Grid.ColumnSpan="2" ToolTip="Executes specific steps of synchronization in chunks, to save memory.">Perform synchronization in chunks</CheckBox>
+      <CheckBox Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" Name="IsChunkedSynchronizationEnabledCheckBox" IsChecked="{Binding IsChunkedSynchronizationEnabled}" Grid.Row="3" Grid.ColumnSpan="2" ToolTip="Executes specific steps of synchronization in chunks, to save memory.">Perform synchronization in chunks</CheckBox>
 
-            <TextBlock Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="4" Grid.Column="0">Chunk size:</TextBlock>
-            <TextBox Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding IsChecked,ElementName=IsChunkedSynchronizationEnabledCheckBox}" Grid.Row="4" Grid.Column="1"  Text="{Binding ChunkSize}"></TextBox>
-        
+      <TextBlock Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="4" Grid.Column="0">Chunk size:</TextBlock>
+      <TextBox Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding IsChecked,ElementName=IsChunkedSynchronizationEnabledCheckBox}" Grid.Row="4" Grid.Column="1"  Text="{Binding ChunkSize}"></TextBox>
+
     </Grid>
   </GroupBox>
 </UserControl>

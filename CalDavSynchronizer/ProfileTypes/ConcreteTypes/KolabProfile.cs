@@ -77,7 +77,7 @@ namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
           ViewOptions);
       }
 
-      public override ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true, true, "Kolab URL");
+      public override ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true, true, "Kolab URL", true);
     }
   }
 }

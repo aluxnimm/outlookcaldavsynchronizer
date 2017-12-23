@@ -22,6 +22,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Media.Animation;
 using CalDavSynchronizer.Implementation;
+using CalDavSynchronizer.ProfileTypes;
 using CalDavSynchronizer.Ui.Options.Models;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
@@ -37,6 +38,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
       _model = model;
       ViewOptions = viewOptions;
+      ModelOptions = model.ModelFactory.ModelOptions;
 
       RegisterPropertyChangePropagation(_model, nameof(_model.Resolution), nameof(Resolution));
       RegisterPropertyChangePropagation(_model, nameof(_model.SynchronizationIntervalInMinutes), nameof(SynchronizationIntervalInMinutes));
@@ -46,6 +48,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       RegisterPropertyChangePropagation(_model, nameof(_model.SynchronizationMode), nameof(SynchronizationMode));
       RegisterPropertyChangePropagation(_model, nameof(_model.SynchronizationMode), nameof(ConflictResolutionAvailable));
     }
+
+    public ProfileModelOptions ModelOptions { get; }
 
     public SynchronizationMode SynchronizationMode
     {

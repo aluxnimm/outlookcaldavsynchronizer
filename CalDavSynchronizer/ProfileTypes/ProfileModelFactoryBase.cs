@@ -103,7 +103,7 @@ namespace CalDavSynchronizer.ProfileTypes
       return optionsViewModel;
     }
 
-    public virtual ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true, true, "DAV Url");
+    public virtual ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true, true, "DAV Url", true);
 
     protected virtual IOptionsViewModel CreateTemplateViewModel(OptionsModel prototypeModel)
     {
