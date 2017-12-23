@@ -4,11 +4,11 @@ namespace GenSync.Synchronization
 {
   public class EntitySyncStateChunkCreator<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>
   {
-    private readonly int? _chunkSize;
+    private readonly int? _maxNumberOfEntitesToLoadPerRepositoryPerBatch;
 
-    public EntitySyncStateChunkCreator(int? chunkSize)
+    public EntitySyncStateChunkCreator(int? maxNumberOfEntitesToLoadPerRepositoryPerBatch)
     {
-      _chunkSize = chunkSize;
+      _maxNumberOfEntitesToLoadPerRepositoryPerBatch = maxNumberOfEntitesToLoadPerRepositoryPerBatch;
     }
 
     public IEnumerable<(
@@ -36,7 +36,7 @@ namespace GenSync.Synchronization
         var bEntitesToLoad = new HashSet<TBtypeEntityId>(bIdComparer);
 
         while (
-          (_chunkSize == null || aEntitesToLoad.Count < _chunkSize && bEntitesToLoad.Count < _chunkSize) &&
+          (_maxNumberOfEntitesToLoadPerRepositoryPerBatch == null || aEntitesToLoad.Count < _maxNumberOfEntitesToLoadPerRepositoryPerBatch && bEntitesToLoad.Count < _maxNumberOfEntitesToLoadPerRepositoryPerBatch) &&
           contextsEnumerator.MoveNext())
         {
           currentBatch.Add(contextsEnumerator.Current);
