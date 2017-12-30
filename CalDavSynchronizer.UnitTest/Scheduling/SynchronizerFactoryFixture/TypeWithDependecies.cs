@@ -128,6 +128,9 @@ namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
       if (type.Namespace + "." + type.Name == "System.Collections.Generic.GenericEqualityComparer`1")
         return false;
 
+      if (type.FullName.StartsWith("System.ValueTuple`2"))
+        return false;
+
       if (type.Assembly == Mscorlib)
         return true;
 
