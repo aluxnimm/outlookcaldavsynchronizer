@@ -23,16 +23,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists.VCard
     {
     }
 
-    protected override bool AIsNewerThanB
-    {
-      get
-      {
-        // Assume that no modification means, that the item is never modified. Therefore it must be new. 
-        if (_bEntity.RevisionDate == null)
-          return false;
-
-        return _aEntity.Inner.LastModificationTime.ToUniversalTime () >= _bEntity.RevisionDate.Value;
-      }
-    }
+    protected override DateTime ModificationTimeA => _aEntity.Inner.LastModificationTime.ToUniversalTime();
+    protected override DateTime? ModificationTimeB => _bEntity.RevisionDate;
   }
 }

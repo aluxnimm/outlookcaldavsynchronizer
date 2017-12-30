@@ -41,12 +41,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
     {
     }
 
-    protected override bool AIsNewerThanB
-    {
-      get
-      {
-        return _aEntity.Inner.LastModificationTime.ToUniversalTime() >= _bEntity.Contact.Updated.ToUniversalTime();
-      }
-    }
+    protected override DateTime ModificationTimeA => _aEntity.Inner.LastModificationTime.ToUniversalTime();
+    protected override DateTime? ModificationTimeB => _bEntity.Contact.Updated.ToUniversalTime();
   }
 }

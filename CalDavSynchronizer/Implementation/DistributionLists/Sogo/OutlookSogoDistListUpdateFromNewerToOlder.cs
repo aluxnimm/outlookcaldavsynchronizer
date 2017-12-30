@@ -38,13 +38,8 @@ namespace CalDavSynchronizer.Implementation.DistributionLists.Sogo
         : base (environment, knownData, newA, newB)
     {
     }
-
-    protected override bool AIsNewerThanB
-    {
-      get
-      {
-        return _aEntity.Inner.LastModificationTime.ToUniversalTime() >= _bEntity.ChangeDateUtc;
-      }
-    }
+    
+    protected override DateTime ModificationTimeA => _aEntity.Inner.LastModificationTime.ToUniversalTime();
+    protected override DateTime? ModificationTimeB => _bEntity.ChangeDateUtc;
   }
 }

@@ -33,17 +33,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
     {
     }
 
-    protected override bool AIsNewerThanB
-    {
-      get
-      {
-        // Assume that no modification means, that the item is never modified. Therefore it must be new. 
-        var todo = _bEntity.Todos[0];
-        if (todo.LastModified == null)
-          return false;
-
-        return _aEntity.Inner.LastModificationTime.ToUniversalTime() >= todo.LastModified.AsUtc();
-      }
-    }
+    protected override DateTime ModificationTimeA => _aEntity.Inner.LastModificationTime.ToUniversalTime();
+    protected override DateTime? ModificationTimeB => _bEntity.Todos[0].LastModified?.AsUtc();
   }
 }

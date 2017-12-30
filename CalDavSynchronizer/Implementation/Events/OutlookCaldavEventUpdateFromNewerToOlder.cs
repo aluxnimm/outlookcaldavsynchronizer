@@ -32,19 +32,8 @@ namespace CalDavSynchronizer.Implementation.Events
         : base (environment, knownData, newA, newB)
     {
     }
-
-    protected override bool AIsNewerThanB
-    {
-      get
-      {
-        var evt = _bEntity.Events[0];
-
-        // Assume that no modification means, that the item is never modified. Therefore it must be new. 
-        if (evt.LastModified == null)
-          return false;
-
-        return _aEntity.Inner.LastModificationTime.ToUniversalTime() >= evt.LastModified.AsUtc();
-      }
-    }
+    
+    protected override DateTime ModificationTimeA => _aEntity.Inner.LastModificationTime.ToUniversalTime();
+    protected override DateTime? ModificationTimeB => _bEntity.Events[0].LastModified?.AsUtc();
   }
 }

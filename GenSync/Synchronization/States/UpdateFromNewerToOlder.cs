@@ -41,13 +41,25 @@ namespace GenSync.Synchronization.States
 
     public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> Resolve ()
     {
-      if (AIsNewerThanB)
-        return _environment.StateFactory.Create_UpdateAtoB (KnownData, _newA, _newB);
+      var modificationTimeA = ModificationTimeA;
+      var modificationTimeB = ModificationTimeB;
+
+      // Assume that no modification of B (when modificationTimeB is NULL) means, that the item is never modified. Therefore it must be new. 
+      // NOTE: THe nullcheck is just there to make it explicit. That would also work without the nullcheck, since compare operators of nullables evaluate to false, if there is no value. 
+      if (modificationTimeB != null && modificationTimeA >= modificationTimeB)
+      {
+        s_logger.Info($"Considering '{KnownData.AtypeId}' (modified at '{modificationTimeA}') newer than '{KnownData.BtypeId}' (modified at '{modificationTimeB}').");
+        return _environment.StateFactory.Create_UpdateAtoB(KnownData, _newA, _newB);
+      }
       else
-        return _environment.StateFactory.Create_UpdateBtoA (KnownData, _newB, _newA);
+      {
+        s_logger.Info($"Considering '{KnownData.BtypeId}' (modified at '{modificationTimeB}') newer than '{KnownData.AtypeId}' (modified at '{modificationTimeA}').");
+        return _environment.StateFactory.Create_UpdateBtoA(KnownData, _newB, _newA);
+      }
     }
 
-    protected abstract bool AIsNewerThanB { get; }
+    protected abstract DateTime ModificationTimeA { get; }
+    protected abstract DateTime? ModificationTimeB { get; }
 
     public override void AddNewRelationNoThrow (Action<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> addAction)
     {

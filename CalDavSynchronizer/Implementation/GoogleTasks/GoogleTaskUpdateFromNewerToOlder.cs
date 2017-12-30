@@ -33,16 +33,7 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
     {
     }
 
-    protected override bool AIsNewerThanB
-    {
-      get
-      {
-        // Assume that no modification means, that the item is never modified. Therefore it must be new. 
-        if (!_bEntity.Updated.HasValue)
-          return false;
-
-        return _aEntity.Inner.LastModificationTime.ToUniversalTime() >= _bEntity.Updated; // TODO: check if Updated is UTC
-      }
-    }
+    protected override DateTime ModificationTimeA => _aEntity.Inner.LastModificationTime.ToUniversalTime();
+    protected override DateTime? ModificationTimeB => _bEntity.Updated;// TODO: check if Updated is UTC
   }
 }
