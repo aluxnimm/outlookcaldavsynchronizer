@@ -34,7 +34,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
     DateTime? _lastSyncronizationRun;
     SyncronizationRunResult? _lastResult;
 
-    private int? _lastRunMinutesAgo;
+    private TimeSpan? _lastRunAgo;
     private readonly ICalDavSynchronizerCommands _calDavSynchronizerCommands;
 
     public ProfileStatusViewModel (Guid profileId, ICalDavSynchronizerCommands calDavSynchronizerCommands)
@@ -59,12 +59,12 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
     public ICommand ShowOptionsCommand { get; }
     public ICommand ShowLatestSynchronizationReportCommand { get; }
     
-    public int? LastRunMinutesAgo
+    public TimeSpan? LastRunAgo
     {
-      get { return _lastRunMinutesAgo; }
+      get { return _lastRunAgo; }
       private set
       {
-        CheckedPropertyChange (ref _lastRunMinutesAgo, value);
+        CheckedPropertyChange (ref _lastRunAgo, value);
       }
     }
 
@@ -105,20 +105,21 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
     {
       _lastSyncronizationRun = summary.StartTimeUtc;
       LastResult = summary.Result;
-      RecalculateLastRunAgoInMinutes();
+      RecalculateLastRunAgo();
     }
 
-    public void RecalculateLastRunAgoInMinutes ()
+    public void RecalculateLastRunAgo()
     {
-      LastRunMinutesAgo = (int?) (DateTime.UtcNow - _lastSyncronizationRun)?.TotalMinutes;
+      var lastRunAgoSeconds = (int?) (DateTime.UtcNow - _lastSyncronizationRun)?.TotalSeconds;
+      LastRunAgo = lastRunAgoSeconds.HasValue ? TimeSpan.FromSeconds(lastRunAgoSeconds.Value) : (TimeSpan?) null;
     }
 
-    public static ProfileStatusViewModel CreateDesignInstance (string profileName, SyncronizationRunResult? status, int? lastRunMinutesAgo)
+    public static ProfileStatusViewModel CreateDesignInstance (string profileName, SyncronizationRunResult? status, TimeSpan? lastRunAgo)
     {
       var viewModel = new ProfileStatusViewModel (Guid.NewGuid(), NullCalDavSynchronizerCommands.Instance);
       viewModel._profileName = profileName;
       viewModel._lastResult = status;
-      viewModel._lastRunMinutesAgo = lastRunMinutesAgo;
+      viewModel._lastRunAgo = lastRunAgo;
       viewModel.IsActive = true;
       return viewModel;
     }

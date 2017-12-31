@@ -48,9 +48,9 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
       _timer.Tick += delegate
       {
         foreach (var profileStatusViewModel in Profiles)
-          profileStatusViewModel.RecalculateLastRunAgoInMinutes();
+          profileStatusViewModel.RecalculateLastRunAgo();
       };
-      _timer.Interval = 50 * 1000;
+      _timer.Interval = 5 * 1000;
       _timer.Enabled = true;
       NotifyProfilesChanged(profiles);
     }
@@ -101,9 +101,9 @@ namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
         var viewModel = new TransientProfileStatusesViewModel(NullCalDavSynchronizerCommands.Instance, new Contracts.Options[0]);
 
         viewModel.Profiles.Add (ProfileStatusViewModel.CreateDesignInstance ("Profile 1", null, null));
-        viewModel.Profiles.Add (ProfileStatusViewModel.CreateDesignInstance ("Profile 2", SyncronizationRunResult.Ok, 7));
-        viewModel.Profiles.Add (ProfileStatusViewModel.CreateDesignInstance ("Profile 3", SyncronizationRunResult.Warning, 839));
-        viewModel.Profiles.Add (ProfileStatusViewModel.CreateDesignInstance ("Profile 4", SyncronizationRunResult.Error, 93));
+        viewModel.Profiles.Add (ProfileStatusViewModel.CreateDesignInstance ("Profile 2", SyncronizationRunResult.Ok, TimeSpan.FromMinutes(7)));
+        viewModel.Profiles.Add (ProfileStatusViewModel.CreateDesignInstance ("Profile 3", SyncronizationRunResult.Warning, TimeSpan.FromMinutes(839)));
+        viewModel.Profiles.Add (ProfileStatusViewModel.CreateDesignInstance ("Profile 4", SyncronizationRunResult.Error, TimeSpan.FromMinutes(93)));
 
         return viewModel;
       }

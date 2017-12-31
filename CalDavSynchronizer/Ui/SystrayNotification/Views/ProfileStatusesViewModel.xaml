@@ -6,7 +6,7 @@
              xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.SystrayNotification.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{x:Static viewModels:ProfileStatusesViewModel.DesignInstance}">
+             d:DataContext="{x:Static viewModels:TransientProfileStatusesViewModel.DesignInstance}">
     <DataGrid ItemsSource="{Binding Profiles}" AutoGenerateColumns="False" >
       <DataGrid.Columns>
   
@@ -47,7 +47,7 @@
         </DataGridTemplateColumn.CellTemplate>
       </DataGridTemplateColumn>
 
-      <DataGridTextColumn  Binding="{Binding LastRunMinutesAgo}" Header="Last run minutes ago" IsReadOnly="True" >
+      <DataGridTextColumn  Binding="{Binding LastRunAgo}" Header="Last run ago" IsReadOnly="True" >
         <DataGridTextColumn.ElementStyle>
           <Style TargetType="TextBlock">
             <Setter Property="HorizontalAlignment" Value="Right" />
