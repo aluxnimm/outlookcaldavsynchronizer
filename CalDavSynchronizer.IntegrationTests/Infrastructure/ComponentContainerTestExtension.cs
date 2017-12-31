@@ -53,5 +53,16 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
         .GetMethod ("GetProfileDataDirectory", System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
         .Invoke (componentContainer, new object[] { profileId });
     }
+
+    public static IOptionsDataAccess GetOptionsDataAccess(this ComponentContainer componentContainer)
+    {
+      // ReSharper disable once PossibleNullReferenceException
+      return (IOptionsDataAccess)componentContainer
+        .GetType()
+        .GetField("_optionsDataAccess", System.Reflection.BindingFlags.GetField | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+        .GetValue(componentContainer);
+    }
+
+    
   }
 }

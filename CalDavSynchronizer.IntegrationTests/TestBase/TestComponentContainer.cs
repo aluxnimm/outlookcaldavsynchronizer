@@ -42,10 +42,11 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
     {
       Application = new Application();
       Application.Session.Logon();
-      TestOptionsFactory = new TestOptionsFactory(new OutlookSession(Application.Session));
       _testComWrapperFactoryWrapper = new TestComWrapperFactoryWrapper(new TestComWrapperFactory(null));
       ComponentContainer = new ComponentContainer(Application, new InMemoryGeneralOptionsDataAccess(), _testComWrapperFactoryWrapper, new TestExceptionHandlingStrategy());
       SynchronizerFactory = ComponentContainer.GetSynchronizerFactory();
+      TestOptionsFactory = new TestOptionsFactory(new OutlookSession(Application.Session), ComponentContainer.GetOptionsDataAccess());
+
     }
 
     public void SetMaximumOpenItemsPerType(int? value)

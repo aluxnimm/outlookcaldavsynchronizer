@@ -18,9 +18,12 @@ namespace CalDavSynchronizer.IntegrationTests
     private const string ContactFolderName = "IntegrationTestContacts";
 
     private readonly IOutlookSession _session;
+    private readonly IOptionsDataAccess _optionsDataAccess;
+    
 
-    public TestOptionsFactory(IOutlookSession session)
+    public TestOptionsFactory(IOutlookSession session, IOptionsDataAccess optionsDataAccess)
     {
+      _optionsDataAccess = optionsDataAccess ?? throw new ArgumentNullException(nameof(optionsDataAccess));
       _session = session ?? throw new ArgumentNullException(nameof(session));
     }
 
@@ -104,12 +107,7 @@ namespace CalDavSynchronizer.IntegrationTests
 
     private Options CreateDefaultOptions(string profileName, string outlookFolderName)
     {
-      var applicationDataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CalDavSynchronizer");
-
-      var optionsDataAccess = new OptionsDataAccess(ComponentContainer.GetOrCreateDataDirectory(applicationDataDirectory, "Outlook").ConfigFilePath);
-
-      var options = optionsDataAccess.Load().Single(o => o.Name == profileName);
-
+      var options = _optionsDataAccess.Load().Single(o => o.Name == profileName);
       return CreateDefaultOptions(options, outlookFolderName);
     }
 
