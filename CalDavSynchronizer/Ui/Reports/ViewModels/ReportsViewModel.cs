@@ -17,9 +17,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Windows.Data;
 using CalDavSynchronizer.DataAccess;
 using GenSync.Logging;
 using Microsoft.Win32;
@@ -34,6 +36,7 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
     private readonly ISynchronizationReportRepository _reportRepository;
     private readonly Dictionary<Guid, string> _currentProfileNamesById;
     private readonly IReportsViewModelParent _parent;
+    private readonly CollectionViewSource _reportsCollectionViewSource;
 
     public event EventHandler RequiresBringToFront;
 
@@ -60,8 +63,8 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
       _reportRepository = reportRepository;
       _currentProfileNamesById = currentProfileNamesById;
       _parent = parent;
-      _deleteSelectedCommand = new DelegateCommand (DeleteSelected, _ => Reports.Any (r => r.IsSelected));
-      _saveSelectedCommand = new DelegateCommand (SaveSelected, _ => Reports.Any (r => r.IsSelected));
+      _deleteSelectedCommand = new DelegateCommand (DeleteSelected, _ => _reports.Any (r => r.IsSelected));
+      _saveSelectedCommand = new DelegateCommand (SaveSelected, _ => _reports.Any (r => r.IsSelected));
 
       foreach (var reportName in reportRepository.GetAvailableReports())
         AddReportViewModel (reportName);
@@ -70,9 +73,15 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
       // since everything happens in the ui thread
       _reportRepository.ReportAdded += ReportRepository_ReportAdded;
 
-      if (Reports.Count > 0)
-        Reports[0].IsSelected = true;
+      _reportsCollectionViewSource = new CollectionViewSource();
+      _reportsCollectionViewSource.Source = _reports;
+      _reportsCollectionViewSource.SortDescriptions.Add(new SortDescription(nameof(ReportViewModel.StartTime), ListSortDirection.Descending));
+      Reports = _reportsCollectionViewSource.View;
+
+      if (_reports.Count > 0)
+        _reports[0].IsSelected = true;
     }
+
 
     private void ReportRepository_ReportAdded (object sender, ReportAddedEventArgs e)
     {
@@ -114,7 +123,7 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
         {
           using (var archive = new ZipArchive (fileStream, ZipArchiveMode.Create))
           {
-            foreach (var report in Reports.Where (r => r.IsSelected))
+            foreach (var report in _reports.Where (r => r.IsSelected))
             {
               var entry = archive.CreateEntry (report.ReportName.ToString(), CompressionLevel.Optimal);
               using (var entryStream = entry.Open())
@@ -132,18 +141,18 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
 
     private void DeleteSelected (object parameter)
     {
-      for (int i = Reports.Count - 1; i >= 0; i--)
+      for (int i = _reports.Count - 1; i >= 0; i--)
       {
-        var report = Reports[i];
+        var report = _reports[i];
         if (report.IsSelected)
         {
           report.Delete();
-          Reports.RemoveAt (i);
+          _reports.RemoveAt (i);
         }
       }
     }
 
-    public ObservableCollection<ReportViewModel> Reports => _reports;
+    public ICollectionView Reports { get; }
     public DelegateCommand DeleteSelectedCommand => _deleteSelectedCommand;
     public DelegateCommand SaveSelectedCommand => _saveSelectedCommand;
 
@@ -189,6 +198,11 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
   
       if (latestReport != null)
         latestReport.IsSelected = true;
+    }
+
+    public void SelectReportByName(string reportNameAsString)
+    {
+      _reports.Single(r => r.ReportName.ToString() == reportNameAsString).IsSelected = true;
     }
   }
 }

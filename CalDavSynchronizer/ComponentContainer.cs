@@ -426,7 +426,7 @@ namespace CalDavSynchronizer
           {
             ShowReportsImplementation();
             var reportNameAsString = reportName.ToString();
-            _currentReportsViewModel.Reports.Single (r => r.ReportName.ToString() == reportNameAsString).IsSelected = true;
+            _currentReportsViewModel.SelectReportByName(reportNameAsString);
             return;
           }
 
