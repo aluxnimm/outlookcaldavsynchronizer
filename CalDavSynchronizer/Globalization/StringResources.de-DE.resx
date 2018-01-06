@@ -117,16 +117,259 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Name:" xml:space="preserve">
-    <value>Name:</value>
+  <data name="Export Html description X-ALT-DESC converted from RTF Body" xml:space="preserve">
+    <value>Export Html description X-ALT-DESC converted from RTF Body</value>
+  </data>
+  <data name="Assign shortcut key:" xml:space="preserve">
+    <value>Assign shortcut key:</value>
+  </data>
+  <data name="Use this IANA timezone for default Outlook/Windows timezone. &amp;#x0a;Manually selected different timezones in Outlook appointments &amp;#x0a;will be mapped to first corresponding IANA timezone." xml:space="preserve">
+    <value>Use this IANA timezone for default Outlook/Windows timezone. &amp;#x0a;Manually selected different timezones in Outlook appointments &amp;#x0a;will be mapped to first corresponding IANA timezone.</value>
+  </data>
+  <data name="Use Iana instead of Windows timezones for creating events on CalDAV server. &amp;#x0a;Needed for servers which do not accept non standard Windows timezones like GMX for example. &amp;#x0a;Timezone definitions will be downloaded from http://tzurl.org." xml:space="preserve">
+    <value>Use Iana instead of Windows timezones for creating events on CalDAV server. &amp;#x0a;Needed for servers which do not accept non standard Windows timezones like GMX for example. &amp;#x0a;Timezone definitions will be downloaded from http://tzurl.org.</value>
+  </data>
+  <data name="Map event color to category" xml:space="preserve">
+    <value>Map event color to category</value>
+  </data>
+  <data name="Map priority" xml:space="preserve">
+    <value>Map priority</value>
+  </data>
+  <data name="Convert numbers like +1 23 45678 9 &amp;#x0a;to +1 (23) 45678 - 9 &amp;#x0a;so that Outlook can show country and area code." xml:space="preserve">
+    <value>Convert numbers like +1 23 45678 9 &amp;#x0a;to +1 (23) 45678 - 9 &amp;#x0a;so that Outlook can show country and area code.</value>
+  </data>
+  <data name="Fix imported phone number format" xml:space="preserve">
+    <value>Fix imported phone number format</value>
+  </data>
+  <data name="Map all Outlook custom properties to X-CALDAVSYNCHRONIZER attributes" xml:space="preserve">
+    <value>Map all Outlook custom properties to X-CALDAVSYNCHRONIZER attributes</value>
+  </data>
+  <data name="Set SCHEDULE-AGENT=CLIENT" xml:space="preserve">
+    <value>Set SCHEDULE-AGENT=CLIENT</value>
+  </data>
+  <data name="Use Outlook GlobalAppointmendID instead of random Guid for UID attribute in new CalDAV events. &amp;#x0a; Can avoid duplicate events from invitations." xml:space="preserve">
+    <value>Use Outlook GlobalAppointmendID instead of random Guid for UID attribute in new CalDAV events. &amp;#x0a; Can avoid duplicate events from invitations.</value>
+  </data>
+  <data name="Set RTF Body from X-ALT-DESC Html description" xml:space="preserve">
+    <value>Set RTF Body from X-ALT-DESC Html description</value>
+  </data>
+  <data name="Use UTC instead of Outlook appointment timezone for creating events on CalDAV server. &amp;#x0a;Not recommended for general use &amp;#x0a;because recurrence exceptions over DST changes can not be mapped and &amp;#x0a;appointments with different start and end timezones can not be represented." xml:space="preserve">
+    <value>Use UTC instead of Outlook appointment timezone for creating events on CalDAV server. &amp;#x0a;Not recommended for general use &amp;#x0a;because recurrence exceptions over DST changes can not be mapped and &amp;#x0a;appointments with different start and end timezones can not be represented.</value>
+  </data>
+  <data name="Use full IANA timezone definition with historical data. &amp;#x0a;Needs more bandwith and can be incompatible when manually importing in Outlook." xml:space="preserve">
+    <value>Use full IANA timezone definition with historical data. &amp;#x0a;Needs more bandwith and can be incompatible when manually importing in Outlook.</value>
+  </data>
+  <data name="Use IANA timezone:" xml:space="preserve">
+    <value>Use IANA timezone:</value>
+  </data>
+  <data name="Write Instant Messenger addresses in vCard as IMPP attributes &amp;#x0a;(not supported by some servers e.g. SOGo) instead of X-PROTOCOL e.g. X-AIM" xml:space="preserve">
+    <value>Write Instant Messenger addresses in vCard as IMPP attributes &amp;#x0a;(not supported by some servers e.g. SOGo) instead of X-PROTOCOL e.g. X-AIM</value>
+  </data>
+  <data name="Scheduling Settings" xml:space="preserve">
+    <value>Scheduling Settings</value>
+  </data>
+  <data name="Custom Properties Mapping Configuration" xml:space="preserve">
+    <value>Custom Properties Mapping Configuration</value>
+  </data>
+  <data name="DAV contact group format" xml:space="preserve">
+    <value>DAV contact group format</value>
+  </data>
+  <data name="Write IM addresses as IMPP attributes" xml:space="preserve">
+    <value>Write IM addresses as IMPP attributes</value>
+  </data>
+  <data name="Manual Mapping" xml:space="preserve">
+    <value>Manual Mapping</value>
+  </data>
+  <data name="Map DAV CLASS:PUBLIC and default events to Outlook Private flag instead of Public" xml:space="preserve">
+    <value>Map DAV CLASS:PUBLIC and default events to Outlook Private flag instead of Public</value>
+  </data>
+  <data name="Cleanup duplicate events after each sync run" xml:space="preserve">
+    <value>Cleanup duplicate events after each sync run</value>
+  </data>
+  <data name="Set DAV calendar color" xml:space="preserve">
+    <value>Set DAV calendar color</value>
+  </data>
+  <data name="These settings affect the filter which selects the items for synchronization.&amp;#x0a;If an item does not pass the filter it is treated as if it would not exist!&amp;#x0a;Changing these settings for non-empty folders can lead to deletions on the server or duplicates in Outlook." xml:space="preserve">
+    <value>These settings affect the filter which selects the items for synchronization.&amp;#x0a;If an item does not pass the filter it is treated as if it would not exist!&amp;#x0a;Changing these settings for non-empty folders can lead to deletions on the server or duplicates in Outlook.</value>
+  </data>
+  <data name="Outlook Settings" xml:space="preserve">
+    <value>Outlook Settings</value>
+  </data>
+  <data name="DAV X-attribute" xml:space="preserve">
+    <value>DAV X-attribute</value>
+  </data>
+  <data name="Map Outlook start and due date of task as floating without timezone" xml:space="preserve">
+    <value>Map Outlook start and due date of task as floating without timezone</value>
+  </data>
+  <data name="Use GlobalAppointmentID for UID attribute" xml:space="preserve">
+    <value>Use GlobalAppointmentID for UID attribute</value>
+  </data>
+  <data name="Create events on server with downloaded IANA timezones" xml:space="preserve">
+    <value>Create events on server with downloaded IANA timezones</value>
+  </data>
+  <data name="Map reminder:" xml:space="preserve">
+    <value>Map reminder:</value>
+  </data>
+  <data name="Experimental mapping of the first category color of the appointment to the matching COLOR attribute of the event&amp;#x0a;Together with DAVdroid for Android you can map individual event colors from Android to Outlook &amp;#x0a;but not all calendar apps support it or can even crash (see &amp;#x0a;https://davdroid.bitfire.at/faq/entry/setting-event-colors-crash/)" xml:space="preserve">
+    <value>Experimental mapping of the first category color of the appointment to the matching COLOR attribute of the event&amp;#x0a;Together with DAVdroid for Android you can map individual event colors from Android to Outlook &amp;#x0a;but not all calendar apps support it or can even crash (see &amp;#x0a;https://davdroid.bitfire.at/faq/entry/setting-event-colors-crash/)</value>
+  </data>
+  <data name="General Task Mapping Settings" xml:space="preserve">
+    <value>General Task Mapping Settings</value>
+  </data>
+  <data name="Map Distribution Lists / Contact Groups" xml:space="preserve">
+    <value>Map Distribution Lists / Contact Groups</value>
+  </data>
+  <data name="Choose the used format for DAV contact groups.&amp;#x0a;SOGO uses its own VLIST format to store contact groups.&amp;#x0a;For other CardDAV servers choose the vCard with KIND:group format &amp;#x0a;and for iCloud the iCloud group format." xml:space="preserve">
+    <value>Choose the used format for DAV contact groups.&amp;#x0a;SOGO uses its own VLIST format to store contact groups.&amp;#x0a;For other CardDAV servers choose the vCard with KIND:group format &amp;#x0a;and for iCloud the iCloud group format.</value>
+  </data>
+  <data name="Map plaintext Body of Outlook appointment to description attribute." xml:space="preserve">
+    <value>Map plaintext Body of Outlook appointment to description attribute.</value>
+  </data>
+  <data name="Outlook custom property" xml:space="preserve">
+    <value>Outlook custom property</value>
+  </data>
+  <data name="Sync only tasks with this category:" xml:space="preserve">
+    <value>Sync only tasks with this category:</value>
+  </data>
+  <data name="Do not send appointment notifications (from SOGo)" xml:space="preserve">
+    <value>Do not send appointment notifications (from SOGo)</value>
+  </data>
+  <data name="Do not overwrite FileAs in Outlook" xml:space="preserve">
+    <value>Do not overwrite FileAs in Outlook</value>
+  </data>
+  <data name="removes duplicate Outlook appointments based on start end and subject of the events after each sync run &amp;#x0a;be aware of possible performance penalties with this option enabled." xml:space="preserve">
+    <value>removes duplicate Outlook appointments based on start end and subject of the events after each sync run &amp;#x0a;be aware of possible performance penalties with this option enabled.</value>
+  </data>
+  <data name="Do not overwrite FileAs in Outlook with FN &amp;#x0a;Uses default FileAs as set in global Outlook options for new entries." xml:space="preserve">
+    <value>Do not overwrite FileAs in Outlook with FN &amp;#x0a;Uses default FileAs as set in global Outlook options for new entries.</value>
+  </data>
+  <data name="Create events on server in UTC" xml:space="preserve">
+    <value>Create events on server in UTC</value>
+  </data>
+  <data name="Map organizer and attendees" xml:space="preserve">
+    <value>Map organizer and attendees</value>
+  </data>
+  <data name="Map Birthday" xml:space="preserve">
+    <value>Map Birthday</value>
+  </data>
+  <data name="Assign category color when OK is clicked." xml:space="preserve">
+    <value>Assign category color when OK is clicked.</value>
+  </data>
+  <data name="Timezone Settings" xml:space="preserve">
+    <value>Timezone Settings</value>
   </data>
   <data name="Outlook automatically creates birthday appointments in your calendar &#xA;when the birthday is added to a contact item." xml:space="preserve">
     <value>Outlook erstellt automatisch einen Termin, wenn ein geburtstag hinzugefügt wird.</value>
   </data>
-  <data name="Not supported in OL 2007." xml:space="preserve">
-    <value>Wird in Outlook 2007 nicht unterstützt</value>
+  <data name="Map Outlook EmailAddress1 to WORK instead of HOME" xml:space="preserve">
+    <value>Map Outlook EmailAddress1 to WORK instead of HOME</value>
+  </data>
+  <data name="Sync only appointments with this category:" xml:space="preserve">
+    <value>Sync only appointments with this category:</value>
+  </data>
+  <data name="Fetch color" xml:space="preserve">
+    <value>Fetch color</value>
+  </data>
+  <data name="Assign category color:" xml:space="preserve">
+    <value>Assign category color:</value>
+  </data>
+  <data name="Task start date will be mapped to 00:00 and Task due date to 23:59 without timezone.&amp;#x0a;Enable this if clients with different timezones are used and the due date should be local." xml:space="preserve">
+    <value>Task start date will be mapped to 00:00 and Task due date to 23:59 without timezone.&amp;#x0a;Enable this if clients with different timezones are used and the due date should be local.</value>
+  </data>
+  <data name="Assign shortcut key when OK is clicked." xml:space="preserve">
+    <value>Assign shortcut key when OK is clicked.</value>
+  </data>
+  <data name="Choose the default Instant Messenger protocol.&amp;#x0a;You can add other protocols with protocol: address" xml:space="preserve">
+    <value>Choose the default Instant Messenger protocol.&amp;#x0a;You can add other protocols with protocol: address</value>
+  </data>
+  <data name="Do not overwrite the contact photo in Outlook" xml:space="preserve">
+    <value>Do not overwrite the contact photo in Outlook</value>
+  </data>
+  <data name="Take care, when changing settings for non-empty folders (see tooltip)" xml:space="preserve">
+    <value>Take care, when changing settings for non-empty folders (see tooltip)</value>
+  </data>
+  <data name="Negate filter and sync all appointments except this category" xml:space="preserve">
+    <value>Negate filter and sync all appointments except this category</value>
+  </data>
+  <data name="Map recurring tasks" xml:space="preserve">
+    <value>Map recurring tasks</value>
+  </data>
+  <data name="WARNING: Do not use since it just keeps the items in sync as long as the cache is not cleared.&amp;#x0a;After clearing the cache (which happens automatically in some cases) items which were affected by this option do not pass the filter anymore!" xml:space="preserve">
+    <value>WARNING: Do not use since it just keeps the items in sync as long as the cache is not cleared.&amp;#x0a;After clearing the cache (which happens automatically in some cases) items which were affected by this option do not pass the filter anymore!</value>
   </data>
   <data name="Map Contact Photo" xml:space="preserve">
     <value>Kontaktfoto synchronisieren</value>
+  </data>
+  <data name="Map Outlook Private flag to DAV CLASS:CONFIDENTIAL instead of PRIVATE" xml:space="preserve">
+    <value>Map Outlook Private flag to DAV CLASS:CONFIDENTIAL instead of PRIVATE</value>
+  </data>
+  <data name="Negate filter and sync all tasks except this category" xml:space="preserve">
+    <value>Negate filter and sync all tasks except this category</value>
+  </data>
+  <data name="Convert formatted RTF Body of Outlook appointment to Html and export it as X-ALT-DESC property.&amp;#x0a;The RTF to Html conversion is experimental inline images and some formatting properties can not be converted!&amp;#x0a;Be aware that some servers like Google Calendar drop this attribute!" xml:space="preserve">
+    <value>Convert formatted RTF Body of Outlook appointment to Html and export it as X-ALT-DESC property.&amp;#x0a;The RTF to Html conversion is experimental inline images and some formatting properties can not be converted!&amp;#x0a;Be aware that some servers like Google Calendar drop this attribute!</value>
+  </data>
+  <data name="Keep items in sync even if category changes and filter does not match anymore" xml:space="preserve">
+    <value>Keep items in sync even if category changes and filter does not match anymore</value>
+  </data>
+  <data name="Map DAV CLASS:CONFIDENTIAL to Outlook Private flag instead of Confidential" xml:space="preserve">
+    <value>Map DAV CLASS:CONFIDENTIAL to Outlook Private flag instead of Confidential</value>
+  </data>
+  <data name="Map Distribution Lists" xml:space="preserve">
+    <value>Map Distribution Lists</value>
+  </data>
+  <data name="Convert X-ALT-DESC description Html property to RTF and set Outlook appointment RTF Body.&amp;#x0a;The html to RTF conversion is experimental not all Html formatting options can be converted!&amp;#x0a;This overwrites also the plaintext Body!" xml:space="preserve">
+    <value>Convert X-ALT-DESC description Html property to RTF and set Outlook appointment RTF Body.&amp;#x0a;The html to RTF conversion is experimental not all Html formatting options can be converted!&amp;#x0a;This overwrites also the plaintext Body!</value>
+  </data>
+  <data name="Map Body" xml:space="preserve">
+    <value>Map Body</value>
+  </data>
+  <data name="General Event Mapping Settings" xml:space="preserve">
+    <value>General Event Mapping Settings</value>
+  </data>
+  <data name="Map Outlook EmailAddress1 to vCard email with TYPE WORK &amp;#x0a;and Outlook EmailAddress2 to vCard email with TYPE HOME instead of vice-versa." xml:space="preserve">
+    <value>Map Outlook EmailAddress1 to vCard email with TYPE WORK &amp;#x0a;and Outlook EmailAddress2 to vCard email with TYPE HOME instead of vice-versa.</value>
+  </data>
+  <data name="General Contact Mapping Settings" xml:space="preserve">
+    <value>General Contact Mapping Settings</value>
+  </data>
+  <data name="Maps changes from Outlook to server but do not update changes from server to Outlook after the initial sync. Useful if another mobile client reduces the photo resolution for example." xml:space="preserve">
+    <value>Maps changes from Outlook to server but do not update changes from server to Outlook after the initial sync. Useful if another mobile client reduces the photo resolution for example.</value>
+  </data>
+  <data name="Add manual mapping pairs of Outlook custom properties and DAV X-attributes. &amp;#x0a;If properties do not exist &amp;#44; they are created. &amp;#x0a;The manual mapping overrules the general mapping of all Outlook custom attributes if both activated. &amp;#x0a;DAV attributes MUST start with X-" xml:space="preserve">
+    <value>Add manual mapping pairs of Outlook custom properties and DAV X-attributes. &amp;#x0a;If properties do not exist &amp;#44; they are created. &amp;#x0a;The manual mapping overrules the general mapping of all Outlook custom attributes if both activated. &amp;#x0a;DAV attributes MUST start with X-</value>
+  </data>
+  <data name="Map all Outlook custom properties to DAV attributes with X-CALDAVSYNCHRONIZER prefix." xml:space="preserve">
+    <value>Map all Outlook custom properties to DAV attributes with X-CALDAVSYNCHRONIZER prefix.</value>
+  </data>
+  <data name="Default IM protocol:" xml:space="preserve">
+    <value>Default IM protocol:</value>
+  </data>
+  <data name="Category Filter" xml:space="preserve">
+    <value>Category Filter</value>
+  </data>
+  <data name="Privacy Settings" xml:space="preserve">
+    <value>Privacy Settings</value>
+  </data>
+  <data name="Sync also appointments without any category" xml:space="preserve">
+    <value>Sync also appointments without any category</value>
+  </data>
+  <data name="Name:" xml:space="preserve">
+    <value>Name:</value>
+  </data>
+  <data name="Include full IANA timezone with historical data" xml:space="preserve">
+    <value>Include full IANA timezone with historical data</value>
+  </data>
+  <data name="Enter the name of the Outlook category for filtering. &amp;#x0a;If the category does not exist it will be created in Outlook." xml:space="preserve">
+    <value>Enter the name of the Outlook category for filtering. &amp;#x0a;If the category does not exist it will be created in Outlook.</value>
+  </data>
+  <data name="Not supported in OL 2007." xml:space="preserve">
+    <value>Wird in Outlook 2007 nicht unterstützt</value>
+  </data>
+  <data name="Sync also tasks without any category" xml:space="preserve">
+    <value>Sync also tasks without any category</value>
+  </data>
+  <data name="WARNING:" xml:space="preserve">
+    <value>WARNING:</value>
   </data>
 </root>

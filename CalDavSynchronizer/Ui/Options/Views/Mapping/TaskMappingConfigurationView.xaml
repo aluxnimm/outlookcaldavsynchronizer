@@ -4,17 +4,18 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mapping="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels.Mapping"
+             xmlns:g="clr-namespace:CalDavSynchronizer.Globalization"
              mc:Ignorable="d"
              d:DataContext="{x:Static mapping:TaskMappingConfigurationViewModel.DesignInstance}">
     <StackPanel>
-    <GroupBox Header="General Task Mapping Settings">
+    <GroupBox Header="{g:Localize General Task Mapping Settings}">
         <StackPanel>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock>Map reminder:</TextBlock>
+                    <TextBlock><g:Localize>Map reminder:</g:Localize></TextBlock>
                 <ComboBox 
                     ItemsSource="{Binding AvailableReminderMappings}"
                     DisplayMemberPath="Name"
@@ -22,18 +23,19 @@
                     SelectedValue="{Binding MapReminder}"
                     Grid.Column="1" />
             </Grid>
-            <CheckBox IsChecked="{Binding MapPriority}">Map priority</CheckBox>
-            <CheckBox IsChecked="{Binding MapBody}">Map Body</CheckBox>
-            <CheckBox IsChecked="{Binding MapRecurringTasks}">Map recurring tasks</CheckBox>
-                <CheckBox IsChecked="{Binding MapStartAndDueAsFloating}" ToolTip="Task start date will be mapped to 00:00 and Task due date to 23:59 without timezone.&#x0a;Enable this if clients with different timezones are used and the due date should be local.">Map Outlook start and due date of task as floating without timezone</CheckBox>
+            <CheckBox IsChecked="{Binding MapPriority}"><g:Localize>Map priority</g:Localize></CheckBox>
+            <CheckBox IsChecked="{Binding MapBody}"><g:Localize>Map Body</g:Localize></CheckBox>
+            <CheckBox IsChecked="{Binding MapRecurringTasks}"><g:Localize>Map recurring tasks</g:Localize></CheckBox>
+                <CheckBox IsChecked="{Binding MapStartAndDueAsFloating}" ToolTip="{g:Localize Task start date will be mapped to 00:00 and Task due date to 23:59 without timezone.&amp;#x0a;Enable this if clients with different timezones are used and the due date should be local.}">
+                    <g:Localize>Map Outlook start and due date of task as floating without timezone</g:Localize></CheckBox>
         </StackPanel>
     </GroupBox>
-    <GroupBox Header="Outlook Settings">
+    <GroupBox Header="{g:Localize Outlook Settings}">
         <StackPanel>
         <TextBlock  
           DockPanel.Dock="Top"
           ToolTipService.ShowDuration="60000"
-          ToolTip="These settings affect the filter, which selects the items for synchronization.&#x0a;If an item does not pass the filter, it is treated as if it would not exist!&#x0a;Changing these settings for non-empty folders can lead to deletions on the Server or duplicates in Outlook."><Bold>WARNING:</Bold> Take care, when changing settings for non-empty folders (see tooltip)</TextBlock>
+          ToolTip="{g:Localize These settings affect the filter which selects the items for synchronization.&amp;#x0a;If an item does not pass the filter it is treated as if it would not exist!&amp;#x0a;Changing these settings for non-empty folders can lead to deletions on the server or duplicates in Outlook.}"><Bold><g:Localize>WARNING:</g:Localize></Bold> <g:Localize>Take care, when changing settings for non-empty folders (see tooltip)</g:Localize></TextBlock>
         <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -45,34 +47,34 @@
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                <TextBlock>Sync only tasks with this category:</TextBlock>
+                    <TextBlock><g:Localize>Sync only tasks with this category:</g:Localize></TextBlock>
                     <ComboBox 
                         IsEditable="True" 
                         Text="{Binding TaskCategory,UpdateSourceTrigger=PropertyChanged}"  
                         ItemsSource="{Binding AvailableCategories}"
                         Grid.Row="0" 
                         Grid.Column="1" 
-                        ToolTip="Enter the name of the Outlook category for filtering. &#x0a;If the category does not exist, it will be created in Outlook." />
+                        ToolTip="{g:Localize Enter the name of the Outlook category for filtering. &amp;#x0a;If the category does not exist it will be created in Outlook.}" />
                     <CheckBox 
                         IsEnabled="{Binding UseTaskCategoryAsFilter}"
                         IsChecked="{Binding IncludeEmptyTaskCategoryFilter}" 
                         Grid.Column="0" 
                         Grid.ColumnSpan="2" 
-                        Grid.Row="1">Sync also tasks without any category</CheckBox>
+                        Grid.Row="1"><g:Localize>Sync also tasks without any category</g:Localize></CheckBox>
                     <CheckBox 
                         IsEnabled="{Binding UseTaskCategoryAsFilter}"
                         IsChecked="{Binding InvertTaskCategoryFilter}" 
                         Grid.Column="0" 
                         Grid.ColumnSpan="2" 
-                        Grid.Row="2">Negate filter and sync all tasks except this category</CheckBox>
+                        Grid.Row="2"><g:Localize>Negate filter and sync all tasks except this category</g:Localize></CheckBox>
                     <CheckBox 
-                      Content="Keep items in sync, even if category changes and filter does not match anymore" 
+                      Content="{g:Localize Keep items in sync even if category changes and filter does not match anymore}" 
                       IsEnabled="{Binding UseTaskCategoryAsFilter}"
                       Grid.ColumnSpan="2" 
                       Grid.Column="0" 
                       Grid.Row="3" 
                       IsChecked="{Binding IsCategoryFilterSticky}"
-                      ToolTip="WARNING: Do not use, since it just keeps the items in sync, as long as the cache is not cleared.&#x0a;After clearing the cache (which happens automatically in some cases), items which were affected by this option do not pass the filter anymore!"
+                      ToolTip="{g:Localize WARNING: Do not use since it just keeps the items in sync as long as the cache is not cleared.&amp;#x0a;After clearing the cache (which happens automatically in some cases) items which were affected by this option do not pass the filter anymore!}"
                       ToolTipService.ShowDuration="60000"></CheckBox>
         </Grid>
             </StackPanel>
