@@ -117,7 +117,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
 
 
-    public string Name => "Network settings";
+    public string Name => "Network Settings";
 
 
     public IEnumerable<ITreeNodeViewModel> Items { get; } = new ITreeNodeViewModel[0];

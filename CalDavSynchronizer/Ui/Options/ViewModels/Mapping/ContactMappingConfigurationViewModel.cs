@@ -154,7 +154,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
 
 
-    public string Name => "Contact mapping configuration";
+    public string Name => "Contact Mapping Configuration";
     public IEnumerable<ITreeNodeViewModel> Items { get; } = new ITreeNodeViewModel[0];
     public IEnumerable<ISubOptionsViewModel> SubOptions => new ISubOptionsViewModel[] { };
   }

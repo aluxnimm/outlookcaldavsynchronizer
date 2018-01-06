@@ -8,14 +8,14 @@
              d:DataContext="{x:Static viewModels:NetworkSettingsViewModel.DesignInstance}">
 
   <DockPanel>
-    <GroupBox DockPanel.Dock="Top" Header="Advanced network settings" IsEnabled="{Binding ModelOptions.AreAdvancedNetWorkSettingsEnabled, Mode=OneTime}">
+    <GroupBox DockPanel.Dock="Top" Header="Advanced Network Settings" IsEnabled="{Binding ModelOptions.AreAdvancedNetWorkSettingsEnabled, Mode=OneTime}">
       <StackPanel>
         <CheckBox IsChecked="{Binding CloseConnectionAfterEachRequest}">Close connection after each request</CheckBox>
         <CheckBox IsChecked="{Binding PreemptiveAuthentication}">Use preemptive authentication</CheckBox>
-        <CheckBox IsChecked="{Binding ForceBasicAuthentication}">Force Basic Authentication</CheckBox>
+        <CheckBox IsChecked="{Binding ForceBasicAuthentication}">Force Basic authentication</CheckBox>
       </StackPanel>
     </GroupBox>
-    <GroupBox Header="Proxy settings">
+    <GroupBox Header="Proxy Settings">
       <StackPanel>
         <CheckBox IsChecked="{Binding ProxyUseDefault}">Use system default proxy (settings from IE and config file)</CheckBox>
         <GroupBox >
@@ -33,7 +33,7 @@
               <RowDefinition />
             </Grid.RowDefinitions>
 
-            <TextBlock>Proxy Url:</TextBlock>
+            <TextBlock>Proxy URL:</TextBlock>
             <TextBox Text="{Binding ProxyUrl}" Grid.Row="0" Grid.Column="1" />
 
             <TextBlock Grid.Row="1" Grid.Column="0">Username (optional):</TextBlock>

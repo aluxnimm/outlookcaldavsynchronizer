@@ -7,11 +7,11 @@
              xmlns:g="clr-namespace:CalDavSynchronizer.Globalization"
              mc:Ignorable="d"
              d:DataContext="{x:Static mapping:ContactMappingConfigurationViewModel.DesignInstance}">
-    <GroupBox Header="General contact mapping settings">
+    <GroupBox Header="General Contact Mapping Settings">
         <StackPanel>
             <CheckBox IsChecked="{Binding MapBirthday}" ToolTip="{g:Localize Outlook automatically creates birthday appointments in your calendar &#x0a;when the birthday is added to a contact item.}">Map Birthday</CheckBox>
             <CheckBox IsChecked="{Binding MapContactPhoto}" ToolTip="{g:Localize Not supported in OL 2007.}"><g:Localize>Map Contact Photo</g:Localize> </CheckBox>
-            <CheckBox IsEnabled="{Binding MapContactPhoto}" IsChecked="{Binding KeepOutlookPhoto}" ToolTip="Maps changes from Outlook to server &#x0a;but don't update changes from server to Outlook after the initial sync, &#x0a;useful if another mobile client reduces the photo resolution for example." >Don't overwrite contact photo in Outlook</CheckBox>
+            <CheckBox IsEnabled="{Binding MapContactPhoto}" IsChecked="{Binding KeepOutlookPhoto}" ToolTip="Maps changes from Outlook to server &#x0a;but don't update changes from server to Outlook after the initial sync, &#x0a;useful if another mobile client reduces the photo resolution for example." >Don't overwrite the contact photo in Outlook</CheckBox>
             <CheckBox IsChecked="{Binding KeepOutlookFileAs}" ToolTip="Don't overwrite FileAs in Outlook with FN &#x0a;Uses default FileAs as set in global Outlook options for new entries.">Don't overwrite FileAs in Outlook</CheckBox>
             <CheckBox IsChecked="{Binding FixPhoneNumberFormat}" ToolTip="Convert numbers like +1 23 45678 9 &#x0a;to +1 (23) 45678 - 9 &#x0a;so that Outlook can show country and area code.">Fix imported phone number format</CheckBox>
             <CheckBox IsChecked="{Binding MapOutlookEmail1ToWork}" ToolTip="Map Outlook EmailAddress1 to vCard email with TYPE=WORK&#x0a;and Outlook EmailAddress2 to vCard email with TYPE=HOME instead of vice-versa.">Map Outlook EmailAddress1 to WORK instead of HOME</CheckBox>

@@ -7,7 +7,7 @@
              mc:Ignorable="d"
              d:DataContext="{x:Static viewModels:GoogleServerSettingsTemplateViewModel.DesignInstance}"
              >
-  <GroupBox Header="Server settings">
+  <GroupBox Header="Server Settings">
     <DockPanel>
       <Grid DockPanel.Dock="Top">
         <Grid.ColumnDefinitions>
@@ -22,10 +22,10 @@
           <RowDefinition />
         </Grid.RowDefinitions>
 
-        <TextBlock>Url:</TextBlock>
+        <TextBlock>URL:</TextBlock>
         <TextBox Text="{Binding CalenderUrl}" IsEnabled="{Binding IsChecked,ElementName=EditUrlToggleButton}" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" />
 
-        <ToggleButton x:Name="EditUrlToggleButton" HorizontalAlignment="Right" Content="Edit Url" Grid.Row="1" Grid.Column="2" />
+        <ToggleButton x:Name="EditUrlToggleButton" HorizontalAlignment="Right" Content="Edit URL" Grid.Row="1" Grid.Column="2" />
 
         <TextBlock Grid.Row="2" Grid.Column="0">Email address:</TextBlock>
         <TextBox Text="{Binding EmailAddress}"  Grid.Row="2" Grid.Column="2" />

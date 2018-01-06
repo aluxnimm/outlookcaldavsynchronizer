@@ -10,7 +10,7 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
-  <GroupBox Header="Server settings">
+  <GroupBox Header="Server Settings">
     <DockPanel>
       <Grid DockPanel.Dock="Top">
         <Grid.ColumnDefinitions>
@@ -26,10 +26,10 @@
           <RowDefinition />
         </Grid.RowDefinitions>
 
-        <TextBlock>Detected Url:</TextBlock>
+        <TextBlock>Detected URL:</TextBlock>
         <TextBox Text="{Binding CalenderUrl}" IsEnabled="{Binding IsChecked,ElementName=EditUrlToggleButton}" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" />
 
-        <ToggleButton x:Name="EditUrlToggleButton" HorizontalAlignment="Right" Content="Edit Url" Grid.Row="1" Grid.Column="2" />
+        <ToggleButton x:Name="EditUrlToggleButton" HorizontalAlignment="Right" Content="Edit URL" Grid.Row="1" Grid.Column="2" />
 
         <TextBlock Grid.Row="2" Grid.Column="0">Email address:</TextBlock>
         <TextBox Text="{Binding EmailAddress}"  Grid.Row="2" Grid.Column="2" />
@@ -40,7 +40,7 @@
           <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></BooleanToVisibilityConverter>
         </DockPanel.Resources>
         <Button DockPanel.Dock="Right" Command="{Binding TestConnectionCommand}" HorizontalAlignment="Right">Test settings</Button>
-        <Button DockPanel.Dock="Right" Command="{Binding DoAutoDiscoveryCommand}" HorizontalAlignment="Right">Do Autodiscovery</Button>
+        <Button DockPanel.Dock="Right" Command="{Binding DoAutoDiscoveryCommand}" HorizontalAlignment="Right">Do autodiscovery</Button>
         <CheckBox 
           ToolTip="Use Google Contacts API instead of CardDAV &#xA;to sync Outlook contact folders with Google contacts &#xA;which improves mapping and performance."
           Visibility="{Binding UseGoogleNativeApiAvailable,Converter={StaticResource BooleanToVisibilityConverter}}"

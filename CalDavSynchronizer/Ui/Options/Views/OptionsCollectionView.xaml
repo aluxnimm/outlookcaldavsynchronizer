@@ -187,7 +187,7 @@
                 </DockPanel>
 
                 <ContentControl Content="{Binding ServerSettingsViewModel}" />
-                <GroupBox Header="Outlook settings">
+                <GroupBox Header="Outlook Settings">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
@@ -220,7 +220,7 @@
                 <GroupBox>
                     <Button HorizontalAlignment="Left" Command="{Binding GetAccountSettingsCommand}">Get IMAP/POP3 account settings</Button>
                 </GroupBox>
-                <GroupBox Header="Outlook settings">
+                <GroupBox Header="Outlook Settings">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -301,10 +301,10 @@
                 <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/CollapseAll.png" />
             </Button>
             <Separator />
-            <Button Command="{Binding ExportAllCommand}" ToolTip="Export Profiles to File">
+            <Button Command="{Binding ExportAllCommand}" ToolTip="Export profiles to file">
                 <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Export.png" />
             </Button>
-            <Button Command="{Binding ImportCommand}" ToolTip="Import Profiles from File">
+            <Button Command="{Binding ImportCommand}" ToolTip="Import profiles from file">
                 <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Import.png" />
             </Button>
            
@@ -338,8 +338,8 @@
         </Grid>
 
         <DockPanel>
-            <TextBlock Margin="6,0,0,6" DockPanel.Dock="Bottom" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"><Hyperlink Command="{Binding ViewOptions.HideAdvancedSettingsCommand}"  >Hide advanced settings</Hyperlink></TextBlock>
-            <TextBlock Margin="6,0,0,6" DockPanel.Dock="Bottom" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverterInverted}}"><Hyperlink Command="{Binding ViewOptions.ShowAdvancedSettingsCommand}" >Show advanced settings</Hyperlink></TextBlock>
+            <TextBlock Margin="6,0,0,6" DockPanel.Dock="Bottom" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"><Hyperlink Command="{Binding ViewOptions.HideAdvancedSettingsCommand}"  >Hide Advanced Settings</Hyperlink></TextBlock>
+            <TextBlock Margin="6,0,0,6" DockPanel.Dock="Bottom" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverterInverted}}"><Hyperlink Command="{Binding ViewOptions.ShowAdvancedSettingsCommand}" >Show Advanced Settings</Hyperlink></TextBlock>
             <ScrollViewer VerticalScrollBarVisibility="Auto" >
                 <Grid>
                     <ContentControl Content="{Binding ElementName=ExpertOptionsTree,Path=SelectedItem}" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">

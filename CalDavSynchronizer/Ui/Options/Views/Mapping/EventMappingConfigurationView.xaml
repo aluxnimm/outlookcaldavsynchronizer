@@ -10,7 +10,7 @@
              >
 
     <StackPanel>
-      <GroupBox Header="General event mapping settings">
+      <GroupBox Header="General Event Mapping Settings">
         <StackPanel>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -25,22 +25,22 @@
                     SelectedValue="{Binding MapReminder}"
                     Grid.Column="1" />
           </Grid>
-                <CheckBox IsChecked="{Binding MapBody}" ToolTip="Map plaintext Body of Outlook Appointment to description attribute.">Map Body</CheckBox>
-                <CheckBox IsEnabled="{Binding MapBody}" IsChecked="{Binding MapRtfBodyToXAltDesc}" ToolTip="Convert formatted RTF Body of Outlook appointment to html and export it as X-ALT-DESC property.&#x0a;The RTF to html conversion is experimental, inline images and some formatting properties can't be converted!&#x0a;Be aware that some servers like Google Calendar drop this attribute!">Export html description X-ALT-DESC converted from RTF Body</CheckBox>
-                <CheckBox IsEnabled="{Binding MapBody}" IsChecked="{Binding MapXAltDescToRtfBody}" ToolTip="Convert X-ALT-DESC description html property to RTF and set Outlook appointment RTF Body.&#x0a;The html to RTF conversion is experimental, not all html formatting options can be converted!&#x0a;This overwrites also the plaintext Body!">Set RTF Body from X-ALT-DESC html description</CheckBox>
+                <CheckBox IsChecked="{Binding MapBody}" ToolTip="Map plaintext Body of Outlook appointment to description attribute.">Map Body</CheckBox>
+                <CheckBox IsEnabled="{Binding MapBody}" IsChecked="{Binding MapRtfBodyToXAltDesc}" ToolTip="Convert formatted RTF Body of Outlook appointment to Html and export it as X-ALT-DESC property.&#x0a;The RTF to Html conversion is experimental, inline images and some formatting properties can't be converted!&#x0a;Be aware that some servers like Google Calendar drop this attribute!">Export Html description X-ALT-DESC converted from RTF Body</CheckBox>
+                <CheckBox IsEnabled="{Binding MapBody}" IsChecked="{Binding MapXAltDescToRtfBody}" ToolTip="Convert X-ALT-DESC description Html property to RTF and set Outlook appointment RTF Body.&#x0a;The html to RTF conversion is experimental, not all Html formatting options can be converted!&#x0a;This overwrites also the plaintext Body!">Set RTF Body from X-ALT-DESC Html description</CheckBox>
                 <CheckBox IsChecked="{Binding UseGlobalAppointmentId}" ToolTip="Use Outlook GlobalAppointmendID instead of random Guid for UID attribute in new CalDAV events. &#x0a; Can avoid duplicate events from invitations.">Use GlobalAppointmentID for UID attribute</CheckBox>
         </StackPanel>
       </GroupBox>
-    <GroupBox Header="Timezone settings">
+    <GroupBox Header="Timezone Settings">
         <StackPanel>
-                <CheckBox IsChecked="{Binding CreateEventsInUtc}" ToolTip="Use UTC instead of Outlook Appointment Timezone for creating events on CalDAV server. &#x0a;Not recommended for general use, &#x0a;because recurrence exceptions over DST changes can't be mapped and &#x0a;Appointments with different start and end timezones can't be represented.">Create events on server in UTC</CheckBox>
-                <CheckBox IsChecked="{Binding UseIanaTz}" ToolTip="Use Iana instead of Windows Timezones for creating events on CalDAV server. &#x0a;Needed for servers which do not accept non standard Windows Timezones like GMX for example. &#x0a;Timezone definitions will be downloaded from http://tzurl.org.">Create events on server with downloaded IANA Timezones</CheckBox>
+                <CheckBox IsChecked="{Binding CreateEventsInUtc}" ToolTip="Use UTC instead of Outlook appointment timezone for creating events on CalDAV server. &#x0a;Not recommended for general use, &#x0a;because recurrence exceptions over DST changes can't be mapped and &#x0a;Appointments with different start and end timezones can't be represented.">Create events on server in UTC</CheckBox>
+                <CheckBox IsChecked="{Binding UseIanaTz}" ToolTip="Use Iana instead of Windows timezones for creating events on CalDAV server. &#x0a;Needed for servers which do not accept non standard Windows timezones like GMX for example. &#x0a;Timezone definitions will be downloaded from http://tzurl.org.">Create events on server with downloaded IANA timezones</CheckBox>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock>Use IANA Timezone:</TextBlock>
+                    <TextBlock>Use IANA timezone:</TextBlock>
                     <ComboBox 
                     ItemsSource="{Binding AvailableTimezones}"
                     IsEnabled="{Binding UseIanaTz}"
@@ -48,34 +48,34 @@
                     ToolTip="Use this IANA timezone for default Outlook/Windows timezone. &#x0a;Manually selected different timezones in Outlook appointments &#x0a;will be mapped to first corresponding IANA timezone."
                     Grid.Column="1" />
                 </Grid>
-                <CheckBox IsEnabled="{Binding UseIanaTz}" IsChecked="{Binding IncludeHistoricalData}" ToolTip="Use full IANA timezone definition with historical data. &#x0a;Needs more bandwith and can be incompatible when manually importing in Outlook.">Include full IANA zone with historical data</CheckBox>
+                <CheckBox IsEnabled="{Binding UseIanaTz}" IsChecked="{Binding IncludeHistoricalData}" ToolTip="Use full IANA timezone definition with historical data. &#x0a;Needs more bandwith and can be incompatible when manually importing in Outlook.">Include full IANA timezone with historical data</CheckBox>
 
             </StackPanel>
     </GroupBox>
-    <GroupBox Header="Privacy settings">
+    <GroupBox Header="Privacy Settings">
       <StackPanel>
         <CheckBox  IsChecked="{Binding MapSensitivityPrivateToClassConfidential}">Map Outlook Private flag to DAV CLASS:CONFIDENTIAL instead of PRIVATE</CheckBox>
         <CheckBox  IsChecked="{Binding MapClassConfidentialToSensitivityPrivate}">Map DAV CLASS:CONFIDENTIAL to Outlook Private flag instead of Confidential</CheckBox>
         <CheckBox  IsChecked="{Binding MapClassPublicToSensitivityPrivate}">Map DAV CLASS:PUBLIC and default events to Outlook Private flag instead of Public</CheckBox>
       </StackPanel>
     </GroupBox>
-    <GroupBox Header="Scheduling settings">
+    <GroupBox Header="Scheduling Settings">
       <StackPanel>
-        <CheckBox  IsChecked="{Binding MapAttendees}">Map Organizer and Attendees</CheckBox>
+        <CheckBox  IsChecked="{Binding MapAttendees}">Map organizer and attendees</CheckBox>
         <CheckBox  IsEnabled="{Binding MapAttendees}" IsChecked="{Binding ScheduleAgentClient}">Set SCHEDULE-AGENT=CLIENT</CheckBox>
         <CheckBox  IsEnabled="{Binding MapAttendees}" IsChecked="{Binding SendNoAppointmentNotifications}">Don't send appointment notifications (from SOGo)</CheckBox>
       </StackPanel>
     </GroupBox>
-    <GroupBox Header="Outlook settings">
+    <GroupBox Header="Outlook Settings">
       <StackPanel>
-        <CheckBox ToolTip="Experimental mapping of the first category color of the appointment to the matching COLOR attribute of the event&#x0a;Together with DAVdroid for Android you can map individual event colors from Android to Outlook,&#x0a;but not all calendar apps support it or can even crash, see &#x0a;https://davdroid.bitfire.at/faq/entry/setting-event-colors-crash/" IsChecked="{Binding MapEventColorToCategory}">Map Event Color to Category</CheckBox>
+        <CheckBox ToolTip="Experimental mapping of the first category color of the appointment to the matching COLOR attribute of the event&#x0a;Together with DAVdroid for Android you can map individual event colors from Android to Outlook,&#x0a;but not all calendar apps support it or can even crash, see &#x0a;https://davdroid.bitfire.at/faq/entry/setting-event-colors-crash/" IsChecked="{Binding MapEventColorToCategory}">Map event color to category</CheckBox>
         <CheckBox ToolTip="removes duplicate Outlook appointments based on start,end and subject of the events after each sync run, &#x0a;be aware of possible performance penalties with this option enabled." IsChecked="{Binding CleanupDuplicateEvents}">Cleanup duplicate events after each sync run</CheckBox>
         <GroupBox Header="Category Filter">
           <DockPanel>
             <TextBlock  
               DockPanel.Dock="Top"
               ToolTipService.ShowDuration="60000"
-              ToolTip="These settings affect the filter, which selects the items for synchronization.&#x0a;If an item does not pass the filter, it is treated as if it would not exist!&#x0a;Changing these settings for non-empty folders can lead to deletions on the Server or duplicates in Outlook."><Bold>WARNING:</Bold> Take care, when changing settings for non-empty folders (see tooltip)</TextBlock>
+              ToolTip="These settings affect the filter, which selects the items for synchronization.&#x0a;If an item does not pass the filter, it is treated as if it would not exist!&#x0a;Changing these settings for non-empty folders can lead to deletions on the server or duplicates in Outlook."><Bold>WARNING:</Bold> Take care, when changing settings for non-empty folders (see tooltip)</TextBlock>
             <Grid>
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -91,7 +91,7 @@
                 <RowDefinition />
                 <RowDefinition />
               </Grid.RowDefinitions>
-              <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">Sync only Appointments with this category:</TextBlock>
+              <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">Sync only appointments with this category:</TextBlock>
               <ComboBox 
                 IsEditable="True" 
                 Text="{Binding EventCategory,UpdateSourceTrigger=PropertyChanged}"  
@@ -104,13 +104,13 @@
                 IsChecked="{Binding IncludeEmptyEventCategoryFilter}" 
                 Grid.Column="0" 
                 Grid.ColumnSpan="4" 
-                Grid.Row="1">Sync also Appointments without any category</CheckBox>
+                Grid.Row="1">Sync also appointments without any category</CheckBox>
               <CheckBox 
                 IsEnabled="{Binding UseEventCategoryAsFilter}"
                 IsChecked="{Binding InvertEventCategoryFilter}" 
                 Grid.Column="0" 
                 Grid.ColumnSpan="4" 
-                Grid.Row="2">Negate filter and sync all Appointments except this category</CheckBox>
+                Grid.Row="2">Negate filter and sync all appointments except this category</CheckBox>
 
               <CheckBox   
                 IsEnabled="{Binding UseEventCategoryAsFilter}"
@@ -141,17 +141,17 @@
                 Command="{Binding GetServerCalendarColorCommand}"
                 IsEnabled="{Binding UseEventCategoryAsFilterAndDoOneTimeSetCategoryColor}"
                 Grid.Row="3" 
-                Grid.Column="2">Fetch Color</Button>
+                Grid.Column="2">Fetch color</Button>
               <Button
                 Command="{Binding SetServerCalendarColorCommand}"
                 IsEnabled="{Binding UseEventCategoryAsFilterAndDoOneTimeSetCategoryColor}"
                 Grid.Row="3" 
-                Grid.Column="3">Set DAV Color</Button>
+                Grid.Column="3">Set DAV calendar color</Button>
 
               <TextBlock 
                 Grid.Row="4" 
                 Grid.Column="0"
-                ToolTip="Assign shortcut key, when OK is clicked.">Assign Shortcut Key:</TextBlock>
+                ToolTip="Assign shortcut key, when OK is clicked.">Assign shortcut key:</TextBlock>
               <ComboBox   
                 IsEnabled="{Binding UseEventCategoryAsFilter}"
                 ItemsSource="{Binding AvailableShortcutKeys}"

@@ -8,7 +8,7 @@
              mc:Ignorable="d"
              d:DataContext="{x:Static viewModels:EasyProjectServerSettingsTemplateViewModel.DesignInstance}">
 
-  <GroupBox Header="Easy Project server settings">
+  <GroupBox Header="Easy Project Server Settings">
     <DockPanel>
       <Grid DockPanel.Dock="Top">
         <Grid.ColumnDefinitions>
@@ -29,8 +29,8 @@
            <views:BooleanNotConverter x:Key="BooleanNotConverter" />
         </Grid.Resources>
 
-        <TextBlock>Easy Project Url:</TextBlock>
-        <TextBox Text="{Binding CalenderUrl}"  Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" ToolTip="Enter the DAV resource url or the server address and discover the available resources. &#x0a;If you leave the DAV Url empty, it can also be discovered from the Email address via DNS lookups." />
+        <TextBlock>Easy Project URL:</TextBlock>
+        <TextBox Text="{Binding CalenderUrl}"  Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" ToolTip="Enter the DAV resource URL or the server address and discover the available resources. &#x0a;If you leave the DAV URL empty, it can also be discovered from the email address via DNS lookups." />
 
         <TextBlock Grid.Row="1" Grid.Column="0">Username:</TextBlock>
         <TextBox Text="{Binding UserName}"  Grid.Row="1" Grid.Column="2" />
@@ -43,7 +43,7 @@
         <CheckBox IsChecked="{Binding UseAccountPassword}" x:Name="UseAccountPasswordCheckBox" Grid.Row="3" Grid.ColumnSpan="3" Grid.Column="0">Use IMAP/POP3 account password</CheckBox>
 
         <TextBlock Grid.Row="4" Grid.Column="0">Email address:</TextBlock>
-        <TextBox Text="{Binding EmailAddress}" Grid.Row="4" Grid.Column="2" ToolTip="Enter the email address of the server identity. &#x0a;It can also be used to discover the DAV Url if you leave the url textbox empty." />
+        <TextBox Text="{Binding EmailAddress}" Grid.Row="4" Grid.Column="2" ToolTip="Enter the email address of the server identity. &#x0a;It can also be used to discover the DAV URL if you leave the url textbox empty." />
 
       </Grid>
     </DockPanel>

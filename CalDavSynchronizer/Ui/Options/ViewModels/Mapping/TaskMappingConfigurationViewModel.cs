@@ -156,7 +156,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     };
 
 
-    public string Name => "Task mapping configuration";
+    public string Name => "Task Mapping Configuration";
 
 
     public IEnumerable<ITreeNodeViewModel> Items { get; }

@@ -43,7 +43,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       Mappings = model.Mappings;
     }
 
-    public string Name { get; } = "Custom properties mapping";
+    public string Name { get; } = "Custom Properties Mapping";
 
 
     public IEnumerable<ITreeNodeViewModel> Items { get; } = new ITreeNodeViewModel[0];

@@ -7,7 +7,7 @@
              mc:Ignorable="d"
              d:DataContext="{x:Static mapping:TaskMappingConfigurationViewModel.DesignInstance}">
     <StackPanel>
-    <GroupBox Header="General task mapping settings">
+    <GroupBox Header="General Task Mapping Settings">
         <StackPanel>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -22,13 +22,13 @@
                     SelectedValue="{Binding MapReminder}"
                     Grid.Column="1" />
             </Grid>
-            <CheckBox IsChecked="{Binding MapPriority}">Map Priority</CheckBox>
+            <CheckBox IsChecked="{Binding MapPriority}">Map priority</CheckBox>
             <CheckBox IsChecked="{Binding MapBody}">Map Body</CheckBox>
-            <CheckBox IsChecked="{Binding MapRecurringTasks}">Map Recurring Tasks</CheckBox>
-                <CheckBox IsChecked="{Binding MapStartAndDueAsFloating}" ToolTip="Task start date will be mapped to 00:00 and Task due date to 23:59 without timezone.&#x0a;Enable this if clients with different timezones are used and the due date should be local.">Map Outlook Start and Due Date of Task as floating without timezone</CheckBox>
+            <CheckBox IsChecked="{Binding MapRecurringTasks}">Map recurring tasks</CheckBox>
+                <CheckBox IsChecked="{Binding MapStartAndDueAsFloating}" ToolTip="Task start date will be mapped to 00:00 and Task due date to 23:59 without timezone.&#x0a;Enable this if clients with different timezones are used and the due date should be local.">Map Outlook start and due date of task as floating without timezone</CheckBox>
         </StackPanel>
     </GroupBox>
-    <GroupBox Header="Outlook settings">
+    <GroupBox Header="Outlook Settings">
         <StackPanel>
         <TextBlock  
           DockPanel.Dock="Top"
@@ -45,7 +45,7 @@
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                <TextBlock>Sync only Tasks with this category:</TextBlock>
+                <TextBlock>Sync only tasks with this category:</TextBlock>
                     <ComboBox 
                         IsEditable="True" 
                         Text="{Binding TaskCategory,UpdateSourceTrigger=PropertyChanged}"  
@@ -58,13 +58,13 @@
                         IsChecked="{Binding IncludeEmptyTaskCategoryFilter}" 
                         Grid.Column="0" 
                         Grid.ColumnSpan="2" 
-                        Grid.Row="1">Sync also Tasks without any category</CheckBox>
+                        Grid.Row="1">Sync also tasks without any category</CheckBox>
                     <CheckBox 
                         IsEnabled="{Binding UseTaskCategoryAsFilter}"
                         IsChecked="{Binding InvertTaskCategoryFilter}" 
                         Grid.Column="0" 
                         Grid.ColumnSpan="2" 
-                        Grid.Row="2">Negate filter and sync all Tasks except this category</CheckBox>
+                        Grid.Row="2">Negate filter and sync all tasks except this category</CheckBox>
                     <CheckBox 
                       Content="Keep items in sync, even if category changes and filter does not match anymore" 
                       IsEnabled="{Binding UseTaskCategoryAsFilter}"

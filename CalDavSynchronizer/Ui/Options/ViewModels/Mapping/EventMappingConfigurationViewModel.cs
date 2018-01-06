@@ -305,7 +305,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
 
 
-    public string Name => "Event mapping configuration";
+    public string Name => "Event Mapping Configuration";
 
     public IEnumerable<ITreeNodeViewModel> Items { get; }
 

@@ -9,7 +9,7 @@
   <UserControl.Resources>
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
   </UserControl.Resources>
-  <GroupBox Header="Sync settings" IsEnabled="{Binding ModelOptions.AreSyncSettingsEnabled}">
+  <GroupBox Header="Sync Settings" IsEnabled="{Binding ModelOptions.AreSyncSettingsEnabled}">
     <Grid DockPanel.Dock="Top">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*" />
@@ -23,7 +23,7 @@
         <RowDefinition />
       </Grid.RowDefinitions>
 
-      <TextBlock>Synchronization Mode:</TextBlock>
+      <TextBlock>Synchronization mode:</TextBlock>
       <ComboBox
           ItemsSource="{Binding AvailableSynchronizationModes}"
           DisplayMemberPath="Name"
@@ -31,7 +31,7 @@
           SelectedValue="{Binding SynchronizationMode}"
           MinWidth="150" Grid.Row="0" Grid.Column="1" />
 
-      <TextBlock Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="1" Grid.Column="0">Conflict Resolution:</TextBlock>
+      <TextBlock Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="1" Grid.Column="0">Conflict resolution:</TextBlock>
       <ComboBox
           Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"
           IsEnabled="{Binding ConflictResolutionAvailable}"
