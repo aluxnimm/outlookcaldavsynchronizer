@@ -6,14 +6,15 @@
              xmlns:logging="clr-namespace:GenSync.Logging;assembly=GenSync"
              xmlns:views="clr-namespace:CalDavSynchronizer.Ui.Reports.Views"
              xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Reports.ViewModels"
+             xmlns:g="clr-namespace:CalDavSynchronizer.Globalization"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="700"
              d:DataContext="{x:Static viewModels:ReportViewModel.DesignInstance}">
   <TabControl>
-    <TabItem Header="Formatted">
+    <TabItem Header="{g:Localize Formatted}">
       <views:SynchronizationReportView />
     </TabItem>
-    <TabItem Header="Raw">
+    <TabItem Header="{g:Localize Raw}">
       <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
         <TextBox Text="{Binding AsString, Mode=OneWay}" IsReadOnly="True" />
       </ScrollViewer>

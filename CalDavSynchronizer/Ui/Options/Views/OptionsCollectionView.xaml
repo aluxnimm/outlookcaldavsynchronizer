@@ -164,12 +164,12 @@
         <DataTemplate DataType="{x:Type bulkOptionsViewModels:MultipleOptionsTemplateViewModel}">
             <StackPanel>
                 <DockPanel DockPanel.Dock="Top">
-                    <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="Name:" />
+                    <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="{g:Localize Name:}" />
                     <TextBox Text="{Binding Name}" />
                 </DockPanel>
                 <ContentControl Content="{Binding ServerSettingsViewModel}" />
-                <Button HorizontalAlignment="Left" Command="{Binding GetAccountSettingsCommand}">Get IMAP/POP3 account settings</Button>
-                <Button HorizontalAlignment="Left" Command="{Binding DiscoverResourcesCommand}">Discover resources and assign to Outlook folders</Button>
+                <Button HorizontalAlignment="Left" Command="{Binding GetAccountSettingsCommand}"><g:Localize>Get IMAP/POP3 account settings</g:Localize></Button>
+                <Button HorizontalAlignment="Left" Command="{Binding DiscoverResourcesCommand}"><g:Localize>Discover resources and assign to Outlook folders</g:Localize></Button>
 
             </StackPanel>
         </DataTemplate>
@@ -182,12 +182,12 @@
             <StackPanel>
                 <Image Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_easyproject.png" Width="200" Height="50" />
                 <DockPanel DockPanel.Dock="Top">
-                    <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="Name:" />
+                    <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="{g:Localize Name:}" />
                     <TextBox Text="{Binding Name}" />
                 </DockPanel>
 
                 <ContentControl Content="{Binding ServerSettingsViewModel}" />
-                <GroupBox Header="Outlook Settings">
+                <GroupBox Header="{g:Localize Outlook Settings}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
@@ -195,12 +195,12 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <Button Grid.Row="0" HorizontalAlignment="Left" Command="{Binding DiscoverResourcesCommand}">Assign Easy Project resources to different Outlook folders</Button>
+                        <Button Grid.Row="0" HorizontalAlignment="Left" Command="{Binding DiscoverResourcesCommand}"><g:Localize>Assign Easy Project resources to different Outlook folders</g:Localize></Button>
                         <Separator Margin="0,10,0,10" Grid.Row="1" />
-                        <Button Grid.Row="2" HorizontalAlignment="Left" Command="{Binding MergeResourcesCommand}">Merge Easy Project resources to one single Outlook folder</Button>
+                        <Button Grid.Row="2" HorizontalAlignment="Left" Command="{Binding MergeResourcesCommand}"><g:Localize>Merge Easy Project resources to one single Outlook folder</g:Localize></Button>
 
                         <DockPanel Grid.Row="3">
-                            <TextBlock Margin="10,0,10,0"  VerticalAlignment="Center" > Outlook folder:</TextBlock>
+                            <TextBlock Margin="10,0,10,0"  VerticalAlignment="Center" ><g:Localize> Outlook folder:</g:Localize></TextBlock>
                             <Button Command="{Binding SelectFolderCommand}" DockPanel.Dock="Right">...</Button>
                             <TextBox VerticalAlignment="Center" IsReadOnly="True" Text="{Binding SelectedFolderName, Mode=OneWay}" />
                         </DockPanel>
@@ -213,14 +213,14 @@
             <StackPanel>
                 <Image Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_kolab.png" Width="98" Height="41" />
                 <DockPanel DockPanel.Dock="Top">
-                    <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="Name:" />
+                    <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="{g:Localize Name:}" />
                     <TextBox Text="{Binding Name}" />
                 </DockPanel>
                 <ContentControl Content="{Binding ServerSettingsViewModel}" />
                 <GroupBox>
-                    <Button HorizontalAlignment="Left" Command="{Binding GetAccountSettingsCommand}">Get IMAP/POP3 account settings</Button>
+                    <Button HorizontalAlignment="Left" Command="{Binding GetAccountSettingsCommand}"><g:Localize>Get IMAP/POP3 account settings</g:Localize></Button>
                 </GroupBox>
-                <GroupBox Header="Outlook Settings">
+                <GroupBox Header="{g:Localize Outlook Settings}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -232,13 +232,13 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button    Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Command="{Binding DiscoverResourcesCommand}">Assign Kolab folders to distinct Outlook folders</Button>
-                        <CheckBox  Grid.Row="1" Grid.Column="0" IsChecked="{Binding AutoCreateOutlookFolders}">Automatically create Outlook folders</CheckBox>
-                        <CheckBox  Grid.Row="2" Grid.Column="0" IsChecked="{Binding OnlyAddNewUrls}">Only add new Kolab resources</CheckBox>
+                        <Button    Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Command="{Binding DiscoverResourcesCommand}"><g:Localize>Assign Kolab folders to distinct Outlook folders</g:Localize></Button>
+                        <CheckBox  Grid.Row="1" Grid.Column="0" IsChecked="{Binding AutoCreateOutlookFolders}"><g:Localize>Automatically create Outlook folders</g:Localize></CheckBox>
+                        <CheckBox  Grid.Row="2" Grid.Column="0" IsChecked="{Binding OnlyAddNewUrls}"><g:Localize>Only add new Kolab resources</g:Localize></CheckBox>
                         <Rectangle Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Stretch" Width="1" Margin="2" Stroke="Black" />
-                        <Button    Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" Command="{Binding MergeResourcesCommand}">Merge Kolab folders to a common Outlook folder</Button>
+                        <Button    Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" Command="{Binding MergeResourcesCommand}"><g:Localize>Merge Kolab folders to a common Outlook folder</g:Localize></Button>
                         <DockPanel Grid.Row="1" Grid.Column="2">
-                            <TextBlock Margin="10,0,10,0"  VerticalAlignment="Center" > Outlook folder:</TextBlock>
+                            <TextBlock Margin="10,0,10,0"  VerticalAlignment="Center" ><g:Localize> Outlook folder:</g:Localize> </TextBlock>
                             <Button Command="{Binding SelectFolderCommand}" DockPanel.Dock="Right">...</Button>
                             <TextBox VerticalAlignment="Center" IsReadOnly="True" Text="{Binding SelectedFolderName, Mode=OneWay}" />
                         </DockPanel>
@@ -269,42 +269,42 @@
 
 
         <ToolBar DockPanel.Dock="Top">
-            <Button Command="{Binding AddCommand}" ToolTip="Add new profile">
+            <Button Command="{Binding AddCommand}" ToolTip="{g:Localize Add new profile}">
                 <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Add.png" />
             </Button>
-            <Button Command="{Binding AddMultipleCommand}" ToolTip="Add multiple profiles">
+            <Button Command="{Binding AddMultipleCommand}" ToolTip="{g:Localize Add multiple profiles}">
                 <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/AddMultiple.png" />
             </Button>
-            <Button Command="{Binding DeleteSelectedCommand}" ToolTip="Delete selected profile">
+            <Button Command="{Binding DeleteSelectedCommand}" ToolTip="{g:Localize Delete selected profile}">
                 <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Delete.png" />
             </Button>
-            <Button Command="{Binding CopySelectedCommand}" ToolTip="Copy selected profile">
+            <Button Command="{Binding CopySelectedCommand}" ToolTip="{g:Localize Copy selected profile}">
                 <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Copy.png" />
             </Button>
-            <Button Command="{Binding MoveSelectedUpCommand}" ToolTip="Move selected profile up" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Button Command="{Binding MoveSelectedUpCommand}" ToolTip="{g:Localize Move selected profile up}" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/MoveUp.png" />
             </Button>
-            <Button Command="{Binding MoveSelectedDownCommand}" ToolTip="Move selected profile down" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Button Command="{Binding MoveSelectedDownCommand}" ToolTip="{g:Localize Move selected profile down}" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/MoveDown.png" />
             </Button>
             <Separator />
-            <Button Command="{Binding OpenProfileDataDirectoryCommand}" ToolTip="Open data directory of selected profile" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Button Command="{Binding OpenProfileDataDirectoryCommand}" ToolTip="{g:Localize Open data directory of selected profile}" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Folder.png" />
             </Button>
-            <Button Command="{Binding ClearCacheOfSelectedCommand}" ToolTip="Clear cache of selected profile">
+            <Button Command="{Binding ClearCacheOfSelectedCommand}" ToolTip="{g:Localize Clear cache of selected profile}">
                 <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ClearCache.png" />
             </Button>
-            <Button Command="{Binding ExpandAllCommand}" ToolTip="Expand all nodes" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Button Command="{Binding ExpandAllCommand}" ToolTip="{g:Localize Expand all nodes}" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ExpandAll.png" />
             </Button>
-            <Button Command="{Binding CollapseAllCommand}" ToolTip="Collapse all nodes" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Button Command="{Binding CollapseAllCommand}" ToolTip="{g:Localize Collapse all nodes}" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/CollapseAll.png" />
             </Button>
             <Separator />
-            <Button Command="{Binding ExportAllCommand}" ToolTip="Export profiles to file">
+            <Button Command="{Binding ExportAllCommand}" ToolTip="{g:Localize Export profiles to file}">
                 <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Export.png" />
             </Button>
-            <Button Command="{Binding ImportCommand}" ToolTip="Import profiles from file">
+            <Button Command="{Binding ImportCommand}" ToolTip="{g:Localize Import profiles from file}">
                 <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Import.png" />
             </Button>
            
@@ -338,8 +338,8 @@
         </Grid>
 
         <DockPanel>
-            <TextBlock Margin="6,0,0,6" DockPanel.Dock="Bottom" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"><Hyperlink Command="{Binding ViewOptions.HideAdvancedSettingsCommand}"  >Hide Advanced Settings</Hyperlink></TextBlock>
-            <TextBlock Margin="6,0,0,6" DockPanel.Dock="Bottom" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverterInverted}}"><Hyperlink Command="{Binding ViewOptions.ShowAdvancedSettingsCommand}" >Show Advanced Settings</Hyperlink></TextBlock>
+            <TextBlock Margin="6,0,0,6" DockPanel.Dock="Bottom" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"><Hyperlink Command="{Binding ViewOptions.HideAdvancedSettingsCommand}" ><g:Localize>Hide Advanced Settings</g:Localize></Hyperlink></TextBlock>
+            <TextBlock Margin="6,0,0,6" DockPanel.Dock="Bottom" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverterInverted}}"><Hyperlink Command="{Binding ViewOptions.ShowAdvancedSettingsCommand}" ><g:Localize>Show Advanced Settings</g:Localize></Hyperlink></TextBlock>
             <ScrollViewer VerticalScrollBarVisibility="Auto" >
                 <Grid>
                     <ContentControl Content="{Binding ElementName=ExpertOptionsTree,Path=SelectedItem}" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">

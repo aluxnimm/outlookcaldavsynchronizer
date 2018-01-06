@@ -4,17 +4,18 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.SystrayNotification.ViewModels"
+             xmlns:g="clr-namespace:CalDavSynchronizer.Globalization"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{x:Static viewModels:TransientProfileStatusesViewModel.DesignInstance}">
     <DataGrid ItemsSource="{Binding Profiles}" AutoGenerateColumns="False" >
       <DataGrid.Columns>
   
-      <DataGridTemplateColumn Header="Profile" Width="*">
+      <DataGridTemplateColumn Header="{g:Localize Profile}" Width="*">
         <DataGridTemplateColumn.CellTemplate>
           <DataTemplate>
             <TextBlock >
-                      <Hyperlink ToolTip="Click to open configuration."
+                      <Hyperlink ToolTip="{g:Localize Click to open configuration.}"
                         Command="{Binding ShowOptionsCommand}">
                         <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding ProfileName}" />
                       </Hyperlink>      
@@ -23,11 +24,11 @@
         </DataGridTemplateColumn.CellTemplate>
       </DataGridTemplateColumn>
 
-      <DataGridTemplateColumn Header="Status" >
+      <DataGridTemplateColumn Header="{g:Localize Status}" >
         <DataGridTemplateColumn.CellTemplate>
           <DataTemplate>
             <TextBlock HorizontalAlignment="Center">
-              <Hyperlink ToolTip="Click to open latest synchronization report."
+              <Hyperlink ToolTip="{g:Localize Click to open latest synchronization report.}"
                           Command="{Binding ShowLatestSynchronizationReportCommand}">
                 <Image Name="StatusImage"  Height="16" Width="16" />
               </Hyperlink>
@@ -47,7 +48,7 @@
         </DataGridTemplateColumn.CellTemplate>
       </DataGridTemplateColumn>
 
-      <DataGridTextColumn  Binding="{Binding LastRunAgo}" Header="Last run ago" IsReadOnly="True" >
+      <DataGridTextColumn  Binding="{Binding LastRunAgo}" Header="{g:Localize Last run ago}" IsReadOnly="True" >
         <DataGridTextColumn.ElementStyle>
           <Style TargetType="TextBlock">
             <Setter Property="HorizontalAlignment" Value="Right" />

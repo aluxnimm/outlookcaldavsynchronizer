@@ -6,11 +6,12 @@
         xmlns:views="clr-namespace:CalDavSynchronizer.Ui.Options.Views"
         xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.ViewModels"
         d:DataContext="{x:Static viewModels:ProgressViewModel.DesingInstance}"
+        xmlns:g="clr-namespace:CalDavSynchronizer.Globalization"
         mc:Ignorable="d"
         WindowStyle="ThreeDBorderWindow"
         Icon= "pack://application:,,,/CalDavSynchronizer;component/Resources/ApplicationIcon.ico"
         ResizeMode="NoResize"
-        Title="CalDavSynchronizer - Synchronizing..." Height="160" Width="360" WindowStartupLocation="CenterScreen">
+        Title="{g:Localize CalDavSynchronizer - Synchronizing...}" Height="160" Width="360" WindowStartupLocation="CenterScreen">
     <Window.Resources>
     </Window.Resources>
     <DockPanel Margin="12">

@@ -5,12 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels"
              xmlns:views="clr-namespace:CalDavSynchronizer.Ui.Options.Views"
+             xmlns:g="clr-namespace:CalDavSynchronizer.Globalization"
              mc:Ignorable="d"
              d:DataContext="{x:Static viewModels:ServerSettingsViewModel.DesignInstance}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
-  <GroupBox Header="Server Settings">
+  <GroupBox Header="{g:Localize Server Settings}">
     <DockPanel>
       <Grid DockPanel.Dock="Top">
         <Grid.ColumnDefinitions>
@@ -31,28 +32,28 @@
           <views:BooleanNotConverter x:Key="BooleanNotConverter" />
         </Grid.Resources>
 
-        <TextBlock>DAV URL:</TextBlock>
-        <TextBox Text="{Binding CalenderUrl}"  Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" ToolTip="Enter the DAV resource URL or the server address and discover the available resources. &#x0a;If you leave the DAV URL empty, it can also be discovered from the email address via DNS lookups."/>
+        <TextBlock><g:Localize>DAV URL:</g:Localize></TextBlock>
+        <TextBox Text="{Binding CalenderUrl}"  Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" ToolTip="{g:Localize Enter the DAV resource URL or the server address and discover the available resources. &amp;#x0a;If you leave the DAV URL empty it can also be discovered from the email address via DNS lookups.}"/>
 
-        <TextBlock Grid.Row="1" Grid.Column="0">Username:</TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="0"><g:Localize>Username:</g:Localize></TextBlock>
         <TextBox Text="{Binding UserName}" MinWidth="200"  Grid.Row="1" Grid.Column="2" />
 
-        <TextBlock Grid.Row="2" Grid.Column="0">Password:</TextBlock>
+        <TextBlock Grid.Row="2" Grid.Column="0"><g:Localize>Password:</g:Localize></TextBlock>
         <PasswordBox x:Name="_passwordBox"
                      PasswordChar="*" 
                      IsEnabled="{Binding IsChecked, ElementName=UseAccountPasswordCheckBox, Converter={StaticResource BooleanNotConverter}}"
                      Grid.Row="2" Grid.Column="2" />
 
-                <CheckBox IsChecked="{Binding UseAccountPassword}" x:Name="UseAccountPasswordCheckBox" Grid.Row="3" Grid.ColumnSpan="2"  Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Column="2">Use IMAP/POP3 account password</CheckBox>
+                <CheckBox IsChecked="{Binding UseAccountPassword}" x:Name="UseAccountPasswordCheckBox" Grid.Row="3" Grid.ColumnSpan="2"  Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Column="2"><g:Localize>Use IMAP/POP3 account password</g:Localize></CheckBox>
 
-                <TextBlock Grid.Row="4" Grid.Column="0">Email address:</TextBlock>
-        <TextBox Text="{Binding EmailAddress}" Grid.Row="4" Grid.Column="2" ToolTip="Enter the email address of the server identity. &#x0a;It can also be used to discover the DAV URL if you leave the url textbox empty."/>
-                <CheckBox Content="Use WebDAV collection sync" IsChecked="{Binding UseWebDavCollectionSync}" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="5" Grid.Column="2" ToolTip="WebDAV-Sync is a protocol extension that is defined in RFC 6578 and not supported by all servers.&#xA;Test or discover settings will check if this is supported.&#xA;This option can speed up the detection of server changes dramatically but excludes the time range filter."/>
+                <TextBlock Grid.Row="4" Grid.Column="0"><g:Localize>Email address:</g:Localize></TextBlock>
+                <TextBox Text="{Binding EmailAddress}" Grid.Row="4" Grid.Column="2" ToolTip="{g:Localize Enter the email address of the server identity. &amp;#x0a;It can also be used to discover the DAV URL if you leave the url textbox empty.}"/>
+                <CheckBox Content="{g:Localize Use WebDAV collection sync}" IsChecked="{Binding UseWebDavCollectionSync}" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="5" Grid.Column="2" ToolTip="{g:Localize WebDAV-Sync is a protocol extension that is defined in RFC 6578 and not supported by all servers.&amp;#xA;Test or discover settings will check if this is supported.&amp;#xA;This option can speed up the detection of server changes dramatically but excludes the time range filter.}"/>
 
             </Grid>
-            <Button HorizontalAlignment="Left" Command="{Binding GetAccountSettingsCommand}" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">Get IMAP/POP3 account settings</Button>
-            <Button HorizontalAlignment="Right" Command="{Binding CreateDavResourceCommand}" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">Create DAV resource</Button>
-      <Button HorizontalAlignment="Right" Command="{Binding TestConnectionCommand}">Test or discover settings</Button>
+            <Button HorizontalAlignment="Left" Command="{Binding GetAccountSettingsCommand}" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"><g:Localize>Get IMAP/POP3 account settings</g:Localize></Button>
+            <Button HorizontalAlignment="Right" Command="{Binding CreateDavResourceCommand}" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"><g:Localize>Create DAV resource</g:Localize></Button>
+      <Button HorizontalAlignment="Right" Command="{Binding TestConnectionCommand}"><g:Localize>Test or discover settings</g:Localize></Button>
     </DockPanel>
   </GroupBox>
 </UserControl>

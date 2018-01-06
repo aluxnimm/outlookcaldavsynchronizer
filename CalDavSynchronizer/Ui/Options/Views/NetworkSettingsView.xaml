@@ -4,23 +4,24 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels"
+             xmlns:g="clr-namespace:CalDavSynchronizer.Globalization"
              mc:Ignorable="d"
              d:DataContext="{x:Static viewModels:NetworkSettingsViewModel.DesignInstance}">
 
   <DockPanel>
-    <GroupBox DockPanel.Dock="Top" Header="Advanced Network Settings" IsEnabled="{Binding ModelOptions.AreAdvancedNetWorkSettingsEnabled, Mode=OneTime}">
+    <GroupBox DockPanel.Dock="Top" Header="{g:Localize Advanced Network Settings}" IsEnabled="{Binding ModelOptions.AreAdvancedNetWorkSettingsEnabled, Mode=OneTime}">
       <StackPanel>
-        <CheckBox IsChecked="{Binding CloseConnectionAfterEachRequest}">Close connection after each request</CheckBox>
-        <CheckBox IsChecked="{Binding PreemptiveAuthentication}">Use preemptive authentication</CheckBox>
-        <CheckBox IsChecked="{Binding ForceBasicAuthentication}">Force Basic authentication</CheckBox>
+        <CheckBox IsChecked="{Binding CloseConnectionAfterEachRequest}"><g:Localize>Close connection after each request</g:Localize></CheckBox>
+        <CheckBox IsChecked="{Binding PreemptiveAuthentication}"><g:Localize>Use preemptive authentication</g:Localize></CheckBox>
+        <CheckBox IsChecked="{Binding ForceBasicAuthentication}"><g:Localize>Force Basic authentication</g:Localize></CheckBox>
       </StackPanel>
     </GroupBox>
-    <GroupBox Header="Proxy Settings">
+    <GroupBox Header="{g:Localize Proxy Settings}">
       <StackPanel>
-        <CheckBox IsChecked="{Binding ProxyUseDefault}">Use system default proxy (settings from IE and config file)</CheckBox>
+        <CheckBox IsChecked="{Binding ProxyUseDefault}"><g:Localize>Use system default proxy (settings from IE and config file)</g:Localize></CheckBox>
         <GroupBox >
           <GroupBox.Header>
-            <CheckBox Foreground="{x:Static SystemColors.ControlDarkDarkBrush}" FontWeight="Bold" Margin="0" IsChecked="{Binding ProxyUseManual}">Use manual proxy configuration</CheckBox>
+            <CheckBox Foreground="{x:Static SystemColors.ControlDarkDarkBrush}" FontWeight="Bold" Margin="0" IsChecked="{Binding ProxyUseManual}"><g:Localize>Use manual proxy configuration</g:Localize></CheckBox>
           </GroupBox.Header>
           <Grid IsEnabled="{Binding ProxyUseManual}">
             <Grid.ColumnDefinitions>
@@ -33,13 +34,13 @@
               <RowDefinition />
             </Grid.RowDefinitions>
 
-            <TextBlock>Proxy URL:</TextBlock>
+            <TextBlock><g:Localize>Proxy URL:</g:Localize></TextBlock>
             <TextBox Text="{Binding ProxyUrl}" Grid.Row="0" Grid.Column="1" />
 
-            <TextBlock Grid.Row="1" Grid.Column="0">Username (optional):</TextBlock>
+            <TextBlock Grid.Row="1" Grid.Column="0"><g:Localize>Username (optional):</g:Localize></TextBlock>
             <TextBox Text="{Binding ProxyUserName}" Grid.Row="1" Grid.Column="1" />
 
-            <TextBlock Grid.Row="2" Grid.Column="0">Password (optional):</TextBlock>
+            <TextBlock Grid.Row="2" Grid.Column="0"><g:Localize>Password (optional):</g:Localize></TextBlock>
             <PasswordBox x:Name="_passwordBox"
                      PasswordChar="*" 
                      Grid.Row="2" Grid.Column="1" />

@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Reports.ViewModels"
              xmlns:views="clr-namespace:CalDavSynchronizer.Ui.Reports.Views"
+             xmlns:g="clr-namespace:CalDavSynchronizer.Globalization"
              mc:Ignorable="d" 
            
              d:DataContext="{x:Static viewModels:ReportViewModel.DesignInstance}">
@@ -39,25 +40,25 @@
           <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TextBlock FontWeight="Bold">Profile name:</TextBlock>
+        <TextBlock FontWeight="Bold"><g:Localize>Profile name:</g:Localize></TextBlock>
         <TextBox IsReadOnly="True" Grid.Row="0" Grid.Column="1"  Text="{Binding Report.ProfileName, Mode=OneTime}" />
 
-        <TextBlock FontWeight="Bold" Grid.Row="1" Grid.Column="0">Profile Id:</TextBlock>
+        <TextBlock FontWeight="Bold" Grid.Row="1" Grid.Column="0"><g:Localize>Profile Id:</g:Localize></TextBlock>
         <TextBox IsReadOnly="True" Grid.Row="1" Grid.Column="1" Text="{Binding Report.ProfileId, Mode=OneTime}" />
 
-        <TextBlock FontWeight="Bold" Grid.Row="2" Grid.Column="0">StartTime:</TextBlock>
+        <TextBlock FontWeight="Bold" Grid.Row="2" Grid.Column="0"><g:Localize>StartTime:</g:Localize></TextBlock>
         <TextBox IsReadOnly="True" Grid.Row="2" Grid.Column="1" Text="{Binding Report.StartTime, Mode=OneTime}" />
 
-        <TextBlock FontWeight="Bold" Grid.Row="3" Grid.Column="0">Duration:</TextBlock>
+        <TextBlock FontWeight="Bold" Grid.Row="3" Grid.Column="0"><g:Localize>Duration:</g:Localize></TextBlock>
         <TextBox IsReadOnly="True" Grid.Row="3" Grid.Column="1" Text="{Binding Report.Duration, Mode=OneTime}" />
 
-        <TextBlock FontWeight="Bold" Grid.Row="4" Grid.Column="0">Outlook Delta:</TextBlock>
+        <TextBlock FontWeight="Bold" Grid.Row="4" Grid.Column="0"><g:Localize>Outlook Delta:</g:Localize></TextBlock>
         <TextBox IsReadOnly="True" Grid.Row="4" Grid.Column="1" Text="{Binding Report.ADelta, Mode=OneTime}" />
 
-        <TextBlock FontWeight="Bold" Grid.Row="5" Grid.Column="0">Server Delta:</TextBlock>
+        <TextBlock FontWeight="Bold" Grid.Row="5" Grid.Column="0"><g:Localize>Server Delta:</g:Localize></TextBlock>
         <TextBox IsReadOnly="True" Grid.Row="5" Grid.Column="1" Text="{Binding Report.BDelta, Mode=OneTime}" />
 
-        <TextBlock FontWeight="Bold" Grid.Row="6" Grid.Column="0">Exception that lead to abortion:</TextBlock>
+                <TextBlock FontWeight="Bold" Grid.Row="6" Grid.Column="0"><g:Localize>Exception that lead to abortion:</g:Localize></TextBlock>
         <TextBox HorizontalScrollBarVisibility="Auto" IsReadOnly="True" Grid.Row="6" Grid.Column="1" Text="{Binding Report.ExceptionThatLeadToAbortion, Mode=OneTime}" />
 
       </Grid>
@@ -80,7 +81,7 @@
                 </DataGridTemplateColumn.CellTemplate>
               </DataGridTemplateColumn>
               <DataGridCheckBoxColumn Binding="{Binding IsAEntity}" Header="Outlook" IsReadOnly="True" />
-              <DataGridTextColumn Binding="{Binding Error}" Header="Error" IsReadOnly="True" />
+              <DataGridTextColumn Binding="{Binding Error}" Header="{g:Localize Error}" IsReadOnly="True" />
             </DataGrid.Columns>
           </DataGrid>
         </TabItem>
@@ -107,7 +108,7 @@
                 </Style>
               </DataGrid.ItemContainerStyle>
               <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Outlook Id" IsReadOnly="True" Width="100">
+                <DataGridTemplateColumn Header="{g:Localize Outlook Id}" IsReadOnly="True" Width="100">
                   <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
                       <TextBlock >
@@ -120,7 +121,7 @@
                     </DataTemplate>
                   </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Server Id" IsReadOnly="True" Width="100">
+                <DataGridTemplateColumn Header="{g:Localize Server Id}" IsReadOnly="True" Width="100">
                   <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
                       <TextBlock >
@@ -133,11 +134,11 @@
                     </DataTemplate>
                   </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Outlook Entity" Binding="{Binding ADisplayName}" Width="100">
+                <DataGridTextColumn Header="{g:Localize Outlook Entity}" Binding="{Binding ADisplayName}" Width="100">
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Server Entity" Binding="{Binding BDisplayName}" Width="100">
+                <DataGridTextColumn Header="{g:Localize Server Entity}" Binding="{Binding BDisplayName}" Width="100">
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Operation" Binding="{Binding Operation}" Width="70">
+                <DataGridTextColumn Header="{g:Localize Operation}" Binding="{Binding Operation}" Width="70">
                 </DataGridTextColumn>
               </DataGrid.Columns>
             </DataGrid>
