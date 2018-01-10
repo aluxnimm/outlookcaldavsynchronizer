@@ -120,12 +120,6 @@
   <data name="Trigger a partial synchronization run immediately after &amp;#x0a;an item is created changed or deleted in Outlook &amp;#x0a;(with a 10 seconds delay).&amp;#x0a;Meeting invitations are excluded from this to avoid duplicate meetings!" xml:space="preserve">
     <value>Trigger a partial synchronization run immediately after &amp;#x0a;an item is created changed or deleted in Outlook &amp;#x0a;(with a 10 seconds delay).&amp;#x0a;Meeting invitations are excluded from this to avoid duplicate meetings!</value>
   </data>
-  <data name="Merge Kolab folders to a common Outlook folder" xml:space="preserve">
-    <value>Merge Kolab folders to a common Outlook folder</value>
-  </data>
-  <data name="Easy Project Server Settings" xml:space="preserve">
-    <value>Easy Project Server Settings</value>
-  </data>
   <data name="Conflict resolution:" xml:space="preserve">
     <value>Conflict resolution:</value>
   </data>
@@ -143,9 +137,6 @@
   </data>
   <data name="Do not overwrite FileAs in Outlook" xml:space="preserve">
     <value>Do not overwrite FileAs in Outlook</value>
-  </data>
-  <data name="Use IMAP/POP3 account password" xml:space="preserve">
-    <value>Use IMAP/POP3 account password</value>
   </data>
   <data name="Use time range filter" xml:space="preserve">
     <value>Use time range filter</value>
@@ -189,14 +180,11 @@
   <data name="Options" xml:space="preserve">
     <value>Options</value>
   </data>
-  <data name="Advanced Network Settings" xml:space="preserve">
-    <value>Advanced Network Settings</value>
-  </data>
   <data name="Formatted" xml:space="preserve">
     <value>Formatted</value>
   </data>
-  <data name="Maps changes from Outlook to server but do not update changes from server to Outlook after the initial sync. Useful if another mobile client reduces the photo resolution for example." xml:space="preserve">
-    <value>Maps changes from Outlook to server but do not update changes from server to Outlook after the initial sync. Useful if another mobile client reduces the photo resolution for example.</value>
+  <data name="Map Contact Photo" xml:space="preserve">
+    <value>Kontaktfoto synchronisieren</value>
   </data>
   <data name="Outlook custom property" xml:space="preserve">
     <value>Outlook custom property</value>
@@ -207,8 +195,8 @@
   <data name="Email address:" xml:space="preserve">
     <value>Email address:</value>
   </data>
-  <data name="WebDAV-Sync is a protocol extension that is defined in RFC 6578 and not supported by all servers.&amp;#xA;Test or discover settings will check if this is supported.&amp;#xA;This option can speed up the detection of server changes dramatically but excludes the time range filter." xml:space="preserve">
-    <value>WebDAV-Sync is a protocol extension that is defined in RFC 6578 and not supported by all servers.&amp;#xA;Test or discover settings will check if this is supported.&amp;#xA;This option can speed up the detection of server changes dramatically but excludes the time range filter.</value>
+  <data name="Synchronization timespan future (days):" xml:space="preserve">
+    <value>Synchronization timespan future (days):</value>
   </data>
   <data name="Enter the name of the Outlook category for filtering. &amp;#x0a;If the category does not exist it will be created in Outlook." xml:space="preserve">
     <value>Enter the name of the Outlook category for filtering. &amp;#x0a;If the category does not exist it will be created in Outlook.</value>
@@ -216,8 +204,11 @@
   <data name="Map Outlook Private flag to DAV CLASS:CONFIDENTIAL instead of PRIVATE" xml:space="preserve">
     <value>Map Outlook Private flag to DAV CLASS:CONFIDENTIAL instead of PRIVATE</value>
   </data>
-  <data name="Synchronization mode:" xml:space="preserve">
-    <value>Synchronization mode:</value>
+  <data name="Add new profile" xml:space="preserve">
+    <value>Add new profile</value>
+  </data>
+  <data name="StartTime:" xml:space="preserve">
+    <value>StartTime:</value>
   </data>
   <data name="Cleanup duplicate events after each sync run" xml:space="preserve">
     <value>Cleanup duplicate events after each sync run</value>
@@ -236,6 +227,9 @@
   </data>
   <data name="Choose the used format for DAV contact groups.&amp;#x0a;SOGO uses its own VLIST format to store contact groups.&amp;#x0a;For other CardDAV servers choose the vCard with KIND:group format &amp;#x0a;and for iCloud the iCloud group format." xml:space="preserve">
     <value>Choose the used format for DAV contact groups.&amp;#x0a;SOGO uses its own VLIST format to store contact groups.&amp;#x0a;For other CardDAV servers choose the vCard with KIND:group format &amp;#x0a;and for iCloud the iCloud group format.</value>
+  </data>
+  <data name="Profile Id:" xml:space="preserve">
+    <value>Profile Id:</value>
   </data>
   <data name="Synchronize items immediately after change" xml:space="preserve">
     <value>Synchronize items immediately after change</value>
@@ -273,8 +267,11 @@
   <data name="Create events on server with downloaded IANA timezones" xml:space="preserve">
     <value>Create events on server with downloaded IANA timezones</value>
   </data>
-  <data name="Add new profile" xml:space="preserve">
-    <value>Add new profile</value>
+  <data name="Use IMAP/POP3 account password" xml:space="preserve">
+    <value>Use IMAP/POP3 account password</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
   </data>
   <data name="Use WebDAV collection sync" xml:space="preserve">
     <value>Use WebDAV collection sync</value>
@@ -309,6 +306,9 @@
   <data name="Don't use a time range less than 1 year if your calendar includes recurring events." xml:space="preserve">
     <value>Don't use a time range less than 1 year if your calendar includes recurring events.</value>
   </data>
+  <data name="Do not overwrite the contact photo in Outlook" xml:space="preserve">
+    <value>Do not overwrite the contact photo in Outlook</value>
+  </data>
   <data name="DAV X-attribute" xml:space="preserve">
     <value>DAV X-attribute</value>
   </data>
@@ -318,11 +318,14 @@
   <data name="Server Settings" xml:space="preserve">
     <value>Server Settings</value>
   </data>
+  <data name="Duration:" xml:space="preserve">
+    <value>Duration:</value>
+  </data>
   <data name="Expand all nodes" xml:space="preserve">
     <value>Expand all nodes</value>
   </data>
-  <data name="Do not overwrite the contact photo in Outlook" xml:space="preserve">
-    <value>Do not overwrite the contact photo in Outlook</value>
+  <data name="Take care, when changing settings for non-empty folders (see tooltip)" xml:space="preserve">
+    <value>Take care, when changing settings for non-empty folders (see tooltip)</value>
   </data>
   <data name="Test or discover settings" xml:space="preserve">
     <value>Test or discover settings</value>
@@ -348,8 +351,8 @@
   <data name="Chunk size:" xml:space="preserve">
     <value>Chunk size:</value>
   </data>
-  <data name="Use GlobalAppointmentID for UID attribute" xml:space="preserve">
-    <value>Use GlobalAppointmentID for UID attribute</value>
+  <data name="Exception that lead to abortion:" xml:space="preserve">
+    <value>Exception that lead to abortion:</value>
   </data>
   <data name="Do not send appointment notifications (from SOGo)" xml:space="preserve">
     <value>Do not send appointment notifications (from SOGo)</value>
@@ -357,8 +360,8 @@
   <data name="Negate filter and sync all tasks except this category" xml:space="preserve">
     <value>Negate filter and sync all tasks except this category</value>
   </data>
-  <data name="Username (optional):" xml:space="preserve">
-    <value>Username (optional):</value>
+  <data name="Easy Project Server Settings" xml:space="preserve">
+    <value>Easy Project Server Settings</value>
   </data>
   <data name="Add manual mapping pairs of Outlook custom properties and DAV X-attributes. &amp;#x0a;If properties do not exist &amp;#44; they are created. &amp;#x0a;The manual mapping overrules the general mapping of all Outlook custom attributes if both activated. &amp;#x0a;DAV attributes MUST start with X-" xml:space="preserve">
     <value>Add manual mapping pairs of Outlook custom properties and DAV X-attributes. &amp;#x0a;If properties do not exist &amp;#44; they are created. &amp;#x0a;The manual mapping overrules the general mapping of all Outlook custom attributes if both activated. &amp;#x0a;DAV attributes MUST start with X-</value>
@@ -374,6 +377,9 @@
   </data>
   <data name="Use UTC instead of Outlook appointment timezone for creating events on CalDAV server. &amp;#x0a;Not recommended for general use &amp;#x0a;because recurrence exceptions over DST changes can not be mapped and &amp;#x0a;appointments with different start and end timezones can not be represented." xml:space="preserve">
     <value>Use UTC instead of Outlook appointment timezone for creating events on CalDAV server. &amp;#x0a;Not recommended for general use &amp;#x0a;because recurrence exceptions over DST changes can not be mapped and &amp;#x0a;appointments with different start and end timezones can not be represented.</value>
+  </data>
+  <data name="Outlook Delta:" xml:space="preserve">
+    <value>Outlook Delta:</value>
   </data>
   <data name="Select Profile Type" xml:space="preserve">
     <value>Select Profile Type</value>
@@ -402,6 +408,12 @@
   <data name="Assign shortcut key:" xml:space="preserve">
     <value>Assign shortcut key:</value>
   </data>
+  <data name="WebDAV-Sync is a protocol extension that is defined in RFC 6578 and not supported by all servers.&amp;#xA;Test or discover settings will check if this is supported.&amp;#xA;This option can speed up the detection of server changes dramatically but excludes the time range filter." xml:space="preserve">
+    <value>WebDAV-Sync is a protocol extension that is defined in RFC 6578 and not supported by all servers.&amp;#xA;Test or discover settings will check if this is supported.&amp;#xA;This option can speed up the detection of server changes dramatically but excludes the time range filter.</value>
+  </data>
+  <data name="Enter the email address of the server identity. &amp;#x0a;It can also be used to discover the DAV URL if you leave the URL textbox empty." xml:space="preserve">
+    <value>Enter the email address of the server identity. &amp;#x0a;It can also be used to discover the DAV URL if you leave the URL textbox empty.</value>
+  </data>
   <data name="Write Instant Messenger addresses in vCard as IMPP attributes &amp;#x0a;(not supported by some servers e.g. SOGo) instead of X-PROTOCOL e.g. X-AIM" xml:space="preserve">
     <value>Write Instant Messenger addresses in vCard as IMPP attributes &amp;#x0a;(not supported by some servers e.g. SOGo) instead of X-PROTOCOL e.g. X-AIM</value>
   </data>
@@ -417,9 +429,6 @@
   <data name="Click to open configuration." xml:space="preserve">
     <value>Click to open configuration.</value>
   </data>
-  <data name="Synchronization timespan future (days):" xml:space="preserve">
-    <value>Synchronization timespan future (days):</value>
-  </data>
   <data name="These settings affect the filter which selects the items for synchronization.&amp;#x0a;If an item does not pass the filter it is treated as if it would not exist!&amp;#x0a;Changing these settings for non-empty folders can lead to deletions on the server or duplicates in Outlook." xml:space="preserve">
     <value>These settings affect the filter which selects the items for synchronization.&amp;#x0a;If an item does not pass the filter it is treated as if it would not exist!&amp;#x0a;Changing these settings for non-empty folders can lead to deletions on the server or duplicates in Outlook.</value>
   </data>
@@ -434,6 +443,9 @@
   </data>
   <data name="DAV contact group format" xml:space="preserve">
     <value>DAV contact group format</value>
+  </data>
+  <data name="Profile name:" xml:space="preserve">
+    <value>Profile name:</value>
   </data>
   <data name="Use preemptive authentication" xml:space="preserve">
     <value>Use preemptive authentication</value>
@@ -453,8 +465,8 @@
   <data name="Do autodiscovery" xml:space="preserve">
     <value>Do autodiscovery</value>
   </data>
-  <data name="Create events on server in UTC" xml:space="preserve">
-    <value>Create events on server in UTC</value>
+  <data name="Maps changes from Outlook to server but do not update changes from server to Outlook after the initial sync. Useful if another mobile client reduces the photo resolution for example." xml:space="preserve">
+    <value>Maps changes from Outlook to server but do not update changes from server to Outlook after the initial sync. Useful if another mobile client reduces the photo resolution for example.</value>
   </data>
   <data name="Default IM protocol:" xml:space="preserve">
     <value>Default IM protocol:</value>
@@ -498,8 +510,8 @@
   <data name="Test settings" xml:space="preserve">
     <value>Test settings</value>
   </data>
-  <data name="Assign category color when OK is clicked." xml:space="preserve">
-    <value>Assign category color when OK is clicked.</value>
+  <data name="Mapping Errors:" xml:space="preserve">
+    <value>Mapping Errors:</value>
   </data>
   <data name="General Task Mapping Settings" xml:space="preserve">
     <value>General Task Mapping Settings</value>
@@ -522,11 +534,17 @@
   <data name="Scheduling Settings" xml:space="preserve">
     <value>Scheduling Settings</value>
   </data>
+  <data name="Use GlobalAppointmentID for UID attribute" xml:space="preserve">
+    <value>Use GlobalAppointmentID for UID attribute</value>
+  </data>
   <data name="Custom Properties Mapping Configuration" xml:space="preserve">
     <value>Custom Properties Mapping Configuration</value>
   </data>
-  <data name="Convert formatted RTF Body of Outlook appointment to Html and export it as X-ALT-DESC property.&amp;#x0a;The RTF to Html conversion is experimental inline images and some formatting properties can not be converted!&amp;#x0a;Be aware that some servers like Google Calendar drop this attribute!" xml:space="preserve">
-    <value>Convert formatted RTF Body of Outlook appointment to Html and export it as X-ALT-DESC property.&amp;#x0a;The RTF to Html conversion is experimental inline images and some formatting properties can not be converted!&amp;#x0a;Be aware that some servers like Google Calendar drop this attribute!</value>
+  <data name="Advanced Network Settings" xml:space="preserve">
+    <value>Advanced Network Settings</value>
+  </data>
+  <data name="Assign category color when OK is clicked." xml:space="preserve">
+    <value>Assign category color when OK is clicked.</value>
   </data>
   <data name="Set DAV calendar color" xml:space="preserve">
     <value>Set DAV calendar color</value>
@@ -542,6 +560,9 @@
   </data>
   <data name="Sync only tasks with this category:" xml:space="preserve">
     <value>Sync only tasks with this category:</value>
+  </data>
+  <data name="Synchronization mode:" xml:space="preserve">
+    <value>Synchronization mode:</value>
   </data>
   <data name="Password (optional):" xml:space="preserve">
     <value>Password (optional):</value>
@@ -573,14 +594,17 @@
   <data name="Map Body" xml:space="preserve">
     <value>Map Body</value>
   </data>
+  <data name="Create events on server in UTC" xml:space="preserve">
+    <value>Create events on server in UTC</value>
+  </data>
   <data name="Convert numbers like +1 23 45678 9 &amp;#x0a;to +1 (23) 45678 - 9 &amp;#x0a;so that Outlook can show country and area code." xml:space="preserve">
     <value>Convert numbers like +1 23 45678 9 &amp;#x0a;to +1 (23) 45678 - 9 &amp;#x0a;so that Outlook can show country and area code.</value>
   </data>
+  <data name="Mapping Warnings:" xml:space="preserve">
+    <value>Mapping Warnings:</value>
+  </data>
   <data name="Clear cache of selected profile" xml:space="preserve">
     <value>Clear cache of selected profile</value>
-  </data>
-  <data name="Enter the email address of the server identity. &amp;#x0a;It can also be used to discover the DAV URL if you leave the url textbox empty." xml:space="preserve">
-    <value>Enter the email address of the server identity. &amp;#x0a;It can also be used to discover the DAV URL if you leave the url textbox empty.</value>
   </data>
   <data name="Outlook Entity" xml:space="preserve">
     <value>Outlook Entity</value>
@@ -600,6 +624,9 @@
   <data name="Delete selected profile" xml:space="preserve">
     <value>Delete selected profile</value>
   </data>
+  <data name="Username (optional):" xml:space="preserve">
+    <value>Username (optional):</value>
+  </data>
   <data name="Synchronization timespan past (days):" xml:space="preserve">
     <value>Synchronization timespan past (days):</value>
   </data>
@@ -609,8 +636,8 @@
   <data name="Export Html description X-ALT-DESC converted from RTF Body" xml:space="preserve">
     <value>Export Html description X-ALT-DESC converted from RTF Body</value>
   </data>
-  <data name="Take care, when changing settings for non-empty folders (see tooltip)" xml:space="preserve">
-    <value>Take care, when changing settings for non-empty folders (see tooltip)</value>
+  <data name="Convert formatted RTF Body of Outlook appointment to Html and export it as X-ALT-DESC property.&amp;#x0a;The RTF to Html conversion is experimental inline images and some formatting properties can not be converted!&amp;#x0a;Be aware that some servers like Google Calendar drop this attribute!" xml:space="preserve">
+    <value>Convert formatted RTF Body of Outlook appointment to Html and export it as X-ALT-DESC property.&amp;#x0a;The RTF to Html conversion is experimental inline images and some formatting properties can not be converted!&amp;#x0a;Be aware that some servers like Google Calendar drop this attribute!</value>
   </data>
   <data name="Assign Kolab folders to distinct Outlook folders" xml:space="preserve">
     <value>Assign Kolab folders to distinct Outlook folders</value>
@@ -621,8 +648,8 @@
   <data name="Move selected profile down" xml:space="preserve">
     <value>Move selected profile down</value>
   </data>
-  <data name="Map Contact Photo" xml:space="preserve">
-    <value>Kontaktfoto synchronisieren</value>
+  <data name="Merge Kolab folders to a common Outlook folder" xml:space="preserve">
+    <value>Merge Kolab folders to a common Outlook folder</value>
   </data>
   <data name="Do not overwrite FileAs in Outlook with FN &amp;#x0a;Uses default FileAs as set in global Outlook options for new entries." xml:space="preserve">
     <value>Do not overwrite FileAs in Outlook with FN &amp;#x0a;Uses default FileAs as set in global Outlook options for new entries.</value>
@@ -636,7 +663,7 @@
   <data name="Choose the default Instant Messenger protocol.&amp;#x0a;You can add other protocols with protocol: address" xml:space="preserve">
     <value>Choose the default Instant Messenger protocol.&amp;#x0a;You can add other protocols with protocol: address</value>
   </data>
-  <data name="Status" xml:space="preserve">
-    <value>Status</value>
+  <data name="Server Delta:" xml:space="preserve">
+    <value>Server Delta:</value>
   </data>
 </root>
