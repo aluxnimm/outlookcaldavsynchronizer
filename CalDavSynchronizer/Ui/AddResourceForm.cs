@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Ui.Options;
 
 namespace CalDavSynchronizer.Ui
@@ -42,7 +43,7 @@ namespace CalDavSynchronizer.Ui
       }
       else
       {
-        MessageBox.Show ("Resource Displayname must not be empty!", OptionTasks.CreateDavResourceCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show (Strings.Get($"Resource displayname must not be empty!"), OptionTasks.CreateDavResourceCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
 

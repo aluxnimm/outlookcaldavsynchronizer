@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Ui.ConnectionTests;
 using CalDavSynchronizer.Ui.Options.ResourceSelection.ViewModels;
 using CalDavSynchronizer.Utilities;
@@ -151,7 +152,7 @@ namespace CalDavSynchronizer.Ui.Options
     {
       var folderColumn = dataGridView.Columns[nameof(ResourceDataViewModelBase.SelectedFolder)];
       folderColumn.Visible = true;
-      folderColumn.HeaderText = "Selected Outlook Folder";
+      folderColumn.HeaderText = Strings.Get($"Selected Outlook Folder");
       folderColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
       var selectFolderColumn = new DataGridViewButtonColumn();
@@ -179,7 +180,7 @@ namespace CalDavSynchronizer.Ui.Options
           {
             if (Array.IndexOf (allowedFolderType, folder.DefaultItemType) == -1)
             {
-              MessageBox.Show ($"Folder has to have item type '{String.Join (", ", allowedFolderType)}'.", "Select folder", MessageBoxButtons.OK, MessageBoxIcon.Error);
+              MessageBox.Show (Strings.Get($"Folder has to have item type '{String.Join (", ", allowedFolderType)}'."), Strings.Get($"Select folder"), MessageBoxButtons.OK, MessageBoxIcon.Error);
               return;
             }
 
@@ -296,7 +297,7 @@ namespace CalDavSynchronizer.Ui.Options
       if (visibleGrid.SelectedRows.Count == 0)
       {
         ResourceType = ResourceType.None;
-        MessageBox.Show ("No ressource selected!");
+        MessageBox.Show (Strings.Get($"No ressource selected!"));
       }
       else
       {

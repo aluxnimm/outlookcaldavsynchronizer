@@ -120,6 +120,12 @@
   <data name="Trigger a partial synchronization run immediately after &amp;#x0a;an item is created changed or deleted in Outlook &amp;#x0a;(with a 10 seconds delay).&amp;#x0a;Meeting invitations are excluded from this to avoid duplicate meetings!" xml:space="preserve">
     <value>Trigger a partial synchronization run immediately after &amp;#x0a;an item is created changed or deleted in Outlook &amp;#x0a;(with a 10 seconds delay).&amp;#x0a;Meeting invitations are excluded from this to avoid duplicate meetings!</value>
   </data>
+  <data name="Merge Kolab folders to a common Outlook folder" xml:space="preserve">
+    <value>Merge Kolab folders to a common Outlook folder</value>
+  </data>
+  <data name="Easy Project Server Settings" xml:space="preserve">
+    <value>Easy Project Server Settings</value>
+  </data>
   <data name="Conflict resolution:" xml:space="preserve">
     <value>Conflict resolution:</value>
   </data>
@@ -180,6 +186,9 @@
   <data name="Options" xml:space="preserve">
     <value>Options</value>
   </data>
+  <data name="Create DAV server resource" xml:space="preserve">
+    <value>Create DAV server resource</value>
+  </data>
   <data name="Formatted" xml:space="preserve">
     <value>Formatted</value>
   </data>
@@ -206,6 +215,9 @@
   </data>
   <data name="Add new profile" xml:space="preserve">
     <value>Add new profile</value>
+  </data>
+  <data name="Use system default proxy (settings from IE and config file)" xml:space="preserve">
+    <value>Use system default proxy (settings from IE and config file)</value>
   </data>
   <data name="StartTime:" xml:space="preserve">
     <value>StartTime:</value>
@@ -236,9 +248,6 @@
   </data>
   <data name="Proxy URL:" xml:space="preserve">
     <value>Proxy URL:</value>
-  </data>
-  <data name="Fetch color" xml:space="preserve">
-    <value>Fetch color</value>
   </data>
   <data name="Server Entity" xml:space="preserve">
     <value>Server Entity</value>
@@ -306,6 +315,9 @@
   <data name="Don't use a time range less than 1 year if your calendar includes recurring events." xml:space="preserve">
     <value>Don't use a time range less than 1 year if your calendar includes recurring events.</value>
   </data>
+  <data name="Can't access Outlook item, maybe it was moved or deleted!" xml:space="preserve">
+    <value>Can't access Outlook item, maybe it was moved or deleted!</value>
+  </data>
   <data name="Do not overwrite the contact photo in Outlook" xml:space="preserve">
     <value>Do not overwrite the contact photo in Outlook</value>
   </data>
@@ -351,8 +363,8 @@
   <data name="Chunk size:" xml:space="preserve">
     <value>Chunk size:</value>
   </data>
-  <data name="Exception that lead to abortion:" xml:space="preserve">
-    <value>Exception that lead to abortion:</value>
+  <data name="Use GlobalAppointmentID for UID attribute" xml:space="preserve">
+    <value>Use GlobalAppointmentID for UID attribute</value>
   </data>
   <data name="Do not send appointment notifications (from SOGo)" xml:space="preserve">
     <value>Do not send appointment notifications (from SOGo)</value>
@@ -360,8 +372,8 @@
   <data name="Negate filter and sync all tasks except this category" xml:space="preserve">
     <value>Negate filter and sync all tasks except this category</value>
   </data>
-  <data name="Easy Project Server Settings" xml:space="preserve">
-    <value>Easy Project Server Settings</value>
+  <data name="Resource displayname must not be empty!" xml:space="preserve">
+    <value>Resource displayname must not be empty!</value>
   </data>
   <data name="Add manual mapping pairs of Outlook custom properties and DAV X-attributes. &amp;#x0a;If properties do not exist &amp;#44; they are created. &amp;#x0a;The manual mapping overrules the general mapping of all Outlook custom attributes if both activated. &amp;#x0a;DAV attributes MUST start with X-" xml:space="preserve">
     <value>Add manual mapping pairs of Outlook custom properties and DAV X-attributes. &amp;#x0a;If properties do not exist &amp;#44; they are created. &amp;#x0a;The manual mapping overrules the general mapping of all Outlook custom attributes if both activated. &amp;#x0a;DAV attributes MUST start with X-</value>
@@ -399,6 +411,9 @@
   <data name="Discover resources and assign to Outlook folders" xml:space="preserve">
     <value>Discover resources and assign to Outlook folders</value>
   </data>
+  <data name="Exception that lead to abortion:" xml:space="preserve">
+    <value>Exception that lead to abortion:</value>
+  </data>
   <data name="Changing the time range filter setting leads to deletion of the sync cache &amp;#x0a;and a complete resync of the calendar!" xml:space="preserve">
     <value>Changing the time range filter setting leads to deletion of the sync cache &amp;#x0a;and a complete resync of the calendar!</value>
   </data>
@@ -414,11 +429,11 @@
   <data name="Enter the email address of the server identity. &amp;#x0a;It can also be used to discover the DAV URL if you leave the URL textbox empty." xml:space="preserve">
     <value>Enter the email address of the server identity. &amp;#x0a;It can also be used to discover the DAV URL if you leave the URL textbox empty.</value>
   </data>
-  <data name="Write Instant Messenger addresses in vCard as IMPP attributes &amp;#x0a;(not supported by some servers e.g. SOGo) instead of X-PROTOCOL e.g. X-AIM" xml:space="preserve">
-    <value>Write Instant Messenger addresses in vCard as IMPP attributes &amp;#x0a;(not supported by some servers e.g. SOGo) instead of X-PROTOCOL e.g. X-AIM</value>
-  </data>
   <data name="No reports available!" xml:space="preserve">
     <value>No reports available!</value>
+  </data>
+  <data name="Set RTF Body from X-ALT-DESC Html description" xml:space="preserve">
+    <value>Set RTF Body from X-ALT-DESC Html description</value>
   </data>
   <data name="Outlook automatically creates birthday appointments in your calendar &amp;#x0a;when the birthday is added to a contact item." xml:space="preserve">
     <value>Outlook automatically creates birthday appointments in your calendar &amp;#x0a;when the birthday is added to a contact item.</value>
@@ -426,17 +441,14 @@
   <data name="Export profiles to file" xml:space="preserve">
     <value>Export profiles to file</value>
   </data>
-  <data name="Click to open configuration." xml:space="preserve">
-    <value>Click to open configuration.</value>
-  </data>
   <data name="These settings affect the filter which selects the items for synchronization.&amp;#x0a;If an item does not pass the filter it is treated as if it would not exist!&amp;#x0a;Changing these settings for non-empty folders can lead to deletions on the server or duplicates in Outlook." xml:space="preserve">
     <value>These settings affect the filter which selects the items for synchronization.&amp;#x0a;If an item does not pass the filter it is treated as if it would not exist!&amp;#x0a;Changing these settings for non-empty folders can lead to deletions on the server or duplicates in Outlook.</value>
   </data>
   <data name="Map Outlook EmailAddress1 to WORK instead of HOME" xml:space="preserve">
     <value>Map Outlook EmailAddress1 to WORK instead of HOME</value>
   </data>
-  <data name="Set RTF Body from X-ALT-DESC Html description" xml:space="preserve">
-    <value>Set RTF Body from X-ALT-DESC Html description</value>
+  <data name="Synchronization timespan past (days):" xml:space="preserve">
+    <value>Synchronization timespan past (days):</value>
   </data>
   <data name="Error" xml:space="preserve">
     <value>Error</value>
@@ -456,9 +468,6 @@
   <data name="Automatically create Outlook folders" xml:space="preserve">
     <value>Automatically create Outlook folders</value>
   </data>
-  <data name="Use full IANA timezone definition with historical data. &amp;#x0a;Needs more bandwith and can be incompatible when manually importing in Outlook." xml:space="preserve">
-    <value>Use full IANA timezone definition with historical data. &amp;#x0a;Needs more bandwith and can be incompatible when manually importing in Outlook.</value>
-  </data>
   <data name="Copy selected profile" xml:space="preserve">
     <value>Copy selected profile</value>
   </data>
@@ -470,6 +479,12 @@
   </data>
   <data name="Default IM protocol:" xml:space="preserve">
     <value>Default IM protocol:</value>
+  </data>
+  <data name="No newer version available." xml:space="preserve">
+    <value>No newer version available.</value>
+  </data>
+  <data name="Server Delta:" xml:space="preserve">
+    <value>Server Delta:</value>
   </data>
   <data name="Assign shortcut key when OK is clicked." xml:space="preserve">
     <value>Assign shortcut key when OK is clicked.</value>
@@ -519,6 +534,9 @@
   <data name="Collapse all nodes" xml:space="preserve">
     <value>Collapse all nodes</value>
   </data>
+  <data name="Add calendar resource on server" xml:space="preserve">
+    <value>Add calendar resource on server</value>
+  </data>
   <data name="Map Outlook EmailAddress1 to vCard email with TYPE WORK &amp;#x0a;and Outlook EmailAddress2 to vCard email with TYPE HOME instead of vice-versa." xml:space="preserve">
     <value>Map Outlook EmailAddress1 to vCard email with TYPE WORK &amp;#x0a;and Outlook EmailAddress2 to vCard email with TYPE HOME instead of vice-versa.</value>
   </data>
@@ -528,14 +546,14 @@
   <data name="Outlook Id" xml:space="preserve">
     <value>Outlook Id</value>
   </data>
+  <data name="Add addressbook resource on server" xml:space="preserve">
+    <value>Add addressbook resource on server</value>
+  </data>
   <data name="Map event color to category" xml:space="preserve">
     <value>Map event color to category</value>
   </data>
   <data name="Scheduling Settings" xml:space="preserve">
     <value>Scheduling Settings</value>
-  </data>
-  <data name="Use GlobalAppointmentID for UID attribute" xml:space="preserve">
-    <value>Use GlobalAppointmentID for UID attribute</value>
   </data>
   <data name="Custom Properties Mapping Configuration" xml:space="preserve">
     <value>Custom Properties Mapping Configuration</value>
@@ -621,14 +639,17 @@
   <data name="Show Advanced Settings" xml:space="preserve">
     <value>Show Advanced Settings</value>
   </data>
+  <data name="Not supported in OL 2007." xml:space="preserve">
+    <value>Wird in Outlook 2007 nicht unterstützt</value>
+  </data>
   <data name="Delete selected profile" xml:space="preserve">
     <value>Delete selected profile</value>
   </data>
   <data name="Username (optional):" xml:space="preserve">
     <value>Username (optional):</value>
   </data>
-  <data name="Synchronization timespan past (days):" xml:space="preserve">
-    <value>Synchronization timespan past (days):</value>
+  <data name="Write Instant Messenger addresses in vCard as IMPP attributes &amp;#x0a;(not supported by some servers e.g. SOGo) instead of X-PROTOCOL e.g. X-AIM" xml:space="preserve">
+    <value>Write Instant Messenger addresses in vCard as IMPP attributes &amp;#x0a;(not supported by some servers e.g. SOGo) instead of X-PROTOCOL e.g. X-AIM</value>
   </data>
   <data name="Edit URL" xml:space="preserve">
     <value>Edit URL</value>
@@ -642,20 +663,20 @@
   <data name="Assign Kolab folders to distinct Outlook folders" xml:space="preserve">
     <value>Assign Kolab folders to distinct Outlook folders</value>
   </data>
-  <data name="Use system default proxy (settings from IE and config file)" xml:space="preserve">
-    <value>Use system default proxy (settings from IE and config file)</value>
+  <data name="Use full IANA timezone definition with historical data. &amp;#x0a;Needs more bandwith and can be incompatible when manually importing in Outlook." xml:space="preserve">
+    <value>Use full IANA timezone definition with historical data. &amp;#x0a;Needs more bandwith and can be incompatible when manually importing in Outlook.</value>
   </data>
   <data name="Move selected profile down" xml:space="preserve">
     <value>Move selected profile down</value>
   </data>
-  <data name="Merge Kolab folders to a common Outlook folder" xml:space="preserve">
-    <value>Merge Kolab folders to a common Outlook folder</value>
+  <data name="Click to open configuration." xml:space="preserve">
+    <value>Click to open configuration.</value>
   </data>
   <data name="Do not overwrite FileAs in Outlook with FN &amp;#x0a;Uses default FileAs as set in global Outlook options for new entries." xml:space="preserve">
     <value>Do not overwrite FileAs in Outlook with FN &amp;#x0a;Uses default FileAs as set in global Outlook options for new entries.</value>
   </data>
-  <data name="Not supported in OL 2007." xml:space="preserve">
-    <value>Wird in Outlook 2007 nicht unterstützt</value>
+  <data name="Fetch color" xml:space="preserve">
+    <value>Fetch color</value>
   </data>
   <data name="Task start date will be mapped to 00:00 and Task due date to 23:59 without timezone.&amp;#x0a;Enable this if clients with different timezones are used and the due date should be local." xml:space="preserve">
     <value>Task start date will be mapped to 00:00 and Task due date to 23:59 without timezone.&amp;#x0a;Enable this if clients with different timezones are used and the due date should be local.</value>
@@ -663,7 +684,7 @@
   <data name="Choose the default Instant Messenger protocol.&amp;#x0a;You can add other protocols with protocol: address" xml:space="preserve">
     <value>Choose the default Instant Messenger protocol.&amp;#x0a;You can add other protocols with protocol: address</value>
   </data>
-  <data name="Server Delta:" xml:space="preserve">
-    <value>Server Delta:</value>
+  <data name="Connection test successful." xml:space="preserve">
+    <value>Connection test successful.</value>
   </data>
 </root>

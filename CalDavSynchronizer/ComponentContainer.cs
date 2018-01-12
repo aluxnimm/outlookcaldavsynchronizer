@@ -700,7 +700,7 @@ namespace CalDavSynchronizer
         var availableVersion = await Task.Run ((Func<Version>) _availableVersionService.GetVersionOfDefaultDownload);
         if (availableVersion == null)
         {
-          MessageBox.Show ("Did not find any default Version!", MessageBoxTitle);
+          MessageBox.Show (Strings.Get($"Did not find any default version!"), MessageBoxTitle);
           return;
         }
 
@@ -715,7 +715,7 @@ namespace CalDavSynchronizer
         }
         else
         {
-          MessageBox.Show ("No newer Version available.", MessageBoxTitle);
+          MessageBox.Show (Strings.Get($"No newer version available."), MessageBoxTitle);
         }
       }
       catch (Exception x)
@@ -740,13 +740,13 @@ namespace CalDavSynchronizer
           options.ShouldCheckForNewerVersions = false;
           _generalOptionsDataAccess.SaveOptions (options);
 
-          MessageBox.Show ("Automatic check for newer version turned off.", MessageBoxTitle);
+          MessageBox.Show (Strings.Get($"Automatic check for newer version turned off."), MessageBoxTitle);
         };
 
         form.IgnoreThisVersion += delegate
         {
           _generalOptionsDataAccess.IgnoreUpdatesTilVersion = e.NewVersion;
-          MessageBox.Show (string.Format ("Waiting for newer version than '{0}'.", e.NewVersion),  MessageBoxTitle);
+          MessageBox.Show (Strings.Get($"Waiting for newer version than '{e.NewVersion}'."),  MessageBoxTitle);
         };
 
         form.ShowDialog();
@@ -892,7 +892,7 @@ namespace CalDavSynchronizer
       }
       catch (COMException ex)
       {
-        MessageBox.Show ("Can't access Outlook item, maybe it was moved or deleted!", MessageBoxTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show (Strings.Get($"Can't access Outlook item, maybe it was moved or deleted!"), MessageBoxTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
         s_logger.Warn ("Can't access Outlook item, maybe it was moved or deleted!", ex);
       }
     }
@@ -944,7 +944,7 @@ namespace CalDavSynchronizer
     {
       if (entityOrNull == null)
       {
-        MessageBox.Show ("The selected entity does not exist anymore.");
+        MessageBox.Show (Strings.Get($"The selected entity does not exist anymore."));
         return;
       }
 
@@ -961,7 +961,7 @@ namespace CalDavSynchronizer
       var allOptions = _optionsDataAccess.Load ();
       var options = allOptions.FirstOrDefault (o => o.Id == synchronizationProfileId);
       if (options == null)
-        MessageBox.Show ("The profile for the selected report doesn't exist anymore!");
+        MessageBox.Show (Strings.Get($"The profile for the selected report doesn't exist anymore!"));
       return options;
     }
 

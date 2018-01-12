@@ -27,6 +27,7 @@ using System.Windows;
 using System.Windows.Input;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Ui.Options.Models;
@@ -109,7 +110,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
         string message = null;
         for (Exception ex = x; ex != null; ex = ex.InnerException)
           message += ex.Message + Environment.NewLine;
-        MessageBox.Show(message, "Account settings");
+        MessageBox.Show(message, Strings.Get($"Account settings"));
       }
       finally
       {

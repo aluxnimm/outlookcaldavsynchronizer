@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using System.Windows.Forms;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Ui.ConnectionTests;
 using CalDavSynchronizer.Ui.Options.Models;
@@ -45,7 +46,7 @@ namespace CalDavSynchronizer.Ui.Options
         {
           options.SynchronizationMode = readOnlyDefaultMode;
           MessageBox.Show(
-              $"The specified Url is a read-only calendar. Synchronization mode set to '{_enumDisplayNameProvider.Get(readOnlyDefaultMode)}'.",
+              Strings.Get($"The specified URL is a read-only calendar. Synchronization mode set to '{_enumDisplayNameProvider.Get(readOnlyDefaultMode)}'."),
               OptionTasks.ConnectionTestCaption);
         }
       }
@@ -57,7 +58,7 @@ namespace CalDavSynchronizer.Ui.Options
         {
           options.SynchronizationMode = readOnlyDefaultMode;
           MessageBox.Show(
-              $"The specified Url is a read-only addressbook. Synchronization mode set to '{_enumDisplayNameProvider.Get(readOnlyDefaultMode)}'.",
+              Strings.Get($"The specified URL is a read-only addressbook. Synchronization mode set to '{_enumDisplayNameProvider.Get(readOnlyDefaultMode)}'."),
               OptionTasks.ConnectionTestCaption);
         }
       }
@@ -65,13 +66,13 @@ namespace CalDavSynchronizer.Ui.Options
       if (options.SynchronizationMode == readOnlyDefaultMode && options.SelectedFolderOrNull?.ItemCount > 0)
       {
         MessageBox.Show(
-          $"Synchronization mode is set to '{_enumDisplayNameProvider.Get(readOnlyDefaultMode)}' and the selected Outlook folder is not empty. Are you sure, you want to select this folder because all items will be overwritten with the DAV server resources!",
+          Strings.Get($"Synchronization mode is set to '{_enumDisplayNameProvider.Get(readOnlyDefaultMode)}' and the selected Outlook folder is not empty. Are you sure, you want to select this folder because all items will be overwritten with the DAV server resources!"),
           OptionTasks.ConnectionTestCaption, MessageBoxButtons.OK, MessageBoxIcon.Warning);
       }
       else if (options.SynchronizationMode == SynchronizationMode.ReplicateOutlookIntoServer && options.SelectedFolderOrNull?.ItemCount == 0)
       {
         MessageBox.Show(
-          $"Synchronization mode is set to '{_enumDisplayNameProvider.Get(SynchronizationMode.ReplicateOutlookIntoServer)}' and the selected Outlook folder is empty. Are you sure, you want to select this folder, because all items on the DAV server will be deleted!",
+          Strings.Get($"Synchronization mode is set to '{_enumDisplayNameProvider.Get(SynchronizationMode.ReplicateOutlookIntoServer)}' and the selected Outlook folder is empty. Are you sure, you want to select this folder, because all items on the DAV server will be deleted!"),
           OptionTasks.ConnectionTestCaption, MessageBoxButtons.OK, MessageBoxIcon.Warning);
       }
     }
@@ -88,7 +89,7 @@ namespace CalDavSynchronizer.Ui.Options
       {
         options.UseWebDavCollectionSync = false;
         MessageBox.Show(
-          $"The specified Url doesn't support WebDav Collection Sync, the option will be disabled!'.",
+          Strings.Get($"The specified URL doesn't support WebDav Collection Sync, the option will be disabled!'."),
           OptionTasks.ConnectionTestCaption);
       }
     }

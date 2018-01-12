@@ -23,6 +23,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Globalization;
 using log4net;
 using log4net.Appender;
 
@@ -93,7 +94,7 @@ namespace CalDavSynchronizer.Ui.Options
       }
       else
       { 
-        MessageBox.Show (errorMessage, "Some options contain invalid values", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show (errorMessage, Strings.Get($"Some options contain invalid values"), MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
 
@@ -112,7 +113,7 @@ namespace CalDavSynchronizer.Ui.Options
         var timeout = int.Parse (_calDavConnectTimeoutTextBox.Text);
         if (timeout < 1)
         {
-          errorMessageBuilder.AppendLine ("- CalDavConnectTimeout must be > 0");
+          errorMessageBuilder.AppendLine (Strings.Get($"- CalDavConnectTimeout must be > 0"));
           isValid = false;
         }
         else
@@ -122,7 +123,7 @@ namespace CalDavSynchronizer.Ui.Options
       }
       catch (Exception)
       {
-        errorMessageBuilder.AppendLine ("- Invalid CalDavConnectTimeout");
+        errorMessageBuilder.AppendLine (Strings.Get($"- Invalid CalDavConnectTimeout"));
         isValid = false;
       }
       try
@@ -130,13 +131,13 @@ namespace CalDavSynchronizer.Ui.Options
         var maxReportAge = int.Parse (_maxReportAgeInDays.Text);
         if (maxReportAge < 1)
         {
-          errorMessageBuilder.AppendLine ("- Max Report Age must be > 0");
+          errorMessageBuilder.AppendLine (Strings.Get($"- Max Report Age must be > 0"));
           isValid = false;
         }
       }
       catch (Exception)
       {
-        errorMessageBuilder.AppendLine ("- Invalid Max Report Age");
+        errorMessageBuilder.AppendLine (Strings.Get($"- Invalid Max Report Age"));
         isValid = false;
       }
 
@@ -256,7 +257,7 @@ namespace CalDavSynchronizer.Ui.Options
     private void _showLogButton_Click (object sender, EventArgs e)
     {
       MessageBox.Show (
-          "Please be aware that the log file (especially with Log Level Debug) can contain 'Personally identifiable information' (PII) like resource URIs and raw calendar and/or addressbook data but no passwords.\nNever post or attach the log or a sync report in a public forum and mask sensitive data when sending as an e-mail!",
+          Strings.Get($"Please be aware that the log file (especially with Log Level Debug) can contain 'Personally identifiable information' (PII) like resource URIs and raw calendar and/or addressbook data but no passwords.\nNever post or attach the log or a sync report in a public forum and mask sensitive data when sending as an e-mail!"),
           ComponentContainer.MessageBoxTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning
         );
         ShowLogFile();

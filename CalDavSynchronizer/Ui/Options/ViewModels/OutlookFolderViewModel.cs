@@ -18,6 +18,7 @@ using System;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.ProfileTypes;
 using CalDavSynchronizer.Ui.Options.Models;
 using log4net;
@@ -74,8 +75,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       {
         if (!_model.SetFolder(folder))
         {
-          string wrongFolderMessage = string.Format("Wrong ItemType in folder '{0}'. It should be a calendar, task or contact folder.", folder.Name);
-          MessageBox.Show(wrongFolderMessage, "Configuration Error");
+          string wrongFolderMessage = Strings.Get($"Wrong ItemType in folder '{folder.Name}'. It should be a calendar, task or contact folder.");
+          MessageBox.Show(wrongFolderMessage, Strings.Get($"Configuration Error"));
           return;
         }
       }

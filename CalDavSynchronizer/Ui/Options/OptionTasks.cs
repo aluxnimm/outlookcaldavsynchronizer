@@ -22,6 +22,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.OAuth.Google;
@@ -41,8 +42,8 @@ namespace CalDavSynchronizer.Ui.Options
   {
     private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
 
-    public const string ConnectionTestCaption = "Test settings";
-    public const string CreateDavResourceCaption = "Create DAV server resource";
+    public static readonly string ConnectionTestCaption = Strings.Get($"Test settings");
+    public static readonly string CreateDavResourceCaption = Strings.Get($"Create DAV server resource");
     public const string GoogleDavBaseUrl = "https://apidata.googleusercontent.com/caldav/v2";
 
     private readonly IEnumDisplayNameProvider _enumDisplayNameProvider;
@@ -69,12 +70,12 @@ namespace CalDavSynchronizer.Ui.Options
 
       if (category.Contains(","))
       {
-        errorMessageBuilder.AppendLine("- The category name must not contain commas.");
+        errorMessageBuilder.AppendLine(Strings.Get($"- The category name must not contain commas."));
         result = false;
       }
       if (category.Contains(";"))
       {
-        errorMessageBuilder.AppendLine("- The category name must not contain semicolons.");
+        errorMessageBuilder.AppendLine(Strings.Get($"- The category name must not contain semicolons."));
         result = false;
       }
       return result;
@@ -86,20 +87,20 @@ namespace CalDavSynchronizer.Ui.Options
 
       if (string.IsNullOrWhiteSpace(webDavUrl))
       {
-        errorMessageBuilder.AppendLine("- The CalDav/CardDav Url is empty.");
-        errorMessageBuilder.AppendLine("- If you don't know the Url you can also enter the Email address and try to discover it.");
+        errorMessageBuilder.AppendLine(Strings.Get($"- The CalDav/CardDav URL is empty."));
+        errorMessageBuilder.AppendLine(Strings.Get($"- If you don't know the URL you can also enter the Email address and try to discover it."));
         return false;
       }
 
       if (webDavUrl.Trim() != webDavUrl)
       {
-        errorMessageBuilder.AppendLine("- The CalDav/CardDav Url cannot end/start with whitespaces.");
+        errorMessageBuilder.AppendLine(Strings.Get($"- The CalDav/CardDav URL cannot end/start with whitespaces."));
         result = false;
       }
 
       if (requiresTrailingSlash && !webDavUrl.EndsWith("/"))
       {
-        errorMessageBuilder.AppendLine("- The CalDav/CardDav Url has to end with a slash ('/').");
+        errorMessageBuilder.AppendLine(Strings.Get($"- The CalDav/CardDav URL has to end with a slash ('/')."));
         result = false;
       }
 
@@ -109,7 +110,7 @@ namespace CalDavSynchronizer.Ui.Options
       }
       catch (Exception x)
       {
-        errorMessageBuilder.AppendFormat("- The CalDav/CardDav Url is not a well formed Url. ({0})", x.Message);
+        errorMessageBuilder.AppendFormat(Strings.Get($"- The CalDav/CardDav URL is not a well formed URL. ({x.Message})"));
         errorMessageBuilder.AppendLine();
         result = false;
       }
@@ -121,7 +122,7 @@ namespace CalDavSynchronizer.Ui.Options
     {
       if (string.IsNullOrWhiteSpace(emailAddress))
       {
-        errorMessageBuilder.AppendLine("- The Email Address is empty.");
+        errorMessageBuilder.AppendLine(Strings.Get($"- The Email address is empty."));
         return false;
       }
       return ValidateEmailAddress(errorMessageBuilder, emailAddress);
@@ -136,7 +137,7 @@ namespace CalDavSynchronizer.Ui.Options
       }
       catch (Exception x)
       {
-        errorMessageBuilder.AppendFormat("- The Email Address is invalid. ({0})", x.Message);
+        errorMessageBuilder.AppendFormat(Strings.Get($"- The Email address is invalid. ({x.Message})"));
         errorMessageBuilder.AppendLine();
         return false;
       }
@@ -159,7 +160,7 @@ namespace CalDavSynchronizer.Ui.Options
 
       if (isCalendar && isAddressBook)
       {
-        errorMessageBuilder.AppendLine("- Ressources which are a calendar and an addressbook are not valid!");
+        errorMessageBuilder.AppendLine(Strings.Get($"- Ressources which are a calendar and an addressbook are not valid!"));
         hasError = true;
       }
 
@@ -170,13 +171,13 @@ namespace CalDavSynchronizer.Ui.Options
           {
             if (!result.CalendarProperties.HasFlag(CalendarProperties.CalendarAccessSupported))
             {
-              errorMessageBuilder.AppendLine("- The specified Url does not support calendar access.");
+              errorMessageBuilder.AppendLine(Strings.Get($"- The specified URL does not support calendar access."));
               hasError = true;
             }
 
             if (!result.CalendarProperties.HasFlag(CalendarProperties.SupportsCalendarQuery))
             {
-              errorMessageBuilder.AppendLine("- The specified Url does not support calendar queries. Some features like time range filter may not work!");
+              errorMessageBuilder.AppendLine(Strings.Get($"- The specified URL does not support calendar queries. Some features like time range filter may not work!"));
               hasWarning = true;
             }
 
@@ -185,26 +186,25 @@ namespace CalDavSynchronizer.Ui.Options
               if (!result.AccessPrivileges.HasFlag(AccessPrivileges.Modify))
               {
                 errorMessageBuilder.AppendFormat(
-                  "- The specified calendar is not writeable. Therefore it is not possible to use the synchronization mode '{0}'.",
-                  selectedSynchronizationModeDisplayName);
+                  Strings.Get($"- The specified calendar is not writeable. Therefore it is not possible to use the synchronization mode '{selectedSynchronizationModeDisplayName}'."));
                 errorMessageBuilder.AppendLine();
                 hasError = true;
               }
               if (!result.AccessPrivileges.HasFlag(AccessPrivileges.Create))
               {
-                errorMessageBuilder.AppendLine("- The specified calendar doesn't allow creation of appointments!");
+                errorMessageBuilder.AppendLine(Strings.Get($"- The specified calendar doesn't allow creation of appointments!"));
                 hasWarning = true;
               }
               if (!result.AccessPrivileges.HasFlag(AccessPrivileges.Delete))
               {
-                errorMessageBuilder.AppendLine("- The specified calendar doesn't allow deletion of appointments!");
+                errorMessageBuilder.AppendLine(Strings.Get($"- The specified calendar doesn't allow deletion of appointments!"));
                 hasWarning = true;
               }
             }
           }
           else
           {
-            errorMessageBuilder.AppendLine("- The specified Url is not a calendar!");
+            errorMessageBuilder.AppendLine(Strings.Get($"- The specified URL is not a calendar!"));
             hasError = true;
           }
           break;
@@ -214,7 +214,7 @@ namespace CalDavSynchronizer.Ui.Options
           {
             if (!result.AddressBookProperties.HasFlag(AddressBookProperties.AddressBookAccessSupported))
             {
-              errorMessageBuilder.AppendLine("- The specified Url does not support address books.");
+              errorMessageBuilder.AppendLine(Strings.Get($"- The specified URL does not support address books."));
               hasError = true;
             }
 
@@ -223,44 +223,44 @@ namespace CalDavSynchronizer.Ui.Options
               if (!result.AccessPrivileges.HasFlag(AccessPrivileges.Modify))
               {
                 errorMessageBuilder.AppendFormat(
-                  "- The specified address book is not writeable. Therefore it is not possible to use the synchronization mode '{0}'.",
-                  selectedSynchronizationModeDisplayName);
+                  Strings.Get(
+                    $"- The specified address book is not writeable. Therefore it is not possible to use the synchronization mode '{selectedSynchronizationModeDisplayName}'."));
                 errorMessageBuilder.AppendLine();
                 hasError = true;
               }
               if (!result.AccessPrivileges.HasFlag(AccessPrivileges.Create))
               {
-                errorMessageBuilder.AppendLine("- The specified address book doesn't allow creation of contacts!");
+                errorMessageBuilder.AppendLine(Strings.Get($"- The specified address book doesn't allow creation of contacts!"));
                 hasWarning = true;
               }
               if (!result.AccessPrivileges.HasFlag(AccessPrivileges.Delete))
               {
-                errorMessageBuilder.AppendLine("- The specified address book doesn't allow deletion of contacts!");
+                errorMessageBuilder.AppendLine(Strings.Get($"- The specified address book doesn't allow deletion of contacts!"));
                 hasWarning = true;
               }
             }
           }
           else
           {
-            errorMessageBuilder.AppendLine("- The specified Url is not an addressbook!");
+            errorMessageBuilder.AppendLine(Strings.Get($"- The specified URL is not an addressbook!"));
             hasError = true;
           }
           break;
         case OlItemType.olTaskItem:
           if (!isTaskList)
           {
-            errorMessageBuilder.AppendLine("- The specified Url is not an task list!");
+            errorMessageBuilder.AppendLine(Strings.Get($"- The specified URL is not an task list!"));
             hasError = true;
           }
           break;
       }
 
       if (hasError)
-        MessageBox.Show("Connection test NOT successful:" + Environment.NewLine + errorMessageBuilder, ConnectionTestCaption);
+        MessageBox.Show(Strings.Get($"Connection test NOT successful:") + Environment.NewLine + errorMessageBuilder, ConnectionTestCaption);
       else if (hasWarning)
-        MessageBox.Show("Connection test successful BUT:" + Environment.NewLine + errorMessageBuilder, ConnectionTestCaption, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        MessageBox.Show(Strings.Get($"Connection test successful BUT:") + Environment.NewLine + errorMessageBuilder, ConnectionTestCaption, MessageBoxButtons.OK, MessageBoxIcon.Warning);
       else
-        MessageBox.Show("Connection test successful.", ConnectionTestCaption);
+        MessageBox.Show(Strings.Get($"Connection test successful."), ConnectionTestCaption);
     }
 
     public static string DoSrvLookup(string serverEmail, OlItemType selectedOutlookFolderType, out bool success)
@@ -305,21 +305,21 @@ namespace CalDavSynchronizer.Ui.Options
           var calDavDataAccess = new CalDavDataAccess(davUri, webDavClient);
           using (var addResourceForm = new AddResourceForm(true))
           {
-            addResourceForm.Text = "Add calendar resource on server";
+            addResourceForm.Text = Strings.Get($"Add calendar resource on server");
             if (addResourceForm.ShowDialog() == DialogResult.OK)
             {
               try
               {
                 var newUri = await calDavDataAccess.AddResource(addResourceForm.ResourceName, addResourceForm.UseRandomUri);
-                MessageBox.Show($"Added calendar resource '{addResourceForm.ResourceName}' successfully!", CreateDavResourceCaption, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(Strings.Get($"Added calendar resource '{addResourceForm.ResourceName}' successfully!"), CreateDavResourceCaption, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 if (!await new CalDavDataAccess(newUri, webDavClient).SetCalendarColorNoThrow(new ArgbColor(addResourceForm.CalendarColor.ToArgb())))
-                  MessageBox.Show($"Can't set the calendar color!'", CreateDavResourceCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                  MessageBox.Show(Strings.Get($"Can't set the calendar color!'"), CreateDavResourceCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return newUri;
               }
               catch (Exception ex)
               {
                 s_logger.Error($"Can't add calendar resource '{addResourceForm.ResourceName}'", ex);
-                MessageBox.Show($"Can't add calendar resource '{addResourceForm.ResourceName}'", CreateDavResourceCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Strings.Get($"Can't add calendar resource '{addResourceForm.ResourceName}'"), CreateDavResourceCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
               }
 
             }
@@ -329,19 +329,19 @@ namespace CalDavSynchronizer.Ui.Options
           var cardDavDataAccess = new CardDavDataAccess(davUri, webDavClient, string.Empty, contentType => true);
           using (var addResourceForm = new AddResourceForm(false))
           {
-            addResourceForm.Text = "Add addressbook resource on server";
+            addResourceForm.Text = Strings.Get($"Add addressbook resource on server");
             if (addResourceForm.ShowDialog() == DialogResult.OK)
             {
               try
               {
                 var newUri = await cardDavDataAccess.AddResource(addResourceForm.ResourceName, addResourceForm.UseRandomUri);
-                MessageBox.Show($"Added addressbook resource '{addResourceForm.ResourceName}' successfully!", CreateDavResourceCaption, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(Strings.Get($"Added addressbook resource '{addResourceForm.ResourceName}' successfully!"), CreateDavResourceCaption, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return newUri;
               }
               catch (Exception ex)
               {
                 s_logger.Error($"Can't add addressbook resource '{addResourceForm.ResourceName}'", ex);
-                MessageBox.Show($"Can't add addressbook resource '{addResourceForm.ResourceName}'", CreateDavResourceCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Strings.Get($"Can't add addressbook resource '{addResourceForm.ResourceName}'"), CreateDavResourceCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
               }
             }
           }
@@ -519,7 +519,7 @@ namespace CalDavSynchronizer.Ui.Options
     {
       if (options.SelectedFolderOrNull == null)
       {
-        MessageBox.Show("Please select an Outlook folder to specify the item type for this profile", ConnectionTestCaption);
+        MessageBox.Show(Strings.Get($"Please select an Outlook folder to specify the item type for this profile"), ConnectionTestCaption);
         return url;
       }
 
@@ -530,7 +530,7 @@ namespace CalDavSynchronizer.Ui.Options
 
       if (!ValidateWebDavUrl(serverUrl, errorMessageBuilder, false))
       {
-        MessageBox.Show(errorMessageBuilder.ToString(), "The CalDav/CardDav Url is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show(errorMessageBuilder.ToString(), Strings.Get($"The CalDav/CardDav URL is invalid"), MessageBoxButtons.OK, MessageBoxIcon.Error);
         return url;
       }
 
@@ -548,7 +548,7 @@ namespace CalDavSynchronizer.Ui.Options
 
       if (options.SelectedFolderOrNull == null)
       {
-        MessageBox.Show("Please select an Outlook folder to specify the item type for this profile", ConnectionTestCaption);
+        MessageBox.Show(Strings.Get($"Please select an Outlook folder to specify the item type for this profile"), ConnectionTestCaption);
         return url;
       }
 
@@ -561,7 +561,7 @@ namespace CalDavSynchronizer.Ui.Options
       {
         if (!ValidateEmailAddress(errorMessageBuilder, serverEmail))
         {
-          MessageBox.Show(errorMessageBuilder.ToString(), "The Email Address is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          MessageBox.Show(errorMessageBuilder.ToString(), Strings.Get($"The Email address is invalid"), MessageBoxButtons.OK, MessageBoxIcon.Error);
           return url;
         }
         bool success;
@@ -571,7 +571,7 @@ namespace CalDavSynchronizer.Ui.Options
 
       if (!ValidateWebDavUrl(serverUrl, errorMessageBuilder, false))
       {
-        MessageBox.Show(errorMessageBuilder.ToString(), "The CalDav/CardDav Url is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show(errorMessageBuilder.ToString(), Strings.Get($"The CalDav/CardDav URL is invalid"), MessageBoxButtons.OK, MessageBoxIcon.Error);
         return url;
       }
 
@@ -600,7 +600,7 @@ namespace CalDavSynchronizer.Ui.Options
                 autoDiscoveredUrl = autodiscoveryResult2.RessourceUrl;
                 break;
               case AutoDiscoverResultStatus.NoResourcesFound:
-                MessageBox.Show("No resources were found via autodiscovery!", ConnectionTestCaption);
+                MessageBox.Show(Strings.Get($"No resources were found via autodiscovery!"), ConnectionTestCaption);
                 return url;
               default:
                 throw new NotImplementedException(autodiscoveryResult2.Status.ToString());
@@ -645,7 +645,7 @@ namespace CalDavSynchronizer.Ui.Options
                   autoDiscoveredUrl = autodiscoveryResult2.RessourceUrl;
                   break;
                 case AutoDiscoverResultStatus.NoResourcesFound:
-                  MessageBox.Show("No resources were found via autodiscovery!", ConnectionTestCaption);
+                  MessageBox.Show(Strings.Get($"No resources were found via autodiscovery!"), ConnectionTestCaption);
                   return url;
                 default:
                   throw new NotImplementedException(autodiscoveryResult2.Status.ToString());
@@ -677,7 +677,7 @@ namespace CalDavSynchronizer.Ui.Options
     {
       if (options.SelectedFolderOrNull == null)
       {
-        MessageBox.Show("Please select an Outlook folder to specify the item type for this profile", ConnectionTestCaption);
+        MessageBox.Show(Strings.Get($"Please select an Outlook folder to specify the item type for this profile"), ConnectionTestCaption);
         return url;
       }
 
@@ -687,7 +687,7 @@ namespace CalDavSynchronizer.Ui.Options
 
       if (!ValidateGoogleEmailAddress(errorMessageBuilder, options.EmailAddress))
       {
-        MessageBox.Show(errorMessageBuilder.ToString(), "The Email Address is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show(errorMessageBuilder.ToString(), Strings.Get($"The Email address is invalid"), MessageBoxButtons.OK, MessageBoxIcon.Error);
         return url;
       }
 
@@ -703,7 +703,7 @@ namespace CalDavSynchronizer.Ui.Options
 
       if (!ValidateWebDavUrl(url, errorMessageBuilder, false))
       {
-        MessageBox.Show(errorMessageBuilder.ToString(), "The CalDav/CardDav Url is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show(errorMessageBuilder.ToString(), Strings.Get($"The CalDav/CardDav URL is invalid"), MessageBoxButtons.OK, MessageBoxIcon.Error);
         return url;
       }
 
@@ -746,7 +746,7 @@ namespace CalDavSynchronizer.Ui.Options
       if (outlookFolderType == OlItemType.olContactItem)
       {
         // Google Addressbook doesn't have any properties. As long as there doesn't occur an exception, the test is successful.
-        MessageBox.Show("Connection test successful.", ConnectionTestCaption);
+        MessageBox.Show(Strings.Get($"Connection test successful."), ConnectionTestCaption);
       }
       else
       {
@@ -794,8 +794,8 @@ namespace CalDavSynchronizer.Ui.Options
       catch (Exception x)
       {
         s_logger.Error(null, x);
-        errorMessageBuilder.AppendFormat("The tasklist with id '{0}' is invalid.", connectionTestUrl);
-        MessageBox.Show(errorMessageBuilder.ToString(), "The tasklist is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        errorMessageBuilder.AppendFormat(Strings.Get($"The tasklist with id '{connectionTestUrl}' is invalid."));
+        MessageBox.Show(errorMessageBuilder.ToString(), Strings.Get($"The tasklist is invalid"), MessageBoxButtons.OK, MessageBoxIcon.Error);
         return url;
       }
       TestResult result = new TestResult(ResourceType.TaskList, CalendarProperties.None, AddressBookProperties.None, AccessPrivileges.None, false);

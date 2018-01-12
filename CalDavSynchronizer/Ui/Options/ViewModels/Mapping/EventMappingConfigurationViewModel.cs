@@ -25,6 +25,7 @@ using CalDavSynchronizer.Utilities;
 using Microsoft.Office.Interop.Outlook;
 using System.Linq;
 using System.Windows.Input;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Ui.Options.Models;
 using log4net;
 using NodaTime.TimeZones;
@@ -361,16 +362,16 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
         {
           if (await _optionsModel.CreateCalDavDataAccess().SetCalendarColorNoThrow(ColorHelper.ArgbColorByCategoryColor[OneTimeSetEventCategoryColor]))
           {
-            System.Windows.MessageBox.Show("Successfully updated the server calendar color!");
+            System.Windows.MessageBox.Show(Strings.Get($"Successfully updated the server calendar color!"));
           }
           else
           {
-            System.Windows.MessageBox.Show("Error updating the server calendar color!");
+            System.Windows.MessageBox.Show(Strings.Get($"Error updating the server calendar color!"));
           }
         }
         else
         {
-          System.Windows.MessageBox.Show("No color set for updating the server calendar color!");
+          System.Windows.MessageBox.Show(Strings.Get($"No color set for updating the server calendar color!"));
         }
       }
       catch (System.Exception x)
