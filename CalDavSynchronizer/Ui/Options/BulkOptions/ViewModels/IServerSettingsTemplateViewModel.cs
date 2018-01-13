@@ -25,7 +25,7 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 {
-  internal interface IServerSettingsTemplateViewModel 
+  public interface IServerSettingsTemplateViewModel 
   {
     Task<ServerResources> GetServerResources ();
     void DiscoverAccountServerSettings();

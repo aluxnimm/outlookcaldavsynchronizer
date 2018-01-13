@@ -21,7 +21,7 @@ using CalDavSynchronizer.DataAccess;
 
 namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 {
-  struct ServerResources
+  public struct ServerResources
   {
     public IReadOnlyList<CalendarData> Calendars { get; }
     public IReadOnlyList<AddressBookData> AddressBooks { get; }

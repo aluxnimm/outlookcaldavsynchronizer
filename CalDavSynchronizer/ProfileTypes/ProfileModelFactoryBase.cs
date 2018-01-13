@@ -109,11 +109,16 @@ namespace CalDavSynchronizer.ProfileTypes
     {
       var optionsViewModel = new MultipleOptionsTemplateViewModel(
         OptionsViewModelParent,
-        new ServerSettingsTemplateViewModel(OutlookAccountPasswordProvider, prototypeModel, ModelOptions),
+        CreateServerSettingsTemplateViewModel(prototypeModel),
         OptionTasks,
         prototypeModel,
         ViewOptions);
       return optionsViewModel;
+    }
+
+    protected virtual IServerSettingsTemplateViewModel CreateServerSettingsTemplateViewModel(OptionsModel prototypeModel)
+    {
+      return new ServerSettingsTemplateViewModel(OutlookAccountPasswordProvider, prototypeModel, ModelOptions);
     }
   }
 }
