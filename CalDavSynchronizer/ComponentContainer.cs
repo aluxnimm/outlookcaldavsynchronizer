@@ -121,6 +121,8 @@ namespace CalDavSynchronizer
       if (comWrapperFactory == null) throw new ArgumentNullException(nameof(comWrapperFactory));
 
       s_logger.Info ("Startup...");
+      s_logger.Info ($"Version: {Assembly.GetExecutingAssembly().GetName().Version}");
+      s_logger.Info ($"Operating system: {Environment.OSVersion}");
 
       _profileTypeRegistry = ProfileTypeRegistry.Instance;
 
