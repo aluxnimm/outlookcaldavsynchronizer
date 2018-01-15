@@ -530,6 +530,9 @@
     <Compile Include="Ui\Options\ViewModels\ViewOptions.cs" />
     <Compile Include="Ui\Options\ViewModels\IViewOptions.cs" />
     <Compile Include="Ui\Options\Views\BooleanToVisibilityConverterInverted.cs" />
+    <Compile Include="Ui\Options\Views\GeneralOptionsWindow.xaml.cs">
+      <DependentUpon>GeneralOptionsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Ui\Options\Views\SelectProfileWindow.xaml.cs">
       <DependentUpon>SelectProfileWindow.xaml</DependentUpon>
     </Compile>
@@ -964,7 +967,12 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Page Include="ProfileTypes\ConcreteTypes\Swisscom\SwisscomResourceDictionary.xaml">
+   <Page Include="Ui\Options\Views\GeneralOptionsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+
+   <Page Include="ProfileTypes\ConcreteTypes\Swisscom\SwisscomResourceDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
