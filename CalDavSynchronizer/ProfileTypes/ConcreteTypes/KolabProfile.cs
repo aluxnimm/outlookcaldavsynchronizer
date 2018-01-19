@@ -18,6 +18,7 @@
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
 using CalDavSynchronizer.Ui.Options.Models;
@@ -77,7 +78,7 @@ namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
           ViewOptions);
       }
 
-      public override ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true, true, "Kolab URL", true);
+      public override ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true, true, Strings.Get($"Kolab URL"), true);
     }
   }
 }
