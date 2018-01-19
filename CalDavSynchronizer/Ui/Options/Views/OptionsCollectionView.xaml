@@ -253,12 +253,12 @@
     <DockPanel>
         <DockPanel DockPanel.Dock="Bottom">
             <UniformGrid DockPanel.Dock="Right" Columns="2" Rows="1">
-                <Button Command="{Binding CloseCommand}" Content="Ok" IsDefault="True">
+                <Button Command="{Binding CloseCommand}" Content="{g:Localize OK}" IsDefault="True">
                     <Button.CommandParameter>
                         <system:Boolean>true</system:Boolean>
                     </Button.CommandParameter>
                 </Button>
-                <Button Command="{Binding CloseCommand}" Content="Cancel" IsCancel="True">
+                <Button Command="{Binding CloseCommand}" Content="{g:Localize Cancel}" IsCancel="True">
                     <Button.CommandParameter>
                         <system:Boolean>false</system:Boolean>
                     </Button.CommandParameter>
