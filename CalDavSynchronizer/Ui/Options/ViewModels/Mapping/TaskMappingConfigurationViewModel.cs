@@ -21,6 +21,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Ui.Options.Models;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
@@ -62,9 +63,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
     public IList<Item<ReminderMapping>> AvailableReminderMappings => new List<Item<ReminderMapping>>
                                                                      {
-                                                                         new Item<ReminderMapping> (ReminderMapping.@true, "Yes"),
-                                                                         new Item<ReminderMapping> (ReminderMapping.@false, "No"),
-                                                                         new Item<ReminderMapping> (ReminderMapping.JustUpcoming, "Just upcoming reminders")
+                                                                         new Item<ReminderMapping> (ReminderMapping.@true,  Strings.Get($"Yes")),
+                                                                         new Item<ReminderMapping> (ReminderMapping.@false,  Strings.Get($"No")),
+                                                                         new Item<ReminderMapping> (ReminderMapping.JustUpcoming,  Strings.Get($"Just upcoming reminders"))
                                                                      };
 
     public IReadOnlyList<string> AvailableCategories { get; }
@@ -156,7 +157,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     };
 
 
-    public string Name => "Task Mapping Configuration";
+    public string Name => Strings.Get($"Task Mapping Configuration");
 
 
     public IEnumerable<ITreeNodeViewModel> Items { get; }

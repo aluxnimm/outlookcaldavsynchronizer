@@ -107,7 +107,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     private void Import()
     {
-      var fileName = _uiService.ShowOpenDialog (Strings.Get($"Import Profiles"));
+      var fileName = _uiService.ShowOpenDialog (Strings.Get($"Import profiles"));
       if (fileName == null)
         return;
 

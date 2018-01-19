@@ -21,6 +21,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Ui.Options.Models;
 using Thought.vCards;
 
@@ -131,9 +132,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
     public IList<Item<DistributionListType>> AvailableDistributionListTypes { get; } = new List<Item<DistributionListType>>
                                                                                      {
-                                                                                         new Item<DistributionListType> (DistributionListType.Sogo, "SOGo VLIST"),
-                                                                                         new Item<DistributionListType> (DistributionListType.VCardGroup, "vCard with KIND:group"),
-                                                                                         new Item<DistributionListType> (DistributionListType.VCardGroupWithUid, "iCloud group"),
+                                                                                         new Item<DistributionListType> (DistributionListType.Sogo,  Strings.Get($"SOGo VLIST")),
+                                                                                         new Item<DistributionListType> (DistributionListType.VCardGroup,  Strings.Get($"vCard with KIND:group")),
+                                                                                         new Item<DistributionListType> (DistributionListType.VCardGroupWithUid,  Strings.Get($"iCloud group")),
                                                                                      };
 
     public static ContactMappingConfigurationViewModel DesignInstance => new ContactMappingConfigurationViewModel(new ContactMappingConfigurationModel(new ContactMappingConfiguration()))
@@ -154,7 +155,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
 
 
-    public string Name => "Contact Mapping Configuration";
+    public string Name => Strings.Get($"Contact Mapping Configuration");
     public IEnumerable<ITreeNodeViewModel> Items { get; } = new ITreeNodeViewModel[0];
     public IEnumerable<ISubOptionsViewModel> SubOptions => new ISubOptionsViewModel[] { };
   }

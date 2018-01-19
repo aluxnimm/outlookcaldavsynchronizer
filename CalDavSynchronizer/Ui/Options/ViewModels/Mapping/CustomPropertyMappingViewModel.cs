@@ -21,6 +21,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Ui.Options.Models;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
@@ -43,7 +44,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       Mappings = model.Mappings;
     }
 
-    public string Name { get; } = "Custom Properties Mapping";
+    public string Name { get; } = Strings.Get($"Custom Properties Mapping");
 
 
     public IEnumerable<ITreeNodeViewModel> Items { get; } = new ITreeNodeViewModel[0];

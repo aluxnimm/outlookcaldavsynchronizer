@@ -57,7 +57,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       set { _model.EnableChangeTriggeredSynchronization = value; }
     }
 
-    public string SelectedFolderName => _model.SelectedFolderOrNull?.Name ?? "<MISSING>";
+    public string SelectedFolderName => _model.SelectedFolderOrNull?.Name ?? Strings.Get($"<MISSING>");
 
 
     public ICommand SelectFolderCommand { get; }

@@ -17,6 +17,7 @@
 
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
@@ -26,7 +27,7 @@ namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
   public sealed class GenericProfile : ProfileTypeBase
   {
     public override string ImageUrl { get; } = "";
-    public override string Name { get; } = "Generic CalDAV/CardDAV";
+    public override string Name { get; } = Strings.Get($"Generic CalDAV/CardDAV");
 
     public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {

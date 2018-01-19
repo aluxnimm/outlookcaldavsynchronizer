@@ -17,6 +17,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Properties;
 using CalDavSynchronizer.Utilities;
 using GenSync.Logging;
@@ -39,14 +40,14 @@ namespace CalDavSynchronizer.Ui.SystrayNotification
       _calDavSynchronizerCommands = calDavSynchronizerCommands;
 
       var trayMenu = new ContextMenu();
-      trayMenu.MenuItems.Add ("Synchronize now", delegate { SynchronizeNow(); });
-      trayMenu.MenuItems.Add ("Reports", delegate { ShowReports(); });
-      trayMenu.MenuItems.Add ("Status", delegate { ShowProfileStatuses(); });
+      trayMenu.MenuItems.Add(Strings.Get($"Synchronize now"), delegate { SynchronizeNow(); });
+      trayMenu.MenuItems.Add(Strings.Get($"Reports"), delegate { ShowReports(); });
+      trayMenu.MenuItems.Add(Strings.Get($"Status"), delegate { ShowProfileStatuses(); });
       trayMenu.MenuItems.Add ("-");
-      trayMenu.MenuItems.Add ("Synchronization profiles", delegate { ShowOptions(); });
-      trayMenu.MenuItems.Add ("General options", delegate { ShowGeneralOptions(); });
+      trayMenu.MenuItems.Add(Strings.Get($"Synchronization profiles"), delegate { ShowOptions(); });
+      trayMenu.MenuItems.Add(Strings.Get($"General options"), delegate { ShowGeneralOptions(); });
       trayMenu.MenuItems.Add ("-");
-      trayMenu.MenuItems.Add ("About", delegate { ShowAbout(); });
+      trayMenu.MenuItems.Add(Strings.Get($"About"), delegate { ShowAbout(); });
 
       // Create a tray icon. In this example we use a
       // standard system icon for simplicity, but you
@@ -153,7 +154,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification
         _nofifyIcon.ShowBalloonTip (
             10 * 1000,
             ComponentContainer.MessageBoxTitle,
-            $"Syncronization profile '{report.ProfileName}' executed with error(s).",
+            Strings.Get($"Syncronization profile '{report.ProfileName}' executed with error(s)."),
             ToolTipIcon.Error);
       }
       else if (report.HasWarnings && notifyWarnings)
@@ -161,7 +162,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification
         _nofifyIcon.ShowBalloonTip (
             10 * 1000,
             ComponentContainer.MessageBoxTitle,
-            $"Syncronization profile '{report.ProfileName}' executed with warnings(s).",
+            Strings.Get($"Syncronization profile '{report.ProfileName}' executed with warning(s)."),
             ToolTipIcon.Warning);
       }
     }

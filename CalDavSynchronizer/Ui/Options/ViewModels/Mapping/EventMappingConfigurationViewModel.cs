@@ -98,14 +98,14 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
     public IList<Item<ReminderMapping>> AvailableReminderMappings { get; } = new List<Item<ReminderMapping>>
                                                                              {
-                                                                                 new Item<ReminderMapping> (ReminderMapping.@true, "Yes"),
-                                                                                 new Item<ReminderMapping> (ReminderMapping.@false, "No"),
-                                                                                 new Item<ReminderMapping> (ReminderMapping.JustUpcoming, "Just upcoming reminders")
+                                                                                 new Item<ReminderMapping> (ReminderMapping.@true,  Strings.Get($"Yes")),
+                                                                                 new Item<ReminderMapping> (ReminderMapping.@false,  Strings.Get($"No")),
+                                                                                 new Item<ReminderMapping> (ReminderMapping.JustUpcoming,  Strings.Get($"Just upcoming reminders"))
                                                                              };
 
     public IList<Item<OlCategoryShortcutKey>> AvailableShortcutKeys { get; } = new List<Item<OlCategoryShortcutKey>>
                                                                                {
-                                                                                   new Item<OlCategoryShortcutKey> (OlCategoryShortcutKey.olCategoryShortcutKeyNone, "None"),
+                                                                                   new Item<OlCategoryShortcutKey> (OlCategoryShortcutKey.olCategoryShortcutKeyNone,  Strings.Get($"None")),
                                                                                    new Item<OlCategoryShortcutKey> (OlCategoryShortcutKey.olCategoryShortcutKeyCtrlF2, "Ctrl+F2"),
                                                                                    new Item<OlCategoryShortcutKey> (OlCategoryShortcutKey.olCategoryShortcutKeyCtrlF3, "Ctrl+F3"),
                                                                                    new Item<OlCategoryShortcutKey> (OlCategoryShortcutKey.olCategoryShortcutKeyCtrlF4, "Ctrl+F4"),
@@ -306,7 +306,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
 
 
-    public string Name => "Event Mapping Configuration";
+    public string Name => Strings.Get($"Event Mapping Configuration");
 
     public IEnumerable<ITreeNodeViewModel> Items { get; }
 

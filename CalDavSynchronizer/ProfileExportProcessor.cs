@@ -21,6 +21,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Ui.Options;
 using Microsoft.Office.Interop.Outlook;
@@ -44,7 +45,7 @@ namespace CalDavSynchronizer
 
     public void PrepareForExport(Options[] profiles, Action<string> logger)
     {
-      logger("Processing profiles.");
+      logger(Strings.Get($"Processing profiles."));
 
       foreach (var profile in profiles)
       {
@@ -58,13 +59,13 @@ namespace CalDavSynchronizer
         }
         catch (System.Exception)
         {
-          logger ($"WARNING profile '{profile.Name}', references an outlook folder that doesn't exist.");
+          logger (Strings.Get($"WARNING profile '{profile.Name}', references an outlook folder that doesn't exist."));
           profile.OutlookFolderEntryId = "<ERROR>";
         }
         profile.OutlookFolderStoreId = null;
       }
 
-      logger ("Processing profiles done.");
+      logger (Strings.Get($"Processing profiles done."));
     }
 
     public Options[] PrepareAndMergeForImport (Options[] existingProfiles,Options[] profilesToImport, Action<string> logger)
@@ -89,7 +90,7 @@ namespace CalDavSynchronizer
         }
         else
         {
-          logger($"Warning: did not find Folder '{profile.OutlookFolderEntryId}'");
+          logger(Strings.Get($"Warning: did not find folder '{profile.OutlookFolderEntryId}'"));
           profile.OutlookFolderEntryId = null;
           profile.OutlookFolderStoreId = null;
           profile.OutlookFolderAccountName = null;
@@ -105,12 +106,12 @@ namespace CalDavSynchronizer
         var existingProfile = mergedProfiles.FirstOrDefault (p => p.Id == profileToImport.Id);
         if (existingProfile == null)
         {
-          logger($"Adding profile '{profileToImport.Name}'");
+          logger(Strings.Get($"Adding profile '{profileToImport.Name}'"));
           mergedProfiles.Add (profileToImport);
         }
         else
         {
-          logger ($"Replacing profile '{profileToImport.Name}'");
+          logger (Strings.Get($"Replacing profile '{profileToImport.Name}'"));
           var index = mergedProfiles.IndexOf (existingProfile);
           mergedProfiles.RemoveAt (index);
           mergedProfiles.Insert (index, profileToImport);

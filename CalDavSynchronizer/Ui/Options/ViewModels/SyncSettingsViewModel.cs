@@ -21,6 +21,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Media.Animation;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.ProfileTypes;
 using CalDavSynchronizer.Ui.Options.Models;
@@ -84,11 +85,11 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
     }
 
     public IList<Item<int>> AvailableSyncIntervals =>
-        new[] { new Item<int>(0, "Manual only") }
+        new[] { new Item<int>(0, Strings.Get($"Manual only")) }
             .Union(Enumerable.Range(1, 2).Select(i => new Item<int>(i, i.ToString())))
             .Union(Enumerable.Range(1, 12).Select(i => i * 5).Select(i => new Item<int>(i, i.ToString())))
-            .Union(Enumerable.Range(1, 3).Select(i => (int)Math.Pow(2,i)*60).Select(i => new Item<int>(i, (i/60).ToString()+" hours")))
-            .Union(new [] {new Item<int>(720, "12 hours"),  new Item<int>(1440, "1 day")}).ToList();
+            .Union(Enumerable.Range(1, 3).Select(i => (int)Math.Pow(2,i)*60).Select(i => new Item<int>(i, (i/60).ToString()+Strings.Get($"hours"))))
+            .Union(new [] {new Item<int>(720, Strings.Get($"12 hours")),  new Item<int>(1440, Strings.Get($"1 day"))}).ToList();
 
     public IList<Item<ConflictResolution>> AvailableConflictResolutions { get; } = new List<Item<ConflictResolution>>
                                                                                    {
