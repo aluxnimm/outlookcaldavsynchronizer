@@ -132,9 +132,6 @@
   <data name="No resources were found via autodiscovery!" xml:space="preserve">
     <value>No resources were found via autodiscovery!</value>
   </data>
-  <data name="Operation" xml:space="preserve">
-    <value>Operation</value>
-  </data>
   <data name="Start a manual synchronization of all active profiles." xml:space="preserve">
     <value>Start a manual synchronization of all active profiles.</value>
   </data>
@@ -150,8 +147,8 @@
   <data name="Timezone Settings" xml:space="preserve">
     <value>Timezone Settings</value>
   </data>
-  <data name="Custom Properties Mapping" xml:space="preserve">
-    <value>Custom Properties Mapping</value>
+  <data name="WARNING profile '{0}', references an outlook folder that doesn't exist." xml:space="preserve">
+    <value>WARNING profile '{0}', references an outlook folder that doesn't exist.</value>
   </data>
   <data name="Processing profiles done." xml:space="preserve">
     <value>Processing profiles done.</value>
@@ -228,11 +225,11 @@
   <data name="These settings affect the filter which selects the items for synchronization.&amp;#x0a;If an item does not pass the filter it is treated as if it would not exist!&amp;#x0a;Changing these settings for non-empty folders can lead to deletions on the server or duplicates in Outlook." xml:space="preserve">
     <value>These settings affect the filter which selects the items for synchronization.&amp;#x0a;If an item does not pass the filter it is treated as if it would not exist!&amp;#x0a;Changing these settings for non-empty folders can lead to deletions on the server or duplicates in Outlook.</value>
   </data>
+  <data name="Mapping Errors:" xml:space="preserve">
+    <value>Mapping Errors:</value>
+  </data>
   <data name="Scheduling Settings" xml:space="preserve">
     <value>Scheduling Settings</value>
-  </data>
-  <data name="Username:" xml:space="preserve">
-    <value>Username:</value>
   </data>
   <data name="Added addressbook resource '{0}' successfully!" xml:space="preserve">
     <value>Added addressbook resource '{0}' successfully!</value>
@@ -252,9 +249,6 @@
   <data name="Use Iana instead of Windows timezones for creating events on CalDAV server. &amp;#x0a;Needed for servers which do not accept non standard Windows timezones like GMX for example. &amp;#x0a;Timezone definitions will be downloaded from http://tzurl.org." xml:space="preserve">
     <value>Use Iana instead of Windows timezones for creating events on CalDAV server. &amp;#x0a;Needed for servers which do not accept non standard Windows timezones like GMX for example. &amp;#x0a;Timezone definitions will be downloaded from http://tzurl.org.</value>
   </data>
-  <data name="Copy selected profile" xml:space="preserve">
-    <value>Copy selected profile</value>
-  </data>
   <data name="Show status of sync runs." xml:space="preserve">
     <value>Show status of sync runs.</value>
   </data>
@@ -269,9 +263,6 @@
   </data>
   <data name="Set DAV calendar color" xml:space="preserve">
     <value>Set DAV calendar color</value>
-  </data>
-  <data name="Profile '{0}'" xml:space="preserve">
-    <value>Profile '{0}'</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>Name</value>
@@ -309,11 +300,14 @@
   <data name="Just upcoming reminders" xml:space="preserve">
     <value>Just upcoming reminders</value>
   </data>
+  <data name="Use system default proxy (settings from IE and config file)" xml:space="preserve">
+    <value>Use system default proxy (settings from IE and config file)</value>
+  </data>
   <data name="Sync also tasks without any category" xml:space="preserve">
     <value>Sync also tasks without any category</value>
   </data>
-  <data name="Create events on server in UTC" xml:space="preserve">
-    <value>Create events on server in UTC</value>
+  <data name="Advanced Network Settings" xml:space="preserve">
+    <value>Advanced Network Settings</value>
   </data>
   <data name="Use UTC instead of Outlook appointment timezone for creating events on CalDAV server. &amp;#x0a;Not recommended for general use &amp;#x0a;because recurrence exceptions over DST changes can not be mapped and &amp;#x0a;appointments with different start and end timezones can not be represented." xml:space="preserve">
     <value>Use UTC instead of Outlook appointment timezone for creating events on CalDAV server. &amp;#x0a;Not recommended for general use &amp;#x0a;because recurrence exceptions over DST changes can not be mapped and &amp;#x0a;appointments with different start and end timezones can not be represented.</value>
@@ -336,8 +330,8 @@
   <data name="Create events on server with downloaded IANA timezones" xml:space="preserve">
     <value>Create events on server with downloaded IANA timezones</value>
   </data>
-  <data name="Use Google Contacts API instead of CardDAV &amp;#xA;to sync Outlook contact folders with Google contacts &amp;#xA;which improves mapping and performance." xml:space="preserve">
-    <value>Use Google Contacts API instead of CardDAV &amp;#xA;to sync Outlook contact folders with Google contacts &amp;#xA;which improves mapping and performance.</value>
+  <data name="Import profiles from file" xml:space="preserve">
+    <value>Import profiles from file</value>
   </data>
   <data name="Contact Mapping Configuration" xml:space="preserve">
     <value>Contact Mapping Configuration</value>
@@ -378,8 +372,8 @@
   <data name="Kolab URL" xml:space="preserve">
     <value>Kolab URL</value>
   </data>
-  <data name="Export profiles to file" xml:space="preserve">
-    <value>Export profiles to file</value>
+  <data name="Custom Properties Mapping" xml:space="preserve">
+    <value>Custom Properties Mapping</value>
   </data>
   <data name="- DAV X-Attributes for manual mapped properties have to start with 'X-'" xml:space="preserve">
     <value>- DAV X-Attributes for manual mapped properties have to start with 'X-'</value>
@@ -399,9 +393,6 @@
   <data name="Manual only" xml:space="preserve">
     <value>Manual only</value>
   </data>
-  <data name="Collapse all nodes" xml:space="preserve">
-    <value>Collapse all nodes</value>
-  </data>
   <data name="Map Outlook EmailAddress1 to WORK instead of HOME" xml:space="preserve">
     <value>Map Outlook EmailAddress1 to WORK instead of HOME</value>
   </data>
@@ -413,9 +404,6 @@
   </data>
   <data name="Can't add addressbook resource '{0}'" xml:space="preserve">
     <value>Can't add addressbook resource '{0}'</value>
-  </data>
-  <data name="DAV URL" xml:space="preserve">
-    <value>DAV URL</value>
   </data>
   <data name="Duration:" xml:space="preserve">
     <value>Duration:</value>
@@ -432,8 +420,8 @@
   <data name="Server Delta:" xml:space="preserve">
     <value>Server Delta:</value>
   </data>
-  <data name="Mapping Errors:" xml:space="preserve">
-    <value>Mapping Errors:</value>
+  <data name="Operation" xml:space="preserve">
+    <value>Operation</value>
   </data>
   <data name="Experimental mapping of the first category color of the appointment to the matching COLOR attribute of the event&amp;#x0a;Together with DAVdroid for Android you can map individual event colors from Android to Outlook &amp;#x0a;but not all calendar apps support it or can even crash (see &amp;#x0a;https://davdroid.bitfire.at/faq/entry/setting-event-colors-crash/)" xml:space="preserve">
     <value>Experimental mapping of the first category color of the appointment to the matching COLOR attribute of the event&amp;#x0a;Together with DAVdroid for Android you can map individual event colors from Android to Outlook &amp;#x0a;but not all calendar apps support it or can even crash (see &amp;#x0a;https://davdroid.bitfire.at/faq/entry/setting-event-colors-crash/)</value>
@@ -452,9 +440,6 @@
   </data>
   <data name="Add calendar resource on server" xml:space="preserve">
     <value>Add calendar resource on server</value>
-  </data>
-  <data name="Test or discover settings" xml:space="preserve">
-    <value>Test or discover settings</value>
   </data>
   <data name="removes duplicate Outlook appointments based on start end and subject of the events after each sync run &amp;#x0a;be aware of possible performance penalties with this option enabled." xml:space="preserve">
     <value>removes duplicate Outlook appointments based on start end and subject of the events after each sync run &amp;#x0a;be aware of possible performance penalties with this option enabled.</value>
@@ -479,6 +464,9 @@
   </data>
   <data name="Do autodiscovery" xml:space="preserve">
     <value>Do autodiscovery</value>
+  </data>
+  <data name="- The specified URL does not support address books." xml:space="preserve">
+    <value>- The specified URL does not support address books.</value>
   </data>
   <data name="hours" xml:space="preserve">
     <value>hours</value>
@@ -513,14 +501,17 @@
   <data name="Map Distribution Lists" xml:space="preserve">
     <value>Map Distribution Lists</value>
   </data>
-  <data name="Detected URL:" xml:space="preserve">
-    <value>Detected URL:</value>
+  <data name="Synchronization Reports" xml:space="preserve">
+    <value>Synchronization Reports</value>
   </data>
   <data name="Synchronization Profiles" xml:space="preserve">
     <value>Synchronization Profiles</value>
   </data>
   <data name="Map all Outlook custom properties to X-CALDAVSYNCHRONIZER attributes" xml:space="preserve">
     <value>Map all Outlook custom properties to X-CALDAVSYNCHRONIZER attributes</value>
+  </data>
+  <data name="General Event Mapping Settings" xml:space="preserve">
+    <value>General Event Mapping Settings</value>
   </data>
   <data name="Proxy Settings" xml:space="preserve">
     <value>Proxy Settings</value>
@@ -600,8 +591,8 @@
   <data name="The tasklist with id '{0}' is invalid." xml:space="preserve">
     <value>The tasklist with id '{0}' is invalid.</value>
   </data>
-  <data name="Import profiles from file" xml:space="preserve">
-    <value>Import profiles from file</value>
+  <data name="Create events on server in UTC" xml:space="preserve">
+    <value>Create events on server in UTC</value>
   </data>
   <data name="Trigger a partial synchronization run immediately after &amp;#x0a;an item is created changed or deleted in Outlook &amp;#x0a;(with a 10 seconds delay).&amp;#x0a;Meeting invitations are excluded from this to avoid duplicate meetings!" xml:space="preserve">
     <value>Trigger a partial synchronization run immediately after &amp;#x0a;an item is created changed or deleted in Outlook &amp;#x0a;(with a 10 seconds delay).&amp;#x0a;Meeting invitations are excluded from this to avoid duplicate meetings!</value>
@@ -636,8 +627,14 @@
   <data name="Close connection after each request" xml:space="preserve">
     <value>Close connection after each request</value>
   </data>
+  <data name="Merge Easy Project resources to one single Outlook folder" xml:space="preserve">
+    <value>Merge Easy Project resources to one single Outlook folder</value>
+  </data>
   <data name="Show syncronization status" xml:space="preserve">
     <value>Show syncronization status</value>
+  </data>
+  <data name="Easy Project Server Settings" xml:space="preserve">
+    <value>Easy Project Server Settings</value>
   </data>
   <data name="- The CalDav/CardDav URL has to end with a slash ('/')." xml:space="preserve">
     <value>- The CalDav/CardDav URL has to end with a slash ('/').</value>
@@ -659,12 +656,6 @@
   </data>
   <data name="Import profiles" xml:space="preserve">
     <value>Import profiles</value>
-  </data>
-  <data name="Map event color to category" xml:space="preserve">
-    <value>Map event color to category</value>
-  </data>
-  <data name="Advanced Network Settings" xml:space="preserve">
-    <value>Advanced Network Settings</value>
   </data>
   <data name="General Options" xml:space="preserve">
     <value>General Options</value>
@@ -816,6 +807,9 @@
   <data name="The tasklist is invalid" xml:space="preserve">
     <value>The tasklist is invalid</value>
   </data>
+  <data name="Use preemptive authentication" xml:space="preserve">
+    <value>Use preemptive authentication</value>
+  </data>
   <data name="Did not find any news." xml:space="preserve">
     <value>Did not find any news.</value>
   </data>
@@ -840,23 +834,29 @@
   <data name="Executes specific steps of synchronization in chunks to save memory." xml:space="preserve">
     <value>Executes specific steps of synchronization in chunks to save memory.</value>
   </data>
-  <data name="Do not overwrite the contact photo in Outlook" xml:space="preserve">
-    <value>Do not overwrite the contact photo in Outlook</value>
+  <data name="Username:" xml:space="preserve">
+    <value>Username:</value>
   </data>
   <data name="Outlook wins" xml:space="preserve">
     <value>Outlook wins</value>
   </data>
+  <data name="M" xml:space="preserve">
+    <value>M</value>
+  </data>
   <data name="Configure your synchronization profiles." xml:space="preserve">
     <value>Configure your synchronization profiles.</value>
   </data>
-  <data name="Use system default proxy (settings from IE and config file)" xml:space="preserve">
-    <value>Use system default proxy (settings from IE and config file)</value>
+  <data name="Export profiles to file" xml:space="preserve">
+    <value>Export profiles to file</value>
   </data>
   <data name="Select folder" xml:space="preserve">
     <value>Select folder</value>
   </data>
   <data name="About" xml:space="preserve">
     <value>About</value>
+  </data>
+  <data name="Do not overwrite the contact photo in Outlook" xml:space="preserve">
+    <value>Do not overwrite the contact photo in Outlook</value>
   </data>
   <data name="Do not check for newer version anymore" xml:space="preserve">
     <value>Do not check for newer version anymore</value>
@@ -869,9 +869,6 @@
   </data>
   <data name="Test settings" xml:space="preserve">
     <value>Test settings</value>
-  </data>
-  <data name="WARNING profile '{0}', references an outlook folder that doesn't exist." xml:space="preserve">
-    <value>WARNING profile '{0}', references an outlook folder that doesn't exist.</value>
   </data>
   <data name="- The Email address is invalid. ({0})" xml:space="preserve">
     <value>- The Email address is invalid. ({0})</value>
@@ -912,11 +909,17 @@
   <data name="Automatically create Outlook folders" xml:space="preserve">
     <value>Automatically create Outlook folders</value>
   </data>
+  <data name="Profile '{0}'" xml:space="preserve">
+    <value>Profile '{0}'</value>
+  </data>
   <data name="About CalDav Synchronizer" xml:space="preserve">
     <value>About CalDav Synchronizer</value>
   </data>
   <data name="Server Settings" xml:space="preserve">
     <value>Server Settings</value>
+  </data>
+  <data name="Can't set the calendar color!'" xml:space="preserve">
+    <value>Can't set the calendar color!'</value>
   </data>
   <data name="General Task Mapping Settings" xml:space="preserve">
     <value>General Task Mapping Settings</value>
@@ -936,11 +939,11 @@
   <data name="- Max Report Age must be &gt; 0" xml:space="preserve">
     <value>- Max Report Age must be &gt; 0</value>
   </data>
-  <data name="Map all Outlook custom properties to DAV attributes with X-CALDAVSYNCHRONIZER prefix." xml:space="preserve">
-    <value>Map all Outlook custom properties to DAV attributes with X-CALDAVSYNCHRONIZER prefix.</value>
-  </data>
   <data name="Export profiles" xml:space="preserve">
     <value>Export profiles</value>
+  </data>
+  <data name="Event Mapping Configuration" xml:space="preserve">
+    <value>Event Mapping Configuration</value>
   </data>
   <data name="Use WebDAV collection sync" xml:space="preserve">
     <value>Use WebDAV collection sync</value>
@@ -969,6 +972,9 @@
   <data name="Outlook ← Server (Replicate)" xml:space="preserve">
     <value>Outlook ← Server (Replicate)</value>
   </data>
+  <data name="Convert numbers like +1 23 45678 9 &amp;#x0a;to +1 (23) 45678 - 9 &amp;#x0a;so that Outlook can show country and area code." xml:space="preserve">
+    <value>Convert numbers like +1 23 45678 9 &amp;#x0a;to +1 (23) 45678 - 9 &amp;#x0a;so that Outlook can show country and area code.</value>
+  </data>
   <data name="Mapping Warnings:" xml:space="preserve">
     <value>Mapping Warnings:</value>
   </data>
@@ -993,6 +999,9 @@
   <data name="Adding profile '{0}'" xml:space="preserve">
     <value>Adding profile '{0}'</value>
   </data>
+  <data name="Get IMAP/POP3 account settings" xml:space="preserve">
+    <value>Get IMAP/POP3 account settings</value>
+  </data>
   <data name="WARNING:" xml:space="preserve">
     <value>WARNING:</value>
   </data>
@@ -1001,9 +1010,6 @@
   </data>
   <data name="Include full IANA timezone with historical data" xml:space="preserve">
     <value>Include full IANA timezone with historical data</value>
-  </data>
-  <data name="Syncronization profile '{0}' executed with error(s)." xml:space="preserve">
-    <value>Syncronization profile '{0}' executed with error(s).</value>
   </data>
   <data name="Fix imported phone number format" xml:space="preserve">
     <value>Fix imported phone number format</value>
@@ -1032,8 +1038,8 @@
   <data name="Map Contact Photo" xml:space="preserve">
     <value>Kontaktfoto synchronisieren</value>
   </data>
-  <data name="Can't set the calendar color!'" xml:space="preserve">
-    <value>Can't set the calendar color!'</value>
+  <data name="Use Google Contacts API instead of CardDAV &amp;#xA;to sync Outlook contact folders with Google contacts &amp;#xA;which improves mapping and performance." xml:space="preserve">
+    <value>Use Google Contacts API instead of CardDAV &amp;#xA;to sync Outlook contact folders with Google contacts &amp;#xA;which improves mapping and performance.</value>
   </data>
   <data name="Error updating the server calendar color!" xml:space="preserve">
     <value>Error updating the server calendar color!</value>
@@ -1050,8 +1056,8 @@
   <data name="Configuration Error" xml:space="preserve">
     <value>Configuration Error</value>
   </data>
-  <data name="Event Mapping Configuration" xml:space="preserve">
-    <value>Event Mapping Configuration</value>
+  <data name="Test or discover settings" xml:space="preserve">
+    <value>Test or discover settings</value>
   </data>
   <data name="Sync Settings" xml:space="preserve">
     <value>Sync Settings</value>
@@ -1086,14 +1092,14 @@
   <data name="Open data directory of selected profile" xml:space="preserve">
     <value>Open data directory of selected profile</value>
   </data>
-  <data name="Get IMAP/POP3 account settings" xml:space="preserve">
-    <value>Get IMAP/POP3 account settings</value>
+  <data name="Map event color to category" xml:space="preserve">
+    <value>Map event color to category</value>
   </data>
   <data name="Show reports of last sync runs" xml:space="preserve">
     <value>Show reports of last sync runs</value>
   </data>
-  <data name="- The specified URL does not support address books." xml:space="preserve">
-    <value>- The specified URL does not support address books.</value>
+  <data name="Collapse all nodes" xml:space="preserve">
+    <value>Collapse all nodes</value>
   </data>
   <data name="Assign Easy Project resources to different Outlook folders" xml:space="preserve">
     <value>Assign Easy Project resources to different Outlook folders</value>
@@ -1104,11 +1110,11 @@
   <data name="Synchronize now" xml:space="preserve">
     <value>Synchronize now</value>
   </data>
-  <data name="General Event Mapping Settings" xml:space="preserve">
-    <value>General Event Mapping Settings</value>
+  <data name="Map all Outlook custom properties to DAV attributes with X-CALDAVSYNCHRONIZER prefix." xml:space="preserve">
+    <value>Map all Outlook custom properties to DAV attributes with X-CALDAVSYNCHRONIZER prefix.</value>
   </data>
-  <data name="Convert numbers like +1 23 45678 9 &amp;#x0a;to +1 (23) 45678 - 9 &amp;#x0a;so that Outlook can show country and area code." xml:space="preserve">
-    <value>Convert numbers like +1 23 45678 9 &amp;#x0a;to +1 (23) 45678 - 9 &amp;#x0a;so that Outlook can show country and area code.</value>
+  <data name="DAV URL" xml:space="preserve">
+    <value>DAV URL</value>
   </data>
   <data name="- The specified address book doesn't allow deletion of contacts!" xml:space="preserve">
     <value>- The specified address book doesn't allow deletion of contacts!</value>
@@ -1131,8 +1137,8 @@
   <data name="Map Body" xml:space="preserve">
     <value>Map Body</value>
   </data>
-  <data name="Merge Easy Project resources to one single Outlook folder" xml:space="preserve">
-    <value>Merge Easy Project resources to one single Outlook folder</value>
+  <data name="Copy selected profile" xml:space="preserve">
+    <value>Copy selected profile</value>
   </data>
   <data name="Wrong ItemType in folder '{0}'. It should be a calendar, task or contact folder." xml:space="preserve">
     <value>Wrong ItemType in folder '{0}'. It should be a calendar, task or contact folder.</value>
@@ -1140,13 +1146,13 @@
   <data name="Connection test successful BUT:" xml:space="preserve">
     <value>Connection test successful BUT:</value>
   </data>
-  <data name="Use preemptive authentication" xml:space="preserve">
-    <value>Use preemptive authentication</value>
+  <data name="Syncronization profile '{0}' executed with error(s)." xml:space="preserve">
+    <value>Syncronization profile '{0}' executed with error(s).</value>
   </data>
-  <data name="Easy Project Server Settings" xml:space="preserve">
-    <value>Easy Project Server Settings</value>
+  <data name="Detected URL:" xml:space="preserve">
+    <value>Detected URL:</value>
   </data>
-  <data name="M" xml:space="preserve">
-    <value>M</value>
+  <data name="Synchronization Status" xml:space="preserve">
+    <value>Synchronization Status</value>
   </data>
 </root>

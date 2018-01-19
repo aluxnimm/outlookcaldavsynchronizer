@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.ViewModels"
+        xmlns:g="clr-namespace:CalDavSynchronizer.Globalization"
         mc:Ignorable="d"
         d:DataContext="{x:Static viewModels:GenericReportViewModel.DesingInstance}"
         Title="{Binding Title}" Height="400" Width="500">
@@ -16,7 +17,7 @@
     </Style>
   </Window.Resources>
   <DockPanel>
-    <Button Command="{Binding OkCommand}" HorizontalAlignment="Right"  DockPanel.Dock="Bottom" Content="Ok"></Button>
+    <Button Command="{Binding OkCommand}" HorizontalAlignment="Right"  DockPanel.Dock="Bottom" Content="{g:Localize OK}"></Button>
     <TextBox HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" IsReadOnly="True" Text="{Binding ReportText}"></TextBox>
   </DockPanel>
 </Window>
