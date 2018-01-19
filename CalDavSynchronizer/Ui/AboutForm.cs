@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Utilities;
 using log4net;
 
@@ -34,7 +35,7 @@ namespace CalDavSynchronizer.Ui
     {
       _checkForUpdatesActionAsync = checkForUpdatesActionAsync;
       InitializeComponent();
-      _versionLabel.Text = string.Format (_versionLabel.Text, Assembly.GetExecutingAssembly().GetName().Version);
+      _versionLabel.Text = Strings.Get($"Version: {Assembly.GetExecutingAssembly().GetName().Version}");
 
       this._linkLabelProject.Text = WebResourceUrls.ProjectHomeSite.ToString();
 

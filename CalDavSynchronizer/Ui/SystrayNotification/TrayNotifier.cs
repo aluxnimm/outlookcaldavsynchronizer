@@ -44,8 +44,8 @@ namespace CalDavSynchronizer.Ui.SystrayNotification
       trayMenu.MenuItems.Add(Strings.Get($"Reports"), delegate { ShowReports(); });
       trayMenu.MenuItems.Add(Strings.Get($"Status"), delegate { ShowProfileStatuses(); });
       trayMenu.MenuItems.Add ("-");
-      trayMenu.MenuItems.Add(Strings.Get($"Synchronization profiles"), delegate { ShowOptions(); });
-      trayMenu.MenuItems.Add(Strings.Get($"General options"), delegate { ShowGeneralOptions(); });
+      trayMenu.MenuItems.Add(Strings.Get($"Synchronization Profiles"), delegate { ShowOptions(); });
+      trayMenu.MenuItems.Add(Strings.Get($"General Options"), delegate { ShowGeneralOptions(); });
       trayMenu.MenuItems.Add ("-");
       trayMenu.MenuItems.Add(Strings.Get($"About"), delegate { ShowAbout(); });
 

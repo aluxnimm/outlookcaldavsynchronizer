@@ -68,8 +68,8 @@ namespace CalDavSynchronizer.Ui
       InitializeComponent();
 
       _newVersionDownloadUrl = newVersionDownloadUrl;
-      _currentVersionLabel.Text = string.Format (_currentVersionLabel.Text, Assembly.GetExecutingAssembly().GetName().Version);
-      _captionLabel.Text = string.Format (_captionLabel.Text, newVersion);
+      _currentVersionLabel.Text = Strings.Get($"Current version: {Assembly.GetExecutingAssembly().GetName().Version}");
+      _captionLabel.Text = Strings.Get($"Version {newVersion} is available!");
       _newFeaturesTextBox.Text = whatsNew;
 
       _logoPictureBox.Image = Properties.Resources.ApplicationLogoLarge;

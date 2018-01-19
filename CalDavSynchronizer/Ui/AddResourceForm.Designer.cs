@@ -1,4 +1,6 @@
-﻿namespace CalDavSynchronizer.Ui
+﻿using CalDavSynchronizer.Globalization;
+
+namespace CalDavSynchronizer.Ui
 {
   partial class AddResourceForm
   {
@@ -54,7 +56,7 @@
       this.label1.Name = "label1";
       this.label1.Size = new System.Drawing.Size(154, 17);
       this.label1.TabIndex = 1;
-      this.label1.Text = "Resource Displayname";
+      this.label1.Text = Strings.Get($"Resource Displayname");
       // 
       // btnOK
       // 
@@ -64,7 +66,7 @@
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(100, 28);
       this.btnOK.TabIndex = 2;
-      this.btnOK.Text = "OK";
+      this.btnOK.Text = Strings.Get($"OK");
       this.btnOK.UseVisualStyleBackColor = true;
       this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
       // 
@@ -77,7 +79,7 @@
       this.buttonCancel.Name = "buttonCancel";
       this.buttonCancel.Size = new System.Drawing.Size(100, 28);
       this.buttonCancel.TabIndex = 3;
-      this.buttonCancel.Text = "Cancel";
+      this.buttonCancel.Text = Strings.Get($"Cancel");
       this.buttonCancel.UseVisualStyleBackColor = true;
       this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
       // 
@@ -90,9 +92,8 @@
       this._useRandomNameCheckBox.Name = "_useRandomNameCheckBox";
       this._useRandomNameCheckBox.Size = new System.Drawing.Size(281, 21);
       this._useRandomNameCheckBox.TabIndex = 4;
-      this._useRandomNameCheckBox.Text = "Use random string for DAV resource Uri";
-      this._toolTip.SetToolTip(this._useRandomNameCheckBox, "If unchecked the displayname is used for creating the dav resource uri instead of" +
-        " a random string.");
+      this._useRandomNameCheckBox.Text = Strings.Get($"Use random string for DAV resource Uri");
+      this._toolTip.SetToolTip(this._useRandomNameCheckBox, Strings.Get($"If unchecked the displayname is used for creating the dav resource uri instead of a random string."));
       this._useRandomNameCheckBox.UseVisualStyleBackColor = true;
       // 
       // _resourceColorButton
@@ -113,7 +114,7 @@
       this.label2.Name = "label2";
       this.label2.Size = new System.Drawing.Size(102, 17);
       this.label2.TabIndex = 6;
-      this.label2.Text = "Calendar Color";
+      this.label2.Text = Strings.Get($"Calendar Color");
       // 
       // _toolTip
       // 
@@ -138,7 +139,7 @@
       this.Controls.Add(this._resourceNameTextBox);
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Name = "AddResourceForm";
-      this.Text = "Add Resource";
+      this.Text = Strings.Get($"Add Resource");
       this.ResumeLayout(false);
       this.PerformLayout();
 
