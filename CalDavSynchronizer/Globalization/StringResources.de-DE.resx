@@ -687,4 +687,262 @@
   <data name="Connection test successful." xml:space="preserve">
     <value>Connection test successful.</value>
   </data>
+<data name="- CalDavConnectTimeout must be > 0" xml:space="preserve">
+  <value>- CalDavConnectTimeout must be > 0</value>
+</data> 
+<data name="- Custom properties must not be empty." xml:space="preserve">
+  <value>- Custom properties must not be empty.</value>
+</data>
+<data name="- DAV X-Attributes for manual mapped properties have to start with 'X-'" xml:space="preserve">
+  <value>- DAV X-Attributes for manual mapped properties have to start with 'X-'</value>
+</data>
+<data name="- If you don't know the URL you can also enter the Email address and try to discover it." xml:space="preserve">
+  <value>- If you don't know the URL you can also enter the Email address and try to discover it.</value>
+</data>
+<data name="- Invalid CalDavConnectTimeout" xml:space="preserve">
+  <value>- Invalid CalDavConnectTimeout</value>
+</data>
+<data name="- Invalid Max Report Age" xml:space="preserve">
+  <value>- Invalid Max Report Age</value>
+</data>
+<data name="- Max Report Age must be > 0" xml:space="preserve">
+  <value>- Max Report Age must be > 0</value>
+</data>
+<data name="- Ressources which are a calendar and an addressbook are not valid!" xml:space="preserve">
+  <value>- Ressources which are a calendar and an addressbook are not valid!</value>
+</data>
+<data name="- The CalDav/CardDav URL cannot end/start with whitespaces." xml:space="preserve">
+  <value>- The CalDav/CardDav URL cannot end/start with whitespaces.</value>
+</data>
+<data name="- The CalDav/CardDav URL has to end with a slash ('/')." xml:space="preserve">
+  <value>- The CalDav/CardDav URL has to end with a slash ('/').</value>
+</data>
+<data name="- The CalDav/CardDav URL is empty." xml:space="preserve">
+  <value>- The CalDav/CardDav URL is empty.</value>
+</data>
+<data name="- The CalDav/CardDav URL is not a well formed URL. ({0})" xml:space="preserve">
+  <value>- The CalDav/CardDav URL is not a well formed URL. ({0})</value>
+</data>
+<data name="- The Email address is empty." xml:space="preserve">
+  <value>- The Email address is empty.</value>
+</data>
+<data name="- The Email address is invalid. ({0})" xml:space="preserve">
+  <value>- The Email address is invalid. ({0})</value>
+</data>
+<data name="- The category name must not contain commas." xml:space="preserve">
+  <value>- The category name must not contain commas.</value>
+</data>
+<data name="- The category name must not contain semicolons." xml:space="preserve">
+  <value>- The category name must not contain semicolons.</value>
+</data>
+<data name="- The chunk size hast to be 1 or greater." xml:space="preserve">
+  <value>- The chunk size hast to be 1 or greater.</value>
+</data>
+<data name="- The specified URL does not support address books." xml:space="preserve">
+  <value>- The specified URL does not support address books.</value>
+</data>
+<data name="- The specified URL does not support calendar access." xml:space="preserve">
+  <value>- The specified URL does not support calendar access.</value>
+</data>
+<data name="- The specified URL does not support calendar queries. Some features like time range filter may not work!" xml:space="preserve">
+  <value>- The specified URL does not support calendar queries. Some features like time range filter may not work!</value>
+</data>
+<data name="- The specified URL is not a calendar!" xml:space="preserve">
+  <value>- The specified URL is not a calendar!</value>
+</data>
+<data name="- The specified URL is not an addressbook!" xml:space="preserve">
+  <value>- The specified URL is not an addressbook!</value>
+</data>
+<data name="- The specified URL is not an task list!" xml:space="preserve">
+  <value>- The specified URL is not an task list!</value>
+</data>
+<data name="- The specified address book doesn't allow creation of contacts!" xml:space="preserve">
+  <value>- The specified address book doesn't allow creation of contacts!</value>
+</data>
+<data name="- The specified address book doesn't allow deletion of contacts!" xml:space="preserve">
+  <value>- The specified address book doesn't allow deletion of contacts!</value>
+</data>
+<data name="- The specified calendar doesn't allow creation of appointments!" xml:space="preserve">
+  <value>- The specified calendar doesn't allow creation of appointments!</value>
+</data>
+<data name="- The specified calendar doesn't allow deletion of appointments!" xml:space="preserve">
+  <value>- The specified calendar doesn't allow deletion of appointments!</value>
+</data>
+<data name="- The specified calendar is not writeable. Therefore it is not possible to use the synchronization mode '{0}'." xml:space="preserve">
+  <value>- The specified calendar is not writeable. Therefore it is not possible to use the synchronization mode '{0}'.</value>
+</data>
+<data name="- There is no Outlook folder selected." xml:space="preserve">
+  <value>- There is no Outlook folder selected.</value>
+</data>
+<data name="- WebDav collection sync ist currently just supported for appointments and contacts." xml:space="preserve">
+  <value>- WebDav collection sync ist currently just supported for appointments and contacts.</value>
+</data>
+<data name="Account settings" xml:space="preserve">
+  <value>Account settings</value>
+</data>
+<data name="Add addressbook resource on server" xml:space="preserve">
+  <value>Add addressbook resource on server</value>
+</data>
+<data name="Add calendar resource on server" xml:space="preserve">
+  <value>Add calendar resource on server</value>
+</data>
+<data name="Added addressbook resource '{0}' successfully!" xml:space="preserve">
+  <value>Added addressbook resource '{0}' successfully!</value>
+</data>
+<data name="Added calendar resource '{0}' successfully!" xml:space="preserve">
+  <value>Added calendar resource '{0}' successfully!</value>
+</data>
+<data name="Automatic check for newer version turned off." xml:space="preserve">
+  <value>Automatic check for newer version turned off.</value>
+</data>
+<data name="CalDAV Synchronizer is currently starting up. Please try again, when startup is finished." xml:space="preserve">
+  <value>CalDAV Synchronizer is currently starting up. Please try again, when startup is finished.</value>
+</data>
+<data name="CalDav Synchronizer download failed" xml:space="preserve">
+  <value>CalDav Synchronizer download failed</value>
+</data>
+<data name="Can't access Outlook item, maybe it was moved or deleted!" xml:space="preserve">
+  <value>Can't access Outlook item, maybe it was moved or deleted!</value>
+</data>
+<data name="Can't add addressbook resource '{0}'" xml:space="preserve">
+  <value>Can't add addressbook resource '{0}'</value>
+</data>
+<data name="Can't add calendar resource '{0}'" xml:space="preserve">
+  <value>Can't add calendar resource '{0}'</value>
+</data>
+<data name="Can't set the calendar color!'" xml:space="preserve">
+  <value>Can't set the calendar color!'</value>
+</data>
+<data name="Configuration Error" xml:space="preserve">
+  <value>Configuration Error</value>
+</data>
+<data name="Connection test NOT successful:" xml:space="preserve">
+  <value>Connection test NOT successful:</value>
+</data>
+<data name="Connection test successful BUT:" xml:space="preserve">
+  <value>Connection test successful BUT:</value>
+</data>
+<data name="Connection test successful." xml:space="preserve">
+  <value>Connection test successful.</value>
+</data>
+<data name="Create DAV server resource" xml:space="preserve">
+  <value>Create DAV server resource</value>
+</data>
+<data name="Did not find any default version!" xml:space="preserve">
+  <value>Did not find any default version!</value>
+</data>
+<data name="Error updating the server calendar color!" xml:space="preserve">
+  <value>Error updating the server calendar color!</value>
+</data>
+<data name="Export cancelled by user." xml:space="preserve">
+  <value>Export cancelled by user.</value>
+</data>
+<data name="Export profiles" xml:space="preserve">
+  <value>Export profiles</value>
+</data>
+<data name="Import Profiles" xml:space="preserve">
+  <value>Import Profiles</value>
+</data>
+<data name="No color set for updating the server calendar color!" xml:space="preserve">
+  <value>No color set for updating the server calendar color!</value>
+</data>
+<data name="No newer version available." xml:space="preserve">
+  <value>No newer version available.</value>
+</data>
+<data name="No resources were found via autodiscovery!" xml:space="preserve">
+  <value>No resources were found via autodiscovery!</value>
+</data>
+<data name="No ressource selected!" xml:space="preserve">
+  <value>No ressource selected!</value>
+</data>
+<data name="Operation aborted" xml:space="preserve">
+  <value>Operation aborted</value>
+</data>
+<data name="Outlook restart required" xml:space="preserve">
+  <value>Outlook restart required</value>
+</data>
+<data name="Please be aware that the log file (especially with Log Level Debug) can contain 'Personally identifiable information' (PII) like resource URIs and raw calendar and/or addressbook data but no passwords.\nNever post or attach the log or a sync report in a public forum and mask sensitive data when sending as an e-mail!" xml:space="preserve">
+  <value>Please be aware that the log file (especially with Log Level Debug) can contain 'Personally identifiable information' (PII) like resource URIs and raw calendar and/or addressbook data but no passwords.\nNever post or attach the log or a sync report in a public forum and mask sensitive data when sending as an e-mail!</value>
+</data>
+<data name="Please select an Outlook folder to specify the item type for this profile" xml:space="preserve">
+  <value>Please select an Outlook folder to specify the item type for this profile</value>
+</data>
+<data name="Profile '{0}'" xml:space="preserve">
+  <value>Profile '{0}'</value>
+</data>
+<data name="Profile cache deleted" xml:space="preserve">
+  <value>Profile cache deleted</value>
+</data>
+<data name="Resource displayname must not be empty!" xml:space="preserve">
+  <value>Resource displayname must not be empty!</value>
+</data>
+<data name="Select folder" xml:space="preserve">
+  <value>Select folder</value>
+</data>
+<data name="Selected Outlook Folder" xml:space="preserve">
+  <value>Selected Outlook Folder</value>
+</data>
+<data name="Some options contain invalid values" xml:space="preserve">
+  <value>Some options contain invalid values</value>
+</data>
+<data name="Successfully updated the server calendar color!" xml:space="preserve">
+  <value>Successfully updated the server calendar color!</value>
+</data>
+<data name="Sucessfully exported {0}'." xml:space="preserve">
+  <value>Sucessfully exported {0}'.</value>
+</data>
+<data name="Sucessfully imported {0}'." xml:space="preserve">
+  <value>Sucessfully imported {0}'.</value>
+</data>
+<data name="Synchronization mode is set to '{0}' and the selected Outlook folder is empty. Are you sure, you want to select this folder, because all items on the DAV server will be deleted!" xml:space="preserve">
+  <value>Synchronization mode is set to '{0}' and the selected Outlook folder is empty. Are you sure, you want to select this folder, because all items on the DAV server will be deleted!</value>
+</data>
+<data name="Synchronization mode is set to '{0}' and the selected Outlook folder is not empty. Are you sure, you want to select this folder because all items will be overwritten with the DAV server resources!" xml:space="preserve">
+  <value>Synchronization mode is set to '{0}' and the selected Outlook folder is not empty. Are you sure, you want to select this folder because all items will be overwritten with the DAV server resources!</value>
+</data>
+<data name="Test settings" xml:space="preserve">
+  <value>Test settings</value>
+</data>
+<data name="The CalDav/CardDav URL is invalid" xml:space="preserve">
+  <value>The CalDav/CardDav URL is invalid</value>
+</data>
+<data name="The Email address is invalid" xml:space="preserve">
+  <value>The Email address is invalid</value>
+</data>
+<data name="The profile for the selected report doesn't exist anymore!" xml:space="preserve">
+  <value>The profile for the selected report doesn't exist anymore!</value>
+</data>
+<data name="The selected entity does not exist anymore." xml:space="preserve">
+  <value>The selected entity does not exist anymore.</value>
+</data>
+<data name="The specified URL doesn't support WebDav Collection Sync, the option will be disabled!'." xml:space="preserve">
+  <value>The specified URL doesn't support WebDav Collection Sync, the option will be disabled!'.</value>
+</data>
+<data name="The specified URL is a read-only addressbook. Synchronization mode set to '{0}'." xml:space="preserve">
+  <value>The specified URL is a read-only addressbook. Synchronization mode set to '{0}'.</value>
+</data>
+<data name="The specified URL is a read-only calendar. Synchronization mode set to '{0}'." xml:space="preserve">
+  <value>The specified URL is a read-only calendar. Synchronization mode set to '{0}'.</value>
+</data>
+<data name="The tasklist is invalid" xml:space="preserve">
+  <value>The tasklist is invalid</value>
+</data>
+<data name="The tasklist with id '{0}' is invalid." xml:space="preserve">
+  <value>The tasklist with id '{0}' is invalid.</value>
+</data>
+<data name="Waiting for newer version than '{0}'." xml:space="preserve">
+  <value>Waiting for newer version than '{0}'.</value>
+</data>
+<data name="Wrong ItemType in folder '{0}'. It should be a calendar, task or contact folder." xml:space="preserve">
+  <value>Wrong ItemType in folder '{0}'. It should be a calendar, task or contact folder.</value>
+</data>
+<data name="You need to choose a calendar folder to merge the EasyProject resources!" xml:space="preserve">
+  <value>You need to choose a calendar folder to merge the EasyProject resources!</value>
+</data>
+<data name="You need to choose a calendar folder to merge the Kolab resources!" xml:space="preserve">
+  <value>You need to choose a calendar folder to merge the Kolab resources!</value>
+</data>
+<data name="You need to restart Outlook after installing the new version!" xml:space="preserve">
+  <value>You need to restart Outlook after installing the new version!</value>
+</data>
 </root>
