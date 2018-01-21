@@ -93,7 +93,7 @@ namespace CalDavSynchronizer.Ui
       this._useRandomNameCheckBox.Size = new System.Drawing.Size(281, 21);
       this._useRandomNameCheckBox.TabIndex = 4;
       this._useRandomNameCheckBox.Text = Strings.Get($"Use random string for DAV resource Uri");
-      this._toolTip.SetToolTip(this._useRandomNameCheckBox, Strings.Get($"If unchecked the displayname is used for creating the dav resource uri instead of a random string."));
+      this._toolTip.SetToolTip(this._useRandomNameCheckBox, Strings.Get($"If unchecked the displayname is used for creating the DAV resource Uri instead of a random string."));
       this._useRandomNameCheckBox.UseVisualStyleBackColor = true;
       // 
       // _resourceColorButton

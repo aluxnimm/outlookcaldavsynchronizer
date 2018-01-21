@@ -89,7 +89,7 @@ namespace CalDavSynchronizer.Ui.Options
       {
         options.UseWebDavCollectionSync = false;
         MessageBox.Show(
-          Strings.Get($"The specified URL doesn't support WebDav Collection Sync, the option will be disabled!'."),
+          Strings.Get($"The specified URL doesn't support WebDav Collection Sync, the option will be disabled!"),
           OptionTasks.ConnectionTestCaption);
       }
     }

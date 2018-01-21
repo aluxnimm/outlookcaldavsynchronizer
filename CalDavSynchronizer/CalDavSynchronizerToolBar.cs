@@ -82,7 +82,7 @@ namespace CalDavSynchronizer
       _toolBarBtnReports.Style = MsoButtonStyle.msoButtonIconAndCaption;
       _toolBarBtnReports.Caption = Strings.Get($"Reports");
       _toolBarBtnReports.FaceId = 433; // builtin icon: statistics
-      _toolBarBtnReports.Tag = Strings.Get($"Show reports of last sync runs");
+      _toolBarBtnReports.Tag = Strings.Get($"Show reports of last sync runs.");
       if (wireClickEvents)
         _toolBarBtnReports.Click += ToolBarBtn_Reports_OnClick;
 
@@ -90,7 +90,7 @@ namespace CalDavSynchronizer
       _toolBarBtnStatus.Style = MsoButtonStyle.msoButtonIconAndCaption;
       _toolBarBtnStatus.Caption = Strings.Get($"Status");
       _toolBarBtnStatus.FaceId = 433; // builtin icon: statistics
-      _toolBarBtnStatus.Tag = Strings.Get($"Show syncronization status");
+      _toolBarBtnStatus.Tag = Strings.Get($"Show status of sync runs.");
       if (wireClickEvents)
         _toolBarBtnStatus.Click += ToolBarBtn_Status_OnClick;
 

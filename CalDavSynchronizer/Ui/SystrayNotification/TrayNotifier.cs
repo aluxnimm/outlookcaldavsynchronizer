@@ -154,7 +154,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification
         _nofifyIcon.ShowBalloonTip (
             10 * 1000,
             ComponentContainer.MessageBoxTitle,
-            Strings.Get($"Syncronization profile '{report.ProfileName}' executed with error(s)."),
+            Strings.Get($"Synchronization profile '{report.ProfileName}' executed with error(s)."),
             ToolTipIcon.Error);
       }
       else if (report.HasWarnings && notifyWarnings)
@@ -162,7 +162,7 @@ namespace CalDavSynchronizer.Ui.SystrayNotification
         _nofifyIcon.ShowBalloonTip (
             10 * 1000,
             ComponentContainer.MessageBoxTitle,
-            Strings.Get($"Syncronization profile '{report.ProfileName}' executed with warning(s)."),
+            Strings.Get($"Synchronization profile '{report.ProfileName}' executed with warning(s)."),
             ToolTipIcon.Warning);
       }
     }
