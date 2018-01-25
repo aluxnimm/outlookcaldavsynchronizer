@@ -123,7 +123,10 @@ namespace CalDavSynchronizer.IntegrationTests
         CalenderUrl = optionsWithConnectionData.CalenderUrl,
         EmailAddress = optionsWithConnectionData.EmailAddress,
         ServerAdapterType = optionsWithConnectionData.ServerAdapterType,
-     
+        ForceBasicAuthentication = optionsWithConnectionData.ForceBasicAuthentication,
+        CloseAfterEachRequest = optionsWithConnectionData.CloseAfterEachRequest,
+        PreemptiveAuthentication = optionsWithConnectionData.PreemptiveAuthentication,
+
         OutlookFolderEntryId = outlookFolder.EntryId,
         OutlookFolderStoreId = outlookFolder.StoreId,
 

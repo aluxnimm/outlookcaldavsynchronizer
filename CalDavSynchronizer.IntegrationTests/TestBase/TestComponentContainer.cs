@@ -33,7 +33,7 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
   {
     public ComponentContainer ComponentContainer;
     public SynchronizerFactory SynchronizerFactory;
-    public GeneralOptions GeneralOptions => new GeneralOptionsDataAccess ().LoadOptions ();
+    public GeneralOptions GeneralOptions => new InMemoryGeneralOptionsDataAccess ().LoadOptions ();
     private readonly TestComWrapperFactoryWrapper _testComWrapperFactoryWrapper;
     public Application Application { get; private set; }
     public TestOptionsFactory TestOptionsFactory { get; }

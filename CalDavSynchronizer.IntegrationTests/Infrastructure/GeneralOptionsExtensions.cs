@@ -23,7 +23,9 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
   {
     public static GeneralOptions Clone (this GeneralOptions options)
     {
-      return Serializer<GeneralOptions>.Deserialize (Serializer<GeneralOptions>.Serialize (options));
+      var clonedOptions = Serializer<GeneralOptions>.Deserialize (Serializer<GeneralOptions>.Serialize (options));
+      clonedOptions.CalDavConnectTimeout = options.CalDavConnectTimeout;
+      return clonedOptions;
     }
   }
 }
