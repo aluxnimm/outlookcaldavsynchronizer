@@ -15,7 +15,7 @@ using NUnit.Framework;
 
 namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
 {
-  public class GoogleContactTest : ChunkedSynchronizationTestBase<string,string, GoogleContactTestSynchronizer>
+  public class GoogleContactTest : GenericTwoWayTestBase<string,string, GoogleContactTestSynchronizer>
   {
     private TestComponentContainer _testComponentContainer;
  
@@ -101,6 +101,7 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
     }
 
 
+    [Test]
     [TestCase(2, 7, false)]
     public override Task Test(int? chunkSize, int itemsPerOperation, bool useWebDavCollectionSync)
     {

@@ -15,7 +15,7 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
 {
-  public class ContactTest : ChunkedSynchronizationTestBase<string,WebResourceName, ContactTestSynchronizer>
+  public class ContactTest : GenericTwoWayTestBase<string,WebResourceName, ContactTestSynchronizer>
   {
     private TestComponentContainer _testComponentContainer;
  
@@ -107,6 +107,7 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
       await Synchronizer.Server.DeleteEntity(id);
     }
 
+    [Test]
     [TestCase(null, 7, false)]
     [TestCase(2, 7, false)]
     [TestCase(7, 7, false)]

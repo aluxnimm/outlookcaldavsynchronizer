@@ -37,6 +37,7 @@ namespace CalDavSynchronizer.IntegrationTests
       _testComponentContainer = new TestComponentContainer();
     }
 
+    [Test]
     [TestCase(40, 201 , 50)]
     [TestCase(40, 201 , 100)]
     [TestCase(40, 201 , 700)]

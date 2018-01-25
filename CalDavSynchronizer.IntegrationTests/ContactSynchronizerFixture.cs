@@ -44,6 +44,7 @@ namespace CalDavSynchronizer.IntegrationTests
     }
 
 
+    [Test]
     [TestCase(false)]
     [TestCase(true)]
     [Apartment(System.Threading.ApartmentState.STA)]
@@ -134,6 +135,7 @@ namespace CalDavSynchronizer.IntegrationTests
 
     }
 
+    [Test]
     [TestCase(true)]
     [TestCase(false)]
     [Apartment(System.Threading.ApartmentState.STA)]
@@ -170,6 +172,7 @@ namespace CalDavSynchronizer.IntegrationTests
         Is.EqualTo(0));
     }
 
+    [Test]
     [TestCase(false)]
     [TestCase(true)]
     [Apartment (System.Threading.ApartmentState.STA)]
@@ -213,6 +216,7 @@ namespace CalDavSynchronizer.IntegrationTests
         Is.EqualTo ("TheValueBlaBLubb"));
     }
 
+    [Test]
     [TestCase(false)]
     [TestCase(true)]
     [Apartment(System.Threading.ApartmentState.STA)]
@@ -317,6 +321,7 @@ namespace CalDavSynchronizer.IntegrationTests
 
     }
 
+    [Test]
     [TestCase(false)]
     [TestCase(true)]
     [Apartment(System.Threading.ApartmentState.STA)]

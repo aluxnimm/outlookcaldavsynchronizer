@@ -147,7 +147,7 @@
     <Compile Include="TestBase\ComWrappers\TestContactItemWrapper.cs" />
     <Compile Include="TestBase\ComWrappers\TestDistListItemWrapper.cs" />
     <Compile Include="TestBase\ComWrappers\TestTaskItemWrapper.cs" />
-    <Compile Include="ChunkedSynchronizationTest\ChunkedSynchronizationTestBase.cs" />
+    <Compile Include="TestBase\GenericTwoWayTestBase.cs" />
     <Compile Include="TestBase\GoogleTaskTestSynchronizer.cs" />
     <Compile Include="TestBase\TaskTestSynchronizer.cs" />
     <Compile Include="TestBase\GoogleContactTestSynchronizer.cs" />

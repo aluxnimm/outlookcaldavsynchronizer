@@ -38,8 +38,9 @@ namespace CalDavSynchronizer.IntegrationTests
     {
       _testComponentContainer = new TestComponentContainer();
     }
-    
-  
+
+
+    [Test]
     [TestCase(true)]
     [TestCase(false)]
     [Apartment(System.Threading.ApartmentState.STA)]

@@ -16,7 +16,7 @@ using NUnit.Framework;
 
 namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
 {
-  public class DistListTest : ChunkedSynchronizationTestBase<string,WebResourceName, ContactTestSynchronizer>
+  public class DistListTest : GenericTwoWayTestBase<string,WebResourceName, ContactTestSynchronizer>
   {
     private TestComponentContainer _testComponentContainer;
  
@@ -107,5 +107,15 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
       await Synchronizer.ServerSogoDistListsOrNull.DeleteEntity(id);
     }
 
+    [Test]
+    [TestCase(null, 7, false)]
+    [TestCase(2, 7, false)]
+    [TestCase(7, 7, false)]
+    [TestCase(29, 7, false)]
+    [TestCase(1, 7, false)]
+    public override Task Test(int? chunkSize, int itemsPerOperation, bool useWebDavCollectionSync)
+    {
+      return base.Test(chunkSize, itemsPerOperation, useWebDavCollectionSync);
+    }
   }
 }

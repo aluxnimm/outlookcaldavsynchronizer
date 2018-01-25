@@ -31,7 +31,7 @@ using NUnit.Framework;
 
 namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
 {
-  public class GoogleTaskTest : ChunkedSynchronizationTestBase<string,string, GoogleTaskTestSynchronizer>
+  public class GoogleTaskTest : GenericTwoWayTestBase<string,string, GoogleTaskTestSynchronizer>
   {
     private TestComponentContainer _testComponentContainer;
   
@@ -113,6 +113,7 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
       await Synchronizer.Server.DeleteEntity(id);
     }
 
+    [Test]
     [TestCase(2, 7, false)]
     public override Task Test(int? chunkSize, int itemsPerOperation, bool useWebDavCollectionSync)
     {

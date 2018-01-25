@@ -83,6 +83,7 @@ namespace CalDavSynchronizer.IntegrationTests
         events.Select(e => e.Entity.Events[0].Summary));
     }
 
+    [Test]
     [TestCase(false)]
     //[TestCase(true)] => This does currently not work, since sogo returns a wrong collection sync report
     [Apartment(System.Threading.ApartmentState.STA)]
@@ -149,18 +150,22 @@ namespace CalDavSynchronizer.IntegrationTests
       entities.ForEach(e => e.Dispose());
     }
 
-    public object[] SynchronizeToServer_AllDayEventsWithTimeRangeFilter_DoesntDuplicateOrDeleteBoundaryEventsSource()
+    [Ignore("This does currently not work")]
+    [Test]
+    [Apartment(System.Threading.ApartmentState.STA)]
+    public async Task SynchronizeToServer_AllDayEventsWithTimeRangeFilter_DoesntDuplicateOrDeleteBoundaryEvents_Google()
     {
-      return new[]
-      {
-        new object[] { _testComponentContainer.TestOptionsFactory.CreateSogoEvents()},
-        //   new object[] { TestOptionsFactory.CreateGoogleEvents()} => This does currently not work
-      };
+      await SynchronizeToServer_AllDayEventsWithTimeRangeFilter_DoesntDuplicateOrDeleteBoundaryEvents(_testComponentContainer.TestOptionsFactory.CreateGoogleEvents());
     }
 
-    [TestCaseSource(nameof(SynchronizeToServer_AllDayEventsWithTimeRangeFilter_DoesntDuplicateOrDeleteBoundaryEventsSource))]
+    [Test]
     [Apartment(System.Threading.ApartmentState.STA)]
-    public async Task SynchronizeToServer_AllDayEventsWithTimeRangeFilter_DoesntDuplicateOrDeleteBoundaryEvents(Options options)
+    public async Task SynchronizeToServer_AllDayEventsWithTimeRangeFilter_DoesntDuplicateOrDeleteBoundaryEvents_Sogo()
+    {
+      await SynchronizeToServer_AllDayEventsWithTimeRangeFilter_DoesntDuplicateOrDeleteBoundaryEvents(_testComponentContainer.TestOptionsFactory.CreateSogoEvents());
+    }
+
+    async Task SynchronizeToServer_AllDayEventsWithTimeRangeFilter_DoesntDuplicateOrDeleteBoundaryEvents(Options options)
     {
       options.SynchronizationMode = SynchronizationMode.ReplicateOutlookIntoServer;
 
@@ -204,7 +209,8 @@ namespace CalDavSynchronizer.IntegrationTests
       }
     }
 
- 
+
+    [Test]
     [TestCase(false)]
     [TestCase(true)]
     [Apartment(System.Threading.ApartmentState.STA)]
@@ -248,6 +254,7 @@ namespace CalDavSynchronizer.IntegrationTests
 
     }
 
+    [Test]
     [TestCase(false, false)]
     [TestCase(false, true)]
     [TestCase(true, false)]
@@ -286,6 +293,7 @@ namespace CalDavSynchronizer.IntegrationTests
         Is.EqualTo(0));
     }
 
+    [Test]
     [TestCase(true)]
     [TestCase(false)]
     [Apartment(System.Threading.ApartmentState.STA)]
@@ -318,6 +326,7 @@ namespace CalDavSynchronizer.IntegrationTests
     }
 
 
+    [Test]
     [TestCase(true)]
     [TestCase(false)]
     [Apartment(System.Threading.ApartmentState.STA)]

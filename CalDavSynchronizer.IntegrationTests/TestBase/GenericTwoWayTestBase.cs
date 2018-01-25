@@ -14,18 +14,18 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.IntegrationTests.TestBase;
 using NUnit.Framework;
 
-namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
+namespace CalDavSynchronizer.IntegrationTests.TestBase
 {
   [TestFixture]
-  public abstract class ChunkedSynchronizationTestBase<TAId,TBId, TSynchronizer> 
+  public abstract class GenericTwoWayTestBase<TAId,TBId, TSynchronizer> 
     where TSynchronizer : TestSynchronizerBase
   {
     protected abstract IEqualityComparer<TAId> AIdComparer { get; }
@@ -60,11 +60,7 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
     }
 
 
-    [TestCase(null, 7, false)]
-    [TestCase(2, 7, false)]
-    [TestCase(7, 7, false)]
-    [TestCase(29, 7, false)]
-    [TestCase(1,7, false)]
+  
     public virtual async Task Test(int? chunkSize, int itemsPerOperation, bool useWebDavCollectionSync)
     {
       await InitializeSynchronizer(chunkSize, useWebDavCollectionSync);
@@ -156,7 +152,7 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
 
       var relations2 = GetRelations();
 
-      Assert.That(relations.Count, Is.EqualTo(itemsPerOperation * 5));
+      Assert.That(relations2.Count, Is.EqualTo(itemsPerOperation * 3));
 
       foreach (var relation in relations2)
       {

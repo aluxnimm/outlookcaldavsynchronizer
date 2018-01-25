@@ -31,7 +31,7 @@ using NUnit.Framework;
 
 namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
 {
-  public class EventTest : ChunkedSynchronizationTestBase<AppointmentId,WebResourceName, EventTestSynchronizer>
+  public class EventTest : GenericTwoWayTestBase<AppointmentId,WebResourceName, EventTestSynchronizer>
   {
     private TestComponentContainer _testComponentContainer;
     private DateTime _startDateTime;
@@ -123,6 +123,7 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
       await Synchronizer.Server.DeleteEntity(id);
     }
 
+    [Test]
     [TestCase(null, 7, false)]
     [TestCase(2, 7, false)]
     [TestCase(7, 7, false)]
