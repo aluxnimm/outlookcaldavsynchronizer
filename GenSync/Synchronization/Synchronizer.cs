@@ -86,9 +86,9 @@ namespace GenSync.Synchronization
       IExceptionHandlingStrategy exceptionHandlingStrategy,
       IMatchDataFactory<TAtypeEntity, TAMatchData> aMatchDataFactory,
       IMatchDataFactory<TBtypeEntity, TBMatchData> bMatchDataFactory,
-      int? chunkSize, 
+      int? chunkSize,
       IChunkedExecutor chunkedExecutor,
-      IFullEntitySynchronizationLoggerFactory<TAtypeEntity,TBtypeEntity> fullEntitySynchronizationLoggerFactory,
+      IFullEntitySynchronizationLoggerFactory<TAtypeEntity, TBtypeEntity> fullEntitySynchronizationLoggerFactory,
       IStateAwareEntityRepository<TAtypeEntityId, TAtypeEntityVersion, TContext, TAtypeStateToken> atypeStateAwareEntityRepository,
       IStateAwareEntityRepository<TBtypeEntityId, TBtypeEntityVersion, TContext, TBtypeStateToken> btypeStateAwareEntityRepository,
       IStateTokenDataAccess<TAtypeStateToken, TBtypeStateToken> stateTokenDataAccess,
@@ -257,7 +257,7 @@ namespace GenSync.Synchronization
           else
             bVersionsTask = Task.FromResult<IEnumerable<EntityVersion<TBtypeEntityId, TBtypeEntityVersion>>>(new EntityVersion<TBtypeEntityId, TBtypeEntityVersion>[] { });
 
-          var aStates = VersionAwareEntityStateCollection<TAtypeEntityId,TAtypeEntityVersion>.Create(await aVersionsTask, _atypeIdComparer, _atypeVersionComparer);
+          var aStates = VersionAwareEntityStateCollection<TAtypeEntityId, TAtypeEntityVersion>.Create(await aVersionsTask, _atypeIdComparer, _atypeVersionComparer);
           var bStates = VersionAwareEntityStateCollection<TBtypeEntityId, TBtypeEntityVersion>.Create(await bVersionsTask, _btypeIdComparer, _btypeVersionComparer);
 
           await Synchronize(
@@ -366,41 +366,41 @@ namespace GenSync.Synchronization
               bEntitiesById = await bEntities.GetEntities(bEntitesToLoad, logger.BLoadEntityLogger, synchronizationContext);
             }
 
-              currentBatch.ForEach(s => s.FetchRequiredEntities(aEntitiesById, bEntitiesById));
-              currentBatch.ForEach(s => s.Resolve());
+            currentBatch.ForEach(s => s.FetchRequiredEntities(aEntitiesById, bEntitiesById));
+            currentBatch.ForEach(s => s.Resolve());
 
-              // since resolve may change to an new state, required entities have to be fetched again.
-              // an state is allowed only to resolve to another state, if the following states requires equal or less entities!
-              currentBatch.ForEach(s => s.FetchRequiredEntities(aEntitiesById, bEntitiesById));
+            // since resolve may change to an new state, required entities have to be fetched again.
+            // an state is allowed only to resolve to another state, if the following states requires equal or less entities!
+            currentBatch.ForEach(s => s.FetchRequiredEntities(aEntitiesById, bEntitiesById));
 
-              var aJobs = new JobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity>();
-              var bJobs = new JobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>();
+            var aJobs = new JobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity>();
+            var bJobs = new JobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>();
 
-              currentBatch.ForEach(s => s.AddSyncronizationJob(aJobs, bJobs, entitySynchronizationLoggerFactory, synchronizationContext));
+            currentBatch.ForEach(s => s.AddSyncronizationJob(aJobs, bJobs, entitySynchronizationLoggerFactory, synchronizationContext));
 
-              totalAJobs = totalAJobs.Add(aJobs.Count);
-              totalBJobs = totalBJobs.Add(bJobs.Count);
+            totalAJobs = totalAJobs.Add(aJobs.Count);
+            totalBJobs = totalBJobs.Add(bJobs.Count);
 
-              try
+            try
+            {
+              using (var progress = chunkLogger.StartProcessing(aJobs.TotalJobCount + bJobs.TotalJobCount))
               {
-                using (var progress = chunkLogger.StartProcessing(aJobs.TotalJobCount + bJobs.TotalJobCount))
-                {
-                  await _atypeWriteRepository.PerformOperations(aJobs.CreateJobs, aJobs.UpdateJobs, aJobs.DeleteJobs, progress, synchronizationContext);
-                  await _btypeWriteRepository.PerformOperations(bJobs.CreateJobs, bJobs.UpdateJobs, bJobs.DeleteJobs, progress, synchronizationContext);
-                }
+                await _atypeWriteRepository.PerformOperations(aJobs.CreateJobs, aJobs.UpdateJobs, aJobs.DeleteJobs, progress, synchronizationContext);
+                await _btypeWriteRepository.PerformOperations(bJobs.CreateJobs, bJobs.UpdateJobs, bJobs.DeleteJobs, progress, synchronizationContext);
+              }
 
-                currentBatch.ForEach(s => s.NotifyJobExecuted());
-              }
-              catch (Exception x)
-              {
-                if (_exceptionHandlingStrategy.DoesGracefullyAbortSynchronization(x))
-                {
-                  entitySynchronizationContexts.ForEach(s => s.Abort());
-                  SaveNewRelations(entitySynchronizationContexts, saveNewRelations);
-                }
-                throw;
-              }
+              currentBatch.ForEach(s => s.NotifyJobExecuted());
             }
+            catch (Exception x)
+            {
+              if (_exceptionHandlingStrategy.DoesGracefullyAbortSynchronization(x))
+              {
+                entitySynchronizationContexts.ForEach(s => s.Abort());
+                SaveNewRelations(entitySynchronizationContexts, saveNewRelations);
+              }
+              throw;
+            }
+          }
         }
         finally
         {
@@ -500,7 +500,7 @@ namespace GenSync.Synchronization
       syncStateContexts.ForEach(s => s.Dispose());
       saveNewRelations(newEntityRelations);
     }
-    
+
     private IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> CreateInitialSyncState(
       IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> knownEntityRelation,
       EntityState aState,
