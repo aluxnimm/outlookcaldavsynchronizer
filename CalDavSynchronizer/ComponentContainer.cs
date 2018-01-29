@@ -613,21 +613,15 @@ namespace CalDavSynchronizer
 
     public async Task ShowGeneralOptionsAsync()
     {
-      await EditGeneralOptionsAsync (
+      await EditGeneralOptionsAsync(
         o =>
         {
-          using (var optionsForm = new GeneralOptionsForm())
-          {
-            optionsForm.Options = o;
-            if (optionsForm.Display())
-            {
-              return Tuple.Create(true, optionsForm.Options);
-            }
-            else
-            {
-              return Tuple.Create(false, (GeneralOptions) null);
-            }
-          }
+          var generalOptionsViewModel = new GeneralOptionsViewModel {Options = o.Clone()};
+
+          if (_uiService.ShowGeneralOptions(generalOptionsViewModel))
+            return Tuple.Create(true, generalOptionsViewModel.Options);
+          else
+            return Tuple.Create(false, (GeneralOptions) null);
         });
     }
     

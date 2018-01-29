@@ -32,14 +32,4 @@ namespace CalDavSynchronizer.Ui
       Name = name;
     }
   }
-
-  internal class Item
-  {
-    public static void BindComboBox (ComboBox comboBox, IEnumerable list)
-    {
-      comboBox.DataSource = list;
-      comboBox.ValueMember = "Value";
-      comboBox.DisplayMember = "Name";
-    }
-  }
 }

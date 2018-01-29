@@ -92,6 +92,15 @@ namespace CalDavSynchronizer.Ui
       SetWindowSize (window, 0.75);
     }
 
+    public bool ShowGeneralOptions(GeneralOptionsViewModel generalOptionsViewModel)
+    {
+      var window = new GeneralOptionsWindow();
+      window.DataContext = generalOptionsViewModel;
+      window.Icon = BitmapFrame.Create(new Uri("pack://application:,,,/CalDavSynchronizer;component/Resources/ApplicationIcon.ico"));
+      ElementHost.EnableModelessKeyboardInterop(window);
+      return window.ShowDialog().GetValueOrDefault(false);
+    }
+
     public bool ShowOptions (OptionsCollectionViewModel viewModel)
     {
       var window = new OptionsWindow();

@@ -525,6 +525,7 @@
     <Compile Include="ProfileTypes\ConcreteTypes\SarenetProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\SogoProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\YandexProfile.cs" />
+    <Compile Include="Ui\Options\ViewModels\GeneralOptionsViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\ProfileViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\SelectProfileViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\ViewOptions.cs" />
@@ -696,12 +697,6 @@
     <Compile Include="Ui\DraggableTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Ui\Options\GeneralOptionsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Ui\Options\GeneralOptionsForm.Designer.cs">
-      <DependentUpon>GeneralOptionsForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Ui\GenericElementHostWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -830,9 +825,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\ColorPicker.resx">
       <DependentUpon>ColorPicker.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Ui\Options\GeneralOptionsForm.resx">
-      <DependentUpon>GeneralOptionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\GenericElementHostWindow.resx">
       <DependentUpon>GenericElementHostWindow.cs</DependentUpon>

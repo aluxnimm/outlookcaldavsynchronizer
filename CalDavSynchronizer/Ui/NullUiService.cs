@@ -71,6 +71,11 @@ namespace CalDavSynchronizer.Ui
      
     }
 
+    public bool ShowGeneralOptions(GeneralOptionsViewModel generalOptionsViewModel)
+    {
+      return false;
+    }
+
     public IProgressUi Create(int maxValue)
     {
       return NullProgressUi.Instance;

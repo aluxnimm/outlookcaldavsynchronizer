@@ -33,7 +33,7 @@ namespace CalDavSynchronizer.Ui.Options.Views
 
     private void OptionsWindow_DataContextChanged (object sender, DependencyPropertyChangedEventArgs e)
     {
-      var viewModel = e.NewValue as OptionsCollectionViewModel;
+      var viewModel = e.NewValue as GeneralOptionsViewModel;
       if (viewModel != null)
       {
         viewModel.CloseRequested += ViewModel_CloseRequested;
