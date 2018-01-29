@@ -136,7 +136,6 @@
     <Compile Include="EventSynchronizerFixture.cs" />
     <Compile Include="Infrastructure\ComponentContainerTestExtension.cs" />
     <Compile Include="Infrastructure\InMemoryGeneralOptionsDataAccess.cs" />
-    <Compile Include="Infrastructure\GeneralOptionsExtensions.cs" />
     <Compile Include="Infrastructure\OptionsExtensions.cs" />
     <Compile Include="Infrastructure\TestDeleteJob.cs" />
     <Compile Include="Infrastructure\ContactData.cs" />
