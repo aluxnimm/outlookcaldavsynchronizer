@@ -26,7 +26,7 @@
             <CheckBox IsChecked="{Binding MapPriority}"><g:Localize>Map priority</g:Localize></CheckBox>
             <CheckBox IsChecked="{Binding MapBody}"><g:Localize>Map Body</g:Localize></CheckBox>
             <CheckBox IsChecked="{Binding MapRecurringTasks}"><g:Localize>Map recurring tasks</g:Localize></CheckBox>
-                <CheckBox IsChecked="{Binding MapStartAndDueAsFloating}" ToolTip="{g:Localize Task start date will be mapped to 00:00 and Task due date to 23:59 without timezone.&amp;#x0a;Enable this if clients with different timezones are used and the due date should be local.}">
+                <CheckBox IsChecked="{Binding MapStartAndDueAsFloating}" ToolTip="{g:Localize Task start date will be mapped to 00:00 and Task due date to 23:59 without timezone.\&#x0a;Enable this if clients with different timezones are used and the due date should be local.}">
                     <g:Localize>Map Outlook start and due date of task as floating without timezone</g:Localize></CheckBox>
         </StackPanel>
     </GroupBox>
@@ -35,7 +35,7 @@
         <TextBlock  
           DockPanel.Dock="Top"
           ToolTipService.ShowDuration="60000"
-          ToolTip="{g:Localize These settings affect the filter which selects the items for synchronization.&amp;#x0a;If an item does not pass the filter it is treated as if it would not exist!&amp;#x0a;Changing these settings for non-empty folders can lead to deletions on the server or duplicates in Outlook.}"><Bold><g:Localize>WARNING:</g:Localize></Bold> <g:Localize>Take care, when changing settings for non-empty folders (see tooltip)</g:Localize></TextBlock>
+          ToolTip="{g:Localize These settings affect the filter which selects the items for synchronization.\&#x0a;If an item does not pass the filter it is treated as if it would not exist!\&#x0a;Changing these settings for non-empty folders can lead to deletions on the server or duplicates in Outlook.}"><Bold><g:Localize>WARNING:</g:Localize></Bold> <g:Localize>Take care, when changing settings for non-empty folders (see tooltip)</g:Localize></TextBlock>
         <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -54,7 +54,7 @@
                         ItemsSource="{Binding AvailableCategories}"
                         Grid.Row="0" 
                         Grid.Column="1" 
-                        ToolTip="{g:Localize Enter the name of the Outlook category for filtering. &amp;#x0a;If the category does not exist it will be created in Outlook.}" />
+                        ToolTip="{g:Localize Enter the name of the Outlook category for filtering. \&#x0a;If the category does not exist it will be created in Outlook.}" />
                     <CheckBox 
                         IsEnabled="{Binding UseTaskCategoryAsFilter}"
                         IsChecked="{Binding IncludeEmptyTaskCategoryFilter}" 
@@ -74,7 +74,7 @@
                       Grid.Column="0" 
                       Grid.Row="3" 
                       IsChecked="{Binding IsCategoryFilterSticky}"
-                      ToolTip="{g:Localize WARNING: Do not use since it just keeps the items in sync as long as the cache is not cleared.&amp;#x0a;After clearing the cache (which happens automatically in some cases) items which were affected by this option do not pass the filter anymore!}"
+                      ToolTip="{g:Localize WARNING: Do not use since it just keeps the items in sync as long as the cache is not cleared.\&#x0a;After clearing the cache (which happens automatically in some cases) items which were affected by this option do not pass the filter anymore!}"
                       ToolTipService.ShowDuration="60000"></CheckBox>
         </Grid>
             </StackPanel>

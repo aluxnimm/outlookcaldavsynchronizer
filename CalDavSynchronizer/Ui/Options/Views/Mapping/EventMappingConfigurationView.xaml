@@ -27,15 +27,15 @@
                     Grid.Column="1" />
           </Grid>
                 <CheckBox IsChecked="{Binding MapBody}" ToolTip="{g:Localize Map plaintext Body of Outlook appointment to description attribute.}"><g:Localize>Map Body</g:Localize></CheckBox>
-                <CheckBox IsEnabled="{Binding MapBody}" IsChecked="{Binding MapRtfBodyToXAltDesc}" ToolTip="{g:Localize Convert formatted RTF Body of Outlook appointment to Html and export it as X-ALT-DESC property.&amp;#x0a;The RTF to Html conversion is experimental inline images and some formatting properties can not be converted!&amp;#x0a;Be aware that some servers like Google Calendar drop this attribute!}"><g:Localize>Export Html description X-ALT-DESC converted from RTF Body</g:Localize></CheckBox>
-                <CheckBox IsEnabled="{Binding MapBody}" IsChecked="{Binding MapXAltDescToRtfBody}" ToolTip="{g:Localize Convert X-ALT-DESC description Html property to RTF and set Outlook appointment RTF Body.&amp;#x0a;The html to RTF conversion is experimental not all Html formatting options can be converted!&amp;#x0a;This overwrites also the plaintext Body!}"><g:Localize>Set RTF Body from X-ALT-DESC Html description</g:Localize></CheckBox>
-                <CheckBox IsChecked="{Binding UseGlobalAppointmentId}" ToolTip="{g:Localize Use Outlook GlobalAppointmendID instead of random Guid for UID attribute in new CalDAV events. &amp;#x0a; Can avoid duplicate events from invitations.}"><g:Localize>Use GlobalAppointmentID for UID attribute</g:Localize></CheckBox>
+                <CheckBox IsEnabled="{Binding MapBody}" IsChecked="{Binding MapRtfBodyToXAltDesc}" ToolTip="{g:Localize Convert formatted RTF Body of Outlook appointment to Html and export it as X-ALT-DESC property.\&#x0a;The RTF to Html conversion is experimental inline images and some formatting properties can not be converted!\&#x0a;Be aware that some servers like Google Calendar drop this attribute!}"><g:Localize>Export Html description X-ALT-DESC converted from RTF Body</g:Localize></CheckBox>
+                <CheckBox IsEnabled="{Binding MapBody}" IsChecked="{Binding MapXAltDescToRtfBody}" ToolTip="{g:Localize Convert X-ALT-DESC description Html property to RTF and set Outlook appointment RTF Body.\&#x0a;The html to RTF conversion is experimental not all Html formatting options can be converted!\&#x0a;This overwrites also the plaintext Body!}"><g:Localize>Set RTF Body from X-ALT-DESC Html description</g:Localize></CheckBox>
+                <CheckBox IsChecked="{Binding UseGlobalAppointmentId}" ToolTip="{g:Localize Use Outlook GlobalAppointmendID instead of random Guid for UID attribute in new CalDAV events. \&#x0a; Can avoid duplicate events from invitations.}"><g:Localize>Use GlobalAppointmentID for UID attribute</g:Localize></CheckBox>
         </StackPanel>
       </GroupBox>
     <GroupBox Header="{g:Localize Timezone Settings}">
         <StackPanel>
-                <CheckBox IsChecked="{Binding CreateEventsInUtc}" ToolTip="{g:Localize Use UTC instead of Outlook appointment timezone for creating events on CalDAV server. &amp;#x0a;Not recommended for general use &amp;#x0a;because recurrence exceptions over DST changes can not be mapped and &amp;#x0a;appointments with different start and end timezones can not be represented.}"><g:Localize>Create events on server in UTC</g:Localize></CheckBox>
-                <CheckBox IsChecked="{Binding UseIanaTz}" ToolTip="{g:Localize Use Iana instead of Windows timezones for creating events on CalDAV server. &amp;#x0a;Needed for servers which do not accept non standard Windows timezones like GMX for example. &amp;#x0a;Timezone definitions will be downloaded from http://tzurl.org.}"><g:Localize>Create events on server with downloaded IANA timezones</g:Localize></CheckBox>
+                <CheckBox IsChecked="{Binding CreateEventsInUtc}" ToolTip="{g:Localize Use UTC instead of Outlook appointment timezone for creating events on CalDAV server. \&#x0a;Not recommended for general use \&#x0a;because recurrence exceptions over DST changes can not be mapped and \&#x0a;appointments with different start and end timezones can not be represented.}"><g:Localize>Create events on server in UTC</g:Localize></CheckBox>
+                <CheckBox IsChecked="{Binding UseIanaTz}" ToolTip="{g:Localize Use Iana instead of Windows timezones for creating events on CalDAV server. \&#x0a;Needed for servers which do not accept non standard Windows timezones like GMX for example. \&#x0a;Timezone definitions will be downloaded from http://tzurl.org.}"><g:Localize>Create events on server with downloaded IANA timezones</g:Localize></CheckBox>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -46,10 +46,10 @@
                     ItemsSource="{Binding AvailableTimezones}"
                     IsEnabled="{Binding UseIanaTz}"
                     SelectedValue="{Binding EventTz}"
-                    ToolTip="{g:Localize Use this IANA timezone for default Outlook/Windows timezone. &amp;#x0a;Manually selected different timezones in Outlook appointments &amp;#x0a;will be mapped to first corresponding IANA timezone.}"
+                    ToolTip="{g:Localize Use this IANA timezone for default Outlook/Windows timezone. \&#x0a;Manually selected different timezones in Outlook appointments \&#x0a;will be mapped to first corresponding IANA timezone.}"
                     Grid.Column="1" />
                 </Grid>
-                <CheckBox IsEnabled="{Binding UseIanaTz}" IsChecked="{Binding IncludeHistoricalData}" ToolTip="{g:Localize Use full IANA timezone definition with historical data. &amp;#x0a;Needs more bandwith and can be incompatible when manually importing in Outlook.}"><g:Localize>Include full IANA timezone with historical data</g:Localize></CheckBox>
+                <CheckBox IsEnabled="{Binding UseIanaTz}" IsChecked="{Binding IncludeHistoricalData}" ToolTip="{g:Localize Use full IANA timezone definition with historical data. \&#x0a;Needs more bandwith and can be incompatible when manually importing in Outlook.}"><g:Localize>Include full IANA timezone with historical data</g:Localize></CheckBox>
 
             </StackPanel>
     </GroupBox>
@@ -69,14 +69,14 @@
     </GroupBox>
     <GroupBox Header="{g:Localize Outlook Settings}">
       <StackPanel>
-        <CheckBox ToolTip="{g:Localize Experimental mapping of the first category color of the appointment to the matching COLOR attribute of the event&amp;#x0a;Together with DAVdroid for Android you can map individual event colors from Android to Outlook &amp;#x0a;but not all calendar apps support it or can even crash (see &amp;#x0a;https://davdroid.bitfire.at/faq/entry/setting-event-colors-crash/)}" IsChecked="{Binding MapEventColorToCategory}"><g:Localize>Map event color to category</g:Localize></CheckBox>
-        <CheckBox ToolTip="{g:Localize removes duplicate Outlook appointments based on start end and subject of the events after each sync run &amp;#x0a;be aware of possible performance penalties with this option enabled.}" IsChecked="{Binding CleanupDuplicateEvents}"><g:Localize>Cleanup duplicate events after each sync run</g:Localize></CheckBox>
+        <CheckBox ToolTip="{g:Localize Experimental mapping of the first category color of the appointment to the matching COLOR attribute of the event\&#x0a;Together with DAVdroid for Android you can map individual event colors from Android to Outlook \&#x0a;but not all calendar apps support it or can even crash (see \&#x0a;https://davdroid.bitfire.at/faq/entry/setting-event-colors-crash/)}" IsChecked="{Binding MapEventColorToCategory}"><g:Localize>Map event color to category</g:Localize></CheckBox>
+        <CheckBox ToolTip="{g:Localize removes duplicate Outlook appointments based on start end and subject of the events after each sync run \&#x0a;be aware of possible performance penalties with this option enabled.}" IsChecked="{Binding CleanupDuplicateEvents}"><g:Localize>Cleanup duplicate events after each sync run</g:Localize></CheckBox>
         <GroupBox Header="{g:Localize Category Filter}">
           <DockPanel>
             <TextBlock  
               DockPanel.Dock="Top"
               ToolTipService.ShowDuration="60000"
-              ToolTip="{g:Localize These settings affect the filter which selects the items for synchronization.&amp;#x0a;If an item does not pass the filter it is treated as if it would not exist!&amp;#x0a;Changing these settings for non-empty folders can lead to deletions on the server or duplicates in Outlook.}"><Bold><g:Localize>WARNING:</g:Localize></Bold> <g:Localize>Take care, when changing settings for non-empty folders (see tooltip)</g:Localize></TextBlock>
+              ToolTip="{g:Localize These settings affect the filter which selects the items for synchronization.\&#x0a;If an item does not pass the filter it is treated as if it would not exist!\&#x0a;Changing these settings for non-empty folders can lead to deletions on the server or duplicates in Outlook.}"><Bold><g:Localize>WARNING:</g:Localize></Bold> <g:Localize>Take care, when changing settings for non-empty folders (see tooltip)</g:Localize></TextBlock>
             <Grid>
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -99,7 +99,7 @@
                 ItemsSource="{Binding AvailableCategories}"
                 Grid.Row="0" 
                 Grid.Column="2" 
-                Grid.ColumnSpan="2" ToolTip="{g:Localize Enter the name of the Outlook category for filtering. &amp;#x0a;If the category does not exist it will be created in Outlook.}" />
+                Grid.ColumnSpan="2" ToolTip="{g:Localize Enter the name of the Outlook category for filtering. \&#x0a;If the category does not exist it will be created in Outlook.}" />
               <CheckBox 
                 IsEnabled="{Binding UseEventCategoryAsFilter}"
                 IsChecked="{Binding IncludeEmptyEventCategoryFilter}" 
@@ -167,7 +167,7 @@
                 Grid.Column="0" 
                 Grid.Row="5" 
                 IsChecked="{Binding IsCategoryFilterSticky}"
-                ToolTip="{g:Localize WARNING: Do not use since it just keeps the items in sync as long as the cache is not cleared.&amp;#x0a;After clearing the cache (which happens automatically in some cases) items which were affected by this option do not pass the filter anymore!}"
+                ToolTip="{g:Localize WARNING: Do not use since it just keeps the items in sync as long as the cache is not cleared.\&#x0a;After clearing the cache (which happens automatically in some cases) items which were affected by this option do not pass the filter anymore!}"
                 ToolTipService.ShowDuration="60000"></CheckBox>
             </Grid>
           </DockPanel>
