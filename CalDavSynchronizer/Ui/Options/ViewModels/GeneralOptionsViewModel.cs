@@ -46,22 +46,22 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     public IList<Item<ReportLogMode>> AvailableReportLogModes { get; } = new List<Item<ReportLogMode>>
     {
-      new Item<ReportLogMode>(ReportLogMode.OnlyWithErrors, "Only sync runs with errors"),
-      new Item<ReportLogMode>(ReportLogMode.WarningsOrErrors, "Sync runs with errors or warnings"),
-      new Item<ReportLogMode>(ReportLogMode.All, "All sync runs")
+      new Item<ReportLogMode>(ReportLogMode.OnlyWithErrors, Strings.Get($"Only sync runs with errors")),
+      new Item<ReportLogMode>(ReportLogMode.WarningsOrErrors, Strings.Get($"Sync runs with errors or warnings")),
+      new Item<ReportLogMode>(ReportLogMode.All, Strings.Get($"All sync runs"))
     };
 
     public IList<Item<ReportPopupMode>> AvailableReportPopupModes { get; } = new List<Item<ReportPopupMode>>
     {
-      new Item<ReportPopupMode>(ReportPopupMode.NoPopup, "No"),
-      new Item<ReportPopupMode>(ReportPopupMode.JustErrors, "Just errors"),
-      new Item<ReportPopupMode>(ReportPopupMode.WarningsAndErrors, "Errors and warnings")
+      new Item<ReportPopupMode>(ReportPopupMode.NoPopup, Strings.Get($"No")),
+      new Item<ReportPopupMode>(ReportPopupMode.JustErrors, Strings.Get($"Just errors")),
+      new Item<ReportPopupMode>(ReportPopupMode.WarningsAndErrors, Strings.Get($"Errors and warnings"))
     };
 
     public IList<Item<LogLevel>> AvailableLogLevels { get; } = new List<Item<LogLevel>>
     {
-      new Item<LogLevel>(LogLevel.Info, "Info"),
-      new Item<LogLevel>(LogLevel.Debug, "Debug")
+      new Item<LogLevel>(LogLevel.Info, Strings.Get($"Info")),
+      new Item<LogLevel>(LogLevel.Debug, Strings.Get($"Debug"))
     };
 
     public ICommand CancelCommand { get; }

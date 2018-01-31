@@ -21,7 +21,7 @@
         <Setter Property="Width" Value="75"></Setter>
       </Style>
     </StackPanel.Resources>
-    <GroupBox Header="{g:Localize General settings}">
+    <GroupBox Header="{g:Localize General Settings}">
       <StackPanel>
         <CheckBox IsChecked="{Binding Options.ShouldCheckForNewerVersions}" Content="{g:Localize Automatically check for newer versions}"></CheckBox>
         <CheckBox IsChecked="{Binding Options.CheckIfOnline}" Content="{g:Localize Check Internet connection before sync run}" ToolTip="{g:Localize Checks if a network interface is up\&#x0a;and try DNS query to dns.msftncsi.com first and if that fails try to download\&#x0a;http://www.msftncsi.com/ncsi.txt with the configured proxy settings.\&#x0a;Should avoid error reports when network is not available after\&#x0a;coming back from hibernate for example.}"></CheckBox>
@@ -32,7 +32,7 @@
       </StackPanel>
     </GroupBox>
 
-    <GroupBox Header="{g:Localize Ui settings}">
+    <GroupBox Header="{g:Localize UI Settings}">
       <StackPanel>
         <CheckBox IsChecked="{Binding Options.EnableAdvancedView}" Content="{g:Localize Show advanced settings as default}" ToolTip="{g:Localize Show the advanced settings in synchronization profiles as default if enabled. }"></CheckBox>
         <CheckBox IsChecked="{Binding Options.ExpandAllSyncProfiles}" Content="{g:Localize Expand all nodes in Synchronization Profiles}" ToolTip="{g:Localize Expand all nodes in the treeview of the Synchronization Profiles configuration as default if enabled.\&#x0a;Only applicable if advanced settings are turned on.}"></CheckBox>
@@ -46,18 +46,18 @@
       </StackPanel>
     </GroupBox>
 
-    <GroupBox Header="{g:Localize Server settings}">
+    <GroupBox Header="{g:Localize Server Settings}">
       <StackPanel>
         <CheckBox IsChecked="{Binding Options.AcceptInvalidCharsInServerResponse}" Content="{g:Localize Accept invalid chars in server response.}" ToolTip="{g:Localize If checked invalid characters in XML server responses are allowed.\&#x0a;A typical invalid char\, sent by some servers is \'Form feed\' (0x0C).}"></CheckBox>
         <CheckBox IsChecked="{Binding Options.UseUnsafeHeaderParsing}"  Content="{g:Localize Enable useUnsafeHeaderParsing}" ToolTip="{g:Localize Enable only if you get the following error:\&#x0a;System.Net.WebException: The server committed a protocol violation. Section\=ResponseStatusLine\&#x0a;Needed for Yahoo and cPanel Horde servers for example.}"></CheckBox>
         <DockPanel>
-          <TextBlock  Text="{g:Localize Dav Connection Timeout (secs)}" ></TextBlock>
+          <TextBlock  Text="{g:Localize DAV Connection Timeout (secs)}" ></TextBlock>
           <TextBox  Text="{Binding CalDavConnectTimeoutInSecs}" TextAlignment="Right" HorizontalAlignment="Right" Width="100"></TextBox>
         </DockPanel>
       </StackPanel>
     </GroupBox>
 
-    <GroupBox Header="{g:Localize SSL\/TLS settings}">
+    <GroupBox Header="{g:Localize SSL\/TLS Settings}">
       <StackPanel>
         <CheckBox IsChecked="{Binding Options.DisableCertificateValidation}" Content="{g:Localize Disable Certificate Validation}" ToolTip="{g:Localize Major security risk\, not recommended!}"></CheckBox>
         <CheckBox IsChecked="{Binding Options.EnableClientCertificate}" Content="{g:Localize Enable Client Certificates}" ToolTip="{g:Localize Enable client certificates with automatic mode.\&#x0a;The available client certificates from the user store will be automatically provided.}"></CheckBox>
@@ -66,7 +66,7 @@
       </StackPanel>
     </GroupBox>
 
-    <GroupBox Header="{g:Localize Synchronization reports}">
+    <GroupBox Header="{g:Localize Synchronization Reports}">
       <StackPanel>
         <DockPanel>
           <TextBlock  Text="{g:Localize Log:}" ></TextBlock>
@@ -85,7 +85,7 @@
       </StackPanel>
     </GroupBox>
 
-    <GroupBox Header="{g:Localize General logging}">
+    <GroupBox Header="{g:Localize General Logging}">
       <StackPanel>
         <DockPanel>
           <TextBlock  Text="{g:Localize Log Level:}"></TextBlock>
