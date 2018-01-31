@@ -427,6 +427,10 @@
     <Compile Include="IOutlookSession.cs" />
     <Compile Include="IProfileExportProcessor.cs" />
     <Compile Include="OutlookCategory.cs" />
+    <Compile Include="ProfileTypes\ConcreteTypes\Swisscom\SwisscomServerSettingsView.xaml.cs">
+      <DependentUpon>SwisscomServerSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ProfileTypes\ConcreteTypes\Swisscom\SwisscomServerSettingsViewModel.cs" />
     <Compile Include="Scheduling\ComponentCollectors\AvailableEventSynchronizerComponents.cs" />
     <Compile Include="Scheduling\ComponentCollectors\AvailableGoogleContactSynchronizerSynchronizerComponents.cs" />
     <Compile Include="Scheduling\ComponentCollectors\AvailableGoogleTaskApiSynchronizerComponents.cs" />
@@ -933,6 +937,14 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Page Include="ProfileTypes\ConcreteTypes\Swisscom\SwisscomResourceDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ProfileTypes\ConcreteTypes\Swisscom\SwisscomServerSettingsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Ui\Options\Views\SelectProfileWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

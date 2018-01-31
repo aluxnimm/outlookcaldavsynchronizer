@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="CalDavSynchronizer.Ui.Options.Views.SwisscomServerSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels"
+             mc:Ignorable="d"
+             d:DataContext="{x:Static viewModels:ServerSettingsViewModel.DesignInstance}">
+  <GroupBox Header="Server settings">
+    <DockPanel>
+      <DockPanel DockPanel.Dock="Top">
+        <TextBlock>DAV Url:</TextBlock>
+        <TextBox  IsEnabled="{Binding IsChecked,ElementName=EditUrlToggleButton}" Text="{Binding CalenderUrl}" />
+      </DockPanel>
+      <Button DockPanel.Dock="Left" HorizontalAlignment="Left" Command="{Binding GetAccountSettingsCommand}" >Get account settings</Button>
+      <ToggleButton DockPanel.Dock="Right" x:Name="EditUrlToggleButton" HorizontalAlignment="Right" Content="Edit Url"/>
+    </DockPanel>
+  </GroupBox>
+</UserControl>

@@ -27,7 +27,7 @@ using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  internal class ServerSettingsViewModel : ModelBase, IOptionsSection
+  public class ServerSettingsViewModel : ModelBase, IOptionsSection
   {
     private readonly OptionsModel _model;
     private static readonly ILog s_logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);

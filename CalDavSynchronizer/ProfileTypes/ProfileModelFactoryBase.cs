@@ -84,13 +84,18 @@ namespace CalDavSynchronizer.ProfileTypes
     {
       var optionsViewModel = new GenericOptionsViewModel(
         OptionsViewModelParent,
-        new ServerSettingsViewModel(model, OptionTasks, ViewOptions),
+        CreateServerSettingsViewModel(model),
         OptionTasks,
         model,
         AvailableCategories,
         ViewOptions);
 
       return optionsViewModel;
+    }
+
+    protected virtual ServerSettingsViewModel CreateServerSettingsViewModel(OptionsModel model)
+    {
+      return new ServerSettingsViewModel(model, OptionTasks, ViewOptions);
     }
 
     public IOptionsViewModel CreateTemplateViewModel()

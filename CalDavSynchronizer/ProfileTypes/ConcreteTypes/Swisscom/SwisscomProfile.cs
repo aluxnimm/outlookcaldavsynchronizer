@@ -57,7 +57,10 @@ namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes.Swisscom
       {
       }
 
-     
+      protected override ServerSettingsViewModel CreateServerSettingsViewModel(OptionsModel model)
+      {
+        return new SwisscomServerSettingsViewModel(model, OptionTasks, ViewOptions);
+      }
 
       protected override IServerSettingsDetector CreateServerSettingsDetector()
       {

@@ -14,377 +14,381 @@
              d:DesignHeight="600" d:DesignWidth="600"
              d:DataContext="{x:Static  viewModels:OptionsCollectionViewModel.DesignInstance}">
 
-    <UserControl.Resources>
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/CalDavSynchronizer;component/ProfileTypes/ConcreteTypes/Swisscom/SwisscomResourceDictionary.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
 
-        <Style TargetType="FrameworkElement">
-            <Setter Property="Margin" Value="3" />
-        </Style>
+      <Style TargetType="FrameworkElement">
+        <Setter Property="Margin" Value="3" />
+      </Style>
 
-        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type FrameworkElement}}">
-            <Setter Property="Padding" Value="12,1" />
-        </Style>
+      <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type FrameworkElement}}">
+        <Setter Property="Padding" Value="12,1" />
+      </Style>
 
-        <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource {x:Type FrameworkElement}}">
-            <Setter Property="Padding" Value="12,1" />
-        </Style>
+      <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource {x:Type FrameworkElement}}">
+        <Setter Property="Padding" Value="12,1" />
+      </Style>
 
-        <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type FrameworkElement}}" />
+      <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type FrameworkElement}}" />
 
-        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type FrameworkElement}}">
-            <!--<Setter Property="Background" Value="Red"></Setter>-->
+      <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type FrameworkElement}}">
+        <!--<Setter Property="Background" Value="Red"></Setter>-->
 
-        </Style>
+      </Style>
 
-        <Style TargetType="{x:Type PasswordBox}" BasedOn="{StaticResource {x:Type FrameworkElement}}">
-            <!--<Setter Property="Background" Value="Red"></Setter>-->
+      <Style TargetType="{x:Type PasswordBox}" BasedOn="{StaticResource {x:Type FrameworkElement}}">
+        <!--<Setter Property="Background" Value="Red"></Setter>-->
 
-        </Style>
-
-
-        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type FrameworkElement}}">
-            <!--<Setter Property="Background" Value="Yellow"></Setter>-->
-            <Setter Property="Margin" Value="3,5,6,3" />
-        </Style>
-
-        <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource {x:Type FrameworkElement}}" />
-
-        <ControlTemplate x:Key="GroupBoxControlTemplate" TargetType="{x:Type GroupBox}">
-            <DockPanel SnapsToDevicePixels="True">
-                <Border x:Name="Header" Background="{x:Static SystemColors.ControlLightBrush}" Padding="3" DockPanel.Dock="Top">
-                    <ContentPresenter TextBlock.Foreground="{x:Static SystemColors.ControlDarkDarkBrush}" TextBlock.FontWeight="Bold" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" ContentStringFormat="{TemplateBinding HeaderStringFormat}" ContentSource="Header" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                </Border>
-                <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-            </DockPanel>
-        </ControlTemplate>
+      </Style>
 
 
-        <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource {x:Type FrameworkElement}}">
-            <Setter Property="Padding" Value="3,6,3,3" />
-            <Setter Property="Template" Value="{StaticResource GroupBoxControlTemplate}" />
-        </Style>
+      <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type FrameworkElement}}">
+        <!--<Setter Property="Background" Value="Yellow"></Setter>-->
+        <Setter Property="Margin" Value="3,5,6,3" />
+      </Style>
 
-        <views:ToProfileImageConverter x:Key="ToProfileImageConverter" />
+      <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource {x:Type FrameworkElement}}" />
 
-        <DataTemplate DataType="{x:Type viewModels:OptionsViewModelBase}" x:Key="TreeViewHeaderTemplate">
-            <StackPanel Orientation="Horizontal" Margin="0,2,3,1">
-                <Image Height="16" Width="16">
-                    <Image.Source>
-                        <MultiBinding Converter="{StaticResource ToProfileImageConverter}">
-                            <Binding Path="OutlookFolderType" />
-                            <Binding Path="IsMultipleOptionsTemplateViewModel" />
-                        </MultiBinding>
-                    </Image.Source>
-                </Image>
-                <CheckBox Margin="2,0" IsEnabled="{Binding SupportsIsActive}" IsChecked="{Binding IsActive}" />
+      <ControlTemplate x:Key="GroupBoxControlTemplate" TargetType="{x:Type GroupBox}">
+        <DockPanel SnapsToDevicePixels="True">
+          <Border x:Name="Header" Background="{x:Static SystemColors.ControlLightBrush}" Padding="3" DockPanel.Dock="Top">
+            <ContentPresenter TextBlock.Foreground="{x:Static SystemColors.ControlDarkDarkBrush}" TextBlock.FontWeight="Bold" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" ContentStringFormat="{TemplateBinding HeaderStringFormat}" ContentSource="Header" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+          </Border>
+          <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+        </DockPanel>
+      </ControlTemplate>
+
+
+      <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource {x:Type FrameworkElement}}">
+        <Setter Property="Padding" Value="3,6,3,3" />
+        <Setter Property="Template" Value="{StaticResource GroupBoxControlTemplate}" />
+      </Style>
+
+      <views:ToProfileImageConverter x:Key="ToProfileImageConverter" />
+
+      <DataTemplate DataType="{x:Type viewModels:OptionsViewModelBase}" x:Key="TreeViewHeaderTemplate">
+        <StackPanel Orientation="Horizontal" Margin="0,2,3,1">
+          <Image Height="16" Width="16">
+            <Image.Source>
+              <MultiBinding Converter="{StaticResource ToProfileImageConverter}">
+                <Binding Path="OutlookFolderType" />
+                <Binding Path="IsMultipleOptionsTemplateViewModel" />
+              </MultiBinding>
+            </Image.Source>
+          </Image>
+          <CheckBox Margin="2,0" IsEnabled="{Binding SupportsIsActive}" IsChecked="{Binding IsActive}" />
+          <TextBlock Text="{Binding Name, Mode=OneWay}" />
+        </StackPanel>
+      </DataTemplate>
+
+      <Style TargetType="{x:Type TreeViewItem}" x:Key="TreeViewItemContainerStyle">
+        <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+        <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+      </Style>
+
+      <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+      <views:BooleanToVisibilityConverterInverted x:Key="BooleanToVisibilityConverterInverted" />
+
+
+
+      <!-- Content view ressources -->
+      <DataTemplate DataType="{x:Type mappingViewModels:ContactMappingConfigurationViewModel}">
+        <mapping:ContactMappingConfigurationView />
+      </DataTemplate>
+
+      <DataTemplate DataType="{x:Type mappingViewModels:TaskMappingConfigurationViewModel}">
+        <mapping:TaskMappingConfigurationView />
+      </DataTemplate>
+
+      <DataTemplate DataType="{x:Type mappingViewModels:EventMappingConfigurationViewModel}">
+        <mapping:EventMappingConfigurationView />
+      </DataTemplate>
+
+      <DataTemplate DataType="{x:Type mappingViewModels:CustomPropertyMappingViewModel}">
+        <mapping:CustomPropertyMappingView />
+      </DataTemplate>
+
+      <DataTemplate DataType="{x:Type viewModels:SyncSettingsViewModel}">
+        <views:SyncSettingsView />
+      </DataTemplate>
+
+      <DataTemplate DataType="{x:Type viewModels:NetworkSettingsViewModel}">
+        <views:NetworkSettingsView />
+      </DataTemplate>
+
+      <DataTemplate DataType="{x:Type viewModels:ServerSettingsViewModel}">
+        <views:ServerSettingsView />
+      </DataTemplate>
+
+      <DataTemplate DataType="{x:Type viewModels:GoogleServerSettingsViewModel}">
+        <views:GoogleServerSettingsView />
+      </DataTemplate>
+
+      <DataTemplate DataType="{x:Type viewModels:OutlookFolderViewModel}">
+        <views:OutlookFolderView />
+      </DataTemplate>
+
+      <DataTemplate DataType="{x:Type viewModels:TimeRangeViewModel}">
+        <views:TimeRangeView />
+      </DataTemplate>
+
+      <DataTemplate DataType="{x:Type bulkOptionsViewModels:ServerSettingsTemplateViewModel}">
+        <bulkOptionsViews:ServerSettingsTemplateView />
+      </DataTemplate>
+
+      <DataTemplate DataType="{x:Type bulkOptionsViewModels:GoogleServerSettingsTemplateViewModel}">
+        <bulkOptionsViews:GoogleServerSettingsTemplateView />
+      </DataTemplate>
+
+
+      <ControlTemplate TargetType="ContentControl" x:Key="OptionsControlTemplate">
+        <DockPanel>
+          <DockPanel DockPanel.Dock="Top">
+            <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="Name:" />
+            <TextBox Text="{Binding Name}" />
+          </DockPanel>
+          <ContentPresenter />
+        </DockPanel>
+      </ControlTemplate>
+
+      <DataTemplate DataType="{x:Type viewModels:OptionsViewModelBase}">
+        <ContentControl Template="{StaticResource OptionsControlTemplate}">
+          <ItemsControl ItemsSource="{Binding Sections}" />
+        </ContentControl>
+      </DataTemplate>
+
+      <DataTemplate DataType="{x:Type bulkOptionsViewModels:MultipleOptionsTemplateViewModel}">
+        <StackPanel>
+          <DockPanel DockPanel.Dock="Top">
+            <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="Name:" />
+            <TextBox Text="{Binding Name}" />
+          </DockPanel>
+          <ContentControl Content="{Binding ServerSettingsViewModel}" />
+          <Button HorizontalAlignment="Left" Command="{Binding GetAccountSettingsCommand}">Get IMAP/POP3 account settings</Button>
+          <Button HorizontalAlignment="Left" Command="{Binding DiscoverResourcesCommand}">Discover resources and assign to Outlook folders</Button>
+
+        </StackPanel>
+      </DataTemplate>
+
+      <DataTemplate DataType="{x:Type bulkOptionsViewModels:EasyProjectServerSettingsTemplateViewModel}">
+        <bulkOptionsViews:EasyProjectServerSettingsTemplateView />
+      </DataTemplate>
+
+      <DataTemplate DataType="{x:Type bulkOptionsViewModels:EasyProjectMultipleOptionsTemplateViewModel}">
+        <StackPanel>
+          <Image Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_easyproject.png" Width="200" Height="50" />
+          <DockPanel DockPanel.Dock="Top">
+            <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="Name:" />
+            <TextBox Text="{Binding Name}" />
+          </DockPanel>
+
+          <ContentControl Content="{Binding ServerSettingsViewModel}" />
+          <GroupBox Header="Outlook settings">
+            <Grid>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+              </Grid.RowDefinitions>
+              <Button Grid.Row="0" HorizontalAlignment="Left" Command="{Binding DiscoverResourcesCommand}">Assign Easy Project resources to different Outlook folders</Button>
+              <Separator Margin="0,10,0,10" Grid.Row="1" />
+              <Button Grid.Row="2" HorizontalAlignment="Left" Command="{Binding MergeResourcesCommand}">Merge Easy Project resources to one single Outlook folder</Button>
+
+              <DockPanel Grid.Row="3">
+                <TextBlock Margin="10,0,10,0"  VerticalAlignment="Center" > Outlook folder:</TextBlock>
+                <Button Command="{Binding SelectFolderCommand}" DockPanel.Dock="Right">...</Button>
+                <TextBox VerticalAlignment="Center" IsReadOnly="True" Text="{Binding SelectedFolderName, Mode=OneWay}" />
+              </DockPanel>
+            </Grid>
+          </GroupBox>
+        </StackPanel>
+      </DataTemplate>
+
+      <DataTemplate DataType="{x:Type bulkOptionsViewModels:KolabMultipleOptionsTemplateViewModel}">
+        <StackPanel>
+          <Image Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_kolab.png" Width="98" Height="41" />
+          <DockPanel DockPanel.Dock="Top">
+            <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="Name:" />
+            <TextBox Text="{Binding Name}" />
+          </DockPanel>
+          <ContentControl Content="{Binding ServerSettingsViewModel}" />
+          <GroupBox>
+            <Button HorizontalAlignment="Left" Command="{Binding GetAccountSettingsCommand}">Get IMAP/POP3 account settings</Button>
+          </GroupBox>
+          <GroupBox Header="Outlook settings">
+            <Grid>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+              </Grid.RowDefinitions>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+              </Grid.ColumnDefinitions>
+              <Button    Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Command="{Binding DiscoverResourcesCommand}">Assign Kolab folders to distinct Outlook folders</Button>
+              <CheckBox  Grid.Row="1" Grid.Column="0" IsChecked="{Binding AutoCreateOutlookFolders}">Automatically create Outlook folders</CheckBox>
+              <CheckBox  Grid.Row="2" Grid.Column="0" IsChecked="{Binding OnlyAddNewUrls}">Only add new Kolab resources</CheckBox>
+              <Rectangle Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Stretch" Width="1" Margin="2" Stroke="Black" />
+              <Button    Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" Command="{Binding MergeResourcesCommand}">Merge Kolab folders to a common Outlook folder</Button>
+              <DockPanel Grid.Row="1" Grid.Column="2">
+                <TextBlock Margin="10,0,10,0"  VerticalAlignment="Center" > Outlook folder:</TextBlock>
+                <Button Command="{Binding SelectFolderCommand}" DockPanel.Dock="Right">...</Button>
+                <TextBox VerticalAlignment="Center" IsReadOnly="True" Text="{Binding SelectedFolderName, Mode=OneWay}" />
+              </DockPanel>
+            </Grid>
+          </GroupBox>
+        </StackPanel>
+      </DataTemplate>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <DockPanel>
+    <DockPanel DockPanel.Dock="Bottom">
+      <UniformGrid DockPanel.Dock="Right" Columns="2" Rows="1">
+        <Button Command="{Binding CloseCommand}" Content="Ok" IsDefault="True">
+          <Button.CommandParameter>
+            <system:Boolean>true</system:Boolean>
+          </Button.CommandParameter>
+        </Button>
+        <Button Command="{Binding CloseCommand}" Content="Cancel" IsCancel="True">
+          <Button.CommandParameter>
+            <system:Boolean>false</system:Boolean>
+          </Button.CommandParameter>
+        </Button>
+      </UniformGrid>
+      <UIElement />
+    </DockPanel>
+
+
+    <ToolBar DockPanel.Dock="Top">
+      <Button Command="{Binding AddCommand}" ToolTip="Add new profile">
+        <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Add.png" />
+      </Button>
+      <Button Command="{Binding AddMultipleCommand}" ToolTip="Add multiple profiles">
+        <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/AddMultiple.png" />
+      </Button>
+      <Button Command="{Binding DeleteSelectedCommand}" ToolTip="Delete selected profile">
+        <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Delete.png" />
+      </Button>
+      <Button Command="{Binding CopySelectedCommand}" ToolTip="Copy selected profile">
+        <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Copy.png" />
+      </Button>
+      <Button Command="{Binding MoveSelectedUpCommand}" ToolTip="Move selected profile up" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/MoveUp.png" />
+      </Button>
+      <Button Command="{Binding MoveSelectedDownCommand}" ToolTip="Move selected profile down" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/MoveDown.png" />
+      </Button>
+      <Separator />
+      <Button Command="{Binding OpenProfileDataDirectoryCommand}" ToolTip="Open data directory of selected profile" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Folder.png" />
+      </Button>
+      <Button Command="{Binding ClearCacheOfSelectedCommand}" ToolTip="Clear cache of selected profile">
+        <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ClearCache.png" />
+      </Button>
+      <Button Command="{Binding ExpandAllCommand}" ToolTip="Expand all nodes" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ExpandAll.png" />
+      </Button>
+      <Button Command="{Binding CollapseAllCommand}" ToolTip="Collapse all nodes" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/CollapseAll.png" />
+      </Button>
+      <Separator />
+      <Button Command="{Binding ExportAllCommand}" ToolTip="Export Profiles to File">
+        <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Export.png" />
+      </Button>
+      <Button Command="{Binding ImportCommand}" ToolTip="Import Profiles from File">
+        <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Import.png" />
+      </Button>
+
+    </ToolBar>
+
+    <Grid  DockPanel.Dock="Left" MinWidth="220" MaxWidth="300" Margin="3" >
+      <TreeView ItemsSource="{Binding Options}" x:Name="ExpertOptionsTree" ItemContainerStyle="{StaticResource TreeViewItemContainerStyle}" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <TreeView.ItemTemplate>
+          <HierarchicalDataTemplate ItemsSource="{Binding Items}" DataType="{x:Type viewModels:IOptionsViewModel}">
+            <ContentControl Content="{Binding}" ContentTemplate="{StaticResource TreeViewHeaderTemplate}" />
+            <HierarchicalDataTemplate.ItemTemplate>
+              <HierarchicalDataTemplate ItemsSource="{Binding Items}">
                 <TextBlock Text="{Binding Name, Mode=OneWay}" />
-            </StackPanel>
-        </DataTemplate>
-
-        <Style TargetType="{x:Type TreeViewItem}" x:Key="TreeViewItemContainerStyle">
-            <Setter Property="IsSelected" Value="{Binding IsSelected}" />
-            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
-        </Style>
-
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <views:BooleanToVisibilityConverterInverted x:Key="BooleanToVisibilityConverterInverted" />
-
-
-
-        <!-- Content view ressources -->
-        <DataTemplate DataType="{x:Type mappingViewModels:ContactMappingConfigurationViewModel}">
-            <mapping:ContactMappingConfigurationView />
-        </DataTemplate>
-
-        <DataTemplate DataType="{x:Type mappingViewModels:TaskMappingConfigurationViewModel}">
-            <mapping:TaskMappingConfigurationView />
-        </DataTemplate>
-
-        <DataTemplate DataType="{x:Type mappingViewModels:EventMappingConfigurationViewModel}">
-            <mapping:EventMappingConfigurationView />
-        </DataTemplate>
-
-        <DataTemplate DataType="{x:Type mappingViewModels:CustomPropertyMappingViewModel}">
-            <mapping:CustomPropertyMappingView />
-        </DataTemplate>
-
-        <DataTemplate DataType="{x:Type viewModels:SyncSettingsViewModel}">
-            <views:SyncSettingsView />
-        </DataTemplate>
-
-        <DataTemplate DataType="{x:Type viewModels:NetworkSettingsViewModel}">
-            <views:NetworkSettingsView />
-        </DataTemplate>
-
-        <DataTemplate DataType="{x:Type viewModels:ServerSettingsViewModel}">
-            <views:ServerSettingsView />
-        </DataTemplate>
-
-        <DataTemplate DataType="{x:Type viewModels:GoogleServerSettingsViewModel}">
-            <views:GoogleServerSettingsView />
-        </DataTemplate>
-
-        <DataTemplate DataType="{x:Type viewModels:OutlookFolderViewModel}">
-            <views:OutlookFolderView />
-        </DataTemplate>
-
-        <DataTemplate DataType="{x:Type viewModels:TimeRangeViewModel}">
-            <views:TimeRangeView />
-        </DataTemplate>
-
-        <DataTemplate DataType="{x:Type bulkOptionsViewModels:ServerSettingsTemplateViewModel}">
-            <bulkOptionsViews:ServerSettingsTemplateView />
-        </DataTemplate>
-
-        <DataTemplate DataType="{x:Type bulkOptionsViewModels:GoogleServerSettingsTemplateViewModel}">
-            <bulkOptionsViews:GoogleServerSettingsTemplateView />
-        </DataTemplate>
-
-
-        <ControlTemplate TargetType="ContentControl" x:Key="OptionsControlTemplate">
-            <DockPanel>
-                <DockPanel DockPanel.Dock="Top">
-                    <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="Name:" />
-                    <TextBox Text="{Binding Name}" />
-                </DockPanel>
-                <ContentPresenter />
-            </DockPanel>
-        </ControlTemplate>
-
-        <DataTemplate DataType="{x:Type viewModels:OptionsViewModelBase}">
-            <ContentControl Template="{StaticResource OptionsControlTemplate}">
-                <ItemsControl ItemsSource="{Binding Sections}" />
-            </ContentControl>
-        </DataTemplate>
-
-        <DataTemplate DataType="{x:Type bulkOptionsViewModels:MultipleOptionsTemplateViewModel}">
-            <StackPanel>
-                <DockPanel DockPanel.Dock="Top">
-                    <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="Name:" />
-                    <TextBox Text="{Binding Name}" />
-                </DockPanel>
-                <ContentControl Content="{Binding ServerSettingsViewModel}" />
-                <Button HorizontalAlignment="Left" Command="{Binding GetAccountSettingsCommand}">Get IMAP/POP3 account settings</Button>
-                <Button HorizontalAlignment="Left" Command="{Binding DiscoverResourcesCommand}">Discover resources and assign to Outlook folders</Button>
-
-            </StackPanel>
-        </DataTemplate>
-
-        <DataTemplate DataType="{x:Type bulkOptionsViewModels:EasyProjectServerSettingsTemplateViewModel}">
-            <bulkOptionsViews:EasyProjectServerSettingsTemplateView />
-        </DataTemplate>
-
-        <DataTemplate DataType="{x:Type bulkOptionsViewModels:EasyProjectMultipleOptionsTemplateViewModel}">
-            <StackPanel>
-                <Image Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_easyproject.png" Width="200" Height="50" />
-                <DockPanel DockPanel.Dock="Top">
-                    <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="Name:" />
-                    <TextBox Text="{Binding Name}" />
-                </DockPanel>
-
-                <ContentControl Content="{Binding ServerSettingsViewModel}" />
-                <GroupBox Header="Outlook settings">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Button Grid.Row="0" HorizontalAlignment="Left" Command="{Binding DiscoverResourcesCommand}">Assign Easy Project resources to different Outlook folders</Button>
-                        <Separator Margin="0,10,0,10" Grid.Row="1" />
-                        <Button Grid.Row="2" HorizontalAlignment="Left" Command="{Binding MergeResourcesCommand}">Merge Easy Project resources to one single Outlook folder</Button>
-
-                        <DockPanel Grid.Row="3">
-                            <TextBlock Margin="10,0,10,0"  VerticalAlignment="Center" > Outlook folder:</TextBlock>
-                            <Button Command="{Binding SelectFolderCommand}" DockPanel.Dock="Right">...</Button>
-                            <TextBox VerticalAlignment="Center" IsReadOnly="True" Text="{Binding SelectedFolderName, Mode=OneWay}" />
-                        </DockPanel>
-                    </Grid>
-                </GroupBox>
-            </StackPanel>
-        </DataTemplate>
-  
-        <DataTemplate DataType="{x:Type bulkOptionsViewModels:KolabMultipleOptionsTemplateViewModel}">
-            <StackPanel>
-                <Image Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_kolab.png" Width="98" Height="41" />
-                <DockPanel DockPanel.Dock="Top">
-                    <TextBlock Style="{StaticResource {x:Type TextBlock}}" DockPanel.Dock="Left" Text="Name:" />
-                    <TextBox Text="{Binding Name}" />
-                </DockPanel>
-                <ContentControl Content="{Binding ServerSettingsViewModel}" />
-                <GroupBox>
-                    <Button HorizontalAlignment="Left" Command="{Binding GetAccountSettingsCommand}">Get IMAP/POP3 account settings</Button>
-                </GroupBox>
-                <GroupBox Header="Outlook settings">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Button    Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Command="{Binding DiscoverResourcesCommand}">Assign Kolab folders to distinct Outlook folders</Button>
-                        <CheckBox  Grid.Row="1" Grid.Column="0" IsChecked="{Binding AutoCreateOutlookFolders}">Automatically create Outlook folders</CheckBox>
-                        <CheckBox  Grid.Row="2" Grid.Column="0" IsChecked="{Binding OnlyAddNewUrls}">Only add new Kolab resources</CheckBox>
-                        <Rectangle Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Stretch" Width="1" Margin="2" Stroke="Black" />
-                        <Button    Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" Command="{Binding MergeResourcesCommand}">Merge Kolab folders to a common Outlook folder</Button>
-                        <DockPanel Grid.Row="1" Grid.Column="2">
-                            <TextBlock Margin="10,0,10,0"  VerticalAlignment="Center" > Outlook folder:</TextBlock>
-                            <Button Command="{Binding SelectFolderCommand}" DockPanel.Dock="Right">...</Button>
-                            <TextBox VerticalAlignment="Center" IsReadOnly="True" Text="{Binding SelectedFolderName, Mode=OneWay}" />
-                        </DockPanel>
-                    </Grid>
-                </GroupBox>
-            </StackPanel>
-        </DataTemplate>
-
-    </UserControl.Resources>
+                <HierarchicalDataTemplate.ItemTemplate>
+                  <HierarchicalDataTemplate ItemsSource="{Binding Items}">
+                    <TextBlock Text="{Binding Name, Mode=OneWay}" />
+                  </HierarchicalDataTemplate>
+                </HierarchicalDataTemplate.ItemTemplate>
+              </HierarchicalDataTemplate>
+            </HierarchicalDataTemplate.ItemTemplate>
+          </HierarchicalDataTemplate>
+        </TreeView.ItemTemplate>
+      </TreeView>
+      <TreeView ItemsSource="{Binding Options}" x:Name="SimpleOptionsTree" ItemContainerStyle="{StaticResource TreeViewItemContainerStyle}" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverterInverted}}">
+        <TreeView.ItemTemplate>
+          <DataTemplate DataType="{x:Type viewModels:IOptionsViewModel}">
+            <ContentControl Content="{Binding}" ContentTemplate="{StaticResource TreeViewHeaderTemplate}" />
+          </DataTemplate>
+        </TreeView.ItemTemplate>
+      </TreeView>
+    </Grid>
 
     <DockPanel>
-        <DockPanel DockPanel.Dock="Bottom">
-            <UniformGrid DockPanel.Dock="Right" Columns="2" Rows="1">
-                <Button Command="{Binding CloseCommand}" Content="Ok" IsDefault="True">
-                    <Button.CommandParameter>
-                        <system:Boolean>true</system:Boolean>
-                    </Button.CommandParameter>
-                </Button>
-                <Button Command="{Binding CloseCommand}" Content="Cancel" IsCancel="True">
-                    <Button.CommandParameter>
-                        <system:Boolean>false</system:Boolean>
-                    </Button.CommandParameter>
-                </Button>
-            </UniformGrid>
-            <UIElement />
-        </DockPanel>
+      <TextBlock Margin="6,0,0,6" DockPanel.Dock="Bottom" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"><Hyperlink Command="{Binding ViewOptions.HideAdvancedSettingsCommand}"  >Hide advanced settings</Hyperlink></TextBlock>
+      <TextBlock Margin="6,0,0,6" DockPanel.Dock="Bottom" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverterInverted}}"><Hyperlink Command="{Binding ViewOptions.ShowAdvancedSettingsCommand}" >Show advanced settings</Hyperlink></TextBlock>
+      <ScrollViewer VerticalScrollBarVisibility="Auto" >
+        <Grid>
+          <ContentControl Content="{Binding ElementName=ExpertOptionsTree,Path=SelectedItem}" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <ContentControl.Resources>
+              <DataTemplate DataType="{x:Type viewModels:GenericOptionsViewModel}">
+                <ContentControl Template="{StaticResource OptionsControlTemplate}">
+                  <StackPanel>
+                    <views:OutlookFolderView DataContext="{Binding OutlookFolderViewModel}" />
+                    <ContentControl Content="{Binding ServerSettingsViewModel}" />
+                    <views:SyncSettingsView DataContext="{Binding SyncSettingsViewModel}" />
+                    <ContentControl Content="{Binding TimeRangeViewModel}">
+                      <ContentControl.Style>
+                        <Style TargetType="{x:Type ContentControl}">
+                          <Style.Setters>
+                            <Setter Property="Visibility" Value="Collapsed" />
+                          </Style.Setters>
+                          <Style.Triggers>
+                            <!--<DataTrigger Binding="{Binding OutlookFolderType}" Value="{x:Static outlook:OlItemType.olAppointmentItem}" >-->
+                            <DataTrigger Binding="{Binding OutlookFolderType}" Value="{x:Static viewModels:GenericOptionsViewModel.olTaskItem}">
+                              <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding OutlookFolderType}" Value="{x:Static viewModels:GenericOptionsViewModel.olAppointmentItem}">
+                              <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                          </Style.Triggers>
+                        </Style>
+                      </ContentControl.Style>
+                    </ContentControl>
+                  </StackPanel>
+                </ContentControl>
+              </DataTemplate>
+            </ContentControl.Resources>
+          </ContentControl>
 
-
-        <ToolBar DockPanel.Dock="Top">
-            <Button Command="{Binding AddCommand}" ToolTip="Add new profile">
-                <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Add.png" />
-            </Button>
-            <Button Command="{Binding AddMultipleCommand}" ToolTip="Add multiple profiles">
-                <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/AddMultiple.png" />
-            </Button>
-            <Button Command="{Binding DeleteSelectedCommand}" ToolTip="Delete selected profile">
-                <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Delete.png" />
-            </Button>
-            <Button Command="{Binding CopySelectedCommand}" ToolTip="Copy selected profile">
-                <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Copy.png" />
-            </Button>
-            <Button Command="{Binding MoveSelectedUpCommand}" ToolTip="Move selected profile up" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/MoveUp.png" />
-            </Button>
-            <Button Command="{Binding MoveSelectedDownCommand}" ToolTip="Move selected profile down" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/MoveDown.png" />
-            </Button>
-            <Separator />
-            <Button Command="{Binding OpenProfileDataDirectoryCommand}" ToolTip="Open data directory of selected profile" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Folder.png" />
-            </Button>
-            <Button Command="{Binding ClearCacheOfSelectedCommand}" ToolTip="Clear cache of selected profile">
-                <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ClearCache.png" />
-            </Button>
-            <Button Command="{Binding ExpandAllCommand}" ToolTip="Expand all nodes" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ExpandAll.png" />
-            </Button>
-            <Button Command="{Binding CollapseAllCommand}" ToolTip="Collapse all nodes" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/CollapseAll.png" />
-            </Button>
-            <Separator />
-            <Button Command="{Binding ExportAllCommand}" ToolTip="Export Profiles to File">
-                <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Export.png" />
-            </Button>
-            <Button Command="{Binding ImportCommand}" ToolTip="Import Profiles from File">
-                <Image Stretch="None" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/Import.png" />
-            </Button>
-           
-        </ToolBar>
-
-        <Grid  DockPanel.Dock="Left" MinWidth="220" MaxWidth="300" Margin="3" >
-            <TreeView ItemsSource="{Binding Options}" x:Name="ExpertOptionsTree" ItemContainerStyle="{StaticResource TreeViewItemContainerStyle}" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate ItemsSource="{Binding Items}" DataType="{x:Type viewModels:IOptionsViewModel}">
-                        <ContentControl Content="{Binding}" ContentTemplate="{StaticResource TreeViewHeaderTemplate}" />
-                        <HierarchicalDataTemplate.ItemTemplate>
-                            <HierarchicalDataTemplate ItemsSource="{Binding Items}">
-                                <TextBlock Text="{Binding Name, Mode=OneWay}" />
-                                <HierarchicalDataTemplate.ItemTemplate>
-                                    <HierarchicalDataTemplate ItemsSource="{Binding Items}">
-                                        <TextBlock Text="{Binding Name, Mode=OneWay}" />
-                                    </HierarchicalDataTemplate>
-                                </HierarchicalDataTemplate.ItemTemplate>
-                            </HierarchicalDataTemplate>
-                        </HierarchicalDataTemplate.ItemTemplate>
-                    </HierarchicalDataTemplate>
-                </TreeView.ItemTemplate>
-            </TreeView>
-            <TreeView ItemsSource="{Binding Options}" x:Name="SimpleOptionsTree" ItemContainerStyle="{StaticResource TreeViewItemContainerStyle}" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverterInverted}}">
-                <TreeView.ItemTemplate>
-                    <DataTemplate DataType="{x:Type viewModels:IOptionsViewModel}">
-                        <ContentControl Content="{Binding}" ContentTemplate="{StaticResource TreeViewHeaderTemplate}" />
-                    </DataTemplate>
-                </TreeView.ItemTemplate>
-            </TreeView>
+          <ContentControl Content="{Binding ElementName=SimpleOptionsTree,Path=SelectedItem}" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverterInverted}}">
+            <ContentControl.Resources>
+              <DataTemplate DataType="{x:Type viewModels:GenericOptionsViewModel}">
+                <ContentControl Template="{StaticResource OptionsControlTemplate}">
+                  <StackPanel>
+                    <views:OutlookFolderView DataContext="{Binding OutlookFolderViewModel}" />
+                    <ContentControl Content="{Binding ServerSettingsViewModel}" />
+                    <views:SyncSettingsView DataContext="{Binding SyncSettingsViewModel}" />
+                  </StackPanel>
+                </ContentControl>
+              </DataTemplate>
+            </ContentControl.Resources>
+          </ContentControl>
         </Grid>
-
-        <DockPanel>
-            <TextBlock Margin="6,0,0,6" DockPanel.Dock="Bottom" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"><Hyperlink Command="{Binding ViewOptions.HideAdvancedSettingsCommand}"  >Hide advanced settings</Hyperlink></TextBlock>
-            <TextBlock Margin="6,0,0,6" DockPanel.Dock="Bottom" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverterInverted}}"><Hyperlink Command="{Binding ViewOptions.ShowAdvancedSettingsCommand}" >Show advanced settings</Hyperlink></TextBlock>
-            <ScrollViewer VerticalScrollBarVisibility="Auto" >
-                <Grid>
-                    <ContentControl Content="{Binding ElementName=ExpertOptionsTree,Path=SelectedItem}" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <ContentControl.Resources>
-                            <DataTemplate DataType="{x:Type viewModels:GenericOptionsViewModel}">
-                                <ContentControl Template="{StaticResource OptionsControlTemplate}">
-                                    <StackPanel>
-                                        <views:OutlookFolderView DataContext="{Binding OutlookFolderViewModel}" />
-                                        <ContentControl Content="{Binding ServerSettingsViewModel}" />
-                                        <views:SyncSettingsView DataContext="{Binding SyncSettingsViewModel}" />
-                                        <ContentControl Content="{Binding TimeRangeViewModel}">
-                                            <ContentControl.Style>
-                                                <Style TargetType="{x:Type ContentControl}">
-                                                    <Style.Setters>
-                                                        <Setter Property="Visibility" Value="Collapsed" />
-                                                    </Style.Setters>
-                                                    <Style.Triggers>
-                                                        <!--<DataTrigger Binding="{Binding OutlookFolderType}" Value="{x:Static outlook:OlItemType.olAppointmentItem}" >-->
-                                                        <DataTrigger Binding="{Binding OutlookFolderType}" Value="{x:Static viewModels:GenericOptionsViewModel.olTaskItem}">
-                                                            <Setter Property="Visibility" Value="Visible" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding OutlookFolderType}" Value="{x:Static viewModels:GenericOptionsViewModel.olAppointmentItem}">
-                                                            <Setter Property="Visibility" Value="Visible" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </ContentControl.Style>
-                                        </ContentControl>
-                                    </StackPanel>
-                                </ContentControl>
-                            </DataTemplate>
-                        </ContentControl.Resources>
-                    </ContentControl>
-
-                    <ContentControl Content="{Binding ElementName=SimpleOptionsTree,Path=SelectedItem}" Visibility="{Binding ViewOptions.IsAdvancedViewEnabled, Converter={StaticResource BooleanToVisibilityConverterInverted}}">
-                        <ContentControl.Resources>
-                            <DataTemplate DataType="{x:Type viewModels:GenericOptionsViewModel}">
-                                <ContentControl Template="{StaticResource OptionsControlTemplate}">
-                                    <StackPanel>
-                                        <views:OutlookFolderView DataContext="{Binding OutlookFolderViewModel}" />
-                                        <ContentControl Content="{Binding ServerSettingsViewModel}" />
-                                        <views:SyncSettingsView DataContext="{Binding SyncSettingsViewModel}" />
-                                    </StackPanel>
-                                </ContentControl>
-                            </DataTemplate>
-                        </ContentControl.Resources>
-                    </ContentControl>
-                </Grid>
-            </ScrollViewer>
-        </DockPanel>
-
+      </ScrollViewer>
     </DockPanel>
+
+  </DockPanel>
 
 </UserControl>
