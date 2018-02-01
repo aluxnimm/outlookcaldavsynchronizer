@@ -12,16 +12,17 @@
         Width="400"
         d:DataContext="{x:Static viewModels:GeneralOptionsViewModel.DesignInstance}"
         WindowStartupLocation="CenterScreen">
-  <StackPanel>
-    <StackPanel.Resources>
-      <Style TargetType="DockPanel">
-        <Setter Property="Margin" Value="0,3"></Setter>
-      </Style>
-      <Style TargetType="Button">
-        <Setter Property="Width" Value="75"></Setter>
-      </Style>
-    </StackPanel.Resources>
-    <GroupBox Header="{g:Localize General Settings}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <StackPanel>
+            <StackPanel.Resources>
+                <Style TargetType="DockPanel">
+                    <Setter Property="Margin" Value="0,3"></Setter>
+                </Style>
+                <Style TargetType="Button">
+                    <Setter Property="Width" Value="75"></Setter>
+                </Style>
+            </StackPanel.Resources>
+            <GroupBox Header="{g:Localize General Settings}">
       <StackPanel>
         <CheckBox IsChecked="{Binding Options.ShouldCheckForNewerVersions}" Content="{g:Localize Automatically check for newer versions}"></CheckBox>
         <CheckBox IsChecked="{Binding Options.CheckIfOnline}" Content="{g:Localize Check Internet connection before sync run}" ToolTip="{g:Localize Checks if a network interface is up\&#x0a;and try DNS query to dns.msftncsi.com first and if that fails try to download\&#x0a;http://www.msftncsi.com/ncsi.txt with the configured proxy settings.\&#x0a;Should avoid error reports when network is not available after\&#x0a;coming back from hibernate for example.}"></CheckBox>
@@ -104,5 +105,5 @@
     </UniformGrid>
 
   </StackPanel>
-
+  </ScrollViewer>
 </Window>
