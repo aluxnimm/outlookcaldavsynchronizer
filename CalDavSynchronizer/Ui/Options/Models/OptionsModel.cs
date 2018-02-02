@@ -618,7 +618,9 @@ namespace CalDavSynchronizer.Ui.Options.Models
         case OlItemType.olAppointmentItem:
           return currentMappingConfiguration as EventMappingConfigurationModel ?? new EventMappingConfigurationModel(ModelFactory.ProfileType.CreateEventMappingConfiguration(), _sessionData);
         case OlItemType.olContactItem:
-          return currentMappingConfiguration as ContactMappingConfigurationModel ?? new ContactMappingConfigurationModel(ModelFactory.ProfileType.CreateContactMappingConfiguration());
+          return ModelFactory.ModelOptions.IsContactMappingConfigurationEnabled
+            ? currentMappingConfiguration as ContactMappingConfigurationModel ?? new ContactMappingConfigurationModel(ModelFactory.ProfileType.CreateContactMappingConfiguration())
+            : null;
         case OlItemType.olTaskItem:
           return ModelFactory.ModelOptions.IsTaskMappingConfigurationEnabled
             ? currentMappingConfiguration as TaskMappingConfigurationModel ?? new TaskMappingConfigurationModel(ModelFactory.ProfileType.CreateTaskMappingConfiguration())
