@@ -17,6 +17,7 @@
 
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
@@ -67,7 +68,7 @@ namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes.Swisscom
         return new SwisscomServerSettingsDetector();
       }
 
-      public override ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(false, false, true, "Detected Url", false);
+      public override ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(false, false, true, Strings.Get($"Detected URL"), false);
     }
   }
 }

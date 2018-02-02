@@ -4,16 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels"
+             xmlns:g="clr-namespace:CalDavSynchronizer.Globalization"
              mc:Ignorable="d"
              d:DataContext="{x:Static viewModels:ServerSettingsViewModel.DesignInstance}">
-  <GroupBox Header="Server settings">
+  <GroupBox Header="{g:Localize Server Settings}">
     <DockPanel>
       <DockPanel DockPanel.Dock="Top">
-        <TextBlock>DAV Url:</TextBlock>
+        <TextBlock><g:Localize>DAV URL:</g:Localize></TextBlock>
         <TextBox  IsEnabled="{Binding IsChecked,ElementName=EditUrlToggleButton}" Text="{Binding CalenderUrl}" />
       </DockPanel>
-      <Button DockPanel.Dock="Left" HorizontalAlignment="Left" Command="{Binding GetAccountSettingsCommand}" >Get account settings</Button>
-      <ToggleButton DockPanel.Dock="Right" x:Name="EditUrlToggleButton" HorizontalAlignment="Right" Content="Edit Url"/>
+            <Button DockPanel.Dock="Left" HorizontalAlignment="Left" Command="{Binding GetAccountSettingsCommand}" >
+                <g:Localize>Get account settings</g:Localize>
+            </Button>
+      <ToggleButton DockPanel.Dock="Right" x:Name="EditUrlToggleButton" HorizontalAlignment="Right" Content="{g:Localize Edit URL}"/>
     </DockPanel>
   </GroupBox>
 </UserControl>

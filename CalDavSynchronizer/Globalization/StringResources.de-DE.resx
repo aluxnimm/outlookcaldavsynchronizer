@@ -1392,4 +1392,10 @@ Andere Protokolle können mittels protocol: address hinzugefügt werden</value>
   <data name="Debug" xml:space="preserve">
     <value>Debug</value>
   </data>
+  <data name="Detected URL" xml:space="preserve">
+    <value>Erkannte URL</value>
+  </data>
+  <data name="Get account settings" xml:space="preserve">
+    <value>Lade Account Einstellungen</value>
+  </data>
 </root>
