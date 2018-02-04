@@ -64,6 +64,8 @@ namespace CalDavSynchronizer.DataAccess
     private const string ValueNameThresholdForProgressDisplay = "ThresholdForProgressDisplay";
     private const string ValueNameMaxSucessiveWarnings = "MaxSucessiveWarnings";
 
+    private const string ValueNameCultureName = "CultureName";
+
     public GeneralOptions LoadOptions ()
     {
       using (var key = OpenOptionsKey())
@@ -99,7 +101,8 @@ namespace CalDavSynchronizer.DataAccess
                    QueryFoldersJustByGetTable = (int) (key.GetValue (ValueNameQueryFoldersJustByGetTable) ?? 1) != 0,
                    ShowProgressBar = (int) (key.GetValue (ValueNameShowProgressBar) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["showProgressBar"] ?? bool.TrueString))) != 0,
                    ThresholdForProgressDisplay = (int) (key.GetValue (ValueNameThresholdForProgressDisplay) ?? int.Parse(ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"] ?? "50")),
-                   MaxSucessiveWarnings = (int) (key.GetValue (ValueNameMaxSucessiveWarnings) ?? 2)
+                   MaxSucessiveWarnings = (int) (key.GetValue (ValueNameMaxSucessiveWarnings) ?? 2),
+                   CultureName = (string) (key.GetValue (ValueNameCultureName) ?? ConfigurationManager.AppSettings["cultureName"] ?? "en-US")
         };
       }
     }
@@ -138,6 +141,7 @@ namespace CalDavSynchronizer.DataAccess
         key.SetValue (ValueNameShowProgressBar, options.ShowProgressBar ? 1: 0);
         key.SetValue (ValueNameThresholdForProgressDisplay, options.ThresholdForProgressDisplay);
         key.SetValue (ValueNameMaxSucessiveWarnings, options.MaxSucessiveWarnings);
+        key.SetValue (ValueNameCultureName, options.CultureName);
       }
     }
 

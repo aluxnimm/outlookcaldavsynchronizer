@@ -1398,4 +1398,7 @@ Andere Protokolle können mittels protocol: address hinzugefügt werden</value>
   <data name="Get account settings" xml:space="preserve">
     <value>Lade Account Einstellungen</value>
   </data>
+  <data name="Language:" xml:space="preserve">
+    <value>Sprache:</value>
+  </data>
 </root>

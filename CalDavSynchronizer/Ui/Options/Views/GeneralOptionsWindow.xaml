@@ -44,7 +44,11 @@
           <TextBlock  Text="{g:Localize Sync Progress Bar Threshold (Items)}" ToolTip="{g:Localize Show the sync progress bar when more items than the treshold need to be loaded.}"></TextBlock>
           <TextBox Text="{Binding Options.ThresholdForProgressDisplay}" TextAlignment="Right" HorizontalAlignment="Right" Width="100"></TextBox>
         </DockPanel>
-      </StackPanel>
+          <DockPanel>
+            <TextBlock  Text="{g:Localize Language:}" ToolTip="{g:Localize Changing this option requires a restart of Outlook.}"></TextBlock>
+            <ComboBox SelectedValue="{Binding Options.CultureName}" ItemsSource="{Binding AvailableCultureNames}" DisplayMemberPath="Name" SelectedValuePath="Value" HorizontalAlignment="Right" Width="220"></ComboBox>
+          </DockPanel>
+                </StackPanel>
     </GroupBox>
 
     <GroupBox Header="{g:Localize Server Settings}">

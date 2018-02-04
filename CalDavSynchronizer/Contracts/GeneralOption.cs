@@ -48,6 +48,7 @@ namespace CalDavSynchronizer.Contracts
     public bool ShowProgressBar { get; set; }
     public int ThresholdForProgressDisplay { get; set; }
     public int MaxSucessiveWarnings { get; set; }
+    public string CultureName { get; set; }
 
     public GeneralOptions Clone()
     {

@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -27,6 +28,7 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Globalization;
 using log4net;
 using log4net.Appender;
+using NodaTime.TimeZones;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
@@ -64,6 +66,34 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       new Item<LogLevel>(LogLevel.Debug, Strings.Get($"Debug"))
     };
 
+    private static IEnumerable<CultureInfo> GetSupportedCultures()
+    {
+      //Get all cultures 
+      var cultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures);
+
+      try
+      {
+        //Find the location where application installed.
+        var exeLocation = Path.GetDirectoryName(Uri.UnescapeDataString(new UriBuilder(Assembly.GetExecutingAssembly().CodeBase).Path));
+
+        //Return all culture for which satellite folder found with culture code.
+        return cultures.Where(cultureInfo => Directory.Exists(Path.Combine(exeLocation, cultureInfo.Name)) || cultureInfo.Name=="en-US");
+      }
+      catch (Exception ex)
+      {
+        s_logger.Error ("Could not get available cultures from satellite assemblies!", ex);
+        return cultures;
+      }
+    }
+    public IList<Item<string>> AvailableCultureNames
+    {
+      get
+      {
+        var allCultures = GetSupportedCultures();
+        var cultures = allCultures.Select(c => new Item<string> (c.Name, c.NativeName + " [" + c.TwoLetterISOLanguageName + "]")).ToList();
+        return cultures;
+      }
+    }
     public ICommand CancelCommand { get; }
     public ICommand OkCommand { get; }
     public ICommand ClearLogCommand { get; }
@@ -280,7 +310,8 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         StoreAppDataInRoamingFolder = true,
         ThresholdForProgressDisplay = 333,
         TriggerSyncAfterSendReceive = true,
-        UseUnsafeHeaderParsing = true
+        UseUnsafeHeaderParsing = true,
+        CultureName = "en-US"
       }
     };
   }
