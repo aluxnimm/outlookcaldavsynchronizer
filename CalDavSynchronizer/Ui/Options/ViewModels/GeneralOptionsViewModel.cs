@@ -65,6 +65,16 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       new Item<LogLevel>(LogLevel.Info, Strings.Get($"Info")),
       new Item<LogLevel>(LogLevel.Debug, Strings.Get($"Debug"))
     };
+    
+    public IList<Item<string>> AvailableCultureNames
+    {
+      get
+      {
+        var allCultures = GetSupportedCultures();
+        var cultures = allCultures.Select(c => new Item<string> (c.Name, c.NativeName + " [" + c.TwoLetterISOLanguageName + "]")).ToList();
+        return cultures;
+      }
+    }
 
     private static IEnumerable<CultureInfo> GetSupportedCultures()
     {
@@ -77,23 +87,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         var exeLocation = Path.GetDirectoryName(Uri.UnescapeDataString(new UriBuilder(Assembly.GetExecutingAssembly().CodeBase).Path));
 
         //Return all culture for which satellite folder found with culture code.
-        return cultures.Where(cultureInfo => Directory.Exists(Path.Combine(exeLocation, cultureInfo.Name)) || cultureInfo.Name=="en-US");
+        return cultures.Where(cultureInfo => Directory.Exists(Path.Combine(exeLocation, cultureInfo.Name)) || cultureInfo.Name == "en-US");
       }
       catch (Exception ex)
       {
-        s_logger.Error ("Could not get available cultures from satellite assemblies!", ex);
+        s_logger.Error("Could not get available cultures from satellite assemblies!", ex);
         return cultures;
       }
     }
-    public IList<Item<string>> AvailableCultureNames
-    {
-      get
-      {
-        var allCultures = GetSupportedCultures();
-        var cultures = allCultures.Select(c => new Item<string> (c.Name, c.NativeName + " [" + c.TwoLetterISOLanguageName + "]")).ToList();
-        return cultures;
-      }
-    }
+
     public ICommand CancelCommand { get; }
     public ICommand OkCommand { get; }
     public ICommand ClearLogCommand { get; }
