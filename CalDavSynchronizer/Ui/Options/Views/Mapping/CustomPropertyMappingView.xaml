@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mapping="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels.Mapping"
              xmlns:views="clr-namespace:CalDavSynchronizer.Ui.Options.Views"
+             xmlns:g="clr-namespace:CalDavSynchronizer.Globalization"
              mc:Ignorable="d"
              d:DataContext="{x:Static  mapping:CustomPropertyMappingViewModel.DesignInstance}">
 
@@ -13,14 +14,14 @@
       
     
     
-    <GroupBox Header="Custom properties mapping configuration">
+    <GroupBox Header="{g:Localize Custom Properties Mapping Configuration}">
       <StackPanel>
-        <CheckBox DockPanel.Dock="Top" ToolTip="Map all Outlook custom properties to DAV attributes with X-CALDAVSYNCHRONIZER prefix." IsChecked="{Binding MapCustomProperties}">Map all Outlook custom properties to X-CALDAVSYNCHRONIZER attributes.</CheckBox>
-                <GroupBox Header="Manual mapping" ToolTip="Add manual mapping pairs of Outlook custom properties and DAV X-Attributes. &#x0a;If properties don't exist, they are created. &#x0a;The manual mapping overrules the general mapping of all Outlook custom attributes if both activated. &#x0a;DAV attributes MUST start with X-">
+        <CheckBox DockPanel.Dock="Top" ToolTip="{g:Localize Map all Outlook custom properties to DAV attributes with X-CALDAVSYNCHRONIZER prefix.}" IsChecked="{Binding MapCustomProperties}"><g:Localize>Map all Outlook custom properties to X-CALDAVSYNCHRONIZER attributes</g:Localize></CheckBox>
+                <GroupBox Header="{g:Localize Manual Mapping}" ToolTip="{g:Localize Add manual mapping pairs of Outlook custom properties and DAV X-attributes. \&#x0a;If properties do not exist \&#44; they are created. \&#x0a;The manual mapping overrules the general mapping of all Outlook custom attributes if both activated. \&#x0a;DAV attributes MUST start with X-}">
            <DataGrid ItemsSource="{Binding Mappings}" AutoGenerateColumns="False" ColumnWidth="*">
                <DataGrid.Columns>
-                   <DataGridTextColumn Header="Outlook custom property" Binding="{Binding OutlookProperty}"></DataGridTextColumn>
-                   <DataGridTextColumn Header="DAV X-Attribute" Binding="{Binding DavProperty}"></DataGridTextColumn>
+                   <DataGridTextColumn Header="{g:Localize Outlook custom property}" Binding="{Binding OutlookProperty}"></DataGridTextColumn>
+                   <DataGridTextColumn Header="{g:Localize DAV X-attribute}" Binding="{Binding DavProperty}"></DataGridTextColumn>
                </DataGrid.Columns>
            </DataGrid>
         </GroupBox>

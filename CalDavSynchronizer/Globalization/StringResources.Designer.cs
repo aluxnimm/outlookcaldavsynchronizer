@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Thought.vCards {
+namespace CalDavSynchronizer.Globalization {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Thought.vCards {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class WarningMessages {
+    internal class StringResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal WarningMessages() {
+        internal StringResources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Thought.vCards {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Thought.vCards.WarningMessages", typeof(WarningMessages).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CalDavSynchronizer.Globalization.StringResources", typeof(StringResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,42 +57,6 @@ namespace Thought.vCards {
             }
             set {
                 resourceCulture = value;
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Line {0} A blank line was encountered.  This is not allowed in the vCard specification..
-        /// </summary>
-        internal static string BlankLine {
-            get {
-                return ResourceManager.GetString("BlankLine", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Line {0}: A colon (:) is missing.  All properties must be in NAME:VALUE format..
-        /// </summary>
-        internal static string ColonMissing {
-            get {
-                return ResourceManager.GetString("ColonMissing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Line {0}: The name section of the property is empty..
-        /// </summary>
-        internal static string EmptyName {
-            get {
-                return ResourceManager.GetString("EmptyName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Line {0}: This property has an invalid base64 encoding..
-        /// </summary>
-        internal static string InvalidEncoding {
-            get {
-                return ResourceManager.GetString("InvalidEncoding", resourceCulture);
             }
         }
     }

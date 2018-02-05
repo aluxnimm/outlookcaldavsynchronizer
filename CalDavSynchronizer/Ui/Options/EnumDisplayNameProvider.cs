@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Implementation;
 
 namespace CalDavSynchronizer.Ui.Options
@@ -33,13 +34,13 @@ namespace CalDavSynchronizer.Ui.Options
       switch (value)
       {
         case ConflictResolution.Automatic:
-          return "Automatic";
+          return Strings.Get($"Automatic");
         case ConflictResolution.Manual:
-          return "Manual";
+          return Strings.Get($"Manual");
         case ConflictResolution.ServerWins:
-          return "Server wins";
+          return Strings.Get($"Server wins");
         case ConflictResolution.OutlookWins:
-          return "Outlook wins";
+          return Strings.Get($"Outlook wins");
         default:
           throw new NotImplementedException($"Value '{value}' not implemented.");
       }
@@ -50,15 +51,15 @@ namespace CalDavSynchronizer.Ui.Options
       switch (value)
       {
         case SynchronizationMode.ReplicateOutlookIntoServer:
-          return "Outlook \u2192 Server (Replicate)";
+          return Strings.Get($"Outlook \u2192 Server (Replicate)");
         case SynchronizationMode.ReplicateServerIntoOutlook:
-          return "Outlook \u2190 Server (Replicate)";
+          return Strings.Get($"Outlook \u2190 Server (Replicate)");
         case SynchronizationMode.MergeOutlookIntoServer:
-          return "Outlook \u2192 Server (Merge)";
+          return Strings.Get($"Outlook \u2192 Server (Merge)");
         case SynchronizationMode.MergeServerIntoOutlook:
-          return "Outlook \u2190 Server (Merge)";
+          return Strings.Get($"Outlook \u2190 Server (Merge)");
         case SynchronizationMode.MergeInBothDirections:
-          return "Outlook \u2190\u2192 Server (Two-Way)";
+          return Strings.Get($"Outlook \u2190\u2192 Server (Two-Way)");
         default:
           throw new NotImplementedException($"Value '{value}' not implemented.");
       }

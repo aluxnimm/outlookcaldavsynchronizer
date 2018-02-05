@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Ui.ConnectionTests;
 using CalDavSynchronizer.Ui.Options.ResourceSelection.ViewModels;
 using CalDavSynchronizer.Utilities;
@@ -64,9 +65,9 @@ namespace CalDavSynchronizer.Ui.Options
 
         // ReSharper disable PossibleNullReferenceException
         _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Uri)].Visible = false;
-        _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Name)].HeaderText = "Name";
+        _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Name)].HeaderText = Strings.Get($"Name");
         _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Name)].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-        _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Color)].HeaderText = "Col";
+        _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Color)].HeaderText = Strings.Get($"Col");
         _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Color)].AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
         _calendarDataGridView.Columns[nameof (CalendarDataViewModel.SelectedFolder)].Visible = false;
         _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Model)].Visible = false;
@@ -84,7 +85,7 @@ namespace CalDavSynchronizer.Ui.Options
         // ReSharper disable PossibleNullReferenceException
         _addressBookDataGridView.DataSource = addressBooks;
         _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.Uri)].Visible = false;
-        _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.Name)].HeaderText = "Name";
+        _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.Name)].HeaderText = Strings.Get($"Name");
         _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.Name)].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
         _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.SelectedFolder)].Visible = false;
         _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.Model)].Visible = false;
@@ -101,7 +102,7 @@ namespace CalDavSynchronizer.Ui.Options
         // ReSharper disable PossibleNullReferenceException
         _tasksDataGridView.DataSource = taskLists;
         _tasksDataGridView.Columns[nameof (TaskListDataViewModel.Id)].Visible = false;
-        _tasksDataGridView.Columns[nameof (TaskListDataViewModel.Name)].HeaderText = "Name";
+        _tasksDataGridView.Columns[nameof (TaskListDataViewModel.Name)].HeaderText = Strings.Get($"Name");
         _tasksDataGridView.Columns[nameof (TaskListDataViewModel.Name)].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
         _tasksDataGridView.Columns[nameof (TaskListDataViewModel.SelectedFolder)].Visible = false;
         _tasksDataGridView.Columns[nameof (TaskListDataViewModel.Model)].Visible = false;
@@ -151,7 +152,7 @@ namespace CalDavSynchronizer.Ui.Options
     {
       var folderColumn = dataGridView.Columns[nameof(ResourceDataViewModelBase.SelectedFolder)];
       folderColumn.Visible = true;
-      folderColumn.HeaderText = "Selected Outlook Folder";
+      folderColumn.HeaderText = Strings.Get($"Selected Outlook Folder");
       folderColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
       var selectFolderColumn = new DataGridViewButtonColumn();
@@ -179,7 +180,7 @@ namespace CalDavSynchronizer.Ui.Options
           {
             if (Array.IndexOf (allowedFolderType, folder.DefaultItemType) == -1)
             {
-              MessageBox.Show ($"Folder has to have item type '{String.Join (", ", allowedFolderType)}'.", "Select folder", MessageBoxButtons.OK, MessageBoxIcon.Error);
+              MessageBox.Show (Strings.Get($"Folder has to have item type '{String.Join (", ", allowedFolderType)}'."), Strings.Get($"Select folder"), MessageBoxButtons.OK, MessageBoxIcon.Error);
               return;
             }
 
@@ -296,7 +297,7 @@ namespace CalDavSynchronizer.Ui.Options
       if (visibleGrid.SelectedRows.Count == 0)
       {
         ResourceType = ResourceType.None;
-        MessageBox.Show ("No ressource selected!");
+        MessageBox.Show (Strings.Get($"No ressource selected!"));
       }
       else
       {

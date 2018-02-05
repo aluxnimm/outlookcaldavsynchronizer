@@ -155,7 +155,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
     }
 
 
-    public static ServerSettingsTemplateViewModel DesignInstance = new ServerSettingsTemplateViewModel(NullOutlookAccountPasswordProvider.Instance, OptionsModel.DesignInstance, new ProfileModelOptions(false, false, false, "DAV Url", false))
+    public static ServerSettingsTemplateViewModel DesignInstance = new ServerSettingsTemplateViewModel(NullOutlookAccountPasswordProvider.Instance, OptionsModel.DesignInstance, new ProfileModelOptions(false, false, false, false, "DAV Url", false))
     {
       CalenderUrl = "http://bulkurl",
       EmailAddress = "bulkemail",

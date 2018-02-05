@@ -25,6 +25,7 @@ using System.Threading;
 using System.Windows.Forms;
 using log4net;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Globalization;
 
 namespace CalDavSynchronizer.Ui
 {
@@ -67,8 +68,8 @@ namespace CalDavSynchronizer.Ui
       InitializeComponent();
 
       _newVersionDownloadUrl = newVersionDownloadUrl;
-      _currentVersionLabel.Text = string.Format (_currentVersionLabel.Text, Assembly.GetExecutingAssembly().GetName().Version);
-      _captionLabel.Text = string.Format (_captionLabel.Text, newVersion);
+      _currentVersionLabel.Text = Strings.Get($"Current version: {Assembly.GetExecutingAssembly().GetName().Version}");
+      _captionLabel.Text = Strings.Get($"Version {newVersion} is available!");
       _newFeaturesTextBox.Text = whatsNew;
 
       _logoPictureBox.Image = Properties.Resources.ApplicationLogoLarge;
@@ -119,8 +120,8 @@ namespace CalDavSynchronizer.Ui
         ZipFile.ExtractToDirectory (_archivePath, extractDirectory);
         File.Delete (_archivePath);
         MessageBox.Show (
-               "You need to restart Outlook after installing the new version!",
-               "Outlook Restart required",
+               Strings.Get($"You need to restart Outlook after installing the new version!"),
+               Strings.Get($"Outlook restart required"),
                MessageBoxButtons.OK,
                MessageBoxIcon.Information);
 
@@ -149,7 +150,7 @@ namespace CalDavSynchronizer.Ui
       catch (Exception ex)
       {
         s_logger.Warn ("Can't extract new version", ex);
-        MessageBox.Show ("Can't extract new version!", "CalDav Synchronizer Download failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show (Strings.Get($"Can't extract new version!"), Strings.Get($"CalDav Synchronizer download failed"), MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
     private void installButton_Click (object sender, EventArgs e)
@@ -167,7 +168,7 @@ namespace CalDavSynchronizer.Ui
       catch (Exception ex)
       {
         s_logger.Warn ("Can't download new version", ex);
-        MessageBox.Show ("Can't download new version!", "CalDav Synchronizer Download failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show (Strings.Get($"Can't download new version!"), Strings.Get($"CalDav Synchronizer download failed"), MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
   }

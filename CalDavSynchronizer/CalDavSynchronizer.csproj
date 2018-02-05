@@ -28,11 +28,12 @@
     <RootNamespace>CalDavSynchronizer</RootNamespace>
     <AssemblyName>CalDavSynchronizer</AssemblyName>
     <LoadBehavior>3</LoadBehavior>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <DefineConstants>VSTO40</DefineConstants>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <BootstrapperComponentsLocation>HomeSite</BootstrapperComponentsLocation>
     <NuGetPackageImportStamp>098701df</NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
@@ -182,7 +183,9 @@
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Net" />
-    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http, Version=4.1.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Http.4.3.3\lib\net46\System.Net.Http.dll</HintPath>
+    </Reference>
     <Reference Include="System.Net.Http.Extensions">
       <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\net45\System.Net.Http.Extensions.dll</HintPath>
     </Reference>
@@ -191,8 +194,20 @@
     </Reference>
     <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net461\System.Security.Cryptography.Algorithms.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+    </Reference>
     <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
@@ -271,6 +286,12 @@
     <Compile Include="ChangeWatching\IItemCollectionChangeWatcher.cs" />
     <Compile Include="ChangeWatching\IFolderChangeWatcherFactory.cs" />
     <Compile Include="ChangeWatching\ItemSavedEventArgs.cs" />
+    <Compile Include="Globalization\LocalizationMarkupExtension.cs" />
+    <Compile Include="Globalization\StringResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StringResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="IOneTimeTaskRunner.cs" />
     <Compile Include="OneTimeTaskRunner.cs" />
     <Compile Include="ComponentContainer.cs" />
@@ -310,6 +331,7 @@
     <Compile Include="DDayICalWorkaround\IDateTimeExtension.cs" />
     <Compile Include="EntityCacheVersionConversion\Version1To2.cs" />
     <Compile Include="EntityCacheVersionConversion\Version2To3.cs" />
+    <Compile Include="Globalization\Strings.cs" />
     <Compile Include="IComponentContainer.cs" />
     <Compile Include="IDateTimeProvider.cs" />
     <Compile Include="Implementation\Common\IOutlookTimeZones.cs" />
@@ -503,11 +525,15 @@
     <Compile Include="ProfileTypes\ConcreteTypes\SarenetProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\SogoProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\YandexProfile.cs" />
+    <Compile Include="Ui\Options\ViewModels\GeneralOptionsViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\ProfileViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\SelectProfileViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\ViewOptions.cs" />
     <Compile Include="Ui\Options\ViewModels\IViewOptions.cs" />
     <Compile Include="Ui\Options\Views\BooleanToVisibilityConverterInverted.cs" />
+    <Compile Include="Ui\Options\Views\GeneralOptionsWindow.xaml.cs">
+      <DependentUpon>GeneralOptionsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Ui\Options\Views\SelectProfileWindow.xaml.cs">
       <DependentUpon>SelectProfileWindow.xaml</DependentUpon>
     </Compile>
@@ -671,12 +697,6 @@
     <Compile Include="Ui\DraggableTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Ui\Options\GeneralOptionsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Ui\Options\GeneralOptionsForm.Designer.cs">
-      <DependentUpon>GeneralOptionsForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Ui\GenericElementHostWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -795,14 +815,16 @@
     <EmbeddedResource Include="CalDavSynchronizerRibbon.resx">
       <DependentUpon>CalDavSynchronizerRibbon.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\StringResources.de-DE.resx" />
+    <EmbeddedResource Include="Globalization\StringResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>StringResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Ui\AddResourceForm.resx">
       <DependentUpon>AddResourceForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\ColorPicker.resx">
       <DependentUpon>ColorPicker.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Ui\Options\GeneralOptionsForm.resx">
-      <DependentUpon>GeneralOptionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Ui\GenericElementHostWindow.resx">
       <DependentUpon>GenericElementHostWindow.cs</DependentUpon>
@@ -937,7 +959,12 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Page Include="ProfileTypes\ConcreteTypes\Swisscom\SwisscomResourceDictionary.xaml">
+   <Page Include="Ui\Options\Views\GeneralOptionsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+
+   <Page Include="ProfileTypes\ConcreteTypes\Swisscom\SwisscomResourceDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

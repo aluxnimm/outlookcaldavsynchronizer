@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.Models;
@@ -38,7 +39,7 @@ namespace CalDavSynchronizer.ProfileTypes
         DaysToSynchronizeInThePast = 60,
         SynchronizationIntervalInMinutes = 30,
         SynchronizationMode = SynchronizationMode.MergeInBothDirections,
-        Name = "<New Profile>",
+        Name = Strings.Get($"<New Profile>"),
         Id = Guid.NewGuid(),
         Inactive = false,
         PreemptiveAuthentication = true,

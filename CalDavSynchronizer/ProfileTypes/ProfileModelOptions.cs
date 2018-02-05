@@ -21,11 +21,12 @@ namespace CalDavSynchronizer.ProfileTypes
 {
   public class ProfileModelOptions
   {
-    public ProfileModelOptions(bool areAdvancedNetWorkSettingsEnabled, bool isEnableChangeTriggeredSynchronizationEnabled, bool isTaskMappingConfigurationEnabled, string davUrlLabelText, bool areSyncSettingsEnabled)
+    public ProfileModelOptions(bool areAdvancedNetWorkSettingsEnabled, bool isEnableChangeTriggeredSynchronizationEnabled, bool isTaskMappingConfigurationEnabled, bool isContactMappingConfigurationEnabled, string davUrlLabelText, bool areSyncSettingsEnabled)
     {
       AreAdvancedNetWorkSettingsEnabled = areAdvancedNetWorkSettingsEnabled;
       IsEnableChangeTriggeredSynchronizationEnabled = isEnableChangeTriggeredSynchronizationEnabled;
       IsTaskMappingConfigurationEnabled = isTaskMappingConfigurationEnabled;
+      IsContactMappingConfigurationEnabled = isContactMappingConfigurationEnabled;
       DavUrlLabelText = davUrlLabelText;
       AreSyncSettingsEnabled = areSyncSettingsEnabled;
     }
@@ -33,6 +34,7 @@ namespace CalDavSynchronizer.ProfileTypes
     public bool AreSyncSettingsEnabled { get; }
     public bool AreAdvancedNetWorkSettingsEnabled { get; }
     public bool IsEnableChangeTriggeredSynchronizationEnabled { get; }
+    public bool IsContactMappingConfigurationEnabled { get; }
     public bool IsTaskMappingConfigurationEnabled { get; }
     public String DavUrlLabelText { get; }
   }

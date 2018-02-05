@@ -1,4 +1,6 @@
-﻿namespace CalDavSynchronizer.Ui
+﻿using CalDavSynchronizer.Globalization;
+
+namespace CalDavSynchronizer.Ui
 {
   partial class AboutForm
   {
@@ -51,7 +53,7 @@
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(100, 28);
       this.btnOK.TabIndex = 0;
-      this.btnOK.Text = "OK";
+      this.btnOK.Text = Strings.Get($"OK");
       this.btnOK.UseVisualStyleBackColor = true;
       this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
       // 
@@ -91,7 +93,6 @@
       this._versionLabel.Name = "_versionLabel";
       this._versionLabel.Size = new System.Drawing.Size(82, 17);
       this._versionLabel.TabIndex = 3;
-      this._versionLabel.Text = "Version: {0}";
       // 
       // _linkLabelProject
       // 
@@ -112,7 +113,7 @@
       this.label1.Name = "label1";
       this.label1.Size = new System.Drawing.Size(48, 17);
       this.label1.TabIndex = 5;
-      this.label1.Text = "Team:";
+      this.label1.Text = Strings.Get($"Team:");
       // 
       // _linkLabelTeamMembers
       // 
@@ -144,7 +145,7 @@
       this._linkLabelPayPal.Size = new System.Drawing.Size(130, 17);
       this._linkLabelPayPal.TabIndex = 8;
       this._linkLabelPayPal.TabStop = true;
-      this._linkLabelPayPal.Text = "Donate with PayPal";
+      this._linkLabelPayPal.Text = Strings.Get($"Donate with PayPal");
       this._linkLabelPayPal.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelPayPal_LinkClicked);
       // 
       // _linkLabelHelp
@@ -156,7 +157,7 @@
       this._linkLabelHelp.Size = new System.Drawing.Size(190, 17);
       this._linkLabelHelp.TabIndex = 9;
       this._linkLabelHelp.TabStop = true;
-      this._linkLabelHelp.Text = "Documentation and Tutorials";
+      this._linkLabelHelp.Text = Strings.Get($"Documentation and Tutorials");
       this._linkLabelHelp.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelHelp_LinkClicked);
       // 
       // _checkForUpdatesButton
@@ -167,7 +168,7 @@
       this._checkForUpdatesButton.Name = "_checkForUpdatesButton";
       this._checkForUpdatesButton.Size = new System.Drawing.Size(149, 28);
       this._checkForUpdatesButton.TabIndex = 10;
-      this._checkForUpdatesButton.Text = "Check for Updates";
+      this._checkForUpdatesButton.Text = Strings.Get($"Check for Updates");
       this._checkForUpdatesButton.UseVisualStyleBackColor = true;
       this._checkForUpdatesButton.Click += new System.EventHandler(this.CheckForUpdatesButton_Click);
       // 
@@ -196,7 +197,7 @@
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Name = "AboutForm";
-      this.Text = "About";
+      this.Text = Strings.Get($"About");
       ((System.ComponentModel.ISupportInitialize)(this._logoPictureBox)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();

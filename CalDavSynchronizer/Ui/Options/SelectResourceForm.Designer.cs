@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using CalDavSynchronizer.Globalization;
 
 namespace CalDavSynchronizer.Ui.Options
 {
@@ -79,7 +80,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.buttonCancel.Name = "buttonCancel";
       this.buttonCancel.Size = new System.Drawing.Size(75, 23);
       this.buttonCancel.TabIndex = 2;
-      this.buttonCancel.Text = "Cancel";
+      this.buttonCancel.Text = Strings.Get($"Cancel");
       this.buttonCancel.UseVisualStyleBackColor = true;
       this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
       // 
@@ -125,7 +126,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._calendarPage.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
       this._calendarPage.Size = new System.Drawing.Size(727, 312);
       this._calendarPage.TabIndex = 0;
-      this._calendarPage.Text = "Calendars";
+      this._calendarPage.Text = Strings.Get($"Calendars");
       this._calendarPage.UseVisualStyleBackColor = true;
       // 
       // _addressBookPage
@@ -136,7 +137,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._addressBookPage.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
       this._addressBookPage.Size = new System.Drawing.Size(727, 312);
       this._addressBookPage.TabIndex = 1;
-      this._addressBookPage.Text = "Address Books";
+      this._addressBookPage.Text = Strings.Get($"Address Books");
       this._addressBookPage.UseVisualStyleBackColor = true;
       // 
       // _tasksPage
@@ -147,7 +148,7 @@ namespace CalDavSynchronizer.Ui.Options
       this._tasksPage.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
       this._tasksPage.Size = new System.Drawing.Size(727, 312);
       this._tasksPage.TabIndex = 2;
-      this._tasksPage.Text = "Tasks";
+      this._tasksPage.Text = Strings.Get($"Tasks");
       this._tasksPage.UseVisualStyleBackColor = true;
       // 
       // _tasksDataGridView
@@ -178,7 +179,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.OkButton.Name = "OkButton";
       this.OkButton.Size = new System.Drawing.Size(75, 23);
       this.OkButton.TabIndex = 5;
-      this.OkButton.Text = "OK";
+      this.OkButton.Text = Strings.Get($"OK");
       this.OkButton.UseVisualStyleBackColor = true;
       this.OkButton.Click += new System.EventHandler(this.OkButton_Click);
       // 
@@ -196,7 +197,7 @@ namespace CalDavSynchronizer.Ui.Options
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
       this.Name = "SelectResourceForm";
-      this.Text = "Select Resource";
+      this.Text = Strings.Get($"Select Resource");
       ((System.ComponentModel.ISupportInitialize)(this._calendarDataGridView)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this._addressBookDataGridView)).EndInit();
       this._mainTab.ResumeLayout(false);

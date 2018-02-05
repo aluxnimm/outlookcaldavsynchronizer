@@ -35,5 +35,6 @@ namespace CalDavSynchronizer.Ui
     string ShowSaveDialog(string title);
     string ShowOpenDialog(string title);
     void ShowReport(string title, string reportText);
+    bool ShowGeneralOptions(GeneralOptionsViewModel generalOptionsViewModel);
   }
 }

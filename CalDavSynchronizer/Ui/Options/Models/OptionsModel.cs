@@ -24,6 +24,7 @@ using System.Text;
 using System.Windows;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.ProfileTypes;
@@ -549,13 +550,13 @@ namespace CalDavSynchronizer.Ui.Options.Models
 
       if (_selectedFolderOrNull == null)
       {
-        errorMessageBuilder.AppendLine ("- There is no Outlook Folder selected.");
+        errorMessageBuilder.AppendLine (Strings.Get($"- There is no Outlook folder selected."));
         result = false;
       }
 
       if (_useWebDavCollectionSync && _selectedFolderOrNull?.DefaultItemType != OlItemType.olAppointmentItem && _selectedFolderOrNull?.DefaultItemType != OlItemType.olContactItem)
       {
-        errorMessageBuilder.AppendLine("- WebDav collection sync ist currently just supported for appointments and contacts.");
+        errorMessageBuilder.AppendLine(Strings.Get($"- WebDav collection sync ist currently just supported for appointments and contacts."));
         result = false;
       }
 
@@ -576,7 +577,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
       if (IsChunkedSynchronizationEnabled && ChunkSize < 1)
       {
         result = false;
-        errorMessageBuilder.AppendLine("- The chunk size hast to be 1 or greater.");
+        errorMessageBuilder.AppendLine(Strings.Get($"- The chunk size hast to be 1 or greater."));
       }
 
       if (MappingConfigurationModelOrNull != null)
@@ -617,7 +618,9 @@ namespace CalDavSynchronizer.Ui.Options.Models
         case OlItemType.olAppointmentItem:
           return currentMappingConfiguration as EventMappingConfigurationModel ?? new EventMappingConfigurationModel(ModelFactory.ProfileType.CreateEventMappingConfiguration(), _sessionData);
         case OlItemType.olContactItem:
-          return currentMappingConfiguration as ContactMappingConfigurationModel ?? new ContactMappingConfigurationModel(ModelFactory.ProfileType.CreateContactMappingConfiguration());
+          return ModelFactory.ModelOptions.IsContactMappingConfigurationEnabled
+            ? currentMappingConfiguration as ContactMappingConfigurationModel ?? new ContactMappingConfigurationModel(ModelFactory.ProfileType.CreateContactMappingConfiguration())
+            : null;
         case OlItemType.olTaskItem:
           return ModelFactory.ModelOptions.IsTaskMappingConfigurationEnabled
             ? currentMappingConfiguration as TaskMappingConfigurationModel ?? new TaskMappingConfigurationModel(ModelFactory.ProfileType.CreateTaskMappingConfiguration())
@@ -640,7 +643,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
         string message = null;
         for (System.Exception ex = x; ex != null; ex = ex.InnerException)
           message += ex.Message + Environment.NewLine;
-        MessageBox.Show(message, "Account settings");
+        MessageBox.Show(message, Strings.Get($"Account settings"));
       }
     }
 

@@ -1,0 +1,113 @@
+﻿<Window x:Class="CalDavSynchronizer.Ui.Options.Views.GeneralOptionsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:CalDavSynchronizer.Ui.Options.Views"
+        xmlns:g="clr-namespace:CalDavSynchronizer.Globalization"
+        xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels"
+        mc:Ignorable="d"
+        Title="{g:Localize General Options}"
+        SizeToContent="Height"
+        Width="400"
+        d:DataContext="{x:Static viewModels:GeneralOptionsViewModel.DesignInstance}"
+        WindowStartupLocation="CenterScreen">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <StackPanel>
+            <StackPanel.Resources>
+                <Style TargetType="DockPanel">
+                    <Setter Property="Margin" Value="0,3"></Setter>
+                </Style>
+                <Style TargetType="Button">
+                    <Setter Property="Width" Value="75"></Setter>
+                </Style>
+            </StackPanel.Resources>
+            <GroupBox Header="{g:Localize General Settings}">
+      <StackPanel>
+        <CheckBox IsChecked="{Binding Options.ShouldCheckForNewerVersions}" Content="{g:Localize Automatically check for newer versions}"></CheckBox>
+        <CheckBox IsChecked="{Binding Options.CheckIfOnline}" Content="{g:Localize Check Internet connection before sync run}" ToolTip="{g:Localize Checks if a network interface is up\&#x0a;and try DNS query to dns.msftncsi.com first and if that fails try to download\&#x0a;http://www.msftncsi.com/ncsi.txt with the configured proxy settings.\&#x0a;Should avoid error reports when network is not available after\&#x0a;coming back from hibernate for example.}"></CheckBox>
+        <CheckBox IsChecked="{Binding Options.StoreAppDataInRoamingFolder}" Content="{g:Localize Store data in roaming folder}" ToolTip="{g:Localize Changing this option requires a restart of Outlook.}"></CheckBox>
+        <CheckBox IsChecked="{Binding Options.IncludeCustomMessageClasses}" Content="{g:Localize Include custom message classes in Outlook filter}" ToolTip="{g:Localize Use prefix filter to include also custom message_classes in filter for Outlook folders. \&#x0a;For better performance\, Windows Search Service shouldn\'t be deactivated if this option is enabled.}" ></CheckBox>
+        <CheckBox IsChecked="{Binding Options.QueryFoldersJustByGetTable}" Content="{g:Localize Use fast queries for Outlook folders}" ToolTip="{g:Localize Use fast GetTable queries when accessing Outlook folders.\&#x0a;Disable only if you get errors in GetVersions\, when disabled every item needs to be requested\&#x0a;which causes a performance penalty!}"></CheckBox>
+        <CheckBox IsChecked="{Binding Options.TriggerSyncAfterSendReceive}" Content="{g:Localize Trigger sync after Outlook Send/Receive and on Startup}" ToolTip="{g:Localize If checked a manual sync is always triggered after the Outlook Send/Receive finishes\&#x0a;and on startup of Outlook.}"></CheckBox>
+      </StackPanel>
+    </GroupBox>
+
+    <GroupBox Header="{g:Localize UI Settings}">
+      <StackPanel>
+        <CheckBox IsChecked="{Binding Options.EnableAdvancedView}" Content="{g:Localize Show advanced settings as default}" ToolTip="{g:Localize Show the advanced settings in synchronization profiles as default if enabled. }"></CheckBox>
+        <CheckBox IsChecked="{Binding Options.ExpandAllSyncProfiles}" Content="{g:Localize Expand all nodes in Synchronization Profiles}" ToolTip="{g:Localize Expand all nodes in the treeview of the Synchronization Profiles configuration as default if enabled.\&#x0a;Only applicable if advanced settings are turned on.}"></CheckBox>
+        <CheckBox IsChecked="{Binding Options.EnableTrayIcon}" Content="{g:Localize Enable Tray Icon}" ToolTip="{g:Localize Enables the systray icon in the Windows taskbar.}"></CheckBox>
+        <CheckBox IsChecked="{Binding Options.FixInvalidSettings}" Content="{g:Localize Fix invalid settings}" ToolTip="{g:Localize Fixes invalid settings automatically\, when\&#x0a;synchronization profiles are  edited.\&#x0a;\&#x0a;E.g.: if  a read-only CalDav calendar is selected\&#x0a;and the synchronization mode is set to TwoWay\,\&#x0a;then the synchronization mode is automatically\&#x0a;set to one way\, so that there are no write\&#x0a;operations performed in the read-only\&#x0a;calendar\, which would produce errors.\&#x0a;Disabling this setting might be helpful for testing\,\&#x0a;but you should know what you do.}"></CheckBox>
+        <CheckBox IsChecked="{Binding Options.ShowProgressBar}" Content="{g:Localize Show Sync Progress Bar}" Name="ShowProgressBarCheckBox"></CheckBox>
+        <DockPanel IsEnabled="{Binding ElementName=ShowProgressBarCheckBox, Path=IsChecked}">
+          <TextBlock  Text="{g:Localize Sync Progress Bar Threshold (Items)}" ToolTip="{g:Localize Show the sync progress bar when more items than the treshold need to be loaded.}"></TextBlock>
+          <TextBox Text="{Binding Options.ThresholdForProgressDisplay}" TextAlignment="Right" HorizontalAlignment="Right" Width="100"></TextBox>
+        </DockPanel>
+          <DockPanel>
+            <TextBlock  Text="{g:Localize Language:}" ToolTip="{g:Localize Changing this option requires a restart of Outlook.}"></TextBlock>
+            <ComboBox SelectedValue="{Binding Options.CultureName}" ItemsSource="{Binding AvailableCultureNames}" DisplayMemberPath="Name" SelectedValuePath="Value" HorizontalAlignment="Right" Width="220"></ComboBox>
+          </DockPanel>
+                </StackPanel>
+    </GroupBox>
+
+    <GroupBox Header="{g:Localize Server Settings}">
+      <StackPanel>
+        <CheckBox IsChecked="{Binding Options.AcceptInvalidCharsInServerResponse}" Content="{g:Localize Accept invalid chars in server response.}" ToolTip="{g:Localize If checked invalid characters in XML server responses are allowed.\&#x0a;A typical invalid char\, sent by some servers is \'Form feed\' (0x0C).}"></CheckBox>
+        <CheckBox IsChecked="{Binding Options.UseUnsafeHeaderParsing}"  Content="{g:Localize Enable useUnsafeHeaderParsing}" ToolTip="{g:Localize Enable only if you get the following error:\&#x0a;System.Net.WebException: The server committed a protocol violation. Section\=ResponseStatusLine\&#x0a;Needed for Yahoo and cPanel Horde servers for example.}"></CheckBox>
+        <DockPanel>
+          <TextBlock  Text="{g:Localize DAV Connection Timeout (secs)}" ></TextBlock>
+          <TextBox  Text="{Binding CalDavConnectTimeoutInSecs}" TextAlignment="Right" HorizontalAlignment="Right" Width="100"></TextBox>
+        </DockPanel>
+      </StackPanel>
+    </GroupBox>
+
+    <GroupBox Header="{g:Localize SSL\/TLS Settings}">
+      <StackPanel>
+        <CheckBox IsChecked="{Binding Options.DisableCertificateValidation}" Content="{g:Localize Disable Certificate Validation}" ToolTip="{g:Localize Major security risk\, not recommended!}"></CheckBox>
+        <CheckBox IsChecked="{Binding Options.EnableClientCertificate}" Content="{g:Localize Enable Client Certificates}" ToolTip="{g:Localize Enable client certificates with automatic mode.\&#x0a;The available client certificates from the user store will be automatically provided.}"></CheckBox>
+        <CheckBox IsChecked="{Binding Options.EnableTls12}" Content="{g:Localize Enable TLS12}" ToolTip="{g:Localize Disabling is a major security risk\, not recommended!}"></CheckBox>
+        <CheckBox IsChecked="{Binding Options.EnableSsl3}" Content="{g:Localize Enable SSL3}" ToolTip="{g:Localize Major security risk\, not recommended!}"></CheckBox>
+      </StackPanel>
+    </GroupBox>
+
+    <GroupBox Header="{g:Localize Synchronization Reports}">
+      <StackPanel>
+        <DockPanel>
+          <TextBlock  Text="{g:Localize Log:}" ></TextBlock>
+          <ComboBox SelectedValue="{Binding ReportLogModeValue}" ItemsSource="{Binding AvailableReportLogModes}" DisplayMemberPath="Name" SelectedValuePath="Value"   HorizontalAlignment="Right" Width="220"></ComboBox>
+        </DockPanel>
+        <DockPanel>
+          <TextBlock  Text="{g:Localize Show reports and notify:}" ToolTip="{g:Localize Show synchronization reports immediately and\&#x0a;notify in systray icon (if enabled)}" ></TextBlock>
+          <ComboBox SelectedValue="{Binding ReportPopupModeValue}" ItemsSource="{Binding AvailableReportPopupModes}" DisplayMemberPath="Name" SelectedValuePath="Value" HorizontalAlignment="Right" Width="220"></ComboBox>
+        </DockPanel>
+        <DockPanel>
+          <TextBlock  Text="{g:Localize Delete reports older than (days):}" ></TextBlock>
+          <TextBox Text="{Binding Options.MaxReportAgeInDays}" TextAlignment="Right"  HorizontalAlignment="Right" Width="100"></TextBox>
+        </DockPanel>
+        <CheckBox IsChecked="{Binding Options.LogEntityNames}" Content="{g:Localize Log Entity Names}" ToolTip="{g:Localize Enable to display the summary of the event or task or the name of the contact\&#x0a;to identify the entity in the sync report.}"></CheckBox>
+        <CheckBox IsChecked="{Binding Options.IncludeEntityReportsWithoutErrorsOrWarnings}" Content="{g:Localize Log all entities\, even without errors or warnings}" ToolTip="{g:Localize Enable if a full report of all modified entities is needed.}"></CheckBox>
+      </StackPanel>
+    </GroupBox>
+
+    <GroupBox Header="{g:Localize General Logging}">
+      <StackPanel>
+        <DockPanel>
+          <TextBlock  Text="{g:Localize Log Level:}"></TextBlock>
+          <ComboBox SelectedValue="{Binding LogLevelValue}" ItemsSource="{Binding AvailableLogLevels}" DisplayMemberPath="Name" SelectedValuePath="Value"  HorizontalAlignment="Right" Width="220"></ComboBox>
+        </DockPanel>
+        <UniformGrid HorizontalAlignment="Right" Margin="0,6" Rows="1">
+          <Button Command="{Binding ShowLogCommand}" Content="{g:Localize Show log}" Margin="0,0,6,0"></Button>
+          <Button Command="{Binding ClearLogCommand}" Content="{g:Localize Clear log}" Margin="6,0,0,0"></Button>
+        </UniformGrid>
+      </StackPanel>
+    </GroupBox>
+
+    <UniformGrid HorizontalAlignment="Right" Margin="6,3" Rows="1">
+      <Button Command="{Binding OkCommand}" IsDefault="True" Content="{g:Localize OK}" Margin="0,0,6,0"></Button>
+      <Button Command="{Binding CancelCommand}" IsCancel="True" Content="{g:Localize Cancel}" Margin="6,0,0,0"></Button>
+    </UniformGrid>
+
+  </StackPanel>
+  </ScrollViewer>
+</Window>

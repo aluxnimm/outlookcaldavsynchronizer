@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Reports.ViewModels"
              xmlns:views="clr-namespace:CalDavSynchronizer.Ui.Reports.Views"
+             xmlns:g="clr-namespace:CalDavSynchronizer.Globalization"
              mc:Ignorable="d" 
              d:DesignHeight="300"
              d:DataContext="{x:Static viewModels:ReportViewModel.EntitySynchronizationReportDesignInstance}" >
@@ -23,13 +24,13 @@
     </Grid.RowDefinitions>
 
    
-    <TextBlock FontWeight="Bold" Grid.Row="0" >Mapping Warnings:</TextBlock>
+    <TextBlock FontWeight="Bold" Grid.Row="0" ><g:Localize>Mapping Warnings:</g:Localize></TextBlock>
     <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1" ItemsSource="{Binding MappingWarnings}" />
 
-    <TextBlock FontWeight="Bold" Grid.Row="2">Mapping Errors:</TextBlock>
+    <TextBlock FontWeight="Bold" Grid.Row="2"><g:Localize>Mapping Errors:</g:Localize></TextBlock>
     <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="3"  ItemsSource="{Binding MappingErrors}" />
 
-    <TextBlock FontWeight="Bold" Grid.Row="4" Grid.Column="0">Exception that lead to abortion:</TextBlock>
+    <TextBlock FontWeight="Bold" Grid.Row="4" Grid.Column="0"><g:Localize>Exception that lead to abortion:</g:Localize></TextBlock>
     <TextBox IsReadOnly="True" Grid.Row="5"  Text="{Binding ExceptionThatLeadToAbortion}" />
   </Grid>
 </UserControl>

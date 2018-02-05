@@ -21,6 +21,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Globalization;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
 
@@ -413,12 +414,12 @@ namespace CalDavSynchronizer.Ui.Options.Models
       var isValid = true;
       if (mappings.Any(m => string.IsNullOrEmpty(m.OutlookProperty) || string.IsNullOrEmpty(m.DavProperty)))
       {
-        errorMessageBuilder.AppendLine("- Custom properties must not be empty.");
+        errorMessageBuilder.AppendLine(Strings.Get($"- Custom properties must not be empty."));
         isValid = false;
       }
       if (mappings.Any(m => !string.IsNullOrEmpty(m.DavProperty) && !m.DavProperty.StartsWith("X-")))
       {
-        errorMessageBuilder.AppendLine("- DAV X-Attributes for manual mapped properties have to start with 'X-'");
+        errorMessageBuilder.AppendLine(Strings.Get($"- DAV X-Attributes for manual mapped properties have to start with 'X-'"));
         isValid = false;
       }
 

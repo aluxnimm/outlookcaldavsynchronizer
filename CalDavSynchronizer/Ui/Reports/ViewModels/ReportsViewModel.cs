@@ -23,6 +23,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Windows.Data;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Globalization;
 using GenSync.Logging;
 using Microsoft.Win32;
 
@@ -92,7 +93,7 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
     {
       string profileName;
       if (!_currentProfileNamesById.TryGetValue (reportName.SyncronizationProfileId, out profileName))
-        profileName = "<Not existing anymore>";
+        profileName = Strings.Get($"<Not existing anymore>");
 
       var reportProxy = new ReportProxy (reportName, () => _reportRepository.GetReport (reportName), profileName);
       var reportViewModel = new ReportViewModel (reportProxy, _reportRepository, this);
@@ -104,7 +105,7 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
     {
       string profileName;
       if (!_currentProfileNamesById.TryGetValue (reportName.SyncronizationProfileId, out profileName))
-        profileName = "<Not existing anymore>";
+        profileName = Strings.Get($"<Not existing anymore>");
 
       var reportProxy = new ReportProxy (reportName, () => report, profileName);
       var reportViewModel = new ReportViewModel (reportProxy, _reportRepository, this);
@@ -116,7 +117,7 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
       SaveFileDialog dialog = new SaveFileDialog();
       dialog.Filter = "Zip archives|*.zip";
       dialog.FileName = "SynchronizationReports.zip";
-      dialog.Title = "Save selected reports";
+      dialog.Title = Strings.Get($"Save selected reports");
       if (dialog.ShowDialog() ?? false)
       {
         using (var fileStream = new FileStream (dialog.FileName, FileMode.Create))

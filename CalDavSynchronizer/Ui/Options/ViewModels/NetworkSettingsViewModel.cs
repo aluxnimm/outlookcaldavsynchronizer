@@ -22,6 +22,7 @@ using System.Runtime.CompilerServices;
 using System.Security;
 using System.Text;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.ProfileTypes;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Utilities;
@@ -117,7 +118,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
 
 
-    public string Name => "Network settings";
+    public string Name => Strings.Get($"Network Settings");
 
 
     public IEnumerable<ITreeNodeViewModel> Items { get; } = new ITreeNodeViewModel[0];

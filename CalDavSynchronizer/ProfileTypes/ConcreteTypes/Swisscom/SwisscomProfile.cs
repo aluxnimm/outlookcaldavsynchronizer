@@ -17,6 +17,7 @@
 
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
@@ -37,8 +38,7 @@ namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes.Swisscom
     {
       var data = base.CreateOptions();
       data.PreemptiveAuthentication = false;
-      data.SynchronizationMode = Implementation.SynchronizationMode.MergeInBothDirections;
-      data.ConflictResolution = Implementation.ConflictResolution.Automatic;
+      data.SynchronizationMode = Implementation.SynchronizationMode.ReplicateOutlookIntoServer;
       data.SynchronizationIntervalInMinutes = 30;
       data.IsChunkedSynchronizationEnabled = true;
       data.ChunkSize = 100;
@@ -67,7 +67,7 @@ namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes.Swisscom
         return new SwisscomServerSettingsDetector();
       }
 
-      public override ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(false, false, true, "Detected Url", false);
+      public override ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(false, false, false, false, Strings.Get($"Detected URL"), true);
     }
   }
 }

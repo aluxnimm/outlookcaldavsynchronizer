@@ -23,6 +23,7 @@ using System.Windows.Forms.Integration;
 using System.Windows.Media.Imaging;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.ProfileTypes;
 using CalDavSynchronizer.Properties;
@@ -54,7 +55,7 @@ namespace CalDavSynchronizer.Ui
       var view = new ProfileStatusesView();
       view.DataContext = viewModel;
       var profileStatusesWindow = new GenericElementHostWindow();
-      profileStatusesWindow.Text = "Synchronization Status";
+      profileStatusesWindow.Text = Strings.Get($"Synchronization Status");
       profileStatusesWindow.Icon = Resources.ApplicationIcon;
       profileStatusesWindow.ShowIcon = true;
       profileStatusesWindow.BackColor = SystemColors.Window;
@@ -78,7 +79,7 @@ namespace CalDavSynchronizer.Ui
 
       var window = new GenericElementHostWindow();
 
-      window.Text = "Synchronization Reports";
+      window.Text = Strings.Get($"Synchronization Reports");
       window.Icon = Resources.ApplicationIcon;
       window.ShowIcon = true;
       window.BackColor = SystemColors.Window;
@@ -89,6 +90,15 @@ namespace CalDavSynchronizer.Ui
       reportsViewModel.RequiresBringToFront += delegate { window.BringToFront(); };
 
       SetWindowSize (window, 0.75);
+    }
+
+    public bool ShowGeneralOptions(GeneralOptionsViewModel generalOptionsViewModel)
+    {
+      var window = new GeneralOptionsWindow();
+      window.DataContext = generalOptionsViewModel;
+      window.Icon = BitmapFrame.Create(new Uri("pack://application:,,,/CalDavSynchronizer;component/Resources/ApplicationIcon.ico"));
+      ElementHost.EnableModelessKeyboardInterop(window);
+      return window.ShowDialog().GetValueOrDefault(false);
     }
 
     public bool ShowOptions (OptionsCollectionViewModel viewModel)

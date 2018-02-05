@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
 using CalDavSynchronizer.Ui.Options.Models;
@@ -108,7 +109,7 @@ namespace CalDavSynchronizer.ProfileTypes
       return optionsViewModel;
     }
 
-    public virtual ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true, true, "DAV Url", true);
+    public virtual ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true, true, true, Strings.Get($"DAV URL"), true);
 
     protected virtual IOptionsViewModel CreateTemplateViewModel(OptionsModel prototypeModel)
     {

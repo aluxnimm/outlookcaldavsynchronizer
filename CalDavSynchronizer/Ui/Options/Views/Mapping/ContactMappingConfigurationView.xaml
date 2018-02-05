@@ -4,35 +4,36 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mapping="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels.Mapping"
+             xmlns:g="clr-namespace:CalDavSynchronizer.Globalization"
              mc:Ignorable="d"
              d:DataContext="{x:Static mapping:ContactMappingConfigurationViewModel.DesignInstance}">
-    <GroupBox Header="General contact mapping settings">
+    <GroupBox Header="{g:Localize General Contact Mapping Settings}">
         <StackPanel>
-            <CheckBox IsChecked="{Binding MapBirthday}" ToolTip="Outlook automatically creates birthday appointments in your calendar &#x0a;when the birthday is added to a contact item.">Map Birthday</CheckBox>
-            <CheckBox IsChecked="{Binding MapContactPhoto}" ToolTip="Not supported in OL 2007.">Map Contact Photo</CheckBox>
-            <CheckBox IsEnabled="{Binding MapContactPhoto}" IsChecked="{Binding KeepOutlookPhoto}" ToolTip="Maps changes from Outlook to server &#x0a;but don't update changes from server to Outlook after the initial sync, &#x0a;useful if another mobile client reduces the photo resolution for example." >Don't overwrite contact photo in Outlook</CheckBox>
-            <CheckBox IsChecked="{Binding KeepOutlookFileAs}" ToolTip="Don't overwrite FileAs in Outlook with FN &#x0a;Uses default FileAs as set in global Outlook options for new entries.">Don't overwrite FileAs in Outlook</CheckBox>
-            <CheckBox IsChecked="{Binding FixPhoneNumberFormat}" ToolTip="Convert numbers like +1 23 45678 9 &#x0a;to +1 (23) 45678 - 9 &#x0a;so that Outlook can show country and area code.">Fix imported phone number format</CheckBox>
-            <CheckBox IsChecked="{Binding MapOutlookEmail1ToWork}" ToolTip="Map Outlook EmailAddress1 to vCard email with TYPE=WORK&#x0a;and Outlook EmailAddress2 to vCard email with TYPE=HOME instead of vice-versa.">Map Outlook EmailAddress1 to WORK instead of HOME</CheckBox>
-            <CheckBox IsChecked="{Binding WriteImAsImpp}" ToolTip="Write Instant Messenger addresses in vCard as IMPP attributes&#x0a;(not supported by some servers e.g. SOGo) instead of X-PROTOCOL e.g. X-AIM">Write IM addresses as IMPP attributes</CheckBox>
+            <CheckBox IsChecked="{Binding MapBirthday}" ToolTip="{g:Localize Outlook automatically creates birthday appointments in your calendar \&#x0a;when the birthday is added to a contact item.}"><g:Localize>Map Birthday</g:Localize></CheckBox>
+            <CheckBox IsChecked="{Binding MapContactPhoto}" ToolTip="{g:Localize Not supported in OL 2007.}"><g:Localize>Map Contact Photo</g:Localize> </CheckBox>
+            <CheckBox IsEnabled="{Binding MapContactPhoto}" IsChecked="{Binding KeepOutlookPhoto}" ToolTip="{g:Localize Maps changes from Outlook to server but do not update changes from server to Outlook after the initial sync. Useful if another mobile client reduces the photo resolution for example.}" ><g:Localize>Do not overwrite the contact photo in Outlook</g:Localize></CheckBox>
+            <CheckBox IsChecked="{Binding KeepOutlookFileAs}" ToolTip="{g:Localize Do not overwrite FileAs in Outlook with FN \&#x0a;Uses default FileAs as set in global Outlook options for new entries.}"><g:Localize>Do not overwrite FileAs in Outlook</g:Localize></CheckBox>
+            <CheckBox IsChecked="{Binding FixPhoneNumberFormat}" ToolTip="{g:Localize Convert numbers like +1 23 45678 9 \&#x0a;to +1 (23) 45678 - 9 \&#x0a;so that Outlook can show country and area code.}"><g:Localize>Fix imported phone number format</g:Localize></CheckBox>
+            <CheckBox IsChecked="{Binding MapOutlookEmail1ToWork}" ToolTip="{g:Localize Map Outlook EmailAddress1 to vCard email with TYPE WORK \&#x0a;and Outlook EmailAddress2 to vCard email with TYPE HOME instead of vice-versa.}"><g:Localize>Map Outlook EmailAddress1 to WORK instead of HOME</g:Localize></CheckBox>
+            <CheckBox IsChecked="{Binding WriteImAsImpp}" ToolTip="{g:Localize Write Instant Messenger addresses in vCard as IMPP attributes \&#x0a;(not supported by some servers e.g. SOGo) instead of X-PROTOCOL e.g. X-AIM}"><g:Localize>Write IM addresses as IMPP attributes</g:Localize></CheckBox>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock ToolTip="Choose the default Instant Messenger protocol.&#x0a;You can add other protocols with protocol: address">Default IM protocol:</TextBlock>
+                <TextBlock ToolTip="{g:Localize Choose the default Instant Messenger protocol.\&#x0a;You can add other protocols with protocol: address}"><g:Localize>Default IM protocol:</g:Localize></TextBlock>
                 <ComboBox Grid.Column="1" ItemsSource="{Binding AvailableImServiceTypes}" SelectedValue="{Binding DefaultImServiceType}" DisplayMemberPath="Name" SelectedValuePath="Value" />
             </Grid>
             <GroupBox>
                 <GroupBox.Header>
-                    <CheckBox IsChecked="{Binding MapDistributionLists}" ToolTip="Map Distribution Lists / Contact Groups">Map Distribution Lists</CheckBox>
+                    <CheckBox IsChecked="{Binding MapDistributionLists}" ToolTip="{g:Localize Map Distribution Lists / Contact Groups}"><g:Localize>Map Distribution Lists</g:Localize></CheckBox>
                 </GroupBox.Header>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock ToolTip="Choose the used format for DAV contact groups.&#x0a;SOGO uses its own VLIST format to store contact groups.&#x0a;For other CardDAV servers choose the vCard with KIND:group format&#x0a;and for iCloud the iCloud group format.">DAV contact group format:</TextBlock>
+                    <TextBlock ToolTip="{g:Localize Choose the used format for DAV contact groups.\&#x0a;SOGO uses its own VLIST format to store contact groups.\&#x0a;For other CardDAV servers choose the vCard with KIND:group format \&#x0a;and for iCloud the iCloud group format.}"><g:Localize>DAV contact group format</g:Localize></TextBlock>
                     <ComboBox Grid.Column="1"  IsEnabled="{Binding MapDistributionLists, Mode=OneWay}" ItemsSource="{Binding AvailableDistributionListTypes}" SelectedValue="{Binding DistributionListType}" DisplayMemberPath="Name" SelectedValuePath="Value" />
                 </Grid>
             </GroupBox>

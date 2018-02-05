@@ -49,6 +49,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Media;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.Tasks;
@@ -137,7 +138,7 @@ namespace CalDavSynchronizer
 
       _daslFilterProvider = new DaslFilterProvider (generalOptions.IncludeCustomMessageClasses);
 
-      SetWpfLocale();
+      SetWpfLocale (generalOptions.CultureName);
 
       ConfigureServicePointManager (generalOptions);
       ConfigureLogLevel (generalOptions.EnableDebugLog);
@@ -241,13 +242,13 @@ namespace CalDavSynchronizer
     }
 
     private static bool _wpfLocaleSet;
-    private static void SetWpfLocale()
+    private static void SetWpfLocale (string cultureName)
     {
       if (!_wpfLocaleSet)
       {
         FrameworkElement.LanguageProperty.OverrideMetadata(
           typeof(FrameworkElement),
-          new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
+          new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(cultureName)));
         _wpfLocaleSet = true;
       }
     }
@@ -612,21 +613,15 @@ namespace CalDavSynchronizer
 
     public async Task ShowGeneralOptionsAsync()
     {
-      await EditGeneralOptionsAsync (
+      await EditGeneralOptionsAsync(
         o =>
         {
-          using (var optionsForm = new GeneralOptionsForm())
-          {
-            optionsForm.Options = o;
-            if (optionsForm.Display())
-            {
-              return Tuple.Create(true, optionsForm.Options);
-            }
-            else
-            {
-              return Tuple.Create(false, (GeneralOptions) null);
-            }
-          }
+          var generalOptionsViewModel = new GeneralOptionsViewModel {Options = o.Clone()};
+
+          if (_uiService.ShowGeneralOptions(generalOptionsViewModel))
+            return Tuple.Create(true, generalOptionsViewModel.Options);
+          else
+            return Tuple.Create(false, (GeneralOptions) null);
         });
     }
     
@@ -699,7 +694,7 @@ namespace CalDavSynchronizer
         var availableVersion = await Task.Run ((Func<Version>) _availableVersionService.GetVersionOfDefaultDownload);
         if (availableVersion == null)
         {
-          MessageBox.Show ("Did not find any default Version!", MessageBoxTitle);
+          MessageBox.Show (Strings.Get($"Did not find any default version!"), MessageBoxTitle);
           return;
         }
 
@@ -714,7 +709,7 @@ namespace CalDavSynchronizer
         }
         else
         {
-          MessageBox.Show ("No newer Version available.", MessageBoxTitle);
+          MessageBox.Show (Strings.Get($"No newer version available."), MessageBoxTitle);
         }
       }
       catch (Exception x)
@@ -739,13 +734,13 @@ namespace CalDavSynchronizer
           options.ShouldCheckForNewerVersions = false;
           _generalOptionsDataAccess.SaveOptions (options);
 
-          MessageBox.Show ("Automatic check for newer version turned off.", MessageBoxTitle);
+          MessageBox.Show (Strings.Get($"Automatic check for newer version turned off."), MessageBoxTitle);
         };
 
         form.IgnoreThisVersion += delegate
         {
           _generalOptionsDataAccess.IgnoreUpdatesTilVersion = e.NewVersion;
-          MessageBox.Show (string.Format ("Waiting for newer version than '{0}'.", e.NewVersion),  MessageBoxTitle);
+          MessageBox.Show (Strings.Get($"Waiting for newer version than '{e.NewVersion}'."),  MessageBoxTitle);
         };
 
         form.ShowDialog();
@@ -891,7 +886,7 @@ namespace CalDavSynchronizer
       }
       catch (COMException ex)
       {
-        MessageBox.Show ("Can't access Outlook item, maybe it was moved or deleted!", MessageBoxTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show (Strings.Get($"Can't access Outlook item, maybe it was moved or deleted!"), MessageBoxTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
         s_logger.Warn ("Can't access Outlook item, maybe it was moved or deleted!", ex);
       }
     }
@@ -929,7 +924,7 @@ namespace CalDavSynchronizer
         }
         else
         {
-          MessageBox.Show ($"The type of profile '{options.Name}' doesn't provide a way to display server entities.");
+          MessageBox.Show (Strings.Get($"The type of profile '{options.Name}' doesn't provide a way to display server entities."));
         }
       }
       catch (Exception x)
@@ -943,7 +938,7 @@ namespace CalDavSynchronizer
     {
       if (entityOrNull == null)
       {
-        MessageBox.Show ("The selected entity does not exist anymore.");
+        MessageBox.Show (Strings.Get($"The selected entity does not exist anymore."));
         return;
       }
 
@@ -960,7 +955,7 @@ namespace CalDavSynchronizer
       var allOptions = _optionsDataAccess.Load ();
       var options = allOptions.FirstOrDefault (o => o.Id == synchronizationProfileId);
       if (options == null)
-        MessageBox.Show ("The profile for the selected report doesn't exist anymore!");
+        MessageBox.Show (Strings.Get($"The profile for the selected report doesn't exist anymore!"));
       return options;
     }
 

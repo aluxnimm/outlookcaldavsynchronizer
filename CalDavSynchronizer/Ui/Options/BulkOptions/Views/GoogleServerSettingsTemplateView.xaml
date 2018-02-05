@@ -4,10 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels"
+             xmlns:g="clr-namespace:CalDavSynchronizer.Globalization"
              mc:Ignorable="d"
              d:DataContext="{x:Static viewModels:GoogleServerSettingsTemplateViewModel.DesignInstance}"
              >
-  <GroupBox Header="Server settings">
+  <GroupBox Header="{g:Localize Server Settings}">
     <DockPanel>
       <Grid DockPanel.Dock="Top">
         <Grid.ColumnDefinitions>
@@ -22,12 +23,12 @@
           <RowDefinition />
         </Grid.RowDefinitions>
 
-        <TextBlock>Url:</TextBlock>
+        <TextBlock><g:Localize>URL:</g:Localize></TextBlock>
         <TextBox Text="{Binding CalenderUrl}" IsEnabled="{Binding IsChecked,ElementName=EditUrlToggleButton}" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" />
 
-        <ToggleButton x:Name="EditUrlToggleButton" HorizontalAlignment="Right" Content="Edit Url" Grid.Row="1" Grid.Column="2" />
+        <ToggleButton x:Name="EditUrlToggleButton" HorizontalAlignment="Right" Content="{g:Localize Edit URL}" Grid.Row="1" Grid.Column="2" />
 
-        <TextBlock Grid.Row="2" Grid.Column="0">Email address:</TextBlock>
+        <TextBlock Grid.Row="2" Grid.Column="0"><g:Localize>Email address:</g:Localize></TextBlock>
         <TextBox Text="{Binding EmailAddress}"  Grid.Row="2" Grid.Column="2" />
 
       </Grid>

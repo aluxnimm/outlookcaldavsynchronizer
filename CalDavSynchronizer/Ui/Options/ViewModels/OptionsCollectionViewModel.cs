@@ -24,6 +24,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.ProfileTypes;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels.Mapping;
@@ -106,7 +107,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
     private void Import()
     {
-      var fileName = _uiService.ShowOpenDialog ("Import Profiles");
+      var fileName = _uiService.ShowOpenDialog (Strings.Get($"Import profiles"));
       if (fileName == null)
         return;
 
@@ -116,9 +117,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
       SetOptionsCollection(mergedOptions);
 
-      reportBuilder.AppendLine ($"Sucessfully imported {newOptions.Length} profile(s) from '{fileName}'.");
+      reportBuilder.AppendLine (Strings.Get($"Sucessfully imported {newOptions.Length} profile(s) from '{fileName}'."));
 
-      _uiService.ShowReport ("Export profiles", reportBuilder.ToString ());
+      _uiService.ShowReport (Strings.Get($"Export profiles"), reportBuilder.ToString ());
     }
 
     private void ExportAll()
@@ -128,18 +129,18 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       var profiles = GetOptionsCollection();
       _optionTasks.ProfileExportProcessor.PrepareForExport(profiles, s => reportBuilder.AppendLine(s));
 
-      var fileName = _uiService.ShowSaveDialog("Export Profiles");
+      var fileName = _uiService.ShowSaveDialog(Strings.Get($"Export profiles"));
       if (fileName != null)
       {
         _optionTasks.SaveOptions(profiles, fileName);
-        reportBuilder.AppendLine ($"Sucessfully exported {profiles.Length} profile(s) to '{fileName}'.");
+        reportBuilder.AppendLine (Strings.Get($"Sucessfully exported {profiles.Length} profile(s) to '{fileName}'."));
       }
       else
       {
-        reportBuilder.AppendLine("Export cancelled by user.");
+        reportBuilder.AppendLine(Strings.Get($"Export cancelled by user."));
       }
 
-      _uiService.ShowReport("Export profiles", reportBuilder.ToString());
+      _uiService.ShowReport(Strings.Get($"Export profiles"), reportBuilder.ToString());
     }
 
     private bool CanMoveSelectedDown => SelectedOrNull != null;
@@ -205,7 +206,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         if (Directory.Exists(profileDataDirectory))
           System.Diagnostics.Process.Start(profileDataDirectory);
         else
-          MessageBox.Show("The selected profile has no data directory.", "Operation aborted", MessageBoxButton.OK);
+          MessageBox.Show(Strings.Get($"The selected profile has no data directory."), Strings.Get($"Operation aborted"), MessageBoxButton.OK);
       }
     }
 
@@ -238,7 +239,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         string errorMessage;
         if (!Validate (out errorMessage, out firstViewModelWithError))
         {
-          _uiService.ShowErrorDialog (errorMessage, "Some Options contain invalid Values");
+          _uiService.ShowErrorDialog (errorMessage, Strings.Get($"Some options contain invalid values"));
           if (firstViewModelWithError != null)
             firstViewModelWithError.IsSelected = true;
           return;
@@ -263,7 +264,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
           if (errorMessageBuilder.Length > 0)
             errorMessageBuilder.AppendLine ();
 
-          errorMessageBuilder.AppendFormat ("Profile '{0}'", viewModel.Name);
+          errorMessageBuilder.AppendFormat (Strings.Get($"Profile '{viewModel.Name}'"));
           errorMessageBuilder.AppendLine ();
           errorMessageBuilder.Append (currentControlErrorMessageBuilder);
 
@@ -388,7 +389,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         if (Directory.Exists (profileDataDirectory))
           Directory.Delete (profileDataDirectory, true);
 
-        MessageBox.Show ("A new intial sync will be performed with the next sync run!", "Profile cache deleted",MessageBoxButton.OK, MessageBoxImage.Information);
+        MessageBox.Show (Strings.Get($"A new intial sync will be performed with the next sync run!"), Strings.Get($"Profile cache deleted"),MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
     public void RequestRemoval (IOptionsViewModel viewModel)

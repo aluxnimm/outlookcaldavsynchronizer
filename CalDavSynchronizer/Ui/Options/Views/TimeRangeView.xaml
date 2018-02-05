@@ -4,29 +4,31 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels"
+             xmlns:g="clr-namespace:CalDavSynchronizer.Globalization"
              mc:Ignorable="d"
              d:DataContext="{x:Static viewModels:TimeRangeViewModel.DesignInstance}">
     <GroupBox>
         <GroupBox.Header>
-          <CheckBox Foreground="{x:Static SystemColors.ControlDarkDarkBrush}" FontWeight="Bold" Margin="0" Content="Use time range filter" IsChecked="{Binding UseSynchronizationTimeRange}" ToolTip="Changing the time range filter setting leads to deletion of the sync cache &#x0a;and a complete resync of the calendar!" />
+          <CheckBox Foreground="{x:Static SystemColors.ControlDarkDarkBrush}" FontWeight="Bold" Margin="0" Content="{g:Localize Use time range filter}" IsChecked="{Binding UseSynchronizationTimeRange}" ToolTip="{g:Localize Changing the time range filter setting leads to deletion of the sync cache \&#x0a;and a complete resync of the calendar!}" />
         </GroupBox.Header>
 
         <Grid DockPanel.Dock="Top" IsEnabled="{Binding UseSynchronizationTimeRange}">
           <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition />
-          </Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            </Grid.ColumnDefinitions>
           <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />
           </Grid.RowDefinitions>
-          <TextBlock Grid.ColumnSpan="2" ToolTip="Outlook and most servers calculate the intersection with the time-range differently for recurring events&#x0a;which can cause doubled or deleted events, so it is recommended to select&#x0a;a time-range which is larger than the largest interval of your recurring events&#x0a;(e.g. 1 year for birthdays)"><Bold>WARNING:</Bold> Don't use a time range less than 1 year if your calendar includes recurring events.</TextBlock>
-          <TextBlock Grid.Row="1" Grid.Column="0">Synchronization timespan past (days):</TextBlock>
-          <TextBox HorizontalAlignment="Right" MinWidth="60" Grid.Row="1" Grid.Column="1" Text="{Binding DaysToSynchronizeInThePast}" />
+          <TextBlock Grid.Row="0" Grid.ColumnSpan="3" ToolTip="{g:Localize Outlook and most servers calculate the intersection with the time-range differently for recurring events\&#x0a;which can cause doubled or deleted events. So it is recommended to select\&#x0a;a time-range which is larger than the largest interval of your recurring events\&#x0a;(e.g. 1 year for birthdays)}"><Bold><g:Localize>WARNING:</g:Localize></Bold> <g:Localize>Don't use a time range less than 1 year if your calendar includes recurring events.</g:Localize></TextBlock>
+          <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"><g:Localize>Synchronization timespan past (days):</g:Localize></TextBlock>
+          <TextBox HorizontalAlignment="Right" MinWidth="60" Grid.Row="1" Grid.Column="2" Text="{Binding DaysToSynchronizeInThePast}" />
 
-          <TextBlock Grid.Row="2" Grid.Column="0">Synchronization timespan future (days):</TextBlock>
-          <TextBox HorizontalAlignment="Right" MinWidth="60" Grid.Row="2" Grid.Column="1" Text="{Binding DaysToSynchronizeInTheFuture}" />
+          <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"><g:Localize>Synchronization timespan future (days):</g:Localize></TextBlock>
+          <TextBox HorizontalAlignment="Right" MinWidth="60" Grid.Row="2" Grid.Column="2" Text="{Binding DaysToSynchronizeInTheFuture}" />
 
         </Grid>
 

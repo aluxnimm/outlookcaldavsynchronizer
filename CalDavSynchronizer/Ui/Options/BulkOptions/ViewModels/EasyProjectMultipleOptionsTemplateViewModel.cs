@@ -27,6 +27,7 @@ using System.Windows;
 using System.Windows.Input;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Ui.Options.Models;
@@ -241,7 +242,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       else
       {
         MessageBox.Show(
-            "You need to choose a calendar folder to merge the EasyProject resources!",
+            Strings.Get($"You need to choose a calendar folder to merge the EasyProject resources!"),
             ComponentContainer.MessageBoxTitle,
             MessageBoxButton.OK,
             MessageBoxImage.Error);

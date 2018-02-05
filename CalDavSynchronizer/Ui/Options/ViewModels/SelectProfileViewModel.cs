@@ -19,6 +19,7 @@ using System;using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.ProfileTypes;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
@@ -52,7 +53,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       {
         if (ProfileTypes.Count(p => p.IsSelected) != 1)
         {
-          _uiService.ShowErrorDialog("Please select exactly one option.", ComponentContainer.MessageBoxTitle);
+          _uiService.ShowErrorDialog(Strings.Get($"Please select exactly one option."), ComponentContainer.MessageBoxTitle);
           return;
         }
 

@@ -18,6 +18,7 @@ using System;
 using System.Text.RegularExpressions;
 using log4net;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Globalization;
 
 namespace CalDavSynchronizer.AutomaticUpdates
 {
@@ -74,7 +75,7 @@ namespace CalDavSynchronizer.AutomaticUpdates
           if (end == -1)
             s_logger.ErrorFormat ("Did not find Version '{0}' in readme.md", oldVersion);
 
-          return "Did not find any news.";
+          return Strings.Get($"Did not find any news.");
         }
 
         return readme.Substring (start, end - start);
@@ -82,7 +83,7 @@ namespace CalDavSynchronizer.AutomaticUpdates
       catch (Exception x)
       {
         s_logger.Error (null, x);
-        return ("Error while trying to fetch the news.\r\nPlease see logfile for details.");
+        return Strings.Get($"Error while trying to fetch the news.\r\nPlease see logfile for details.");
       }
     }
 

@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Reports.ViewModels"
              xmlns:views="clr-namespace:CalDavSynchronizer.Ui.Reports.Views"
+             xmlns:g="clr-namespace:CalDavSynchronizer.Globalization"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{x:Static viewModels:ReportsViewModel.DesignInstance}">
@@ -27,8 +28,8 @@
       </ListView.ItemTemplate>
         <ListView.ContextMenu>
           <ContextMenu>
-            <MenuItem Header="Save selected to Zip file" Command="{Binding SaveSelectedCommand}" />
-            <MenuItem Header="Delete selected" Command="{Binding DeleteSelectedCommand}" />
+            <MenuItem Header="{g:Localize Save selected to Zip file}" Command="{Binding SaveSelectedCommand}" />
+            <MenuItem Header="{g:Localize Delete selected}" Command="{Binding DeleteSelectedCommand}" />
           </ContextMenu>
         </ListView.ContextMenu>
         <ListView.ItemContainerStyle>
@@ -54,7 +55,7 @@
       Foreground="Red" 
       FontSize="14"
       FontWeight="Bold"
-      Text="No reports available!">
+      Text="{g:Localize No reports available!}">
       <TextBlock.Style>
         <Style   TargetType="TextBlock">
           <Style.Setters>

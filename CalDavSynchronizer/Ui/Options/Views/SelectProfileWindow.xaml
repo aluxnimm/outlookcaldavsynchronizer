@@ -5,16 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:CalDavSynchronizer.Ui.Options.Views"
         xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels"
+        xmlns:g="clr-namespace:CalDavSynchronizer.Globalization"
         mc:Ignorable="d"
         SizeToContent="Height"
-        Title="Select Profile Type" 
-        Width="960" 
+        Title="{g:Localize Select Profile Type}"
+        Width="960"
         WindowStartupLocation="CenterScreen"
          d:DataContext="{x:Static viewModels:SelectProfileViewModel.DesignInstance}">
   <DockPanel>
     <UniformGrid Columns="2" DockPanel.Dock="Bottom" HorizontalAlignment="Right">
-      <Button Command="{Binding OkCommand}" Margin="6" Width="60" HorizontalAlignment="Stretch" IsDefault="True">Ok</Button>
-      <Button Command="{Binding CancelCommand}" Margin="6" IsCancel="True">Cancel</Button>
+            <Button Command="{Binding OkCommand}" Margin="6" Width="60" HorizontalAlignment="Stretch" IsDefault="True">
+                <g:Localize>OK</g:Localize>
+            </Button>
+            <Button Command="{Binding CancelCommand}" Margin="6" IsCancel="True">
+                <g:Localize>Cancel</g:Localize>
+            </Button>
     </UniformGrid>
     <ItemsControl ItemsSource="{Binding ProfileTypes}">
       <ItemsControl.ItemsPanel>

@@ -24,6 +24,7 @@ using System.Windows.Forms;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Scheduling;
 using CalDavSynchronizer.Ui.Options;
+using CalDavSynchronizer.Globalization;
 
 namespace CalDavSynchronizer
 {
@@ -96,7 +97,7 @@ namespace CalDavSynchronizer
     void ShowStartupMessage()
     {
       // ReSharper disable once LocalizableElement
-      MessageBox.Show("CalDAV Synchronizer is currently starting up. Please try again, when startup is finished.", ComponentContainer.MessageBoxTitle, MessageBoxButtons.OK);
+      MessageBox.Show(Strings.Get($"CalDAV Synchronizer is currently starting up. Please try again, when startup is finished."), ComponentContainer.MessageBoxTitle, MessageBoxButtons.OK);
     }
 
     void OnSynchronizationFailedWhileReportsFormWasNotVisible ()

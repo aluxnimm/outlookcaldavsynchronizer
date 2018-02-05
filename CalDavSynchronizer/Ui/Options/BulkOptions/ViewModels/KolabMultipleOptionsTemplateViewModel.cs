@@ -38,6 +38,7 @@ using CalDavSynchronizer.Implementation.ComWrappers;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
 using System.Text.RegularExpressions;
+using CalDavSynchronizer.Globalization;
 using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
@@ -124,7 +125,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
         string message = null;
         for (Exception ex = x; ex != null; ex = ex.InnerException)
           message += ex.Message + Environment.NewLine;
-        MessageBox.Show(message, "Account settings");
+        MessageBox.Show(message, Strings.Get($"Account settings"));
       }
       finally
       {
@@ -336,7 +337,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       else
       {
         MessageBox.Show(
-            "You need to choose a calendar folder to merge the Kolab resources!",
+            Strings.Get($"You need to choose a calendar folder to merge the Kolab resources!"),
             ComponentContainer.MessageBoxTitle,
             MessageBoxButton.OK,
             MessageBoxImage.Error);

@@ -14,18 +14,35 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.Utilities;
+using System;
+using System.Windows;
+using CalDavSynchronizer.Ui.Options.ViewModels;
 
-namespace CalDavSynchronizer.IntegrationTests.Infrastructure
+namespace CalDavSynchronizer.Ui.Options.Views
 {
-  public static class GeneralOptionsExtensions
+  /// <summary>
+  /// Interaction logic for MainWindow.xaml
+  /// </summary>
+  public partial class GeneralOptionsWindow : Window
   {
-    public static GeneralOptions Clone (this GeneralOptions options)
+    public GeneralOptionsWindow()
     {
-      var clonedOptions = Serializer<GeneralOptions>.Deserialize (Serializer<GeneralOptions>.Serialize (options));
-      clonedOptions.CalDavConnectTimeout = options.CalDavConnectTimeout;
-      return clonedOptions;
+      InitializeComponent ();
+      this.DataContextChanged += OptionsWindow_DataContextChanged;
+    }
+
+    private void OptionsWindow_DataContextChanged (object sender, DependencyPropertyChangedEventArgs e)
+    {
+      var viewModel = e.NewValue as GeneralOptionsViewModel;
+      if (viewModel != null)
+      {
+        viewModel.CloseRequested += ViewModel_CloseRequested;
+      }
+    }
+
+    private void ViewModel_CloseRequested (object sender, CloseEventArgs e)
+    {
+      DialogResult = e.IsAcceptedByUser;
     }
   }
 }
