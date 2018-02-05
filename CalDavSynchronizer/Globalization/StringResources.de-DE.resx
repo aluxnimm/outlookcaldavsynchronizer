@@ -140,7 +140,7 @@
   </data>
   <data name="Use Outlook GlobalAppointmendID instead of random Guid for UID attribute in new CalDAV events. &#xA; Can avoid duplicate events from invitations." xml:space="preserve">
     <value>Verwende Outlook GlobalAppointmendID anstelle von einer zufälligen Guid für das UID Attribut für neue CalDAV Termine. 
- Kann doppelte Termineinladungen verhindern.</value>
+Kann doppelte Termineinladungen verhindern.</value>
   </data>
   <data name="Sync Progress Bar Threshold (Items)" xml:space="preserve">
     <value>Sync Fortschrittsbalken Schwellwert (Elemente)</value>
@@ -237,7 +237,7 @@ benachrichtige im Icon in der Taskleiste (wenn verfügbar)</value>
     <value>Alle Knoten in den Synchronisationsprofilen aufklappen</value>
   </data>
   <data name="- Invalid Max Report Age" xml:space="preserve">
-    <value>- Üngültiges maximales Report Alter</value>
+    <value>- Ungültiges maximales Report Alter</value>
   </data>
   <data name="These settings affect the filter which selects the items for synchronization.&#xA;If an item does not pass the filter it is treated as if it would not exist!&#xA;Changing these settings for non-empty folders can lead to deletions on the server or duplicates in Outlook." xml:space="preserve">
     <value>Diese Einstellungen beeinflussen den Filter der die zu synchronisierenden Objekte auswählt.
@@ -275,7 +275,7 @@ Für eine bessere Performance sollte der Windows Suchdienst nicht deaktivert sei
   <data name="Convert formatted RTF Body of Outlook appointment to Html and export it as X-ALT-DESC property.&#xA;The RTF to Html conversion is experimental inline images and some formatting properties can not be converted!&#xA;Be aware that some servers like Google Calendar drop this attribute!" xml:space="preserve">
     <value>Wandle RTF formatierte Beschreibung von Outlook Terminen in Html um und exportiere diese als X-ALT-DESC Eigenschaft.
 Die RTF zu Html Umwandlung ist nur experimentell und Inline Bilder sowie einige Formatierungseigenschaften können nicht umgewandelt werden!
-Beachte dass einige Server wie Google diese Eigenschaft löschen und nicht unterstützen!</value>
+Beachten Sie dass einige Server wie Google diese Eigenschaft löschen und nicht unterstützen!</value>
   </data>
   <data name="Changing this option requires a restart of Outlook." xml:space="preserve">
     <value>Ein Verändern dieser Option erfordert einen Neustart von Outlook.</value>
@@ -326,7 +326,7 @@ Nur anwendbar wenn erweiterte Einstellungen eingeschalten sind.</value>
     <value>Speichere als Zip Datei</value>
   </data>
   <data name="- The specified URL does not support calendar queries. Some features like time range filter may not work!" xml:space="preserve">
-    <value>- Die ausgewählte URL unterstützt nicht alle CalDAV Kalenderabfragen. Eingie Features wie z.B. Zeitfilter funktionieren eventuell nicht!</value>
+    <value>- Die ausgewählte URL unterstützt nicht alle CalDav Kalenderabfragen. Einige Features wie z.B. Zeitfilter funktionieren eventuell nicht!</value>
   </data>
   <data name="Map Distribution Lists / Contact Groups" xml:space="preserve">
     <value>Synchronisiere Outlook Verteilerlisten / Kontaktgruppen</value>
@@ -359,7 +359,7 @@ Nur anwendbar wenn erweiterte Einstellungen eingeschalten sind.</value>
     <value>Verwende schnelle Abfragen für Outlook Ordner</value>
   </data>
   <data name="Exception that lead to abortion:" xml:space="preserve">
-    <value>Exception die den Abbruch verursacht hat:</value>
+    <value>Ausnahme die den Abbruch verursacht hat:</value>
   </data>
   <data name="Custom Properties Mapping Configuration" xml:space="preserve">
     <value>Benutzerdefinierte Eigenschaften Mapping Konfiguration</value>
@@ -396,11 +396,11 @@ wiederholende Termine aufweist.</value>
     <value>Ja</value>
   </data>
   <data name="Map priority" xml:space="preserve">
-    <value>Synchronisire Priorität</value>
+    <value>Synchronisiere Priorität</value>
   </data>
   <data name="Task start date will be mapped to 00:00 and Task due date to 23:59 without timezone.&#xA;Enable this if clients with different timezones are used and the due date should be local." xml:space="preserve">
     <value>Das Startdatum von Aufgaben wird auf 00:00 gesetzt und das Fälligkeitsdatum auf 23:59 ohne Zeitzoneninformation.
-Aktievieren Sie diese Option wenn Clients mit verschiedenen Zeitzonen und die Fälligkeitsdaten lokal sein sollen.</value>
+Aktivieren Sie diese Option wenn Clients mit verschiedenen Zeitzonen verwendet werden und die Fälligkeitsdaten lokal sein sollen.</value>
   </data>
   <data name="You need to choose a calendar folder to merge the Kolab resources!" xml:space="preserve">
     <value>Es muss ein Kalenderordner ausgewählt werden zum Zusammenführen der Kolab Ressourcen!</value>
@@ -493,7 +493,7 @@ und einer kompletten Initialsynchronisation des Kalenders!</value>
   <data name="Experimental mapping of the first category color of the appointment to the matching COLOR attribute of the event&#xA;Together with DAVdroid for Android you can map individual event colors from Android to Outlook &#xA;but not all calendar apps support it or can even crash (see &#xA;https://davdroid.bitfire.at/faq/entry/setting-event-colors-crash/)" xml:space="preserve">
     <value>Experimentelles Mapping der ersten Kategoriefarbe des Termins auf das passende COLOR Attribut 
 Zusammen mit DAVdroid für Android können damit individuelle Terminfarben aus Android nach Outlook synchronisiert werden
-Diese Feature wird allerdings nicht von allen Kalender Apps unterstützt und kann bei manchen zum Absturz führen (siehe 
+Dieses Feature wird allerdings nicht von allen Kalender Apps unterstützt und kann bei manchen zum Absturz führen (siehe 
 https://davdroid.bitfire.at/faq/entry/setting-event-colors-crash/)</value>
   </data>
   <data name="Server wins" xml:space="preserve">
@@ -528,7 +528,7 @@ einen Zeitfilter der größer als das größte Intervall eines wiederholenden Te
     <value>Outlook Objekt</value>
   </data>
   <data name="WARNING profile '{0}', references an outlook folder that doesn't exist." xml:space="preserve">
-    <value>WARNUNG Profile '{0}' verweist auf einen nicht exisitierenden Outlook Ordner.</value>
+    <value>WARNUNG Profil '{0}' verweist auf einen nicht exisitierenden Outlook Ordner.</value>
   </data>
   <data name="DAV contact group format" xml:space="preserve">
     <value>DAV Kontaktgruppen Format</value>
@@ -538,7 +538,7 @@ einen Zeitfilter der größer als das größte Intervall eines wiederholenden Te
   </data>
   <data name="If checked invalid characters in XML server responses are allowed.&#xA;A typical invalid char, sent by some servers is 'Form feed' (0x0C)." xml:space="preserve">
     <value>Wenn aktiviert werden ungültige Zeichen in der XML Antwort des Servers akzeptiert.
-Ein typisches ungültiges Zeichen dass manche Server senden ist 'Form feed' (0x0C).</value>
+Ein typisches ungültiges Zeichen das manche Server senden ist 'Form feed' (0x0C).</value>
   </data>
   <data name="Do autodiscovery" xml:space="preserve">
     <value>Starte automatische Suche</value>
@@ -623,7 +623,7 @@ standardmäßig an wenn aktiviert.</value>
     <value>Nein</value>
   </data>
   <data name="- Invalid CalDavConnectTimeout" xml:space="preserve">
-    <value>- Üngultiger Wert für CalDavConnectTimeout</value>
+    <value>- Ungültiger Wert für CalDavConnectTimeout</value>
   </data>
   <data name="Use fast GetTable queries when accessing Outlook folders.&#xA;Disable only if you get errors in GetVersions, when disabled every item needs to be requested&#xA;which causes a performance penalty!" xml:space="preserve">
     <value>Verwende schnelle GetTable Abfragen für den Zugriff auf Outlook Ordner.
@@ -635,7 +635,7 @@ Nur deaktivieren bei Fehlern bei GetVersions, da die Performance leidet weil ans
   <data name="Fixes invalid settings automatically, when&#xA;synchronization profiles are  edited.&#xA;&#xA;E.g.: if  a read-only CalDav calendar is selected&#xA;and the synchronization mode is set to TwoWay,&#xA;then the synchronization mode is automatically&#xA;set to one way, so that there are no write&#xA;operations performed in the read-only&#xA;calendar, which would produce errors.&#xA;Disabling this setting might be helpful for testing,&#xA;but you should know what you do." xml:space="preserve">
     <value>Repariert ungültige Einstellungen automatisch wenn Synchronisationsprofile editiert werden.
 
-Z.b. wird der Synchronisationsmodus automatisch auf Einweg gesetzt wenn ein CalDAV Kalender mit nur Lesezugriff ausgewählt wurde und der Modus auf Zwei-Wege eingestellt wurde, damit keine Fehler beim Versuch Schreiboperationen durchzuführen auftreten.
+Z.B. wird der Synchronisationsmodus automatisch auf Einweg gesetzt wenn ein CalDaV Kalender mit nur Lesezugriff ausgewählt wurde und der Modus auf Zwei-Wege eingestellt wurde, damit keine Fehler beim Versuch Schreiboperationen durchzuführen auftreten.
 Deaktivieren dieser Einstellungen ist nur für Testzwecke sinnvoll und sollte normalerweise nicht gemacht werden.</value>
   </data>
   <data name="Network Settings" xml:space="preserve">
@@ -664,10 +664,10 @@ Verwende Standard 'Speichern unter' Einstellung von den globalen Outlook Adressb
     <value>Füge Profil hinzu</value>
   </data>
   <data name="Synchronization interval (minutes):" xml:space="preserve">
-    <value>Synchronisationsinterval (in Minuten):</value>
+    <value>Synchronisationsintervall (in Minuten):</value>
   </data>
   <data name="- If you don't know the URL you can also enter the Email address and try to discover it." xml:space="preserve">
-    <value>- Wenn die URL nicht bekann ist, kann auch nur die Email Adresse eingegeben werden um die URL automatisch zu finden.</value>
+    <value>- Wenn die URL nicht bekannt ist, kann auch nur die Email Adresse eingegeben werden um die URL automatisch zu finden.</value>
   </data>
   <data name="If unchecked the displayname is used for creating the DAV resource Uri instead of a random string." xml:space="preserve">
     <value>Wenn die Option deaktiviert ist, wird der Anzeigename anstelle eines zufälligen Strings für die DAV Ressource Uri verwendet</value>
@@ -802,8 +802,8 @@ Auch der nicht formatierte Beschreibungstext wird hierbei überschrieben!</value
     <value>Weise Kategrie Tastenkürzel bei Klick auf OK zu.</value>
   </data>
   <data name="WebDAV-Sync is a protocol extension that is defined in RFC 6578 and supported by Google Calendar.&#xA;This option can speed up the detection of server changes dramatically but excludes the time range filter." xml:space="preserve">
-    <value>WebDAV-Sync is a protocol extension that is defined in RFC 6578 and supported by Google Calendar.
-This option can speed up the detection of server changes dramatically but excludes the time range filter.</value>
+    <value>WebDAV-Sync ist eine Protokollerweiterung die in RFC 6578 definiert ist und von Google Kalender unterstützt wird.
+Diese Option kann das Erkennen von Serveränderungen dramatisch beschleunigen aber exkludiert die Möglichkeit den Zeitfilter zu verwenden.</value>
   </data>
   <data name="Assign shortcut key:" xml:space="preserve">
     <value>Weise Kategorie Tastenkürzel zu:</value>
@@ -869,7 +869,7 @@ Nach dem Löschen des Sync Caches (was in manchen Fällen automatisch geschehen 
   </data>
   <data name="Add manual mapping pairs of Outlook custom properties and DAV X-attributes. &#xA;If properties do not exist , they are created. &#xA;The manual mapping overrules the general mapping of all Outlook custom attributes if both activated. &#xA;DAV attributes MUST start with X-" xml:space="preserve">
     <value>Füge manuelle Mapping Paare von benutzerdefinierten Outlook Eigenschaften zu DAV X-Attributen hinzu. 
-Wenn Eigenschaften nicht exisitieren , werden sie angelegt. 
+Wenn Eigenschaften nicht existieren, werden sie angelegt. 
 Das manuelle Mapping overruled das generelle Mapping aller benutzerdefinierten Outlook Eigenschaften wenn beides aktiviert ist. 
 DAV Attribute MÜSSEN mit X- starten.</value>
   </data>
@@ -903,7 +903,7 @@ Manuell ausgewählte andere Zeitzonen in Outlook Terminen
 werde auf die erste passende IANA Zeitzone gemappt.</value>
   </data>
   <data name="Enter the DAV resource URL or the server address and discover the available resources. &#xA;If you leave the DAV URL empty it can also be discovered from the email address via DNS lookups." xml:space="preserve">
-    <value>Gebe die DAV Ressource URL oder Serveradresse ein und suche nach verfügbaren Ressourcen. 
+    <value>Gebn Sie die DAV Ressource URL oder Serveradresse ein und suche nach verfügbaren Ressourcen. 
 Wenn die DAV URL leer gelassen wird kann diese auch durch DNS Abfragen aus der Email Adresse gefunden werden.</value>
   </data>
   <data name="No color set for updating the server calendar color!" xml:space="preserve">
@@ -1086,7 +1086,7 @@ anstelle von X-PROTOCOL wie z.B. X-AIM (wird von manchen Servern wie z.B. SOGo n
     <value>Bitte wählen Sie einen Outlook Folder aus um den Profiltyp festzulegen</value>
   </data>
   <data name="Automatically create Outlook folders" xml:space="preserve">
-    <value>Erstelle Outlook Folder automatisch</value>
+    <value>Erstelle Outlook Ordner automatisch</value>
   </data>
   <data name="Profile '{0}'" xml:space="preserve">
     <value>Profil '{0}'</value>
@@ -1122,7 +1122,7 @@ anstelle von X-PROTOCOL wie z.B. X-AIM (wird von manchen Servern wie z.B. SOGo n
     <value>Log Level:</value>
   </data>
   <data name="- Max Report Age must be &gt; 0" xml:space="preserve">
-    <value>- Maximales Report Alter muss &gt;0 sein</value>
+    <value>- Maximales Report Alter muss &gt; 0 sein</value>
   </data>
   <data name="Hide Advanced Settings" xml:space="preserve">
     <value>Verberge erweiterte Einstellungen</value>
@@ -1187,7 +1187,7 @@ so dass Outlook Ländercode und Vorwahl darstellen kann.</value>
     <value>Lösche das Sync Cache des ausgewählten Profils</value>
   </data>
   <data name="Enables the systray icon in the Windows taskbar." xml:space="preserve">
-    <value>Aktiviere das Icon in der Windows Taskleiste.</value>
+    <value>Aktiviert das Icon in der Windows Taskleiste.</value>
   </data>
   <data name="Team:" xml:space="preserve">
     <value>Team:</value>
@@ -1196,7 +1196,7 @@ so dass Outlook Ländercode und Vorwahl darstellen kann.</value>
     <value>Synchronisiere auch Objekte mit geänderter Kategorie trotz nicht übereinstimmendem Filter</value>
   </data>
   <data name="- The CalDav/CardDav URL cannot end/start with whitespaces." xml:space="preserve">
-    <value>- Die CalDav/CardDav URL darf nicht mit Whitespace(Leerzeichen, Tabulatoren) starten/enden.</value>
+    <value>- Die CalDav/CardDav URL darf nicht mit Whitespace (Leerzeichen, Tabulatoren) starten/enden.</value>
   </data>
   <data name="Show Advanced Settings" xml:space="preserve">
     <value>Zeige erweiterte Einstellungen</value>
@@ -1384,7 +1384,7 @@ Andere Protokolle können mittels protocol: address hinzugefügt werden</value>
     <value>Verbindungstest erfolgreich ABER:</value>
   </data>
   <data name="Use preemptive authentication" xml:space="preserve">
-    <value>Verwende preemptive Authentifikation</value>
+    <value>Verwende preemptive Authentifizierung</value>
   </data>
   <data name="Detected URL:" xml:space="preserve">
     <value>Erkannte URL:</value>
