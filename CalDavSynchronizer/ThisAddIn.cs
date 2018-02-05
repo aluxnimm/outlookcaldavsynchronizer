@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Globalization;
 using System.Reflection;
 using System.Windows.Forms;
 using CalDavSynchronizer.DataAccess;
@@ -181,6 +182,7 @@ namespace CalDavSynchronizer
 
     protected override IRibbonExtension[] CreateRibbonObjects ()
     {
+      System.Threading.Thread.CurrentThread.CurrentUICulture = new CultureInfo(GeneralOptionsDataAccess.CultureName);
       return new IRibbonExtension[] { new CalDavSynchronizerRibbon() };
     }
 

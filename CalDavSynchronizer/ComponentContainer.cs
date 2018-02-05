@@ -246,9 +246,6 @@ namespace CalDavSynchronizer
     {
       if (!_wpfLocaleSet)
       {
-        Thread.CurrentThread.CurrentUICulture = new CultureInfo(cultureName);
-        Thread.CurrentThread.CurrentCulture = new CultureInfo(cultureName);
-
         FrameworkElement.LanguageProperty.OverrideMetadata(
           typeof(FrameworkElement),
           new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(cultureName)));
