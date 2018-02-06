@@ -59,6 +59,13 @@ namespace CalDavSynchronizer.Ui.Options
     {
       InitializeComponent();
 
+      Text = Strings.Get($"Select Resource");
+      OkButton.Text = Strings.Get($"OK");
+      buttonCancel.Text = Strings.Get($"Cancel");
+      _calendarPage.Text = Strings.Get($"Calendars");
+      _addressBookPage.Text = Strings.Get($"Address Books");
+      _tasksPage.Text = Strings.Get($"Tasks");
+
       if (calendars != null)
       {
         _calendarDataGridView.DataSource = calendars;
@@ -128,6 +135,12 @@ namespace CalDavSynchronizer.Ui.Options
           _mainTab.SelectedTab = _tasksPage;
           break;
       }
+    }
+
+    public sealed override string Text
+    {
+      get => base.Text;
+      set => base.Text = value;
     }
 
     private SelectResourceForm (

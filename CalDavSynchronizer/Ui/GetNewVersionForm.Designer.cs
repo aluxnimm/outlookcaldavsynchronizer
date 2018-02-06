@@ -53,7 +53,7 @@ namespace CalDavSynchronizer.Ui
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(100, 28);
       this.btnOK.TabIndex = 0;
-      this.btnOK.Text = Strings.Get($"OK");
+      this.btnOK.Text = "OK";
       this.btnOK.UseVisualStyleBackColor = true;
       this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
       // 
@@ -101,7 +101,7 @@ namespace CalDavSynchronizer.Ui
       this._downloadNewVersionLinkLabel.Size = new System.Drawing.Size(149, 17);
       this._downloadNewVersionLinkLabel.TabIndex = 4;
       this._downloadNewVersionLinkLabel.TabStop = true;
-      this._downloadNewVersionLinkLabel.Text = Strings.Get($"Download new version");
+      this._downloadNewVersionLinkLabel.Text = "Download new version";
       this._downloadNewVersionLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this._downloadNewVersionLinkLabel_LinkClicked);
       // 
       // _doNotCheckForNewerVersionsLinkLabel
@@ -113,7 +113,7 @@ namespace CalDavSynchronizer.Ui
       this._doNotCheckForNewerVersionsLinkLabel.Size = new System.Drawing.Size(263, 17);
       this._doNotCheckForNewerVersionsLinkLabel.TabIndex = 6;
       this._doNotCheckForNewerVersionsLinkLabel.TabStop = true;
-      this._doNotCheckForNewerVersionsLinkLabel.Text = Strings.Get($"Do not check for newer version anymore");
+      this._doNotCheckForNewerVersionsLinkLabel.Text = "Do not check for newer version anymore";
       this._doNotCheckForNewerVersionsLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this._doNotCheckForNewerVersionsLinkLabel_LinkClicked);
       // 
       // _logoPictureBox
@@ -136,7 +136,7 @@ namespace CalDavSynchronizer.Ui
       this.WhatsNewLabel.Name = "WhatsNewLabel";
       this.WhatsNewLabel.Size = new System.Drawing.Size(126, 20);
       this.WhatsNewLabel.TabIndex = 8;
-      this.WhatsNewLabel.Text = Strings.Get($"Whats\'s new?");
+      this.WhatsNewLabel.Text = "Whats\'s new?";
       // 
       // _ignoreThisVersionLinkLabel
       // 
@@ -147,7 +147,7 @@ namespace CalDavSynchronizer.Ui
       this._ignoreThisVersionLinkLabel.Size = new System.Drawing.Size(124, 17);
       this._ignoreThisVersionLinkLabel.TabIndex = 9;
       this._ignoreThisVersionLinkLabel.TabStop = true;
-      this._ignoreThisVersionLinkLabel.Text = Strings.Get($"Ignore this version");
+      this._ignoreThisVersionLinkLabel.Text = "Ignore this version";
       this._ignoreThisVersionLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this._ignoreThisVersionLinkLabel_LinkClicked);
       // 
       // installButton
@@ -158,7 +158,7 @@ namespace CalDavSynchronizer.Ui
       this.installButton.Name = "installButton";
       this.installButton.Size = new System.Drawing.Size(143, 28);
       this.installButton.TabIndex = 10;
-      this.installButton.Text = Strings.Get($"Install new version");
+      this.installButton.Text = "Install new version";
       this.installButton.UseVisualStyleBackColor = true;
       this.installButton.Click += new System.EventHandler(this.installButton_Click);
       // 

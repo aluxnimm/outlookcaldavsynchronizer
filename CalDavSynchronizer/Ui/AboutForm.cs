@@ -35,6 +35,14 @@ namespace CalDavSynchronizer.Ui
     {
       _checkForUpdatesActionAsync = checkForUpdatesActionAsync;
       InitializeComponent();
+
+      btnOK.Text = Strings.Get($"OK");
+      label1.Text = Strings.Get($"Team:");
+      _linkLabelPayPal.Text = Strings.Get($"Donate with PayPal");
+      _linkLabelHelp.Text = Strings.Get($"Documentation and Tutorials");
+      _checkForUpdatesButton.Text = Strings.Get($"Check for Updates");
+      Text = Strings.Get($"About");
+
       _versionLabel.Text = Strings.Get($"Version: {Assembly.GetExecutingAssembly().GetName().Version}");
 
       this._linkLabelProject.Text = WebResourceUrls.ProjectHomeSite.ToString();
@@ -44,6 +52,12 @@ namespace CalDavSynchronizer.Ui
       AddTeamMember ("Alexander Nimmervoll", "http://sourceforge.net/u/nimm/profile/");
       AddTeamMember ("Gerhard Zehetbauer", "http://sourceforge.net/u/nertsch/profile/");
       _logoPictureBox.Image = Properties.Resources.ApplicationLogoLarge;
+    }
+
+    public sealed override string Text
+    {
+      get => base.Text;
+      set => base.Text = value;
     }
 
     private void _linkLabelTeamMembers_LinkClicked (object sender, LinkLabelLinkClickedEventArgs e)

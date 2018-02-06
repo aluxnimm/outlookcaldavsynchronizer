@@ -16,6 +16,12 @@ namespace CalDavSynchronizer.Ui
     public AddResourceForm (bool enableColorSelect)
     {
       InitializeComponent();
+      Text = Strings.Get($"Add Resource");
+      label1.Text = Strings.Get($"Resource Displayname");
+      btnOK.Text = Strings.Get($"OK");
+      buttonCancel.Text = Strings.Get($"Cancel");
+      _useRandomNameCheckBox.Text = Strings.Get($"Use random string for DAV resource Uri");
+      _toolTip.SetToolTip(_useRandomNameCheckBox, Strings.Get($"If unchecked the displayname is used for creating the DAV resource Uri instead of a random string."));
       if (!enableColorSelect)
       {
         _resourceColorButton.Visible = false;
@@ -25,7 +31,14 @@ namespace CalDavSynchronizer.Ui
       {
         CalendarColor = Color.LightBlue;
         _resourceColorButton.BackColor = CalendarColor;
+        label2.Text = Strings.Get($"Calendar Color");
       }
+    }
+
+    public sealed override string Text
+    {
+      get => base.Text;
+      set => base.Text = value;
     }
 
     private bool ValidateForm()
