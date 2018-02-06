@@ -13,6 +13,26 @@ namespace CalDavSynchronizer
       : base (Globals.Factory.GetRibbonFactory ())
     {
       InitializeComponent ();
+
+      SynchronizeNowButton.Label = Strings.Get($"Synchronize now");
+      SynchronizeNowButton.ScreenTip = Strings.Get($"Synchronize now");
+      SynchronizeNowButton.SuperTip = Strings.Get($"Start a manual synchronization of all active profiles.");
+      OptionsButton.Label = Strings.Get($"Synchronization Profiles");
+      OptionsButton.ScreenTip = Strings.Get($"Synchronization Profiles");
+      OptionsButton.SuperTip = Strings.Get($"Configure your synchronization profiles.");
+      GeneralOptionsButton.Label = Strings.Get($"General Options");
+      GeneralOptionsButton.ScreenTip = Strings.Get($"General Options");
+      GeneralOptionsButton.SuperTip = Strings.Get($"Set global options for all profiles like SSL/TLS settings.");
+      AboutButton.Label = Strings.Get($"About");
+      AboutButton.ScreenTip = Strings.Get($"About");
+      AboutButton.SuperTip = Strings.Get($"Information about the project and version.");
+      ReportsButton.Label = Strings.Get($"Reports");
+      ReportsButton.ScreenTip = Strings.Get($"Reports");
+      ReportsButton.SuperTip = Strings.Get($"Show reports of last sync runs.");
+      StatusesButton.Label = Strings.Get($"Status");
+      StatusesButton.ScreenTip = Strings.Get($"Status");
+      StatusesButton.SuperTip = Strings.Get($"Show status of sync runs.");
+
     }
 
     /// <summary> 
@@ -68,61 +88,49 @@ namespace CalDavSynchronizer
       // SynchronizeNowButton
       // 
       this.SynchronizeNowButton.Image = global::CalDavSynchronizer.Properties.Resources.Sync;
-      this.SynchronizeNowButton.Label = Strings.Get($"Synchronize now");
+      this.SynchronizeNowButton.Label = "Synchronize now";
       this.SynchronizeNowButton.Name = "SynchronizeNowButton";
-      this.SynchronizeNowButton.ScreenTip = Strings.Get($"Synchronize now");
       this.SynchronizeNowButton.ShowImage = true;
-      this.SynchronizeNowButton.SuperTip = Strings.Get($"Start a manual synchronization of all active profiles.");
       this.SynchronizeNowButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.SynchronizeNowButton_Click);
       // 
       // OptionsButton
       // 
       this.OptionsButton.Image = global::CalDavSynchronizer.Properties.Resources.Options;
-      this.OptionsButton.Label = Strings.Get($"Synchronization Profiles");
+      this.OptionsButton.Label = "Synchronization Profiles";
       this.OptionsButton.Name = "OptionsButton";
-      this.OptionsButton.ScreenTip = Strings.Get($"Synchronization Profiles");
       this.OptionsButton.ShowImage = true;
-      this.OptionsButton.SuperTip = Strings.Get($"Configure your synchronization profiles.");
       this.OptionsButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.OptionsButton_Click);
       // 
       // GeneralOptionsButton
       // 
       this.GeneralOptionsButton.Image = global::CalDavSynchronizer.Properties.Resources.GeneralOptions;
-      this.GeneralOptionsButton.Label = Strings.Get($"General Options");
+      this.GeneralOptionsButton.Label = "General Options";
       this.GeneralOptionsButton.Name = "GeneralOptionsButton";
-      this.GeneralOptionsButton.ScreenTip = Strings.Get($"General Options");
       this.GeneralOptionsButton.ShowImage = true;
-      this.GeneralOptionsButton.SuperTip = Strings.Get($"Set global options for all profiles like SSL/TLS settings.");
       this.GeneralOptionsButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.GeneralOptionsButton_Click);
       // 
       // AboutButton
       // 
       this.AboutButton.Image = global::CalDavSynchronizer.Properties.Resources.About;
-      this.AboutButton.Label = Strings.Get($"About");
+      this.AboutButton.Label = "About";
       this.AboutButton.Name = "AboutButton";
-      this.AboutButton.ScreenTip = Strings.Get($"About");
       this.AboutButton.ShowImage = true;
-      this.AboutButton.SuperTip = Strings.Get($"Information about the project and version.");
       this.AboutButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.AboutButton_Click);
       // 
       // ReportsButton
       // 
       this.ReportsButton.Image = global::CalDavSynchronizer.Properties.Resources.SyncReport;
-      this.ReportsButton.Label = Strings.Get($"Reports");
+      this.ReportsButton.Label = "Reports";
       this.ReportsButton.Name = "ReportsButton";
-      this.ReportsButton.ScreenTip = Strings.Get($"Reports");
       this.ReportsButton.ShowImage = true;
-      this.ReportsButton.SuperTip = Strings.Get($"Show reports of last sync runs.");
       this.ReportsButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.ReportsButton_Click);
       // 
       // StatusesButton
       // 
       this.StatusesButton.Image = global::CalDavSynchronizer.Properties.Resources.report;
-      this.StatusesButton.Label = Strings.Get($"Status");
+      this.StatusesButton.Label = "Status";
       this.StatusesButton.Name = "StatusesButton";
-      this.StatusesButton.ScreenTip = Strings.Get($"Status");
       this.StatusesButton.ShowImage = true;
-      this.StatusesButton.SuperTip = Strings.Get($"Show status of sync runs.");
       this.StatusesButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.StatusesButton_Click);
       // 
       // CalDavSynchronizerRibbon
