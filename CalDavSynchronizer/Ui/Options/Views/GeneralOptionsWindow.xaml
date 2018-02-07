@@ -34,13 +34,13 @@
   
     </Window.Resources>
 
-    <Grid>
+    <Grid Background="{x:Static SystemColors.ControlLightBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TabControl Grid.Row="0" TabStripPlacement="Left" Margin="10" Padding="10" BorderThickness="1" BorderBrush="{x:Static SystemColors.ControlDarkBrush}" >
+        <TabControl Grid.Row="0" TabStripPlacement="Left" Margin="3" Padding="10" BorderThickness="3" BorderBrush="{x:Static SystemColors.ControlLightBrush}" >
             <TabControl.Resources>
                 <Style TargetType="TabItem">
                     <Setter Property="Template">
@@ -50,7 +50,7 @@
                                     <Border Name="Border" BorderThickness="0">
                                         <ContentPresenter x:Name="ContentSite"
                                         VerticalAlignment="Center"
-                                        HorizontalAlignment="Center"
+                                        HorizontalAlignment="Left"
                                         ContentSource="Header"
                                         Margin="10,10"/>
                                     </Border>
