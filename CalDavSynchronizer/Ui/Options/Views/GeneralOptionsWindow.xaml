@@ -157,8 +157,8 @@
         </TabControl>
         <DockPanel DockPanel.Dock="Bottom" Grid.Row="1">
            <UniformGrid HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="6,3" Rows="1">
-              <Button Command="{Binding OkCommand}" IsDefault="True" Content="{g:Localize OK}" Margin="0,0,6,0"></Button>
-              <Button Command="{Binding CancelCommand}" IsCancel="True" Content="{g:Localize Cancel}" Margin="6,0,0,0"></Button>
+                <Button Command="{Binding OkCommand}" IsDefault="True" Content="{g:Localize OK}" Margin="0,0,6,0" Background="{x:Static SystemColors.ControlLightLightBrush}"></Button>
+                <Button Command="{Binding CancelCommand}" IsCancel="True" Content="{g:Localize Cancel}" Margin="6,0,0,0" Background="{x:Static SystemColors.ControlLightLightBrush}"></Button>
            </UniformGrid>
         </DockPanel>
     </Grid>
