@@ -78,10 +78,12 @@
                 <StackPanel>
                     <CheckBox IsChecked="{Binding Options.ShouldCheckForNewerVersions}" Content="{g:Localize Automatically check for newer versions}"></CheckBox>
                     <CheckBox IsChecked="{Binding Options.CheckIfOnline}" Content="{g:Localize Check Internet connection before sync run}" ToolTip="{g:Localize Checks if a network interface is up\&#x0a;and try DNS query to dns.msftncsi.com first and if that fails try to download\&#x0a;http://www.msftncsi.com/ncsi.txt with the configured proxy settings.\&#x0a;Should avoid error reports when network is not available after\&#x0a;coming back from hibernate for example.}"></CheckBox>
-                    <CheckBox IsChecked="{Binding Options.StoreAppDataInRoamingFolder}" Content="{g:Localize Store data in roaming folder}" ToolTip="{g:Localize Changing this option requires a restart of Outlook.}"></CheckBox>
                     <CheckBox IsChecked="{Binding Options.IncludeCustomMessageClasses}" Content="{g:Localize Include custom message classes in Outlook filter}" ToolTip="{g:Localize Use prefix filter to include also custom message_classes in filter for Outlook folders. \&#x0a;For better performance\, Windows Search Service shouldn\'t be deactivated if this option is enabled.}" ></CheckBox>
                     <CheckBox IsChecked="{Binding Options.QueryFoldersJustByGetTable}" Content="{g:Localize Use fast queries for Outlook folders}" ToolTip="{g:Localize Use fast GetTable queries when accessing Outlook folders.\&#x0a;Disable only if you get errors in GetVersions\, when disabled every item needs to be requested\&#x0a;which causes a performance penalty!}"></CheckBox>
                     <CheckBox IsChecked="{Binding Options.TriggerSyncAfterSendReceive}" Content="{g:Localize Trigger sync after Outlook Send/Receive and on Startup}" ToolTip="{g:Localize If checked a manual sync is always triggered after the Outlook Send/Receive finishes\&#x0a;and on startup of Outlook.}"></CheckBox>
+                    <Separator></Separator>
+                    <CheckBox IsChecked="{Binding Options.StoreAppDataInRoamingFolder}" Content="{g:Localize Store data in roaming folder}"></CheckBox>
+                    <TextBlock FontWeight="Bold" Text="{g:Localize Changing this option requires a restart of Outlook.}"></TextBlock>
                 </StackPanel>
             </TabItem>
 
@@ -96,10 +98,12 @@
                         <TextBlock  Text="{g:Localize Sync Progress Bar Threshold (Items)}" ToolTip="{g:Localize Show the sync progress bar when more items than the treshold need to be loaded.}"></TextBlock>
                         <TextBox Text="{Binding Options.ThresholdForProgressDisplay}" TextAlignment="Right" HorizontalAlignment="Right" Width="100"></TextBox>
                     </DockPanel>
+                    <Separator></Separator>
                     <DockPanel>
-                        <TextBlock  Text="{g:Localize Language:}" ToolTip="{g:Localize Changing this option requires a restart of Outlook.}"></TextBlock>
+                        <TextBlock Text="{g:Localize Language:}"></TextBlock>
                         <ComboBox SelectedValue="{Binding Options.CultureName}" ItemsSource="{Binding AvailableCultureNames}" DisplayMemberPath="Name" SelectedValuePath="Value" HorizontalAlignment="Right" Width="220"></ComboBox>
                     </DockPanel>
+                    <TextBlock FontWeight="Bold" Text="{g:Localize Changing this option requires a restart of Outlook.}"></TextBlock>
                 </StackPanel>
             </TabItem>
 
