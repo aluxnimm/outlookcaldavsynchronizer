@@ -6,6 +6,10 @@
         xmlns:views="clr-namespace:CalDavSynchronizer.Ui.Options.Views"
         xmlns:g="clr-namespace:CalDavSynchronizer.Globalization"
         mc:Ignorable="d"
-        Title="{g:Localize Options}" Height="810" Width="860" WindowStartupLocation="CenterScreen">
+        Title="{g:Localize Options}"
+        SizeToContent="Width"
+        Height="810" 
+        MinWidth="860" 
+        WindowStartupLocation="CenterScreen">
   <views:OptionsCollectionView Margin="3" />
 </Window>

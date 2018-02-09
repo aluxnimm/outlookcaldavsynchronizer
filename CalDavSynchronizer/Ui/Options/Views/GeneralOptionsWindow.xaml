@@ -8,8 +8,8 @@
         xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels"
         mc:Ignorable="d"
         Title="{g:Localize General Options}"
-        SizeToContent="Height"
-        Width="600"
+        SizeToContent="WidthAndHeight"
+        MinWidth="600"
         d:DataContext="{x:Static viewModels:GeneralOptionsViewModel.DesignInstance}"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
