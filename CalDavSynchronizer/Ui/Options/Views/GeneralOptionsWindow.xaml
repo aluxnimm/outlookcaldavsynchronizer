@@ -109,7 +109,7 @@
 
             <TabItem Header="{g:Localize Server Settings}">
                 <StackPanel>
-                    <CheckBox IsChecked="{Binding Options.AcceptInvalidCharsInServerResponse}" Content="{g:Localize Accept invalid chars in server response.}" ToolTip="{g:Localize If checked invalid characters in XML server responses are allowed.\&#x0a;A typical invalid char\, sent by some servers is \'Form feed\' (0x0C).}"></CheckBox>
+                    <CheckBox IsChecked="{Binding Options.AcceptInvalidCharsInServerResponse}" Content="{g:Localize Accept invalid chars in server response}" ToolTip="{g:Localize If checked invalid characters in XML server responses are allowed.\&#x0a;A typical invalid char\, sent by some servers is \'Form feed\' (0x0C).}"></CheckBox>
                     <CheckBox IsChecked="{Binding Options.UseUnsafeHeaderParsing}"  Content="{g:Localize Enable useUnsafeHeaderParsing}" ToolTip="{g:Localize Enable only if you get the following error:\&#x0a;System.Net.WebException: The server committed a protocol violation. Section\=ResponseStatusLine\&#x0a;Needed for Yahoo and cPanel Horde servers for example.}"></CheckBox>
                     <DockPanel>
                         <TextBlock  Text="{g:Localize DAV Connection Timeout (secs)}" ></TextBlock>

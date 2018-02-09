@@ -391,7 +391,7 @@
     <value>Выберите папку, соедержащую календарь для синхронизации с сетевыми источниками Kolab!</value>
   </data>
   <data name="General Logging" xml:space="preserve">
-    <value>Общие настройки журналирования</value>
+    <value>Общие журналирования</value>
   </data>
   <data name="- Ressources which are a calendar and an addressbook are not valid!" xml:space="preserve">
     <value>Сетевые источники календаря и адресной книги неверны!</value>
@@ -801,8 +801,8 @@
   <data name="Formatted" xml:space="preserve">
     <value>Отформатировано</value>
   </data>
-  <data name="Accept invalid chars in server response." xml:space="preserve">
-    <value>Принимать неверных знаки в ответах сервера.</value>
+  <data name="Accept invalid chars in server response" xml:space="preserve">
+    <value>Принимать неверных знаки в ответах сервера</value>
   </data>
   <data name="Proxy URL:" xml:space="preserve">
     <value>Путь URL прокси-сервера:</value>
@@ -1000,7 +1000,7 @@
     <value>Адрес электронной почты неверный. ({0})</value>
   </data>
   <data name="UI Settings" xml:space="preserve">
-    <value>Настройки пользовательского интерфейса</value>
+    <value>Настройки ГПИ</value>
   </data>
   <data name="Added calendar resource '{0}' successfully!" xml:space="preserve">
     <value>Источник календаря '{0}' добавлен успешно!</value>

@@ -839,7 +839,7 @@ Benötigt eine höhere Bandbreite und kann zu Inkompatibilitäten beim manuellen
   <data name="Formatted" xml:space="preserve">
     <value>Formatiert</value>
   </data>
-  <data name="Accept invalid chars in server response." xml:space="preserve">
+  <data name="Accept invalid chars in server response" xml:space="preserve">
     <value>Akzeptiere ungültige Zeichen in Serverantwort</value>
   </data>
   <data name="Proxy URL:" xml:space="preserve">
