@@ -71,6 +71,7 @@ namespace CalDavSynchronizer
       // tab1
       // 
       this.tab1.Groups.Add(this.group1);
+      this.tab1.KeyTip = "CDS";
       this.tab1.Label = "CalDav Synchronizer";
       this.tab1.Name = "tab1";
       // 
@@ -88,6 +89,7 @@ namespace CalDavSynchronizer
       // SynchronizeNowButton
       // 
       this.SynchronizeNowButton.Image = global::CalDavSynchronizer.Properties.Resources.Sync;
+      this.SynchronizeNowButton.KeyTip = "SN";
       this.SynchronizeNowButton.Label = "Synchronize now";
       this.SynchronizeNowButton.Name = "SynchronizeNowButton";
       this.SynchronizeNowButton.ShowImage = true;
@@ -96,6 +98,7 @@ namespace CalDavSynchronizer
       // OptionsButton
       // 
       this.OptionsButton.Image = global::CalDavSynchronizer.Properties.Resources.Options;
+      this.OptionsButton.KeyTip = "SP";
       this.OptionsButton.Label = "Synchronization Profiles";
       this.OptionsButton.Name = "OptionsButton";
       this.OptionsButton.ShowImage = true;
@@ -104,6 +107,7 @@ namespace CalDavSynchronizer
       // GeneralOptionsButton
       // 
       this.GeneralOptionsButton.Image = global::CalDavSynchronizer.Properties.Resources.GeneralOptions;
+      this.GeneralOptionsButton.KeyTip = "GO";
       this.GeneralOptionsButton.Label = "General Options";
       this.GeneralOptionsButton.Name = "GeneralOptionsButton";
       this.GeneralOptionsButton.ShowImage = true;
@@ -112,6 +116,7 @@ namespace CalDavSynchronizer
       // AboutButton
       // 
       this.AboutButton.Image = global::CalDavSynchronizer.Properties.Resources.About;
+      this.AboutButton.KeyTip = "AB";
       this.AboutButton.Label = "About";
       this.AboutButton.Name = "AboutButton";
       this.AboutButton.ShowImage = true;
@@ -120,6 +125,7 @@ namespace CalDavSynchronizer
       // ReportsButton
       // 
       this.ReportsButton.Image = global::CalDavSynchronizer.Properties.Resources.SyncReport;
+      this.ReportsButton.KeyTip = "RE";
       this.ReportsButton.Label = "Reports";
       this.ReportsButton.Name = "ReportsButton";
       this.ReportsButton.ShowImage = true;
@@ -128,6 +134,7 @@ namespace CalDavSynchronizer
       // StatusesButton
       // 
       this.StatusesButton.Image = global::CalDavSynchronizer.Properties.Resources.report;
+      this.StatusesButton.KeyTip = "ST";
       this.StatusesButton.Label = "Status";
       this.StatusesButton.Name = "StatusesButton";
       this.StatusesButton.ShowImage = true;
