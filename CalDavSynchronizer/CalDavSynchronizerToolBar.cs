@@ -64,9 +64,9 @@ namespace CalDavSynchronizer
 
       _toolBarBtnSyncNow = (CommandBarButton) _toolBar.Controls.Add (1, missing, missing, missing, missing);
       _toolBarBtnSyncNow.Style = MsoButtonStyle.msoButtonIconAndCaption;
-      _toolBarBtnSyncNow.Caption = Strings.Get($"Synchronize");
+      _toolBarBtnSyncNow.Caption = Strings.Get($"Synchronize now");
       _toolBarBtnSyncNow.FaceId = 107; // builtin icon: lightning hovering above a calendar table
-      _toolBarBtnSyncNow.Tag = Strings.Get($"Synchronize now");
+      _toolBarBtnSyncNow.Tag = Strings.Get($"Start a manual synchronization of all active profiles.");
       if (wireClickEvents)
         _toolBarBtnSyncNow.Click += ToolBarBtn_SyncNow_OnClick;
 
