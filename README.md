@@ -67,6 +67,7 @@ We work closely together and test interopability with DAVdroid for Android, see 
 
 - open source AGPL, the only free Outlook CalDav plugin
 - two-way-sync
+- Localization support
 - SSL/TLS support, support for self-signed certificates and client certificate authentication
 - Manual proxy configuration support for NTLM or basic auth proxies
 - Autodiscovery of calendars and addressbooks
@@ -105,15 +106,38 @@ We work closely together and test interopability with DAVdroid for Android, see 
 
 ### Install instructions ###
 
+**WARNING**: Beginning with release 3.0.0 .NET framework 4.6.1 is the minimal requirement.
+
 Download and extract the `OutlookCalDavSynchronizer-<Version>.zip` into any directory and start setup.exe. You can change the default install path, but you need to use a directory on the `C:\` drive.
 If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=54251)
 You should also update manually to the latest Visual Studio 2010 Tools for Office Runtime (Version 10.0.60825) if you have an older version installed, since some COMExceptions have been fixed.
 
 Beginning with version 2.9.0 the default install location is `ProgramFilesDir\CalDavSynchronizer\` and the installer remembers the chosen directory for the next updates. Also the install option to install for Everyone instead of the current user is working now for Outlook 2010 and higher, if you want to install the addin for all users on the current machine. For Outlook 2007 you can only install the addin for the current user.
 
-We recommend updating to the latest .Net Framework but the minimal required version is .Net 4.5, which is not supported on Windows XP. If you need Outlook CalDav Synchronizer for Windows XP you can download a backport to .Net 4.0 from a forked project [here](https://sourceforge.net/projects/outlookcaldavsynchronizerxp/), thanks to [Salvatore Isaja](https://sourceforge.net/u/salvois/profile/) for the awesome work!
+We recommend updating to the latest .Net Framework but the minimal required version is .NET 4.6.1, which is not supported on Windows XP. If you need Outlook CalDav Synchronizer for Windows XP you can download a backport to .Net 4.0 from a forked project [here](https://sourceforge.net/projects/outlookcaldavsynchronizerxp/), thanks to [Salvatore Isaja](https://sourceforge.net/u/salvois/profile/) for the awesome work!
 
 ### Changelog ###
+
+#### 3.0.0 ####
+- Released 2018/02/10
+- **WARNING**: This release is a major upgrade and needs .NET framework 4.6.1 as minimal requirement. Automatic upgrade won't work if you still have only .NET framework 4.5 installed. Install and upgrade manually in that case!
+
+- New features
+	- Use .NET framework 4.6.1.
+	- Added localization support.
+	- Added German and Russian translations (more to come and help wanted, contact us!)
+	- Added general option to switch UI language (needs restart of Outlook to take effect).
+	- UI redesign for general options with WPF TabControl.
+	- Improve accessibility by adding keytips to ribbon.
+	- Added ProfileType for Swisscom.
+	- Update of Google API and other NuGet packages.
+	- Sort sync reports.
+- Bug fixes
+	- Fixed many typos.
+	- Fixed some UI inconsistencies and content fit to screen issues.
+	- Improve logging.
+	- Improve Profile Status.
+	- Improve IntegrationTests.
 
 #### 2.27.0 ####
 - Released 2017/12/23
@@ -1104,6 +1128,8 @@ After installing the plugin, a new ribbon called 'Caldav Synchronizer' is added 
 - Reports
 - Status
 
+For better accessibility the ribbon also supports keytips, accessible via ALT key followed by CDS and SN,SP,GO,AB,RE,ST respectively for the 6 items.
+
 Use the Synchronization Profiles dialog to configure different synchronization profiles. Each profile is responsible for synchronizing one Outlook calendar/task or contact folder with a remote folder of a CalDAV/CardDAV server.
 
 Beginning with version 2.15.0 advanced configuration settings are hidden by default and you can enable them by clicking on *Show advanced settings* and disable them again by clicking on *Hide advanced settings*. The default behaviour can also be configured as a general option, see below.
@@ -1128,7 +1154,7 @@ When adding a new profile you can choose between a generic CalDAV/CardDAV, a goo
 The following properties need to be set for a new generic profile:
 
 - *Profile name*: An arbitrary name for the profile, which will be displayed in the tree view.
-- - *Outlook settings*:
+- *Outlook settings*:
 	- **Outlook Folder:** Outlook folder that should be used for synchronization. You can choose a calendar, contact or task folder. Depending on the folder type, the matching server resource type in the server settings must be used.
 	- **Synchronize items immediately after change** Trigger a partial synchronization run immediately after an item is created, changed or deleted in Outlook (with a 10 seconds delay).
 - *Server settings*:
@@ -1353,31 +1379,34 @@ More information can be found at
 ### General Options and SSL settings ###
 In the General Options Dialog you can change settings which are used for all synchronization profiles.
 
-- **Automatically check for newer versions** set to false to disable checking for updates.
-- **Check Internet connection before sync run** checks if an interface is up and try DNS query to dns.msftncsi.com first and if that fails try to download http://www.msftncsi.com/ncsi.txt with the configured proxy before each sync run to avoid error reports if network is unavailable after hibernate for example. Disable this option if you are in a local network where DNS and that URL is blocked.
-- **Store data in roaming folder** set to true if you need to store state and profile data in the AppData\Roaming\ directory for roaming profiles in a AD domain for example. When changing this option, a restart of Outlook is required.
-- **Include custom message classes in Outlook filter** Disabled by default, enable only if you have custom forms with message_classes other than the default IPM.Appointment/Contact/Task. For better performance, Windows Search Service shouldn't be deactivated if this option is enabled.
-- **Use fast queries for Outlook folders** Enabled by default, uses fast GetTable queries when accessing Outlook folders. Disable only if you get errors in GetVersions, when disabled every item needs to be requested which causes a performance penalty!
-- **Trigger sync after Outlook Send/Receive and on Startup** If checked a manual sync is triggered after the Outlook Send/Receive finishes and on Outlook startup.
-- **Show advanced settings as default** Show the advanced settings in synchronization profiles as default if enabled.
-- **Expand all nodes in Synchronization profiles** Enabled by default, expands all nodes in the synchronization profiles to see the suboptions for network settings and mapping configuration.
-- **Enable Tray Icon** Enabled by default, you can disable the tray icon in the Windows Taskbar if you don't need it.
-- **Fix invalid settings** Fixes invalid settings automatically, when synchronization profiles are edited.
-- **Show Sync Progress Bar** and **Sync Progress Bar Threshold (Items)** Enabled by default, show a progress bar if more than the treshold of items need to be loaded during a synchronization run. If disabled, no progress bar is shown but be aware that for larger changes Outlook can freeze, since some operations need to be performed in the Outlook main thread.
-- **Accept invalid chars in server response** If checked invalid characters in XML server responses are allowed. A typical invalid char, sent by some servers is Form feed (0x0C).
-- ** Enable useUnsafeHeaderParsing** Enable, if the server sends invalid http headers, see common network errors. Needed for Yahoo and cPanel Horde servers for example. The general option overrides the setting in the app.config file.
-- **CalDav Connection Timeout (secs)** For slow server connections you can increaste the timeout value (default 90 secs).
-
-If you have problems with SSL/TLS and self-signed certificates, you can change the following settings at your own risk.
-The recommended way would be to add the self signed cert to the Local Computer Trusted Root Certification Authorities
-You can import the cert by running the MMC as Administrator.
-
-- **Disable Certificate Validation** set to true to disable SSL/TLS certificate validation, major security risk, use with caution!
-- **Enable Client Certificates** If enabled, the available client certificates from the Windows user certificate store will automatically be provided.
-- **Enable Tls12** set to false to disable TLS12, not recommended 
-- **Enable Ssl3** set to true to enable deprecated SSLv3, major security risk, use with caution! 
-
-In the **General Logging** section you can show or clear the log file and define the log level. Possible log levels are `INFO` and  `DEBUG`.
+- *Generel Settings*
+	- **Automatically check for newer versions** set to false to disable checking for updates.
+	- **Check Internet connection before sync run** checks if an interface is up and try DNS query to dns.msftncsi.com first and if that fails try to download http://www.msftncsi.com/ncsi.txt with the configured proxy before each sync run to avoid error reports if network is unavailable after hibernate for example. Disable this option if you are in a local network where DNS and that URL is blocked.
+	- **Include custom message classes in Outlook filter** Disabled by default, enable only if you have custom forms with message_classes other than the default IPM.Appointment/Contact/Task. For better performance, Windows Search Service shouldn't be deactivated if this option is enabled.
+	- **Use fast queries for Outlook folders** Enabled by default, uses fast GetTable queries when accessing Outlook folders. Disable only if you get errors in GetVersions, when disabled every item needs to be requested which causes a performance penalty!
+	- **Trigger sync after Outlook Send/Receive and on Startup** If checked a manual sync is triggered after the Outlook Send/Receive finishes and on Outlook startup.
+	- **Store data in roaming folder** set to true if you need to store state and profile data in the AppData\Roaming\ directory for roaming profiles in a AD domain for example. When changing this option, a restart of Outlook is required.
+- *UI Settings*
+	- **Show advanced settings as default** Show the advanced settings in synchronization profiles as default if enabled.
+	- **Expand all nodes in Synchronization profiles** Enabled by default, expands all nodes in the synchronization profiles to see the suboptions for network settings and mapping configuration.
+	- **Enable Tray Icon** Enabled by default, you can disable the tray icon in the Windows Taskbar if you don't need it.
+	- **Fix invalid settings** Fixes invalid settings automatically, when synchronization profiles are edited.
+	- **Show Sync Progress Bar** and **Sync Progress Bar Threshold (Items)** Enabled by default, show a progress bar if more than the treshold of items need to be loaded during a synchronization run. If disabled, no progress bar is shown but be aware that for larger changes Outlook can freeze, since some operations need to be performed in the Outlook main thread.
+	- **Language** Select UI language. When changing this option, a restart of Outlook is required.
+- *Server Settings*
+	- **Accept invalid chars in server response** If checked invalid characters in XML server responses are allowed. A typical invalid char, sent by some servers is Form feed (0x0C).
+	- ** Enable useUnsafeHeaderParsing** Enable, if the server sends invalid http headers, see common network errors. Needed for Yahoo and cPanel Horde servers for example. The general option overrides the setting in the app.config file.
+	- **CalDav Connection Timeout (secs)** For slow server connections you can increaste the timeout value (default 90 secs).
+- *SSL/TLS Settings*
+	- If you have problems with SSL/TLS and self-signed certificates, you can change the following settings at your own risk. The recommended way would be to add the self signed cert to the Local Computer Trusted Root Certification Authorities. You can import the cert by running the MMC as Administrator.
+	- **Disable Certificate Validation** set to true to disable SSL/TLS certificate validation, major security risk, use with caution!
+	- **Enable Client Certificates** If enabled, the available client certificates from the Windows user certificate store will automatically be provided.
+	- **Enable Tls12** set to false to disable TLS12, not recommended 
+	- **Enable Ssl3** set to true to enable deprecated SSLv3, major security risk, use with caution!
+- *Synchronization Reports*
+	- See **Reports of sync runs** below. 
+- *General Logging*
+	- In the **General Logging** section you can show or clear the log file and define the log level. Possible log levels are `INFO` and  `DEBUG`.
 
 ### Profile Import/Export ###
 
