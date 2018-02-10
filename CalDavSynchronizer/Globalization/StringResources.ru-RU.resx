@@ -304,7 +304,7 @@
     <value>OK</value>
   </data>
   <data name="Synchronization timespan future (days):" xml:space="preserve">
-    <value>Период времени в будущем для синхронизации (в днях):</value>
+    <value>Период времени для синхронизации событий в бущудем (дней):</value>
   </data>
   <data name="Raw" xml:space="preserve">
     <value>Исходные данные</value>
@@ -349,7 +349,7 @@
     <value>Исключение, которое ведёт к сбросу:</value>
   </data>
   <data name="Custom Properties Mapping Configuration" xml:space="preserve">
-    <value>Специальные настройки путей к источникам</value>
+    <value>Специальные настройки</value>
   </data>
   <data name="Don't use a time range less than 1 year if your calendar includes recurring events." xml:space="preserve">
     <value>Не используйте перид синхронизации менее одного года если в вашем календаре есть повторяющиеся события</value>
@@ -373,7 +373,7 @@
     <value>Импортировать профили из файла</value>
   </data>
   <data name="Contact Mapping Configuration" xml:space="preserve">
-    <value>Настройка путей к источникам контактов</value>
+    <value>Настройка контактов</value>
   </data>
   <data name="Negate filter and sync all appointments except this category" xml:space="preserve">
     <value>Исключить из выборки и синхронизировать все события за исключением этой категории</value>
@@ -391,7 +391,7 @@
     <value>Выберите папку, соедержащую календарь для синхронизации с сетевыми источниками Kolab!</value>
   </data>
   <data name="General Logging" xml:space="preserve">
-    <value>Общие журналирования</value>
+    <value>Основные настройки журналирования</value>
   </data>
   <data name="- Ressources which are a calendar and an addressbook are not valid!" xml:space="preserve">
     <value>Сетевые источники календаря и адресной книги неверны!</value>
@@ -418,7 +418,7 @@
     <value>Путь URL к серверу Kolab</value>
   </data>
   <data name="Custom Properties Mapping" xml:space="preserve">
-    <value>Указание специальных настроек</value>
+    <value>Специальные настройки</value>
   </data>
   <data name="Errors and warnings" xml:space="preserve">
     <value>Ошибки и предупреждения</value>
@@ -436,7 +436,7 @@
     <value>Обычный CalDAV/CardDAV</value>
   </data>
   <data name="View or set CalDav Synchronizer general options" xml:space="preserve">
-    <value>Просмотреть или усатновить основные настройки CalDav Synchronizer</value>
+    <value>Просмотреть или установить основные настройки CalDav Synchronizer</value>
   </data>
   <data name="Manual only" xml:space="preserve">
     <value>Только вручную</value>
@@ -448,7 +448,7 @@
     <value>Указать первый адрес электронной почты MS Outlook как рабочий вместо домашнего</value>
   </data>
   <data name="Chunk size:" xml:space="preserve">
-    <value>Размер последовательности:</value>
+    <value>Размер партии:</value>
   </data>
   <data name="Connection test NOT successful:" xml:space="preserve">
     <value>Проверка соединения НЕ удалась:</value>
@@ -577,7 +577,7 @@
     <value>Указать все специальные настройки MS Outlook, как атрибуты X-CALDAVSYNCHRONIZER</value>
   </data>
   <data name="General Event Mapping Settings" xml:space="preserve">
-    <value>Общие настройки указания событий</value>
+    <value>Основные настройки событий календаря</value>
   </data>
   <data name="Show the advanced settings in synchronization profiles as default if enabled." xml:space="preserve">
     <value>Если активировано, показать расширенные настройки профилей синхронизации по умолчанию.</value>
@@ -607,7 +607,7 @@
     <value>Указать в MS Outlook даты начала и завершиния задач, как плавающие, без указания часового пояса.</value>
   </data>
   <data name="Fixes invalid settings automatically, when&#xA;synchronization profiles are  edited.&#xA;&#xA;E.g.: if  a read-only CalDav calendar is selected&#xA;and the synchronization mode is set to TwoWay,&#xA;then the synchronization mode is automatically&#xA;set to one way, so that there are no write&#xA;operations performed in the read-only&#xA;calendar, which would produce errors.&#xA;Disabling this setting might be helpful for testing,&#xA;but you should know what you do." xml:space="preserve">
-    <value>Исправляет неверные настройки автоматически в ходе редактирования профилей. К примеру, если выбран календарь только для чтения, а вид синхронизации выбран двусторонний, то вид синхронизации автоматически изменяется на односторонний так, что никаких операций записи в календаре только для чтения, могущих привести к ошибкам, не происходит. Выключение этой настройки может быть полезно при проверках, но вы должны знать, что вы делаете. </value>
+    <value>Исправляет неверные настройки автоматически в ходе редактирования профилей. К примеру, если выбран календарь только для чтения, а направление синхронизации выбрано двустороннее, то направление синхронизации автоматически изменяется на одностороннее так, что никаких операций записи в календаре только для чтения, могущих привести к ошибкам, не происходит. Выключение этой настройки может быть полезно при проверках, но вы должны знать, что вы делаете.</value>
   </data>
   <data name="Network Settings" xml:space="preserve">
     <value>Сетевые настройки</value>
@@ -622,7 +622,7 @@
     <value>Не переписывать флаг FileAs флагом FN. Использует настроенный по умолчанию в MS Outlook флаг FileAs для всех новых объектов.</value>
   </data>
   <data name="Perform synchronization in chunks" xml:space="preserve">
-    <value>Осуществлять синхронизацию последовательностями</value>
+    <value>Осуществлять синхронизацию партиями объектов</value>
   </data>
   <data name="&lt;MISSING&gt;" xml:space="preserve">
     <value>&lt;ОТСУТСТВУЕТ&gt;</value>
@@ -634,7 +634,7 @@
     <value>Добавить новый профиль</value>
   </data>
   <data name="Synchronization interval (minutes):" xml:space="preserve">
-    <value>Интервал между синхронизациями (в минутах);</value>
+    <value>Интервал между сессиями синхронизациями (минут);</value>
   </data>
   <data name="- If you don't know the URL you can also enter the Email address and try to discover it." xml:space="preserve">
     <value>Если вам не известен путь URL, вы можете указать адрес электронной почты и попытаться обнаружить путь по нему.</value>
@@ -706,13 +706,13 @@
     <value>Удалить выбранное</value>
   </data>
   <data name="Synchronization timespan past (days):" xml:space="preserve">
-    <value>Период синхронизации событий в прошлом (дней):</value>
+    <value>Период времени для синхронизации событий в прошлом (дней):</value>
   </data>
   <data name="Profile name:" xml:space="preserve">
     <value>Наименование профиля:</value>
   </data>
   <data name="Show the sync progress bar when more items than the treshold need to be loaded." xml:space="preserve">
-    <value>Показывать прогресс синхронизации, когда требуется синхронизировать больше объектов, чем в установленной последовательности.</value>
+    <value>Показывать прогресс синхронизации, когда требуется синхронизировать больше объектов, чем в установленной партии</value>
   </data>
   <data name="Outlook automatically creates birthday appointments in your calendar &#xA;when the birthday is added to a contact item." xml:space="preserve">
     <value>MS Outlook автоматически создаёт события дней рождений в вашем календаре, если день рождения добавлен в поле контакта.</value>
@@ -751,7 +751,7 @@
     <value>Импортировтаь профили</value>
   </data>
   <data name="General Options" xml:space="preserve">
-    <value>Общие настройки</value>
+    <value>Основные настройки</value>
   </data>
   <data name="Calendar Color" xml:space="preserve">
     <value>Цвет календаря</value>
@@ -781,7 +781,7 @@
     <value>Путь URL к серверу Easy Project:</value>
   </data>
   <data name="General Settings" xml:space="preserve">
-    <value>Общие настройки</value>
+    <value>Основные настройки</value>
   </data>
   <data name="Use full IANA timezone definition with historical data. &#xA;Needs more bandwith and can be incompatible when manually importing in Outlook." xml:space="preserve">
     <value>Использовать полное определение часового пояса IANA с историческими данными. Требует большей пропускной способности соединения и может быть несовместимо с ручным импортом в MS Outlook.</value>
@@ -802,7 +802,7 @@
     <value>Отформатировано</value>
   </data>
   <data name="Accept invalid chars in server response" xml:space="preserve">
-    <value>Принимать неверных знаки в ответах сервера</value>
+    <value>Принимать неверные символы в ответах сервера</value>
   </data>
   <data name="Proxy URL:" xml:space="preserve">
     <value>Путь URL прокси-сервера:</value>
@@ -844,7 +844,7 @@
     <value>Заменить профиль '{0}'</value>
   </data>
   <data name="Synchronization mode:" xml:space="preserve">
-    <value>Вид синхронизации:</value>
+    <value>Направление синхронизации:</value>
   </data>
   <data name="Move selected profile down" xml:space="preserve">
     <value>Переместить указанный профиль вниз</value>
@@ -895,7 +895,7 @@
     <value>Что нового?</value>
   </data>
   <data name="The specified URL is a read-only calendar. Synchronization mode set to '{0}'." xml:space="preserve">
-    <value>По указанному пути URL расположен календарь только для чтения. Вид синхронизации установлен в '{0}'.</value>
+    <value>По указанному пути URL расположен календарь только для чтения. Направление синхронизации установлено в '{0}'.</value>
   </data>
   <data name="Delete reports older than (days):" xml:space="preserve">
     <value>Удалить отчёты старше, чем (дней):</value>
@@ -910,7 +910,7 @@
     <value>Статус</value>
   </data>
   <data name="General Contact Mapping Settings" xml:space="preserve">
-    <value>Основные настройки указания контактов</value>
+    <value>Основные настройки контактов</value>
   </data>
   <data name="Use IMAP/POP3 account password" xml:space="preserve">
     <value>Использовать пароли от учётных записей IMAP/POP3</value>
@@ -949,7 +949,7 @@
     <value>Кэш профиля синхронизации удалён</value>
   </data>
   <data name="- The specified calendar is not writeable. Therefore it is not possible to use the synchronization mode '{0}'." xml:space="preserve">
-    <value>Указанный календарь не доступен для записи. Поэтому невозможно использовать вид синхронизации '{0}'.</value>
+    <value>Указанный календарь не доступен для записи. Поэтому невозможно использовать направление синхронизации '{0}'.</value>
   </data>
   <data name="Assign category color when OK is clicked." xml:space="preserve">
     <value>Назначить цвет категории при нажатии на ОК.</value>
@@ -958,7 +958,7 @@
     <value>Указать напоминание:</value>
   </data>
   <data name="Executes specific steps of synchronization in chunks to save memory." xml:space="preserve">
-    <value>Выполняет синхронизацию пошагово отдельными последовательностями для сохранения памяти.</value>
+    <value>Выполняет синхронизацию пошагово отдельными партиями для сохранения памяти.</value>
   </data>
   <data name="Username:" xml:space="preserve">
     <value>Имя пользователя:</value>
@@ -988,7 +988,7 @@
     <value>Больше не проверять наличие новых версий</value>
   </data>
   <data name="Set global options for all profiles like SSL/TLS settings." xml:space="preserve">
-    <value>Установить общие настройки всех профилей синхронизации как SSL/TLS</value>
+    <value>Установить основные настройки всех профилей синхронизации как SSL/TLS.</value>
   </data>
   <data name="No reports available!" xml:space="preserve">
     <value> Нет доступных отчётов!</value>
@@ -1049,7 +1049,7 @@
     <value>Невозможно установить цвет календаря!</value>
   </data>
   <data name="General Task Mapping Settings" xml:space="preserve">
-    <value>Основные настройки указания задач</value>
+    <value>Основные настройки задач</value>
   </data>
   <data name="DAV X-attribute" xml:space="preserve">
     <value>Атрибуты DAV X-</value>
@@ -1076,7 +1076,7 @@
     <value>Скрыть расширенные настройки</value>
   </data>
   <data name="Event Mapping Configuration" xml:space="preserve">
-    <value>Настройки указания событий</value>
+    <value>Настройки событий</value>
   </data>
   <data name="Use WebDAV collection sync" xml:space="preserve">
     <value>Использовать WebDAV collection sync</value>
@@ -1192,7 +1192,7 @@
     <value>После установки новой версии требуется перезагрузка MS Outlook!</value>
   </data>
   <data name="- The chunk size hast to be 1 or greater." xml:space="preserve">
-    <value>Размер последовательности должен быть 1 или больше.</value>
+    <value>Размер партии должен быть 1 или больше.</value>
   </data>
   <data name="WebDAV-Sync is a protocol extension that is defined in RFC 6578 and not supported by all servers.&#xA;Test or discover settings will check if this is supported.&#xA;This option can speed up the detection of server changes dramatically but excludes the time range filter." xml:space="preserve">
     <value>WebDAV-Sync - это расширение протокола, описанное в RFC 6578 и не поддерживаемое всеми серверами. Автоопределение сервисов проверит, поддерживается ли оно. Эта настройка может значительно ускорить определение изменений на сервере, но исключает возможность использования периода синхронизации.</value>
@@ -1241,7 +1241,7 @@
     <value>Только добавить новые источники Kolab</value>
   </data>
   <data name="Task Mapping Configuration" xml:space="preserve">
-    <value>Настройки указания задач</value>
+    <value>Настройки задач</value>
   </data>
   <data name="Choose the default Instant Messenger protocol.&#xA;You can add other protocols with protocol: address" xml:space="preserve">
     <value>Использовать протокол обмена мгновенными сообщениями по умолчанию. Вы можете добавить прочие протоколы с помощью протокола: address</value>
