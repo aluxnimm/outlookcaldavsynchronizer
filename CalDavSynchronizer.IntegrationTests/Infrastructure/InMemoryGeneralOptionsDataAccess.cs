@@ -15,13 +15,14 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
     public GeneralOptions LoadOptions()
     {
       return (_options ??
-             (_options = new GeneralOptions
-             {
-               CalDavConnectTimeout = TimeSpan.FromSeconds(10),
-               MaxReportAgeInDays = 100,
-                QueryFoldersJustByGetTable = true
-             }))
-             .Clone();
+              (_options = new GeneralOptions
+              {
+                CalDavConnectTimeout = TimeSpan.FromSeconds(10),
+                MaxReportAgeInDays = 100,
+                QueryFoldersJustByGetTable = true,
+                CultureName = System.Threading.Thread.CurrentThread.CurrentUICulture.Name
+              }))
+        .Clone();
     }
 
     public void SaveOptions(GeneralOptions options)
