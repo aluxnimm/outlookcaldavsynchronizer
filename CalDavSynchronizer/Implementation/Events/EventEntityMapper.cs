@@ -339,8 +339,8 @@ namespace CalDavSynchronizer.Implementation.Events
         case OlBusyStatus.olBusy:
         case OlBusyStatus.olOutOfOffice:
         case OlBusyStatus.olWorkingElsewhere:
-          return new CalendarProperty ("TRANSP", "OPAQUE");
         case OlBusyStatus.olTentative:
+          return new CalendarProperty ("TRANSP", "OPAQUE");
         case OlBusyStatus.olFree:
           return new CalendarProperty ("TRANSP", "TRANSPARENT");
       }
