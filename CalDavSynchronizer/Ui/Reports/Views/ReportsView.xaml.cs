@@ -15,7 +15,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Linq;
 using System.Windows.Controls;
+using CalDavSynchronizer.Ui.Reports.ViewModels;
 
 namespace CalDavSynchronizer.Ui.Reports.Views
 {
@@ -27,6 +29,18 @@ namespace CalDavSynchronizer.Ui.Reports.Views
     public ReportsView ()
     {
       InitializeComponent();
+    }
+
+    private void ReportList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      foreach (var removedItem in e.RemovedItems.Cast<ReportViewModel>())
+      {
+        removedItem.IsSelected = false;
+      }
+      foreach (var addedItem in e.AddedItems.Cast<ReportViewModel>())
+      {
+        addedItem.IsSelected = true;
+      }
     }
   }
 }

@@ -19,23 +19,22 @@
     <GridSplitter Background="DarkGray"  ResizeDirection="Columns" Grid.Column="1" 
                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                   ResizeBehavior="PreviousAndNext" />
-    
-     <ListView Name="ReportList" Grid.Column="0" ItemsSource="{Binding Reports}">
+
+      <ListView Name="ReportList" Grid.Column="0" ItemsSource="{Binding Reports}" SelectionChanged="ReportList_OnSelectionChanged">
       <ListView.ItemTemplate>
         <DataTemplate>
               <views:ReportView />
         </DataTemplate>
       </ListView.ItemTemplate>
         <ListView.ContextMenu>
-          <ContextMenu>
-            <MenuItem Header="{g:Localize Save selected to Zip file}" Command="{Binding SaveSelectedCommand}" />
-            <MenuItem Header="{g:Localize Delete selected}" Command="{Binding DeleteSelectedCommand}" />
+          <ContextMenu Focusable="False">
+            <MenuItem Focusable="False" Header="{g:Localize Save selected to Zip file}" Command="{Binding SaveSelectedCommand}" />
+            <MenuItem Focusable="False" Header="{g:Localize Delete selected}" Command="{Binding DeleteSelectedCommand}" />
           </ContextMenu>
         </ListView.ContextMenu>
         <ListView.ItemContainerStyle>
-          <Style TargetType="{x:Type ListViewItem}">
-            <Setter Property="IsSelected" Value="{Binding Mode=TwoWay, Path=IsSelected}"/>
-          </Style>
+                    <Style TargetType="{x:Type ListViewItem}">
+                    </Style>
         </ListView.ItemContainerStyle>
       </ListView>
         <views:ReportDetailView Grid.Column="2"  DataContext="{Binding ElementName=ReportList,Path=SelectedItem}" />
