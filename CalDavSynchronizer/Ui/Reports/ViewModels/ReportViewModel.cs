@@ -29,7 +29,6 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
     private readonly ISynchronizationReportRepository _reportRepository;
     private readonly ReportProxy _reportProxy;
     private string _asString;
-    private bool _isSelected;
     private readonly IReportViewModelParent _parent;
 
     public ReportViewModel (ReportProxy reportProxy, ISynchronizationReportRepository reportRepository, IReportViewModelParent parent)
@@ -76,13 +75,7 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
     }
 
     public string AsString => _asString ?? (_asString = Serializer<SynchronizationReport>.Serialize (_reportProxy.Value));
-
-    public bool IsSelected
-    {
-      get { return _isSelected; }
-      set { CheckedPropertyChange (ref _isSelected, value); }
-    }
-
+    
     public void Delete ()
     {
       _reportRepository.DeleteReport (_reportProxy.Name);

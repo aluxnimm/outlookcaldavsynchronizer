@@ -38,6 +38,7 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
     private readonly Dictionary<Guid, string> _currentProfileNamesById;
     private readonly IReportsViewModelParent _parent;
     private readonly CollectionViewSource _reportsCollectionViewSource;
+    private ICollection<ReportViewModel> _selectedReports;
 
     public event EventHandler RequiresBringToFront;
 
@@ -64,8 +65,8 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
       _reportRepository = reportRepository;
       _currentProfileNamesById = currentProfileNamesById;
       _parent = parent;
-      _deleteSelectedCommand = new DelegateCommand (DeleteSelected, _ => _reports.Any (r => r.IsSelected));
-      _saveSelectedCommand = new DelegateCommand (SaveSelected, _ => _reports.Any (r => r.IsSelected));
+      _deleteSelectedCommand = new DelegateCommand(DeleteSelected, _ => _selectedReports.Any());
+      _saveSelectedCommand = new DelegateCommand(SaveSelected, _ => _selectedReports.Any());
 
       foreach (var reportName in reportRepository.GetAvailableReports())
         AddReportViewModel (reportName);
@@ -78,9 +79,6 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
       _reportsCollectionViewSource.Source = _reports;
       _reportsCollectionViewSource.SortDescriptions.Add(new SortDescription(nameof(ReportViewModel.StartTime), ListSortDirection.Descending));
       Reports = _reportsCollectionViewSource.View;
-
-      if (_reports.Count > 0)
-        _reports[0].IsSelected = true;
     }
 
 
@@ -124,7 +122,7 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
         {
           using (var archive = new ZipArchive (fileStream, ZipArchiveMode.Create))
           {
-            foreach (var report in _reports.Where (r => r.IsSelected))
+            foreach (var report in _selectedReports)
             {
               var entry = archive.CreateEntry (report.ReportName.ToString(), CompressionLevel.Optimal);
               using (var entryStream = entry.Open())
@@ -142,14 +140,10 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
 
     private void DeleteSelected (object parameter)
     {
-      for (int i = _reports.Count - 1; i >= 0; i--)
+      foreach(var report in _selectedReports.ToArray())
       {
-        var report = _reports[i];
-        if (report.IsSelected)
-        {
           report.Delete();
-          _reports.RemoveAt (i);
-        }
+        _reports.Remove(report);
       }
     }
 
@@ -186,24 +180,30 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
       _parent.DiplayBEntityAsync (synchronizationProfileId, entityId);
     }
 
-    public void ShowLatestSynchronizationReportCommand (Guid profileId)
+    public void ShowLatestSynchronizationReportCommand(Guid profileId)
     {
-      foreach (var report in _reports)
-        report.IsSelected = false;
-
       ReportViewModel latestReport = null;
 
-      foreach (var report in _reports.Where (r => r.ProfileId == profileId))
+      foreach (var report in _reports.Where(r => r.ProfileId == profileId))
         if (latestReport == null || report.StartTime > latestReport.StartTime)
           latestReport = report;
-  
+
+      _selectedReports.Clear();
       if (latestReport != null)
-        latestReport.IsSelected = true;
+      {
+        _selectedReports.Add(latestReport);
+      }
     }
 
     public void SelectReportByName(string reportNameAsString)
     {
-      _reports.Single(r => r.ReportName.ToString() == reportNameAsString).IsSelected = true;
+      _selectedReports.Clear();
+      _selectedReports.Add(_reports.Single(r => r.ReportName.ToString() == reportNameAsString));
+    }
+
+    public void BindSelectedReports(ICollection<ReportViewModel> selectedReportsOrNull)
+    {
+      _selectedReports = selectedReportsOrNull;
     }
   }
 }
