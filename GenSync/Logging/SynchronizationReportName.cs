@@ -72,7 +72,7 @@ namespace GenSync.Logging
 
     public static bool TryParse (string value, out SynchronizationReportName name)
     {
-      var match = Regex.Match (value, @"^(?<id>.*)(?<start>\d{14})(?<warnings>[01])(?<errors>[01])(?<sequence>\d+).log$");
+      var match = Regex.Match (value, @"^(?<id>.{36})(?<start>\d{14})(?<warnings>[01])(?<errors>[01])(?<sequence>\d+).log$");
       if (match.Success)
       {
         name = new SynchronizationReportName (
