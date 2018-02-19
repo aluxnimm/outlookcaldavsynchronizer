@@ -1234,7 +1234,7 @@ Outlook can only track meeting responses and invites in the main calender folder
 
 The response status of all attendees can be synced from Outlook to the server but only the status of the own Outlook identity (if included in the attendees) can be synced from the server to Outlook due to limitations of the Outlook Object Model.
 
-When receiving invites from the CalDAV server and via Email in your INBOX, Outlook will automatically create a tentative meeting in the main calendar folder. 
+When receiving invites from the CalDAV server and via Email in your INBOX, Outlook will automatically create a tentative meeting in the main calendar folder (This can be controlled with the Outlook Option 'Automatically process meeting requests and responses to meeting requests and polls').
 
 To avoid double meetings the option *Cleanup duplicate events after each sync run* in event mapping configuration is recommended.
 
