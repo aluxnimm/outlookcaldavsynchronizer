@@ -79,19 +79,22 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
         .ToArray();
     }
 
-    public async Task<IEnumerable<EntityVersion<string, string>>> GetAllVersions (IEnumerable<string> idsOfknownEntities, int context, IGetVersionsLogger logger)
+    public async Task<IEnumerable<EntityVersion<string, string>>> GetAllVersions(IEnumerable<string> idsOfknownEntities, int context, IGetVersionsLogger logger)
     {
-      var request = _tasksService.Tasks.List (_taskList.Id);
-      request.Fields = "items(etag,id)";
-      var result = await request.ExecuteAsync();
-      if (result.Items != null)
+      var request = _tasksService.Tasks.List(_taskList.Id);
+      request.Fields = "items(etag,id),nextPageToken";
+      var tasks = new List<EntityVersion<string, string>>();
+
+      Google.Apis.Tasks.v1.Data.Tasks result = null;
+      do
       {
-        return result.Items.Select (t => EntityVersion.Create (t.Id, t.ETag)).ToArray();
-      }
-      else
-      {
-        return new List<EntityVersion<string, string>>();
-      }
+        request.PageToken = result?.NextPageToken;
+        result = await request.ExecuteAsync();
+        if (result.Items != null)
+          tasks.AddRange(result.Items.Select(t => EntityVersion.Create(t.Id, t.ETag)));
+      } while (result.NextPageToken != null);
+
+      return tasks;
     }
 
     public async Task<IEnumerable<EntityWithId<string, Task>>> Get (ICollection<string> ids, ILoadEntityLogger logger, int context)
