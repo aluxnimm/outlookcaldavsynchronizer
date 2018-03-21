@@ -35,14 +35,19 @@ namespace CalDavSynchronizer.DataAccess
     {
       var responseBody = DeserializeXmlStream (webDavXmlStream);
 
-      XmlNamespaceManager namespaceManager = new XmlNamespaceManager (responseBody.NameTable);
+      return CreateXmlDocumentWithNamespaceManager(uri, responseBody);
+    }
 
-      namespaceManager.AddNamespace ("D", "DAV:");
-      namespaceManager.AddNamespace ("C", "urn:ietf:params:xml:ns:caldav");
-      namespaceManager.AddNamespace ("A", "urn:ietf:params:xml:ns:carddav");
-      namespaceManager.AddNamespace ("E", "http://apple.com/ns/ical/");
+    public static XmlDocumentWithNamespaceManager CreateXmlDocumentWithNamespaceManager(Uri uri, XmlDocument responseBody)
+    {
+      XmlNamespaceManager namespaceManager = new XmlNamespaceManager(responseBody.NameTable);
 
-      return new XmlDocumentWithNamespaceManager (responseBody, namespaceManager, uri);
+      namespaceManager.AddNamespace("D", "DAV:");
+      namespaceManager.AddNamespace("C", "urn:ietf:params:xml:ns:caldav");
+      namespaceManager.AddNamespace("A", "urn:ietf:params:xml:ns:carddav");
+      namespaceManager.AddNamespace("E", "http://apple.com/ns/ical/");
+
+      return new XmlDocumentWithNamespaceManager(responseBody, namespaceManager, uri);
     }
 
     private XmlDocument DeserializeXmlStream (Stream webDavXmlStream)

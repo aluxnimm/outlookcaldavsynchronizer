@@ -26,6 +26,7 @@ namespace CalDavSynchronizer.DataAccess
   {
     public HttpStatusCode? StatusCode { get; }
     public string StatusDescription { get; }
+    public string ResponseMessage { get; }
     public IHttpHeaders Headers { get; }
 
     public WebDavClientException (Exception innerException, HttpStatusCode? statusCode, string statusDescription, IHttpHeaders headers)
@@ -42,6 +43,7 @@ namespace CalDavSynchronizer.DataAccess
       StatusCode = statusCode;
       StatusDescription = statusDescription;
       Headers = headers;
+      ResponseMessage = responseMessage;
     }
   }
 }

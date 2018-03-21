@@ -204,14 +204,16 @@ namespace CalDavSynchronizer.DataAccess
     public async Task<(string SyncToken, IReadOnlyList<(WebResourceName Id, string Version)> ChangedOrAddedItems, IReadOnlyList<WebResourceName> DeletedItems)>
       CollectionSync(string syncTokenOrNull, IGetVersionsLogger logger)
     {
-      var document = await _webDavClient.ExecuteWebDavRequestAndReadResponse(
-        _serverUrl,
-        "REPORT",
-        0,
-        null,
-        null,
-        "application/xml",
-        $@"<?xml version=""1.0"" encoding=""utf-8"" ?>
+      try
+      {
+        var document = await _webDavClient.ExecuteWebDavRequestAndReadResponse(
+          _serverUrl,
+          "REPORT",
+          0,
+          null,
+          null,
+          "application/xml",
+          $@"<?xml version=""1.0"" encoding=""utf-8"" ?>
            <D:sync-collection xmlns:D=""DAV:"">
              {(syncTokenOrNull != null ? $"<D:sync-token>{syncTokenOrNull}</D:sync-token>" : "<D:sync-token/>")}
              <D:sync-level>1</D:sync-level>
@@ -221,10 +223,32 @@ namespace CalDavSynchronizer.DataAccess
            </D:sync-collection>
                  ");
 
-      var syncTokenNode = document.XmlDocument.SelectSingleNode("/D:multistatus/D:sync-token", document.XmlNamespaceManager) ?? throw new Exception("Sync token missing");
+        var syncTokenNode = document.XmlDocument.SelectSingleNode("/D:multistatus/D:sync-token", document.XmlNamespaceManager) ?? throw new Exception("Sync token missing");
 
-      var extractedItems = ExtractCollectionItems(document, logger);
-      return (syncTokenNode.InnerText, extractedItems.ChangedOrAddedItems, extractedItems.DeletedItems);
+        var extractedItems = ExtractCollectionItems(document, logger);
+        return (syncTokenNode.InnerText, extractedItems.ChangedOrAddedItems, extractedItems.DeletedItems);
+      }
+      catch (WebDavClientException x) when (x.StatusCode == HttpStatusCode.Forbidden && syncTokenOrNull != null)
+      {
+        var isSyncTokenInvalid  = false;
+
+        try
+        {
+          var xmlDocument = new XmlDocument();
+          xmlDocument.LoadXml(x.ResponseMessage);
+          var document = WebDavClientBase.CreateXmlDocumentWithNamespaceManager(_serverUrl, xmlDocument);
+          isSyncTokenInvalid = document.XmlDocument.SelectSingleNode("/D:error/D:valid-sync-token", document.XmlNamespaceManager) != null;
+        }
+        catch(Exception xt)
+        {
+          s_logger.Info("Error while trying to Check response for invalid token message", xt);
+        }
+
+        if (isSyncTokenInvalid)
+          return await CollectionSync(null, logger);
+        else
+          throw;
+      }
     }
 
     private (IReadOnlyList<(WebResourceName, string)> ChangedOrAddedItems, IReadOnlyList<WebResourceName> DeletedItems) 
