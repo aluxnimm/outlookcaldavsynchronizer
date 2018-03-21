@@ -245,9 +245,14 @@ namespace CalDavSynchronizer.DataAccess
         }
 
         if (isSyncTokenInvalid)
+        {
+          s_logger.Info("Detected invalid sync-token. Retrying CollectionSync.");
           return await CollectionSync(null, logger);
+        }
         else
+        {
           throw;
+        }
       }
     }
 
