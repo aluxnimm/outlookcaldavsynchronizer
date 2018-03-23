@@ -59,6 +59,7 @@ namespace CalDavSynchronizer.ProfileTypes
       data.MapSensitivityPrivateToClassConfidential = false;
       data.MapClassConfidentialToSensitivityPrivate = false;
       data.MapClassPublicToSensitivityPrivate = false;
+      data.MapSensitivityPublicToDefault = false;
       data.MapAttendees = true;
       data.ScheduleAgentClient = true;
       data.SendNoAppointmentNotifications = false;

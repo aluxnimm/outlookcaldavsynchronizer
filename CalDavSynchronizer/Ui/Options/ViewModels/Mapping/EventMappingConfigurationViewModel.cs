@@ -84,6 +84,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       RegisterPropertyChangePropagation(_model, nameof(_model.MapClassConfidentialToSensitivityPrivate), nameof(MapClassConfidentialToSensitivityPrivate));
       RegisterPropertyChangePropagation(_model, nameof(_model.MapReminder), nameof(MapReminder));
       RegisterPropertyChangePropagation(_model, nameof(_model.MapSensitivityPrivateToClassConfidential), nameof(MapSensitivityPrivateToClassConfidential));
+      RegisterPropertyChangePropagation(_model, nameof(_model.MapSensitivityPublicToDefault), nameof(MapSensitivityPublicToDefault));
       RegisterPropertyChangePropagation(_model, nameof(_model.MapClassPublicToSensitivityPrivate), nameof(MapClassPublicToSensitivityPrivate));
       RegisterPropertyChangePropagation(_model, nameof(_model.ScheduleAgentClient), nameof(ScheduleAgentClient));
       RegisterPropertyChangePropagation(_model, nameof(_model.SendNoAppointmentNotifications), nameof(SendNoAppointmentNotifications));
@@ -266,6 +267,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       set { _model.MapSensitivityPrivateToClassConfidential = value; }
     }
 
+    public bool MapSensitivityPublicToDefault
+    {
+      get { return _model.MapSensitivityPublicToDefault; }
+      set { _model.MapSensitivityPublicToDefault = value; }
+    }
+
     public bool ScheduleAgentClient
     {
       get { return _model.ScheduleAgentClient; }
@@ -329,6 +336,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       MapClassPublicToSensitivityPrivate = true,
       MapReminder = ReminderMapping.JustUpcoming,
       MapSensitivityPrivateToClassConfidential = true,
+      MapSensitivityPublicToDefault = true,
       ScheduleAgentClient = true,
       SendNoAppointmentNotifications = true,
       DoOneTimeSetCategoryColor = true,

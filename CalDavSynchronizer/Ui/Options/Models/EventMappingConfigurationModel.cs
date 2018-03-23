@@ -49,6 +49,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
     private bool _mapClassPublicToSensitivityPrivate;
     private ReminderMapping _mapReminder;
     private bool _mapSensitivityPrivateToClassConfidential;
+    private bool _mapSensitivityPublicToDefault;
     private bool _scheduleAgentClient;
     private bool _sendNoAppointmentNotifications;
     private bool _doOneTimeSetCategoryColor;
@@ -279,6 +280,15 @@ namespace CalDavSynchronizer.Ui.Options.Models
       }
     }
 
+    public bool MapSensitivityPublicToDefault
+    {
+      get { return _mapSensitivityPublicToDefault; }
+      set
+      {
+        CheckedPropertyChange(ref _mapSensitivityPublicToDefault, value);
+      }
+    }
+
     public bool ScheduleAgentClient
     {
       get { return _scheduleAgentClient; }
@@ -340,6 +350,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
       _mapClassPublicToSensitivityPrivate = mappingConfiguration.MapClassPublicToSensitivityPrivate;
       _mapReminder = mappingConfiguration.MapReminder;
       _mapSensitivityPrivateToClassConfidential = mappingConfiguration.MapSensitivityPrivateToClassConfidential;
+      _mapSensitivityPublicToDefault = mappingConfiguration.MapSensitivityPublicToDefault;
       _scheduleAgentClient = mappingConfiguration.ScheduleAgentClient;
       _sendNoAppointmentNotifications = mappingConfiguration.SendNoAppointmentNotifications;
       _cleanupDuplicateEvents = mappingConfiguration.CleanupDuplicateEvents;
@@ -381,6 +392,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
         MapClassConfidentialToSensitivityPrivate = _mapClassConfidentialToSensitivityPrivate,
         MapReminder = _mapReminder,
         MapSensitivityPrivateToClassConfidential = _mapSensitivityPrivateToClassConfidential,
+        MapSensitivityPublicToDefault = _mapSensitivityPublicToDefault,
         MapClassPublicToSensitivityPrivate = _mapClassPublicToSensitivityPrivate,
         ScheduleAgentClient = _scheduleAgentClient,
         SendNoAppointmentNotifications = _sendNoAppointmentNotifications,

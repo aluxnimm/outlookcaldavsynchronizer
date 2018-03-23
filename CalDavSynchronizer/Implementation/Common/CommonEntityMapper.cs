@@ -89,12 +89,12 @@ namespace CalDavSynchronizer.Implementation.Common
       return target;
     }
 
-    public static string MapPrivacy1To2 (OlSensitivity value, bool mapPrivateToConfidential)
+    public static string MapPrivacy1To2 (OlSensitivity value, bool mapPrivateToConfidential, bool mapPublicToDefault)
     {
       switch (value)
       {
         case OlSensitivity.olNormal:
-          return "PUBLIC";
+          return mapPublicToDefault ? null : "PUBLIC";
         case OlSensitivity.olPersonal:
           return "PRIVATE"; // not sure
         case OlSensitivity.olPrivate:

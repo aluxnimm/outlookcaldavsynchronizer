@@ -56,6 +56,7 @@
     <GroupBox Header="{g:Localize Privacy Settings}">
       <StackPanel>
         <CheckBox  IsChecked="{Binding MapSensitivityPrivateToClassConfidential}"><g:Localize>Map Outlook Private flag to DAV CLASS:CONFIDENTIAL instead of PRIVATE</g:Localize></CheckBox>
+        <CheckBox  IsChecked="{Binding MapSensitivityPublicToDefault}"><g:Localize>Map Outlook Public flag to default instead of PUBLIC</g:Localize></CheckBox>
         <CheckBox  IsChecked="{Binding MapClassConfidentialToSensitivityPrivate}"><g:Localize>Map DAV CLASS:CONFIDENTIAL to Outlook Private flag instead of Confidential</g:Localize></CheckBox>
         <CheckBox  IsChecked="{Binding MapClassPublicToSensitivityPrivate}"><g:Localize>Map DAV CLASS:PUBLIC and default events to Outlook Private flag instead of Public</g:Localize></CheckBox>
       </StackPanel>

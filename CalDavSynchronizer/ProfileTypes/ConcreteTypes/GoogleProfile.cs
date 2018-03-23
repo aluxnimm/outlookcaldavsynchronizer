@@ -57,6 +57,7 @@ namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
     {
       var data = base.CreateEventMappingConfiguration();
       data.MapAttendees = false;
+      data.MapSensitivityPublicToDefault = true;
       return data;
     }
 

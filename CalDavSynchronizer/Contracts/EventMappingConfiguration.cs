@@ -28,6 +28,7 @@ namespace CalDavSynchronizer.Contracts
     public bool MapSensitivityPrivateToClassConfidential { get; set; }
     public bool MapClassConfidentialToSensitivityPrivate { get; set; }
     public bool MapClassPublicToSensitivityPrivate { get; set; }
+    public bool MapSensitivityPublicToDefault { get; set; }
     public bool MapAttendees { get; set; }
     public bool ScheduleAgentClient { get; set; }
     public bool SendNoAppointmentNotifications { get; set; }

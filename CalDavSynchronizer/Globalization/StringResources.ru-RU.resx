@@ -1339,4 +1339,7 @@
   <data name="Language:" xml:space="preserve">
     <value>Язык:</value>
   </data>
+  <data name="Map Outlook Public flag to default instead of PUBLIC" xml:space="preserve">
+    <value>Установите флаг общедоступный MS Outlook по умолчанию вместо PUBLIC</value>
+  </data>
 </root>
