@@ -521,7 +521,15 @@ namespace CalDavSynchronizer.Implementation.Tasks
           switch (sourceRecurrencePattern.Frequency)
           {
             case FrequencyType.Daily:
-              targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursDaily;
+              if (sourceRecurrencePattern.ByDay.Count > 0)
+              {
+                targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursWeekly;
+                targetRecurrencePattern.DayOfWeekMask = CommonEntityMapper.MapDayOfWeek2To1 (sourceRecurrencePattern.ByDay);
+              }
+              else
+              {
+                targetRecurrencePattern.RecurrenceType = OlRecurrenceType.olRecursDaily;
+              }
               break;
             case FrequencyType.Weekly:
               if (sourceRecurrencePattern.ByDay.Count > 0)
