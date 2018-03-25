@@ -118,6 +118,22 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 3.1.0 ####
+- Released 2018/03/25
+- New features
+	- Map tentative to TRANSP:OPAQUE instead of TRANSPARENT, feature request 94.
+	- Add event mapping configuration to map Outlook public events to default visibility instead of public, feature request 98. Set this option as default for google profiles.
+- Bug fixes
+	- Fix translation for OL2007 toolbar, ticket #821.
+	- Update some Russian and German translations.
+	- Fix integration tests.
+	- Fix selection of reports in Listview.
+	- Fix report name parsing for large sequence numbers.
+	- Ticket 842: read all pages from google task service.
+	- Retry without sync-token if sync-token is invalid.
+	- Fix mapping of weekday recurrence rule with FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR
+ticket #847.
+
 #### 3.0.0 ####
 - Released 2018/02/10
 - **WARNING**: This release is a major upgrade and needs .NET framework 4.6.1 as minimal requirement. Automatic upgrade won't work if you still have only .NET framework 4.5 installed. Install and upgrade manually in that case!
@@ -1202,7 +1218,7 @@ If you expand the tree view of the profile you can configure network and proxy o
 	- *Set RTF Body from X-ALT-DESC html description* If enabled, convert X-ALT-DESC description html property to RTF and set Outlook appointment RTF Body. The html to RTF conversion is experimental, not all html formatting options can be converted! This overwrites also the plaintext Body!
 	- *Timezone settings* See section Timezone mapping below.
 	- *Use GlobalAppointmentID for UID attribute:* Use Outlook GlobalAppointmendID instead of random Guid for UID attribute in new CalDAV events. This can avoid duplicate events from invitations.
-	- In *Privacy settings* you can configure if you want to map Outlook private appointments to CLASS:CONFIDENTIAL and vice versa. This could be useful for Owncloud for example, if you share your calendar with others and they should see start/end dates of your private appointments. You can also map all CLASS:PUBLIC events to Outlook private appointments.
+	- In *Privacy settings* you can configure if you want to map Outlook private appointments to CLASS:CONFIDENTIAL and vice versa. This could be useful for Owncloud for example, if you share your calendar with others and they should see start/end dates of your private appointments. You can also map all CLASS:PUBLIC events to Outlook private appointments. And for Google calendar it is useful to map all Outlook public events to default visibility instead of PUBLIC.
 	- In *Scheduling settings* you can configure if you want to map attendees and organizer and if notifications should be sent by the server. 
 	- Use *Don't send appointment notifications for SOGo servers and SCHEDULE-AGENT=CLIENT for other servers if you want to send invitations from Outlook and avoid that the server sends invitations too, but be aware that not all servers (e.g. Google) support the SCHEDULE-AGENT=CLIENT setting. 
 	- In *Outlook settings* you can also define a filter category so that multiple CalDAV-Calendars can be synchronized into one Outlook calendar via the defined category (see Category Filter and Color below).
