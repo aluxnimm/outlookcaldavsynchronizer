@@ -58,6 +58,7 @@ using CalDavSynchronizer.ProfileTypes;
 using CalDavSynchronizer.Scheduling.ComponentCollectors;
 using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
+using CalDavSynchronizer.Ui.Options.ResourceSelection.ViewModels;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Ui.SystrayNotification;
@@ -233,7 +234,81 @@ namespace CalDavSynchronizer
         s_logger.Error ("Can't access SyncObjects", ex);
       }
 
+      // Set the registry key "HKEY_CURRENT_USER\Software\CalDavSynchronizer\AutoconfigureKolab"
+      // to "1" to enable the Kolab autoconfigure feature. This setting is not available
+      // through the general options dialog, as it is not so general after all...
+      if (generalOptions.AutoconfigureKolab)
+      {
+        AutoconfigureKolab(options, generalOptions);
+      }
+      // Search for any existing Kolab setting
+      // var kolabOption = options.First(option => option.ProfileTypeOrNull == "Kolab");
+
       _oneTimeTaskRunner = new OneTimeTaskRunner(_outlookSession);
+    }
+
+    private async void AutoconfigureKolab(Options[] options, GeneralOptions generalOptions)
+    {
+      // Create all objects required to use the options collection models
+      string profileType = "Kolab";
+      string[] categories;
+      using (var categoriesWrapper = GenericComObjectWrapper.Create(_session.Categories))
+        categories = categoriesWrapper.Inner.ToSafeEnumerable<Category>().Select(c => c.Name).ToArray();
+      var faultFinder = generalOptions.FixInvalidSettings
+        ? new SettingsFaultFinder(EnumDisplayNameProvider.Instance)
+        : NullSettingsFaultFinder.Instance;
+      var optionTasks = new OptionTasks(
+        _session, EnumDisplayNameProvider.Instance, faultFinder, _outlookSession);
+      var viewOptions = new ViewOptions(
+        generalOptions.EnableAdvancedView);
+      var sessionData = new OptionModelSessionData(
+        _outlookSession.GetCategories().ToDictionary(
+          c => c.Name, _outlookSession.CategoryNameComparer));
+      var optionsCollectionModel = new OptionsCollectionViewModel(
+        generalOptions.ExpandAllSyncProfiles, GetProfileDataDirectory, _uiService, optionTasks, _profileTypeRegistry,
+        (parent, type) => type.CreateModelFactory(
+          parent, _outlookAccountPasswordProvider, categories, optionTasks, faultFinder, generalOptions, viewOptions, sessionData),
+        viewOptions);
+      optionsCollectionModel.SetOptionsCollection(options);
+
+      // Add the "add multiple resources" pseudo-option of type "Kolab"
+      var kolabOptionsModel = (KolabMultipleOptionsTemplateViewModel)optionsCollectionModel.AddMultipleHeadless(
+        _profileTypeRegistry.AllTypes.First(t => t.Name == profileType));
+
+      // Auto-detect all updates
+      kolabOptionsModel.AutoCreateOutlookFolders = true;
+      kolabOptionsModel.OnlyAddNewUrls = true;
+      kolabOptionsModel.AutoConfigure = true;
+      kolabOptionsModel.GetAccountSettingsCommand.Execute(null);
+      var serverResources = await kolabOptionsModel.DiscoverResourcesAsync();
+      var newOptions = optionsCollectionModel.GetOptionsCollection();
+
+      // remove all options that are no longer available.
+      // Do this only if we really have a response from the server.
+      if (serverResources.ContainsResources)
+      {
+        var allUris = 
+          serverResources.Calendars.Select(c => c.Uri.ToString()).Concat(
+          serverResources.AddressBooks.Select(a => a.Uri.ToString())).Concat(
+          serverResources.TaskLists.Select(d => d.Id)).ToArray();
+        var remainingOptions = new List<Options>();
+        var markDeleted = " - " + Strings.Localize("Deleted") + " " + DateTime.Now.ToString();
+        foreach (var option in newOptions)
+        {
+          if (option.ProfileTypeOrNull != profileType || allUris.Contains(option.CalenderUrl))
+            remainingOptions.Add(option);
+          else
+          {
+            GenericComObjectWrapper<Folder> folder = new GenericComObjectWrapper<Folder>(
+              Globals.ThisAddIn.Application.Session.GetFolderFromID(option.OutlookFolderEntryId) as Folder);
+            folder.Inner.Name += markDeleted;
+          }
+        }
+        newOptions = remainingOptions.ToArray();
+      }
+
+      // Save new settings
+      await ApplyNewOptions(options, newOptions, generalOptions, optionsCollectionModel.GetOneTimeTasks());
     }
 
     private void PermanentStatusesViewModel_OptionsRequesting(object sender, OptionsEventArgs e)

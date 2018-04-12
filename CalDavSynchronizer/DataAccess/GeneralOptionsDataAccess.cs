@@ -65,6 +65,7 @@ namespace CalDavSynchronizer.DataAccess
     private const string ValueNameMaxSucessiveWarnings = "MaxSucessiveWarnings";
 
     private const string ValueNameCultureName = "CultureName";
+    private const string ValueNameAutoconfigureKolab = "AutoconfigureKolab";
 
     public GeneralOptions LoadOptions ()
     {
@@ -102,7 +103,8 @@ namespace CalDavSynchronizer.DataAccess
                    ShowProgressBar = (int) (key.GetValue (ValueNameShowProgressBar) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["showProgressBar"] ?? bool.TrueString))) != 0,
                    ThresholdForProgressDisplay = (int) (key.GetValue (ValueNameThresholdForProgressDisplay) ?? int.Parse(ConfigurationManager.AppSettings["loadOperationThresholdForProgressDisplay"] ?? "50")),
                    MaxSucessiveWarnings = (int) (key.GetValue (ValueNameMaxSucessiveWarnings) ?? 2),
-                   CultureName = GetCultureName(key)
+                   CultureName = GetCultureName(key),
+                   AutoconfigureKolab = (int)(key.GetValue(ValueNameAutoconfigureKolab) ?? 0) != 0
         };
       }
     }

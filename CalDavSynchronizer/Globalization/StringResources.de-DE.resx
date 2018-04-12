@@ -1404,4 +1404,7 @@ Andere Protokolle können mittels protocol: address hinzugefügt werden</value>
   <data name="Map Outlook Public flag to default instead of PUBLIC" xml:space="preserve">
     <value>Synchronisiere öffentliche Outlook Termine auf Standard Sichtbarkeit anstelle von PUBLIC</value>
   </data>
+  <data name="Deleted" xml:space="preserve">
+    <value>Gelöscht</value>
+  </data>
 </root>

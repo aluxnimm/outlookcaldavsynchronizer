@@ -1083,7 +1083,7 @@
     </ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>99D12A4419EA17C4DB056A34FEDAFDC1A576A921</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>1420A545B90CAFB4925D2F952464AA1F36A0AA27</ManifestCertificateThumbprint>
   </PropertyGroup>
   <!-- Include the build rules for a C# project. -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

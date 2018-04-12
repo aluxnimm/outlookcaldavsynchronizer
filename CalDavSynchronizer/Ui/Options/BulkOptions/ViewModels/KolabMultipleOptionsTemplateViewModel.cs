@@ -23,6 +23,8 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using CalDavSynchronizer.Contracts;
@@ -86,7 +88,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       _discoverResourcesCommand = new DelegateCommandWithoutCanExecuteDelegation (_ =>
       {
         ComponentContainer.EnsureSynchronizationContext();
-        DiscoverResourcesAsync();
+        DiscoverResourcesCommandAsync();
       });
 
       _mergeResourcesCommand = new DelegateCommandWithoutCanExecuteDelegation(_ =>
@@ -171,12 +173,18 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       }
     }
 
-    private async void DiscoverResourcesAsync ()
+    private async void DiscoverResourcesCommandAsync()
+    {
+      await DiscoverResourcesAsync();
+    }
+
+    public async Task<ServerResources> DiscoverResourcesAsync()
     {
       _discoverResourcesCommand.SetCanExecute (false);
+      ServerResources serverResources = new ServerResources();
       try
       {
-        var serverResources = await _serverSettingsViewModel.GetServerResources ();
+        serverResources = await _serverSettingsViewModel.GetServerResources ();
 
         var calendars = serverResources.Calendars.Select (c => new CalendarDataViewModel (c)).ToArray();
         var addressBooks = serverResources.AddressBooks.Select (a => new AddressBookDataViewModel (a)).ToArray();
@@ -256,7 +264,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
         }
         using (var selectResourcesForm = SelectResourceForm.CreateForFolderAssignment(_optionTasks, ConnectionTests.ResourceType.Calendar, calendars, addressBooks, taskLists))
         {
-          if (selectResourcesForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+          if (AutoConfigure || selectResourcesForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
           {
             var optionList = new List<OptionsModel>();
 
@@ -298,6 +306,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       {
         _discoverResourcesCommand.SetCanExecute (true);
       }
+      return serverResources;
     }
 
     private OptionsModel CreateOptions (ResourceDataViewModelBase resource)
@@ -364,6 +373,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
     public bool IsActive { get; set; }
     public bool SupportsIsActive { get; } = false;
     public bool AutoCreateOutlookFolders { get; set; } = false;
+    public bool AutoConfigure { get; set; } = false;
     public bool OnlyAddNewUrls { get; set; } = false;
     public IEnumerable<ISubOptionsViewModel> Items { get; }
     IEnumerable<ITreeNodeViewModel> ITreeNodeViewModel.Items => Items;
