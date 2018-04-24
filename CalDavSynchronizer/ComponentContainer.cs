@@ -241,8 +241,6 @@ namespace CalDavSynchronizer
       {
         AutoconfigureKolab(options, generalOptions);
       }
-      // Search for any existing Kolab setting
-      // var kolabOption = options.First(option => option.ProfileTypeOrNull == "Kolab");
 
       _oneTimeTaskRunner = new OneTimeTaskRunner(_outlookSession);
     }
