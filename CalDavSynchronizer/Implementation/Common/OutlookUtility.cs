@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using GenSync.Logging;
@@ -220,6 +221,11 @@ namespace CalDavSynchronizer.Implementation.Common
       globalId[19] = (byte) originalStart.Day;
 
       return globalId;
+    }
+
+    public static string RemoveEmailFromName (Recipient recipient)
+    {
+      return Regex.Replace (recipient.Name, " \\([^()]*\\)$", string.Empty);
     }
   }
 }

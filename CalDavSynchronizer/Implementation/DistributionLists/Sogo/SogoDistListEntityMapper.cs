@@ -66,7 +66,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists.Sogo
             var serverFileName = context.GetServerFileNameByEmailAddress(recipientWrapper.Inner.Address);
             if (serverFileName != null)
             {
-              var nameWithoutEmail = Regex.Replace(recipientWrapper.Inner.Name, " \\([^()]*\\)$", string.Empty);
+              var nameWithoutEmail = OutlookUtility.RemoveEmailFromName(recipientWrapper.Inner);
               var distributionListMember = new KnownDistributionListMember(recipientWrapper.Inner.Address, nameWithoutEmail, serverFileName);
               target.Members.Add(distributionListMember);
             }
