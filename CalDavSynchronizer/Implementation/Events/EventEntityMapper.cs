@@ -242,16 +242,16 @@ namespace CalDavSynchronizer.Implementation.Events
         target.IsAllDay = false;
       }
 
-      target.Summary = source.Subject;
+      target.Summary = CalendarDataPreprocessor.EscapeBackslash (source.Subject);
       if (!string.IsNullOrEmpty (target.Summary) && 
           target.Summary.StartsWith ("Cancelled: "))
         target.Status = EventStatus.Cancelled;
 
-      target.Location = source.Location;
+      target.Location = CalendarDataPreprocessor.EscapeBackslash (source.Location);
 
       if (_configuration.MapBody)
       {
-        target.Description = source.Body;
+        target.Description = CalendarDataPreprocessor.EscapeBackslash (source.Body);
 
         if (_configuration.MapRtfBodyToXAltDesc && !string.IsNullOrEmpty(source.Body))
         {
