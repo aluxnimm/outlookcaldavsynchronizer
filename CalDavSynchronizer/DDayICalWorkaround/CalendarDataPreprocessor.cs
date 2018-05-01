@@ -207,8 +207,8 @@ namespace CalDavSynchronizer.DDayICalWorkaround
 
     public static string EscapeBackslash (string value)
     {
-      // DDay.iCal doesn't escape Backslash which leads to errors with some servers
-      return !string.IsNullOrEmpty (value) ? value.Replace (@"\", @"\\") : value;
+        // DDay.iCal doesn't escape Backslash which leads to errors with some servers
+        return value?.Replace(@"\", @"\\");
     }
   }
 }
