@@ -524,25 +524,25 @@ namespace CalDavSynchronizer
     
     public Options[] ShowWpfOptions (Guid? initialSelectedProfileId, GeneralOptions generalOptions, Options[] options, out OneTimeChangeCategoryTask[] oneTimeTasks)
     {
-      string[] categories;
-      using (var categoriesWrapper = GenericComObjectWrapper.Create (_session.Categories))
-      {
-        categories = categoriesWrapper.Inner.ToSafeEnumerable<Category>().Select (c => c.Name).ToArray();
-      }
-
       var faultFinder = generalOptions.FixInvalidSettings ? new SettingsFaultFinder(EnumDisplayNameProvider.Instance) : NullSettingsFaultFinder.Instance;
 
       var optionTasks = new OptionTasks(_session, EnumDisplayNameProvider.Instance, faultFinder, _outlookSession);
 
       var viewOptions = new ViewOptions (generalOptions.EnableAdvancedView);
-      OptionModelSessionData sessionData = new OptionModelSessionData(_outlookSession.GetCategories().ToDictionary(c => c.Name , _outlookSession.CategoryNameComparer));
+      var categories = _outlookSession
+                .GetCategories()
+                .GroupBy(c => c.Name, _outlookSession.CategoryNameComparer)
+                .Select(g => g.First())
+                .ToArray() ;
+      var categoryNames = categories.Select(c => c.Name).ToArray();
+      OptionModelSessionData sessionData = new OptionModelSessionData(categories.ToDictionary(c => c.Name , _outlookSession.CategoryNameComparer));
       var viewModel = new OptionsCollectionViewModel(
         generalOptions.ExpandAllSyncProfiles,
         GetProfileDataDirectory,
         _uiService,
         optionTasks,
         _profileTypeRegistry,
-        (parent, type) => type.CreateModelFactory(parent, _outlookAccountPasswordProvider, categories, optionTasks, faultFinder, generalOptions, viewOptions, sessionData),
+        (parent, type) => type.CreateModelFactory(parent, _outlookAccountPasswordProvider, categoryNames, optionTasks, faultFinder, generalOptions, viewOptions, sessionData),
         viewOptions);
 
       _currentVisibleOptionsFormOrNull = viewModel;
