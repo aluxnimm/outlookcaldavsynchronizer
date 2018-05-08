@@ -204,5 +204,11 @@ namespace CalDavSynchronizer.DDayICalWorkaround
        // which causes DDay.iCal to fail. This can be fixed by normalizing the unexpected \r\r\n to \r\n
        return iCalendarData.Replace("\r\r\n", "\r\n");
      }
+
+    public static string EscapeBackslash (string value)
+    {
+        // DDay.iCal doesn't escape Backslash which leads to errors with some servers
+        return value?.Replace(@"\", @"\\");
+    }
   }
 }

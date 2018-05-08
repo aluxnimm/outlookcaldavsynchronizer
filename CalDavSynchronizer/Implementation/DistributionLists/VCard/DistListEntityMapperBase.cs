@@ -66,7 +66,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists.VCard
         {
           using (var recipientWrapper = GenericComObjectWrapper.Create(source.Inner.GetMember(i)))
           {
-            var nameWithoutEmail = Regex.Replace(recipientWrapper.Inner.Name, " \\([^()]*\\)$", string.Empty);
+            var nameWithoutEmail = OutlookUtility.RemoveEmailFromName(recipientWrapper.Inner);
             var targetMember = CreateVCardMemberOrNull(recipientWrapper, nameWithoutEmail, context, logger, s_logger);
             if (targetMember != null)
               target.Members.Add(targetMember);

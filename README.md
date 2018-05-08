@@ -118,6 +118,12 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 3.1.1 ####
+- Released 2018/05/02
+- Bug fixes
+	- Remove Email from Recipient CN. Should avoid attendees with Name (Email) <Email>.
+	- Escape Backslash, DDay.iCal workaround. ticket #810, gh issue 226.
+
 #### 3.1.0 ####
 - Released 2018/03/25
 - New features

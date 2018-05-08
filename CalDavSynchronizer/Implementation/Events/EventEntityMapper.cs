@@ -21,6 +21,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DDayICalWorkaround;
@@ -241,16 +242,16 @@ namespace CalDavSynchronizer.Implementation.Events
         target.IsAllDay = false;
       }
 
-      target.Summary = source.Subject;
+      target.Summary = CalendarDataPreprocessor.EscapeBackslash (source.Subject);
       if (!string.IsNullOrEmpty (target.Summary) && 
           target.Summary.StartsWith ("Cancelled: "))
         target.Status = EventStatus.Cancelled;
 
-      target.Location = source.Location;
+      target.Location = CalendarDataPreprocessor.EscapeBackslash (source.Location);
 
       if (_configuration.MapBody)
       {
-        target.Description = source.Body;
+        target.Description = CalendarDataPreprocessor.EscapeBackslash (source.Body);
 
         if (_configuration.MapRtfBodyToXAltDesc && !string.IsNullOrEmpty(source.Body))
         {
@@ -1309,6 +1310,8 @@ namespace CalDavSynchronizer.Implementation.Events
           logger.LogMappingWarning ("Can't get AddressEntry of recipient", ex);
         }
 
+        var nameWithoutEmail = OutlookUtility.RemoveEmailFromName (recipient);
+
         if (!IsOwnIdentity (recipientMailAddressOrNull))
         {
           Attendee attendee;
@@ -1331,7 +1334,7 @@ namespace CalDavSynchronizer.Implementation.Events
           }
 
           attendee.ParticipationStatus = MapParticipation1To2 (recipient.MeetingResponseStatus);
-          attendee.CommonName = recipient.Name;
+          attendee.CommonName = nameWithoutEmail;
           attendee.Role = MapAttendeeType1To2 ((OlMeetingRecipientType) recipient.Type);
           if ((OlMeetingRecipientType) recipient.Type == OlMeetingRecipientType.olResource)
             attendee.Type = "RESOURCE";
@@ -1362,7 +1365,8 @@ namespace CalDavSynchronizer.Implementation.Events
             {
               ownAttendee = new Attendee();
             }
-            ownAttendee.CommonName = recipient.Name;
+            
+            ownAttendee.CommonName = nameWithoutEmail;
             ownAttendee.ParticipationStatus = (source.MeetingStatus == OlMeetingStatus.olMeetingReceivedAndCanceled) ? "DECLINED" : MapParticipation1To2 (source.ResponseStatus);
             ownAttendee.Role = MapAttendeeType1To2 ((OlMeetingRecipientType) recipient.Type);
             if (_configuration.ScheduleAgentClient)
