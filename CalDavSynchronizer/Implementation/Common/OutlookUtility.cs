@@ -48,7 +48,7 @@ namespace CalDavSynchronizer.Implementation.Common
         {
           type = addressEntry.AddressEntryUserType;
         }
-        catch (COMException ex)
+        catch (System.Exception ex)
         {
           generalLogger.Warn ("Could not get type from AddressEntry", ex);
           logger.LogMappingWarning ("Could not get type from AddressEntry", ex);
@@ -70,7 +70,7 @@ namespace CalDavSynchronizer.Implementation.Common
               }
             }
           }
-          catch (COMException ex)
+          catch (System.Exception ex)
           {
             generalLogger.Warn ("Could not get email address from adressEntry.GetExchangeUser()", ex);
             logger.LogMappingWarning ("Could not get email address from adressEntry.GetExchangeUser()", ex);
@@ -89,7 +89,7 @@ namespace CalDavSynchronizer.Implementation.Common
               }
             }
           }
-          catch (COMException ex)
+          catch (System.Exception ex)
           {
             generalLogger.Warn ("Could not get email address from adressEntry.GetExchangeDistributionList()", ex);
             logger.LogMappingWarning ("Could not get email address from adressEntry.GetExchangeDistributionList()", ex);
@@ -121,7 +121,7 @@ namespace CalDavSynchronizer.Implementation.Common
                 }
               }
             }
-            catch (COMException ex)
+            catch (System.Exception ex)
             {
               generalLogger.Warn ("Could not get email address from adressEntry.GetContact()", ex);
               logger.LogMappingWarning ("Could not get email address from adressEntry.GetContact()", ex);
@@ -138,7 +138,7 @@ namespace CalDavSynchronizer.Implementation.Common
           {
             return addressEntry.GetPropertySafe (PR_SMTP_ADDRESS);
           }
-          catch (COMException ex)
+          catch (System.Exception ex)
           {
             generalLogger.Warn ("Could not get property PR_SMTP_ADDRESS for adressEntry", ex);
             logger.LogMappingWarning ("Could not get property PR_SMTP_ADDRESS for adressEntry", ex);
@@ -155,7 +155,7 @@ namespace CalDavSynchronizer.Implementation.Common
       {
         return source.GetPropertySafe (PR_SENDER_EMAIL_ADDRESS);
       }
-      catch (COMException ex)
+      catch (System.Exception ex)
       {
         generalLogger.Warn ("Can't access property PR_SENDER_EMAIL_ADDRESS of appointment", ex);
         logger.LogMappingWarning ("Can't access property PR_SENDER_EMAIL_ADDRESS of appointment", ex);
@@ -182,7 +182,7 @@ namespace CalDavSynchronizer.Implementation.Common
           return source.GetOrganizer();
         }
       }
-      catch (COMException ex)
+      catch (System.Exception ex)
       {
         generalLogger.Warn ("Can't get organizer of appointment", ex);
         logger.LogMappingWarning ("Can't get organizer of appointment", ex);
