@@ -68,6 +68,7 @@ using GenSync.Logging;
 using GenSync.Synchronization;
 using AppointmentId = CalDavSynchronizer.Implementation.Events.AppointmentId;
 using MessageBox = System.Windows.Forms.MessageBox;
+using Microsoft.Win32;
 
 namespace CalDavSynchronizer
 {
@@ -303,6 +304,24 @@ namespace CalDavSynchronizer
           }
         }
         newOptions = remainingOptions.ToArray();
+      }
+
+      // Set free/busy URL in Registry
+      string regPath =
+        @"Software\Microsoft\Office\" + Globals.ThisAddIn.Application.Version.Split(new char[] { '.' })[0] + @".0" +
+        @"\Outlook\\Options\Calendar\Internet Free/Busy";
+      var key = Registry.CurrentUser.OpenSubKey(regPath, true);
+      if (key == null)
+        key = Registry.CurrentUser.CreateSubKey(regPath);
+      var value = key.GetValue("Read URL");
+      if (value == null || string.IsNullOrEmpty(value.ToString()))
+      {
+        ServerSettingsTemplateViewModel server = kolabOptionsModel.ServerSettingsViewModel as ServerSettingsTemplateViewModel;
+        if (!string.IsNullOrEmpty(server.CalenderUrl))
+        {
+          Uri url = new Uri(new Uri(server.CalenderUrl), "/freebusy/");
+          key.SetValue("Read URL", url.ToString() + "%NAME%@%SERVER%");
+        }
       }
 
       // Save new settings
