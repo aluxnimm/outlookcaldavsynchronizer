@@ -42,6 +42,7 @@ using Microsoft.Office.Interop.Outlook;
 using System.Text.RegularExpressions;
 using CalDavSynchronizer.Globalization;
 using Exception = System.Exception;
+using Microsoft.Win32;
 
 namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 {
@@ -240,11 +241,38 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
             {
               newAddressBookFolder = new GenericComObjectWrapper<Folder> (defaultAddressBookFolder.Inner.Folders.Add(newAddressBookName, OlDefaultFolders.olFolderContacts) as Folder);
               newAddressBookFolder.Inner.Name = newAddressBookName;
+              newAddressBookFolder.Inner.ShowAsOutlookAB = true;
+            }
+            // Special handling for GAL delivered by CardDAV: set as default address list
+            if (resource.Uri.Segments.Last() == "ldap-directory/")
+            {
+              var _session = Globals.ThisAddIn.Application.Session;
+              foreach (AddressList al in _session.AddressLists)
+              {
+                if (al.Name == newAddressBookName)
+                {
+                  // We need to set it in the registry, as there does not seem to exist an appropriate API
+                  string regPath =
+                    @"Software\Microsoft\Office\" + Globals.ThisAddIn.Application.Version.Split(new char[] { '.' })[0] + @".0" +
+                    @"\Outlook\Profiles\" + _session.CurrentProfileName +
+                    @"\9207f3e0a3b11019908b08002b2a56c2";
+                  var key = Registry.CurrentUser.OpenSubKey(regPath, true);
+                  if (key != null)
+                  {
+                    // Turn ID into byte array
+                    byte[] bytes = new byte[al.ID.Length / 2];
+                    for (int i = 0; i < al.ID.Length; i += 2)
+                      bytes[i / 2] = Convert.ToByte(al.ID.Substring(i, 2), 16);
+                    key.SetValue("01023d06", bytes);
+                  }
+                }
+              }
+
             }
             resource.SelectedFolder = new OutlookFolderDescriptor (newAddressBookFolder.Inner.EntryID, newAddressBookFolder.Inner.StoreID, newAddressBookFolder.Inner.DefaultItemType, newAddressBookFolder.Inner.Name, 0);
           }
 
-          // Create and assign all Kolab address books that are not yet synced to an outlook folder
+          // Create and assign all Kolab task lists that are not yet synced to an outlook folder
           GenericComObjectWrapper<Folder> defaultTaskListsFolder = new GenericComObjectWrapper<Folder> (Globals.ThisAddIn.Application.Session.GetDefaultFolder(OlDefaultFolders.olFolderTasks) as Folder);
           foreach (var resource in taskLists.Where(c => c.SelectedFolder == null))
           {
