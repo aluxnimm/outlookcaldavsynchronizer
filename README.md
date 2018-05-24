@@ -118,6 +118,16 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 3.2.0 ####
+- Released 2018/05/17
+- New features
+	- Add French and Italian translations.
+	- Update NuGet packages.
+- Bug fixes
+	- Remove duplicate categories (Ticket #881).
+	- Catch not only COMExceptions in OutlookUtility functions, gh issue 229.
+	- Fix typo in german translation.
+
 #### 3.1.1 ####
 - Released 2018/05/02
 - Bug fixes

@@ -733,7 +733,7 @@ Verwende Standard 'Speichern unter' Einstellung von den globalen Outlook Adressb
     <value>Kalender Ressource '{0}' kann nicht hinzugefügt werden</value>
   </data>
   <data name="Delete selected" xml:space="preserve">
-    <value>Lösche augewählte(n)</value>
+    <value>Lösche ausgewählte(n)</value>
   </data>
   <data name="Synchronization timespan past (days):" xml:space="preserve">
     <value>Synchronisationszeitspanne in die Vergangenheit (in Tagen):</value>
