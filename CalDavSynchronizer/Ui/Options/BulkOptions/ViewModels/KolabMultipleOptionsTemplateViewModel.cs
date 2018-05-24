@@ -279,6 +279,8 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
             {
               var options = CreateOptions (resource);
               _serverSettingsViewModel.SetResourceUrl (options, resource.Model);
+              if (resource.Model.ReadOnly)
+                options.SynchronizationMode = SynchronizationMode.ReplicateServerIntoOutlook;
               optionList.Add (options);
             }
 
