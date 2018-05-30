@@ -182,16 +182,18 @@ namespace CalDavSynchronizer.DataAccess
                       if (supportedComponentsNode != null)
                       {
                         var path = urlNode.InnerText.EndsWith ("/") ? urlNode.InnerText : urlNode.InnerText + "/";
+                        var uri = new Uri(calendarDocument.DocumentUri, path);
+                        bool ro = await IsReadOnly(uri);
 
                         if (supportedComponentsNode.InnerXml.Contains ("VEVENT"))
                         {
                           var displayName = string.IsNullOrEmpty (displayNameNode.InnerText) ? "Default Calendar" : displayNameNode.InnerText;
-                          calendars.Add (new CalendarData (new Uri (calendarDocument.DocumentUri, path), displayName, calendarColor));
+                          calendars.Add (new CalendarData (uri, displayName, calendarColor, ro));
                         }
                         if (supportedComponentsNode.InnerXml.Contains ("VTODO"))
                         {
                           var displayName = string.IsNullOrEmpty (displayNameNode.InnerText) ? "Default Tasks" : displayNameNode.InnerText;
-                          taskLists.Add (new TaskListData (new Uri (calendarDocument.DocumentUri, path).ToString(), displayName));
+                          taskLists.Add (new TaskListData (uri.ToString(), displayName, ro));
                         }
                       }
                     }

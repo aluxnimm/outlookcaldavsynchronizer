@@ -170,8 +170,9 @@ namespace CalDavSynchronizer.DataAccess
                     {
                       var path = urlNode.InnerText.EndsWith ("/") ? urlNode.InnerText : urlNode.InnerText + "/";
                       var displayName = string.IsNullOrEmpty (displayNameNode.InnerText) ? "Default Addressbook" : displayNameNode.InnerText;
-                      bool readOnly = null != responseElement.SelectSingleNode("D:propstat/D:prop/D:resourcetype/A:directory", addressBookDocument.XmlNamespaceManager);   // http://sabre.io/dav/carddav-directory/
-                      addressbooks.Add (new AddressBookData (new Uri (addressBookDocument.DocumentUri, path), displayName, readOnly));
+                      var uri = new Uri(addressBookDocument.DocumentUri, path);
+                      bool ro = await IsReadOnly(uri);
+                      addressbooks.Add (new AddressBookData (uri, displayName, ro));
                     }
                   }
                 }
