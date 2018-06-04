@@ -55,6 +55,7 @@ using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.Tasks;
 using CalDavSynchronizer.Implementation.TimeZones;
 using CalDavSynchronizer.ProfileTypes;
+using CalDavSynchronizer.Properties;
 using CalDavSynchronizer.Scheduling.ComponentCollectors;
 using CalDavSynchronizer.Ui.Options;
 using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
@@ -248,6 +249,8 @@ namespace CalDavSynchronizer
 
     private async void AutoconfigureKolab(Options[] options, GeneralOptions generalOptions)
     {
+      // Make sure the add-on language is active in our context
+      Thread.CurrentThread.CurrentUICulture = new CultureInfo(GeneralOptionsDataAccess.CultureName);
       // Create all objects required to use the options collection models
       string profileType = "Kolab";
       string[] categories;
@@ -286,7 +289,7 @@ namespace CalDavSynchronizer
       // Do this only if we really have a response from the server.
       if (serverResources.ContainsResources)
       {
-        var allUris = 
+        var allUris =
           serverResources.Calendars.Select(c => c.Uri.ToString()).Concat(
           serverResources.AddressBooks.Select(a => a.Uri.ToString())).Concat(
           serverResources.TaskLists.Select(d => d.Id)).ToArray();
@@ -304,6 +307,77 @@ namespace CalDavSynchronizer
           }
         }
         newOptions = remainingOptions.ToArray();
+      }
+
+      // Update existing Kolab Calendar resources
+      foreach (var resource in serverResources.Calendars)
+      {
+        foreach (var option in newOptions.Where(o => o.CalenderUrl == resource.Uri.ToString())) {
+          GenericComObjectWrapper<Folder> folder = new GenericComObjectWrapper<Folder>(
+            Globals.ThisAddIn.Application.Session.GetFolderFromID(option.OutlookFolderEntryId) as Folder);
+          if (resource.ReadOnly)
+          {
+            option.SynchronizationMode = SynchronizationMode.ReplicateServerIntoOutlook;
+            folder.Inner.Description = Strings.Get($"Read-only calendar") + $" ({option.ProfileTypeOrNull}): " + Strings.Get($"local changes made in Outlook are discarded and replaced by data from the server.");
+            folder.Inner.SetCustomIcon(
+              PictureDispConverter.ToIPictureDisp(Resources.CalendarReadOnly) as stdole.StdPicture);
+          }
+          else
+          {
+            option.SynchronizationMode = SynchronizationMode.MergeInBothDirections;
+            folder.Inner.Description = Strings.Get($"Read-write calendar") + $" ({option.ProfileTypeOrNull}): " + Strings.Get($"local changes made in Outlook and remote changes from the server are merged.");
+            folder.Inner.SetCustomIcon(
+              PictureDispConverter.ToIPictureDisp(Resources.CalendarReadWrite) as stdole.StdPicture);
+          }
+        }
+      }
+
+      // Update existing Kolab Address book resources
+      foreach (var resource in serverResources.AddressBooks)
+      {
+        foreach (var option in newOptions.Where(o => o.CalenderUrl == resource.Uri.ToString()))
+        {
+          GenericComObjectWrapper<Folder> folder = new GenericComObjectWrapper<Folder>(
+            Globals.ThisAddIn.Application.Session.GetFolderFromID(option.OutlookFolderEntryId) as Folder);
+          if (resource.ReadOnly)
+          {
+            option.SynchronizationMode = SynchronizationMode.ReplicateServerIntoOutlook;
+            folder.Inner.Description = Strings.Get($"Read-only address book") + $" ({option.ProfileTypeOrNull}): " + Strings.Get($"local changes made in Outlook are discarded and replaced by data from the server.");
+            folder.Inner.SetCustomIcon(
+              PictureDispConverter.ToIPictureDisp(Resources.AddressbookReadOnly) as stdole.StdPicture);
+          }
+          else
+          {
+            option.SynchronizationMode = SynchronizationMode.MergeInBothDirections;
+            folder.Inner.Description = Strings.Get($"Read-write address book") + $" ({option.ProfileTypeOrNull}): " + Strings.Get($"local changes made in Outlook and remote changes from the server are merged.");
+            folder.Inner.SetCustomIcon(
+              PictureDispConverter.ToIPictureDisp(Resources.AddressbookReadWrite) as stdole.StdPicture);
+          }
+        }
+      }
+
+      // Update existing Kolab Task list resources
+      foreach (var resource in serverResources.TaskLists)
+      {
+        foreach (var option in newOptions.Where(o => o.CalenderUrl == resource.Id))
+        {
+          GenericComObjectWrapper<Folder> folder = new GenericComObjectWrapper<Folder>(
+            Globals.ThisAddIn.Application.Session.GetFolderFromID(option.OutlookFolderEntryId) as Folder);
+          if (resource.ReadOnly)
+          {
+            option.SynchronizationMode = SynchronizationMode.ReplicateServerIntoOutlook;
+            folder.Inner.Description = Strings.Get($"Read-only task list") + $" ({option.ProfileTypeOrNull}): " + Strings.Get($"local changes made in Outlook are discarded and replaced by data from the server.");
+            folder.Inner.SetCustomIcon(
+              PictureDispConverter.ToIPictureDisp(Resources.TasklistReadOnly) as stdole.StdPicture);
+          }
+          else
+          {
+            option.SynchronizationMode = SynchronizationMode.MergeInBothDirections;
+            folder.Inner.Description = Strings.Get($"Read-write task list") + $" ({option.ProfileTypeOrNull}): " + Strings.Get($"local changes made in Outlook and remote changes from the server are merged.");
+            folder.Inner.SetCustomIcon(
+              PictureDispConverter.ToIPictureDisp(Resources.TasklistReadWrite) as stdole.StdPicture);
+          }
+        }
       }
 
       // Set free/busy URL in Registry

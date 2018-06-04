@@ -145,4 +145,22 @@
   <data name="ApplicationLogoLarge" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ApplicationLogoLarge.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="AddressbookReadOnly" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AddressbookReadOnly.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AddressbookReadWrite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AddressbookReadWrite.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CalendarReadOnly" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CalendarReadOnly.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CalendarReadWrite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CalendarReadWrite.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TasklistReadOnly" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TasklistReadOnly.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TasklistReadWrite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TasklistReadWrite.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

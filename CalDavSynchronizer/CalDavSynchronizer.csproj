@@ -901,6 +901,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
+    <None Include="Resources\TasklistReadWrite.ico" />
+    <None Include="Resources\TasklistReadOnly.ico" />
     <Resource Include="Resources\ProfileLogos\logo_kolab.png" />
     <Resource Include="Resources\ProfileLogos\logo_swisscom.png" />
     <Resource Include="Resources\ProfileLogos\logo_iCloud.png" />
@@ -940,6 +942,10 @@
     <Resource Include="Resources\Import.png" />
     <Resource Include="Resources\ClearCache.png" />
     <None Include="Resources\ApplicationLogoLarge.png" />
+    <None Include="Resources\AddressbookReadOnly.ico" />
+    <None Include="Resources\AddressbookReadWrite.ico" />
+    <None Include="Resources\CalendarReadOnly.ico" />
+    <None Include="Resources\CalendarReadWrite.ico" />
     <Content Include="Resources\LogoBanner.bmp" />
     <Resource Include="Resources\ExpandAll.png" />
     <Resource Include="Resources\ProfileLogos\logo_nextcloud.png" />

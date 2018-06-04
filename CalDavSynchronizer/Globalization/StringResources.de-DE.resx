@@ -1407,4 +1407,28 @@ Andere Protokolle können mittels protocol: address hinzugefügt werden</value>
   <data name="Deleted" xml:space="preserve">
     <value>Gelöscht</value>
   </data>
+  <data name="local changes made in Outlook and remote changes from the server are merged." xml:space="preserve">
+    <value>Änderungen in Outlook und Änderungen vom Server werden zusammengeführt.</value>
+  </data>
+  <data name="local changes made in Outlook are discarded and replaced by data from the server." xml:space="preserve">
+    <value>Änderungen in Outlook werden verworfen und durch Daten vom Server ersetzt.</value>
+  </data>
+  <data name="Read-only address book" xml:space="preserve">
+    <value>Adressbuch mit Nur-Lese-Zugriff</value>
+  </data>
+  <data name="Read-only calendar" xml:space="preserve">
+    <value>Kalender mit Nur-Lese-Zugriff</value>
+  </data>
+  <data name="Read-only task list" xml:space="preserve">
+    <value>Aufgabenliste mit Nur-Lese-Zugriff</value>
+  </data>
+  <data name="Read-write address book" xml:space="preserve">
+    <value>Adressbuch mit Lese- und Schreibzugriff</value>
+  </data>
+  <data name="Read-write calendar" xml:space="preserve">
+    <value>Kalender mit Lese- und Schreibzugriff</value>
+  </data>
+  <data name="Read-write task list" xml:space="preserve">
+    <value>Aufgabenliste mit Lese- und Schreibzugriff</value>
+  </data>
 </root>
