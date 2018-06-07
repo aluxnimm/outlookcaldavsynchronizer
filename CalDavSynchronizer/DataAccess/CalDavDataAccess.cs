@@ -150,6 +150,11 @@ namespace CalDavSynchronizer.DataAccess
           XmlNode homeSetNode = calendarHomeSetProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/C:calendar-home-set", calendarHomeSetProperties.XmlNamespaceManager);
           if (homeSetNode != null && homeSetNode.HasChildNodes)
           {
+            // https://tools.ietf.org/html/rfc6638#section-9.2
+            XmlNode scheduleDefaultCalendarNode = calendarHomeSetProperties.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/C:schedule-default-calendar-URL", calendarHomeSetProperties.XmlNamespaceManager);
+            String scheduleDefaultCalendarPath = scheduleDefaultCalendarNode == null ? "" :
+              scheduleDefaultCalendarNode.InnerText.EndsWith("/") ? scheduleDefaultCalendarNode.InnerText : scheduleDefaultCalendarNode.InnerText + "/";
+            bool isFirstCalendar = true;
             foreach (XmlNode homeSetNodeHref in homeSetNode.ChildNodes)
             {  
               if (!string.IsNullOrEmpty (homeSetNodeHref.InnerText))
@@ -187,8 +192,10 @@ namespace CalDavSynchronizer.DataAccess
 
                         if (supportedComponentsNode.InnerXml.Contains ("VEVENT"))
                         {
+                          bool isDefault = (scheduleDefaultCalendarNode != null && scheduleDefaultCalendarPath == path || scheduleDefaultCalendarNode == null && isFirstCalendar);
+                          isFirstCalendar = false;
                           var displayName = string.IsNullOrEmpty (displayNameNode.InnerText) ? "Default Calendar" : displayNameNode.InnerText;
-                          calendars.Add (new CalendarData (uri, displayName, calendarColor, ro));
+                          calendars.Add (new CalendarData (uri, displayName, calendarColor, ro, isDefault));
                         }
                         if (supportedComponentsNode.InnerXml.Contains ("VTODO"))
                         {
@@ -235,6 +242,7 @@ namespace CalDavSynchronizer.DataAccess
                         <D:propfind xmlns:D=""DAV:"" xmlns:C=""urn:ietf:params:xml:ns:caldav"">
                           <D:prop>
                             <C:calendar-home-set/>
+                            <C:schedule-default-calendar-URL/>
                           </D:prop>
                         </D:propfind>
                  "

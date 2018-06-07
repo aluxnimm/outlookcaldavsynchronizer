@@ -193,11 +193,11 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
         var calendars = serverResources.Calendars.Select (c => new CalendarDataViewModel (c)).ToArray();
         var addressBooks = serverResources.AddressBooks.Select (a => new AddressBookDataViewModel (a)).ToArray();
         var taskLists = serverResources.TaskLists.Select (d => new TaskListDataViewModel (d)).ToArray();
+        var existingOptions = (_parent as OptionsCollectionViewModel).Options;
         if (OnlyAddNewUrls)
         {
           // Exclude all resourcres that have already been configured
-          var options = (_parent as OptionsCollectionViewModel).Options;
-          var configuredUrls = new HashSet<String> (options.Select(o => o.Model.CalenderUrl));
+          var configuredUrls = new HashSet<String> (existingOptions.Select(o => o.Model.CalenderUrl));
           calendars = calendars.Where(c => !configuredUrls.Contains(c.Uri.ToString())).ToArray();
           addressBooks = addressBooks.Where(c => !configuredUrls.Contains(c.Uri.ToString())).ToArray();
           taskLists = taskLists.Where(c => !configuredUrls.Contains(c.Id)).ToArray();
@@ -209,15 +209,22 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
           // https://msdn.microsoft.com/en-us/library/office/ff184655.aspx
           // Get Outlook's default calendar folder (this is where we create the Kolab folders)
           GenericComObjectWrapper<Folder> defaultCalendarFolder = new GenericComObjectWrapper<Folder> (Globals.ThisAddIn.Application.Session.GetDefaultFolder(OlDefaultFolders.olFolderCalendar) as Folder);
+          // Get sync option that syncs the default calendar (if any)
+          bool defaultFolderIsSynced = existingOptions.Any(o => o.Model.SelectedFolderOrNull?.EntryId == defaultCalendarFolder.Inner.EntryID);
           // Find all Kolab calendars that are not yet synced to an outlook folder
           foreach (var resource in calendars.Where(c => c.SelectedFolder == null))
           {
             string newCalendarName = resource.Name + " (" + Name + ")";
-            GenericComObjectWrapper<Folder> newCalendarFolder = null;
+            GenericComObjectWrapper<Folder> newCalendarFolder;
             try
             {
+              // Sync CalDAV default calendar with Outlook default calendar folder.
+              // Only do so if there are no sync settings yet for the Outlook default calendar
+              if (resource.Model.IsDefault && !defaultFolderIsSynced)
+                newCalendarFolder = defaultCalendarFolder;
               // Use existing folder if it does exist
-              newCalendarFolder = new GenericComObjectWrapper<Folder> (defaultCalendarFolder.Inner.Folders[newCalendarName] as Folder);
+              else
+                newCalendarFolder = new GenericComObjectWrapper<Folder>(defaultCalendarFolder.Inner.Folders[newCalendarName] as Folder);
             }
             catch
             {
@@ -309,16 +316,26 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
               if (resource.Model.ReadOnly)
               {
                 options.SynchronizationMode = SynchronizationMode.ReplicateServerIntoOutlook;
-                folder.Inner.Description = Strings.Get($"Read-only calendar") + $" ({options.ModelFactory.ProfileType.Name}): " + Strings.Get($"local changes made in Outlook are discarded and replaced by data from the server.");
-                folder.Inner.SetCustomIcon(
-                  PictureDispConverter.ToIPictureDisp(Resources.CalendarReadOnly) as stdole.StdPicture);
+                folder.Inner.Description = Strings.Get($"Read-only calendar") + $" »{options.Name}«:\n" + Strings.Get($"local changes made in Outlook are discarded and replaced by data from the server.");
+                try
+                {
+                  // Setting the icon might fail if we sync with the default Outlook calendar folder
+                  folder.Inner.SetCustomIcon(
+                    PictureDispConverter.ToIPictureDisp(Resources.CalendarReadOnly) as stdole.StdPicture);
+                }
+                catch { }
               }
               else
               {
                 options.SynchronizationMode = SynchronizationMode.MergeInBothDirections;
-                folder.Inner.Description = Strings.Get($"Read-write calendar") + $" ({options.ModelFactory.ProfileType.Name}): " + Strings.Get($"local changes made in Outlook and remote changes from the server are merged.");
-                folder.Inner.SetCustomIcon(
-                  PictureDispConverter.ToIPictureDisp(Resources.CalendarReadWrite) as stdole.StdPicture);
+                folder.Inner.Description = Strings.Get($"Read-write calendar") + $" »{options.Name}«:\n" + Strings.Get($"local changes made in Outlook and remote changes from the server are merged.");
+                try
+                {
+                  // Setting the icon might fail if we sync with the default Outlook calendar folder
+                  folder.Inner.SetCustomIcon(
+                    PictureDispConverter.ToIPictureDisp(Resources.CalendarReadWrite) as stdole.StdPicture);
+                }
+                catch { }
               }
               optionList.Add (options);
             }
@@ -332,14 +349,14 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
               if (resource.Model.ReadOnly)
               {
                 options.SynchronizationMode = SynchronizationMode.ReplicateServerIntoOutlook;
-                folder.Inner.Description = Strings.Get($"Read-only address book") + $" ({options.ModelFactory.ProfileType.Name}): " + Strings.Get($"local changes made in Outlook are discarded and replaced by data from the server.");
+                folder.Inner.Description = Strings.Get($"Read-only address book") + $" »{options.Name}«:\n" + Strings.Get($"local changes made in Outlook are discarded and replaced by data from the server.");
                 folder.Inner.SetCustomIcon(
                   PictureDispConverter.ToIPictureDisp(Resources.AddressbookReadOnly) as stdole.StdPicture);
               }
               else
               {
                 options.SynchronizationMode = SynchronizationMode.MergeInBothDirections;
-                folder.Inner.Description = Strings.Get($"Read-write address book") + $" ({options.ModelFactory.ProfileType.Name}): " + Strings.Get($"local changes made in Outlook and remote changes from the server are merged.");
+                folder.Inner.Description = Strings.Get($"Read-write address book") + $" »{options.Name}«:\n" + Strings.Get($"local changes made in Outlook and remote changes from the server are merged.");
                 folder.Inner.SetCustomIcon(
                   PictureDispConverter.ToIPictureDisp(Resources.AddressbookReadWrite) as stdole.StdPicture);
               }
@@ -355,14 +372,14 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
               if (resource.Model.ReadOnly)
               {
                 options.SynchronizationMode = SynchronizationMode.ReplicateServerIntoOutlook;
-                folder.Inner.Description = Strings.Get($"Read-only task list") + $" ({options.ModelFactory.ProfileType.Name}): " + Strings.Get($"local changes made in Outlook are discarded and replaced by data from the server.");
+                folder.Inner.Description = Strings.Get($"Read-only task list") + $" »{options.Name}«:\n" + Strings.Get($"local changes made in Outlook are discarded and replaced by data from the server.");
                 folder.Inner.SetCustomIcon(
                   PictureDispConverter.ToIPictureDisp(Resources.TasklistReadOnly) as stdole.StdPicture);
               }
               else
               {
                 options.SynchronizationMode = SynchronizationMode.MergeInBothDirections;
-                folder.Inner.Description = Strings.Get($"Read-write task list") + $" ({options.ModelFactory.ProfileType.Name}): " + Strings.Get($"local changes made in Outlook and remote changes from the server are merged.");
+                folder.Inner.Description = Strings.Get($"Read-write task list") + $" »{options.Name}«:\n" + Strings.Get($"local changes made in Outlook and remote changes from the server are merged.");
                 folder.Inner.SetCustomIcon(
                   PictureDispConverter.ToIPictureDisp(Resources.TasklistReadWrite) as stdole.StdPicture);
               }
