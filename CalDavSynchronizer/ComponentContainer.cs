@@ -219,6 +219,14 @@ namespace CalDavSynchronizer
 
       _trayNotifier = generalOptions.EnableTrayIcon ? new TrayNotifier (this) : NullTrayNotifer.Instance;
 
+      // Set the registry key "HKEY_CURRENT_USER\Software\CalDavSynchronizer\AutoconfigureKolab"
+      // to "1" to enable the Kolab autoconfigure feature. This setting is not available
+      // through the general options dialog, as it is not so general after all...
+      if (generalOptions.AutoconfigureKolab)
+      {
+        AutoconfigureKolab(options, generalOptions);
+      }
+
       try
       {
         using (var syncObjects = GenericComObjectWrapper.Create (_session.SyncObjects))
@@ -234,14 +242,6 @@ namespace CalDavSynchronizer
       catch (COMException ex)
       {
         s_logger.Error ("Can't access SyncObjects", ex);
-      }
-
-      // Set the registry key "HKEY_CURRENT_USER\Software\CalDavSynchronizer\AutoconfigureKolab"
-      // to "1" to enable the Kolab autoconfigure feature. This setting is not available
-      // through the general options dialog, as it is not so general after all...
-      if (generalOptions.AutoconfigureKolab)
-      {
-        AutoconfigureKolab(options, generalOptions);
       }
 
       _oneTimeTaskRunner = new OneTimeTaskRunner(_outlookSession);
@@ -324,6 +324,31 @@ namespace CalDavSynchronizer
           }
         }
         newOptions = remainingOptions.ToArray();
+
+        // If one of the remaining CaldDAV calendars is the default calendar
+        // and the Outlook default calendar is not currently synced:
+        // - Remove existing Outlook calendar subfolder
+        // - Sync Outlook default calendar
+        var defaultCalendarResource = serverResources.Calendars.FirstOrDefault(c => c.IsDefault);
+        var defaultCalendarFolderIsMapped = newOptions.Any(o => o.OutlookFolderEntryId == defaultCalendarFolder.Inner.EntryID);
+        if (defaultCalendarResource != null && !defaultCalendarFolderIsMapped)
+        {
+          var defaultCalendarMapping = newOptions.FirstOrDefault(m => m.CalenderUrl == defaultCalendarResource.Uri.ToString());
+          if (defaultCalendarMapping?.OutlookFolderEntryId != defaultCalendarFolder.Inner.EntryID)
+          {
+            // Delete existing folder
+            GenericComObjectWrapper<Folder> folder = new GenericComObjectWrapper<Folder>(
+              Globals.ThisAddIn.Application.Session.GetFolderFromID(defaultCalendarMapping.OutlookFolderEntryId) as Folder);
+            folder.Inner.Name += markDeleted;
+            try {
+              // Deleting a folder that has just been created might fail
+              folder.Inner.Delete();
+            } catch { }
+            // Map to Outlook default folder
+            defaultCalendarMapping.OutlookFolderEntryId = defaultCalendarFolder.Inner.EntryID;
+            defaultCalendarMapping.OutlookFolderStoreId = defaultCalendarFolder.Inner.StoreID;
+          }
+        }
       }
 
       // Update existing Kolab Calendar resources
