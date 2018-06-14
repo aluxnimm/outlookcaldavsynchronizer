@@ -188,6 +188,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       ServerResources serverResources = new ServerResources();
       try
       {
+        s_logger.Debug("Get CalDAV/CardDAV data from Server");
         serverResources = await _serverSettingsViewModel.GetServerResources ();
 
         var calendars = serverResources.Calendars.Select (c => new CalendarDataViewModel (c)).ToArray();
@@ -196,6 +197,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
         var existingOptions = (_parent as OptionsCollectionViewModel).Options;
         if (OnlyAddNewUrls)
         {
+          s_logger.Debug("Exclude all server resources that have already been configured");
           // Exclude all resourcres that have already been configured
           var configuredUrls = new HashSet<String> (existingOptions.Select(o => o.Model.CalenderUrl));
           calendars = calendars.Where(c => !configuredUrls.Contains(c.Uri.ToString())).ToArray();
@@ -205,6 +207,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
         // --- Create folders if requested and required
         if (AutoCreateOutlookFolders)
         {
+          s_logger.Debug("Auto-create outlook folders");
           // https://docs.microsoft.com/en-us/visualstudio/vsto/how-to-programmatically-create-a-custom-calendar
           // https://msdn.microsoft.com/en-us/library/office/ff184655.aspx
           // Get Outlook's default calendar folder (this is where we create the Kolab folders)
@@ -214,6 +217,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
           // Find all Kolab calendars that are not yet synced to an outlook folder
           foreach (var resource in calendars.Where(c => c.SelectedFolder == null))
           {
+            s_logger.Debug($"Find folder for calendar '{Name}'");
             string newCalendarName = resource.Name + " (" + Name + ")";
             GenericComObjectWrapper<Folder> newCalendarFolder;
             try
@@ -221,13 +225,20 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
               // Sync CalDAV default calendar with Outlook default calendar folder.
               // Only do so if there are no sync settings yet for the Outlook default calendar
               if (resource.Model.IsDefault && !defaultFolderIsSynced)
+              {
+                s_logger.Debug($"Sync Calendar '{Name}' with default outlook calendar");
                 newCalendarFolder = defaultCalendarFolder;
+              }
               // Use existing folder if it does exist
               else
+              {
+                s_logger.Debug($"Try to use an existing folder for calendar '{Name}'");
                 newCalendarFolder = new GenericComObjectWrapper<Folder>(defaultCalendarFolder.Inner.Folders[newCalendarName] as Folder);
+              }
             }
             catch
             {
+              s_logger.Debug($"Create new folder for calendar '{Name}'");
               // Create missing folder
               newCalendarFolder = new GenericComObjectWrapper<Folder> (defaultCalendarFolder.Inner.Folders.Add(newCalendarName, OlDefaultFolders.olFolderCalendar) as Folder);
               // Make sure it has not been renamed to "name (this computer only)"
@@ -241,6 +252,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
           GenericComObjectWrapper<Folder> defaultAddressBookFolder = new GenericComObjectWrapper<Folder> (Globals.ThisAddIn.Application.Session.GetDefaultFolder(OlDefaultFolders.olFolderContacts) as Folder);
           foreach (var resource in addressBooks.Where(c => c.SelectedFolder == null))
           {
+            s_logger.Debug($"Find folder for address book '{Name}'");
             string newAddressBookName = resource.Name + " (" + Name + ")";
             GenericComObjectWrapper<Folder> newAddressBookFolder = null;
             try
@@ -286,6 +298,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
           GenericComObjectWrapper<Folder> defaultTaskListsFolder = new GenericComObjectWrapper<Folder> (Globals.ThisAddIn.Application.Session.GetDefaultFolder(OlDefaultFolders.olFolderTasks) as Folder);
           foreach (var resource in taskLists.Where(c => c.SelectedFolder == null))
           {
+            s_logger.Debug($"Find folder for task list '{Name}'");
             string newTaskListName = resource.Name + " (" + Name + ")";
             GenericComObjectWrapper<Folder> newTaskListFolder = null;
             try
@@ -303,6 +316,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
         using (var selectResourcesForm = SelectResourceForm.CreateForFolderAssignment(_optionTasks, ConnectionTests.ResourceType.Calendar, calendars, addressBooks, taskLists))
         {
           // Create and add new sync profiles
+          s_logger.Debug("Create and add all new sync profiles");
           if (AutoConfigure || selectResourcesForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
           {
             var optionList = new List<OptionsModel>();
