@@ -307,40 +307,90 @@ namespace CalDavSynchronizer
       // Do this only if we really have a response from the server.
       if (serverResources.ContainsResources)
       {
-        s_logger.Debug("Removing all resources that are no longer available");
+        s_logger.Debug("Remove all sync profiles and outlook folders whose CalDAV resources are no longer available");
         var allUris =
           serverResources.Calendars.Select(c => c.Uri.ToString()).Concat(
           serverResources.AddressBooks.Select(a => a.Uri.ToString())).Concat(
           serverResources.TaskLists.Select(d => d.Id)).ToArray();
         var remainingOptions = new List<Options>();
         var markDeleted = " - " + Strings.Localize("Deleted") + " " + DateTime.Now.ToString();
+        var markDeletedSafe = markDeleted.Replace('.', '_');
         var defaultCalendarFolder = new GenericComObjectWrapper<Folder>(Globals.ThisAddIn.Application.Session.GetDefaultFolder(OlDefaultFolders.olFolderCalendar) as Folder);
         foreach (var option in newOptions)
         {
           if (option.ProfileTypeOrNull != profileType || allUris.Contains(option.CalenderUrl))
+          {
+            s_logger.Debug($"Keep sync profile '{option.Name}'");
             remainingOptions.Add(option);
+          }
+          else if (option.OutlookFolderEntryId == null)
+          {
+            s_logger.Info($"Remove stale Kolab sync profile '{option.Name}'");
+          }
           else
           {
-            s_logger.Info($"Removing Resource '{option.Name}'");
-            GenericComObjectWrapper<Folder> folder = new GenericComObjectWrapper<Folder>(
-              Globals.ThisAddIn.Application.Session.GetFolderFromID(option.OutlookFolderEntryId) as Folder);
-            if (folder.Inner.EntryID == defaultCalendarFolder.Inner.EntryID)
+            s_logger.Info($"Remove stale Kolab sync profile '{option.Name}' and delete synced outlook folder");
+            GenericComObjectWrapper<Folder> folder = null;
+            try
             {
-              s_logger.Info($"We can't delete '{option.Name}', so move all entries to a new folder and mark this folder als deleted.");
-              // As we can't rename the default folder, create a new folder and move all appointment entries
-              var deletedCalendarFolder = new GenericComObjectWrapper<Folder>(defaultCalendarFolder.Inner.Folders.Add(folder.Inner.Name + markDeleted, OlDefaultFolders.olFolderCalendar) as Folder);
-              deletedCalendarFolder.Inner.Name = folder.Inner.Name + markDeleted;
-              deletedCalendarFolder.Inner.Description = folder.Inner.Description;
-              folder.Inner.Description = "";
-              foreach (var innerItem in folder.Inner.Items)
-                using (var item = GenericComObjectWrapper.Create(innerItem))
-                   (item as AppointmentItem)?.Move(deletedCalendarFolder.Inner);
-              deletedCalendarFolder.Inner.Delete();
+              folder = new GenericComObjectWrapper<Folder>(
+                Globals.ThisAddIn.Application.Session.GetFolderFromID(option.OutlookFolderEntryId) as Folder);
             }
-            else
+            catch (Exception ex)
             {
-              folder.Inner.Name += markDeleted;
-              folder.Inner.Delete();
+              s_logger.Error($"Could not find outlook folder ID '{option.OutlookFolderEntryId}' für sync profile '{option.Name}'", ex);
+            }
+            if (folder != null && folder.Inner.EntryID == defaultCalendarFolder.Inner.EntryID)
+            {
+              s_logger.Info($"We can't delete '{folder.Inner.Name}', so move all entries to a new folder and mark this folder als deleted.");
+              GenericComObjectWrapper<Folder> deletedCalendarFolder = null;
+              foreach (String tempFolderName in new[] {folder.Inner.Name + markDeleted, folder.Inner.Name + markDeletedSafe})
+              {
+                if (deletedCalendarFolder == null)
+                  try
+                  {
+                    deletedCalendarFolder = new GenericComObjectWrapper<Folder>(defaultCalendarFolder.Inner.Folders.Add(folder.Inner.Name + markDeleted, OlDefaultFolders.olFolderCalendar) as Folder);
+                    deletedCalendarFolder.Inner.Name = folder.Inner.Name + markDeleted;
+                  }
+                  catch (Exception ex)
+                  {
+                    s_logger.Debug($"Could not create temporary folder '{tempFolderName}'", ex);
+                  }
+              }
+              if (deletedCalendarFolder == null)
+              {
+                s_logger.Error($"Could not create temporary folder '{folder.Inner.Name + markDeleted}'");
+              }
+              else
+              {
+                s_logger.Info($"Move all entries from outlook default calendar '{folder.Inner.Name}' to temporary folder '{deletedCalendarFolder.Inner.Name}'");
+                try
+                {
+                  deletedCalendarFolder.Inner.Description = folder.Inner.Description;
+                  folder.Inner.Description = "";
+                  foreach (var innerItem in folder.Inner.Items)
+                    using (var item = GenericComObjectWrapper.Create(innerItem))
+                      (item as AppointmentItem)?.Move(deletedCalendarFolder.Inner);
+                  deletedCalendarFolder.Inner.Delete();
+                }
+                catch (Exception ex)
+                {
+                  s_logger.Error($"Failed to move all items from '{folder.Inner.Name}' to temporary folder '{deletedCalendarFolder.Inner.Name}'", ex);
+                }
+              }
+            }
+            else if (folder != null)
+            {
+              try { folder.Inner.Name += markDeleted; }
+              catch { try { folder.Inner.Name += markDeletedSafe; } catch { } }
+              try
+              {
+                folder.Inner.Delete();
+              }
+              catch (Exception ex)
+              {
+                s_logger.Error($"Could not move '{folder.Inner.Name}' to  Trash", ex);
+              }
             }
           }
         }
@@ -363,13 +413,16 @@ namespace CalDavSynchronizer
             GenericComObjectWrapper<Folder> folder = new GenericComObjectWrapper<Folder>(
               Globals.ThisAddIn.Application.Session.GetFolderFromID(defaultCalendarMapping.OutlookFolderEntryId) as Folder);
             s_logger.Info($"Delete existing folder '{folder.Inner.Name}' for Mapping '{defaultCalendarMapping.Name}'");
-            folder.Inner.Name += markDeleted;
-            try {
+            try { folder.Inner.Name += markDeleted; }
+            catch { try { folder.Inner.Name += markDeletedSafe; } catch { } }
+            try
+            {
               // Deleting a folder that has just been created might fail
               folder.Inner.Delete();
             }
-            catch {
-              s_logger.Info($"Could not move folder '{folder.Inner.Name}' to trash");
+            catch (Exception ex)
+            {
+              s_logger.Error($"Could not move folder '{folder.Inner.Name}' to trash", ex);
             }
             // Map to Outlook default folder
             s_logger.Debug($"Route mapping '{defaultCalendarMapping.Name}' to folder '{defaultCalendarFolder.Inner.Name}'");

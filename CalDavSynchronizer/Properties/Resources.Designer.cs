@@ -131,15 +131,6 @@ namespace CalDavSynchronizer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 26.
-        /// </summary>
-        internal static string CbPatchlevel {
-            get {
-                return ResourceManager.GetString("CbPatchlevel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap GeneralOptions {

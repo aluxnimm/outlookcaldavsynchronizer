@@ -182,6 +182,56 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       await DiscoverResourcesAsync();
     }
 
+    private GenericComObjectWrapper<Folder> findOrCreateFolder(GenericComObjectWrapper<Folder> ParentFolder, String NewFolderName, object NewFolderType)
+    {
+      GenericComObjectWrapper<Folder> newFolder = null;
+      String NewFolderNameSafe = NewFolderName.Replace('.', '_');
+      try
+      {
+        // Use existing folder if it does exist. Start with raw name.
+        // If this fails, fall back to name with dots replaced by underscores.
+        s_logger.Debug($"Try to use an existing folder for '{NewFolderName}'");
+        try
+        {
+          newFolder = new GenericComObjectWrapper<Folder>(ParentFolder.Inner.Folders[NewFolderName] as Folder);
+        }
+        catch
+        {
+          newFolder = new GenericComObjectWrapper<Folder>(ParentFolder.Inner.Folders[NewFolderNameSafe] as Folder);
+        }
+      }
+      catch
+      {
+        // No matching folder found, so create missing folder. Start with raw name.
+        // If this fails, fall back to name with dots replaced by underscores.
+        s_logger.Debug($"Could not find/use an existing folder for '{NewFolderName}'");
+        s_logger.Info($"Create new folder for '{NewFolderName}'");
+        try
+        {
+          newFolder = new GenericComObjectWrapper<Folder>(ParentFolder.Inner.Folders.Add(NewFolderName, NewFolderType) as Folder);
+          // Make sure it has not been renamed to "name (this computer only)"
+          s_logger.Debug($"Make sure the folder is called '{NewFolderName}'");
+          newFolder.Inner.Name = NewFolderName;
+        }
+        catch
+        {
+          try
+          {
+            newFolder = new GenericComObjectWrapper<Folder>(ParentFolder.Inner.Folders.Add(NewFolderNameSafe, NewFolderType) as Folder);
+            // Make sure it has not been renamed to "name (this computer only)"
+            s_logger.Debug($"Make sure the folder is called '{NewFolderNameSafe}'");
+            newFolder.Inner.Name = NewFolderNameSafe;
+          }
+          catch (Exception ex)
+          {
+            // No folder found and unable to create new one. Log as error.
+            s_logger.Error($"Could not create folder '{NewFolderName}'.", ex);
+          }
+        }
+      }
+      return newFolder;
+    }
+
     public async Task<ServerResources> DiscoverResourcesAsync()
     {
       _discoverResourcesCommand.SetCanExecute (false);
@@ -200,7 +250,6 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
         if (OnlyAddNewUrls)
         {
           s_logger.Debug("Exclude all server resources that have already been configured");
-          // Exclude all resourcres that have already been configured
           var configuredUrls = new HashSet<String> (existingOptions.Select(o => o.Model.CalenderUrl));
           calendars = calendars.Where(c => !configuredUrls.Contains(c.Uri.ToString())).ToArray();
           addressBooks = addressBooks.Where(c => !configuredUrls.Contains(c.Uri.ToString())).ToArray();
@@ -214,107 +263,92 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
           // https://msdn.microsoft.com/en-us/library/office/ff184655.aspx
           // Get Outlook's default calendar folder (this is where we create the Kolab folders)
           GenericComObjectWrapper<Folder> defaultCalendarFolder = new GenericComObjectWrapper<Folder> (Globals.ThisAddIn.Application.Session.GetDefaultFolder(OlDefaultFolders.olFolderCalendar) as Folder);
-          // Get sync option that syncs the default calendar (if any)
-          bool defaultFolderIsSynced = existingOptions.Any(o => o.Model.SelectedFolderOrNull?.EntryId == defaultCalendarFolder.Inner.EntryID);
-          // Find all Kolab calendars that are not yet synced to an outlook folder
+          // Detect wether we have a sync option that syncs the default Outlook calendar
+          bool defaultCalendarFolderIsSynced = existingOptions.Any(o => o.Model.SelectedFolderOrNull?.EntryId == defaultCalendarFolder.Inner.EntryID);
+
+          // Create and assign all Kolab calendars that are not yet synced to an outlook folder
           foreach (var resource in calendars.Where(c => c.SelectedFolder == null))
           {
-            s_logger.Debug($"Find folder for calendar '{Name}'");
             string newCalendarName = resource.Name + " (" + Name + ")";
-            GenericComObjectWrapper<Folder> newCalendarFolder;
-            try
+            GenericComObjectWrapper<Folder> newCalendarFolder = null;
+
+            if (resource.Model.IsDefault && !defaultCalendarFolderIsSynced)
             {
-              // Sync CalDAV default calendar with Outlook default calendar folder.
-              // Only do so if there are no sync settings yet for the Outlook default calendar
-              if (resource.Model.IsDefault && !defaultFolderIsSynced)
-              {
-                s_logger.Debug($"Sync Calendar '{Name}' with default outlook calendar");
-                newCalendarFolder = defaultCalendarFolder;
-              }
-              // Use existing folder if it does exist
-              else
-              {
-                s_logger.Debug($"Try to use an existing folder for calendar '{Name}'");
-                newCalendarFolder = new GenericComObjectWrapper<Folder>(defaultCalendarFolder.Inner.Folders[newCalendarName] as Folder);
-              }
+              s_logger.Info($"Sync Calendar '{newCalendarName}' with default outlook calendar");
+              newCalendarFolder = defaultCalendarFolder;
             }
-            catch
+            else
             {
-              s_logger.Debug($"Create new folder for calendar '{Name}'");
-              // Create missing folder
-              newCalendarFolder = new GenericComObjectWrapper<Folder> (defaultCalendarFolder.Inner.Folders.Add(newCalendarName, OlDefaultFolders.olFolderCalendar) as Folder);
-              // Make sure it has not been renamed to "name (this computer only)"
-              newCalendarFolder.Inner.Name = newCalendarName;
+              s_logger.Debug($"Find folder for calendar '{newCalendarName}'");
+              newCalendarFolder = findOrCreateFolder(defaultCalendarFolder, newCalendarName, OlDefaultFolders.olFolderCalendar);
             }
             // use the selected folder for syncing with kolab
-            resource.SelectedFolder = new OutlookFolderDescriptor (newCalendarFolder.Inner.EntryID, newCalendarFolder.Inner.StoreID, newCalendarFolder.Inner.DefaultItemType, newCalendarFolder.Inner.Name, 0);
+            if (newCalendarFolder != null)
+            {
+              s_logger.Info($"Use calendar folder '{newCalendarFolder.Inner.Name}' in Sync setting");
+              resource.SelectedFolder = new OutlookFolderDescriptor(newCalendarFolder.Inner.EntryID, newCalendarFolder.Inner.StoreID, newCalendarFolder.Inner.DefaultItemType, newCalendarFolder.Inner.Name, 0);
+            }
           }
 
           // Create and assign all Kolab address books that are not yet synced to an outlook folder
           GenericComObjectWrapper<Folder> defaultAddressBookFolder = new GenericComObjectWrapper<Folder> (Globals.ThisAddIn.Application.Session.GetDefaultFolder(OlDefaultFolders.olFolderContacts) as Folder);
           foreach (var resource in addressBooks.Where(c => c.SelectedFolder == null))
           {
-            s_logger.Debug($"Find folder for address book '{Name}'");
             string newAddressBookName = resource.Name + " (" + Name + ")";
-            GenericComObjectWrapper<Folder> newAddressBookFolder = null;
-            try
+            s_logger.Debug($"Find folder for address book '{newAddressBookName}'");
+            GenericComObjectWrapper<Folder> newAddressBookFolder = findOrCreateFolder(defaultAddressBookFolder, newAddressBookName, OlDefaultFolders.olFolderContacts);
+            if (newAddressBookFolder != null)
             {
-              newAddressBookFolder = new GenericComObjectWrapper<Folder>(defaultAddressBookFolder.Inner.Folders[newAddressBookName] as Folder);
-            }
-            catch
-            {
-              newAddressBookFolder = new GenericComObjectWrapper<Folder> (defaultAddressBookFolder.Inner.Folders.Add(newAddressBookName, OlDefaultFolders.olFolderContacts) as Folder);
-              newAddressBookFolder.Inner.Name = newAddressBookName;
               newAddressBookFolder.Inner.ShowAsOutlookAB = true;
-            }
-            // Special handling for GAL delivered by CardDAV: set as default address list
-            if (resource.Uri.Segments.Last() == "ldap-directory/")
-            {
-              var _session = Globals.ThisAddIn.Application.Session;
-              foreach (AddressList al in _session.AddressLists)
+              // Special handling for GAL delivered by CardDAV: set as default address list
+              if (resource.Uri.Segments.Last() == "ldap-directory/")
               {
-                if (al.Name == newAddressBookName)
+                var _session = Globals.ThisAddIn.Application.Session;
+                foreach (AddressList ali in _session.AddressLists)
                 {
-                  // We need to set it in the registry, as there does not seem to exist an appropriate API
-                  string regPath =
-                    @"Software\Microsoft\Office\" + Globals.ThisAddIn.Application.Version.Split(new char[] { '.' })[0] + @".0" +
-                    @"\Outlook\Profiles\" + _session.CurrentProfileName +
-                    @"\9207f3e0a3b11019908b08002b2a56c2";
-                  var key = Registry.CurrentUser.OpenSubKey(regPath, true);
-                  if (key != null)
+                  GenericComObjectWrapper <AddressList> al = new GenericComObjectWrapper<AddressList>(ali);
+                  if (al.Inner.Name == newAddressBookName)
                   {
-                    // Turn ID into byte array
-                    byte[] bytes = new byte[al.ID.Length / 2];
-                    for (int i = 0; i < al.ID.Length; i += 2)
-                      bytes[i / 2] = Convert.ToByte(al.ID.Substring(i, 2), 16);
-                    key.SetValue("01023d06", bytes);
+                    // We need to set it in the registry, as there does not seem to exist an appropriate API
+                    // http://www.ericwoodford.com/2016/06/set-default-outlook-address-book-script.html
+                    string regPath =
+                      @"Software\Microsoft\Office\" + Globals.ThisAddIn.Application.Version.Split(new char[] { '.' })[0] + @".0" +
+                      @"\Outlook\Profiles\" + _session.CurrentProfileName +
+                      @"\9207f3e0a3b11019908b08002b2a56c2"; // Outlook default address key
+                    var key = Registry.CurrentUser.OpenSubKey(regPath, true);
+                    if (key != null)
+                    {
+                      s_logger.Info($"Configure LDAP GAL '{newAddressBookName}' as default address book.");
+                      // Turn ID into byte array
+                      byte[] bytes = new byte[al.Inner.ID.Length / 2];
+                      for (int i = 0; i < al.Inner.ID.Length; i += 2)
+                        bytes[i / 2] = Convert.ToByte(al.Inner.ID.Substring(i, 2), 16);
+                      // Set Outlook default address book subKey
+                      key.SetValue("01023d06", bytes);
+                    }
                   }
                 }
               }
-
+              s_logger.Debug($"Use address book folder '{newAddressBookFolder.Inner.Name}' in Sync setting");
+              resource.SelectedFolder = new OutlookFolderDescriptor(newAddressBookFolder.Inner.EntryID, newAddressBookFolder.Inner.StoreID, newAddressBookFolder.Inner.DefaultItemType, newAddressBookFolder.Inner.Name, 0);
             }
-            resource.SelectedFolder = new OutlookFolderDescriptor (newAddressBookFolder.Inner.EntryID, newAddressBookFolder.Inner.StoreID, newAddressBookFolder.Inner.DefaultItemType, newAddressBookFolder.Inner.Name, 0);
           }
 
           // Create and assign all Kolab task lists that are not yet synced to an outlook folder
           GenericComObjectWrapper<Folder> defaultTaskListsFolder = new GenericComObjectWrapper<Folder> (Globals.ThisAddIn.Application.Session.GetDefaultFolder(OlDefaultFolders.olFolderTasks) as Folder);
           foreach (var resource in taskLists.Where(c => c.SelectedFolder == null))
           {
-            s_logger.Debug($"Find folder for task list '{Name}'");
             string newTaskListName = resource.Name + " (" + Name + ")";
-            GenericComObjectWrapper<Folder> newTaskListFolder = null;
-            try
+            s_logger.Debug($"Find folder for task list '{newTaskListName}'");
+            GenericComObjectWrapper<Folder> newTaskListFolder = findOrCreateFolder(defaultTaskListsFolder, newTaskListName, OlDefaultFolders.olFolderTasks);
+            if (newTaskListFolder != null)
             {
-              newTaskListFolder = new GenericComObjectWrapper<Folder> (defaultTaskListsFolder.Inner.Folders[newTaskListName] as Folder);
+              s_logger.Info($"Use task list folder '{newTaskListFolder.Inner.Name}' in Sync setting");
+              resource.SelectedFolder = new OutlookFolderDescriptor(newTaskListFolder.Inner.EntryID, newTaskListFolder.Inner.StoreID, newTaskListFolder.Inner.DefaultItemType, newTaskListFolder.Inner.Name, 0);
             }
-            catch
-            {
-              newTaskListFolder = new GenericComObjectWrapper<Folder> (defaultTaskListsFolder.Inner.Folders.Add(newTaskListName, OlDefaultFolders.olFolderTasks) as Folder);
-              newTaskListFolder.Inner.Name = newTaskListName;
-            }
-            resource.SelectedFolder = new OutlookFolderDescriptor(newTaskListFolder.Inner.EntryID, newTaskListFolder.Inner.StoreID, newTaskListFolder.Inner.DefaultItemType, newTaskListFolder.Inner.Name, 0);
           }
         }
+
         using (var selectResourcesForm = SelectResourceForm.CreateForFolderAssignment(_optionTasks, ConnectionTests.ResourceType.Calendar, calendars, addressBooks, taskLists))
         {
           // Create and add new sync profiles
@@ -410,10 +444,10 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       catch (Exception x)
       {
         s_logger.Error ("Exception while DiscoverResourcesAsync.", x);
-        string message = null;
+        /*string message = null;
         for (Exception ex = x; ex != null; ex = ex.InnerException)
           message += ex.Message + Environment.NewLine;
-        MessageBox.Show (message, OptionTasks.ConnectionTestCaption);
+        MessageBox.Show (message, OptionTasks.ConnectionTestCaption);*/
       }
       finally
       {
