@@ -190,6 +190,8 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       {
         s_logger.Debug("Get CalDAV/CardDAV data from Server");
         serverResources = await _serverSettingsViewModel.GetServerResources ();
+        if (!serverResources.ContainsResources)
+          return serverResources;
 
         var calendars = serverResources.Calendars.Select (c => new CalendarDataViewModel (c)).ToArray();
         var addressBooks = serverResources.AddressBooks.Select (a => new AddressBookDataViewModel (a)).ToArray();

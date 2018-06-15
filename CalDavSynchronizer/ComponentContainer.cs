@@ -380,7 +380,7 @@ namespace CalDavSynchronizer
       }
 
       // Update existing Kolab Calendar resources
-      foreach (var resource in serverResources.Calendars)
+      foreach (var resource in serverResources.Calendars ?? Enumerable.Empty<CalendarData>())
       {
         s_logger.Debug($"Update calendar '{resource.Name}'");
         foreach (var option in newOptions.Where(o => o.OutlookFolderEntryId != null && o.CalenderUrl == resource.Uri.ToString())) {
@@ -439,7 +439,7 @@ namespace CalDavSynchronizer
       }
 
       // Update existing Kolab Address book resources
-      foreach (var resource in serverResources.AddressBooks)
+      foreach (var resource in serverResources.AddressBooks ?? Enumerable.Empty<AddressBookData>())
       {
         s_logger.Debug($"Update address book '{resource.Name}'");
         foreach (var option in newOptions.Where(o => o.OutlookFolderEntryId != null && o.CalenderUrl == resource.Uri.ToString()))
@@ -464,7 +464,7 @@ namespace CalDavSynchronizer
       }
 
       // Update existing Kolab Task list resources
-      foreach (var resource in serverResources.TaskLists)
+      foreach (var resource in serverResources.TaskLists ?? Enumerable.Empty<TaskListData>())
       {
         s_logger.Debug($"Update task list '{resource.Name}'");
         foreach (var option in newOptions.Where(o => o.OutlookFolderEntryId != null && o.CalenderUrl == resource.Id))
