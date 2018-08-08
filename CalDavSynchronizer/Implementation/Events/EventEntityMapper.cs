@@ -371,9 +371,9 @@ namespace CalDavSynchronizer.Implementation.Events
       }
       else
       {
-        if (source.Transparency == TransparencyType.Opaque)
-          return OlBusyStatus.olBusy;
-        else return OlBusyStatus.olFree;
+        if (source.Transparency == TransparencyType.Transparent || source.IsAllDay && !source.Properties.ContainsKey("TRANSP"))
+          return OlBusyStatus.olFree;
+        else return OlBusyStatus.olBusy;
       }
     }
 
