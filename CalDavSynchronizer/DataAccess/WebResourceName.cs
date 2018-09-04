@@ -75,7 +75,7 @@ namespace CalDavSynchronizer.DataAccess
 
     private class WebResourceNameEqualityComparer : IEqualityComparer<WebResourceName>
     {
-      private static readonly IEqualityComparer<string> s_stringComparer = StringComparer.OrdinalIgnoreCase;
+      private static readonly IEqualityComparer<string> s_stringComparer = StringComparer.Ordinal;
 
       public bool Equals (WebResourceName x, WebResourceName y)
       {
