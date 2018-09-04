@@ -108,7 +108,7 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
     }
 
     [Test]
-    [TestCase(null, 7, false)]
+    [TestCase(null, 7, false, Category = TestCategories.BasicCrud)]
     [TestCase(2, 7, false)]
     [TestCase(7, 7, false)]
     [TestCase(29, 7, false)]

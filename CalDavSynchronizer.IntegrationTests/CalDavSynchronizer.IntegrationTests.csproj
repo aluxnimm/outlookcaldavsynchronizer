@@ -160,6 +160,7 @@
     <Compile Include="TestBase\TestComponentContainer.cs" />
     <Compile Include="TestBase\ComWrappers\TestComWrapperFactory.cs" />
     <Compile Include="TestBase\TestSynchronizerBase.cs" />
+    <Compile Include="TestCategories.cs" />
     <Compile Include="TestOptionsFactory.cs" />
   </ItemGroup>
   <ItemGroup>
