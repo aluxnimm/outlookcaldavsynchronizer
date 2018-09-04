@@ -34,10 +34,10 @@ namespace CalDavSynchronizer.DataAccess
     public WebResourceName (string absolutePath)
     {
       OriginalAbsolutePath = absolutePath;
-      Id = DecodedString (absolutePath);
+      Id = DecodeString (absolutePath);
     }
     
-    private static string DecodedString (string value)
+    private static string DecodeString (string value)
     {
       string newValue;
       while ((newValue = Uri.UnescapeDataString (value)) != value)
