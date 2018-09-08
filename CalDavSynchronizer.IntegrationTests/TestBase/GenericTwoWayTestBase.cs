@@ -128,17 +128,27 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
                     notUpdated.Add(relation);
                 }
             }
-            
-            await UpdateInA((await GetFromA(aUpdates)).Select(u => (u.Item1,"Upd" + u.Name)));
-            await UpdateInB((await GetFromB(bUpdates)).Select(u => (u.Item1, "Upd" + u.Name)));
-            await DeleteInA(aDeletes);
-            await DeleteInB(bDeletes);
-            
+
             Assert.That(aUpdates.Count, Is.EqualTo(itemsPerOperation));
             Assert.That(bUpdates.Count, Is.EqualTo(itemsPerOperation));
             Assert.That(aDeletes.Count, Is.EqualTo(itemsPerOperation));
             Assert.That(bDeletes.Count, Is.EqualTo(itemsPerOperation));
             Assert.That(notUpdated.Count, Is.EqualTo(itemsPerOperation));
+
+            const string commonUpdatePrefix = "Upd";
+            const string aUpdatePrefix = commonUpdatePrefix + " in A ";
+            const string bUpdatePrefix = commonUpdatePrefix + " in B ";
+
+            var aEntitiesToUpdate = await GetFromA(aUpdates);
+            Assert.That(aEntitiesToUpdate.Count, Is.EqualTo(aUpdates.Count));
+            await UpdateInA(aEntitiesToUpdate.Select(u => (u.Item1, aUpdatePrefix + u.Name)));
+
+            var bEntitiesToUpdate = await GetFromB(bUpdates);
+            Assert.That(bEntitiesToUpdate.Count, Is.EqualTo(bUpdates.Count));
+            await UpdateInB(bEntitiesToUpdate.Select(u => (u.Item1, bUpdatePrefix + u.Name)));
+
+            await DeleteInA(aDeletes);
+            await DeleteInB(bDeletes);
 
             await Synchronizer.SynchronizeAndCheck(
                 unchangedA: itemsPerOperation * 3, addedA: 0, changedA: itemsPerOperation, deletedA: itemsPerOperation,
@@ -165,18 +175,18 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
                 
                 if (aUpdates.Remove(relation.AId))
                 {
-                    Assert.That(aContent, Does.StartWith("Upd"));
-                    Assert.That(bContent, Does.StartWith("Upd"));
+                    Assert.That(aContent, Does.StartWith(aUpdatePrefix));
+                    Assert.That(bContent, Does.StartWith(aUpdatePrefix));
                 }
                 else if (bUpdates.Remove(relation.BId))
                 {
-                    Assert.That(aContent, Does.StartWith("Upd"));
-                    Assert.That(bContent, Does.StartWith("Upd"));
+                    Assert.That(aContent, Does.StartWith(bUpdatePrefix));
+                    Assert.That(bContent, Does.StartWith(bUpdatePrefix));
                 }
                 else if (notUpdated.Remove(relation))
                 {
-                    Assert.That(aContent, Does.Not.StartWith("Upd"));
-                    Assert.That(bContent, Does.Not.StartWith("Upd"));
+                    Assert.That(aContent, Does.Not.StartWith(commonUpdatePrefix));
+                    Assert.That(bContent, Does.Not.StartWith(commonUpdatePrefix));
                 }
             }
 

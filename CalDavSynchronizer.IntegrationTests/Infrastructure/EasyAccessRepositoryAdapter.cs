@@ -163,12 +163,17 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
             var context = await _contextFactory.Create();
             try
             {
-                var versions = await _readRepository.GetVersions(updates.Select(u => new IdWithAwarenessLevel<TEntityId>(u.Id, false)), context, NullGetVersionsLogger.Instance);
+                var versions = (await _readRepository.GetVersions(updates.Select(u => new IdWithAwarenessLevel<TEntityId>(u.Id, false)), context, NullGetVersionsLogger.Instance)).ToArray();
+                Assert.That(versions.Length, Is.EqualTo(updates.Count));
                 var entities = (await _readRepository.Get(updates.Select(u => u.Id).ToArray(), NullLoadEntityLogger.Instance, context)).ToArray();
+                Assert.That(entities.Length, Is.EqualTo(updates.Count));
+
                 var updateJobs = versions
                     .Join(entities, v => v.Id, e => e.Id, (v, e) => (Version: v, Entity: e), _idComparer)
                     .Join(updates, o => o.Version.Id, u => u.Id, (o, u) => new UpdateJob(o.Version.Id, o.Version.Version, o.Entity.Entity, u.ModifyAction), _idComparer)
                     .ToArray();
+
+                Assert.That(updateJobs.Length, Is.EqualTo(updates.Count));
 
                 await _writeRepository.PerformOperations(
                     new ICreateJob<TEntityId, TEntityVersion, TEntity>[0],
