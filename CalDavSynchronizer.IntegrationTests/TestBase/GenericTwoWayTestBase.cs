@@ -36,14 +36,14 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
         protected abstract Task<IReadOnlyList<TAId>> CreateInA(IEnumerable<string> contents);
         protected abstract Task<IReadOnlyList<TBId>> CreateInB(IEnumerable<string> contents);
 
-        protected abstract Task UpdateInA(TAId id, string content);
-        protected abstract Task UpdateInB(TBId id, string content);
+        protected abstract Task UpdateInA(IEnumerable<(TAId Id, string Content)> updates);
+        protected abstract Task UpdateInB(IEnumerable<(TBId Id, string Content)> updates);
 
-        protected abstract Task<string> GetFromA(TAId id);
-        protected abstract Task<string> GetFromB(TBId id);
+        protected abstract Task<IReadOnlyList<(TAId Id, string Name)>> GetFromA(ICollection<TAId> ids);
+        protected abstract Task<IReadOnlyList<(TBId Id, string Name)>> GetFromB(ICollection<TBId> ids);
 
-        protected abstract Task DeleteInA(TAId id);
-        protected abstract Task DeleteInB(TBId id);
+        protected abstract Task DeleteInA(IEnumerable<TAId> ids);
+        protected abstract Task DeleteInB(IEnumerable<TBId> ids);
 
         protected TSynchronizer Synchronizer { get; private set; }
         protected abstract Options GetOptions();
@@ -52,7 +52,7 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
         protected async Task InitializeSynchronizer(int? chunkSize, bool useWebDavCollectionSync)
         {
             var options = GetOptions();
-            options.ChunkSize = chunkSize ?? 0;
+            options.ChunkSize = chunkSize ?? 1000; // Some profiles use chunks even if it disabled, because the server forces that
             options.IsChunkedSynchronizationEnabled = chunkSize.HasValue;
             options.UseWebDavCollectionSync = useWebDavCollectionSync;
             Synchronizer = CreateSynchronizer(options);
@@ -63,31 +63,28 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
 
         public virtual async Task Test(int? chunkSize, int itemsPerOperation, bool useWebDavCollectionSync)
         {
+            await InitializeSynchronizer(null, false);
+            Synchronizer.ClearCache();
+            await Synchronizer.ClearEventRepositoriesAndCache();
+
             await InitializeSynchronizer(chunkSize, useWebDavCollectionSync);
 
             // Set maximum alloed open items to chunksize+1, since the synchronizer builds chunks with operations that load an entity and keep it open
             // A delete operation in a Outlook repository will open an entity and release it immediately
             var maximumOpenItemsPerType = chunkSize + 1;
 
-
-            Synchronizer.ClearCache();
-            await Synchronizer.ClearEventRepositoriesAndCache();
-
-            Assert.That(
-                (await CreateInA(Enumerable.Range(0, itemsPerOperation * 3).Select(i => $"Item {i}"))).Count,
-                Is.EqualTo(itemsPerOperation * 3));
+            var matchingItems = Enumerable.Range(1, itemsPerOperation * 3).Select(i => $"Item {i:000}").ToArray();
+            var nextName = matchingItems.Length + 1;
+            var itemsJustInA = Enumerable.Range(0, itemsPerOperation).Select(i => $"Item {nextName++:000}").ToArray();
+            var itemsJustInB = Enumerable.Range(0, itemsPerOperation).Select(i => $"Item {nextName++:000}").ToArray();
 
             Assert.That(
-                (await CreateInB(Enumerable.Range(0, itemsPerOperation * 3).Select(i => $"Item {i}"))).Count,
-                Is.EqualTo(itemsPerOperation * 3));
+                (await CreateInA(matchingItems.Union(itemsJustInA))).Count,
+                Is.EqualTo(matchingItems.Length + itemsJustInA.Length));
 
-            int nextName = itemsPerOperation * 3;
-
-            var newAids = await CreateInA(Enumerable.Range(0, itemsPerOperation).Select(i => $"Item {nextName++}"));
-            var newBids = await CreateInB(Enumerable.Range(0, itemsPerOperation).Select(i => $"Item {nextName++}"));
-
-            Assert.That(newAids.Count, Is.EqualTo(itemsPerOperation));
-            Assert.That(newBids.Count, Is.EqualTo(itemsPerOperation));
+            Assert.That(
+                (await CreateInB(matchingItems.Union(itemsJustInB))).Count,
+                Is.EqualTo(matchingItems.Length + itemsJustInB.Length));
 
             await Synchronizer.SynchronizeAndCheck(
                 unchangedA: itemsPerOperation * 3, addedA: itemsPerOperation, changedA: 0, deletedA: 0,
@@ -99,12 +96,12 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
 
             var relations = GetRelations();
             Assert.That(relations.Count, Is.EqualTo(itemsPerOperation * 5));
-
-            var updatedA = new HashSet<TAId>(AIdComparer);
-            var updatedB = new HashSet<TBId>(BIdComparer);
+            
+            var aUpdates = new HashSet<TAId>(AIdComparer);
+            var bUpdates = new HashSet<TBId>(BIdComparer);
+            var aDeletes = new HashSet<TAId>(AIdComparer);
+            var bDeletes = new HashSet<TBId>(BIdComparer);
             var notUpdated = new HashSet<(TAId AId, TBId BId)>(new RelationEqualityComparer(AIdComparer, BIdComparer));
-            var deletedA = new HashSet<TAId>(AIdComparer);
-            var deletedB = new HashSet<TBId>(BIdComparer);
 
             for (var i = 0; i < relations.Count; i++)
             {
@@ -112,34 +109,35 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
 
                 if (i % 5 == 0)
                 {
-                    await UpdateInA(relation.AId, "Upd" + await GetFromA(relation.AId));
-                    updatedA.Add(relation.AId);
+                    aUpdates.Add(relation.AId);
                 }
                 else if (i % 5 == 1)
                 {
-                    await UpdateInB(relation.BId, "Upd" + await GetFromB(relation.BId));
-                    updatedB.Add(relation.BId);
+                    bUpdates.Add(relation.BId);
                 }
                 else if (i % 5 == 2)
                 {
-                    await DeleteInA(relation.AId);
-                    deletedA.Add(relation.AId);
+                    aDeletes.Add((relation.AId));
                 }
                 else if (i % 5 == 3)
                 {
-                    await DeleteInB(relation.BId);
-                    deletedB.Add(relation.BId);
+                    bDeletes.Add(relation.BId);
                 }
                 else
                 {
                     notUpdated.Add(relation);
                 }
             }
-
-            Assert.That(updatedA.Count, Is.EqualTo(itemsPerOperation));
-            Assert.That(updatedB.Count, Is.EqualTo(itemsPerOperation));
-            Assert.That(deletedA.Count, Is.EqualTo(itemsPerOperation));
-            Assert.That(deletedB.Count, Is.EqualTo(itemsPerOperation));
+            
+            await UpdateInA((await GetFromA(aUpdates)).Select(u => (u.Item1,"Upd" + u.Name)));
+            await UpdateInB((await GetFromB(bUpdates)).Select(u => (u.Item1, "Upd" + u.Name)));
+            await DeleteInA(aDeletes);
+            await DeleteInB(bDeletes);
+            
+            Assert.That(aUpdates.Count, Is.EqualTo(itemsPerOperation));
+            Assert.That(bUpdates.Count, Is.EqualTo(itemsPerOperation));
+            Assert.That(aDeletes.Count, Is.EqualTo(itemsPerOperation));
+            Assert.That(bDeletes.Count, Is.EqualTo(itemsPerOperation));
             Assert.That(notUpdated.Count, Is.EqualTo(itemsPerOperation));
 
             await Synchronizer.SynchronizeAndCheck(
@@ -154,21 +152,23 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
 
             Assert.That(relations2.Count, Is.EqualTo(itemsPerOperation * 3));
 
+            var aContentsById = (await GetFromA(relations2.Select(r => r.AId).ToArray())).ToDictionary(e => e.Id, e => e.Name, AIdComparer);
+            var bContentsById = (await GetFromB(relations2.Select(r => r.BId).ToArray())).ToDictionary(e => e.Id, e => e.Name, BIdComparer);
+
             foreach (var relation in relations2)
             {
-                Assert.That(deletedA.Contains(relation.AId), Is.False);
-                Assert.That(deletedB.Contains(relation.BId), Is.False);
+                Assert.That(aDeletes.Contains(relation.AId), Is.False);
+                Assert.That(bDeletes.Contains(relation.BId), Is.False);
 
-                var aContent = await GetFromA(relation.AId);
-                var bContent = await GetFromB(relation.BId);
-
-
-                if (updatedA.Remove(relation.AId))
+                var aContent = aContentsById[relation.AId];
+                var bContent = bContentsById[relation.BId];
+                
+                if (aUpdates.Remove(relation.AId))
                 {
                     Assert.That(aContent, Does.StartWith("Upd"));
                     Assert.That(bContent, Does.StartWith("Upd"));
                 }
-                else if (updatedB.Remove(relation.BId))
+                else if (bUpdates.Remove(relation.BId))
                 {
                     Assert.That(aContent, Does.StartWith("Upd"));
                     Assert.That(bContent, Does.StartWith("Upd"));
@@ -180,8 +180,8 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
                 }
             }
 
-            Assert.That(updatedA.Count, Is.EqualTo(0));
-            Assert.That(updatedB.Count, Is.EqualTo(0));
+            Assert.That(aUpdates.Count, Is.EqualTo(0));
+            Assert.That(bUpdates.Count, Is.EqualTo(0));
             Assert.That(notUpdated.Count, Is.EqualTo(0));
         }
 

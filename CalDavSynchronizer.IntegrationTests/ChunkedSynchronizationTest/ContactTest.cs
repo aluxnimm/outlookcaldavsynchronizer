@@ -15,112 +15,110 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
 {
-  public class ContactTest : GenericTwoWayTestBase<string,WebResourceName, ContactTestSynchronizer>
-  {
-    private TestComponentContainer _testComponentContainer;
- 
+    public class ContactTest : GenericTwoWayTestBase<string, WebResourceName, ContactTestSynchronizer>
+    {
+        private TestComponentContainer _testComponentContainer;
 
-    [OneTimeSetUp]
-    public void OneTimeSetup()
-    {
-      _testComponentContainer = new TestComponentContainer();
-    }
 
-    protected override int? OrdinalOfReportToCheck => 0;
+        [OneTimeSetUp]
+        public void OneTimeSetup()
+        {
+            _testComponentContainer = new TestComponentContainer();
+        }
 
-    protected override Options GetOptions()
-    {
-      var options = _testComponentContainer.TestOptionsFactory.CreateSogoContacts();
-      // Set MapDistributionLists to ensure distributionlists are deleted
-      ((ContactMappingConfiguration)options.MappingConfiguration).MapDistributionLists = true;
-      ((ContactMappingConfiguration)options.MappingConfiguration).DistributionListType = DistributionListType.Sogo;
-      return options;
-    }
+        protected override int? OrdinalOfReportToCheck => 0;
 
-    protected override ContactTestSynchronizer CreateSynchronizer(Options options)
-    {
-      return new ContactTestSynchronizer(options, _testComponentContainer);
-    }
-    
-    protected override IEqualityComparer<string> AIdComparer { get; } = StringComparer.InvariantCulture;
-    protected override IEqualityComparer<WebResourceName> BIdComparer { get; } = WebResourceName.Comparer;
-   
-    protected override IReadOnlyList<(string AId, WebResourceName BId)> GetRelations()
-    {
-      return Synchronizer.Components.EntityRelationDataAccess.LoadEntityRelationData()
-        .Select(r => (r.AtypeId, r.BtypeId))
-        .ToArray();
-    }
+        protected override Options GetOptions()
+        {
+            var options = _testComponentContainer.TestOptionsFactory.CreateSogoContacts();
+            // Set MapDistributionLists to ensure distributionlists are deleted
+            ((ContactMappingConfiguration) options.MappingConfiguration).MapDistributionLists = true;
+            ((ContactMappingConfiguration) options.MappingConfiguration).DistributionListType = DistributionListType.Sogo;
+            return options;
+        }
 
-    protected override async Task<IReadOnlyList<string>> CreateInA(IEnumerable<string> contents)
-    {
-      return await Synchronizer.Outlook.CreateEntities(
-        contents.Select<string, Action<IContactItemWrapper>>(
-          c =>
-            a =>
-            {
-              a.Inner.LastName = c;
-            }));
-    }
+        protected override ContactTestSynchronizer CreateSynchronizer(Options options)
+        {
+            return new ContactTestSynchronizer(options, _testComponentContainer);
+        }
 
-    protected override async Task<IReadOnlyList<WebResourceName>> CreateInB(IEnumerable<string> contents)
-    {
-      return await Synchronizer.Server.CreateEntities(
-        contents.Select<string, Action<vCard>>(
-          c =>
-            a =>
-            {
-              a.FamilyName = c;
-            }));
-    }
-    
-    protected override async Task UpdateInA(string id, string content)
-    {
-      await Synchronizer.Outlook.UpdateEntity(id, w => w.Inner.LastName = content);
-    }
+        protected override IEqualityComparer<string> AIdComparer { get; } = StringComparer.InvariantCulture;
+        protected override IEqualityComparer<WebResourceName> BIdComparer { get; } = WebResourceName.Comparer;
 
-    protected override async Task UpdateInB(WebResourceName id, string content)
-    {
-      await Synchronizer.Server.UpdateEntity(id, w => w.FamilyName = content);
-    }
+        protected override IReadOnlyList<(string AId, WebResourceName BId)> GetRelations()
+        {
+            return Synchronizer.Components.EntityRelationDataAccess.LoadEntityRelationData()
+                .Select(r => (r.AtypeId, r.BtypeId))
+                .ToArray();
+        }
 
-    protected override async Task<string> GetFromA(string id)
-    {
-      using (var wrapper = await Synchronizer.Outlook.GetEntity(id))
-      {
-        return wrapper.Inner.LastName;
-      }
-    }
+        protected override async Task<IReadOnlyList<string>> CreateInA(IEnumerable<string> contents)
+        {
+            return await Synchronizer.Outlook.CreateEntities(
+                contents.Select<string, Action<IContactItemWrapper>>(
+                    c =>
+                        a =>
+                        {
+                            a.Inner.LastName = c;
+                        }));
+        }
 
-    protected override async Task<string> GetFromB(WebResourceName id)
-    {
-      return (await Synchronizer.Server.GetEntity(id)).FamilyName;
-    }
+        protected override async Task<IReadOnlyList<WebResourceName>> CreateInB(IEnumerable<string> contents)
+        {
+            return await Synchronizer.Server.CreateEntities(
+                contents.Select<string, Action<vCard>>(
+                    c =>
+                        a =>
+                        {
+                            a.FamilyName = c;
+                        }));
+        }
 
-    protected override async Task DeleteInA(string id)
-    {
-      await Synchronizer.Outlook.DeleteEntity(id);
-    }
+        protected override async Task UpdateInA(IEnumerable<(string Id, string Content)> updates)
+        {
+            await Synchronizer.Outlook.UpdateEntities(updates, u => w => w.Inner.LastName = u);
+        }
 
-    protected override async Task DeleteInB(WebResourceName id)
-    {
-      await Synchronizer.Server.DeleteEntity(id);
-    }
+        protected override async Task UpdateInB(IEnumerable<(WebResourceName Id, string Content)> updates)
+        {
+            await Synchronizer.Server.UpdateEntities(updates, u => w => w.FamilyName = u);
+        }
 
-    [Test]
-    [TestCase(null, 7, false, Category = TestCategories.BasicCrud)]
-    [TestCase(2, 7, false)]
-    [TestCase(7, 7, false)]
-    [TestCase(29, 7, false)]
-    [TestCase(1, 7, false)]
-    [TestCase(null, 7, true)]
-    [TestCase(2, 7, true)]
-    [TestCase(7, 7, true)]
-    [TestCase(29, 7, true)]
-    [TestCase(1, 7, true)]
-    public override Task Test(int? chunkSize, int itemsPerOperation, bool useWebDavCollectionSync)
-    {
-      return base.Test(chunkSize, itemsPerOperation, useWebDavCollectionSync);
+        protected override async Task<IReadOnlyList<(string Id, string Name)>> GetFromA(ICollection<string> ids)
+        {
+            return await Synchronizer.Outlook.GetEntities(ids, e => e.Inner.LastName, e => e.Dispose());
+        }
+
+        protected override async Task<IReadOnlyList<(WebResourceName Id, string Name)>> GetFromB(ICollection<WebResourceName> ids)
+        {
+            return await Synchronizer.Server.GetEntities(ids, e => e.FamilyName);
+        }
+
+        protected override async Task DeleteInA(IEnumerable<string> ids)
+        {
+            await Synchronizer.Outlook.DeleteEntities(ids);
+        }
+
+        protected override async Task DeleteInB(IEnumerable<WebResourceName> ids)
+        {
+            await Synchronizer.Server.DeleteEntities(ids);
+        }
+        
+
+        [Test]
+        [TestCase(null, 7, false, Category = TestCategories.BasicCrud)]
+        [TestCase(2, 7, false)]
+        [TestCase(7, 7, false)]
+        [TestCase(29, 7, false)]
+        [TestCase(1, 7, false)]
+        [TestCase(null, 7, true)]
+        [TestCase(2, 7, true)]
+        [TestCase(7, 7, true)]
+        [TestCase(29, 7, true)]
+        [TestCase(1, 7, true)]
+        public override Task Test(int? chunkSize, int itemsPerOperation, bool useWebDavCollectionSync)
+        {
+            return base.Test(chunkSize, itemsPerOperation, useWebDavCollectionSync);
+        }
     }
-  }
 }

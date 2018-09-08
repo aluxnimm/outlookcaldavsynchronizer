@@ -31,93 +31,90 @@ using NUnit.Framework;
 
 namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
 {
-  public class GoogleTaskTest : GenericTwoWayTestBase<string,string, GoogleTaskTestSynchronizer>
-  {
-    private TestComponentContainer _testComponentContainer;
-  
-    [OneTimeSetUp]
-    public void OneTimeSetup()
+    public class GoogleTaskTest : GenericTwoWayTestBase<string, string, GoogleTaskTestSynchronizer>
     {
-      _testComponentContainer = new TestComponentContainer();
-    }
+        private TestComponentContainer _testComponentContainer;
 
-    protected override Options GetOptions() => _testComponentContainer.TestOptionsFactory.CreateGoogleTasks();
+        [OneTimeSetUp]
+        public void OneTimeSetup()
+        {
+            _testComponentContainer = new TestComponentContainer();
+        }
 
-    protected override GoogleTaskTestSynchronizer CreateSynchronizer(Options options)
-    {
-      return new GoogleTaskTestSynchronizer(options, _testComponentContainer);
-    }
-    
-    protected override IEqualityComparer<string> AIdComparer { get; } =StringComparer.InvariantCulture;
-    protected override IEqualityComparer<string> BIdComparer { get; } = StringComparer.InvariantCulture;
+        protected override Options GetOptions() => _testComponentContainer.TestOptionsFactory.CreateGoogleTasks();
 
-    protected override IReadOnlyList<(string AId, string BId)> GetRelations()
-    {
-      return Synchronizer.Components.EntityRelationDataAccess.LoadEntityRelationData()
-        .Select(r => (r.AtypeId, r.BtypeId))
-        .ToArray();
-    }
+        protected override GoogleTaskTestSynchronizer CreateSynchronizer(Options options)
+        {
+            return new GoogleTaskTestSynchronizer(options, _testComponentContainer);
+        }
 
-    protected override async Task<IReadOnlyList<string>> CreateInA(IEnumerable<string> contents)
-    {
-      return await Synchronizer.Outlook.CreateEntities(
-        contents.Select<string, Action<ITaskItemWrapper>>(
-          c =>
-            a =>
-            {
-              a.Inner.Subject = c;
-            }));
-    }
+        protected override IEqualityComparer<string> AIdComparer { get; } = StringComparer.InvariantCulture;
+        protected override IEqualityComparer<string> BIdComparer { get; } = StringComparer.InvariantCulture;
 
-    protected override async Task<IReadOnlyList<string>> CreateInB(IEnumerable<string> contents)
-    {
-      return await Synchronizer.Server.CreateEntities(
-        contents.Select<string, Action<Google.Apis.Tasks.v1.Data.Task>>(
-          c =>
-            a =>
-            {
-              a.Title = c;
-            }));
-    }
-    
-    protected override async Task UpdateInA(string id, string content)
-    {
-      await Synchronizer.Outlook.UpdateEntity(id, w => w.Inner.Subject = content);
-    }
+        protected override IReadOnlyList<(string AId, string BId)> GetRelations()
+        {
+            return Synchronizer.Components.EntityRelationDataAccess.LoadEntityRelationData()
+                .Select(r => (r.AtypeId, r.BtypeId))
+                .ToArray();
+        }
 
-    protected override async Task UpdateInB(string id, string content)
-    {
-      await Synchronizer.Server.UpdateEntity(id, w => w.Title = content);
-    }
+        protected override async Task<IReadOnlyList<string>> CreateInA(IEnumerable<string> contents)
+        {
+            return await Synchronizer.Outlook.CreateEntities(
+                contents.Select<string, Action<ITaskItemWrapper>>(
+                    c =>
+                        a =>
+                        {
+                            a.Inner.Subject = c;
+                        }));
+        }
 
-    protected override async Task<string> GetFromA(string id)
-    {
-      using (var wrapper = await Synchronizer.Outlook.GetEntity(id))
-      {
-        return wrapper.Inner.Subject;
-      }
-    }
+        protected override async Task<IReadOnlyList<string>> CreateInB(IEnumerable<string> contents)
+        {
+            return await Synchronizer.Server.CreateEntities(
+                contents.Select<string, Action<Google.Apis.Tasks.v1.Data.Task>>(
+                    c =>
+                        a =>
+                        {
+                            a.Title = c;
+                        }));
+        }
 
-    protected override async Task<string> GetFromB(string id)
-    {
-      return (await Synchronizer.Server.GetEntity(id)).Title;
-    }
+        protected override async Task UpdateInA(IEnumerable<(string Id, string Content)> updates)
+        {
+            await Synchronizer.Outlook.UpdateEntities(updates, c => w => w.Inner.Subject = c);
+        }
 
-    protected override async Task DeleteInA(string id)
-    {
-      await Synchronizer.Outlook.DeleteEntity(id);
-    }
+        protected override async Task UpdateInB(IEnumerable<(string Id, string Content)> updates)
+        {
+            await Synchronizer.Server.UpdateEntities(updates, c => w => w.Title = c);
+        }
 
-    protected override async Task DeleteInB(string id)
-    {
-      await Synchronizer.Server.DeleteEntity(id);
-    }
+        protected override async Task<IReadOnlyList<(string Id, string Name)>> GetFromA(ICollection<string> ids)
+        {
+            return await Synchronizer.Outlook.GetEntities(ids, e => e.Inner.Subject, e => e.Dispose());
+        }
 
-    [Test]
-    [TestCase(2, 7, false, Category = TestCategories.BasicCrud)]
-    public override Task Test(int? chunkSize, int itemsPerOperation, bool useWebDavCollectionSync)
-    {
-      return base.Test(chunkSize, itemsPerOperation, useWebDavCollectionSync);
+        protected override async Task<IReadOnlyList<(string Id, string Name)>> GetFromB(ICollection<string> ids)
+        {
+            return await Synchronizer.Server.GetEntities(ids, e => e.Title);
+        }
+
+        protected override async Task DeleteInA(IEnumerable<string> ids)
+        {
+            await Synchronizer.Outlook.DeleteEntities(ids);
+        }
+
+        protected override async Task DeleteInB(IEnumerable<string> ids)
+        {
+            await Synchronizer.Server.DeleteEntities(ids);
+        }
+
+        [Test]
+        [TestCase(2, 7, false, Category = TestCategories.BasicCrud)]
+        public override Task Test(int? chunkSize, int itemsPerOperation, bool useWebDavCollectionSync)
+        {
+            return base.Test(chunkSize, itemsPerOperation, useWebDavCollectionSync);
+        }
     }
-  }
 }

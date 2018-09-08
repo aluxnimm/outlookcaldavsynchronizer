@@ -31,99 +31,96 @@ using NUnit.Framework;
 
 namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
 {
-  public class TaskTest : GenericTwoWayTestBase<string,WebResourceName, TaskTestSynchronizer>
-  {
-    private TestComponentContainer _testComponentContainer;
-  
-    [OneTimeSetUp]
-    public void OneTimeSetup()
+    public class TaskTest : GenericTwoWayTestBase<string, WebResourceName, TaskTestSynchronizer>
     {
-      _testComponentContainer = new TestComponentContainer();
-    }
+        private TestComponentContainer _testComponentContainer;
 
-    protected override Options GetOptions() => _testComponentContainer.TestOptionsFactory.CreateSogoTasks();
+        [OneTimeSetUp]
+        public void OneTimeSetup()
+        {
+            _testComponentContainer = new TestComponentContainer();
+        }
 
-    protected override TaskTestSynchronizer CreateSynchronizer(Options options)
-    {
-      return new TaskTestSynchronizer(options, _testComponentContainer);
-    }
-    
-    protected override IEqualityComparer<string> AIdComparer { get; } =StringComparer.InvariantCulture;
-    protected override IEqualityComparer<WebResourceName> BIdComparer { get; } = WebResourceName.Comparer;
-   
-    protected override IReadOnlyList<(string AId, WebResourceName BId)> GetRelations()
-    {
-      return Synchronizer.Components.EntityRelationDataAccess.LoadEntityRelationData()
-        .Select(r => (r.AtypeId, r.BtypeId))
-        .ToArray();
-    }
+        protected override Options GetOptions() => _testComponentContainer.TestOptionsFactory.CreateSogoTasks();
 
-    protected override async Task<IReadOnlyList<string>> CreateInA(IEnumerable<string> contents)
-    {
-      return await Synchronizer.Outlook.CreateEntities(
-        contents.Select<string, Action<ITaskItemWrapper>>(
-          c =>
-            a =>
-            {
-              a.Inner.Subject = c;
-            }));
-    }
+        protected override TaskTestSynchronizer CreateSynchronizer(Options options)
+        {
+            return new TaskTestSynchronizer(options, _testComponentContainer);
+        }
 
-    protected override async Task<IReadOnlyList<WebResourceName>> CreateInB(IEnumerable<string> contents)
-    {
-      return await Synchronizer.Server.CreateEntities(
-        contents.Select<string, Action<IICalendar>>(
-          c =>
-            a =>
-            {
-              var todo = new Todo();
-              todo.Summary = c;
-              a.Todos.Add(todo);
-            }));
-    }
+        protected override IEqualityComparer<string> AIdComparer { get; } = StringComparer.InvariantCulture;
+        protected override IEqualityComparer<WebResourceName> BIdComparer { get; } = WebResourceName.Comparer;
 
-    protected override async Task UpdateInA(string id, string content)
-    {
-      await Synchronizer.Outlook.UpdateEntity(id, w => w.Inner.Subject = content);
-    }
+        protected override IReadOnlyList<(string AId, WebResourceName BId)> GetRelations()
+        {
+            return Synchronizer.Components.EntityRelationDataAccess.LoadEntityRelationData()
+                .Select(r => (r.AtypeId, r.BtypeId))
+                .ToArray();
+        }
 
-    protected override async Task UpdateInB(WebResourceName id, string content)
-    {
-      await Synchronizer.Server.UpdateEntity(id, w => w.Todos[0].Summary = content);
-    }
+        protected override async Task<IReadOnlyList<string>> CreateInA(IEnumerable<string> contents)
+        {
+            return await Synchronizer.Outlook.CreateEntities(
+                contents.Select<string, Action<ITaskItemWrapper>>(
+                    c =>
+                        a =>
+                        {
+                            a.Inner.Subject = c;
+                        }));
+        }
 
-    protected override async Task<string> GetFromA(string id)
-    {
-      using (var wrapper = await Synchronizer.Outlook.GetEntity(id))
-      {
-        return wrapper.Inner.Subject;
-      }
-    }
+        protected override async Task<IReadOnlyList<WebResourceName>> CreateInB(IEnumerable<string> contents)
+        {
+            return await Synchronizer.Server.CreateEntities(
+                contents.Select<string, Action<IICalendar>>(
+                    c =>
+                        a =>
+                        {
+                            var todo = new Todo();
+                            todo.Summary = c;
+                            a.Todos.Add(todo);
+                        }));
+        }
 
-    protected override async Task<string> GetFromB(WebResourceName id)
-    {
-      return (await Synchronizer.Server.GetEntity(id)).Todos[0].Summary;
-    }
+        protected override async Task UpdateInA(IEnumerable<(string Id, string Content)> updates)
+        {
+            await Synchronizer.Outlook.UpdateEntities(updates, c => w => w.Inner.Subject = c);
+        }
 
-    protected override async Task DeleteInA(string id)
-    {
-      await Synchronizer.Outlook.DeleteEntity(id);
-    }
+        protected override async Task UpdateInB(IEnumerable<(WebResourceName Id, string Content)> updates)
+        {
+            await Synchronizer.Server.UpdateEntities(updates, c => w => w.Todos[0].Summary = c);
+        }
 
-    protected override async Task DeleteInB(WebResourceName id)
-    {
-      await Synchronizer.Server.DeleteEntity(id);
-    }
+        protected override async Task<IReadOnlyList<(string Id, string Name)>> GetFromA(ICollection<string> ids)
+        {
+            return await Synchronizer.Outlook.GetEntities(ids, e => e.Inner.Subject, e => e.Dispose());
+        }
 
-    [Test]
-    [TestCase(null, 7, false, Category = TestCategories.BasicCrud)]
-    [TestCase(2, 7, false)]
-    [TestCase(7, 7, false)]
-    [TestCase(29, 7, false)]
-    [TestCase(1, 7, false)]
-    public override Task Test(int? chunkSize, int itemsPerOperation, bool useWebDavCollectionSync)
-    {
-      return base.Test(chunkSize, itemsPerOperation, useWebDavCollectionSync);
+        protected override async Task<IReadOnlyList<(WebResourceName Id, string Name)>> GetFromB(ICollection<WebResourceName> ids)
+        {
+            return await Synchronizer.Server.GetEntities(ids, e => e.Todos[0].Summary);
+        }
+
+        protected override async Task DeleteInA(IEnumerable<string> ids)
+        {
+            await Synchronizer.Outlook.DeleteEntities(ids);
+        }
+
+        protected override async Task DeleteInB(IEnumerable<WebResourceName> ids)
+        {
+            await Synchronizer.Server.DeleteEntities(ids);
+        }
+
+        [Test]
+        [TestCase(null, 7, false, Category = TestCategories.BasicCrud)]
+        [TestCase(2, 7, false)]
+        [TestCase(7, 7, false)]
+        [TestCase(29, 7, false)]
+        [TestCase(1, 7, false)]
+        public override Task Test(int? chunkSize, int itemsPerOperation, bool useWebDavCollectionSync)
+        {
+            return base.Test(chunkSize, itemsPerOperation, useWebDavCollectionSync);
+        }
     }
-  }
 }

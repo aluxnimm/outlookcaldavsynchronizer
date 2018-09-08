@@ -31,112 +31,109 @@ using NUnit.Framework;
 
 namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
 {
-  public class EventTest : GenericTwoWayTestBase<AppointmentId,WebResourceName, EventTestSynchronizer>
-  {
-    private TestComponentContainer _testComponentContainer;
-    private DateTime _startDateTime;
-    private DateTime _endDateTime;
-
-    [OneTimeSetUp]
-    public void OneTimeSetup()
+    public class EventTest : GenericTwoWayTestBase<AppointmentId, WebResourceName, EventTestSynchronizer>
     {
-      _startDateTime = DateTime.Now.Date.AddDays(10).AddHours(15);
-      _endDateTime = _startDateTime.AddHours(1);
-      _testComponentContainer = new TestComponentContainer();
-    }
+        private TestComponentContainer _testComponentContainer;
+        private DateTime _startDateTime;
+        private DateTime _endDateTime;
 
-    protected override Options GetOptions() => _testComponentContainer.TestOptionsFactory.CreateSogoEvents();
+        [OneTimeSetUp]
+        public void OneTimeSetup()
+        {
+            _startDateTime = DateTime.Now.Date.AddDays(10).AddHours(15);
+            _endDateTime = _startDateTime.AddHours(1);
+            _testComponentContainer = new TestComponentContainer();
+        }
 
-    protected override EventTestSynchronizer CreateSynchronizer(Options options)
-    {
-      return new EventTestSynchronizer(options, _testComponentContainer);
-    }
-    
-    protected override IEqualityComparer<AppointmentId> AIdComparer { get; } = AppointmentId.Comparer;
-    protected override IEqualityComparer<WebResourceName> BIdComparer { get; } = WebResourceName.Comparer;
-   
-    protected override IReadOnlyList<(AppointmentId AId, WebResourceName BId)> GetRelations()
-    {
-      return Synchronizer.Components.EntityRelationDataAccess.LoadEntityRelationData()
-        .Select(r => (r.AtypeId, r.BtypeId))
-        .ToArray();
-    }
+        protected override Options GetOptions() => _testComponentContainer.TestOptionsFactory.CreateSogoEvents();
 
-    protected override async Task<IReadOnlyList<AppointmentId>> CreateInA(IEnumerable<string> contents)
-    {
-      return await Synchronizer.Outlook.CreateEntities(
-        contents.Select<string, Action<IAppointmentItemWrapper>>(
-          c =>
-            a =>
-            {
-              a.Inner.Subject = c;
-              a.Inner.Start = _startDateTime;
-              a.Inner.End = _endDateTime;
-            }));
-    }
+        protected override EventTestSynchronizer CreateSynchronizer(Options options)
+        {
+            return new EventTestSynchronizer(options, _testComponentContainer);
+        }
 
-    protected override async Task<IReadOnlyList<WebResourceName>> CreateInB(IEnumerable<string> contents)
-    {
-      return await Synchronizer.Server.CreateEntities(
-        contents.Select<string, Action<IICalendar>>(
-          c =>
-            a =>
-            {
-              var evt = new Event();
-              evt.Start = new iCalDateTime(_startDateTime);
-              evt.End = new iCalDateTime(_endDateTime);
-              evt.Summary = c;
-              a.Events.Add(evt);
-            }));
-    }
+        protected override IEqualityComparer<AppointmentId> AIdComparer { get; } = AppointmentId.Comparer;
+        protected override IEqualityComparer<WebResourceName> BIdComparer { get; } = WebResourceName.Comparer;
 
-    protected override async Task UpdateInA(AppointmentId id, string content)
-    {
-      await Synchronizer.Outlook.UpdateEntity(id, w => w.Inner.Subject = content);
-    }
+        protected override IReadOnlyList<(AppointmentId AId, WebResourceName BId)> GetRelations()
+        {
+            return Synchronizer.Components.EntityRelationDataAccess.LoadEntityRelationData()
+                .Select(r => (r.AtypeId, r.BtypeId))
+                .ToArray();
+        }
 
-    protected override async Task UpdateInB(WebResourceName id, string content)
-    {
-      await Synchronizer.Server.UpdateEntity(id, w => w.Events[0].Summary = content);
-    }
+        protected override async Task<IReadOnlyList<AppointmentId>> CreateInA(IEnumerable<string> contents)
+        {
+            return await Synchronizer.Outlook.CreateEntities(
+                contents.Select<string, Action<IAppointmentItemWrapper>>(
+                    c =>
+                        a =>
+                        {
+                            a.Inner.Subject = c;
+                            a.Inner.Start = _startDateTime;
+                            a.Inner.End = _endDateTime;
+                        }));
+        }
 
-    protected override async Task<string> GetFromA(AppointmentId id)
-    {
-      using (var wrapper = await Synchronizer.Outlook.GetEntity(id))
-      {
-        return wrapper.Inner.Subject;
-      }
-    }
+        protected override async Task<IReadOnlyList<WebResourceName>> CreateInB(IEnumerable<string> contents)
+        {
+            return await Synchronizer.Server.CreateEntities(
+                contents.Select<string, Action<IICalendar>>(
+                    c =>
+                        a =>
+                        {
+                            var evt = new Event();
+                            evt.Start = new iCalDateTime(_startDateTime);
+                            evt.End = new iCalDateTime(_endDateTime);
+                            evt.Summary = c;
+                            a.Events.Add(evt);
+                        }));
+        }
 
-    protected override async Task<string> GetFromB(WebResourceName id)
-    {
-      return (await Synchronizer.Server.GetEntity(id)).Events[0].Summary;
-    }
+        protected override async Task UpdateInA(IEnumerable<(AppointmentId Id, string Content)> updates)
+        {
+            await Synchronizer.Outlook.UpdateEntities(updates, c => w => w.Inner.Subject = c);
+        }
 
-    protected override async Task DeleteInA(AppointmentId id)
-    {
-      await Synchronizer.Outlook.DeleteEntity(id);
-    }
+        protected override async Task UpdateInB(IEnumerable<(WebResourceName Id, string Content)> updates)
+        {
+            await Synchronizer.Server.UpdateEntities(updates, c => w => w.Events[0].Summary = c);
+        }
 
-    protected override async Task DeleteInB(WebResourceName id)
-    {
-      await Synchronizer.Server.DeleteEntity(id);
-    }
+        protected override async Task<IReadOnlyList<(AppointmentId Id, string Name)>> GetFromA(ICollection<AppointmentId> ids)
+        {
+            return await Synchronizer.Outlook.GetEntities(ids, e => e.Inner.Subject, e => e.Dispose());
+        }
 
-    [Test]
-    [TestCase(null, 7, false, Category = TestCategories.BasicCrud)]
-    [TestCase(2, 7, false)]
-    [TestCase(7, 7, false)]
-    [TestCase(29, 7, false)]
-    [TestCase(1, 7, false)]
-    [TestCase(null, 7, true)]
-    [TestCase(2, 7, true)]
-    [TestCase(7, 7, true)]
-    [TestCase(29, 7, true)]
-    [TestCase(1, 7, true)]
-    public override Task Test(int? chunkSize, int itemsPerOperation, bool useWebDavCollectionSync)
-    {
-      return base.Test(chunkSize, itemsPerOperation, useWebDavCollectionSync);
+        protected override async Task<IReadOnlyList<(WebResourceName Id, string Name)>> GetFromB(ICollection<WebResourceName> ids)
+        {
+            return await Synchronizer.Server.GetEntities(ids, e => e.Events[0].Summary);
+        }
+
+        protected override async Task DeleteInA(IEnumerable<AppointmentId> ids)
+        {
+            await Synchronizer.Outlook.DeleteEntities(ids);
+        }
+
+        protected override async Task DeleteInB(IEnumerable<WebResourceName> ids)
+        {
+            await Synchronizer.Server.DeleteEntities(ids);
+        }
+
+        [Test]
+        [TestCase(null, 7, false, Category = TestCategories.BasicCrud)]
+        [TestCase(2, 7, false)]
+        [TestCase(7, 7, false)]
+        [TestCase(29, 7, false)]
+        [TestCase(1, 7, false)]
+        [TestCase(null, 7, true)]
+        [TestCase(2, 7, true)]
+        [TestCase(7, 7, true)]
+        [TestCase(29, 7, true)]
+        [TestCase(1, 7, true)]
+        public override Task Test(int? chunkSize, int itemsPerOperation, bool useWebDavCollectionSync)
+        {
+            return base.Test(chunkSize, itemsPerOperation, useWebDavCollectionSync);
+        }
     }
-  }
 }
