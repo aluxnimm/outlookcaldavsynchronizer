@@ -29,45 +29,50 @@ using NUnit.Framework;
 
 namespace CalDavSynchronizer.IntegrationTests.TestBase
 {
-  public class TestComponentContainer : IDisposable
-  {
-    public ComponentContainer ComponentContainer;
-    public SynchronizerFactory SynchronizerFactory;
-    public GeneralOptions GeneralOptions => new InMemoryGeneralOptionsDataAccess ().LoadOptions ();
-    private readonly TestComWrapperFactoryWrapper _testComWrapperFactoryWrapper;
-    public Application Application { get; private set; }
-    public TestOptionsFactory TestOptionsFactory { get; }
-
-    public TestComponentContainer()
+    public class TestComponentContainer : IDisposable
     {
-      Application = new Application();
-      Application.Session.Logon();
-      _testComWrapperFactoryWrapper = new TestComWrapperFactoryWrapper(new TestComWrapperFactory(null));
-      ComponentContainer = new ComponentContainer(Application, new InMemoryGeneralOptionsDataAccess(), _testComWrapperFactoryWrapper, new TestExceptionHandlingStrategy());
-      SynchronizerFactory = ComponentContainer.GetSynchronizerFactory();
-      TestOptionsFactory = new TestOptionsFactory(new OutlookSession(Application.Session), ComponentContainer.GetOptionsDataAccess());
+        public ComponentContainer ComponentContainer;
+        public SynchronizerFactory SynchronizerFactory;
+        public GeneralOptions GeneralOptions => new InMemoryGeneralOptionsDataAccess().LoadOptions();
+        private readonly TestComWrapperFactoryWrapper _testComWrapperFactoryWrapper;
+        public Application Application { get; private set; }
+        public TestOptionsFactory TestOptionsFactory { get; }
 
-    }
+        public TestComponentContainer()
+        {
+            Application = new Application();
+            Application.Session.Logon();
+            _testComWrapperFactoryWrapper = new TestComWrapperFactoryWrapper(new TestComWrapperFactory(null));
+            ComponentContainer = new ComponentContainer(Application, new InMemoryGeneralOptionsDataAccess(), _testComWrapperFactoryWrapper, new TestExceptionHandlingStrategy());
+            SynchronizerFactory = ComponentContainer.GetSynchronizerFactory();
+            TestOptionsFactory = new TestOptionsFactory(new OutlookSession(Application.Session), ComponentContainer.GetOptionsDataAccess());
 
-    public void SetMaximumOpenItemsPerType(int? value)
-    {
-      _testComWrapperFactoryWrapper.SetInner(new TestComWrapperFactory(value));
-    }
+        }
 
-    public void Dispose()
-    {
-      try
-      {
-        Application.Session.Logoff();
-      }
-      finally
-      {
-        Marshal.FinalReleaseComObject(Application);
-        Application = null;
+        public void SetMaximumOpenItemsPerType(int? value)
+        {
+            _testComWrapperFactoryWrapper.SetInner(new TestComWrapperFactory(value));
+        }
 
-        GC.Collect();
-        GC.WaitForPendingFinalizers();
-      }
-    }
+        public void AssertNoComObjectInstancesOpen()
+        {
+            _testComWrapperFactoryWrapper.AssertNoInstancesOpen();
+        }
+
+        public void Dispose()
+        {
+            try
+            {
+                Application.Session.Logoff();
+            }
+            finally
+            {
+                Marshal.FinalReleaseComObject(Application);
+                Application = null;
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
+        }
     }
 }

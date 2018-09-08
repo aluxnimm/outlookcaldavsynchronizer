@@ -22,41 +22,46 @@ using NUnit.Framework;
 
 namespace CalDavSynchronizer.IntegrationTests.TestBase.ComWrappers
 {
-  class TestComWrapperFactoryWrapper : IComWrapperFactory
-  {
-    private TestComWrapperFactory _inner;
-
-    public TestComWrapperFactoryWrapper(TestComWrapperFactory inner)
+    class TestComWrapperFactoryWrapper : IComWrapperFactory
     {
-      _inner = inner ?? throw new ArgumentNullException(nameof(inner));
-    }
+        private TestComWrapperFactory _inner;
 
-    public void SetInner(TestComWrapperFactory inner)
-    {
-      // Fail if the inner has open instances, since when they will be released, an error occurs, which will be much harder to find.
-      _inner?.AssertNoInstancesOpen(); 
+        public TestComWrapperFactoryWrapper(TestComWrapperFactory inner)
+        {
+            _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+        }
 
-      _inner = inner ?? throw new ArgumentNullException(nameof(inner));
-    }
+        public void SetInner(TestComWrapperFactory inner)
+        {
+            // Fail if the inner has open instances, since when they will be released, an error occurs, which will be much harder to find.
+            AssertNoInstancesOpen();
 
-    public IAppointmentItemWrapper Create(AppointmentItem inner, LoadAppointmentItemDelegate load)
-    {
-      return _inner.Create(inner, load);
-    }
+            _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+        }
 
-    public IContactItemWrapper Create(ContactItem inner, LoadContactItemDelegate load)
-    {
-      return _inner.Create(inner, load);
-    }
+        public void AssertNoInstancesOpen()
+        {
+            _inner?.AssertNoInstancesOpen();
+        }
 
-    public ITaskItemWrapper Create(TaskItem inner, LoadTaskItemDelegate load)
-    {
-      return _inner.Create(inner, load);
-    }
+        public IAppointmentItemWrapper Create(AppointmentItem inner, LoadAppointmentItemDelegate load)
+        {
+            return _inner.Create(inner, load);
+        }
 
-    public IDistListItemWrapper Create(DistListItem inner)
-    {
-      return _inner.Create(inner);
+        public IContactItemWrapper Create(ContactItem inner, LoadContactItemDelegate load)
+        {
+            return _inner.Create(inner, load);
+        }
+
+        public ITaskItemWrapper Create(TaskItem inner, LoadTaskItemDelegate load)
+        {
+            return _inner.Create(inner, load);
+        }
+
+        public IDistListItemWrapper Create(DistListItem inner)
+        {
+            return _inner.Create(inner);
+        }
     }
-  }
 }
