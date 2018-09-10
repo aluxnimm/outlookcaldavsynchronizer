@@ -210,19 +210,19 @@ namespace CalDavSynchronizer.Scheduling
       }
     }
 
-    private async Task RunAllPendingJobs ()
+    private async Task RunAllPendingJobs()
     {
-      if (_profile.CheckIfOnline && !ConnectionTester.IsOnline (_profile.ProxyOptionsOrNull))
-      {
-        s_logger.WarnFormat ("Skipping synchronization profile '{0}' (Id: '{1}') because network is not available", _profile.ProfileName, _profileId);
-        return;
-      }
-
       // Monitor cannot be used here, since Monitor allows recursive enter for a thread 
-      if (Interlocked.CompareExchange (ref _isRunning, 1, 0) == 0)
+      if (Interlocked.CompareExchange(ref _isRunning, 1, 0) == 0)
       {
         try
         {
+          if (_profile.CheckIfOnline && !await ConnectionTester.IsOnline(_profile.ProxyOptionsOrNull))
+          {
+            s_logger.WarnFormat("Skipping synchronization profile '{0}' (Id: '{1}') because network is not available", _profile.ProfileName, _profileId);
+            return;
+          }
+
           while (_fullSyncPending || _pendingOutlookItems.Count > 0)
           {
             if (_fullSyncPending)
@@ -238,16 +238,16 @@ namespace CalDavSynchronizer.Scheduling
               _pendingOutlookItems.Clear();
               if (s_logger.IsDebugEnabled)
               {
-                s_logger.Debug ($"Partial sync: Going to sync '{itemsToSync.Length}' pending items ( {string.Join (", ", itemsToSync.Select (id => id.EntryId))} ).");
+                s_logger.Debug($"Partial sync: Going to sync '{itemsToSync.Length}' pending items ( {string.Join(", ", itemsToSync.Select(id => id.EntryId))} ).");
               }
               Thread.MemoryBarrier(); // should not be required because there is just one thread entering multiple times
-              await RunPartialNoThrow (itemsToSync);
+              await RunPartialNoThrow(itemsToSync);
             }
           }
         }
         finally
         {
-          Interlocked.Exchange (ref _isRunning, 0);
+          Interlocked.Exchange(ref _isRunning, 0);
         }
       }
     }

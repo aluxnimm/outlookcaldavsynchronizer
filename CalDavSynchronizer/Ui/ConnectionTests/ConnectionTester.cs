@@ -27,7 +27,7 @@ namespace CalDavSynchronizer.Ui.ConnectionTests
 {
   public static class ConnectionTester
   {
-    public static bool IsOnline (ProxyOptions proxyOptionsOrNull)
+    public static async Task<bool> IsOnline (ProxyOptions proxyOptionsOrNull)
     {
       if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
       {
@@ -35,7 +35,7 @@ namespace CalDavSynchronizer.Ui.ConnectionTests
         // try DNS first
         try
         {
-          IPHostEntry hostEntry = Dns.GetHostEntry ("dns.msftncsi.com");
+          IPHostEntry hostEntry = await Dns.GetHostEntryAsync ("dns.msftncsi.com");
           IPAddress ipAddress = Array.Find (hostEntry.AddressList, ip => ip.AddressFamily == AddressFamily.InterNetwork);
           if (ipAddress != null && ipAddress.ToString() == "131.107.255.255") return true;
         }
@@ -48,7 +48,7 @@ namespace CalDavSynchronizer.Ui.ConnectionTests
           {
             IWebProxy proxy = (proxyOptionsOrNull != null) ? SynchronizerFactory.CreateProxy (proxyOptionsOrNull) : null;
             client.Proxy = proxy;
-            txt = client.DownloadString (new Uri ("http://www.msftncsi.com/ncsi.txt"));
+            txt = await client.DownloadStringTaskAsync (new Uri ("http://www.msftncsi.com/ncsi.txt"));
           }
           if (txt != "Microsoft NCSI") return false;
           return true;
