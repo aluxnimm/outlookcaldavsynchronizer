@@ -118,6 +118,15 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 3.2.1 ####
+- Released 2018/09/11
+- Bug fixes
+	- Set Default BusyStatus to Free for AllDay events without TRANSP set, ticket #951.
+	- Set WebResourceName comparison to case sensitive, avoid problems with DavMail URIs.
+	- Fix Unit Tests.
+	- Improve Integration Tests.
+	- Check Internet connection async to avoid blocking in case of DNS issues, ticket #968.
+
 #### 3.2.0 ####
 - Released 2018/05/17
 - New features
