@@ -23,11 +23,12 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 
 New collaboration with Nextcloud, see [https://nextcloud.com/blog/nextcloud-offers-caldav-synchronizer-for-outlook-users/](https://nextcloud.com/blog/nextcloud-offers-caldav-synchronizer-for-outlook-users/) 
 
-For possible enterprise support, please contact us [here](http://caldavsynchronizer.org/enterprise/)!
+For possible enterprise support, please contact us [here](https://caldavsynchronizer.org/enterprise/contact/)!
 
 ### Recommended Android DAV client ###
 
-We work closely together and test interopability with DAVdroid for Android, see [https:// www.davdroid.com](https://www.davdroid.com), so we can really recommend it! Together with DAVdroid we now have experimental support for per-event coloring by mapping the Outlook category color to the COLOR attribute of the event.
+We work closely together and test interopability with DAVdroid for Android, 
+see [https://www.davdroid.com](https://www.davdroid.com), so we can really recommend it! Together with DAVdroid we now have experimental support for per-event coloring by mapping the Outlook category color to the COLOR attribute of the event.
 
 ### Tested CalDAV Servers ###
 
