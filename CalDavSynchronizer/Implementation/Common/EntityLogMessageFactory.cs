@@ -41,47 +41,47 @@ namespace CalDavSynchronizer.Implementation.Common
     {
     }
 
-    public string ACreateOrNull(IAppointmentItemWrapper entity)
+    public string GetADisplayNameOrNull(IAppointmentItemWrapper entity)
     {
       return entity.Inner.Subject;
     }
 
-    public string ACreateOrNull(ITaskItemWrapper entity)
+    public string GetADisplayNameOrNull(ITaskItemWrapper entity)
     {
       return entity.Inner.Subject;
     }
 
-    public string BCreateOrNull(Task entity)
+    public string GetBDisplayNameOrNull(Task entity)
     {
       return entity.Title;
     }
 
-    public string BCreateOrNull(IICalendar entity)
+    public string GetBDisplayNameOrNull(IICalendar entity)
     {
       return entity.Calendar.Events.FirstOrDefault()?.Summary ?? entity.Calendar.Todos.FirstOrDefault()?.Summary;
     }
 
-    public string ACreateOrNull(IContactItemWrapper entity)
+    public string GetADisplayNameOrNull(IContactItemWrapper entity)
     {
       return entity.Inner.FullName;
     }
 
-    public string BCreateOrNull(GoogleContactWrapper entity)
+    public string GetBDisplayNameOrNull(GoogleContactWrapper entity)
     {
       return entity.Contact.Name.FullName;
     }
 
-    public string BCreateOrNull(vCard entity)
+    public string GetBDisplayNameOrNull(vCard entity)
     {
       return entity.FormattedName;
     }
 
-    public string ACreateOrNull(IDistListItemWrapper entity)
+    public string GetADisplayNameOrNull(IDistListItemWrapper entity)
     {
       return entity.Inner.DLName;
     }
 
-    public string BCreateOrNull(DistributionList entity)
+    public string GetBDisplayNameOrNull(DistributionList entity)
     {
       return entity.Name;
     }

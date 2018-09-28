@@ -191,7 +191,7 @@ namespace GenSync.UnitTests.Synchronization
         IdentityMatchDataFactory<string>.Instance,
         null,
         NullChunkedExecutor.Instance,
-        NullFullEntitySynchronizationLoggerFactory<string, string>.Instance,
+        NullFullEntitySynchronizationLoggerFactory<Identifier, string, Identifier, string>.Instance,
         new VersionAwareToStateAwareEntityRepositoryAdapter<Identifier, int, int, int>(_localRepository, IdentifierEqualityComparer.Instance, EqualityComparer<int>.Default),
         new VersionAwareToStateAwareEntityRepositoryAdapter<Identifier, int, int, int>(_serverRepository, IdentifierEqualityComparer.Instance, EqualityComparer<int>.Default),
         NullStateTokensDataAccess<int, int>.Instance);

@@ -26,12 +26,12 @@ namespace GenSync.Logging
     {
     }
 
-    public string ACreateOrNull(TAtypeEntity entity)
+    public string GetADisplayNameOrNull(TAtypeEntity entity)
     {
       return null;
     }
 
-    public string BCreateOrNull(TBtypeEntity entity)
+    public string GetBDisplayNameOrNull(TBtypeEntity entity)
     {
       return null;
     }

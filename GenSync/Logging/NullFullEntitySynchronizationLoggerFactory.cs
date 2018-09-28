@@ -1,17 +1,17 @@
 ﻿namespace GenSync.Logging
 {
-  public class NullFullEntitySynchronizationLoggerFactory<TAtypeEntity, TBtypeEntity> : IFullEntitySynchronizationLoggerFactory<TAtypeEntity, TBtypeEntity>
-  {
-    public static readonly IFullEntitySynchronizationLoggerFactory<TAtypeEntity, TBtypeEntity> Instance = new NullFullEntitySynchronizationLoggerFactory<TAtypeEntity, TBtypeEntity>();
+  public class NullFullEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> : IFullEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity>
+    {
+    public static readonly IFullEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> Instance = new NullFullEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity>();
 
     private NullFullEntitySynchronizationLoggerFactory()
     {
      
     }
 
-    public IFullEntitySynchronizationLogger<TAtypeEntity, TBtypeEntity> CreateEntitySynchronizationLogger(SynchronizationOperation operation)
+    public IFullEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> CreateEntitySynchronizationLogger(SynchronizationOperation operation)
     {
-      return NullFullEntitySynchronizationLogger<TAtypeEntity, TBtypeEntity>.Instance;
+      return NullFullEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity>.Instance;
     }
   }
 }

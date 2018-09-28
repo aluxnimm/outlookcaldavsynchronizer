@@ -66,7 +66,7 @@ namespace GenSync.UnitTests.Synchronization.Stubs
         IdentityMatchDataFactory<string>.Instance,
         null,
         NullChunkedExecutor.Instance,
-        NullFullEntitySynchronizationLoggerFactory<string, string>.Instance,
+        NullFullEntitySynchronizationLoggerFactory<string, string, string, string>.Instance,
         new VersionAwareToStateAwareEntityRepositoryAdapter<string, string, int, int>(AtypeRepository, AtypeIdComparer, EqualityComparer<string>.Default),
         new VersionAwareToStateAwareEntityRepositoryAdapter<string, string, int, int>(BtypeRepository, BtypeIdComparer, EqualityComparer<string>.Default),
         NullStateTokensDataAccess<int, int>.Instance);

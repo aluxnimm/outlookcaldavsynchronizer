@@ -461,7 +461,7 @@ namespace CalDavSynchronizer.Scheduling
         new EventServerEntityMatchDataFactory(),
         options.EffectiveChunkSize,
         CreateChunkedExecutor(options),
-        FullEntitySynchronizationLoggerFactory.Create(generalOptions.LogEntityNames ? EntityLogMessageFactory.Instance : NullEntityLogMessageFactory<IAppointmentItemWrapper, IICalendar>.Instance),
+        FullEntitySynchronizationLoggerFactory.Create<AppointmentId, IAppointmentItemWrapper, WebResourceName, IICalendar>(generalOptions.LogEntityNames ? EntityLogMessageFactory.Instance : NullEntityLogMessageFactory<IAppointmentItemWrapper, IICalendar>.Instance),
         new VersionAwareToStateAwareEntityRepositoryAdapter<AppointmentId, DateTime, IEventSynchronizationContext, int>(atypeRepository, atypeIdEqualityComparer, atypeVersionComparer),
         options.UseWebDavCollectionSync ?  btypeRepository : (IStateAwareEntityRepository<WebResourceName, string, IEventSynchronizationContext, string>) new VersionAwareToStateAwareEntityRepositoryAdapter<WebResourceName, string, IEventSynchronizationContext, string>(btypeRepository, btypeIdEqualityComparer, btypeVersionComparer),
         options.UseWebDavCollectionSync ?  new StateTokensDataAccess<int,string>(storageDataDirectory)  :   NullStateTokensDataAccess<int,string>.Instance,
@@ -604,7 +604,7 @@ namespace CalDavSynchronizer.Scheduling
         IdentityMatchDataFactory<IICalendar>.Instance,
         options.EffectiveChunkSize,
         CreateChunkedExecutor(options),
-        FullEntitySynchronizationLoggerFactory.Create(generalOptions.LogEntityNames ? EntityLogMessageFactory.Instance : NullEntityLogMessageFactory<ITaskItemWrapper, IICalendar>.Instance),
+        FullEntitySynchronizationLoggerFactory.Create<string, ITaskItemWrapper, WebResourceName, IICalendar>(generalOptions.LogEntityNames ? EntityLogMessageFactory.Instance : NullEntityLogMessageFactory<ITaskItemWrapper, IICalendar>.Instance),
         new VersionAwareToStateAwareEntityRepositoryAdapter<string, DateTime, int, int>(atypeRepository, atypeIdEqualityComparer, atypeVersionComparer),
         new VersionAwareToStateAwareEntityRepositoryAdapter<WebResourceName, string, int, string>(btypeRepository, btypeIdEqualityComparer, btypeVersionComparer),
         NullStateTokensDataAccess<int, string>.Instance);
@@ -684,7 +684,7 @@ namespace CalDavSynchronizer.Scheduling
         IdentityMatchDataFactory<Task>.Instance,
         options.EffectiveChunkSize,
         CreateChunkedExecutor(options),
-        FullEntitySynchronizationLoggerFactory.Create(generalOptions.LogEntityNames ? EntityLogMessageFactory.Instance : NullEntityLogMessageFactory<ITaskItemWrapper, Task>.Instance),
+        FullEntitySynchronizationLoggerFactory.Create<string, ITaskItemWrapper, string, Task>(generalOptions.LogEntityNames ? EntityLogMessageFactory.Instance : NullEntityLogMessageFactory<ITaskItemWrapper, Task>.Instance),
         new VersionAwareToStateAwareEntityRepositoryAdapter<string, DateTime, int, int>(atypeRepository, atypeIdEqualityComparer, atypeVersionComparer),
         new VersionAwareToStateAwareEntityRepositoryAdapter<string, string, int, string>(btypeRepository, btypeIdEqualityComparer, btypeVersionComparer),
         NullStateTokensDataAccess<int, string>.Instance);
@@ -736,7 +736,7 @@ namespace CalDavSynchronizer.Scheduling
               e => new SogoDistListConflictInitialSyncStateCreationStrategyAutomatic(e),
               btypeIdEqualityComparer,
               componentsToFill,
-              FullEntitySynchronizationLoggerFactory.Create(generalOptions.LogEntityNames ? EntityLogMessageFactory.Instance : NullEntityLogMessageFactory<IDistListItemWrapper, DistributionList>.Instance));
+              FullEntitySynchronizationLoggerFactory.Create<string,IDistListItemWrapper, WebResourceName, DistributionList>(generalOptions.LogEntityNames ? EntityLogMessageFactory.Instance : NullEntityLogMessageFactory<IDistListItemWrapper, DistributionList>.Instance));
 
             return new OutlookSynchronizer<WebResourceName, string>(
               new ContactAndDistListSynchronizer(
@@ -771,7 +771,7 @@ namespace CalDavSynchronizer.Scheduling
               e => new DistListConflictInitialSyncStateCreationStrategyAutomatic(e),
               btypeIdEqualityComparer,
               componentsToFill,
-              FullEntitySynchronizationLoggerFactory.Create(generalOptions.LogEntityNames ? EntityLogMessageFactory.Instance : NullEntityLogMessageFactory<IDistListItemWrapper, vCard>.Instance));
+              FullEntitySynchronizationLoggerFactory.Create<string, IDistListItemWrapper, WebResourceName, vCard>(generalOptions.LogEntityNames ? EntityLogMessageFactory.Instance : NullEntityLogMessageFactory<IDistListItemWrapper, vCard>.Instance));
 
           
         
@@ -920,7 +920,7 @@ namespace CalDavSynchronizer.Scheduling
         IdentityMatchDataFactory<vCard>.Instance,
         options.EffectiveChunkSize,
         CreateChunkedExecutor(options),
-        FullEntitySynchronizationLoggerFactory.Create(generalOptions.LogEntityNames ? EntityLogMessageFactory.Instance : NullEntityLogMessageFactory<IContactItemWrapper, vCard>.Instance),
+        FullEntitySynchronizationLoggerFactory.Create<string, IContactItemWrapper, WebResourceName, vCard>(generalOptions.LogEntityNames ? EntityLogMessageFactory.Instance : NullEntityLogMessageFactory<IContactItemWrapper, vCard>.Instance),
         new VersionAwareToStateAwareEntityRepositoryAdapter<string, DateTime, ICardDavRepositoryLogger, int>(contactSynchronizerComponents.AtypeRepository, contactSynchronizerComponents.AtypeIdEqulityComparer, atypeVersionComparer),
         contactSynchronizerComponents.BtypeStateAwareEntityRepository,
         contactSynchronizerComponents.StateTokenDataAccess);
@@ -937,7 +937,7 @@ namespace CalDavSynchronizer.Scheduling
        ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, IDistListItemWrapper, WebResourceName, string, TBtypeEntity, DistributionListSychronizationContext>> automaticConflictResolutionStrategyFactory,
       IEqualityComparer<WebResourceName> btypeIdEqualityComparer,
       AvailableContactSynchronizerComponents componentsToFill,
-      IFullEntitySynchronizationLoggerFactory<IDistListItemWrapper,TBtypeEntity> entitySynchronizationLoggerFactory) 
+      IFullEntitySynchronizationLoggerFactory<string, IDistListItemWrapper,WebResourceName, TBtypeEntity> entitySynchronizationLoggerFactory) 
       where TBtypeEntity : new()
     {
       var atypeRepository = new OutlookDistListRepository<DistributionListSychronizationContext> (
@@ -1080,7 +1080,7 @@ namespace CalDavSynchronizer.Scheduling
         IdentityMatchDataFactory<GoogleContactWrapper>.Instance,
         options.EffectiveChunkSize,
         CreateChunkedExecutor(options),
-        FullEntitySynchronizationLoggerFactory.Create(generalOptions.LogEntityNames ? EntityLogMessageFactory.Instance : NullEntityLogMessageFactory<IContactItemWrapper, GoogleContactWrapper>.Instance),
+        FullEntitySynchronizationLoggerFactory.Create<string, IContactItemWrapper, string, GoogleContactWrapper>(generalOptions.LogEntityNames ? EntityLogMessageFactory.Instance : NullEntityLogMessageFactory<IContactItemWrapper, GoogleContactWrapper>.Instance),
         new VersionAwareToStateAwareEntityRepositoryAdapter<string, DateTime, IGoogleContactContext, int>(atypeRepository, atypeIdEqualityComparer, atypeVersionComparer),
         new VersionAwareToStateAwareEntityRepositoryAdapter<string, GoogleContactVersion, IGoogleContactContext, int>(btypeRepository, btypeIdEqualityComparer, googleContactVersionComparer),
         NullStateTokensDataAccess<int, int>.Instance);

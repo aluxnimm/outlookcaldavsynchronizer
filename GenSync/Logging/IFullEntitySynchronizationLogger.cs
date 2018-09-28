@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 namespace GenSync.Logging
 {
-  public interface IFullEntitySynchronizationLogger<in TAtypeEntity, in TBtypeEntity> : IEntitySynchronizationLogger<TAtypeEntity, TBtypeEntity>, IEntitySynchronizationLog
+  public interface IFullEntitySynchronizationLogger<in TAtypeEntityId, in TAtypeEntity, in TBtypeEntityId, in TBtypeEntity> : IEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity>, IEntitySynchronizationLog
   {
 
   }

@@ -25,7 +25,7 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   EntitySyncStateFactory<String, DateTime, IContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
 |   |   |   |   EntitySyncStateEnvironment<String, DateTime, IContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
 |   |   |   ExceptionHandlingStrategy
-|   |   |   FullEntitySynchronizationLoggerFactory<IContactItemWrapper, vCard>
+|   |   |   FullEntitySynchronizationLoggerFactory<String, IContactItemWrapper, WebResourceName, vCard>
 |   |   |   |   NullEntityLogMessageFactory<IContactItemWrapper, vCard>
 |   |   |   GenericEqualityComparer<DateTime>
 |   |   |   GenericEqualityComparer<String>
@@ -83,7 +83,7 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   EntitySyncStateFactory<String, DateTime, IDistListItemWrapper, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
 |   |   |   |   EntitySyncStateEnvironment<String, DateTime, IDistListItemWrapper, WebResourceName, String, DistributionList, DistributionListSychronizationContext>
 |   |   |   ExceptionHandlingStrategy
-|   |   |   FullEntitySynchronizationLoggerFactory<IDistListItemWrapper, DistributionList>
+|   |   |   FullEntitySynchronizationLoggerFactory<String, IDistListItemWrapper, WebResourceName, DistributionList>
 |   |   |   |   NullEntityLogMessageFactory<IDistListItemWrapper, DistributionList>
 |   |   |   GenericEqualityComparer<DateTime>
 |   |   |   GenericEqualityComparer<String>

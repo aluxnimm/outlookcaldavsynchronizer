@@ -18,19 +18,19 @@ using System;
 
 namespace GenSync.Logging
 {
-  public class NullFullEntitySynchronizationLogger<TAtypeEntity, TBtypeEntity> : IFullEntitySynchronizationLogger<TAtypeEntity, TBtypeEntity>
+  public class NullFullEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> : IFullEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity>
   {
-    public static readonly IFullEntitySynchronizationLogger<TAtypeEntity, TBtypeEntity> Instance = new NullFullEntitySynchronizationLogger<TAtypeEntity, TBtypeEntity>();
+    public static readonly IFullEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> Instance = new NullFullEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity>();
 
     private NullFullEntitySynchronizationLogger()
     {
     }
 
-    public void SetAId (object aid)
+    public void SetAId (TAtypeEntityId aid)
     {
     }
 
-    public void SetBId (object bid)
+    public void SetBId (TBtypeEntityId bid)
     {
     }
 

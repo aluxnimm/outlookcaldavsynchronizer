@@ -19,17 +19,14 @@ using System;
 namespace GenSync.Logging
 {
 
-  public interface IEntitySynchronizationLogger<in TAtypeEntity, in TBtypeEntity> : IEntitySynchronizationLogger
-  {
-    void LogA(TAtypeEntity entity);
-    void LogB(TBtypeEntity entity);
-  }
+    public interface IEntitySynchronizationLogger<in TAtypeEntityId, in TAtypeEntity, in TBtypeEntityId, in TBtypeEntity> : IEntityMappingLogger
+    {
+        void LogA(TAtypeEntity entity);
+        void LogB(TBtypeEntity entity);
+        void SetAId(TAtypeEntityId id);
+        void SetBId(TBtypeEntityId id);
+        void LogAbortedDueToError(Exception exception);
+        void LogAbortedDueToError(string errorMessage);
+    }
 
-  public interface IEntitySynchronizationLogger : IEntityMappingLogger
-  {
-    void SetAId (object id);
-    void SetBId (object id);
-    void LogAbortedDueToError (Exception exception);
-    void LogAbortedDueToError (string errorMessage);
-  }
 }

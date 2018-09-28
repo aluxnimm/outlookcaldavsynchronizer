@@ -19,7 +19,7 @@ namespace GenSync.Logging
 {
   public interface IEntityLogMessageFactory<in TAtypeEntity, in TBtypeEntity> 
   {
-    string ACreateOrNull(TAtypeEntity entity);
-    string BCreateOrNull(TBtypeEntity entity);
+    string GetADisplayNameOrNull(TAtypeEntity entity);
+    string GetBDisplayNameOrNull(TBtypeEntity entity);
   }
 }

@@ -66,7 +66,7 @@ namespace GenSync.Synchronization
     private readonly EntitySyncStateChunkCreator<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> _entitySyncStateChunkCreator;
     private readonly int? _chunkSize;
     private readonly IChunkedExecutor _chunkedExecutor;
-    private readonly IFullEntitySynchronizationLoggerFactory<TAtypeEntity, TBtypeEntity> _fullEntitySynchronizationLoggerFactory;
+    private readonly IFullEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> _fullEntitySynchronizationLoggerFactory;
     private readonly IStateAwareEntityRepository<TAtypeEntityId, TAtypeEntityVersion, TContext, TAtypeStateToken> _atypeStateAwareEntityRepository;
     private readonly IStateAwareEntityRepository<TBtypeEntityId, TBtypeEntityVersion, TContext, TBtypeStateToken> _btypeStateAwareEntityRepository;
 
@@ -88,7 +88,7 @@ namespace GenSync.Synchronization
       IMatchDataFactory<TBtypeEntity, TBMatchData> bMatchDataFactory,
       int? chunkSize,
       IChunkedExecutor chunkedExecutor,
-      IFullEntitySynchronizationLoggerFactory<TAtypeEntity, TBtypeEntity> fullEntitySynchronizationLoggerFactory,
+      IFullEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> fullEntitySynchronizationLoggerFactory,
       IStateAwareEntityRepository<TAtypeEntityId, TAtypeEntityVersion, TContext, TAtypeStateToken> atypeStateAwareEntityRepository,
       IStateAwareEntityRepository<TBtypeEntityId, TBtypeEntityVersion, TContext, TBtypeStateToken> btypeStateAwareEntityRepository,
       IStateTokenDataAccess<TAtypeStateToken, TBtypeStateToken> stateTokenDataAccess,
@@ -333,7 +333,7 @@ namespace GenSync.Synchronization
       Action<List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>> saveNewRelations)
     {
 
-      var entitySynchronizationLoggerFactory = new SynchronizationLoggerBoundEntitySynchronizationLoggerFactory<TAtypeEntity, TBtypeEntity>(logger, _fullEntitySynchronizationLoggerFactory);
+      var entitySynchronizationLoggerFactory = new SynchronizationLoggerBoundEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity>(logger, _fullEntitySynchronizationLoggerFactory);
 
       using (IEntityContainer<TAtypeEntityId, TAtypeEntity, TContext> aEntities = new EntityContainer<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TContext>(_atypeRepository, _atypeIdComparer, _chunkSize, _chunkedExecutor))
       using (IEntityContainer<TBtypeEntityId, TBtypeEntity, TContext> bEntities = new EntityContainer<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>(_btypeRepository, _btypeIdComparer, _chunkSize, _chunkedExecutor))

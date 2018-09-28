@@ -21,8 +21,8 @@ using log4net;
 
 namespace GenSync.Logging
 {
-  public class EntitySynchronizationLogger<TAtypeEntity, TBtypeEntity> : IFullEntitySynchronizationLogger<TAtypeEntity, TBtypeEntity>
-  {
+  public class EntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity>  : IFullEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity>
+    {
     private static readonly ILog s_logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
     private readonly SynchronizationOperation _operation;
@@ -73,12 +73,12 @@ namespace GenSync.Logging
       MappingWarnings.Add (warning + " : " + exception.ToString ());
     }
 
-    public void SetAId (object id)
+    public void SetAId (TAtypeEntityId id)
     {
       _aId = id.ToString();
     }
 
-    public void SetBId (object id)
+    public void SetBId (TBtypeEntityId id)
     {
       _bId = id.ToString();
     }
@@ -87,7 +87,7 @@ namespace GenSync.Logging
     {
       try
       {
-        _aLogDisplayName = _entityLogMessageFactory.ACreateOrNull(entity);
+        _aLogDisplayName = _entityLogMessageFactory.GetADisplayNameOrNull(entity);
       }
       catch (Exception x)
       {
@@ -100,7 +100,7 @@ namespace GenSync.Logging
     {
       try
       {
-        _bLogDisplayName = _entityLogMessageFactory.BCreateOrNull(entity);
+        _bLogDisplayName = _entityLogMessageFactory.GetBDisplayNameOrNull(entity);
       }
       catch (Exception x)
       {
