@@ -471,11 +471,17 @@ namespace CalDavSynchronizer.Implementation.Events
 
       if (source.Alarms.Count > 1)
       {
-        s_logger.WarnFormat ("Event '{0}' contains multiple alarms. Ignoring all except first.", source.UID);
+        s_logger.WarnFormat ("Event '{0}' contains multiple alarms. Ignoring all except first alarm with action DISPLAY.", source.UID);
       }
 
-      var alarm = source.Alarms[0];
+      var alarm = source.Alarms.FirstOrDefault (a => a.Action == AlarmAction.Display);
 
+      if (alarm == null)
+      {
+        s_logger.WarnFormat ("Event '{0}' contains only not supported alarm types. Ignoring alarm.", source.UID);
+        target.ReminderSet = false;
+        return;
+      }
       if (alarm.Trigger == null)
       {
         s_logger.WarnFormat ("Event '{0}' contains non RFC-conform alarm. Ignoring alarm.", source.UID);
