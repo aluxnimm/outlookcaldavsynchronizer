@@ -24,11 +24,13 @@ namespace CalDavSynchronizer.DataAccess
   {
     public Uri Uri { get; }
     public string Name { get; }
+    public bool ReadOnly { get; }
 
-    public AddressBookData (Uri uri, string name)
+    public AddressBookData (Uri uri, string name, bool readOnly = false)
     {
       Uri = uri;
       Name = name;
+      ReadOnly = readOnly;
     }
   }
 }

@@ -901,6 +901,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
+    <None Include="Resources\TasklistReadWrite.ico" />
+    <None Include="Resources\TasklistReadOnly.ico" />
     <Resource Include="Resources\ProfileLogos\logo_kolab.png" />
     <Resource Include="Resources\ProfileLogos\logo_swisscom.png" />
     <Resource Include="Resources\ProfileLogos\logo_iCloud.png" />
@@ -940,6 +942,10 @@
     <Resource Include="Resources\Import.png" />
     <Resource Include="Resources\ClearCache.png" />
     <None Include="Resources\ApplicationLogoLarge.png" />
+    <None Include="Resources\AddressbookReadOnly.ico" />
+    <None Include="Resources\AddressbookReadWrite.ico" />
+    <None Include="Resources\CalendarReadOnly.ico" />
+    <None Include="Resources\CalendarReadWrite.ico" />
     <Content Include="Resources\LogoBanner.bmp" />
     <Resource Include="Resources\ExpandAll.png" />
     <Resource Include="Resources\ProfileLogos\logo_nextcloud.png" />
@@ -1090,7 +1096,7 @@
     </ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>99D12A4419EA17C4DB056A34FEDAFDC1A576A921</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>1420A545B90CAFB4925D2F952464AA1F36A0AA27</ManifestCertificateThumbprint>
   </PropertyGroup>
   <!-- Include the build rules for a C# project. -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

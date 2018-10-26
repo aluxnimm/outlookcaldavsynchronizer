@@ -24,11 +24,13 @@ namespace CalDavSynchronizer.DataAccess
   {
     public string Id { get; }
     public string Name { get; }
+    public bool ReadOnly { get; }
 
-    public TaskListData (string id, string name)
+    public TaskListData (string id, string name, bool readOnly = false)
     {
       Id = id;
       Name = name;
+      ReadOnly = readOnly;
     }
   }
 }

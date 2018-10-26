@@ -301,7 +301,15 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         ShowProfile(viewModel.Model.Id);
       }
     }
-    
+
+    public IOptionsViewModel AddMultipleHeadless (IProfileType type)
+    {
+       var profileModelFactoryFactory = _profileModelFactoriesByType[type];
+       var viewModel = profileModelFactoryFactory.CreateTemplateViewModel();
+       _options.Add(viewModel);
+      return viewModel;
+    }
+
     private IProfileType QueryProfileType()
     {
       return _uiService.QueryProfileType(_profileTypeRegistry.AllTypes);

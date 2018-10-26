@@ -170,7 +170,9 @@ namespace CalDavSynchronizer.DataAccess
                     {
                       var path = urlNode.InnerText.EndsWith ("/") ? urlNode.InnerText : urlNode.InnerText + "/";
                       var displayName = string.IsNullOrEmpty (displayNameNode.InnerText) ? "Default Addressbook" : displayNameNode.InnerText;
-                      addressbooks.Add (new AddressBookData (new Uri (addressBookDocument.DocumentUri, path), displayName));
+                      var uri = new Uri(addressBookDocument.DocumentUri, path);
+                      bool ro = await IsReadOnly(uri);
+                      addressbooks.Add (new AddressBookData (uri, displayName, ro));
                     }
                   }
                 }

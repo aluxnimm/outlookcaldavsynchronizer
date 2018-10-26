@@ -49,6 +49,7 @@ namespace CalDavSynchronizer.Contracts
     public int ThresholdForProgressDisplay { get; set; }
     public int MaxSucessiveWarnings { get; set; }
     public string CultureName { get; set; }
+    public bool AutoconfigureKolab { get; set; }
 
     public GeneralOptions Clone()
     {

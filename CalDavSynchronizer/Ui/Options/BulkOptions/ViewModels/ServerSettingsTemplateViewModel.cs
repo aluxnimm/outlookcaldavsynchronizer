@@ -106,6 +106,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 
       if (string.IsNullOrEmpty (CalenderUrl) && !string.IsNullOrEmpty (EmailAddress))
       {
+        s_logger.Debug("Auto-detect CaldAV/CardDAV URL");
         bool success;
         caldavUrlString = OptionTasks.DoSrvLookup (EmailAddress, OlItemType.olAppointmentItem, out success);
         carddavUrlString = OptionTasks.DoSrvLookup (EmailAddress, OlItemType.olContactItem, out success);
@@ -127,6 +128,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       var calDavDataAccess = new CalDavDataAccess (caldavUrl, webDavClientCaldav);
       var cardDavDataAccess = new CardDavDataAccess (carddavUrl, webDavClientCarddav, string.Empty, contentType => true);
 
+      s_logger.Debug("Get User's resources");
       return await GetUserResources (calDavDataAccess, cardDavDataAccess);
     }
 

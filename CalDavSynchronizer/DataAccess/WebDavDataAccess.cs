@@ -113,6 +113,48 @@ namespace CalDavSynchronizer.DataAccess
       return privileges;
     }
 
+    // Only consider resource as read-only if we are sure. That is:
+    // - we can query ACL property
+    // - we see a READ privilage, but no WRITE privilege
+    public async Task<bool> IsReadOnly(Uri resourceUrl)
+    {
+      try
+      {
+        var document = await _webDavClient.ExecuteWebDavRequestAndReadResponse(
+            resourceUrl,
+            "PROPFIND",
+            0,
+            null,
+            null,
+            "application/xml",
+            @"<?xml version='1.0'?>
+                      <D:propfind xmlns:D=""DAV:"" xmlns:C=""urn:ietf:params:xml:ns:caldav"" xmlns:E=""http://apple.com/ns/ical/"">
+                          <D:prop>
+                              <D:acl />
+                          </D:prop>
+                      </D:propfind>
+                 "
+            );
+
+        if (
+          document.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/D:acl/D:ace/D:grant/D:privilege/D:read", document.XmlNamespaceManager) != null
+          && document.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/D:acl/D:ace/D:grant/D:privilege/D:write", document.XmlNamespaceManager) == null
+          )
+        {
+          return true;
+        }
+        else
+        {
+          return false;
+        }
+      }
+      catch (Exception x)
+      {
+        s_logger.Error(null, x);
+        return false;
+      }
+    }
+
     protected async Task<string> GetEtag (Uri absoluteEntityUrl)
     {
       var headers = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (absoluteEntityUrl, "GET", null, null, null, null, null);

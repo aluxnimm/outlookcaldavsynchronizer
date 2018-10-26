@@ -25,12 +25,16 @@ namespace CalDavSynchronizer.DataAccess
     public Uri Uri { get; }
     public string Name { get; }
     public ArgbColor? Color { get; }
+    public bool ReadOnly { get; }
+    public bool IsDefault { get; }
 
-    public CalendarData (Uri uri, string name, ArgbColor? color)
+    public CalendarData (Uri uri, string name, ArgbColor? color, bool readOnly = false, bool isDefault = false)
     {
       Uri = uri;
       Name = name;
       Color = color;
+      ReadOnly = readOnly;
+      IsDefault = isDefault;
     }
   }
 }
