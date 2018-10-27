@@ -58,6 +58,7 @@ namespace CalDavSynchronizer.ProfileTypes
       all.Add(new CozyProfile());
       all.Add(new NextcloudProfile());
       all.Add(new MailboxOrgProfile());
+      all.Add(new OpenXchangeProfile());
       all.Add(new EasyProjectProfile());
       all.Add(new WebDeProfile());
       all.Add(new SmarterMailProfile());
