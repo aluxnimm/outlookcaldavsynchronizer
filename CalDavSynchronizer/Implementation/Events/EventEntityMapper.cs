@@ -844,6 +844,10 @@ namespace CalDavSynchronizer.Implementation.Events
                   targetException.UID = target.UID;
                   Map1To2 (wrapper.Inner, targetException, true, startIcalTimeZone, endIcalTimeZone, logger, context);
 
+                  // Organizer must be the same for all components to avoid SameOrganizerForAllComponentsException
+                  if (target.Organizer != null)
+                    targetException.Organizer = target.Organizer;
+
                   // check if new exception is already present in target
                   // if it is found and not already present as exdate then add a new exdate to avoid 2 events
                   var from = (wrapper.Inner.Start.Date < sourceException.OriginalDate.Date) ? wrapper.Inner.Start.Date : sourceException.OriginalDate.Date;
