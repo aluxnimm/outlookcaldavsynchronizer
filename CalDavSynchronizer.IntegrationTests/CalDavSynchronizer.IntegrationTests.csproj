@@ -66,6 +66,9 @@
       <HintPath>..\packages\Google.GData.Extensions.2.2.0.0\lib\Google.GData.Extensions.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Office.Interop.Outlook, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -132,6 +135,7 @@
     <Compile Include="ChunkedSynchronizationTest\TaskTest.cs" />
     <Compile Include="ChunkedSynchronizationTest\EventTest.cs" />
     <Compile Include="ContactSynchronizerFixture.cs" />
+    <Compile Include="SetupFixture.cs" />
     <Compile Include="TaskSynchronizerFixture.cs" />
     <Compile Include="EventSynchronizerFixture.cs" />
     <Compile Include="Infrastructure\ComponentContainerTestExtension.cs" />
