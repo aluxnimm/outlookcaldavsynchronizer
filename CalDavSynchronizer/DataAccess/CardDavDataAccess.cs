@@ -233,9 +233,9 @@ namespace CalDavSynchronizer.DataAccess
           );
     }
 
-    public Task<EntityVersion<WebResourceName, string>> CreateEntity (string vCardData, string uid)
+    public Task<EntityVersion<WebResourceName, string>> CreateEntity (string vCardData, string name)
     {
-      return CreateNewEntity (string.Format ("{0:D}.vcf", uid), vCardData);
+      return CreateNewEntity (string.Format ("{0:D}.vcf", name), vCardData);
     }
 
     protected async Task<EntityVersion<WebResourceName, string>> CreateNewEntity (string name, string content)

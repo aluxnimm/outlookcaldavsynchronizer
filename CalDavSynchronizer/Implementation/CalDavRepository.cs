@@ -255,8 +255,10 @@ namespace CalDavSynchronizer.Implementation
       {
         IICalendar newCalendar = new iCalendar ();
         newCalendar = await entityInitializer (newCalendar);
-        var uid = (newCalendar.Events.Count > 0) ? newCalendar.Events[0].UID : newCalendar.Todos[0].UID;
-        return await _calDavDataAccess.CreateEntity (SerializeCalendar (newCalendar), uid);
+        var uid = newCalendar.Events.Count > 0 ? newCalendar.Events[0].UID : newCalendar.Todos[0].UID;
+        const int maximumNameLength = 255;
+        var name = uid.Length <= maximumNameLength ? uid : Guid.NewGuid().ToString();
+        return await _calDavDataAccess.CreateEntity (SerializeCalendar (newCalendar), name);
       }
     }
 

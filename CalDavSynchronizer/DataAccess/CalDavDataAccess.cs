@@ -340,9 +340,9 @@ namespace CalDavSynchronizer.DataAccess
       return GetVersions (range, "VTODO");
     }
 
-    public Task<EntityVersion<WebResourceName, string>> CreateEntity (string iCalData, string uid)
+    public Task<EntityVersion<WebResourceName, string>> CreateEntity (string iCalData, string name)
     {
-      return CreateNewEntity (string.Format ("{0:D}.ics", uid), iCalData);
+      return CreateNewEntity (string.Format ("{0:D}.ics", name), iCalData);
     }
 
     protected async Task<EntityVersion<WebResourceName, string>> CreateNewEntity (string name, string content)

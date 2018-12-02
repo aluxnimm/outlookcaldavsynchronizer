@@ -107,9 +107,9 @@ namespace CalDavSynchronizer.DataAccess
       return Task.FromResult<IReadOnlyList<EntityWithId<WebResourceName, string>>>(entities.ToArray());
     }
 
-    public Task<EntityVersion<WebResourceName, string>> CreateEntity(string iCalData, string uid)
+    public Task<EntityVersion<WebResourceName, string>> CreateEntity(string iCalData, string name)
     {
-      var fileName = uid + _fileExtension;
+      var fileName = name + _fileExtension;
       var path = Path.Combine(_directory.FullName, fileName);
       File.WriteAllText(path, iCalData);
       return Task.FromResult(EntityVersion.Create(new WebResourceName(fileName), File.GetLastWriteTimeUtc(path).ToString("o")));
