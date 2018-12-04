@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.Contacts;
@@ -99,69 +100,62 @@ END:VLIST
 
     protected override bool TryDeserialize(string vcardData, out DistributionList vcard, WebResourceName uriOfAddressbookForLogging, int deserializationThreadLocal, ILoadEntityLogger logger)
     {
-      vcardData = vcardData.Replace("\r\n\t", string.Empty).Replace("\r\n ", string.Empty);
-
+      var cardReader = new vCardStandardReader();
       vcard = new DistributionList();
 
-      foreach (var contentLine in vcardData.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
+      using (var reader = new StringReader(vcardData))
       {
-        var valueStartIndex = contentLine.LastIndexOf(':') + 1;
-        var value = contentLine.Substring(valueStartIndex);
+        vCardProperty property;
+        do
+        {
+          property = cardReader.ReadProperty(reader);
+          if (!string.IsNullOrEmpty(property?.Name))
+          { 
+            var propNameToProcess = property.Name.ToUpperInvariant();
 
-        if (contentLine.StartsWith("UID"))
-          vcard.Uid = value;
-        else if (contentLine.StartsWith("FN"))
-          vcard.Name = vCardStandardReader.DecodeEscaped(value);
-        else if (contentLine.StartsWith("DESCRIPTION"))
-          vcard.Description = vCardStandardReader.DecodeEscaped(value);
-        else if (contentLine.StartsWith("NICKNAME"))
-          vcard.Nickname = vCardStandardReader.DecodeEscaped(value);
-        else if (contentLine.StartsWith("CARD"))
-        {
-          string displayName = null;
-          string emailAddress = null;
-          ParseMemberContentLineParameters(contentLine.Substring(0, valueStartIndex-1), out emailAddress, out displayName);
-          vcard.Members.Add(new KnownDistributionListMember(emailAddress, displayName, value));
-        }
-        else if (contentLine.StartsWith(NonAddressBookMemberValueName))
-        {
-          string displayName = null;
-          string emailAddress = value;
-          var contentWithoutMailto = contentLine.Substring(0, valueStartIndex - 8); // substract :mailto:
-          
-          ParseXAddressBookServerMemberContentLineParameters(contentWithoutMailto, out displayName);
-          vcard.NonAddressBookMembers.Add(new DistributionListMember(emailAddress, displayName));
-        }
+            switch (propNameToProcess)
+            {
+              case "UID":
+                vcard.Uid = property.ToString();
+                break;
+              case "FN":
+                vcard.Name = property.ToString();
+                break;
+              case "DESCRIPTION":
+                vcard.Description = property.ToString();
+                break;
+              case "NICKNAME":
+                vcard.Nickname = property.ToString();
+                break;
+              case "CARD":
+                if (property.Value != null)
+                {
+                  var emailAddress = property.Subproperties.GetValue("EMAIL");
+                  var displayName = property.Subproperties.GetValue("FN");
+                  vcard.Members.Add(new KnownDistributionListMember(emailAddress, displayName, property.Value.ToString()));
+                }
+                break;
+              case NonAddressBookMemberValueName:
+                if (property.Value != null)
+                {
+                  var displayName = property.Subproperties.GetValue("CN");
+                  string emailAddress = null;
+                  var value = property.Value.ToString();
+                  if (!string.IsNullOrEmpty(value))
+                  {
+                    if (value.StartsWith("mailto:", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                      emailAddress = value.Substring(7); //skip mailto:
+                    }
+                  }
+                  vcard.NonAddressBookMembers.Add(new DistributionListMember(emailAddress, displayName));
+                }
+                break;
+            }
+          }
+        } while (property != null);
       }
-
       return true;
     }
-
-    private static void ParseMemberContentLineParameters(string contentLineWithoutValue,out string emailAddress, out string displayName)
-    {
-      emailAddress = null;
-      displayName = null;
-
-      var parameters = contentLineWithoutValue.Split(";", '\\');
-      foreach (var parameter in parameters)
-      {
-        if (parameter.StartsWith("EMAIL="))
-          emailAddress = parameter.Substring(6);
-        if (parameter.StartsWith("FN="))
-          displayName = vCardStandardReader.DecodeEscaped(parameter.Substring(3));
-      }
-    }
-    private static void ParseXAddressBookServerMemberContentLineParameters (string contentLineWithoutValue, out string displayName)
-    {
-      displayName = null;
-
-      var parameters = contentLineWithoutValue.Split(";", '\\');
-      foreach (var parameter in parameters)
-      {
-        if (parameter.StartsWith("CN="))
-          displayName = vCardStandardReader.DecodeEscaped(parameter.Substring(3));
-      }
-    }
-
   }
 }
