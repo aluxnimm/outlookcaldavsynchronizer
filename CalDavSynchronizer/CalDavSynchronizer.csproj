@@ -450,6 +450,7 @@
     <Compile Include="IOutlookSession.cs" />
     <Compile Include="IProfileExportProcessor.cs" />
     <Compile Include="OutlookCategory.cs" />
+    <Compile Include="ProfileTypes\ConcreteTypes\CalendariCloudProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\Open-XchangeProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\Swisscom\SwisscomServerSettingsView.xaml.cs">
       <DependentUpon>SwisscomServerSettingsView.xaml</DependentUpon>

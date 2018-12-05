@@ -1370,6 +1370,11 @@ Now it will work on port 5006 with https.
 Apple changed their security policy recently (June 2017). You need to enable Two-Factor-Authentication and an app-specific password for CalDavSynchronizer, see
 [https://support.apple.com/en-us/HT204397](https://support.apple.com/en-us/HT204397)
 
+For syncing iCloud Calendar select the preconfigured iCloud Calendar profile type, which uses     the following CalDAV URL
+
+    https://caldav.icloud.com
+
+Only as a fallback if the autodiscovery fails you can use the following procedur
 To find the correct DAV url for iCloud you need some information from the MacOS, where you are connected with your calendar.
 
 Open with Textedit: `~/Library/Calendars/*.caldav/Info.plist` 
@@ -1385,6 +1390,7 @@ Then you get the DAV url of the calendar:
     `https://p**-caldav.icloud.com/*********/calendars/********-****-****-****-************/`
 
 For syncing iCloud contacts select the preconfigured iCloud contacts profile type, which uses the following CardDAV URL
+
     https://contacts.icloud.com
 and press '*Test or discover settings*' for autodiscovery, the final URL should look like
     

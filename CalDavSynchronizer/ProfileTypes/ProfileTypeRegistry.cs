@@ -47,6 +47,7 @@ namespace CalDavSynchronizer.ProfileTypes
       var generic = new GenericProfile();
       var google = new GoogleProfile();
       var all = new List<IProfileType> { generic, google };
+      all.Add(new CalendariCloudProfile());
       all.Add(new ContactsiCloudProfile());
       all.Add(new FruuxProfile());
       all.Add(new PosteoProfile());
