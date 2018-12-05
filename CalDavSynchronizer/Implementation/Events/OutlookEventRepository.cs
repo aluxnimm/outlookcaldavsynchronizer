@@ -287,11 +287,19 @@ namespace CalDavSynchronizer.Implementation.Events
 
       using (newAppointmentItemWrapper)
       {
-        IAppointmentItemWrapper initializedWrapper;
-
         try
         {
-          initializedWrapper = await entityInitializer(newAppointmentItemWrapper);
+          var initializedWrapper = await entityInitializer(newAppointmentItemWrapper);
+
+          using (initializedWrapper)
+          {
+            initializedWrapper.SaveAndReload();
+            context.DuplicateEventCleaner.AnnounceAppointment(AppointmentSlim.FromAppointmentItem(initializedWrapper.Inner));
+            var result = new EntityVersion<AppointmentId, DateTime>(
+              new AppointmentId(initializedWrapper.Inner.EntryID, initializedWrapper.Inner.GlobalAppointmentID),
+              initializedWrapper.Inner.LastModificationTime);
+            return result;
+          }
         }
         catch
         {
@@ -306,15 +314,7 @@ namespace CalDavSynchronizer.Implementation.Events
           throw;
         }
 
-        using (initializedWrapper)
-        {
-          initializedWrapper.SaveAndReload();
-          context.DuplicateEventCleaner.AnnounceAppointment(AppointmentSlim.FromAppointmentItem(initializedWrapper.Inner));
-          var result = new EntityVersion<AppointmentId, DateTime>(
-            new AppointmentId(initializedWrapper.Inner.EntryID, initializedWrapper.Inner.GlobalAppointmentID),
-            initializedWrapper.Inner.LastModificationTime);
-          return result;
-        }
+ 
       }
     }
 
