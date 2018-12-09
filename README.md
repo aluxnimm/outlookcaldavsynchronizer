@@ -37,6 +37,7 @@ see [https://www.davdroid.com](https://www.davdroid.com), so we can really recom
 - cPanel
 - Cyrus Imap 2.5
 - DAViCal
+- EGroupware
 - Fruux
 - GMX
 - Google Calendar
@@ -50,7 +51,7 @@ see [https://www.davdroid.com](https://www.davdroid.com), so we can really recom
 - mailbox.org
 - Nextcloud
 - One.com
-- OpenX-change
+- Open-Xchange
 - Owncloud
 - Posteo
 - Radicale
@@ -118,6 +119,18 @@ Beginning with version 2.9.0 the default install location is `ProgramFilesDir\Ca
 We recommend updating to the latest .Net Framework but the minimal required version is .NET 4.6.1, which is not supported on Windows XP. If you need Outlook CalDav Synchronizer for Windows XP you can download a backport to .Net 4.0 from a forked project [here](https://sourceforge.net/projects/outlookcaldavsynchronizerxp/), thanks to [Salvatore Isaja](https://sourceforge.net/u/salvois/profile/) for the awesome work!
 
 ### Changelog ###
+
+#### 3.3.0 ####
+- Released 2018/12/09
+- New features
+	- Add Open-Xchange profile type.
+	- Add iCloud Calendar profile type.
+- Bug fixes
+	- Ignore alarms with ACTION different to DISPLAY to not sync email alarms as Outlook reminders, ticket #978.
+	- Force organizer of exception to be the same as event organizer to avoid SameOrganizerForAllComponentsException. Github issues 240,244.
+	- Move using block inside try/catch in Create to avoid issues with SaveAndReload of new empty AppointmentItems.
+	- Improve deserialization of SOGo VLISTs.
+	- Limit CalDav-resourcenames to 255 chars.
 
 #### 3.2.1 ####
 - Released 2018/09/11
