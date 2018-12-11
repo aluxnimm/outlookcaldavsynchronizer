@@ -7,16 +7,14 @@
              xmlns:g="clr-namespace:CalDavSynchronizer.Globalization"
              mc:Ignorable="d"
              d:DataContext="{x:Static viewModels:ServerSettingsViewModel.DesignInstance}">
-  <GroupBox Header="{g:Localize Server Settings}">
-    <DockPanel>
-      <DockPanel DockPanel.Dock="Top">
-        <TextBlock><g:Localize>DAV URL:</g:Localize></TextBlock>
-        <TextBox  IsEnabled="{Binding IsChecked,ElementName=EditUrlToggleButton}" Text="{Binding CalenderUrl}" />
-      </DockPanel>
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+    <GroupBox Header="{g:Localize Swisscom Settings}">
+        <DockPanel>
             <Button DockPanel.Dock="Left" HorizontalAlignment="Left" Command="{Binding GetAccountSettingsCommand}" >
-                <g:Localize>Get account settings</g:Localize>
+                <g:Localize>Swisscom Login</g:Localize>
             </Button>
-      <ToggleButton DockPanel.Dock="Right" x:Name="EditUrlToggleButton" HorizontalAlignment="Right" Content="{g:Localize Edit URL}"/>
-    </DockPanel>
+        </DockPanel>
   </GroupBox>
 </UserControl>

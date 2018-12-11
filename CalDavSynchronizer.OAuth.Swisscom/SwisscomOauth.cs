@@ -68,6 +68,7 @@ namespace CalDavSynchronizer.OAuth.Swisscom
         {
             var response = GetResponse(API_HOST + "/addressbooks/configs");
             var apiResponse = JsonConvert.DeserializeObject<ApiResponse[]>(response);
+
             return apiResponse[0].Carddav[0];
         }
     }

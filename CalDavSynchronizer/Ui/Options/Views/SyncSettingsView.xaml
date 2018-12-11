@@ -10,7 +10,7 @@
   <UserControl.Resources>
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
   </UserControl.Resources>
-  <GroupBox Header="{g:Localize Sync Settings}" IsEnabled="{Binding ModelOptions.AreSyncSettingsEnabled}">
+  <GroupBox Header="{g:Localize Sync Settings}" IsEnabled="{Binding ModelOptions.AreSyncSettingsEnabled}" Visibility="{Binding ModelOptions.AreSyncSettingsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
     <Grid DockPanel.Dock="Top">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*" />

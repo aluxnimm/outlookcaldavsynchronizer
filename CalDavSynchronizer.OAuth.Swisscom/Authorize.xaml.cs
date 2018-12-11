@@ -37,3 +37,4 @@ namespace CalDavSynchronizer.OAuth.Swisscom
         }
     }
 }
+

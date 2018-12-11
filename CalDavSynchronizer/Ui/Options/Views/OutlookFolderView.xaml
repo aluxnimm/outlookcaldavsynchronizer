@@ -7,8 +7,11 @@
              xmlns:g="clr-namespace:CalDavSynchronizer.Globalization"
              mc:Ignorable="d"
              d:DataContext="{x:Static viewModels:OutlookFolderViewModel.DesignInstance}">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
 
-  <GroupBox Header="{g:Localize Outlook Settings}">
+    <GroupBox Header="{g:Localize Outlook Settings}">
 
 
     <StackPanel>
@@ -20,6 +23,7 @@
             <CheckBox 
               IsChecked="{Binding EnableChangeTriggeredSynchronization}" 
               IsEnabled="{Binding ModelOptions.IsEnableChangeTriggeredSynchronizationEnabled,Mode=OneTime}"
+              Visibility="{Binding ModelOptions.IsEnableChangeTriggeredSynchronizationVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
               ToolTip="{g:Localize Trigger a partial synchronization run immediately after \&#x0a;an item is created changed or deleted in Outlook \&#x0a;(with a 10 seconds delay).\&#x0a;Meeting invitations are excluded from this to avoid duplicate meetings!}"><g:Localize>Synchronize items immediately after change</g:Localize></CheckBox>
     </StackPanel>
   </GroupBox>
