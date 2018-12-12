@@ -54,6 +54,11 @@ namespace CalDavSynchronizer.DataAccess
       return Task.FromResult(true);
     }
 
+    public Task<bool> IsCalendarProxySupported()
+    {
+      return Task.FromResult(true);
+    }
+
     public Task<AccessPrivileges> GetPrivileges()
     {
       return Task.FromResult (AccessPrivileges.All);
