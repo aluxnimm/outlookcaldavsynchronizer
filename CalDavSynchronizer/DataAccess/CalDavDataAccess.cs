@@ -46,9 +46,9 @@ namespace CalDavSynchronizer.DataAccess
       return HasOption ("calendar-access");
     }
 
-    public Task<bool> IsCalendarProxySupported()
+    public Task<bool> IsCalendarProxySupported (Uri principalUrl)
     {
-      return HasOption ("calendar-proxy");
+      return HasOption (principalUrl, "calendar-proxy");
     }
 
     public Task<bool> IsResourceCalender ()
@@ -166,7 +166,7 @@ namespace CalDavSynchronizer.DataAccess
       }
       try
       {
-        if (await IsCalendarProxySupported())
+        if (await IsCalendarProxySupported (currentUserPrincipalUrl))
         { 
           var calendarProxyProperties = await GetCalendarProxy (currentUserPrincipalUrl);
 

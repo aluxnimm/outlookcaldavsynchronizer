@@ -51,12 +51,17 @@ namespace CalDavSynchronizer.DataAccess
 
     protected async Task<bool> HasOption (string requiredOption)
     {
+      return await HasOption (_serverUrl, requiredOption);
+    }
+
+    protected async Task<bool> HasOption (Uri url, string requiredOption)
+    {
       IHttpHeaders headers;
       try
       {
 
         headers = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders(
-          _serverUrl,
+          url,
           "OPTIONS",
           null,
           null,
