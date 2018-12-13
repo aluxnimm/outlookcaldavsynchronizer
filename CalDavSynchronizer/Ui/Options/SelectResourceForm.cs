@@ -248,6 +248,7 @@ namespace CalDavSynchronizer.Ui.Options
       if (!_calendarDataGridView.Rows[e.RowIndex].IsNewRow)
       {
         var columnName = _calendarDataGridView.Columns[e.ColumnIndex].Name;
+        var cell = _calendarDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
         if (columnName == nameof(CalendarDataViewModel.Color))
         {
           if (e.Value != null)
@@ -257,7 +258,12 @@ namespace CalDavSynchronizer.Ui.Options
             e.CellStyle.BackColor = calColor;
             e.CellStyle.SelectionBackColor = calColor;
             e.CellStyle.SelectionForeColor = calColor;
+            cell.ToolTipText = calColor.ToString();
           }
+        }
+        else if (columnName == nameof(CalendarDataViewModel.Name))
+        {
+          cell.ToolTipText = (_calendarDataGridView.Rows[e.RowIndex].Cells[nameof(CalendarDataViewModel.Uri)].Value as Uri)?.AbsolutePath;
         }
         else if (columnName == nameof (CalendarDataViewModel.Uri))
         {
@@ -277,6 +283,11 @@ namespace CalDavSynchronizer.Ui.Options
       {
         e.Value = (e.Value as Uri)?.AbsolutePath;
       }
+      else if (columnName == nameof(AddressBookDataViewModel.Name))
+      {
+        var cell = _addressBookDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+        cell.ToolTipText = (_addressBookDataGridView.Rows[e.RowIndex].Cells[nameof(AddressBookDataViewModel.Uri)].Value as Uri)?.AbsolutePath;
+      }
       else if (columnName == nameof(ResourceDataViewModelBase.SelectedFolder))
       {
         e.Value = (e.Value as OutlookFolderDescriptor)?.Name;
@@ -290,9 +301,12 @@ namespace CalDavSynchronizer.Ui.Options
       {
         e.Value = (e.Value as OutlookFolderDescriptor)?.Name;
       }
+      else if (columnName == nameof(TaskListDataViewModel.Name))
+      {
+        var cell = _tasksDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+        cell.ToolTipText = _tasksDataGridView.Rows[e.RowIndex].Cells[nameof(TaskListDataViewModel.Id)].Value?.ToString();
+      }
     }
-
-
     private void OkButton_Click (object sender, EventArgs e)
     {
       DataGridView visibleGrid = null;
