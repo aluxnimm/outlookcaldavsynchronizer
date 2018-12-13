@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using CalDavSynchronizer.Ui.ConnectionTests;
 using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.DataAccess
@@ -24,11 +25,13 @@ namespace CalDavSynchronizer.DataAccess
   {
     public Uri Uri { get; }
     public string Name { get; }
+    public AccessPrivileges Privileges { get; }
 
-    public AddressBookData (Uri uri, string name)
+    public AddressBookData (Uri uri, string name, AccessPrivileges privileges)
     {
       Uri = uri;
       Name = name;
+      Privileges = privileges;
     }
   }
 }

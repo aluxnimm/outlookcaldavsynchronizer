@@ -76,6 +76,9 @@ namespace CalDavSynchronizer.Ui.Options
         _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Name)].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
         _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Color)].HeaderText = Strings.Get($"Col");
         _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Color)].AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+        _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Privileges)].HeaderText = Strings.Get($"Access");
+        _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Privileges)].AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+        _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Privileges)].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
         _calendarDataGridView.Columns[nameof (CalendarDataViewModel.SelectedFolder)].Visible = false;
         _calendarDataGridView.Columns[nameof (CalendarDataViewModel.Model)].Visible = false;
 
@@ -94,6 +97,9 @@ namespace CalDavSynchronizer.Ui.Options
         _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.Uri)].Visible = false;
         _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.Name)].HeaderText = Strings.Get($"Name");
         _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.Name)].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+        _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.Privileges)].HeaderText = Strings.Get($"Access");
+        _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.Privileges)].AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+        _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.Privileges)].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
         _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.SelectedFolder)].Visible = false;
         _addressBookDataGridView.Columns[nameof (AddressBookDataViewModel.Model)].Visible = false;
         _addressBookDataGridView.CellFormatting += _addressBookDataGridView_CellFormatting;
@@ -111,6 +117,9 @@ namespace CalDavSynchronizer.Ui.Options
         _tasksDataGridView.Columns[nameof (TaskListDataViewModel.Id)].Visible = false;
         _tasksDataGridView.Columns[nameof (TaskListDataViewModel.Name)].HeaderText = Strings.Get($"Name");
         _tasksDataGridView.Columns[nameof (TaskListDataViewModel.Name)].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+        _tasksDataGridView.Columns[nameof (TaskListDataViewModel.Privileges)].HeaderText = Strings.Get($"Access");
+        _tasksDataGridView.Columns[nameof (TaskListDataViewModel.Privileges)].AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+        _tasksDataGridView.Columns[nameof (TaskListDataViewModel.Privileges)].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
         _tasksDataGridView.Columns[nameof (TaskListDataViewModel.SelectedFolder)].Visible = false;
         _tasksDataGridView.Columns[nameof (TaskListDataViewModel.Model)].Visible = false;
         _tasksDataGridView.CellFormatting += _tasksDataGridView_CellFormatting;

@@ -101,7 +101,11 @@ namespace CalDavSynchronizer.DataAccess
 
     public async Task<AccessPrivileges> GetPrivileges ()
     {
-      var properties = await GetCurrentUserPrivileges (_serverUrl, 0);
+      return await GetPrivileges (_serverUrl);
+    }
+    public async Task<AccessPrivileges> GetPrivileges (Uri url)
+    {
+      var properties = await GetCurrentUserPrivileges (url, 0);
 
       XmlNode privilegeWriteContent = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-privilege-set/D:privilege/D:write-content", properties.XmlNamespaceManager);
       XmlNode privilegeBind = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-privilege-set/D:privilege/D:bind", properties.XmlNamespaceManager);

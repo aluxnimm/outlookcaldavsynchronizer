@@ -262,12 +262,14 @@ namespace CalDavSynchronizer.DataAccess
                       if (supportedComponentsNode.InnerXml.Contains ("VEVENT"))
                       {
                         var displayName = string.IsNullOrEmpty (displayNameNode.InnerText) ? "Default Calendar" : displayNameNode.InnerText;
-                        calendars.Add (new CalendarData (new Uri (calendarDocument.DocumentUri, path), displayName, calendarColor));
+                        var resourceUri = new Uri (calendarDocument.DocumentUri, path);
+                        calendars.Add (new CalendarData (resourceUri, displayName, calendarColor, await GetPrivileges (resourceUri)));
                       }
                       if (supportedComponentsNode.InnerXml.Contains ("VTODO"))
                       {
                         var displayName = string.IsNullOrEmpty (displayNameNode.InnerText) ? "Default Tasks" : displayNameNode.InnerText;
-                        taskLists.Add (new TaskListData (new Uri (calendarDocument.DocumentUri, path).ToString(), displayName));
+                        var resourceUri = new Uri (calendarDocument.DocumentUri, path);
+                        taskLists.Add (new TaskListData (resourceUri.ToString(), displayName, await GetPrivileges (resourceUri)));
                       }
                     }
                   }

@@ -771,7 +771,7 @@ namespace CalDavSynchronizer.Ui.Options
 
         if (taskLists.Items.Any())
         {
-          var selectedTaskList = SelectTaskList(taskLists.Items.Select(i => new TaskListData(i.Id, i.Title)).ToArray());
+          var selectedTaskList = SelectTaskList(taskLists.Items.Select(i => new TaskListData(i.Id, i.Title, AccessPrivileges.All)).ToArray());
           if (selectedTaskList != null)
             connectionTestUrl = selectedTaskList.Id;
           else

@@ -1404,4 +1404,7 @@ ma esclude la possibilità di impiegare il filtro temporale.</value>
   <data name="You need to restart Outlook after installing the new version!" xml:space="preserve">
     <value>Outlook dev'essere riavviato dopo l'installazione della nuova versione!</value>
   </data>
+  <data name="Access" xml:space="preserve">
+    <value>Accesso</value>
+  </data>
 </root>

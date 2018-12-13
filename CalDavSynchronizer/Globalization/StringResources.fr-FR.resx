@@ -1393,4 +1393,7 @@ X-PROTOCOL comme X-AIM (incompatible avec certains serveurs comme SOGo)</value>
   <data name="You need to restart Outlook after installing the new version!" xml:space="preserve">
     <value>Outlook doit être redémarré après l'installation de la nouvelle version!</value>
   </data>
+  <data name="Access" xml:space="preserve">
+    <value>Accès</value>
+  </data>
 </root>
