@@ -52,6 +52,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
     private bool _mapSensitivityPublicToDefault;
     private bool _scheduleAgentClient;
     private bool _sendNoAppointmentNotifications;
+    private bool _organizerAsDelegate;
     private bool _doOneTimeSetCategoryColor;
     private bool _cleanupDuplicateEvents;
     private bool _mapEventColorToCategory;
@@ -307,6 +308,15 @@ namespace CalDavSynchronizer.Ui.Options.Models
       }
     }
 
+    public bool OrganizerAsDelegate
+    {
+      get { return _organizerAsDelegate; }
+      set
+      {
+        CheckedPropertyChange (ref _organizerAsDelegate, value);
+      }
+    }
+
     public bool DoOneTimeSetCategoryColor
     {
       get { return _doOneTimeSetCategoryColor; }
@@ -353,6 +363,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
       _mapSensitivityPublicToDefault = mappingConfiguration.MapSensitivityPublicToDefault;
       _scheduleAgentClient = mappingConfiguration.ScheduleAgentClient;
       _sendNoAppointmentNotifications = mappingConfiguration.SendNoAppointmentNotifications;
+      _organizerAsDelegate = mappingConfiguration.OrganizerAsDelegate;
       _cleanupDuplicateEvents = mappingConfiguration.CleanupDuplicateEvents;
       _mapEventColorToCategory = mappingConfiguration.MapEventColorToCategory;
       _mapCustomProperties = mappingConfiguration.MapCustomProperties;
@@ -396,6 +407,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
         MapClassPublicToSensitivityPrivate = _mapClassPublicToSensitivityPrivate,
         ScheduleAgentClient = _scheduleAgentClient,
         SendNoAppointmentNotifications = _sendNoAppointmentNotifications,
+        OrganizerAsDelegate = _organizerAsDelegate,
         CleanupDuplicateEvents = _cleanupDuplicateEvents,
         MapEventColorToCategory = _mapEventColorToCategory,
         MapCustomProperties = _mapCustomProperties,

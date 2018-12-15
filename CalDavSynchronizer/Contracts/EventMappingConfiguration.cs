@@ -32,6 +32,7 @@ namespace CalDavSynchronizer.Contracts
     public bool MapAttendees { get; set; }
     public bool ScheduleAgentClient { get; set; }
     public bool SendNoAppointmentNotifications { get; set; }
+    public bool OrganizerAsDelegate { get; set; }
     public bool MapBody { get; set; }
     public bool MapRtfBodyToXAltDesc { get; set; }
     public bool MapXAltDescToRtfBody { get; set; }
