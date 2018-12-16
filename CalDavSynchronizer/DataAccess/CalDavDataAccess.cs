@@ -61,6 +61,33 @@ namespace CalDavSynchronizer.DataAccess
       return DoesSupportsReportSet (_serverUrl, 0, "C", "calendar-query");
     }
 
+    public async Task<Uri> GetCalendarUserAddressSetUriOrNull()
+    { 
+      var owner = await GetOwnerOrNull (_serverUrl);
+      var ownerPrincipalUrl = owner ?? await GetCurrentUserPrincipalUrl (_serverUrl);
+      if (ownerPrincipalUrl != null)
+      {
+        var userAddressSetProperties = await GetUserAddressSet (ownerPrincipalUrl);
+
+        var userAddressSetNode = userAddressSetProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/C:calendar-user-address-set", userAddressSetProperties.XmlNamespaceManager);
+        if (userAddressSetNode != null && userAddressSetNode.HasChildNodes)
+        {
+          foreach (XmlNode userAddressSetNodeHref in userAddressSetNode.ChildNodes)
+          {
+            if (!string.IsNullOrEmpty (userAddressSetNodeHref.InnerText))
+            {
+              var address = userAddressSetNodeHref.InnerText;
+              if (address.StartsWith ("mailto:") && Uri.IsWellFormedUriString (address, UriKind.Absolute))
+              {
+                return new Uri (address);
+              }
+            }
+          }
+        }
+      }
+      return null;
+    }
+
     public async Task<Uri> GetCalendarHomeSetUriOrNull (bool useWellKnownUrl)
     {
       var autodiscoveryUrl = useWellKnownUrl ? AutoDiscoveryUrl : _serverUrl;
@@ -314,6 +341,25 @@ namespace CalDavSynchronizer.DataAccess
                         </D:propfind>
                  "
           );
+    }
+
+    private Task<XmlDocumentWithNamespaceManager> GetUserAddressSet (Uri url)
+    {
+      return _webDavClient.ExecuteWebDavRequestAndReadResponse(
+        url,
+        "PROPFIND",
+        0,
+        null,
+        null,
+        "application/xml",
+        @"<?xml version='1.0'?>
+                        <D:propfind xmlns:D=""DAV:"" xmlns:C=""urn:ietf:params:xml:ns:caldav"">
+                          <D:prop>
+                            <C:calendar-user-address-set/>
+                          </D:prop>
+                        </D:propfind>
+                 "
+      );
     }
 
     private Task<XmlDocumentWithNamespaceManager> GetCalendarProxy (Uri url)

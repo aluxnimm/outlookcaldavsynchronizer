@@ -122,6 +122,26 @@ namespace CalDavSynchronizer.DataAccess
       return privileges;
     }
 
+    protected async Task<Uri> GetOwnerOrNull (Uri resourceUri)
+    {
+      try
+      {
+        var ownerProperties = await GetOwner (resourceUri);
+        var ownerNode = ownerProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:owner", ownerProperties.XmlNamespaceManager);
+
+        if (!string.IsNullOrEmpty (ownerNode?.InnerText))
+          return new Uri (ownerProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + ownerNode.InnerText);
+      }
+      catch (Exception x)
+      {
+        if (x.Message.Contains ("404") || x.Message.Contains ("405") || x is XmlException)
+          return null;
+        else
+          throw;
+      }
+      return null;
+    }
+
     protected async Task<string> GetEtag (Uri absoluteEntityUrl)
     {
       var headers = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders (absoluteEntityUrl, "GET", null, null, null, null, null);
@@ -346,6 +366,25 @@ namespace CalDavSynchronizer.DataAccess
                         </D:propfind>
                  "
           );
+    }
+
+    protected Task<XmlDocumentWithNamespaceManager> GetOwner (Uri url)
+    {
+      return _webDavClient.ExecuteWebDavRequestAndReadResponse(
+        url,
+        "PROPFIND",
+        0,
+        null,
+        null,
+        "application/xml",
+        @"<?xml version='1.0'?>
+                        <D:propfind xmlns:D=""DAV:"">
+                          <D:prop>
+                            <D:owner/>
+                          </D:prop>
+                        </D:propfind>
+                 "
+      );
     }
 
     protected Task<XmlDocumentWithNamespaceManager> GetCurrentUserPrincipal (Uri url)
