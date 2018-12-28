@@ -61,10 +61,12 @@ namespace CalDavSynchronizer.DataAccess
       return DoesSupportsReportSet (_serverUrl, 0, "C", "calendar-query");
     }
 
-    public async Task<Uri> GetCalendarUserAddressSetUriOrNull()
+    public async Task<CalendarOwnerProperties> GetCalendarOwnerPropertiesOrNull()
     { 
       var owner = await GetOwnerOrNull (_serverUrl);
-      var ownerPrincipalUrl = owner ?? await GetCurrentUserPrincipalUrl (_serverUrl);
+      var currentUserPrincipal = await GetCurrentUserPrincipalUrl (_serverUrl);
+      var isSharedCalendar = owner != null && Uri.Compare (owner, currentUserPrincipal, UriComponents.AbsoluteUri, UriFormat.SafeUnescaped, StringComparison.OrdinalIgnoreCase) != 0;
+      var ownerPrincipalUrl = owner ?? currentUserPrincipal;
       if (ownerPrincipalUrl != null)
       {
         var userAddressSetProperties = await GetUserAddressSet (ownerPrincipalUrl);
@@ -79,7 +81,7 @@ namespace CalDavSynchronizer.DataAccess
               var address = userAddressSetNodeHref.InnerText;
               if (address.StartsWith ("mailto:") && Uri.IsWellFormedUriString (address, UriKind.Absolute))
               {
-                return new Uri (address);
+                return new CalendarOwnerProperties ( address.Substring(7), isSharedCalendar);
               }
             }
           }

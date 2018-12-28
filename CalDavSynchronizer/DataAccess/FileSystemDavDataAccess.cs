@@ -59,7 +59,7 @@ namespace CalDavSynchronizer.DataAccess
       return Task.FromResult(true);
     }
 
-    public Task<Uri> GetCalendarUserAddressSetUriOrNull()
+    public Task<CalendarOwnerProperties> GetCalendarOwnerPropertiesOrNull()
     {
       return null;
     }

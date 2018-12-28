@@ -487,6 +487,7 @@
       <DependentUpon>AddResourceForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Ui\ConnectionTests\AccessPrivileges.cs" />
+    <Compile Include="Ui\ConnectionTests\CalendarOwnerProperties.cs" />
     <Compile Include="Ui\DelegateCommandHandlingRequerySuggested.cs" />
     <Compile Include="Ui\NullProgressUi.cs" />
     <Compile Include="Ui\NullUiService.cs" />

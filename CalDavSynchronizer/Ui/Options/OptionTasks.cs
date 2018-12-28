@@ -616,7 +616,8 @@ namespace CalDavSynchronizer.Ui.Options
         if (result.ResourceType != ResourceType.None)
         {
           _settingsFaultFinder.FixSynchronizationMode(options, result);
-          _settingsFaultFinder.FixWebDavCollectionSync(options,result);
+          _settingsFaultFinder.FixWebDavCollectionSync(options, result);
+          _settingsFaultFinder.UpdateServerEmailAndSchedulingSettings(options, result);
 
           DisplayTestReport(
               result,
@@ -663,6 +664,7 @@ namespace CalDavSynchronizer.Ui.Options
 
       _settingsFaultFinder.FixSynchronizationMode(options, finalResult);
       _settingsFaultFinder.FixWebDavCollectionSync(options, finalResult);
+      _settingsFaultFinder.UpdateServerEmailAndSchedulingSettings(options, finalResult);
 
       DisplayTestReport(
           finalResult,
@@ -798,7 +800,7 @@ namespace CalDavSynchronizer.Ui.Options
         MessageBox.Show(errorMessageBuilder.ToString(), Strings.Get($"The tasklist is invalid"), MessageBoxButtons.OK, MessageBoxIcon.Error);
         return url;
       }
-      TestResult result = new TestResult(ResourceType.TaskList, CalendarProperties.None, AddressBookProperties.None, AccessPrivileges.None, false);
+      TestResult result = new TestResult(ResourceType.TaskList, CalendarProperties.None, AddressBookProperties.None, AccessPrivileges.None, false, null);
 
       DisplayTestReport(
           result,
@@ -827,7 +829,8 @@ namespace CalDavSynchronizer.Ui.Options
           CalendarProperties.None,
           AddressBookProperties.AddressBookAccessSupported,
           AccessPrivileges.All,
-          false);
+          false,
+          null);
 
       DisplayTestReport(
           result,

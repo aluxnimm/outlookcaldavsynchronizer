@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -15,34 +15,28 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using CalDavSynchronizer.Ui.ConnectionTests;
-using CalDavSynchronizer.Ui.Options.Models;
-using Microsoft.Office.Interop.Outlook;
 
-namespace CalDavSynchronizer.Ui.Options
+namespace CalDavSynchronizer.Ui.ConnectionTests
 {
-  public class NullSettingsFaultFinder : ISettingsFaultFinder
+  public class CalendarOwnerProperties
   {
-    public static readonly ISettingsFaultFinder Instance = new NullSettingsFaultFinder();
+    private readonly string _calendarOwnerEmail;
+    private readonly bool _isSharedCalendar;
 
-    private NullSettingsFaultFinder()
+    public CalendarOwnerProperties (string calendarOwnerEmail, bool isSharedCalendar)
     {
+      _calendarOwnerEmail = calendarOwnerEmail;
+      _isSharedCalendar = isSharedCalendar;
     }
 
-    public void FixSynchronizationMode(OptionsModel options, TestResult result)
+    public string CalendarOwnerEmail
     {
+      get { return _calendarOwnerEmail; }
     }
 
-    public void FixTimeRangeUsage(OptionsModel options, OlItemType? folderType)
+    public bool IsSharedCalendar
     {
-    }
-
-    public void FixWebDavCollectionSync(OptionsModel options, TestResult result)
-    {
-    }
-
-    public void UpdateServerEmailAndSchedulingSettings(OptionsModel options, TestResult result)
-    {
+      get { return _isSharedCalendar; }
     }
   }
 }
