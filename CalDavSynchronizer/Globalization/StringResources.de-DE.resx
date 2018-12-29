@@ -903,7 +903,7 @@ Manuell ausgewählte andere Zeitzonen in Outlook Terminen
 werde auf die erste passende IANA Zeitzone gemappt.</value>
   </data>
   <data name="Enter the DAV resource URL or the server address and discover the available resources. &#xA;If you leave the DAV URL empty it can also be discovered from the email address via DNS lookups." xml:space="preserve">
-    <value>Gebn Sie die DAV Ressource URL oder Serveradresse ein und suche nach verfügbaren Ressourcen. 
+    <value>Geben Sie die DAV Ressource URL oder Serveradresse ein und suche nach verfügbaren Ressourcen. 
 Wenn die DAV URL leer gelassen wird kann diese auch durch DNS Abfragen aus der Email Adresse gefunden werden.</value>
   </data>
   <data name="No color set for updating the server calendar color!" xml:space="preserve">
@@ -935,9 +935,9 @@ und zweite Outlook Email Adresse zu vCard Email mit TYPE HOME anstelle von umgek
     <value>Aktiviere Client Zertifikate im Automatik Modus.
 Das verfügbare Zertifikat vom Benutzerstore wird automatisch verwendet.</value>
   </data>
-  <data name="Enter the email address of the server identity. &#xA;It can also be used to discover the DAV URL if you leave the URL textbox empty." xml:space="preserve">
-    <value>Geben Sie die Email Adresse der Serveridentität an. 
-Damit kann auch die DAV URL gefunden werden, wenn diese leer gelassen wird.</value>
+  <data name="Enter the email address of the server identity of the calendar owner. Will be auto-detected if available.&#xA;It can also be used to discover the DAV URL if you leave the URL textbox empty." xml:space="preserve">
+    <value>Geben Sie die Email Adresse des Kalendereigentümers am Server an, es wird versucht, diese beim Testen der Einstellungen automatisch auszufüllen. 
+Außerdem kann über die Email Adresse auch die DAV URL gefunden werden, wenn diese leer gelassen wird.</value>
   </data>
   <data name="Get IMAP/POP3 account settings" xml:space="preserve">
     <value>Lade IMAP/POP3 Account Einstellungen</value>
@@ -1406,5 +1406,8 @@ Andere Protokolle können mittels protocol: address hinzugefügt werden</value>
   </data>
   <data name="Access" xml:space="preserve">
     <value>Zugriff</value>
+  </data>
+  <data name="Act on behalf of server identity" xml:space="preserve">
+    <value>Handle im Namen der Serveridentität</value>
   </data>
 </root>
