@@ -449,11 +449,11 @@ namespace CalDavSynchronizer.DataAccess
     {
       var principalProperties = await GetCurrentUserPrincipal (calenderUrl);
 
-      XmlNode principalUrlNode = principalProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-principal", principalProperties.XmlNamespaceManager) ??
-                                 principalProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:principal-URL", principalProperties.XmlNamespaceManager);
+      var principalUrlHrefNode = principalProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-principal/D:href", principalProperties.XmlNamespaceManager) ??
+                                 principalProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:principal-URL/D:href", principalProperties.XmlNamespaceManager);
 
-      if (principalUrlNode != null && !string.IsNullOrEmpty (principalUrlNode.InnerText))
-        return new Uri (principalProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + principalUrlNode.InnerText);
+      if (principalUrlHrefNode != null && !string.IsNullOrEmpty (principalUrlHrefNode.InnerText))
+        return new Uri (principalProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + principalUrlHrefNode.InnerText);
       else
         return null;
     }
