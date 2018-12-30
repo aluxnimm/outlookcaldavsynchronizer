@@ -1349,4 +1349,11 @@
   <data name="Act on behalf of server identity" xml:space="preserve">
     <value>Действовать от имени личности сервера</value>
   </data>
+  <data name="Set server identity as organizer of meeting and Outlook identity as delegate acting on behalf of it (SENT-BY).&#x0a;Useful when Outlook and server identity do not match to avoid invites sent by the wrong email&#x0a;or if meetings are created in a shared calendar on behalf of the calendar owner." xml:space="preserve">
+    <value>Используйте электронную почту сервера в качестве организатора собрания и удостоверение Outlook в качестве прокси (SENT-BY).
+Полезно, если адреса электронной почты Outlook и сервера разные
+и приглашения не должны быть отправлены с неправильного адреса
+или если вы хотите создать встречу в календаре для владельца.
+    </value>
+  </data>
 </root>

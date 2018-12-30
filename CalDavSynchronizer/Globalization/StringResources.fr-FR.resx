@@ -1399,4 +1399,11 @@ X-PROTOCOL comme X-AIM (incompatible avec certains serveurs comme SOGo)</value>
   <data name="Act on behalf of server identity" xml:space="preserve">
     <value>Agir pour le compte de l'identité du serveur</value>
   </data>
+  <data name="Set server identity as organizer of meeting and Outlook identity as delegate acting on behalf of it (SENT-BY).&#x0a;Useful when Outlook and server identity do not match to avoid invites sent by the wrong email&#x0a;or if meetings are created in a shared calendar on behalf of the calendar owner." xml:space="preserve">
+    <value>Utilisez le courrier électronique du serveur en tant qu'organisateur de la réunion et l'identité Outlook en tant que proxy (SENT-BY).
+Utile si les adresses de messagerie d'Outlook et du serveur sont différentes
+et les courriels d'invitation ne doivent pas être envoyés à partir de la mauvaise adresse
+ou si vous souhaitez créer une réunion sur un calendrier partagé pour le propriétaire.
+    </value>
+  </data>
 </root>

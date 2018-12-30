@@ -1410,4 +1410,11 @@ ma esclude la possibilità di impiegare il filtro temporale.</value>
   <data name="Act on behalf of server identity" xml:space="preserve">
     <value>Agisci per conto dell'identità del server</value>
   </data>
+  <data name="Set server identity as organizer of meeting and Outlook identity as delegate acting on behalf of it (SENT-BY).&#x0a;Useful when Outlook and server identity do not match to avoid invites sent by the wrong email&#x0a;or if meetings are created in a shared calendar on behalf of the calendar owner." xml:space="preserve">
+    <value>Utilizzare l'e-mail del server come organizzatore della riunione e Outlook identità come proxy (SENT-BY).
+Utile se gli indirizzi e-mail differiscono da Outlook e Server
+e le e-mail di invito non devono essere inviate dall'indirizzo sbagliato
+o se si desidera creare una riunione su un calendario condiviso per il proprietario.
+    </value>
+  </data>
 </root>

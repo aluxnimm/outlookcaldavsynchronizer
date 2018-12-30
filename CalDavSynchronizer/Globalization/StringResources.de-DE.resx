@@ -1410,4 +1410,11 @@ Andere Protokolle können mittels protocol: address hinzugefügt werden</value>
   <data name="Act on behalf of server identity" xml:space="preserve">
     <value>Handle im Namen der Serveridentität</value>
   </data>
+  <data name="Set server identity as organizer of meeting and Outlook identity as delegate acting on behalf of it (SENT-BY).&#x0a;Useful when Outlook and server identity do not match to avoid invites sent by the wrong email&#x0a;or if meetings are created in a shared calendar on behalf of the calendar owner." xml:space="preserve">
+    <value>Verwende Server Email als Organisator für Meetings und Outlook Identität als Vertretung (SENT-BY).
+Sinnvoll wenn Outlook und Server Email Adressen unterschiedlich sind 
+und Einladungsmails nicht von der falschen Adresse gesendet werden sollen
+bzw. wenn ein Meeting in einem freigegebenen Kalender im Namen des Besitzers erstellt werden soll. 
+    </value>
+  </data>
 </root>
