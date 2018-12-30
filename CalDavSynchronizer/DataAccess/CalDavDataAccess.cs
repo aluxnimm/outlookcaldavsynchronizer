@@ -65,7 +65,15 @@ namespace CalDavSynchronizer.DataAccess
     { 
       var owner = await GetOwnerOrNull (_serverUrl);
       var currentUserPrincipal = await GetCurrentUserPrincipalUrl (_serverUrl);
-      var isSharedCalendar = owner != null && Uri.Compare (owner, currentUserPrincipal, UriComponents.AbsoluteUri, UriFormat.SafeUnescaped, StringComparison.OrdinalIgnoreCase) != 0;
+
+      var isSharedCalendar = false;
+      if (owner != null && currentUserPrincipal != null)
+      {
+        var ownerString = owner.OriginalString.EndsWith ("/") ? owner.OriginalString : owner.OriginalString + "/";
+        var principalString = currentUserPrincipal.OriginalString.EndsWith ("/") ? currentUserPrincipal.OriginalString : currentUserPrincipal.OriginalString + "/";
+        isSharedCalendar = StringComparer.InvariantCultureIgnoreCase.Compare (UriHelper.DecodeUrlString (ownerString), UriHelper.DecodeUrlString (principalString)) != 0;
+      }
+      
       var ownerPrincipalUrl = owner ?? currentUserPrincipal;
       if (ownerPrincipalUrl != null)
       {
