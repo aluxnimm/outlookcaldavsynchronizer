@@ -1016,7 +1016,7 @@ namespace Thought.vCards
 				}
 
 			} while (property != null);
-
+		  
 		}
 
 		#endregion
@@ -2077,9 +2077,12 @@ namespace Thought.vCards
 			}
 			else
 			{
-				if (property.Value.GetType() == typeof(string))
+				if (property.Value is string data) 
 				{
-					card.Photos.Add(new vCardPhoto((string)property.Value, true));
+				  if (!string.IsNullOrEmpty(data))
+				  {
+				    card.Photos.Add(new vCardPhoto(data, true));
+				  }
 				}
 				else if (((byte[])property.Value).Length >0)
 				{
