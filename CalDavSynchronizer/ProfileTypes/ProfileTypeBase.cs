@@ -90,6 +90,7 @@ namespace CalDavSynchronizer.ProfileTypes
     public virtual ContactMappingConfiguration CreateContactMappingConfiguration()
     {
       var data = new ContactMappingConfiguration();
+      data.MapAnniversary = true;
       data.MapBirthday = true;
       data.MapContactPhoto = true;
       data.KeepOutlookPhoto = false;

@@ -40,6 +40,7 @@ namespace Thought.vCards
 
         private vCardAccessClassification accessClassification;
         private string additionalNames;
+        private DateTime? anniversary;
         private DateTime? birthDate;
         private StringCollection categories;
         private string department;
@@ -194,7 +195,21 @@ namespace Thought.vCards
                 this.additionalNames = value;
             }
         }
-
+    
+        /// <summary>
+        ///     The anniversary of the person.
+        /// </summary>
+        public DateTime? Anniversary
+        {
+          get
+          {
+            return this.anniversary;
+          }
+          set
+          {
+            this.anniversary = value;
+          }
+        }
 
         /// <summary>
         ///     The birthdate of the person.

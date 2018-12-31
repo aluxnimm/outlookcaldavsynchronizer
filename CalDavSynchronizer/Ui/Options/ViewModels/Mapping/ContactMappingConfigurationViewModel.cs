@@ -39,6 +39,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
       _model = model;
 
+      RegisterPropertyChangePropagation(_model, nameof(_model.MapAnniversary), nameof(MapAnniversary));
       RegisterPropertyChangePropagation(_model, nameof(_model.MapBirthday), nameof(MapBirthday));
       RegisterPropertyChangePropagation(_model, nameof(_model.MapContactPhoto), nameof(MapContactPhoto));
       RegisterPropertyChangePropagation(_model, nameof(_model.KeepOutlookPhoto), nameof(KeepOutlookPhoto));
@@ -48,6 +49,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       RegisterPropertyChangePropagation(_model, nameof(_model.FixPhoneNumberFormat), nameof(FixPhoneNumberFormat));
       RegisterPropertyChangePropagation(_model, nameof(_model.MapDistributionLists), nameof(MapDistributionLists));
       RegisterPropertyChangePropagation(_model, nameof(_model.DistributionListType), nameof(DistributionListType));
+    }
+
+    public bool MapAnniversary
+    {
+      get { return _model.MapAnniversary; }
+      set { _model.MapAnniversary = value; }
     }
 
     public bool MapBirthday
@@ -139,6 +146,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 
     public static ContactMappingConfigurationViewModel DesignInstance => new ContactMappingConfigurationViewModel(new ContactMappingConfigurationModel(new ContactMappingConfiguration()))
     {
+      MapAnniversary = true,
       MapBirthday = true,
       MapContactPhoto = true,
       KeepOutlookPhoto = true,

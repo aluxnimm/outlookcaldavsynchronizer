@@ -196,6 +196,10 @@ namespace Thought.vCards
                 properties,
                 card);
 
+            BuildProperties_ANNIVERSARY(
+                properties,
+                card);
+
             BuildProperties_BDAY(
                 properties,
                 card);
@@ -387,6 +391,28 @@ namespace Thought.vCards
 
             }
 
+        }
+
+        #endregion
+
+        #region [ BuildProperties_ANNIVERSARY ]
+
+        /// <summary>
+        ///     Builds the ANNIVERSARY property.
+        /// </summary>
+        private void BuildProperties_ANNIVERSARY(
+            vCardPropertyCollection properties,
+            vCard card)
+        {
+
+          if (card.Anniversary.HasValue)
+          {
+
+            vCardProperty property =
+              new vCardProperty("ANNIVERSARY", card.Anniversary.Value.ToString("yyyyMMdd"));
+
+            properties.Add(property);
+          }
         }
 
         #endregion

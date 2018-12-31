@@ -316,8 +316,11 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       }
     }
 
-    private static void MapAnniversary1To2(IContactItemWrapper source, Contact target, IEntityMappingLogger logger)
+    private void MapAnniversary1To2(IContactItemWrapper source, Contact target, IEntityMappingLogger logger)
     {
+      if (!_configuration.MapAnniversary)
+        return;
+
       var googleAnniversary = target.ContactEntry.Events.FirstOrDefault(e => e.Relation != null && e.Relation.Equals(REL_ANNIVERSARY));
 
       if (googleAnniversary != null)
@@ -870,8 +873,11 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
       }
     }
 
-    private static void MapAnniversary2To1(IContactItemWrapper target, Contact source, IEntityMappingLogger logger)
+    private void MapAnniversary2To1(IContactItemWrapper target, Contact source, IEntityMappingLogger logger)
     {
+      if (!_configuration.MapAnniversary)
+        return;
+
       try
       {
         var googleAnniversary = source.ContactEntry.Events.FirstOrDefault(e => e.Relation != null && e.Relation.Equals(REL_ANNIVERSARY));

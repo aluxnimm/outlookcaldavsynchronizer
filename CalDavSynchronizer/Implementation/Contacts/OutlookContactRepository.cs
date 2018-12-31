@@ -44,6 +44,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
     private readonly bool _useDefaultFolderItemType;
     
     private const string PR_ASSOCIATED_BIRTHDAY_APPOINTMENT_ID = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/804D0102";
+    private const string PR_ASSOCIATED_ANNIVERSARY_APPOINTMENT_ID = "http://schemas.microsoft.com/mapi/id/{00062004-0000-0000-C000-000000000046}/804E0102";
 
     public OutlookContactRepository (IOutlookSession session, string folderId, string folderStoreId, IDaslFilterProvider daslFilterProvider, IQueryOutlookContactItemFolderStrategy queryFolderStrategy, IComWrapperFactory comWrapperFactory, bool useDefaultFolderItemType)
     {
@@ -162,6 +163,21 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       using (var contact = entityWithId.Entity)
       {
+        if (!contact.Inner.Anniversary.Equals (OutlookUtility.OUTLOOK_DATE_NONE))
+        {
+          try
+          {
+            Byte[] ba = contact.Inner.GetPropertySafe (PR_ASSOCIATED_ANNIVERSARY_APPOINTMENT_ID);
+            string anniversaryAppointmentItemID = BitConverter.ToString (ba).Replace ("-", string.Empty);
+            IAppointmentItemWrapper anniveraryWrapper = _comWrapperFactory.Create ( _session.GetAppointmentItem (anniversaryAppointmentItemID),
+                                                                                    entryId => _session.GetAppointmentItem (anniversaryAppointmentItemID));
+            anniveraryWrapper.Inner.Delete();
+          }
+          catch (COMException ex)
+          {
+            s_logger.Error ("Could not delete associated Anniversary Appointment.", ex);
+          }
+        }
         if (!contact.Inner.Birthday.Equals (OutlookUtility.OUTLOOK_DATE_NONE))
         {
           try

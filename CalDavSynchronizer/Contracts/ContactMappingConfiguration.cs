@@ -24,6 +24,7 @@ namespace CalDavSynchronizer.Contracts
 {
   public class ContactMappingConfiguration : MappingConfigurationBase
   {
+    public bool MapAnniversary { get; set; }
     public bool MapBirthday { get; set; }
 
     public bool MapContactPhoto { get; set; }

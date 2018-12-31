@@ -9,6 +9,7 @@
              d:DataContext="{x:Static mapping:ContactMappingConfigurationViewModel.DesignInstance}">
     <GroupBox Header="{g:Localize General Contact Mapping Settings}">
         <StackPanel>
+            <CheckBox IsChecked="{Binding MapAnniversary}" ToolTip="{g:Localize Outlook automatically creates anniversary appointments in your calendar \&#x0a;when the anniversary is added to a contact item.}"><g:Localize>Map Anniversary</g:Localize></CheckBox>
             <CheckBox IsChecked="{Binding MapBirthday}" ToolTip="{g:Localize Outlook automatically creates birthday appointments in your calendar \&#x0a;when the birthday is added to a contact item.}"><g:Localize>Map Birthday</g:Localize></CheckBox>
             <CheckBox IsChecked="{Binding MapContactPhoto}" ToolTip="{g:Localize Not supported in OL 2007.}"><g:Localize>Map Contact Photo</g:Localize> </CheckBox>
             <CheckBox IsEnabled="{Binding MapContactPhoto}" IsChecked="{Binding KeepOutlookPhoto}" ToolTip="{g:Localize Maps changes from Outlook to server but do not update changes from server to Outlook after the initial sync. Useful if another mobile client reduces the photo resolution for example.}" ><g:Localize>Do not overwrite the contact photo in Outlook</g:Localize></CheckBox>

@@ -24,6 +24,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
 {
   public class ContactMappingConfigurationModel : MappingConfigurationModel
   {
+    private bool _mapAnniversary;
     private bool _mapBirthday;
     private bool _mapContactPhoto;
     private bool _keepOutlookPhoto;
@@ -42,6 +43,15 @@ namespace CalDavSynchronizer.Ui.Options.Models
       if (data == null) throw new ArgumentNullException(nameof(data));
 
       InitializeData(data);
+    }
+
+    public bool MapAnniversary
+    {
+      get { return _mapAnniversary; }
+      set
+      {
+        CheckedPropertyChange (ref _mapAnniversary, value);
+      }
     }
 
     public bool MapBirthday
@@ -156,6 +166,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
     /// </remarks>
     private void InitializeData(ContactMappingConfiguration mappingConfiguration)
     {
+      MapAnniversary = mappingConfiguration.MapAnniversary;
       MapBirthday = mappingConfiguration.MapBirthday;
       MapContactPhoto = mappingConfiguration.MapContactPhoto;
       KeepOutlookPhoto = mappingConfiguration.KeepOutlookPhoto;
@@ -172,6 +183,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
     {
       return new ContactMappingConfiguration
       {
+        MapAnniversary = _mapAnniversary,
         MapBirthday = _mapBirthday,
         MapContactPhoto = _mapContactPhoto,
         KeepOutlookPhoto = _keepOutlookPhoto,

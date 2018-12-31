@@ -208,6 +208,10 @@ namespace CalDavSynchronizer.Implementation.Contacts
 
       MapPhoneNumbers1To2 (source.Inner, target);
 
+      if (_configuration.MapAnniversary)
+      {
+        target.Anniversary = source.Inner.Anniversary.Equals (OutlookUtility.OUTLOOK_DATE_NONE) ? default(DateTime?) : source.Inner.Anniversary.Date;
+      }
       if (_configuration.MapBirthday)
       {
         target.BirthDate = source.Inner.Birthday.Equals (OutlookUtility.OUTLOOK_DATE_NONE) ? default(DateTime?) : source.Inner.Birthday.Date;
@@ -311,6 +315,34 @@ namespace CalDavSynchronizer.Implementation.Contacts
       MapPostalAdresses2To1 (source, target.Inner);
 
       MapTelephoneNumber2To1 (source, target.Inner);
+
+      if (_configuration.MapAnniversary)
+      {
+        if (source.Anniversary.HasValue)
+        {
+          if (!source.Anniversary.Value.Date.Equals (target.Inner.Anniversary))
+          {
+            try
+            {
+              target.Inner.Anniversary = source.Anniversary.Value;
+            }
+            catch (COMException ex)
+            {
+              s_logger.Warn ("Could not update contact anniversary.", ex);
+              logger.LogMappingWarning ("Could not update contact anniversary.", ex);
+            }
+            catch (OverflowException ex)
+            {
+              s_logger.Warn ("Contact anniversary has invalid value.", ex);
+              logger.LogMappingWarning ("Contact anniversary has invalid value.", ex);
+            }
+          }
+        }
+        else
+        {
+          target.Inner.Anniversary = OutlookUtility.OUTLOOK_DATE_NONE;
+        }
+      }
 
       if (_configuration.MapBirthday)
       {
