@@ -37,6 +37,7 @@ namespace CalDavSynchronizer.Implementation.Common
 
     private const string PR_GLOBAL_OBJECT_ID = "http://schemas.microsoft.com/mapi/id/{6ED8DA90-450B-101B-98DA-00AA003F1305}/00030102";
     private const string PR_LONG_TERM_ENTRYID_FROM_TABLE = "http://schemas.microsoft.com/mapi/proptag/0x66700102";
+    private const string PR_ENTRYID = "http://schemas.microsoft.com/mapi/proptag/0x0FFF0102";
     private const string LastModificationTimeColumnId = "LastModificationTime";
     private const string SubjectColumnId = "Subject";
     private const string StartColumnId = "Start";
@@ -58,6 +59,7 @@ namespace CalDavSynchronizer.Implementation.Common
         table.Columns.RemoveAll();
         table.Columns.Add (PR_GLOBAL_OBJECT_ID);
         table.Columns.Add (PR_LONG_TERM_ENTRYID_FROM_TABLE);
+        table.Columns.Add (PR_ENTRYID);
         table.Columns.Add (LastModificationTimeColumnId);
         table.Columns.Add (SubjectColumnId);
         table.Columns.Add (StartColumnId);
@@ -66,7 +68,20 @@ namespace CalDavSynchronizer.Implementation.Common
         while (!table.EndOfTable)
         {
           var row = table.GetNextRow();
-          var entryId =  row.BinaryToString(PR_LONG_TERM_ENTRYID_FROM_TABLE);
+
+          string entryId;
+          byte[] entryIdArray = row[PR_LONG_TERM_ENTRYID_FROM_TABLE] as byte[];
+          if (entryIdArray != null && entryIdArray.Length > 0)
+          {
+            entryId = row.BinaryToString (PR_LONG_TERM_ENTRYID_FROM_TABLE);
+          }
+          else
+          {
+            // Fall back to short-term ENTRYID if long-term ID not available
+            entryId = row.BinaryToString (PR_ENTRYID);
+            s_logger.Warn ($"Could not access long-term ENTRYID of appointment '{entryId}', use short-term ENTRYID as fallback.");
+          }
+
           string globalAppointmentId = null;
           try
           {
@@ -153,12 +168,25 @@ namespace CalDavSynchronizer.Implementation.Common
         var table = tableWrapper.Inner;
         table.Columns.RemoveAll ();
         table.Columns.Add (PR_LONG_TERM_ENTRYID_FROM_TABLE);
+        table.Columns.Add (PR_ENTRYID);
         table.Columns.Add (LastModificationTimeColumnId);
 
         while (!table.EndOfTable)
         {
           var row = table.GetNextRow ();
-          var entryId = row.BinaryToString (PR_LONG_TERM_ENTRYID_FROM_TABLE);
+
+          string entryId;
+          byte[] entryIdArray = row[PR_LONG_TERM_ENTRYID_FROM_TABLE] as byte[];
+          if (entryIdArray != null && entryIdArray.Length > 0)
+          {
+            entryId = row.BinaryToString (PR_LONG_TERM_ENTRYID_FROM_TABLE);
+          }
+          else
+          {
+            // Fall back to short-term ENTRYID if long-term ID not available
+            entryId = row.BinaryToString (PR_ENTRYID);
+            s_logger.Warn ($"Could not access long-term ENTRYID of entity '{entryId}', use short-term ENTRYID as fallback.");
+          }
 
           var lastModificationTimeObject = row[LastModificationTimeColumnId];
           DateTime lastModificationTime;
