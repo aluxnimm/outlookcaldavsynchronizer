@@ -18,15 +18,21 @@ using System;
 
 namespace GenSync.Logging
 {
+  public interface IEntitySynchronizationLogger : IDisposable
+  {
+    void LogError(string message);
+    void LogError(string message, Exception exception);
+    void LogWarning(string warning);
+    void LogWarning(string warning, Exception exception);
+  }
 
-    public interface IEntitySynchronizationLogger<in TAtypeEntityId, in TAtypeEntity, in TBtypeEntityId, in TBtypeEntity> : IEntityMappingLogger
-    {
-        void LogA(TAtypeEntity entity);
-        void LogB(TBtypeEntity entity);
-        void SetAId(TAtypeEntityId id);
-        void SetBId(TBtypeEntityId id);
-        void LogAbortedDueToError(Exception exception);
-        void LogAbortedDueToError(string errorMessage);
-    }
-
+  public interface IEntitySynchronizationLogger<in TAtypeEntityId, in TAtypeEntity, in TBtypeEntityId, in TBtypeEntity> : IEntitySynchronizationLogger
+  {
+    void LogA(TAtypeEntity entity);
+    void LogB(TBtypeEntity entity);
+    void SetAId(TAtypeEntityId id);
+    void SetBId(TBtypeEntityId id);
+    void LogAbortedDueToError(Exception exception);
+    void LogAbortedDueToError(string errorMessage);
+  }
 }

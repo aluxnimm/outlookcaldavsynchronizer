@@ -56,7 +56,7 @@ namespace CalDavSynchronizer
             {
               if (addressEntry.Inner != null)
               {
-                return OutlookUtility.GetEmailAdressOrNull(addressEntry.Inner, NullEntityMappingLogger.Instance, s_logger) ?? string.Empty;
+                return OutlookUtility.GetEmailAdressOrNull(addressEntry.Inner, NullEntitySynchronizationLogger.Instance, s_logger) ?? string.Empty;
               }
             }
           }

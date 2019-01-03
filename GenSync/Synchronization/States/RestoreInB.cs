@@ -126,7 +126,7 @@ namespace GenSync.Synchronization.States
         _context = context;
       }
 
-      public IEntityMappingLogger Logger => _logger;
+      public IEntitySynchronizationLogger Logger => _logger;
       public TBtypeEntityId EntityId => _state.KnownData.BtypeId;
       public TBtypeEntityVersion Version => _state._currentBVersion;
       public TBtypeEntity EntityToUpdate => _state._bEntity;

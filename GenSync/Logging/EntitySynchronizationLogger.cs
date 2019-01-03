@@ -26,8 +26,8 @@ namespace GenSync.Logging
     private static readonly ILog s_logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
     private readonly SynchronizationOperation _operation;
-    private List<string> _mappingErrors ;
-    private List<string> _mappingWarnings;
+    private List<string> _errors ;
+    private List<string> _warnings;
     private string _aId;
     private string _bId;
     private string _aLogDisplayName;
@@ -41,8 +41,8 @@ namespace GenSync.Logging
       _entityLogMessageFactory = entityLogMessageFactory ?? throw new ArgumentNullException(nameof(entityLogMessageFactory));
     }
 
-    private List<string> MappingErrors => _mappingErrors ?? (_mappingErrors = new List<string>());
-    private List<string> MappingWarnings => _mappingWarnings ?? (_mappingWarnings = new List<string>());
+    private List<string> Errors => _errors ?? (_errors = new List<string>());
+    private List<string> Warnings => _warnings ?? (_warnings = new List<string>());
 
     public event EventHandler Disposed;
 
@@ -53,24 +53,24 @@ namespace GenSync.Logging
         handler (this, EventArgs.Empty);
     }
 
-    public void LogMappingError (string message)
+    public void LogError (string message)
     {
-      MappingErrors.Add (message);
+      Errors.Add (message);
     }
 
-    public void LogMappingError (string message, Exception exception)
+    public void LogError (string message, Exception exception)
     {
-      MappingErrors.Add (message + " : " + exception.ToString());
+      Errors.Add (message + " : " + exception.ToString());
     }
 
-    public void LogMappingWarning (string warning)
+    public void LogWarning (string warning)
     {
-      MappingWarnings.Add (warning);
+      Warnings.Add (warning);
     }
 
-    public void LogMappingWarning (string warning, Exception exception)
+    public void LogWarning (string warning, Exception exception)
     {
-      MappingWarnings.Add (warning + " : " + exception.ToString ());
+      Warnings.Add (warning + " : " + exception.ToString ());
     }
 
     public void SetAId (TAtypeEntityId id)
@@ -128,15 +128,15 @@ namespace GenSync.Logging
         ADisplayName = _aLogDisplayName,
         BDisplayName = _bLogDisplayName,
         ExceptionThatLeadToAbortion = _exceptionThatLeadToAbortion,
-        MappingErrors =  _mappingErrors?.ToArray() ?? new string[0],
-        MappingWarnings = _mappingWarnings?.ToArray() ?? new string[0],
+        Errors =  _errors?.ToArray() ?? new string[0],
+        Warnings = _warnings?.ToArray() ?? new string[0],
         Operation = _operation
       };
     }
 
     public bool HasErrorsOrWarnings =>
-        _mappingErrors?.Count > 0
-        || _mappingWarnings?.Count > 0
+        _errors?.Count > 0
+        || _warnings?.Count > 0
         || !string.IsNullOrEmpty (_exceptionThatLeadToAbortion);
 
     public void Dispose ()

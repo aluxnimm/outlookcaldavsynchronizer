@@ -38,7 +38,7 @@ namespace CalDavSynchronizer.Implementation.Common
 
     public static readonly DateTime OUTLOOK_DATE_NONE = new DateTime (4501, 1, 1, 0 ,0, 0);
     
-    public static string GetEmailAdressOrNull (AddressEntry addressEntry, IEntityMappingLogger logger, ILog generalLogger)
+    public static string GetEmailAdressOrNull (AddressEntry addressEntry, IEntitySynchronizationLogger logger, ILog generalLogger)
     {
       OlAddressEntryUserType type;
 
@@ -51,7 +51,7 @@ namespace CalDavSynchronizer.Implementation.Common
         catch (System.Exception ex)
         {
           generalLogger.Warn ("Could not get type from AddressEntry", ex);
-          logger.LogMappingWarning ("Could not get type from AddressEntry", ex);
+          logger.LogWarning ("Could not get type from AddressEntry", ex);
           return null;
         }
         if (type == OlAddressEntryUserType.olExchangeUserAddressEntry
@@ -73,7 +73,7 @@ namespace CalDavSynchronizer.Implementation.Common
           catch (System.Exception ex)
           {
             generalLogger.Warn ("Could not get email address from adressEntry.GetExchangeUser()", ex);
-            logger.LogMappingWarning ("Could not get email address from adressEntry.GetExchangeUser()", ex);
+            logger.LogWarning ("Could not get email address from adressEntry.GetExchangeUser()", ex);
           }
         }
         else if (type == OlAddressEntryUserType.olExchangeDistributionListAddressEntry
@@ -92,7 +92,7 @@ namespace CalDavSynchronizer.Implementation.Common
           catch (System.Exception ex)
           {
             generalLogger.Warn ("Could not get email address from adressEntry.GetExchangeDistributionList()", ex);
-            logger.LogMappingWarning ("Could not get email address from adressEntry.GetExchangeDistributionList()", ex);
+            logger.LogWarning ("Could not get email address from adressEntry.GetExchangeDistributionList()", ex);
           }
         }
         else if (type == OlAddressEntryUserType.olSmtpAddressEntry
@@ -124,7 +124,7 @@ namespace CalDavSynchronizer.Implementation.Common
             catch (System.Exception ex)
             {
               generalLogger.Warn ("Could not get email address from adressEntry.GetContact()", ex);
-              logger.LogMappingWarning ("Could not get email address from adressEntry.GetContact()", ex);
+              logger.LogWarning ("Could not get email address from adressEntry.GetContact()", ex);
             }
           }
           else
@@ -141,7 +141,7 @@ namespace CalDavSynchronizer.Implementation.Common
           catch (System.Exception ex)
           {
             generalLogger.Warn ("Could not get property PR_SMTP_ADDRESS for adressEntry", ex);
-            logger.LogMappingWarning ("Could not get property PR_SMTP_ADDRESS for adressEntry", ex);
+            logger.LogWarning ("Could not get property PR_SMTP_ADDRESS for adressEntry", ex);
           }
         }
       }
@@ -149,7 +149,7 @@ namespace CalDavSynchronizer.Implementation.Common
       return null;
     }
 
-    public static string GetSenderEmailAddressOrNull (AppointmentItem source, IEntityMappingLogger logger, ILog generalLogger)
+    public static string GetSenderEmailAddressOrNull (AppointmentItem source, IEntitySynchronizationLogger logger, ILog generalLogger)
     {
       try
       {
@@ -158,12 +158,12 @@ namespace CalDavSynchronizer.Implementation.Common
       catch (System.Exception ex)
       {
         generalLogger.Warn ("Can't access property PR_SENDER_EMAIL_ADDRESS of appointment", ex);
-        logger.LogMappingWarning ("Can't access property PR_SENDER_EMAIL_ADDRESS of appointment", ex);
+        logger.LogWarning ("Can't access property PR_SENDER_EMAIL_ADDRESS of appointment", ex);
         return null;
       }
     }
 
-    public static AddressEntry GetEventOrganizerOrNull (AppointmentItem source, IEntityMappingLogger logger, ILog generalLogger, int outlookMajorVersion)
+    public static AddressEntry GetEventOrganizerOrNull (AppointmentItem source, IEntitySynchronizationLogger logger, ILog generalLogger, int outlookMajorVersion)
     {
       try
       {
@@ -185,7 +185,7 @@ namespace CalDavSynchronizer.Implementation.Common
       catch (System.Exception ex)
       {
         generalLogger.Warn ("Can't get organizer of appointment", ex);
-        logger.LogMappingWarning ("Can't get organizer of appointment", ex);
+        logger.LogWarning ("Can't get organizer of appointment", ex);
         return null;
       }
     }

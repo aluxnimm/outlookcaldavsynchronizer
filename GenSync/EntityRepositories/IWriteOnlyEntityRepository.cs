@@ -30,13 +30,13 @@ namespace GenSync.EntityRepositories
     /// true: Entity was found an deleted.
     /// false: Entity was not found
     /// </returns>
-    Task<bool> TryDelete (TEntityId entityId, TEntityVersion version, TContext context, IEntityMappingLogger logger);
+    Task<bool> TryDelete (TEntityId entityId, TEntityVersion version, TContext context, IEntitySynchronizationLogger logger);
     /// <returns>
     /// Id and Version of the updated entity
     /// or
     /// Null if entity was not found
     /// </returns>
-    Task<EntityVersion<TEntityId, TEntityVersion>> TryUpdate (TEntityId entityId, TEntityVersion version, TEntity entityToUpdate, Func<TEntity, Task<TEntity>> entityModifier, TContext context, IEntityMappingLogger logger);
+    Task<EntityVersion<TEntityId, TEntityVersion>> TryUpdate (TEntityId entityId, TEntityVersion version, TEntity entityToUpdate, Func<TEntity, Task<TEntity>> entityModifier, TContext context, IEntitySynchronizationLogger logger);
     Task<EntityVersion<TEntityId, TEntityVersion>> Create (Func<TEntity, Task<TEntity>> entityInitializer, TContext context);
   }
 }

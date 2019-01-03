@@ -30,7 +30,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
     public IDuplicateEventCleaner DuplicateEventCleaner => NullDuplicateEventCleaner.Instance;
 
-    public string MapHtmlColorToCategoryOrNull(string htmlColor, IEntityMappingLogger logger)
+    public string MapHtmlColorToCategoryOrNull(string htmlColor, IEntitySynchronizationLogger logger)
     {
       return NullColorCategoryMapper.Instance.MapHtmlColorToCategoryOrNull(htmlColor, logger);
     }

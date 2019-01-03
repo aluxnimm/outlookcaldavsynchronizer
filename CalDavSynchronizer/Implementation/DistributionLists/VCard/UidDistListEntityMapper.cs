@@ -28,14 +28,14 @@ namespace CalDavSynchronizer.Implementation.DistributionLists.VCard
 {
   public class UidDistListEntityMapper : DistListEntityMapperBase
   {
-    protected override vCardMember CreateVCardMemberOrNull(GenericComObjectWrapper<Recipient> recipientWrapper, string nameWithoutEmail, DistributionListSychronizationContext context, IEntityMappingLogger mappingLogger, ILog logger)
+    protected override vCardMember CreateVCardMemberOrNull(GenericComObjectWrapper<Recipient> recipientWrapper, string nameWithoutEmail, DistributionListSychronizationContext context, IEntitySynchronizationLogger synchronizationLogger, ILog logger)
     {
       var uid = context.GetUidByEmailAddress(recipientWrapper.Inner.Address);
       if (uid == null)
       {
         var logMessage = $"Did not find Uid of EmailAddress '{recipientWrapper.Inner.Address}'. Member won't be added to contact group";
         logger.WarnFormat(logMessage);
-        mappingLogger.LogMappingWarning(logMessage);
+        synchronizationLogger.LogWarning(logMessage);
       }
 
       var targetMember = new vCardMember();
@@ -43,11 +43,11 @@ namespace CalDavSynchronizer.Implementation.DistributionLists.VCard
       return targetMember;
     }
 
-    protected override IEnumerable<DistributionListMember> GetMembers(vCard source, DistributionListSychronizationContext context, IEntityMappingLogger mappingLogger, ILog logger)
+    protected override IEnumerable<DistributionListMember> GetMembers(vCard source, DistributionListSychronizationContext context, IEntitySynchronizationLogger synchronizationLogger, ILog logger)
     {
       foreach(var member in source.Members)
       {
-        (var contactWrapper, var emailAddress) = context.GetContactByUidOrNull(member.Uid, mappingLogger, logger);
+        (var contactWrapper, var emailAddress) = context.GetContactByUidOrNull(member.Uid, synchronizationLogger, logger);
         if (contactWrapper != null)
         {
           DistributionListMember distributionListMember;

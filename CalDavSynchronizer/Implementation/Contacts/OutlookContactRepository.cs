@@ -146,7 +146,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       IContactItemWrapper entityToUpdate,
       Func<IContactItemWrapper, Task<IContactItemWrapper>> entityModifier,
       Tcontext context, 
-      IEntityMappingLogger logger)
+      IEntitySynchronizationLogger logger)
     {
       entityToUpdate = await entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save ();
@@ -157,7 +157,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       string entityId,
       DateTime version,
       Tcontext context, 
-      IEntityMappingLogger logger)
+      IEntitySynchronizationLogger logger)
     {
       var entityWithId = Get (new[] { entityId }, NullLoadEntityLogger.Instance, default (Tcontext)).Result.SingleOrDefault ();
       if (entityWithId == null)

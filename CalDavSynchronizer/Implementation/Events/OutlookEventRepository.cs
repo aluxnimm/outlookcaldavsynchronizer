@@ -244,7 +244,7 @@ namespace CalDavSynchronizer.Implementation.Events
         IAppointmentItemWrapper entityToUpdate,
         Func<IAppointmentItemWrapper, Task<IAppointmentItemWrapper>> entityModifier,
         IEventSynchronizationContext context, 
-        IEntityMappingLogger logger)
+        IEntitySynchronizationLogger logger)
     {
       entityToUpdate = await entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save();
@@ -260,7 +260,7 @@ namespace CalDavSynchronizer.Implementation.Events
         entityToUpdate.Inner.LastModificationTime);
     }
 
-    public Task<bool> TryDelete (AppointmentId entityId, DateTime version, IEventSynchronizationContext context, IEntityMappingLogger logger)
+    public Task<bool> TryDelete (AppointmentId entityId, DateTime version, IEventSynchronizationContext context, IEntitySynchronizationLogger logger)
     {
       var entityWithId = Get (new[] { entityId }, NullLoadEntityLogger.Instance, context).Result.SingleOrDefault();
       if (entityWithId == null)

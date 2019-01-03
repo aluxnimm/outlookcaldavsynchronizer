@@ -37,7 +37,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists.VCard
   {
     private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
 
-    public Task<vCard> Map1To2(IDistListItemWrapper source, vCard target, IEntityMappingLogger logger, DistributionListSychronizationContext context)
+    public Task<vCard> Map1To2(IDistListItemWrapper source, vCard target, IEntitySynchronizationLogger logger, DistributionListSychronizationContext context)
     {
       target.Members.Clear();
       target.FormattedName = source.Inner.DLName;
@@ -75,16 +75,16 @@ namespace CalDavSynchronizer.Implementation.DistributionLists.VCard
         catch (COMException ex)
         {
           s_logger.Warn("Can't access member of Distribution List!", ex);
-          logger.LogMappingWarning("Can't access member of Distribution List!", ex);
+          logger.LogWarning("Can't access member of Distribution List!", ex);
         }
       }
 
       return Task.FromResult(target);
     }
 
-    protected abstract vCardMember CreateVCardMemberOrNull(GenericComObjectWrapper<Recipient> recipientWrapper, string nameWithoutEmail, DistributionListSychronizationContext context, IEntityMappingLogger mappingLogger, ILog logger);
+    protected abstract vCardMember CreateVCardMemberOrNull(GenericComObjectWrapper<Recipient> recipientWrapper, string nameWithoutEmail, DistributionListSychronizationContext context, IEntitySynchronizationLogger synchronizationLogger, ILog logger);
 
-    public Task<IDistListItemWrapper> Map2To1(vCard source, IDistListItemWrapper target, IEntityMappingLogger logger, DistributionListSychronizationContext context)
+    public Task<IDistListItemWrapper> Map2To1(vCard source, IDistListItemWrapper target, IEntitySynchronizationLogger logger, DistributionListSychronizationContext context)
     {
       if (string.IsNullOrEmpty(source.FormattedName))
       {
@@ -139,6 +139,6 @@ namespace CalDavSynchronizer.Implementation.DistributionLists.VCard
       return Task.FromResult(target);
     }
 
-    protected abstract IEnumerable<DistributionListMember> GetMembers(vCard source, DistributionListSychronizationContext context, IEntityMappingLogger mappingLogger, ILog logger);
+    protected abstract IEnumerable<DistributionListMember> GetMembers(vCard source, DistributionListSychronizationContext context, IEntitySynchronizationLogger synchronizationLogger, ILog logger);
   }
 }

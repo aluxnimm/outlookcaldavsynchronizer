@@ -25,7 +25,7 @@ namespace GenSync.EntityMapping
   /// </summary>
   public interface IEntityMapper<T1, T2, TContext>
   {
-    Task<T2> Map1To2 (T1 source, T2 target, IEntityMappingLogger logger, TContext context);
-    Task<T1> Map2To1 (T2 source, T1 target, IEntityMappingLogger logger, TContext context);
+    Task<T2> Map1To2 (T1 source, T2 target, IEntitySynchronizationLogger logger, TContext context);
+    Task<T1> Map2To1 (T2 source, T1 target, IEntitySynchronizationLogger logger, TContext context);
   }
 }

@@ -60,7 +60,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       _webClientFactory = webClientFactory;
     }
 
-    public Task<vCard> Map1To2 (IContactItemWrapper source, vCard target, IEntityMappingLogger logger, ICardDavRepositoryLogger context)
+    public Task<vCard> Map1To2 (IContactItemWrapper source, vCard target, IEntitySynchronizationLogger logger, ICardDavRepositoryLogger context)
     {
       target.RevisionDate = source.Inner.LastModificationTime.ToUniversalTime();
       
@@ -132,7 +132,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
             {
               im.ServiceType = _configuration.DefaultImServicType;
               s_logger.Warn ($"Unknown IM ServiceType '{imDetails[0]}' not implemented, defaulting to '{_configuration.DefaultImServicType}'");
-              logger.LogMappingWarning ($"Unknown IM ServiceType '{imDetails[0]}' not implemented, defaulting to '{_configuration.DefaultImServicType}'");
+              logger.LogWarning ($"Unknown IM ServiceType '{imDetails[0]}' not implemented, defaulting to '{_configuration.DefaultImServicType}'");
             }
             else
             {
@@ -245,7 +245,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       return Task.FromResult(target);
     }
 
-    public async Task<IContactItemWrapper> Map2To1 (vCard source, IContactItemWrapper target, IEntityMappingLogger logger, ICardDavRepositoryLogger context)
+    public async Task<IContactItemWrapper> Map2To1 (vCard source, IContactItemWrapper target, IEntitySynchronizationLogger logger, ICardDavRepositoryLogger context)
     {
       target.Inner.FirstName = source.GivenName;
       target.Inner.LastName = source.FamilyName;
@@ -329,12 +329,12 @@ namespace CalDavSynchronizer.Implementation.Contacts
             catch (COMException ex)
             {
               s_logger.Warn ("Could not update contact anniversary.", ex);
-              logger.LogMappingWarning ("Could not update contact anniversary.", ex);
+              logger.LogWarning ("Could not update contact anniversary.", ex);
             }
             catch (OverflowException ex)
             {
               s_logger.Warn ("Contact anniversary has invalid value.", ex);
-              logger.LogMappingWarning ("Contact anniversary has invalid value.", ex);
+              logger.LogWarning ("Contact anniversary has invalid value.", ex);
             }
           }
         }
@@ -357,12 +357,12 @@ namespace CalDavSynchronizer.Implementation.Contacts
             catch (COMException ex)
             {
               s_logger.Warn ("Could not update contact birthday.", ex);
-              logger.LogMappingWarning ("Could not update contact birthday.", ex);
+              logger.LogWarning ("Could not update contact birthday.", ex);
             }
             catch (OverflowException ex)
             {
               s_logger.Warn ("Contact birthday has invalid value.", ex);
-              logger.LogMappingWarning ("Contact birthday has invalid value.", ex);
+              logger.LogWarning ("Contact birthday has invalid value.", ex);
             }
           }
         }
@@ -427,7 +427,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", sourceGender));
     }
 
-    private void MapEmailAddresses1To2 (ContactItem source, vCard target, IEntityMappingLogger logger)
+    private void MapEmailAddresses1To2 (ContactItem source, vCard target, IEntitySynchronizationLogger logger)
     {
       target.EmailAddresses.Clear();
       if (!string.IsNullOrEmpty (source.Email1Address))
@@ -443,7 +443,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
           catch (COMException ex)
           {
             s_logger.Warn ("Could not get property PR_EMAIL1ADDRESS for Email1Address", ex);
-            logger.LogMappingWarning ("Could not get property PR_EMAIL1ADDRESS for Email1Address", ex);
+            logger.LogWarning ("Could not get property PR_EMAIL1ADDRESS for Email1Address", ex);
           }
         }
         else
@@ -467,7 +467,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
           catch (COMException ex)
           {
             s_logger.Warn ("Could not get property PR_EMAIL2ADDRESS for Email2Address", ex);
-            logger.LogMappingWarning ("Could not get property PR_EMAIL2ADDRESS for Email2Address", ex);
+            logger.LogWarning ("Could not get property PR_EMAIL2ADDRESS for Email2Address", ex);
           }
         }
         else
@@ -491,7 +491,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
           catch (COMException ex)
           {
             s_logger.Warn ("Could not get property PR_EMAIL3ADDRESS for Email3Address", ex);
-            logger.LogMappingWarning ("Could not get property PR_EMAIL3ADDRESS for Email3Address", ex);
+            logger.LogWarning ("Could not get property PR_EMAIL3ADDRESS for Email3Address", ex);
           }
         }
         else
@@ -541,7 +541,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    private static void MapCertificate1To2 (ContactItem source, vCard target, IEntityMappingLogger logger)
+    private static void MapCertificate1To2 (ContactItem source, vCard target, IEntitySynchronizationLogger logger)
     {
       try
       {
@@ -557,11 +557,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
       catch (COMException ex)
       {
         s_logger.Warn ("Could not get property PR_USER_X509_CERTIFICATE for contact.", ex);
-        logger.LogMappingWarning ("Could not get property PR_USER_X509_CERTIFICATE for contact.", ex);
+        logger.LogWarning ("Could not get property PR_USER_X509_CERTIFICATE for contact.", ex);
       }
     }
 
-    private static void MapCertificate2To1 (vCard source, ContactItem target, IEntityMappingLogger logger)
+    private static void MapCertificate2To1 (vCard source, ContactItem target, IEntitySynchronizationLogger logger)
     {
       if (source.Certificates.Count > 0)
       {
@@ -575,18 +575,18 @@ namespace CalDavSynchronizer.Implementation.Contacts
           catch (COMException ex)
           {
             s_logger.Warn ("Could not set property PR_USER_X509_CERTIFICATE for contact.", ex);
-            logger.LogMappingWarning ("Could not set property PR_USER_X509_CERTIFICATE for contact.", ex);
+            logger.LogWarning ("Could not set property PR_USER_X509_CERTIFICATE for contact.", ex);
           }
           catch (System.UnauthorizedAccessException ex)
           {
             s_logger.Warn ("Could not access PR_USER_X509_CERTIFICATE for contact.", ex);
-            logger.LogMappingWarning ("Could not access PR_USER_X509_CERTIFICATE for contact.", ex);
+            logger.LogWarning ("Could not access PR_USER_X509_CERTIFICATE for contact.", ex);
           }
         }
       }
     }
 
-    private static void MapPhoto1To2 (ContactItem source, vCard target, IEntityMappingLogger logger)
+    private static void MapPhoto1To2 (ContactItem source, vCard target, IEntitySynchronizationLogger logger)
     {
       target.Photos.Clear();
       if (source.HasPicture)
@@ -605,12 +605,12 @@ namespace CalDavSynchronizer.Implementation.Contacts
               catch (COMException ex)
               {
                 s_logger.Warn ("Could not get property PR_ATTACH_DATA_BIN to export picture for contact.", ex);
-                logger.LogMappingWarning ("Could not get property PR_ATTACH_DATA_BIN to export picture for contact.", ex);
+                logger.LogWarning ("Could not get property PR_ATTACH_DATA_BIN to export picture for contact.", ex);
               }
               catch (System.UnauthorizedAccessException ex)
               {
                 s_logger.Warn ("Could not access PR_ATTACH_DATA_BIN to export picture for contact.", ex);
-                logger.LogMappingWarning ("Could not get property PR_ATTACH_DATA_BIN to export picture for contact.", ex);
+                logger.LogWarning ("Could not get property PR_ATTACH_DATA_BIN to export picture for contact.", ex);
               }
             }
           }
@@ -618,7 +618,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       }
     }
 
-    private async Task MapPhoto2To1 (vCard source, ContactItem target, IEntityMappingLogger logger)
+    private async Task MapPhoto2To1 (vCard source, ContactItem target, IEntitySynchronizationLogger logger)
     {
       if (source.Photos.Count > 0)
       {
@@ -643,7 +643,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
           else
           {
             s_logger.Warn ("Could not load picture for contact.");
-            logger.LogMappingWarning ("Could not load picture for contact.");
+            logger.LogWarning ("Could not load picture for contact.");
             return;
           }
           try
@@ -653,14 +653,14 @@ namespace CalDavSynchronizer.Implementation.Contacts
           catch (COMException x)
           {
             s_logger.Warn ("Could not add picture for contact.", x);
-            logger.LogMappingWarning ("Could not add picture for contact.", x);
+            logger.LogWarning ("Could not add picture for contact.", x);
           }
           File.Delete (picturePath);
         }
         catch (Exception ex)
         {
           s_logger.Warn ("Could not add picture for contact.", ex);
-          logger.LogMappingWarning ("Could not add picture for contact.", ex);
+          logger.LogWarning ("Could not add picture for contact.", ex);
         }
       }
       else
@@ -674,7 +674,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
           catch (COMException x)
           {
             s_logger.Warn ("Could not remove picture for contact.", x);
-            logger.LogMappingWarning ("Could not remove picture for contact.", x);
+            logger.LogWarning ("Could not remove picture for contact.", x);
           }
         }
       }

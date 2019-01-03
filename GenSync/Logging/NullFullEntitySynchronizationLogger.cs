@@ -43,21 +43,21 @@ namespace GenSync.Logging
       
     }
 
-    public void LogMappingError (string message)
+    public void LogError (string message)
     {
       
     }
 
-    public void LogMappingError (string message, Exception exception)
+    public void LogError (string message, Exception exception)
     {
     }
 
-    public void LogMappingWarning (string warning)
+    public void LogWarning (string warning)
     {
       
     }
 
-    public void LogMappingWarning (string warning, Exception exception)
+    public void LogWarning (string warning, Exception exception)
     {
       
     }

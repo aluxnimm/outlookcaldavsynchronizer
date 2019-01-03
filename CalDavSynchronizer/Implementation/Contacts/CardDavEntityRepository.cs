@@ -115,7 +115,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
       return result;
     }
     
-    public async Task<bool> TryDelete (WebResourceName entityId, string version, TContext context, IEntityMappingLogger logger)
+    public async Task<bool> TryDelete (WebResourceName entityId, string version, TContext context, IEntitySynchronizationLogger logger)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
@@ -129,7 +129,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         TEntity entityToUpdate,
         Func<TEntity, Task<TEntity>> entityModifier,
         TContext context, 
-        IEntityMappingLogger logger)
+        IEntitySynchronizationLogger logger)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {

@@ -285,7 +285,7 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
                 _modifyEntity = modifyEntity;
             }
 
-            public IEntityMappingLogger Logger => NullEntityMappingLogger.Instance;
+            public IEntitySynchronizationLogger Logger => NullEntitySynchronizationLogger.Instance;
             public TEntityId EntityId { get; }
             public TEntityVersion Version { get; }
             public TEntity EntityToUpdate { get; }
@@ -327,7 +327,7 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
                 Version = version;
             }
 
-            public IEntityMappingLogger Logger => NullEntityMappingLogger.Instance;
+            public IEntitySynchronizationLogger Logger => NullEntitySynchronizationLogger.Instance;
             public TEntityId EntityId { get; }
             public TEntityVersion Version { get; }
 

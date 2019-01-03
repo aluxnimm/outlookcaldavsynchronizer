@@ -32,12 +32,12 @@ namespace CalDavSynchronizer.UnitTest.Implementation.Events
     [Test, TestCaseSource(typeof(ColorMapper), nameof(ColorMapper.HtmlColorNames))]
     public void TestRoundtrip2To1(string originalhtmlColor)
     {
-      var category = _mapper.MapHtmlColorToCategoryOrNull(originalhtmlColor, NullEntityMappingLogger.Instance);
+      var category = _mapper.MapHtmlColorToCategoryOrNull(originalhtmlColor, NullEntitySynchronizationLogger.Instance);
       var roundTrippedHtmlColor = _mapper.MapCategoryToHtmlColorOrNull(category);
       Assert.That(roundTrippedHtmlColor, Is.EqualTo(originalhtmlColor));
 
       // try a second roundtrip
-      category = _mapper.MapHtmlColorToCategoryOrNull(originalhtmlColor, NullEntityMappingLogger.Instance);
+      category = _mapper.MapHtmlColorToCategoryOrNull(originalhtmlColor, NullEntitySynchronizationLogger.Instance);
       roundTrippedHtmlColor = _mapper.MapCategoryToHtmlColorOrNull(category);
       Assert.That(roundTrippedHtmlColor, Is.EqualTo(originalhtmlColor));
     }
@@ -50,12 +50,12 @@ namespace CalDavSynchronizer.UnitTest.Implementation.Events
       CreateMapper();
 
       var htmlColor = _mapper.MapCategoryToHtmlColorOrNull(originalCategory);
-      var roundTrippedCategory = _mapper.MapHtmlColorToCategoryOrNull(htmlColor, NullEntityMappingLogger.Instance);
+      var roundTrippedCategory = _mapper.MapHtmlColorToCategoryOrNull(htmlColor, NullEntitySynchronizationLogger.Instance);
       Assert.That(roundTrippedCategory, Is.EqualTo(originalCategory));
 
       // try a second roundtrip
       htmlColor = _mapper.MapCategoryToHtmlColorOrNull(originalCategory);
-      roundTrippedCategory = _mapper.MapHtmlColorToCategoryOrNull(htmlColor, NullEntityMappingLogger.Instance);
+      roundTrippedCategory = _mapper.MapHtmlColorToCategoryOrNull(htmlColor, NullEntitySynchronizationLogger.Instance);
       Assert.That(roundTrippedCategory, Is.EqualTo(originalCategory));
     }
 
@@ -63,12 +63,12 @@ namespace CalDavSynchronizer.UnitTest.Implementation.Events
     [TestCase("#ff00ff", "purple", OlCategoryColor.olCategoryColorPurple)]
     public void TestRoundtrip2To1WithNonStandardHtmlColorName(string originalhtmlColor, string expectedRoundTrippedHtmlColor, OlCategoryColor expectedOutlookColor)
     {
-      var category = _mapper.MapHtmlColorToCategoryOrNull(originalhtmlColor, NullEntityMappingLogger.Instance);
+      var category = _mapper.MapHtmlColorToCategoryOrNull(originalhtmlColor, NullEntitySynchronizationLogger.Instance);
       var roundTrippedHtmlColor = _mapper.MapCategoryToHtmlColorOrNull(category);
       Assert.That(roundTrippedHtmlColor, Is.EqualTo(expectedRoundTrippedHtmlColor));
       Assert.That(_outlookCategories[category].Color, Is.EqualTo(expectedOutlookColor));
 
-      category = _mapper.MapHtmlColorToCategoryOrNull(originalhtmlColor, NullEntityMappingLogger.Instance);
+      category = _mapper.MapHtmlColorToCategoryOrNull(originalhtmlColor, NullEntitySynchronizationLogger.Instance);
       roundTrippedHtmlColor = _mapper.MapCategoryToHtmlColorOrNull(category);
       Assert.That(roundTrippedHtmlColor, Is.EqualTo(expectedRoundTrippedHtmlColor));
       Assert.That(_outlookCategories[category].Color, Is.EqualTo(expectedOutlookColor));

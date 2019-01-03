@@ -21,7 +21,7 @@ namespace CalDavSynchronizer.Implementation.Events
 {
   public interface IColorCategoryMapper
   {
-    string MapHtmlColorToCategoryOrNull(string htmlColor, IEntityMappingLogger logger);
+    string MapHtmlColorToCategoryOrNull(string htmlColor, IEntitySynchronizationLogger logger);
     string MapCategoryToHtmlColorOrNull(string categoryName);
   }
 }

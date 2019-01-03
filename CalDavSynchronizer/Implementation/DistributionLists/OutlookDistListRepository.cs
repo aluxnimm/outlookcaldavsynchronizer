@@ -135,7 +135,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
       IDistListItemWrapper entityToUpdate,
       Func<IDistListItemWrapper, Task<IDistListItemWrapper>> entityModifier,
       Tcontext context,
-      IEntityMappingLogger logger)
+      IEntitySynchronizationLogger logger)
     {
       entityToUpdate = await entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save ();
@@ -146,7 +146,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
       string entityId,
       DateTime version,
       Tcontext context,
-      IEntityMappingLogger logger)
+      IEntitySynchronizationLogger logger)
     {
       var entityWithId = Get (new[] { entityId }, NullLoadEntityLogger.Instance, default (Tcontext)).Result.SingleOrDefault ();
       if (entityWithId == null)

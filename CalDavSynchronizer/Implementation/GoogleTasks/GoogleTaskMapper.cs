@@ -32,7 +32,7 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
 
     }
 
-    public Task<Task> Map1To2 (ITaskItemWrapper source, Task target, IEntityMappingLogger logger, int context)
+    public Task<Task> Map1To2 (ITaskItemWrapper source, Task target, IEntitySynchronizationLogger logger, int context)
     {
       target.Title = source.Inner.Subject;
       target.Notes = source.Inner.Body;
@@ -74,7 +74,7 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
       throw new NotImplementedException (string.Format ("Mapping for value '{0}' not implemented.", value));
     }
 
-    public Task<ITaskItemWrapper> Map2To1 (Task source, ITaskItemWrapper target, IEntityMappingLogger logger, int context)
+    public Task<ITaskItemWrapper> Map2To1 (Task source, ITaskItemWrapper target, IEntitySynchronizationLogger logger, int context)
     {
       target.Inner.Subject = source.Title;
       target.Inner.Body = source.Notes;

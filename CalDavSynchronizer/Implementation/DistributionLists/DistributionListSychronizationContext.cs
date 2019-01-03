@@ -83,7 +83,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
         return null;
     }
 
-    public (GenericComObjectWrapper<ContactItem> ContactWrapper, string EmailAddress) GetContactByUidOrNull(string uid, IEntityMappingLogger mappingLogger, ILog logger)
+    public (GenericComObjectWrapper<ContactItem> ContactWrapper, string EmailAddress) GetContactByUidOrNull(string uid, IEntitySynchronizationLogger synchronizationLogger, ILog logger)
     {
       if (_cacheItemsByUid.TryGetValue(uid, out var cacheItem))
       {
@@ -96,7 +96,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
         {
           var logMessage = $"Did not find OutlookId for ServerId '{cacheItem.Id}'";
           logger.WarnFormat(logMessage);
-          mappingLogger.LogMappingWarning(logMessage);
+          synchronizationLogger.LogWarning(logMessage);
 
           return (null, null);
         }
@@ -105,7 +105,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
       {
         var logMessage = $"Did not find cacheEntry for Uid '{uid}'";
         logger.WarnFormat(logMessage);
-        mappingLogger.LogMappingWarning(logMessage);
+        synchronizationLogger.LogWarning(logMessage);
         return (null, null);
       }
     }

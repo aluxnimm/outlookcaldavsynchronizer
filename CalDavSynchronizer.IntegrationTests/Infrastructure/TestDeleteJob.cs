@@ -28,7 +28,7 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
   class TestDeleteJob<TEntityId, TEntityVersion> : IDeleteJob<TEntityId, TEntityVersion>
   {
     private readonly EntityVersion<TEntityId, TEntityVersion> _version;
-    public IEntityMappingLogger Logger { get; } = NullEntityMappingLogger.Instance;
+    public IEntitySynchronizationLogger Logger { get; } = NullEntitySynchronizationLogger.Instance;
     public TEntityId EntityId => _version.Id;
     public TEntityVersion Version => _version.Version;
 

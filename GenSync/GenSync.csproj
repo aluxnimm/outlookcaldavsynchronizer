@@ -113,7 +113,6 @@
     <Compile Include="Logging\LoadEntityLogger.cs" />
     <Compile Include="Logging\NullLoadEntityLogger.cs" />
     <Compile Include="Logging\SynchronizationReportName.cs" />
-    <Compile Include="Logging\IEntityMappingLogger.cs" />
     <Compile Include="Logging\ILoadEntityLogger.cs" />
     <Compile Include="Logging\IEntitySynchronizationLogger.cs" />
     <Compile Include="Logging\EntitySynchronizationReport.cs" />

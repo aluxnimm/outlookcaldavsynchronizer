@@ -202,7 +202,7 @@ namespace CalDavSynchronizer.Implementation.Common
       }
     }
 
-    public static void MapCustomProperties1To2 (GenericComObjectWrapper<UserProperties> userPropertiesWrapper, ICalendarPropertyList targetProperties, bool mapAllCustomProperties, PropertyMapping[] mappings, IEntityMappingLogger logger, ILog s_logger)
+    public static void MapCustomProperties1To2 (GenericComObjectWrapper<UserProperties> userPropertiesWrapper, ICalendarPropertyList targetProperties, bool mapAllCustomProperties, PropertyMapping[] mappings, IEntitySynchronizationLogger logger, ILog s_logger)
     {
       if (userPropertiesWrapper.Inner != null && userPropertiesWrapper.Inner.Count > 0)
       {
@@ -226,13 +226,13 @@ namespace CalDavSynchronizer.Implementation.Common
           catch (COMException ex)
           {
             s_logger.Warn ("Can't access UserProperty of Item!", ex);
-            logger.LogMappingWarning ("Can't access UserProperty of Item!", ex);
+            logger.LogWarning ("Can't access UserProperty of Item!", ex);
           }
         }
       }
     }
 
-    public static void MapCustomProperties2To1 (ICalendarPropertyList sourceList, GenericComObjectWrapper<UserProperties> userPropertiesWrapper, bool mapAllCustomProperties, PropertyMapping[] mappings, IEntityMappingLogger logger, ILog s_logger)
+    public static void MapCustomProperties2To1 (ICalendarPropertyList sourceList, GenericComObjectWrapper<UserProperties> userPropertiesWrapper, bool mapAllCustomProperties, PropertyMapping[] mappings, IEntitySynchronizationLogger logger, ILog s_logger)
     {
       var alreadyMappedOutlookProperties = new HashSet<string>();
 
@@ -262,7 +262,7 @@ namespace CalDavSynchronizer.Implementation.Common
           catch (COMException ex)
           {
             s_logger.Warn ("Can't set UserProperty of Item!", ex);
-            logger.LogMappingWarning ("Can't set UserProperty of Item!", ex);
+            logger.LogWarning ("Can't set UserProperty of Item!", ex);
           }
         }
       }
@@ -293,7 +293,7 @@ namespace CalDavSynchronizer.Implementation.Common
             catch (COMException ex)
             {
               s_logger.Warn("Can't set UserProperty of Item!", ex);
-              logger.LogMappingWarning("Can't set UserProperty of Item!", ex);
+              logger.LogWarning("Can't set UserProperty of Item!", ex);
             }
           }
         }
@@ -303,7 +303,7 @@ namespace CalDavSynchronizer.Implementation.Common
     public static void MapDistListMembers2To1(
       IEnumerable<DistributionListMember> sourceMembers,
       IDistListItemWrapper target,
-      IEntityMappingLogger logger,
+      IEntitySynchronizationLogger logger,
       DistributionListSychronizationContext context)
     {
       var outlookMembersByAddress = new Dictionary<string, GenericComObjectWrapper<Recipient>>(StringComparer.InvariantCultureIgnoreCase);
@@ -379,7 +379,7 @@ namespace CalDavSynchronizer.Implementation.Common
       catch (COMException ex)
       {
         s_logger.Warn("Can't access member of Distribution List!", ex);
-        logger.LogMappingWarning("Can't access member of Distribution List!", ex);
+        logger.LogWarning("Can't access member of Distribution List!", ex);
       }
       finally
       {

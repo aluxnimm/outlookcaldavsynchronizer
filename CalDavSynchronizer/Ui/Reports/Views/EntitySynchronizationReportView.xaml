@@ -25,10 +25,10 @@
 
    
     <TextBlock FontWeight="Bold" Grid.Row="0" ><g:Localize>Mapping Warnings:</g:Localize></TextBlock>
-    <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1" ItemsSource="{Binding MappingWarnings}" />
+    <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1" ItemsSource="{Binding Warnings}" />
 
     <TextBlock FontWeight="Bold" Grid.Row="2"><g:Localize>Mapping Errors:</g:Localize></TextBlock>
-    <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="3"  ItemsSource="{Binding MappingErrors}" />
+    <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="3"  ItemsSource="{Binding Errors}" />
 
     <TextBlock FontWeight="Bold" Grid.Row="4" Grid.Column="0"><g:Localize>Exception that lead to abortion:</g:Localize></TextBlock>
     <TextBox IsReadOnly="True" Grid.Row="5"  Text="{Binding ExceptionThatLeadToAbortion}" />

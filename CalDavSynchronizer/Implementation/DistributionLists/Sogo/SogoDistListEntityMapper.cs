@@ -34,7 +34,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists.Sogo
   {
     private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
 
-    public Task<DistributionList> Map1To2(IDistListItemWrapper source, DistributionList target, IEntityMappingLogger logger, DistributionListSychronizationContext context)
+    public Task<DistributionList> Map1To2(IDistListItemWrapper source, DistributionList target, IEntitySynchronizationLogger logger, DistributionListSychronizationContext context)
     {
       target.Members.Clear();
       target.NonAddressBookMembers.Clear();
@@ -54,7 +54,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists.Sogo
       catch (COMException ex)
       {
         s_logger.Warn ("Can't access UserProperty of Distribution List!", ex);
-        logger.LogMappingWarning ("Can't access UserProperty of Distribution List!", ex);
+        logger.LogWarning ("Can't access UserProperty of Distribution List!", ex);
       }
 
       for (int i = 1; i <= source.Inner.MemberCount; i++)
@@ -80,14 +80,14 @@ namespace CalDavSynchronizer.Implementation.DistributionLists.Sogo
         catch (COMException ex)
         {
           s_logger.Warn("Can't access member of Distribution List!", ex);
-          logger.LogMappingWarning("Can't access member of Distribution List!", ex);
+          logger.LogWarning("Can't access member of Distribution List!", ex);
         }
       }
 
       return Task.FromResult(target);
     }
 
-    public Task<IDistListItemWrapper> Map2To1(DistributionList source, IDistListItemWrapper target, IEntityMappingLogger logger, DistributionListSychronizationContext context)
+    public Task<IDistListItemWrapper> Map2To1(DistributionList source, IDistListItemWrapper target, IEntitySynchronizationLogger logger, DistributionListSychronizationContext context)
     {
       target.Inner.DLName = source.Name;
       if (!string.IsNullOrEmpty(source.Description))
@@ -116,7 +116,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists.Sogo
       catch (COMException ex)
       {
         s_logger.Warn("Can't access UserProperty of Distribution List!", ex);
-        logger.LogMappingWarning("Can't access UserProperty of Distribution List!", ex);
+        logger.LogWarning("Can't access UserProperty of Distribution List!", ex);
       }
 
       CommonEntityMapper.MapDistListMembers2To1 (source.Members.Concat (source.NonAddressBookMembers), target, logger, context);

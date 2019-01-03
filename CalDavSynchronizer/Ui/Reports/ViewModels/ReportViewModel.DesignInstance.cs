@@ -67,12 +67,12 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
                                                           AId = "0000000028D820BC0737DB4C8B99236D4EE6B04E0700025B101ADEE08447AD25B60FE763ED76003C4B923C400000025B101ADEE08447AD25B60FE763ED7600797457C1F90000",
                                                           BId = "/SOGo/dav/se13m017/Calendar/personal/ef7fe2af-b38f-44d6-89aa-356ee1fc0940.ics",
                                                           ExceptionThatLeadToAbortion = CreateException ("Strange exception"),
-                                                          MappingErrors = new[]
+                                                          Errors = new[]
                                                                           {
                                                                               CreateException ("Mapping error 1"),
                                                                               "Mapping error 2",
                                                                           },
-                                                          MappingWarnings = new[]
+                                                          Warnings = new[]
                                                                             {
                                                                                 CreateException ("Mapping warning 1"),
                                                                                 "Mapping warning 2",
@@ -83,12 +83,12 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
                                                           AId = "ANOTHER028D820BC0737DB4C8B99236D4EE6B04E0700025B101ADEE08447AD25B60FE763ED76003C4B923C400000025B101ADEE08447AD25B60FE763ED7600797457C1F90000",
                                                           BId = "/SOGo/dav/se13m017/Calendar/personal/ef7fe2af-b38f-44d6-89aa-356ee1fc0940another.ics",
                                                           ExceptionThatLeadToAbortion = CreateException ("Another exception"),
-                                                          MappingErrors = new[]
+                                                          Errors = new[]
                                                                           {
                                                                               CreateException ("Another Mapping error 1"),
                                                                               "Another Mapping error 2",
                                                                           },
-                                                          MappingWarnings = new[]
+                                                          Warnings = new[]
                                                                             {
                                                                                 CreateException ("Mapping warning 1"),
                                                                                 "Mapping warning 2",
@@ -112,12 +112,12 @@ namespace CalDavSynchronizer.Ui.Reports.ViewModels
                                                                                                AId = "0000000028D820BC0737DB4C8B99236D4EE6B04E0700025B101ADEE08447AD25B60FE763ED76003C4B923C400000025B101ADEE08447AD25B60FE763ED7600797457C1F90000",
                                                                                                BId = "/SOGo/dav/se13m017/Calendar/personal/ef7fe2af-b38f-44d6-89aa-356ee1fc0940.ics",
                                                                                                ExceptionThatLeadToAbortion = CreateException ("Strange exception"),
-                                                                                               MappingErrors = new[]
+                                                                                               Errors = new[]
                                                                                                                {
                                                                                                                    CreateException ("Mapping error 1"),
                                                                                                                    "Mapping error 2",
                                                                                                                },
-                                                                                               MappingWarnings = new[]
+                                                                                               Warnings = new[]
                                                                                                                  {
                                                                                                                      CreateException ("Mapping warning 1"),
                                                                                                                      "Mapping warning 2",

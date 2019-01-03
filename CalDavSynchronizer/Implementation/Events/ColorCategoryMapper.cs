@@ -51,7 +51,7 @@ namespace CalDavSynchronizer.Implementation.Events
         .ToDictionary(c => c.Name, c => c.Color, StringComparer.InvariantCultureIgnoreCase);
     }
 
-    public string MapHtmlColorToCategoryOrNull(string htmlColor, IEntityMappingLogger logger)
+    public string MapHtmlColorToCategoryOrNull(string htmlColor, IEntitySynchronizationLogger logger)
     {
       var categoryColor = ColorMapper.MapHtmlColorToCategoryColor(htmlColor);
 
@@ -83,10 +83,10 @@ namespace CalDavSynchronizer.Implementation.Events
         switch (_outlookSession.AddCategoryNoThrow(category, categoryColor))
         {
           case CreateCategoryResult.DidAlreadyExist:
-            logger.LogMappingWarning($"Did not map html color '{htmlColor}' to category '{category}', since category already exists with the wrong color ('{_outlookColorByCategory[category]}').");
+            logger.LogWarning($"Did not map html color '{htmlColor}' to category '{category}', since category already exists with the wrong color ('{_outlookColorByCategory[category]}').");
             return null;
           case CreateCategoryResult.Error:
-            logger.LogMappingError($"Error while trying to create category '{category}'.");
+            logger.LogError($"Error while trying to create category '{category}'.");
             return null;
           case CreateCategoryResult.Ok:
             _outlookColorByCategory.Add(category, categoryColor);

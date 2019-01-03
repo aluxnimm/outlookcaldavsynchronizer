@@ -21,7 +21,7 @@ namespace GenSync.EntityRepositories
 {
   public interface IDeleteJob<out TEntityId, out TEntityVersion>
   {
-    IEntityMappingLogger Logger { get; }
+    IEntitySynchronizationLogger Logger { get; }
     TEntityId EntityId { get; }
     TEntityVersion Version { get; }
     void NotifyOperationSuceeded ();

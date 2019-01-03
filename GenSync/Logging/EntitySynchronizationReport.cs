@@ -21,19 +21,21 @@ namespace GenSync.Logging
 {
   public class EntitySynchronizationReport
   {
-    private string[] _mappingErrors;
-    private string[] _mappingWarnings;
+    private string[] _errors;
+    private string[] _warnings;
 
-    public string[] MappingErrors
+    [XmlArray("MappingErrors")]
+    public string[] Errors
     {
-      get { return _mappingErrors ?? new string[] {}; }
-      set { _mappingErrors = value; }
+      get => _errors ?? new string[] {};
+      set => _errors = value;
     }
 
-    public string[] MappingWarnings
+    [XmlArray("MappingWarnings")]
+    public string[] Warnings
     {
-      get { return _mappingWarnings ?? new string[] { }; }
-      set { _mappingWarnings = value; }
+      get => _warnings ?? new string[] { };
+      set => _warnings = value;
     }
 
     public string AId { get; set; }
@@ -46,9 +48,9 @@ namespace GenSync.Logging
     public SynchronizationOperation Operation { get; set; }
 
     [XmlIgnore]
-    public bool HasErrors => ExceptionThatLeadToAbortion != null || _mappingErrors?.Length > 0;
+    public bool HasErrors => ExceptionThatLeadToAbortion != null || _errors?.Length > 0;
 
     [XmlIgnore]
-    public bool HasWarnings => _mappingWarnings?.Length > 0;
+    public bool HasWarnings => _warnings?.Length > 0;
   }
 }

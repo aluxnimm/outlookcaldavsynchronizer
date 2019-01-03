@@ -30,7 +30,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists.VCard
   {
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod ().DeclaringType);
 
-    protected override vCardMember CreateVCardMemberOrNull(GenericComObjectWrapper<Recipient> recipientWrapper, string nameWithoutEmail, DistributionListSychronizationContext context, IEntityMappingLogger mappingLogger, ILog logger)
+    protected override vCardMember CreateVCardMemberOrNull(GenericComObjectWrapper<Recipient> recipientWrapper, string nameWithoutEmail, DistributionListSychronizationContext context, IEntitySynchronizationLogger synchronizationLogger, ILog logger)
     {
       var targetMember = new vCardMember();
       targetMember.EmailAddress = recipientWrapper.Inner.Address;
@@ -38,7 +38,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists.VCard
       return targetMember;
     }
 
-    protected override IEnumerable<DistributionListMember> GetMembers(vCard source, DistributionListSychronizationContext context, IEntityMappingLogger mappingLogger, ILog logger)
+    protected override IEnumerable<DistributionListMember> GetMembers(vCard source, DistributionListSychronizationContext context, IEntitySynchronizationLogger synchronizationLogger, ILog logger)
     {
       return source.Members.Select(v => new DistributionListMember(v.EmailAddress, v.DisplayName));
     }

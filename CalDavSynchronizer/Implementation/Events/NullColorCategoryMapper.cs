@@ -28,7 +28,7 @@ namespace CalDavSynchronizer.Implementation.Events
     {
     }
 
-    public string MapHtmlColorToCategoryOrNull(string htmlColor, IEntityMappingLogger logger)
+    public string MapHtmlColorToCategoryOrNull(string htmlColor, IEntitySynchronizationLogger logger)
     {
       return null;
     }

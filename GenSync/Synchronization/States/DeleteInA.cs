@@ -133,7 +133,7 @@ namespace GenSync.Synchronization.States
         _logger = logger;
       }
 
-      public IEntityMappingLogger Logger => _logger;
+      public IEntitySynchronizationLogger Logger => _logger;
       public TAtypeEntityId EntityId => _state.KnownData.AtypeId;
       public TAtypeEntityVersion Version => _state._currentAVersion;
 

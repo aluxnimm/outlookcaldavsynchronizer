@@ -202,7 +202,7 @@ namespace CalDavSynchronizer.Implementation.Events
       var appointmentId = new AppointmentId(item.Inner.EntryID, item.Inner.GlobalAppointmentID);
       if (relations.TryGetValue (appointmentId, out relation))
       {
-        await _btypeRepository.TryDelete (relation.BtypeId, relation.BtypeVersion, NullEventSynchronizationContext.Instance, NullEntityMappingLogger.Instance);
+        await _btypeRepository.TryDelete (relation.BtypeId, relation.BtypeVersion, NullEventSynchronizationContext.Instance, NullEntitySynchronizationLogger.Instance);
         relations.Remove (appointmentId);
       }
       item.Inner.Delete();

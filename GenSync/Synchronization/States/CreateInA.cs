@@ -92,7 +92,7 @@ namespace GenSync.Synchronization.States
       aJobs.AddCreateJob (new JobWrapper (stateContext, this, logger, context));
     }
 
-    private async Task<TAtypeEntity> InitializeEntity (TAtypeEntity entity, IEntityMappingLogger logger, TContext context)
+    private async Task<TAtypeEntity> InitializeEntity (TAtypeEntity entity, IEntitySynchronizationLogger logger, TContext context)
     {
       return await _environment.Mapper.Map2To1 (_bEntity, entity, logger, context);
     }

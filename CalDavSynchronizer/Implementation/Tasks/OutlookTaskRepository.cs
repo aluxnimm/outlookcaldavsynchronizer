@@ -206,7 +206,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
         ITaskItemWrapper entityToUpdate,
         Func<ITaskItemWrapper, Task<ITaskItemWrapper>> entityModifier,
         int context, 
-        IEntityMappingLogger logger)
+        IEntitySynchronizationLogger logger)
     {
       entityToUpdate = await entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save();
@@ -217,7 +217,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
       string entityId, 
       DateTime version,
       int context,
-      IEntityMappingLogger logger)
+      IEntitySynchronizationLogger logger)
     {
       var entityWithId = Get (new[] { entityId }, NullLoadEntityLogger.Instance, 0).Result.SingleOrDefault ();
       if (entityWithId == null)

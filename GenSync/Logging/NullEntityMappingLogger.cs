@@ -19,11 +19,11 @@ using System;
 
 namespace GenSync.Logging
 {
-  public class NullEntityMappingLogger : IEntityMappingLogger
+  public class NullEntitySynchronizationLogger : IEntitySynchronizationLogger
   {
-    public static readonly IEntityMappingLogger Instance = new NullEntityMappingLogger();
+    public static readonly IEntitySynchronizationLogger Instance = new NullEntitySynchronizationLogger();
 
-    private NullEntityMappingLogger()
+    private NullEntitySynchronizationLogger()
     {
 
     }
@@ -33,22 +33,22 @@ namespace GenSync.Logging
       
     }
 
-    public void LogMappingError(string message)
+    public void LogError(string message)
     {
      
     }
 
-    public void LogMappingError(string message, Exception exception)
+    public void LogError(string message, Exception exception)
     {
     
     }
 
-    public void LogMappingWarning(string warning)
+    public void LogWarning(string warning)
     {
      
     }
 
-    public void LogMappingWarning(string warning, Exception exception)
+    public void LogWarning(string warning, Exception exception)
     {
      
     }

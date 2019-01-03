@@ -203,7 +203,7 @@ namespace CalDavSynchronizer.Implementation
     }
 
 
-    public async Task<bool> TryDelete (WebResourceName entityId, string version, TContext context, IEntityMappingLogger logger)
+    public async Task<bool> TryDelete (WebResourceName entityId, string version, TContext context, IEntitySynchronizationLogger logger)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
@@ -217,7 +217,7 @@ namespace CalDavSynchronizer.Implementation
         IICalendar entityToUpdate,
         Func<IICalendar, Task<IICalendar>> entityModifier,
         TContext context, 
-        IEntityMappingLogger logger)
+        IEntitySynchronizationLogger logger)
     {
       using (AutomaticStopwatch.StartDebug (s_logger))
       {
@@ -231,7 +231,7 @@ namespace CalDavSynchronizer.Implementation
           if (_deleteAndCreateOnUpdateError403 && ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
           {
             s_logger.Warn ("Server returned '403' ('Forbidden') for update, trying Delete and Recreate instead...");
-            logger.LogMappingWarning ("Server returned '403' ('Forbidden') for update, trying Delete and Recreate instead...");
+            logger.LogWarning ("Server returned '403' ('Forbidden') for update, trying Delete and Recreate instead...");
 
             await TryDelete (entityId, entityVersion, context, logger);
 
