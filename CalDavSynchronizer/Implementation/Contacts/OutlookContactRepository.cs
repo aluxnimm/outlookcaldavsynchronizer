@@ -178,6 +178,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
           catch (COMException ex)
           {
             s_logger.Error ("Could not delete associated Anniversary Appointment.", ex);
+            logger.LogError ("Could not delete associated Anniversary Appointment.", ex);
           }
         }
         if (!contact.Inner.Birthday.Equals (OutlookUtility.OUTLOOK_DATE_NONE))
@@ -193,6 +194,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
           catch (COMException ex)
           {
             s_logger.Error ("Could not delete associated Birthday Appointment.", ex);
+            logger.LogError ("Could not delete associated Birthday Appointment.", ex);
           }
         }
         contact.Inner.Delete ();
