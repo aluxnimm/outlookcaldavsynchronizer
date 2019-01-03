@@ -145,7 +145,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
       DateTime entityVersion,
       IContactItemWrapper entityToUpdate,
       Func<IContactItemWrapper, Task<IContactItemWrapper>> entityModifier,
-      Tcontext context)
+      Tcontext context, 
+      IEntityMappingLogger logger)
     {
       entityToUpdate = await entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save ();
@@ -155,7 +156,8 @@ namespace CalDavSynchronizer.Implementation.Contacts
     public Task<bool> TryDelete (
       string entityId,
       DateTime version,
-      Tcontext context)
+      Tcontext context, 
+      IEntityMappingLogger logger)
     {
       var entityWithId = Get (new[] { entityId }, NullLoadEntityLogger.Instance, default (Tcontext)).Result.SingleOrDefault ();
       if (entityWithId == null)

@@ -54,14 +54,14 @@ namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
         .ToArray ();
     }
 
-    public Task<bool> TryDelete (WebResourceName entityId, string version, TContext context)
+    public Task<bool> TryDelete (WebResourceName entityId, string version, TContext context, IEntityMappingLogger logger)
     {
-      return _decorated.TryDelete (entityId, version, context);
+      return _decorated.TryDelete (entityId, version, context, logger);
     }
 
-    public Task<EntityVersion<WebResourceName, string>> TryUpdate (WebResourceName entityId, string version, vCard entityToUpdate, Func<vCard, Task<vCard>> entityModifier, TContext context)
+    public Task<EntityVersion<WebResourceName, string>> TryUpdate (WebResourceName entityId, string version, vCard entityToUpdate, Func<vCard, Task<vCard>> entityModifier, TContext context, IEntityMappingLogger logger)
     {
-      return _decorated.TryUpdate (entityId, version, entityToUpdate, entityModifier, context);
+      return _decorated.TryUpdate (entityId, version, entityToUpdate, entityModifier, context, logger);
     }
 
     public async Task<EntityVersion<WebResourceName, string>> Create (Func<vCard, Task<vCard>> entityInitializer, TContext context)

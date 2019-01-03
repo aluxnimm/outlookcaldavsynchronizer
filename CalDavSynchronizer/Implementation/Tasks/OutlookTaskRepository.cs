@@ -205,7 +205,8 @@ namespace CalDavSynchronizer.Implementation.Tasks
         DateTime entityVersion,
         ITaskItemWrapper entityToUpdate,
         Func<ITaskItemWrapper, Task<ITaskItemWrapper>> entityModifier,
-        int context)
+        int context, 
+        IEntityMappingLogger logger)
     {
       entityToUpdate = await entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save();
@@ -215,7 +216,8 @@ namespace CalDavSynchronizer.Implementation.Tasks
     public Task<bool> TryDelete (
       string entityId, 
       DateTime version,
-      int context)
+      int context,
+      IEntityMappingLogger logger)
     {
       var entityWithId = Get (new[] { entityId }, NullLoadEntityLogger.Instance, 0).Result.SingleOrDefault ();
       if (entityWithId == null)

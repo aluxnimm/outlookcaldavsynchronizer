@@ -104,7 +104,7 @@ namespace GenSync.UnitTests.Synchronization.Stubs
       EntityVersionAndContentById.Remove (entityId);
     }
 
-    public Task<bool> TryDelete (Identifier entityId, int version, int context)
+    public Task<bool> TryDelete (Identifier entityId, int version, int context, IEntityMappingLogger logger)
     {
       if (IdentifierEqualityComparer.Instance.Equals (entityId, EntityWhichCausesExceptionOnDelete))
         throw new Exception ("Failed!");
@@ -127,7 +127,8 @@ namespace GenSync.UnitTests.Synchronization.Stubs
         int entityVersion,
         string entityToUpdate,
         Func<string, Task<string>> entityModifier, 
-        int context)
+        int context, 
+        IEntityMappingLogger logger)
     {
       if (IdentifierEqualityComparer.Instance.Equals (entityId, EntityWhichCausesExceptionOnUpdate))
         throw new Exception ("Failed!");

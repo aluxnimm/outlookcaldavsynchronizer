@@ -425,7 +425,8 @@ namespace CalDavSynchronizer.IntegrationTests
                     c.Events.Remove(master);
                     return Task.FromResult(c);
                 },
-                NullEventSynchronizationContext.Instance);
+                NullEventSynchronizationContext.Instance,
+                NullEntityMappingLogger.Instance);
 
             // Now a server event was set up without an master event
             var report = await synchronizer.Synchronize();

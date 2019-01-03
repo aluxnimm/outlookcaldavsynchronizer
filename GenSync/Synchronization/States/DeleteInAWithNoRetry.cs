@@ -141,6 +141,7 @@ namespace GenSync.Synchronization.States
         _logger = logger;
       }
 
+      public IEntityMappingLogger Logger => _logger;
       public TAtypeEntityId EntityId => _state._aId;
       public TAtypeEntityVersion Version => _state._currentAVersion;
 

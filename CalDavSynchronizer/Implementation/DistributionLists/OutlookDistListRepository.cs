@@ -134,7 +134,8 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
       DateTime entityVersion,
       IDistListItemWrapper entityToUpdate,
       Func<IDistListItemWrapper, Task<IDistListItemWrapper>> entityModifier,
-      Tcontext context)
+      Tcontext context,
+      IEntityMappingLogger logger)
     {
       entityToUpdate = await entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save ();
@@ -144,7 +145,8 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
     public Task<bool> TryDelete (
       string entityId,
       DateTime version,
-      Tcontext context)
+      Tcontext context,
+      IEntityMappingLogger logger)
     {
       var entityWithId = Get (new[] { entityId }, NullLoadEntityLogger.Instance, default (Tcontext)).Result.SingleOrDefault ();
       if (entityWithId == null)

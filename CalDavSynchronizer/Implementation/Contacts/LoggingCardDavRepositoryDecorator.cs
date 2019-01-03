@@ -35,16 +35,16 @@ namespace CalDavSynchronizer.Implementation.Contacts
       _inner = inner;
     }
 
-    public async Task<bool> TryDelete(WebResourceName entityId, string version, ICardDavRepositoryLogger context)
+    public async Task<bool> TryDelete(WebResourceName entityId, string version, ICardDavRepositoryLogger context, IEntityMappingLogger logger)
     {
-      var result = await _inner.TryDelete(entityId, version, 0);
+      var result = await _inner.TryDelete(entityId, version, 0, logger);
       context.LogEntityDeleted(entityId);
       return result;
     }
 
-    public async Task<EntityVersion<WebResourceName, string>> TryUpdate(WebResourceName entityId, string version, vCard entityToUpdate, Func<vCard, Task<vCard>> entityModifier, ICardDavRepositoryLogger context)
+    public async Task<EntityVersion<WebResourceName, string>> TryUpdate(WebResourceName entityId, string version, vCard entityToUpdate, Func<vCard, Task<vCard>> entityModifier, ICardDavRepositoryLogger context, IEntityMappingLogger logger)
     {
-      var result = await _inner.TryUpdate(entityId, version, entityToUpdate, entityModifier, 0);
+      var result = await _inner.TryUpdate(entityId, version, entityToUpdate, entityModifier, 0, logger);
       context.LogEntityExists(entityId, entityToUpdate);
       return result;
     }

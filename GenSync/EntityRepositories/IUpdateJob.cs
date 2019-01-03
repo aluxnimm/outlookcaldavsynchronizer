@@ -16,11 +16,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Threading.Tasks;
+using GenSync.Logging;
 
 namespace GenSync.EntityRepositories
 {
   public interface IUpdateJob<TEntityId, TEntityVersion, TEntity>
   {
+    IEntityMappingLogger Logger { get; }
     TEntityId EntityId { get; }
     TEntityVersion Version { get; }
     TEntity EntityToUpdate { get; }
