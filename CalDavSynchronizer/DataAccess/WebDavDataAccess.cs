@@ -122,7 +122,7 @@ namespace CalDavSynchronizer.DataAccess
       return privileges;
     }
 
-    protected async Task<Uri> GetOwnerOrNull (Uri resourceUri)
+    protected async Task<Uri> GetOwnerUrlOrNull (Uri resourceUri)
     {
       try
       {

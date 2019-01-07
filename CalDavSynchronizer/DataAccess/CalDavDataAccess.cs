@@ -63,7 +63,7 @@ namespace CalDavSynchronizer.DataAccess
 
     public async Task<CalendarOwnerProperties> GetCalendarOwnerPropertiesOrNull()
     { 
-      var owner = await GetOwnerOrNull (_serverUrl);
+      var owner = await GetOwnerUrlOrNull (_serverUrl);
       var currentUserPrincipal = await GetCurrentUserPrincipalUrl (_serverUrl);
 
       var isSharedCalendar = false;
