@@ -252,9 +252,9 @@ namespace CalDavSynchronizer.DataAccess
           }
         }
       }
-      catch (Exception) 
+      catch (Exception x)
       {
-        // suppress any errors if server reports calendar-proxy support and still fails like Google
+        s_logger.Info("Ignoring error, because some servers report calendar-proxy support and are still failing like Google.", x);
       }
       return new CalDavResources (calendars, taskLists);
     }
