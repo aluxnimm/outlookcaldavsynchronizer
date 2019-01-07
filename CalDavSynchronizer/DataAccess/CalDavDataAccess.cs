@@ -85,9 +85,9 @@ namespace CalDavSynchronizer.DataAccess
       return null;
     }
 
-    public async Task<string> GetUserEmailAddressOrNull(Uri userPricipalUrl)
+    public async Task<string> GetUserEmailAddressOrNull(Uri userPrincipalUrl)
     {
-      var userAddressSetProperties = await GetUserAddressSet(userPricipalUrl);
+      var userAddressSetProperties = await GetUserAddressSet(userPrincipalUrl);
       var userAddressSetNode = userAddressSetProperties.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/C:calendar-user-address-set", userAddressSetProperties.XmlNamespaceManager);
       if (userAddressSetNode != null && userAddressSetNode.HasChildNodes)
       {
