@@ -357,7 +357,7 @@ namespace CalDavSynchronizer.Ui.Options
       {
         case OlItemType.olAppointmentItem:
           var calDavDataAccess = new CalDavDataAccess(autoDiscoveryUri, webDavClient);
-          var foundCalendars = (await calDavDataAccess.GetUserResourcesNoThrow(useWellKnownCalDav)).CalendarResources;
+          var foundCalendars = (await calDavDataAccess.GetUserResourcesIncludingCalendarProxies(useWellKnownCalDav)).CalendarResources;
           if (foundCalendars.Count == 0)
             return new AutoDiscoveryResult(null, AutoDiscoverResultStatus.NoResourcesFound);
           var selectedCalendar = SelectCalendar(foundCalendars);
@@ -367,7 +367,7 @@ namespace CalDavSynchronizer.Ui.Options
             return new AutoDiscoveryResult(null, AutoDiscoverResultStatus.UserCancelled);
         case OlItemType.olTaskItem:
           var calDavDataAccessTasks = new CalDavDataAccess(autoDiscoveryUri, webDavClient);
-          var foundTasks = (await calDavDataAccessTasks.GetUserResourcesNoThrow(useWellKnownCalDav)).TaskListResources;
+          var foundTasks = (await calDavDataAccessTasks.GetUserResourcesIncludingCalendarProxies(useWellKnownCalDav)).TaskListResources;
           if (foundTasks.Count == 0)
             return new AutoDiscoveryResult(null, AutoDiscoverResultStatus.NoResourcesFound);
           var selectedTask = SelectTaskList(foundTasks);
@@ -616,7 +616,8 @@ namespace CalDavSynchronizer.Ui.Options
         if (result.ResourceType != ResourceType.None)
         {
           _settingsFaultFinder.FixSynchronizationMode(options, result);
-          _settingsFaultFinder.FixWebDavCollectionSync(options,result);
+          _settingsFaultFinder.FixWebDavCollectionSync(options, result);
+          _settingsFaultFinder.UpdateServerEmailAndSchedulingSettings(options, result);
 
           DisplayTestReport(
               result,
@@ -663,6 +664,7 @@ namespace CalDavSynchronizer.Ui.Options
 
       _settingsFaultFinder.FixSynchronizationMode(options, finalResult);
       _settingsFaultFinder.FixWebDavCollectionSync(options, finalResult);
+      _settingsFaultFinder.UpdateServerEmailAndSchedulingSettings(options, finalResult);
 
       DisplayTestReport(
           finalResult,
@@ -771,7 +773,7 @@ namespace CalDavSynchronizer.Ui.Options
 
         if (taskLists.Items.Any())
         {
-          var selectedTaskList = SelectTaskList(taskLists.Items.Select(i => new TaskListData(i.Id, i.Title)).ToArray());
+          var selectedTaskList = SelectTaskList(taskLists.Items.Select(i => new TaskListData(i.Id, i.Title, AccessPrivileges.All)).ToArray());
           if (selectedTaskList != null)
             connectionTestUrl = selectedTaskList.Id;
           else
@@ -798,7 +800,7 @@ namespace CalDavSynchronizer.Ui.Options
         MessageBox.Show(errorMessageBuilder.ToString(), Strings.Get($"The tasklist is invalid"), MessageBoxButtons.OK, MessageBoxIcon.Error);
         return url;
       }
-      TestResult result = new TestResult(ResourceType.TaskList, CalendarProperties.None, AddressBookProperties.None, AccessPrivileges.None, false);
+      TestResult result = new TestResult(ResourceType.TaskList, CalendarProperties.None, AddressBookProperties.None, AccessPrivileges.None, false, null);
 
       DisplayTestReport(
           result,
@@ -827,7 +829,8 @@ namespace CalDavSynchronizer.Ui.Options
           CalendarProperties.None,
           AddressBookProperties.AddressBookAccessSupported,
           AccessPrivileges.All,
-          false);
+          false,
+          null);
 
       DisplayTestReport(
           result,

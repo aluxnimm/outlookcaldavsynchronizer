@@ -40,5 +40,9 @@ namespace CalDavSynchronizer.Ui.Options
     public void FixWebDavCollectionSync(OptionsModel options, TestResult result)
     {
     }
+
+    public void UpdateServerEmailAndSchedulingSettings(OptionsModel options, TestResult result)
+    {
+    }
   }
 }

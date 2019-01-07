@@ -54,6 +54,16 @@ namespace CalDavSynchronizer.DataAccess
       return Task.FromResult(true);
     }
 
+    public Task<bool> IsCalendarProxySupported(Uri principalUrl)
+    {
+      return Task.FromResult(false);
+    }
+
+    public Task<CalendarOwnerProperties> GetCalendarOwnerPropertiesOrNull()
+    {
+      return null;
+    }
+
     public Task<AccessPrivileges> GetPrivileges()
     {
       return Task.FromResult (AccessPrivileges.All);

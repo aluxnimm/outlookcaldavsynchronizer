@@ -58,7 +58,7 @@ namespace CalDavSynchronizer.DataAccess
     {
       var autodiscoveryUrl = useWellKnownUrl ? AutoDiscoveryUrl : _serverUrl;
 
-      var currentUserPrincipalUrl = await GetCurrentUserPrincipalUrl (autodiscoveryUrl);
+      var currentUserPrincipalUrl = await GetCurrentUserPrincipalUrlOrNull (autodiscoveryUrl);
       if (currentUserPrincipalUrl != null)
       {
         var addressBookHomeSetProperties = await GetAddressBookHomeSet (currentUserPrincipalUrl);
@@ -135,7 +135,7 @@ namespace CalDavSynchronizer.DataAccess
       {
         var autodiscoveryUrl = useWellKnownUrl ? AutoDiscoveryUrl : _serverUrl;
 
-        var currentUserPrincipalUrl = await GetCurrentUserPrincipalUrl (autodiscoveryUrl);
+        var currentUserPrincipalUrl = await GetCurrentUserPrincipalUrlOrNull (autodiscoveryUrl);
 
         var addressbooks = new List<AddressBookData>();
 
@@ -170,7 +170,8 @@ namespace CalDavSynchronizer.DataAccess
                     {
                       var path = urlNode.InnerText.EndsWith ("/") ? urlNode.InnerText : urlNode.InnerText + "/";
                       var displayName = string.IsNullOrEmpty (displayNameNode.InnerText) ? "Default Addressbook" : displayNameNode.InnerText;
-                      addressbooks.Add (new AddressBookData (new Uri (addressBookDocument.DocumentUri, path), displayName));
+                      var resourceUri = new Uri (addressBookDocument.DocumentUri, path);
+                      addressbooks.Add (new AddressBookData (resourceUri, displayName, await GetPrivileges (resourceUri)));
                     }
                   }
                 }

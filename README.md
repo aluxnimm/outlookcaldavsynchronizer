@@ -1204,7 +1204,7 @@ The toolbar on the left upper part provides the following options:
 - **Export Profiles to File** and 
 - **Import Profiles from File** See Profile Import/Export
 
-When adding a new profile you can choose between a generic CalDAV/CardDAV, a google profile to simplify the google profile creation and predefined CalDAV/CardDAV profiles for SOGo, Fruux, Posteo, Yandex, GMX, Sarenet and Landmarks, Cozy Cloud, Nextcloud, mailbox.org, EasyProject, Web.de and SmarterMail where the DAV Url for autodiscovery is already entered. 
+When adding a new profile you can choose between a generic CalDAV/CardDAV, a google profile to simplify the google profile creation and predefined CalDAV/CardDAV profiles for iCloud Calendar and Contacts, SOGo, Fruux, Posteo, Yandex, GMX, Sarenet, Landmarks, Cozy Cloud, Nextcloud, mailbox.org, Open-Xchange, EasyProject, Web.de, SmarterMail, Mail.de, Kolab and Swisscom Addressbooks where the DAV Url for autodiscovery is already entered. 
 
 The following properties need to be set for a new generic profile:
 
@@ -1219,7 +1219,7 @@ The following properties need to be set for a new generic profile:
 	- **Password:** Password used for the connection. The password will be saved encrypted in the option config file.
 	- ** Use IMAP/POP3 Account Password** Instead of entering the password you can use the IMAP/Pop3 Password from the Outlook Account associated with the folder, the password is fetched from the Windows registry entry of the Outlook profile. *(only in advanced settings)*
 	- ** Use WebDAV collection sync** WebDAV-Sync is a protocol extension that is defined in RFC 6578 and not supported by all servers. Test or discover settings will check if this is supported. This option can speed up the detection of server changes dramatically but excludes the possibility to use the time range filter. *(only in advanced settings)*
-	- **Email address:** email address used as remote identity for the CalDAV server, necessary to synchronize the organizer. The email address can also be used for autodiscovery via DNS lookups, see section Autodiscovery.
+	- **Email address:** email address of the calendar owner used as remote identity for the CalDAV server, necessary to identify the real organizer of meetings and used as organizer instead of the Outlook identity if scheduling option *Act on behalf of server identity* is enabled. If available, the email address is auto-detected during *Test or discover settings*.  If the DAV Url is empty, the email address can also be used for autodiscovery via DNS lookups, see section Autodiscovery.
 	- **Create DAV resource** You can add server DAV resources (calendars or addressbooks). You can configure the resource displayname and if the url should be created with a random string or the displayname. For calendars you can also change the server calendar color. *(only in advanced settings)*
 
 - *Sync settings*:
@@ -1259,7 +1259,8 @@ If you expand the tree view of the profile you can configure network and proxy o
 	- *Use GlobalAppointmentID for UID attribute:* Use Outlook GlobalAppointmendID instead of random Guid for UID attribute in new CalDAV events. This can avoid duplicate events from invitations.
 	- In *Privacy settings* you can configure if you want to map Outlook private appointments to CLASS:CONFIDENTIAL and vice versa. This could be useful for Owncloud for example, if you share your calendar with others and they should see start/end dates of your private appointments. You can also map all CLASS:PUBLIC events to Outlook private appointments. And for Google calendar it is useful to map all Outlook public events to default visibility instead of PUBLIC.
 	- In *Scheduling settings* you can configure if you want to map attendees and organizer and if notifications should be sent by the server. 
-	- Use *Don't send appointment notifications for SOGo servers and SCHEDULE-AGENT=CLIENT for other servers if you want to send invitations from Outlook and avoid that the server sends invitations too, but be aware that not all servers (e.g. Google) support the SCHEDULE-AGENT=CLIENT setting. 
+	- Use *Don't send appointment notifications for SOGo servers and SCHEDULE-AGENT=CLIENT for other servers if you want to send invitations from Outlook and avoid that the server sends invitations too, but be aware that not all servers (e.g. Google) support the SCHEDULE-AGENT=CLIENT setting.
+	- Use *Act on behalf of server identity* to set the server identity (Email Address in the server settings of the sync profile) as the organizer of newly created meetings and the Outlook identity acting on behalf with the SENT-BY property. This can be useful when Outlook and server identity do not match to avoid invites sent by the wrong email or if meetings are created in a shared calendar on behalf of the calendar owner.
 	- In *Outlook settings* you can also define a filter category so that multiple CalDAV-Calendars can be synchronized into one Outlook calendar via the defined category (see Category Filter and Color below).
 	- *Cleanup duplicate events after each sync run:* removes duplicate Outlook appointments based on start,end and subject of the events after each sync run, be aware of possible performance penalties with this option enabled.
 	- For contacts you can configure if birthdays should be mapped or not. If birthdays are mapped, Outlook also creates an recurring appointment for every contact with a defined birthday.
@@ -1286,6 +1287,8 @@ Outlook and Windows use different Timezone definitions than most CalDAV servers 
 ### Managing meetings and invites ###
 
 Outlook can only track meeting responses and invites in the main calender folder. If you schedule meetings from Outlook which are synced with the CalDAV server you have two possibilities to avoid double invitation mails for all attendees. First, you can enable the option *SCHEDULE-AGENT=CLIENT* (or *Don't send appointment notifications (from SOGo)*" for SOGo servers) and let only Outlook send the meeting invites, if the server supports this option. Or you can disable this option and let the server schedule the meetings after syncing the meeting. Then you need to disable the invitation mails sent from Outlook. This is possible by unchecking the checkbox left to the attendee name in the meeting planning dialog. When syncing meetings created in Outlook to the server, the option *Use GlobalAppointmentID for UID attribute* is recommended. This can avoid duplicate events from invitations.
+
+When creating meetings in Outlook you can also use *Act on behalf of server identity* to set the server identity (Email Address in the server settings of the sync profile) as the organizer and the Outlook identity acting on behalf with the SENT-BY property. This can be useful when Outlook and server identity do not match to avoid invites sent by the wrong email or if meetings are created in a shared calendar on behalf of the calendar owner.
 
 The response status of all attendees can be synced from Outlook to the server but only the status of the own Outlook identity (if included in the attendees) can be synced from the server to Outlook due to limitations of the Outlook Object Model.
 

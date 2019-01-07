@@ -93,6 +93,24 @@ namespace CalDavSynchronizer.Ui.Options
           OptionTasks.ConnectionTestCaption);
       }
     }
+
+    public void UpdateServerEmailAndSchedulingSettings(OptionsModel options, TestResult result)
+    {
+      if (result.CalendarOwnerProperties != null && 
+          StringComparer.InvariantCultureIgnoreCase.Compare(result.CalendarOwnerProperties.CalendarOwnerEmail, options.EmailAddress) !=0)
+      {
+        options.EmailAddress = result.CalendarOwnerProperties.CalendarOwnerEmail;
+
+        if (result.CalendarOwnerProperties.IsSharedCalendar && result.AccessPrivileges.HasFlag(AccessPrivileges.Create))
+        {
+          var eventMappingConfigurationModel = (EventMappingConfigurationModel) options.MappingConfigurationModelOrNull;
+          eventMappingConfigurationModel.OrganizerAsDelegate = true;
+          MessageBox.Show(
+            Strings.Get($"The calendar is shared from '{options.EmailAddress}', enabling scheduling option 'act on behalf of server identity'!"),
+            OptionTasks.ConnectionTestCaption);
+        }
+      }
+    }
   }
 
 

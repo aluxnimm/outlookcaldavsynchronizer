@@ -46,6 +46,11 @@ namespace CalDavSynchronizer.DataAccess
       return HasOption ("calendar-access");
     }
 
+    public Task<bool> IsCalendarProxySupported (Uri principalUrl)
+    {
+      return HasOption (principalUrl, "calendar-proxy");
+    }
+
     public Task<bool> IsResourceCalender ()
     {
       return IsResourceType ("C", "calendar");
@@ -56,11 +61,56 @@ namespace CalDavSynchronizer.DataAccess
       return DoesSupportsReportSet (_serverUrl, 0, "C", "calendar-query");
     }
 
+    public async Task<CalendarOwnerProperties> GetCalendarOwnerPropertiesOrNull()
+    { 
+      var owner = await GetOwnerUrlOrNull (_serverUrl);
+      var currentUserPrincipal = await GetCurrentUserPrincipalUrlOrNull (_serverUrl);
+
+      var isSharedCalendar = false;
+      if (owner != null && currentUserPrincipal != null)
+      {
+        var ownerString = owner.OriginalString.EndsWith ("/") ? owner.OriginalString : owner.OriginalString + "/";
+        var principalString = currentUserPrincipal.OriginalString.EndsWith ("/") ? currentUserPrincipal.OriginalString : currentUserPrincipal.OriginalString + "/";
+        isSharedCalendar = StringComparer.InvariantCultureIgnoreCase.Compare (UriHelper.DecodeUrlString (ownerString), UriHelper.DecodeUrlString (principalString)) != 0;
+      }
+      
+      var ownerPrincipalUrl = owner ?? currentUserPrincipal;
+
+      if (ownerPrincipalUrl == null)
+        return null;
+
+      if (await GetUserEmailAddressOrNull(ownerPrincipalUrl) is var emailAddress && emailAddress != null)
+        return new CalendarOwnerProperties(emailAddress, isSharedCalendar);
+
+      return null;
+    }
+
+    public async Task<string> GetUserEmailAddressOrNull(Uri userPricipalUrl)
+    {
+      var userAddressSetProperties = await GetUserAddressSet(userPricipalUrl);
+      var userAddressSetNode = userAddressSetProperties.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/C:calendar-user-address-set", userAddressSetProperties.XmlNamespaceManager);
+      if (userAddressSetNode != null && userAddressSetNode.HasChildNodes)
+      {
+        foreach (XmlNode userAddressSetNodeHref in userAddressSetNode.ChildNodes)
+        {
+          if (!string.IsNullOrEmpty(userAddressSetNodeHref.InnerText))
+          {
+            var address = userAddressSetNodeHref.InnerText;
+            if (address.StartsWith("mailto:") && Uri.IsWellFormedUriString(address, UriKind.Absolute))
+            {
+              return address.Substring(7);
+            }
+          }
+        }
+      }
+      return null;
+    }
+
     public async Task<Uri> GetCalendarHomeSetUriOrNull (bool useWellKnownUrl)
     {
       var autodiscoveryUrl = useWellKnownUrl ? AutoDiscoveryUrl : _serverUrl;
 
-      var currentUserPrincipalUrl = await GetCurrentUserPrincipalUrl (autodiscoveryUrl);
+      var currentUserPrincipalUrl = await GetCurrentUserPrincipalUrlOrNull (autodiscoveryUrl);
       if (currentUserPrincipalUrl != null)
       {
         var calendarHomeSetProperties = await GetCalendarHomeSet (currentUserPrincipalUrl);
@@ -132,67 +182,139 @@ namespace CalDavSynchronizer.DataAccess
       return newResourceUri;
     }
 
-    public async Task<CalDavResources> GetUserResourcesNoThrow (bool useWellKnownUrl)
+    public async Task<CalDavResources> GetUserResourcesIncludingCalendarProxies (bool useWellKnownUrl)
+    {
+      var autodiscoveryUrl = useWellKnownUrl ? AutoDiscoveryUrl : _serverUrl;
+
+      var calendars = new List<CalendarData>();
+      var taskLists = new List<TaskListData>();
+      Uri currentUserPrincipalUrl;
+
+      try
+      {
+        currentUserPrincipalUrl = await GetCurrentUserPrincipalUrlOrNull (autodiscoveryUrl);
+      }
+      catch (Exception x)
+      {
+        if (x.Message.Contains ("404") || x.Message.Contains ("405") || x is XmlException)
+          return new CalDavResources (calendars, taskLists);
+        else
+          throw;
+      }
+
+      if (currentUserPrincipalUrl != null)
+      {
+        var resources = await GetUserResources(currentUserPrincipalUrl);
+        calendars.AddRange(resources.CalendarResources);
+        taskLists.AddRange(resources.TaskListResources);
+      }
+
+      try
+      {
+        if (await IsCalendarProxySupported (currentUserPrincipalUrl))
+        { 
+          var calendarProxyProperties = await GetCalendarProxy (currentUserPrincipalUrl);
+
+          var proxyWriteForNode = calendarProxyProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/CS:calendar-proxy-write-for", calendarProxyProperties.XmlNamespaceManager);
+          if (proxyWriteForNode != null && proxyWriteForNode.HasChildNodes)
+          {
+            foreach (XmlNode proxyWriteForNodeHref in proxyWriteForNode.ChildNodes)
+            {
+              if (!string.IsNullOrEmpty (proxyWriteForNodeHref.InnerText))
+              {
+                var proxyWriteUri = Uri.IsWellFormedUriString (proxyWriteForNodeHref.InnerText, UriKind.Absolute) ?
+                  new Uri (proxyWriteForNodeHref.InnerText) :
+                  new Uri (calendarProxyProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + proxyWriteForNodeHref.InnerText);
+
+                var result = await GetUserResources(proxyWriteUri);
+                calendars.AddRange (result.CalendarResources);
+                taskLists.AddRange (result.TaskListResources);
+              }
+            }
+          }
+
+          var proxyReadForNode = calendarProxyProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/CS:calendar-proxy-read-for", calendarProxyProperties.XmlNamespaceManager);
+          if (proxyReadForNode != null && proxyReadForNode.HasChildNodes)
+          {
+            foreach (XmlNode proxyReadForNodeHref in proxyReadForNode.ChildNodes)
+            {
+              if (!string.IsNullOrEmpty (proxyReadForNodeHref.InnerText))
+              {
+                var proxyReadUri = Uri.IsWellFormedUriString (proxyReadForNodeHref.InnerText, UriKind.Absolute) ?
+                  new Uri (proxyReadForNodeHref.InnerText) :
+                  new Uri (calendarProxyProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + proxyReadForNodeHref.InnerText);
+                var result = await GetUserResources(proxyReadUri);
+
+                calendars.AddRange (result.CalendarResources);
+                taskLists.AddRange (result.TaskListResources);
+              }
+            }
+          }
+        }
+      }
+      catch (Exception x)
+      {
+        s_logger.Info("Ignoring error, because some servers report calendar-proxy support and are still failing like Google.", x);
+      }
+      return new CalDavResources (calendars, taskLists);
+    }
+
+    public async Task<CalDavResources> GetUserResources (Uri principalUri)
     {
       try
       {
-        var autodiscoveryUrl = useWellKnownUrl ? AutoDiscoveryUrl : _serverUrl;
-
-        var currentUserPrincipalUrl = await GetCurrentUserPrincipalUrl (autodiscoveryUrl);
-
         var calendars = new List<CalendarData>();
         var taskLists = new List<TaskListData>();
 
-        if (currentUserPrincipalUrl != null)
+        var calendarHomeSetProperties = await GetCalendarHomeSet (principalUri);
+
+        XmlNode homeSetNode = calendarHomeSetProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/C:calendar-home-set", calendarHomeSetProperties.XmlNamespaceManager);
+        if (homeSetNode != null && homeSetNode.HasChildNodes)
         {
-          var calendarHomeSetProperties = await GetCalendarHomeSet (currentUserPrincipalUrl);
-
-          XmlNode homeSetNode = calendarHomeSetProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/C:calendar-home-set", calendarHomeSetProperties.XmlNamespaceManager);
-          if (homeSetNode != null && homeSetNode.HasChildNodes)
+          foreach (XmlNode homeSetNodeHref in homeSetNode.ChildNodes)
           {
-            foreach (XmlNode homeSetNodeHref in homeSetNode.ChildNodes)
-            {  
-              if (!string.IsNullOrEmpty (homeSetNodeHref.InnerText))
+            if (!string.IsNullOrEmpty (homeSetNodeHref.InnerText))
+            {
+              var calendarHomeSetUri = Uri.IsWellFormedUriString (homeSetNodeHref.InnerText, UriKind.Absolute) ?
+                new Uri (homeSetNodeHref.InnerText) :
+                new Uri (calendarHomeSetProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + homeSetNodeHref.InnerText);
+
+              var calendarDocument = await ListCalendars (calendarHomeSetUri);
+
+              var responseNodes = calendarDocument.XmlDocument.SelectNodes ("/D:multistatus/D:response", calendarDocument.XmlNamespaceManager);
+
+              foreach (XmlElement responseElement in responseNodes)
               {
-                var calendarHomeSetUri = Uri.IsWellFormedUriString (homeSetNodeHref.InnerText, UriKind.Absolute) ?
-                  new Uri (homeSetNodeHref.InnerText) :
-                  new Uri (calendarHomeSetProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + homeSetNodeHref.InnerText);
-
-                var calendarDocument = await ListCalendars (calendarHomeSetUri);
-
-                XmlNodeList responseNodes = calendarDocument.XmlDocument.SelectNodes ("/D:multistatus/D:response",calendarDocument.XmlNamespaceManager);
-
-                foreach (XmlElement responseElement in responseNodes)
+                var urlNode = responseElement.SelectSingleNode ("D:href", calendarDocument.XmlNamespaceManager);
+                var displayNameNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:displayname", calendarDocument.XmlNamespaceManager);
+                if (urlNode != null && displayNameNode != null)
                 {
-                  var urlNode = responseElement.SelectSingleNode ("D:href", calendarDocument.XmlNamespaceManager);
-                  var displayNameNode = responseElement.SelectSingleNode ("D:propstat/D:prop/D:displayname", calendarDocument.XmlNamespaceManager);
-                  if (urlNode != null && displayNameNode != null)
+                  var isCollection = responseElement.SelectSingleNode ("D:propstat/D:prop/D:resourcetype/C:calendar", calendarDocument.XmlNamespaceManager);
+                  if (isCollection != null)
                   {
-                    XmlNode isCollection = responseElement.SelectSingleNode ("D:propstat/D:prop/D:resourcetype/C:calendar", calendarDocument.XmlNamespaceManager);
-                    if (isCollection != null)
+                    var calendarColorNode = responseElement.SelectSingleNode ("D:propstat/D:prop/E:calendar-color", calendarDocument.XmlNamespaceManager);
+                    ArgbColor? calendarColor = null;
+                    if (calendarColorNode != null && calendarColorNode.InnerText.Length >= 7)
                     {
-                      var calendarColorNode = responseElement.SelectSingleNode ("D:propstat/D:prop/E:calendar-color", calendarDocument.XmlNamespaceManager);
-                      ArgbColor? calendarColor = null;
-                      if (calendarColorNode != null && calendarColorNode.InnerText.Length >= 7)
+                      calendarColor = ArgbColor.FromRgbaHexStringWithOptionalANoThrow (calendarColorNode.InnerText);
+                    }
+
+                    var supportedComponentsNode = responseElement.SelectSingleNode ("D:propstat/D:prop/C:supported-calendar-component-set", calendarDocument.XmlNamespaceManager);
+                    if (supportedComponentsNode != null)
+                    {
+                      var path = urlNode.InnerText.EndsWith("/") ? urlNode.InnerText : urlNode.InnerText + "/";
+
+                      if (supportedComponentsNode.InnerXml.Contains ("VEVENT"))
                       {
-                        calendarColor = ArgbColor.FromRgbaHexStringWithOptionalANoThrow (calendarColorNode.InnerText);
+                        var displayName = string.IsNullOrEmpty (displayNameNode.InnerText) ? "Default Calendar" : displayNameNode.InnerText;
+                        var resourceUri = new Uri (calendarDocument.DocumentUri, path);
+                        calendars.Add (new CalendarData (resourceUri, displayName, calendarColor, await GetPrivileges (resourceUri)));
                       }
-
-                      XmlNode supportedComponentsNode = responseElement.SelectSingleNode ("D:propstat/D:prop/C:supported-calendar-component-set", calendarDocument.XmlNamespaceManager);
-                      if (supportedComponentsNode != null)
+                      if (supportedComponentsNode.InnerXml.Contains ("VTODO"))
                       {
-                        var path = urlNode.InnerText.EndsWith ("/") ? urlNode.InnerText : urlNode.InnerText + "/";
-
-                        if (supportedComponentsNode.InnerXml.Contains ("VEVENT"))
-                        {
-                          var displayName = string.IsNullOrEmpty (displayNameNode.InnerText) ? "Default Calendar" : displayNameNode.InnerText;
-                          calendars.Add (new CalendarData (new Uri (calendarDocument.DocumentUri, path), displayName, calendarColor));
-                        }
-                        if (supportedComponentsNode.InnerXml.Contains ("VTODO"))
-                        {
-                          var displayName = string.IsNullOrEmpty (displayNameNode.InnerText) ? "Default Tasks" : displayNameNode.InnerText;
-                          taskLists.Add (new TaskListData (new Uri (calendarDocument.DocumentUri, path).ToString(), displayName));
-                        }
+                        var displayName = string.IsNullOrEmpty (displayNameNode.InnerText) ? "Default Tasks" : displayNameNode.InnerText;
+                        var resourceUri = new Uri (calendarDocument.DocumentUri, path);
+                        taskLists.Add (new TaskListData (resourceUri.ToString(), displayName, await GetPrivileges (resourceUri)));
                       }
                     }
                   }
@@ -201,17 +323,17 @@ namespace CalDavSynchronizer.DataAccess
             }
           }
         }
-        return new CalDavResources (calendars, taskLists);
+
+        return new CalDavResources(calendars, taskLists);
       }
       catch (Exception x)
       {
         if (x.Message.Contains ("404") || x.Message.Contains ("405") || x is XmlException)
-          return new CalDavResources (new CalendarData[] { }, new TaskListData[] {});
+          return new CalDavResources (new CalendarData[] { }, new TaskListData[] { });
         else
           throw;
       }
     }
-    
     private Uri AutoDiscoveryUrl
     {
       get 
@@ -237,6 +359,45 @@ namespace CalDavSynchronizer.DataAccess
                         </D:propfind>
                  "
           );
+    }
+
+    private Task<XmlDocumentWithNamespaceManager> GetUserAddressSet (Uri userPricipalUrl)
+    {
+      return _webDavClient.ExecuteWebDavRequestAndReadResponse(
+        userPricipalUrl,
+        "PROPFIND",
+        0,
+        null,
+        null,
+        "application/xml",
+        @"<?xml version='1.0'?>
+                        <D:propfind xmlns:D=""DAV:"" xmlns:C=""urn:ietf:params:xml:ns:caldav"">
+                          <D:prop>
+                            <C:calendar-user-address-set/>
+                          </D:prop>
+                        </D:propfind>
+                 "
+      );
+    }
+
+    private Task<XmlDocumentWithNamespaceManager> GetCalendarProxy (Uri url)
+    {
+      return _webDavClient.ExecuteWebDavRequestAndReadResponse(
+        url,
+        "PROPFIND",
+        0,
+        null,
+        null,
+        "application/xml",
+        @"<?xml version='1.0'?>
+                        <D:propfind xmlns:D=""DAV:"" xmlns:CS=""http://calendarserver.org/ns/"">
+                          <D:prop>
+                            <CS:calendar-proxy-read-for/>
+                            <CS:calendar-proxy-write-for/>
+                          </D:prop>
+                        </D:propfind>
+                 "
+      );
     }
 
     private Task<XmlDocumentWithNamespaceManager> ListCalendars (Uri url)

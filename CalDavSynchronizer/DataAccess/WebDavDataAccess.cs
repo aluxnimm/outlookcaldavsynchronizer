@@ -51,12 +51,17 @@ namespace CalDavSynchronizer.DataAccess
 
     protected async Task<bool> HasOption (string requiredOption)
     {
+      return await HasOption (_serverUrl, requiredOption);
+    }
+
+    protected async Task<bool> HasOption (Uri url, string requiredOption)
+    {
       IHttpHeaders headers;
       try
       {
 
         headers = await _webDavClient.ExecuteWebDavRequestAndReturnResponseHeaders(
-          _serverUrl,
+          url,
           "OPTIONS",
           null,
           null,
@@ -96,7 +101,11 @@ namespace CalDavSynchronizer.DataAccess
 
     public async Task<AccessPrivileges> GetPrivileges ()
     {
-      var properties = await GetCurrentUserPrivileges (_serverUrl, 0);
+      return await GetPrivileges (_serverUrl);
+    }
+    public async Task<AccessPrivileges> GetPrivileges (Uri url)
+    {
+      var properties = await GetCurrentUserPrivileges (url, 0);
 
       XmlNode privilegeWriteContent = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-privilege-set/D:privilege/D:write-content", properties.XmlNamespaceManager);
       XmlNode privilegeBind = properties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-privilege-set/D:privilege/D:bind", properties.XmlNamespaceManager);
@@ -111,6 +120,26 @@ namespace CalDavSynchronizer.DataAccess
       if (privilegeBind !=null) privileges |= AccessPrivileges.Create;
       if (privilegeUnbind != null) privileges |= AccessPrivileges.Delete;
       return privileges;
+    }
+
+    protected async Task<Uri> GetOwnerUrlOrNull (Uri resourceUri)
+    {
+      try
+      {
+        var ownerProperties = await GetOwner (resourceUri);
+        var ownerNode = ownerProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:owner", ownerProperties.XmlNamespaceManager);
+
+        if (!string.IsNullOrEmpty (ownerNode?.InnerText))
+          return new Uri (ownerProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + ownerNode.InnerText);
+      }
+      catch (Exception x)
+      {
+        if (x.Message.Contains ("404") || x.Message.Contains ("405") || x is XmlException)
+          return null;
+        else
+          throw;
+      }
+      return null;
     }
 
     protected async Task<string> GetEtag (Uri absoluteEntityUrl)
@@ -339,6 +368,25 @@ namespace CalDavSynchronizer.DataAccess
           );
     }
 
+    protected Task<XmlDocumentWithNamespaceManager> GetOwner (Uri url)
+    {
+      return _webDavClient.ExecuteWebDavRequestAndReadResponse(
+        url,
+        "PROPFIND",
+        0,
+        null,
+        null,
+        "application/xml",
+        @"<?xml version='1.0'?>
+                        <D:propfind xmlns:D=""DAV:"">
+                          <D:prop>
+                            <D:owner/>
+                          </D:prop>
+                        </D:propfind>
+                 "
+      );
+    }
+
     protected Task<XmlDocumentWithNamespaceManager> GetCurrentUserPrincipal (Uri url)
     {
       return _webDavClient.ExecuteWebDavRequestAndReadResponse (
@@ -397,15 +445,15 @@ namespace CalDavSynchronizer.DataAccess
       return true;
     }
 
-    protected async Task<Uri> GetCurrentUserPrincipalUrl (Uri calenderUrl)
+    protected async Task<Uri> GetCurrentUserPrincipalUrlOrNull (Uri calenderUrl)
     {
       var principalProperties = await GetCurrentUserPrincipal (calenderUrl);
 
-      XmlNode principalUrlNode = principalProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-principal", principalProperties.XmlNamespaceManager) ??
-                                 principalProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:principal-URL", principalProperties.XmlNamespaceManager);
+      var principalUrlHrefNode = principalProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:current-user-principal/D:href", principalProperties.XmlNamespaceManager) ??
+                                 principalProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:principal-URL/D:href", principalProperties.XmlNamespaceManager);
 
-      if (principalUrlNode != null && !string.IsNullOrEmpty (principalUrlNode.InnerText))
-        return new Uri (principalProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + principalUrlNode.InnerText);
+      if (principalUrlHrefNode != null && !string.IsNullOrEmpty (principalUrlHrefNode.InnerText))
+        return new Uri (principalProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + principalUrlHrefNode.InnerText);
       else
         return null;
     }

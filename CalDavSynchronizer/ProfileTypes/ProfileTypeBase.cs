@@ -63,6 +63,7 @@ namespace CalDavSynchronizer.ProfileTypes
       data.MapAttendees = true;
       data.ScheduleAgentClient = true;
       data.SendNoAppointmentNotifications = false;
+      data.OrganizerAsDelegate = false;
       data.MapBody = true;
       data.MapRtfBodyToXAltDesc = false;
       data.MapXAltDescToRtfBody = false;

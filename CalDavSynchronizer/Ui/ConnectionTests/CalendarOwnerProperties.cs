@@ -1,4 +1,4 @@
-﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -14,26 +14,19 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 using System;
-using CalDavSynchronizer.Ui.ConnectionTests;
-using CalDavSynchronizer.Utilities;
 
-namespace CalDavSynchronizer.DataAccess
+namespace CalDavSynchronizer.Ui.ConnectionTests
 {
-  public class CalendarData
+  public class CalendarOwnerProperties
   {
-    public Uri Uri { get; }
-    public string Name { get; }
-    public ArgbColor? Color { get; }
-    public AccessPrivileges Privileges { get; }
-
-    public CalendarData (Uri uri, string name, ArgbColor? color, AccessPrivileges privileges)
+    public CalendarOwnerProperties (string calendarOwnerEmail, bool isSharedCalendar)
     {
-      Uri = uri;
-      Name = name;
-      Color = color;
-      Privileges = privileges;
+      CalendarOwnerEmail = calendarOwnerEmail;
+      IsSharedCalendar = isSharedCalendar;
     }
+
+    public string CalendarOwnerEmail { get; }
+    public bool IsSharedCalendar { get; }
   }
 }

@@ -661,9 +661,18 @@ namespace CalDavSynchronizer.Implementation.Events
     private void SetOrganizer (IEvent target, AddressEntry organizer, string address, IEntitySynchronizationLogger logger)
     {
       string organizerEmail = GetMailUrlOrNull (organizer, address, logger);
-      var targetOrganizer = (organizerEmail != null) ? new Organizer (organizerEmail) : new Organizer();
-      if (organizer != null)
-        targetOrganizer.CommonName = organizer.Name;
+      Organizer targetOrganizer;
+      if (_configuration.OrganizerAsDelegate && StringComparer.InvariantCultureIgnoreCase.Compare (organizerEmail, $"mailto:{_outlookEmailAddress}") == 0)
+      {
+        targetOrganizer = new Organizer (_serverEmailUri);
+        if (organizerEmail != null) targetOrganizer.SentBy = new Uri (organizerEmail);
+      }
+      else
+      {
+        targetOrganizer = (organizerEmail != null) ? new Organizer(organizerEmail) : new Organizer();
+        if (organizer != null)
+          targetOrganizer.CommonName = organizer.Name;
+      }
       target.Organizer = targetOrganizer;
     }
 
@@ -673,24 +682,33 @@ namespace CalDavSynchronizer.Implementation.Events
 
       if (organizerEmail != null)
       {
-        var emailAddress = string.Format ("mailto:{0}", organizerEmail);
+        var emailAddress = $"mailto:{organizerEmail}";
         if (Uri.IsWellFormedUriString (emailAddress, UriKind.Absolute))
         {
-          targetOrganizer = new Organizer (emailAddress);
+          if (_configuration.OrganizerAsDelegate && StringComparer.InvariantCultureIgnoreCase.Compare (organizerEmail, _outlookEmailAddress) == 0)
+          {
+            targetOrganizer = new Organizer (_serverEmailUri);
+            targetOrganizer.SentBy = new Uri (emailAddress);
+          }
+          else
+          {
+            targetOrganizer = new Organizer (emailAddress);
+            targetOrganizer.CommonName = organizerCN;
+          }
         }
         else
         {
           s_logger.WarnFormat ("Invalid email address URI {0} for organizer", organizerEmail);
           logger.LogWarning ($"Invalid email address Uri '{organizerEmail}' for organizer");
           targetOrganizer = new Organizer();
+          targetOrganizer.CommonName = organizerCN;
         }
       }
       else
       {
         targetOrganizer = new Organizer();
+        targetOrganizer.CommonName = organizerCN;
       }
-
-      targetOrganizer.CommonName = organizerCN;
       target.Organizer = targetOrganizer;
     }
 
@@ -1782,7 +1800,7 @@ namespace CalDavSynchronizer.Implementation.Events
         {
           targetWrapper.Inner.MeetingStatus = OlMeetingStatus.olMeetingReceivedAndCanceled;
         }
-        else if (ownSourceAttendee != null && targetWrapper.Inner.ResponseStatus != OlResponseStatus.olResponseOrganized)
+        else if (ownSourceAttendee != null && targetWrapper.Inner.ResponseStatus != OlResponseStatus.olResponseOrganized && !_configuration.OrganizerAsDelegate)
         {
           var response = MapParticipation2ToMeetingResponse (ownSourceAttendee.ParticipationStatus);
 

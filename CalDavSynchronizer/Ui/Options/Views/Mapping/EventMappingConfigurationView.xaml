@@ -66,6 +66,9 @@
         <CheckBox  IsChecked="{Binding MapAttendees}"><g:Localize>Map organizer and attendees</g:Localize></CheckBox>
         <CheckBox  IsEnabled="{Binding MapAttendees}" IsChecked="{Binding ScheduleAgentClient}"><g:Localize>Set SCHEDULE-AGENT=CLIENT</g:Localize></CheckBox>
         <CheckBox  IsEnabled="{Binding MapAttendees}" IsChecked="{Binding SendNoAppointmentNotifications}"><g:Localize>Do not send appointment notifications (from SOGo)</g:Localize></CheckBox>
+        <CheckBox  ToolTipService.ShowDuration="60000" ToolTip="{g:Localize Set server identity as organizer of meeting and Outlook identity as delegate acting on behalf of it (SENT-BY).\&#x0a;Useful when Outlook and server identity do not match to avoid invites sent by the wrong email\&#x0a;or if meetings are created in a shared calendar on behalf of the calendar owner.}" IsEnabled="{Binding MapAttendees}" IsChecked="{Binding OrganizerAsDelegate}">
+          <g:Localize>Act on behalf of server identity</g:Localize>
+        </CheckBox>
       </StackPanel>
     </GroupBox>
     <GroupBox Header="{g:Localize Outlook Settings}">

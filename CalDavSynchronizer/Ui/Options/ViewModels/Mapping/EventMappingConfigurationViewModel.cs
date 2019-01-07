@@ -88,6 +88,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       RegisterPropertyChangePropagation(_model, nameof(_model.MapClassPublicToSensitivityPrivate), nameof(MapClassPublicToSensitivityPrivate));
       RegisterPropertyChangePropagation(_model, nameof(_model.ScheduleAgentClient), nameof(ScheduleAgentClient));
       RegisterPropertyChangePropagation(_model, nameof(_model.SendNoAppointmentNotifications), nameof(SendNoAppointmentNotifications));
+      RegisterPropertyChangePropagation(_model, nameof(_model.OrganizerAsDelegate), nameof(OrganizerAsDelegate));
       RegisterPropertyChangePropagation(_model, nameof(_model.DoOneTimeSetCategoryColor), nameof(DoOneTimeSetCategoryColor));
       RegisterPropertyChangePropagation(_model, nameof(_model.CleanupDuplicateEvents), nameof(CleanupDuplicateEvents));
       RegisterPropertyChangePropagation(_model, nameof(_model.MapEventColorToCategory), nameof(MapEventColorToCategory));
@@ -283,6 +284,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     {
       get { return _model.SendNoAppointmentNotifications; }
       set { _model.SendNoAppointmentNotifications = value; }
+    }
+
+    public bool OrganizerAsDelegate
+    {
+      get { return _model.OrganizerAsDelegate; }
+      set { _model.OrganizerAsDelegate = value; }
     }
 
     public bool DoOneTimeSetCategoryColor

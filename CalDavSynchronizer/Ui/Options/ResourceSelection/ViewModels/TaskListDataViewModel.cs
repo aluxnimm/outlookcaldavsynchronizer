@@ -17,6 +17,7 @@
 
 using System;
 using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Ui.ConnectionTests;
 
 namespace CalDavSynchronizer.Ui.Options.ResourceSelection.ViewModels
 {
@@ -33,5 +34,6 @@ namespace CalDavSynchronizer.Ui.Options.ResourceSelection.ViewModels
 
     public string Id => Model.Id;
     public override string Name => Model.Name;
+    public string Privileges => AccessPrivilegesConverter.ToString(Model.Privileges);
   }
 }

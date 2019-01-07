@@ -145,9 +145,9 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 
     private static async Task<ServerResources> GetUserResources (CalDavDataAccess calDavDataAccess, CardDavDataAccess cardDavDataAccess)
     {
-      var calDavResources = await calDavDataAccess.GetUserResourcesNoThrow (true);
+      var calDavResources = await calDavDataAccess.GetUserResourcesIncludingCalendarProxies (true);
       if (calDavResources.CalendarResources.Count == 0 && calDavResources.TaskListResources.Count == 0)
-        calDavResources = await calDavDataAccess.GetUserResourcesNoThrow (false);
+        calDavResources = await calDavDataAccess.GetUserResourcesIncludingCalendarProxies (false);
       var foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow (true);
       if (foundAddressBooks.Count == 0)
         foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow (false);

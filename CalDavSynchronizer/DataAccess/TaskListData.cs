@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using CalDavSynchronizer.Ui.ConnectionTests;
 using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.DataAccess
@@ -24,11 +25,13 @@ namespace CalDavSynchronizer.DataAccess
   {
     public string Id { get; }
     public string Name { get; }
+    public AccessPrivileges Privileges { get; }
 
-    public TaskListData (string id, string name)
+    public TaskListData (string id, string name, AccessPrivileges privileges)
     {
       Id = id;
       Name = name;
+      Privileges = privileges;
     }
   }
 }

@@ -28,6 +28,7 @@ using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.OAuth.Google;
 using CalDavSynchronizer.Scheduling;
+using CalDavSynchronizer.Ui.ConnectionTests;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 using CalDavSynchronizer.Utilities;
@@ -102,13 +103,13 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 
       var webDavClient = _prototypeModel.CreateWebDavClient();
       var calDavDataAccess = new CalDavDataAccess (url, webDavClient);
-      var foundResources = await calDavDataAccess.GetUserResourcesNoThrow (false);
+      var foundResources = await calDavDataAccess.GetUserResourcesIncludingCalendarProxies (false);
 
-      var foundAddressBooks = new[] { new AddressBookData (new Uri ("googleApi://defaultAddressBook"), "Default AddressBook") };
+      var foundAddressBooks = new[] { new AddressBookData (new Uri ("googleApi://defaultAddressBook"), "Default AddressBook", AccessPrivileges.All) };
 
       var service = await GoogleHttpClientFactory.LoginToGoogleTasksService (EmailAddress, SynchronizerFactory.CreateProxy (_prototypeModel.CreateProxyOptions()));
       var taskLists = await service.Tasklists.List().ExecuteAsync();
-      var taskListsData = taskLists?.Items.Select (i => new TaskListData (i.Id, i.Title)).ToArray() ?? new TaskListData[] { };
+      var taskListsData = taskLists?.Items.Select (i => new TaskListData (i.Id, i.Title, AccessPrivileges.All)).ToArray() ?? new TaskListData[] { };
 
       return new ServerResources (foundResources.CalendarResources, foundAddressBooks, taskListsData);
     }

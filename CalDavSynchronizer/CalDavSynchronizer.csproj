@@ -487,6 +487,7 @@
       <DependentUpon>AddResourceForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Ui\ConnectionTests\AccessPrivileges.cs" />
+    <Compile Include="Ui\ConnectionTests\CalendarOwnerProperties.cs" />
     <Compile Include="Ui\DelegateCommandHandlingRequerySuggested.cs" />
     <Compile Include="Ui\NullProgressUi.cs" />
     <Compile Include="Ui\NullUiService.cs" />
@@ -528,6 +529,7 @@
     <Compile Include="ProfileTypes\ConcreteTypes\SarenetProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\SogoProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\YandexProfile.cs" />
+    <Compile Include="Ui\Options\ResourceSelection\ViewModels\AccessPrivilegesConverter.cs" />
     <Compile Include="Ui\Options\ViewModels\GeneralOptionsViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\ProfileViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\SelectProfileViewModel.cs" />

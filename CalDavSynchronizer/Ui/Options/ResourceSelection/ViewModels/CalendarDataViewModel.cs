@@ -35,5 +35,9 @@ namespace CalDavSynchronizer.Ui.Options.ResourceSelection.ViewModels
     public Uri Uri => Model.Uri;
     public override string Name => Model.Name;
     public ArgbColor? Color => Model.Color;
+
+    public string Privileges => AccessPrivilegesConverter.ToString(Model.Privileges);
+
+    
   }
 }

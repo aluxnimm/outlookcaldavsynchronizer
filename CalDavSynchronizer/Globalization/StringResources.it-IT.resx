@@ -584,9 +584,9 @@ Utilizza l'impostazione standard 'SALVA COME' come da opzioni globali della rubr
     <value>Inserire l'URL della risorsa DAV oppure l'indirizzo del server e cercare le risorse disponibili.  
 Se l'URL della risorsa DAV non viene inserito è possibile trovarlo anche interrogando il DNS tramite l?indirizzo e-mail.</value>
   </data>
-  <data name="Enter the email address of the server identity. &#xA;It can also be used to discover the DAV URL if you leave the URL textbox empty." xml:space="preserve">
-    <value>Inserire l'indirizzo e-mail del server. In questo modo è possibile trovare l'URL della risorsa DAV, 
-se non precedentemente inserito.</value>
+  <data name="Enter the email address of the server identity of the calendar owner. Will be auto-detected if available.&#xA;It can also be used to discover the DAV URL if you leave the URL textbox empty." xml:space="preserve">
+    <value>Inserire l'indirizzo e-mail del server del proprietario del calendario. Sarà rilevato automaticamente se disponibile.
+In questo modo è possibile trovare l'URL della risorsa DAV, se non precedentemente inserito.</value>
   </data>
   <data name="Enter the name of the Outlook category for filtering. &#xA;If the category does not exist it will be created in Outlook." xml:space="preserve">
     <value>Indicare il nome della categoria Outlook assegnata al filtro.  La categoria sarà creata se non presente in Outlook.</value>
@@ -1403,5 +1403,18 @@ ma esclude la possibilità di impiegare il filtro temporale.</value>
   </data>
   <data name="You need to restart Outlook after installing the new version!" xml:space="preserve">
     <value>Outlook dev'essere riavviato dopo l'installazione della nuova versione!</value>
+  </data>
+  <data name="Access" xml:space="preserve">
+    <value>Accesso</value>
+  </data>
+  <data name="Act on behalf of server identity" xml:space="preserve">
+    <value>Agisci per conto dell'identità del server</value>
+  </data>
+  <data name="Set server identity as organizer of meeting and Outlook identity as delegate acting on behalf of it (SENT-BY).&#x0a;Useful when Outlook and server identity do not match to avoid invites sent by the wrong email&#x0a;or if meetings are created in a shared calendar on behalf of the calendar owner." xml:space="preserve">
+    <value>Utilizzare l'e-mail del server come organizzatore della riunione e Outlook identità come proxy (SENT-BY).
+Utile se gli indirizzi e-mail differiscono da Outlook e Server
+e le e-mail di invito non devono essere inviate dall'indirizzo sbagliato
+o se si desidera creare una riunione su un calendario condiviso per il proprietario.
+    </value>
   </data>
 </root>

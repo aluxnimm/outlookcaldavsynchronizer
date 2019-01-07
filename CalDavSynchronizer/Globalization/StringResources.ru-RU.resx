@@ -885,8 +885,9 @@
   <data name="Enable client certificates with automatic mode.&#xA;The available client certificates from the user store will be automatically provided." xml:space="preserve">
     <value>Активировать сертификаты клиентов в автоматическом режиме. Доступные сертификаты клиентов из хранилища пользователя будут предоставлены автоматически.</value>
   </data>
-  <data name="Enter the email address of the server identity. &#xA;It can also be used to discover the DAV URL if you leave the URL textbox empty." xml:space="preserve">
-    <value>Введите адрес электронной почты учётной записи на сервере. Это также бывает полезно при автоопределении пути URL на сервере DAV, если оставить поле URL пустым.</value>
+  <data name="Enter the email address of the server identity of the calendar owner. Will be auto-detected if available.&#xA;It can also be used to discover the DAV URL if you leave the URL textbox empty." xml:space="preserve">
+    <value>Введите адрес электронной почты учётной записи владельца календаря на сервере. Будет автоматически определено, если доступно.
+Это также бывает полезно при автоопределении пути URL на сервере DAV, если оставить поле URL пустым.</value>
   </data>
   <data name="Get IMAP/POP3 account settings" xml:space="preserve">
     <value>Получить настройки учётной записи IMAP/POP3</value>
@@ -1341,5 +1342,18 @@
   </data>
   <data name="Map Outlook Public flag to default instead of PUBLIC" xml:space="preserve">
     <value>Установите флаг общедоступный MS Outlook по умолчанию вместо PUBLIC</value>
+  </data>
+  <data name="Access" xml:space="preserve">
+    <value>Доступ</value>
+  </data>
+  <data name="Act on behalf of server identity" xml:space="preserve">
+    <value>Действовать от имени личности сервера</value>
+  </data>
+  <data name="Set server identity as organizer of meeting and Outlook identity as delegate acting on behalf of it (SENT-BY).&#x0a;Useful when Outlook and server identity do not match to avoid invites sent by the wrong email&#x0a;or if meetings are created in a shared calendar on behalf of the calendar owner." xml:space="preserve">
+    <value>Используйте электронную почту сервера в качестве организатора собрания и удостоверение Outlook в качестве прокси (SENT-BY).
+Полезно, если адреса электронной почты Outlook и сервера разные
+и приглашения не должны быть отправлены с неправильного адреса
+или если вы хотите создать встречу в календаре для владельца.
+    </value>
   </data>
 </root>

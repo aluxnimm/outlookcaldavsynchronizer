@@ -579,8 +579,8 @@ Utilisé notamment pour Yahoo et cPanel Horde Server.</value>
     <value>Saisir l'URL DAV ou l'adresse du serveur et rechercher les ressources disponibles. 
 Si l'URL DAV n'est pas renseignée, elle peut aussi être trouvée par des requêtes DNS de l'adresse e-mail.</value>
   </data>
-  <data name="Enter the email address of the server identity. &#xA;It can also be used to discover the DAV URL if you leave the URL textbox empty." xml:space="preserve">
-    <value>Veuillez saisir l'adresse e-mail de l'identité du serveur. 
+  <data name="Enter the email address of the server identity of the calendar owner. Will be auto-detected if available.&#xA;It can also be used to discover the DAV URL if you leave the URL textbox empty." xml:space="preserve">
+    <value>Veuillez saisir l'adresse e-mail de l'identité du serveur du propriétaire du calendrier. Il sera détecté automatiquement si disponible.
 Cela permet de trouver l'URL DAV lorsque cette dernière n'est pas renseignée.</value>
   </data>
   <data name="Enter the name of the Outlook category for filtering. &#xA;If the category does not exist it will be created in Outlook." xml:space="preserve">
@@ -1392,5 +1392,18 @@ X-PROTOCOL comme X-AIM (incompatible avec certains serveurs comme SOGo)</value>
   </data>
   <data name="You need to restart Outlook after installing the new version!" xml:space="preserve">
     <value>Outlook doit être redémarré après l'installation de la nouvelle version!</value>
+  </data>
+  <data name="Access" xml:space="preserve">
+    <value>Accès</value>
+  </data>
+  <data name="Act on behalf of server identity" xml:space="preserve">
+    <value>Agir pour le compte de l'identité du serveur</value>
+  </data>
+  <data name="Set server identity as organizer of meeting and Outlook identity as delegate acting on behalf of it (SENT-BY).&#x0a;Useful when Outlook and server identity do not match to avoid invites sent by the wrong email&#x0a;or if meetings are created in a shared calendar on behalf of the calendar owner." xml:space="preserve">
+    <value>Utilisez le courrier électronique du serveur en tant qu'organisateur de la réunion et l'identité Outlook en tant que proxy (SENT-BY).
+Utile si les adresses de messagerie d'Outlook et du serveur sont différentes
+et les courriels d'invitation ne doivent pas être envoyés à partir de la mauvaise adresse
+ou si vous souhaitez créer une réunion sur un calendrier partagé pour le propriétaire.
+    </value>
   </data>
 </root>
