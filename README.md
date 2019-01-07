@@ -27,8 +27,8 @@ For possible enterprise support, please contact us [here](https://caldavsynchron
 
 ### Recommended Android DAV client ###
 
-We work closely together and test interopability with DAVdroid for Android, 
-see [https://www.davdroid.com](https://www.davdroid.com), so we can really recommend it! Together with DAVdroid we now have experimental support for per-event coloring by mapping the Outlook category color to the COLOR attribute of the event.
+We work closely together and test interopability with DAVx⁵ for Android, 
+see [https://www.davx5.com](https://www.davx5.com), so we can really recommend it! Together with DAVx⁵ we now have experimental support for per-event coloring by mapping the Outlook category color to the COLOR attribute of the event.
 
 ### Tested CalDAV Servers ###
 
@@ -1263,7 +1263,7 @@ If you expand the tree view of the profile you can configure network and proxy o
 	- Use *Act on behalf of server identity* to set the server identity (Email Address in the server settings of the sync profile) as the organizer of newly created meetings and the Outlook identity acting on behalf with the SENT-BY property. This can be useful when Outlook and server identity do not match to avoid invites sent by the wrong email or if meetings are created in a shared calendar on behalf of the calendar owner.
 	- In *Outlook settings* you can also define a filter category so that multiple CalDAV-Calendars can be synchronized into one Outlook calendar via the defined category (see Category Filter and Color below).
 	- *Cleanup duplicate events after each sync run:* removes duplicate Outlook appointments based on start,end and subject of the events after each sync run, be aware of possible performance penalties with this option enabled.
-	- For contacts you can configure if birthdays should be mapped or not. If birthdays are mapped, Outlook also creates an recurring appointment for every contact with a defined birthday.
+	- For contacts you can configure if birthdays should be mapped or not. If birthdays are mapped, Outlook also creates an recurring appointment for every contact with a defined birthday.  Similar, you can configure if anniversarys should be mapped or not.
 	- You can also configure if contact photos should be mapped or not. Contact photo mapping from Outlook to the server doesn't work in Outlook 2007. You can also add an option to not overwrite the contact photo in Outlook when it changes on the server, which could happen due to other mobile clients reducing the resolution for example.
 	- Don't overwrite FileAs in Outlook uses the Outlook settings for FileAs and doesn't overwrite the contact FileAs with the FN from the server.
 	- Fix imported phone number format adds round brackets to the area code of phone numbers, so that Outlook can show correct phone number details with country and area code, e.g. +1 23 45678 is mapped to +1 (23) 45678.
