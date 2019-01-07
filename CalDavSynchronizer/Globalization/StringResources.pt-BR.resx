@@ -1,0 +1,1400 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="- CalDavConnectTimeout must be &gt; 0" xml:space="preserve">
+    <value>- CalDavConnectTimeout precisa ser &gt; 0</value>
+  </data>
+  <data name="- Custom properties must not be empty." xml:space="preserve">
+    <value>- Propriedades customizados não podem estar vazias.</value>
+  </data>
+  <data name="- DAV X-Attributes for manual mapped properties have to start with 'X-'" xml:space="preserve">
+    <value>- X-Atributos do DAV para propriedades mapeadas manualmente precisam iniciar com 'X-'</value>
+  </data>
+  <data name="- If you don't know the URL you can also enter the Email address and try to discover it." xml:space="preserve">
+    <value>- Caso você não saiba a URL, poderá digitar o endereço de e-mail para tentar a descoberta automática.</value>
+  </data>
+  <data name="- Invalid CalDavConnectTimeout" xml:space="preserve">
+    <value>- CalDavConnectTimeout Inválido</value>
+  </data>
+  <data name="- Invalid Max Report Age" xml:space="preserve">
+    <value>- Idade Máxima do Relatório Inválida</value>
+  </data>
+  <data name="- Max Report Age must be &gt; 0" xml:space="preserve">
+    <value>- Relatório de Idade Máx., precisa ser &gt; 0</value>
+  </data>
+  <data name="- Ressources which are a calendar and an addressbook are not valid!" xml:space="preserve">
+    <value>- Recursos que são um calendário e um livro de endereços inválidos.</value>
+  </data>
+  <data name="- The CalDav/CardDav URL cannot end/start with whitespaces." xml:space="preserve">
+    <value>- O URL CalDav/CardDav não pode finalizar/iniciar com espaços em branco.</value>
+  </data>
+  <data name="- The CalDav/CardDav URL has to end with a slash ('/')." xml:space="preserve">
+    <value>- O URL CalDav/CardDav precisa terminar uma uma barra ('/').</value>
+  </data>
+  <data name="- The CalDav/CardDav URL is empty." xml:space="preserve">
+    <value>- O URL CalDav/CardDAV está vazio.</value>
+  </data>
+  <data name="- The CalDav/CardDav URL is not a well formed URL. ({0})" xml:space="preserve">
+    <value>- O URL CalDav/CardDav não é um URL bem formado. ({0})</value>
+  </data>
+  <data name="- The category name must not contain commas." xml:space="preserve">
+    <value>- O nome da categoria não pode conter vírgulas.</value>
+  </data>
+  <data name="- The category name must not contain semicolons." xml:space="preserve">
+    <value>- Nome da categoria não pode conter ponto e vírgula.</value>
+  </data>
+  <data name="- The chunk size hast to be 1 or greater." xml:space="preserve">
+    <value>- Cada pedaco precisa ter tamanho 1 ou maior.</value>
+  </data>
+  <data name="- The Email address is empty." xml:space="preserve">
+    <value>- O endereço de Email está vazio.</value>
+  </data>
+  <data name="- The Email address is invalid. ({0})" xml:space="preserve">
+    <value>- O endereço de email é inválido. ({0})</value>
+  </data>
+  <data name="- The specified address book doesn't allow creation of contacts!" xml:space="preserve">
+    <value>- O endereço de livro de endereços especificado não permite a criação de contatos.</value>
+  </data>
+  <data name="- The specified address book doesn't allow deletion of contacts!" xml:space="preserve">
+    <value>- O livro de endereços especificado não permite a exclusão de contatos.</value>
+  </data>
+  <data name="- The specified calendar doesn't allow creation of appointments!" xml:space="preserve">
+    <value>- O calendário especificado não permite a criação de compromissos.</value>
+  </data>
+  <data name="- The specified calendar doesn't allow deletion of appointments!" xml:space="preserve">
+    <value>- O calendário especificado não permite a exclusão de compromissos.</value>
+  </data>
+  <data name="- The specified calendar is not writeable. Therefore it is not possible to use the synchronization mode '{0}'." xml:space="preserve">
+    <value>- O calendário especificado não possui permissão de escrita, portanto, não é possível usar o modo de sincronização '{0}'.</value>
+  </data>
+  <data name="- The specified URL does not support address books." xml:space="preserve">
+    <value>- O URL especificado não suporta livros de endereços.</value>
+  </data>
+  <data name="- The specified URL does not support calendar access." xml:space="preserve">
+    <value>- O URL especificado não suporta acesso ao calendário.</value>
+  </data>
+  <data name="- The specified URL does not support calendar queries. Some features like time range filter may not work!" xml:space="preserve">
+    <value>- O URL especificado não suporta consultas de calendário. Alguns recursos, como o filtro de intervalo de tempo, podem não funcionar.</value>
+  </data>
+  <data name="- The specified URL is not a calendar!" xml:space="preserve">
+    <value>- A URL especificada não é um calendário.</value>
+  </data>
+  <data name="- The specified URL is not an addressbook!" xml:space="preserve">
+    <value>- O URL especificado não é um livro de endereços.</value>
+  </data>
+  <data name="- The specified URL is not an task list!" xml:space="preserve">
+    <value>- O URL especificado não é uma lista de tarefas.</value>
+  </data>
+  <data name="- There is no Outlook folder selected." xml:space="preserve">
+    <value>- Não há uma pasta Outlook selecionada.</value>
+  </data>
+  <data name="- WebDav collection sync ist currently just supported for appointments and contacts." xml:space="preserve">
+    <value>- A sincronização de coleção WebDAV é atualmente suportada apenas para compromissos e contatos.</value>
+  </data>
+  <data name="1 day" xml:space="preserve">
+    <value>1 dia</value>
+  </data>
+  <data name="12 hours" xml:space="preserve">
+    <value>12 horas</value>
+  </data>
+  <data name="&lt;MISSING&gt;" xml:space="preserve">
+    <value>&lt;FALTANDO&gt;</value>
+  </data>
+  <data name="&lt;New Profile&gt;" xml:space="preserve">
+    <value>&lt; Novo Perfil&gt;</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>Sobre</value>
+  </data>
+  <data name="About CalDav Synchronizer" xml:space="preserve">
+    <value>Sobre CalDav Synchronizer</value>
+  </data>
+  <data name="Accept invalid chars in server response" xml:space="preserve">
+    <value>Aceitar caracteres inválidos na resposta do servidor</value>
+  </data>
+  <data name="Account settings" xml:space="preserve">
+    <value>Configurações da conta</value>
+  </data>
+  <data name="Add addressbook resource on server" xml:space="preserve">
+    <value>Adicionar recurso de livro de endereços no servidor</value>
+  </data>
+  <data name="Add calendar resource on server" xml:space="preserve">
+    <value>Adicionar recurso de calendário no servidor</value>
+  </data>
+  <data name="Add manual mapping pairs of Outlook custom properties and DAV X-attributes. &#xA;If properties do not exist , they are created. &#xA;The manual mapping overrules the general mapping of all Outlook custom attributes if both activated. &#xA;DAV attributes MUST start with X-" xml:space="preserve">
+    <value>Adicionar pares de mapeamento manuais de propriedades customizadas do Outlook e X-atributos DAV.
+Se as propriedades não existirem, elas serão criadas.
+O mapeamento manual anula o mapeamento geral de todos os atributos personalizados do Outlook, se ambos estiverem ativados.
+Atributos DAV devem começar com X-</value>
+  </data>
+  <data name="Add multiple profiles" xml:space="preserve">
+    <value>Adicionar perfis múltiplos</value>
+  </data>
+  <data name="Add new profile" xml:space="preserve">
+    <value>Adicionar novo perfil</value>
+  </data>
+  <data name="Add resource" xml:space="preserve">
+    <value>Adicionar recurso</value>
+  </data>
+  <data name="Added addressbook resource '{0}' successfully!" xml:space="preserve">
+    <value>Adicionado recurso de livro de endereços '{0}' com sucesso.</value>
+  </data>
+  <data name="Added calendar resource '{0}' successfully!" xml:space="preserve">
+    <value>Adicionar recurso de calendário '{0}' com sucesso.</value>
+  </data>
+  <data name="Adding profile '{0}'" xml:space="preserve">
+    <value>Adicionando perfil '{0}'</value>
+  </data>
+  <data name="Address Books" xml:space="preserve">
+    <value>Livros de Endereços</value>
+  </data>
+  <data name="Advanced Network Settings" xml:space="preserve">
+    <value>Configurações Avançadas de Rede</value>
+  </data>
+  <data name="All sync runs" xml:space="preserve">
+    <value>Todas as execuções de sincronização</value>
+  </data>
+  <data name="Assign category color when OK is clicked." xml:space="preserve">
+    <value>Atribuir cor de categoria quando OK for clicado.</value>
+  </data>
+  <data name="Assign category color:" xml:space="preserve">
+    <value>Atribuir cor de categoria:</value>
+  </data>
+  <data name="Assign Easy Project resources to different Outlook folders" xml:space="preserve">
+    <value>Atribuir recursos Easy Project a diferentes pastas Outlook</value>
+  </data>
+  <data name="Assign Kolab folders to distinct Outlook folders" xml:space="preserve">
+    <value>Atribuir pastas Kolab a pastas Outlook distintas</value>
+  </data>
+  <data name="Assign shortcut key when OK is clicked." xml:space="preserve">
+    <value>Atribuir tecla de atalho quando OK for clicado.</value>
+  </data>
+  <data name="Assign shortcut key:" xml:space="preserve">
+    <value>Atribuir tecla de atalho: </value>
+  </data>
+  <data name="Automatic" xml:space="preserve">
+    <value>Automático</value>
+  </data>
+  <data name="Automatic check for newer version turned off." xml:space="preserve">
+    <value>A opção de verificar automaticamente por novas versões está desativada.</value>
+  </data>
+  <data name="Automatically check for newer versions" xml:space="preserve">
+    <value>Verificar automaticamente por novas versões</value>
+  </data>
+  <data name="Automatically create Outlook folders" xml:space="preserve">
+    <value>Criar pastas Outlook automaticamente</value>
+  </data>
+  <data name="CalDav Synchronizer download failed" xml:space="preserve">
+    <value>Falha no download do CalDav Synchronizer</value>
+  </data>
+  <data name="CalDAV Synchronizer is currently starting up. Please try again, when startup is finished." xml:space="preserve">
+    <value>O CalDAV Synchronizer está sendo iniciado. Favor tentar novamente após a inicialização finalizar.</value>
+  </data>
+  <data name="CalDavSynchronizer - Synchronizing..." xml:space="preserve">
+    <value>Caldav Synchronizer - Sincronizando...</value>
+  </data>
+  <data name="Calendar Color" xml:space="preserve">
+    <value>Cor do Calendário</value>
+  </data>
+  <data name="Calendars" xml:space="preserve">
+    <value>Calendários</value>
+  </data>
+  <data name="Can't access Outlook item, maybe it was moved or deleted!" xml:space="preserve">
+    <value>Não foi possível acessar item do Outlook, talvez tenha sido movido ou excluído.</value>
+  </data>
+  <data name="Can't add addressbook resource '{0}'" xml:space="preserve">
+    <value>Não foi possível adicionar o recurso livro de endereços '{0}'</value>
+  </data>
+  <data name="Can't add calendar resource '{0}'" xml:space="preserve">
+    <value>Não foi possível adicionar recurso de calendário '{0}'</value>
+  </data>
+  <data name="Can't set the calendar color!'" xml:space="preserve">
+    <value>Não foi possível definir a cor do calendário.</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="Category Filter" xml:space="preserve">
+    <value>Filtro de Categoria</value>
+  </data>
+  <data name="Changing the time range filter setting leads to deletion of the sync cache &#xA;and a complete resync of the calendar!" xml:space="preserve">
+    <value>Alterar a configuração do filtro de intervalo de tempo leva à exclusão do cache de sincronização
+e uma ressincronização completa do calendário.</value>
+  </data>
+  <data name="Changing this option requires a restart of Outlook." xml:space="preserve">
+    <value>Alterar esta opção requer reiniciar o Outlook.</value>
+  </data>
+  <data name="Check for Updates" xml:space="preserve">
+    <value>Verificar por Atualizações</value>
+  </data>
+  <data name="Check Internet connection before sync run" xml:space="preserve">
+    <value>Verificar conexão Internet antes de executar sincronia</value>
+  </data>
+  <data name="Checks if a network interface is up&#xA;and try DNS query to dns.msftncsi.com first and if that fails try to download&#xA;http://www.msftncsi.com/ncsi.txt with the configured proxy settings.&#xA;Should avoid error reports when network is not available after&#xA;coming back from hibernate for example." xml:space="preserve">
+    <value>Verifica se uma interface de rede está ativa
+e tentar a consulta DNS para dns.msftncsi.com primeiro e, se isso falhar, tente baixar
+http://www.msftncsi.com/ncsi.txt com as configurações de proxy configuradas.
+Deve evitar relatórios de erros quando a rede não estiver disponível, por exemplo, após voltando do estado de hibernação.</value>
+  </data>
+  <data name="Choose the default Instant Messenger protocol.&#xA;You can add other protocols with protocol: address" xml:space="preserve">
+    <value>Escolha o protocolo padrão para Mensagens Instantâneas. 
+Você pode adicionar outros protocolos com protocolo: endereço</value>
+  </data>
+  <data name="Choose the used format for DAV contact groups.&#xA;SOGO uses its own VLIST format to store contact groups.&#xA;For other CardDAV servers choose the vCard with KIND:group format &#xA;and for iCloud the iCloud group format." xml:space="preserve">
+    <value>Escolha o formato usado para grupos de contatos DAV.
+O SOGO usa seu próprio formato VLIST para armazenar grupos de contatos.
+Para outros servidores CardDAV, escolha o vCard com o formato KIND:group 
+e para o iCloud, o formato de grupo do iCloud.</value>
+  </data>
+  <data name="Chunk size:" xml:space="preserve">
+    <value>Tamanho do pedaço:</value>
+  </data>
+  <data name="Cleanup duplicate events after each sync run" xml:space="preserve">
+    <value>Limpar eventos duplicados após cada execução de sincronização</value>
+  </data>
+  <data name="Clear cache of selected profile" xml:space="preserve">
+    <value>Limpar cache do perfil selecionado</value>
+  </data>
+  <data name="Clear log" xml:space="preserve">
+    <value>Limpar log</value>
+  </data>
+  <data name="Click to open configuration." xml:space="preserve">
+    <value>Clique para abrir a configuração.</value>
+  </data>
+  <data name="Click to open latest synchronization report." xml:space="preserve">
+    <value>Clique para abrir o relatório de sincronização mais recente.</value>
+  </data>
+  <data name="Close connection after each request" xml:space="preserve">
+    <value>Fechar a conexão a cada pedido</value>
+  </data>
+  <data name="Col" xml:space="preserve">
+    <value>Cor</value>
+  </data>
+  <data name="Collapse all nodes" xml:space="preserve">
+    <value>Fechar todos os nós</value>
+  </data>
+  <data name="Configuration Error" xml:space="preserve">
+    <value>Erro de Configuração</value>
+  </data>
+  <data name="Configure your synchronization profiles." xml:space="preserve">
+    <value>Configure seus perfis de sincronização.</value>
+  </data>
+  <data name="Conflict resolution:" xml:space="preserve">
+    <value>Resolução de conflito:</value>
+  </data>
+  <data name="Connection test NOT successful:" xml:space="preserve">
+    <value>Teste de conexão não foi bem sucedido: </value>
+  </data>
+  <data name="Connection test successful BUT:" xml:space="preserve">
+    <value>Teste de conexão bem-sucedido, porém: </value>
+  </data>
+  <data name="Connection test successful." xml:space="preserve">
+    <value>teste de conexão bem-sucedido.</value>
+  </data>
+  <data name="Contact Mapping Configuration" xml:space="preserve">
+    <value>Configuração de Mapeamento de Contato</value>
+  </data>
+  <data name="Convert formatted RTF Body of Outlook appointment to Html and export it as X-ALT-DESC property.&#xA;The RTF to Html conversion is experimental inline images and some formatting properties can not be converted!&#xA;Be aware that some servers like Google Calendar drop this attribute!" xml:space="preserve">
+    <value>Converter Corpo RTF formatado do compromisso Outlok para Html e exportá-lo como propriedade X-ALT-DESC.
+A conversão de RTF para HTML com imagens incorporadas é experimental e algumas propriedades de formatação podem não ser convertidas.
+Esteja ciente de que alguns servidores, como o Google Agenda, descartam esse atributo.</value>
+  </data>
+  <data name="Convert numbers like +1 23 45678 9 &#xA;to +1 (23) 45678 - 9 &#xA;so that Outlook can show country and area code." xml:space="preserve">
+    <value>Converter números como +1 23 45678 9 para +1 (23) 45678 - 9
+para que o Outlook possa mostrar o código do país e de área.</value>
+  </data>
+  <data name="Convert X-ALT-DESC description Html property to RTF and set Outlook appointment RTF Body.&#xA;The html to RTF conversion is experimental not all Html formatting options can be converted!&#xA;This overwrites also the plaintext Body!" xml:space="preserve">
+    <value>Converter propriedade Html da descrição X-ALT-DESC para RTF e definir 
+compromisso do Outlook como Corpo RPF.
+A conversão de Html para RTF é experimental, nem todas as opções de formatação HTML podem ser convertidas.
+Isso também substitui o corpo de texto simples.</value>
+  </data>
+  <data name="Copy selected profile" xml:space="preserve">
+    <value>Copiar perfil selecionado</value>
+  </data>
+  <data name="Create DAV resource" xml:space="preserve">
+    <value>Criar recurso DAV</value>
+  </data>
+  <data name="Create DAV server resource" xml:space="preserve">
+    <value>Criar recurso DAV do servidor</value>
+  </data>
+  <data name="Create events on server in UTC" xml:space="preserve">
+    <value>Criar eventos no servidor em fuso UTC</value>
+  </data>
+  <data name="Create events on server with downloaded IANA timezones" xml:space="preserve">
+    <value>Criar eventos no servidor com fusos horários baixados da IANA</value>
+  </data>
+  <data name="Current version: {0}" xml:space="preserve">
+    <value>Versão atual: {0}</value>
+  </data>
+  <data name="Custom Properties Mapping" xml:space="preserve">
+    <value>Mapeamento Customizado das Propriedades</value>
+  </data>
+  <data name="Custom Properties Mapping Configuration" xml:space="preserve">
+    <value>Configuração de Mapeamento de Propriedades Customizadas</value>
+  </data>
+  <data name="DAV Connection Timeout (secs)" xml:space="preserve">
+    <value>Tempo de inatividade da Conexão DAV (segs)</value>
+  </data>
+  <data name="DAV contact group format" xml:space="preserve">
+    <value>Formato do grupo de contatos DAV</value>
+  </data>
+  <data name="DAV URL" xml:space="preserve">
+    <value>DAV URL</value>
+  </data>
+  <data name="DAV URL:" xml:space="preserve">
+    <value>URL DAV:</value>
+  </data>
+  <data name="DAV X-attribute" xml:space="preserve">
+    <value>X-atributo DAV</value>
+  </data>
+  <data name="Debug" xml:space="preserve">
+    <value>Depurado</value>
+  </data>
+  <data name="Default IM protocol:" xml:space="preserve">
+    <value>Protocolo IM padrão: </value>
+  </data>
+  <data name="Delete reports older than (days):" xml:space="preserve">
+    <value>Excluir relatórios mais antigos que (dias):</value>
+  </data>
+  <data name="Delete selected" xml:space="preserve">
+    <value>Excluir selecionado</value>
+  </data>
+  <data name="Delete selected profile" xml:space="preserve">
+    <value>Excluir perfil selecionado</value>
+  </data>
+  <data name="Detected URL" xml:space="preserve">
+    <value>URL Detectado:</value>
+  </data>
+  <data name="Detected URL:" xml:space="preserve">
+    <value>URL Detectado: </value>
+  </data>
+  <data name="Did not find any default version!" xml:space="preserve">
+    <value>Não foi localizada nenhuma versão padrão.</value>
+  </data>
+  <data name="Did not find any news." xml:space="preserve">
+    <value>Nenhuma notícia encontrada.</value>
+  </data>
+  <data name="Disable Certificate Validation" xml:space="preserve">
+    <value>Desabilitar Validação de Certificado</value>
+  </data>
+  <data name="Disabling is a major security risk, not recommended!" xml:space="preserve">
+    <value>Desabilitar não é recomendado e implica em um grande risco de segurança.</value>
+  </data>
+  <data name="Discover resources and assign to Outlook folders" xml:space="preserve">
+    <value>Descobrir recursos e atribuir a pastas Outlook</value>
+  </data>
+  <data name="Do autodiscovery" xml:space="preserve">
+    <value>Realizar autodescoberta</value>
+  </data>
+  <data name="Do not check for newer version anymore" xml:space="preserve">
+    <value>Não verificar mais por novas versões</value>
+  </data>
+  <data name="Do not overwrite FileAs in Outlook" xml:space="preserve">
+    <value>Não sobrescrever 'Salvar como' no Outlook.</value>
+  </data>
+  <data name="Do not overwrite FileAs in Outlook with FN &#xA;Uses default FileAs as set in global Outlook options for new entries." xml:space="preserve">
+    <value>Não substituir arquivos no Outlook com atributo FN
+Usa o padrão FileAs, conforme definido nas opções globais do Outlook para novas entradas.</value>
+  </data>
+  <data name="Do not overwrite the contact photo in Outlook" xml:space="preserve">
+    <value>Não sobrescrever a foto do contato no Outlook</value>
+  </data>
+  <data name="Do not send appointment notifications (from SOGo)" xml:space="preserve">
+    <value>Não enviar notificações de compromissos (do SOGo)</value>
+  </data>
+  <data name="Documentation and Tutorials" xml:space="preserve">
+    <value>Documentação e Tutoriais</value>
+  </data>
+  <data name="Don't use a time range less than 1 year if your calendar includes recurring events." xml:space="preserve">
+    <value>Não use um intervalo de tempo menor que 1 ano se o seu calendário inclui eventos recorrentes.</value>
+  </data>
+  <data name="Donate with PayPal" xml:space="preserve">
+    <value>Doar com PayPal</value>
+  </data>
+  <data name="Download new version" xml:space="preserve">
+    <value>Obter nova versão</value>
+  </data>
+  <data name="Duration:" xml:space="preserve">
+    <value>Duração</value>
+  </data>
+  <data name="Easy Project Server Settings" xml:space="preserve">
+    <value>Configurações do Servidor Easy project</value>
+  </data>
+  <data name="Easy Project URL:" xml:space="preserve">
+    <value>URL Easy Project: </value>
+  </data>
+  <data name="Edit URL" xml:space="preserve">
+    <value>Editar URL</value>
+  </data>
+  <data name="Email address:" xml:space="preserve">
+    <value>Endereço de email:</value>
+  </data>
+  <data name="Enable Client Certificates" xml:space="preserve">
+    <value>Habilitar Certificados Cliente</value>
+  </data>
+  <data name="Enable client certificates with automatic mode.&#xA;The available client certificates from the user store will be automatically provided." xml:space="preserve">
+    <value>Ativar certificados de cliente com o modo automático.
+Os certificados de cliente disponíveis no repositório de usuários serão fornecidos automaticamente.</value>
+  </data>
+  <data name="Enable if a full report of all modified entities is needed." xml:space="preserve">
+    <value>Habilitar caso um relatório completo de todas as entidades modificadas seja necessário.</value>
+  </data>
+  <data name="Enable only if you get the following error:&#xA;System.Net.WebException: The server committed a protocol violation. Section=ResponseStatusLine&#xA;Needed for Yahoo and cPanel Horde servers for example." xml:space="preserve">
+    <value>Habilite somente se você receber o seguinte erro:
+System.Net.WebException: O servidor cometeu uma violação de protocolo. Section=ResponseStatusLine
+É necessário, por exemplo, para servidores Yahoo e cPanel Horde.</value>
+  </data>
+  <data name="Enable SSL3" xml:space="preserve">
+    <value>Habilitar SSL3</value>
+  </data>
+  <data name="Enable TLS12" xml:space="preserve">
+    <value>Habilitar TLS12</value>
+  </data>
+  <data name="Enable to display the summary of the event or task or the name of the contact&#xA;to identify the entity in the sync report." xml:space="preserve">
+    <value>Habilite para exibir o resumo do evento, tarefa ou o nome do contato,
+a fim de identificar a entidade no relatório de sincronização.</value>
+  </data>
+  <data name="Enable Tray Icon" xml:space="preserve">
+    <value>Habilitar Ícone de Bandeja</value>
+  </data>
+  <data name="Enable useUnsafeHeaderParsing" xml:space="preserve">
+    <value>Habilitar useUnsafeHeaderParsing</value>
+  </data>
+  <data name="Enables the systray icon in the Windows taskbar." xml:space="preserve">
+    <value>Habilitar ícone na bandeja do sistema na barra da tarefas do Windows.</value>
+  </data>
+  <data name="Enter the DAV resource URL or the server address and discover the available resources. &#xA;If you leave the DAV URL empty it can also be discovered from the email address via DNS lookups." xml:space="preserve">
+    <value>Digite o URL do recurso DAV ou o endereço do servidor e descubra os recursos disponíveis.
+Se você deixar o URL DAV vazio, ele também poderá ser descoberto a partir do endereço de e-mail, por meio de pesquisas de DNS.</value>
+  </data>
+  <data name="Enter the email address of the server identity. &#xA;It can also be used to discover the DAV URL if you leave the URL textbox empty." xml:space="preserve">
+    <value>Digite o endereço de e-mail da identidade do servidor.
+Pode também ser usado para descobrir o URL de DAV se você deixar a caixa de texto de URL vazia.</value>
+  </data>
+  <data name="Enter the name of the Outlook category for filtering. &#xA;If the category does not exist it will be created in Outlook." xml:space="preserve">
+    <value>Digite o nome da categoria do Outlook para filtragem.
+Se a categoria não existir, ela será criada no Outlook.</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Erro</value>
+  </data>
+  <data name="Error updating the server calendar color!" xml:space="preserve">
+    <value>Erro ao atualizar a cor do calendário do servidor.</value>
+  </data>
+  <data name="Error while trying to fetch the news.\r\nPlease see logfile for details." xml:space="preserve">
+    <value>Erro ao tentar obter notícias.\r\nFavor verificar o arquivo de log para detalhes.</value>
+  </data>
+  <data name="Errors and warnings" xml:space="preserve">
+    <value>Erros e alertas</value>
+  </data>
+  <data name="Event Mapping Configuration" xml:space="preserve">
+    <value>Configuração do Mapeamento de Eventos</value>
+  </data>
+  <data name="Exception that lead to abortion:" xml:space="preserve">
+    <value>Exceção que levou a abortar o processo: </value>
+  </data>
+  <data name="Executes specific steps of synchronization in chunks to save memory." xml:space="preserve">
+    <value>Executar passos específicos de sincronização em pedaços, a fim de economizar memória.</value>
+  </data>
+  <data name="Expand all nodes" xml:space="preserve">
+    <value>Expandir todos os nós</value>
+  </data>
+  <data name="Expand all nodes in Synchronization Profiles" xml:space="preserve">
+    <value>Expandir todos os nós nos Perfis de Sincronização</value>
+  </data>
+  <data name="Expand all nodes in the treeview of the Synchronization Profiles configuration as default if enabled.&#xA;Only applicable if advanced settings are turned on." xml:space="preserve">
+    <value>Expanda todos os nós na visualização em árvore da configuração de Perfis de Sincronização como padrão, se ativada.
+Aplicável apenas se as configurações avançadas estiverem ativadas.</value>
+  </data>
+  <data name="Experimental mapping of the first category color of the appointment to the matching COLOR attribute of the event&#xA;Together with DAVdroid for Android you can map individual event colors from Android to Outlook &#xA;but not all calendar apps support it or can even crash (see &#xA;https://davdroid.bitfire.at/faq/entry/setting-event-colors-crash/)" xml:space="preserve">
+    <value>Mapeamento experimental da primeira cor de categoria do compromisso para o atributo COLOR correspondente do evento
+Juntamente com DAVdroid para Android, você pode mapear cores de eventos individuais do Android para o Outlook
+mas nem todos os aplicativos de calendário suportam ou podem até travar (veja https://davdroid.bitfire.at/faq/entry/setting-event-colors-crash/)</value>
+  </data>
+  <data name="Export cancelled by user." xml:space="preserve">
+    <value>Exportação cancelada pelo usuário.</value>
+  </data>
+  <data name="Export Html description X-ALT-DESC converted from RTF Body" xml:space="preserve">
+    <value>Exportar descrição Html X-ALT-DESC convertida de Corpo RTF</value>
+  </data>
+  <data name="Export profiles" xml:space="preserve">
+    <value>Exportar perfis</value>
+  </data>
+  <data name="Export profiles to file" xml:space="preserve">
+    <value>Exportar perfis para arquivo</value>
+  </data>
+  <data name="Fetch color" xml:space="preserve">
+    <value>Carregar cor</value>
+  </data>
+  <data name="Fix imported phone number format" xml:space="preserve">
+    <value>Consertar formato de números de telefones inválidos</value>
+  </data>
+  <data name="Fix invalid settings" xml:space="preserve">
+    <value>Consertar configurações inválidas</value>
+  </data>
+  <data name="Fixes invalid settings automatically, when&#xA;synchronization profiles are  edited.&#xA;&#xA;E.g.: if  a read-only CalDav calendar is selected&#xA;and the synchronization mode is set to TwoWay,&#xA;then the synchronization mode is automatically&#xA;set to one way, so that there are no write&#xA;operations performed in the read-only&#xA;calendar, which would produce errors.&#xA;Disabling this setting might be helpful for testing,&#xA;but you should know what you do." xml:space="preserve">
+    <value>Corrige configurações inválidas automaticamente, quando
+perfis de sincronização são editados.
+
+Por exemplo: se um calendário CalDav somente leitura for selecionado e o modo de sincronização está definido para AmbosSentidos (TwoWay), então o modo de sincronização é automaticamente definido para um sentido, de modo quenão hajam operações de escrita executadas no calendário apenasde leitura, o que produziria erros. Desativar essa configuração pode ser útil para testes, mas você deve saber o que está fazendo.</value>
+  </data>
+  <data name="Force Basic authentication" xml:space="preserve">
+    <value>Forçar autenticação básica</value>
+  </data>
+  <data name="Formatted" xml:space="preserve">
+    <value>Formatada</value>
+  </data>
+  <data name="General Contact Mapping Settings" xml:space="preserve">
+    <value>Configurações Geral do Mapeamento de Contatos</value>
+  </data>
+  <data name="General Event Mapping Settings" xml:space="preserve">
+    <value>Configurações Gerais de Mapeamento de Eventos</value>
+  </data>
+  <data name="General Logging" xml:space="preserve">
+    <value>Logging Geral</value>
+  </data>
+  <data name="General Options" xml:space="preserve">
+    <value>Opções Gerais</value>
+  </data>
+  <data name="General Settings" xml:space="preserve">
+    <value>Configurações Gerais</value>
+  </data>
+  <data name="General Task Mapping Settings" xml:space="preserve">
+    <value>Configurações Gerais de Mapeamento de Tarefas</value>
+  </data>
+  <data name="Generic CalDAV/CardDAV" xml:space="preserve">
+    <value>CalDAV/CardDAV genérico</value>
+  </data>
+  <data name="Get account settings" xml:space="preserve">
+    <value>Obter configurações de conta</value>
+  </data>
+  <data name="Get IMAP/POP3 account settings" xml:space="preserve">
+    <value>Obter configurações de conta IMAP/POP3</value>
+  </data>
+  <data name="Hide Advanced Settings" xml:space="preserve">
+    <value>Ocultar Configurações Avançadas</value>
+  </data>
+  <data name="hours" xml:space="preserve">
+    <value>horas</value>
+  </data>
+  <data name="iCloud group" xml:space="preserve">
+    <value>Group iCloud</value>
+  </data>
+  <data name="If checked a manual sync is always triggered after the Outlook Send/Receive finishes&#xA;and on startup of Outlook." xml:space="preserve">
+    <value>Se marcada, uma sincronização manual é sempre acionada após o envio/recebimento do Outlook</value>
+  </data>
+  <data name="If checked invalid characters in XML server responses are allowed.&#xA;A typical invalid char, sent by some servers is 'Form feed' (0x0C)." xml:space="preserve">
+    <value>Se marcado, caracteres inválidos são permitidos nas respostas do servidor XML.
+Um caractere inválido típico, enviado por alguns servidores, é 'Feed de formulário' (0x0C).</value>
+  </data>
+  <data name="If unchecked the displayname is used for creating the DAV resource Uri instead of a random string." xml:space="preserve">
+    <value>Se desmarcado, o nome de exibição será usado para criar o URI do recurso DAV em vez de uma sequência aleatória.</value>
+  </data>
+  <data name="Ignore this version" xml:space="preserve">
+    <value>Ignorar esta versão</value>
+  </data>
+  <data name="Import profiles" xml:space="preserve">
+    <value>Importar perfis do arquivo</value>
+  </data>
+  <data name="Import profiles from file" xml:space="preserve">
+    <value>Importar perfis do arquivo</value>
+  </data>
+  <data name="Include custom message classes in Outlook filter" xml:space="preserve">
+    <value>Incluir classes de mensagens customizadas no filtro Outlook</value>
+  </data>
+  <data name="Include full IANA timezone with historical data" xml:space="preserve">
+    <value>Incluir fuso horário completo IANA com dados históricos</value>
+  </data>
+  <data name="Info" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="Information about the project and version." xml:space="preserve">
+    <value>Informações sobre o projeto e a versão.</value>
+  </data>
+  <data name="Install new version" xml:space="preserve">
+    <value>Instalar nova versão</value>
+  </data>
+  <data name="Just errors" xml:space="preserve">
+    <value>Apenas erros</value>
+  </data>
+  <data name="Just upcoming reminders" xml:space="preserve">
+    <value>Apenas lembretes futuros</value>
+  </data>
+  <data name="Keep items in sync even if category changes and filter does not match anymore" xml:space="preserve">
+    <value>Manter itens em sincronia mesmo se a categoria mudar e o filtro não combinar mais</value>
+  </data>
+  <data name="Kolab URL" xml:space="preserve">
+    <value>URL Kolab</value>
+  </data>
+  <data name="Language:" xml:space="preserve">
+    <value>Idioma:</value>
+  </data>
+  <data name="Last run ago" xml:space="preserve">
+    <value>Última execução</value>
+  </data>
+  <data name="Log all entities, even without errors or warnings" xml:space="preserve">
+    <value>Logar todas as entidades, mesmo sem erros ou alertas</value>
+  </data>
+  <data name="Log Entity Names" xml:space="preserve">
+    <value>Nomes de Entidades de Logs</value>
+  </data>
+  <data name="Log Level:" xml:space="preserve">
+    <value>Nível para Geração de Logs:</value>
+  </data>
+  <data name="Log:" xml:space="preserve">
+    <value>Log:</value>
+  </data>
+  <data name="Major security risk, not recommended!" xml:space="preserve">
+    <value>Grande risco de segurança, não recomendado!</value>
+  </data>
+  <data name="Manual Mapping" xml:space="preserve">
+    <value>Mapeamento Manual</value>
+  </data>
+  <data name="Manual only" xml:space="preserve">
+    <value>Apenas manual</value>
+  </data>
+  <data name="Map all Outlook custom properties to DAV attributes with X-CALDAVSYNCHRONIZER prefix." xml:space="preserve">
+    <value>Mapear todas as propriedades customizadas do Outlook para atributos DAV coom prefixo X-CALDAVSYNCHRONIZER.</value>
+  </data>
+  <data name="Map all Outlook custom properties to X-CALDAVSYNCHRONIZER attributes" xml:space="preserve">
+    <value>Mapear todas as propriedades customizadas do Outlook para atributos X-CALDAVSYNCHRONIZER</value>
+  </data>
+  <data name="Map Birthday" xml:space="preserve">
+    <value>Mapear Aniversário</value>
+  </data>
+  <data name="Map Body" xml:space="preserve">
+    <value>Mapear Corpo</value>
+  </data>
+  <data name="Map Contact Photo" xml:space="preserve">
+    <value>Mapear Foto do Contato</value>
+  </data>
+  <data name="Map DAV CLASS:CONFIDENTIAL to Outlook Private flag instead of Confidential" xml:space="preserve">
+    <value>Mapear atributido DAV CLASS:CONFIDENTIAL para atributo Privativo Outlook ao invés de Confidencial</value>
+  </data>
+  <data name="Map DAV CLASS:PUBLIC and default events to Outlook Private flag instead of Public" xml:space="preserve">
+    <value>Mapear DAV CLASS:PUBLIC como eventos padrão no atributo Privativo do Outlook ao invés de Público</value>
+  </data>
+  <data name="Map Distribution Lists" xml:space="preserve">
+    <value>Mapear Listas de Distribuição</value>
+  </data>
+  <data name="Map Distribution Lists / Contact Groups" xml:space="preserve">
+    <value>Mapear Listas de Distribuição / Grupos de Contatos</value>
+  </data>
+  <data name="Map event color to category" xml:space="preserve">
+    <value>Mapear cor de evento para categoria</value>
+  </data>
+  <data name="Map organizer and attendees" xml:space="preserve">
+    <value>Mapear organizador e participantes</value>
+  </data>
+  <data name="Map Outlook EmailAddress1 to vCard email with TYPE WORK &#xA;and Outlook EmailAddress2 to vCard email with TYPE HOME instead of vice-versa." xml:space="preserve">
+    <value>Sincronizar o primeiro endereço de e-mail vCard do Outlook com TYPE WORK 
+e o segundo endereço de e-mail com TYPE HOME, no lugar da ordem inversa.</value>
+  </data>
+  <data name="Map Outlook EmailAddress1 to WORK instead of HOME" xml:space="preserve">
+    <value>Mapear Outlook EmailAddress1 para WORK ao invés de HOME</value>
+  </data>
+  <data name="Map Outlook Private flag to DAV CLASS:CONFIDENTIAL instead of PRIVATE" xml:space="preserve">
+    <value>Mapear atributo de privativa do Outlook para DAV CLASS:CONFIDENTIAL ao invés de PRIVATE</value>
+  </data>
+  <data name="Map Outlook Public flag to default instead of PUBLIC" xml:space="preserve">
+    <value>Mapear atributido Público do Outlook com padrão ao invés de PUBLIC</value>
+  </data>
+  <data name="Map Outlook start and due date of task as floating without timezone" xml:space="preserve">
+    <value>Mapear data de início e de conclusão de tarefas Outlook como flutuante, sem fuso horário</value>
+  </data>
+  <data name="Map plaintext Body of Outlook appointment to description attribute." xml:space="preserve">
+    <value>Mapear Corpo texto puro de compromissio Outlook para o atributo descrição.</value>
+  </data>
+  <data name="Map priority" xml:space="preserve">
+    <value>Mapear prioridade</value>
+  </data>
+  <data name="Map recurring tasks" xml:space="preserve">
+    <value>Mapear tarefas recorrentes</value>
+  </data>
+  <data name="Map reminder:" xml:space="preserve">
+    <value>Mapear lembrete:</value>
+  </data>
+  <data name="Mapping Errors:" xml:space="preserve">
+    <value>Mapeamento de Erros:</value>
+  </data>
+  <data name="Mapping Warnings:" xml:space="preserve">
+    <value>Alertas de mapeamento:</value>
+  </data>
+  <data name="Maps changes from Outlook to server but do not update changes from server to Outlook after the initial sync. Useful if another mobile client reduces the photo resolution for example." xml:space="preserve">
+    <value>Mapeia as alterações do Outlook para o servidor, mas não atualiza as alterações do servidor para o Outlook após a sincronização inicial. Útil se outro cliente móvel, por exemplo, reduzir a resolução da foto.</value>
+  </data>
+  <data name="Merge Easy Project resources to one single Outlook folder" xml:space="preserve">
+    <value>Mesclar recursos Easy Project em uma única pasta Outlook</value>
+  </data>
+  <data name="Merge Kolab folders to a common Outlook folder" xml:space="preserve">
+    <value>Mesclar pastas Kolab com uma pasta comum Outlook</value>
+  </data>
+  <data name="Move selected profile down" xml:space="preserve">
+    <value>Mover perfil selecionado para baixo</value>
+  </data>
+  <data name="Move selected profile up" xml:space="preserve">
+    <value>Mover perfil selecionado para cima</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="Name:" xml:space="preserve">
+    <value>Nome:</value>
+  </data>
+  <data name="Negate filter and sync all appointments except this category" xml:space="preserve">
+    <value>Negar filtro e sincronizar todos os compromissos, exceto esta categoria</value>
+  </data>
+  <data name="Negate filter and sync all tasks except this category" xml:space="preserve">
+    <value>Negar filtro e sincronizar todas as tarefas, exceto esta categoria</value>
+  </data>
+  <data name="Network Settings" xml:space="preserve">
+    <value>Configurações de Rede</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Não</value>
+  </data>
+  <data name="No color set for updating the server calendar color!" xml:space="preserve">
+    <value>Nenhuma cor definida para atualização da cor de calendário do servidor.</value>
+  </data>
+  <data name="No newer version available." xml:space="preserve">
+    <value>Nenhuma versão mais recente disponível.</value>
+  </data>
+  <data name="No reports available!" xml:space="preserve">
+    <value>Nenhum relatório disponível.</value>
+  </data>
+  <data name="No resources were found via autodiscovery!" xml:space="preserve">
+    <value>Nenhum recurso encontrado através do autodiscovery.</value>
+  </data>
+  <data name="No ressource selected!" xml:space="preserve">
+    <value>Nenhum recurso selecionado.</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Nenhum</value>
+  </data>
+  <data name="Not supported in OL 2007." xml:space="preserve">
+    <value>Não suportado no Outlook 2007.</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Only add new Kolab resources" xml:space="preserve">
+    <value>Adicionar apenas novos recursos Kolab</value>
+  </data>
+  <data name="Only sync runs with errors" xml:space="preserve">
+    <value>Apenas sincronizações com erros</value>
+  </data>
+  <data name="Open data directory of selected profile" xml:space="preserve">
+    <value>Abrir diretório de dados do perfil selecionado</value>
+  </data>
+  <data name="Operation" xml:space="preserve">
+    <value>Operação</value>
+  </data>
+  <data name="Operation aborted" xml:space="preserve">
+    <value>Operação abortada</value>
+  </data>
+  <data name="Options" xml:space="preserve">
+    <value>Opções</value>
+  </data>
+  <data name="Outlook and most servers calculate the intersection with the time-range differently for recurring events&#xA;which can cause doubled or deleted events. So it is recommended to select&#xA;a time-range which is larger than the largest interval of your recurring events&#xA;(e.g. 1 year for birthdays)" xml:space="preserve">
+    <value>O Outlook e a maioria dos servidores calculam a interseção com o intervalo de tempo de maneira diferente para eventos recorrentes
+o que pode causar eventos duplicados ou excluídos. Por isso, é recomendável selecionar
+um intervalo de tempo maior que o maior intervalo de seus eventos recorrentes (por exemplo, 1 ano para aniversários)</value>
+  </data>
+  <data name="Outlook automatically creates birthday appointments in your calendar &#xA;when the birthday is added to a contact item." xml:space="preserve">
+    <value>O Outlook cria automaticamente compromissos de aniversário em calendário
+quando o aniversário é adicionado a um item de contato.</value>
+  </data>
+  <data name="Outlook custom property" xml:space="preserve">
+    <value>Propriedade customizada do Outlook</value>
+  </data>
+  <data name="Outlook Delta:" xml:space="preserve">
+    <value>Delta Outlook:</value>
+  </data>
+  <data name="Outlook Entity" xml:space="preserve">
+    <value>Entidade Outlook</value>
+  </data>
+  <data name="Outlook folder:" xml:space="preserve">
+    <value>Pasta Outlook:</value>
+  </data>
+  <data name="Outlook Id" xml:space="preserve">
+    <value>Id do Outlook</value>
+  </data>
+  <data name="Outlook restart required" xml:space="preserve">
+    <value>É necessário reiniciar o Outlook</value>
+  </data>
+  <data name="Outlook Settings" xml:space="preserve">
+    <value>Configurações Outlook</value>
+  </data>
+  <data name="Outlook wins" xml:space="preserve">
+    <value>Outlook vence</value>
+  </data>
+  <data name="Outlook ← Server (Merge)" xml:space="preserve">
+    <value>Outlook ← Server (Mesclar)</value>
+  </data>
+  <data name="Outlook ← Server (Replicate)" xml:space="preserve">
+    <value>Outlook ← Server (Replicar)</value>
+  </data>
+  <data name="Outlook ←→ Server (Two-Way)" xml:space="preserve">
+    <value>Outlook ←→ Server (Ambos sentidos)</value>
+  </data>
+  <data name="Outlook → Server (Merge)" xml:space="preserve">
+    <value>Outlook → Server (Mesclar)</value>
+  </data>
+  <data name="Outlook → Server (Replicate)" xml:space="preserve">
+    <value>Outlook → Server (Replicar)</value>
+  </data>
+  <data name="Password (optional):" xml:space="preserve">
+    <value>Senha (opcional): </value>
+  </data>
+  <data name="Password:" xml:space="preserve">
+    <value>Senha: </value>
+  </data>
+  <data name="Perform synchronization in chunks" xml:space="preserve">
+    <value>Realizar a sincronização em pedaços</value>
+  </data>
+  <data name="Please be aware that the log file (especially with Log Level Debug) can contain 'Personally identifiable information' (PII) like resource URIs and raw calendar and/or addressbook data but no passwords.\nNever post or attach the log or a sync report in a public forum and mask sensitive data when sending as an e-mail!" xml:space="preserve">
+    <value>Esteja ciente que o arquivo de log (especialmente com Nível de Log Depurado) pode conter 'Personal identifiable information (informações pessoas identificáveis)' (PII) como URIs de recursos e dados brutos do calendário e/ou catálogo de endereços, mas sem senha.\nNunca envie ou anexe o log ou um relatório de sincronização em um fórum público e mascare dados confidenciais ao enviar como um e-mail.</value>
+  </data>
+  <data name="Please select an Outlook folder to specify the item type for this profile" xml:space="preserve">
+    <value>Favor selecionar uma pasta Outlook para especificar o tipo de item deste perfil</value>
+  </data>
+  <data name="Privacy Settings" xml:space="preserve">
+    <value>Configurações de Privacidade</value>
+  </data>
+  <data name="Processing profiles done." xml:space="preserve">
+    <value>Finalizado processamento de perfis.</value>
+  </data>
+  <data name="Processing profiles." xml:space="preserve">
+    <value>Processando perfis.</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Perfil</value>
+  </data>
+  <data name="Profile '{0}'" xml:space="preserve">
+    <value>Perfil '{0}'</value>
+  </data>
+  <data name="Profile cache deleted" xml:space="preserve">
+    <value>Cache de perfil excluído.</value>
+  </data>
+  <data name="Profile Id:" xml:space="preserve">
+    <value>Id do Perfil:</value>
+  </data>
+  <data name="Profile name:" xml:space="preserve">
+    <value>Nome do perfil:</value>
+  </data>
+  <data name="Proxy Settings" xml:space="preserve">
+    <value>Configurações Proxy</value>
+  </data>
+  <data name="Proxy URL:" xml:space="preserve">
+    <value>URL Proxy:</value>
+  </data>
+  <data name="Raw" xml:space="preserve">
+    <value>Cru</value>
+  </data>
+  <data name="removes duplicate Outlook appointments based on start end and subject of the events after each sync run &#xA;be aware of possible performance penalties with this option enabled." xml:space="preserve">
+    <value>remove compromissos duplicados do Outlook com base no início/fim e no assunto dos eventos após cada execução de sincronização
+esteja ciente das possíveis penalidades de desempenho com essa opção ativada.</value>
+  </data>
+  <data name="Replacing profile '{0}'" xml:space="preserve">
+    <value>Substituindo perfil '{0}'</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Relatórios</value>
+  </data>
+  <data name="Resource Displayname" xml:space="preserve">
+    <value>Nome de exibição do Recurso</value>
+  </data>
+  <data name="Resource displayname must not be empty!" xml:space="preserve">
+    <value>O recurso nome de exibição não pode estar vazio.</value>
+  </data>
+  <data name="Save selected to Zip file" xml:space="preserve">
+    <value>Salvar selecionado para arquivo Zip</value>
+  </data>
+  <data name="Scheduling Settings" xml:space="preserve">
+    <value>Configurações de Agendamento</value>
+  </data>
+  <data name="Select folder" xml:space="preserve">
+    <value>Selecionar pasta</value>
+  </data>
+  <data name="Select Profile Type" xml:space="preserve">
+    <value>Selecione o Tipo de Perfil</value>
+  </data>
+  <data name="Select Resource" xml:space="preserve">
+    <value>Selecionar Recurso</value>
+  </data>
+  <data name="Selected Outlook Folder" xml:space="preserve">
+    <value>Pasta do Outlook Selecionada</value>
+  </data>
+  <data name="Server Delta:" xml:space="preserve">
+    <value>Delta do Servidor:</value>
+  </data>
+  <data name="Server Entity" xml:space="preserve">
+    <value>Entidade do Servidor</value>
+  </data>
+  <data name="Server Id" xml:space="preserve">
+    <value>Id do Servidor</value>
+  </data>
+  <data name="Server Settings" xml:space="preserve">
+    <value>Configurações do Servidor</value>
+  </data>
+  <data name="Server wins" xml:space="preserve">
+    <value>Servidor vence</value>
+  </data>
+  <data name="Set DAV calendar color" xml:space="preserve">
+    <value>Definir cor do calendário DAV</value>
+  </data>
+  <data name="Set global options for all profiles like SSL/TLS settings." xml:space="preserve">
+    <value>Definir opções globais para todos os perfis, como por exemplo, configurações SSL/TLS.</value>
+  </data>
+  <data name="Set RTF Body from X-ALT-DESC Html description" xml:space="preserve">
+    <value>Definir Corpo RTF a partir da descrição Html X-ALT-DESC</value>
+  </data>
+  <data name="Set SCHEDULE-AGENT=CLIENT" xml:space="preserve">
+    <value>Definir SCHEDULE-AGENT=CLIENT</value>
+  </data>
+  <data name="Show Advanced Settings" xml:space="preserve">
+    <value>Exibir Configurações Avançadas</value>
+  </data>
+  <data name="Show advanced settings as default" xml:space="preserve">
+    <value>Exibir configurações avançadas como padrão</value>
+  </data>
+  <data name="Show log" xml:space="preserve">
+    <value>Exibir log</value>
+  </data>
+  <data name="Show reports and notify:" xml:space="preserve">
+    <value>Exibir relatórios e notificar:</value>
+  </data>
+  <data name="Show reports of last sync runs." xml:space="preserve">
+    <value>Exibir relatórios das últimas execuções de sincronização.</value>
+  </data>
+  <data name="Show status of sync runs." xml:space="preserve">
+    <value>Exibir o status enquanto a sincronização é executada.</value>
+  </data>
+  <data name="Show Sync Progress Bar" xml:space="preserve">
+    <value>Exibir Barra de Progresso da Sincronia</value>
+  </data>
+  <data name="Show synchronization reports immediately and&#xA;notify in systray icon (if enabled)" xml:space="preserve">
+    <value>Exibir relatórios de sincronização imediatamente e
+notificar no ícone de bandeja do sistema (caso habilitado)</value>
+  </data>
+  <data name="Show the advanced settings in synchronization profiles as default if enabled." xml:space="preserve">
+    <value>Exibir configurações avançadas nos perfis de sincronização como padrão, se habilitadas.</value>
+  </data>
+  <data name="Show the sync progress bar when more items than the treshold need to be loaded." xml:space="preserve">
+    <value>Mostrar a barra de progresso de sincronização quando mais itens do que o limite precisarem ser carregados.</value>
+  </data>
+  <data name="SOGo VLIST" xml:space="preserve">
+    <value>SOGo VLIST</value>
+  </data>
+  <data name="Some options contain invalid values" xml:space="preserve">
+    <value>Algumas opções contém caracteres inválidos</value>
+  </data>
+  <data name="SSL/TLS Settings" xml:space="preserve">
+    <value>Configurações SSL/TLS</value>
+  </data>
+  <data name="Start a manual synchronization of all active profiles." xml:space="preserve">
+    <value>Iniciar sincronização manual de todos os perfis ativos.</value>
+  </data>
+  <data name="StartTime:" xml:space="preserve">
+    <value>Hora de início:</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Store data in roaming folder" xml:space="preserve">
+    <value>Armazenar dados na pasta roaming</value>
+  </data>
+  <data name="Successfully updated the server calendar color!" xml:space="preserve">
+    <value>Cor de calendário do servidor atualizada com sucesso.</value>
+  </data>
+  <data name="Sucessfully exported {0} profile(s) to '{1}'." xml:space="preserve">
+    <value>{0} perfil(is) exportado(s) com sucesso para '{1}'.</value>
+  </data>
+  <data name="Sucessfully imported {0} profile(s) from '{1}'." xml:space="preserve">
+    <value>{0} perfil(is) importados com sucesso de '{1}'.</value>
+  </data>
+  <data name="Sync also appointments without any category" xml:space="preserve">
+    <value>Sincronizar também compromissions sem nenhuma categoria</value>
+  </data>
+  <data name="Sync also tasks without any category" xml:space="preserve">
+    <value>Sincronizar também tarefas sem qualquer categoria</value>
+  </data>
+  <data name="Sync only appointments with this category:" xml:space="preserve">
+    <value>Sincronizar apenas compromissos com esta categoria: </value>
+  </data>
+  <data name="Sync only tasks with this category:" xml:space="preserve">
+    <value>Sincronizar apenas tarefas com esta categoria: </value>
+  </data>
+  <data name="Sync Progress Bar Threshold (Items)" xml:space="preserve">
+    <value>Limite da barra de progresso da sincronização (itens)</value>
+  </data>
+  <data name="Sync runs with errors or warnings" xml:space="preserve">
+    <value>Sincronia roda com erros ou alertas</value>
+  </data>
+  <data name="Sync Settings" xml:space="preserve">
+    <value>Configurações de Sincronização</value>
+  </data>
+  <data name="Synchronization interval (minutes):" xml:space="preserve">
+    <value>Intervalo de sincronização (minutos):</value>
+  </data>
+  <data name="Synchronization mode is set to '{0}' and the selected Outlook folder is empty. Are you sure, you want to select this folder, because all items on the DAV server will be deleted!" xml:space="preserve">
+    <value>O modo de sincronização está definido como '{0}' e a pasta selecionada do Outlook não está vazia. Você tem certeza de que deseja selecionar esta pasta? Vale ressaltar que todos os itens do servidor Dav serão excluídos.</value>
+  </data>
+  <data name="Synchronization mode is set to '{0}' and the selected Outlook folder is not empty. Are you sure, you want to select this folder because all items will be overwritten with the DAV server resources!" xml:space="preserve">
+    <value>O modo de sincronização está definido como '{0}' e a pasta selecionada do Outlook não está vazia. Você tem certeza de que deseja selecionar esta pasta? Vale ressaltar que todos os itens serão sobrescritos pelos recursos do servidor DAV.</value>
+  </data>
+  <data name="Synchronization mode:" xml:space="preserve">
+    <value>Modo de sincronização:</value>
+  </data>
+  <data name="Synchronization profile '{0}' executed with error(s)." xml:space="preserve">
+    <value>Perfil de sincronização '{0}' executado com erro(s).</value>
+  </data>
+  <data name="Synchronization profile '{0}' executed with warning(s)." xml:space="preserve">
+    <value>Sincronização do perfil '{0}' executada com erro(s).</value>
+  </data>
+  <data name="Synchronization Profiles" xml:space="preserve">
+    <value>Perfis de Sincronização</value>
+  </data>
+  <data name="Synchronization Reports" xml:space="preserve">
+    <value>Relatórios de Sincronização</value>
+  </data>
+  <data name="Synchronization Status" xml:space="preserve">
+    <value>Status da Sincronização</value>
+  </data>
+  <data name="Synchronization timespan future (days):" xml:space="preserve">
+    <value>Sincronização de tempo futuro (dias):</value>
+  </data>
+  <data name="Synchronization timespan past (days):" xml:space="preserve">
+    <value>Tempo de sincronização para passado (dias):</value>
+  </data>
+  <data name="Synchronize items immediately after change" xml:space="preserve">
+    <value>Sincronizar itens imediamente após a mudança</value>
+  </data>
+  <data name="Synchronize now" xml:space="preserve">
+    <value>Sincronizar agora</value>
+  </data>
+  <data name="Take care, when changing settings for non-empty folders (see tooltip)" xml:space="preserve">
+    <value>Tome cuidado ao alterar as configurações para pastas não vazias (consulte as dicas de contexto)</value>
+  </data>
+  <data name="Task Mapping Configuration" xml:space="preserve">
+    <value>Configuração do Mapeamento de Tarefas</value>
+  </data>
+  <data name="Task start date will be mapped to 00:00 and Task due date to 23:59 without timezone.&#xA;Enable this if clients with different timezones are used and the due date should be local." xml:space="preserve">
+    <value>A data de início da tarefa será mapeada para 00:00 e a data de vencimento da tarefa para 23:59, sem fuso horário.
+Ative isso se clientes com diferentes fusos horários forem usados e a data de término precise ser local.</value>
+  </data>
+  <data name="Tasks" xml:space="preserve">
+    <value>Tarefas</value>
+  </data>
+  <data name="Team:" xml:space="preserve">
+    <value>Equipe: </value>
+  </data>
+  <data name="Test or discover settings" xml:space="preserve">
+    <value>Testar ou descobrir configurações</value>
+  </data>
+  <data name="Test settings" xml:space="preserve">
+    <value>Testar configurações</value>
+  </data>
+  <data name="The CalDav/CardDav URL is invalid" xml:space="preserve">
+    <value>O URL CalDav/CardDav é inválido.</value>
+  </data>
+  <data name="The Email address is invalid" xml:space="preserve">
+    <value>O endereço de email é inválido</value>
+  </data>
+  <data name="The profile for the selected report doesn't exist anymore!" xml:space="preserve">
+    <value>porque as exceções de recorrência sobre alterações de horário de verão não podem ser mapeadas e</value>
+  </data>
+  <data name="The selected entity does not exist anymore." xml:space="preserve">
+    <value>A entidade selecionada não existe mais.</value>
+  </data>
+  <data name="The specified URL doesn't support WebDav Collection Sync, the option will be disabled!" xml:space="preserve">
+    <value>O URL especificado não suporta WebDav Collection Sync, logo a opção será desabilitada.</value>
+  </data>
+  <data name="The specified URL is a read-only addressbook. Synchronization mode set to '{0}'." xml:space="preserve">
+    <value>O URL especificado é um livro de endereços somente de leitura. O modo de sincronização foi definido como '{0}'.</value>
+  </data>
+  <data name="The specified URL is a read-only calendar. Synchronization mode set to '{0}'." xml:space="preserve">
+    <value>O URL especificado é de um calendário apenas de leitura. O modo de sincronização foi definido para '{0}'</value>
+  </data>
+  <data name="The tasklist is invalid" xml:space="preserve">
+    <value>A lista de tarefas é inválida</value>
+  </data>
+  <data name="The tasklist with id '{0}' is invalid." xml:space="preserve">
+    <value>A lista de tarefas com id '{0}' é inválida.</value>
+  </data>
+  <data name="These settings affect the filter which selects the items for synchronization.&#xA;If an item does not pass the filter it is treated as if it would not exist!&#xA;Changing these settings for non-empty folders can lead to deletions on the server or duplicates in Outlook." xml:space="preserve">
+    <value>Essas configurações afetam o filtro que seleciona os itens para sincronização.
+Se um item não corresponder ao filtro, ele será tratado como se não existisse.
+Alterar essas configurações para pastas não vazias pode levar a exclusões no servidor ou itens duplicados no Outlook.</value>
+  </data>
+  <data name="Timezone Settings" xml:space="preserve">
+    <value>Configuração de Fuso horário</value>
+  </data>
+  <data name="Trigger a partial synchronization run immediately after &#xA;an item is created changed or deleted in Outlook &#xA;(with a 10 seconds delay).&#xA;Meeting invitations are excluded from this to avoid duplicate meetings!" xml:space="preserve">
+    <value>Acionar uma sincronização parcial imediatamente após
+um item ser criado, alterado ou excluído no Outlook (com um atraso de 10 segundos).
+Os convites para reuniões são excluídos para evitar reuniões duplicadas.</value>
+  </data>
+  <data name="Trigger sync after Outlook Send/Receive and on Startup" xml:space="preserve">
+    <value>Acionar sincronia após Enviar/Receber do Outlook e na Inicialização</value>
+  </data>
+  <data name="UI Settings" xml:space="preserve">
+    <value>Configurações da Interface</value>
+  </data>
+  <data name="Use fast GetTable queries when accessing Outlook folders.&#xA;Disable only if you get errors in GetVersions, when disabled every item needs to be requested&#xA;which causes a performance penalty!" xml:space="preserve">
+    <value>Use consultas rápidas GetTable ao acessar pastas do Outlook.
+Desabilite somente se você obtiver erros em GetVersions, já que quando desativado, cada item precisa ser solicitado,
+o que causa uma penalidade de desempenho.</value>
+  </data>
+  <data name="Use fast queries for Outlook folders" xml:space="preserve">
+    <value>Usar consultas (queries) rápidas para pastas Outlook</value>
+  </data>
+  <data name="Use full IANA timezone definition with historical data. &#xA;Needs more bandwith and can be incompatible when manually importing in Outlook." xml:space="preserve">
+    <value>Use a definição completa de fuso horário da IANA com dados históricos. Precisa de mais largura de banda e pode ser incompatível ao importar manualmente no Outlook. </value>
+  </data>
+  <data name="Use GlobalAppointmentID for UID attribute" xml:space="preserve">
+    <value>Usar GlobalAppointmentID para o atributo UID</value>
+  </data>
+  <data name="Use Google Contacts API instead of CardDAV &#xA;to sync Outlook contact folders with Google contacts &#xA;which improves mapping and performance." xml:space="preserve">
+    <value>Use a API de contatos do Google em vez do CardDAV
+para sincronizar pastas de contatos Outlook com contatos do Google, 
+o que que melhora o mapeamento e o desempenho.</value>
+  </data>
+  <data name="Use Google native API" xml:space="preserve">
+    <value>Usar API nativa do Google</value>
+  </data>
+  <data name="Use Iana instead of Windows timezones for creating events on CalDAV server. &#xA;Needed for servers which do not accept non standard Windows timezones like GMX for example. &#xA;Timezone definitions will be downloaded from http://tzurl.org." xml:space="preserve">
+    <value>Use o Iana em vez de fusos horários do Windows para criar eventos no servidor CalDAV.
+Necessário para servidores que não aceitam fusos horários não padrão do Windows, como o GMX.
+As definições de fuso horário serão baixadas de http://tzurl.org.</value>
+  </data>
+  <data name="Use IANA timezone:" xml:space="preserve">
+    <value>Usar fuso horário IANA:</value>
+  </data>
+  <data name="Use IMAP/POP3 account password" xml:space="preserve">
+    <value>Usa senha da conta IMAP/POP3</value>
+  </data>
+  <data name="Use manual proxy configuration" xml:space="preserve">
+    <value>Usar configuração manual de proxy</value>
+  </data>
+  <data name="Use Outlook GlobalAppointmendID instead of random Guid for UID attribute in new CalDAV events. &#xA; Can avoid duplicate events from invitations." xml:space="preserve">
+    <value>Use o GlobalAppointmendID do Outlook em vez do atributo aleatório Guid para UID em novos eventos CalDAV.
+ Pode evitar eventos duplicados de convites.</value>
+  </data>
+  <data name="Use preemptive authentication" xml:space="preserve">
+    <value>usar autenticação preemptiva</value>
+  </data>
+  <data name="Use prefix filter to include also custom message_classes in filter for Outlook folders. &#xA;For better performance, Windows Search Service shouldn't be deactivated if this option is enabled." xml:space="preserve">
+    <value>O perfil do relatório selecionado não existe mais.</value>
+  </data>
+  <data name="Use random string for DAV resource Uri" xml:space="preserve">
+    <value>Use um texto randômico para Uri de recurso DAV</value>
+  </data>
+  <data name="Use system default proxy (settings from IE and config file)" xml:space="preserve">
+    <value>Usar proxy padrão do sistema (configurações do IE e arquivo de config)</value>
+  </data>
+  <data name="Use this IANA timezone for default Outlook/Windows timezone. &#xA;Manually selected different timezones in Outlook appointments &#xA;will be mapped to first corresponding IANA timezone." xml:space="preserve">
+    <value>Use este fuso horário da IANA para o fuso horário padrão do Outlook / Windows.
+Fusos horários diferentes selecionados manualmente nos compromissos do Outlook
+serão mapeados para o primeiro fuso horário correspondente da IANA.</value>
+  </data>
+  <data name="Use time range filter" xml:space="preserve">
+    <value>Usar filtro de intervalo de tempo</value>
+  </data>
+  <data name="Use UTC instead of Outlook appointment timezone for creating events on CalDAV server. &#xA;Not recommended for general use &#xA;because recurrence exceptions over DST changes can not be mapped and &#xA;appointments with different start and end timezones can not be represented." xml:space="preserve">
+    <value>Use o UTC em vez do fuso horário do Outlook para criar eventos no servidor CalDAV.
+Não recomendado para uso geral, 
+porque as exceções de recorrência sobre alterações de horário de verão não podem ser mapeadas e
+compromissos com diferentes fusos horários de início e fim não podem ser representados.</value>
+  </data>
+  <data name="Use WebDAV collection sync" xml:space="preserve">
+    <value>Usar sincronia de coleção WebDAV</value>
+  </data>
+  <data name="Username (optional):" xml:space="preserve">
+    <value>Nome de usuário (opcional):</value>
+  </data>
+  <data name="Username:" xml:space="preserve">
+    <value>Nome de usuário:</value>
+  </data>
+  <data name="vCard with KIND:group" xml:space="preserve">
+    <value>vCard com KIND:group</value>
+  </data>
+  <data name="Version {0} is available!" xml:space="preserve">
+    <value>A versão {0} está disponível.</value>
+  </data>
+  <data name="Version: {0}" xml:space="preserve">
+    <value>Versão: {0}</value>
+  </data>
+  <data name="View or set CalDav Synchronization profiles" xml:space="preserve">
+    <value>Ver ou definir perfis de Sincronização CalDav</value>
+  </data>
+  <data name="View or set CalDav Synchronizer general options" xml:space="preserve">
+    <value>Ver ou definir opções gerais do CalDav Synchronizer</value>
+  </data>
+  <data name="Waiting for newer version than '{0}'." xml:space="preserve">
+    <value>Esperando por versão mais nova que '{0}'.</value>
+  </data>
+  <data name="WARNING profile '{0}', references an outlook folder that doesn't exist." xml:space="preserve">
+    <value>ALERTA quanto ao perfil '{0}' que ferencia uma pasta inexistente do Outlook.</value>
+  </data>
+  <data name="WARNING:" xml:space="preserve">
+    <value>ALERTA: </value>
+  </data>
+  <data name="Warning: did not find folder '{0}'" xml:space="preserve">
+    <value>Alerta: pasta '{0}' não foi localizada.</value>
+  </data>
+  <data name="WARNING: Do not use since it just keeps the items in sync as long as the cache is not cleared.&#xA;After clearing the cache (which happens automatically in some cases) items which were affected by this option do not pass the filter anymore!" xml:space="preserve">
+    <value>ALERTA: Não use, pois apenas mantém os itens em sincronia enquanto o cache não estiver limpo.
+Depois de limpar o cache (o que acontece automaticamente em alguns casos), os itens afetados por essa opção não passam mais pelo filtro.</value>
+  </data>
+  <data name="WebDAV-Sync is a protocol extension that is defined in RFC 6578 and not supported by all servers.&#xA;Test or discover settings will check if this is supported.&#xA;This option can speed up the detection of server changes dramatically but excludes the time range filter." xml:space="preserve">
+    <value>O WebDAV-Sync é uma extensão de protocolo definida no RFC 6578 e não suportada por todos os servidores.
+Testar ou descobrir configurações irá verificar se isso é suportado.
+Essa opção pode acelerar a detecção de alterações no servidor, mas exclui o filtro de intervalo de tempo.</value>
+  </data>
+  <data name="WebDAV-Sync is a protocol extension that is defined in RFC 6578 and supported by Google Calendar.&#xA;This option can speed up the detection of server changes dramatically but excludes the time range filter." xml:space="preserve">
+    <value>O WebDAV-Sync é uma extensão de protocolo definida no RFC 6578 e suportada pelo Google Agenda.
+Essa opção pode acelerar a detecção de alterações no servidor, mas exclui o filtro de intervalo de tempo.</value>
+  </data>
+  <data name="Whats's new?" xml:space="preserve">
+    <value>O que há de novo?</value>
+  </data>
+  <data name="Write IM addresses as IMPP attributes" xml:space="preserve">
+    <value>Gravar endereços IM sem atributos IMPP</value>
+  </data>
+  <data name="Write Instant Messenger addresses in vCard as IMPP attributes &#xA;(not supported by some servers e.g. SOGo) instead of X-PROTOCOL e.g. X-AIM" xml:space="preserve">
+    <value>Gravar endereços do Instant Messenger como atributos do vCard IMPP em vez de X-PROTOCOLO, como X-AIM (incompatível com alguns servidores, como o SOGo)</value>
+  </data>
+  <data name="Wrong ItemType in folder '{0}'. It should be a calendar, task or contact folder." xml:space="preserve">
+    <value>Tipo de item errado para pasta '{0}'. Precisa ser uma pasta de calendário, tarefa ou contato.</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Sim</value>
+  </data>
+  <data name="You need to choose a calendar folder to merge the EasyProject resources!" xml:space="preserve">
+    <value>Você precisa escolher uma pasta de calendário para mesclar os recursos do EasyProject.</value>
+  </data>
+  <data name="You need to choose a calendar folder to merge the Kolab resources!" xml:space="preserve">
+    <value>Você precisa escolher uma pasta de calendário para mesclar os recursos Kolab.</value>
+  </data>
+  <data name="You need to restart Outlook after installing the new version!" xml:space="preserve">
+    <value>Você precisa reiniciar o Outlook após instalar a versão nova.</value>
+  </data>
+</root>
