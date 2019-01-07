@@ -75,22 +75,30 @@ namespace CalDavSynchronizer.DataAccess
       }
       
       var ownerPrincipalUrl = owner ?? currentUserPrincipal;
-      if (ownerPrincipalUrl != null)
-      {
-        var userAddressSetProperties = await GetUserAddressSet (ownerPrincipalUrl);
 
-        var userAddressSetNode = userAddressSetProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/C:calendar-user-address-set", userAddressSetProperties.XmlNamespaceManager);
-        if (userAddressSetNode != null && userAddressSetNode.HasChildNodes)
+      if (ownerPrincipalUrl == null)
+        return null;
+
+      if (await GetUserEmailAddressOrNull(ownerPrincipalUrl) is var emailAddress && emailAddress != null)
+        return new CalendarOwnerProperties(emailAddress, isSharedCalendar);
+
+      return null;
+    }
+
+    public async Task<string> GetUserEmailAddressOrNull(Uri userPricipalUrl)
+    {
+      var userAddressSetProperties = await GetUserAddressSet(userPricipalUrl);
+      var userAddressSetNode = userAddressSetProperties.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/C:calendar-user-address-set", userAddressSetProperties.XmlNamespaceManager);
+      if (userAddressSetNode != null && userAddressSetNode.HasChildNodes)
+      {
+        foreach (XmlNode userAddressSetNodeHref in userAddressSetNode.ChildNodes)
         {
-          foreach (XmlNode userAddressSetNodeHref in userAddressSetNode.ChildNodes)
+          if (!string.IsNullOrEmpty(userAddressSetNodeHref.InnerText))
           {
-            if (!string.IsNullOrEmpty (userAddressSetNodeHref.InnerText))
+            var address = userAddressSetNodeHref.InnerText;
+            if (address.StartsWith("mailto:") && Uri.IsWellFormedUriString(address, UriKind.Absolute))
             {
-              var address = userAddressSetNodeHref.InnerText;
-              if (address.StartsWith ("mailto:") && Uri.IsWellFormedUriString (address, UriKind.Absolute))
-              {
-                return new CalendarOwnerProperties ( address.Substring(7), isSharedCalendar);
-              }
+              return address.Substring(7);
             }
           }
         }
@@ -353,10 +361,10 @@ namespace CalDavSynchronizer.DataAccess
           );
     }
 
-    private Task<XmlDocumentWithNamespaceManager> GetUserAddressSet (Uri url)
+    private Task<XmlDocumentWithNamespaceManager> GetUserAddressSet (Uri userPricipalUrl)
     {
       return _webDavClient.ExecuteWebDavRequestAndReadResponse(
-        url,
+        userPricipalUrl,
         "PROPFIND",
         0,
         null,
