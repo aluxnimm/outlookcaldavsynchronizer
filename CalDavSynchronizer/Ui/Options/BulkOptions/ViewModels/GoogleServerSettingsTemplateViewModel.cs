@@ -103,7 +103,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 
       var webDavClient = _prototypeModel.CreateWebDavClient();
       var calDavDataAccess = new CalDavDataAccess (url, webDavClient);
-      var foundResources = await calDavDataAccess.GetUserResourcesIncludingCalendarProxiesNoThrow (false);
+      var foundResources = await calDavDataAccess.GetUserResourcesIncludingCalendarProxies (false);
 
       var foundAddressBooks = new[] { new AddressBookData (new Uri ("googleApi://defaultAddressBook"), "Default AddressBook", AccessPrivileges.All) };
 

@@ -357,7 +357,7 @@ namespace CalDavSynchronizer.Ui.Options
       {
         case OlItemType.olAppointmentItem:
           var calDavDataAccess = new CalDavDataAccess(autoDiscoveryUri, webDavClient);
-          var foundCalendars = (await calDavDataAccess.GetUserResourcesIncludingCalendarProxiesNoThrow(useWellKnownCalDav)).CalendarResources;
+          var foundCalendars = (await calDavDataAccess.GetUserResourcesIncludingCalendarProxies(useWellKnownCalDav)).CalendarResources;
           if (foundCalendars.Count == 0)
             return new AutoDiscoveryResult(null, AutoDiscoverResultStatus.NoResourcesFound);
           var selectedCalendar = SelectCalendar(foundCalendars);
@@ -367,7 +367,7 @@ namespace CalDavSynchronizer.Ui.Options
             return new AutoDiscoveryResult(null, AutoDiscoverResultStatus.UserCancelled);
         case OlItemType.olTaskItem:
           var calDavDataAccessTasks = new CalDavDataAccess(autoDiscoveryUri, webDavClient);
-          var foundTasks = (await calDavDataAccessTasks.GetUserResourcesIncludingCalendarProxiesNoThrow(useWellKnownCalDav)).TaskListResources;
+          var foundTasks = (await calDavDataAccessTasks.GetUserResourcesIncludingCalendarProxies(useWellKnownCalDav)).TaskListResources;
           if (foundTasks.Count == 0)
             return new AutoDiscoveryResult(null, AutoDiscoverResultStatus.NoResourcesFound);
           var selectedTask = SelectTaskList(foundTasks);

@@ -182,7 +182,7 @@ namespace CalDavSynchronizer.DataAccess
       return newResourceUri;
     }
 
-    public async Task<CalDavResources> GetUserResourcesIncludingCalendarProxiesNoThrow (bool useWellKnownUrl)
+    public async Task<CalDavResources> GetUserResourcesIncludingCalendarProxies (bool useWellKnownUrl)
     {
       var autodiscoveryUrl = useWellKnownUrl ? AutoDiscoveryUrl : _serverUrl;
 
@@ -197,7 +197,7 @@ namespace CalDavSynchronizer.DataAccess
 
         if (currentUserPrincipalUrl != null)
         {
-          var resources = await GetUserResourcesNoThrow(currentUserPrincipalUrl);
+          var resources = await GetUserResources(currentUserPrincipalUrl);
           calendars.AddRange (resources.CalendarResources);
           taskLists.AddRange (resources.TaskListResources);
         }
@@ -226,7 +226,7 @@ namespace CalDavSynchronizer.DataAccess
                   new Uri (proxyWriteForNodeHref.InnerText) :
                   new Uri (calendarProxyProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + proxyWriteForNodeHref.InnerText);
 
-                var result = await GetUserResourcesNoThrow(proxyWriteUri);
+                var result = await GetUserResources(proxyWriteUri);
                 calendars.AddRange (result.CalendarResources);
                 taskLists.AddRange (result.TaskListResources);
               }
@@ -243,7 +243,7 @@ namespace CalDavSynchronizer.DataAccess
                 var proxyReadUri = Uri.IsWellFormedUriString (proxyReadForNodeHref.InnerText, UriKind.Absolute) ?
                   new Uri (proxyReadForNodeHref.InnerText) :
                   new Uri (calendarProxyProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + proxyReadForNodeHref.InnerText);
-                var result = await GetUserResourcesNoThrow(proxyReadUri);
+                var result = await GetUserResources(proxyReadUri);
 
                 calendars.AddRange (result.CalendarResources);
                 taskLists.AddRange (result.TaskListResources);
@@ -259,7 +259,7 @@ namespace CalDavSynchronizer.DataAccess
       return new CalDavResources (calendars, taskLists);
     }
 
-    public async Task<CalDavResources> GetUserResourcesNoThrow (Uri principalUri)
+    public async Task<CalDavResources> GetUserResources (Uri principalUri)
     {
       try
       {
