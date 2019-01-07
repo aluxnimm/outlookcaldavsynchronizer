@@ -34,6 +34,6 @@ namespace CalDavSynchronizer.Ui.Options.ResourceSelection.ViewModels
 
     public Uri Uri => Model.Uri;
     public override string Name => Model.Name;
-    public string Privileges => ((Model.Privileges & AccessPrivileges.All) == AccessPrivileges.All) ? "rw" : "r";
+    public string Privileges => AccessPrivilegesConverter.ToString(Model.Privileges);
   }
 }

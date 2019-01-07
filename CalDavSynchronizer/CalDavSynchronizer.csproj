@@ -529,6 +529,7 @@
     <Compile Include="ProfileTypes\ConcreteTypes\SarenetProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\SogoProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\YandexProfile.cs" />
+    <Compile Include="Ui\Options\ResourceSelection\ViewModels\AccessPrivilegesConverter.cs" />
     <Compile Include="Ui\Options\ViewModels\GeneralOptionsViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\ProfileViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\SelectProfileViewModel.cs" />
