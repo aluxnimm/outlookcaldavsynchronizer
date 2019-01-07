@@ -20,23 +20,13 @@ namespace CalDavSynchronizer.Ui.ConnectionTests
 {
   public class CalendarOwnerProperties
   {
-    private readonly string _calendarOwnerEmail;
-    private readonly bool _isSharedCalendar;
-
     public CalendarOwnerProperties (string calendarOwnerEmail, bool isSharedCalendar)
     {
-      _calendarOwnerEmail = calendarOwnerEmail;
-      _isSharedCalendar = isSharedCalendar;
+      CalendarOwnerEmail = calendarOwnerEmail;
+      IsSharedCalendar = isSharedCalendar;
     }
 
-    public string CalendarOwnerEmail
-    {
-      get { return _calendarOwnerEmail; }
-    }
-
-    public bool IsSharedCalendar
-    {
-      get { return _isSharedCalendar; }
-    }
+    public string CalendarOwnerEmail { get; }
+    public bool IsSharedCalendar { get; }
   }
 }
