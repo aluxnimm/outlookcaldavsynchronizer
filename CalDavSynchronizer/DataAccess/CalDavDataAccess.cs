@@ -64,7 +64,7 @@ namespace CalDavSynchronizer.DataAccess
     public async Task<CalendarOwnerProperties> GetCalendarOwnerPropertiesOrNull()
     { 
       var owner = await GetOwnerUrlOrNull (_serverUrl);
-      var currentUserPrincipal = await GetCurrentUserPrincipalUrl (_serverUrl);
+      var currentUserPrincipal = await GetCurrentUserPrincipalUrlOrNull (_serverUrl);
 
       var isSharedCalendar = false;
       if (owner != null && currentUserPrincipal != null)
@@ -102,7 +102,7 @@ namespace CalDavSynchronizer.DataAccess
     {
       var autodiscoveryUrl = useWellKnownUrl ? AutoDiscoveryUrl : _serverUrl;
 
-      var currentUserPrincipalUrl = await GetCurrentUserPrincipalUrl (autodiscoveryUrl);
+      var currentUserPrincipalUrl = await GetCurrentUserPrincipalUrlOrNull (autodiscoveryUrl);
       if (currentUserPrincipalUrl != null)
       {
         var calendarHomeSetProperties = await GetCalendarHomeSet (currentUserPrincipalUrl);
@@ -185,7 +185,7 @@ namespace CalDavSynchronizer.DataAccess
       try
       {
 
-        currentUserPrincipalUrl = await GetCurrentUserPrincipalUrl (autodiscoveryUrl);
+        currentUserPrincipalUrl = await GetCurrentUserPrincipalUrlOrNull (autodiscoveryUrl);
 
         if (currentUserPrincipalUrl != null)
         {

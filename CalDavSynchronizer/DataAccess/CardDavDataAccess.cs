@@ -58,7 +58,7 @@ namespace CalDavSynchronizer.DataAccess
     {
       var autodiscoveryUrl = useWellKnownUrl ? AutoDiscoveryUrl : _serverUrl;
 
-      var currentUserPrincipalUrl = await GetCurrentUserPrincipalUrl (autodiscoveryUrl);
+      var currentUserPrincipalUrl = await GetCurrentUserPrincipalUrlOrNull (autodiscoveryUrl);
       if (currentUserPrincipalUrl != null)
       {
         var addressBookHomeSetProperties = await GetAddressBookHomeSet (currentUserPrincipalUrl);
@@ -135,7 +135,7 @@ namespace CalDavSynchronizer.DataAccess
       {
         var autodiscoveryUrl = useWellKnownUrl ? AutoDiscoveryUrl : _serverUrl;
 
-        var currentUserPrincipalUrl = await GetCurrentUserPrincipalUrl (autodiscoveryUrl);
+        var currentUserPrincipalUrl = await GetCurrentUserPrincipalUrlOrNull (autodiscoveryUrl);
 
         var addressbooks = new List<AddressBookData>();
 

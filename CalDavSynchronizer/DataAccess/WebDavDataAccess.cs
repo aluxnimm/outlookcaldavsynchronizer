@@ -445,7 +445,7 @@ namespace CalDavSynchronizer.DataAccess
       return true;
     }
 
-    protected async Task<Uri> GetCurrentUserPrincipalUrl (Uri calenderUrl)
+    protected async Task<Uri> GetCurrentUserPrincipalUrlOrNull (Uri calenderUrl)
     {
       var principalProperties = await GetCurrentUserPrincipal (calenderUrl);
 
