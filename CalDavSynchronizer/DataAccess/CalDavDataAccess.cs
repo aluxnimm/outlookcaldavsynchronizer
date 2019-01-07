@@ -192,15 +192,7 @@ namespace CalDavSynchronizer.DataAccess
 
       try
       {
-
         currentUserPrincipalUrl = await GetCurrentUserPrincipalUrlOrNull (autodiscoveryUrl);
-
-        if (currentUserPrincipalUrl != null)
-        {
-          var resources = await GetUserResources(currentUserPrincipalUrl);
-          calendars.AddRange (resources.CalendarResources);
-          taskLists.AddRange (resources.TaskListResources);
-        }
       }
       catch (Exception x)
       {
@@ -209,6 +201,14 @@ namespace CalDavSynchronizer.DataAccess
         else
           throw;
       }
+
+      if (currentUserPrincipalUrl != null)
+      {
+        var resources = await GetUserResources(currentUserPrincipalUrl);
+        calendars.AddRange(resources.CalendarResources);
+        taskLists.AddRange(resources.TaskListResources);
+      }
+
       try
       {
         if (await IsCalendarProxySupported (currentUserPrincipalUrl))
