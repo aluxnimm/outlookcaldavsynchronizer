@@ -829,7 +829,9 @@
     <EmbeddedResource Include="Globalization\StringResources.pt-BR.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\StringResources.ru-RU.resx" />
+    <EmbeddedResource Include="Globalization\StringResources.ru-RU.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Globalization\StringResources.de-DE.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>

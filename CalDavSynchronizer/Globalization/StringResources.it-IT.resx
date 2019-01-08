@@ -1417,4 +1417,13 @@ e le e-mail di invito non devono essere inviate dall'indirizzo sbagliato
 o se si desidera creare una riunione su un calendario condiviso per il proprietario.
     </value>
   </data>
+  <data name="The calendar is shared from '{0}', enabling scheduling option 'act on behalf of server identity'!" xml:space="preserve">
+    <value>Il calendario è condiviso da '{0}', abilitando Impostazioni meeting 'Agisci per conto dell'identità del server'!</value>
+  </data>
+  <data name="Map Anniversary" xml:space="preserve">
+    <value>Sincronizza anniversario di matrimonio</value>
+  </data>
+  <data name="Outlook automatically creates anniversary appointments in your calendar &#xA;when the anniversary is added to a contact item." xml:space="preserve">
+    <value>Outlook crea automaticamente un termine nel calendario qualora ad un contatto venga aggiunto un anniversario di matrimonio.</value>
+  </data>
 </root>

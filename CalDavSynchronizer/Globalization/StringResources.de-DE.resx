@@ -1417,4 +1417,13 @@ und Einladungsmails nicht von der falschen Adresse gesendet werden sollen
 bzw. wenn ein Meeting in einem freigegebenen Kalender im Namen des Besitzers erstellt werden soll. 
     </value>
   </data>
+  <data name="The calendar is shared from '{0}', enabling scheduling option 'act on behalf of server identity'!" xml:space="preserve">
+    <value>Der Kalender ist freigegeben von '{0}', aktiviere Meeting Einstellung 'Handle im Namen der Serveridentität'!</value>
+  </data>
+  <data name="Map Anniversary" xml:space="preserve">
+    <value>Synchronisiere Jahrestage</value>
+  </data>
+  <data name="Outlook automatically creates anniversary appointments in your calendar &#xA;when the anniversary is added to a contact item." xml:space="preserve">
+    <value>Outlook erstellt automatisch einen Termin im Kalender wenn ein Jahrestag bei einem Kontakt hinzugefügt wird.</value>
+  </data>
 </root>

@@ -584,8 +584,8 @@ a fim de identificar a entidade no relatório de sincronização.</value>
     <value>Digite o URL do recurso DAV ou o endereço do servidor e descubra os recursos disponíveis.
 Se você deixar o URL DAV vazio, ele também poderá ser descoberto a partir do endereço de e-mail, por meio de pesquisas de DNS.</value>
   </data>
-  <data name="Enter the email address of the server identity. &#xA;It can also be used to discover the DAV URL if you leave the URL textbox empty." xml:space="preserve">
-    <value>Digite o endereço de e-mail da identidade do servidor.
+  <data name="Enter the email address of the server identity of the calendar owner. Will be auto-detected if available.&#xA;It can also be used to discover the DAV URL if you leave the URL textbox empty." xml:space="preserve">
+    <value>Digite o endereço de e-mail da identidade do servidor do proprietário do calendário. Será detectado automaticamente se disponível.
 Pode também ser usado para descobrir o URL de DAV se você deixar a caixa de texto de URL vazia.</value>
   </data>
   <data name="Enter the name of the Outlook category for filtering. &#xA;If the category does not exist it will be created in Outlook." xml:space="preserve">
@@ -1396,5 +1396,27 @@ Essa opção pode acelerar a detecção de alterações no servidor, mas exclui 
   </data>
   <data name="You need to restart Outlook after installing the new version!" xml:space="preserve">
     <value>Você precisa reiniciar o Outlook após instalar a versão nova.</value>
+  </data>
+  <data name="Access" xml:space="preserve">
+    <value>Acesso</value>
+  </data>
+  <data name="Act on behalf of server identity" xml:space="preserve">
+    <value>atue em nome da identidade do servidor</value>
+  </data>
+  <data name="Set server identity as organizer of meeting and Outlook identity as delegate acting on behalf of it (SENT-BY).&#x0a;Useful when Outlook and server identity do not match to avoid invites sent by the wrong email&#x0a;or if meetings are created in a shared calendar on behalf of the calendar owner." xml:space="preserve">
+    <value>Definir a identidade do servidor como organizador da reunião e identidade do Outlook como delegado
+agindo em seu nome (SENT-BY). Útil quando o Outlook e a identidade do servidor não corresponderem para evitar convites enviados pelo email errado
+ou se as reuniões forem criadas em um calendário compartilhado em nome do proprietário do calendário.
+    </value>
+  </data>
+  <data name="The calendar is shared from '{0}', enabling scheduling option 'act on behalf of server identity'!" xml:space="preserve">
+    <value>O calendário foi compartilhado por '{0}', hablitando a opção de agendamento 'atue em nome da identidade do servidor'</value>
+  </data>
+  <data name="Map Anniversary" xml:space="preserve">
+    <value>Mapear Aniversário de casamento</value>
+  </data>
+  <data name="Outlook automatically creates anniversary appointments in your calendar &#xA;when the anniversary is added to a contact item." xml:space="preserve">
+    <value>O Outlook cria automaticamente compromissos de aniversário de casamento em sua agenda 
+quando o aniversário de casamento é adicionado a um item de contato.</value>
   </data>
 </root>

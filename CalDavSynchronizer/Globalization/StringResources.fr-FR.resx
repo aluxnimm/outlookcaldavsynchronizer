@@ -1406,4 +1406,13 @@ et les courriels d'invitation ne doivent pas être envoyés à partir de la mauv
 ou si vous souhaitez créer une réunion sur un calendrier partagé pour le propriétaire.
     </value>
   </data>
+  <data name="The calendar is shared from '{0}', enabling scheduling option 'act on behalf of server identity'!" xml:space="preserve">
+    <value>Le calendrier est partagé à partir de '{0}', activation de l'option de Paramètres réunion 'Agir pour le compte de l'identité du serveur'!</value>
+  </data>
+  <data name="Map Anniversary" xml:space="preserve">
+    <value>Synchroniser les dates d'anniversaire de mariage</value>
+  </data>
+  <data name="Outlook automatically creates anniversary appointments in your calendar &#xA;when the anniversary is added to a contact item." xml:space="preserve">
+    <value>Outlook crée automatiquement un événement dans le calendrier à la saisie de la date d'anniversaire de mariage d'un contact.</value>
+  </data>
 </root>
