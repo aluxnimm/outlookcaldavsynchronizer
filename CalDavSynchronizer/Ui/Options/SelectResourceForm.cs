@@ -333,7 +333,7 @@ namespace CalDavSynchronizer.Ui.Options
       if (visibleGrid.SelectedRows.Count == 0)
       {
         ResourceType = ResourceType.None;
-        MessageBox.Show (Strings.Get($"No ressource selected!"));
+        MessageBox.Show (Strings.Get($"No resource selected!"));
       }
       else
       {

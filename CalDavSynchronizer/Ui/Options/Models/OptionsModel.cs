@@ -556,7 +556,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
 
       if (_useWebDavCollectionSync && _selectedFolderOrNull?.DefaultItemType != OlItemType.olAppointmentItem && _selectedFolderOrNull?.DefaultItemType != OlItemType.olContactItem)
       {
-        errorMessageBuilder.AppendLine(Strings.Get($"- WebDav collection sync ist currently just supported for appointments and contacts."));
+        errorMessageBuilder.AppendLine(Strings.Get($"- WebDav collection sync is currently just supported for appointments and contacts."));
         result = false;
       }
 
@@ -577,7 +577,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
       if (IsChunkedSynchronizationEnabled && ChunkSize < 1)
       {
         result = false;
-        errorMessageBuilder.AppendLine(Strings.Get($"- The chunk size hast to be 1 or greater."));
+        errorMessageBuilder.AppendLine(Strings.Get($"- The chunk size has to be 1 or greater."));
       }
 
       if (MappingConfigurationModelOrNull != null)

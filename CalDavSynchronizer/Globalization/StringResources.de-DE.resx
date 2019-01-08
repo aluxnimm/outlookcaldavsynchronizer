@@ -408,7 +408,7 @@ Aktivieren Sie diese Option wenn Clients mit verschiedenen Zeitzonen verwendet w
   <data name="General Logging" xml:space="preserve">
     <value>Generelles Logging</value>
   </data>
-  <data name="- Ressources which are a calendar and an addressbook are not valid!" xml:space="preserve">
+  <data name="- Resources which are a calendar and an addressbook are not valid!" xml:space="preserve">
     <value>- Kalender und Adressbuch Ressourcen sind ungültig!</value>
   </data>
   <data name="Use random string for DAV resource Uri" xml:space="preserve">
@@ -699,7 +699,7 @@ Verwende Standard 'Speichern unter' Einstellung von den globalen Outlook Adressb
   <data name="Sucessfully exported {0} profile(s) to '{1}'." xml:space="preserve">
     <value>{0} Profil(e) erfolgreich exportiert nach '{1}'.</value>
   </data>
-  <data name="- WebDav collection sync ist currently just supported for appointments and contacts." xml:space="preserve">
+  <data name="- WebDav collection sync is currently just supported for appointments and contacts." xml:space="preserve">
     <value>- WebDav Collection Sync wird momentan nur für Kalender und Adressbücher unterstützt.</value>
   </data>
   <data name="StartTime:" xml:space="preserve">
@@ -711,7 +711,7 @@ Verwende Standard 'Speichern unter' Einstellung von den globalen Outlook Adressb
   <data name="Show advanced settings as default" xml:space="preserve">
     <value>Zeige erweiterte Einstellungen standardmäßig an</value>
   </data>
-  <data name="No ressource selected!" xml:space="preserve">
+  <data name="No resource selected!" xml:space="preserve">
     <value>Keine Ressource ausgewählt!</value>
   </data>
   <data name="Error while trying to fetch the news.\r\nPlease see logfile for details." xml:space="preserve">
@@ -1106,7 +1106,7 @@ anstelle von X-PROTOCOL wie z.B. X-AIM (wird von manchen Servern wie z.B. SOGo n
   <data name="DAV X-attribute" xml:space="preserve">
     <value>DAV X-Attribut</value>
   </data>
-  <data name="Not supported in OL 2007." xml:space="preserve">
+  <data name="Not supported in Outlook 2007." xml:space="preserve">
     <value>Wird in Outlook 2007 nicht unterstützt.</value>
   </data>
   <data name="Waiting for newer version than '{0}'." xml:space="preserve">
@@ -1247,7 +1247,7 @@ Sollte Fehlerreports vermeiden wenn das Netzwerk nicht verfügbar ist z.B. kurz 
   <data name="You need to restart Outlook after installing the new version!" xml:space="preserve">
     <value>Outlook muss nach der Installation der neuen Version neu gestartet werden!</value>
   </data>
-  <data name="- The chunk size hast to be 1 or greater." xml:space="preserve">
+  <data name="- The chunk size has to be 1 or greater." xml:space="preserve">
     <value>- Die Blockgröße muss &gt;= 1 sein.</value>
   </data>
   <data name="WebDAV-Sync is a protocol extension that is defined in RFC 6578 and not supported by all servers.&#xA;Test or discover settings will check if this is supported.&#xA;This option can speed up the detection of server changes dramatically but excludes the time range filter." xml:space="preserve">
@@ -1335,8 +1335,8 @@ Andere Protokolle können mittels protocol: address hinzugefügt werden</value>
   <data name="Assign Easy Project resources to different Outlook folders" xml:space="preserve">
     <value>Weise Easy Project Resourcen verschiedenen Outlook Foldern zu</value>
   </data>
-  <data name="CalDavSynchronizer - Synchronizing..." xml:space="preserve">
-    <value>CalDavSynchronizer - Synchronisiere...</value>
+  <data name="CalDav Synchronizer - Synchronizing..." xml:space="preserve">
+    <value>CalDav Synchronizer - Synchronisiere...</value>
   </data>
   <data name="Export profiles" xml:space="preserve">
     <value>Exportiere Profile</value>
@@ -1410,7 +1410,7 @@ Andere Protokolle können mittels protocol: address hinzugefügt werden</value>
   <data name="Act on behalf of server identity" xml:space="preserve">
     <value>Handle im Namen der Serveridentität</value>
   </data>
-  <data name="Set server identity as organizer of meeting and Outlook identity as delegate acting on behalf of it (SENT-BY).&#x0a;Useful when Outlook and server identity do not match to avoid invites sent by the wrong email&#x0a;or if meetings are created in a shared calendar on behalf of the calendar owner." xml:space="preserve">
+  <data name="Set server identity as organizer of meeting and Outlook identity as delegate acting on behalf of it (SENT-BY).&#xA;Useful when Outlook and server identity do not match to avoid invites sent by the wrong email&#xA;or if meetings are created in a shared calendar on behalf of the calendar owner." xml:space="preserve">
     <value>Verwende Server Email als Organisator für Meetings und Outlook Identität als Vertretung (SENT-BY).
 Sinnvoll wenn Outlook und Server Email Adressen unterschiedlich sind 
 und Einladungsmails nicht von der falschen Adresse gesendet werden sollen

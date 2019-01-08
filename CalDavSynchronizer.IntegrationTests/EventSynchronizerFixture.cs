@@ -433,7 +433,7 @@ namespace CalDavSynchronizer.IntegrationTests
 
             Assert.That(report.HasErrors, Is.False);
             Assert.That(
-                report.EntitySynchronizationReports.SingleOrDefault()?.Warnings.FirstOrDefault(w => w == "CalDav Ressources contains only exceptions. Reconstructing master event."),
+                report.EntitySynchronizationReports.SingleOrDefault()?.Warnings.FirstOrDefault(w => w == "Detected CalDav Event which contains only exceptions. Reconstructing master event."),
                 Is.Not.Null);
 
             using (var outlookEvent = (await synchronizer.Outlook.GetAllEntities()).Single().Entity)

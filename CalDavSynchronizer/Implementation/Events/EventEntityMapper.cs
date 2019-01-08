@@ -1520,8 +1520,8 @@ namespace CalDavSynchronizer.Implementation.Events
 
       if (sourceMasterEvent == null)
       {
-        s_logger.Warn ("Detected CalDav Event with contains only exceptions. Reconstructing master event.");
-        logger.LogWarning ("CalDav Ressources contains only exceptions. Reconstructing master event.");
+        s_logger.Warn ("Detected CalDav Event which contains only exceptions. Reconstructing master event.");
+        logger.LogWarning ("Detected CalDav Event which contains only exceptions. Reconstructing master event.");
         AddMasterEvent (sourceCalendar);
         return Map2To1 (sourceCalendar, target, logger, context);
       }

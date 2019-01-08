@@ -160,7 +160,7 @@ namespace CalDavSynchronizer.Ui.Options
 
       if (isCalendar && isAddressBook)
       {
-        errorMessageBuilder.AppendLine(Strings.Get($"- Ressources which are a calendar and an addressbook are not valid!"));
+        errorMessageBuilder.AppendLine(Strings.Get($"- Resources which are a calendar and an addressbook are not valid!"));
         hasError = true;
       }
 

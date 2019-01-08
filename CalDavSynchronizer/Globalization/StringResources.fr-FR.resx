@@ -138,7 +138,7 @@
   <data name="- Max Report Age must be &gt; 0" xml:space="preserve">
     <value>- L’âge maximum du rapport doit être &gt; 0.</value>
   </data>
-  <data name="- Ressources which are a calendar and an addressbook are not valid!" xml:space="preserve">
+  <data name="- Resources which are a calendar and an addressbook are not valid!" xml:space="preserve">
     <value>- Les ressources qui sont à la fois calendrier et carnet d'adresses ne sont pas valables!</value>
   </data>
   <data name="- The CalDav/CardDav URL cannot end/start with whitespaces." xml:space="preserve">
@@ -159,7 +159,7 @@
   <data name="- The category name must not contain semicolons." xml:space="preserve">
     <value>- Le nom de catégorie ne peut pas contenir un point-virgule..</value>
   </data>
-  <data name="- The chunk size hast to be 1 or greater." xml:space="preserve">
+  <data name="- The chunk size has to be 1 or greater." xml:space="preserve">
     <value>- La taille du bloc doit être &gt;= 1</value>
   </data>
   <data name="- The Email address is empty." xml:space="preserve">
@@ -204,7 +204,7 @@
   <data name="- There is no Outlook folder selected." xml:space="preserve">
     <value>- Aucun dossier Outlook n'a été sélectionné.</value>
   </data>
-  <data name="- WebDav collection sync ist currently just supported for appointments and contacts." xml:space="preserve">
+  <data name="- WebDav collection sync is currently just supported for appointments and contacts." xml:space="preserve">
     <value>- WebDav Collection Sync ne fonctionne momentanément que pour les calendriers et les carnets d'adresses.</value>
   </data>
   <data name="1 day" xml:space="preserve">
@@ -306,7 +306,7 @@ Les attributs DAV DOIVENT commencer par X-.</value>
   <data name="CalDAV Synchronizer is currently starting up. Please try again, when startup is finished." xml:space="preserve">
     <value>Démarrage de CalDAV Synchronizer. Veuillez patienter jusqu'à la fin de l'initialisation.</value>
   </data>
-  <data name="CalDavSynchronizer - Synchronizing..." xml:space="preserve">
+  <data name="CalDav Synchronizer - Synchronizing..." xml:space="preserve">
     <value>CalDav Synchronizer - Synchronisation...</value>
   </data>
   <data name="Calendar Color" xml:space="preserve">
@@ -879,13 +879,13 @@ Indiqué lorsqu'un autre client mobile diminue par exemple la résolution de la 
   <data name="No resources were found via autodiscovery!" xml:space="preserve">
     <value>Aucune ressource trouvée lors de la recherche automatique!</value>
   </data>
-  <data name="No ressource selected!" xml:space="preserve">
+  <data name="No resource selected!" xml:space="preserve">
     <value>Aucune ressource actionnée!</value>
   </data>
   <data name="None" xml:space="preserve">
     <value>Aucun/e</value>
   </data>
-  <data name="Not supported in OL 2007." xml:space="preserve">
+  <data name="Not supported in Outlook 2007." xml:space="preserve">
     <value>Pas compatible avec Outlook 2007.</value>
   </data>
   <data name="OK" xml:space="preserve">
@@ -1399,7 +1399,7 @@ X-PROTOCOL comme X-AIM (incompatible avec certains serveurs comme SOGo)</value>
   <data name="Act on behalf of server identity" xml:space="preserve">
     <value>Agir pour le compte de l'identité du serveur</value>
   </data>
-  <data name="Set server identity as organizer of meeting and Outlook identity as delegate acting on behalf of it (SENT-BY).&#x0a;Useful when Outlook and server identity do not match to avoid invites sent by the wrong email&#x0a;or if meetings are created in a shared calendar on behalf of the calendar owner." xml:space="preserve">
+  <data name="Set server identity as organizer of meeting and Outlook identity as delegate acting on behalf of it (SENT-BY).&#xA;Useful when Outlook and server identity do not match to avoid invites sent by the wrong email&#xA;or if meetings are created in a shared calendar on behalf of the calendar owner." xml:space="preserve">
     <value>Utilisez le courrier électronique du serveur en tant qu'organisateur de la réunion et l'identité Outlook en tant que proxy (SENT-BY).
 Utile si les adresses de messagerie d'Outlook et du serveur sont différentes
 et les courriels d'invitation ne doivent pas être envoyés à partir de la mauvaise adresse

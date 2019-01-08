@@ -11,7 +11,7 @@
         WindowStyle="ThreeDBorderWindow"
         Icon= "pack://application:,,,/CalDavSynchronizer;component/Resources/ApplicationIcon.ico"
         ResizeMode="NoResize"
-        Title="{g:Localize CalDavSynchronizer - Synchronizing...}" Height="160" Width="360" WindowStartupLocation="CenterScreen">
+        Title="{g:Localize CalDav Synchronizer - Synchronizing...}" Height="160" Width="360" WindowStartupLocation="CenterScreen">
     <Window.Resources>
     </Window.Resources>
     <DockPanel Margin="12">
