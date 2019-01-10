@@ -1426,4 +1426,15 @@ bzw. wenn ein Meeting in einem freigegebenen Kalender im Namen des Besitzers ers
   <data name="Outlook automatically creates anniversary appointments in your calendar &#xA;when the anniversary is added to a contact item." xml:space="preserve">
     <value>Outlook erstellt automatisch einen Termin im Kalender wenn ein Jahrestag bei einem Kontakt hinzugefügt wird.</value>
   </data>
+  <data name="Reminder Settings" xml:space="preserve">
+    <value>Erinnerungen Einstellungen</value>
+  </data>
+  <data name="Map reminder as DATE-TIME value" xml:space="preserve">
+    <value>Synchronisiere Erinnerung als DATE-TIME Wert</value>
+  </data>
+  <data name="Map Outlook reminder as absolute DATE-TIME value instead of relative to start or due date.&#xA;Needed for iOS compatibility." xml:space="preserve">
+    <value>Synchronisiere Outlook Erinnerung als absoluten DATE-TIME Wert anstelle von relativ zu Start oder Fällig Datum.
+Notwendig für Kompatibilität mit iOS Geräten.
+    </value>
+  </data>
 </root>

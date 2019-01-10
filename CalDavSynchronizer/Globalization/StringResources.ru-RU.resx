@@ -1365,4 +1365,15 @@
   <data name="Outlook automatically creates anniversary appointments in your calendar &#xA;when the anniversary is added to a contact item." xml:space="preserve">
     <value>MS Outlook автоматически создаёт события дней  в вашем годовщину календаре, если день годовщину добавлен в поле контакта.</value>
   </data>
+  <data name="Reminder Settings" xml:space="preserve">
+    <value>настройки напоминание</value>
+  </data>
+  <data name="Map reminder as DATE-TIME value" xml:space="preserve">
+    <value>Указать напоминание как значение DATE-TIME</value>
+  </data>
+  <data name="Map Outlook reminder as absolute DATE-TIME value instead of relative to start or due date.&#xA;Needed for iOS compatibility." xml:space="preserve">
+    <value>Указать Outlook напоминание как абсолютного значение DATE-TIME вместо ссылки на дату начала или дату окончания.
+    Необходим для совместимости с iOS.
+    </value>
+  </data>
 </root>

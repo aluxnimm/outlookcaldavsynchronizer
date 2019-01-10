@@ -1415,4 +1415,15 @@ ou si vous souhaitez créer une réunion sur un calendrier partagé pour le prop
   <data name="Outlook automatically creates anniversary appointments in your calendar &#xA;when the anniversary is added to a contact item." xml:space="preserve">
     <value>Outlook crée automatiquement un événement dans le calendrier à la saisie de la date d'anniversaire de mariage d'un contact.</value>
   </data>
+  <data name="Reminder Settings" xml:space="preserve">
+    <value>Paramètres de notification</value>
+  </data>
+  <data name="Map reminder as DATE-TIME value" xml:space="preserve">
+    <value>Synchroniser les notifications en tant que valeur DATE-TIME</value>
+  </data>
+  <data name="Map Outlook reminder as absolute DATE-TIME value instead of relative to start or due date.&#xA;Needed for iOS compatibility." xml:space="preserve">
+    <value>Synchroniser les notifications Outlook en tant que valeur absolue DATE-TIME au lieu de la valeur relative à la date de début ou d'échéance.
+Nécessaire pour la compatibilité avec iOS.
+    </value>
+  </data>
 </root>

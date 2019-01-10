@@ -1426,4 +1426,15 @@ o se si desidera creare una riunione su un calendario condiviso per il proprieta
   <data name="Outlook automatically creates anniversary appointments in your calendar &#xA;when the anniversary is added to a contact item." xml:space="preserve">
     <value>Outlook crea automaticamente un termine nel calendario qualora ad un contatto venga aggiunto un anniversario di matrimonio.</value>
   </data>
+  <data name="Reminder Settings" xml:space="preserve">
+    <value>Impostazioni solleciti</value>
+  </data>
+  <data name="Map reminder as DATE-TIME value" xml:space="preserve">
+    <value>Sincronizza solleciti come valore DATE-TIME</value>
+  </data>
+  <data name="Map Outlook reminder as absolute DATE-TIME value instead of relative to start or due date.&#xA;Needed for iOS compatibility." xml:space="preserve">
+    <value>Sincronizza i solleciti come valore assoluto DATE-TIME anziché relativo alla data di inizio e scadenza.
+Necessario per la compatibilità con iOS.
+    </value>
+  </data>
 </root>

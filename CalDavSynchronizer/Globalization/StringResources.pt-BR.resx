@@ -1419,4 +1419,15 @@ ou se as reuniões forem criadas em um calendário compartilhado em nome do prop
     <value>O Outlook cria automaticamente compromissos de aniversário de casamento em sua agenda 
 quando o aniversário de casamento é adicionado a um item de contato.</value>
   </data>
+  <data name="Reminder Settings" xml:space="preserve">
+    <value>Configuração lembrete</value>
+  </data>
+  <data name="Map reminder as DATE-TIME value" xml:space="preserve">
+    <value>Mapear lembrete para o valor de DATE-TIME</value>
+  </data>
+  <data name="Map Outlook reminder as absolute DATE-TIME value instead of relative to start or due date.&#xA;Needed for iOS compatibility." xml:space="preserve">
+    <value>Mapear lembrete do Outlook para o valor de DATE-TIME absoluto em vez de relativo à data de início ou à data de expiração.
+Obrigatório para compatibilidade com iOS.
+    </value>
+  </data>
 </root>
