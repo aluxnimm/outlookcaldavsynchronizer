@@ -24,6 +24,7 @@ namespace CalDavSynchronizer.Contracts
   public class TaskMappingConfiguration : MappingConfigurationBase, IPropertyMappingConfiguration
   {
     public ReminderMapping MapReminder { get; set; }
+    public bool MapReminderAsDateTime { get; set; }
     public bool MapPriority { get; set; }
     public bool MapBody { get; set; }
     public bool MapRecurringTasks { get; set; }

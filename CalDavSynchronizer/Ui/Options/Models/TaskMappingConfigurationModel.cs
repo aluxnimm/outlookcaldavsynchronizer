@@ -32,6 +32,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
     private bool _mapRecurringTasks;
     private bool _mapStartAndDueAsFloating;
     private ReminderMapping _mapReminder;
+    private bool _mapReminderAsDateTime;
     private string _taskCategory;
     private bool _includeEmptyTaskCategoryFilter;
     private bool _invertTaskCategoryFilter;
@@ -87,6 +88,14 @@ namespace CalDavSynchronizer.Ui.Options.Models
       set
       {
         CheckedPropertyChange (ref _mapReminder, value);
+      }
+    }
+    public bool MapReminderAsDateTime
+    {
+      get { return _mapReminderAsDateTime; }
+      set
+      {
+        CheckedPropertyChange(ref _mapReminderAsDateTime, value);
       }
     }
 
@@ -154,6 +163,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
       MapRecurringTasks = mappingConfiguration.MapRecurringTasks;
       MapStartAndDueAsFloating = mappingConfiguration.MapStartAndDueAsFloating;
       MapReminder = mappingConfiguration.MapReminder;
+      MapReminderAsDateTime = mappingConfiguration.MapReminderAsDateTime;
       TaskCategory = mappingConfiguration.TaskCategory;
       IncludeEmptyTaskCategoryFilter = mappingConfiguration.IncludeEmptyTaskCategoryFilter;
       InvertTaskCategoryFilter = mappingConfiguration.InvertTaskCategoryFilter;
@@ -173,6 +183,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
         MapRecurringTasks = _mapRecurringTasks,
         MapStartAndDueAsFloating = _mapStartAndDueAsFloating,
         MapReminder = _mapReminder,
+        MapReminderAsDateTime = _mapReminderAsDateTime,
         TaskCategory = _taskCategory,
         IncludeEmptyTaskCategoryFilter = _includeEmptyTaskCategoryFilter,
         InvertTaskCategoryFilter = _invertTaskCategoryFilter,

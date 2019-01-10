@@ -176,7 +176,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
         var trigger = new Trigger();
 
-        if (source.Inner.StartDate != OutlookUtility.OUTLOOK_DATE_NONE)
+        if (!_configuration.MapReminderAsDateTime && source.Inner.StartDate != OutlookUtility.OUTLOOK_DATE_NONE)
         {
           trigger.Duration = source.Inner.ReminderTime - source.Inner.StartDate;
           trigger.Parameters.Add ("RELATED", "START");
@@ -200,9 +200,10 @@ namespace CalDavSynchronizer.Implementation.Tasks
           var actionProperty = new CalendarProperty ("ACTION", "DISPLAY");
           target.Alarms[0].Properties.Add (actionProperty);
         }
-        else if (source.Inner.DueDate != OutlookUtility.OUTLOOK_DATE_NONE)
+        else if (!_configuration.MapReminderAsDateTime && source.Inner.DueDate != OutlookUtility.OUTLOOK_DATE_NONE)
         {
-          trigger.Duration = source.Inner.ReminderTime - source.Inner.DueDate;
+          var dueTime = new DateTime (source.Inner.DueDate.Year, source.Inner.DueDate.Month, source.Inner.DueDate.Day, 23, 59, 59);
+          trigger.Duration = source.Inner.ReminderTime - dueTime;
           trigger.Parameters.Add ("RELATED", "END");
           trigger.Parameters.Add ("VALUE", "DURATION");
 

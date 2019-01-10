@@ -108,6 +108,7 @@ namespace CalDavSynchronizer.ProfileTypes
     {
       var data = new TaskMappingConfiguration();
       data.MapReminder = ReminderMapping.JustUpcoming;
+      data.MapReminderAsDateTime = false;
       data.MapPriority = true;
       data.MapBody = true;
       data.MapRecurringTasks = true;

@@ -54,6 +54,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
       RegisterPropertyChangePropagation(_model, nameof(_model.MapRecurringTasks), nameof(MapRecurringTasks));
       RegisterPropertyChangePropagation(_model, nameof(_model.MapStartAndDueAsFloating), nameof(MapStartAndDueAsFloating));
       RegisterPropertyChangePropagation(_model, nameof(_model.MapReminder), nameof(MapReminder));
+      RegisterPropertyChangePropagation(_model, nameof(_model.MapReminderAsDateTime), nameof(MapReminderAsDateTime));
       RegisterPropertyChangePropagation(_model, nameof(_model.TaskCategory), nameof(TaskCategory));
       RegisterPropertyChangePropagation(_model, nameof(_model.UseTaskCategoryAsFilter), nameof(UseTaskCategoryAsFilter));
       RegisterPropertyChangePropagation(_model, nameof(_model.IncludeEmptyTaskCategoryFilter), nameof(IncludeEmptyTaskCategoryFilter));
@@ -104,6 +105,12 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
     {
       get { return _model.MapReminder; }
       set { _model.MapReminder = value; }
+    }
+
+    public bool MapReminderAsDateTime
+    {
+      get { return _model.MapReminderAsDateTime; }
+      set { _model.MapReminderAsDateTime = value; }
     }
 
     public string TaskCategory
