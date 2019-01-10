@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mapping="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels.Mapping"
              xmlns:g="clr-namespace:CalDavSynchronizer.Globalization"
+             xmlns:contracts="clr-namespace:CalDavSynchronizer.Contracts"
              mc:Ignorable="d"
              d:DataContext="{x:Static mapping:TaskMappingConfigurationViewModel.DesignInstance}">
     <StackPanel>
@@ -41,7 +42,7 @@
                         <CheckBox.Style>
                             <Style TargetType="CheckBox">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SelectedIndex, ElementName=ReminderComboBox}" Value="1">
+                                    <DataTrigger Binding="{Binding MapReminder}" Value="{x:Static contracts:ReminderMapping.false}">
                                         <Setter Property="IsEnabled" Value="False"/>
                                     </DataTrigger>
                                 </Style.Triggers>
