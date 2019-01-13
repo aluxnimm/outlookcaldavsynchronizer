@@ -120,6 +120,26 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 3.4.0 ####
+- Released 2019/01/13
+- New features
+	- Add calendar-proxy support for autodiscovery (calendar-proxy-read-for, calendar-proxy-write-for), feature request 103.
+	- Show access rights in autodiscovery resource selection.
+	- Add option to set organizer on behalf of server identity.
+	- Add discovery of server email address and set act on behalf of server identity as default for shared writable calendars.
+	- Improve tooltips in SelectResourceForm and show resource URI and color values as tooltip.
+	- Update Swisscom profile setup.
+	- Add contact mapping configuration option to map anniversary dates for contacts. Supports ANNIVERSARY, X-ANNIVERSARY and X-MS-ANNIVERSARY properties and writes ANNIVERSARY.
+	- Add option to map task reminders as absolute DATE-TIME value, needed for IOS, feature request 105.
+	- Add Brazilian portuguese translations. Thanks to Flávio Zarur Lucarelli!
+- Bug fixes
+	- Ignore empty PHOTO properties in vCards.
+	- Fall back to short-term ENTRYID if long-term is not available in QueryOutlookFolderByGetTableStrategy to avoid ArgumentException in row.BinaryToString().
+	- Log errors during entity deletion.
+	- Fix GetCurrentUserPrincipalUrl. Select only href node.
+	- Fix task reminders relative to DUE date.
+	- Fix UI typos and translations.
+
 #### 3.3.0 ####
 - Released 2018/12/09
 - New features
@@ -1431,7 +1451,10 @@ use the url
 
 When you are using an IMAP/POP3 Account with the same server settings (Username, Email address) you can press *Get IMAP/POP3 account settings* to discover those settings. The DAV url is discovered via DNS lookup from the account email address or the IMAP/POP3/SMTP server url if that fails. Together with the *Use IMAP/POP3 account password* checkbox activated you can fully autoconfigure the server settings from your existing account.
 
-Instead of using the exact calendar/addressbook URL you can use the server address or the principal url and use the 'Test  or discover settings' button in the option dialog to try to autodiscover available calendars and addressbooks on the server. You can  then choose one of the found calendars or addressbooks in the new window.
+Instead of using the exact calendar/addressbook URL you can use the server address or the principal url and use the 'Test  or discover settings' button in the option dialog to try to autodiscover available calendars and addressbooks on the server. 
+
+If the server has calendar-proxy support (calendar-proxy-read-for, calendar-proxy-write-for), see [https://github.com/apple/ccs-calendarserver/blob/master/doc/Extensions/caldav-proxy.txt](https://github.com/apple/ccs-calendarserver/blob/master/doc/Extensions/caldav-proxy.txt) shared calendars can also be discovered. You can  then choose one of the found calendars or addressbooks in the new window.
+
 If your server has redirections for well-known Urls (`./well-known/caldav/` and `./well-known/carddav/` ) you need to enter the server name only (without path). If your domain configured DNS SRV and/or TXT lookups it is also possible leave the DAV url empty and discover it from the entered Email Address via DNS lookups, for example:
 
     _carddavs._tcp 86400 IN SRV 10 20 443 dav.example.org.
