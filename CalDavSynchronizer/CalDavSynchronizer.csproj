@@ -452,6 +452,7 @@
     <Compile Include="OutlookCategory.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\CalendariCloudProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\Open-XchangeProfile.cs" />
+    <Compile Include="ProfileTypes\ConcreteTypes\EGroupwareProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\Swisscom\SwisscomServerSettingsView.xaml.cs">
       <DependentUpon>SwisscomServerSettingsView.xaml</DependentUpon>
     </Compile>
@@ -910,6 +911,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
+    <Resource Include="Resources\ProfileLogos\logo_egroupware.png" />
     <Resource Include="Resources\ProfileLogos\logo_ox.png" />
     <Resource Include="Resources\ProfileLogos\logo_kolab.png" />
     <Resource Include="Resources\ProfileLogos\logo_swisscom.png" />
