@@ -127,7 +127,8 @@ namespace CalDavSynchronizer.DataAccess
       try
       {
         var ownerProperties = await GetOwner (resourceUri);
-        var ownerNode = ownerProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:owner", ownerProperties.XmlNamespaceManager);
+        var ownerNode = ownerProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/D:owner/D:href", ownerProperties.XmlNamespaceManager) ??
+                        ownerProperties.XmlDocument.SelectSingleNode ("/D:multistatus/D:response/D:propstat/D:prop/CS:organizer/D:href", ownerProperties.XmlNamespaceManager);
 
         if (!string.IsNullOrEmpty (ownerNode?.InnerText))
           return new Uri (ownerProperties.DocumentUri.GetLeftPart (UriPartial.Authority) + ownerNode.InnerText);
@@ -378,9 +379,10 @@ namespace CalDavSynchronizer.DataAccess
         null,
         "application/xml",
         @"<?xml version='1.0'?>
-                        <D:propfind xmlns:D=""DAV:"">
+                        <D:propfind xmlns:D=""DAV:"" xmlns:CS=""http://calendarserver.org/ns/"">
                           <D:prop>
                             <D:owner/>
+                            <CS:organizer/>
                           </D:prop>
                         </D:propfind>
                  "
