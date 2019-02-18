@@ -1726,32 +1726,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
       targetWrapper.Inner.Location = source.Location;
 
-      targetWrapper.Inner.Body = _configuration.MapBody ? source.Description : string.Empty;
-
-      if (_configuration.MapBody && _configuration.MapXAltDescToRtfBody && source.Properties.ContainsKey ("X-ALT-DESC"))
-      {
-        var xAltDesc = source.Properties["X-ALT-DESC"];
-        if (xAltDesc.Parameters.ContainsKey ("FMTTYPE") && xAltDesc.Parameters.Get ("FMTTYPE").ToLowerInvariant() == "text/html")
-        {
-          try
-          {
-            if (xAltDesc.Value != null)
-            {
-              var htmlString = xAltDesc.Value.ToString();
-              var rtfBodyString = _documentConverter.ConvertHtmlToRtf (htmlString);
-
-              var rtfBody = System.Text.Encoding.Default.GetBytes (rtfBodyString);
-              targetWrapper.Inner.RTFBody = rtfBody;
-            }
-          }
-          catch (System.Exception ex)
-          {
-            s_logger.Warn ("Can't convert X-ALT-DESC from html to RTF.", ex);
-            logger.LogWarning ("Can't convert X-ALT-DESC from html to RTF.", ex);
-          }
-        }
-      }
-
+      MapBody2To1 (source, targetWrapper.Inner, logger);
 
       targetWrapper.Inner.Importance = CommonEntityMapper.MapPriority2To1 (source.Priority);
 
@@ -1881,6 +1856,47 @@ namespace CalDavSynchronizer.Implementation.Events
       }
 
       target.Categories = string.Join(CultureInfo.CurrentCulture.TextInfo.ListSeparator, targetCategorySortOrderByCategory.OrderBy(e => e.Value).Select(e => e.Key));
+    }
+
+    private void MapBody2To1 (IEvent source, AppointmentItem target, IEntitySynchronizationLogger logger)
+    {
+      if (_configuration.MapBody)
+      {
+        target.Body = source.Description;
+
+        // check if description contains HTML tags, Google calendar uses this instead of X-ALT-DESC for formatted description
+        var htmlRegex = new Regex (@"<\s*([^ >]+)[^>]*>.*?<\s*/\s*\1\s*>", RegexOptions.IgnoreCase);
+        if (!string.IsNullOrEmpty (source.Description) && htmlRegex.IsMatch (source.Description))
+        {
+          SetRTFBody (source.Description, target, logger);
+        }
+        else if (_configuration.MapXAltDescToRtfBody && source.Properties.ContainsKey ("X-ALT-DESC"))
+        {
+          var xAltDesc = source.Properties["X-ALT-DESC"];
+          if (xAltDesc.Parameters.ContainsKey ("FMTTYPE") && xAltDesc.Parameters.Get ("FMTTYPE").ToLowerInvariant() == "text/html" && xAltDesc.Value !=null)
+          {
+            SetRTFBody (xAltDesc.Value.ToString(), target, logger);   
+          }
+        }
+      } 
+      else
+      {
+        target.Body = string.Empty;
+      }
+    }
+
+    private void SetRTFBody (string sourceHtml, AppointmentItem target, IEntitySynchronizationLogger logger)
+    {
+      try
+      {
+        var rtfBodyString = _documentConverter.ConvertHtmlToRtf (sourceHtml);
+        target.RTFBody = System.Text.Encoding.Default.GetBytes (rtfBodyString);
+      }
+      catch (System.Exception ex)
+      {
+        s_logger.Warn ("Can't convert description from html to RTF.", ex);
+        logger.LogWarning ("Can't convert description from html to RTF.", ex);
+      }
     }
 
     private void MapAttendeesAndOrganizer2To1 (IEvent source, AppointmentItem target, IEntitySynchronizationLogger logger)
