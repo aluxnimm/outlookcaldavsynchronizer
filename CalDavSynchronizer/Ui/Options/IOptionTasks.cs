@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System.Threading.Tasks;
+using CalDavSynchronizer.Ui.ConnectionTests;
 using CalDavSynchronizer.Ui.Options.Models;
 using Microsoft.Office.Interop.Outlook;
 
@@ -31,6 +32,8 @@ namespace CalDavSynchronizer.Ui.Options
     Contracts.Options[] LoadOptions (string fileName);
     Task<string> TestGoogleConnection(OptionsModel options, string url);
     Task<string> TestWebDavConnection(OptionsModel options);
+    void ValidateBulkProfile (OptionsModel options, AccessPrivileges privileges, CalendarOwnerProperties ownerProperties);
+
     OutlookFolderDescriptor GetDefaultCalendarFolderOrNull();
   }
 }

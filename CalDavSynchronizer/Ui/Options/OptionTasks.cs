@@ -675,6 +675,25 @@ namespace CalDavSynchronizer.Ui.Options
       return autoDiscoveredUrl.ToString();
     }
 
+    public void ValidateBulkProfile (OptionsModel options, AccessPrivileges privileges, CalendarOwnerProperties ownerProperties)
+    {
+      if (!privileges.HasFlag (AccessPrivileges.Modify) && DoesModeRequireWriteableServerResource (options.SynchronizationMode))
+      {
+        options.SynchronizationMode = SynchronizationMode.ReplicateServerIntoOutlook;
+      }
+
+      if (ownerProperties != null)
+      {
+        options.EmailAddress = ownerProperties.CalendarOwnerEmail;
+
+        if (ownerProperties.IsSharedCalendar && privileges.HasFlag (AccessPrivileges.Create))
+        {
+          var eventMappingConfigurationModel = (EventMappingConfigurationModel) options.MappingConfigurationModelOrNull;
+          eventMappingConfigurationModel.OrganizerAsDelegate = true;
+        }
+      }
+    }
+
     public async Task<string> TestGoogleConnection(OptionsModel options, string url)
     {
       if (options.SelectedFolderOrNull == null)

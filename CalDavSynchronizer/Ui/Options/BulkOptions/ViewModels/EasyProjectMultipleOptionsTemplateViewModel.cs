@@ -169,6 +169,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
             {
               var options = CreateOptionsWithCategory (resource);
               _serverSettingsViewModel.SetResourceUrl (options, resource.Model);
+              _optionTasks.ValidateBulkProfile (options, resource.Model.Privileges, resource.Model.OwnerProperties);
               optionList.Add (options);
             }
 
@@ -176,6 +177,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
             {
               var options = CreateOptions (resource);
               _serverSettingsViewModel.SetResourceUrl (options, resource.Model);
+              _optionTasks.ValidateBulkProfile(options, resource.Model.Privileges, null);
               optionList.Add (options);
             }
 

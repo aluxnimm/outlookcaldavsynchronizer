@@ -27,13 +27,15 @@ namespace CalDavSynchronizer.DataAccess
     public string Name { get; }
     public ArgbColor? Color { get; }
     public AccessPrivileges Privileges { get; }
+    public CalendarOwnerProperties OwnerProperties { get; }
 
-    public CalendarData (Uri uri, string name, ArgbColor? color, AccessPrivileges privileges)
+    public CalendarData (Uri uri, string name, ArgbColor? color, AccessPrivileges privileges, CalendarOwnerProperties ownerProperties)
     {
       Uri = uri;
       Name = name;
       Color = color;
       Privileges = privileges;
+      OwnerProperties = ownerProperties;
     }
   }
 }

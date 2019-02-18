@@ -17,6 +17,7 @@
 
 using System;
 using System.Threading.Tasks;
+using CalDavSynchronizer.Ui.ConnectionTests;
 using CalDavSynchronizer.Ui.Options.Models;
 
 namespace CalDavSynchronizer.Ui.Options
@@ -65,7 +66,10 @@ namespace CalDavSynchronizer.Ui.Options
     {
       throw new NotImplementedException();
     }
-
+    public void ValidateBulkProfile (OptionsModel options, AccessPrivileges privileges, CalendarOwnerProperties ownerProperties)
+    {
+      throw new NotImplementedException();
+    }
     public OutlookFolderDescriptor GetDefaultCalendarFolderOrNull()
     {
       throw new NotImplementedException();

@@ -30,6 +30,7 @@ using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Implementation;
 using CalDavSynchronizer.Scheduling;
+using CalDavSynchronizer.Ui.ConnectionTests;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ResourceSelection.ViewModels;
 using CalDavSynchronizer.Ui.Options.ViewModels;
@@ -139,6 +140,8 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
             {
               var options = CreateOptions(resource);
               _serverSettingsViewModel.SetResourceUrl (options, resource.Model);
+              _optionTasks.ValidateBulkProfile (options, resource.Model.Privileges, resource.Model.OwnerProperties);
+              
               optionList.Add (options);
             }
 
@@ -146,6 +149,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
             {
               var options = CreateOptions (resource);
               _serverSettingsViewModel.SetResourceUrl (options, resource.Model);
+              _optionTasks.ValidateBulkProfile (options, resource.Model.Privileges, null);
               optionList.Add (options);
             }
 

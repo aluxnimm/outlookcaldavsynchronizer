@@ -62,9 +62,14 @@ namespace CalDavSynchronizer.DataAccess
     }
 
     public async Task<CalendarOwnerProperties> GetCalendarOwnerPropertiesOrNull()
+    {
+      return await GetCalendarOwnerPropertiesOrNull (_serverUrl);
+    }
+
+    private async Task<CalendarOwnerProperties> GetCalendarOwnerPropertiesOrNull (Uri resourceUri)
     { 
-      var owner = await GetOwnerUrlOrNull (_serverUrl);
-      var currentUserPrincipal = await GetCurrentUserPrincipalUrlOrNull (_serverUrl);
+      var owner = await GetOwnerUrlOrNull (resourceUri);
+      var currentUserPrincipal = await GetCurrentUserPrincipalUrlOrNull (resourceUri);
 
       var isSharedCalendar = false;
       if (owner != null && currentUserPrincipal != null)
@@ -308,7 +313,7 @@ namespace CalDavSynchronizer.DataAccess
                       {
                         var displayName = string.IsNullOrEmpty (displayNameNode.InnerText) ? "Default Calendar" : displayNameNode.InnerText;
                         var resourceUri = new Uri (calendarDocument.DocumentUri, path);
-                        calendars.Add (new CalendarData (resourceUri, displayName, calendarColor, await GetPrivileges (resourceUri)));
+                        calendars.Add (new CalendarData (resourceUri, displayName, calendarColor, await GetPrivileges (resourceUri), await GetCalendarOwnerPropertiesOrNull (resourceUri)));
                       }
                       if (supportedComponentsNode.InnerXml.Contains ("VTODO"))
                       {
