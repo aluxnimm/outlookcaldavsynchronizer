@@ -165,8 +165,8 @@
   <data name="- The Email address is empty." xml:space="preserve">
     <value>- O endereço de Email está vazio.</value>
   </data>
-  <data name="- The Email address is invalid. ({0})" xml:space="preserve">
-    <value>- O endereço de email é inválido. ({0})</value>
+  <data name="- The Email address is invalid." xml:space="preserve">
+    <value>- O endereço de email é inválido.</value>
   </data>
   <data name="- The specified address book doesn't allow creation of contacts!" xml:space="preserve">
     <value>- O endereço de livro de endereços especificado não permite a criação de contatos.</value>

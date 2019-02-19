@@ -566,12 +566,12 @@ namespace CalDavSynchronizer.Ui.Options.Models
         if (serverAdapterType != ServerAdapterType.GoogleTaskApi && serverAdapterType != ServerAdapterType.GoogleContactApi)
           result &= OptionTasks.ValidateWebDavUrl(CalenderUrl, errorMessageBuilder, true);
 
-        result &= OptionTasks.ValidateGoogleEmailAddress(errorMessageBuilder, EmailAddress);
+        result &= OptionTasks.ValidateEmailAddress(errorMessageBuilder, EmailAddress, false);
       }
       else
       {
         result &= OptionTasks.ValidateWebDavUrl(CalenderUrl, errorMessageBuilder, true);
-        result &= OptionTasks.ValidateEmailAddress(errorMessageBuilder, EmailAddress);
+        result &= OptionTasks.ValidateEmailAddress(errorMessageBuilder, EmailAddress, true);
       }
 
       if (IsChunkedSynchronizationEnabled && ChunkSize < 1)

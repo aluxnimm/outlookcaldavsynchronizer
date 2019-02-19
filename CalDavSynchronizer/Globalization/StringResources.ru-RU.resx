@@ -997,8 +997,8 @@
   <data name="Test settings" xml:space="preserve">
     <value>Проверить настройки</value>
   </data>
-  <data name="- The Email address is invalid. ({0})" xml:space="preserve">
-    <value>Адрес электронной почты неверный. ({0})</value>
+  <data name="- The Email address is invalid." xml:space="preserve">
+    <value>Адрес электронной почты неверный.</value>
   </data>
   <data name="UI Settings" xml:space="preserve">
     <value>Настройки ГПИ</value>

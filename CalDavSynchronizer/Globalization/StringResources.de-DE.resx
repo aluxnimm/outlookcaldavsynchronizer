@@ -1048,8 +1048,8 @@ um die Entität im Synchronisationsreport zu identifizieren.</value>
   <data name="Test settings" xml:space="preserve">
     <value>Teste Einstellungen</value>
   </data>
-  <data name="- The Email address is invalid. ({0})" xml:space="preserve">
-    <value>- Die Email Adresse ist ungültig. ({0})</value>
+  <data name="- The Email address is invalid." xml:space="preserve">
+    <value>- Die Email Adresse ist ungültig.</value>
   </data>
   <data name="UI Settings" xml:space="preserve">
     <value>UI Einstellungen</value>

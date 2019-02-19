@@ -104,11 +104,13 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
       string caldavUrlString ;
       string carddavUrlString;
 
-      if (string.IsNullOrEmpty (CalenderUrl) && !string.IsNullOrEmpty (EmailAddress))
+      if (string.IsNullOrEmpty (CalenderUrl) && (!string.IsNullOrEmpty (EmailAddress) || !string.IsNullOrEmpty (UserName)))
       {
         bool success;
-        caldavUrlString = OptionTasks.DoSrvLookup (EmailAddress, OlItemType.olAppointmentItem, out success);
-        carddavUrlString = OptionTasks.DoSrvLookup (EmailAddress, OlItemType.olContactItem, out success);
+        var lookupEmail = !string.IsNullOrEmpty(EmailAddress) ? EmailAddress : UserName;
+
+        caldavUrlString = OptionTasks.DoSrvLookup (lookupEmail, OlItemType.olAppointmentItem, out success);
+        carddavUrlString = OptionTasks.DoSrvLookup (lookupEmail, OlItemType.olContactItem, out success);
       }
       else
       {

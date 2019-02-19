@@ -67,6 +67,7 @@ namespace CalDavSynchronizer.ProfileTypes
       all.Add(new KolabProfile());
       all.Add(new SwisscomProfile());
       all.Add(new EGroupwareProfile());
+      all.Add(new FastMailProfile());
 
       return new ProfileTypeRegistry(all, generic, google);
     }

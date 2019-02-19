@@ -176,6 +176,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -451,6 +452,7 @@
     <Compile Include="IProfileExportProcessor.cs" />
     <Compile Include="OutlookCategory.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\CalendariCloudProfile.cs" />
+    <Compile Include="ProfileTypes\ConcreteTypes\FastMailProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\Open-XchangeProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\EGroupwareProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\Swisscom\SwisscomServerSettingsView.xaml.cs">
@@ -911,6 +913,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
+    <Resource Include="Resources\ProfileLogos\logo_fastmail.png" />
     <Resource Include="Resources\ProfileLogos\logo_egroupware.png" />
     <Resource Include="Resources\ProfileLogos\logo_ox.png" />
     <Resource Include="Resources\ProfileLogos\logo_kolab.png" />

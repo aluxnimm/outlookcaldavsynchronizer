@@ -35,6 +35,7 @@ using log4net;
 using Microsoft.Office.Interop.Outlook;
 using Exception = System.Exception;
 using Task = System.Threading.Tasks.Task;
+using System.ComponentModel.DataAnnotations;
 
 namespace CalDavSynchronizer.Ui.Options
 {
@@ -118,31 +119,31 @@ namespace CalDavSynchronizer.Ui.Options
       return result;
     }
 
-    public static bool ValidateGoogleEmailAddress(StringBuilder errorMessageBuilder, string emailAddress)
+    public static bool ValidateEmailAddress(StringBuilder errorMessageBuilder, string emailAddress, bool allowEmpty)
     {
       if (string.IsNullOrWhiteSpace(emailAddress))
       {
-        errorMessageBuilder.AppendLine(Strings.Get($"- The Email address is empty."));
-        return false;
+        if (allowEmpty)
+        {
+          return true;
+        }
+        else
+        {
+          errorMessageBuilder.AppendLine(Strings.Get($"- The Email address is empty."));
+          return false;
+        }
       }
-      return ValidateEmailAddress(errorMessageBuilder, emailAddress);
-    }
-
-    public static bool ValidateEmailAddress(StringBuilder errorMessageBuilder, string emailAddress)
-    {
-      try
+      if (new EmailAddressAttribute().IsValid(emailAddress))
       {
-        var uri = new Uri("mailto:" + emailAddress).ToString();
         return true;
       }
-      catch (Exception x)
-      {
-        errorMessageBuilder.AppendFormat(Strings.Get($"- The Email address is invalid. ({x.Message})"));
+      else
+      { 
+        errorMessageBuilder.AppendFormat(Strings.Get($"- The Email address is invalid."));
         errorMessageBuilder.AppendLine();
         return false;
       }
     }
-
 
     public static void DisplayTestReport(
         TestResult result,
@@ -544,7 +545,6 @@ namespace CalDavSynchronizer.Ui.Options
     public async Task<string> TestWebDavConnection(OptionsModel options)
     {
       string url = options.CalenderUrl;
-      string serverEmail = options.EmailAddress;
 
       if (options.SelectedFolderOrNull == null)
       {
@@ -557,15 +557,18 @@ namespace CalDavSynchronizer.Ui.Options
       string serverUrl = url;
       StringBuilder errorMessageBuilder = new StringBuilder();
 
-      if (string.IsNullOrEmpty(url) && !string.IsNullOrEmpty(serverEmail))
+      if (string.IsNullOrEmpty(url) && (!string.IsNullOrEmpty(options.EmailAddress) || !string.IsNullOrEmpty(options.UserName)))
       {
-        if (!ValidateEmailAddress(errorMessageBuilder, serverEmail))
+        var lookupEmail = !string.IsNullOrEmpty(options.EmailAddress) ? options.EmailAddress : options.UserName;
+       
+        if (!ValidateEmailAddress(errorMessageBuilder, lookupEmail, true))
         {
-          MessageBox.Show(errorMessageBuilder.ToString(), Strings.Get($"The Email address is invalid"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+          MessageBox.Show(errorMessageBuilder.ToString(), Strings.Get($"The Email address is invalid"),
+            MessageBoxButtons.OK, MessageBoxIcon.Error);
           return url;
         }
         bool success;
-        serverUrl = DoSrvLookup(serverEmail, outlookFolderType, out success);
+        serverUrl = DoSrvLookup(lookupEmail, outlookFolderType, out success);
       }
 
 
@@ -706,7 +709,7 @@ namespace CalDavSynchronizer.Ui.Options
 
       StringBuilder errorMessageBuilder = new StringBuilder();
 
-      if (!ValidateGoogleEmailAddress(errorMessageBuilder, options.EmailAddress))
+      if (!ValidateEmailAddress(errorMessageBuilder, options.EmailAddress, false))
       {
         MessageBox.Show(errorMessageBuilder.ToString(), Strings.Get($"The Email address is invalid"), MessageBoxButtons.OK, MessageBoxIcon.Error);
         return url;
