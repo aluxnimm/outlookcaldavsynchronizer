@@ -843,7 +843,7 @@ namespace CalDavSynchronizer.Implementation.Events
           foreach (var sourceException in sourceRecurrencePattern.Exceptions.ToSafeEnumerable<Exception>())
           {
             if (!sourceException.Deleted)
-            { 
+            {
               originalOutlookDatesWithExceptions.Add (sourceException.OriginalDate.Date.Add (source.StartInStartTimeZone.TimeOfDay));
             }
           }
@@ -873,7 +873,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
                   var targetContainsExceptionList = target.GetOccurrences (from, to);
                   foreach (var el in targetContainsExceptionList)
-                  {
+                  {                   
                     if (!originalOutlookDatesWithExceptions.Contains (el.Period.StartTime.Value))
                     {
                       PeriodList targetExList = new PeriodList();
@@ -902,11 +902,24 @@ namespace CalDavSynchronizer.Implementation.Events
                   }
                   else
                   {
-                    DateTimeZone tz = DateTimeZoneProviders.Bcl.GetSystemDefault();
-                    LocalDateTime localExDateTime = LocalDateTime.FromDateTime (sourceException.OriginalDate);
-                    ZonedDateTime zonedExDateTime = tz.AtLeniently (localExDateTime);
-                    var originalDateUtc = zonedExDateTime.ToDateTimeUtc(); 
-                    targetException.RecurrenceID = new iCalDateTime (originalDateUtc) { IsUniversalTime = true };
+                    var sourceZone = DateTimeZoneProviders.Bcl.GetSystemDefault();
+                    var localExDateTime = LocalDateTime.FromDateTime (sourceException.OriginalDate);
+                    var zonedExDateTime = sourceZone.AtLeniently (localExDateTime);
+
+                    // Use same value type and tzid for RECURRENCE-ID as for DTSTART to be compliant with RFC 5545
+                    // see https://tools.ietf.org/html/rfc5545#section-3.8.4.4
+                    if (_configuration.CreateEventsInUTC || startIcalTimeZone == null)
+                    {
+                      var originalDateUtc = zonedExDateTime.ToDateTimeUtc();
+                      targetException.RecurrenceID = new iCalDateTime (originalDateUtc) {IsUniversalTime = true};
+                    }
+                    else
+                    {
+                      var targetZone = (_configuration.UseIanaTz) ? DateTimeZoneProviders.Tzdb[startIcalTimeZone.TZID] : DateTimeZoneProviders.Bcl[startIcalTimeZone.TZID];
+                      var targetExDateTime = zonedExDateTime.WithZone (targetZone).LocalDateTime.ToDateTimeUnspecified();
+                      targetException.RecurrenceID = new iCalDateTime (targetExDateTime);
+                      targetException.RecurrenceID.SetTimeZone (startIcalTimeZone);
+                    }
                   }
                 }
               }
