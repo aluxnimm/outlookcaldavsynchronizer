@@ -839,12 +839,27 @@ namespace CalDavSynchronizer.Implementation.Events
 
           Dictionary<DateTime, PeriodList> targetExceptionDatesByDate = new Dictionary<DateTime, PeriodList>();
           HashSet<DateTime> originalOutlookDatesWithExceptions = new HashSet<DateTime>();
+          var sourceZone = DateTimeZoneProviders.Bcl.GetSystemDefault();
 
           foreach (var sourceException in sourceRecurrencePattern.Exceptions.ToSafeEnumerable<Exception>())
           {
             if (!sourceException.Deleted)
             {
-              originalOutlookDatesWithExceptions.Add (sourceException.OriginalDate.Date.Add (source.StartInStartTimeZone.TimeOfDay));
+              // calculate Exception OriginalDate in target timezone.
+              var localExDateTime = LocalDateTime.FromDateTime (sourceException.OriginalDate);
+              var zonedExDateTime = sourceZone.AtLeniently (localExDateTime);
+              DateTime targetExDateTime;
+
+              if (_configuration.CreateEventsInUTC || startIcalTimeZone == null)
+              {
+                targetExDateTime = zonedExDateTime.ToDateTimeUtc();
+              }
+              else
+              {
+                var targetZone = (_configuration.UseIanaTz)? DateTimeZoneProviders.Tzdb[startIcalTimeZone.TZID] : DateTimeZoneProviders.Bcl[startIcalTimeZone.TZID];
+                targetExDateTime = zonedExDateTime.WithZone (targetZone).LocalDateTime.ToDateTimeUnspecified();
+              }
+              originalOutlookDatesWithExceptions.Add (targetExDateTime);
             }
           }
           foreach (var sourceException in sourceRecurrencePattern.Exceptions.ToSafeEnumerable<Exception>())
@@ -902,7 +917,6 @@ namespace CalDavSynchronizer.Implementation.Events
                   }
                   else
                   {
-                    var sourceZone = DateTimeZoneProviders.Bcl.GetSystemDefault();
                     var localExDateTime = LocalDateTime.FromDateTime (sourceException.OriginalDate);
                     var zonedExDateTime = sourceZone.AtLeniently (localExDateTime);
 
