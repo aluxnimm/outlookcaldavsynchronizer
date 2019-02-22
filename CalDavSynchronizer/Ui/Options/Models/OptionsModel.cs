@@ -75,17 +75,15 @@ namespace CalDavSynchronizer.Ui.Options.Models
 
     private MappingConfigurationModel _mappingConfigurationModelOrNull;
     private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
-    private readonly ISettingsFaultFinder _faultFinder;
     private readonly IOptionTasks _optionTasks;
     private readonly GeneralOptions _generalOptions;
     private readonly OptionModelSessionData _sessionData;
     private readonly MappingConfigurationModelFactory _mappingConfigurationModelFactory;
     private readonly IServerSettingsDetector _serverSettingsDetector;
 
-    public static OptionsModel DesignInstance => new OptionsModel(NullSettingsFaultFinder.Instance, NullOptionTasks.Instance, NullOutlookAccountPasswordProvider.Instance, new Contracts.Options(), new GeneralOptions(), DesignProfileModelFactory.Instance, false, new OptionModelSessionData(new  Dictionary<string, OutlookCategory>()), new NullServerSettingsDetector());
+    public static OptionsModel DesignInstance => new OptionsModel(NullOptionTasks.Instance, NullOutlookAccountPasswordProvider.Instance, new Contracts.Options(), new GeneralOptions(), DesignProfileModelFactory.Instance, false, new OptionModelSessionData(new  Dictionary<string, OutlookCategory>()), new NullServerSettingsDetector());
    
     public OptionsModel(
-      ISettingsFaultFinder faultFinder, 
       IOptionTasks optionTasks, 
       IOutlookAccountPasswordProvider outlookAccountPasswordProvider,
       Contracts.Options data,
@@ -99,7 +97,6 @@ namespace CalDavSynchronizer.Ui.Options.Models
       if (serverSettingsDetector == null) throw new ArgumentNullException(nameof(serverSettingsDetector));
 
       _mappingConfigurationModelFactory = new MappingConfigurationModelFactory(sessionData);
-      _faultFinder = faultFinder ?? throw new ArgumentNullException(nameof(faultFinder));
       _optionTasks = optionTasks ?? throw new ArgumentNullException(nameof(optionTasks));
       _outlookAccountPasswordProvider = outlookAccountPasswordProvider ?? throw new ArgumentNullException(nameof(outlookAccountPasswordProvider));
       _generalOptions = generalOptions ?? throw new ArgumentNullException(nameof(generalOptions));
@@ -529,7 +526,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
     {
       var data = CreateData();
       data.Id = Guid.NewGuid();
-      return new OptionsModel(_faultFinder, _optionTasks, _outlookAccountPasswordProvider, data , _generalOptions, ModelFactory, _isGoogle, _sessionData, _serverSettingsDetector);
+      return new OptionsModel(_optionTasks, _outlookAccountPasswordProvider, data , _generalOptions, ModelFactory, _isGoogle, _sessionData, _serverSettingsDetector);
     }
 
     public ProxyOptions CreateProxyOptions()
@@ -597,13 +594,18 @@ namespace CalDavSynchronizer.Ui.Options.Models
          ? _optionTasks.GetFolderAccountNameOrNull(_selectedFolderOrNull.StoreId)
          : null;
 
-      _faultFinder.FixTimeRangeUsage(this, folderDescriptor.DefaultItemType);
+      UseSynchronizationTimeRange = folderDescriptor.DefaultItemType != OlItemType.olContactItem;
 
       CoerceMappingConfiguration();
 
       return true;
     }
-    
+
+    public void FixTimeRangeUsage(OptionsModel options, OlItemType? folderType)
+    {
+     
+    }
+
     private void CoerceMappingConfiguration()
     {
       MappingConfigurationModelOrNull = CoerceMappingConfiguration(MappingConfigurationModelOrNull, SelectedFolderOrNull?.DefaultItemType);

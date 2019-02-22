@@ -645,16 +645,6 @@ Questa caratteristica non è tuttavia supportata da tutte le App del calendario 
   <data name="Fix imported phone number format" xml:space="preserve">
     <value>Ripara formato del numero telefonico importato </value>
   </data>
-  <data name="Fix invalid settings" xml:space="preserve">
-    <value>Ripara impostazioni non valide</value>
-  </data>
-  <data name="Fixes invalid settings automatically, when&#xA;synchronization profiles are  edited.&#xA;&#xA;E.g.: if  a read-only CalDav calendar is selected&#xA;and the synchronization mode is set to TwoWay,&#xA;then the synchronization mode is automatically&#xA;set to one way, so that there are no write&#xA;operations performed in the read-only&#xA;calendar, which would produce errors.&#xA;Disabling this setting might be helpful for testing,&#xA;but you should know what you do." xml:space="preserve">
-    <value>Ripara automaticamente impostazioni non valide al momento dell‘edit dei profili sincronizzati. 
-Quando per esempio la sincronizzazione viene automaticamente impostata in un‘unica modalità
-- nel caso in cui sia stato selezionato un calendario CalDAV di sola lettura e la modalità sia impostata a due vie - 
-allo scopo di evitare errori nella scrittura. Disattivare queste impostazioni ha senso solo a scopo di test 
-e non dovrebbe, di norma, essere fatto.</value>
-  </data>
   <data name="Force Basic authentication" xml:space="preserve">
     <value>Forza autenticazione di base</value>
   </data>

@@ -807,8 +807,6 @@
     <Compile Include="Ui\Options\SelectResourceForm.Designer.cs">
       <DependentUpon>SelectResourceForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Ui\Options\ISettingsFaultFinder.cs" />
-    <Compile Include="Ui\Options\NullSettingsFaultFinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -872,7 +870,6 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-    <Compile Include="Ui\Options\SettingsFaultFinder.cs" />
     <Compile Include="Ui\SystrayNotification\ITrayNotifier.cs" />
     <Compile Include="Ui\SystrayNotification\NullTrayNotifier.cs" />
     <Compile Include="Ui\SystrayNotification\ViewModels\TransientProfileStatusesViewModel.cs" />

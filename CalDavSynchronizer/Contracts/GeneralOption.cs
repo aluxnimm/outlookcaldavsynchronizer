@@ -30,7 +30,6 @@ namespace CalDavSynchronizer.Contracts
     public bool EnableTls12 { get; set; }
     public bool EnableSsl3 { get; set; }
     public TimeSpan CalDavConnectTimeout { get; set; }
-    public bool FixInvalidSettings { get; set; }
     public bool IncludeCustomMessageClasses { get; set; }
     public bool IncludeEntityReportsWithoutErrorsOrWarnings { get; set; }
     public bool LogEntityNames { get; set; }

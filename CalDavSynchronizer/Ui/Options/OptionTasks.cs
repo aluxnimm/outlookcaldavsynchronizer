@@ -50,18 +50,15 @@ namespace CalDavSynchronizer.Ui.Options
     private readonly IEnumDisplayNameProvider _enumDisplayNameProvider;
     private readonly NameSpace _session;
     private readonly IOutlookSession _outlookSession;
-    private readonly ISettingsFaultFinder _settingsFaultFinder;
 
-    public OptionTasks(NameSpace session, IEnumDisplayNameProvider enumDisplayNameProvider, ISettingsFaultFinder settingsFaultFinder, IOutlookSession outlookSession)
+    public OptionTasks(NameSpace session, IEnumDisplayNameProvider enumDisplayNameProvider, IOutlookSession outlookSession)
     {
       if (session == null) throw new ArgumentNullException(nameof(session));
       if (enumDisplayNameProvider == null) throw new ArgumentNullException(nameof(enumDisplayNameProvider));
-      if (settingsFaultFinder == null) throw new ArgumentNullException(nameof(settingsFaultFinder));
       if (outlookSession == null) throw new ArgumentNullException(nameof(outlookSession));
 
       _session = session;
       _enumDisplayNameProvider = enumDisplayNameProvider;
-      _settingsFaultFinder = settingsFaultFinder;
       _outlookSession = outlookSession;
     }
 
@@ -618,9 +615,9 @@ namespace CalDavSynchronizer.Ui.Options
         var result = await ConnectionTester.TestConnection(enteredUri, webDavClient);
         if (result.ResourceType != ResourceType.None)
         {
-          _settingsFaultFinder.FixSynchronizationMode(options, result);
-          _settingsFaultFinder.FixWebDavCollectionSync(options, result);
-          _settingsFaultFinder.UpdateServerEmailAndSchedulingSettings(options, result);
+          FixSynchronizationMode(options, result);
+          FixWebDavCollectionSync(options, result);
+          UpdateServerEmailAndSchedulingSettings(options, result);
 
           DisplayTestReport(
               result,
@@ -665,9 +662,9 @@ namespace CalDavSynchronizer.Ui.Options
 
       var finalResult = await ConnectionTester.TestConnection(autoDiscoveredUrl, webDavClient);
 
-      _settingsFaultFinder.FixSynchronizationMode(options, finalResult);
-      _settingsFaultFinder.FixWebDavCollectionSync(options, finalResult);
-      _settingsFaultFinder.UpdateServerEmailAndSchedulingSettings(options, finalResult);
+      FixSynchronizationMode(options, finalResult);
+      FixWebDavCollectionSync(options, finalResult);
+      UpdateServerEmailAndSchedulingSettings(options, finalResult);
 
       DisplayTestReport(
           finalResult,
@@ -763,8 +760,8 @@ namespace CalDavSynchronizer.Ui.Options
 
       if (result.ResourceType != ResourceType.None)
       {
-        _settingsFaultFinder.FixSynchronizationMode(options, result);
-        _settingsFaultFinder.FixWebDavCollectionSync(options, result);
+        FixSynchronizationMode(options, result);
+        FixWebDavCollectionSync(options, result);
       }
 
       if (outlookFolderType == OlItemType.olContactItem)
@@ -783,6 +780,77 @@ namespace CalDavSynchronizer.Ui.Options
 
       return finalUrl;
     }
+
+    private void FixSynchronizationMode(OptionsModel options, TestResult result)
+    {
+      const SynchronizationMode readOnlyDefaultMode = SynchronizationMode.ReplicateServerIntoOutlook;
+      if (result.ResourceType.HasFlag(ResourceType.Calendar))
+      {
+        if (!result.AccessPrivileges.HasFlag(AccessPrivileges.Modify)
+            && OptionTasks.DoesModeRequireWriteableServerResource(options.SynchronizationMode))
+        {
+          options.SynchronizationMode = readOnlyDefaultMode;
+          MessageBox.Show(
+            Strings.Get($"The specified URL is a read-only calendar. Synchronization mode set to '{_enumDisplayNameProvider.Get(readOnlyDefaultMode)}'."),
+            OptionTasks.ConnectionTestCaption);
+        }
+      }
+
+      if (result.ResourceType.HasFlag(ResourceType.AddressBook))
+      {
+        if (!result.AccessPrivileges.HasFlag(AccessPrivileges.Modify)
+            && OptionTasks.DoesModeRequireWriteableServerResource(options.SynchronizationMode))
+        {
+          options.SynchronizationMode = readOnlyDefaultMode;
+          MessageBox.Show(
+            Strings.Get($"The specified URL is a read-only addressbook. Synchronization mode set to '{_enumDisplayNameProvider.Get(readOnlyDefaultMode)}'."),
+            OptionTasks.ConnectionTestCaption);
+        }
+      }
+
+      if (options.SynchronizationMode == readOnlyDefaultMode && options.SelectedFolderOrNull?.ItemCount > 0)
+      {
+        MessageBox.Show(
+          Strings.Get($"Synchronization mode is set to '{_enumDisplayNameProvider.Get(readOnlyDefaultMode)}' and the selected Outlook folder is not empty. Are you sure, you want to select this folder because all items will be overwritten with the DAV server resources!"),
+          OptionTasks.ConnectionTestCaption, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+      }
+      else if (options.SynchronizationMode == SynchronizationMode.ReplicateOutlookIntoServer && options.SelectedFolderOrNull?.ItemCount == 0)
+      {
+        MessageBox.Show(
+          Strings.Get($"Synchronization mode is set to '{_enumDisplayNameProvider.Get(SynchronizationMode.ReplicateOutlookIntoServer)}' and the selected Outlook folder is empty. Are you sure, you want to select this folder, because all items on the DAV server will be deleted!"),
+          OptionTasks.ConnectionTestCaption, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+      }
+    }
+
+    private void FixWebDavCollectionSync(OptionsModel options, TestResult result)
+    {
+      if (options.UseWebDavCollectionSync && !result.DoesSupportWebDavCollectionSync)
+      {
+        options.UseWebDavCollectionSync = false;
+        MessageBox.Show(
+          Strings.Get($"The specified URL doesn't support WebDav Collection Sync, the option will be disabled!"),
+          OptionTasks.ConnectionTestCaption);
+      }
+    }
+
+    private void UpdateServerEmailAndSchedulingSettings(OptionsModel options, TestResult result)
+    {
+      if (result.CalendarOwnerProperties != null &&
+          StringComparer.InvariantCultureIgnoreCase.Compare(result.CalendarOwnerProperties.CalendarOwnerEmail, options.EmailAddress) != 0)
+      {
+        options.EmailAddress = result.CalendarOwnerProperties.CalendarOwnerEmail;
+
+        if (result.CalendarOwnerProperties.IsSharedCalendar && result.AccessPrivileges.HasFlag(AccessPrivileges.Create))
+        {
+          var eventMappingConfigurationModel = (EventMappingConfigurationModel)options.MappingConfigurationModelOrNull;
+          eventMappingConfigurationModel.OrganizerAsDelegate = true;
+          MessageBox.Show(
+            Strings.Get($"The calendar is shared from '{options.EmailAddress}', enabling scheduling option 'act on behalf of server identity'!"),
+            OptionTasks.ConnectionTestCaption);
+        }
+      }
+    }
+
 
     private async Task<string> TestGoogleTaskConnection(OptionsModel options, StringBuilder errorMessageBuilder, OlItemType outlookFolderType, string url)
     {

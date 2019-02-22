@@ -32,19 +32,17 @@ namespace CalDavSynchronizer.ProfileTypes
     protected readonly IOutlookAccountPasswordProvider OutlookAccountPasswordProvider;
     protected readonly IReadOnlyList<string> AvailableCategories;
     protected readonly IOptionTasks OptionTasks;
-    protected readonly ISettingsFaultFinder SettingsFaultFinder;
     protected readonly GeneralOptions GeneralOptions;
     protected readonly IViewOptions ViewOptions;
     protected readonly OptionModelSessionData SessionData;
 
-    protected ProfileModelFactoryBase(IProfileType profileType, IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+    protected ProfileModelFactoryBase(IProfileType profileType, IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {
       if (profileType == null) throw new ArgumentNullException(nameof(profileType));
       if (optionsViewModelParent == null) throw new ArgumentNullException(nameof(optionsViewModelParent));
       if (outlookAccountPasswordProvider == null) throw new ArgumentNullException(nameof(outlookAccountPasswordProvider));
       if (availableCategories == null) throw new ArgumentNullException(nameof(availableCategories));
       if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
-      if (settingsFaultFinder == null) throw new ArgumentNullException(nameof(settingsFaultFinder));
       if (generalOptions == null) throw new ArgumentNullException(nameof(generalOptions));
       if (viewOptions == null) throw new ArgumentNullException(nameof(viewOptions));
       if (sessionData == null) throw new ArgumentNullException(nameof(sessionData));
@@ -54,7 +52,6 @@ namespace CalDavSynchronizer.ProfileTypes
       OutlookAccountPasswordProvider = outlookAccountPasswordProvider;
       AvailableCategories = availableCategories;
       OptionTasks = optionTasks;
-      SettingsFaultFinder = settingsFaultFinder;
       GeneralOptions = generalOptions;
       ViewOptions = viewOptions;
       SessionData = sessionData;
@@ -73,12 +70,12 @@ namespace CalDavSynchronizer.ProfileTypes
 
     protected virtual OptionsModel CreateModel(Contracts.Options data)
     {
-      return new OptionsModel(SettingsFaultFinder, OptionTasks, OutlookAccountPasswordProvider, data, GeneralOptions, this, false, SessionData, ServerSettingsDetector.Value);
+      return new OptionsModel(OptionTasks, OutlookAccountPasswordProvider, data, GeneralOptions, this, false, SessionData, ServerSettingsDetector.Value);
     }
     
     protected virtual OptionsModel CreatePrototypeModel(Contracts.Options data)
     {
-      return new OptionsModel(SettingsFaultFinder, OptionTasks, OutlookAccountPasswordProvider, data, GeneralOptions, this, false, SessionData, ServerSettingsDetector.Value);
+      return new OptionsModel(OptionTasks, OutlookAccountPasswordProvider, data, GeneralOptions, this, false, SessionData, ServerSettingsDetector.Value);
     }
 
     public virtual IOptionsViewModel CreateViewModel(OptionsModel model)

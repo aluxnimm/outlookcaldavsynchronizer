@@ -296,7 +296,6 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         EnableTls12 = true,
         EnableTrayIcon = true,
         ExpandAllSyncProfiles = true,
-        FixInvalidSettings = true,
         IncludeCustomMessageClasses = true,
         IncludeEntityReportsWithoutErrorsOrWarnings = true,
         LogEntityNames = true,

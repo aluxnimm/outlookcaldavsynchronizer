@@ -37,7 +37,6 @@ namespace CalDavSynchronizer.DataAccess
     private const string ValueNameEnableTls12 = "EnableTls12";
     private const string ValueNameEnableSsl3 = "EnableSsl3";
     private const string ValueNameCalDavConnectTimeout = "CalDavConnectTimeout";
-    private const string ValueNameFixInvalidSettings = "FixInvalidSettings";
     private const string ValueNameOptionsRegistryKey = @"Software\CalDavSynchronizer";
     private const string ValueNameIncludeCustomMessageClasses = "IncludeCustomMessageClasses";
     private const string ValueNameIncludeEntityReportsWithoutErrorsOrWarnings = "LogAllEntitySyncReports";
@@ -82,7 +81,6 @@ namespace CalDavSynchronizer.DataAccess
                    EnableTls12 = (int) (key.GetValue (ValueNameEnableTls12) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"] ?? bool.TrueString))) != 0,
                    EnableSsl3 = (int) (key.GetValue (ValueNameEnableSsl3) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"] ?? bool.FalseString))) != 0,
                    CalDavConnectTimeout = TimeSpan.Parse ((string)(key.GetValue (ValueNameCalDavConnectTimeout) ?? ConfigurationManager.AppSettings["caldavConnectTimeout"] ?? "01:30")),
-                   FixInvalidSettings = (int) (key.GetValue (ValueNameFixInvalidSettings) ?? 1) != 0,
                    IncludeCustomMessageClasses = (int) (key.GetValue (ValueNameIncludeCustomMessageClasses) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["includeCustomMessageClasses"] ?? bool.FalseString))) != 0,
                    LogReportsWithoutWarningsOrErrors = (int) (key.GetValue (ValueNameLogReportsWithoutWarningsOrErrors) ?? 0) != 0,
                    IncludeEntityReportsWithoutErrorsOrWarnings = (int)(key.GetValue (ValueNameIncludeEntityReportsWithoutErrorsOrWarnings) ?? 0) != 0 ,
@@ -137,7 +135,6 @@ namespace CalDavSynchronizer.DataAccess
         key.SetValue (ValueNameEnableTls12, options.EnableTls12 ? 1 : 0);
         key.SetValue (ValueNameEnableSsl3, options.EnableSsl3 ? 1 : 0);
         key.SetValue (ValueNameCalDavConnectTimeout, options.CalDavConnectTimeout.ToString());
-        key.SetValue (ValueNameFixInvalidSettings, options.FixInvalidSettings ? 1 : 0);
         key.SetValue (ValueNameIncludeCustomMessageClasses, options.IncludeCustomMessageClasses ? 1 : 0);
         key.SetValue (ValueNameLogReportsWithoutWarningsOrErrors, options.LogReportsWithoutWarningsOrErrors ? 1 : 0);
         key.SetValue (ValueNameIncludeEntityReportsWithoutErrorsOrWarnings, options.IncludeEntityReportsWithoutErrorsOrWarnings ? 1 : 0);

@@ -524,9 +524,7 @@ namespace CalDavSynchronizer
     
     public Options[] ShowWpfOptions (Guid? initialSelectedProfileId, GeneralOptions generalOptions, Options[] options, out OneTimeChangeCategoryTask[] oneTimeTasks)
     {
-      var faultFinder = generalOptions.FixInvalidSettings ? new SettingsFaultFinder(EnumDisplayNameProvider.Instance) : NullSettingsFaultFinder.Instance;
-
-      var optionTasks = new OptionTasks(_session, EnumDisplayNameProvider.Instance, faultFinder, _outlookSession);
+      var optionTasks = new OptionTasks(_session, EnumDisplayNameProvider.Instance, _outlookSession);
 
       var viewOptions = new ViewOptions (generalOptions.EnableAdvancedView);
       var categories = _outlookSession
@@ -542,7 +540,7 @@ namespace CalDavSynchronizer
         _uiService,
         optionTasks,
         _profileTypeRegistry,
-        (parent, type) => type.CreateModelFactory(parent, _outlookAccountPasswordProvider, categoryNames, optionTasks, faultFinder, generalOptions, viewOptions, sessionData),
+        (parent, type) => type.CreateModelFactory(parent, _outlookAccountPasswordProvider, categoryNames, optionTasks, generalOptions, viewOptions, sessionData),
         viewOptions);
 
       _currentVisibleOptionsFormOrNull = viewModel;

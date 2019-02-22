@@ -58,7 +58,7 @@ namespace CalDavSynchronizer.UnitTest.Ui.Options.ViewModels
         _uiServiceStub,
         _optionTasksStub,
         _testProfileRegistry,
-        (_,t) => t.CreateModelFactory(null, null, null, null, null, null, null, null),
+        (_,t) => t.CreateModelFactory(null, null, null, null, null, null, null),
         new ViewOptions (false));
     }
 
@@ -130,7 +130,6 @@ namespace CalDavSynchronizer.UnitTest.Ui.Options.ViewModels
       {
         var outlookAccountPasswordProvider = MockRepository.GenerateStub<IOutlookAccountPasswordProvider>();
         return new OptionsModel(
-            MockRepository.GenerateStub<ISettingsFaultFinder>(),
             _optionTasksStub,
             outlookAccountPasswordProvider,
             data,
@@ -180,7 +179,7 @@ namespace CalDavSynchronizer.UnitTest.Ui.Options.ViewModels
         return new TaskMappingConfiguration();
       }
 
-      public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, ISettingsFaultFinder settingsFaultFinder, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+      public IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
       {
         return this;
       }
