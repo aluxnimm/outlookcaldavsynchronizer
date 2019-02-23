@@ -675,18 +675,18 @@ namespace CalDavSynchronizer.Ui.Options
       return autoDiscoveredUrl.ToString();
     }
 
-    public void ValidateBulkProfile (OptionsModel options, AccessPrivileges privileges, CalendarOwnerProperties ownerProperties)
+    public void ValidateBulkProfile (OptionsModel options, AccessPrivileges privileges, CalendarOwnerProperties ownerPropertiesOrNull)
     {
       if (!privileges.HasFlag (AccessPrivileges.Modify) && DoesModeRequireWriteableServerResource (options.SynchronizationMode))
       {
         options.SynchronizationMode = SynchronizationMode.ReplicateServerIntoOutlook;
       }
 
-      if (ownerProperties != null)
+      if (ownerPropertiesOrNull != null)
       {
-        options.EmailAddress = ownerProperties.CalendarOwnerEmail;
+        options.EmailAddress = ownerPropertiesOrNull.CalendarOwnerEmail;
 
-        if (ownerProperties.IsSharedCalendar && privileges.HasFlag (AccessPrivileges.Create))
+        if (ownerPropertiesOrNull.IsSharedCalendar && privileges.HasFlag (AccessPrivileges.Create))
         {
           var eventMappingConfigurationModel = (EventMappingConfigurationModel) options.MappingConfigurationModelOrNull;
           eventMappingConfigurationModel.OrganizerAsDelegate = true;
