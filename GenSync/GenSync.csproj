@@ -63,6 +63,10 @@
     <Compile Include="EntityRelationManagement\XmlFileDataAccess.cs" />
     <Compile Include="EntityRelationManagement\StateTokensDataAccess.cs" />
     <Compile Include="EntityRelationManagement\StateTokens.cs" />
+    <Compile Include="EntityRepositories\Decorators\BatchWriteOnlyEntityRepositoryRunInBackgroundDecorator.cs" />
+    <Compile Include="EntityRepositories\Decorators\RunInBackgroundDecoratorFactory.cs" />
+    <Compile Include="EntityRepositories\Decorators\StateAwareEntityRepositoryRunInBackgroundDecorator.cs" />
+    <Compile Include="EntityRepositories\Decorators\ReadOnlyEntityRepositoryRunInBackgroundDecorator.cs" />
     <Compile Include="EntityRepositories\VersionAwareEntityStateCollection.cs" />
     <Compile Include="EntityRepositories\IStateAwareEntityRepository.cs" />
     <Compile Include="EntityRepositories\IVersionAwareEntityRepository.cs" />

@@ -1,0 +1,39 @@
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+// Copyright (c) 2015 Gerhard Zehetbauer
+// Copyright (c) 2015 Alexander Nimmervoll
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+// 
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using GenSync.ProgressReport;
+
+namespace GenSync.EntityRepositories.Decorators
+{
+  public class BatchWriteOnlyEntityRepositoryRunInBackgroundDecorator<TEntityId, TEntityVersion, TEntity, TContext> : IBatchWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>
+  {
+    private readonly IBatchWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> _batchWriteOnlyEntityRepositoryImplementation;
+
+    public BatchWriteOnlyEntityRepositoryRunInBackgroundDecorator(IBatchWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> batchWriteOnlyEntityRepositoryImplementation)
+    {
+      _batchWriteOnlyEntityRepositoryImplementation = batchWriteOnlyEntityRepositoryImplementation ?? throw new ArgumentNullException(nameof(batchWriteOnlyEntityRepositoryImplementation));
+    }
+
+    public async Task PerformOperations(IReadOnlyList<ICreateJob<TEntityId, TEntityVersion, TEntity>> createJobs, IReadOnlyList<IUpdateJob<TEntityId, TEntityVersion, TEntity>> updateJobs, IReadOnlyList<IDeleteJob<TEntityId, TEntityVersion>> deleteJobs, IProgressLogger progressLogger, TContext context)
+    {
+      await Task.Run(() => _batchWriteOnlyEntityRepositoryImplementation.PerformOperations(createJobs, updateJobs, deleteJobs, progressLogger, context));
+    }
+  }
+}
