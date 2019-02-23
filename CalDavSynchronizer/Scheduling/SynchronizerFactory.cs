@@ -49,6 +49,7 @@ using DDay.iCal.Serialization.iCalendar;
 using GenSync.EntityMapping;
 using GenSync.EntityRelationManagement;
 using GenSync.EntityRepositories;
+using GenSync.EntityRepositories.Decorators;
 using GenSync.InitialEntityMatching;
 using GenSync.Logging;
 using GenSync.ProgressReport;
@@ -897,9 +898,9 @@ namespace CalDavSynchronizer.Scheduling
 
       return new Synchronizer<string, DateTime, IContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger, ContactMatchData, vCard, int, string> (
         contactSynchronizerComponents.AtypeRepository,
-        contactSynchronizerComponents.BtypeRepository,
+        RunInBackgroundDecoratorFactory.Create(contactSynchronizerComponents.BtypeRepository),
         BatchEntityRepositoryAdapter.Create (contactSynchronizerComponents.AtypeRepository, _exceptionHandlingStrategy),
-        BatchEntityRepositoryAdapter.Create (contactSynchronizerComponents.BtypeRepository, _exceptionHandlingStrategy),
+        RunInBackgroundDecoratorFactory.Create(BatchEntityRepositoryAdapter.Create (contactSynchronizerComponents.BtypeRepository, _exceptionHandlingStrategy)),
         InitialSyncStateCreationStrategyFactory<string, DateTime, IContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger>.Create (
           contactSynchronizerComponents.SyncStateFactory,
           contactSynchronizerComponents.SyncStateFactory.Environment,
@@ -922,7 +923,7 @@ namespace CalDavSynchronizer.Scheduling
         CreateChunkedExecutor(options),
         FullEntitySynchronizationLoggerFactory.Create<string, IContactItemWrapper, WebResourceName, vCard>(generalOptions.LogEntityNames ? EntityLogMessageFactory.Instance : NullEntityLogMessageFactory<IContactItemWrapper, vCard>.Instance),
         new VersionAwareToStateAwareEntityRepositoryAdapter<string, DateTime, ICardDavRepositoryLogger, int>(contactSynchronizerComponents.AtypeRepository, contactSynchronizerComponents.AtypeIdEqulityComparer, atypeVersionComparer),
-        contactSynchronizerComponents.BtypeStateAwareEntityRepository,
+        RunInBackgroundDecoratorFactory.Create(contactSynchronizerComponents.BtypeStateAwareEntityRepository),
         contactSynchronizerComponents.StateTokenDataAccess);
     }
     
