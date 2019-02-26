@@ -38,6 +38,7 @@ see [https://www.davx5.com](https://www.davx5.com), so we can really recommend i
 - Cyrus Imap 2.5
 - DAViCal
 - EGroupware
+- FastMail
 - Fruux
 - GMX
 - Google Calendar
@@ -119,6 +120,21 @@ Beginning with version 2.9.0 the default install location is `ProgramFilesDir\Ca
 We recommend updating to the latest .Net Framework but the minimal required version is .NET 4.6.1, which is not supported on Windows XP. If you need Outlook CalDav Synchronizer for Windows XP you can download a backport to .Net 4.0 from a forked project [here](https://sourceforge.net/projects/outlookcaldavsynchronizerxp/), thanks to [Salvatore Isaja](https://sourceforge.net/u/salvois/profile/) for the awesome work!
 
 ### Changelog ###
+
+#### 3.5.0 ####
+- Released 2019/02/26
+- New features
+	- Add profile type for EGroupware.
+	- Add profile type for FastMail.
+	- Map formatted description from Google calendar.
+	- Execute server access for Contact sync in Background.
+	- Remove general option 'Fix invalid settings'.
+- Bug fixes
+	- Improve GetOwner and check also for organizer property if owner property not found (Workaround for OpenX-change).
+	- Improve SOGo profile and add VLIST distribution list mapping to default profile settings.
+	- Improve bulk profile creation and set correct synchronization mode and update server email and scheduling settings.
+	- Use same value type and tzid for RECURRENCE-ID as for DTSTART to be compliant with RFC 5545.
+	- Fix generation of originalOutlookDatesWithExceptions. Always use target timezone.
 
 #### 3.4.0 ####
 - Released 2019/01/13
@@ -1224,7 +1240,7 @@ The toolbar on the left upper part provides the following options:
 - **Export Profiles to File** and 
 - **Import Profiles from File** See Profile Import/Export
 
-When adding a new profile you can choose between a generic CalDAV/CardDAV, a google profile to simplify the google profile creation and predefined CalDAV/CardDAV profiles for iCloud Calendar and Contacts, SOGo, Fruux, Posteo, Yandex, GMX, Sarenet, Landmarks, Cozy Cloud, Nextcloud, mailbox.org, Open-Xchange, EasyProject, Web.de, SmarterMail, Mail.de, Kolab and Swisscom Addressbooks where the DAV Url for autodiscovery is already entered. 
+When adding a new profile you can choose between a generic CalDAV/CardDAV, a google profile to simplify the google profile creation and predefined CalDAV/CardDAV profiles for iCloud Calendar and Contacts, SOGo, Fruux, Posteo, Yandex, GMX, Sarenet, Landmarks, Cozy Cloud, Nextcloud, mailbox.org, Open-Xchange, EasyProject, Web.de, SmarterMail, Mail.de, Kolab, Swisscom Addressbooks, EGroupware and FastMail where the DAV Url for autodiscovery is already entered. 
 
 The following properties need to be set for a new generic profile:
 
@@ -1451,11 +1467,11 @@ use the url
 
 When you are using an IMAP/POP3 Account with the same server settings (Username, Email address) you can press *Get IMAP/POP3 account settings* to discover those settings. The DAV url is discovered via DNS lookup from the account email address or the IMAP/POP3/SMTP server url if that fails. Together with the *Use IMAP/POP3 account password* checkbox activated you can fully autoconfigure the server settings from your existing account.
 
-Instead of using the exact calendar/addressbook URL you can use the server address or the principal url and use the 'Test  or discover settings' button in the option dialog to try to autodiscover available calendars and addressbooks on the server. 
+Instead of using the exact calendar/addressbook URL you can use the server address or the principal url and use the 'Test or discover settings' button in the option dialog to try to autodiscover available calendars and addressbooks on the server. 
 
-If the server has calendar-proxy support (calendar-proxy-read-for, calendar-proxy-write-for), see [https://github.com/apple/ccs-calendarserver/blob/master/doc/Extensions/caldav-proxy.txt](https://github.com/apple/ccs-calendarserver/blob/master/doc/Extensions/caldav-proxy.txt) shared calendars can also be discovered. You can  then choose one of the found calendars or addressbooks in the new window.
+If the server has calendar-proxy support (calendar-proxy-read-for, calendar-proxy-write-for), see [https://github.com/apple/ccs-calendarserver/blob/master/doc/Extensions/caldav-proxy.txt](https://github.com/apple/ccs-calendarserver/blob/master/doc/Extensions/caldav-proxy.txt) shared calendars can also be discovered. You can then choose one of the found calendars or addressbooks in the new window.
 
-If your server has redirections for well-known Urls (`./well-known/caldav/` and `./well-known/carddav/` ) you need to enter the server name only (without path). If your domain configured DNS SRV and/or TXT lookups it is also possible leave the DAV url empty and discover it from the entered Email Address via DNS lookups, for example:
+If your server has redirections for well-known Urls (`./well-known/caldav/` and `./well-known/carddav/` ) you need to enter the server name only (without path). If your domain configured DNS SRV and/or TXT lookups it is also possible leave the DAV url empty and discover it from the entered Email Address or Username via DNS lookups, for example:
 
     _carddavs._tcp 86400 IN SRV 10 20 443 dav.example.org.
     _caldavs._tcp 86400 IN SRV 10 20 443 dav.example.org.
@@ -1479,7 +1495,6 @@ In the General Options Dialog you can change settings which are used for all syn
 	- **Show advanced settings as default** Show the advanced settings in synchronization profiles as default if enabled.
 	- **Expand all nodes in Synchronization profiles** Enabled by default, expands all nodes in the synchronization profiles to see the suboptions for network settings and mapping configuration.
 	- **Enable Tray Icon** Enabled by default, you can disable the tray icon in the Windows Taskbar if you don't need it.
-	- **Fix invalid settings** Fixes invalid settings automatically, when synchronization profiles are edited.
 	- **Show Sync Progress Bar** and **Sync Progress Bar Threshold (Items)** Enabled by default, show a progress bar if more than the treshold of items need to be loaded during a synchronization run. If disabled, no progress bar is shown but be aware that for larger changes Outlook can freeze, since some operations need to be performed in the Outlook main thread.
 	- **Language** Select UI language. When changing this option, a restart of Outlook is required.
 - *Server Settings*
