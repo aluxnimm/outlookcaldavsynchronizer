@@ -71,6 +71,10 @@ namespace CalDavSynchronizer.Implementation.Contacts
       target.AdditionalNames = source.Inner.MiddleName;
       target.Gender = MapGender2To1 (source.Inner.Gender);
 
+      target.Assistant = source.Inner.AssistantName;
+      target.Spouse = source.Inner.Spouse;
+      target.Manager = source.Inner.ManagerName;
+
       MapEmailAddresses1To2(source.Inner, target, logger);
 
       if (!string.IsNullOrEmpty (source.Inner.FileAs))
@@ -253,6 +257,11 @@ namespace CalDavSynchronizer.Implementation.Contacts
       target.Inner.Suffix = source.NameSuffix;
       target.Inner.MiddleName = source.AdditionalNames;
       target.Inner.Gender = MapGender1To2 (source.Gender);
+
+      target.Inner.AssistantName = source.Assistant;
+      target.Inner.Spouse = source.Spouse;
+      target.Inner.ManagerName = source.Manager;
+
       if (string.IsNullOrEmpty (target.Inner.FullName))
         target.Inner.FullName = source.FormattedName;
       if (!_configuration.KeepOutlookFileAs)
