@@ -64,6 +64,9 @@ namespace Thought.vCards
         private string title;
         private string uniqueId;
         private vCardKindType kind;
+        private string assistant;
+        private string spouse;
+        private string manager;
 
         private vCardCertificateCollection certificates;
         private vCardDeliveryAddressCollection deliveryAddresses;
@@ -105,6 +108,9 @@ namespace Thought.vCards
             this.timeZone = string.Empty;
             this.title = string.Empty;
             this.uniqueId = string.Empty;
+            this.assistant = string.Empty;
+            this.spouse = string.Empty;
+            this.manager = string.Empty;
 
             this.categories = new StringCollection();
             this.certificates = new vCardCertificateCollection();
@@ -533,15 +539,60 @@ namespace Thought.vCards
             }
         }
 
+      /// <summary>
+      ///     The name of the assistant of the person.
+      /// </summary>
+      public string Assistant
+      {
+        get
+        {
+          return this.assistant ?? string.Empty;
+        }
+        set
+        {
+          this.assistant = value;
+        }
+      }
 
-        /// <summary>
-        ///     A collection of nicknames for the person.
-        /// </summary>
-        /// <seealso cref="AdditionalNames"/>
-        /// <seealso cref="FamilyName"/>
-        /// <seealso cref="FormattedName"/>
-        /// <seealso cref="GivenName"/>
-        public StringCollection Nicknames
+      /// <summary>
+      ///     The name of the spouse of the person.
+      /// </summary>
+      public string Spouse
+      {
+        get
+        {
+          return this.spouse ?? string.Empty;
+        }
+        set
+        {
+          this.spouse = value;
+        }
+      }
+
+      /// <summary>
+      ///     The name of the manager of the person.
+      /// </summary>
+
+      public string Manager
+      {
+        get
+        {
+          return this.manager ?? string.Empty;
+        }
+        set
+        {
+          this.manager = value;
+        }
+      }
+
+    /// <summary>
+    ///     A collection of nicknames for the person.
+    /// </summary>
+    /// <seealso cref="AdditionalNames"/>
+    /// <seealso cref="FamilyName"/>
+    /// <seealso cref="FormattedName"/>
+    /// <seealso cref="GivenName"/>
+    public StringCollection Nicknames
         {
             get
             {

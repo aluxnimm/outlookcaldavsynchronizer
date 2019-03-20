@@ -1226,6 +1226,18 @@ namespace Thought.vCards
         case "X-QQ":
           ReadInto_X_QQ(card, property);
           break;
+        case "X-ASSISTANT":
+        case "X-MS-ASSISTANT":
+          ReadInto_X_ASSISTANT(card, property);
+          break;
+			  case "X-SPOUSE":
+        case "X-MS-SPOUSE":
+			    ReadInto_X_SPOUSE(card, property);
+			    break;
+			  case "X-MANAGER":
+        case "X-MS-MANAGER":
+			    ReadInto_X_MANAGER(card, property);
+			    break;
         default:
 
 					// The property name is not recognized and
@@ -2003,14 +2015,50 @@ namespace Thought.vCards
 			card.DisplayName = property.ToString().Trim();
 		}
 
-		#endregion
+    #endregion
 
-		#region [ ReadInto_NICKNAME ]
+	  #region [ ReadInto_X-ASSISTANT ]
 
-		/// <summary>
-		///     Reads the NICKNAME property.
-		/// </summary>
-		private void ReadInto_NICKNAME(vCard card, vCardProperty property)
+	  /// <summary>
+	  ///     Reads the X-ASSISTANT property.
+	  /// </summary>
+	  private void ReadInto_X_ASSISTANT(vCard card, vCardProperty property)
+	  {
+	    card.Assistant = property.ToString();
+	  }
+
+    #endregion
+
+	  #region [ ReadInto_X-SPOUSE ]
+
+	  /// <summary>
+	  ///     Reads the X-SPOUSE property.
+	  /// </summary>
+	  private void ReadInto_X_SPOUSE(vCard card, vCardProperty property)
+	  {
+	    card.Spouse = property.ToString();
+	  }
+
+    #endregion
+
+	  #region [ ReadInto_X-MANAGER ]
+
+	  /// <summary>
+	  ///     Reads the X-MANAGER property.
+	  /// </summary>
+	  private void ReadInto_X_MANAGER(vCard card, vCardProperty property)
+	  {
+	    card.Manager = property.ToString();
+	  }
+
+	  #endregion
+
+    #region [ ReadInto_NICKNAME ]
+
+    /// <summary>
+    ///     Reads the NICKNAME property.
+    /// </summary>
+    private void ReadInto_NICKNAME(vCard card, vCardProperty property)
 		{
 
 			if (property.Value == null)

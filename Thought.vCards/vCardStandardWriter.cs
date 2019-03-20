@@ -296,8 +296,20 @@ namespace Thought.vCards
                 properties,
                 card);
 
-            // Add all other unrecognized properties
-            foreach (var other in card.OtherProperties)
+            BuildProperties_X_ASSISTANT(
+                properties,
+                card);
+
+            BuildProperties_X_SPOUSE(
+                properties,
+                card);
+
+            BuildProperties_X_MANAGER(
+                properties,
+                card);
+
+      // Add all other unrecognized properties
+      foreach (var other in card.OtherProperties)
             {
                 properties.Add(other);
             }
@@ -757,7 +769,7 @@ namespace Thought.vCards
     }
 
 
-    #region [ BuildProperties_KEY ]
+        #region [ BuildProperties_KEY ]
 
     /// <summary>
     ///     Builds KEY properties.
@@ -786,7 +798,7 @@ namespace Thought.vCards
 
     #endregion
 
-    #region [ BuildProperties_KIND ]
+        #region [ BuildProperties_KIND ]
 
     private void BuildProperties_KIND(
         vCardPropertyCollection properties,
@@ -822,6 +834,7 @@ namespace Thought.vCards
     }
 
     #endregion
+    
         #region [ BuildProperties_LABEL ]
 
     private void BuildProperties_LABEL(
@@ -894,7 +907,7 @@ namespace Thought.vCards
 
     #endregion
 
-    #region [ BuildProperties_MEMBER ]
+        #region [ BuildProperties_MEMBER ]
 
     /// <summary>
     ///     Builds the MEMBER property.
@@ -931,7 +944,7 @@ namespace Thought.vCards
 
     #endregion
 
-    #region [ BuildProperties_N ]
+        #region [ BuildProperties_N ]
 
     private void BuildProperties_N(
             vCardPropertyCollection properties,
@@ -980,14 +993,74 @@ namespace Thought.vCards
 
         }
 
-        #endregion
+    #endregion
+
+        #region [ BuildProperties_X-ASSISTANT ]
+
+      private void BuildProperties_X_ASSISTANT(
+        vCardPropertyCollection properties,
+        vCard card)
+      {
+
+        if (!string.IsNullOrEmpty(card.Assistant))
+        {
+
+          vCardProperty property =
+            new vCardProperty("X-ASSISTANT", card.Assistant);
+
+          properties.Add(property);
+        }
+
+      }
+
+    #endregion
+
+        #region [ BuildProperties_X-SPOUSE ]
+
+      private void BuildProperties_X_SPOUSE(
+        vCardPropertyCollection properties,
+        vCard card)
+      {
+
+        if (!string.IsNullOrEmpty(card.Spouse))
+        {
+
+          vCardProperty property =
+            new vCardProperty("X-SPOUSE", card.Spouse);
+
+          properties.Add(property);
+        }
+
+      }
+
+    #endregion
+
+        #region [ BuildProperties_X-MANAGER ]
+
+      private void BuildProperties_X_MANAGER(
+        vCardPropertyCollection properties,
+        vCard card)
+      {
+
+        if (!string.IsNullOrEmpty(card.Manager))
+        {
+
+          vCardProperty property =
+            new vCardProperty("X-MANAGER", card.Manager);
+
+          properties.Add(property);
+        }
+
+      }
+
+      #endregion
 
         #region [ BuildProperties_NICKNAME ]
 
-        /// <summary>
-        ///     Builds the NICKNAME property.
-        /// </summary>
-        private void BuildProperties_NICKNAME(
+    /// <summary>
+    ///     Builds the NICKNAME property.
+    /// </summary>
+    private void BuildProperties_NICKNAME(
             vCardPropertyCollection properties,
             vCard card)
         {
