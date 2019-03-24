@@ -175,33 +175,37 @@ namespace CalDavSynchronizer
       return _nameSpace.CreateRecipient(recipientName);
     }
 
-    public CreateCategoryResult AddCategoryNoThrow(string name, OlCategoryColor color)
+    public (CreateCategoryResult Result, OlCategoryColor? ExistingColorOrNull) AddCategoryNoThrow(string name, OlCategoryColor color)
     {
       try
       {
         using (var categoriesWrapper = GenericComObjectWrapper.Create(_nameSpace.Categories))
         {
-          // Here a hashset has to be used with an case-insensitive comparer, because the indexer cannot be used to check if the
-          // category already exists, since it is case sensitive (but outlook requires case insensitive uniqueness)
-          var categoryNames = new HashSet<string>(
-            categoriesWrapper.Inner.ToSafeEnumerable<Category>().Select(c => c.Name),
-            CategoryNameComparer);
 
-          if (!categoryNames.Contains(name))
+          // Here a dictionary has to be used with an case-insensitive comparer, because the indexer cannot be used to check if the
+          // category already exists, since it is case sensitive (but outlook requires case insensitive uniqueness)
+          var categoryColorByName = new Dictionary<string, OlCategoryColor>(StringComparer.InvariantCultureIgnoreCase);
+          foreach (var category in GetCategories())
+          {
+            // Use assignment via indexer to prevent exceptions if outlook retursn duplicate categories
+            categoryColorByName[category.Name] = category.Color;
+          }
+          
+          if (!categoryColorByName.TryGetValue(name, out var existingColor))
           {
             categoriesWrapper.Inner.Add(name, color);
-            return CreateCategoryResult.Ok;
+            return (CreateCategoryResult.Ok, null);
           }
           else
           {
-            return CreateCategoryResult.DidAlreadyExist;
+            return (CreateCategoryResult.DidAlreadyExist, existingColor);
           }
         }
       }
       catch (System.Exception e)
       {
         s_logger.Error($"Can't create category '{name}' with color '{color}'", e);
-        return CreateCategoryResult.Error;
+        return (CreateCategoryResult.Error, null);
       }
     }
 
