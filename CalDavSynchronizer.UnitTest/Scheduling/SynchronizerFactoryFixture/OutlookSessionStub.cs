@@ -99,9 +99,9 @@ namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
       throw new System.NotImplementedException();
     }
 
-    public CreateCategoryResult AddCategoryNoThrow(string name, OlCategoryColor color)
+    public (CreateCategoryResult Result, string ExistingColorNameForLoggingOrNull) AddCategoryNoThrow(string name, OlCategoryColor color)
     {
-      throw new System.NotImplementedException();
+      throw new NotImplementedException();
     }
 
     public void AddOrUpdateCategoryNoThrow(string name, OlCategoryColor color, bool useColor, OlCategoryShortcutKey shortcutKey, bool useShortcutKey)

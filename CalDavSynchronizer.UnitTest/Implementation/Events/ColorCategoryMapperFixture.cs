@@ -183,11 +183,12 @@ namespace CalDavSynchronizer.UnitTest.Implementation.Events
         throw new NotImplementedException();
       }
 
-      public CreateCategoryResult AddCategoryNoThrow(string name, OlCategoryColor color)
+      public (CreateCategoryResult Result, string ExistingColorNameForLoggingOrNull) AddCategoryNoThrow(string name, OlCategoryColor color)
       {
-        _parent._outlookCategories.Add(name, new OutlookCategory (name, color, OlCategoryShortcutKey.olCategoryShortcutKeyNone));
-        return CreateCategoryResult.Ok;
+        _parent._outlookCategories.Add(name, new OutlookCategory(name, color, OlCategoryShortcutKey.olCategoryShortcutKeyNone));
+        return (CreateCategoryResult.Ok, null);
       }
+
 
       public void AddOrUpdateCategoryNoThrow(string name, OlCategoryColor color, bool useColor, OlCategoryShortcutKey shortcutKey, bool useShortcutKey)
       {

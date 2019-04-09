@@ -48,7 +48,7 @@ namespace CalDavSynchronizer
     
     Recipient CreateRecipient (string recipientName);
 
-    (CreateCategoryResult Result, OlCategoryColor? ExistingColorOrNull) AddCategoryNoThrow(string name, OlCategoryColor color);
+    (CreateCategoryResult Result, string ExistingColorNameForLoggingOrNull) AddCategoryNoThrow(string name, OlCategoryColor color);
     void AddOrUpdateCategoryNoThrow(string name, OlCategoryColor color, bool useColor, OlCategoryShortcutKey shortcutKey, bool useShortcutKey);
     IReadOnlyDictionary<string, IReadOnlyList<OutlookFolderDescriptor>> GetFoldersByName();
   }

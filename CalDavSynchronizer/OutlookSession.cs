@@ -175,7 +175,7 @@ namespace CalDavSynchronizer
       return _nameSpace.CreateRecipient(recipientName);
     }
 
-    public (CreateCategoryResult Result, OlCategoryColor? ExistingColorOrNull) AddCategoryNoThrow(string name, OlCategoryColor color)
+    public (CreateCategoryResult Result, string ExistingColorNameForLoggingOrNull) AddCategoryNoThrow(string name, OlCategoryColor color)
     {
       try
       {
@@ -198,7 +198,7 @@ namespace CalDavSynchronizer
           }
           else
           {
-            return (CreateCategoryResult.DidAlreadyExist, existingColor);
+            return (CreateCategoryResult.DidAlreadyExist, existingColor.ToString());
           }
         }
       }
