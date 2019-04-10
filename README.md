@@ -121,6 +121,16 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 3.6.0 ####
+- Released 2019/04/10
+- New features
+	- Add mapping for Outlook contacts AssistantName, Spouse and ManagerName to vCard X-ASSISTANT, X-SPOUSE and X-MANAGER.
+	- Update mailbox.org profile logo.
+	- Update NuGet packages.
+- Bug fixes
+	- Take existing color from existing category instead of Dictionary to prevent a KeyNotFoundException, gh issue 251.
+	- Reduce Options Window height to improve display for smaller screen sizes.
+
 #### 3.5.0 ####
 - Released 2019/02/26
 - New features
