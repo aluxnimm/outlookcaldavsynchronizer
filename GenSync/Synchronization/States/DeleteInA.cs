@@ -32,6 +32,7 @@ namespace GenSync.Synchronization.States
     private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
 
     private readonly TAtypeEntityVersion _currentAVersion;
+    private IEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> _loggerOrNull;
 
     public DeleteInA (
         EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> environment,
@@ -74,6 +75,7 @@ namespace GenSync.Synchronization.States
         TContext context)
     {
       var logger = loggerFactory.CreateEntitySynchronizationLogger(SynchronizationOperation.DeleteInA);
+      _loggerOrNull = logger;
       logger.SetAId (KnownData.AtypeId);
       aJobs.AddDeleteJob (new JobWrapper (stateContext, this, logger));
     }
@@ -103,6 +105,7 @@ namespace GenSync.Synchronization.States
 
     public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> NotifyJobExecuted ()
     {
+      _loggerOrNull?.LogWarning($"State '{GetType().Name}' was not left. Defaulting to failed state.");
       s_logger.Error ("State was not left. Defaulting to failed state.");
       return CreateFailed ();
     }

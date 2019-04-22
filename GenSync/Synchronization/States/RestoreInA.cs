@@ -29,6 +29,7 @@ namespace GenSync.Synchronization.States
   {
     private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);
     private readonly TAtypeEntityVersion _currentAVersion;
+    private IEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> _loggerOrNull;
 
     public RestoreInA (
         EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> environment,
@@ -47,6 +48,7 @@ namespace GenSync.Synchronization.States
         TContext context)
     {
       var logger = loggerFactory.CreateEntitySynchronizationLogger(SynchronizationOperation.UpdateInA);
+      _loggerOrNull = logger;
       logger.SetAId (KnownData.AtypeId);
       logger.SetBId (KnownData.BtypeId);
       logger.LogA(_aEntity);
@@ -91,6 +93,7 @@ namespace GenSync.Synchronization.States
 
     public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> NotifyJobExecuted ()
     {
+      _loggerOrNull?.LogWarning($"State '{GetType().Name}' was not left. Defaulting to failed state.");
       s_logger.Error ("State was not left. Defaulting to failed state.");
       return CreateFailed ();
     }

@@ -34,6 +34,7 @@ namespace GenSync.Synchronization.States
     private readonly TBtypeEntityId _bId;
     private readonly TBtypeEntityVersion _bVersion;
     private TBtypeEntity _bEntity;
+    private IEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> _loggerOrNull;
 
     public CreateInA (EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> environment, TBtypeEntityId bId, TBtypeEntityVersion bVersion)
         : base (environment)
@@ -87,6 +88,7 @@ namespace GenSync.Synchronization.States
         TContext context)
     {
       var logger = loggerFactory.CreateEntitySynchronizationLogger(SynchronizationOperation.CreateInA);
+      _loggerOrNull = logger;
       logger.SetBId (_bId);
       logger.LogB(_bEntity);
       aJobs.AddCreateJob (new JobWrapper (stateContext, this, logger, context));
@@ -121,6 +123,7 @@ namespace GenSync.Synchronization.States
 
     public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> NotifyJobExecuted()
     {
+      _loggerOrNull?.LogWarning($"State '{GetType().Name}' was not left. Defaulting to failed state.");
       s_logger.Error("State was not left. Defaulting to failed state.");
       return CreateFailed();
     }
