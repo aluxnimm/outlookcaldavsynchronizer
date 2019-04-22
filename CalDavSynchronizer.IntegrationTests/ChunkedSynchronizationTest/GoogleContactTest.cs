@@ -26,6 +26,7 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
             _testComponentContainer = new TestComponentContainer();
         }
 
+        protected override TimeSpan PreSyncSleepTime => TimeSpan.FromSeconds(5);
         protected override int? OrdinalOfReportToCheck => 0;
 
         protected override Options GetOptions() => _testComponentContainer.TestOptionsFactory.CreateGoogleContacts();

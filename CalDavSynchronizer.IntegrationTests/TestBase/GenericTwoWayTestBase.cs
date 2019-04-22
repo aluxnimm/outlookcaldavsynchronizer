@@ -42,6 +42,8 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
         protected abstract Task<IReadOnlyList<(TAId Id, string Name)>> GetFromA(ICollection<TAId> ids);
         protected abstract Task<IReadOnlyList<(TBId Id, string Name)>> GetFromB(ICollection<TBId> ids);
 
+        protected virtual TimeSpan PreSyncSleepTime => TimeSpan.Zero;
+
         protected abstract Task DeleteInA(IEnumerable<TAId> ids);
         protected abstract Task DeleteInB(IEnumerable<TBId> ids);
 
@@ -85,6 +87,8 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
             Assert.That(
                 (await CreateInB(matchingItems.Union(itemsJustInB))).Count,
                 Is.EqualTo(matchingItems.Length + itemsJustInB.Length));
+
+            await Task.Delay(PreSyncSleepTime);
 
             await Synchronizer.SynchronizeAndCheck(
                 unchangedA: itemsPerOperation * 3, addedA: itemsPerOperation, changedA: 0, deletedA: 0,
@@ -149,6 +153,8 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase
 
             await DeleteInA(aDeletes);
             await DeleteInB(bDeletes);
+
+            await Task.Delay(PreSyncSleepTime);
 
             await Synchronizer.SynchronizeAndCheck(
                 unchangedA: itemsPerOperation * 3, addedA: 0, changedA: itemsPerOperation, deletedA: itemsPerOperation,
