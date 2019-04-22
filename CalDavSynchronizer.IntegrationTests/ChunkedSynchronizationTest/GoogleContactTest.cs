@@ -99,7 +99,7 @@ namespace CalDavSynchronizer.IntegrationTests.ChunkedSynchronizationTest
         }
         
         [Test]
-        [TestCase(2, 7, false, Category = TestCategories.BasicCrud)]
+        [TestCase(100, 7, false, Category = TestCategories.BasicCrud)]
         public override Task Test(int? chunkSize, int itemsPerOperation, bool useWebDavCollectionSync)
         {
             return base.Test(chunkSize, itemsPerOperation, useWebDavCollectionSync);
