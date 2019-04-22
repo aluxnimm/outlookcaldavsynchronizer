@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -137,7 +138,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
 
           var createJob = requestsAndJobs.Item2[i];
           var request = requestsAndJobs.Item1[i];
-          if (contact.BatchData.Status.Reason == "Created")
+          if (contact.BatchData.Status.Code == (int)HttpStatusCode.Created)
           {
             if (UpdatePhoto (contact, request.PhotoOrNull))
               requeryEtagJobs.Add (contact.Id, createJob);
@@ -305,7 +306,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
         contact.ETag = job.Version.ContactEtag;
 
         requests.Add (contact);
-        jobsById.Add (contact.Id, job);
+        jobsById.Add (job.EntityId, job);
       }
 
       var responses = _writeOperationExecutor.Execute (
