@@ -20,7 +20,8 @@ namespace CalDavSynchronizer.IntegrationTests.Infrastructure
                 CalDavConnectTimeout = TimeSpan.FromSeconds(10),
                 MaxReportAgeInDays = 100,
                 QueryFoldersJustByGetTable = true,
-                CultureName = System.Threading.Thread.CurrentThread.CurrentUICulture.Name
+                CultureName = System.Threading.Thread.CurrentThread.CurrentUICulture.Name,
+                EnableTls12 = true
               }))
         .Clone();
     }
