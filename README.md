@@ -121,6 +121,13 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 3.6.1 ####
+- Released 2019/04/23
+- Bug fixes
+	- Fix Google Contacts sync due to changed native API.
+	- Update Google API NuGet packages.
+	- Adapt Google Integration Tests.
+
 #### 3.6.0 ####
 - Released 2019/04/10
 - New features
