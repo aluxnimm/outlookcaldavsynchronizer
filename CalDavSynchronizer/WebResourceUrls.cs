@@ -21,13 +21,13 @@ namespace CalDavSynchronizer
 {
   public static class WebResourceUrls
   {
-    public static Uri GlobalOptionsFile => new Uri ("http://sourceforge.net/p/outlookcaldavsynchronizer/code/ci/master/tree/GlobalOptions.xml?format=raw");
+    public static Uri GlobalOptionsFile => new Uri ("https://sourceforge.net/p/outlookcaldavsynchronizer/code/ci/master/tree/GlobalOptions.xml?format=raw");
     public static Uri SiteContainingCurrentVersion => new Uri ("https://sourceforge.net/projects/outlookcaldavsynchronizer/files/");
     public static Uri LatestVersionZipFile => new Uri ("https://sourceforge.net/projects/outlookcaldavsynchronizer/files/latest/download?source=files");
-    public static Uri ReadMeFile => new Uri ("http://sourceforge.net/p/outlookcaldavsynchronizer/code/ci/master/tree/README.md?format=raw");
+    public static Uri ReadMeFile => new Uri ("https://sourceforge.net/p/outlookcaldavsynchronizer/code/ci/master/tree/README.md?format=raw");
     public static Uri ReadMeFileDownloadSite => new Uri ("https://sourceforge.net/projects/outlookcaldavsynchronizer/files/README.md/download");
-    public static Uri HelpSite => new Uri ("http://caldavsynchronizer.org/documentation/");
+    public static Uri HelpSite => new Uri ("https://caldavsynchronizer.org/documentation/");
     public static Uri DonationSite => new Uri("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PWA2N6P5WRSJJ&lc=US");
-    public static Uri ProjectHomeSite => new Uri("http://caldavsynchronizer.org/");
+    public static Uri ProjectHomeSite => new Uri("https://caldavsynchronizer.org/");
   }
 }
