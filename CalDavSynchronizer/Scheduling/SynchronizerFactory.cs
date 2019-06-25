@@ -20,8 +20,10 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
 using System.Security;
+using System.Text;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
@@ -292,15 +294,9 @@ namespace CalDavSynchronizer.Scheduling
           var httpClientHandler = new HttpClientHandler();
           if (!string.IsNullOrEmpty (username))
           {
-            var credentials = new NetworkCredential (username, password);
-            if (forceBasicAuthentication)
+            if (!forceBasicAuthentication)
             {
-              var cache = new CredentialCache();
-              cache.Add (new Uri (new Uri (serverUrl).GetLeftPart (UriPartial.Authority)), "Basic", credentials);
-              httpClientHandler.Credentials = cache;
-            }
-            else
-            {
+              var credentials = new NetworkCredential (username, password);
               httpClientHandler.Credentials = credentials;
             }
 
@@ -309,10 +305,20 @@ namespace CalDavSynchronizer.Scheduling
           }
           httpClientHandler.Proxy = proxy;
           httpClientHandler.UseProxy = (proxy != null);
+
           if (enableClientCertificate)
+          {
             httpClientHandler.ClientCertificateOptions = ClientCertificateOption.Automatic;
+          }
 
           var httpClient = new HttpClient (httpClientHandler);
+          if (forceBasicAuthentication && !string.IsNullOrEmpty (username))
+          {
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue (
+                "Basic", 
+                Convert.ToBase64String (Encoding.UTF8.GetBytes ($"{username}:{SecureStringUtility.ToUnsecureString (password)}"))
+              );
+          }
           httpClient.Timeout = calDavConnectTimeout;
           return httpClient;
         case ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth:
