@@ -163,10 +163,10 @@ namespace CalDavSynchronizer.Ui
       // _checkForUpdatesButton
       // 
       this._checkForUpdatesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this._checkForUpdatesButton.Location = new System.Drawing.Point(337, 529);
+      this._checkForUpdatesButton.Location = new System.Drawing.Point(287, 529);
       this._checkForUpdatesButton.Margin = new System.Windows.Forms.Padding(4);
       this._checkForUpdatesButton.Name = "_checkForUpdatesButton";
-      this._checkForUpdatesButton.Size = new System.Drawing.Size(149, 28);
+      this._checkForUpdatesButton.Size = new System.Drawing.Size(199, 28);
       this._checkForUpdatesButton.TabIndex = 10;
       this._checkForUpdatesButton.Text = "Check for Updates";
       this._checkForUpdatesButton.UseVisualStyleBackColor = true;

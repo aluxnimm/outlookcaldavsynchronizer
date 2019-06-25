@@ -118,9 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="_licenseTextBox.Text" xml:space="preserve">
-    <value>CalDavSynchronizer (http://caldavsynchronizer.org/)
-Copyright (c) 2015-2017 Gerhard Zehetbauer
-Copyright (c) 2015-2017 Alexander Nimmervoll
+    <value>CalDavSynchronizer (https://caldavsynchronizer.org/)
+Copyright (c) 2015-2019 Gerhard Zehetbauer
+Copyright (c) 2015-2019 Alexander Nimmervoll
 powered by Generalize-IT Solutions OG, 1210 Vienna, Austria
 
 This program is free software: you can redistribute it and/or modify
