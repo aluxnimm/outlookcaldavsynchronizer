@@ -121,6 +121,14 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 3.6.2 ####
+- Released 2019/06/26
+- Bug fixes
+	- Manually set authorization header if forceBasicAuthentication is checked to fix issues with some server configs which fail with 401 otherwise.
+	- Update WebResourcUrls to https.
+	- Update AboutForm layout and LicenseInfo text.
+	- Fix global options for Integration test.
+
 #### 3.6.1 ####
 - Released 2019/04/23
 - Bug fixes
