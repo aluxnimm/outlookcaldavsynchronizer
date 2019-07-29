@@ -234,6 +234,8 @@ namespace CalDavSynchronizer
       }
 
       _oneTimeTaskRunner = new OneTimeTaskRunner(_outlookSession);
+
+      DDayICalWorkaround.DDayICalCustomization.InitializeNoThrow();
     }
 
     private void PermanentStatusesViewModel_OptionsRequesting(object sender, OptionsEventArgs e)
