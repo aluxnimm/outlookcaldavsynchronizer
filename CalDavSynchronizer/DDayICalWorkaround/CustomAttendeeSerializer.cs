@@ -32,9 +32,12 @@ namespace CalDavSynchronizer.DDayICalWorkaround
         {
           string uriString = Unescape(Decode(a, value));
 
-          // Prepend "mailto:" if necessary
-          if (!uriString.StartsWith("mailto:", StringComparison.InvariantCultureIgnoreCase))
+          // Prepend "mailto:" only if uriString doesn't start with mailto: or urn: 
+          if (!(uriString.StartsWith("mailto:", StringComparison.InvariantCultureIgnoreCase) ||
+                uriString.StartsWith("urn:", StringComparison.InvariantCultureIgnoreCase)))
+          {
             uriString = "mailto:" + uriString;
+          }
 
           a.Value = new Uri(uriString);
         }
