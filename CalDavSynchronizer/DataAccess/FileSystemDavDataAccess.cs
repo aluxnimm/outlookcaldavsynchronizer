@@ -64,6 +64,11 @@ namespace CalDavSynchronizer.DataAccess
       return null;
     }
 
+    public Task<Uri> GetResourceUriOrNull(string displayName)
+    {
+      return null;
+    }
+
     public Task<AccessPrivileges> GetPrivileges()
     {
       return Task.FromResult (AccessPrivileges.All);

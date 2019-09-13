@@ -67,7 +67,7 @@ namespace CalDavSynchronizer.DataAccess
     }
 
     private async Task<CalendarOwnerProperties> GetCalendarOwnerPropertiesOrNull (Uri resourceUri)
-    { 
+    {
       var owner = await GetOwnerUrlOrNull (resourceUri);
       var currentUserPrincipal = await GetCurrentUserPrincipalUrlOrNull (resourceUri);
 
@@ -90,7 +90,64 @@ namespace CalDavSynchronizer.DataAccess
       return null;
     }
 
-    public async Task<string> GetUserEmailAddressOrNull(Uri userPrincipalUrl)
+    public async Task<Uri> GetResourceUriOrNull(string displayName)
+    {
+      
+      var resourceProperties = await ResourcePropSearchReport(displayName);
+
+      var responseNodes = resourceProperties.XmlDocument.SelectNodes("/D:multistatus/D:response", resourceProperties.XmlNamespaceManager);
+
+      if (responseNodes == null) return null;
+
+      foreach (XmlElement responseElement in responseNodes)
+      {
+        var resourceIdNode = responseElement.SelectSingleNode("D:propstat/D:prop/D:resource-id", resourceProperties.XmlNamespaceManager);
+        var calendarUsertypeNode = responseElement.SelectSingleNode("D:propstat/D:prop/C:calendar-user-type", resourceProperties.XmlNamespaceManager);
+        if (resourceIdNode != null && calendarUsertypeNode != null)
+        {
+          if (!string.IsNullOrEmpty(calendarUsertypeNode.InnerText) && !string.IsNullOrEmpty(resourceIdNode.InnerText))
+          {
+            if (StringComparer.InvariantCultureIgnoreCase.Compare(calendarUsertypeNode.InnerText,"ROOM") == 0 ||
+                StringComparer.InvariantCultureIgnoreCase.Compare(calendarUsertypeNode.InnerText,"RESOURCE") == 0 )
+            {
+              return new Uri(resourceIdNode.InnerText);
+            }
+          }
+        }
+      }
+
+      return null;
+    }
+
+    private Task<XmlDocumentWithNamespaceManager> ResourcePropSearchReport(string displayName)
+    { 
+      return _webDavClient.ExecuteWebDavRequestAndReadResponse(
+      _serverUrl,
+      "REPORT",
+      0,
+      null,
+      null,
+      "application/xml",
+      $@"<?xml version='1.0'?>
+                        <D:principal-property-search xmlns:D=""DAV:"" xmlns:C=""urn:ietf:params:xml:ns:caldav"">
+                            <D:property-search>
+                                <D:prop>
+                                    <D:displayname/>
+                                </D:prop>
+                                <D:match match-type=""equals"">{displayName}</D:match>
+                            </D:property-search>
+                            <D:prop>
+                                <D:displayname/>
+                                <D:resource-id/>
+                                <C:calendar-user-type/>
+                            </D:prop> 
+                            <D:apply-to-principal-collection-set/>
+                        </D:principal-property-search>
+                 "
+      );
+  }
+
+  public async Task<string> GetUserEmailAddressOrNull(Uri userPrincipalUrl)
     {
       var userAddressSetProperties = await GetUserAddressSet(userPrincipalUrl);
       var userAddressSetNode = userAddressSetProperties.XmlDocument.SelectSingleNode("/D:multistatus/D:response/D:propstat/D:prop/C:calendar-user-address-set", userAddressSetProperties.XmlNamespaceManager);

@@ -33,6 +33,7 @@ namespace CalDavSynchronizer.DataAccess
     Task<bool> IsCalendarAccessSupported ();
     Task<bool> IsCalendarProxySupported (Uri principalUrl);
     Task<CalendarOwnerProperties> GetCalendarOwnerPropertiesOrNull ();
+    Task<Uri> GetResourceUriOrNull (string displayName);
     Task<AccessPrivileges> GetPrivileges ();
 
     Task<ArgbColor?> GetCalendarColorNoThrow ();
