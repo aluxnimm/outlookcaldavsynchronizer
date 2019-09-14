@@ -9,11 +9,12 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   |   |   NullDaslFilterProvider
 |   |   |   |   |   NullQueryOutlookFolderStrategy
 |   |   |   |   |   OutlookSessionStub
-|   |   |   BatchEntityRepositoryAdapter<WebResourceName, String, vCard, ICardDavRepositoryLogger>
-|   |   |   |   ExceptionHandlingStrategy
-|   |   |   |   LoggingCardDavRepositoryDecorator
-|   |   |   |   |   CardDavRepository<Int32>
-|   |   |   |   |   |   vCardStandardWriter
+|   |   |   BatchWriteOnlyEntityRepositoryRunInBackgroundDecorator<WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   BatchEntityRepositoryAdapter<WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   |   ExceptionHandlingStrategy
+|   |   |   |   |   LoggingCardDavRepositoryDecorator
+|   |   |   |   |   |   CardDavRepository<Int32>
+|   |   |   |   |   |   |   vCardStandardWriter
 |   |   |   ContactMatchDataFactory
 |   |   |   EntityRelationDataAccess<String, DateTime, OutlookContactRelationData, WebResourceName, String>
 |   |   |   EntitySyncStateChunkCreator<String, DateTime, IContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
@@ -27,12 +28,6 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   GenericEqualityComparer<String>
 |   |   |   IdentityMatchDataFactory<vCard>
 |   |   |   InitialContactEntityMatcher
-|   |   |   LoggingCardDavRepositoryDecorator
-|   |   |   |   CardDavRepository<Int32>
-|   |   |   |   |   vCardStandardWriter
-|   |   |   LoggingStateAwareCardDavRepositoryDecorator
-|   |   |   |   CardDavRepository<Int32>
-|   |   |   |   |   vCardStandardWriter
 |   |   |   NullChunkedExecutor
 |   |   |   NullSynchronizationInterceptorFactory<String, DateTime, IContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
 |   |   |   NullTotalProgressFactory
@@ -42,6 +37,14 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   |   NullDaslFilterProvider
 |   |   |   |   NullQueryOutlookFolderStrategy
 |   |   |   |   OutlookSessionStub
+|   |   |   ReadOnlyEntityRepositoryRunInBackgroundDecorator<WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   LoggingCardDavRepositoryDecorator
+|   |   |   |   |   CardDavRepository<Int32>
+|   |   |   |   |   |   vCardStandardWriter
+|   |   |   StateAwareEntityRepositoryRunInBackgroundDecorator<WebResourceName, String, ICardDavRepositoryLogger, String>
+|   |   |   |   LoggingStateAwareCardDavRepositoryDecorator
+|   |   |   |   |   CardDavRepository<Int32>
+|   |   |   |   |   |   vCardStandardWriter
 |   |   |   StateTokensDataAccess<Int32, String>
 |   |   |   TwoWayInitialSyncStateCreationStrategy<String, DateTime, IContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
 |   |   |   |   ContactConflictInitialSyncStateCreationStrategyAutomatic

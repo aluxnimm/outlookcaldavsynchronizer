@@ -9,11 +9,12 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   |   |   NullDaslFilterProvider
 |   |   |   |   |   NullQueryOutlookFolderStrategy
 |   |   |   |   |   OutlookSessionStub
-|   |   |   BatchEntityRepositoryAdapter<WebResourceName, String, vCard, ICardDavRepositoryLogger>
-|   |   |   |   ExceptionHandlingStrategy
-|   |   |   |   LoggingCardDavRepositoryDecorator
-|   |   |   |   |   CardDavRepository<Int32>
-|   |   |   |   |   |   vCardStandardWriter
+|   |   |   BatchWriteOnlyEntityRepositoryRunInBackgroundDecorator<WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   BatchEntityRepositoryAdapter<WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   |   ExceptionHandlingStrategy
+|   |   |   |   |   LoggingCardDavRepositoryDecorator
+|   |   |   |   |   |   CardDavRepository<Int32>
+|   |   |   |   |   |   |   vCardStandardWriter
 |   |   |   ContactMatchDataFactory
 |   |   |   EntityRelationDataAccess<String, DateTime, OutlookContactRelationData, WebResourceName, String>
 |   |   |   EntitySyncStateChunkCreator<String, DateTime, IContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
@@ -27,9 +28,6 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   GenericEqualityComparer<String>
 |   |   |   IdentityMatchDataFactory<vCard>
 |   |   |   InitialContactEntityMatcher
-|   |   |   LoggingCardDavRepositoryDecorator
-|   |   |   |   CardDavRepository<Int32>
-|   |   |   |   |   vCardStandardWriter
 |   |   |   NullChunkedExecutor
 |   |   |   NullStateTokensDataAccess<Int32, String>
 |   |   |   NullSynchronizationInterceptorFactory<String, DateTime, IContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
@@ -40,6 +38,17 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   |   NullDaslFilterProvider
 |   |   |   |   NullQueryOutlookFolderStrategy
 |   |   |   |   OutlookSessionStub
+|   |   |   ReadOnlyEntityRepositoryRunInBackgroundDecorator<WebResourceName, String, vCard, ICardDavRepositoryLogger>
+|   |   |   |   LoggingCardDavRepositoryDecorator
+|   |   |   |   |   CardDavRepository<Int32>
+|   |   |   |   |   |   vCardStandardWriter
+|   |   |   StateAwareEntityRepositoryRunInBackgroundDecorator<WebResourceName, String, ICardDavRepositoryLogger, String>
+|   |   |   |   VersionAwareToStateAwareEntityRepositoryAdapter<WebResourceName, String, ICardDavRepositoryLogger, String>
+|   |   |   |   |   GenericEqualityComparer<String>
+|   |   |   |   |   LoggingCardDavRepositoryDecorator
+|   |   |   |   |   |   CardDavRepository<Int32>
+|   |   |   |   |   |   |   vCardStandardWriter
+|   |   |   |   |   WebResourceNameEqualityComparer
 |   |   |   TwoWayInitialSyncStateCreationStrategy<String, DateTime, IContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
 |   |   |   |   ContactConflictInitialSyncStateCreationStrategyAutomatic
 |   |   |   |   |   EntitySyncStateEnvironment<String, DateTime, IContactItemWrapper, WebResourceName, String, vCard, ICardDavRepositoryLogger>
@@ -53,10 +62,4 @@ OutlookSynchronizer<WebResourceName, String>
 |   |   |   |   |   NullDaslFilterProvider
 |   |   |   |   |   NullQueryOutlookFolderStrategy
 |   |   |   |   |   OutlookSessionStub
-|   |   |   VersionAwareToStateAwareEntityRepositoryAdapter<WebResourceName, String, ICardDavRepositoryLogger, String>
-|   |   |   |   GenericEqualityComparer<String>
-|   |   |   |   LoggingCardDavRepositoryDecorator
-|   |   |   |   |   CardDavRepository<Int32>
-|   |   |   |   |   |   vCardStandardWriter
-|   |   |   |   WebResourceNameEqualityComparer
 |   |   |   WebResourceNameEqualityComparer
