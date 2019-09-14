@@ -297,6 +297,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>StringResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Implementation\Events\CalendarResourceResolver.cs" />
+    <Compile Include="Implementation\Events\ICalendarResourceResolver.cs" />
     <Compile Include="IOneTimeTaskRunner.cs" />
     <Compile Include="OneTimeTaskRunner.cs" />
     <Compile Include="ComponentContainer.cs" />

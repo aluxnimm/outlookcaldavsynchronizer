@@ -29,6 +29,7 @@ using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.TimeZones;
 using CalDavSynchronizer.Conversions;
+using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Utilities;
 using DDay.iCal;
 using GenSync.EntityMapping;
@@ -68,17 +69,20 @@ namespace CalDavSynchronizer.Implementation.Events
     private readonly ITimeZoneCache _timeZoneCache;
     private readonly IOutlookTimeZones _outlookTimeZones;
     private readonly DocumentConverter _documentConverter;
+    private readonly ICalendarResourceResolver _calendarResourceResolver;
 
-    public EventEntityMapper (
-        string outlookEmailAddress,
-        Uri serverEmailAddress,
-        string localTimeZoneId,
-        string outlookApplicationVersion,
-        ITimeZoneCache timeZoneCache,
-        EventMappingConfiguration configuration, 
-        ITimeZone configuredEventTimeZoneOrNull,
-        IOutlookTimeZones outlookTimeZones)
+    public EventEntityMapper(
+      string outlookEmailAddress,
+      Uri serverEmailAddress,
+      string localTimeZoneId,
+      string outlookApplicationVersion,
+      ITimeZoneCache timeZoneCache,
+      EventMappingConfiguration configuration,
+      ITimeZone configuredEventTimeZoneOrNull,
+      IOutlookTimeZones outlookTimeZones,
+      ICalendarResourceResolver calendarResourceResolver)
     {
+      _calendarResourceResolver = calendarResourceResolver ?? throw new ArgumentNullException(nameof(calendarResourceResolver));
       _outlookEmailAddress = outlookEmailAddress;
       _configuration = configuration;
       _configuredEventTimeZoneOrNull = configuredEventTimeZoneOrNull;
@@ -88,8 +92,8 @@ namespace CalDavSynchronizer.Implementation.Events
       _timeZoneCache = timeZoneCache;
       _documentConverter = new DocumentConverter();
 
-      string outlookMajorVersionString = outlookApplicationVersion.Split (new char[] { '.' })[0];
-      _outlookMajorVersion = Convert.ToInt32 (outlookMajorVersionString);
+      string outlookMajorVersionString = outlookApplicationVersion.Split(new char[] {'.'})[0];
+      _outlookMajorVersion = Convert.ToInt32(outlookMajorVersionString);
     }
 
     public async Task<IICalendar> Map1To2 (IAppointmentItemWrapper sourceWrapper, IICalendar existingTargetCalender, IEntitySynchronizationLogger logger, IEventSynchronizationContext context)
