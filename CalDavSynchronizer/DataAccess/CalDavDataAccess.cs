@@ -92,37 +92,46 @@ namespace CalDavSynchronizer.DataAccess
 
     public async Task<Uri> GetResourceUriOrNull(string displayName)
     {
-      
-      var resourceProperties = await ResourcePropSearchReport(displayName);
-
+      XmlDocumentWithNamespaceManager resourceProperties;
+      try
+      {
+        var currentUserPrincipal = await GetCurrentUserPrincipalUrlOrNull (_serverUrl);
+        resourceProperties = await ResourcePropSearchReport(currentUserPrincipal ?? _serverUrl, displayName);
+      }
+      catch (Exception x)
+      {
+        s_logger.Info("Ignoring error, because some servers don't support principal-property-search reports.", x);
+        return null;
+      }
       var responseNodes = resourceProperties.XmlDocument.SelectNodes("/D:multistatus/D:response", resourceProperties.XmlNamespaceManager);
 
       if (responseNodes == null) return null;
 
       foreach (XmlElement responseElement in responseNodes)
       {
+        var displayNameNode = responseElement.SelectSingleNode("D:propstat/D:prop/D:displayname", resourceProperties.XmlNamespaceManager);
         var resourceIdNode = responseElement.SelectSingleNode("D:propstat/D:prop/D:resource-id", resourceProperties.XmlNamespaceManager);
         var calendarUsertypeNode = responseElement.SelectSingleNode("D:propstat/D:prop/C:calendar-user-type", resourceProperties.XmlNamespaceManager);
-        if (resourceIdNode != null && calendarUsertypeNode != null)
+       
+        if ( !string.IsNullOrEmpty(displayNameNode?.InnerText) && 
+             !string.IsNullOrEmpty(calendarUsertypeNode?.InnerText) && 
+             !string.IsNullOrEmpty(resourceIdNode?.InnerText) )
         {
-          if (!string.IsNullOrEmpty(calendarUsertypeNode.InnerText) && !string.IsNullOrEmpty(resourceIdNode.InnerText))
+          if ( StringComparer.InvariantCultureIgnoreCase.Compare(displayNameNode.InnerText, displayName) == 0 &&
+               ( StringComparer.InvariantCultureIgnoreCase.Compare(calendarUsertypeNode.InnerText, "ROOM") == 0 ||
+                 StringComparer.InvariantCultureIgnoreCase.Compare(calendarUsertypeNode.InnerText, "RESOURCE") == 0 ))
           {
-            if (StringComparer.InvariantCultureIgnoreCase.Compare(calendarUsertypeNode.InnerText,"ROOM") == 0 ||
-                StringComparer.InvariantCultureIgnoreCase.Compare(calendarUsertypeNode.InnerText,"RESOURCE") == 0 )
-            {
-              return new Uri(resourceIdNode.InnerText);
-            }
+            return new Uri(resourceIdNode.InnerText);
           }
         }
       }
-
       return null;
     }
 
-    private Task<XmlDocumentWithNamespaceManager> ResourcePropSearchReport(string displayName)
+    private Task<XmlDocumentWithNamespaceManager> ResourcePropSearchReport(Uri principalUri, string displayName)
     { 
       return _webDavClient.ExecuteWebDavRequestAndReadResponse(
-      _serverUrl,
+      principalUri,
       "REPORT",
       0,
       null,
