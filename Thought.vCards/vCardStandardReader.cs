@@ -1072,10 +1072,12 @@ namespace Thought.vCards
 
         case "KIND":
         case "X-ADDRESSBOOKSERVER-KIND":
+        case "X-KIND":
           ReadInto_KIND(card, property);
 			    break;
         case "MEMBER":
         case "X-ADDRESSBOOKSERVER-MEMBER":
+        case "X-MEMBER":
           ReadInto_MEMBER(card, property);
 			    break;
 
