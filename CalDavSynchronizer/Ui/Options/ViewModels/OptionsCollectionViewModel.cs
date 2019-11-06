@@ -119,7 +119,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
 
       reportBuilder.AppendLine (Strings.Get($"Sucessfully imported {newOptions.Length} profile(s) from '{fileName}'."));
 
-      _uiService.ShowReport (Strings.Get($"Export profiles"), reportBuilder.ToString ());
+      _uiService.ShowReport (Strings.Get($"Import profiles"), reportBuilder.ToString ());
     }
 
     private void ExportAll()
