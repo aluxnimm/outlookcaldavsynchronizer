@@ -399,7 +399,11 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
       target.Inner.Status = (target.Inner.Complete && target.Inner.PercentComplete == 100) ? OlTaskStatus.olTaskComplete : MapStatus2To1 (source.Status);
 
-      target.Inner.PercentComplete = source.PercentComplete;
+      // Only set PercentComplete if source is actually set and status is not already completed to avoid overwriting the status again
+      if (source.PercentComplete != 0 && target.Inner.Status != OlTaskStatus.olTaskComplete)
+      {
+        target.Inner.PercentComplete = source.PercentComplete;
+      }
 
       if (_configuration.MapPriority)
         target.Inner.Importance = CommonEntityMapper.MapPriority2To1 (source.Priority);
