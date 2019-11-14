@@ -121,6 +121,16 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 3.7.0 ####
+- Released 2019/11/14
+- New features
+	- Add support for resources with urn:uuid values and EMAIL property in attendees.
+	- Add principal-property-search report to find resource id from displayname.
+	- Add support for X-KIND and X-MEMBER in vCard for contact groups, ticket #1267.
+- Bug fixes
+	- Fix mapping of completed tasks if PercentComplete is not set. Tickets #1211 and #1273.
+	- Fix import profile windows title, ticket #1235.
+
 #### 3.6.2 ####
 - Released 2019/06/26
 - Bug fixes
