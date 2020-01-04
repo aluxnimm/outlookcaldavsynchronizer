@@ -85,7 +85,7 @@ namespace CalDavSynchronizer.Scheduling
     private readonly IComWrapperFactory _comWrapperFactory;
     private readonly IOptionsDataAccess _optionsDataAccess;
     private readonly IProfileTypeRegistry _profileTypeRegistry;
-    private readonly IEqualityComparer<DateTime> _atypeVersionComparer = EqualityComparer<DateTime>.Default;
+    private readonly IEqualityComparer<DateTime> _atypeVersionComparer;
 
     public SynchronizerFactory (Func<Guid, string> profileDataDirectoryFactory, ITotalProgressFactory totalProgressFactory, IOutlookSession outlookSession, IDaslFilterProvider daslFilterProvider, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, GlobalTimeZoneCache globalTimeZoneCache, IQueryOutlookFolderStrategy queryFolderStrategy, IExceptionHandlingStrategy exceptionHandlingStrategy, IComWrapperFactory comWrapperFactory, IOptionsDataAccess optionsDataAccess, IProfileTypeRegistry profileTypeRegistry)
     {
@@ -98,7 +98,7 @@ namespace CalDavSynchronizer.Scheduling
       if (profileTypeRegistry == null) throw new ArgumentNullException(nameof(profileTypeRegistry));
 
       _outlookEmailAddress = outlookSession.GetCurrentUserEmailAddressOrNull() ?? string.Empty;
-     
+      _atypeVersionComparer = new DateTimeEqualityComparer();
 
       _totalProgressFactory = totalProgressFactory;
       _outlookSession = outlookSession;

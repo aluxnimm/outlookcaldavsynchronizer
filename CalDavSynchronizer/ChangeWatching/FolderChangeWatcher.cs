@@ -91,7 +91,7 @@ namespace CalDavSynchronizer.ChangeWatching
         if (appointment.MeetingStatus != OlMeetingStatus.olMeetingReceived)
         {
           s_logger.Debug ($"'{nameof (ItemAction)}.{action}': Appointment '{appointment.Subject}' '{appointment.EntryID}' ");
-          entryId = new AppointmentId(new Implementation.Events.AppointmentId(appointment.EntryID, appointment.GlobalAppointmentID), appointment.LastModificationTime, wasDeleted);
+          entryId = new AppointmentId(new Implementation.Events.AppointmentId(appointment.EntryID, appointment.GlobalAppointmentID), appointment.LastModificationTime.ToUniversalTime(), wasDeleted);
         }
       }
       else
@@ -100,7 +100,7 @@ namespace CalDavSynchronizer.ChangeWatching
         if (task != null)
         {
           s_logger.Debug ($"'{nameof (ItemAction)}.{action}': Task '{task.Subject}' '{task.EntryID}' ");
-          entryId = new GenericId(task.EntryID, task.LastModificationTime, wasDeleted);
+          entryId = new GenericId(task.EntryID, task.LastModificationTime.ToUniversalTime(), wasDeleted);
         }
         else
         {
@@ -108,7 +108,7 @@ namespace CalDavSynchronizer.ChangeWatching
           if (contact != null)
           {
             s_logger.Debug ($"'{nameof (ItemAction)}.{action}': Contact '{contact.LastNameAndFirstName}' '{contact.EntryID}' ");
-            entryId = new GenericId (contact.EntryID, contact.LastModificationTime, wasDeleted);
+            entryId = new GenericId (contact.EntryID, contact.LastModificationTime.ToUniversalTime(), wasDeleted);
           }
         }
       }

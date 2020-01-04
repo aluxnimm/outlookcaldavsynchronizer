@@ -76,7 +76,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
               .Select (id => _session.GetContactItemOrNull (id.Id, _folderId, _folderStoreId))
               .Where (e => e != null)
               .ToSafeEnumerable ()
-              .Select (c => EntityVersion.Create (c.EntryID, c.LastModificationTime))
+              .Select (c => EntityVersion.Create (c.EntryID, c.LastModificationTime.ToUniversalTime()))
               .ToList ());
     }
 
@@ -150,7 +150,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
     {
       entityToUpdate = await entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save ();
-      return new EntityVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime);
+      return new EntityVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime.ToUniversalTime());
     }
 
     public Task<bool> TryDelete (
@@ -239,7 +239,7 @@ namespace CalDavSynchronizer.Implementation.Contacts
         using (initializedWrapper)
         {
           initializedWrapper.SaveAndReload ();
-          var result = new EntityVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime);
+          var result = new EntityVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime.ToUniversalTime());
           return result;
         }
       }

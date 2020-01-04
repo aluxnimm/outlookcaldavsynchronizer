@@ -103,7 +103,7 @@ namespace CalDavSynchronizer.Implementation.Common
           DateTime lastModificationTime;
           if (lastModificationTimeObject != null)
           {
-            lastModificationTime = (DateTime) lastModificationTimeObject;
+            lastModificationTime = ((DateTime) lastModificationTimeObject).ToUniversalTime();
           }
           else
           {
@@ -138,7 +138,7 @@ namespace CalDavSynchronizer.Implementation.Common
             end = null;
           }
           
-          events.Add(new AppointmentSlim(EntityVersion.Create(appointmentId, lastModificationTime), start, end, subject));
+          events.Add(new AppointmentSlim(EntityVersion.Create(appointmentId, lastModificationTime.ToUniversalTime()), start, end, subject));
         }
       }
       return events;
@@ -192,7 +192,7 @@ namespace CalDavSynchronizer.Implementation.Common
           DateTime lastModificationTime;
           if (lastModificationTimeObject != null)
           {
-            lastModificationTime = (DateTime)lastModificationTimeObject;
+            lastModificationTime = ((DateTime)lastModificationTimeObject).ToUniversalTime();
           }
           else
           {
@@ -201,7 +201,7 @@ namespace CalDavSynchronizer.Implementation.Common
             lastModificationTime = OutlookUtility.OUTLOOK_DATE_NONE;
           }
 
-          versions.Add (new EntityVersion<string, DateTime> (entryId, lastModificationTime));
+          versions.Add (new EntityVersion<string, DateTime> (entryId, lastModificationTime.ToUniversalTime()));
         }
       }
 

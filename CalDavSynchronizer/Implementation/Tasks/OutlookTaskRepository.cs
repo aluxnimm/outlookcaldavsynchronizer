@@ -83,7 +83,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
           {
             if (_configuration.IsCategoryFilterSticky && id.IsKnown || DoesMatchCategoryCriterion (task))
             {
-              result.Add (EntityVersion.Create (id.Id, task.LastModificationTime));
+              result.Add (EntityVersion.Create (id.Id, task.LastModificationTime.ToUniversalTime()));
             }
           }
           finally
@@ -140,7 +140,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
                 .Select(id => _session.GetTaskItemOrNull(id, _folderId, _folderStoreId))
                 .Where(i => i != null)
                 .ToSafeEnumerable()
-                .Select(t => new EntityVersion<string, DateTime> (t.EntryID, t.LastModificationTime)));
+                .Select(t => new EntityVersion<string, DateTime> (t.EntryID, t.LastModificationTime.ToUniversalTime())));
       }
 
       return Task.FromResult<IEnumerable<EntityVersion<string, DateTime>>> (tasks);
@@ -210,7 +210,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
     {
       entityToUpdate = await entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save();
-      return new EntityVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime);
+      return new EntityVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime.ToUniversalTime());
     }
 
     public Task<bool> TryDelete (
@@ -261,7 +261,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
         using (initializedWrapper)
         {
           initializedWrapper.SaveAndReload();
-          var result = new EntityVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime);
+          var result = new EntityVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime.ToUniversalTime());
           return result;
         }
       }

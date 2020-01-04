@@ -27,7 +27,7 @@ namespace CalDavSynchronizer.Implementation.Events
     public static AppointmentSlim FromAppointmentItem(AppointmentItem item)
     {
       return new AppointmentSlim(
-        new EntityVersion<AppointmentId, DateTime>(new AppointmentId(item.EntryID, item.GlobalAppointmentID), item.LastModificationTime),
+        new EntityVersion<AppointmentId, DateTime>(new AppointmentId(item.EntryID, item.GlobalAppointmentID), item.LastModificationTime.ToUniversalTime()),
         item.Start,
         item.End,
         item.Subject);

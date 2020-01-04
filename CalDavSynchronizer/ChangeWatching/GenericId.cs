@@ -26,7 +26,7 @@ namespace CalDavSynchronizer.ChangeWatching
 
     public GenericId (string entryId, DateTime lastModificationTime, bool wasDeleted)
     {
-      Inner = IdWithHints.Create (entryId, (DateTime?) lastModificationTime, wasDeleted);
+      Inner = IdWithHints.Create (entryId, (DateTime?) lastModificationTime.ToUniversalTime(), wasDeleted);
     }
 
     public string EntryId => Inner.Id;

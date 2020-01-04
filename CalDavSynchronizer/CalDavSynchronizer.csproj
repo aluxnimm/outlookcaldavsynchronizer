@@ -471,6 +471,7 @@
     <Compile Include="Scheduling\ComponentCollectors\AvailableTaskSynchronizerComponents.cs" />
     <Compile Include="Scheduling\ComponentCollectors\AvailableContactSynchronizerComponents.cs" />
     <Compile Include="Scheduling\ComponentCollectors\DataAccessComponents.cs" />
+    <Compile Include="Scheduling\DateTimeEqualityComparer.cs" />
     <Compile Include="Scheduling\SynchronizationProfileRunner.ErrorHandlingStrategy.cs" />
     <Compile Include="StartupComponentContainer.cs" />
     <Compile Include="LoadErrorComponentContainer.cs" />

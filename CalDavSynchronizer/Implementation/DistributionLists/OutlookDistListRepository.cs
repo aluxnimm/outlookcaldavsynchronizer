@@ -74,7 +74,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
               .Select (id => _session.GetDistListItemOrNull (id.Id, _folderId, _folderStoreId))
               .Where (e => e != null)
               .ToSafeEnumerable ()
-              .Select (c => EntityVersion.Create (c.EntryID, c.LastModificationTime))
+              .Select (c => EntityVersion.Create (c.EntryID, c.LastModificationTime.ToUniversalTime()))
               .ToList ());
     }
 
@@ -139,7 +139,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
     {
       entityToUpdate = await entityModifier (entityToUpdate);
       entityToUpdate.Inner.Save ();
-      return new EntityVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime);
+      return new EntityVersion<string, DateTime> (entityToUpdate.Inner.EntryID, entityToUpdate.Inner.LastModificationTime.ToUniversalTime());
     }
 
     public Task<bool> TryDelete (
@@ -175,7 +175,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists
         using (var initializedWrapper = await entityInitializer (newWrapper))
         {
           initializedWrapper.Inner.Save();
-          var result = new EntityVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime);
+          var result = new EntityVersion<string, DateTime> (initializedWrapper.Inner.EntryID, initializedWrapper.Inner.LastModificationTime.ToUniversalTime());
           return result;
         }
       }

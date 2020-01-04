@@ -27,7 +27,7 @@ namespace CalDavSynchronizer.ChangeWatching
 
     public AppointmentId (Implementation.Events.AppointmentId appointmentId, DateTime lastModificationTime, bool wasDeleted)
     {
-      Inner = IdWithHints.Create(appointmentId, (DateTime?) lastModificationTime, wasDeleted);
+      Inner = IdWithHints.Create(appointmentId, (DateTime?) lastModificationTime.ToUniversalTime(), wasDeleted);
     }
 
     public string EntryId => Inner.Id.EntryId;

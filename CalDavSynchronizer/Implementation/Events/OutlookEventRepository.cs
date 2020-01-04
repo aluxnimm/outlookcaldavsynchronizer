@@ -99,7 +99,7 @@ namespace CalDavSynchronizer.Implementation.Events
           {
             if (_configuration.IsCategoryFilterSticky && id.IsKnown || DoesMatchCategoryCriterion (appointment))
             {
-              result.Add (EntityVersion.Create (id.Id, appointment.LastModificationTime));
+              result.Add (EntityVersion.Create (id.Id, appointment.LastModificationTime.ToUniversalTime()));
               context.DuplicateEventCleaner.AnnounceAppointment (AppointmentSlim.FromAppointmentItem(appointment));
             }
           }
@@ -257,7 +257,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
       return new EntityVersion<AppointmentId, DateTime> (
         newAppointmentId, 
-        entityToUpdate.Inner.LastModificationTime);
+        entityToUpdate.Inner.LastModificationTime.ToUniversalTime());
     }
 
     public Task<bool> TryDelete (AppointmentId entityId, DateTime version, IEventSynchronizationContext context, IEntitySynchronizationLogger logger)
@@ -298,7 +298,7 @@ namespace CalDavSynchronizer.Implementation.Events
             context.DuplicateEventCleaner.AnnounceAppointment(AppointmentSlim.FromAppointmentItem(initializedWrapper.Inner));
             var result = new EntityVersion<AppointmentId, DateTime>(
               new AppointmentId(initializedWrapper.Inner.EntryID, initializedWrapper.Inner.GlobalAppointmentID),
-              initializedWrapper.Inner.LastModificationTime);
+              initializedWrapper.Inner.LastModificationTime.ToUniversalTime());
             return result;
           }
         }

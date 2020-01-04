@@ -95,7 +95,7 @@ namespace CalDavSynchronizer.Implementation.Common
           {
             using (var contactWrapper = GenericComObjectWrapper.Create (contact))
             {
-              contacts.Add (new EntityVersion<string, DateTime> (contactWrapper.Inner.EntryID, contactWrapper.Inner.LastModificationTime));
+              contacts.Add (new EntityVersion<string, DateTime> (contactWrapper.Inner.EntryID, contactWrapper.Inner.LastModificationTime.ToUniversalTime()));
             }
           }
         }
@@ -125,7 +125,7 @@ namespace CalDavSynchronizer.Implementation.Common
           {
             using (var taskWrapper = GenericComObjectWrapper.Create (session.GetTaskItem (entryId, storeId)))
             {
-              tasks.Add (new EntityVersion<string, DateTime> (taskWrapper.Inner.EntryID, taskWrapper.Inner.LastModificationTime));
+              tasks.Add (new EntityVersion<string, DateTime> (taskWrapper.Inner.EntryID, taskWrapper.Inner.LastModificationTime.ToUniversalTime()));
             }
           }
           catch (COMException ex)
@@ -159,7 +159,7 @@ namespace CalDavSynchronizer.Implementation.Common
           {
             using (var contactWrapper = GenericComObjectWrapper.Create (contact))
             {
-              contacts.Add (new EntityVersion<string, DateTime> (contactWrapper.Inner.EntryID, contactWrapper.Inner.LastModificationTime));
+              contacts.Add (new EntityVersion<string, DateTime> (contactWrapper.Inner.EntryID, contactWrapper.Inner.LastModificationTime.ToUniversalTime()));
             }
           }
         }
