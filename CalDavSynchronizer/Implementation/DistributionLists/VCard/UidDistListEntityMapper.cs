@@ -31,15 +31,17 @@ namespace CalDavSynchronizer.Implementation.DistributionLists.VCard
     protected override vCardMember CreateVCardMemberOrNull(GenericComObjectWrapper<Recipient> recipientWrapper, string nameWithoutEmail, DistributionListSychronizationContext context, IEntitySynchronizationLogger synchronizationLogger, ILog logger)
     {
       var uid = context.GetUidByEmailAddress(recipientWrapper.Inner.Address);
-      if (uid == null)
-      {
-        var logMessage = $"Did not find Uid of EmailAddress '{recipientWrapper.Inner.Address}'. Member won't be added to contact group";
-        logger.WarnFormat(logMessage);
-        synchronizationLogger.LogWarning(logMessage);
-      }
-
       var targetMember = new vCardMember();
-      targetMember.Uid = uid;
+
+      if (uid != null)
+      {
+        targetMember.Uid = uid;
+      }
+      else
+      {
+        targetMember.EmailAddress = recipientWrapper.Inner.Address;
+        targetMember.DisplayName = nameWithoutEmail;
+      }
       return targetMember;
     }
 
@@ -47,16 +49,24 @@ namespace CalDavSynchronizer.Implementation.DistributionLists.VCard
     {
       foreach(var member in source.Members)
       {
-        (var contactWrapper, var emailAddress) = context.GetContactByUidOrNull(member.Uid, synchronizationLogger, logger);
-        if (contactWrapper != null)
+        DistributionListMember distributionListMember;
+        if (!string.IsNullOrEmpty(member.Uid))
         {
-          DistributionListMember distributionListMember;
-          using (contactWrapper)
+          (var contactWrapper, var emailAddress) = context.GetContactByUidOrNull(member.Uid, synchronizationLogger, logger);
+          if (contactWrapper != null)
           {
-            distributionListMember = new DistributionListMember(emailAddress, contactWrapper.Inner.FullName);
+            using (contactWrapper)
+            {
+              distributionListMember = new DistributionListMember(emailAddress, contactWrapper.Inner.FullName);
+              yield return distributionListMember;
+            }
           }
-          yield return distributionListMember;
         }
+        else
+        {
+          distributionListMember = new DistributionListMember(member.EmailAddress, member.DisplayName);
+          yield return distributionListMember;
+        } 
       }
     }
   }
