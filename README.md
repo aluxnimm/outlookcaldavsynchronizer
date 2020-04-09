@@ -121,6 +121,15 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 3.8.0 ####
+- Released 2020/04/09
+- New features
+	- Support also external members with email and CN in iCloud groups for DistributionList mapping.
+- Bug fixes
+	- Update Google API and other NuGet packages.
+	- Use Utc for aVersion LastModification timestamps in cache to avoid full resync when Windows timezone changes, ticket #1266.
+	- Update code signing certificate.
+
 #### 3.7.0 ####
 - Released 2019/11/14
 - New features
@@ -1414,7 +1423,8 @@ When enabled in Contact Mapping configuration you can now also sync Outlook Dist
 
 Since Outlook Distribution Lists also support list members which aren't in the addressbook but SOGo VLISTs don't, we add them as custom X-Attributes. With this workaround those members aren't displayed in SOGo but won't get lost when syncing back to Outlook.
 
-Since vCard in version 3.0 doesn't support contact groups we use X-ADDRESSBOOK-SERVER attributes for KIND and MEMBER for contact groups and map the member CN and EMAIL for vCards with KIND:group or the member UID for the icloud groups.
+Since vCard in version 3.0 doesn't support contact groups we use X-ADDRESSBOOK-SERVER attributes for KIND and MEMBER for contact groups. The contact group format 
+*vCard with KIND:group* will map the member CN and EMAIL and the format *iCloud groups* will map the member UID if available or also CN and EMAIL for external members, which are not in the addressbook.
 
 ### Google Calender / Addressbooks / Tasks settings ###
 
