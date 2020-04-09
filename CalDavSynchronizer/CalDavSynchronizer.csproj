@@ -1108,7 +1108,13 @@
     </ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>99D12A4419EA17C4DB056A34FEDAFDC1A576A921</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>1DD03B86FE5C780F60AADFD80FC8963626189ECF</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestTimestampUrl>http://timestamp.comodoca.com/rfc3161</ManifestTimestampUrl>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <!-- Include the build rules for a C# project. -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
