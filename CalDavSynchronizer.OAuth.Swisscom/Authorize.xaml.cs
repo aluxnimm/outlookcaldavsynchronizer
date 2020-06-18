@@ -23,6 +23,11 @@ namespace CalDavSynchronizer.OAuth.Swisscom
         public Authorize(UserAgentClient client)
         {
             InitializeComponent();
+
+            var clientAuthorizationViewWebBrowserOrNull = clientAuthorizationView.Controls.OfType<System.Windows.Forms.WebBrowser>().FirstOrDefault();
+            if (clientAuthorizationViewWebBrowserOrNull != null)
+                clientAuthorizationViewWebBrowserOrNull.ScriptErrorsSuppressed = true;
+
             clientAuthorizationView.Client = client;
         }
         public IAuthorizationState Authorization
