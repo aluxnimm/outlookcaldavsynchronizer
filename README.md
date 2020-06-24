@@ -121,6 +121,11 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 3.8.1 ####
+- Released 2020/06/24
+- Bug fixes
+	- HOTFIX: Suppress javascript errors during swisscom oauth.
+
 #### 3.8.0 ####
 - Released 2020/04/09
 - New features
