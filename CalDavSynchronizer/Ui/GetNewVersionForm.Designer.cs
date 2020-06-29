@@ -153,10 +153,10 @@ namespace CalDavSynchronizer.Ui
       // installButton
       // 
       this.installButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.installButton.Location = new System.Drawing.Point(598, 526);
+      this.installButton.Location = new System.Drawing.Point(538, 526);
       this.installButton.Margin = new System.Windows.Forms.Padding(4);
       this.installButton.Name = "installButton";
-      this.installButton.Size = new System.Drawing.Size(143, 28);
+      this.installButton.Size = new System.Drawing.Size(200, 28);
       this.installButton.TabIndex = 10;
       this.installButton.Text = "Install new version";
       this.installButton.UseVisualStyleBackColor = true;
