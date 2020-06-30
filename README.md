@@ -121,6 +121,12 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 3.8.2 ####
+- Released 2020/06/30
+- Bug fixes
+	- Fix "install new version" button width for non english locales.
+	- Fix assembly info version for OAuth.Swisscom project and link to CalDavSynchronizer files.
+
 #### 3.8.1 ####
 - Released 2020/06/24
 - Bug fixes
