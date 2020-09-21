@@ -973,6 +973,9 @@
   <data name="Enable TLS12" xml:space="preserve">
     <value>Включить TLS12</value>
   </data>
+  <data name="Enable TLS13" xml:space="preserve">
+    <value>Включить TLS13</value>
+  </data>
   <data name="About" xml:space="preserve">
     <value>О программе</value>
   </data>

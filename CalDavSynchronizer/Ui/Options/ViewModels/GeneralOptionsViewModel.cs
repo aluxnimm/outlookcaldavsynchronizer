@@ -294,6 +294,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         EnableDebugLog = true,
         EnableSsl3 = true,
         EnableTls12 = true,
+        EnableTls13 = true,
         EnableTrayIcon = true,
         ExpandAllSyncProfiles = true,
         IncludeCustomMessageClasses = true,

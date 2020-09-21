@@ -459,6 +459,9 @@ namespace CalDavSynchronizer
       if (options.EnableTls12)
         ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
 
+      if (options.EnableTls13)
+        ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls13;
+
       if (options.EnableSsl3)
         ServicePointManager.SecurityProtocol |= SecurityProtocolType.Ssl3;
 

@@ -567,6 +567,9 @@ System.Net.WebException: O servidor cometeu uma violação de protocolo. Section
   <data name="Enable TLS12" xml:space="preserve">
     <value>Habilitar TLS12</value>
   </data>
+  <data name="Enable TLS13" xml:space="preserve">
+    <value>Habilitar TLS13</value>
+  </data>
   <data name="Enable to display the summary of the event or task or the name of the contact&#xA;to identify the entity in the sync report." xml:space="preserve">
     <value>Habilite para exibir o resumo do evento, tarefa ou o nome do contato,
 a fim de identificar a entidade no relatório de sincronização.</value>

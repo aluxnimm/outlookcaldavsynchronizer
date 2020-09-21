@@ -35,6 +35,7 @@ namespace CalDavSynchronizer.DataAccess
     private const string ValueNameDisableCertificateValidation = "DisableCertificateValidation";
     private const string ValueNameEnableClientCertificate = "EnableClientCertificate";
     private const string ValueNameEnableTls12 = "EnableTls12";
+    private const string ValueNameEnableTls13 = "EnableTls13";
     private const string ValueNameEnableSsl3 = "EnableSsl3";
     private const string ValueNameCalDavConnectTimeout = "CalDavConnectTimeout";
     private const string ValueNameOptionsRegistryKey = @"Software\CalDavSynchronizer";
@@ -79,6 +80,7 @@ namespace CalDavSynchronizer.DataAccess
                    DisableCertificateValidation = (int) (key.GetValue (ValueNameDisableCertificateValidation) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["disableCertificateValidation"] ?? bool.FalseString))) != 0,
                    EnableClientCertificate = (int) (key.GetValue (ValueNameEnableClientCertificate) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableClientCertificate"] ?? bool.FalseString))) != 0,
                    EnableTls12 = (int) (key.GetValue (ValueNameEnableTls12) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableTls12"] ?? bool.TrueString))) != 0,
+                   EnableTls13 = (int)(key.GetValue(ValueNameEnableTls13) ?? Convert.ToInt32(Boolean.Parse(ConfigurationManager.AppSettings["enableTls13"] ?? bool.FalseString))) != 0,
                    EnableSsl3 = (int) (key.GetValue (ValueNameEnableSsl3) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["enableSsl3"] ?? bool.FalseString))) != 0,
                    CalDavConnectTimeout = TimeSpan.Parse ((string)(key.GetValue (ValueNameCalDavConnectTimeout) ?? ConfigurationManager.AppSettings["caldavConnectTimeout"] ?? "01:30")),
                    IncludeCustomMessageClasses = (int) (key.GetValue (ValueNameIncludeCustomMessageClasses) ?? Convert.ToInt32 (Boolean.Parse (ConfigurationManager.AppSettings["includeCustomMessageClasses"] ?? bool.FalseString))) != 0,
@@ -133,6 +135,7 @@ namespace CalDavSynchronizer.DataAccess
         key.SetValue (ValueNameDisableCertificateValidation, options.DisableCertificateValidation ? 1 : 0);
         key.SetValue (ValueNameEnableClientCertificate, options.EnableClientCertificate ? 1 : 0);
         key.SetValue (ValueNameEnableTls12, options.EnableTls12 ? 1 : 0);
+        key.SetValue(ValueNameEnableTls13, options.EnableTls13 ? 1 : 0);
         key.SetValue (ValueNameEnableSsl3, options.EnableSsl3 ? 1 : 0);
         key.SetValue (ValueNameCalDavConnectTimeout, options.CalDavConnectTimeout.ToString());
         key.SetValue (ValueNameIncludeCustomMessageClasses, options.IncludeCustomMessageClasses ? 1 : 0);

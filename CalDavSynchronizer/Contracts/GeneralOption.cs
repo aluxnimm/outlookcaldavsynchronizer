@@ -28,6 +28,7 @@ namespace CalDavSynchronizer.Contracts
     public bool DisableCertificateValidation { get; set; }
     public bool EnableClientCertificate { get; set; }
     public bool EnableTls12 { get; set; }
+    public bool EnableTls13 { get; set; }
     public bool EnableSsl3 { get; set; }
     public TimeSpan CalDavConnectTimeout { get; set; }
     public bool IncludeCustomMessageClasses { get; set; }

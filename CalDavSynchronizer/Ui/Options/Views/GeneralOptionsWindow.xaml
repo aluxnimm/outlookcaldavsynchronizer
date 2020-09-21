@@ -122,6 +122,7 @@
                     <CheckBox IsChecked="{Binding Options.DisableCertificateValidation}" Content="{g:Localize Disable Certificate Validation}" ToolTip="{g:Localize Major security risk\, not recommended!}"></CheckBox>
                     <CheckBox IsChecked="{Binding Options.EnableClientCertificate}" Content="{g:Localize Enable Client Certificates}" ToolTip="{g:Localize Enable client certificates with automatic mode.\&#x0a;The available client certificates from the user store will be automatically provided.}"></CheckBox>
                     <CheckBox IsChecked="{Binding Options.EnableTls12}" Content="{g:Localize Enable TLS12}" ToolTip="{g:Localize Disabling is a major security risk\, not recommended!}"></CheckBox>
+                    <CheckBox IsChecked="{Binding Options.EnableTls13}" Content="{g:Localize Enable TLS13}"></CheckBox>
                     <CheckBox IsChecked="{Binding Options.EnableSsl3}" Content="{g:Localize Enable SSL3}" ToolTip="{g:Localize Major security risk\, not recommended!}"></CheckBox>
                 </StackPanel>
             </TabItem>

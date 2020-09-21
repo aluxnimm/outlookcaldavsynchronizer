@@ -1021,6 +1021,9 @@ um die Entität im Synchronisationsreport zu identifizieren.</value>
   <data name="Enable TLS12" xml:space="preserve">
     <value>Aktiviere TLS12</value>
   </data>
+  <data name="Enable TLS13" xml:space="preserve">
+    <value>Aktiviere TLS13</value>
+  </data>
   <data name="About" xml:space="preserve">
     <value>Über</value>
   </data>

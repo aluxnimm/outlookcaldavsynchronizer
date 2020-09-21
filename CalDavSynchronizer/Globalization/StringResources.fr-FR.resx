@@ -563,6 +563,9 @@ Utilisé notamment pour Yahoo et cPanel Horde Server.</value>
   <data name="Enable TLS12" xml:space="preserve">
     <value>Activer TLS12</value>
   </data>
+  <data name="Enable TLS13" xml:space="preserve">
+    <value>Activer TLS13</value>
+  </data>
   <data name="Enable to display the summary of the event or task or the name of the contact&#xA;to identify the entity in the sync report." xml:space="preserve">
     <value>Activer pour afficher le titre de l'événement, la tâche ou le nom du contact afin d'identifier l'entité dans le rapport de synchronisation.</value>
   </data>

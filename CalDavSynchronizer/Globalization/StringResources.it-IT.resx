@@ -568,6 +568,9 @@ Utilizza l'impostazione standard 'SALVA COME' come da opzioni globali della rubr
   <data name="Enable TLS12" xml:space="preserve">
     <value>Attiva TLS12</value>
   </data>
+  <data name="Enable TLS13" xml:space="preserve">
+    <value>Attiva TLS13</value>
+  </data>
   <data name="Enable to display the summary of the event or task or the name of the contact&#xA;to identify the entity in the sync report." xml:space="preserve">
     <value>Mostra anche il titolo dell'appuntamento oppure il tema oppure il nome del contatto allo scopo di identificare l'entità nel report di sincronizzazione.</value>
   </data>
