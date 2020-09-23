@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Xml;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using DDay.iCal;
@@ -34,6 +35,6 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
     }
 
     protected override DateTime ModificationTimeA => _aEntity.Inner.LastModificationTime.ToUniversalTime();
-    protected override DateTime? ModificationTimeB => _bEntity.Updated;// TODO: check if Updated is UTC
+    protected override DateTime? ModificationTimeB => XmlConvert.ToDateTime(_bEntity.Updated, XmlDateTimeSerializationMode.Utc);
   }
 }

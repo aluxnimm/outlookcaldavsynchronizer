@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
+using System.Xml;
 using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using CalDavSynchronizer.Implementation.Tasks;
@@ -36,13 +37,13 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
     {
       if (atypeEntity.Subject == btypeEntity.Title)
       {
-        if (btypeEntity.Due == null)
+        if (string.IsNullOrEmpty(btypeEntity.Due))
         {
           return atypeEntity.DueDate == OutlookUtility.OUTLOOK_DATE_NONE;
         }
         else
         {
-          return atypeEntity.DueDate == btypeEntity.Due.Value.Date;
+          return atypeEntity.DueDate == XmlConvert.ToDateTime (btypeEntity.Due, XmlDateTimeSerializationMode.Utc).Date;
         }
       }
       return false;

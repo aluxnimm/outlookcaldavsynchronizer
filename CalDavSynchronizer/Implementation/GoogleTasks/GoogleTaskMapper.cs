@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Threading.Tasks;
+using System.Xml;
 using CalDavSynchronizer.Implementation.Common;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using GenSync.EntityMapping;
@@ -39,15 +40,18 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
 
       if (source.Inner.DueDate != OutlookUtility.OUTLOOK_DATE_NONE)
       {
-        target.Due = new DateTime (source.Inner.DueDate.Year, source.Inner.DueDate.Month, source.Inner.DueDate.Day, 23, 59, 59, DateTimeKind.Utc);
+        var due = new DateTime (source.Inner.DueDate.Year, source.Inner.DueDate.Month, source.Inner.DueDate.Day, 23, 59, 59, DateTimeKind.Utc);
+        target.Due = XmlConvert.ToString (due, XmlDateTimeSerializationMode.Utc);
       }
+      
       else
       {
         target.Due = null;
       }
       if (source.Inner.Complete && source.Inner.DateCompleted != OutlookUtility.OUTLOOK_DATE_NONE)
       {
-        target.Completed = source.Inner.DateCompleted.ToUniversalTime();
+        var completed = source.Inner.DateCompleted.ToUniversalTime();
+        target.Completed = XmlConvert.ToString (completed, XmlDateTimeSerializationMode.Utc);
       }
       else
       {
@@ -79,22 +83,23 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
       target.Inner.Subject = source.Title;
       target.Inner.Body = source.Notes;
 
-      if (source.Due != null)
+      if (!string.IsNullOrEmpty (source.Due))
       {
-        if (source.Due < target.Inner.StartDate)
+        var sourceDue = XmlConvert.ToDateTime (source.Due, XmlDateTimeSerializationMode.Utc);
+        if (sourceDue < target.Inner.StartDate)
         {
-          target.Inner.StartDate = source.Due.Value.ToUniversalTime();
+          target.Inner.StartDate = sourceDue;
         }
-        target.Inner.DueDate = source.Due.Value.ToUniversalTime();
+        target.Inner.DueDate = sourceDue;
       }
       else
       {
         target.Inner.DueDate = OutlookUtility.OUTLOOK_DATE_NONE;
       }
 
-      if (source.Completed != null)
+      if (!string.IsNullOrEmpty (source.Completed))
       {
-        target.Inner.DateCompleted = source.Completed.Value.Date;
+        target.Inner.DateCompleted = XmlConvert.ToDateTime (source.Completed, XmlDateTimeSerializationMode.Utc).Date;
         target.Inner.Complete = true;
       }
       else
