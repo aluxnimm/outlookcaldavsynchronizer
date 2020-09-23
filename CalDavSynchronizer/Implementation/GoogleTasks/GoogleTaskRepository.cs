@@ -83,6 +83,7 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
     {
       var request = _tasksService.Tasks.List(_taskList.Id);
       request.Fields = "items(etag,id),nextPageToken";
+      request.ShowHidden = true;
       var tasks = new List<EntityVersion<string, string>>();
 
       Google.Apis.Tasks.v1.Data.Tasks result = null;
@@ -90,9 +91,9 @@ namespace CalDavSynchronizer.Implementation.GoogleTasks
       {
         request.PageToken = result?.NextPageToken;
         result = await request.ExecuteAsync();
-        if (result.Items != null)
+        if (result?.Items != null)
           tasks.AddRange(result.Items.Select(t => EntityVersion.Create(t.Id, t.ETag)));
-      } while (result.NextPageToken != null);
+      } while (result?.NextPageToken != null);
 
       return tasks;
     }
