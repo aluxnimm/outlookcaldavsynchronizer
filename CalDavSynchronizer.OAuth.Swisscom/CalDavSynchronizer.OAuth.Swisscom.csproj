@@ -122,9 +122,6 @@
     <PackageReference Include="DotNetOpenAuth.OAuth2.Client.UI">
       <Version>4.3.4.13329</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.Bcl.Build">
-      <Version>1.0.21</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.Net.Http">
       <Version>2.2.29</Version>
     </PackageReference>
