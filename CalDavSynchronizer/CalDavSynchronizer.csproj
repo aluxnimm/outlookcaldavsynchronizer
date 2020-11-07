@@ -458,12 +458,16 @@
     <Compile Include="Ui\Options\ResourceSelection\ViewModels\AccessPrivilegesConverter.cs" />
     <Compile Include="Ui\Options\ViewModels\GeneralOptionsViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\ProfileViewModel.cs" />
+    <Compile Include="Ui\Options\ViewModels\OXInfoDialogViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\SelectProfileViewModel.cs" />
     <Compile Include="Ui\Options\ViewModels\ViewOptions.cs" />
     <Compile Include="Ui\Options\ViewModels\IViewOptions.cs" />
     <Compile Include="Ui\Options\Views\BooleanToVisibilityConverterInverted.cs" />
     <Compile Include="Ui\Options\Views\GeneralOptionsWindow.xaml.cs">
       <DependentUpon>GeneralOptionsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\Options\Views\OXInfoDialog.xaml.cs">
+      <DependentUpon>OXInfoDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Ui\Options\Views\SelectProfileWindow.xaml.cs">
       <DependentUpon>SelectProfileWindow.xaml</DependentUpon>
@@ -830,6 +834,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
+    <Resource Include="Resources\ProfileLogos\logo_fuago.png" />
     <Resource Include="Resources\ProfileLogos\logo_fastmail.png" />
     <Resource Include="Resources\ProfileLogos\logo_egroupware.png" />
     <Resource Include="Resources\ProfileLogos\logo_ox.png" />
@@ -956,6 +961,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ProfileTypes\ConcreteTypes\Swisscom\SwisscomServerSettingsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\Options\Views\OXInfoDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

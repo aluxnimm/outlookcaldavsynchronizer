@@ -1431,4 +1431,19 @@ bzw. wenn ein Meeting in einem freigegebenen Kalender im Namen des Besitzers ers
 Notwendig für Kompatibilität mit iOS Geräten.
     </value>
   </data>
+  <data name="You want to use Outlook with your OX App Suite account?&#xD;&#xA;&#xD;&#xA;Fuago GmbH now offers Outlook Sync for OX.&#xD;&#xA;With Outlook Sync for OX you get access to exclusive Features.&#xD;&#xA;&#xD;&#xA;Exclusive with Outlook Sync for OX: &#xD;&#xA;-predefined profile configurations&#xD;&#xA;- synchronization of OX App Suite distribution lists&#xD;&#xA;- support&#xD;&#xA;&#xD;&#xA;Get in contact with OSfO@fuago.io, today.&#xD;&#xA;&#xD;&#xA;Of course you can still set up a free generic profile and manage all settings manually." xml:space="preserve">
+    <value>Sie möchten Outlook mit ihrer OX App Suite Instanz nutzen?
+
+Die Fuago GmbH bietet ihnen nun den Outlook Sync for OX an.
+Mit Outlook Sync for OX profitieren Sie von exklusiven Funktionen:
+
+- vorkonfiguriertes Profil
+- Synchronisierung der OX App Suite Verteilerlisten
+- Support
+- viele weitere Funktionen geplant
+
+Kontaktieren Sie für ein persönliches Angebot zum Outlook Sync for OX am besten noch heute OSfO@fuago.io.
+
+Selbstverständlich können Sie auch weiterhin kostenlos ein generisches Profil erstellen und die Einstellungen manuell vornehmen.</value>
+  </data>
 </root>

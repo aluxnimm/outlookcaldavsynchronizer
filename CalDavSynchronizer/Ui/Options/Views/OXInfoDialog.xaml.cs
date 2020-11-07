@@ -14,28 +14,40 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-using System.Collections.Generic;
-using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.ProfileTypes;
+using System;
+using System.Windows;
+using System.Diagnostics;
+using System.Windows.Navigation;
 using CalDavSynchronizer.Ui.Options.ViewModels;
-using CalDavSynchronizer.Ui.Reports.ViewModels;
-using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
-using GenSync.ProgressReport;
 
-namespace CalDavSynchronizer.Ui
+namespace CalDavSynchronizer.Ui.Options.Views
 {
-  public interface IUiService : IProgressUiFactory
+  /// <summary>
+  /// Interaction logic for MainWindow.xaml
+  /// </summary>
+  public partial class OXInfoDialog : Window
   {
-    void Show (ReportsViewModel reportsViewModel);
-    void Show(TransientProfileStatusesViewModel viewModel);
-    bool ShowOptions (OptionsCollectionViewModel viewModel);
-    IProfileType QueryProfileType(IReadOnlyCollection<IProfileType> profileTypes);
-    void ShowErrorDialog(string errorMessage, string title);
-    void ShowOXInfoDialog();
-    string ShowSaveDialog(string title);
-    string ShowOpenDialog(string title);
-    void ShowReport(string title, string reportText);
-    bool ShowGeneralOptions(GeneralOptionsViewModel generalOptionsViewModel);
+    public OXInfoDialog ()
+    {
+      InitializeComponent ();
+      
+      DataContextChanged += OptionsWindow_DataContextChanged;
+    }
+
+    private void OptionsWindow_DataContextChanged (object sender, DependencyPropertyChangedEventArgs e)
+    {
+      var viewModel = e.NewValue as OXInfoDialogViewModel;
+      if (viewModel != null)
+      {
+        viewModel.CloseRequested += ViewModel_CloseRequested;
+      }
+    }
+
+    private void ViewModel_CloseRequested (object sender, CloseEventArgs e)
+    {
+      DialogResult = e.IsAcceptedByUser;
+    }
+
+    
   }
 }

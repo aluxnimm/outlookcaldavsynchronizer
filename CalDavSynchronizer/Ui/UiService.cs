@@ -136,6 +136,16 @@ namespace CalDavSynchronizer.Ui
       System.Windows.MessageBox.Show(errorMessage, title, MessageBoxButton.OK, MessageBoxImage.Error);
     }
 
+    public void ShowOXInfoDialog()
+    {
+      var viewModel = new OXInfoDialogViewModel(this);
+
+      var window = new OXInfoDialog();
+      window.DataContext = viewModel;
+      window.Icon = BitmapFrame.Create(new Uri("pack://application:,,,/CalDavSynchronizer;component/Resources/ApplicationIcon.ico"));
+      ElementHost.EnableModelessKeyboardInterop(window);
+      window.ShowDialog();
+    }
 
     public string ShowSaveDialog(string title)
     {
