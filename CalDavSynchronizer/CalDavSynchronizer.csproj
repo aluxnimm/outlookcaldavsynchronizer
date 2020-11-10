@@ -834,6 +834,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
+    <Resource Include="Resources\ProfileLogos\logo_ox_with_claim.png" />
     <Resource Include="Resources\ProfileLogos\logo_fuago.png" />
     <Resource Include="Resources\ProfileLogos\logo_fastmail.png" />
     <Resource Include="Resources\ProfileLogos\logo_egroupware.png" />

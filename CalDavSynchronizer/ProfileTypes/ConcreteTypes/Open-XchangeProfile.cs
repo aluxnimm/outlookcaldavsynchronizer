@@ -26,7 +26,7 @@ namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
   class OpenXchangeProfile : ProfileTypeBase
   {
     public override string Name => "Open-Xchange";
-    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_ox.png";
+    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_ox_with_claim.png";
 
     public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
     {

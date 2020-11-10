@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         SizeToContent="Height"
         Title="{g:Localize Select Profile Type}"
-        Width="480"
+        Width="620.335"
         WindowStartupLocation="CenterScreen"
          d:DataContext="{x:Static viewModels:OXInfoDialogViewModel.DesignInstance}">
     <DockPanel>
@@ -23,24 +23,23 @@
 
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="1*" />
-                <RowDefinition Height="1*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Label Grid.Row="0"  FontSize="20" Grid.ColumnSpan="2"  FontWeight="Bold" HorizontalAlignment="Center" Content="Outlook Sync for OX powered by Fuago" > 
-                
-              
-            </Label>
+            <Label Grid.Row="0"  Margin="0,10,0,16" FontSize="20"  FontWeight="Bold" HorizontalAlignment="Left" Content="Outlook Sync for OX powered by Fuago" Width="408"  ></Label>
+            <Image Grid.Row="0" Grid.Column="1" Stretch="Uniform"  Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_fuago.png" Margin="23,10,43,16"></Image>
             <TextBox Grid.Row="1"
                 TextWrapping="Wrap"
                 AcceptsReturn="True" 
-              BorderThickness="2"
+                BorderThickness="2"
+                Padding="5"
                 HorizontalScrollBarVisibility="Disabled"
                 VerticalScrollBarVisibility="Auto" Text="{Binding InfoText}" Margin="5,5,5,5">
             </TextBox>
-            <UniformGrid Rows="2" Grid.Column="1" Grid.Row="1" Margin="5,5,5,5">
-                <Image Stretch="Uniform" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_fuago.png"></Image>
-                <Image Stretch="Uniform" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_ox.png"></Image>
-            </UniformGrid>
+
+            <Image Grid.Row="1" Grid.Column="1" Stretch="Uniform" VerticalAlignment="Top" Source="pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_ox_with_claim.png" Margin="23,10,43,0" Height="33"/>
+
+
         </Grid>
     </DockPanel>
 </Window>
