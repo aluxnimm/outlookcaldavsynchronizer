@@ -109,7 +109,7 @@ see [https://www.davx5.com](https://www.davx5.com), so we can really recommend i
 
 ### Install instructions ###
 
-**WARNING**: Beginning with release 3.0.0 .NET framework 4.6.1 is the minimal requirement.
+**WARNING**: Beginning with release 4.0.0 .NET framework 4.8 is the minimal requirement.
 
 Download and extract the `OutlookCalDavSynchronizer-<Version>.zip` into any directory and start setup.exe. You can change the default install path, but you need to use a directory on the `C:\` drive.
 If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=56961)
@@ -117,10 +117,25 @@ You should also update manually to the latest Visual Studio 2010 Tools for Offic
 
 Beginning with version 2.9.0 the default install location is `ProgramFilesDir\CalDavSynchronizer\` and the installer remembers the chosen directory for the next updates. Also the install option to install for Everyone instead of the current user is working now for Outlook 2010 and higher, if you want to install the addin for all users on the current machine. For Outlook 2007 you can only install the addin for the current user.
 
-We recommend updating to the latest .Net Framework but the minimal required version is .NET 4.6.1, which is not supported on Windows XP. If you need Outlook CalDav Synchronizer for Windows XP you can download a backport to .Net 4.0 from a forked project [here](https://sourceforge.net/projects/outlookcaldavsynchronizerxp/), thanks to [Salvatore Isaja](https://sourceforge.net/u/salvois/profile/) for the awesome work!
+We recommend updating to the latest .Net Framework but the minimal required version is .NET 4.8, which is not supported on Windows XP, Windows 8 or Windows Vista. If you need Outlook CalDav Synchronizer for Windows XP you can download a backport to .Net 4.0 from a forked project [here](https://sourceforge.net/projects/outlookcaldavsynchronizerxp/), thanks to [Salvatore Isaja](https://sourceforge.net/u/salvois/profile/) for the awesome work!
 
 ### Changelog ###
 
+#### 4.0.0 ####
+- Released 2020/11/30
+- **WARNING**: This release is a major upgrade and needs .NET framework 4.8 as minimal requirement. Automatic upgrade won't work if you still have only .NET framework 4.6.1 installed. Install and upgrade manually in that case!
+- New features
+	- Support for .NET framework 4.8
+	- Support for TLS 1.3
+	- Update Google Task API
+	- Update NuGet libraries
+	- Add Fuago contact for Ooutlook Sync for OX, contact [OSfO@fuago.io](mailto:OSfO@fuago.io).
+- Bug fixes
+	- Fix sync for empty task lists and check also for hidden tasks (needed for completed tasks), fixes ticket #1377 and gh issue 280
+	- Fix PostBuildEvent to sign also setup.exe
+	- Remove Microsoft.Bcl.Build reference
+	- Migrate to package references and VS 2019 
+	
 #### 3.8.2 ####
 - Released 2020/06/30
 - Bug fixes
@@ -1562,6 +1577,7 @@ In the General Options Dialog you can change settings which are used for all syn
 	- **Disable Certificate Validation** set to true to disable SSL/TLS certificate validation, major security risk, use with caution!
 	- **Enable Client Certificates** If enabled, the available client certificates from the Windows user certificate store will automatically be provided.
 	- **Enable Tls12** set to false to disable TLS12, not recommended 
+	- **Enable Tls13** set to true to enable TLS13 if the server supports it for better security! 
 	- **Enable Ssl3** set to true to enable deprecated SSLv3, major security risk, use with caution!
 - *Synchronization Reports*
 	- See **Reports of sync runs** below. 

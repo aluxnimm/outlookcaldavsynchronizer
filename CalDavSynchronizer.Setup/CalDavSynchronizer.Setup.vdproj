@@ -7276,15 +7276,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CalDavSynchronizer"
-        "ProductCode" = "8:{030E643C-733A-4F10-9445-3A900E1E00E3}"
-        "PackageCode" = "8:{9EF81C2A-447E-4978-A24C-767C88218A9C}"
+        "ProductCode" = "8:{A2B8E419-39E8-4BB4-A691-FF497FB22D58}"
+        "PackageCode" = "8:{FB6DBD39-CF9D-44A5-A1B3-AB7FDBA377E4}"
         "UpgradeCode" = "8:{691063F4-DD9A-4264-948D-3FBD2565572C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:3.8.2"
+        "ProductVersion" = "8:4.0.0"
         "Manufacturer" = "8:Gerhard Zehetbauer"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -8084,7 +8084,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_593FC7C26DA342179AC2756B0BC5D8F9"
             {
-            "SourcePath" = "8:"
+            "SourcePath" = "8:..\\CalDavSynchronizer.CustomInstaller\\obj\\Release\\CalDavSynchronizer.CustomInstaller.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
