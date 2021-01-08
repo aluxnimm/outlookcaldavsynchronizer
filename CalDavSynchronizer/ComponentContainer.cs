@@ -125,6 +125,8 @@ namespace CalDavSynchronizer
       s_logger.Info ($"Version: {Assembly.GetExecutingAssembly().GetName().Version}");
       s_logger.Info ($"Operating system: {Environment.OSVersion}");
 
+      Thread.CurrentThread.CurrentUICulture = new CultureInfo (GeneralOptionsDataAccess.CultureName);
+
       _profileTypeRegistry = ProfileTypeRegistry.Instance;
 
       if (GeneralOptionsDataAccess.WpfRenderModeSoftwareOnly)
