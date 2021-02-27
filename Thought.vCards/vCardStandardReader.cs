@@ -2575,6 +2575,8 @@ namespace Thought.vCards
                 //
                 // See: RFC 2425, Section 5.8.1
 
+                var contentLineBuilder = new StringBuilder(firstLine);
+
                 do
                 {
                     int peekChar = reader.Peek();
@@ -2582,13 +2584,15 @@ namespace Thought.vCards
                     if ((peekChar == 32) || (peekChar == 9))
                     {
                         string foldedLine = reader.ReadLine();
-                        firstLine += foldedLine.Substring(1);
+                        contentLineBuilder.Append(foldedLine, 1, foldedLine.Length - 1);
                     }
                     else
                     {
                         break;
                     }
                 } while (true);
+
+                firstLine = contentLineBuilder.ToString();
 
                 // Get the index of the colon (:) in this
                 // property line.  All vCard properties are
