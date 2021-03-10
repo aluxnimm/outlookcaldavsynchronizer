@@ -15,24 +15,24 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.OAuth.Swisscom;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes.Swisscom
 {
-  class SwisscomServerSettingsDetector : IServerSettingsDetector
-  {
-    private const string APP_KEY = "fArWZ9P9e163dbMzCuzJtCEGa5vKOUBf";
-    private const string APP_SECRET = "QVXHXaUwSyVWDyxv";
-
-    public void AutoFillServerSettings(OptionsModel optionsModel)
+    class SwisscomServerSettingsDetector : IServerSettingsDetector
     {
-      var scsOauth = new SwisscomOauth(APP_KEY, APP_SECRET);
-      var credentials = scsOauth.GetCredentials();
-      optionsModel.UserName = credentials.Username;
-      optionsModel.Password = SecureStringUtility.ToSecureString(credentials.Password);
-      optionsModel.CalenderUrl = credentials.Url;
+        public void AutoFillServerSettings(OptionsModel optionsModel)
+        {
+            CredentialSet credentials = new SwisscomOauth(GeneralOptionsDataAccess.CultureName).GetCredentials(optionsModel.CalenderUrl);
+            if (credentials != null)
+            {
+                optionsModel.UserName = credentials.Username;
+                optionsModel.Password = SecureStringUtility.ToSecureString(credentials.Password);
+                optionsModel.CalenderUrl = credentials.Url;
+            }
+        }
     }
-  }
 }

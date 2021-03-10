@@ -1,33 +1,22 @@
 ﻿using DotNetOpenAuth.OAuth2;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace CalDavSynchronizer.OAuth.Swisscom
 {
     /// <summary>
-    /// Interaction logic for Authorize.xaml
+    /// Interaction logic for AuthorizationWindow.xaml
     /// </summary>
-    public partial class Authorize : Window
+    public partial class AuthorizationWindow : Window
     {
-        public Authorize(UserAgentClient client)
+        public AuthorizationWindow(UserAgentClient client)
         {
             InitializeComponent();
 
             var clientAuthorizationViewWebBrowserOrNull = clientAuthorizationView.Controls.OfType<System.Windows.Forms.WebBrowser>().FirstOrDefault();
-            if (clientAuthorizationViewWebBrowserOrNull != null)
+            if (clientAuthorizationViewWebBrowserOrNull != null) {
                 clientAuthorizationViewWebBrowserOrNull.ScriptErrorsSuppressed = true;
-
+            }
             clientAuthorizationView.Client = client;
         }
         public IAuthorizationState Authorization
@@ -35,7 +24,7 @@ namespace CalDavSynchronizer.OAuth.Swisscom
             get { return this.clientAuthorizationView.Authorization; }
         }
 
-        private void clientAuthorizationView_Completed(object sender, ClientAuthorizationCompleteEventArgs e)
+        private void ClientAuthorizationView_Completed(object sender, ClientAuthorizationCompleteEventArgs e)
         {
             this.DialogResult = e.Authorization != null;
             this.Close();
