@@ -19,9 +19,23 @@ namespace CalDavSynchronizer.OAuth.Swisscom
             InitializeComponent();
             foreach (AddressbookInfo l in locations)
             {
-                String content = l.LocationInfo.AddressLine1;
-                String toolTip = l.LocationInfo.AddressLine1;
-                if (l.ListOfMsisdn.Length > 0)
+                String content = "";
+                String toolTip = "";
+                if (!String.IsNullOrEmpty(l.LocationInfo.AddressLine1) && String.IsNullOrEmpty(l.LocationInfo.AddressLine2))
+                {
+                    content = l.LocationInfo.AddressLine1;
+                    toolTip = l.LocationInfo.AddressLine1;
+                } else if (String.IsNullOrEmpty(l.LocationInfo.AddressLine1) && !String.IsNullOrEmpty(l.LocationInfo.AddressLine2))
+                {
+                    content = l.LocationInfo.AddressLine2;
+                    toolTip = l.LocationInfo.AddressLine2;
+                } else if (!String.IsNullOrEmpty(l.LocationInfo.AddressLine1) && !String.IsNullOrEmpty(l.LocationInfo.AddressLine2))
+                {
+                    content = l.LocationInfo.AddressLine1 + ", " + l.LocationInfo.AddressLine2;
+                    toolTip = l.LocationInfo.AddressLine1 + ", " + l.LocationInfo.AddressLine2;
+                }
+
+               if (l.ListOfMsisdn.Length > 0)
                 {
                     if (String.IsNullOrEmpty(content))
                     {
