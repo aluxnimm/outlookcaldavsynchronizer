@@ -153,18 +153,13 @@ namespace CalDavSynchronizer.OAuth.Swisscom
                 AuthorizationEndpoint = new Uri(AUTH_ENDPOINT),
                 TokenEndpoint = new Uri(TOKEN_ENDPOINT)
             };
-            s_logger.Debug(AUTH_ENDPOINT);
-            s_logger.Debug(TOKEN_ENDPOINT);
-            s_logger.Debug(CLIENT_ID);
-            s_logger.Debug(CLIENT_SECRET);
+
             UserAgentClient client = new UserAgentClient(authServer, CLIENT_ID, CLIENT_SECRET);
             AuthorizationWindow authorizePopup = new AuthorizationWindow(client)
             {
             };
-            s_logger.Debug(authorizePopup);
 
             bool? result = authorizePopup.ShowDialog();
-            s_logger.Debug(result);
             if (result.HasValue && result.Value)
             {
                 _authorization = authorizePopup.Authorization;
@@ -172,6 +167,7 @@ namespace CalDavSynchronizer.OAuth.Swisscom
             }
             else
             {
+                s_logger.Error("User not authorized");
                 return false;
                 //throw new Exception("Not authorized");
             }
