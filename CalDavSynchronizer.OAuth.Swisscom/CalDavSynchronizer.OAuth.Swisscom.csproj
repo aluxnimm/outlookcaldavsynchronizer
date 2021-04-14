@@ -76,7 +76,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>StringResources.de-DE.resx</DependentUpon>
     </Compile>
-    <Compile Include="SwisscomOauthTests.cs" />
     <Compile Include="Globalization\StringResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
