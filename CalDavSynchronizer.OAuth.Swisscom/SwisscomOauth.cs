@@ -1,5 +1,4 @@
-﻿using DotNetOpenAuth.OAuth2;
-using log4net;
+﻿using log4net;
 using Newtonsoft.Json;
 using System;
 using System.Globalization;
@@ -23,14 +22,14 @@ namespace CalDavSynchronizer.OAuth.Swisscom
 
         private readonly String UUID = Guid.NewGuid().ToString();
 
-        internal IAuthorizationState _authorization = null;
+        private string _accessToken;
 
         public SwisscomOauth(string cultureInfo)
         {
             System.Threading.Thread.CurrentThread.CurrentUICulture = new CultureInfo(cultureInfo);
         }
 
-        public CredentialSet GetCredentials(string carddavUrl)
+        public async Task<CredentialSet> GetCredentialsAsync(string carddavUrl)
         {
             try
             {
@@ -38,10 +37,10 @@ namespace CalDavSynchronizer.OAuth.Swisscom
                 if (carddavUrl != null)
                 {
                     string[] sa = carddavUrl.Split('/');
-                    return QueryCredentialSet(sa[8]);
+                    return await QueryCredentialSetAsync(sa[8]);
                 }
 
-                AddressbookInfo[] r = QueryAddressbookInfos();
+                AddressbookInfo[] r = await QueryAddressbookInfosAsync();
                 if (r == null || r.Length == 0)
                 {
                     s_logger.Error(String.Format("{0} | No location or addressbook found", UUID));
@@ -52,7 +51,7 @@ namespace CalDavSynchronizer.OAuth.Swisscom
 
                 if (r.Length == 1)
                 {
-                    return QueryCredentialSet(r[0].PublicId);
+                    return await QueryCredentialSetAsync(r[0].PublicId);
                 }
 
                 LocationSelectorWindow locationSelectorWindow = new LocationSelectorWindow(r);
@@ -61,7 +60,7 @@ namespace CalDavSynchronizer.OAuth.Swisscom
                 AddressbookInfo location = locationSelectorWindow.GetSelectedLocationInfo();
                 if (location != null)
                 {
-                    return QueryCredentialSet(location.PublicId);
+                    return await QueryCredentialSetAsync(location.PublicId);
                 }
                 else
                 {
@@ -77,9 +76,9 @@ namespace CalDavSynchronizer.OAuth.Swisscom
             }
         }
 
-        private AddressbookInfo[] QueryAddressbookInfos()
+        private async Task<AddressbookInfo[]> QueryAddressbookInfosAsync()
         {
-            String response = GetResponse(
+            String response = await GetResponseAsync(
                     API_HOST + "/layer/addressbook-ng/nextgenerationaddressbook/plugin-conf/addressbooks"
                 );
 
@@ -91,9 +90,10 @@ namespace CalDavSynchronizer.OAuth.Swisscom
 
             return listOfAddressbookInfo;
         }
-        private CredentialSet QueryCredentialSet(string publicId)
+
+        private async Task<CredentialSet> QueryCredentialSetAsync(string publicId)
         {
-            String response = GetResponse(
+            String response = await GetResponseAsync(
                     API_HOST + "/layer/addressbook-ng/nextgenerationaddressbook/plugin-conf/credentials/" + publicId
                 );
             CredentialSet credentialSet = null;
@@ -104,18 +104,19 @@ namespace CalDavSynchronizer.OAuth.Swisscom
 
             return credentialSet;
         }
-        public string GetResponse(string url)
+
+        private async Task<string> GetResponseAsync(string url)
         {
-            if (null == _authorization)
+            if (_accessToken == null)
             {
-                Authenticate();
+                await AuthenticateAsync();
             }
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.Headers.Add("Authorization", "Bearer " + _authorization.AccessToken);
+            request.Headers.Add("Authorization", "Bearer " + _accessToken);
             request.Headers.Add("Scs-Correlation-Id", UUID);
             request.Headers.Add("Scs-Version", "1");
-            request.Headers.Add("Scs-AccessToken", _authorization.AccessToken);
+            request.Headers.Add("Scs-AccessToken", _accessToken);
 
             try
             {
@@ -146,31 +147,21 @@ namespace CalDavSynchronizer.OAuth.Swisscom
                 throw;
             }
         }
-        public virtual Boolean Authenticate()
+
+        private async Task AuthenticateAsync()
         {
-            AuthorizationServerDescription authServer = new AuthorizationServerDescription()
+            var initializer = new Google.Apis.Auth.OAuth2.Flows.AuthorizationCodeFlow.Initializer(AUTH_ENDPOINT, TOKEN_ENDPOINT)
             {
-                AuthorizationEndpoint = new Uri(AUTH_ENDPOINT),
-                TokenEndpoint = new Uri(TOKEN_ENDPOINT)
+                ClientSecrets = new Google.Apis.Auth.OAuth2.ClientSecrets { ClientId = CLIENT_ID, ClientSecret = CLIENT_SECRET },
             };
 
-            UserAgentClient client = new UserAgentClient(authServer, CLIENT_ID, CLIENT_SECRET);
-            AuthorizationWindow authorizePopup = new AuthorizationWindow(client)
-            {
-            };
+            var authorizer = new Google.Apis.Auth.OAuth2.AuthorizationCodeInstalledApp(
+                new Google.Apis.Auth.OAuth2.Flows.AuthorizationCodeFlow(initializer),
+                new Google.Apis.Auth.OAuth2.LocalServerCodeReceiver("Die Seite kann geschlossen werden", Google.Apis.Auth.OAuth2.LocalServerCodeReceiver.CallbackUriChooserStrategy.ForceLocalhost));
 
-            bool? result = authorizePopup.ShowDialog();
-            if (result.HasValue && result.Value)
-            {
-                _authorization = authorizePopup.Authorization;
-                return true;
-            }
-            else
-            {
-                s_logger.Error("User not authorized");
-                return false;
-                //throw new Exception("Not authorized");
-            }
+            var result = await authorizer.AuthorizeAsync(string.Empty, System.Threading.CancellationToken.None);
+
+            _accessToken = result.Token.AccessToken;
         }
     }
 }

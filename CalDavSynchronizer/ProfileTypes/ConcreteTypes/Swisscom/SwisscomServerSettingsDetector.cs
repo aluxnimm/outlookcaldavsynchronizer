@@ -19,14 +19,15 @@ using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.OAuth.Swisscom;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Utilities;
+using System.Threading.Tasks;
 
 namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes.Swisscom
 {
     class SwisscomServerSettingsDetector : IServerSettingsDetector
     {
-        public void AutoFillServerSettings(OptionsModel optionsModel)
+        public async Task AutoFillServerSettingsAsync(OptionsModel optionsModel)
         {
-            CredentialSet credentials = new SwisscomOauth(GeneralOptionsDataAccess.CultureName).GetCredentials(optionsModel.CalenderUrl);
+            CredentialSet credentials = await new SwisscomOauth(GeneralOptionsDataAccess.CultureName).GetCredentialsAsync(optionsModel.CalenderUrl);
             if (credentials != null)
             {
                 optionsModel.UserName = credentials.Username;

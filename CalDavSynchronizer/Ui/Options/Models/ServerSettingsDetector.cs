@@ -17,6 +17,7 @@
 
 using System;
 using Microsoft.Office.Interop.Outlook;
+using System.Threading.Tasks;
 
 namespace CalDavSynchronizer.Ui.Options.Models
 {
@@ -30,7 +31,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
       _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
     }
 
-    public void AutoFillServerSettings(OptionsModel optionsModel)
+    public Task AutoFillServerSettingsAsync(OptionsModel optionsModel)
     {
       var serverAccountSettings = _outlookAccountPasswordProvider.GetAccountServerSettings(optionsModel.FolderAccountName);
       optionsModel.EmailAddress = serverAccountSettings.EmailAddress;
@@ -40,6 +41,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
       optionsModel.CalenderUrl = success ? dnsDiscoveredUrl : "https://" + serverAccountSettings.ServerString + path;
       optionsModel.UserName = serverAccountSettings.UserName;
       optionsModel.UseAccountPassword = true;
+      return Task.CompletedTask;
     }
   }
 }

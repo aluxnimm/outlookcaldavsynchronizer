@@ -633,11 +633,11 @@ namespace CalDavSynchronizer.Ui.Options.Models
     }
    
 
-    public void AutoFillAccountSettings()
+    public async void AutoFillAccountSettings()
     {
       try
       {
-        _serverSettingsDetector.AutoFillServerSettings(this);
+        await _serverSettingsDetector.AutoFillServerSettingsAsync(this);
       }
       catch (System.Exception x)
       {
