@@ -27,7 +27,7 @@ namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes.Swisscom
     {
         public async Task AutoFillServerSettingsAsync(OptionsModel optionsModel)
         {
-            CredentialSet credentials = await new SwisscomOauth(GeneralOptionsDataAccess.CultureName).GetCredentialsAsync(optionsModel.CalenderUrl);
+            CredentialSet credentials = await new SwisscomOauth().GetCredentialsAsync(optionsModel.CalenderUrl);
             if (credentials != null)
             {
                 optionsModel.UserName = credentials.Username;

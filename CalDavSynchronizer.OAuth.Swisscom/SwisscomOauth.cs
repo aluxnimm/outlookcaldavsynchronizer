@@ -24,9 +24,8 @@ namespace CalDavSynchronizer.OAuth.Swisscom
 
         private string _accessToken;
 
-        public SwisscomOauth(string cultureInfo)
+        public SwisscomOauth()
         {
-            System.Threading.Thread.CurrentThread.CurrentUICulture = new CultureInfo(cultureInfo);
         }
 
         public async Task<CredentialSet> GetCredentialsAsync(string carddavUrl)
