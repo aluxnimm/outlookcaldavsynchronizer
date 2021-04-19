@@ -156,7 +156,7 @@ namespace CalDavSynchronizer.OAuth.Swisscom
 
             var authorizer = new Google.Apis.Auth.OAuth2.AuthorizationCodeInstalledApp(
                 new Google.Apis.Auth.OAuth2.Flows.AuthorizationCodeFlow(initializer),
-                new Google.Apis.Auth.OAuth2.LocalServerCodeReceiver("Die Seite kann geschlossen werden", Google.Apis.Auth.OAuth2.LocalServerCodeReceiver.CallbackUriChooserStrategy.ForceLocalhost));
+                new Google.Apis.Auth.OAuth2.LocalServerCodeReceiver(String.Format(Globalization.Strings.Localize("LABEL_CLOSE_AUTH_WINDOW")), Google.Apis.Auth.OAuth2.LocalServerCodeReceiver.CallbackUriChooserStrategy.ForceLocalhost));
 
             var result = await authorizer.AuthorizeAsync(string.Empty, System.Threading.CancellationToken.None);
 

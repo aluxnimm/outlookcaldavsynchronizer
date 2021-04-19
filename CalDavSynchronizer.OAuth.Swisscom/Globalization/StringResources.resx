@@ -123,6 +123,9 @@
   <data name="LABEL_BUTTON_OK" xml:space="preserve">
     <value>OK</value>
   </data>
+  <data name="LABEL_CLOSE_AUTH_WINDOW" xml:space="preserve">
+    <value>&lt;html&gt;&lt;meta charset="UTF - 8"&gt;&lt;head&gt;&lt;title&gt;Swisscom OAuth 2.0&lt;/title&gt;&lt;/head&gt;&lt;body&gt;Received verification code. You may now close this window.&lt;/body&gt;&lt;/html&gt;</value>
+  </data>
   <data name="LABEL_CUSTOMER_CENTER" xml:space="preserve">
     <value>Customer Center</value>
   </data>
@@ -155,5 +158,8 @@
   </data>
   <data name="LABEL_UNEXPECTED_ERROR" xml:space="preserve">
     <value>An error has occured, please try again later.</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
   </data>
 </root>

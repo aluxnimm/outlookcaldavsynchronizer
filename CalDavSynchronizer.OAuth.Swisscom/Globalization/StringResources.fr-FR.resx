@@ -123,6 +123,9 @@
   <data name="LABEL_BUTTON_OK" xml:space="preserve">
     <value>OK</value>
   </data>
+  <data name="LABEL_CLOSE_AUTH_WINDOW" xml:space="preserve">
+    <value>&lt;html&gt;&lt;meta charset="UTF - 8"&gt;&lt;head&gt;&lt;title&gt;Swisscom OAuth 2.0&lt;/title&gt;&lt;/head&gt;&lt;body&gt;Code d'authentification re&amp;#231;u. Cette fen&amp;#234;tre peut maintenant &amp;#234;tre ferm&amp;#233;e.&lt;/body&gt;&lt;/html&gt;</value>
+  </data>
   <data name="LABEL_CUSTOMER_CENTER" xml:space="preserve">
     <value>Espace client</value>
   </data>
