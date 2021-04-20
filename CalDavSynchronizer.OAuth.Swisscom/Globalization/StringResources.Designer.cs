@@ -61,6 +61,15 @@ namespace CalDavSynchronizer.OAuth.Swisscom.Globalization {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Authentication successful. ähnelt.
+        /// </summary>
+        public static string LABEL_AUTH_OK {
+            get {
+                return ResourceManager.GetString("LABEL_AUTH_OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Cancel ähnelt.
         /// </summary>
         public static string LABEL_BUTTON_CANCEL {
@@ -185,6 +194,5 @@ namespace CalDavSynchronizer.OAuth.Swisscom.Globalization {
                 return ResourceManager.GetString("LABEL_UNEXPECTED_ERROR", resourceCulture);
             }
         }
-        
     }
 }

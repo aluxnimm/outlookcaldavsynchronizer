@@ -156,4 +156,7 @@
   <data name="LABEL_CLOSE_AUTH_WINDOW" xml:space="preserve">
     <value>&lt;html&gt;&lt;meta charset="UTF - 8"&gt;&lt;head&gt;&lt;title&gt;Swisscom OAuth 2.0&lt;/title&gt;&lt;/head&gt;&lt;body&gt;Authentifizierungscode erhalten. Dieses Fenster kann nun geschlossen werden.&lt;/body&gt;&lt;/html&gt;</value>
   </data>
+  <data name="LABEL_AUTH_OK" xml:space="preserve">
+    <value>Authentifizierung erfolgreich.</value>
+  </data>
 </root>

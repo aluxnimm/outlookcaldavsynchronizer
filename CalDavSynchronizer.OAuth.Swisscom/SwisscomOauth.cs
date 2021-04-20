@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace CalDavSynchronizer.OAuth.Swisscom
 {
@@ -99,6 +100,7 @@ namespace CalDavSynchronizer.OAuth.Swisscom
             if (response != null)
             {
                credentialSet = JsonConvert.DeserializeObject<CredentialSet>(response);
+               MessageBox.Show(Globalization.Strings.Localize("LABEL_AUTH_OK"), "Swisscom OAuth 2.0", MessageBoxButtons.OK);
             }
 
             return credentialSet;
