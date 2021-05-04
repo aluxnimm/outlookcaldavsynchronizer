@@ -14,10 +14,12 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+using System.Threading.Tasks;
+
 namespace CalDavSynchronizer.Ui.Options.Models
 {
-  public interface IServerSettingsDetector
-  {
-    void AutoFillServerSettings(OptionsModel optionsModel);
-  }
+    public interface IServerSettingsDetector
+    {
+        Task AutoFillServerSettingsAsync(OptionsModel optionsModel);
+    }
 }
