@@ -121,6 +121,16 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 4.1.0 ####
+- Released 2021/05/12
+- New features
+	- New Addressbook Profile handling for Profile Type Swisscom.
+	- Use Google oauth library for authentication in Swisscom profile.
+	- Update Google NuGet libraries.
+- Bug fixes
+	- Set CurrentUICulture in CompontentContainer startup to avoid issues where Localization didn't work in some dialogs, e.g. github issue 241.
+	- Improve naive string handling in vcard parser library, fixed performance issues when syncing large pictures, github isse 299.
+
 #### 4.0.0 ####
 - Released 2020/11/30
 - **WARNING**: This release is a major upgrade and needs .NET framework 4.8 as minimal requirement. Automatic upgrade won't work if you still have only .NET framework 4.6.1 installed. Install and upgrade manually in that case!
