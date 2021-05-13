@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.ComponentModel;
 using System.Windows;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
@@ -25,24 +26,35 @@ namespace CalDavSynchronizer.Ui.Options.Views
   /// </summary>
   public partial class OptionsWindow : Window
   {
-    public OptionsWindow ()
+    public OptionsWindow (OptionsCollectionViewModel viewModel)
     {
       InitializeComponent ();
-      this.DataContextChanged += OptionsWindow_DataContextChanged;
-    }
-
-    private void OptionsWindow_DataContextChanged (object sender, DependencyPropertyChangedEventArgs e)
-    {
-      var viewModel = e.NewValue as OptionsCollectionViewModel;
-      if (viewModel != null)
-      {
-        viewModel.CloseRequested += ViewModel_CloseRequested;
-      }
+      this.DataContext = viewModel;
+      this.Closing += OnWindowClosing;
+      viewModel.CloseRequested += ViewModel_CloseRequested;
     }
 
     private void ViewModel_CloseRequested (object sender, CloseEventArgs e)
     {
       DialogResult = e.IsAcceptedByUser;
+    }
+
+    public void OnWindowClosing (object sender, CancelEventArgs e)
+    {
+      var viewModel = DataContext as OptionsCollectionViewModel;
+      if (viewModel != null)
+      {
+        if (!DialogResult.HasValue)
+        {
+          var result = MessageBox.Show("Dou you want to save profiles?", ComponentContainer.MessageBoxTitle,MessageBoxButton.YesNo);
+          DialogResult = (result == MessageBoxResult.Yes);
+        }
+        if (DialogResult.Value)
+        {
+          e.Cancel = viewModel.ShouldCloseBeCanceled();
+        }
+       
+      }
     }
   }
 }
