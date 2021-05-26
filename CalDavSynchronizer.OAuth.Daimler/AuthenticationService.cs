@@ -1,7 +1,6 @@
 ﻿using CalDavSynchronizer.OAuth.Daimler.Controls;
 using CalDavSynchronizer.OAuth.Daimler.Models;
 using IdentityModel.OidcClient;
-using IdentityModel.OidcClient.Browser;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,16 +13,7 @@ namespace CalDavSynchronizer.OAuth.Daimler
         private readonly OidcClient _client = null;
 
         public AuthenticationService(DaimlerEnvironment environment)
-            : this(environment, null)
         {
-        }
-
-        public AuthenticationService(DaimlerEnvironment environment, IBrowser browser)
-        {
-            // browser.SetTitle($"Daimler {environment.Name} CalDAV Login");
-            if (browser == null)
-                browser = new AuthPopupBrowser($"Daimler {environment.Name} Login");
-
             _options = new OidcClientOptions
             {
                 Authority = environment.WellKnownEndpoint,
@@ -34,7 +24,7 @@ namespace CalDavSynchronizer.OAuth.Daimler
                 Flow = OidcClientOptions.AuthenticationFlow.AuthorizationCode,
                 ResponseMode = OidcClientOptions.AuthorizeResponseMode.Redirect,
                 LoadProfile = true,
-                Browser = browser
+                Browser = new AuthPopupBrowser($"Daimler {environment.Name} Login")
             };
 
             _client = new OidcClient(_options);
