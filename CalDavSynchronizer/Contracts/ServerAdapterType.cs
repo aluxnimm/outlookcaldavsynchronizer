@@ -27,6 +27,9 @@ namespace CalDavSynchronizer.Contracts
     [XmlEnum ("GoogleOAuth")]
     WebDavHttpClientBasedWithGoogleOAuth,
 
+    [XmlEnum("DaimlerOAuth")]
+    DaimlerOAuth,
+
     GoogleTaskApi,
 
     GoogleContactApi

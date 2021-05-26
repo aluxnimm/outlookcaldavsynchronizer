@@ -1,0 +1,64 @@
+﻿<UserControl x:Class="CalDavSynchronizer.Ui.Options.Views.DaimlerSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CalDavSynchronizer.ProfileTypes.ConcreteTypes.Daimler"
+             xmlns:converters="clr-namespace:CalDavSynchronizer.ProfileTypes.ConcreteTypes.Daimler.Converters"
+             xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels"
+             xmlns:g="clr-namespace:CalDavSynchronizer.Globalization" 
+             d:DataContext="{d:DesignInstance Type=local:DaimlerServerSettingsViewModel}"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" True="Visible" False="Collapsed" />
+        <converters:BooleanToVisibilityConverter x:Key="NegateBooleanToVisibilityConverter" True="Collapsed" False="Visible" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Button x:Name="btnSelectConfig" 
+                Grid.Row="0"
+                Grid.ColumnSpan="2"
+                Visibility="{Binding ConfigLoaded, Converter={StaticResource NegateBooleanToVisibilityConverter}}"
+                Content="Select configuration file..." 
+                HorizontalAlignment="Left"
+                Click="btnSelectConfig_Click" />
+        <ComboBox x:Name="cmbEnvironment" 
+                  Visibility="{Binding ConfigLoaded, Converter={StaticResource BooleanToVisibilityConverter}}"
+                  Grid.Row="0" Grid.Column="0" 
+                  DisplayMemberPath="Name"
+                  ItemsSource="{Binding Environments}"
+                  SelectedItem="{Binding SelectedEnvironment}"
+                  ToolTip="Select Environment">
+        </ComboBox>
+        <TextBox Grid.Row="0" Grid.Column="1" IsReadOnly="True" Text="{Binding CalenderUrl}" Visibility="{Binding ConfigLoaded, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <Button 
+            Grid.Row="1" Grid.Column="0" 
+            HorizontalAlignment="Left"
+            Visibility="{Binding ShowLogin, Converter={StaticResource BooleanToVisibilityConverter}}"
+            Command="{Binding LoginCommand}">
+            Login
+        </Button>
+        <Grid Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Visibility="{Binding IsAuthProgress, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <ProgressBar x:Name="pbAuthentication" IsIndeterminate="True" MinWidth="100" MaxWidth="100" />
+            <TextBlock HorizontalAlignment="Center" Width="{Binding ElementName=pbAuthentication, Path=Width}" VerticalAlignment="Center">Authenticating...</TextBlock>
+        </Grid>
+        <Grid Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="0" Visibility="{Binding ShowLogin, Converter={StaticResource NegateBooleanToVisibilityConverter}}">
+            <StackPanel Orientation="Horizontal">
+                <Button Grid.Column="0" Command="{Binding TestOrDiscoverCommand}" HorizontalAlignment="Left">
+                    <g:Localize>Test or discover settings</g:Localize>
+                </Button>
+                <Button Grid.Column="1" Command="{Binding ChangeResourceCommand}" HorizontalAlignment="Left">
+                    <g:Localize>Change resource</g:Localize>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

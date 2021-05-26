@@ -374,6 +374,15 @@
     <Compile Include="IProfileExportProcessor.cs" />
     <Compile Include="OutlookCategory.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\CalendariCloudProfile.cs" />
+    <Compile Include="ProfileTypes\ConcreteTypes\Daimler\Converters\BooleanConverter.cs" />
+    <Compile Include="ProfileTypes\ConcreteTypes\Daimler\DaimlerProfile.cs" />
+    <Compile Include="ProfileTypes\ConcreteTypes\Daimler\Helpers\DaimlerHttpClient.cs" />
+    <Compile Include="ProfileTypes\ConcreteTypes\Daimler\Helpers\Extensions.cs" />
+    <Compile Include="ProfileTypes\ConcreteTypes\Daimler\Helpers\ProfileDataProvider.cs" />
+    <Compile Include="ProfileTypes\ConcreteTypes\Daimler\ViewModels\DaimlerServerSettingsViewModel.cs" />
+    <Compile Include="ProfileTypes\ConcreteTypes\Daimler\Views\DaimlerSettingsView.xaml.cs">
+      <DependentUpon>DaimlerSettingsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ProfileTypes\ConcreteTypes\FastMailProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\Open-XchangeProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\EGroupwareProfile.cs" />
@@ -834,6 +843,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
+    <Resource Include="Resources\ProfileLogos\daimler.png" />
     <Resource Include="Resources\ProfileLogos\logo_ox_with_claim.png" />
     <Resource Include="Resources\ProfileLogos\logo_fuago.png" />
     <Resource Include="Resources\ProfileLogos\logo_fastmail.png" />
@@ -887,6 +897,10 @@
     <ProjectReference Include="..\CalDavSynchronizer.Conversions\CalDavSynchronizer.Conversions.csproj">
       <Project>{71021de1-8dc8-4414-af56-fe821dd92f47}</Project>
       <Name>CalDavSynchronizer.Conversions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CalDavSynchronizer.OAuth.Daimler\CalDavSynchronizer.OAuth.Daimler.csproj">
+      <Project>{74C7B6D1-E353-4C51-BFE1-B519325E8129}</Project>
+      <Name>CalDavSynchronizer.OAuth.Daimler</Name>
     </ProjectReference>
     <ProjectReference Include="..\CalDavSynchronizer.OAuth.Google\CalDavSynchronizer.OAuth.Google.csproj">
       <Project>{230914cf-6ff1-4b09-a831-c37c6b41d127}</Project>
@@ -953,6 +967,14 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="ProfileTypes\ConcreteTypes\Daimler\Views\DaimlerResourceDictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ProfileTypes\ConcreteTypes\Daimler\Views\DaimlerSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Ui\Options\Views\GeneralOptionsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

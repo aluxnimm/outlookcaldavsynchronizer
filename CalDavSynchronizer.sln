@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31313.381
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalDavSynchronizer", "CalDavSynchronizer\CalDavSynchronizer.csproj", "{64937844-752B-49A4-9B3F-3526601E93E1}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -33,6 +33,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalDavSynchronizer.IntegrationTests", "CalDavSynchronizer.IntegrationTests\CalDavSynchronizer.IntegrationTests.csproj", "{13B5D6BF-EB84-4570-A3E4-1F272C0F2BC0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalDavSynchronizer.OAuth.Swisscom", "CalDavSynchronizer.OAuth.Swisscom\CalDavSynchronizer.OAuth.Swisscom.csproj", "{424F803E-B641-4473-B9C3-B8DF40E0B3B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalDavSynchronizer.OAuth.Daimler", "CalDavSynchronizer.OAuth.Daimler\CalDavSynchronizer.OAuth.Daimler.csproj", "{74C7B6D1-E353-4C51-BFE1-B519325E8129}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -94,13 +96,17 @@ Global
 		{424F803E-B641-4473-B9C3-B8DF40E0B3B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{424F803E-B641-4473-B9C3-B8DF40E0B3B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{424F803E-B641-4473-B9C3-B8DF40E0B3B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74C7B6D1-E353-4C51-BFE1-B519325E8129}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74C7B6D1-E353-4C51-BFE1-B519325E8129}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74C7B6D1-E353-4C51-BFE1-B519325E8129}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74C7B6D1-E353-4C51-BFE1-B519325E8129}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		RESX_AutoCreateNewLanguageFiles = True
-		RESX_SortFileContentOnSave = True
 		SolutionGuid = {C6CA0E38-AF86-45D6-BDCA-263A18B40738}
+		RESX_SortFileContentOnSave = True
+		RESX_AutoCreateNewLanguageFiles = True
 	EndGlobalSection
 EndGlobal

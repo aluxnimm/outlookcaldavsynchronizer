@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CalDavSynchronizer.ProfileTypes.ConcreteTypes;
+using CalDavSynchronizer.ProfileTypes.ConcreteTypes.Daimler;
 using CalDavSynchronizer.ProfileTypes.ConcreteTypes.Swisscom;
 using log4net;
 
@@ -68,6 +69,7 @@ namespace CalDavSynchronizer.ProfileTypes
       all.Add(new SwisscomProfile());
       all.Add(new EGroupwareProfile());
       all.Add(new FastMailProfile());
+      all.Add(new DaimlerProfile());
 
       return new ProfileTypeRegistry(all, generic, google);
     }

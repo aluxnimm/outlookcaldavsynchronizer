@@ -19,6 +19,7 @@
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/CalDavSynchronizer;component/ProfileTypes/ConcreteTypes/Swisscom/SwisscomResourceDictionary.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/CalDavSynchronizer;component/ProfileTypes/ConcreteTypes/Daimler/Views/DaimlerResourceDictionary.xaml"/>
       </ResourceDictionary.MergedDictionaries>
 
         <Style TargetType="FrameworkElement">

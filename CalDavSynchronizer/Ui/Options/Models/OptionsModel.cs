@@ -406,7 +406,8 @@ namespace CalDavSynchronizer.Ui.Options.Models
         }
         else
         {
-          return ServerAdapterType.WebDavHttpClientBased;
+          return ModelFactory.ProfileType.CreateOptions().ServerAdapterType;
+          // return ServerAdapterType.WebDavHttpClientBased;
         }
       }
     }
@@ -652,6 +653,7 @@ namespace CalDavSynchronizer.Ui.Options.Models
     public IWebDavClient CreateWebDavClient(Uri url = null)
     {
       return SynchronizerFactory.CreateWebDavClient(
+          Id,
           UserName,
           UseAccountPassword ? _outlookAccountPasswordProvider.GetPassword(FolderAccountName) : Password,
           url != null ? url.ToString() : CalenderUrl,

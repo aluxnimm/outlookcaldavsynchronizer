@@ -17,10 +17,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Globalization;
@@ -47,6 +49,12 @@ namespace CalDavSynchronizer.Ui
   internal class UiService : IUiService
   {
     private const string c_exportedProfilesFilesFilter = "CalDav Synchronizer profiles (*.cdsp)|*.cdsp";
+    public static readonly Dispatcher Dispatcher;
+
+    static UiService()
+    {
+        Dispatcher = Dispatcher.FromThread(Thread.CurrentThread);
+    }
 
     public void Show (TransientProfileStatusesViewModel viewModel)
     {

@@ -43,6 +43,7 @@ using CalDavSynchronizer.Implementation.TimeRangeFiltering;
 using CalDavSynchronizer.Implementation.TimeZones;
 using CalDavSynchronizer.ProfileTypes;
 using CalDavSynchronizer.ProfileTypes.ConcreteTypes;
+using CalDavSynchronizer.ProfileTypes.ConcreteTypes.Daimler.Helpers;
 using CalDavSynchronizer.Scheduling.ComponentCollectors;
 using CalDavSynchronizer.Synchronization;
 using CalDavSynchronizer.Utilities;
@@ -216,6 +217,7 @@ namespace CalDavSynchronizer.Scheduling
         throw new ArgumentNullException (nameof (generalOptions));
 
       return CreateWebDavClient (
+          options.Id,
           options.UserName,
           options.GetEffectivePassword(outlookAccountPasswordProvider),
           options.CalenderUrl,
@@ -230,6 +232,7 @@ namespace CalDavSynchronizer.Scheduling
     }
 
     public static IWebDavClient CreateWebDavClient (
+        Guid profileId,
         string username,
         SecureString password,
         string serverUrl,
@@ -247,9 +250,10 @@ namespace CalDavSynchronizer.Scheduling
       {
         case ServerAdapterType.WebDavHttpClientBased:
         case ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth:
+        case ServerAdapterType.DaimlerOAuth:
           var productAndVersion = GetProductAndVersion();
           return new DataAccess.HttpClientBasedClient.WebDavClient (
-              () => CreateHttpClient (username, password, serverUrl, timeout, serverAdapterType, proxyOptions, preemptiveAuthentication, forceBasicAuthentication, enableClientCertificate),
+              () => CreateHttpClient (profileId, username, password, serverUrl, timeout, serverAdapterType, proxyOptions, preemptiveAuthentication, forceBasicAuthentication, enableClientCertificate),
               productAndVersion.Item1,
               productAndVersion.Item2,
               closeConnectionAfterEachRequest,
@@ -277,7 +281,8 @@ namespace CalDavSynchronizer.Scheduling
       return false;
     }
 
-    private static async System.Threading.Tasks.Task<HttpClient> CreateHttpClient ( string username,
+    private static async System.Threading.Tasks.Task<HttpClient> CreateHttpClient ( Guid profileId, 
+                                                                                    string username,
                                                                                     SecureString password,
                                                                                     string serverUrl, 
                                                                                     TimeSpan calDavConnectTimeout, 
@@ -324,6 +329,8 @@ namespace CalDavSynchronizer.Scheduling
           return httpClient;
         case ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth:
           return await OAuth.Google.GoogleHttpClientFactory.CreateHttpClient (username, GetProductWithVersion(), proxy);
+        case ServerAdapterType.DaimlerOAuth:
+          return DaimlerHttpClient.Create(proxy: proxy, profileDataProvider: new ProfileDataProvider(profileId));
         default:
           throw new ArgumentOutOfRangeException ("serverAdapterType");
       }
@@ -541,6 +548,7 @@ namespace CalDavSynchronizer.Scheduling
         calDavDataAccess = new CalDavDataAccess (
          calendarUrl,
          CreateWebDavClient (
+           options.Id,
            options.UserName,
            options.GetEffectivePassword (_outlookAccountPasswordProvider),
            options.CalenderUrl,
@@ -831,6 +839,7 @@ namespace CalDavSynchronizer.Scheduling
       else
       {
         webDavClientOrNullIfFileAccess = CreateWebDavClient(
+          options.Id,
           options.UserName,
           options.GetEffectivePassword(_outlookAccountPasswordProvider),
           options.CalenderUrl,
