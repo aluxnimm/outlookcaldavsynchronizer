@@ -103,7 +103,8 @@ namespace CalDavSynchronizer.Ui
 
     public bool ShowOptions (OptionsCollectionViewModel viewModel)
     {
-      var window = new OptionsWindow(viewModel);
+      var window = new OptionsWindow();
+      window.DataContext = viewModel;
       window.Icon = BitmapFrame.Create (new Uri ("pack://application:,,,/CalDavSynchronizer;component/Resources/ApplicationIcon.ico"));
       ElementHost.EnableModelessKeyboardInterop (window);
 
