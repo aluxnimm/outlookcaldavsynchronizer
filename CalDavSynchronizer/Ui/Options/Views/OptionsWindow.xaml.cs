@@ -53,8 +53,7 @@ namespace CalDavSynchronizer.Ui.Options.Views
 
     public void OnWindowClosing(object sender, CancelEventArgs e)
     {
-      var viewModel = DataContext as OptionsCollectionViewModel;
-      if (viewModel != null)
+      if (DataContext is OptionsCollectionViewModel viewModel)
       {
         if (!DialogResult.HasValue)
         {
