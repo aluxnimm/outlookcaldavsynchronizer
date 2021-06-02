@@ -236,7 +236,7 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
       CloseRequested?.Invoke(this, new CloseEventArgs(shouldSaveNewOptions));
     }
 
-    public bool ShouldCloseBeCanceled()
+    public bool Validate()
     {
       IOptionsViewModel firstViewModelWithError;
       string errorMessage;
@@ -245,9 +245,9 @@ namespace CalDavSynchronizer.Ui.Options.ViewModels
         _uiService.ShowErrorDialog(errorMessage, Strings.Get($"Some options contain invalid values"));
         if (firstViewModelWithError != null)
           firstViewModelWithError.IsSelected = true;
-        return true;
+        return false;
       }
-      return false;
+      return true;
     }
   
 

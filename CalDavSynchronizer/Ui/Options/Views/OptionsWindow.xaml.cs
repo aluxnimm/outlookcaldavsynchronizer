@@ -63,7 +63,7 @@ namespace CalDavSynchronizer.Ui.Options.Views
 
         if (DialogResult.Value)
         {
-          e.Cancel = viewModel.ShouldCloseBeCanceled();
+          e.Cancel = !viewModel.Validate();
         }
       }
     }
