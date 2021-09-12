@@ -915,11 +915,11 @@
     <PackageReference Include="DDay.iCal">
       <Version>1.0.2.575</Version>
     </PackageReference>
+    <PackageReference Include="Google.Apis.PeopleService.v1">
+      <Version>1.51.0.2329</Version>
+    </PackageReference>
     <PackageReference Include="Google.Apis.Tasks.v1">
       <Version>1.51.0.2231</Version>
-    </PackageReference>
-    <PackageReference Include="Google.GData.Contacts">
-      <Version>2.2.0</Version>
     </PackageReference>
     <PackageReference Include="log4net">
       <Version>2.0.10</Version>
